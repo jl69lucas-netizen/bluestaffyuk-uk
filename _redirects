@@ -1,0 +1,6 @@
+# Old WordPress URL redirects — 301 permanent
+/wp-admin/*     /admin/     301
+/wp-login.php   /admin/     301
+/feed           /           301
+/feed/          /           301
+/?p=*           /           301
