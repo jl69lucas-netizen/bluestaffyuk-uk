@@ -2,7 +2,7 @@ backend:
   name: github
   repo: jl69lucas-netizen/bluestaffyuk-uk
   branch: main
-  base_url: https://NETLIFY_OAUTH_GATEWAY_PLACEHOLDER
+  base_url: https://decap-oauth-gateway.netlify.app
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
