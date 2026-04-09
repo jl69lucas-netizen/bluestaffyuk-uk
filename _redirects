@@ -3,4 +3,3 @@
 /wp-login.php   /admin/     301
 /feed           /           301
 /feed/          /           301
-/?p=*           /           301
