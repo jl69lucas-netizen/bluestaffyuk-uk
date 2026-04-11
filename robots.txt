@@ -1,5 +1,14 @@
+# robots.txt — BlueStaffyUK.uk (Cloudflare Pages static site)
+
 User-agent: *
 Disallow: /wp-admin/
-Allow: /wp-admin/admin-ajax.php
+Disallow: /wp-includes/
+Disallow: /feed/
+Disallow: /xmlrpc.php
+Disallow: /bluestaffyuk-uk/
+Disallow: /.wrangler/
+
+# Allow all crawlable content
+Allow: /
 
 Sitemap: https://bluestaffyuk.uk/sitemap_index.xml
