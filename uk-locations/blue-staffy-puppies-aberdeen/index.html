@@ -508,10 +508,13 @@ window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(argumen
 .bsuk-delivery-box ul{margin:0;padding-left:20px;}
 .bsuk-delivery-box ul li{margin-bottom:5px;font-size:0.92rem;line-height:1.5;}
 .bsuk-puppies-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:32px;}
-.bsuk-puppy-card{background:#fff;border:2px solid #dde3ec;border-radius:10px;padding:16px;text-align:center;}
-.bsuk-puppy-card .name{font-size:1.1rem;font-weight:800;color:#1a5fa8;margin-bottom:4px;}
-.bsuk-puppy-card .detail{font-size:0.82rem;color:#555;}
-.bsuk-puppy-card .avail{display:inline-block;margin-top:8px;background:#22c55e;color:#fff;font-size:0.75rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.bsuk-puppy-card{background:#fff;border:2px solid #dde3ec;border-radius:12px;overflow:hidden;text-align:center;box-shadow:0 2px 12px rgba(26,95,168,0.08);transition:transform .2s;}
+.bsuk-puppy-card:hover{transform:translateY(-3px);}
+.bsuk-puppy-card img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;border-bottom:2px solid #dde3ec;}
+.bsuk-puppy-card .name{font-size:1.15rem;font-weight:800;color:#1a5fa8;margin:12px 0 2px;padding:0 12px;}
+.bsuk-puppy-card .detail{font-size:0.82rem;color:#555;padding:0 12px;}
+.bsuk-puppy-card .price{font-size:1.2rem;font-weight:900;color:#1a3a5c;margin:6px 0 0;padding:0 12px;}
+.bsuk-puppy-card .avail{display:inline-block;margin:8px 0 14px;background:#22c55e;color:#fff;font-size:0.75rem;font-weight:700;padding:4px 12px;border-radius:20px;}
 .bsuk-faq-item{margin-bottom:20px;border-bottom:1px solid #eee;padding-bottom:20px;}
 .bsuk-faq-q{font-size:1rem;font-weight:700;color:#1a3a5c;margin:0 0 6px;}
 .bsuk-faq-a{margin:0;line-height:1.6;color:#444;font-size:0.94rem;}
@@ -544,10 +547,34 @@ window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(argumen
   <div class="bsuk-loc-section">
     <h2>Available Blue Staffy Puppies</h2>
     <div class="bsuk-puppies-grid">
-      <div class="bsuk-puppy-card"><div class="name">BETH</div><div class="detail">Female · Solid Blue · £1,100</div><span class="avail">Available</span></div>
-      <div class="bsuk-puppy-card"><div class="name">KANE</div><div class="detail">Male · Blue &amp; White · £1,000</div><span class="avail">Available</span></div>
-      <div class="bsuk-puppy-card"><div class="name">ALIS</div><div class="detail">Female · Solid Blue · £1,100</div><span class="avail">Available</span></div>
-      <div class="bsuk-puppy-card"><div class="name">KOBE</div><div class="detail">Male · Blue &amp; White · £1,000</div><span class="avail">Available</span></div>
+      <div class="bsuk-puppy-card">
+        <img src="https://bluestaffyuk.uk/wp-content/uploads/blue-staffy-puppy-uk-sale.jpg" alt="BETH - Blue Staffy Puppy For Sale UK" loading="lazy">
+        <div class="name">BETH</div>
+        <div class="detail">Female · Solid Blue</div>
+        <div class="price">£1,100</div>
+        <span class="avail">✅ Available</span>
+      </div>
+      <div class="bsuk-puppy-card">
+        <img src="https://bluestaffyuk.uk/wp-content/uploads/blue-staffy-pup-near-me-available.jpg" alt="KANE - Blue Staffy Puppy For Sale UK" loading="lazy">
+        <div class="name">KANE</div>
+        <div class="detail">Male · Blue</div>
+        <div class="price">£1,000</div>
+        <span class="avail">✅ Available</span>
+      </div>
+      <div class="bsuk-puppy-card">
+        <img src="https://bluestaffyuk.uk/wp-content/uploads/white-grey-staffy-puppy-uk.jpg" alt="ALIS - White Grey Staffy Puppy For Sale UK" loading="lazy">
+        <div class="name">ALIS</div>
+        <div class="detail">Female · White &amp; Grey</div>
+        <div class="price">£1,200</div>
+        <span class="avail">✅ Available</span>
+      </div>
+      <div class="bsuk-puppy-card">
+        <img src="https://bluestaffyuk.uk/wp-content/uploads/tan-white-staffy-puppy-uk.jpg" alt="KOBE - Tan White Staffy Puppy For Sale UK" loading="lazy">
+        <div class="name">KOBE</div>
+        <div class="detail">Male · Tan &amp; White</div>
+        <div class="price">£850</div>
+        <span class="avail">✅ Available</span>
+      </div>
     </div>
   </div>
 
@@ -581,7 +608,7 @@ window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(argumen
 </div>
 <div class="bsuk-faq-item">
   <h3 class="bsuk-faq-q">🐾 What is the price of a Blue Staffy puppy in Aberdeen?</h3>
-  <p class="bsuk-faq-a">Prices range from £1,000 to £1,100 depending on the puppy. We believe in transparent, fair pricing that reflects our commitment to ethical breeding.</p>
+  <p class="bsuk-faq-a">Our Blue Staffy puppies are priced between £850–£1,200 depending on the puppy. KOBE is £850, KANE is £1,000, BETH is £1,100, and ALIS is £1,200. We believe in transparent, fair pricing that reflects our commitment to ethical breeding.</p>
 </div>
 <div class="bsuk-faq-item">
   <h3 class="bsuk-faq-q">🐾 Can we visit the puppies before buying?</h3>
