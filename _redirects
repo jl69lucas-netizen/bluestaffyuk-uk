@@ -7,4 +7,6 @@
 # Broken link redirects — 301 permanent
 /uk-locations/                              /uk-locations/blue-staffy-puppies-uk/   301
 /privacy-policy/                            /privacy-policy-uk/                     301
+/legal/privacy-policy/                      /privacy-policy-uk/                     301
+/legal/*                                    /privacy-policy-uk/                     301
 /uk-locations/staffordshire-bull-terrier-puppies-for-sale-essex/  /uk-locations/staffy-puppies-for-sale-essex/  301
