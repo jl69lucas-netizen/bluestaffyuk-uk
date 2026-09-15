@@ -99,8 +99,11 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     raw = path.read_text(encoding="utf-8", errors="ignore")
     soup = BeautifulSoup(raw, "lxml")
     schema = []
+    schema_phone_hits = 0
     for s in soup.find_all("script", type="application/ld+json"):
-        try: schema.append(json.loads(s.string or "{}"))
+        raw_json, n = scrub_phone(s.string or "{}")
+        schema_phone_hits += n
+        try: schema.append(json.loads(raw_json))
         except json.JSONDecodeError: pass
     title = html.unescape((soup.title.string or "").strip()) if soup.title else ""
     description = _meta(soup, name="description")
@@ -114,18 +117,20 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     body = extract_body(soup)
     body_html, phone_hits = scrub_phone(body.decode_contents())
     title, n1 = scrub_phone(title); description, n2 = scrub_phone(description)
-    phone_hits += n1 + n2
+    phone_hits += n1 + n2 + schema_phone_hits
     text = BeautifulSoup(body_html, "lxml").get_text(" ", strip=True)
+    word_count = len(text.split())
     b = BeautifulSoup(body_html, "lxml")
     images = [{"src": i.get("src", ""), "alt": i.get("alt", "")} for i in b.find_all("img")]
     embeds = [f.get("src", "") for f in b.find_all("iframe")]
     headings = [(t.name, t.get_text(" ", strip=True)) for t in b.find_all(re.compile("^h[1-6]$"))]
     defects, flags = [], []
     if not h1: defects.append("empty-h1")
+    if word_count < 50: defects.append("stub")
     if re.search(r"\b\d+ (Sweet )?Blue Staffy Pupp", title): flags.append("count-in-title")
     for m in re.finditer(r"£\s?(850|1,?000|1,?100|1,?200|300)\b", text): flags.append("old-price:%s" % m.group(0))
     return Page(url_path, classify(url_path), title, description, canonical, robots, og_type, h1,
-                body_html, schema, len(text.split()), images, embeds, headings, defects, phone_hits, flags)
+                body_html, schema, word_count, images, embeds, headings, defects, phone_hits, flags)
 
 
 def inventory(src: pathlib.Path):
