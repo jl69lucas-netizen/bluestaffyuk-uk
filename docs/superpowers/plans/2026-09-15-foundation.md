@@ -2128,3 +2128,8 @@ Confirm: no remote (`git remote -v` prints nothing), the old MCP untouched, the 
 **Gaps closed inline.** The blog index and puppies index needed sitemap routing (Task 14 `shard_for`). Old-homepage internal link `/blue/#contact-us` is dead; Task 16 routes it to an extractor rewrite map. The `prose-migrated` class is what parity scopes on (Task 8 and 15 agree).
 
 **Type consistency.** `Page` dataclass fields used by writers: `url_path, kind, title, description, canonical, robots, og_type, h1, body_html, schema, word_count, images, embeds, headings, defects, phone_hits, refresh_flags` — matches Tasks 3, 4, 6. `bake_body_image(src, dst_dir, stem)` and `bake_puppy_card(src, dst_dir, slug)` signatures match their tests. `settings.json` keys used in components (`price_range`, `delivery_note`, `delivery_min_gbp`, `delivery_max_gbp`, `deposit_gbp`, `logo`, `socials`, `address`) all exist in Task 2.
+
+## Pinning decisions (recorded during execution)
+
+- **astro pinned exactly to 6.3.8** (Task 1): `^6.3.1` resolves to 6.4.x, outside the agreed 6.3 line.
+- **`overrides.vite: ^7.3.6`** (Task 1): `@tailwindcss/vite@4.3.3` needs vite 7 while astro pulls vite 8; two vite copies broke the Tailwind plugin. Revisit both when moving to Astro 6.4+ / Tailwind with vite 8 support.
