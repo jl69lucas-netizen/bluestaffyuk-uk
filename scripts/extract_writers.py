@@ -46,10 +46,13 @@ OLD_PUP_RE = re.compile(
     "|".join(r"\bmeet %s\b|\b%s['’]s overview\b|\b%s is\b" % (n, n, n) for n in OLD_PUPS))
 OLD_PUP_NAME_RE = re.compile(r"\b(%s)\b" % "|".join(OLD_PUPS))
 # Blocks that may wrap a whole pup card. `.wp-block-group` is only trusted on the
-# image-filename path (see _card_names_in_headings) because its prose can be ordinary copy.
+# image-filename path (see _names_in_labels) because its prose can be ordinary copy.
+# `.bsuk-puppy-card` is the hand-written theme card used on nine location pages.
 CARD_SELECTORS = (".wp-block-uagb-info-box, .wp-block-uagb-image, .wp-block-uagb-container, "
-                  ".wp-block-uagb-column, .wp-block-group")
+                  ".wp-block-uagb-column, .wp-block-group, .bsuk-puppy-card")
 PROSE_PATH_EXCLUDED = ("wp-block-group",)
+# Wrappers that exist only to lay out pup cards: drop them once they are empty.
+CARD_GRID_SELECTORS = ".bsuk-puppies-grid"
 
 
 def city_from_slug(slug):
@@ -127,8 +130,17 @@ def strip_old_pups(body_html):
             removed += 1
     if not removed:
         return body_html, 0
+    for grid in soup.select(CARD_GRID_SELECTORS):
+        if grid.parent is not None and not grid.find(True):
+            grid.decompose()
     inner = soup.body.decode_contents() if soup.body else str(soup)
     return inner, removed
+
+
+def old_pup_mentions(body_html):
+    """How many times the sold pups are still named in the body text (prose, alts aside)."""
+    text = BeautifulSoup(body_html, "lxml").get_text(" ", strip=True)
+    return len(OLD_PUP_NAME_RE.findall(text.lower()))
 
 
 def recount(page, body_html):
@@ -206,6 +218,9 @@ def run(src, out):
         if removed:
             page.refresh_flags.append("old-pup-cards-removed:%d" % removed)
             recount(page, page.body_html)
+        mentions = old_pup_mentions(page.body_html)
+        if mentions:
+            page.refresh_flags.append("old-pup-names-in-prose:%d" % mentions)
         page.body_html = rewrite_image_srcs(page.body_html)
         if kind == "rich":
             write_rich_page(page, out)

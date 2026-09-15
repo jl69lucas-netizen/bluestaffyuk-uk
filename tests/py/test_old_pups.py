@@ -66,3 +66,44 @@ def test_image_match_uses_srcset_data_src_and_ignores_query():
         body, removed = strip_old_pups(html)
         assert removed == 1, attrs
         assert img not in body
+
+
+YORK = SITE / "uk-locations/blue-staffy-puppies-york/index.html"
+
+
+@pytest.mark.skipif(not YORK.exists(), reason="live WP clone not present")
+def test_theme_puppy_cards_stripped_on_location_page():
+    page = parse_page(YORK, "/uk-locations/blue-staffy-puppies-york/")
+    body, removed = strip_old_pups(page.body_html)
+    assert removed == 4
+    assert not any(img in body for img in OLD_PUP_IMAGES)
+    assert "bsuk-puppy-card" not in body
+
+
+def test_emptied_card_grid_wrapper_is_removed():
+    img = sorted(OLD_PUP_IMAGES)[0]
+    html = ('<div class="bsuk-loc-section"><h2>Available Blue Staffy Puppies</h2>'
+            '<div class="bsuk-puppies-grid">'
+            '<div class="bsuk-puppy-card"><img src="/wp-content/uploads/%s"><div>BETH</div></div>'
+            '</div></div>' % img)
+    body, removed = strip_old_pups(html)
+    assert removed == 1
+    assert "bsuk-puppies-grid" not in body and "bsuk-puppy-card" not in body
+    assert "Available Blue Staffy Puppies" in body
+
+
+def test_card_grid_kept_when_it_still_has_children():
+    img = sorted(OLD_PUP_IMAGES)[0]
+    html = ('<div class="bsuk-puppies-grid">'
+            '<div class="bsuk-puppy-card"><img src="/wp-content/uploads/%s"><div>BETH</div></div>'
+            '<div class="keeper">Maggie, our mum</div></div>' % img)
+    body, removed = strip_old_pups(html)
+    assert removed == 1
+    assert "bsuk-puppies-grid" in body and "Maggie, our mum" in body
+
+
+def test_old_pup_mentions_counts_remaining_names():
+    from extract_writers import old_pup_mentions
+    assert old_pup_mentions("<p>Nothing here.</p>") == 0
+    assert old_pup_mentions("<p>Ask about Kane or KOBE.</p><p>beth too.</p>") == 3
+    assert old_pup_mentions("<p>Early socialisation matters.</p>") == 0
