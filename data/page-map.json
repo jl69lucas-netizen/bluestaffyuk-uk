@@ -281,16 +281,12 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-pup-cards-removed:4"
+        "old-pup-schema-images-removed:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -381,16 +377,11 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
         "old-pup-cards-removed:4",
+        "old-price:£850",
+        "old-price:£1,200",
+        "old-price:£850",
+        "old-price:£1,200",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -518,15 +509,12 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-pup-cards-removed:4"
+        "old-pup-schema-images-removed:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -653,16 +641,13 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:5",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£300",
-        "old-price:£1,000",
-        "old-price:£850",
-        "old-price:£1,100",
-        "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-pup-cards-removed:5"
+        "old-pup-schema-images-removed:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1138,13 +1123,9 @@
       "refresh_flags": [
         "wp-form-removed",
         "count-in-title",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1200",
-        "old-price:£1,000",
-        "old-price:£850",
-        "old-price:£1,100",
-        "old-price:£1,200",
-        "old-pup-cards-removed:4",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -1710,17 +1691,14 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£1,000",
-        "old-price:£1,100",
-        "old-price:£1,200",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
+        "old-price:£850",
+        "old-price:£1,200",
+        "old-price:£850",
+        "old-price:£1,000",
+        "old-price:£1,100",
+        "old-price:£1,200",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -1814,11 +1792,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -1877,17 +1852,14 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£1,000",
-        "old-price:£1,100",
-        "old-price:£1,200",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
+        "old-price:£850",
+        "old-price:£1,200",
+        "old-price:£850",
+        "old-price:£1,000",
+        "old-price:£1,100",
+        "old-price:£1,200",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -1980,11 +1952,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-pup-cards-removed:4"
+        "old-pup-cards-removed:4",
+        "puppy-grid-emptied"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2042,11 +2011,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -2140,11 +2106,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -2203,11 +2166,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -2284,13 +2244,10 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
+        "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£1,000",
-        "old-price:£1,100",
-        "old-pup-cards-removed:4"
+        "old-price:£1,100"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2425,17 +2382,12 @@
       "phone_hits": 0,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£300",
-        "old-pup-cards-removed:4"
+        "old-price:£300"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2493,11 +2445,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£1,200",
-        "old-price:£850",
         "old-pup-cards-removed:4",
+        "puppy-grid-emptied",
         "old-pup-names-in-prose:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
@@ -2611,16 +2560,11 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£850",
-        "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-pup-cards-removed:4"
+        "old-price:£1,200"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -3068,18 +3012,14 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£850",
-        "old-price:£1,200",
-        "old-price:£1,100",
-        "old-price:£1,000",
-        "old-price:£850",
-        "old-price:£850",
-        "old-pup-cards-removed:4"
+        "old-pup-schema-images-removed:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"

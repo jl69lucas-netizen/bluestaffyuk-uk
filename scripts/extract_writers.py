@@ -2,7 +2,8 @@
 """Writers for the extracted WordPress pages: rich .astro pages, locations.json, page-map.json."""
 import json, pathlib, re
 from bs4 import BeautifulSoup
-from extract_wp import inventory, parse_page, classify, OLD_PUPS, OLD_PUP_IMAGES
+from extract_wp import (inventory, parse_page, classify, OLD_PUPS, OLD_PUP_IMAGES,
+                        OLD_PRICE_RE)
 
 NOT_FETCHED = "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
 NOISE = ("blue", "staffy", "staffies", "staffordshire", "bull", "terrier", "puppies", "puppy",
@@ -53,6 +54,14 @@ CARD_SELECTORS = (".wp-block-uagb-info-box, .wp-block-uagb-image, .wp-block-uagb
 PROSE_PATH_EXCLUDED = ("wp-block-group",)
 # Wrappers that exist only to lay out pup cards: drop them once they are empty.
 CARD_GRID_SELECTORS = ".bsuk-puppies-grid"
+# WordPress size suffix on a derived upload ("...-300x200.jpg"); the pups' own filenames
+# never look like that, so stripping it is safe and catches resized copies in JSON-LD.
+SIZE_SUFFIX_RE = re.compile(r"-\d{2,4}x\d{2,4}$")
+OLD_PUP_STEMS = set(pathlib.Path(n).stem for n in OLD_PUP_IMAGES)
+# "@id" is included because Yoast's graph names an ImageObject by its own file URL, so the
+# bare {"@id": "...jpg"} reference stubs elsewhere in the graph must go with the node itself.
+SCHEMA_URL_KEYS = ("url", "contentUrl", "thumbnailUrl", "@id")
+SCHEMA_IMAGE_KEYS = ("image", "primaryImageOfPage")
 
 
 def city_from_slug(slug):
@@ -110,8 +119,8 @@ def _names_in_labels(box):
 
 def strip_old_pups(body_html):
     """Remove the four sold pups' cards (Spectra info-box / image / column / container blocks that
-    name them or use their images). Returns (inner_html, removed_count); the original html is
-    returned unchanged when nothing matched."""
+    name them or use their images). Returns (inner_html, removed_count, notes); the original
+    html is returned unchanged when nothing matched."""
     soup = BeautifulSoup(body_html, "lxml")
     removed = 0
     for box in soup.select(CARD_SELECTORS):
@@ -129,12 +138,14 @@ def strip_old_pups(body_html):
             box.decompose()
             removed += 1
     if not removed:
-        return body_html, 0
+        return body_html, 0, []
+    notes = []
     for grid in soup.select(CARD_GRID_SELECTORS):
-        if grid.parent is not None and not grid.find(True):
+        if grid.parent is not None and not grid.find(True) and not grid.get_text(strip=True):
             grid.decompose()
+            notes.append("puppy-grid-emptied")
     inner = soup.body.decode_contents() if soup.body else str(soup)
-    return inner, removed
+    return inner, removed, notes
 
 
 def old_pup_mentions(body_html):
@@ -143,8 +154,59 @@ def old_pup_mentions(body_html):
     return len(OLD_PUP_NAME_RE.findall(text.lower()))
 
 
+def _is_old_pup_url(value):
+    if not isinstance(value, str) or not value:
+        return False
+    stem = pathlib.Path(re.split(r"[?#]", value)[0]).stem
+    return SIZE_SUFFIX_RE.sub("", stem) in OLD_PUP_STEMS
+
+
+def _node_is_old_pup(node):
+    return isinstance(node, dict) and any(_is_old_pup_url(node.get(k)) for k in SCHEMA_URL_KEYS)
+
+
+def scrub_schema_old_pups(schema):
+    """Drop JSON-LD nodes whose image URL is one of the sold pups' photos.
+
+    Returns (schema, removed). A deleted node that was the whole value of an "image" /
+    "primaryImageOfPage" key takes the key with it.
+    """
+    count = [0]
+
+    def walk(node):
+        if isinstance(node, list):
+            out = []
+            for v in node:
+                if _node_is_old_pup(v):
+                    count[0] += 1
+                    continue
+                out.append(walk(v))
+            return out
+        if isinstance(node, dict):
+            out = {}
+            for k, v in node.items():
+                if k in SCHEMA_IMAGE_KEYS and _node_is_old_pup(v):
+                    count[0] += 1
+                    continue                      # drop the key with its only value
+                if k in SCHEMA_IMAGE_KEYS and isinstance(v, str) and _is_old_pup_url(v):
+                    count[0] += 1
+                    continue
+                if _node_is_old_pup(v):
+                    count[0] += 1
+                    continue
+                out[k] = walk(v)
+            return out
+        return node
+
+    return walk(schema), count[0]
+
+
 def recount(page, body_html):
-    """Refresh the derived counts/lists on `page` from a (stripped) body, one parse."""
+    """Refresh the derived counts/lists and price flags on `page` from a (stripped) body.
+
+    Mutates `page` in place and returns None: one BeautifulSoup parse, same field shapes
+    as extract_wp.parse_page.
+    """
     b = BeautifulSoup(body_html, "lxml")
     text = b.get_text(" ", strip=True)
     page.word_count = len(text.split())
@@ -156,7 +218,9 @@ def recount(page, body_html):
             page.defects.append("stub")
     elif "stub" in page.defects:
         page.defects.remove("stub")
-    return page
+    page.refresh_flags[:] = [f for f in page.refresh_flags if not f.startswith("old-price:")]
+    for m in OLD_PRICE_RE.finditer(text):
+        page.refresh_flags.append("old-price:%s" % m.group(0))
 
 
 def write_rich_page(page, out):
@@ -214,10 +278,14 @@ def run(src, out):
         if kind == "skip":
             continue
         page = parse_page(f, url_path)
-        page.body_html, removed = strip_old_pups(page.body_html)
+        page.body_html, removed, notes = strip_old_pups(page.body_html)
         if removed:
             page.refresh_flags.append("old-pup-cards-removed:%d" % removed)
+            page.refresh_flags.extend(notes)
             recount(page, page.body_html)
+        page.schema, schema_removed = scrub_schema_old_pups(page.schema)
+        if schema_removed:
+            page.refresh_flags.append("old-pup-schema-images-removed:%d" % schema_removed)
         mentions = old_pup_mentions(page.body_html)
         if mentions:
             page.refresh_flags.append("old-pup-names-in-prose:%d" % mentions)

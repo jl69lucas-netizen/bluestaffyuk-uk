@@ -1,7 +1,7 @@
 import json, pathlib
 from extract_wp import parse_page
 from extract_writers import (write_rich_page, write_locations, write_page_map,
-                             astro_frontmatter, city_from_slug)
+                             astro_frontmatter, city_from_slug, SLUG_CITY)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -42,6 +42,11 @@ def test_city_names():
     assert city_from_slug("staffy-breeding-dogs-glasgow") == "Glasgow (breeding dogs)"
     assert city_from_slug("blue-staffy-puppies-uk") == "UK"
     assert city_from_slug("uk-staffordshire-bull-terrier-breeder") == "UK"
+
+
+def test_city_name_falls_back_to_heuristic_for_unmapped_slug():
+    assert "blue-staffy-puppies-plymouth" not in SLUG_CITY
+    assert city_from_slug("blue-staffy-puppies-plymouth") == "Plymouth"
 
 
 def test_page_map_generated_from_comes_from_src(tmp_path):

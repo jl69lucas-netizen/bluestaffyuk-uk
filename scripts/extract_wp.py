@@ -25,6 +25,7 @@ OLD_PUP_IMAGES = {
     "blue-staffy-puppy-uk-sale.jpg", "tan-white-staffy-puppy-uk.jpg", "white-grey-staffy-puppy-uk.jpg",
 }
 PHONE_RE = re.compile(r"(\+?44\s?7490\s?571\s?679|07490\s?571\s?679|\+447490571679)")
+OLD_PRICE_RE = re.compile(r"£\s?(850|1,?000|1,?100|1,?200|300)\b")
 DEAD_HREF_RE = re.compile(r"(/wp-json/|/feed/?$|/comments/feed|xmlrpc\.php|/wp-admin/|/wp-login)")
 
 
@@ -184,7 +185,7 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     if not h1: defects.append("empty-h1")
     if word_count < 50: defects.append("stub")
     if re.search(r"\b\d+ (Sweet )?Blue Staffy Pupp", title): flags.append("count-in-title")
-    for m in re.finditer(r"£\s?(850|1,?000|1,?100|1,?200|300)\b", text): flags.append("old-price:%s" % m.group(0))
+    for m in OLD_PRICE_RE.finditer(text): flags.append("old-price:%s" % m.group(0))
     return Page(url_path, classify(url_path), title, description, canonical, robots, og_type, h1,
                 body_html, schema, word_count, images, embeds, headings, defects, phone_hits, flags,
                 str(path))
