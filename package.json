@@ -1,0 +1,42 @@
+{
+  "name": "bsuk",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "extract": "python3 scripts/extract_wp.py",
+    "bake": "python3 scripts/bake_images.py",
+    "sitemaps": "python3 scripts/generate_sitemaps.py",
+    "redirects": "python3 scripts/build_redirects.py",
+    "llms": "python3 scripts/build_llms_txt.py",
+    "check:parity": "python3 scripts/migration_parity.py",
+    "check:redirects": "python3 scripts/redirect_check.py",
+    "check:schema": "python3 scripts/schema_check.py",
+    "check:sitemaps": "python3 scripts/sitemap_check.py",
+    "check:all": "npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps",
+    "test:py": "python3 -m pytest tests/py -q",
+    "test:render:meta": "playwright test -c tests/render/playwright.config.ts meta.spec.ts",
+    "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^5.0.4",
+    "@astrojs/react": "^5.0.4",
+    "@tailwindcss/vite": "^4.3.0",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "astro": "6.3.8",
+    "lighthouse": "^13.4.1"
+  },
+  "overrides": {
+    "vite": "^7.3.6"
+  }
+}

@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+:root {
+  --hdr: 72px;
+  --container: 1200px;
+  --text-max: 760px;
+}
+html { scroll-behavior: auto; overflow-x: clip; }
+body { margin: 0; font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: #1b2430; background: #fff; }
+.container { max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+.container-text { max-width: var(--text-max); }
+main p, main li { max-width: 70ch; }
+[id] { scroll-margin-top: calc(var(--hdr) + 16px); }
+img { max-width: 100%; height: auto; }
+table { border-collapse: collapse; width: 100%; }
+td, th { padding: 6px 10px; border-bottom: 1px solid #dad6cc; text-align: left; vertical-align: top; }
+.table-wrap { overflow-x: auto; }
+@media (max-width: 640px) {
+  .stack-table, .stack-table thead, .stack-table tbody, .stack-table tr, .stack-table td, .stack-table th, .stack-table caption { display: block; }
+  .stack-table thead { position: absolute; left: -9999px; }
+  .stack-table td { border: 0; padding: 4px 0; }
+  .stack-table td::before { content: attr(data-label) ": "; font-weight: 600; }
+  .stack-table tr { border-bottom: 1px solid #dad6cc; padding: 8px 0; }
+}
