@@ -47,6 +47,7 @@ class Page:
     defects: list
     phone_hits: int
     refresh_flags: list
+    source_path: str = ""
 
 
 def classify(url_path: str) -> str:
@@ -104,9 +105,27 @@ def _label_table(tbl):
                 cell["data-label"] = heads[i]
 
 
+FORM_WRAPPERS = ".wpforms-container, .wpcf7, .forminator-ui, .wp-block-uagb-forms"
+
+
 def extract_body(soup):
-    """Return the content node itself, mutated in place; caller takes decode_contents()."""
+    """Return (content node mutated in place, forms_removed); caller takes decode_contents().
+
+    Every <form> is a dead WordPress endpoint on this export (the enquiry form still
+    lists the sold pups), so forms and their plugin wrappers are dropped outright.
+    """
     node = soup.select_one(".entry-content") or soup.select_one("#primary") or soup.body
+    forms_removed = 0
+    for t in node.select(FORM_WRAPPERS):
+        if t.parent is None:
+            continue
+        forms_removed += len(t.find_all("form")) or 1
+        t.decompose()
+    for f in node.find_all("form"):
+        if f.parent is None:
+            continue
+        forms_removed += 1
+        f.decompose()
     for a in node.find_all("a", href=True):
         if DEAD_HREF_RE.search(a["href"]):
             a.insert_before(" "); a.insert_after(" ")
@@ -120,7 +139,7 @@ def extract_body(soup):
     for tbl in node.find_all("table"):
         _label_table(tbl)
         tbl.wrap(soup.new_tag("div", attrs={"class": "table-wrap"}))
-    return node
+    return node, forms_removed
 
 
 def scrub_phone(text: str):
@@ -150,7 +169,9 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     _strip_chrome(soup)
     h1_tag = soup.find("h1")
     h1 = h1_tag.get_text(" ", strip=True) if h1_tag else ""
-    node = extract_body(soup)
+    node, forms_removed = extract_body(soup)
+    if forms_removed:
+        flags.append("wp-form-removed")
     body_html, phone_hits = scrub_phone(node.decode_contents())
     title, n1 = scrub_phone(title); description, n2 = scrub_phone(description)
     phone_hits += n1 + n2 + schema_phone_hits
@@ -165,7 +186,8 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     if re.search(r"\b\d+ (Sweet )?Blue Staffy Pupp", title): flags.append("count-in-title")
     for m in re.finditer(r"£\s?(850|1,?000|1,?100|1,?200|300)\b", text): flags.append("old-price:%s" % m.group(0))
     return Page(url_path, classify(url_path), title, description, canonical, robots, og_type, h1,
-                body_html, schema, word_count, images, embeds, headings, defects, phone_hits, flags)
+                body_html, schema, word_count, images, embeds, headings, defects, phone_hits, flags,
+                str(path))
 
 
 def inventory(src: pathlib.Path):

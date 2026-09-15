@@ -92,3 +92,11 @@ def test_media_headings_and_flags(synth):
     assert synth.headings == [("h1", "Synthetic Heading One"), ("h2", "Synthetic Heading Two")]
     assert "old-price:£1,200" in synth.refresh_flags
     assert synth.canonical == "/synthetic/"
+
+
+def test_dead_wp_form_removed(synth):
+    # The old export embeds a dead WordPress enquiry form listing the sold pups.
+    assert "<form" not in synth.body_html
+    assert "wpforms-container" not in synth.body_html
+    assert "KANE" not in synth.body_html and "Select Puppy Name" not in synth.body_html
+    assert "wp-form-removed" in synth.refresh_flags
