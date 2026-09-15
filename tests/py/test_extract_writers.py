@@ -1,6 +1,7 @@
 import json, pathlib
 from extract_wp import parse_page
-from extract_writers import write_rich_page, write_locations, write_page_map, astro_frontmatter
+from extract_writers import (write_rich_page, write_locations, write_page_map,
+                             astro_frontmatter, city_from_slug)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -24,7 +25,7 @@ def test_write_locations_json(tmp_path):
 
 def test_page_map_records_baseline_not_fetched(tmp_path):
     page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
-    pm = json.loads(write_page_map([page], tmp_path).read_text())
+    pm = json.loads(write_page_map([page], tmp_path, "/Users/apple/bluestaffyuk-site").read_text())
     row = pm["pages"][0]
     assert row["baseline_gsc"] == "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     assert row["kind"] == "location" and row["word_count"] == 4
@@ -33,11 +34,52 @@ def test_city_names():
     from extract_writers import city_from_slug
     assert city_from_slug("blue-staffy-puppies-birmingham") == "Birmingham"
     assert city_from_slug("staffy-puppies-for-sale-cornwall") == "Cornwall"
-    assert city_from_slug("blue-staffies-newcastle-under-lyme") == "Newcastle under Lyme"
-    assert city_from_slug("staffy-puppies-cardiff-wales") == "Cardiff Wales"
+    assert city_from_slug("blue-staffies-newcastle-under-lyme") == "Newcastle-under-Lyme"
+    assert city_from_slug("staffy-puppies-cardiff-wales") == "Cardiff"
     assert city_from_slug("blue-staffy-puppies-manchester-uk") == "Manchester"
     assert city_from_slug("buy-blue-staffy-puppy-coventry-area") == "Coventry"
     assert city_from_slug("blue-staffy-puppies-for-sale-in-leicester") == "Leicester"
-    assert city_from_slug("staffy-breeding-dogs-glasgow") == "Glasgow"
+    assert city_from_slug("staffy-breeding-dogs-glasgow") == "Glasgow (breeding dogs)"
     assert city_from_slug("blue-staffy-puppies-uk") == "UK"
     assert city_from_slug("uk-staffordshire-bull-terrier-breeder") == "UK"
+
+
+def test_page_map_generated_from_comes_from_src(tmp_path):
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    pm = json.loads(write_page_map([page], tmp_path, "/tmp/some-clone").read_text())
+    assert pm["generated_from"] == "/tmp/some-clone"
+
+
+def test_nested_slug_layout_depth(tmp_path):
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.url_path = "/a/b/"
+    out = write_rich_page(page, tmp_path)
+    assert out == tmp_path / "src/pages/a/b/index.astro"
+    assert "import BaseLayout from '../../../layouts/BaseLayout.astro';" in out.read_text()
+
+
+def test_frontmatter_meta_is_valid_json_with_defaults():
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.robots = ""; page.og_type = ""
+    line = [l for l in astro_frontmatter(page, "x.astro").splitlines()
+            if l.startswith("const meta = ")][0]
+    meta = json.loads(line[len("const meta = "):].rstrip(";"))
+    assert meta["robots"] == "index, follow"
+    assert meta["ogType"] == "article"
+    assert meta["canonical"].startswith("/")
+
+
+def test_locations_row_has_og_type_and_robots_defaults(tmp_path):
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.robots = ""; page.og_type = ""
+    row = json.loads(write_locations([page], tmp_path).read_text())[0]
+    assert row["robots"] == "index, follow" and row["og_type"] == "article"
+
+
+def test_recount_refreshes_counts_and_clears_stub():
+    from extract_writers import recount
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    assert "stub" in page.defects
+    recount(page, "<p>%s</p><h2>Head</h2><img src='a.jpg' alt='a'>" % (" word" * 60))
+    assert page.word_count > 50 and "stub" not in page.defects
+    assert len(page.images) == 1 and page.headings == [("h2", "Head")]
