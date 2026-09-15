@@ -4,7 +4,7 @@ out = pathlib.Path('/Users/apple/Downloads/BSUK/docs/artifacts/bsuk-foundation-p
 out.parent.mkdir(parents=True, exist_ok=True)
 
 # split into sections on '## '
-parts = re.split(r'^## ', src, flags=re.M)
+parts = re.split(r'^###? ', src, flags=re.M)
 preamble = parts[0]
 sections = []
 for p in parts[1:]:

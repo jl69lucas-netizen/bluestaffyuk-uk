@@ -84,9 +84,8 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 | `docs/reports/foundation-migration.md`, `docs/reports/foundation-gate-report.md`, `docs/artifacts/bsuk-foundation-gate-report.html` | close-out (Task 20) |
 
 ---
-
-### Task 1: Scaffold the Astro project
-
+</script>
+<script type="text/markdown" data-title="Task 1: Scaffold the Astro project">
 **Files:**
 - Create: `package.json`, `astro.config.mjs`, `tsconfig.json`, `src/styles/global.css`, `src/env.d.ts`, `.env.example`, `tests/py/conftest.py`, `requirements.txt`
 
@@ -241,9 +240,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 2: Site facts data files
-
+</script>
+<script type="text/markdown" data-title="Task 2: Site facts data files">
 **Files:**
 - Create: `data/settings.json`, `data/price-matrix.json`, `data/puppies.json`
 - Test: `tests/py/test_data_files.py`
@@ -352,9 +350,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 3: Extractor core — page inventory and body extraction
-
+</script>
+<script type="text/markdown" data-title="Task 3: Extractor core — page inventory and body extraction">
 **Files:**
 - Create: `scripts/extract_wp.py`, `tests/py/test_extract_core.py`, `tests/py/fixtures/birmingham.html` (copy of `~/bluestaffyuk-site/uk-locations/blue-staffy-puppies-birmingham/index.html`)
 
@@ -557,9 +554,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 4: Extractor writers — rich pages, locations.json, page-map.json
-
+</script>
+<script type="text/markdown" data-title="Task 4: Extractor writers — rich pages, locations.json, page-map.json">
 **Files:**
 - Create: `scripts/extract_writers.py`, `tests/py/test_extract_writers.py`
 
@@ -700,9 +696,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 5: Old pup removal — verify against the real homepage
-
+</script>
+<script type="text/markdown" data-title="Task 5: Old pup removal — verify against the real homepage">
 **Files:**
 - Test: `tests/py/test_old_pups.py`, fixture `tests/py/fixtures/home.html` (copy of `~/bluestaffyuk-site/index.html`)
 
@@ -749,9 +744,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 6: Blog post writer (markdown)
-
+</script>
+<script type="text/markdown" data-title="Task 6: Blog post writer (markdown)">
 **Files:**
 - Create: `scripts/extract_blog.py`, `tests/py/test_extract_blog.py`, fixture `tests/py/fixtures/blog-guides.html`
 
@@ -839,9 +833,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 7: Image pipeline — copy, bake, rewrite srcs
-
+</script>
+<script type="text/markdown" data-title="Task 7: Image pipeline — copy, bake, rewrite srcs">
 **Files:**
 - Create: `scripts/extract_images.py`, `scripts/bake_images.py`, `tests/py/test_images.py`
 
@@ -994,9 +987,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 8: BaseLayout, header, footer, schema, breadcrumb
-
+</script>
+<script type="text/markdown" data-title="Task 8: BaseLayout, header, footer, schema, breadcrumb">
 **Files:**
 - Create: `src/layouts/BaseLayout.astro`, `src/components/SiteHeader.astro`, `src/components/SiteFooter.astro`, `src/components/Breadcrumb.astro`, `src/components/Schema.astro`, `src/lib/site.ts`
 - Delete: stub `src/pages/index.astro` (the extractor already wrote the real one)
@@ -1153,9 +1145,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 9: Location pages and the /uk-locations/ hub
-
+</script>
+<script type="text/markdown" data-title="Task 9: Location pages and the /uk-locations/ hub">
 **Files:**
 - Create: `src/pages/uk-locations/[slug].astro`, `src/pages/uk-locations/index.astro`
 
@@ -1206,9 +1197,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 10: Puppy pages and PuppyList component
-
+</script>
+<script type="text/markdown" data-title="Task 10: Puppy pages and PuppyList component">
 **Files:**
 - Create: `src/pages/available-puppies/[slug].astro`, `src/pages/available-puppies/index.astro`, `src/components/PuppyList.astro`
 - Modify: `src/pages/buy-blue-staffy-puppies-uk/index.astro`, `src/pages/index.astro` (insert `<PuppyList />` after the article; data, not prose)
@@ -1293,9 +1283,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 11: Blog collection, root-slug posts and /blog/ index
-
+</script>
+<script type="text/markdown" data-title="Task 11: Blog collection, root-slug posts and /blog/ index">
 **Files:**
 - Create: `src/content.config.ts`, `src/pages/[...post].astro`, `src/pages/blog/index.astro`
 
@@ -1373,9 +1362,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 12: Contact form (Formspree + Turnstile)
-
+</script>
+<script type="text/markdown" data-title="Task 12: Contact form (Formspree + Turnstile)">
 **Files:**
 - Create: `src/components/ContactForm.astro`
 - Modify: `src/pages/uk-blue-staffy-breeders-contact/index.astro` (append `<ContactForm />` before `</BaseLayout>`)
@@ -1438,9 +1426,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 13: Redirects, headers, robots, llms.txt
-
+</script>
+<script type="text/markdown" data-title="Task 13: Redirects, headers, robots, llms.txt">
 **Files:**
 - Create: `data/redirects.json`, `scripts/build_redirects.py`, `scripts/build_llms_txt.py`, `public/_headers`, `public/robots.txt`, `public/404.html`, `tests/py/test_redirects_build.py`
 
@@ -1566,9 +1553,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 14: Sitemaps (five shards + index)
-
+</script>
+<script type="text/markdown" data-title="Task 14: Sitemaps (five shards + index)">
 **Files:**
 - Create: `scripts/generate_sitemaps.py`, `tests/py/test_sitemaps_gen.py`
 
@@ -1681,9 +1667,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 15: Gate — migration parity
-
+</script>
+<script type="text/markdown" data-title="Task 15: Gate — migration parity">
 **Files:**
 - Create: `scripts/migration_parity.py`, `tests/py/test_parity.py`
 
@@ -1772,9 +1757,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 16: Gate — redirects and internal links
-
+</script>
+<script type="text/markdown" data-title="Task 16: Gate — redirects and internal links">
 **Files:**
 - Create: `scripts/redirect_check.py`, `tests/py/test_redirect_check.py`
 
@@ -1868,9 +1852,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 17: Gate — schema
-
+</script>
+<script type="text/markdown" data-title="Task 17: Gate — schema">
 **Files:**
 - Create: `scripts/schema_check.py`, `tests/py/test_schema_check.py`
 
@@ -1951,9 +1934,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 18: Gate — sitemaps
-
+</script>
+<script type="text/markdown" data-title="Task 18: Gate — sitemaps">
 **Files:**
 - Create: `scripts/sitemap_check.py`, `tests/py/test_sitemap_check.py`
 
@@ -2026,9 +2008,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 19: Port the CAG Playwright render harness
-
+</script>
+<script type="text/markdown" data-title="Task 19: Port the CAG Playwright render harness">
 **Files:**
 - Create: `tests/render/**` (copied from `/Users/apple/Downloads/CAG/tests/render/`), `tests/render/targets.json` (rewritten), `scripts/build_scorecard.mjs` (copied), `data/quality/` (created by the harness)
 
@@ -2097,9 +2078,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 20: Close-out — run everything twice, reports, Artifact
-
+</script>
+<script type="text/markdown" data-title="Task 20: Close-out — run everything twice, reports, Artifact">
 **Files:**
 - Create: `docs/reports/foundation-migration.md`, `docs/reports/foundation-gate-report.md`, `docs/artifacts/bsuk-foundation-gate-report.html`, `scripts/build_report_artifact.py`
 
