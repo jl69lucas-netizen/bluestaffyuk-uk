@@ -1,0 +1,24 @@
+{
+  "site_name": "Blue Staffy UK",
+  "tagline": "Your Trusted UK Blue Staffy Breeders",
+  "breeder_name": "Lisa Bright",
+  "address": { "street": "40 Coltmuir Street", "city": "Glasgow", "postcode": "G22 6LU", "country": "GB", "lat": 55.891560, "lng": -4.256577 },
+  "phone": "PHONE_PLACEHOLDER",
+  "email": "staffies@bluestaffyuk.uk",
+  "hours": "Mo-Su 09:00-23:00",
+  "price_range": "£1500 - £1700",
+  "deposit_gbp": 500,
+  "deposit_refundable": true,
+  "delivery_min_gbp": 200,
+  "delivery_max_gbp": 350,
+  "delivery_note": "UK home delivery by DEFRA-approved transport, priced by distance",
+  "guarantee_days": null,
+  "socials": {
+    "x": "https://x.com/bluestaffyuk",
+    "youtube": "https://www.youtube.com/@BlueStaffyUK-v2d",
+    "instagram": "https://www.instagram.com/bluestaffyukingdom",
+    "facebook": "https://www.facebook.com/bluestaffyuk"
+  },
+  "youtube_embeds": ["g9iV9RVr_Sk", "g88qOo9C94c", "fXhu9jDS6CA"],
+  "logo": "/images/blue-staffy-uk-official-logo0.png"
+}
