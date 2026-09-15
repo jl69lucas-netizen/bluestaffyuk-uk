@@ -45,7 +45,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 <div id="doc"></div>
 </div>
 <script type="text/markdown" data-title="Context">
-Date: 2026-09-15. Status: approved in conversation, awaiting written review.
+Date: 2026-09-15. Status: **approved** 2026-09-15 (written review complete).
 </script>
 <script type="text/markdown" data-title="0. Context">
 BlueStaffyUK is a Glasgow-based Staffordshire Bull Terrier puppy breeder. The WordPress site at
@@ -139,7 +139,7 @@ Locations (28): the 19 from the zip plus aberdeen, dundee, edinburgh, hull, inve
 
   Old pups Kane, Kobe, Beth, Alis are removed: their cards are stripped from the three sale pages and the homepage, and the five image files (`blue-staffy-pup-near-me-available.jpg`, `blue-staffy-pup-near-me-available-1.jpg`, `blue-staffy-puppy-uk-sale.jpg`, `tan-white-staffy-puppy-uk.jpg`, `white-grey-staffy-puppy-uk.jpg`) are not copied. The prose that referred to them by name is kept but listed in `refresh_flags` for rewrite in project 4.
 
-- **Site facts** → `data/settings.json`: name, tagline, address (40 Coltmuir Street, Glasgow G22 6LU), `phone: "PHONE_PLACEHOLDER"`, email staffies@bluestaffyuk.uk, hours Mon–Sun 09:00–23:00, price range £1,500–£1,700, deposit £500 refundable, socials (X `bluestaffyuk`, YouTube `@BlueStaffyUK-v2d`, Instagram `bluestaffyukingdom`, Facebook `bluestaffyuk`), YouTube embed IDs `g9iV9RVr_Sk`, `g88qOo9C94c`, `fXhu9jDS6CA`.
+- **Site facts** → `data/settings.json`: name, tagline, breeder name (Lisa Bright), address (40 Coltmuir Street, Glasgow G22 6LU), `phone: "PHONE_PLACEHOLDER"`, email staffies@bluestaffyuk.uk, hours Mon–Sun 09:00–23:00, price range £1,500–£1,700, deposit £500 refundable, delivery £200–£350 by distance, socials (X `bluestaffyuk`, YouTube `@BlueStaffyUK-v2d`, Instagram `bluestaffyukingdom`, Facebook `bluestaffyuk`), YouTube embed IDs `g9iV9RVr_Sk`, `g88qOo9C94c`, `fXhu9jDS6CA`.
 - **Phone number**: the old number is removed from every page body, meta description, title, footer and schema and replaced with `PHONE_PLACEHOLDER`. The migration report lists every occurrence replaced. The user supplies the new number at launch.
 - **Price mentions**: old prices (£850, £1,000, £1,100, £1,200, £300) are kept verbatim in body copy for Foundation but every occurrence is listed in `refresh_flags` with file and line. `data/price-matrix.json` holds the new truth (£1,500 male, £1,700 female, £500 refundable deposit) and drives puppies.json, schema and the contact form.
 
@@ -190,11 +190,12 @@ Canonicals self-referencing on every page. `_headers`: the old security headers 
 
 **Out of scope for Foundation**: any content rewrite, the design system and components, the four logos, the location-page rebuild, comparison pages, the two new blog posts, deleting the old MCP, GSC/GA4/Bing, the new domain and phone number.
 </script>
-<script type="text/markdown" data-title="6. Open flags">
-- **GSC and Bing baselines: NOT FETCHED** — the GSC property `https://bluestaffyuk.uk/` returns 403 (`siteUnverifiedUser`; verification lapsed with the expired domain); no Bing export found on disk. If the user has an old export, it goes in `data/analytics/` and the page-map gets clicks/impressions per URL.
-- **Leaked token**: `~/bluestaffyuk-site`'s git remote embeds a GitHub personal access token in plaintext. The user should revoke it on GitHub. The new repo never reuses it.
-- **Breeder name**: the homepage says "Hi, I Am Sharine Amelia". Carried verbatim; confirm in project 4 whether this is the name to keep.
-- **Guarantee phrasing and delivery fees**: the old site names no specific guarantee period or delivery fee. Nothing is invented; these are asked for in project 4.
+<script type="text/markdown" data-title="6. Open flags (resolved 2026-09-15)">
+- **GSC and Bing baselines: NOT FETCHED — barrier: GSC property returns 403 (verification lapsed with the expired domain) and the user confirms no old GSC or Bing exports exist.** Closed. Every page's baseline is recorded as NOT FETCHED in page-map.json; re-baselined after launch in project 6.
+- **Leaked token**: the git remote in `~/bluestaffyuk-site` embeds a GitHub personal access token. Being revoked on GitHub via the browser during this session; the new BSUK repo will later get its own remote on the same GitHub account (repo `jl69lucas-netizen/bluestaffyuk-uk`, project 6) with credentials from the credential helper, never in the URL.
+- **Breeder name: Lisa Bright.** The homepage currently says "Hi, I Am Sharine Amelia"; it is carried verbatim in Foundation and listed in `refresh_flags` for replacement with Lisa Bright in project 4. settings.json gets `breeder_name: "Lisa Bright"`.
+- **Delivery**: home delivery anywhere in the UK by DEFRA-approved transport, priced by distance, **£200 to £350**, no fixed fee; collection in Glasgow after a refundable £500 deposit. settings.json: `delivery_min: 200, delivery_max: 350`. The puppy-card delivery line (project 3/4) reads `UK home delivery £200–£350 by distance · Collect in Glasgow`.
+- **Guarantee phrasing (recommended, pending the breeder's confirmation before it becomes an assertable claim)**: "14-day health guarantee" as the primary phrasing and "two-week health guarantee" as the second, both correct, both banked so no agent rewrites one into the other. Why: the old site names no period; UK breeder contracts commonly give the buyer a short window to have their own vet examine the puppy, and 14 days is the common floor in Kennel Club Assured Breeder contract templates. Trade-off: shorter than a 12-month hereditary-defect clause; that can be a separate line if the breeder offers it. Recorded in settings.json as `guarantee_days: 14` once confirmed.
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
