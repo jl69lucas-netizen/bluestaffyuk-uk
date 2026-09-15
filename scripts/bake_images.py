@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
 """Bake every image the migrated pages reference, plus the six pup masters.
+
+Every baked file is measured into data/image-manifest.json, and the run then ENDS BY
+RE-EXTRACTING (apply_manifest) so the pages' width/height/srcset come from those
+measurements rather than from guessed numbers. `npm run bake` therefore rewrites
+src/pages, src/content/blog and data/locations.json as well as public/images, and is
+idempotent: same source clone plus same manifest yields byte-identical output.
+
 Usage: python3 scripts/bake_images.py [--src /Users/apple/bluestaffyuk-site]"""
 import argparse, json, pathlib, re, shutil
 from PIL import Image, ImageOps, ImageFilter
@@ -12,28 +19,40 @@ SIZED_VARIANT = re.compile(r"-\d{2,4}x\d{2,4}$")
 
 
 def _walk(im, out, max_kb=MAX_KB):
-    q = 82
+    """Save as WebP, stepping quality down until the file fits. Returns the quality used."""
     for q in range(82, 39, -3):
         im.save(out, "WEBP", quality=q, method=6)
         if out.stat().st_size <= max_kb * 1024:
             return q
-    return q
+    return 40
 
 
 MIN_WIDTH = 640
+SIB_WIDTH = 760
 
 
-def _save_within_budget(im, out, max_kb=MAX_KB):
+def _over(out, max_kb):
+    return out.stat().st_size > max_kb * 1024
+
+
+def _save_within_budget(im, out, max_kb=MAX_KB, allow_downscale=True):
     """Quality walk first; if even q40 busts the budget, step the resolution down.
 
     Detailed photographs left at master resolution (the no-upscale branch) can sit at
-    140-180KB even at q40, so quality alone cannot hold the budget for them.
+    140-180KB even at q40, so quality alone cannot hold the budget for them. Fixed-geometry
+    outputs (pup cards, 4:5 portraits) pass allow_downscale=False and only get a warning:
+    their dimensions are a layout contract, so shrinking them is not ours to do.
+    Returns the image as actually written, so callers can record its real size.
     """
     _walk(im, out, max_kb)
-    while out.stat().st_size > max_kb * 1024 and im.width > MIN_WIDTH:
-        w = max(MIN_WIDTH, int(im.width * 0.85))
-        im = im.resize((w, max(1, round(im.height * w / im.width))), Image.LANCZOS)
-        _walk(im, out, max_kb)
+    if allow_downscale:
+        while _over(out, max_kb) and im.width > MIN_WIDTH:
+            w = max(MIN_WIDTH, int(im.width * 0.85))
+            im = im.resize((w, max(1, round(im.height * w / im.width))), Image.LANCZOS)
+            _walk(im, out, max_kb)
+    if _over(out, max_kb):
+        print("WARNING over budget at q40 (%dx%d, %dKB): %s" % (
+            im.width, im.height, out.stat().st_size // 1024, out.name))
     return im
 
 
@@ -46,14 +65,22 @@ def bake_body_image(src, dst_dir, stem, centering=(0.5, 0.5)):
     else:
         full_im = ImageOps.fit(im, BOX, Image.LANCZOS, centering=centering)
     full = dst_dir / ("%s.webp" % stem)
-    _save_within_budget(full_im, full)
-    if full_im.width > 760:
-        sib_im = full_im.resize((760, round(full_im.height * 760 / full_im.width)), Image.LANCZOS)
-    else:
-        sib_im = full_im
+    # The budget fit may have shrunk the full image, so the sibling must be derived from
+    # what was actually written -- otherwise the "smaller" candidate can end up wider.
+    full_im = _save_within_budget(full_im, full)
     sib = dst_dir / ("%s-760.webp" % stem)
-    _save_within_budget(sib_im, sib)
-    return full, sib
+    if full_im.width > SIB_WIDTH:
+        sib_im = full_im.resize(
+            (SIB_WIDTH, max(1, round(full_im.height * SIB_WIDTH / full_im.width))), Image.LANCZOS)
+        sib_im = _save_within_budget(sib_im, sib)
+        sib_w = sib_im.width
+    else:
+        # A sibling would be byte-identical to the full image: don't write one, and clear
+        # any stale copy left by an earlier bake.
+        if sib.exists():
+            sib.unlink()
+        sib, sib_w = None, None
+    return full, sib, {"w": full_im.width, "h": full_im.height, "sib_w": sib_w}
 
 
 def bake_puppy_card(src, dst_dir, slug, centering=(0.5, 0.4)):
@@ -61,14 +88,15 @@ def bake_puppy_card(src, dst_dir, slug, centering=(0.5, 0.4)):
     dst_dir.mkdir(parents=True, exist_ok=True)
     im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
     card = dst_dir / ("%s-card-800.webp" % slug)
-    _walk(ImageOps.fit(im, (800, 800), Image.LANCZOS, centering=centering), card)
+    _save_within_budget(ImageOps.fit(im, (800, 800), Image.LANCZOS, centering=centering),
+                        card, allow_downscale=False)
     W, H = 800, 1000
     bg = ImageOps.fit(im, (W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(28))
     fg = im.copy()
     fg.thumbnail((W, H), Image.LANCZOS)
     bg.paste(fg, ((W - fg.width) // 2, (H - fg.height) // 2))
     tall = dst_dir / ("%s-portrait-4x5.webp" % slug)
-    _walk(bg, tall)
+    _save_within_budget(bg, tall, allow_downscale=False)
     return card, tall
 
 
@@ -78,22 +106,33 @@ def _generated_files():
     return [f for f in candidates if f.exists()]
 
 
-def referenced_stems():
+def referenced_stems(files=None):
     stems = set()
-    for f in _generated_files():
-        for m in re.finditer(r"/images/([a-z0-9._-]+?)(?:-760)?\.(?:webp|png)",
-                             f.read_text(encoding="utf-8")):
+    for f in _generated_files() if files is None else files:
+        for m in re.finditer(r"/images/([A-Za-z0-9._-]+?)(?:-760)?\.(?:webp|png)",
+                             pathlib.Path(f).read_text(encoding="utf-8")):
             stems.add(m.group(1))
     return sorted(stems)
 
 
-def referenced_videos():
+def referenced_videos(files=None):
     """Video filenames the migrated pages/schema point at under /videos/."""
     names = set()
-    for f in _generated_files():
-        for m in re.finditer(r"/videos/([A-Za-z0-9._-]+\.(?:mp4|webm))", f.read_text(encoding="utf-8")):
+    for f in _generated_files() if files is None else files:
+        for m in re.finditer(r"/videos/([A-Za-z0-9._-]+\.(?:mp4|webm))",
+                             pathlib.Path(f).read_text(encoding="utf-8")):
             names.add(m.group(1))
     return sorted(names)
+
+
+def load_centering():
+    """Optional per-stem crop centering, so art direction can override the default centre."""
+    try:
+        raw = json.loads((ROOT / "data/image-centering.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return dict((k, tuple(v)) for k, v in raw.items()
+                if not k.startswith("_") and isinstance(v, list) and len(v) == 2)
 
 
 def find_master(uploads, stem):
@@ -108,12 +147,26 @@ def find_master(uploads, stem):
     return None, False
 
 
+def apply_manifest(src_site, manifest):
+    """Re-run the extraction so the rewrite emits the freshly measured widths.
+
+    The bodies live JSON-encoded inside .astro frontmatter and locations.json, so patching
+    them in place would mean re-parsing generated output. Re-extracting from the source
+    clone is both simpler and exactly idempotent: same input, same manifest, same bytes.
+    """
+    import extract_images
+    from extract_writers import run
+    extract_images.set_manifest(manifest)
+    run(pathlib.Path(src_site), ROOT)
+
+
 def main(src_site):
     from extract_images import LOGO_STEMS
     out = ROOT / "public/images"
     out.mkdir(parents=True, exist_ok=True)
     uploads = pathlib.Path(src_site) / "wp-content/uploads"
-    missing, fallbacks = [], []
+    centering = load_centering()
+    manifest, missing, fallbacks = {}, [], []
     for stem in referenced_stems():
         m, used_fallback = find_master(uploads, stem)
         if m is None:
@@ -124,8 +177,11 @@ def main(src_site):
         if stem in LOGO_STEMS:
             shutil.copy(m, out / ("%s.png" % stem))
             continue
-        full, sib = bake_body_image(m, out, stem)
-        print("%s: %dKB / %dKB" % (stem, full.stat().st_size // 1024, sib.stat().st_size // 1024))
+        full, sib, dims = bake_body_image(m, out, stem, centering.get(stem, (0.5, 0.5)))
+        manifest[stem] = dims
+        print("%s: %dx%d %dKB%s" % (
+            stem, dims["w"], dims["h"], full.stat().st_size // 1024,
+            " / %dw %dKB" % (dims["sib_w"], sib.stat().st_size // 1024) if sib else " (no sibling)"))
     # Videos are only referenced from JSON-LD VideoObjects; copy them over untouched.
     videos_out = ROOT / "public/videos"
     for name in referenced_videos():
@@ -137,14 +193,24 @@ def main(src_site):
         shutil.copy(srcs[0], videos_out / name)
         print("%s: copied %dKB (video, verbatim)" % (name, srcs[0].stat().st_size // 1024))
     for p in json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8")):
-        bake_puppy_card(ROOT / "assets/brand" / p["slug"] / p["card_photo"], out / "puppies", p["slug"])
+        slug = p["slug"]
+        bake_puppy_card(ROOT / "assets/brand" / slug / p["card_photo"], out / "puppies", slug)
+        manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
+        manifest["puppies/%s-portrait-4x5" % slug] = {"w": 800, "h": 1000, "sib_w": None}
         for g in p["gallery"]:
-            bake_body_image(ROOT / "assets/brand" / p["slug"] / g, out / "puppies",
-                            "%s-%s" % (p["slug"], pathlib.Path(g).stem.lower()))
+            gstem = "%s-%s" % (slug, pathlib.Path(g).stem.lower())
+            _, _, dims = bake_body_image(ROOT / "assets/brand" / slug / g, out / "puppies", gstem,
+                                         centering.get(gstem, (0.5, 0.5)))
+            manifest["puppies/%s" % gstem] = dims
+    (ROOT / "data/image-manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    print("wrote data/image-manifest.json (%d entries)" % len(manifest))
     for stem, name in fallbacks:
         print("FALLBACK sized variant for %s -> %s" % (stem, name))
     for stem in missing:
         print("MISSING master for %s" % stem)
+    if not missing:
+        apply_manifest(src_site, manifest)
     return missing
 
 

@@ -1,15 +1,70 @@
 import pathlib
+import pytest
 from PIL import Image
-from extract_images import rewrite_image_srcs, rewrite_schema_urls, stem_for
-from bake_images import bake_body_image, bake_puppy_card, MAX_KB
+import extract_images
+from extract_images import rewrite_image_srcs, rewrite_schema_urls, stem_for, set_manifest
+from bake_images import (bake_body_image, bake_puppy_card, referenced_stems, referenced_videos,
+                         MAX_KB)
+
+LITTER = "blue-staffy-puppies-uk-litter1"
+
+
+@pytest.fixture(autouse=True)
+def _clean_manifest():
+    """Every test states the manifest it wants; none inherit the repo's real one."""
+    set_manifest({})
+    yield
+    extract_images._MANIFEST = None
+
+
+def _noisy(size, blur=1, seed=7):
+    """Blurred noise compresses roughly like a detailed photograph: busts the budget at
+    full resolution, fits once stepped down."""
+    import random
+    from PIL import ImageFilter
+    random.seed(seed)
+    im = Image.new("RGB", size)
+    im.putdata([(random.randrange(256),) * 3 for _ in range(size[0] * size[1])])
+    return im.filter(ImageFilter.GaussianBlur(blur))
 
 
 def test_rewrite_srcs_points_to_images_webp():
-    html = '<img src="/wp-content/uploads/blue-staffy-puppies-uk-litter1.jpg" srcset="/wp-content/uploads/x.jpg 780w" sizes="(max-width:480px) 150px" alt="a" width="576" height="350">'
+    set_manifest({LITTER: {"w": 1408, "h": 768, "sib_w": 760}})
+    html = '<img src="/wp-content/uploads/%s.jpg" srcset="/wp-content/uploads/x.jpg 780w" sizes="(max-width:480px) 150px" alt="a" width="576" height="350">' % LITTER
     out = rewrite_image_srcs(html)
-    assert 'src="/images/blue-staffy-puppies-uk-litter1.webp"' in out
-    assert 'srcset="/images/blue-staffy-puppies-uk-litter1-760.webp 760w, /images/blue-staffy-puppies-uk-litter1.webp 1408w"' in out
+    assert 'src="/images/%s.webp"' % LITTER in out
+    assert 'srcset="/images/%s-760.webp 760w, /images/%s.webp 1408w"' % (LITTER, LITTER) in out
     assert "wp-content" not in out and 'loading="lazy"' in out and 'alt="a"' in out
+    assert 'width="1408"' in out and 'height="768"' in out     # WP's guesses overwritten
+
+
+def test_rewrite_srcs_uses_measured_widths_not_guesses():
+    set_manifest({LITTER: {"w": 1046, "h": 1036, "sib_w": 760}})
+    out = rewrite_image_srcs('<img src="/wp-content/uploads/%s.jpg" alt="a">' % LITTER)
+    assert 'srcset="/images/%s-760.webp 760w, /images/%s.webp 1046w"' % (LITTER, LITTER) in out
+    assert "1408w" not in out
+    assert 'width="1046"' in out and 'height="1036"' in out
+
+
+def test_rewrite_srcs_single_candidate_when_no_sibling_was_baked():
+    set_manifest({"small": {"w": 600, "h": 300, "sib_w": None}})
+    out = rewrite_image_srcs('<img src="/wp-content/uploads/small.png" alt="a">')
+    assert 'srcset="/images/small.webp 600w"' in out
+    assert "-760.webp" not in out
+
+
+def test_rewrite_srcs_never_guesses_without_a_manifest_entry():
+    out = rewrite_image_srcs('<img src="/wp-content/uploads/unbaked.jpg" alt="a" width="576" height="350">')
+    assert 'src="/images/unbaked.webp"' in out
+    assert "srcset" not in out and "sizes" not in out
+    assert "width=" not in out and "height=" not in out
+
+
+def test_rewrite_is_idempotent():
+    set_manifest({LITTER: {"w": 1046, "h": 1036, "sib_w": 760}})
+    html = '<img src="/wp-content/uploads/%s.jpg" alt="a" width="576">' % LITTER
+    once = rewrite_image_srcs(html)
+    assert rewrite_image_srcs(once) == once
 
 
 def test_rewrite_rewrites_lightbox_anchor_href():
@@ -28,10 +83,10 @@ def test_rewrite_rewrites_logo_anchor_to_png():
 
 
 def test_rewrite_video_poster_and_src():
-    html = ('<video controls="" poster="/wp-content/uploads/blue-staffy-puppies-uk-litter1.jpg" '
-            'src="/wp-content/uploads/best-blue-staffy-puppies-uk.mp4"></video>')
+    html = ('<video controls="" poster="/wp-content/uploads/%s.jpg" '
+            'src="/wp-content/uploads/best-blue-staffy-puppies-uk.mp4"></video>' % LITTER)
     out = rewrite_image_srcs(html)
-    assert 'poster="/images/blue-staffy-puppies-uk-litter1.webp"' in out
+    assert 'poster="/images/%s.webp"' % LITTER in out
     assert 'src="/videos/best-blue-staffy-puppies-uk.mp4"' in out
     assert "wp-content" not in out
 
@@ -47,18 +102,31 @@ def test_stem_for_strips_wp_size_suffix():
     assert stem_for("/wp-content/uploads/a.jpg?ver=3") == "a"
 
 
+def test_referenced_stems_matches_uppercase_and_sibling_forms(tmp_path):
+    f = tmp_path / "page.astro"
+    f.write_text('"/images/Roman2.webp" "/images/blue-staffy-UK.webp" '
+                 '"/images/litter1-760.webp" "/images/logo0.png"', encoding="utf-8")
+    assert referenced_stems([f]) == ["Roman2", "blue-staffy-UK", "litter1", "logo0"]
+
+
+def test_referenced_videos_finds_mp4s(tmp_path):
+    f = tmp_path / "page.astro"
+    f.write_text('"/videos/Best-Blue-Staffy.mp4" "/videos/a.webm"', encoding="utf-8")
+    assert referenced_videos([f]) == ["Best-Blue-Staffy.mp4", "a.webm"]
+
+
 def test_rewrite_schema_urls_rewrites_nested_image_and_video_urls():
     schema = [{"@type": "ImageObject", "url": "/wp-content/uploads/blue-staffy-health-uk.jpg"},
               {"@type": "Organization",
                "logo": {"url": "https://bluestaffyuk.uk/wp-content/uploads/blue-staffy-uk-official-logo0.png"}},
               {"@type": "VideoObject",
                "contentUrl": "/wp-content/uploads/best-blue-staffy-puppies-uk.mp4",
-               "thumbnailUrl": "/wp-content/uploads/blue-staffy-puppies-uk-litter1-768x761.jpg"}]
+               "thumbnailUrl": "/wp-content/uploads/%s-768x761.jpg" % LITTER}]
     out = rewrite_schema_urls(schema)
     assert out[0]["url"] == "/images/blue-staffy-health-uk.webp"
     assert out[1]["logo"]["url"] == "/images/blue-staffy-uk-official-logo0.png"  # logo stays PNG
     assert out[2]["contentUrl"] == "/videos/best-blue-staffy-puppies-uk.mp4"
-    assert out[2]["thumbnailUrl"] == "/images/blue-staffy-puppies-uk-litter1.webp"
+    assert out[2]["thumbnailUrl"] == "/images/%s.webp" % LITTER
 
 
 def test_rewrite_schema_urls_leaves_clean_schema_alone():
@@ -68,34 +136,55 @@ def test_rewrite_schema_urls_leaves_clean_schema_alone():
 
 def test_bake_body_image_under_budget(tmp_path):
     src = tmp_path / "big.jpg"; Image.new("RGB", (3000, 2000), (40, 80, 120)).save(src, quality=95)
-    full, sib = bake_body_image(src, tmp_path / "out", "big")
+    full, sib, dims = bake_body_image(src, tmp_path / "out", "big")
     assert Image.open(full).size == (1408, 768) and Image.open(sib).size == (760, 415)
     assert full.stat().st_size <= MAX_KB * 1024
+    assert dims == {"w": 1408, "h": 768, "sib_w": 760}
 
 
-def test_bake_small_image_not_upscaled(tmp_path):
+def test_bake_small_image_not_upscaled_and_writes_no_sibling(tmp_path):
     src = tmp_path / "small.png"; Image.new("RGB", (600, 300), (10, 10, 10)).save(src)
-    full, sib = bake_body_image(src, tmp_path / "out", "small")
-    assert Image.open(full).size == (600, 300) and Image.open(sib).size == (600, 300)
+    full, sib, dims = bake_body_image(src, tmp_path / "out", "small")
+    assert Image.open(full).size == (600, 300)
+    assert sib is None and dims == {"w": 600, "h": 300, "sib_w": None}
+    # A 760 sibling of a 600px image would be a byte-identical duplicate.
+    assert not (tmp_path / "out" / "small-760.webp").exists()
+
+
+def test_bake_removes_a_stale_sibling(tmp_path):
+    out = tmp_path / "out"; out.mkdir()
+    stale = out / "small-760.webp"; stale.write_bytes(b"stale")
+    src = tmp_path / "small.png"; Image.new("RGB", (600, 300), (10, 10, 10)).save(src)
+    bake_body_image(src, out, "small")
+    assert not stale.exists()
 
 
 def test_bake_steps_resolution_down_when_quality_walk_cannot_hit_budget(tmp_path):
-    import random
-    from PIL import ImageFilter
-    random.seed(7)
-    src = tmp_path / "noise.png"
-    noisy = Image.new("RGB", (1080, 1080))
-    noisy.putdata([(random.randrange(256),) * 3 for _ in range(1080 * 1080)])
-    # Lightly blurred noise compresses roughly like a detailed photograph: it busts the
-    # budget at full resolution but fits once stepped down.
-    noisy.filter(ImageFilter.GaussianBlur(1)).save(src)
-    full, sib = bake_body_image(src, tmp_path / "out", "noise")
+    src = tmp_path / "noise.png"; _noisy((1080, 1080)).save(src)
+    full, sib, dims = bake_body_image(src, tmp_path / "out", "noise")
     assert full.stat().st_size <= MAX_KB * 1024
-    assert sib.stat().st_size <= MAX_KB * 1024
-    assert Image.open(full).width < 1080          # could not fit at full resolution
+    assert sib is not None and sib.stat().st_size <= MAX_KB * 1024
+    assert dims["w"] < 1080                       # could not fit at full resolution
+
+
+def test_bake_sibling_is_never_wider_than_the_full_image(tmp_path):
+    src = tmp_path / "noise.png"; _noisy((1080, 1080)).save(src)
+    full, sib, dims = bake_body_image(src, tmp_path / "out", "noise")
+    assert sib is not None
+    assert Image.open(sib).width <= Image.open(full).width
+    assert dims["sib_w"] <= dims["w"]
 
 
 def test_bake_puppy_card_square_and_portrait(tmp_path):
     src = tmp_path / "pup.jpg"; Image.new("RGB", (1080, 1350), (90, 90, 90)).save(src)
     card, tall = bake_puppy_card(src, tmp_path / "out", "christa")
     assert Image.open(card).size == (800, 800) and Image.open(tall).size == (800, 1000)
+    assert card.stat().st_size <= MAX_KB * 1024 and tall.stat().st_size <= MAX_KB * 1024
+
+
+def test_bake_puppy_card_keeps_geometry_even_when_over_budget(tmp_path, capsys):
+    """Pup geometry is a layout contract: warn rather than shrink."""
+    src = tmp_path / "pup.png"; _noisy((1200, 1500), blur=0).save(src)
+    card, tall = bake_puppy_card(src, tmp_path / "out", "noisy")
+    assert Image.open(card).size == (800, 800) and Image.open(tall).size == (800, 1000)
+    assert "WARNING over budget" in capsys.readouterr().out
