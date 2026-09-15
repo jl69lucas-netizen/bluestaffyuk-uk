@@ -206,7 +206,7 @@ def write_page_map(pages, out, src):
 
 def run(src, out):
     from extract_blog import write_blog_post       # Task 6
-    from extract_images import rewrite_image_srcs  # Task 7
+    from extract_images import rewrite_image_srcs, rewrite_schema_urls  # Task 7
     src, out = pathlib.Path(src), pathlib.Path(out)
     pages, locs = [], []
     for url_path, f in inventory(src):
@@ -222,6 +222,7 @@ def run(src, out):
         if mentions:
             page.refresh_flags.append("old-pup-names-in-prose:%d" % mentions)
         page.body_html = rewrite_image_srcs(page.body_html)
+        page.schema = rewrite_schema_urls(page.schema)
         if kind == "rich":
             write_rich_page(page, out)
         elif kind == "location":
