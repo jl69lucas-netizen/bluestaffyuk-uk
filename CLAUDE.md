@@ -10,10 +10,10 @@ the traffic.
 - **`src/pages/<slug>/index.astro` is what ships.** Eleven rich pages are one Astro file
   each; 28 locations and 6 puppies are data-driven from `data/locations.json` and
   `data/puppies.json`; blog posts are a markdown content collection under `src/content/blog/`.
-- Build `npm run build` → `dist/`. Every gate measures `dist/`, never source.
-- **Work on the project branch. Commit after every task. Never push until project 6** —
-  this repo has no remote and must not get one. `git remote -v` printing nothing is a gate,
-  not an accident.
+- Build `npm run build` → `dist/`. The page gates measure `dist/`; `check:markers` and
+  `check:placeholders` also scan the instruction tree (`.claude/`, `rules/`, `tests/render/`).
+- Where work lands and how it is committed: judgment rules 2–3 below, and
+  [`rules/deploy.md`](rules/deploy.md).
 - After adding or removing a page: `npm run sitemaps` (the build's postbuild already does it).
 - Generated files are never hand-edited: the eleven rich pages, `data/page-map.json`,
   `data/locations.json`, `data/image-manifest.json`, `public/_redirects`, `public/llms.txt`,
@@ -23,14 +23,19 @@ the traffic.
 
 There is no host, no domain and no deploy. `SITE_URL_PLACEHOLDER`, `PHONE_PLACEHOLDER` and
 an unset `PUBLIC_FORMSPREE_ID` are the correct state today and catastrophic on launch day,
-so the launch tooling is ported but refuses to run:
+so the launch tooling is ported but inactive. Each piece declines differently, and the
+difference matters when you are reading an exit code:
 
-- `python3 scripts/indexnow_submit.py <slug>` (arrives in Task 17) and
-  `bash scripts/health-sweep.sh`'s live block require `BSUK_RELEASE=1` and a real
-  `SITE_URL`. Without both they print `REFUSED` and exit non-zero.
+- `python3 scripts/perf_audit.py <slug> --live` (and `--psi`, which implies it) refuse on
+  the **`SITE_URL` placeholder**, not on the release flag: they print `REFUSED` and exit 2.
+  Drop `--live` and measure `dist/`.
+- `python3 scripts/indexnow_submit.py <slug>` (arrives in Task 17) refuses unless
+  `BSUK_RELEASE=1` is set, and exits non-zero.
+- `bash scripts/health-sweep.sh` does **not** refuse: with no `SITE_URL` it warns
+  `no SITE_URL — skipping live checks (project 6)`, skips its live block, and its exit code
+  is decided by the checks it did run.
 - `BSUK_RELEASE=1 npm run check:placeholders` is the gate that will refuse to ship a
   placeholder. Pre-launch it counts and prints and passes.
-- `python3 scripts/perf_audit.py <slug> --live` and `--psi` refuse for the same reason.
 
 ## The rules live in `rules/`, not here
 
@@ -148,7 +153,9 @@ npm run test:render:pages
 ```
 
 `check:all` chains `check:parity`, `check:redirects`, `check:schema`, `check:sitemaps`,
-`check:placeholders` and `check:markers`, in that order. `test:render:meta` is the gate that
+`check:placeholders` and `check:markers`, in that order. Until Task 16 closes,
+`check:markers` reports the ported `tests/render/` fixtures as known debt; every other gate
+in the chain must be green. `test:render:meta` is the gate that
 checks the checkers — run it **before** trusting any page result. `test:render:pages`
 measures the target pages at 375/768/1280 in a real browser.
 

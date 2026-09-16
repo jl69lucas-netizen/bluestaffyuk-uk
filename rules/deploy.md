@@ -1,6 +1,6 @@
 # Where work lands and how it ships
 
-Rules moved out of `CLAUDE.md` (arrives in Task 10) on 2026-08-02 (Phase 4), re-based for BlueStaffyUK
+Rules moved out of `CLAUDE.md` on 2026-08-02 (Phase 4), re-based for BlueStaffyUK
 2026-09-16. **This pack is the one that was rewritten rather than re-worded**: BSUK has no
 remote, nothing deploys until project 6, and a rule that says "push after every build"
 would be an instruction to do something impossible.

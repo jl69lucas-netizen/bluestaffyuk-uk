@@ -1,6 +1,6 @@
 # The puppy and buy cluster
 
-Rules moved out of `CLAUDE.md` (arrives in Task 10) on 2026-08-02 (Phase 4) and re-based for BlueStaffyUK
+Rules moved out of `CLAUDE.md` on 2026-08-02 (Phase 4) and re-based for BlueStaffyUK
 2026-09-16. **The rule text is verbatim except where the source fact did not survive the re-base.**
 
 `enforced:` says what actually holds the rule up.

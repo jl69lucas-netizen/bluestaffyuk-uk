@@ -1,8 +1,8 @@
 # `rules/` — the rule packs
 
-Task 10 writes `CLAUDE.md` (arrives in Task 10), which carries the nine judgment rules — the ones with no
+`CLAUDE.md` carries the nine judgment rules — the ones with no
 mechanical decision procedure — plus a router to these packs. Everything else lives here.
-In the source repo the same split reduced a 37-rule, 88,000-character `CLAUDE.md` (arrives in Task 10); the rule
+In the source repo the same split reduced a 37-rule, 88,000-character `CLAUDE.md`; the rule
 text crossed **verbatim** except where a source fact did not survive the re-base.
 
 ## Reading a rule

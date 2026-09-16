@@ -57,15 +57,16 @@ def test_pointer_table_names_every_pack_and_nothing_else():
 
 def test_the_router_actually_has_rows():
     # A table that silently stopped matching would make the test above pass against an
-    # empty rules/ and fail loudly against a real one; assert the shape too.
-    assert len(routed_packs()) == 10
+    # empty rules/; assert the router is non-empty rather than pinning a count that every
+    # new pack would have to come here to bump.
+    assert routed_packs()
 
 
 # ── no push ─────────────────────────────────────────────────────────────────
 DEPLOY_SECTION = "## Deploy — inactive until project 6"
 NEXT_SECTION = re.compile(r"^## ")
-# "never push", "unpushed", "must not get one" — a line that FORBIDS pushing is the point.
-FORBIDS = ("never push", "not push", "no push", "unpushed", "until project 6")
+# A line that FORBIDS pushing is the point; anything else that mentions it is not.
+FORBIDS = ("never push", "not push", "no push", "unpushed")
 
 
 def deploy_section_bounds():
@@ -91,3 +92,59 @@ def test_no_line_instructs_a_push_outside_the_inactive_section():
     assert bad == [], (
         "CLAUDE.md mentions pushing outside the 'inactive until project 6' section and "
         "without forbidding it. This repo has no remote:\n  " + "\n  ".join(bad))
+
+
+# ── the stale-marker guard ──────────────────────────────────────────────────
+# The forward-reference marker is a promise with an expiry date. Once Task N lands and the
+# path exists, the marker stops being honest and starts telling readers that a file they
+# can open is not there yet — worse than no marker at all, because it is load-bearing
+# elsewhere: the guard above SUPPRESSES the missing-path check on any marked line, so a
+# stale marker silently disarms it for every other path on that line.
+ARRIVES = re.compile(r"\(arrives in Task \d+\)")
+
+
+def stale_markers(root: pathlib.Path):
+    """Lines carrying '(arrives in Task N)' where every backticked path already exists.
+
+    `root` is a parameter so the test can prove the checker FIRES, by pointing it at a
+    copy of the docs where one marked path has been created.
+    """
+    docs = [root / "CLAUDE.md"] + sorted((root / "rules").glob("*.md"))
+    stale = []
+    for f in docs:
+        if not f.exists():
+            continue
+        for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+            if not ARRIVES.search(line):
+                continue
+            paths = [p for p in (_path_like(t) for t in BACKTICKED.findall(line))
+                     if p is not None]
+            if paths and all((root / p).exists() for p in paths):
+                stale.append(f"{f.name}:{lineno}  {line.strip()}")
+    return stale
+
+
+def test_no_arrives_in_task_marker_is_stale():
+    stale = stale_markers(ROOT)
+    assert stale == [], (
+        "marker is stale, delete it — every path on these lines now exists, so "
+        "'(arrives in Task N)' is telling readers a file is missing that is not:\n  "
+        + "\n  ".join(stale))
+
+
+def test_the_stale_marker_checker_actually_fires(tmp_path):
+    """Copy the docs to a fake root, create one marked path, expect exactly that line."""
+    import shutil
+
+    shutil.copy(CLAUDE_MD, tmp_path / "CLAUDE.md")
+    shutil.copytree(RULES_DIR, tmp_path / "rules")
+    assert stale_markers(tmp_path) == [], "the copy should start clean, like the real root"
+
+    # `docs/reference/quick-start.md` (arrives in Task 13) — make it arrive.
+    target = tmp_path / "docs" / "reference" / "quick-start.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("arrived\n", encoding="utf-8")
+
+    fired = stale_markers(tmp_path)
+    assert fired, "creating a marked path must make the checker fire"
+    assert all("quick-start.md" in row for row in fired), fired
