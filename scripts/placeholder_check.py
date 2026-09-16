@@ -3,7 +3,10 @@
 
 Foundation deliberately ships stand-ins. `SITE_URL_PLACEHOLDER` stands in for the domain
 nobody has bought yet, `PHONE_PLACEHOLDER` for the number project 6 will provision, and
-`FORMSPREE_ID_PLACEHOLDER` for the form endpoint whose contract belongs to CAG. Two more
+`FORMSPREE_ID_PLACEHOLDER` for the form endpoint, as the build-time sentinel
+`src/components/ContactForm.astro` falls back to when `PUBLIC_FORMSPREE_ID` is unset — the
+env var is the endpoint's ONE name in `.claude/`; this token exists only so a build that
+shipped without it is visible here. Two more
 stand in for unverified facts rather than unprovisioned services: `LICENCE_CLAIM_PLACEHOLDER`
 and `LEGAL_CLAIM_PLACEHOLDER` hold the breeder-licence and Lucy's-Law claims the skill
 re-base would otherwise have asserted, until Lisa Bright confirms them. Every one

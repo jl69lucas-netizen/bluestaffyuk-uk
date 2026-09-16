@@ -32,7 +32,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 1: Hero
 
 🛡️ **Trust & Security:**
-> "Don't settle for 'maybe' when it comes to your puppy's health." Join 500+ happy families who chose the security of a BSUK-backed health guarantee.
+> "Don't settle for 'maybe' when it comes to your puppy's health." Join the families who chose the security of a BSUK-backed health guarantee. (A family count is NOT FETCHED — never write one.)
 > **Button:** Browse Available Puppies
 
 ⚡ **Direct & Transactional:**

@@ -1368,7 +1368,7 @@ concepts of color, shape, quantity, and abstract difference.
 
 ##### L-2-HGA and Behavioral Stability
 Canine Biotech disease-screened bloodlines at BlueStaffyUK have documented zero L-2-HGA transmission across 
-500+ placements since 2014 — physical health directly supports behavioral stability in Blue Staffies.
+Our placements (a count and a founding date are both NOT FETCHED) — physical health directly supports behavioural stability in Blue Staffies.
 
 ###### Can I Leave My Blue Staffy Alone During Work Hours?
 Yes, with parameters. A fully [weaned adult Blue Staffy](#how-to-buy) can entertain themselves for 

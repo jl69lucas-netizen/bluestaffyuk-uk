@@ -1,6 +1,6 @@
 ---
 name: bsuk-contact-form
-description: Audits, fixes and verifies every enquiry and newsletter form on BlueStaffyUK against the field contract and the single Formspree endpoint (FORMSPREE_ID_PLACEHOLDER, read from the environment, never committed). Use for "add a field to the forms", "enquiries go to the wrong address", "check every contact form", or after any page build that renders a <form>.
+description: Audits, fixes and verifies every enquiry and newsletter form on BlueStaffyUK against the field contract and the single Formspree endpoint (`PUBLIC_FORMSPREE_ID`, read from the environment, never committed). Use for "add a field to the forms", "enquiries go to the wrong address", "check every contact form", or after any page build that renders a <form>.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -19,9 +19,9 @@ gate below is BSUK's own.
 
 | Item | Value |
 |---|---|
-| Every form on the site (enquiry AND newsletter) | `action="https://formspree.io/f/<FORMSPREE_ID_PLACEHOLDER>" method="POST"` |
-| Where the id comes from | the environment at call time (`scripts/form_contract_audit.py` reads it and refuses to run without it). **Never** a committed file, never a report, never stdout |
-| Pre-launch action | `#contact` — the component renders the live endpoint only when the release flag is set. A build without it must not POST anywhere |
+| Every form on the site (enquiry AND newsletter) | `action="https://formspree.io/f/${PUBLIC_FORMSPREE_ID}" method="POST"` |
+| Where the id comes from | the `PUBLIC_FORMSPREE_ID` environment variable, read at call time — `scripts/form_contract_audit.py` refuses to run when it is unset, and Task 18 sets it. **Never** a committed file, never a report, never stdout |
+| Pre-launch action | `#contact` — `src/components/ContactForm.astro` falls back to the build-time sentinel when `PUBLIC_FORMSPREE_ID` is unset, and renders the live endpoint only when it is set. A build without it must not POST anywhere |
 | Honeypot | `<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">`, hidden off-screen |
 | Success redirect | `<input type="hidden" name="_next" value="https://SITE_URL_PLACEHOLDER/thank-you-blue-staffy-puppies-journey/">` |
 | Subject | `<input type="hidden" name="_subject" value="New Blue Staffy enquiry">` |
@@ -118,5 +118,5 @@ FORM CONTRACT — https://SITE_URL_PLACEHOLDER
 forms examined: N (enquiry I, in-scope S, newsletter L)   cross-check: N ✓
 audit: PASS | FAIL (rows…)
 screens eyeballed: <one per family>
-endpoint: FORMSPREE_ID_PLACEHOLDER (value never printed)
+endpoint: PUBLIC_FORMSPREE_ID (value never printed)
 ```
