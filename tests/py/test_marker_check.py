@@ -41,6 +41,33 @@ def test_every_marker_fires(tmp_path, marker, line):
     assert hits_in(repo / "CLAUDE.md") == [(1, marker, line)]
 
 
+@pytest.mark.parametrize("line", [
+    "Every page meets WCAG-AA contrast.",
+    "wcag-aa contrast is checked",
+    "WCAG 2.2 AA is the target.",
+    "the swcag-thing",
+])
+def test_cag_prefix_does_not_fire_mid_identifier(tmp_path, line):
+    """Spec 4 defines `cag-` as a path/identifier PREFIX. WCAG-AA is not a CAG reference,
+    and a gate that cries wolf on an accessibility note stops being read."""
+    repo = _repo(tmp_path, files=[("CLAUDE.md", line + "\n")])
+    assert hits_in(repo / "CLAUDE.md") == []
+
+
+@pytest.mark.parametrize("line", [
+    "cag-hub-builder is first",
+    "see /cag-library/x for the rest",
+    "trailing space then cag-",
+    "(cag-hub-builder)",
+    '"cag-hub-builder"',
+    "cag-hub-builder at line start",
+    "CAG-HUB-BUILDER shouting",
+])
+def test_cag_prefix_fires_at_a_left_word_boundary(tmp_path, line):
+    repo = _repo(tmp_path, files=[("CLAUDE.md", line + "\n")])
+    assert [m for _, m, _ in hits_in(repo / "CLAUDE.md")] == ["cag-"]
+
+
 def test_matching_is_case_insensitive(tmp_path):
     repo = _repo(tmp_path, files=[("CLAUDE.md", "AFRICAN GREY PARROT\n")])
     found = {m for _, m, _ in hits_in(repo / "CLAUDE.md")}

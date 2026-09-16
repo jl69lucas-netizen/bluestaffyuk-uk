@@ -5,7 +5,8 @@ The port copies a parrot breeder's operating system into a dog breeder's repo. E
 file is either rewritten by hand or judged not to need it, and the only honest proof that
 the judgement was right is a scan that cannot be argued with.
 
-So: twelve markers, case-insensitive, NO ALLOWLIST. A legitimate-looking hit is a design
+So: twelve markers, case-insensitive (`cag-` as a prefix — word-boundary on the left —
+and the other eleven as plain substrings), NO ALLOWLIST. A legitimate-looking hit is a design
 error to fix, not an exception to record — the moment this gate grows an allowlist it stops
 being evidence and becomes a list of the places nobody re-based.
 
@@ -23,6 +24,7 @@ Output shape matches the Foundation gates: `examined N files; 0 problems`.
 Usage:  python3 scripts/marker_check.py   |   npm run check:markers
 """
 import pathlib
+import re
 import sys
 
 from port_from_cag import load_manifest, validate
@@ -33,6 +35,16 @@ MARKERS = (
     "parrot", "african grey", "african-grey", "timneh", "congo", "clutch",
     "c.a.gs", "cags", "congoafricangreys", "agcare", "xrejpnvn", "cag-",
 )
+
+# Eleven of the twelve are plain case-insensitive substrings, by design: a parrot word is a
+# parrot word wherever it sits. `cag-` is the exception — spec 4 defines it as a path or
+# identifier PREFIX, so it needs a word boundary on its left or it fires on "WCAG-AA".
+PREFIX_ONLY = {"cag-": re.compile(r"(?<![a-z0-9])cag-")}
+
+
+def _present(marker, low):
+    rx = PREFIX_ONLY.get(marker)
+    return bool(rx.search(low)) if rx else marker in low
 
 FIXED_ROOTS = (
     "CLAUDE.md", "rules", "docs/reference", "package.json", "tests/render",
@@ -68,7 +80,7 @@ def hits_in(path):
     out = []
     for n, line in enumerate(text.splitlines(), 1):
         low = line.lower()
-        matched = [m for m in MARKERS if m in low]
+        matched = [m for m in MARKERS if _present(m, low)]
         for m in matched:
             # Line-scoped: a standalone `congo` sharing a line with `congoafricangreys` is
             # absorbed. Acceptable for a zero-tolerance gate — the line is reported either way.
