@@ -34,8 +34,10 @@ PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACE
 
 # The claim placeholders live in the instruction tree, not in dist/ — a skill that tells a
 # writer to assert an unconfirmed licence is the defect, and it never reaches a built page
-# to be caught there. So the scan covers dist/ plus these source roots.
-SOURCE_ROOTS = (".claude/skills", ".claude/agents")
+# to be caught there. So the scan covers dist/ plus these source roots. `docs/reference`
+# joined them in Task 13: seo-rules.md Rule 7 and the credentials table are read the same
+# way a skill is, and a stand-in that survives launch there is the same defect one rung up.
+SOURCE_ROOTS = (".claude/skills", ".claude/agents", "docs/reference")
 
 # Text formats only. A byte scan of dist/ would also walk every baked WebP, which cannot
 # contain a placeholder and would dominate the run time.

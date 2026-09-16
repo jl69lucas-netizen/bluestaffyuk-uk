@@ -125,8 +125,13 @@ ROUTE = re.compile(r"(?<!/)/[A-Za-z0-9_<>\[\]-]*(?:" + "|".join(PLACEHOLDERS)
 
 
 def targets():
+    # `docs/reference/*.md` joined the walk in Task 13. Those five docs are loaded into a
+    # session exactly the way an agent is — seo-rules.md is cited as the source of truth by
+    # half the agents in the repo — so an unlocked price or a borrowed regulator in one of
+    # them is the same defect, one document further from the page.
     return (sorted((ROOT / ".claude/agents").glob("*.md"))
-            + sorted((ROOT / ".claude/skills").glob("**/SKILL.md")))
+            + sorted((ROOT / ".claude/skills").glob("**/SKILL.md"))
+            + sorted((ROOT / "docs/reference").glob("*.md")))
 
 
 def _norm(m):

@@ -34,8 +34,8 @@ The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK d
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` — what you must never change (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — pricing for any variant/breed comparisons
 4. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "comparison_page") (not ported — source repo only)
 5. **Read** `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro` — reference design patterns (Astro component format; read lines 1–120 for structure)

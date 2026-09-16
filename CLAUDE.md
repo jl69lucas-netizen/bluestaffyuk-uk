@@ -77,7 +77,7 @@ The generic skills already ported live at `.claude/skills/` — `grill-me`,
 `section-auditor`, `internal-link-agent`, `keyword-cluster`, `anti-ai-writing` and the
 `framework-*` set among them. Each is one SKILL.md file in its own directory.
 
-Full task→entry-point table: `docs/reference/quick-start.md` (arrives in Task 13).
+Full task→entry-point table: `docs/reference/quick-start.md`.
 
 ## The nine judgment rules that stay here
 
@@ -215,10 +215,14 @@ The design system is project 3. Until then there is no component kit and no lock
 
 ## Where everything else went
 
-- `docs/reference/system-registry.md` (arrives in Task 13) — every agent, skill, script and data file
-- `docs/reference/quick-start.md` (arrives in Task 13) — task → entry point, and the reference-doc index
-- `docs/reference/session-log.md` (arrives in Task 13) — build history and **Known Issues**
-- `docs/reference/WORKFLOW.md` (arrives in Task 13) — the sprint model
-- `docs/reference/seo-rules.md` (arrives in Task 13) — the numbered SEO rules
-- `docs/reference/credentials.md` (arrives in Task 13) — which env key exists and what reads it
+- `docs/reference/system-registry.md` — every agent, skill, script and data file
+- `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
+- `docs/reference/session-log.md` — build history and **Known Issues**
+- `docs/reference/WORKFLOW.md` — the sprint model
+- `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
+  A–J. That is a different count from `data/quality/rule-index.json`'s 66 (of which 9 are
+  `enforced: judgment`, capped there): the ledger indexes the `rules/` packs and the
+  render-harness checks, seo-rules.md numbers its own categories. `docs/reference/quick-start.md` states
+  both, and all three files change together.
+- `docs/reference/credentials.md` — which env key exists and what reads it
 - `docs/superpowers/specs/` and `docs/superpowers/plans/` — the six projects' specs and plans

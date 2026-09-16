@@ -36,8 +36,8 @@ Hubs are short relative to spoke pages — typically 800–1,500 words. They don
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md`
 3. **Read** `data/locations.json` — for location hub (all live cities)
 4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which hub — Comparison, Breed, Location, Documentation, or new?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 5. Check existing hub pages:

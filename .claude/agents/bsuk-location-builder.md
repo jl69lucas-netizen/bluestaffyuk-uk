@@ -37,8 +37,8 @@ The reference template is the Glasgow page — 22 sections, city-specific conten
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` — what you must never change (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode)
 4. **Read** `data/locations.json` — live cities, slugs, variants per city
 5. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "location_page") (not ported — source repo only)

@@ -51,9 +51,9 @@ Your job: given a page, a goal, and a reader profile, you select the right frame
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/top-pages.md` — GSC traffic, rankings, redesign priority (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` — canonical, image, SEO constraints (especially Rules 55-62) (arrives in Task 13)
-3. **Read** `docs/reference/design-system.md` — design tokens, section types (arrives in Task 13)
+1. **Read** `docs/reference/top-pages.md` — GSC traffic, rankings, redesign priority (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md` — canonical, image, SEO constraints (especially Rules 55-62)
+3. **Read** `docs/reference/design-system.md` — design tokens, section types (not ported — source repo only)
 4. **Read** `data/image-specs.json` — per-page image source/dimension requirements (not ported — source repo only)
 5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "What page or content cluster are we architecting today?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 

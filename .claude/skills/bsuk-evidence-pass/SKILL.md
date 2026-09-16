@@ -61,7 +61,7 @@ Every row quotes or paraphrases an entry in the source repo's 2026-09-09 evidenc
 
 ## Red flags — stop and re-read the procedure
 - You are about to add a heading, an FAQ or a paragraph to reach a count.
-- You typed a credential you did not read in `data/quality/evidence-ledger.json`. The credentials reference arrives in Task 13.
+- You typed a credential you did not read in `data/quality/evidence-ledger.json`. `docs/reference/credentials.md` names every key and no value.
 - You wrote a licence number, a study, or a buyer name from memory.
 - The audit passed on `0 pages matched`.
 - Two review quotes on the page read the same.

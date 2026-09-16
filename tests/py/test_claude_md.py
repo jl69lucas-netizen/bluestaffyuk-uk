@@ -117,7 +117,10 @@ def stale_markers(root: pathlib.Path):
     docs = ([root / "CLAUDE.md"]
             + sorted((root / "rules").glob("*.md"))
             + sorted((root / ".claude/agents").glob("*.md"))
-            + sorted((root / ".claude/skills").glob("*/SKILL.md")))
+            + sorted((root / ".claude/skills").glob("*/SKILL.md"))
+            # Task 13's own reference docs, for the same reason: a stale marker there
+            # disarms the missing-path guard on that line for every other path on it.
+            + sorted((root / "docs/reference").glob("*.md")))
     stale = []
     for f in docs:
         if not f.exists():
@@ -148,14 +151,23 @@ def test_the_stale_marker_checker_actually_fires(tmp_path):
     shutil.copytree(RULES_DIR, tmp_path / "rules")
     assert stale_markers(tmp_path) == [], "the copy should start clean, like the real root"
 
-    # `docs/reference/quick-start.md` (arrives in Task 13) — make it arrive.
+    # Task 13's markers are gone now that its six reference docs exist, and the one
+    # surviving marker in CLAUDE.md sits on a line whose backticked token carries a `<slug>`
+    # argument, so `_path_like` correctly refuses to read it as a path. The proof therefore
+    # supplies its own marked pack rather than depending on whichever real marker happens to
+    # be live this week.
+    pack = tmp_path / "rules" / "zz-fixture.md"
+    pack.write_text("Read `docs/reference/quick-start.md` (arrives in Task 13)\n",
+                    encoding="utf-8")
+    assert stale_markers(tmp_path) == [], "the marked path does not exist yet — not stale"
+
     target = tmp_path / "docs" / "reference" / "quick-start.md"
     target.parent.mkdir(parents=True)
     target.write_text("arrived\n", encoding="utf-8")
 
     fired = stale_markers(tmp_path)
     assert fired, "creating a marked path must make the checker fire"
-    assert all("quick-start.md" in row for row in fired), fired
+    assert all("zz-fixture.md" in row for row in fired), fired
 
 
 def test_the_checker_walks_agents_and_skills_too(tmp_path):

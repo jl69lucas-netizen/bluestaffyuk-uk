@@ -81,7 +81,7 @@ family: GATE
 - **No credential value in any committed file, report, Artifact, or on stdout (ALWAYS)** —
   Every key BSUK uses (`GSC_*`, `GA4_*`, `PUBLIC_FORMSPREE_ID`) lives in the gitignored
   `.env`; `.env.example` lists the key names with empty values, and
-  `docs/reference/credentials.md` (arrives in Task 13) says which script reads which key. Scripts read from the
+  `docs/reference/credentials.md` says which script reads which key. Scripts read from the
   environment and never print what they read. A value pasted into a commit message, a gate
   report, a published Artifact, or a terminal transcript is disclosed whether or not the file
   is later edited — the git history keeps it. Check `git status` before every commit.

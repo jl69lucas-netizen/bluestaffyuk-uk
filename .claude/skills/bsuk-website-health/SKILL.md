@@ -78,7 +78,7 @@ token into and nothing to push. When a remote is added in project 6:
 2. Auth goes in the OS credential helper, never in the remote URL and never in a file.
 3. No credential value may appear in any committed file, report or on stdout.
 
-The credentials reference arrives in Task 13.
+`docs/reference/credentials.md` says which script reads which key.
 
 ### Uncommitted / unpushed work (not deployed)
 Per CLAUDE.md "Always commit + push after build", finished work must be committed and

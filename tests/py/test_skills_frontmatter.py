@@ -173,7 +173,12 @@ def bad_table_rows(path: pathlib.Path):
     return out
 
 
-TABLE_FILES = sorted(SKILLS.glob("*/SKILL.md")) + sorted(AGENTS.glob("*.md"))
+REFERENCE = ROOT / "docs/reference"
+# Task 13: the reference docs are full of hand-written tables — the keyword frequency
+# table, the credentials key table, the data-file dependency table — and a row with the
+# wrong cell count renders as a silently truncated fact.
+TABLE_FILES = (sorted(SKILLS.glob("*/SKILL.md")) + sorted(AGENTS.glob("*.md"))
+               + sorted(REFERENCE.glob("*.md")))
 
 
 @pytest.mark.parametrize("doc", TABLE_FILES,

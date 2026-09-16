@@ -1042,5 +1042,35 @@
     "dst": ".claude/skills/bsuk-puppy-page-builder/SKILL.md",
     "mode": "rebase",
     "notes": "system; the largest rewrite — bird listing becomes the puppy listing on rules/puppies.md"
+  },
+  {
+    "src": "docs/reference/system-registry.md",
+    "dst": "docs/reference/system-registry.md",
+    "mode": "rebase",
+    "notes": "system; the registry regenerated from this repo's own agents, skills, scripts and data files"
+  },
+  {
+    "src": "docs/reference/quick-start.md",
+    "dst": "docs/reference/quick-start.md",
+    "mode": "rebase",
+    "notes": "system; task→entry-point map re-based onto BSUK page types and the six reference docs that exist here"
+  },
+  {
+    "src": "docs/reference/WORKFLOW.md",
+    "dst": "docs/reference/WORKFLOW.md",
+    "mode": "rebase",
+    "notes": "system; the 7-sprint model re-based; Sprint 5 Ship inactive until project 6"
+  },
+  {
+    "src": "docs/reference/seo-rules.md",
+    "dst": "docs/reference/seo-rules.md",
+    "mode": "rebase",
+    "notes": "system; the numbered SEO rules re-based; the African Grey–specific section and CAG's dated GSC table deleted"
+  },
+  {
+    "src": "docs/reference/session-log.md",
+    "dst": "docs/reference/session-log.md",
+    "mode": "rebase",
+    "notes": "system; body replaced with BSUK's two project entries and Known Issues seeded from the foundation gate report"
   }
 ]

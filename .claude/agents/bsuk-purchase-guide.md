@@ -35,8 +35,8 @@ You work section-by-section. You never rewrite the full page at once. Each secti
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` — what you must never change (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode prices)
 4. **Read** `data/locations.json` — cities served (for delivery section)
 5. **Run** `grep -n "h1\|canonical\|ld+json" dist/buy-blue-staffy-puppies-uk/ 2>/dev/null | head -20` — verify H1 and schema locations

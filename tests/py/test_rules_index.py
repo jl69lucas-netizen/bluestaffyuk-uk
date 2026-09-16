@@ -244,6 +244,27 @@ def test_every_repo_path_cited_in_a_skill_exists_or_is_marked(skill):
         + "\n  ".join(bad))
 
 
+# The reference docs are cited by name in almost every agent and pack, and they cite back.
+# Task 13 wrote them, so they get the same forward-reference rule: a path either exists or
+# says when it arrives.
+REFERENCE_DIR = ROOT / "docs/reference"
+
+
+@pytest.mark.parametrize("doc", sorted(REFERENCE_DIR.glob("*.md")), ids=lambda p: p.stem)
+def test_every_repo_path_cited_in_a_reference_doc_exists_or_is_marked(doc):
+    bad = _unmarked_missing_paths(doc)
+    assert bad == [], (
+        f"{doc.name} cites a path that does not exist and does not say when it will. "
+        "Either fix the path, or mark the line '(arrives in Task N)' / "
+        "'(deferred to project N)' / '(not ported — source repo only)':\n  "
+        + "\n  ".join(bad))
+
+
+def test_there_are_reference_docs_to_check():
+    # Task 13 wrote six. A glob that stopped matching would make the test above vacuous.
+    assert len(list(REFERENCE_DIR.glob("*.md"))) >= 6
+
+
 def test_there_are_skills_to_check():
     # The port wrote 25 system skills; a glob that stopped matching would make the
     # parametrised test above vacuous.

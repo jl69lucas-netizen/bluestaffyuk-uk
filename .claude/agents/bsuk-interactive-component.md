@@ -32,7 +32,7 @@ All components are self-contained HTML blocks: zero external dependencies, zero 
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — design tokens (colors, fonts, radius) (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — design tokens (colors, fonts, radius) (not ported — source repo only)
 2. **Read** `data/price-matrix.json` — pricing for any calculator
 3. **Read** `data/financial-entities.json` — cost data for ownership calculators (not ported — source repo only)
 4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which component type? What page does it go on? What data does it need?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).

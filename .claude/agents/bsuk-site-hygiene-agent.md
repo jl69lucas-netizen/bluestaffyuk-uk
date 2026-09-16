@@ -37,7 +37,7 @@ You are the **Site Hygiene Agent** for SITE_URL_PLACEHOLDER. You run four recurr
 ## On Startup
 
 1. Ask the user: "Which hygiene task do you want? (1) Cannibalization audit, (2) Breadcrumb audit, (3) Footer links, (4) GA4 check — or run all four?"
-2. Read `docs/reference/top-pages.md` if it exists (traffic context helps prioritise cannibalization fixes) (arrives in Task 13)
+2. Read `docs/reference/top-pages.md` if it exists (traffic context helps prioritise cannibalization fixes) (not ported — source repo only)
 
 ---
 

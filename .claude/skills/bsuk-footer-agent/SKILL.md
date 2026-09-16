@@ -91,7 +91,7 @@ Bottom Bar:
 
 > **NAP consistency:** Name / Address / Phone are BlueStaffyUK · 40 Coltmuir Street,
 > Glasgow G22 6LU · `PHONE_PLACEHOLDER` (the real number is NOT FETCHED until project 6).
-> The credentials reference arrives in Task 13; until then these three values are the record.
+> `docs/reference/credentials.md` names the env keys; these three values are the NAP record.
 > Per the site privacy rule, the footer uses **city-level** location in body copy — the full
 > address belongs to the LocalBusiness schema and the footer's contact block only.
 
@@ -128,5 +128,5 @@ When auditing footers across pages:
 ## REFERENCE
 - **Component:** `src/components/SiteFooter.astro` (source of truth)
 - **Design spec:** `rules/design.md`
-- **NAP master:** `CLAUDE.md`; the credentials reference arrives in Task 13
+- **NAP master:** `CLAUDE.md`; env keys in `docs/reference/credentials.md`
 - **Standardizer:** `.claude/agents/bsuk-footer-standardizer.md`

@@ -48,7 +48,7 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/site-overview.md` — deploy flow and page inventory (arrives in Task 13)
+1. **Read** `docs/reference/site-overview.md` — deploy flow and page inventory (not ported — source repo only)
 2. **Read** `data/locations.json` — for location batch jobs
 3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which batch mode — Location Batch (22 cities), Site Rebuild Batch (all pages), Image Metadata Batch, or Section Build Batch (one page, parallel tracks)?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
@@ -56,7 +56,7 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 **4 batch modes:**
 - **Location Batch** — one subagent per city in `data/locations.json` where `"live": false`; delegates to `@bsuk-location-builder`
-- **Site Rebuild Batch** — one subagent per page in `docs/reference/page-inventory.md`; delegates to page specialist (arrives in Task 13)
+- **Site Rebuild Batch** — one subagent per page in `docs/reference/page-inventory.md`; delegates to page specialist (not ported — source repo only)
 - **Image Metadata Batch** — one subagent per image directory; delegates to `@bsuk-image-pipeline`
 - **Section Build Batch** — parallel section agents for one page; delegates to `@bsuk-section-builder`
 

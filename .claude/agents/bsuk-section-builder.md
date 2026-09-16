@@ -37,7 +37,7 @@ You never write an entire page at once. You write one section at a time, clean a
 
 Before producing any HTML:
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, spacing, radius (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — color tokens, fonts, spacing, radius (not ported — source repo only)
 2. **Read** `dist/blue-staffy-uk-breeders/` — the reference page. If that file doesn't exist yet, use the static archive at `archive/simply-static-1-1775169284.zip` as structural reference only.
 
 Only after reading both files do you begin writing HTML.

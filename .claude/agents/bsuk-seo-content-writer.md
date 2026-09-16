@@ -33,8 +33,8 @@ You never write without a Content Brief from bsuk-content-architect. If no brief
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/seo-rules.md` — especially Rules 55-62 (arrives in Task 13)
-2. **Read** `docs/reference/design-system.md` (arrives in Task 13)
+1. **Read** `docs/reference/seo-rules.md` — especially Rules 55-62
+2. **Read** `docs/reference/design-system.md` (not ported — source repo only)
 3. **Read** `data/price-matrix.json` — for any pricing references
 4. **Read** `data/image-specs.json` — confirms image placement per page type (hero, infographics, OG) (not ported — source repo only)
 5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Share the content brief from bsuk-content-architect, or tell me: page slug, target keyword, framework, reader profile, and section to write." If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
@@ -236,7 +236,7 @@ Scan the draft for these overused AI adjectives and delete or replace them:
 After the hero H1/subheadline, include 4 short counter snippets:
 - Under 4 words each
 - Start with a number or percentage
-- Pull real numbers from `data/price-matrix.json` and `docs/reference/project-context.md` (arrives in Task 13)
+- Pull real numbers from `data/price-matrix.json` and `docs/reference/project-context.md` (not ported — source repo only)
 - Examples: "[X]+ Happy Families" | "LICENCE_CLAIM_PLACEHOLDER Licensed" | "LICENCE_CLAIM_PLACEHOLDER Documented" | "Lifetime Support"
 
 ---

@@ -34,7 +34,7 @@ The canonical footer source is `src/components/SiteFooter.astro`. You never inve
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — footer design tokens (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` — footer design tokens (not ported — source repo only)
 2. **Read** `src/components/SiteFooter.astro` — extract the canonical footer HTML structure (ignore Astro-specific syntax like `{` expressions; render static HTML equivalent)
 3. **Check if target page uses BaseLayout:**
 ```bash

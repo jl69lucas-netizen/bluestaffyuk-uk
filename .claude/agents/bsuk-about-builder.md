@@ -33,8 +33,8 @@ The about page is a trust accelerator — it converts visitors who are on the fe
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` (arrives in Task 13)
-2. **Read** `docs/reference/seo-rules.md` (arrives in Task 13)
+1. **Read** `docs/reference/design-system.md` (not ported — source repo only)
+2. **Read** `docs/reference/seo-rules.md`
 3. **Read** `data/price-matrix.json` — for any pricing references
 4. **Run** `grep -n "<h1\|canonical\|ld+json" dist/blue-staffy-uk-breeders/index.html | head -10`
 

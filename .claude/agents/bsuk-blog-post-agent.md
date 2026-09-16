@@ -44,7 +44,7 @@ Writes buyer-intent blog posts for SITE_URL_PLACEHOLDER that rank for commercial
 
 ## On Startup
 
-1. Read `docs/reference/top-pages.md` — understand current traffic baseline (arrives in Task 13)
+1. Read `docs/reference/top-pages.md` — understand current traffic baseline (not ported — source repo only)
 2. Read `data/price-matrix.json` — pricing must be accurate in every post
 3. Read `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "blog_page") (not ported — source repo only)
 4. Ask: "What keyword or topic is this post targeting? Do you have a specific query in mind, or should I propose 5 options based on GSC gaps?"
