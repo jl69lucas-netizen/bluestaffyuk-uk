@@ -1,7 +1,7 @@
 [
-  {"src": "schemas/board.schema.json", "dst": "schemas/board.schema.json", "mode": "copy", "notes": "structure only; no site vocabulary"},
-  {"src": "schemas/component-ledger.schema.json", "dst": "schemas/component-ledger.schema.json", "mode": "copy", "notes": "structure only; ledger stays empty until project 3"},
-  {"src": "schemas/ontology.schema.json", "dst": "schemas/ontology.schema.json", "mode": "copy", "notes": "structure only"},
+  {"src": "schemas/board.schema.json", "dst": "schemas/board.schema.json", "mode": "rebase", "notes": "page_type enum and offer_model need BSUK values; hand-edited after the first port"},
+  {"src": "schemas/component-ledger.schema.json", "dst": "schemas/component-ledger.schema.json", "mode": "rebase", "notes": "structure only; title re-based to BSUK; ledger stays empty until project 3"},
+  {"src": "schemas/ontology.schema.json", "dst": "schemas/ontology.schema.json", "mode": "rebase", "notes": "structure only; title re-based to BSUK"},
   {"src": ".claude/commands/opsx/propose.md", "dst": ".claude/commands/opsx/propose.md", "mode": "copy", "notes": "openspec command, site-agnostic"},
   {"src": ".claude/commands/opsx/explore.md", "dst": ".claude/commands/opsx/explore.md", "mode": "copy", "notes": "openspec command, site-agnostic"},
   {"src": ".claude/commands/opsx/apply.md", "dst": ".claude/commands/opsx/apply.md", "mode": "copy", "notes": "openspec command, site-agnostic"},
@@ -74,5 +74,10 @@
   {"src": ".claude/skills/cag-header-search/SKILL.md", "dst": ".claude/skills/cag-header-search/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"},
   {"src": ".claude/skills/reddit-strategy/SKILL.md", "dst": ".claude/skills/reddit-strategy/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"},
   {"src": ".claude/skills/social-content/SKILL.md", "dst": ".claude/skills/social-content/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"},
-  {"src": ".claude/skills/youtube-script/SKILL.md", "dst": ".claude/skills/youtube-script/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"}
+  {"src": ".claude/skills/youtube-script/SKILL.md", "dst": ".claude/skills/youtube-script/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"},
+  {"src": "scripts/pageboard.py", "dst": "scripts/pageboard.py", "mode": "rebase", "notes": "SPECIES regex -> coat colours; ONTOLOGY/LEDGER paths; board_path -> data/boards/<slug>.json; inline file_token/unfile_token (board_canvas is not ported)"},
+  {"src": "scripts/board_gate.py", "dst": "scripts/board_gate.py", "mode": "rebase", "notes": "no CAG literals; re-based only for the board_path change"},
+  {"src": "scripts/board_approve.py", "dst": "scripts/board_approve.py", "mode": "rebase", "notes": "drop the board_canvas import and the --canvas-dir write-back; approvals arrive from the Artifact db"},
+  {"src": "scripts/build_page_board.py", "dst": "scripts/build_page_board.py", "mode": "rebase", "notes": "masthead literal; drop the thumbs block (board_thumbs.mjs is not ported)"},
+  {"src": "tests/test_page_board.py", "dst": "tests/py/test_page_board.py", "mode": "rebase", "notes": "183 tests; port the schema/hash/ledger/gate/render core, drop the tests bound to CAG's real data files"}
 ]

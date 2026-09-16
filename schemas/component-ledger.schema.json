@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "CAG component ledger",
+  "title": "BSUK component ledger",
   "type": "object", "required": ["pools", "pages"], "additionalProperties": false,
   "properties": {
     "refresh_pools": {"type": "array", "items": {"type": "string"}},

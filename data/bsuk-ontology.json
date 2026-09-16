@@ -1,0 +1,11 @@
+{
+  "entities": [
+    { "id": "ont:staffordshire-bull-terrier", "name": "Staffordshire Bull Terrier", "aliases": ["Staffy", "Staffie", "Stafford", "SBT"], "class": "Organism", "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "uk-staffordshire-bull-terrier-guide" },
+    { "id": "ont:blue-coat", "name": "Blue coat", "aliases": ["blue staffy", "blue Staffordshire Bull Terrier"], "class": "Organism", "authorization": "ASSERTED", "source": "data/puppies.json", "owner_page": "index" },
+    { "id": "ont:lisa-bright", "name": "Lisa Bright", "aliases": ["the breeder"], "class": "People", "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "blue-staffy-uk-breeders" },
+    { "id": "ont:glasgow", "name": "Glasgow", "aliases": ["G22", "Coltmuir Street"], "class": "Place", "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "uk-locations/staffy-puppies-for-sale-glasgow" },
+    { "id": "ont:refundable-deposit", "name": "£500 refundable deposit", "aliases": ["deposit"], "class": "Commerce", "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "uk-blue-staffy-puppy-buying-guide" },
+    { "id": "ont:defra-approved-transport", "name": "DEFRA-approved pet transport", "aliases": ["home delivery", "UK delivery"], "class": "Logistics", "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "index" },
+    { "id": "ont:health-guarantee", "name": "Health guarantee", "aliases": [], "class": "Health", "authorization": "PROPOSED", "source": null, "owner_page": null }
+  ]
+}
