@@ -11,4 +11,4 @@ playwright-report/
 data/quality/raw/
 docs/reports/lh/
 
-docs/reports/*.json
+docs/reports/**/*.json

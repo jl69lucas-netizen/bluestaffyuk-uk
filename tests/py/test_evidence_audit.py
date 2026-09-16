@@ -166,3 +166,50 @@ def test_review_attribution_wrapper_div_does_not_swallow_first_card():
 def test_statement_labels_section_regex_ignores_data_id():
     html = page("<section data-id='zz'><p>Canis familiaris lives 12 to 14 years.</p></section>")
     assert E.missing_statement_labels(html) == []
+
+
+# --- the script's own entry point ---------------------------------------------------
+
+SCRIPT = pathlib.Path(__file__).resolve().parents[2] / "scripts" / "evidence_audit.py"
+
+
+def _run(tmp_path, *extra):
+    import subprocess
+    return subprocess.run([sys.executable, str(SCRIPT), "--all", "--dist", str(tmp_path)]
+                          + list(extra), capture_output=True, text=True)
+
+
+def _quality(tmp_path, budgets=None, ledger=None):
+    """A tmp repo-shaped tree: data/quality/{evidence-budgets,evidence-ledger}.json."""
+    q = tmp_path / "data" / "quality"
+    q.mkdir(parents=True)
+    if budgets is not None:
+        (q / "evidence-budgets.json").write_text(json.dumps(budgets), encoding="utf-8")
+    if ledger is not None:
+        (q / "evidence-ledger.json").write_text(json.dumps(ledger), encoding="utf-8")
+    return q
+
+
+def test_main_exits_2_when_the_budgets_file_is_missing(tmp_path):
+    """Task 9 writes data/quality/evidence-budgets.json. Until it exists the gate
+    cannot run — exit 2, never a silent 0."""
+    dist = tmp_path / "dist"
+    (dist).mkdir()
+    r = _run(dist, "--budgets", str(tmp_path / "nope.json"))
+    assert r.returncode == 2
+    assert "evidence budgets missing" in r.stdout
+
+
+def test_main_writes_a_json_report(tmp_path):
+    q = _quality(tmp_path, BUDGETS, LEDGER)
+    dist = tmp_path / "dist"
+    (dist).mkdir()
+    (dist / "index.html").write_text(page("<p>KC KC KC</p>"), encoding="utf-8")
+    out = tmp_path / "report.json"
+    r = _run(dist, "--budgets", str(q / "evidence-budgets.json"),
+             "--ledger", str(q / "evidence-ledger.json"), "--json", str(out))
+    assert r.returncode == 1, r.stdout          # the term breach is an ERROR
+    data = json.loads(out.read_text())
+    assert data["errors"] == 1
+    assert data["pages"][0]["slug"] == "index"
+    assert any("KC" in f["message"] for f in data["pages"][0]["findings"])

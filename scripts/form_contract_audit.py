@@ -28,7 +28,8 @@ Exit code: 1 when any form fails the contract, 2 when no forms were examined at 
 `--fail-on-error` is accepted for symmetry with the other gates and changes nothing
 here: a contract failure is always fatal.
 """
-import argparse, json, os, re, sys
+import argparse, json, os, pathlib, re, sys
+from functools import lru_cache
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -39,18 +40,27 @@ ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 DEFAULT_JSON = ROOT / "docs/reports/form_contract_audit.json"
 
-# Read from the environment, never hard-coded. The id is a credential-adjacent fact that
-# lives in .env (spec §8); a literal here would be a second source of truth that goes
-# stale the day the form moves, and would put a real endpoint in a committed file.
-_FID = os.environ.get("PUBLIC_FORMSPREE_ID", "")
-if not _FID:
-    # Exit 2 = the gate cannot run, the code board_gate.py and evidence_audit.py use.
-    # Exit 1 would read as "ran, found one problem".
-    print("REFUSED: PUBLIC_FORMSPREE_ID is unset — a form audit that matches nothing "
-          "would report every form clean. Set it in .env (see .env.example).",
-          file=sys.stderr)
-    sys.exit(2)
-ENDPOINT = f"https://formspree.io/f/{_FID}"
+PAGE_MAP = ROOT / "data/page-map.json"
+
+
+def _endpoint():
+    """The one Formspree endpoint, read from the environment at call time, never
+    hard-coded. The id is a credential-adjacent fact that lives in .env (spec §8); a
+    literal here would be a second source of truth that goes stale the day the form
+    moves, and would put a real endpoint in a committed file.
+
+    Read LAZILY, not at import: a module-level sys.exit makes `--help`, and any import
+    of this module, impossible without the id. Exit 2 = the gate cannot run, the code
+    board_gate.py and evidence_audit.py use; exit 1 would read as "ran, found one
+    problem".
+    """
+    fid = os.environ.get("PUBLIC_FORMSPREE_ID", "")
+    if not fid:
+        print("REFUSED: PUBLIC_FORMSPREE_ID is unset — a form audit that matches "
+              "nothing would report every form clean. Set it in .env (see "
+              ".env.example).", file=sys.stderr)
+        sys.exit(2)
+    return f"https://formspree.io/f/{fid}"
 
 # BSUK's contract, read off the built contact page (dist/uk-blue-staffy-breeders-contact/
 # index.html, 2026-09-16). The source repo's seven screening questions were written for a
@@ -77,11 +87,41 @@ LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
 
 
+# data/page-map.json's `kind` is what the build actually produced; a hand list of slugs
+# drifts the first time a page is added. Kind -> contract:
+KIND_CONTRACT = {"rich": "full", "blog": "short", "location": "none"}
+
+
+@lru_cache(maxsize=1)
+def _kinds():
+    """{slug: kind} from data/page-map.json; empty when the map is unreadable, in which
+    case every page falls back to the slug heuristic."""
+    try:
+        pages = json.loads(pathlib.Path(PAGE_MAP).read_text(encoding="utf-8"))["pages"]
+    except Exception:
+        return {}
+    return {(p["url"].strip("/") or "index"): p["kind"] for p in pages}
+
+
+def _contract_name(slug: str) -> str:
+    kind = _kinds().get(slug)
+    if kind in KIND_CONTRACT:
+        return KIND_CONTRACT[kind]
+    # Fallback for a page absent from the map (a hub, or a page built after the map was
+    # last generated): today's slug heuristic.
+    if LOCATION.match(slug) or slug in HUBS:
+        return "none"
+    if slug.startswith("blog/"):
+        return "short"
+    return "full"
+
+
 def contract_keys(slug: str) -> list:
     """The (name, regex) pairs this page's inquiry forms must carry."""
-    if LOCATION.match(slug) or slug in HUBS:
+    name = _contract_name(slug)
+    if name == "none":
         return []
-    if slug.startswith("blog/"):
+    if name == "short":
         return [k for k in KEYS if k[0] in SHORT]
     return KEYS
 
@@ -135,6 +175,7 @@ class _Forms(HTMLParser):
 
 
 def audit_html(html: str, slug: str):
+    endpoint = _endpoint()
     p = _Forms(); p.feed(html); p.close()
     rows = []
     for n, f in enumerate(p.forms, 1):
@@ -148,8 +189,8 @@ def audit_html(html: str, slug: str):
         real = [c for c in ctl if c["type"] != "hidden" and c["name"] != "_gotcha"]
         kind = "newsletter" if len(real) == 1 and real[0]["type"] == "email" else "inquiry"
         problems = []
-        if action != ENDPOINT:
-            problems.append(f'endpoint is "{action or "(none)"}", must be {ENDPOINT}')
+        if action != endpoint:
+            problems.append(f'endpoint is "{action or "(none)"}", must be {endpoint}')
         if "data-netlify" in a or "netlify-honeypot" in a or any(c["name"] in ("form-name", "bot-field") for c in ctl):
             problems.append("netlify residue (data-netlify / form-name / bot-field)")
         if (a.get("method") or "get").lower() != "post":
@@ -197,6 +238,7 @@ def main(argv=None):
                     metavar="PATH",
                     help=f"write the machine-readable result (default {DEFAULT_JSON})")
     args = ap.parse_args(sys.argv[1:] if argv is None else argv)
+    _endpoint()          # fail fast: refuse before reading a single page
     dist = Path(args.dist)
     rows = audit_dist(dist)
     if not rows:

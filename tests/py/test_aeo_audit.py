@@ -9,7 +9,7 @@
 #     design (spec §7 drops CAG's rule 12; BSUK owns no branded method label). Replaced
 #     by test_labeled_method_check_is_inert_when_no_method_is_owned, which pins that the
 #     empty list makes the check inert rather than making every page fail it.
-import sys, pathlib
+import json, subprocess, sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import aeo_audit as A
 
@@ -66,7 +66,7 @@ def test_labeled_method_check_is_inert_when_no_method_is_owned():
             "<h2>12 Years Breeding Blue Staffies</h2>"
             "<p>Lisa Bright breeds Canis familiaris pups in Glasgow.</p>")
     findings, _ = A.audit("index", page)
-    assert not [m for _, m in findings if "method" in m]
+    assert not [x for x in findings if "method" in x[1]]
 
 
 def test_freshness_reads_json_ld_only():
@@ -91,3 +91,77 @@ def test_stat_headers_are_detected():
         ["12 Years of Breeding Experience"]
     assert A.stat_headers("<h2>6 Pups Available Now</h2>") == ["6 Pups Available Now"]
     assert A.stat_headers("<h2>Why Choose Us</h2>") == []
+
+
+# --- the migration baseline (Task 6 convention) -------------------------------------
+#
+# 37 of the 49 built pages carry no dateModified. If every one of them fails the exit
+# code, a NEW defect is indistinguishable from the backlog — so a page whose ONLY
+# problems are baseline checks is tagged and counted separately, and does not fail the
+# run. A page with any other ERROR still does.
+
+SCRIPT = pathlib.Path(__file__).resolve().parents[2] / "scripts" / "aeo_audit.py"
+
+BASELINE_ONLY = "<h2>6 Pups Available</h2><p>Lisa Bright breeds Canis familiaris pups in Glasgow.</p>"
+REGRESSION = ('<script type="application/ld+json">{"dateModified":"2026-09-16"}</script>'
+              "<h2>6 Pups Available</h2>"
+              "<p>Lisa Bright breeds Canis familiaris pups in Glasgow. Last updated: June 2026</p>")
+
+
+def test_freshness_is_the_only_baseline_check():
+    assert A.BASELINE_CHECKS == {"freshness"}
+
+
+def test_a_page_missing_only_datemodified_is_baseline_only():
+    findings, _ = A.audit("index", BASELINE_ONLY)
+    assert any(x[0] == "ERROR" for x in findings)
+    assert A.baseline_only(findings) is True
+
+
+def test_a_visible_date_is_a_real_regression_not_baseline():
+    findings, _ = A.audit("index", REGRESSION)
+    assert any("VISIBLE date" in x[1] for x in findings)
+    assert A.baseline_only(findings) is False
+
+
+def _dist(tmp_path, **pages):
+    for slug, html in pages.items():
+        d = tmp_path if slug == "index" else tmp_path / slug
+        d.mkdir(parents=True, exist_ok=True)
+        (d / "index.html").write_text(html, encoding="utf-8")
+    return tmp_path
+
+
+def _run(tmp_path, *extra):
+    return subprocess.run([sys.executable, str(SCRIPT), "--all", "--dist", str(tmp_path)]
+                          + list(extra), capture_output=True, text=True)
+
+
+def test_baseline_only_pages_do_not_fail_the_run(tmp_path):
+    r = _run(_dist(tmp_path, index=BASELINE_ONLY))
+    assert r.returncode == 0, r.stdout
+    assert "[migration baseline]" in r.stdout
+    assert "baseline-only FAIL pages: 1" in r.stdout
+
+
+def test_a_real_regression_still_fails_the_run(tmp_path):
+    r = _run(_dist(tmp_path, index=BASELINE_ONLY, **{"a-page": REGRESSION}))
+    assert r.returncode == 1, r.stdout
+    assert "baseline-only FAIL pages: 1" in r.stdout
+
+
+def test_json_report_records_the_baseline_flag(tmp_path):
+    out = tmp_path / "report.json"
+    r = _run(_dist(tmp_path, index=BASELINE_ONLY), "--json", str(out))
+    assert r.returncode == 0, r.stdout
+    data = json.loads(out.read_text())
+    assert data["baseline_only_pages"] == 1
+    assert data["pages"][0]["baseline_only"] is True
+    assert data["pages"][0]["slug"] == "index"
+
+
+def test_json_ld_extraction_matches_schema_checks_pattern():
+    """single quotes and extra attributes are valid JSON-LD; schema_check.py accepts
+    them, and the freshness check must not silently disagree with it."""
+    assert A.has_freshness("<script data-x type='application/ld+json'>"
+                           '{"dateModified":"2026-09-16"}</script>') is True

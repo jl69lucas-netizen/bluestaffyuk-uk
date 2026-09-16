@@ -24,18 +24,26 @@ Usage:
   python3 scripts/aeo_audit.py --all
   python3 scripts/aeo_audit.py --all --json             # also write the JSON report
 
-Exit code: 1 when any page has an ERROR-level finding, when the slug filter matched
-nothing (0 pages matched is never a pass), or when --fail-on-error is passed and any
-WARN was found; 0 otherwise.
+Exit code: 1 when any page has an ERROR-level finding that is NOT one of
+BASELINE_CHECKS, when the slug filter matched nothing (0 pages matched is never a
+pass), or when --fail-on-error is passed and any WARN was found; 0 otherwise. A page
+whose only ERRORs are baseline checks is tagged [migration baseline] and counted on
+its own line — the backlog is visible without hiding a new defect behind it.
 """
 import re, sys, glob, json, argparse, pathlib
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _slugs import dist_path as _dist_path, page_key  # noqa: E402
+from _html import strip_tags, unescape, text_of  # noqa: E402  one shared decoder
+from schema_check import LD_RE  # noqa: E402  one JSON-LD extraction pattern, shared
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DIST = ROOT / "dist"
 DEFAULT_JSON = ROOT / "docs/reports/aeo_audit.json"
+# The migration baseline, Task 6's convention: 37 of the 49 built pages carry no
+# dateModified. Not excused — separated, so a new defect is not lost among 37 identical
+# rows, and a page failing ONLY these does not fail the run.
+BASELINE_CHECKS = {"freshness"}
 
 # Spec §7 drops CAG's rule 12: BSUK owns no branded method label, so the list is empty
 # and every check that reads it is inert by design (guarded, not deleted, so that the day
@@ -64,22 +72,6 @@ STAT_HEADER = re.compile(r"\b\d[\d,\.]*\s*\+?\s*(?:%|years?|yrs?|word|puppies?|p
 HEDGE_OPENERS = ("before we", "in this", "there are many", "it is worth", "when it comes",
                  "as you may", "one of the", "over the years", "let us", "let's",
                  "first, ", "to begin", "many people", "if you have ever")
-
-
-def strip_tags(html):
-    html = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", html, flags=re.S | re.I)
-    return re.sub(r"<[^>]+>", " ", html)
-
-
-def unescape(t):
-    for a, b in (("&amp;", "&"), ("&nbsp;", " "), ("&middot;", "·"), ("&ndash;", "–"),
-                 ("&mdash;", "—"), ("&rsquo;", "’"), ("&#8217;", "’"), ("&quot;", '"')):
-        t = t.replace(a, b)
-    return t
-
-
-def text_of(html):
-    return re.sub(r"\s+", " ", unescape(strip_tags(html))).strip()
 
 
 # ── principle 1: BLUF ────────────────────────────────────────────────────────
@@ -131,8 +123,10 @@ def labeled_methods(html):
 
 # ── principle 6b: freshness, schema-only ─────────────────────────────────────
 def has_freshness(html):
-    for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>',
-                        html, re.S):
+    # LD_RE is scripts/schema_check.py's pattern: single quotes and extra attributes on
+    # the <script> tag are valid JSON-LD, and the two gates must not disagree on what
+    # counts as a JSON-LD block.
+    for b in LD_RE.findall(html):
         if "dateModified" in b:
             return True
     return False
@@ -168,11 +162,26 @@ def sentence_report(html):
             "over_30": sum(1 for n in lens if n > 30)}
 
 
+def baseline_only(findings):
+    """True when this page's ERRORs are all migration-baseline checks (and there is at
+    least one). A page with any other ERROR is a real failure."""
+    errs = [x for x in findings if x[0] == "ERROR"]
+    return bool(errs) and all(check_id(x) in BASELINE_CHECKS for x in errs)
+
+
+def check_id(finding):
+    """The check a finding came from; findings that predate the ids report ""."""
+    return finding[2] if len(finding) > 2 else ""
+
+
 def audit(slug, html):
+    """[(severity, message[, check_id])], entity_report. `slug` is carried for callers
+    that report it; no check reads it."""
     ent = entity_report(html)
     f = []
     if not has_freshness(html):
-        f.append(("ERROR", "no dateModified in JSON-LD — page emits no freshness signal"))
+        f.append(("ERROR", "no dateModified in JSON-LD — page emits no freshness signal",
+                  "freshness"))
     for d in visible_dates(html):
         f.append(("ERROR", f"VISIBLE date on the page (banned): '{d.strip()}'"))
     if ent["binomial"] == 0:
@@ -196,6 +205,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.strip().splitlines()[1])
     ap.add_argument("slugs", nargs="*", help="audit these slugs (`index` = the homepage)")
     ap.add_argument("--all", action="store_true", help="audit every built page")
+    ap.add_argument("--dist", default=str(DIST), help="dist root to audit")
     ap.add_argument("--fail-on-error", action="store_true",
                     help="also exit non-zero when only WARN-level findings were made")
     ap.add_argument("--json", nargs="?", const=str(DEFAULT_JSON), default=None,
@@ -205,10 +215,11 @@ def main(argv=None):
 
     if not ns.slugs and not ns.all:
         ap.error("give one or more slugs, or --all")
-    pages = sorted(glob.glob(str(DIST / "**" / "index.html"), recursive=True))
+    dist = pathlib.Path(ns.dist)
+    pages = sorted(glob.glob(str(dist / "**" / "index.html"), recursive=True))
     if ns.slugs:
         # one slug-resolution convention, shared: scripts/_slugs.py
-        wanted = {str(_dist_path(s, DIST)) for s in ns.slugs}
+        wanted = {str(_dist_path(s, dist)) for s in ns.slugs}
         pages = [p for p in pages if p in wanted]
     if not pages:
         print("aeo-audit: 0 pages matched — CHECK YOUR SLUGS, this is not a pass.")
@@ -216,39 +227,48 @@ def main(argv=None):
               "or use ${=VAR})")
         return 1
 
-    errs = warns = 0
+    errs = warns = nbase = real = 0
     report = []
     print(f"AEO audit — {len(pages)} pages examined\n")
     for p in pages:
         html = pathlib.Path(p).read_text(encoding="utf-8")
-        f, ent = audit(p, html)
-        slug = page_key(pathlib.Path(p), DIST)
-        e = sum(1 for s, _ in f if s == "ERROR")
+        slug = page_key(pathlib.Path(p), dist)
+        f, ent = audit(slug, html)
+        e = sum(1 for x in f if x[0] == "ERROR")
+        base = baseline_only(f)
         errs += e
         warns += len(f) - e
+        nbase += int(base)
+        real += int(e > 0 and not base)
         fm = formatting_report(html)
         sr = sentence_report(html)
-        print(f"── {slug}")
+        print(f"── {slug}" + ("   [migration baseline]" if base else ""))
         print(f"   entities: binomial={ent['binomial']} breeder={ent['breeder']} "
               f"place={ent['place']} credential={ent['credential']} · "
               f"tables={fm['tables']} lists={fm['lists']} · "
               f"avg sentence {sr['avg_words']}w, {sr['over_30']} over 30w")
-        for sev, msg in f:
-            print(f"   [{sev}] {msg}")
+        for finding in f:
+            print(f"   [{finding[0]}] {finding[1]}")
         if not f:
             print("   ✅ clean")
         report.append({"slug": slug, "entities": ent, "formatting": fm,
-                       "sentences": sr,
-                       "findings": [{"severity": s, "message": m} for s, m in f]})
+                       "sentences": sr, "baseline_only": base,
+                       "findings": [{"severity": x[0], "message": x[1],
+                                     "check": check_id(x)} for x in f]})
 
     print(f"\nexamined {len(pages)} pages; {errs} problems ({warns} WARN)")
+    print(f"baseline-only FAIL pages: {nbase}  (failing only "
+          f"{', '.join(sorted(BASELINE_CHECKS))} — the migration baseline, excluded "
+          f"from the exit code); pages with a real ERROR: {real}")
     if ns.json:
         out = pathlib.Path(ns.json)
         out.parent.mkdir(parents=True, exist_ok=True)
-        out.write_text(json.dumps({"pages": report, "errors": errs, "warns": warns},
+        out.write_text(json.dumps({"pages": report, "errors": errs, "warns": warns,
+                                   "baseline_only_pages": nbase,
+                                   "real_error_pages": real},
                                   indent=2) + "\n", encoding="utf-8")
         print(f"JSON report → {out}")
-    return 1 if errs or (ns.fail_on_error and warns) else 0
+    return 1 if real or (ns.fail_on_error and warns) else 0
 
 
 if __name__ == "__main__":

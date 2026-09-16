@@ -70,3 +70,19 @@ def test_unmatched_override_term_is_reported(capsys):
     ea.term_budget(_main(["KC"]), "home", b, slug="index")
     err = capsys.readouterr().err
     assert "KCpapers" in err and "index" in err and "home" in err
+
+
+def test_override_shape_round_trips_through_a_real_budgets_file(tmp_path):
+    """The inline fixture above is only trustworthy if the same shape survives
+    json.dumps -> file -> json.loads, `null` ceiling removal included."""
+    import json as _json
+    path = tmp_path / "evidence-budgets.json"
+    path.write_text(_json.dumps(_budgets()), encoding="utf-8")
+    budgets = _json.loads(path.read_text())
+    assert budgets["budgets_by_slug"]["index"]["KC"] is None
+    html = _main(["KC"] * 20 + ["Glasgow"] * 30)
+    over = {t for t, n, c in ea.term_budget(html, "home", budgets, slug="index")}
+    assert "KC" not in over          # null removed the ceiling
+    assert "Glasgow" in over         # the untouched ceiling still bites
+    over_other = {t for t, n, c in ea.term_budget(html, "home", budgets, slug="other")}
+    assert "KC" in over_other        # the override is per-slug, not global

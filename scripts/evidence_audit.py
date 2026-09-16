@@ -35,6 +35,7 @@ from collections import defaultdict
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _slugs import dist_path as _dist_path, page_key  # noqa: E402
+from _html import strip_tags, unescape, text_of  # noqa: E402  one shared decoder
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BUDGETS_PATH = ROOT / "data" / "quality" / "evidence-budgets.json"
@@ -56,25 +57,9 @@ FACT_SIGNAL = re.compile(
     r"|lifespan|hip\s*score|elbow\s*score|L2-?HGA|HC\b|PHPV|patella|KC[- ]registered", re.I)
 
 
-def strip_tags(html):
-    html = re.sub(r"<(script|style)\b[^>]*>.*?</\1>", " ", html, flags=re.S | re.I)
-    return re.sub(r"<[^>]+>", " ", html)
-
-
-def unescape(t):
-    for a, b in (("&amp;", "&"), ("&nbsp;", " "), ("&#39;", "'"), ("&rsquo;", "’"),
-                 ("&#8217;", "’"), ("&quot;", '"'), ("&mdash;", "—"), ("&ndash;", "–")):
-        t = t.replace(a, b)
-    return t
-
-
 def main_html(html):
     m = re.search(r"<main\b.*?</main>", html, flags=re.S | re.I)
     return m.group(0) if m else html
-
-
-def text_of(html):
-    return re.sub(r"\s+", " ", unescape(strip_tags(html))).strip()
 
 
 # ── term-budget-per-page ────────────────────────────────────────────────────
@@ -264,7 +249,7 @@ def audit(slug, html, page_type, budgets, ledger):
 def page_type_for(slug):
     """targets.json first; then a path heuristic; 'interior' as the fallback."""
     try:
-        for p in json.load(open(TARGETS_PATH))["pages"]:
+        for p in json.loads(TARGETS_PATH.read_text(encoding="utf-8"))["pages"]:
             if p["slug"] == slug:
                 return p["page_type"]
     except Exception:
@@ -297,6 +282,11 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.strip().splitlines()[1])
     ap.add_argument("slugs", nargs="*", help="audit these slugs (`index` = the homepage)")
     ap.add_argument("--all", action="store_true", help="audit every built page")
+    ap.add_argument("--dist", default=str(DIST), help="dist root to audit")
+    ap.add_argument("--budgets", default=str(BUDGETS_PATH),
+                    help=f"evidence budgets JSON (default {BUDGETS_PATH})")
+    ap.add_argument("--ledger", default=str(LEDGER_PATH),
+                    help=f"verified-claim ledger JSON (default {LEDGER_PATH})")
     ap.add_argument("--type", default=None, choices=PAGE_TYPES,
                     help="override the page type for every slug given")
     ap.add_argument("--fail-on-error", action="store_true",
@@ -306,17 +296,19 @@ def main(argv=None):
                     help=f"write the machine-readable result (default {DEFAULT_JSON})")
     a = ap.parse_args(sys.argv[1:] if argv is None else argv)
 
-    for path, what in ((BUDGETS_PATH, "evidence budgets"), (LEDGER_PATH, "claim ledger")):
+    for path, what in ((pathlib.Path(a.budgets), "evidence budgets"),
+                       (pathlib.Path(a.ledger), "claim ledger")):
         if not path.exists():
             print(f"evidence-audit: {what} missing at {path} — Task 9 writes it. "
                   "A gate with no budget file cannot run; that is not a pass.")
             return 2
-    budgets = json.load(open(BUDGETS_PATH))
-    ledger = json.load(open(LEDGER_PATH))
+    budgets = json.loads(pathlib.Path(a.budgets).read_text(encoding="utf-8"))
+    ledger = json.loads(pathlib.Path(a.ledger).read_text(encoding="utf-8"))
+    dist = pathlib.Path(a.dist)
     if a.all:
-        paths = sorted(DIST.glob("**/index.html"))
+        paths = sorted(dist.glob("**/index.html"))
     else:
-        paths = [_dist_path(s, DIST) for s in a.slugs]
+        paths = [_dist_path(s, dist) for s in a.slugs]
     paths = [p for p in paths if p.exists()]
     if not paths:
         print("evidence-audit: 0 pages matched — that is not a pass")
@@ -324,7 +316,7 @@ def main(argv=None):
     errs = warns = 0
     report = []
     for p in paths:
-        slug = page_key(p, DIST)
+        slug = page_key(p, dist)
         pt = a.type or page_type_for(slug)
         html = p.read_text(encoding="utf-8", errors="ignore")
         f = audit(slug, html, pt, budgets, ledger)

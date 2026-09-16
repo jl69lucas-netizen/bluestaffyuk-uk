@@ -21,7 +21,7 @@
 #   - test_unset_formspree_id_refuses_rather_than_matching_nothing
 #   - test_optional_phone_is_not_a_missing_field
 #   - test_missing_hidden_field_is_named
-import importlib
+import json
 import os
 import subprocess
 import sys, pathlib
@@ -31,8 +31,7 @@ import pytest
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 
 TEST_ID = "test-form-id"
-os.environ.setdefault("PUBLIC_FORMSPREE_ID", TEST_ID)
-import form_contract_audit as F  # noqa: E402
+import form_contract_audit as F  # noqa: E402  imports with no id set — see below
 
 SCRIPT = pathlib.Path(__file__).resolve().parents[2] / "scripts" / "form_contract_audit.py"
 CONTACT = "uk-blue-staffy-breeders-contact"
@@ -40,13 +39,42 @@ CONTACT = "uk-blue-staffy-breeders-contact"
 
 @pytest.fixture(autouse=True)
 def _formspree_id(monkeypatch):
-    """Every test sets the id itself; the module-level ENDPOINT is reloaded from it."""
+    """Every test sets the id itself. The module reads it lazily in _endpoint(), so
+    importing this module with no id set must never exit the interpreter."""
     monkeypatch.setenv("PUBLIC_FORMSPREE_ID", TEST_ID)
-    importlib.reload(F)
     yield
 
 
 END = f"https://formspree.io/f/{TEST_ID}"
+
+
+def test_importing_without_the_id_does_not_exit(monkeypatch):
+    """A module-level sys.exit made --help, and any import of this module, impossible
+    without the id."""
+    monkeypatch.delenv("PUBLIC_FORMSPREE_ID", raising=False)
+    import importlib
+    importlib.reload(F)          # must not raise SystemExit
+    monkeypatch.setenv("PUBLIC_FORMSPREE_ID", TEST_ID)
+
+
+def test_help_works_without_the_id():
+    env = {k: v for k, v in os.environ.items() if k != "PUBLIC_FORMSPREE_ID"}
+    r = subprocess.run([sys.executable, str(SCRIPT), "--help"],
+                       capture_output=True, text=True, env=env)
+    assert r.returncode == 0
+    assert "--fail-on-error" in r.stdout
+
+
+def test_endpoint_is_read_lazily_from_the_environment(monkeypatch):
+    monkeypatch.setenv("PUBLIC_FORMSPREE_ID", "another-id")
+    assert F._endpoint() == "https://formspree.io/f/another-id"
+
+
+def test_endpoint_refuses_when_unset(monkeypatch):
+    monkeypatch.delenv("PUBLIC_FORMSPREE_ID", raising=False)
+    with pytest.raises(SystemExit) as e:
+        F._endpoint()
+    assert e.value.code == 2
 
 GOOD = f"""<form action="{END}" method="POST">
 <input type="hidden" name="_next" value="/thank-you/"><input type="hidden" name="_subject" value="x">
@@ -180,18 +208,53 @@ def test_short_form_on_a_non_blog_page_fails_the_full_contract():
 
 # --- the id must come from the environment ----------------------------------------
 
-def test_unset_formspree_id_refuses_rather_than_matching_nothing(monkeypatch):
+def test_unset_formspree_id_refuses_rather_than_matching_nothing(monkeypatch, tmp_path):
     monkeypatch.delenv("PUBLIC_FORMSPREE_ID", raising=False)
     with pytest.raises(SystemExit) as e:
-        importlib.reload(F)
+        F.audit_html(page(GOOD), CONTACT)
     assert e.value.code == 2
 
 
-def test_endpoint_is_built_from_the_environment_not_a_literal(monkeypatch):
-    monkeypatch.setenv("PUBLIC_FORMSPREE_ID", "another-id")
-    importlib.reload(F)
-    assert F.ENDPOINT == "https://formspree.io/f/another-id"
-    assert SCRIPT.read_text(encoding="utf-8").count("formspree.io/f/{_FID}") == 1
+def test_the_id_is_never_a_literal_in_the_script():
+    src = SCRIPT.read_text(encoding="utf-8")
+    assert 'os.environ.get("PUBLIC_FORMSPREE_ID"' in src
+    assert src.count('formspree.io/f/{') == 1
+
+
+# --- routing comes from data/page-map.json ------------------------------------------
+
+def _page_map(tmp_path, pages):
+    p = tmp_path / "page-map.json"
+    p.write_text(json.dumps({"pages": pages}), encoding="utf-8")
+    return p
+
+
+def test_contract_routing_reads_kinds_from_the_page_map(tmp_path, monkeypatch):
+    pm = _page_map(tmp_path, [
+        {"url": "/a-rich-page/", "kind": "rich"},
+        {"url": "/a-blog-post/", "kind": "blog"},
+        {"url": "/a-location/", "kind": "location"},
+    ])
+    monkeypatch.setattr(F, "PAGE_MAP", pm)
+    F.contract_keys.cache_clear() if hasattr(F.contract_keys, "cache_clear") else None
+    F._kinds.cache_clear()
+    assert [k[0] for k in F.contract_keys("a-rich-page")] == [k[0] for k in F.KEYS]
+    assert [k[0] for k in F.contract_keys("a-blog-post")] == list(F.SHORT)
+    assert F.contract_keys("a-location") == []
+
+
+def test_pages_absent_from_the_map_fall_back_to_the_slug_heuristic(tmp_path, monkeypatch):
+    monkeypatch.setattr(F, "PAGE_MAP", _page_map(tmp_path, []))
+    F._kinds.cache_clear()
+    assert F.contract_keys("uk-locations/glasgow") == []
+    assert F.contract_keys("blog") == []
+    assert [k[0] for k in F.contract_keys("blog/a-post")] == list(F.SHORT)
+    assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
+
+
+def test_the_real_page_map_routes_the_contact_page_to_the_full_contract():
+    F._kinds.cache_clear()
+    assert [k[0] for k in F.contract_keys(CONTACT)] == [k[0] for k in F.KEYS]
 
 
 # --- Finding 1: CRITICAL zero-page PASS -------------------------------------------
