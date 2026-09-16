@@ -12,7 +12,10 @@ Four things are checked, because an SEO migration loses ranking to any of them:
                 failure: Foundation deliberately keeps two legacy in-body links verbatim,
                 and rewriting generated pages by hand is not the fix — the extractor's
                 rewrite map is, which is a controller decision.
-  WP leftovers— any surviving `wp-json`, in-href `/feed/`, `xmlrpc.php`,
+  shadowing   — a concrete rule preceded by a wildcard or placeholder rule that already
+                matches its `from` is dead configuration: the concrete rule can never fire,
+                so its intended target is silently not used.
+  WP leftovers— any surviving `wp-json`, root-relative in-href `/feed/`, `xmlrpc.php`,
                 `wp-content/uploads`, the old phone number or its placeholder means a page
                 still points at WordPress. `SITE_URL_PLACEHOLDER` is counted, not failed:
                 it is expected until the launch domain is set.
@@ -37,7 +40,10 @@ ASSET_EXTS = {".xml", ".txt", ".webp", ".png", ".jpg", ".jpeg", ".svg", ".ico", 
 # candidates with descriptors), so it is collected separately below.
 REF_RE = re.compile(r'(?:href|src|poster|data-src)\s*=\s*["\']([^"\']+)["\']', re.I)
 SRCSET_RE = re.compile(r'srcset\s*=\s*["\']([^"\']+)["\']', re.I)
-HREF_FEED_RE = re.compile(r'href\s*=\s*["\'][^"\']*/feed/[^"\']*["\']', re.I)
+# Anchored to root-relative hrefs so an external `https://partner.example/feed/` is not a
+# leftover, and only flagged when the path does not exist in dist — a future first-party
+# `/…/feed/` page would be a real page, not a WordPress remnant.
+HREF_FEED_RE = re.compile(r'href\s*=\s*["\'](/[^"\']*/feed/[^"\']*)["\']', re.I)
 
 SKIP_PREFIXES = ("#", "mailto:", "tel:", "javascript:", "//", "data:")
 
@@ -139,6 +145,26 @@ def page_refs(html_text):
     return out
 
 
+def shadowed_rules(rules):
+    """Concrete rules that an earlier wildcard/placeholder rule already matches.
+
+    First match wins, so such a rule is unreachable: its target is never used and editing
+    it has no effect. Dead configuration, reported with the rule that swallows it.
+    """
+    problems = []
+    for i, (src, dest) in enumerate(rules):
+        if not is_concrete(src):
+            continue
+        for earlier, earlier_dest in rules[:i]:
+            if is_concrete(earlier):
+                continue
+            if _rule_re(earlier).fullmatch(src):
+                problems.append("FAIL shadowed rule: %s -> %s is unreachable behind "
+                                "%s -> %s" % (src, dest, earlier, earlier_dest))
+                break
+    return problems
+
+
 def check_rules(rules, dist):
     """Per-rule verdicts. Returns (problems, examined).
 
@@ -159,6 +185,7 @@ def check_rules(rules, dist):
         onward = match_rule(dest, rules)
         if onward is not None:
             problems.append("FAIL chain: %s -> %s -> %s" % (src, dest, onward))
+    problems += shadowed_rules(rules)
     return problems, len(rules)
 
 
@@ -182,8 +209,10 @@ def check_pages(dist, rules):
         for token in LEFTOVERS:
             if token in text:
                 problems.append("FAIL WP leftover %s in %s" % (token, rel))
-        if HREF_FEED_RE.search(text):
-            problems.append("FAIL WP leftover /feed/ href in %s" % rel)
+        for ref in HREF_FEED_RE.findall(text):
+            cleaned = clean_ref(ref)
+            if cleaned and not exists(dist, cleaned):
+                problems.append("FAIL WP leftover /feed/ href %s in %s" % (cleaned, rel))
         placeholders += text.count(COUNT_ONLY)
     return problems, refs_seen, redirected, placeholders
 
@@ -203,13 +232,17 @@ HEADER = [
 def main(root=ROOT, dist=None):
     root = pathlib.Path(root)
     dist = pathlib.Path(dist) if dist else root / "dist"
+    if not (dist / "index.html").is_file():
+        print("FAIL dist missing or unbuilt (run npm run build)")
+        sys.exit(1)
     rules = load_rules(root)
 
     rule_problems, examined = check_rules(rules, dist)
     page_problems, refs, redirected, placeholders = check_pages(dist, rules)
     problems = rule_problems + page_problems
 
-    summary = ("examined %d redirects, %d internal refs; %d redirected refs; %d problems"
+    summary = ("examined %d redirects, %d internal refs (distinct per page); "
+               "%d redirected refs; %d problems"
                % (examined, refs, len(redirected), len(problems)))
 
     lines = list(HEADER)
