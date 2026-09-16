@@ -54,6 +54,9 @@ def repo(tmp_path, monkeypatch):
     _write(tmp_path, "data/locations.json", json.dumps([{"slug": "blue-staffies-glasgow"}]))
     _write(tmp_path, "data/puppies.json", json.dumps([{"slug": "roman"}, {"slug": "byrd"}]))
     _commit(tmp_path, "2026-01-05")
+    # The module anchors every path to ROOT, not to the cwd; point ROOT at the fixture.
+    monkeypatch.setattr(G, "ROOT", tmp_path)
+    monkeypatch.setattr(G, "OUT", tmp_path / "data" / "page-dates.json")
     monkeypatch.chdir(tmp_path)
     return tmp_path
 
@@ -144,3 +147,42 @@ def test_the_summary_line_reports_dated_built_and_undated(repo, capsys):
 def test_dry_run_writes_nothing(repo):
     G.main(["--dry-run"])
     assert not (repo / "data" / "page-dates.json").exists()
+
+
+def test_it_runs_from_any_cwd_because_every_path_is_anchored_to_root(repo, monkeypatch, tmp_path):
+    """Relative globs and a bare `git log` made the map a fact about the shell's cwd. Run
+    from elsewhere it produced zero routes and said so as if the repo were empty."""
+    elsewhere = tmp_path.parent / "elsewhere"
+    elsewhere.mkdir(exist_ok=True)
+    monkeypatch.chdir(elsewhere)
+    routes, _, _ = G.build()
+    assert "/" in routes and "/available-puppies/roman/" in routes
+
+
+def test_check_on_a_malformed_committed_map_cannot_run(repo, capsys):
+    """A corrupt page-dates.json is not a stale map: nothing was compared. Exit 2."""
+    (repo / "data" / "page-dates.json").write_text('{"routes": ')
+    assert G.main(["--check"]) == 2
+    assert "unreadable" in capsys.readouterr().out
+
+
+def test_check_reports_staleness_as_exit_1(repo):
+    (repo / "data" / "page-dates.json").write_text(json.dumps({"routes": {}}))
+    assert G.main(["--check"]) == 1
+
+
+def test_a_write_that_fails_leaves_the_previous_map_intact(repo, monkeypatch):
+    """Atomic write: the map is committed, so a half-written file is a corrupted record in
+    git, not a retry."""
+    out = repo / "data" / "page-dates.json"
+    out.write_text('{"routes": {"/old/": {}}}')
+    monkeypatch.setattr(G.os, "replace", lambda *a: (_ for _ in ()).throw(OSError("disk full")))
+    with pytest.raises(OSError):
+        G.main([])
+    assert json.loads(out.read_text())["routes"] == {"/old/": {}}
+    assert not list((repo / "data").glob("*.tmp*")), "the temp file must be cleaned up"
+
+
+def test_check_and_dry_run_are_mutually_exclusive(repo):
+    with pytest.raises(SystemExit):
+        G.main(["--check", "--dry-run"])

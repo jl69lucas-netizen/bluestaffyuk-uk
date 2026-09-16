@@ -40,13 +40,14 @@ import functools
 import http.server
 import json
 import pathlib
-import re
 import socketserver
 import statistics
 import subprocess
 import sys
+import tempfile
 import threading
 import os
+import urllib.error
 import urllib.parse
 import urllib.request
 
@@ -66,6 +67,9 @@ IGNORE_AUDITS = {"valid-source-maps"}
 # (project 6), so this finds nothing today and is wired so it will.
 EDGE_TYPES = {"Script", "Font", "Stylesheet"}
 PORT = 4399
+# One page, a few runs. Long enough for a cold Chrome start, short enough that a hung
+# browser fails the command rather than the afternoon.
+LH_TIMEOUT = 300
 
 
 class CannotRun(RuntimeError):
@@ -135,13 +139,19 @@ def psi_url(url, profile, key=""):
 
 
 def run_psi(url, out, profile):
+    """The PSI record, or CannotRun. Every failure here — HTTP error, DNS, timeout, an
+    error page where JSON was expected, a body with no lighthouseResult — means no
+    measurement was taken, which is exit 2 and never a perf regression."""
     try:
         with urllib.request.urlopen(psi_url(url, profile, os.environ.get("PSI_API_KEY", "")), timeout=180) as r:
             body = json.load(r)
+        report = body["lighthouseResult"]
     except urllib.error.HTTPError as e:
         raise CannotRun(f"PSI API {e.code}: {e.read()[:300].decode(errors='replace')}\n"
                         "Keyless quota is per day; set PSI_API_KEY, or run pagespeed.web.dev by hand.")
-    report = body["lighthouseResult"]
+    except (urllib.error.URLError, OSError, ValueError, KeyError) as e:
+        raise CannotRun(f"PSI request to {url} produced no usable report: {e!r}\n"
+                        "Keyless quota is per day; set PSI_API_KEY, or run pagespeed.web.dev by hand.")
     pathlib.Path(out).write_text(json.dumps(report))
     return report
 
@@ -151,7 +161,11 @@ def run_lighthouse(url, out, profile):
         raise CannotRun("node_modules/.bin/lighthouse missing — `npm i` (devDependency lighthouse@13.4.1).")
     cmd = [str(LH_BIN), url, "--quiet", "--output=json", f"--output-path={out}",
            f"--config-path={CONFIGS[profile]}", "--chrome-flags=--headless=new --no-sandbox"]
-    res = subprocess.run(cmd, capture_output=True, text=True)
+    try:
+        res = subprocess.run(cmd, capture_output=True, text=True, timeout=LH_TIMEOUT)
+    except subprocess.TimeoutExpired:
+        raise CannotRun(f"lighthouse timed out after {LH_TIMEOUT}s on {url} — a headless Chrome "
+                        "that never exits is not a failing page; nothing was measured.")
     if res.returncode != 0 or not pathlib.Path(out).exists():
         raise CannotRun(f"lighthouse failed:\n{res.stderr[-1500:]}")
     return json.loads(pathlib.Path(out).read_text())
@@ -222,12 +236,15 @@ def main(argv=None):
 
     reports = []
     tag = f"{slug or 'home'}--{profile}{'--psi' if a.psi else '--live' if a.live else ''}"
+    # Raw Lighthouse output is scratch: the judged record is what PERF_DIR keeps. A fixed
+    # /tmp name would collide between concurrent runs and outlive them either way.
     try:
-        for i in range(a.runs):
-            runner = run_psi if a.psi else run_lighthouse
-            reports.append(runner(url, f"/tmp/lh-{tag}{'-psi' if a.psi else ''}-{i}.json", profile))
-            if a.runs > 1:
-                print(f"  run {i + 1}/{a.runs} done")
+        with tempfile.TemporaryDirectory(prefix="perf-audit-") as scratch:
+            for i in range(a.runs):
+                runner = run_psi if a.psi else run_lighthouse
+                reports.append(runner(url, str(pathlib.Path(scratch) / f"lh-{tag}-{i}.json"), profile))
+                if a.runs > 1:
+                    print(f"  run {i + 1}/{a.runs} done")
     except CannotRun as e:
         print(e, file=sys.stderr)
         return 2
@@ -240,14 +257,15 @@ def main(argv=None):
     failed = judge(reports)
     median = {}
     for cat, floor in THRESHOLDS.items():
-        scores = [((r["categories"].get(cat) or {}).get("score") or 0) for r in reports]
+        scores = [((r.get("categories") or {}).get(cat) or {}).get("score") or 0 for r in reports]
         median[cat] = statistics.median(scores)
         spread = "" if len(scores) == 1 else f"  (runs: {', '.join(str(round(s * 100)) for s in sorted(scores))})"
         print(f"    {'FAIL' if cat in failed else 'PASS'}  {cat:17s} {round(median[cat] * 100):3d}  floor 100{spread}")
 
     metrics = {}
     for m in ("cumulative-layout-shift", "largest-contentful-paint", "total-blocking-time"):
-        vals = [r["audits"][m]["numericValue"] for r in reports if m in r["audits"]]
+        vals = [v for v in (((r.get("audits") or {}).get(m) or {}).get("numericValue") for r in reports)
+                if isinstance(v, (int, float))]
         if vals:
             metrics[m] = round(statistics.median(vals), 4)
             print(f"    {m}: median {metrics[m]}  min {round(min(vals), 4)}  max {round(max(vals), 4)}")
@@ -266,9 +284,10 @@ def main(argv=None):
                   "feature off in the host's dashboard and purge the cache; it is a toggle, not code.")
 
     print("\n  Failing audits (worst run):")
-    worst = min(reports, key=lambda r: sum(((r["categories"].get(k) or {}).get("score") or 0) for k in THRESHOLDS))
+    worst = min(reports, key=lambda r: sum(((r.get("categories") or {}).get(k) or {}).get("score") or 0
+                                           for k in THRESHOLDS))
     shown = 0
-    for aid, aud in worst["audits"].items():
+    for aid, aud in (worst.get("audits") or {}).items():
         if aid in IGNORE_AUDITS:
             continue
         score = aud.get("score")

@@ -10,8 +10,14 @@
 # Exit code 0 = all critical checks passed, 1 = at least one critical failure.
 # Designed for BlueStaffyUK (Astro -> static dist/; no host until project 6).
 # =============================================================================
+# -e is deliberately NOT set: a sweep whose job is to report every failure must keep going
+# past the first one. Each check records its own verdict in $FAIL, and the RESULT block is
+# what decides the exit code.
 set -uo pipefail
 cd "$(dirname "$0")/.." || exit 1
+
+BUILD_LOG=$(mktemp -t bsuk-build)
+trap 'rm -f "$BUILD_LOG"' EXIT
 
 DOMAIN="${SITE_URL:-}"
 RUN_BUILD=1
@@ -99,12 +105,12 @@ python3 scripts/marker_check.py || FAIL=1
 hdr "3. ASTRO BUILD"
 # -----------------------------------------------------------------------------
 if [ $RUN_BUILD -eq 1 ]; then
-  if npm run build > /tmp/bsuk-build.log 2>&1; then
-    PAGES=$(grep -oE '[0-9]+ page\(s\) built' /tmp/bsuk-build.log | tail -1)
+  if npm run build > "$BUILD_LOG" 2>&1; then
+    PAGES=$(grep -oE '[0-9]+ page\(s\) built' "$BUILD_LOG" | tail -1)
     pass "Build succeeded — ${PAGES:-completed}"
   else
-    fail "Build FAILED — see /tmp/bsuk-build.log"
-    tail -15 /tmp/bsuk-build.log | sed 's/^/      /'
+    fail "Build FAILED — last 15 lines below (the full log is a temp file, removed on exit)"
+    tail -15 "$BUILD_LOG" | sed 's/^/      /'
   fi
 else
   warn "Build skipped (--no-build)"

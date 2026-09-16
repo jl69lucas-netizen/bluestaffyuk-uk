@@ -1953,7 +1953,6 @@ def test_board_renders_the_schema_plan():
 # categories. Local records gate the release; the PSI record (only possible after deploy)
 # is pending until measured and FAILS the next release once it reads under 100.
 
-# is pending until measured and FAILS the next release once it reads under 100.
 
 def _perf(tmp_path, name, **kw):
     rec = {"failed": [], "edge_blocking": [], "dist_mtime": 2000.0, "measured_at": "2026-09-13T20:00:00+00:00",

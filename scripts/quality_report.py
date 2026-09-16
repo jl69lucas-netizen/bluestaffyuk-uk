@@ -111,11 +111,27 @@ def judgment_overflow(index: dict):
     return (n, cap) if n > cap else None
 
 
+def _read(path: pathlib.Path, default):
+    try:
+        return json.loads(path.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return default
+
+
 def load_scorecards(d: pathlib.Path = SCORECARDS) -> list:
     """Most recent card per slug, newest first."""
     latest = {}
     for p in sorted(d.glob("*.json")):
-        c = json.loads(p.read_text())
+        # A truncated or slug-less card is skipped OUT LOUD. Crashing would take down the
+        # one report people run when things are already broken; skipping in silence would
+        # quietly shrink the leading indicator, which is worse than either.
+        c = _read(p, None)
+        if c is None:
+            print(f"   skipping unreadable scorecard {p}")
+            continue
+        if not c.get("slug"):
+            print(f"   skipping scorecard with no slug {p}")
+            continue
         prev = latest.get(c["slug"])
         if prev is None or c.get("date", "") >= prev.get("date", ""):
             latest[c["slug"]] = c
@@ -161,13 +177,6 @@ def trend(ledger: dict):
         return (w[-1], None)
     key = "page_rate" if "page_rate" in w[-1] and "page_rate" in w[-2] else "rate"
     return (w[-1], w[-1][key] - w[-2][key])
-
-
-def _read(path: pathlib.Path, default):
-    try:
-        return json.loads(path.read_text())
-    except (FileNotFoundError, json.JSONDecodeError):
-        return default
 
 
 def main(argv=None) -> int:

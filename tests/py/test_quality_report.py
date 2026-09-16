@@ -193,3 +193,17 @@ def test_a_present_rule_index_still_reports_the_cap(monkeypatch, capsys, tmp_pat
     monkeypatch.setattr(Q, "RULE_INDEX", idx)
     assert Q.main([]) == 0
     assert "1 judgment rules within cap" in capsys.readouterr().out
+
+
+def test_a_malformed_scorecard_is_skipped_with_a_notice_not_a_crash(tmp_path, capsys):
+    """One unreadable card must not take the whole report down. The report is what people
+    run when things are already broken; that is the worst possible moment for it to raise."""
+    d = tmp_path / "scorecards"
+    d.mkdir()
+    (d / "good.json").write_text(json.dumps({"slug": "a", "date": "2026-09-01", "total": 1}))
+    (d / "truncated.json").write_text('{"slug": "b", "date"')
+    (d / "no-slug.json").write_text(json.dumps({"date": "2026-09-02", "total": 4}))
+    cards = Q.load_scorecards(d)
+    assert [c["slug"] for c in cards] == ["a"]
+    out = capsys.readouterr().out
+    assert "truncated.json" in out and "no-slug.json" in out

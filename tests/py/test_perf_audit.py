@@ -7,6 +7,10 @@ rather than hard-coding a domain BSUK does not have.
 """
 import importlib.util
 import json
+import subprocess
+import urllib.error
+
+import pytest
 import os
 import pathlib
 
@@ -127,3 +131,69 @@ def test_parse_only_judges_saved_reports_without_running_a_browser(tmp_path, cap
 
 def test_parse_only_on_an_unreadable_report_cannot_run(tmp_path, capsys):
     assert pa.parse_only([str(tmp_path / "absent.json")]) == 2
+
+
+# --- cannot-run paths: every way the gate fails to produce a measurement is exit 2 -------
+# The distinction is the whole point of the two codes. A hung Lighthouse, a DNS failure or
+# a PSI error page are all "no measurement was taken"; reporting any of them as exit 1
+# would enter a regression in the record for a run that never happened.
+
+def test_a_hung_lighthouse_cannot_run_rather_than_hanging_forever(monkeypatch, tmp_path):
+    """Without a timeout the gate waits for a headless Chrome that may never exit."""
+    def hang(cmd, **kw):
+        assert kw.get("timeout"), "lighthouse must be given a timeout"
+        raise subprocess.TimeoutExpired(cmd, kw["timeout"])
+    monkeypatch.setattr(pa.subprocess, "run", hang)
+    monkeypatch.setattr(pa, "LH_BIN", _touch(tmp_path / "lighthouse"))
+    with pytest.raises(pa.CannotRun) as e:
+        pa.run_lighthouse("http://127.0.0.1:4399/", str(tmp_path / "o.json"), "desktop")
+    assert "timed out" in str(e.value)
+
+
+def test_a_network_failure_on_psi_cannot_run(monkeypatch, tmp_path):
+    def boom(*a, **kw):
+        raise urllib.error.URLError("name or service not known")
+    monkeypatch.setattr(pa.urllib.request, "urlopen", boom)
+    with pytest.raises(pa.CannotRun):
+        pa.run_psi("https://x.test/", str(tmp_path / "o.json"), "mobile")
+
+
+def test_a_malformed_psi_body_cannot_run_rather_than_crashing(monkeypatch, tmp_path):
+    class _R:
+        def read(self):
+            return b"<html>not json</html>"
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+    monkeypatch.setattr(pa.urllib.request, "urlopen", lambda *a, **kw: _R())
+    with pytest.raises(pa.CannotRun):
+        pa.run_psi("https://x.test/", str(tmp_path / "o.json"), "mobile")
+
+
+def test_a_psi_body_without_a_lighthouse_result_cannot_run(monkeypatch, tmp_path):
+    class _R:
+        def read(self):
+            return json.dumps({"error": {"message": "quota"}}).encode()
+        def __enter__(self):
+            return self
+        def __exit__(self, *a):
+            return False
+    monkeypatch.setattr(pa.urllib.request, "urlopen", lambda *a, **kw: _R())
+    with pytest.raises(pa.CannotRun):
+        pa.run_psi("https://x.test/", str(tmp_path / "o.json"), "mobile")
+
+
+def test_parse_only_survives_a_report_with_no_categories_block(tmp_path, capsys):
+    """A truncated or wrong-shaped report must read as 0 (FAIL), never as a KeyError.
+    judge() was already defensive; the PRINT path was not, so the same report judged fine
+    and then crashed on the way to saying so."""
+    p = tmp_path / "r.json"
+    p.write_text(json.dumps({"lighthouseVersion": "13.4.1"}))
+    assert pa.parse_only([str(p)]) == 1
+    assert "PERF GATE FAIL" in capsys.readouterr().out
+
+
+def _touch(p):
+    p.write_text("#!/bin/sh\n")
+    return p
