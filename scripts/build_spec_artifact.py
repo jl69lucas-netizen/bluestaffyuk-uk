@@ -6,6 +6,9 @@ TITLE = sys.argv[3] if len(sys.argv) > 3 else 'BSUK Foundation Spec'
 EYEBROW = sys.argv[4] if len(sys.argv) > 4 else 'BlueStaffyUK rebuild · Project 1 of 6'
 HEADING = sys.argv[5] if len(sys.argv) > 5 else 'Foundation design spec'
 COPY_HEAD = sys.argv[6] if len(sys.argv) > 6 else 'BlueStaffyUK Rebuild — Project 1 of 6: Foundation'
+STATUS = sys.argv[7] if len(sys.argv) > 7 else 'status: approved'
+DATE = sys.argv[8] if len(sys.argv) > 8 else '2026-09-15'
+REL = sys.argv[9] if len(sys.argv) > 9 else 'docs/superpowers/specs/2026-09-15-foundation-design.md'
 src = SRC.read_text()
 out = OUT
 out.parent.mkdir(parents=True, exist_ok=True)
@@ -65,7 +68,7 @@ section.sec h2{{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22p
 </style>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">{EYEBROW}</p><h1 class="title">{HEADING}</h1></div>
-<div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-15</span><br>docs/superpowers/specs/2026-09-15-foundation-design.md</div></header>
+<div class="meta"><span class="pill">{STATUS}</span> <span class="pill">{DATE}</span><br>{REL}</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
 <div id="doc"></div>
