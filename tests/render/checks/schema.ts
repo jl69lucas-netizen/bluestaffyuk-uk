@@ -89,7 +89,7 @@ register({
     // A Product with NO `offers` is a descriptive reference, not a listing — the hub's
     // CollectionPage carries `about: {@type: Product}` to name what the page is about, and
     // counting it as a second listing would report a correct page as broken. Measured on
-    // CAG's dist/african-grey-parrots-for-sale before the predicate was chosen.
+    // the source project's widest for-sale page in dist/ before the predicate was chosen.
     const examined = products.length;
     const defects = [];
 
@@ -128,7 +128,7 @@ register({
       } else if (ctx.pageType === 'puppy' && type === 'AggregateOffer') {
         // A single puppy is a single Offer. AggregateOffer is the litter/hub page's shape
         // and on a one-puppy page it advertises a price range that does not exist.
-        // (Ported from CAG's cag-bird-listing-page rule; `bird` there is `puppy` here.)
+        // (Ported from the source project's listing-page rule; its animal noun is `puppy` here.)
         badOffer.push(`${name} uses AggregateOffer on a single-puppy page`);
       }
     }

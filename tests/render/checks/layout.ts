@@ -160,7 +160,7 @@ register({
       //     341x62 <label class="inq-checkbox-item"> is activated by clicking anywhere
       //     in the label, so the effective target is the label — measuring the raw input
       //     reports a defect that no user can experience. Measured on
-      //     /african-grey-parrot-care-guide/ and /african-grey-parrot-health-guarantee/,
+      //     the source project's care-guide and health-guarantee pages,
       //     where all 12 flagged controls were 13x13 radios and checkboxes wrapped in
       //     labels between 86x47 and 341x62. "Enlarge the checkbox" would have been a
       //     design change bought for zero accessibility gain.
@@ -290,7 +290,7 @@ register({
       const borderPx = parseFloat(cs.borderTopWidth) || 0;
       const barPx = parseFloat(before.height) || 0;
       const hasBar = before.content !== 'none' && barPx > 0;
-      const hasSeam = !!strip.querySelector(':scope > .cag-seam, :scope > .seam-wrap, :scope > .seam');
+      const hasSeam = !!strip.querySelector(':scope > .bsuk-seam, :scope > .seam-wrap, :scope > .seam');
       return { examined: 1, hasTone, hasRule: borderPx > 0 || hasBar || hasSeam };
     });
 
@@ -379,7 +379,7 @@ register({
 });
 
 /**
- * 2026-09-13 — PSI measured CLS 0.266 on /african-grey-parrots-for-sale-near-me/ while every
+ * 2026-09-13 — PSI measured CLS 0.266 on the source project's widest for-sale page while every
  * local Lighthouse run read 0. `.hero-field{margin-left:auto}` made a grid item shrink-wrap:
  * until the hero photo arrived its only max-content was the tile chips (228px at 412), so the
  * 2:1 photo box was 114px tall, then grew to 190 on load and pushed the hero copy down 76px.
@@ -400,7 +400,7 @@ register({
   describe: 'nothing in the first viewport may move or resize when above-the-fold images finish loading',
   minExamined: 0,
   async run(page: Page, viewport: number): Promise<CheckResult> {
-    await page.route('**/__cag_pending_image__/**', () => {
+    await page.route('**/__bsuk_pending_image__/**', () => {
       /* never fulfilled: the clone stays in the pending state for the whole measurement */
     });
     try {
@@ -431,7 +431,7 @@ register({
           clone.querySelectorAll('source').forEach((s) => s.remove());
           cimg.removeAttribute('srcset');
           cimg.removeAttribute('loading');
-          cimg.src = `/__cag_pending_image__/${i}.webp`;
+          cimg.src = `/__bsuk_pending_image__/${i}.webp`;
           host.replaceWith(clone);
           swaps.push([host, clone]);
         });
@@ -464,7 +464,7 @@ register({
           : [],
       };
     } finally {
-      await page.unroute('**/__cag_pending_image__/**');
+      await page.unroute('**/__bsuk_pending_image__/**');
     }
   },
 });

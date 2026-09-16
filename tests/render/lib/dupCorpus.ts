@@ -8,10 +8,10 @@ export const REPO = resolve(here, '../../..');
 /**
  * The whitelist is READ FROM `scripts/dup_content_audit.py`, never copied.
  *
- * That file's list is the only tuned one this project has: it was built by working
- * through real reports and encodes exactly what CLAUDE.md says may legitimately repeat
- * across siblings — the shipping cost line, doc-badge enumerations, the counter strip,
- * the CITES notice, real reviews. Forking it into TypeScript would create two lists that
+ * That file's list is the only tuned one this project has: it was measured on dist/ and
+ * encodes exactly what CLAUDE.md says may legitimately repeat across siblings — the
+ * delivery band, the deposit line, the footer columns, the breadcrumb, the CTA band and
+ * the litter-card grid. Forking it into TypeScript would create two lists that
  * agree today and drift the first time either is tuned, and the drift would show up as a
  * check reporting a mandated line as a defect.
  *
@@ -30,7 +30,8 @@ export function loadWhitelist(): string[] {
   for (const m of block.matchAll(/"([^"]{8,})"|'([^']{8,})'/g)) {
     out.push((m[1] ?? m[2]).toLowerCase());
   }
-  if (out.length < 10) {
+  const FLOOR = 10; // ← 13 entries measured in Task 15 Step 1; floor kept at 10 headroom
+  if (out.length < FLOOR) {
     throw new Error(
       `parsed only ${out.length} whitelist entries from dup_content_audit.py — refusing to ` +
         `run with a near-empty whitelist, which would report every mandated line as a defect`,
@@ -45,7 +46,7 @@ export function loadWhitelist(): string[] {
  * An apostrophe is part of a word, so "we'd" is ONE token on both sides. Until 2026-09-11 this
  * replaced every other character with a space, apostrophe included, and read "we d" — so a
  * shared sentence of 11 words with one contraction was 12 here (fires) and 11 in Python
- * (silent), measured on dist/ between the eggs and congo for-sale pages. A curly ’ is outside
+ * (silent), measured on the source project's two for-sale pages, 2026-09-11. A curly ’ is outside
  * the class on both sides, so "we’d" is two tokens in both. Whitelist stems go through this
  * same function, as Python's WHITELIST_STEMS go through its findall.
  */
@@ -93,7 +94,7 @@ export interface Target {
 
 /**
  * Every built page in a dist/ directory, keyed exactly as `scripts/_slugs.py` page_key keys
- * it: `dist/index.html` → "index", `dist/available/roys/index.html` → "available/roys".
+ * it: `dist/index.html` → "index", `dist/available-puppies/roman/index.html` → "available-puppies/roman".
  */
 export function distSlugs(dist: string = join(REPO, 'dist')): string[] {
   const out: string[] = [];
@@ -113,8 +114,9 @@ export function distSlugs(dist: string = join(REPO, 'dist')): string[] {
  *
  * Until 2026-09-11 this was "targets of the same page type". targets.json holds a dozen
  * for-sale targets but one each of every other type, so six page types compared against
- * nothing (examined=0) while the Python gate found 481 crossovers on 70 pages — bird-card
- * copy on care, blog and home pages, location lines, credential sentences on available/*.
+ * nothing (examined=0) while the Python gate found, on BSUK's own build (2026-09-17),
+ * 152 crossovers across 49 pages — the templated city-page about and health blocks, the
+ * litter price grid, and buying-guide copy shared with the hub.
  * Every one of those partners is a page no target is paired with, so the fix is the corpus,
  * not a longer target list. `targets` is kept in the signature so the meta gate can prove
  * the page-type filter has not crept back.

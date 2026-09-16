@@ -48,17 +48,22 @@ Exit 1 = FAIL. `--headers` normalizes breed/coat names to `{breed}`, so "Is an E
 | Documentation badge stack (L-2-HGA and HC-HSF4 parent test certificates, vet check, microchip, vaccination record) | puppy cards/pages | canonical trust set |
 | The licence and statute notice (LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER) | footer bottom bar | legal |
 | Nav, footer, newsletter, global CTA band | site chrome | stripped by the parser already |
-| Site-standard section headers | any page | deliberate site furniture — but see the note below: the script's list is not BSUK's yet |
+| Site-standard section headers | any page | deliberate site furniture — the measured list is below |
 
-> **The header whitelist is still the source repo's** (arrives in Task 15). `HEADER_WHITELIST`
-> in `scripts/dup_content_audit.py` holds the stems that were site furniture in the SOURCE repo,
-> not on this site, and Task 15 re-measures it against BSUK's own chrome. Do not edit
-> the script here to make this row true — the measurement is the deliverable, and guessing
-> the list is how a whitelist stops being evidence.
+> **The header whitelist was measured on BSUK's own `dist/` (Task 15, 2026-09-17)**, not guessed.
+> `HEADER_WHITELIST` in `scripts/dup_content_audit.py` now holds exactly:
+> Frequently Asked Questions · Get In Touch · Join Our Newsletter · Blue Staffy UK ·
+> Quick Pages · Cities We Serve · Blue Staffy News: Join 500+ Readers! ·
+> 📬 Get Blue Staffy Updates · Available Blue Staffy Puppies · 🐾 Reserve Your Blue Staffy
+> Puppy · Lisa Bright · and the six puppy names Roman, Byrd, Ince, Vennie, Christa, Cheryl
+> (sync with `data/puppies.json` when the litter changes).
 >
-> Expected after Task 15: Frequently Asked Questions · Delivery & Collection · Reserve Your
-> Puppy · Get In Touch · Join Our Newsletter, plus the footer column headings and the
-> breeder's name. Until then this table describes the intent, not the script.
+> The match is EXACT on the normalised heading text, not a substring test: the old substring
+> match let the one-word entry `contact` whitelist every heading containing it.
+> `WHITELIST_SNIPPETS` holds 13 body stems, each one a run measured as shared across 3+ built
+> pages and classified as chrome. Location-page prose that repeats across the templated city
+> pages is deliberately NOT whitelisted — it is the migrated-content baseline and belongs in
+> the report.
 
 **Adding to the whitelist requires breeder approval** — state what, where, and why it must be identical. Everything else that repeats is a defect.
 

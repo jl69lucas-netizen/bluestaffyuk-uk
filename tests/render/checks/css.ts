@@ -185,8 +185,8 @@ register({
             }
           }
           if (matched) continue;
-          // A STATE selector matches nothing until the state happens. `.cag-fab.visible`,
-          // `.cag-sheet-scrim.open` and `.nav-dropdown-btn[aria-expanded="true"] +
+          // A STATE selector matches nothing until the state happens. `.bsuk-fab.visible`,
+          // `.bsuk-sheet-scrim.open` and `.nav-dropdown-btn[aria-expanded="true"] +
           // .nav-dropdown` are toggled by JS and were reported as dead on every page of
           // the site by the first version — the component exists, its state variant is
           // simply not active while a static probe looks.

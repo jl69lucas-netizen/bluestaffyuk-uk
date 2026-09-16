@@ -603,17 +603,17 @@ def test_gate_h5_h6_minimums_are_warn_on_home_and_location():
 
 
 def test_gate_whitelist_matches_whole_tokens_not_substrings():
-    """"evie" is a puppy-name whitelist entry and it lives inside "Review". Substring
+    """"ince" is a puppy-name whitelist entry and it lives inside "Since". Substring
     matching cleared a real crossover; whole-token matching keeps the FAIL."""
     b = _approved(MIN_BOARD)
-    b["sections"][0]["tree"][0]["heading"] = "Our Honest Review of Every Puppy We Raise"
+    b["sections"][0]["tree"][0]["heading"] = "Since 2014 We Have Raised Every Puppy At Home"
     b["approval"]["record_hash"] = PB.record_hash(b)
-    live = {"/sibling/": ["Our Honest Review of Every Puppy We Raise"]}
+    live = {"/sibling/": ["Since 2014 We Have Raised Every Puppy At Home"]}
     msgs = [x["msg"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live=live, stage="build")
             if x["check"] == "header-collision"]
-    assert any("Honest Review" in m for m in msgs), msgs
-    assert PB._whitelisted("Bery") and PB._whitelisted("Frequently Asked Questions")
-    assert not PB._whitelisted("Our Honest Review of Every Puppy We Raise")
+    assert any("Since 2014" in m for m in msgs), msgs
+    assert PB._whitelisted("Ince") and PB._whitelisted("Frequently Asked Questions")
+    assert not PB._whitelisted("Since 2014 We Have Raised Every Puppy At Home")
 
 
 def test_gate_fails_when_the_header_precheck_examined_zero_live_pages():

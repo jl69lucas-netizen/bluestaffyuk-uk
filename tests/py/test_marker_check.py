@@ -155,7 +155,7 @@ def test_a_malformed_manifest_fails_with_task_1s_message(tmp_path):
         scan_roots(repo)
 
 
-@pytest.mark.xfail(reason="tests/render/ and dup_content_audit.py are re-based in Tasks 14-16", strict=True)
 def test_the_real_repo_is_clean():
-    """The gate this project exists to satisfy. Red until Task 16."""
+    """The gate this project exists to satisfy. Green since Task 15 re-based tests/render/
+    and scripts/dup_content_audit.py; targets.json (Task 16) carried no marker."""
     assert main() == 0

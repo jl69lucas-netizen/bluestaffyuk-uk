@@ -237,7 +237,7 @@ register({
           // PAGE DEFECT; raise maxMs before touching the page"). Failing a BLOCKING gate on
           // that verdict is incoherent, and it was measured doing exactly that on 2026-08-02:
           // three consecutive runs of the same commit against the same dist/ failed on three
-          // different page/viewport pairs — adoption-cost@375, then timneh@375 and
+          // different page/viewport pairs — the pricing page@375, then a listing page@375 and
           // hand-raised@768 — each time one link out of eighteen.
           //
           // So keep waiting instead of guessing. The scroll is already in flight, so a second

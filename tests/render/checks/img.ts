@@ -14,7 +14,7 @@ register({
     /**
      * A still-loading image is NOT a broken image, and this check used to call them the
      * same thing. `settlePage` caps its wait at 3s; on the heaviest page in the suite
-     * (congo-pair, 58 images) the eager `decoding="async"` hero candidate was still in
+     * (the source project's image-heaviest listing page, 58 images) the eager `decoding="async"` hero candidate was still in
      * flight at that cap and got reported as "failed to decode" — wording that reads as
      * a 404. It failed at vp375 only, because `sizes` resolves to ~170px there and that
      * is the sole viewport selecting the 230w candidate; the same page passed at 768 and

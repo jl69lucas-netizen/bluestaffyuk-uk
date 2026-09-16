@@ -34,7 +34,7 @@ export interface CheckResult {
    * `querySelectorAll('*').length` reports ~1,100 "examined" on a page where
    * it evaluated exactly one expression — so if that one expression is wrong,
    * the check reports clean forever and every zero-examined guard downstream
-   * still passes. Measured on the congo-pair page: the first draft of
+   * still passes. Measured on the source project's image-heaviest listing page: the first draft of
    * `layout-no-horizontal-overflow` reported examined=1116 having box-tested 0
    * elements. Count what you actually judged.
    */

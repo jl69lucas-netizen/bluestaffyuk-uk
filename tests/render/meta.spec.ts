@@ -159,9 +159,9 @@ test.describe('dup-no-sibling-crossover sees a crossover adjacent to a whitelist
     expect(r.defects.length, 'a crossover beside a whitelisted line must still fire').toBe(1);
     expect(r.defects[0].count, 'one finding per non-whitelisted segment: A before, B after').toBe(2);
     const msg = r.defects[0].message;
-    expect(msg).toContain('18w vs /sibling-hand-raised-african-grey-texas/ "before a chick leaves');
-    expect(msg).toContain('17w vs /sibling-hand-raised-african-grey-texas/ "tell us which bird');
-    expect(msg, 'the whitelisted line is not the defect').not.toContain('ships nationwide');
+    expect(msg).toContain('18w vs /sibling-staffy-puppies-glasgow/ "before a puppy leaves');
+    expect(msg).toContain('17w vs /sibling-staffy-puppies-glasgow/ "tell us which puppy');
+    expect(msg, 'the whitelisted line is not the defect').not.toContain('defra approved transport');
   });
 });
 
@@ -228,7 +228,7 @@ test.describe('dup-no-sibling-crossover judges every page against the whole buil
  *
  * Found 2026-09-11: scripts/dup_content_audit.py tokenises with [a-z0-9$']+, so "we'd" is one
  * word; normalise() replaced the apostrophe with a space and read "we d". On the same dist/,
- * "answered the same honest way we'd answer them on the phone" — shared by the eggs and congo
+ * "answered the same honest way we'd answer them on the phone" — shared by the source
  * for-sale pages — was 12 words here (fires) and 11 in Python (silent). The corpus side read
  * raw HTML without decoding entities, so an apostrophe Astro emits as &#39; was a third token
  * shape ("we 39 d") that matched neither.
@@ -257,7 +257,7 @@ test.describe('dup-no-sibling-crossover tokenises exactly like dup_content_audit
       String(minWords),
     ) as string[];
   const SHARED_11 = "answered the same honest way we'd answer them on the phone";
-  const SHARED_12 = "every hatch record we've kept for a chick goes home with it";
+  const SHARED_12 = "every vet record we've kept for a puppy goes home with it";
 
   test('a run that is 12 words only because an apostrophe split a word is not a crossover', async ({
     page,
@@ -298,7 +298,7 @@ test.describe('dup-no-sibling-crossover tokenises exactly like dup_content_audit
       "'quoted words' and rock'n'roll",
       "Mark & Teri's o'clock call",
       '$1,500–$3,500 · 72-hour / 3-day guarantee',
-      'Timneh/Congo 1st  clutch\tnaïve ÉCLAT',
+      'Blue/Brindle 1st  litter\tnaïve ÉCLAT',
       "a''b ' $ -- ",
       '',
     ];
@@ -740,7 +740,7 @@ test.describe('nav-jump-target-lands names the direction of failure', () => {
 /**
  * A landing must be a fact about the page's geometry, never about animation timing.
  *
- * Measured 2026-09-13: /african-grey-parrots-for-sale-near-me/ @1280 failed once with
+ * Measured 2026-09-13 on the source project's widest for-sale page @1280: it failed once with
  * `#mt-dallas@7373px` (its raw document offset is ~7394px, so the page had barely moved),
  * then passed twice on the identical dist/. waitForScrollSettle's equal-read and
  * start-grace logic was already in place and still lost the race to the site's
@@ -1190,7 +1190,7 @@ test.describe('every registered family is actually wired into targets.json', () 
  *   - `complete === false` — still in flight when we happened to look.
  *
  * The second is a fact about the run, not the page. On 2026-08-08 it failed
- * `congo-african-grey-parrot-pair-for-sale` at **vp375 only**, on a 6,294-byte WebP that
+ * the source project's paired-listing page at **vp375 only**, on a 6,294-byte WebP that
  * decodes perfectly to 230x144 — that page has 58 images, the file is the eager
  * `decoding="async"` hero, and 375px is the one viewport whose `sizes` (~170px) selects
  * the 230w candidate. It passed at 768 and 1280 in the same run.
@@ -1251,7 +1251,7 @@ test.describe('img-srcset-within-2x separates broken from still-loading', () => 
  * REMOVED IN THE BSUK PORT (2026-09-16): CAG's `IndexNow tooling is intact` describe.
  * It asserted the existence of scripts/indexnow_submit.py, exactly one 32-hex
  * public/<key>.txt whose body equals its filename, and that no live line of
- * skills/cag-indexing.md still pointed at the MFS project. None of those three artefacts
+ * the source project's indexing skill still pointed at the MFS project. None of those three artefacts
  * exists in this repo, so every assertion would have failed for the absence of a CAG
  * tool rather than for a defect in anything BSUK ships. It is deliberately DELETED rather
  * than skipped: a skipped test is the easiest place to hide vanished coverage, and this

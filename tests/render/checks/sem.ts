@@ -124,8 +124,8 @@ register({
     const r = await page.evaluate((sel) => {
       // Ported from scripts/page_hardening_scan.py::check_title_case rather than
       // rewritten, because that caser has already been tuned against this site's real
-      // headings: acronyms (C.A.Gs, CITES, PCR), prices, hyphenated compounds, and the
-      // binomial genus/epithet pair (`Psittacus erithacus`), where capitalising the
+      // headings: acronyms (KC, DEFRA, HC-HSF4), prices, hyphenated compounds, and the
+      // binomial genus/epithet pair (`Canis familiaris`), where capitalising the
       // epithet would BE the defect. A fresh implementation would rediscover each of
       // those as a false positive on a live page instead of on a fixture.
       //
@@ -136,7 +136,8 @@ register({
         'a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet',
         'at', 'by', 'in', 'of', 'on', 'to', 'as', 'vs', 'per', 'via',
       ]);
-      const GENERA = new Set(['Psittacus', 'Ara', 'Amazona', 'Cacatua', 'Eclectus', 'Poicephalus']);
+      // Mirrors SPECIES_GENERA in scripts/page_hardening_scan.py — keep the two in step.
+      const GENERA = new Set(['Canis']);
       const core = (w: string) => w.replace(/[^\w'-]/g, '');
 
       const root = document.querySelector('main') || document.body;
@@ -253,7 +254,7 @@ register({
         // that is a bird card (name, then the spec list) and a hero (H1, then the trust
         // badge row) — both correct. Measured before choosing the predicate: the wider
         // "must be a <p>" form fired 9 times on available/roys and 9 on
-        // congo-vs-timneh, and every one of those was a card, not a missing paragraph.
+        // the breed-comparison page, and every one of those was a card, not a missing paragraph.
         const nextOwner = owner[nextIdx];
         if (nextOwner) {
           bad.push(

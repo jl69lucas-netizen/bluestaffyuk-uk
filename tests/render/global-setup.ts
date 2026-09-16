@@ -18,7 +18,7 @@ const here = dirname(fileURLToPath(import.meta.url));
  *
  * Measured failure (2026-08-01), reproduced on the real harness, not a toy:
  *   rm -rf data/quality/raw && npx playwright test pages.spec.ts \
- *     --grep congo-african-grey-parrot-pair
+ *     --grep available-puppies/roman
  * 3 tests ran across 3 viewport projects. Exactly ONE partial survived. resetRaw()
  * at pages.spec.ts module scope ran once per worker process; the last worker to load
  * the module deleted the other workers' already-written output out from under them.

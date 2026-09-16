@@ -8,7 +8,7 @@ import type { Page } from '@playwright/test';
 export async function settlePage(page: Page): Promise<{ pending: number }> {
   // Force every lazy image to fetch BEFORE scrolling.
   //
-  // Scrolling alone does not do it: measured on /congo-african-grey-for-sale/,
+  // Scrolling alone does not do it: measured on the source project's paired-listing page,
   // a full-page scroll left 45 of 52 images with complete === false, zero HTTP
   // 4xx, and they stayed unloaded after a further 15 seconds. All 45 were
   // ordinary loading="lazy" images — visible, real widths, not inside <details>.
@@ -40,7 +40,7 @@ export async function settlePage(page: Page): Promise<{ pending: number }> {
 
   // BOUNDED. An image that never loads and never errors fires neither onload nor
   // onerror, so an unbounded Promise.all here hangs until the test timeout —
-  // measured on /congo-african-grey-for-sale/, where it stalled both IMG checks
+  // measured on the source project's paired-listing page, where it stalled both IMG checks
   // past 45s and killed the page's results entirely. A page whose results never
   // get written scores as absent rather than as failed, which is the worst
   // failure mode this harness has. Never let this wait be unbounded.
@@ -81,7 +81,7 @@ export interface TopChrome {
  * `var(--hdr, 72px)` fallbacks against a header that measures 96px.
  *
  * Two things this gets right that the obvious implementation does not, both
- * found by measuring the congo-pair page rather than by reading its CSS:
+ * found by measuring the source project's image-heaviest listing page rather than by reading its CSS:
  *
  * 1. MUST SCROLL FIRST. A rail with `top: var(--hdr)` is not pinned at
  *    scrollY 0 — measured at rest it sits at top:1030, far down the document.
@@ -233,7 +233,7 @@ export async function resetScrollInstant(page: Page): Promise<void> {
  *
  * Why waiting cannot fix it: the settle probe calls a scroll settled after five equal
  * reads (160ms). On 2026-09-13, with four browsers competing for the CPU on
- * /african-grey-parrots-for-sale-near-me/ @1280, a smooth fragment scroll was measured
+ * the source project's widest for-sale page @1280, a smooth fragment scroll was measured
  * stalling mid-flight for 221ms after it had already started (p95 40ms). A stall that
  * long passes the equal-read test, and the 400ms start grace no longer applies once the
  * page has moved. The blocking NAV check then recorded `#mt-dallas@7373px`, about 21px
@@ -325,7 +325,7 @@ export async function waitForScrollSettle(
   // `startGraceMs`: a scroll that has NOT STARTED is indistinguishable from one that has
   // FINISHED, and without this the difference decided a blocking check at random.
   //
-  // Measured 2026-08-02 on /african-grey-parrot-adoption-cost/ @375: two runs of the same
+  // Measured 2026-08-02 on the source project's pricing page @375: two runs of the same
   // commit against the same dist/, one clean, one failing `nav-jump-target-lands` with
   // `#reserve@26059px` — the target's raw document offset, i.e. the page had never moved.
   // `el.click()` requests a smooth scroll, but the first animation frame can land later
