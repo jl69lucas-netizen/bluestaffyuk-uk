@@ -44,8 +44,12 @@ DEFAULT_JSON = ROOT / "docs/reports/form_contract_audit.json"
 # stale the day the form moves, and would put a real endpoint in a committed file.
 _FID = os.environ.get("PUBLIC_FORMSPREE_ID", "")
 if not _FID:
-    sys.exit("REFUSED: PUBLIC_FORMSPREE_ID is unset — a form audit that matches nothing "
-             "would report every form clean. Set it in .env (see .env.example).")
+    # Exit 2 = the gate cannot run, the code board_gate.py and evidence_audit.py use.
+    # Exit 1 would read as "ran, found one problem".
+    print("REFUSED: PUBLIC_FORMSPREE_ID is unset — a form audit that matches nothing "
+          "would report every form clean. Set it in .env (see .env.example).",
+          file=sys.stderr)
+    sys.exit(2)
 ENDPOINT = f"https://formspree.io/f/{_FID}"
 
 # BSUK's contract, read off the built contact page (dist/uk-blue-staffy-breeders-contact/
@@ -65,6 +69,9 @@ KEYS = [
 # would report the shipped page as broken.
 REQUIRED = ("name", "email", "puppy", "message")
 HIDDEN = ("_next", "_subject")
+# Spec §5: the puppy control is a <select>, and one of its options is the Glasgow
+# collection choice (value read off the built page, 2026-09-16).
+PUPPY_OPTION = "collection-glasgow"
 SHORT = ("name", "email", "message")
 LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
@@ -90,6 +97,7 @@ class _Forms(HTMLParser):
     def __init__(self):
         super().__init__()
         self.forms, self._cur = [], None
+        self._cursel = None
         self._skip_depth = 0
 
     def handle_starttag(self, tag, attrs):
@@ -106,10 +114,12 @@ class _Forms(HTMLParser):
             self.forms.append(self._cur)
         elif tag in ("input", "select", "textarea") and self._cur is not None:
             type_ = a.get("type") or ("text" if tag == "input" else tag)
-            self._cur["controls"].append({
-                "tag": tag, "name": a.get("name"), "type": type_.lower(),
-                "required": "required" in a,
-            })
+            ctl = {"tag": tag, "name": a.get("name"), "type": type_.lower(),
+                   "required": "required" in a, "options": []}
+            self._cur["controls"].append(ctl)
+            self._cursel = ctl if tag == "select" else None
+        elif tag == "option" and self._cursel is not None:
+            self._cursel["options"].append(a.get("value", ""))
 
     def handle_endtag(self, tag):
         if tag in _SKIPPED:
@@ -118,8 +128,10 @@ class _Forms(HTMLParser):
             return
         if self._skip_depth:
             return
+        if tag == "select":
+            self._cursel = None
         if tag == "form":
-            self._cur = None
+            self._cur = self._cursel = None
 
 
 def audit_html(html: str, slug: str):
@@ -151,6 +163,13 @@ def audit_html(html: str, slug: str):
                     problems.append(f"{key} absent")
                 elif key in REQUIRED and not any(c["required"] for c in hits):
                     problems.append(f"{key} not required")
+                if key == "puppy" and hits:
+                    sels = [c for c in hits if c["tag"] == "select"]
+                    if not sels:
+                        problems.append("puppy must be a <select> (spec §5)")
+                    elif not any(PUPPY_OPTION in c["options"] for c in sels):
+                        problems.append(
+                            f"puppy select missing the {PUPPY_OPTION} option (spec §5)")
             # Without _next and _subject Formspree has no redirect and no reply subject.
             for h in HIDDEN:
                 if not any(c["name"] == h for c in ctl):

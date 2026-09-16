@@ -53,8 +53,14 @@ GOOD = f"""<form action="{END}" method="POST">
 <input type="text" name="_gotcha" style="display:none">
 <input name="name" required><input type="email" name="email" required>
 <input type="tel" name="phone"><input name="location">
-<select name="puppy" required><option value="">-</option></select>
+<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="collection-glasgow">Collection in Glasgow after a refundable £500 deposit</option></select>
 <textarea name="message" required></textarea></form>"""
+
+
+PUPPY_SELECT = ('<select name="puppy" required><option value="">-</option>'
+                '<option value="roman">Roman</option>'
+                '<option value="collection-glasgow">Collection in Glasgow after a '
+                'refundable £500 deposit</option></select>')
 
 
 def page(*forms):
@@ -83,7 +89,7 @@ def test_search_form_is_not_examined():
 
 
 def test_missing_puppy_select_is_named():
-    html = page(GOOD.replace('<select name="puppy" required><option value="">-</option></select>', ""))
+    html = page(GOOD.replace('<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="collection-glasgow">Collection in Glasgow after a refundable £500 deposit</option></select>', ""))
     assert any("puppy absent" in p for p in problems(html))
 
 
@@ -103,6 +109,26 @@ def test_optional_phone_is_not_a_missing_field(tmp_path):
 def test_missing_hidden_field_is_named():
     html = page(GOOD.replace('<input type="hidden" name="_next" value="/thank-you/">', ""))
     assert any("_next absent" in p for p in problems(html))
+
+
+# --- spec §5: the puppy control is a <select> carrying the collection option ------
+
+def test_puppy_select_with_the_collection_option_is_clean():
+    assert not [p for p in problems(page(GOOD)) if "puppy" in p]
+
+
+def test_puppy_select_without_the_collection_option_is_a_problem():
+    stripped = PUPPY_SELECT.replace(
+        '<option value="collection-glasgow">Collection in Glasgow after a '
+        'refundable £500 deposit</option>', "")
+    ps = problems(page(GOOD.replace(PUPPY_SELECT, stripped)))
+    assert any("puppy select missing the collection-glasgow option" in p for p in ps)
+
+
+def test_puppy_as_a_text_input_is_a_problem():
+    ps = problems(page(GOOD.replace(PUPPY_SELECT, '<input name="puppy" required>')))
+    assert any("puppy must be a <select>" in p for p in ps)
+    assert not any("puppy absent" in p for p in ps)
 
 
 def test_netlify_form_fails_on_endpoint():
@@ -158,7 +184,7 @@ def test_unset_formspree_id_refuses_rather_than_matching_nothing(monkeypatch):
     monkeypatch.delenv("PUBLIC_FORMSPREE_ID", raising=False)
     with pytest.raises(SystemExit) as e:
         importlib.reload(F)
-    assert "PUBLIC_FORMSPREE_ID" in str(e.value)
+    assert e.value.code == 2
 
 
 def test_endpoint_is_built_from_the_environment_not_a_literal(monkeypatch):
@@ -185,10 +211,12 @@ def test_main_fails_loud_on_zero_forms_examined(tmp_path):
 
 
 def test_main_refuses_without_the_id(tmp_path):
+    """Exit 2 = cannot run, the same code board_gate.py and evidence_audit.py use;
+    exit 1 would read as 'ran, found one problem'."""
     env = {k: v for k, v in os.environ.items() if k != "PUBLIC_FORMSPREE_ID"}
     result = subprocess.run([sys.executable, str(SCRIPT), "--dist", str(tmp_path)],
                             capture_output=True, text=True, env=env)
-    assert result.returncode != 0
+    assert result.returncode == 2
     assert "PUBLIC_FORMSPREE_ID is unset" in result.stderr
 
 
