@@ -44,20 +44,23 @@ import type { Page } from '@playwright/test';
  * different verdicts on the same page, which is the one failure this pair exists to refuse.
  */
 /**
- * Read from the environment, never hard-coded. The id is a credential-adjacent fact that
- * lives in .env (spec §8). Throwing on unset is the point: an empty id makes `action !==
- * endpoint` true on every form, which reads as "every form is broken", or — worse, if the
- * comparison were relaxed — as "every form is fine". A gate that cannot tell those apart
- * must refuse to run. scripts/form_contract_audit.py refuses identically.
+ * Read from the environment at call time, never hard-coded and never at module scope. The
+ * id is a credential-adjacent fact that lives in .env (spec §8). Refusing on unset is the
+ * point: an empty id makes `action !== endpoint` true on every form, which reads as "every
+ * form is broken", or — worse, if the comparison were relaxed — as "every form is fine". A
+ * gate that cannot tell those apart must refuse to run. scripts/form_contract_audit.py
+ * refuses identically (exit 2, read lazily for the same reason: a module-scope throw here
+ * would abort the import of meta.spec.ts and take all ten families down with it, so an
+ * unset id would look like a broken harness rather than an unconfigured FORM family).
  */
-const FORMSPREE_ID = process.env.PUBLIC_FORMSPREE_ID;
-if (!FORMSPREE_ID) {
-  throw new Error(
-    'PUBLIC_FORMSPREE_ID is unset — the FORM family cannot judge an endpoint it does not ' +
-      'know. Set it in .env (see .env.example) and re-run.',
-  );
+function endpoint(): string | null {
+  const id = process.env.PUBLIC_FORMSPREE_ID;
+  return id ? `https://formspree.io/f/${id}` : null;
 }
-const FORM_ENDPOINT = `https://formspree.io/f/${FORMSPREE_ID}`;
+
+/** The literal the committed fixtures carry in place of the real id; meta.spec.ts
+ *  substitutes it into the loaded DOM. Exported so the two sides cannot drift. */
+export const FORM_ID_FROM_ENV = 'FORM_ID_FROM_ENV';
 
 /** Slugs whose built page carries a real (non-search) inquiry form. See the note above. */
 const INQUIRY_FORM_SLUGS = new Set(['uk-blue-staffy-breeders-contact']);
@@ -110,6 +113,23 @@ register({
   // known_good carries one inquiry form + one newsletter (the search form is skipped) → 2.
   minExamined: 2,
   async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
+    const FORM_ENDPOINT = endpoint();
+    if (!FORM_ENDPOINT) {
+      return {
+        examined: 0,
+        defects: [
+          {
+            checkId: 'form-inquiry-contract',
+            family: 'FORM' as const,
+            viewport,
+            count: 1,
+            message:
+              'REFUSED: PUBLIC_FORMSPREE_ID unset — the FORM family cannot judge an ' +
+              'endpoint it does not know. Set it in .env (see .env.example) and re-run.',
+          },
+        ],
+      };
+    }
     const r = await page.evaluate(
       ({ endpoint, contract }) => {
         const ALL: [string, RegExp][] = [
@@ -137,7 +157,7 @@ register({
         const submitsEmpty: string[] = [];
         let examined = 0;
         Array.from(document.querySelectorAll('form')).forEach((f, i) => {
-          const action = f.getAttribute('action') || '';
+          const action = (f.getAttribute('action') || '').trim();
           if (action.startsWith('/search')) return;
           examined++;
           const subject = f.querySelector('input[name="_subject"]') as HTMLInputElement | null;
@@ -153,15 +173,29 @@ register({
             f.hasAttribute('data-netlify') ||
             f.hasAttribute('netlify-honeypot') ||
             !!f.querySelector('[name="form-name"],[name="bot-field"]');
-          if (action !== endpoint || netlify || (f.getAttribute('method') || 'get').toLowerCase() !== 'post') {
-            wrongEndpoint.push(`${label} action="${action || '(none)'}"${netlify ? ' +netlify' : ''}`);
+          // The Python twin's three distinct phrases, kept distinct: one form can fail all
+          // three, and collapsing them hides which fix is needed.
+          const method = (f.getAttribute('method') || 'get').trim().toLowerCase();
+          if (action !== endpoint) {
+            wrongEndpoint.push(`${label}: endpoint is "${action || '(none)'}", must be ${endpoint}`);
+          }
+          if (netlify) {
+            wrongEndpoint.push(`${label}: netlify residue (data-netlify / form-name / bot-field)`);
+          }
+          if (method !== 'post') {
+            wrongEndpoint.push(`${label}: method is ${method.toUpperCase() || 'GET'}, must be POST`);
           }
           // Same classification as scripts/form_contract_audit.py: a NEWSLETTER is a form whose
           // visible controls are exactly one email box; anything else is an inquiry form. Two
           // gates must agree on what an inquiry form is (reference_same_input_different_verdict).
-          const controls = Array.from(f.querySelectorAll('input,select,textarea')) as HTMLInputElement[];
-          const visible = controls.filter((c) => c.type !== 'hidden' && c.name !== '_gotcha');
-          const isInquiry = !(visible.length === 1 && visible[0].type === 'email');
+          type Control = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+          const controls = (
+            Array.from(f.querySelectorAll('input,select,textarea')) as Control[]
+          ).map((c) => Object.assign(c, { name: c.name.trim() }));
+          const visible = controls.filter(
+            (c) => (c as HTMLInputElement).type !== 'hidden' && c.name !== '_gotcha',
+          );
+          const isInquiry = !(visible.length === 1 && (visible[0] as HTMLInputElement).type === 'email');
           if (!isInquiry) {
             // Same parity check as form_contract_audit.py: a newsletter's one real control
             // must carry a `name`, or Formspree receives an unlabeled value and drops it.
@@ -178,17 +212,17 @@ register({
               formIssues.push(`${name} absent`);
               continue;
             }
-            if (REQUIRED.includes(name) && !hits.some((c) => c.required)) {
+            if (REQUIRED.includes(name) && !hits.some((c) => (c as HTMLInputElement).required)) {
               formIssues.push(`${name} not required`);
             }
             if (name === 'puppy') {
               const sels = hits.filter(
                 (c) => c.tagName.toLowerCase() === 'select',
-              ) as unknown as HTMLSelectElement[];
+              ) as HTMLSelectElement[];
               if (!sels.length) formIssues.push('puppy must be a <select> (spec §5)');
               else if (
                 !sels.some((sel) =>
-                  Array.from(sel.options).some((o) => o.value === PUPPY_OPTION),
+                  Array.from(sel.options).some((o) => (o.getAttribute('value') ?? '') === PUPPY_OPTION),
                 )
               ) {
                 formIssues.push(`puppy select missing the ${PUPPY_OPTION} option (spec §5)`);
@@ -218,7 +252,7 @@ register({
     }
     if (r.wrongEndpoint.length) {
       defects.push({ checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: r.wrongEndpoint.length,
-        message: `not posting to ${FORM_ENDPOINT}: ${r.wrongEndpoint.slice(0, 4).join(' | ')}` });
+        message: `endpoint/method contract (must POST to ${FORM_ENDPOINT}): ${r.wrongEndpoint.slice(0, 4).join(' | ')}` });
     }
     if (r.missing.length) {
       defects.push({ checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: r.missingCount,

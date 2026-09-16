@@ -6,8 +6,8 @@
   <!-- Skipped: a /search/ form is never judged, so it does not count toward `examined`. -->
   <form action="/search/" method="get" role="search"><input name="q"><button>Search</button></form>
   <!-- The real contact form, copied out of dist/uk-blue-staffy-breeders-contact/index.html
-       (2026-09-16) with the data-astro-cid-* attributes stripped. `FORM_ID_FROM_ENV` is
-       substituted with PUBLIC_FORMSPREE_ID when the fixture loads: the id may not sit in a
+       (2026-09-16) with the data-astro-cid-* attributes stripped. `FORM_ID_FROM_ENV` (the constant exported from
+       tests/render/checks/form.ts) is substituted with PUBLIC_FORMSPREE_ID when the fixture loads: the id may not sit in a
        committed file. -->
   <form method="POST" action="https://formspree.io/f/FORM_ID_FROM_ENV" data-form="contact">
     <input type="hidden" name="_next" value="https://www.bluestaffyuk.com/thank-you-blue-staffy-puppies-journey/">

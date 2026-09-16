@@ -2,6 +2,9 @@
 <html lang="en"><head><meta charset="utf-8"><title>blog-kind page, short form contract</title>
 <style>.hp{display:none}</style></head><body>
 <main>
+  <!-- Form actions carry FORM_ID_FROM_ENV — the constant exported from
+       tests/render/checks/form.ts; meta.spec.ts substitutes PUBLIC_FORMSPREE_ID for it at
+       load time, because the real id may not sit in a committed file. -->
   <h1>Blue Staffy Blog and Guides</h1>
   <!-- A blog-kind page (data/page-map.json kind "blog") carries the SHORT contract:
        name, email and message only, each required, plus the honeypot and both hidden

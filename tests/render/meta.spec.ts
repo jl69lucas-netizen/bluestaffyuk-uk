@@ -30,7 +30,7 @@ import {
   type Target,
 } from './lib/dupCorpus.js';
 import { resetRaw } from './lib/scorecard.js';
-import { contractFor, fieldChecksSkipped, formExpected } from './checks/form.js';
+import { contractFor, fieldChecksSkipped, formExpected, FORM_ID_FROM_ENV } from './checks/form.js';
 import './checks/index.js';
 
 
@@ -66,18 +66,29 @@ test('the registry is not empty', () => {
 /**
  * The committed form fixtures cannot carry the real Formspree id — it lives in .env and no
  * credential-adjacent value may sit in a committed file. They carry the literal
- * `FORM_ID_FROM_ENV` in their form `action`s instead, and this substitutes the live id into
- * the loaded DOM before any check runs, so the FORM family still judges known_good against
- * the very endpoint it will judge dist/ against. A no-op for every other fixture.
+ * `FORM_ID_FROM_ENV` (exported from checks/form.ts, so the two sides cannot drift) in their
+ * form `action`s instead, and this substitutes the live id into the loaded DOM before the
+ * check runs, so the FORM family judges known_good against the very endpoint it will judge
+ * dist/ against. It THROWS rather than no-ops when the id is unset: with the check now
+ * refusing lazily, a silent no-op here would leave the fixture action unsubstituted and the
+ * failure would read as a fixture defect instead of a missing environment.
  */
 async function substituteFormEndpoint(page: import('@playwright/test').Page): Promise<void> {
   const id = process.env.PUBLIC_FORMSPREE_ID;
-  if (!id) return;
-  await page.evaluate((formId) => {
-    document.querySelectorAll('form[action*="FORM_ID_FROM_ENV"]').forEach((f) => {
-      f.setAttribute('action', (f.getAttribute('action') || '').replace('FORM_ID_FROM_ENV', formId));
-    });
-  }, id);
+  if (!id) {
+    throw new Error(
+      `PUBLIC_FORMSPREE_ID is unset — the form fixtures' ${FORM_ID_FROM_ENV} placeholder ` +
+        'cannot be substituted. Set it in .env (see .env.example) and re-run.',
+    );
+  }
+  await page.evaluate(
+    ({ formId, token }) => {
+      document.querySelectorAll(`form[action*="${token}"]`).forEach((f) => {
+        f.setAttribute('action', (f.getAttribute('action') || '').replace(token, formId));
+      });
+    },
+    { formId: id, token: FORM_ID_FROM_ENV },
+  );
 }
 
 for (const check of registry) {
@@ -86,7 +97,7 @@ for (const check of registry) {
       const viewport = testInfo.project.use.viewport!.width;
       const res = await page.goto(fixtureUrl('known_broken', check.id));
       expect(res?.status(), 'known_broken fixture must exist').toBe(200);
-      await substituteFormEndpoint(page);
+      if (check.family === 'FORM') await substituteFormEndpoint(page);
       const result = await runCheck(check, page, viewport, FIXTURE_CTX);
       expect(
         result.examined,
@@ -102,7 +113,7 @@ for (const check of registry) {
       const viewport = testInfo.project.use.viewport!.width;
       const res = await page.goto(fixtureUrl('known_good', check.id));
       expect(res?.status(), 'known_good fixture must exist').toBe(200);
-      await substituteFormEndpoint(page);
+      if (check.family === 'FORM') await substituteFormEndpoint(page);
       const result = await runCheck(check, page, viewport, FIXTURE_CTX);
       expect(
         result.examined,
