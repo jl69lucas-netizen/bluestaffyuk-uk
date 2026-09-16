@@ -422,8 +422,9 @@ moment Harden becomes a bullet, it becomes the bullet that gets skipped.*
    → §1k markup-css-drift          (101 classes styled + never rendered, 5 mandated)
    → §1l component colour specificity (.ship-tier at 1.19:1 on forest green)
 
-2. python3 scripts/seam_parity.py <slug>
-   → one seam per section; exactly one seamless hero allowed
+2. [seam parity — the source repo's scripts/seam_parity.py was not ported (not ported — source repo only)]
+   → one seam per section; exactly one seamless hero allowed. Check it by eye until a
+     BSUK equivalent exists; the Sprint 3 gate row below is advisory in the meantime.
    → NEVER grep '<section class="sec"' — 6 of 8 for-sale pages don't use that class
 
 3. npm run test:render:meta        ← THE GATE THAT CHECKS THE CHECKERS. Run it FIRST.
@@ -835,9 +836,9 @@ Every agent carries `model: inherit` — the session's model drives all of them,
 
 Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the native field replaced it), the `dynamic_workflow:` frontmatter key (not a recognized field — the flag lives in the registry only), and the `opus48_*` / `opus47_*` / `haiku_medium` tier names. `xhigh` is available and untested here; try it on the orchestrators and the audit chain and measure rework rate before adopting it.
 
-**Dynamic routing:** the three orchestrators (`bsuk-content-architect`, `bsuk-structure-architect`, `bsuk-batch-rebuilder`) classify each task to a tier and dispatch with the `Agent` tool; `python3 scripts/route.py "<task description>"` prints the tier deterministically (e.g. "rebuild florida page from scratch" → `tier_max`).
+**Dynamic routing:** the three orchestrators (`bsuk-content-architect`, `bsuk-structure-architect`, `bsuk-batch-rebuilder`) classify each task to a tier and dispatch with the `Agent` tool; the source repo's routing script was not ported, so the orchestrator classifies by hand against the tiers in `data/agent-registry.json`.
 
-**To change effort site-wide:** edit `data/agent-registry.json`, then `python3 scripts/apply_model_tiers.py` → `bash scripts/verify_model_tiers.sh` → `python3 -m pytest tests/test_apply_model_tiers_idempotent.py` → commit → push.
+**To change an agent's effort:** the registry is GENERATED, so the flow runs the other way here — edit the agent's own frontmatter, then `python3 scripts/build_agent_registry.py` to regenerate `data/agent-registry.json`, then `python3 scripts/build_agent_registry.py --check` to prove it is not stale, then `python3 -m pytest tests/py -q` → commit. Never push: there is no remote until project 6.
 
 ---
 

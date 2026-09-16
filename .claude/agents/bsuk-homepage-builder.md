@@ -41,7 +41,7 @@ You preserve every SEO element: H1, canonical, schema JSON-LD, og:url, og:image.
 5. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "homepage") (not ported — source repo only)
 6. **Run** `grep -n "canonical\|ld+json" src/pages/index.astro | head -10 && grep -n "<h1" src/components/SiteHeader.astro` — extract current H1, canonical, schema locations
 7. **Read** `rules/headings.md`, `rules/images.md`, `rules/design.md` — the enforced packs (headings gate, image sizing, hero/counter separation)
-8. **Read** `docs/reference/components.md` and `docs/artifacts/bsuk-component-library.md` — the component registry and the visual library of every live component at 375/768/1280 (not ported — source repo only) (not ported — source repo only)
+8. **Read** `docs/reference/components.md` and `docs/artifacts/bsuk-component-library.md` — the component registry and the visual library of every live component at 375/768/1280 (not ported — source repo only)
 
 Only after reading all eight do you begin any section work.
 

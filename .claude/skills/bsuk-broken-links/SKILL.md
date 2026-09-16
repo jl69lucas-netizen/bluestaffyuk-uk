@@ -174,7 +174,7 @@ After adding redirects and/or hub pages, re-run the audit script from Step 1. Br
 
 ```bash
 # Quick check — count remaining broken links after fix
-python3 audit_links.py 2>/dev/null | grep "BROKEN" | head -1
+python3 scripts/redirect_check.py 2>/dev/null | grep "BROKEN" | head -1
 ```
 
 ---

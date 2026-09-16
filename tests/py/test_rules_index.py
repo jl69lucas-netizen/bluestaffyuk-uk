@@ -159,6 +159,15 @@ def _path_like(tok: str):
     make this test noise, and a noisy test gets deleted rather than obeyed.
     """
     tok = tok.strip()
+    # `python3 scripts/x.py` is a command whose SECOND word is the cited path. Before this
+    # strip, the space made `_path_like` return None and the guard never looked at it — so
+    # WORKFLOW.md could prescribe `python3 scripts/apply_model_tiers.py`, a script that was
+    # never ported, and pass. `npm run x` is deliberately absent: its argument is a package
+    # script name, not a file.
+    for word in ("python3 ", "python ", "bash ", "sh ", "node "):
+        if tok.startswith(word):
+            tok = tok[len(word):].strip()
+            break
     if tok.startswith(("http", "/", "<", "@", "-", "$")):
         return None
     if any(c in tok for c in '<>"*= ') or tok.count("`"):
@@ -176,13 +185,7 @@ def _path_like(tok: str):
 def test_every_repo_path_cited_in_a_pack_exists_or_is_marked():
     bad = []
     for f in sorted(RULES_DIR.glob("*.md")):
-        for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-            marked = any(m in line for m in MARKERS)
-            for tok in BACKTICKED.findall(line):
-                p = _path_like(tok)
-                if p is None or (ROOT / p).exists() or marked:
-                    continue
-                bad.append(f"{f.name}:{lineno}  {p}")
+        bad += _unmarked_missing_paths(f)
     assert bad == [], (
         "a pack cites a path that does not exist and does not say when it will. Either "
         "fix the path, or mark the line '(arrives in Task N)' / '(deferred to project N)' "
@@ -197,17 +200,39 @@ def test_every_repo_path_cited_in_a_pack_exists_or_is_marked():
 AGENTS_DIR = ROOT / ".claude/agents"
 
 
-def _unmarked_missing_paths(f: pathlib.Path):
-    bad = []
+# A command line inside a fenced block: `python3 scripts/x.py --flag`. Backticks are the
+# only thing the guard used to read, and a fenced runbook has none — so a whole pipeline of
+# scripts that do not exist could be prescribed in a ``` block and nothing would notice.
+FENCED_CMD = re.compile(r"^\s*(?:\d+\.\s*|[-*]\s*|[→>]\s*)?"
+                        r"(?:python3|python|bash|sh|node)\s+([A-Za-z0-9_./-]+)")
+
+
+def _cited_paths(f: pathlib.Path):
+    """[(lineno, path, marked)] for every repo path this document cites.
+
+    Two sources: backticked tokens anywhere, and interpreter commands inside fenced code
+    blocks. `marked` carries the line's own forward-reference marker, because the marker
+    suppresses the missing-path check for that line.
+    """
+    out = []
     for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-        if any(m in line for m in MARKERS):
-            continue
+        marked = any(m in line for m in MARKERS)
         for tok in BACKTICKED.findall(line):
             p = _path_like(tok)
-            if p is None or (ROOT / p).exists():
-                continue
-            bad.append(f"{f.name}:{lineno}  {p}")
-    return bad
+            if p is not None:
+                out.append((lineno, p, marked))
+        m = FENCED_CMD.match(line)
+        if m:
+            p = _path_like(m.group(1))
+            if p is not None:
+                out.append((lineno, p, marked))
+    return out
+
+
+def _unmarked_missing_paths(f: pathlib.Path):
+    return [f"{f.name}:{lineno}  {p}"
+            for lineno, p, marked in _cited_paths(f)
+            if not marked and not (ROOT / p).exists()]
 
 
 @pytest.mark.parametrize("agent", sorted(AGENTS_DIR.glob("bsuk-*.md")), ids=lambda p: p.stem)

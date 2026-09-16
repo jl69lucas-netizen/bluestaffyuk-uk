@@ -13,7 +13,8 @@ every build. It gets the same guards the rule packs get, plus two of its own.
 import pathlib
 import re
 
-from test_rules_index import BACKTICKED, MARKERS, _path_like
+from test_rules_index import BACKTICKED, MARKERS, _cited_paths, _path_like,\
+    _unmarked_missing_paths
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 CLAUDE_MD = ROOT / "CLAUDE.md"
@@ -25,14 +26,7 @@ def lines():
 
 
 def test_every_repo_path_cited_in_claude_md_exists_or_is_marked():
-    bad = []
-    for lineno, line in enumerate(lines(), 1):
-        marked = any(m in line for m in MARKERS)
-        for tok in BACKTICKED.findall(line):
-            p = _path_like(tok)
-            if p is None or (ROOT / p).exists() or marked:
-                continue
-            bad.append(f"CLAUDE.md:{lineno}  {p}")
+    bad = _unmarked_missing_paths(CLAUDE_MD)
     assert bad == [], (
         "CLAUDE.md cites a path that does not exist and does not say when it will. Either "
         "fix the path, or mark the line '(arrives in Task N)' / '(deferred to project N)' "
@@ -101,6 +95,11 @@ def test_no_line_instructs_a_push_outside_the_inactive_section():
 # elsewhere: the guard above SUPPRESSES the missing-path check on any marked line, so a
 # stale marker silently disarms it for every other path on that line.
 ARRIVES = re.compile(r"\(arrives in Task \d+\)")
+# `(not ported — source repo only)` expires the same way, and worse: it asserts the file
+# will NEVER exist here. Task 13 left one on a line citing `docs/reference/system-registry.md`
+# minutes after writing that file. Same rule, same report.
+NEVER = re.compile(r"\(not ported[^)]*\)")
+EXPIRING = (ARRIVES, NEVER)
 
 
 def stale_markers(root: pathlib.Path):
@@ -126,7 +125,7 @@ def stale_markers(root: pathlib.Path):
         if not f.exists():
             continue
         for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-            if not ARRIVES.search(line):
+            if not any(rx.search(line) for rx in EXPIRING):
                 continue
             paths = [p for p in (_path_like(t) for t in BACKTICKED.findall(line))
                      if p is not None]
@@ -138,8 +137,9 @@ def stale_markers(root: pathlib.Path):
 def test_no_arrives_in_task_marker_is_stale():
     stale = stale_markers(ROOT)
     assert stale == [], (
-        "marker is stale, delete it — every path on these lines now exists, so "
-        "'(arrives in Task N)' is telling readers a file is missing that is not:\n  "
+        "marker is stale, delete it — every path on these lines now exists, so the "
+        "'(arrives in Task N)' / '(not ported — source repo only)' marker is telling "
+        "readers a file is missing that is not:\n  "
         + "\n  ".join(stale))
 
 
@@ -168,6 +168,21 @@ def test_the_stale_marker_checker_actually_fires(tmp_path):
     fired = stale_markers(tmp_path)
     assert fired, "creating a marked path must make the checker fire"
     assert all("zz-fixture.md" in row for row in fired), fired
+
+
+def test_the_not_ported_marker_expires_too(tmp_path):
+    """The second expiring marker gets its own proof, or a regex typo silences it."""
+    pack = tmp_path / "rules" / "zz-never.md"
+    pack.parent.mkdir(parents=True)
+    pack.write_text("See `docs/reference/system-registry.md` (not ported — source repo only)\n",
+                    encoding="utf-8")
+    assert stale_markers(tmp_path) == [], "the path does not exist yet — not stale"
+
+    target = tmp_path / "docs" / "reference" / "system-registry.md"
+    target.parent.mkdir(parents=True)
+    target.write_text("arrived\n", encoding="utf-8")
+    fired = stale_markers(tmp_path)
+    assert fired and all("zz-never.md" in row for row in fired), fired
 
 
 def test_the_checker_walks_agents_and_skills_too(tmp_path):

@@ -94,6 +94,15 @@ if [ -f scripts/build_agent_registry.py ]; then
 else
   warn "scripts/build_agent_registry.py absent — agent-registry check arrives in Task 11"
 fi
+
+# The system registry is derived the same way, and drifts the same way: the source repo's
+# was hand-maintained until it claimed 68 agents over 67 files.
+if [ -f scripts/build_system_registry.py ]; then
+  if python3 scripts/build_system_registry.py --check; then pass "System registry in sync"
+  else fail "System registry drift — run: python3 scripts/build_system_registry.py"; fi
+else
+  warn "scripts/build_system_registry.py absent"
+fi
 echo "  skills found: $(ls -d .claude/skills/*/SKILL.md 2>/dev/null | wc -l | tr -d ' ')"
 
 # register_skills.py is not ported: spec §1 retires the flat skills/*.md mirror, so a check

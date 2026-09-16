@@ -8,7 +8,7 @@ description: THE comparison-page builder skill for BlueStaffyUK — 22–25-sect
 **Source of truth inputs:**
 - The source repo's comparison system and its worked research file set were **not ported —
   source repo only**. This file is the whole system; replicate its research deliverables per page.
-- Binding alongside: `rules/copy.md`, `rules/design.md`, `rules/images.md`, `rules/puppies.md`, the theme pack (not ported — source repo only), `.claude/skills/anti-ai-writing/SKILL.md`
+- Binding alongside: `rules/copy.md`, `rules/design.md`, `rules/images.md`, `rules/puppies.md`, `.claude/skills/anti-ai-writing/SKILL.md`. There is no theme pack: the design system is project 3
 
 This skill **supersedes the section template inside `.claude/agents/bsuk-comparison-builder.md`** — the agent now executes THIS blueprint. Same design system, same reference page idioms, deeper structure.
 

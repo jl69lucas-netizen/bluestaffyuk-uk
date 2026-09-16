@@ -201,9 +201,9 @@ Plus `bsuk-blog-related-posts` (bottom silo) and `bsuk-blog-sticky-cta` (mobile)
 ### 12. Toolbelt & BSUK Context (know these before building any post)
 
 - **Competitor intel:** Firecrawl MCP (`firecrawl_search` fresh SERP, `firecrawl_scrape` json headers). Retry with `-A Mozilla/5.0` logic / stealth proxy on 403; `thekennelclub.org.uk` 403-to-curl = bot-block not dead.
-- **Images:** Pillow (`quality=82, method=6`), output to `public/`. Higgsfield / Nano Banana / Claude-HTML infographics per the image-generation and infographic skills (not ported — source repo only).
+- **Images:** Pillow (`quality=82, method=6`), output to `public/`. Infographic and image-generation skills are deferred to project 3, see data/port-manifest.json.
 - **Audit/deploy:** `python3 scripts/final_page_audit.py` (blog profile; all six heading levels, ≥5 H5 AND ≥5 H6, no skips) → `python3 scripts/generate_sitemaps.py` (writes BOTH `public/` and `dist/` — commit both) → commit. No push and no deploy until project 6.
-- **Data (never hardcode):** `data/settings.json` (the £200–£350 delivery band, the £500 deposit), `data/price-matrix.json` (£1,500 / £1,700), `data/puppies.json` (the available pups), a competitor registry (not ported — source repo only), the external-link library (deferred to project 6).
+- **Data (never hardcode):** `data/settings.json` (the £200–£350 delivery band, the £500 deposit), `data/price-matrix.json` (£1,500 / £1,700), `data/puppies.json` (the available pups), There is no competitor registry and no external-link library here; both are deferred to project 6, see data/port-manifest.json.
 - **Deploy/push caveat:** there is **no push and no deploy until project 6** — this repo has no remote. Never add one, and never write a credential anywhere. In a session where the keychain isn't reachable, `git push` fails with "could not read Username" — the commit is safe locally; ask the breeder to push from their terminal. Build on `main` only (feature branches strand at live-404).
 - **Cannibalization guard:** blog posts LINK OUT to money/interior pages (for-sale hub, price, scam) — never re-teach or re-list what a money page owns (see best-place §5).
 

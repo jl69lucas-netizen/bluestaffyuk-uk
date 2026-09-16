@@ -45,7 +45,7 @@ Single source of truth: `.claude/skills/bsuk-contact-form/SKILL.md` — the one 
 Startup for any form task:
 1. `python3 scripts/form_contract_audit.py` — read `forms examined` and every FAIL row before touching a page.
 2. Edit in the page's own family vocabulary (table in the skill). Never swap a raw form for the shared component unless the brief says so.
-3. Re-run the audit, then `node scripts/form_contract_browser.mjs`, then the harness. Open one 375px screenshot per family touched — an orphaned `*` passes every mechanical gate.
+3. Re-run the audit, then the render harness (`npm run test:render:pages`) — the source repo's browser probe was not ported (not ported — source repo only). Open one 375px screenshot per family touched — an orphaned `*` passes every mechanical gate.
 
 Excluded from field additions (endpoint still enforced): `/`, `/uk-blue-staffy-breeders-contact/`, the location cluster.
 
@@ -154,7 +154,7 @@ After updating any form, run the three gates in the skill (audit → browser →
 git add src/pages/<slug>/index.astro src/components/<changed component>
 git commit -m "feat(forms): <page list> — <what changed>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
-python3 scripts/indexnow_submit.py <slug>             # every slug whose rendered output changed
+python3 scripts/indexnow_submit.py <slug>             # every slug whose rendered output changed   # (arrives in Task 17)
 ```
 
 ---
