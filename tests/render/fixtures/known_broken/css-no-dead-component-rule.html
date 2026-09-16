@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a component styled but never rendered</title>
+<style>
+  body { margin:0; font:16px/1.5 system-ui }
+  .bird-card[data-astro-cid-fixture] { border:1px solid #e7ddd3; padding:16px }
+  .bird-name[data-astro-cid-fixture] { font-size:18px }
+  /* Styled, never rendered. On the adoption-cost page five spec-mandated components
+     shipped as CSS with no markup behind them, and the page looked "fine" because
+     nothing was there to look wrong. */
+  .counter-strip[data-astro-cid-fixture] { display:flex; gap:18px }
+  .doc-badges[data-astro-cid-fixture] { display:grid }
+</style></head><body>
+<div class="bird-card" data-astro-cid-fixture>
+  <h2 class="bird-name" data-astro-cid-fixture>Roys</h2>
+</div>
+</body></html>

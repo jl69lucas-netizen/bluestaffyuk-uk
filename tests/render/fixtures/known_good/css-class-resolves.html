@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>every class is styled</title>
+<style>
+  body { margin:0; font:16px/1.5 system-ui }
+  .bird-card { border:1px solid #e7ddd3; border-radius:20px; padding:16px }
+  .bird-name { font-size:18px; margin:0 0 6px }
+  .ship-line { color:#6b625a }
+  /* CSS-ESCAPED class tokens, the shape Tailwind emits for variant and fractional
+     utilities. A tokeniser that stops at the backslash captures `gap-0` and `text-white`
+     and then reports every element carrying `gap-0.5` or `text-white/80` as unstyled —
+     45 of the CSS family's 90 rows on its first real-page run, on all 15 pages, every
+     one of them a class that IS styled. */
+  .gap-0\.5 { gap:.125rem }
+  .text-white\/80 { color:rgba(255,255,255,.8) }
+  .hover\:text-clay:hover { color:#e8604c }
+</style></head><body>
+<div class="bird-card gap-0.5">
+  <h2 class="bird-name">Roys</h2>
+  <p class="ship-line text-white/80 hover:text-clay">Ships nationwide · $185 airport · $350 home</p>
+</div>
+</body></html>

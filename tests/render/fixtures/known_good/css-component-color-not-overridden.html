@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>component colour survives</title>
+<style>
+  body { margin:0; font:16px/1.5 system-ui }
+  .ship-c { background:#2d6a4f; padding:16px }
+  /* The bare component rule is still (0,1,0), but nothing more specific claims this
+     element, so white on forest green is what actually paints. `.ship-tier` must stay a
+     BARE single-class rule here: it is the unit this check judges, and rewriting it as
+     `.ship-c p.ship-tier` would leave the check examining zero units on its own clean
+     fixture — a silent pass that proves nothing. */
+  .ship-tier { color:#ffffff }
+  .ship-c span { color:#5b524a }
+</style></head><body>
+<div class="ship-c">
+  <p class="ship-tier">Airport pickup — $185</p>
+  <span>Home delivery quoted separately</span>
+</div>
+</body></html>

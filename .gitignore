@@ -6,3 +6,6 @@ dist/
 .DS_Store
 .pytest_cache/
 public/videos/
+test-results/
+playwright-report/
+data/quality/raw/

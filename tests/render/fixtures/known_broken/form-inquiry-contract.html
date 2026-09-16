@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>form posts to nothing, fields missing</title>
+<style>.hp{position:absolute;left:-9999px}</style></head><body>
+<main>
+  <h1>Congo African Greys</h1>
+  <form class="cta-form" name="compare-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="compare-inquiry">
+    <p class="hp"><label>Leave this field empty: <input name="bot-field"></label></p>
+    <label>First name<input name="first_name"></label>
+    <label>Cell<input name="cell" type="tel"></label>
+    <label>Email<input name="email" type="email"></label>
+    <label>Delivery<select name="delivery"><option value="">Choose</option><option>Airport pickup</option></select></label>
+    <label>Message<textarea name="message"></textarea></label>
+    <button type="submit">Send</button>
+  </form>
+  <form class="fs-nl-form" action="/contact-us/">
+    <input type="email" required placeholder="you@example.com"><button>Subscribe</button>
+  </form>
+  <form class="fs-nl-form" action="https://formspree.io/f/xrejpnvn" method="POST">
+    <input type="email" required placeholder="you@example.com"><button>Subscribe</button>
+  </form>
+</main>
+</body></html>

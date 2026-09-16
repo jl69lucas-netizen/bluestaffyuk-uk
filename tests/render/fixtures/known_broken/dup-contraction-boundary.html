@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>contraction at the 12-word boundary</title></head><body>
+<!--
+  Pairs with dup_corpus/sibling-contraction.html. The check must stay SILENT here.
+
+  The only shared run is "answered the same honest way we'd answer them on the phone":
+  11 words to scripts/dup_content_audit.py, whose tokeniser is [a-z0-9$']+ and keeps "we'd"
+  whole. Before 2026-09-11 the harness replaced the apostrophe with a space, read "we d",
+  counted 12, and fired on a pair the Python gate passes — measured on dist/ between
+  african-grey-parrot-bird-eggs-for-sale-usa and congo-african-grey-for-sale.
+
+  The words either side differ from the sibling's ("was" / "get", "candling" / "deposits"),
+  so the run cannot grow past 11.
+-->
+<main>
+  <h1>Fertile African Grey Eggs</h1>
+  <p>Each egg question was answered the same honest way we'd answer them on the phone.</p>
+  <p>Candling photos go out on day seven, and again on day fourteen.</p>
+</main>
+</body></html>

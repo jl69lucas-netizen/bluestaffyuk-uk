@@ -1,0 +1,120 @@
+<!doctype html>
+<!--
+  Pins the 2026-09-13 flake in `nav-jump-target-lands`, a BLOCKING check.
+
+  /african-grey-parrots-for-sale-near-me/ @1280 failed once, then passed twice on the
+  identical dist/, with "1 of 49 in-page links land outside 88-156px ... ROOT CAUSE:
+  html{scroll-behavior:smooth} on a 29364px document; first: #mt-dallas@7373px". #mt-dallas
+  sits at ~7394px in that document, so the probe measured a page that had barely moved.
+  waitForScrollSettle already waits for consecutive equal scrollY reads and a 400ms
+  start grace, and it still lost the race, because a smooth fragment scroll hands the
+  landing to the browser's animation scheduler. When that scroll starts or finishes is
+  not something the page decides.
+
+  The site declares the same rule in `@media (prefers-reduced-motion: no-preference)`,
+  reproduced below. It is on every page, so every landing the check measured depended on
+  animation timing.
+
+  This fixture is the same shape: a long document, html{scroll-behavior:smooth}, and
+  targets whose scroll-margin-top lands them inside the band (112px against a 96px header,
+  band 88-156). #s17 is a real defect (scroll-margin-top 20px, so it lands under the
+  header). The check must report it, and only it, however the animation is timed.
+
+  The race cannot be made to lose deterministically: an animation that stalls under load is
+  exactly what a fixture cannot schedule. So the meta test checks what makes the race
+  impossible instead. The capture listener below records the computed root scroll-behavior
+  at each click. Every entry must be "auto", and the page must read "smooth" again after
+  the check returns, because the checks that run later must see the page as shipped.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>smooth-scroll landing fixture</title>
+<style>
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font: 16px/1.5 system-ui, sans-serif; }
+  header { position: sticky; top: 0; height: 96px; background: #2D6A4F; color: #fff; z-index: 50;
+           display: flex; flex-wrap: wrap; align-items: center; overflow: hidden; }
+  nav a { color: #fff; display: inline-block; min-width: 36px; padding: 2px 4px; font-size: 12px; }
+  section { scroll-margin-top: 112px; min-height: 950px; padding: 24px 16px; }
+  section.miss { scroll-margin-top: 20px; }
+  .tail { height: 1000px; }
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+      <a href="#s01">s01</a>
+      <a href="#s02">s02</a>
+      <a href="#s03">s03</a>
+      <a href="#s04">s04</a>
+      <a href="#s05">s05</a>
+      <a href="#s06">s06</a>
+      <a href="#s07">s07</a>
+      <a href="#s08">s08</a>
+      <a href="#s09">s09</a>
+      <a href="#s10">s10</a>
+      <a href="#s11">s11</a>
+      <a href="#s12">s12</a>
+      <a href="#s13">s13</a>
+      <a href="#s14">s14</a>
+      <a href="#s15">s15</a>
+      <a href="#s16">s16</a>
+      <a href="#s17">s17</a>
+      <a href="#s18">s18</a>
+      <a href="#s19">s19</a>
+      <a href="#s20">s20</a>
+      <a href="#s21">s21</a>
+      <a href="#s22">s22</a>
+      <a href="#s23">s23</a>
+      <a href="#s24">s24</a>
+      <a href="#s25">s25</a>
+      <a href="#s26">s26</a>
+      <a href="#s27">s27</a>
+      <a href="#s28">s28</a>
+      <a href="#s29">s29</a>
+      <a href="#s30">s30</a>
+    </nav>
+  </header>
+  <section id="s01"><h2>s01</h2></section>
+  <section id="s02"><h2>s02</h2></section>
+  <section id="s03"><h2>s03</h2></section>
+  <section id="s04"><h2>s04</h2></section>
+  <section id="s05"><h2>s05</h2></section>
+  <section id="s06"><h2>s06</h2></section>
+  <section id="s07"><h2>s07</h2></section>
+  <section id="s08"><h2>s08</h2></section>
+  <section id="s09"><h2>s09</h2></section>
+  <section id="s10"><h2>s10</h2></section>
+  <section id="s11"><h2>s11</h2></section>
+  <section id="s12"><h2>s12</h2></section>
+  <section id="s13"><h2>s13</h2></section>
+  <section id="s14"><h2>s14</h2></section>
+  <section id="s15"><h2>s15</h2></section>
+  <section id="s16"><h2>s16</h2></section>
+  <section id="s17" class="miss"><h2>s17 — the one real miss</h2></section>
+  <section id="s18"><h2>s18</h2></section>
+  <section id="s19"><h2>s19</h2></section>
+  <section id="s20"><h2>s20</h2></section>
+  <section id="s21"><h2>s21</h2></section>
+  <section id="s22"><h2>s22</h2></section>
+  <section id="s23"><h2>s23</h2></section>
+  <section id="s24"><h2>s24</h2></section>
+  <section id="s25"><h2>s25</h2></section>
+  <section id="s26"><h2>s26</h2></section>
+  <section id="s27"><h2>s27</h2></section>
+  <section id="s28"><h2>s28</h2></section>
+  <section id="s29"><h2>s29</h2></section>
+  <section id="s30"><h2>s30</h2></section>
+  <div class="tail"></div>
+  <script>
+    window.__navBehaviors = [];
+    document.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a[href^="#"]')) {
+        window.__navBehaviors.push(getComputedStyle(document.documentElement).scrollBehavior);
+      }
+    }, true);
+  </script>
+</body>
+</html>

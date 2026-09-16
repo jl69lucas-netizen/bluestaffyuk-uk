@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>apostrophe written as an entity on the sibling</title></head><body>
+<!--
+  Pairs with dup_corpus/sibling-contraction.html. The check must fire EXACTLY ONCE here.
+
+  Shared run: "every hatch record we've kept for a chick goes home with it" — 12 words to
+  scripts/dup_content_audit.py, which fires. This page writes the apostrophe as a plain ',
+  the sibling as &#39;. The rendered page's innerText is decoded; the corpus is read from raw
+  HTML. So the run only matches when the corpus reader decodes entities AND the tokeniser
+  keeps the apostrophe inside the word:
+    old tokeniser            -> "we ve" vs "we 39 ve": run breaks at 4 + 9, silent
+    new tokeniser, no decode -> "we've" vs "we 39 ve": run breaks at 3 + 8, silent
+    new tokeniser + decode   -> 12 words, fires, same as Python
+-->
+<main>
+  <h1>Hatch Records</h1>
+  <p>Since spring, every hatch record we've kept for a chick goes home with it.</p>
+  <p>Band numbers are read aloud on the video call before shipping.</p>
+</main>
+</body></html>

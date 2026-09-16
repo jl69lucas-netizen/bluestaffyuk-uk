@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "postbuild": "python3 scripts/generate_sitemaps.py",
     "preview": "astro preview",
     "extract": "python3 scripts/extract_wp.py",
     "bake": "python3 scripts/bake_images.py",
@@ -30,7 +31,7 @@
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@playwright/test": "1.60.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "astro": "6.3.8",

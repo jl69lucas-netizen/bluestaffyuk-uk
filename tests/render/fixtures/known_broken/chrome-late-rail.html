@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>chrome fixture — rail that pins late</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; }
+
+  /* Tier 1: always pinned, from scrollY 0. */
+  header { position: sticky; top: 0; height: 96px; background: #2D6A4F; z-index: 50; }
+
+  /* Content ABOVE the rail, deliberately taller than 1.5 viewports. At 1280x800 a
+     1.5-viewport scroll is 1200px, so at that offset the rail below has NOT yet
+     reached its 96px sticky threshold and is not part of the pinned chrome.
+     This is the real shape on dna-tested / hand-raised / baby, where the jump rail
+     sits ~1300-2000px down the document. */
+  .lede { height: 2000px; background: #faf7f4; }
+
+  /* Tier 2: pins only once scrolled past ~1904px. */
+  .rail { position: sticky; top: 96px; height: 62px; background: #fff;
+          border-bottom: 1px solid #e7ddd3; z-index: 40; }
+
+  /* Enough runway after the rail that it can actually stick and stay stuck. */
+  main { min-height: 6000px; padding: 20px; }
+</style>
+</head>
+<body>
+  <header></header>
+  <div class="lede"></div>
+  <nav class="rail">Jump rail</nav>
+  <main>
+    <section id="a">A</section>
+    <section id="b">B</section>
+    <section id="c">C</section>
+  </main>
+</body>
+</html>

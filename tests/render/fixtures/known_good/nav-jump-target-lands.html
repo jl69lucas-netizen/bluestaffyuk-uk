@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>clean jump, smooth scrolling</title>
+<style>
+/* MATCHES THE LIVE SITE: src/styles/global.css:104 sets html{scroll-behavior:smooth}
+   inside @media (prefers-reduced-motion: no-preference). A known_good fixture that
+   used `auto` would let the check pass by being unable to measure smooth at all. */
+html{scroll-behavior:smooth}
+body{margin:0;font:16px/1.5 system-ui}
+header{position:sticky;top:0;height:96px;background:#2D6A4F;color:#fff;display:flex;align-items:center}
+nav a{color:#fff;margin-right:12px;display:inline-block;min-width:44px;min-height:44px}
+/* MEASURED, not assumed. The loop resets to the top before every target, so the longest
+   traversal any single target can produce is the distance to #shipping — one section, not
+   the document height. At 12000px that was 11,984px of travel taking 1496ms, only 296ms
+   past the old fixed 1200ms wait: enough to reproduce the bug, but a faster machine or a
+   shortened Chromium easing curve would have turned that reproduction silently green.
+   24000px puts #shipping ~23,984px away and restores the margin. #care stays a no-op by
+   construction — it sits at docTop 96 with scroll-margin-top 112, so its target clamps to
+   0, which is where the reset already left us. That asymmetry is structural, and it is why
+   only one of these two targets exercises the settle logic at all. */
+section{min-height:24000px;padding:0}
+h2{margin:0;scroll-margin-top:112px}
+</style></head><body>
+<header><nav><a href="#care">Care</a> <a href="#shipping">Shipping</a></nav></header>
+<section><h2 id="care">Care</h2><p>Copy.</p></section>
+<section><h2 id="shipping">Shipping</h2><p>Copy.</p></section>
+</body></html>

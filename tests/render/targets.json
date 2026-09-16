@@ -1,0 +1,31 @@
+{
+  "_comment": "Ported from CAG 2026-09-16. families_by_page_type scopes which invariant families run per page type. IMG/LAYOUT/NAV are BLOCKING; SEM/SCHEMA/CSS/DUP/A11Y/FORM enter ADVISORY until they have passed their fixtures AND produced zero false reports across one full cluster - the same promotion rule the source harness uses. Registering a check is not wiring it in: on CAG the A11Y family was registered and declared blocking a full day before it appeared here, so it examined ZERO pages while reporting as a shipped gate (Guard 2 in build_scorecard.mjs is what caught it). meta.spec.ts now asserts the symmetric difference between registered families and families named here is empty. DUP's sibling set is every built page (lib/dupCorpus.ts siblingSlugsFor), never 'targets of the same page type', so no page type compares against nothing. Foundation is a verbatim migration of WordPress markup: many failures are expected on migrated bodies and form the baseline for projects 3 and 4; failures caused by the shell (SiteHeader/SiteFooter/Breadcrumb/BaseLayout/PuppyList/ContactForm) are fixed here. `corpus: true` marks the frozen benchmark sample - one page per page type - so the quality trend does not depend on which pages happened to be built that month.",
+  "families_by_page_type": {
+    "home": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "for-sale": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "puppy": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "interior": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "location": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "hub": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"],
+    "blog": ["IMG", "LAYOUT", "NAV", "SEM", "SCHEMA", "CSS", "DUP", "A11Y", "FORM"]
+  },
+  "pages": [
+    { "slug": "index", "page_type": "home", "corpus": true },
+    { "slug": "buy-blue-staffy-puppies-uk", "page_type": "for-sale", "corpus": true },
+    { "slug": "blue-staffy-pup-sale-uk", "page_type": "for-sale", "corpus": false },
+    { "slug": "buy-staffy-puppies-for-sale-uk", "page_type": "for-sale", "corpus": false },
+    { "slug": "available-puppies/roman", "page_type": "puppy", "corpus": true },
+    { "slug": "available-puppies", "page_type": "hub", "corpus": false },
+    { "slug": "uk-blue-staffy-puppy-buying-guide", "page_type": "interior", "corpus": true },
+    { "slug": "uk-staffordshire-bull-terrier-guide", "page_type": "interior", "corpus": false },
+    { "slug": "blue-staffy-health-uk", "page_type": "interior", "corpus": false },
+    { "slug": "blue-staffy-uk-breeders", "page_type": "interior", "corpus": false },
+    { "slug": "uk-blue-staffy-breeders-contact", "page_type": "interior", "corpus": false },
+    { "slug": "privacy-policy-uk", "page_type": "interior", "corpus": false },
+    { "slug": "uk-locations", "page_type": "hub", "corpus": true },
+    { "slug": "uk-locations/blue-staffy-puppies-birmingham", "page_type": "location", "corpus": true },
+    { "slug": "uk-locations/blue-staffy-puppies-uk", "page_type": "location", "corpus": false },
+    { "slug": "blue-staffy-blog-guides", "page_type": "blog", "corpus": true },
+    { "slug": "blog", "page_type": "hub", "corpus": false }
+  ]
+}

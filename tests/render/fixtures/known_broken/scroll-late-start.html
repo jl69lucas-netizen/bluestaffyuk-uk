@@ -1,0 +1,52 @@
+<!doctype html>
+<!--
+  Pins the race that made `nav-jump-target-lands` — a BLOCKING check — nondeterministic.
+
+  A scroll that has NOT STARTED looks exactly like one that has FINISHED: scrollY simply
+  equals its previous value. `waitForScrollSettle` counted five unchanged ticks (5 * 32ms
+  = 160ms) as "settled", so when a fragment navigation's first animation frame landed
+  later than that, the probe reported `settled: true` at the PRE-CLICK position and the
+  check recorded the target as missed at its raw document offset.
+
+  Observed on the real site 2026-08-02: two runs of the same commit against the same
+  dist/ scored /african-grey-parrot-adoption-cost/ @375 clean, then failing with
+  `#reserve@26059px`. 26059 is where #reserve sits in the document, i.e. the page never
+  moved at all.
+
+  This fixture makes the late start deterministic rather than load-dependent: the link
+  defers its scroll by 250ms, which is past the 160ms stability threshold and inside the
+  400ms start grace. A probe without the grace resolves settled at y=0 and this test's
+  expectation on the landed position fails.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>late-starting scroll — settle-probe fixture</title>
+  <style>
+    body { margin: 0; font: 16px/1.5 system-ui, sans-serif; }
+    /* The condition under which the real defect appeared. */
+    html { scroll-behavior: smooth; }
+    .spacer { height: 26000px; background: linear-gradient(#fff, #eee); }
+    #reserve { padding: 24px; background: #2D6A4F; color: #fff; }
+    a { display: inline-block; padding: 12px 16px; }
+  </style>
+</head>
+<body>
+  <a id="jump" href="#reserve">Reserve this bird</a>
+  <div class="spacer"></div>
+  <h2 id="reserve">Reserve</h2>
+  <div style="height:1200px"></div>
+
+  <script>
+    // Defer the scroll past the probe's stability threshold. Deliberately NOT a slow
+    // smooth animation: the failure being pinned is a LATE START, and an instant jump
+    // after a delay isolates that from animation duration, which `maxMs` already covers.
+    document.getElementById('jump').addEventListener('click', function (e) {
+      e.preventDefault();
+      setTimeout(function () {
+        document.getElementById('reserve').scrollIntoView({ behavior: 'instant' });
+      }, 250);
+    });
+  </script>
+</body>
+</html>

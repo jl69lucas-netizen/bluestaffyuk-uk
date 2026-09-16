@@ -43,7 +43,12 @@ SRCSET_RE = re.compile(r'srcset\s*=\s*["\']([^"\']+)["\']', re.I)
 # Anchored to root-relative hrefs so an external `https://partner.example/feed/` is not a
 # leftover, and only flagged when the path does not exist in dist — a future first-party
 # `/…/feed/` page would be a real page, not a WordPress remnant.
-HREF_FEED_RE = re.compile(r'href\s*=\s*["\'](/[^"\']*/feed/[^"\']*)["\']', re.I)
+# `(/(?:[^"\']*/)?feed/…)`, not `(/[^"\']*/feed/…)`: the middle path is OPTIONAL. The
+# earlier form required at least one segment before `/feed/`, so the single most common
+# WordPress remnant of all — a bare root `href="/feed/"` — matched nothing and shipped
+# silently while the check reported PASS. Regression found 2026-09-16; the test below it
+# (`test_bare_root_feed_href_is_flagged`) is what pins it now.
+HREF_FEED_RE = re.compile(r'href\s*=\s*["\'](/(?:[^"\']*/)?feed/[^"\']*)["\']', re.I)
 
 SKIP_PREFIXES = ("#", "mailto:", "tel:", "javascript:", "//", "data:")
 
@@ -146,15 +151,26 @@ def page_refs(html_text):
 
 
 def shadowed_rules(rules):
-    """Concrete rules that an earlier wildcard/placeholder rule already matches.
+    """Concrete rules an earlier rule already matches — a wildcard, or the same source again.
 
     First match wins, so such a rule is unreachable: its target is never used and editing
     it has no effect. Dead configuration, reported with the rule that swallows it.
     """
     problems = []
+    seen = {}
     for i, (src, dest) in enumerate(rules):
         if not is_concrete(src):
             continue
+        # A concrete `from` repeated later is unreachable for the same first-match-wins
+        # reason a wildcard shadows one, and it is the easier mistake to make: two rules
+        # with the SAME source and DIFFERENT targets look like a deliberate override, and
+        # the second one silently never applies. Reported separately from the wildcard case
+        # so the message names the real cause (a duplicate, not a pattern).
+        if src in seen:
+            problems.append("FAIL duplicate rule: %s -> %s is unreachable behind the "
+                            "earlier %s -> %s" % (src, dest, src, seen[src]))
+            continue
+        seen[src] = dest
         for earlier, earlier_dest in rules[:i]:
             if is_concrete(earlier):
                 continue

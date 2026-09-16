@@ -1,0 +1,24 @@
+<!doctype html><meta charset=utf-8><title>known-good: image before the prose under every H3</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>body{margin:0;font:16px/1.5 system-ui;padding:16px}.sec-img{width:100%;height:auto;display:block}</style>
+<main>
+  <h2>A section heading</h2>
+  <!-- Still lead-paragraph-first, and still correct — the check must stay silent on it. -->
+  <p>An H2 lead paragraph that precedes its image, which is the house order for H2 blocks and must not be reported.</p>
+  <figure><img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="h2 image" width="1" height="1"></figure>
+
+  <h3>An H3 with its image first</h3>
+  <figure><img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="early image" width="1" height="1"></figure>
+  <p>This paragraph is longer than the forty-character prose floor and correctly follows the sectional image above it.</p>
+
+  <h3>A second compliant H3</h3>
+  <figure><img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="second early image" width="1" height="1"></figure>
+  <p>Another block of real prose, again placed after the sectional image that belongs to this heading.</p>
+
+  <h3>An H3 that owns no image at all</h3>
+  <p>This block has prose and no sectional image, so there is nothing to order here.</p>
+
+  <h3>An H3 with only a decorative seam</h3>
+  <p>A seam emblem is decorative and carries no sec-img class, so it must not register as this block's image.</p>
+  <div class="seam-wrap"><img class="seam" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" width="1" height="1"></div>
+</main>

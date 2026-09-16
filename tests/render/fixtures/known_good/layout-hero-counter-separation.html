@@ -1,0 +1,21 @@
+<!doctype html><meta charset=utf-8><title>known-good: counter strip separated from the hero</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+  body { margin:0; background:#faf7f4; font:16px/1.5 system-ui; }
+  .phero { padding:24px; }
+  /* Both halves of the rule: a tone shift AND a rule. */
+  .counter-wrap { position:relative; padding:20px 0 22px; background:#f6efe8;
+    border-top:1px solid #ede5dc; border-bottom:1px solid #ede5dc; }
+  .counter-wrap::before { content:''; position:absolute; inset:0 0 auto 0; height:3px;
+    background:linear-gradient(90deg,#2D6A4F 0%,#e8604c 100%); }
+  .counter-row { display:flex; gap:10px; padding:0 24px; }
+  .cs { min-height:74px; padding:10px 13px; background:#fff; border:1px solid #ede5dc; }
+</style>
+<header class="phero"><h1>Proven pairs</h1><p>Hero copy sits above a clearly separated band.</p></header>
+<div class="counter-wrap">
+  <div class="counter-row">
+    <div class="cs"><span class="num">3</span><span class="cs-l">Proven Pairs</span></div>
+    <div class="cs"><span class="num">7</span><span class="cs-l">Clutches Hatched</span></div>
+  </div>
+</div>
+<main><p>Body copy follows.</p></main>

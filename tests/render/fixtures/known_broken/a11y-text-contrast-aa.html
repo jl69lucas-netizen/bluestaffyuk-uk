@@ -1,0 +1,23 @@
+<!doctype html><meta charset=utf-8><title>known-broken: .ti sage on the white dial</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+  body { margin:0; background:#faf7f4; font:16px/1.5 system-ui; padding:16px; }
+  /* The real 2026-08-07 failure, reduced: the dial was re-themed to a white bed and the
+     index numeral kept its dark-theme sage. Neither declaration is wrong alone. */
+  .tdial { background:#fff; padding:12px; border-radius:16px; }
+  .ti { color:#7ba98d; font-size:13px; }   /* 2.66:1 on white — MUST fail */
+  .tt { color:#2b2018; font-size:13px; }   /* 15.9:1 — must NOT be flagged */
+  /* Not judgeable, and must be skipped rather than guessed at: */
+  .over-photo { background-image:linear-gradient(90deg,#fff,#000); color:#888; }
+  .over-glass { background:rgba(255,255,255,.5); color:#999; }
+  /* An opaque oklab() dark grey on forest green is a REAL failure (~1.6:1) and must still fire. */
+  .nav-green { background:#2D6A4F; padding:8px; }
+  .nav-green .dim { color: oklab(0.42 -0.03 0.01); font-size:15px; }
+</style>
+<nav class="tdial"><ul>
+  <li><a><span class="ti">1</span><span class="tt">The Three Pairs</span></a></li>
+  <li><a><span class="ti">2</span><span class="tt">What Proven Means</span></a></li>
+</ul></nav>
+<p class="over-photo">Text on a gradient has no single backdrop colour.</p>
+<p class="over-glass">Text on a translucent layer composites by paint order.</p>
+<nav class="nav-green"><span class="dim">Shop Parrots</span> <span class="dim">Compare</span></nav>

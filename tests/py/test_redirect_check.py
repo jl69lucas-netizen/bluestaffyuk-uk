@@ -169,3 +169,40 @@ def test_summary_notes_refs_are_per_page_distinct(tmp_path, capsys):
     main(root=root, dist=dist)
     out = capsys.readouterr().out
     assert "examined 0 redirects, 2 internal refs (distinct per page)" in out
+
+
+def test_bare_root_feed_href_is_flagged(tmp_path, capsys):
+    """`href="/feed/"` — the single most common WordPress remnant — must be caught.
+
+    Regression: HREF_FEED_RE required at least one path segment before `/feed/`
+    (`/[^"']*/feed/`), so a bare root feed link matched nothing and the check reported PASS
+    on a page that still advertised the WordPress feed.
+    """
+    root, dist = tmp_path / "root", tmp_path / "dist"
+    _write(root / "data" / "redirects.json", json.dumps({"redirects": []}))
+    _write(dist / "index.html", '<a href="/feed/">Entries RSS</a>')
+    with pytest.raises(SystemExit):
+        main(root=root, dist=dist)
+    assert "/feed/" in capsys.readouterr().out
+
+
+def test_built_root_feed_page_is_not_a_leftover(tmp_path):
+    """The existence escape hatch still applies to the bare root form, not just nested ones."""
+    root, dist = tmp_path / "root", tmp_path / "dist"
+    _write(root / "data" / "redirects.json", json.dumps({"redirects": []}))
+    _write(dist / "index.html", '<a href="/feed/">our feed</a>')
+    _write(dist / "feed" / "index.html", "<p>built</p>")
+    main(root=root, dist=dist)          # must not raise
+
+
+def test_duplicate_concrete_rule_is_dead_configuration():
+    """Two rules with the same `from` look like an override; the second never applies."""
+    rules = [("/old-page/", "/new-page/"), ("/old-page/", "/somewhere-else/")]
+    problems = shadowed_rules(rules)
+    assert len(problems) == 1
+    assert "duplicate rule" in problems[0]
+    assert "/somewhere-else/" in problems[0] and "/new-page/" in problems[0]
+    # Distinct sources are not duplicates, and an exact repeat of source AND target is
+    # still reported — a copy-paste twice over is still a line that does nothing.
+    assert shadowed_rules([("/a/", "/x/"), ("/b/", "/x/")]) == []
+    assert len(shadowed_rules([("/a/", "/x/"), ("/a/", "/x/")])) == 1

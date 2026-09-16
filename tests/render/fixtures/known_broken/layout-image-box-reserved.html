@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>image box grows on load</title>
+<style>
+body{margin:0;font:16px/1.5 system-ui}
+.hero{display:grid;grid-template-columns:minmax(0,1fr);padding:0 16px}
+/* margin-left:auto shrink-wraps the grid item: before the photo loads it is only as wide as the chips */
+.field{display:grid;gap:8px;max-width:520px;margin-left:auto;min-width:0}
+.field img{display:block;width:100%;height:auto;aspect-ratio:2/1;object-fit:cover}
+.chips{display:flex;gap:6px}.chips a{padding:4px 8px;border:1px solid #999}
+</style></head><body>
+<section class="hero">
+  <div class="field">
+    <figure style="margin:0"><img src="../assets/wide-1600.png" width="1600" height="800" alt="Congo African Grey on a stand in a family living room"></figure>
+    <nav class="chips"><a href="#a">AZ</a><a href="#b">CA</a><a href="#c">TX</a></nav>
+  </div>
+  <div class="copy"><h1>African Greys Near You</h1><p>Hero copy that must not move when the photo arrives.</p></div>
+</section>
+</body></html>

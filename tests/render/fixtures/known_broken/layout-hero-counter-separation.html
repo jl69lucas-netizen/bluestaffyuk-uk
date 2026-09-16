@@ -1,0 +1,19 @@
+<!doctype html><meta charset=utf-8><title>known-broken: counter strip flush against the hero</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+  body { margin:0; background:#faf7f4; font:16px/1.5 system-ui; }
+  /* Same background as the page surface, no border, no ::before bar.
+     This is exactly what shipped on the breeding-pair page before 2026-08-07. */
+  .phero { padding:24px; }
+  .counter-wrap { padding:6px 0 18px; border:0; }
+  .counter-row { display:flex; gap:10px; padding:0 24px; }
+  .cs { min-height:74px; padding:10px 13px; background:#fff; border:1px solid #ede5dc; }
+</style>
+<header class="phero"><h1>Proven pairs</h1><p>Hero copy sits directly above the figures.</p></header>
+<div class="counter-wrap">
+  <div class="counter-row">
+    <div class="cs"><span class="num">3</span><span class="cs-l">Proven Pairs</span></div>
+    <div class="cs"><span class="num">7</span><span class="cs-l">Clutches Hatched</span></div>
+  </div>
+</div>
+<main><p>Body copy follows.</p></main>

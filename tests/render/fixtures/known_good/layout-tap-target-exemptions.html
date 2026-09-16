@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>tap-target exemptions — all of these are CORRECT</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; font-size: 16px; padding: 20px; }
+
+  /* The WCAG-mandated skip link, in the standard 1px-clip pattern. It has client
+     rects and is not visibility:hidden, so a naive size check counts it — and then
+     reports an accessibility FEATURE as an accessibility defect. */
+  .skip-link { position: absolute; width: 1px; height: 1px; overflow: hidden;
+               clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+  p { max-width: 60ch; line-height: 1.65; margin-bottom: 1em; }
+  .controls { display: flex; gap: 12px; margin-top: 20px; }
+  .controls a, .controls button { display: inline-flex; align-items: center;
+    justify-content: center; min-width: 44px; min-height: 44px; padding: 0 16px;
+    border: 1px solid #e7ddd3; border-radius: 50px; text-decoration: none; }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <main id="main">
+    <!-- Inline links in a block of text. WCAG 2.2 SC 2.5.8 exempts these explicitly:
+         the target is in a sentence, so enlarging it would break the line box. -->
+    <p>
+      Our <a href="/congo-african-grey-for-sale/">Congo African Grey guide</a> covers
+      diet, weaning and documentation in depth, and the
+      <a href="https://www.parrottrust.org/">World Parrot Trust</a> keeps a good
+      reference on CITES status for anyone comparing breeders.
+    </p>
+    <p>
+      Every chick is <a href="/dna-tested-african-grey-for-sale/">DNA-sexed</a> before
+      it leaves us.
+    </p>
+
+    <!-- Real controls, all comfortably above 24x24. -->
+    <div class="controls">
+      <a href="/contact-us/">Reserve a bird</a>
+      <button type="button">Filter</button>
+    </div>
+
+    <!-- A 13x13 checkbox whose LABEL is the target. Clicking anywhere in the label
+         toggles it, so the effective target is the label, not the input. Measured on
+         the live care-guide and health-guarantee pages, where all 12 flagged controls
+         were exactly this pattern.
+
+         The adjacent button is load-bearing and must stay flush. It puts another
+         target inside the input's 24px circle, so the SPACING exception cannot rescue
+         this case and only the label rule can. Without it, an earlier version of this
+         fixture passed with the label rule DELETED — it was being exempted for
+         spacing instead, and would have proved nothing. -->
+    <div style="display:flex;align-items:center;gap:0;margin-top:40px;">
+      <label class="pill" style="display:inline-flex;align-items:center;gap:8px;height:44px;padding:0;border:1px solid #e7ddd3;border-radius:12px 0 0 12px;">
+        <span style="padding-left:12px;">Reserve Roys</span>
+        <input type="checkbox" name="bird_selection" value="roys" style="margin:0;">
+      </label>
+      <button type="button" style="height:44px;min-width:44px;margin:0;border:1px solid #e7ddd3;border-radius:0 12px 12px 0;">Go</button>
+    </div>
+
+    <!-- An ISOLATED undersized link: a card title, 18px tall, with no other target
+         within 24px in any direction. SC 2.5.8's spacing exception covers exactly
+         this, and the standard is what the check must implement — not "24px always". -->
+    <div style="margin-top:80px;margin-bottom:80px;">
+      <h3 class="bird-name" style="font-size:15px;line-height:18px;margin:0;">
+        <a href="/available/evie/" style="text-decoration:none;">Evie</a>
+      </h3>
+    </div>
+  </main>
+</body>
+</html>
