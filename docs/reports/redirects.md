@@ -19,4 +19,4 @@ None.
 
 SITE_URL_PLACEHOLDER occurrences: 545 (expected until launch)
 
-examined 18 redirects, 1915 internal refs (distinct per page); 0 redirected refs; 0 problems
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems

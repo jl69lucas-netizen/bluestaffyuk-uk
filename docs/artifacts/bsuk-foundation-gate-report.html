@@ -1,0 +1,548 @@
+<title>BSUK Foundation Gate Report</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.md blockquote{border-left:3px solid var(--blue);margin:10px 0;padding:2px 0 2px 14px;color:var(--ink-2)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild &middot; Project 1 close-out</p><h1 class="title">Foundation gate report</h1></div>
+<div class="meta"><span class="pill">2026-09-16</span> <span class="pill">branch: foundation</span><br>docs/reports/foundation-gate-report.md<br>docs/reports/foundation-migration.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy both reports as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Summary">
+BlueStaffyUK rebuild, project 1 of 6. Written by hand from the real outputs of the runs
+recorded in `docs/reports/foundation-run.log`, the render harness, and the Lighthouse
+sweep. Date 2026-09-16. Branch `foundation`, no remote, nothing pushed.
+
+Spec: `docs/superpowers/specs/2026-09-15-foundation-design.md` §5 is the definition of
+done; the checklist at the end of this report answers it line by line.
+
+Read the two severities in this report differently. The **Python gates** (parity,
+redirects, schema, sitemaps) are zero-tolerance and are all at zero. The **render harness**
+reports a large blocking baseline, and that is the intended outcome, not a failure:
+Foundation migrates WordPress markup verbatim, so the harness is measuring the old site's
+body HTML through a new shell. Those rows are the starting line for projects 3 and 4.
+
+---
+</script>
+<script type="text/markdown" data-title="Build">
+| | |
+| --- | --- |
+| Command | `npm run build` (Astro 6.3.8, pinned) |
+| Pages built | **49** `index.html` |
+| Composition | 11 rich pages + 28 locations + 6 puppy pages + 1 blog post + 3 new index pages |
+| Postbuild | `scripts/generate_sitemaps.py` — 5 shards |
+| Exit | clean, both runs |
+</script>
+<script type="text/markdown" data-title="Parity — `scripts/migration_parity.py`">
+```
+examined 40 pages, 0 failing
+```
+
+40 old URLs compared old body → expected body → built body. Headings match exactly on every
+page; no page lost more than the 2% whitespace band; embeds never decreased. Full table in
+`docs/reports/parity.md` and embedded in `docs/reports/foundation-migration.md`.
+</script>
+<script type="text/markdown" data-title="Redirects — `scripts/redirect_check.py`">
+```
+examined 18 redirects, 1964 internal refs (distinct per page); 0 redirected refs; 0 problems
+```
+
+Every row in `data/redirects.json` resolves in one hop; every root-relative `href`/`src` on
+every built page resolves to a real route; zero `wp-json`, `/feed/`, `xmlrpc.php` remnants.
+"0 redirected refs" is the stronger statement: no internal link points at a URL that then
+redirects, so nothing on the site spends a hop.
+</script>
+<script type="text/markdown" data-title="Schema — `scripts/schema_check.py`">
+```
+examined 49 pages; 0 blocking, 0 advisory
+```
+
+Every `application/ld+json` block on every page parses; no `telephone` still holding
+`PHONE_PLACEHOLDER`; no `InStock` outside an available puppy's page; no dangling `@id`
+after the legacy Rank Math graph was deduped; every `Product` carries `offers`; no `Offer`
+states price without currency.
+
+Fixed at close-out: the `InStock` test required `isinstance(availability, str)`, and
+`_strip_availability` removed the key before the prose fallback scan, so
+`"availability": ["https://schema.org/InStock"]` — the list form — was invisible to **both**
+the blocking test and the advisory backstop. The test now runs against `json.dumps` of the
+value, with two pytest cases pinning the list form blocking off a puppy page and permitted
+on an available one.
+</script>
+<script type="text/markdown" data-title="Sitemaps — `scripts/sitemap_check.py`">
+```
+31 of 49 built pages are indexable; each must appear in exactly one URL shard.
+examined 49 built pages, 5 shards, 35 sitemap urls; 0 problems
+```
+
+18 pages are deliberately noindexed (17 stub locations + the thank-you page) and correctly
+absent from every shard. `lastmod` is the build date throughout — see the plan addendum:
+the WordPress export carries no trustworthy per-page modification date, and inventing one
+would tell Google something untrue.
+</script>
+<script type="text/markdown" data-title="Placeholders — `scripts/placeholder_check.py`">
+```
+SITE_URL_PLACEHOLDER       586 occurrence(s) in 56 file(s)
+PHONE_PLACEHOLDER            0 occurrence(s) in 0 file(s)
+FORMSPREE_ID_PLACEHOLDER     0 occurrence(s) in 0 file(s)
+TOTAL                      586
+placeholders: 586 (advisory — set BSUK_RELEASE=1 to make this blocking)
+```
+
+The gate always counts and always prints; it fails only under `BSUK_RELEASE=1`. Foundation
+is *supposed* to ship stand-ins — the domain does not exist yet — and launch is not.
+Verified in both modes: pre-launch exits 0 with 586 counted, `BSUK_RELEASE=1` exits 1 and
+names the files. Wired as the last step of `npm run check:all`.
+
+The two zeros are real, not a broken scan: `PHONE_PLACEHOLDER` lives in `data/settings.json`
+and the extractor drops the key rather than rendering it, and `ContactForm.astro` renders a
+local stub rather than a Formspree action while `PUBLIC_FORMSPREE_ID` is unset.
+</script>
+<script type="text/markdown" data-title="Pytest">
+```
+173 passed, 146 warnings in 50.2s
+```
+
+173 tests across 16 files in `tests/py/`, green on both runs. (+2 at close-out for the
+list-valued `availability` case.)
+</script>
+<script type="text/markdown" data-title="Render harness — meta gate (`tests/render/meta.spec.ts`)">
+```
+306 passed, 36 skipped        (run 1)
+306 passed, 36 skipped        (run 2)
+```
+
+The skips are viewport-independent tests declared once and skipped in the two non-primary
+projects — by design, not by failure.
+
+| | |
+| --- | --- |
+| Families registered in `lib/registry.ts` | 9 — IMG, LAYOUT, NAV, CSS, SEM, SCHEMA, DUP, A11Y, FORM |
+| Families wired in `targets.json` | 9, on all 7 page types |
+| Symmetric difference | **empty**, asserted in both directions |
+| Checks registered | 25 |
+| Checks examining > 0 units on real pages | 22 |
+| Checks examining 0 | 3, all declared in `deferred_checks` (below) |
+| Total units examined across the corpus | 66,313 |
+
+Both directions are asserted, and that matters: a family registered but wired nowhere runs
+on zero pages while reporting as a shipped gate (this is exactly how `a11y-text-contrast-aa`
+shipped blocking and examined nothing for a day on CAG), and a family named in
+`targets.json` that no check registers is a typo that silently widens nothing.
+</script>
+<script type="text/markdown" data-title="Render harness — pages run (`tests/render/pages.spec.ts`)">
+17 target pages × 3 viewports (375, 768, 1280) = **51 partials**, all written; the run
+produced the expected 51 of 51 against the manifest, so no page crashed the harness (Guard 1).
+
+**Overrides used: none.** No defect anywhere in this baseline is suppressed.
+
+### Blocking baseline by check id
+
+These fail the pages spec, and they are the migrated content's baseline — **not Foundation
+defects**. Each one is a property of the WordPress body HTML that Foundation carried across
+verbatim, per spec §2, and the `targets.json` comment ("Foundation is a verbatim migration
+of WordPress markup: many failures are expected on migrated bodies and form the baseline for
+projects 3 and 4; failures caused by the shell … are fixed here"). Every shell-caused row —
+header logo size, mobile scroll offset, contact-form overflow, header measurement — *was*
+fixed here, which is why the list below contains no shell rows.
+
+| Check id | Family | Pages | Rows | Instances | Units examined | Cause |
+| --- | --- | ---: | ---: | ---: | ---: | --- |
+| `schema-date-modified-present` | SCHEMA | 6 | 18 | 18 | 216 | The export has no per-page modification date; `scripts/generate_page_dates.py` is project 4's. |
+| `nav-jump-target-lands` | NAV | 6 | 18 | 21 | 93 | In-page anchors in migrated bodies pointing at targets the old theme's chrome offset differently. |
+| `img-srcset-within-2x` | IMG | 6 | 15 | 62 | 402 | WordPress `srcset` candidate sets whose widest and narrowest candidates exceed a 2x ratio. |
+| `sem-heading-order` | SEM | 3 | 9 | 9 | 1,407 | Heading levels skipped inside migrated bodies (H2 → H4). |
+| `layout-tap-target-size` | LAYOUT | 2 | 4 | 26 | 2,907 | Inline links in dense migrated prose below the 24px target. |
+| `schema-no-visible-date` | SCHEMA | 1 | 3 | 3 | 51 | A visible date in migrated body copy with no matching schema date. |
+| **Total** | | | **67** | **130** | | |
+
+### Advisory baseline by check id
+
+| Check id | Family | Pages | Rows | Instances | Units examined |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `sem-all-six-levels` | SEM | 17 | 51 | 177 | 1,407 |
+| `css-class-resolves` | CSS | 17 | 51 | 6,534 | 28,974 |
+| `dup-no-sibling-crossover` | DUP | 14 | 42 | 477 | 2,448 |
+| `sem-title-case-headings` | SEM | 11 | 33 | 264 | 1,401 |
+| `sem-section-opening-paragraph` | SEM | 8 | 24 | 72 | 1,398 |
+| `form-inquiry-contract` | FORM | 1 | 6 | 21 | 3 |
+| `a11y-text-contrast-aa` | A11Y | 1 | 3 | 6 | 11,151 |
+| **Total** | | | **210** | **7,551** | |
+
+**The 42 DUP rows are not a BSUK duplication measurement.** `lib/dupCorpus.ts` reads the
+whitelist from `scripts/dup_content_audit.py`, and that file is still CAG's **verbatim** —
+its exempt phrases are parrot inventory lines ("ships nationwide $185 airport $350 home",
+"browse by kind all birds 6 congo 3 timneh 2"). None of them match anything on a Staffy
+site, so nothing is exempted and every mandated sitewide line counts as a crossover. It
+cannot simply be swapped: the meta gate's `dup-adjacent-to-whitelist` fixture is built on
+those exact stems, so re-basing the whitelist means re-basing the fixture with it. That is
+project 2's port work. Until then read the DUP number as "unfiltered", not as a finding.
+
+### Deferred checks
+
+Registered, wired, and still passing both fixtures — but they encode conventions the
+migrated WordPress markup does not use, so they examine zero nodes on every built page and
+would fail `build_scorecard.mjs` Guard 2. They are listed in `targets.json > deferred_checks`
+with a reason that must state its own end condition, and Guard 2 **prints** rather than
+silences them:
+
+| Check id | Reason | Ends when |
+| --- | --- | --- |
+| `layout-hero-counter-separation` | BSUK has no counter strip until project 3 adopts the kit | any built page ships a counter strip |
+| `layout-h3-image-first` | no H3-owned `.sec-img` convention on migrated WordPress bodies | project 3 re-authors bodies so an H3 owns its `.sec-img` |
+| `sem-statement-label-visible` | no `.stmt-label` convention yet | the kit introduces `.stmt-label` |
+
+Exempting an id from Guard 2 switches off the one alarm that would notice the check had
+rotted, so the exemption buys the proof back by other means. `meta.spec.ts` asserts, for
+every deferred id: it names a registered check; its reason states a promotion condition; it
+still **fires** on its `known_broken` fixture; it is still **silent** on `known_good`; and
+it examined **zero** in the latest scorecard. `build_scorecard.mjs` additionally prints
+`DEFERRED-STALE` for any entry that starts examining nodes again.
+</script>
+<script type="text/markdown" data-title="Scorecard">
+`node scripts/build_scorecard.mjs --run first`
+
+```
+DEFERRED (…) layout-hero-counter-separation
+DEFERRED (…) layout-h3-image-first
+DEFERRED (…) sem-statement-label-visible
+---
+277 defect ROWS across 17 pages (run=first, harness 2.0.0).
+```
+
+277 rows = 67 blocking + 210 advisory. Rows are comparable across families; instances
+(7,681) are not — a row is one failure mode of one check at one viewport, which is the unit
+that survives being compared between `layout-min-font-size` (one row, many nodes) and
+`nav-jump-target-lands` (one row per anchor). Per-page cards, including `examined_by_check`,
+are in `data/quality/scorecards/*.json` and are committed as the project 3/4 baseline.
+
+Guard 1 (51 of 51 partials present) and Guard 2 (no undeclared zero-examined check) both
+pass. Zero overrides in effect.
+</script>
+<script type="text/markdown" data-title="Lighthouse baseline">
+Warm median of 3 runs per page type against `npx astro preview` on localhost, headless
+Chrome, Lighthouse 13.4.1, default mobile emulation. **Not a gate in Foundation** (spec §5);
+recorded as the number projects 3–6 have to not make worse. Raw JSON is written to
+`docs/reports/lh/` and gitignored — only these medians are committed.
+
+| Page type | URL | Perf | A11y | Best practices | SEO | FCP | LCP | TBT | CLS | Speed Index |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| home | `/` | 99 | 100 | 100 | 100 | 908 ms | 1552 ms | 77 ms | 0.000 | 921 ms |
+| for-sale | `/buy-blue-staffy-puppies-uk/` | 99 | 100 | 100 | 92 | 902 ms | 1689 ms | 75 ms | 0.000 | 902 ms |
+| puppy | `/available-puppies/roman/` | 98 | 100 | 100 | 100 | 671 ms | 2277 ms | 88 ms | 0.000 | 671 ms |
+| location | `/uk-locations/blue-staffy-puppies-uk/` | 100 | 100 | 100 | 92 | 874 ms | 1453 ms | 69 ms | 0.000 | 874 ms |
+| blog | `/blue-staffy-blog-guides/` | 100 | 100 | 100 | 100 | 667 ms | 758 ms | 63 ms | 0.001 | 667 ms |
+
+Two notes on reading these. **Localhost flatters network metrics** — LCP and Speed Index
+here carry no real-world latency, so treat the *category scores* as the baseline and the
+millisecond columns as relative between page types. And the two **SEO 92s are one audit**,
+`link-text` ("links do not have descriptive text") on migrated body copy: generic anchor
+text like "read more" inside the WordPress prose. That is content work for project 4, and
+it is the only SEO deduction anywhere in the sweep.
+
+The puppy page's LCP (2277 ms) is the worst of the five and is the pup hero image; the
+`img-srcset-within-2x` blocking rows above are on the same images. Project 3's image work
+should move both numbers together.
+</script>
+<script type="text/markdown" data-title="Second-run confirmation">
+Spec §5: "every check runs twice; both runs must be clean."
+
+The full pipeline — `extract` → `redirects` → `llms` → `build` → `check:all` → `test:py` —
+was run twice back to back into `docs/reports/foundation-run.log`. The two halves of that
+log are **byte-identical after normalising elapsed times**, verified programmatically rather
+than by eye:
+
+| Output | Run 1 | Run 2 |
+| --- | --- | --- |
+| Parity | `examined 40 pages, 0 failing` | `examined 40 pages, 0 failing` |
+| Redirects | `18 redirects, 1964 internal refs; 0 redirected refs; 0 problems` | identical |
+| Schema | `examined 49 pages; 0 blocking, 0 advisory` | identical |
+| Sitemaps | `49 built pages, 5 shards, 35 sitemap urls; 0 problems` | identical |
+| Placeholders | `586 (advisory)` | identical |
+| Pytest | `173 passed` | `173 passed` |
+
+The meta gate was then run twice on its own: `306 passed, 36 skipped` both times.
+
+The stronger evidence that the build is deterministic is `git status --short`: after two
+full pipeline runs the only modified tracked files are under `docs/reports/`. Every
+generated file under `public/` and every file under `data/` came out byte-identical, and the
+harness's own staleness tests (`checkDistFreshness`) refuse to measure a `dist/` older than
+`src/`, so a stale build cannot masquerade as a passing one.
+</script>
+<script type="text/markdown" data-title="Definition of done — spec §5">
+| Requirement | Status | Evidence |
+| --- | --- | --- |
+| `astro build` clean | ✅ | 49 pages, clean exit, both runs |
+| `meta.spec.ts` + `pages.spec.ts` ported; targets.json lists the required pages | ✅ | 17 targets: 11 rich + `/uk-locations/` + 2 locations + 1 pup + 1 post + `/blog/` + `/available-puppies/` |
+| Meta gate reports non-zero examined for every registered family; a family wired to no page type fails | ✅ | 9/9 families wired, symmetric difference empty and asserted both ways; 66,313 units examined; the 3 zero-examined *checks* are declared, printed and fixture-proven |
+| `migration_parity.py` — ≤2% drop, whitelisted removals | ✅ | `examined 40 pages, 0 failing` |
+| `redirect_check.py` — one hop, every internal href 200, no WP remnants | ✅ | `18 redirects, 1964 internal refs; 0 redirected refs; 0 problems` |
+| `schema_check.py` — parses, no duplicate types, no false InStock, no placeholder telephone | ✅ | `49 pages; 0 blocking, 0 advisory`; list-form `availability` hole closed at close-out |
+| `sitemap_check.py` — every page in exactly one sitemap, nothing noindexed listed, every loc 200 | ✅ | `49 built pages, 5 shards, 35 sitemap urls; 0 problems` |
+| Lighthouse warm median of 3 per page type recorded, not a gate | ✅ | table above; 98–100 performance, 100 accessibility and best practices across all five |
+| Every check runs twice; both runs clean | ✅ | `docs/reports/foundation-run.log`, halves identical after time normalisation; meta gate twice |
+| `foundation-migration.md` written | ✅ | `docs/reports/foundation-migration.md`, generated by `scripts/build_migration_report.py` |
+| `foundation-gate-report.md` written | ✅ | this file |
+| Published as an Artifact | ⏳ | source built at `docs/artifacts/bsuk-foundation-gate-report.html`; publishing is the controller's step |
+| Old MCP untouched | ✅ | nothing in this project touches it |
+| No remote, nothing pushed | ✅ | `git remote -v` prints nothing |
+| Git history in `~/Downloads/BSUK` | ✅ | 44 commits on branch `foundation` (this report is the 44th) |
+</script>
+<script type="text/markdown" data-title="Out of scope for Foundation">
+Restated from spec §5 so nothing below is read as an omission: any content rewrite; the
+design system and components; the four logos; the location-page rebuild; the comparison
+cluster; the two new blog posts; deleting the old MCP; GSC / GA4 / Bing; the new domain and
+the new phone number.
+</script>
+<script type="text/markdown" data-title="Open items for later projects">
+1. **`FORM_ENDPOINT` contract is CAG's.** `form-inquiry-contract` reports 6 advisory rows on
+   the contact page against a contract written for the parrot site's fields. Re-basing it is
+   part of the project 2 system transfer, together with the Formspree endpoint itself.
+2. **The DUP whitelist is CAG's verbatim.** See the note above the advisory table — the 42
+   DUP rows are unfiltered, not measured. Re-basing the whitelist means re-basing the
+   `dup-adjacent-to-whitelist` fixture that depends on its exact stems. Project 2.
+3. **The orphan check is blinded by the catch-all route.** `builtRoutesWithoutSource()` in
+   `tests/render/lib/freshness.ts` compares built routes to source routes, and a root-level
+   `src/pages/[...post].astro` matches *any* path — so while it exists the function cannot
+   prove **any** route orphaned, static pages included. The mtime comparison is the only
+   remaining freshness signal today. The comment in that file now says so. A real answer
+   needs a check that reads the content collection rather than the filesystem.
+4. **Puppy `srcset` 2x rows.** 15 blocking rows over 6 pages, same images as the puppy page's
+   2277 ms LCP. Project 3's image pass should fix both at once.
+5. **`nav-jump-target-lands` baseline.** 18 rows over 6 pages remain after the shell fix.
+   `--hdr` is now *measured* from the header (`--hdr-measured`, written by an inline script on
+   load / resize / ResizeObserver) with the media query kept as the no-JS fallback, so the
+   remaining rows are migrated in-page anchors, not chrome miscalculation.
+6. **17 stub locations are noindexed.** They carry 0–7 words of legacy body. Project 5 writes
+   them; `sitemap_check.py` keeps them out of the shards until then.
+7. **Placeholders.** 586 `SITE_URL_PLACEHOLDER` occurrences across 56 files, plus the phone
+   number and the Formspree id, all resolved at project 6 launch.
+   `BSUK_RELEASE=1 npm run check:placeholders` is the gate that will refuse to ship them.
+8. **`schema-date-modified-present`.** 18 rows over 6 pages; needs
+   `scripts/generate_page_dates.py`, which arrives with project 4's content work — the same
+   project that gives pages a real edit history for sitemap `lastmod`.
+</script>
+<script type="text/markdown" data-title="Migration report — Counts">
+| | |
+| --- | --- |
+| Source clone | `/Users/apple/bluestaffyuk-site` @ `aa3f139` |
+| Generated | 2026-09-16 |
+| Generator | `scripts/build_migration_report.py` |
+
+Every number below is read from `data/page-map.json`, `data/*.json` and `dist/` at
+generation time. Nothing here is typed by hand.
+
+| What | Count |
+| --- | ---: |
+| Rich pages migrated | 11 |
+| Location pages | 28 |
+| — of which are indexed (migrated body) | 11 |
+| — of which are noindexed stubs awaiting project 5 | 17 |
+| Blog posts | 1 |
+| Individual puppy pages | 6 |
+| New index pages (no WordPress original) | 3 — `/uk-locations/`, `/blog/`, `/available-puppies/` |
+| Old URLs read by the extractor | 40 |
+| **Total pages built** | **49** |
+</script>
+<script type="text/markdown" data-title="Migration report — Phone numbers removed">
+The old body text published a phone number the new site does not have yet. The
+extractor strips every occurrence and records the count per page; `PHONE_PLACEHOLDER`
+stands in until project 6 provisions a number, and `scripts/placeholder_check.py`
+refuses to let that placeholder reach a release build.
+
+**39 occurrence(s) removed across 39 page(s).**
+
+| Page kind | Occurrences removed |
+| --- | ---: |
+| blog | 1 |
+| location | 27 |
+| rich | 11 |
+</script>
+<script type="text/markdown" data-title="Migration report — Parity">
+Embedded verbatim from `docs/reports/parity.md`, the gate that produced it.
+
+### Migration parity
+
+Built pages measured against what the extractor promised. `raw` is the old
+`.entry-content` before the extractor's deliberate removals (dead WordPress forms,
+the four sold pups' cards); `expected` is the same page after them; `built` is what
+`article.prose-migrated` renders. Note that `raw` is itself measured after site
+chrome and dead forms are stripped, so it slightly understates the WordPress body.
+The gate compares expected → built with a 2% whitespace band; headings must match
+exactly, embeds must never decrease, a built page missing its article scope fails,
+and expected must keep at least 60% of raw's words.
+
+| URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
+| --- | --- | --- | --- | --- | --- | --- |
+| /blue-staffy-blog-guides/ | 0→0→142 | 0→3 | 0→0 | 0→0 | 0 | PASS (archive) |
+| /blue-staffy-health-uk/ | 3510→3165→3165 | 62→62 | 8→8 | 0→0 | 4 | PASS |
+| /blue-staffy-pup-sale-uk/ | 1133→788→788 | 18→18 | 5→5 | 0→0 | 4 | PASS |
+| /blue-staffy-uk-breeders/ | 2316→1780→1780 | 27→27 | 7→7 | 1→1 | 4 | PASS |
+| /buy-blue-staffy-puppies-uk/ | 2488→2254→2254 | 27→27 | 7→7 | 1→1 | 5 | PASS |
+| /buy-staffy-puppies-for-sale-uk/ | 4706→4706→4706 | 50→50 | 13→13 | 1→1 | 0 | PASS |
+| / | 3369→3112→3112 | 59→59 | 14→14 | 2→2 | 4 | PASS |
+| /privacy-policy-uk/ | 1015→1015→1015 | 23→23 | 3→3 | 0→0 | 0 | PASS |
+| /thank-you-blue-staffy-puppies-journey/ | 422→422→422 | 5→5 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-breeders-contact/ | 397→397→397 | 6→6 | 1→1 | 0→0 | 0 | PASS |
+| /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
+| /uk-locations/blue-staffies-newcastle-under-lyme/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-aberdeen/ | 476→443→443 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-birmingham/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-bristol-uk/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-dundee/ | 463→430→430 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-edinburgh/ | 485→452→452 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-for-sale-in-leicester/ | 7→7→7 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-for-sale-leeds/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-hull/ | 470→437→437 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-inverness/ | 469→436→436 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-london/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-manchester-uk/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-middlesbrough/ | 449→416→416 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-oxford/ | 473→440→440 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-south-yorkshire/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/blue-staffy-puppies-sunderland/ | 464→431→431 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/blue-staffy-puppies-uk/ | 2112→1767→1767 | 29→29 | 11→11 | 0→0 | 4 | PASS |
+| /uk-locations/blue-staffy-puppies-york/ | 474→441→441 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
+| /uk-locations/buy-blue-staffy-puppy-coventry-area/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-breeding-dogs-glasgow/ | 1853→1508→1508 | 19→19 | 4→4 | 1→1 | 4 | PASS |
+| /uk-locations/staffy-puppies-cardiff-wales/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-cornwall/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-essex/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-glasgow/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-liverpool/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-for-sale-nottingham/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
+| /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
+
+examined 40 pages, 0 failing
+</script>
+<script type="text/markdown" data-title="Migration report — Flags for projects 4 and 5">
+Pages the extractor flagged. These are properties of the WordPress content,
+not defects introduced by the migration: Foundation's job was to carry them
+across unchanged, and fixing them is the content work projects 4 and 5 own.
+A page with neither a defect nor a refresh flag is omitted.
+
+| URL | Kind | Words | Defects | Refresh flags |
+| --- | --- | ---: | --- | --- |
+| `/` | rich | 3112 | — | `wp-form-removed`, `legacy-links-rewritten:1`, `count-in-title`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1200`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/blue-staffy-blog-guides/` | blog | 0 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:3` |
+| `/blue-staffy-health-uk/` | rich | 3165 | — | `wp-form-removed`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-pup-schema-images-removed:3`, `legacy-schema-nodes-dropped:3` |
+| `/blue-staffy-pup-sale-uk/` | rich | 788 | — | `wp-form-removed`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:3` |
+| `/blue-staffy-uk-breeders/` | rich | 1780 | — | `wp-form-removed`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-pup-schema-images-removed:3`, `legacy-schema-nodes-dropped:3` |
+| `/buy-blue-staffy-puppies-uk/` | rich | 2254 | — | `wp-form-removed`, `legacy-links-rewritten:1`, `old-pup-cards-removed:5`, `old-price:£850`, `old-price:£1,200`, `old-price:£300`, `old-price:£850`, `old-price:£1,200`, `old-pup-schema-images-removed:3`, `legacy-schema-nodes-dropped:3` |
+| `/buy-staffy-puppies-for-sale-uk/` | rich | 4706 | — | `wp-form-removed`, `legacy-links-rewritten:3`, `old-price:£850`, `old-price:£1,200`, `legacy-schema-nodes-dropped:3` |
+| `/privacy-policy-uk/` | rich | 1015 | — | `legacy-schema-nodes-dropped:3` |
+| `/thank-you-blue-staffy-puppies-journey/` | rich | 422 | — | `wp-form-removed`, `legacy-schema-nodes-dropped:3` |
+| `/uk-blue-staffy-breeders-contact/` | rich | 397 | — | `wp-form-removed`, `legacy-schema-nodes-dropped:3` |
+| `/uk-blue-staffy-puppy-buying-guide/` | rich | 6117 | — | `wp-form-removed`, `legacy-links-rewritten:3`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-price:£300`, `old-price:£300`, `old-price:£1,000`, `old-price:£1,100`, `old-price:£1,000`, `old-price:£1,200`, `old-price:£850`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:3` |
+| `/uk-locations/blue-staffies-newcastle-under-lyme/` | location | 5 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-aberdeen/` | location | 443 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,000`, `old-price:£1,100`, `old-price:£1,200`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-birmingham/` | location | 4 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-bristol-uk/` | location | 0 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-dundee/` | location | 430 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-edinburgh/` | location | 452 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,000`, `old-price:£1,100`, `old-price:£1,200`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-for-sale-in-leicester/` | location | 7 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-for-sale-leeds/` | location | 0 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-hull/` | location | 437 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-inverness/` | location | 436 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-london/` | location | 4 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-manchester-uk/` | location | 5 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-middlesbrough/` | location | 416 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-oxford/` | location | 440 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-south-yorkshire/` | location | 0 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/blue-staffy-puppies-sunderland/` | location | 431 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-price:£1,000`, `old-price:£1,100`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/blue-staffy-puppies-uk/` | location | 1767 | — | `wp-form-removed`, `legacy-links-rewritten:1`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-price:£300`, `legacy-schema-nodes-dropped:4` |
+| `/uk-locations/blue-staffy-puppies-york/` | location | 441 | — | `old-pup-cards-removed:4`, `puppy-grid-emptied`, `old-pup-names-in-prose:4`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/buy-blue-staffy-puppy-coventry-area/` | location | 0 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-breeding-dogs-glasgow/` | location | 1508 | — | `wp-form-removed`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `legacy-schema-nodes-dropped:2` |
+| `/uk-locations/staffy-puppies-cardiff-wales/` | location | 4 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-for-sale-cornwall/` | location | 0 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-for-sale-essex/` | location | 0 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-for-sale-glasgow/` | location | 5 | `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-for-sale-liverpool/` | location | 5 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-for-sale-nottingham/` | location | 5 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/staffy-puppies-wolverhampton/` | location | 3 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-locations/uk-staffordshire-bull-terrier-breeder/` | location | 0 | `empty-h1`, `stub` | `legacy-schema-nodes-dropped:2`, `stub-noindexed` |
+| `/uk-staffordshire-bull-terrier-guide/` | rich | 4630 | — | `wp-form-removed`, `old-pup-cards-removed:4`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£1,200`, `old-price:£850`, `old-price:£850`, `old-pup-schema-images-removed:3`, `legacy-schema-nodes-dropped:3` |
+
+40 of 40 pages flagged.
+
+### Flags by kind
+
+Counted in PAGES carrying the flag, not occurrences.
+
+| Flag | Pages |
+| --- | ---: |
+| `flag: legacy-schema-nodes-dropped` | 40 |
+| `defect: stub` | 18 |
+| `flag: old-pup-cards-removed` | 17 |
+| `flag: stub-noindexed` | 17 |
+| `flag: old-price` | 13 |
+| `flag: wp-form-removed` | 12 |
+| `defect: empty-h1` | 10 |
+| `flag: old-pup-names-in-prose` | 10 |
+| `flag: puppy-grid-emptied` | 9 |
+| `flag: legacy-links-rewritten` | 5 |
+| `flag: old-pup-schema-images-removed` | 4 |
+| `flag: count-in-title` | 1 |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild \u2014 Project 1 Foundation: close-out reports\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>
