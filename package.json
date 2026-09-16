@@ -22,6 +22,7 @@
     "test:render:meta": "playwright test -c tests/render/playwright.config.ts meta.spec.ts",
     "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts",
     "check:markers": "python3 scripts/marker_check.py",
+    "agents": "python3 scripts/build_agent_registry.py --check",
     "check:placeholders": "python3 scripts/placeholder_check.py"
   },
   "dependencies": {

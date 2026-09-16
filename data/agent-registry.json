@@ -1,0 +1,65 @@
+{
+  "_meta": {
+    "description": "BSUK agent tier registry, GENERATED from .claude/agents/bsuk-*.md by scripts/build_agent_registry.py. Never hand-edit: edit the agent's frontmatter and regenerate. All agents use model: inherit; effort is the only per-agent cost lever.",
+    "generated_by": "scripts/build_agent_registry.py",
+    "tiers": {
+      "tier_max": {
+        "model": "inherit",
+        "effort": "max"
+      },
+      "tier_high": {
+        "model": "inherit",
+        "effort": "high"
+      },
+      "tier_medium": {
+        "model": "inherit",
+        "effort": "medium"
+      },
+      "tier_low": {
+        "model": "inherit",
+        "effort": "low"
+      }
+    }
+  },
+  "agents": {
+    "bsuk-about-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-batch-rebuilder": {
+      "tier": "tier_medium"
+    },
+    "bsuk-comparison-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-content-architect": {
+      "tier": "tier_max"
+    },
+    "bsuk-framework-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-homepage-builder": {
+      "tier": "tier_max"
+    },
+    "bsuk-hub-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-infographic-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-interactive-component": {
+      "tier": "tier_high"
+    },
+    "bsuk-location-builder": {
+      "tier": "tier_max"
+    },
+    "bsuk-purchase-guide": {
+      "tier": "tier_max"
+    },
+    "bsuk-section-builder": {
+      "tier": "tier_high"
+    },
+    "bsuk-structure-architect": {
+      "tier": "tier_max"
+    }
+  }
+}

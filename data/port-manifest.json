@@ -676,5 +676,83 @@
     "dst": "CLAUDE.md",
     "mode": "rebase",
     "notes": "rewritten from CAG's 169-line skeleton; same structure, BSUK facts, deploy inactive, rules 2/11/12 dropped"
+  },
+  {
+    "src": ".claude/agents/cag-homepage-builder.md",
+    "dst": ".claude/agents/bsuk-homepage-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; CAG homepage section map replaced by BSUK's own index.astro; GSC figures deleted (NOT FETCHED until project 6)"
+  },
+  {
+    "src": ".claude/agents/cag-hub-builder.md",
+    "dst": ".claude/agents/bsuk-hub-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; hub routes re-based to /uk-locations/ and /available-puppies/"
+  },
+  {
+    "src": ".claude/agents/cag-location-builder.md",
+    "dst": ".claude/agents/bsuk-location-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; US state pages -> /uk-locations/<slug>/ from data/locations.json (28 UK cities)"
+  },
+  {
+    "src": ".claude/agents/cag-comparison-builder.md",
+    "dst": ".claude/agents/bsuk-comparison-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; parrot-vs-parrot comparisons -> Staffy comparisons; cag- CSS classes -> bsuk-"
+  },
+  {
+    "src": ".claude/agents/cag-purchase-guide.md",
+    "dst": ".claude/agents/bsuk-purchase-guide.md",
+    "mode": "rebase",
+    "notes": "page builder; /buy-african-grey-parrot-near-me/ -> /buy-blue-staffy-puppies-uk/; CITES/IATA -> deposit, delivery, LICENCE_CLAIM_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/agents/cag-section-builder.md",
+    "dst": ".claude/agents/bsuk-section-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; section catalogue re-based; cites-trust-bar -> trust-bar"
+  },
+  {
+    "src": ".claude/agents/cag-structure-architect.md",
+    "dst": ".claude/agents/bsuk-structure-architect.md",
+    "mode": "rebase",
+    "notes": "page builder; silo map re-based to BSUK clusters; data/structure.json not ported"
+  },
+  {
+    "src": ".claude/agents/cag-content-architect.md",
+    "dst": ".claude/agents/bsuk-content-architect.md",
+    "mode": "rebase",
+    "notes": "page builder; orchestrator; framework routing kept, page types re-based"
+  },
+  {
+    "src": ".claude/agents/cag-batch-rebuilder.md",
+    "dst": ".claude/agents/bsuk-batch-rebuilder.md",
+    "mode": "rebase",
+    "notes": "page builder; batch dispatch kept; deploy + IndexNow step marked inactive until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-framework-agent.md",
+    "dst": ".claude/agents/bsuk-framework-agent.md",
+    "mode": "rebase",
+    "notes": "page builder; competitor deep-dive re-based to UK Staffy keywords; data/competitors.json not ported"
+  },
+  {
+    "src": ".claude/agents/cag-interactive-component.md",
+    "dst": ".claude/agents/bsuk-interactive-component.md",
+    "mode": "rebase",
+    "notes": "page builder; calculators re-based to \u00a3 and data/puppies.json; financial-entities not ported"
+  },
+  {
+    "src": ".claude/agents/cag-infographic-builder.md",
+    "dst": ".claude/agents/bsuk-infographic-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; infographic types kept, examples re-based"
+  },
+  {
+    "src": ".claude/agents/cag-about-builder.md",
+    "dst": ".claude/agents/bsuk-about-builder.md",
+    "mode": "rebase",
+    "notes": "page builder; breeder story = Lisa Bright, Glasgow; USDA/CITES -> LICENCE_CLAIM_PLACEHOLDER"
   }
 ]

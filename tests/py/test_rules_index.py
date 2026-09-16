@@ -12,6 +12,8 @@ take `evidence_audit.py` and `quality_report.py` down with it.
 import json
 import pathlib
 
+import pytest
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 QUALITY = ROOT / "data" / "quality"
 RULES_DIR = ROOT / "rules"
@@ -185,3 +187,39 @@ def test_every_repo_path_cited_in_a_pack_exists_or_is_marked():
         "a pack cites a path that does not exist and does not say when it will. Either "
         "fix the path, or mark the line '(arrives in Task N)' / '(deferred to project N)' "
         "/ '(not ported — source repo only)':\n  " + "\n  ".join(bad))
+
+
+# The agents are loaded the same way the packs are — into a working session, as
+# instructions — so the same forward-reference rule applies to them. An agent that tells a
+# builder to `Read data/image-specs.json` when that file was never ported sends the builder
+# looking for a file nobody will ever create, and the first symptom is a failed run rather
+# than a failed test. Parametrised so the report names the offending agent.
+AGENTS_DIR = ROOT / ".claude/agents"
+
+
+def _unmarked_missing_paths(f: pathlib.Path):
+    bad = []
+    for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+        if any(m in line for m in MARKERS):
+            continue
+        for tok in BACKTICKED.findall(line):
+            p = _path_like(tok)
+            if p is None or (ROOT / p).exists():
+                continue
+            bad.append(f"{f.name}:{lineno}  {p}")
+    return bad
+
+
+@pytest.mark.parametrize("agent", sorted(AGENTS_DIR.glob("bsuk-*.md")), ids=lambda p: p.stem)
+def test_every_repo_path_cited_in_an_agent_exists_or_is_marked(agent):
+    bad = _unmarked_missing_paths(agent)
+    assert bad == [], (
+        f"{agent.name} cites a path that does not exist and does not say when it will. "
+        "Either fix the path, or mark the line '(arrives in Task N)' / "
+        "'(deferred to project N)' / '(not ported — source repo only)':\n  "
+        + "\n  ".join(bad))
+
+
+def test_there_are_agents_to_check():
+    # A glob that silently stopped matching would make the parametrised test above vacuous.
+    assert list(AGENTS_DIR.glob("bsuk-*.md"))
