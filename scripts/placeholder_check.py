@@ -39,8 +39,23 @@ SOURCE_ROOTS = (".claude/skills", ".claude/agents")
 TEXT_SUFFIXES = {".html", ".xml", ".txt", ".json", ".js", ".css", ".mjs", ".map",
                  ".webmanifest", ".md"}
 
+# How many files are listed per placeholder before the tail is summarised. The COUNT is
+# never capped, and a truncated list says so — a silent cut reads as "that is all of them".
+LIST_CAP = 20
 
-def scan(dist, roots=()):
+
+def _label(path, root):
+    """Repo-root-relative path. `dist/index.html` and `.claude/skills/x/SKILL.md` are both
+    `x/SKILL.md` when reported relative to their own scan base, which makes a skill hit
+    indistinguishable from a built-page hit."""
+    resolved = path.resolve()
+    try:
+        return resolved.relative_to(pathlib.Path(root).resolve()).as_posix()
+    except ValueError:
+        return resolved.as_posix()
+
+
+def scan(dist, roots=(), root=ROOT):
     """{placeholder: total occurrences} and {placeholder: [files]} across dist/ and roots."""
     counts = {p: 0 for p in PLACEHOLDERS}
     files = {p: set() for p in PLACEHOLDERS}
@@ -56,7 +71,7 @@ def scan(dist, roots=()):
                 n = text.count(placeholder)
                 if n:
                     counts[placeholder] += n
-                    files[placeholder].add(path.relative_to(base).as_posix())
+                    files[placeholder].add(_label(path, root))
     return counts, {p: sorted(f) for p, f in files.items()}
 
 
@@ -70,7 +85,7 @@ def main(root=ROOT, dist=None, release=None):
         print("FAIL: no dist/ to scan — a build that does not exist is not placeholder-free.")
         return 1
 
-    counts, files = scan(dist, [root / r for r in SOURCE_ROOTS])
+    counts, files = scan(dist, [root / r for r in SOURCE_ROOTS], root=root)
     total = sum(counts.values())
     mode = "release" if release else "pre-launch"
     print("# Placeholders (%s build)" % mode)
@@ -84,8 +99,11 @@ def main(root=ROOT, dist=None, release=None):
         return 0
     if total:
         for placeholder in PLACEHOLDERS:
-            for f in files[placeholder][:20]:
+            listed = files[placeholder]
+            for f in listed[:LIST_CAP]:
                 print("  %s — %s" % (placeholder, f))
+            if len(listed) > LIST_CAP:
+                print("  %s — … and %d more" % (placeholder, len(listed) - LIST_CAP))
         print("FAIL: BSUK_RELEASE=1 and %d placeholder occurrence(s) remain in dist/ "
               "and the instruction tree." % total)
         return 1

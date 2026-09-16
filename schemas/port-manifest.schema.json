@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://bluestaffyuk.local/schemas/port-manifest.schema.json",
   "title": "CAG → BSUK port manifest",
-  "description": "Every file that crosses from ~/Downloads/CAG into ~/Downloads/BSUK, and how. This file is the record; scripts/port_from_cag.py applies it; scripts/marker_check.py proves the result. A file that is not in this manifest did not cross.",
+  "description": "Every file that crosses from ~/Downloads/CAG into ~/Downloads/BSUK, and how. This file is the record; scripts/port_from_cag.py applies it; scripts/marker_check.py proves the result. A file that is not in this manifest did not cross. Rows stay in the order they were added, grouped by task: the manifest is the chronological record of the port, so never sort or regroup it.",
   "type": "array",
   "minItems": 1,
   "items": {
