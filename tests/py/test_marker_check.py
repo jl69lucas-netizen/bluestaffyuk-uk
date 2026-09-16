@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from parrot_marker_check import MARKERS, hits_in, main, scan_roots
+from marker_check import MARKERS, hits_in, main, scan_roots
 
 
 def _repo(tmp_path, manifest_rows=(), files=()):

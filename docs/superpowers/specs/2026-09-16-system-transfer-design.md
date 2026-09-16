@@ -19,7 +19,7 @@ BSUK in project 1.
 | Decision | Choice |
 | --- | --- |
 | Scope | Curated core: rules, board, gates, harness re-base, and only the agents and skills projects 3–5 will invoke. About 25 agents and 40 skills. |
-| Port method | Manifest-driven. `data/port-manifest.json` is the record; `scripts/port_from_cag.py` applies it; `scripts/parrot_marker_check.py` proves it complete. |
+| Port method | Manifest-driven. `data/port-manifest.json` is the record; `scripts/port_from_cag.py` applies it; `scripts/marker_check.py` proves it complete. |
 | Skill layout | Single tree at `.claude/skills/<name>/SKILL.md`. The CAG flat mirror `skills/*.md` and `register_skills.py` are not ported; citations are rewritten. |
 | Component kit | Not ported. Project 3 brings components with the design system. |
 | Deploy, IndexNow, pagefind | Ported but inactive: documented in CLAUDE.md as "Project 6", and the scripts refuse to run unless `BSUK_RELEASE=1`. |
@@ -46,7 +46,7 @@ data/agent-registry.json               regenerated from the agents actually pres
 data/component-ledger.json             empty until project 3
 data/boards/<slug>.json                approved boards (homepage proving board in project 2)
 scripts/port_from_cag.py               applies the manifest
-scripts/parrot_marker_check.py         zero-tolerance gate, wired into check:all
+scripts/marker_check.py         zero-tolerance gate, wired into check:all
 scripts/pageboard.py                   board library (imports dup_content_audit whitelist)
 scripts/board_gate.py                  refuses to build an unapproved board
 scripts/board_approve.py
@@ -143,7 +143,7 @@ marketing agents wait for the projects that use them. The manifest lists them wi
 - prints `applied N, skipped-existing N, deferred N, missing N` and exits non-zero on any
   missing source.
 
-`scripts/parrot_marker_check.py` scans every `dst` the manifest names plus `CLAUDE.md`,
+`scripts/marker_check.py` scans every `dst` the manifest names plus `CLAUDE.md`,
 `rules/`, `docs/reference/`, `package.json` and `tests/render/`, and fails on any of:
 `parrot`, `african grey`, `african-grey`, `timneh`, `congo`, `clutch`, `C.A.Gs`, `cags`,
 `congoafricangreys`, `agcare`, `xrejpnvn`, `cag-` as a path or identifier prefix. Matching
@@ -200,7 +200,7 @@ rules, gates, brand context, and where everything else lives. Changes:
 - Rules 2 (CITES framing), 11 (Verified-Claim Ledger) and 12 (brand-owned method labels)
   are dropped. Rule 1 becomes first-person voice for Lisa Bright. Rules 3 and 4 (branch,
   commit+push) become "work on `foundation`, commit, never push until project 6".
-- The gate list gains `parrot_marker_check.py`, `board_gate.py` and the Foundation gates.
+- The gate list gains `marker_check.py`, `board_gate.py` and the Foundation gates.
 - The deploy section is titled "Deploy — inactive until project 6" and names the
   `BSUK_RELEASE=1` guard.
 - Page types: home, hub, location, puppy, blog, about, contact, comparison.
@@ -266,3 +266,5 @@ scan roots; the board file lives at `data/boards/<slug>.json` with nested slugs 
 `framework-*` skills, not 14; `final_page_audit.py` gains a non-zero exit on FAIL;
 `perf_audit.py` brings its two `scripts/lighthouse/agentic-*.mjs` helpers; the harness
 re-base covers every marker hit under `tests/render/`, about 57 files, not six.
+
+- The marker gate is `scripts/marker_check.py`, not `parrot_marker_check.py`: `package.json` is a scan root and the gate's own wiring line would otherwise be a permanent hit. Renaming beats an exclusion, which §4 forbids.

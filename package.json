@@ -21,7 +21,7 @@
     "test:py": "python3 -m pytest tests/py -q",
     "test:render:meta": "playwright test -c tests/render/playwright.config.ts meta.spec.ts",
     "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts",
-    "check:markers": "python3 scripts/parrot_marker_check.py",
+    "check:markers": "python3 scripts/marker_check.py",
     "check:placeholders": "python3 scripts/placeholder_check.py"
   },
   "dependencies": {

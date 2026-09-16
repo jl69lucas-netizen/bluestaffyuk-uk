@@ -4,7 +4,7 @@
 
 **Goal:** Move the C.A.Gs site operating system — the rules, the Page Board, the gate scripts, and the curated agents and skills that run them — from `~/Downloads/CAG` into `~/Downloads/BSUK`, re-based from an African Grey parrot breeder to a Glasgow Staffordshire Bull Terrier breeder, with a zero-tolerance marker gate proving the re-base complete; re-base the render harness's form contract and DUP whitelist onto BSUK's own built pages; and retire the `bluestaffyuk` MCP server into a gitignored `.env`.
 
-**Architecture:** Manifest-driven port. `data/port-manifest.json` is the single record of every file that crosses from CAG to BSUK (`src`, `dst`, `mode`, `notes`). `scripts/port_from_cag.py` applies it — overwriting `copy`/`rename` rows on every run, never overwriting `rebase` rows, because the hand edits are the deliverable. `scripts/parrot_marker_check.py` proves the result: it scans every manifest `dst` plus `CLAUDE.md`, `rules/`, `docs/reference/`, `package.json` and `tests/render/` for twelve parrot markers with no allowlist, and is wired into `npm run check:all`. Gates keep Foundation's shape: `examined N …; 0 problems`, non-zero exit on problems.
+**Architecture:** Manifest-driven port. `data/port-manifest.json` is the single record of every file that crosses from CAG to BSUK (`src`, `dst`, `mode`, `notes`). `scripts/port_from_cag.py` applies it — overwriting `copy`/`rename` rows on every run, never overwriting `rebase` rows, because the hand edits are the deliverable. `scripts/marker_check.py` proves the result: it scans every manifest `dst` plus `CLAUDE.md`, `rules/`, `docs/reference/`, `package.json` and `tests/render/` for twelve parrot markers with no allowlist, and is wired into `npm run check:all`. Gates keep Foundation's shape: `examined N …; 0 problems`, non-zero exit on problems.
 
 **Tech Stack:** Python 3.9 (`python3`) with `beautifulsoup4`, `lxml`, `pytest`, and newly `jsonschema`; pytest in `tests/py/` via `npm run test:py`; Playwright 1.60 render harness at `tests/render/`; Astro 6.3.8 / Tailwind 4.3 producing `dist/`. Node is used only by the harness and the Astro build.
 
@@ -29,8 +29,8 @@
 | `data/port-manifest.json` | the record of every ported file: `src`, `dst`, `mode`, `notes` | 1, 3, 4, 6–9, 11–13 |
 | `scripts/port_from_cag.py` | applies the manifest; overwrite `copy`/`rename`, never `rebase` | 1 |
 | `tests/py/test_port_manifest.py` | schema rejection, never-overwrite, overwrite, missing-source exit | 1 |
-| `scripts/parrot_marker_check.py` | zero-tolerance marker gate over manifest dsts + fixed roots | 2 |
-| `tests/py/test_parrot_marker_check.py` | one fixture per marker, the manifest self-exception, exit codes | 2 |
+| `scripts/marker_check.py` | zero-tolerance marker gate over manifest dsts + fixed roots | 2 |
+| `tests/py/test_marker_check.py` | one fixture per marker, the manifest self-exception, exit codes | 2 |
 | `package.json` | `check:markers`, `check:all` chain, `board:*`, `quality`, release-guarded scripts | 2, 17 |
 | `schemas/board.schema.json`, `component-ledger.schema.json`, `ontology.schema.json` | ported schemas | 3, 4 |
 | `.claude/commands/opsx/{propose,explore,apply,archive}.md` | openspec commands, copied | 3 |
@@ -196,7 +196,7 @@ def test_real_manifest_validates():
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://bluestaffyuk.local/schemas/port-manifest.schema.json",
   "title": "CAG → BSUK port manifest",
-  "description": "Every file that crosses from ~/Downloads/CAG into ~/Downloads/BSUK, and how. This file is the record; scripts/port_from_cag.py applies it; scripts/parrot_marker_check.py proves the result. A file that is not in this manifest did not cross.",
+  "description": "Every file that crosses from ~/Downloads/CAG into ~/Downloads/BSUK, and how. This file is the record; scripts/port_from_cag.py applies it; scripts/marker_check.py proves the result. A file that is not in this manifest did not cross.",
   "type": "array",
   "minItems": 1,
   "items": {
@@ -242,7 +242,7 @@ The manifest is the record of the port, not a convenience. Four modes:
   rename    byte-identical, new path (cag-x.md -> bsuk-x.md). Rewritten on every run.
   rebase    copied ONCE, then hand-edited. NEVER overwritten. The hand edits are the
             deliverable; a second run that re-copied the parrot source would undo the
-            entire re-base silently, and scripts/parrot_marker_check.py would only find
+            entire re-base silently, and scripts/marker_check.py would only find
             out afterwards. `skipped-existing` on a second run is the expected result.
   deferred  recorded, not written. The file exists in CAG and belongs to a later project;
             listing it keeps the manifest a complete account of the source tree. Its src
@@ -436,17 +436,17 @@ The gate that makes every later re-base task checkable. Written before the re-ba
 so each task can end by proving itself.
 
 **Files:**
-- Create: `scripts/parrot_marker_check.py`, `tests/py/test_parrot_marker_check.py`
+- Create: `scripts/marker_check.py`, `tests/py/test_marker_check.py`
 - Modify: `package.json`
 
-- [ ] **Step 1: Failing test — `tests/py/test_parrot_marker_check.py`**
+- [ ] **Step 1: Failing test — `tests/py/test_marker_check.py`**
 
 ```python
 import json
 
 import pytest
 
-from parrot_marker_check import MARKERS, hits_in, main, scan_roots
+from marker_check import MARKERS, hits_in, main, scan_roots
 
 
 def _repo(tmp_path, manifest_rows=(), files=()):
@@ -540,9 +540,9 @@ def test_the_real_repo_is_clean():
     assert main() == 0
 ```
 
-- [ ] **Step 2: Run** → `ModuleNotFoundError: No module named 'parrot_marker_check'`.
+- [ ] **Step 2: Run** → `ModuleNotFoundError: No module named 'marker_check'`.
 
-- [ ] **Step 3: Write `scripts/parrot_marker_check.py`** — see the module below.
+- [ ] **Step 3: Write `scripts/marker_check.py`** — see the module below.
 
 ```python
 #!/usr/bin/env python3
@@ -567,7 +567,7 @@ a manifest that could pass this gate would be a manifest that failed to record t
 
 Output shape matches the Foundation gates: `examined N files; 0 problems`.
 
-Usage:  python3 scripts/parrot_marker_check.py   |   npm run check:markers
+Usage:  python3 scripts/marker_check.py   |   npm run check:markers
 """
 import json
 import pathlib
@@ -671,14 +671,14 @@ if __name__ == "__main__":
 In `package.json` `"scripts"`, add the marker script and put it at the end of the chain (so a
 broken build still reports parity first):
 ```json
-    "check:markers": "python3 scripts/parrot_marker_check.py",
+    "check:markers": "python3 scripts/marker_check.py",
     "check:all": "npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps && npm run check:placeholders && npm run check:markers",
 ```
 
 - [ ] **Step 5: Run**
 
 ```bash
-python3 -m pytest tests/py/test_parrot_marker_check.py -q
+python3 -m pytest tests/py/test_marker_check.py -q
 npm run check:markers | tail -3
 ```
 Expected: every test passes except `test_the_real_repo_is_clean`, which FAILS today —
@@ -698,7 +698,7 @@ never be proven to have flipped.
 - [ ] **Step 7: Commit**
 
 ```bash
-git add -A && git commit -m "gate: parrot_marker_check.py, wired into check:all (baseline non-zero until task 16)
+git add -A && git commit -m "gate: marker_check.py, wired into check:all (baseline non-zero until task 16)
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
@@ -1474,7 +1474,7 @@ pages themselves is project 4's work, not this project's.
 - `python3 scripts/register_skills.py --check` and the `--copy` recovery → delete both. Spec
   §1 retires the flat `skills/*.md` mirror; a check that the mirror is in sync is a check for
   a thing that no longer exists. Replace the block with
-  `python3 scripts/parrot_marker_check.py || FAIL=1`.
+  `python3 scripts/marker_check.py || FAIL=1`.
 - The `skills/*.md` and `skills/*/SKILL.md` glob → `.claude/skills/*/SKILL.md`.
 - `.claude/agents/*.md` frontmatter check: keep, and change `^model:` to accept `inherit`.
 - Header comment `# CAG FULL SYSTEM HEALTH SWEEP` → `# BSUK FULL SYSTEM HEALTH SWEEP`, and
@@ -1726,7 +1726,7 @@ and the recorded reason for each: `data/quality/rule-index.json` + the packs.
    guarantee length is `NOT FETCHED` — `data/settings.json` has `guarantee_days: null` and
    no page may state a number until the breeder gives one.
 9. **No parrot vocabulary, ever.** This system came from a Congo African Grey breeder. The
-   twelve markers `scripts/parrot_marker_check.py` scans for are not a style preference;
+   twelve markers `scripts/marker_check.py` scans for are not a style preference;
    a hit is a re-base that did not happen. There is no allowlist, and
    `npm run check:markers` is in `check:all`.
 10. **Every deliverable ships as an Artifact with copy buttons, plus `.md`.** Research docs,
@@ -1863,7 +1863,7 @@ it back out with invented UK content is worse than a shorter honest document.
 
 **Acceptance test for every re-base task**, run over the paths that task touched:
 ```bash
-python3 scripts/parrot_marker_check.py
+python3 scripts/marker_check.py
 ```
 Expected: `examined N files; 0 problems` for those paths (the repo-wide count stays non-zero
 until Task 16).
@@ -1927,7 +1927,7 @@ Per file, in this order:
 
 After each batch:
 ```bash
-python3 scripts/parrot_marker_check.py 2>&1 | grep '\.claude/agents/' | head -20
+python3 scripts/marker_check.py 2>&1 | grep '\.claude/agents/' | head -20
 ```
 Expected: no lines. Fix and re-run before starting the next batch.
 
@@ -2046,7 +2046,7 @@ def test_parse_rejects_a_file_with_no_frontmatter(tmp_path):
 
 ```bash
 python3 scripts/build_agent_registry.py && python3 -m pytest tests/py/test_agent_registry.py -q
-python3 scripts/parrot_marker_check.py 2>&1 | grep -c '\.claude/agents/'
+python3 scripts/marker_check.py 2>&1 | grep -c '\.claude/agents/'
 ```
 Expected: `wrote data/agent-registry.json — 36 agents`, pytest green, and `0` agent lines
 from the marker gate. Add `"agents": "python3 scripts/build_agent_registry.py --check"` to
@@ -2108,7 +2108,7 @@ Apply the substitution table, then per skill:
 - [ ] **Step 3: Run**
 
 ```bash
-python3 scripts/parrot_marker_check.py 2>&1 | grep -c '\.claude/skills/'
+python3 scripts/marker_check.py 2>&1 | grep -c '\.claude/skills/'
 ls .claude/skills | wc -l
 ```
 Expected: `0`, and 52 skill directories (27 generic + 25 system).
@@ -2177,7 +2177,7 @@ and `tests/render/checks/form.ts` both refuse rather than matching nothing.
 - [ ] **Step 4: Run and commit**
 
 ```bash
-python3 scripts/parrot_marker_check.py 2>&1 | grep -c 'docs/reference/'
+python3 scripts/marker_check.py 2>&1 | grep -c 'docs/reference/'
 git add -A && git commit -m "docs: five reference docs re-based, credentials.md written (keys only)
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
@@ -2356,7 +2356,7 @@ sentence becomes the measured BSUK figure from Step 1.
 - [ ] **Step 5: Re-base every remaining marker-carrying file under `tests/render/`**
 
 ```bash
-python3 scripts/parrot_marker_check.py 2>&1 | grep 'tests/render/' | cut -d: -f1 | sort -u
+python3 scripts/marker_check.py 2>&1 | grep 'tests/render/' | cut -d: -f1 | sort -u
 ```
 About 45 files. Two classes:
 - **Fixture HTML** (~35): the marker is page copy. Rewrite the copy in BSUK voice, keeping
@@ -2377,7 +2377,7 @@ About 45 files. Two classes:
 ```bash
 python3 scripts/dup_content_audit.py | tail -3
 python3 scripts/dup_content_audit.py --headers | tail -3
-python3 scripts/parrot_marker_check.py | tail -3
+python3 scripts/marker_check.py | tail -3
 ```
 Expected: the DUP gate prints its BSUK crossover count (non-zero — the migrated baseline);
 the marker gate reports `0 problems` for `tests/render/` and `scripts/dup_content_audit.py`.
@@ -2391,7 +2391,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 16: `targets.json`, and the marker gate goes green
 
-**Files:** Modify `tests/render/targets.json`, `tests/py/test_parrot_marker_check.py`
+**Files:** Modify `tests/render/targets.json`, `tests/py/test_marker_check.py`
 
 - [ ] **Step 1: Rename the page type and check family coverage**
 
@@ -2501,7 +2501,7 @@ Keep Foundation's eleven entries and add:
     "audit:perf": "python3 scripts/perf_audit.py",
     "sweep": "bash scripts/health-sweep.sh",
     "indexnow": "python3 scripts/indexnow_submit.py",
-    "check:markers": "python3 scripts/parrot_marker_check.py",
+    "check:markers": "python3 scripts/marker_check.py",
     "check:all": "npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps && npm run check:placeholders && npm run check:markers && npm run agents",
 ```
 

@@ -20,7 +20,7 @@ a manifest that could pass this gate would be a manifest that failed to record t
 
 Output shape matches the Foundation gates: `examined N files; 0 problems`.
 
-Usage:  python3 scripts/parrot_marker_check.py   |   npm run check:markers
+Usage:  python3 scripts/marker_check.py   |   npm run check:markers
 """
 import pathlib
 import sys
@@ -56,6 +56,8 @@ def hits_in(path):
     Markers overlap: `congoafricangreys` contains `congo`. Reporting both would double-count
     one defect and name it less precisely than the repo does, so when one matched marker is
     a substring of another matched marker on the same line only the longer one is reported.
+    The only overlapping pair in MARKERS today is `congo` / `congoafricangreys`; re-check this
+    rule when a marker is added.
     """
     try:
         text = pathlib.Path(path).read_text(encoding="utf-8")
