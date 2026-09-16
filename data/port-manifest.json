@@ -670,5 +670,11 @@
     "dst": "data/quality/evidence-budgets.json",
     "mode": "rebase",
     "notes": "per-term repetition caps re-based to BSUK head terms (task 9, step 4)"
+  },
+  {
+    "src": "CLAUDE.md",
+    "dst": "CLAUDE.md",
+    "mode": "rebase",
+    "notes": "rewritten from CAG's 169-line skeleton; same structure, BSUK facts, deploy inactive, rules 2/11/12 dropped"
   }
 ]
