@@ -1,0 +1,19 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import locations from '../../../data/locations.json';
+
+const SUFFIXES = [' - Blue Staffy UK: Your Trusted UK Blue Staffy Breeders.', ' | BlueStaffyUK'];
+const clean = (title: string) => SUFFIXES.reduce((t, s) => (t.endsWith(s) ? t.slice(0, -s.length) : t), title).trim();
+const label = (l: { h1: string; title: string }) => l.h1 || clean(l.title);
+
+const sorted = [...locations].sort((a, b) => a.city.localeCompare(b.city, 'en-GB'));
+---
+<BaseLayout title="Blue Staffy Puppies by UK Location | Blue Staffy UK" description="Find Blue Staffy puppies for sale near you. Blue Staffy UK delivers KC-registered Staffordshire Bull Terrier puppies from Glasgow to every UK city and county." canonical="/uk-locations/">
+  <section class="container container-text">
+    <h1>Blue Staffy Puppies by UK Location</h1>
+    <p>We are based in Glasgow and deliver across the whole of the UK. Choose your nearest city for local details.</p>
+    <ul style="columns:2;gap:24px">
+      {sorted.map((l) => <li><a href={`/uk-locations/${l.slug}/`}>{label(l)}</a></li>)}
+    </ul>
+  </section>
+</BaseLayout>

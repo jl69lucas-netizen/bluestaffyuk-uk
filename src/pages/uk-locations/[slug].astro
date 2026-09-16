@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import locations from '../../../data/locations.json';
+
+export function getStaticPaths() {
+  return locations.map((l) => ({ params: { slug: l.slug }, props: { loc: l } }));
+}
+
+const { loc } = Astro.props;
+---
+<BaseLayout title={loc.title} description={loc.description} canonical={`/uk-locations/${loc.slug}/`} robots={loc.robots || 'index, follow'} ogType={loc.og_type || 'article'} schema={loc.schema}>
+  <article class="container container-text prose-migrated">
+    <Fragment set:html={loc.body_html} />
+  </article>
+</BaseLayout>
