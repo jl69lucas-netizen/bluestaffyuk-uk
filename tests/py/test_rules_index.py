@@ -1,0 +1,103 @@
+"""The rule ledger and the quality ledgers are load-bearing files, not documentation.
+
+`data/quality/rule-index.json` is what `scripts/quality_report.py` §5 reads to decide
+whether a rule is enforced, a deletion candidate, or an unearned judgment exemption. A
+row pointing at a pack file that does not exist is the same defect the report exists to
+catch, one level up: the ledger itself lying about what holds the rules up.
+
+The three quality ledgers are asserted here for SHAPE, not content. All three are empty at
+the system transfer, and an empty file that does not load is the failure mode that would
+take `evidence_audit.py` and `quality_report.py` down with it.
+"""
+import json
+import pathlib
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+QUALITY = ROOT / "data" / "quality"
+RULES_DIR = ROOT / "rules"
+
+
+def _load(name):
+    return json.loads((QUALITY / name).read_text(encoding="utf-8"))
+
+
+def index():
+    return _load("rule-index.json")
+
+
+# ── the rule ledger ─────────────────────────────────────────────────────────
+def test_every_pack_path_exists_under_rules():
+    missing = sorted({r["pack"] for r in index()["rules"] if "pack" in r}
+                     - {p.relative_to(ROOT).as_posix() for p in RULES_DIR.glob("*.md")})
+    assert missing == [], f"rule-index names pack files that do not exist: {missing}"
+
+
+def test_rule_ids_are_unique():
+    ids = [r["id"] for r in index()["rules"]]
+    dupes = sorted({i for i in ids if ids.count(i) > 1})
+    assert dupes == [], f"duplicate rule ids: {dupes}"
+
+
+def test_judgment_cap_is_nine():
+    # 12 minus CAG rules 2 (CITES), 11 (Verified-Claim Ledger) and 12 (brand-owned method
+    # labels). A cap left at 12 over 9 rules is not a cap; it is three free exemptions.
+    assert index()["judgment_cap"] == 9
+
+
+def test_exactly_nine_judgment_rules():
+    j = [r["id"] for r in index()["rules"] if r.get("enforced") == "judgment"]
+    assert len(j) == 9, f"judgment class is {len(j)}: {j}"
+
+
+def test_every_judgment_rule_states_why_a_test_cannot_exist():
+    bare = [r["id"] for r in index()["rules"]
+            if r.get("enforced") == "judgment" and not (r.get("why") or "").strip()]
+    assert bare == [], f"judgment with no `why` is an exemption anyone can grant: {bare}"
+
+
+def test_no_id_or_path_carries_the_source_repo_vocabulary():
+    bad = []
+    for r in index()["rules"]:
+        blob = " ".join(str(r.get(k, "")) for k in ("id", "pack", "test"))
+        if "cag" in blob.lower() or "for-sale" in blob.lower():
+            bad.append(r["id"])
+    assert bad == [], f"rows still naming the source repo or the renamed pack: {bad}"
+
+
+# ── the three quality ledgers ───────────────────────────────────────────────
+def test_evidence_budgets_shape():
+    b = _load("evidence-budgets.json")
+    assert isinstance(b["terms"], dict) and b["terms"]
+    assert isinstance(b["budgets"], dict) and b["budgets"]
+    assert isinstance(b["title_max_chars"], int)
+    assert isinstance(b.get("superlatives", []), list)
+    assert isinstance(b.get("title_max_chars_by_slug", {}), dict)
+    assert isinstance(b.get("budgets_by_slug", {}), dict)
+    # every capped term must be resolvable to a pattern, or the ceiling silently never fires
+    for page_type, caps in b["budgets"].items():
+        unknown = sorted(set(caps) - set(b["terms"]))
+        assert unknown == [], f"budgets[{page_type}] caps terms with no pattern: {unknown}"
+
+
+def test_rework_ledger_is_empty_and_readable_by_quality_report():
+    r = _load("rework-ledger.json")
+    # scripts/quality_report.py trend() reads `windows`, not `entries`.
+    assert r["windows"] == []
+
+
+def test_evidence_ledger_is_empty_and_readable_by_evidence_audit():
+    e = _load("evidence-ledger.json")
+    # scripts/evidence_audit.py claim_binding() iterates ledger["claims"].
+    assert e["claims"] == []
+
+
+def test_the_gates_actually_load_all_three():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import evidence_audit, quality_report  # noqa: E402
+
+    assert quality_report.trend(_load("rework-ledger.json")) == (None, None)
+    assert evidence_audit.claim_binding("<main>anything at all</main>",
+                                        _load("evidence-ledger.json")) == []
+    assert quality_report.broken_test_links(index(), quality_report.registry_check_ids()) == []
+    assert quality_report.judgment_overflow(index()) is None

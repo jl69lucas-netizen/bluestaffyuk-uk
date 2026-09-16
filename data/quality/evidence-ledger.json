@@ -1,0 +1,4 @@
+{
+  "_comment": "Claim → proof object. `pattern` is the regex evidence_audit.py uses to find the claim in <main>. `proof` is a site-relative path to a redacted document image/PDF the page must link to (href or <img src>) wherever the claim is made more than once, or the literal string NOT FETCHED. `anchor` is the section id that owns the claim. `confirmed` is the breeder confirmation date. Empty at the system transfer (spec §1): no BSUK claim is ledgered yet, so no claim is assertable more than once. BVA hip/elbow scores and the L2-HGA / HC / PHPV DNA tests enter here as NOT FETCHED rows the moment a certificate is on file.",
+  "claims": []
+}

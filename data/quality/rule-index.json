@@ -1,0 +1,455 @@
+{
+  "judgment_cap": 9,
+  "rules": [
+    {
+      "id": "img-srcset-within-2x",
+      "family": "IMG",
+      "enforced": "test",
+      "test": "tests/render/checks/img.ts::img-srcset-within-2x",
+      "severity": "blocking"
+    },
+    {
+      "id": "img-alt-present-and-unique",
+      "family": "IMG",
+      "enforced": "test",
+      "test": "tests/render/checks/img.ts::img-alt-present-and-unique",
+      "severity": "blocking"
+    },
+    {
+      "id": "layout-no-horizontal-overflow",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "test": "tests/render/checks/layout.ts::layout-no-horizontal-overflow",
+      "severity": "blocking"
+    },
+    {
+      "id": "layout-min-font-size",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "test": "tests/render/checks/layout.ts::layout-min-font-size",
+      "severity": "blocking"
+    },
+    {
+      "id": "layout-tap-target-size",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "test": "tests/render/checks/layout.ts::layout-tap-target-size",
+      "severity": "blocking"
+    },
+    {
+      "id": "nav-anchors-resolve",
+      "family": "NAV",
+      "enforced": "test",
+      "test": "tests/render/checks/nav.ts::nav-anchors-resolve",
+      "severity": "blocking"
+    },
+    {
+      "id": "nav-jump-target-lands",
+      "family": "NAV",
+      "enforced": "test",
+      "test": "tests/render/checks/nav.ts::nav-jump-target-lands",
+      "severity": "blocking"
+    },
+    {
+      "id": "sem-heading-order",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-heading-order",
+      "severity": "blocking"
+    },
+    {
+      "id": "sem-all-six-levels",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-all-six-levels",
+      "severity": "advisory",
+      "why_advisory": "6 rows on 2 pages \u2014 genuine H5/H6 shortfalls that are page work, not check work. (measured 2026-08-02: 6 rows)"
+    },
+    {
+      "id": "sem-title-case-headings",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-title-case-headings",
+      "severity": "advisory",
+      "why_advisory": "18 rows / 393 instances: the known ~1,099-heading sentence-case backlog, now measured. Blocking on it would stop every build until a site-wide copy sweep lands. (measured 2026-08-02: 18 rows)"
+    },
+    {
+      "id": "sem-section-opening-paragraph",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-section-opening-paragraph",
+      "severity": "advisory",
+      "why_advisory": "21 rows / 54 instances awaiting a copy pass. (measured 2026-08-02: 21 rows)"
+    },
+    {
+      "id": "schema-single-product-offer",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "test": "tests/render/checks/schema.ts::schema-single-product-offer",
+      "severity": "advisory",
+      "why_advisory": "Several offered Products outside an ItemList on a group/cost page. Needs the cluster decision recorded in the backlog (group-page AggregateOffer exemption) before it can block. (source-repo baseline, 2026-08-02: 3 rows; re-measure on BSUK's own corpus)"
+    },
+    {
+      "id": "schema-sold-not-instock",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "test": "tests/render/checks/schema.ts::schema-sold-not-instock",
+      "severity": "blocking"
+    },
+    {
+      "id": "schema-date-modified-present",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "test": "tests/render/checks/schema.ts::schema-date-modified-present",
+      "severity": "blocking"
+    },
+    {
+      "id": "schema-no-visible-date",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "test": "tests/render/checks/schema.ts::schema-no-visible-date",
+      "severity": "blocking"
+    },
+    {
+      "id": "css-class-resolves",
+      "family": "CSS",
+      "enforced": "test",
+      "test": "tests/render/checks/css.ts::css-class-resolves",
+      "severity": "advisory",
+      "why_advisory": "45 rows / 186 instances live on the corpus. Real orphans (mobile-section, counter-snippet, key-takeaway-v2, cmpe) plus text-clay-text x47 on roys. Promoting now would red the gate on all 15 pages and force exactly the blanket override Task 0b removed. (measured 2026-08-02: 45 rows)"
+    },
+    {
+      "id": "css-no-dead-component-rule",
+      "family": "CSS",
+      "enforced": "test",
+      "test": "tests/render/checks/css.ts::css-no-dead-component-rule",
+      "severity": "advisory",
+      "why_advisory": "33 rows / 147 instances. Includes a triage set (priceband, carecards) whose resolution is a build decision with new headings, not a check fix. (source-repo baseline, 2026-08-02: 33 rows; re-measure on BSUK's own corpus)"
+    },
+    {
+      "id": "css-component-color-not-overridden",
+      "family": "CSS",
+      "enforced": "test",
+      "test": "tests/render/checks/css.ts::css-component-color-not-overridden",
+      "severity": "advisory",
+      "why_advisory": "12 rows / 21 instances still to triage against the known .ship-price / .xsell-k specificity defects. (measured 2026-08-02: 12 rows)"
+    },
+    {
+      "id": "dup-no-sibling-crossover",
+      "family": "DUP",
+      "enforced": "test",
+      "test": "tests/render/checks/dup.ts::dup-no-sibling-crossover",
+      "severity": "advisory",
+      "why_advisory": "48 rows / 5,034 instances on 16 of 19 targets (source-repo measurement 2026-09-11: 57/57 page-viewports, two identical runs, examined = 104 siblings each). The sibling corpus is every built page, never same-page-type targets, so no page type examines 0. Stays advisory: Foundation is a verbatim WordPress migration, so crossover on migrated bodies is the baseline projects 3 and 4 clear, not a check defect. Re-measure on BSUK's own corpus before promoting."
+    },
+    {
+      "id": "first-person-brand-voice",
+      "family": "COPY",
+      "enforced": "judgment",
+      "why": "a regex for we/our passes on third-person text that merely mentions us; the distinction is authorial stance, which has no mechanical decision procedure",
+      "pack": "rules/copy.md"
+    },
+    {
+      "id": "work-on-foundation-not-main",
+      "family": "GATE",
+      "enforced": "judgment",
+      "why": "governs the operator's git behaviour before any artifact exists; a test can assert the branch name but not that nothing was pushed, and BSUK has no remote to observe",
+      "pack": "rules/deploy.md"
+    },
+    {
+      "id": "commit-after-build-never-push",
+      "family": "GATE",
+      "enforced": "judgment",
+      "pack": "rules/deploy.md",
+      "why": "a test could assert a clean working tree, but not that the work was finished, and asserting the former would pass on an empty commit; the 'never push' half has no observable at all while the repo has no remote"
+    },
+    {
+      "id": "recommend-plus-why",
+      "family": "COPY",
+      "enforced": "judgment",
+      "why": "applies to conversational output, which is never written to a file the harness can read"
+    },
+    {
+      "id": "restate-the-brief",
+      "family": "COPY",
+      "enforced": "judgment",
+      "why": "same \u2014 conversational, pre-artifact"
+    },
+    {
+      "id": "preview-before-apply",
+      "family": "GATE",
+      "enforced": "judgment",
+      "why": "asserts that approval happened before a write; the write itself is indistinguishable from an approved one"
+    },
+    {
+      "id": "confidence-gate-97",
+      "family": "GATE",
+      "enforced": "judgment",
+      "why": "a self-reported confidence level has no external observable"
+    },
+    {
+      "id": "write-from-outline-never-from-sibling",
+      "family": "DUP",
+      "enforced": "judgment",
+      "why": "the OUTCOME is tested by dup_content_audit.py, but the rule is about method \u2014 a page written from a sibling and then reworded passes the outcome test and still violates the rule"
+    },
+    {
+      "id": "no-fabricated-claims",
+      "family": "COPY",
+      "enforced": "judgment",
+      "why": "requires knowing what is true off-page; a test can only check a claim against a ledger it is given, which is the next rule"
+    },
+    {
+      "id": "entity-4-move-loop",
+      "family": "COPY",
+      "enforced": "untested",
+      "pack": "rules/copy.md"
+    },
+    {
+      "id": "meaningful-words-no-stop-words",
+      "family": "COPY",
+      "enforced": "untested",
+      "pack": "rules/copy.md"
+    },
+    {
+      "id": "header-style-declared",
+      "family": "SEM",
+      "enforced": "untested",
+      "pack": "rules/headings.md"
+    },
+    {
+      "id": "image-keyword-distribution",
+      "family": "IMG",
+      "enforced": "untested",
+      "pack": "rules/images.md"
+    },
+    {
+      "id": "uniform-inbody-image-sizing",
+      "family": "IMG",
+      "enforced": "untested",
+      "pack": "rules/images.md"
+    },
+    {
+      "id": "link-first-anchors",
+      "family": "NAV",
+      "enforced": "untested",
+      "pack": "rules/links.md"
+    },
+    {
+      "id": "src-pages-is-deployed",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/deploy.md"
+    },
+    {
+      "id": "design-context-read-first",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/gates.md"
+    },
+    {
+      "id": "visual-first-workflow",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/gates.md"
+    },
+    {
+      "id": "same-content-on-redesign",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/gates.md"
+    },
+    {
+      "id": "verify-the-gate-first",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/gates.md"
+    },
+    {
+      "id": "puppies-extended-meta",
+      "family": "COPY",
+      "enforced": "untested",
+      "pack": "rules/puppies.md"
+    },
+    {
+      "id": "delivery-band-on-every-card",
+      "family": "COPY",
+      "enforced": "untested",
+      "pack": "rules/puppies.md"
+    },
+    {
+      "id": "design-system-nine",
+      "family": "CSS",
+      "enforced": "untested",
+      "pack": "rules/design.md"
+    },
+    {
+      "id": "heading-hierarchy-outline-gate",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-heading-order + tests/render/checks/sem.ts::sem-all-six-levels",
+      "pack": "rules/headings.md"
+    },
+    {
+      "id": "title-case-headings",
+      "family": "SEM",
+      "enforced": "test",
+      "test": "tests/render/checks/sem.ts::sem-title-case-headings",
+      "pack": "rules/headings.md"
+    },
+    {
+      "id": "no-visible-date",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "test": "tests/render/checks/schema.ts::schema-no-visible-date",
+      "pack": "rules/schema.md"
+    },
+    {
+      "id": "no-test-no-rule",
+      "family": "GATE",
+      "enforced": "test",
+      "test": "tests/py/test_quality_report.py",
+      "pack": "rules/gates.md"
+    },
+    {
+      "id": "layout-hero-counter-separation",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "test": "tests/render/checks/layout.ts::layout-hero-counter-separation",
+      "severity": "advisory"
+    },
+    {
+      "id": "layout-h3-image-first",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "test": "tests/render/checks/layout.ts::layout-h3-image-first",
+      "severity": "advisory"
+    },
+    {
+      "id": "read-card-thumb-is-target-hero",
+      "family": "IMG",
+      "enforced": "untested",
+      "severity": "advisory",
+      "pack": "rules/images.md",
+      "_note": "re-classed on the port: CAG's tests/test_read_card_thumbs.py and scripts/bake_read_card_thumbs.py did not cross. It is asserted and nothing holds it up until the baker lands."
+    },
+    {
+      "id": "a11y-text-contrast-aa",
+      "family": "A11Y",
+      "enforced": "test",
+      "test": "tests/render/checks/a11y.ts::a11y-text-contrast-aa",
+      "severity": "blocking"
+    },
+    {
+      "id": "term-budget-per-page",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::term-budget-per-page",
+      "severity": "blocking"
+    },
+    {
+      "id": "claim-bound-to-proof",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::claim-bound-to-proof",
+      "severity": "blocking"
+    },
+    {
+      "id": "statement-labels-present",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::statement-labels-present",
+      "severity": "advisory"
+    },
+    {
+      "id": "review-attribution-unique",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::review-attribution-unique",
+      "severity": "blocking"
+    },
+    {
+      "id": "title-length-max",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::title-length-max",
+      "severity": "blocking"
+    },
+    {
+      "id": "no-not-fetched-in-prose",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::no-not-fetched-in-prose",
+      "severity": "blocking"
+    },
+    {
+      "id": "no-unsourced-superlatives",
+      "family": "COPY",
+      "enforced": "test",
+      "test": "scripts/evidence_audit.py::no-unsourced-superlatives",
+      "severity": "advisory"
+    },
+    {
+      "id": "form-inquiry-contract",
+      "family": "FORM",
+      "enforced": "test",
+      "test": "tests/render/checks/form.ts::form-inquiry-contract",
+      "severity": "advisory"
+    },
+    {
+      "id": "theme-lead-color-outranks-component",
+      "family": "CSS",
+      "enforced": "test",
+      "test": "tests/py/test_page_hardening.py",
+      "severity": "advisory",
+      "why_advisory": "New 2026-09-12 (near-me router hero lead rendered var(--ink) on dark green). Pairs the theme's body.theme-d h1/h2 + p lead rule against page lead-colour rules by specificity from source markup, not a painted DOM. Earns blocking after one cluster with zero false reports."
+    },
+    {
+      "id": "page-board-gate",
+      "family": "GATE",
+      "enforced": "test",
+      "test": "tests/py/test_page_board.py",
+      "severity": "blocking",
+      "why_blocking": "A page built from an unapproved or edited-after-approval board is the exact rework the Board-First workflow exists to stop (8 post-build rejections vs 0 after canvas picks). scripts/board_gate.py exits 1; the build step must not run without it."
+    },
+    {
+      "id": "release-guarded-publication",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/deploy.md"
+    },
+    {
+      "id": "no-credential-in-a-committed-file",
+      "family": "GATE",
+      "enforced": "untested",
+      "pack": "rules/deploy.md"
+    },
+    {
+      "id": "product-schema-per-pup",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "pack": "rules/puppies.md",
+      "test": "tests/render/checks/schema.ts::schema-single-product-offer"
+    },
+    {
+      "id": "instock-only-on-an-available-pup",
+      "family": "SCHEMA",
+      "enforced": "test",
+      "pack": "rules/puppies.md",
+      "test": "tests/render/checks/schema.ts::schema-sold-not-instock"
+    },
+    {
+      "id": "no-head-cropped-portraits",
+      "family": "IMG",
+      "enforced": "untested",
+      "pack": "rules/puppies.md"
+    },
+    {
+      "id": "puppy-cluster-component-order",
+      "family": "LAYOUT",
+      "enforced": "test",
+      "pack": "rules/puppies.md",
+      "test": "tests/render/checks/layout.ts::layout-hero-counter-separation + tests/render/checks/layout.ts::layout-h3-image-first"
+    }
+  ]
+}

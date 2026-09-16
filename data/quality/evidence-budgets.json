@@ -1,0 +1,107 @@
+{
+  "_comment": "Per-page-type ceilings on head-term repetition inside <main>. PROPOSALS re-based from CAG on 2026-09-16 until a calibration pass measures them against the pages that AI answers actually cite (record the date in `calibrated`). A term absent from a page type's map has no ceiling. Terms are BSUK's six head terms; the caps are proportional to the CAG originals, not measured.",
+  "calibrated": null,
+  "title_max_chars": 70,
+  "superlatives": [
+    "world's best",
+    "best staffy",
+    "best staffies",
+    "uk's best",
+    "uk's most trusted",
+    "the best breeder",
+    "number one breeder",
+    "wins"
+  ],
+  "terms": {
+    "blue staffy": "blue\\s+staff(?:y|ies)",
+    "staffy puppies": "staff(?:y|ie)\\s+pupp(?:y|ies)",
+    "staffordshire bull terrier": "staffordshire\\s+bull\\s+terriers?",
+    "puppies for sale": "pupp(?:y|ies)\\s+for\\s+sale",
+    "glasgow": "\\bglasgow\\b",
+    "uk": "\\bUK\\b"
+  },
+  "budgets": {
+    "home": {
+      "blue staffy": 20,
+      "staffy puppies": 12,
+      "staffordshire bull terrier": 8,
+      "puppies for sale": 6,
+      "glasgow": 8,
+      "uk": 10
+    },
+    "for-sale": {
+      "blue staffy": 15,
+      "staffy puppies": 12,
+      "staffordshire bull terrier": 6,
+      "puppies for sale": 8,
+      "glasgow": 6,
+      "uk": 8
+    },
+    "puppy": {
+      "blue staffy": 12,
+      "staffy puppies": 10,
+      "staffordshire bull terrier": 5,
+      "puppies for sale": 6,
+      "glasgow": 5,
+      "uk": 6
+    },
+    "comparison": {
+      "blue staffy": 12,
+      "staffy puppies": 8,
+      "staffordshire bull terrier": 8,
+      "puppies for sale": 4,
+      "glasgow": 4,
+      "uk": 6
+    },
+    "location": {
+      "blue staffy": 10,
+      "staffy puppies": 8,
+      "staffordshire bull terrier": 5,
+      "puppies for sale": 6,
+      "glasgow": 8,
+      "uk": 8
+    },
+    "interior": {
+      "blue staffy": 12,
+      "staffy puppies": 8,
+      "staffordshire bull terrier": 6,
+      "puppies for sale": 4,
+      "glasgow": 4,
+      "uk": 6
+    },
+    "blog": {
+      "blue staffy": 8,
+      "staffy puppies": 6,
+      "staffordshire bull terrier": 6,
+      "puppies for sale": 3,
+      "glasgow": 3,
+      "uk": 5
+    },
+    "hub": {
+      "blue staffy": 10,
+      "staffy puppies": 8,
+      "staffordshire bull terrier": 5,
+      "puppies for sale": 5,
+      "glasgow": 5,
+      "uk": 6
+    }
+  },
+  "title_max_chars_by_slug": {
+    "_comment": "Per-slug override of title_max_chars. Every entry is a MEASURED Foundation baseline (the migrated WordPress <title> length on 2026-09-16), not a target: project 4 brings each of these back under the sitewide 70 and deletes its row. Do not raise a number to silence a finding; lower it as the title shortens.",
+    "blue-staffy-blog-guides": 83,
+    "blue-staffy-health-uk": 180,
+    "buy-blue-staffy-puppies-uk": 71,
+    "buy-staffy-puppies-for-sale-uk": 161,
+    "index": 76,
+    "privacy-policy-uk": 77,
+    "uk-blue-staffy-puppy-buying-guide": 115,
+    "uk-locations/blue-staffies-newcastle-under-lyme": 90,
+    "uk-locations/blue-staffy-puppies-uk": 77,
+    "uk-locations/staffy-breeding-dogs-glasgow": 143,
+    "uk-locations/staffy-puppies-for-sale-glasgow": 87,
+    "uk-staffordshire-bull-terrier-guide": 112
+  },
+  "budgets_by_slug": {
+    "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Empty at Foundation \u2014 every override must carry a `_why` naming the approved outline or breeder ruling that earns it."
+  }
+}

@@ -598,5 +598,77 @@
     "dst": "scripts/lighthouse/agentic-desktop.mjs",
     "mode": "copy",
     "notes": "as above"
+  },
+  {
+    "src": "rules/README.md",
+    "dst": "rules/README.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/headings.md",
+    "dst": "rules/headings.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/images.md",
+    "dst": "rules/images.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/schema.md",
+    "dst": "rules/schema.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/links.md",
+    "dst": "rules/links.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/copy.md",
+    "dst": "rules/copy.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/design.md",
+    "dst": "rules/design.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/gates.md",
+    "dst": "rules/gates.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/deploy.md",
+    "dst": "rules/deploy.md",
+    "mode": "rebase",
+    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+  },
+  {
+    "src": "rules/for-sale.md",
+    "dst": "rules/puppies.md",
+    "mode": "rebase",
+    "notes": "for-sale cluster pack renamed to the puppy cluster (task 9, spec \u00a77)"
+  },
+  {
+    "src": "data/quality/rule-index.json",
+    "dst": "data/quality/rule-index.json",
+    "mode": "rebase",
+    "notes": "rule ledger; ids renamed with their files, judgment_cap 12->9 (task 9, spec \u00a711)"
+  },
+  {
+    "src": "data/quality/evidence-budgets.json",
+    "dst": "data/quality/evidence-budgets.json",
+    "mode": "rebase",
+    "notes": "per-term repetition caps re-based to BSUK head terms (task 9, step 4)"
   }
 ]

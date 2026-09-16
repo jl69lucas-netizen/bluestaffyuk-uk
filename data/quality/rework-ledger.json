@@ -1,0 +1,4 @@
+{
+  "definition": "see docs/superpowers/specs/2026-07-31-self-improving-quality-loop-design.md §1. `page_rate` (rework touching src/public) is the headline; `harness_rate` is checker self-repair, tracked separately so improving the harness cannot worsen the headline. `rate` is the union. Empty at the system transfer: BSUK starts with no measured windows, and scripts/rework_ledger.py --last-30-days records the first one in project 4.",
+  "windows": []
+}
