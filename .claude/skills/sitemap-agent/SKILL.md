@@ -1,6 +1,6 @@
 ---
 name: sitemap-agent
-description: Regenerates all CAG sitemap XML via scripts/generate_sitemaps.py (the single source of truth — never hand-edit). Validates XML, checks for phantom/broken URLs, and submits to IndexNow + GSC. The generator writes BOTH public/ and site/content/ because deploy.yml copies site/content over public at build time.
+description: Regenerates all BSUK sitemap XML via scripts/generate_sitemaps.py (the single source of truth — never hand-edit). Validates XML, checks for phantom/broken URLs, and submits to IndexNow + GSC. The generator writes BOTH public/ and site/content/ because deploy.yml copies site/content over public at build time.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Sitemap Agent Skill** for CongoAfricanGreys.com. You keep all sitemap XML files accurate and up to date — adding new pages, updating `<lastmod>` dates, removing dead URLs, and submitting changed sitemaps to GSC.
+You are the **Sitemap Agent Skill** for BlueStaffyUK. You keep all sitemap XML files accurate and up to date — adding new pages, updating `<lastmod>` dates, removing dead URLs, and submitting changed sitemaps to GSC.
 
 A stale sitemap means new pages don't get indexed. Run this skill after every page addition or rebuild.
 
@@ -53,7 +53,7 @@ done
 | File (written to BOTH public/ + site/content/) | Contents |
 |------|---------|
 | `page-sitemap.xml` | homepage + `/blog/` + all non-location, non-blog pages |
-| `local-sitemap.xml` | location/geo pages (`african-grey-parrot-for-sale-<state>` + GEO_BUY) |
+| `local-sitemap.xml` | location/geo pages (`/uk-locations/<region>/` + GEO_BUY) |
 | `post-sitemap.xml` | blog posts (`src/pages/blog/*`) |
 | `video-sitemap.xml` | YouTube embeds — **only file still hand-maintained** (generator preserves it in the index, doesn't rewrite it) |
 | `sitemap_index.xml` | master index → the 4 shards above |
@@ -66,12 +66,12 @@ not in this doc — edit the script if tiers change.
 
 ## URL Format Rules
 
-> ⚠️ **WordPress/Simply Static export bug:** The Rank Math sitemap plugin exports relative URLs (`/slug/`). ALWAYS convert to absolute before deploying. Batch fix: `sed -i '' 's|<loc>/|<loc>https://congoafricangreys.com/|g' file.xml` (also run for `<image:loc>`).
+> ⚠️ **WordPress/Simply Static export bug:** The Rank Math sitemap plugin exports relative URLs (`/slug/`). ALWAYS convert to absolute before deploying. Batch fix: `sed -i '' 's|<loc>/|<loc>https://SITE_URL_PLACEHOLDER/|g' file.xml` (also run for `<image:loc>`).
 
 ```xml
 <!-- Correct: absolute URL, https, trailing slash -->
 <url>
-  <loc>https://congoafricangreys.com/[slug]/</loc>
+  <loc>https://SITE_URL_PLACEHOLDER/[slug]/</loc>
   <lastmod>YYYY-MM-DD</lastmod>
   <changefreq>monthly</changefreq>
   <priority>0.8</priority>
@@ -80,8 +80,8 @@ not in this doc — edit the script if tiers change.
 
 **Priority values:**
 - Homepage: `1.0`
-- Tier 1 pages (breed guide, adoption, purchase guide): `0.9`
-- Tier 2 pages (size pages, comparisons): `0.8`
+- Tier 1 pages (breed guide, buying guide, available puppies): `0.9`
+- Tier 2 pages (health pages, comparisons): `0.8`
 - Location pages: `0.8`
 - Supporting pages (about, contact, FAQ): `0.7`
 - Hub pages: `0.8`
@@ -134,7 +134,7 @@ git push origin main
 3. **Verify it reached production** — the deploy must serve today's `lastmod`,
    not the old `site/content` bytes:
 ```bash
-curl -s -A "Mozilla/5.0" "https://congoafricangreys.com/sitemap_index.xml?cb=$RANDOM" | grep -m1 lastmod
+curl -s -A "Mozilla/5.0" "https://SITE_URL_PLACEHOLDER/sitemap_index.xml?cb=$RANDOM" | grep -m1 lastmod
 ```
 4. **Submit to IndexNow** (covers Bing/Yandex/Seznam — NOT Google). Key file
    `f8071f0dbdb94257934a690f4a18fa59.txt` is live at the domain root:
@@ -143,8 +143,8 @@ python3 - <<'PY'
 import json,urllib.request,re
 urls=sorted({u for f in ["public/page-sitemap.xml","public/local-sitemap.xml","public/post-sitemap.xml"]
             for u in re.findall(r"<loc>(.*?)</loc>",open(f).read())})
-body=json.dumps({"host":"congoafricangreys.com","key":"f8071f0dbdb94257934a690f4a18fa59",
-  "keyLocation":"https://congoafricangreys.com/f8071f0dbdb94257934a690f4a18fa59.txt","urlList":urls}).encode()
+body=json.dumps({"host":"SITE_URL_PLACEHOLDER","key":"f8071f0dbdb94257934a690f4a18fa59",
+  "keyLocation":"https://SITE_URL_PLACEHOLDER/f8071f0dbdb94257934a690f4a18fa59.txt","urlList":urls}).encode()
 for ep in ("https://api.indexnow.org/indexnow","https://www.bing.com/indexnow"):
     r=urllib.request.urlopen(urllib.request.Request(ep,data=body,
       headers={"Content-Type":"application/json; charset=utf-8"},method="POST"),timeout=30)

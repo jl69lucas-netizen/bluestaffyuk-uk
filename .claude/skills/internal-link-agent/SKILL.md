@@ -1,6 +1,6 @@
 ---
 name: internal-link-agent
-description: Audits and improves internal link structure across CAG pages. ALWAYS starts from the sitemap (the canonical page universe), then finds orphan pages (no inbound links), missing hub-to-spoke links, missing spoke-to-hub links, and anchor text opportunities — enforcing the Anchor Diversity Ledger (no repeated anchors; exact/partial/LSI/natural variation) and the Link-First placement rule. Produces a prioritized fix list with exact HTML insertions. Never modifies H1 or canonical.
+description: Audits and improves internal link structure across BSUK pages. ALWAYS starts from the sitemap (the canonical page universe), then finds orphan pages (no inbound links), missing hub-to-spoke links, missing spoke-to-hub links, and anchor text opportunities — enforcing the Anchor Diversity Ledger (no repeated anchors; exact/partial/LSI/natural variation) and the Link-First placement rule. Produces a prioritized fix list with exact HTML insertions. Never modifies H1 or canonical.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Internal Link Agent Skill** for CongoAfricanGreys.com. You map the internal link graph, find gaps, and prescribe exact fixes — because internal links pass authority to the pages that need it most and help Google understand site structure.
+You are the **Internal Link Agent Skill** for BlueStaffyUK. You map the internal link graph, find gaps, and prescribe exact fixes — because internal links pass authority to the pages that need it most and help Google understand site structure.
 
 ---
 
@@ -24,7 +24,7 @@ You are the **Internal Link Agent Skill** for CongoAfricanGreys.com. You map the
 
 ---
 
-## CAG Hub/Spoke Link Architecture
+## BSUK Hub/Spoke Link Architecture
 
 Every page belongs to a cluster. Links must flow correctly:
 
@@ -33,26 +33,26 @@ Hub → All Spokes (hub lists every spoke with descriptive anchor text)
 Spoke → Hub (each spoke links back to its hub)
 Spoke → 2–3 Sibling Spokes (cross-links between related pages)
 All pages → Homepage (via header nav — already exists)
-All pages → Contact/Inquiry (via CTA — check this exists)
+All pages → Contact/Enquiry (via CTA — check this exists)
 ```
 
 ### Known Cluster Maps
 
-**Comparison cluster (slugs verified 2026-06-03):**
-- Hub: `/african-grey-comparison/`
-- Spokes: `/congo-vs-timneh-african-grey/`, `/male-vs-female-african-grey-parrots-for-sale/`, `/african-grey-vs-macaw/`, `/african-grey-vs-cockatoo/`, `/african-grey-vs-amazon-parrot/`, `/african-grey-parrot-breeders-comparison/`, `/african-grey-parrot-lifespan/`
+**Buying-guide cluster (slugs verified 2026-06-03):**
+- Hub: `/uk-blue-staffy-puppy-buying-guide/`
+- Spokes: `/blue-staffy-pup-sale-uk/`, `/buy-blue-staffy-puppies-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/uk-staffordshire-bull-terrier-guide/`, `/blue-staffy-health-uk/`, `/blue-staffy-uk-breeders/`, `/available-puppies/`
 
 **Location cluster:**
-- Hub: `/african-grey-parrots-for-sale/`
-- Spokes: all 22 state pages in `/usa-locations/`
+- Hub: `/uk-locations/`
+- Spokes: all UK region pages in `/uk-locations/<slug>/`
 
-**Variant cluster:**
-- Hub: `/african-grey-parrot-guide/` (or homepage)
-- Spokes: `/congo-african-grey-for-sale/`, `/timneh-african-grey-for-sale/`, `/african-grey-parrot-guide/`
+**Availability cluster:**
+- Hub: `/available-puppies/`
+- Spokes: `/available-puppies/<slug>/` (Roman, Byrd, Ince, Vennie, Christa, Cheryl)
 
-**Adoption cluster:**
-- Hub: `/african-grey-parrot-for-adoption/`
-- Spokes: `/african-grey-parrot-rescue/`, `/buy-african-grey-parrot-near-me/`, `/congo-african-grey-for-sale/`
+**Trust cluster:**
+- Hub: `/blue-staffy-uk-breeders/`
+- Spokes: `/uk-blue-staffy-breeders-contact/`, `/blue-staffy-health-uk/`, `/uk-blue-staffy-puppy-buying-guide/`
 
 ---
 
@@ -80,7 +80,7 @@ Use `/tmp/sitemap_pages.txt` as the master list for:
 
 **Bulk mode:** Pass `slugs: [slug1, slug2, slug3]` to process multiple pages in one call instead of one at a time.
 
-**Gutenberg strip (required before analysis):** CAG HTML may contain WordPress Gutenberg block comments that confuse link parsing. Strip them first:
+**Gutenberg strip (required before analysis):** BSUK HTML may contain WordPress Gutenberg block comments that confuse link parsing. Strip them first:
 ```bash
 # Strip Gutenberg comments before analysis
 sed 's/<!-- wp:[^>]*-->//g' site/content/[slug]/index.html > /tmp/clean.html
@@ -114,11 +114,11 @@ comm -23 /tmp/all_pages.txt /tmp/linked_pages.txt
 
 ### Step 3 — Check Hub-to-Spoke Links
 ```bash
-# Example: check comparison hub links to all spokes
-grep -o 'href="/african-grey-vs[^"]*"\|href="/congo-vs-timneh[^"]*"\|href="/male-vs-female[^"]*"' dist/african-grey-comparison/index.html
+# Example: check buying-guide hub links to all spokes
+grep -o 'href="/buy-blue-staffy[^"]*"\|href="/blue-staffy-pup-sale-uk[^"]*"\|href="/blue-staffy-health-uk[^"]*"' dist/uk-blue-staffy-puppy-buying-guide/index.html
 
 # Check each spoke links back to hub
-grep -l 'href="/african-grey-comparison/"' dist/african-grey-vs-*/index.html dist/congo-vs-timneh-african-grey/index.html
+grep -l 'href="/uk-blue-staffy-puppy-buying-guide/"' dist/buy-blue-staffy-puppies-uk/index.html dist/blue-staffy-pup-sale-uk/index.html
 ```
 
 ### Step 4 — Anchor Text Audit
@@ -144,9 +144,9 @@ Score each missing link 1–3:
 ## Anchor Text Rules
 
 **Good anchor text:**
-- Descriptive: "Congo African Grey parrot care guide"
-- Keyword-rich but natural: "African Grey vs Cockatoo comparison"
-- Action-oriented: "see Congo and Timneh African Grey variants"
+- Descriptive: "Blue Staffy puppy care guide"
+- Keyword-rich but natural: "Staffy vs American Bully comparison"
+- Action-oriented: "see our blue and blue brindle Staffy pups"
 
 **Bad anchor text:**
 - Generic: "click here," "read more," "here," "this page"
@@ -159,7 +159,7 @@ Repeated identical anchors to the same target are the #1 over-optimization signa
 
 ```bash
 # All anchors currently pointing at a target, site-wide (run on dist/ or src/pages/)
-target="/congo-african-grey-for-sale/"
+target="/buy-blue-staffy-puppies-uk/"
 grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c | sort -rn
 ```
 
@@ -167,45 +167,45 @@ grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c |
 
 | Target URL | Anchors in use (count) | Next variation to use |
 |---|---|---|
-| /congo-african-grey-for-sale/ | "Congo African Grey for sale" (1), "our available Congo Greys" (1) | "hand-raised Congo African Grey parrots" (LSI) |
+| /buy-blue-staffy-puppies-uk/ | "buy Blue Staffy puppies UK" (1), "our available Blue Staffy pups" (1) | "home-raised Blue Staffy puppies" (LSI) |
 
 **Variation rules:**
 1. **Never repeat an anchor** — not twice on a page, and not for the same target across the site. Every new link gets a fresh variation.
-2. **Rotate the 4 anchor types** per target: exact match (≤1 site-wide per target beyond the hub) → partial match → LSI/synonym ("Grey parrot pricing", "what a Congo costs") → natural language / first-person ("compare our two Grey variants").
-3. **Mine variations from real data** — GSC query variants, PAA phrasing, and the keyword-cluster tiers (`skills/keyword-cluster.md`) — not invented synonyms.
-4. **No stop-word-only anchors** — anchors are meaningful content words ("Congo African Grey diet plan"), never filler ("more about this", "the page on diet").
+2. **Rotate the 4 anchor types** per target: exact match (≤1 site-wide per target beyond the hub) → partial match → LSI/synonym ("Staffy puppy pricing", "what a blue pup costs") → natural language / first-person ("compare our two coat colours").
+3. **Mine variations from real data** — GSC query variants, PAA phrasing, and the keyword-cluster tiers (`.claude/skills/keyword-cluster/SKILL.md`) — not invented synonyms.
+4. **No stop-word-only anchors** — anchors are meaningful content words ("Blue Staffy puppy feeding plan"), never filler ("more about this", "the page on feeding").
 
 ### Anchor Position Rule (Internal + External)
 
 **Link-First rule (2026-07-11):** links must appear at the **START** of the sentence — inside the opening words (first clause). Never mid-sentence, never at the end.
 
 ✅ **Good — link in subject/predicate position:**
-- `"Our <a href="/congo-african-grey-for-sale/">Congo African Grey parrot guide</a> covers adult weight, pricing, and care requirements."`
-- `"<a href="/african-grey-parrot-guide/">African Grey parrot species characteristics</a> include exceptional mimicry and high intelligence."`
+- `"Our <a href="/uk-staffordshire-bull-terrier-guide/">Blue Staffy puppy guide</a> covers adult weight, pricing, and care requirements."`
+- `"<a href="/blue-staffy-health-uk/">Staffordshire Bull Terrier health screening</a> includes HC and L-2-HGA DNA test results for both parents."`
 
 ❌ **Bad — link at end of sentence:**
-- `"Learn about variant differences in our <a href="/congo-vs-timneh-african-grey/">Congo vs Timneh guide</a>."`
-- `"For pricing details, see our <a href="/african-grey-parrot-price/">price page</a>."`
+- `"Learn about coat colour differences in our <a href="/uk-staffordshire-bull-terrier-guide/">blue vs brindle guide</a>."`
+- `"For pricing details, see our <a href="/buy-blue-staffy-puppies-uk/">price page</a>."`
 
 ### Open-in-New-Tab Policy (confirmed 2026-06-03)
 
 > Best practice — verified against SEO + WCAG. `target="_blank"` is **not** a ranking factor; forcing every link to a new tab gives **zero SEO value** and hurts UX (breaks the back button, tab clutter on mobile).
 
 - **Internal links → SAME tab, always.** Never add `target="_blank"` to an internal `/slug/` link. (Internal new-tab breaks navigation and is an anti-pattern.)
-- **External authority links → NEW tab** (`target="_blank" rel="noopener noreferrer"`) **+ a visual/a11y cue.** On a sales page this keeps the high-intent buyer on our page instead of shipping them to cites.org/usda with no easy return. Pattern used site-wide: a subtle CSS `::after { content:"↗" }` affordance scoped to `.home-d a[target="_blank"]` (see `src/pages/index.astro`).
+- **External authority links → NEW tab** (`target="_blank" rel="noopener noreferrer"`) **+ a visual/a11y cue.** On a sales page this keeps the high-intent buyer on our page instead of shipping them to gov.uk/the Kennel Club with no easy return. Pattern used site-wide: a subtle CSS `::after { content:"↗" }` affordance scoped to `.home-d a[target="_blank"]` (see `src/pages/index.astro`).
 - Note: warning of a new window is WCAG **3.2.5 (Level AAA)**, not AA — so `target+rel` alone is AA-compliant; the ↗ cue is the courtesy affordance.
-- **Authority citations on technical terms:** cite important technical/clinical terms ONCE to a credible **government/NIH** source (prefer `pmc.ncbi.nlm.nih.gov`) or the canonical industry authority, at the claim sentence. Reusable verified-source table: `docs/reference/external-link-library.md §Authority Citations` (PCR DNA sexing, PBFD, Polyomavirus, hypocalcemia, IATA LAR, CITES). Verify 200 first; link a term only once per page.
+- **Authority citations on technical terms:** cite important technical/clinical terms ONCE to a credible **government/NIH** source (prefer `pmc.ncbi.nlm.nih.gov`) or the canonical industry authority, at the claim sentence. Reusable verified-source table: `docs/reference/external-link-library.md §Authority Citations` (HC and L-2-HGA DNA testing, hip dysplasia, canine parvovirus, DEFRA pet travel rules, Lucy's Law, Glasgow City Council breeder licensing). Verify 200 first; link a term only once per page.
 
 ### Anchor / Jump-Link Cross-Reference Technique (in-content `#anchor` links) — confirmed 2026-06-03
 
-> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#compare-species"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
+> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#compare-colours"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
 
-**Worked example (homepage, the model to copy):** the FAQ "What's the difference between a Congo and a Timneh?" answer points readers **up** to the Compare Variants section (`Is a Congo or a Timneh African Grey Right for You?`) via `href="#compare-species"`. The deep-dive table is the payoff; the FAQ is the teaser.
+**Worked example (homepage, the model to copy):** the FAQ "What's the difference between a blue and a blue brindle Staffy?" answer points readers **up** to the Compare Coat Colours section (`Is a Blue or a Blue Brindle Staffy Right for You?`) via `href="#compare-colours"`. The deep-dive table is the payoff; the FAQ is the teaser.
 
 **How to apply it everywhere:**
 1. **Inventory section IDs first:** `grep -n 'id="' <page>` — every major section should have a stable `id` + `scroll-mt-20` (so the jump doesn't hide under a sticky header).
-2. **Link teaser → deep-dive in the same page.** FAQ answers, "still deciding?" lines, and pros/cons sections are prime spots to jump **up** to a comparison/spec table or **down** to the available-birds grid / contact form.
-3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#compare-species">Compare our Congo and Timneh Greys side by side</a> in the table above to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
+2. **Link teaser → deep-dive in the same page.** FAQ answers, "still deciding?" lines, and pros/cons sections are prime spots to jump **up** to a comparison/spec table or **down** to the available-puppies grid / contact form.
+3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#compare-colours">Compare our blue and blue brindle pups side by side</a> in the table above to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
 4. **Schema-safe caveat (critical):** if a section's text is rendered from a data array that also feeds JSON-LD (e.g. `faqItems` → `FAQPage` `acceptedAnswer.text`, rendered via `{item.a}` = HTML-escaped), you **cannot** put an `<a>` inside that string — it will show as literal text and pollute the schema. Instead add the jump-link in a **separate prose `<p>`** outside the array (the homepage adds a "Still weighing it up?" line under the FAQ accordion).
 5. Cap ~1–2 jump links per section; they supplement, not replace, contextual links to other pages.
 
@@ -220,12 +220,12 @@ grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c |
 ### External URL Verification (Before Any External Link Insert)
 ```bash
 # Always verify external URLs return 200 before inserting
-url="https://cites.org/eng/app/appendices.php"
+url="https://www.gov.uk/government/news/lucys-law-spells-the-beginning-of-the-end-for-puppy-farming"
 status=$(curl -sI -A "Mozilla/5.0" --max-time 10 "$url" | head -1 | awk '{print $2}')
 [ "$status" = "200" ] && echo "✅ Safe to link" || echo "❌ SKIP — HTTP $status"
 ```
 
-> **⚠️ Bot-block exception (learned 2026-06-05):** a curl 403/406 ≠ dead link. Some authority domains block non-browser user agents — **`cites.org` is the known case** (the recurring "CITES link is dead" was anti-bot blocking all along, not a broken URL — note the example above must use a browser UA, and the canonical host is `cites.org`, not `www.cites.org` which 301-hops). On a 403/406 for a known authority: retry with `-A "Mozilla/5.0"`, then browser-verify / accept user confirmation before skipping. Never drop a valid CITES/.gov/NIH citation on a bare curl 403. Also: cite a *species/topic* claim to the **specific resource page** (`parrots.org/encyclopedia/grey-parrot/`), not the org homepage.
+> **⚠️ Bot-block exception (learned 2026-06-05):** a curl 403/406 ≠ dead link. Some authority domains block non-browser user agents — **`thekennelclub.org.uk` is the known case** (the recurring "Kennel Club link is dead" was anti-bot blocking all along, not a broken URL — note the example above must use a browser UA, and the canonical host is `www.thekennelclub.org.uk`, not the bare apex which 301-hops). On a 403/406 for a known authority: retry with `-A "Mozilla/5.0"`, then browser-verify / accept user confirmation before skipping. Never drop a valid Kennel Club/.gov.uk/NIH citation on a bare curl 403. Also: cite a *breed/topic* claim to the **specific resource page** (`thekennelclub.org.uk/breed-information/staffordshire-bull-terrier/`), not the org homepage.
 
 ## Why Claude Code + Playwright First
 
@@ -251,16 +251,16 @@ All internal link operations use Claude Code file reads and Bash grep for speed 
 ### Add Spoke → Hub Link
 ```html
 <!-- Add in body prose or navigation section -->
-<p class="cag-body">
-  <a href="/african-grey-comparison/">Our complete African Grey comparison guide</a> lines up
-  every alternative species side by side. <!-- Link-First: anchor opens the sentence -->
+<p class="bsuk-body">
+  <a href="/uk-blue-staffy-puppy-buying-guide/">Our complete UK Blue Staffy buying guide</a> walks
+  through every step from deposit to collection day. <!-- Link-First: anchor opens the sentence -->
 </p>
 ```
 
 ### Fix Generic Anchor Text
 ```
-Before: <a href="/congo-african-grey-for-sale/">click here</a>
-After:  <a href="/congo-african-grey-for-sale/">view Congo African Grey parrots for sale</a>
+Before: <a href="/buy-blue-staffy-puppies-uk/">click here</a>
+After:  <a href="/buy-blue-staffy-puppies-uk/">view Blue Staffy puppies for sale</a>
 ```
 
 ---

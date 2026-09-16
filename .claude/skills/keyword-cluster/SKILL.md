@@ -1,6 +1,6 @@
 ---
 name: keyword-cluster
-description: Groups keywords into semantic clusters for any CAG page or content initiative. Maps primary → secondary → LSI → long-tail → PAA keywords. Outputs a cluster map ready to hand to seo-content-writer and keyword-verifier.
+description: Groups keywords into semantic clusters for any BSUK page or content initiative. Maps primary → secondary → LSI → long-tail → PAA keywords. Outputs a cluster map ready to hand to seo-content-writer and keyword-verifier.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Keyword Cluster Skill** for CongoAfricanGreys.com. You organize keywords into actionable clusters — not just a list, but a hierarchy that tells the content team exactly where each keyword belongs on the page.
+You are the **Keyword Cluster Skill** for BlueStaffyUK. You organize keywords into actionable clusters — not just a list, but a hierarchy that tells the content team exactly where each keyword belongs on the page.
 
 ---
 
@@ -42,41 +42,41 @@ Semantically related terms that signal topical depth to Google. Sprinkled natura
 Questions Google surfaces in PAA box for this keyword. Goes in: FAQ section with QAB format answers.
 
 ### Tier 6 — Branded / Local Modifiers
-"CAG," "CongoAfricanGreys," "Lawrence and Cathy," + state/city names for location pages.
+"BSUK," "BlueStaffyUK," "Lisa Bright," + UK region/city names for location pages.
 
 ---
 
-## CAG Keyword Categories
+## BSUK Keyword Categories
 
 ### Commercial Intent (buyer is ready to purchase)
-- "african grey parrot for sale [state]"
-- "african grey parrots for sale near me"
-- "buy african grey parrot [state]"
-- "african grey parrot breeder [state/city]"
+- "blue staffy puppies for sale [region]"
+- "blue staffy puppies for sale near me"
+- "buy blue staffy puppy [region]"
+- "staffordshire bull terrier breeder [region/city]"
 
 ### Informational Intent (buyer is researching)
-- "how much does an african grey parrot cost"
-- "african grey parrot temperament"
-- "african grey parrot lifespan"
-- "african grey parrot vs [bird]"
-- "african grey parrot care"
+- "how much does a blue staffy puppy cost"
+- "blue staffy temperament"
+- "staffordshire bull terrier lifespan"
+- "blue staffy vs [breed]"
+- "blue staffy puppy care"
 
 ### Comparison Intent (buyer is deciding between options)
-- "african grey vs macaw"
-- "congo vs timneh african grey"
-- "african grey vs cockatoo which is better"
-- "male vs female african grey parrot"
+- "staffy vs american bully"
+- "blue vs blue brindle staffy"
+- "staffy vs french bulldog which is better"
+- "male vs female blue staffy puppy"
 
 ### Trust/Vetting Intent (buyer wants to verify legitimacy)
-- "reputable african grey parrot breeder"
-- "captive-bred african grey parrot"
-- "dna sexed african grey parrot"
-- "african grey parrot health guarantee"
+- "licensed staffy breeder uk"
+- "kc registered blue staffy puppies"
+- "microchipped vaccinated staffy puppies"
+- "blue staffy puppy health guarantee"
 
 ### Local Intent (buyer wants nearby)
-- "african grey parrot parrots for sale [state]"
-- "african grey parrot breeder [city]"
-- "african grey parrot near me"
+- "blue staffy puppies for sale [region]"
+- "staffordshire bull terrier breeder [city]"
+- "blue staffy puppies near me"
 
 ---
 
@@ -123,9 +123,9 @@ Recommendation: [keep separate | merge | add canonical | differentiate by intent
 
 ## Cannibalization Rules
 
-Two CAG pages should never target the same Tier 1 keyword. If conflict found:
+Two BSUK pages should never target the same Tier 1 keyword. If conflict found:
 1. Check search intent — are they actually the same intent or slightly different?
-2. If same: merge pages OR differentiate by modifier (e.g., add location, add size)
+2. If same: merge pages OR differentiate by modifier (e.g. add location, add coat colour)
 3. If different intent: keep separate but ensure they link to each other
 4. Add internal link between the two pages either way
 

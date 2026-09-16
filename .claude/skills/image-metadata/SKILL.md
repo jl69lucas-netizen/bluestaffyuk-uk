@@ -1,6 +1,6 @@
 ---
 name: image-metadata
-description: Writes SEO-optimized alt text, file names, title attributes, and caption text for all CAG images. Follows seo-rules.md image constraints. Audits existing pages for missing or weak alt text. Outputs a ready-to-paste metadata block for each image.
+description: Writes SEO-optimized alt text, file names, title attributes, and caption text for all BSUK images. Follows seo-rules.md image constraints. Audits existing pages for missing or weak alt text. Outputs a ready-to-paste metadata block for each image.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Image Metadata Skill** for CongoAfricanGreys.com. You write and audit all image metadata — alt text, file names, title attributes, captions — ensuring every image is SEO-optimized, accessible, and compliant with seo-rules.md.
+You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all image metadata — alt text, file names, title attributes, captions — ensuring every image is SEO-optimized, accessible, and compliant with seo-rules.md.
 
 ---
 
@@ -23,9 +23,9 @@ You are the **Image Metadata Skill** for CongoAfricanGreys.com. You write and au
 
 ---
 
-## Image Metadata Rules — CANONICAL 5-ELEMENT C.A.Gs SET
+## Image Metadata Rules — CANONICAL 5-ELEMENT BSUK SET
 
-> **⚠️ EVERY C.A.Gs image gets ALL FIVE elements — no exceptions.** This is the standard the user confirmed; earlier 4-element / 100–150-char-alt versions are RETIRED. Brand string = **C.A.Gs** / **CongoAfricanGreys.com** (never generic "the breeder").
+> **⚠️ EVERY BSUK image gets ALL FIVE elements — no exceptions.** This is the standard the user confirmed; earlier 4-element / 100–150-char-alt versions are RETIRED. Brand string = **BlueStaffyUK** / **BSUK** (never generic "the breeder").
 
 **Each metadata set includes:**
 1. **Filename** (SEO-optimized)
@@ -44,32 +44,32 @@ You are the **Image Metadata Skill** for CongoAfricanGreys.com. You write and au
 
 ### 1. Filename (SEO-optimized)
 - **Format:** `[descriptor]-[keyword]-[location]-[number].jpg`
-- **Example:** `congo-african-grey-parrot-midland-tx-01.jpg`
+- **Example:** `blue-staffy-puppy-for-sale-glasgow-01.jpg`
 - **Never:** `IMG_3847.jpg`, `photo1.png`, `DSC00234.jpg`
 - **Max length:** 60 characters including extension
 
 ### 2. Alt Text (≤190 characters, entity-rich)
 - **Length:** up to **190 characters** — entity-rich, primary keyword + variant + location + a trust/health entity.
-- **Pattern:** [descriptive content] + [keyword where natural] + [variant: Congo/Timneh] + [location if location page] + [trust entity: DNA-sexed / vet-checked / CITES].
+- **Pattern:** [descriptive content] + [keyword where natural] + [coat colour: blue / blue brindle / black brindle] + [location if location page] + [trust entity: KC registered / vet-checked / licensed breeder].
 - **Format:** Sentence-style, no keyword stuffing, describes what a screen-reader user needs.
-- **Never:** "image001," "photo," "picture of parrot," empty `alt=""`, generic 🦜.
+- **Never:** "image001," "photo," "picture of puppy," empty `alt=""`, generic 🐶.
 - **Accessibility caveat (honest):** screen readers often truncate alt around ~125 chars, so front-load the most important description in the first 125; the remaining length carries SEO entities.
-- **Example:** `Hand-raised Congo African Grey parrot perched on Mark's hand at C.A.Gs in Midland, TX — DNA-sexed, avian-vet-checked, captive-bred with CITES Appendix I paperwork, ready to reserve`
+- **Example:** `Home-raised blue Staffy puppy held by Lisa Bright at BlueStaffyUK in Glasgow — KC registered, microchipped, vet-checked with first vaccinations under a Glasgow City Council licence, ready to reserve`
 
 ### 3. Title (keyword + benefit)
 - Shown on hover; pairs the keyword with a concrete benefit.
-- **Pattern:** `[Primary keyword + variant] — [benefit] | C.A.Gs`
-- **Example:** `Congo African Grey Parrot — DNA-sexed & vet-checked | C.A.Gs – Midland, TX`
+- **Pattern:** `[Primary keyword + coat colour] — [benefit] | BSUK`
+- **Example:** `Blue Staffordshire Bull Terrier Puppy — KC registered & vet-checked | BSUK – Glasgow, Scotland`
 
 ### 4. Caption (conversational, with CTA)
 - Visible below the image; adds info not obvious from the photo + a soft CTA.
-- **Example:** `This hand-fed Congo baby is already on a pellet diet at 12 weeks — ask Mark & Teri which clutch is available next. 👉 Reserve yours at C.A.Gs.`
+- **Example:** `This home-raised blue boy is already crate-settled and worm-treated at 8 weeks — ask Lisa which litter is available next. 👉 Reserve yours at BlueStaffyUK.`
 
 ### 5. Description (250+ words, comprehensive)
 - Long-form, for the media-library field, `ImageObject` schema `description`, and/or on-page `<figcaption>`/figure copy.
-- Must weave: primary keyword + 2–3 GSC variations/LSI, variant (Congo/Timneh), location (Midland, TX), trust entities (DNA-sexed, avian vet, CITES Appendix I captive-bred, USDA AWA), and a closing CTA to `/contact-us/`.
+- Must weave: primary keyword + 2–3 GSC variations/LSI, coat colour (blue / blue brindle / black brindle), location (Glasgow, Scotland), trust entities (KC registration, microchip number, vet health check, first vaccinations, Glasgow City Council breeder licence, Lucy's Law compliance), and a closing CTA to `/uk-blue-staffy-breeders-contact/`.
 - Entity-rich and conversational — written as if answering "what am I looking at and why does it matter?"
-- **Never** fabricate a bird's age, sex, price, or health status — pull only from `data/clutch-inventory.json` / `data/price-matrix.json` or confirmed breeder input.
+- **Never** fabricate a puppy's age, sex, price, or health status — pull only from `data/litter-inventory.json` / `data/price-matrix.json` or confirmed breeder input.
 
 ---
 
@@ -90,36 +90,36 @@ grep -n 'src="[^"]*\(IMG_\|DSC\|photo\|image[0-9]\)' site/content/[slug]/index.h
 
 ## Metadata Templates by Image Type
 
-### Parrot Portrait
+### Puppy Portrait
 ```
-File name: [variant]-african-grey-parrot-[location]-[nn].jpg
-Alt text:  [Variant] African Grey parrot at CongoAfricanGreys.com Omaha Nebraska — [health claim] — available [season/year]
-Title:     [Variant] African Grey parrot | CongoAfricanGreys.com
+File name: [coat-colour]-staffy-puppy-[location]-[nn].jpg
+Alt text:  [Coat colour] Staffordshire Bull Terrier puppy at BlueStaffyUK Glasgow Scotland — [health claim] — available [season/year]
+Title:     [Coat colour] Staffy puppy | BlueStaffyUK
 Caption:   [Optional: adult weight estimate, price range]
 ```
 
 ### Lifestyle / Family Photo
 ```
-File name: african-grey-parrot-with-[family-type]-[location]-[nn].jpg
-Alt text:  [Family type] with Congo African Grey parrot in [setting] — CongoAfricanGreys.com Omaha Nebraska
-Title:     African Grey parrot with [family type] | CAG
-Caption:   [Optional: "Perfect for [lifestyle] — ask about our Congo or Timneh African Grey parrots"]
+File name: blue-staffy-puppy-with-[family-type]-[location]-[nn].jpg
+Alt text:  [Family type] with blue Staffordshire Bull Terrier puppy in [setting] — BlueStaffyUK Glasgow Scotland
+Title:     Blue Staffy puppy with [family type] | BSUK
+Caption:   [Optional: "Perfect for [lifestyle] — ask about our blue or blue brindle Staffy puppies"]
 ```
 
 ### Size Reference
 ```
-File name: african-grey-parrot-adult-size-reference-[nn].jpg
-Alt text:  African Grey parrot adult size comparison — 400–650 grams (approx. 1.4 lbs) — perched on hand showing adult size | CAG
-Title:     African Grey parrot actual adult size | CongoAfricanGreys.com
-Caption:   African Grey parrot: 400–650 grams as adults. Shown at [age] weeks.
+File name: blue-staffy-adult-size-reference-[nn].jpg
+Alt text:  Staffordshire Bull Terrier adult size comparison — 11–17 kg (approx. 24–37 lbs) — standing beside a person showing adult size | BSUK
+Title:     Blue Staffy actual adult size | BlueStaffyUK
+Caption:   Staffordshire Bull Terrier: 11–17 kg as adults. Shown at [age] weeks.
 ```
 
 ### Infographic
 ```
-File name: african-grey-parrot-[topic]-infographic-[nn].jpg
-Alt text:  Infographic: [topic description] — [key data point] | CongoAfricanGreys.com
-Title:     [Topic] Infographic | CAG
-Caption:   [Share this: congoafricangreys.com/[page]] — optional
+File name: blue-staffy-[topic]-infographic-[nn].jpg
+Alt text:  Infographic: [topic description] — [key data point] | BlueStaffyUK
+Title:     [Topic] Infographic | BSUK
+Caption:   [Share this: https://SITE_URL_PLACEHOLDER/[page]] — optional
 ```
 
 ---
@@ -135,7 +135,7 @@ Date: [YYYY-MM-DD]
 | Line | Current State | Issue | Recommended Alt Text | Recommended File Name |
 |------|--------------|-------|---------------------|----------------------|
 | 234 | alt="" | Missing | [suggested] | [suggested] |
-| 456 | alt="cute parrot" | Too generic | [suggested] | [suggested] |
+| 456 | alt="cute puppy" | Too generic | [suggested] | [suggested] |
 | ... | | | | |
 
 ## Summary
@@ -152,7 +152,7 @@ Priority: [top 3 fixes]
 
 1. **Every image gets all FIVE elements** — filename, alt (≤190), title, caption (with CTA), and a 250+ word description. None are optional.
 2. **No keyword in every alt text** — natural placement only, 50–60% of images max
-3. **Location in alt text on location pages** — always include state/city
+3. **Location in alt text on location pages** — always include city/region
 4. **Audit before writing new** — always check what exists first
 5. **File rename requires git tracking** — note if file name changes will break existing references
 

@@ -1,6 +1,6 @@
 ---
 name: section-auditor
-description: Audits individual page sections for content quality, framework compliance, word count, AIO-readiness, and design token compliance for CAG pages. Use before rebuilding a page to identify which sections are weak vs which are strong. Outputs a section-by-section health report with specific improvement tasks.
+description: Audits individual page sections for content quality, framework compliance, word count, AIO-readiness, and design token compliance for BSUK pages. Use before rebuilding a page to identify which sections are weak vs which are strong. Outputs a section-by-section health report with specific improvement tasks.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Section Auditor Skill** for CongoAfricanGreys.com. Before any page is rebuilt, you audit it section-by-section — identifying which sections are strong (preserve), which need updating (patch), and which are broken (rebuild). This prevents unnecessary rebuilds and focuses effort where it matters.
+You are the **Section Auditor Skill** for BlueStaffyUK. Before any page is rebuilt, you audit it section-by-section — identifying which sections are strong (preserve), which need updating (patch), and which are broken (rebuild). This prevents unnecessary rebuilds and focuses effort where it matters.
 
 ---
 
@@ -28,7 +28,7 @@ You are the **Section Auditor Skill** for CongoAfricanGreys.com. Before any page
 
 ```bash
 # Extract section structure from any page
-grep -n "cag-section\|<section\|<h2\|<!-- Section" site/content/[slug]/index.html | head -40
+grep -n "bsuk-section\|<section\|<h2\|<!-- Section" site/content/[slug]/index.html | head -40
 ```
 
 For known page builders, use the section map from the builder's agent file (e.g., homepage-builder.md lists 18 sections with line ranges).
@@ -50,7 +50,7 @@ For each section, score 1–5 on:
 - **1:** No framework — rambling prose
 
 ### 3. Design Token Compliance
-- **5:** `cag-section` classes, correct color tokens, CAG typography
+- **5:** `bsuk-section` classes, correct color tokens, BSUK typography
 - **3:** Mostly correct with minor deviations
 - **1:** WordPress/Astra classes, inline colors, wrong fonts
 
@@ -60,7 +60,7 @@ For each section, score 1–5 on:
 - **1:** No citations, vague language, AI engines can't cite it
 
 ### 5. Conversion Contribution
-- **5:** Clear path to inquiry, trust signal present, leads toward CTA
+- **5:** Clear path to enquiry, trust signal present, leads toward CTA
 - **3:** Informative but no conversion push
 - **1:** No trust signal, no next step, reader has no reason to act
 
@@ -87,23 +87,23 @@ For each section, score 1–5 on:
 
 ### Features Section
 - Issue: generic benefits ("high quality," "best") with no evidence
-- Missing: DNA sexing certificate specificity (confirm variant + sex)
+- Missing: KC registration + microchip number specificity (confirm pedigree + ID)
 - Issue: icon grid without descriptive text (not AIO-citable)
 
 ### FAQ Section
 - Missing: FAQPage JSON-LD schema
-- Issue: questions written for SEO not for real buyers ("What is a African Grey parrot?")
+- Issue: questions written for SEO not for real buyers ("What is a Blue Staffy?")
 - Missing: QAB format (Answer doesn't include Benefit)
 - Issue: `<details>/<summary>` accordion not used (JS dependency)
 
 ### CTA Section
-- Issue: form_id missing or wrong (`xpqoeazq` is canonical)
+- Issue: form_id missing or wrong (`bsuk-enquiry-form` is canonical)
 - Issue: CTA text generic ("Submit" / "Contact Us")
 - Missing: reassurance below button ("We respond within 24 hours")
 - Missing: what happens next (no expectation-setting)
 
 ### Comparison Table Section
-- Issue: CAG column not highlighted (no visual win indicator)
+- Issue: BSUK column not highlighted (no visual win indicator)
 - Issue: table not mobile-responsive
 - Missing: source citations on health/price claims
 
@@ -127,14 +127,14 @@ Page: [slug] — [line count] lines
 
 ### Section 1 — Hero (✅ Preserve)
 Strong: H1 keyword placement, trust bar above fold, orange CTA
-Weak: Subheading is generic ("The best African Grey parrots...") — consider updating
+Weak: Subheading is generic ("The best Blue Staffy puppies...") — consider updating
 
 ### Section 2 — Features (🔴 Rebuild)
 Issues:
 - 3 of 4 feature cards use "passion" or "love" — banned clichés
-- No DNA sexing certificate specificity
+- No KC registration / microchip specificity
 - No framework applied (not Inverse Pyramid)
-- WordPress card classes — needs cag-section migration
+- WordPress card classes — needs bsuk-section migration
 Rebuild with: section-builder (features type) + seo-content-writer
 
 ## Rebuild Priority Order
