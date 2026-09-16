@@ -63,12 +63,30 @@ test('the registry is not empty', () => {
   ).toBeGreaterThan(0);
 });
 
+/**
+ * The committed form fixtures cannot carry the real Formspree id — it lives in .env and no
+ * credential-adjacent value may sit in a committed file. They carry the literal
+ * `FORM_ID_FROM_ENV` in their form `action`s instead, and this substitutes the live id into
+ * the loaded DOM before any check runs, so the FORM family still judges known_good against
+ * the very endpoint it will judge dist/ against. A no-op for every other fixture.
+ */
+async function substituteFormEndpoint(page: import('@playwright/test').Page): Promise<void> {
+  const id = process.env.PUBLIC_FORMSPREE_ID;
+  if (!id) return;
+  await page.evaluate((formId) => {
+    document.querySelectorAll('form[action*="FORM_ID_FROM_ENV"]').forEach((f) => {
+      f.setAttribute('action', (f.getAttribute('action') || '').replace('FORM_ID_FROM_ENV', formId));
+    });
+  }, id);
+}
+
 for (const check of registry) {
   test.describe(`${check.id} [${check.family}]`, () => {
     test('fires on the known_broken fixture', async ({ page }, testInfo) => {
       const viewport = testInfo.project.use.viewport!.width;
       const res = await page.goto(fixtureUrl('known_broken', check.id));
       expect(res?.status(), 'known_broken fixture must exist').toBe(200);
+      await substituteFormEndpoint(page);
       const result = await runCheck(check, page, viewport, FIXTURE_CTX);
       expect(
         result.examined,
@@ -84,6 +102,7 @@ for (const check of registry) {
       const viewport = testInfo.project.use.viewport!.width;
       const res = await page.goto(fixtureUrl('known_good', check.id));
       expect(res?.status(), 'known_good fixture must exist').toBe(200);
+      await substituteFormEndpoint(page);
       const result = await runCheck(check, page, viewport, FIXTURE_CTX);
       expect(
         result.examined,

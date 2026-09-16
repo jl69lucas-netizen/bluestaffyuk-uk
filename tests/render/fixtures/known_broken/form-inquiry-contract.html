@@ -1,22 +1,32 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><title>form posts to nothing, fields missing</title>
-<style>.hp{position:absolute;left:-9999px}</style></head><body>
+<style>.hp{display:none}</style></head><body>
 <main>
-  <h1>Congo African Greys</h1>
-  <form class="cta-form" name="compare-inquiry" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-    <input type="hidden" name="form-name" value="compare-inquiry">
+  <h1>UK Blue Staffy Breeders Contact: Speak to Glasgow's Trusted Family Breeders</h1>
+  <form action="/search/" method="get" role="search"><input name="q"><button>Search</button></form>
+  <!-- DEFECT 1 (endpoint branch): data-netlify with no action — the browser POSTs to the
+       page itself and the enquiry vanishes. Also trips the form-name/bot-field residue.
+       DEFECT 2 (required branch): `required` stripped from the puppy select.
+       DEFECT 3 (hidden branch): _next and _subject deleted. -->
+  <form class="cta-form" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="contact">
     <p class="hp"><label>Leave this field empty: <input name="bot-field"></label></p>
-    <label>First name<input name="first_name"></label>
-    <label>Cell<input name="cell" type="tel"></label>
-    <label>Email<input name="email" type="email"></label>
-    <label>Delivery<select name="delivery"><option value="">Choose</option><option>Airport pickup</option></select></label>
-    <label>Message<textarea name="message"></textarea></label>
-    <button type="submit">Send</button>
+    <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <label>Your name <input name="name" required></label>
+    <label>Email <input type="email" name="email" required></label>
+    <label>Phone <input type="tel" name="phone"></label>
+    <label>Town or postcode <input name="location"></label>
+    <label>Which puppy?
+      <select name="puppy">
+        <option value="">Choose…</option>
+        <option value="collection-glasgow">Collection in Glasgow after a refundable £500 deposit</option>
+      </select></label>
+    <label>Message<textarea name="message" required></textarea></label>
+    <button type="submit">Send enquiry</button>
   </form>
-  <form class="fs-nl-form" action="/contact-us/">
-    <input type="email" required placeholder="you@example.com"><button>Subscribe</button>
-  </form>
-  <form class="fs-nl-form" action="https://formspree.io/f/xrejpnvn" method="POST">
+  <!-- DEFECT 4 (newsletter-name branch): the email input has no `name`, so Formspree
+       receives an unlabelled value and drops it. -->
+  <form class="fs-nl-form" action="https://formspree.io/f/FORM_ID_FROM_ENV" method="POST">
     <input type="email" required placeholder="you@example.com"><button>Subscribe</button>
   </form>
 </main>

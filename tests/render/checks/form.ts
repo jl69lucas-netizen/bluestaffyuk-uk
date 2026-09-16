@@ -2,13 +2,14 @@ import { register, type CheckResult, type CheckContext, type Defect } from '../l
 import type { Page } from '@playwright/test';
 
 /**
- * FORM family. Ported from CAG 2026-09-16, where it was added after the breeder found
- * inquiries "still going to the MFS email": 14 forms carried data-netlify with no action
- * (a Netlify handler that does not exist on Cloudflare Pages — the browser POSTed to the
- * page itself and the mail vanished), two POSTed to a /thank-you/ page that did not exist,
- * one GET to /contact-us/, one to a retired Formspree ID. No invariant covered any of it.
- * It is judged in the browser, not from source: `checkValidity()` on the untouched form is
- * the one honest test that `required` is live on every control the contract names.
+ * FORM family. Ported from the source project 2026-09-16, where it was added after the
+ * breeder found inquiries "still going to the MFS email": 14 forms carried data-netlify
+ * with no action (a Netlify handler that does not exist on Cloudflare Pages — the browser
+ * POSTed to the page itself and the mail vanished), two POSTed to a /thank-you/ page that
+ * did not exist, one GET to /contact-us/, one to a retired Formspree ID. No invariant
+ * covered any of it. It is judged in the browser, not from source: `checkValidity()` on the
+ * untouched form is the one honest test that `required` is live on every control the
+ * contract names.
  *
  * `examined === 0` is a legitimate, silent state on a page that carries no inquiry form BY
  * DESIGN — on BSUK that is every page except the contact page, because ContactForm.astro
@@ -24,16 +25,27 @@ import type { Page } from '@playwright/test';
  * an explicit allow-list rather than a regex: a regex over BSUK's slugs would have to
  * enumerate the 16 pages that DON'T carry a form, and would silently exempt the 17th.
  *
- * NOT changed in the port, deliberately: FORM_ENDPOINT and the seven-field screening
- * contract below are CAG's, and tests/render/fixtures/{known_good,known_broken}/
- * form-inquiry-contract.html are built against exactly them. BSUK's own screening contract
- * has not been decided (ContactForm.astro ships name/email/phone/location/puppy/message and
- * posts to `#contact` until PUBLIC_FORMSPREE_ID is set), so every row this check emits on
- * the real contact page is Foundation BASELINE, not a regression. Rewriting the contract
- * here without rewriting the fixtures would leave the new branch fixture-untested, which is
- * the one thing this harness exists to refuse.
+ * The contract below is BSUK's own, read off the built contact page and held in lock-step
+ * with scripts/form_contract_audit.py: same six controls, same required/optional split,
+ * same `puppy` <select> with the `collection-glasgow` option, same two hidden fields, same
+ * `_gotcha` exclusion. Two gates that disagree about what an inquiry form is would give
+ * different verdicts on the same page, which is the one failure this pair exists to refuse.
  */
-const FORM_ENDPOINT = 'https://formspree.io/f/xrejpnvn';
+/**
+ * Read from the environment, never hard-coded. The id is a credential-adjacent fact that
+ * lives in .env (spec §8). Throwing on unset is the point: an empty id makes `action !==
+ * endpoint` true on every form, which reads as "every form is broken", or — worse, if the
+ * comparison were relaxed — as "every form is fine". A gate that cannot tell those apart
+ * must refuse to run. scripts/form_contract_audit.py refuses identically.
+ */
+const FORMSPREE_ID = process.env.PUBLIC_FORMSPREE_ID;
+if (!FORMSPREE_ID) {
+  throw new Error(
+    'PUBLIC_FORMSPREE_ID is unset — the FORM family cannot judge an endpoint it does not ' +
+      'know. Set it in .env (see .env.example) and re-run.',
+  );
+}
+const FORM_ENDPOINT = `https://formspree.io/f/${FORMSPREE_ID}`;
 
 /** Slugs whose built page carries a real (non-search) inquiry form. See the note above. */
 const INQUIRY_FORM_SLUGS = new Set(['uk-blue-staffy-breeders-contact']);
@@ -54,22 +66,29 @@ register({
   family: 'FORM',
   severity: 'advisory',
   describe:
-    'every non-search form POSTs to the one Formspree endpoint; every in-scope inquiry form carries the seven screening fields, each required, and refuses to submit empty',
+    'every non-search form POSTs to the one Formspree endpoint; every in-scope inquiry form carries the six BSUK fields with name/email/puppy/message required, the honeypot and both hidden fields, and refuses to submit empty',
   // known_good carries one inquiry form + one newsletter (the search form is skipped) → 2.
   minExamined: 2,
   async run(page: Page, viewport: number, ctx: CheckContext): Promise<CheckResult> {
     const r = await page.evaluate(
       ({ endpoint, contract }) => {
         const ALL: [string, RegExp][] = [
-          ['confirm number', /^(phone|cell|mobile)[_-]?confirm$/],
-          ['confirm email', /^email[_-]?confirm$/],
-          ['resale screening', /^resale_screening$/],
-          ['surrender history', /^surrender_history$/],
-          ['experience', /^experience$/],
-          ['delivery', /^delivery(_method)?$/],
+          ['name', /^name$/],
+          ['email', /^email$/],
+          ['phone', /^phone$/],
+          ['location', /^location$/],
+          ['puppy', /^puppy$/],
           ['message', /^(message|msg)$/],
         ];
-        const SHORT = ['confirm number', 'confirm email', 'resale screening', 'surrender history'];
+        // As BUILT (dist/uk-blue-staffy-breeders-contact/index.html, 2026-09-16): name,
+        // email, puppy and message carry `required`; phone and location do not, by design.
+        // Demanding `required` on all six would report the shipped page as broken and teach
+        // the next agent to add a constraint the breeder did not ask for.
+        const REQUIRED = ['name', 'email', 'puppy', 'message'];
+        const HIDDEN = ['_next', '_subject'];
+        // Spec §5: the puppy control is a <select> carrying the Glasgow collection choice.
+        const PUPPY_OPTION = 'collection-glasgow';
+        const SHORT = ['name', 'email', 'message'];
         const KEYS = contract === 'short' ? ALL.filter(([n]) => SHORT.includes(n)) : ALL;
         const fieldsApply = contract !== 'none';
         const wrongEndpoint: string[] = [];
@@ -114,8 +133,31 @@ register({
           if (!fieldsApply) return;
           const formIssues: string[] = [];
           for (const [name, rx] of KEYS) {
-            const hits = controls.filter((c) => rx.test(c.name));
-            if (!hits.length || !hits.some((c) => c.required)) formIssues.push(name);
+            const hits = controls.filter((c) => c.name && rx.test(c.name));
+            if (!hits.length) {
+              formIssues.push(`${name} absent`);
+              continue;
+            }
+            if (REQUIRED.includes(name) && !hits.some((c) => c.required)) {
+              formIssues.push(`${name} not required`);
+            }
+            if (name === 'puppy') {
+              const sels = hits.filter(
+                (c) => c.tagName.toLowerCase() === 'select',
+              ) as unknown as HTMLSelectElement[];
+              if (!sels.length) formIssues.push('puppy must be a <select> (spec §5)');
+              else if (
+                !sels.some((sel) =>
+                  Array.from(sel.options).some((o) => o.value === PUPPY_OPTION),
+                )
+              ) {
+                formIssues.push(`puppy select missing the ${PUPPY_OPTION} option (spec §5)`);
+              }
+            }
+          }
+          // Without _next and _subject Formspree has no redirect and no reply subject.
+          for (const h of HIDDEN) {
+            if (!controls.some((c) => c.name === h)) formIssues.push(`hidden field ${h} absent`);
           }
           if (formIssues.length) {
             missingCount += formIssues.length;
