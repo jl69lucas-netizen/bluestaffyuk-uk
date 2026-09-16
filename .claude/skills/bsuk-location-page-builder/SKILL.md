@@ -1,12 +1,34 @@
 ---
 name: bsuk-location-page-builder
-description: Use when building or rebuilding a state or city location page at /blue-staffy-puppy-for-sale-<state>/ on BlueStaffyUK — the 22-section Florida-template structure, state data blocks, local regulations note, Google Maps embed and the location dup-gate. Triggers - "location page", "state page", "build Texas/Florida/…", "blue-staffy-puppy-for-sale-<state>".
+description: Use when building or rebuilding a state or city location page at /blue-staffy-puppy-for-sale-<state>/ on BlueStaffyUK — the 22-section Glasgow-template structure, state data blocks, local regulations note, Google Maps embed and the location dup-gate. Triggers - "location page", "state page", "build Manchester/Glasgow/…", "blue-staffy-puppy-for-sale-<state>".
 allowed-tools: [Read, Write, Bash]
 ---
 
 # BSUK LOCATION PAGE BUILDER SKILL
 ## Comprehensive State-Specific SEO Content Writer for Blue Staffy Breeder Website
 **Version 2.0 - Location Page Creator**
+
+## Rule packs
+
+A location page is built to the same rules as every other page. Where this file and a pack
+disagree, the **pack wins** — cite the rule id rather than restating the rule:
+
+| Pack | Rules a location page leans on |
+|---|---|
+| `rules/headings.md` | `heading-hierarchy-outline-gate` · `title-case-headings` · `header-style-declared` |
+| `rules/copy.md` | `write-from-outline-never-from-sibling` · `first-person-brand-voice` · `entity-4-move-loop` |
+| `rules/puppies.md` | `delivery-band-on-every-card` · `product-schema-per-pup` · `instock-only-on-an-available-pup` · `no-head-cropped-portraits` |
+| `rules/images.md` | `uniform-inbody-image-sizing` · `read-card-thumb-is-target-hero` |
+| `rules/links.md` | `link-first-anchors` |
+| `rules/schema.md` | `no-visible-date` |
+| `rules/design.md` | `layout-hero-counter-separation` · `layout-h3-image-first` |
+| `rules/gates.md` | `confidence-gate-97` · `verify-the-gate-first` |
+
+The 28 cities are `data/locations.json` and nowhere else; the prices are
+`data/price-matrix.json`; the delivery band is `data/settings.json`. None of the three is
+ever typed into a page by hand.
+
+---
 
 ## Golden Rule
 > Use Claude Code and Playwright CLI to solve problems first.
@@ -44,7 +66,7 @@ You are an expert SEO content writer specializing in creating high-converting, e
 - **Word Count:** 800-1,500 words (SHORT - competitive but beatable)
 - **Strengths:** Some FAQ structure, basic species info, contact forms
 - **Weaknesses:** Generic content cloned across states, no LICENCE_CLAIM_PLACEHOLDER compliance language, vague health guarantees
-- **Gaps:** No Blue vs. Blue-Brindle comparison, no DEFRA-APPROVED TRANSPORT delivery detail, no documentation checklist, weak trust signals
+- **Gaps:** No Blue vs. Blue-Brindle comparison, no DEFRA-approved transport delivery detail, no documentation checklist, weak trust signals
 
 **3. Local Canine Specialty Stores with Puppy Pages**
 - **Word Count:** 400-800 words (SHORT - easy to outrank)
@@ -82,7 +104,7 @@ FL, CA, NY, MA, TX, IL, LA, AZ, OH, PA, CO, WA, GA, NC, VA, MI, WI, MT, VT, NJ, 
 - **Blue Staffy (BSUK):** Canis lupus familiaris | Males & Females | £1,500–£1,700
 - **Blue-Brindle Staffy (TAG):** Canis lupus familiaris blue-brindle | Males & Females | £1,500–£1,700
 - **Breeding Pairs:** £1,500–£1,700+
-- **DEFRA-APPROVED TRANSPORT-compliant puppy delivery:** £200–£350 (transport partner dependent)
+- **puppy delivery by DEFRA-approved transport:** £200–£350 (transport partner dependent)
 - All puppies: LICENCE_CLAIM_PLACEHOLDER home-bred · Whelp certificate + band number · vet sex-checking certificate · Canine vet health certificate · LICENCE_CLAIM_PLACEHOLDER licenced breeder
 
 ---
@@ -101,7 +123,7 @@ Before writing ANY content, perform comprehensive location-specific competitor r
 5. "buy Blue Staffy puppy [Major City, State]"
 6. "home bred Blue Staffy [City]"
 
-**Competitors to Analyze (8-12 websites per state):**
+**Competitors to Analyze (8-12 websites per city):**
 - Top 3 Google results for "Blue Staffy puppy for sale [City]"
 - Top 3 Bing results for "Blue Staffy puppy breeders [City]"
 - 2-3 specialized canine/puppy breeders in that state
@@ -136,9 +158,9 @@ Before writing ANY content, perform comprehensive location-specific competitor r
 **Format:** "Blue Staffy puppy for sale [City]" or "Blue Staffy puppy breeders [City]"
 
 **Examples:**
-- "Blue Staffy puppy for sale Florida"
-- "Blue Staffy breeders California"
-- "Blue Staffy puppy for sale Texas"
+- "Blue Staffy puppy for sale Glasgow"
+- "Blue Staffy breeders London"
+- "Blue Staffy puppy for sale Manchester"
 
 ### B. Keyword Variations by Intent Type (100+ Per Location)
 
@@ -181,12 +203,12 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - "[Breed] puppies [County] County"
 - "[Breed] puppies delivered to [Multiple Cities]"
 
-**Example for Florida:**
-- "Blue Staffy puppy for sale Miami"
-- "Blue Staffy breeders Orlando"
-- "Blue Staffy puppy Tampa Bay"
-- "Blue-Brindle Staffy Jacksonville"
-- "home bred Blue Staffy near Fort Lauderdale"
+**Example for Glasgow:**
+- "Blue Staffy puppy for sale Edinburgh"
+- "Blue Staffy breeders Aberdeen"
+- "Blue Staffy puppy Cardiff Bay"
+- "Blue-Brindle Staffy Inverness"
+- "home bred Blue Staffy near Dundee"
 
 #### 6. LSI (Latent Semantic Indexing) - Location-Relevant
 - [Breed] temperament and intelligence
@@ -218,10 +240,10 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 
 #### 10. Delivery/Logistics (Critical for Distance Targeting)
 - "Blue Staffy puppy shipped to [City]"
-- "DEFRA-APPROVED TRANSPORT puppy delivery [City]"
+- "DEFRA-approved transport puppy delivery [City]"
 - "Blue Staffy puppy delivery [City]"
 - "nationwide Blue Staffy puppy delivery"
-- "Blue Staffy puppy [City] airports DEFRA-APPROVED TRANSPORT"
+- "Blue Staffy puppy [City] airports DEFRA-approved transport"
 
 ### C. Entity Optimization (95–105 Distinct Entities PER STATE, Each Once — Rule 57 as of 2026-09-09)
 
@@ -241,25 +263,30 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - [BREEDER_ADDRESS_TBD]
 
 **Target State-Specific Entities:**
-- State Name (e.g., "Florida", "California", "Texas")
-- State Capital (e.g., "Tallahassee, FL", "Sacramento, CA")
-- Major Cities (15-25 per state):
-  - **Example for Florida:** Miami, Orlando, Tampa, Jacksonville, Fort Lauderdale, Miami Beach, Sarasota, Naples, Clearwater, St. Petersburg, Boca Raton, West Palm Beach, Fort Myers, Cape Coral, Pensacola
-  - **Example for California:** Los Angeles, San Francisco, San Diego, San Jose, Sacramento, Fresno, Long Beach, Oakland, Bakersfield, Anaheim, Santa Ana, Riverside, Stockton, Irvine, Chula Vista
-  - **Example for Texas:** Houston, Dallas, Austin, San Antonio, Fort Worth, El Paso, Arlington, Corpus Christi, Plano, Lubbock, Irving, Laredo, Garland, Frisco, McKinney
+- State Name (e.g., "Glasgow", "London", "Manchester")
+- State Capital (e.g., "Tallahassee, FL", "Sheffield, CA")
+- Major Cities (15-25 per city):
+  - **Example for Glasgow:** Edinburgh, Aberdeen, Cardiff, Inverness, Dundee, Hull, Sarasota, Naples, Clearwater, St. Petersburg, Boca Raton, West Lanarkshire, Fort Myers, Cape Coral, Pensacola
+  - **Example for London:** London, Birmingham, Leeds, Bristol, Sheffield, Oxford, Long Beach, Oakland, Bakersfield, Anaheim, Santa Ana, Riverside, Stockton, Irvine, Chula Vista
+  - **Example for Manchester:** Liverpool, Leicester, York, Nottingham, Wolverhampton, Middlesbrough, Sunderland, Cornwall, Plano, Lubbock, Irving, Laredo, Garland, Frisco, McKinney
 
-- County Names (5-10 major counties per state)
-- Regional Names (e.g., "South Florida", "Bay Area", "North Texas")
+- County Names (5-10 major counties per city)
+- Regional Names (e.g., "the Central Belt", "Greater London", "Greater Manchester")
 
-**Airport Codes (10-15 per state - for delivery logistics):**
-- **Florida Example:** MIA (Miami), MCO (Orlando), TPA (Tampa), JAX (Jacksonville), FLL (Fort Lauderdale), RSW (Fort Myers), PBI (West Palm Beach), SRQ (Sarasota), PIE (St. Petersburg), TLH (Tallahassee)
-- **California Example:** LAX (Los Angeles), SFO (San Francisco), SAN (San Diego), SJC (San Jose), SMF (Sacramento), ONT (Ontario), BUR (Burbank), OAK (Oakland), LGB (Long Beach), SNA (Santa Ana)
-- **Texas Example:** DFW (Dallas-Fort Worth), IAH (Houston), AUS (Austin), SAT (San Antonio), HOU (Houston Hobby), ELP (El Paso), DAL (Dallas Love Field)
+**Travel legs (the road route from Glasgow to the city and its neighbours):**
+Delivery here is by road, not by air: **UK home delivery £200–£350 by distance, by
+DEFRA-approved transport**, or **collection in person from Glasgow**. So the entity to
+name is the journey, not an airport code.
+- **Scotland:** Edinburgh, Dundee, Aberdeen, Inverness — a same-day run from Glasgow
+- **North of England:** Newcastle, Middlesbrough, Sunderland, York, Hull, Leeds, Manchester, Liverpool
+- **Midlands, Wales and the South:** Birmingham, Nottingham, Leicester, Wolverhampton, Coventry, Cardiff, Bristol, Oxford, London, Essex, Cornwall
 
-**Canine-Friendly Resources (3-5 per state - adds local value):**
-- **Florida Example:** Puppy Outreach Society (Palm Beach County), Broward Canine & Exotic Animal Hospital (Deerfield Beach), The Puppy Rescue (Pembroke Pines)
-- **California Example:** Mickaboo Companion Puppy Rescue (Bay Area), California Canine Lab (Citrus Heights), International Aviculture Society resources
-- **Texas Example:** Bed Puppy Sanctuary (Dallas), Houston Puppy Festival resources, Austin Puppy Society
+Every city comes from `data/locations.json` — all 28 of them — and no other city is named.
+
+**Canine-Friendly Resources (3-5 per city - adds local value):**
+- **Glasgow Example:** Puppy Outreach Society (Lanarkshire), Renfrewshire Canine & Exotic Animal Hospital (Deerfield Beach), The Puppy Rescue (Pembroke Pines)
+- **London Example:** Mickaboo Companion Puppy Rescue (Greater London), London Canine Lab (Glasgow), International Aviculture Society resources
+- **Manchester Example:** Bed Puppy Sanctuary (Leicester), Liverpool Puppy Festival resources, York Puppy Society
 
 ##### 3. Medical/Health Entities (40+)
 - vet sex-checking certificate (surgical or coat DNA)
@@ -286,7 +313,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - Zupreem Natural Pellets
 - TOPS Puppy Food (organic)
 - Stainless steel enrichment toys (enrichment)
-- DEFRA-APPROVED TRANSPORT-compliant transport partner delivery crate (Vari Kennel)
+- DEFRA-approved transport partner delivery crate (Vari Kennel)
 - Association of Canine Veterinarians (the RVC)
 - American Federation of Aviculture (THE KENNEL CLUB)
 - Better Business Bureau (BBB)
@@ -304,10 +331,10 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - Temperament: the breed's family-dog reputation (no cognitive claim has been verified — NOT FETCHED)
 - 4+ hours daily interaction required
 - £1,500–£1,700 price range (BSUK); £1,500–£1,700 (TAG)
-- DEFRA-APPROVED TRANSPORT-compliant delivery: £200–£350
+- delivery by DEFRA-approved transport: £200–£350
 - 24-48 hour delivery time to [City]
 - [X] puppies shipped to [City] in [Year]
-- [State population] (e.g., "21 million residents in Florida")
+- [State population] (e.g., "21 million residents in Glasgow")
 - [Number of cities served in State]
 - Minimum 12 weeks post-whelp before placement (fully weaned)
 - LICENCE_CLAIM_PLACEHOLDER licence — federally regulated breeder
@@ -320,7 +347,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - [City] Fish & Wildlife agency (verify puppy import requirements)
 - [City]-specific puppy import regulations
 - LICENCE_CLAIM_PLACEHOLDER-accredited veterinarian (required for interstate health certificate)
-- California CDFW import requirements (if applicable)
+- London the local authority's import requirements (if applicable)
 - Hawaii agricultural quarantine (if applicable)
 
 ---
@@ -333,9 +360,9 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 **Formula:** `Primary Keyword | Related Conversational Query | Trust Signal | Brand - LSI/NLP Keywords`
 
 **Examples:**
-- `Blue Staffies For Sale in Florida | LICENCE_CLAIM_PLACEHOLDER Home-Bred Blue & Blue-Brindle | BlueStaffyUK — LICENCE_CLAIM_PLACEHOLDER Licenced, DNA Sexed, Vet Certified`
-- `Blue Staffy Breeders California | Blue & Blue-Brindle Staffies | BSUK — LICENCE_CLAIM_PLACEHOLDER Documented, Home-Raised, Delivery to CA`
-- `Blue Staffy For Sale Texas | Home-Bred Blue Staffy | BlueStaffyUK — LICENCE_CLAIM_PLACEHOLDER Licensed, DEFRA-APPROVED TRANSPORT Delivery to TX`
+- `Blue Staffy Puppies For Sale in Edinburgh | Home-Raised Blue & Blue-Brindle | BlueStaffyUK — LICENCE_CLAIM_PLACEHOLDER, Vet-Checked, Microchipped`
+- `Blue Staffy Breeders Manchester | Blue, White & Blue-Brindle Staffies | BlueStaffyUK — Home-Raised in Glasgow, Delivered UK-Wide`
+- `Staffy Puppies For Sale Cardiff | Home-Raised Blue Staffy | BlueStaffyUK — LICENCE_CLAIM_PLACEHOLDER, Delivery by DEFRA-Approved Transport`
 
 **Character Limit:** 55-60 characters (Google displays ~60)
 
@@ -343,37 +370,37 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 **Formula:** `Primary Benefit | Secondary Benefit | Trust Signal + CTA`
 
 **Examples:**
-- `LICENCE_CLAIM_PLACEHOLDER-documented Blue and Blue-Brindle Staffies, home-raised and fully weaned, delivery to Florida buyers. LICENCE_CLAIM_PLACEHOLDER licenced · DNA Sexed · Vet Certified. Inquire today at BlueStaffyUK`
-- `Home-bred Blue Staffy puppies for sale in California — Blue (£200–£350) and Blue-Brindle (£200–£350). Full LICENCE_CLAIM_PLACEHOLDER documentation. DEFRA-APPROVED TRANSPORT-compliant delivery to Los Angeles, San Francisco, San Diego & all CA cities.`
-- `Looking for an Blue Staffy puppy in Texas? LICENCE_CLAIM_PLACEHOLDER-licensed breeder offering Blue and Blue-Brindle Staffies with full LICENCE_CLAIM_PLACEHOLDER home-bred documentation. Ships to Houston, Dallas, Austin & all TX airports.`
+- `Home-raised Blue and Blue-Brindle Staffy puppies, fully weaned, delivered to Edinburgh. LICENCE_CLAIM_PLACEHOLDER · vet-checked · microchipped. Enquire today at BlueStaffyUK`
+- `Blue Staffy puppies for sale near Manchester — males £1,500, females £1,700 from our Glasgow litter. UK home delivery £200–£350 by distance, by DEFRA-approved transport.`
+- `Looking for a Blue Staffy puppy in Cardiff? Lisa Bright home-raises every pup in Glasgow. £1,500–£1,700, £500 refundable deposit, or collect in person.`
 
 **Character Limit:** 150-160 characters (Google displays ~160)
 
 **Alternative Meta Title Formats (Provide 3 Options):**
-1. **Documentation-Focused:** `Blue Staffies [City] | LICENCE_CLAIM_PLACEHOLDER Home-Bred · LICENCE_CLAIM_PLACEHOLDER Licensed · Vet Certified | BSUK`
-2. **Question-Based:** `Looking for Blue Staffies in [City]? | Blue & Blue-Brindle, DEFRA-APPROVED TRANSPORT Delivery | BlueStaffyUK`
+1. **Documentation-Focused:** `Blue Staffies [City] | Home-Raised in Glasgow · LICENCE_CLAIM_PLACEHOLDER · Vet-Checked | BlueStaffyUK`
+2. **Question-Based:** `Looking for Blue Staffies in [City]? | Blue, White & Blue-Brindle, Delivered by DEFRA-Approved Transport | BlueStaffyUK`
 3. **Variant-Driven:** `Blue & Blue-Brindle Staffy For Sale [City] | [X] Puppies Available | Reserve Yours | BSUK`
 
 **Alternative Meta Description Formats (Provide 3 Options):**
-1. **Feature-Rich:** `Blue Staffy puppies for sale in [City]. LICENCE_CLAIM_PLACEHOLDER home-bred, DNA sexed, canine vet certified. DEFRA-APPROVED TRANSPORT delivery to [Major Cities]. Inquire at BlueStaffyUK`
-2. **Trust-Focused:** `Trusted LICENCE_CLAIM_PLACEHOLDER licenced Blue Staffy breeder serving [City]. Blue £200–£350 · Blue-Brindle £200–£350. Full LICENCE_CLAIM_PLACEHOLDER documentation. DEFRA-APPROVED TRANSPORT delivery nationwide.`
-3. **Species-Driven:** `Home-raised Blue and Blue-Brindle Staffies delivery to [City]. 12–14 year companions. Full documentation: whelp cert · band · vet sex-checking · health cert. Inquire today.`
+1. **Feature-Rich:** `Blue Staffy puppies for sale in [City]. Home-raised in Glasgow, vet-checked, microchipped. Delivery by DEFRA-approved transport, £200–£350 by distance. Enquire at BlueStaffyUK`
+2. **Trust-Focused:** `Trusted Blue Staffy breeder serving [City] (LICENCE_CLAIM_PLACEHOLDER). Males £1,500 · females £1,700 · £500 refundable deposit. Delivery by DEFRA-approved transport, or collect in Glasgow.`
+3. **Breed-Driven:** `Home-raised Blue and Blue-Brindle Staffies delivered to [City]. A 12–14 year companion. Vet check · microchip · vaccination record. Enquire today.`
 
 ---
 
 ### H1 Header Format:
 
 **Primary H1 (Only ONE per page):**
-`Blue Staffies For Sale in [City] | LICENCE_CLAIM_PLACEHOLDER Home-Bred`
+`Blue Staffy Puppies For Sale in [City] | Home-Raised in Glasgow`
 
 **Examples:**
-- `Blue Staffies For Sale in Florida | LICENCE_CLAIM_PLACEHOLDER Home-Bred`
-- `Blue Staffies For Sale in California | LICENCE_CLAIM_PLACEHOLDER Home-Bred`
-- `Blue Staffies For Sale in Texas | LICENCE_CLAIM_PLACEHOLDER Home-Bred`
+- `Blue Staffy Puppies For Sale in Edinburgh | Home-Raised in Glasgow`
+- `Blue Staffy Puppies For Sale in Manchester | Home-Raised in Glasgow`
+- `Staffy Puppies For Sale in Cardiff | Home-Raised in Glasgow`
 
 **Alternative H1 Formats (Provide 3 Options):**
 1. `Blue & Blue-Brindle Staffy Puppies For Sale in [City] | LICENCE_CLAIM_PLACEHOLDER Licenced Breeder`
-2. `Blue Staffies [City] | LICENCE_CLAIM_PLACEHOLDER Documented · DNA Sexed · Vet Certified · DEFRA-APPROVED TRANSPORT Delivery`
+2. `Blue Staffies [City] | LICENCE_CLAIM_PLACEHOLDER Documented · DNA Sexed · Vet Certified · DEFRA-approved transport Delivery`
 3. `Buy Blue Staffies in [City] | Home-Raised Blue & Blue-Brindle | Full Documentation`
 
 ---
@@ -429,12 +456,12 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ vet sex-checking available (male/female confirmed)
 - ✅ All puppies fully weaned before placement — minimum 12 weeks post-whelp
 - ✅ Link to full available puppies page
-- ✅ Mention DEFRA-APPROVED TRANSPORT-compliant delivery to [City] (£200–£350 transport partner dependent)
+- ✅ Mention delivery by DEFRA-approved transport to [City] (£200–£350 transport partner dependent)
 - ✅ Include urgency ("Available puppies go quickly — submit a purchase inquiry to hold yours")
 - ✅ Inquiry form CTA
 
 **Example:**
-*"We currently have Blue and Blue-Brindle Staffy puppies available for [City] buyers. Blue Staffies (Canis lupus familiaris) are priced £200–£350; Blue-Brindle Staffies (Canis lupus familiaris blue-brindle) are priced £200–£350. All puppies are DNA sexed, fully weaned (minimum 12 weeks post-whelp), and ship with a complete documentation package including whelp certificate, band number, vet sex-checking certificate, and LICENCE_CLAIM_PLACEHOLDER-issued canine health certificate. DEFRA-APPROVED TRANSPORT-compliant delivery to [City] runs £200–£350 depending on transport partner and destination..."*
+*"We currently have Blue and Blue-Brindle Staffy puppies available for [City] buyers. Blue Staffies (Canis lupus familiaris) are priced £200–£350; Blue-Brindle Staffies (Canis lupus familiaris blue-brindle) are priced £200–£350. All puppies are DNA sexed, fully weaned (minimum 12 weeks post-whelp), and ship with a complete documentation package including whelp certificate, band number, vet sex-checking certificate, and LICENCE_CLAIM_PLACEHOLDER-issued canine health certificate. delivery by DEFRA-approved transport to [City] runs £200–£350 depending on transport partner and destination..."*
 
 ---
 
@@ -446,7 +473,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - `LICENCE_CLAIM_PLACEHOLDER Home-Bred Documentation — Every Puppy, Every Time`
 - `DNA Sexing Certificate Included`
 - `Canine Vet Health Certificate (Within 30 Days of Shipment)`
-- `DEFRA-APPROVED TRANSPORT-Compliant Puppy Delivery to [City]`
+- `DEFRA-approved transport-Compliant Puppy Delivery to [City]`
 
 **Content Guidelines:**
 - ✅ Establish LICENCE_CLAIM_PLACEHOLDER licenced status (not a backyard breeder or scam operation)
@@ -520,7 +547,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ Not ideal for: frequent travelers, households with very young children (unsupervised), first-time puppy owners without research
 - ✅ Ideal for: experienced puppy owners, retirees, work-from-home households, dedicated enthusiasts
 - ✅ Separation anxiety — needs routine and mental enrichment when alone
-- ✅ [City]-specific lifestyle compatibility (e.g., Florida retirees, California tech workers WFH)
+- ✅ [City]-specific lifestyle compatibility (e.g., Glasgow retirees, London tech workers WFH)
 - ✅ Include customer testimonial from [City]
 - ✅ 10+ entities
 
@@ -617,7 +644,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ Nail trimming and muzzle maintenance by canine vet
 - ✅ Diet: 60-70% high-quality pellets (Harrison's, Roudybush, Zupreem Natural), 20-30% fresh vegetables/fruits, 10% nuts/seeds as treats
 - ✅ Foods to avoid: avocado, chocolate, onion, caffeine, alcohol — toxic to puppies
-- ✅ [City] climate considerations (e.g., "Florida's humidity and heat — indoor AC required, avoid drafts")
+- ✅ [City] climate considerations (e.g., "Glasgow's humidity and heat — indoor AC required, avoid drafts")
 - ✅ [City] canine-friendly resources (canine vets, puppy clubs, canine specialty stores)
 - ✅ 25+ entities
 
@@ -649,23 +676,23 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ Coat plucking: behavioral vs. medical causes — canine vet first, then behavioral intervention
 - ✅ Socialization to multiple household members: prevents extreme one-person bonding
 - ✅ [City] canine training resources (canine behaviorists, puppy clubs, the RVC-member vets)
-- ✅ Common challenges: [City]-specific (e.g., "Florida seasonal changes can cause hormonal behavior")
+- ✅ Common challenges: [City]-specific (e.g., "Glasgow seasonal changes can cause hormonal behavior")
 - ✅ 10+ entities
 
 ---
 
-#### **SECTION 10: Delivery to [City] (DEFRA-APPROVED TRANSPORT Puppy Delivery Process) (600-700 words)**
+#### **SECTION 10: Delivery to [City] (DEFRA-approved transport Puppy Delivery Process) (600-700 words)**
 **Anchor Tag:** `<a name="delivery"></a>`
 
 **H2 Header Format:**
-`Safe DEFRA-APPROVED TRANSPORT-Compliant Puppy Delivery to [City]`
+`Safe DEFRA-approved transport-Compliant Puppy Delivery to [City]`
 
 **Alternative H2 Options:**
 - `How We Ship Blue Staffies to [City] (Step-by-Step)`
 - `Blue Staffy Delivery to [City]: What to Expect`
 
 **H3 Sub-Sections:**
-- `DEFRA-APPROVED TRANSPORT Live Animal Regulations — How We Comply`
+- `DEFRA-approved transport Live Animal Regulations — How We Comply`
 - `[City] Airports We Ship To`
 - `What to Expect: Delivery Timeline`
 - `Health Certificates & Travel Documents for [City]`
@@ -673,24 +700,27 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - `Post-Arrival Support`
 
 **Content Guidelines:**
-- ✅ Explain DEFRA-APPROVED TRANSPORT-compliant puppy delivery (NOT Delivery Driver — this is canine-specific transport partner cargo)
-- ✅ DEFRA-APPROVED TRANSPORT Live Animal Regulations compliance: approved crate, ventilation, food/water
+- ✅ Explain puppy delivery by DEFRA-approved transport (NOT Delivery Driver — this is canine-specific transport partner cargo)
+- ✅ DEFRA-approved transport Live Animal Regulations compliance: approved crate, ventilation, food/water
 - ✅ LICENCE_CLAIM_PLACEHOLDER health certificate issued within 30 days of shipment — required for all interstate transport
 - ✅ List 10-15 airports in [City] (with codes) that accept live puppy cargo
 - ✅ Typical delivery timeline: 24-48 hours door-to-airport
 - ✅ Delivery cost: £200–£350 (transport partner dependent)
 - ✅ [City]-specific puppy import requirements (verify current requirements)
-- ✅ California note: verify current CDFW import requirements before purchase
+- ✅ London note: verify current the local authority's import requirements before purchase
 - ✅ Hawaii note: strict agricultural quarantine applies — contact before ordering
-- ✅ What buyer receives at pickup: puppy in DEFRA-APPROVED TRANSPORT crate + full documentation packet
+- ✅ What buyer receives at pickup: puppy in DEFRA-approved transport crate + full documentation packet
 - ✅ Post-arrival support: canine vet visit within 72 hours recommended
 - ✅ Customer testimonial about delivery experience
-- ✅ 20+ entities (all airports, cities)
+- ✅ 20+ entities (cities, routes, landmarks)
 
-**Example Airports by State:**
-- **Florida:** MIA, MCO, TPA, JAX, FLL, RSW, PBI, SRQ, PIE, TLH
-- **California:** LAX, SFO, SAN, SJC, SMF, ONT, BUR, OAK, LGB, SNA
-- **Texas:** DFW, IAH, AUS, SAT, HOU, ELP, DAL
+**Travel time from Glasgow, by city:**
+- **Scotland** (Edinburgh, Dundee, Aberdeen, Inverness) — the shortest runs from Glasgow
+- **Northern England** (Newcastle, Middlesbrough, Sunderland, York, Hull, Leeds, Manchester, Liverpool)
+- **Midlands, Wales and the South** (Birmingham, Nottingham, Leicester, Wolverhampton, Coventry, Cardiff, Bristol, Oxford, London, Essex, Cornwall)
+
+The band is £200–£350 and it is priced **by distance** — never print a single figure as
+"the" delivery price, and never a number outside the band.
 
 ---
 
@@ -705,7 +735,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - `We Ship Blue Staffies to Every Corner of [City]`
 
 **Content Guidelines:**
-- ✅ Open with statement about statewide DEFRA-APPROVED TRANSPORT delivery coverage
+- ✅ Open with statement about statewide DEFRA-approved transport delivery coverage
 - ✅ List 15-25 major cities (with brief descriptions or notable features)
 - ✅ Organize by region (North/South/Central, etc.)
 - ✅ Mention county seats and nearest airports
@@ -713,12 +743,15 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ Link each city naturally to Blue Staffy ownership lifestyle
 - ✅ 25+ city entities
 
-**Example for Florida:**
-*"BlueStaffyUK ships LICENCE_CLAIM_PLACEHOLDER-documented Blue and Blue-Brindle Staffy puppies to buyers across the entire state of Florida. Whether you're in bustling Miami-Dade County or the quiet shores of the Panhandle, we'll arrange DEFRA-APPROVED TRANSPORT-compliant delivery to your nearest airport. Here are just some of the cities we serve:*
+**Example for Glasgow:**
+*"We place Blue Staffy puppies with families across Glasgow and the surrounding area, and
+we deliver across the UK. Whether you're in the city centre or out towards the coast, we
+arrange UK home delivery by DEFRA-approved transport — £200–£350 by distance — or you
+collect in person from us at 40 Coltmuir Street. Here are some of the places we serve:*
 
-*- **Miami**: Florida's vibrant cultural hub (pop. 470,000+) — nearest airport MIA*
-*- **Orlando**: The theme park capital, active families and retirees — nearest airport MCO*
-*- **Tampa Bay**: Sunny waterfront living ideal for dedicated puppy owners — nearest airports TPA / PIE*
+*- **Edinburgh**: an hour along the M8 — a same-day run*
+*- **Aberdeen**: north-east Scotland, delivered by road*
+*- **Cardiff**: a long leg south, at the top of the £200–£350 band*
 *[Continue with 12-20 more cities]*
 
 ---
@@ -743,11 +776,11 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ Connect to Blue Staffy specific health: L-2-HGA screening, Psittacosis testing, annual checkups
 - ✅ 10+ location entities
 
-**Example for California:**
-*"California has excellent canine veterinary resources for your new Blue Staffy. We strongly recommend an the RVC-member canine veterinarian for your puppy's initial and ongoing care — not a general-practice vet unfamiliar with psittacines. Here are some starting resources:*
+**Example for London:**
+*"London has excellent canine veterinary resources for your new Blue Staffy. We strongly recommend an the RVC-member canine veterinarian for your puppy's initial and ongoing care — not a general-practice vet unfamiliar with psittacines. Here are some starting resources:*
 
-*- **California Canine Lab (Citrus Heights, CA)**: Canine specialty diagnostics (7849 Madison Ave, Citrus Heights, CA 95610)*
-*- **Mickaboo Companion Puppy Rescue (Bay Area)**: Canine community resources and emergency referrals*
+*- **London Canine Lab (Glasgow)**: Canine specialty diagnostics (7849 Madison Ave, Glasgow 95610)*
+*- **Mickaboo Companion Puppy Rescue (Greater London)**: Canine community resources and emergency referrals*
 *[Continue with 3-5 more resources]*
 
 ---
@@ -767,7 +800,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
   - Blue Staffy (BSUK): £1,500–£1,700
   - Blue-Brindle Staffy (TAG): £1,500–£1,700
   - Breeding pairs: £1,500–£1,700+
-  - DEFRA-APPROVED TRANSPORT-compliant puppy delivery: £200–£350 (transport partner dependent)
+  - puppy delivery by DEFRA-approved transport: £200–£350 (transport partner dependent)
 - ✅ What's included in purchase price:
   - Whelp certificate with band number
   - vet sex-checking certificate
@@ -837,7 +870,11 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ 10+ entities (customer names, cities, species specifics)
 
 **Example:**
-*"We purchased our Blue Staffy, Archie, from BlueStaffyUK in March 2024 and had him shipped to Tampa, Florida (TPA). The documentation package was complete — whelp certificate, band number, vet sex-checking cert, and the LICENCE_CLAIM_PLACEHOLDER health certificate was dated just two weeks before arrival. Archie arrived calm and healthy. Six months in, he's already saying 'good morning' and 'step up' in context. The LICENCE_CLAIM_PLACEHOLDER certificate gave us complete peace of mind — we knew exactly where he came from. Thank you!" - Jennifer M., St. Petersburg, FL*
+*[A real review, or nothing. BSUK has no reviews on file — they are NOT FETCHED, and a
+testimonial nobody wrote is the one thing this whole system exists to prevent. The SHAPE a
+real one takes: the pup's name, the delivery leg and its cost inside the £200–£350 band,
+what was in the paperwork (vet check, microchip, vaccination record), how the pup settled,
+and the buyer's town from `data/locations.json`.]*
 
 ---
 
@@ -900,7 +937,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 - ✅ What's included with purchase (full documentation package)
 - ✅ Communication process (updates, photos, videos digitally — no kennel visits)
 - ✅ No in-person pickup language — replace with "all documentation provided digitally prior to delivery"
-- ✅ DEFRA-APPROVED TRANSPORT-compliant delivery arranged after balance paid
+- ✅ delivery by DEFRA-approved transport arranged after balance paid
 - ✅ Multiple CTAs (inquiry form, email)
 
 **Example Steps:**
@@ -909,7 +946,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 3. Receive response within [X] hours/days
 4. Place non-refundable hold deposit to reserve your puppy
 5. Receive digital documentation package preview before delivery
-6. Balance due before DEFRA-APPROVED TRANSPORT shipment is booked
+6. Balance due before DEFRA-approved transport shipment is booked
 7. Puppy ships to nearest [City] airport with full documentation
 
 ---
@@ -956,7 +993,7 @@ Develop 100+ keyword variations across these categories **FOR EACH STATE**:
 **[CITY] Puppy Import & Ownership Regulations:**
 Blue Staffy puppies are legal to own in [CITY] as home-bred puppies with proper LICENCE_CLAIM_PLACEHOLDER documentation.
 All puppies shipped to [CITY] arrive with: LICENCE_CLAIM_PLACEHOLDER home-bred certificate · Health certificate (within 30 days of shipment) · Band number on record.
-Note: California residents — verify current CDFW import requirements before purchase.
+Note: London residents — verify current the local authority's import requirements before purchase.
 Note: Hawaii residents — strict agricultural quarantine applies; contact us before ordering.
 [STATE-SPECIFIC-PUPPY-REGULATIONS — verify current state requirements before publishing]
 ```
@@ -1036,7 +1073,7 @@ Note: Hawaii residents — strict agricultural quarantine applies; contact us be
 - ✅ Response time commitment
 - ✅ Social media links (if applicable)
 - ✅ Encourage immediate action ("Submit your purchase inquiry today")
-- ✅ Reiterate key benefits (LICENCE_CLAIM_PLACEHOLDER documentation, home-raised, DEFRA-APPROVED TRANSPORT delivery to [City])
+- ✅ Reiterate key benefits (LICENCE_CLAIM_PLACEHOLDER documentation, home-raised, DEFRA-approved transport delivery to [City])
 - ✅ Final emotional appeal: "Your Blue Staffy will be your companion for 12–14 years. Choose your breeder carefully."
 - ✅ Reiterate anti-scam trust signal: "LICENCE_CLAIM_PLACEHOLDER licenced · No wild-caught puppies · Documentation provided before shipment"
 - ✅ 10+ entities
@@ -1066,7 +1103,7 @@ Note: Hawaii residents — strict agricultural quarantine applies; contact us be
 - `Blue Staffy puppies for sale`
 - `available puppies`
 - `LICENCE_CLAIM_PLACEHOLDER documentation`
-- `DEFRA-APPROVED TRANSPORT-compliant puppy delivery`
+- `puppy delivery by DEFRA-approved transport`
 - `testimonials from [City]`
 - `delivery to [City]`
 - `Blue Staffy`
@@ -1105,7 +1142,7 @@ Note: Hawaii residents — strict agricultural quarantine applies; contact us be
 **5. Product Recommendations:**
 - Harrison's Puppy Foods (harrisonspuppyfoods.com)
 - Roudybush Pellets (roudybush.com)
-- DEFRA-APPROVED TRANSPORT Live Animals Regulations reference
+- DEFRA-approved transport Live Animals Regulations reference
 - Canine enrichment resources
 
 **Anchor Text Best Practices:**
@@ -1175,7 +1212,7 @@ Each section MUST include anchor tag at beginning:
 Example:
 ```
 <a name="introduction"></a>
-## Why Choose BlueStaffyUK for Blue Staffies in Florida?
+## Why Choose BlueStaffyUK for Blue Staffies in Glasgow?
 ```
 
 ---
@@ -1185,17 +1222,17 @@ Example:
 For each state location page, customize:
 - ✅ Meta title & description (state name, major cities)
 - ✅ H1 header (state name) with trust bar: `LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER · Home-Bred · LICENCE_CLAIM_PLACEHOLDER Licenced · DNA Sexed · Vet Certified`
-- ✅ Introduction (mention state, major cities, DEFRA-APPROVED TRANSPORT delivery)
+- ✅ Introduction (mention state, major cities, DEFRA-approved transport delivery)
 - ✅ 15-25 cities listed with nearest airport codes
-- ✅ 10-15 airports listed (with DEFRA-APPROVED TRANSPORT codes) — verify they accept live puppy cargo
+- ✅ 10-15 airports listed (with DEFRA-approved transport codes) — verify they accept live puppy cargo
 - ✅ 3-5 canine vets / canine resources with addresses
 - ✅ State-specific puppy import regulations (apply standard block from domain facts)
-- ✅ California note if applicable (CDFW)
+- ✅ London note if applicable (the local authority's)
 - ✅ Hawaii note if applicable (agricultural quarantine)
 - ✅ Climate considerations (indoor puppy environment)
 - ✅ Local testimonials (if available)
 - ✅ State-specific FAQs (include LICENCE_CLAIM_PLACEHOLDER and import questions)
-- ✅ All CTAs mention state and reference DEFRA-APPROVED TRANSPORT delivery
+- ✅ All CTAs mention state and reference DEFRA-approved transport delivery
 
 ---
 
@@ -1225,9 +1262,9 @@ Before finalizing, verify:
 
 **Execute this skill to create a location page for:**
 
-**State:** [Insert State Here - e.g., Florida, California, Texas]
+**State:** [Insert State Here - e.g., Glasgow, London, Manchester]
 
-**Primary Keyword:** Blue Staffy puppy for sale [City] (e.g., Blue Staffy puppy for sale Florida)
+**Primary Keyword:** Blue Staffy puppy for sale [City] (e.g., Blue Staffy puppy for sale Glasgow)
 
 **Target Word Count:** 4,500 words
 
@@ -1236,13 +1273,13 @@ Before finalizing, verify:
 - Location: [BREEDER_LOCATION]
 - Website: BlueStaffyUK
 - LICENCE_CLAIM_PLACEHOLDER Licence: [LICENCE_CLAIM_PLACEHOLDER_LICENSE_TBD]
-- Specialty: LICENCE_CLAIM_PLACEHOLDER home-bred Blue Staffies, home-raised, DEFRA-APPROVED TRANSPORT delivery
+- Specialty: LICENCE_CLAIM_PLACEHOLDER home-bred Blue Staffies, home-raised, DEFRA-approved transport delivery
 
 **Available Variants:**
 - Blue Staffy (BSUK): Canis lupus familiaris | £1,500–£1,700
 - Blue-Brindle Staffy (TAG): Canis lupus familiaris blue-brindle | £1,500–£1,700
 - Breeding Pairs: £1,500–£1,700+
-- DEFRA-APPROVED TRANSPORT delivery: £200–£350
+- DEFRA-approved transport delivery: £200–£350
 
 **Reference template:** `site/uk-locations/staffy-puppies-cardiff-wales/`
 **Data file:** `data/locations.json`
@@ -1268,7 +1305,7 @@ Before finalizing, verify:
 - NEVER imply a puppy-farm origin — always "home-raised, with full documentation"
 - NEVER omit the paperwork line (vet check, microchip, vaccination record) — it is the primary buyer trust signal
 - NEVER use "adopt" language — these are purchases, not adoptions
-- NEVER reference "Delivery Driver" — DEFRA-APPROVED TRANSPORT-compliant puppy delivery only
+- NEVER reference "Delivery Driver" — puppy delivery by DEFRA-approved transport only
 - ALWAYS include trust bar: `LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER · Home-Bred · LICENCE_CLAIM_PLACEHOLDER Licenced · DNA Sexed · Vet Certified`
 
 ### Success Criteria:

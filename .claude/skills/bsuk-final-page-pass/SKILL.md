@@ -49,7 +49,7 @@ script.
 | Check ID | What fails | Rationale |
 |---|---|---|
 | `no_aggregateoffer` | `AggregateOffer` present anywhere in schema | Puppy page must be a **single `Product`+`Offer`**; `AggregateOffer` is the variant page (`bsuk-puppy-listing-page`). |
-| health-test claim | **Not a mechanical gate.** A parent health-test claim (L-2-HGA, HC-HSF4) may be asserted only where the certificate is recorded in `data/quality/evidence-ledger.json`; otherwise it is NOT FETCHED and must not appear. |
+| health-test claim | A parent health-test claim (L-2-HGA, HC-HSF4) asserted without a certificate in `data/quality/evidence-ledger.json` | **Not a mechanical gate** — read it by eye. An unrecorded health claim is NOT FETCHED and must not appear. |
 | `shipping_line` | The `£200–£350` delivery band missing from the visible body | Delivery-on-every-card is non-negotiable (`rules/puppies.md` `delivery-band-on-every-card`). Canonical line: `UK home delivery £200–£350 by distance · or collect in Glasgow`. |
 | `sold_not_instock` | Sold/reserved STATUS signal present AND schema still shows `InStock` | Sell-and-retire lifecycle: sold → 301, never `InStock`. Note: commerce phrases like "sold together" do NOT trigger; only explicit status signals ("now sold", "has been sold", "status: sold", "is reserved", etc.). |
 | `canonical_abs` | Relative canonical (not `https://…`) | Site-wide hard gate — applies to all page types. |

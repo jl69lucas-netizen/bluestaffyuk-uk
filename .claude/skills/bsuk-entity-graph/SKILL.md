@@ -63,7 +63,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 | Class | Types |
 |---|---|
 | **Organism** | Species (*Canis lupus familiaris*, *P. e. blue-brindle*) · Variant (Blue, Blue-Brindle) · Individual Puppy (Roys, Amie, Elad, Evie, Jins, Jeni, Maxy) · Parent Pair (James×Lois, Levi×Rily) |
-| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Lab (Canine Biotech) · Carrier (Delta, United, American) · Regulator (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, DEFRA-APPROVED TRANSPORT) |
+| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Lab (Canine Biotech) · Carrier (Delta, United, American) · Regulator (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, DEFRA-approved transport) |
 | **Place** | Country · State · City · Kennel (Glasgow) · Airport |
 | **Commerce** | Price · Offer · Guarantee · Delivery Option · Payment Term · Availability State |
 | **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA/PCR certificate · Health record · Whelp certificate · Vet record |

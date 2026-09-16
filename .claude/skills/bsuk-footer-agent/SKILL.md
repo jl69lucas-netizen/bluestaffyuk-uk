@@ -38,7 +38,7 @@ The footer is a single Astro component rendered on every page:
 | Text | White / white-at-opacity on green |
 | CTA button | **Clay `#e8604c`** pill (`bg-clay`, `rounded-full`) — brand signature |
 | Bottom bar | `bg-green/90`, white/10 top border |
-| Headings | Lora 700 · Body/links | Sora 400–600 |
+| Type | Headings Lora 700 · body and links Sora 400–600 |
 | Puppy icon | custom `/emoji/bsuk-blue.png` — **never 🦜** |
 
 ---
@@ -77,7 +77,7 @@ Column 4: Legal
   - Refund Policy → /refund-policy/
 
 Column 5: Contact
-  - Phone: +1-281-545-3169   (master NAP — docs/reference/credentials.md)
+  - Phone: PHONE_PLACEHOLDER   (the real number is NOT FETCHED until project 6)
   - Email: [INQUIRIES_EMAIL_TBD]
   - Address: [BREEDER_LOCATION_TBD — city-level only; see privacy rule]
   - Hours: Open 24/7

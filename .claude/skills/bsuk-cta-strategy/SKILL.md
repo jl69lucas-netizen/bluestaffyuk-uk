@@ -36,7 +36,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** Browse Available Puppies
 
 ⚡ **Direct & Transactional:**
-> "Ready to meet your new best friend?" Browse current litters — vet sex-checked Blue Staffy puppies with canine vet health certificates. DEFRA-APPROVED TRANSPORT-compliant delivery nationwide. Prices from £200–£350.
+> "Ready to meet your new best friend?" Browse current litters — vet sex-checked Blue Staffy puppies with canine vet health certificates. delivery by DEFRA-approved transport nationwide. Prices from £200–£350.
 > **Button:** Check Availability ✅
 
 🌱 **Ethical & Quality:**
@@ -141,18 +141,18 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 8: DEFRA-APPROVED TRANSPORT Delivery / Delivery
+## Section 8: DEFRA-approved transport Delivery / Delivery
 
 🛡️ **Trust & Security:**
-> "Your puppy flies with a certified DEFRA-APPROVED TRANSPORT handler — never in cargo, never alone."
+> "Your puppy flies with a certified DEFRA-approved transport handler — never in cargo, never alone."
 > **Button:** How Delivery Works
 
 ⚡ **Direct & Transactional:**
-> "We ship nationwide via DEFRA-APPROVED TRANSPORT-certified handlers. Your puppy, your city."
+> "We ship nationwide via DEFRA-approved transport. Your puppy, your city."
 > **Button:** Check Your Airport
 
 🌱 **Ethical & Quality:**
-> "We chose DEFRA-APPROVED TRANSPORT delivery because we care about the puppy's welfare — comfort and safety are non-negotiable."
+> "We chose DEFRA-approved transport delivery because we care about the puppy's welfare — comfort and safety are non-negotiable."
 > **Button:** Our Delivery Promise
 
 ---

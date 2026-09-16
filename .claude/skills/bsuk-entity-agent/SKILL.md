@@ -57,7 +57,7 @@ For every entity mention on an MFS page:
 | [BREEDER_LOCATION] | [LOCATION], [REGION] | About, location, schema |
 | BlueStaffyUK | BSUK, BSUK breeder, breeding program | Brand mentions, footer, schema |
 | [BREEDER_NAME] | Breeder, owner, founder | About, testimonials, Person schema |
-| DEFRA-APPROVED TRANSPORT-compliant delivery | DEFRA-APPROVED TRANSPORT certified handler, air transport | Location pages, hero |
+| delivery by DEFRA-approved transport | DEFRA-approved transport certified handler, air transport | Location pages, hero |
 | Nationwide delivery | Continental US delivery, interstate transport | Hero, location hub |
 
 ### Category 4 — Pricing Entities

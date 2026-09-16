@@ -60,7 +60,7 @@ answer**, in one sentence, before any context.
 | ✗ | ✓ |
 |---|---|
 | "Before we get into numbers, it's worth stepping back to consider the history of puppy keeping…" | "Blue Staffies from Lisa Bright cost **£1,500–£1,700**, set by age and training." |
-| "There are many things to think about when delivery a puppy." | "Lisa Bright ship DEFRA-APPROVED TRANSPORT-compliant to 28 UK cities in data/locations.json — **£200–£350 airport, £200–£350 home**." |
+| "There are many things to think about when buying a puppy." | "Lisa Bright delivers to the 28 UK cities in `data/locations.json` by DEFRA-approved transport — **£200–£350, priced by distance** — or you collect in Glasgow." |
 
 **Gate:** the audit flags any H2/H3 whose first sentence exceeds 32 words or opens
 with a wind-up phrase. It is a proxy — read the flagged section. This stacks with the

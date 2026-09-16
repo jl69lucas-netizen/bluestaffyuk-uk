@@ -109,7 +109,15 @@ def stale_markers(root: pathlib.Path):
     `root` is a parameter so the test can prove the checker FIRES, by pointing it at a
     copy of the docs where one marked path has been created.
     """
-    docs = [root / "CLAUDE.md"] + sorted((root / "rules").glob("*.md"))
+    # The agents and skills are loaded into a session exactly the way CLAUDE.md and the
+    # packs are, and Task 12's own arrivals are the proof this matters: 31 lines said
+    # "(arrives in Task 12)" about files Task 12 then created. A marker left behind in an
+    # agent or a skill disarms the missing-path guard on that line for every other path on
+    # it, which is the failure this checker exists to catch.
+    docs = ([root / "CLAUDE.md"]
+            + sorted((root / "rules").glob("*.md"))
+            + sorted((root / ".claude/agents").glob("*.md"))
+            + sorted((root / ".claude/skills").glob("*/SKILL.md")))
     stale = []
     for f in docs:
         if not f.exists():
@@ -148,3 +156,19 @@ def test_the_stale_marker_checker_actually_fires(tmp_path):
     fired = stale_markers(tmp_path)
     assert fired, "creating a marked path must make the checker fire"
     assert all("quick-start.md" in row for row in fired), fired
+
+
+def test_the_checker_walks_agents_and_skills_too(tmp_path):
+    """A glob typo in the walked roots would silently stop checking 89 loaded documents."""
+    agent = tmp_path / ".claude" / "agents" / "bsuk-x.md"
+    skill = tmp_path / ".claude" / "skills" / "bsuk-y" / "SKILL.md"
+    for f in (agent, skill):
+        f.parent.mkdir(parents=True)
+        f.write_text("Read `data/here.json` (arrives in Task 12)\n", encoding="utf-8")
+    assert stale_markers(tmp_path) == [], "the path does not exist yet — not stale"
+
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "here.json").write_text("{}\n", encoding="utf-8")
+    fired = stale_markers(tmp_path)
+    assert len(fired) == 2, fired
+    assert {r.split(":")[0] for r in fired} == {"bsuk-x.md", "SKILL.md"}, fired

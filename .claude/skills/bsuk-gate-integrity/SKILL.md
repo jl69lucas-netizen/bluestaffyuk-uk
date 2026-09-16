@@ -44,7 +44,7 @@ a pass.
 | 4 | 23 body dup crossovers | 0 real | whitelist didn't encode reviews / counter strip / read-card labels / doc-badge lists, all of which CLAUDE.md explicitly permits |
 | 5 | 8 contrast failures at 375px | 0 real | tested `display:none` on the element but **not on its ancestors** — it was measuring the hidden desktop dial |
 | 6 | hero "432px, over the 350–420 band" | 396px, in band | measured `.adopt-hero` *including* its `16px 0 20px` padding; `.hero-grid` is the element the spec names |
-| 7 | `absolute-hero-not-unwound` | 0 real | name-matched exemption (`badge|chip|tag|caption`); a price pill called `-p` slipped through |
+| 7 | `absolute-hero-not-unwound` | 0 real | name-matched exemption (`badge\|chip\|tag\|caption`); a price pill called `-p` slipped through |
 | 8 | dup gate: "PASS — 0 pages" | **examined nothing** | zsh does not word-split `$SL`; all 8 slugs arrived as ONE argument |
 | 9 | seam parity: 0 sections | 15 sections | `grep '<section class="sec"'` — 6 of the 8 source puppy pages used `<section id=…>` |
 | 10 | 586 specificity WARNs | 2 real | "ancestor somewhere in file" × "component somewhere in file" is a **cartesian product**, not DOM nesting |

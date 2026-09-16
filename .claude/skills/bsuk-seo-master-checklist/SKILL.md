@@ -5,6 +5,28 @@ description: Use BEFORE starting any interior page build on BlueStaffyUK (homepa
 
 # SKILL: BSUK Master SEO Execution Checklist (v2.0)
 
+## Rule packs
+
+This checklist is long, and where it and a rule pack say the same thing the **pack wins** —
+the pack is the copy a checker can be pointed at, and the one that gets updated. Read these
+before using anything below, and cite the rule id rather than restating the rule:
+
+| Pack | Rules this checklist leans on |
+|---|---|
+| `rules/headings.md` | `heading-hierarchy-outline-gate` · `title-case-headings` · `header-style-declared` |
+| `rules/copy.md` | `write-from-outline-never-from-sibling` · `first-person-brand-voice` · `entity-4-move-loop` · `meaningful-words-no-stop-words` |
+| `rules/images.md` | `image-keyword-distribution` · `uniform-inbody-image-sizing` · `read-card-thumb-is-target-hero` |
+| `rules/links.md` | `link-first-anchors` |
+| `rules/schema.md` | `no-visible-date` |
+| `rules/puppies.md` | `puppies-extended-meta` · `delivery-band-on-every-card` · `product-schema-per-pup` · `instock-only-on-an-available-pup` |
+| `rules/gates.md` | `confidence-gate-97` · `recommend-plus-why` · `verify-the-gate-first` · `no-test-no-rule` |
+| `rules/deploy.md` | `commit-after-build-never-push` · `release-guarded-publication` · `no-credential-in-a-committed-file` |
+
+Where a section below still restates a pack rule in full, the pack is the source of truth
+and the restatement is the copy to delete on the next pass.
+
+---
+
 ## SCOPE
 
 **Applies to:** Homepage · Species guides · Care guides · Blog posts · Variant pages · Trust pages · Scam pages · Purchase guides · FAQ pages · About page · Any new hub or spoke page
@@ -56,7 +78,7 @@ full H1–H6 band · the 4-Move entity loop + Verified-Claim Ledger · Link-Firs
 Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Glasgow
 ```
 
-**Homepage CTA rule:** ALL CTAs use form links — NO phone number in body. Phone 281-545-3169 appears ONLY in the footer.
+**Homepage CTA rule:** ALL CTAs use form links — NO phone number in body. Phone PHONE_PLACEHOLDER appears ONLY in the footer.
 
 ---
 
@@ -196,7 +218,7 @@ Develop 100+ keyword variations across these categories:
 - `BlueStaffyUK blue staffies`
 - `BlueStaffyUK`
 - `Lisa Bright blue staffy breeders`
-- `Glasgow Texas blue staffy kennel`
+- `Glasgow Manchester blue staffy kennel`
 
 **10. Review/Testimonial:**
 - `blue staffy reviews`
@@ -225,11 +247,11 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - Dr. SUKn Friedman (Applied Behavior Analysis, BehaviorWorks)
 
 **2. Location Entities (80+ required):**
-- **Primary:** Glasgow · 2508 Briaroaks Ct · 79707
-- **Target States + Cities:** From `data/locations.json` — include all states + major cities
-- **Airport Codes:** DEN, LAX, MIA, ORD, JFK, PHX, ATL, DFW, SEA, BOS, etc.
-- **Regions:** Southwest, Southeast, Pacific Coast, Midwest, Northeast, etc.
-- **DEFRA-APPROVED TRANSPORT-approved delivery hubs:** Cross-reference with `data/locations.json`
+- **Primary:** Glasgow · 40 Coltmuir Street, Glasgow G22 6LU
+- **Target cities:** From `data/locations.json` — include all states + major cities
+- **Delivery routes:** the road legs from Glasgow to the 28 cities — never an airport code; delivery here is by road
+- **Regions:** Scotland, the North East, the North West, Yorkshire, the Midlands, Wales, the South West, Greater London
+- **DEFRA-approved transport coverage:** Cross-reference with `data/locations.json`
 
 **3. Medical/Health Entities (40+ required):**
 - Canine Biotech DNA Testing (gender + disease panel)
@@ -270,7 +292,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER (Convention on International Trade in Endangered Species)
 - LICENCE_CLAIM_PLACEHOLDER Licence (Animal Welfare Act)
 - THE KENNEL CLUB Registered Kennel
-- DEFRA-APPROVED TRANSPORT Live Animals Regulations (delivery compliance)
+- DEFRA-approved transport Live Animals Regulations (delivery compliance)
 - the RVC Member Canine Veterinarian
 - Canine Biotech Certified Disease-Free Bloodlines
 
@@ -323,7 +345,7 @@ Generate 15–20 more
 **Category 5: Delivery/Delivery Keywords**
 Examples:
 - `blue staffy delivery service to [city]`
-- `DEFRA-APPROVED TRANSPORT-certified blue staffy delivery [city]`
+- `blue staffy delivery by DEFRA-approved transport [city]`
 - `blue staffy delivery driver [airport code]`
 - `safe blue staffy delivery nationwide`
 Generate 15–20 more
@@ -388,7 +410,7 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - Top 10 cities in target region (population 50,000+)
 - Most puppy-friendly neighborhoods/communities in key cities
 - Top 5 canine vet clinics in key metro areas
-- Major regional airports with DEFRA-APPROVED TRANSPORT Live Animal programs
+- Major regional airports with DEFRA-approved transport Live Animal programs
 - State wildlife/puppy regulations relevant to Blue Staffy ownership
 
 **Authority Entities Required:**
@@ -400,7 +422,7 @@ For pages with a delivery/delivery section, use web search to gather these entit
 
 **Logistics Entities Required:**
 - Airport codes for all major delivery hubs
-- DEFRA-APPROVED TRANSPORT-compliant pet transport companies serving target states
+- DEFRA-approved pet transport companies serving target states
 - Delta Cargo, United PetSafe programs for delivery driver coordination
 - Ground transit time estimates from Glasgow to target cities
 
@@ -455,13 +477,13 @@ Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword 
 | 17 | BlueStaffyUK Breeding Commitment & Ethics | 200–250 | `#breeding-commitment` |
 | 18 | Blue Staffy vs Other Puppy Subspecies Comparison | 500–600 | `#subspecies-comparison` |
 | 19 | Real-World Customer Case Study | 400–500 | `#case-study` |
-| 20 | DEFRA-APPROVED TRANSPORT Delivery & Coverage Areas | 700–900 | `#delivery` |
+| 20 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
 | 21 | Frequently Asked Questions (30+ questions) | 800–1,000 | `#faqs` |
 | 22 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
 | 23 | Puppy Culture & Early Neonatal Handling (Video) | 100–150 | `#puppy-culture` |
 | 24 | Contact Information & Next Steps | 150–200 | `#contact` |
 | 25 | Related Blue Staffy Varieties & Companion Puppies | 200–300 | `#related-species` |
-| 26 | Map & DEFRA-APPROVED TRANSPORT Delivery Coverage Area | 100–150 | `#map` |
+| 26 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
 | 27 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
 
 ---
@@ -592,7 +614,7 @@ TIER 4: ENTITY & TRUST
 9. Geographic Entities (3–5 per section):
    ☐ Cities: [specific cities mentioned]
    ☐ States/Regions: [regions referenced]
-   ☐ Airport Codes: [if relevant]
+   ☐ Delivery routes / travel time from Glasgow: [if relevant]
 
 10. Authority Entities (1–2 per section):
     ☐ [Canine vet organization / credential]
@@ -736,7 +758,7 @@ Example: `"Learn more about [LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER d
 1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Interstate Travel Regulations for Puppies](https://www.gov.uk/)
 2. [Delta Cargo — Live Animal Delivery Guidelines](https://www.deltacargo.com/)
 3. [United PetSafe Canine Delivery Program](https://www.united.com/)
-4. [DEFRA-APPROVED TRANSPORT Live Animals Regulations](https://www.DEFRA-approved transport.org/en/programs/ops-infra/live-animals/)
+4. [DEFRA-approved transport Live Animals Regulations](https://www.DEFRA-approved transport.org/en/programs/ops-infra/live-animals/)
 
 #### C. 3 Anchor Text Strategies (Rule 58)
 
@@ -783,11 +805,11 @@ Under 4 words each, start with a number or percentage:
 - ✅ `👉 [Submit an inquiry to reserve your Blue Staffy](/contact-us/)`
 - ✅ `📋 [Fill out our quick inquiry form — we respond within 24 hours](/contact-us/)`
 - ✅ `<a href="/contact-us/" class="bsuk-btn-primary">Inquire About a Puppy</a>`
-- ❌ `📞 Call 281-545-3169 to reserve today!` — NEVER in body copy
+- ❌ `📞 Call PHONE_PLACEHOLDER to reserve today!` — NEVER in body copy
 
 **Newsletter Signups (3 per full hub page):**
 - Position 1 (Top — after Diet/Nutrition section): "Get our FREE Blue Staffy Diet & Nutrition Guide!"
-- Position 2 (Middle — after Delivery section): "Calculate your DEFRA-APPROVED TRANSPORT delivery cost!"
+- Position 2 (Middle — after Delivery section): "Calculate your DEFRA-approved transport delivery cost!"
 - Position 3 (Bottom — after Contact section): "Join 500+ happy BlueStaffyUK families!"
 
 **Image Placeholders:**
@@ -867,7 +889,7 @@ Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at Blu
 H1 examples:
 1. "Where Can I Buy a Home-Reared Blue Staffy Puppy with LICENCE_CLAIM_PLACEHOLDER Documentation?"
 2. "Looking for an Intelligent Companion? Meet Our Home-Bred Blue Staffy Puppies"
-3. "Blue Staffy Puppies for Sale: DEFRA-APPROVED TRANSPORT Safe Delivery to 50+ States from Glasgow"
+3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 50+ States from Glasgow"
 4. "Why Are BlueStaffyUK Blue Staffies Chosen by 500+ Happy Families?"
 5. "Ready for a Lifelong Canine Companion? Our Blue Staffies Come with Lifetime Breeder Support"
 6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Glasgow"
@@ -956,10 +978,10 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 **BSUK Meta Description Examples:**
 
 Standard (155 chars):
-> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. DNA sexed pups from BlueStaffyUK - Glasgow. Nationwide DEFRA-APPROVED TRANSPORT delivery.
+> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. DNA sexed pups from BlueStaffyUK - Glasgow. Nationwide DEFRA-approved transport delivery.
 
 Extended Urgency (290 chars):
-> Blue Staffy for sale — only 6 pups available this litter | Don't miss out — NOT FETCHED families chose BlueStaffyUK over other breeders | £200–£350 home-reared pups vs £200–£350+ at pet stores | Canine Biotech DNA tested, DEFRA-APPROVED TRANSPORT-certified delivery driver to 28 UK cities | Reserve yours before they're gone | Act now
+> Blue Staffy for sale — only 6 pups available this litter | Don't miss out — NOT FETCHED families chose BlueStaffyUK over other breeders | £200–£350 home-reared pups vs £200–£350+ at pet stores | Canine Biotech DNA tested, delivery by DEFRA-approved transport driver to 28 UK cities | Reserve yours before they're gone | Act now
 
 #### B. Schema Markup (Rule 5)
 
@@ -1025,7 +1047,7 @@ Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh be
 4. **CAPTION** — a visible `<figcaption>` with a soft CTA where natural.
 5. **DESCRIPTION** — a 250+ word SEO-optimized description block (image-metadata pipeline, not the rendered DOM).
 
-**Transactional-keyword variation rule (MUST):** each image's filename / alt / title must use a *different* transactional keyword variation than the visible page copy — e.g. "buy home-reared male Blue Staffy," "tame DNA-tested baby Blue puppy for sale near me," "home-bred Blue Staffy for sale Texas" — so one page ranks for many queries. Never repeat the H1 keyword verbatim across images.
+**Transactional-keyword variation rule (MUST):** each image's filename / alt / title must use a *different* transactional keyword variation than the visible page copy — e.g. "buy home-reared male Blue Staffy," "tame DNA-tested baby Blue puppy for sale near me," "home-bred Blue Staffy for sale Manchester" — so one page ranks for many queries. Never repeat the H1 keyword verbatim across images.
 
 - **File size:** Highly compressed (<100KB for page-content images)
 - **Dimensions:** See image-specs.json for page-type-specific specs
@@ -1044,8 +1066,8 @@ Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh be
 ```
 Blue Staffy puppies for sale from BlueStaffyUK in Glasgow showing three healthy
 Canine Biotech DNA-tested Blue Staffy pups with silver coat and bright red tails
-available for nationwide DEFRA-APPROVED TRANSPORT-certified delivery to families in Texas, Florida, and
-California seeking home-bred LICENCE_CLAIM_PLACEHOLDER-documented Blue Staffy puppies from ethical breeders
+available for nationwide delivery by DEFRA-approved transport to families in Manchester, Glasgow, and
+London seeking home-bred LICENCE_CLAIM_PLACEHOLDER-documented Blue Staffy puppies from ethical breeders
 ```
 
 ---
@@ -1414,12 +1436,12 @@ When migrating content from dog-breeder templates or MFS reference material, app
 | Breed | Subspecies / variant |
 | Grooming (nails, fur) | Coat care, muzzle maintenance, misting |
 | Hip dysplasia, luxating patella | L-2-HGA, Polyomavirus, Psittacosis, Bornavirus |
-| £1,500–£1,700 price range | £1,500–£1,700 (BSUK) / £1,500–£1,700 (TAG) |
-| (402) 555-0123 placeholder | 281-545-3169 — FOOTER ONLY (Rule 61) |
-| 17 states served | Nationwide delivery (DEFRA-APPROVED TRANSPORT-approved) |
-| Delivery Driver | DEFRA-APPROVED TRANSPORT-certified canine delivery driver |
+| any price range | £1,500 (Roman, Byrd, Ince) · £1,700 (Vennie, Christa, Cheryl) — the litter spans £1,500–£1,700 |
+| a placeholder number | PHONE_PLACEHOLDER — FOOTER ONLY (Rule 61) |
+| 17 states served | the 28 UK cities in `data/locations.json` |
+| Delivery Driver | DEFRA-approved transport |
 | Ground transport | Climate-controlled canine ground transit |
-| Microchip | Closed leg band / canine DNA certificate |
+| Microchip | Microchip number on the paperwork |
 | Vaccination (DHPP, Nobivac) | DNA disease panel (L-2-HGA, HC-HSF4, Psittacosis) |
 | THE KENNEL CLUB, BBB, AAHA | LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, THE KENNEL CLUB, the RVC |
 | BBB A+ Rating | LICENCE_CLAIM_PLACEHOLDER Licence + THE KENNEL CLUB Registered Kennel |

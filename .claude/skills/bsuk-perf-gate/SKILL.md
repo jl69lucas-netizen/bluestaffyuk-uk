@@ -29,8 +29,9 @@ python3 scripts/perf_audit.py <slug> --psi               # project 6 only, deskt
 Every floor is 0.995 (what PSI displays as 100). Lighthouse is pinned to 13.4.1 with
 `scripts/lighthouse/agentic-*.mjs`. `--preset=desktop` is ignored alongside a config path,
 so desktop has its own config. Records land under `data/quality/` (the perf sub-directory is created on first run);
-`scripts/board_gate.py <slug> --release` FAILs without fresh local records, and FAILs on any PSI
-record under 100 (`scripts/pageboard.py perf_findings`).
+`python3 scripts/board_gate.py <slug> --release` FAILs without fresh local records, and (from
+project 6) on any PSI record under 100. `scripts/pageboard.py` is the board library it reads
+through, not a command — it has no argv dispatch, so never try to run it with a sub-command.
 
 ## Why local and PSI disagree (check these before theorising)
 

@@ -1,7 +1,6 @@
 ---
 name: bsuk-comprehensive-page-audit-system
 description: "Use when auditing any BlueStaffyUK page deeply — SEO, semantic, AEO, entity, UX, CRO, visual-asset, and backlink — to get one brutal scored verdict with prioritized fixes. Runs as a chain over existing BSUK specialists. Triggers: \"audit this page\", \"deep audit\", \"why isn't this page ranking\", \"page audit\"."
-context: fork
 ---
 
 # BlueStaffyUK Comprehensive Page Audit System

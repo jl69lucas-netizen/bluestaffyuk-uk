@@ -106,11 +106,11 @@ For state/city location pages, use the city center as the map target:
 | State | Encoded Query |
 |---|---|
 | Arizona | `Arizona%2C%20UK` |
-| California | `California%2C%20UK` |
-| Florida | `Florida%2C%20UK` |
+| London | `London%2C%20UK` |
+| Glasgow | `Glasgow%2C%20UK` |
 | Georgia | `Georgia%2C%20UK` |
 | New York | `New%20York%2C%20UK` |
-| Texas | `Texas%2C%20UK` |
+| Manchester | `Manchester%2C%20UK` |
 | Virginia | `Virginia%2C%20UK` |
 | North Carolina | `North%20Carolina%2C%20UK` |
 | Illinois | `Illinois%2C%20UK` |

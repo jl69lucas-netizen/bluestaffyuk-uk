@@ -110,7 +110,7 @@ for a brand-new page that has no form vocabulary yet — and even then prefer
 
   <div class="bsuk-field">
     <label for="inq-phone">Phone Number</label>
-    <input type="tel" id="inq-phone" name="phone" placeholder="(555) 555-5555">
+    <input type="tel" id="inq-phone" name="phone" placeholder="PHONE_PLACEHOLDER">
   </div>
 
   <div class="bsuk-field">

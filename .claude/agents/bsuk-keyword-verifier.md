@@ -109,7 +109,7 @@ For each page audit, check every item:
 - [ ] vet cert referenced on health-related pages
 - [ ] the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) mentioned on sales/availability pages
 - [ ] No language implying backyard-bred origin
-- [ ] Rule 61: No phone number in body copy — CTAs link to /uk-blue-staffy-breeders-contact/ form only (281-545-3169 in footer/schema ONLY)
+- [ ] Rule 61: No phone number in body copy — CTAs link to /uk-blue-staffy-breeders-contact/ form only (PHONE_PLACEHOLDER in footer/schema ONLY)
 
 ---
 

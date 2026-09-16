@@ -48,10 +48,15 @@ MONEY = re.compile(AMOUNT + r"(?:\s*[–—-]\s*" + AMOUNT + r")?")
 # Bare-token bans. Each is a fact BSUK has not established, or a body whose authority the
 # source repo borrowed: US wildlife/agriculture regulators, a parrot lifespan, a US state
 # count, and a host nobody has chosen.
+# CAG geography. A US state or city in a meta template is not a harmless example: it is the
+# territory the page claims to serve, and Task 12 shipped meta templates still promising delivery to
+# California. BSUK's 28 cities are in data/locations.json and nowhere else.
+CAG_GEO = ("California", "Los Angeles", "San Diego", "Texas", "Florida")
+
 BANNED = (
     "40–60", "40-60", "50 cities", "50 states",
     "captive", "USDA", "APHIS", "CITES", "Cloudflare", "cloudflare",
-)
+) + CAG_GEO
 
 # DEFRA is real here in exactly one form: the transport that carries a puppy. "DEFRA-approved
 # breeder" / "DEFRA-compliant kennel" are claims nobody has verified.
@@ -218,6 +223,8 @@ def test_the_lint_actually_fires(tmp_path):
     assert any("unlocked amount" in v for v in kinds), kinds
     assert any("banned token" in v for v in kinds), kinds
     assert any("DEFRA asserted" in v for v in kinds), kinds
+
+
     assert any("year figure" in v for v in kinds), kinds
     assert any("used as a noun in a heading" in v for v in kinds), kinds
     assert any("bare numeral 2500" in v for v in kinds), kinds
@@ -255,3 +262,11 @@ def test_these_lines_are_lifespan_claims(tmp_path, line):
     p = tmp_path / "SKILL.md"
     p.write_text(line + "\n", encoding="utf-8")
     assert any("year figure" in v for v in violations(p)), violations(p)
+
+
+def test_the_lint_bans_cag_geography(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text("Delivery to California, Los Angeles and San Diego.\n", encoding="utf-8")
+    bad = violations(p)
+    assert len(bad) == 3, bad
+    assert all("banned token" in v for v in bad), bad

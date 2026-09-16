@@ -48,7 +48,17 @@ Exit 1 = FAIL. `--headers` normalizes breed/coat names to `{breed}`, so "Is an E
 | Documentation badge stack (L-2-HGA and HC-HSF4 parent test certificates, vet check, microchip, vaccination record) | puppy cards/pages | canonical trust set |
 | The licence and statute notice (LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER) | footer bottom bar | legal |
 | Nav, footer, newsletter, global CTA band | site chrome | stripped by the parser already |
-| Site-standard section headers (`HEADER_WHITELIST` in the script: FAQ, Delivery & Collection, Reserve, Get in Touch, Newsletter) | any page | deliberate site furniture |
+| Site-standard section headers | any page | deliberate site furniture — but see the note below: the script's list is not BSUK's yet |
+
+> **The header whitelist is still the source repo's** (arrives in Task 15). `HEADER_WHITELIST`
+> in `scripts/dup_content_audit.py` holds the stems that were site furniture in the SOURCE repo,
+> not on this site, and Task 15 re-measures it against BSUK's own chrome. Do not edit
+> the script here to make this row true — the measurement is the deliverable, and guessing
+> the list is how a whitelist stops being evidence.
+>
+> Expected after Task 15: Frequently Asked Questions · Delivery & Collection · Reserve Your
+> Puppy · Get In Touch · Join Our Newsletter, plus the footer column headings and the
+> breeder's name. Until then this table describes the intent, not the script.
 
 **Adding to the whitelist requires breeder approval** — state what, where, and why it must be identical. Everything else that repeats is a defect.
 

@@ -171,36 +171,25 @@ Applying the light-card `#6b625a` to a dark dial makes it unreadable. Always
 check which variant the page ships before "sweeping the contrast fix".
 
 ### 1e-ter. `header-not-title-case` — ERROR — *site-wide heading standard*
-**Every H1–H6 on every page uses AP-style Title Case**, matching the homepage and
-the blue / blue-brindle for-sale pages. Sentence-case headings are a defect (the
-home-raised page shipped 62 of them, 2026-07-23).
+**Every H1–H6 on every page uses AP-style Title Case.**
 
-**The rule:**
-- Capitalize every word of **4+ letters**, plus all nouns, verbs, adjectives and
-  adverbs regardless of length (`Is`, `Are`, `Do`, `Be`, `Not`, `Our`, `Such`).
-- Lowercase these **≤3-letter** articles / conjunctions / prepositions when they
-  fall mid-title: `a an the and but or nor for so yet at by in of on to as vs per via`.
-- **Always** capitalize the first word, the last word, and the word after a
-  `:` `?` `!`. An **em dash is a mid-sentence break** — it does NOT force a
-  capital (`Legit — and How Would You Even Know?` is correct).
-- Hyphenated compounds capitalize **each** part (`Home-Raised`, `People-Bonded`,
-  `Sought-After`, `Home-Bred`) — except a minor part (`12-to-16-Week`).
-- Particles stay capitalized (`Steps Up`), and 4-letter prepositions do too
-  (`From`, `With`, `Before`, `Across`, `Against`).
-- Never touch acronyms, brand tokens or domains: `BlueStaffyUK` `UK` `KC` `DNA`
-  `L-2-HGA` `HC-HSF4` `www.gov.uk`
-  (and `DEFRA-approved transport`, which is always written whole).
+**The rule lives in the pack, not here.** `rules/headings.md` `title-case-headings` is the
+single statement of what Title Case means on this site — which words are capitalised, which
+≤3-letter articles drop mid-title, how an em dash and a hyphenated compound behave, and
+which acronyms and brand tokens are never touched. Restating it in a skill is how the two
+drift apart, and the pack is the copy a checker can be pointed at. Read it there; the
+companion rules are `rules/headings.md` `header-style-declared` (a page declares its heading
+style once) and `heading-hierarchy-outline-gate` (the outline is approved before any code).
 
-Reference (live siblings): *"Which Blue Staffy Puppies Do We Have for Sale
-Right Now?"* · *"Why Do Blue Staffy Prices Range From £1,500 to £1,700?"* ·
-*"How Do You Know This Blue Staffy Breeder Is Legit, Not a Scam?"*
+**What this scanner adds** is only the detection: it flags a heading on a built page whose
+casing disagrees with the pack. A sentence-case heading is a defect (one source page shipped
+62 of them, 2026-07-23).
 
-**Scope — headings only.** FAQ accordion questions live in `<summary>`, not in a
-heading tag, and stay **conversational sentence case** ("How much does a Blue
-Blue Staffy cost?") on blue, blue-brindle and home-raised alike. Do NOT title-case
-them. The homepage is the one outlier: it renders its FAQ questions *as H3*, so
-the scanner flags them — that block is a pre-existing inconsistency, not a
-licence to change the FAQ voice.
+**Scope — headings only.** FAQ accordion questions live in `<summary>`, not in a heading
+tag, and stay **conversational sentence case** ("How much does a Blue Staffy puppy cost?").
+Do NOT title-case them. A page that renders its FAQ questions *as H3* will be flagged by the
+scanner; that is a pre-existing inconsistency in the page, not a licence to change the FAQ
+voice.
 
 ### 1f. `links-colour-only` — WARN — WCAG 1.4.1
 In-body links distinguished by colour alone fail Lighthouse.
