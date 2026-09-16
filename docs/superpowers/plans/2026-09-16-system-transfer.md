@@ -1095,6 +1095,8 @@ Expected: `approved index at <timestamp> — 0 picks, 0 text write-backs, ledger
 python3 scripts/board_gate.py index
 ```
 Expected: `board-gate index [build] — 14 sections, N headings, 49 live pages, 0 entity refs, 0 ledger siblings, 0 assets examined` then `0 FAIL · <n> WARN`, exit 0.
+
+> Execution note (2026-09-16): on the migrated homepage the gate reports five `header-collision` FAILs, exit 1. Two are chrome cleared by Task 15's whitelist re-base; three are genuine cross-page duplicates carried to project 4 (spec §11). Task 16 re-runs this gate after Task 15 and expects exactly those three FAILs remaining; Task 20 lists them in the gate report.
 A `header-collision` FAIL here means a homepage H2 also appears on another built page — that
 is a real Foundation finding, so record it in the gate report rather than editing the page;
 this project rewrites no content. If it blocks the gate, add the colliding heading to

@@ -269,3 +269,12 @@ re-base covers every marker hit under `tests/render/`, about 57 files, not six.
 
 - Two content placeholders introduced during the skill re-base, `LICENCE_CLAIM_PLACEHOLDER` and `LEGAL_CLAIM_PLACEHOLDER`, stand in for the breeder-licence and Lucy's-Law claims until Lisa Bright confirms them; `placeholder_check.py` refuses to release while they remain.
 - The marker gate is `scripts/marker_check.py`, not `parrot_marker_check.py`: `package.json` is a scan root and the gate's own wiring line would otherwise be a permanent hit. Renaming beats an exclusion, which §4 forbids.
+- Proving board (Task 5): `board_gate.py index` reports five `header-collision` FAILs on the
+  migrated homepage. Two are site chrome (`Blue Staffy News: Join 500+ Readers!` on 3 pages,
+  `Available Blue Staffy Puppies` on 12) whose whitelist entries are still parrot-worded and
+  clear with Task 15's `HEADER_WHITELIST` / `HEAD_TERMS` re-base. Three are genuine
+  cross-page heading duplicates in migrated copy (`/uk-locations/staffy-breeding-dogs-glasgow/`
+  and `/uk-blue-staffy-puppy-buying-guide/` against the homepage) that this project may not
+  edit; they are carried to project 4 as a Foundation content finding. §6 and §9 therefore
+  read "the proving board is approved and built; the gate is green after Task 15 except for
+  the three carried duplicates, which the gate report lists". The gate is not weakened.
