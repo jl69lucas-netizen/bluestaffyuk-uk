@@ -77,7 +77,7 @@
   {"src": ".claude/skills/youtube-script/SKILL.md", "dst": ".claude/skills/youtube-script/SKILL.md", "mode": "deferred", "notes": "spec §10 out of scope"},
   {"src": "scripts/pageboard.py", "dst": "scripts/pageboard.py", "mode": "rebase", "notes": "SPECIES regex -> coat colours; ONTOLOGY/LEDGER paths; board_path -> data/boards/<slug>.json; inline file_token/unfile_token (board_canvas is not ported)"},
   {"src": "scripts/board_gate.py", "dst": "scripts/board_gate.py", "mode": "rebase", "notes": "no CAG literals; re-based only for the board_path change"},
-  {"src": "scripts/board_approve.py", "dst": "scripts/board_approve.py", "mode": "rebase", "notes": "drop the board_canvas import and the --canvas-dir write-back; approvals arrive from the Artifact db"},
+  {"src": "scripts/board_approve.py", "dst": "scripts/board_approve.py", "mode": "rebase", "notes": "drop the board_canvas import (file_token now from pageboard); --canvas-dir write-back kept, inert unless the dir exists"},
   {"src": "scripts/build_page_board.py", "dst": "scripts/build_page_board.py", "mode": "rebase", "notes": "masthead literal; drop the thumbs block (board_thumbs.mjs is not ported)"},
   {"src": "tests/test_page_board.py", "dst": "tests/py/test_page_board.py", "mode": "rebase", "notes": "183 tests; port the schema/hash/ledger/gate/render core, drop the tests bound to CAG's real data files"}
 ]
