@@ -24,3 +24,20 @@ def test_every_target_is_a_known_page():
     known = {p["url"] for p in pm} | {"/", "/blog/", "/uk-locations/", "/available-puppies/"}
     for r in rows():
         assert r["to"] in known, r
+
+def test_committed_redirects_file_matches_data():
+    assert render(rows()) == (ROOT / "public/_redirects").read_text(encoding="utf-8")
+
+def test_no_duplicate_from():
+    froms = [r["from"] for r in rows()]
+    assert len(froms) == len(set(froms)), [f for f in froms if froms.count(f) > 1]
+
+def test_splats_trailing_and_placeholders_well_formed():
+    import re
+    for r in rows():
+        src = r["from"]
+        if "*" in src:
+            assert src.count("*") == 1 and src.endswith("*"), src
+        for seg in src.split("/"):
+            if seg.startswith(":"):
+                assert re.fullmatch(r":[a-z]+", seg), src

@@ -9,6 +9,8 @@ THANK_YOU = "/thank-you-blue-staffy-puppies-journey/"
 def indexable(page):
     if page["url"] == THANK_YOU:
         return False
+    if not page["word_count"]:  # empty archive page — nothing for an LLM to read
+        return False
     return "stub-noindexed" not in page.get("refresh_flags", [])
 
 
