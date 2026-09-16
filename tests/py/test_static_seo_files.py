@@ -14,6 +14,8 @@ def test_robots_allows_all_and_points_at_sitemap_index():
     text = (ROOT / "public/robots.txt").read_text(encoding="utf-8")
     assert "Allow: /" in text
     assert re.search(r"(?m)^Sitemap: \S+/sitemap_index\.xml$", text), text
+    # the generator rewrites dist/robots.txt only; this tracked copy keeps the placeholder
+    assert "SITE_URL_PLACEHOLDER" in text
 
 
 def test_404_is_noindexed_and_links_home():

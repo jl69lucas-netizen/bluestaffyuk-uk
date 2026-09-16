@@ -13,18 +13,37 @@ DIST = ROOT / "dist"
 BASE = (os.environ.get("SITE_URL") or "https://SITE_URL_PLACEHOLDER").rstrip("/")
 TODAY = datetime.date.today().isoformat()
 SHARDS = ("page", "post", "location", "puppy", "video")
+VIDEO_TITLE_MAX = 100
+VIDEO_DESC_MAX = 2048
+
+
+def _clip(text, limit):
+    """Trim to `limit` chars at a word boundary, adding an ellipsis when cut."""
+    text = " ".join(text.split())
+    if len(text) <= limit:
+        return text
+    cut = text[:limit - 1]
+    if " " in cut.strip():
+        cut = cut[:cut.rstrip().rfind(" ")]
+    return cut.rstrip() + "\u2026"
+
+
+def _frontmatter(text):
+    """The block between the first two `---` lines, or "" when there is none."""
+    m = re.match(r"---\r?\n(.*?)\r?\n---\s*(?:\r?\n|$)", text, re.S)
+    return m.group(1) if m else ""
 
 
 def blog_slugs_from_content():
     out = set()
     for f in (ROOT / "src/content/blog").glob("*.md"):
-        m = re.search(r'^slug:\s*"?([^"\n]+)"?\s*$', f.read_text(encoding="utf-8"), re.M)
+        m = re.search(r'^slug:\s*"?([^"\n]+)"?\s*$', _frontmatter(f.read_text(encoding="utf-8")), re.M)
         if m:
             out.add(m.group(1).strip())
     return out
 
 
-def shard_for(url_path, blog_slugs=frozenset()):
+def shard_for(url_path, blog_slugs):
     if url_path.startswith("/thank-you"):
         return None
     if url_path.startswith("/uk-locations/") and url_path != "/uk-locations/":
@@ -43,8 +62,13 @@ def _pages(dist):
 
 
 def _meta(text, name):
-    m = re.search(r'<meta name="%s" content="([^"]*)"' % name, text)
-    return html.unescape(m.group(1)) if m else ""
+    """Read a <meta> content value, tolerating attribute order and quote style."""
+    for pat in (r'<meta[^>]*name=["\']%s["\'][^>]*content=["\']([^"\']*)["\']',
+                r'<meta[^>]*content=["\']([^"\']*)["\'][^>]*name=["\']%s["\']'):
+        m = re.search(pat % name, text, re.I)
+        if m:
+            return html.unescape(m.group(1))
+    return ""
 
 
 def build_shards(dist, base, blog_slugs):
@@ -61,7 +85,8 @@ def build_shards(dist, base, blog_slugs):
             t = re.search(r"<title>(.*?)</title>", text, re.S)
             title = html.unescape(t.group(1)).strip() if t else url_path
             out["video"].append((base + url_path, [
-                {"id": v, "title": title, "description": _meta(text, "description")} for v in vids
+                {"id": v, "title": _clip(title, VIDEO_TITLE_MAX),
+                 "description": _clip(_meta(text, "description"), VIDEO_DESC_MAX)} for v in vids
             ]))
     return out
 
@@ -102,7 +127,17 @@ def _rewrite_robots(path, base):
     text = path.read_text(encoding="utf-8")
     line = "Sitemap: %s/sitemap_index.xml" % base
     if re.search(r"(?m)^Sitemap:.*$", text):
-        text = re.sub(r"(?m)^Sitemap:.*$", line, text)
+        seen = [False]
+        kept = []
+        for l in text.splitlines():
+            if re.match(r"^Sitemap:", l):
+                if seen[0]:
+                    continue
+                seen[0] = True
+                kept.append(line)
+            else:
+                kept.append(l)
+        text = "\n".join(kept) + "\n"
     else:
         text = text.rstrip("\n") + "\n\n" + line + "\n"
     path.write_text(text, encoding="utf-8")
@@ -125,12 +160,14 @@ def write(shards, dist=DIST, base=BASE):
                 "    <lastmod>%s</lastmod>" % TODAY, "  </sitemap>"]
     idx.append("</sitemapindex>")
     (dist / "sitemap_index.xml").write_text("\n".join(idx) + "\n", encoding="utf-8")
+    # dist only — public/robots.txt is tracked and keeps its placeholder line.
     _rewrite_robots(dist / "robots.txt", base)
-    _rewrite_robots(ROOT / "public/robots.txt", base)
     return written
 
 
 if __name__ == "__main__":
+    if "SITE_URL_PLACEHOLDER" in BASE:
+        print("WARNING: SITE_URL not set — sitemaps carry %s" % BASE)
     slugs = blog_slugs_from_content()
     shards = build_shards(DIST, BASE, slugs)
     written = write(shards)

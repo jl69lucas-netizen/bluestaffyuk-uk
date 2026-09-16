@@ -9,8 +9,6 @@ THANK_YOU = "/thank-you-blue-staffy-puppies-journey/"
 def indexable(page):
     if page["url"] == THANK_YOU:
         return False
-    if not page["word_count"]:  # empty archive page — nothing for an LLM to read
-        return False
     return "stub-noindexed" not in page.get("refresh_flags", [])
 
 
@@ -23,7 +21,8 @@ def render(pages, settings):
     )
     out += ["", "## Sitemaps", "", "- [XML sitemap](/sitemap_index.xml)", "", "## Pages", ""]
     for p in sorted((q for q in pages if indexable(q)), key=lambda q: q["url"]):
-        out.append("- [%s](%s): %d words" % (p["title"], p["url"], p["word_count"]))
+        wc = p["word_count"]
+        out.append("- [%s](%s)%s" % (p["title"], p["url"], ": %d words" % wc if wc else ""))
     out += ["", "## Available puppies", "", "- [Available Blue Staffy puppies](/available-puppies/)"]
     out += ["", "## Locations", "", "- [UK locations](/uk-locations/)"]
     out += ["", "## Blog", "", "- [Blue Staffy blog](/blog/)", ""]
