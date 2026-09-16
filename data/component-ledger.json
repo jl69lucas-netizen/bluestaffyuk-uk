@@ -1,1 +1,16 @@
-{ "refresh_pools": [], "pools": {}, "pages": {} }
+{
+  "refresh_pools": [],
+  "pools": {},
+  "pages": {
+    "index": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "",
+      "table": "",
+      "faq": "",
+      "takeaway": [],
+      "h6_prefixes": []
+    }
+  }
+}

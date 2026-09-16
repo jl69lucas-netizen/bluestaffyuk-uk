@@ -1,0 +1,692 @@
+{
+  "meta": {
+    "slug": "index",
+    "page_type": "home",
+    "status": "approved",
+    "research_as_of": "2026-09-16",
+    "sources": [
+      {
+        "path": "dist/index.html",
+        "fetched": "2026-09-16"
+      }
+    ]
+  },
+  "brief": {
+    "goal": "record the migrated homepage as a board so project 4 has a worked example",
+    "scope": "no content is rewritten",
+    "gates": [
+      "board_gate.py index",
+      "npm run check:all"
+    ],
+    "done": "board approved, gate passes, Artifact built",
+    "out_of_scope": [
+      "any content edit"
+    ],
+    "primary_keyword": "blue staffy puppies for sale uk",
+    "angles": [
+      {
+        "name": "Record the migrated page as built",
+        "hook": "the board mirrors the homepage exactly as Foundation migrated it",
+        "why_not": ""
+      },
+      {
+        "name": "Propose a homepage rebuild",
+        "hook": "re-plan the homepage around the component kit",
+        "why_not": "project 3 owns the component kit and project 2 rewrites no content"
+      }
+    ],
+    "strategy": {
+      "name": "Record the migrated page as built",
+      "why": "project 2 ports the operating system, it does not change the site",
+      "trade_off": "the board carries no research depth until project 4 revisits it"
+    },
+    "cta": {
+      "cadence": {
+        "min": 400,
+        "max": 1200
+      },
+      "destination": "#contact",
+      "anchors": [
+        "Reserve a puppy"
+      ],
+      "global_cta": "shown"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "this board records an existing page and introduces no interactive tool; a tool pick here would be a change project 2 is not making",
+      "trade_off": "project 4 revisits it"
+    },
+    "schema": {
+      "types": [
+        "LocalBusiness",
+        "WebSite",
+        "BreadcrumbList"
+      ],
+      "offer_model": "none"
+    }
+  },
+  "h1": {
+    "variants": [
+      "Secure Your blue Staffy puppies for sale UK: Safe Delivery & Verified Papers.",
+      "Blue Staffy Puppies for Sale UK: Verified Papers and Safe Delivery",
+      "Reserve a Blue Staffy Puppy in the UK with Papers and Safe Delivery",
+      "Blue Staffy Puppies for Sale UK from a Glasgow Kennel",
+      "Buy a Blue Staffy Puppy in the UK: Papers, Health Checks, Safe Delivery"
+    ],
+    "recommended": 0,
+    "pick": 0
+  },
+  "meta_set": {
+    "titles": [
+      "Blue Staffy Puppies For Sale UK | Papers | BlueStaffyUK",
+      "Blue Staffy Puppies UK | Verified Papers & Safe Delivery",
+      "Buy Blue Staffy Puppies UK | Glasgow Kennel | BlueStaffyUK"
+    ],
+    "descriptions": [
+      "Blue Staffy puppies for sale UK from our Glasgow kennel, with verified papers, health checks and safe UK-wide delivery. Reserve your puppy today.",
+      "Browse blue Staffy puppies for sale in the UK. Verified papers, health-checked pups, a refundable deposit and safe delivery to your door across Britain.",
+      "Our blue Staffordshire Bull Terrier puppies come with verified papers and health checks, and we deliver safely across the UK. See the litters available now."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": 0,
+      "description": 0
+    }
+  },
+  "sections": [
+    {
+      "id": "key-takeaways-the-bluestaffyuk-promise",
+      "n": 1,
+      "heading": "Key Takeaways: The BluestaffyUK Promise",
+      "intent": "opens the page with the promise summary a buyer reads before anything else",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "hi-i-am-sharine-amelia",
+      "n": 2,
+      "heading": "Hi, I Am Sharine Amelia",
+      "intent": "introduces the breeder behind the kennel",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "meet-our-affordable-blue-staffy-puppies-ready-for-their-forever-homes",
+      "n": 3,
+      "heading": "Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes",
+      "intent": "lists the puppies currently available with their prices",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "why-choose-a-pure-bred-staffy-pup-for-sale-from-bluestaffyuk-uk",
+      "n": 4,
+      "heading": "Why Choose a Pure-bred Staffy Pup for Sale from BlueStaffyUK.uk?",
+      "intent": "sets out the reasons to buy from this kennel rather than another",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "understanding-the-wonderful-blue-staffordshire-bull-terrier-breed",
+      "n": 5,
+      "heading": "Understanding the Wonderful Blue Staffordshire Bull Terrier Breed",
+      "intent": "explains the blue Staffordshire Bull Terrier breed to a first-time buyer",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "blue-staffy-news-join-500-readers",
+      "n": 6,
+      "heading": "Blue Staffy News: Join 500+ Readers!",
+      "intent": "offers the newsletter sign-up",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "our-happy-blue-staffy-owners-speak",
+      "n": 7,
+      "heading": "Our Happy Blue Staffy Owners Speak",
+      "intent": "shows testimonials from previous buyers",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "our-commitment-to-excellence-in-blue-staffy-breeding",
+      "n": 8,
+      "heading": "Our Commitment to Excellence in Blue Staffy Breeding",
+      "intent": "states the kennel's breeding standards",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "meet-the-proud-parents-of-our-blue-staffy-puppies",
+      "n": 9,
+      "heading": "Meet the Proud Parents of Our Blue Staffy Puppies",
+      "intent": "presents the sire and dam of the current litters",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "our-commitment-to-the-health-of-our-blue-staffy-puppies",
+      "n": 10,
+      "heading": "Our Commitment to the Health of Our Blue Staffy Puppies",
+      "intent": "records the health work done on every puppy",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "connecting-families-across-the-uk-we-ship-our-blue-staffy-puppies-to-your-doorstep",
+      "n": 11,
+      "heading": "🚚 Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep",
+      "intent": "explains UK-wide delivery and what it costs",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "your-questions-about-blue-staffies-answered",
+      "n": 12,
+      "heading": "Your Questions About Blue Staffies, Answered",
+      "intent": "answers the questions buyers ask most often",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    },
+    {
+      "id": "how-to-buy-your-blue-staffy-puppy",
+      "n": 13,
+      "heading": "How to Buy Your Blue Staffy Puppy",
+      "intent": "walks a buyer through the steps of reserving and buying a puppy",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      },
+      "cta": 1
+    },
+    {
+      "id": "available-blue-staffy-puppies",
+      "n": 14,
+      "heading": "Available Blue Staffy Puppies",
+      "intent": "repeats the available puppies as a closing inventory list",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "present on the migrated WordPress page",
+      "why_source": "dist/index.html (Foundation, verbatim migration)",
+      "framework": "EEBP",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "standard shape — no component choice"
+      }
+    }
+  ],
+  "tuple": {
+    "hero": "",
+    "dial": "",
+    "rail": "",
+    "toc": "",
+    "takeaway": [],
+    "table": "",
+    "faq": "",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "Kennel Note:"
+    ]
+  },
+  "assets": [],
+  "approval": {
+    "approved_at": "2026-09-16T00:00:00Z",
+    "h1": 0,
+    "meta": {
+      "title": 0,
+      "description": 0
+    },
+    "picks": {},
+    "notes": {},
+    "canvas_version": "none",
+    "record_hash": "2f847f857da2aa49a00c5b7143c8ce84d343dccf55fda4994206ba04978bd78b"
+  }
+}

@@ -1,0 +1,349 @@
+<title>Page Board: index</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F7F5EE;--paper:#FFFFFF;--ink:#1E2A24;--ink-2:#4B5A52;--ink-3:#7A867F;--line:#DDD9CC;--green:#2D6A4F;--green-soft:#E3EEE8;--clay:#E8604C;--clay-ink:#c8472f;--clay-soft:#FBE7E2;--code-bg:#F0EEE5;--mark:#FFF3C4;--warn:#9C3A2A;--on-clay:#FFFFFF}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#151A17;--paper:#1D2420;--ink:#ECEBE3;--ink-2:#B7BDB6;--ink-3:#7F8983;--line:#2F3934;--green:#6FB48F;--green-soft:#1F2F28;--clay:#F08A78;--clay-ink:#F08A78;--clay-soft:#3A2622;--code-bg:#11161380;--mark:#4A3F16;--warn:#F2A08F;--on-clay:#191F1C}}
+:root[data-theme="dark"]{--ground:#151A17;--paper:#1D2420;--ink:#ECEBE3;--ink-2:#B7BDB6;--ink-3:#7F8983;--line:#2F3934;--green:#6FB48F;--green-soft:#1F2F28;--clay:#F08A78;--clay-ink:#F08A78;--clay-soft:#3A2622;--code-bg:#11161380;--mark:#4A3F16;--warn:#F2A08F;--on-clay:#191F1C}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:36px 24px 96px}
+header.masthead{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:2px solid var(--green);margin-bottom:24px}
+.eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:600;margin:0 0 6px}
+h1.title{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 9px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px 26px;margin:0 0 20px}
+section.sec h2{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:22px;margin:0 0 10px;line-height:1.2}
+.md p,.md li{max-width:72ch}.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--green);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "IBM Plex Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.tree{font:13px/1.65 "IBM Plex Mono",ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
+.hit{color:var(--warn);font-weight:600}
+#entity-graph{height:440px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
+.legend{font-size:12px;color:var(--ink-3);margin:6px 0 0}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:8px 0 6px}
+.opt{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);display:grid;gap:6px}
+.opt img,.opt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:5px;border:1px solid var(--line);background:var(--code-bg);display:grid;place-items:center;font-size:12px;color:var(--ink-3)}
+.opt.off{opacity:.55}.opt label{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600;cursor:pointer}
+.opt .why{font-size:12px;color:var(--ink-3)}
+.opt .pill{justify-self:start;text-transform:none;letter-spacing:0;background:var(--green-soft);border-color:var(--green);color:var(--ink-2)}
+textarea.note{width:100%;min-height:52px;font:13px/1.5 "IBM Plex Sans",system-ui,sans-serif;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--ground);color:var(--ink)}
+.slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.slot{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}.slot .st{font-weight:700}.slot .st.missing{color:var(--warn)}
+#approve{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+button.btn{font:inherit;font-size:14px;font-weight:600;padding:10px 18px;border-radius:50px;border:1px solid var(--clay-ink);background:var(--clay-ink);color:var(--on-clay);cursor:pointer}
+button.btn[disabled]{opacity:.5;cursor:default}
+.status{font-size:13px;color:var(--ink-2)}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--clay);outline-offset:2px}
+.kit .opt{gap:5px}
+.kit .opt b{font-size:13px;font-weight:600}
+.kit .opt .pill:first-child{justify-self:start;background:var(--paper);border-color:var(--line);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+@media (max-width:640px){header.masthead{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:18px 16px 20px}}
+</style>
+<div class="wrap">
+<header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/index/</h1></div>
+<div class="meta"><span class="pill">status: approved</span> <span class="pill">research as of 2026-09-16</span><br>record <code>2f847f857da2</code></div></header>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="1. Brief">
+**Goal.** record the migrated homepage as a board so project 4 has a worked example
+**Scope.** no content is rewritten
+**Gates.** board\_gate.py index, npm run check:all
+**Done means.** board approved, gate passes, Artifact built
+**Out of scope.** any content edit
+**Primary keyword.** blue staffy puppies for sale uk
+**Strategy: Record the migrated page as built.** Why: project 2 ports the operating system, it does not change the site
+**CTA plan.** One every 400–1200 words, to \#contact; anchors: Reserve a puppy; the site-wide CTA band is shown.
+**Tool.** none — evidence: this board records an existing page and introduces no interactive tool; a tool pick here would be a change project 2 is not making Trade-off: project 4 revisits it
+**Schema plan.** offer model none; types: LocalBusiness, WebSite, BreadcrumbList.
+
+**Angles considered**
+| Angle | Hook | Why not / trade-off |
+|---|---|---|
+| ⭐ Record the migrated page as built | the board mirrors the homepage exactly as Foundation migrated it | **taken** — trade-off: the board carries no research depth until project 4 revisits it |
+| Propose a homepage rebuild | re-plan the homepage around the component kit | project 3 owns the component kit and project 2 rewrites no content |
+
+**Research used**
+| Source | Fetched |
+|---|---|
+| dist/index.html | 2026-09-16 |
+</script>
+<script type="text/markdown" data-title="2. H1 and meta">
+**H1** — the page's own promise
+
+⭐ <label><input type="radio" name="h1" value="0" checked> Secure Your blue Staffy puppies for sale UK: Safe Delivery &amp; Verified Papers. <span class="why">(77 chars)</span></label>  
+<label><input type="radio" name="h1" value="1"> Blue Staffy Puppies for Sale UK: Verified Papers and Safe Delivery <span class="why">(66 chars)</span></label>  
+<label><input type="radio" name="h1" value="2"> Reserve a Blue Staffy Puppy in the UK with Papers and Safe Delivery <span class="why">(67 chars)</span></label>  
+<label><input type="radio" name="h1" value="3"> Blue Staffy Puppies for Sale UK from a Glasgow Kennel <span class="why">(53 chars)</span></label>  
+<label><input type="radio" name="h1" value="4"> Buy a Blue Staffy Puppy in the UK: Papers, Health Checks, Safe Delivery <span class="why">(71 chars)</span></label>  
+
+**Title tag** — ceiling 70 characters
+
+⭐ <label><input type="radio" name="meta-title" value="0" checked> Blue Staffy Puppies For Sale UK | Papers | BlueStaffyUK <span class="why">(55 chars)</span></label>  
+<label><input type="radio" name="meta-title" value="1"> Blue Staffy Puppies UK | Verified Papers &amp; Safe Delivery <span class="why">(56 chars)</span></label>  
+<label><input type="radio" name="meta-title" value="2"> Buy Blue Staffy Puppies UK | Glasgow Kennel | BlueStaffyUK <span class="why">(58 chars)</span></label>  
+
+**Meta description** — band 140–160 characters
+
+⭐ <label><input type="radio" name="meta-description" value="0" checked> Blue Staffy puppies for sale UK from our Glasgow kennel, with verified papers, health checks and safe UK-wide delivery. Reserve your puppy today. <span class="why">(145 chars)</span></label>  
+<label><input type="radio" name="meta-description" value="1"> Browse blue Staffy puppies for sale in the UK. Verified papers, health-checked pups, a refundable deposit and safe delivery to your door across Britain. <span class="why">(152 chars)</span></label>  
+<label><input type="radio" name="meta-description" value="2"> Our blue Staffordshire Bull Terrier puppies come with verified papers and health checks, and we deliver safely across the UK. See the litters available now. <span class="why">(156 chars)</span></label>  
+</script>
+<script type="text/markdown" data-title="3. Outline">
+<pre class="tree">H1  Secure Your blue Staffy puppies for sale UK: Safe Delivery &amp; Verified Papers.
+├─ H2 01  Key Takeaways: The BluestaffyUK Promise   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 02  Hi, I Am Sharine Amelia   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 03  Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 04  Why Choose a Pure-bred Staffy Pup for Sale from BlueStaffyUK.uk?   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 05  Understanding the Wonderful Blue Staffordshire Bull Terrier Breed   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 06  Blue Staffy News: Join 500+ Readers!   [A · mandatory · standard · EEBP · 0–0w]   <span class="hit">⚠ exact match with /buy-blue-staffy-puppies-uk/</span>
+├─ H2 07  Our Happy Blue Staffy Owners Speak   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 08  Our Commitment to Excellence in Blue Staffy Breeding   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 09  Meet the Proud Parents of Our Blue Staffy Puppies   [A · mandatory · standard · EEBP · 0–0w]   <span class="hit">⚠ 5-word overlap with /uk-locations/staffy-breeding-dogs-glasgow/</span>
+├─ H2 10  Our Commitment to the Health of Our Blue Staffy Puppies   [A · mandatory · standard · EEBP · 0–0w]   <span class="hit">⚠ 5-word overlap with /uk-locations/staffy-breeding-dogs-glasgow/</span>
+├─ H2 11  🚚 Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 12  Your Questions About Blue Staffies, Answered   [A · mandatory · standard · EEBP · 0–0w]
+├─ H2 13  How to Buy Your Blue Staffy Puppy   [A · mandatory · standard · EEBP · 0–0w · CTA×1]   <span class="hit">⚠ 5-word overlap with /uk-blue-staffy-puppy-buying-guide/</span>
+├─ H2 14  Available Blue Staffy Puppies   [A · mandatory · standard · EEBP · 0–0w]   <span class="hit">⚠ exact match with /available-puppies/</span></pre>
+
+**5 heading(s) collide with a live page.** Rewrite them before approving; the gate fails on any.
+</script>
+<script type="text/markdown" data-title="3b. Image plan">
+| Section | Slot | Kind | Required | Prompt |
+|---|---|---|---|---|
+| 01 Key Takeaways: The BluestaffyUK Promise | — | — | — | _no image slot_ |
+| 02 Hi, I Am Sharine Amelia | — | — | — | _no image slot_ |
+| 03 Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes | — | — | — | _no image slot_ |
+| 04 Why Choose a Pure-bred Staffy Pup for Sale from BlueStaffyUK.uk? | — | — | — | _no image slot_ |
+| 05 Understanding the Wonderful Blue Staffordshire Bull Terrier Breed | — | — | — | _no image slot_ |
+| 06 Blue Staffy News: Join 500+ Readers! | — | — | — | _no image slot_ |
+| 07 Our Happy Blue Staffy Owners Speak | — | — | — | _no image slot_ |
+| 08 Our Commitment to Excellence in Blue Staffy Breeding | — | — | — | _no image slot_ |
+| 09 Meet the Proud Parents of Our Blue Staffy Puppies | — | — | — | _no image slot_ |
+| 10 Our Commitment to the Health of Our Blue Staffy Puppies | — | — | — | _no image slot_ |
+| 11 🚚 Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep | — | — | — | _no image slot_ |
+| 12 Your Questions About Blue Staffies, Answered | — | — | — | _no image slot_ |
+| 13 How to Buy Your Blue Staffy Puppy | — | — | — | _no image slot_ |
+| 14 Available Blue Staffy Puppies | — | — | — | _no image slot_ |
+
+Every image slot the outline plans. Infographic prompts are the generation pack; photo prompts say what the photo has to show. Page-level files and alts are in block 7.
+</script>
+<script type="text/markdown" data-title="4. Distribution">
+| Section | Primary | LSI | Long-tail | Brand | Geo | Voice | Compare | Solution | Transact | Words |
+|---|---|---|---|---|---|---|---|---|---|---|
+| key-takeaways-the-bluestaffyuk-promise | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| hi-i-am-sharine-amelia | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| meet-our-affordable-blue-staffy-puppies-ready-for-their-forever-homes | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| why-choose-a-pure-bred-staffy-pup-for-sale-from-bluestaffyuk-uk | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| understanding-the-wonderful-blue-staffordshire-bull-terrier-breed | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| blue-staffy-news-join-500-readers | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| our-happy-blue-staffy-owners-speak | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| our-commitment-to-excellence-in-blue-staffy-breeding | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| meet-the-proud-parents-of-our-blue-staffy-puppies | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| our-commitment-to-the-health-of-our-blue-staffy-puppies | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| connecting-families-across-the-uk-we-ship-our-blue-staffy-puppies-to-your-doorstep | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| your-questions-about-blue-staffies-answered | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| how-to-buy-your-blue-staffy-puppy | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| available-blue-staffy-puppies | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+| **totals** | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0–0 |
+
+Headings: H1 1 · H2 14 · H3 0 · H4 0 · H5 0 · H6 0. Counts are ceilings, not floors.
+
+**Why each section is here**
+
+| Section | Group | Framework | Why | Source |
+|---|---|---|---|---|
+| 01 Key Takeaways: The BluestaffyUK Promise | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 02 Hi, I Am Sharine Amelia | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 03 Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 04 Why Choose a Pure-bred Staffy Pup for Sale from BlueStaffyUK.uk? | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 05 Understanding the Wonderful Blue Staffordshire Bull Terrier Breed | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 06 Blue Staffy News: Join 500+ Readers! | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 07 Our Happy Blue Staffy Owners Speak | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 08 Our Commitment to Excellence in Blue Staffy Breeding | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 09 Meet the Proud Parents of Our Blue Staffy Puppies | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 10 Our Commitment to the Health of Our Blue Staffy Puppies | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 11 🚚 Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 12 Your Questions About Blue Staffies, Answered | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 13 How to Buy Your Blue Staffy Puppy | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+| 14 Available Blue Staffy Puppies | MANDATORY | EEBP | present on the migrated WordPress page | dist/index.html (Foundation, verbatim migration) |
+</script>
+<script type="text/markdown" data-title="5. Entities">
+<div id="entity-graph"></div><p class="legend">colour = class · solid = ASSERTED · dashed = PROPOSED · red = BLOCKED (fails the board)</p>
+
+| Entity | 01 | 02 | 03 | 04 | 05 | 06 | 07 | 08 | 09 | 10 | 11 | 12 | 13 | 14 | Owner |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+</script>
+<script type="text/markdown" data-title="5b. The kit">
+<div class="opts kit"><div class="opt off"><span class="pill">hero</span><div class="nothumb">none</div><span class="why">this page wears no hero</span></div><div class="opt off"><span class="pill">dial</span><div class="nothumb">none</div><span class="why">this page wears no dial</span></div><div class="opt off"><span class="pill">rail</span><div class="nothumb">none</div><span class="why">this page wears no rail</span></div><div class="opt off"><span class="pill">toc</span><div class="nothumb">none</div><span class="why">this page wears no toc</span></div><div class="opt off"><span class="pill">table</span><div class="nothumb">none</div><span class="why">this page wears no table</span></div><div class="opt off"><span class="pill">stepper</span><div class="nothumb">none</div><span class="why">this page wears no stepper</span></div><div class="opt off"><span class="pill">faq</span><div class="nothumb">none</div><span class="why">this page wears no faq</span></div><div class="opt off"><span class="pill">takeaway</span><div class="nothumb">none</div><span class="why">this page wears no takeaway</span></div><div class="opt off"><span class="pill">newsletter</span><div class="nothumb">none</div><span class="why">this page places no newsletter</span></div></div>
+
+The page-level tuple, for reading. Picks happen in block 6; a shell that is wrong here is a record edit, not a radio.
+</script>
+<script type="text/markdown" data-title="6. Component options">
+### 01 · Key Takeaways: The BluestaffyUK Promise <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-key-takeaways-the-bluestaffyuk-promise" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 02 · Hi, I Am Sharine Amelia <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-hi-i-am-sharine-amelia" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 03 · Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-meet-our-affordable-blue-staffy-puppies-ready-for-their-forever-homes" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 04 · Why Choose a Pure-bred Staffy Pup for Sale from BlueStaffyUK.uk? <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-why-choose-a-pure-bred-staffy-pup-for-sale-from-bluestaffyuk-uk" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 05 · Understanding the Wonderful Blue Staffordshire Bull Terrier Breed <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-understanding-the-wonderful-blue-staffordshire-bull-terrier-breed" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 06 · Blue Staffy News: Join 500+ Readers! <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-blue-staffy-news-join-500-readers" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 07 · Our Happy Blue Staffy Owners Speak <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-our-happy-blue-staffy-owners-speak" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 08 · Our Commitment to Excellence in Blue Staffy Breeding <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-our-commitment-to-excellence-in-blue-staffy-breeding" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 09 · Meet the Proud Parents of Our Blue Staffy Puppies <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-meet-the-proud-parents-of-our-blue-staffy-puppies" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 10 · Our Commitment to the Health of Our Blue Staffy Puppies <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-our-commitment-to-the-health-of-our-blue-staffy-puppies" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 11 · 🚚 Connecting Families Across the UK: We Ship Our Blue Staffy Puppies to Your Doorstep <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-connecting-families-across-the-uk-we-ship-our-blue-staffy-puppies-to-your-doorstep" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 12 · Your Questions About Blue Staffies, Answered <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-your-questions-about-blue-staffies-answered" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 13 · How to Buy Your Blue Staffy Puppy <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-how-to-buy-your-blue-staffy-puppy" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+
+### 14 · Available Blue Staffy Puppies <span class="pill">standard</span>
+
+<div class="opts"><div class="opt"><div class="nothumb">ledger default</div><span class="why">the default a standard section gets — nothing to pick</span></div></div>
+<textarea class="note" name="note-available-blue-staffy-puppies" placeholder="Note for this section (optional)">standard shape — no component choice</textarea>
+</script>
+<script type="text/markdown" data-title="7. Asset slots">
+<div class="slots"></div>
+</script>
+<script type="text/markdown" data-title="8. Approve">
+<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button><span class="status" id="approve-status">Approved as it stands.</span></div>
+
+Writes your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it.
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc');
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b){
+    var sec=document.createElement('section');sec.className='sec';
+    var h2=document.createElement('h2');h2.textContent=b.getAttribute('data-title');sec.appendChild(h2);
+    var body=document.createElement('div');body.className='md';
+    body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\n+|\s+$/g,'')):b.textContent;
+    sec.appendChild(body);doc.appendChild(sec);
+  });
+  var G={"nodes": [{"data": {"id": "sec:key-takeaways-the-bluestaffyuk-promise", "label": "01 Key Takeaways: The BluestaffyUK Pr", "kind": "section"}}, {"data": {"id": "sec:hi-i-am-sharine-amelia", "label": "02 Hi, I Am Sharine Amelia", "kind": "section"}}, {"data": {"id": "sec:meet-our-affordable-blue-staffy-puppies-ready-for-their-forever-homes", "label": "03 Meet Our Affordable Blue Staffy Pu", "kind": "section"}}, {"data": {"id": "sec:why-choose-a-pure-bred-staffy-pup-for-sale-from-bluestaffyuk-uk", "label": "04 Why Choose a Pure-bred Staffy Pup ", "kind": "section"}}, {"data": {"id": "sec:understanding-the-wonderful-blue-staffordshire-bull-terrier-breed", "label": "05 Understanding the Wonderful Blue S", "kind": "section"}}, {"data": {"id": "sec:blue-staffy-news-join-500-readers", "label": "06 Blue Staffy News: Join 500+ Reader", "kind": "section"}}, {"data": {"id": "sec:our-happy-blue-staffy-owners-speak", "label": "07 Our Happy Blue Staffy Owners Speak", "kind": "section"}}, {"data": {"id": "sec:our-commitment-to-excellence-in-blue-staffy-breeding", "label": "08 Our Commitment to Excellence in Bl", "kind": "section"}}, {"data": {"id": "sec:meet-the-proud-parents-of-our-blue-staffy-puppies", "label": "09 Meet the Proud Parents of Our Blue", "kind": "section"}}, {"data": {"id": "sec:our-commitment-to-the-health-of-our-blue-staffy-puppies", "label": "10 Our Commitment to the Health of Ou", "kind": "section"}}, {"data": {"id": "sec:connecting-families-across-the-uk-we-ship-our-blue-staffy-puppies-to-your-doorstep", "label": "11 \ud83d\ude9a Connecting Families Across the U", "kind": "section"}}, {"data": {"id": "sec:your-questions-about-blue-staffies-answered", "label": "12 Your Questions About Blue Staffies", "kind": "section"}}, {"data": {"id": "sec:how-to-buy-your-blue-staffy-puppy", "label": "13 How to Buy Your Blue Staffy Puppy", "kind": "section"}}, {"data": {"id": "sec:available-blue-staffy-puppies", "label": "14 Available Blue Staffy Puppies", "kind": "section"}}], "edges": []};
+  var el=document.getElementById('entity-graph');
+  // Two palettes, not one: a graph drawn in ink-dark fills disappears on the dark ground
+  // and a graph drawn in light fills disappears on the light one. Every fill below clears
+  // 3:1 against its own theme's --ground, which is why the light section node is a mid
+  // clay-brown rather than the cream the page uses for card beds.
+  var PAL={
+    light:{Organism:'#2D6A4F',Documentation:'#6b4fa0',Health:'#c8472f',Commerce:'#8a6508',Logistics:'#1f6f8b',Place:'#7a5c3e',People:'#8b1e5f',Method:'#3d7a4a',Unknown:'#6b736e',section:'#8c7a5e',edge:'#6f7a74',blocked:'#c8472f',border:'#3A3227',ink:'#1E2A24'},
+    dark:{Organism:'#6FB48F',Documentation:'#b09ae0',Health:'#F08A78',Commerce:'#d9b44a',Logistics:'#7fc3dc',Place:'#c3a483',People:'#e08ab6',Method:'#8fd3a4',Unknown:'#9aa39d',section:'#7d8f84',edge:'#8d9a93',blocked:'#F08A78',border:'#D8DEDA',ink:'#ECEBE3'}
+  };
+  function darkMode(){
+    var a=document.documentElement.getAttribute('data-theme');
+    if(a==='dark')return true;
+    if(a==='light')return false;
+    return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+  function graphStyle(){
+    var p=PAL[darkMode()?'dark':'light'];
+    return [{selector:'node',style:{'label':'data(label)','font-size':10,'width':18,'height':18,'background-color':function(n){return p[n.data('kind')]||p.Unknown},'color':p.ink,'text-wrap':'wrap','text-max-width':110}},
+            {selector:'node[kind="section"]',style:{'shape':'round-rectangle','width':60,'height':22,'font-weight':'bold','border-width':1,'border-color':p.border}},
+            {selector:'edge',style:{'width':1.5,'line-color':p.edge,'curve-style':'bezier'}},
+            {selector:'edge[auth="PROPOSED"]',style:{'line-style':'dashed'}},
+            {selector:'edge[auth="BLOCKED"]',style:{'line-color':p.blocked,'width':3}}];
+  }
+  if(el&&window.cytoscape){
+    var cy=cytoscape({container:el,elements:G.nodes.concat(G.edges),layout:{name:'cose',animate:false,padding:20},style:graphStyle()});
+    if(window.matchMedia){
+      var mq=window.matchMedia('(prefers-color-scheme: dark)');
+      var repaint=function(){cy.style(graphStyle());};
+      if(mq.addEventListener)mq.addEventListener('change',repaint);else if(mq.addListener)mq.addListener(repaint);
+    }
+  }
+  var RECORD_HASH="2f847f857da2aa49a00c5b7143c8ce84d343dccf55fda4994206ba04978bd78b";var BOARD_DOC="boards/index";
+  var SIGNATURE_SECTIONS=[];
+  var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
+  if(!window.claude||!window.claude.use){st.textContent='Open this board inside claude.ai to approve it.';return;}
+  window.claude.use("db").then(function(db){
+    if(!db){st.textContent='Approval needs the board database, which this view cannot reach.';return;}
+    var ref=db.doc(BOARD_DOC);
+    ref.get().then(function(snap){
+      if(!snap||!snap.exists){return;}                 // absence is not an error: never approved
+      var d=snap.data()||{};                            // frozen body; undefined only when !exists
+      if(d.record_hash===RECORD_HASH){st.textContent='Approved '+(d.approved_at||'earlier')+'.';}
+      else{st.textContent='An earlier version of this board was approved — this record has changed since.';}
+    }).catch(function(e){st.textContent='Could not read the board database: '+(e&&e.code?e.code:'error')+'. Approve in chat.';});
+    btn.disabled=false;st.textContent=st.textContent.indexOf('Approved')===0?st.textContent:'Ready.';
+    btn.addEventListener('click',function(){
+      // A half-picked board is worse than an unapproved one: the build would start and
+      // then guess a component. Refuse the write and name the sections still open.
+      var missing=SIGNATURE_SECTIONS.filter(function(id){
+        return !document.querySelector('input[name="pick-'+id+'"]:checked');
+      });
+      if(missing.length){
+        st.textContent=missing.length+' section(s) still need a pick: '+missing.join(', ');
+        btn.disabled=false;return;
+      }
+      var h1=document.querySelector('input[name="h1"]:checked');
+      if(!h1){st.textContent='Pick an H1 before approving.';btn.disabled=false;return;}
+      var mt=document.querySelector('input[name="meta-title"]:checked'),
+          mdsc=document.querySelector('input[name="meta-description"]:checked');
+      if(!mt||!mdsc){st.textContent='Pick a title and a description before approving.';btn.disabled=false;return;}
+      var picks={},notes={};
+      document.querySelectorAll('input[name^="pick-"]:checked').forEach(function(i){picks[i.name.slice(5)]=i.value;});
+      // Every note box, empty included — "" is how a cleared note reaches the record.
+      document.querySelectorAll('textarea[name^="note-"]').forEach(function(t){notes[t.name.slice(5)]=t.value.trim();});
+      var rec={approved_at:new Date().toISOString(),h1:parseInt(h1.value,10),
+               meta:{title:parseInt(mt.value,10),description:parseInt(mdsc.value,10)},
+               picks:picks,notes:notes,canvas_version:null,record_hash:RECORD_HASH};
+      btn.disabled=true;st.textContent='Saving…';
+      ref.set(rec).then(function(){st.textContent='Approved '+rec.approved_at+'. Claude reads this back before building.';})
+        .catch(function(e){btn.disabled=false;st.textContent='Could not save: '+(e&&e.code?e.code:'error')+'. Try again, or approve in chat.';});
+    });
+  }).catch(function(e){st.textContent='Board database unavailable: '+(e&&e.code?e.code:'error')+'. Approve in chat.';});
+})();
+</script>
