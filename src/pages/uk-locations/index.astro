@@ -1,18 +1,29 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import locations from '../../../data/locations.json';
+import locationsJson from '../../../data/locations.json';
+import { SITE, type LocationRow } from '../../lib/site';
 
-const SUFFIXES = [' - Blue Staffy UK: Your Trusted UK Blue Staffy Breeders.', ' | BlueStaffyUK'];
-const clean = (title: string) => SUFFIXES.reduce((t, s) => (t.endsWith(s) ? t.slice(0, -s.length) : t), title).trim();
-const label = (l: { h1: string; title: string }) => l.h1 || clean(l.title);
+const locations = locationsJson as LocationRow[];
+/** Legacy Rank Math appended the brand to every title, in a few punctuation variants. */
+const BRAND_SUFFIX = /\s*[|\-–]\s*(Blue\s*Staffy\s*UK|BlueStaffyUK)(:.*)?$/i;
+const clean = (title: string) => {
+  let t = title.trim();
+  for (let next = t.replace(BRAND_SUFFIX, '').trim(); next !== t; next = t.replace(BRAND_SUFFIX, '').trim()) t = next;
+  return t;
+};
+const titleCase = (s: string) => s.replace(/\S+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1));
+const label = (l: LocationRow) => titleCase(l.h1 || clean(l.title));
 
-const sorted = [...locations].sort((a, b) => a.city.localeCompare(b.city, 'en-GB'));
+const sorted = [...locations].sort((a, b) =>
+  a.city.localeCompare(b.city, 'en-GB') || a.slug.localeCompare(b.slug, 'en-GB'));
+
+const description = 'Blue Staffy puppies for sale across the UK from Blue Staffy UK in Glasgow: home delivery by DEFRA-approved transport priced by distance, or collection in Glasgow.';
 ---
-<BaseLayout title="Blue Staffy Puppies by UK Location | Blue Staffy UK" description="Find Blue Staffy puppies for sale near you. Blue Staffy UK delivers KC-registered Staffordshire Bull Terrier puppies from Glasgow to every UK city and county." canonical="/uk-locations/">
+<BaseLayout title="Blue Staffy Puppies by UK Location | Blue Staffy UK" description={description} canonical="/uk-locations/">
   <section class="container container-text">
     <h1>Blue Staffy Puppies by UK Location</h1>
-    <p>We are based in Glasgow and deliver across the whole of the UK. Choose your nearest city for local details.</p>
-    <ul style="columns:2;gap:24px">
+    <p>We are based in Glasgow. {SITE.delivery_note}, £{SITE.delivery_min_gbp} to £{SITE.delivery_max_gbp}, or collect from us in Glasgow after a refundable £{SITE.deposit_gbp} deposit. Choose your nearest area below.</p>
+    <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:8px 24px;list-style:none;padding:0">
       {sorted.map((l) => <li><a href={`/uk-locations/${l.slug}/`}>{label(l)}</a></li>)}
     </ul>
   </section>

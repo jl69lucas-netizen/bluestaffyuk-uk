@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PuppyList from '../../components/PuppyList.astro';
+import puppies from '../../../data/puppies.json';
+import pm from '../../../data/price-matrix.json';
+const avail = puppies.filter((p) => p.status === 'Available');
+const males = avail.filter((p) => p.sex === 'male').length;
+const description = `${avail.length} Blue Staffy puppies available now from Blue Staffy UK in Glasgow: ${males} males at £${pm.male_gbp.toLocaleString('en-GB')} and ${avail.length - males} females at £${pm.female_gbp.toLocaleString('en-GB')}, with UK-wide delivery.`;
+---
+<BaseLayout title="Available Blue Staffy Puppies | Blue Staffy UK" description={description} canonical="/available-puppies/" crumbTitle="Available Puppies">
+  <PuppyList />
+</BaseLayout>

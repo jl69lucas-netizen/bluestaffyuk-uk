@@ -2,7 +2,8 @@ import json, pathlib
 from extract_wp import parse_page
 from extract_writers import (write_rich_page, write_locations, write_page_map,
                              astro_frontmatter, city_from_slug, SLUG_CITY,
-                             meta_dict, NOINDEX_PATHS, dedupe_legacy_schema, run)
+                             meta_dict, NOINDEX_PATHS, dedupe_legacy_schema, run,
+                             PUPPY_LIST_PAGES)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -186,3 +187,22 @@ def test_run_noindexes_stub_locations_and_thank_you(tmp_path):
     assert row["robots"] == "noindex, follow"
     astro = (out / "src/pages/thank-you-blue-staffy-puppies-journey/index.astro").read_text()
     assert '"robots": "noindex, follow"' in astro
+
+
+def _page_at(url_path):
+    page = parse_page(FIX / "birmingham.html", url_path)
+    page.kind = "rich"
+    return page
+
+
+def test_write_rich_page_emits_puppy_list_on_listed_pages(tmp_path):
+    for url_path in sorted(PUPPY_LIST_PAGES):
+        text = write_rich_page(_page_at(url_path), tmp_path / url_path.strip("/")).read_text()
+        depth = len([p for p in url_path.strip("/").split("/") if p]) + 1
+        assert "import PuppyList from '%scomponents/PuppyList.astro';" % ("../" * depth) in text
+        assert "  <PuppyList />\n</BaseLayout>" in text
+
+
+def test_write_rich_page_omits_puppy_list_elsewhere(tmp_path):
+    text = write_rich_page(_page_at("/blue-staffy-health-uk/"), tmp_path).read_text()
+    assert "PuppyList" not in text

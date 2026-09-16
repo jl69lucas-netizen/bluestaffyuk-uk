@@ -1,0 +1,18 @@
+---
+import puppies from '../../data/puppies.json';
+import pm from '../../data/price-matrix.json';
+import { SITE } from '../lib/site';
+const avail = puppies.filter((p) => p.status === 'Available');
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+---
+<section id="available-puppies" class="container" aria-labelledby="avail-h2">
+  <h2 id="avail-h2">Available Blue Staffy Puppies</h2>
+  <p>{avail.length} puppies available now. Males {gbp(pm.male_gbp)}, females {gbp(pm.female_gbp)}. {SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}, or collect in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit.</p>
+  <ul style="display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));list-style:none;padding:0">
+    {avail.map((p) => <li style="border:1px solid var(--color-rule);border-radius:8px;overflow:hidden">
+      <a href={`/available-puppies/${p.slug}/`}><img src={`/images/puppies/${p.slug}-card-800.webp`} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy for sale`} width="800" height="800" loading="lazy" decoding="async" /></a>
+      <div style="padding:12px 14px"><h3 style="margin:0 0 4px"><a href={`/available-puppies/${p.slug}/`}>{p.name}</a></h3>
+        <p style="margin:0">{p.sex === 'male' ? 'Male' : 'Female'} · {p.colour} · <strong>{gbp(p.price_gbp)}</strong></p></div>
+    </li>)}
+  </ul>
+</section>

@@ -38,3 +38,10 @@ export function crumbs(path: string, leafTitle: string): Crumb[] {
   });
   return out;
 }
+
+/** A row of data/locations.json, written by scripts/extract_writers.py:write_locations. */
+export interface LocationRow {
+  slug: string; city: string; title: string; h1: string; description: string;
+  canonical: string; robots: string; og_type: string; body_html: string;
+  word_count: number; schema: unknown[]; defects: string[];
+}

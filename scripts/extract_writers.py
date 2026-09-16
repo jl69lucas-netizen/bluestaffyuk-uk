@@ -82,6 +82,10 @@ def city_from_slug(slug):
 # thank-you page is a post-submit destination with no standalone search value.
 NOINDEX_PATHS = ["/thank-you-blue-staffy-puppies-journey/"]
 
+# Pages whose generated .astro also renders the live puppy list. These files are rewritten
+# by every `npm run extract`, so the component has to be emitted by the writer.
+PUPPY_LIST_PAGES = {"/", "/buy-blue-staffy-puppies-uk/"}
+
 
 def meta_dict(page):
     """Shared meta shape for the .astro frontmatter and the locations rows."""
@@ -299,12 +303,20 @@ def write_rich_page(page, out):
     f = d / "index.astro"
     depth = len([p for p in rel.split("/") if p]) + 1
     layout_rel = "../" * depth + "layouts/BaseLayout.astro"
-    f.write_text(astro_frontmatter(page, layout_rel) +
+    with_list = page.url_path in PUPPY_LIST_PAGES
+    frontmatter = astro_frontmatter(page, layout_rel)
+    if with_list:
+        frontmatter = frontmatter.replace(
+            "import BaseLayout from '%s';\n" % layout_rel,
+            "import BaseLayout from '%s';\nimport PuppyList from '%scomponents/PuppyList.astro';\n"
+            % (layout_rel, "../" * depth))
+    f.write_text(frontmatter +
                  "<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical} "
                  "robots={meta.robots} ogType={meta.ogType} schema={meta.schema} "
                  "crumbTitle={meta.h1 || meta.title}>\n"
                  "  <article class=\"container container-text prose-migrated\">\n"
-                 "    <Fragment set:html={body} />\n  </article>\n"
+                 "    <Fragment set:html={body} />\n  </article>\n" +
+                 ("  <PuppyList />\n" if with_list else "") +
                  "</BaseLayout>\n", encoding="utf-8")
     return f
 
