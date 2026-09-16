@@ -3,7 +3,7 @@ from extract_wp import parse_page
 from extract_writers import (write_rich_page, write_locations, write_page_map,
                              astro_frontmatter, city_from_slug, SLUG_CITY,
                              meta_dict, NOINDEX_PATHS, dedupe_legacy_schema, run,
-                             PUPPY_LIST_PAGES)
+                             PUPPY_LIST_PAGES, CONTACT_FORM_PAGES)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -206,6 +206,26 @@ def test_write_rich_page_emits_puppy_list_on_listed_pages(tmp_path):
 def test_write_rich_page_omits_puppy_list_elsewhere(tmp_path):
     text = write_rich_page(_page_at("/blue-staffy-health-uk/"), tmp_path).read_text()
     assert "PuppyList" not in text
+
+
+def test_write_rich_page_emits_contact_form_on_contact_page(tmp_path):
+    for url_path in sorted(CONTACT_FORM_PAGES):
+        text = write_rich_page(_page_at(url_path), tmp_path / url_path.strip("/")).read_text()
+        depth = len([p for p in url_path.strip("/").split("/") if p]) + 1
+        assert "import ContactForm from '%scomponents/ContactForm.astro';" % ("../" * depth) in text
+        assert "  <ContactForm />\n</BaseLayout>" in text
+
+
+def test_write_rich_page_omits_contact_form_elsewhere(tmp_path):
+    text = write_rich_page(_page_at("/blue-staffy-health-uk/"), tmp_path).read_text()
+    assert "ContactForm" not in text
+    text = write_rich_page(_page_at("/buy-blue-staffy-puppies-uk/"),
+                           tmp_path / "buy").read_text()
+    assert "ContactForm" not in text
+
+
+def test_contact_and_puppy_list_page_sets_are_disjoint():
+    assert not (PUPPY_LIST_PAGES & CONTACT_FORM_PAGES)
 
 
 def test_dedupe_prunes_refs_to_dropped_nodes():

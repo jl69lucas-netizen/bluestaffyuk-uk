@@ -1,0 +1,41 @@
+---
+import puppiesJson from '../../data/puppies.json';
+import { SITE, abs, type PuppyRow } from '../lib/site';
+const puppies = puppiesJson as PuppyRow[];
+const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
+const tsk = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || '';
+const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
+const action = live ? `https://formspree.io/f/${fid}` : '#contact';
+const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
+---
+<section id="contact" class="container container-text">
+  <h2>Enquire About a Puppy</h2>
+  <form method="POST" action={action} data-form="contact" data-live={String(live)} style="display:grid;gap:14px;max-width:560px">
+    <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
+    <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
+    <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <label style="display:grid;gap:4px">Your name <input name="name" required autocomplete="name" /></label>
+    <label style="display:grid;gap:4px">Email <input type="email" name="email" required autocomplete="email" /></label>
+    <label style="display:grid;gap:4px">Phone <input type="tel" name="phone" autocomplete="tel" /></label>
+    <label style="display:grid;gap:4px">Town or postcode <input name="location" autocomplete="postal-code" /></label>
+    <label style="display:grid;gap:4px">Which puppy? <select name="puppy" required>
+      <option value="">Choose…</option>
+      {puppies.filter((p) => p.status === 'Available').map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
+      <option value="collection-glasgow">Collection in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit</option>
+      <option value="waiting-list">Join the waiting list for the next litter</option>
+    </select></label>
+    <label style="display:grid;gap:4px">Message <textarea name="message" rows="5" required></textarea></label>
+    {tsk && <div class="cf-turnstile" data-sitekey={tsk}></div>}
+    <button type="submit" style="padding:12px 22px;border-radius:12px;border:0;background:var(--color-ink);color:#fff;font-weight:600">Send enquiry</button>
+    <p style="font-size:13px">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
+  </form>
+  {tsk && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+  <script is:inline>
+    (function () {
+      var f = document.querySelector('form[data-form="contact"]'); if (!f) return;
+      var want = new URLSearchParams(location.search).get('puppy');
+      if (want && f.puppy) { for (var i = 0; i < f.puppy.options.length; i++) if (f.puppy.options[i].value === want) f.puppy.selectedIndex = i; }
+      if (f.dataset.live !== 'true') f.addEventListener('submit', function (e) { e.preventDefault(); console.log('contact form (stub):', Object.fromEntries(new FormData(f))); alert('Form stub: set PUBLIC_FORMSPREE_ID to post for real.'); });
+    })();
+  </script>
+</section>

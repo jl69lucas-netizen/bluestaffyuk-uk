@@ -40,6 +40,6 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `$
     <div><h1>{h1}</h1>
       <p><strong>{gbp(p.price_gbp)}</strong> · {p.status}</p>
       <dl><dt>Sex</dt><dd>{sexLabel}</dd><dt>Colour</dt><dd>{p.colour}</dd><dt>Deposit</dt><dd>{gbp(SITE.deposit_gbp)}, refundable</dd><dt>Delivery</dt><dd>{SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}; or collect in Glasgow</dd></dl>
-      <p><a href="/uk-blue-staffy-breeders-contact/" style="display:inline-block;padding:10px 20px;background:var(--color-ink);color:#fff;border-radius:50px;text-decoration:none">Enquire about {p.name}</a></p></div>
+      <p><a href={`/uk-blue-staffy-breeders-contact/?puppy=${p.slug}#contact`} style="display:inline-block;padding:10px 20px;background:var(--color-ink);color:#fff;border-radius:50px;text-decoration:none">Enquire about {p.name}</a></p></div>
   </article>
 </BaseLayout>

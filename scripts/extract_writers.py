@@ -85,6 +85,11 @@ NOINDEX_PATHS = ["/thank-you-blue-staffy-puppies-journey/"]
 # Pages whose generated .astro also renders the live puppy list. These files are rewritten
 # by every `npm run extract`, so the component has to be emitted by the writer.
 PUPPY_LIST_PAGES = {"/", "/buy-blue-staffy-puppies-uk/"}
+CONTACT_FORM_PAGES = {"/uk-blue-staffy-breeders-contact/"}
+
+# (pages that get it, component name) — write_rich_page imports and emits each match,
+# in this order, just before </BaseLayout>.
+PAGE_COMPONENTS = ((PUPPY_LIST_PAGES, "PuppyList"), (CONTACT_FORM_PAGES, "ContactForm"))
 
 
 def meta_dict(page):
@@ -338,20 +343,21 @@ def write_rich_page(page, out):
     f = d / "index.astro"
     depth = len([p for p in rel.split("/") if p]) + 1
     layout_rel = "../" * depth + "layouts/BaseLayout.astro"
-    with_list = page.url_path in PUPPY_LIST_PAGES
+    components = [name for pages, name in PAGE_COMPONENTS if page.url_path in pages]
     frontmatter = astro_frontmatter(page, layout_rel)
-    if with_list:
+    if components:
+        imports = "".join("import %s from '%scomponents/%s.astro';\n" % (name, "../" * depth, name)
+                          for name in components)
         frontmatter = frontmatter.replace(
             "import BaseLayout from '%s';\n" % layout_rel,
-            "import BaseLayout from '%s';\nimport PuppyList from '%scomponents/PuppyList.astro';\n"
-            % (layout_rel, "../" * depth))
+            "import BaseLayout from '%s';\n%s" % (layout_rel, imports))
     f.write_text(frontmatter +
                  "<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical} "
                  "robots={meta.robots} ogType={meta.ogType} schema={meta.schema} "
                  "crumbTitle={meta.h1 || meta.title}>\n"
                  "  <article class=\"container container-text prose-migrated\">\n"
                  "    <Fragment set:html={body} />\n  </article>\n" +
-                 ("  <PuppyList />\n" if with_list else "") +
+                 "".join("  <%s />\n" % name for name in components) +
                  "</BaseLayout>\n", encoding="utf-8")
     return f
 
