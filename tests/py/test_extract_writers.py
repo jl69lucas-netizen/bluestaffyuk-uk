@@ -2,7 +2,7 @@ import json, pathlib
 from extract_wp import parse_page
 from extract_writers import (write_rich_page, write_locations, write_page_map,
                              astro_frontmatter, city_from_slug, SLUG_CITY,
-                             meta_dict, NOINDEX_PATHS)
+                             meta_dict, NOINDEX_PATHS, dedupe_legacy_schema, run)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -66,6 +66,7 @@ def test_nested_slug_layout_depth(tmp_path):
 
 def test_frontmatter_meta_is_valid_json_with_defaults():
     page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.defects.remove("stub")          # the stub rule is covered separately
     page.robots = ""; page.og_type = ""
     line = [l for l in astro_frontmatter(page, "x.astro").splitlines()
             if l.startswith("const meta = ")][0]
@@ -77,6 +78,7 @@ def test_frontmatter_meta_is_valid_json_with_defaults():
 
 def test_locations_row_has_og_type_and_robots_defaults(tmp_path):
     page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.defects.remove("stub")          # the stub rule is covered separately
     page.robots = ""; page.og_type = ""
     row = json.loads(write_locations([page], tmp_path).read_text())[0]
     assert row["robots"] == "index, follow" and row["og_type"] == "article"
@@ -94,6 +96,7 @@ def test_recount_refreshes_counts_and_clears_stub():
 def test_noindex_paths_override_old_robots():
     """The thank-you page must be noindex even though Rank Math tagged it index, follow."""
     page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.defects.remove("stub")          # isolate the path rule from the stub rule
     page.robots = "follow, index, max-snippet:-1"
     assert meta_dict(page)["robots"] == "follow, index, max-snippet:-1"
     page.canonical = NOINDEX_PATHS[0]
@@ -102,3 +105,84 @@ def test_noindex_paths_override_old_robots():
 
 def test_thank_you_page_is_in_noindex_paths():
     assert "/thank-you-blue-staffy-puppies-journey/" in NOINDEX_PATHS
+
+
+def test_dedupe_legacy_schema_drops_sitewide_entities():
+    """The sitewide entities Schema.astro emits itself must not arrive twice."""
+    schema = [{"@context": "https://schema.org", "@graph": [
+        {"@type": "WebSite", "@id": "/#website"},
+        {"@type": ["PetStore", "Organization"], "@id": "/#organization"},
+        {"@type": "BreadcrumbList", "itemListElement": []},
+        {"@type": "LocalBusiness", "name": "old"},
+        {"@type": "WebPage", "@id": "/#webpage", "name": "keep me"},
+        {"@type": "Article", "headline": "keep me too"},
+        {"@type": "VideoObject", "name": "clip"},
+        {"@type": "ImageObject", "url": "/images/x.webp"},
+    ]}]
+    out, dropped = dedupe_legacy_schema(schema)
+    assert dropped == 4
+    kept = [n["@type"] for n in out[0]["@graph"]]
+    assert kept == ["WebPage", "Article", "VideoObject", "ImageObject"]
+
+
+def test_dedupe_legacy_schema_drops_solo_top_level_block_and_keeps_faq():
+    schema = [{"@context": "https://schema.org", "@type": "WebSite", "url": ""},
+              {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": []}]
+    out, dropped = dedupe_legacy_schema(schema)
+    assert dropped == 1
+    assert [b["@type"] for b in out] == ["FAQPage"]
+
+
+def test_dedupe_legacy_schema_drops_block_left_with_empty_graph():
+    schema = [{"@context": "https://schema.org", "@graph": [{"@type": "WebSite"}]}]
+    out, dropped = dedupe_legacy_schema(schema)
+    assert dropped == 1 and out == []
+
+
+def test_meta_dict_includes_h1_and_noindexes_stubs():
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    assert meta_dict(page)["h1"] == page.h1
+    page.defects = [d for d in page.defects if d != "stub"]
+    page.canonical = "/uk-locations/somewhere/"
+    page.robots = "follow, index"
+    assert meta_dict(page)["robots"] == "follow, index"
+    page.defects.append("stub")
+    assert meta_dict(page)["robots"] == "noindex, follow"
+    assert page.refresh_flags.count("stub-noindexed") == 1
+    meta_dict(page)                      # idempotent: the flag is not appended twice
+    assert page.refresh_flags.count("stub-noindexed") == 1
+
+
+def test_rich_page_passes_crumb_title():
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.kind = "rich"; page.url_path = "/demo-page/"
+    text = write_rich_page(page, pathlib.Path(__import__("tempfile").mkdtemp())).read_text()
+    assert "crumbTitle={meta.h1 || meta.title}" in text
+
+
+THANK_YOU_HTML = """<!doctype html><html><head><title>Thanks</title>
+<meta name="description" content="Thanks for your message">
+<meta name="robots" content="follow, index, max-snippet:-1">
+<link rel="canonical" href="https://bluestaffyuk.uk/thank-you-blue-staffy-puppies-journey/">
+</head><body><div id="primary"><main><article><h1>Thank You</h1>
+<p>Your message about our blue Staffy puppies has reached us and we will reply shortly with
+the next steps, available litters and delivery options across the United Kingdom today.</p>
+</article></main></div></body></html>"""
+
+
+def test_run_noindexes_stub_locations_and_thank_you(tmp_path):
+    """End to end: a stub location row and the thank-you page both come out noindex."""
+    src, out = tmp_path / "src-site", tmp_path / "out"
+    for rel, body in (("uk-locations/blue-staffy-puppies-birmingham",
+                       (FIX / "birmingham.html").read_text()),
+                      ("thank-you-blue-staffy-puppies-journey", THANK_YOU_HTML)):
+        d = src / rel
+        d.mkdir(parents=True)
+        (d / "index.html").write_text(body, encoding="utf-8")
+    run(src, out)
+    row = [r for r in json.loads((out / "data/locations.json").read_text())
+           if r["slug"] == "blue-staffy-puppies-birmingham"][0]
+    assert "stub" in row["defects"]
+    assert row["robots"] == "noindex, follow"
+    astro = (out / "src/pages/thank-you-blue-staffy-puppies-journey/index.astro").read_text()
+    assert '"robots": "noindex, follow"' in astro

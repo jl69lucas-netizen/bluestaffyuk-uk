@@ -1,14 +1,15 @@
 ---
 import { SITE, NAV } from '../lib/site';
+const here = Astro.url.pathname;
 ---
-<header class="site-header" style="position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--color-rule);height:var(--hdr)">
-  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;height:100%">
+<header class="site-header" style="position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--color-rule);min-height:var(--hdr)">
+  <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:var(--hdr)">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:600">
-      <img src={SITE.logo} alt={`${SITE.site_name} logo`} width="44" height="44" />
+      <img src={SITE.logo} alt={`${SITE.site_name} logo`} width="44" height="44" decoding="async" />
       <span>{SITE.site_name}</span>
     </a>
     <nav aria-label="Main"><ul style="display:flex;gap:18px;list-style:none;margin:0;padding:0;flex-wrap:wrap">
-      {NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      {NAV.map((n) => <li><a href={n.href} aria-current={n.href === here ? 'page' : undefined}>{n.label}</a></li>)}
     </ul></nav>
   </div>
 </header>

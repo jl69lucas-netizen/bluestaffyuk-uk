@@ -6,80 +6,11 @@
     "h1": "blue staffies Newcastle under Lyme",
     "description": "blue staffies Newcastle under Lyme",
     "canonical": "/uk-locations/blue-staffies-newcastle-under-lyme/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>blue staffies Newcastle under Lyme</p>\n",
     "word_count": 5,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffies-newcastle-under-lyme/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffies-newcastle-under-lyme/",
-                  "name": "blue staffies Newcastle under Lyme"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffies-newcastle-under-lyme/#local-business",
-        "name": "Blue Staffy Puppies for Sale Newcastle-under-Lyme | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffies-newcastle-under-lyme/",
-        "description": "KC-registered Blue Staffy puppies delivered to Newcastle-under-Lyme. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Newcastle-under-Lyme"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -95,76 +26,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Aberdeen, Scotland</h1>\n<p>Aberdeen families — BlueStaffyUK.uk are Scotland's most trusted ethical Blue Staffy breeders. Our Staffordshire Bull Terrier puppies are family-raised, health-tested, and ready to become your next best friend. We offer delivery direct to Aberdeen and across Aberdeenshire.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Aberdeen</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Aberdeen</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Aberdeen, Westhill, Inverurie, Portlethen, Stonehaven, Dyce, Bridge of Don, and across Aberdeenshire.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Aberdeen Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Aberdeen.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Aberdeen, Inverurie, Westhill, Portlethen, Stonehaven and all surrounding areas — so no matter where in Scotland you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Aberdeen</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Aberdeen?</h3>\n<p class=\"bsuk-faq-a\">Yes — we provide safe, stress-free DEFRA-approved transport to Aberdeen. We also offer a FREE train station handover at Aberdeen Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What health tests do your Blue Staffies have?</h3>\n<p class=\"bsuk-faq-a\">All parent dogs are tested for L-2-HGA and HC-HSF4. Puppies are vet-checked, microchipped, vaccinated, and dewormed before leaving us.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What is the price of a Blue Staffy puppy in Aberdeen?</h3>\n<p class=\"bsuk-faq-a\">Our Blue Staffy puppies are priced between £850–£1,200 depending on the puppy. KOBE is £850, KANE is £1,000, BETH is £1,100, and ALIS is £1,200. We believe in transparent, fair pricing that reflects our commitment to ethical breeding.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Can we visit the puppies before buying?</h3>\n<p class=\"bsuk-faq-a\">Due to high demand and biosecurity, we operate on an appointment basis. Contact us to arrange a viewing or video call with your chosen puppy.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Aberdeen?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 443,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-aberdeen/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-aberdeen/",
-                  "name": "Blue Staffy Puppies Aberdeen"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-aberdeen/#local-business",
-        "name": "Blue Staffy Puppies for Sale Aberdeen | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-aberdeen/",
-        "description": "KC-registered Blue Staffy puppies delivered to Aberdeen. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Aberdeen"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -174,80 +36,11 @@
     "h1": "",
     "description": "Blue Staffy Puppies Birmingham",
     "canonical": "/uk-locations/blue-staffy-puppies-birmingham/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>Blue Staffy Puppies Birmingham</p>\n",
     "word_count": 4,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-birmingham/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-birmingham/",
-                  "name": "Blue Staffy Puppies Birmingham"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-birmingham/#local-business",
-        "name": "Blue Staffy Puppies for Sale Birmingham | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-birmingham/",
-        "description": "KC-registered Blue Staffy puppies delivered to Birmingham. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Birmingham"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -260,80 +53,11 @@
     "h1": "Blue Staffy Puppies Bristol UK",
     "description": "Blue Staffy Puppies Bristol UK",
     "canonical": "/uk-locations/blue-staffy-puppies-bristol-uk/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-bristol-uk/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-bristol-uk/",
-                  "name": "Blue Staffy Puppies Bristol UK"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-bristol-uk/#local-business",
-        "name": "Blue Staffy Puppies for Sale Bristol | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-bristol-uk/",
-        "description": "KC-registered Blue Staffy puppies delivered to Bristol. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Bristol"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -349,76 +73,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Dundee, Scotland</h1>\n<p>Dundee is a city full of character — and our Blue Staffy puppies match that perfectly. BlueStaffyUK.uk are Scotland's ethical KC-aware Staffordshire Bull Terrier breeders, raising loyal, loving puppies in a home environment with full health screening. We deliver straight to your Dundee doorstep.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Dundee</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Dundee</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Dundee, Broughty Ferry, Monifieth, Perth, Arbroath, Forfar, and across the Tayside region.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Dundee Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Dundee.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Dundee, Perth, Arbroath, Forfar, Monifieth and all surrounding areas — so no matter where in Scotland you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Dundee</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Can you deliver a Blue Staffy to Dundee?</h3>\n<p class=\"bsuk-faq-a\">Yes — we offer DEFRA-approved ground transport to Dundee and a FREE train station handover at Dundee Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What age do your puppies leave for their new homes?</h3>\n<p class=\"bsuk-faq-a\">Puppies leave at 8 weeks of age or older, fully weaned, vet-checked, microchipped, and with their first vaccinations.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are Blue Staffies good for families in Dundee?</h3>\n<p class=\"bsuk-faq-a\">Absolutely. The Staffordshire Bull Terrier is one of the UK's most family-friendly breeds — playful, loyal, and great with children when properly socialised.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How do I reserve a Blue Staffy puppy?</h3>\n<p class=\"bsuk-faq-a\">Complete our online enquiry form, choose your preferred puppy (BETH, KANE, ALIS or KOBE), and we'll confirm availability and next steps within 24 hours.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Dundee?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 430,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-dundee/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-dundee/",
-                  "name": "Blue Staffy Puppies Dundee"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-dundee/#local-business",
-        "name": "Blue Staffy Puppies for Sale Dundee | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-dundee/",
-        "description": "KC-registered Blue Staffy puppies delivered to Dundee. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Dundee"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -432,76 +87,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Edinburgh, Scotland</h1>\n<p>Edinburgh families — your search for a loyal, loving Blue Staffy puppy ends here. BlueStaffyUK.uk are trusted, ethical breeders based in Scotland, raising Kennel Club-aware Staffordshire Bull Terriers with exceptional temperaments, full health testing, and a lifelong support guarantee.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Edinburgh</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Edinburgh</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Edinburgh, Leith, Morningside, Portobello, Corstorphine, Stockbridge, Newington, and all surrounding Lothian areas.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Edinburgh Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Edinburgh.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Edinburgh, Livingston, Dunfermline, Kirkcaldy, Musselburgh and all surrounding areas — so no matter where in Scotland you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Edinburgh</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Can you deliver a Blue Staffy puppy to Edinburgh?</h3>\n<p class=\"bsuk-faq-a\">Absolutely. We offer safe, DEFRA-approved ground transport delivery directly to Edinburgh, as well as a FREE train station handover at Edinburgh Waverley or Edinburgh Park.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are your Blue Staffy puppies health tested?</h3>\n<p class=\"bsuk-faq-a\">Yes — all our breeding dogs are tested for L-2-HGA and HC-HSF4, the two hereditary conditions specific to the Staffordshire Bull Terrier. Your puppy comes with vet check, microchip, and first vaccinations.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How much does a Blue Staffy puppy cost in Edinburgh?</h3>\n<p class=\"bsuk-faq-a\">Our Blue Staffy puppies are priced between £850–£1,200 depending on the puppy. KOBE is £850, KANE is £1,000, BETH is £1,100, and ALIS is £1,200. We never compromise on health or care to lower the price.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you offer a health guarantee?</h3>\n<p class=\"bsuk-faq-a\">Yes. We back every puppy with a health guarantee covering hereditary and congenital conditions. Full details are provided before purchase.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Edinburgh?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 452,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-edinburgh/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-edinburgh/",
-                  "name": "Blue Staffy Puppies Edinburgh"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-edinburgh/#local-business",
-        "name": "Blue Staffy Puppies for Sale Edinburgh | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-edinburgh/",
-        "description": "KC-registered Blue Staffy puppies delivered to Edinburgh. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Edinburgh"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -511,80 +97,11 @@
     "h1": "Blue staffy puppies for sale in Leicester",
     "description": "Blue staffy puppies for sale in Leicester",
     "canonical": "/uk-locations/blue-staffy-puppies-for-sale-in-leicester/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p><a href=\"https://www.freeads.co.uk/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/37190315/blue-staffy-puppies-for-sale/view\" rel=\"noopener\" target=\"_blank\">Blue staffy puppies for sale in Leicester</a></p>\n",
     "word_count": 7,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-for-sale-in-leicester/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-for-sale-in-leicester/",
-                  "name": "Blue staffy puppies for sale in Leicester"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-for-sale-in-leicester/#local-business",
-        "name": "Blue Staffy Puppies for Sale Leicester | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-for-sale-in-leicester/",
-        "description": "KC-registered Blue Staffy puppies delivered to Leicester. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Leicester"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -596,80 +113,11 @@
     "h1": "Blue Staffy Puppies For Sale Leeds",
     "description": "Blue Staffy Puppies For Sale Leeds",
     "canonical": "/uk-locations/blue-staffy-puppies-for-sale-leeds/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-for-sale-leeds/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-for-sale-leeds/",
-                  "name": "Blue Staffy Puppies For Sale Leeds"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-for-sale-leeds/#local-business",
-        "name": "Blue Staffy Puppies for Sale Leeds | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-for-sale-leeds/",
-        "description": "KC-registered Blue Staffy puppies delivered to Leeds. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Leeds"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -685,76 +133,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Hull, East Yorkshire</h1>\n<p>Hull families — BlueStaffyUK.uk brings ethically bred Blue Staffy puppies right to your doorstep. Our Staffordshire Bull Terriers are raised with love, fully health-tested, KC-aware, and come with lifelong breeder support. Whether you're in Hull city centre or the surrounding East Yorkshire area, we've got you covered.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Hull</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Hull</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Hull, Beverley, Hessle, Cottingham, Brough, Goole, Driffield, and across East Yorkshire.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Hull Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Hull.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Hull, Beverley, Hessle, Cottingham, Brough and all surrounding areas — so no matter where in East Yorkshire you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Hull</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Hull?</h3>\n<p class=\"bsuk-faq-a\">Yes — we deliver to Hull via DEFRA-approved transport and also offer a FREE handover at Hull Paragon Interchange railway station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are your Staffy puppies KC registered?</h3>\n<p class=\"bsuk-faq-a\">Our puppies are KC-aware bred — this means both parent dogs are health-tested to Kennel Club standards. We do not offer paper KC registration as standard but prioritise health above pedigree papers.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What health guarantees do you offer?</h3>\n<p class=\"bsuk-faq-a\">All puppies come with a health guarantee covering hereditary and congenital conditions. Full documentation is provided at the time of sale.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How do I put down a deposit?</h3>\n<p class=\"bsuk-faq-a\">Once we confirm a puppy is available, a non-refundable deposit secures your puppy. Bank transfer is our preferred payment method.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Hull?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 437,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-hull/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-hull/",
-                  "name": "Blue Staffy Puppies Hull"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-hull/#local-business",
-        "name": "Blue Staffy Puppies for Sale Hull | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-hull/",
-        "description": "KC-registered Blue Staffy puppies delivered to Hull. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Hull"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -768,76 +147,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Inverness &amp; the Highlands</h1>\n<p>Even in the Highlands, BlueStaffyUK.uk delivers. We are Scotland's trusted ethical Blue Staffy breeders — raising KC-aware Staffordshire Bull Terrier puppies with full health testing, early socialisation, and lifetime breeder support. Your perfect companion awaits, and we'll bring them right to you in Inverness.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Inverness</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Inverness</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Inverness, Nairn, Forres, Elgin, Dingwall, Beauly, and across the Scottish Highlands.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Inverness Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Inverness.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Inverness, Nairn, Forres, Elgin, Dingwall and all surrounding areas — so no matter where in Scotland you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Inverness</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Inverness?</h3>\n<p class=\"bsuk-faq-a\">Yes — we provide DEFRA-approved transport to Inverness and across the Highlands. We also offer a FREE train station handover at Inverness Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are there Blue Staffy breeders in the Highlands?</h3>\n<p class=\"bsuk-faq-a\">BlueStaffyUK.uk serve the entire Scottish Highlands from our base. We are one of the few ethical KC-aware breeders who actively deliver this far north.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How long does transport to Inverness take?</h3>\n<p class=\"bsuk-faq-a\">Our DEFRA-approved transporters plan the journey to ensure your puppy travels safely and comfortably. We keep you updated every step of the way.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What puppies do you have available?</h3>\n<p class=\"bsuk-faq-a\">Our current litter includes BETH, KANE, ALIS and KOBE — all Blue Staffordshire Bull Terriers. Fill in our form to check current availability.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Inverness?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 436,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-inverness/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-inverness/",
-                  "name": "Blue Staffy Puppies Inverness"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-inverness/#local-business",
-        "name": "Blue Staffy Puppies for Sale Inverness | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-inverness/",
-        "description": "KC-registered Blue Staffy puppies delivered to Inverness. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Inverness"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -847,80 +157,11 @@
     "h1": "",
     "description": "Blue Staffy Puppies London",
     "canonical": "/uk-locations/blue-staffy-puppies-london/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>Blue Staffy Puppies London</p>\n",
     "word_count": 4,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-london/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-london/",
-                  "name": "Blue Staffy Puppies London"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-london/#local-business",
-        "name": "Blue Staffy Puppies for Sale London | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-london/",
-        "description": "KC-registered Blue Staffy puppies delivered to London. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "London"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -933,80 +174,11 @@
     "h1": "Blue Staffy Puppies Manchester UK",
     "description": "Blue Staffy Puppies Manchester UK",
     "canonical": "/uk-locations/blue-staffy-puppies-manchester-uk/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>Blue Staffy Puppies Manchester UK</p>\n",
     "word_count": 5,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-manchester-uk/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-manchester-uk/",
-                  "name": "Blue Staffy Puppies Manchester UK"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-manchester-uk/#local-business",
-        "name": "Blue Staffy Puppies for Sale Manchester | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-manchester-uk/",
-        "description": "KC-registered Blue Staffy puppies delivered to Manchester. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Manchester"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -1022,76 +194,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Middlesbrough, Teesside</h1>\n<p>Middlesbrough and Teesside families — BlueStaffyUK.uk are your trusted ethical Blue Staffy breeders. We raise KC-aware Staffordshire Bull Terrier puppies in a loving home environment with full health testing, expert early socialisation, and DEFRA-approved delivery straight to your door in the Tees Valley.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Middlesbrough</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Middlesbrough</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Middlesbrough, Stockton-on-Tees, Hartlepool, Redcar, Darlington, Billingham, and across Teesside.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Middlesbrough Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Middlesbrough.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Middlesbrough, Stockton-on-Tees, Hartlepool, Redcar, Darlington and all surrounding areas — so no matter where in Teesside you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Middlesbrough</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Middlesbrough?</h3>\n<p class=\"bsuk-faq-a\">Yes — DEFRA-approved transport to Middlesbrough, plus a FREE handover at Middlesbrough Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What is the temperament of a Blue Staffy?</h3>\n<p class=\"bsuk-faq-a\">Blue Staffies are renowned for being gentle, loyal, and fantastic with families. They are intelligent, eager to please, and thrive on human companionship.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are your puppies health tested?</h3>\n<p class=\"bsuk-faq-a\">Yes — all parent dogs are screened for L-2-HGA and HC-HSF4. Puppies are vet-checked, microchipped, and vaccinated before collection or delivery.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How do I start the process?</h3>\n<p class=\"bsuk-faq-a\">Fill in our online enquiry form, select your preferred puppy (BETH, KANE, ALIS or KOBE), and we'll be in touch within 24 hours.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Middlesbrough?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 416,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-middlesbrough/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-middlesbrough/",
-                  "name": "Blue Staffy Puppies Middlesbrough"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-middlesbrough/#local-business",
-        "name": "Blue Staffy Puppies for Sale Middlesbrough | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-middlesbrough/",
-        "description": "KC-registered Blue Staffy puppies delivered to Middlesbrough. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Middlesbrough"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -1105,76 +208,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Oxford, Oxfordshire</h1>\n<p>Oxford families and students alike — BlueStaffyUK.uk are the UK's most trusted ethical Blue Staffy breeders. We breed KC-aware, health-tested Staffordshire Bull Terrier puppies in a caring home environment and deliver them safely to Oxford and across Oxfordshire, Berkshire, and the Thames Valley.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Oxford</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Oxford</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Oxford, Abingdon, Didcot, Witney, Banbury, Bicester, Kidlington, and across Oxfordshire.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Oxford Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Oxford.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Oxford, Abingdon, Didcot, Witney, Banbury and all surrounding areas — so no matter where in Oxfordshire you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Oxford</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Oxford?</h3>\n<p class=\"bsuk-faq-a\">Yes — DEFRA-approved ground transport to Oxford, plus a FREE handover at Oxford Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are Blue Staffies allowed in rented properties in Oxford?</h3>\n<p class=\"bsuk-faq-a\">This depends on your tenancy agreement. We recommend checking with your landlord. Blue Staffies are not a banned breed under the Dangerous Dogs Act 1991.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What is the difference between a Blue Staffy and a Blue Nose Pitbull?</h3>\n<p class=\"bsuk-faq-a\">The Staffordshire Bull Terrier is a UK-bred, KC-recognised breed. Pitbulls are banned in the UK under the Dangerous Dogs Act. Our dogs are 100% purebred Staffordshire Bull Terriers.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How do I reserve a puppy in Oxford?</h3>\n<p class=\"bsuk-faq-a\">Use our online form, select BETH, KANE, ALIS or KOBE, and we'll confirm availability and next steps within 24 hours. A deposit secures your puppy.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Oxford?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 440,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-oxford/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-oxford/",
-                  "name": "Blue Staffy Puppies Oxford"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-oxford/#local-business",
-        "name": "Blue Staffy Puppies for Sale Oxford | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-oxford/",
-        "description": "KC-registered Blue Staffy puppies delivered to Oxford. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Oxford"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -1184,80 +218,11 @@
     "h1": "",
     "description": "Blue Staffy Puppies South Yorkshire",
     "canonical": "/uk-locations/blue-staffy-puppies-south-yorkshire/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-south-yorkshire/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-south-yorkshire/",
-                  "name": "Blue Staffy Puppies South Yorkshire"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-south-yorkshire/#local-business",
-        "name": "Blue Staffy Puppies for Sale South Yorkshire | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-south-yorkshire/",
-        "description": "KC-registered Blue Staffy puppies delivered to South Yorkshire. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "South Yorkshire"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -1274,76 +239,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in Sunderland, Tyne &amp; Wear</h1>\n<p>Sunderland families looking for a Blue Staffy puppy — look no further. BlueStaffyUK.uk are the UK's ethical Staffordshire Bull Terrier breeders, delivering health-tested, family-raised Blue Staffy puppies to Sunderland and across Tyne and Wear. Our puppies are bred for temperament, health, and loyalty.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to Sunderland</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to Sunderland</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to Sunderland, Washington, Houghton-le-Spring, Seaham, Chester-le-Street, Durham, and across Tyne and Wear.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your Sunderland Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in Sunderland.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to Sunderland, Washington, Durham, Gateshead, South Shields and all surrounding areas — so no matter where in Tyne and Wear you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in Sunderland</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to Sunderland?</h3>\n<p class=\"bsuk-faq-a\">Yes — we provide DEFRA-approved transport to Sunderland and a FREE train station handover at Sunderland Railway Station.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are Blue Staffies popular in the North East?</h3>\n<p class=\"bsuk-faq-a\">Absolutely. The Staffordshire Bull Terrier is one of the most loved family dogs across the North East of England, known for their loyalty, affection, and robust nature.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How much does a Blue Staffy puppy cost in Sunderland?</h3>\n<p class=\"bsuk-faq-a\">Our puppies are priced between £1,000–£1,100. We offer transparent pricing with no hidden fees.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What does a puppy package include?</h3>\n<p class=\"bsuk-faq-a\">Your puppy comes with vet health check, microchip, first vaccinations, deworming/defleaing, relevant paperwork, and a puppy pack to help them settle into their new home.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to Sunderland?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 431,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-sunderland/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-sunderland/",
-                  "name": "Blue Staffy Puppies Sunderland"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-sunderland/#local-business",
-        "name": "Blue Staffy Puppies for Sale Sunderland | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-sunderland/",
-        "description": "KC-registered Blue Staffy puppies delivered to Sunderland. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Sunderland"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -1367,62 +263,12 @@
             "openingHoursSpecification": []
           },
           {
-            "@type": "Organization",
-            "@id": "/#organization",
-            "name": "Blue Staffy UK: Your Trusted UK Blue Staffy Breeders.",
-            "logo": {
-              "@type": "ImageObject",
-              "url": "/images/blue-staffy-uk-official-logo0.png"
-            }
-          },
-          {
-            "@type": "WebSite",
-            "@id": "/#website",
-            "url": "",
-            "name": "Blue Staffy UK: Your Trusted UK Blue Staffy Breeders.",
-            "alternateName": "UK’s Trusted Staffy Source",
-            "publisher": {
-              "@id": "/#organization"
-            },
-            "inLanguage": "en-GB"
-          },
-          {
             "@type": "ImageObject",
             "@id": "/images/blue-staffy-puppies-near-me-uk-available.webp",
             "url": "/images/blue-staffy-puppies-near-me-uk-available.webp",
             "width": "200",
             "height": "200",
             "inLanguage": "en-GB"
-          },
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-uk/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-uk/",
-                  "name": "UK Cities"
-                }
-              }
-            ]
           },
           {
             "@type": "WebPage",
@@ -1440,27 +286,6 @@
             "inLanguage": "en-GB",
             "breadcrumb": {
               "@id": "/uk-locations/blue-staffy-puppies-uk/#breadcrumb"
-            }
-          },
-          {
-            "url": "/uk-locations/blue-staffy-puppies-uk/",
-            "name": "Blue Staffy Puppies UK Delivered: Your Local Guide 2 Finding A Playful Staffy",
-            "description": "Searching for blue Staffy puppies uk ? BlueStaffyUK offers KC-registered Staffordshire Bull Terrier puppies with safe, UK-wide DEFRA-approved delivery to families in London, Birmingham, Manchester, and beyond.",
-            "@type": "PetStore",
-            "priceRange": "$$$",
-            "openingHoursSpecification": [],
-            "@id": "/uk-locations/blue-staffy-puppies-uk/#schema-1121",
-            "image": {
-              "@id": "/images/blue-staffy-puppies-near-me-uk-available.webp"
-            },
-            "mainEntityOfPage": {
-              "@id": "/uk-locations/blue-staffy-puppies-uk/#webpage"
-            },
-            "parentOrganization": {
-              "@id": "/#organization"
-            },
-            "location": {
-              "@id": "/uk-locations/blue-staffy-puppies-uk/#place"
             }
           }
         ]
@@ -1534,76 +359,7 @@
     "og_type": "article",
     "body_html": "<div class=\"bsuk-loc-wrap\">\n<div class=\"bsuk-loc-hero\">\n<h1>Blue Staffy Puppies For Sale in York, Yorkshire</h1>\n<p>York families searching for a Blue Staffy puppy — BlueStaffyUK.uk are the UK's most trusted ethical breeders. Our Staffordshire Bull Terriers are health-tested, KC-aware, and raised in a loving home environment. We deliver to York and all surrounding Yorkshire areas.</p>\n<a href=\"/#contact-form\">🐾 Reserve Your Puppy Today →</a>\n</div>\n<div class=\"bsuk-loc-badges\">\n<span class=\"bsuk-badge\">✅ KC-Aware Ethical Breeders</span>\n<span class=\"bsuk-badge\">🏥 Full Health Tested</span>\n<span class=\"bsuk-badge\">🚚 Delivery to York</span>\n<span class=\"bsuk-badge\">🐾 Family Raised Puppies</span>\n<span class=\"bsuk-badge\">💬 Lifetime Support</span>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Available Blue Staffy Puppies</h2>\n\n</div>\n<div class=\"bsuk-delivery-box\">\n<h3>🚚 Delivery Options to York</h3>\n<ul>\n<li><strong>Train Station Handover — FREE</strong> · We meet you at your nearest mainline station</li>\n<li><strong>Ground Transport — £100</strong> · DEFRA-approved delivery to your front door</li>\n<li><strong>Halfway Meet-up — £100</strong> · We meet you at a convenient midpoint location</li>\n</ul>\n<p>We deliver to York, Selby, Malton, Tadcaster, Pocklington, Stamford Bridge, and across North Yorkshire.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Why Choose BlueStaffyUK for Your York Puppy?</h2>\n<p>At BlueStaffyUK.uk, we are passionate about breeding Staffordshire Bull Terriers the right way. Every puppy in our litter is raised in our family home — never in a kennel or puppy farm. We focus on temperament, health, and socialisation from day one, so your new puppy arrives confident, healthy, and ready to bond with your family in York.</p>\n<p>Our breeding dogs undergo full health testing for L-2-HGA and HC-HSF4 — the two hereditary conditions specific to the Staffordshire Bull Terrier. Every puppy leaves us microchipped, vet-checked, vaccinated, and with a comprehensive puppy pack.</p>\n<p>We cover delivery to York, Selby, Malton, Tadcaster, Harrogate and all surrounding areas — so no matter where in Yorkshire you are, we can get your new puppy to you safely.</p>\n</div>\n<div class=\"bsuk-loc-section\">\n<h2>Frequently Asked Questions — Blue Staffy Puppies in York</h2>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Do you deliver Blue Staffy puppies to York?</h3>\n<p class=\"bsuk-faq-a\">Yes — we offer DEFRA-approved ground transport to York and a FREE train station handover at York Railway Station, one of the UK's busiest mainline stations.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 What makes BlueStaffyUK different from other breeders?</h3>\n<p class=\"bsuk-faq-a\">We are KC-aware ethical breeders with full health testing, transparent pricing, lifelong support, and years of experience. We never sell from puppy farms or third parties.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 Are Blue Staffies good with children in York?</h3>\n<p class=\"bsuk-faq-a\">Yes — the Staffordshire Bull Terrier was famously nicknamed 'the nanny dog' for their patience and love of children. With proper socialisation, they are excellent family pets.</p>\n</div>\n<div class=\"bsuk-faq-item\">\n<h3 class=\"bsuk-faq-q\">🐾 How do I enquire about a puppy?</h3>\n<p class=\"bsuk-faq-a\">Use our contact form, choose your preferred puppy from BETH, KANE, ALIS or KOBE, and we'll respond within 24 hours with availability and pricing details.</p>\n</div>\n</div>\n<div class=\"bsuk-cta-box\">\n<h2>Ready to Bring a Blue Staffy Home to York?</h2>\n<p>Complete our short enquiry form, choose your puppy, and we'll be in touch within 24 hours.</p>\n<a href=\"/#contact-form\">Start Your Enquiry →</a>\n</div>\n</div>\n",
     "word_count": 441,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/blue-staffy-puppies-york/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/blue-staffy-puppies-york/",
-                  "name": "Blue Staffy Puppies York"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/blue-staffy-puppies-york/#local-business",
-        "name": "Blue Staffy Puppies for Sale York | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/blue-staffy-puppies-york/",
-        "description": "KC-registered Blue Staffy puppies delivered to York. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "York"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -1613,80 +369,11 @@
     "h1": "",
     "description": "buy blue staffy puppy Coventry area",
     "canonical": "/uk-locations/buy-blue-staffy-puppy-coventry-area/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/buy-blue-staffy-puppy-coventry-area/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/buy-blue-staffy-puppy-coventry-area/",
-                  "name": "buy blue staffy puppy Coventry area"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/buy-blue-staffy-puppy-coventry-area/#local-business",
-        "name": "Blue Staffy Puppies for Sale Coventry | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/buy-blue-staffy-puppy-coventry-area/",
-        "description": "KC-registered Blue Staffy puppies delivered to Coventry. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Coventry"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -1703,76 +390,7 @@
     "og_type": "article",
     "body_html": "<div class=\"wp-block-uagb-container uagb-block-vlhuzyww alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-container uagb-block-ydecujex\">\n<div class=\"wp-block-uagb-info-box uagb-block-etxkgkh7 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h1 class=\"uagb-ifb-title\"><strong>Our Staffy Breeding Dogs Glasgow: Meet Your Future Puppy’s Parents</strong></h1></div><div class=\"uagb-ifb-desc\">\n<p>Explore our exceptional <strong>Staffy Breeding Dogs Glasgow</strong>, showcasing the healthy and loving foundation for your next family member.</p>\n</div><div class=\"uagb-ifb-separator\"></div><div class=\"uagb-ifb-button-wrapper wp-block-button\"><a class=\"uagb-infobox-cta-link wp-block-button__link\" href=\"#Staffies-adoption\" onclick=\"return true;\" rel=\"noopener noreferrer\" target=\"_blank\"><span class=\"uagb-inline-editing\">View Our Blue Staffy Pups</span><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M504.3 273.6l-112.1 104c-6.992 6.484-17.18 8.218-25.94 4.406c-8.758-3.812-14.42-12.45-14.42-21.1L351.9 288H32C14.33 288 .0002 273.7 .0002 255.1S14.33 224 32 224h319.9l0-72c0-9.547 5.66-18.19 14.42-22c8.754-3.809 18.95-2.075 25.94 4.41l112.1 104C514.6 247.9 514.6 264.1 504.3 273.6z\"></path></svg></a></div></div></div>\n</div>\n<div class=\"wp-block-uagb-container uagb-block-q1newczy\">\n<div class=\"wp-block-uagb-image alignleft uagb-block-ud1wdwuy wp-block-uagb-image--layout-default wp-block-uagb-image--effect-zoomin wp-block-uagb-image--align-left\"><figure class=\"wp-block-uagb-image__figure\"><img alt=\"Our Staffy Breeding Dogs Glasgow | Playful blue Staffordshire Bull Terrier puppy running across a green lawn in the UK\" decoding=\"async\" fetchpriority=\"high\" height=\"794\" loading=\"lazy\" sizes=\"(max-width: 800px) 100vw, 760px\" src=\"/images/playful-blue-staffy-lawn-uk.webp\" srcset=\"/images/playful-blue-staffy-lawn-uk-760.webp 760w, /images/playful-blue-staffy-lawn-uk.webp 780w\" width=\"780\"/></figure></div>\n<div class=\"wp-block-uagb-image alignleft uagb-block-lpr39t0x wp-block-uagb-image--layout-default wp-block-uagb-image--effect-zoomin wp-block-uagb-image--align-left\"><figure class=\"wp-block-uagb-image__figure\"><img alt=\"A striking portrait of Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire.\" decoding=\"async\" height=\"780\" loading=\"lazy\" sizes=\"(max-width: 800px) 100vw, 760px\" src=\"/images/jones-magnificent-blue-staffy-sire.webp\" srcset=\"/images/jones-magnificent-blue-staffy-sire-760.webp 760w, /images/jones-magnificent-blue-staffy-sire.webp 780w\" width=\"780\"/></figure></div>\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-6gizqn5l alignfull uagb-is-root-container\">\n<div class=\"wp-block-uagb-info-box uagb-block-arzqn5mh uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h2 class=\"uagb-ifb-title\"><strong>Meet Our Healthy Staffy Breeding Dogs Glasgow: Maggie &amp; Jones</strong></h2></div><div class=\"uagb-ifb-desc\">\n<p>At <a href=\"/\" rel=\"noreferrer noopener\" target=\"_blank\">BlueStaffyUK.uk</a>, we offer HC-HSF4 Clear Blue Staffy puppies, L-2-HGA Clear Staffordshire Bull Terrier, and believe that the foundation of healthy, well-tempered <strong>blue Staffordshire Bull Terrier puppies</strong> lies directly with their parents. Our commitment to <strong><a href=\"/uk-locations/uk-staffordshire-bull-terrier-breeder/\" rel=\"noreferrer noopener\" target=\"_blank\">ethical breeding practices in the UK</a></strong> means we meticulously select our Dam and Sire not only for their stunning looks but, more importantly, for their proven health, stable temperaments, and adherence to the <strong>Staffordshire Bull Terrier breed standard</strong>.</p>\n<p>We are proud to introduce Maggie and Jones, our health-tested Staffy parents, the dedicated parents of our current and upcoming <strong>blue Staffy litters</strong>. Their combined qualities ensure that each puppy inherits the very best traits of this magnificent breed. Our Blue Staffy parents, Maggie and Jones, enjoy regular invigorating walks and playtime in the expansive, dog-friendly grounds of <strong>Pollok Country Park</strong>, ensuring they maintain peak physical condition and balanced temperaments amidst Glasgow’s finest natural beauty.</p>\n</div><div class=\"uagb-ifb-separator\"></div><div class=\"uagb-ifb-button-wrapper wp-block-button\"><a class=\"uagb-infobox-cta-link wp-block-button__link\" href=\"/uk-blue-staffy-breeders-contact/\" onclick=\"return true;\" rel=\"noopener noreferrer\" target=\"_blank\"><span class=\"uagb-inline-editing\">Contact US</span><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M504.3 273.6l-112.1 104c-6.992 6.484-17.18 8.218-25.94 4.406c-8.758-3.812-14.42-12.45-14.42-21.1L351.9 288H32C14.33 288 .0002 273.7 .0002 255.1S14.33 224 32 224h319.9l0-72c0-9.547 5.66-18.19 14.42-22c8.754-3.809 18.95-2.075 25.94 4.41l112.1 104C514.6 247.9 514.6 264.1 504.3 273.6z\"></path></svg></a></div></div></div>\n</div>\n<div class=\"wp-block-uagb-container uagb-block-6ghd9tbh alignfull uagb-is-root-container\" id=\"Staffies-adoption\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-info-box uagb-block-jn7bejmq uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-icon-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM371.8 211.8C382.7 200.9 382.7 183.1 371.8 172.2C360.9 161.3 343.1 161.3 332.2 172.2L224 280.4L179.8 236.2C168.9 225.3 151.1 225.3 140.2 236.2C129.3 247.1 129.3 264.9 140.2 275.8L204.2 339.8C215.1 350.7 232.9 350.7 243.8 339.8L371.8 211.8z\"></path></svg></div><div class=\"uagb-ifb-title-wrap\"><span class=\"uagb-ifb-title-prefix\"><strong>Buy Your Blue Staffy Pup Today – Only £850 to £1,200!</strong></span><h2 class=\"uagb-ifb-title\"><strong>Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide</strong></h2></div><div class=\"uagb-ifb-desc\">\n<p>Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.</p>\n<p>Top-quality Staffies at affordable UK family prices. Each Staffy is microchipped and raised with care. Don’t wait—our current litter won’t last long! If you’re seeking reliable, affordable blue Staffy puppies from a trusted source, you’re in the right place.</p>\n</div></div></div>\n<div class=\"wp-block-uagb-container uagb-block-n24y3pgl\">\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-57k57bmc alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-image uagb-block-1pnow1rx wp-block-uagb-image--layout-default wp-block-uagb-image--effect-zoomin wp-block-uagb-image--align-none\"><figure class=\"wp-block-uagb-image__figure\"><img alt=\"A heartwarming photo of Maggie, a beautiful 2-year-old blue Staffy Dam, lovingly tending to her pups.\" decoding=\"async\" height=\"585\" loading=\"lazy\" sizes=\"(max-width: 800px) 100vw, 760px\" src=\"/images/maggie-blue-staffy-dam-with-pups.webp\" srcset=\"/images/maggie-blue-staffy-dam-with-pups-760.webp 760w, /images/maggie-blue-staffy-dam-with-pups.webp 780w\" width=\"780\"/></figure></div>\n<div class=\"wp-block-uagb-container uagb-block-8kpy0baq\">\n<div class=\"wp-block-uagb-info-box uagb-block-jqukzbfs uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h2 class=\"uagb-ifb-title\"><strong>Maggie: Our Loving Blue Staffy Dam</strong></h2></div><div class=\"uagb-ifb-desc\">\n<p><strong>Full Profile:</strong> Maggie is a splendid <strong>2-year-old blue Staffordshire Bull Terrier female</strong> and an integral part of our family and breeding program. <br/><br/>She is <strong>fully pedigree</strong> and <strong><a href=\"https://www.thekennelclub.org.uk/\" rel=\"noreferrer noopener\" target=\"_blank\">KC registered (Kennel Club Registered)</a></strong>, demonstrating her pure lineage and adherence to breed standards. <br/><br/>Maggie is known for her incredibly <strong><a href=\"/uk-staffordshire-bull-terrier-guide/\" rel=\"noreferrer noopener\" target=\"_blank\">affectionate blue Staffy temperament</a></strong>, her intelligence, and her gentle, nurturing nature. She loves cuddles and playtime with our children, embodying the “children’s nursemaid” reputation of the breed. <br/><br/>Her calm disposition and loving character make her an exemplary mother to her <strong>blue Staffy puppies</strong>.</p>\n</div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-8bc2f4ee uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\"><strong>Temperament Highlights</strong></h3></div></div></div>\n<div class=\"wp-block-uagb-icon-list uagb-block-fm4idwkc\"><div class=\"uagb-icon-list__wrap\">\n<div class=\"wp-block-uagb-icon-list-child uagb-block-gsczt7z9\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Gentle &amp; Nurturing:</strong> An excellent mother with a patient and loving approach to her pups.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-kri9esan\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Highly Affectionate:</strong> Forms strong bonds with humans, eager for attention and companionship.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-fotp0xq5\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Intelligent &amp; Eager to Please:</strong> Responds well to training and enjoys engaging with her family.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-al7yfm5d\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Calm &amp; Stable:</strong> Exhibits a very balanced and confident demeanor in various situations.</span></div>\n</div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-00509462 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\">Maggie’s Daily Life and Loving Nature</h3></div><div class=\"uagb-ifb-desc\">\n<p>Beyond her impressive pedigree and health clearances, Maggie is a cherished and active member of our family right here in Glasgow. Her days are filled with joyful romps and exploration in local dog-friendly parks, interactive playtime with our children, and serene moments cuddling on the sofa. She possesses a remarkable intuition, often sensing when someone needs a comforting nudge or a quiet presence, truly embodying the breed’s ‘children’s nursemaid’ reputation. Her playful spirit is matched only by her gentle patience, making her an ideal companion in our busy household. </p>\n</div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-27486560 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\"><strong>Maggie’s Health Clearances &amp; Veterinary Care</strong></h3></div><div class=\"uagb-ifb-desc\">\n<p>Maggie’s health is paramount to us and essential for producing <a href=\"/blue-staffy-pup-sale-uk/\" rel=\"noreferrer noopener\" target=\"_blank\">healthy blue Staffy puppies</a>. She undergoes rigorous health testing for blue Staffies in the UK as recommended by the Kennel Club for the breed. Her results are as follows:</p>\n</div></div></div>\n<div class=\"wp-block-uagb-icon-list uagb-block-deba4213\"><div class=\"uagb-icon-list__wrap\">\n<div class=\"wp-block-uagb-icon-list-child uagb-block-a9b143f0\"><a aria-label=\"L-2-HGA (Hereditary L-2-Hydroxyglutaric Aciduria): CLEAR\" href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 256 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M256 448c0 17.67-14.33 32-32 32H32c-17.67 0-32-14.33-32-32s14.33-32 32-32h64V123.8L49.75 154.6C35.02 164.5 15.19 160.4 5.375 145.8C-4.422 131.1-.4531 111.2 14.25 101.4l96-64c9.828-6.547 22.45-7.187 32.84-1.594C153.5 41.37 160 52.22 160 64.01v352h64C241.7 416 256 430.3 256 448z\"></path></svg></span><span class=\"uagb-icon-list__label\">L-2-HGA (Hereditary L-2-Hydroxyglutaric Aciduria): CLEAR</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-91245460\"><a aria-label=\"HC-HSF4 (Hereditary Cataracts - Hereditary Clear): CLEAR\" href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 448c0 17.67-14.33 32-32 32H32c-13.08 0-24.83-7.953-29.7-20.09c-4.859-12.12-1.859-26 7.594-35.03l193.6-185.1c31.36-30.17 33.95-80 5.812-113.4c-14.91-17.69-35.86-28.12-58.97-29.38C127.4 95.83 105.3 103.9 88.53 119.9L53.52 151.7c-13.08 11.91-33.33 10.89-45.2-2.172C-3.563 136.5-2.594 116.2 10.48 104.3l34.45-31.3c28.67-27.34 68.39-42.11 108.9-39.88c40.33 2.188 78.39 21.16 104.4 52.03c49.8 59.05 45.2 147.3-10.45 200.8l-136 130H288C305.7 416 320 430.3 320 448z\"></path></svg></span><span class=\"uagb-icon-list__label\">HC-HSF4 (Hereditary Cataracts – Hereditary Clear): CLEAR</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-cf77cffe\"><a aria-label=\"BVA/KC Eye Scheme: Clear\" href=\"https://www.bva.co.uk/canine-health-schemes/eye-scheme/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 344c0 74.98-61.02 136-136 136H103.6c-46.34 0-87.31-29.53-101.1-73.48c-5.594-16.77 3.484-34.88 20.25-40.47c16.75-5.609 34.89 3.484 40.47 20.25c5.922 17.77 22.48 29.7 41.23 29.7H184c39.7 0 72-32.3 72-72s-32.3-72-72-72H80c-13.2 0-25.05-8.094-29.83-20.41C45.39 239.3 48.66 225.3 58.38 216.4l131.4-120.4H32c-17.67 0-32-14.33-32-32s14.33-32 32-32h240c13.2 0 25.05 8.094 29.83 20.41c4.781 12.3 1.516 26.27-8.203 35.19l-131.4 120.4H184C258.1 208 320 269 320 344z\"></path></svg></span><span class=\"uagb-icon-list__label\">BVA/KC Eye Scheme: Clear</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-d9c59dfc\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 384 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M384 334.2c0 17.67-14.33 32-32 32h-32v81.78c0 17.67-14.33 32-32 32s-32-14.33-32-32v-81.78H32c-10.97 0-21.17-5.625-27.05-14.89c-5.859-9.266-6.562-20.89-1.875-30.81l128-270.2C138.6 34.33 157.8 27.56 173.7 35.09c15.97 7.562 22.78 26.66 15.22 42.63L82.56 302.2H256V160c0-17.67 14.33-32 32-32s32 14.33 32 32v142.2h32C369.7 302.2 384 316.6 384 334.2z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Annual Veterinary Health Checks:</strong> Up-to-date and consistently in excellent health.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-296add27\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 344.6c0 74.66-60.73 135.4-135.4 135.4H104.7c-46.81 0-88.22-29.83-103-74.23c-5.594-16.77 3.469-34.89 20.23-40.48c16.83-5.625 34.91 3.469 40.48 20.23c6.078 18.23 23.08 30.48 42.3 30.48h79.95c39.36 0 71.39-32.03 71.39-71.39s-32.03-71.38-71.39-71.38H32c-9.484 0-18.47-4.203-24.56-11.48C1.359 254.5-1.172 244.9 .5156 235.6l32-177.2C35.27 43.09 48.52 32.01 64 32.01l192 .0049c17.67 0 32 14.33 32 32s-14.33 32-32 32H90.73L70.3 209.2h114.3C259.3 209.2 320 269.1 320 344.6z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Fully Vaccinated &amp; Routinely Wormed/Flea Treated:</strong> Ensuring her ongoing well-being.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-c2db5bd8\"><span class=\"uagb-icon-list__label\"><em>Documentation of all health clearances and her full KC pedigree is available for viewing during your visit to our home.</em></span></div>\n</div></div>\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-d3db34af alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-image uagb-block-68d473c3 wp-block-uagb-image--layout-default wp-block-uagb-image--effect-zoomin wp-block-uagb-image--align-none\"><figure class=\"wp-block-uagb-image__figure\"><img alt=\"Jones, a magnificent 3-year-old blue Staffordshire Bull Terrier Sire, displaying his calm strength and good temperament.\" decoding=\"async\" height=\"660\" loading=\"lazy\" sizes=\"(max-width: 800px) 100vw, 760px\" src=\"/images/jones-strong-staffy-sire-temperament.webp\" srcset=\"/images/jones-strong-staffy-sire-temperament.webp 663w\" width=\"663\"/></figure></div>\n<div class=\"wp-block-uagb-container uagb-block-1a5dba10\">\n<div class=\"wp-block-uagb-info-box uagb-block-95229e0b uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h2 class=\"uagb-ifb-title\"><strong><strong>Jones: Our Magnificent Blue Staffy Sire</strong></strong></h2></div><div class=\"uagb-ifb-desc\">\n<p><strong>Full Profile:</strong> Jones is a striking <strong>3-year-old blue Staffordshire Bull Terrier male</strong>, an outstanding example of a <strong>blue Staffy stud dog</strong>. He is also <strong>fully pedigree</strong> and <strong><a href=\"https://www.thekennelclub.org.uk/\" rel=\"noreferrer noopener\" target=\"_blank\">KC registered (Kennel Club Registered)</a></strong>, boasting an impressive lineage.</p>\n<p> Jones possesses a <strong>confident and robust blue Staffy temperament</strong>, combining strength with a remarkably gentle and friendly nature. His handsome appearance, powerful build, and keen intelligence make him a superb father, consistently passing on his desirable traits to his <strong>Staffordshire Bull Terrier puppies</strong>.</p>\n</div><div class=\"uagb-ifb-separator\"></div><div class=\"uagb-ifb-button-wrapper wp-block-button\"><a class=\"uagb-infobox-cta-link wp-block-button__link\" href=\"/uk-blue-staffy-breeders-contact/\" onclick=\"return true;\" rel=\"noopener noreferrer\" target=\"_blank\"><span class=\"uagb-inline-editing\">Learn More</span><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M504.3 273.6l-112.1 104c-6.992 6.484-17.18 8.218-25.94 4.406c-8.758-3.812-14.42-12.45-14.42-21.1L351.9 288H32C14.33 288 .0002 273.7 .0002 255.1S14.33 224 32 224h319.9l0-72c0-9.547 5.66-18.19 14.42-22c8.754-3.809 18.95-2.075 25.94 4.41l112.1 104C514.6 247.9 514.6 264.1 504.3 273.6z\"></path></svg></a></div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-26454f44 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\"><strong>Temperament Highlights</strong></h3></div></div></div>\n<div class=\"wp-block-uagb-icon-list uagb-block-f9b08056\"><div class=\"uagb-icon-list__wrap\">\n<div class=\"wp-block-uagb-icon-list-child uagb-block-64b60fe3\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Confident &amp; Composed:</strong> Handles new situations with a calm and self-assured manner.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-ba36a564\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Affectionate &amp; Loyal:</strong> Devoted to his family and enjoys being part of daily activities.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-8ebf2317\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Intelligent &amp; Trainable:</strong> Quick to learn and responsive to commands.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-94ff54ea\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 512 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M0 256C0 114.6 114.6 0 256 0C397.4 0 512 114.6 512 256C512 397.4 397.4 512 256 512C114.6 512 0 397.4 0 256zM256 352C309 352 352 309 352 256C352 202.1 309 160 256 160C202.1 160 160 202.1 160 256C160 309 202.1 352 256 352z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Strong &amp; Athletic:</strong> Embodies the active and powerful spirit of the breed.</span></div>\n</div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-b9f04619 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\"><strong><strong>Jones’s Presence and Playful Intelligence</strong></strong></h3></div><div class=\"uagb-ifb-desc\">\n<p>Jones, a proven blue Staffy stud dog in Glasgow, on the other hand, embodies the Blue Staffy’s robust and confident spirit. His calm, composed demeanor is evident in how he gracefully handles new situations and interacts with strangers, always exuding an air of self-assurance. His keen intelligence shines through as he quickly masters new commands and genuinely enjoys engaging in mentally stimulating games and training sessions. He moves with an athletic grace, a true testament to the Staffy’s inherent power and agility. Yet, his strength is always beautifully tempered by an amiable disposition that makes him a joy to be around.</p>\n</div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-37f07df5 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\"><strong><strong>Jones</strong>‘s Health Clearances &amp; Veterinary Care</strong></h3></div><div class=\"uagb-ifb-desc\">\n<p>Jones’s health is equally crucial to our breeding program’s integrity and the health of our <strong>Staffordshire Bull Terrier puppies</strong>. He has undergone all necessary health screenings:</p>\n</div></div></div>\n<div class=\"wp-block-uagb-icon-list uagb-block-58a72209\"><div class=\"uagb-icon-list__wrap\">\n<div class=\"wp-block-uagb-icon-list-child uagb-block-9f9c19bc\"><a aria-label=\"L-2-HGA (Hereditary L-2-Hydroxyglutaric Aciduria): CLEAR\" href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 256 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M256 448c0 17.67-14.33 32-32 32H32c-17.67 0-32-14.33-32-32s14.33-32 32-32h64V123.8L49.75 154.6C35.02 164.5 15.19 160.4 5.375 145.8C-4.422 131.1-.4531 111.2 14.25 101.4l96-64c9.828-6.547 22.45-7.187 32.84-1.594C153.5 41.37 160 52.22 160 64.01v352h64C241.7 416 256 430.3 256 448z\"></path></svg></span><span class=\"uagb-icon-list__label\">L-2-HGA (Hereditary L-2-Hydroxyglutaric Aciduria): CLEAR</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-fcfc2b87\"><a aria-label=\"HC-HSF4 (Hereditary Cataracts - Hereditary Clear): CLEAR\" href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 448c0 17.67-14.33 32-32 32H32c-13.08 0-24.83-7.953-29.7-20.09c-4.859-12.12-1.859-26 7.594-35.03l193.6-185.1c31.36-30.17 33.95-80 5.812-113.4c-14.91-17.69-35.86-28.12-58.97-29.38C127.4 95.83 105.3 103.9 88.53 119.9L53.52 151.7c-13.08 11.91-33.33 10.89-45.2-2.172C-3.563 136.5-2.594 116.2 10.48 104.3l34.45-31.3c28.67-27.34 68.39-42.11 108.9-39.88c40.33 2.188 78.39 21.16 104.4 52.03c49.8 59.05 45.2 147.3-10.45 200.8l-136 130H288C305.7 416 320 430.3 320 448z\"></path></svg></span><span class=\"uagb-icon-list__label\">HC-HSF4 (Hereditary Cataracts – Hereditary Clear): CLEAR</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-ff11daa7\"><a aria-label=\"BVA/KC Eye Scheme: Clear\" href=\"https://www.bva.co.uk/canine-health-schemes/eye-scheme/\" rel=\"noopener noreferrer\" target=\"_blank\"> </a><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 344c0 74.98-61.02 136-136 136H103.6c-46.34 0-87.31-29.53-101.1-73.48c-5.594-16.77 3.484-34.88 20.25-40.47c16.75-5.609 34.89 3.484 40.47 20.25c5.922 17.77 22.48 29.7 41.23 29.7H184c39.7 0 72-32.3 72-72s-32.3-72-72-72H80c-13.2 0-25.05-8.094-29.83-20.41C45.39 239.3 48.66 225.3 58.38 216.4l131.4-120.4H32c-17.67 0-32-14.33-32-32s14.33-32 32-32h240c13.2 0 25.05 8.094 29.83 20.41c4.781 12.3 1.516 26.27-8.203 35.19l-131.4 120.4H184C258.1 208 320 269 320 344z\"></path></svg></span><span class=\"uagb-icon-list__label\">BVA/KC Eye Scheme: Clear</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-9367d1ff\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 384 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M384 334.2c0 17.67-14.33 32-32 32h-32v81.78c0 17.67-14.33 32-32 32s-32-14.33-32-32v-81.78H32c-10.97 0-21.17-5.625-27.05-14.89c-5.859-9.266-6.562-20.89-1.875-30.81l128-270.2C138.6 34.33 157.8 27.56 173.7 35.09c15.97 7.562 22.78 26.66 15.22 42.63L82.56 302.2H256V160c0-17.67 14.33-32 32-32s32 14.33 32 32v142.2h32C369.7 302.2 384 316.6 384 334.2z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Annual Veterinary Health Checks:</strong> Up-to-date and in peak condition.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-c9e7d12d\"><span class=\"uagb-icon-list__source-wrap\"><svg viewbox=\"0 0 320 512\" xmlns=\"https://www.w3.org/2000/svg\"><path d=\"M320 344.6c0 74.66-60.73 135.4-135.4 135.4H104.7c-46.81 0-88.22-29.83-103-74.23c-5.594-16.77 3.469-34.89 20.23-40.48c16.83-5.625 34.91 3.469 40.48 20.23c6.078 18.23 23.08 30.48 42.3 30.48h79.95c39.36 0 71.39-32.03 71.39-71.39s-32.03-71.38-71.39-71.38H32c-9.484 0-18.47-4.203-24.56-11.48C1.359 254.5-1.172 244.9 .5156 235.6l32-177.2C35.27 43.09 48.52 32.01 64 32.01l192 .0049c17.67 0 32 14.33 32 32s-14.33 32-32 32H90.73L70.3 209.2h114.3C259.3 209.2 320 269.1 320 344.6z\"></path></svg></span><span class=\"uagb-icon-list__label\"><strong>Fully Vaccinated &amp; Routinely Wormed/Flea Treated:</strong> Maintained for optimal health.</span></div>\n<div class=\"wp-block-uagb-icon-list-child uagb-block-b875762a\"><span class=\"uagb-icon-list__label\"><em><em>Full documentation of Jones’s health clearances and his KC pedigree are transparently available upon request during your viewing.</em></em></span></div>\n</div></div>\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-nusw4ixs alignfull uagb-is-root-container\">\n<div class=\"wp-block-uagb-info-box uagb-block-l1xlncng uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h2 class=\"uagb-ifb-title\"><strong>Our Commitment: The Cornerstone of Our Blue Staffy Puppies</strong></h2></div><div class=\"uagb-ifb-separator\"></div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-zgmfn2vw uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top wp-block-uagb-info-box--has-margin\"><div class=\"uagb-infobox-margin-wrapper\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"></div><div class=\"uagb-ifb-desc\">\n<p>The profiles of Maggie and Jones underscore our unwavering commitment to producing healthy staffies for adoption in the UK with exceptional temperaments. By carefully selecting our breeding dogs based on their health, genetic purity, and character, we ensure that every blue Staffy puppy leaving BlueStaffyUK.uk is a true testament to the breed’s finest qualities. We encourage you to visit us and meet Maggie, Blue Staffy Dam, and Jones in person, allowing you to see firsthand the wonderful attributes that will be passed down to your future <strong>Staffordshire Bull Terrier companion</strong>.</p>\n</div></div></div></div>\n</div>\n<div class=\"wp-block-uagb-container uagb-block-ohcajsoi alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-info-box uagb-block-5huynynp uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h3 class=\"uagb-ifb-title\">Our Ethical Rearing Process: From Birth to Forever Home</h3></div></div></div>\n<div class=\"wp-block-uagb-container uagb-block-tuh8heyj\">\n<div class=\"wp-block-uagb-container uagb-block-wkntrtyc\">\n<div class=\"wp-block-uagb-info-box uagb-block-lelpegiv uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><p class=\"uagb-ifb-title-prefix\">01</p><h4 class=\"uagb-ifb-title\">Pre-Breeding Preparation &amp; Care</h4></div><div class=\"uagb-ifb-desc\">\n<p>Our excellent breeding commitment begins long before conception. Both Maggie and Jones maintain a rigorous regimen of specialised, high-quality nutrition, tailored specifically for breeding dogs, ensuring they are in peak physical condition. Their daily exercise includes varied activities, from energetic play sessions to quiet, stimulating walks, contributing to their optimal physical well-being and mental contentment, which is vital for producing healthy offspring.</p>\n</div></div></div>\n</div>\n<div class=\"wp-block-uagb-container uagb-block-1yaes12r\">\n<div class=\"wp-block-uagb-info-box uagb-block-emou0fdb uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><p class=\"uagb-ifb-title-prefix\">02</p><h4 class=\"uagb-ifb-title\">During Pregnancy &amp; Whelping</h4></div><div class=\"uagb-ifb-desc\">\n<p>Once Maggie’s pregnancy is confirmed, her care intensifies with regular <a href=\"https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/pregnancy-in-dogs/\" rel=\"noreferrer noopener\" target=\"_blank\">veterinary check-ups</a><br/>and specialized <a href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/health-and-care/a-z-of-health-and-care-issues/feeding-during-pregnancy/\" rel=\"noreferrer noopener\" target=\"_blank\">nutritional support</a><br/>, ensuring her optimal health and the healthy development of her litter. Our KC Registered Blue Staffies are born in a meticulously prepared, <a href=\"https://www.thekennelclub.org.uk/dog-breeding/first-time-breeders/whelping-your-first-litter/\" rel=\"noreferrer noopener\" target=\"_blank\">sterile, and warm whelping area</a> within our Glasgow home, providing them with the safest, most comfortable start to life, closely monitored around the clock to ensure every pup thrives.”</p>\n</div></div></div>\n</div>\n<div class=\"wp-block-uagb-container uagb-block-iw6gfuv0\">\n<div class=\"wp-block-uagb-info-box uagb-block-wsivj4hr uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><p class=\"uagb-ifb-title-prefix\">03</p><h4 class=\"uagb-ifb-title\"><strong>Early Puppy Development &amp; Socialisation</strong></h4></div><div class=\"uagb-ifb-desc\">\n<p>From birth, our pups benefit from <a href=\"https://breedingbetterdogs.com/article/early-neurological-stimulation\" rel=\"noreferrer noopener\" target=\"_blank\">early neurological stimulation (ENS)</a><br/>and are introduced to a rich environment through carefully implemented <a href=\"https://www.puppyculture.com/\" rel=\"noreferrer noopener\" target=\"_blank\">Puppy Culture protocols</a><br/>. This involves controlled, positive exposure to various sights, sounds, textures, and gentle human handling. This crucial early socialization helps them develop into confident, resilient, and well-adjusted individuals. As they grow, we introduce them to <a href=\"https://www.thekennelclub.org.uk/health-and-dog-care/health/health-and-care/a-z-of-health-and-care-issues/feeding-your-puppy-from-birth-to-weaning/\" rel=\"noreferrer noopener\" target=\"_blank\">premium-quality weaning foods</a> and begin foundational potty training efforts, setting them up for success and a smooth transition into their new homes. Every step of their development is guided by expert veterinary advice.</p>\n</div></div></div>\n</div>\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-av3yhicn alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-info-box uagb-block-dkznqfa9 uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><span class=\"uagb-ifb-title-prefix\">SHOP YOUR STAFFY Now</span><h2 class=\"uagb-ifb-title\"><strong>Ready to Welcome a Blue Staffy Puppy into Your Home?</strong> </h2></div><div class=\"uagb-ifb-desc\">\n<p class=\"has-ast-global-color-8-color has-text-color has-link-color wp-elements-9167d0ce27f7db56ba3193bf8487c57e\">If you’re looking for <a href=\"/uk-locations/staffy-puppies-for-sale-glasgow/\" rel=\"noreferrer noopener\" target=\"_blank\">blue Staffy puppies for sale in Glasgow</a> from purebred Staffy dog breeders, including regions like <a href=\"/uk-locations/staffy-puppies-wolverhampton/\" rel=\"noreferrer noopener\" target=\"_blank\">Wolverhampton</a><br/>, <a href=\"/uk-locations/staffy-puppies-cardiff-wales/\" rel=\"noreferrer noopener\" target=\"_blank\">Cardiff</a>, and <a href=\"/uk-locations/blue-staffies-newcastle-under-lyme/\" rel=\"noreferrer noopener\" target=\"_blank\">Newcastle-under-Lyme</a>, you’ve come to the right place. Our breeding program focuses on health, temperament, and lifetime support.</p>\n</div></div></div>\n<div class=\"wp-block-uagb-container uagb-block-8qfeuiyq\" id=\"welcome-staffy\"> <div class=\"wp-block-uagb-container alignfull uagb-is-root-container bsuk-contact-form-wrap\">\n<div class=\"bsuk-form-card\">\n<div class=\"bsuk-form-header\">\n<h2>🐾 Reserve Your Blue Staffy Puppy</h2>\n<p>Fill in your details below and we'll be in touch within 24 hours</p>\n</div>\n<div class=\"bsuk-form-body\">\n<div class=\"bsuk-form-notice\">⏰ <strong>Delivery Note:</strong> Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free).</div>\n</div>\n</div>\n</div>\n</div>\n</div></div>\n<div class=\"wp-block-uagb-container uagb-block-tzqm19bw alignfull uagb-is-root-container\"><div class=\"uagb-container-inner-blocks-wrap\">\n<div class=\"wp-block-uagb-info-box uagb-block-49bhqpio uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><h2 class=\"uagb-ifb-title\">Comprehensive Ongoing Support</h2></div></div></div>\n<div class=\"wp-block-uagb-info-box uagb-block-bfew3rxe uagb-infobox__content-wrap uagb-infobox-icon-above-title uagb-infobox-image-valign-top wp-block-uagb-info-box--has-margin\"><div class=\"uagb-infobox-margin-wrapper\"><div class=\"uagb-ifb-content\"><div class=\"uagb-ifb-title-wrap\"><p class=\"uagb-ifb-title-prefix\">Our relationship with you doesn’t end when you take your puppy home. We pride ourselves on offering comprehensive lifetime support, reflecting our unwavering dedication to every Blue Staffy we breed.</p><p class=\"uagb-ifb-title\">This includes a detailed puppy pack containing essential care guidelines, a transitional supply of their current food, and a comfort blanket with their mother’s scent to ease their transition.</p></div><div class=\"uagb-ifb-desc\">\n<p>We remain readily available for ongoing advice on training, nutrition, behavior, and any concerns you might have as your new family member grows, ensuring a smooth, happy journey for both you and your Blue Staffy companion.</p>\n</div></div></div></div>\n</div></div>\n<div class=\"wp-block-uagb-google-map uagb-google-map__wrap uagb-block-rwg4xnwc\">\n<iframe allowfullscreen=\"\" class=\"uagb-google-map__iframe\" height=\"450\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\" src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2234.577!2d-4.256577!3d55.89156!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x488846a4ec93e607%3A0x9e6e8b2e89f01e30!2s40%20Coltmuir%20St%2C%20Glasgow%20G22%206LU%2C%20UK!5e0!3m2!1sen!2sgb!4v1749000000000!5m2!1sen!2sgb\" style=\"border:0;display:block;width:100%;\" title=\"Blue Staffy UK — 40 Coltmuir Street, Glasgow G22 6LU\" width=\"100%\"></iframe>\n</div>\n",
     "word_count": 1508,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-breeding-dogs-glasgow/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-breeding-dogs-glasgow/",
-                  "name": "Staffy Breeding Dogs Glasgow"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-breeding-dogs-glasgow/#local-business",
-        "name": "Blue Staffy Puppies for Sale Glasgow | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-breeding-dogs-glasgow/",
-        "description": "KC-registered Blue Staffy puppies delivered to Glasgow. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Glasgow"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": []
   },
   {
@@ -1782,80 +400,11 @@
     "h1": "staffy puppies cardiff wales",
     "description": "staffy puppies cardiff wales",
     "canonical": "/uk-locations/staffy-puppies-cardiff-wales/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>staffy puppies cardiff wales</p>\n",
     "word_count": 4,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-cardiff-wales/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-cardiff-wales/",
-                  "name": "staffy puppies cardiff wales"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-cardiff-wales/#local-business",
-        "name": "Blue Staffy Puppies for Sale Cardiff | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-cardiff-wales/",
-        "description": "KC-registered Blue Staffy puppies delivered to Cardiff. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Cardiff"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -1867,80 +416,11 @@
     "h1": "Staffy Puppies for Sale Cornwall",
     "description": "Staffy Puppies for Sale Cornwall",
     "canonical": "/uk-locations/staffy-puppies-for-sale-cornwall/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-for-sale-cornwall/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-for-sale-cornwall/",
-                  "name": "Staffy Puppies for Sale Cornwall"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-for-sale-cornwall/#local-business",
-        "name": "Blue Staffy Puppies for Sale Cornwall | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-for-sale-cornwall/",
-        "description": "KC-registered Blue Staffy puppies delivered to Cornwall. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Cornwall"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -1952,80 +432,11 @@
     "h1": "",
     "description": "Staffy Puppies for Sale Essex",
     "canonical": "/uk-locations/staffy-puppies-for-sale-essex/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-for-sale-essex/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-for-sale-essex/",
-                  "name": "Staffy Puppies for Sale Essex"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-for-sale-essex/#local-business",
-        "name": "Blue Staffy Puppies for Sale Essex | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-for-sale-essex/",
-        "description": "KC-registered Blue Staffy puppies delivered to Essex. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Essex"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -2038,80 +449,11 @@
     "h1": "Staffy Puppies for Sale Glasgow",
     "description": "staffy puppies for sale glasgow",
     "canonical": "/uk-locations/staffy-puppies-for-sale-glasgow/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<figure class=\"wp-block-table\"><div class=\"table-wrap\"><table class=\"has-fixed-layout stack-table\"><tbody><tr><th>staffy puppies for sale glasgow</th><td data-label=\"staffy puppies for sale glasgow\"></td></tr></tbody></table></div></figure>\n",
     "word_count": 5,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-for-sale-glasgow/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-for-sale-glasgow/",
-                  "name": "Staffy Puppies for Sale Glasgow"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-for-sale-glasgow/#local-business",
-        "name": "Blue Staffy Puppies for Sale Glasgow | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-for-sale-glasgow/",
-        "description": "KC-registered Blue Staffy puppies delivered to Glasgow. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Glasgow"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "stub"
     ]
@@ -2123,80 +465,11 @@
     "h1": "",
     "description": "Staffy Puppies for Sale Liverpool",
     "canonical": "/uk-locations/staffy-puppies-for-sale-liverpool/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>Staffy Puppies for Sale Liverpool</p>\n",
     "word_count": 5,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-for-sale-liverpool/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-for-sale-liverpool/",
-                  "name": "Staffy Puppies for Sale Liverpool"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-for-sale-liverpool/#local-business",
-        "name": "Blue Staffy Puppies for Sale Liverpool | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-for-sale-liverpool/",
-        "description": "KC-registered Blue Staffy puppies delivered to Liverpool. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Liverpool"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -2209,80 +482,11 @@
     "h1": "",
     "description": "Staffy Puppies for Sale Nottingham",
     "canonical": "/uk-locations/staffy-puppies-for-sale-nottingham/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>Staffy Puppies for Sale Nottingham</p>\n",
     "word_count": 5,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-for-sale-nottingham/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-for-sale-nottingham/",
-                  "name": "Staffy Puppies for Sale Nottingham"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-for-sale-nottingham/#local-business",
-        "name": "Blue Staffy Puppies for Sale Nottingham | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-for-sale-nottingham/",
-        "description": "KC-registered Blue Staffy puppies delivered to Nottingham. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Nottingham"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -2295,80 +499,11 @@
     "h1": "",
     "description": "staffy puppies wolverhampton",
     "canonical": "/uk-locations/staffy-puppies-wolverhampton/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n<p>staffy puppies wolverhampton</p>\n",
     "word_count": 3,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/staffy-puppies-wolverhampton/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/staffy-puppies-wolverhampton/",
-                  "name": "staffy puppies wolverhampton"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/staffy-puppies-wolverhampton/#local-business",
-        "name": "Blue Staffy Puppies for Sale Wolverhampton | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/staffy-puppies-wolverhampton/",
-        "description": "KC-registered Blue Staffy puppies delivered to Wolverhampton. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "Wolverhampton"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"
@@ -2381,80 +516,11 @@
     "h1": "",
     "description": "UK Staffordshire Bull Terrier Breeder",
     "canonical": "/uk-locations/uk-staffordshire-bull-terrier-breeder/",
-    "robots": "follow, index, max-snippet:-1, max-video-preview:-1, max-image-preview:large",
+    "robots": "noindex, follow",
     "og_type": "article",
     "body_html": "\n",
     "word_count": 0,
-    "schema": [
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "BreadcrumbList",
-            "@id": "/uk-locations/uk-staffordshire-bull-terrier-breeder/#breadcrumb",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": "1",
-                "item": {
-                  "@id": "",
-                  "name": "Home"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "2",
-                "item": {
-                  "@id": "/uk-locations/",
-                  "name": "UK LOCATION"
-                }
-              },
-              {
-                "@type": "ListItem",
-                "position": "3",
-                "item": {
-                  "@id": "/uk-locations/uk-staffordshire-bull-terrier-breeder/",
-                  "name": "UK Staffordshire Bull Terrier Breeder"
-                }
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "@context": "https://schema.org",
-        "@type": "PetStore",
-        "@id": "/uk-locations/uk-staffordshire-bull-terrier-breeder/#local-business",
-        "name": "Blue Staffy Puppies for Sale United Kingdom | BlueStaffyUK",
-        "url": "https://bluestaffyuk.uk/uk-locations/uk-staffordshire-bull-terrier-breeder/",
-        "description": "KC-registered Blue Staffy puppies delivered to United Kingdom. Ethical breeders, health-tested Staffordshire Bull Terrier puppies with UK-wide delivery from Glasgow.",
-        "email": "staffies@bluestaffyuk.uk",
-        "priceRange": "£850-£1,200",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "40 Coltmuir Street",
-          "addressLocality": "Glasgow",
-          "addressRegion": "Scotland",
-          "postalCode": "G22 6LU",
-          "addressCountry": "GB"
-        },
-        "areaServed": {
-          "@type": "City",
-          "name": "United Kingdom"
-        },
-        "openingHours": "Mo,Tu,We,Th,Fr,Sa,Su 09:00-23:00",
-        "image": "/images/blue-staffy-uk-official-logo0.png",
-        "logo": "/images/blue-staffy-uk-official-logo0.png",
-        "parentOrganization": {
-          "@id": "https://bluestaffyuk.uk/#organization"
-        },
-        "sameAs": [
-          "https://www.instagram.com/bluestaffyukingdom",
-          "https://x.com/bluestaffyuk",
-          "https://www.tiktok.com/@bluestaffyuk.uk"
-        ]
-      }
-    ],
+    "schema": [],
     "defects": [
       "empty-h1",
       "stub"

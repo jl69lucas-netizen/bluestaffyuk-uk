@@ -1,7 +1,12 @@
 ---
 import { SITE, NAV } from '../lib/site';
 import locations from '../../data/locations.json';
-const cities = [...locations].sort((a, b) => a.city.localeCompare(b.city));
+// Real cities only: two pages are national ("UK") and one is a second Glasgow page
+// ("Glasgow (breeding dogs)"), so listing them here would duplicate labels. All three stay
+// reachable from the /uk-locations/ hub, which labels rows by h1/title instead.
+const cities = locations
+  .filter((l) => l.city !== 'UK' && !l.city.includes('('))
+  .sort((a, b) => a.city.localeCompare(b.city, 'en-GB'));
 ---
 <footer class="site-footer" style="margin-top:64px;padding:40px 0;background:#1b2430;color:#e9ecf0">
   <div class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">

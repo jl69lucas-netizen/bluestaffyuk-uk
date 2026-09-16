@@ -6,7 +6,7 @@ description: "Learn how to find the perfect Blue Staffordshire Bull Terrier for 
 canonical: "/blue-staffy-blog-guides/"
 schema_type: CollectionPage
 faqs: []
-refresh_flags: ["archive-page", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image"]
+refresh_flags: ["legacy-schema-nodes-dropped:3", "archive-page", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image"]
 ---
 
 ## [Buy Staffy Puppies for Sale UK](/buy-staffy-puppies-for-sale-uk/)

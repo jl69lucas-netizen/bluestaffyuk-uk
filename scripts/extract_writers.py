@@ -88,8 +88,14 @@ def meta_dict(page):
     robots = page.robots or "index, follow"
     if page.canonical in NOINDEX_PATHS:
         robots = "noindex, follow"
+    if "stub" in page.defects:
+        # Interim call from Task 9: the thin (4-word) location pages stay out of the index
+        # until project 5 rebuilds them, so a crawl never sees the placeholder prose.
+        robots = "noindex, follow"
+        if "stub-noindexed" not in page.refresh_flags:
+            page.refresh_flags.append("stub-noindexed")
     return {"title": page.title, "description": page.description, "canonical": page.canonical,
-            "robots": robots, "ogType": page.og_type or "article",
+            "robots": robots, "ogType": page.og_type or "article", "h1": page.h1,
             "schema": page.schema}
 
 
@@ -244,6 +250,48 @@ def recount(page, body_html):
         page.refresh_flags.append("old-price:%s" % m.group(0))
 
 
+LEGACY_SITEWIDE_TYPES = {"WebSite", "BreadcrumbList", "Organization", "PetStore",
+                         "LocalBusiness"}
+
+
+def _types_of(node):
+    t = node.get("@type") if isinstance(node, dict) else None
+    if isinstance(t, str):
+        return {t}
+    if isinstance(t, list):
+        return set(x for x in t if isinstance(x, str))
+    return set()
+
+
+def dedupe_legacy_schema(schema):
+    """Drop the sitewide entities the old Rank Math graph repeated on every page.
+
+    Schema.astro now emits LocalBusiness, WebSite and BreadcrumbList itself from
+    data/settings.json, so carrying the legacy copies through would ship two of each with
+    conflicting @ids. Page-specific nodes (WebPage, Article, FAQPage, VideoObject,
+    ImageObject, Person, Place, ...) are kept verbatim. Returns (schema, dropped).
+    """
+    dropped = 0
+    out_blocks = []
+    for block in schema:
+        if isinstance(block, dict) and isinstance(block.get("@graph"), list):
+            kept = []
+            for node in block["@graph"]:
+                if _types_of(node) & LEGACY_SITEWIDE_TYPES:
+                    dropped += 1
+                    continue
+                kept.append(node)
+            block = dict(block, **{"@graph": kept})
+            if not kept:
+                continue
+        elif _types_of(block) & LEGACY_SITEWIDE_TYPES:
+            # A top-level block that is solely one of the sitewide entities.
+            dropped += 1
+            continue
+        out_blocks.append(block)
+    return out_blocks, dropped
+
+
 def write_rich_page(page, out):
     rel = page.url_path.strip("/")
     d = out / "src/pages" / rel if rel else out / "src/pages"
@@ -253,7 +301,8 @@ def write_rich_page(page, out):
     layout_rel = "../" * depth + "layouts/BaseLayout.astro"
     f.write_text(astro_frontmatter(page, layout_rel) +
                  "<BaseLayout title={meta.title} description={meta.description} canonical={meta.canonical} "
-                 "robots={meta.robots} ogType={meta.ogType} schema={meta.schema}>\n"
+                 "robots={meta.robots} ogType={meta.ogType} schema={meta.schema} "
+                 "crumbTitle={meta.h1 || meta.title}>\n"
                  "  <article class=\"container container-text prose-migrated\">\n"
                  "    <Fragment set:html={body} />\n  </article>\n"
                  "</BaseLayout>\n", encoding="utf-8")
@@ -310,6 +359,9 @@ def run(src, out):
         mentions = old_pup_mentions(page.body_html)
         if mentions:
             page.refresh_flags.append("old-pup-names-in-prose:%d" % mentions)
+        page.schema, legacy_dropped = dedupe_legacy_schema(page.schema)
+        if legacy_dropped:
+            page.refresh_flags.append("legacy-schema-nodes-dropped:%d" % legacy_dropped)
         page.body_html = rewrite_image_srcs(page.body_html)
         page.schema = rewrite_schema_urls(page.schema)
         if kind == "rich":
@@ -321,4 +373,10 @@ def run(src, out):
         pages.append(page)
     write_locations(locs, out)
     write_page_map(pages, out, src)
-    print("extracted %d pages (%d locations)" % (len(pages), len(locs)))
+    seen = set(p.canonical for p in pages)
+    for path in NOINDEX_PATHS:
+        if path not in seen:
+            print("WARNING: NOINDEX_PATHS entry %s matched no page — the rule is dead" % path)
+    stubs = len([p for p in pages if "stub-noindexed" in p.refresh_flags])
+    print("extracted %d pages (%d locations); %d stub page(s) noindexed"
+          % (len(pages), len(locs), stubs))

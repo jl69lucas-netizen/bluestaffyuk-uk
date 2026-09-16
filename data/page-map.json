@@ -15,7 +15,9 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:3"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -286,7 +288,8 @@
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-pup-schema-images-removed:3"
+        "old-pup-schema-images-removed:3",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -382,7 +385,8 @@
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -514,7 +518,8 @@
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-pup-schema-images-removed:3"
+        "old-pup-schema-images-removed:3",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -647,7 +652,8 @@
         "old-price:£300",
         "old-price:£850",
         "old-price:£1,200",
-        "old-pup-schema-images-removed:3"
+        "old-pup-schema-images-removed:3",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -867,7 +873,8 @@
       "refresh_flags": [
         "wp-form-removed",
         "old-price:£850",
-        "old-price:£1,200"
+        "old-price:£1,200",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1126,7 +1133,8 @@
         "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1200",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1235,7 +1243,9 @@
       ],
       "defects": [],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:3"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1272,7 +1282,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "wp-form-removed"
+        "wp-form-removed",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1314,7 +1325,8 @@
       "defects": [],
       "phone_hits": 1,
       "refresh_flags": [
-        "wp-form-removed"
+        "wp-form-removed",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1616,7 +1628,8 @@
         "old-price:£1,000",
         "old-price:£1,200",
         "old-price:£850",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1634,7 +1647,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1699,7 +1715,8 @@
         "old-price:£1,000",
         "old-price:£1,100",
         "old-price:£1,200",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1718,7 +1735,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1735,7 +1755,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1794,7 +1817,8 @@
       "refresh_flags": [
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1860,7 +1884,8 @@
         "old-price:£1,000",
         "old-price:£1,100",
         "old-price:£1,200",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -1878,7 +1903,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1895,7 +1923,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -1953,7 +1984,8 @@
       "phone_hits": 1,
       "refresh_flags": [
         "old-pup-cards-removed:4",
-        "puppy-grid-emptied"
+        "puppy-grid-emptied",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2013,7 +2045,8 @@
       "refresh_flags": [
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2032,7 +2065,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2049,7 +2085,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2108,7 +2147,8 @@
       "refresh_flags": [
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2168,7 +2208,8 @@
       "refresh_flags": [
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2187,7 +2228,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2247,7 +2291,8 @@
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
         "old-price:£1,000",
-        "old-price:£1,100"
+        "old-price:£1,100",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2387,7 +2432,8 @@
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£1,200",
-        "old-price:£300"
+        "old-price:£300",
+        "legacy-schema-nodes-dropped:4"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2447,7 +2493,8 @@
       "refresh_flags": [
         "old-pup-cards-removed:4",
         "puppy-grid-emptied",
-        "old-pup-names-in-prose:4"
+        "old-pup-names-in-prose:4",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2466,7 +2513,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2564,7 +2614,8 @@
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
-        "old-price:£1,200"
+        "old-price:£1,200",
+        "legacy-schema-nodes-dropped:2"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
@@ -2582,7 +2633,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2599,7 +2653,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2617,7 +2674,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2634,7 +2694,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2652,7 +2715,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2670,7 +2736,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2688,7 +2757,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -2706,7 +2778,10 @@
         "stub"
       ],
       "phone_hits": 1,
-      "refresh_flags": [],
+      "refresh_flags": [
+        "legacy-schema-nodes-dropped:2",
+        "stub-noindexed"
+      ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
     },
@@ -3019,7 +3094,8 @@
         "old-price:£1,200",
         "old-price:£850",
         "old-price:£850",
-        "old-pup-schema-images-removed:3"
+        "old-pup-schema-images-removed:3",
+        "legacy-schema-nodes-dropped:3"
       ],
       "baseline_gsc": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk",
       "baseline_bing": "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"

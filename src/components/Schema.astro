@@ -1,5 +1,5 @@
 ---
-import { SITE, SITE_URL, abs } from '../lib/site';
+import { SITE, SITE_URL, abs, crumbs } from '../lib/site';
 interface Props { extra?: unknown[]; path: string; title: string }
 const { extra = [], path, title } = Astro.props;
 const org: Record<string, unknown> = {
@@ -11,10 +11,10 @@ const org: Record<string, unknown> = {
 };
 if (SITE.phone !== 'PHONE_PLACEHOLDER') org.telephone = SITE.phone;
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: SITE.site_name };
-const crumbs = path.split('/').filter(Boolean);
-const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
-  { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
-  ...crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 2, name: i === crumbs.length - 1 ? title : c.replace(/-/g, ' '), item: abs('/' + crumbs.slice(0, i + 1).join('/') + '/') })) ] };
-const blocks = [org, website, ...(crumbs.length ? [breadcrumb] : []), ...extra.filter((b) => b && typeof b === 'object')];
+// Same trail the visible breadcrumb renders, so the two can never disagree.
+const trail = crumbs(path, title);
+const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+  itemListElement: trail.map((c, i) => ({ '@type': 'ListItem', position: i + 1, name: c.label, item: abs(c.href) })) };
+const blocks = [org, website, ...(trail.length > 1 ? [breadcrumb] : []), ...extra.filter((b) => b && typeof b === 'object')];
 ---
 {blocks.map((b) => <script type="application/ld+json" set:html={JSON.stringify(b).replace(/</g, '\\u003c')} />)}

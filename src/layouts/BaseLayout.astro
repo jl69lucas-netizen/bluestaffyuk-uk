@@ -5,8 +5,8 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
 import { SITE, abs } from '../lib/site';
-interface Props { title: string; description: string; canonical?: string; robots?: string; ogType?: string; ogImage?: string; schema?: unknown[] }
-const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', ogType = 'website', ogImage = SITE.logo, schema = [] } = Astro.props;
+interface Props { title: string; description: string; canonical?: string; robots?: string; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
+const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', ogType = 'website', ogImage = SITE.logo, schema = [], crumbTitle = title } = Astro.props;
 const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
 ---
 <!doctype html>
@@ -21,12 +21,12 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
   <meta property="og:type" content={ogType} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={abs(path)} /><meta property="og:image" content={abs(ogImage)} /><meta property="og:locale" content="en_GB" /><meta property="og:site_name" content={SITE.site_name} />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href={SITE.logo} />
-  <Schema extra={schema} path={path} title={title} />
+  <Schema extra={schema} path={path} title={crumbTitle} />
 </head>
 <body>
-  <a href="#main" style="position:absolute;left:-9999px">Skip to content</a>
+  <a href="#main" class="skip-link">Skip to content</a>
   <SiteHeader />
-  <Breadcrumb path={path} title={title} />
+  <Breadcrumb path={path} title={crumbTitle} />
   <main id="main"><slot /></main>
   <SiteFooter />
 </body>

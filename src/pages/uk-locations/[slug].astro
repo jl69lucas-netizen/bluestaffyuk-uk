@@ -8,7 +8,7 @@ export function getStaticPaths() {
 
 const { loc } = Astro.props;
 ---
-<BaseLayout title={loc.title} description={loc.description} canonical={`/uk-locations/${loc.slug}/`} robots={loc.robots || 'index, follow'} ogType={loc.og_type || 'article'} schema={loc.schema}>
+<BaseLayout title={loc.title} description={loc.description} canonical={`/uk-locations/${loc.slug}/`} robots={loc.robots || 'index, follow'} ogType={loc.og_type || 'article'} schema={loc.schema} crumbTitle={loc.h1 || loc.city}>
   <article class="container container-text prose-migrated">
     <Fragment set:html={loc.body_html} />
   </article>

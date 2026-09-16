@@ -173,6 +173,13 @@ def main(src_site):
     # Cold start: on a fresh clone there are no generated pages yet, so nothing references
     # any image and the bake would copy nothing. Extract once from the stored manifest first
     # so the referenced-stem scan below has pages to read and one bake converges.
+    #
+    # SIDE EFFECT, deliberate: apply_manifest() re-runs the whole extraction, so this
+    # rewrites every generated file (src/pages/**, data/locations.json, src/content/blog/*)
+    # from the source clone before a single image is baked. That is safe because generated
+    # output is a pure function of the clone plus the manifest, but it means `npm run bake`
+    # on a fresh checkout also regenerates the pages — and it only fires when nothing is
+    # generated yet, so a normal repeat bake never triggers it.
     if not referenced_stems():
         apply_manifest(src_site, load_manifest())
     out = ROOT / "public/images"
