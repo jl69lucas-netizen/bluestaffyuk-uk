@@ -2,7 +2,14 @@
   "site_name": "Blue Staffy UK",
   "tagline": "Your Trusted UK Blue Staffy Breeders",
   "breeder_name": "Lisa Bright",
-  "address": { "street": "40 Coltmuir Street", "city": "Glasgow", "postcode": "G22 6LU", "country": "GB", "lat": 55.891560, "lng": -4.256577 },
+  "address": {
+    "street": "40 Coltmuir Street",
+    "city": "Glasgow",
+    "postcode": "G22 6LU",
+    "country": "GB",
+    "lat": 55.89156,
+    "lng": -4.256577
+  },
   "phone": "PHONE_PLACEHOLDER",
   "email": "staffies@bluestaffyuk.uk",
   "hours": "Mo-Su 09:00-23:00",
@@ -19,6 +26,11 @@
     "instagram": "https://www.instagram.com/bluestaffyukingdom",
     "facebook": "https://www.facebook.com/bluestaffyuk"
   },
-  "youtube_embeds": ["g9iV9RVr_Sk", "g88qOo9C94c", "fXhu9jDS6CA"],
-  "logo": "/images/blue-staffy-uk-official-logo0.png"
+  "youtube_embeds": [
+    "g9iV9RVr_Sk",
+    "g88qOo9C94c",
+    "fXhu9jDS6CA"
+  ],
+  "logo": "/images/blue-staffy-uk-official-logo0.png",
+  "logo_header": "/images/blue-staffy-uk-header-logo-88.webp"
 }

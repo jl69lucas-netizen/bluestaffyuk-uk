@@ -8,7 +8,21 @@ const action = live ? `https://formspree.io/f/${fid}` : '#contact';
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 ---
 <section id="contact" class="container container-text">
-  <style>.req { font-weight: 400; font-size: 13px; color: var(--color-ink-muted, #5a5a5a); }</style>
+  <style>
+    .req { font-weight: 400; font-size: 13px; color: var(--color-ink-muted, #5a5a5a); }
+    /* An <input> without an explicit width uses its `size` default (~20 characters, 454px
+       here), and a grid item's min-width is auto, so the intrinsic width wins and the
+       document scrolls sideways. Measured at 375px: "document overflows by 79px —
+       offenders: label | span.req | input". box-sizing keeps the padding inside the 100%. */
+    form[data-form="contact"] label { min-width: 0; }
+    form[data-form="contact"] input,
+    form[data-form="contact"] select,
+    form[data-form="contact"] textarea {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+  </style>
   <h2>Enquire About a Puppy</h2>
   <form method="POST" action={action} data-form="contact" data-live={String(live)} style="display:grid;gap:14px;max-width:560px">
     <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />

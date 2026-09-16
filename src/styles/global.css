@@ -6,6 +6,22 @@
   --color-rule: #dad6cc;
 }
 :root { --hdr: 72px; --container: 1200px; --text-max: 760px; }
+/* --hdr is the sticky header's height, and every in-page jump target is offset by it
+   (`[id] { scroll-margin-top: calc(var(--hdr) + 16px) }` in @layer base below).
+   At 375px the header wraps to two rows and actually measures 121px, so a 72px --hdr
+   landed every anchor 25px UNDER the pinned chrome — the header covered the heading the
+   reader had just jumped to. Measured by the render harness (nav-jump-target-lands:
+   "1 of 1 in-page links land outside 113-181px, measured chrome 121px"), on 17 of 17
+   pages at vp375 and on none at vp768/vp1280, where the header is 73-75px and 72 is right.
+   The header already renders at 121px here, so raising min-height to 120 changes nothing
+   visually; it only stops --hdr lying to the scroll offset.
+
+   This override lives BESIDE the :root above and deliberately NOT inside @layer base:
+   the base :root declaration is unlayered, and an unlayered declaration beats a layered
+   one regardless of media query or source order. The first attempt put it in @layer base
+   and the harness reported the identical 29 rows on the next run — the rule parsed, applied
+   to nothing, and looked like a fix. */
+@media (max-width: 640px) { :root { --hdr: 120px; } }
 
 @utility container { max-width: var(--container); margin-inline: auto; padding-inline: 24px; }
 @utility container-text { max-width: var(--text-max); margin-inline: auto; }
@@ -15,6 +31,7 @@
   body { margin: 0; font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--color-ink); background: #fff; }
   main p, main li { max-width: 70ch; }
   [id] { scroll-margin-top: calc(var(--hdr) + 16px); }
+
   img { max-width: 100%; height: auto; }
   .skip-link { position: absolute; left: -9999px; top: 8px; background: #fff; padding: 8px 12px; z-index: 100; }
   .skip-link:focus { left: 8px; }

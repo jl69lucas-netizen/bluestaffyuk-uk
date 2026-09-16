@@ -5,7 +5,11 @@ const here = Astro.url.pathname;
 <header class="site-header" style="position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--color-rule);min-height:var(--hdr)">
   <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:var(--hdr)">
     <a href="/" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit;font-weight:600">
-      <img src={SITE.logo} alt={`${SITE.site_name} logo`} width="44" height="44" decoding="async" />
+      {/* logo_header, not logo: the 1024px master is painted at 44 CSS px here, which is a
+          23x oversize on every page of the site (1.7MB for a 44px mark) and the single most
+          frequent row in the first render-harness baseline — 51 of 51 page-viewports.
+          SITE.logo stays the master for JSON-LD, OG and the favicon, which all want it. */}
+      <img src={SITE.logo_header} alt={`${SITE.site_name} logo`} width="44" height="44" decoding="async" />
       <span>{SITE.site_name}</span>
     </a>
     <nav aria-label="Main"><ul style="display:flex;gap:18px;list-style:none;margin:0;padding:0;flex-wrap:wrap">
