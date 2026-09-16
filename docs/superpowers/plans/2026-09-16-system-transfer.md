@@ -2280,6 +2280,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 15: Harness — the DUP whitelist and the remaining fixtures
 
+> Execution note (2026-09-16): re-basing `HEADER_WHITELIST`/`HEAD_TERMS` changes the homepage board's `record_hash`. After this task, rerun `python3 scripts/build_page_board.py index` and hand the controller `docs/artifacts/boards/index.html` to republish at the same Artifact URL; expect `board_gate.py index` to drop from 5 to 3 FAILs (the three carried duplicates).
+
 **Files:** Modify `scripts/dup_content_audit.py`, `tests/render/lib/dupCorpus.ts`, `tests/render/fixtures/dup_corpus/*`, and the ~45 remaining marker-carrying files under `tests/render/`
 
 - [ ] **Step 1: Measure BSUK's real chrome, do not guess**
@@ -2677,6 +2679,8 @@ project-2 entry. Commit that with Task 20.
 ---
 
 ### Task 20: Close-out — run everything twice, the gate report, the Artifacts
+
+> Execution note (2026-09-16): report the proving board's approval state from `data/boards/index.json` `approval`, not from ledger slot emptiness (the ledger row is all-empty by design until project 3). List the three carried header duplicates by heading and page.
 
 - [ ] **Step 1: Full run, twice**
 
