@@ -83,5 +83,12 @@
   {"src": "scripts/final_page_audit.py", "dst": "scripts/final_page_audit.py", "mode": "rebase", "notes": "SLUGS/BIRDS/COMPARISONS/FORSALE lists; $185/$350 shipping; PBFD; method labels; emoji; word bands; airport codes; add a non-zero exit"},
   {"src": "scripts/page_hardening_scan.py", "dst": "scripts/page_hardening_scan.py", "mode": "rebase", "notes": "SPECIES_GENERA; skills/ citations -> .claude/skills/; cag-library component paths; GA4 gateway id"},
   {"src": "tests/test_final_page_audit.py", "dst": "tests/py/test_final_page_audit.py", "mode": "rebase", "notes": "22 tests; bird->puppy fixtures, GBP shipping, no PBFD"},
-  {"src": "tests/test_page_hardening_new_checks.py", "dst": "tests/py/test_page_hardening.py", "mode": "rebase", "notes": "45 tests; only the fixture HTML changes, every check is domain-neutral"}
+  {"src": "tests/test_page_hardening_new_checks.py", "dst": "tests/py/test_page_hardening.py", "mode": "rebase", "notes": "45 tests; only the fixture HTML changes, every check is domain-neutral"},
+  {"src": "scripts/aeo_audit.py", "dst": "scripts/aeo_audit.py", "mode": "rebase", "notes": "LABELED_METHODS, BINOMIAL, BREEDER, PLACE, CREDENTIAL regexes; skills/ citations"},
+  {"src": "scripts/evidence_audit.py", "dst": "scripts/evidence_audit.py", "mode": "rebase", "notes": "FACT_SIGNAL regex; page-type heuristics; evidence-budgets"},
+  {"src": "scripts/form_contract_audit.py", "dst": "scripts/form_contract_audit.py", "mode": "rebase", "notes": "ENDPOINT from the environment; LOCATION regex; the seven-field contract becomes BSUK's"},
+  {"src": "tests/test_aeo_audit.py", "dst": "tests/py/test_aeo_audit.py", "mode": "rebase", "notes": "10 tests; Canis familiaris fixtures; the labeled-method check is inert"},
+  {"src": "tests/test_evidence_audit.py", "dst": "tests/py/test_evidence_audit.py", "mode": "rebase", "notes": "19 tests; fixture prose only, every assertion stands"},
+  {"src": "tests/test_evidence_per_slug_overrides.py", "dst": "tests/py/test_evidence_per_slug_overrides.py", "mode": "rebase", "notes": "7 tests; inline budgets fixture until Task 9 writes evidence-budgets.json"},
+  {"src": "tests/test_form_contract_audit.py", "dst": "tests/py/test_form_contract_audit.py", "mode": "rebase", "notes": "17 tests; BSUK's six-field form, PUBLIC_FORMSPREE_ID via monkeypatch"}
 ]
