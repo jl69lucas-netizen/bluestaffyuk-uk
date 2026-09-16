@@ -286,4 +286,13 @@ re-base covers every marker hit under `tests/render/`, about 57 files, not six.
   Cloudflare, 40–60, 50 cities/states); DEFRA only beside "transport"; no placeholder inside
   a heading or a path segment; no lifespan other than 12–14 years. Rule 10 is now enforced,
   not asserted.
+- Form check unset behaviour (Task 14 quality review): §5 says `form.ts` "throws when
+  unset". A module-scope throw aborts every family in the harness at import, so the check
+  instead reads `PUBLIC_FORMSPREE_ID` lazily inside `run()` and, when unset, returns a
+  single REFUSED defect row with `examined: 0` — the FORM family fails visibly and the other
+  nine families still run, matching `scripts/form_contract_audit.py`'s lazy read. Both
+  gates derive the field contract from `data/page-map.json` `kind` (rich → full,
+  blog → short, location/hub → none), never from a hard-coded slug list. Fixtures carry
+  `FORM_ID_FROM_ENV` in the action and the meta spec substitutes the env value at test time,
+  so the id never sits in a committed file under `tests/`, `scripts/` or `src/`.
 
