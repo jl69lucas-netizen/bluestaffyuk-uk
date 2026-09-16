@@ -24,7 +24,7 @@
       },
       "mode": {
         "enum": ["copy", "rename", "rebase", "deferred"],
-        "description": "copy = byte-identical at the same relative path; rename = byte-identical at a new path; rebase = first copy then hand-edited, never overwritten again; deferred = recorded, not written."
+        "description": "copy = byte-identical at the same relative path; rename = byte-identical at a new path; rebase = first copy then hand-edited, never overwritten again; deferred = recorded, not written. MODES in scripts/port_from_cag.py is the authority for this enum; keep the two in step."
       },
       "notes": {
         "type": "string",
