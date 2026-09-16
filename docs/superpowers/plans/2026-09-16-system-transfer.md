@@ -15,7 +15,7 @@
 - Source repo is `/Users/apple/Downloads/CAG` (read-only; never modify it, never `git` in it).
 - Python tests: `python3 -m pytest tests/py -q`. Gates: `npm run check:all`.
 - Commit after every task with the trailer `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
-- Branch is `foundation`. Never add a git remote. Never push.
+- Branch is `system-transfer` (cut from `foundation`). Never add a git remote. Never push.
 - No credential value may appear in any committed file, report, Artifact, or on stdout.
 - A parrot marker anywhere in a scanned root is a defect to fix, never an exception to record. The one structural exception is `data/port-manifest.json` itself, which necessarily carries `cag-` source paths.
 
