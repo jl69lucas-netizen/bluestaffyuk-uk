@@ -161,8 +161,9 @@ fixtures from project 1. Project 2 changes:
 
 - `tests/render/checks/form.ts` reads `PUBLIC_FORMSPREE_ID` from the environment and throws
   when it is unset, so a missing id fails the meta gate rather than silently matching
-  nothing. The contract's field set becomes BSUK's: puppy select, collection option, name,
-  email, phone, message. `known_good/form-inquiry-contract.html` and
+  nothing. The contract's field set becomes BSUK's as built: `name`, `email`, `phone`,
+  `location`, `puppy` (select with the Glasgow collection option), `message`, the
+  `_gotcha` honeypot, and hidden `_next` and `_subject`. `known_good/form-inquiry-contract.html` and
   `known_broken/form-inquiry-contract.html` are regenerated from the built contact page.
 - The DUP whitelist in `scripts/dup_content_audit.py` (`WHITELIST_SNIPPETS`,
   `WHITELIST_STEMS`, `HEADER_WHITELIST`, `HEAD_TERMS`) is re-measured against BSUK's own
