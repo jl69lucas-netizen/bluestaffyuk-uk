@@ -253,3 +253,16 @@ No credential value appears in any committed file, report, or Artifact.
 Components and the design system (project 3); rewriting any page content; the marketing,
 email, social and competitor agents; canvas and thumbnail scripts; GSC and GA4 data pulls;
 the new domain, phone number, pagefind index and IndexNow submissions (project 6).
+
+## 11. Amendments from planning (2026-09-16)
+
+The implementation plan (`docs/superpowers/plans/2026-09-16-system-transfer.md`, closing
+section "Deviations from the spec, recorded") found eleven places where CAG's code
+contradicts this spec. They stand as written there and override the sections above where
+they conflict. The material ones: `pageboard.py` absorbs the two token helpers from the
+unported `board_canvas.py`; `scripts/dup_content_audit.py` joins the marker gate's fixed
+scan roots; the board file lives at `data/boards/<slug>.json` with nested slugs flattened
+`/` → `--`; §3's agent list is the 36 names it prints, not "about 25"; CAG has 12
+`framework-*` skills, not 14; `final_page_audit.py` gains a non-zero exit on FAIL;
+`perf_audit.py` brings its two `scripts/lighthouse/agentic-*.mjs` helpers; the harness
+re-base covers every marker hit under `tests/render/`, about 57 files, not six.
