@@ -19,6 +19,7 @@ Usage:
   python3 scripts/port_from_cag.py --dry-run       # report, write nothing
   python3 scripts/port_from_cag.py --only rules/   # rows whose dst starts with this prefix
   python3 scripts/port_from_cag.py --cag /path     # override the source root
+  python3 scripts/port_from_cag.py --manifest P --dest D   # override manifest / destination
 
 Exits non-zero when any non-deferred row's src is missing, so a manifest that drifts
 from CAG fails loudly instead of half-applying.
@@ -47,6 +48,20 @@ def validate(rows, schema_path=SCHEMA):
     "unknown mode") name the actual defect rather than a regex the reader has to decode.
     """
     import jsonschema
+
+    if not isinstance(rows, list):
+        raise ValueError("manifest invalid at (root): expected a list of rows, got %s"
+                         % type(rows).__name__)
+    for i, r in enumerate(rows):
+        if not isinstance(r, dict):
+            raise ValueError("manifest invalid at %d: expected an object, got %s"
+                             % (i, type(r).__name__))
+        for key in ("src", "dst", "mode"):
+            if key not in r:
+                raise ValueError("manifest invalid at %d: missing required key %r" % (i, key))
+            if not isinstance(r[key], str):
+                raise ValueError("manifest invalid at %d: %s must be a string, got %s"
+                                 % (i, key, type(r[key]).__name__))
 
     seen = {}
     for i, r in enumerate(rows):
@@ -100,11 +115,15 @@ def main(argv=None):
     ap.add_argument("--dry-run", action="store_true", help="report, write nothing")
     ap.add_argument("--only", default="", help="apply only rows whose dst starts with this prefix")
     ap.add_argument("--cag", default=str(CAG), help="source repo root (default %s)" % CAG)
+    ap.add_argument("--manifest", default=str(MANIFEST),
+                    help="manifest to apply (default %s)" % MANIFEST)
+    ap.add_argument("--dest", default=str(ROOT),
+                    help="destination repo root (default %s)" % ROOT)
     a = ap.parse_args(argv)
-    rows = validate(load_manifest())
+    rows = validate(load_manifest(a.manifest))
     if a.only:
         rows = [r for r in rows if r["dst"].startswith(a.only)]
-    stats = apply_manifest(rows, cag=a.cag, dry_run=a.dry_run)
+    stats = apply_manifest(rows, cag=a.cag, root=a.dest, dry_run=a.dry_run)
     for p in stats["missing_paths"]:
         print("MISSING SOURCE: %s" % p)
     print("examined %d rows; applied %d, skipped-existing %d, deferred %d, missing %d"

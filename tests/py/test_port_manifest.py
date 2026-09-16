@@ -1,7 +1,13 @@
 import json
+import pathlib
+import subprocess
+import sys
+
 import pytest
 
 from port_from_cag import apply_manifest, load_manifest, validate
+
+SCRIPT = pathlib.Path(__file__).resolve().parents[2] / "scripts/port_from_cag.py"
 
 
 def _row(src, dst, mode="copy", notes="n"):
@@ -96,3 +102,39 @@ def test_real_manifest_validates():
     rows = load_manifest()
     validate(rows)
     assert len(rows) > 0
+
+
+def test_validate_rejects_row_missing_mode():
+    with pytest.raises(ValueError, match="manifest invalid at 0"):
+        validate([{"src": "a.md", "dst": "b.md", "notes": "n"}])
+
+
+def test_validate_rejects_non_dict_row():
+    with pytest.raises(ValueError, match="manifest invalid at 0"):
+        validate(["a.md"])
+
+
+def _run_script(tmp_path, cag, rows):
+    manifest = tmp_path / "manifest.json"
+    manifest.write_text(json.dumps(rows), encoding="utf-8")
+    return subprocess.run(
+        [sys.executable, str(SCRIPT), "--cag", str(cag),
+         "--manifest", str(manifest), "--dest", str(tmp_path / "bsuk")],
+        capture_output=True, text=True)
+
+
+def test_cli_exits_nonzero_when_source_missing(tmp_path):
+    cag = _src_tree(tmp_path, "other.md")
+    proc = _run_script(tmp_path, cag, [_row("a.md", "x/a.md")])
+    assert proc.returncode == 1
+    assert proc.stdout.strip().splitlines()[-1].endswith(
+        "examined 1 rows; applied 0, skipped-existing 0, deferred 0, missing 1")
+
+
+def test_cli_exits_zero_when_source_present(tmp_path):
+    cag = _src_tree(tmp_path, "a.md")
+    proc = _run_script(tmp_path, cag, [_row("a.md", "x/a.md")])
+    assert proc.returncode == 0, proc.stdout + proc.stderr
+    assert proc.stdout.strip().splitlines()[-1].endswith(
+        "examined 1 rows; applied 1, skipped-existing 0, deferred 0, missing 0")
+    assert (tmp_path / "bsuk/x/a.md").read_text() == "source a.md\n"
