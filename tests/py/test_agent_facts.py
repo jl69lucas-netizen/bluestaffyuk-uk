@@ -63,6 +63,14 @@ YEARS = re.compile(r"(?i)\b(years?|yrs?)\b")
 # A digit glued to letters is an identifier (`h3`, `70de`, `G-M...`), not a quantity.
 NUMBER = re.compile(r"(?<![A-Za-z0-9-])\d+(?![A-Za-z0-9])")
 ALLOWED_YEARS = {"12", "13", "14"}
+# "years" is not always a lifespan. A span of DATA ("3 years of GSC data"), a duration of
+# TRADING ("5 years running", "15 years' experience") and a calendar year are all ordinary
+# English that the lifespan rule would otherwise report as a claim about how long a
+# Staffordshire Bull Terrier lives. Narrow and documented, because the alternative is a
+# lint people learn to ignore: the escape needs one of these words in the same window, and
+# a bare calendar year 2020-2030 is a date, not an age.
+NOT_A_LIFESPAN = re.compile(
+    r"(?i)(of (GSC|GA4|search|history|data|records)|year[- ]on[- ]year|running|experience)")
 # "first-year cost", "year 1 total": a budgeting horizon, not a claim about how long the dog
 # lives. Narrow on purpose — only the literal ordinal-first-year phrasings, and only the
 # digit 1.
@@ -159,6 +167,8 @@ def violations(path: pathlib.Path):
             for num in NUMBER.findall(window):
                 if num == "1" and FIRST_YEAR.search(line):
                     continue
+                if NOT_A_LIFESPAN.search(window) or _is_year(num):
+                    continue
                 if num not in ALLOWED_YEARS:
                     bad("year figure %r near %r (the breed figure is 12–14)" % (num, ym.group(0)))
 
@@ -201,7 +211,9 @@ def test_the_lint_actually_fires(tmp_path):
     p.write_text("```js\nconst prices = {\n  blue and white Staffy: { low: 1700, high: 2500 }\n};\n```\n"
                  "```markdown\n## LICENCE_CLAIM_PLACEHOLDER Query Gap\n```\n"
                  "Lifetime estimate (40-60 yrs) £85,000–£250,000 from captive DEFRA-compliant breeders\n"
-                 "## LICENCE_CLAIM_PLACEHOLDER Writing Rules\n", encoding="utf-8")
+                 "## LICENCE_CLAIM_PLACEHOLDER Writing Rules\n"
+                 "Fetch /LICENCE_CLAIM_PLACEHOLDER/report\n"
+                 "A parrot lives 40 years.\n", encoding="utf-8")
     kinds = violations(p)
     assert any("unlocked amount" in v for v in kinds), kinds
     assert any("banned token" in v for v in kinds), kinds
@@ -210,4 +222,36 @@ def test_the_lint_actually_fires(tmp_path):
     assert any("used as a noun in a heading" in v for v in kinds), kinds
     assert any("bare numeral 2500" in v for v in kinds), kinds
     assert any("Query Gap" in v and "heading" in v for v in kinds), kinds
+    assert any("placeholder inside a route" in v for v in kinds), kinds
+    assert any("year figure '40'" in v for v in kinds), kinds
     assert any("object key with an unquoted space" in v for v in kinds), kinds
+
+
+# ── the escapes, proven to stay quiet ───────────────────────────────────────
+# A lint is only as good as the lines it DOESN'T report. These are the four shapes that
+# cost the rule its credibility if it fires on them, so each is pinned.
+@pytest.mark.parametrize("line", [
+    "Pull 3 years of GSC data.",
+    "5 years running",
+    "15 years' experience with the breed",
+    "Compare year-on-year: 2019 vs 2024.",
+    "Blue Staffies live 12\u201314 years.",
+    "Estimate Your First-Year Cost",
+    "Data from 2024 covering three years of records",
+])
+def test_these_lines_are_not_lifespan_claims(tmp_path, line):
+    p = tmp_path / "SKILL.md"
+    p.write_text(line + "\n", encoding="utf-8")
+    years = [v for v in violations(p) if "year figure" in v]
+    assert years == [], years
+
+
+@pytest.mark.parametrize("line", [
+    "A parrot lives 40 years.",
+    "Blue Staffies live 50\u201370 years.",
+    "Lifetime estimate (40-60 yrs)",
+])
+def test_these_lines_are_lifespan_claims(tmp_path, line):
+    p = tmp_path / "SKILL.md"
+    p.write_text(line + "\n", encoding="utf-8")
+    assert any("year figure" in v for v in violations(p)), violations(p)

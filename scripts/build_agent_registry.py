@@ -24,7 +24,13 @@ def parse(path):
     m = re.match(r"^---\n(.*?)\n---\n", text, re.S)
     if not m:
         raise ValueError("%s has no YAML frontmatter" % path.name)
-    fm = dict(re.findall(r"^([a-z_]+):\s*(.+)$", m.group(1), re.M))
+    # Scalar keys only. A block sequence (`tools:` written as a `-` list over several
+    # lines) is not parsed, because nothing here reads `tools` — every agent writes it
+    # inline. If that changes, this needs a real YAML parser rather than a wider regex.
+    fm = dict(re.findall(r"^([a-z_]+):[ \t]*(.+)$", m.group(1), re.M))
+    # `effort: "high"` and `effort: high` are the same declaration; a quoted value must not
+    # become an unknown tier.
+    fm = {k: v.strip().strip('"\'') for k, v in fm.items()}
     if "name" not in fm or "effort" not in fm:
         raise ValueError("%s frontmatter needs name and effort" % path.name)
     if fm["name"] != path.stem:
@@ -54,7 +60,14 @@ def build():
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
-    reg = build()
+    try:
+        reg = build()
+    except ValueError as e:
+        # A malformed agent is a defect in the agent, not in this script: say which file and
+        # what is wrong, and exit non-zero. A traceback here reads as a broken gate and
+        # sends the reader to the wrong file.
+        print("ERROR: %s" % e, file=sys.stderr)
+        return 1
     text = json.dumps(reg, indent=2) + "\n"
     if "--check" in argv:
         current = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
