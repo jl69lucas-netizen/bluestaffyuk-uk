@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!-- Foundation capture of the old live site's public HTML. The Formspree endpoint id
+     was scrubbed to FORM_ID_FROM_ENV (see tests/render/checks/form.ts) for spec §8
+     consistency: no credential-adjacent value in a committed file. No test reads it. -->
 <html lang="en-GB" prefix="og: https://ogp.me/ns#">
 <head><meta charset="UTF-8">
 <link rel="preload" as="image" href="/wp-content/uploads/blue-staffy-puppy-for-sale-uk.jpg" fetchpriority="high">
@@ -875,7 +878,7 @@ window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(argumen
       <p>New litters, breeder tips &amp; puppy availability &#8212; straight to your inbox</p>
     </div>
     <div class="bsuk-nl-body">
-      <form method="POST" action="https://formspree.io/f/xqegrzka">
+      <form method="POST" action="https://formspree.io/f/FORM_ID_FROM_ENV">
         <input type="hidden" name="_subject" value="Newsletter Sign-up &#8212; BlueStaffyUK">
         <input type="hidden" name="_next" value="https://bluestaffyuk.uk/thank-you-blue-staffy-puppies-journey/">
         <input type="hidden" name="form_type" value="newsletter">
@@ -1162,7 +1165,7 @@ window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(argumen
   </div>
   <div class="bsuk-form-body">
     <div class="bsuk-form-notice">⏰ <strong>Delivery Note:</strong> Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free).</div>
-    <form method="POST" action="https://formspree.io/f/xqegrzka" accept-charset="UTF-8">
+    <form method="POST" action="https://formspree.io/f/FORM_ID_FROM_ENV" accept-charset="UTF-8">
       <input type="hidden" name="_subject" value="New Puppy Enquiry — BlueStaffyUK">
       <input type="hidden" name="_next" value="https://bluestaffyuk.uk/thank-you-blue-staffy-puppies-journey/">
       <div class="bsuk-two-col">

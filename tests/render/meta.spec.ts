@@ -1317,62 +1317,115 @@ test.describe('form-inquiry-contract: zero-examined is a defect only where a for
  * for every slug shape it needs to cover.
  */
 test.describe('fieldChecksSkipped pins the field-contract exemption list', () => {
-  // BSUK's inventory is the mirror image of CAG's: exactly ONE page carries an inquiry
-  // form, so the exemption is an explicit allow-list and everything else is exempt.
-  // Verified against dist/ 2026-09-16 — 1 of 17 targets contains a <form> at all.
-  test('in scope: the contact page, which is the only page that ships ContactForm.astro', () => {
-    expect(fieldChecksSkipped('uk-blue-staffy-breeders-contact')).toBe(false);
-  });
-
-  test('exempt: every other page type, because none of them carries an inquiry form', () => {
+  // Routed by data/page-map.json `kind`, exactly as scripts/form_contract_audit.py routes
+  // it: rich → full, blog → short, location → none, and the hubs (absent from the map)
+  // → none by the slug fallback. "Exempt" therefore means "this page's inquiry forms, if
+  // it ever grows one, carry no field contract" — NOT "this page has no form today".
+  test('in scope: every rich and blog page, contact page included', () => {
     for (const s of [
+      'uk-blue-staffy-breeders-contact',
       'index',
       'buy-blue-staffy-puppies-uk',
-      'available-puppies/roman',
-      'available-puppies',
+      'privacy-policy-uk',
+      'blue-staffy-blog-guides',
+    ]) {
+      expect(fieldChecksSkipped(s), s).toBe(false);
+    }
+  });
+
+  test('exempt: the uk-locations cluster and the hubs', () => {
+    for (const s of [
       'uk-locations',
       'uk-locations/blue-staffy-puppies-birmingham',
-      'blue-staffy-blog-guides',
-      'privacy-policy-uk',
+      'uk-locations/staffy-puppies-for-sale-glasgow',
+      'available-puppies',
+      'blog',
     ]) {
       expect(fieldChecksSkipped(s), s).toBe(true);
     }
   });
 });
 
-/** `contractFor` picks which field list a page's inquiry forms must carry. The field lists
- *  themselves are CAG's and are pinned by the fixtures — see the note at the top of
- *  checks/form.ts for why the port deliberately did not rewrite them. */
+/** `contractFor` picks which field list a page's inquiry forms must carry, from
+ *  data/page-map.json `kind`. It must agree with scripts/form_contract_audit.py on every
+ *  slug or the two gates give different verdicts on the same form. */
 test.describe('contractFor pins the per-slug field contract', () => {
-  test('full: the contact page', () => {
+  test('full: rich pages', () => {
     expect(contractFor('uk-blue-staffy-breeders-contact')).toBe('full');
+    expect(contractFor('index')).toBe('full');
+    expect(contractFor('buy-blue-staffy-puppies-uk')).toBe('full');
   });
-  test('none: every page with no inquiry form', () => {
-    expect(contractFor('index')).toBe('none');
+  test('short: blog-kind pages, and blog/* posts absent from the map', () => {
+    expect(contractFor('blue-staffy-blog-guides')).toBe('short');
+    expect(contractFor('blog/a-post-built-after-the-map')).toBe('short');
+  });
+  test('none: the locations cluster and the hubs', () => {
     expect(contractFor('uk-locations/blue-staffy-puppies-birmingham')).toBe('none');
-    expect(contractFor('buy-blue-staffy-puppies-uk')).toBe('none');
+    expect(contractFor('uk-locations')).toBe('none');
+    expect(contractFor('available-puppies')).toBe('none');
   });
 });
 
 /**
- * `formExpected` decides when the zero-examined defect fires, and it must agree with the
- * exemption above rather than with `pageType` alone. On CAG the discriminator was pageType
- * plus a slug escape hatch for two for-sale pages that carried only the search form; on
- * BSUK it is the slug outright, because the one page with a form is `interior`-typed and
- * five other `interior` pages have none — a pageType rule would emit five false rows.
+ * `formExpected` decides when the zero-examined defect fires. It is the slug allow-list,
+ * not the contract and not `pageType`: on BSUK the one page with a form is `interior`-typed
+ * and five other `interior` pages have none, so a pageType rule would emit five false rows,
+ * and a contract rule would emit one for every rich page.
  */
 test.describe('formExpected pins the zero-examined exemption list', () => {
   test('expected: the contact page only', () => {
-    expect(formExpected('uk-blue-staffy-breeders-contact', 'interior')).toBe(true);
+    expect(formExpected('uk-blue-staffy-breeders-contact')).toBe(true);
   });
 
   test('not expected: other interior pages, home, puppy, hub, location and blog', () => {
-    expect(formExpected('blue-staffy-health-uk', 'interior')).toBe(false);
-    expect(formExpected('index', 'home')).toBe(false);
-    expect(formExpected('available-puppies/roman', 'puppy')).toBe(false);
-    expect(formExpected('available-puppies', 'hub')).toBe(false);
-    expect(formExpected('uk-locations/blue-staffy-puppies-birmingham', 'location')).toBe(false);
-    expect(formExpected('blue-staffy-blog-guides', 'blog')).toBe(false);
+    for (const s of [
+      'blue-staffy-health-uk',
+      'index',
+      'available-puppies/roman',
+      'available-puppies',
+      'uk-locations/blue-staffy-puppies-birmingham',
+      'blue-staffy-blog-guides',
+    ]) {
+      expect(formExpected(s), s).toBe(false);
+    }
+  });
+});
+
+/**
+ * The 'short' contract has no page carrying a form today, so the generic fixture loop —
+ * pinned to the contact slug — never takes that branch. Without this, `SHORT` could be
+ * emptied or mis-spelled and every meta test would still pass.
+ */
+test.describe('form-inquiry-contract: the short (blog) contract is exercised', () => {
+  const URL = `${FIXTURE_BASE}/tests/render/fixtures/known_good/form-inquiry-contract-blog-short.html`;
+  const check = () => registry.find((x) => x.id === 'form-inquiry-contract')!;
+
+  test('a blog-kind page with name/email/message only is clean', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    const res = await page.goto(URL);
+    expect(res?.status(), 'fixture must load').toBe(200);
+    await substituteFormEndpoint(page);
+    expect(contractFor('blue-staffy-blog-guides'), 'fixture must take the short branch').toBe('short');
+    const result = await runCheck(check(), page, viewport, {
+      ...FIXTURE_CTX,
+      slug: 'blue-staffy-blog-guides',
+      pageType: 'blog',
+    });
+    expect(result.examined, 'the blog inquiry form must be examined').toBe(1);
+    expect(result.defects.map((d) => d.message), 'short contract cried wolf').toEqual([]);
+  });
+
+  test('the same form missing `message` fires', async ({ page }, testInfo) => {
+    const viewport = testInfo.project.use.viewport!.width;
+    await page.goto(URL);
+    await substituteFormEndpoint(page);
+    await page.evaluate(() => document.querySelector('textarea[name="message"]')!.remove());
+    const result = await runCheck(check(), page, viewport, {
+      ...FIXTURE_CTX,
+      slug: 'blue-staffy-blog-guides',
+      pageType: 'blog',
+    });
+    expect(result.defects.length, 'a short contract that cannot fail is not a contract').toBeGreaterThan(0);
   });
 });
 

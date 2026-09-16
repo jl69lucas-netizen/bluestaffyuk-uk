@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { register, type CheckResult, type CheckContext, type Defect } from '../lib/registry.js';
 import type { Page } from '@playwright/test';
 
@@ -19,11 +22,20 @@ import type { Page } from '@playwright/test';
  * form in disguise), and this check reports it as one row instead of passing silently — a
  * check that returns clean on zero is indistinguishable from a check that never ran.
  *
- * `INQUIRY_FORM_SLUGS` is a fact about today's page inventory, not a permanent property of
- * any slug pattern — the day a second page grows an inquiry form it must be added here or
- * this check will silently stop looking at it. It is the reason the exemption is written as
- * an explicit allow-list rather than a regex: a regex over BSUK's slugs would have to
- * enumerate the 16 pages that DON'T carry a form, and would silently exempt the 17th.
+ * Two different questions, two different sources, deliberately:
+ *   - WHICH CONTRACT a page's inquiry forms must satisfy is routed by data/page-map.json's
+ *     `kind` (rich → full, blog → short, location → none), read at module load, with the
+ *     same slug fallback the Python uses for a page absent from the map. scripts/
+ *     form_contract_audit.py routes identically; a hand-kept slug list here would drift
+ *     from it the first time a page is added, and the two gates would then judge the same
+ *     form by different contracts.
+ *   - WHETHER A PAGE MUST CARRY A FORM AT ALL is `INQUIRY_FORM_SLUGS`, which has no Python
+ *     equivalent because zero-examined is a harness-only concept (the Python audit reads
+ *     whatever forms exist). It is a fact about today's page inventory, not a property of
+ *     any slug pattern — the day a second page grows an inquiry form it must be added here
+ *     or the zero-examined defect will stop firing for it. It is an explicit allow-list
+ *     rather than a regex because a regex would have to enumerate the 16 pages that DON'T
+ *     carry a form, and would silently exempt the 17th.
  *
  * The contract below is BSUK's own, read off the built contact page and held in lock-step
  * with scripts/form_contract_audit.py: same six controls, same required/optional split,
@@ -50,14 +62,42 @@ const FORM_ENDPOINT = `https://formspree.io/f/${FORMSPREE_ID}`;
 /** Slugs whose built page carries a real (non-search) inquiry form. See the note above. */
 const INQUIRY_FORM_SLUGS = new Set(['uk-blue-staffy-breeders-contact']);
 
-export function fieldChecksSkipped(slug: string): boolean {
-  return !INQUIRY_FORM_SLUGS.has(slug);
-}
+const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+/** Mirrors KIND_CONTRACT in scripts/form_contract_audit.py. */
+const KIND_CONTRACT: Record<string, 'full' | 'short' | 'none'> = {
+  rich: 'full',
+  blog: 'short',
+  location: 'none',
+};
+const HUBS = ['available-puppies', 'uk-locations', 'blog'];
+/** {slug: kind} from data/page-map.json; empty when the map is unreadable, in which case
+ *  every page falls back to the slug heuristic — same degradation as the Python. */
+const PAGE_KINDS: Record<string, string> = (() => {
+  try {
+    const pages = JSON.parse(
+      readFileSync(join(REPO, 'data/page-map.json'), 'utf8'),
+    ).pages as { url: string; kind: string }[];
+    return Object.fromEntries(
+      pages.map((p) => [p.url.replace(/^\/+|\/+$/g, '') || 'index', p.kind]),
+    );
+  } catch {
+    return {};
+  }
+})();
+
 export function contractFor(slug: string): 'full' | 'short' | 'none' {
-  if (fieldChecksSkipped(slug)) return 'none';
-  return slug.startsWith('blog/') ? 'short' : 'full';
+  const kind = PAGE_KINDS[slug];
+  if (kind && kind in KIND_CONTRACT) return KIND_CONTRACT[kind];
+  // Fallback for a page absent from the map (a hub, or a page built after the map was last
+  // generated): today's slug heuristic, character for character the Python's.
+  if (/^uk-locations\//.test(slug) || HUBS.includes(slug)) return 'none';
+  if (slug.startsWith('blog/')) return 'short';
+  return 'full';
 }
-export function formExpected(slug: string, _pageType: string): boolean {
+export function fieldChecksSkipped(slug: string): boolean {
+  return contractFor(slug) === 'none';
+}
+export function formExpected(slug: string): boolean {
   return INQUIRY_FORM_SLUGS.has(slug);
 }
 
@@ -170,7 +210,7 @@ register({
       { endpoint: FORM_ENDPOINT, contract: contractFor(ctx.slug) },
     );
     const defects: Defect[] = [];
-    if (r.examined === 0 && formExpected(ctx.slug, ctx.pageType)) {
+    if (r.examined === 0 && formExpected(ctx.slug)) {
       defects.push({
         checkId: 'form-inquiry-contract', family: 'FORM' as const, viewport, count: 1,
         message: `no non-search form on ${ctx.slug} (${ctx.pageType}) — nothing to judge`,
