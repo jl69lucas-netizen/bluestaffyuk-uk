@@ -2166,3 +2166,6 @@ editing the plan body, so the decision and its cause stay legible to projects 2â
 - **Placeholder gate is conditional.** `scripts/placeholder_check.py` always counts and prints
   `SITE_URL_PLACEHOLDER` / `PHONE_PLACEHOLDER` / `FORMSPREE_ID_PLACEHOLDER` in `dist/`, and fails
   only under `BSUK_RELEASE=1`. Foundation is supposed to ship stand-ins; launch is not.
+- **Organization node not emitted separately.** `Schema.astro` emits LocalBusiness (an Organization subtype), WebSite and BreadcrumbList; a second overlapping org node was judged worse than none.
+- **`--hdr` is measured.** BaseLayout sets `--hdr-measured` from the real header height (ResizeObserver); the 640px media query on `--hdr` is the no-JS fallback.
+- **Generated files are banner-marked and listed in README.md** (11 rich pages, page-map, locations, image-manifest, _redirects, llms.txt).
