@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from marker_check import MARKERS, hits_in, main, scan_roots
+from marker_check import MARKERS, PRINT_CAP, hits_in, main, scan_roots
 
 
 def _repo(tmp_path, manifest_rows=(), files=()):
@@ -84,11 +84,48 @@ def test_fixed_roots_are_scanned_even_when_not_in_the_manifest(tmp_path):
     assert main(repo) == 1
 
 
-def test_binary_and_non_text_files_are_skipped(tmp_path):
+def test_binary_files_are_not_scanned_at_all(tmp_path):
+    """Skipped by suffix, so a marker-shaped byte run inside a PNG is never even opened."""
     repo = _repo(tmp_path, files=[("CLAUDE.md", "clean\n")])
     (repo / "tests/render/fixtures/assets").mkdir(parents=True)
-    (repo / "tests/render/fixtures/assets/x.png").write_bytes(b"\x89PNG\r\n\x1a\ncongo")
+    png = repo / "tests/render/fixtures/assets/x.png"
+    png.write_bytes(b"\x89PNG\r\n\x1a\ncongo")
+    assert png not in scan_roots(repo)
     assert main(repo) == 0
+
+
+def test_a_text_file_that_is_not_utf8_is_still_read_and_reported(tmp_path):
+    """A latin-1 byte in a .md must not silently buy the file a pass: decode with
+    replacement so the markers around the bad byte are still judged."""
+    repo = _repo(tmp_path)
+    (repo / "rules").mkdir(parents=True, exist_ok=True)
+    (repo / "rules/x.md").write_bytes(b"parrot caf\xe9\n")
+    assert [m for _, m, _ in hits_in(repo / "rules/x.md")] == ["parrot"]
+    assert main(repo) == 1
+
+
+def test_a_rebase_row_whose_dst_is_not_written_yet_is_skipped(tmp_path):
+    rows = [{"src": "rules/cag-x.md", "dst": "rules/bsuk-x.md", "mode": "rebase", "notes": "n"}]
+    repo = _repo(tmp_path, rows)
+    assert scan_roots(repo) == []
+    assert main(repo) == 0
+
+
+def test_output_is_capped_and_the_count_is_not(tmp_path, capsys):
+    repo = _repo(tmp_path)
+    (repo / "rules").mkdir(parents=True, exist_ok=True)
+    (repo / "rules/x.md").write_text("parrot\n" * (PRINT_CAP + 5), encoding="utf-8")
+    assert main(repo) == 1
+    out = capsys.readouterr().out
+    assert "\u2026 and 5 more" in out
+    assert "examined 1 files; %d problems" % (PRINT_CAP + 5) in out
+    assert out.count("[parrot]") == PRINT_CAP
+
+
+def test_a_malformed_manifest_fails_with_task_1s_message(tmp_path):
+    repo = _repo(tmp_path, [{"src": "a.md", "dst": "b.md", "mode": "teleport", "notes": "n"}])
+    with pytest.raises(ValueError, match="unknown mode"):
+        scan_roots(repo)
 
 
 @pytest.mark.xfail(reason="tests/render/ and dup_content_audit.py are re-based in Tasks 14-16", strict=True)

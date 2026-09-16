@@ -25,7 +25,7 @@ Usage:  python3 scripts/marker_check.py   |   npm run check:markers
 import pathlib
 import sys
 
-from port_from_cag import load_manifest
+from port_from_cag import load_manifest, validate
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -44,6 +44,9 @@ FIXED_ROOTS = (
 # of parrot-named sources.
 EXCLUDED = ("data/port-manifest.json",)
 
+# How many hits are printed before the tail is summarised. The COUNT is never capped.
+PRINT_CAP = 60
+
 TEXT_SUFFIXES = {
     ".md", ".json", ".py", ".ts", ".tsx", ".js", ".mjs", ".cjs", ".html", ".css",
     ".sh", ".txt", ".yml", ".yaml", ".xml", ".astro",
@@ -59,15 +62,16 @@ def hits_in(path):
     The only overlapping pair in MARKERS today is `congo` / `congoafricangreys`; re-check this
     rule when a marker is added.
     """
-    try:
-        text = pathlib.Path(path).read_text(encoding="utf-8")
-    except (UnicodeDecodeError, OSError):
-        return []
+    # errors="replace", like placeholder_check.py: a stray non-UTF-8 byte must not buy a
+    # file a silent pass, and an OSError is a real fault that belongs in the traceback.
+    text = pathlib.Path(path).read_text(encoding="utf-8", errors="replace")
     out = []
     for n, line in enumerate(text.splitlines(), 1):
         low = line.lower()
         matched = [m for m in MARKERS if m in low]
         for m in matched:
+            # Line-scoped: a standalone `congo` sharing a line with `congoafricangreys` is
+            # absorbed. Acceptable for a zero-tolerance gate — the line is reported either way.
             if any(other != m and m in other for other in matched):
                 continue
             out.append((n, m, line.strip()))
@@ -89,7 +93,12 @@ def scan_roots(root=ROOT):
     files = []
     manifest = root / "data/port-manifest.json"
     if manifest.is_file():
-        for r in load_manifest(manifest):
+        rows = load_manifest(manifest)
+        # Task 1's validator owns the readable messages for a drifted manifest. An empty
+        # list is left alone: it is a repo with nothing ported yet, not a malformed record.
+        if rows:
+            validate(rows)
+        for r in rows:
             if r["mode"] == "deferred":
                 continue
             files += _walk(root / r["dst"])
@@ -114,10 +123,10 @@ def main(root=ROOT):
     for f in files:
         for n, marker, line in hits_in(f):
             problems += 1
-            if problems <= 60:
+            if problems <= PRINT_CAP:
                 print("  %s:%d  [%s]  %s" % (f.relative_to(root), n, marker, line[:140]))
-    if problems > 60:
-        print("  … and %d more" % (problems - 60))
+    if problems > PRINT_CAP:
+        print("  … and %d more" % (problems - PRINT_CAP))
     print("examined %d files; %d problems" % (len(files), problems))
     if problems:
         print("FAIL — a parrot marker is a re-base that did not happen. There is no allowlist.")

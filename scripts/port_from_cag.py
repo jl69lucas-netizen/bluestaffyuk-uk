@@ -7,7 +7,7 @@ The manifest is the record of the port, not a convenience. Four modes:
   rename    byte-identical, new path (cag-x.md -> bsuk-x.md). Rewritten on every run.
   rebase    copied ONCE, then hand-edited. NEVER overwritten. The hand edits are the
             deliverable; a second run that re-copied the parrot source would undo the
-            entire re-base silently, and scripts/parrot_marker_check.py would only find
+            entire re-base silently, and scripts/marker_check.py would only find
             out afterwards. `skipped-existing` on a second run is the expected result.
   deferred  recorded, not written. The file exists in CAG and belongs to a later project;
             listing it keeps the manifest a complete account of the source tree. Its src
