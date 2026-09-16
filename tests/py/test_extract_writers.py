@@ -12,7 +12,7 @@ def test_write_rich_page_creates_astro_with_props(tmp_path):
     out = write_rich_page(page, tmp_path)
     assert out == tmp_path / "src/pages/demo-page/index.astro"
     text = out.read_text()
-    assert text.startswith("---\nimport BaseLayout")
+    assert text.startswith("---\n// GENERATED") and "import BaseLayout" in text.splitlines()[2]
     assert 'title={meta.title}' in text
     assert "<Fragment set:html={body} />" in text
     assert "447490" not in text
