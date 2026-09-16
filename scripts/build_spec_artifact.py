@@ -1,6 +1,13 @@
 import re, html, pathlib, sys
-src = pathlib.Path('/Users/apple/Downloads/BSUK/docs/superpowers/specs/2026-09-15-foundation-design.md').read_text()
-out = pathlib.Path('/Users/apple/Downloads/BSUK/docs/artifacts/bsuk-foundation-spec.html')
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SRC = pathlib.Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / 'docs/superpowers/specs/2026-09-15-foundation-design.md'
+OUT = pathlib.Path(sys.argv[2]) if len(sys.argv) > 2 else ROOT / 'docs/artifacts/bsuk-foundation-spec.html'
+TITLE = sys.argv[3] if len(sys.argv) > 3 else 'BSUK Foundation Spec'
+EYEBROW = sys.argv[4] if len(sys.argv) > 4 else 'BlueStaffyUK rebuild · Project 1 of 6'
+HEADING = sys.argv[5] if len(sys.argv) > 5 else 'Foundation design spec'
+COPY_HEAD = sys.argv[6] if len(sys.argv) > 6 else 'BlueStaffyUK Rebuild — Project 1 of 6: Foundation'
+src = SRC.read_text()
+out = OUT
 out.parent.mkdir(parents=True, exist_ok=True)
 
 # split into sections on '## '
@@ -17,7 +24,7 @@ def esc(s):  # safe inside <script type=text/markdown>
 blocks = '\n'.join(
     f'<script type="text/markdown" data-title="{html.escape(t)}">\n{esc(b)}\n</script>' for t, b in sections)
 
-page = f'''<title>BSUK Foundation Spec</title>
+page = f'''<title>{TITLE}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
 <style>
 :root{{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}}
@@ -57,7 +64,7 @@ section.sec h2{{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22p
 @media (prefers-reduced-motion:no-preference){{button.btn{{transition:opacity .15s}}button.btn:hover{{opacity:.85}}}}
 </style>
 <div class="wrap">
-<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 1 of 6</p><h1 class="title">Foundation design spec</h1></div>
+<header class="mast"><div><p class="eyebrow">{EYEBROW}</p><h1 class="title">{HEADING}</h1></div>
 <div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-15</span><br>docs/superpowers/specs/2026-09-15-foundation-design.md</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
@@ -86,7 +93,7 @@ section.sec h2{{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22p
     sec.appendChild(body);doc.appendChild(sec);
     var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
   }});
-  document.getElementById('copy-all').addEventListener('click',function(){{copy('# BlueStaffyUK Rebuild — Project 1 of 6: Foundation\\n\\n'+all.join('\\n\\n'),document.getElementById('all-status'));}});
+  document.getElementById('copy-all').addEventListener('click',function(){{copy('# {COPY_HEAD}\\n\\n'+all.join('\\n\\n'),document.getElementById('all-status'));}});
 }})();
 </script>
 '''
