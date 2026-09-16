@@ -158,7 +158,7 @@ After showing the report:
 
 - **yes** → apply all patches in sequence, confirm each one
 - **review one by one** → show each patch, wait for approval before writing
-- **skip** → write the report to `sessions/YYYY-MM-DD-self-update.md` and stop (arrives in Task 12 with the grill-me skill)
+- **skip** → write the report to `sessions/YYYY-MM-DD-self-update.md` and stop (deferred — `sessions/` is created on first write)
 
 After applying patches (or skipping):
 > "Update complete. Report saved to `sessions/<date>-self-update.md`."

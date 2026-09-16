@@ -177,7 +177,7 @@ git commit -m "Batch rebuild: [job type] — [date]"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
-Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit all changed URLs to IndexNow. (arrives in Task 12)
+Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit all changed URLs to IndexNow.
 
 ---
 

@@ -322,7 +322,7 @@ grep -rL "LICENCE_CLAIM_PLACEHOLDER\|home-raised" dist/ --include="*.html"
 find dist/ -name "index.html" | wc -l
 ```
 
-Save audit report to: `sessions/YYYY-MM-DD-trust-signals-audit.md` (arrives in Task 12 with the grill-me skill)
+Save audit report to: `sessions/YYYY-MM-DD-trust-signals-audit.md` (deferred — `sessions/` is created on first write)
 
 Report format:
 ```

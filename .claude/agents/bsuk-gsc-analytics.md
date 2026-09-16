@@ -231,6 +231,6 @@ After generating report, **update `docs/reference/top-pages.md`** with new findi
 2. **Python for CSV parsing** — bash `awk` for simple counts only
 3. **Update top-pages.md** after every analysis
 4. **Bucket by priority** — critical / high / opportunity — every report
-5. **Save report** — write to `sessions/YYYY-MM-DD-gsc-analysis.md` (arrives in Task 12 with the grill-me skill)
+5. **Save report** — write to `sessions/YYYY-MM-DD-gsc-analysis.md` (deferred — `sessions/` is created on first write)
 6. **Position data is an average** — note this caveat in all reports
 7. **LICENCE_CLAIM_PLACEHOLDER query gap** — always check for "LICENCE_CLAIM_PLACEHOLDER" / "documented" queries with no matching BSUK page

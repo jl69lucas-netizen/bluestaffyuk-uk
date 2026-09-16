@@ -40,7 +40,7 @@ No form collects payment details — deposits happen after we talk, never throug
 
 ## Form Inventory and Field Contract
 
-Single source of truth: `.claude/skills/bsuk-contact-form/SKILL.md` — the one endpoint (`PUBLIC_FORMSPREE_ID` from a gitignored `.env`, unset today), the seven-field contract, the seven form families and their class vocabularies, the traps already sprung, and the three gates. Do not re-derive any of it here. (arrives in Task 12)
+Single source of truth: `.claude/skills/bsuk-contact-form/SKILL.md` — the one endpoint (`PUBLIC_FORMSPREE_ID` from a gitignored `.env`, unset today), the seven-field contract, the seven form families and their class vocabularies, the traps already sprung, and the three gates. Do not re-derive any of it here.
 
 Startup for any form task:
 1. `python3 scripts/form_contract_audit.py` — read `forms examined` and every FAIL row before touching a page.

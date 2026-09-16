@@ -222,7 +222,7 @@ Protocol: [A / B / C]
 Pages needing alt text: [list]
 ```
 
-Save to `sessions/YYYY-MM-DD-image-pipeline.md`. (arrives in Task 12 with the grill-me skill)
+Save to `sessions/YYYY-MM-DD-image-pipeline.md`. (deferred — `sessions/` is created on first write)
 
 ---
 

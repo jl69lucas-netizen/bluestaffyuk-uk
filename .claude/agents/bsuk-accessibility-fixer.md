@@ -286,7 +286,7 @@ grep -rn "<img" dist/ --include="*.html" | grep -v 'alt="' | wc -l
 grep -rL "<main" dist/ --include="*.html" | wc -l
 ```
 
-Save full batch report to: `sessions/YYYY-MM-DD-accessibility-audit.md` (arrives in Task 12 with the grill-me skill)
+Save full batch report to: `sessions/YYYY-MM-DD-accessibility-audit.md` (deferred — `sessions/` is created on first write)
 
 Report structure:
 ```markdown

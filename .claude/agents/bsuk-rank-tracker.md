@@ -83,7 +83,7 @@ Any competitor with 2+ changes = **Mover** → auto-trigger `bsuk-competitor-int
 
 ## Weekly Report Format
 
-Save to `sessions/YYYY-MM-DD-monitor.md`: (arrives in Task 12 with the grill-me skill)
+Save to `sessions/YYYY-MM-DD-monitor.md`: (deferred — `sessions/` is created on first write)
 
 ```markdown
 # BSUK Competitor Monitor — [YYYY-MM-DD]

@@ -51,7 +51,7 @@ When asked to run a non-commodity pass over a whole page (or "all sections"), do
 5. **Generic-filler watch:** the literal phrase "**both make exceptional companions**" (and similar "make exceptional companions" filler) is a recurring offender — it hid in `CompareTableE.astro` even after the prose copy was fixed. Grep components + data arrays, not just the page.
 6. **Note:** the original homepage build did NOT run this agent or the humor modes — voice came from the separate first-person pass. When a page predates a non-commodity pass, it's a candidate.
 
-> Real breeder material captured this way (e.g. Teri's "first week is trust, not training" + the week-1 quiet-Blue Staffy story; the training Blue Staffy **Maxy** in the homepage video) **must be appended to the Verified-Claim Ledger** so future work can reuse it. Ledger lives in `.claude/agents/bsuk-entity-incorporation-agent.md` + `sessions/2026-06-03-homepage-entity-map.md`. (deferred to project 6, see data/port-manifest.json) (arrives in Task 12 with the grill-me skill)
+> Real breeder material captured this way (e.g. Teri's "first week is trust, not training" + the week-1 quiet-Blue Staffy story; the training Blue Staffy **Maxy** in the homepage video) **must be appended to the Verified-Claim Ledger** so future work can reuse it. Ledger lives in `.claude/agents/bsuk-entity-incorporation-agent.md` + `sessions/2026-06-03-homepage-entity-map.md`. (deferred to project 6, see data/port-manifest.json) (not ported — source repo only)
 
 ---
 

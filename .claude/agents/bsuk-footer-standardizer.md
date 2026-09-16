@@ -169,7 +169,7 @@ git commit -m "Footer standardization: [page list or 'full site'] — bsuk-foote
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
-Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit changed URLs to IndexNow. (arrives in Task 12)
+Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit changed URLs to IndexNow.
 
 ---
 

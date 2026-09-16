@@ -137,14 +137,14 @@ git push origin main
 curl -s -A "Mozilla/5.0" "https://SITE_URL_PLACEHOLDER/sitemap_index.xml?cb=$RANDOM" | grep -m1 lastmod
 ```
 4. **Submit to IndexNow** (covers Bing/Yandex/Seznam — NOT Google). Key file
-   `f8071f0dbdb94257934a690f4a18fa59.txt` is live at the domain root:
+   `INDEXNOW_KEY_PLACEHOLDER.txt` is live at the domain root:
 ```bash
 python3 - <<'PY'
 import json,urllib.request,re
 urls=sorted({u for f in ["public/page-sitemap.xml","public/local-sitemap.xml","public/post-sitemap.xml"]
             for u in re.findall(r"<loc>(.*?)</loc>",open(f).read())})
-body=json.dumps({"host":"SITE_URL_PLACEHOLDER","key":"f8071f0dbdb94257934a690f4a18fa59",
-  "keyLocation":"https://SITE_URL_PLACEHOLDER/f8071f0dbdb94257934a690f4a18fa59.txt","urlList":urls}).encode()
+body=json.dumps({"host":"SITE_URL_PLACEHOLDER","key":"INDEXNOW_KEY_PLACEHOLDER",
+  "keyLocation":"https://SITE_URL_PLACEHOLDER/INDEXNOW_KEY_PLACEHOLDER.txt","urlList":urls}).encode()
 for ep in ("https://api.indexnow.org/indexnow","https://www.bing.com/indexnow"):
     r=urllib.request.urlopen(urllib.request.Request(ep,data=body,
       headers={"Content-Type":"application/json; charset=utf-8"},method="POST"),timeout=30)

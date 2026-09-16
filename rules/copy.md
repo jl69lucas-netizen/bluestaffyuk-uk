@@ -31,7 +31,7 @@ enforced: untested
 family: COPY
 ---
 
-- **Entity 4-Move Loop is the required section-build method (ALWAYS)** — When building or improving ANY page section, run the loop: (1) **Structural Critique** → (2) **Recommended Entities + WHY** (grounded: KG authority / PAA demand / competitor gap / buyer intent) → (3) **Optimized Draft** (verified facts only) → (4) **Topical-Cluster Strategy** (internal links + schema; extend existing JSON-LD, never duplicate; FAQ schema must be visible; verify in `dist/`). The active engine is `@bsuk-entity-incorporation-agent`; its vocabulary is `.claude/skills/bsuk-entity-agent/SKILL.md` (arrives in Task 12) (a passive catalog, not a builder). Every health/credential entity is bounded by `data/quality/evidence-ledger.json` — the health entities are the **BVA hip and elbow scores** and the **L2-HGA, HC and PHPV DNA tests**, and each one stays marked `NOT FETCHED` until the certificate is on file. Never assert a score, a test result, or a licence beyond what Lisa Bright has confirmed; an unconfirmed licence or statute claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`.
+- **Entity 4-Move Loop is the required section-build method (ALWAYS)** — When building or improving ANY page section, run the loop: (1) **Structural Critique** → (2) **Recommended Entities + WHY** (grounded: KG authority / PAA demand / competitor gap / buyer intent) → (3) **Optimized Draft** (verified facts only) → (4) **Topical-Cluster Strategy** (internal links + schema; extend existing JSON-LD, never duplicate; FAQ schema must be visible; verify in `dist/`). The active engine is `@bsuk-entity-incorporation-agent`; its vocabulary is `.claude/skills/bsuk-entity-agent/SKILL.md` (a passive catalog, not a builder). Every health/credential entity is bounded by `data/quality/evidence-ledger.json` — the health entities are the **BVA hip and elbow scores** and the **L2-HGA, HC and PHPV DNA tests**, and each one stays marked `NOT FETCHED` until the certificate is on file. Never assert a score, a test result, or a licence beyond what Lisa Bright has confirmed; an unconfirmed licence or statute claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`.
 
 ---
 id: meaningful-words-no-stop-words
@@ -47,7 +47,7 @@ family: COPY
 
 **Not a rule and deliberately carries no front-matter.** Each of the seven checks below is its own row in `data/quality/rule-index.json` (`term-budget-per-page` … `no-unsourced-superlatives`); an umbrella `evidence-pass` row on top of them would count the same enforcement twice.
 
-Seven checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budgets: `data/quality/evidence-budgets.json` · proof ledger: `data/quality/evidence-ledger.json` · method: `.claude/skills/bsuk-evidence-pass/SKILL.md` (arrives in Task 12).
+Seven checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budgets: `data/quality/evidence-budgets.json` · proof ledger: `data/quality/evidence-ledger.json` · method: `.claude/skills/bsuk-evidence-pass/SKILL.md`.
 
 - `term-budget-per-page` (blocking) — every calibrated term stays within its per-page budget; uncalibrated pages report, they do not pass. Per-slug override: `budgets_by_slug` — a number replaces the page-type ceiling, `null` removes it.
 - `claim-bound-to-proof` (blocking) — every health / credential / price claim resolves to a ledger entry; un-ledgered = not assertable.

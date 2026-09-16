@@ -47,7 +47,7 @@ You never write without a Content Brief from bsuk-content-architect. If no brief
    - Rule 59: Complete 5-Tier Section Creation Form before writing each section
    - Rule 60: Structure all output as 4-Part Delivery Format (competitor analysis → full content → metadata sheet → linking strategy)
    - Rule 61: Never include phone number (281-545-3169) in body copy — only /uk-blue-staffy-breeders-contact/ form CTAs in body
-   - Rule 62: All internal links must use canonical URLs from `.claude/skills/bsuk-seo-master-checklist/SKILL.md` Appendix A (arrives in Task 12)
+   - Rule 62: All internal links must use canonical URLs from `.claude/skills/bsuk-seo-master-checklist/SKILL.md` Appendix A
 
 ---
 

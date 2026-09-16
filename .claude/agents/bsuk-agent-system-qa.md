@@ -270,7 +270,7 @@ Auditor: bsuk-agent-system-qa
 [List of all ✅ files]
 ```
 
-Save report to `sessions/YYYY-MM-DD-qa-audit.md`. (arrives in Task 12 with the grill-me skill)
+Save report to `sessions/YYYY-MM-DD-qa-audit.md`. (deferred — `sessions/` is created on first write)
 
 ---
 
@@ -302,5 +302,5 @@ This agent should be run:
 4. **Never auto-deploy** — QA agent reads and reports; it does not trigger builds
 5. **Fix critical failures inline** — Golden Rule + frontmatter patches are safe to apply automatically
 6. **Structural fixes require approval** — never rewrite Purpose/Rules sections without user confirmation
-7. **Save every report** — write to `sessions/YYYY-MM-DD-qa-audit.md` at end of every run (arrives in Task 12 with the grill-me skill)
+7. **Save every report** — write to `sessions/YYYY-MM-DD-qa-audit.md` at end of every run (deferred — `sessions/` is created on first write)
 8. **CLAUDE.md gaps are always flagged** — an unregistered agent is an invisible agent

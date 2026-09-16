@@ -223,3 +223,28 @@ def test_every_repo_path_cited_in_an_agent_exists_or_is_marked(agent):
 def test_there_are_agents_to_check():
     # A glob that silently stopped matching would make the parametrised test above vacuous.
     assert list(AGENTS_DIR.glob("bsuk-*.md"))
+
+
+# A skill is loaded into a session exactly the way an agent is, so it gets the same rule.
+# Task 12 brought 25 system skills across from the source repo, every one of them full of
+# paths that existed THERE — `scripts/rework_ledger.py`, `site/content/`, a session log
+# nobody ported. A skill that sends a builder to one of those has the same failure mode as
+# an agent that does: the first symptom is a failed run rather than a failed test.
+SKILLS_DIR = ROOT / ".claude/skills"
+
+
+@pytest.mark.parametrize("skill", sorted(SKILLS_DIR.glob("bsuk-*/SKILL.md")),
+                         ids=lambda p: p.parent.name)
+def test_every_repo_path_cited_in_a_skill_exists_or_is_marked(skill):
+    bad = _unmarked_missing_paths(skill)
+    assert bad == [], (
+        f"{skill.parent.name} cites a path that does not exist and does not say when it "
+        "will. Either fix the path, or mark the line '(arrives in Task N)' / "
+        "'(deferred to project N)' / '(not ported — source repo only)':\n  "
+        + "\n  ".join(bad))
+
+
+def test_there_are_skills_to_check():
+    # The port wrote 25 system skills; a glob that stopped matching would make the
+    # parametrised test above vacuous.
+    assert len(list(SKILLS_DIR.glob("bsuk-*/SKILL.md"))) >= 25

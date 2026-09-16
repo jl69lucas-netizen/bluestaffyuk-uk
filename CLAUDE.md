@@ -64,14 +64,14 @@ capped at nine (`judgment_cap: 9`); a tenth exemption is a rule that has to earn
 
 | Building… | Skill | Extra rule packs |
 |---|---|---|
-| home | `bsuk-site-patterns` (arrives in Task 12) | headings, images, copy |
-| buy / for-sale | `bsuk-puppy-page-builder` (arrives in Task 12) | puppies, images, headings |
-| puppy `/available-puppies/<slug>/` | `bsuk-puppy-page-builder` (arrives in Task 12) | puppies, schema, images |
-| hub | `bsuk-site-patterns` (arrives in Task 12) | links, headings |
-| location | `bsuk-location-page-builder` (arrives in Task 12) | copy, links |
-| blog | `bsuk-blog-post` (arrives in Task 12) | headings, images |
-| about / contact | `bsuk-contact-form`, `bsuk-trust-signals` (arrives in Task 12) | copy, links |
-| comparison | `bsuk-comparison-page-builder` (arrives in Task 12) | images, headings, copy |
+| home | `bsuk-site-patterns` | headings, images, copy |
+| buy / for-sale | `bsuk-puppy-page-builder` | puppies, images, headings |
+| puppy `/available-puppies/<slug>/` | `bsuk-puppy-page-builder` | puppies, schema, images |
+| hub | `bsuk-site-patterns` | links, headings |
+| location | `bsuk-location-page-builder` | copy, links |
+| blog | `bsuk-blog-post` | headings, images |
+| about / contact | `bsuk-contact-form`, `bsuk-trust-signals` | copy, links |
+| comparison | `bsuk-comparison-page-builder` | images, headings, copy |
 
 The generic skills already ported live at `.claude/skills/` — `grill-me`,
 `section-auditor`, `internal-link-agent`, `keyword-cluster`, `anti-ai-writing` and the
@@ -178,7 +178,7 @@ refuses when `data/boards/<slug>.json` is missing or unapproved;
 anything in response to a gate, confirm the defect on the built page; before believing a
 PASS, read the gate's own examined count. The rule lives in
 [`rules/gates.md`](rules/gates.md) today; its canonical spec is
-`.claude/skills/bsuk-gate-integrity/SKILL.md` (arrives in Task 12).
+`.claude/skills/bsuk-gate-integrity/SKILL.md`.
 
 **When a defect escapes, charge it to the harness, not to a new rule.** If an invariant
 already covered it and stayed quiet, the tool is broken: add the case to

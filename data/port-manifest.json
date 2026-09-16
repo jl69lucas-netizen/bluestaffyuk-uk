@@ -273,187 +273,187 @@
     "src": ".claude/agents/cag-ab-test-agent.md",
     "dst": ".claude/agents/bsuk-ab-test-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-backlink-outreach-agent.md",
     "dst": ".claude/agents/bsuk-backlink-outreach-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-branded-search-monitor-agent.md",
     "dst": ".claude/agents/bsuk-branded-search-monitor-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-case-study-agent.md",
     "dst": ".claude/agents/bsuk-case-study-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-competitive-keyword-gap-agent.md",
     "dst": ".claude/agents/bsuk-competitive-keyword-gap-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-competitor-intel.md",
     "dst": ".claude/agents/bsuk-competitor-intel.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-conversion-tracker.md",
     "dst": ".claude/agents/bsuk-conversion-tracker.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-directory-submission-agent.md",
     "dst": ".claude/agents/bsuk-directory-submission-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-email-lead-nurture-agent.md",
     "dst": ".claude/agents/bsuk-email-lead-nurture-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-email-newsletter-agent.md",
     "dst": ".claude/agents/bsuk-email-newsletter-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-entity-incorporation-agent.md",
     "dst": ".claude/agents/bsuk-entity-incorporation-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-external-link-agent.md",
     "dst": ".claude/agents/bsuk-external-link-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-financial-strategist.md",
     "dst": ".claude/agents/bsuk-financial-strategist.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-funnel-analysis-agent.md",
     "dst": ".claude/agents/bsuk-funnel-analysis-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-heatmap-analyst-agent.md",
     "dst": ".claude/agents/bsuk-heatmap-analyst-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-llm-keyword-intel.md",
     "dst": ".claude/agents/bsuk-llm-keyword-intel.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-nap-citation-agent.md",
     "dst": ".claude/agents/bsuk-nap-citation-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-performance-monitor-agent.md",
     "dst": ".claude/agents/bsuk-performance-monitor-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-review-collection-agent.md",
     "dst": ".claude/agents/bsuk-review-collection-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-scam-specialist.md",
     "dst": ".claude/agents/bsuk-scam-specialist.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-seasonal-content-agent.md",
     "dst": ".claude/agents/bsuk-seasonal-content-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-social-strategist.md",
     "dst": ".claude/agents/bsuk-social-strategist.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-strategy-synthesizer.md",
     "dst": ".claude/agents/bsuk-strategy-synthesizer.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-video-seo-agent.md",
     "dst": ".claude/agents/bsuk-video-seo-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/agents/cag-google-map-agent.md",
     "dst": ".claude/agents/bsuk-google-map-agent.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope; project 6 at the earliest"
+    "notes": "spec §10 out of scope; project 6 at the earliest"
   },
   {
     "src": ".claude/skills/cag-branded-hybrid-keywords/SKILL.md",
     "dst": ".claude/skills/cag-branded-hybrid-keywords/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": ".claude/skills/cag-branded-search-skill/SKILL.md",
     "dst": ".claude/skills/cag-branded-search-skill/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": ".claude/skills/cag-header-search/SKILL.md",
     "dst": ".claude/skills/cag-header-search/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": ".claude/skills/reddit-strategy/SKILL.md",
     "dst": ".claude/skills/reddit-strategy/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": ".claude/skills/social-content/SKILL.md",
     "dst": ".claude/skills/social-content/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": ".claude/skills/youtube-script/SKILL.md",
     "dst": ".claude/skills/youtube-script/SKILL.md",
     "mode": "deferred",
-    "notes": "spec \u00a710 out of scope"
+    "notes": "spec §10 out of scope"
   },
   {
     "src": "scripts/pageboard.py",
@@ -603,67 +603,67 @@
     "src": "rules/README.md",
     "dst": "rules/README.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/headings.md",
     "dst": "rules/headings.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/images.md",
     "dst": "rules/images.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/schema.md",
     "dst": "rules/schema.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/links.md",
     "dst": "rules/links.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/copy.md",
     "dst": "rules/copy.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/design.md",
     "dst": "rules/design.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/gates.md",
     "dst": "rules/gates.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/deploy.md",
     "dst": "rules/deploy.md",
     "mode": "rebase",
-    "notes": "rule pack re-based in place (task 9, spec \u00a77)"
+    "notes": "rule pack re-based in place (task 9, spec §7)"
   },
   {
     "src": "rules/for-sale.md",
     "dst": "rules/puppies.md",
     "mode": "rebase",
-    "notes": "for-sale cluster pack renamed to the puppy cluster (task 9, spec \u00a77)"
+    "notes": "for-sale cluster pack renamed to the puppy cluster (task 9, spec §7)"
   },
   {
     "src": "data/quality/rule-index.json",
     "dst": "data/quality/rule-index.json",
     "mode": "rebase",
-    "notes": "rule ledger; ids renamed with their files, judgment_cap 12->9 (task 9, spec \u00a711)"
+    "notes": "rule ledger; ids renamed with their files, judgment_cap 12->9 (task 9, spec §11)"
   },
   {
     "src": "data/quality/evidence-budgets.json",
@@ -741,7 +741,7 @@
     "src": ".claude/agents/cag-interactive-component.md",
     "dst": ".claude/agents/bsuk-interactive-component.md",
     "mode": "rebase",
-    "notes": "page builder; calculators re-based to \u00a3 and data/puppies.json; financial-entities not ported"
+    "notes": "page builder; calculators re-based to £ and data/puppies.json; financial-entities not ported"
   },
   {
     "src": ".claude/agents/cag-infographic-builder.md",
@@ -807,7 +807,7 @@
     "src": ".claude/agents/cag-meta-description-agent.md",
     "dst": ".claude/agents/bsuk-meta-description-agent.md",
     "mode": "rebase",
-    "notes": "content; CTR patterns kept; prices from data/price-matrix.json, \u00a3 not $"
+    "notes": "content; CTR patterns kept; prices from data/price-matrix.json, £ not $"
   },
   {
     "src": ".claude/agents/cag-agent-system-qa.md",
@@ -825,7 +825,7 @@
     "src": ".claude/agents/cag-deploy-verifier.md",
     "dst": ".claude/agents/bsuk-deploy-verifier.md",
     "mode": "rebase",
-    "notes": "ops/QA; release-guarded \u2014 inactive until project 6, no host and no domain"
+    "notes": "ops/QA; release-guarded — inactive until project 6, no host and no domain"
   },
   {
     "src": ".claude/agents/cag-accessibility-fixer.md",
@@ -837,7 +837,7 @@
     "src": ".claude/agents/cag-performance-fixer.md",
     "dst": ".claude/agents/bsuk-performance-fixer.md",
     "mode": "rebase",
-    "notes": "ops/QA; the one agent with zero bird vocabulary \u2014 name: field only"
+    "notes": "ops/QA; the one agent with zero bird vocabulary — name: field only"
   },
   {
     "src": ".claude/agents/cag-site-hygiene-agent.md",
@@ -879,7 +879,7 @@
     "src": ".claude/agents/cag-gsc-analytics.md",
     "dst": ".claude/agents/bsuk-gsc-analytics.md",
     "mode": "rebase",
-    "notes": "analytics; data-guarded \u2014 no GSC data pulled, every figure NOT FETCHED until project 6"
+    "notes": "analytics; data-guarded — no GSC data pulled, every figure NOT FETCHED until project 6"
   },
   {
     "src": ".claude/agents/cag-keyword-verifier.md",
@@ -892,5 +892,155 @@
     "dst": ".claude/agents/bsuk-rank-tracker.md",
     "mode": "rebase",
     "notes": "analytics; data-guarded and competitor list not ported; inactive until project 6"
+  },
+  {
+    "src": ".claude/skills/cag-gate-integrity/SKILL.md",
+    "dst": ".claude/skills/bsuk-gate-integrity/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; gate-integrity re-based to BSUK's scripts/ gates and npm run check:all"
+  },
+  {
+    "src": ".claude/skills/cag-learning-loop/SKILL.md",
+    "dst": ".claude/skills/bsuk-learning-loop/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; rework ledger re-based to rules/ and the BSUK page board"
+  },
+  {
+    "src": ".claude/skills/cag-final-page-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-final-page-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; final page pass over dist/ pages; scripts/final_page_audit.py"
+  },
+  {
+    "src": ".claude/skills/cag-page-hardening/SKILL.md",
+    "dst": ".claude/skills/bsuk-page-hardening/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; hardening scan re-based to BSUK routes and scripts/page_hardening_scan.py"
+  },
+  {
+    "src": ".claude/skills/cag-perf-gate/SKILL.md",
+    "dst": ".claude/skills/bsuk-perf-gate/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; perf gate; live PageSpeed release-guarded to project 6"
+  },
+  {
+    "src": ".claude/skills/cag-duplicate-content-gate/SKILL.md",
+    "dst": ".claude/skills/bsuk-duplicate-content-gate/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; DUP gate over dist/; whitelist re-measured in Task 15"
+  },
+  {
+    "src": ".claude/skills/cag-evidence-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-evidence-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; evidence pass — every claim traced or NOT FETCHED"
+  },
+  {
+    "src": ".claude/skills/cag-aeo-pass/SKILL.md",
+    "dst": ".claude/skills/bsuk-aeo-pass/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; answer-engine pass re-based to BSUK questions and routes"
+  },
+  {
+    "src": ".claude/skills/cag-seo-master-checklist/SKILL.md",
+    "dst": ".claude/skills/bsuk-seo-master-checklist/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the master checklist re-based to BSUK routes, prices and locations"
+  },
+  {
+    "src": ".claude/skills/cag-website-health/SKILL.md",
+    "dst": ".claude/skills/bsuk-website-health/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; health sweep re-based to scripts/health-sweep.sh"
+  },
+  {
+    "src": ".claude/skills/cag-broken-links/SKILL.md",
+    "dst": ".claude/skills/bsuk-broken-links/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; link checker re-based to dist/ and https://SITE_URL_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/skills/cag-indexing/SKILL.md",
+    "dst": ".claude/skills/bsuk-indexing/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; indexing; IndexNow and live submission release-guarded to project 6"
+  },
+  {
+    "src": ".claude/skills/cag-contact-form/SKILL.md",
+    "dst": ".claude/skills/bsuk-contact-form/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; contact form contract re-based to BSUK's enquiry form"
+  },
+  {
+    "src": ".claude/skills/cag-footer-agent/SKILL.md",
+    "dst": ".claude/skills/bsuk-footer-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; footer re-based; scripts/rebuild_footer.py not ported"
+  },
+  {
+    "src": ".claude/skills/cag-site-patterns/SKILL.md",
+    "dst": ".claude/skills/bsuk-site-patterns/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the shared page patterns re-based to BSUK components"
+  },
+  {
+    "src": ".claude/skills/cag-cta-strategy/SKILL.md",
+    "dst": ".claude/skills/bsuk-cta-strategy/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; CTA strategy re-based to deposit/enquiry CTAs"
+  },
+  {
+    "src": ".claude/skills/cag-entity-agent/SKILL.md",
+    "dst": ".claude/skills/bsuk-entity-agent/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; entity agent re-based to BlueStaffyUK, Lisa Bright and Glasgow"
+  },
+  {
+    "src": ".claude/skills/cag-entity-graph/SKILL.md",
+    "dst": ".claude/skills/bsuk-entity-graph/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; entity graph re-based to BSUK's Organization/Person/Product graph"
+  },
+  {
+    "src": ".claude/skills/cag-youtube/SKILL.md",
+    "dst": ".claude/skills/bsuk-youtube/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; YouTube skill re-based; channel data NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/skills/cag-google-map/SKILL.md",
+    "dst": ".claude/skills/bsuk-google-map/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; map embed re-based to 40 Coltmuir Street, Glasgow G22 6LU"
+  },
+  {
+    "src": ".claude/skills/cag-blog-post/SKILL.md",
+    "dst": ".claude/skills/bsuk-blog-post/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the blog builder re-based to BSUK topics, packs and gates"
+  },
+  {
+    "src": ".claude/skills/cag-location-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-location-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; location pages re-based to the 28 UK cities in data/locations.json"
+  },
+  {
+    "src": ".claude/skills/cag-comparison-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-comparison-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; comparison pages re-based to Staffy comparisons"
+  },
+  {
+    "src": ".claude/skills/cags-comprehensive-page-audit-system/SKILL.md",
+    "dst": ".claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the audit system re-based to BSUK routes and the ported gate scripts"
+  },
+  {
+    "src": ".claude/skills/cag-for-sale-page-builder/SKILL.md",
+    "dst": ".claude/skills/bsuk-puppy-page-builder/SKILL.md",
+    "mode": "rebase",
+    "notes": "system; the largest rewrite — bird listing becomes the puppy listing on rules/puppies.md"
   }
 ]

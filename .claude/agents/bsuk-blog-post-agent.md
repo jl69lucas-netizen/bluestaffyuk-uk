@@ -251,7 +251,7 @@ Every post that makes a technical or clinical claim must cite it **once** to a c
 - **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (L-2-HGA, hereditary cataract, hip scoring, microchipping law (LEGAL_CLAIM_PLACEHOLDER), animal-transport rules). Never invent a source URL.
 - **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (Direction D adds the `↗` cue automatically). Internal links stay same-tab.
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
-- **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (arrives in Task 12 with the grill-me skill)
+- **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (not ported — source repo only)
 
 Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a "how DNA sexing works" post cites the DNA test; a shipping post cites the animal-transport rules).
 
