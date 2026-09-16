@@ -2280,6 +2280,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 15: Harness — the DUP whitelist and the remaining fixtures
 
+> Execution note (Task 12 quality review): `scripts/dup_content_audit.py` still holds CAG stems (`reserve your bird`, `shipping & delivery`, `shop african greys`, `mark & teri benjamin`), and its header whitelist match at ~line 214 is a substring test, so `contact` whitelists every heading containing it. Re-base the stems to BSUK chrome measured from `dist/` (expected: FAQ, Delivery & Collection, Reserve, Get in Touch, Blue Staffy News) AND switch to exact (normalised) match with a test for the substring trap. Also give the script argparse so `--help` no longer runs a full audit. Then remove the "(arrives in Task 15)" marker in `.claude/skills/bsuk-duplicate-content-gate/SKILL.md` and make its stem list match.
+
 > Execution note (2026-09-16): re-basing `HEADER_WHITELIST`/`HEAD_TERMS` changes the homepage board's `record_hash`. After this task, rerun `python3 scripts/build_page_board.py index` and hand the controller `docs/artifacts/boards/index.html` to republish at the same Artifact URL; expect `board_gate.py index` to drop from 5 to 3 FAILs (the three carried duplicates).
 
 **Files:** Modify `scripts/dup_content_audit.py`, `tests/render/lib/dupCorpus.ts`, `tests/render/fixtures/dup_corpus/*`, and the ~45 remaining marker-carrying files under `tests/render/`
