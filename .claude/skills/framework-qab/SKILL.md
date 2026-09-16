@@ -83,7 +83,7 @@ Good: "Blue Staffy puppies from BlueStaffyUK cost £1,500 (Roman, Byrd, Ince) / 
 **Be specific — use real numbers:**
 ```
 Bad:  "Crate costs can vary but are generally affordable."
-Good: "Expect £60–£120 for an appropriate crate — a minimum 30" model suits an adult Staffy."
+Good: "Expect to budget for an appropriate crate — a minimum 30" model suits an adult Staffy."
 ```
 
 **Source the answer:**
@@ -108,7 +108,7 @@ Good Benefit: "Knowing your puppy's complete paperwork before handover means you
 - **Fear-removal:** "...so you never have to worry about hidden fees"
 - **Outcome clarity:** "...which means your puppy arrives calm and healthy"
 - **Decision confidence:** "...so you can compare breeders with the same standard"
-- **Financial:** "...saving you £800–£2,000 compared to first-year vet costs for a puppy-farm puppy"
+- **Financial:** "...saving you the first-year vet costs a puppy-farm puppy brings — an amount that is NOT FETCHED, so never print one"
 
 ---
 

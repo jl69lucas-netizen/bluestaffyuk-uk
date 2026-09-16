@@ -124,8 +124,8 @@ Run these checks AFTER the standard keyword checklist above. Every item must pas
 
 ### Entity Coverage (AIO/LLM Citability)
 - [ ] ≥1 declarative statement per H2 section (Entity-Tree format: "[Subject] is/are [fact].")
-- [ ] Blue Staffy puppy entity properties mentioned: lifespan (40–60 years), vocabulary (1,000+ words), LICENCE_CLAIM_PLACEHOLDER status, origin regions
-- [ ] Breeder entity properties mentioned: owner name, location (Midland TX), founding year (2014), the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER), the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
+- [ ] Blue Staffy puppy entity properties mentioned: lifespan (12–14 years), temperament with children (LICENCE_CLAIM_PLACEHOLDER until evidenced), LICENCE_CLAIM_PLACEHOLDER status, origin regions
+- [ ] Breeder entity properties mentioned: owner name, location (Glasgow G22 6LU), founding year (NOT FETCHED), the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER), the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
 - [ ] Variant entity properties mentioned if applicable: Blue Staffy (solid blue coat) vs blue and white Staffy (smaller, charcoal, red-tipped tail)
 
 ### Schema Completeness

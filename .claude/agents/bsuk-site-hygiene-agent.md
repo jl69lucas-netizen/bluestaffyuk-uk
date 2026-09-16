@@ -180,7 +180,7 @@ The breadcrumb must go as the **first child** inside the hero section's inner co
 ### Known pages already having breadcrumbs (as of 2026-05-22)
 
 All city pages, all blog pages, `/available-puppies/`, and ~60 others. The 15 pages added in this sprint:
-`/available-puppies/`, `/available-puppies/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/buy-blue-staffy-puppies-uk/`, `/LICENCE_CLAIM_PLACEHOLDER-blue-staffy-documentation/`, `/available-puppies/`, `/male-african-gray-for-sale/`, `/blue-staffy-uk-breeders/`, `/testimonials/`, `/blue-staffy-uk-breeders/`, `/buy-blue-staffy-puppies-uk/`
+`/available-puppies/`, `/available-puppies/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/buy-blue-staffy-puppies-uk/`, `/blue-staffy-breeder-standing/`, `/available-puppies/`, `/male-african-gray-for-sale/`, `/blue-staffy-uk-breeders/`, `/testimonials/`, `/blue-staffy-uk-breeders/`, `/buy-blue-staffy-puppies-uk/`
 
 ---
 
@@ -207,7 +207,7 @@ All city pages, all blog pages, `/available-puppies/`, and ~60 others. The 15 pa
 ### Current Resources & Trust links (Column 4, as of 2026-05-22)
 1. Trusted Breeders → `/blue-staffy-uk-breeders/`
 2. **Blue Staffy Care Hub → `/uk-staffordshire-bull-terrier-guide/`** ← added 2026-05-22
-3. the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) → `/LICENCE_CLAIM_PLACEHOLDER-blue-staffy-documentation/`
+3. the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) → `/blue-staffy-breeder-standing/`
 4. Scam Prevention Guide → `/available-puppies/`
 5. Health Guarantee → `/blue-staffy-health-uk/`
 6. Live Shipping Info → `/buy-blue-staffy-puppies-uk/`

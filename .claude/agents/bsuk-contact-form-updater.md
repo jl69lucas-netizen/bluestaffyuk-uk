@@ -102,8 +102,8 @@ for a brand-new page that has no form vocabulary yet — and even then prefer
     <label for="inq-variant">Variant Preference <span aria-hidden="true">*</span></label>
     <select id="inq-variant" name="variant" required aria-required="true">
       <option value="">Select a variant</option>
-      <option value="blue">Blue Staffy (£1,700–£2,500)</option>
-      <option value="blue and white Staffy">Blue and white Staffy (£1,500–£1,600)</option>
+      <option value="blue">Blue Staffy (£1,500)</option>
+      <option value="blue-and-white">Blue and white Staffy (£1,700)</option>
       <option value="unsure">Not sure yet</option>
     </select>
   </div>

@@ -80,7 +80,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 | Informational | "what is," "how long," "are they" | Breed guide, FAQ sections |
 | Comparison | "vs," "difference between," "better" | Comparison pages |
 | Health | "health problems," "lifespan," "tested" | Breed guide, trust sections |
-| Legal/LICENCE_CLAIM_PLACEHOLDER | "legal," "documentation," "LICENCE_CLAIM_PLACEHOLDER," "permit" | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages |
+| Legal and breeder standing | "legal," "documentation," "LICENCE_CLAIM_PLACEHOLDER," "permit" | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages |
 | Local | "[city/city] Blue Staffy" | Location pages |
 
 ---
@@ -94,7 +94,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 - Where can I buy a legally documented Blue Staffy puppy?
 - How do I avoid Blue Staffy puppy scams?
 
-### LICENCE_CLAIM_PLACEHOLDER / Legal
+### Breeder Standing / Legal
 - Are Blue Staffy puppies legal to own in the US?
 - What is LEGAL_CLAIM_PLACEHOLDER and why does it matter?
 - What documentation comes with a home-raised Blue Staffy?
@@ -112,7 +112,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 
 ### Shipping / Process
 - Is puppy shipping safe?
-- How does DEFRA-approved-compliant puppy shipping work?
+- How does delivery by DEFRA-approved transport work?
 - What is included in the purchase price?
 - How do I reserve an Blue Staffy puppy?
 
@@ -122,7 +122,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 
 Google pulls Featured Snippets from content that:
 1. **Answers the exact question** in the first sentence
-2. **Uses 40–60 words** for paragraph snippets
+2. **Uses 40 to 60 words** for paragraph snippets
 3. **Uses a list** for "how to" or "steps" questions (3–8 items)
 4. **Uses a table** for comparison questions
 
@@ -157,7 +157,7 @@ Q: What's the difference between Blue Staffy and Blue and white Staffies?
 | | Blue Staffy | Blue and white Staffy |
 |--|--|--|
 | Size | Larger (400–650g) | Smaller (275–375g) |
-| Price range | £1,500–£3,500 | £1,200–£2,500 |
+| Price | £1,500 (Roman, Byrd, Ince) | £1,700 (Vennie, Christa, Cheryl) |
 | Tail color | Bright red | Dark maroon |
 | training onset | Later | Earlier |
 | Best for | Experienced owners | First-time puppy owners |
@@ -182,7 +182,7 @@ Commercial: [list]
 Informational: [list]
 Comparison: [list]
 Health: [list]
-Legal/LICENCE_CLAIM_PLACEHOLDER: [list]
+Legal and breeder standing: [list]
 
 ## Featured Snippet-Optimized Answers
 
@@ -191,7 +191,7 @@ Legal/LICENCE_CLAIM_PLACEHOLDER: [list]
 **Target page:** /[slug]/
 **Target section:** FAQ / Hero / Body
 **Answer (snippet-ready):**
-[40–60 word answer or list/table]
+[40 to 60 word answer or list/table]
 **Schema-ready text** (no HTML):
 [plain text version for JSON-LD]
 
@@ -232,6 +232,6 @@ Run PAA extraction for a new keyword cluster every time:
 2. **Expand the PAA tree** — click to reveal nested questions, not just the first 4
 3. **Classify before writing** — know which page each question targets
 4. **Snippet format matches question type** — paragraph, list, or table
-5. **40–60 words for paragraph snippets** — Google's preferred range
+5. **40 to 60 words for paragraph snippets** — Google's preferred range
 6. **Feed to bsuk-faq-agent** — bsuk-paa-agent extracts and optimizes, bsuk-faq-agent formats HTML
 7. **Save question bank** — write to `docs/research/paa-<keyword>-<date>.md`

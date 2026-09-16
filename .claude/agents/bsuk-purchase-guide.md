@@ -70,7 +70,7 @@ The purchase guide walks buyers through:
 4. **Documentation preview** — what you will receive before deposit is sent
 5. **Deposit phase** — how deposit works, what it holds, deposit amount
 6. **Documentation delivery** — LICENCE_CLAIM_PLACEHOLDER permit, microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert, vet health certificate LICENCE_CLAIM_PLACEHOLDER
-7. **Shipping phase** — DEFRA-approved live animal protocols, temperature windows, transit time
+7. **Shipping phase** — delivery by DEFRA-approved transport (LEGAL_CLAIM_PLACEHOLDER for the rules themselves), temperature windows, transit time
 8. **Arrival phase** — 72-hour vet visit, settling-in protocol
 9. **Post-purchase support** — Lisa Bright contact, ongoing questions welcome
 
@@ -96,7 +96,7 @@ Build one at a time. Confirm with user before moving to next.
 | 8 | **9-Step Purchase Process** | custom | Numbered steps with icons — the full purchase journey |
 | 9 | **Puppy Info** | custom | What makes Blue Staffies exceptional companions |
 | 10 | **Pricing & Comparison** | `comparison-table` | BSUK vs market pricing, Blue Staffy vs blue and white Staffy |
-| 11 | **Delivery Coverage** | custom | All 50 cities, DEFRA-approved-compliant puppy shipping — from data/locations.json |
+| 11 | **Delivery Coverage** | custom | all 28 cities in `data/locations.json`, delivery by DEFRA-approved transport — from data/locations.json |
 | 12 | **FAQ — Buyer Questions** | `faq` | Top 8–10 buyer questions in QAB format + FAQPage schema |
 | 13 | **Care Guide** | custom | New owner resource — diet, enrichment, training, vet schedule |
 | 14 | **Testimonials** | `testimonials` | 3–6 real owner stories — BAB framework |
@@ -170,7 +170,7 @@ Build [section type]:
 - Pull city list from `data/locations.json` — only list cities where `"live": true`
 - Format as a 3-column grid of city badges
 - Each city badge links to its `/uk-locations/<slug>/` page
-- Headline: "DEFRA-approved-Compliant Puppy Shipping to All 50 Cities"
+- Headline: "UK Home Delivery by DEFRA-approved transport, or Collection in Glasgow"
 - Note: LICENCE_CLAIM_PLACEHOLDER health certificate required for interstate transport — included
 
 ### Section 12 — FAQ

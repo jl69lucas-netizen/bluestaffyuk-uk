@@ -214,7 +214,7 @@ health screening, and lifetime breeder support. Top breeders demonstrate:</p>
 
 ### Strategy 2 — "Question in Heading, Answer in First Paragraph"
 Works for: Why, What, How, Are, Is, Can, Should questions.
-- First paragraph directly answers the H2 question in 40–60 words
+- First paragraph directly answers the H2 question in 40 to 60 words
 - Active voice, specific numbers, no hedging
 ```html
 <h2>Why Choose a Blue Staffordshire Bull Terrier Over Other Terrier Breeds?</h2>

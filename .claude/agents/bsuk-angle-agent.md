@@ -90,7 +90,7 @@ Lead with a specific person's story, then widen to the general.
 **Formula:** "[Person]'s story is exactly what [keyword searcher] needs to hear."
 
 **BSUK examples:**
-- "A buyer contacted us after finding a £600 'Blue Staffy' on Facebook. What the seller couldn't produce told the whole story."
+- "A buyer contacted us after finding a suspiciously cheap 'Blue Staffy' on Facebook. What the seller couldn't produce told the whole story."
 - "The Thompson family almost bought from an overseas listing. Here's what stopped them."
 
 ---
@@ -108,7 +108,7 @@ A surprising statistic or number that reframes the conversation.
 **Formula:** "[Unexpected number] — here's what it means for [reader]."
 
 **BSUK examples:**
-- "Blue Staffies live 50–70 years. Most buyers spend more time researching a TV than their puppy."
+- "Blue Staffies live 12–14 years. Most buyers spend more time researching a TV than their puppy."
 - "L-2-HGA is undetectable at purchase without a DNA test — and most sellers don't offer one."
 
 ---
@@ -123,7 +123,7 @@ Position BSUK against what most buyers accept as standard.
 ## BSUK Angle Categories
 
 ### Documentation Angles
-- "The £600 Facebook advert vs the £1,500 puppy with paperwork (LICENCE_CLAIM_PLACEHOLDER) — what you're actually paying for"
+- "The cheap Facebook advert vs the £1,500 puppy with paperwork (LICENCE_CLAIM_PLACEHOLDER) — what you're actually paying for"
 - "LEGAL_CLAIM_PLACEHOLDER explained in plain English — what it means for your puppy purchase"
 - "How to verify a LICENCE_CLAIM_PLACEHOLDER home-raised permit before sending any deposit"
 
@@ -132,7 +132,7 @@ Position BSUK against what most buyers accept as standard.
 - "Why blue and white Staffy owners bond faster (and what Blue Staffy owners get instead)"
 
 ### Longevity Angles
-- "The 50-year decision: what to ask before buying an Blue Staffy"
+- "The 12–14-year decision: what to ask before buying an Blue Staffy"
 - "Blue Staffy lifespan vs other puppies — what the data says"
 
 ---

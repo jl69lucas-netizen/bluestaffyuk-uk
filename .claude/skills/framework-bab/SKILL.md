@@ -52,8 +52,8 @@ B — Bridge:  BSUK as the path from Before to After.
 ### Scam-Prevention Section
 ```
 BEFORE:
-You found a blue Staffy puppy for £450 on Facebook Marketplace. The photos looked real.
-The seller had a phone number. You sent £300 by bank transfer as a deposit.
+You found a blue Staffy puppy for well under £1,500 on Facebook Marketplace. The photos looked real.
+The seller had a phone number. You sent a bank transfer as a deposit.
 Then silence. The number disconnected. The profile disappeared.
 That's not a rare story — it happens every week in UK Staffy Facebook groups.
 
@@ -96,13 +96,13 @@ yours before sending any deposit. [Link: LICENCE_CLAIM_PLACEHOLDER verification 
 ## BAB Writing Rules
 
 ### Before — Make the Pain Real
-- **Specific, not generic:** "You sent £300 online and never heard back" > "some people get scammed"
+- **Specific, not generic:** "You sent a bank transfer online and never heard back" > "some people get scammed"
 - **Empathetic, not condescending:** "that's not a horror story — that's a Tuesday for Staffy buyers in Facebook groups" validates without judging
 - **Name the emotion:** fear, frustration, heartbreak — not just the situation
 
 ### After — Make the Future Concrete
 - **Sensory specificity:** "you meet the puppy with its mother in our kitchen before you pay anything"
-- **Numbers where possible:** "£0 surprise vet costs in year 1" > "fewer vet visits"
+- **Numbers where possible:** "the vet bills you were told to expect, and no others" > "fewer vet visits"
 - **Their future, not BlueStaffyUK's product:** show their life, not BSUK's features
 
 ### Bridge — Earn the Transition
@@ -128,7 +128,7 @@ yours before sending any deposit. [Link: LICENCE_CLAIM_PLACEHOLDER verification 
 | Mistake | Fix |
 |---------|-----|
 | Before is too mild ("it can be hard to find a good breeder") | Make the pain specific and real |
-| After is vague ("peace of mind") | Make After concrete ("zero surprise vet bills in year 1") |
+| After is vague ("peace of mind") | Make After concrete ("the vet bills you were told to expect, and no others") |
 | Bridge is a feature list | Bridge is a single mechanism — the one thing that closes the gap |
 | BAB without CTA | Every BAB ends with an action path |
 | Before sounds like you're insulting scam sellers/competitors | Empathize with the reader's experience, don't attack the industry |

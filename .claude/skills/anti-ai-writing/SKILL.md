@@ -31,7 +31,7 @@ Apply to **any BSUK prose** — especially the high-tell surfaces:
 
 | Category | Banned pattern | Why it reads robotic | Human alternative |
 |---|---|---|---|
-| **Weak Openers** | "In today's fast-paced world…" / "In the world of…" | Generic stage-setting that says nothing | Open on the concrete situation: "A buyer rang us last week, spooked by a £300 'blue Staffy' with no paperwork." |
+| **Weak Openers** | "In today's fast-paced world…" / "In the world of…" | Generic stage-setting that says nothing | Open on the concrete situation: "A buyer rang us last week, spooked by a a deposit 'blue Staffy' with no paperwork." |
 | Weak Openers | "When it comes to Blue Staffies…" | Filler runway before the real sentence | Cut it. Start at the noun: "Blue Staffies bond hard, fast, and for a decade or more." |
 | Weak Openers | "Whether you're a first-time owner or a seasoned handler…" | Fake-inclusive both-sides hedge | Pick the actual reader and address them. |
 | Weak Openers | "The truth is…" / "The truth, in our experience, is that…" | Hedge frame that buries the claim | Lead with the claim itself, no preamble. |

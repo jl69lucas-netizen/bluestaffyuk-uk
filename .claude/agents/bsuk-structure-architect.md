@@ -150,7 +150,7 @@ For each cluster, define the mandatory internal links:
 # Map: homepage → hub → spoke → sub-spoke = 3 clicks max
 # Find pages that are too deep
 find dist/ -name "*.md" | sed 's|dist/||' | \
-  awk -F'/' '{if(NF > 3) print NF" clicks: "£0}' | sort -rn
+  awk -F'/' '{if(NF > 3) print NF" clicks: "$0}' | sort -rn
 ```
 
 ### Step 2 — Orphan Detection

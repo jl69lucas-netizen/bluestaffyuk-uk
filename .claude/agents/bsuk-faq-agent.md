@@ -173,7 +173,7 @@ Minimum requirements:
 **Good question:** "How much does a Blue Staffy puppy cost from a reputable breeder?"
 **Bad question:** "What are the advantages of purchasing an Blue Staffy puppy from SITE_URL_PLACEHOLDER?"
 
-**Good answer opening:** "Blue Staffies from SITE_URL_PLACEHOLDER cost £1,500–£3,500."
+**Good answer opening:** "Blue Staffies from SITE_URL_PLACEHOLDER cost £1,500 or £1,700."
 **Bad answer opening:** "Great question! When considering the cost of a Blue Staffy..."
 
 **Good benefit:** "Knowing the all-in price upfront means no surprise fees when your puppy arrives."

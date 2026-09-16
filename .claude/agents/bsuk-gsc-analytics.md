@@ -143,7 +143,7 @@ with open('data/analytics/[export-folder]/Queries.csv') as f:
 EOF
 ```
 
-### 6. LICENCE_CLAIM_PLACEHOLDER Query Gap
+### 6. Breeder-Standing Query Gap
 Queries containing "documented" or "LICENCE_CLAIM_PLACEHOLDER" with no BSUK page targeting them.
 
 ```bash

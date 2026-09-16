@@ -85,7 +85,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 
 ## BSUK Blog Topic Categories
 
-### LICENCE_CLAIM_PLACEHOLDER & Documentation (high-authority, low competition)
+### Breeder Standing & Documentation (high-authority, low competition)
 - "Blue Staffy LEGAL_CLAIM_PLACEHOLDER: a buyer's complete guide"
 - "How to verify a LICENCE_CLAIM_PLACEHOLDER home-raised permit before purchase"
 - "What happens if your Blue Staffy doesn't have proper documentation"
@@ -95,7 +95,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 - "Male vs female Blue Staffy: temperament differences"
 
 ### Care & Husbandry (informational, long-tail)
-- "Blue Staffy puppy lifespan: what 40–60 years means for ownership"
+- "Blue Staffy puppy lifespan: what 12–14 years means for ownership"
 - "L-2-HGA in Blue Staffies: what to ask your breeder"
 - "home-raised vs parent-raised: what to look for"
 
@@ -109,7 +109,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 
 1. **[BREEDER_NAME] speaks directly** — use first-person "we" for breeder voice sections
 2. **Never invent stats** — all numbers come from `data/price-matrix.json` or `data/financial-entities.json` (not ported — source repo only)
-3. **Blue Staffy prices** are always `£1,500–£3,500` (BSUK) / `£1,200–£2,500` (TAG) — use correct variant
+3. **Blue Staffy prices** are always `£1,500` (Roman, Byrd, Ince) or `£1,700` (Vennie, Christa, Cheryl), read from `data/puppies.json` — never a range, never a figure of your own
 4. **Health guarantee is `[DURATION_TBD]`** — never specify a duration until confirmed
 5. **We are in [BREEDER_LOCATION]** — always accurate, never a different city
 6. **LICENCE_CLAIM_PLACEHOLDER compliance is non-negotiable** — every post mentioning purchase must reference the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
@@ -237,7 +237,7 @@ Every post must link to at least 3 BSUK pages. Priority targets:
 | `/contact/` | "submit your inquiry", "ask us anything", "our inquiry form" |
 | `/uk-staffordshire-bull-terrier-guide/` | "complete Blue Staffy breed guide", "everything about Blue Staffies" |
 | `/buy-blue-staffy-puppies-uk/` | "how to find a reputable breeder", "our buying process" |
-| `/LICENCE_CLAIM_PLACEHOLDER-documentation/` | "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)", "legal documentation guide" |
+| `/blue-staffy-breeder-standing/` | "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)", "legal documentation guide" |
 | `/blue-staffy-uk-breeders/` | "[BREEDER_NAME]", "our breeding story" |
 
 **Anchor position rule (Link-First, 2026-07-11):** Link text must appear at the START of the sentence — inside the opening words. Never mid-sentence, never at the end. Bad: `"learn more [here](url)."` Good: `"Our [complete breed guide](url) covers everything from..."`)
@@ -248,12 +248,12 @@ Every post must link to at least 3 BSUK pages. Priority targets:
 
 Every post that makes a technical or clinical claim must cite it **once** to a credible **government / NIH** source (prefer `pmc.ncbi.nlm.nih.gov`) or the **canonical industry authority**, at the claim sentence (beginning/middle, never the end). This is the E-E-A-T pattern proven live on the homepage.
 
-- **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (microchip registration LICENCE_CLAIM_PLACEHOLDER, L-2-HGA, hereditary cataract/HC, Blue Staffy hypocalcemia, DEFRA-approved LAR, LEGAL_CLAIM_PLACEHOLDER, Alex/cognition). Never invent a source URL.
+- **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (L-2-HGA, hereditary cataract, hip scoring, microchipping law (LEGAL_CLAIM_PLACEHOLDER), animal-transport rules). Never invent a source URL.
 - **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (Direction D adds the `↗` cue automatically). Internal links stay same-tab.
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
 - **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (arrives in Task 12 with the grill-me skill)
 
-Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a "how DNA sexing works" post LICENCE_CLAIM_PLACEHOLDER PCR; a shipping post LICENCE_CLAIM_PLACEHOLDER DEFRA-approved LAR).
+Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a "how DNA sexing works" post cites the DNA test; a shipping post cites the animal-transport rules).
 
 ---
 
@@ -294,7 +294,7 @@ def seo_check(filepath, primary_keyword):
         "H1 contains keyword": primary_keyword.lower() in re.search(r'<h1[^>]*>(.*?)</h1>', content, re.I|re.S).group(1).lower() if re.search(r'<h1[^>]*>(.*?)</h1>', content) else False,
         "BlogPosting schema": '"@type": "BlogPosting"' in content,
         "Internal links >= 3": len(re.findall(r'href="/[^"]+/', content)) >= 3,
-        "Authority citation >= 1 (E-E-A-T)": bool(re.search(r'href="https://(pmc\.ncbi\.nlm\.nih\.gov|www\.DEFRA-approved\.org|www\.LICENCE_CLAIM_PLACEHOLDER\.org|alexfoundation\.org)', content)),
+        "Authority citation >= 1 (E-E-A-T)": bool(re.search(r'href="https://(pmc\.ncbi\.nlm\.nih\.gov|www\.gov\.uk|www\.thekennelclub\.org\.uk|www\.bva\.co\.uk)', content)),
         "External links are new-tab": all('rel="noopener' in seg for seg in re.findall(r'<a[^>]*target="_blank"[^>]*>', content)) if 'target="_blank"' in content else True,
         "CTA present": '/contact/' in content or '/available/' in content,
         "No price invented": not bool(re.search(r'\$[0-9]{5,}', content)),

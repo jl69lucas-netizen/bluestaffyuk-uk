@@ -116,13 +116,13 @@ Add to `<head>` of homepage, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders
 <!-- Trust Badges — Required in Hero and Footer -->
 <div class="trust-badges-row" aria-label="BSUK certifications and credentials">
   <div class="trust-badge">
-    <img src="/images/trust-badge-LICENCE_CLAIM_PLACEHOLDER.png"
+    <img src="/images/trust-badge-breeder-standing.png"
          alt="LICENCE_CLAIM_PLACEHOLDER Licensed Facility — SITE_URL_PLACEHOLDER inspected and licensed Blue Staffy breeder"
          width="80" height="80" loading="lazy">
     <span class="badge-label">LICENCE_CLAIM_PLACEHOLDER Licensed</span>
   </div>
   <div class="trust-badge">
-    <img src="/images/trust-badge-LICENCE_CLAIM_PLACEHOLDER.png"
+    <img src="/images/trust-badge-breeder-standing.png"
          alt="LICENCE_CLAIM_PLACEHOLDER home-raised Documented — every Blue Staffy includes LEGAL_CLAIM_PLACEHOLDER home-raised permit"
          width="80" height="80" loading="lazy">
     <span class="badge-label">LICENCE_CLAIM_PLACEHOLDER Documented</span>
@@ -212,8 +212,8 @@ ls dist/blue-staffy-uk-breeders/ 2>/dev/null || echo "Page does not exist — cr
      <tbody>
        <tr>
          <td>Blue Staffy Price</td>
-         <td><strong>£1,500–£3,500</strong></td>
-         <td>£800–£2,000</td>
+         <td><strong>£1,500–£1,700</strong></td>
+         <td>NOT FETCHED</td>
          <td>Illegal — LICENCE_CLAIM_PLACEHOLDER violation</td>
        </tr>
        <tr>

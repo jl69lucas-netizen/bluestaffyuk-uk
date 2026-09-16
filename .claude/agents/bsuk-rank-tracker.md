@@ -137,7 +137,7 @@ Save a lean snapshot after each run to enable next week's change detection:
   "blog_post_count": 34,
   "states_found": ["CA", "TX", "FL"],
   "schema_types": ["FAQPage", "Product"],
-  "price_mentions": ["£1,200", "£1,800"]
+  "price_mentions": ["NOT FETCHED"]
 }
 ```
 

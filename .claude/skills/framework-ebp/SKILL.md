@@ -105,11 +105,11 @@ Pricing transparency is also evidence-based:
 
 ```
 Claim:    "BlueStaffyUK puppies cost less than a pet-shop or unlicensed puppy over a lifetime."
-Evidence: First-year vet costs for health-checked, vaccinated puppies average £300–£500
+Evidence: First-year vet costs are NOT FETCHED — quote a figure only when the breeder or a vet supplies one
           (routine care only). First-year vet costs for undocumented puppies
-          average £1,200–£2,800 (illness + re-vaccination + paperwork issues).
+          are NOT FETCHED (illness + re-vaccination + paperwork issues).
           Source: BSUK owner survey data.
-Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price + £300–£500 vet = a licensed,
+Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price is the locked fact; vet costs are NOT FETCHED. A breeder who can show paperwork (LICENCE_CLAIM_PLACEHOLDER) is
           KC-registered puppy with full paperwork from day one. £500 deposit, refundable.
 ```
 

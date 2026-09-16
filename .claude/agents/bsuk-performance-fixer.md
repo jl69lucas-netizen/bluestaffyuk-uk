@@ -66,9 +66,9 @@ head -3 [target_file] | grep "^---" && echo "ASTRO PAGE" || echo "LEGACY HTML PA
 ```
 **Trade-off (city it):** GA fires on interaction or within ~3.5 s, so a sub-3.5 s no-interaction bounce is measured slightly later. Acceptable for this site; keeps GA off the critical path. Verify: `grep -c 'async src="https://www.googletagmanager.com/gtag/js' dist/index.html` → `0`.
 
-### Fix 7: 1st-party "unused JS" you can't see in the repo = Cloudflare-injected
+### Fix 7: 1st-party "unused JS" you can't see in the repo = injected by the CDN or host
 
-A 1st-party bundle on a hashed path (e.g. `/70de/…`) that is NOT in `src/` or `dist/` is **Cloudflare edge-injected** — Rocket Loader (look for `data-cf-settings`/`data-cf` and `cloudflare-static/…` on the live HTML) and/or email-obfuscation (`/cdn-cgi/scripts/.../email-decode.min.js`). **This is a Cloudflare dashboard fix, not a code fix:** Speed → Optimization → turn OFF **Rocket Loader** (it usually hurts modern Astro sites). Keep email obfuscation (small, anti-spam). Tell the user — do not hunt for it in the codebase.
+A 1st-party bundle on a hashed path (e.g. `/70de/…`) that is NOT in `src/` or `dist/` is **injected by the host or CDN at the edge** (which host is NOT FETCHED until project 6) — Rocket Loader (look for `data-cf-settings`/`data-cf` and `host-static/…` on the live HTML) and/or email-obfuscation (`/cdn-cgi/scripts/.../email-decode.min.js`). **This is a the host dashboard fix, not a code fix:** Speed → Optimization → turn OFF **Rocket Loader** (it usually hurts modern Astro sites). Keep email obfuscation (small, anti-spam). Tell the user — do not hunt for it in the codebase.
 
 ### Fix 8: Images missing intrinsic `width`/`height` (CLS audit)
 
@@ -156,7 +156,7 @@ grep -m 3 '<img' /path/to/page/index.html
 **Fix the img tag** (add `fetchpriority="high" loading="eager"`):
 ```bash
 # Replace first occurrence of class="wp-post-image" img with fetchpriority added
-perl -i -0pe 's|(<img[^>]*class="wp-post-image"[^>]*)(>)|£1 fetchpriority="high" loading="eager"£2|' /path/to/page/index.html
+perl -i -0pe 's|(<img[^>]*class="wp-post-image"[^>]*)(>)|$1 fetchpriority="high" loading="eager"$2|' /path/to/page/index.html
 ```
 
 **Add preload to head** (after `<title>` tag):
@@ -357,7 +357,7 @@ for f in glob.glob('/tmp/bsuk-repo/**/*.html', recursive=True) + glob.glob('/tmp
 
 **Symptom:** `curl https://SITE_URL_PLACEHOLDER/` returns `HTTP/2 301 location: /` forever.
 
-**Root cause:** Cloudflare Pages `_redirects` does not support query-string pattern matching. The rule `/?p=* / 301` is parsed as "redirect / to /" creating an infinite loop.
+**Root cause:** the `_redirects` format does not support query-string pattern matching. The rule `/?p=* / 301` is parsed as "redirect / to /" creating an infinite loop.
 
 **Fix:** Remove this line from `/tmp/bsuk-repo/_redirects`:
 ```

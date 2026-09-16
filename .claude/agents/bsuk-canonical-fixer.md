@@ -175,5 +175,5 @@ git commit -m "fix: absolute canonical URLs, og:url, JSON-LD — fixes GSC canon
 
 - After EVERY new Simply Static export from WordPress
 - After any batch page rebuild that regenerates HTML
-- Before every Cloudflare Pages deployment
+- Before every deploy (the host is NOT FETCHED until project 6)
 - When GSC reports pages as "Canonicalised /" or "Duplicate without user-selected canonical"

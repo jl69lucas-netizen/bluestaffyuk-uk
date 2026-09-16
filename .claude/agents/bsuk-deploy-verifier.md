@@ -68,7 +68,7 @@ Poll the homepage every 30 seconds for up to 5 minutes. Compare a known changed 
 ```bash
 # Quick check — does the site respond?
 for i in 1 2 3 4 5 6 7 8 9 10; do
-  status=$(curl -sI https://SITE_URL_PLACEHOLDER/ | head -1 | awk '{print £2}')
+  status=$(curl -sI https://SITE_URL_PLACEHOLDER/ | head -1 | awk '{print $2}')
   echo "Attempt $i: HTTP $status"
   [ "$status" = "200" ] && echo "✅ Site is responding" && break
   sleep 30
@@ -92,7 +92,7 @@ Always verify these pages return 200 with valid `<title>` tags:
 ```bash
 for slug in "" "buy-blue-staffy-near-me/" "blue-blue-staffy/" "blue-staffy-breed-guide/" "available/"; do
   url="https://SITE_URL_PLACEHOLDER/${slug}"
-  status=$(curl -sI "$url" | head -1 | awk '{print £2}')
+  status=$(curl -sI "$url" | head -1 | awk '{print $2}')
   title=$(curl -s "$url" | grep -o '<title>[^<]*' | head -1 | sed 's/<title>//')
   [ "$status" = "200" ] && echo "✅ $url — $title" || echo "❌ FAIL ($status): $url"
 done
@@ -111,7 +111,7 @@ slug="[changed-slug]"
 url="https://SITE_URL_PLACEHOLDER/${slug}/"
 
 # Check 200 status
-status=$(curl -sI "$url" | head -1 | awk '{print £2}')
+status=$(curl -sI "$url" | head -1 | awk '{print $2}')
 
 # Check canonical matches expected URL
 canonical=$(curl -s "$url" | grep -o 'rel="canonical"[^>]*href="[^"]*"' | grep -o 'href="[^"]*"' | sed 's/href="//;s/"//')

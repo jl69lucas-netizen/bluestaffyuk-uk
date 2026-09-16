@@ -97,7 +97,7 @@ find content/ -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -na
 ```bash
 # Flag any image over 200KB
 find content/ -type f \( -name "*.jpg" -o -name "*.jpeg" -o -name "*.png" -o -name "*.webp" \) \
-  -size +200k -exec ls -lh {} \; | awk '{print £5, £9}'
+  -size +200k -exec ls -lh {} \; | awk '{print $5, $9}'
 ```
 > **Never auto-compress oversized images.** Report them to the user for manual compression decision.
 

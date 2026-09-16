@@ -127,7 +127,7 @@ Every location page follows this structure (modeled on Glasgow reference page):
 | 4 | Why {CITY} Families Choose BSUK | `features` | 3–4 city-specific reasons |
 | 5 | Available Puppies & Pricing | `price-card` | From `data/price-matrix.json` |
 | 6 | Blue Staffy vs blue and white Staffy for {CITY} Lifestyle | custom | Match variant personality to city lifestyle |
-| 7 | Delivery to {CITY} | custom | DEFRA-approved-compliant puppy shipping to {NEARBY_TOWNS} airports |
+| 7 | Delivery to {CITY} | custom | delivery by DEFRA-approved transport to {NEARBY_TOWNS} airports |
 | 8 | {CITY} Climate Considerations | custom | Temperature windows, shipping restrictions if any |
 | 9 | Setting Up for {CITY} Owners | custom | Climate-adapted habitat setup advice |
 | 10 | Health Guarantee | `features` | "{CITY}'s Best Documentation Package" |

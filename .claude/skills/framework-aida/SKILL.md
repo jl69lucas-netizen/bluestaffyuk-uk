@@ -82,7 +82,7 @@ Rules:
 **Interest techniques:**
 - "You've probably heard..." (validates their existing knowledge)
 - "Most breeders will tell you..." (sets up contrast)
-- "Here's what 15 years taught us that nobody talks about..." (insider revelation)
+- "Here's what the last litter taught us that nobody talks about..." (insider revelation)
 
 **BSUK Interest content:**
 - The problem with Gumtree / Facebook Marketplace (no licence number, bank-transfer deposits, no recourse)
@@ -113,7 +113,7 @@ Desire:   "Your Staffy travels in a climate-controlled van with a rest schedule 
 
 **Desire amplifiers:**
 - Milestone numbers ("2,000+ families have done this")
-- Contrast ("most breeders give you 30 days — we give you 10 years")
+- Contrast ("most breeders give you 30 days — ours is NOT FETCHED until the breeder sets it")
 - Story ("the Robertson family almost bought from a pet shop...")
 
 ---

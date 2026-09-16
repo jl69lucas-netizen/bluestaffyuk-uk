@@ -62,7 +62,7 @@ These are the ranked fears Blue Staffy buyers arrive with (in order of frequency
 ### Pain (1–3 sentences)
 ```
 You found three Blue Staffy breeders online. One has a slick website with adorable photos. 
-One says "KC registered" in the description but the price is £450. One has been operating 
+One says "KC registered" in the description but the price is well under £1,500. The other has been operating 
 since [YEAR] with a LICENCE_CLAIM_PLACEHOLDER number you can look up. You can't 
 tell which one is real.
 ```

@@ -45,7 +45,7 @@ Hubs are short relative to spoke pages — typically 800–1,500 words. They don
 ls dist/blue-staffy-uk-breeders/ 2>/dev/null
 ls dist/available-puppies/ 2>/dev/null
 ls dist/uk-staffordshire-bull-terrier-guide/ 2>/dev/null
-ls dist/blue-staffy-LICENCE_CLAIM_PLACEHOLDER-documentation/ 2>/dev/null
+ls dist/blue-staffy-breeder-standing/ 2>/dev/null
 ```
 
 ---
@@ -57,7 +57,7 @@ ls dist/blue-staffy-LICENCE_CLAIM_PLACEHOLDER-documentation/ 2>/dev/null
 | Location Hub | `/available-puppies/` | 22 city pages (from data/locations.json) |
 | Comparison Hub | `/blue-staffy-uk-breeders/` | Blue Staffy vs blue and white Staffy, vs American Bully, vs French Bulldog, etc. |
 | Breed Hub | `/uk-staffordshire-bull-terrier-guide/` | care, health, training, training spokes |
-| Documentation Hub | `/blue-staffy-LICENCE_CLAIM_PLACEHOLDER-documentation/` | LICENCE_CLAIM_PLACEHOLDER guide, LICENCE_CLAIM_PLACEHOLDER, DNA sexing spokes |
+| Documentation Hub | `/blue-staffy-breeder-standing/` | LICENCE_CLAIM_PLACEHOLDER guide, LICENCE_CLAIM_PLACEHOLDER, DNA sexing spokes |
 
 ---
 
@@ -87,11 +87,11 @@ ls dist/blue-staffy-LICENCE_CLAIM_PLACEHOLDER-documentation/ 2>/dev/null
 - `/blue-staffy-health-uk/`
 - `/blue-staffy-health-uk/`
 
-### 4. Documentation Hub — `/blue-staffy-LICENCE_CLAIM_PLACEHOLDER-documentation/`
+### 4. Documentation Hub — `/blue-staffy-breeder-standing/` (route name PROPOSED)
 **Purpose:** Index of all LICENCE_CLAIM_PLACEHOLDER, legal, and certification content
 **Spokes:**
-- `/LICENCE_CLAIM_PLACEHOLDER-home-raised-blue-staffy/`
-- `/LICENCE_CLAIM_PLACEHOLDER-licensed-blue-staffy-breeder/`
+- `/home-raised-blue-staffy/`
+- `/blue-staffy-breeder-standing/`
 - `/available-puppies/`
 - `/blue-staffy-health-uk/`
 

@@ -62,7 +62,7 @@ Paragraph 3: BSUK application — "this is why we do X"
 
 Example:
 ```
-Paragraph 1: Direct answer — "Blue Staffies cost £1,500–£3,500 from captive breeders."
+Paragraph 1: Direct answer — "Blue Staffies cost £1,500 or £1,700, and the breeder can show the paperwork (LICENCE_CLAIM_PLACEHOLDER)."
 Paragraph 2: Evidence — "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert included."
 Paragraph 3: BSUK application — "At SITE_URL_PLACEHOLDER, every puppy ships with [list docs]."
 ```
@@ -83,7 +83,7 @@ Bridge: [How BSUK gets them there]
 
 ### H-S-S — Hook-Story-Solution (about page, trust-building sections)
 ```
-Hook: [The Blue Staffy scam problem — £600 Craigslist puppies with forged the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)]
+Hook: [The Blue Staffy scam problem — suspiciously cheap online listings with forged the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)]
 Story: [BREEDER_NAME]'s [X] years breeding LICENCE_CLAIM_PLACEHOLDER-documented puppies
 Solution: [What BSUK built — LICENCE_CLAIM_PLACEHOLDER license, LICENCE_CLAIM_PLACEHOLDER permits, vet certs on every puppy]
 ```
@@ -136,7 +136,7 @@ These rules make content citable by AI engines (ChatGPT, Perplexity, Google AIO)
 
 ---
 
-## LICENCE_CLAIM_PLACEHOLDER Writing Rules (non-negotiable)
+## Claim-Writing Rules (non-negotiable)
 
 These rules apply to every piece of content this agent produces:
 
@@ -248,7 +248,7 @@ After the hero H1/subheadline, include 4 short counter snippets:
 3. **Framework must match brief** — don't substitute your preferred approach
 4. **H1 is sacred** — never modify it when rewriting sections
 5. **Staged output** — write one section, wait for approval, then next
-6. **Variant accuracy** — Blue Staffy (£1,500–£3,500) and blue and white Staffy (£1,200–£2,500) are distinct; never mix their prices or characteristics
+6. **Variant accuracy** — the six puppies carry two prices — £1,500 and £1,700, both from `data/puppies.json`; never mix their prices or characteristics
 7. **Humor mode is opt-in** — default to professional/warm; only apply humor modes when explicitly requested; never use humor in LICENCE_CLAIM_PLACEHOLDER, pricing, or health guarantee sections
 8. **Generic-Slayer Filter mandatory** — run before every output delivery
 9. **Counter snippets required** — every page hero gets 4 counter snippets pulled from real data files

@@ -64,11 +64,11 @@ Desc (156): Trusted Blue Staffy puppy breeder in Midland, TX. Lisa Bright hand-r
 
 | Trigger Type | Examples |
 |-------------|---------|
-| **Numbers** | "limited litter," "health guarantee (`[DURATION_TBD]`)," "2,000+ families," "15+ years" |
+| **Numbers** | "limited litter," "health guarantee (`[DURATION_TBD]`)," "NOT FETCHED" (family counts and years in business are unverified) |
 | **Scarcity** | "only 3 available," "sells within days," "limited availability" |
 | **Comparison** | "Blue Staffy vs blue and white Staffy," "BSUK vs TAG," "home-raised vs backyard-bred" |
 | **Proof** | "microchip registration LICENCE_CLAIM_PLACEHOLDER," "LICENCE_CLAIM_PLACEHOLDER documented," "LICENCE_CLAIM_PLACEHOLDER-licensed," "vet health certificate" |
-| **Geographic** | "[BREEDER_LOCATION]," "50 cities," "DEFRA-approved-compliant puppy shipping," specific city names |
+| **Geographic** | "[BREEDER_LOCATION]," "28 UK cities," "delivery by DEFRA-approved transport," specific city names |
 | **Emoji** | 🔴 🆚 🛡️ 🧬 are TONE-PLANNING LABELS ONLY — NEVER render emoji inside an actual title/description tag |
 | **Questions** | "Why do they sell out within days?" "Can you get an Blue Staffy if you have allergies?" |
 | **CTA** | "Reserve yours," "View available puppies," "Act now," "Don't miss out" |
@@ -130,7 +130,7 @@ grep -n "<title>" dist/available-puppies/index.html
 ```
 Title: Blue Staffy Puppy [City] | Health Guarantee (`[DURATION_TBD]`) | BSUK
 Description: Find premium Blue Staffy puppy [City] from BSUK, LICENCE_CLAIM_PLACEHOLDER-licensed breeder with
-[X]+ years experience. microchip registration LICENCE_CLAIM_PLACEHOLDER. Blue Staffy & blue and white Staffy variants. DEFRA-approved-compliant puppy shipping to [City1],
+microchip registration LICENCE_CLAIM_PLACEHOLDER. Blue Staffy & blue and white Staffy variants. delivery by DEFRA-approved transport to [City1],
 [City2] & all [City] airports. Health guaranteed.
 ```
 
@@ -138,7 +138,7 @@ Description: Find premium Blue Staffy puppy [City] from BSUK, LICENCE_CLAIM_PLAC
 ```
 Title: Blue Staffy vs Blue and white Staffy: [Key Differentiator] | BSUK Honest Comparison
 Description: Blue Staffy vs Blue and white Staffy comparison from a breeder who raises both. [Key stat].
-[Key difference]. [Buyer fit]. Which is right for your lifestyle? BSUK — 15+ years,
+[Key difference]. [Buyer fit]. Which is right for your lifestyle? BSUK — Glasgow,
 2,000+ families.
 ```
 
@@ -146,7 +146,7 @@ Description: Blue Staffy vs Blue and white Staffy comparison from a breeder who 
 ```
 Title: [Variant] Blue Staffy Puppy | [Key trait] | $[price] | BSUK [BREEDER_LOCATION]
 Description: [Variant] Blue Staffies weigh [range] as adults. [Key trait]. microchip registration LICENCE_CLAIM_PLACEHOLDER,
-health guarantee (`[DURATION_TBD]`). $[price range]. DEFRA-approved-compliant puppy shipping. [Availability CTA].
+health guarantee (`[DURATION_TBD]`). £1,500 or £1,700. delivery by DEFRA-approved transport. [Availability CTA].
 ```
 
 ---

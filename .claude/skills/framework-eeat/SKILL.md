@@ -56,7 +56,7 @@ BlueStaffyUK is a YMYL site (buying a living animal is a significant decision). 
 ### Authoritativeness Signals (external recognition)
 - Customer testimonials with full names and UK regions
 - LICENCE_CLAIM_PLACEHOLDER (local-authority recognition of a licensed breeder)
-- Local-authority and DEFRA regulatory compliance documentation
+- Local-authority and national regulatory compliance documentation (LEGAL_CLAIM_PLACEHOLDER)
 - Links from credible canine sources (The Kennel Club, Staffordshire Bull Terrier Club, RSPCA)
 
 ### Trustworthiness Signals (accuracy, transparency)

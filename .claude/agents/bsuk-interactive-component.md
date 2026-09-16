@@ -71,7 +71,7 @@ Input: destination city (from data/locations.json).
 Output: DEFRA-approved transport protocol, typical transit time, estimated cost from `data/financial-entities.json`. (not ported — source repo only)
 Graceful degradation if data/locations.json city not found.
 
-### 5. LICENCE_CLAIM_PLACEHOLDER Verification Guide (new — no MFS equivalent)
+### 5. Breeder-Standing Verification Guide (new — no MFS equivalent)
 Step-by-step clickable guide:
 Step 1 → Go to usfws.gov → Step 2 → Enter permit number → Step 3 → Verify home-raised status
 Vanilla JS step-stepper, keyboard accessible, no external deps.
@@ -143,10 +143,10 @@ Vanilla JS step-stepper, keyboard accessible, no external deps.
     <table class="bsuk-table">
       <tr><td>Purchase price</td><td id="c-purchase">—</td></tr>
       <tr><td>Crate &amp; setup (if needed)</td><td id="c-setup">—</td></tr>
-      <tr><td>Initial vet visit</td><td>£150–£300</td></tr>
+      <tr><td>Initial vet visit</td><td>NOT FETCHED</td></tr>
       <tr class="calc-total"><td><strong>Year 1 total</strong></td><td id="c-year1"><strong>—</strong></td></tr>
-      <tr><td>Annual ongoing cost</td><td>£2,000–£4,000</td></tr>
-      <tr><td>Lifetime estimate (40–60 yrs)</td><td>£85,000–£250,000</td></tr>
+      <tr><td>Annual ongoing cost</td><td>NOT FETCHED</td></tr>
+      <tr><td>Lifetime estimate (12–14 yrs)</td><td>NOT FETCHED</td></tr>
     </table>
     <p class="bsuk-form-note">All estimates from owner data. Actual costs vary by location and lifestyle. Blue Staffies are a lifetime commitment.</p>
   </div>
@@ -166,7 +166,7 @@ function bsukCalc() {
   const setupLow = includeSetup ? 600 : 0;
   const setupHigh = includeSetup ? 1200 : 0;
   document.getElementById('c-purchase').textContent = '$' + p.low.toLocaleString() + '–$' + p.high.toLocaleString();
-  document.getElementById('c-setup').textContent = includeSetup ? '£600–£1,200' : 'Not included';
+  document.getElementById('c-setup').textContent = includeSetup ? 'NOT FETCHED' : 'Not included';
   document.getElementById('c-year1').innerHTML = '<strong>$' + (p.low + 150 + setupLow).toLocaleString() + '–$' + (p.high + 300 + setupHigh).toLocaleString() + '</strong>';
   out.hidden = false;
 }
@@ -212,8 +212,8 @@ function bsukCalc() {
   <div class="quiz-step" id="q4" data-step="4" hidden>
     <p class="quiz-question">4. What is your budget range?</p>
     <div class="quiz-options">
-      <button class="bsuk-quiz-btn" onclick="bsukQuiz(4,'lower')">£1,200–£2,500</button>
-      <button class="bsuk-quiz-btn" onclick="bsukQuiz(4,'higher')">£2,500–£3,500+</button>
+      <button class="bsuk-quiz-btn" onclick="bsukQuiz(4,'lower')">£1,500</button>
+      <button class="bsuk-quiz-btn" onclick="bsukQuiz(4,'higher')">£1,700</button>
       <button class="bsuk-quiz-btn" onclick="bsukQuiz(4,'flexible')">Flexible</button>
     </div>
   </div>
@@ -276,7 +276,7 @@ function bsukCalc() {
     <summary class="bsuk-checklist-section">Federal Licensing &amp; Permits</summary>
     <ul class="bsuk-check-list">
       <li><label><input type="checkbox"> the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) number (verifiable at <a href="https://aphis.LICENCE_CLAIM_PLACEHOLDER.gov" target="_blank" rel="noopener">aphis.LICENCE_CLAIM_PLACEHOLDER.gov</a>)</label></li>
-      <li><label><input type="checkbox"> LICENCE_CLAIM_PLACEHOLDER home-raised permit number (verifiable at <a href="https://www.fws.gov/service/LICENCE_CLAIM_PLACEHOLDER-permits" target="_blank" rel="noopener">usfws.gov</a>)</label></li>
+      <li><label><input type="checkbox"> Breeder licence or registration number, if the breeder has one (LICENCE_CLAIM_PLACEHOLDER — do not name an issuing body or a verification URL until the breeder supplies one)</label></li>
     </ul>
   </details>
 
@@ -301,7 +301,7 @@ function bsukCalc() {
 
 ---
 
-## LICENCE_CLAIM_PLACEHOLDER Verification Guide — Full Implementation
+## Breeder-Standing Verification Guide — Full Implementation
 
 ```html
 <div class="bsuk-LICENCE_CLAIM_PLACEHOLDER-guide" id="LICENCE_CLAIM_PLACEHOLDER-guide" role="region" aria-label="LICENCE_CLAIM_PLACEHOLDER Permit Verification Guide">
@@ -379,7 +379,7 @@ window.bsukCitesStep = function(step) {
 | Weight | 400–600g | 275–375g |
 | Size | 33 cm | 28 cm |
 | Tail Color | Bright scarlet red | Dark maroon-brown |
-| Price Range | £1,500–£3,500 | £1,200–£2,500 |
+| Price | £1,500 (Roman, Byrd, Ince) | £1,700 (Vennie, Christa, Cheryl) |
 | LICENCE_CLAIM_PLACEHOLDER Status | Appendix I home-raised | Appendix I home-raised |
 
 **HTML skeleton:**
