@@ -163,6 +163,34 @@ def scrub_phone(text: str):
     return PHONE_RE.sub("PHONE_PLACEHOLDER", text), n
 
 
+def drop_placeholder_telephones(node):
+    """Strip telephone keys whose value is (or contains) the phone placeholder.
+
+    The migrated Rank Math @graph is carried through verbatim, so the scrubbed
+    "telephone": "PHONE_PLACEHOLDER" would otherwise ship in public JSON-LD. The real
+    number was already counted by scrub_phone before json.loads, so removing the dead
+    key here leaves phone_hits unchanged. Returns (cleaned node, keys removed).
+    """
+    removed = 0
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k == "telephone" and isinstance(v, str) and "PHONE_PLACEHOLDER" in v:
+                removed += 1
+                continue
+            out[k], n = drop_placeholder_telephones(v)
+            removed += n
+        return out, removed
+    if isinstance(node, list):
+        out = []
+        for v in node:
+            cleaned, n = drop_placeholder_telephones(v)
+            out.append(cleaned)
+            removed += n
+        return out, removed
+    return node, 0
+
+
 def parse_page(path: pathlib.Path, url_path: str) -> Page:
     raw = path.read_text(encoding="utf-8", errors="ignore")
     soup = BeautifulSoup(raw, "lxml")
@@ -172,7 +200,8 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
         raw_json, n = scrub_phone(s.get_text() or "{}")
         schema_phone_hits += n
         try:
-            schema.append(json.loads(raw_json))
+            block, _ = drop_placeholder_telephones(json.loads(raw_json))
+            schema.append(block)
         except json.JSONDecodeError:
             defects.append("bad-ld-json")
     title = (soup.title.string or "").strip() if soup.title else ""

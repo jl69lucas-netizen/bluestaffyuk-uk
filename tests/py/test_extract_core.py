@@ -1,6 +1,6 @@
 import json, pathlib, re
 import pytest
-from extract_wp import parse_page, classify, RICH_SLUGS
+from extract_wp import (parse_page, classify, RICH_SLUGS, drop_placeholder_telephones)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 SITE = pathlib.Path("/Users/apple/bluestaffyuk-site")
 
@@ -73,10 +73,32 @@ def test_dead_href_unwrap_keeps_spacing(synth):
 
 def test_phone_scrubbed_in_body_and_schema(synth):
     assert "PHONE_PLACEHOLDER" in synth.body_html
-    assert "PHONE_PLACEHOLDER" in json.dumps(synth.schema)
     assert "447490" not in synth.body_html + json.dumps(synth.schema)
-    # href, anchor text, and the ld+json telephone are three distinct occurrences
+    # href, anchor text, and the ld+json telephone are three distinct occurrences;
+    # dropping the dead telephone key must not lose the hit that produced it
     assert synth.phone_hits == 3
+
+
+def test_placeholder_telephone_dropped_from_schema(synth):
+    """No placeholder telephone ships in the migrated JSON-LD."""
+    dump = json.dumps(synth.schema)
+    assert "telephone" not in dump
+    assert "PHONE_PLACEHOLDER" not in dump
+
+
+def test_drop_placeholder_telephones_walks_nested_lists_and_dicts():
+    block = {"@graph": [
+        {"@type": "Organization", "telephone": "PHONE_PLACEHOLDER",
+         "location": {"telephone": "call PHONE_PLACEHOLDER now", "name": "Glasgow"}},
+        {"@type": "Person", "telephone": "+441234567890"},
+        [{"telephone": "PHONE_PLACEHOLDER"}],
+    ]}
+    cleaned, removed = drop_placeholder_telephones(block)
+    assert removed == 3
+    assert "PHONE_PLACEHOLDER" not in json.dumps(cleaned)
+    # a real number is untouched, and unrelated keys survive
+    assert cleaned["@graph"][1]["telephone"] == "+441234567890"
+    assert cleaned["@graph"][0]["location"]["name"] == "Glasgow"
 
 
 def test_wp_attributes_stripped(synth):
