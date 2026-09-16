@@ -152,7 +152,7 @@ Build [section type]:
 1. Read `dist/buy-blue-staffy-puppies-uk/` — copy head + nav verbatim
 2. Insert all approved section HTML in order
 3. Append footer verbatim
-4. Write to `src/pages/buy-blue-staffy-puppies-uk/index.astro` (not ported — source repo only)
+4. Write to `src/pages/buy-blue-staffy-puppies-uk/index.astro`
 5. Confirm: "Page rebuilt. Committed; there is no deploy until project 6."
 
 ---
@@ -197,7 +197,7 @@ mkdir -p dist/purchase-guide-rebuild
 
 Files: `section-01-hero.html`, `section-02-inquiry-cta.html`, etc.
 
-Only write to `src/pages/buy-blue-staffy-puppies-uk/index.astro` after ALL sections approved. (not ported — source repo only)
+Only write to `src/pages/buy-blue-staffy-puppies-uk/index.astro` after ALL sections approved.
 
 ---
 

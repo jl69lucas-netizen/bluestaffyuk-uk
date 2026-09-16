@@ -25,6 +25,12 @@
     "bsuk-about-builder": {
       "tier": "tier_high"
     },
+    "bsuk-accessibility-fixer": {
+      "tier": "tier_medium"
+    },
+    "bsuk-agent-system-qa": {
+      "tier": "tier_medium"
+    },
     "bsuk-angle-agent": {
       "tier": "tier_max"
     },
@@ -34,8 +40,14 @@
     "bsuk-blog-post-agent": {
       "tier": "tier_max"
     },
+    "bsuk-canonical-fixer": {
+      "tier": "tier_medium"
+    },
     "bsuk-comparison-builder": {
       "tier": "tier_high"
+    },
+    "bsuk-contact-form-updater": {
+      "tier": "tier_medium"
     },
     "bsuk-content-architect": {
       "tier": "tier_max"
@@ -43,11 +55,20 @@
     "bsuk-content-audit-agent": {
       "tier": "tier_max"
     },
+    "bsuk-deploy-verifier": {
+      "tier": "tier_medium"
+    },
     "bsuk-faq-agent": {
       "tier": "tier_high"
     },
+    "bsuk-footer-standardizer": {
+      "tier": "tier_medium"
+    },
     "bsuk-framework-agent": {
       "tier": "tier_max"
+    },
+    "bsuk-gsc-analytics": {
+      "tier": "tier_high"
     },
     "bsuk-homepage-builder": {
       "tier": "tier_max"
@@ -64,6 +85,9 @@
     "bsuk-interactive-component": {
       "tier": "tier_high"
     },
+    "bsuk-keyword-verifier": {
+      "tier": "tier_medium"
+    },
     "bsuk-location-builder": {
       "tier": "tier_max"
     },
@@ -76,17 +100,35 @@
     "bsuk-paa-agent": {
       "tier": "tier_medium"
     },
+    "bsuk-performance-fixer": {
+      "tier": "tier_medium"
+    },
     "bsuk-purchase-guide": {
       "tier": "tier_max"
+    },
+    "bsuk-rank-tracker": {
+      "tier": "tier_high"
+    },
+    "bsuk-redirect-manager": {
+      "tier": "tier_medium"
     },
     "bsuk-section-builder": {
       "tier": "tier_high"
     },
+    "bsuk-self-update": {
+      "tier": "tier_medium"
+    },
     "bsuk-seo-content-writer": {
       "tier": "tier_max"
     },
+    "bsuk-site-hygiene-agent": {
+      "tier": "tier_medium"
+    },
     "bsuk-structure-architect": {
       "tier": "tier_max"
+    },
+    "bsuk-trust-signals-agent": {
+      "tier": "tier_high"
     }
   }
 }

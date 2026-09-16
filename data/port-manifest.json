@@ -808,5 +808,89 @@
     "dst": ".claude/agents/bsuk-meta-description-agent.md",
     "mode": "rebase",
     "notes": "content; CTR patterns kept; prices from data/price-matrix.json, \u00a3 not $"
+  },
+  {
+    "src": ".claude/agents/cag-agent-system-qa.md",
+    "dst": ".claude/agents/bsuk-agent-system-qa.md",
+    "mode": "rebase",
+    "notes": "ops/QA; audits .claude/agents and .claude/skills; registry check now scripts/build_agent_registry.py --check"
+  },
+  {
+    "src": ".claude/agents/cag-self-update.md",
+    "dst": ".claude/agents/bsuk-self-update.md",
+    "mode": "rebase",
+    "notes": "ops/QA; self-update loop re-based; sessions/ marked as arriving in Task 12"
+  },
+  {
+    "src": ".claude/agents/cag-deploy-verifier.md",
+    "dst": ".claude/agents/bsuk-deploy-verifier.md",
+    "mode": "rebase",
+    "notes": "ops/QA; release-guarded \u2014 inactive until project 6, no host and no domain"
+  },
+  {
+    "src": ".claude/agents/cag-accessibility-fixer.md",
+    "dst": ".claude/agents/bsuk-accessibility-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; scans dist/ instead of site/content/; WCAG rules unchanged"
+  },
+  {
+    "src": ".claude/agents/cag-performance-fixer.md",
+    "dst": ".claude/agents/bsuk-performance-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; the one agent with zero bird vocabulary \u2014 name: field only"
+  },
+  {
+    "src": ".claude/agents/cag-site-hygiene-agent.md",
+    "dst": ".claude/agents/bsuk-site-hygiene-agent.md",
+    "mode": "rebase",
+    "notes": "ops/QA; footer/breadcrumb/GA4 tasks re-based to BSUK components; GA4 id NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-canonical-fixer.md",
+    "dst": ".claude/agents/bsuk-canonical-fixer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; canonical host -> https://SITE_URL_PLACEHOLDER; WordPress export context kept (BSUK has the same origin)"
+  },
+  {
+    "src": ".claude/agents/cag-redirect-manager.md",
+    "dst": ".claude/agents/bsuk-redirect-manager.md",
+    "mode": "rebase",
+    "notes": "ops/QA; _redirects path -> public/_redirects, generated from data/redirects.json"
+  },
+  {
+    "src": ".claude/agents/cag-contact-form-updater.md",
+    "dst": ".claude/agents/bsuk-contact-form-updater.md",
+    "mode": "rebase",
+    "notes": "ops/QA; Formspree id -> PUBLIC_FORMSPREE_ID env; seven-field contract in bsuk-contact-form (arrives in Task 12)"
+  },
+  {
+    "src": ".claude/agents/cag-trust-signals-agent.md",
+    "dst": ".claude/agents/bsuk-trust-signals-agent.md",
+    "mode": "rebase",
+    "notes": "ops/QA; review widgets kept but every credential claim is LICENCE_CLAIM_PLACEHOLDER; data/reviews.json not ported"
+  },
+  {
+    "src": ".claude/agents/cag-footer-standardizer.md",
+    "dst": ".claude/agents/bsuk-footer-standardizer.md",
+    "mode": "rebase",
+    "notes": "ops/QA; footer component -> src/components/SiteFooter.astro; scans dist/"
+  },
+  {
+    "src": ".claude/agents/cag-gsc-analytics.md",
+    "dst": ".claude/agents/bsuk-gsc-analytics.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded \u2014 no GSC data pulled, every figure NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-keyword-verifier.md",
+    "dst": ".claude/agents/bsuk-keyword-verifier.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded; keyword checks re-based to BSUK head terms"
+  },
+  {
+    "src": ".claude/agents/cag-rank-tracker.md",
+    "dst": ".claude/agents/bsuk-rank-tracker.md",
+    "mode": "rebase",
+    "notes": "analytics; data-guarded and competitor list not ported; inactive until project 6"
   }
 ]
