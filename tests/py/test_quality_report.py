@@ -171,3 +171,25 @@ def test_registry_check_ids_include_python_audit_ids(tmp_path):
     ids = Q.registry_check_ids()
     assert "term-budget-per-page" in ids, "evidence_audit.py ids must count as backing tests"
     assert "review-attribution-unique" in ids
+
+
+def test_a_missing_rule_index_says_so_rather_than_reporting_a_clean_cap(monkeypatch, capsys, tmp_path):
+    """Task 9 writes data/quality/rule-index.json. Until it does, `_read` returns the empty
+    default and section 5 printed "0 judgment rules within cap" — which reads as a pass for
+    a check that never ran. An absent input must be reported as absent."""
+    monkeypatch.setattr(Q, "RULE_INDEX", tmp_path / "rule-index.json")
+    assert Q.main([]) == 0
+    out = capsys.readouterr().out
+    assert "rule index missing at" in out
+    assert "Task 9 writes it; judgment-cap check not run" in out
+    assert "judgment rules within cap" not in out
+
+
+def test_a_present_rule_index_still_reports_the_cap(monkeypatch, capsys, tmp_path):
+    """The absence branch must not swallow the real report."""
+    idx = tmp_path / "rule-index.json"
+    idx.write_text(json.dumps({"judgment_cap": 12, "rules": [
+        {"id": "kept", "enforced": "judgment", "why": "no test can exist for taste"}]}))
+    monkeypatch.setattr(Q, "RULE_INDEX", idx)
+    assert Q.main([]) == 0
+    assert "1 judgment rules within cap" in capsys.readouterr().out

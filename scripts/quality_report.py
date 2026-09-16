@@ -176,7 +176,13 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     ledger = _read(LEDGER, {"windows": []})
-    index = _read(RULE_INDEX, {"rules": []})
+    # An ABSENT rule index is not an index with no rules. The empty default made section 5
+    # print "0 judgment rules within cap", which reads as a pass for a check that could not
+    # run — the exact shape of the lying gates this report exists to prevent.
+    index = _read(RULE_INDEX, None)
+    have_index = index is not None
+    if not have_index:
+        index = {"rules": []}
     cards = load_scorecards()
     ids = registry_check_ids()
 
@@ -237,6 +243,16 @@ def main(argv=None) -> int:
         print("   none")
 
     print("\n5. RULES WITH NO BACKING TEST  (deletion candidates)")
+    if not have_index:
+        try:
+            where = RULE_INDEX.relative_to(ROOT)
+        except ValueError:
+            where = RULE_INDEX
+        print(f"   rule index missing at {where} — Task 9 writes it; "
+              "judgment-cap check not run")
+        print(f"   {len(ids)} checks registered, but nothing claims them yet.")
+        print()
+        return 0
     broken = broken_test_links(index, ids)
     orphans = deletion_candidates(index)
     over = judgment_overflow(index)
