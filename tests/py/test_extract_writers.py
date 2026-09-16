@@ -206,3 +206,19 @@ def test_write_rich_page_emits_puppy_list_on_listed_pages(tmp_path):
 def test_write_rich_page_omits_puppy_list_elsewhere(tmp_path):
     text = write_rich_page(_page_at("/blue-staffy-health-uk/"), tmp_path).read_text()
     assert "PuppyList" not in text
+
+
+def test_dedupe_prunes_refs_to_dropped_nodes():
+    schema = [{"@graph": [
+        {"@type": "WebSite", "@id": "https://x/#website"},
+        {"@type": "WebPage", "@id": "https://x/p/#webpage",
+         "isPartOf": {"@id": "https://x/#website"},
+         "breadcrumb": "https://x/#website",
+         "about": {"@id": "https://x/p/#person"}},
+        {"@type": "Person", "@id": "https://x/p/#person"},
+    ]}]
+    out, dropped = dedupe_legacy_schema(schema)
+    assert dropped == 1
+    page = out[0]["@graph"][0]
+    assert "isPartOf" not in page and "breadcrumb" not in page
+    assert page["about"] == {"@id": "https://x/p/#person"}

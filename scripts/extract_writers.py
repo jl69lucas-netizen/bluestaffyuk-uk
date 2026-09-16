@@ -267,15 +267,46 @@ def _types_of(node):
     return set()
 
 
+DANGLING_REF_KEYS = ("isPartOf", "breadcrumb", "publisher", "about", "mainEntity")
+
+
+def _note_id(node, ids):
+    if isinstance(node, dict) and isinstance(node.get("@id"), str):
+        ids.add(node["@id"])
+
+
+def _prune_refs(node, dropped_ids):
+    """Delete refs on a kept node that point at a node dedupe just dropped."""
+    if not isinstance(node, dict):
+        return node
+    out = dict(node)
+    for key in DANGLING_REF_KEYS:
+        v = out.get(key)
+        target = (v.get("@id") if isinstance(v, dict) and set(v) == {"@id"}
+                  else v if isinstance(v, str) else None)
+        if isinstance(target, str) and target in dropped_ids:
+            del out[key]
+    return out
+
+
+def _prune_block_refs(block, dropped_ids):
+    if isinstance(block, dict) and isinstance(block.get("@graph"), list):
+        return dict(block, **{"@graph": [_prune_refs(n, dropped_ids) for n in block["@graph"]]})
+    return _prune_refs(block, dropped_ids)
+
+
 def dedupe_legacy_schema(schema):
     """Drop the sitewide entities the old Rank Math graph repeated on every page.
 
     Schema.astro now emits LocalBusiness, WebSite and BreadcrumbList itself from
     data/settings.json, so carrying the legacy copies through would ship two of each with
     conflicting @ids. Page-specific nodes (WebPage, Article, FAQPage, VideoObject,
-    ImageObject, Person, Place, ...) are kept verbatim. Returns (schema, dropped).
+    ImageObject, Person, Place, ...) are kept verbatim. References from kept
+    nodes to a dropped node's @id are deleted too, so no dangling refs survive.
+    Returns (schema, dropped).
     """
     dropped = 0
+    dropped_ids = set()
     out_blocks = []
     for block in schema:
         if isinstance(block, dict) and isinstance(block.get("@graph"), list):
@@ -283,6 +314,7 @@ def dedupe_legacy_schema(schema):
             for node in block["@graph"]:
                 if _types_of(node) & LEGACY_SITEWIDE_TYPES:
                     dropped += 1
+                    _note_id(node, dropped_ids)
                     continue
                 kept.append(node)
             block = dict(block, **{"@graph": kept})
@@ -291,8 +323,11 @@ def dedupe_legacy_schema(schema):
         elif _types_of(block) & LEGACY_SITEWIDE_TYPES:
             # A top-level block that is solely one of the sitewide entities.
             dropped += 1
+            _note_id(block, dropped_ids)
             continue
         out_blocks.append(block)
+    if dropped_ids:
+        out_blocks = [_prune_block_refs(b, dropped_ids) for b in out_blocks]
     return out_blocks, dropped
 
 

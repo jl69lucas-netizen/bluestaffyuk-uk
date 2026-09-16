@@ -277,16 +277,10 @@
             "name": "Blue Staffy Puppies UK Delivered: Your Local Guide 2 Finding A Playful Staffy",
             "datePublished": "2025-05-28T16:17:14+00:00",
             "dateModified": "2025-05-28T16:17:14+00:00",
-            "isPartOf": {
-              "@id": "/#website"
-            },
             "primaryImageOfPage": {
               "@id": "/images/blue-staffy-puppies-near-me-uk-available.webp"
             },
-            "inLanguage": "en-GB",
-            "breadcrumb": {
-              "@id": "/uk-locations/blue-staffy-puppies-uk/#breadcrumb"
-            }
+            "inLanguage": "en-GB"
           }
         ]
       },

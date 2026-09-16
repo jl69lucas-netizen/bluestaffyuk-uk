@@ -1,0 +1,34 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { abs, SITE, SITE_URL } from '../lib/site';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { post: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const d = post.data;
+const isCollection = d.schema_type === 'CollectionPage';
+// The migrated archive body has no h1, so the template supplies one; a real post whose
+// markdown already opens with an h1 keeps its own.
+const bodyHasH1 = /^\s*#\s/.test(post.body ?? '');
+const main: Record<string, unknown> = {
+  '@context': 'https://schema.org', '@type': d.schema_type, headline: d.title, name: d.title, description: d.description,
+  author: { '@type': 'Organization', name: d.author }, publisher: { '@id': `${SITE_URL}/#business` },
+  image: d.featured_image ? abs(d.featured_image) : abs(SITE.logo), mainEntityOfPage: abs(`/${d.slug}/`), url: abs(`/${d.slug}/`),
+};
+if (d.date) main.datePublished = d.date;
+if (isCollection) { delete main.headline; delete main.author; }
+const schema = [main, ...(d.faqs.length ? [{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: d.faqs.map((f) => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })) }] : [])];
+---
+<BaseLayout title={d.title} description={d.description} canonical={`/${d.slug}/`} crumbTitle={d.title.split(' | ')[0]} ogType="article" ogImage={d.featured_image || SITE.logo} schema={schema}>
+  <article class="container container-text">
+    {!bodyHasH1 && <h1>{d.title.split(' | ')[0]}</h1>}
+    {d.date && <p><time datetime={d.date}>{d.date}</time></p>}
+    <Content />
+    {d.faqs.length > 0 && <section><h2>Frequently Asked Questions</h2>{d.faqs.map((f) => <details><summary>{f.question}</summary><p>{f.answer}</p></details>)}</section>}
+  </article>
+</BaseLayout>
