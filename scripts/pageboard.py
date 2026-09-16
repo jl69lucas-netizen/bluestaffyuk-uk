@@ -173,8 +173,32 @@ def validate_ledger(ledger):
                     f"{page}: {cid} is the unnamed refresh placeholder — rename it to base#<delta> before recording it")
 
 
+# Mirrors schemas/board.schema.json's meta.slug pattern. BSUK routes nest
+# (`available-puppies/roman`), so a slug is one or more `[a-z0-9-]` segments joined by
+# single slashes: no leading or trailing slash, no empty segment, no traversal.
+SLUG = re.compile(r"^[a-z0-9-]+(/[a-z0-9-]+)*$")
+
+
+def slug_file(slug):
+    """A slug -> the filename stem that holds its record, `/` flattened to `--`.
+
+    Written once and used by every caller that names a per-slug file, so the board, its
+    inbox and its canvas directory can never disagree about the spelling.
+
+    The slug is validated first: a path built from an unchecked slug (`../x`, `/abs`)
+    reads a file the caller never named. A segment may not itself contain `--`, because
+    `a--b` and `a/b` would then flatten to the same file — the mapping has to be
+    collision-free in both directions for `--` to be readable as a path separator."""
+    if not isinstance(slug, str) or not SLUG.match(slug):
+        raise BoardError(f"not a slug: {slug!r} — expected [a-z0-9-] segments joined by '/'")
+    if "--" in slug:
+        raise BoardError(f"not a slug: {slug!r} — a segment may not contain '--', which is "
+                         "how a nested slug is spelled in a filename")
+    return slug.replace("/", "--")
+
+
 def board_path(slug):
-    return ROOT / "data" / "boards" / (slug.replace("/", "--") + ".json")
+    return ROOT / "data" / "boards" / (slug_file(slug) + ".json")
 
 
 def load_board(slug):
@@ -914,5 +938,10 @@ def file_token(candidate: str) -> str:
 
 
 def unfile_token(token: str) -> str:
-    """The filename spelling -> the candidate id. Inverse of file_token()."""
+    """The filename spelling -> the candidate id. Inverse of file_token().
+
+    One-way-safe only for ids that carry no `_` of their own: every `_` comes back as a
+    `#`, so `file_token()` round-trips but an id spelled with an underscore does not. No
+    component id in any pool uses `_`, and the schema's `^[a-z][a-z0-9-]*$` keeps it that
+    way — the delta suffix after `#` is the only place the spelling ever differs."""
     return token.replace("_", "#")

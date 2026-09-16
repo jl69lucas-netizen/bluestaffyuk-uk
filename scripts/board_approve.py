@@ -223,13 +223,20 @@ def parse_args(argv=None):
 def main():
     a = parse_args()                                  # argparse itself exits 2 on a bad invocation
     slug = a.slug
+    try:
+        # Before any path is built: a slug that is not a slug names a file the caller
+        # never asked for, and the gate refuses it the same way.
+        stem = PB.slug_file(slug)
+    except PB.BoardError as e:
+        print(f"board-approve ERROR {e}")
+        sys.exit(2)
     if a.canvas_dir is not None:
         canvas_dir = pathlib.Path(a.canvas_dir)       # named but absent is a BoardError, not a skip
     else:
-        default = PB.ROOT / "docs" / "design" / ("board-" + slug.replace("/", "--"))
+        default = PB.ROOT / "docs" / "design" / ("board-" + stem)
         canvas_dir = default if default.exists() else None
 
-    inbox_path = PB.ROOT / "data" / "boards" / "inbox" / (slug.replace("/", "--") + ".json")
+    inbox_path = PB.ROOT / "data" / "boards" / "inbox" / (stem + ".json")
     if not inbox_path.exists():
         print(f"board-approve ERROR no approval at {inbox_path} — run the Artifact read_db step first")
         sys.exit(2)

@@ -39,6 +39,10 @@ def main():
     print(f"board-gate {slug} [{stage}] — {len(board['sections'])} sections, {n_head} headings, "
           f"{len(live)} live pages, {sum(len(s['entities']) for s in board['sections'])} entity refs, "
           f"{len(siblings)} ledger siblings, {len(board['assets'])} assets examined")
+    # Until the component ledger records a page, the five ledger-* checks have nothing to
+    # compare against. Said out loud so an empty ledger cannot be read as a clean gate.
+    if not ledger.get("pages"):
+        print("ledger: empty — ledger-* families examined 0, not a pass")
     for x in f:
         print(f"  {x['sev']:4s} {x['check']:24s} {x['msg']}")
     fails = [x for x in f if x["sev"] == "FAIL"]

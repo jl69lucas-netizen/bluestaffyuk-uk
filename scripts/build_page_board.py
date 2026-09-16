@@ -527,7 +527,7 @@ def main():
     # option card renders as its labelled box.
     thumbs = {}
     OUT.mkdir(parents=True, exist_ok=True)
-    out = OUT / (slug.replace("/", "--") + ".html")
+    out = OUT / (PB.slug_file(slug) + ".html")
     out.write_text(render(board, ont, ledger, live, thumbs, slug), encoding="utf-8")
     print("wrote %s — %d sections, %d live pages checked"
           % (out.relative_to(PB.ROOT), len(board["sections"]), len(live)))

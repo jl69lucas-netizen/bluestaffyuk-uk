@@ -1968,3 +1968,98 @@ def test_every_asserted_entity_names_a_source_that_exists():
         if e["authorization"] == "ASSERTED":
             assert e["source"], e["id"]
             assert (PB.ROOT / e["source"]).exists(), (e["id"], e["source"])
+
+
+# --- quality pass: nested slugs, slug validation, token round trip, empty-ledger banner ---
+
+def test_a_nested_slug_flattens_to_one_board_file():
+    assert PB.slug_file("uk-locations/glasgow") == "uk-locations--glasgow"
+    assert PB.board_path("uk-locations/glasgow") == PB.ROOT / "data" / "boards" / "uk-locations--glasgow.json"
+    assert PB.board_path("available-puppies/roman").name == "available-puppies--roman.json"
+    assert PB.slug_file("index") == "index"
+
+
+def test_the_schema_accepts_a_nested_slug():
+    """BSUK routes nest (`available-puppies/roman`); CAG's did not, and its `^[a-z0-9-]+$`
+    made the flattening in board_path unreachable."""
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["meta"]["slug"] = "available-puppies/roman"
+    PB.validate_board(b)
+
+
+def test_a_slug_segment_may_not_carry_the_flattening_separator():
+    """`a--b` and `a/b` would otherwise name the same file, so the flattening would not be
+    reversible and two records could silently overwrite each other."""
+    with pytest.raises(PB.BoardError, match="--"):
+        PB.slug_file("a--b")
+    with pytest.raises(PB.BoardError, match="--"):
+        PB.board_path("uk-locations--glasgow")
+    bad = json.loads(json.dumps(MIN_BOARD))
+    bad["meta"]["slug"] = "a--b"
+    with pytest.raises(PB.BoardError):
+        PB.save_board("a--b", bad)
+
+
+@pytest.mark.parametrize("slug", ["../x", "/abs", "a//b", "a/", "/", "", "Upper", "..", "a b", "a/../b"])
+def test_board_path_refuses_a_slug_that_is_not_a_slug(slug):
+    """A path built from an unvalidated slug reads a file the caller never named."""
+    with pytest.raises(PB.BoardError, match="slug"):
+        PB.board_path(slug)
+
+
+def test_board_gate_cli_exits_2_on_a_traversal_slug_without_reading_a_file():
+    import subprocess
+    r = subprocess.run([sys.executable, str(PB.ROOT / "scripts" / "board_gate.py"), "../../etc"],
+                       capture_output=True, text=True)
+    assert r.returncode == 2
+    assert "board-gate ERROR" in r.stdout and "slug" in r.stdout
+    assert "does not exist" not in r.stdout          # refused before any file was looked for
+
+
+def test_unfile_token_round_trips_an_id_without_an_underscore():
+    for cid in ("toc-a", "hero-c-mosaic-metrics", "toc-t1-numbered-ledger#state-chips"):
+        assert PB.unfile_token(PB.file_token(cid)) == cid
+    # Documented one-way limit: an id that already spells `_` cannot come back.
+    assert PB.unfile_token(PB.file_token("toc_a")) == "toc#a"
+
+
+def test_board_gate_says_so_when_the_ledger_is_empty(tmp_path, monkeypatch, capsys):
+    """Until project 3 the component ledger has no pages, so the five ledger-* checks
+    examine nothing. A gate that examines nothing is not a pass."""
+    import board_gate
+    b = _approved(MIN_BOARD)
+    monkeypatch.setattr(PB, "ROOT", tmp_path)
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "load_board", lambda slug: b)
+    monkeypatch.setattr(PB, "load_ontology", lambda: ONT_OK)
+    monkeypatch.setattr(PB, "load_ledger", lambda: {"refresh_pools": [], "pools": {}, "pages": {}})
+    monkeypatch.setattr(sys, "argv", ["board_gate.py", "x"])
+    with pytest.raises(SystemExit):
+        board_gate.main()
+    assert "ledger: empty — ledger-* families examined 0, not a pass" in capsys.readouterr().out
+
+
+def test_board_gate_says_nothing_about_an_empty_ledger_when_it_has_pages(tmp_path, monkeypatch, capsys):
+    import board_gate
+    b = _approved(MIN_BOARD)
+    ledger = {"refresh_pools": [], "pools": {"hero": ["hero-a"]},
+              "pages": {"sibling": {"hero": "hero-a", "dial": "", "rail": "", "toc": "",
+                                    "takeaway": [], "table": "", "faq": "", "h6_prefixes": []}}}
+    monkeypatch.setattr(PB, "ROOT", tmp_path)
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "load_board", lambda slug: b)
+    monkeypatch.setattr(PB, "load_ontology", lambda: ONT_OK)
+    monkeypatch.setattr(PB, "load_ledger", lambda: ledger)
+    monkeypatch.setattr(sys, "argv", ["board_gate.py", "x"])
+    with pytest.raises(SystemExit):
+        board_gate.main()
+    assert "ledger: empty" not in capsys.readouterr().out
+
+
+def test_board_approve_cli_exits_2_on_a_traversal_slug():
+    import subprocess
+    r = subprocess.run([sys.executable, str(PB.ROOT / "scripts" / "board_approve.py"), "../../etc"],
+                       capture_output=True, text=True)
+    assert r.returncode == 2
+    assert "board-approve ERROR" in r.stdout and "slug" in r.stdout
+    assert "no approval at" not in r.stdout
