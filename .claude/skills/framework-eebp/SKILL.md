@@ -40,7 +40,7 @@ P — Purpose:   Close on the buyer's decision/outcome the statement enables
 | Entity | Evidence | Benefit | Purpose |
 |---|---|---|---|
 | Blue Brindle Staffy Puppy | Home-raised, KC registered, microchipped | Calm, loyal, adaptable family companion | Helps buyers confidently choose a fully papered Blue Staffy that matches their home and lifestyle. |
-| Glasgow City Council Licensed Breeder | Licensed family home in Glasgow, Scotland | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
+| LICENCE_CLAIM_PLACEHOLDER | Licensed family home in Glasgow, Scotland | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
 | Vet Health Check | Veterinary examination before collection | Greater confidence in the puppy's condition | Helps buyers make an informed decision before bringing a Blue Staffy home. |
 
 ## Why EEBP Beats a Plain Feature List (the 5-point payoff)
@@ -66,7 +66,7 @@ Rules:
 - **Evidence must be Ledger-verified** — only claims in the Verified-Claim Ledger (`bsuk-entity-incorporation-agent.md` + `sessions/2026-06-03-homepage-entity-map.md`). Never invent a test, cert, or count.
 - **Benefit is buyer-facing**, not seller-facing ("you bring home…" not "we offer…").
 - **Purpose names the decision** the buyer can now make (choose, verify, reserve, rule out, budget).
-- Licensing framing stays accurate: **Glasgow City Council breeder licence, Lucy's Law compliant, mum always seen with the litter at our home.**
+- Licensing framing stays accurate: **LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliant, mum always seen with the litter at our home.**
 
 ## When to Use vs Other Frameworks
 
@@ -91,4 +91,4 @@ Rules:
 - [ ] Is each Evidence item Ledger-verified?
 - [ ] Does each row read as a citable fact (GEO) AND a buyer outcome (conversion)?
 - [ ] Entity leads? Purpose closes on a decision?
-- [ ] Glasgow City Council licence / Lucy's Law framing intact?
+- [ ] LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER framing intact?

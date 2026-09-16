@@ -32,7 +32,7 @@ The auditor's heuristics were hardened against these — but if you ever hand-au
 | **`has_org` missing** | `Organization` is valid when nested as `Article.publisher`/`author`, and `@type` can be a **list** `["LocalBusiness","PetStore"]`. Recurse + handle lists before flagging. |
 | **non-hero image is `eager`** | Index 0 is the **header logo**; the eager image right after it is the correct **LCP hero**. Detect the hero by excluding `logo` srcs, not by position 0. |
 | **phone number in body** | Third-party **authority helplines** (RSPCA cruelty line `0300 1234 999`, DEFRA) are intentional. Rule 61 bans only the **breeder's** number. |
-| **licence/Lucy's Law not in first 300 words** | Astro renders inline JSON-LD *inside* `<main>` — **strip `<script>` before measuring** visible words, or the schema text poisons the count. |
+| **licence/LEGAL_CLAIM_PLACEHOLDER not in first 300 words** | Astro renders inline JSON-LD *inside* `<main>` — **strip `<script>` before measuring** visible words, or the schema text poisons the count. |
 
 ## Triage Legend (label every `✗`)
 - **REAL** → fix now (e.g. alt >190, missing visible "Updated" stamp).
@@ -69,7 +69,7 @@ META + IMAGES
 [ ] Every <img> has explicit width/height (CLS); delivered <100KB
 
 COMPLIANCE COPY (content pages; contact/privacy exempt)
-[ ] Glasgow City Council breeder licence + Lucy's Law compliance + home-raised in the first 300 VISIBLE words (strip JSON-LD)
+[ ] LICENCE_CLAIM_PLACEHOLDER + LEGAL_CLAIM_PLACEHOLDER compliance + home-raised in the first 300 VISIBLE words (strip JSON-LD)
 [ ] 12–14 year lifespan referenced at least once
 
 CONVERSION + FRESHNESS

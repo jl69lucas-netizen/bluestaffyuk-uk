@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Staffordshire Bull Terriers are bred here under a Glasgow City Council breeder licence with full Lucy's Law compliance — every puppy is seen with its mother at our home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliant · KC registration · Microchipped · Vet health check · First vaccinations + worming · Fully weaned + home-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -39,9 +39,9 @@ BSUK operates in a trust-scarce market. Blue Staffy buyers have been burned by:
 - Sellers who say "licensed breeder" with an invented licence number
 - Facebook Marketplace listings with stock photos and bank-transfer deposit requests
 - Sites that say "home-raised" with no paperwork to show
-- "Cheap blue staffy" sites with no council licence, no vet check, no recourse
+- "Cheap blue staffy" sites with no LICENCE_CLAIM_PLACEHOLDER, no vet check, no recourse
 
-EBP converts vague claims into verifiable proof. "All our puppies are documented" becomes "Glasgow City Council breeder licence #[NUMBER] — verifiable with Glasgow City Council."
+EBP converts vague claims into verifiable proof. "All our puppies are documented" becomes "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable with Glasgow City Council."
 
 ---
 
@@ -49,8 +49,8 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 
 | Claim | Evidence Source | How to Cite |
 |-------|---------------|-------------|
-| Legally sold | Lucy's Law compliance | "Lucy's Law compliant — puppy seen with its mother at our Glasgow home" |
-| Licensed breeder | Glasgow City Council breeder licence | "Glasgow City Council breeder licence #[NUMBER] — verifiable at glasgow.gov.uk" |
+| Legally sold | LEGAL_CLAIM_PLACEHOLDER compliance | "LEGAL_CLAIM_PLACEHOLDER compliant — puppy seen with its mother at our Glasgow home" |
+| Licensed breeder | LICENCE_CLAIM_PLACEHOLDER | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at glasgow.gov.uk" |
 | Pedigree verified | KC registration | "Kennel Club registration — [KC_NUMBER], papers handed over at collection" |
 | Health tested | Vet health check | "Vet health check — [VET_NAME], issued on [date]" |
 | Home-raised | Socialisation log | "Socialisation log from birth — documented week by week" |
@@ -64,7 +64,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 
 ### Basic EBP Block (for inline credibility)
 ```
-[Claim]: Staffordshire Bull Terriers from BlueStaffyUK are bred under a Glasgow City Council breeder licence.
+[Claim]: Staffordshire Bull Terriers from BlueStaffyUK are bred under a LICENCE_CLAIM_PLACEHOLDER.
 [Evidence]: Licence issued by Glasgow City Council under UK animal-activity licensing rules. Licence number
             available before any deposit is sent. Verifiable independently with the council.
 [Profile]: Every puppy leaves with KC registration, microchip number, vet health check, first vaccinations,
@@ -77,12 +77,12 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
   <h3>Documentation — What "Licensed Breeder" Actually Means at BlueStaffyUK</h3>
 
   <div class="bsuk-ebp-item">
-    <strong>Glasgow City Council Breeder Licence</strong>
-    <p>Every blue Staffordshire Bull Terrier puppy from BlueStaffyUK is bred under a Glasgow
-       City Council breeder licence. This licence is issued by the local authority and is
-       required by law for anyone breeding and selling puppies in Scotland.
+    <strong>LICENCE_CLAIM_PLACEHOLDER</strong>
+    <p>Every blue Staffordshire Bull Terrier puppy from BlueStaffyUK is bred under
+       LICENCE_CLAIM_PLACEHOLDER — the breeder's verifiable legal standing, issued by an
+       outside authority rather than self-reported.
        Licence number available before any deposit is sent.</p>
-    <p class="bsuk-evidence-note">Evidence: Glasgow City Council breeder licence number supplied with every puppy.
+    <p class="bsuk-evidence-note">Evidence: LICENCE_CLAIM_PLACEHOLDER number supplied with every puppy.
        Verifiable independently at glasgow.gov.uk.</p>
   </div>
 
@@ -90,7 +90,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
     <strong>Vet Health Check</strong>
     <p>The dam and every puppy receive a health check from a licensed veterinary surgeon,
        along with first vaccinations and a worming record. This is the same standard required
-       for a responsible transfer under Lucy's Law.</p>
+       for a responsible transfer under LEGAL_CLAIM_PLACEHOLDER.</p>
     <p class="bsuk-evidence-note">Evidence: Vet health check — [VET_NAME],
        certificate included with puppy.</p>
   </div>
@@ -119,11 +119,11 @@ Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price + £300–�
 
 | Assertion (weak) | EBP (strong) |
 |-----------------|-------------|
-| "All our puppies are legal" | "Glasgow City Council breeder licence #[NUMBER] — verifiable at glasgow.gov.uk" |
+| "All our puppies are legal" | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at glasgow.gov.uk" |
 | "Our puppies are health tested" | "Vet health check — [VET_NAME], certificate included" |
 | "KC registered" | "Kennel Club registration — [KC_NUMBER], papers at collection" |
 | "Home-raised from birth" | "Socialisation log from day 1 — available on request" |
-| "We've been breeding for X years" | "Glasgow City Council breeder licence #[NUMBER], breeding since [YEAR]" |
+| "We've been breeding for X years" | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER], breeding since [YEAR]" |
 | "Health guaranteed" | "Health guarantee — full terms at [link]" |
 
 ---
@@ -141,8 +141,8 @@ grep -n "we guarantee\|health tested\|best\|top\|premier\|reputable\|home-raised
 ## Rules
 
 1. **Every claim gets evidence** — no claim stands without a named source
-2. **Name the source specifically** — "Glasgow City Council breeder licence" not "documentation"
-3. **Baseline matters** — show what the evidence standard means (council licence, Lucy's Law, KC registration)
+2. **Name the source specifically** — "LICENCE_CLAIM_PLACEHOLDER" not "documentation"
+3. **Baseline matters** — show what the evidence standard means (LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER, KC registration)
 4. **Profile shows BSUK exceeding baseline** — don't just meet the standard, show how BSUK leads
-5. **Evidence must be verifiable** — council licence number, KC registration number, microchip number, vet certificate
+5. **Evidence must be verifiable** — LICENCE_CLAIM_PLACEHOLDER number, KC registration number, microchip number, vet certificate
 6. **No unverifiable superlatives** — "best," "top," "premier" require external evidence to cite

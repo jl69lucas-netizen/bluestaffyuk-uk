@@ -10,10 +10,10 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
-> **Coat colours:** Blue (£1,500 — Roman, Byrd, Ince) · Blue Brindle (£1,700 — Vennie, Christa, Cheryl) — treat as distinct product lines
-> **Licensing:** Licensed by Glasgow City Council under the Animal Welfare (Licensing of Activities Involving Animals) rules; every sale is Lucy's Law compliant — puppies seen with their mother, in our home. Never imply a third-party dealer or puppy farm.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliant · KC registration · Microchipped · Vet health check · First vaccinations + worming · Fully weaned + home-raised
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Glasgow, Scotland
+> **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -30,30 +30,30 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 
 ### H1 — Primary Keyword (One Per Page, Strict)
 **Maps to:** Highest-volume transactional or informational keyword for the page
-**Format:** Primary keyword + variant/species modifier + optional brand or location
+**Format:** Primary keyword + coat-colour/variant modifier + optional brand or location
 **Rules:**
 - ONE H1 per page — never two H1s on the same page
 - Never repeat the H1 text verbatim anywhere else on the page
 - Include the main commercial keyword in the first 3 words where possible
 
 **Examples:**
-- `Blue Staffy Puppies for Sale | breeder licensing Captive-Bred | BlueStaffyUK`
-- `Blue Brindle Staffy for Sale in [State] | Hand-Raised, DNA Sexed`
+- `Blue Staffy Puppies for Sale UK | Licensed Glasgow Breeder | BlueStaffyUK`
+- `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`
 - `Blue vs Blue Brindle Staffy: The Complete Buyer's Comparison`
 
 ---
 
 ### H2 — Secondary Keyword + Conversational Hook
-**Maps to:** Long-tail variation (location, variant modifier, or "puppy" context) + conversational wrapper
+**Maps to:** Long-tail variation (location, coat-colour modifier, or "Staffordshire Bull Terrier" context) + conversational wrapper
 **Format:** Secondary keyword + question or benefit statement
 **Rules:**
 - Use 2+ H2s per section; Q&A format where it fits naturally
 - H2s must form a logical narrative when scanned without body text
 
 **3 H2 Patterns:**
-- *Location Focus:* "Searching for a Tame Blue Staffy Puppy in [State]? Meet [Name]."
-- *Variant Focus:* "Meet [Name]: The Blue Brindle Staffy Perfect for Families."
-- *Benefit Focus:* "Why Every Puppy Includes a breeder licensing Captive-Bred Permit and Veterinary Vet Certificate."
+- *Location Focus:* "Searching for a Home-Raised Blue Staffy Puppy in [UK Region]? Meet [Name]."
+- *Coat-Colour Focus:* "Meet [Name]: The Blue Brindle Staffy Perfect for Families."
+- *Benefit Focus:* "Why Every Puppy Includes KC Registration, a Microchip and a Vet Health Check."
 
 **5 Alternative Variations Rule:**
 For every core H2, generate 5 variations for A/B testing:
@@ -66,7 +66,7 @@ For every core H2, generate 5 variations for A/B testing:
 ---
 
 ### H3 — Category Keywords (Specific Attributes)
-**Maps to:** Attribute-level keywords: Size, Variant, Temperament, licence documentation, Health, Talking ability, Weaning
+**Maps to:** Attribute-level keywords: Size, Coat colour, Temperament, Paperwork, Health, Trainability, Weaning
 **Format:** Category keyword + specific angle or question
 **Rules:**
 - H3s must be subordinate to their parent H2 (don't skip levels)
@@ -74,9 +74,9 @@ For every core H2, generate 5 variations for A/B testing:
 
 **Examples:**
 - *Size:* "How Big Will [Name] Get? Adult Weight and Size for Blue Staffies."
-- *Health:* "Peace of Mind: Is [Name] DNA Sexed? What That Means for Your New Puppy."
-- *Documentation:* "What breeder licensing Documentation Comes with [Name]?"
-- *Temperament:* "Energetic or Calm? How to Match an Blue Staffy's Temperament to Your Lifestyle."
+- *Health:* "Peace of Mind: Is [Name] L-2-HGA Clear by Parentage? What That Means for Your New Puppy."
+- *Documentation:* "What Paperwork Comes with [Name]?"
+- *Temperament:* "Boisterous or Calm? How to Match a Staffy's Temperament to Your Lifestyle."
 
 ---
 
@@ -86,26 +86,26 @@ For every core H2, generate 5 variations for A/B testing:
 **Purpose:** Shows Google the page covers the topic in depth, not just the sale
 
 **Examples:**
-- Hand-Feeding Schedule, Weaning Timeline, Enrichment Protocol, PBFD Screening, Psittacosis Test
-- "[Name]'s Progress: Hand-Feeding Schedule and Where We Are in the Weaning Process."
-- "Puppy Care 101: Nutritional Needs for a Young Blue Staffy."
-- "What's Included: breeder licensing Permit, DNA Sexing Certificate, Veterinary Vet Health Certificate, and Hatch Certificate."
+- Feeding Schedule, Weaning Timeline, Socialisation Protocol, Hereditary Cataract Screening, Hip Scoring
+- "[Name]'s Progress: Feeding Schedule and Where We Are in the Weaning Process."
+- "Puppy Care 101: Nutritional Needs for a Young Staffordshire Bull Terrier."
+- "What's Included: KC Registration, Microchip Number, Vet Health Check and Worming Record."
 
 ---
 
 ### H5 — Deep LSI / Technical Authority Terms (MANDATORY — Minimum 5 Per Page)
-**Maps to:** Technical and expert terms that establish topical authority on Blue Staffy breeding
+**Maps to:** Technical and expert terms that establish topical authority on Staffordshire Bull Terrier breeding
 **Format:** Specific technical term + context or explanation
 **Purpose:** Signals expertise to Google and AIO; targets niche searchers who know the terminology
 **Status: MANDATORY — not optional. Every full-length page (22+ sections) must have ≥5 H5 headings.**
 
 **Examples:**
-- "Meeting the Parents: Blue Staffy Genetic and Behavioral Lineage."
-- "PBFD Screening Explained: Why It Matters for Your Puppy's Health."
-- "Travel Ready: How [Name] Transfers to Your State with Full breeder licensing Documentation."
-- "Glasgow City Council AWA License Explained: What Annual Inspection Means for Buyers."
-- "DNA Sexing Methodology: How We Confirm Your Puppy's Sex Before Transfer."
-- "Hatch Certificate and Band Number: Your Puppy's Identity on Paper."
+- "Meeting the Parents: Blue Staffy Genetic and Behavioural Lineage."
+- "Hereditary Cataracts (HC) Explained: Why It Matters for Your Puppy's Health."
+- "Travel Ready: How [Name] Gets to Your UK Region with Full Paperwork."
+- "LICENCE_CLAIM_PLACEHOLDER Explained: What Annual Inspection Means for Buyers."
+- "L-2-HGA DNA Status: How We Confirm Your Puppy Is Clear Before Collection."
+- "Microchip Number and KC Registration: Your Puppy's Identity on Paper."
 
 ---
 
@@ -117,10 +117,10 @@ For every core H2, generate 5 variations for A/B testing:
 
 **Examples:**
 - "Is [Name] Good with Kids and Other Pets?"
-- "What Is the Total Adoption Fee and Is a Deposit Required?"
+- "What Is the Total Price and Is a Deposit Required?"
 - "Ready to Go Home Now: How to Reserve [Name] Today."
-- "Can I See [Name] Before I Commit? How Our Virtual Visits Work."
-- "What Happens After I Pay a Deposit?"
+- "Can I See [Name] Before I Commit? How Our Home Visits Work."
+- "What Happens After I Pay the £500 Deposit?"
 - "How Long Until My Puppy Is Ready to Come Home?"
 
 ---
@@ -141,7 +141,7 @@ Highest engagement, weakest keyword signal.
 **Style 2 — Conversational Hybrid (keyword + entity).** Question or benefit phrasing
 wrapped around a target keyword and a named entity.
 *"How to Choose the Best Blue Staffy Crate Setup"* ·
-*"Safe Foods vs. Toxic Foods for Psittacus erithacus"*
+*"Safe Foods vs. Toxic Foods for Staffordshire Bull Terriers"*
 Balanced. Best for informational depth across many sections.
 
 **Style 3 — Recommended Hybrid (direct-answer / snippet-targeted).** Question plus a
@@ -155,8 +155,8 @@ it — alternate with Style 2 inside a page.
 
 | Register | Example | Best for | Cost |
 |---|---|---|---|
-| **FAQ question-based** | "How Long Do Blue Staffies Live in Captivity?" | direct answers, AIO + Featured Snippets | monotonous if overused |
-| **Quora-style** | "Why Is My Blue Staffy Pulling Out Its Chest Feathers All of a Sudden?" | long-tail behaviour / problem posts | too long to scan |
+| **FAQ question-based** | "How Long Do Blue Staffies Live?" | direct answers, AIO + Featured Snippets | monotonous if overused |
+| **Quora-style** | "Why Is My Staffy Chewing Its Paws Raw All of a Sudden?" | long-tail behaviour / problem posts | too long to scan |
 | **Reddit-style** | "Is a Blue Staffy Actually Worth the Hassle for a First-Time Owner?" | community, subjective, review roundups, Reddit-modifier pages | weak explicit keyword |
 
 ### Page-type → default style
@@ -166,10 +166,10 @@ it — alternate with Style 2 inside a page.
 | For-sale / buy (transactional) | **Style 3**, ~30% Style 2 | Buyer queries are decision questions; the parenthetical carries the commercial modifier without stuffing the H2 |
 | Comparison | **Style 3**, both entities named | The query *is* the comparison — both entities must appear for passage-level ranking |
 | Care / health / informational | **Style 2** | Long-tail depth queries; entity density beats snippet framing across 20+ sections |
-| Puppy listing `/available/` | **FAQ register on Style 2** | Buyers ask about one named puppy — name + attribute + question |
+| Puppy listing `/available-puppies/` | **FAQ register on Style 2** | Buyers ask about one named puppy — name + attribute + question |
 | Reddit-modifier | **Reddit register**, deliberately | The page's whole promise is "what owners actually say" |
 | Blog | **Style 2**, Quora-register H1 | Curiosity opener, keyword body |
-| Location | **Style 2** with the geo modifier | The state/city IS the differentiator |
+| Location | **Style 2** with the geo modifier | The UK region/city IS the differentiator |
 | Legal / privacy | Plain declarative | No search intent to serve; clarity only |
 
 ### The justification requirement (binding)
@@ -180,7 +180,7 @@ snapshot, PAA demand, or a named competitor gap. **Never taste.**
 
 ```
 Header style: Style 3 (Recommended Hybrid), FAQ register on H4–H6.
-Why: price intent beats adoption intent 5:1 in this page's own query set, and 6 of the
+Why: price intent beats rehoming intent 5:1 in this page's own query set, and 6 of the
 top 10 SERP results are question-led — so a direct-answer H2 competes for the snippet
 those informational results currently hold.
 Trade-off: Style 3 on every H2 reads repetitive; H3s alternate to Style 2.
@@ -220,24 +220,24 @@ The only legal movements are: one level down (H2 → H3), or back up to any high
 ## Complete Example: Individual Puppy Listing Page
 
 ```
-H1: Harlow — Blue Staffy for Sale | Male, DNA Sexed | BlueStaffyUK
-H2: Searching for a Hand-Raised Blue Staffy in [State]? Meet Your Match.
-  H3: How Big Will Harlow Get? Adult Size and Weight for Blue Staffies.
-    H4: Current Weight: Where Harlow Is in His Development Timeline.
-    H4: What Harlow Eats: His Weaning Diet and Enrichment Schedule.
-  H3: Is Harlow DNA Sexed? What That Means for Your New Puppy.
-    H4: Complete Documentation: breeder licensing Permit, Veterinary Vet Certificate, and Hatch Certificate.
-    H5: PBFD Screening Explained: Why It Matters for Your Puppy's Health.
+H1: Roman — Blue Staffy Puppy for Sale | Male, KC Registered, £1,500 | BlueStaffyUK
+H2: Searching for a Home-Raised Blue Staffy Puppy in [UK Region]? Meet Your Match.
+  H3: How Big Will Roman Get? Adult Size and Weight for Blue Staffies.
+    H4: Current Weight: Where Roman Is in His Development Timeline.
+    H4: What Roman Eats: His Weaning Diet and Feeding Schedule.
+  H3: Is Roman Microchipped and Vet Checked? What That Means for Your New Puppy.
+    H4: Complete Documentation: KC Registration, Vet Health Check, First Vaccinations and Worming Record.
+    H5: Hereditary Cataracts (HC) Explained: Why It Matters for Your Puppy's Health.
 H2: Why Choose a Blue Staffy from BlueStaffyUK?
   H3: Blue vs Blue Brindle: Which Coat Colour Is Right for Your Household?
-  H3: How Harlow Was Raised: Our Hand-Feeding and Socialization Protocol.
-    H4: Enrichment and Training Progress: What Harlow Can Do at [X] Weeks.
-    H5: Glasgow City Council AWA Licensed Facility: What Annual Inspection Means for Buyers.
-    H6: Is Harlow Already Talking? Here's What to Expect at This Age.
-H2: How to Reserve Harlow and Bring Him Home
-  H3: The BSUK Adoption Process: 5 Simple Steps.
-    H4: Deposit, Payment, and What's Included in Harlow's Transfer Package.
-    H6: Ready to Go Now: How to Reserve Harlow Today.
+  H3: How Roman Was Raised: Our Home-Raising and Socialisation Protocol.
+    H4: Enrichment and Training Progress: What Roman Can Do at [X] Weeks.
+    H5: LICENCE_CLAIM_PLACEHOLDER: What Annual Inspection Means for Buyers.
+    H6: Is Roman Lead Trained Yet? Here's What to Expect at This Age.
+H2: How to Reserve Roman and Bring Him Home
+  H3: The BSUK Reservation Process: 5 Simple Steps.
+    H4: The £500 Refundable Deposit, Payment, and What's Included in Roman's Delivery Package.
+    H6: Ready to Go Now: How to Reserve Roman Today.
 ```
 
 ---
@@ -271,14 +271,14 @@ grep -c "<h5" site/content/[slug]/index.html   # must be ≥5
 grep -c "<h6" site/content/[slug]/index.html   # must be ≥5
 
 # Detect skipped levels (prints any H-jump greater than 1)
-grep -oP '(?<=<)[hH][1-6]' site/content/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && £1 > prev+1 {print "SKIP DETECTED: H"prev" → H"£1} {prev=£1}'
+grep -oP '(?<=<)[hH][1-6]' site/content/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && $1 > prev+1 {print "SKIP DETECTED: H"prev" → H"$1} {prev=$1}'
 ```
 
 ---
 
 ## Anti-Patterns (Never Do)
 
-- `<h2>Blue Staffy Puppies</h2>` — too generic, not a search query
+- `<h2>Staffordshire Bull Terriers</h2>` — too generic, not a search query
 - `<h2>Best Blue Staffy Puppies For Sale Near Me In 2025</h2>` — keyword stuffing
 - Two `<h1>` tags on the same page
 - Using `<h4>` directly under `<h2>` without an `<h3>` in between

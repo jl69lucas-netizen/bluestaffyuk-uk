@@ -77,7 +77,7 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 
 - **Keep the first-person breeder voice** — stripping slop never means stripping "we / our / here at BlueStaffyUK." Humanizing without the POV is a different failure.
 - **Stay inside the Verified-Claim Ledger** — humanizing never means inventing. A vivid concrete detail still has to be true (a real enquiry call, a real puppy, a real price). No new credentials, no fabricated outcomes.
-- **Licence-safe** — all rewrites stay accurate to our Glasgow City Council breeder licence and Lucy's Law compliance; never imply a third-party or dealer sale.
+- **Licence-safe** — all rewrites stay accurate to LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance; never state either as fact before Lisa confirms it, and never imply a third-party or dealer sale.
 - **No visible dates** — freshness lives in schema only (see CLAUDE.md non-negotiables).
 - **Never the 🐶 emoji** — use `/emoji/bsuk-blue.png` / `bsuk-brindle.png` or `[BSUK]`/`[BLUE]` text markers.
 

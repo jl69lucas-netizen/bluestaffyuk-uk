@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Glasgow (Lisa Bright)
 > **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Glasgow City Council breeder licence held; Lucy's Law compliant — puppies only ever seen with their mother at the home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliance · KC registration · Microchip number · Vet health check + first vaccinations · Worming record · Home-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -154,10 +154,10 @@ B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing
 - Is there a difference in price between blue and black brindle puppies?
 
 ### Licensing & Legality
-- Are your puppies sold under a council breeder licence?
+- Are your puppies sold under a LICENCE_CLAIM_PLACEHOLDER?
 - Is it legal to buy a Staffy puppy this way in the UK?
 - What paperwork do I receive with my puppy?
-- What is Lucy's Law and why does it matter?
+- What is LEGAL_CLAIM_PLACEHOLDER and why does it matter?
 - Can I see the puppy with its mother before buying?
 
 ### Health & Documentation

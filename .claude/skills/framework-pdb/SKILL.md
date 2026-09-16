@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Glasgow, Scotland (Lisa Bright)
 > **Coat lines:** Blue and blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle and rarer blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Glasgow City Council breeder licence held; Lucy's Law compliant — puppies only ever seen with their mother at the home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliance (mother present) · KC registration · Microchip number · Vet health check + first vaccinations · Worming record · Home-raised, not kennel-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment · Cost uncertainty
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -37,7 +37,7 @@ B — Brief:   Summarize what this reader needs — then show BlueStaffyUK provi
 These are the ranked fears Blue Staffy buyers arrive with (in order of frequency):
 
 1. **Scam fear** — "Is this breeder real or will I lose my £500 deposit to a scammer?"
-2. **Licensing/legal fear** — "Is this seller actually licensed, or am I buying outside Lucy's Law?"
+2. **Licensing/legal fear** — "Is this seller actually licensed, or am I buying outside LEGAL_CLAIM_PLACEHOLDER?"
 3. **Puppy-farm suspicion** — "Was this litter home-raised, or farmed and handed over in a car park?"
 4. **Sick puppy fear** — "What if the puppy carries hereditary cataracts or L-2-HGA I won't discover for months?"
 5. **Support abandonment fear** — "Will the breeder answer the phone after the money is sent?"
@@ -63,7 +63,7 @@ These are the ranked fears Blue Staffy buyers arrive with (in order of frequency
 ```
 You found three Blue Staffy breeders online. One has a slick website with adorable photos. 
 One says "KC registered" in the description but the price is £450. One has been operating 
-since [YEAR] with a Glasgow City Council breeder licence number you can look up. You can't 
+since [YEAR] with a LICENCE_CLAIM_PLACEHOLDER number you can look up. You can't 
 tell which one is real.
 ```
 
@@ -77,7 +77,7 @@ already disappeared. Your fear isn't paranoia — it's pattern recognition.
 
 ### Brief (1 paragraph)
 ```
-What you need: a breeder with a verifiable Glasgow City Council licence number, KC 
+What you need: a breeder with a verifiable LICENCE_CLAIM_PLACEHOLDER number, KC 
 registration you can independently check with the Kennel Club, a traceable payment method, 
 and a vet health check naming the practice by name. Here's what each of those looks like at 
 BlueStaffyUK — and here's how to verify each one independently.
@@ -127,8 +127,8 @@ Strong Pain: "The seller had 47 five-star reviews, a licence certificate on thei
 
 | Fear | Depth Fact | BSUK Solution |
 |------|-----------|-------------|
-| Scam | Puppy fraud is common on Gumtree/FB Marketplace | Council breeder licence, traceable payment, [YEAR]+ history |
-| Licensing/legal | Unlicensed sellers breach Lucy's Law; paperwork is forged | Licence number checkable with Glasgow City Council before deposit |
+| Scam | Puppy fraud is common on Gumtree/FB Marketplace | LICENCE_CLAIM_PLACEHOLDER, traceable payment, [YEAR]+ history |
+| Licensing/legal | Unlicensed sellers cannot show LEGAL_CLAIM_PLACEHOLDER; paperwork is forged | Licence number checkable with the issuing authority before deposit |
 | Puppy farm | "Home-raised" is claimed freely, rarely proven | Mother seen with the litter at the home; KC registration + microchip number per puppy |
 | Sick puppy | HC and L-2-HGA can stay hidden for months | Vet health check, first vaccinations, worming record, parental DNA status |
 | Abandonment | Most puppy sellers have no post-sale support | `[BREEDER_NAME]` phone/email on every page (name: see `docs/reference/domain-knowledge.md`) |

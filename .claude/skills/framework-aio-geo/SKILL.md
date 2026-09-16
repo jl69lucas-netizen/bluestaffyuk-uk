@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Staffordshire Bull Terriers are bred here under a Glasgow City Council breeder licence with full Lucy's Law compliance — every puppy is seen with its mother at our home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliant · KC registration · Microchipped · Vet health check · First vaccinations + worming · Fully weaned + home-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -38,7 +38,7 @@ Content gets cited by AI engines when it:
 1. **Answers a specific question directly in the first sentence**
 2. **Contains named entities** (puppy names, health conditions, certifications, locations)
 3. **Uses declarative statements** ("Staffordshire Bull Terriers weigh X" not "Staffordshire Bull Terriers can weigh")
-4. **Attributes claims to named sources** ("confirmed by KC registration + vet health check," "per Glasgow City Council breeder licence standards")
+4. **Attributes claims to named sources** ("confirmed by KC registration + vet health check," "per LICENCE_CLAIM_PLACEHOLDER standards")
 5. **Uses structured patterns** (tables, lists, labeled sections) over undifferentiated prose
 6. **Has FAQPage schema** — directly feeds AI answer extraction
 
@@ -61,8 +61,8 @@ Source:    Kennel Club breed health data (Staffordshire Bull Terrier longevity s
 
 Entity:    Staffordshire Bull Terrier
 Attribute: Legal sale status in the UK
-Value:     Lucy's Law — puppies may only be sold by the breeder who raised them, with the mother present; licensed breeders display a council licence number
-Source:    Glasgow City Council breeder licensing / Lucy's Law
+Value:     LEGAL_CLAIM_PLACEHOLDER — the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) is what a buyer checks before paying
+Source:    LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER
 ```
 
 **Prose translation:**
@@ -89,14 +89,14 @@ Paragraph 3: [BSUK context — how this applies to BSUK breeding]
 
 **Example — licensing and paperwork section:**
 ```
-Para 1: Blue Staffordshire Bull Terrier puppies sold legally in the UK must come directly
-        from the breeder who raised them under Lucy's Law, with a council breeder licence
-        number and full paperwork.
+Para 1: Blue Staffordshire Bull Terrier puppies come directly from the breeder who
+        raised them, with LEGAL_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER number and
+        full paperwork.
 
 Para 2: KC registration + a vet health check confirms each puppy's health status and
         identity. A microchip number is required by law before a puppy leaves the breeder.
 
-Para 3: BlueStaffyUK includes a Glasgow City Council breeder licence number, KC registration,
+Para 3: BlueStaffyUK includes a LICENCE_CLAIM_PLACEHOLDER number, KC registration,
         microchip number, vet health check, and first vaccinations with worming record on
         every puppy — buyers can verify full documentation before bringing their puppy home.
 ```
@@ -116,7 +116,7 @@ Para 3: BlueStaffyUK includes a Glasgow City Council breeder licence number, KC 
       "name": "How much does a blue Staffordshire Bull Terrier puppy cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Blue Staffordshire Bull Terrier puppies from licensed UK breeders range from £1,500 to £1,700. Price depends on coat colour, sex, and pedigree. Every puppy from BlueStaffyUK includes a Glasgow City Council breeder licence number, KC registration, microchip number, vet health check, and first vaccinations with a worming record."
+        "text": "Blue Staffordshire Bull Terrier puppies from licensed UK breeders range from £1,500 to £1,700. Price depends on coat colour, sex, and pedigree. Every puppy from BlueStaffyUK includes a LICENCE_CLAIM_PLACEHOLDER number, KC registration, microchip number, vet health check, and first vaccinations with a worming record."
       }
     }
   ]
@@ -132,7 +132,7 @@ Use for: "How to find a reputable blue Staffy breeder," "How to prepare for a ne
   "@context": "https://schema.org",
   "@type": "Animal",
   "name": "Staffordshire Bull Terrier",
-  "description": "A compact, affectionate terrier breed originating in the English Midlands, bred in the UK under council breeder licensing and Lucy's Law.",
+  "description": "A compact, affectionate terrier breed originating in the English Midlands, bred in the UK under LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER.",
   "alternateName": ["Blue Staffy", "Blue Staffordshire Bull Terrier", "Staffy", "Staffie"]
 }
 ```
@@ -166,7 +166,7 @@ grep -n "FAQPage\|@type.*Question" site/content/[slug]/*.md | head -10
 - Avoid: thin content, vague claims, excessive internal repetition
 
 ### ChatGPT / Perplexity
-- Targets: cited sources (KC registration + vet health check, Glasgow City Council breeder licence), specific data points, comparisons
+- Targets: cited sources (KC registration + vet health check, LICENCE_CLAIM_PLACEHOLDER), specific data points, comparisons
 - Note: These engines index from the web — pages must be crawlable
 
 ### Claude (Anthropic)
@@ -184,7 +184,7 @@ grep -n "FAQPage\|@type.*Question" site/content/[slug]/*.md | head -10
 
 - [ ] Every H2 section leads with a direct declarative statement
 - [ ] All size/weight/price data in a table or labeled list
-- [ ] All health claims attributed to KC registration + vet health check, the vet health certificate, or the Glasgow City Council breeder licence
+- [ ] All health claims attributed to KC registration + vet health check, the vet health certificate, or the LICENCE_CLAIM_PLACEHOLDER
 - [ ] FAQPage JSON-LD on every FAQ section
 - [ ] No hedging on factual claims
 - [ ] Entity names consistent (always "Staffordshire Bull Terrier" not "staffy" or "the dog")
@@ -200,14 +200,14 @@ Use these 4 pattern types to win Google Featured Snippets and position zero. Pla
 Many snippets show a definition paragraph AND a list. Structure:
 ```html
 <h2>Who Are the Best Blue Staffy Breeders in [Region]?</h2>
-<p>The best blue Staffy breeders in [Region] provide a council breeder licence number,
+<p>The best blue Staffy breeders in [Region] provide a LICENCE_CLAIM_PLACEHOLDER number,
 health screening, and lifetime breeder support. Top breeders demonstrate:</p>
 <ol>
-  <li>Council breeder licence number displayed on every advert</li>
+  <li>LICENCE_CLAIM_PLACEHOLDER number displayed on every advert</li>
   <li>KC registration paperwork handed over at collection</li>
   <li>Vet health check before transfer</li>
   <li>Hereditary cataracts (HC) and L-2-HGA DNA status on both parents</li>
-  <li>Lucy's Law compliance — puppy seen with its mother at the breeder's home</li>
+  <li>LEGAL_CLAIM_PLACEHOLDER compliance — puppy seen with its mother at the breeder's home</li>
   <li>Home-raised puppies with microchip, first vaccinations, and worming records</li>
 </ol>
 ```
@@ -245,8 +245,8 @@ Format: numbered steps, bold step title + 1–2 sentence explanation.
 ```html
 <h2>How to Choose a Reputable Blue Staffy Breeder: 7 Steps</h2>
 <ol>
-  <li><strong>Verify the council breeder licence</strong> — Every licensed UK breeder has a council licence number. Ask for it before paying any deposit.</li>
-  <li><strong>Confirm Lucy's Law compliance</strong> — You must see the puppy with its mother at the breeder's home. Refuse any meet-up handover.</li>
+  <li><strong>Verify the LICENCE_CLAIM_PLACEHOLDER</strong> — Every licensed UK breeder has a LICENCE_CLAIM_PLACEHOLDER number. Ask for it before paying any deposit.</li>
+  <li><strong>Confirm LEGAL_CLAIM_PLACEHOLDER compliance</strong> — Ask to see the puppy with its mother at the breeder's home. Refuse any meet-up handover.</li>
   <li><strong>Request hereditary cataracts (HC) and L-2-HGA DNA results</strong> — These conditions are inherited and silent in young puppies. Reputable breeders test both parents.</li>
   <li><strong>Ask for the vet health check</strong> — Confirms the puppy was examined by a licensed veterinary surgeon before transfer.</li>
   <li><strong>Verify KC registration</strong> — Kennel Club papers confirm pedigree and litter registration; check the names match the parents you met.</li>

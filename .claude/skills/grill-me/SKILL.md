@@ -17,8 +17,8 @@ This rule applies to you and every agent you hand off to.
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
 > **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Glasgow City Council breeder licence held; Lucy's Law compliant — puppies only ever seen with their mother at the home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliant · KC registration · Microchipped · Vet health check · First vaccinations + worming · Fully weaned + home-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file (see the site-wide **Clarification Checkpoint** rule in `CLAUDE.md` — below gate you ask ONE question, log it to the live brief, and continue; you do not dead-stop)
@@ -196,7 +196,7 @@ Report the gate findings to the user in one message before asking Q7. **Log ever
 
 When discussing buyer hesitations, the ranked fears for blue Staffy buyers are:
 1. Scam/fraud — "Is this breeder real or will I lose my £500 deposit?"
-2. Licensing/legal fear — "Is this seller actually licensed under Lucy's Law?"
+2. Licensing/legal fear — "Is this seller actually licensed under LEGAL_CLAIM_PLACEHOLDER?"
 3. Puppy-farm suspicion — "Was this litter home-raised or farmed?"
 4. Sick puppy — "What if the puppy has hereditary cataracts or L-2-HGA?"
 5. Support abandonment — "Will the breeder answer after I send money?"

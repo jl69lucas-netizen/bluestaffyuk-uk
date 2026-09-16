@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Staffordshire Bull Terriers are bred here under a Glasgow City Council breeder licence with full Lucy's Law compliance — every puppy is seen with its mother at our home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliant · KC registration · Microchipped · Vet health check · First vaccinations + worming · Fully weaned + home-raised
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -38,7 +38,7 @@ B — Bridge:  BSUK as the path from Before to After.
 | Page / Section | BAB Application |
 |----------------|----------------|
 | Scam-prevention sections | Before: bank-transfer seller risk → After: licensed, documented purchase |
-| Licensing safety sections | Before: unlicensed puppy-farm risk → After: full Lucy's Law-compliant paperwork |
+| Licensing safety sections | Before: unlicensed puppy-farm risk → After: full LEGAL_CLAIM_PLACEHOLDER-compliant paperwork |
 | Health guarantee section | Before: sick puppy fear → After: vet health check + health guarantee |
 | First-time owner sections | Before: overwhelmed by complexity → After: guided and supported |
 | `/uk-blue-staffy-puppy-buying-guide/` | Before: online scam → After: verified breeder checklist |
@@ -58,7 +58,7 @@ Then silence. The number disconnected. The profile disappeared.
 That's not a rare story — it happens every week in UK Staffy Facebook groups.
 
 AFTER:
-Your BlueStaffyUK puppy comes with a Glasgow City Council breeder licence number — the
+Your BlueStaffyUK puppy comes with a LICENCE_CLAIM_PLACEHOLDER number — the
 council record issued under UK licensing law. KC registration papers from the Kennel Club.
 A vet health check naming the vet and practice. A microchip number registered to us first.
 You can verify every document independently before sending a single pound.
@@ -79,15 +79,15 @@ Three months later, your vet asked who registered the microchip. The licence num
 was invented. Trading Standards had already been out to the address. You had no idea.
 
 AFTER:
-Every puppy from BlueStaffyUK leaves with a Glasgow City Council breeder licence number
-and full Lucy's Law compliance. You receive the licence number before you pay a deposit.
+Every puppy from BlueStaffyUK leaves with a LICENCE_CLAIM_PLACEHOLDER number
+and full LEGAL_CLAIM_PLACEHOLDER compliance. You receive the licence number before you pay a deposit.
 You can check it with the council directly. It's not a certificate we printed — it's a
 council record with a traceable number.
 
 BRIDGE:
-A breeder licence either exists as a council record or it doesn't. There's no grey area.
-Here's what a genuine Glasgow City Council breeder licence looks like — and how to verify
-yours before sending any deposit. [Link: breeder licence verification guide]
+LICENCE_CLAIM_PLACEHOLDER either exists as an authority record or it doesn't. There's no grey area.
+Here's what a genuine LICENCE_CLAIM_PLACEHOLDER looks like — and how to verify
+yours before sending any deposit. [Link: LICENCE_CLAIM_PLACEHOLDER verification guide]
 [CTA: Verify your breeder's licence →]
 ```
 
@@ -107,7 +107,7 @@ yours before sending any deposit. [Link: breeder licence verification guide]
 
 ### Bridge — Earn the Transition
 - **Don't jump straight to CTA:** earn the bridge by validating the Before fully
-- **Show the mechanism:** what specifically makes BlueStaffyUK the bridge (Glasgow City Council breeder licence, vet health check + KC registration, insured door-to-door puppy delivery)
+- **Show the mechanism:** what specifically makes BlueStaffyUK the bridge (LICENCE_CLAIM_PLACEHOLDER, vet health check + KC registration, insured door-to-door puppy delivery)
 - **One bridge per BAB:** don't list every BSUK feature — pick the one that most directly solves the Before
 
 ---

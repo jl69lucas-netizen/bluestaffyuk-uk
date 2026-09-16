@@ -49,7 +49,7 @@ allowed-tools: [Read, Write, Bash]
 High-investment, skepticism-heavy offers (buying a £1,500–£1,700 puppy).
 1. **Promise** — the core claim ("a healthy, home-raised, fully documented Blue Staffy").
 2. **Picture** — paint the owned future concretely (first tail-wag in your kitchen).
-3. **Proof** — the trust stack: real reviews (reviewCount 52), Glasgow City Council breeder licence, Lucy's Law compliance, KC registration, vet health checks. Proof validates the Promise BEFORE the ask.
+3. **Proof** — the trust stack: real reviews (reviewCount 52), LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliance, KC registration, vet health checks. Proof validates the Promise BEFORE the ask.
 4. **Push** — the single CTA. Real scarcity only (`data/puppies.json`).
 
 ### AICPBSAWN — the long-form cold-traffic skeleton
@@ -59,7 +59,7 @@ Attention · Interest · Credibility · Proof · Benefits · Scarcity · Action 
 Consultative selling; ideal because Staffy buyers SHOULD be vetted. Open by qualifying ("Are you ready for a 12–14-year, high-energy companion?"), empathize with the research burden, educate (link out to guides — Link-First), stimulate with what ownership is actually like, transition to the enquiry form. This is the framework for `/buy-blue-staffy-puppies-uk/`-class pages and the rehoming page's honest-breeder frame.
 
 ### ACCA — Awareness, Comprehension, Conviction, Action
-For readers who don't yet understand the problem (e.g. Lucy's Law and breeder-licence education, why "cheap Blue Staffy" ads are dangerous). Heavier on Comprehension than PAS — explain mechanics before asking for conviction.
+For readers who don't yet understand the problem (e.g. LEGAL_CLAIM_PLACEHOLDER and LICENCE_CLAIM_PLACEHOLDER education, why "cheap Blue Staffy" ads are dangerous). Heavier on Comprehension than PAS — explain mechanics before asking for conviction.
 
 ### HIPASI — Headline, Image, Problem, Agitation, Solution, Invitation
 The blog-post skeleton: hook headline → hero image (Rule 50b alts) → PAS body → soft Invitation (newsletter/guide link, not a hard sell). Stacks with `bsuk-blog-post`'s 14-step architecture — HIPASI orders the narrative INSIDE that structure.

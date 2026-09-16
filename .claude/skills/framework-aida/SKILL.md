@@ -13,8 +13,8 @@ allowed-tools: [Read, Write, Bash]
 ## BSUK Project Context
 > **Site:** https://SITE_URL_PLACEHOLDER — home-raised Blue Staffordshire Bull Terrier breeder in Glasgow, Scotland
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
-> **Licensing:** Staffordshire Bull Terriers are bred here under a Glasgow City Council breeder licence with full Lucy's Law compliance — every puppy is seen with its mother at our home. Never imply puppy-farm or third-party sale.
-> **Trust pillars:** Glasgow City Council breeder licence · Lucy's Law compliance · KC registration · Microchip number · Vet health check · First vaccinations + worming record
+> **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
+> **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
 > **Content root:** `site/content/` | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
@@ -86,8 +86,8 @@ Rules:
 
 **BSUK Interest content:**
 - The problem with Gumtree / Facebook Marketplace (no licence number, bank-transfer deposits, no recourse)
-- The problem with "cheap blue staffy" sites (no council licence, payment via no-recourse apps)
-- What "home-raised and licensed" actually means (Glasgow City Council breeder licence + Lucy's Law + vet health check)
+- The problem with "cheap blue staffy" sites (no LICENCE_CLAIM_PLACEHOLDER, payment via no-recourse apps)
+- What "home-raised and licensed" actually means (LICENCE_CLAIM_PLACEHOLDER + LEGAL_CLAIM_PLACEHOLDER + vet health check)
 
 ---
 
@@ -101,7 +101,7 @@ Rules:
 
 **Feature → Desire transformation:**
 ```
-Feature:  "Glasgow City Council breeder licence and Lucy's Law compliance on every litter"
+Feature:  "LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance on every litter"
 Desire:   "You'll meet your puppy with its mother in our home before you pay a penny —
            no puppy-farm risk, no questions at your door, no heartbreak after bonding with a
            puppy that was never really ours to sell."

@@ -267,4 +267,5 @@ scan roots; the board file lives at `data/boards/<slug>.json` with nested slugs 
 `perf_audit.py` brings its two `scripts/lighthouse/agentic-*.mjs` helpers; the harness
 re-base covers every marker hit under `tests/render/`, about 57 files, not six.
 
+- Two content placeholders introduced during the skill re-base, `LICENCE_CLAIM_PLACEHOLDER` and `LEGAL_CLAIM_PLACEHOLDER`, stand in for the breeder-licence and Lucy's-Law claims until Lisa Bright confirms them; `placeholder_check.py` refuses to release while they remain.
 - The marker gate is `scripts/marker_check.py`, not `parrot_marker_check.py`: `package.json` is a scan root and the gate's own wiring line would otherwise be a permanent hit. Renaming beats an exclusion, which §4 forbids.

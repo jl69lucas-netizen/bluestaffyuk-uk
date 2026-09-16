@@ -3,7 +3,10 @@
 
 Foundation deliberately ships stand-ins. `SITE_URL_PLACEHOLDER` stands in for the domain
 nobody has bought yet, `PHONE_PLACEHOLDER` for the number project 6 will provision, and
-`FORMSPREE_ID_PLACEHOLDER` for the form endpoint whose contract belongs to CAG. Every one
+`FORMSPREE_ID_PLACEHOLDER` for the form endpoint whose contract belongs to CAG. Two more
+stand in for unverified facts rather than unprovisioned services: `LICENCE_CLAIM_PLACEHOLDER`
+and `LEGAL_CLAIM_PLACEHOLDER` hold the breeder-licence and Lucy's-Law claims the skill
+re-base would otherwise have asserted, until Lisa Bright confirms them. Every one
 of them is correct today and catastrophic on launch day: a canonical pointing at
 `https://SITE_URL_PLACEHOLDER/`, or a `tel:` link nobody can ring, is the kind of defect
 that is invisible in review and obvious to the first visitor.
@@ -23,26 +26,37 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
-PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACEHOLDER")
+PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACEHOLDER",
+                "LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER")
+
+# The claim placeholders live in the instruction tree, not in dist/ — a skill that tells a
+# writer to assert an unconfirmed licence is the defect, and it never reaches a built page
+# to be caught there. So the scan covers dist/ plus these source roots.
+SOURCE_ROOTS = (".claude/skills", ".claude/agents")
 
 # Text formats only. A byte scan of dist/ would also walk every baked WebP, which cannot
 # contain a placeholder and would dominate the run time.
-TEXT_SUFFIXES = {".html", ".xml", ".txt", ".json", ".js", ".css", ".mjs", ".map", ".webmanifest"}
+TEXT_SUFFIXES = {".html", ".xml", ".txt", ".json", ".js", ".css", ".mjs", ".map",
+                 ".webmanifest", ".md"}
 
 
-def scan(dist):
-    """{placeholder: total occurrences} and {placeholder: [files]} across dist/."""
+def scan(dist, roots=()):
+    """{placeholder: total occurrences} and {placeholder: [files]} across dist/ and roots."""
     counts = {p: 0 for p in PLACEHOLDERS}
     files = {p: set() for p in PLACEHOLDERS}
-    for path in sorted(pathlib.Path(dist).rglob("*")):
-        if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
+    bases = [pathlib.Path(dist)] + [pathlib.Path(r) for r in roots]
+    for base in bases:
+        if not base.is_dir():
             continue
-        text = path.read_text(encoding="utf-8", errors="ignore")
-        for placeholder in PLACEHOLDERS:
-            n = text.count(placeholder)
-            if n:
-                counts[placeholder] += n
-                files[placeholder].add(path.relative_to(dist).as_posix())
+        for path in sorted(base.rglob("*")):
+            if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
+                continue
+            text = path.read_text(encoding="utf-8", errors="ignore")
+            for placeholder in PLACEHOLDERS:
+                n = text.count(placeholder)
+                if n:
+                    counts[placeholder] += n
+                    files[placeholder].add(path.relative_to(base).as_posix())
     return counts, {p: sorted(f) for p, f in files.items()}
 
 
@@ -56,7 +70,7 @@ def main(root=ROOT, dist=None, release=None):
         print("FAIL: no dist/ to scan — a build that does not exist is not placeholder-free.")
         return 1
 
-    counts, files = scan(dist)
+    counts, files = scan(dist, [root / r for r in SOURCE_ROOTS])
     total = sum(counts.values())
     mode = "release" if release else "pre-launch"
     print("# Placeholders (%s build)" % mode)
@@ -72,7 +86,8 @@ def main(root=ROOT, dist=None, release=None):
         for placeholder in PLACEHOLDERS:
             for f in files[placeholder][:20]:
                 print("  %s — %s" % (placeholder, f))
-        print("FAIL: BSUK_RELEASE=1 and %d placeholder occurrence(s) remain in dist/." % total)
+        print("FAIL: BSUK_RELEASE=1 and %d placeholder occurrence(s) remain in dist/ "
+              "and the instruction tree." % total)
         return 1
     print("placeholders: 0 — release build is clean")
     return 0
