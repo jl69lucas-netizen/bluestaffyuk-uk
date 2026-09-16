@@ -278,3 +278,12 @@ re-base covers every marker hit under `tests/render/`, about 57 files, not six.
   edit; they are carried to project 4 as a Foundation content finding. §6 and §9 therefore
   read "the proving board is approved and built; the gate is green after Task 15 except for
   the three carried duplicates, which the gate report lists". The gate is not weakened.
+- Fact lint (Task 11): mechanical re-basing re-labelled parrot facts as dog facts (a
+  lifespan/cost table, price ranges outside the locked £1,500/£1,700, DEFRA asserted as a
+  compliance body, "50 cities", a hosting provider stated as fact, placeholders used as
+  nouns in headings and routes). `tests/py/test_agent_facts.py` now lints `.claude/agents`
+  and `.claude/skills`: only locked £ amounts; banned tokens (captive, USDA, APHIS, CITES,
+  Cloudflare, 40–60, 50 cities/states); DEFRA only beside "transport"; no placeholder inside
+  a heading or a path segment; no lifespan other than 12–14 years. Rule 10 is now enforced,
+  not asserted.
+
