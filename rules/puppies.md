@@ -1,6 +1,6 @@
 # The puppy and buy cluster
 
-Rules moved out of `CLAUDE.md` on 2026-08-02 (Phase 4) and re-based for BlueStaffyUK
+Rules moved out of `CLAUDE.md` (arrives in Task 10) on 2026-08-02 (Phase 4) and re-based for BlueStaffyUK
 2026-09-16. **The rule text is verbatim except where the source fact did not survive the re-base.**
 
 `enforced:` says what actually holds the rule up.
@@ -16,7 +16,7 @@ enforced: untested
 family: COPY
 ---
 
-- **Puppy-cluster meta — extended 3-part format (ALWAYS, all puppy/buy pages) — titles may run to ~280 chars** — Every puppy-cluster page uses the extended 3-part meta (do NOT truncate to a short title): **Title** = `Primary Keyword | Related Conversational Query | Number + Positive Word | Brand — LSI/NLP Keywords` (front-load the primary keyword; extend toward but never past **280 characters**). **Description** = `Primary Benefit | Secondary Benefit | Trust Signal + CTA` (≤300). Real price floor (£1,500 for Roman, Byrd and Ince; £1,700 for Vennie, Christa and Cheryl — from `data/price-matrix.json`, never typed by hand) + real credentials + branded ending. A licence or statute claim in a title or description is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` until it is confirmed. Canonical spec: `.claude/skills/bsuk-puppy-page-builder/SKILL.md §6a`.
+- **Puppy-cluster meta — extended 3-part format (ALWAYS, all puppy/buy pages) — titles may run to ~280 chars** — Every puppy-cluster page uses the extended 3-part meta (do NOT truncate to a short title): **Title** = `Primary Keyword | Related Conversational Query | Number + Positive Word | Brand — LSI/NLP Keywords` (front-load the primary keyword; extend toward but never past **280 characters**). **Description** = `Primary Benefit | Secondary Benefit | Trust Signal + CTA` (≤300). Real price floor (£1,500 for Roman, Byrd and Ince; £1,700 for Vennie, Christa and Cheryl — from `data/price-matrix.json`, never typed by hand) + real credentials + branded ending. A licence or statute claim in a title or description is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` until it is confirmed. Canonical spec: `.claude/skills/bsuk-puppy-page-builder/SKILL.md` §6a (arrives in Task 12).
 
 ---
 id: delivery-band-on-every-card

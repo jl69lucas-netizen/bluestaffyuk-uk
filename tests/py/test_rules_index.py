@@ -101,3 +101,87 @@ def test_the_gates_actually_load_all_three():
                                         _load("evidence-ledger.json")) == []
     assert quality_report.broken_test_links(index(), quality_report.registry_check_ids()) == []
     assert quality_report.judgment_overflow(index()) is None
+
+
+def test_enforced_is_one_of_the_three_known_classes():
+    bad = [(r["id"], r.get("enforced")) for r in index()["rules"]
+           if r.get("enforced") not in {"test", "judgment", "untested"}]
+    assert bad == [], f"unknown `enforced` class (quality_report.py knows only three): {bad}"
+
+
+# ── packs and ledger must not drift apart ───────────────────────────────────
+import re  # noqa: E402
+
+FRONTMATTER_ID = re.compile(r"^id: ([\w-]+)$", re.M)
+
+
+def pack_ids():
+    """{rule id: pack path} for every front-matter block in rules/*.md."""
+    out = {}
+    for f in sorted(RULES_DIR.glob("*.md")):
+        for m in FRONTMATTER_ID.finditer(f.read_text(encoding="utf-8")):
+            out[m.group(1)] = f.relative_to(ROOT).as_posix()
+    return out
+
+
+def test_every_pack_rule_is_in_the_index():
+    # The reverse does not hold: the index also registers harness check ids, which are
+    # checks rather than written rules and live in tests/render/checks/, not in a pack.
+    missing = sorted(set(pack_ids()) - {r["id"] for r in index()["rules"]})
+    assert missing == [], f"rules written in a pack but absent from the ledger: {missing}"
+
+
+def test_index_pack_field_points_at_the_file_that_holds_the_rule():
+    actual = pack_ids()
+    wrong = [(r["id"], r["pack"], actual[r["id"]]) for r in index()["rules"]
+             if "pack" in r and r["id"] in actual and r["pack"] != actual[r["id"]]]
+    assert wrong == [], f"rule-index `pack` disagrees with where the rule is written: {wrong}"
+
+
+# ── the recurrence guard ────────────────────────────────────────────────────
+# A pack that cites `docs/reference/seo-rules.md` before Task 13 writes it sends a reader
+# to a path that does not exist and reads as a bug in their checkout rather than as work
+# that has not happened yet. A forward reference is allowed; an UNMARKED one is not.
+BACKTICKED = re.compile(r"`([^`\n]+)`")
+PATH_EXT = (".py", ".md", ".json", ".ts", ".sh", ".css", ".mjs")
+MARKERS = ("(arrives in", "(deferred", "(not ported", "(source repo only")
+TOP_LEVEL = {p.name for p in ROOT.iterdir() if p.is_dir() and not p.name.startswith(".")} | {".claude"}
+
+
+def _path_like(tok: str):
+    """The path a backticked token names, or None when it is not a repo path.
+
+    Deliberately narrow. Prose in these packs backticks CSS (`width/height="1em"`), HTML
+    (`</h3>`), URLs, route paths (`/available-puppies/`), bare extensions (`.astro`) and
+    stop-word lists (`of/the/and/for/with`). Treating any of those as a missing file would
+    make this test noise, and a noisy test gets deleted rather than obeyed.
+    """
+    tok = tok.strip()
+    if tok.startswith(("http", "/", "<", "@", "-", "$")):
+        return None
+    if any(c in tok for c in '<>"*= ') or tok.count("`"):
+        return None
+    if re.fullmatch(r"\.[a-z]+", tok):          # a bare extension, e.g. `.astro`
+        return None
+    tok = tok.split("::")[0].split("#")[0].rstrip(".,;:")
+    if not (tok.endswith(PATH_EXT) or tok.split("/")[0] in TOP_LEVEL):
+        # `of/the/and/for/with` is a stop-word list, not a directory. A token only counts
+        # as a path when it carries a source extension or starts at a real repo directory.
+        return None
+    return tok
+
+
+def test_every_repo_path_cited_in_a_pack_exists_or_is_marked():
+    bad = []
+    for f in sorted(RULES_DIR.glob("*.md")):
+        for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+            marked = any(m in line for m in MARKERS)
+            for tok in BACKTICKED.findall(line):
+                p = _path_like(tok)
+                if p is None or (ROOT / p).exists() or marked:
+                    continue
+                bad.append(f"{f.name}:{lineno}  {p}")
+    assert bad == [], (
+        "a pack cites a path that does not exist and does not say when it will. Either "
+        "fix the path, or mark the line '(arrives in Task N)' / '(deferred to project N)' "
+        "/ '(not ported — source repo only)':\n  " + "\n  ".join(bad))

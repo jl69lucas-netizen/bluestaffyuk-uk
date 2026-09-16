@@ -1,15 +1,16 @@
 # `rules/` — the rule packs
 
-`CLAUDE.md` used to carry ~37 rules in 88,000 characters. It now carries the nine that
-have no mechanical decision procedure, plus a router to these packs. Everything else is
-here, **verbatim** — the move rewrote nothing.
+Task 10 writes `CLAUDE.md` (arrives in Task 10), which carries the nine judgment rules — the ones with no
+mechanical decision procedure — plus a router to these packs. Everything else lives here.
+In the source repo the same split reduced a 37-rule, 88,000-character `CLAUDE.md` (arrives in Task 10); the rule
+text crossed **verbatim** except where a source fact did not survive the re-base.
 
 ## Reading a rule
 
 Each rule is preceded by front-matter:
 
 ```yaml
-id: title-case-headings
+id: sem-title-case-headings
 enforced: test
 family: SEM
 test: tests/render/checks/sem.ts::sem-title-case-headings
@@ -27,20 +28,20 @@ test: tests/render/checks/sem.ts::sem-title-case-headings
 list is the Phase-5 backlog: each one either earns a test or gets deleted. A rule that
 sits there indefinitely is documentation pretending to be enforcement.
 
-## The two-copy problem
+## The injectors — not ported
 
-Seven `scripts/add_*_rule.py` injectors write rule text into all 68 agent Golden Rules.
-Moving a rule out of `CLAUDE.md` did **not** remove it from those agents, so several
-rules now exist in two places: the pack (the source) and 68 injected copies. Editing a
-rule means editing the pack **and** re-running its injector. Nothing detects the drift —
-that is a known gap, recorded here rather than left to be discovered.
+In the source repo, seven `scripts/add_*_rule.py` injectors wrote rule text into every
+agent's Golden Rules, so each of those rules existed twice: once in its pack and once per
+agent. **They are not ported (spec §2).** In BSUK the packs are the only source, and an
+agent cites a pack rule by its id rather than carrying a copy of its text. There is
+therefore no drift to detect, which is why the table below is history and not a checklist.
 
-| Injector | Pack |
+| Injector (source repo only — not ported) | Pack |
 |---|---|
-| `add_write_from_outline_rule.py` | `rules/copy.md` |
-| `add_first_person_golden_rule.py` | `rules/copy.md` |
-| `add_heading_outline_gate_rule.py` | `rules/headings.md` |
-| `add_title_case_rule.py` | `rules/headings.md` |
-| `add_header_style_rule.py` | `rules/headings.md` |
-| `add_link_first_rule.py` | `rules/links.md` |
-| `add_clarification_checkpoint_rule.py` | `rules/gates.md` |
+| add_write_from_outline_rule.py | `rules/copy.md` |
+| add_first_person_golden_rule.py | `rules/copy.md` |
+| add_heading_outline_gate_rule.py | `rules/headings.md` |
+| add_title_case_rule.py | `rules/headings.md` |
+| add_header_style_rule.py | `rules/headings.md` |
+| add_link_first_rule.py | `rules/links.md` |
+| add_clarification_checkpoint_rule.py | `rules/gates.md` |
