@@ -754,5 +754,59 @@
     "dst": ".claude/agents/bsuk-about-builder.md",
     "mode": "rebase",
     "notes": "page builder; breeder story = Lisa Bright, Glasgow; USDA/CITES -> LICENCE_CLAIM_PLACEHOLDER"
+  },
+  {
+    "src": ".claude/agents/cag-seo-content-writer.md",
+    "dst": ".claude/agents/bsuk-seo-content-writer.md",
+    "mode": "rebase",
+    "notes": "content; frameworks kept, facts re-based to locked BSUK prices and delivery"
+  },
+  {
+    "src": ".claude/agents/cag-blog-post-agent.md",
+    "dst": ".claude/agents/bsuk-blog-post-agent.md",
+    "mode": "rebase",
+    "notes": "content; blog posts land in src/content/blog/; GSC figures NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-angle-agent.md",
+    "dst": ".claude/agents/bsuk-angle-agent.md",
+    "mode": "rebase",
+    "notes": "content; angle bank re-based from parrot buyer fears to Staffy buyer fears"
+  },
+  {
+    "src": ".claude/agents/cag-non-commodity-content-agent.md",
+    "dst": ".claude/agents/bsuk-non-commodity-content-agent.md",
+    "mode": "rebase",
+    "notes": "content; Triad model kept, breeder voice re-based to Lisa Bright"
+  },
+  {
+    "src": ".claude/agents/cag-content-audit-agent.md",
+    "dst": ".claude/agents/bsuk-content-audit-agent.md",
+    "mode": "rebase",
+    "notes": "content; audit phases kept; competitor-intel handoff marked deferred to project 6"
+  },
+  {
+    "src": ".claude/agents/cag-image-pipeline.md",
+    "dst": ".claude/agents/bsuk-image-pipeline.md",
+    "mode": "rebase",
+    "notes": "content; image paths re-based to public/images/ and data/image-manifest.json"
+  },
+  {
+    "src": ".claude/agents/cag-faq-agent.md",
+    "dst": ".claude/agents/bsuk-faq-agent.md",
+    "mode": "rebase",
+    "notes": "content; QAB kept; question bank re-based; GSC Queries.csv NOT FETCHED until project 6"
+  },
+  {
+    "src": ".claude/agents/cag-paa-agent.md",
+    "dst": ".claude/agents/bsuk-paa-agent.md",
+    "mode": "rebase",
+    "notes": "content; PAA extraction kept; target keywords re-based to UK Staffy queries"
+  },
+  {
+    "src": ".claude/agents/cag-meta-description-agent.md",
+    "dst": ".claude/agents/bsuk-meta-description-agent.md",
+    "mode": "rebase",
+    "notes": "content; CTR patterns kept; prices from data/price-matrix.json, \u00a3 not $"
   }
 ]

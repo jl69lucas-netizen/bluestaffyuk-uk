@@ -25,14 +25,26 @@
     "bsuk-about-builder": {
       "tier": "tier_high"
     },
+    "bsuk-angle-agent": {
+      "tier": "tier_max"
+    },
     "bsuk-batch-rebuilder": {
       "tier": "tier_medium"
+    },
+    "bsuk-blog-post-agent": {
+      "tier": "tier_max"
     },
     "bsuk-comparison-builder": {
       "tier": "tier_high"
     },
     "bsuk-content-architect": {
       "tier": "tier_max"
+    },
+    "bsuk-content-audit-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-faq-agent": {
+      "tier": "tier_high"
     },
     "bsuk-framework-agent": {
       "tier": "tier_max"
@@ -43,6 +55,9 @@
     "bsuk-hub-builder": {
       "tier": "tier_high"
     },
+    "bsuk-image-pipeline": {
+      "tier": "tier_medium"
+    },
     "bsuk-infographic-builder": {
       "tier": "tier_high"
     },
@@ -52,11 +67,23 @@
     "bsuk-location-builder": {
       "tier": "tier_max"
     },
+    "bsuk-meta-description-agent": {
+      "tier": "tier_medium"
+    },
+    "bsuk-non-commodity-content-agent": {
+      "tier": "tier_max"
+    },
+    "bsuk-paa-agent": {
+      "tier": "tier_medium"
+    },
     "bsuk-purchase-guide": {
       "tier": "tier_max"
     },
     "bsuk-section-builder": {
       "tier": "tier_high"
+    },
+    "bsuk-seo-content-writer": {
+      "tier": "tier_max"
     },
     "bsuk-structure-architect": {
       "tier": "tier_max"
