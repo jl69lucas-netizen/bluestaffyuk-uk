@@ -69,7 +69,40 @@ ALLOWED_YEARS = {"12", "13", "14"}
 FIRST_YEAR = re.compile(r"(?i)(first[- ]year|year[- ]1\b|year 1\b|1st[- ]year)")
 
 HEADING = re.compile(r"^\s{0,3}#{1,6}\s")
-FENCE = re.compile(r"^\s{0,3}```")
+FENCE = re.compile(r"^\s{0,3}```\s*([A-Za-z]*)")
+# A fence is only a reason to stop reading headings when what is inside it is CODE. The
+# source repo fenced its report TEMPLATES as ```markdown, and `## LICENCE_CLAIM_PLACEHOLDER
+# Query Gap` sat inside one — a heading that ships into a deliverable, invisible to a
+# detector that skipped the whole block. So: skip headings in code, read them everywhere else.
+CODE_LANGS = {"bash", "sh", "shell", "zsh", "python", "py", "json", "js", "javascript",
+              "ts", "html", "css", "astro", "xml", "yaml", "yml", "diff", "sql"}
+
+# Inside a code fence a bare numeral is a value, and the currency rules never see it: the
+# cost calculator shipped `{ low: 1700, high: 2500 }` and passed a lint that only reads `£`.
+#
+# Scoped two ways, because a code block is full of honest four-digit numbers (`z-index: 9999`,
+# `setTimeout(loadGA, 3000)`) and a lint that called those price defects would be deleted
+# within a week. So: only in a script context, and only on a line that is ABOUT money.
+BARE_4 = re.compile(r"(?<![\w.,-])([1-9]\d{3})(?![\w.,])")
+ALLOWED_BARE = {"1500", "1700"}          # the two locked prices
+ALLOWED_DIMS = {"1408", "1280", "1200", "1100"}   # image/viewport widths in use today
+JS_LANGS = {"js", "javascript", "ts", "json"}
+SCRIPT_OPEN = re.compile(r"(?i)<script\b")
+SCRIPT_CLOSE = re.compile(r"(?i)</script>")
+# The words a price wears when it is a variable rather than a pound sign.
+MONEYISH = re.compile(r"(?i)\b(price|prices|cost|costs|low|high|amount|gbp|deposit|fee|"
+                      r"total|subtotal|delivery|purchase)\b")
+
+
+def _is_year(n):
+    return 2020 <= int(n) <= 2030
+
+
+# `blue and white Staffy: { ... }` is not JavaScript. It is what a blind vocabulary
+# substitution does to an object key, and it means the snippet cannot run. The value must
+# look like a JS value too, or every `Pages checked: [count]` line in a report template
+# reads as broken code.
+SPACED_KEY = re.compile(r"^\s*[A-Za-z]+(?: [A-Za-z]+)+\s*:\s*[\[{\'\"0-9]")
 # A route or URL path: a placeholder is a claim-shaped word, not a path segment. The one
 # sanctioned exception is `https://SITE_URL_PLACEHOLDER/...`, where the placeholder stands in
 # the HOST position for the domain project 6 will register — that is the repo-wide convention
@@ -88,10 +121,21 @@ def _norm(m):
 
 
 def violations(path: pathlib.Path):
-    out, fenced = [], False
+    out, fenced, lang, in_script = [], False, "", False
     for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
-        if FENCE.match(line):
-            fenced = not fenced
+        m = FENCE.match(line)
+        if m:
+            if fenced:
+                fenced, lang = False, ""
+            else:
+                fenced, lang = True, m.group(1).lower()
+            in_script = False
+            continue
+        if fenced:
+            if SCRIPT_OPEN.search(line):
+                in_script = True
+            if SCRIPT_CLOSE.search(line):
+                in_script = False
         def bad(why):
             out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:120]))
 
@@ -118,7 +162,17 @@ def violations(path: pathlib.Path):
                 if num not in ALLOWED_YEARS:
                     bad("year figure %r near %r (the breed figure is 12–14)" % (num, ym.group(0)))
 
-        if HEADING.match(line) and not fenced:
+        if fenced and (lang in JS_LANGS or in_script):
+            if SPACED_KEY.match(line):
+                bad("object key with an unquoted space \u2014 this snippet cannot run")
+            if MONEYISH.search(line):
+                for n in BARE_4.findall(line):
+                    if n in ALLOWED_BARE or n in ALLOWED_DIMS or _is_year(n):
+                        continue
+                    bad("bare numeral %s priced in a code block "
+                        "(the locked prices are 1500 and 1700)" % n)
+
+        if HEADING.match(line) and not (fenced and lang in CODE_LANGS):
             for ph in PLACEHOLDERS:
                 if ph in line:
                     bad("placeholder %s used as a noun in a heading" % ph)
@@ -144,7 +198,9 @@ def test_there_is_something_to_lint():
 
 def test_the_lint_actually_fires(tmp_path):
     p = tmp_path / "SKILL.md"
-    p.write_text("Lifetime estimate (40-60 yrs) £85,000–£250,000 from captive DEFRA-compliant breeders\n"
+    p.write_text("```js\nconst prices = {\n  blue and white Staffy: { low: 1700, high: 2500 }\n};\n```\n"
+                 "```markdown\n## LICENCE_CLAIM_PLACEHOLDER Query Gap\n```\n"
+                 "Lifetime estimate (40-60 yrs) £85,000–£250,000 from captive DEFRA-compliant breeders\n"
                  "## LICENCE_CLAIM_PLACEHOLDER Writing Rules\n", encoding="utf-8")
     kinds = violations(p)
     assert any("unlocked amount" in v for v in kinds), kinds
@@ -152,3 +208,6 @@ def test_the_lint_actually_fires(tmp_path):
     assert any("DEFRA asserted" in v for v in kinds), kinds
     assert any("year figure" in v for v in kinds), kinds
     assert any("used as a noun in a heading" in v for v in kinds), kinds
+    assert any("bare numeral 2500" in v for v in kinds), kinds
+    assert any("Query Gap" in v and "heading" in v for v in kinds), kinds
+    assert any("object key with an unquoted space" in v for v in kinds), kinds

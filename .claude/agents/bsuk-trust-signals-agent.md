@@ -326,7 +326,7 @@ Save audit report to: `sessions/YYYY-MM-DD-trust-signals-audit.md` (arrives in T
 
 Report format:
 ```
-# Trust Signals Audit — SITE_URL_PLACEHOLDER
+# Trust Signals Audit — BlueStaffyUK
 Date: [YYYY-MM-DD]
 Pages checked: [count]
 

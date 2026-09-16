@@ -208,7 +208,7 @@ Analysis date: [today]
 | Keyword | Position | Impressions | Clicks | Recommended Action |
 |---------|----------|------------|--------|-------------------|
 
-## LICENCE_CLAIM_PLACEHOLDER Query Gap
+## Breeder-standing query gap
 | Query | Impressions | Position | Recommended Action |
 |-------|-------------|----------|--------------------|
 

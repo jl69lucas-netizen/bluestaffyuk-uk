@@ -84,7 +84,7 @@ docs/research/cannibalization-audit-YYYY-MM-DD.md
 
 Template:
 ```markdown
-# SITE_URL_PLACEHOLDER — Page Cannibalization Audit
+# BlueStaffyUK — Page Cannibalization Audit
 **Date:** YYYY-MM-DD
 
 ## Cluster N: [Name] — [PRIORITY] ([X] pages competing)

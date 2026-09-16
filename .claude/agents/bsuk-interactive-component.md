@@ -43,7 +43,7 @@ All components are self-contained HTML blocks: zero external dependencies, zero 
 
 ### 1. First-Year Cost Calculator
 Reads `data/financial-entities.json` and `data/price-matrix.json` (both exist). (not ported — source repo only)
-Inputs: variant (Blue Staffy/blue and white Staffy) + whether buyer needs crate/setup.
+Inputs: which puppy (male £1,500 / female £1,700) + whether the buyer needs crate and setup.
 Output: purchase price + setup costs + annual ongoing = year-1 total.
 Uses vanilla JS, no frameworks, self-contained block.
 
@@ -124,11 +124,11 @@ Vanilla JS step-stepper, keyboard accessible, no external deps.
   <p class="bsuk-body">Select a variant to see the full cost breakdown.</p>
 
   <div class="calc-field">
-    <label for="calc-variant">Choose your Blue Staffy variant:</label>
+    <label for="calc-variant">Choose your puppy:</label>
     <select id="calc-variant" onchange="bsukCalc()">
-      <option value="">— Select variant —</option>
-      <option value="blue">Blue Staffy</option>
-      <option value="blue and white Staffy">Blue and white Staffy</option>
+      <option value="">— Select a puppy —</option>
+      <option value="male">Roman, Byrd or Ince (male)</option>
+      <option value="female">Vennie, Christa or Cheryl (female)</option>
     </select>
   </div>
 
@@ -154,20 +154,23 @@ Vanilla JS step-stepper, keyboard accessible, no external deps.
 
 <script>
 function bsukCalc() {
+  // The two locked prices, keyed the way the <select> is. Both come from
+  // data/puppies.json: there is no range, and no third number.
   const prices = {
-    blue:  { low: 1700, high: 2500 },
-    blue and white Staffy: { low: 1500, high: 1600 }
+    male:   1500,   // Roman, Byrd, Ince
+    female: 1700    // Vennie, Christa, Cheryl
   };
   const variant = document.getElementById('calc-variant').value;
   const includeSetup = document.getElementById('calc-setup').checked;
   const out = document.getElementById('calc-output');
   if (!variant) { out.hidden = true; return; }
-  const p = prices[variant];
-  const setupLow = includeSetup ? 600 : 0;
-  const setupHigh = includeSetup ? 1200 : 0;
-  document.getElementById('c-purchase').textContent = '$' + p.low.toLocaleString() + '–$' + p.high.toLocaleString();
+  const price = prices[variant];
+  document.getElementById('c-purchase').textContent = '£' + price.toLocaleString();
+  // Crate, setup and vet costs are NOT FETCHED. Print the words, never a number the
+  // breeder has not given — a calculator that invents a total is worse than no calculator.
   document.getElementById('c-setup').textContent = includeSetup ? 'NOT FETCHED' : 'Not included';
-  document.getElementById('c-year1').innerHTML = '<strong>$' + (p.low + 150 + setupLow).toLocaleString() + '–$' + (p.high + 300 + setupHigh).toLocaleString() + '</strong>';
+  document.getElementById('c-year1').innerHTML = '<strong>£' + price.toLocaleString()
+    + ' purchase + £500 refundable deposit; running costs NOT FETCHED</strong>';
   out.hidden = false;
 }
 </script>

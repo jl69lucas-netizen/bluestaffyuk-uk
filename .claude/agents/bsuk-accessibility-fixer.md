@@ -290,7 +290,7 @@ Save full batch report to: `sessions/YYYY-MM-DD-accessibility-audit.md` (arrives
 
 Report structure:
 ```markdown
-# Accessibility Audit — SITE_URL_PLACEHOLDER
+# Accessibility Audit — BlueStaffyUK
 Date: [YYYY-MM-DD]
 Pages checked: [count]
 
