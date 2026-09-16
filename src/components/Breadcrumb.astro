@@ -1,0 +1,9 @@
+---
+interface Props { path: string; title: string }
+const { path, title } = Astro.props;
+const crumbs = path.split('/').filter(Boolean);
+---
+{crumbs.length > 0 && <nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap">
+  <li><a href="/">Home</a></li>
+  {crumbs.map((c, i) => <li>› {i === crumbs.length - 1 ? <span aria-current="page">{title}</span> : <a href={'/' + crumbs.slice(0, i + 1).join('/') + '/'}>{c.replace(/-/g, ' ')}</a>}</li>)}
+</ol></nav>}

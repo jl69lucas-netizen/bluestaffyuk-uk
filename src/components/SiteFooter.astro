@@ -1,0 +1,15 @@
+---
+import { SITE, NAV } from '../lib/site';
+import locations from '../../data/locations.json';
+const cities = [...locations].sort((a, b) => a.city.localeCompare(b.city));
+---
+<footer class="site-footer" style="margin-top:64px;padding:40px 0;background:#1b2430;color:#e9ecf0">
+  <div class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+    <div><h2 style="font-size:1.1rem">{SITE.site_name}</h2><p>{SITE.tagline}</p>
+      <p>{SITE.address.street}, {SITE.address.city} {SITE.address.postcode}<br /><a href={`mailto:${SITE.email}`} style="color:inherit">{SITE.email}</a></p>
+      <p><a href={SITE.socials.facebook} rel="noopener" target="_blank" style="color:inherit">Facebook</a> · <a href={SITE.socials.instagram} rel="noopener" target="_blank" style="color:inherit">Instagram</a> · <a href={SITE.socials.youtube} rel="noopener" target="_blank" style="color:inherit">YouTube</a> · <a href={SITE.socials.x} rel="noopener" target="_blank" style="color:inherit">X</a></p></div>
+    <div><h2 style="font-size:1.1rem">Quick Pages</h2><ul style="list-style:none;padding:0">{NAV.map((n) => <li><a href={n.href} style="color:inherit">{n.label}</a></li>)}<li><a href="/privacy-policy-uk/" style="color:inherit">Privacy Policy</a></li></ul></div>
+    <div><h2 style="font-size:1.1rem">Cities We Serve</h2><ul style="list-style:none;padding:0;columns:2">{cities.map((l) => <li><a href={`/uk-locations/${l.slug}/`} style="color:inherit">{l.city}</a></li>)}</ul></div>
+  </div>
+  <div class="container" style="margin-top:24px;font-size:13px;opacity:.85">© {new Date().getFullYear()} {SITE.site_name}. All rights reserved.</div>
+</footer>

@@ -1,0 +1,33 @@
+---
+import '../styles/global.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+import Schema from '../components/Schema.astro';
+import { SITE, abs } from '../lib/site';
+interface Props { title: string; description: string; canonical?: string; robots?: string; ogType?: string; ogImage?: string; schema?: unknown[] }
+const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', ogType = 'website', ogImage = SITE.logo, schema = [] } = Astro.props;
+const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
+---
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <meta name="robots" content={robots} />
+  <link rel="canonical" href={abs(path)} />
+  <meta property="og:type" content={ogType} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={abs(path)} /><meta property="og:image" content={abs(ogImage)} /><meta property="og:locale" content="en_GB" /><meta property="og:site_name" content={SITE.site_name} />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="icon" href={SITE.logo} />
+  <Schema extra={schema} path={path} title={title} />
+</head>
+<body>
+  <a href="#main" style="position:absolute;left:-9999px">Skip to content</a>
+  <SiteHeader />
+  <Breadcrumb path={path} title={title} />
+  <main id="main"><slot /></main>
+  <SiteFooter />
+</body>
+</html>

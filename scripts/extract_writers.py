@@ -78,10 +78,18 @@ def city_from_slug(slug):
     return " ".join(w if w in KEEP_LOWER else w.capitalize() for w in words)
 
 
+# Pages that must never be indexed regardless of what the old Rank Math tags said: the
+# thank-you page is a post-submit destination with no standalone search value.
+NOINDEX_PATHS = ["/thank-you-blue-staffy-puppies-journey/"]
+
+
 def meta_dict(page):
     """Shared meta shape for the .astro frontmatter and the locations rows."""
+    robots = page.robots or "index, follow"
+    if page.canonical in NOINDEX_PATHS:
+        robots = "noindex, follow"
     return {"title": page.title, "description": page.description, "canonical": page.canonical,
-            "robots": page.robots or "index, follow", "ogType": page.og_type or "article",
+            "robots": robots, "ogType": page.og_type or "article",
             "schema": page.schema}
 
 

@@ -160,8 +160,21 @@ def apply_manifest(src_site, manifest):
     run(pathlib.Path(src_site), ROOT)
 
 
+def load_manifest():
+    """The last measured manifest from disk, or {} when there is none yet."""
+    try:
+        return json.loads((ROOT / "data/image-manifest.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+
+
 def main(src_site):
     from extract_images import LOGO_STEMS
+    # Cold start: on a fresh clone there are no generated pages yet, so nothing references
+    # any image and the bake would copy nothing. Extract once from the stored manifest first
+    # so the referenced-stem scan below has pages to read and one bake converges.
+    if not referenced_stems():
+        apply_manifest(src_site, load_manifest())
     out = ROOT / "public/images"
     out.mkdir(parents=True, exist_ok=True)
     uploads = pathlib.Path(src_site) / "wp-content/uploads"

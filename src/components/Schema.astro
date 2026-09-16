@@ -1,0 +1,20 @@
+---
+import { SITE, SITE_URL, abs } from '../lib/site';
+interface Props { extra?: unknown[]; path: string; title: string }
+const { extra = [], path, title } = Astro.props;
+const org: Record<string, unknown> = {
+  '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': `${SITE_URL}/#business`,
+  name: SITE.site_name, url: SITE_URL, email: SITE.email, priceRange: SITE.price_range,
+  address: { '@type': 'PostalAddress', streetAddress: SITE.address.street, addressLocality: SITE.address.city, postalCode: SITE.address.postcode, addressCountry: SITE.address.country },
+  geo: { '@type': 'GeoCoordinates', latitude: SITE.address.lat, longitude: SITE.address.lng },
+  openingHours: SITE.hours, sameAs: Object.values(SITE.socials), image: abs(SITE.logo),
+};
+if (SITE.phone !== 'PHONE_PLACEHOLDER') org.telephone = SITE.phone;
+const website = { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: SITE.site_name };
+const crumbs = path.split('/').filter(Boolean);
+const breadcrumb = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE_URL}/` },
+  ...crumbs.map((c, i) => ({ '@type': 'ListItem', position: i + 2, name: i === crumbs.length - 1 ? title : c.replace(/-/g, ' '), item: abs('/' + crumbs.slice(0, i + 1).join('/') + '/') })) ] };
+const blocks = [org, website, ...(crumbs.length ? [breadcrumb] : []), ...extra.filter((b) => b && typeof b === 'object')];
+---
+{blocks.map((b) => <script type="application/ld+json" set:html={JSON.stringify(b).replace(/</g, '\\u003c')} />)}

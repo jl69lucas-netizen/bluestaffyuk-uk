@@ -1,7 +1,8 @@
 import json, pathlib
 from extract_wp import parse_page
 from extract_writers import (write_rich_page, write_locations, write_page_map,
-                             astro_frontmatter, city_from_slug, SLUG_CITY)
+                             astro_frontmatter, city_from_slug, SLUG_CITY,
+                             meta_dict, NOINDEX_PATHS)
 FIX = pathlib.Path(__file__).parent / "fixtures"
 
 def test_write_rich_page_creates_astro_with_props(tmp_path):
@@ -88,3 +89,16 @@ def test_recount_refreshes_counts_and_clears_stub():
     recount(page, "<p>%s</p><h2>Head</h2><img src='a.jpg' alt='a'>" % (" word" * 60))
     assert page.word_count > 50 and "stub" not in page.defects
     assert len(page.images) == 1 and page.headings == [("h2", "Head")]
+
+
+def test_noindex_paths_override_old_robots():
+    """The thank-you page must be noindex even though Rank Math tagged it index, follow."""
+    page = parse_page(FIX / "birmingham.html", "/uk-locations/blue-staffy-puppies-birmingham/")
+    page.robots = "follow, index, max-snippet:-1"
+    assert meta_dict(page)["robots"] == "follow, index, max-snippet:-1"
+    page.canonical = NOINDEX_PATHS[0]
+    assert meta_dict(page)["robots"] == "noindex, follow"
+
+
+def test_thank_you_page_is_in_noindex_paths():
+    assert "/thank-you-blue-staffy-puppies-journey/" in NOINDEX_PATHS
