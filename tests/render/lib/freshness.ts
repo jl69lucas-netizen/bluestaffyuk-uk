@@ -161,15 +161,21 @@ export function builtRoutesWithoutSource(root: string = process.cwd()): string[]
   // A dynamic segment is matched as a PATTERN instead: `[param]` spans exactly one path
   // segment, `[...rest]` spans zero or more (Astro's own rest-parameter semantics, which
   // is why the `/` before it is optional in the regex). Everything else is still compared
-  // literally, so the deletion case this function exists for — a static page removed from
-  // src/ while dist/ still serves it — is caught exactly as before.
+  // literally.
   //
-  // Stated cost, because it is real: a root-level `[...rest]` route matches ANY path, so
-  // while `src/pages/[...post].astro` exists this check cannot prove any route orphaned,
-  // and a blog post deleted from the content collection will not be reported here. That
-  // is a limit of comparing PATHS: the catch-all's paths come from getStaticPaths, not
-  // from the filesystem. It is the honest answer rather than a false refusal, and the
-  // content-collection deletion case belongs to a check that can read the collection.
+  // Stated cost, because it is real and larger than it first looks: a root-level
+  // `[...rest]` route matches ANY path. While `src/pages/[...post].astro` exists this
+  // function CANNOT DETECT ANY ORPHANED ROUTE AT ALL — not a deleted blog post, and not
+  // the static-page deletion this function was written for either, because a static page
+  // removed from src/ leaves a dist/ route the catch-all pattern still claims as sourced.
+  // On BSUK this check therefore contributes nothing today, and the mtime comparison above
+  // is the only remaining freshness signal. It is kept because it is correct wherever the
+  // catch-all is absent (CAG, and BSUK again if the root rest route is ever scoped under a
+  // prefix), and because a silent false REFUSAL on every run would be worse than a check
+  // that honestly proves nothing. The limit is one of comparing PATHS: a catch-all's paths
+  // come from getStaticPaths, not from the filesystem, so the deletion cases belong to a
+  // check that can read the content collection. Recorded as an open item in
+  // docs/reports/foundation-gate-report.md.
   const ESCAPE = /[.*+?^${}()|[\]\\]/g;
   const dynamic: RegExp[] = [];
   for (const route of src) {

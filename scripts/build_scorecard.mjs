@@ -4,6 +4,15 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve } from 'node:path';
 
+// Checks the controller has knowingly deferred: registered, wired, passing their fixture
+// pairs, but encoding a convention Foundation's verbatim WordPress markup does not use, so
+// they examine zero nodes on every built page. Exempt from the Guard 2 FAIL below and
+// PRINTED with their reason — a deferral that printed nothing would be the same silence
+// Guard 2 exists to break.
+const deferred = JSON.parse(
+  readFileSync(resolve('tests/render/targets.json'), 'utf8'),
+).deferred_checks ?? {};
+
 const RAW = resolve('data/quality/raw');
 const OUT = resolve('data/quality/scorecards');
 const runLabel = process.argv.includes('--run')
@@ -45,10 +54,25 @@ if (files.length !== manifest.expectedPartials) {
 
 // Guard 2: seeded from the MANIFEST, not from the partials — a check that ran
 // nowhere contributes no key to any partial and would be invisible otherwise.
-const dead = [...examinedAnywhere.entries()].filter(([, n]) => n === 0).map(([id]) => id);
+const zero = [...examinedAnywhere.entries()].filter(([, n]) => n === 0).map(([id]) => id);
+for (const id of zero.filter((id) => id in deferred)) {
+  console.log(`DEFERRED (${deferred[id]})  ${id}`);
+}
+const dead = zero.filter((id) => !(id in deferred));
 if (dead.length) {
   console.error(`FAIL: check(s) examined zero nodes across every page: ${dead.join(', ')}`);
   process.exit(1);
+}
+// A deferral that no longer applies is itself a defect: it would keep a real zero-examined
+// check exempt forever. Say so, loudly, without failing the run.
+for (const id of Object.keys(deferred)) {
+  if (!examinedAnywhere.has(id)) {
+    console.log(`DEFERRED-STALE  ${id} is not in the manifest — remove it from deferred_checks`);
+  } else if ((examinedAnywhere.get(id) ?? 0) > 0) {
+    console.log(
+      `DEFERRED-STALE  ${id} examined ${examinedAnywhere.get(id)} nodes — it is live, remove the deferral`,
+    );
+  }
 }
 
 if (bySlug.size === 0) {

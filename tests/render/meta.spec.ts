@@ -1356,3 +1356,135 @@ test.describe('formExpected pins the zero-examined exemption list', () => {
     expect(formExpected('blue-staffy-blog-guides', 'blog')).toBe(false);
   });
 });
+
+/**
+ * A deferral must never be able to hide a dead check.
+ *
+ * `targets.json > deferred_checks` exempts an id from build_scorecard.mjs Guard 2 — the
+ * guard whose entire job is to catch a check that examined ZERO nodes everywhere while
+ * looking shipped (reference: a11y-text-contrast-aa, 2026-08-07). Exempting an id is
+ * therefore switching off the one alarm that would notice the check had rotted, so the
+ * exemption has to buy back the proof by other means: the id must still name a REGISTERED
+ * check, and that check must still fire on its known_broken fixture and stay silent on its
+ * known_good one. A deferred check is one whose convention the pages do not use yet — not
+ * one nobody is testing.
+ */
+test.describe('every deferred check is registered and still passes both fixtures', () => {
+  const deferredIds = Object.keys(
+    (
+      JSON.parse(
+        readFileSync(
+          resolve(dirname(fileURLToPath(import.meta.url)), 'targets.json'),
+          'utf8',
+        ),
+      ) as { deferred_checks?: Record<string, string> }
+    ).deferred_checks ?? {},
+  );
+
+  test('every deferred id names a check the registry actually holds', () => {
+    const registered = new Set(registry.map((c) => c.id));
+    const phantom = deferredIds.filter((id) => !registered.has(id)).sort();
+    expect(
+      phantom,
+      `deferred in targets.json but no check registers it: ${phantom.join(', ')} — ` +
+        `a deferral for a nonexistent id silences nothing and hides the typo`,
+    ).toEqual([]);
+  });
+
+  const deferredReasons = () =>
+    (
+      JSON.parse(
+        readFileSync(
+          resolve(dirname(fileURLToPath(import.meta.url)), 'targets.json'),
+          'utf8',
+        ),
+      ) as { deferred_checks?: Record<string, string> }
+    ).deferred_checks ?? {};
+
+  test('every deferred id carries a reason that states its promotion condition', () => {
+    // A reason that only says WHY is a reason to never look again. Requiring the sentence
+    // that says when the entry comes out turns each deferral into something with an end
+    // date somebody can check, rather than a permanent exemption worded as a temporary one.
+    for (const [id, reason] of Object.entries(deferredReasons())) {
+      expect(reason.trim().length, `${id} is deferred with no stated reason`).toBeGreaterThan(10);
+      expect(
+        reason.toLowerCase(),
+        `${id}'s reason does not say when the deferral ends — every entry must state ` +
+          `'remove this entry when …' so the exemption cannot outlive its cause`,
+      ).toContain('remove this entry when');
+    }
+  });
+
+  /**
+   * A deferral is only honest while the check really is examining nothing.
+   *
+   * The moment a page starts carrying the convention — project 3 adds the counter strip,
+   * say — the check has real nodes to judge and its findings would be silently exempt from
+   * Guard 2. This reads the latest raw run and requires every deferred id to have examined
+   * ZERO. It is deliberately a skip, not a pass, when no run exists: "no data" must not
+   * read as "verified".
+   */
+  test('no deferred check is actually examining nodes in the latest run', () => {
+    // SCORECARDS, not raw partials. `global-setup.ts` calls resetRaw(), so by the time this
+    // spec executes data/quality/raw is empty by design — reading it here would skip on
+    // every single run and the assertion would be decoration. The scorecards are the
+    // durable record of the last pages run and carry `examined_by_check` per page.
+    const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+    const dir = join(root, 'data', 'quality', 'scorecards');
+    const cards = existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')) : [];
+    if (cards.length === 0) {
+      // Skip, never pass: "no run on disk" must not be able to read as "verified".
+      test.skip(
+        true,
+        'no scorecards on disk — run `npm run test:render:pages` then ' +
+          '`node scripts/build_scorecard.mjs` before a deferral can be trusted',
+      );
+      return;
+    }
+    const examined = new Map<string, number>();
+    for (const file of cards) {
+      const card = JSON.parse(readFileSync(join(dir, file), 'utf8')) as {
+        examined_by_check?: Record<string, number>;
+      };
+      for (const [id, n] of Object.entries(card.examined_by_check ?? {})) {
+        examined.set(id, (examined.get(id) ?? 0) + n);
+      }
+    }
+    const live = Object.keys(deferredReasons())
+      .filter((id) => (examined.get(id) ?? 0) > 0)
+      .map((id) => `${id} (${examined.get(id)} nodes)`)
+      .sort();
+    expect(
+      live,
+      `deferred but examining real nodes: ${live.join(', ')} — these checks are live again ` +
+        `and their defects are being exempted from Guard 2. Remove them from deferred_checks.`,
+    ).toEqual([]);
+  });
+
+  for (const id of deferredIds) {
+    test(`${id} still fires on known_broken and is silent on known_good`, async ({
+      page,
+    }, testInfo) => {
+      const check = registry.find((c) => c.id === id);
+      expect(check, `${id} is deferred but not registered`).toBeTruthy();
+      const viewport = testInfo.project.use.viewport!.width;
+
+      const broken = await page.goto(fixtureUrl('known_broken', id));
+      expect(broken?.status(), 'known_broken fixture must exist').toBe(200);
+      const bad = await runCheck(check!, page, viewport, FIXTURE_CTX);
+      expect(
+        bad.defects.length,
+        `${id} is deferred from Guard 2 and no longer fires on its own broken fixture — ` +
+          `the deferral is now hiding a dead check`,
+      ).toBeGreaterThan(0);
+
+      const good = await page.goto(fixtureUrl('known_good', id));
+      expect(good?.status(), 'known_good fixture must exist').toBe(200);
+      const clean = await runCheck(check!, page, viewport, FIXTURE_CTX);
+      expect(
+        clean.defects.map((d) => d.message),
+        `${id} cried wolf on a clean page`,
+      ).toEqual([]);
+    });
+  }
+});

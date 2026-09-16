@@ -46,7 +46,7 @@ export interface CheckResult {
  * What the harness knows about the page being measured that the page itself does not say.
  *
  * Only `pageType` so far, and it exists because SCHEMA invariants are genuinely page-type
- * conditioned: a bird listing must carry EXACTLY ONE Product/Offer, while a hub legitimately
+ * conditioned: a puppy page must carry EXACTLY ONE Product/Offer, while a hub legitimately
  * carries an ItemList of many, and a page cannot be trusted to self-declare which it is —
  * the defect this catches is precisely a page whose schema does not match its role. Every
  * other check ignores this argument.

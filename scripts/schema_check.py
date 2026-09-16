@@ -198,8 +198,12 @@ def audit_html(text, available_slugs, slug):
     offers = _offer_nodes(blocks)
     if not may_be_in_stock:
         for offer in offers:
-            availability = offer.get("availability")
-            if isinstance(availability, str) and IN_STOCK in availability:
+            # Serialised, not string-tested: Rank Math and hand-written blocks both write
+            # `availability` as a list ("availability": ["https://schema.org/InStock"]), and
+            # an isinstance(str) test skipped that shape entirely — while
+            # _strip_availability removed the key before the prose scan, so the list form
+            # was invisible to BOTH the blocking test and the advisory fallback.
+            if IN_STOCK in json.dumps(offer.get("availability")):
                 blocking.append("InStock claimed on a page that is not an available puppy"
                                 " (%s)" % slug)
         if IN_STOCK in json.dumps(_strip_availability(blocks)):

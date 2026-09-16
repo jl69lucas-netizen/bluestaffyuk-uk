@@ -141,3 +141,24 @@ def test_typed_stub_reference_to_a_dropped_node_is_blocking():
             '{"@type":"Organization","@id":"/#business"}]}</script>')
     r = audit_html(stub, available_slugs=set(), slug="x")
     assert r["blocking"] == ["dangling @id reference: /#business"]
+
+
+def test_list_valued_availability_claiming_instock_is_blocking():
+    # `"availability": ["https://schema.org/InStock"]` is the shape Rank Math emits for a
+    # multi-availability offer. The blocking test used to require a str, and
+    # _strip_availability removed the key before the prose scan, so this page claimed
+    # InStock on a non-pup URL and the gate reported nothing at all.
+    listed = ('<script type="application/ld+json">{"@type":"Product","name":"p",'
+              '"offers":{"@type":"Offer","availability":'
+              '["https://schema.org/InStock"]}}</script>')
+    r = audit_html(listed, available_slugs={"roman"}, slug="uk-locations/birmingham")
+    assert len(r["blocking"]) == 1
+    assert "InStock claimed on a page that is not an available puppy" in r["blocking"][0]
+
+
+def test_list_valued_availability_is_allowed_on_an_available_pup():
+    listed = ('<script type="application/ld+json">{"@type":"Product","name":"p",'
+              '"offers":{"@type":"Offer","availability":'
+              '["https://schema.org/InStock"]}}</script>')
+    r = audit_html(listed, available_slugs={"roman"}, slug="available-puppies/roman")
+    assert r["blocking"] == []

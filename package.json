@@ -17,10 +17,11 @@
     "check:redirects": "python3 scripts/redirect_check.py",
     "check:schema": "python3 scripts/schema_check.py",
     "check:sitemaps": "python3 scripts/sitemap_check.py",
-    "check:all": "npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps",
+    "check:all": "npm run check:parity && npm run check:redirects && npm run check:schema && npm run check:sitemaps && npm run check:placeholders",
     "test:py": "python3 -m pytest tests/py -q",
     "test:render:meta": "playwright test -c tests/render/playwright.config.ts meta.spec.ts",
-    "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts"
+    "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts",
+    "check:placeholders": "python3 scripts/placeholder_check.py"
   },
   "dependencies": {
     "@astrojs/mdx": "^5.0.4",

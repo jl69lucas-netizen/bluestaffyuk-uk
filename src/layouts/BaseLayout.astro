@@ -29,5 +29,43 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
   <Breadcrumb path={path} title={crumbTitle} />
   <main id="main"><slot /></main>
   <SiteFooter />
+  <!--
+    Measure the sticky header instead of guessing it.
+
+    `--hdr` drives `[id] { scroll-margin-top: calc(var(--hdr) + 16px) }`, so whenever it
+    disagrees with the header's real height an in-page jump lands under the pinned chrome
+    and the reader sees the heading they jumped to covered up. The CSS carries two guessed
+    values (72px, and 120px under `max-width: 640px`), which were measured on THIS header at
+    THIS font size — a longer nav item, a larger default font, or a viewport at 641px where
+    the header still wraps all put the guess back out of step, and the failure is silent.
+
+    This script writes the measured height and keeps writing it: on load, on resize, and via
+    a ResizeObserver, which is the only one of the three that fires when the header changes
+    height without the window changing size (a wrapping nav, a late-loading webfont, the
+    logo image finally decoding). The media query above stays exactly as it is and remains
+    the no-JS answer — this only narrows the window in which it is wrong, it does not
+    replace it. Inline and at the end of <body> so it costs no request and runs after the
+    header exists.
+  -->
+  <script is:inline>
+    (function () {
+      var header = document.querySelector('.site-header');
+      if (!header) return;
+      var last = -1;
+      function sync() {
+        var h = Math.round(header.getBoundingClientRect().height);
+        // Only touch the custom property when the value actually changed: a ResizeObserver
+        // that writes on every frame would invalidate style on every frame.
+        if (h > 0 && h !== last) {
+          last = h;
+          document.documentElement.style.setProperty('--hdr', h + 'px');
+        }
+      }
+      sync();
+      addEventListener('load', sync);
+      addEventListener('resize', sync);
+      if (window.ResizeObserver) new ResizeObserver(sync).observe(header);
+    })();
+  </script>
 </body>
 </html>

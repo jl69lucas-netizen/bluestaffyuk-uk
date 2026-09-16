@@ -1,0 +1,82 @@
+#!/usr/bin/env python3
+"""Gate: no launch placeholder survives into a release build.
+
+Foundation deliberately ships stand-ins. `SITE_URL_PLACEHOLDER` stands in for the domain
+nobody has bought yet, `PHONE_PLACEHOLDER` for the number project 6 will provision, and
+`FORMSPREE_ID_PLACEHOLDER` for the form endpoint whose contract belongs to CAG. Every one
+of them is correct today and catastrophic on launch day: a canonical pointing at
+`https://SITE_URL_PLACEHOLDER/`, or a `tel:` link nobody can ring, is the kind of defect
+that is invisible in review and obvious to the first visitor.
+
+So the gate is conditional rather than absolute. It always COUNTS and always PRINTS — a
+pre-launch build stays green while showing exactly how much stand-in text is still in
+`dist/` — and it only FAILS when `BSUK_RELEASE=1` says this build is meant to go live.
+An unconditional failure would have to be commented out for every Foundation build, which
+is the same as not having the gate; an unconditional pass could ship a placeholder.
+
+Usage:  python3 scripts/placeholder_check.py          # count and report, always exit 0
+        BSUK_RELEASE=1 python3 scripts/placeholder_check.py   # exit 1 if any count > 0
+"""
+import os
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+
+PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACEHOLDER")
+
+# Text formats only. A byte scan of dist/ would also walk every baked WebP, which cannot
+# contain a placeholder and would dominate the run time.
+TEXT_SUFFIXES = {".html", ".xml", ".txt", ".json", ".js", ".css", ".mjs", ".map", ".webmanifest"}
+
+
+def scan(dist):
+    """{placeholder: total occurrences} and {placeholder: [files]} across dist/."""
+    counts = {p: 0 for p in PLACEHOLDERS}
+    files = {p: set() for p in PLACEHOLDERS}
+    for path in sorted(pathlib.Path(dist).rglob("*")):
+        if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for placeholder in PLACEHOLDERS:
+            n = text.count(placeholder)
+            if n:
+                counts[placeholder] += n
+                files[placeholder].add(path.relative_to(dist).as_posix())
+    return counts, {p: sorted(f) for p, f in files.items()}
+
+
+def main(root=ROOT, dist=None, release=None):
+    root = pathlib.Path(root)
+    dist = pathlib.Path(dist) if dist else root / "dist"
+    if release is None:
+        release = os.environ.get("BSUK_RELEASE") == "1"
+
+    if not dist.is_dir():
+        print("FAIL: no dist/ to scan — a build that does not exist is not placeholder-free.")
+        return 1
+
+    counts, files = scan(dist)
+    total = sum(counts.values())
+    mode = "release" if release else "pre-launch"
+    print("# Placeholders (%s build)" % mode)
+    for placeholder in PLACEHOLDERS:
+        print("  %-24s %5d occurrence(s) in %d file(s)"
+              % (placeholder, counts[placeholder], len(files[placeholder])))
+    print("  %-24s %5d" % ("TOTAL", total))
+
+    if not release:
+        print("placeholders: %d (advisory — set BSUK_RELEASE=1 to make this blocking)" % total)
+        return 0
+    if total:
+        for placeholder in PLACEHOLDERS:
+            for f in files[placeholder][:20]:
+                print("  %s — %s" % (placeholder, f))
+        print("FAIL: BSUK_RELEASE=1 and %d placeholder occurrence(s) remain in dist/." % total)
+        return 1
+    print("placeholders: 0 — release build is clean")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

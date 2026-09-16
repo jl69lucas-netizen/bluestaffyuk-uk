@@ -1,0 +1,186 @@
+{
+  "slug": "blue-staffy-uk-breeders",
+  "date": "2026-09-16",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 801,
+    "layout-tap-target-size": 174,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 3,
+    "img-srcset-within-2x": 24,
+    "img-alt-present-and-unique": 24,
+    "nav-anchors-resolve": 6,
+    "nav-jump-target-lands": 6,
+    "sem-heading-order": 81,
+    "sem-all-six-levels": 81,
+    "sem-title-case-headings": 81,
+    "sem-section-opening-paragraph": 81,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 1776,
+    "css-no-dead-component-rule": 0,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 144,
+    "a11y-text-contrast-aa": 630,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "NAV": 3,
+    "SEM": 12,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "NAV": 3,
+    "SEM": 51,
+    "CSS": 507,
+    "DUP": 42
+  },
+  "total": 21,
+  "total_instances": 603,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffies-for-sale@1353px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Uncompromising Health & Transparency\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:11 H3:11 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 12,
+      "message": "12 heading(s) not in Title Case: H1 \"from\" in \"Home-Raised Blue Staffy Puppies from Glasgow’s\" | H3 \"health‑checked\" in \"KC‑registered, health‑checked Staffy puppies r\" | H2 \"bull\" in \"Buy a Staffordshire bull terrier for rehoming \" | H3 \"from\" in \"We’re Ready to Buy! Which Blue Staffy Pups For\" | H2 \"with\" in \"Frequently Asked Questions: Your Peace of Mind\" | H3 \"makes\" in \"What makes BlueStaffyUK an ethical blue Staffy\" | H3 \"your\" in \"Are your Staffordshire Bull Terrier puppies he\" | H3 \"is\" in \"What is the typical temperament of your blue S\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Our Story: A Journey Fueled by Passion: \" | H2→H3 \"Buy a Staffordshire bull terrier for reh\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 169,
+      "message": "169 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x29, wp-block-uagb-info-box x25, uagb-infobox__content-wrap x25, uagb-infobox-image-valign-top x25, uagb-ifb-content x25, uagb-ifb-title-wrap x25, uagb-ifb-desc x21, uagb-ifb-title x19, uagb-infobox-icon-above-title x16, alignfull x15, uagb-is-root-container x15, uagb-faq-icon-wrap x12"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-staffy-puppies-for-sale-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 113-181px (measured chrome 121px = header:121) — no single page-level cause identified; first: #Staffies-for-sale@1603px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Uncompromising Health & Transparency\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:11 H3:11 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 12,
+      "message": "12 heading(s) not in Title Case: H1 \"from\" in \"Home-Raised Blue Staffy Puppies from Glasgow’s\" | H3 \"health‑checked\" in \"KC‑registered, health‑checked Staffy puppies r\" | H2 \"bull\" in \"Buy a Staffordshire bull terrier for rehoming \" | H3 \"from\" in \"We’re Ready to Buy! Which Blue Staffy Pups For\" | H2 \"with\" in \"Frequently Asked Questions: Your Peace of Mind\" | H3 \"makes\" in \"What makes BlueStaffyUK an ethical blue Staffy\" | H3 \"your\" in \"Are your Staffordshire Bull Terrier puppies he\" | H3 \"is\" in \"What is the typical temperament of your blue S\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Our Story: A Journey Fueled by Passion: \" | H2→H3 \"Buy a Staffordshire bull terrier for reh\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 169,
+      "message": "169 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x29, wp-block-uagb-info-box x25, uagb-infobox__content-wrap x25, uagb-infobox-image-valign-top x25, uagb-ifb-content x25, uagb-ifb-title-wrap x25, uagb-ifb-desc x21, uagb-ifb-title x19, uagb-infobox-icon-above-title x16, alignfull x15, uagb-is-root-container x15, uagb-faq-icon-wrap x12"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-staffy-puppies-for-sale-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffies-for-sale@1355px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-heading-order",
+      "count": 1,
+      "message": "1 skipped heading level(s): H2→H4 at \"Uncompromising Health & Transparency\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 2,
+      "message": "heading level(s) absent: H5, H6 — inventory H1:1 H2:11 H3:11 H4:4 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 12,
+      "message": "12 heading(s) not in Title Case: H1 \"from\" in \"Home-Raised Blue Staffy Puppies from Glasgow’s\" | H3 \"health‑checked\" in \"KC‑registered, health‑checked Staffy puppies r\" | H2 \"bull\" in \"Buy a Staffordshire bull terrier for rehoming \" | H3 \"from\" in \"We’re Ready to Buy! Which Blue Staffy Pups For\" | H2 \"with\" in \"Frequently Asked Questions: Your Peace of Mind\" | H3 \"makes\" in \"What makes BlueStaffyUK an ethical blue Staffy\" | H3 \"your\" in \"Are your Staffordshire Bull Terrier puppies he\" | H3 \"is\" in \"What is the typical temperament of your blue S\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 2,
+      "message": "2 heading(s) with no opening paragraph: H2→H3 \"Our Story: A Journey Fueled by Passion: \" | H2→H3 \"Buy a Staffordshire bull terrier for reh\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 169,
+      "message": "169 class(es) on rendered elements match no CSS rule: wp-block-uagb-container x29, wp-block-uagb-info-box x25, uagb-infobox__content-wrap x25, uagb-infobox-image-valign-top x25, uagb-ifb-content x25, uagb-ifb-title-wrap x25, uagb-ifb-desc x21, uagb-ifb-title x19, uagb-infobox-icon-above-title x16, alignfull x15, uagb-is-root-container x15, uagb-faq-icon-wrap x12"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 36w vs /blue-staffy-health-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-blue-staffy-puppies-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \" | 36w vs /buy-staffy-puppies-for-sale-uk/ \"reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 \""
+    }
+  ]
+}
