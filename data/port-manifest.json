@@ -79,5 +79,9 @@
   {"src": "scripts/board_gate.py", "dst": "scripts/board_gate.py", "mode": "rebase", "notes": "no CAG literals; re-based only for the board_path change"},
   {"src": "scripts/board_approve.py", "dst": "scripts/board_approve.py", "mode": "rebase", "notes": "drop the board_canvas import (file_token now from pageboard); --canvas-dir write-back kept, inert unless the dir exists"},
   {"src": "scripts/build_page_board.py", "dst": "scripts/build_page_board.py", "mode": "rebase", "notes": "masthead literal; drop the thumbs block (board_thumbs.mjs is not ported)"},
-  {"src": "tests/test_page_board.py", "dst": "tests/py/test_page_board.py", "mode": "rebase", "notes": "183 tests; port the schema/hash/ledger/gate/render core, drop the tests bound to CAG's real data files"}
+  {"src": "tests/test_page_board.py", "dst": "tests/py/test_page_board.py", "mode": "rebase", "notes": "183 tests; port the schema/hash/ledger/gate/render core, drop the tests bound to CAG's real data files"},
+  {"src": "scripts/final_page_audit.py", "dst": "scripts/final_page_audit.py", "mode": "rebase", "notes": "SLUGS/BIRDS/COMPARISONS/FORSALE lists; $185/$350 shipping; PBFD; method labels; emoji; word bands; airport codes; add a non-zero exit"},
+  {"src": "scripts/page_hardening_scan.py", "dst": "scripts/page_hardening_scan.py", "mode": "rebase", "notes": "SPECIES_GENERA; skills/ citations -> .claude/skills/; cag-library component paths; GA4 gateway id"},
+  {"src": "tests/test_final_page_audit.py", "dst": "tests/py/test_final_page_audit.py", "mode": "rebase", "notes": "22 tests; bird->puppy fixtures, GBP shipping, no PBFD"},
+  {"src": "tests/test_page_hardening_new_checks.py", "dst": "tests/py/test_page_hardening.py", "mode": "rebase", "notes": "45 tests; only the fixture HTML changes, every check is domain-neutral"}
 ]

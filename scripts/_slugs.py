@@ -8,6 +8,15 @@ tests/test_audit_slug_resolution.py for the history of each script's bug.
 """
 
 
+def dist_path(slug, dist="dist"):
+    """Resolve a flat or nested slug to its rendered index.html, per the convention
+    above. `dist` may be a str or a pathlib.Path; the return type follows it."""
+    import pathlib
+    root = pathlib.Path(dist)
+    p = root / "index.html" if slug in ("index", "", "/") else root / slug.strip("/") / "index.html"
+    return p if isinstance(dist, pathlib.PurePath) else str(p)
+
+
 def select_pages(paths, slugs, dist="dist"):
     """Resolve slugs to built page paths. `paths` is the list of candidate
     built page paths (as strings); `dist` is the dist-root prefix used to
