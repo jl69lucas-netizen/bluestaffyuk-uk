@@ -1,10 +1,12 @@
 # BlueStaffyUK — Master Workflow
 
 > **Read this before starting any new page, sprint, or monitoring cycle.**
-> This is the authoritative end-to-end sequence for all 36 agents in `.claude/agents/`.
+> This is the authoritative end-to-end sequence for every agent in `.claude/agents/`.
 
 The 7-sprint model is domain-neutral and stands as written. What changed in the project 2
-re-base is the cast: this repo has **36** agents, not the source repo's 68. Every agent
+re-base is the cast. The agent roster is whatever `data/agent-registry.json` lists —
+this file deliberately does not restate the count, because a number written here is a
+number that goes stale the next time an agent lands. Every agent
 this file names that is not in `data/agent-registry.json` is **deferred to project 6**
 (analytics, outreach, monitoring and conversion work that needs Search Console, a live
 domain or a remote) — `data/port-manifest.json` records the decision for each one, and
@@ -57,11 +59,13 @@ Sprint 6    Bank       session-closer + memory + BACK-PROPAGATE to the
 ```
 
 **Sprint 3 (Harden) must stay its own sprint, never a bullet inside Final.** The
-hand-raised page passed every static gate and still came back "feels rushed," with
+rationale is the source repo's, not this one's — BlueStaffyUK's own history starts
+2026-09-15 and is in `docs/reference/session-log.md`. There, a hand-raised page passed
+every static gate and still came back "feels rushed," with
 five root causes that were invisible in source review; `scripts/page_hardening_scan.py`
-existed but sat outside the named pipeline, so it stayed optional. Then on 2026-07-28
-a page that scanned `0 ERROR · 0 WARN` shipped with invisible FAQ answers and five
-mandated components missing. The moment Harden is a sub-bullet, it is the bullet that
+existed but sat outside the named pipeline, so it stayed optional. Then, in the source
+repo on 2026-07-28, a page that scanned `0 ERROR · 0 WARN` shipped with invisible FAQ
+answers and five mandated components missing. The moment Harden is a sub-bullet, it is the bullet that
 gets skipped.
 
 **Before acting on ANY gate's output, read `.claude/skills/bsuk-gate-integrity/SKILL.md`.** Twelve
@@ -425,8 +429,9 @@ moment Harden becomes a bullet, it becomes the bullet that gets skipped.*
 3. npm run test:render:meta        ← THE GATE THAT CHECKS THE CHECKERS. Run it FIRST.
    → ~200 tests, ~1 min. Every check must fire on its known_broken fixture, stay
      silent on known_good, and reach its declared minExamined floor.
-   → A page measured by a failing gate is not evidence. Six harness defects were
-     found on 2026-08-02 alone, five of them firing on EVERY page of the site.
+   → A page measured by a failing gate is not evidence. In the source repo, on
+     2026-08-02, six harness defects were found in one session, five of them firing on
+     EVERY page of that site.
 
 4. npm run test:render:pages       ← 19 checks x 15 pages x 375/768/1280, ~13 min
    → BLOCKING families: IMG · LAYOUT · NAV. A blocking row fails the run.
@@ -675,8 +680,9 @@ lessons never reached the skill that enforces them.*
 3. BACK-PROPAGATE every lesson into the artifact that ENFORCES it:
      a render defect      → a check in scripts/page_hardening_scan.py + a RED test
      a gate that lied     → .claude/skills/bsuk-gate-integrity/SKILL.md
-     a rule for everyone  → CLAUDE.md + a scripts/add_<rule>_rule.py injector
-                            (a rule with no injector is 0/68 in the agents)
+     a rule for everyone  → a pack in rules/ + a row in data/quality/rule-index.json
+                            (a rule in no pack reaches no agent; the source repo's
+                             injector scripts were not ported — source repo only)
      a component decision → a dated file under docs/superpowers/sessions/ ledger
      an anchor spent      → the Anchor Diversity Ledger
      a Reddit thread cited→ data/reddit-thread-ledger.json
@@ -689,7 +695,7 @@ lessons never reached the skill that enforces them.*
 ### Sprint 6 Gate
 - [ ] Every lesson in the doc maps to a named enforcing artifact, or is explicitly logged as backlog
 - [ ] Siblings swept for the same defect class
-- [ ] Any new rule has an injector, and it reports 68/68
+- [ ] Any new rule is written in a `rules/` pack and registered in `data/quality/rule-index.json`, and `python3 scripts/quality_report.py` §5 does not list it as `untested`
 
 ---
 
@@ -819,7 +825,7 @@ full `ls data/`.
 
 ## Model Tier System
 
-All 36 agents carry `model: inherit` — the session's model drives every agent, so a model release never requires editing 36 files again. The per-agent cost lever is `effort`, a **native** Claude Code frontmatter field (`low | medium | high | xhigh | max`). The single source of truth is `data/agent-registry.json`, which is GENERATED from the agents' own frontmatter by `python3 scripts/build_agent_registry.py` — the source repo's `apply_model_tiers.py` and `verify_model_tiers.sh` were not ported (not ported — source repo only), so the flow runs the other way here: edit the agent's frontmatter, then regenerate the registry.
+Every agent carries `model: inherit` — the session's model drives all of them, so a model release never requires editing the agent files again. The per-agent cost lever is `effort`, a **native** Claude Code frontmatter field (`low | medium | high | xhigh | max`). The single source of truth is `data/agent-registry.json`, which is GENERATED from the agents' own frontmatter by `python3 scripts/build_agent_registry.py` — the source repo's `apply_model_tiers.py` and `verify_model_tiers.sh` were not ported (not ported — source repo only), so the flow runs the other way here: edit the agent's frontmatter, then regenerate the registry.
 
 | Tier | Model | Effort | Use For | Count |
 |---|---|---|---|---|
