@@ -124,16 +124,19 @@ FORM_WRAPPERS = ".wpforms-container, .wpcf7, .forminator-ui, .wp-block-uagb-form
 
 
 def rewrite_legacy_href(href):
-    """The rewritten href for a legacy path, or None. Fragments are preserved.
+    """The rewritten href for a legacy path, or None. Query and fragment are preserved.
 
     The old host is stripped first so an absolute legacy link is matched too; the path
     must match a LINK_REWRITES key exactly, since a prefix match would catch unrelated
-    deeper paths.
+    deeper paths. WordPress served both `/path/` and `/path`, and either spelling appears
+    in the export, so the slash-less form matches and comes back with the canonical
+    trailing slash the live routes use. `?query#fragment` is carried across untouched.
     """
-    path = OLD_HOST_RE.sub("", href.strip())
-    path, sep, fragment = path.partition("#")
-    dest = LINK_REWRITES.get(path)
-    return None if dest is None else dest + sep + fragment
+    rest = OLD_HOST_RE.sub("", href.strip())
+    cut = min([i for i in (rest.find("?"), rest.find("#")) if i != -1] or [len(rest)])
+    path, suffix = rest[:cut], rest[cut:]
+    dest = LINK_REWRITES.get(path) or LINK_REWRITES.get(path + "/")
+    return None if dest is None else dest + suffix
 
 
 def clean_content_node(node):

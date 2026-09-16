@@ -140,3 +140,16 @@ def test_rewrite_is_exact_path_not_prefix():
     from extract_wp import rewrite_legacy_href
     assert rewrite_legacy_href("/category/puppy-buying-guide-uk/deeper/") is None
     assert rewrite_legacy_href("/blog/") is None
+
+
+def test_rewrite_preserves_query_and_accepts_the_slash_less_form():
+    from extract_wp import rewrite_legacy_href
+    assert (rewrite_legacy_href("/buy-blue-staffy-puppies-for-sale-uk/?utm_source=x")
+            == "/buy-blue-staffy-puppies-uk/?utm_source=x")
+    assert (rewrite_legacy_href("/category/puppy-buying-guide-uk?page=2#list")
+            == "/blog/?page=2#list")
+    # WordPress served both spellings; the rewrite lands on the canonical trailing slash.
+    assert (rewrite_legacy_href("/buy-blue-staffy-puppies-for-sale-uk")
+            == "/buy-blue-staffy-puppies-uk/")
+    assert (rewrite_legacy_href("https://www.bluestaffyuk.com/category/puppy-buying-guide-uk")
+            == "/blog/")

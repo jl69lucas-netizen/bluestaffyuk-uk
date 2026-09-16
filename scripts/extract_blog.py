@@ -40,15 +40,18 @@ def faqs_from_body(body_html):
 
 
 def archive_body_html(raw_soup):
-    """Inner HTML of the archive's <main>/#primary, cleaned. Returns (html, links_rewritten).
+    """Inner HTML of the archive's <main>/#primary, cleaned.
 
-    `raw_soup` is a BeautifulSoup over the *unmodified* source file; it is mutated.
-    Returns ("", 0) when no main region is present.
+    Returns (html, blog_links_rewritten, legacy_links_rewritten): the second count is this
+    function's own /category/ -> /blog/ rewrite, the third the shared extractor rewrite of
+    legacy in-body links, which the caller flags so the archive path is as accountable as
+    the rich-page path. `raw_soup` is a BeautifulSoup over the *unmodified* source file; it
+    is mutated. Returns ("", 0, 0) when no main region is present.
     """
     node = raw_soup.select_one("main#main") or raw_soup.select_one("main") \
         or raw_soup.select_one("#primary")
     if node is None:
-        return "", 0
+        return "", 0, 0
     for sel in ARCHIVE_CHROME + ARCHIVE_FURNITURE:
         for t in node.select(sel):
             t.decompose()
@@ -67,8 +70,8 @@ def archive_body_html(raw_soup):
         for attr in list(t.attrs):
             if attr.startswith("item") or (attr == "id" and t.get("id", "").startswith("post-")):
                 del t[attr]
-    clean_content_node(node)
-    return node.decode_contents(), rewritten
+    _, _, legacy_rewritten = clean_content_node(node)
+    return node.decode_contents(), rewritten, legacy_rewritten
 
 
 def _date_from_schema(schema):
@@ -132,7 +135,7 @@ def write_blog_post(page, out):
     archive = False
     if page.word_count == 0 and page.source_path:
         raw = pathlib.Path(page.source_path).read_text(encoding="utf-8", errors="ignore")
-        fallback, rewritten = archive_body_html(BeautifulSoup(raw, "lxml"))
+        fallback, rewritten, legacy_rewritten = archive_body_html(BeautifulSoup(raw, "lxml"))
         fallback, _ = scrub_phone(fallback)
         if fallback.strip():
             body_html, archive = fallback, True
@@ -141,6 +144,9 @@ def write_blog_post(page, out):
                     flags.append(flag)
             if rewritten and "archive-links-rewritten" not in flags:
                 flags.append("archive-links-rewritten")
+            legacy_flag = "legacy-links-rewritten:%d" % legacy_rewritten
+            if legacy_rewritten and legacy_flag not in flags:
+                flags.append(legacy_flag)
 
     soup = BeautifulSoup(body_html, "lxml")
     for faq in soup.select(".wp-block-uagb-faq"):

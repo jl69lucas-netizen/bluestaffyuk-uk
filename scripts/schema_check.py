@@ -10,10 +10,12 @@ tells Google something untrue:
   telephone       — `PHONE_PLACEHOLDER` in a `telephone` value would publish a stand-in as
                     the business' phone number. The extractor drops those keys; if one
                     survives, the dropper missed a path.
-  false InStock   — `https://schema.org/InStock` may only appear on `available-puppies/<s>`
-                    where `<s>` is a pup whose data/puppies.json status is Available. A
-                    sold pup (or any other page) claiming availability is a misrepresented
-                    offer, which Merchant listings penalise.
+  false InStock   — an Offer node (or an `offers` value) whose `availability` says InStock
+                    may only appear on `available-puppies/<s>` where `<s>` is a pup whose
+                    data/puppies.json status is Available. A sold pup (or any other page)
+                    claiming availability is a misrepresented offer, which Merchant
+                    listings penalise. The test is structural: prose quoting the InStock
+                    URL is reported as advisory, not failed.
   dangling @id    — a reference (`{"@id": X}`, or an id-shaped string X under
                     isPartOf/publisher/author/…)
                     whose X no node on the same page defines. Deduping the legacy Rank
@@ -25,8 +27,8 @@ tells Google something untrue:
                     legitimate and is left alone.
 
 Advisory rows are reported and do not fail: more than one node of a sitewide type on one
-page (harmless duplication, but it means a dedupe missed something), `url: ""`, and a
-WebPage with no `name`.
+page (harmless duplication, but it means a dedupe missed something), `url: ""`, a WebPage
+with no `name`, and the InStock URL appearing outside any Offer node.
 
 Usage: python3 scripts/schema_check.py
 """
@@ -42,7 +44,7 @@ LD_RE = re.compile(
     re.I | re.S)
 
 PLACEHOLDER_PHONE = "PHONE_PLACEHOLDER"
-IN_STOCK = "https://schema.org/InStock"
+IN_STOCK = "InStock"          # matched inside an availability value, not against it
 PUP_PREFIX = "available-puppies/"
 
 # Keys whose value is another *node*, so a bare string there is an @id reference. Keys
@@ -101,8 +103,14 @@ def _walk(node):
 
 
 def _is_reference(d):
-    """A dict that only points at a node defined elsewhere."""
-    return set(d) == {"@id"} and isinstance(d.get("@id"), str)
+    """A dict that only points at a node defined elsewhere.
+
+    `{"@id": X}` and `{"@type": T, "@id": X}` are both references: neither says anything
+    about the node beyond naming it, so neither counts as a definition. Rank Math writes
+    the typed form, and a dedupe that drops X while leaving the stub is exactly the
+    breakage this gate is for.
+    """
+    return set(d) <= {"@id", "@type"} and isinstance(d.get("@id"), str)
 
 
 def collect_ids(blocks):
@@ -120,6 +128,45 @@ def collect_ids(blocks):
                 if isinstance(value, str) and ID_LIKE_RE.search(value):
                     refs.append(value)
     return defined, refs
+
+
+def _offer_nodes(blocks):
+    """Every dict on the page that states an offer: an Offer node, or an `offers` value.
+
+    An `offers` dict is included even when it omits `@type`, because that is how a
+    hand-written block often shapes it; a list of offers is followed member by member.
+    """
+    found, seen = [], set()
+    def add(d):
+        if id(d) not in seen:                 # a typed Offer under `offers` is one offer
+            seen.add(id(d))
+            found.append(d)
+    for block in blocks:
+        for d in _walk(block):
+            if "Offer" in _types(d):
+                add(d)
+                continue
+            offers = d.get("offers")
+            if isinstance(offers, dict):
+                add(offers)
+            elif isinstance(offers, list):
+                for o in offers:
+                    if isinstance(o, dict):
+                        add(o)
+    return found
+
+
+def _strip_availability(node):
+    """A copy of `node` with every `availability` value removed.
+
+    What is left is the page's prose: a description or FAQ answer that happens to quote
+    the InStock URL is a mention, not a claim, and must not fail the gate.
+    """
+    if isinstance(node, dict):
+        return {k: _strip_availability(v) for k, v in node.items() if k != "availability"}
+    if isinstance(node, list):
+        return [_strip_availability(v) for v in node]
+    return node
 
 
 def _types(node):
@@ -148,8 +195,15 @@ def audit_html(text, available_slugs, slug):
             if isinstance(d.get("url"), str) and d["url"] == "":
                 advisory.append('empty url on %s node' % (",".join(_types(d)) or "untyped"))
 
-    if not may_be_in_stock and IN_STOCK in json.dumps(blocks):
-        blocking.append("InStock claimed on a page that is not an available puppy (%s)" % slug)
+    offers = _offer_nodes(blocks)
+    if not may_be_in_stock:
+        for offer in offers:
+            availability = offer.get("availability")
+            if isinstance(availability, str) and IN_STOCK in availability:
+                blocking.append("InStock claimed on a page that is not an available puppy"
+                                " (%s)" % slug)
+        if IN_STOCK in json.dumps(_strip_availability(blocks)):
+            advisory.append("InStock mentioned outside any Offer node")
 
     defined, refs = collect_ids(blocks)
     for ref in sorted(set(refs)):
@@ -161,19 +215,20 @@ def audit_html(text, available_slugs, slug):
         for node in _nodes(block):
             for t in _types(node):
                 counts[t] = counts.get(t, 0) + 1
-            if "Product" in _types(node) and "offers" not in node:
-                blocking.append("Product without offers")
-            if "WebPage" in _types(node) and not node.get("name"):
-                advisory.append("WebPage without name")
+    # Nested nodes count: a Product under `mainEntity`, or a WebPage inside a @graph
+    # member, is served to Google exactly like a top-level one.
     for block in blocks:
         for d in _walk(block):
-            if "Offer" not in _types(d):
-                continue
-            has_price, has_cur = "price" in d, "priceCurrency" in d
-            if has_price != has_cur:
-                blocking.append("Offer states %s without %s"
-                                % ("price" if has_price else "priceCurrency",
-                                   "priceCurrency" if has_price else "price"))
+            if "Product" in _types(d) and "offers" not in d:
+                blocking.append("Product without offers")
+            if "WebPage" in _types(d) and not d.get("name"):
+                advisory.append("WebPage without name")
+    for offer in offers:
+        has_price, has_cur = "price" in offer, "priceCurrency" in offer
+        if has_price != has_cur:
+            blocking.append("Offer states %s without %s"
+                            % ("price" if has_price else "priceCurrency",
+                               "priceCurrency" if has_price else "price"))
     for t in SITEWIDE_TYPES:
         if counts.get(t, 0) > 1:
             advisory.append("%d %s nodes on one page" % (counts[t], t))
@@ -201,7 +256,8 @@ HEADER = [
     "an available puppy's page, an `@id` reference no node on the page defines, a Product",
     "with no `offers`, and an Offer stating price without priceCurrency (or the reverse).",
     "An Offer stating neither is a bare availability statement and is left alone.",
-    "Advisory: duplicate sitewide nodes, empty `url`, a WebPage with no `name`.", "",
+    "Advisory: duplicate sitewide nodes, empty `url`, a WebPage with no `name`, and the",
+    "InStock URL quoted outside any Offer node.", "",
 ]
 
 
