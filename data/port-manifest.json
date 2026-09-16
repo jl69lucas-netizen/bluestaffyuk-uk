@@ -1,0 +1,17 @@
+[
+  { "src": "schemas/board.schema.json", "dst": "schemas/board.schema.json", "mode": "copy", "notes": "structure only; no site vocabulary" },
+  { "src": "schemas/component-ledger.schema.json", "dst": "schemas/component-ledger.schema.json", "mode": "copy", "notes": "structure only; ledger stays empty until project 3" },
+  { "src": "schemas/ontology.schema.json", "dst": "schemas/ontology.schema.json", "mode": "copy", "notes": "structure only" },
+  { "src": ".claude/commands/opsx/propose.md", "dst": ".claude/commands/opsx/propose.md", "mode": "copy", "notes": "openspec command, site-agnostic" },
+  { "src": ".claude/commands/opsx/explore.md", "dst": ".claude/commands/opsx/explore.md", "mode": "copy", "notes": "openspec command, site-agnostic" },
+  { "src": ".claude/commands/opsx/apply.md", "dst": ".claude/commands/opsx/apply.md", "mode": "copy", "notes": "openspec command, site-agnostic" },
+  { "src": ".claude/commands/opsx/archive.md", "dst": ".claude/commands/opsx/archive.md", "mode": "copy", "notes": "openspec command, site-agnostic" },
+  { "src": ".claude/skills/anti-ai-writing/SKILL.md", "dst": ".claude/skills/anti-ai-writing/SKILL.md", "mode": "copy", "notes": "generic writing skill, no site vocabulary" },
+  { "src": ".claude/skills/keyword-cluster/SKILL.md", "dst": ".claude/skills/keyword-cluster/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/internal-link-agent/SKILL.md", "dst": ".claude/skills/internal-link-agent/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/sitemap-agent/SKILL.md", "dst": ".claude/skills/sitemap-agent/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/section-auditor/SKILL.md", "dst": ".claude/skills/section-auditor/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/manual-auditor-check/SKILL.md", "dst": ".claude/skills/manual-auditor-check/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/research-recency/SKILL.md", "dst": ".claude/skills/research-recency/SKILL.md", "mode": "copy", "notes": "generic" },
+  { "src": ".claude/skills/image-metadata/SKILL.md", "dst": ".claude/skills/image-metadata/SKILL.md", "mode": "copy", "notes": "generic" }
+]

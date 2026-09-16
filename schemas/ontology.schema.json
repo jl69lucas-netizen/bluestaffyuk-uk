@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CAG ontology",
+  "type": "object", "required": ["entities"], "additionalProperties": false,
+  "properties": {
+    "entities": {
+      "type": "array",
+      "items": {
+        "type": "object", "required": ["id", "name", "aliases", "class", "authorization", "source", "owner_page"], "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^ont:[a-z0-9-]+$"},
+          "name": {"type": "string", "minLength": 1},
+          "aliases": {"type": "array", "items": {"type": "string"}},
+          "class": {"enum": ["Organism", "Documentation", "Health", "Commerce", "Logistics", "Place", "People", "Method"]},
+          "authorization": {"enum": ["ASSERTED", "PROPOSED", "BLOCKED"]},
+          "source": {"type": ["string", "null"]},
+          "owner_page": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}
