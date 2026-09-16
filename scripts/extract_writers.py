@@ -4,6 +4,7 @@ import json, pathlib, re
 from bs4 import BeautifulSoup
 from extract_wp import (inventory, parse_page, classify, OLD_PUPS, OLD_PUP_IMAGES,
                         OLD_PRICE_RE)
+from extract_images import SIZE_SUFFIX
 
 NOT_FETCHED = "NOT FETCHED — GSC property unverified (domain expired); no exports on disk"
 NOISE = ("blue", "staffy", "staffies", "staffordshire", "bull", "terrier", "puppies", "puppy",
@@ -95,17 +96,29 @@ def astro_frontmatter(page, layout_rel):
 
 
 def _img_names(box):
-    """Every image filename referenced by a box: src, data-src and the first srcset candidate."""
+    """Every image filename a box references, with the WP size suffix normalised away.
+
+    src, data-src and *every* srcset candidate are considered: WordPress resizes mean the
+    same photo appears as pup.jpg, pup-300x200.jpg, pup-768x512.jpg, and a card may carry
+    only the resized variants. Names are returned both verbatim and suffix-stripped so a
+    comparison against OLD_PUP_IMAGES (which lists full-size names) matches either way.
+    """
     names = set()
     for img in box.find_all("img"):
         raw = [img.get("src", ""), img.get("data-src", "")]
-        srcset = img.get("srcset", "")
-        if srcset:
-            raw.append(srcset.split(",")[0].strip().split(" ")[0])
+        for attr in ("srcset", "data-srcset"):
+            for cand in img.get(attr, "").split(","):
+                cand = cand.strip().split(" ")[0]
+                if cand:
+                    raw.append(cand)
         for u in raw:
             u = re.split(r"[?#]", u)[0]
-            if u:
-                names.add(pathlib.Path(u).name)
+            if not u:
+                continue
+            name = pathlib.Path(u).name
+            names.add(name)
+            stem, suffix = pathlib.Path(name).stem, pathlib.Path(name).suffix
+            names.add(SIZE_SUFFIX.sub("", stem) + suffix)
     return names
 
 

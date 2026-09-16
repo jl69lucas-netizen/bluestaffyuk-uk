@@ -169,3 +169,18 @@ def test_recount_refreshes_old_price_flags():
     body, _removed, _notes = strip_old_pups(page.body_html)
     recount(page, body)
     assert not [f for f in page.refresh_flags if f.startswith("old-price:")]
+
+
+def test_img_names_matches_resized_srcset_candidates():
+    """A card whose only reference to a sold pup's photo is a resized srcset candidate
+    must still be recognised: WP size suffixes are normalised away."""
+    from extract_writers import _img_names
+    html = ('<div class="wp-block-uagb-info-box"><img src="/wp-content/uploads/placeholder.png" '
+            'srcset="/wp-content/uploads/x-300x200.jpg 300w, '
+            '/wp-content/uploads/blue-staffy-puppy-uk-sale-768x512.jpg 768w"/>'
+            '<h3>Puppy Info</h3></div>')
+    box = BeautifulSoup(html, "lxml").select_one(".wp-block-uagb-info-box")
+    assert "blue-staffy-puppy-uk-sale.jpg" in _img_names(box)
+    assert _img_names(box) & OLD_PUP_IMAGES
+    body, removed, _notes = strip_old_pups(html)
+    assert removed == 1 and "blue-staffy-puppy-uk-sale" not in body

@@ -4,7 +4,7 @@
 Usage: python3 scripts/extract_wp.py [--src /Users/apple/bluestaffyuk-site] [--out .]
 """
 import argparse, dataclasses, json, pathlib, re
-from bs4 import BeautifulSoup, Comment
+from bs4 import BeautifulSoup, Comment, Tag
 
 SRC_DEFAULT = pathlib.Path("/Users/apple/bluestaffyuk-site")
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -64,9 +64,15 @@ def _meta(soup, name=None, prop=None):
     return tag["content"].strip() if tag and tag.has_attr("content") else ""
 
 
+# Site chrome dropped before any content extraction. Shared with extract_blog's
+# archive fallback, which adds its own archive-only selectors.
+CHROME_SELECTORS = ("script", "style", "noscript", "header.site-header", "footer.site-footer",
+                    "#ast-mobile-header", ".ast-breadcrumbs-wrapper", "link",
+                    "svg.ast-mobile-svg-icon")
+
+
 def _strip_chrome(soup):
-    for sel in ["script", "style", "noscript", "header.site-header", "footer.site-footer",
-                "#ast-mobile-header", ".ast-breadcrumbs-wrapper", "link", "svg.ast-mobile-svg-icon"]:
+    for sel in CHROME_SELECTORS:
         for t in soup.select(sel): t.decompose()
     for c in soup.find_all(string=lambda s: isinstance(s, Comment)): c.extract()
 
@@ -109,24 +115,27 @@ def _label_table(tbl):
 FORM_WRAPPERS = ".wpforms-container, .wpcf7, .forminator-ui, .wp-block-uagb-forms"
 
 
-def extract_body(soup):
-    """Return (content node mutated in place, forms_removed); caller takes decode_contents().
+def clean_content_node(node):
+    """Clean one content node in place; returns (node, forms_removed).
+
+    Shared by extract_body and extract_blog.archive_body_html so both paths get the
+    same treatment: dead forms dropped, dead hrefs unwrapped with spacing preserved,
+    inline styles and WP data-*/uagb ids stripped, tables labelled and wrapped.
 
     Every <form> is a dead WordPress endpoint on this export (the enquiry form still
     lists the sold pups), so forms and their plugin wrappers are dropped outright.
     """
-    node = soup.select_one(".entry-content") or soup.select_one("#primary") or soup.body
     forms_removed = 0
     for t in node.select(FORM_WRAPPERS):
         if t.parent is None:
             continue
         forms_removed += len(t.find_all("form")) or 1
         t.decompose()
-    for f in node.find_all("form"):
-        if f.parent is None:
+    for form in node.find_all("form"):
+        if form.parent is None:
             continue
         forms_removed += 1
-        f.decompose()
+        form.decompose()
     for a in node.find_all("a", href=True):
         if DEAD_HREF_RE.search(a["href"]):
             a.insert_before(" "); a.insert_after(" ")
@@ -139,8 +148,14 @@ def extract_body(soup):
                 del t[attr]
     for tbl in node.find_all("table"):
         _label_table(tbl)
-        tbl.wrap(soup.new_tag("div", attrs={"class": "table-wrap"}))
+        tbl.wrap(Tag(name="div", attrs={"class": "table-wrap"}))
     return node, forms_removed
+
+
+def extract_body(soup):
+    """Return (content node mutated in place, forms_removed); caller takes decode_contents()."""
+    node = soup.select_one(".entry-content") or soup.select_one("#primary") or soup.body
+    return clean_content_node(node)
 
 
 def scrub_phone(text: str):
