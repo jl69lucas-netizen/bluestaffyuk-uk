@@ -7,9 +7,9 @@ const { heading = 'h2' } = Astro.props;
 const avail = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 ---
-<section id="available-puppies" class="container" aria-label="Available Blue Staffy puppies">
-  {heading === 'h2' && <h2>Available Blue Staffy Puppies</h2>}
-  <p>{avail.length} puppies available now. Males {gbp(pm.male_gbp)}, females {gbp(pm.female_gbp)}. {SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}, or collect in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit.</p>
+<section id="available-puppies" class="container" aria-label={heading === 'none' ? 'Available Blue Staffy puppies' : undefined} aria-labelledby={heading === 'h2' ? 'available-puppies-heading' : undefined}>
+  {heading === 'h2' && <h2 id="available-puppies-heading">Available Blue Staffy Puppies</h2>}
+  {heading === 'h2' && <p>{avail.length} puppies available now. Males {gbp(pm.male_gbp)}, females {gbp(pm.female_gbp)}. {SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}, or collect in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit.</p>}
   <ul style="display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));list-style:none;padding:0">
     {avail.map((p) => <li style="border:1px solid var(--color-rule);border-radius:8px;overflow:hidden">
       <a href={`/available-puppies/${p.slug}/`}><img src={`/images/puppies/${p.slug}-card-800.webp`} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy for sale`} width="800" height="800" loading="lazy" decoding="async" /></a>

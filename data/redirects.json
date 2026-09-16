@@ -1,0 +1,19 @@
+{ "redirects": [
+  { "from": "/uk-locations/staffordshire-bull-terrier-puppies-for-sale-essex/", "to": "/uk-locations/staffy-puppies-for-sale-essex/", "type": 301, "reason": "typo slug linked from 32 old pages" },
+  { "from": "/legal/privacy-policy/", "to": "/privacy-policy-uk/", "type": 301, "reason": "dead legal link" },
+  { "from": "/privacy-policy/", "to": "/privacy-policy-uk/", "type": 301, "reason": "dead legal link" },
+  { "from": "/form/*", "to": "/uk-blue-staffy-breeders-contact/", "type": 301, "reason": "WP form pages" },
+  { "from": "/category/*", "to": "/blog/", "type": 301, "reason": "WP category archives" },
+  { "from": "/healthy-habits-exercises-for-your-pets/", "to": "/uk-staffordshire-bull-terrier-guide/", "type": 301, "reason": "redirect stub, care intent" },
+  { "from": "/bluestaffyuk-uk/*", "to": "/blue-staffy-uk-breeders/", "type": 301, "reason": "WP author archive" },
+  { "from": "/buy-blue-staffy-puppies-for-sale-uk/", "to": "/buy-blue-staffy-puppies-uk/", "type": 301, "reason": "kept from old map" },
+  { "from": "/feed/", "to": "/", "type": 301, "reason": "WP feed" },
+  { "from": "/comments/feed/", "to": "/", "type": 301, "reason": "WP feed" },
+  { "from": "/:slug/feed/", "to": "/", "type": 301, "reason": "WP per-page feeds (placeholder, not a mid-path splat)" },
+  { "from": "/wp-json/*", "to": "/", "type": 301, "reason": "WP API" },
+  { "from": "/xmlrpc.php", "to": "/", "type": 301, "reason": "WP xmlrpc" },
+  { "from": "/wp-admin/*", "to": "/", "type": 301, "reason": "WP admin" },
+  { "from": "/wp-login.php", "to": "/", "type": 301, "reason": "WP login" },
+  { "from": "/admin", "to": "/", "type": 301, "reason": "Decap CMS not carried over" },
+  { "from": "/admin/*", "to": "/", "type": 301, "reason": "Decap CMS not carried over" }
+] }
