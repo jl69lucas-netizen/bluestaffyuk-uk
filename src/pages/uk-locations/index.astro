@@ -11,7 +11,13 @@ const clean = (title: string) => {
   for (let next = t.replace(BRAND_SUFFIX, '').trim(); next !== t; next = t.replace(BRAND_SUFFIX, '').trim()) t = next;
   return t;
 };
-const titleCase = (s: string) => s.replace(/\S+/g, (w) => w.charAt(0).toUpperCase() + w.slice(1));
+/** Small words stay lowercase unless they lead; tokens already in caps (UK) are left alone. */
+const SMALL_WORDS = new Set(['for', 'in', 'of', 'and', 'the', 'a', 'an', 'at', 'to', 'on', 'with']);
+const titleCase = (s: string) => s.replace(/\S+/g, (w, at: number) => {
+  if (w === w.toUpperCase()) return w;
+  if (at > 0 && SMALL_WORDS.has(w.toLowerCase())) return w.toLowerCase();
+  return w.charAt(0).toUpperCase() + w.slice(1);
+});
 const label = (l: LocationRow) => titleCase(l.h1 || clean(l.title));
 
 const sorted = [...locations].sort((a, b) =>

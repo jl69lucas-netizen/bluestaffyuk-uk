@@ -2,16 +2,21 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import puppies from '../../../data/puppies.json';
 import manifest from '../../../data/image-manifest.json';
-import { SITE, SITE_URL, abs } from '../../lib/site';
-export function getStaticPaths() { return puppies.map((p) => ({ params: { slug: p.slug }, props: { p } })); }
-const { p } = Astro.props;
-const dims = manifest as Record<string, { w: number; h: number }>;
-/** Task 7 baked each gallery photo as `<slug>-<stem lower>.webp`; the manifest keeps its
- *  intrinsic size under the same key so the thumb reserves the right aspect ratio. */
-const thumb = (g: string) => {
-  const key = `puppies/${p.slug}-${g.split('.')[0].toLowerCase()}`;
-  const d = dims[key] ?? { w: 120, h: 120 };
-  return { src: `/${key}.webp`, width: d.w, height: d.h };
+import { SITE, SITE_URL, abs, type PuppyRow } from '../../lib/site';
+export function getStaticPaths() {
+  return (puppies as PuppyRow[]).map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: PuppyRow };
+const dims = manifest as Record<string, { w: number; h: number; sib_w: number | null }>;
+/** Task 7 baked every puppy photo as /images/puppies/<stem>.webp and recorded its intrinsic
+ *  size in the manifest under the key "puppies/<stem>". A missing key means the bake and the
+ *  data have drifted, so fail the build rather than ship a broken <img>. */
+const image = (stem: string) => {
+  const d = dims[`puppies/${stem}`];
+  if (!d) throw new Error(`image-manifest.json has no entry for puppies/${stem} (referenced by /available-puppies/${p.slug}/)`);
+  const src = `/images/puppies/${stem}.webp`;
+  const srcset = d.sib_w ? `/images/puppies/${stem}-${d.sib_w}.webp ${d.sib_w}w, ${src} ${d.w}w` : undefined;
+  return { src, srcset, width: d.w, height: d.h };
 };
 const sexLabel = p.sex === 'male' ? 'Male' : 'Female';
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
@@ -19,18 +24,22 @@ const title = `${p.name} – ${sexLabel} Blue Staffy Puppy for Sale | Blue Staff
 const h1 = `${p.name}: ${p.colour} ${sexLabel} Blue Staffy Puppy`;
 const description = `${p.name} is a ${p.colour.toLowerCase()} ${p.sex} Staffordshire Bull Terrier puppy, ${gbp(p.price_gbp)}, available now from Blue Staffy UK in Glasgow with UK-wide delivery.`;
 const card = `/images/puppies/${p.slug}-card-800.webp`;
-const portrait = dims[`puppies/${p.slug}-portrait-4x5`] ?? { w: 800, h: 1000 };
+const portrait = image(`${p.slug}-portrait-4x5`);
+const thumbs = p.gallery.map((g, i) => ({
+  ...image(`${p.slug}-${g.split('.')[0].toLowerCase()}`),
+  alt: `${p.name}, photo ${i + 1} of ${p.gallery.length}`,
+}));
 const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `${p.name} – Blue Staffy puppy`, image: abs(card), description,
   brand: { '@type': 'Brand', name: SITE.site_name },
   offers: { '@type': 'Offer', price: p.price_gbp, priceCurrency: 'GBP', availability: p.status === 'Available' ? 'https://schema.org/InStock' : 'https://schema.org/SoldOut', url: abs(`/available-puppies/${p.slug}/`), seller: { '@id': `${SITE_URL}/#business` } } }];
 ---
 <BaseLayout title={title} description={description} canonical={`/available-puppies/${p.slug}/`} crumbTitle={p.name} ogType="product" ogImage={card} schema={schema}>
   <article class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-    <div><img src={`/images/puppies/${p.slug}-portrait-4x5.webp`} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} width={portrait.w} height={portrait.h} fetchpriority="high" />
-      {p.gallery.length > 1 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{p.gallery.map((g) => { const t = thumb(g); return <li><img src={t.src} alt={`${p.name} photo`} width={t.width} height={t.height} loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>; })}</ul>}</div>
+    <div><img src={portrait.src} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} width={portrait.width} height={portrait.height} fetchpriority="high" />
+      {thumbs.length > 1 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><img src={t.src} srcset={t.srcset} sizes="120px" alt={t.alt} width={t.width} height={t.height} loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
     <div><h1>{h1}</h1>
       <p><strong>{gbp(p.price_gbp)}</strong> · {p.status}</p>
       <dl><dt>Sex</dt><dd>{sexLabel}</dd><dt>Colour</dt><dd>{p.colour}</dd><dt>Deposit</dt><dd>{gbp(SITE.deposit_gbp)}, refundable</dd><dt>Delivery</dt><dd>{SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}; or collect in Glasgow</dd></dl>
-      <p><a href="/uk-blue-staffy-breeders-contact/" style="display:inline-block;padding:10px 20px;background:#2c4a6b;color:#fff;border-radius:50px;text-decoration:none">Enquire about {p.name}</a></p></div>
+      <p><a href="/uk-blue-staffy-breeders-contact/" style="display:inline-block;padding:10px 20px;background:var(--color-ink);color:#fff;border-radius:50px;text-decoration:none">Enquire about {p.name}</a></p></div>
   </article>
 </BaseLayout>

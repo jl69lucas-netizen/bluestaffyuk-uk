@@ -45,3 +45,10 @@ export interface LocationRow {
   canonical: string; robots: string; og_type: string; body_html: string;
   word_count: number; schema: unknown[]; defects: string[];
 }
+
+/** A row of data/puppies.json. */
+export interface PuppyRow {
+  slug: string; name: string; sex: 'male' | 'female'; price_gbp: number;
+  status: 'Available' | 'Reserved' | 'Sold'; colour: string;
+  card_photo: string; gallery: string[];
+}
