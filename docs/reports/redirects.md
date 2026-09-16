@@ -15,15 +15,8 @@ None.
 
 ## Redirected references (warning)
 
-| page | reference | redirects to |
-| --- | --- | --- |
-| /buy-blue-staffy-puppies-uk/index.html | /buy-blue-staffy-puppies-for-sale-uk/ | /buy-blue-staffy-puppies-uk/ |
-| /buy-staffy-puppies-for-sale-uk/index.html | /category/puppy-buying-guide-uk/ | /blog/ |
-| /index.html | /buy-blue-staffy-puppies-for-sale-uk/ | /buy-blue-staffy-puppies-uk/ |
-| /uk-blue-staffy-puppy-buying-guide/index.html | /buy-blue-staffy-puppies-for-sale-uk/ | /buy-blue-staffy-puppies-uk/ |
-| /uk-blue-staffy-puppy-buying-guide/index.html | /category/puppy-buying-guide-uk/ | /blog/ |
-| /uk-locations/blue-staffy-puppies-uk/index.html | /buy-blue-staffy-puppies-for-sale-uk/ | /buy-blue-staffy-puppies-uk/ |
+None.
 
 SITE_URL_PLACEHOLDER occurrences: 545 (expected until launch)
 
-examined 18 redirects, 1921 internal refs; 6 redirected refs; 0 problems
+examined 18 redirects, 1915 internal refs; 0 redirected refs; 0 problems

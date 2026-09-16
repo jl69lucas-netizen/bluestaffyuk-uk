@@ -1,0 +1,106 @@
+"""Gate tests for scripts/schema_check.py."""
+import json
+import pathlib
+import sys
+
+import pytest
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
+
+from schema_check import audit_html, main  # noqa: E402
+
+GOOD = ('<script type="application/ld+json">{"@type":"LocalBusiness","name":"x"}</script>'
+        '<script type="application/ld+json">{"@type":"Product","offers":'
+        '{"@type":"Offer","availability":"https://schema.org/InStock"}}</script>')
+
+
+def test_audit_ok():
+    r = audit_html(GOOD, available_slugs={"roman"}, slug="available-puppies/roman")
+    assert r["parsed"] == 2 and r["blocking"] == [] and r["advisory"] == []
+
+
+def test_audit_flags_bad_json_phone_and_false_instock():
+    bad = ('<script type="application/ld+json">{oops}</script>'
+           '<script type="application/ld+json">{"@type":"LocalBusiness",'
+           '"telephone":"PHONE_PLACEHOLDER"}</script>'
+           '<script type="application/ld+json">{"@type":"Offer",'
+           '"availability":"https://schema.org/InStock"}</script>')
+    r = audit_html(bad, available_slugs=set(), slug="x")
+    b = " ".join(r["blocking"])
+    assert "parse" in b and "telephone" in b and "InStock" in b
+
+
+def test_duplicate_sitewide_types_are_advisory():
+    dup = ('<script type="application/ld+json">{"@type":"WebSite"}</script>'
+           '<script type="application/ld+json">{"@graph":[{"@type":"WebSite"}]}</script>')
+    r = audit_html(dup, available_slugs=set(), slug="x")
+    assert r["blocking"] == [] and any("WebSite" in a for a in r["advisory"])
+
+
+def test_dangling_ids_are_blocking():
+    d = ('<script type="application/ld+json">{"@graph":[{"@type":"WebPage",'
+         '"@id":"/#webpage","isPartOf":{"@id":"/#website"}}]}</script>')
+    r = audit_html(d, available_slugs=set(), slug="x")
+    assert any("dangling" in b for b in r["blocking"])
+
+
+def test_resolved_reference_is_not_dangling():
+    ok = ('<script type="application/ld+json">{"@graph":[{"@type":"WebPage",'
+          '"@id":"/#webpage","name":"Home","isPartOf":{"@id":"/#website"}},'
+          '{"@type":"WebSite","@id":"/#website","name":"s"}]}</script>')
+    r = audit_html(ok, available_slugs=set(), slug="x")
+    assert r["blocking"] == []
+
+
+def test_product_without_offers_and_half_priced_offer_are_blocking():
+    t = ('<script type="application/ld+json">{"@type":"Product","name":"p"}</script>'
+         '<script type="application/ld+json">{"@type":"Offer","price":1500}</script>')
+    r = audit_html(t, available_slugs=set(), slug="x")
+    b = " ".join(r["blocking"])
+    assert "offers" in b and "priceCurrency" in b
+
+
+def test_soldout_pup_page_may_not_claim_instock():
+    sold = ('<script type="application/ld+json">{"@type":"Product","offers":'
+            '{"@type":"Offer","availability":"https://schema.org/InStock"}}</script>')
+    r = audit_html(sold, available_slugs={"roman"}, slug="available-puppies/gone")
+    assert any("InStock" in b for b in r["blocking"])
+
+
+def test_advisory_empty_url_and_nameless_webpage():
+    a = ('<script type="application/ld+json">{"@type":"WebPage","@id":"/#w",'
+         '"url":""}</script>')
+    r = audit_html(a, available_slugs=set(), slug="x")
+    joined = " ".join(r["advisory"])
+    assert "url" in joined and "name" in joined
+
+
+def _write(path, body):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(body, encoding="utf-8")
+
+
+def test_main_fixture_fails_and_names_the_page(tmp_path):
+    root, dist = tmp_path / "root", tmp_path / "dist"
+    _write(root / "data" / "puppies.json",
+           json.dumps([{"slug": "roman", "status": "Available"}]))
+    _write(dist / "index.html",
+           '<script type="application/ld+json">{"@type":"LocalBusiness","name":"x"}</script>')
+    _write(dist / "blog" / "index.html",
+           '<script type="application/ld+json">{"@graph":[{"@type":"WebPage",'
+           '"@id":"/blog/#webpage","name":"Blog","isPartOf":{"@id":"/#website"}}]}</script>')
+    with pytest.raises(SystemExit) as exc:
+        main(root=root, dist=dist)
+    assert exc.value.code == 1
+    report = (root / "docs" / "reports" / "schema.md").read_text(encoding="utf-8")
+    assert "/blog/" in report and "dangling" in report
+
+
+def test_main_fixture_passes_when_clean(tmp_path):
+    root, dist = tmp_path / "root", tmp_path / "dist"
+    _write(root / "data" / "puppies.json",
+           json.dumps([{"slug": "roman", "status": "Available"}]))
+    _write(dist / "index.html",
+           '<script type="application/ld+json">{"@type":"LocalBusiness","name":"x"}</script>')
+    main(root=root, dist=dist)   # no SystemExit
+    assert (root / "docs" / "reports" / "schema.md").is_file()

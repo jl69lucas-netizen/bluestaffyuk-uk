@@ -646,6 +646,7 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "legacy-links-rewritten:1",
         "old-pup-cards-removed:5",
         "old-price:£850",
         "old-price:£1,200",
@@ -872,6 +873,7 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "legacy-links-rewritten:3",
         "old-price:£850",
         "old-price:£1,200",
         "legacy-schema-nodes-dropped:3"
@@ -1129,6 +1131,7 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "legacy-links-rewritten:1",
         "count-in-title",
         "old-pup-cards-removed:4",
         "old-price:£850",
@@ -1617,6 +1620,7 @@
       "phone_hits": 1,
       "refresh_flags": [
         "wp-form-removed",
+        "legacy-links-rewritten:3",
         "old-price:£850",
         "old-price:£1,200",
         "old-price:£850",
@@ -2427,6 +2431,7 @@
       "phone_hits": 0,
       "refresh_flags": [
         "wp-form-removed",
+        "legacy-links-rewritten:1",
         "old-pup-cards-removed:4",
         "old-price:£850",
         "old-price:£1,200",

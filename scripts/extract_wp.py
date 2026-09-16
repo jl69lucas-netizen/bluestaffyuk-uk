@@ -27,6 +27,14 @@ OLD_PUP_IMAGES = {
 PHONE_RE = re.compile(r"(\+?44\s?7490\s?571\s?679|07490\s?571\s?679|\+447490571679)")
 OLD_PRICE_RE = re.compile(r"£\s?(850|1,?000|1,?100|1,?200|300)\b")
 DEAD_HREF_RE = re.compile(r"(/wp-json/|/feed/?$|/comments/feed|xmlrpc\.php|/wp-admin/|/wp-login)")
+# Two legacy in-body links survive the migration verbatim and would only work through a
+# 301. A redirect costs a hop and leaks link equity on every internal click, so the body
+# is rewritten at extraction — the one place the change is durable.
+LINK_REWRITES = {
+    "/buy-blue-staffy-puppies-for-sale-uk/": "/buy-blue-staffy-puppies-uk/",
+    "/category/puppy-buying-guide-uk/": "/blog/",
+}
+OLD_HOST_RE = re.compile(r"^https?://(?:www\.)?bluestaffyuk\.com")
 
 
 @dataclasses.dataclass
@@ -115,8 +123,21 @@ def _label_table(tbl):
 FORM_WRAPPERS = ".wpforms-container, .wpcf7, .forminator-ui, .wp-block-uagb-forms"
 
 
+def rewrite_legacy_href(href):
+    """The rewritten href for a legacy path, or None. Fragments are preserved.
+
+    The old host is stripped first so an absolute legacy link is matched too; the path
+    must match a LINK_REWRITES key exactly, since a prefix match would catch unrelated
+    deeper paths.
+    """
+    path = OLD_HOST_RE.sub("", href.strip())
+    path, sep, fragment = path.partition("#")
+    dest = LINK_REWRITES.get(path)
+    return None if dest is None else dest + sep + fragment
+
+
 def clean_content_node(node):
-    """Clean one content node in place; returns (node, forms_removed).
+    """Clean one content node in place; returns (node, forms_removed, links_rewritten).
 
     Shared by extract_body and extract_blog.archive_body_html so both paths get the
     same treatment: dead forms dropped, dead hrefs unwrapped with spacing preserved,
@@ -136,10 +157,16 @@ def clean_content_node(node):
             continue
         forms_removed += 1
         form.decompose()
+    links_rewritten = 0
     for a in node.find_all("a", href=True):
         if DEAD_HREF_RE.search(a["href"]):
             a.insert_before(" "); a.insert_after(" ")
             a.unwrap()
+            continue
+        dest = rewrite_legacy_href(a["href"])
+        if dest is not None:
+            a["href"] = dest
+            links_rewritten += 1
     for t in node.select("[style]"):
         if t.name in ("p", "div", "span", "h1", "h2", "h3", "h4", "h5", "h6"): del t["style"]
     for t in node.find_all(True):
@@ -149,11 +176,11 @@ def clean_content_node(node):
     for tbl in node.find_all("table"):
         _label_table(tbl)
         tbl.wrap(Tag(name="div", attrs={"class": "table-wrap"}))
-    return node, forms_removed
+    return node, forms_removed, links_rewritten
 
 
 def extract_body(soup):
-    """Return (content node mutated in place, forms_removed); caller takes decode_contents()."""
+    """Return (node mutated in place, forms_removed, links_rewritten)."""
     node = soup.select_one(".entry-content") or soup.select_one("#primary") or soup.body
     return clean_content_node(node)
 
@@ -214,9 +241,11 @@ def parse_page(path: pathlib.Path, url_path: str) -> Page:
     _strip_chrome(soup)
     h1_tag = soup.find("h1")
     h1 = h1_tag.get_text(" ", strip=True) if h1_tag else ""
-    node, forms_removed = extract_body(soup)
+    node, forms_removed, links_rewritten = extract_body(soup)
     if forms_removed:
         flags.append("wp-form-removed")
+    if links_rewritten:
+        flags.append("legacy-links-rewritten:%d" % links_rewritten)
     body_html, phone_hits = scrub_phone(node.decode_contents())
     title, n1 = scrub_phone(title); description, n2 = scrub_phone(description)
     phone_hits += n1 + n2 + schema_phone_hits

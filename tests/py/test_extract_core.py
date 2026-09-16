@@ -122,3 +122,21 @@ def test_dead_wp_form_removed(synth):
     assert "wpforms-container" not in synth.body_html
     assert "KANE" not in synth.body_html and "Select Puppy Name" not in synth.body_html
     assert "wp-form-removed" in synth.refresh_flags
+
+
+def test_legacy_in_body_links_are_rewritten(synth):
+    # Both legacy paths only resolved through a 301; the extractor is where that is fixed,
+    # so the built body must carry the live paths and the fragment must survive.
+    assert "/buy-blue-staffy-puppies-uk/" in synth.body_html
+    assert "buy-blue-staffy-puppies-for-sale-uk" not in synth.body_html
+    assert 'href="/blog/#top"' in synth.body_html
+    assert "category/puppy-buying-guide-uk" not in synth.body_html
+    # Untouched links stay untouched, and the rewrite is counted.
+    assert '"/uk-blue-staffy-breeders-contact/"' in synth.body_html
+    assert "legacy-links-rewritten:2" in synth.refresh_flags
+
+
+def test_rewrite_is_exact_path_not_prefix():
+    from extract_wp import rewrite_legacy_href
+    assert rewrite_legacy_href("/category/puppy-buying-guide-uk/deeper/") is None
+    assert rewrite_legacy_href("/blog/") is None
