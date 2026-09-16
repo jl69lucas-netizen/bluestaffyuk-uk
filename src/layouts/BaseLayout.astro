@@ -58,7 +58,7 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
         // that writes on every frame would invalidate style on every frame.
         if (h > 0 && h !== last) {
           last = h;
-          document.documentElement.style.setProperty('--hdr', h + 'px');
+          document.documentElement.style.setProperty('--hdr-measured', h + 'px');
         }
       }
       sync();

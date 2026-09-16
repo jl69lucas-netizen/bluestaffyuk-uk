@@ -30,7 +30,11 @@
   html { scroll-behavior: auto; overflow-x: clip; }
   body { margin: 0; font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--color-ink); background: #fff; }
   main p, main li { max-width: 70ch; }
-  [id] { scroll-margin-top: calc(var(--hdr) + 16px); }
+  /* `--hdr-measured` is written by the inline script in BaseLayout from the header's
+     real height; `--hdr` below is the no-JS fallback the media query tunes. Deliberately a
+     SECOND variable: `.site-header` sets `min-height: var(--hdr)`, so measuring into --hdr
+     made the header resize itself and no in-page jump ever settled. */
+  [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + 16px); }
 
   img { max-width: 100%; height: auto; }
   .skip-link { position: absolute; left: -9999px; top: 8px; background: #fff; padding: 8px 12px; z-index: 100; }
