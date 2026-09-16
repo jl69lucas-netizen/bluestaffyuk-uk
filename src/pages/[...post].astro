@@ -4,7 +4,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { abs, SITE, SITE_URL } from '../lib/site';
 
 export async function getStaticPaths() {
+  // Slugs owned by a real page route. A blog post claiming one of these would be shadowed
+  // by the file route and silently vanish, so the build fails loudly instead.
+  const reserved = new Set([
+    ...Object.keys(import.meta.glob('./**/index.astro'))
+      .map((k) => k.replace(/^\.\//, '').replace(/(^|\/)index\.astro$/, ''))
+      .filter(Boolean),
+    'blog', 'uk-locations', 'available-puppies',
+  ]);
   const posts = await getCollection('blog');
+  for (const post of posts) {
+    if (reserved.has(post.data.slug)) {
+      throw new Error(`Blog post slug "${post.data.slug}" collides with a page route; rename the post slug.`);
+    }
+  }
   return posts.map((post) => ({ params: { post: post.data.slug }, props: { post } }));
 }
 

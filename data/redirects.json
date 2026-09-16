@@ -10,6 +10,7 @@
   { "from": "/feed/", "to": "/", "type": 301, "reason": "WP feed" },
   { "from": "/comments/feed/", "to": "/", "type": 301, "reason": "WP feed" },
   { "from": "/:slug/feed/", "to": "/", "type": 301, "reason": "WP per-page feeds (placeholder, not a mid-path splat)" },
+  { "from": "/:a/:b/feed/", "to": "/", "type": 301, "reason": "WP per-page feeds, two segments" },
   { "from": "/wp-json/*", "to": "/", "type": 301, "reason": "WP API" },
   { "from": "/xmlrpc.php", "to": "/", "type": 301, "reason": "WP xmlrpc" },
   { "from": "/wp-admin/*", "to": "/", "type": 301, "reason": "WP admin" },

@@ -242,3 +242,30 @@ def test_dedupe_prunes_refs_to_dropped_nodes():
     page = out[0]["@graph"][0]
     assert "isPartOf" not in page and "breadcrumb" not in page
     assert page["about"] == {"@id": "https://x/p/#person"}
+
+
+def test_prune_refs_is_recursive_and_generic():
+    """A ref to a dropped node is removed wherever it sits, not just under known keys."""
+    schema = [{"@graph": [
+        {"@type": "Organization", "@id": "/#organization", "name": "Old Org"},
+        {"@type": "WebPage", "@id": "/#webpage", "isPartOf": {"@id": "/#website"},
+         "author": [
+             {"@type": "Person", "@id": "/#lisa", "name": "Lisa",
+              "worksFor": {"@id": "/#organization", "name": "Old Org"},
+              "knows": {"@id": "/#kept"}},
+         ],
+         "mentions": ["/#organization", "/#kept"]},
+        {"@type": "WebSite", "@id": "/#website", "name": "Old Site"},
+        {"@type": "Place", "@id": "/#kept", "name": "Glasgow"},
+    ]}]
+    out, dropped = dedupe_legacy_schema(schema)
+    assert dropped == 2
+    nodes = {n["@id"]: n for n in out[0]["@graph"]}
+    assert set(nodes) == {"/#webpage", "/#kept"}
+    page = nodes["/#webpage"]
+    assert "isPartOf" not in page                       # top-level ref to dropped WebSite
+    person = page["author"][0]
+    assert "worksFor" not in person                     # nested ref-dict with extra keys
+    assert person["knows"] == {"@id": "/#kept"}         # ref to a kept node survives
+    assert person["@id"] == "/#lisa"                    # a node's own @id is never a ref
+    assert page["mentions"] == ["/#kept"]               # bare string ref pruned from a list

@@ -272,26 +272,49 @@ def _types_of(node):
     return set()
 
 
-DANGLING_REF_KEYS = ("isPartOf", "breadcrumb", "publisher", "about", "mainEntity")
-
-
 def _note_id(node, ids):
     if isinstance(node, dict) and isinstance(node.get("@id"), str):
         ids.add(node["@id"])
 
 
+def _ref_target(value):
+    """The @id a value references, or None.
+
+    A reference is either a bare string ("/#organization") or a dict carrying a string
+    "@id" — extra keys are allowed, because Yoast writes refs like
+    {"@id": "/#organization", "name": "..."} alongside pure {"@id": ...} stubs.
+    """
+    if isinstance(value, str):
+        return value
+    if isinstance(value, dict) and isinstance(value.get("@id"), str):
+        return value["@id"]
+    return None
+
+
 def _prune_refs(node, dropped_ids):
-    """Delete refs on a kept node that point at a node dedupe just dropped."""
-    if not isinstance(node, dict):
-        return node
-    out = dict(node)
-    for key in DANGLING_REF_KEYS:
-        v = out.get(key)
-        target = (v.get("@id") if isinstance(v, dict) and set(v) == {"@id"}
-                  else v if isinstance(v, str) else None)
-        if isinstance(target, str) and target in dropped_ids:
-            del out[key]
-    return out
+    """Recursively delete every reference to a dropped node, at any depth.
+
+    Applies to dict values under any key except "@id" itself (a node's own identity is
+    not a reference) and to list items. Nodes that are not references are walked into.
+    """
+    if isinstance(node, list):
+        out = []
+        for v in node:
+            if _ref_target(v) in dropped_ids:
+                continue
+            out.append(_prune_refs(v, dropped_ids))
+        return out
+    if isinstance(node, dict):
+        out = {}
+        for k, v in node.items():
+            if k == "@id":
+                out[k] = v
+                continue
+            if _ref_target(v) in dropped_ids:
+                continue
+            out[k] = _prune_refs(v, dropped_ids)
+        return out
+    return node
 
 
 def _prune_block_refs(block, dropped_ids):

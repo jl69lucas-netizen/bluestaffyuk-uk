@@ -11,6 +11,8 @@ def test_render_redirects_lines():
     assert "/form/* /uk-blue-staffy-breeders-contact/ 301" in text
     assert "/wp-json/* / 301" in text
     assert "/admin/* / 301" in text
+    assert "/:slug/feed/ / 301" in text
+    assert "/:a/:b/feed/ / 301" in text
     assert not any(l.startswith("/sitemap") for l in text.splitlines())
 
 def test_no_chains():
