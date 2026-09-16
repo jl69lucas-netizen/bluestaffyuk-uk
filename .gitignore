@@ -12,3 +12,4 @@ data/quality/raw/
 docs/reports/lh/
 
 docs/reports/**/*.json
+data/quality/perf/

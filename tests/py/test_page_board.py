@@ -1953,6 +1953,85 @@ def test_board_renders_the_schema_plan():
 # categories. Local records gate the release; the PSI record (only possible after deploy)
 # is pending until measured and FAILS the next release once it reads under 100.
 
+# is pending until measured and FAILS the next release once it reads under 100.
+
+def _perf(tmp_path, name, **kw):
+    rec = {"failed": [], "edge_blocking": [], "dist_mtime": 2000.0, "measured_at": "2026-09-13T20:00:00+00:00",
+           "median": {c: 1 for c in ("performance", "accessibility", "best-practices", "seo", "agentic-browsing")}}
+    rec.update(kw)
+    (tmp_path / f"{name}.json").write_text(json.dumps(rec))
+
+
+def _page(tmp_path, mtime=1000.0):
+    import os
+    p = tmp_path / "index.html"
+    p.write_text("<html></html>")
+    os.utime(p, (mtime, mtime))
+    return p
+
+
+def _perf_checks(found):
+    return sorted((x["check"], x["sev"]) for x in found)
+
+
+def test_perf_silent_at_build_stage(tmp_path):
+    assert PB.perf_findings("s", "build", perf_dir=tmp_path, dist_page=_page(tmp_path)) == []
+
+
+def test_perf_missing_local_records_fail_release(tmp_path):
+    found = PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))
+    assert ("perf-record-missing", "FAIL") in _perf_checks(found)
+    assert sum(1 for x in found if x["check"] == "perf-record-missing") == 2   # mobile and desktop
+
+
+def test_perf_clean_local_records_leave_only_psi_pending(tmp_path):
+    _perf(tmp_path, "s--desktop"); _perf(tmp_path, "s--mobile")
+    assert _perf_checks(PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))) == [
+        ("perf-psi-pending", "WARN"), ("perf-psi-pending", "WARN")]
+
+
+def test_perf_local_record_older_than_the_build_is_stale(tmp_path):
+    _perf(tmp_path, "s--desktop", dist_mtime=500.0); _perf(tmp_path, "s--mobile")
+    assert ("perf-record-stale", "FAIL") in _perf_checks(PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path)))
+
+
+def test_perf_local_category_under_100_fails(tmp_path):
+    _perf(tmp_path, "s--desktop", failed=["accessibility"]); _perf(tmp_path, "s--mobile")
+    msgs = [x["msg"] for x in PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))
+            if x["check"] == "perf-below-100"]
+    assert len(msgs) == 1 and "accessibility" in msgs[0]
+
+
+def test_perf_local_mobile_performance_is_not_judged_hardware_bound(tmp_path):
+    # This Mac's CPU cannot stand in for PSI's; mobile Performance is judged by the PSI record.
+    _perf(tmp_path, "s--desktop"); _perf(tmp_path, "s--mobile", failed=["performance"])
+    assert not [x for x in PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))
+                if x["check"] == "perf-below-100"]
+
+
+def test_perf_failing_psi_record_fails_release(tmp_path):
+    _perf(tmp_path, "s--desktop"); _perf(tmp_path, "s--mobile")
+    _perf(tmp_path, "s--mobile--psi", failed=["performance"], median={"performance": 0.77})
+    _perf(tmp_path, "s--desktop--psi")
+    assert _perf_checks(PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))) == [
+        ("perf-psi-below-100", "FAIL")]
+
+
+def test_perf_edge_injected_script_fails_release(tmp_path):
+    _perf(tmp_path, "s--desktop"); _perf(tmp_path, "s--mobile")
+    _perf(tmp_path, "s--mobile--psi", edge_blocking=["https://example-host.test/70de/"])
+    _perf(tmp_path, "s--desktop--psi")
+    assert ("perf-edge-injected", "FAIL") in _perf_checks(PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path)))
+
+
+def test_perf_psi_record_older_than_local_record_is_pending_again(tmp_path):
+    _perf(tmp_path, "s--desktop", measured_at="2026-09-14T00:00:00+00:00"); _perf(tmp_path, "s--mobile")
+    _perf(tmp_path, "s--desktop--psi", measured_at="2026-09-13T00:00:00+00:00")
+    _perf(tmp_path, "s--mobile--psi")
+    assert _perf_checks(PB.perf_findings("s", "release", perf_dir=tmp_path, dist_page=_page(tmp_path))) == [
+        ("perf-psi-pending", "WARN")]
+
+
 
 def test_ontology_file_validates_and_marks_the_unconfirmed_guarantee_proposed():
     """data/settings.json has guarantee_days: null (Foundation, unconfirmed). An ontology
