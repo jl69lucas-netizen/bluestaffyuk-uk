@@ -217,18 +217,21 @@ curl -X POST https://oauth2.googleapis.com/token \
 
 IndexNow covers Bing, Yandex, and (via `api.indexnow.org`) partially Google.
 
-**Use the committed script. Do NOT paste inline Python for this.**
+**The submitter script is deferred to project 6** (`data/port-manifest.json`) — it was not
+ported, because there is nothing to submit until BSUK has a host and a domain. When it
+arrives, use the committed script and never paste inline Python for this. The shapes it
+will take:
 
 ```bash
-python3 scripts/indexnow_submit.py  # deferred to project 6 — not ported <slug> [<slug> ...]
+python3 scripts/indexnow_submit.py <slug> [<slug> ...]
 ```
 
 ```bash
-python3 scripts/indexnow_submit.py  # deferred to project 6 — not ported --changed
+python3 scripts/indexnow_submit.py --changed
 ```
 
 ```bash
-python3 scripts/indexnow_submit.py  # deferred to project 6 — not ported --dry-run <slug>
+python3 scripts/indexnow_submit.py --dry-run <slug>
 ```
 
 `--all` submits every sitemap URL. `--dry-run` prints the payload and sends nothing.

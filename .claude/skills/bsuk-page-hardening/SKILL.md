@@ -32,11 +32,12 @@ SEO; this one audits whether the page actually *renders* correctly.
 ```bash
 npx astro build                                    # nothing below works on a stale dist/
 python3 scripts/page_hardening_scan.py <slug>      # 21 checks
-python3 scripts/seam_parity.py <slug>              # one seam per section
 ```
 
 `ERROR` = shipped-broken, fix before deploy. `WARN` = very likely wrong, eyeball it.
-Omit the slug to sweep the whole site. Add `--fail-on-error` for CI.
+Omit the slug to sweep the whole site. Add `--fail-on-error` for CI. Seam parity has no
+script here (the source repo's was not ported — source repo only); count seams against
+sections by hand, or let the render harness do it.
 
 **Pass slugs literally.** zsh does not word-split an unquoted `$VAR`, so
 `python3 … $SLUGS` arrives as one argument, matches no page, and the gate reports
