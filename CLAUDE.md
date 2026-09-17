@@ -19,6 +19,12 @@ the traffic.
   `data/locations.json`, `data/image-manifest.json`, `public/_redirects`, `public/llms.txt`,
   `public/images/**`, `src/content/blog/*.md`. `README.md` carries the full list.
 
+## The npm script prefixes
+
+`check:*` is a pass/fail gate (non-zero exit blocks the work), `audit:*` writes a report and
+is read by a human, `test:*` runs a test suite or a measurement harness. `npm run check:all`
+chains every gate; nothing else is chained, so an audit can never silently gate a commit.
+
 ## Deploy — inactive until project 6
 
 There is no host, no domain and no deploy. `SITE_URL_PLACEHOLDER`, `PHONE_PLACEHOLDER` and

@@ -92,3 +92,19 @@ def test_build_artifacts_are_filtered_out(monkeypatch, tmp_path, capsys):
     out = capsys.readouterr().out
     assert "/thank-you/" not in out
     assert "/puppies/" in out
+
+
+def test_a_pretty_printed_sitemap_still_yields_urls(monkeypatch, tmp_path, capsys):
+    """A `<loc>` on its own indented line is valid XML and common in generated sitemaps.
+    A regex that demanded the URL abut its tags would report 'nothing to submit' on a
+    perfectly good sitemap — a false negative that looks like a clean refusal."""
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    (tmp_path / "public" / "page-sitemap.xml").write_text(
+        "<urlset>\n  <url>\n    <loc>\n      https://example.invalid/puppies/\n    </loc>\n"
+        "  </url>\n  <url><loc>https://example.invalid/about/</loc></url>\n</urlset>\n",
+        encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["indexnow_submit.py", "--dry-run", "--all"])
+    assert mod.main() == 0
+    out = capsys.readouterr().out
+    assert "https://example.invalid/puppies/" in out
+    assert "https://example.invalid/about/" in out

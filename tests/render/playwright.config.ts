@@ -1,15 +1,9 @@
 import { defineConfig } from '@playwright/test';
 import { SITE_PORT, FIXTURE_PORT, SITE_BASE } from './lib/servers.js';
-import { readFileSync, existsSync } from 'node:fs';
-// form.ts throws without PUBLIC_FORMSPREE_ID. Loading .env here rather than requiring every
-// caller to `set -a; . ./.env` keeps `npm run test:render:*` working as documented.
-const envFile = new URL('../../.env', import.meta.url);
-if (existsSync(envFile)) {
-  for (const line of readFileSync(envFile, 'utf8').split('\n')) {
-    const m = /^([A-Z0-9_]+)=(.*)$/.exec(line.trim());
-    if (m && !process.env[m[1]]) process.env[m[1]] = m[2];
-  }
-}
+import { loadEnv } from './lib/env.mjs';
+// checks/form.ts throws without PUBLIC_FORMSPREE_ID; loading .env here keeps
+// `npm run test:render:*` working as documented. Parser + its tests: lib/env.mjs.
+loadEnv(new URL('../../.env', import.meta.url));
 
 export default defineConfig({
   testDir: '.',

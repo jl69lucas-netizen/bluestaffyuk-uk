@@ -29,7 +29,6 @@
     "audit:aeo": "python3 scripts/aeo_audit.py",
     "audit:evidence": "python3 scripts/evidence_audit.py --all",
     "audit:form": "python3 scripts/form_contract_audit.py",
-    "audit:perf": "python3 scripts/perf_audit.py",
     "test:perf": "python3 scripts/perf_audit.py",
     "test:perf:mobile": "python3 scripts/perf_audit.py --mobile",
     "sweep": "bash scripts/health-sweep.sh",

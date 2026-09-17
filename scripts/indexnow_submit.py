@@ -82,8 +82,14 @@ def verify_key_live(key: str) -> None:
 
 
 def urls_from_sitemaps():
-    """URLs are pulled with a regex rather than an XML parser on purpose: a half-written
-    sitemap must yield nothing and let the caller refuse, never raise a traceback."""
+    """The three sitemap files BSUK's own generator writes, and only those: there is no
+    sitemap-index following, no .gz support and no namespace handling, by design — this
+    reads one repo's output, not the open web.
+
+    URLs are pulled with a regex rather than an XML parser on purpose: a half-written
+    sitemap must yield nothing and let the caller refuse, never raise a traceback. The
+    `\s*` either side of the URL matters — a pretty-printed `<loc>` on its own indented
+    line is valid, and a regex that missed it would report a clean 'nothing to submit'."""
     out = []
     for name in ("page-sitemap.xml", "post-sitemap.xml", "local-sitemap.xml"):
         p = PUBLIC / name
@@ -93,7 +99,7 @@ def urls_from_sitemaps():
             text = p.read_text(encoding="utf-8", errors="replace")
         except OSError as e:
             die(f"cannot read {p}: {e}")
-        out += re.findall(rf"<loc>({re.escape(ORIGIN)}/[^<]*)</loc>", text)
+        out += re.findall(rf"<loc>\s*({re.escape(ORIGIN)}/[^<\s]*)\s*</loc>", text)
     return sorted(set(out))
 
 
@@ -120,7 +126,7 @@ def changed_slugs(ref="origin/main"):
 
 
 def to_url(token: str) -> str:
-    if token.startswith("http"):
+    if token.startswith(("http://", "https://")):
         return token
     return f"{ORIGIN}/" + token.strip("/") + "/" if token.strip("/") else f"{ORIGIN}/"
 

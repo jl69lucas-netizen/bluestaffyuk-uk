@@ -11,7 +11,7 @@
 # deleted: a script that exists and says REFUSED teaches more than a script that is missing.
 # The same flag guards scripts/indexnow_submit.py and BSUK_RELEASE=1 check:placeholders.
 # =============================================================================
-set -uo pipefail
+set -euo pipefail
 
 if [ "${BSUK_RELEASE:-}" != "1" ]; then
   echo "REFUSED: release-only command. Set BSUK_RELEASE=1 only when project 6 has a real domain and host." >&2
