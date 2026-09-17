@@ -655,8 +655,10 @@ bsuk-llm-keyword-intel [for target keyword]
 2. bsuk-deploy-verifier
    → Verifies: all new pages return HTTP 200
    → Verifies: canonical URLs are absolute
-   → Submits: all changed URLs to IndexNow, reading the key from .env per
-     docs/reference/credentials.md — never from a file in the repo
+   → Submits: all changed URLs to IndexNow (`npm run indexnow:changed`), reading
+     INDEXNOW_KEY and SITE_URL from the environment per docs/reference/credentials.md —
+     never from a file in the repo. Today it exits 2: `BSUK_RELEASE=1` is unset, and the
+     flag alone still refuses a placeholder SITE_URL
    → Output: docs/reports/YYYY-MM-DD-deploy-report.md
 
 3. bsuk-redirect-manager [if any page slug changed]

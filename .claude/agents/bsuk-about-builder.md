@@ -128,7 +128,7 @@ grep -i "founded\|LICENCE_CLAIM_PLACEHOLDER\|years\|puppies\|permit\|LICENCE_CLA
 1. Read current page — extract real facts, names, dates, quotes
 2. Build one section at a time — show → approve → stage to `docs/reports/about-rebuild/` (not ported — source repo only)
 3. After all approved → assemble → write to `dist/blue-staffy-uk-breeders/index.html`
-4. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` (arrives in Task 17) refuses without `BSUK_RELEASE=1`. Commit the work and stop there (`CLAUDE.md` rule 3)
+4. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 ---
 
 ## Rules

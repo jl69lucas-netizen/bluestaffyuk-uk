@@ -58,7 +58,7 @@ proves them.
 
 **Rule 10 — Post-Deploy Checklist — inactive until project 6**
 There is no remote and no live site. When project 6 activates deploy: submit changed URLs
-via `scripts/indexnow_submit.py` (deferred to project 6, see data/port-manifest.json), read
+via `scripts/indexnow_submit.py`, which exits 2 without `BSUK_RELEASE=1`; read
 the key from `.env` per `docs/reference/credentials.md` and never from a file in the repo,
 then check Search Console for crawl errors within 24 hours.
 

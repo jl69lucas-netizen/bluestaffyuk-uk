@@ -223,15 +223,15 @@ arrives, use the committed script and never paste inline Python for this. The sh
 will take:
 
 ```bash
-python3 scripts/indexnow_submit.py <slug> [<slug> ...]   # (arrives in Task 17)
+python3 scripts/indexnow_submit.py <slug> [<slug> ...]   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
 ```bash
-python3 scripts/indexnow_submit.py --changed   # (arrives in Task 17)
+python3 scripts/indexnow_submit.py --changed   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
 ```bash
-python3 scripts/indexnow_submit.py --dry-run <slug>   # (arrives in Task 17)
+python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
 `--all` submits every sitemap URL. `--dry-run` prints the payload and sends nothing.

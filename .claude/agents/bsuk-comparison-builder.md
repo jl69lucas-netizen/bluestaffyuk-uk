@@ -145,7 +145,7 @@ Never change either. When building a **new** page, set:
 3. Research top 3 competitor pages via Firecrawl MCP (Step 6 above)
 4. Build one section at a time — show HTML → get approval → stage in docs/reports/[slug]-rebuild/
 5. After all sections approved → assemble → write to `src/pages/<slug>/index.astro`
-6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` (arrives in Task 17) refuses without `BSUK_RELEASE=1`. Commit the work and stop there (`CLAUDE.md` rule 3)
+6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 **Output file:** `src/pages/<slug>/index.astro` — all new and rebuilt comparison pages are Astro files. Never write final pages to `dist/`.
 
 ---

@@ -12,8 +12,9 @@ list; `.env` is the values.
 
 | Key | Read by | Active? |
 |---|---|---|
-| `SITE_URL` | `astro.config.mjs`, `scripts/perf_audit.py`, `scripts/health-sweep.sh` | no — `SITE_URL_PLACEHOLDER` until project 6 |
+| `SITE_URL` | `astro.config.mjs`, `scripts/perf_audit.py`, `scripts/health-sweep.sh`, `scripts/indexnow_submit.py` | no — `SITE_URL_PLACEHOLDER` until project 6 |
 | `PUBLIC_FORMSPREE_ID` | `src/components/ContactForm.astro`, `scripts/form_contract_audit.py`, `tests/render/checks/form.ts` | yes |
+| `INDEXNOW_KEY` | `scripts/indexnow_submit.py` | no — the script refuses without `BSUK_RELEASE=1`, project 6 |
 | `GSC_SITE_URL` | `.claude/agents/bsuk-gsc-analytics.md` | no — project 6 |
 | `GSC_CLIENT_ID` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 | `GSC_CLIENT_SECRET` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
@@ -24,13 +25,13 @@ list; `.env` is the values.
 | `GA4_REFRESH_TOKEN` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 
 A "Read by" cell names a file only when that file actually contains the key name today.
-`scripts/indexnow_submit.py` (deferred to project 6, see data/port-manifest.json) will
-read `SITE_URL` too; it is not listed in the table until it exists.
+`scripts/indexnow_submit.py` reads both `SITE_URL` and `INDEXNOW_KEY` from the environment
+and neither is hardcoded, but it refuses to run at all until project 6 sets `BSUK_RELEASE=1`.
 `tests/py/test_credentials_doc.py` holds this table to `.env.example` in both directions and
 greps every named file, so neither side can drift.
 
-Ten keys. Nine of them are populated by Task 18; `SITE_URL` waits for the domain project 6
-registers.
+Eleven keys. Nine of them are populated by Task 18; `SITE_URL` waits for the domain project 6
+registers, and `INDEXNOW_KEY` is generated against that domain in the same project.
 
 ## The retired MCP server
 

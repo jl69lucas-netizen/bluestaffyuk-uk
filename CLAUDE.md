@@ -29,8 +29,11 @@ difference matters when you are reading an exit code:
 - `python3 scripts/perf_audit.py <slug> --live` (and `--psi`, which implies it) refuse on
   the **`SITE_URL` placeholder**, not on the release flag: they print `REFUSED` and exit 2.
   Drop `--live` and measure `dist/`.
-- `python3 scripts/indexnow_submit.py <slug>` (arrives in Task 17) refuses unless
-  `BSUK_RELEASE=1` is set, and exits non-zero.
+- `python3 scripts/indexnow_submit.py <slug>` refuses **twice**: without `BSUK_RELEASE=1`
+  it prints `REFUSED: IndexNow is inactive until project 6…` and exits 2 before reading the
+  key or opening a socket, and with the flag set it still refuses a placeholder `SITE_URL`.
+  `--dry-run` prints the URLs it would submit and sends nothing. `npm run build:release`
+  (pagefind) sits behind the same flag via `bash scripts/release_guard.sh`, which exits 2.
 - `bash scripts/health-sweep.sh` does **not** refuse: with no `SITE_URL` it warns
   `no SITE_URL — skipping live checks (project 6)`, skips its live block, and its exit code
   is decided by the checks it did run.

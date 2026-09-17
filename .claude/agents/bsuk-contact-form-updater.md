@@ -154,7 +154,7 @@ After updating any form, run the three gates in the skill (audit → browser →
 git add src/pages/<slug>/index.astro src/components/<changed component>
 git commit -m "feat(forms): <page list> — <what changed>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
-python3 scripts/indexnow_submit.py <slug>             # every slug whose rendered output changed   # (arrives in Task 17)
+python3 scripts/indexnow_submit.py <slug>             # every slug whose rendered output changed   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
 ---

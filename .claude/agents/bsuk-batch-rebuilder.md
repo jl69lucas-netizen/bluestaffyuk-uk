@@ -170,7 +170,7 @@ for dir in docs/reports/*-rebuild/; do
 done
 ```
 
-### Step 6 — Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` (arrives in Task 17) refuses without `BSUK_RELEASE=1`. Commit the work and stop there (`CLAUDE.md` rule 3)
+### Step 6 — Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 ```bash
 git add src/pages/
 git commit -m "Batch rebuild: [job type] — [date]"

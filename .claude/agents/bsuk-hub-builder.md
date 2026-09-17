@@ -147,7 +147,7 @@ When a new spoke page is built (e.g., new comparison page or new city), update t
 2. Add a new spoke card to section 3
 3. Add the new URL to the jump nav in section 2
 4. Update the sitemap entry for the hub (`<lastmod>` date)
-5. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` (arrives in Task 17) refuses without `BSUK_RELEASE=1`. Commit the work and stop there (`CLAUDE.md` rule 3)
+5. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 ---
 
 ## Build Protocol
@@ -157,7 +157,7 @@ When a new spoke page is built (e.g., new comparison page or new city), update t
 3. Pull spoke list from data/locations.json (for location hub) or dist/ directory (for comparison hub)
 4. Build one section at a time — show → approve → stage
 5. After all approved → assemble → write to hub content file
-6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` (arrives in Task 17) refuses without `BSUK_RELEASE=1`. Commit the work and stop there (`CLAUDE.md` rule 3)
+6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 ---
 
 ## Rules

@@ -576,6 +576,12 @@
     "notes": "SITE_URL-gated live block; marker_check + agent-registry --check replace the retired blocks"
   },
   {
+    "src": "scripts/indexnow_submit.py",
+    "dst": "scripts/indexnow_submit.py",
+    "mode": "rebase",
+    "notes": "release-guarded: refuses unless BSUK_RELEASE=1, then refuses a placeholder SITE_URL; key and host read from env, never hardcoded"
+  },
+  {
     "src": "tests/test_perf_audit.py",
     "dst": "tests/py/test_perf_audit.py",
     "mode": "rebase",

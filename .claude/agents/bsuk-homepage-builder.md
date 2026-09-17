@@ -253,7 +253,7 @@ git add src/pages/index.astro && git commit -m "homepage: rebuild section by sec
 
 2. IndexNow — inactive until project 6, skip:
 ```python
-# Nothing to run. `scripts/indexnow_submit.py` (arrives in Task 17) refuses without BSUK_RELEASE=1.
+# Nothing to run. `scripts/indexnow_submit.py` refuses without BSUK_RELEASE=1 (exit 2).
 urls = ["https://SITE_URL_PLACEHOLDER/"]
 ```
 

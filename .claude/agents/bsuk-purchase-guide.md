@@ -211,7 +211,7 @@ git add src/pages/buy-blue-staffy-puppies-uk/ && git commit -m "buy page: rebuil
 
 2. IndexNow — inactive until project 6, skip:
 ```python
-# Nothing to run. `scripts/indexnow_submit.py` (arrives in Task 17) refuses without BSUK_RELEASE=1.
+# Nothing to run. `scripts/indexnow_submit.py` refuses without BSUK_RELEASE=1 (exit 2).
 urls = ["https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"]
 ```
 
