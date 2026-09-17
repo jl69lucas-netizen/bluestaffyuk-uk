@@ -9,7 +9,7 @@ history, and translating it would have invented a past this repo does not have.
 The Astro 6.3.8 static site, the rule packs, the Python suite and the render harness.
 Full report and evidence: `docs/reports/foundation-gate-report.md`.
 
-## Project 2 — System transfer (2026-09-16) — IN PROGRESS
+## Project 2 — System transfer (2026-09-16/17) — COMPLETE
 
 Moves the site operating system — rules, agents, skills, gate scripts and reference docs —
 from the source repo into this one, re-based onto a Glasgow Staffordshire Bull
@@ -17,10 +17,29 @@ Terrier breeder, with `scripts/marker_check.py` as the zero-tolerance
 proof. `data/port-manifest.json` is the record of every file that crossed.
 Plan: `docs/superpowers/plans/2026-09-16-system-transfer.md`.
 
+Closed 2026-09-17 on branch `system-transfer`, 57 commits, `6c1f2c3..939033b` plus the
+close-out commit, no remote and nothing pushed. Every gate was run twice with identical
+results; the transcript is `docs/reports/system-transfer-run.log`. Full report and evidence:
+`docs/reports/system-transfer-gate-report.md`.
+
+Headline numbers: the marker gate went 418 → 0 (`examined 233 files; 0 problems`); the
+manifest carries 180 rows (10 copy, 129 rebase, 41 deferred) and `scripts/port_from_cag.py` reports
+`missing 0, blocked 0` with no rebase row re-applied on the second run; 36 agents and 53
+skills in the single `.claude` tree with both registries generated and in sync; 1240 pytest
+tests pass; the render meta gate is at 315 passed and the pages gate at the recorded Project
+2 baseline with no new blocking row.
+
+Credentials moved out of the MCP server and into a gitignored `.env` holding eleven keys by
+name (values never printed, never committed). The `bluestaffyuk` MCP block was removed from
+the Claude desktop config, which was backed up first as
+`claude_desktop_config.json.bak-20260917-022840`; `~/bsuk-mcp-server` was deleted. Only
+`gscServer` remains.
+
 ## Known Issues
 
-Seeded from the Foundation gate report's "Open items" 1–8. Items 1 and 2 are closed by
-project 2; 3–8 are carried forward with their owning project.
+Seeded from the Foundation gate report's "Open items" 1–8 and extended by project 2's gate
+report. Items 1 and 2 are closed by project 2; 3–8 are carried forward with their owning
+project; 9–14 are new from the system transfer.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -43,10 +62,36 @@ project 2; 3–8 are carried forward with their owning project.
 6. **17 stub locations are noindexed.** They carry 0–7 words of legacy body.
    **Project 5** writes them; `scripts/sitemap_check.py` keeps them out of the shards until
    then.
-7. **Placeholders.** `SITE_URL_PLACEHOLDER`, `PHONE_PLACEHOLDER` and the form id are
-   resolved at **project 6** launch. `BSUK_RELEASE=1 npm run check:placeholders` is the
-   gate that will refuse to ship them.
+7. **Placeholders.** 1692 occurrences across five tokens. `SITE_URL_PLACEHOLDER` (891) and
+   `PHONE_PLACEHOLDER` (19) resolve at **project 6** launch; `FORMSPREE_ID_PLACEHOLDER` is
+   already at 0. `LICENCE_CLAIM_PLACEHOLDER` (633) and `LEGAL_CLAIM_PLACEHOLDER` (149) were
+   added by project 2's skill re-base and await **Lisa Bright's** confirmation of the
+   breeder-licence and Lucy's-Law wording. `BSUK_RELEASE=1 npm run check:placeholders`
+   refuses to ship any of them (exit 1, confirmed).
 8. **`schema-date-modified-present`.** 18 rows over 6 pages; needs
    `scripts/generate_page_dates.py` wired into the content pass, which arrives with
    **project 4** — the same project that gives pages a real edit history for sitemap
    `lastmod`.
+
+9. **Three carried header duplicates.** `board_gate.py index` reports three
+   `header-collision` FAILs in migrated copy: the homepage's *Meet the Proud Parents of Our
+   Blue Staffy Puppies* and *Our Commitment to the Health of Our Blue Staffy Puppies*
+   against `/uk-locations/staffy-breeding-dogs-glasgow/`, and *How to Buy Your Blue Staffy
+   Puppy* against `/uk-blue-staffy-puppy-buying-guide/`. Down from five; the two chrome rows
+   cleared with the harness re-base. **Project 4.**
+10. **Deferred-check id drift.** `bottom-bar-under-tabbar` and `analytics-double-load` are
+    Python page-hardening checks in the source repo, not render-harness checks, so they could
+    not be deferred in `tests/render/targets.json`. Defer them if a later project ports them
+    into the harness.
+11. **Old price range in migrated copy.** A pre-migration price band, below the locked
+    £1,500 / £1,700, persists in several migrated page bodies (see the project-2 gate
+    report, open item 11, for the exact pages). The fact lint covers `.claude/agents` and
+    `.claude/skills` only; page bodies are content. **Project 4.**
+12. **`Sharine Amelia` byline.** The migrated author byline persists on the homepage and the
+    breeders page. **Project 4.**
+13. **`INDEXNOW_KEY` empty, `SITE_URL` still the placeholder.** IndexNow and pagefind are
+    ported and guarded (`scripts/indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` and again on
+    the placeholder; `build:release` sits behind `scripts/release_guard.sh`). There is no
+    deploy script — the source repo pushed to a host and this repo has none. **Project 6.**
+14. **GSC and GA4 pulls are unwired.** The eight keys are in `.env` and named in
+    `docs/reference/credentials.md`, but no script reads them yet. **Project 6.**
