@@ -2397,6 +2397,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 ### Task 16: `targets.json`, and the marker gate goes green
 
+> Execution note (2026-09-17): Task 15 already brought `marker_check.py` to `0 problems` and removed the strict xfail in `tests/py/test_marker_check.py` (an early XPASS would have failed the suite). Step 3 is therefore verification only: run the gate, confirm 0, do not touch the xfail. Step 1's coverage check and Step 2's deferred checks stand. Step 4 must record the pages-gate scorecard rows per family for the gate report.
+
 **Files:** Modify `tests/render/targets.json`, `tests/py/test_marker_check.py`
 
 - [ ] **Step 1: Rename the page type and check family coverage**
