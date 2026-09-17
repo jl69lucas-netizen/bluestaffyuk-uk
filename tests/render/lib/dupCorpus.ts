@@ -27,8 +27,11 @@ export function loadWhitelist(): string[] {
   const end = src.indexOf('\n]', start);
   const block = src.slice(start, end < 0 ? undefined : end);
   const out: string[] = [];
-  for (const m of block.matchAll(/"([^"]{8,})"|'([^']{8,})'/g)) {
-    out.push((m[1] ?? m[2]).toLowerCase());
+  // Anchored to the start of a line so only LIST ENTRIES are read. Unanchored, a quoted
+  // phrase inside one of the block's comments widened the whitelist by whatever that
+  // comment happened to quote — an exemption nobody wrote, arriving through prose.
+  for (const m of block.matchAll(/^\s*"([^"]{8,})",?\s*$/gm)) {
+    out.push(m[1].toLowerCase());
   }
   const FLOOR = 10; // ← 13 entries measured in Task 15 Step 1; floor kept at 10 headroom
   if (out.length < FLOOR) {

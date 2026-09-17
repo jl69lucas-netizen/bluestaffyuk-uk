@@ -9,19 +9,31 @@ body text only (scripts/styles/JSON-LD stripped) using word shingles.
 Usage:
   python3 scripts/dup_content_audit.py                 # audit all dist pages
   python3 scripts/dup_content_audit.py slugA slugB ... # audit only these slugs
+  python3 scripts/dup_content_audit.py --dist build    # audit a different built tree
   python3 scripts/dup_content_audit.py --min-words 15  # change shingle length
+  python3 scripts/dup_content_audit.py --json          # also write the JSON report
   python3 scripts/dup_content_audit.py --headers       # heading-crossover mode:
       flags any H1-H6 whose exact text (or template with breed names swapped)
       appears on 2+ pages — catches the crossover-header failure that the
       12-word shingle check is blind to (most headings are < 12 words).
 
-Exit 1 if any duplicate run >= MIN_WORDS (or duplicate heading in --headers
-mode) is found between two different pages. Boilerplate that legitimately
+Exit codes, same convention as the other audit scripts (evidence_audit.py,
+aeo_audit.py): 1 when any duplicate passage or heading was found, 0 otherwise.
+Every finding this gate makes is an ERROR — there is no WARN level here — so
+--fail-on-error is accepted and changes nothing; it exists so a caller can pass
+the same flags to every audit without special-casing this one.
+
+--json [PATH] writes the machine-readable result (default
+docs/reports/dup_content_audit.json) so callers never scrape stdout:
+  {"mode": "body"|"headers", "dist", "pages", "min_words", "problems",
+   "findings": [{"a","b","words","run"} | {"kind","text","pages"}]}
+
+Boilerplate that legitimately
 repeats (nav, footer, the canonical delivery band, the £500 deposit line,
 the puppy-grid card data, site-standard section headers) is whitelisted below,
 and every whitelist entry was measured on dist/ rather than guessed.
 """
-import argparse, re, sys, itertools
+import argparse, html as _h, itertools, json, re, sys
 from pathlib import Path
 from html.parser import HTMLParser
 from _slugs import page_key
@@ -36,6 +48,12 @@ WHITELIST_SNIPPETS = [
     # chrome (a component rendered across page types) or as page prose. Whitelist the CORE,
     # never the longest run on one page — the longer stem exempts nothing on the pages that
     # carry the shorter variant. Only chrome is listed here.
+    #
+    # This comment deliberately quotes a phrase — "the delivery band, the deposit line" —
+    # as a live fixture: tests/render/lib/dupCorpus.ts parses this list with a regex, and
+    # an unanchored one read quoted prose out of these comments and silently widened the
+    # whitelist. tests/py/test_dup_content_audit.py mirrors the anchored parse and asserts
+    # it returns exactly WHITELIST_SNIPPETS, so removing the anchor turns that test red.
     # Location-page prose that repeats across the nine templated city pages — the
     # passionate-about-breeding about-block, the L-2-HGA / HC-HSF4 health-testing
     # block — is deliberately ABSENT: that is the migrated-content baseline and it
@@ -183,7 +201,7 @@ HEAD_TERMS = [
 # substring test (`any(w in text ...)`), which meant the one-word entry "contact"
 # whitelisted every heading containing the string "contact" and the gate quietly stopped
 # reporting real collisions. Exact match, one entry per heading that really repeats.
-HEADER_WHITELIST = [
+HEADER_WHITELIST = frozenset((
     "frequently asked questions",
     "get in touch",
     "join our newsletter",
@@ -199,10 +217,18 @@ HEADER_WHITELIST = [
     "\U0001f43e reserve your blue staffy puppy",
     # Owner card (the breeder's name is the breeder's name)
     "lisa bright",
-    # Puppy-name card headings — sync with data/puppies.json when the litter changes;
-    # a puppy's name legitimately repeats wherever its card renders.
-    "roman", "byrd", "ince", "vennie", "christa", "cheryl",
-]
+))
+
+# Puppy-name card headings, kept SEPARATE from HEADER_WHITELIST — sync with
+# data/puppies.json when the litter changes.
+#
+# A card heading is a whole heading, never a phrase inside one: a puppy's name legitimately
+# repeats wherever its card renders, and nowhere else. Kept apart because scripts/pageboard.py
+# matches HEADER_WHITELIST as a contiguous token SUB-RUN, and a one-word entry in that list
+# exempts every board heading containing the word ("Roman Roads of Glasgow"). Both lists are
+# matched exactly today; the split keeps that true if sub-run matching ever comes back for
+# phrases.
+PUPPY_CARD_HEADINGS = frozenset(("roman", "byrd", "ince", "vennie", "christa", "cheryl"))
 # Breed/variant tokens normalised in --headers mode so that templated headers
 # ("Is a Blue Staffy Right for You?" vs "Is a Staffordshire Bull Terrier Right for You?")
 # are caught as template-for-template crossovers, not just exact matches.
@@ -217,67 +243,103 @@ def _norm_heading(text):
 
 
 def headers_mode(pages):
-    """Flag exact + templated H1-H6 crossovers between pages."""
+    """Flag exact + templated H1-H6 crossovers between pages. Returns the findings list."""
     hpat = re.compile(r"<h([1-6])[^>]*>(.*?)</h\1>", re.S | re.I)
     strip = re.compile(r"<[^>]+>")
     exact, templ = {}, {}
     for slug, p in pages.items():
         html = p.read_text(errors="ignore")
         for lvl, raw in hpat.findall(html):
-            import html as _h
             text = _norm_heading(_h.unescape(strip.sub("", raw)))
-            if not text or text in HEADER_WHITELIST:
+            if not text or text in HEADER_WHITELIST or text in PUPPY_CARD_HEADINGS:
                 continue
             exact.setdefault(text, set()).add(slug)
             templ.setdefault(SPECIES_TOKENS.sub("{breed}", text), set()).add(slug)
-    bad = 0
+    findings = []
     for text, slugs in sorted(exact.items()):
         if len(slugs) > 1:
-            bad += 1
+            findings.append({"kind": "exact", "text": text, "pages": sorted(slugs)})
             print(f"EXACT header crossover on {sorted(slugs)}:\n  \"{text}\"\n")
     for text, slugs in sorted(templ.items()):
         if len(slugs) > 1 and text not in exact:
-            bad += 1
+            findings.append({"kind": "template", "text": text, "pages": sorted(slugs)})
             print(f"TEMPLATE header crossover on {sorted(slugs)}:\n  \"{text}\"\n")
-    if bad:
-        print(f"FAIL — {bad} crossover headers across {len(pages)} pages."); sys.exit(1)
-    print(f"PASS — no crossover headers in {len(pages)} pages.")
+    if findings:
+        print(f"FAIL — {len(findings)} crossover headers across {len(pages)} pages.")
+    else:
+        print(f"PASS — no crossover headers in {len(pages)} pages.")
+    return findings
 
-def main():
+DEFAULT_JSON = Path(__file__).resolve().parent.parent / "docs/reports/dup_content_audit.json"
+
+
+def _write_json(path, payload):
+    out = Path(path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(json.dumps(payload, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    try:
+        shown = out.relative_to(Path.cwd())
+    except ValueError:
+        shown = out
+    print(f"JSON report → {shown}")
+
+
+def main(argv=None):
     global MIN_WORDS
     ap = argparse.ArgumentParser(
         prog="dup_content_audit.py",
-        description="Audit dist/ for cross-page duplicate body copy (and, with "
+        description="Audit a built site for cross-page duplicate body copy (and, with "
                     "--headers, duplicate headings).",
         epilog="Exits 1 when a duplicate is found. Whitelisted chrome is listed in "
-               "WHITELIST_SNIPPETS / HEADER_WHITELIST at the top of this file.")
+               "WHITELIST_SNIPPETS / HEADER_WHITELIST at the top of this file; reproduce "
+               "the measurement behind it with scripts/measure_chrome.py.")
     ap.add_argument("slugs", nargs="*",
-                    help="page keys to audit (default: every page in dist/)")
+                    help="page keys to audit (default: every page in the dist tree)")
+    ap.add_argument("--dist", default="dist", help="built site directory (default dist)")
     ap.add_argument("--min-words", type=int, default=MIN_WORDS,
                     help=f"shingle length in words (default {MIN_WORDS})")
     ap.add_argument("--headers", action="store_true",
                     help="heading-crossover mode instead of the body-copy audit")
-    ns = ap.parse_args()
+    ap.add_argument("--fail-on-error", action="store_true",
+                    help="accepted for symmetry with the other audit scripts; every "
+                         "finding here is already an ERROR, so this changes nothing")
+    ap.add_argument("--json", nargs="?", const=str(DEFAULT_JSON), default=None,
+                    metavar="PATH",
+                    help=f"write the machine-readable result (default {DEFAULT_JSON})")
+    ns = ap.parse_args(sys.argv[1:] if argv is None else argv)
     args = ns.slugs
     MIN_WORDS = ns.min_words
-    dist=Path("dist")
-    pages={page_key(p, dist): p for p in dist.rglob("index.html")}
-    if args: pages={k:v for k,v in pages.items() if k in args}
+    dist = Path(ns.dist)
+    pages = {page_key(p, dist): p for p in dist.rglob("index.html")}
+    if args:
+        pages = {k: v for k, v in pages.items() if k in args}
+    base = {"mode": "headers" if ns.headers else "body", "dist": str(dist),
+            "pages": len(pages), "min_words": MIN_WORDS}
     if ns.headers:
-        headers_mode(pages); return
-    shingled={}
-    for slug,p in pages.items():
-        ws=words(p)
-        shingled[slug]=(ws,shingles(ws))
-    bad=0
-    for (a,(wa,sa)),(b,(wb,sb)) in itertools.combinations(shingled.items(),2):
-        for seg in crossovers(wa, sa, sb):
-            bad+=1
-            run=norm(seg)
-            print(f"DUPLICATE ({len(seg)} words) between /{a}/ and /{b}/:\n  \"{run[:220]}{'…' if len(run)>220 else ''}\"\n")
-    if bad:
-        print(f"FAIL — {bad} duplicated passages ≥{MIN_WORDS} words."); sys.exit(1)
-    print(f"PASS — no cross-page duplicate runs ≥{MIN_WORDS} words in {len(pages)} pages.")
+        findings = headers_mode(pages)
+        if ns.json:
+            _write_json(ns.json, {**base, "problems": len(findings), "findings": findings})
+        return 1 if findings else 0
 
-if __name__=="__main__":
-    main()
+    shingled = {}
+    for slug, p in pages.items():
+        ws = words(p)
+        shingled[slug] = (ws, shingles(ws))
+    findings = []
+    for (a, (wa, sa)), (b, (wb, sb)) in itertools.combinations(shingled.items(), 2):
+        for seg in crossovers(wa, sa, sb):
+            run = norm(seg)
+            findings.append({"a": a, "b": b, "words": len(seg), "run": run})
+            print(f"DUPLICATE ({len(seg)} words) between /{a}/ and /{b}/:\n"
+                  f"  \"{run[:220]}{'…' if len(run) > 220 else ''}\"\n")
+    if findings:
+        print(f"FAIL — {len(findings)} duplicated passages ≥{MIN_WORDS} words.")
+    else:
+        print(f"PASS — no cross-page duplicate runs ≥{MIN_WORDS} words in {len(pages)} pages.")
+    if ns.json:
+        _write_json(ns.json, {**base, "problems": len(findings), "findings": findings})
+    return 1 if findings else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

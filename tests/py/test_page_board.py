@@ -2141,3 +2141,30 @@ def test_board_approve_cli_exits_2_on_a_traversal_slug():
     assert r.returncode == 2
     assert "board-approve ERROR" in r.stdout and "slug" in r.stdout
     assert "no approval at" not in r.stdout
+
+
+def test_puppy_card_headings_are_matched_exactly_not_as_a_sub_run():
+    """The substring trap, one layer down: the CONSUMER of the whitelist.
+
+    `roman` is a puppy-card heading — a card whose H3 is exactly the puppy's name may repeat
+    wherever the card renders. Matching it as a contiguous token sub-run exempted every board
+    heading that merely contains the word ("Roman Roads of Glasgow"), which is the same
+    failure the dup gate's own header whitelist had. Card headings match exactly; only the
+    phrase list keeps sub-run behaviour, and it holds no single common words.
+    """
+    assert PB._whitelisted("Roman")
+    assert PB._whitelisted("roman")          # normalised
+    assert not PB._whitelisted("Roman Roads of Glasgow")
+    assert not PB._whitelisted("Meet Roman, Byrd and Ince")
+    # the phrase list is unaffected
+    assert PB._whitelisted("Frequently Asked Questions")
+
+
+def test_gate_still_fails_a_collision_that_merely_contains_a_puppy_name():
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["tree"][0]["heading"] = "Roman Roads of Glasgow and Our Puppies"
+    b["approval"]["record_hash"] = PB.record_hash(b)
+    live = {"/sibling/": ["Roman Roads of Glasgow and Our Puppies"]}
+    msgs = [x["msg"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live=live, stage="build")
+            if x["check"] == "header-collision"]
+    assert any("Roman Roads" in m for m in msgs), msgs

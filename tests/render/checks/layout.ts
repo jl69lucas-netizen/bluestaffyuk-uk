@@ -290,6 +290,12 @@ register({
       const borderPx = parseFloat(cs.borderTopWidth) || 0;
       const barPx = parseFloat(before.height) || 0;
       const hasBar = before.content !== 'none' && barPx > 0;
+      // Seam elements: MEASURED ABSENT from BSUK's dist/ on 2026-09-17 (no .bsuk-seam,
+      // .seam-wrap or .seam anywhere in the build). Kept because this is a
+      // separation-EXISTS check: the day a component ships a seam div instead of a border
+      // or a ::before bar, this is what stops the check reporting a false defect. A
+      // selector that names a class nobody has written yet is cheap; a check that fails on
+      // the first correct implementation is not.
       const hasSeam = !!strip.querySelector(':scope > .bsuk-seam, :scope > .seam-wrap, :scope > .seam');
       return { examined: 1, hasTone, hasRule: borderPx > 0 || hasBar || hasSeam };
     });

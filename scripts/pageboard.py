@@ -12,6 +12,7 @@ import jsonschema
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import dup_content_audit as DUP
 HEADER_WHITELIST = DUP.HEADER_WHITELIST   # phrases the dup gate already forgives
+PUPPY_CARD_HEADINGS = DUP.PUPPY_CARD_HEADINGS  # whole headings: a puppy card's name
 HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page must be free to write
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -657,17 +658,21 @@ LIBRARY_LINK_MIN = 3
 LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster and its hub
 GATE_STAGES = ("build", "release")
 _WHITELIST_TOKENS = [t for t in (tokens(w) for w in HEADER_WHITELIST) if t]
+_CARD_TOKENS = {tuple(t) for t in (tokens(w) for w in PUPPY_CARD_HEADINGS) if t}
 
 
 def _whitelisted(heading):
-    """True when a HEADER_WHITELIST phrase appears in the heading as a contiguous run of
-    WHOLE tokens. Substring matching read the puppy name "evie" out of "Review" and the
-    puppy name "amie" out of any "...amie..." run, clearing collisions the dup gate flags
-    after the build — so the match is on tokens, not characters."""
-    ws = tokens(heading)
-    return any(ws[i:i + len(phrase)] == phrase
-               for phrase in _WHITELIST_TOKENS
-               for i in range(len(ws) - len(phrase) + 1))
+    """True when this heading is exempt from the collision gate.
+
+    Both lists are matched EXACTLY, on the normalised token list. Two failures got us here:
+    substring matching read the puppy name "evie" out of "Review", so the match moved to whole
+    tokens; then sub-run matching over whole tokens still let the one-word card heading
+    "roman" exempt "Roman Roads of Glasgow", clearing collisions the dup gate flags after the
+    build. A whitelisted heading is a whole heading, so equality is the right test, and the two
+    lists stay separate so a future relaxation for phrases cannot reach the card names.
+    """
+    ws = tuple(tokens(heading))
+    return ws in _CARD_TOKENS or any(ws == tuple(p) for p in _WHITELIST_TOKENS)
 
 
 def _head_term_shingle(shingle, primary_keyword):
