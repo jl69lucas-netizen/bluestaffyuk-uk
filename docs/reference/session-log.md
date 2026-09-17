@@ -117,4 +117,17 @@ project; 9–14 are new from the system transfer.
     tracked files, the run log and the Artifacts) and `tests/py/test_secret_shapes.py`
     (credential shapes across the marker gate's roots plus reports, artifacts, scorecards and
     fixtures). Full account: `docs/reports/system-transfer-gate-report.md` § Credentials and
-    MCP → Incident. **Open until rotated.**
+    MCP → Incident. **Open until rotated.** 2026-09-18: the source repo's working copy and
+    its legacy skill file were scrubbed to env refs and committed locally (not pushed);
+    rotation still pending.
+
+16. **The breeder has relocated: Carlisle, Cumbria, England — not Glasgow.** Confirmed by
+    the user 2026-09-18 during the build 3 brainstorm, as a full relocation of the business
+    and the website. Address is town-level only (Carlisle, Cumbria) until the breeder says
+    otherwise. Everything that currently says Glasgow is now wrong: the homepage and page
+    copy, `data/settings.json`, the schema `address` / `areaServed`, the fact lint's locked
+    geography in `tests/py/test_agent_facts.py`, agents and skills, and
+    `/uk-locations/staffy-breeding-dogs-glasgow/`, which becomes an outreach page rather
+    than the home base. **Build 3** carries Carlisle in the logo lockups and tokens only;
+    **build 4** rewrites the copy and settings; **build 5** re-plans the 28 locations around
+    Carlisle (Cumbria, the Borders, the North West and North East are now the near ring).
