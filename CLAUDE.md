@@ -126,6 +126,11 @@ growing. Every other rule moved to a pack.
    guarantee length is `NOT FETCHED` — `data/settings.json` has `guarantee_days: null` and
    no page may state a number until the breeder gives one. An unconfirmed licence or statute
    claim is written `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER`, never asserted.
+10. **Visual companion, always.** Every visual decision — palette, type, logo, component
+    variation, layout — is shown in the browser (the brainstorming visual companion, or a
+    published Artifact canvas), never described in words alone. Consent is standing
+    (breeder, 2026-09-18): do not ask whether to use it. Text-only questions stay in the
+    terminal.
 
 ### Two standing rules that are not judgment exemptions
 
