@@ -308,4 +308,12 @@ re-base covers every marker hit under `tests/render/`, about 57 files, not six.
   `analytics-double-load` never existed in the render harness — they are Python
   page-hardening checks in the source repo — so `deferred_checks` gained nothing. If a
   later project ports them into the harness, defer them then.
+- Deploy (Task 17): §1's "deploy, IndexNow, pagefind ported but inactive" resolves as
+  IndexNow (`scripts/indexnow_submit.py`, refuses with exit 2 unless `BSUK_RELEASE=1`, and
+  again on the `SITE_URL` placeholder) and pagefind (`build:release`, behind
+  `scripts/release_guard.sh`) ported and guarded; there is no deploy script to port because
+  the source repo deployed by pushing to a host and BSUK has no remote and no host until
+  project 6. The deploy model is documented as inactive in CLAUDE.md; project 6 adds the
+  actual deploy step for the host it chooses. Refusal exit code is 2 ("cannot run"),
+  consistent with `board_gate.py` and `evidence_audit.py`, superseding the plan's 1.
 
