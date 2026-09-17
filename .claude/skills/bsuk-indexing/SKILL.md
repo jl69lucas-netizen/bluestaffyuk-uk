@@ -202,13 +202,13 @@ export it with `set -a; . ./.env; set +a` before running these commands and neve
 literal id, secret or token into this file.
 
 1. Go to this URL (logged in as jl69lucas@gmail.com):
-   `https://accounts.google.com/o/oauth2/auth?client_id=$GA4_CLIENT_ID&redirect_uri=https://developers.google.com/oauthplayground&response_type=code&scope=https://www.googleapis.com/auth/webmasters%20https://www.googleapis.com/auth/indexing&access_type=offline&prompt=consent`
+   `https://accounts.google.com/o/oauth2/auth?client_id=$GSC_CLIENT_ID&redirect_uri=https://developers.google.com/oauthplayground&response_type=code&scope=https://www.googleapis.com/auth/webmasters%20https://www.googleapis.com/auth/indexing&access_type=offline&prompt=consent`
 2. Authorize and get the auth code from the URL
 3. Exchange for refresh token:
 ```bash
 curl -X POST https://oauth2.googleapis.com/token \
   -d "code=AUTH_CODE_HERE" \
-  -d "client_id=$GA4_CLIENT_ID" \
+  -d "client_id=$GSC_CLIENT_ID" \
   -d "client_secret=$GSC_CLIENT_SECRET" \
   -d "redirect_uri=https://developers.google.com/oauthplayground" \
   -d "grant_type=authorization_code"
