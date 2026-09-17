@@ -27,6 +27,9 @@ import os
 import pathlib
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import marker_check
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACEHOLDER",
@@ -34,9 +37,17 @@ PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACE
 
 # The claim placeholders live in the instruction tree, not in dist/ — a skill that tells a
 # writer to assert an unconfirmed licence is the defect, and it never reaches a built page
-# to be caught there. So the scan covers dist/ plus these source roots. `docs/reference`
+# to be caught there. So the scan covers dist/ plus the instruction tree. `docs/reference`
 # joined them in Task 13: seo-rules.md Rule 7 and the credentials table are read the same
 # way a skill is, and a stand-in that survives launch there is the same defect one rung up.
+#
+# These three are the floor, kept literal so this gate still works on a tree with no port
+# manifest (the unit tests build exactly such a tree). The ACTUAL scan is the union of this
+# floor with every file `marker_check.scan_roots()` judges — the written manifest `dst`s
+# plus the marker gate's own fixed roots, minus `data/port-manifest.json`, which
+# `marker_check.EXCLUDED` already drops. That union is the point: when project 3 adds a row
+# to the manifest, the new file inherits placeholder coverage the same day it inherits
+# marker coverage, with no second list to forget. `dist/` is added by `main()`.
 SOURCE_ROOTS = (".claude/skills", ".claude/agents", "docs/reference")
 
 # Text formats only. A byte scan of dist/ would also walk every baked WebP, which cannot
@@ -60,24 +71,69 @@ def _label(path, root):
         return resolved.as_posix()
 
 
-def scan(dist, roots=(), root=ROOT):
-    """{placeholder: total occurrences} and {placeholder: [files]} across dist/ and roots."""
+def source_files(root=ROOT):
+    """Every non-dist file this gate judges: the literal floor plus the marker gate's roots.
+
+    Deduped by resolved path and filtered to text formats. `data/port-manifest.json` is
+    excluded by `marker_check.EXCLUDED`, so it cannot drag CAG paths in here either.
+    """
+    root = pathlib.Path(root)
+    seen, out = set(), []
+    for rel in SOURCE_ROOTS:
+        base = root / rel
+        if base.is_dir():
+            for path in sorted(base.rglob("*")):
+                rp = path.resolve()
+                if (path.is_file() and path.suffix.lower() in TEXT_SUFFIXES
+                        and rp not in seen):
+                    seen.add(rp)
+                    out.append(path)
+    try:
+        derived = marker_check.scan_roots(root)
+    except Exception:
+        # A malformed manifest is marker_check's failure to report, not this gate's. The
+        # floor above still stands, so the placeholder count is never silently zeroed.
+        derived = []
+    for path in derived:
+        rp = path.resolve()
+        if path.suffix.lower() in TEXT_SUFFIXES and rp not in seen:
+            seen.add(rp)
+            out.append(path)
+    return out
+
+
+def scan(dist, roots=(), root=ROOT, files=None):
+    """{placeholder: total occurrences} and {placeholder: [files]} across dist/ and roots.
+
+    `roots` are directories walked wholesale; `files` is an explicit list (what
+    `source_files()` returns). Both are accepted so the unit tests can drive either.
+    """
     counts = {p: 0 for p in PLACEHOLDERS}
-    files = {p: set() for p in PLACEHOLDERS}
+    found = {p: set() for p in PLACEHOLDERS}
+    paths, seen = [], set()
     bases = [pathlib.Path(dist)] + [pathlib.Path(r) for r in roots]
     for base in bases:
         if not base.is_dir():
             continue
         for path in sorted(base.rglob("*")):
-            if not path.is_file() or path.suffix.lower() not in TEXT_SUFFIXES:
-                continue
-            text = path.read_text(encoding="utf-8", errors="ignore")
-            for placeholder in PLACEHOLDERS:
-                n = text.count(placeholder)
-                if n:
-                    counts[placeholder] += n
-                    files[placeholder].add(_label(path, root))
-    return counts, {p: sorted(f) for p, f in files.items()}
+            if path.is_file() and path.suffix.lower() in TEXT_SUFFIXES:
+                rp = path.resolve()
+                if rp not in seen:
+                    seen.add(rp)
+                    paths.append(path)
+    for path in (files or ()):
+        rp = pathlib.Path(path).resolve()
+        if rp not in seen:
+            seen.add(rp)
+            paths.append(pathlib.Path(path))
+    for path in paths:
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for placeholder in PLACEHOLDERS:
+            n = text.count(placeholder)
+            if n:
+                counts[placeholder] += n
+                found[placeholder].add(_label(path, root))
+    return counts, {p: sorted(f) for p, f in found.items()}
 
 
 def main(root=ROOT, dist=None, release=None):
@@ -90,7 +146,7 @@ def main(root=ROOT, dist=None, release=None):
         print("FAIL: no dist/ to scan — a build that does not exist is not placeholder-free.")
         return 1
 
-    counts, files = scan(dist, [root / r for r in SOURCE_ROOTS], root=root)
+    counts, files = scan(dist, (), root=root, files=source_files(root))
     total = sum(counts.values())
     mode = "release" if release else "pre-launch"
     print("# Placeholders (%s build)" % mode)

@@ -150,7 +150,80 @@ def render(root=ROOT):
     L.append("Deferred paths are not listed here by name: a name is a path, and a path this repo")
     L.append("does not have is exactly what the forward-reference guard exists to catch. Read the")
     L.append("manifest for the list.")
+    L.append("")
+    L += guards_table()
     return "\n".join(L)
+
+
+# Guard, what it scans, how a root is added, which pytest fails. Generated into the block so
+# it cannot drift from the code: a guard whose row is wrong is a guard nobody will trust.
+GUARDS = (
+    ("`scripts/marker_check.py`",
+     "every written manifest `dst` plus CLAUDE.md, rules/, docs/reference/, package.json, "
+     "tests/render/, scripts/dup_content_audit.py",
+     "add a non-`deferred` row to `data/port-manifest.json`, or a path to `FIXED_ROOTS`",
+     "`tests/py/test_marker_check.py`"),
+    ("`scripts/placeholder_check.py`",
+     "`dist/` plus the union of its literal floor (.claude/skills, .claude/agents, "
+     "docs/reference) with `marker_check.scan_roots()`",
+     "inherited — anything the marker gate judges is scanned automatically",
+     "`tests/py/test_placeholder_check.py`"),
+    ("fact lint",
+     "`.claude/agents` and `.claude/skills`: locked £ amounts, banned tokens, DEFRA only "
+     "beside transport, no stand-in inside a heading or path segment, lifespan 12–14",
+     "drop a file into either tree",
+     "`tests/py/test_agent_facts.py`"),
+    ("path guard + stale-marker",
+     "every repo path cited in a `docs/reference` doc, and every `(arrives in Task N)` "
+     "marker whose path now exists",
+     "cite a path in a reference doc",
+     "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`"),
+    ("table lint + frontmatter",
+     "every skill's frontmatter and every markdown table in the skill tree",
+     "add a skill directory under `.claude/skills`",
+     "`tests/py/test_skills_frontmatter.py`"),
+    ("harness vocabulary",
+     "`tests/render/` check ids, families and the deferred-check register",
+     "register a check in the harness",
+     "`tests/render/meta.spec.ts` via `npm run test:render:meta`"),
+    ("credentials doc + secret scan",
+     "`docs/reference/credentials.md` key table; every `.env` value against all tracked "
+     "files, the run log and `docs/artifacts/*.html`; credential SHAPES across "
+     "`marker_check.scan_roots()` plus docs/reports, docs/artifacts, "
+     "data/quality/scorecards, tests/py/fixtures",
+     "inherited from the marker gate; add a key to `.env` and `.env.example`",
+     "`tests/py/test_credentials_doc.py`, `tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py`"),
+    ("agent + system registries",
+     "`.claude/agents` frontmatter against `data/agent-registry.json`; this document "
+     "against the repo",
+     "add an agent, a skill, a script or a `data/` file",
+     "`npm run agents`, `npm run registry` (both `--check`)"),
+    ("render baseline",
+     "the generated table in `docs/reports/render-baseline-project2.md` against the "
+     "scorecards",
+     "regenerate with `scripts/render_baseline.py --write`",
+     "`npm run baseline`"),
+    ("parity / redirects / schema / sitemaps",
+     "the built `dist/` against the migration record, the redirect map, JSON-LD and the "
+     "sitemap shards",
+     "build a page — coverage follows `dist/`",
+     "`npm run check:all`"),
+)
+
+
+def guards_table():
+    L = ["## Mechanical guards — %d" % len(GUARDS), ""]
+    L.append("Every rule in this repo that is actually enforced is enforced by one of these. A")
+    L.append("guard that is not in this table is not a guard; a rule with no row here is a")
+    L.append("convention. \"How a root is added\" is the column that matters when a later project")
+    L.append("brings new files: most guards inherit their scope from the marker gate, so the")
+    L.append("answer is usually \"add the manifest row and it is covered\".")
+    L.append("")
+    L.append("| Guard | What it scans | How a root is added | Which pytest fails |")
+    L.append("|---|---|---|---|")
+    for guard, scans, adds, fails in GUARDS:
+        L.append("| %s | %s | %s | %s |" % (guard, scans, adds, fails))
+    return L
 
 
 def compose(root=ROOT):

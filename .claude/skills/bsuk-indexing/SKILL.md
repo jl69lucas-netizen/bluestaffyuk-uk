@@ -41,13 +41,13 @@ You are the **Indexing Agent** for BlueStaffyUK. Your job is to ensure every pag
 
 | Property | Value |
 |---|---|
-| Domain | https://SITE_URL_PLACEHOLDER |
+| Domain | $SITE_URL |
 | Local files | `dist/` |
 | Sitemaps | `sitemap_index.xml`, `page-sitemap.xml`, `post-sitemap.xml`, `video-sitemap.xml`, `local-sitemap.xml` |
 | IndexNow key | NOT FETCHED until project 6 (a gitignored `.env`, never this file) |
-| IndexNow key file | `https://SITE_URL_PLACEHOLDER/<indexnow-key>.txt` |
+| IndexNow key file | `$SITE_URL/<indexnow-key>.txt` |
 | GSC credentials | NOT FETCHED until project 6 |
-| GSC Site URL | `https://SITE_URL_PLACEHOLDER/` |
+| GSC Site URL | `$SITE_URL/` |
 
 ---
 
@@ -60,7 +60,7 @@ import re, glob
 
 # dist/, not dist/ and NOT the MFS project: gates measure the BUILT page.
 SITE_ROOT = "dist"
-DOMAIN = "https://SITE_URL_PLACEHOLDER"
+DOMAIN = "$SITE_URL"
 
 issues = []
 for fpath in glob.glob(f"{SITE_ROOT}/**/index.html", recursive=True):
@@ -115,7 +115,7 @@ import re, glob, os
 # public/ is where BSUK's sitemaps live. This block WRITES — pointed at the old
 # MFS path it would have rewritten a different project's sitemaps in place.
 SITE_ROOT = "public"
-DOMAIN = "https://SITE_URL_PLACEHOLDER"
+DOMAIN = "$SITE_URL"
 
 def fix_sitemap(content):
     # Fix <loc>
@@ -167,7 +167,7 @@ print(f"Access token: {access_token[:30]}...")
 ```python
 import urllib.request
 
-SITE = "https://SITE_URL_PLACEHOLDER/"
+SITE = "$SITE_URL/"
 SITEMAPS = [
     "sitemap_index.xml",
     "page-sitemap.xml",
@@ -180,7 +180,7 @@ from urllib.parse import quote
 site_encoded = quote(SITE, safe='')
 
 for sm in SITEMAPS:
-    sm_url = quote(f"https://SITE_URL_PLACEHOLDER/{sm}", safe='')
+    sm_url = quote(f"$SITE_URL/{sm}", safe='')
     req = urllib.request.Request(
         f"https://www.googleapis.com/webmasters/v3/sites/{site_encoded}/sitemaps/{sm_url}",
         headers={"Authorization": f"Bearer {access_token}"},
@@ -197,15 +197,19 @@ for sm in SITEMAPS:
 ### Re-auth if refresh token is expired:
 If you get `invalid_grant`, the refresh token has expired. Generate a new one:
 
+Every credential below is read from `.env` at the repo root (gitignored, never committed);
+export it with `set -a; . ./.env; set +a` before running these commands and never paste a
+literal id, secret or token into this file.
+
 1. Go to this URL (logged in as jl69lucas@gmail.com):
-   `https://accounts.google.com/o/oauth2/auth?client_id=127795919160-4sav11nlbd7pva34681q8igh63nldn87.apps.googleusercontent.com&redirect_uri=https://developers.google.com/oauthplayground&response_type=code&scope=https://www.googleapis.com/auth/webmasters%20https://www.googleapis.com/auth/indexing&access_type=offline&prompt=consent`
+   `https://accounts.google.com/o/oauth2/auth?client_id=$GA4_CLIENT_ID&redirect_uri=https://developers.google.com/oauthplayground&response_type=code&scope=https://www.googleapis.com/auth/webmasters%20https://www.googleapis.com/auth/indexing&access_type=offline&prompt=consent`
 2. Authorize and get the auth code from the URL
 3. Exchange for refresh token:
 ```bash
 curl -X POST https://oauth2.googleapis.com/token \
   -d "code=AUTH_CODE_HERE" \
-  -d "client_id=127795919160-4sav11nlbd7pva34681q8igh63nldn87.apps.googleusercontent.com" \
-  -d "client_secret=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" \
+  -d "client_id=$GA4_CLIENT_ID" \
+  -d "client_secret=$GSC_CLIENT_SECRET" \
   -d "redirect_uri=https://developers.google.com/oauthplayground" \
   -d "grant_type=authorization_code"
 ```
@@ -278,8 +282,8 @@ Disallow: /*?add-to-cart=
 
 And sitemap entries are absolute:
 ```
-Sitemap: https://SITE_URL_PLACEHOLDER/sitemap_index.xml
-Sitemap: https://SITE_URL_PLACEHOLDER/local-sitemap.xml
+Sitemap: $SITE_URL/sitemap_index.xml
+Sitemap: $SITE_URL/local-sitemap.xml
 ```
 
 ---
@@ -291,7 +295,7 @@ All URLs must be absolute. Run this fix:
 import re
 from html import unescape
 
-DOMAIN = "https://SITE_URL_PLACEHOLDER"
+DOMAIN = "$SITE_URL"
 with open('dist/llms.txt') as f:
     content = f.read()
 

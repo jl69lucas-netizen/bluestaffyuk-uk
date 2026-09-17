@@ -76,7 +76,7 @@ projects 3–5, not defects introduced here. Every such number below is tagged
 
 `.env` was sourced for both runs, so `PUBLIC_FORMSPREE_ID` was in the environment and Astro
 baked the real Formspree action into `dist/`. `dist/` is gitignored and is not committed.
-Two consequences, both observed: `FORMSPREE_ID_PLACEHOLDER` fell to **0 occurrences in 0
+Two consequences, both observed: `FORMSPREE_ID_PLACEHOLDER` is at **0 occurrences in 0
 files** across `dist/` and the instruction tree, and `scripts/form_contract_audit.py` clears — `examined 1 forms; 0 problems
 (inquiry 1, in-scope 1, newsletter 0)`. The last `#contact` row is gone. The render
 harness's `form-inquiry-contract` still reports 3 advisory rows on the contact page; those
@@ -143,21 +143,28 @@ Green on both runs as part of the 1240-test suite. Rule 10 is enforced, not asse
 
 | Token | Occurrences | Files |
 |---|---|---|
-| `SITE_URL_PLACEHOLDER` | 891 | 112 |
-| `PHONE_PLACEHOLDER` | 19 | 12 |
+| `SITE_URL_PLACEHOLDER` | 883 | 113 |
+| `PHONE_PLACEHOLDER` | 21 | 13 |
 | `FORMSPREE_ID_PLACEHOLDER` | 0 | 0 |
-| `LICENCE_CLAIM_PLACEHOLDER` | 633 | 70 |
-| `LEGAL_CLAIM_PLACEHOLDER` | 149 | 66 |
-| **Total** | **1692** | |
+| `LICENCE_CLAIM_PLACEHOLDER` | 639 | 74 |
+| `LEGAL_CLAIM_PLACEHOLDER` | 155 | 70 |
+| **Total** | **1698** | |
 
-Identical on both runs' `check:all`. One caveat, recorded because it is the only number that
-moved between the two runs: this report and `docs/reference/session-log.md` **name** the five
-tokens in prose, so a `placeholder_check.py` run made after the close-out documents were
-written reports a slightly higher total — 1695 at the second run's release probe, and higher
-again once this report is committed. Those are documentation mentions of the token names, not
-unresolved placeholders in content, and they resolve when the tokens themselves do at project
-6. The gate measurement of record is the 1692 above, taken with the instruction tree in its
-pre-close-out state on both runs.
+**These are the final, post-close-out figures**, and two things moved them from the 1692 the
+two gate runs recorded. Both are accounted for exactly:
+
+| Cause | Delta | Detail |
+|---|---|---|
+| `docs/reference/session-log.md` named three tokens in prose | +3, then **−3** | `docs/reference` **is** a placeholder scan root, so spelling a token there is a permanent hit that could never reach zero on launch day. The session-log entry was rewritten to describe the stand-ins instead of naming them ("the site-URL stand-in", "the two legal-claim stand-ins"), which is why `FORMSPREE_ID_PLACEHOLDER` is back at 0. Net zero |
+| `placeholder_check.py` now derives its scan set from `marker_check.scan_roots()` | **+18** | 93 files newly covered; 0 files dropped. `SITE_URL` +3, `PHONE` +3, `LICENCE` +6, `LEGAL` +6 |
+
+`docs/reports` is **not** a placeholder scan root, so this report may name the tokens freely;
+that is deliberately where the token names and counts now live, and the session-log points
+here for them. The scan set is `dist/` plus the union of the gate's literal floor
+(`.claude/skills`, `.claude/agents`, `docs/reference`) with every file the marker gate judges
+— so a row added to `data/port-manifest.json` in project 3 inherits placeholder coverage the
+same day it inherits marker coverage, with no second list to forget. Measured old-roots total
+on the identical tree: 1680; new-roots total: 1698.
 
 `LICENCE_CLAIM_PLACEHOLDER` and `LEGAL_CLAIM_PLACEHOLDER` are the two content placeholders
 introduced during the skill re-base (spec §11). They stand in for the breeder-licence and
@@ -225,7 +232,8 @@ board-gate index [build] — 14 sections, 15 headings, 49 live pages, 0 entity r
 
 Exit 1. The two WARNs are `ledger-examined-zero` (the component ledger records one page and
 no sibling of `index`, so the five `ledger-*` checks examined nothing — the project-3
-condition above).
+condition above) and `min-h5-h6` (`H5 0 / H6 0 — floor is 5 each`, the migrated homepage's
+heading depth, the same finding `final_page_audit.py` reports as `min_h5_5` / `min_h6_5`).
 
 The three FAILs are all `header-collision`, and all three are **carried duplicates in
 migrated copy that this project may not edit** (spec §11). By heading and page:
@@ -351,11 +359,72 @@ rather than two during Task 18. Recorded as a deviation, not a shortfall.
 **Ruling on the Formspree id.** `PUBLIC_FORMSPREE_ID` holds a **public endpoint id** — it is
 served to every visitor in the contact form's `action` attribute and is not a secret. It is
 therefore permitted to appear in the spec, the plan and the Artifact documents where the
-contract is described. It is **never** permitted in code, fixtures, tests, or
+contract is described. It does appear in one committed generated file —
+`data/quality/scorecards/uk-blue-staffy-breeders-contact-2026-09-17.json`, in the captured
+form's `action` field, because the scorecard records the built page as served. That is the
+same public string the visitor receives, and it is permitted on the same footing as the
+spec, the plan and the Artifacts. It is **never** permitted in code, fixtures, tests, or
 `.env.example`: fixtures carry `FORM_ID_FROM_ENV` in the action and the meta spec
-substitutes the env value at test time, so the id sits in no committed file under `tests/`,
-`scripts/` or `src/`. Both gates read it lazily at run time. That line holds in this report:
+substitutes the env value at test time, so the id sits in no hand-written file under
+`tests/`, `scripts/` or `src/`. `tests/py/test_no_env_value_committed.py` allowlists this
+key explicitly, with that reasoning recorded beside the allowlist. Both gates read it lazily at run time. That line holds in this report:
 the id is named by key, never by value.
+
+### Incident — two live credential values were committed in this branch
+
+Found by the close-out spec review, after the two gate runs and after the first close-out
+commit. Recorded here in full because a credential that has been committed is not fixed by
+deleting it.
+
+**What.** `.claude/skills/bsuk-indexing/SKILL.md` carried, in a worked OAuth
+token-exchange example, the live values of two keys — **`GSC_CLIENT_SECRET`** and
+**`GA4_CLIENT_ID`** — at lines 201, 207 and 208 (the client id in the consent URL and again
+in the `curl` body, the client secret in the `curl` body). Both matched `.env` exactly. They
+are named here by KEY only; neither value appears in this report, in the run log, or in any
+Artifact.
+
+**How it got here.** The file was ported from the source repo, where the same example has
+always held the same literals. Mechanical re-basing changed the parrot wording and left the
+credentials untouched, because no gate was looking for them: the marker gate scans for
+re-base markers, the fact lint for unbacked claims, and neither has a concept of a secret.
+
+**Commit range.** The values were present from the skills re-base —
+`7a89519 skills: 25 system skills re-based into the single .claude/skills tree` — through
+every commit to and including the first close-out commit `eed05a5`, i.e. the whole of the
+system-transfer branch from `7a89519` onward. They are in this branch's git **history**, so
+removing them from the working tree does not remove them from the repository.
+
+**Blast radius.** The branch has **no git remote** and has never been pushed (`git remote -v`
+prints nothing); nothing left this machine by way of BSUK. But the exposure is not confined
+to BSUK: the identical two values sit in the **source repo's own skill file**,
+`~/Downloads/CAG/.claude/skills/cag-indexing/SKILL.md`, and in thirteen further copies under
+its `.claude/worktrees/` — a tracked file in a repository that has a git origin and, per the
+close-out review, has been pushed to GitHub since 2026-06-28. The OAuth client is therefore
+exposed well beyond this repository, and BSUK's clean local history does not make it safe.
+
+**Fixed at.** Every literal was replaced with its `$KEY` environment reference
+(`$GA4_CLIENT_ID`, `$GSC_CLIENT_SECRET`) and the section now opens by saying that every
+credential is read from `.env` and must never be pasted back. Done in the commit this report
+is committed in.
+
+**Rotation — PENDING, and required.** Replacing the text does not invalidate the credential.
+The **GSC OAuth client** and the **GA4 client** must be **ROTATED by the user in the Google
+Cloud Console** — new client secret, and the refresh tokens re-minted against it — **before
+project 6** wires up the GSC and GA4 pulls. Until that is done this item stays open. It is
+carried as **Known Issue 15** in `docs/reference/session-log.md`. Rotation is the user's
+action; no agent can or should perform it.
+
+**Guards added, so this cannot recur silently.** Two new pytest files, both of which report
+locations only and never the matched text:
+
+| Guard | What it proves |
+|---|---|
+| `tests/py/test_no_env_value_committed.py` | no value in `.env` appears in any tracked file, in `docs/reports/system-transfer-run.log`, or in `docs/artifacts/*.html`. Values are passed to `git grep -F` as arguments, never through a shell. Four public-by-design keys are allowlisted with the reasoning recorded inline. Run: `examined 6 values; 0 tracked files contain one` |
+| `tests/py/test_secret_shapes.py` | no credential-SHAPED token (Google OAuth client secret, OAuth client id, refresh token, API key, bare 32-hex) appears anywhere `marker_check.scan_roots()` looks, plus `docs/reports`, `docs/artifacts`, `data/quality/scorecards` and `tests/py/fixtures`. Catches credentials that were never in `.env`. Verified non-vacuous: a probe file containing one of each shape fires all five |
+
+Both were confirmed to **fail first** on the unfixed tree and pass after. They are listed in
+the Mechanical guards table in `docs/reference/system-registry.md`, which is generated so it
+cannot rot.
 </script>
 <script type="text/markdown" data-title="Second-run confirmation">
 **Identical: yes.** Both runs produced the same summary line for every gate — build 49
@@ -366,8 +435,9 @@ sweep unchanged. No `rebase` row was re-applied on run 2.
 
 The one line that moved is the placeholder total at run 2's release probe, 1692 → 1695,
 caused by the close-out session-log entry written between the two runs naming three of the
-token strings. Explained in full under "Fact lint and the placeholder gate". No gate verdict,
-exit code or defect count changed.
+token strings. That prose has since been rewritten descriptively and the gate's scan set
+widened; the final figure is 1698, reconciled line by line under "Fact lint and the
+placeholder gate". No gate verdict, exit code or defect count changed.
 </script>
 <script type="text/markdown" data-title="Out of scope">
 Restated from spec §10 so nothing below is read as an omission: components and the design
@@ -438,17 +508,19 @@ updated status; 9–14 are new from this port.
 | 4 | `test:render:pages` runs to completion against the recorded Project 2 baseline with no new blocking row | **PASS** | `5 passed, 46 failed` both runs; 265 rows / 67 blocking / 198 advisory matches `render-baseline-project2.md`; `npm run baseline` 0 problems; only `dup-no-sibling-crossover` 42→33 and `form-inquiry-contract` 6→3 moved, both intended, both downward |
 | 5 | `port_from_cag.py` reports `missing 0`; a second run re-applies no `rebase` row | **PASS-WITH-DEVIATION** | `missing 0, blocked 0`, `applied 10` (= the copy count) on both runs. Deviation of wording only: the script buckets rebase rows as `skipped-existing 129`, so §9's literal "`applied 0` for `rebase` rows" reads as "the 129 rebase rows stay in `skipped-existing` and `applied` never exceeds the copy count" — which both runs show |
 | 6 | The homepage proving board is approved, passes `board_gate.py`, and its Artifact is built | **PASS-WITH-DEVIATION** | `data/boards/index.json` `approval.approved_at` `2026-09-16T00:00:00Z`; Artifact source `docs/artifacts/boards/index.html`. Per §11 the gate is green "except for the three carried duplicates": `3 FAIL · 2 WARN`, exit 1, all three FAILs the listed `header-collision` rows in migrated copy, down from five after Task 15 cleared the two chrome rows. The gate is not weakened |
-| 7 | `.env` holds all keys; the MCP block is gone; the desktop config is valid JSON; `~/bsuk-mcp-server` no longer exists | **PASS-WITH-DEVIATION** | 11 keys, not §9's nine — the GA4 group split into four. `INDEXNOW_KEY` intentionally empty until project 6. Block removed, backup `claude_desktop_config.json.bak-20260917-022840`, config parses, server directory deleted |
+| 7 | `.env` holds all keys; the MCP block is gone; the desktop config is valid JSON; `~/bsuk-mcp-server` no longer exists; **no credential value is committed** | **PASS-WITH-DEVIATION** | 11 keys, not §9's nine — the GA4 group split into four. `INDEXNOW_KEY` intentionally empty until project 6. Block removed, backup `claude_desktop_config.json.bak-20260917-022840`, config parses, server directory deleted. **Deviation: the Incident above.** `GSC_CLIENT_SECRET` and `GA4_CLIENT_ID` were committed in `.claude/skills/bsuk-indexing/SKILL.md` from `7a89519` through `eed05a5`; replaced with `$KEY` references in this commit; the branch has no remote, but the same values are pushed in the source repo, so **rotation in the Google Cloud Console is PENDING and required before project 6** (Known Issue 15). Two new guards (`tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py`) now prove the absence on every run |
 | 8 | `docs/reports/system-transfer-gate-report.md` written and published as an Artifact, with this spec and the plan | **PASS** | this file; `docs/artifacts/bsuk-system-transfer-gate-report.html`, `bsuk-system-transfer-spec.html` and `bsuk-system-transfer-plan.html` all rebuilt by `scripts/build_spec_artifact.py` |
-| 9 | Commit trailer on every commit: `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **PASS** | 57 commits on `system-transfer`, 57 carrying the trailer |
+| 9 | Commit trailer on every commit: `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **PASS** | branch range `7655bd3..HEAD` (`7655bd3` is `foundation`'s tip, the cut point). `git log --oneline 7655bd3..HEAD \| wc -l` → **59**; trailer coverage **59/59** |
 | 10 | (§11) The marker gate is `marker_check.py` and is at zero with no allowlist | **PASS** | `examined 233 files; 0 problems`, both runs; 418 → 0 |
 | 11 | (§11) The fact lint enforces the locked facts across agents and skills | **PASS** | `tests/py/test_agent_facts.py` green within the suite |
 | 12 | (§11) The form check refuses lazily rather than throwing at import | **PASS** | unset → `REFUSED …`, exit 2, `examined: 0`, one defect row; the other nine families still run |
 | 13 | (§11) Deploy resolves to guarded IndexNow and pagefind; no deploy script | **PASS** | `indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` and again on the placeholder `SITE_URL`; `build:release` sits behind `scripts/release_guard.sh`; documented inactive in CLAUDE.md |
 
-**Verdict count: 10 PASS · 3 PASS-WITH-DEVIATION · 0 FAIL.** All three deviations are
-recorded in spec §11 or are arithmetic restatements of it; none is a shortfall against the
-amended definition of done.
+**Verdict count: 10 PASS · 3 PASS-WITH-DEVIATION · 0 FAIL.** Rows 5 and 6 are recorded in
+spec §11 or are arithmetic restatements of it. Row 7 is **not**: it carries a real defect
+found at close-out, fixed in the tree and fully disclosed in the Incident above, but with
+**credential rotation still pending on the user**. Project 2 should not be considered closed
+for credential purposes until that rotation is done.
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>

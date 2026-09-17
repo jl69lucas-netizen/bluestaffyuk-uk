@@ -62,12 +62,17 @@ project; 9–14 are new from the system transfer.
 6. **17 stub locations are noindexed.** They carry 0–7 words of legacy body.
    **Project 5** writes them; `scripts/sitemap_check.py` keeps them out of the shards until
    then.
-7. **Placeholders.** 1692 occurrences across five tokens. `SITE_URL_PLACEHOLDER` (891) and
-   `PHONE_PLACEHOLDER` (19) resolve at **project 6** launch; `FORMSPREE_ID_PLACEHOLDER` is
-   already at 0. `LICENCE_CLAIM_PLACEHOLDER` (633) and `LEGAL_CLAIM_PLACEHOLDER` (149) were
+7. **Placeholders.** Five stand-in tokens are still in the tree. This entry describes them
+   rather than naming them: `docs/reference` is itself a placeholder scan root, so spelling
+   a token here would register as a permanent hit and the gate would never reach zero on
+   launch day. The exact token names and counts are in
+   `docs/reports/system-transfer-gate-report.md`, which is not a scan root.
+   The site-URL stand-in and the phone stand-in resolve at **project 6** launch; the
+   form-endpoint stand-in is already clear, because the build reads the endpoint from `.env`.
+   The two legal-claim stand-ins — the breeder-licence claim and the Lucy's-Law claim — were
    added by project 2's skill re-base and await **Lisa Bright's** confirmation of the
-   breeder-licence and Lucy's-Law wording. `BSUK_RELEASE=1 npm run check:placeholders`
-   refuses to ship any of them (exit 1, confirmed).
+   wording. `BSUK_RELEASE=1 npm run check:placeholders` refuses to ship any of them
+   (exit 1, confirmed).
 8. **`schema-date-modified-present`.** 18 rows over 6 pages; needs
    `scripts/generate_page_dates.py` wired into the content pass, which arrives with
    **project 4** — the same project that gives pages a real edit history for sitemap
@@ -95,3 +100,21 @@ project; 9–14 are new from the system transfer.
     deploy script — the source repo pushed to a host and this repo has none. **Project 6.**
 14. **GSC and GA4 pulls are unwired.** The eight keys are in `.env` and named in
     `docs/reference/credentials.md`, but no script reads them yet. **Project 6.**
+
+15. **Two live credential values were committed in this branch — ROTATION PENDING.**
+    `.claude/skills/bsuk-indexing/SKILL.md` carried the live values of `GSC_CLIENT_SECRET`
+    and `GA4_CLIENT_ID` inside an OAuth token-exchange example, from the skills re-base
+    (`7a89519`) through the first close-out commit (`eed05a5`). The literals were replaced
+    with `$GSC_CLIENT_SECRET` / `$GA4_CLIENT_ID` at the close-out, but they remain in this
+    branch's git history. The branch has **no remote** and was never pushed; however the
+    identical values are in the source repo's own indexing skill, which is tracked and
+    pushed to its GitHub origin, so the OAuth client is exposed regardless of BSUK's local
+    history.
+    **Action required by the user: rotate the GSC OAuth client and the GA4 client in the
+    Google Cloud Console — new client secret, refresh tokens re-minted — before project 6
+    wires up the GSC and GA4 pulls.** No agent can do this. Two guards now prove the absence
+    on every run: `tests/py/test_no_env_value_committed.py` (every `.env` value against all
+    tracked files, the run log and the Artifacts) and `tests/py/test_secret_shapes.py`
+    (credential shapes across the marker gate's roots plus reports, artifacts, scorecards and
+    fixtures). Full account: `docs/reports/system-transfer-gate-report.md` § Credentials and
+    MCP → Incident. **Open until rotated.**

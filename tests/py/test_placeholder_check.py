@@ -8,7 +8,8 @@ lives (the instruction tree, not `dist/`), and it must block a release build.
 """
 import pytest
 
-from placeholder_check import LIST_CAP, PLACEHOLDERS, SOURCE_ROOTS, main, scan
+from placeholder_check import (LIST_CAP, PLACEHOLDERS, SOURCE_ROOTS, main, scan,
+                               source_files)
 
 
 def _repo(tmp_path, dist_files=(), skill_files=(), agent_files=(), other_files=()):
@@ -41,6 +42,34 @@ def test_both_claim_tokens_are_registered():
 def test_instruction_tree_roots_are_scanned():
     assert ".claude/skills" in SOURCE_ROOTS
     assert ".claude/agents" in SOURCE_ROOTS
+
+
+def test_scan_set_is_derived_from_the_marker_gate_not_a_second_list():
+    """The gate's real scan set is the union of the literal floor with every file the
+    marker gate judges, so a manifest row added in project 3 inherits placeholder coverage
+    automatically. Proven against the real repo, not a fixture."""
+    import pathlib as _p
+    import sys as _s
+    _s.path.insert(0, str(_p.Path(__file__).resolve().parents[2] / "scripts"))
+    import marker_check
+
+    derived = {f.resolve() for f in marker_check.scan_roots()}
+    scanned = {f.resolve() for f in source_files()}
+    text = {f for f in derived
+            if f.suffix.lower() in __import__("placeholder_check").TEXT_SUFFIXES}
+    missing = sorted(p.name for p in text - scanned)
+    assert missing == [], f"marker-gate files the placeholder gate does not scan: {missing}"
+
+    manifest = _p.Path(__file__).resolve().parents[2] / "data/port-manifest.json"
+    assert manifest.resolve() not in scanned, "port-manifest must stay excluded"
+
+
+def test_the_literal_floor_still_works_without_a_manifest(tmp_path):
+    """source_files() must not go blind on a tree marker_check can say nothing about."""
+    p = tmp_path / ".claude/skills/x/SKILL.md"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("LEGAL_CLAIM_PLACEHOLDER", encoding="utf-8")
+    assert [f.name for f in source_files(tmp_path)] == ["SKILL.md"]
 
 
 @pytest.mark.parametrize("token", ["LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER"])
