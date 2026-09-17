@@ -295,4 +295,17 @@ re-base covers every marker hit under `tests/render/`, about 57 files, not six.
   blog → short, location/hub → none), never from a hard-coded slug list. Fixtures carry
   `FORM_ID_FROM_ENV` in the action and the meta spec substitutes the env value at test time,
   so the id never sits in a committed file under `tests/`, `scripts/` or `src/`.
+- Render gates in §9 (Task 16): "`test:render:pages` green" was never achievable on
+  Foundation's terms — that gate measures migrated WordPress markup and its baseline is the
+  starting line for projects 3–4. §9 now reads: `test:render:meta` green; `test:render:pages`
+  runs to completion against the recorded Project 2 baseline in
+  `docs/reports/render-baseline-project2.md` (5 passed / 46 failed, 265 defect rows across
+  17 pages, 67 blocking / 198 advisory) with no new blocking row versus Foundation's gate
+  report; every family examines at least one page. The only rows that moved after the
+  harness re-base are `dup-no-sibling-crossover` (42 → 33) and `form-inquiry-contract`
+  (6 → 3), both intended.
+- Deferred checks (Task 16): the plan's two ids `bottom-bar-under-tabbar` and
+  `analytics-double-load` never existed in the render harness — they are Python
+  page-hardening checks in the source repo — so `deferred_checks` gained nothing. If a
+  later project ports them into the harness, defer them then.
 
