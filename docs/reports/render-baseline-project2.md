@@ -22,7 +22,13 @@ appeared that was not already present in the 2026-09-16 scorecard.
 ## Defect rows by family
 
 Rows are comparable across families; instances are not. Severity is the check's own
-`severity` field, so a family can carry both kinds (SEM does).
+`severity` field in `tests/render/checks/*.ts` — the scorecard JSON carries none — so a family
+can carry both kinds (SEM does). Everything between the generated markers below is produced by
+`python3 scripts/render_baseline.py --write docs/reports/render-baseline-project2.md`; `npm run
+baseline` fails if it drifts. Do not hand-edit it.
+
+<!-- generated:start -->
+Scorecard run 2026-09-17 — 17 page scorecards, 265 defect rows.
 
 | Family | Blocking rows | Advisory rows | Pages affected |
 |---|---|---|---|
@@ -37,11 +43,8 @@ Rows are comparable across families; instances are not. Severity is the check's 
 | SEM | 9 | 108 | 17 |
 | **Total** | **67** | **198** | **17** |
 
-Rows by check: `css-class-resolves` 51, `sem-all-six-levels` 51, `dup-no-sibling-crossover` 33,
-`sem-title-case-headings` 33, `sem-section-opening-paragraph` 24, `nav-jump-target-lands` 18,
-`schema-date-modified-present` 18, `img-srcset-within-2x` 15, `sem-heading-order` 9,
-`layout-tap-target-size` 4, `a11y-text-contrast-aa` 3, `form-inquiry-contract` 3,
-`schema-no-visible-date` 3.
+Rows by check: `css-class-resolves` 51, `sem-all-six-levels` 51, `dup-no-sibling-crossover` 33, `sem-title-case-headings` 33, `sem-section-opening-paragraph` 24, `nav-jump-target-lands` 18, `schema-date-modified-present` 18, `img-srcset-within-2x` 15, `sem-heading-order` 9, `layout-tap-target-size` 4, `a11y-text-contrast-aa` 3, `form-inquiry-contract` 3, `schema-no-visible-date` 3.
+<!-- generated:end -->
 
 ## DUP before and after Task 15's whitelist re-measurement
 

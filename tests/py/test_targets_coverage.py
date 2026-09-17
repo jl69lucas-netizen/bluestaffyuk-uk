@@ -37,6 +37,14 @@ def _used(t):
     return {p["page_type"] for p in t["pages"]}
 
 
+def test_there_are_target_pages_at_all(targets):
+    assert targets["pages"], (
+        "`pages` is empty — every coverage assertion below is vacuously true against an "
+        "empty target list, so this is the one that has to come first"
+    )
+    assert targets["families_by_page_type"], "families_by_page_type is empty"
+
+
 def test_every_declared_page_type_has_at_least_one_target_page(targets):
     orphans = sorted(_declared(targets) - _used(targets))
     assert not orphans, (
@@ -53,8 +61,9 @@ def test_every_target_page_type_is_mapped_to_families(targets):
 
 
 def test_every_family_is_wired_to_at_least_one_reachable_page_type(targets):
-    reachable = {f for pt in _used(targets) for f in targets["families_by_page_type"][pt]}
-    declared_families = {f for fams in targets["families_by_page_type"].values() for f in fams}
+    mapping = targets["families_by_page_type"]
+    reachable = {f for pt in _used(targets) for f in mapping.get(pt, [])}
+    declared_families = {f for fams in mapping.values() for f in fams}
     dangling = sorted(declared_families - reachable)
     assert not dangling, f"families wired to no page type that has a real page: {dangling}"
 

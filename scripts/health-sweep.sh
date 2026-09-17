@@ -110,6 +110,16 @@ echo "  skills found: $(ls -d .claude/skills/*/SKILL.md 2>/dev/null | wc -l | tr
 # marker gate is what has to hold instead.
 python3 scripts/marker_check.py || FAIL=1
 
+# The render baseline table in docs/reports/ is derived from the scorecards and from each
+# check's `severity:` in tests/render/checks/*.ts. Hand-editing either side silently rots the
+# number the Task 20 gate report quotes, so the sweep regenerates it and compares.
+if [ -f scripts/render_baseline.py ] && ls data/quality/scorecards/*.json >/dev/null 2>&1; then
+  if python3 scripts/render_baseline.py --check; then pass "Render baseline report in sync"
+  else fail "Render baseline drift — run: python3 scripts/render_baseline.py --write docs/reports/render-baseline-project2.md"; fi
+else
+  warn "no scorecards yet — render-baseline check skipped (run node scripts/build_scorecard.mjs)"
+fi
+
 # -----------------------------------------------------------------------------
 hdr "3. ASTRO BUILD"
 # -----------------------------------------------------------------------------
