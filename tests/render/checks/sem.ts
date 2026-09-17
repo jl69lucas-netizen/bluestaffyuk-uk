@@ -251,9 +251,9 @@ register({
 
         // The defect is deliberately NARROW: heading immediately followed by another
         // heading. A heading followed by a <ul> is NOT flagged, because on this site
-        // that is a bird card (name, then the spec list) and a hero (H1, then the trust
+        // that is a puppy card (name, then the spec list) and a hero (H1, then the trust
         // badge row) — both correct. Measured before choosing the predicate: the wider
-        // "must be a <p>" form fired 9 times on available/roys and 9 on
+        // "must be a <p>" form fired 9 times on available-puppies/roman and 9 on
         // the breed-comparison page, and every one of those was a card, not a missing paragraph.
         const nextOwner = owner[nextIdx];
         if (nextOwner) {

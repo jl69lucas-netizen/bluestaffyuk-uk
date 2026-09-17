@@ -155,7 +155,7 @@ register({
   // pages declaring exactly one standalone offered Product, and the other 7 are hubs,
   // guides and multi-listing pages. That is nothing-to-check, not a check that no-opped,
   // which is the distinction `minExamined` exists to police. Worth blocking on despite the
-  // narrow scope: the defect it catches is a bird shown Sold while its Offer still says
+  // narrow scope: the defect it catches is a puppy shown Sold while its Offer still says
   // InStock, which is a commercial error, not a cosmetic one.
   severity: 'blocking',
   describe: 'a listing the page shows as sold may not declare InStock',
@@ -170,7 +170,7 @@ register({
     // not carry, and guessing the boundary by climbing ancestors is how a checker starts
     // reporting one card's badge against another card's schema. Multi-listing attribution
     // is left to the page's own build gate. On a single-listing page the attribution is
-    // unambiguous, and that is the case the rule was written for: a sold bird left InStock.
+    // unambiguous, and that is the case the rule was written for: a sold puppy left InStock.
     if (standalone.length !== 1) return { examined: 0, defects: [] };
 
     const o = standalone[0].node.offers;
@@ -180,7 +180,7 @@ register({
     const sold = await page.evaluate(() => {
       // A BADGE, not prose: an element whose entire trimmed text is the status word.
       // "…Amie, sold last spring…" in a sentence is not a sold listing, and matching
-      // the substring would make every cross-link to a placed bird a defect.
+      // the substring would make every cross-link to a placed puppy a defect.
       const root = document.querySelector('main') || document.body;
       const hits: string[] = [];
       for (const el of Array.from(root.querySelectorAll<HTMLElement>('*'))) {

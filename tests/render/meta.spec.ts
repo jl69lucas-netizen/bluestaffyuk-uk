@@ -38,7 +38,7 @@ import './checks/index.js';
  * Fixtures are judged under the STRICTEST page type, not a neutral one.
  *
  * `pageType` only reaches checks that condition on it, and today that is SCHEMA, where
- * `puppy` (CAG's `bird`) is the tightest branch (exactly one Product/Offer, never AggregateOffer). Passing
+ * `puppy` is the tightest branch (exactly one Product/Offer, never AggregateOffer). Passing
  * something laxer here would let a SCHEMA check pass its fixtures through a branch it never
  * takes on the page type it was written for — the fixture pair would then be proving a
  * property nobody relies on.
@@ -169,7 +169,7 @@ test.describe('dup-no-sibling-crossover sees a crossover adjacent to a whitelist
  * The DUP check is only as wide as the sibling set pages.spec hands it.
  *
  * Found 2026-09-11: the set was "same page type", and targets.json holds 13 for-sale
- * targets but exactly ONE each of bird, comparison, interior, location, blog and hub — so on
+ * targets but exactly ONE each of puppy, comparison, interior, location, blog and hub — so on
  * six of eight page types DUP compared against nothing and reported examined=0, while the
  * Python gate (every dist page, pairwise) found 481 crossovers on 70 pages that day. Home
  * did not run DUP at all. The fixture pair above cannot see this: meta supplies its own
@@ -1148,14 +1148,14 @@ test.describe('every registered family is actually wired into targets.json', () 
 
   test('the predicate names a family that is registered but wired nowhere', () => {
     expect(
-      unwiredFamilies(['IMG', 'A11Y'], { 'for-sale': ['IMG'], bird: ['IMG'] }),
+      unwiredFamilies(['IMG', 'A11Y'], { 'for-sale': ['IMG'], puppy: ['IMG'] }),
     ).toEqual(['A11Y']);
   });
 
   test('a family wired into even one page type is not reported', () => {
     // Deliberately asymmetric: A11Y runs on for-sale only. That is a scoping decision,
     // not a defect, and this invariant must not force every family onto every page type.
-    expect(unwiredFamilies(['IMG', 'A11Y'], { 'for-sale': ['IMG', 'A11Y'], bird: ['IMG'] })).toEqual(
+    expect(unwiredFamilies(['IMG', 'A11Y'], { 'for-sale': ['IMG', 'A11Y'], puppy: ['IMG'] })).toEqual(
       [],
     );
   });

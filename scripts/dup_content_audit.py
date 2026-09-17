@@ -29,22 +29,31 @@ from _slugs import page_key
 MIN_WORDS = 12
 WHITELIST_SNIPPETS = [
     # ── 2026-09-17, measured on the BSUK dist/ build (49 pages) ─────────────
-    # Every entry below was MEASURED, not guessed: shingles shared by 3+ pages were
-    # merged into maximal runs and each run was classified as chrome (a component
-    # rendered on many page types) or as page prose. Only chrome is listed here.
+    # Every entry below was MEASURED, not guessed, by scripts/measure_chrome.py — run it
+    # to reproduce or re-measure after a redesign. It merges shingles shared by 3+ built
+    # pages into maximal runs, reduces each to its invariant core (the sub-run carried by
+    # the most pages), and prints the carrying pages; each core was then classified as
+    # chrome (a component rendered across page types) or as page prose. Whitelist the CORE,
+    # never the longest run on one page — the longer stem exempts nothing on the pages that
+    # carry the shorter variant. Only chrome is listed here.
     # Location-page prose that repeats across the nine templated city pages — the
     # passionate-about-breeding about-block, the L-2-HGA / HC-HSF4 health-testing
     # block — is deliberately ABSENT: that is the migrated-content baseline and it
     # belongs in the gate report, not in the exemption list.
 
-    # CTA band + enquiry-form intro — one component, rendered on nine page types
-    "reserve your blue staffy puppy fill in your details below and we'll be in touch within 24 hours",
+    # CTA band + enquiry-form intro — one component, rendered on nine page types. The stem
+    # is the INVARIANT CORE (10 pages), not the longest run on one page: the heading above
+    # it varies, and a stem starting `reserve your blue staffy puppy` left the 13-word
+    # remainder reported nine times.
+    "fill in your details below and we'll be in touch within 24 hours",
     "complete our short enquiry form choose your puppy and we'll be in touch within 24 hours start your enquiry",
     "reserve your puppy today kc aware ethical breeders full health tested",
 
     # delivery band — the canonical delivery terms, mandated identical wherever they render
     "delivery note delivery begins 24 48 hours after payment confirmation train station pickup is our default method free",
-    "uk home delivery by defra approved transport priced by distance 200 to 350 or collect in glasgow",
+    # invariant core (9 pages): the trailing `in glasgow` is present on six of them only,
+    # and including it left the 15-word remainder reported eight times
+    "uk home delivery by defra approved transport priced by distance 200 to 350 or collect",
     "train station handover free we meet you at your nearest mainline station",
     "ground transport 100 defra approved delivery to your front door",
     "halfway meet up 100 we meet you at a convenient midpoint location",

@@ -18,7 +18,7 @@ const RAW_DIR = resolve(process.cwd(), 'data/quality/raw');
  * Slug → a filename component that cannot contain a path separator.
  *
  * Two corpus pages are nested — `available-puppies/roman` and
- * `available/roys`. Interpolated raw, those produce `data/quality/raw/blog/<...>.json`,
+ * `available-puppies/roman`. Interpolated raw, those produce `data/quality/raw/blog/<...>.json`,
  * a directory that does not exist, so the write throws, the page test fails AFTER its
  * checks have already run, and the page contributes no partial. A page with no partial
  * scores ABSENT rather than failed — the failure mode this harness treats as its worst.
