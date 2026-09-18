@@ -131,3 +131,11 @@ project; 9–14 are new from the system transfer.
     than the home base. **Build 3** carries Carlisle in the logo lockups and tokens only;
     **build 4** rewrites the copy and settings; **build 5** re-plans the 28 locations around
     Carlisle (Cumbria, the Borders, the North West and North East are now the near ring).
+    One strand of this debt is machine-readable and easy to miss: the form contract's
+    `PUPPY_OPTION` constant in `scripts/form_contract_audit.py`, and the matching
+    `<option>` value and visible label in `src/components/ContactForm.astro`, name the old
+    city in a collection choice — so the gate currently *requires* the wrong geography of
+    every page it audits in full, and the shipped contact page offers a collection point
+    the breeder has left. **Build 4** re-bases all three together when it replaces the
+    contact form with `src/components/kit/ContactFormKit.astro`, which carries no such
+    option (design-system spec §11 amendment 2).

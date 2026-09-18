@@ -252,6 +252,43 @@ def test_pages_absent_from_the_map_fall_back_to_the_slug_heuristic(tmp_path, mon
     assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
 
 
+def test_the_design_canvas_route_is_excluded_from_the_field_contract(tmp_path, monkeypatch):
+    """Project 3's design-canvas route mounts the five ContactFormKit layouts so a human
+    can pick one; they are specimens of one form, not five reachable enquiry forms, and
+    the route is deleted in Task 19. The exclusion is by NAME, so it survives the route
+    being added to the page map later, and it must not leak to any other slug."""
+    monkeypatch.setattr(F, "PAGE_MAP", _page_map(tmp_path, []))
+    F._kinds.cache_clear()
+    assert "design-canvas" in F.NON_CONTENT_ROUTES
+    assert F.contract_keys("design-canvas") == []
+    # An unknown CONTENT slug still falls to the full contract: this is one named route,
+    # not a loosening of the fallback.
+    assert [k[0] for k in F.contract_keys("design-canvas-notes")] == [k[0] for k in F.KEYS]
+    assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
+
+
+def test_the_excluded_route_still_owes_the_endpoint_and_the_method():
+    """The exclusion drops the FIELD checks only. A specimen form that posted somewhere
+    else, or by GET, would be a real defect and is still reported."""
+    stray = ('<form action="https://example.invalid/f/x" method="GET">'
+             '<input name="name" required><textarea name="message" required></textarea></form>')
+    rows = [r for r in F.audit_html(page(stray), "design-canvas") if r["action"] != "/search/"]
+    assert len(rows) == 1
+    probs = rows[0]["problems"]
+    assert any("endpoint is" in p for p in probs), probs
+    assert any("method is GET" in p for p in probs), probs
+    assert not any("absent" in p for p in probs), probs
+
+
+def test_a_contract_free_specimen_form_passes_on_the_excluded_route():
+    """The positive half: the kit's own shape — the one endpoint, POST, no netlify
+    residue — is clean on design-canvas without the per-page field contract."""
+    specimen = (f'<form action="{END}" method="POST">'
+                '<input name="name" required><input type="email" name="email" required>'
+                '<textarea name="message" required></textarea></form>')
+    assert problems(page(specimen), slug="design-canvas") == []
+
+
 def test_the_real_page_map_routes_the_contact_page_to_the_full_contract():
     F._kinds.cache_clear()
     assert [k[0] for k in F.contract_keys(CONTACT)] == [k[0] for k in F.KEYS]

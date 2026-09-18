@@ -8,7 +8,8 @@ classed "inquiry" and must carry its page's contract:
   full  — the six named controls of the built inquiry form (every in-scope page,
           the contact page included)
   short — blog/* posts: name, email, message
-  none  — the uk-locations/* cluster and the hubs (no inquiry forms today).
+  none  — the uk-locations/* cluster, the hubs (no inquiry forms today) and the
+          NON_CONTENT_ROUTES below; those still owe the endpoint and method.
 
 This is the Python half of the same contract tests/render/checks/form.ts enforces, and
 the two must agree or they will give different verdicts on the same page.
@@ -86,6 +87,19 @@ SHORT = ("name", "email", "message")
 LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
 
+# Routes that build a page but are not content pages, listed BY NAME rather than left to
+# the slug fallback. `design-canvas` is project 3's hidden noindex design-specimen route
+# (src/pages/design-canvas/index.astro): it mounts the five ContactFormKit layouts side by
+# side so a human can pick one, and the whole route is deleted in project 3 Task 19. Those
+# five are specimens of one form, not five enquiry forms a visitor can reach, so the
+# per-page FIELD contract does not apply to them. The endpoint, method and netlify-residue
+# checks still do — a specimen posting somewhere else would be a real defect, and that is
+# what keeps this from being a way to smuggle a form past the gate.
+#
+# Named here, and checked BEFORE the page map, rather than folded into the slug heuristic:
+# an exclusion nobody can see is how a content page quietly stops being audited.
+NON_CONTENT_ROUTES = ("design-canvas",)
+
 
 # data/page-map.json's `kind` is what the build actually produced; a hand list of slugs
 # drifts the first time a page is added. Kind -> contract:
@@ -104,6 +118,8 @@ def _kinds():
 
 
 def _contract_name(slug: str) -> str:
+    if slug in NON_CONTENT_ROUTES:
+        return "none"
     kind = _kinds().get(slug)
     if kind in KIND_CONTRACT:
         return KIND_CONTRACT[kind]

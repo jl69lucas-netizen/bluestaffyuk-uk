@@ -43,6 +43,7 @@ import CounterStrip from './CounterStrip.astro';
 import InfoCard from './InfoCard.astro';
 import Testimonial from './Testimonial.astro';
 import Faq from './Faq.astro';
+import ContactFormKit from './ContactFormKit.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -119,5 +120,10 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // No demo props: the three answers are the component's own defaults, and two of the
   // three are read out of data/settings.json so a price change never becomes a copy edit.
   faq: { C: Faq },
+  // No demo props: the six controls, the honeypot and the two hidden fields are the form
+  // CONTRACT, not a fixture, and the puppy options are read from data/puppies.json. The
+  // canvas route is named in form_contract_audit.py's NON_CONTENT_ROUTES, so these five
+  // are audited for endpoint and method but not as five separate enquiry forms.
+  'contact-form': { C: ContactFormKit },
   'section-divider': { C: SectionDivider },
 };

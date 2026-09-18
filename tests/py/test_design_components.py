@@ -429,3 +429,55 @@ def test_built_faq_variants_are_native_details_with_backed_answers():
         assert "<svg" not in s[v], v
     # c is the numbered treatment.
     assert ">01<" in s["c"] and f">{len(rows):02d}<" in s["c"]
+
+
+def test_built_contact_form_variants_all_keep_the_whole_form_contract():
+    """Convention 8, and spec §11 amendment 2's half of it.
+
+    The canvas route is excluded from form_contract_audit.py's per-page FIELD contract
+    (NON_CONTENT_ROUTES) because five specimens of one form are not five enquiry forms.
+    That exclusion is only safe while something else proves the specimens still carry the
+    contract — this is that something. Every variant must show the six named controls with
+    the built page's required set, the honeypot, both hidden fields, POST, and the endpoint
+    built from the environment rather than spelled in the component. The puppy options are
+    read from data/puppies.json, so a reserved pup is a data edit and not a test edit."""
+    pups = json.loads((ROOT / "data/puppies.json").read_text())
+    available = [p for p in pups if p["status"] == "Available"]
+    assert available, "the fixture needs at least one available puppy"
+    s = _sections("contact-form")
+    for v, inner in sorted(s.items()):
+        assert 'method="POST"' in inner, v
+        assert 'name="_gotcha"' in inner, v
+        for hidden in ('name="_next"', 'name="_subject"'):
+            assert hidden in inner, (v, hidden)
+        for key in ("name", "email", "phone", "location", "puppy", "message"):
+            assert f'name="{key}"' in inner, (v, key)
+        # The four the built contact page marks required; phone and location are optional
+        # there, and a kit form that demanded them would not be the same form.
+        for key in ("name", "email", "puppy", "message"):
+            assert re.search(rf'name="{key}"[^>]*\brequired\b|\brequired\b[^>]*name="{key}"',
+                             inner), (v, key)
+        assert '<select' in inner and 'name="puppy"' in inner, v
+        for p in available:
+            assert f'value="{p["slug"]}"' in inner, (v, p["slug"])
+        assert 'value="waiting-list"' in inner, v
+        assert "<textarea" in inner, v
+        # The endpoint is the one built from PUBLIC_FORMSPREE_ID (or the local stub when it
+        # is unset); either way the component never spells a Formspree id of its own.
+        assert re.search(r'action="(https://formspree\.io/f/[^"]+|#contact)"', inner), v
+    # d is the only variant that paints its own dark card, and the only one with the eyebrow.
+    assert 'data-surface="inverse"' in s["d"] and "eyebrow" in s["d"]
+    for v in ("a", "b", "c", "e"):
+        assert 'data-surface="inverse"' not in s[v], v
+    # c is the stepped one: three fieldsets with legends, and the only variant with any.
+    assert s["c"].count("<fieldset") == 3 and s["c"].count("<legend") == 3
+    for v in ("a", "b", "d", "e"):
+        assert "<fieldset" not in s[v], v
+    # b is the two-column one: the short fields sit in their own row wrapper.
+    assert "cols" in s["b"]
+    for v in ("a", "d", "e"):
+        assert "cols" not in s[v], v
+    # e is the compact panel, and the only one offering the address as a direct line.
+    assert "direct" in s["e"] and "mailto:" in s["e"]
+    for v in ("a", "b", "c", "d"):
+        assert "mailto:" not in s[v], v
