@@ -154,7 +154,7 @@ The breadcrumb must go as the **first child** inside the hero section's inner co
 |---|---|---|
 | Comparison pages | `cmp-hero` | `page-container` |
 | Care / breed guides | `care-hero` or named | `page-container` |
-| Location / Tailwind pages | `bg-logo-dark text-surface py-16 px-4` | `max-w-4xl mx-auto text-center` |
+| Location / Tailwind pages | `bg-brand text-surface py-16 px-4` | `max-w-4xl mx-auto text-center` |
 | Blog pages | `style="background:var(--color-brand)" class="text-white py-16 px-4"` | `max-w-4xl mx-auto text-center` |
 | Reviews / trust pages | `bg-brand text-white py-16 px-4` | `max-w-3xl mx-auto text-center` |
 
@@ -201,7 +201,7 @@ All city pages, all blog pages, `/available-puppies/`, and ~60 others. The 15 pa
 
 ### Link template (matches existing style)
 ```astro
-<li><a href="/[slug]/" class="text-white/80 hover:text-brand transition-colors">[Label]</a></li>
+<li><a href="/[slug]/" class="text-white/80 hover:text-link-on-inverse transition-colors">[Label]</a></li>
 ```
 
 ### Current Resources & Trust links (Column 4, as of 2026-05-22)

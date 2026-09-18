@@ -72,10 +72,10 @@ const canonical = "https://SITE_URL_PLACEHOLDER/search/";
 <BaseLayout {title} {description} {canonical}>
   <section class="py-16 px-4 min-h-[60vh]">
     <div class="max-w-3xl mx-auto">
-      <h1 class="font-lora font-bold text-3xl text-logo-dark mb-8">Search Results</h1>
+      <h1 class="font-display font-bold text-3xl text-brand mb-8">Search Results</h1>
       <form action="/search/" method="get" class="flex gap-2 mb-10">
         <input id="search-refine" name="q" type="search" placeholder="Search BlueStaffyUK…"
-          class="flex-1 border border-stone-300 rounded-full px-4 py-2.5 text-sm text-logo-dark focus:outline-none focus:border-cta focus:ring-1 focus:ring-cta" />
+          class="flex-1 border border-stone-300 rounded-full px-4 py-2.5 text-sm text-brand focus:outline-none focus:border-cta focus:ring-1 focus:ring-cta" />
         <button type="submit" class="bg-cta text-cta-ink font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-cta-hover transition-colors">Search</button>
       </form>
       <div id="results" class="space-y-5"><p class="text-stone-400 text-sm">Loading…</p></div>
@@ -98,9 +98,9 @@ const canonical = "https://SITE_URL_PLACEHOLDER/search/";
       const items = await Promise.all(search.results.slice(0, 12).map((r: any) => r.data()));
       resultsEl.innerHTML = items.map((item: any) => `
         <a href="${item.url}" class="block border border-stone-200 rounded-xl p-5 hover:border-cta/50 hover:shadow-sm transition-all group">
-          <div class="font-lora font-semibold text-logo-dark text-lg group-hover:text-brand transition-colors mb-1">${item.meta?.title ?? item.url}</div>
+          <div class="font-display font-semibold text-brand text-lg group-hover:underline transition-colors mb-1">${item.meta?.title ?? item.url}</div>
           <div class="text-stone-500 text-sm leading-relaxed line-clamp-2">${item.excerpt ?? ''}</div>
-          <div class="text-brand text-xs mt-2 font-sora">${item.url}</div>
+          <div class="text-brand text-xs mt-2 font-body">${item.url}</div>
         </a>`).join('');
     }
     runSearch();
@@ -134,7 +134,7 @@ Group Logo + search in a left flex div. Inquire Now stands alone on the right.
   </div>
 
   <!-- Desktop nav (center) -->
-  <nav class="hidden lg:flex items-center gap-5 text-sm font-sora font-medium">
+  <nav class="hidden lg:flex items-center gap-5 text-sm font-body font-medium">
     {nav links...}
   </nav>
 
@@ -187,8 +187,8 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
   <div class="max-w-7xl mx-auto">
     <div class="flex items-end justify-between mb-10 gap-4 flex-wrap">
       <div>
-        <p class="text-brand font-sora text-xs font-semibold uppercase tracking-widest mb-2">This Week's Kennel</p>
-        <h2 class="font-lora font-bold text-3xl text-logo-dark">Puppies Available Right Now</h2>
+        <p class="text-brand font-body text-xs font-semibold uppercase tracking-widest mb-2">This Week's Kennel</p>
+        <h2 class="font-display font-bold text-3xl text-brand">Puppies Available Right Now</h2>
         <p class="text-stone-500 mt-2 max-w-md text-sm leading-relaxed">
           Every puppy is home-reared, vet sex-checked, LICENCE_CLAIM_PLACEHOLDER-documented, and vet-certified before reservation.
         </p>
@@ -207,13 +207,13 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
           </div>
           <div class="p-5 flex flex-col flex-1">
             <div class="flex items-baseline justify-between mb-1">
-              <h3 class="font-lora font-bold text-xl text-logo-dark">{puppy.name}</h3>
-              <span class="text-stone-400 text-xs font-sora">📍 Glasgow</span>
+              <h3 class="font-display font-bold text-xl text-brand">{puppy.name}</h3>
+              <span class="text-stone-400 text-xs font-body">📍 Glasgow</span>
             </div>
-            <p class="text-stone-500 text-xs font-sora mb-3">{puppy.sex} · {puppy.age} · Blue Staffy</p>
+            <p class="text-stone-500 text-xs font-body mb-3">{puppy.sex} · {puppy.age} · Blue Staffy</p>
             <p class="text-stone-600 text-sm leading-relaxed mb-4 flex-1">{puppy.notes}</p>
             <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-100">
-              <span class="font-lora font-bold text-2xl text-brand">{puppy.price}</span>
+              <span class="font-display font-bold text-2xl text-brand">{puppy.price}</span>
               <a href={`/contact-us/?puppy=${puppy.id}`}
                 class="bg-cta text-cta-ink text-xs font-semibold px-4 py-2 rounded-full hover:bg-cta-hover transition-colors">
                 Inquire
@@ -223,7 +223,7 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
         </article>
       ))}
     </div>
-    <p class="text-center text-stone-400 text-xs mt-8 font-sora">
+    <p class="text-center text-stone-400 text-xs mt-8 font-body">
       All puppies include LICENCE_CLAIM_PLACEHOLDER home-bred certificate · DNA sex certificate · Canine vet health certificate · Whelp certificate
     </p>
   </div>

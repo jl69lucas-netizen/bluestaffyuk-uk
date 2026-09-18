@@ -83,10 +83,10 @@ The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@l
 **H2 / H3 on section headings — DO NOT add font-size utilities:**
 ```html
 <!-- ✅ CORRECT — let base clamp cascade -->
-<h2 class="font-lora font-bold text-logo-dark mb-4">Section Heading</h2>
+<h2 class="font-display font-bold text-brand mb-4">Section Heading</h2>
 
 <!-- ❌ WRONG — text-3xl overrides base on mobile (30px fixed, too large) -->
-<h2 class="font-lora font-bold text-3xl text-logo-dark md:text-4xl">Section Heading</h2>
+<h2 class="font-display font-bold text-3xl text-brand md:text-4xl">Section Heading</h2>
 ```
 
 **Exceptions** (explicit size classes ARE correct on these):
@@ -104,10 +104,10 @@ The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@l
 **Eyebrow / prefix spans:**
 ```html
 <!-- ✅ CORRECT -->
-<span class="font-sora text-[10px] font-medium uppercase tracking-[0.12em] text-brand md:text-[11px]">EYEBROW</span>
+<span class="font-body text-[10px] font-medium uppercase tracking-[0.12em] text-brand md:text-[11px]">EYEBROW</span>
 
 <!-- ❌ WRONG — semibold + wide tracking makes 11px look 14px -->
-<span class="font-sora text-[11px] font-semibold uppercase tracking-[0.18em]">EYEBROW</span>
+<span class="font-body text-[11px] font-semibold uppercase tracking-[0.18em]">EYEBROW</span>
 ```
 
 **Testimonial blockquotes:**

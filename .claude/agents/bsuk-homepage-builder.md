@@ -180,8 +180,8 @@ The homepage uses **Option A fluid clamp** typography. All H2/H3 section heading
 
 | Rule | ✅ Correct | ❌ Wrong |
 |---|---|---|
-| Section H2 | `class="font-lora font-bold text-logo-dark"` | `class="font-lora font-bold text-3xl md:text-4xl"` |
-| Section H3 | `class="font-lora font-bold text-logo-dark"` | `class="font-lora font-bold text-2xl"` |
+| Section H2 | `class="font-display font-bold text-brand"` | `class="font-display font-bold text-3xl md:text-4xl"` |
+| Section H3 | `class="font-display font-bold text-brand"` | `class="font-display font-bold text-2xl"` |
 | Eyebrow span | `font-medium tracking-[0.12em] text-[10px] md:text-[11px]` | `font-semibold tracking-[0.18em] text-[11px]` |
 | Testimonial blockquote | `text-lg md:text-3xl` | `text-3xl` |
 | Testimonial feature wrapper | `p-6 md:p-12` | `p-12` |

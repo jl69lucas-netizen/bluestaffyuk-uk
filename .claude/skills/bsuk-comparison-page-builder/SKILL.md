@@ -269,12 +269,12 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    cuddler and the family dog, weighed honestly" · CvT "Two Staffy subspecies, raised side by side since
    2014" · MvF "Cock or hen · DNA-certain before you ever pay". A new spoke writes its own from the
    comparison premise; duplicate eyebrows across siblings FAIL the pass.
-6. **Seam divider = brand medallion + light-orange fading htransport partners.** `img
+6. **Seam divider = brand medallion + brass fading rules.** `img
    src="/bsuk-header-logo-160.webp"` (the ONLY square logo asset — every `bsuk-footer-logo*` /
    `bsuk-seam-logo` / `bsuk-logo-badge*` file is a wide wordmark that letterboxes into a smudge inside
    the circle), `width/height=54`, CSS `object-fit:cover;padding:2px;border:2px solid
-   rgba(232,96,76,.35);border-radius:50%`. Lines: `height:2px;border-radius:1px` fading gradients to
-   `rgba(240,128,112,.6)` (--color-cta-soft), replacing the old faint 1px `#cdbfae`.
+   rgba(201,162,39,.35);border-radius:50%`. Lines: `height:2px;border-radius:1px` fading gradients to
+   `--color-cta-soft` (`#EFE3B4`), replacing the old faint 1px `#cdbfae`.
 7. **Middle newsletter is ALWAYS `NewsletterV2 variant="middle" compact`.** The full-height variant's
    36px H2 overtakes the page H1 in the 768–860px band (MvF shipped that inversion). `compact` is not
    optional on comparison spokes. (CvT currently has no middle newsletter — decision pending.)
