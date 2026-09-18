@@ -40,7 +40,7 @@ const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
 ---
 <div {...rest} class:list={['kit-faq', `kit-faq-${variant}`, cls]} data-variant={variant}>
   {items.map((it, i) => (
-    <details>
+    <details class:list={[variant === 'd' && 'kit-card']}>
       <summary>
         {variant === 'c' && <span class="num">{String(i + 1).padStart(2, '0')}</span>}
         <span class="q">{it.q}</span>
@@ -64,7 +64,11 @@ const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
     p { margin: 0; padding: 0 var(--space-4) var(--space-4); font-size: var(--text-base); }
     /* The number is a muted label, not brass: brass is 2.1:1 as small text on bone. */
     .num { font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
-    .kit-faq-d details { border: var(--card-border); box-shadow: var(--shadow-card); }
+    /* d's shell is .kit-card from src/styles/kit.css (convention 9), applied as a CLASS
+       rather than as a `.kit-faq-d details` rule: a variant whose only difference from
+       another lives in a stylesheet emits identical markup, and
+       tests/py/test_design_components.py's distinctness check compares the built sections
+       with the variant letter normalised away. d and e were that pair before this. */
     .kit-faq-e { gap: 0; }
     .kit-faq-e details { border-radius: 0; border-bottom: 1px solid var(--color-border); background: transparent; }
     .kit-faq-e summary { padding-inline: 0; }

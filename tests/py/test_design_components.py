@@ -105,10 +105,41 @@ SECTION_RE = re.compile(
     r'<section[^>]*data-component="([a-z-]+)"[^>]*data-variant="([a-e])"[^>]*>(.*?)</section>', re.S)
 
 
+# The artboard's own caption — `<h3 style="…">Title — variant a</h3>`, written by the route,
+# not by the component. It carries the variant letter, so leaving it in makes every pair of
+# sections differ no matter what the components rendered.
+CAPTION_RE = re.compile(r'^\s*<h3[^>]*>.*?</h3>', re.S)
+# The variant letter as it reaches the DOM: the component's own `kit-<name>-<letter>` class
+# and the `data-variant` hook. Both are bookkeeping; two variants that agree on everything
+# else are the same rendering wearing different labels.
+VARIANT_CLASS_RE = re.compile(r'\bkit-([a-z][a-z0-9-]*?)-([a-e])\b')
+VARIANT_ATTR_RE = re.compile(r'data-variant="[a-e]"')
+
+
+def _rendering(inner):
+    """One variant section reduced to what it actually PAINTS.
+
+    Two variants can be byte-different and visually identical: the route stamps the letter
+    into the caption, the component stamps it into its own class and into data-variant, and
+    those three alone are enough to make a pairwise byte comparison pass while the canvas
+    shows the same card twice. Everything that only NAMES the variant is stripped or
+    normalised here, so what survives the comparison is markup and CSS classes that change
+    the pixels. A variant whose only difference is in its scoped stylesheet (`.kit-x-d {
+    box-shadow: none }`) still reads as a duplicate — correctly: the canvas exists for a
+    human to pick between five options, and two that differ by a shadow are one option."""
+    out = CAPTION_RE.sub("", inner)
+    out = VARIANT_CLASS_RE.sub(r"kit-\1-V", out)
+    out = VARIANT_ATTR_RE.sub('data-variant="V"', out)
+    return out.strip()
+
+
 def test_built_sections_render_five_distinct_variants():
-    """Whatever is on the canvas today must show five genuinely different things per
-    component, with no hex reached for in an inline style. Passes for the components that
-    exist; every later task widens it for free."""
+    """Whatever is on the canvas today must show five genuinely different THINGS per
+    component, with no hex reached for in an inline style. Compared on _rendering(), not on
+    the raw section: the raw bytes always differ, because the route writes the variant
+    letter into the artboard caption and the component writes it into its own class, so a
+    byte comparison would have passed on five copies of one card. Passes for the components
+    that exist; every later task widens it for free."""
     if not DIST_ROUTE.exists():
         pytest.skip("run npm run build first")
     by_component = {}
@@ -117,9 +148,12 @@ def test_built_sections_render_five_distinct_variants():
     assert by_component, "the canvas built no variant sections at all"
     for cid, variants in sorted(by_component.items()):
         assert sorted(variants) == list("abcde"), (cid, sorted(variants))
+        painted = {v: _rendering(inner) for v, inner in variants.items()}
         same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
-                if variants[x] == variants[y]]
-        assert not same, (cid, same)
+                if painted[x] == painted[y]]
+        assert not same, (
+            f"{cid}: {same} render the same markup once the variant letter is normalised "
+            f"away — they are one option on the canvas, not two")
         hexes = [m for inner in variants.values()
                  for m in re.findall(r'style="[^"]*#[0-9A-Fa-f]{3}', inner)]
         assert not hexes, (cid, hexes)

@@ -30,10 +30,11 @@ const inverse = variant === 'd';
   aria-label="Breeder credentials"
 >
   <ul class="container list">
-    {items.map((x) => (
+    {items.map((x, i) => (
       <li class:list={[variant === 'b' && 'kit-card']}>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={x.i} /></svg>
         <div><strong>{x.t}</strong>{variant !== 'c' && <p>{x.d}</p>}</div>
+        {variant === 'e' && i < items.length - 1 && <span class="row-rule" aria-hidden="true"></span>}
       </li>
     ))}
   </ul>
@@ -56,7 +57,15 @@ const inverse = variant === 'd';
     .kit-trust-c .list { display: flex; justify-content: center; gap: 0; }
     .kit-trust-c li { padding-inline: var(--space-6); border-left: 1px solid var(--color-border); align-items: center; }
     .kit-trust-c li:first-child { border-left: 0; }
-    .kit-trust-e .list { grid-template-columns: 1fr; max-width: 560px; }
+    /* e is the DIVIDED stacked list: one column, and a hairline between the claims. The
+       rule is a real element rather than a border on the <li>, because a variant whose only
+       difference from another lives in a stylesheet emits identical markup, and
+       tests/py/test_design_components.py's distinctness check compares the built sections
+       with the variant letter normalised away. a and e were that pair before this. */
+    .kit-trust-e .list { grid-template-columns: 1fr; max-width: 560px; gap: var(--space-4); }
+    .kit-trust-e li { flex-wrap: wrap; }
+    .row-rule { flex-basis: 100%; height: 1px; background: var(--color-border); margin-top: var(--space-4); }
+    [data-surface="inverse"] .row-rule { background: color-mix(in srgb, var(--color-text-on-inverse) 24%, transparent); }
     @media (max-width: 720px) {
       .list { grid-template-columns: 1fr; }
       .kit-trust-c .list { flex-direction: column; }

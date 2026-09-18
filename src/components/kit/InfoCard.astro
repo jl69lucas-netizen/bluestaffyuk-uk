@@ -78,7 +78,13 @@ const {
   {variant === 'd' && <p class="prose">{body}</p>}
   {variant !== 'd' && (
     <div class="body">
-      {(variant === 'b' || variant === 'e') && (
+      {variant === 'b' && (
+        <p class="eyebrow eyebrow-ruled">
+          <span class="stmt-label" data-kind={kind}>{label}</span>
+          <span class="rule" aria-hidden="true"></span>
+        </p>
+      )}
+      {variant === 'e' && (
         <p class="eyebrow"><span class="stmt-label" data-kind={kind}>{label}</span></p>
       )}
       {variant === 'c' && (
@@ -110,6 +116,18 @@ const {
     .sec-h3 .stmt-label { color: var(--color-text-muted); }
     .sec-img { display: block; width: 100%; height: auto; }
     .prose { margin: 0; padding: var(--space-5); font-size: var(--text-sm); }
+
+    /* b is the brass treatment, and brass is a FILL here, never the label's colour: a 4px
+       bar down the card's leading edge and a hairline that runs out from the label to the
+       card's inner edge. The hairline is a real <span>, not an ::after, on purpose — a
+       variant whose only difference from another lives in a stylesheet renders identical
+       markup, and tests/py/test_design_components.py's distinctness check now compares the
+       markup with the variant letter normalised away, which is exactly the collapse it is
+       there to catch. b and e were that pair before this. */
+    .kit-info-b { border-left: 4px solid var(--color-cta); }
+    .eyebrow-ruled { display: flex; align-items: center; gap: var(--space-3); }
+    .eyebrow-ruled .rule { flex: 1; height: 2px; background: var(--color-cta); }
+    /* e is the plain one: the bordered card with no fill, no bar and no shadow. */
     .kit-info-e { box-shadow: none; }
   }
 </style>

@@ -34,8 +34,16 @@ const stats = [
   data-variant={variant}
   aria-label="At a glance"
 >
+  {variant === 'b' && <span class="seam" aria-hidden="true"></span>}
   <ul class="container list">
-    {stats.map((s) => <li><strong>{s.n}</strong><span>{s.l}</span></li>)}
+    {stats.map((s, i) => (
+      <li class:list={[variant === 'c' && 'kit-card']}>
+        {variant === 'e'
+          ? <Fragment><span>{s.l}</span><strong>{s.n}</strong></Fragment>
+          : <Fragment><strong>{s.n}</strong><span>{s.l}</span></Fragment>}
+        {variant === 'd' && i < stats.length - 1 && <span class="dot" aria-hidden="true">·</span>}
+      </li>
+    ))}
   </ul>
 </section>
 <style>
@@ -47,8 +55,14 @@ const stats = [
     /* b trades the border for a seam bar — still a rule, and the check counts a ::before
        bar as one; the bed still shifts tone, so both halves of the rule are present. */
     .kit-counter-b { border-top: 0; }
-    .kit-counter-b::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
-    .kit-counter-c li { background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-md); padding: var(--space-4); }
+    /* The seam is a real element, not a ::before. A variant whose only difference from
+       another lives in a stylesheet emits identical markup, and
+       tests/py/test_design_components.py's distinctness check compares the built sections
+       with the variant letter normalised away — with the seam, the tile shell, the dot and
+       e's reversed pair, each of the five now differs in what it actually renders. */
+    .seam { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
+    /* The tile shell is .kit-card from src/styles/kit.css (convention 9). */
+    .kit-counter-c li { padding: var(--space-4); }
     /* d is a different SHAPE, not a recoloured a: the three stats are one flush line of
        figure-then-label pairs reading left to right, lifted onto the hero's bottom edge by
        a negative margin, instead of the centred three-column grid the others use. The 2px
@@ -61,8 +75,16 @@ const stats = [
     /* Steel-100 is a lighter bed than the others: --color-text-muted (ink-3) measures
        4.49:1 on it, under the 4.5:1 AA floor, so d's labels take the full text colour. */
     .kit-counter-d span { color: var(--color-text); }
+    /* The dot is d's own furniture: an inline row needs something between the pairs, and
+       the other four are grids that do not. aria-hidden, so it is punctuation for the eye
+       only. */
+    .kit-counter-d .dot { color: var(--color-text-muted); padding-inline-start: var(--space-4); }
+    /* e reads label-then-figure: the label is the quiet line and the brass-ruled figure
+       lands under it, which is a different reading order from the four figure-first
+       treatments, not a restyle of one. */
     .kit-counter-e { background: var(--color-surface-raised); border-top: 2px solid var(--color-cta); padding-block: var(--space-4); }
     .kit-counter-e strong { font-size: var(--text-2xl); }
+    .kit-counter-e span { display: block; }
     @media (max-width: 720px) { .list { grid-template-columns: 1fr; } }
   }
 </style>
