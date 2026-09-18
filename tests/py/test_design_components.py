@@ -416,32 +416,58 @@ def test_built_info_card_variants_carry_a_kinded_statement_label_and_d_owns_its_
         assert "sec-img" not in s[v], v
 
 
-def test_built_testimonial_variants_quote_the_reviews_file_verbatim():
+QUOTE_BLOCK_RE = re.compile(
+    r'<section class="kit-quote[^"]*kit-quote-([a-e])"([^>]*)>(.*?)</section>', re.S)
+
+
+def _quote_blocks():
+    """Every Testimonial the canvas built, keyed by (variant, mode).
+
+    Read off the component's OWN sections rather than through `_sections`: the artboard
+    wrapper is a <section> too, and the outer match stops at the first nested `</section>`,
+    so the second block on each artboard is invisible from there."""
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    out = {}
+    for variant, attrs, inner in QUOTE_BLOCK_RE.findall(DIST_ROUTE.read_text()):
+        m = re.search(r'data-mode="(\w+)"', attrs)
+        out[(variant, m.group(1) if m else "?")] = attrs + inner
+    return out
+
+
+def test_built_testimonial_blocks_quote_the_reviews_file_verbatim_in_both_modes():
     """Convention 8, and rule 9's half of it. A testimonial component is the easiest place
     in the kit to invent a claim, so the built artboards are compared against
-    data/reviews.json rather than against a shape: every variant must print the first
-    review's exact words and attribution, and the multi-quote variants all three. If a
-    review is a REVIEW_PLACEHOLDER row it still has to appear, because a slot silently
-    dropped is the same defect as a slot silently invented."""
+    data/reviews.json rather than against a shape: every block must print the reviews it
+    shows word for word. If a review is a REVIEW_PLACEHOLDER row it still has to appear,
+    because a slot silently dropped is the same defect as a slot silently invented.
+
+    Spec §11 amendment 3e: how many it shows is `mode`, not the variant letter — `single` is
+    one review given room, `grid` is the strip — so both modes are built on every artboard
+    and both are asserted here."""
     reviews = json.loads((ROOT / "data/reviews.json").read_text())
     assert len(reviews) == 3, len(reviews)
-    s = _sections("testimonial")
+    blocks = _quote_blocks()
+    assert sorted(blocks) == [(v, m) for v in "abcde" for m in ("grid", "single")], sorted(blocks)
 
     def printed(text, inner):
         # The built HTML escapes & < >; nothing else in these quotes needs escaping.
         return text.replace("&", "&#38;").replace("<", "&#60;").replace(">", "&#62;") in inner
 
-    for v, inner in sorted(s.items()):
-        shown = reviews if v in ("c", "e") else reviews[:1]
+    for (v, mode), inner in sorted(blocks.items()):
+        shown = reviews if mode == "grid" else reviews[:1]
         for r in shown:
-            assert printed(r["quote"], inner), (v, r["name"], "quote not printed verbatim")
-            assert printed(r["name"], inner), (v, r["name"])
-        if v not in ("c", "e"):
-            assert not printed(reviews[2]["quote"], inner), (v, "one-quote variant shows one")
-    # b is the only variant that paints its own dark band.
-    assert 'data-surface="inverse"' in s["b"]
-    for v in ("a", "c", "d", "e"):
-        assert 'data-surface="inverse"' not in s[v], v
+            assert printed(r["quote"], inner), (v, mode, r["name"], "quote not printed verbatim")
+            assert printed(r["name"], inner), (v, mode, r["name"])
+        if mode == "single":
+            assert not printed(reviews[2]["quote"], inner), (v, "single mode shows one review")
+        # the container follows the mode, never the variant
+        assert f'class="container {"grid" if mode == "grid" else "stack"}' in inner, (v, mode)
+    # b is still the only variant that paints its own dark band — mode does not change that.
+    for mode in ("single", "grid"):
+        assert 'data-surface="inverse"' in blocks[("b", mode)], mode
+        for v in ("a", "c", "d", "e"):
+            assert 'data-surface="inverse"' not in blocks[(v, mode)], (v, mode)
 
 
 def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():

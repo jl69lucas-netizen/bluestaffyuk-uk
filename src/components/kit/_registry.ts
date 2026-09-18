@@ -116,9 +116,12 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
       },
     ],
   },
-  // No demo props: the quotes are data. The component reads data/reviews.json so that a
-  // new review is a data edit, and the variant decides how many of them it shows.
-  testimonial: { C: Testimonial },
+  // The quotes are data — the component reads data/reviews.json so that a new review is a
+  // data edit. What the two fixtures demo is the API that survives the prune: `mode`
+  // (spec §11 amendment 3e). `single` is one review given room, `grid` is the multi-review
+  // strip, and the variant letter is now only the STYLE the pair is painted in. Both are on
+  // every artboard, so the eye judges the two modes together rather than one of them.
+  testimonial: { C: Testimonial, demo: [{ mode: 'single' }, { mode: 'grid' }] },
   // No demo props: the three answers are the component's own defaults, and two of the
   // three are read out of data/settings.json so a price change never becomes a copy edit.
   faq: { C: Faq },

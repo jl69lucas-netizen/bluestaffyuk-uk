@@ -3,6 +3,12 @@
 // a quote card · b inverse band with an initials avatar · c three-up grid
 // d single large pull-quote · e stacked divided list
 //
+// MODES (spec §11 amendment 3e). How many reviews a block shows, and whether they stack or
+// sit in a grid, is now the `mode` prop — `single` (the default, the picked variant b) or
+// `grid` (the former variant c) — and NOT the variant letter. The five variants stay for
+// the rest of project 3 as five STYLES of the same two modes; when Task 19 prunes them,
+// `mode` is what remains, and it is the API project 4 places review slots with.
+//
 // THE QUOTES ARE NOT WRITTEN HERE. data/reviews.json holds three reviews copied verbatim
 // off the migrated pages — two from the homepage's "Our Happy Blue Staffy Owners Speak"
 // carousel and one from the "Why UK Families Trust BlueStaffyUK" block on
@@ -18,12 +24,15 @@ import type { Variant } from './_variant';
 import reviews from '../../../data/reviews.json';
 
 interface Review { quote: string; name: string; place: string; source: string }
-type Props = HTMLAttributes<'section'> & { variant?: Variant };
-const { variant = 'a', class: cls, ...rest } = Astro.props;
+export type TestimonialMode = 'single' | 'grid';
+type Props = HTMLAttributes<'section'> & { variant?: Variant; mode?: TestimonialMode };
+const { variant = 'a', mode = 'single', class: cls, ...rest } = Astro.props;
 
 const all = reviews as Review[];
-// c and e are the multi-quote treatments; a, b and d are one quote given room.
-const list = variant === 'c' || variant === 'e' ? all.slice(0, 3) : all.slice(0, 1);
+// The MODE decides how many, not the variant: `single` is one review given room, `grid` is
+// the multi-review strip. A page with three rows in data/reviews.json renders one grid and
+// the rest as singles — none are dropped (rules/copy.md, review placement).
+const list = mode === 'grid' ? all.slice(0, 3) : all.slice(0, 1);
 /** The placeholder a slot with no real review carries; scripts/placeholder_check.py counts it. */
 const PLACEHOLDER = 'REVIEW_PLACEHOLDER';
 // "The Victoria Family" is TV, not TF: a leading article is not part of anybody's name.
@@ -37,9 +46,10 @@ const inverse = variant === 'b';
   class:list={['kit-quote', `kit-quote-${variant}`, cls]}
   data-surface={inverse ? 'inverse' : undefined}
   data-variant={variant}
+  data-mode={mode}
   aria-label="What families say"
 >
-  <div class:list={['container', variant === 'c' ? 'grid' : 'stack']}>
+  <div class:list={['container', mode === 'grid' ? 'grid' : 'stack']}>
     {list.map((r) => (
       r.quote === PLACEHOLDER ? (
         /* An empty slot is SHOWN, not skipped. Dropping the row would hide the hole from
