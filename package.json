@@ -24,6 +24,8 @@
     "board:build": "python3 scripts/build_page_board.py",
     "canvas:heights": "node scripts/measure_canvas_heights.mjs",
     "canvas:build": "python3 scripts/build_design_canvas.py",
+    "picks:board": "python3 scripts/build_picks_board.py",
+    "picks:pull": "python3 scripts/pull_design_picks.py",
     "quality": "python3 scripts/quality_report.py",
     "audit:final": "python3 scripts/final_page_audit.py",
     "audit:harden": "python3 scripts/page_hardening_scan.py",
