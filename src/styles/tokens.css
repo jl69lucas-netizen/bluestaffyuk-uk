@@ -67,7 +67,11 @@
   --color-link: var(--color-steel-700);
   --color-link-on-inverse: var(--color-brass-200);
   --color-border: var(--color-rule);
-  --color-focus: var(--color-brass-500);
+  /* A focus ring is a non-text UI component: WCAG 1.4.11 asks 3:1 against what it sits on.
+     Brass manages only 2.1:1 on bone, so the ring is steel on the light surfaces and brass
+     on the dark bands, where steel on steel would disappear. */
+  --color-focus: var(--color-steel-700);
+  --color-focus-on-inverse: var(--color-brass-500);
 
   /* @layer-component */
   --btn-radius: var(--radius-pill);

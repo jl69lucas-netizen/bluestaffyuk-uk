@@ -165,7 +165,11 @@ def violations(path: pathlib.Path):
                 bad("unlocked amount %s (locked: %s)" % (_norm(m), ", ".join(sorted(ALLOWED_MONEY))))
 
         for tok in BANNED:
-            if tok in line:
+            # A hex is the same colour in either case, so #2D6A4F must also catch #2d6a4f.
+            # Word bans stay case-sensitive: "captive" should not fire on a capitalised
+            # sentence start that means something else.
+            hit = tok.lower() in line.lower() if tok.startswith("#") else tok in line
+            if hit:
                 bad("banned token %r" % tok)
 
         if DEFRA.search(line) and "transport" not in line.lower():

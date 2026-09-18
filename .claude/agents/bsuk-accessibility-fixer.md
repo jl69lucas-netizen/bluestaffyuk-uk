@@ -56,7 +56,7 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 **A11y-6: component-rendered `<img>` missing `width`/`height` (CLS audit).** Images passed as props (Testimonials avatars, SplitFeature `imageSrc`) render a shared `<img>` with no dims. Add `width`/`height` matching the CSS box ratio (`object-cover` + `aspect-*`/`w-12 h-12` means attrs won't distort) — e.g. `aspect-square`→`300×300`, `w-12 h-12`→`48×48`, `aspect-[5/4]`→`500×400`.
 
-**A11y-7: a lead-paragraph rule forcing the ink colour onto dark-section paragraphs (DARK-ON-DARK fail).** (Found 2026-06-05; full writeup in MEMORY `reference_contrast_lead_paragraph_trap`.) When `color-contrast` reports a failing `<p>` whose foreground is the body ink (`--color-text`) on a *dark* bg (1.2–1.4:1), it is a lead-line rule `h1+p, h2+p { color: var(--color-text) }` overriding light-text lead paragraphs (newsletter card, dark CTA band). **Such a rule out-specifies Tailwind opacity utilities even without `!important`, so fix every copy of it** — any page-scoped `h2+p{…!important}` as well as the global one. Fix = split size/line-height from colour, and scope the colour with `:not([style*="color"]):not([class*="text-white"])`. The right foreground inside a dark band is `--color-text-on-inverse` (10.4:1 on `--color-brand`, 14.6:1 on `--color-surface-deep`). Same day: **`MobileTabBar.astro`** (`nav.md:hidden`, 10px labels — a separate component a homepage sweep misses) — its active label must not be brass on light (2.1:1); use `--color-brand` (10.4:1), and lift an inactive `text-stone-400` (2.58:1) to `text-stone-600`.
+**A11y-7: a lead-paragraph rule forcing the ink colour onto dark-section paragraphs (DARK-ON-DARK fail).** (Found 2026-06-05; full writeup in MEMORY `reference_contrast_lead_paragraph_trap`.) When `color-contrast` reports a failing `<p>` whose foreground is the body ink (`--color-text`) on a *dark* bg (1.2–1.4:1), it is a lead-line rule `h1+p, h2+p { color: var(--color-text) }` overriding light-text lead paragraphs (newsletter card, dark CTA band). **Such a rule out-specifies Tailwind opacity utilities even without `!important`, so fix every copy of it** — any page-scoped `h2+p{…!important}` as well as the global one. Fix = split size/line-height from colour, and scope the colour with `:not([style*="color"]):not([class*="text-white"])`. The right foreground inside a dark band is `--color-text-on-inverse` (10.4:1 on `--color-surface-inverse`, 14.6:1 on `--color-surface-deep`). Same day: **`MobileTabBar.astro`** (`nav.md:hidden`, 10px labels — a separate component a homepage sweep misses) — its active label must not be brass on light (2.1:1); use `--color-brand` (10.4:1), and lift an inactive `text-stone-400` (2.58:1) to `text-stone-600`.
 
 ---
 
@@ -154,6 +154,10 @@ textarea:focus {
   outline-offset: 2px;
 }
 ```
+`--color-focus` is steel and clears WCAG 1.4.11 (3:1 for a non-text indicator) on the light
+surfaces — 10.4:1 on `--color-surface`. Inside a dark band it would disappear, so switch
+those to `--color-focus-on-inverse` (brass, 4.9:1 on `--color-surface-inverse`). Both pairs
+are asserted as `"size": "nontext"` rows in `data/design/contrast.json`.
 Check: `grep -rn "outline: none\|outline:none\|outline: 0" dist/<slug>/index.html`
 
 **7. Touch Target Sizes (WCAG 2.5.5)**

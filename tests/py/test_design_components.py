@@ -22,9 +22,16 @@ def test_thirteen_components_in_spec_order():
 
 def test_each_row_has_file_title_width():
     for r in load():
-        assert re.fullmatch(r"[A-Z][A-Za-z]+Kit?\.astro|[A-Z][A-Za-z]+\.astro", r["file"]), r
+        assert re.fullmatch(r"[A-Z][A-Za-z]+\.astro", r["file"]), r
         assert r["title"] and isinstance(r["title"], str)
         assert r["board_width"] in (640, 1280), r
+
+
+def test_ids_and_files_are_unique():
+    rows = load()
+    ids, files = [r["id"] for r in rows], [r["file"] for r in rows]
+    assert len(set(ids)) == len(ids), sorted(i for i in ids if ids.count(i) > 1)
+    assert len(set(files)) == len(files), sorted(f for f in files if files.count(f) > 1)
 
 
 @pytest.mark.xfail(strict=True, reason="kit lands in Tasks 4-16")

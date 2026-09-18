@@ -14,5 +14,10 @@
   {"fg": "--color-brand",           "bg": "--color-cta-soft",        "size": "normal"},
   {"fg": "--color-cta",             "bg": "--color-surface-inverse", "size": "large"},
   {"fg": "--color-cta",             "bg": "--color-surface-deep",    "size": "large"},
-  {"fg": "--color-brand-mid",       "bg": "--color-surface",         "size": "large"}
+  {"fg": "--color-brand-mid",       "bg": "--color-surface",         "size": "large"},
+
+  {"fg": "--color-focus",            "bg": "--color-surface",         "size": "nontext"},
+  {"fg": "--color-focus",            "bg": "--color-surface-raised",  "size": "nontext"},
+  {"fg": "--color-focus-on-inverse", "bg": "--color-surface-inverse", "size": "nontext"},
+  {"fg": "--color-focus-on-inverse", "bg": "--color-surface-deep",    "size": "nontext"}
 ]

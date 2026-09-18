@@ -1,7 +1,11 @@
 """tokens.css is the only place a colour is spelled. Three layers; every semantic token
 resolves to a primitive; every fg/bg pair in contrast.json clears WCAG AA."""
 import json, pathlib, re
+
+import pytest
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+SRC = ROOT / "src"
 TOKENS = ROOT / "src/styles/tokens.css"
 GLOBAL = ROOT / "src/styles/global.css"
 CONTRAST = ROOT / "data/design/contrast.json"
@@ -13,8 +17,12 @@ DECL = re.compile(r"(--[a-z0-9-]+)\s*:\s*([^;]+);")
 def layers():
     text = TOKENS.read_text()
     parts = re.split(r"/\*\s*@layer-(primitive|semantic|component)\s*\*/", text)
+    # One preamble + three (marker, body) pairs. A fourth marker, or a repeated one,
+    # would silently merge two layers and make the layering assertions vacuous.
+    assert len(parts) == 7, f"expected exactly 3 layer markers, split gave {len(parts)} parts"
     out = {}
     for i in range(1, len(parts), 2):
+        assert parts[i] not in out, f"@layer-{parts[i]} appears more than once"
         out[parts[i]] = dict(DECL.findall(parts[i + 1]))
     assert set(out) == {"primitive", "semantic", "component"}, set(out)
     return out
@@ -36,6 +44,10 @@ def resolve(name, L, depth=0):
 
 
 def to_rgb(h):
+    # A token that resolves to rgb()/oklch()/a gradient has no single colour to measure;
+    # say so instead of silently reading the first two characters as a red channel.
+    assert re.fullmatch(r"#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})", h), (
+        f"{h!r} is not a 3- or 6-digit hex colour; contrast.json can only measure those")
     h = h.lstrip("#")
     if len(h) == 3: h = "".join(c * 2 for c in h)
     return tuple(int(h[i:i + 2], 16) / 255 for i in (0, 2, 4))
@@ -85,6 +97,8 @@ def test_contrast_pairs_clear_aa():
     assert len(pairs) >= 10
     failures = []
     for p in pairs:
+        # "nontext" is WCAG 1.4.11 (focus rings, UI component boundaries): 3:1, like large text.
+        assert p["size"] in ("normal", "large", "nontext"), p
         r = ratio(resolve(p["fg"], L), resolve(p["bg"], L))
         need = 4.5 if p["size"] == "normal" else 3.0
         if r < need:
@@ -92,10 +106,44 @@ def test_contrast_pairs_clear_aa():
     assert not failures, failures
 
 
+@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 4-16")
 def test_kit_has_no_hex_literals():
-    if not KIT.exists():
-        return
-    bad = [str(f.relative_to(ROOT)) for f in KIT.glob("*.astro") if HEX.search(f.read_text())]
+    # Strict-xfail rather than a silent early return: while the kit does not exist this
+    # test proves nothing, and saying so out loud means Task 16 cannot forget to unmark it.
+    assert KIT.exists(), "src/components/kit does not exist yet"
+    bad = [str(f.relative_to(ROOT)) for f in KIT.rglob("*.astro") if HEX.search(f.read_text())]
+    assert not bad, bad
+
+
+LEGACY_HEX_FILES = (
+    "src/components/SiteHeader.astro",
+    "src/components/SiteFooter.astro",
+    "src/components/ContactForm.astro",
+    "src/pages/available-puppies/[slug].astro",
+    "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+    "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+)
+
+
+@pytest.mark.xfail(strict=True, reason=(
+    "legacy shell hexes removed in Tasks 6-20; still spelled in "
+    + ", ".join(LEGACY_HEX_FILES)))
+def test_no_hex_anywhere_in_src_except_tokens():
+    """Rule 1: tokens.css is the only file in src/ that spells a colour.
+
+    Strict-xfail because projects 1-2 left hexes in the six files above. The moment
+    Tasks 6-20 finish replacing them this test passes, xfail(strict) turns that pass
+    into a failure, and whoever sees it deletes the marker — so the rule starts being
+    enforced for real instead of being quietly forgotten.
+    """
+    bad = sorted(
+        str(f.relative_to(ROOT))
+        for f in SRC.rglob("*")
+        if f.is_file()
+        and f.suffix in {".astro", ".css", ".ts", ".tsx", ".js", ".jsx", ".mjs"}
+        and f != TOKENS
+        and HEX.search(f.read_text())
+    )
     assert not bad, bad
 
 
