@@ -172,3 +172,33 @@ def test_built_puppy_card_variants_carry_price_status_and_their_ornament():
     assert "badge" in s["a"], "variant a carries the price badge"
     assert "ribbon" in s["b"], "variant b carries the status ribbon"
     assert "ribbon" not in s["a"] and "badge" not in s["b"]
+
+
+def test_built_hero_variants_carry_their_photo_copy_and_band():
+    """Convention 8. The hero's job is one heading, one lede and — where it shows a photo —
+    a responsive one. Five heroes that differ only in a class name would pass the
+    distinctness check above with the image or the CTAs silently gone."""
+    s = _sections("hero")
+    for v, inner in sorted(s.items()):
+        # The canvas fixture passes as="h2" so the page keeps one h1; the component's
+        # default is h1 and that is what project 4 will render.
+        assert 'class="title' in inner and "<h2" in inner, v
+        assert "KC registered" in inner, v
+        assert "Carlisle" in inner, v
+    # a and c show the .pic photo; b paints the full-bleed band photo; d and e are text-only.
+    for v in ("a", "b", "c"):
+        assert "srcset=" in s[v], v
+    for v in ("d", "e"):
+        assert "srcset=" not in s[v], v
+    assert 'class="bg' in s["b"] and 'class="pic' not in s["b"]
+    for v in ("a", "c"):
+        assert 'class="pic' in s[v], v
+    for v in ("b", "d"):
+        assert 'data-surface="inverse"' in s[v], v
+    for v in ("a", "c", "e"):
+        assert 'data-surface="inverse"' not in s[v], v
+    assert "chips" in s["c"] and "chips" not in s["a"]
+    # e is the short location hero: eyebrow, heading, one line, no CTA row.
+    assert "ctas" not in s["e"]
+    for v in ("a", "b", "c", "d"):
+        assert "ctas" in s[v], v

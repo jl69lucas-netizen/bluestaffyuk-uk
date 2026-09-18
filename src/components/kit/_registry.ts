@@ -28,6 +28,7 @@ import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
 import PuppyCard from './PuppyCard.astro';
+import Hero from './Hero.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -55,6 +56,9 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // positioned box with room in it; without one the five bars stack on the page's own
   // scroll container and the artboard shows a collapsed strip.
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
+  // `as: 'h2'` — the canvas mounts five heroes on one page and the page already owns an
+  // <h1>. The prop exists for exactly this: on a real page the default 'h1' is correct.
+  hero: { C: Hero, demo: [{ as: 'h2' }] },
   buttons: {
     C: Button,
     demo: [
