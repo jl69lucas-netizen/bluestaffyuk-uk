@@ -45,6 +45,7 @@ import Testimonial from './Testimonial.astro';
 import Faq from './Faq.astro';
 import ContactFormKit from './ContactFormKit.astro';
 import PageNav from './PageNav.astro';
+import SiteFooterKit from './SiteFooterKit.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -141,5 +142,8 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
       ],
     }],
   },
+  // No demo props: every link and contact row is NAV and data/settings.json. `wrap` would
+  // be wrong here — the footer paints its own dark band and is full-bleed by nature.
+  footer: { C: SiteFooterKit },
   'section-divider': { C: SectionDivider },
 };

@@ -34,7 +34,6 @@ def test_ids_and_files_are_unique():
     assert len(set(files)) == len(files), sorted(f for f in files if files.count(f) > 1)
 
 
-@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 4-16")
 def test_kit_file_exists_for_each_row():
     missing = [r["file"] for r in load() if not (KIT / r["file"]).exists()]
     assert not missing, missing
@@ -71,7 +70,6 @@ def test_route_is_noindex():
     assert 'noindex={true}' in t
 
 
-@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-15")
 def test_registry_has_an_entry_for_every_component():
     # The route renders whatever REGISTRY holds and has no per-component branches, so the
     # registry - not the route's import list - is what has to name all thirteen ids.
@@ -89,7 +87,6 @@ def test_built_canvas_is_noindex():
     assert 'name="robots" content="noindex' in DIST_ROUTE.read_text()
 
 
-@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-16")
 def test_built_route_has_sixty_five_sections():
     if not DIST_ROUTE.exists():
         pytest.skip("run npm run build first")
@@ -520,3 +517,57 @@ def test_built_page_nav_variants_carry_the_real_trail_and_their_own_toc_shape():
     assert 'stroke="currentColor"' in s["e"]
     for v in ("a", "b", "c", "d"):
         assert "<svg" not in s[v], v
+
+
+def test_built_footer_variants_carry_the_nav_the_socials_and_their_own_arrangement():
+    """Convention 8, and rule 9's half of it. The footer is where invented copy and dead
+    links collect, so the built artboards are compared against src/lib/site.ts's NAV and
+    data/settings.json rather than against a shape: every variant must link every NAV item
+    it claims to list and every social profile in the settings file, and the contact rows
+    must be the settings email and hours rather than a second copy of them."""
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    site = (ROOT / "src/lib/site.ts").read_text()
+    nav = re.findall(r"\{ href: '([^']+)', label: '([^']+)' \}", site)
+    assert len(nav) == 7, nav
+    s = _sections("footer")
+    for v, inner in sorted(s.items()):
+        # c is the slim row and carries the primary four; the rest carry the whole list.
+        expected = nav[:4] if v == "c" else nav
+        for href, label in expected:
+            assert f'href="{href}"' in inner, (v, href)
+            assert label in inner, (v, label)
+        assert settings["location_label"] in inner, v
+        assert settings["site_name"] in inner, v
+        assert 'href="/privacy-policy-uk/"' in inner, v
+        assert 'data-surface="inverse"' in inner, v
+        # No colour is spelled in the footer's own markup.
+        assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3}', inner), v
+    # c is one line and carries no follow column; the other four link every profile in
+    # the settings file, so a new social account is a data edit.
+    for v in ("a", "b", "d", "e"):
+        for url in settings["socials"].values():
+            assert f'href="{url}"' in s[v], (v, url)
+    for url in settings["socials"].values():
+        assert url not in s["c"], url
+    # a and e are the ones with a contact column; both print the settings email and hours.
+    for v in ("a", "e"):
+        assert f'mailto:{settings["email"]}' in s[v], v
+        assert settings["hours"] in s[v], v
+    for v in ("b", "c", "d"):
+        assert "mailto:" not in s[v], v
+    # d is the only variant with the call-to-action band above the columns.
+    assert "cta-band" in s["d"] and "Ready to meet the litter?" in s["d"]
+    for v in ("a", "b", "c", "e"):
+        assert "cta-band" not in s[v], v
+    # c is the slim row: no column headings and no tagline.
+    assert "<h2" not in s["c"] and settings["tagline"] not in s["c"]
+    for v in ("a", "b", "d", "e"):
+        assert "<h2" in s[v] and settings["tagline"] in s[v], v
+    # b is the centred lockup and the only one with the larger mark.
+    assert 'width="56"' in s["b"]
+    for v in ("a", "c", "d", "e"):
+        assert 'width="40"' in s[v], v
+    # e is the sitemap arrangement: four columns, so it alone carries the small-print one.
+    assert "Small print" in s["e"]
+    for v in ("a", "b", "c", "d"):
+        assert "Small print" not in s[v], v
