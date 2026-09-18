@@ -1,10 +1,6 @@
+@import "./tokens.css";
 @import "tailwindcss" source(none);
 @source "../../src/**/*.{astro,mdx,md,ts,tsx,js,jsx}";
-
-@theme {
-  --color-ink: #1b2430;
-  --color-rule: #dad6cc;
-}
 :root { --hdr: 72px; --container: 1200px; --text-max: 760px; }
 /* --hdr is the sticky header's height, and every in-page jump target is offset by it
    (`[id] { scroll-margin-top: calc(var(--hdr) + 16px) }` in @layer base below).
@@ -28,7 +24,8 @@
 
 @layer base {
   html { scroll-behavior: auto; overflow-x: clip; }
-  body { margin: 0; font: 17px/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; color: var(--color-ink); background: #fff; }
+  body { margin: 0; font: var(--text-base)/var(--text-base--line-height) var(--font-body); color: var(--color-ink); background: var(--color-white); }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   main p, main li { max-width: 70ch; }
   /* `--hdr-measured` is written by the inline script in BaseLayout from the header's
      real height; `--hdr` below is the no-JS fallback the media query tunes. Deliberately a

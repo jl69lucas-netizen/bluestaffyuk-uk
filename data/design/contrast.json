@@ -1,0 +1,18 @@
+[
+  {"fg": "--color-text",            "bg": "--color-surface",         "size": "normal"},
+  {"fg": "--color-text",            "bg": "--color-surface-raised",  "size": "normal"},
+  {"fg": "--color-text-muted",      "bg": "--color-surface",         "size": "normal"},
+  {"fg": "--color-text-muted",      "bg": "--color-surface-raised",  "size": "normal"},
+  {"fg": "--color-text-on-inverse", "bg": "--color-surface-inverse", "size": "normal"},
+  {"fg": "--color-text-on-inverse", "bg": "--color-surface-deep",    "size": "normal"},
+  {"fg": "--color-cta-ink",         "bg": "--color-cta",             "size": "normal"},
+  {"fg": "--color-cta-ink",         "bg": "--color-cta-hover",       "size": "normal"},
+  {"fg": "--color-link",            "bg": "--color-surface",         "size": "normal"},
+  {"fg": "--color-link",            "bg": "--color-surface-raised",  "size": "normal"},
+  {"fg": "--color-link-on-inverse", "bg": "--color-surface-inverse", "size": "normal"},
+  {"fg": "--color-brand",           "bg": "--color-brand-soft",      "size": "normal"},
+  {"fg": "--color-brand",           "bg": "--color-cta-soft",        "size": "normal"},
+  {"fg": "--color-cta",             "bg": "--color-surface-inverse", "size": "large"},
+  {"fg": "--color-cta",             "bg": "--color-surface-deep",    "size": "large"},
+  {"fg": "--color-brand-mid",       "bg": "--color-surface",         "size": "large"}
+]
