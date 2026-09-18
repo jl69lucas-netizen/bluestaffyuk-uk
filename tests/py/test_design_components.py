@@ -337,22 +337,31 @@ def test_built_hero_puts_the_image_before_the_heading():
 HEIGHTS = ROOT / "data/design/canvas-heights.json"
 
 
-def test_measured_hero_boards_respect_the_height_ceiling():
-    """rules/design.md rule 10, second half: <= 450px on the 1280 boards.
+def test_measured_hero_fits_its_clamp_without_clipping_anything():
+    """rules/design.md rule 10, second half — and the half a board height cannot prove.
 
-    The measured number is not the section height: scripts/measure_canvas_heights.mjs rounds
-    the section up to the nearest 8 and adds a 16px artboard frame. A 450px hero therefore
-    measures ceil(450 / 8) * 8 + 16 = 472, and that is the ceiling asserted here."""
+    The old version of this test read the rounded artboard height and called <= 472 a pass.
+    That number is produced by `max-height` whether the copy FITS in the clamp or is being
+    CUT OFF by it, so a hero with its CTA row sliced in half measured exactly as well as one
+    that fitted. scripts/measure_canvas_heights.mjs therefore records, per hero and at each
+    of the three desktop widths where the clamp is live, the scroll overflow of `.inner` and
+    of the section, and where the CTA row's bottom edge sits relative to the section's own.
+    Overflow of zero and a CTA row at or above the section's bottom is the real assertion;
+    the 390-450 band is checked on the unrounded section height beside it."""
     if not HEIGHTS.exists():
         pytest.skip("run npm run canvas:heights first")
-    heights = json.loads(HEIGHTS.read_text())
-    ceiling = -(-450 // 8) * 8 + 16
-    floor = -(-390 // 8) * 8 + 16
-    for v in "abcde":
-        h = heights.get(f"hero-{v}")
-        assert h is not None, v
-        assert h <= ceiling, (v, h, ceiling)
-        assert h >= floor, (v, h, floor)
+    data = json.loads(HEIGHTS.read_text())
+    heroes = data.get("hero_overflow")
+    assert heroes, "canvas-heights.json has no hero_overflow block — re-run npm run canvas:heights"
+    for key, widths in sorted(heroes.items()):
+        for w in ("1024", "1100", "1280"):
+            m = widths.get(w)
+            assert m is not None, (key, w, "not measured")
+            assert m["overflow"] == 0, (key, w, m, ".inner is clipping its own copy")
+            assert m["section_overflow"] == 0, (key, w, m, "the hero section is clipping content")
+            if m["ctas_below"] is not None:
+                assert m["ctas_below"] <= 0, (key, w, m, "the CTA row hangs below the hero")
+            assert 390 <= m["height"] <= 450, (key, w, m["height"])
 
 
 def test_built_trust_strip_variants_carry_three_backed_claims_and_line_icons():

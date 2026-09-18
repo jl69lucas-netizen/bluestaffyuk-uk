@@ -78,7 +78,7 @@
  "footer-a-m375": 1128,
  "section-divider-a-m375": 176,
  "site-header-a-t768": 240,
- "hero-c-t768": 976,
+ "hero-c-t768": 936,
  "buttons-a-t768": 80,
  "puppy-card-c-t768": 1304,
  "trust-strip-d-t768": 232,
@@ -89,5 +89,107 @@
  "contact-form-c-t768": 1112,
  "page-nav-c-t768": 104,
  "footer-a-t768": 760,
- "section-divider-a-t768": 176
+ "section-divider-a-t768": 176,
+ "hero_overflow": {
+  "hero-a": {
+   "1024": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -97
+   },
+   "1100": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -97
+   },
+   "1280": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -97
+   }
+  },
+  "hero-b": {
+   "1024": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   },
+   "1100": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   },
+   "1280": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   }
+  },
+  "hero-c": {
+   "1024": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -71
+   },
+   "1100": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -71
+   },
+   "1280": {
+    "height": 450,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -71
+   }
+  },
+  "hero-d": {
+   "1024": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   },
+   "1100": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   },
+   "1280": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": -104
+   }
+  },
+  "hero-e": {
+   "1024": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": null
+   },
+   "1100": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": null
+   },
+   "1280": {
+    "height": 390,
+    "overflow": 0,
+    "section_overflow": 0,
+    "ctas_below": null
+   }
+  }
+ }
 }

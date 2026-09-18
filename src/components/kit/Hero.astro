@@ -19,9 +19,13 @@
 // HEIGHT AND DOM ORDER (rules/design.md rule 10, spec §11 amendment 3c). The source site's
 // hero puts the image first in the DOM and keeps the band short. Both hold here for every
 // variant: the photo element PRECEDES the copy in source order and `order` puts it back on
-// the right visually, and at >=1024px `.inner` is clamped to 390-450px with the section
-// clipping, so no variant can grow a tall hero by accident. Below 1024px the height is auto,
+// the right visually, and at >=1024px the band is held between 390 and 450px. Nothing is
+// clipped to get there — the copy is SIZED to fit (3xl heading, two-line lede, tight block
+// margins) and the PHOTO is what the ceiling crops. Below 1024px the height is auto,
 // because a phone hero that clipped its own CTA would be worse than a tall one.
+// scripts/measure_canvas_heights.mjs measures the overflow and the CTA row's bottom edge at
+// 1024, 1100 and 1280, and test_measured_hero_fits_its_clamp_without_clipping_anything
+// fails on either.
 //
 // HEADING LEVEL. `as` exists because the canvas mounts five heroes on one page: the page owns
 // the only <h1> there and the demo fixture passes `as="h2"`. On a real page the default 'h1'
@@ -50,7 +54,10 @@ const {
   as: Heading = 'h1',
   eyebrow = `KC registered · ${SITE.location_label}`,
   title = 'Blue Staffy puppies raised in a family home',
-  lede = `Health-tested parents, Kennel Club registration paperwork, and UK delivery from £${SITE.delivery_min_gbp}.`,
+  // Two lines at the desktop clamp, which is what rule 10 leaves the lede: the longer
+  // wording ("Kennel Club registration paperwork") ran to three and pushed the CTA row past
+  // the 450px ceiling. This is demo copy; project 4 writes the page's own.
+  lede = `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
   class: cls,
   ...rest
 } = Astro.props;
@@ -105,7 +112,10 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
 </section>
 <style>
   @layer components {
-    .kit-hero { background: var(--color-surface); color: var(--color-text); position: relative; overflow: hidden; }
+    /* No `overflow: hidden` on the section. The clamp below crops the PHOTO; it is not a
+       guillotine across the copy. Hiding the overflow here would let a hero whose CTA row
+       no longer fits simply lose it, and still measure as a pass. */
+    .kit-hero { background: var(--color-surface); color: var(--color-text); position: relative; }
     .kit-hero[data-surface="inverse"] { background: var(--color-surface-inverse); }
     .inner { display: grid; grid-template-columns: 1fr; gap: var(--space-8); align-items: center; padding-block: var(--space-10); position: relative; }
     /* Rule 10's DOM order: the photo is first in source and second on screen. */
@@ -133,13 +143,27 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
     .kit-hero-e .inner { padding-block: var(--space-7); }
     .kit-hero-e .title { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
     .kit-hero-e .lede { margin-bottom: 0; }
-    /* RULE 10. One clamp for every variant: 390px floor so a short hero still reads as a
-       hero, 450px ceiling so it never eats the fold. The section already has
-       `overflow: hidden`, so the ceiling is enforced, not advisory; the photo drops its 4:5
-       crop here and fills the row instead, which is what keeps it from setting the height. */
+    /* RULE 10. One clamp for every variant: a 390px floor so a short hero still reads as a
+       hero, a 450px ceiling so it never eats the fold — and the COPY has to fit inside that
+       ceiling on its own, because only the photo is allowed to be cropped by it.
+       So: the ceiling sits on the SECTION (`max-height`), the floor on `.inner`
+       (`min-height`, border-box, so the padding is inside the 390), the heading steps down
+       to --text-3xl, the lede is held to two lines and the block margins tighten. The only
+       `overflow: clip` is on the photo column: the picture drops its 4:5 crop, stretches to
+       the row and is cropped by `object-fit: cover`, so it can never set the height. */
     @media (min-width: 1024px) {
-      .inner { min-height: 390px; max-height: 450px; padding-block: var(--space-6); }
-      .pic { height: 100%; aspect-ratio: auto; object-fit: cover; }
+      .kit-hero { max-height: 450px; }
+      .inner { min-height: 390px; padding-block: var(--space-6); }
+      .eyebrow { margin-bottom: var(--space-2); }
+      .title { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); margin-bottom: var(--space-3); }
+      .lede { margin-bottom: var(--space-4); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+      .chips { margin-bottom: var(--space-4); }
+      /* `height: 100%` alone is not enough: the grid row is sized BY its items, so the
+         percentage has nothing definite to resolve against and the portrait master falls
+         back to its intrinsic height — a 690px row that the ceiling then slices, taking the
+         centred copy's CTA row with it. The cap is therefore absolute, and it is exactly
+         the content box the 450px ceiling leaves once the padding is taken out. */
+      .pic { align-self: stretch; height: 100%; max-height: calc(450px - 2 * var(--space-6)); aspect-ratio: auto; object-fit: cover; overflow: clip; }
     }
     @media (max-width: 900px) {
       .kit-hero-a .inner, .kit-hero-c .inner { grid-template-columns: 1fr; }
