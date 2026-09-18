@@ -14,3 +14,4 @@ docs/reports/lh/
 docs/reports/**/*.json
 data/quality/perf/
 data/boards/inbox/
+docs/artifacts/canvas/
