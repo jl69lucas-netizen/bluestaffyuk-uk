@@ -65,6 +65,34 @@ def test_every_built_indexable_page_map_url_is_present():
     assert not (want - have), sorted(want - have)
 
 
+#: indexable built urls that are deliberately NOT in the search index, each with its reason.
+#: Empty today, and that is the point: the coverage test below is written so that adding a
+#: route which is indexable but unfindable costs a line here and a sentence defending it.
+#: The only legitimate entry is a page with no sitemap shard — `shard_for` returns None and
+#: the builder skips it — and such a page should usually be given a shard instead.
+UNINDEXED_BUT_INDEXABLE: dict[str, str] = {}
+
+
+def test_every_indexable_built_page_is_findable():
+    """The inverse of the page-map test above, and the one that actually bites.
+
+    That test checks the pages the PAGE MAP knows are in the index. Nothing checked the
+    other direction, so a whole route family the page map does not list — the puppy pages,
+    the blog posts, the three index routes, anything project 4 adds — could fall out of the
+    index with every other gate still green: it is in the sitemaps, it returns 200, it is
+    simply unreachable from the site's own search. This asserts the complement, against an
+    allowlist that has to be written down and justified."""
+    if not DIST.exists():
+        pytest.skip("run npm run build first")
+    missing = indexable_built_urls() - {r["url"] for r in rows()} - set(UNINDEXED_BUT_INDEXABLE)
+    assert not missing, (
+        "indexable built pages the site's own search cannot find: "
+        f"{sorted(missing)} — index them, mark them noindex, or add them to "
+        "UNINDEXED_BUT_INDEXABLE with a reason")
+    stale = set(UNINDEXED_BUT_INDEXABLE) - indexable_built_urls()
+    assert not stale, f"allowlist entries that are no longer indexable built pages: {sorted(stale)}"
+
+
 def test_every_available_puppy_is_present():
     puppies = json.loads((ROOT / "data/puppies.json").read_text())
     available = [p for p in puppies if str(p.get("status", "")).lower() == "available"]

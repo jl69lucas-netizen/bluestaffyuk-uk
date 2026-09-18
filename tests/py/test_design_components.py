@@ -209,11 +209,13 @@ def test_built_sections_render_five_distinct_variants():
         painted = {v: _rendering(cid, inner) for v, inner in variants.items()}
         same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
                 if painted[x] == painted[y]]
-        if cid in DISTINCTNESS_EXEMPT:
-            continue
-        assert not same, (
-            f"{cid}: {same} render the same markup once the variant letter is normalised "
-            f"away — they are one option on the canvas, not two")
+        # The exemption is from the DISTINCTNESS half only. `continue` here also skipped the
+        # inline-hex half, so an exempt component was the one place in the kit where a hex
+        # could be spelled in a style attribute and nothing would say so.
+        if cid not in DISTINCTNESS_EXEMPT:
+            assert not same, (
+                f"{cid}: {same} render the same markup once the variant letter is normalised "
+                f"away — they are one option on the canvas, not two")
         hexes = [m for inner in variants.values()
                  for m in re.findall(r'style="[^"]*#[0-9A-Fa-f]{3}', inner)]
         assert not hexes, (cid, hexes)

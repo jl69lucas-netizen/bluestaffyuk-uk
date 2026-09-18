@@ -93,13 +93,19 @@ def main(argv=None):
         print("no dist/ — run `npm run build` first")
         return 1
     rows = build()
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(rows, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    body = json.dumps(rows, indent=1, ensure_ascii=False) + "\n"
+    # BOTH copies. `public/` is the committed source of the file; `dist/` is what the built
+    # site actually serves — and Astro copies `public/` into `dist/` BEFORE postbuild runs,
+    # so writing only to `public/` ships an index that is one build out of date. Every page
+    # added in a build would be missing from its own build's search results.
+    for out in (OUT, DIST / OUT.name):
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(body, encoding="utf-8")
     kinds = {}
     for r in rows:
         kinds[r["kind"]] = kinds.get(r["kind"], 0) + 1
     carried = sum(1 for r in rows if "Glasgow" in r["title"])
-    print(f"search index: {len(rows)} rows -> {OUT.relative_to(ROOT)}")
+    print(f"search index: {len(rows)} rows -> {OUT.relative_to(ROOT)} and dist/{OUT.name}")
     print("  " + ", ".join(f"{k} {v}" for k, v in sorted(kinds.items())))
     if carried:
         print(f"  {carried} title(s) carry the former city verbatim from data/page-map.json "

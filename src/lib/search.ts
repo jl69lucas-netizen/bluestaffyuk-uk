@@ -71,6 +71,11 @@ export function renderInto(list: HTMLUListElement, rows: SearchRow[], query: str
     head.textContent = group;
     list.append(head);
     for (const row of inGroup) {
+      // The index holds this site's own routes and nothing else, so a url that is not a
+      // root-relative path is not a result: it is a row that should not be there. Assigning
+      // it to `a.href` unguarded would let a `javascript:` or off-site value out of a static
+      // JSON file and into a link the reader is being invited to click.
+      if (!row.url.startsWith('/')) continue;
       const li = document.createElement('li');
       const a = document.createElement('a');
       a.href = row.url;

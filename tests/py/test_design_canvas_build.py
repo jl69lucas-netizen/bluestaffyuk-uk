@@ -66,12 +66,10 @@ PICKED_ROWS = [{"id": "buttons", "title": "3 · Buttons", "board_width": 640},
 
 
 def test_canvas_index_adds_the_picked_mobile_and_tablet_rows():
-    boards = [(cid, "a", 120) for cid in ("buttons", "faq")]
     picked = [(cid, "a", suffix, 200) for cid in ("buttons", "faq") for suffix in ("m375", "t768")]
     idx = B.canvas_index("BlueStaffyUK Design Canvas", PICKED_ROWS,
                          [(cid, v, 120) for cid in ("buttons", "faq") for v in "abcde"],
                          existing=None, picked=picked)
-    assert boards  # the five-variant rows are unchanged
     for suffix, w, title in B.RESPONSIVE_ROWS:
         files = [f"buttons-a-{suffix}.dc.html", f"faq-a-{suffix}.dc.html"]
         for f in files:

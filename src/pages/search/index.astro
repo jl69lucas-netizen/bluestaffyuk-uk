@@ -52,9 +52,15 @@ const description = 'Search BlueStaffyUK: puppies, guides, locations and posts.'
     loadIndex().then((rows) => {
       const hits = matchRows(rows, q);
       const shown = renderInto(list, hits, q, MAX);
-      summary.textContent = shown
-        ? `${hits.length} result${hits.length === 1 ? '' : 's'} for “${q}”.`
-        : `No results for “${q}”.`;
+      // Say so when the list is cut off. `${hits.length} results` printed above a list of
+      // fifty read as a complete list, and the reader had no way to tell that the rest
+      // existed or that scrolling would not reach them.
+      const total = `${hits.length} result${hits.length === 1 ? '' : 's'} for “${q}”`;
+      summary.textContent = !shown
+        ? `No results for “${q}”.`
+        : shown < hits.length
+          ? `${total} — showing the first ${shown}.`
+          : `${total}.`;
       summary.hidden = false;
     });
   }

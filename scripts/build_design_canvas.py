@@ -127,7 +127,10 @@ def canvas_index(title, rows, boards, existing, picked=()):
     picked_h = {(c, v, s): h for c, v, s, h in picked}
     by_id = {r["id"]: r for r in rows}
     for suffix, w, row_title in RESPONSIVE_ROWS:
-        in_row = [(c, v) for (c, v, s) in {(c, v, s) for c, v, s, _ in picked} if s == suffix]
+        # No set round-trip: `picked` already holds one row per (component, suffix), so
+        # building a set of the first three fields deduplicated nothing and only threw the
+        # order away before the sort below put it back.
+        in_row = [(c, v) for c, v, s, _ in picked if s == suffix]
         if not in_row:
             continue
         order = [r["id"] for r in rows]
