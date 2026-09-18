@@ -18,6 +18,12 @@
 //     `@layer components { … }`, so a passed Tailwind utility wins over them.
 //  7. Register the component here with demo fixtures; the canvas renders one copy per fixture.
 //  8. Add a dist assertion for it in tests/py/test_design_components.py.
+// 10. A POSITIONAL check — one that judges an element against its previous sibling, its
+//     offset from the chrome, or its place in the scroll — is INERT on the canvas: every
+//     demo is the first child of its own artboard, so `previousElementSibling` is null and
+//     the check examines zero and passes vacuously. Cover those with a fixture pair in
+//     tests/render/fixtures/, and give the demo a `wrap` only to make the artboard
+//     LOOK right for the eye that picks it.
 //  9. A primitive needed by a SECOND component (card shell, medal, rule) moves to
 //     src/styles/kit.css rather than being copied into another scoped style block.
 //     That file exists as of Task 9 and holds `.kit-card`, `.kit-card--lift` and
@@ -44,8 +50,9 @@ export interface KitEntry {
   C: AstroComponentFactory;
   /** One rendering per fixture, inside one variant section. Omitted means a single bare copy. */
   demo?: Record<string, unknown>[];
-  /** Extra chrome the canvas wraps the demo in, for components that need a context to be judged. */
-  wrap?: 'sticky' | 'inverse';
+  /** Extra chrome the canvas wraps the demo in, for components that need a context to be
+   *  judged BY EYE. It never makes a positional check work — see convention 10. */
+  wrap?: 'sticky' | 'inverse' | 'after-band';
 }
 
 /** The row in data/design/components.json, typed so a typo in an id fails the build. */
@@ -63,6 +70,9 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
   // `as: 'h2'` — the canvas mounts five heroes on one page and the page already owns an
   // <h1>. The prop exists for exactly this: on a real page the default 'h1' is correct.
+  // TWO images carry fetchpriority="high" on the canvas — variants a and c each render the
+  // hero photo — and that is expected here: the canvas is five heroes on one noindex page,
+  // where a real page mounts exactly one.
   hero: { C: Hero, demo: [{ as: 'h2' }] },
   buttons: {
     C: Button,
@@ -75,8 +85,13 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // only Roman would hide how the row wraps behind a longer colour name.
   'puppy-card': { C: PuppyCard, demo: [{ slug: 'roman' }, { slug: 'christa' }] },
   'trust-strip': { C: TrustStrip },
-  // No `wrap`: the counter strip's whole point is the seam against what sits above it, and
-  // the artboard's own section edge is the boundary the check would judge anyway.
-  'counter-strip': { C: CounterStrip },
+  // `wrap: 'after-band'` paints a steel band above the strip so the seam is judgeable BY
+  // EYE — a strip floating on bone shows nothing to be separated from. It does NOT make
+  // `layout-hero-counter-separation` judge the canvas: convention 10, the check reads the
+  // strip's previousElementSibling and on the canvas that is the band, not a hero, only
+  // because this wrap puts one there. The real coverage is the fixture pair
+  // tests/render/fixtures/{known_good/kit-counter-separated,known_broken/kit-counter-flush}.html,
+  // which pins the shipped component's own resolved geometry.
+  'counter-strip': { C: CounterStrip, wrap: 'after-band' },
   'section-divider': { C: SectionDivider },
 };

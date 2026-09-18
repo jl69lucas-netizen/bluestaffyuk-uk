@@ -1606,7 +1606,9 @@ test.describe('layout-hero-counter-separation [kit CounterStrip]', () => {
     const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
     expect(r.examined).toBe(1);
     expect(r.defects.length, 'a flush strip must be reported').toBeGreaterThan(0);
-    expect(r.defects[0].message).toContain('background tone shift');
-    expect(r.defects[0].message).toContain('border/seam/gradient rule');
+    // Matched loosely on purpose: the assertion is that BOTH halves are reported missing,
+    // not that the check's prose never gets reworded.
+    expect(r.defects[0].message).toMatch(/tone/);
+    expect(r.defects[0].message).toMatch(/rule/);
   });
 });

@@ -239,3 +239,22 @@ def test_built_counter_strip_variants_keep_the_harness_hooks_and_the_data_figure
         assert f"£{settings['deposit_gbp']}" in inner, v
         assert f"£{settings['delivery_min_gbp']}" in inner, v
         assert f"£{settings['delivery_max_gbp']}" in inner, v
+
+
+def test_kit_counter_fixture_hexes_are_the_tokens_they_stand_for():
+    """The fixture pair spells hex because a fixture is test data served as a static file —
+    it cannot read tokens.css. That freedom is also the failure mode: retune --counter-bed
+    and the fixture goes on proving that some OTHER bed clears the check while the shipped
+    component no longer does. This binds the two, so a token change that orphans the fixture
+    fails here instead of passing silently."""
+    from test_design_tokens import layers, resolve
+
+    L = layers()
+    fixture = (ROOT / "tests/render/fixtures/known_good/kit-counter-separated.html").read_text()
+    lowered = fixture.lower()
+    for token in ("--counter-bed", "--color-border", "--color-surface-inverse"):
+        value = resolve(token, L)
+        assert re.fullmatch(r"#[0-9a-fA-F]{6}", value), (token, value)
+        assert value.lower() in lowered, (
+            f"{token} resolves to {value}, which the kit counter fixture does not spell; "
+            f"the fixture is no longer the shipped component's geometry")

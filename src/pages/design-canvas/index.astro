@@ -23,10 +23,16 @@ const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
 // docks to the page scroller and the artboard captures a collapsed strip), 'inverse' paints
 // the dark band and, through [data-surface], flips --kit-ring inside it.
 const FLEX = 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
-const demoStyle = (wrap?: 'sticky' | 'inverse') =>
+// 'after-band' puts a steel band ABOVE the demo so a component whose whole point is the
+// seam against what precedes it has something to be judged against by eye. It is a
+// display:block box for that reason: the default flex row would sit the band beside the
+// component instead of above it.
+const demoStyle = (wrap?: 'sticky' | 'inverse' | 'after-band') =>
   wrap === 'sticky'
     ? 'position:relative;min-height:220px;overflow:visible'
-    : wrap === 'inverse'
+    : wrap === 'after-band'
+      ? 'display:block'
+      : wrap === 'inverse'
       ? `${FLEX};background:var(--color-surface-inverse);padding:var(--space-8) var(--space-5);border-radius:var(--card-radius)`
       : FLEX;
 ---
@@ -56,6 +62,7 @@ const demoStyle = (wrap?: 'sticky' | 'inverse') =>
             <section data-component={c.id} data-variant={v} data-width={c.board_width} class="kit-section">
               <h3 style={h3}>{c.title} — variant {v}</h3>
               <div style={demoStyle(wrap)} data-surface={wrap === 'inverse' ? 'inverse' : undefined}>
+                {wrap === 'after-band' && <div data-surface="inverse" style="height:80px"></div>}
                 {demo.map((props) => <C variant={v} {...props} />)}
               </div>
             </section>

@@ -10,8 +10,10 @@
 //
 // SIZES. `.pic` paints at ~560px on desktop and full width below 900px, which is what the
 // `sizes` attribute says — a hero that claimed 100vw everywhere would download the 1200px
-// candidate onto a 560px box. The hero image is the page's LCP element in every variant that
-// shows one, so it is eager with fetchpriority="high" rather than lazy. The crop is CSS
+// candidate onto a 560px box. `.pic` is the LCP element in the variants that show it, so it
+// is eager with fetchpriority="high" rather than lazy. Variant b's band photo is eager too
+// but NOT high priority: it is a texture behind the copy and the LCP there is the heading,
+// so promoting it would only push the heading's font down the queue. The crop is CSS
 // (aspect-ratio + object-fit), never a baked one, so one master serves every variant.
 //
 // HEADING LEVEL. `as` exists because the canvas mounts five heroes on one page: the page owns
@@ -64,7 +66,6 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
       sizes="100vw"
       class="bg"
       loading="eager"
-      fetchpriority="high"
       decoding="async"
     />
   )}

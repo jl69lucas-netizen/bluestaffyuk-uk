@@ -8,7 +8,10 @@
 
    These are global classes on purpose: an Astro component's scoped styles cannot be shared,
    and a component applies one of these alongside its own scoped class, which keeps the
-   per-component overrides (padding, aspect ratio, direction) exactly where they belong. */
+   per-component overrides (padding, aspect ratio, direction) exactly where they belong.
+
+   No hex here; the spacing and radius literals are kept verbatim from the components these
+   rules were lifted out of, so moving them changed nothing on screen. */
 @layer components {
   /* The card shell: PuppyCard and TrustStrip variant b. */
   .kit-card {
@@ -33,5 +36,11 @@
     border-radius: var(--radius-pill);
     background: var(--color-brand-soft);
     color: var(--color-brand);
+  }
+  /* On a dark band the steel-on-steel chip disappears, so the fill becomes a bone tint of
+     the band's own text colour and the label takes that colour outright. */
+  [data-surface="inverse"] .kit-chip {
+    background: color-mix(in srgb, var(--color-text-on-inverse) 14%, transparent);
+    color: var(--color-text-on-inverse);
   }
 }
