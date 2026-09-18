@@ -335,3 +335,30 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
         assert r["quote"] in body, (r["source"], r["quote"][:60])
         assert r["name"] in body, (r["source"], r["name"])
         assert r["place"] in body, (r["source"], r["place"])
+
+
+def test_built_faq_variants_are_native_details_with_backed_answers():
+    """Convention 8. Two things are pinned here. First the element: a kit that quietly
+    swapped <details> for a scripted div would lose keyboard operation, find-in-page and
+    the no-JavaScript open, and every other test would stay green. Second the facts: the
+    deposit and the delivery band are read from data/settings.json, so a price edited in
+    one place and not the other fails here rather than shipping two numbers."""
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    s = _sections("faq")
+    for v, inner in sorted(s.items()):
+        assert inner.count("<details") == 3, v
+        assert inner.count("<summary") == 3, v
+        assert f"£{settings['deposit_gbp']}" in inner, v
+        assert f"£{settings['delivery_min_gbp']}" in inner, v
+        assert f"£{settings['delivery_max_gbp']}" in inner, v
+        assert settings["delivery_note"] in inner, v
+        # Rule 7: the open/close markers are inline stroke SVG, never an emoji.
+        assert "emoji" not in inner
+    # a and b are the only variants with a marker glyph, and they are different glyphs.
+    for v in ("a", "b"):
+        assert 'stroke="currentColor"' in s[v], v
+        assert s[v].count("<svg") == 3, v
+    for v in ("c", "d", "e"):
+        assert "<svg" not in s[v], v
+    # c is the numbered treatment.
+    assert ">01<" in s["c"] and ">03<" in s["c"]

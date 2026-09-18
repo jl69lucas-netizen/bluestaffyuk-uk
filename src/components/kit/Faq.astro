@@ -1,0 +1,77 @@
+---
+// src/components/kit/Faq.astro — spec §5 #9. Native <details>, five treatments.
+// a plus icon · b chevron · c numbered · d bordered cards · e divided list
+//
+// Native <details>/<summary>, not a scripted accordion: it opens with JavaScript off, it
+// is keyboard-operable and announced without an aria-expanded of our own, and the browser
+// handles find-in-page opening the right panel.
+//
+// EVERY ANSWER IS BACKED (rule 9). The deposit and the delivery band come from
+// data/settings.json, so a price change is a data edit and not a copy edit. The third
+// answer is the puppy package the live homepage already describes — "their first
+// vaccinations, microchip, a full veterinary health check... and relevant paperwork". The
+// plan's third question was "can we meet the mother"; the migrated pages make that claim
+// only as generic buying advice in the buying guide, never as a promise this breeder
+// makes, so asserting it here would have been an invented claim.
+//
+// Rule 7: the markers are inline stroke SVG, never an emoji. Convention 2: the summary's
+// focus ring reads --kit-ring, so it survives on a dark band.
+import type { HTMLAttributes } from 'astro/types';
+import type { Variant } from './_variant';
+import { SITE } from '../../lib/site';
+
+interface Item { q: string; a: string }
+type Props = HTMLAttributes<'div'> & { variant?: Variant; items?: Item[] };
+const defaults: Item[] = [
+  {
+    q: 'How much is the deposit?',
+    a: `£${SITE.deposit_gbp}, ${SITE.deposit_refundable ? 'refundable' : 'non-refundable'}, secures your chosen puppy.`,
+  },
+  {
+    q: 'Do you deliver across the UK?',
+    a: `Yes. ${SITE.delivery_note}, from £${SITE.delivery_min_gbp} to £${SITE.delivery_max_gbp}.`,
+  },
+  {
+    q: 'What comes with a puppy?',
+    a: 'A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.',
+  },
+];
+const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
+---
+<div {...rest} class:list={['kit-faq', `kit-faq-${variant}`, cls]} data-variant={variant}>
+  {items.map((it, i) => (
+    <details>
+      <summary>
+        {variant === 'c' && <span class="num">{String(i + 1).padStart(2, '0')}</span>}
+        <span class="q">{it.q}</span>
+        {variant === 'a' && <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>}
+        {variant === 'b' && <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" /></svg>}
+      </summary>
+      <p>{it.a}</p>
+    </details>
+  ))}
+</div>
+<style>
+  @layer components {
+    .kit-faq { max-width: 640px; display: grid; gap: var(--space-2); color: var(--color-text); }
+    details { background: var(--color-surface-raised); border-radius: var(--radius-md); }
+    summary { display: flex; align-items: center; gap: var(--space-3); cursor: pointer; list-style: none; padding: var(--space-4); min-height: 44px; font-weight: 600; font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-brand); }
+    summary::-webkit-details-marker { display: none; }
+    .q { flex: 1; }
+    .ico { transition: transform var(--dur-base) var(--ease-out); }
+    details[open] .ico { transform: rotate(45deg); }
+    .kit-faq-b details[open] .ico { transform: rotate(180deg); }
+    p { margin: 0; padding: 0 var(--space-4) var(--space-4); font-size: var(--text-base); }
+    /* The number is a muted label, not brass: brass is 2.1:1 as small text on bone. */
+    .num { font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
+    .kit-faq-d details { border: var(--card-border); box-shadow: var(--shadow-card); }
+    .kit-faq-e { gap: 0; }
+    .kit-faq-e details { border-radius: 0; border-bottom: 1px solid var(--color-border); background: transparent; }
+    .kit-faq-e summary { padding-inline: 0; }
+    .kit-faq-e p { padding-inline: 0; }
+    /* --kit-ring, not --color-focus: the ring has to survive if this list is dropped on a
+       steel band, where the fixed focus token is the band's own colour (convention 2). */
+    summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+    @media (prefers-reduced-motion: reduce) { .ico { transition: none; } }
+  }
+</style>
