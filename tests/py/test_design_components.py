@@ -71,7 +71,7 @@ def test_mark_inverse_swaps_the_badge_and_the_outline_for_dark_bands():
     assert "inverse = false" in t
     assert "inverse ? 'var(--color-surface)' : 'var(--color-brand)'" in t
     assert "inverse ? 'var(--color-brand)' : 'var(--color-surface)'" in t
-    for token in ("--color-cta", "--color-brand-mid", "--color-brand-soft", "--color-surface-deep"):
+    for token in ("--color-cta", "--color-brand-mid", "--color-brand-tint", "--color-surface-deep"):
         assert f"var({token})" in t, token
 
 
@@ -126,6 +126,21 @@ CAPTION_RE = re.compile(r'^\s*<h3[^>]*>.*?</h3>', re.S)
 VARIANT_ATTR_RE = re.compile(r'data-variant="[a-e]"')
 
 
+#: components whose variant class stem is NOT derivable from their id. Four of the thirteen
+#: name their root class after the thing rather than the row — `testimonial` paints
+#: `kit-quote-a`, `site-header` paints `kit-hdr-a` — and for those the derived pattern below
+#: matched nothing at all, so the variant letter survived normalisation and every pair of
+#: sections differed by that letter alone. The distinctness check passed vacuously for them.
+#: `buttons` has no stem on purpose: its five variants are five different utility class
+#: lists, with no `kit-buttons-[a-e]` to normalise away.
+CLASS_STEM = {
+    "site-header": "hdr",
+    "puppy-card": "pup",
+    "testimonial": "quote",
+    "section-divider": "divider",
+}
+
+
 def _variant_class_re(cid):
     r"""The one class that spells this component's variant letter.
 
@@ -133,10 +148,13 @@ def _variant_class_re(cid):
     rewrites any other kit class that happens to end in a hyphen and a letter a-e, and a
     normalisation that reaches classes it was not aimed at can only ever erase differences
     the check exists to find. `kit-counter-a` comes from the `counter-strip` row, so the
-    stem is the id with a trailing `-strip`/`-card` dropped, and the full id is allowed too.
+    stem is the id with a trailing `-strip`/`-card` dropped, and the full id is allowed too —
+    except for the four in CLASS_STEM, which say outright what they paint.
     """
-    stem = re.sub(r"-(strip|card)$", "", cid)
-    alts = "|".join(sorted({re.escape(stem), re.escape(cid)}, key=len, reverse=True))
+    stems = {re.sub(r"-(strip|card)$", "", cid), cid}
+    if cid in CLASS_STEM:
+        stems.add(CLASS_STEM[cid])
+    alts = "|".join(sorted((re.escape(s) for s in stems), key=len, reverse=True))
     return re.compile(rf"\bkit-(?:{alts})-([a-e])\b")
 
 
@@ -163,6 +181,16 @@ def _rendering(cid, inner):
     return out.strip()
 
 
+#: components exempt from the five-way distinctness check, each with the reason in full.
+#: A named list, never a silent skip: an exemption nobody can read is an exemption nobody
+#: can revoke, and `test_distinctness_exemptions_are_still_warranted` below fails the day
+#: an exempt component starts passing again.
+DISTINCTNESS_EXEMPT = {
+    "testimonial": "amendment 3e: modes replace variants; a≡c (single), d≡e (single/stacked) "
+                   "collapse at Task 19",
+}
+
+
 def test_built_sections_render_five_distinct_variants():
     """Whatever is on the canvas today must show five genuinely different THINGS per
     component, with no hex reached for in an inline style. Compared on _rendering(), not on
@@ -181,6 +209,8 @@ def test_built_sections_render_five_distinct_variants():
         painted = {v: _rendering(cid, inner) for v, inner in variants.items()}
         same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
                 if painted[x] == painted[y]]
+        if cid in DISTINCTNESS_EXEMPT:
+            continue
         assert not same, (
             f"{cid}: {same} render the same markup once the variant letter is normalised "
             f"away — they are one option on the canvas, not two")
@@ -705,3 +735,22 @@ def test_built_footer_variants_carry_the_nav_the_socials_and_their_own_arrangeme
     assert "Small print" in s["e"]
     for v in ("a", "b", "c", "d"):
         assert "Small print" not in s[v], v
+
+
+def test_distinctness_exemptions_are_still_warranted():
+    """An exemption that has stopped being needed is a hole left open.
+
+    Every id in DISTINCTNESS_EXEMPT must still collapse — and must still be a real
+    component — so the list shrinks itself rather than outliving its reason."""
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    by_component = {}
+    for cid, variant, inner in SECTION_RE.findall(DIST_ROUTE.read_text()):
+        by_component.setdefault(cid, {})[variant] = inner
+    for cid, reason in sorted(DISTINCTNESS_EXEMPT.items()):
+        assert cid in IDS, cid
+        assert reason.strip(), cid
+        painted = {v: _rendering(cid, inner) for v, inner in by_component[cid].items()}
+        same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
+                if painted[x] == painted[y]]
+        assert same, f"{cid} no longer collapses — drop it from DISTINCTNESS_EXEMPT"

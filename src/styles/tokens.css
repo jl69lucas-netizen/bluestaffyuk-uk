@@ -60,6 +60,9 @@
   --color-brand: var(--color-steel-700);
   --color-brand-soft: var(--color-steel-100);
   --color-brand-mid: var(--color-steel-500);
+  /* A FILL only — the mark's skull, which is the reference lockup's own steel-300. It is
+     never text, so it has no pair in data/design/contrast.json; add one the day it is. */
+  --color-brand-tint: var(--color-steel-300);
   --color-cta: var(--color-brass-500);
   --color-cta-ink: var(--color-steel-900);
   --color-cta-hover: var(--color-brass-600);
