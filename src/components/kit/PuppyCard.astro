@@ -26,7 +26,7 @@ const price = `£${p.price_gbp.toLocaleString('en-GB')}`;
 const avail = p.status === 'Available';
 const href = `/available-puppies/${p.slug}/`;
 ---
-<article {...rest} class:list={['kit-pup', `kit-pup-${variant}`, cls]} data-variant={variant}>
+<article {...rest} class:list={['kit-card', 'kit-card--lift', 'kit-pup', `kit-pup-${variant}`, cls]} data-variant={variant}>
   <a href={href} class="photo" tabindex="-1">
     <Image
       src={img}
@@ -42,18 +42,19 @@ const href = `/available-puppies/${p.slug}/`;
   <div class="body">
     <h3 class:list={[variant === 'd' && 'band']}><a href={href}>{p.name}</a></h3>
     <p class="meta">
-      <span class="chip">{p.sex === 'male' ? 'Male' : 'Female'}</span>
-      <span class="chip">{p.colour}</span>
-      {variant !== 'a' && <span class="chip strong">{price}</span>}
-      {variant !== 'b' && <span class:list={['chip', avail && 'ok']}>{p.status}</span>}
+      <span class="kit-chip">{p.sex === 'male' ? 'Male' : 'Female'}</span>
+      <span class="kit-chip">{p.colour}</span>
+      {variant !== 'a' && <span class="kit-chip strong">{price}</span>}
+      {variant !== 'b' && <span class:list={['kit-chip', avail && 'ok']}>{p.status}</span>}
     </p>
     <Button variant={variant === 'e' ? 'e' : 'a'} href={href} label={`Ask about ${p.name}`} />
   </div>
 </article>
 <style>
   @layer components {
-    .kit-pup { background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card); overflow: hidden; max-width: 400px; transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
-    .kit-pup:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+    /* Shell and hover lift come from .kit-card / .kit-card--lift in src/styles/kit.css
+       (convention 9); what is left here is what only this card needs. */
+    .kit-pup { overflow: hidden; max-width: 400px; }
     /* The photo link is tabindex="-1": the heading link below it goes to the same page, so
        two TAB STOPS with one destination would be a duplicate; the link itself stays in the
        accessibility tree, carrying the photo's alt text. The ratio is CSS, not a baked crop,
@@ -69,9 +70,8 @@ const href = `/available-puppies/${p.slug}/`;
     h3.band { background: var(--color-brand); margin: calc(-1 * var(--space-5)) calc(-1 * var(--space-5)) 0; padding: var(--space-3) var(--space-5); --kit-ring: var(--color-focus-on-inverse); }
     h3.band a { color: var(--color-text-on-inverse); }
     .meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
-    .chip { font-size: var(--text-xs); font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--color-brand-soft); color: var(--color-brand); }
-    .chip.strong { background: var(--color-cta-soft); color: var(--color-cta-ink); }
-    .chip.ok { color: var(--color-ok); }
+    .kit-chip.strong { background: var(--color-cta-soft); color: var(--color-cta-ink); }
+    .kit-chip.ok { color: var(--color-ok); }
     .badge { position: absolute; top: var(--space-3); right: var(--space-3); background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; padding: 6px 12px; border-radius: var(--radius-pill); }
     .ribbon { position: absolute; left: 0; top: var(--space-4); background: var(--color-surface-inverse); color: var(--color-text-on-inverse); font-size: var(--text-xs); font-weight: 600; padding: 4px 12px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
     .kit-pup-e { display: grid; grid-template-columns: 160px 1fr; max-width: 560px; align-items: stretch; }

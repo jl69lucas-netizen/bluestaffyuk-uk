@@ -16,7 +16,7 @@ import type { Variant } from './_variant';
 type Props = HTMLAttributes<'section'> & { variant?: Variant };
 const { variant = 'a', class: cls, ...rest } = Astro.props;
 const items = [
-  { t: 'KC registered', d: 'Every litter registered with The Kennel Club.', i: 'M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z' },
+  { t: 'KC registered', d: 'KC-registered breeder; registration paperwork with every puppy.', i: 'M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z' },
   { t: 'DNA-tested parents', d: 'Dam and sire clear of L-2-HGA and HC-HSF4, results on request.', i: 'M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6' },
   { t: 'Raised in the home', d: 'Reared in a family home, not a kennel, and socialised early.', i: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6' },
 ];
@@ -31,7 +31,7 @@ const inverse = variant === 'd';
 >
   <ul class="container list">
     {items.map((x) => (
-      <li>
+      <li class:list={[variant === 'b' && 'kit-card']}>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={x.i} /></svg>
         <div><strong>{x.t}</strong>{variant !== 'c' && <p>{x.d}</p>}</div>
       </li>
@@ -50,7 +50,9 @@ const inverse = variant === 'd';
     strong { display: block; font-family: var(--font-display); font-size: var(--text-lg); color: inherit; }
     p { margin: 4px 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
     [data-surface="inverse"] p { color: inherit; }
-    .kit-trust-b li { flex-direction: column; padding: var(--space-5); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card); }
+    /* The tile shell is .kit-card from src/styles/kit.css (convention 9): b is the second
+       component to need it, so it moved there rather than being copied in. */
+    .kit-trust-b li { flex-direction: column; padding: var(--space-5); }
     .kit-trust-c .list { display: flex; justify-content: center; gap: 0; }
     .kit-trust-c li { padding-inline: var(--space-6); border-left: 1px solid var(--color-border); align-items: center; }
     .kit-trust-c li:first-child { border-left: 0; }

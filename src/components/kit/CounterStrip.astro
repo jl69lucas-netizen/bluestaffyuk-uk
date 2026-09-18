@@ -12,7 +12,8 @@
 // from memory, so a sold puppy or a price change is a data edit, not a component edit.
 //
 // a tone shift + top rule · b seam gradient bar · c boxed tiles on bone
-// d hero-edge with brand rule · e minimal, brass rule
+// d inline hero-edge: one flush line of figure+label pairs, overlapping the hero's bottom
+// e minimal, brass rule
 import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
 import pups from '../../../data/puppies.json';
@@ -48,7 +49,15 @@ const stats = [
     .kit-counter-b { border-top: 0; }
     .kit-counter-b::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
     .kit-counter-c li { background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-md); padding: var(--space-4); }
-    .kit-counter-d { background: var(--color-brand-soft); border-top: 2px solid var(--color-brand); }
+    /* d is a different SHAPE, not a recoloured a: the three stats are one flush line of
+       figure-then-label pairs reading left to right, lifted onto the hero's bottom edge by
+       a negative margin, instead of the centred three-column grid the others use. The 2px
+       brand rule and the steel-100 bed keep both halves of
+       layout-hero-counter-separation intact under the overlap. */
+    .kit-counter-d { background: var(--color-brand-soft); border-top: 2px solid var(--color-brand); margin-top: calc(-1 * var(--space-4)); padding-block: var(--space-4); }
+    .kit-counter-d .list { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: baseline; grid-template-columns: none; gap: var(--space-6); text-align: left; }
+    .kit-counter-d li { display: flex; align-items: baseline; gap: var(--space-2); }
+    .kit-counter-d strong { font-size: var(--text-xl); font-variant-numeric: tabular-nums; }
     /* Steel-100 is a lighter bed than the others: the muted ink is 4.5:1 on it only by
        rounding, so d's labels take the full text colour rather than the muted one. */
     .kit-counter-d span { color: var(--color-text); }

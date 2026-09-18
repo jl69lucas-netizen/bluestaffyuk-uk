@@ -1,0 +1,37 @@
+/* src/styles/kit.css — kit primitives shared by MORE THAN ONE component (convention 9).
+   Imported from global.css. No colour is spelled here: every value is a token from
+   tokens.css, which stays the only file in src/ with a hex.
+
+   A rule earns a place in this file the moment a SECOND component needs it. Until then it
+   belongs in that one component's scoped <style>. Copying a card shell or a chip into a
+   second component instead of moving it here is the drift this file exists to stop.
+
+   These are global classes on purpose: an Astro component's scoped styles cannot be shared,
+   and a component applies one of these alongside its own scoped class, which keeps the
+   per-component overrides (padding, aspect ratio, direction) exactly where they belong. */
+@layer components {
+  /* The card shell: PuppyCard and TrustStrip variant b. */
+  .kit-card {
+    background: var(--color-surface-raised);
+    border: var(--card-border);
+    border-radius: var(--card-radius);
+    box-shadow: var(--shadow-card);
+  }
+  /* The hover lift is opt-in: a card that is not a link should not rise under the pointer. */
+  .kit-card--lift {
+    transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out);
+  }
+  .kit-card--lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+
+  /* The chip: PuppyCard's meta row and Hero variant c's trust chips. Brass is a FILL
+     (--kit-chip-strong) carrying --color-cta-ink, never small brass text on a light card. */
+  .kit-chip {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-pill);
+    background: var(--color-brand-soft);
+    color: var(--color-brand);
+  }
+}

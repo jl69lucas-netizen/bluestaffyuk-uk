@@ -1,5 +1,8 @@
 @import "./tokens.css";
 @import "tailwindcss" source(none);
+/* After the Tailwind import so Tailwind establishes the layer order first; kit.css adds
+   to @layer components, which a caller's utility class still beats. */
+@import "./kit.css";
 @source "../../src/**/*.{astro,mdx,md,ts,tsx,js,jsx}";
 :root { --hdr: 72px; --container: 1200px; --text-max: 760px; }
 /* --hdr is the sticky header's height, and every in-page jump target is offset by it

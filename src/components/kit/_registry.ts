@@ -20,6 +20,9 @@
 //  8. Add a dist assertion for it in tests/py/test_design_components.py.
 //  9. A primitive needed by a SECOND component (card shell, medal, rule) moves to
 //     src/styles/kit.css rather than being copied into another scoped style block.
+//     That file exists as of Task 9 and holds `.kit-card`, `.kit-card--lift` and
+//     `.kit-chip`; global.css imports it. Reach for a class from there before writing a
+//     second copy of a shell into a scoped block.
 //
 // Brass (--color-cta) is a FILL with --color-cta-ink text or an accent on a dark band. It is
 // never the colour of small text on a light surface: it is 2.1:1 there.
