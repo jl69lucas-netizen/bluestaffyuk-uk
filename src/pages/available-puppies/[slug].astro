@@ -1,32 +1,26 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
 import puppies from '../../../data/puppies.json';
-import manifest from '../../../data/image-manifest.json';
+import { puppyImage } from '../../lib/puppyImages';
 import { SITE, SITE_URL, abs, type PuppyRow } from '../../lib/site';
 export function getStaticPaths() {
   return (puppies as PuppyRow[]).map((p) => ({ params: { slug: p.slug }, props: { p } }));
 }
 const { p } = Astro.props as { p: PuppyRow };
-const dims = manifest as Record<string, { w: number; h: number; sib_w: number | null }>;
-/** Task 7 baked every puppy photo as /images/puppies/<stem>.webp and recorded its intrinsic
- *  size in the manifest under the key "puppies/<stem>". A missing key means the bake and the
- *  data have drifted, so fail the build rather than ship a broken <img>. */
-const image = (stem: string) => {
-  const d = dims[`puppies/${stem}`];
-  if (!d) throw new Error(`image-manifest.json has no entry for puppies/${stem} (referenced by /available-puppies/${p.slug}/)`);
-  const src = `/images/puppies/${stem}.webp`;
-  const srcset = d.sib_w ? `/images/puppies/${stem}-${d.sib_w}.webp ${d.sib_w}w, ${src} ${d.w}w` : undefined;
-  return { src, srcset, width: d.w, height: d.h };
-};
+/** Project 3 Task 7: the photos come from src/assets/puppies through astro:assets, so the
+ *  srcset is bounded (Known Issue 4) and a filename with no file behind it throws in
+ *  puppyImage() rather than shipping a broken <img>. The og:image and the Product schema
+ *  below still point at the baked /images/puppies/<slug>-card-800.webp: those are absolute
+ *  URLs in markup, which a content-hashed build asset cannot be. */
 const sexLabel = p.sex === 'male' ? 'Male' : 'Female';
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 const title = `${p.name} – ${sexLabel} Blue Staffy Puppy for Sale | Blue Staffy UK`;
 const h1 = `${p.name}: ${p.colour} ${sexLabel} Blue Staffy Puppy`;
 const description = `${p.name} is a ${p.colour.toLowerCase()} ${p.sex} Staffordshire Bull Terrier puppy, ${gbp(p.price_gbp)}, available now from Blue Staffy UK in Glasgow with UK-wide delivery.`;
 const card = `/images/puppies/${p.slug}-card-800.webp`;
-const portrait = image(`${p.slug}-portrait-4x5`);
 const thumbs = p.gallery.map((g, i) => ({
-  ...image(`${p.slug}-${g.split('.')[0].toLowerCase()}`),
+  img: puppyImage(g),
   alt: `${p.name}, photo ${i + 1} of ${p.gallery.length}`,
 }));
 const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `${p.name} – Blue Staffy puppy`, image: abs(card), description,
@@ -35,8 +29,8 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `$
 ---
 <BaseLayout title={title} description={description} canonical={`/available-puppies/${p.slug}/`} crumbTitle={p.name} ogType="product" ogImage={card} schema={schema}>
   <article class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
-    <div><img src={portrait.src} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} width={portrait.width} height={portrait.height} fetchpriority="high" />
-      {thumbs.length > 1 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><img src={t.src} srcset={t.srcset} sizes="120px" alt={t.alt} width={t.width} height={t.height} loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
+    <div><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} widths={[400, 800, 1200]} sizes="(max-width: 640px) 100vw, 560px" fetchpriority="high" loading="eager" style="display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover" />
+      {thumbs.length > 1 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><Image src={t.img} alt={t.alt} widths={[120, 240, 360]} sizes="120px" loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
     <div><h1>{h1}</h1>
       <p><strong>{gbp(p.price_gbp)}</strong> · {p.status}</p>
       <dl><dt>Sex</dt><dd>{sexLabel}</dd><dt>Colour</dt><dd>{p.colour}</dd><dt>Deposit</dt><dd>{gbp(SITE.deposit_gbp)}, refundable</dd><dt>Delivery</dt><dd>{SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}; or collect in Glasgow</dd></dl>

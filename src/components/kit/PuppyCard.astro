@@ -1,0 +1,81 @@
+---
+// src/components/kit/PuppyCard.astro — spec §5 #4. Photo, name, sex, colour, price, status.
+// a 4:5 photo, price badge top-right · b 1:1 photo, status ribbon · c 4:5 photo, price chip, chips row
+// d 1:1 photo, brand header band with the name · e horizontal card (photo left) for lists
+//
+// The photo comes from src/assets/puppies through astro:assets, so the srcset is the three
+// widths below and nothing else — the card paints at ~400px and used to decode a single
+// 800px webp at 3.3x (Known Issue 4). The aspect ratio is held by CSS rather than by a
+// baked crop, so one master serves both the square and the portrait variants.
+//
+// Brass is a FILL here (the price badge carries --color-cta-ink), never a text colour on
+// the bone card: it is 2.1:1 there.
+import type { HTMLAttributes } from 'astro/types';
+import type { Variant } from './_variant';
+import { Image } from 'astro:assets';
+import { puppyImage } from '../../lib/puppyImages';
+import Button from './Button.astro';
+import pups from '../../../data/puppies.json';
+import type { PuppyRow } from '../../lib/site';
+type Props = HTMLAttributes<'article'> & { variant?: Variant; slug?: string };
+const { variant = 'a', slug = 'roman', class: cls, ...rest } = Astro.props;
+const list = pups as PuppyRow[];
+const p = list.find((x) => x.slug === slug) ?? list[0];
+const img = puppyImage(p.card_photo);
+const price = `£${p.price_gbp.toLocaleString('en-GB')}`;
+const avail = p.status === 'Available';
+const href = `/available-puppies/${p.slug}/`;
+---
+<article {...rest} class:list={['kit-pup', `kit-pup-${variant}`, cls]} data-variant={variant}>
+  <a href={href} class="photo" tabindex="-1">
+    <Image
+      src={img}
+      alt={`${p.name} the ${p.colour.toLowerCase()} Staffordshire Bull Terrier puppy`}
+      widths={[400, 800, 1200]}
+      sizes="(max-width: 640px) 100vw, 400px"
+      loading="lazy"
+      decoding="async"
+    />
+    {variant === 'a' && <span class="badge">{price}</span>}
+    {variant === 'b' && <span class:list={['ribbon', avail && 'ok']}>{p.status}</span>}
+  </a>
+  <div class="body">
+    <h3 class:list={[variant === 'd' && 'band']}><a href={href}>{p.name}</a></h3>
+    <p class="meta">
+      <span class="chip">{p.sex === 'male' ? 'Male' : 'Female'}</span>
+      <span class="chip">{p.colour}</span>
+      {variant !== 'a' && <span class="chip strong">{price}</span>}
+      {variant !== 'b' && <span class:list={['chip', avail && 'ok']}>{p.status}</span>}
+    </p>
+    <Button variant={variant === 'e' ? 'e' : 'a'} href={href} label={`Ask about ${p.name}`} />
+  </div>
+</article>
+<style>
+  @layer components {
+    .kit-pup { background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-card); overflow: hidden; max-width: 400px; transition: transform var(--dur-base) var(--ease-out), box-shadow var(--dur-base) var(--ease-out); }
+    .kit-pup:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
+    /* The photo link is tabindex="-1": the heading link below it goes to the same page, so
+       two TAB STOPS with one destination would be a duplicate; the link itself stays in the
+       accessibility tree, carrying the photo's alt text. The ratio is CSS, not a baked crop,
+       so the same master serves the square and the portrait variants. */
+    .photo { display: block; position: relative; aspect-ratio: 4/5; }
+    .kit-pup-b .photo, .kit-pup-d .photo { aspect-ratio: 1/1; }
+    .photo img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .body { padding: var(--space-5); display: grid; gap: var(--space-3); }
+    h3 { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
+    h3 a { color: var(--color-brand); text-decoration: none; }
+    h3 a:hover { text-decoration: underline; }
+    h3 a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    h3.band { background: var(--color-brand); margin: calc(-1 * var(--space-5)) calc(-1 * var(--space-5)) 0; padding: var(--space-3) var(--space-5); --kit-ring: var(--color-focus-on-inverse); }
+    h3.band a { color: var(--color-text-on-inverse); }
+    .meta { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+    .chip { font-size: var(--text-xs); font-weight: 600; padding: 4px 10px; border-radius: var(--radius-pill); background: var(--color-brand-soft); color: var(--color-brand); }
+    .chip.strong { background: var(--color-cta-soft); color: var(--color-cta-ink); }
+    .chip.ok { color: var(--color-ok); }
+    .badge { position: absolute; top: var(--space-3); right: var(--space-3); background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; padding: 6px 12px; border-radius: var(--radius-pill); }
+    .ribbon { position: absolute; left: 0; top: var(--space-4); background: var(--color-surface-inverse); color: var(--color-text-on-inverse); font-size: var(--text-xs); font-weight: 600; padding: 4px 12px; border-radius: 0 var(--radius-sm) var(--radius-sm) 0; }
+    .kit-pup-e { display: grid; grid-template-columns: 160px 1fr; max-width: 560px; align-items: stretch; }
+    .kit-pup-e .photo { aspect-ratio: auto; height: 100%; }
+    @media (max-width: 640px) { .kit-pup-e { grid-template-columns: 1fr; } .kit-pup-e .photo { aspect-ratio: 4/5; } }
+  }
+</style>

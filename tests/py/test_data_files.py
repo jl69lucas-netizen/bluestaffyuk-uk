@@ -23,8 +23,9 @@ def test_price_matrix_matches_puppies():
         assert p["sex"] in {"male", "female"}
         assert p["status"] in {"Available", "Reserved", "Sold"}
         assert p["status"] == "Available"
-        assert (ROOT / "assets" / "brand" / p["slug"] / p["card_photo"]).exists()
+        # Project 3 Task 7 moved the masters into src/assets/puppies/ (astro:assets).
+        assert (ROOT / "src" / "assets" / "puppies" / p["card_photo"]).exists()
         for g in p["gallery"]:
-            assert (ROOT / "assets" / "brand" / p["slug"] / g).exists()
+            assert (ROOT / "src" / "assets" / "puppies" / g).exists()
         assert p["card_photo"] in p["gallery"]
     assert {p["slug"] for p in pups} == {"roman","byrd","ince","vennie","christa","cheryl"}

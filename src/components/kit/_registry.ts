@@ -27,6 +27,7 @@ import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
+import PuppyCard from './PuppyCard.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -61,5 +62,8 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
       { label: 'Ask about Roman', type: 'submit' },
     ],
   },
+  // Two pups, not one: the price/status chips differ between them, so a board that showed
+  // only Roman would hide how the row wraps behind a longer colour name.
+  'puppy-card': { C: PuppyCard, demo: [{ slug: 'roman' }, { slug: 'christa' }] },
   'section-divider': { C: SectionDivider },
 };

@@ -188,3 +188,31 @@ def test_bake_puppy_card_keeps_geometry_even_when_over_budget(tmp_path, capsys):
     card, tall = bake_puppy_card(src, tmp_path / "out", "noisy")
     assert Image.open(card).size == (800, 800) and Image.open(tall).size == (800, 1000)
     assert "WARNING over budget" in capsys.readouterr().out
+
+
+def test_puppy_photos_live_in_src_assets_and_render_with_srcset():
+    """Known Issue 4: the puppy photos were only ever available as one baked 800px webp,
+    so every card painted at ~240px decoded a 3.3x image. The masters now live in
+    src/assets/puppies/ where astro:assets can emit a bounded srcset.
+
+    Deviation from the Task 7 text: the masters were in assets/brand/<slug>/, not in
+    public/images/ — public/images only ever held bake_images.py's webp derivatives, which
+    stay where they are because the og:image and the Product schema still point at them.
+    """
+    import json, pathlib, re
+    root = pathlib.Path(__file__).resolve().parents[2]
+    pups = json.loads((root / "data/puppies.json").read_text())
+    for p in pups:
+        for f in {p["card_photo"], *p["gallery"]}:
+            assert (root / "src/assets/puppies" / f).exists(), f
+            assert not (root / "public/images" / f).exists(), f
+            assert not (root / "assets/brand" / p["slug"] / f).exists(), f
+    built = root / "dist/available-puppies/roman/index.html"
+    if not built.exists():
+        pytest.skip("run npm run build first")
+    html = built.read_text()
+    m = (re.search(r'<img[^>]+srcset="([^"]+)"[^>]*alt="Roman', html)
+         or re.search(r'<img[^>]+alt="Roman[^"]*"[^>]+srcset="([^"]+)"', html))
+    assert m, "Roman's image has no srcset"
+    widths = sorted(int(w) for w in re.findall(r"\s(\d+)w", m.group(1)))
+    assert widths[-1] / widths[0] <= 3.0 and len(widths) >= 3, widths

@@ -212,14 +212,20 @@ def main(src_site):
         videos_out.mkdir(parents=True, exist_ok=True)
         shutil.copy(srcs[0], videos_out / name)
         print("%s: copied %dKB (video, verbatim)" % (name, srcs[0].stat().st_size // 1024))
+    # Project 3 Task 7 moved the puppy masters from assets/brand/<slug>/ into
+    # src/assets/puppies/ so astro:assets can emit a bounded srcset for the pages. The bake
+    # still runs over the same masters: the og:image and the Product schema are absolute
+    # URLs, which a content-hashed build asset cannot be, so they keep pointing at
+    # public/images/puppies/<slug>-card-800.webp.
+    masters = ROOT / "src/assets/puppies"
     for p in json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8")):
         slug = p["slug"]
-        bake_puppy_card(ROOT / "assets/brand" / slug / p["card_photo"], out / "puppies", slug)
+        bake_puppy_card(masters / p["card_photo"], out / "puppies", slug)
         manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
         manifest["puppies/%s-portrait-4x5" % slug] = {"w": 800, "h": 1000, "sib_w": None}
         for g in p["gallery"]:
             gstem = "%s-%s" % (slug, pathlib.Path(g).stem.lower())
-            _, _, dims = bake_body_image(ROOT / "assets/brand" / slug / g, out / "puppies", gstem,
+            _, _, dims = bake_body_image(masters / g, out / "puppies", gstem,
                                          centering.get(gstem, (0.5, 0.5)))
             manifest["puppies/%s" % gstem] = dims
     (ROOT / "data/image-manifest.json").write_text(
