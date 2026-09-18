@@ -288,6 +288,43 @@ def test_built_hero_variants_carry_their_photo_copy_and_band():
         assert "ctas" in s[v], v
 
 
+def test_built_hero_puts_the_image_before_the_heading():
+    """rules/design.md rule 10, first half (spec §11 amendment 3c). SOURCE ORDER, not the
+    painted layout: `order` moves the photo back to the right of the copy on screen, so the
+    only way to see this is where the <img> sits in the markup."""
+    s = _sections("hero")
+    for v in ("a", "b", "c"):
+        inner = s[v]
+        img = inner.find("<img")
+        head = inner.find("<h2")
+        assert img != -1 and head != -1, v
+        assert img < head, (v, "the hero image must precede the heading in the DOM")
+    # d and e have no hero image at all, which rule 10 does not make a violation
+    for v in ("d", "e"):
+        assert "<img" not in s[v], v
+
+
+HEIGHTS = ROOT / "data/design/canvas-heights.json"
+
+
+def test_measured_hero_boards_respect_the_height_ceiling():
+    """rules/design.md rule 10, second half: <= 450px on the 1280 boards.
+
+    The measured number is not the section height: scripts/measure_canvas_heights.mjs rounds
+    the section up to the nearest 8 and adds a 16px artboard frame. A 450px hero therefore
+    measures ceil(450 / 8) * 8 + 16 = 472, and that is the ceiling asserted here."""
+    if not HEIGHTS.exists():
+        pytest.skip("run npm run canvas:heights first")
+    heights = json.loads(HEIGHTS.read_text())
+    ceiling = -(-450 // 8) * 8 + 16
+    floor = -(-390 // 8) * 8 + 16
+    for v in "abcde":
+        h = heights.get(f"hero-{v}")
+        assert h is not None, v
+        assert h <= ceiling, (v, h, ceiling)
+        assert h >= floor, (v, h, floor)
+
+
 def test_built_trust_strip_variants_carry_three_backed_claims_and_line_icons():
     """Convention 8. Rule 7: the icons are inline stroke SVG, never an emoji. Rule 9: each
     claim is one the live homepage already makes (KC registration, L-2-HGA / HC-HSF4 clear

@@ -1,6 +1,8 @@
-# Design system — the nine non-negotiable visual rules
+# Design system — the ten non-negotiable visual rules
 
 Rules moved out of `CLAUDE.md` on 2026-08-02 (Phase 4). **The rule text is verbatim.**
+Rule 10 was added on 2026-09-18 from the user's review of the design canvas (spec §11
+amendment 3c) and is the one rule here that was not carried over from `CLAUDE.md`.
 
 `enforced:` says what actually holds the rule up.
 `test` — a committed check fails when the rule is broken. `judgment` — no mechanical
@@ -45,3 +47,11 @@ family: LAYOUT
 ---
 
 - **Under an H3, the image comes before the prose (ALWAYS — breeder, 2026-08-07)** — In the puppy cluster a sectional image sits immediately after its `</h3>` and before that block's first `<p>`, so the reader gets the subject before the argument. **H2 blocks keep lead-paragraph-first** — this rule is H3-scoped, deliberately, and a check that flags H2s is over-broad. Only `.sec-img` counts; seam emblems and icons are decorative and must never register as "the image". An H3 that owns no image is not a violation and must not be counted as examined. Enforced by `tests/render/checks/layout.ts::layout-h3-image-first`.
+
+---
+id: layout-hero-height-and-image-first
+enforced: test
+family: LAYOUT
+---
+
+10. **Hero image first in the DOM; hero section height ≤ 450px and ≥ 390px on desktop (≥1024px), auto on mobile.** The image element precedes the copy in source order and CSS `order` puts it back where the layout wants it, so a reader on a narrow screen or with stylesheets off meets the subject before the argument — the same reasoning as `layout-h3-image-first`, applied to the band that sets the page's first impression. The band is clamped, not merely advised: the section carries `overflow: hidden` and `.inner` carries `min-height: 390px; max-height: 450px` at ≥1024px, and the hero photo takes `object-fit: cover; height: 100%` so its own aspect ratio can never set the height. Below 1024px the height is `auto`, because a phone hero that clipped its own call to action would be worse than a tall one. Enforced by `tests/py/test_design_components.py::test_built_hero_puts_the_image_before_the_heading` and `::test_measured_hero_boards_respect_the_height_ceiling`.

@@ -16,6 +16,13 @@
 // so promoting it would only push the heading's font down the queue. The crop is CSS
 // (aspect-ratio + object-fit), never a baked one, so one master serves every variant.
 //
+// HEIGHT AND DOM ORDER (rules/design.md rule 10, spec §11 amendment 3c). The source site's
+// hero puts the image first in the DOM and keeps the band short. Both hold here for every
+// variant: the photo element PRECEDES the copy in source order and `order` puts it back on
+// the right visually, and at >=1024px `.inner` is clamped to 390-450px with the section
+// clipping, so no variant can grow a tall hero by accident. Below 1024px the height is auto,
+// because a phone hero that clipped its own CTA would be worse than a tall one.
+//
 // HEADING LEVEL. `as` exists because the canvas mounts five heroes on one page: the page owns
 // the only <h1> there and the demo fixture passes `as="h2"`. On a real page the default 'h1'
 // is correct and is what project 4 will use.
@@ -70,18 +77,6 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
     />
   )}
   <div class="container inner">
-    <div class="copy">
-      <p class="eyebrow">{eyebrow}</p>
-      <Heading class="title">{title}</Heading>
-      <p class="lede">{lede}</p>
-      {variant === 'c' && <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>}
-      {variant !== 'e' && (
-        <div class="ctas">
-          <Button variant="a" href="/available-puppies/" label="Meet the puppies" />
-          <Button variant={inverse ? 'c' : 'b'} href="/uk-blue-staffy-breeders-contact/" label="Ask a question" />
-        </div>
-      )}
-    </div>
     {(variant === 'a' || variant === 'c') && (
       <Image
         src={hero}
@@ -94,6 +89,18 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
         decoding="async"
       />
     )}
+    <div class="copy">
+      <p class="eyebrow">{eyebrow}</p>
+      <Heading class="title">{title}</Heading>
+      <p class="lede">{lede}</p>
+      {variant === 'c' && <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>}
+      {variant !== 'e' && (
+        <div class="ctas">
+          <Button variant="a" href="/available-puppies/" label="Meet the puppies" />
+          <Button variant={inverse ? 'c' : 'b'} href="/uk-blue-staffy-breeders-contact/" label="Ask a question" />
+        </div>
+      )}
+    </div>
   </div>
 </section>
 <style>
@@ -101,6 +108,9 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
     .kit-hero { background: var(--color-surface); color: var(--color-text); position: relative; overflow: hidden; }
     .kit-hero[data-surface="inverse"] { background: var(--color-surface-inverse); }
     .inner { display: grid; grid-template-columns: 1fr; gap: var(--space-8); align-items: center; padding-block: var(--space-10); position: relative; }
+    /* Rule 10's DOM order: the photo is first in source and second on screen. */
+    .pic { order: 2; }
+    .copy { order: 1; }
     .kit-hero-a .inner, .kit-hero-c .inner { grid-template-columns: 1.1fr 1fr; }
     /* Brass is 3.1:1 on bone, so the light eyebrow is steel, not brass; on the dark band
        brass is 4.9:1 and is the accent the header and buttons already use there. */
@@ -118,12 +128,19 @@ const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
     /* The band photo is a texture, not content: alt="" and .28 opacity over the steel fill,
        which keeps the on-inverse text reading against a near-flat surface. */
     .kit-hero-b .bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: .28; }
-    .kit-hero-b .inner { min-height: 520px; }
     .kit-hero-d .inner { padding-block: var(--space-8); }
     .kit-hero-d .title { font-size: var(--text-3xl); }
     .kit-hero-e .inner { padding-block: var(--space-7); }
     .kit-hero-e .title { font-size: var(--text-3xl); margin-bottom: var(--space-2); }
     .kit-hero-e .lede { margin-bottom: 0; }
+    /* RULE 10. One clamp for every variant: 390px floor so a short hero still reads as a
+       hero, 450px ceiling so it never eats the fold. The section already has
+       `overflow: hidden`, so the ceiling is enforced, not advisory; the photo drops its 4:5
+       crop here and fills the row instead, which is what keeps it from setting the height. */
+    @media (min-width: 1024px) {
+      .inner { min-height: 390px; max-height: 450px; padding-block: var(--space-6); }
+      .pic { height: 100%; aspect-ratio: auto; object-fit: cover; }
+    }
     @media (max-width: 900px) {
       .kit-hero-a .inner, .kit-hero-c .inner { grid-template-columns: 1fr; }
       .title { font-size: var(--text-3xl); }
