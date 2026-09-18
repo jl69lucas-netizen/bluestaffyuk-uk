@@ -1612,3 +1612,75 @@ test.describe('layout-hero-counter-separation [kit CounterStrip]', () => {
     expect(r.defects[0].message).toMatch(/rule/);
   });
 });
+
+/**
+ * The KIT's info card, not a generic one.
+ *
+ * The generic loop above resolves a fixture BY CHECK ID, so it judges
+ * `layout-h3-image-first` and `sem-statement-label-visible` against
+ * known_good/layout-h3-image-first.html and known_good/sem-statement-label-visible.html —
+ * pages written to prove those checks can tell the two states apart. Neither says anything
+ * about src/components/kit/InfoCard.astro. These kit-named pairs do, and because the loop
+ * cannot find them by id they need their own describes, the same way the kit counter strip
+ * does.
+ *
+ * Both checks are convention-10 positional/state checks: on the canvas every demo is the
+ * first child of its own artboard and the labels sit outside a page's real flow, so the
+ * fixture pair IS the coverage.
+ */
+test.describe('layout-h3-image-first [kit InfoCard]', () => {
+  const check = () => registry.find((c) => c.id === 'layout-h3-image-first')!;
+
+  test('is silent on the kit card with its image above its prose', async ({ page }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-h3-image-first.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    // Two blocks, not one: a fixture that silently lost its only unit would otherwise pass
+    // as clean while examining nothing.
+    expect(r.examined, 'both H3 blocks must own a sectional image').toBe(2);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the kit card drops the image below the prose', async ({ page }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-h3-image-last.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(2);
+    expect(r.defects.length, 'a prose-first block must be reported').toBeGreaterThan(0);
+    expect(r.defects[0].count, 'both blocks are offenders').toBe(2);
+  });
+});
+
+test.describe('sem-statement-label-visible [kit InfoCard]', () => {
+  const check = () => registry.find((c) => c.id === 'sem-statement-label-visible')!;
+
+  test('is silent on the kit card labels in all three places it puts one', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-stmt-label.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'band, eyebrow and H3 labels').toBe(3);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires on a hidden label and on one with no kind', async ({ page }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-stmt-label-hidden.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(3);
+    // Matched loosely on purpose: the assertion is that BOTH halves of the predicate are
+    // reported, not that the check's prose never gets reworded.
+    expect(r.defects[0].count).toBe(2);
+    expect(r.defects[0].message).toMatch(/hidden/);
+    expect(r.defects[0].message).toMatch(/kind/);
+  });
+});

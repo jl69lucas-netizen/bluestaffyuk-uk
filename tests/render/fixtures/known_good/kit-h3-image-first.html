@@ -1,0 +1,35 @@
+<!doctype html><meta charset=utf-8><title>known-good: the kit InfoCard puts its sectional image before its prose</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The KIT's own markup, not a generic one. known_good/layout-h3-image-first.html already
+  proves the CHECK can tell the two orders apart; this pair proves the component BSUK
+  ships is on the right side of it. The body below is src/components/kit/InfoCard.astro
+  variant d flattened: article > h3.sec-h3 > img.sec-img > p, all direct siblings, which is
+  the ONE structural property the check reads. Wrap the prose back into a <div> and the
+  check stops seeing it; move the <img> after the <p> and it fires — that is the
+  known_broken half. Fixtures are static test data and cannot read tokens.css, so hex is
+  spelled here; the no-hex rule scans src/ only.
+-->
+<style>
+  body { margin:0; background:#F4F1EA; font:16px/1.5 system-ui; padding:16px; }
+  .kit-info { max-width:420px; background:#FAF8F3; border:1px solid #DAD6CC; border-radius:12px; overflow:hidden; color:#22303C; }
+  .sec-h3 { margin:0; padding:20px 20px 12px; display:flex; flex-direction:column; gap:4px; font-size:22px; }
+  .stmt-label { font-size:12px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#5E6B7A; }
+  .sec-img { display:block; width:100%; height:auto; }
+  .prose { margin:0; padding:20px; font-size:15px; }
+</style>
+<main>
+  <article class="kit-info" data-variant="d">
+    <h3 class="sec-h3"><span class="stmt-label" data-kind="fact">Fact</span>What a health-tested litter means</h3>
+    <img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" width="1" height="1">
+    <p class="prose">Both parents are clear of L-2-HGA and HC-HSF4. Every puppy leaves with a full veterinary health check, its first vaccination and a microchip.</p>
+  </article>
+
+  <!-- A second card in the same shape, so the check examines more than a single block and
+       a fixture that silently lost its only unit cannot pass as clean. -->
+  <article class="kit-info" data-variant="d">
+    <h3 class="sec-h3"><span class="stmt-label" data-kind="observed">Observed here</span>How the litter is reared</h3>
+    <img class="sec-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="" width="1" height="1">
+    <p class="prose">The puppies are reared in a family home rather than a kennel and are socialised with household noise from the first weeks.</p>
+  </article>
+</main>

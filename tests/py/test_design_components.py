@@ -258,3 +258,33 @@ def test_kit_counter_fixture_hexes_are_the_tokens_they_stand_for():
         assert value.lower() in lowered, (
             f"{token} resolves to {value}, which the kit counter fixture does not spell; "
             f"the fixture is no longer the shipped component's geometry")
+
+
+def test_built_info_card_variants_carry_a_kinded_statement_label_and_d_owns_its_image():
+    """Convention 8, and the two deferred checks' half of it.
+
+    `sem-statement-label-visible` requires every `.stmt-label` to be painted AND to carry a
+    data-kind of fact/observed/recommendation; a label that lost its kind, or a variant
+    that quietly stopped rendering one, would still pass the distinctness check above.
+    `layout-h3-image-first` reads the SIBLINGS of an h3, so variant d's image and prose
+    have to be direct children of the article in that order — wrapping them back into a
+    <div> makes the check examine zero and pass vacuously, which is the regression this
+    pins. The kinds come from the registry's two demo fixtures."""
+    s = _sections("info-card")
+    for v, inner in sorted(s.items()):
+        # Counted on the class token, not on a whole attribute: Astro appends its scoped
+        # `astro-*` class to every element its <style> matches.
+        assert len(re.findall(r'\bstmt-label\b', inner)) == 2, (v, "one label per demo fixture")
+        assert 'data-kind="fact"' in inner, v
+        assert 'data-kind="recommendation"' in inner, v
+        assert re.search(r'data-kind="(?!fact|observed|recommendation)', inner) is None, v
+    # d is the only variant that owns a sectional image, and the H3 comes first.
+    d = s["d"]
+    assert "sec-img" in d
+    order = [m.group(1) for m in re.finditer(r'<(h3|img|p)\b[^>]*\b(?:sec-h3|sec-img|prose)\b', d)]
+    assert order[:3] == ["h3", "img", "p"], order[:6]
+    # The srcset is the card's painted width, not a hero's: 420 and 840, nothing wider.
+    assert 'sizes="(max-width: 640px) 100vw, 420px"' in d
+    assert "1200w" not in d and "1600w" not in d, "the 420px card must not decode a hero width"
+    for v in ("a", "b", "c", "e"):
+        assert "sec-img" not in s[v], v

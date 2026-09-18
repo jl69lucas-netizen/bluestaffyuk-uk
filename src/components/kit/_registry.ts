@@ -40,6 +40,7 @@ import PuppyCard from './PuppyCard.astro';
 import Hero from './Hero.astro';
 import TrustStrip from './TrustStrip.astro';
 import CounterStrip from './CounterStrip.astro';
+import InfoCard from './InfoCard.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -93,5 +94,22 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // tests/render/fixtures/{known_good/kit-counter-separated,known_broken/kit-counter-flush}.html,
   // which pins the shipped component's own resolved geometry.
   'counter-strip': { C: CounterStrip, wrap: 'after-band' },
+  // Two fixtures, not one: the card's statement label is the deferred
+  // sem-statement-label-visible check's only subject in the kit, and a board showing a
+  // single `fact` label would hide whether the other two kinds paint at all. No `wrap` —
+  // both of the card's checks are convention-10 checks that the fixture pairs
+  // tests/render/fixtures/{known_good,known_broken}/kit-h3-image-*.html and
+  // kit-stmt-label*.html cover; chrome on the artboard would not make either judge here.
+  'info-card': {
+    C: InfoCard,
+    demo: [
+      {},
+      {
+        kind: 'recommendation',
+        title: 'Ask to see the paperwork',
+        body: 'Every puppy leaves with a comprehensive puppy package: the first vaccination, a microchip, a full veterinary health check and the relevant paperwork.',
+      },
+    ],
+  },
   'section-divider': { C: SectionDivider },
 };
