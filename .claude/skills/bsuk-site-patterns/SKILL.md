@@ -19,8 +19,8 @@ All patterns below are verified: built, committed, and deployed to SITE_URL_PLAC
 ```css
 /* src/styles/global.css */
 @theme {
-  --color-gold: #e8604c;   /* must match --color-clay exactly */
-  --color-clay: #e8604c;
+  --color-gold: var(--color-cta);   /* must match --color-clay exactly */
+  --color-clay: var(--color-cta);
   --color-clay-dk: #c94d3a;
   ...
 }

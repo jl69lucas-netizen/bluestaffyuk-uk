@@ -9,7 +9,9 @@ env var is the endpoint's ONE name in `.claude/`; this token exists only so a bu
 shipped without it is visible here. Two more
 stand in for unverified facts rather than unprovisioned services: `LICENCE_CLAIM_PLACEHOLDER`
 and `LEGAL_CLAIM_PLACEHOLDER` hold the breeder-licence and Lucy's-Law claims the skill
-re-base would otherwise have asserted, until Lisa Bright confirms them. Every one
+re-base would otherwise have asserted, until Lisa Bright confirms them.
+REVIEW_PLACEHOLDER stands in a testimonial slot for which no real review exists in the
+repo (project 3 kit). Every one
 of them is correct today and catastrophic on launch day: a canonical pointing at
 `https://SITE_URL_PLACEHOLDER/`, or a `tel:` link nobody can ring, is the kind of defect
 that is invisible in review and obvious to the first visitor.
@@ -33,7 +35,8 @@ import marker_check
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
 PLACEHOLDERS = ("SITE_URL_PLACEHOLDER", "PHONE_PLACEHOLDER", "FORMSPREE_ID_PLACEHOLDER",
-                "LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER")
+                "LICENCE_CLAIM_PLACEHOLDER", "LEGAL_CLAIM_PLACEHOLDER",
+                "REVIEW_PLACEHOLDER")
 
 # The claim placeholders live in the instruction tree, not in dist/ — a skill that tells a
 # writer to assert an unconfirmed licence is the defect, and it never reaches a built page

@@ -97,3 +97,28 @@ def test_kit_has_no_hex_literals():
         return
     bad = [str(f.relative_to(ROOT)) for f in KIT.glob("*.astro") if HEX.search(f.read_text())]
     assert not bad, bad
+
+
+RULES = ROOT / "rules/design.md"
+INDEX = ROOT / "data/quality/rule-index.json"
+SETTINGS = ROOT / "data/settings.json"
+
+
+def test_design_rules_name_the_new_palette_and_type():
+    text = RULES.read_text()
+    for old in ("#2D6A4F", "#e8604c", "#faf7f4", "Newsreader", "IBM Plex", "font-lora", "font-sora", "Forest Green", "Clay"):
+        assert old not in text, old
+    for new in ("--color-brand", "--color-cta", "--color-surface", "Fraunces", "Source Sans 3", "src/styles/tokens.css"):
+        assert new in text, new
+
+
+def test_rule_index_marks_design_system_nine_tested():
+    rows = json.loads(INDEX.read_text())
+    row = next(r for r in rows["rules"] if r["id"] == "design-system-nine")
+    assert row["enforced"] == "test"
+    assert row["test"] == "tests/py/test_design_tokens.py"
+
+
+def test_settings_has_location_label_without_a_city_field_change():
+    s = json.loads(SETTINGS.read_text())
+    assert s["location_label"] == "Carlisle · Cumbria"

@@ -140,10 +140,10 @@ When a directory like `/UK-locations/` has child pages but no `index.html`, crea
 <style>
 body { font-family: 'Open Sans', sans-serif; background: #FFF8F0; color: #1a1a1a; margin: 0; }
 .hub { max-width: 900px; margin: 60px auto; padding: 0 20px; }
-h1 { font-family: 'Rosario', serif; color: #2D6A4F; }
+h1 { font-family: 'Rosario', serif; color: var(--color-brand); }
 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
 .card { background: #fff; border: 1px solid #e8ddd0; border-radius: 10px; padding: 18px 20px;
-        text-decoration: none; color: #2D6A4F; font-weight: 600; }
+        text-decoration: none; color: var(--color-brand); font-weight: 600; }
 .card:hover { color: #F4A261; box-shadow: 0 4px 18px rgba(45,106,79,.15); }
 </style>
 </head>

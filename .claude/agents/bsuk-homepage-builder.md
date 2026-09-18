@@ -159,8 +159,8 @@ Assemble the full page (Astro pattern):
 > **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read it before building or restyling any section. (deferred to project 3, see data/port-manifest.json)
 
 Direction D is the **live site-wide theme**, implemented globally in `src/styles/global.css` and switched on by `body.theme-d` in `BaseLayout.astro`. It is the canonical look for the homepage AND every other page:
-- **Headings:** Newsreader literary serif (weight 600, `opsz` 18, `letter-spacing:-.003em`) — applies to all H1–H6 and their accent spans, even when `font-lora` is on them.
-- **Body:** IBM Plex Sans (overrides `.font-sora`).
+- **Headings:** Fraunces literary serif (weight 600, `opsz` 18, `letter-spacing:-.003em`) — applies to all H1–H6 and their accent spans, even when `font-lora` is on them.
+- **Body:** Source Sans 3 (overrides `.font-sora`).
 - **Lead-line paragraphs:** first `<p>` straight after an H1/H2 reads larger/inkier.
 - **Eyebrows:** `.uppercase` labels get the clay underline tick.
 - **Cards:** `<article>` → soft-warm 18px radius + warm shadow + hover lift.

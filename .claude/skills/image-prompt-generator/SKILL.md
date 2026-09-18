@@ -28,7 +28,7 @@ You are the **Image Prompt Generator Skill** for BlueStaffyUK. You write optimiz
 ## BSUK Visual Brand
 
 ### Color Palette for Images
-- Warm tones: blue-grey coat, silver brindle accent, clay/terracotta accent (#e8604c) + forest green (#2D6A4F) framing
+- Warm tones: blue-grey coat, silver brindle accent, clay/terracotta accent (--color-cta) + forest green (--color-brand) framing
 - Backgrounds: white, soft beige, warm wood, green foliage (outdoor)
 - Avoid: cold blues, sterile/clinical backgrounds
 
@@ -85,7 +85,7 @@ Lighting: Even, bright, shows coat detail clearly
 ### Infographic Image
 ```
 [INFOGRAPHIC PROMPT TEMPLATE]
-Style: Clean flat design infographic, BSUK brand colors (#e8604c clay, #2D6A4F forest green, #faf7f4 cream)
+Style: Clean flat design infographic, BSUK brand colors (--color-cta clay, --color-brand forest green, --color-surface cream)
 Content: [specific data/comparison to visualize]
 Layout: [vertical / horizontal], readable at 600px width
 Font style: Modern sans-serif, high contrast
@@ -131,7 +131,7 @@ Date: [YYYY-MM-DD]
 1. **Alt text included with every prompt** — image-metadata agent needs it
 2. **At least 2 prompt variations per image** — give photographer/AI options
 3. **No prompt over 300 words** — AI tools work better with focused prompts
-4. **Brand colors referenced** — always tie back to BSUK clay/forest-green/cream palette (#e8604c / #2D6A4F / #faf7f4)
+4. **Brand colors referenced** — always tie back to BSUK clay/forest-green/cream palette (--color-cta / --color-brand / --color-surface)
 5. **Realistic expectations** — don't prompt for things AI tools consistently fail at (accurate text on signs, realistic human faces)
 
 

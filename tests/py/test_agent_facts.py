@@ -56,6 +56,9 @@ CAG_GEO = ("California", "Los Angeles", "San Diego", "Texas", "Florida")
 BANNED = (
     "40–60", "40-60", "50 cities", "50 states",
     "captive", "USDA", "APHIS", "CITES", "Cloudflare", "cloudflare",
+    # The previous site's palette and type, replaced by src/styles/tokens.css in project 3.
+    # An instruction file still quoting these teaches a writer the dead design system.
+    "#2D6A4F", "#e8604c", "#faf7f4", "Newsreader", "IBM Plex",
 ) + CAG_GEO
 
 # DEFRA is real here in exactly one form: the transport that carries a puppy. "DEFRA-approved

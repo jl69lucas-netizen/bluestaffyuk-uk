@@ -56,10 +56,10 @@ grep "^--" src/styles/global.css | head -40
 
 ```css
 /* BSUK "Terracotta Warmth" Design System — confirmed production values */
---primary: #2D6A4F;          /* Forest Green — nav/headers */
---cta: #e8604c;              /* Clay — ALL CTAs and buttons. --gold MUST equal --clay */
---gold: #e8604c;             /* Same as --cta — never use a different value */
---canvas: #faf7f4;           /* Cream — page surface background */
+--primary: var(--color-brand);          /* Forest Green — nav/headers */
+--cta: var(--color-cta);              /* Clay — ALL CTAs and buttons. --gold MUST equal --clay */
+--gold: var(--color-cta);             /* Same as --cta — never use a different value */
+--canvas: var(--color-surface);           /* Cream — page surface background */
 --text: #1a1a1a;             /* Near-black — body text */
 --font-heading: 'Lora', serif;   /* 700 weight — ALL headlines, no exceptions */
 --font-body: 'Sora', sans-serif; /* 400-700 — ALL body, labels, buttons */
@@ -484,7 +484,7 @@ Section Builder — build a `hero` section:
 > **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
 
 Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Newsreader** serif (even with `font-lora` on them); **body** in **IBM Plex Sans** (overrides `.font-sora`).
+- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
 - First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
 - Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
 

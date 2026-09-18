@@ -125,7 +125,7 @@ Captions/badges pinned *inside* a card stay absolute — that's correct, and the
 scanner ignores them.
 
 ### 1e. `clay-small-text-contrast` / `opacity-dims-text-contrast` — WARN
-Brand `--clay #e8604c` is AA **only as large text** (3.38:1). Small clay text on
+Brand `--color-cta` is AA **only as large text** (3.38:1). Small clay text on
 light must be `#b04228`; solid clay fills use `--clay-ink #c8472f`. Separately,
 any `opacity` on a text rule silently drags contrast down — `opacity:.9` white on
 `#c8472f` measures **4.10** against a 4.5 floor.
@@ -393,7 +393,7 @@ Added 2026-07-26 for the breeder's "text height/width on mobile, desktop and tab
 which had **never been measured at any breakpoint**. Body measure must land in 45–75ch.
 
 > **Do not approximate `ch` as `0.5em`.** The first cut of this probe did, and it
-> over-reported by ~20% for IBM Plex Sans, whose "0" advance is nearer `0.6em`. On
+> over-reported by ~20% for Source Sans 3, whose "0" advance is nearer `0.6em`. On
 > 2026-07-26 that produced a false alarm: it reported the body copy at 84ch and had
 > a fix underway to "cap the measure across the cluster" — when `.hgar p{max-width:70ch}`
 > was already there and correct, and the only genuinely over-wide text on the whole

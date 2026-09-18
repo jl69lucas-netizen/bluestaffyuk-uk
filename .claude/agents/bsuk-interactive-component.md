@@ -367,7 +367,7 @@ window.bsukCitesStep = function(step) {
 **Output:** Self-contained HTML/CSS/JS block. No external dependencies. No CDN.
 
 **Key specs:**
-- Two-column layout on desktop: Blue Staffy (left, clay `#e8604c` header) vs blue and white Staffy (right, green `#2D6A4F` header)
+- Two-column layout on desktop: Blue Staffy (left, clay `--color-cta` header) vs blue and white Staffy (right, green `--color-brand` header)
 - Comparison rows: Weight, Size, Tail Color, Price Range, Personality, Best For
 - Interactive toggle: user flips between "Quick Look" (4 rows) and "Full Comparison" (all rows) via a single JS event
 - Mobile (≤640px): stacks vertically, Blue Staffy on top
@@ -450,7 +450,7 @@ window.bsukCvcToggle = function(mode) {
 > **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
 
 Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Newsreader** serif (even with `font-lora` on them); **body** in **IBM Plex Sans** (overrides `.font-sora`).
+- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
 - First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
 - Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
 

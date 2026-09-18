@@ -40,7 +40,7 @@ a pass.
 |---|---|---|---|
 | 1 | 7 tap-target ERRORs | 0 real | matched `li`/`pill`/`chip` in a selector *name*; read only `min-height`, so `height:28px` fell through to a font-size guess |
 | 2 | 6 icon-baseline WARNs | 0 real | matched keywords across **CSS comments** — a `/* GREEN TICK */` comment flagged whatever rule sat beneath it; also didn't know `place-items` is shorthand for `align-items` |
-| 3 | "body copy runs 84ch" | already 70ch | approximated `ch` as `0.5em`; IBM Plex Sans's `0` advance is ~`0.6em`, inflating every reading ~20% |
+| 3 | "body copy runs 84ch" | already 70ch | approximated `ch` as `0.5em`; Source Sans 3's `0` advance is ~`0.6em`, inflating every reading ~20% |
 | 4 | 23 body dup crossovers | 0 real | whitelist didn't encode reviews / counter strip / read-card labels / doc-badge lists, all of which CLAUDE.md explicitly permits |
 | 5 | 8 contrast failures at 375px | 0 real | tested `display:none` on the element but **not on its ancestors** — it was measuring the hidden desktop dial |
 | 6 | hero "432px, over the 350–420 band" | 396px, in band | measured `.adopt-hero` *including* its `16px 0 20px` padding; `.hero-grid` is the element the spec names |

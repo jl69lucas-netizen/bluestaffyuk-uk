@@ -167,7 +167,7 @@ Never change either. When building a **new** page, set:
 > **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
 
 Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Newsreader** serif (even with `font-lora` on them); **body** in **IBM Plex Sans** (overrides `.font-sora`).
+- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
 - First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
 - Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
 

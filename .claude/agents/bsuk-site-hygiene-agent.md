@@ -155,12 +155,12 @@ The breadcrumb must go as the **first child** inside the hero section's inner co
 | Comparison pages | `cmp-hero` | `page-container` |
 | Care / breed guides | `care-hero` or named | `page-container` |
 | Location / Tailwind pages | `bg-logo-dark text-cream py-16 px-4` | `max-w-4xl mx-auto text-center` |
-| Blog pages | `style="background:#2D6A4F" class="text-white py-16 px-4"` | `max-w-4xl mx-auto text-center` |
+| Blog pages | `style="background:var(--color-brand)" class="text-white py-16 px-4"` | `max-w-4xl mx-auto text-center` |
 | Reviews / trust pages | `bg-green text-white py-16 px-4` | `max-w-3xl mx-auto text-center` |
 
 **Breadcrumb component design (as of 2026-05-22):**
 - Style: frosted glass pill — `rgba(255,255,255,0.15)` background, `backdrop-filter: blur(8px)`, white border `rgba(255,255,255,0.25)`, `border-radius: 50px`
-- Text: white `rgba(250,247,244,0.85)` for links, `#faf7f4` bold for current page
+- Text: white `rgba(250,247,244,0.85)` for links, `--color-surface` bold for current page
 - Designed to render on dark/green hero backgrounds only — do NOT place on cream/white backgrounds
 - JSON-LD BreadcrumbList schema is emitted automatically by the component
 

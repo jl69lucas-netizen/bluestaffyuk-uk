@@ -34,9 +34,9 @@ The footer is a single Astro component rendered on every page:
 
 | Element | Value |
 |---|---|
-| Footer background | **Forest Green `#2D6A4F`** (`bg-green`) — never orange |
+| Footer background | **Forest Green `--color-brand`** (`bg-green`) — never orange |
 | Text | White / white-at-opacity on green |
-| CTA button | **Clay `#e8604c`** pill (`bg-clay`, `rounded-full`) — brand signature |
+| CTA button | **Clay `--color-cta`** pill (`bg-clay`, `rounded-full`) — brand signature |
 | Bottom bar | `bg-green/90`, white/10 top border |
 | Type | Headings Lora 700 · body and links Sora 400–600 |
 | Puppy icon | custom `/emoji/bsuk-blue.png` — **never 🦜** |

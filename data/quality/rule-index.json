@@ -280,7 +280,8 @@
     {
       "id": "design-system-nine",
       "family": "CSS",
-      "enforced": "untested",
+      "enforced": "test",
+      "test": "tests/py/test_design_tokens.py",
       "pack": "rules/design.md"
     },
     {

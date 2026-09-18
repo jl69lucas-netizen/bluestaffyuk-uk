@@ -182,7 +182,7 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
    `top:calc(96px + 24px)`, every section `scroll-margin-top:calc(96px + 18px)`, `:global(html){scroll-behavior:smooth}`
    (+ reduced-motion opt-out). TOC column 200px / gap 34px (not 230/40) to widen the article column.
 5. **Contrast floors** — buttons + solid chips fill `#b04228` with white (5.7:1); table verdict cells
-   `#2D6A4F` bold (≥6:1); never clay-on-clay: inside the article column add
+   `--color-brand` bold (≥6:1); never clay-on-clay: inside the article column add
    `.cvt-main a.btn-clay{color:#fff;text-decoration:none}` or the generic link rule silently overrides it.
 6. **Form = what we sell** — short inquiry form with: interest select (Blue / Blue-Brindle / breeding pair /
    fertile eggs / not sure, prices visible), first + last name, cell + confirm, email + confirm,
@@ -250,7 +250,7 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    (40px circle icon chips + 2.1–2.2rem serif numbers + uppercase tracked labels + 4 stacked columns)
    is the exact "big number, small label" cliché DESIGN.md bans, and it rendered ~330px tall on
    phones. The shipped pattern: no icon chips at all; number and sentence-case label inline on one
-   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` Newsreader desktop /
+   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` Fraunces desktop /
    `1.2rem` tablet / `1.1rem` phone; labels `.8rem`→`.74rem` `font-weight:500`, NO uppercase, NO
    letter-spacing games; desktop one flex row with `1px rgba(255,255,255,.18)` htransport partners (~54px
    band), ≤900px a 2×2 grid (~115–140px). Content stays page-specific per §12-1.
