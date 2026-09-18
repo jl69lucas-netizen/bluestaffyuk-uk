@@ -123,3 +123,40 @@ def test_built_sections_render_five_distinct_variants():
         hexes = [m for inner in variants.values()
                  for m in re.findall(r'style="[^"]*#[0-9A-Fa-f]{3}', inner)]
         assert not hexes, (cid, hexes)
+
+
+def _sections(cid):
+    """The built artboard sections for one component, keyed by variant letter."""
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    out = {v: inner for c, v, inner in SECTION_RE.findall(DIST_ROUTE.read_text()) if c == cid}
+    if not out:
+        pytest.skip(f"{cid} is not on the canvas yet")
+    return out
+
+
+def test_built_site_header_variants_carry_their_distinguishing_marks():
+    """Convention 8. Five headers that differ only in CSS would pass the distinctness check
+    above while the drawer, the dark bands and the strapline had all silently vanished."""
+    s = _sections("site-header")
+    assert "<details" in s["d"], "variant d is the drawer variant"
+    assert "<details" not in s["a"]
+    for v in ("b", "d"):
+        assert 'data-surface="inverse"' in s[v], v
+    for v in ("a", "c", "e"):
+        assert 'data-surface="inverse"' not in s[v], v
+    assert "Carlisle" in s["e"], "variant e shows the location strapline"
+    assert "Glasgow" not in "".join(s.values())
+
+
+def test_built_puppy_card_variants_carry_price_status_and_their_ornament():
+    """Convention 8. The card's whole job is photo + name + price + status; a variant that
+    renders the shell without the data is a pass on distinctness and a failure in fact."""
+    s = _sections("puppy-card")
+    for v, inner in sorted(s.items()):
+        assert "£1," in inner, v          # £1,500 / £1,700 from data/puppies.json
+        assert "Available" in inner, v
+        assert "srcset=" in inner, v      # astro:assets, not a single fixed width
+    assert "badge" in s["a"], "variant a carries the price badge"
+    assert "ribbon" in s["b"], "variant b carries the status ribbon"
+    assert "ribbon" not in s["a"] and "badge" not in s["b"]

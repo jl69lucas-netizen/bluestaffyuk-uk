@@ -32,7 +32,7 @@ allowed-tools: [Read, Write, Bash]
 | `dist/` | The only built state. Scan it, never `src/`, for what actually ships |
 | Redirects | `data/redirects.json` → `scripts/build_redirects.py`; the host's own format is NOT FETCHED until project 6 |
 | Headers | NOT FETCHED until project 6 — no host, so no header file format yet |
-| Brand assets | `assets/brand/`, `public/` |
+| Brand assets | `src/assets/puppies/`, `src/assets/hero/` (astro:assets masters, project 3), `public/` |
 
 > ⚠️ v1 of this skill hardcoded an absolute path into the sibling MFS repo, the domain
 > "blue staffiesforsale.com", and Netlify. All three were wrong. Never
