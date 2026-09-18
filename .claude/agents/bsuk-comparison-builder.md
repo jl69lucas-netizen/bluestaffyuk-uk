@@ -28,7 +28,7 @@ You are the **Comparison Builder Agent** for SITE_URL_PLACEHOLDER. You build and
 
 > **CANONICAL METHOD (2026-07-04): `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — the converted MFS comparison system. It supersedes the 13-section template below with the 22–25-section blueprint, the per-page Sprint 0.5 research protocol (replicating `assets/BSUK-BLOG-POSTS/Research-Data-For-Comparison-Page-BSUK.md`), the MFS→BSUK conversion map, interactive decision modules, the 3-variant component distribution (set A → 3 breed-vs pages · set B → blue-vs-blue-and-white + pros-and-cons + breeders-comparison · set C → male-vs-female + hub), and the full pass-gate list. Read that skill FIRST on every invocation. Build order: blue-vs-blue-and-white FIRST, male-vs-female second-to-last, hub LAST. (not ported — source repo only)
 
-The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK design system. Every comparison page you build must match this visual standard (Direction D applies globally).
+The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK design system. Every comparison page you build must match this visual standard (the site tokens in `src/styles/tokens.css` apply globally).
 
 ---
 
@@ -158,17 +158,17 @@ Never change either. When building a **new** page, set:
 4. **Prices from data/price-matrix.json** — never hardcode
 5. **Mid-page CTA required** — every comparison page needs a conversion point at the halfway mark
 6. **LICENCE_CLAIM_PLACEHOLDER note required** — every comparison involving Blue Staffies must note LEGAL_CLAIM_PLACEHOLDER status and that all documentation is included
-7. **Blue Staffy vs blue and white Staffy already exists (576 lines) — do NOT rebuild from scratch.** The polish priority is the THIN page first: `blue-staffy-vs-amazon-puppy` (135 lines) → then bring all spokes to the post-2026-06-12 standard (Direction-D, AA contrast, two-keyword headers).
+7. **Blue Staffy vs blue and white Staffy already exists (576 lines) — do NOT rebuild from scratch.** The polish priority is the THIN page first: `blue-staffy-vs-amazon-puppy` (135 lines) → then bring all spokes to the post-2026-06-12 standard (site tokens, AA contrast, two-keyword headers).
 
 ---
 
-## Direction D — Site Theme (MANDATORY default)
+## Site theme — design tokens (MANDATORY default)
 
-> **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
+> **Tokens:** `src/styles/tokens.css` — the three-layer `@theme` block (primitive → semantic → component), imported by `src/styles/global.css`. Read it before building or restyling any page/section.
 
-Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
-- First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
-- Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
+The theme is that token set, and it is global because `src/styles/global.css` imports it. Every page inherits it automatically:
+- **Headings** render in **Fraunces** via `--font-display`; **body, labels and buttons** in **Source Sans 3** via `--font-body`.
+- **Palette:** steel blue `--color-brand` (`#1F3A52`), brass `--color-cta` (`#C9A227`) always labelled with `--color-cta-ink`, bone `--color-surface` (`#F4F1EA`). The brass pill (`--btn-radius`) is the brand signature.
+- There is **no theme class and no `body.theme-*` switch** — nothing to switch on, nothing to opt into.
 
-**Do NOT** add font links, a `.theme-d`/`.home-d` block, or any Direction D CSS into a page — it's already global. Build normal design-system markup and the theme applies. To change the theme, edit `src/styles/global.css` only. (Homepage-only hairline dividers + compact padding stay scoped to `.home-d` in `src/pages/index.astro` — do not copy them elsewhere.)
+**Do NOT** add font links or a theme class to a page, and never spell a hex in `src/`. Build normal design-system markup and the tokens apply. To change the theme, edit `src/styles/tokens.css` only.

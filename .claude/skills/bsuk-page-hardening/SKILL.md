@@ -82,7 +82,7 @@ sticky under the header, matching every sibling for-sale page
 
 ```css
 .railB{position:sticky; top:var(--hdr); z-index:40;
-  background:rgba(250,247,244,.985);      /* cream — a green bar merges into the header */
+  background:rgba(244,241,234,.985);      /* bone — a steel bar merges into the header */
   border-bottom:1px solid var(--bd);
   box-shadow:0 6px 14px rgba(60,30,10,.07);}
 ```
@@ -124,11 +124,16 @@ grid and get the "scatter" from rotation, so overlap is structurally impossible:
 Captions/badges pinned *inside* a card stay absolute — that's correct, and the
 scanner ignores them.
 
-### 1e. `clay-small-text-contrast` / `opacity-dims-text-contrast` — WARN
-Brand `--color-cta` is AA **only as large text** (3.38:1). Small clay text on
-light must be `#b04228`; solid clay fills use `--clay-ink #c8472f`. Separately,
-any `opacity` on a text rule silently drags contrast down — `opacity:.9` white on
-`#c8472f` measures **4.10** against a 4.5 floor.
+### 1e. `cta-small-text-contrast` / `opacity-dims-text-contrast` — WARN
+`--color-cta` (brass) is a **fill, not a text colour on a light surface**: it measures
+**2.1:1** on `--color-surface` and **2.4:1** on `--color-surface-raised`, so it fails at
+every size there — there is no darker small-text variant to fall back to. Small readable
+text on light is `--color-text` (13.9:1) or `--color-brand` (10.4:1). Brass is correct as
+a **fill labelled `--color-cta-ink`** (6.8:1), and as an accent on the dark bands
+(4.9:1 on `--color-surface-inverse`, 6.8:1 on `--color-surface-deep`). Separately, any
+`opacity` on a text rule silently drags contrast down — re-measure the pair after adding
+one, against the 4.5 floor. Ratios computed from `data/design/contrast.json` by
+`tests/py/test_design_tokens.py`.
 
 ### 1e-bis. Desktop dial TOC — the CANONICAL row metrics (cluster-wide, LOCKED)
 The breeder rejected a "density pass" that shrank rows to `.7rem` / `3.5px 6px`
@@ -137,7 +142,7 @@ compactness** — the card scrolls internally if it ever runs long.
 
 **Every for-sale / comparison desktop dial matches `/buy-staffy-puppies-for-sale-uk/`
 (`.tdial`) exactly.** Copy these numbers verbatim; only the palette changes per
-page tuple (light-cream card vs dark-kennel card):
+page tuple (light card vs dark-kennel card):
 
 ```css
 /* sidebar column */   grid-template-columns:196px minmax(0,1fr); gap:28px;
@@ -152,7 +157,7 @@ page tuple (light-cream card vs dark-kennel card):
             font-size:.74rem;line-height:1.25;padding:5px 7px;border-radius:8px;
 /* num   */ font-size:.7rem;width:16px;flex:none;font-weight:700;font-variant-numeric:tabular-nums;
 /* tag   */ margin-left:auto;font-size:.56rem;font-weight:600;
-            color:#fff;background:var(--clay-ink);border-radius:50px;padding:1px 6px;white-space:nowrap;
+            color:#fff;background:var(--color-cta-ink);border-radius:50px;padding:1px 6px;white-space:nowrap;
 ```
 
 **The tag pill is always visible** — hiding it on inactive rows was part of the
@@ -163,7 +168,7 @@ tall (WCAG 2.5.8), label ≥ 4.5:1.
 
 | Dial variant | Background | Numerals | Ratio |
 |---|---|---|---|
-| **Light card** (blue, blue-brindle) | cream `#fff` | `#6b625a` | 5.9:1 ✓ |
+| **Light card** (blue, blue-brindle) | white `#fff` | `#6b625a` | 5.9:1 ✓ |
 | **Dark kennel** (home-raised) | `#234f3b` | `#9fc7b0` | 5.0:1 ✓ |
 | Mobile rail `.p` | `#234f3b` | `#c9f2db`, **no opacity** | 5.4:1 ✓ |
 
@@ -296,7 +301,7 @@ selector out-ranking a component selector:
 
 | Component rule | Beaten by | Result |
 |---|---|---|
-| `.ship-tier{color:#fff}` (0,1,0) | `.ship-c p{color:#5b524a}` (0,1,1) | dark staffy on forest green, **1.19:1** |
+| `.ship-tier{color:#fff}` (0,1,0) | `.ship-c p{color:#5b524a}` (0,1,1) | dark staffy on the steel band, **1.19:1** |
 | answer in `.faq-d` (`background:#fff`) inside the dark accordion | `.faqC-item p{color:rgba(255,255,255,.82)}` | **white on white, 1.00:1 — invisible** |
 
 **Rule: when a component's inner element is a bare tag (`p`, `span`, `li`, `dt`, `dd`,
@@ -318,7 +323,7 @@ it" signal, not a verdict. Confirm with `getComputedStyle` in Playwright first.
 >    on the page. CSS descendant selectors are about **DOM containment**; resolve the
 >    subtree, don't co-occur names.
 > 2. **An existing rescue rule already fixed it** — adoption-cost ships both
->    `.btn-clay{color:#fff}` and `.adopt-main a.btn-clay{color:#fff}`, the prescribed
+>    `.btn-cta{color:#fff}` and `.adopt-main a.btn-cta{color:#fff}`, the prescribed
 >    fix. 5 of 8 findings were already correct code.
 > 3. **Selectors quoted inside `/* … */` were analysed** — a comment documenting a
 >    past fix contains the literal text `.ship-c p{color:#5b524a}`, so the same defect
@@ -328,14 +333,14 @@ it" signal, not a verdict. Confirm with `getComputedStyle` in Playwright first.
 ### 1m. `theme-lead-color-outranks-component` — WARN — *the invisible hero lead*
 
 Added 2026-09-12. A theme stylesheet (a theme stylesheet the port did not carry — source repo only) painted the first
-paragraph after an `h1`/`h2` `var(--ink)` with a `body.theme-d h1 + p:not(…)×3` rule
-at **(0,4,3)**. A page's `.pg .hero .lead{color:#dcebe3}` is (0,3,0) and loses
-silently: on a dark hero the lead rendered ink on green, invisible. §1l never saw it
+paragraph after an `h1`/`h2` in the body ink with a `body.<theme-class> h1 + p:not(…)×3`
+rule at **(0,4,3)**. A page's own `.pg .hero .lead{color:…}` is (0,3,0) and loses
+silently: on a dark hero the lead rendered body ink on the steel band, invisible. §1l never saw it
 (page CSS only, `.ancestor tag` shape only) and a gradient-skipping runtime sweep
 skipped the hero too; a fold screenshot caught it.
 
 **Fix — use the rule's own escape whelp, not a specificity war:** give the paragraph
-a class containing `text-cream` (or `text-white`), or an inline colour. The check
+a class containing `text-surface` (or `text-white`), or an inline colour. The check
 reads the `hN → p` pairing from source markup, so it is a "go and measure it"
 signal. Verify with `getComputedStyle(lead).color`.
 
@@ -519,8 +524,8 @@ label and never wrap.
   lands on the puppy's head.
 - **Name/price row:** `grid-template-columns:minmax(0,1fr) auto` with
   `white-space:nowrap` on the price, so a wrapping name never shoves the price.
-- **Seam divider:** framed, not floating — two clay htransport partners flanking a ~34px
-  wordmark, plus a clay `h2::before` tick so sections visibly separate.
+- **Seam divider:** framed, not floating — two brass rules flanking a ~34px
+  wordmark, plus a `--color-cta` `h2::before` tick so sections visibly separate.
 - **Hero trust chips:** 2×2 grid on desktop, **1 column** on mobile. `nowrap`
   chips in 2 mobile columns overflow a 343px content box and drag the whole hero
   column wide.

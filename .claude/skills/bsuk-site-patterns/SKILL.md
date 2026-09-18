@@ -9,26 +9,26 @@ All patterns below are verified: built, committed, and deployed to SITE_URL_PLAC
 
 ---
 
-## 1. Color: Gold → Clay (fix "dark yellow" text)
+## 1. Color: one accent token, defined once
 
-**Problem:** `text-gold`, `bg-gold`, `border-gold` render as the wrong color (too yellow or too bright).
+**Problem:** two near-identical accent variables drift apart, and the same "accent" renders as two different colours across the site.
 
-**Root cause:** `--color-gold` in `src/styles/global.css` was set to a different hex than `--color-clay`.
+**How it is arranged now (project 3):** there is exactly one accent, `--color-cta` (brass `#C9A227`), and every colour in the site is a token in **`src/styles/tokens.css`** — the three-layer `@theme` block (primitive → semantic → component). `src/styles/global.css` does nothing but `@import "./tokens.css"` before Tailwind; it declares no colour of its own. A hex outside `src/styles/tokens.css` anywhere in `src/` is a rule-1 violation and `tests/py/test_design_tokens.py` fails on it.
 
-**Fix — one line:**
+**So the fix for any accent drift is one edit in one file:**
 ```css
-/* src/styles/global.css */
+/* src/styles/tokens.css */
 @theme {
-  --color-gold: var(--color-cta);   /* must match --color-clay exactly */
-  --color-clay: var(--color-cta);
-  --color-clay-dk: #c94d3a;
-  ...
+  /* @layer-primitive */
+  --color-brass-500: #C9A227;
+  /* @layer-semantic */
+  --color-cta: var(--color-brass-500);
+  --color-cta-hover: var(--color-brass-600);
+  --color-cta-ink: var(--color-steel-900);  /* the label on every brass fill, 6.8:1 */
 }
 ```
 
-That single change propagates to all 17+ files that use `text-gold`, `bg-gold`, `border-gold/30`, etc. — no per-file edits needed.
-
-**Why it works:** Tailwind v4 uses CSS custom properties in `@theme`. Every utility class like `bg-gold` resolves at build time from `--color-gold`. Change the variable, change every instance.
+**Why it works:** Tailwind v4 resolves utilities from the custom properties in `@theme` at build time. Change the primitive, change every instance — no per-file edits needed.
 
 ---
 
@@ -75,8 +75,8 @@ const canonical = "https://SITE_URL_PLACEHOLDER/search/";
       <h1 class="font-lora font-bold text-3xl text-logo-dark mb-8">Search Results</h1>
       <form action="/search/" method="get" class="flex gap-2 mb-10">
         <input id="search-refine" name="q" type="search" placeholder="Search BlueStaffyUK…"
-          class="flex-1 border border-stone-300 rounded-full px-4 py-2.5 text-sm text-logo-dark focus:outline-none focus:border-clay focus:ring-1 focus:ring-clay" />
-        <button type="submit" class="bg-clay text-white font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-clay-dk transition-colors">Search</button>
+          class="flex-1 border border-stone-300 rounded-full px-4 py-2.5 text-sm text-logo-dark focus:outline-none focus:border-cta focus:ring-1 focus:ring-cta" />
+        <button type="submit" class="bg-cta text-cta-ink font-semibold text-sm px-5 py-2.5 rounded-full hover:bg-cta-hover transition-colors">Search</button>
       </form>
       <div id="results" class="space-y-5"><p class="text-stone-400 text-sm">Loading…</p></div>
     </div>
@@ -97,10 +97,10 @@ const canonical = "https://SITE_URL_PLACEHOLDER/search/";
       if (!search.results.length) { resultsEl.innerHTML = `<p class="text-stone-500 text-sm">No results for "<strong>${q}</strong>".</p>`; return; }
       const items = await Promise.all(search.results.slice(0, 12).map((r: any) => r.data()));
       resultsEl.innerHTML = items.map((item: any) => `
-        <a href="${item.url}" class="block border border-stone-200 rounded-xl p-5 hover:border-clay/50 hover:shadow-sm transition-all group">
-          <div class="font-lora font-semibold text-logo-dark text-lg group-hover:text-clay transition-colors mb-1">${item.meta?.title ?? item.url}</div>
+        <a href="${item.url}" class="block border border-stone-200 rounded-xl p-5 hover:border-cta/50 hover:shadow-sm transition-all group">
+          <div class="font-lora font-semibold text-logo-dark text-lg group-hover:text-brand transition-colors mb-1">${item.meta?.title ?? item.url}</div>
           <div class="text-stone-500 text-sm leading-relaxed line-clamp-2">${item.excerpt ?? ''}</div>
-          <div class="text-clay text-xs mt-2 font-sora">${item.url}</div>
+          <div class="text-brand text-xs mt-2 font-sora">${item.url}</div>
         </a>`).join('');
     }
     runSearch();
@@ -128,8 +128,8 @@ Group Logo + search in a left flex div. Inquire Now stands alone on the right.
     <Logo />
     <form action="/search/" method="get" class="hidden lg:flex gap-2">
       <input name="q" type="search" placeholder="Search…"
-        class="w-40 bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-clay" />
-      <button type="submit" class="bg-clay text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-clay-dk transition-colors">Go</button>
+        class="w-40 bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-cta" />
+      <button type="submit" class="bg-cta text-cta-ink text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-cta-hover transition-colors">Go</button>
     </form>
   </div>
 
@@ -139,7 +139,7 @@ Group Logo + search in a left flex div. Inquire Now stands alone on the right.
   </nav>
 
   <!-- Inquire Now (desktop/tablet, right) -->
-  <a href="/contact-us/" class="hidden sm:inline-flex items-center gap-2 bg-clay text-white font-semibold text-sm px-5 py-2 rounded-full hover:bg-clay-dk transition-colors">
+  <a href="/contact-us/" class="hidden sm:inline-flex items-center gap-2 bg-cta text-cta-ink font-semibold text-sm px-5 py-2 rounded-full hover:bg-cta-hover transition-colors">
     Inquire Now
   </a>
 
@@ -147,8 +147,8 @@ Group Logo + search in a left flex div. Inquire Now stands alone on the right.
   <form action="/search/" method="get" class="flex lg:hidden flex-1 mx-3">
     <div class="flex w-full gap-2">
       <input name="q" type="search" placeholder="Search…"
-        class="flex-1 bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-clay" />
-      <button type="submit" class="bg-clay text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-clay-dk transition-colors">Go</button>
+        class="flex-1 bg-white/10 border border-white/30 text-white placeholder:text-white/50 rounded-full px-3 py-1.5 text-xs focus:outline-none focus:border-cta" />
+      <button type="submit" class="bg-cta text-cta-ink text-xs font-semibold px-3 py-1.5 rounded-full hover:bg-cta-hover transition-colors">Go</button>
     </div>
   </form>
 
@@ -187,23 +187,23 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
   <div class="max-w-7xl mx-auto">
     <div class="flex items-end justify-between mb-10 gap-4 flex-wrap">
       <div>
-        <p class="text-clay font-sora text-xs font-semibold uppercase tracking-widest mb-2">This Week's Kennel</p>
+        <p class="text-brand font-sora text-xs font-semibold uppercase tracking-widest mb-2">This Week's Kennel</p>
         <h2 class="font-lora font-bold text-3xl text-logo-dark">Puppies Available Right Now</h2>
         <p class="text-stone-500 mt-2 max-w-md text-sm leading-relaxed">
           Every puppy is home-reared, vet sex-checked, LICENCE_CLAIM_PLACEHOLDER-documented, and vet-certified before reservation.
         </p>
       </div>
-      <a href="/blue-staffy-pup-sale-uk/" class="text-sm font-semibold text-clay hover:text-clay-dk border border-clay/40 hover:border-clay px-4 py-2 rounded-full transition-colors whitespace-nowrap">
+      <a href="/blue-staffy-pup-sale-uk/" class="text-sm font-semibold text-brand hover:text-cta-hover border border-cta/40 hover:border-cta px-4 py-2 rounded-full transition-colors whitespace-nowrap">
         View all puppies &rarr;
       </a>
     </div>
     <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {puppies.map(puppy => (
         <article class="bg-white rounded-2xl overflow-hidden shadow-sm border border-stone-100 flex flex-col hover:shadow-md transition-shadow">
-          <div class="relative bg-green/10 h-48 overflow-hidden">
+          <div class="relative bg-brand/10 h-48 overflow-hidden">
             <img src="/blue-staffy-hero.webp" alt={`${puppy.name} — ${puppy.sex} Blue Staffy`}
               class="w-full h-full object-cover object-center" loading="lazy" />
-            <span class="absolute top-3 left-3 bg-clay text-white text-xs font-semibold px-3 py-1 rounded-full">{puppy.tag}</span>
+            <span class="absolute top-3 left-3 bg-cta text-cta-ink text-xs font-semibold px-3 py-1 rounded-full">{puppy.tag}</span>
           </div>
           <div class="p-5 flex flex-col flex-1">
             <div class="flex items-baseline justify-between mb-1">
@@ -213,9 +213,9 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
             <p class="text-stone-500 text-xs font-sora mb-3">{puppy.sex} · {puppy.age} · Blue Staffy</p>
             <p class="text-stone-600 text-sm leading-relaxed mb-4 flex-1">{puppy.notes}</p>
             <div class="flex items-center justify-between mt-auto pt-4 border-t border-stone-100">
-              <span class="font-lora font-bold text-2xl text-clay">{puppy.price}</span>
+              <span class="font-lora font-bold text-2xl text-brand">{puppy.price}</span>
               <a href={`/contact-us/?puppy=${puppy.id}`}
-                class="bg-clay text-white text-xs font-semibold px-4 py-2 rounded-full hover:bg-clay-dk transition-colors">
+                class="bg-cta text-cta-ink text-xs font-semibold px-4 py-2 rounded-full hover:bg-cta-hover transition-colors">
                 Inquire
               </a>
             </div>

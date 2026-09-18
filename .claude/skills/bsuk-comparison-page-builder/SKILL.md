@@ -105,7 +105,7 @@ Pillar structure (adapt per page; hub compares staffy vs ALL species with 2–3 
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
 | 23 | H2 | FAQ (8–12 PAA questions, QAB) | FAQPage JSON-LD, visible accordion |
 | 24 | H2 | Blog / further-reading cards | 3 relevant posts |
-| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | clay pill; `idPrefix` if 2 forms |
+| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; `idPrefix` if 2 forms |
 
 **Hard structural gates (non-negotiable):**
 - Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**.
@@ -167,7 +167,8 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
 1. **Hero** — full-bleed band (background spans viewport, content in `.container`), homepage height
    (~380–480px desktop), copy LEFT / two staggered OG puppy portraits CENTER-RIGHT with a small `vs`
    roundel at the overlap; mobile stacks **images first**. Eyebrow is **sentence case** (never
-   uppercase), clay `#b04228`. H1 `clamp(1.75rem, 3vw, 2.25rem)`. Hero images get responsive
+   uppercase), `--color-brand` on a light hero or `--color-link-on-inverse` on a steel one —
+   never brass, which is 2.1:1 on the light surface. H1 `clamp(1.75rem, 3vw, 2.25rem)`. Hero images get responsive
    `srcset` (480w + 800w) + `heroPreload`/`heroPreloadSrcset` in BaseLayout.
 2. **No HTML/CSS infographics.** Every H2 + important H3 image slot is a real OG photo or a Gemini
    image (distinct design style per section, the `rules/design.md` palette, 16:9 1600×900 → 760×400 slot).
@@ -181,9 +182,11 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
 4. **Sticky offsets** — site header is `sticky` and **96px** tall: jump rail `top:96px`, desktop TOC
    `top:calc(96px + 24px)`, every section `scroll-margin-top:calc(96px + 18px)`, `:global(html){scroll-behavior:smooth}`
    (+ reduced-motion opt-out). TOC column 200px / gap 34px (not 230/40) to widen the article column.
-5. **Contrast floors** — buttons + solid chips fill `#b04228` with white (5.7:1); table verdict cells
-   `--color-brand` bold (≥6:1); never clay-on-clay: inside the article column add
-   `.cvt-main a.btn-clay{color:#fff;text-decoration:none}` or the generic link rule silently overrides it.
+5. **Contrast floors** — buttons and solid chips fill `--color-cta` with a `--color-cta-ink`
+   label (6.8:1); table verdict cells `--color-brand` bold (10.4:1 on the surface); never brass
+   on brass, and never brass as text on a light surface (2.1:1). Inside the article column give
+   the CTA its own link rule (`color: var(--color-cta-ink); text-decoration: none`) or the
+   generic link rule silently overrides it.
 6. **Form = what we sell** — short inquiry form with: interest select (Blue / Blue-Brindle / breeding pair /
    fertile eggs / not sure, prices visible), first + last name, cell + confirm, email + confirm,
    delivery select (£200–£350 airport / £200–£350 home / Glasgow pickup), optional home note. Pass
@@ -221,7 +224,7 @@ Every comparison page must clear these on its finishing pass, in addition to §1
 5. **Internal links to the three money/authority hubs, anchored at sentence start (Link-First), from their own sections:**
    Reviews → `/blue-staffy-uk-breeders/` (Owner Stories), FAQ → `/uk-blue-staffy-puppy-buying-guide/` (FAQ intro),
    Delivery → `/buy-blue-staffy-puppies-uk/` (delivery body copy).
-6. **Route pills carry a map-pin SVG + cream tint (`#f4efe9`), `inline-flex`; 2-col centered on
+6. **Route pills carry a map-pin SVG + bone tint (`#F4F1EA`, = `--color-surface`), `inline-flex`; 2-col centered on
    mobile** (`.pin` stays `flex:none`). Body copy above the pills links the delivery page.
 7. **Reversed head-term + American spelling coverage.** Weave "Blue-Brindle vs Blue" AND "Blue Staffy"
    (with an *a*) once, naturally, in the Quick-Answer close; add **"What is the difference between…"**
@@ -250,7 +253,8 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    (40px circle icon chips + 2.1–2.2rem serif numbers + uppercase tracked labels + 4 stacked columns)
    is the exact "big number, small label" cliché DESIGN.md bans, and it rendered ~330px tall on
    phones. The shipped pattern: no icon chips at all; number and sentence-case label inline on one
-   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` Fraunces desktop /
+   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` in the display face
+   (Fraunces via `--font-display`, the project-3 token — not a hard-coded family) on desktop /
    `1.2rem` tablet / `1.1rem` phone; labels `.8rem`→`.74rem` `font-weight:500`, NO uppercase, NO
    letter-spacing games; desktop one flex row with `1px rgba(255,255,255,.18)` htransport partners (~54px
    band), ≤900px a 2×2 grid (~115–140px). Content stays page-specific per §12-1.
@@ -270,7 +274,7 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    `bsuk-seam-logo` / `bsuk-logo-badge*` file is a wide wordmark that letterboxes into a smudge inside
    the circle), `width/height=54`, CSS `object-fit:cover;padding:2px;border:2px solid
    rgba(232,96,76,.35);border-radius:50%`. Lines: `height:2px;border-radius:1px` fading gradients to
-   `rgba(240,128,112,.6)` (--clay-lt), replacing the old faint 1px `#cdbfae`.
+   `rgba(240,128,112,.6)` (--color-cta-soft), replacing the old faint 1px `#cdbfae`.
 7. **Middle newsletter is ALWAYS `NewsletterV2 variant="middle" compact`.** The full-height variant's
    36px H2 overtakes the page H1 in the 768–860px band (MvF shipped that inversion). `compact` is not
    optional on comparison spokes. (CvT currently has no middle newsletter — decision pending.)

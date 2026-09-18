@@ -154,21 +154,23 @@ Assemble the full page (Astro pattern):
 
 ---
 
-## Direction D — "Modern Editorial" Site Theme (MANDATORY — read the skill)
+## Site theme — design tokens (MANDATORY — read the token file)
 
-> **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read it before building or restyling any section. (deferred to project 3, see data/port-manifest.json)
+> **Tokens:** `src/styles/tokens.css` — the three-layer `@theme` block, imported by `src/styles/global.css`. Read it before building or restyling any section.
 
-Direction D is the **live site-wide theme**, implemented globally in `src/styles/global.css` and switched on by `body.theme-d` in `BaseLayout.astro`. It is the canonical look for the homepage AND every other page:
-- **Headings:** Fraunces literary serif (weight 600, `opsz` 18, `letter-spacing:-.003em`) — applies to all H1–H6 and their accent spans, even when `font-lora` is on them.
-- **Body:** Source Sans 3 (overrides `.font-sora`).
+The theme is that token set, and it is global because `src/styles/global.css` imports it. It is the canonical look for the homepage AND every other page:
+- **Headings:** Fraunces via `--font-display` — all H1–H6 and their accent spans.
+- **Body, labels and buttons:** Source Sans 3 via `--font-body`.
+- **Palette:** steel blue `--color-brand` (`#1F3A52`), brass `--color-cta` (`#C9A227`) always labelled with `--color-cta-ink`, bone `--color-surface` (`#F4F1EA`).
 - **Lead-line paragraphs:** first `<p>` straight after an H1/H2 reads larger/inkier.
-- **Eyebrows:** `.uppercase` labels get the clay underline tick.
-- **Cards:** `<article>` → soft-warm 18px radius + warm shadow + hover lift.
-- **Buttons:** clay pill kept, calm hover rise.
+- **Eyebrows:** `.uppercase` labels get a `--color-cta` underline tick — brass as a rule or fill, never as small text on a light surface (2.1:1).
+- **Cards:** `<article>` → `--card-radius`, `--card-border`, `--shadow-card`, hover lift.
+- **Buttons:** brass pill at `--btn-radius`, calm hover rise to `--color-cta-hover`.
+- There is **no theme class and no `body.theme-*` switch** — nothing to switch on.
 
-**Homepage-specific extras** (NOT global — keep in `src/pages/index.astro`'s `.home-d` wrapper): the hairline dividers between top-level sections (`> * + *`) and the compact-padding overrides on `py-12/14/16`. The homepage keeps these via its `.home-d` class; the global theme intentionally omits them.
+**Homepage-specific extras** (NOT global — keep in `src/pages/index.astro`): the hairline dividers between top-level sections (`> * + *`) and the compact-padding overrides on `py-12/14/16`. The global tokens intentionally omit them.
 
-**Rule:** Do not duplicate Direction D CSS into a page. Build normal design-system markup and the theme applies automatically. To tune the theme, edit `src/styles/global.css` only.
+**Rule:** Do not duplicate theme CSS into a page, and never spell a hex in `src/`. Build normal design-system markup and the tokens apply automatically. To tune the theme, edit `src/styles/tokens.css` only.
 
 ---
 
@@ -187,7 +189,7 @@ The homepage uses **Option A fluid clamp** typography. All H2/H3 section heading
 **Exceptions — keep explicit sizing on these:**
 - Hero H1: `text-3xl sm:text-4xl md:text-[3.25rem]` — intentional large display
 - FAQ accordion H3: `text-[16px]` — intentional compact
-- Calculator output `<p id="calc-total">`: `text-3xl text-clay` — display number
+- Calculator output `<p id="calc-total">`: `text-3xl text-brand` — display number
 
 Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 

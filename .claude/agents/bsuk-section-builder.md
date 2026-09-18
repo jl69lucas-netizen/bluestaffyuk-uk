@@ -52,26 +52,26 @@ Only after reading both files do you begin writing HTML.
 grep "^--" src/styles/global.css | head -40
 ```
 
-**Confirmed BSUK design tokens (from docs/design.md — these are production values):**
+**BSUK design tokens (project 3 — defined in `src/styles/tokens.css`, imported by `src/styles/global.css`):**
 
 ```css
-/* BSUK "Terracotta Warmth" Design System — confirmed production values */
---primary: var(--color-brand);          /* Forest Green — nav/headers */
---cta: var(--color-cta);              /* Clay — ALL CTAs and buttons. --gold MUST equal --clay */
---gold: var(--color-cta);             /* Same as --cta — never use a different value */
---canvas: var(--color-surface);           /* Cream — page surface background */
---text: #1a1a1a;             /* Near-black — body text */
---font-heading: 'Lora', serif;   /* 700 weight — ALL headlines, no exceptions */
---font-body: 'Sora', sans-serif; /* 400-700 — ALL body, labels, buttons */
---radius-btn: 50px;          /* Primary CTA pill — brand signature */
---radius-form: 12px;         /* Form submit buttons only */
---radius-card: 20px;         /* Cards — 20px radius */
---shadow: 0 4px 20px rgba(60,30,10,0.12); /* Always warm-tinted — never neutral grey */
+/* Use the token, never the hex: rule 1 bans a hex anywhere in src/ but tokens.css. */
+--color-brand;        /* steel blue #1F3A52 — header, headings, bands */
+--color-cta;          /* brass  #C9A227 — ALL CTAs and buttons (a FILL, not text on light) */
+--color-cta-ink;      /* #14202B — the label on every brass fill, 6.8:1 */
+--color-surface;      /* bone   #F4F1EA — page surface */
+--color-text;         /* body text, 13.9:1 on the surface */
+--font-display;       /* Fraunces — ALL headlines H1–H6 */
+--font-body;          /* Source Sans 3 — ALL body, labels, buttons */
+--btn-radius;         /* 50px pill — primary CTA, the brand signature */
+--btn-form-radius;    /* 12px — form submit buttons only */
+--card-radius;        /* 20px — cards */
+--shadow-card;        /* steel-tinted rgba(20,32,43,…) — never neutral grey, never hand-written */
 ```
 
-**If you need to verify a specific token, read `src/styles/global.css` directly:**
+**If you need to verify a specific token, read `src/styles/tokens.css` directly:**
 ```bash
-grep "^--cta\|^--primary\|^--gold\|^--canvas" src/styles/global.css
+grep -n "^  --color-\|^  --font-\|^  --btn-" src/styles/tokens.css
 ```
 
 ---
@@ -92,7 +92,7 @@ The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@l
 **Exceptions** (explicit size classes ARE correct on these):
 - Hero H1: `text-3xl sm:text-4xl md:text-[3.25rem]` — intentional display override
 - FAQ accordion H3: `text-[16px]` — intentional compact size
-- Calculator output `<p>`: `text-3xl text-clay` — display number, not a heading
+- Calculator output `<p>`: `text-3xl text-brand` — display number, not a heading
 
 **Confirmed scale (computed values):**
 | Element | Mobile 375px | Desktop 1280px |
@@ -104,7 +104,7 @@ The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@l
 **Eyebrow / prefix spans:**
 ```html
 <!-- ✅ CORRECT -->
-<span class="font-sora text-[10px] font-medium uppercase tracking-[0.12em] text-clay md:text-[11px]">EYEBROW</span>
+<span class="font-sora text-[10px] font-medium uppercase tracking-[0.12em] text-brand md:text-[11px]">EYEBROW</span>
 
 <!-- ❌ WRONG — semibold + wide tracking makes 11px look 14px -->
 <span class="font-sora text-[11px] font-semibold uppercase tracking-[0.18em]">EYEBROW</span>
@@ -479,13 +479,13 @@ Section Builder — build a `hero` section:
 
 ---
 
-## Direction D — Site Theme (MANDATORY default)
+## Site theme — design tokens (MANDATORY default)
 
-> **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
+> **Tokens:** `src/styles/tokens.css` — the three-layer `@theme` block (primitive → semantic → component), imported by `src/styles/global.css`. Read it before building or restyling any page/section.
 
-Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
-- First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
-- Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
+The theme is that token set, and it is global because `src/styles/global.css` imports it. Every page inherits it automatically:
+- **Headings** render in **Fraunces** via `--font-display`; **body, labels and buttons** in **Source Sans 3** via `--font-body`.
+- **Palette:** steel blue `--color-brand` (`#1F3A52`), brass `--color-cta` (`#C9A227`) always labelled with `--color-cta-ink`, bone `--color-surface` (`#F4F1EA`). The brass pill (`--btn-radius`) is the brand signature.
+- There is **no theme class and no `body.theme-*` switch** — nothing to switch on, nothing to opt into.
 
-**Do NOT** add font links, a `.theme-d`/`.home-d` block, or any Direction D CSS into a page — it's already global. Build normal design-system markup and the theme applies. To change the theme, edit `src/styles/global.css` only. (Homepage-only hairline dividers + compact padding stay scoped to `.home-d` in `src/pages/index.astro` — do not copy them elsewhere.)
+**Do NOT** add font links or a theme class to a page, and never spell a hex in `src/`. Build normal design-system markup and the tokens apply. To change the theme, edit `src/styles/tokens.css` only.

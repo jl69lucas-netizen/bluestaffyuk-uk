@@ -34,11 +34,11 @@ The footer is a single Astro component rendered on every page:
 
 | Element | Value |
 |---|---|
-| Footer background | **Forest Green `--color-brand`** (`bg-green`) — never orange |
-| Text | White / white-at-opacity on green |
-| CTA button | **Clay `--color-cta`** pill (`bg-clay`, `rounded-full`) — brand signature |
-| Bottom bar | `bg-green/90`, white/10 top border |
-| Type | Headings Lora 700 · body and links Sora 400–600 |
+| Footer background | **steel blue `--color-brand`** (`#1F3A52`) — never orange |
+| Text | `--color-text-on-inverse`, or white at opacity, on the steel band (10.4:1) |
+| CTA button | **brass `--color-cta`** (`#C9A227`) pill with `--color-cta-ink` label, `--btn-radius` — brand signature |
+| Bottom bar | `--color-surface-deep` (`#14202B`), white/10 top border |
+| Type | Headings Fraunces (`--font-display`) · body and links Source Sans 3 (`--font-body`) |
 | Puppy icon | custom `/emoji/bsuk-blue.png` — **never 🦜** |
 
 ---
@@ -112,7 +112,7 @@ Bottom Bar:
 When auditing footers across pages:
 1. Confirm the page renders `Footer.astro` (not legacy WordPress/Astra `site-footer` markup).
 2. Confirm all 5 columns are present (flag `INCOMPLETE` if 2+ missing).
-3. Confirm Forest Green background + Clay CTA (no orange).
+3. Confirm the steel `--color-brand` background + the brass `--color-cta` pill (no orange).
 4. Confirm the phone is `PHONE_PLACEHOLDER`, the licence and statute lines are
    LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER, and the copyright year is current.
 5. Confirm no other breeder's vocabulary survives, and no emoji (line-icon SVGs only).

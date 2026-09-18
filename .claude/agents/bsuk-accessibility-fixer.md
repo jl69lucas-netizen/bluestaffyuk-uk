@@ -44,9 +44,9 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 ## BSUK-Specific Antipatterns (found in real audits — check these every time)
 
-**A11y-1: SVG inside CSS `content:` (BROKEN icon + run-together text).** `content` only renders plain text — it CANNOT render `<svg>` markup. A rule like `.badge::before { content: '<svg ...></svg> '; }` dumps the raw SVG string (or drops it as invalid) AND, when the separator space lives only in that pseudo-element, adjacent badges run together (e.g. "home-raised from Week 212–16 Week Socialization"). **Fix:** put a real inline `<svg>` in the markup (site convention — see `bsuk-hero-3split.astro`), `stroke="currentColor"` so it inherits the text color (white on dark/green bars, `--color-brand` on light). Spacing comes from the flex `gap` on the wrapper. Detect: `grep -rn "content: '<svg\|content:\"<svg" src/`. (Fixed on home-raised / home-raised / dna-tested pages, 2026-06-05.)
+**A11y-1: SVG inside CSS `content:` (BROKEN icon + run-together text).** `content` only renders plain text — it CANNOT render `<svg>` markup. A rule like `.badge::before { content: '<svg ...></svg> '; }` dumps the raw SVG string (or drops it as invalid) AND, when the separator space lives only in that pseudo-element, adjacent badges run together (e.g. "home-raised from Week 212–16 Week Socialization"). **Fix:** put a real inline `<svg>` in the markup (site convention — see `bsuk-hero-3split.astro`), `stroke="currentColor"` so it inherits the text color (white on dark bands, `--color-brand` on light). Spacing comes from the flex `gap` on the wrapper. Detect: `grep -rn "content: '<svg\|content:\"<svg" src/`. (Fixed on home-raised / home-raised / dna-tested pages, 2026-06-05.)
 
-**A11y-2: clay on green/dark = contrast fail.** `--color-cta` only clears AA as *large* text/fill. Enforce DESIGN.md: nav links/active cities on the green header → `text-white` (distinguish active with `underline underline-offset-4 font-semibold`, never clay). Small clay TEXT on light → `#b04228` (4.5:1). Clay text on a dark *tinted* chip (e.g. `bg-clay/15` on `#241c18`) → use clay-lt `#f08070` (the `/15` tint dilutes the bg below 4.5:1 for plain `text-clay`).
+**A11y-2: brass as text on a light surface = contrast fail.** `--color-cta` is a fill, not a text colour on light: **2.1:1** on `--color-surface`, **2.4:1** on `--color-surface-raised` — failing at every size, with no darker small-text variant to fall back to. Small readable text on light is `--color-text` (13.9:1) or `--color-brand` (10.4:1). Brass is correct as a fill labelled `--color-cta-ink` (6.8:1) and as an accent on the dark bands (4.9:1 on `--color-surface-inverse`, 6.8:1 on `--color-surface-deep`). Nav links on the steel header → `--color-text-on-inverse` (10.4:1), distinguishing the active one with `underline underline-offset-4 font-semibold`. Any tint (`/15`) dilutes the background — re-measure the pair rather than assuming the token's own ratio still holds.
 
 **A11y-3: `bg-amber-500 text-white` badge = ~1.9:1 fail.** Use `bg-amber-500 text-amber-950` (dark text, vivid amber kept, ~7:1). Applies to PuppyList `family`/`amber` badge variants.
 
@@ -56,7 +56,7 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 **A11y-6: component-rendered `<img>` missing `width`/`height` (CLS audit).** Images passed as props (Testimonials avatars, SplitFeature `imageSrc`) render a shared `<img>` with no dims. Add `width`/`height` matching the CSS box ratio (`object-cover` + `aspect-*`/`w-12 h-12` means attrs won't distort) — e.g. `aspect-square`→`300×300`, `w-12 h-12`→`48×48`, `aspect-[5/4]`→`500×400`.
 
-**A11y-7: Direction-D lead-paragraph rule forcing `--ink` on dark-section paragraphs (DARK-ON-DARK fail).** (Found 2026-06-05; full writeup in MEMORY `reference_contrast_lead_paragraph_trap`.) When `color-contrast` reports a failing `<p>` whose **foreground is `#20342b`** (= `--ink`) on a *dark* bg (1.26–1.43:1), it's the lead-line rule `body.theme-d h1+p, h2+p { color: var(--ink) }` overriding light-text lead paragraphs (newsletter card, `bg-logo-dark` CTA). **It out-specifies Tailwind opacity utilities (`text-cream/80`) even without `!important`, so fix BOTH copies:** the homepage-scoped `.home-d h2+p{…!important}` in `src/pages/index.astro` AND the global rule in `src/styles/global.css`. Fix = split size/line-height from color, scope color with `:not([style*="color"]):not([class*="text-cream"]):not([class*="text-white"])`. Same day: **`MobileTabBar.astro`** (`nav.md:hidden`, 10px labels — a separate component a homepage sweep misses) active `text-clay` --color-cta (3.38:1)→`text-[#b04228]`, inactive `text-stone-400` (2.58:1)→`text-stone-600`.
+**A11y-7: a lead-paragraph rule forcing the ink colour onto dark-section paragraphs (DARK-ON-DARK fail).** (Found 2026-06-05; full writeup in MEMORY `reference_contrast_lead_paragraph_trap`.) When `color-contrast` reports a failing `<p>` whose foreground is the body ink (`--color-text`) on a *dark* bg (1.2–1.4:1), it is a lead-line rule `h1+p, h2+p { color: var(--color-text) }` overriding light-text lead paragraphs (newsletter card, dark CTA band). **Such a rule out-specifies Tailwind opacity utilities even without `!important`, so fix every copy of it** — any page-scoped `h2+p{…!important}` as well as the global one. Fix = split size/line-height from colour, and scope the colour with `:not([style*="color"]):not([class*="text-white"])`. The right foreground inside a dark band is `--color-text-on-inverse` (10.4:1 on `--color-brand`, 14.6:1 on `--color-surface-deep`). Same day: **`MobileTabBar.astro`** (`nav.md:hidden`, 10px labels — a separate component a homepage sweep misses) — its active label must not be brass on light (2.1:1); use `--color-brand` (10.4:1), and lift an inactive `text-stone-400` (2.58:1) to `text-stone-600`.
 
 ---
 
@@ -85,8 +85,8 @@ Required CSS (add to page `<style>` block):
   width: auto;
   height: auto;
   padding: 8px 16px;
-  background: #2B5E3F;
-  color: #fff;
+  background: var(--color-brand);
+  color: var(--color-white);
   font-weight: bold;
   z-index: 9999;
 }
@@ -150,7 +150,7 @@ button:focus,
 input:focus,
 select:focus,
 textarea:focus {
-  outline: 3px solid #2B5E3F;
+  outline: 3px solid var(--color-focus);
   outline-offset: 2px;
 }
 ```
@@ -176,7 +176,7 @@ Check: `grep 'href="#' dist/<slug>/index.html | head -10`
 BSUK design system colors — verify these combinations:
 - Check any white text on light backgrounds — minimum 4.5:1 ratio for normal text
 - Check any gray text — must be dark enough against background
-- BSUK green `#2B5E3F` on white: PASSES AA
+- `--color-brand` (steel blue `#1F3A52`) on white: 11.8:1, PASSES AA
 - Never use light gray text on white backgrounds
 
 **Action:** Search for inline color styles and remove or replace any contrast failures:

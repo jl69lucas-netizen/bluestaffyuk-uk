@@ -52,7 +52,7 @@ Every page carries all three special-element slots (TOP/MIDDLE/BOTTOM). MIDDLE m
 - `bsuk-blog-related-posts` — silo internal-link cluster to the other 8 posts + money pages.
 - `bsuk-blog-sticky-cta` — mobile-only sticky bar ("See available Staffies").
 
-All 8 are Direction-D themed by inheritance (do NOT re-implement per page). Colour tokens are **not globally imported** in components — use `rules/design.md` literals or the global token file directly. Never hardcode stale palette values (`#1F7A4D`, `#FF6210`).
+All 8 inherit the site tokens (do NOT re-implement per page). Reference the tokens in `src/styles/tokens.css`; never spell a hex in `src/`. Never hardcode stale palette values (`#1F7A4D`, `#FF6210`).
 
 ---
 
@@ -109,7 +109,7 @@ All 8 are Direction-D themed by inheritance (do NOT re-implement per page). Colo
 
 ### 6. Color Token Note
 
-CSS custom properties are **not auto-imported** in Astro components. In the blog components and any blog page sections, use `rules/design.md` palette literals directly, or import the global token file explicitly. Canonical palette: Forest Green `--color-brand` · Clay `--color-cta` (CTA fills use `--color-clay-ink #c8472f` for AA contrast; clay as small text uses `#b04228`) · Cream `--color-surface`. Never use stale `#1F7A4D` or `#FF6210`.
+CSS custom properties are **not auto-imported** in Astro components. In the blog components and any blog page sections, reference the tokens defined in `src/styles/tokens.css` (imported by `src/styles/global.css`); never spell a hex in `src/`. Canonical palette: steel blue `--color-brand` (`#1F3A52`) · brass `--color-cta` (`#C9A227`), whose label is always `--color-cta-ink` (`#14202B`, 6.8:1) · bone `--color-surface` (`#F4F1EA`). Brass is a **fill colour, not a text colour on light**: `--color-cta` on `--color-surface` is 2.1:1 and fails. Small readable text on a light surface is `--color-text` (13.9:1) or `--color-brand` (10.4:1). Never use a stale palette value from the previous site.
 
 ---
 
@@ -132,8 +132,8 @@ These are the things the breeder caught polishing the crate-setup pilot. Bake th
 
 **B. Author signature / E-E-A-T (every post).** Ship a **visible** byline, not just schema. Pattern: hero byline `Written by Lisa Bright · BlueStaffyUK… LICENCE_CLAIM_PLACEHOLDER-licensed since 2014` (small, `text-xs`, on the hero dek) **and** a signed editorial sign-off at the end of the body (`— Written by Lisa Bright, …`). Keep `author: { "@type": "Person", name: "Lisa Bright" }` in the Article schema too. This is an AI-citation + Google-author signal.
 
-**C. Hero eyebrow parity (do not ship `text-sm uppercase`).** Blog hero eyebrow = the Roys/homepage style: `font-sora text-xs font-medium tracking-wide`, **sentence/Title case (NOT uppercase)**, color **`#ffd6c9`** on the green `--color-brand` hero. `text-sm uppercase tracking-widest` renders oversized on mobile (no fluid shrink) — the breeder flagged it explicitly.
-  - **AA contrast on the green hero (Lighthouse-verified 2026-07-03):** `#f08070` FAILS on `--color-brand` (~2.4:1 at text-xs) — it is only valid on dark tints, never on the green hero. Use `#ffd6c9` for the eyebrow. Cream body text on green needs **≥0.85 alpha**: bylines/captions at `rgba(250,247,244,0.72)` or `0.7` fail; `rgba(250,247,244,0.85)` passes.
+**C. Hero eyebrow parity (do not ship `text-sm uppercase`).** Blog hero eyebrow = the Roys/homepage style: `font-sora text-xs font-medium tracking-wide`, **sentence/Title case (NOT uppercase)**, color **`--color-link-on-inverse`** on the steel `--color-brand` hero. `text-sm uppercase tracking-widest` renders oversized on mobile (no fluid shrink) — the breeder flagged it explicitly.
+  - **AA contrast on the steel hero (computed from `data/design/contrast.json`, project 3):** the eyebrow token `--color-link-on-inverse` is 9.1:1 on `--color-brand` and `--color-text-on-inverse` is 10.4:1, so both clear AA at `text-xs`. `--color-cta` is 4.9:1 there — fine for a large accent, never for `text-xs`. The old "body text on the band needs ≥0.85 alpha" rule does **not** carry over: the steel band is dark enough that `--color-text-on-inverse` at 0.7 alpha still measures 6.0:1. Do not put `--color-cta` on `--color-surface` (2.1:1) at any size.
 
 **D. "Page already shows for a query but has no coverage" → FAQ-first.** From project 6, when search console shows the page ranking for a query the body doesn't answer, **verify existing coverage first**, then add the answer as new entries in the page's `faqs` array (auto-feeds the visible accordion *and* FAQPage schema) plus, if it's a real subtopic, one sequential H3 (never skip a level — re-run `scripts/final_page_audit.py` to confirm ≥5 H5 / ≥5 H6 still hold). Watch for intent splits the single-topic page misses: e.g. crate-setup showed for **"two Blue Staffies"** and **"breeding crate size"** — both distinct from the single-companion-crate the page covered. Always show the placement map for approval before writing.
 
@@ -170,7 +170,7 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 
 **Placeholder-first (default).** Build the page with image constants + `<figure>` slots wired to **exact final paths**, but treat every generated asset as a PLACEHOLDER until the breeder confirms design/size. The breeder supplies real puppy photos + generated infographics into `assets/BSUK-BLOG-POSTS/<Page>/`; a manifest in the strategy doc lists each target filename. **Do NOT commit/push while any referenced image 404s** (main auto-deploys → broken imgs go live).
 
-**Asset categories & sizes** (art direction from `rules/images.md` + `rules/design.md`; palette forest `--color-brand`, clay `--color-cta`, cream `--color-surface`, Source Sans 3, line icons, no emoji/logos/other species/visible price overlays):
+**Asset categories & sizes** (art direction from `rules/images.md` + `rules/design.md`; palette steel blue `#1F3A52` (= `--color-brand`), brass `#C9A227` (= `--color-cta`), bone `#F4F1EA` (= `--color-surface`); type Fraunces headings, Source Sans 3 body; line icons, no emoji/logos/other species/visible price overlays):
 | Category | Per page | Native gen size | On-page render |
 |---|---|---|---|
 | Hero (photoreal editorial) | 1 | 1408×768 or 1600×900 (16:9) | `srcset` 480w/800w + full; `sizes` `(min-width:768px) 480px, 92vw` |
@@ -179,7 +179,7 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 | Real OG / trust photo | 1–2 | native | plain `<img>` in the long visual-less H2/H3; real brand shot for E-E-A-T |
 
 **The encode → wire → deploy pipeline (copy this):**
-1. **Encode with Pillow** (`cwebp` NOT installed): flatten RGBA onto cream `--color-surface` for infographics / white for photos; `Image.resize((w, h), LANCZOS).save(path, "WEBP", quality=82, method=6)`. Generate the srcset variants. Output straight to `public/` at the manifest paths.
+1. **Encode with Pillow** (`cwebp` NOT installed): flatten RGBA onto bone `#F4F1EA` (= `--color-surface`) for infographics / white for photos; `Image.resize((w, h), LANCZOS).save(path, "WEBP", quality=82, method=6)`. Generate the srcset variants. Output straight to `public/` at the manifest paths.
 2. **Fix CLS** — set each `<img width/height>` to the file's **native ratio** (don't trust the placeholder's guessed dims). Verify in preview that displayed ratio ≈ native ratio (no stretch). Best-place used hero `1408×768`, infographics `1200×655`.
 3. **Hero preload mirrors the srcset** (`heroPreloadSrcset`/`heroPreloadSizes`) or the LCP image double-downloads.
 4. **Add a visual to every long visual-less H2/H3** — the breeder's rule: tall/important sections must carry an image; weave real OG photos into them.
@@ -187,7 +187,7 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 
 ### 11. Universal Special-Element Boxes (reuse on every page)
 
-Every page carries the 3 slot boxes (TOP/MIDDLE/BOTTOM, §1) plus draws from this catalog — all Direction-D-themed Astro components, Coat line-icons only (never 💡/⚠/emoji):
+Every page carries the 3 slot boxes (TOP/MIDDLE/BOTTOM, §1) plus draws from this catalog — all token-themed Astro components, Coat line-icons only (never 💡/⚠/emoji):
 1. **Quick-Answer / TL;DR** → `bsuk-blog-quick-answer` (TOP, AEO).
 2. **Breeder Note** (first-person moat) → `bsuk-blog-breeder-note`.
 3. **Expert Tip** → `bsuk-blog-callout` variant `tip`.

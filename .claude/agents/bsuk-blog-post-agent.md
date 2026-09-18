@@ -249,7 +249,7 @@ Every post must link to at least 3 BSUK pages. Priority targets:
 Every post that makes a technical or clinical claim must cite it **once** to a credible **government / NIH** source (prefer `pmc.ncbi.nlm.nih.gov`) or the **canonical industry authority**, at the claim sentence (beginning/middle, never the end). This is the E-E-A-T pattern proven live on the homepage.
 
 - **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (L-2-HGA, hereditary cataract, hip scoring, microchipping law (LEGAL_CLAIM_PLACEHOLDER), animal-transport rules). Never invent a source URL.
-- **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (Direction D adds the `↗` cue automatically). Internal links stay same-tab.
+- **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (the global link rule adds the `↗` cue automatically). Internal links stay same-tab.
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
 - **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (not ported — source repo only)
 
@@ -344,13 +344,13 @@ r = urllib.request.urlopen(req); print(f"IndexNow: {r.status}")
 
 ---
 
-## Direction D — Site Theme (MANDATORY default)
+## Site theme — design tokens (MANDATORY default)
 
-> **Skill:** `.claude/skills/bsuk-direction-d-theme/SKILL.md` — read before building or restyling any page/section. (deferred to project 3, see data/port-manifest.json)
+> **Tokens:** `src/styles/tokens.css` — the three-layer `@theme` block (primitive → semantic → component), imported by `src/styles/global.css`. Read it before building or restyling any page/section.
 
-Direction D "Modern Editorial" is the **live, site-wide theme**, applied globally via `src/styles/global.css` + `body.theme-d` (in `BaseLayout.astro`). Every page inherits it automatically:
-- **Headings** render in **Fraunces** serif (even with `font-lora` on them); **body** in **Source Sans 3** (overrides `.font-sora`).
-- First `<p>` after an H1/H2 = lead line (larger/inkier). `.uppercase` eyebrows get a clay tick. `<article>` = soft-warm card. Clay pill CTAs keep a calm hover rise.
-- Palette is unchanged (Forest / Clay / Cream); the clay pill stays the brand signature.
+The theme is that token set, and it is global because `src/styles/global.css` imports it. Every page inherits it automatically:
+- **Headings** render in **Fraunces** via `--font-display`; **body, labels and buttons** in **Source Sans 3** via `--font-body`.
+- **Palette:** steel blue `--color-brand` (`#1F3A52`), brass `--color-cta` (`#C9A227`) always labelled with `--color-cta-ink`, bone `--color-surface` (`#F4F1EA`). The brass pill (`--btn-radius`) is the brand signature.
+- There is **no theme class and no `body.theme-*` switch** — nothing to switch on, nothing to opt into.
 
-**Do NOT** add font links, a `.theme-d`/`.home-d` block, or any Direction D CSS into a page — it's already global. Build normal design-system markup and the theme applies. To change the theme, edit `src/styles/global.css` only. (Homepage-only hairline dividers + compact padding stay scoped to `.home-d` in `src/pages/index.astro` — do not copy them elsewhere.)
+**Do NOT** add font links or a theme class to a page, and never spell a hex in `src/`. Build normal design-system markup and the tokens apply. To change the theme, edit `src/styles/tokens.css` only.

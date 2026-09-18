@@ -48,7 +48,7 @@ a pass.
 | 8 | dup gate: "PASS — 0 pages" | **examined nothing** | zsh does not word-split `$SL`; all 8 slugs arrived as ONE argument |
 | 9 | seam parity: 0 sections | 15 sections | `grep '<section class="sec"'` — 6 of the 8 source puppy pages used `<section id=…>` |
 | 10 | 586 specificity WARNs | 2 real | "ancestor somewhere in file" × "component somewhere in file" is a **cartesian product**, not DOM nesting |
-| 11 | 5 `.btn-clay` WARNs | 0 real | the prescribed fix (`.adopt-main a.btn-clay{color:#fff}`) was **already in the file**; the check only looked at the unqualified rule |
+| 11 | 5 `.btn-cta` WARNs | 0 real | the prescribed fix (`.adopt-main a.btn-cta{color:#fff}`) was **already in the file**; the check only looked at the unqualified rule |
 | 12 | `.delivery-price` reported twice | 1 real | a CSS **comment** documenting the past fix contains the literal text `.delivery-c p{color:#5b524a}` — trap #2, repeated two years' worth of lessons later |
 
 Rows 10–12 were produced while *building* the checks in rows 9–12's own session.

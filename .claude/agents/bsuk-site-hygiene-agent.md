@@ -132,7 +132,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 
 **Component placement — INSIDE the hero section's first inner container div** (2026-05-22 design: frosted glass pill, Option C):
 
-The breadcrumb must go as the **first child** inside the hero section's inner container `<div>`, NOT in a standalone wrapper before the hero. Placing it outside the hero creates a white/cream strip between the navbar and hero.
+The breadcrumb must go as the **first child** inside the hero section's inner container `<div>`, NOT in a standalone wrapper before the hero. Placing it outside the hero creates a pale strip between the navbar and hero.
 
 ```astro
 <!-- HERO with breadcrumb inside -->
@@ -154,14 +154,14 @@ The breadcrumb must go as the **first child** inside the hero section's inner co
 |---|---|---|
 | Comparison pages | `cmp-hero` | `page-container` |
 | Care / breed guides | `care-hero` or named | `page-container` |
-| Location / Tailwind pages | `bg-logo-dark text-cream py-16 px-4` | `max-w-4xl mx-auto text-center` |
+| Location / Tailwind pages | `bg-logo-dark text-surface py-16 px-4` | `max-w-4xl mx-auto text-center` |
 | Blog pages | `style="background:var(--color-brand)" class="text-white py-16 px-4"` | `max-w-4xl mx-auto text-center` |
-| Reviews / trust pages | `bg-green text-white py-16 px-4` | `max-w-3xl mx-auto text-center` |
+| Reviews / trust pages | `bg-brand text-white py-16 px-4` | `max-w-3xl mx-auto text-center` |
 
 **Breadcrumb component design (as of 2026-05-22):**
 - Style: frosted glass pill — `rgba(255,255,255,0.15)` background, `backdrop-filter: blur(8px)`, white border `rgba(255,255,255,0.25)`, `border-radius: 50px`
 - Text: white `rgba(250,247,244,0.85)` for links, `--color-surface` bold for current page
-- Designed to render on dark/green hero backgrounds only — do NOT place on cream/white backgrounds
+- Designed to render on dark bands (`--color-surface-inverse` / `--color-surface-deep`) only — do NOT place on the light surface
 - JSON-LD BreadcrumbList schema is emitted automatically by the component
 
 ### Trail rules by page type
@@ -201,7 +201,7 @@ All city pages, all blog pages, `/available-puppies/`, and ~60 others. The 15 pa
 
 ### Link template (matches existing style)
 ```astro
-<li><a href="/[slug]/" class="text-white/80 hover:text-clay transition-colors">[Label]</a></li>
+<li><a href="/[slug]/" class="text-white/80 hover:text-brand transition-colors">[Label]</a></li>
 ```
 
 ### Current Resources & Trust links (Column 4, as of 2026-05-22)
