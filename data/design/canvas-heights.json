@@ -10,7 +10,7 @@
  "trust-strip": 168,
  "counter-strip": 144,
  "testimonial": 1192,
- "footer": 520,
+ "footer": 640,
  "section-divider": 176,
  "site-header-m375": 240,
  "hero-m375": 952,
@@ -23,7 +23,7 @@
  "faq-m375": 296,
  "contact-form-m375": 1176,
  "page-nav-m375": 160,
- "footer-m375": 1128,
+ "footer-m375": 1296,
  "section-divider-m375": 176,
  "site-header-t768": 240,
  "hero-t768": 936,
@@ -36,7 +36,7 @@
  "faq-t768": 232,
  "contact-form-t768": 1112,
  "page-nav-t768": 104,
- "footer-t768": 760,
+ "footer-t768": 872,
  "section-divider-t768": 176,
  "hero_overflow": {
   "hero": {

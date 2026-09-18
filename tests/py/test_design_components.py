@@ -667,6 +667,39 @@ def test_built_footer_carries_the_nav_the_socials_and_the_contact_rows():
     assert 'width="40"' in inner, "the footer mark"
 
 
+def test_built_footer_carries_the_cta_band_and_social_icons():
+    """Spec §11 amendment 5. Two things the user kept that the picked arrangement did not
+    come with: the call-to-action band that belonged to a losing option, and social ICONS.
+
+    The icons are the part worth pinning. Rule 7 forbids emoji, not brand glyphs, so these
+    are inline paths — but an icon-only link announces as its url, so each anchor carries an
+    aria-label naming the destination and the icon itself is aria-hidden. A row that lost
+    the labels, or grew an <img>, would look identical and read as four unnamed links."""
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    inner = _sections("footer")
+    # (1) the band, above the columns and before them in source order.
+    assert _has_class(inner, "cta-band")
+    assert "Ready to meet the litter?" in inner
+    assert 'href="/buy-blue-staffy-puppies-uk/"' in inner
+    assert inner.index("cta-band") < inner.index("Explore"), "the band sits above the columns"
+    # (2) one icon link per profile in the settings file, each named by its destination.
+    socials = settings["socials"]
+    assert len(socials) == 4, socials
+    for url in socials.values():
+        assert f'href="{url}"' in inner, url
+        assert 'target="_blank"' in inner and 'rel="noopener noreferrer"' in inner
+    labels = re.findall(rf'aria-label="{re.escape(settings["site_name"])} on ([^"]+)"', inner)
+    assert sorted(labels) == ["Facebook", "Instagram", "X", "YouTube"], labels
+    # Four icons plus the footer mark, all inline SVG — never an <img> and never a glyph.
+    assert inner.count("<svg") == 5, inner.count("<svg")
+    assert "<img" not in inner
+    assert not [c for c in inner if ord(c) >= 0x1F000]
+    # The icon is decoration beside a name the anchor already announces.
+    assert inner.count('aria-hidden="true"') >= 4
+    # currentColor only: no brand hex reaches src/ (rule 1).
+    assert not re.findall(r"#[0-9A-Fa-f]{6}", inner)
+
+
 def test_built_section_divider_is_the_mark_between_two_rules():
     """Convention 8. The divider is real structure — role="separator" — with the ornament
     inside hidden from the accessibility tree, because the sections either side already

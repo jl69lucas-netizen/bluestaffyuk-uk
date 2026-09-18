@@ -1,7 +1,17 @@
 ---
 // src/components/kit/SiteFooterKit.astro — the footer (spec §5 #12). Picked 2026-09-18:
-// the four-column arrangement — brand, Explore, Contact, Follow — over the legal row.
-// It replaces SiteFooter.astro in project 4.
+// the four-column arrangement — brand, Explore, Contact, Follow — over the legal row,
+// with the call-to-action band above it (spec §11 amendment 5: the band belonged to one of
+// the options the prune dropped, and the user kept it). It replaces SiteFooter.astro in
+// project 4.
+//
+// THE SOCIAL ROW IS ICONS (amendment 5). Each profile is an inline SVG on a 24 grid with
+// the platform name beside it — the icon alone would make the reader guess, and the name
+// alone is what every other link in the footer looks like. The icon is `aria-hidden` and
+// the anchor carries the full `aria-label` ("BlueStaffyUK on YouTube"), so the accessible
+// name says where the link goes rather than repeating one word. Rule 7 forbids EMOJI, not
+// brand glyphs: these are paths, not characters, and they take `currentColor` — no brand
+// hex is spelled anywhere (rule 1).
 //
 // EVERY LINK AND EVERY CONTACT ROW IS DATA (rule 9): the explore list is NAV from
 // src/lib/site.ts — the same list the header renders, so a renamed page cannot leave a
@@ -20,13 +30,29 @@
 import type { HTMLAttributes } from 'astro/types';
 import { SITE, NAV } from '../../lib/site';
 import Mark from './Mark.astro';
+import Button from './Button.astro';
 
 type Props = HTMLAttributes<'footer'>;
 const { class: cls, ...rest } = Astro.props;
 
 const year = new Date().getFullYear();
 const socials = Object.entries(SITE.socials) as [string, string][];
-const socialLabel = (key: string) => (key === 'x' ? 'X' : key[0].toUpperCase() + key.slice(1));
+// The platforms spell their own names; `youtube`.toUpperCase-the-first-letter gives
+// "Youtube", which is nobody's brand. The keys are data/settings.json's, so an unknown one
+// still gets a readable label rather than nothing.
+const SOCIAL_NAMES: Record<string, string> = {
+  x: 'X', youtube: 'YouTube', instagram: 'Instagram', facebook: 'Facebook',
+};
+const socialLabel = (key: string) => SOCIAL_NAMES[key] ?? key[0].toUpperCase() + key.slice(1);
+// Simple 24-grid marks, drawn here rather than pulled from an icon font (rule 7's reason:
+// a font ships a whole alphabet to paint four glyphs, and a missing font paints tofu).
+// `fill` icons use currentColor; X is two strokes, so it is stroked instead.
+const ICONS: Record<string, string> = {
+  youtube: '<path d="M2.5 8.2a3 3 0 0 1 2.6-2.9C7.4 5 12 5 12 5s4.6 0 6.9.3a3 3 0 0 1 2.6 2.9c.2 1.3.2 2.5.2 3.8s0 2.5-.2 3.8a3 3 0 0 1-2.6 2.9c-2.3.3-6.9.3-6.9.3s-4.6 0-6.9-.3a3 3 0 0 1-2.6-2.9C2.3 14.5 2.3 13.3 2.3 12s0-2.5.2-3.8Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M10.2 9.3v5.4L15 12z" fill="currentColor"/>',
+  instagram: '<rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.1" cy="6.9" r="1.2" fill="currentColor"/>',
+  x: '<path d="M4 4l16 16M20 4L4 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>',
+  facebook: '<path d="M14.6 21v-7.6h2.6l.4-3h-3V8.5c0-.9.2-1.5 1.5-1.5H17.7V4.3A20 20 0 0 0 15.4 4c-2.3 0-3.9 1.4-3.9 4.1v2.3H8.9v3h2.6V21z" fill="currentColor"/>',
+};
 const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
 ---
 <footer
@@ -34,6 +60,13 @@ const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
   class:list={['kit-ftr', cls]}
   data-surface="inverse"
 >
+  <div class="cta-band">
+    <div class="container row">
+      <p>Ready to meet the litter?</p>
+      <Button kind="primary" href="/buy-blue-staffy-puppies-uk/" label="See available puppies" />
+    </div>
+  </div>
+
   <div class="container grid">
     <div class="brand">
       <Mark inverse size={40} title={`${SITE.site_name} mark`} />
@@ -58,10 +91,17 @@ const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
     <div>
       <h2>Follow</h2>
       {/* The profiles are off-site, so they open in a new tab; rel is
-          noopener noreferrer, never a target without it. */}
+          noopener noreferrer, never a target without it. The accessible name is the
+          anchor's aria-label, so it reads as a destination rather than as one word. */}
       <ul>
         {socials.map(([key, url]) => (
-          <li><a href={url} target="_blank" rel="noopener noreferrer">{socialLabel(key)}</a></li>
+          <li>
+            <a href={url} target="_blank" rel="noopener noreferrer" class="social"
+              aria-label={`${SITE.site_name} on ${socialLabel(key)}`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><Fragment set:html={ICONS[key] ?? ''} /></svg>
+              <span>{socialLabel(key)}</span>
+            </a>
+          </li>
         ))}
       </ul>
     </div>
@@ -118,6 +158,23 @@ const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
       border-top: 1px solid color-mix(in srgb, currentColor 18%, transparent);
     }
     .legal-links { display: flex; gap: var(--space-4); }
+
+    /* The icon takes the link's own colour, hover included, so no brand hex is spelled
+       and the row still reads on whatever surface the footer is retuned to. */
+    .social { gap: var(--space-2); }
+    .social svg { flex: 0 0 auto; color: inherit; }
+    .social:hover svg { color: var(--color-link-on-inverse); }
+
+    .cta-band {
+      background: var(--color-surface-deep);
+      margin: calc(-1 * var(--space-8)) 0 var(--space-8);
+      padding-block: var(--space-6);
+    }
+    .cta-band .row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      justify-content: space-between; gap: var(--space-4);
+    }
+    .cta-band p { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
 
     @media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
     @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
