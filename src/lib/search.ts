@@ -61,14 +61,37 @@ export function grouped(rows: SearchRow[], limit: number): [string, SearchRow[]]
   return out;
 }
 
+/** How `renderInto` should mark the list up.
+ *
+ *  The header's pill is a COMBOBOX: its list is a `listbox`, each result is an `option`
+ *  with an id, and the input points at the active one with aria-activedescendant. The
+ *  /search/ page is not — it is a page of results a reader scrolls, and calling it a
+ *  listbox would announce a widget nobody is operating. So the roles are opt-in, and the
+ *  one that needs them says so by passing an id prefix. */
+export interface RenderOptions {
+  /** Set to make the list a listbox whose options are `${optionIdPrefix}-0`, `-1`, … */
+  optionIdPrefix?: string;
+}
+
 /** Fills a `<ul>` with grouped results. Returns the number of rows written. */
-export function renderInto(list: HTMLUListElement, rows: SearchRow[], query: string, limit: number): number {
+export function renderInto(
+  list: HTMLUListElement,
+  rows: SearchRow[],
+  query: string,
+  limit: number,
+  { optionIdPrefix }: RenderOptions = {},
+): number {
   list.textContent = '';
+  if (optionIdPrefix) list.setAttribute('role', 'listbox');
+  else list.removeAttribute('role');
   let written = 0;
   for (const [group, inGroup] of grouped(rows, limit)) {
     const head = document.createElement('li');
     head.className = 'group';
     head.textContent = group;
+    // A listbox's children are options; a heading between them is presentational, or the
+    // reader is told there are more options than there are.
+    if (optionIdPrefix) head.setAttribute('role', 'presentation');
     list.append(head);
     for (const row of inGroup) {
       // The index holds this site's own routes and nothing else, so a url that is not a
@@ -77,6 +100,11 @@ export function renderInto(list: HTMLUListElement, rows: SearchRow[], query: str
       // JSON file and into a link the reader is being invited to click.
       if (!row.url.startsWith('/')) continue;
       const li = document.createElement('li');
+      if (optionIdPrefix) {
+        li.id = `${optionIdPrefix}-${written}`;
+        li.setAttribute('role', 'option');
+        li.setAttribute('aria-selected', 'false');
+      }
       const a = document.createElement('a');
       a.href = row.url;
       a.textContent = row.title;
@@ -88,9 +116,15 @@ export function renderInto(list: HTMLUListElement, rows: SearchRow[], query: str
   if (!written) {
     const li = document.createElement('li');
     li.className = 'empty';
-    li.textContent = `Nothing matches “${query}”.`;
+    if (optionIdPrefix) li.setAttribute('role', 'presentation');
+    li.textContent = `Nothing matches \u201C${query}\u201D.`;
     list.append(li);
   }
   list.hidden = false;
   return written;
+}
+
+/** Every option element in a rendered listbox, in reading order. */
+export function optionsIn(list: HTMLUListElement): HTMLLIElement[] {
+  return Array.from(list.querySelectorAll<HTMLLIElement>('li[role="option"]'));
 }

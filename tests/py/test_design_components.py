@@ -42,31 +42,75 @@ def test_kit_file_exists_for_each_row():
 
 
 MARK = KIT / "Mark.astro"
+MARK_SHAPES = KIT / "markShapes.ts"
+MARK_SPRITE = KIT / "MarkSprite.astro"
 
 
-def test_mark_is_one_badge_on_a_100_grid_with_a_title_and_no_hex():
+def test_mark_geometry_is_one_badge_on_a_100_grid_with_no_hex():
     """Spec §11 amendment 3a: the five stroke options were replaced by ONE filled badge,
     and Task 19 removed the prop that used to name them.
 
-    Two `<circle>` and no more — the roundel and the brass ring. The eye catchlights are
+    The paths live in markShapes.ts, once, because the sprite and the standalone copy both
+    draw them and two copies of a twelve-path head is two drawings that drift. Two
+    `<circle>` and no more — the roundel and the brass ring. The eye catchlights are
     `<ellipse>` with rx == ry on purpose, so this count stays a statement about the badge
-    frame rather than a tally of every round thing in the head.
-    """
-    t = MARK.read_text()
-    assert t.count("<svg") == 1
-    assert 'viewBox="0 0 100 100"' in t
-    assert "<title>" in t
+    frame rather than a tally of every round thing in the head."""
+    t = MARK_SHAPES.read_text()
+    assert "MARK_VIEWBOX = '0 0 100 100'" in t
     assert t.count("<circle") == 2, "the badge and its ring, nothing else"
     assert 'fill="#' not in t and 'stroke="#' not in t
-
-
-def test_mark_inverse_swaps_the_badge_and_the_outline_for_dark_bands():
-    t = MARK.read_text()
-    assert "inverse = false" in t
-    assert "inverse ? 'var(--color-surface)' : 'var(--color-brand)'" in t
-    assert "inverse ? 'var(--color-brand)' : 'var(--color-surface)'" in t
     for token in ("--color-cta", "--color-brand-mid", "--color-brand-tint", "--color-surface-deep"):
         assert f"var({token})" in t, token
+
+
+def test_mark_is_a_use_at_the_document_sprite_with_a_standalone_escape_hatch():
+    """A page carries the mark in the header, in every divider and in the footer, so it is
+    drawn once into the document's two <symbol>s and referenced after that. `standalone`
+    inlines the paths for a document with no sprite to point at — which is what the Task 20
+    lockup files are."""
+    t = MARK.read_text()
+    assert "<use href={spriteHref(inverse)} />" in t
+    assert "standalone = false" in t and "markBody(" in t
+    # The name is on the referencing <svg>, where each caller decides content vs ornament.
+    assert "<title>{title}</title>" in t
+    assert t.count("<svg") == 1
+    # No geometry here any more: the paths are markShapes.ts's.
+    assert "<circle" not in t and "<path" not in t
+
+
+def test_the_sprite_carries_both_marks_and_is_out_of_the_accessibility_tree():
+    t = MARK_SPRITE.read_text()
+    assert "MARK_SPRITE_ID}" in t and "MARK_SPRITE_ID_INVERSE}" in t
+    assert t.count("<symbol id=") == 2
+    assert 'aria-hidden="true"' in t
+    # The inverse symbol swaps the roundel fill and the outline stroke, and nothing else.
+    assert "markBody('var(--color-brand)', 'var(--color-surface)')" in t
+    assert "markBody('var(--color-surface)', 'var(--color-brand)')" in t
+
+
+def test_the_layout_emits_the_sprite_once():
+    """Once per document, in BaseLayout — not once per <Mark />, which is the whole point."""
+    t = (ROOT / "src/layouts/BaseLayout.astro").read_text()
+    assert "import MarkSprite from '../components/kit/MarkSprite.astro';" in t
+    assert t.count("<MarkSprite />") == 1
+
+
+def test_built_pages_carry_one_sprite_and_the_kit_references_it():
+    """Every page gets the sprite, because BaseLayout emits it; the pages that mount the
+    kit point at it. Project 4 replaces SiteHeader/SiteFooter with the kit's, at which
+    point every page does both."""
+    for page_path in ("dist/index.html", "dist/kit-preview/index.html"):
+        built = ROOT / page_path
+        if not built.exists():
+            pytest.skip("run npm run build first")
+        html = built.read_text()
+        assert html.count('id="bsuk-mark"') == 1, page_path
+        assert html.count('id="bsuk-mark-inverse"') == 1, page_path
+    kit = (ROOT / "dist/kit-preview/index.html").read_text()
+    assert 'href="#bsuk-mark"' in kit
+    assert 'href="#bsuk-mark-inverse"' in kit
+    # …and the paths themselves appear once: in the sprite, not once per <Mark />.
+    assert kit.count('d="M-30 -14 C-30 -34') == 2, "once in each symbol and nowhere else"
 
 
 CANVAS_ROUTE = ROOT / "src/pages/design-canvas"
@@ -175,6 +219,49 @@ def test_built_site_header_is_logo_only_with_the_search_pill_and_the_drawer():
     # The call to action survives the prune; the strapline (a losing option's) does not.
     assert 'href="/available-puppies/"' in inner
     assert settings["location_label"] not in inner
+
+
+def test_the_header_search_is_one_combobox_with_one_of_everything():
+    """Spec §11 amendment 3b, and the a11y half of it.
+
+    ONE form. The drawer used to carry a second copy, which meant two inputs, two result
+    lists and a duplicated `#site-search-results-drawer` — one search on one page announced
+    as two. Below 768px CSS gives the single form a full-width row when the drawer is open.
+
+    And it is a COMBOBOX, marked up as one: without `role="combobox"`, `aria-expanded`,
+    `aria-controls` and `aria-activedescendant`, the result list was a panel a mouse could
+    reach and a keyboard could not — and the arrow keys had nothing to move."""
+    inner = _sections("site-header")
+    assert inner.count("<form") == 1, "one search form on the page, not one per surface"
+    assert inner.count('name="q"') == 1
+    assert "site-search-results-drawer" not in inner
+    for expect in ('role="combobox"', 'aria-expanded="false"',
+                   'aria-controls="site-search-results"', 'aria-autocomplete="list"',
+                   'aria-describedby="site-search-hint"'):
+        assert expect in inner, expect
+    # One hint, on the one input, and it names the keys.
+    assert inner.count('id="site-search-hint"') == 1
+    for key in ("arrow", "Enter", "Escape"):
+        assert key in inner, key
+    # The list is NOT a live region: a live region holding the active option is
+    # re-announced on every arrow press. The count goes to a separate polite status line.
+    results = inner[inner.index('id="site-search-results"'):]
+    results = results[: results.index("</ul>")]
+    assert "aria-live" not in results, "the result list must not be a live region"
+    assert 'id="site-search-status"' in inner and 'role="status"' in inner
+    assert 'aria-live="polite"' in inner
+
+
+def test_the_header_search_script_handles_the_combobox_keys():
+    """The roles are only half of it: a combobox that does not move on ArrowDown is a
+    combobox in name. Read off the component source, because the behaviour lives in a
+    bundled module the built page only links to."""
+    t = (KIT / "SiteHeaderKit.astro").read_text()
+    for key in ("'ArrowDown'", "'ArrowUp'", "'Home'", "'End'", "'Enter'", "'Escape'"):
+        assert key in t, key
+    assert "aria-activedescendant" in t
+    assert "focusout" in t, "the list is dismissed when focus leaves the form"
+    assert "optionIdPrefix" in t, "the list is rendered with listbox roles"
 
 
 def test_built_hero_carries_its_photo_copy_chips_and_ctas():

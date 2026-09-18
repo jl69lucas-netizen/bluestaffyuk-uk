@@ -6,63 +6,46 @@
 // stroke options with this badge, and Task 19 (2026-09-18) removed the prop that named
 // them, here and in the three components that used to pass one down.
 //
-// COLOUR. Every fill and stroke is a token, never a hex (rule 1). SVG presentation
-// attributes accept `var()` because this SVG is inline in the HTML document, so it resolves
-// against the page's own custom properties rather than an isolated image document.
+// THE GEOMETRY IS NOT HERE. It is src/components/kit/markShapes.ts, drawn once into the
+// document's two `<symbol>`s by MarkSprite.astro (BaseLayout mounts it), and this component
+// is a `<use>` pointing at one of them. A page carries the mark in the header, in every
+// divider and in the footer; four copies of twelve paths is four times the bytes and four
+// chances for one of them to drift.
 //
-// The skull is `--color-brand-tint` (steel-300) and the ears `--color-brand-mid`, which is
-// exactly the reference lockup's two-tone head. Both are fills and never text, so neither
-// carries a pair in data/design/contrast.json.
+// `standalone` renders the full paths inline instead, for a document that has no sprite to
+// point at — the Task 20 lockup files are exactly that, self-contained SVG documents.
 //
+// COLOUR. Every fill and stroke is a token, never a hex (rule 1) — see markShapes.ts.
 // `inverse` is for dark bands: the roundel becomes the bone surface and the outline strokes
 // that separate skull from badge become brand steel, which is what the reference lockup's
 // light badge does. The blaze, eyes, nose and tongue do not change — they sit inside the
 // skull fill, not against the badge.
 //
 // Naming: the accessible name is the SVG `<title>` child with `role="img"`, not
-// `aria-labelledby`. A page can carry the mark several times over — header, divider,
-// footer — so any id would be duplicated; a `<title>` child needs no id. A caller that wants the mark purely
-// as decoration passes `title=""`, which drops the `<title>` and hides the whole SVG from
-// the accessibility tree instead of naming it "".
+// `aria-labelledby`. A page can carry the mark several times over, so any id would be
+// duplicated; a `<title>` child needs no id. A caller that wants the mark purely as
+// decoration passes `title=""`, which drops the `<title>` and hides the whole SVG from the
+// accessibility tree instead of naming it "".
 import type { HTMLAttributes } from 'astro/types';
+import { markBody, MARK_VIEWBOX, spriteHref } from './markShapes';
 type Props = HTMLAttributes<'svg'> & {
   size?: number;
   title?: string;
   inverse?: boolean;
+  /** Inline the paths instead of referencing the sprite, for a standalone SVG document. */
+  standalone?: boolean;
 };
-const { size = 48, title = 'BlueStaffyUK mark', inverse = false, class: cls, ...rest } = Astro.props;
+const { size = 48, title = 'BlueStaffyUK mark', inverse = false, standalone = false,
+        class: cls, ...rest } = Astro.props;
 const decorative = title === '';
-const badge = inverse ? 'var(--color-surface)' : 'var(--color-brand)';
-const outline = inverse ? 'var(--color-brand)' : 'var(--color-surface)';
+const inline = standalone
+  ? markBody(inverse ? 'var(--color-surface)' : 'var(--color-brand)',
+             inverse ? 'var(--color-brand)' : 'var(--color-surface)')
+  : null;
 ---
-<svg {...rest} class:list={['kit-mark', cls]} width={size} height={size} viewBox="0 0 100 100"
+<svg {...rest} class:list={['kit-mark', cls]} width={size} height={size} viewBox={MARK_VIEWBOX}
   role={decorative ? undefined : 'img'} aria-hidden={decorative ? 'true' : undefined}
   focusable="false" data-inverse={inverse ? 'true' : undefined}>
   {!decorative && <title>{title}</title>}
-  {/* the roundel and its brass ring */}
-  <circle cx="50" cy="50" r="47" fill={badge} />
-  <circle cx="50" cy="50" r="43" fill="none" stroke="var(--color-cta)" stroke-width="2.5" />
-  <g transform="translate(50 54)" stroke-linejoin="round">
-    {/* broad skull */}
-    <path d="M-30 -14 C-30 -34 -14 -42 0 -42 C14 -42 30 -34 30 -14 L30 4 C30 22 16 34 0 34 C-16 34 -30 22 -30 4 Z"
-      fill="var(--color-brand-tint)" stroke={outline} stroke-width="2.5" />
-    {/* rose ears, folded back */}
-    <path d="M-30 -14 C-40 -20 -44 -30 -38 -36 C-32 -40 -24 -36 -20 -30"
-      fill="var(--color-brand-mid)" stroke={outline} stroke-width="2.5" />
-    <path d="M30 -14 C40 -20 44 -30 38 -36 C32 -40 24 -36 20 -30"
-      fill="var(--color-brand-mid)" stroke={outline} stroke-width="2.5" />
-    {/* the white blaze and muzzle */}
-    <path d="M-16 6 C-16 -2 -8 -6 0 -6 C8 -6 16 -2 16 6 L14 22 C10 30 -10 30 -14 22 Z"
-      fill="var(--color-surface)" />
-    {/* eyes, with a catchlight each — ellipses, so the only two circles are the badge and ring */}
-    <ellipse cx="-11" cy="-8" rx="4" ry="4.5" fill="var(--color-surface-deep)" />
-    <ellipse cx="11" cy="-8" rx="4" ry="4.5" fill="var(--color-surface-deep)" />
-    <ellipse cx="-9.5" cy="-9.5" rx="1.3" ry="1.3" fill="var(--color-surface-raised)" />
-    <ellipse cx="12.5" cy="-9.5" rx="1.3" ry="1.3" fill="var(--color-surface-raised)" />
-    {/* nose, then the breed grin and the brass tongue */}
-    <path d="M-7 10 C-7 6 7 6 7 10 C7 14 -7 14 -7 10 Z" fill="var(--color-surface-deep)" />
-    <path d="M0 14 L0 19 M-9 22 C-4 27 4 27 9 22" fill="none" stroke="var(--color-surface-deep)"
-      stroke-width="2.2" stroke-linecap="round" />
-    <path d="M-4 24 C-2 30 2 30 4 24 Z" fill="var(--color-cta)" />
-  </g>
+  {inline ? <Fragment set:html={inline} /> : <use href={spriteHref(inverse)} />}
 </svg>

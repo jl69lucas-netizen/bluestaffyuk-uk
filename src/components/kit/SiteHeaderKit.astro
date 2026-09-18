@@ -7,21 +7,34 @@
 // (1) LOGO ONLY. There is no wordmark text; the brand link is the badge mark and its
 //     `aria-label` is the accessible name.
 // (2) A SEARCH PILL between the nav and the CTA (direction S1), and the same form
-//     full-width inside the mobile drawer. It is a real GET form to /search/, so pressing
-//     Enter works with no script at all; the script only adds the instant result list.
+//     full-width when the mobile drawer is open. It is a real GET form to /search/, so
+//     pressing Enter works with no script at all; the script only adds the instant list.
+//
+// ONE FORM, NOT TWO. The drawer used to carry its own copy of the search form, which meant
+// two inputs, two result lists and two ids for one search on one page — and the duplicated
+// `-drawer` id is exactly the kind of thing a reader using a screen reader hits and nobody
+// using a mouse ever sees. There is a single `<form class="site-search">` in the bar now,
+// and below 768px CSS gives it the full width of a second bar row when the drawer is open.
+// One input, one `#site-search-results`, one hint.
+//
+// THE PILL IS A COMBOBOX, and is marked up as one: `role="combobox"` with
+// `aria-expanded`, `aria-controls` and `aria-activedescendant` on the input, `role="listbox"`
+// on the list and `role="option"` on each result (src/lib/search.ts writes those). The
+// arrow keys, Home, End, Enter and Escape move and choose; focusout dismisses. Without that
+// the list was a div a mouse could reach and a keyboard could not.
+//
+// The list is NOT an aria-live region. A live region that also holds the active option gets
+// re-announced on every keystroke AND on every arrow press, which is how an instant-search
+// box becomes unusable with a screen reader. The count is announced once per render from a
+// separate polite status line instead.
 //
 // The index is `public/search-index.json`, written at build time by
 // scripts/build_search_index.py from this repo's own data. No third-party search service is
 // contacted, at build time or in the browser.
 //
-// The drawer is the MOBILE behaviour: below 768px the inline nav and the bar's search pill
-// are hidden and the <details> arrives. Both navs are in the DOM, but only ever one at a
-// time is in the accessibility tree — the hidden one is `display: none`, which removes it
-// rather than duplicating the landmark.
-//
 // The bar takes `color` from the surface and the links inherit it; nothing here spells
-// `--color-brand` for text. The mark is the only branding SVG; the icons are inline stroke
-// paths, never an icon font.
+// `--color-brand` for text. The mark is the only branding SVG (a `<use>` at the document's
+// sprite); the icons are inline stroke paths, never an icon font.
 import type { HTMLAttributes } from 'astro/types';
 import { SITE, NAV } from '../../lib/site';
 import Mark from './Mark.astro';
@@ -45,13 +58,20 @@ const here = Astro.url.pathname;
     <form role="search" action="/search/" method="get" class="site-search">
       <label class="vh" for="site-search-q">Search the site</label>
       <input id="site-search-q" type="search" name="q" autocomplete="off"
-        placeholder="Search the site…" aria-describedby="site-search-hint" />
+        placeholder="Search the site…"
+        role="combobox" aria-expanded="false" aria-controls="site-search-results"
+        aria-autocomplete="list" aria-describedby="site-search-hint" />
       <button type="submit" class="go">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4" /></svg>
         <span class="vh">Search</span>
       </button>
-      <p id="site-search-hint" class="vh">Results appear below as you type; press Enter for the full results page.</p>
-      <ul id="site-search-results" class="results" hidden aria-live="polite"></ul>
+      <p id="site-search-hint" class="vh">Results appear below as you type. Use the up and
+      down arrow keys to move through them, Enter to open one, Escape to dismiss the list,
+      or Enter with nothing highlighted for the full results page.</p>
+      <ul id="site-search-results" class="results" hidden></ul>
+      {/* The count, announced once per render. Separate from the list on purpose: a live
+          region that also holds the active option is re-announced on every arrow press. */}
+      <p id="site-search-status" class="vh" role="status" aria-live="polite"></p>
     </form>
     <Button kind="primary" href="/available-puppies/" label="Available puppies" class="cta" />
     <details class="drawer">
@@ -64,15 +84,6 @@ const here = Astro.url.pathname;
         <span class="lbl when-open">Close menu</span>
       </summary>
       <div class="panel">
-        <form role="search" action="/search/" method="get" class="site-search site-search--wide">
-          <label class="vh" for="site-search-q-drawer">Search the site</label>
-          <input id="site-search-q-drawer" type="search" name="q" autocomplete="off" placeholder="Search the site…" />
-          <button type="submit" class="go">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7" /><path d="M20 20l-4-4" /></svg>
-            <span class="vh">Search</span>
-          </button>
-          <ul id="site-search-results-drawer" class="results" hidden aria-live="polite"></ul>
-        </form>
         <nav aria-label="Main">
           <ul>
             {NAV.map((n) => (
@@ -88,7 +99,7 @@ const here = Astro.url.pathname;
   // The instant-results layer. The form works without it: it is a GET to /search/, so Enter
   // submits and /search/ renders the same list from the same index. The fetch, the cache,
   // the matching and the grouping are src/lib/search.ts, shared with that page.
-  import { loadIndex, matchRows, renderInto } from '../../lib/search';
+  import { loadIndex, matchRows, renderInto, optionsIn } from '../../lib/search';
 
   const MIN_CHARS = 2;
   const MAX = 8;
@@ -96,23 +107,97 @@ const here = Astro.url.pathname;
   for (const form of document.querySelectorAll<HTMLFormElement>('form.site-search')) {
     const input = form.querySelector<HTMLInputElement>('input[name="q"]');
     const list = form.querySelector<HTMLUListElement>('ul.results');
+    const status = form.querySelector<HTMLParagraphElement>('[role="status"]');
     if (!input || !list) continue;
-    const clear = () => {
+
+    let active = -1;
+
+    /** The option elements currently rendered, in reading order. */
+    const options = () => optionsIn(list);
+
+    const paint = () => {
+      const opts = options();
+      opts.forEach((li, i) => li.setAttribute('aria-selected', String(i === active)));
+      const current = active >= 0 ? opts[active] : null;
+      if (current) {
+        input.setAttribute('aria-activedescendant', current.id);
+        // The panel scrolls at 60vh, so an option moved to off the bottom has to be brought
+        // back: the pointer user scrolls, the keyboard user cannot.
+        current.scrollIntoView({ block: 'nearest' });
+      } else {
+        input.removeAttribute('aria-activedescendant');
+      }
+    };
+
+    const close = () => {
+      active = -1;
       list.hidden = true;
       list.textContent = '';
+      input.setAttribute('aria-expanded', 'false');
+      input.removeAttribute('aria-activedescendant');
     };
+
     input.addEventListener('input', () => {
       const q = input.value.trim();
-      if (q.length < MIN_CHARS) return clear();
+      if (q.length < MIN_CHARS) return close();
       loadIndex().then((rows) => {
         // The field may have changed again while the index was in flight.
         const now = input.value.trim();
         if (now.length < MIN_CHARS) return;
-        renderInto(list, matchRows(rows, now), now, MAX);
+        const written = renderInto(list, matchRows(rows, now), now, MAX,
+                                   { optionIdPrefix: 'site-search-option' });
+        active = -1;
+        input.setAttribute('aria-expanded', String(written > 0));
+        paint();
+        if (status) {
+          status.textContent = written
+            ? `${written} result${written === 1 ? '' : 's'}.`
+            : 'No results.';
+        }
       });
     });
+
     input.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') clear();
+      const opts = options();
+      const open = !list.hidden && opts.length > 0;
+      if (e.key === 'Escape') {
+        close();
+        if (status) status.textContent = '';
+        return;
+      }
+      if (!open) return;
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        active = active + 1 >= opts.length ? 0 : active + 1;
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        active = active - 1 < 0 ? opts.length - 1 : active - 1;
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        active = 0;
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        active = opts.length - 1;
+      } else if (e.key === 'Enter') {
+        // Only when something is highlighted. With nothing highlighted the form submits
+        // and /search/ shows the whole list, which is the no-script behaviour too.
+        const link = active >= 0 ? opts[active].querySelector('a') : null;
+        if (!link) return;
+        e.preventDefault();
+        link.click();
+        return;
+      } else {
+        return;
+      }
+      paint();
+    });
+
+    // Dismiss when focus leaves the form entirely — `relatedTarget` is where it went, and
+    // a click on a result inside the list is not leaving.
+    form.addEventListener('focusout', (e) => {
+      const to = (e as FocusEvent).relatedTarget as Node | null;
+      if (to && form.contains(to)) return;
+      close();
     });
   }
 </script>
@@ -126,9 +211,10 @@ const here = Astro.url.pathname;
     .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: var(--text-sm); padding: var(--space-3) 0; display: inline-block; min-height: 44px; line-height: 20px; }
     .nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--color-cta); }
 
-    /* Visually hidden, still announced: the search field's own label, the button's name and
-       the hint. Scoped here rather than in kit.css because search is the first component in
-       the kit that needs it (convention 9 moves it out on the SECOND). */
+    /* Visually hidden, still announced: the search field's own label, the button's name,
+       the hint and the status line. Scoped here rather than in kit.css because search is
+       the first component in the kit that needs it (convention 9 moves it out on the
+       SECOND). */
     .vh { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
     /* The search pill (S1). `position: relative` so the result list hangs off the field
@@ -146,14 +232,21 @@ const here = Astro.url.pathname;
     .results a { display: block; padding: var(--space-2) var(--space-3); color: var(--color-link); text-decoration: none; font-size: var(--text-sm); border-radius: var(--radius-sm); }
     .results a:hover { background: var(--color-brand-soft); }
     .results a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -2px; }
+    /* The keyboard's highlight. `aria-selected` is the state, so the paint follows the
+       attribute rather than a second class the script has to keep in step with it. */
+    .results [role="option"][aria-selected="true"] > a { background: var(--color-brand-soft); }
     .results .empty { padding: var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
 
-    /* Mobile: the inline nav and the bar's search go, the drawer arrives. */
+    /* Mobile: the inline nav goes and the drawer arrives. The ONE search form goes with the
+       nav while the drawer is shut, and comes back as a full-width second row of the bar
+       while it is open — the same form element, moved by CSS, never a second copy. */
     .drawer { position: relative; display: none; }
     @media (max-width: 767px) {
+      .bar { position: relative; }
       .nav { display: none; }
       .bar > .site-search { display: none; }
-      .drawer { display: block; }
+      .bar:has(.drawer[open]) > .site-search { display: flex; flex: 1 1 100%; order: 10; margin-bottom: var(--space-3); }
+      .drawer { display: block; position: static; }
     }
     .lbl { font-size: var(--text-sm); font-weight: 600; }
     .drawer:not([open]) .when-open, .drawer[open] .when-shut { display: none; }
@@ -162,8 +255,6 @@ const here = Astro.url.pathname;
     /* The open panel is its own dark band, so it names the on-inverse text and ring rather
        than inheriting the bone bar's near-black `color` onto a steel background. */
     .drawer[open] .panel { position: absolute; right: 0; top: 100%; min-width: 280px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse); --kit-ring: var(--color-focus-on-inverse); padding: var(--space-5); border-radius: 0 0 var(--card-radius) var(--card-radius); box-shadow: var(--shadow-lift); display: grid; gap: var(--space-4); }
-    /* Full width inside the drawer, which is what amendment 3b asks for. */
-    .site-search--wide { flex: 1 1 auto; width: 100%; }
     .drawer nav a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .drawer nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
     .drawer nav a { color: inherit; text-decoration: none; font-weight: 600; display: block; padding: var(--space-2) 0; min-height: 44px; }

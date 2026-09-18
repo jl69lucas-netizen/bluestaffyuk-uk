@@ -1,0 +1,25 @@
+---
+// src/components/kit/MarkSprite.astro — the mark's two `<symbol>`s, emitted ONCE per
+// document by BaseLayout. Every `<Mark />` on the page is then a `<use href="#bsuk-mark">`
+// rather than a twelfth copy of the same twelve paths: a page with the header, a divider or
+// two and the footer carried the head four times over, which is four times the bytes and
+// four chances for one of them to drift.
+//
+// Two symbols, not one with a modifier: the inverse mark swaps the roundel fill and the
+// outline stroke, and a `<use>` cannot pass those in as attributes — a symbol's own
+// presentation attributes win over the referencing element's. Custom properties would cross
+// the shadow boundary, but only for properties the symbol actually reads, and spelling two
+// symbols is plainer than a variable that has to be set on every caller.
+//
+// The sprite itself is out of the layout and out of the accessibility tree: zero-sized,
+// absolutely positioned and aria-hidden. The NAME lives on the referencing `<svg>`, where
+// each caller decides whether this instance is content or ornament.
+import { markBody, MARK_VIEWBOX, MARK_SPRITE_ID, MARK_SPRITE_ID_INVERSE } from './markShapes';
+const body = markBody('var(--color-brand)', 'var(--color-surface)');
+const bodyInverse = markBody('var(--color-surface)', 'var(--color-brand)');
+---
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false"
+  style="position:absolute;width:0;height:0;overflow:hidden">
+  <symbol id={MARK_SPRITE_ID} viewBox={MARK_VIEWBOX}><Fragment set:html={body} /></symbol>
+  <symbol id={MARK_SPRITE_ID_INVERSE} viewBox={MARK_VIEWBOX}><Fragment set:html={bodyInverse} /></symbol>
+</svg>

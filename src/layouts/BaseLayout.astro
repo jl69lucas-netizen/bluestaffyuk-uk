@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SiteHeader from '../components/SiteHeader.astro';
+import MarkSprite from '../components/kit/MarkSprite.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
@@ -29,6 +30,8 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
   <Schema extra={schema} path={path} title={crumbTitle} />
 </head>
 <body>
+  {/* The mark's two <symbol>s, once per document: every <Mark /> below is a <use> at them. */}
+  <MarkSprite />
   <a href="#main" class="skip-link">Skip to content</a>
   <SiteHeader />
   <Breadcrumb path={path} title={crumbTitle} />
