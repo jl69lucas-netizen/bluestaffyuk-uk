@@ -1,0 +1,59 @@
+---
+// src/components/kit/CounterStrip.astro — spec §5 #6. Every variant satisfies
+// rules/design.md `layout-hero-counter-separation`: a background TONE SHIFT and a
+// rule/seam, because the check asks for both and a strip that carries only one of them
+// reads as hero furniture and the figures stop registering.
+//
+// `.counter-wrap` and `[data-counters]` are the harness hooks the check selects on
+// (tests/render/checks/layout.ts) — renaming either makes the check silently examine zero.
+//
+// FIGURES COME FROM DATA (rule 9): the availability count is derived from
+// data/puppies.json and the money comes from data/settings.json. Nothing here is typed
+// from memory, so a sold puppy or a price change is a data edit, not a component edit.
+//
+// a tone shift + top rule · b seam gradient bar · c boxed tiles on bone
+// d hero-edge with brand rule · e minimal, brass rule
+import type { HTMLAttributes } from 'astro/types';
+import type { Variant } from './_variant';
+import pups from '../../../data/puppies.json';
+import { SITE, type PuppyRow } from '../../lib/site';
+type Props = HTMLAttributes<'section'> & { variant?: Variant };
+const { variant = 'a', class: cls, ...rest } = Astro.props;
+const available = (pups as PuppyRow[]).filter((p) => p.status === 'Available').length;
+const stats = [
+  { n: String(available), l: available === 1 ? 'puppy available now' : 'puppies available now' },
+  { n: `£${SITE.deposit_gbp}`, l: SITE.deposit_refundable ? 'refundable deposit' : 'deposit' },
+  { n: `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`, l: 'UK delivery by distance' },
+];
+---
+<section
+  {...rest}
+  class:list={['counter-wrap', 'kit-counter', `kit-counter-${variant}`, cls]}
+  data-counters
+  data-variant={variant}
+  aria-label="At a glance"
+>
+  <ul class="container list">
+    {stats.map((s) => <li><strong>{s.n}</strong><span>{s.l}</span></li>)}
+  </ul>
+</section>
+<style>
+  @layer components {
+    .kit-counter { position: relative; background: var(--counter-bed); color: var(--color-brand); padding-block: var(--space-6); border-top: 1px solid var(--color-border); }
+    .list { list-style: none; margin: 0; padding-block: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); text-align: center; }
+    strong { display: block; font-family: var(--font-display); font-size: var(--text-3xl); line-height: 1.1; }
+    span { font-size: var(--text-sm); color: var(--color-text-muted); }
+    /* b trades the border for a seam bar — still a rule, and the check counts a ::before
+       bar as one; the bed still shifts tone, so both halves of the rule are present. */
+    .kit-counter-b { border-top: 0; }
+    .kit-counter-b::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
+    .kit-counter-c li { background: var(--color-surface-raised); border: var(--card-border); border-radius: var(--radius-md); padding: var(--space-4); }
+    .kit-counter-d { background: var(--color-brand-soft); border-top: 2px solid var(--color-brand); }
+    /* Steel-100 is a lighter bed than the others: the muted ink is 4.5:1 on it only by
+       rounding, so d's labels take the full text colour rather than the muted one. */
+    .kit-counter-d span { color: var(--color-text); }
+    .kit-counter-e { background: var(--color-surface-raised); border-top: 2px solid var(--color-cta); padding-block: var(--space-4); }
+    .kit-counter-e strong { font-size: var(--text-2xl); }
+    @media (max-width: 720px) { .list { grid-template-columns: 1fr; } }
+  }
+</style>

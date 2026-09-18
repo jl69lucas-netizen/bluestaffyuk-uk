@@ -29,6 +29,8 @@ import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
 import PuppyCard from './PuppyCard.astro';
 import Hero from './Hero.astro';
+import TrustStrip from './TrustStrip.astro';
+import CounterStrip from './CounterStrip.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -69,5 +71,9 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // Two pups, not one: the price/status chips differ between them, so a board that showed
   // only Roman would hide how the row wraps behind a longer colour name.
   'puppy-card': { C: PuppyCard, demo: [{ slug: 'roman' }, { slug: 'christa' }] },
+  'trust-strip': { C: TrustStrip },
+  // No `wrap`: the counter strip's whole point is the seam against what sits above it, and
+  // the artboard's own section edge is the boundary the check would judge anyway.
+  'counter-strip': { C: CounterStrip },
   'section-divider': { C: SectionDivider },
 };

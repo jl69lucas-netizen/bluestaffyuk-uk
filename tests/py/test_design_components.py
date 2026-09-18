@@ -202,3 +202,40 @@ def test_built_hero_variants_carry_their_photo_copy_and_band():
     assert "ctas" not in s["e"]
     for v in ("a", "b", "c", "d"):
         assert "ctas" in s[v], v
+
+
+def test_built_trust_strip_variants_carry_three_backed_claims_and_line_icons():
+    """Convention 8. Rule 7: the icons are inline stroke SVG, never an emoji. Rule 9: each
+    claim is one the live homepage already makes (KC registration, L-2-HGA / HC-HSF4 clear
+    parents, home rearing) — a strip that invented a fourth would be a statutory statement
+    with nothing behind it."""
+    s = _sections("trust-strip")
+    for v, inner in sorted(s.items()):
+        for claim in ("KC registered", "DNA-tested parents", "Raised in the home"):
+            assert claim in inner, (v, claim)
+        assert inner.count("<svg") == 3, v
+        assert 'stroke="currentColor"' in inner, v
+    # c is the single line: the headline claims only, no description sentences.
+    assert "L-2-HGA" not in s["c"]
+    for v in ("a", "b", "d", "e"):
+        assert "L-2-HGA" in s[v], v
+    assert 'data-surface="inverse"' in s["d"]
+    for v in ("a", "b", "c", "e"):
+        assert 'data-surface="inverse"' not in s[v], v
+
+
+def test_built_counter_strip_variants_keep_the_harness_hooks_and_the_data_figures():
+    """Convention 8. `.counter-wrap` and `[data-counters]` are what
+    tests/render/checks/layout.ts selects on: rename either and the
+    layout-hero-counter-separation check examines zero elements and passes vacuously.
+    The figures are read from the data here too, so a sold puppy is a data edit."""
+    settings = json.loads((ROOT / "data/settings.json").read_text())
+    pups = json.loads((ROOT / "data/puppies.json").read_text())
+    available = sum(1 for p in pups if p["status"] == "Available")
+    s = _sections("counter-strip")
+    for v, inner in sorted(s.items()):
+        assert "counter-wrap" in inner and "data-counters" in inner, v
+        assert f">{available}<" in inner, (v, available)
+        assert f"£{settings['deposit_gbp']}" in inner, v
+        assert f"£{settings['delivery_min_gbp']}" in inner, v
+        assert f"£{settings['delivery_max_gbp']}" in inner, v

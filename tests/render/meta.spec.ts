@@ -1571,3 +1571,42 @@ test.describe('every deferred check is registered and still passes both fixtures
     });
   }
 });
+
+/**
+ * The KIT's counter strip, not a generic one.
+ *
+ * The generic loop above judges `layout-hero-counter-separation` against the fixture named
+ * after the check, which proves the check can tell separated from flush. It says nothing
+ * about whether the component BSUK actually ships clears the bar. This pair is
+ * src/components/kit/CounterStrip.astro's own geometry with its tokens resolved: the
+ * known_good half is variant a under the inverse hero band, and the known_broken half is
+ * the same markup with the bed and the rule taken away — the one edit that would silently
+ * reintroduce the 2026-08-07 defect while every other test stayed green.
+ */
+test.describe('layout-hero-counter-separation [kit CounterStrip]', () => {
+  const check = () => registry.find((c) => c.id === 'layout-hero-counter-separation')!;
+
+  test('is silent on the kit strip with its bed and rule', async ({ page }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-counter-separated.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'the check must find the strip at all').toBe(1);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the kit strip keeps the hero band and drops the rule', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-counter-flush.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(1);
+    expect(r.defects.length, 'a flush strip must be reported').toBeGreaterThan(0);
+    expect(r.defects[0].message).toContain('background tone shift');
+    expect(r.defects[0].message).toContain('border/seam/gradient rule');
+  });
+});
