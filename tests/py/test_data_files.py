@@ -29,3 +29,23 @@ def test_price_matrix_matches_puppies():
             assert (ROOT / "src" / "assets" / "puppies" / g).exists()
         assert p["card_photo"] in p["gallery"]
     assert {p["slug"] for p in pups} == {"roman","byrd","ince","vennie","christa","cheryl"}
+
+
+def test_puppy_photo_filenames_are_unique_across_the_litter():
+    """src/assets/puppies/ is one flat folder keyed by filename (src/lib/puppyImages.ts),
+    so two pups sharing a photo name would silently render the same dog twice."""
+    # Per pup the names are de-duplicated first: a card_photo that also appears in that
+    # pup's own gallery is one file, not a collision.
+    names = [n for p in load("puppies.json") for n in sorted({p["card_photo"], *p["gallery"]})]
+    dupes = sorted({n for n in names if names.count(n) > 1})
+    assert not dupes, dupes
+
+
+def test_site_settings_do_not_say_glasgow():
+    """Known Issue 16: the breeder relocated. The kit reads `location_label`, so these
+    three keys are the ones that would put the old city back on every page. `address` is
+    deliberately excluded — Known Issue 16 owns it and project 4 rewrites it."""
+    s = load("settings.json")
+    for key in ("location_label", "tagline", "site_name"):
+        assert "glasgow" not in str(s[key]).lower(), (key, s[key])
+    assert s["location_label"] == "Carlisle · Cumbria"

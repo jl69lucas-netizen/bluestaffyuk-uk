@@ -13,10 +13,12 @@ const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
   {heading === 'h2' && <h2 id="available-puppies-heading">Available Blue Staffy Puppies</h2>}
   {heading === 'h2' && <p>{avail.length} puppies available now. Males {gbp(pm.male_gbp)}, females {gbp(pm.female_gbp)}. {SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}, or collect in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit.</p>}
   <ul style="display:grid;gap:20px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));list-style:none;padding:0">
-    {avail.map((p) => <li style="border:1px solid var(--color-rule);border-radius:8px;overflow:hidden">
-      {/* astro:assets, not the baked 800px card: the tile paints at ~240px, so one fixed 800px
-          file decoded at 3.3x (Known Issue 4). The square crop the card had is now CSS. */}
-      <a href={`/available-puppies/${p.slug}/`}><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy for sale`} widths={[400, 800, 1200]} sizes="(max-width: 640px) 100vw, 400px" loading="lazy" decoding="async" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover" /></a>
+    {avail.map((p, i) => <li style="border:1px solid var(--color-rule);border-radius:8px;overflow:hidden">
+      {/* astro:assets, not the baked 800px card: the tile paints at ~240-280px, so one fixed
+          800px file decoded at 3.3x (Known Issue 4). The widths bracket that painted size at
+          1x and 2x and stop there; the square crop the card had is now CSS. The first two
+          tiles are above the fold on every viewport, so they load eager. */}
+      <a href={`/available-puppies/${p.slug}/`}><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy for sale`} widths={[240, 280, 480, 560]} sizes="(max-width: 640px) 100vw, 280px" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover" /></a>
       <div style="padding:12px 14px"><h3 style="margin:0 0 4px"><a href={`/available-puppies/${p.slug}/`}>{p.name}</a></h3>
         <p style="margin:0">{p.sex === 'male' ? 'Male' : 'Female'} · {p.colour} · <strong>{gbp(p.price_gbp)}</strong></p></div>
     </li>)}

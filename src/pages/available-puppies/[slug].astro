@@ -19,9 +19,12 @@ const title = `${p.name} – ${sexLabel} Blue Staffy Puppy for Sale | Blue Staff
 const h1 = `${p.name}: ${p.colour} ${sexLabel} Blue Staffy Puppy`;
 const description = `${p.name} is a ${p.colour.toLowerCase()} ${p.sex} Staffordshire Bull Terrier puppy, ${gbp(p.price_gbp)}, available now from Blue Staffy UK in Glasgow with UK-wide delivery.`;
 const card = `/images/puppies/${p.slug}-card-800.webp`;
-const thumbs = p.gallery.map((g, i) => ({
+// card_photo is already the full-size image above, so it is filtered out of the thumbs
+// rather than shipped twice: a thumbnail that reopens the picture beside it is noise.
+const gallery = p.gallery.filter((g) => g !== p.card_photo);
+const thumbs = gallery.map((g, i) => ({
   img: puppyImage(g),
-  alt: `${p.name}, photo ${i + 1} of ${p.gallery.length}`,
+  alt: `${p.name}, photo ${i + 1} of ${gallery.length}`,
 }));
 const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `${p.name} – Blue Staffy puppy`, image: abs(card), description,
   brand: { '@type': 'Brand', name: SITE.site_name },
@@ -30,7 +33,7 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'Product', name: `$
 <BaseLayout title={title} description={description} canonical={`/available-puppies/${p.slug}/`} crumbTitle={p.name} ogType="product" ogImage={card} schema={schema}>
   <article class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
     <div><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy`} widths={[400, 800, 1200]} sizes="(max-width: 640px) 100vw, 560px" fetchpriority="high" loading="eager" style="display:block;width:100%;height:auto;aspect-ratio:4/5;object-fit:cover" />
-      {thumbs.length > 1 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><Image src={t.img} alt={t.alt} widths={[120, 240, 360]} sizes="120px" loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
+      {thumbs.length > 0 && <ul style="display:flex;gap:8px;list-style:none;padding:0;margin-top:8px">{thumbs.map((t) => <li><Image src={t.img} alt={t.alt} widths={[120, 240, 360]} sizes="120px" loading="lazy" decoding="async" style="width:120px;height:120px;object-fit:cover" /></li>)}</ul>}</div>
     <div><h1>{h1}</h1>
       <p><strong>{gbp(p.price_gbp)}</strong> · {p.status}</p>
       <dl><dt>Sex</dt><dd>{sexLabel}</dd><dt>Colour</dt><dd>{p.colour}</dd><dt>Deposit</dt><dd>{gbp(SITE.deposit_gbp)}, refundable</dd><dt>Delivery</dt><dd>{SITE.delivery_note}, {gbp(SITE.delivery_min_gbp)} to {gbp(SITE.delivery_max_gbp)}; or collect in Glasgow</dd></dl>

@@ -83,13 +83,21 @@ def bake_body_image(src, dst_dir, stem, centering=(0.5, 0.5)):
     return full, sib, {"w": full_im.width, "h": full_im.height, "sib_w": sib_w}
 
 
-def bake_puppy_card(src, dst_dir, slug, centering=(0.5, 0.4)):
+def bake_puppy_card(src, dst_dir, slug, centering=(0.5, 0.4), portrait=True):
+    """The square card, and (only when asked) the blurred-background 4:5 portrait.
+
+    Project 3 Task 7: the pages render the masters through astro:assets, so the portrait
+    and the gallery derivatives have no consumer left. `portrait=False` is what main()
+    passes; the default keeps the pair for any caller that still wants both.
+    """
     dst_dir = pathlib.Path(dst_dir)
     dst_dir.mkdir(parents=True, exist_ok=True)
     im = ImageOps.exif_transpose(Image.open(src)).convert("RGB")
     card = dst_dir / ("%s-card-800.webp" % slug)
     _save_within_budget(ImageOps.fit(im, (800, 800), Image.LANCZOS, centering=centering),
                         card, allow_downscale=False)
+    if not portrait:
+        return card, None
     W, H = 800, 1000
     bg = ImageOps.fit(im, (W, H), Image.LANCZOS).filter(ImageFilter.GaussianBlur(28))
     fg = im.copy()
@@ -213,21 +221,16 @@ def main(src_site):
         shutil.copy(srcs[0], videos_out / name)
         print("%s: copied %dKB (video, verbatim)" % (name, srcs[0].stat().st_size // 1024))
     # Project 3 Task 7 moved the puppy masters from assets/brand/<slug>/ into
-    # src/assets/puppies/ so astro:assets can emit a bounded srcset for the pages. The bake
-    # still runs over the same masters: the og:image and the Product schema are absolute
-    # URLs, which a content-hashed build asset cannot be, so they keep pointing at
-    # public/images/puppies/<slug>-card-800.webp.
+    # src/assets/puppies/, and the pages now render THEM through astro:assets. One
+    # derivative survives: og:image and the Product schema are absolute URLs in markup,
+    # which a content-hashed build asset cannot be, so they keep pointing at
+    # public/images/puppies/<slug>-card-800.webp. The portrait and the gallery webps had
+    # no consumer left, so they are no longer baked.
     masters = ROOT / "src/assets/puppies"
     for p in json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8")):
         slug = p["slug"]
-        bake_puppy_card(masters / p["card_photo"], out / "puppies", slug)
+        bake_puppy_card(masters / p["card_photo"], out / "puppies", slug, portrait=False)
         manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
-        manifest["puppies/%s-portrait-4x5" % slug] = {"w": 800, "h": 1000, "sib_w": None}
-        for g in p["gallery"]:
-            gstem = "%s-%s" % (slug, pathlib.Path(g).stem.lower())
-            _, _, dims = bake_body_image(masters / g, out / "puppies", gstem,
-                                         centering.get(gstem, (0.5, 0.5)))
-            manifest["puppies/%s" % gstem] = dims
     (ROOT / "data/image-manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print("wrote data/image-manifest.json (%d entries)" % len(manifest))

@@ -3,6 +3,12 @@
 // a bone bar, left logo, right nav + CTA · b inverse bar, centred nav · c bone bar, centred logo, nav below
 // d inverse bar, logo left, CTA only (nav in a drawer) · e slim bone bar, nav left of CTA, strapline visible
 //
+// The drawer is the MOBILE behaviour of all five variants, not a trait of d: below 768px
+// every variant hides the inline nav and shows the <details>. What distinguishes d is that
+// it keeps the drawer at desktop too and never renders an inline nav at all. Both navs are
+// in the DOM for the other four, but only ever one at a time is in the accessibility tree —
+// the hidden one is `display: none`, which removes it rather than duplicating the landmark.
+//
 // Variants b and d paint their own steel band, so they carry `data-surface="inverse"`: the
 // global rule flips `--kit-ring` to the on-inverse focus colour and sets the inverse text
 // colour for everything inside, rather than each child naming a dark-band colour of its own.
@@ -46,16 +52,23 @@ const here = Astro.url.pathname;
     {variant !== 'c' && (
       <Button variant="a" href="/available-puppies/" label="Available puppies" class="cta" />
     )}
-    {variant === 'd' && (
-      <details class="drawer">
-        <summary aria-label="Open menu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
-        </summary>
-        <nav aria-label="Main">
-          <ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
-        </nav>
-      </details>
-    )}
+    <details class="drawer">
+      {/* Two spans rather than a toggled aria-label: the summary's accessible name comes
+          from its own text, so `details[open]` swapping which span is displayed renames
+          the control with no script and no attribute to keep in sync. */}
+      <summary>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+        <span class="lbl when-shut">Open menu</span>
+        <span class="lbl when-open">Close menu</span>
+      </summary>
+      <nav aria-label="Main">
+        <ul>
+          {NAV.map((n) => (
+            <li><a href={n.href} aria-current={n.href === here ? 'page' : undefined}>{n.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </details>
   </div>
 </header>
 <style>
@@ -79,12 +92,23 @@ const here = Astro.url.pathname;
     .kit-hdr-c .brand { flex-direction: column; text-align: center; }
     .kit-hdr-e { min-height: 56px; }
     .kit-hdr-e .bar { min-height: 56px; }
-    .drawer { position: relative; }
-    .drawer summary { list-style: none; cursor: pointer; display: inline-flex; padding: 10px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
+    /* Mobile: the inline nav goes, the drawer arrives — for every variant. */
+    .drawer { position: relative; display: none; }
+    .kit-hdr-d .drawer { display: block; }
+    @media (max-width: 767px) {
+      .nav { display: none; }
+      .drawer { display: block; }
+    }
+    .lbl { font-size: var(--text-sm); font-weight: 600; }
+    .drawer:not([open]) .when-open, .drawer[open] .when-shut { display: none; }
+    .drawer summary { list-style: none; cursor: pointer; display: inline-flex; gap: var(--space-2); padding: 10px; min-width: 44px; min-height: 44px; align-items: center; justify-content: center; }
     .drawer summary::-webkit-details-marker { display: none; }
-    .drawer[open] nav { position: absolute; right: 0; top: 100%; min-width: 240px; background: var(--color-surface-inverse); padding: var(--space-5); border-radius: 0 0 var(--card-radius) var(--card-radius); }
+    /* The open panel is its own dark band, so it names the on-inverse text and ring rather
+       than inheriting the bone bar's near-black `color` onto a steel background. */
+    .drawer[open] nav { position: absolute; right: 0; top: 100%; min-width: 240px; background: var(--color-surface-inverse); color: var(--color-text-on-inverse); --kit-ring: var(--color-focus-on-inverse); padding: var(--space-5); border-radius: 0 0 var(--card-radius) var(--card-radius); box-shadow: var(--shadow-lift); }
+    .drawer nav a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
     .drawer nav ul { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
     .drawer nav a { color: inherit; text-decoration: none; font-weight: 600; display: block; padding: var(--space-2) 0; min-height: 44px; }
-    @media (max-width: 640px) { .nav ul { gap: var(--space-3); } }
+    .drawer nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--color-cta); }
   }
 </style>

@@ -126,12 +126,14 @@ def test_built_sections_render_five_distinct_variants():
 
 
 def _sections(cid):
-    """The built artboard sections for one component, keyed by variant letter."""
+    """The built artboard sections for one component, keyed by variant letter.
+
+    A registered component with zero sections is a failure, not a skip: that is exactly
+    what a route regression looks like, and skipping it would hide one."""
     if not DIST_ROUTE.exists():
         pytest.skip("run npm run build first")
     out = {v: inner for c, v, inner in SECTION_RE.findall(DIST_ROUTE.read_text()) if c == cid}
-    if not out:
-        pytest.skip(f"{cid} is not on the canvas yet")
+    assert sorted(out) == list("abcde"), (cid, sorted(out))
     return out
 
 
@@ -139,23 +141,33 @@ def test_built_site_header_variants_carry_their_distinguishing_marks():
     """Convention 8. Five headers that differ only in CSS would pass the distinctness check
     above while the drawer, the dark bands and the strapline had all silently vanished."""
     s = _sections("site-header")
-    assert "<details" in s["d"], "variant d is the drawer variant"
-    assert "<details" not in s["a"]
+    # The drawer is every variant's MOBILE nav, so it is in all five; what makes d the
+    # drawer variant is that it ships no inline nav to hide.
+    for v, inner in sorted(s.items()):
+        assert "<details" in inner, v
+    assert 'class="nav' not in s["d"] and "Open menu" in s["d"]
+    for v in ("a", "b", "c", "e"):
+        assert 'class="nav' in s[v], v
     for v in ("b", "d"):
         assert 'data-surface="inverse"' in s[v], v
     for v in ("a", "c", "e"):
         assert 'data-surface="inverse"' not in s[v], v
     assert "Carlisle" in s["e"], "variant e shows the location strapline"
-    assert "Glasgow" not in "".join(s.values())
 
 
 def test_built_puppy_card_variants_carry_price_status_and_their_ornament():
     """Convention 8. The card's whole job is photo + name + price + status; a variant that
-    renders the shell without the data is a pass on distinctness and a failure in fact."""
+    renders the shell without the data is a pass on distinctness and a failure in fact.
+    The prices are read from the data, so a price change is a data edit, not a test edit."""
+    pups = {p["slug"]: p for p in json.loads((ROOT / "data/puppies.json").read_text())}
+    demo = ("roman", "christa")
     s = _sections("puppy-card")
     for v, inner in sorted(s.items()):
-        assert "£1," in inner, v          # £1,500 / £1,700 from data/puppies.json
-        assert "Available" in inner, v
+        for slug in demo:
+            p = pups[slug]
+            assert f"£{p['price_gbp']:,}" in inner, (v, slug)
+            assert p["status"] in inner, (v, slug)
+            assert p["name"] in inner, (v, slug)
         assert "srcset=" in inner, v      # astro:assets, not a single fixed width
     assert "badge" in s["a"], "variant a carries the price badge"
     assert "ribbon" in s["b"], "variant b carries the status ribbon"

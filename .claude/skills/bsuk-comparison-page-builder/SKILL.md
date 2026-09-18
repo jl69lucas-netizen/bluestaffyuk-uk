@@ -285,4 +285,4 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    H2 (usually the CTA/newsletter component) before delivery.
 9. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walk quality
    78→54 until <95KB (LICENCE_CLAIM_PLACEHOLDER-flatlay 101→94KB q66, vs-french bulldog-hero 122→89KB q66 — certificate text
-   still crisp). Masters in `src/assets/puppies/` untouched.
+   still crisp). Masters for comparison imagery live under `src/assets/` when created (project 5); puppy masters are `src/assets/puppies/`.

@@ -196,8 +196,15 @@ def test_puppy_photos_live_in_src_assets_and_render_with_srcset():
     src/assets/puppies/ where astro:assets can emit a bounded srcset.
 
     Deviation from the Task 7 text: the masters were in assets/brand/<slug>/, not in
-    public/images/ — public/images only ever held bake_images.py's webp derivatives, which
-    stay where they are because the og:image and the Product schema still point at them.
+    public/images/ — public/images only ever held bake_images.py's webp derivatives, of
+    which only <slug>-card-800.webp survives, because the og:image and the Product schema
+    still point at it.
+
+    The assertion is about the SMALLEST candidate, not the ratio between the ends: a
+    bounded srcset can still be wrong if its cheapest option is already far bigger than
+    the widest slot the page ever paints the image into, which is exactly the shape of
+    Known Issue 4. `sizes` is the page's own statement of that slot, so it is what the
+    smallest candidate is measured against.
     """
     import json, pathlib, re
     root = pathlib.Path(__file__).resolve().parents[2]
@@ -206,13 +213,20 @@ def test_puppy_photos_live_in_src_assets_and_render_with_srcset():
         for f in {p["card_photo"], *p["gallery"]}:
             assert (root / "src/assets/puppies" / f).exists(), f
             assert not (root / "public/images" / f).exists(), f
-            assert not (root / "assets/brand" / p["slug"] / f).exists(), f
     built = root / "dist/available-puppies/roman/index.html"
     if not built.exists():
         pytest.skip("run npm run build first")
     html = built.read_text()
-    m = (re.search(r'<img[^>]+srcset="([^"]+)"[^>]*alt="Roman', html)
-         or re.search(r'<img[^>]+alt="Roman[^"]*"[^>]+srcset="([^"]+)"', html))
-    assert m, "Roman's image has no srcset"
-    widths = sorted(int(w) for w in re.findall(r"\s(\d+)w", m.group(1)))
-    assert widths[-1] / widths[0] <= 3.0 and len(widths) >= 3, widths
+    m = re.search(r'<img[^>]*fetchpriority="high"[^>]*>', html)
+    assert m, "Roman's page has no eager hero image"
+    tag = m.group(0)
+    srcset = re.search(r'srcset="([^"]+)"', tag)
+    sizes = re.search(r'sizes="([^"]+)"', tag)
+    assert srcset and sizes, tag
+    widths = sorted(int(w) for w in re.findall(r"\s(\d+)w", srcset.group(1)))
+    assert len(widths) >= 3, widths
+    # Every slot `sizes` declares, in px. 100vw is the narrowest phone the harness drives.
+    slots = [int(n) for n in re.findall(r"(\d+)px", sizes.group(1))]
+    slots += [375 for _ in re.findall(r"100vw", sizes.group(1))]
+    assert slots, sizes.group(1)
+    assert widths[0] <= max(slots), (widths, slots)

@@ -18,13 +18,14 @@ const title = 'Design canvas — BlueStaffyUK kit (project 3)';
 const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
 // The demo box. `wrap` is the only thing that varies it, and it varies by ENTRY, not by id,
 // so this stays a lookup rather than becoming a per-component branch: 'sticky' gives a
-// position: sticky component a positioned box with room in it (without one the sticky bar
+// position: sticky component a positioned box with room in it — tall enough, and not
+// clipped, so an opened drawer is judgeable (without one the sticky bar
 // docks to the page scroller and the artboard captures a collapsed strip), 'inverse' paints
 // the dark band and, through [data-surface], flips --kit-ring inside it.
 const FLEX = 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
 const demoStyle = (wrap?: 'sticky' | 'inverse') =>
   wrap === 'sticky'
-    ? 'position:relative;min-height:140px;overflow:hidden'
+    ? 'position:relative;min-height:220px;overflow:visible'
     : wrap === 'inverse'
       ? `${FLEX};background:var(--color-surface-inverse);padding:var(--space-8) var(--space-5);border-radius:var(--card-radius)`
       : FLEX;
