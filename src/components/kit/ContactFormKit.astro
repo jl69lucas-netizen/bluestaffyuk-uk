@@ -28,13 +28,18 @@ import { SITE, abs, type PuppyRow } from '../../lib/site';
 import Button from './Button.astro';
 
 type Props = HTMLAttributes<'form'> & { variant?: Variant };
-const { variant = 'a', class: cls, ...rest } = Astro.props;
+// `action` is destructured because it is also set literally below (convention 4): left in
+// `rest` Astro would emit two action attributes side by side.
+const { variant = 'a', class: cls, action: actionOverride, ...rest } = Astro.props;
 
 const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
 const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
-const action = live ? `https://formspree.io/f/${fid}` : '#contact';
+const action = actionOverride ?? (live ? `https://formspree.io/f/${fid}` : '#contact');
 
 const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+// The placeholder option is `disabled selected`, both words: HTML's default selectedness is
+// the first option that is NOT disabled, so `disabled` on its own would silently pre-select
+// the first puppy and the required check would pass on a choice nobody made.
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 
 const inverse = variant === 'd';
@@ -45,12 +50,12 @@ const fields = [
   { key: 'name', label: 'Your name', type: 'text', autocomplete: 'name', required: true },
   { key: 'email', label: 'Email', type: 'email', autocomplete: 'email', required: true },
   { key: 'phone', label: 'Phone', type: 'tel', autocomplete: 'tel', required: false },
-  { key: 'location', label: 'Town or postcode', type: 'text', autocomplete: 'postal-code', required: false },
+  { key: 'location', label: 'Town or postcode', type: 'text', autocomplete: 'address-level2', required: false },
 ] as const;
 ---
 <form
   {...rest}
-  class:list={['kit-contact', f, cls]}
+  class:list={['kit-card', 'kit-contact', f, cls]}
   data-variant={variant}
   data-surface={inverse ? 'inverse' : undefined}
   method="POST"
@@ -72,7 +77,7 @@ const fields = [
         <legend>1 · About you</legend>
         {fields.map((x) => (
           <p class="field">
-            <label for={`${f}-${x.key}`}>{x.label}{x.required && <span class="req">(required)</span>}</label>
+            <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
             <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
           </p>
         ))}
@@ -80,9 +85,9 @@ const fields = [
       <fieldset>
         <legend>2 · Which puppy</legend>
         <p class="field">
-          <label for={`${f}-puppy`}>Which puppy?<span class="req">(required)</span></label>
+          <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
           <select id={`${f}-puppy`} name="puppy" required>
-            <option value="">Choose…</option>
+            <option value="" disabled selected>Choose…</option>
             {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
             <option value="waiting-list">Join the waiting list for the next litter</option>
           </select>
@@ -91,7 +96,7 @@ const fields = [
       <fieldset>
         <legend>3 · Your message</legend>
         <p class="field">
-          <label for={`${f}-message`}>Message<span class="req">(required)</span></label>
+          <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
           <textarea id={`${f}-message`} name="message" rows="5" required></textarea>
         </p>
       </fieldset>
@@ -102,7 +107,7 @@ const fields = [
         <div class="cols">
           {fields.map((x) => (
             <p class="field">
-              <label for={`${f}-${x.key}`}>{x.label}{x.required && <span class="req">(required)</span>}</label>
+              <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
               <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
             </p>
           ))}
@@ -110,21 +115,21 @@ const fields = [
       ) : (
         fields.map((x) => (
           <p class="field">
-            <label for={`${f}-${x.key}`}>{x.label}{x.required && <span class="req">(required)</span>}</label>
+            <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
             <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
           </p>
         ))
       )}
       <p class="field">
-        <label for={`${f}-puppy`}>Which puppy?<span class="req">(required)</span></label>
+        <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
         <select id={`${f}-puppy`} name="puppy" required>
-          <option value="">Choose…</option>
+          <option value="" disabled selected>Choose…</option>
           {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
           <option value="waiting-list">Join the waiting list for the next litter</option>
         </select>
       </p>
       <p class="field">
-        <label for={`${f}-message`}>Message<span class="req">(required)</span></label>
+        <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
         <textarea id={`${f}-message`} name="message" rows={variant === 'e' ? 3 : 5} required></textarea>
       </p>
     </div>
@@ -137,16 +142,14 @@ const fields = [
 
 <style>
   @layer components {
+    /* The shell is .kit-card from src/styles/kit.css (convention 9): background, border,
+       radius and shadow come from there, and only the form's own box is spelled here. */
     .kit-contact {
       display: grid;
       gap: var(--space-4);
       max-width: 560px;
       box-sizing: border-box;
       padding: var(--space-6);
-      background: var(--color-surface-raised);
-      border: var(--card-border);
-      border-radius: var(--card-radius);
-      box-shadow: var(--shadow-card);
       color: var(--color-text);
     }
     /* d carries its own dark fill, so it also carries the ring that survives on it
@@ -157,6 +160,7 @@ const fields = [
       color: var(--color-text-on-inverse);
       border: 0;
     }
+    /* Both overrides beat .kit-card: this block is in the same @layer and comes later. */
     .kit-contact-form-e { max-width: 380px; padding: var(--space-5); }
 
     h2 { margin: 0; font-family: var(--font-display); font-size: var(--text-2xl); color: var(--color-brand); }
@@ -170,7 +174,7 @@ const fields = [
     .cols { display: grid; gap: var(--space-4); grid-template-columns: 1fr 1fr; }
     .field { margin: 0; display: grid; gap: 4px; min-width: 0; }
     label { font-weight: 600; font-size: var(--text-sm); }
-    .req { font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); margin-left: 6px; }
+    .req { font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); }
     .kit-contact-form-d .req { color: inherit; opacity: .8; }
 
     /* width: 100% + box-sizing, as on the shipped contact page: an <input> without an

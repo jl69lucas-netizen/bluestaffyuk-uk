@@ -126,7 +126,11 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // CONTRACT, not a fixture, and the puppy options are read from data/puppies.json. The
   // canvas route is named in form_contract_audit.py's NON_CONTENT_ROUTES, so these five
   // are audited for endpoint and method but not as five separate enquiry forms.
-  'contact-form': { C: ContactFormKit },
+  // `action: '#contact'` is the component's documented canvas override: five live
+  // endpoints on one page is five ways for a stray click to send a real enquiry, so the
+  // specimens post nowhere. form_contract_audit.py allows that one stub on a
+  // NON_CONTENT_ROUTES page and nothing else. A real page passes no action at all.
+  'contact-form': { C: ContactFormKit, demo: [{ action: '#contact' }] },
   // The four sections are DEMO DATA and live here, not in the component: PageNav defaults
   // to no sections and renders the breadcrumb alone, because the component has no way of
   // knowing what a page's sections are. The path and title are the guide page's own, so

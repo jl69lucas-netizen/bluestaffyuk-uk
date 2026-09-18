@@ -2114,6 +2114,23 @@ git commit -m "kit: pruned to the picked variants; canvas route removed
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
+**Task 19 prune notes (from the Task 15 quality review).**
+
+Measured on the finished kit at Task 15: `grep -ro "variant ===" src/components/kit/ src/pages/design-canvas/ | wc -l` = **68 sites across 14 files**. The prune is therefore NOT a scripted rewrite. `scripts/prune_variants.py` FINDS THE CANDIDATES with a regex and each file is then collapsed BY HAND, because every one of the shapes below breaks a naive `variant === 'x'` substitution:
+
+- **Multi-line destructures.** `Hero.astro`, `InfoCard.astro` and `PageNav.astro` destructure their props over several lines, so the `variant = 'a'` default is not on the same line as `const {`. A line-oriented edit removes the default and leaves a dangling comma.
+- **`Button.astro` destructures twice.** `Astro.props` is cast (`as Props & { class?: string }`) and `type` is pulled out of `rest` in a second statement, so there are two places a prop list changes shape.
+- **`markVariant` is a SECOND variant prop.** `SiteHeaderKit.astro`, `SiteFooterKit.astro` and `SectionDivider.astro` each take `markVariant` and pass it to `Mark.astro`. It is coupled to the MARK's pick, not to their own, so the three must be collapsed against `picks['mark']` and not against their own row — and `Mark.astro` must be pruned before or with them.
+- **`Faq.astro` defaults a prop to a function call.** `items = loadFaq()` is evaluated in the destructure; the variant collapse must not disturb it.
+- **`ContactFormKit.astro` nests ternaries in the template.** `variant === 'c' ? … : (variant === 'b' ? … : …)` spans a large JSX block, and the `rows={variant === 'e' ? 3 : 5}` attribute sits inside it. Collapsing the outer branch without the inner one leaves unreachable markup that still compiles.
+- **`SiteFooterKit.astro` computes a value in the frontmatter.** `const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;` is a variant branch OUTSIDE the template, which a template-only pass will miss entirely.
+- **`ContactFormKit.astro` carries a canvas-only prop.** Its `action` override exists so the canvas specimens post nowhere; when the route goes, so do the override, its comment and the registry fixture that passes it.
+- **`scripts/form_contract_audit.py` names the route.** `NON_CONTENT_ROUTES = ("design-canvas",)` must lose that name in this same commit — `tests/py/test_form_contract_audit.py::test_every_excluded_route_still_exists_as_a_page` fails until it does, which is the point of that test. `LOCAL_STUB_ACTION` and the stub allowance go with it.
+- **`PageNav.astro` variant b leaves a note behind.** b's `<nav data-pinned-chrome>` marks pinned chrome the global `[id] { scroll-margin-top }` does not clear. If b is the pick, project 4 has to extend that offset; if it is not, the attribute and its header paragraph go.
+
+Verification is per FILE, not in aggregate: `for f in src/components/kit/*.astro; do echo "$f $(grep -c variant "$f")"; done` must print `0` for every file (`grep -c` counts the bare word, so a surviving comment about variants fails it too), and the Step 4 run above re-checks the built site.
+
+
 ---
 
 ### Task 20: Logo lockups, favicons, header and footer

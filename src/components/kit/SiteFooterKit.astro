@@ -57,9 +57,11 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
     </div>
 
     {variant === 'c' ? (
-      <ul class="inline">
-        {explore.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
-      </ul>
+      <nav aria-label="Footer">
+        <ul class="inline">
+          {explore.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+        </ul>
+      </nav>
     ) : (
       <Fragment>
         <nav aria-label="Footer">
@@ -80,9 +82,11 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
 
         <div>
           <h2>Follow</h2>
+          {/* The profiles are off-site, so they open in a new tab; rel is
+              noopener noreferrer, never a target without it. */}
           <ul>
             {socials.map(([key, url]) => (
-              <li><a href={url} rel="noopener">{socialLabel(key)}</a></li>
+              <li><a href={url} target="_blank" rel="noopener noreferrer">{socialLabel(key)}</a></li>
             ))}
           </ul>
         </div>

@@ -13,11 +13,17 @@
 // data and live in the registry fixture, where they read as fixture and not as content.
 //
 // The jump links rely on the global `[id]` scroll-margin rule (nav-jump-target-lands) for
-// the landing offset; nothing here re-states it.
+// the landing offset, and nothing here re-states it — but variant b PINS ITS OWN CHROME
+// above the target, which that rule's offset does not account for: it clears the measured
+// header only. Picking b is therefore a decision with a consequence in project 4, so b's
+// <nav> carries `data-pinned-chrome`: mount b and the global `[id] { scroll-margin-top }`
+// has to grow by that element's height, or every jump lands with its heading under the
+// pinned list. A component cannot set a :root variable, so this is a marker for the page
+// that mounts it, not a fix the component can apply to itself.
 //
-// Tap targets (layout-tap-target-size / WCAG SC 2.5.8): these links sit in rows, so the
-// spacing exception never applies to them — every crumb is a 32px line box and every jump
-// link a 44px one, measured rather than hoped for.
+// Tap targets (layout-tap-target-size / WCAG SC 2.5.8): crumbs and jump links sit in rows
+// of close neighbours, so neither gets the isolated-target spacing exception and both are
+// measured against the 24px floor. Crumbs are 32px line boxes and jump links 44px.
 import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
 import { crumbs } from '../../lib/site';
@@ -56,7 +62,7 @@ const arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" strok
   </nav>
 
   {showToc && (
-    <nav aria-label="On this page" class="toc">
+    <nav aria-label="On this page" class="toc" data-pinned-chrome={variant === 'b' ? '' : undefined}>
       {/* b and d announce the list with a visible heading; c and e are self-evidently a
           row of jumps and would only be given a heading to fill space. */}
       {(variant === 'b' || variant === 'd') && <h2>On this page</h2>}
@@ -121,7 +127,9 @@ const arrow = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" strok
 
     /* b: the list stays with the reader as the page scrolls, under the measured header. */
     .kit-page-nav-b .toc {
-      position: sticky; top: calc(var(--hdr) + var(--space-2)); z-index: 1;
+      /* --hdr-measured is written by the header's own measurement; --hdr is the
+         no-JS fallback, the same order global.css uses. */
+      position: sticky; top: calc(var(--hdr-measured, var(--hdr)) + var(--space-2)); z-index: 1;
       background: var(--color-surface); padding-block: var(--space-2);
     }
     .kit-page-nav-b .toc ul { flex-direction: column; gap: 0; }

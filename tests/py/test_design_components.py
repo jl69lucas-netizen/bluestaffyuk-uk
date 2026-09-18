@@ -428,6 +428,33 @@ def test_built_faq_variants_are_native_details_with_backed_answers():
     assert ">01<" in s["c"] and f">{len(rows):02d}<" in s["c"]
 
 
+def _has_class(html, token):
+    """True when `token` appears as a class TOKEN in a class attribute.
+
+    Astro appends its own `astro-cid-*` class to every styled element, and the scoped
+    stylesheet inside the same section spells every class name this file looks for, so a
+    bare `"cols" in inner` passes on a component that renders no such element at all."""
+    return any(token in value.split()
+               for value in re.findall(r'class="([^"]*)"', html))
+
+
+def test_the_contact_page_itself_still_posts_to_the_live_endpoint():
+    """The canvas specimens post nowhere on purpose (below), which is only safe while the
+    REAL contact page still posts to the one Formspree endpoint. Skipped, not silently
+    passed, when the id is unset: the built page then legitimately carries the stub."""
+    import os
+    if not os.environ.get("PUBLIC_FORMSPREE_ID"):
+        pytest.skip("PUBLIC_FORMSPREE_ID unset; the built contact page carries the stub")
+    built = ROOT / "dist/uk-blue-staffy-breeders-contact/index.html"
+    if not built.exists():
+        pytest.skip("run npm run build first")
+    actions = re.findall(r'<form[^>]*\saction="([^"]*)"', built.read_text())
+    inquiry = [a for a in actions if not a.startswith("/search")]
+    assert inquiry, actions
+    for a in inquiry:
+        assert a.startswith("https://formspree.io/f/"), a
+
+
 def test_built_contact_form_variants_all_keep_the_whole_form_contract():
     """Convention 8, and spec §11 amendment 2's half of it.
 
@@ -459,23 +486,26 @@ def test_built_contact_form_variants_all_keep_the_whole_form_contract():
             assert f'value="{p["slug"]}"' in inner, (v, p["slug"])
         assert 'value="waiting-list"' in inner, v
         assert "<textarea" in inner, v
-        # The endpoint is the one built from PUBLIC_FORMSPREE_ID (or the local stub when it
-        # is unset); either way the component never spells a Formspree id of its own.
-        assert re.search(r'action="(https://formspree\.io/f/[^"]+|#contact)"', inner), v
+        # The canvas specimens post NOWHERE: the registry passes the component's
+        # documented `action` override so five copies of one form on one page cannot send
+        # five real enquiries. form_contract_audit.py allows that one stub here only.
+        assert re.findall(r'<form[^>]*\saction="([^"]*)"', inner) == ["#contact"], v
     # d is the only variant that paints its own dark card, and the only one with the eyebrow.
-    assert 'data-surface="inverse"' in s["d"] and "eyebrow" in s["d"]
+    assert 'data-surface="inverse"' in s["d"] and _has_class(s["d"], "eyebrow")
     for v in ("a", "b", "c", "e"):
         assert 'data-surface="inverse"' not in s[v], v
     # c is the stepped one: three fieldsets with legends, and the only variant with any.
     assert s["c"].count("<fieldset") == 3 and s["c"].count("<legend") == 3
     for v in ("a", "b", "d", "e"):
         assert "<fieldset" not in s[v], v
-    # b is the two-column one: the short fields sit in their own row wrapper.
-    assert "cols" in s["b"]
+    # b is the two-column one: the short fields sit in their own row wrapper. Anchored on
+    # the class token in a class attribute, not on the bare word, which also appears in
+    # any stylesheet or comment that mentions it.
+    assert _has_class(s["b"], "cols"), "b wraps its short fields in a row"
     for v in ("a", "d", "e"):
-        assert "cols" not in s[v], v
+        assert not _has_class(s[v], "cols"), v
     # e is the compact panel, and the only one offering the address as a direct line.
-    assert "direct" in s["e"] and "mailto:" in s["e"]
+    assert _has_class(s["e"], "direct") and "mailto:" in s["e"]
     for v in ("a", "b", "c", "d"):
         assert "mailto:" not in s[v], v
 
@@ -526,8 +556,12 @@ def test_built_footer_variants_carry_the_nav_the_socials_and_their_own_arrangeme
     it claims to list and every social profile in the settings file, and the contact rows
     must be the settings email and hours rather than a second copy of them."""
     settings = json.loads((ROOT / "data/settings.json").read_text())
+    # Parsed from the NAV block alone: a bare href/label pattern over the whole file would
+    # also swallow any other array of links src/lib/site.ts grows later.
     site = (ROOT / "src/lib/site.ts").read_text()
-    nav = re.findall(r"\{ href: '([^']+)', label: '([^']+)' \}", site)
+    block = re.search(r"export const NAV = \[(.*?)\n\];", site, re.S)
+    assert block, "src/lib/site.ts no longer declares NAV as a literal array"
+    nav = re.findall(r"\{ href: '([^']+)', label: '([^']+)' \}", block.group(1))
     assert len(nav) == 7, nav
     s = _sections("footer")
     for v, inner in sorted(s.items()):
@@ -556,9 +590,9 @@ def test_built_footer_variants_carry_the_nav_the_socials_and_their_own_arrangeme
     for v in ("b", "c", "d"):
         assert "mailto:" not in s[v], v
     # d is the only variant with the call-to-action band above the columns.
-    assert "cta-band" in s["d"] and "Ready to meet the litter?" in s["d"]
+    assert _has_class(s["d"], "cta-band") and "Ready to meet the litter?" in s["d"]
     for v in ("a", "b", "c", "e"):
-        assert "cta-band" not in s[v], v
+        assert not _has_class(s[v], "cta-band"), v
     # c is the slim row: no column headings and no tagline.
     assert "<h2" not in s["c"] and settings["tagline"] not in s["c"]
     for v in ("a", "b", "d", "e"):

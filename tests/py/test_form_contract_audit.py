@@ -267,6 +267,17 @@ def test_the_design_canvas_route_is_excluded_from_the_field_contract(tmp_path, m
     assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
 
 
+def test_every_excluded_route_still_exists_as_a_page(monkeypatch):
+    """The exclusion EXPIRES. Each name in NON_CONTENT_ROUTES has to be a real route in
+    src/pages/, so the day project 3 Task 19 deletes the canvas the name has to go with
+    it — otherwise a future page could be built at that slug and be silently unaudited."""
+    root = pathlib.Path(__file__).resolve().parents[2]
+    for name in F.NON_CONTENT_ROUTES:
+        assert (root / "src/pages" / name).is_dir(), (
+            f"{name} is excluded from the form contract but src/pages/{name}/ is gone — "
+            f"delete the name from NON_CONTENT_ROUTES in the same commit as the route")
+
+
 def test_the_excluded_route_still_owes_the_endpoint_and_the_method():
     """The exclusion drops the FIELD checks only. A specimen form that posted somewhere
     else, or by GET, would be a real defect and is still reported."""
@@ -278,6 +289,21 @@ def test_the_excluded_route_still_owes_the_endpoint_and_the_method():
     assert any("endpoint is" in p for p in probs), probs
     assert any("method is GET" in p for p in probs), probs
     assert not any("absent" in p for p in probs), probs
+
+
+def test_the_local_stub_is_allowed_on_the_excluded_route_and_nowhere_else():
+    """The canvas registry posts its five specimens at the local stub on purpose: five
+    live endpoints on one page is five ways for a stray click to send a real enquiry. That
+    one literal is allowed on a NON_CONTENT_ROUTES page, and only there."""
+    stub = (f'<form action="{F.LOCAL_STUB_ACTION}" method="POST">'
+            '<input name="name" required><textarea name="message" required></textarea></form>')
+    assert problems(page(stub), slug="design-canvas") == []
+    # Same form on a content page: still a failure, and the message still names the endpoint.
+    probs = problems(page(stub), slug="a-rich-interior-page")
+    assert any("endpoint is" in p for p in probs), probs
+    # And no other off-endpoint value is bought by the exclusion.
+    other = stub.replace(F.LOCAL_STUB_ACTION, "#somewhere-else")
+    assert any("endpoint is" in p for p in problems(page(other), slug="design-canvas"))
 
 
 def test_a_contract_free_specimen_form_passes_on_the_excluded_route():
