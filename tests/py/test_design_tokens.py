@@ -106,10 +106,9 @@ def test_contrast_pairs_clear_aa():
     assert not failures, failures
 
 
-@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 4-16")
 def test_kit_has_no_hex_literals():
-    # Strict-xfail rather than a silent early return: while the kit does not exist this
-    # test proves nothing, and saying so out loud means Task 16 cannot forget to unmark it.
+    # The strict-xfail this carried until Task 4 is gone: the kit folder now exists, so the
+    # check has something real to say and must stay green for every component added after.
     assert KIT.exists(), "src/components/kit does not exist yet"
     bad = [str(f.relative_to(ROOT)) for f in KIT.rglob("*.astro") if HEX.search(f.read_text())]
     assert not bad, bad

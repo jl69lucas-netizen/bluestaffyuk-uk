@@ -38,3 +38,22 @@ def test_ids_and_files_are_unique():
 def test_kit_file_exists_for_each_row():
     missing = [r["file"] for r in load() if not (KIT / r["file"]).exists()]
     assert not missing, missing
+
+
+VARIANT_TS = KIT / "_variant.ts"
+MARK = KIT / "Mark.astro"
+
+
+def test_variant_helper_exports_the_five_letters():
+    t = VARIANT_TS.read_text()
+    assert "export type Variant = 'a' | 'b' | 'c' | 'd' | 'e'" in t
+    assert "export const VARIANTS" in t
+
+
+def test_mark_has_five_variants_stroke_currentcolor_and_title():
+    t = MARK.read_text()
+    for v in "abcde":
+        assert f"variant === '{v}'" in t, v
+    assert 'stroke="currentColor"' in t
+    assert "<title>" in t
+    assert "fill=\"#" not in t and "stroke=\"#" not in t

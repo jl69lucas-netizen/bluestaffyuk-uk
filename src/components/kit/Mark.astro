@@ -1,0 +1,39 @@
+---
+// src/components/kit/Mark.astro — the BlueStaffyUK mark: a front-facing Staffordshire Bull
+// Terrier head, stroke paths on a 64-unit grid, `currentColor` so it takes any token.
+// Five variants until the pick (spec §4); Task 19 keeps one.
+//
+// Naming: the accessible name is the SVG `<title>` child with `role="img"`, not
+// `aria-labelledby`. The canvas route renders the same variant many times on one page, so
+// any id built from the variant letter would be duplicated; a `<title>` child needs no id.
+// A caller that wants the mark purely as decoration passes `title=""`, which drops the
+// `<title>` and hides the whole SVG from the accessibility tree instead of naming it "".
+import type { Variant } from './_variant';
+interface Props { variant?: Variant; size?: number; title?: string; class?: string }
+const { variant = 'a', size = 48, title = 'BlueStaffyUK mark', class: cls = '' } = Astro.props;
+const sw = variant === 'd' ? 4 : 3;
+const decorative = title === '';
+---
+<svg class={cls} width={size} height={size} viewBox="0 0 64 64" fill="none" stroke="currentColor"
+  stroke-width={sw} stroke-linejoin="round" stroke-linecap="round"
+  role={decorative ? undefined : 'img'} aria-hidden={decorative ? 'true' : undefined}
+  focusable="false" data-variant={variant}>
+  {!decorative && <title>{title}</title>}
+  {variant === 'c' && <circle cx="32" cy="32" r="30" stroke-width="2" />}
+  {/* skull: broad, wide cheeks, short muzzle */}
+  <path d="M15 31c0-11 8-19 17-19s17 8 17 19v6c0 9-8 16-17 16S15 46 15 37v-6z" />
+  {/* rose ears folded back */}
+  <path d="M15 31l-5-13 11 5" />
+  <path d="M49 31l5-13-11 5" />
+  {/* eyes */}
+  <path d="M25 33h2.5M36.5 33h2.5" stroke-width={sw + 1} />
+  {/* the plain lockup gets a centre stop line down the forehead; the busier variants do not */}
+  {variant === 'a' && <path d="M32 22v8" stroke-width="2" />}
+  {/* nose and muzzle */}
+  <path d="M29 41h6l-3 3z" fill="currentColor" stroke="none" />
+  {variant === 'e'
+    ? <path d="M26 46c2 4 10 4 12 0M30 47v3M34 47v3" />
+    : <path d="M27 46c2 3 8 3 10 0" />}
+  {variant === 'b' && <path d="M17 50c4 3 26 3 30 0" stroke-width="2.5" />}
+  {variant === 'b' && <circle cx="32" cy="53" r="2.5" fill="currentColor" stroke="none" />}
+</svg>
