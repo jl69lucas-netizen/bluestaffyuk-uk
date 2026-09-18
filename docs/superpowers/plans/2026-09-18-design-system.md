@@ -32,6 +32,7 @@ The full list is the comment block at the top of `src/components/kit/_registry.t
 | `src/components/kit/*.astro` | the thirteen components (with `variant` until Task 19) |
 | `src/components/kit/Mark.astro` | the Staffy-head SVG, five variants until Task 19 |
 | `src/pages/design-canvas/index.astro` | hidden noindex route mounting every variant; deleted in Task 19 |
+| `src/pages/kit-preview/index.astro` | its replacement (Task 19): each picked component once, noindex; the artboard builder's source |
 | `src/assets/puppies/`, `src/assets/hero/` | images moved from `public/images/` for `astro:assets` |
 | `public/brand/logo-{horizontal,stacked,icon,mono}.svg` | the four lockups |
 | `public/favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png` | rendered from `logo-icon.svg` |
@@ -2050,16 +2051,18 @@ Session-closer for this pause: tell the user the canvas URL, the picks board URL
 
 ### Task 19: Prune to the picked variants
 
+**EXECUTED, 2026-09-18.** The prune ran as written with one decision the plan did not anticipate. Deleting `src/pages/design-canvas/` would have taken two things with it that outlive the picks: the source `scripts/build_design_canvas.py` cuts the artboards from, and the only page the per-component dist assertions in `tests/py/test_design_components.py` can point at, since project 4 does not mount the kit on real pages until build 4. So the route was REPLACED by **`src/pages/kit-preview/index.astro`** — noindex, one section per component with `data-component` and no letter, rendered from `_registry.ts` with no per-component branches — and `_registry.ts` was kept rather than deleted, because the preview renders exactly the way the canvas did. `scripts/form_contract_audit.py`'s `NON_CONTENT_ROUTES` names `kit-preview` in place of `design-canvas` under the same self-expiry test, and `LOCAL_STUB_ACTION` went with the canvas's `action` override. The canvas is now 39 boards (13 components at their own width, plus the 375 and 768 rows). Two props survived the prune renamed to what they are: `Button.kind` (five treatments, because a page needs more than one button) and `Testimonial.mode` plus a new explicit `reviews` list. `grep -c variant` is 0 in every kit file. Recorded as spec §11 amendment 4.
+
 **Files:**
 - Create: `scripts/prune_variants.py`
 - Modify: every `src/components/kit/*.astro`; delete `src/components/kit/_variant.ts`, `src/pages/design-canvas/`
 
-- [ ] **Step 1: Pull the picks**
+- [x] **Step 1: Pull the picks**
 
 Run: `python3 scripts/pull_design_picks.py && python3 -m pytest tests/py/test_design_picks.py -q`
 Expected: `wrote 13 picks + mark <v>`; 3 passed, 1 skipped (the post-prune test).
 
-- [ ] **Step 2: Write the prune script**
+- [x] **Step 2: Write the prune script**
 
 ```python
 #!/usr/bin/env python3
@@ -2096,16 +2099,16 @@ shutil.rmtree(ROOT / "src/pages/design-canvas", ignore_errors=True)
 print("removed _variant.ts and src/pages/design-canvas/")
 ```
 
-- [ ] **Step 3: Run it, then finish each file by hand**
+- [x] **Step 3: Run it, then finish each file by hand**
 
 Run: `python3 scripts/prune_variants.py`. Then for each of the fourteen files: delete every `{variant === 'x' && …}` / ternary branch that is not the pick (keep the picked branch's markup inline, unwrapped), delete the `data-variant` attributes, delete the `.kit-*-x` CSS rules for the other letters, delete the `const variant = …` line once nothing reads it, and delete the variant comment block at the top, replacing it with one line naming the pick and the date. `Button.astro` keeps a `kind` prop instead (`'primary' | 'outline' | 'inverse' | 'submit' | 'text'`) because pages need more than one button treatment: rename `byVariant` to `byKind` with those keys, default `'primary'`. `SectionDivider.astro`, `Hero.astro` and `InfoCard.astro` likewise keep only the picked layout.
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 Run: `npm run build 2>&1 | tail -1 && python3 -m pytest tests/py/test_design_picks.py tests/py/test_design_components.py tests/py/test_design_tokens.py -q && grep -rl "variant" src/components/kit/ | wc -l`
 Expected: `49 page(s) built`; all passed (the post-prune test now runs and passes); `0`. The `test_route_is_noindex…` and `test_built_route…` tests in `test_design_components.py` must be deleted in this task (the route is gone); replace them with `test_no_canvas_route_after_prune` asserting `not (ROOT / "src/pages/design-canvas").exists()`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add -A src scripts/prune_variants.py tests/py data/design/picks.json data/design/inbox
