@@ -1,0 +1,41 @@
+---
+// src/pages/design-canvas/index.astro — mounts every kit component in every variant for
+// scripts/build_design_canvas.py. noindex; excluded from sitemaps by the noindex rule.
+// Deleted in Task 19 after the picks are pulled.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import components from '../../../data/design/components.json';
+import { VARIANTS } from '../../components/kit/_variant';
+import Mark from '../../components/kit/Mark.astro';
+import Button from '../../components/kit/Button.astro';
+import SectionDivider from '../../components/kit/SectionDivider.astro';
+// Tasks 6-16 add one import per component here, in components.json order:
+// SiteHeaderKit, Hero, PuppyCard, TrustStrip, CounterStrip, InfoCard, Testimonial, Faq,
+// ContactFormKit, PageNav, SiteFooterKit.
+const byId: Record<string, any> = { buttons: Button, 'section-divider': SectionDivider };
+const title = 'Design canvas — BlueStaffyUK kit (project 3)';
+---
+<BaseLayout title={title} description="Internal design canvas; not indexed." noindex={true}>
+  <main class="container" style="padding-block: var(--space-8);">
+    <h1 style="font-family: var(--font-display);">Design canvas</h1>
+    <!-- data-variant="all": this one section shows all five marks side by side, like the
+         per-component heading sections. Only the per-variant artboard sections below are
+         data-variant="a".."e", which is what the builder and the 65-section test count. -->
+    <section data-component="mark" data-variant="all" class="kit-section">
+      <h2>0 · The mark</h2>
+      <div style="display:flex;gap:var(--space-6);color:var(--color-brand)">
+        {VARIANTS.map((v) => <figure style="margin:0;text-align:center"><Mark variant={v} size={96} /><figcaption>{v}</figcaption></figure>)}
+      </div>
+    </section>
+    {components.map((c) => byId[c.id] && (
+      <section data-component={c.id} data-variant="all" class="kit-section"><h2>{c.title}</h2></section>
+    ))}
+    {components.map((c) => { const C = byId[c.id]; return C && VARIANTS.map((v) => (
+      <section data-component={c.id} data-variant={v} data-width={c.board_width} class="kit-section">
+        <h3 style="font-size:var(--text-sm);color:var(--color-text-muted)">{c.title} — variant {v}</h3>
+        {c.id === 'buttons'
+          ? <div style="display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center"><C variant={v} label="Meet the puppies" href="/available-puppies/" /><C variant={v} label="Ask about Roman" type="submit" /></div>
+          : <C variant={v} />}
+      </section>
+    )); })}
+  </main>
+</BaseLayout>

@@ -5,8 +5,13 @@ import SiteFooter from '../components/SiteFooter.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
 import { SITE, abs } from '../lib/site';
-interface Props { title: string; description: string; canonical?: string; robots?: string; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
-const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', ogType = 'website', ogImage = SITE.logo, schema = [], crumbTitle = title } = Astro.props;
+interface Props { title: string; description: string; canonical?: string; robots?: string; noindex?: boolean; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
+const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', noindex = false, ogType = 'website', ogImage = SITE.logo, schema = [], crumbTitle = title } = Astro.props;
+// `noindex` is the shorthand for the internal pages; it wins over any `robots` string and
+// still resolves to the SAME single robots meta below, because that one tag is what
+// scripts/generate_sitemaps.py and scripts/sitemap_check.py read to decide indexability —
+// a second tag would leave them reading whichever came first.
+const robotsContent = noindex ? 'noindex, nofollow' : robots;
 const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
 ---
 <!doctype html>
@@ -16,7 +21,7 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>{title}</title>
   <meta name="description" content={description} />
-  <meta name="robots" content={robots} />
+  <meta name="robots" content={robotsContent} />
   <link rel="canonical" href={abs(path)} />
   <meta property="og:type" content={ogType} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={abs(path)} /><meta property="og:image" content={abs(ogImage)} /><meta property="og:locale" content="en_GB" /><meta property="og:site_name" content={SITE.site_name} />
   <meta name="twitter:card" content="summary_large_image" />

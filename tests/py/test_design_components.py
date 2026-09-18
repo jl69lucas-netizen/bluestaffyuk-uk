@@ -57,3 +57,31 @@ def test_mark_has_five_variants_stroke_currentcolor_and_title():
     assert 'stroke="currentColor"' in t
     assert "<title>" in t
     assert "fill=\"#" not in t and "stroke=\"#" not in t
+
+
+ROUTE = ROOT / "src/pages/design-canvas/index.astro"
+DIST_ROUTE = ROOT / "dist/design-canvas/index.html"
+
+
+@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-15")
+def test_route_is_noindex_and_mounts_every_component_variant():
+    t = ROUTE.read_text()
+    # The prop, not the bare word: the file's header comment also says "noindex", so
+    # `'noindex' in t` would keep passing with the prop deleted from the BaseLayout call.
+    assert 'noindex={true}' in t
+    for r in load():
+        stem = r["file"].removesuffix(".astro")
+        assert f"import {stem} from" in t, stem
+
+
+@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-16")
+def test_built_route_has_sixty_five_sections():
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    html = DIST_ROUTE.read_text()
+    # 13 components x 5 variants. The mark's own section carries data-variant="all", like
+    # the per-component heading sections, so only the artboard sections are counted here.
+    secs = re.findall(r'<section[^>]*data-component="([a-z-]+)"[^>]*data-variant="([a-e])"', html)
+    assert len(secs) == 65, len(secs)
+    assert {c for c, _ in secs} == set(IDS)
+    assert 'name="robots" content="noindex' in html
