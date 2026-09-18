@@ -51,7 +51,7 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
 
   <div class="container grid">
     <div class="brand">
-      <Mark variant={markVariant} size={variant === 'b' ? 56 : 40} title={`${SITE.site_name} mark`} />
+      <Mark variant={markVariant} inverse size={variant === 'b' ? 56 : 40} title={`${SITE.site_name} mark`} />
       <p class="word">{SITE.site_name}<small>{SITE.location_label}</small></p>
       {variant !== 'c' && <p class="tag">{SITE.tagline}</p>}
     </div>

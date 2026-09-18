@@ -39,13 +39,21 @@ const demoStyle = (wrap?: 'sticky' | 'inverse' | 'after-band') =>
 <BaseLayout title={title} description="Internal design canvas; not indexed." noindex={true}>
   <div class="container" style="padding-block: var(--space-8);">
     <h1 style="font-family: var(--font-display);">Design canvas</h1>
-    <!-- data-variant="all": this one section shows all five marks side by side, like the
-         per-component heading sections. Only the per-variant artboard sections below are
-         data-variant="a".."e", which is what the builder and the 65-section test count. -->
+    <!-- data-variant="all": one section, now showing the ONE badge mark (spec §11 amendment
+         3a) on both surfaces it has to work on, rather than five stroke variants. Only the
+         per-variant artboard sections below are data-variant="a".."e", which is what the
+         builder and the 65-section test count. -->
     <section data-component="mark" data-variant="all" class="kit-section">
       <h2>0 · The mark</h2>
-      <div style="display:flex;gap:var(--space-6);color:var(--color-brand)">
-        {VARIANTS.map((v) => <figure style="margin:0;text-align:center"><Mark variant={v} size={96} /><figcaption>{v}</figcaption></figure>)}
+      <div style="display:flex;gap:var(--space-6);align-items:flex-start">
+        <figure style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface);border-radius:var(--card-radius)">
+          <Mark size={96} />
+          <figcaption>on bone</figcaption>
+        </figure>
+        <figure data-surface="inverse" style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--card-radius)">
+          <Mark size={96} inverse />
+          <figcaption>inverse, on steel</figcaption>
+        </figure>
       </div>
     </section>
 
@@ -78,7 +86,7 @@ const demoStyle = (wrap?: 'sticky' | 'inverse' | 'after-band') =>
       <h2>0b · On a dark band</h2>
       <div data-surface="inverse" style="background: var(--color-surface-inverse); padding: var(--space-8) var(--space-5); border-radius: var(--card-radius); display:flex; flex-direction:column; gap:var(--space-6); align-items:center">
         <Button variant="c" label="Meet the puppies" href="/available-puppies/" />
-        <SectionDivider variant="a" />
+        <SectionDivider variant="a" inverse />
       </div>
     </section>
   </div>

@@ -49,13 +49,30 @@ def test_variant_helper_exports_the_five_letters():
     assert "export const VARIANTS" in t
 
 
-def test_mark_has_five_variants_stroke_currentcolor_and_title():
+def test_mark_is_one_badge_on_a_100_grid_with_a_title_and_no_hex():
+    """Spec §11 amendment 3a: the five stroke variants are replaced by ONE filled badge.
+
+    Two `<circle>` and no more — the roundel and the brass ring. The eye catchlights are
+    `<ellipse>` with rx == ry on purpose, so this count stays a statement about the badge
+    frame rather than a tally of every round thing in the head.
+    """
     t = MARK.read_text()
-    for v in "abcde":
-        assert f"variant === '{v}'" in t, v
-    assert 'stroke="currentColor"' in t
+    assert t.count("<svg") == 1
+    assert 'viewBox="0 0 100 100"' in t
     assert "<title>" in t
-    assert "fill=\"#" not in t and "stroke=\"#" not in t
+    assert t.count("<circle") == 2, "the badge and its ring, nothing else"
+    assert 'fill="#' not in t and 'stroke="#' not in t
+    # the prop is accepted and ignored: no variant branch is left in the markup
+    assert "variant ===" not in t
+
+
+def test_mark_inverse_swaps_the_badge_and_the_outline_for_dark_bands():
+    t = MARK.read_text()
+    assert "inverse = false" in t
+    assert "inverse ? 'var(--color-surface)' : 'var(--color-brand)'" in t
+    assert "inverse ? 'var(--color-brand)' : 'var(--color-surface)'" in t
+    for token in ("--color-cta", "--color-brand-mid", "--color-brand-soft", "--color-surface-deep"):
+        assert f"var({token})" in t, token
 
 
 ROUTE = ROOT / "src/pages/design-canvas/index.astro"

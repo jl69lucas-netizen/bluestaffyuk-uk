@@ -16,15 +16,17 @@
 import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
 import Mark from './Mark.astro';
-type Props = HTMLAttributes<'div'> & { variant?: Variant; markVariant?: Variant };
-const { variant = 'a', markVariant = 'a', class: cls, ...rest } = Astro.props;
+// `inverse` is passed straight to the mark: the divider is dropped onto bone and onto
+// steel bands alike, and only the caller knows which. It changes nothing else here.
+type Props = HTMLAttributes<'div'> & { variant?: Variant; markVariant?: Variant; inverse?: boolean };
+const { variant = 'a', markVariant = 'a', inverse = false, class: cls, ...rest } = Astro.props;
 ---
 <div {...rest} class:list={['kit-divider', `kit-divider-${variant}`, cls]} role="separator" data-variant={variant}>
-  {variant === 'a' && <><span class="rule" /><span class="medal"><Mark variant={markVariant} size={40} title="" /></span><span class="rule" /></>}
-  {variant === 'b' && <><span class="rule brass" /><span class="stack"><Mark variant={markVariant} size={44} title="" /><span class="word" aria-hidden="true">BlueStaffyUK</span></span><span class="rule brass" /></>}
-  {variant === 'c' && <><span class="rule fade-l" /><Mark variant={markVariant} size={36} title="" /><span class="rule fade-r" /></>}
-  {variant === 'd' && <><span class="seam" /><span class="medal bone"><Mark variant={markVariant} size={40} title="" /></span></>}
-  {variant === 'e' && <><Mark variant={markVariant} size={28} title="" /><span class="rule thin" /></>}
+  {variant === 'a' && <><span class="rule" /><span class="medal"><Mark variant={markVariant} inverse={inverse} size={40} title="" /></span><span class="rule" /></>}
+  {variant === 'b' && <><span class="rule brass" /><span class="stack"><Mark variant={markVariant} inverse={inverse} size={44} title="" /><span class="word" aria-hidden="true">BlueStaffyUK</span></span><span class="rule brass" /></>}
+  {variant === 'c' && <><span class="rule fade-l" /><Mark variant={markVariant} inverse={inverse} size={36} title="" /><span class="rule fade-r" /></>}
+  {variant === 'd' && <><span class="seam" /><span class="medal bone"><Mark variant={markVariant} inverse={inverse} size={40} title="" /></span></>}
+  {variant === 'e' && <><Mark variant={markVariant} inverse={inverse} size={28} title="" /><span class="rule thin" /></>}
 </div>
 <style>
   @layer components {
