@@ -288,3 +288,50 @@ def test_built_info_card_variants_carry_a_kinded_statement_label_and_d_owns_its_
     assert "1200w" not in d and "1600w" not in d, "the 420px card must not decode a hero width"
     for v in ("a", "b", "c", "e"):
         assert "sec-img" not in s[v], v
+
+
+def test_built_testimonial_variants_quote_the_reviews_file_verbatim():
+    """Convention 8, and rule 9's half of it. A testimonial component is the easiest place
+    in the kit to invent a claim, so the built artboards are compared against
+    data/reviews.json rather than against a shape: every variant must print the first
+    review's exact words and attribution, and the multi-quote variants all three. If a
+    review is a REVIEW_PLACEHOLDER row it still has to appear, because a slot silently
+    dropped is the same defect as a slot silently invented."""
+    reviews = json.loads((ROOT / "data/reviews.json").read_text())
+    assert len(reviews) == 3, len(reviews)
+    s = _sections("testimonial")
+
+    def printed(text, inner):
+        # The built HTML escapes & < >; nothing else in these quotes needs escaping.
+        return text.replace("&", "&#38;").replace("<", "&#60;").replace(">", "&#62;") in inner
+
+    for v, inner in sorted(s.items()):
+        shown = reviews if v in ("c", "e") else reviews[:1]
+        for r in shown:
+            assert printed(r["quote"], inner), (v, r["name"], "quote not printed verbatim")
+            assert printed(r["name"], inner), (v, r["name"])
+        if v not in ("c", "e"):
+            assert not printed(reviews[2]["quote"], inner), (v, "one-quote variant shows one")
+    # b is the only variant that paints its own dark band.
+    assert 'data-surface="inverse"' in s["b"]
+    for v in ("a", "c", "d", "e"):
+        assert 'data-surface="inverse"' not in s[v], v
+
+
+def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
+    """Rule 9, enforced at the source. Each row carries the path it was copied from; this
+    reads that file and fails if the quote or the attribution is not in it character for
+    character. A REVIEW_PLACEHOLDER row has no source and is exempt — that is the whole
+    point of the placeholder."""
+    reviews = json.loads((ROOT / "data/reviews.json").read_text())
+    for r in reviews:
+        if r["quote"] == "REVIEW_PLACEHOLDER":
+            assert r["source"] == "", r
+            continue
+        page = (ROOT / r["source"]).read_text()
+        m = re.search(r'const body = "(.*?)";\n', page, re.S)
+        assert m, r["source"]
+        body = m.group(1).encode().decode("unicode_escape").encode("latin-1").decode("utf-8")
+        assert r["quote"] in body, (r["source"], r["quote"][:60])
+        assert r["name"] in body, (r["source"], r["name"])
+        assert r["place"] in body, (r["source"], r["place"])

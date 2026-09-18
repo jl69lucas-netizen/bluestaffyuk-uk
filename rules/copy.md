@@ -52,7 +52,7 @@ Seven checks in `scripts/evidence_audit.py`, run per slug against `dist/`. Budge
 - `term-budget-per-page` (blocking) — every calibrated term stays within its per-page budget; uncalibrated pages report, they do not pass. Per-slug override: `budgets_by_slug` — a number replaces the page-type ceiling, `null` removes it.
 - `claim-bound-to-proof` (blocking) — every health / credential / price claim resolves to a ledger entry; un-ledgered = not assertable.
 - `statement-labels-present` (advisory) — a `StatementLabel` sits on each proven claim so the reader can see what is proven and what is opinion.
-- `review-attribution-unique` (blocking) — no reviewer quote is attributed to two different people across the site (`data/reviews.json` (not ported — source repo only; BSUK's review data lands in project 3) is the single source).
+- `review-attribution-unique` (blocking) — no reviewer quote is attributed to two different people across the site (`data/reviews.json` is the single source; it landed in project 3 and holds only quotes that exist verbatim on a migrated page, each row naming that page in `source`; a slot with no real review takes the review placeholder token that `scripts/placeholder_check.py` counts, never an invented quote).
 - `title-length-max` (blocking) — `<title>` never exceeds `title_max_chars` from the budgets file (per-slug override: `title_max_chars_by_slug` — Foundation's migrated titles carry measured baselines that project 4 brings back under 70).
 - `no-not-fetched-in-prose` (blocking) — the literal `NOT FETCHED` never ships in visible text; it is a research placeholder, not copy.
 - `no-unsourced-superlatives` (advisory) — "best / #1 / world's" etc. need a link to the source in the same sentence.

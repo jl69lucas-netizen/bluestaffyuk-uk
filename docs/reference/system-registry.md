@@ -180,7 +180,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
 
-## Data files — 15
+## Data files — 16
 
 - `data/agent-registry.json`
 - `data/boards/`
@@ -196,6 +196,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/puppies.json`
 - `data/quality/`
 - `data/redirects.json`
+- `data/reviews.json`
 - `data/settings.json`
 
 ## Gates

@@ -1,0 +1,73 @@
+---
+// src/components/kit/Testimonial.astro — spec §5 #8.
+// a quote card · b inverse band with an initials avatar · c three-up grid
+// d single large pull-quote · e stacked divided list
+//
+// THE QUOTES ARE NOT WRITTEN HERE. data/reviews.json holds three reviews copied verbatim
+// off the migrated pages — two from the homepage's "Our Happy Blue Staffy Owners Speak"
+// carousel and one from the "Why UK Families Trust BlueStaffyUK" block on
+// /buy-blue-staffy-puppies-uk/ — each with the attribution exactly as that page prints it
+// and the page path in `source`. Rule 9: a testimonial with nobody behind it is the one
+// invented claim a component must never make, so a slot with no real review takes the
+// REVIEW_PLACEHOLDER row that scripts/placeholder_check.py counts. There are none today.
+//
+// Variant b paints its own steel band, so it carries data-surface="inverse" and takes its
+// text colour and --kit-ring from the global rule (conventions 2 and 3).
+import type { HTMLAttributes } from 'astro/types';
+import type { Variant } from './_variant';
+import reviews from '../../../data/reviews.json';
+
+interface Review { quote: string; name: string; place: string; source: string }
+type Props = HTMLAttributes<'section'> & { variant?: Variant };
+const { variant = 'a', class: cls, ...rest } = Astro.props;
+
+const all = reviews as Review[];
+// c and e are the multi-quote treatments; a, b and d are one quote given room.
+const list = variant === 'c' || variant === 'e' ? all.slice(0, 3) : all.slice(0, 1);
+const initials = (n: string) =>
+  n.split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+const inverse = variant === 'b';
+---
+<section
+  {...rest}
+  class:list={['kit-quote', `kit-quote-${variant}`, cls]}
+  data-surface={inverse ? 'inverse' : undefined}
+  data-variant={variant}
+  aria-label="What families say"
+>
+  <div class:list={['container', variant === 'c' ? 'grid' : 'stack']}>
+    {list.map((r) => (
+      <figure class:list={[(variant === 'a' || variant === 'c') && 'kit-card']}>
+        {inverse && <span class="avatar" aria-hidden="true">{initials(r.name)}</span>}
+        <blockquote><p>{r.quote}</p></blockquote>
+        <figcaption>{r.name}{r.place && <span> · {r.place}</span>}</figcaption>
+      </figure>
+    ))}
+  </div>
+</section>
+<style>
+  @layer components {
+    .kit-quote { padding-block: var(--space-8); color: var(--color-text); }
+    .kit-quote[data-surface="inverse"] { background: var(--color-surface-inverse); color: var(--color-text-on-inverse); }
+    .stack { display: grid; gap: var(--space-5); }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+    /* The card shell on a and c is .kit-card from src/styles/kit.css (convention 9). */
+    figure { margin: 0; padding: var(--space-6); }
+    blockquote { margin: 0 0 var(--space-3); }
+    blockquote p { margin: 0; font-family: var(--font-display); font-size: var(--text-lg); line-height: 1.5; }
+    figcaption { font-size: var(--text-sm); font-weight: 600; color: var(--color-text-muted); }
+    [data-surface="inverse"] figcaption { color: inherit; opacity: .85; }
+
+    .kit-quote-b figure { text-align: center; max-width: 720px; margin-inline: auto; }
+    /* Brass as a FILL carrying --color-cta-ink, never brass text. */
+    .avatar { display: inline-grid; place-items: center; width: 56px; height: 56px; border-radius: 50%; background: var(--color-cta); color: var(--color-cta-ink); font-weight: 700; margin-bottom: var(--space-3); }
+
+    .kit-quote-d figure { padding-inline: var(--space-6) 0; border-left: 4px solid var(--color-cta); }
+    .kit-quote-d blockquote p { font-size: var(--text-2xl); }
+
+    .kit-quote-e .stack { gap: 0; }
+    .kit-quote-e figure { padding-inline: 0; padding-block: var(--space-4); border-bottom: 1px solid var(--color-border); }
+
+    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  }
+</style>

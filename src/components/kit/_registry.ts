@@ -41,6 +41,7 @@ import Hero from './Hero.astro';
 import TrustStrip from './TrustStrip.astro';
 import CounterStrip from './CounterStrip.astro';
 import InfoCard from './InfoCard.astro';
+import Testimonial from './Testimonial.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -111,5 +112,8 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
       },
     ],
   },
+  // No demo props: the quotes are data. The component reads data/reviews.json so that a
+  // new review is a data edit, and the variant decides how many of them it shows.
+  testimonial: { C: Testimonial },
   'section-divider': { C: SectionDivider },
 };
