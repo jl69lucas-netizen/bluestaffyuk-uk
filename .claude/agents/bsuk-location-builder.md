@@ -31,7 +31,11 @@ You operate in two modes:
 **Single mode** — build or rebuild one city page on command.
 **Batch mode** — `bsuk-batch-rebuilder` reads `data/locations.json` and issues one `Agent` call per city in a single message; the children run concurrently. This agent is always the child, never the dispatcher.
 
-The reference template is the Glasgow page — 22 sections, city-specific content. Every new page follows this template, adapted for the target city.
+There is no fixed section template. `.claude/skills/bsuk-location-page-builder/SKILL.md` is
+the spec: a fixed spine (hero → counter strip → trust strip → PageNav → key takeaways →
+reviews top/middle/bottom → newsletter → contact form → FAQ, each naming its kit component)
+plus a body whose section COUNT and TOPICS are derived per city from a competitor scan
+recorded in the page board. Read that skill before building.
 
 ---
 
@@ -53,7 +57,7 @@ ls dist/uk-locations/<slug>/ 2>/dev/null && echo "EXISTS" || echo "NEW"
 
 ## City Page Variables
 
-Every location page is built by substituting these variables into the 22-section template:
+Every location page is built by substituting these variables into its derived section list:
 
 | Variable | Example (Glasgow) | Source |
 |----------|------------------|--------|
@@ -115,39 +119,30 @@ with your own vet" — because BSUK names no clinic it has not verified.
 
 ---
 
-## 22-Section Page Template
+## Page Structure — Spine Plus Derived Body
 
-Every location page follows this structure (modeled on Glasgow reference page):
+The section list is NOT fixed. `.claude/skills/bsuk-location-page-builder/SKILL.md` owns it;
+this table is the spine only, and every other section is derived per city from the
+competitor scan recorded in `data/boards/<slug>.json`.
 
-| # | Section | Type | City-Specific Content |
+| # | Section | Kit component | City-Specific Content |
 |---|---------|------|----------------------|
-| 1 | Hero | `hero` | H1: "Blue Staffy Puppy for Sale in {CITY} \| home-raised \| SITE_URL_PLACEHOLDER" |
-| 2 | Welcome {CITY} Families | custom | Why BSUK serves {CITY}, breeder intro |
-| 3 | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) Promise | `features` | Same across all cities — 6 trust pillars |
-| 4 | Why {CITY} Families Choose BSUK | `features` | 3–4 city-specific reasons |
-| 5 | Available Puppies & Pricing | `price-card` | From `data/price-matrix.json` |
-| 6 | Blue Staffy vs blue and white Staffy for {CITY} Lifestyle | custom | Match variant personality to city lifestyle |
-| 7 | Delivery to {CITY} | custom | delivery by DEFRA-approved transport to {NEARBY_TOWNS} airports |
-| 8 | {CITY} Climate Considerations | custom | Temperature windows, shipping restrictions if any |
-| 9 | Setting Up for {CITY} Owners | custom | Climate-adapted habitat setup advice |
-| 10 | Health Guarantee | `features` | "{CITY}'s Best Documentation Package" |
-| 11 | Training Your {CITY} Blue Staffy | custom | Local vet + training resource mentions |
-| 12 | Feeding Guidelines | custom | Standard — slight climate adaptation |
-| 13 | Enrichment in {CITY} | custom | Season/climate-adapted enrichment advice |
-| 14 | Socializing in {CITY} | custom | Local puppy clubs, canine vets in {NEARBY_TOWNS} |
-| 15 | {CITY} Puppy Laws & LICENCE_CLAIM_PLACEHOLDER Requirements | custom | {CITY_TRAVEL_NOTE} + federal LICENCE_CLAIM_PLACEHOLDER summary |
-| 16 | {CITY} Owner Testimonials | `testimonials` | 2–3 stories from {CITY} buyers (BAB format) |
-| 17 | Inquiry Form | `cta` | 3-field inquiry form |
-| 18 | FAQ Part 1 | `faq` | 6 general buyer questions + FAQPage schema |
-| 19 | Blue Staffy vs Other Puppies | `comparison-table` | Standard comparison, {CITY}-adapted intro |
-| 20 | Why BSUK Over Local {CITY} Breeders | custom | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), LICENCE_CLAIM_PLACEHOLDER license, microchip registration LICENCE_CLAIM_PLACEHOLDER transparency |
-| 21 | Delivery to {CITY} Cities | custom | Grid of {NEARBY_TOWNS} with airport info |
-| 22 | FAQ Part 2 | `faq` | 6 city-specific questions + FAQPage schema |
+| 1 | Hero — image first | `Hero` c | H1 from `data/locations.json` → `h1`, never rewritten |
+| 2 | Counter strip | `CounterStrip` d | separated from the hero by a tone shift and a rule |
+| 3 | Trust strip | `TrustStrip` d | same across all cities |
+| 4 | Table of contents | `PageNav` c | one entry per H2, each jump target lands |
+| 5 | Key takeaways | `InfoCard` b, `kind="fact"` | 3–5 facts, all from `data/` |
+| 6 | Review — top | `Testimonial` b | `data/reviews.json` only; never invented |
+| 7…n | Derived body sections | `InfoCard` · `PuppyCard` c · `SectionDivider` a | count and topics from the competitor scan |
+| — | Review — middle | `Testimonial` b | `data/reviews.json` only |
+| — | Newsletter | `InfoCard` b, `kind="note"` | what a subscriber gets, no counts |
+| n+1 | Review — bottom | `Testimonial` b | `data/reviews.json` only |
+| n+2 | Contact form | `ContactFormKit` c | never a hand-rolled form |
+| n+3 | FAQ | `Faq` c | `data/faq.json` + page-backed Q&A, one FAQPage node |
+| n+4 | Footer | `SiteFooterKit` a | inherited from `BaseLayout`, never hand-written |
 
-**City-unique sections** (add only where applicable):
-- Manchester: "CA Health Certificate Requirement — Already Included"
-- Glasgow: "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) for Glasgow Buyers — Everything Included"
-- Leeds: "NYC Apartment-Ready Blue Staffies — What to Expect"
+There are no city-unique bolt-on sections held in this file: what is unique to a city comes
+out of that city's competitor scan, and anything the scan did not supply is `NOT FETCHED`.
 
 ---
 
@@ -173,7 +168,7 @@ When the breeder requests a batch build, hand off to `bsuk-batch-rebuilder`, whi
 ```
 - city name, abbr, slug, variants from locations.json
 - city data from the Built-In City Data section above
-- instruction: build sections 1–22 for this city
+- instruction: run the competitor scan, derive the section list, build the spine plus that body
 - staging path: src/pages/[slug]/ (staged in a -rebuild sibling until approved)
 ```
 3. The children run concurrently; there is no environment variable to set
@@ -190,7 +185,7 @@ Before building ANY city location page (single or batch mode), produce the Page 
 
 The outline must include:
 
-**A. H1–H6 Heading Tree** — using the 22-section template as the base, customized per city. Must include all six heading levels (H1→H2→H3→H4→H5→H6, no skips). ≥5 H5 / ≥3 H6 are advisory on location pages (WARN, evidence pass 2026-09-09) — never add a heading to hit a count; depth comes from real shipments, not headings.
+**A. H1–H6 Heading Tree** — the spine above plus the sections derived from this city’s competitor scan. Must include all six heading levels (H1→H2→H3→H4→H5→H6, no skips). ≥5 H5 / ≥3 H6 are advisory on location pages (WARN, evidence pass 2026-09-09) — never add a heading to hit a count; depth comes from real shipments, not headings.
 
 **B. Keyword Distribution Table** — section by section for the city: primary KW, LSI, longtail, NLP, comparison KWs, word count per section.
 
@@ -216,7 +211,7 @@ The outline must include:
 2. Ask: **"Approve? (yes / revise / skip)"**
 3. Write to `docs/reports/<slug>-rebuild/section-<N>.html`
 
-### After all 22 sections approved:
+### After every section is approved:
 1. Wrap all sections in `<BaseLayout>` — header and footer are injected automatically by `src/layouts/BaseLayout.astro`
 2. Set title, description, canonical props on BaseLayout
 3. Content starts at the hero `<section>` — never write `<header>` or `<footer>` HTML in the page file
@@ -245,7 +240,7 @@ The outline must include:
 1. **Read city data first** — never guess climate, cities, or laws
 2. **H1 pattern is fixed** — "Blue Staffy Puppy for Sale in {CITY} | home-raised | SITE_URL_PLACEHOLDER"
 3. **Prices from data/price-matrix.json** — never hardcode
-4. **Both FAQ sections need FAQPage schema** — no exceptions
+4. **The FAQ needs one FAQPage node** carrying every visible Q&A and nothing else — no exceptions
 5. **Stage before write** — never touch the final Astro file until all sections are approved
 6. **Add to sitemap after every new page** — must be updated
 7. **Batch mode requires explicit user approval** before dispatching all cities at once
