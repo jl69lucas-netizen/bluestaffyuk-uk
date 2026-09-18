@@ -109,26 +109,42 @@ SECTION_RE = re.compile(
 # not by the component. It carries the variant letter, so leaving it in makes every pair of
 # sections differ no matter what the components rendered.
 CAPTION_RE = re.compile(r'^\s*<h3[^>]*>.*?</h3>', re.S)
-# The variant letter as it reaches the DOM: the component's own `kit-<name>-<letter>` class
-# and the `data-variant` hook. Both are bookkeeping; two variants that agree on everything
-# else are the same rendering wearing different labels.
-VARIANT_CLASS_RE = re.compile(r'\bkit-([a-z][a-z0-9-]*?)-([a-e])\b')
 VARIANT_ATTR_RE = re.compile(r'data-variant="[a-e]"')
 
 
-def _rendering(inner):
-    """One variant section reduced to what it actually PAINTS.
+def _variant_class_re(cid):
+    r"""The one class that spells this component's variant letter.
+
+    Built from `data-component`, not from a blanket `kit-\w+-[a-e]`: a blanket pattern also
+    rewrites any other kit class that happens to end in a hyphen and a letter a-e, and a
+    normalisation that reaches classes it was not aimed at can only ever erase differences
+    the check exists to find. `kit-counter-a` comes from the `counter-strip` row, so the
+    stem is the id with a trailing `-strip`/`-card` dropped, and the full id is allowed too.
+    """
+    stem = re.sub(r"-(strip|card)$", "", cid)
+    alts = "|".join(sorted({re.escape(stem), re.escape(cid)}, key=len, reverse=True))
+    return re.compile(rf"\bkit-(?:{alts})-([a-e])\b")
+
+
+def _rendering(cid, inner):
+    """One variant section reduced to what it actually RENDERS.
 
     Two variants can be byte-different and visually identical: the route stamps the letter
-    into the caption, the component stamps it into its own class and into data-variant, and
-    those three alone are enough to make a pairwise byte comparison pass while the canvas
-    shows the same card twice. Everything that only NAMES the variant is stripped or
-    normalised here, so what survives the comparison is markup and CSS classes that change
-    the pixels. A variant whose only difference is in its scoped stylesheet (`.kit-x-d {
-    box-shadow: none }`) still reads as a duplicate — correctly: the canvas exists for a
-    human to pick between five options, and two that differ by a shadow are one option."""
+    into the artboard caption and the component stamps it into its own class and into
+    data-variant. Those three alone were enough to make a pairwise byte comparison pass on
+    five copies of one card, which is what this strips or normalises away.
+
+    LIMITATION, stated once: what survives is markup, so this proves "differs in markup",
+    which is a PROXY for "differs on screen" and not the thing itself. It is sound in one
+    direction only — identical markup after normalisation means the canvas really is
+    showing the same thing twice, so a failure here is always real. The converse does not
+    hold: two variants that differ only in a scoped stylesheet (`.kit-x-e { box-shadow:
+    none }`) now read as distinct markup once one of them also gains an element, and two
+    that differ by a single aria-hidden glyph pass while looking nearly identical to the
+    eye choosing between them. The canvas itself, and the human picking from it, remain the
+    real judge of whether five options are five options."""
     out = CAPTION_RE.sub("", inner)
-    out = VARIANT_CLASS_RE.sub(r"kit-\1-V", out)
+    out = _variant_class_re(cid).sub(lambda m: m.group(0)[: -1] + "V", out)
     out = VARIANT_ATTR_RE.sub('data-variant="V"', out)
     return out.strip()
 
@@ -148,7 +164,7 @@ def test_built_sections_render_five_distinct_variants():
     assert by_component, "the canvas built no variant sections at all"
     for cid, variants in sorted(by_component.items()):
         assert sorted(variants) == list("abcde"), (cid, sorted(variants))
-        painted = {v: _rendering(inner) for v, inner in variants.items()}
+        painted = {v: _rendering(cid, inner) for v, inner in variants.items()}
         same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
                 if painted[x] == painted[y]]
         assert not same, (
@@ -249,6 +265,11 @@ def test_built_trust_strip_variants_carry_three_backed_claims_and_line_icons():
             assert claim in inner, (v, claim)
         assert inner.count("<svg") == 3, v
         assert 'stroke="currentColor"' in inner, v
+        # Rule 7, measured rather than asserted by keyword: an icon is an inline stroke SVG,
+        # so there is no <img> in the strip and no character in the emoji planes.
+        assert "<img" not in inner, v
+        emoji = [c for c in inner if ord(c) >= 0x1F000]
+        assert not emoji, (v, emoji)
     # c is the single line: the headline claims only, no description sentences.
     assert "L-2-HGA" not in s["c"]
     for v in ("a", "b", "d", "e"):
@@ -374,25 +395,37 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
 def test_built_faq_variants_are_native_details_with_backed_answers():
     """Convention 8. Two things are pinned here. First the element: a kit that quietly
     swapped <details> for a scripted div would lose keyboard operation, find-in-page and
-    the no-JavaScript open, and every other test would stay green. Second the facts: the
-    deposit and the delivery band are read from data/settings.json, so a price edited in
-    one place and not the other fails here rather than shipping two numbers."""
+    the no-JavaScript open, and every other test would stay green. Second the copy: the
+    questions and answers are read out of data/faq.json with the same interpolation
+    src/lib/faq.ts performs, so an answer edited in the component instead of in the data —
+    or a price edited in settings and left stale in the FAQ — fails here."""
     settings = json.loads((ROOT / "data/settings.json").read_text())
+    rows = json.loads((ROOT / "data/faq.json").read_text())
+    tokens = {
+        "deposit_gbp": str(settings["deposit_gbp"]),
+        "delivery_min_gbp": str(settings["delivery_min_gbp"]),
+        "delivery_max_gbp": str(settings["delivery_max_gbp"]),
+        "delivery_note": settings["delivery_note"],
+        "deposit_terms": "refundable" if settings["deposit_refundable"] else "non-refundable",
+    }
+    resolved = [
+        {"q": r["q"], "a": re.sub(r"\{([a-z_]+)\}", lambda m: tokens[m.group(1)], r["a"])}
+        for r in rows
+    ]
     s = _sections("faq")
     for v, inner in sorted(s.items()):
-        assert inner.count("<details") == 3, v
-        assert inner.count("<summary") == 3, v
-        assert f"£{settings['deposit_gbp']}" in inner, v
-        assert f"£{settings['delivery_min_gbp']}" in inner, v
-        assert f"£{settings['delivery_max_gbp']}" in inner, v
-        assert settings["delivery_note"] in inner, v
-        # Rule 7: the open/close markers are inline stroke SVG, never an emoji.
-        assert "emoji" not in inner
+        assert inner.count("<details") == len(rows), v
+        assert inner.count("<summary") == len(rows), v
+        # The question is a heading inside the summary, so the answers are a navigable list.
+        assert len(re.findall(r'<h3[^>]*\bq\b[^>]*>', inner)) == len(rows), v
+        for r in resolved:
+            assert r["q"] in inner, (v, r["q"])
+            assert r["a"] in inner, (v, r["a"])
     # a and b are the only variants with a marker glyph, and they are different glyphs.
     for v in ("a", "b"):
         assert 'stroke="currentColor"' in s[v], v
-        assert s[v].count("<svg") == 3, v
+        assert s[v].count("<svg") == len(rows), v
     for v in ("c", "d", "e"):
         assert "<svg" not in s[v], v
     # c is the numbered treatment.
-    assert ">01<" in s["c"] and ">03<" in s["c"]
+    assert ">01<" in s["c"] and f">{len(rows):02d}<" in s["c"]

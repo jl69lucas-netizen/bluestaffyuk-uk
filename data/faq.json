@@ -1,0 +1,20 @@
+[
+  {
+    "id": "deposit",
+    "q": "How much is the deposit?",
+    "a": "£{deposit_gbp}, {deposit_terms}, secures your chosen puppy.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "delivery",
+    "q": "Do you deliver across the UK?",
+    "a": "Yes. {delivery_note}, from £{delivery_min_gbp} to £{delivery_max_gbp}.",
+    "source": "data/settings.json"
+  },
+  {
+    "id": "puppy-package",
+    "q": "What comes with a puppy?",
+    "a": "A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.",
+    "source": "src/pages/index.astro"
+  }
+]

@@ -24,8 +24,12 @@ const { variant = 'a', class: cls, ...rest } = Astro.props;
 const all = reviews as Review[];
 // c and e are the multi-quote treatments; a, b and d are one quote given room.
 const list = variant === 'c' || variant === 'e' ? all.slice(0, 3) : all.slice(0, 1);
+/** The placeholder a slot with no real review carries; scripts/placeholder_check.py counts it. */
+const PLACEHOLDER = 'REVIEW_PLACEHOLDER';
+// "The Victoria Family" is TV, not TF: a leading article is not part of anybody's name.
 const initials = (n: string) =>
-  n.split(/\s+/).filter(Boolean).map((w) => w[0]).join('').slice(0, 2).toUpperCase();
+  n.split(/\s+/).filter((w) => w && w.toLowerCase() !== 'the')
+    .map((w) => w[0]).join('').slice(0, 2).toUpperCase();
 const inverse = variant === 'b';
 ---
 <section
@@ -37,11 +41,19 @@ const inverse = variant === 'b';
 >
   <div class:list={['container', variant === 'c' ? 'grid' : 'stack']}>
     {list.map((r) => (
-      <figure class:list={[(variant === 'a' || variant === 'c') && 'kit-card']}>
-        {inverse && <span class="avatar" aria-hidden="true">{initials(r.name)}</span>}
-        <blockquote><p>{r.quote}</p></blockquote>
-        <figcaption>{r.name}{r.place && <span> · {r.place}</span>}</figcaption>
-      </figure>
+      r.quote === PLACEHOLDER ? (
+        /* An empty slot is SHOWN, not skipped. Dropping the row would hide the hole from
+           the eye picking a variant AND from scripts/placeholder_check.py, which counts
+           the token in dist/ — a review slot silently omitted and a review slot invented
+           are the same class of defect (rule 9). */
+        <p class="kit-quote-empty">{PLACEHOLDER}</p>
+      ) : (
+        <figure class:list={[(variant === 'a' || variant === 'c') && 'kit-card']}>
+          {inverse && <span class="avatar" aria-hidden="true">{initials(r.name)}</span>}
+          <blockquote><p>{r.quote}</p></blockquote>
+          <figcaption>{r.name}{r.place && <span> · {r.place}</span>}</figcaption>
+        </figure>
+      )
     ))}
   </div>
 </section>
@@ -50,7 +62,7 @@ const inverse = variant === 'b';
     .kit-quote { padding-block: var(--space-8); color: var(--color-text); }
     .kit-quote[data-surface="inverse"] { background: var(--color-surface-inverse); color: var(--color-text-on-inverse); }
     .stack { display: grid; gap: var(--space-5); }
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--space-5); }
     /* The card shell on a and c is .kit-card from src/styles/kit.css (convention 9). */
     figure { margin: 0; padding: var(--space-6); }
     blockquote { margin: 0 0 var(--space-3); }
@@ -68,6 +80,9 @@ const inverse = variant === 'b';
     .kit-quote-e .stack { gap: 0; }
     .kit-quote-e figure { padding-inline: 0; padding-block: var(--space-4); border-bottom: 1px solid var(--color-border); }
 
-    @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+    /* auto-fit rather than a 720px breakpoint: the grid reflows on its own container, so a
+       three-up strip dropped into a narrow column wraps without the page having to be
+       narrow too. */
+    .kit-quote-empty { margin: 0; padding: var(--space-6); border: 1px dashed var(--color-border); border-radius: var(--card-radius); color: var(--color-text-muted); font-size: var(--text-sm); }
   }
 </style>

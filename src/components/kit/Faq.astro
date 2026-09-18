@@ -4,46 +4,32 @@
 //
 // Native <details>/<summary>, not a scripted accordion: it opens with JavaScript off, it
 // is keyboard-operable and announced without an aria-expanded of our own, and the browser
-// handles find-in-page opening the right panel.
+// handles find-in-page opening the right panel. The question is an <h3> inside the
+// <summary> so the answers are navigable as a heading list; <summary> permits flow
+// content, and the disclosure role stays on the <summary> itself.
 //
-// EVERY ANSWER IS BACKED (rule 9). The deposit and the delivery band come from
-// data/settings.json, so a price change is a data edit and not a copy edit. The third
-// answer is the puppy package the live homepage already describes — "their first
-// vaccinations, microchip, a full veterinary health check... and relevant paperwork". The
-// plan's third question was "can we meet the mother"; the migrated pages make that claim
-// only as generic buying advice in the buying guide, never as a promise this breeder
-// makes, so asserting it here would have been an invented claim.
+// THE ROWS ARE DATA (rule 9): data/faq.json via src/lib/faq.ts, each row naming in
+// `source` the page or settings file that backs its answer, with the money and the
+// delivery wording interpolated from data/settings.json at load. The plan's third question
+// was "can we meet the mother"; the migrated pages make that claim only as generic buying
+// advice in the buying guide, never as a promise this breeder makes, so the third row is
+// the puppy package the homepage already describes.
 //
 // Rule 7: the markers are inline stroke SVG, never an emoji. Convention 2: the summary's
 // focus ring reads --kit-ring, so it survives on a dark band.
 import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
-import { SITE } from '../../lib/site';
+import { loadFaq, type FaqRow } from '../../lib/faq';
 
-interface Item { q: string; a: string }
-type Props = HTMLAttributes<'div'> & { variant?: Variant; items?: Item[] };
-const defaults: Item[] = [
-  {
-    q: 'How much is the deposit?',
-    a: `£${SITE.deposit_gbp}, ${SITE.deposit_refundable ? 'refundable' : 'non-refundable'}, secures your chosen puppy.`,
-  },
-  {
-    q: 'Do you deliver across the UK?',
-    a: `Yes. ${SITE.delivery_note}, from £${SITE.delivery_min_gbp} to £${SITE.delivery_max_gbp}.`,
-  },
-  {
-    q: 'What comes with a puppy?',
-    a: 'A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.',
-  },
-];
-const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'div'> & { variant?: Variant; items?: FaqRow[] };
+const { variant = 'a', items = loadFaq(), class: cls, ...rest } = Astro.props;
 ---
 <div {...rest} class:list={['kit-faq', `kit-faq-${variant}`, cls]} data-variant={variant}>
   {items.map((it, i) => (
     <details class:list={[variant === 'd' && 'kit-card']}>
       <summary>
         {variant === 'c' && <span class="num">{String(i + 1).padStart(2, '0')}</span>}
-        <span class="q">{it.q}</span>
+        <h3 class="q">{it.q}</h3>
         {variant === 'a' && <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M12 5v14M5 12h14" /></svg>}
         {variant === 'b' && <svg class="ico" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M6 9l6 6 6-6" /></svg>}
       </summary>
@@ -57,7 +43,7 @@ const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
     details { background: var(--color-surface-raised); border-radius: var(--radius-md); }
     summary { display: flex; align-items: center; gap: var(--space-3); cursor: pointer; list-style: none; padding: var(--space-4); min-height: 44px; font-weight: 600; font-family: var(--font-display); font-size: var(--text-lg); color: var(--color-brand); }
     summary::-webkit-details-marker { display: none; }
-    .q { flex: 1; }
+    .q { flex: 1; margin: 0; font: inherit; color: inherit; }
     .ico { transition: transform var(--dur-base) var(--ease-out); }
     details[open] .ico { transform: rotate(45deg); }
     .kit-faq-b details[open] .ico { transform: rotate(180deg); }
@@ -65,10 +51,8 @@ const { variant = 'a', items = defaults, class: cls, ...rest } = Astro.props;
     /* The number is a muted label, not brass: brass is 2.1:1 as small text on bone. */
     .num { font-family: var(--font-body); font-size: var(--text-sm); color: var(--color-text-muted); font-variant-numeric: tabular-nums; }
     /* d's shell is .kit-card from src/styles/kit.css (convention 9), applied as a CLASS
-       rather than as a `.kit-faq-d details` rule: a variant whose only difference from
-       another lives in a stylesheet emits identical markup, and
-       tests/py/test_design_components.py's distinctness check compares the built sections
-       with the variant letter normalised away. d and e were that pair before this. */
+       rather than as a `.kit-faq-d details` rule, so d differs from e in what it renders
+       and not only in this stylesheet. */
     .kit-faq-e { gap: 0; }
     .kit-faq-e details { border-radius: 0; border-bottom: 1px solid var(--color-border); background: transparent; }
     .kit-faq-e summary { padding-inline: 0; }

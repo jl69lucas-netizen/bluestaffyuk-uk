@@ -55,11 +55,9 @@ const stats = [
     /* b trades the border for a seam bar — still a rule, and the check counts a ::before
        bar as one; the bed still shifts tone, so both halves of the rule are present. */
     .kit-counter-b { border-top: 0; }
-    /* The seam is a real element, not a ::before. A variant whose only difference from
-       another lives in a stylesheet emits identical markup, and
-       tests/py/test_design_components.py's distinctness check compares the built sections
-       with the variant letter normalised away — with the seam, the tile shell, the dot and
-       e's reversed pair, each of the five now differs in what it actually renders. */
+    /* The seam is a real element, not a ::before: with it, the tile shell on c, the dot on
+       d and e's reversed pair, each of the five differs in what it renders and not only in
+       this stylesheet. */
     .seam { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
     /* The tile shell is .kit-card from src/styles/kit.css (convention 9). */
     .kit-counter-c li { padding: var(--space-4); }

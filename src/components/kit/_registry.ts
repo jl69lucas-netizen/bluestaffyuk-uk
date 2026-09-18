@@ -108,7 +108,7 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
       {},
       {
         kind: 'recommendation',
-        title: 'Ask to see the paperwork',
+        heading: 'Ask to see the paperwork',
         body: 'Every puppy leaves with a comprehensive puppy package: the first vaccination, a microchip, a full veterinary health check and the relevant paperwork.',
       },
     ],
