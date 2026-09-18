@@ -2152,45 +2152,6 @@ Confirm: no remote (`git remote -v` prints nothing), the old MCP untouched, the 
 
 **Type consistency.** `Page` dataclass fields used by writers: `url_path, kind, title, description, canonical, robots, og_type, h1, body_html, schema, word_count, images, embeds, headings, defects, phone_hits, refresh_flags` — matches Tasks 3, 4, 6. `bake_body_image(src, dst_dir, stem)` and `bake_puppy_card(src, dst_dir, slug)` signatures match their tests. `settings.json` keys used in components (`price_range`, `delivery_note`, `delivery_min_gbp`, `delivery_max_gbp`, `deposit_gbp`, `logo`, `socials`, `address`) all exist in Task 2.
 </script>
-<script type="text/markdown" data-title="Pinning decisions (recorded during execution)">
-- **astro pinned exactly to 6.3.8** (Task 1): `^6.3.1` resolves to 6.4.x, outside the agreed 6.3 line.
-- **`overrides.vite: ^7.3.6`** (Task 1): `@tailwindcss/vite@4.3.3` needs vite 7 while astro pulls vite 8; two vite copies broke the Tailwind plugin. Revisit both when moving to Astro 6.4+ / Tailwind with vite 8 support.
-</script>
-<script type="text/markdown" data-title="Superseded during execution">
-Where the plan as written no longer describes what shipped. Recorded here rather than by
-editing the plan body, so the decision and its cause stay legible to projects 2–6.
-
-- **Turnstile dropped.** The plan put a Cloudflare Turnstile widget on the contact form.
-  Formspree does not verify a Turnstile token, so the widget would have rendered, cost a
-  third-party script on every page carrying the form, and blocked nothing. Spam handling is
-  Formspree's own, and the real decision belongs with the FORM_ENDPOINT contract in project 2.
-- **Task 10 PuppyList is emitted by the writer, not composed in the page.** The pup cards are
-  part of the migrated body markup, so building them in an Astro component would have meant
-  re-authoring content Foundation migrates verbatim. The extractor writes the list; the
-  component is deferred to project 3 with the rest of the kit.
-- **Stub location pages are noindexed.** 17 of the 28 locations have no migrated body. Shipping
-  them indexable would publish 17 near-empty pages under a thin-content signal; they carry
-  `robots: noindex` until project 5 writes them, and `sitemap_check.py` enforces that nothing
-  noindexed is listed.
-- **Sitemap `lastmod` is TODAY, not the source date.** The WordPress export carries no reliable
-  per-page modification date, and inventing one would tell Google something untrue. Every
-  built page gets the build date until project 4 gives pages real edit history.
-- **`deferred_checks` added to `tests/render/targets.json`.** Three registered, fixture-passing
-  checks (`layout-hero-counter-separation`, `layout-h3-image-first`, `sem-statement-label-visible`)
-  encode conventions the migrated WordPress markup does not use, so they examine zero nodes on
-  every built page. Rather than retire them or let them fail Guard 2, they are listed with a
-  reason; Guard 2 exempts them from the FAIL but PRINTS them as `DEFERRED (reason)`, and
-  `meta.spec.ts` asserts each one is still registered and still passes both fixtures — so the
-  deferral cannot become a hiding place for a dead check.
-- **`astro` pinned exactly to 6.3.8** (also noted under Pinning decisions): `^6.3.1` resolves to
-  6.4.x, outside the agreed 6.3 line.
-- **Placeholder gate is conditional.** `scripts/placeholder_check.py` always counts and prints
-  `SITE_URL_PLACEHOLDER` / `PHONE_PLACEHOLDER` / `FORMSPREE_ID_PLACEHOLDER` in `dist/`, and fails
-  only under `BSUK_RELEASE=1`. Foundation is supposed to ship stand-ins; launch is not.
-- **Organization node not emitted separately.** `Schema.astro` emits LocalBusiness (an Organization subtype), WebSite and BreadcrumbList; a second overlapping org node was judged worse than none.
-- **`--hdr` is measured.** BaseLayout sets `--hdr-measured` from the real header height (ResizeObserver); the 640px media query on `--hdr` is the no-JS fallback.
-- **Generated files are banner-marked and listed in README.md** (11 rich pages, page-map, locations, image-manifest, _redirects, llms.txt).
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
 (function(){
