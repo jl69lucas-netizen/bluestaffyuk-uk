@@ -1,14 +1,13 @@
 ---
-// src/components/kit/SiteFooterKit.astro — spec §5 #12. Replaces SiteFooter.astro in
-// project 4. Five arrangements of one set of links.
-// a four column · b three column, centred lockup · c slim single row · d CTA band above
-// the columns · e sitemap style, brand across the top
+// src/components/kit/SiteFooterKit.astro — the footer (spec §5 #12). Picked 2026-09-18:
+// the four-column arrangement — brand, Explore, Contact, Follow — over the legal row.
+// It replaces SiteFooter.astro in project 4.
 //
 // EVERY LINK AND EVERY CONTACT ROW IS DATA (rule 9): the explore list is NAV from
 // src/lib/site.ts — the same list the header renders, so a renamed page cannot leave a
 // dead footer link — and the address line, the email, the hours and the social profiles
-// are data/settings.json. Nothing here is typed out a second time. The one line of copy
-// the component owns is d's band, and it is a call to action rather than a claim.
+// are data/settings.json. Nothing here is typed out a second time, and the footer owns no
+// copy of its own.
 //
 // The footer carries its own dark fill, so it declares data-surface="inverse": that flips
 // --kit-ring to the on-inverse focus colour for everything inside it (convention 2) and
@@ -19,86 +18,53 @@
 // Tap targets: a footer link list is a column of close neighbours, so SC 2.5.8's spacing
 // exception never applies and every link is a 44px line box (layout-tap-target-size).
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
 import { SITE, NAV } from '../../lib/site';
 import Mark from './Mark.astro';
-import Button from './Button.astro';
 
-type Props = HTMLAttributes<'footer'> & { variant?: Variant; markVariant?: Variant };
-const { variant = 'a', markVariant = 'a', class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'footer'>;
+const { class: cls, ...rest } = Astro.props;
 
 const year = new Date().getFullYear();
 const socials = Object.entries(SITE.socials) as [string, string][];
 const socialLabel = (key: string) => (key === 'x' ? 'X' : key[0].toUpperCase() + key.slice(1));
 const legal = [{ href: '/privacy-policy-uk/', label: 'Privacy policy' }];
-// c is the slim row: the primary four, not the whole list, because the row is one line.
-const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
 ---
 <footer
   {...rest}
-  class:list={['kit-ftr', `kit-footer-${variant}`, cls]}
-  data-variant={variant}
+  class:list={['kit-ftr', cls]}
   data-surface="inverse"
 >
-  {variant === 'd' && (
-    <div class="cta-band">
-      <div class="container row">
-        <p>Ready to meet the litter?</p>
-        <Button variant="a" href="/buy-blue-staffy-puppies-uk/" label="See available puppies" />
-      </div>
-    </div>
-  )}
-
   <div class="container grid">
     <div class="brand">
-      <Mark variant={markVariant} inverse size={variant === 'b' ? 56 : 40} title={`${SITE.site_name} mark`} />
+      <Mark inverse size={40} title={`${SITE.site_name} mark`} />
       <p class="word">{SITE.site_name}<small>{SITE.location_label}</small></p>
-      {variant !== 'c' && <p class="tag">{SITE.tagline}</p>}
+      <p class="tag">{SITE.tagline}</p>
     </div>
 
-    {variant === 'c' ? (
-      <nav aria-label="Footer">
-        <ul class="inline">
-          {explore.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
-        </ul>
-      </nav>
-    ) : (
-      <Fragment>
-        <nav aria-label="Footer">
-          <h2>Explore</h2>
-          <ul>{explore.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
-        </nav>
+    <nav aria-label="Footer">
+      <h2>Explore</h2>
+      <ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}</ul>
+    </nav>
 
-        {(variant === 'a' || variant === 'e') && (
-          <div>
-            <h2>Contact</h2>
-            <ul>
-              <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
-              <li class="plain">{SITE.hours}</li>
-              <li class="plain">{SITE.location_label}</li>
-            </ul>
-          </div>
-        )}
+    <div>
+      <h2>Contact</h2>
+      <ul>
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+        <li class="plain">{SITE.hours}</li>
+        <li class="plain">{SITE.location_label}</li>
+      </ul>
+    </div>
 
-        <div>
-          <h2>Follow</h2>
-          {/* The profiles are off-site, so they open in a new tab; rel is
-              noopener noreferrer, never a target without it. */}
-          <ul>
-            {socials.map(([key, url]) => (
-              <li><a href={url} target="_blank" rel="noopener noreferrer">{socialLabel(key)}</a></li>
-            ))}
-          </ul>
-        </div>
-
-        {variant === 'e' && (
-          <div>
-            <h2>Small print</h2>
-            <ul>{legal.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
-          </div>
-        )}
-      </Fragment>
-    )}
+    <div>
+      <h2>Follow</h2>
+      {/* The profiles are off-site, so they open in a new tab; rel is
+          noopener noreferrer, never a target without it. */}
+      <ul>
+        {socials.map(([key, url]) => (
+          <li><a href={url} target="_blank" rel="noopener noreferrer">{socialLabel(key)}</a></li>
+        ))}
+      </ul>
+    </div>
   </div>
 
   <div class="container legal">
@@ -116,12 +82,6 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
     }
 
     .grid { display: grid; gap: var(--space-6); grid-template-columns: 1.4fr repeat(3, 1fr); }
-    .kit-footer-b .grid { grid-template-columns: repeat(3, 1fr); }
-    .kit-footer-b .brand { align-items: center; text-align: center; }
-    .kit-footer-c { padding-block: var(--space-5); }
-    .kit-footer-c .grid { grid-template-columns: auto 1fr; align-items: center; }
-    .kit-footer-e .grid { grid-template-columns: repeat(4, 1fr); }
-    .kit-footer-e .brand { grid-column: 1 / -1; }
 
     .brand { display: flex; flex-direction: column; gap: var(--space-2); }
     .word {
@@ -140,7 +100,6 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
       letter-spacing: .12em; text-transform: uppercase; color: var(--color-cta);
     }
     ul { list-style: none; margin: 0; padding: 0; }
-    .inline { display: flex; flex-wrap: wrap; gap: 0 var(--space-5); justify-content: flex-end; }
 
     /* 44px line boxes, not padding on an inline link: these lists are columns of close
        neighbours, so an undersized target here has no spacing exception to fall back on. */
@@ -160,24 +119,7 @@ const explore = variant === 'c' ? NAV.slice(0, 4) : NAV;
     }
     .legal-links { display: flex; gap: var(--space-4); }
 
-    .cta-band {
-      background: var(--color-surface-deep);
-      margin: calc(-1 * var(--space-8)) 0 var(--space-8);
-      padding-block: var(--space-6);
-    }
-    .cta-band .row {
-      display: flex; flex-wrap: wrap; align-items: center;
-      justify-content: space-between; gap: var(--space-4);
-    }
-    .cta-band p { margin: 0; font-family: var(--font-display); font-size: var(--text-xl); }
-
-    @media (max-width: 800px) {
-      .grid, .kit-footer-b .grid, .kit-footer-e .grid { grid-template-columns: 1fr 1fr; }
-      .kit-footer-c .grid { grid-template-columns: 1fr; }
-      .inline { justify-content: flex-start; }
-    }
-    @media (max-width: 480px) {
-      .grid, .kit-footer-b .grid, .kit-footer-e .grid { grid-template-columns: 1fr; }
-    }
+    @media (max-width: 800px) { .grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
   }
 </style>

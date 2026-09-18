@@ -1,29 +1,31 @@
-// src/components/kit/_registry.ts — the one place the canvas route learns what a kit
-// component is and how to demo it. The route renders `REGISTRY` generically; it has no
-// per-component branches, so Tasks 6-16 add a component by adding an entry here.
-// Task 19 (prune) deletes this file with the rest of the variant machinery.
+// src/components/kit/_registry.ts — the one place a page learns what a kit component is
+// and how to demo it. It was written for the design canvas; Task 19 deleted that route and
+// kept this file, because src/pages/kit-preview/ renders exactly the same way — walk
+// data/design/components.json, look each id up here, render one copy per fixture — and
+// scripts/build_design_canvas.py turns that page's built sections into the artboards.
+// Nothing that reads it has a per-component branch.
 //
 // KIT CONVENTIONS — every component in this folder follows all nine.
-//  1. No second `<main>`: BaseLayout already renders one, so a kit component and the canvas
-//     route use `<div>`/`<section>`, never `<main>`.
+//  1. No second `<main>`: BaseLayout already renders one, so a kit component and a page
+//     that mounts one use `<div>`/`<section>`, never `<main>`.
 //  2. Focus rings read `var(--kit-ring)`, never a fixed focus token: --color-focus is
 //     steel-700, the same colour as the inverse surface, so a fixed ring vanishes on dark bands.
 //  3. Colour comes from `currentColor` or a context variable with a default. A component that
 //     can sit on both the bone surface and a dark band never hard-codes `--color-brand`.
 //  4. `Props` extends `HTMLAttributes<'tag'>`, spreads `...rest` onto the root element, and
 //     applies `class` with `class:list` — so no bare `class=""` or trailing space is emitted.
-//  5. Multi-region components take content through named slots; `variant`, `size` and data
-//     come through props.
+//  5. Multi-region components take content through named slots; size, mode and data come
+//     through props.
 //  6. Scoped `<style>` rules that a caller should be able to override live in
 //     `@layer components { … }`, so a passed Tailwind utility wins over them.
-//  7. Register the component here with demo fixtures; the canvas renders one copy per fixture.
+//  7. Register the component here with demo fixtures; the preview renders one copy per fixture.
 //  8. Add a dist assertion for it in tests/py/test_design_components.py.
 // 10. A POSITIONAL check — one that judges an element against its previous sibling, its
-//     offset from the chrome, or its place in the scroll — is INERT on the canvas: every
-//     demo is the first child of its own artboard, so `previousElementSibling` is null and
+//     offset from the chrome, or its place in the scroll — is INERT on a preview page: every
+//     demo is the first child of its own section, so `previousElementSibling` is null and
 //     the check examines zero and passes vacuously. Cover those with a fixture pair in
-//     tests/render/fixtures/, and give the demo a `wrap` only to make the artboard
-//     LOOK right for the eye that picks it.
+//     tests/render/fixtures/, and give the demo a `wrap` only to make the section LOOK
+//     right for the eye reading it.
 //  9. A primitive needed by a SECOND component (card shell, medal, rule) moves to
 //     src/styles/kit.css rather than being copied into another scoped style block.
 //     That file exists as of Task 9 and holds `.kit-card`, `.kit-card--lift` and
@@ -54,9 +56,9 @@ export type ComponentId =
 
 export interface KitEntry {
   C: AstroComponentFactory;
-  /** One rendering per fixture, inside one variant section. Omitted means a single bare copy. */
+  /** One rendering per fixture, inside one section. Omitted means a single bare copy. */
   demo?: Record<string, unknown>[];
-  /** Extra chrome the canvas wraps the demo in, for components that need a context to be
+  /** Extra chrome the preview wraps the demo in, for components that need a context to be
    *  judged BY EYE. It never makes a positional check work — see convention 10. */
   wrap?: 'sticky' | 'inverse' | 'after-band';
 }
@@ -70,21 +72,23 @@ export interface ComponentRow {
 }
 
 export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
-  // `wrap: 'sticky'` — the header is position: sticky, so on the canvas it needs a
-  // positioned box with room in it; without one the five bars stack on the page's own
-  // scroll container and the artboard shows a collapsed strip.
+  // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
+  // positioned box with room in it; without one the bar docks to the page's own scroll
+  // container and the artboard captures a collapsed strip.
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
-  // `as: 'h2'` — the canvas mounts five heroes on one page and the page already owns an
-  // <h1>. The prop exists for exactly this: on a real page the default 'h1' is correct.
-  // TWO images carry fetchpriority="high" on the canvas — variants a and c each render the
-  // hero photo — and that is expected here: the canvas is five heroes on one noindex page,
-  // where a real page mounts exactly one.
+  // `as: 'h2'` — the preview page already owns an <h1>. The prop exists for exactly this:
+  // on a real page the default 'h1' is correct.
   hero: { C: Hero, demo: [{ as: 'h2' }] },
+  // All five button KINDS on one board, because a page uses more than one of them and the
+  // board is where their weights are judged against each other.
   buttons: {
     C: Button,
     demo: [
-      { label: 'Meet the puppies', href: '/available-puppies/' },
-      { label: 'Ask about Roman', type: 'submit' },
+      { kind: 'primary', label: 'Meet the puppies', href: '/available-puppies/' },
+      { kind: 'outline', label: 'Ask a question', href: '/uk-blue-staffy-breeders-contact/' },
+      { kind: 'inverse', label: 'Meet the puppies', href: '/available-puppies/' },
+      { kind: 'text', label: 'Read the guide', href: '/uk-staffordshire-bull-terrier-guide/' },
+      { kind: 'submit', label: 'Send enquiry', type: 'submit' },
     ],
   },
   // Two pups, not one: the price/status chips differ between them, so a board that showed
@@ -93,18 +97,14 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   'trust-strip': { C: TrustStrip },
   // `wrap: 'after-band'` paints a steel band above the strip so the seam is judgeable BY
   // EYE — a strip floating on bone shows nothing to be separated from. It does NOT make
-  // `layout-hero-counter-separation` judge the canvas: convention 10, the check reads the
-  // strip's previousElementSibling and on the canvas that is the band, not a hero, only
-  // because this wrap puts one there. The real coverage is the fixture pair
+  // `layout-hero-counter-separation` judge the preview: convention 10. The real coverage is
+  // the fixture pair
   // tests/render/fixtures/{known_good/kit-counter-separated,known_broken/kit-counter-flush}.html,
   // which pins the shipped component's own resolved geometry.
   'counter-strip': { C: CounterStrip, wrap: 'after-band' },
   // Two fixtures, not one: the card's statement label is the deferred
   // sem-statement-label-visible check's only subject in the kit, and a board showing a
-  // single `fact` label would hide whether the other two kinds paint at all. No `wrap` —
-  // both of the card's checks are convention-10 checks that the fixture pairs
-  // tests/render/fixtures/{known_good,known_broken}/kit-h3-image-*.html and
-  // kit-stmt-label*.html cover; chrome on the artboard would not make either judge here.
+  // single `fact` label would hide whether the other kinds paint at all.
   'info-card': {
     C: InfoCard,
     demo: [
@@ -117,23 +117,18 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
     ],
   },
   // The quotes are data — the component reads data/reviews.json so that a new review is a
-  // data edit. What the two fixtures demo is the API that survives the prune: `mode`
-  // (spec §11 amendment 3e). `single` is one review given room, `grid` is the multi-review
-  // strip, and the variant letter is now only the STYLE the pair is painted in. Both are on
-  // every artboard, so the eye judges the two modes together rather than one of them.
+  // data edit. What the two fixtures demo is the API: `mode` (spec §11 amendment 3e).
+  // `single` is one review given room, `grid` is the multi-review strip. Both are on the
+  // board, so the eye judges the two together rather than one of them.
   testimonial: { C: Testimonial, demo: [{ mode: 'single' }, { mode: 'grid' }] },
   // No demo props: the three answers are the component's own defaults, and two of the
   // three are read out of data/settings.json so a price change never becomes a copy edit.
   faq: { C: Faq },
   // No demo props: the six controls, the honeypot and the two hidden fields are the form
   // CONTRACT, not a fixture, and the puppy options are read from data/puppies.json. The
-  // canvas route is named in form_contract_audit.py's NON_CONTENT_ROUTES, so these five
-  // are audited for endpoint and method but not as five separate enquiry forms.
-  // `action: '#contact'` is the component's documented canvas override: five live
-  // endpoints on one page is five ways for a stray click to send a real enquiry, so the
-  // specimens post nowhere. form_contract_audit.py allows that one stub on a
-  // NON_CONTENT_ROUTES page and nothing else. A real page passes no action at all.
-  'contact-form': { C: ContactFormKit, demo: [{ action: '#contact' }] },
+  // preview route is named in form_contract_audit.py's NON_CONTENT_ROUTES, so this copy is
+  // audited for endpoint and method but not as a reachable enquiry form.
+  'contact-form': { C: ContactFormKit },
   // The four sections are DEMO DATA and live here, not in the component: PageNav defaults
   // to no sections and renders the breadcrumb alone, because the component has no way of
   // knowing what a page's sections are. The path and title are the guide page's own, so

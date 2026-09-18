@@ -9,8 +9,7 @@ classed "inquiry" and must carry its page's contract:
           the contact page included)
   short — blog/* posts: name, email, message
   none  — the uk-locations/* cluster, the hubs (no inquiry forms today) and the
-          NON_CONTENT_ROUTES below; those still owe the method, and an endpoint that is
-          either the one Formspree endpoint or the documented local stub.
+          NON_CONTENT_ROUTES below; those still owe the method and the one endpoint.
 
 This is the Python half of the same contract tests/render/checks/form.ts enforces, and
 the two must agree or they will give different verdicts on the same page.
@@ -89,28 +88,26 @@ LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
 
 # Routes that build a page but are not content pages, listed BY NAME rather than left to
-# the slug fallback. `design-canvas` is project 3's hidden noindex design-specimen route
-# (src/pages/design-canvas/index.astro): it mounts the five ContactFormKit layouts side by
-# side so a human can pick one, and the whole route is deleted in project 3 Task 19. Those
-# five are specimens of one form, not five enquiry forms a visitor can reach, so the
-# per-page FIELD contract does not apply to them. The endpoint, method and netlify-residue
-# checks still do — a specimen posting somewhere else would be a real defect, and that is
-# what keeps this from being a way to smuggle a form past the gate.
+# the slug fallback. `kit-preview` is project 3's hidden noindex route
+# (src/pages/kit-preview/index.astro): it mounts each kit component once so the whole kit can
+# be read on one page, and so scripts/build_design_canvas.py has a source to cut the
+# artboards from. Its ContactFormKit copy is a specimen of one form, not an enquiry form a
+# visitor can reach, so the per-page FIELD contract does not apply to it. The endpoint,
+# method and netlify-residue checks still do — a specimen posting somewhere else would be a
+# real defect, and that is what keeps this from being a way to smuggle a form past the gate.
 #
 # Named here, and checked BEFORE the page map, rather than folded into the slug heuristic:
 # an exclusion nobody can see is how a content page quietly stops being audited. For the
 # same reason the exclusion EXPIRES: tests/py/test_form_contract_audit.py requires every
-# name in this tuple to exist as src/pages/<name>/, so project 3 Task 19, which deletes the
-# canvas route, must delete this name in the same commit or the suite fails.
-NON_CONTENT_ROUTES = ("design-canvas",)
-
-# A specimen on one of those routes posts to the one endpoint OR to this local stub, and
-# to nothing else. `#contact` is what ContactForm.astro and ContactFormKit.astro build when
-# PUBLIC_FORMSPREE_ID is unset, and what the canvas registry passes deliberately so five
-# copies of the form on one page cannot send five real enquiries from a stray click. The
-# allowance is this one literal on those routes only: anywhere else, and for any other
-# value, the endpoint check below is unchanged.
-LOCAL_STUB_ACTION = "#contact"
+# name in this tuple to exist as src/pages/<name>/, so the day the preview route goes, this
+# name has to go with it in the same commit or the suite fails. (Task 19 moved the name
+# here from `design-canvas`, which that task deleted.)
+#
+# The exclusion drops the FIELD checks only. The specimen still owes POST and the one
+# endpoint: there is no stub allowance any more, because the canvas's `action` override —
+# five live endpoints on one page being five ways for a stray click to send a real enquiry
+# — went with the canvas, and the preview mounts exactly one form.
+NON_CONTENT_ROUTES = ("kit-preview",)
 
 
 # data/page-map.json's `kind` is what the build actually produced; a hand list of slugs
@@ -217,11 +214,8 @@ def audit_html(html: str, slug: str):
         real = [c for c in ctl if c["type"] != "hidden" and c["name"] != "_gotcha"]
         kind = "newsletter" if len(real) == 1 and real[0]["type"] == "email" else "inquiry"
         problems = []
-        stub_ok = slug in NON_CONTENT_ROUTES and action == LOCAL_STUB_ACTION
-        if action != endpoint and not stub_ok:
-            problems.append(f'endpoint is "{action or "(none)"}", must be {endpoint}'
-                            + (f' or the local stub {LOCAL_STUB_ACTION}'
-                               if slug in NON_CONTENT_ROUTES else ''))
+        if action != endpoint:
+            problems.append(f'endpoint is "{action or "(none)"}", must be {endpoint}')
         if "data-netlify" in a or "netlify-honeypot" in a or any(c["name"] in ("form-name", "bot-field") for c in ctl):
             problems.append("netlify residue (data-netlify / form-name / bot-field)")
         if (a.get("method") or "get").lower() != "post":

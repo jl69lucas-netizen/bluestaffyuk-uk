@@ -252,25 +252,26 @@ def test_pages_absent_from_the_map_fall_back_to_the_slug_heuristic(tmp_path, mon
     assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
 
 
-def test_the_design_canvas_route_is_excluded_from_the_field_contract(tmp_path, monkeypatch):
-    """Project 3's design-canvas route mounts the five ContactFormKit layouts so a human
-    can pick one; they are specimens of one form, not five reachable enquiry forms, and
-    the route is deleted in Task 19. The exclusion is by NAME, so it survives the route
-    being added to the page map later, and it must not leak to any other slug."""
+def test_the_kit_preview_route_is_excluded_from_the_field_contract(tmp_path, monkeypatch):
+    """Project 3's kit-preview route mounts each kit component once, the enquiry form
+    among them; that copy is a specimen, not a reachable enquiry form. The exclusion is by
+    NAME, so it survives the route being added to the page map later, and it must not leak
+    to any other slug."""
     monkeypatch.setattr(F, "PAGE_MAP", _page_map(tmp_path, []))
     F._kinds.cache_clear()
-    assert "design-canvas" in F.NON_CONTENT_ROUTES
-    assert F.contract_keys("design-canvas") == []
+    assert "kit-preview" in F.NON_CONTENT_ROUTES
+    assert F.contract_keys("kit-preview") == []
     # An unknown CONTENT slug still falls to the full contract: this is one named route,
     # not a loosening of the fallback.
-    assert [k[0] for k in F.contract_keys("design-canvas-notes")] == [k[0] for k in F.KEYS]
+    assert [k[0] for k in F.contract_keys("kit-preview-notes")] == [k[0] for k in F.KEYS]
     assert [k[0] for k in F.contract_keys("some-interior-page")] == [k[0] for k in F.KEYS]
 
 
 def test_every_excluded_route_still_exists_as_a_page(monkeypatch):
     """The exclusion EXPIRES. Each name in NON_CONTENT_ROUTES has to be a real route in
-    src/pages/, so the day project 3 Task 19 deletes the canvas the name has to go with
-    it — otherwise a future page could be built at that slug and be silently unaudited."""
+    src/pages/, so the day the preview route is deleted the name has to go with it —
+    otherwise a future page could be built at that slug and be silently unaudited. It is
+    what made Task 19 move the name off `design-canvas` in the commit that deleted it."""
     root = pathlib.Path(__file__).resolve().parents[2]
     for name in F.NON_CONTENT_ROUTES:
         assert (root / "src/pages" / name).is_dir(), (
@@ -283,7 +284,7 @@ def test_the_excluded_route_still_owes_the_endpoint_and_the_method():
     else, or by GET, would be a real defect and is still reported."""
     stray = ('<form action="https://example.invalid/f/x" method="GET">'
              '<input name="name" required><textarea name="message" required></textarea></form>')
-    rows = [r for r in F.audit_html(page(stray), "design-canvas") if r["action"] != "/search/"]
+    rows = [r for r in F.audit_html(page(stray), "kit-preview") if r["action"] != "/search/"]
     assert len(rows) == 1
     probs = rows[0]["problems"]
     assert any("endpoint is" in p for p in probs), probs
@@ -291,28 +292,13 @@ def test_the_excluded_route_still_owes_the_endpoint_and_the_method():
     assert not any("absent" in p for p in probs), probs
 
 
-def test_the_local_stub_is_allowed_on_the_excluded_route_and_nowhere_else():
-    """The canvas registry posts its five specimens at the local stub on purpose: five
-    live endpoints on one page is five ways for a stray click to send a real enquiry. That
-    one literal is allowed on a NON_CONTENT_ROUTES page, and only there."""
-    stub = (f'<form action="{F.LOCAL_STUB_ACTION}" method="POST">'
-            '<input name="name" required><textarea name="message" required></textarea></form>')
-    assert problems(page(stub), slug="design-canvas") == []
-    # Same form on a content page: still a failure, and the message still names the endpoint.
-    probs = problems(page(stub), slug="a-rich-interior-page")
-    assert any("endpoint is" in p for p in probs), probs
-    # And no other off-endpoint value is bought by the exclusion.
-    other = stub.replace(F.LOCAL_STUB_ACTION, "#somewhere-else")
-    assert any("endpoint is" in p for p in problems(page(other), slug="design-canvas"))
-
-
 def test_a_contract_free_specimen_form_passes_on_the_excluded_route():
     """The positive half: the kit's own shape — the one endpoint, POST, no netlify
-    residue — is clean on design-canvas without the per-page field contract."""
+    residue — is clean on kit-preview without the per-page field contract."""
     specimen = (f'<form action="{END}" method="POST">'
                 '<input name="name" required><input type="email" name="email" required>'
                 '<textarea name="message" required></textarea></form>')
-    assert problems(page(specimen), slug="design-canvas") == []
+    assert problems(page(specimen), slug="kit-preview") == []
 
 
 def test_the_real_page_map_routes_the_contact_page_to_the_full_contract():

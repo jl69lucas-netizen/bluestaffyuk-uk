@@ -1,0 +1,77 @@
+---
+// src/pages/kit-preview/index.astro — the kit, once each, on one hidden page.
+//
+// It replaces src/pages/design-canvas/ (Task 19). The canvas existed so five options per
+// component could be compared; the picks are made and pruned, so what is left is ONE
+// rendering of each of the thirteen, and the page is worth keeping for three jobs:
+//  · it is what scripts/build_design_canvas.py reads to cut the artboards, so the canvas
+//    stays regenerable from the shipped components rather than from a snapshot;
+//  · it is where the per-component dist assertions in tests/py/test_design_components.py
+//    point, until project 4 mounts the kit on real pages;
+//  · it is the preview a human opens to see the whole kit at once.
+//
+// noindex, and named in form_contract_audit.py's NON_CONTENT_ROUTES: the contact form here
+// is a specimen, not a reachable enquiry form. That exclusion expires — the audit's test
+// requires this directory to exist for as long as the name is in that tuple.
+//
+// There are no per-component branches: the page walks components.json, looks each id up in
+// REGISTRY and renders one copy per demo fixture. BaseLayout already renders the page's
+// <main>, so this is a <div>.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import componentsJson from '../../../data/design/components.json';
+import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
+import Mark from '../../components/kit/Mark.astro';
+const components = componentsJson as ComponentRow[];
+const title = 'Kit preview — BlueStaffyUK (project 3)';
+const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
+// The demo box. `wrap` is the only thing that varies it, and it varies by ENTRY, not by id,
+// so this stays a lookup rather than becoming a per-component branch: 'sticky' gives a
+// position: sticky component a positioned box with room in it, 'after-band' puts a steel
+// band ABOVE the demo so a component whose whole point is the seam against what precedes it
+// has something to be judged against by eye, and 'inverse' paints the dark band and,
+// through [data-surface], flips --kit-ring inside it.
+const FLEX = 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
+const demoStyle = (wrap?: 'sticky' | 'inverse' | 'after-band') =>
+  wrap === 'sticky'
+    ? 'position:relative;min-height:220px;overflow:visible'
+    : wrap === 'after-band'
+      ? 'display:block'
+      : wrap === 'inverse'
+        ? `${FLEX};background:var(--color-surface-inverse);padding:var(--space-8) var(--space-5);border-radius:var(--card-radius)`
+        : FLEX;
+---
+<BaseLayout title={title} description="Internal kit preview; not indexed." noindex={true}>
+  <div class="container" style="padding-block: var(--space-8);">
+    <h1 style="font-family: var(--font-display);">Kit preview</h1>
+    <!-- The mark is not a components.json row and has no artboard: it is shown here on both
+         surfaces it has to work on, and the builder skips it. -->
+    <section data-component="mark" class="kit-section">
+      <h2>0 · The mark</h2>
+      <div style="display:flex;gap:var(--space-6);align-items:flex-start">
+        <figure style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface);border-radius:var(--card-radius)">
+          <Mark size={96} />
+          <figcaption>on bone</figcaption>
+        </figure>
+        <figure data-surface="inverse" style="margin:0;text-align:center;padding:var(--space-5);background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--card-radius)">
+          <Mark size={96} inverse />
+          <figcaption>inverse, on steel</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    {components.map((c) => {
+      const entry = REGISTRY[c.id];
+      if (!entry) return null;
+      const { C, demo = [{}], wrap } = entry;
+      return (
+        <section data-component={c.id} data-width={c.board_width} class="kit-section">
+          <h3 style={h3}>{c.title}</h3>
+          <div style={demoStyle(wrap)} data-surface={wrap === 'inverse' ? 'inverse' : undefined}>
+            {wrap === 'after-band' && <div data-surface="inverse" style="height:80px"></div>}
+            {demo.map((props) => <C {...props} />)}
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</BaseLayout>

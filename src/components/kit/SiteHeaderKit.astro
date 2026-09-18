@@ -1,12 +1,11 @@
 ---
-// src/components/kit/SiteHeaderKit.astro — spec §5 #1. Replaces SiteHeader.astro in project 4.
-// a bone bar, left logo, right nav + CTA · b inverse bar, centred nav · c bone bar, centred logo, nav below
-// d inverse bar, logo left, CTA only (nav in a drawer) · e slim bone bar, nav left of CTA, strapline visible
+// src/components/kit/SiteHeaderKit.astro — the site header (spec §5 #1). Picked 2026-09-18:
+// the bone bar — logo left, nav right, search pill, call-to-action. It replaces
+// SiteHeader.astro in project 4.
 //
-// SPEC §11 AMENDMENT 3b, applied to ALL FIVE variants so the canvas stays comparable:
-// (1) LOGO ONLY. The wordmark text is gone; the brand link is the badge mark and its
-//     `aria-label` is the accessible name. Variant e keeps the strapline, as a small caption
-//     under the logo rather than under a wordmark, because the strapline IS e's identity.
+// SPEC §11 AMENDMENT 3b:
+// (1) LOGO ONLY. There is no wordmark text; the brand link is the badge mark and its
+//     `aria-label` is the accessible name.
 // (2) A SEARCH PILL between the nav and the CTA (direction S1), and the same form
 //     full-width inside the mobile drawer. It is a real GET form to /search/, so pressing
 //     Enter works with no script at all; the script only adds the instant result list.
@@ -15,55 +14,34 @@
 // scripts/build_search_index.py from this repo's own data. No third-party search service is
 // contacted, at build time or in the browser.
 //
-// IDS. The bar's result list is `#site-search-results` and the drawer's is
-// `#site-search-results-drawer`, so the two forms on one page own distinct lists. The canvas
-// route mounts five headers on one page and therefore duplicates both — a canvas-only
-// artifact, like the five contact forms of amendment 2, and it goes when Task 19 deletes
-// the route. The script never looks an id up: it walks each form and finds the list inside it.
+// The drawer is the MOBILE behaviour: below 768px the inline nav and the bar's search pill
+// are hidden and the <details> arrives. Both navs are in the DOM, but only ever one at a
+// time is in the accessibility tree — the hidden one is `display: none`, which removes it
+// rather than duplicating the landmark.
 //
-// The drawer is the MOBILE behaviour of all five variants, not a trait of d: below 768px
-// every variant hides the inline nav and shows the <details>. What distinguishes d is that
-// it keeps the drawer at desktop too and never renders an inline nav at all. Both navs are
-// in the DOM for the other four, but only ever one at a time is in the accessibility tree —
-// the hidden one is `display: none`, which removes it rather than duplicating the landmark.
-//
-// Variants b and d paint their own steel band, so they carry `data-surface="inverse"`: the
-// global rule flips `--kit-ring` to the on-inverse focus colour and sets the inverse text
-// colour for everything inside, rather than each child naming a dark-band colour of its own.
-// Nothing here spells `--color-brand` for text; the bar takes `color` from the surface and
-// the links inherit it.
-//
-// The mark is the only branding SVG; the icons are inline stroke paths, never an icon font.
+// The bar takes `color` from the surface and the links inherit it; nothing here spells
+// `--color-brand` for text. The mark is the only branding SVG; the icons are inline stroke
+// paths, never an icon font.
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
 import { SITE, NAV } from '../../lib/site';
 import Mark from './Mark.astro';
 import Button from './Button.astro';
-type Props = HTMLAttributes<'header'> & { variant?: Variant; markVariant?: Variant };
-const { variant = 'a', markVariant = 'a', class: cls, ...rest } = Astro.props;
-const inverse = variant === 'b' || variant === 'd';
+type Props = HTMLAttributes<'header'>;
+const { class: cls, ...rest } = Astro.props;
 const here = Astro.url.pathname;
 ---
-<header
-  {...rest}
-  class:list={['kit-hdr', `kit-hdr-${variant}`, cls]}
-  data-surface={inverse ? 'inverse' : undefined}
-  data-variant={variant}
->
+<header {...rest} class:list={['kit-hdr', cls]}>
   <div class="container bar">
     <a href="/" class="brand" aria-label={`${SITE.site_name} home`}>
-      <Mark variant={markVariant} inverse={inverse} size={40} title="" />
-      {variant === 'e' && <small class="strap">{SITE.location_label}</small>}
+      <Mark size={40} title="" />
     </a>
-    {variant !== 'd' && (
-      <nav aria-label="Main" class="nav">
-        <ul>
-          {NAV.map((n) => (
-            <li><a href={n.href} aria-current={n.href === here ? 'page' : undefined}>{n.label}</a></li>
-          ))}
-        </ul>
-      </nav>
-    )}
+    <nav aria-label="Main" class="nav">
+      <ul>
+        {NAV.map((n) => (
+          <li><a href={n.href} aria-current={n.href === here ? 'page' : undefined}>{n.label}</a></li>
+        ))}
+      </ul>
+    </nav>
     <form role="search" action="/search/" method="get" class="site-search">
       <label class="vh" for="site-search-q">Search the site</label>
       <input id="site-search-q" type="search" name="q" autocomplete="off"
@@ -75,9 +53,7 @@ const here = Astro.url.pathname;
       <p id="site-search-hint" class="vh">Results appear below as you type; press Enter for the full results page.</p>
       <ul id="site-search-results" class="results" hidden aria-live="polite"></ul>
     </form>
-    {variant !== 'c' && (
-      <Button variant="a" href="/available-puppies/" label="Available puppies" class="cta" />
-    )}
+    <Button kind="primary" href="/available-puppies/" label="Available puppies" class="cta" />
     <details class="drawer">
       {/* Two spans rather than a toggled aria-label: the summary's accessible name comes
           from its own text, so `details[open]` swapping which span is displayed renames
@@ -143,14 +119,9 @@ const here = Astro.url.pathname;
 <style>
   @layer components {
     .kit-hdr { position: sticky; top: 0; z-index: 50; background: var(--hdr-bg); border-bottom: 1px solid var(--color-border); min-height: var(--hdr); color: var(--color-text); }
-    .kit-hdr[data-surface="inverse"] { background: var(--color-surface-inverse); border-bottom-color: transparent; }
     .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--space-4); min-height: var(--hdr); flex-wrap: wrap; }
     .brand { display: inline-flex; align-items: center; gap: var(--space-3); text-decoration: none; color: inherit; }
     .brand:focus-visible, .nav a:focus-visible, .drawer summary:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
-    /* The strapline is the one place the header names a colour, and on the slim bone bar
-       only: steel-500 is 4.6:1 on bone, and variant e is the only variant that shows it. */
-    .strap { font-family: var(--font-body); font-weight: 600; font-size: var(--text-xs); letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand-mid); }
-    .kit-hdr-e .brand { flex-direction: column; align-items: flex-start; gap: var(--space-1); }
     .nav ul { display: flex; gap: var(--space-5); list-style: none; margin: 0; padding: 0; flex-wrap: wrap; }
     .nav a { color: inherit; text-decoration: none; font-weight: 600; font-size: var(--text-sm); padding: var(--space-3) 0; display: inline-block; min-height: 44px; line-height: 20px; }
     .nav a[aria-current="page"] { box-shadow: inset 0 -2px 0 var(--color-cta); }
@@ -163,15 +134,13 @@ const here = Astro.url.pathname;
     /* The search pill (S1). `position: relative` so the result list hangs off the field
        rather than pushing the bar taller as the reader types. */
     .site-search { position: relative; display: flex; align-items: center; gap: var(--space-1); background: var(--color-surface-raised); border: 1px solid var(--color-border); border-radius: var(--radius-pill); padding-inline: var(--space-3); min-height: 44px; flex: 0 1 240px; }
-    [data-surface="inverse"] .site-search { background: color-mix(in srgb, var(--color-text-on-inverse) 12%, transparent); border-color: color-mix(in srgb, var(--color-text-on-inverse) 28%, transparent); }
     .site-search input { flex: 1 1 auto; min-width: 0; border: 0; background: none; color: inherit; font: inherit; font-size: var(--text-sm); padding-block: 10px; }
     .site-search input::placeholder { color: var(--color-text-muted); opacity: 1; }
-    [data-surface="inverse"] .site-search input::placeholder { color: inherit; opacity: .8; }
     .site-search input:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; border-radius: var(--radius-sm); }
     .go { display: inline-grid; place-items: center; width: 44px; height: 44px; margin-right: calc(var(--space-3) * -1 + 2px); border: 0; background: none; color: inherit; cursor: pointer; border-radius: 50%; }
     .go:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
-    /* The result list is its own bone panel even on an inverse bar: a result title is body
-       text, and body text belongs on the reading surface, not on a steel band. */
+    /* The result list is its own bone panel: a result title is body text, and body text
+       belongs on the reading surface. */
     .results { position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 60; margin: 0; padding: var(--space-2); list-style: none; background: var(--color-surface-raised); color: var(--color-text); border: var(--card-border); border-radius: var(--card-radius); box-shadow: var(--shadow-lift); max-height: 60vh; overflow: auto; min-width: 260px; }
     .results .group { font-size: var(--text-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); padding: var(--space-2) var(--space-3) var(--space-1); }
     .results a { display: block; padding: var(--space-2) var(--space-3); color: var(--color-link); text-decoration: none; font-size: var(--text-sm); border-radius: var(--radius-sm); }
@@ -179,17 +148,8 @@ const here = Astro.url.pathname;
     .results a:focus-visible { outline: 3px solid var(--color-focus); outline-offset: -2px; }
     .results .empty { padding: var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
 
-    .kit-hdr-b .bar { justify-content: center; }
-    .kit-hdr-b .brand { margin-right: auto; }
-    .kit-hdr-b .cta { margin-left: auto; }
-    .kit-hdr-c .bar { flex-direction: column; gap: var(--space-2); padding-block: var(--space-3); }
-    .kit-hdr-c .brand { flex-direction: column; text-align: center; }
-    .kit-hdr-c .site-search { flex-basis: 320px; }
-    .kit-hdr-e { min-height: 56px; }
-    .kit-hdr-e .bar { min-height: 56px; }
-    /* Mobile: the inline nav and the bar's search go, the drawer arrives — every variant. */
+    /* Mobile: the inline nav and the bar's search go, the drawer arrives. */
     .drawer { position: relative; display: none; }
-    .kit-hdr-d .drawer { display: block; }
     @media (max-width: 767px) {
       .nav { display: none; }
       .bar > .site-search { display: none; }

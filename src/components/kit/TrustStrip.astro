@@ -1,6 +1,7 @@
 ---
-// src/components/kit/TrustStrip.astro — spec §5 #5. Line icons, never emoji (rule 7).
-// a icon row · b three tiles · c single line with dividers · d inverse band · e stacked list
+// src/components/kit/TrustStrip.astro — the trust strip (spec §5 #5). Picked 2026-09-18:
+// the inverse band — three claims with a line icon, a headline and a sentence, on steel.
+// Line icons, never emoji (rule 7).
 //
 // THE THREE CLAIMS ARE BACKED, not written here. Each one is on the live homepage today:
 // KC registration and DEFRA approval in the "are you a licensed breeder" answer, the
@@ -8,66 +9,45 @@
 // answer, and the home rearing in both. A claim with nothing behind it would be a statutory
 // statement invented by a component, which rule 9 forbids.
 //
-// Variant d paints its own steel band, so it carries `data-surface="inverse"` and the
+// The strip paints its own steel band, so it carries `data-surface="inverse"` and the
 // global rule supplies the on-inverse text colour and --kit-ring (convention 3): nothing
-// here names --color-brand for a colour that has to work on both surfaces.
+// here names a colour that has to work on both surfaces, and the section deliberately sets
+// no `color` of its own so the global one is what applies.
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
-type Props = HTMLAttributes<'section'> & { variant?: Variant };
-const { variant = 'a', class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'>;
+const { class: cls, ...rest } = Astro.props;
 const items = [
   { t: 'KC registered', d: 'KC-registered breeder; registration paperwork with every puppy.', i: 'M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z' },
   { t: 'DNA-tested parents', d: 'Dam and sire clear of L-2-HGA and HC-HSF4, results on request.', i: 'M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6' },
   { t: 'Raised in the home', d: 'Reared in a family home, not a kennel, and socialised early.', i: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6' },
 ];
-const inverse = variant === 'd';
 ---
 <section
   {...rest}
-  class:list={['kit-trust', `kit-trust-${variant}`, cls]}
-  data-surface={inverse ? 'inverse' : undefined}
-  data-variant={variant}
+  class:list={['kit-trust', cls]}
+  data-surface="inverse"
   aria-label="Breeder credentials"
 >
   <ul class="container list">
-    {items.map((x, i) => (
-      <li class:list={[variant === 'b' && 'kit-card']}>
+    {items.map((x) => (
+      <li>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d={x.i} /></svg>
-        <div><strong>{x.t}</strong>{variant !== 'c' && <p>{x.d}</p>}</div>
-        {variant === 'e' && i < items.length - 1 && <span class="row-rule" aria-hidden="true"></span>}
+        <div><strong>{x.t}</strong><p>{x.d}</p></div>
       </li>
     ))}
   </ul>
 </section>
 <style>
   @layer components {
-    .kit-trust { background: var(--color-surface-raised); color: var(--color-text); padding-block: var(--space-6); border-block: 1px solid var(--color-border); }
-    .kit-trust[data-surface="inverse"] { background: var(--color-surface-inverse); border-block: 0; }
+    .kit-trust { background: var(--color-surface-inverse); padding-block: var(--space-6); }
     .list { list-style: none; margin: 0; padding-block: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-6); }
-    li { display: flex; gap: var(--space-3); align-items: flex-start; color: var(--color-brand); }
-    [data-surface="inverse"] li { color: inherit; }
-    /* Brass as an accent on the dark band only: it is 4.9:1 there and 3.1:1 on bone. */
-    [data-surface="inverse"] svg { color: var(--color-cta); }
+    li { display: flex; gap: var(--space-3); align-items: flex-start; color: inherit; }
+    /* Brass as an accent on the dark band: it is 4.9:1 there and 3.1:1 on bone. */
+    svg { color: var(--color-cta); }
     strong { display: block; font-family: var(--font-display); font-size: var(--text-lg); color: inherit; }
-    p { margin: 4px 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
-    [data-surface="inverse"] p { color: inherit; }
-    /* The tile shell is .kit-card from src/styles/kit.css (convention 9): b is the second
-       component to need it, so it moved there rather than being copied in. */
-    .kit-trust-b li { flex-direction: column; padding: var(--space-5); }
-    .kit-trust-c .list { display: flex; justify-content: center; gap: 0; }
-    .kit-trust-c li { padding-inline: var(--space-6); border-left: 1px solid var(--color-border); align-items: center; }
-    .kit-trust-c li:first-child { border-left: 0; }
-    /* e is the DIVIDED stacked list: one column, and a hairline between the claims. The
-       rule is a real element rather than a border on the <li>, so e differs from a in what
-       it renders and not only in this stylesheet. */
-    .kit-trust-e .list { grid-template-columns: 1fr; max-width: 560px; gap: var(--space-4); }
-    .kit-trust-e li { flex-wrap: wrap; }
-    .row-rule { flex-basis: 100%; height: 1px; background: var(--color-border); margin-top: var(--space-4); }
-    [data-surface="inverse"] .row-rule { background: color-mix(in srgb, var(--color-text-on-inverse) 24%, transparent); }
+    p { margin: 4px 0 0; font-size: var(--text-sm); color: inherit; }
     @media (max-width: 720px) {
       .list { grid-template-columns: 1fr; }
-      .kit-trust-c .list { flex-direction: column; }
-      .kit-trust-c li { border-left: 0; padding-inline: 0; }
     }
   }
 </style>

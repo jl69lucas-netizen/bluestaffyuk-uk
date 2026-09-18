@@ -1,8 +1,12 @@
 ---
-// src/components/kit/CounterStrip.astro — spec §5 #6. Every variant satisfies
-// rules/design.md `layout-hero-counter-separation`: a background TONE SHIFT and a
-// rule/seam, because the check asks for both and a strip that carries only one of them
-// reads as hero furniture and the figures stop registering.
+// src/components/kit/CounterStrip.astro — the stat strip (spec §5 #6). Picked 2026-09-18:
+// the inline hero-edge treatment — one flush line of figure-then-label pairs, lifted onto
+// the hero's bottom edge.
+//
+// It satisfies rules/design.md `layout-hero-counter-separation`: a background TONE SHIFT
+// (steel-100 against the hero's bone) AND a rule (the 2px brand border), because the check
+// asks for both and a strip carrying only one of them reads as hero furniture, at which
+// point the figures stop registering as claims.
 //
 // `.counter-wrap` and `[data-counters]` are the harness hooks the check selects on
 // (tests/render/checks/layout.ts) — renaming either makes the check silently examine zero.
@@ -10,16 +14,11 @@
 // FIGURES COME FROM DATA (rule 9): the availability count is derived from
 // data/puppies.json and the money comes from data/settings.json. Nothing here is typed
 // from memory, so a sold puppy or a price change is a data edit, not a component edit.
-//
-// a tone shift + top rule · b seam gradient bar · c boxed tiles on bone
-// d inline hero-edge: one flush line of figure+label pairs, overlapping the hero's bottom
-// e minimal, brass rule
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
 import pups from '../../../data/puppies.json';
 import { SITE, type PuppyRow } from '../../lib/site';
-type Props = HTMLAttributes<'section'> & { variant?: Variant };
-const { variant = 'a', class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'>;
+const { class: cls, ...rest } = Astro.props;
 const available = (pups as PuppyRow[]).filter((p) => p.status === 'Available').length;
 const stats = [
   { n: String(available), l: available === 1 ? 'puppy available now' : 'puppies available now' },
@@ -29,60 +28,48 @@ const stats = [
 ---
 <section
   {...rest}
-  class:list={['counter-wrap', 'kit-counter', `kit-counter-${variant}`, cls]}
+  class:list={['counter-wrap', 'kit-counter', cls]}
   data-counters
-  data-variant={variant}
   aria-label="At a glance"
 >
-  {variant === 'b' && <span class="seam" aria-hidden="true"></span>}
   <ul class="container list">
     {stats.map((s, i) => (
-      <li class:list={[variant === 'c' && 'kit-card']}>
-        {variant === 'e'
-          ? <Fragment><span>{s.l}</span><strong>{s.n}</strong></Fragment>
-          : <Fragment><strong>{s.n}</strong><span>{s.l}</span></Fragment>}
-        {variant === 'd' && i < stats.length - 1 && <span class="dot" aria-hidden="true">·</span>}
+      <li>
+        <strong>{s.n}</strong><span>{s.l}</span>
+        {i < stats.length - 1 && <span class="dot" aria-hidden="true">·</span>}
       </li>
     ))}
   </ul>
 </section>
 <style>
   @layer components {
-    .kit-counter { position: relative; background: var(--counter-bed); color: var(--color-brand); padding-block: var(--space-6); border-top: 1px solid var(--color-border); }
-    .list { list-style: none; margin: 0; padding-block: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); text-align: center; }
-    strong { display: block; font-family: var(--font-display); font-size: var(--text-3xl); line-height: 1.1; }
-    span { font-size: var(--text-sm); color: var(--color-text-muted); }
-    /* b trades the border for a seam bar — still a rule, and the check counts a ::before
-       bar as one; the bed still shifts tone, so both halves of the rule are present. */
-    .kit-counter-b { border-top: 0; }
-    /* The seam is a real element, not a ::before: with it, the tile shell on c, the dot on
-       d and e's reversed pair, each of the five differs in what it renders and not only in
-       this stylesheet. */
-    .seam { position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--seam-gradient); }
-    /* The tile shell is .kit-card from src/styles/kit.css (convention 9). */
-    .kit-counter-c li { padding: var(--space-4); }
-    /* d is a different SHAPE, not a recoloured a: the three stats are one flush line of
-       figure-then-label pairs reading left to right, lifted onto the hero's bottom edge by
-       a negative margin, instead of the centred three-column grid the others use. The 2px
-       brand rule and the steel-100 bed keep both halves of
-       layout-hero-counter-separation intact under the overlap. */
-    .kit-counter-d { background: var(--color-brand-soft); border-top: 2px solid var(--color-brand); margin-top: calc(-1 * var(--space-4)); padding-block: var(--space-4); }
-    .kit-counter-d .list { display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: baseline; grid-template-columns: none; gap: var(--space-6); text-align: left; }
-    .kit-counter-d li { display: flex; align-items: baseline; gap: var(--space-2); }
-    .kit-counter-d strong { font-size: var(--text-xl); font-variant-numeric: tabular-nums; }
-    /* Steel-100 is a lighter bed than the others: --color-text-muted (ink-3) measures
-       4.49:1 on it, under the 4.5:1 AA floor, so d's labels take the full text colour. */
-    .kit-counter-d span { color: var(--color-text); }
-    /* The dot is d's own furniture: an inline row needs something between the pairs, and
-       the other four are grids that do not. aria-hidden, so it is punctuation for the eye
-       only. */
-    .kit-counter-d .dot { color: var(--color-text-muted); padding-inline-start: var(--space-4); }
-    /* e reads label-then-figure: the label is the quiet line and the brass-ruled figure
-       lands under it, which is a different reading order from the four figure-first
-       treatments, not a restyle of one. */
-    .kit-counter-e { background: var(--color-surface-raised); border-top: 2px solid var(--color-cta); padding-block: var(--space-4); }
-    .kit-counter-e strong { font-size: var(--text-2xl); }
-    .kit-counter-e span { display: block; }
-    @media (max-width: 720px) { .list { grid-template-columns: 1fr; } }
+    /* Steel-100 bed and a 2px brand rule: both halves of
+       layout-hero-counter-separation, kept intact under the negative overlap that lifts
+       the line onto the hero's bottom edge. */
+    .kit-counter {
+      position: relative;
+      background: var(--color-brand-soft);
+      color: var(--color-brand);
+      border-top: 2px solid var(--color-brand);
+      margin-top: calc(-1 * var(--space-4));
+      padding-block: var(--space-4);
+    }
+    .list {
+      list-style: none; margin: 0; padding-block: 0;
+      display: flex; flex-wrap: wrap; justify-content: flex-start; align-items: baseline;
+      gap: var(--space-6); text-align: left;
+    }
+    li { display: flex; align-items: baseline; gap: var(--space-2); }
+    strong { display: block; font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1; font-feature-settings: "tnum"; }
+    /* Steel-100 is a light bed: --color-text-muted (ink-3) measures 4.49:1 on it, under the
+       4.5:1 AA floor, so the labels take the full text colour. */
+    span { font-size: var(--text-sm); color: var(--color-text); }
+    /* The dot is this line's own furniture: an inline row needs something between the
+       pairs. aria-hidden, so it is punctuation for the eye only. */
+    .dot { color: var(--color-text-muted); padding-inline-start: var(--space-4); }
+    @media (max-width: 720px) {
+      .list { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
+      .dot { display: none; }
+    }
   }
 </style>

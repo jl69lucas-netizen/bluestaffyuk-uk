@@ -1,30 +1,32 @@
 #!/usr/bin/env python3
-"""build_design_canvas.py — dist/design-canvas/index.html → Design-type artboards.
+"""build_design_canvas.py — dist/kit-preview/index.html → Design-type artboards.
 
-Reads the built canvas route, writes one `.dc.html` per [data-component][data-variant]
-section plus `canvas.json`, into docs/artifacts/canvas/project/. The controller then
-publishes with the Artifact tool (url = the canvas, root = docs/artifacts/canvas,
-file_path = project/canvas.json, files = every artboard). Images are uploaded once by the
-controller; their /_blob/ urls are kept in data/design/canvas-assets.json and reused.
+Reads the built preview route, writes one `.dc.html` per [data-component] section plus
+`canvas.json`, into docs/artifacts/canvas/project/. The controller then publishes with the
+Artifact tool (url = the canvas, root = docs/artifacts/canvas, file_path =
+project/canvas.json, files = every artboard). Images are uploaded once by the controller;
+their /_blob/ urls are kept in data/design/canvas-assets.json and reused.
 
 Astro inlines the built CSS, so there is no dist/_astro/*.css to read: the stylesheet for an
 artboard is every <style> block of the built route, pasted in document order so the @layer
 cascade survives.
 
-Spec §11 amendment 3d: every PICKED variant also gets a 375 and a 768 artboard
-(`<component>-<v>-m375.dc.html`, `-t768.dc.html`), laid out as two extra rows at the bottom
-of the canvas, so the mobile and tablet renderings are judged rather than assumed. Only the
-picks: 130 more boards for the losing variants is a canvas nobody can read.
+THIRTY-NINE BOARDS, NOT SIXTY-FIVE. Task 19 pruned the kit to the picks and deleted the
+canvas route, so there is no variant letter left to put on a board: each of the thirteen
+components is cut once at its own board width (1280 or 640, from components.json) and again
+at 375 and at 768 (spec §11 amendment 3d, so the phone and tablet renderings are judged
+rather than assumed). The three rows are `<component>.dc.html`, `<component>-m375.dc.html`
+and `<component>-t768.dc.html`.
 
-Usage: python3 scripts/build_design_canvas.py [--dist dist] [--out docs/artifacts/canvas]
-       [--heights data/design/canvas-heights.json]
+Usage: python3 scripts/build_design_canvas.py [--dist dist/kit-preview/index.html]
+       [--out docs/artifacts/canvas] [--heights data/design/canvas-heights.json]
 Heights come from scripts/measure_canvas_heights.mjs (Playwright) — run it first.
 """
 import argparse, dataclasses, html as H, json, pathlib, re, sys, datetime as dt
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FONTS_LINK = ('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
               'family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">')
-SEC = re.compile(r'<section([^>]*)data-component="([a-z-]+)"([^>]*)data-variant="([a-e])"([^>]*)>(.*?)</section>', re.S)
+SEC = re.compile(r'<section([^>]*)data-component="([a-z-]+)"([^>]*)>(.*?)</section>', re.S)
 WIDTH = re.compile(r'data-width="(\d+)"')
 IMG_SRC = re.compile(r'(src|srcset)="([^"]+)"')
 STYLE = re.compile(r"<style[^>]*>(.*?)</style>", re.S)
@@ -34,7 +36,6 @@ SCRIPT = re.compile(r"<script\b[^>]*>.*?</script>", re.S)
 @dataclasses.dataclass
 class Section:
     component: str
-    variant: str
     width: int
     inner: str
 
@@ -49,10 +50,10 @@ def find_sections(html):
     dropped here, once, so neither the artboard nor the missing-asset scan ever sees it."""
     out = []
     for m in SEC.finditer(html):
-        attrs = m.group(1) + m.group(3) + m.group(5)
+        attrs = m.group(1) + m.group(3)
         w = WIDTH.search(attrs)
-        out.append(Section(m.group(2), m.group(4), int(w.group(1)) if w else 1280,
-                           SCRIPT.sub("", m.group(6)).strip()))
+        out.append(Section(m.group(2), int(w.group(1)) if w else 1280,
+                           SCRIPT.sub("", m.group(4)).strip()))
     return out
 
 
@@ -80,7 +81,7 @@ def artboard(sec, css, fonts_link, height, assets, width=None):
     width = sec.width if width is None else width
     inner = rewrite_assets(sec.inner, assets)
     inner = re.sub(r"<h3[^>]*>.*?</h3>\s*", "", inner, count=1, flags=re.S)   # the route's caption
-    title = f"{sec.component} — variant {sec.variant}"
+    title = f"{sec.component} — {width}"
     props = json.dumps({"$preview": {"width": width, "height": height}}, separators=(",", ":"))
     return (
         "<!doctype html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
@@ -94,13 +95,31 @@ def artboard(sec, css, fonts_link, height, assets, width=None):
     )
 
 
-#: the two extra rows, as (suffix, board width, row title). Spec §11 amendment 3d.
-RESPONSIVE_ROWS = (("m375", 375, "14 · Picked — mobile 375"),
-                   ("t768", 768, "15 · Picked — tablet 768"))
+#: The three rows, as (suffix, board width or None for the component's own, row title).
+#: Row 1 cuts each component at its components.json width; rows 2 and 3 are spec §11
+#: amendment 3d's phone and tablet passes over the same built section.
+BOARD_ROWS = (("", None, "1 · The kit"),
+              ("m375", 375, "2 · The kit — mobile 375"),
+              ("t768", 768, "3 · The kit — tablet 768"))
 GAP = 80
 
 
-def canvas_index(title, rows, boards, existing, picked=()):
+def board_name(cid, suffix):
+    """`hero.dc.html` on row 1, `hero-m375.dc.html` on the responsive rows."""
+    return f"{cid}-{suffix}.dc.html" if suffix else f"{cid}.dc.html"
+
+
+def height_key(cid, suffix):
+    """The key scripts/measure_canvas_heights.mjs writes for that board."""
+    return f"{cid}-{suffix}" if suffix else cid
+
+
+def canvas_index(title, rows, heights, existing=None):
+    """The canvas index: three rows of one board per component, in components.json order.
+
+    `heights` is the measured map (component -> px, component-m375 -> px, ...). A component
+    with no measurement falls back to 200 rather than failing the build: a board of the
+    wrong height is visible and fixable, a build that refuses to write is not."""
     now = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     idx = existing or {"v": 3, "createdOnFiles": {"v": 1, "at": now}, "title": title, "launch": {"view": "canvas"},
                        "pages": [], "boards": {}, "order": [], "notes": {}, "designSystems": []}
@@ -108,95 +127,65 @@ def canvas_index(title, rows, boards, existing, picked=()):
     idx["boards"], idx["order"] = {}, []
     idx["notes"] = {k: v for k, v in idx.get("notes", {}).items() if v.get("kind") != "title1"}
     y = 0
-    heights = {(c, v): h for c, v, h in boards}
-    for row in rows:
-        w = row["board_width"]
-        row_h = max(heights.get((row["id"], v), 200) for v in "abcde")
-        idx["notes"][f"row-{row['id']}"] = {"x": 0, "y": y - 240, "text": row["title"], "kind": "title1", "maxW": 5 * w + 4 * GAP}
-        for i, v in enumerate("abcde"):
-            f = f"{row['id']}-{v}.dc.html"
-            idx["boards"][f] = {"x": i * (w + GAP), "y": y, "w": w, "h": heights.get((row["id"], v), 200), "title": f"{row['title']} · {v}"}
+    for suffix, row_w, row_title in BOARD_ROWS:
+        x = 0
+        row_h = 200
+        for row in rows:
+            w = row_w or row["board_width"]
+            h = heights.get(height_key(row["id"], suffix), 200)
+            f = board_name(row["id"], suffix)
+            idx["boards"][f] = {"x": x, "y": y, "w": w, "h": h,
+                                "title": f"{row['title']} · {w}"}
+            # The FAQ is the one component whose whole point is a control that opens.
             if row["id"] == "faq":
                 idx["boards"][f]["is_interactive"] = True
             idx["order"].append(f)
-        y += row_h + 120 + 240
-
-    # Rows 14 and 15: the picked variant of every component, at phone and tablet width. One
-    # board per component, in components.json order, so a reader scanning left to right sees
-    # the page they are about to build in the order it stacks.
-    picked_h = {(c, v, s): h for c, v, s, h in picked}
-    by_id = {r["id"]: r for r in rows}
-    for suffix, w, row_title in RESPONSIVE_ROWS:
-        # No set round-trip: `picked` already holds one row per (component, suffix), so
-        # building a set of the first three fields deduplicated nothing and only threw the
-        # order away before the sort below put it back.
-        in_row = [(c, v) for c, v, s, _ in picked if s == suffix]
-        if not in_row:
-            continue
-        order = [r["id"] for r in rows]
-        in_row.sort(key=lambda cv: order.index(cv[0]) if cv[0] in order else len(order))
-        row_h = max(picked_h[(c, v, suffix)] for c, v in in_row)
-        idx["notes"][f"row-picked-{suffix}"] = {
-            "x": 0, "y": y - 240, "text": row_title, "kind": "title1",
-            "maxW": len(in_row) * w + (len(in_row) - 1) * GAP}
-        for i, (c, v) in enumerate(in_row):
-            f = f"{c}-{v}-{suffix}.dc.html"
-            idx["boards"][f] = {"x": i * (w + GAP), "y": y, "w": w,
-                                "h": picked_h[(c, v, suffix)],
-                                "title": f"{by_id.get(c, {}).get('title', c)} · {v} · {w}"}
-            if c == "faq":
-                idx["boards"][f]["is_interactive"] = True
-            idx["order"].append(f)
+            x += w + GAP
+            row_h = max(row_h, h)
+        idx["notes"][f"row-{suffix or 'kit'}"] = {
+            "x": 0, "y": y - 240, "text": row_title, "kind": "title1", "maxW": max(x - GAP, 0)}
         y += row_h + 120 + 240
     return idx
 
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("--dist", default=str(ROOT / "dist/design-canvas/index.html"))
+    ap.add_argument("--dist", default=str(ROOT / "dist/kit-preview/index.html"))
     ap.add_argument("--out", default=str(ROOT / "docs/artifacts/canvas"))
     ap.add_argument("--heights", default=str(ROOT / "data/design/canvas-heights.json"))
     a = ap.parse_args(argv)
     html = pathlib.Path(a.dist).read_text()
     rows = json.loads((ROOT / "data/design/components.json").read_text())
     assets = json.loads((ROOT / "data/design/canvas-assets.json").read_text())
-    # The mark has no artboard at any width, so picks["mark"] is not read here.
-    picks = json.loads((ROOT / "data/design/picks.json").read_text())["picks"]
-    PICKED = {(cid, p["variant"]) for cid, p in picks.items()}
     heights = json.loads(pathlib.Path(a.heights).read_text()) if pathlib.Path(a.heights).exists() else {}
     css = page_css(html)
     out = pathlib.Path(a.out) / "project"
     out.mkdir(parents=True, exist_ok=True)
-    boards = []
-    picked_boards = []
+    written = 0
     missing = set()
     sizes = []
     for sec in find_sections(html):
-        if sec.variant not in "abcde" or sec.component == "mark":
+        # The mark has no artboard at any width: it is shown on the preview page on both
+        # surfaces it has to work on, and it is not a components.json row.
+        if sec.component == "mark":
             continue
         for m in IMG_SRC.finditer(sec.inner):
             for cand in m.group(2).split(","):
                 url = cand.strip().split(" ")[0]
                 if url.startswith("/_astro/") and url not in assets:
                     missing.add(url)
-        h = heights.get(f"{sec.component}-{sec.variant}", 200)
-        path = out / f"{sec.component}-{sec.variant}.dc.html"
-        path.write_text(artboard(sec, css, FONTS_LINK, h, assets))
-        sizes.append(path.stat().st_size)
-        boards.append((sec.component, sec.variant, h))
-        if (sec.component, sec.variant) in PICKED:
-            for suffix, w, _ in RESPONSIVE_ROWS:
-                rh = heights.get(f"{sec.component}-{sec.variant}-{suffix}", 200)
-                rpath = out / f"{sec.component}-{sec.variant}-{suffix}.dc.html"
-                rpath.write_text(artboard(sec, css, FONTS_LINK, rh, assets, width=w))
-                sizes.append(rpath.stat().st_size)
-                picked_boards.append((sec.component, sec.variant, suffix, rh))
+        for suffix, row_w, _ in BOARD_ROWS:
+            h = heights.get(height_key(sec.component, suffix), 200)
+            path = out / board_name(sec.component, suffix)
+            path.write_text(artboard(sec, css, FONTS_LINK, h, assets, width=row_w))
+            sizes.append(path.stat().st_size)
+            written += 1
     idx_path = out / "canvas.json"
     existing = json.loads(idx_path.read_text()) if idx_path.exists() else None
     idx_path.write_text(json.dumps(
-        canvas_index("BlueStaffyUK Design Canvas", rows, boards, existing, picked_boards), indent=1))
-    print(f"wrote {len(boards) + len(picked_boards)} artboards + canvas.json to {out} "
-          f"({len(boards)} variant boards, {len(picked_boards)} picked mobile/tablet boards)")
+        canvas_index("BlueStaffyUK Design Canvas", rows, heights, existing), indent=1))
+    print(f"wrote {written} artboards + canvas.json to {out} "
+          f"({len(rows)} components x {len(BOARD_ROWS)} widths)")
     if sizes:
         print(f"artboard size: min {min(sizes) // 1024} KB, max {max(sizes) // 1024} KB")
     if missing:

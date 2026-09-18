@@ -1,40 +1,39 @@
 ---
-// src/components/kit/ContactFormKit.astro — spec §5 #10. Five layouts over ONE field
-// contract: the same six named controls, the same honeypot, the same two hidden fields and
-// the same endpoint as src/components/ContactForm.astro, which this replaces in project 4.
-// a single column · b two column · c stepped fieldsets · d inverse card · e compact panel
+// src/components/kit/ContactFormKit.astro — the enquiry form (spec §5 #10). Picked
+// 2026-09-18: the stepped layout — three numbered fieldsets, about you / which puppy /
+// your message. It replaces src/components/ContactForm.astro in project 4 over the SAME
+// field contract: the same six named controls, the same honeypot, the same two hidden
+// fields and the same endpoint.
 //
 // THE CONTRACT IS NOT A LAYOUT CHOICE. scripts/form_contract_audit.py and
 // tests/render/checks/form.ts both read the built page for name/email/phone/location/puppy/
 // message, the _gotcha honeypot, hidden _next and _subject, method POST and the one
-// Formspree endpoint. Every variant carries all of them; only the boxes around them move.
-// A variant that dropped a field to look tidier would ship a form that loses an enquiry.
+// Formspree endpoint. A layout that dropped a field to look tidier would ship a form that
+// loses an enquiry.
 //
 // THE ENDPOINT IS NEVER A LITERAL. It is built here exactly the way ContactForm.astro
-// builds it — from PUBLIC_FORMSPREE_ID, with the local '#contact' stub when the id is
-// unset — so a dev build has no live endpoint and no id is ever committed. `data-live`
-// carries the same fact to the client script project 4 wires up; the canvas mounts five
-// copies of this form, so the stub's submit handler is not duplicated here.
+// builds it — from PUBLIC_FORMSPREE_ID, with a local '#contact' stub when the id is unset —
+// so a dev build has no live endpoint and no id is ever committed. `data-live` carries the
+// same fact to the client script project 4 wires up. There is no `action` override prop any
+// more: it existed so the design canvas's five specimens posted nowhere, and it went with
+// the canvas.
 //
 // THE PUPPY OPTIONS ARE DATA (rule 9): data/puppies.json, the available rows, plus the
 // waiting-list choice. A hard-coded pup would go stale the day one is reserved.
 //
 // Conventions: 4 (HTMLAttributes + ...rest + class:list), 6 (@layer components), 2 (the
-// focus ring reads --kit-ring, so it survives on d's dark card).
+// focus ring reads --kit-ring).
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
 import puppiesJson from '../../../data/puppies.json';
-import { SITE, abs, type PuppyRow } from '../../lib/site';
+import { abs, type PuppyRow } from '../../lib/site';
 import Button from './Button.astro';
 
-type Props = HTMLAttributes<'form'> & { variant?: Variant };
-// `action` is destructured because it is also set literally below (convention 4): left in
-// `rest` Astro would emit two action attributes side by side.
-const { variant = 'a', class: cls, action: actionOverride, ...rest } = Astro.props;
+type Props = HTMLAttributes<'form'>;
+const { class: cls, ...rest } = Astro.props;
 
 const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
 const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
-const action = actionOverride ?? (live ? `https://formspree.io/f/${fid}` : '#contact');
+const action = live ? `https://formspree.io/f/${fid}` : '#contact';
 
 const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
 // The placeholder option is `disabled selected`, both words: HTML's default selectedness is
@@ -42,10 +41,7 @@ const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Availabl
 // the first puppy and the required check would pass on a choice nobody made.
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 
-const inverse = variant === 'd';
-const f = `kit-contact-form-${variant}`;
-// One id prefix per variant: the canvas mounts all five on one page, so a shared prefix
-// would duplicate every id and point four labels at the wrong input.
+const f = 'kit-contact-form';
 const fields = [
   { key: 'name', label: 'Your name', type: 'text', autocomplete: 'name', required: true },
   { key: 'email', label: 'Email', type: 'email', autocomplete: 'email', required: true },
@@ -55,89 +51,49 @@ const fields = [
 ---
 <form
   {...rest}
-  class:list={['kit-card', 'kit-contact', f, cls]}
-  data-variant={variant}
-  data-surface={inverse ? 'inverse' : undefined}
+  class:list={['kit-card', 'kit-contact', cls]}
   method="POST"
   action={action}
   data-form="contact"
   data-live={String(live)}
   aria-labelledby={`${f}-h`}
 >
-  {variant === 'd' && <p class="eyebrow">{SITE.location_label}</p>}
   <h2 id={`${f}-h`}>Enquire about a puppy</h2>
 
   <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
   <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />
   <input type="text" name="_gotcha" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true" />
 
-  {variant === 'c' ? (
-    <Fragment>
-      <fieldset>
-        <legend>1 · About you</legend>
-        {fields.map((x) => (
-          <p class="field">
-            <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
-            <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
-          </p>
-        ))}
-      </fieldset>
-      <fieldset>
-        <legend>2 · Which puppy</legend>
-        <p class="field">
-          <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
-          <select id={`${f}-puppy`} name="puppy" required>
-            <option value="" disabled selected>Choose…</option>
-            {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
-            <option value="waiting-list">Join the waiting list for the next litter</option>
-          </select>
-        </p>
-      </fieldset>
-      <fieldset>
-        <legend>3 · Your message</legend>
-        <p class="field">
-          <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
-          <textarea id={`${f}-message`} name="message" rows="5" required></textarea>
-        </p>
-      </fieldset>
-    </Fragment>
-  ) : (
-    <div class="fields">
-      {variant === 'b' ? (
-        <div class="cols">
-          {fields.map((x) => (
-            <p class="field">
-              <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
-              <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
-            </p>
-          ))}
-        </div>
-      ) : (
-        fields.map((x) => (
-          <p class="field">
-            <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
-            <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
-          </p>
-        ))
-      )}
+  <fieldset>
+    <legend>1 · About you</legend>
+    {fields.map((x) => (
       <p class="field">
-        <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
-        <select id={`${f}-puppy`} name="puppy" required>
-          <option value="" disabled selected>Choose…</option>
-          {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
-          <option value="waiting-list">Join the waiting list for the next litter</option>
-        </select>
+        <label for={`${f}-${x.key}`}>{x.label}{x.required && <Fragment> <span class="req">(required)</span></Fragment>}</label>
+        <input id={`${f}-${x.key}`} name={x.key} type={x.type} autocomplete={x.autocomplete} required={x.required} />
       </p>
-      <p class="field">
-        <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
-        <textarea id={`${f}-message`} name="message" rows={variant === 'e' ? 3 : 5} required></textarea>
-      </p>
-    </div>
-  )}
+    ))}
+  </fieldset>
+  <fieldset>
+    <legend>2 · Which puppy</legend>
+    <p class="field">
+      <label for={`${f}-puppy`}>Which puppy? <span class="req">(required)</span></label>
+      <select id={`${f}-puppy`} name="puppy" required>
+        <option value="" disabled selected>Choose…</option>
+        {puppies.map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
+        <option value="waiting-list">Join the waiting list for the next litter</option>
+      </select>
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend>3 · Your message</legend>
+    <p class="field">
+      <label for={`${f}-message`}>Message <span class="req">(required)</span></label>
+      <textarea id={`${f}-message`} name="message" rows="5" required></textarea>
+    </p>
+  </fieldset>
 
-  <Button variant="d" type="submit" label="Send enquiry" />
+  <Button kind="submit" type="submit" label="Send enquiry" />
   <p class="note">We reply by email. Your details are used only to answer your enquiry. See our <a href="/privacy-policy-uk/">privacy policy</a>.</p>
-  {variant === 'e' && <p class="direct">Prefer to write to us? <a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>}
 </form>
 
 <style>
@@ -152,30 +108,12 @@ const fields = [
       padding: var(--space-6);
       color: var(--color-text);
     }
-    /* d carries its own dark fill, so it also carries the ring that survives on it
-       (convention 2) — the light-surface focus token is this card's own colour. */
-    .kit-contact-form-d {
-      --kit-ring: var(--color-focus-on-inverse);
-      background: var(--color-surface-inverse);
-      color: var(--color-text-on-inverse);
-      border: 0;
-    }
-    /* Both overrides beat .kit-card: this block is in the same @layer and comes later. */
-    .kit-contact-form-e { max-width: 380px; padding: var(--space-5); }
 
     h2 { margin: 0; font-family: var(--font-display); font-size: var(--text-2xl); color: var(--color-brand); }
-    .kit-contact-form-d h2 { color: inherit; }
-    .eyebrow {
-      margin: 0; font-size: var(--text-xs); font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase; color: var(--color-link-on-inverse);
-    }
 
-    .fields { display: grid; gap: var(--space-4); }
-    .cols { display: grid; gap: var(--space-4); grid-template-columns: 1fr 1fr; }
     .field { margin: 0; display: grid; gap: 4px; min-width: 0; }
     label { font-weight: 600; font-size: var(--text-sm); }
     .req { font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); }
-    .kit-contact-form-d .req { color: inherit; opacity: .8; }
 
     /* width: 100% + box-sizing, as on the shipped contact page: an <input> without an
        explicit width uses its `size` default and the document scrolls sideways at 375px. */
@@ -203,9 +141,6 @@ const fields = [
        does not fill in. Never focusable — tabindex="-1" above. */
     .hp { position: absolute; left: -9999px; width: 1px; height: 1px; }
 
-    .note, .direct { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
-    .kit-contact-form-d .note { color: inherit; opacity: .85; }
-
-    @media (max-width: 640px) { .cols { grid-template-columns: 1fr; } }
+    .note { margin: 0; font-size: var(--text-xs); color: var(--color-text-muted); }
   }
 </style>

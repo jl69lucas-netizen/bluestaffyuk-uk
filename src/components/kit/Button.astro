@@ -1,29 +1,35 @@
 ---
-// src/components/kit/Button.astro — the five button treatments (spec §5 #3).
-// a pill/cta · b pill/outline · c pill/inverse · d form submit (md radius) · e text link with arrow
+// src/components/kit/Button.astro — the button (spec §5 #3). Picked 2026-09-18: treatment a,
+// the brass pill, is the default.
+//
+// `kind`, not a letter. The prune kept all five treatments and renamed them, because a page
+// needs more than one button on it: a primary call to action, a quieter outline beside it,
+// an inverse pill for dark bands, the full-width form submit, and a text link with an arrow.
+// Those are five JOBS, which is why they survived the prune when the five STYLES of every
+// other component did not — `kind` says which job, and there is no letter left to pick from.
 //
 // Brass (`--color-cta`) is 2.1:1 on the bone surface, so it is only ever a FILL carrying
-// `--color-cta-ink` text (a, d) — never the colour of the label itself.
+// `--color-cta-ink` text (primary, submit) — never the colour of the label itself.
 //
-// The focus ring reads `--kit-ring` (global.css), which the surface sets. Variant c paints
+// The focus ring reads `--kit-ring` (global.css), which the surface sets. `inverse` paints
 // its own dark band, so it sets `--kit-ring` on itself: the ring sits partly on the button's
 // steel fill, where the steel `--color-focus` would be 1:1 and invisible.
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
-type Props = (HTMLAttributes<'a'> | HTMLAttributes<'button'>) & { variant?: Variant; label: string };
-const { variant = 'a', label, class: cls, ...rest } = Astro.props as Props & { class?: string };
+export type ButtonKind = 'primary' | 'outline' | 'inverse' | 'submit' | 'text';
+type Props = (HTMLAttributes<'a'> | HTMLAttributes<'button'>) & { kind?: ButtonKind; label: string };
+const { kind = 'primary', label, class: cls, ...rest } = Astro.props as Props & { class?: string };
 const base = 'kit-btn inline-flex items-center justify-center gap-2 font-semibold no-underline transition-colors';
-const byVariant: Record<Variant, string> = {
-  a: 'rounded-[var(--btn-radius)] bg-cta text-cta-ink px-6 py-3 text-base hover:bg-cta-hover',
-  b: 'rounded-[var(--btn-radius)] border-2 border-brand text-brand px-6 py-[10px] text-base hover:bg-brand-soft',
-  c: 'rounded-[var(--btn-radius)] bg-surface-inverse text-text-on-inverse px-6 py-3 text-base hover:bg-surface-deep',
-  d: 'rounded-[var(--btn-form-radius)] bg-cta text-cta-ink px-5 py-3 text-base w-full hover:bg-cta-hover',
-  e: 'text-link underline-offset-4 hover:underline px-0 py-2 text-base',
+const byKind: Record<ButtonKind, string> = {
+  primary: 'rounded-[var(--btn-radius)] bg-cta text-cta-ink px-6 py-3 text-base hover:bg-cta-hover',
+  outline: 'rounded-[var(--btn-radius)] border-2 border-brand text-brand px-6 py-[10px] text-base hover:bg-brand-soft',
+  inverse: 'rounded-[var(--btn-radius)] bg-surface-inverse text-text-on-inverse px-6 py-3 text-base hover:bg-surface-deep',
+  submit: 'rounded-[var(--btn-form-radius)] bg-cta text-cta-ink px-5 py-3 text-base w-full hover:bg-cta-hover',
+  text: 'text-link underline-offset-4 hover:underline px-0 py-2 text-base',
 };
 // `class:list` drops empty entries, so a caller that passes no `class` gets no trailing space.
-const classes = [base, byVariant[variant], cls];
-// Variant c is the only one that carries its own inverse surface with it.
-const ringStyle = variant === 'c' ? '--kit-ring: var(--color-focus-on-inverse);' : undefined;
+const classes = [base, byKind[kind], cls];
+// `inverse` is the only kind that carries its own dark surface with it.
+const ringStyle = kind === 'inverse' ? '--kit-ring: var(--color-focus-on-inverse);' : undefined;
 const href = 'href' in rest ? (rest as { href?: string }).href : undefined;
 // Pulled out of `rest`, not defaulted in the tag: Astro emits a spread attribute and a
 // literal attribute of the same name side by side (`type="button" type="submit"`).
@@ -32,8 +38,8 @@ const buttonType = restType ?? 'button';
 const arrow = '<svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 ---
 {href
-  ? <a {...attrs as HTMLAttributes<'a'>} class:list={classes} style={ringStyle} data-variant={variant}>{label}{variant === 'e' && <Fragment set:html={arrow} />}</a>
-  : <button {...attrs as HTMLAttributes<'button'>} type={buttonType} class:list={classes} style={ringStyle} data-variant={variant}>{label}{variant === 'e' && <Fragment set:html={arrow} />}</button>}
+  ? <a {...attrs as HTMLAttributes<'a'>} class:list={classes} style={ringStyle} data-kind={kind}>{label}{kind === 'text' && <Fragment set:html={arrow} />}</a>
+  : <button {...attrs as HTMLAttributes<'button'>} type={buttonType} class:list={classes} style={ringStyle} data-kind={kind}>{label}{kind === 'text' && <Fragment set:html={arrow} />}</button>}
 <style>
   @layer components {
     .kit-btn { transition-duration: var(--dur-base); transition-timing-function: var(--ease-out); min-height: 44px; }

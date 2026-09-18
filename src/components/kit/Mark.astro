@@ -2,10 +2,9 @@
 // src/components/kit/Mark.astro — the BlueStaffyUK mark: the L1 badge picked in the second
 // logo round (spec §11 amendment 3a). A flat-shaded Staffordshire Bull Terrier head —
 // broad skull, rose ears, white blaze, the breed grin with a brass tongue — inside a steel
-// roundel with a brass ring. One mark, not five: the five stroke variants are gone and the
-// `variant` prop is ACCEPTED AND IGNORED so the canvas route and the three components that
-// pass `markVariant` keep working. Task 19 removes the prop with the rest of the variant
-// machinery.
+// roundel with a brass ring. One mark, not five: the second logo round replaced the five
+// stroke options with this badge, and Task 19 (2026-09-18) removed the prop that named
+// them, here and in the three components that used to pass one down.
 //
 // COLOUR. Every fill and stroke is a token, never a hex (rule 1). SVG presentation
 // attributes accept `var()` because this SVG is inline in the HTML document, so it resolves
@@ -21,20 +20,17 @@
 // skull fill, not against the badge.
 //
 // Naming: the accessible name is the SVG `<title>` child with `role="img"`, not
-// `aria-labelledby`. The canvas route renders the mark many times on one page, so any id
-// would be duplicated; a `<title>` child needs no id. A caller that wants the mark purely
+// `aria-labelledby`. A page can carry the mark several times over — header, divider,
+// footer — so any id would be duplicated; a `<title>` child needs no id. A caller that wants the mark purely
 // as decoration passes `title=""`, which drops the `<title>` and hides the whole SVG from
 // the accessibility tree instead of naming it "".
 import type { HTMLAttributes } from 'astro/types';
-import type { Variant } from './_variant';
 type Props = HTMLAttributes<'svg'> & {
-  /** Accepted and ignored — there is one mark now. Task 19 deletes this prop. */
-  variant?: Variant;
   size?: number;
   title?: string;
   inverse?: boolean;
 };
-const { variant, size = 48, title = 'BlueStaffyUK mark', inverse = false, class: cls, ...rest } = Astro.props;
+const { size = 48, title = 'BlueStaffyUK mark', inverse = false, class: cls, ...rest } = Astro.props;
 const decorative = title === '';
 const badge = inverse ? 'var(--color-surface)' : 'var(--color-brand)';
 const outline = inverse ? 'var(--color-brand)' : 'var(--color-surface)';
