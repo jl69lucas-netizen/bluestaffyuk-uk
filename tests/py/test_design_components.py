@@ -109,8 +109,14 @@ def test_built_pages_carry_one_sprite_and_the_kit_references_it():
     kit = (ROOT / "dist/kit-preview/index.html").read_text()
     assert 'href="#bsuk-mark"' in kit
     assert 'href="#bsuk-mark-inverse"' in kit
-    # …and the paths themselves appear once: in the sprite, not once per <Mark />.
-    assert kit.count('d="M-30 -14 C-30 -34') == 2, "once in each symbol and nowhere else"
+    # …and no <Mark /> carries its own copy of the paths: every one of them is a <use>.
+    # Four copies of the skull outline reach the page, and only four — one in each of the
+    # sprite's two symbols, plus the header and footer lockups, which are standalone SVG
+    # *documents* (public/brand/*.svg, generated from this same geometry in Task 20) and so
+    # have no sprite to point at when the legacy shell inlines them. A fifth copy would be
+    # a <Mark /> that inlined itself, which is the duplication the sprite exists to prevent.
+    assert kit.count('d="M-30 -14 C-30 -34') == 4, (
+        "two symbols plus the two shell lockups, and nothing else")
 
 
 CANVAS_ROUTE = ROOT / "src/pages/design-canvas"

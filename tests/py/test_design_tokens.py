@@ -115,8 +115,8 @@ def test_kit_has_no_hex_literals():
 
 
 LEGACY_HEX_FILES = (
-    "src/components/SiteHeader.astro",
-    "src/components/SiteFooter.astro",
+    # SiteHeader.astro and SiteFooter.astro came off this list in Task 20: the shell moved
+    # to the SVG lockups, and its inline style attributes became scoped rules over tokens.
     "src/components/ContactForm.astro",
     "src/pages/available-puppies/[slug].astro",
     "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",

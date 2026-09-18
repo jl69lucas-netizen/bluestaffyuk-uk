@@ -1,5 +1,5 @@
 ---
-import { SITE, SITE_URL, abs, crumbs } from '../lib/site';
+import { SITE, SITE_URL, LOGO_RASTER, abs, crumbs } from '../lib/site';
 interface Props { extra?: unknown[]; path: string; title: string }
 const { extra = [], path, title } = Astro.props;
 const org: Record<string, unknown> = {
@@ -7,7 +7,7 @@ const org: Record<string, unknown> = {
   name: SITE.site_name, url: SITE_URL, email: SITE.email, priceRange: SITE.price_range,
   address: { '@type': 'PostalAddress', streetAddress: SITE.address.street, addressLocality: SITE.address.city, postalCode: SITE.address.postcode, addressCountry: SITE.address.country },
   geo: { '@type': 'GeoCoordinates', latitude: SITE.address.lat, longitude: SITE.address.lng },
-  openingHours: SITE.hours, sameAs: Object.values(SITE.socials), image: abs(SITE.logo),
+  openingHours: SITE.hours, sameAs: Object.values(SITE.socials), image: abs(LOGO_RASTER),
 };
 if (SITE.phone !== 'PHONE_PLACEHOLDER') org.telephone = SITE.phone;
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: SITE.site_name };

@@ -1,20 +1,61 @@
 ---
 import { SITE, NAV } from '../lib/site';
 import locations from '../../data/locations.json';
-// Real cities only: two pages are national ("UK") and one is a second Glasgow page
-// ("Glasgow (breeding dogs)"), so listing them here would duplicate labels. All three stay
-// reachable from the /uk-locations/ hub, which labels rows by h1/title instead.
+// Real cities only: two pages are national ("UK") and one is a second breeding-dogs page,
+// so listing them here would duplicate labels. All three stay reachable from the
+// /uk-locations/ hub, which labels rows by h1/title instead.
 const cities = locations
   .filter((l) => l.city !== 'UK' && !l.city.includes('('))
   .sort((a, b) => a.city.localeCompare(b.city, 'en-GB'));
+// DEVIATION from the Task 20 text, which said the stacked lockup here at 96px. The footer
+// is an inverse band, and the stacked lockup is self-coloured: its wordmark is
+// --color-brand (steel-700), which is the band's own background — it would render
+// invisible. The mono lockup is the one built for this, currentColor over three tones, so
+// it takes the band's bone text colour. `?raw` inlines it at build time, as in the header.
+import logo from '../../public/brand/logo-mono.svg?raw';
 ---
-<footer class="site-footer" style="margin-top:64px;padding:40px 0;background:#1b2430;color:#e9ecf0">
-  <div class="container" style="display:grid;gap:32px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-    <div><h2 style="font-size:1.1rem">{SITE.site_name}</h2><p>{SITE.tagline}</p>
-      <p>{SITE.address.street}, {SITE.address.city} {SITE.address.postcode}<br /><a href={`mailto:${SITE.email}`} style="color:inherit">{SITE.email}</a></p>
-      <p><a href={SITE.socials.facebook} rel="noopener" target="_blank" style="color:inherit">Facebook</a> · <a href={SITE.socials.instagram} rel="noopener" target="_blank" style="color:inherit">Instagram</a> · <a href={SITE.socials.youtube} rel="noopener" target="_blank" style="color:inherit">YouTube</a> · <a href={SITE.socials.x} rel="noopener" target="_blank" style="color:inherit">X</a></p></div>
-    <div><h2 style="font-size:1.1rem">Quick Pages</h2><ul style="list-style:none;padding:0">{NAV.map((n) => <li><a href={n.href} style="color:inherit">{n.label}</a></li>)}<li><a href="/privacy-policy-uk/" style="color:inherit">Privacy Policy</a></li></ul></div>
-    <div><h2 style="font-size:1.1rem">Cities We Serve</h2><ul style="list-style:none;padding:0;columns:2">{cities.map((l) => <li><a href={`/uk-locations/${l.slug}/`} style="color:inherit">{l.city}</a></li>)}</ul></div>
+<footer class="site-footer" data-surface="inverse">
+  <div class="container site-footer__grid">
+    <div>
+      {/* The heading keeps the site name as text for the document outline and for anything
+          reading the footer without CSS; the lockup is the visible form of the same name. */}
+      <h2 class="site-footer__brand">
+        <span class="site-footer__name">{SITE.site_name}</span>
+        <Fragment set:html={logo} />
+      </h2>
+      <p>{SITE.tagline}</p>
+      <p>{SITE.address.street}, {SITE.address.city} {SITE.address.postcode}<br /><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      <p><a href={SITE.socials.facebook} rel="noopener" target="_blank">Facebook</a> · <a href={SITE.socials.instagram} rel="noopener" target="_blank">Instagram</a> · <a href={SITE.socials.youtube} rel="noopener" target="_blank">YouTube</a> · <a href={SITE.socials.x} rel="noopener" target="_blank">X</a></p>
+    </div>
+    <div><h2>Quick Pages</h2><ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}<li><a href="/privacy-policy-uk/">Privacy Policy</a></li></ul></div>
+    <div><h2>Cities We Serve</h2><ul class="site-footer__cities">{cities.map((l) => <li><a href={`/uk-locations/${l.slug}/`}>{l.city}</a></li>)}</ul></div>
   </div>
-  <div class="container" style="margin-top:24px;font-size:13px;opacity:.85">© {new Date().getFullYear()} {SITE.site_name}. All rights reserved.</div>
+  <div class="container site-footer__legal">© {new Date().getFullYear()} {SITE.site_name}. All rights reserved.</div>
 </footer>
+<style>
+  @layer components {
+    /* data-surface="inverse" carries the text colour and the focus ring (global.css); the
+       band only has to state its own fill. */
+    .site-footer { margin-top: 64px; padding: 40px 0; background: var(--color-surface-inverse); }
+    .site-footer__grid {
+      display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+    .site-footer h2 { font-size: 1.1rem; }
+    .site-footer a { color: inherit; }
+    .site-footer ul { list-style: none; padding: 0; }
+    .site-footer__cities { columns: 2; }
+    .site-footer__legal { margin-top: 24px; font-size: 13px; opacity: .85; }
+    .site-footer__brand { margin: 0 0 12px; }
+    /* The name is for the outline and for no-CSS readers; the lockup says it visibly. */
+    .site-footer__name {
+      position: absolute; width: 1px; height: 1px; overflow: hidden;
+      clip-path: inset(50%); white-space: nowrap;
+    }
+    /* `:global` because the SVG arrives through set:html and carries no scope attribute.
+       Width-bound rather than height-bound: the column is as narrow as 220px, and the
+       lockup is wide, so its height follows from whatever width the column allows. */
+    .site-footer__brand :global(svg) {
+      display: block; width: min(260px, 100%); height: auto;
+    }
+  }
+</style>

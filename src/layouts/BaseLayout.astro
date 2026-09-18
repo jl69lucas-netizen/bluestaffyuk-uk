@@ -5,9 +5,9 @@ import MarkSprite from '../components/kit/MarkSprite.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
-import { SITE, abs } from '../lib/site';
+import { SITE, LOGO_RASTER, abs } from '../lib/site';
 interface Props { title: string; description: string; canonical?: string; robots?: string; noindex?: boolean; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
-const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', noindex = false, ogType = 'website', ogImage = SITE.logo, schema = [], crumbTitle = title } = Astro.props;
+const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', noindex = false, ogType = 'website', ogImage = LOGO_RASTER, schema = [], crumbTitle = title } = Astro.props;
 // `noindex` is the shorthand for the internal pages; it wins over any `robots` string and
 // still resolves to the SAME single robots meta below, because that one tag is what
 // scripts/generate_sitemaps.py and scripts/sitemap_check.py read to decide indexability —
@@ -26,7 +26,12 @@ const path = canonical.replace(/^https?:\/\/[^/]+/, '') || '/';
   <link rel="canonical" href={abs(path)} />
   <meta property="og:type" content={ogType} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:url" content={abs(path)} /><meta property="og:image" content={abs(ogImage)} /><meta property="og:locale" content="en_GB" /><meta property="og:site_name" content={SITE.site_name} />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href={SITE.logo} />
+  {/* SVG first for anything that takes one, the 32px PNG for the rest, and the
+      180px apple-touch-icon for a home-screen pin. All three are rendered from
+      public/brand/logo-icon.svg by scripts/build_favicons.py. */}
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <Schema extra={schema} path={path} title={crumbTitle} />
 </head>
 <body>

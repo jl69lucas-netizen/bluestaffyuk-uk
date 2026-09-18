@@ -15,6 +15,13 @@ export const NAV = [
 
 export const abs = (path: string) => `${SITE_URL}${path}`;
 
+/** The logo as a RASTER, for the two consumers that cannot take the SVG in `SITE.logo`:
+ *  schema.org `image`, which Google's structured-data pipeline wants as a bitmap, and
+ *  `og:image`, which every social card renderer wants the same way. It is the 512px favicon
+ *  render — scripts/build_favicons.py writes it from public/brand/logo-icon.svg, so it is
+ *  the same badge the visible lockups show and it cannot drift away from them. */
+export const LOGO_RASTER = '/icon-512.png';
+
 const TITLE_CASE_KEEP_LOWER = new Set(['uk', 'and', 'of', 'for', 'in', 'the']);
 
 const titleCase = (slug: string) =>
