@@ -12,8 +12,10 @@ that quotes the secret has published it a second time.
 
 Written at the project-2 close-out. See the gate report's Credentials section → Incident.
 """
+import functools
 import pathlib
 import re
+import subprocess
 import sys
 
 import pytest
@@ -51,10 +53,33 @@ SHAPES = {
 HEX_EXEMPT_PREFIX = "tests/py/fixtures/"
 
 
+@functools.lru_cache(maxsize=1)
+def _git_ignored():
+    """Paths git ignores, as repo-relative posix strings, from one `git ls-files` call.
+
+    Generated build output lives under ignored roots — `docs/artifacts/canvas/` (the
+    design-canvas artboards) and `docs/artifacts/design-system/`. Astro's `astro:assets`
+    URLs carry 32-character content hashes, which are indistinguishable from the
+    `bare-32-hex` shape, so a built tree would fail this guard on markup that is never
+    committed. Nothing ignored can leak a secret into the repo, so nothing ignored is
+    scanned. Tracked files are unaffected: the guard is otherwise unchanged.
+    """
+    try:
+        r = subprocess.run(
+            ["git", "ls-files", "--others", "--ignored", "--exclude-standard", "-z"],
+            cwd=ROOT, capture_output=True, text=True, check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return frozenset()  # no git here: scan everything rather than skip silently
+    return frozenset(p for p in r.stdout.split("\0") if p)
+
+
 def _files():
+    ignored = _git_ignored()
     seen, out = set(), []
     for f in marker_check.scan_roots(ROOT):
         rp = f.resolve()
+        if f.relative_to(ROOT).as_posix() in ignored:
+            continue
         if rp not in seen:
             seen.add(rp)
             out.append(f)
@@ -65,7 +90,8 @@ def _files():
         for f in sorted(base.rglob("*")):
             rp = f.resolve()
             if (f.is_file() and f.suffix.lower() in TEXT_SUFFIXES
-                    and "__pycache__" not in f.parts and rp not in seen):
+                    and "__pycache__" not in f.parts and rp not in seen
+                    and f.relative_to(ROOT).as_posix() not in ignored):
                 seen.add(rp)
                 out.append(f)
     return out
