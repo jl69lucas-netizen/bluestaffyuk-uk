@@ -139,7 +139,15 @@ const here = Astro.url.pathname;
 
     input.addEventListener('input', () => {
       const q = input.value.trim();
-      if (q.length < MIN_CHARS) return close();
+      if (q.length < MIN_CHARS) {
+        close();
+        // Clearing the status is NOT part of close(): Escape dismisses the panel while the
+        // query — and therefore its count — is still on screen and still true. A query that
+        // has dropped below MIN_CHARS has no count at all, and a stale "3 results." left
+        // behind would be read out again the next time the region changed.
+        if (status) status.textContent = '';
+        return;
+      }
       loadIndex().then((rows) => {
         // The field may have changed again while the index was in flight.
         const now = input.value.trim();
@@ -147,13 +155,19 @@ const here = Astro.url.pathname;
         const written = renderInto(list, matchRows(rows, now), now, MAX,
                                    { optionIdPrefix: 'site-search-option' });
         active = -1;
-        input.setAttribute('aria-expanded', String(written > 0));
-        paint();
-        if (status) {
-          status.textContent = written
-            ? `${written} result${written === 1 ? '' : 's'}.`
-            : 'No results.';
+        // `aria-expanded` describes the PANEL, so the panel and the attribute are decided
+        // together and can never disagree. With nothing to show there is no panel: an
+        // expanded combobox whose listbox holds no options promises a reader somewhere to
+        // arrow into and hands them an empty box. The sentence goes to the polite status
+        // line instead, which is where every other count already goes.
+        if (written === 0) {
+          close();
+          if (status) status.textContent = `No results for ${now}.`;
+          return;
         }
+        input.setAttribute('aria-expanded', 'true');
+        paint();
+        if (status) status.textContent = `${written} result${written === 1 ? '' : 's'}.`;
       });
     });
 
@@ -192,12 +206,26 @@ const here = Astro.url.pathname;
       paint();
     });
 
-    // Dismiss when focus leaves the form entirely — `relatedTarget` is where it went, and
-    // a click on a result inside the list is not leaving.
-    form.addEventListener('focusout', (e) => {
-      const to = (e as FocusEvent).relatedTarget as Node | null;
-      if (to && form.contains(to)) return;
-      close();
+    // Keeping the focus where it is, is what makes a MOUSE-chosen result survive. A pointer
+    // going down inside the panel would otherwise move focus off the input, and the focusout
+    // that follows empties the list — out from under the click that was on its way to the
+    // anchor. `preventDefault()` on pointerdown suppresses the focus move (and the
+    // compatibility mousedown) while leaving the anchor's own click to fire and navigate.
+    list.addEventListener('pointerdown', (e) => e.preventDefault());
+
+    // Dismiss when focus leaves the form entirely.
+    //
+    // SAFARI: `relatedTarget` is null on the focusout Safari fires when a pointer goes down
+    // on a non-focusable element, so "did focus stay inside the form?" is a question the
+    // event cannot answer — a null reads as "it left", close() empties the list, and the
+    // result the reader clicked is gone before the click lands. The decision is therefore
+    // deferred by one tick and asked of the DOCUMENT, which by then knows where focus
+    // actually ended up, rather than of an event that only guessed.
+    form.addEventListener('focusout', () => {
+      setTimeout(() => {
+        if (form.contains(document.activeElement)) return;
+        close();
+      }, 0);
     });
   }
 </script>
@@ -235,7 +263,9 @@ const here = Astro.url.pathname;
     /* The keyboard's highlight. `aria-selected` is the state, so the paint follows the
        attribute rather than a second class the script has to keep in step with it. */
     .results [role="option"][aria-selected="true"] > a { background: var(--color-brand-soft); }
-    .results .empty { padding: var(--space-3); font-size: var(--text-sm); color: var(--color-text-muted); }
+    /* No `.empty` rule here: with no matches this panel is HIDDEN and the sentence is spoken
+       from the status line, so the empty row src/lib/search.ts writes for /search/ is never
+       painted in the pill. */
 
     /* Mobile: the inline nav goes and the drawer arrives. The ONE search form goes with the
        nav while the drawer is shut, and comes back as a full-width second row of the bar
@@ -246,6 +276,19 @@ const here = Astro.url.pathname;
       .nav { display: none; }
       .bar > .site-search { display: none; }
       .bar:has(.drawer[open]) > .site-search { display: flex; flex: 1 1 100%; order: 10; margin-bottom: var(--space-3); }
+      /* :has() IS THE WHOLE MECHANISM, and there is no sibling combinator that can stand in
+         for it: `<details class="drawer">` comes AFTER the form in the DOM (the form is in
+         the tab order where a reader expects it, between the nav and the call to action),
+         and `~` only ever looks forwards. So `.drawer[open] ~ .site-search` matches nothing
+         no matter which browser reads it, and the fallback cannot be a selector — it has to
+         be the absence of the rule that hides the form.
+         THE TRADE: without :has(), the search pill stays visible as its own full-width row
+         below 768px whether the drawer is open or not. That is one bar row the reader did
+         not ask for, against a search box they could not reach at all — and it is the half
+         of the failure that still works. */
+      @supports not selector(:has(*)) {
+        .bar > .site-search { display: flex; flex: 1 1 100%; order: 10; margin-bottom: var(--space-3); }
+      }
       .drawer { display: block; position: static; }
     }
     .lbl { font-size: var(--text-sm); font-weight: 600; }

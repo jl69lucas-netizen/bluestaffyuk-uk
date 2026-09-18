@@ -44,18 +44,21 @@
     "height": 450,
     "overflow": 0,
     "section_overflow": 0,
+    "lede_overflow": 0,
     "ctas_below": -71
    },
    "1100": {
     "height": 450,
     "overflow": 0,
     "section_overflow": 0,
+    "lede_overflow": 0,
     "ctas_below": -71
    },
    "1280": {
     "height": 450,
     "overflow": 0,
     "section_overflow": 0,
+    "lede_overflow": 0,
     "ctas_below": -71
    }
   }

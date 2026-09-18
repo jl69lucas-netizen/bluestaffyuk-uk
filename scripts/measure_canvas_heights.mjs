@@ -44,26 +44,32 @@ for (const [width, suffix] of [[375, 'm375'], [768, 't768']]) {
 // RULE 10, measured rather than asserted. A board height alone cannot tell a hero that
 // FITS in 390-450px from one that is CLIPPED to it: `max-height` plus a hidden overflow
 // produces the same number either way. So each hero is re-measured at the three desktop
-// widths where the clamp is live, and three facts are recorded per width: the scroll
-// overflow of `.inner` and of the section (0 when nothing is cut off), how far the CTA row
-// sits below the section's own bottom edge (<= 0 when it is inside), and the section
-// height (which rule 10 holds between 390 and 450).
+// widths where the clamp is live, and these facts are recorded per width: the scroll
+// overflow of `.inner`, of the section and of the LEDE (0 when nothing is cut off), how far
+// the CTA row sits below the section's own bottom edge (<= 0 when it is inside), and the
+// section height (which rule 10 holds between 390 and 450).
 const heroOverflow = {};
 for (const width of [1024, 1100, 1280]) {
   const page = await browser.newPage({ viewport: { width, height: 900 } });
   await page.goto(PREVIEW, { waitUntil: 'networkidle' });
   const rows = await page.$$eval('.kit-hero', (els) => els.map((el) => {
+    // A board IS its component now — Task 19 pruned the kit to the picks, so there is no
+    // variant letter left to suffix the key with.
     const board = el.closest('section[data-component]');
-    const key = board
-      ? board.dataset.component + (board.dataset.variant ? '-' + board.dataset.variant : '')
-      : 'hero';
+    const key = board ? board.dataset.component : 'hero';
     const inner = el.querySelector('.inner');
     const ctas = el.querySelector('.ctas');
+    const lede = el.querySelector('.lede');
     const box = el.getBoundingClientRect();
     return [key, {
       height: Math.round(box.height),
       overflow: inner ? inner.scrollHeight - inner.clientHeight : 0,
       section_overflow: el.scrollHeight - el.clientHeight,
+      // The lede is the one element rule 10 deliberately CLAMPS, and a clamp hides its own
+      // overflow: a third line is not pushed past the ceiling where `overflow` or
+      // `ctas_below` would catch it, it is simply not painted. So the lede is measured on
+      // its own, and two lines that do not fit fail as loudly as a CTA row that does not.
+      lede_overflow: lede ? lede.scrollHeight - lede.clientHeight : 0,
       ctas_below: ctas ? Math.round(ctas.getBoundingClientRect().bottom - box.bottom) : null,
     }];
   }));

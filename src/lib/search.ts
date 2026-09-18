@@ -21,8 +21,11 @@ export const OTHER = 'Other';
 let index: SearchRow[] | null = null;
 let pending: Promise<SearchRow[]> | null = null;
 
-/** Fetched once per page: `pending` is the in-flight promise, so the header's two forms —
- *  and the five headers the design canvas mounts — share one request rather than racing. */
+/** Fetched once per page: `pending` is the in-flight promise, so every caller on the page
+ *  shares one request rather than racing. There is one header form per page now (the
+ *  drawer's duplicate went in amendment 3b) and the design canvas that mounted five headers
+ *  is gone, but /search/ still calls this beside the header on that page — and the cache is
+ *  what makes a second call free rather than a second download. */
 export function loadIndex(): Promise<SearchRow[]> {
   if (index) return Promise.resolve(index);
   if (!pending) {

@@ -5,7 +5,7 @@
 // scripts/build_design_canvas.py turns that page's built sections into the artboards.
 // Nothing that reads it has a per-component branch.
 //
-// KIT CONVENTIONS — every component in this folder follows all nine.
+// KIT CONVENTIONS — every component in this folder follows all ten.
 //  1. No second `<main>`: BaseLayout already renders one, so a kit component and a page
 //     that mounts one use `<div>`/`<section>`, never `<main>`.
 //  2. Focus rings read `var(--kit-ring)`, never a fixed focus token: --color-focus is
@@ -20,17 +20,17 @@
 //     `@layer components { … }`, so a passed Tailwind utility wins over them.
 //  7. Register the component here with demo fixtures; the preview renders one copy per fixture.
 //  8. Add a dist assertion for it in tests/py/test_design_components.py.
+//  9. A primitive needed by a SECOND component (card shell, medal, rule) moves to
+//     src/styles/kit.css rather than being copied into another scoped style block.
+//     That file exists as of Task 9 and holds `.kit-card`, `.kit-card--lift` and
+//     `.kit-chip`; global.css imports it. Reach for a class from there before writing a
+//     second copy of a shell into a scoped block.
 // 10. A POSITIONAL check — one that judges an element against its previous sibling, its
 //     offset from the chrome, or its place in the scroll — is INERT on a preview page: every
 //     demo is the first child of its own section, so `previousElementSibling` is null and
 //     the check examines zero and passes vacuously. Cover those with a fixture pair in
 //     tests/render/fixtures/, and give the demo a `wrap` only to make the section LOOK
 //     right for the eye reading it.
-//  9. A primitive needed by a SECOND component (card shell, medal, rule) moves to
-//     src/styles/kit.css rather than being copied into another scoped style block.
-//     That file exists as of Task 9 and holds `.kit-card`, `.kit-card--lift` and
-//     `.kit-chip`; global.css imports it. Reach for a class from there before writing a
-//     second copy of a shell into a scoped block.
 //
 // Brass (--color-cta) is a FILL with --color-cta-ink text or an accent on a dark band. It is
 // never the colour of small text on a light surface: it is 2.1:1 there.
@@ -59,8 +59,13 @@ export interface KitEntry {
   /** One rendering per fixture, inside one section. Omitted means a single bare copy. */
   demo?: Record<string, unknown>[];
   /** Extra chrome the preview wraps the demo in, for components that need a context to be
-   *  judged BY EYE. It never makes a positional check work — see convention 10. */
-  wrap?: 'sticky' | 'inverse' | 'after-band';
+   *  judged BY EYE. It never makes a positional check work — see convention 10.
+   *
+   *  Two members, not three: the kit has no component that has to be judged on a dark band
+   *  of the preview's making. The footer paints its own, and the drawer panel is inside the
+   *  header. An `'inverse'` member nothing sets is a branch in the preview page nobody can
+   *  reach — add it back the day an entry needs it. */
+  wrap?: 'sticky' | 'after-band';
 }
 
 /** The row in data/design/components.json, typed so a typo in an id fails the build. */
@@ -71,7 +76,10 @@ export interface ComponentRow {
   board_width: 640 | 1280;
 }
 
-export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
+/** Every id, no exceptions — a `Partial` here would let a component be dropped from the kit
+ *  by deleting its entry, and the preview would simply render one section fewer while every
+ *  test that walks components.json went on passing. `Record` makes that a type error. */
+export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
   // positioned box with room in it; without one the bar docks to the page's own scroll
   // container and the artboard captures a collapsed strip.

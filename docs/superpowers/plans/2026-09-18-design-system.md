@@ -2106,7 +2106,7 @@ Run: `python3 scripts/prune_variants.py`. Then for each of the fourteen files: d
 - [x] **Step 4: Verify**
 
 Run: `npm run build 2>&1 | tail -1 && python3 -m pytest tests/py/test_design_picks.py tests/py/test_design_components.py tests/py/test_design_tokens.py -q && grep -rl "variant" src/components/kit/ | wc -l`
-Expected: `49 page(s) built`; all passed (the post-prune test now runs and passes); `0`. The `test_route_is_noindex…` and `test_built_route…` tests in `test_design_components.py` must be deleted in this task (the route is gone); replace them with `test_no_canvas_route_after_prune` asserting `not (ROOT / "src/pages/design-canvas").exists()`.
+Expected: `51 page(s) built` — the `49` written into this sketch was a guess made before the task ran; the build has printed 51 since the prune landed, and it was re-measured at 51 on 2026-09-19. All passed (the post-prune test now runs and passes); `0`. The `test_route_is_noindex…` and `test_built_route…` tests in `test_design_components.py` must be deleted in this task (the route is gone); replace them with `test_no_canvas_route_after_prune` asserting `not (ROOT / "src/pages/design-canvas").exists()`.
 
 - [x] **Step 5: Commit**
 

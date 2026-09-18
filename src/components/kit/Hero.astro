@@ -20,9 +20,11 @@
 // the copy is SIZED to fit (3xl heading, two-line lede, tight block margins) and the PHOTO
 // is what the ceiling crops. Below 1024px the height is auto, because a phone hero that
 // clipped its own CTA would be worse than a tall one.
-// scripts/measure_canvas_heights.mjs measures the overflow and the CTA row's bottom edge at
-// 1024, 1100 and 1280, and test_measured_hero_fits_its_clamp_without_clipping_anything
-// fails on either.
+// scripts/measure_canvas_heights.mjs measures the overflow, the LEDE's own overflow and the
+// CTA row's bottom edge at 1024, 1100 and 1280, and
+// test_measured_hero_fits_its_clamp_without_clipping_anything fails on any of the three.
+// The lede is measured separately because it is the one clamped element here: a clamp hides
+// its overflow, so a third line disappears instead of pushing anything past the ceiling.
 //
 // HEADING LEVEL. `as` exists because a preview page can mount a hero under a page that
 // already owns the only <h1>. On a real page the default 'h1' is correct and is what

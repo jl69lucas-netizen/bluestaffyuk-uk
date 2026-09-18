@@ -258,10 +258,15 @@ def test_the_header_search_is_one_combobox_with_one_of_everything():
     assert 'aria-live="polite"' in inner
 
 
-def test_the_header_search_script_handles_the_combobox_keys():
-    """The roles are only half of it: a combobox that does not move on ArrowDown is a
-    combobox in name. Read off the component source, because the behaviour lives in a
-    bundled module the built page only links to."""
+def test_the_header_search_script_handles_the_combobox_keys_smoke():
+    """A SMOKE CHECK, and named one: it greps the component source for the key names.
+
+    Grepping a source file cannot tell a handler that moves the highlight from one that
+    names the key and does nothing, so this proves only that the wiring has not been
+    deleted wholesale. The real coverage is `tests/render/kit-search.spec.ts`, which drives
+    the built page in a browser: types, arrows, presses Enter and clicks a result with the
+    mouse. Kept beside it because it runs in the Python gate with no browser and fails in
+    milliseconds when someone removes a branch."""
     t = (KIT / "SiteHeaderKit.astro").read_text()
     for key in ("'ArrowDown'", "'ArrowUp'", "'Home'", "'End'", "'Enter'", "'Escape'"):
         assert key in t, key
@@ -309,9 +314,10 @@ def test_measured_hero_fits_its_clamp_without_clipping_anything():
     CUT OFF by it, so a hero with its CTA row sliced in half measured exactly as well as one
     that fitted. scripts/measure_canvas_heights.mjs therefore records, at each of the three
     desktop widths where the clamp is live, the scroll overflow of `.inner` and of the
-    section, and where the CTA row's bottom edge sits relative to the section's own.
-    Overflow of zero and a CTA row at or above the section's bottom is the real assertion;
-    the 390-450 band is checked on the unrounded section height beside it."""
+    section, the scroll overflow of the LEDE, and where the CTA row's bottom edge sits
+    relative to the section's own. Overflow of zero and a CTA row at or above the section's
+    bottom is the real assertion; the 390-450 band is checked on the unrounded section
+    height beside it."""
     if not HEIGHTS.exists():
         pytest.skip("run npm run canvas:heights first")
     data = json.loads(HEIGHTS.read_text())
@@ -323,6 +329,14 @@ def test_measured_hero_fits_its_clamp_without_clipping_anything():
             assert m is not None, (key, w, "not measured")
             assert m["overflow"] == 0, (key, w, m, ".inner is clipping its own copy")
             assert m["section_overflow"] == 0, (key, w, m, "the hero section is clipping content")
+            # The lede is the ONE element rule 10 clamps, and a clamp hides its own
+            # overflow: a third line is never pushed past the ceiling where the two figures
+            # above would catch it, it is simply not painted. Held to two lines AND
+            # measured, so the clamp can never become the thing that makes the copy fit.
+            assert m["lede_overflow"] == 0, (
+                key, w, m,
+                "the lede runs past the two lines the clamp paints — shorten the copy",
+            )
             if m["ctas_below"] is not None:
                 assert m["ctas_below"] <= 0, (key, w, m, "the CTA row hangs below the hero")
             assert 390 <= m["height"] <= 450, (key, w, m["height"])

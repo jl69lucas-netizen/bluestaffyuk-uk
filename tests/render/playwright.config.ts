@@ -7,7 +7,11 @@ loadEnv(new URL('../../.env', import.meta.url));
 
 export default defineConfig({
   testDir: '.',
-  testMatch: ['meta.spec.ts', 'pages.spec.ts'],
+  // kit-search.spec.ts drives the header combobox on the built kit-preview page. It is in
+  // the suite, so `npm run test:render` covers it; `npm run test:render:search` filters to
+  // it. Like the meta gate, it writes no scorecard partial — but globalSetup's resetRaw()
+  // still fires for it, so it belongs BEFORE pages.spec.ts in any hand-run sequence.
+  testMatch: ['meta.spec.ts', 'pages.spec.ts', 'kit-search.spec.ts'],
   // Fires for EVERY invocation of this config, meta-only included — see the long
   // comment in global-setup.ts for what deliberately does and doesn't live there.
   globalSetup: './global-setup.ts',
