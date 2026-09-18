@@ -44,6 +44,7 @@ import InfoCard from './InfoCard.astro';
 import Testimonial from './Testimonial.astro';
 import Faq from './Faq.astro';
 import ContactFormKit from './ContactFormKit.astro';
+import PageNav from './PageNav.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -125,5 +126,20 @@ export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
   // canvas route is named in form_contract_audit.py's NON_CONTENT_ROUTES, so these five
   // are audited for endpoint and method but not as five separate enquiry forms.
   'contact-form': { C: ContactFormKit },
+  // The four sections are DEMO DATA and live here, not in the component: PageNav defaults
+  // to no sections and renders the breadcrumb alone, because the component has no way of
+  // knowing what a page's sections are. The path and title are the guide page's own, so
+  // crumbs() produces the trail a real page would show.
+  'page-nav': {
+    C: PageNav,
+    demo: [{
+      sections: [
+        { id: 'temperament', label: 'Temperament' },
+        { id: 'health', label: 'Health' },
+        { id: 'exercise', label: 'Exercise' },
+        { id: 'cost', label: 'Cost' },
+      ],
+    }],
+  },
   'section-divider': { C: SectionDivider },
 };

@@ -481,3 +481,42 @@ def test_built_contact_form_variants_all_keep_the_whole_form_contract():
     assert "direct" in s["e"] and "mailto:" in s["e"]
     for v in ("a", "b", "c", "d"):
         assert "mailto:" not in s[v], v
+
+
+def test_built_page_nav_variants_carry_the_real_trail_and_their_own_toc_shape():
+    """Convention 8. Two things are pinned. First the trail: it is produced by crumbs()
+    in src/lib/site.ts, so the intermediate label has to be NAV's label for that href and
+    the last crumb has to be the page itself, marked aria-current — a breadcrumb whose
+    last item is a link is the defect this catches. Second the shape: five treatments that
+    differed only in CSS would pass the distinctness check above with the list gone."""
+    s = _sections("page-nav")
+    labels = ["Temperament", "Health", "Exercise", "Cost"]
+    for v, inner in sorted(s.items()):
+        assert 'aria-label="Breadcrumb"' in inner, v
+        assert 'href="/"' in inner and ">Home<" in inner, v
+        # The leaf is the page, not a link: crumbs() puts the title last.
+        assert 'aria-current="page"' in inner, v
+        assert "Staffordshire Bull Terrier guide" in inner, v
+    # a is the breadcrumb alone; the other four carry the jump list from the demo fixture.
+    assert 'aria-label="On this page"' not in s["a"]
+    for label in labels:
+        assert label not in s["a"], label
+    for v in ("b", "c", "d", "e"):
+        assert 'aria-label="On this page"' in s[v], v
+        for label in labels:
+            assert f'#{label.lower()}"' in s[v], (v, label)
+            assert label in s[v], (v, label)
+    # b and d announce the list with a VISIBLE heading; the aria-label is on all four, so
+    # the heading is matched as element text and not as the bare phrase.
+    for v in ("b", "d"):
+        assert ">On this page</h2>" in s[v], v
+    for v in ("c", "e"):
+        assert "</h2>" not in s[v], v
+    assert s["d"].count("<ol") == 2, "the trail's <ol> plus the numbered rail"
+    for v in ("a", "b", "c", "e"):
+        assert s[v].count("<ol") == 1, v
+    # e is the only one with a jump glyph, and it is an inline stroke SVG (rule 7).
+    assert s["e"].count("<svg") == len(labels)
+    assert 'stroke="currentColor"' in s["e"]
+    for v in ("a", "b", "c", "d"):
+        assert "<svg" not in s[v], v
