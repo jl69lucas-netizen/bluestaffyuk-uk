@@ -26,6 +26,7 @@
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
+import SiteHeaderKit from './SiteHeaderKit.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -49,6 +50,10 @@ export interface ComponentRow {
 }
 
 export const REGISTRY: Partial<Record<ComponentId, KitEntry>> = {
+  // `wrap: 'sticky'` — the header is position: sticky, so on the canvas it needs a
+  // positioned box with room in it; without one the five bars stack on the page's own
+  // scroll container and the artboard shows a collapsed strip.
+  'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
   buttons: {
     C: Button,
     demo: [
