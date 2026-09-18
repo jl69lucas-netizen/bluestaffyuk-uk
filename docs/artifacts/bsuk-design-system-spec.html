@@ -58,9 +58,9 @@ page content:
 
 - design tokens (colour, type, space, radius, shadow, motion) as the single source of truth;
 - one logo mark in four lockups;
-- twelve components, each built in five real variants, shown live on a published design canvas;
+- thirteen components, each built in five real variants, shown live on a published design canvas;
 - the user's picks recorded as data and the non-picked variants deleted;
-- a published Design System artifact carrying the tokens and the twelve picked components, for
+- a published Design System artifact carrying the tokens and the thirteen picked components, for
   every later design canvas to attach.
 
 **Out of scope.** Page copy of any kind; the Glasgow → Carlisle change in content, settings and
@@ -76,7 +76,7 @@ original six-project plan is **replaced** by the Design System artifact (§7); n
 | Type | **A. Fraunces** (display, H1–H6) + **Source Sans 3** (body, labels, buttons) | Newsreader + IBM Plex Sans (the ported rule); Bricolage Grotesque + Inter |
 | Mark | **A. Line-drawn, front-facing Staffy head**, stroke-based, `currentColor` | brass monogram roundel; kennel-club shield; pure wordmark |
 | Logo scope | **One mark, four lockups** (horizontal, stacked, icon, mono) | four competing concepts |
-| Components | **The twelve in §5** | twelve + comparison table + blog layout; a core of six |
+| Components | **The thirteen in §5** (twelve picked in the brainstorm plus the section divider added at spec approval) | twelve + comparison table + blog layout; a core of six |
 | Canvas | **Published Design-type canvas + picks board with a shared database** | local browser screens only; both |
 | Prompt pack | **Replaced by a Design System artifact** | one prompt per page type; per component; both |
 
@@ -161,10 +161,10 @@ parses, carries a `<title>`, contains no `<text>` element and no `<image>`; `src
 no `.png`/`.webp` logo; `settings.json`'s two logo paths resolve to files.
 </script>
 <script type="text/markdown" data-title="5. The component kit">
-Twelve components, each an Astro component in `src/components/kit/`, styled only with
+Thirteen components, each an Astro component in `src/components/kit/`, styled only with
 tokens (a `test_design_tokens.py` case greps `src/components/kit/` for hex literals and fails
 on any). During project 3 each takes a `variant` prop typed `'a'|'b'|'c'|'d'|'e'`; after the
-picks are pulled (§6) the prop and the non-picked branches are removed, leaving twelve
+picks are pulled (§6) the prop and the non-picked branches are removed, leaving thirteen
 single-purpose components.
 
 | # | Component | File | The five variants explore | Serves |
@@ -181,6 +181,7 @@ single-purpose components.
 | 10 | Contact form | `ContactFormKit.astro` | single column, two column, stepped labels, inverse card, inline sidebar form | contact; replaces `ContactForm.astro` markup, keeps the Formspree action and the `FORM_ENDPOINT` contract |
 | 11 | Breadcrumb + in-page nav | `PageNav.astro` | breadcrumb only, breadcrumb + sticky ToC, chip row, sidebar ToC, jump-bar | guides, location |
 | 12 | Footer | `SiteFooterKit.astro` | four-column, three-column with stacked logo, slim single row, inverse with CTA band, sitemap-style | all pages; replaces `SiteFooter.astro` |
+| 13 | Section divider | `SectionDivider.astro` | mark centred on a rule, two brass rules with the stacked lockup between them, mark-only with fading rule, seam gradient bar with the icon in a bone medallion, slim rule with the icon at the left margin | between sections on every page; the mark is the picked head (§4), so the divider variants render with head variant (a) until the pick and are regenerated after it |
 
 Each variant is a distinct layout, not a colour swap; a variant that differs from a sibling
 only in tokens is rejected in review. Copy inside the kit is placeholder-free real copy from
@@ -220,11 +221,11 @@ is filled, never re-created. `scripts/build_design_canvas.py`:
 3. images referenced by the section are uploaded as canvas assets once and the returned
    `/_blob/` URLs substituted (`data/design/canvas-assets.json` maps source path → blob URL so
    re-runs reuse uploads);
-4. writes `project/canvas.json`: twelve rows, five boards per row 80 px apart, rows 120 px
+4. writes `project/canvas.json`: thirteen rows, five boards per row 80 px apart, rows 120 px
    apart, one `title1` note per row (`1 · Site header`, …), `order` back to front, `launch`
    `{"view":"canvas"}`, `createdOnFiles` carried over from the existing index if present;
 5. prints the file list. The controller publishes with the Artifact tool (`url`, `root`,
-   `file_path` = `canvas.json`, `files` = the sixty artboards); the script never calls the
+   `file_path` = `canvas.json`, `files` = the sixty-five artboards); the script never calls the
    network itself except for step 3, which the controller also performs.
 
 The `<x-dc>` markup keeps the kit's real `<button>`, `<a href>`, `<input>` + `<label>`
@@ -233,12 +234,12 @@ scripts other than the required `data-dc-script` class.
 
 **Picks board.** `docs/artifacts/design-picks.html`, a plain published Artifact with the
 shared-database capability, built by `scripts/build_picks_board.py` from the same section
-list: twelve rows, each with the component name, a link to its canvas row, five pick buttons
+list: thirteen rows, each with the component name, a link to its canvas row, five pick buttons
 `a`–`e`, a note field and a "Save" that writes `{component, variant, note, at, by}` to the
 database key `picks/<component>`. The board shows the saved state on load. It is the same
 mechanism as `data/boards/index.json`'s Artifact from project 2, with the `db` rules copied.
 
-**Pull.** `scripts/pull_design_picks.py` takes the twelve `picks/*` rows (the controller reads
+**Pull.** `scripts/pull_design_picks.py` takes the thirteen `picks/*` rows (the controller reads
 them with the ArtifactData tool and passes the JSON on stdin, the same way the project 2 board
 approval was pulled) and writes `data/design/picks.json`:
 
@@ -246,7 +247,7 @@ approval was pulled) and writes `data/design/picks.json`:
 {"pulled_at": "2026-09-19T10:00:00Z", "picks": {"site-header": {"variant": "c", "note": "…"}, …}}
 ```
 
-`tests/py/test_design_picks.py`: the file has exactly the twelve component ids of §5, every
+`tests/py/test_design_picks.py`: the file has exactly the thirteen component ids of §5, every
 variant is one of `a`–`e`, and after the prune step (§8, task order) every picked variant
 file's component still exists and no `variant=` prop remains in `src/components/kit/`. Until
 `picks.json` exists the test is skipped with a reason naming this spec, so the suite stays
@@ -299,12 +300,12 @@ Easier first, each step committed:
    no `DEFERRED` line; `npm run test:render:pages` at a new recorded baseline
    `docs/reports/render-baseline-project3.md` with **no new blocking row** and the `IMG`
    family's `img-srcset-within-2x` at 0.
-4. `data/design/picks.json` holds twelve picks; `src/components/kit/` has twelve components and
+4. `data/design/picks.json` holds thirteen picks; `src/components/kit/` has thirteen components and
    no `variant` prop; the `/design-canvas/` route is gone.
 5. `public/brand/` holds the four lockups and the four favicon renders; header and footer
    render the SVG logo.
 6. The three Artifacts are published and their URLs recorded in `data/design/artifacts.json`:
-   the canvas (sixty artboards), the picks board, the Design System.
+   the canvas (sixty-five artboards), the picks board, the Design System.
 7. Lighthouse warm median of 3 on the five Foundation page types: no category score below
    the Foundation baseline (99/100/100/100 home; 99/100/100/92 for-sale; 98/100/100/100
    puppy; 100/100/100/92 location; 100/100/100/100 blog). Recorded, not a gate.
@@ -320,17 +321,19 @@ Easier first, each step committed:
   refused, the builder falls back to inlining computed styles per element (Playwright
   `getComputedStyle`), which the type edits natively. Decided at task time; the fallback is
   in the plan, not improvised.
-- *Sixty uploads of the same images.* The asset map in `data/design/canvas-assets.json`
+- *Sixty-five uploads of the same images.* The asset map in `data/design/canvas-assets.json`
   de-duplicates; the six puppy images and three hero images are the whole set.
 - *Picks arrive over several sessions.* The board persists in its database; the pull script is
-  idempotent and the test skips until all twelve are present.
+  idempotent and the test skips until all thirteen are present.
 - *The kit's contact form must not break the form contract.* `ContactFormKit.astro` keeps the
   field names, the `action` from `PUBLIC_FORMSPREE_ID` and the honeypot;
   `scripts/form_contract_audit.py` runs in `check:all` and must stay at 0 problems.
 </script>
 <script type="text/markdown" data-title="11. Amendments">
 Recorded here as they happen during planning and execution, in the same way as the project 2
-spec's §11. None yet.
+spec's §11.
+
+1. **2026-09-18, at spec approval.** Component 13, *Section divider*, added to §5 at the user's request: dividers built around the logo mark (a centred mark on a rule, in the style of the source site's parrot divider), five variants like every other component. Counts throughout the spec move from twelve to thirteen components and from sixty to sixty-five artboards.
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
