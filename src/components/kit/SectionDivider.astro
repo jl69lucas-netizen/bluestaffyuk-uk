@@ -8,12 +8,18 @@
 // accessibility tree and take the role with it. The ornament inside is hidden instead — the
 // mark is passed `title=""` (which makes it aria-hidden) and the variant-b wordmark is
 // marked hidden too, because the sections either side already carry their own headings.
+//
+// The divider sits on the bone surface AND inside dark bands, so it never names a colour of
+// its own: it inherits `currentColor` through `--kit-divider-color`, which defaults to the
+// brand steel and which `.on-inverse` / `[data-surface="inverse"]` overrides to the inverse
+// text colour. Nothing here reads `--color-brand` directly.
+import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
 import Mark from './Mark.astro';
-interface Props { variant?: Variant; markVariant?: Variant; class?: string }
-const { variant = 'a', markVariant = 'a', class: cls = '' } = Astro.props;
+type Props = HTMLAttributes<'div'> & { variant?: Variant; markVariant?: Variant };
+const { variant = 'a', markVariant = 'a', class: cls, ...rest } = Astro.props;
 ---
-<div class={`kit-divider kit-divider-${variant} ${cls}`} role="separator" data-variant={variant}>
+<div {...rest} class:list={['kit-divider', `kit-divider-${variant}`, cls]} role="separator" data-variant={variant}>
   {variant === 'a' && <><span class="rule" /><span class="medal"><Mark variant={markVariant} size={40} title="" /></span><span class="rule" /></>}
   {variant === 'b' && <><span class="rule brass" /><span class="stack"><Mark variant={markVariant} size={44} title="" /><span class="word" aria-hidden="true">BlueStaffyUK</span></span><span class="rule brass" /></>}
   {variant === 'c' && <><span class="rule fade-l" /><Mark variant={markVariant} size={36} title="" /><span class="rule fade-r" /></>}
@@ -21,12 +27,15 @@ const { variant = 'a', markVariant = 'a', class: cls = '' } = Astro.props;
   {variant === 'e' && <><Mark variant={markVariant} size={28} title="" /><span class="rule thin" /></>}
 </div>
 <style>
-  .kit-divider { display: flex; align-items: center; gap: var(--space-4); width: 100%; max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--color-brand); }
-  .rule { flex: 1; height: 2px; background: var(--color-brand-mid); opacity: .6; }
+  @layer components {
+  .kit-divider { display: flex; align-items: center; gap: var(--space-4); width: 100%; max-width: var(--container); margin: var(--space-8) auto; padding-inline: var(--space-5); color: var(--kit-divider-color, var(--color-brand)); }
+  :global(.on-inverse) .kit-divider, :global([data-surface="inverse"]) .kit-divider { --kit-divider-color: var(--color-text-on-inverse); }
+  /* currentColor, not a fixed steel: on a dark band the rule follows the inverse text colour. */
+  .rule { flex: 1; height: 2px; background: currentColor; opacity: .5; }
   .rule.brass { background: var(--color-cta); opacity: 1; }
-  .rule.thin { height: 1px; background: var(--color-border); opacity: 1; }
-  .rule.fade-l { background: linear-gradient(90deg, transparent, var(--color-brand-mid)); }
-  .rule.fade-r { background: linear-gradient(90deg, var(--color-brand-mid), transparent); }
+  .rule.thin { height: 1px; opacity: .35; }
+  .rule.fade-l { background: linear-gradient(90deg, transparent, currentColor); }
+  .rule.fade-r { background: linear-gradient(90deg, currentColor, transparent); }
   .medal { display: inline-flex; padding: var(--space-2); border-radius: 50%; border: 1px solid var(--color-border); background: var(--color-surface-raised); }
   .medal.bone { background: var(--color-surface); position: relative; z-index: 1; }
   .stack { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
@@ -34,4 +43,5 @@ const { variant = 'a', markVariant = 'a', class: cls = '' } = Astro.props;
   .kit-divider-d { position: relative; justify-content: center; }
   .kit-divider-d .seam { position: absolute; left: var(--space-5); right: var(--space-5); top: 50%; height: 3px; transform: translateY(-50%); background: var(--seam-gradient); }
   .kit-divider-e { justify-content: flex-start; }
+  }
 </style>

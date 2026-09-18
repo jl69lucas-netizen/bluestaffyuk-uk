@@ -24,6 +24,15 @@
 
 @layer base {
   html { scroll-behavior: auto; overflow-x: clip; }
+
+  /* Surface context for the kit. A focus ring has to reach 3:1 against what it sits on
+     (WCAG 1.4.11), and --color-focus IS steel-700 — the same token as --color-surface-inverse.
+     A steel ring inside a steel band is 1:1 and invisible, so the ring colour is read from
+     --kit-ring, which the SURFACE sets, rather than from a token each component picks once.
+     Anything painting a dark band marks itself `.on-inverse` or `data-surface="inverse"`, and
+     every kit component inside it flips ring and text colour without knowing where it is. */
+  :root { --kit-ring: var(--color-focus); }
+  .on-inverse, [data-surface="inverse"] { --kit-ring: var(--color-focus-on-inverse); color: var(--color-text-on-inverse); }
   body { margin: 0; font: var(--text-base)/var(--text-base--line-height) var(--font-body); color: var(--color-ink); background: var(--color-white); }
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); }
   main p, main li { max-width: 70ch; }

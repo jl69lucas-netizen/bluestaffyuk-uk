@@ -60,18 +60,33 @@ def test_mark_has_five_variants_stroke_currentcolor_and_title():
 
 
 ROUTE = ROOT / "src/pages/design-canvas/index.astro"
+REGISTRY_TS = KIT / "_registry.ts"
 DIST_ROUTE = ROOT / "dist/design-canvas/index.html"
 
 
-@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-15")
-def test_route_is_noindex_and_mounts_every_component_variant():
+def test_route_is_noindex():
     t = ROUTE.read_text()
     # The prop, not the bare word: the file's header comment also says "noindex", so
     # `'noindex' in t` would keep passing with the prop deleted from the BaseLayout call.
     assert 'noindex={true}' in t
-    for r in load():
-        stem = r["file"].removesuffix(".astro")
-        assert f"import {stem} from" in t, stem
+
+
+@pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-15")
+def test_registry_has_an_entry_for_every_component():
+    # The route renders whatever REGISTRY holds and has no per-component branches, so the
+    # registry - not the route's import list - is what has to name all thirteen ids.
+    body = REGISTRY_TS.read_text().split("export const REGISTRY", 1)[1]
+    missing = [r["id"] for r in load()
+               if f"'{r['id']}'" not in body and not re.search(rf"\b{r['id']}\s*:", body)]
+    assert not missing, missing
+
+
+def test_built_canvas_is_noindex():
+    # Deliberately its own passing test rather than a line inside the xfail'd count check:
+    # the route being noindex is true TODAY, and it is what keeps it out of every sitemap.
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    assert 'name="robots" content="noindex' in DIST_ROUTE.read_text()
 
 
 @pytest.mark.xfail(strict=True, reason="kit lands in Tasks 5-16")
@@ -84,4 +99,27 @@ def test_built_route_has_sixty_five_sections():
     secs = re.findall(r'<section[^>]*data-component="([a-z-]+)"[^>]*data-variant="([a-e])"', html)
     assert len(secs) == 65, len(secs)
     assert {c for c, _ in secs} == set(IDS)
-    assert 'name="robots" content="noindex' in html
+
+
+SECTION_RE = re.compile(
+    r'<section[^>]*data-component="([a-z-]+)"[^>]*data-variant="([a-e])"[^>]*>(.*?)</section>', re.S)
+
+
+def test_built_sections_render_five_distinct_variants():
+    """Whatever is on the canvas today must show five genuinely different things per
+    component, with no hex reached for in an inline style. Passes for the components that
+    exist; every later task widens it for free."""
+    if not DIST_ROUTE.exists():
+        pytest.skip("run npm run build first")
+    by_component = {}
+    for cid, variant, inner in SECTION_RE.findall(DIST_ROUTE.read_text()):
+        by_component.setdefault(cid, {})[variant] = inner
+    assert by_component, "the canvas built no variant sections at all"
+    for cid, variants in sorted(by_component.items()):
+        assert sorted(variants) == list("abcde"), (cid, sorted(variants))
+        same = [(x, y) for i, x in enumerate("abcde") for y in "abcde"[i + 1:]
+                if variants[x] == variants[y]]
+        assert not same, (cid, same)
+        hexes = [m for inner in variants.values()
+                 for m in re.findall(r'style="[^"]*#[0-9A-Fa-f]{3}', inner)]
+        assert not hexes, (cid, hexes)

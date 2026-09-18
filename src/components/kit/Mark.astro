@@ -8,13 +8,14 @@
 // any id built from the variant letter would be duplicated; a `<title>` child needs no id.
 // A caller that wants the mark purely as decoration passes `title=""`, which drops the
 // `<title>` and hides the whole SVG from the accessibility tree instead of naming it "".
+import type { HTMLAttributes } from 'astro/types';
 import type { Variant } from './_variant';
-interface Props { variant?: Variant; size?: number; title?: string; class?: string }
-const { variant = 'a', size = 48, title = 'BlueStaffyUK mark', class: cls = '' } = Astro.props;
+type Props = HTMLAttributes<'svg'> & { variant?: Variant; size?: number; title?: string };
+const { variant = 'a', size = 48, title = 'BlueStaffyUK mark', class: cls, ...rest } = Astro.props;
 const sw = variant === 'd' ? 4 : 3;
 const decorative = title === '';
 ---
-<svg class={cls} width={size} height={size} viewBox="0 0 64 64" fill="none" stroke="currentColor"
+<svg {...rest} class:list={['kit-mark', cls]} width={size} height={size} viewBox="0 0 64 64" fill="none" stroke="currentColor"
   stroke-width={sw} stroke-linejoin="round" stroke-linecap="round"
   role={decorative ? undefined : 'img'} aria-hidden={decorative ? 'true' : undefined}
   focusable="false" data-variant={variant}>

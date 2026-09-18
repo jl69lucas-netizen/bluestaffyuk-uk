@@ -2,20 +2,23 @@
 // src/pages/design-canvas/index.astro — mounts every kit component in every variant for
 // scripts/build_design_canvas.py. noindex; excluded from sitemaps by the noindex rule.
 // Deleted in Task 19 after the picks are pulled.
+//
+// There are no per-component branches here: the route walks components.json, looks each id
+// up in REGISTRY, and renders one copy per demo fixture. Tasks 6-16 touch _registry.ts only.
+// BaseLayout already renders the page's <main>, so this is a <div>.
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import components from '../../../data/design/components.json';
+import componentsJson from '../../../data/design/components.json';
 import { VARIANTS } from '../../components/kit/_variant';
+import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
 import Mark from '../../components/kit/Mark.astro';
 import Button from '../../components/kit/Button.astro';
 import SectionDivider from '../../components/kit/SectionDivider.astro';
-// Tasks 6-16 add one import per component here, in components.json order:
-// SiteHeaderKit, Hero, PuppyCard, TrustStrip, CounterStrip, InfoCard, Testimonial, Faq,
-// ContactFormKit, PageNav, SiteFooterKit.
-const byId: Record<string, any> = { buttons: Button, 'section-divider': SectionDivider };
+const components = componentsJson as ComponentRow[];
 const title = 'Design canvas — BlueStaffyUK kit (project 3)';
+const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
 ---
 <BaseLayout title={title} description="Internal design canvas; not indexed." noindex={true}>
-  <main class="container" style="padding-block: var(--space-8);">
+  <div class="container" style="padding-block: var(--space-8);">
     <h1 style="font-family: var(--font-display);">Design canvas</h1>
     <!-- data-variant="all": this one section shows all five marks side by side, like the
          per-component heading sections. Only the per-variant artboard sections below are
@@ -26,16 +29,37 @@ const title = 'Design canvas — BlueStaffyUK kit (project 3)';
         {VARIANTS.map((v) => <figure style="margin:0;text-align:center"><Mark variant={v} size={96} /><figcaption>{v}</figcaption></figure>)}
       </div>
     </section>
-    {components.map((c) => byId[c.id] && (
-      <section data-component={c.id} data-variant="all" class="kit-section"><h2>{c.title}</h2></section>
-    ))}
-    {components.map((c) => { const C = byId[c.id]; return C && VARIANTS.map((v) => (
-      <section data-component={c.id} data-variant={v} data-width={c.board_width} class="kit-section">
-        <h3 style="font-size:var(--text-sm);color:var(--color-text-muted)">{c.title} — variant {v}</h3>
-        {c.id === 'buttons'
-          ? <div style="display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center"><C variant={v} label="Meet the puppies" href="/available-puppies/" /><C variant={v} label="Ask about Roman" type="submit" /></div>
-          : <C variant={v} />}
-      </section>
-    )); })}
-  </main>
+
+    {components.map((c) => {
+      const entry = REGISTRY[c.id];
+      if (!entry) return null;
+      const { C, demo = [{}] } = entry;
+      // Heading section first, then that component's five artboards, so the canvas reads
+      // component by component rather than all headings then all boards.
+      return (
+        <>
+          <section data-component={c.id} data-variant="all" class="kit-section"><h2>{c.title}</h2></section>
+          {VARIANTS.map((v) => (
+            <section data-component={c.id} data-variant={v} data-width={c.board_width} class="kit-section">
+              <h3 style={h3}>{c.title} — variant {v}</h3>
+              <div style="display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center">
+                {demo.map((props) => <C variant={v} {...props} />)}
+              </div>
+            </section>
+          ))}
+        </>
+      );
+    })}
+
+    <!-- The dark band. Everything inside inherits --kit-ring: var(--color-focus-on-inverse)
+         from [data-surface="inverse"], so the ring on the inverse button and the divider's
+         rules can be judged where the light-surface ring would be invisible. -->
+    <section data-component="on-inverse" data-variant="all" class="kit-section">
+      <h2>0b · On a dark band</h2>
+      <div data-surface="inverse" style="background: var(--color-surface-inverse); padding: var(--space-8) var(--space-5); border-radius: var(--card-radius); display:flex; flex-direction:column; gap:var(--space-6); align-items:center">
+        <Button variant="c" label="Meet the puppies" href="/available-puppies/" />
+        <SectionDivider variant="a" />
+      </div>
+    </section>
+  </div>
 </BaseLayout>
