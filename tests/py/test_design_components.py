@@ -219,6 +219,26 @@ def test_built_site_header_variants_carry_their_distinguishing_marks():
     assert "Carlisle" in s["e"], "variant e shows the location strapline"
 
 
+def test_built_site_header_variants_are_logo_only_and_all_carry_the_search_pill():
+    """Spec §11 amendment 3b. The pick is variant a, but the wordmark came off and the
+    search pill went on in ALL FIVE, so the canvas keeps comparing like with like.
+
+    Two forms per header — the bar's pill and the same form full-width in the drawer — and
+    both are a real GET to /search/, so Enter works with the script removed."""
+    s = _sections("site-header")
+    for v, inner in sorted(s.items()):
+        assert inner.count('role="search"') == 2, (v, "bar pill + drawer form")
+        assert inner.count('action="/search/"') == 2, v
+        assert 'name="q"' in inner and 'type="search"' in inner, v
+        assert 'id="site-search-results"' in inner and 'aria-live="polite"' in inner, v
+        assert 'class="word"' not in inner, (v, "the wordmark text is gone")
+        # the brand link keeps its accessible name without the wordmark
+        assert 'class="brand" aria-label=' in inner, v
+    # e is the only variant that still prints the strapline, now as a caption under the logo
+    for v in ("a", "b", "c", "d"):
+        assert "Carlisle" not in s[v], v
+
+
 def test_built_puppy_card_variants_carry_price_status_and_their_ornament():
     """Convention 8. The card's whole job is photo + name + price + status; a variant that
     renders the shell without the data is a pass on distinctness and a failure in fact.

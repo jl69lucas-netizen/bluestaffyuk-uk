@@ -1,0 +1,84 @@
+---
+// src/pages/search/index.astro — the on-site search results page (spec §11 amendment 3b).
+//
+// noindex: a results page is a query, not content, and indexing one is how a site ends up
+// with thousands of thin pages in the index. The single robots meta BaseLayout writes is
+// also what scripts/generate_sitemaps.py and scripts/sitemap_check.py read, so this route
+// stays out of every shard without a second exclusion list to keep in step.
+//
+// The page is STATIC — there is no server here. `q` is read from the URL in the browser and
+// matched against /search-index.json with src/lib/search.ts, the same module the header's
+// search pill uses, so a result on this page and a result in the header dropdown can never
+// disagree. Without script there is still a working form and a <noscript> saying so.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Search — BlueStaffyUK';
+const description = 'Search BlueStaffyUK: puppies, guides, locations and posts.';
+---
+<BaseLayout title={title} description={description} noindex={true} crumbTitle="Search">
+  <div class="container search-page">
+    <h1>Search</h1>
+    <form role="search" action="/search/" method="get" class="search-form">
+      <label for="q">Search the site</label>
+      <div class="field">
+        <input id="q" type="search" name="q" autocomplete="off" placeholder="Search the site…" />
+        <button type="submit">Search</button>
+      </div>
+    </form>
+    <p id="search-summary" class="summary" hidden aria-live="polite"></p>
+    <ul id="search-results" class="results" hidden></ul>
+    <noscript>
+      <p class="summary">Instant results need JavaScript. Use the menu to browse the puppies,
+      the guides, the UK locations and the blog.</p>
+    </noscript>
+  </div>
+</BaseLayout>
+<script>
+  import { loadIndex, matchRows, renderInto } from '../../lib/search';
+
+  const input = document.querySelector<HTMLInputElement>('#q');
+  const list = document.querySelector<HTMLUListElement>('#search-results');
+  const summary = document.querySelector<HTMLParagraphElement>('#search-summary');
+  const MAX = 50;
+
+  function run(query: string) {
+    if (!list || !summary) return;
+    const q = query.trim();
+    if (!q) {
+      list.hidden = true;
+      summary.hidden = true;
+      return;
+    }
+    loadIndex().then((rows) => {
+      const hits = matchRows(rows, q);
+      const shown = renderInto(list, hits, q, MAX);
+      summary.textContent = shown
+        ? `${hits.length} result${hits.length === 1 ? '' : 's'} for “${q}”.`
+        : `No results for “${q}”.`;
+      summary.hidden = false;
+    });
+  }
+
+  const initial = new URLSearchParams(window.location.search).get('q') ?? '';
+  if (input) {
+    input.value = initial;
+    input.addEventListener('input', () => run(input.value));
+  }
+  run(initial);
+</script>
+<style>
+  @layer components {
+    .search-page { padding-block: var(--space-8) var(--space-11); }
+    .search-page h1 { font-family: var(--font-display); font-size: var(--text-3xl); margin: 0 0 var(--space-5); color: var(--color-brand); }
+    .search-form label { display: block; font-weight: 600; font-size: var(--text-sm); margin-bottom: var(--space-2); }
+    .field { display: flex; gap: var(--space-2); max-width: 560px; }
+    .field input { flex: 1 1 auto; min-width: 0; min-height: 44px; padding: 0 var(--space-4); font: inherit; font-size: var(--text-base); border: var(--card-border); border-radius: var(--btn-form-radius); background: var(--color-surface-raised); color: var(--color-text); }
+    .field button { min-height: 44px; padding: 0 var(--space-5); border: 0; border-radius: var(--btn-form-radius); background: var(--color-cta); color: var(--color-cta-ink); font: inherit; font-weight: 700; cursor: pointer; }
+    .field input:focus-visible, .field button:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+    .summary { margin: var(--space-5) 0 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+    .results { list-style: none; margin: var(--space-4) 0 0; padding: 0; max-width: 760px; }
+    .results .group { font-size: var(--text-xs); font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); margin-top: var(--space-5); }
+    .results a { display: block; padding: var(--space-3) 0; color: var(--color-link); font-size: var(--text-base); border-bottom: 1px solid var(--color-border); }
+    .results .empty { padding: var(--space-3) 0; color: var(--color-text-muted); }
+  }
+</style>
