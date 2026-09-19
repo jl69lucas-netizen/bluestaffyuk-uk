@@ -207,3 +207,31 @@ Recorded here as they happen.
    the column its place beside the prose — and collapses it below 1024px — belongs to the
    shell every rebuilt page mounts. A component that declared the grid would be deciding
    the page's layout from inside a sidebar, and the two hubs would each need their own copy.
+
+**Amendment 2 (2026-09-19, Task 7 and the board pipeline).** Two gate rulings, both taken
+after the first three approvals (privacy, thank-you, contact) were applied and the gate was
+run against them.
+
+1. **`min-h5-h6` reads the BUILT page for a rebuilt slug, and the record tree otherwise.**
+   The check counted H-levels off `all_headings(board)` — the board record's own tree — so
+   the only way a rebuilt page could meet the floor of five H5 and five H6 was for an
+   approved outline to be reopened and padded with ten sub-headings the breeder never saw,
+   purely to satisfy an arithmetic check. That inverts the board: the outline is a plan for
+   sections, agreed at H2 and H3, not a transcript of every sub-point. From now on, when a
+   slug is listed in `data/facts/rebuilt.json` and `dist/<slug>/index.html` exists, the
+   floor is counted off the built page, which is how the migrated pages met it too — H4 and
+   H5 sub-points and the `tuple.h6_prefixes` "Note:" lines are written inside the sections
+   at build time. A record that is not yet rebuilt, or one whose page has not been built,
+   keeps the tree reading: a missing build is not a pass, and reading zero headings out of
+   nothing would clear the floor for free. The finding names its source either way.
+
+2. **`ledger-triple-owned` becomes `ledger-tuple-owned`, on hero+faq+takeaway.** The old
+   signature was hero+dial+rail, on the reading that those three are the page's chrome and
+   two pages wearing all three the same way are the same page. Task 9 retired that premise:
+   the breeder picks ONE dial style and ONE sheet style on the contact board and both are
+   baked into the kit, so every rebuilt page carries the same two and the signature
+   degenerates to "no two pages may share a hero style". It failed privacy-policy-uk
+   against thank-you-blue-staffy-puppies-journey on a shared hero S3 alone, although the
+   two pages differ in their FAQ shell and their takeaway set. The signature is now the
+   tuple minus the two baked axes — what a page is made of that the breeder can still
+   choose differently — and the two records separate on `faq-s1` against `faq-s3`.

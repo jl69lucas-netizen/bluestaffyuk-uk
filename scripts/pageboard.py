@@ -560,7 +560,9 @@ class _Headings(DUP.Text):
     def __init__(self):
         super().__init__()
         self.headings = []
+        self.levelled = []                  # (level, text), the same rows with their tag
         self._buf = None
+        self._level = None
 
     def _visible(self):
         return bool(self.stack) and not self.stack[-1][1]
@@ -569,19 +571,52 @@ class _Headings(DUP.Text):
         super().handle_starttag(tag, attrs)
         if self._buf is None and tag in HEADING_TAGS and self._visible():
             self._buf = []
+            self._level = int(tag[1])
 
     def handle_endtag(self, tag):
         if self._buf is not None and tag in HEADING_TAGS:
             text = re.sub(r"\s+", " ", "".join(self._buf)).strip()
             if text:
                 self.headings.append(text)
+                self.levelled.append((self._level, text))
             self._buf = None
+            self._level = None
         super().handle_endtag(tag)
 
     def handle_data(self, data):
         super().handle_data(data)
         if self._buf is not None and self._visible():
             self._buf.append(data)
+
+
+REBUILT = ROOT / "data" / "facts" / "rebuilt.json"
+
+
+def rebuilt_slugs(path=None):
+    """The slugs whose page is written fresh from an approved board rather than migrated.
+    Same list `migration_parity.py` skips and `facts_preserved_check.py` gates. Missing or
+    unreadable reads as empty: a gate must not pass a page because a list went absent.
+
+    The default is resolved at CALL time, not bound at import: the gate's tests repoint
+    `PB.REBUILT` at a tmp_path, and a default argument would have pinned the real file."""
+    path = REBUILT if path is None else path
+    try:
+        rows = json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return set()
+    return {r for r in rows if isinstance(r, str)} if isinstance(rows, list) else set()
+
+
+def page_h_counts(path):
+    """{h1..h6: n} for one built page, counted the way the dup gate sees headings: site
+    chrome (nav, read-cards, footer) does not count toward a page's own structure."""
+    p = _Headings()
+    p.feed(pathlib.Path(path).read_text(encoding="utf-8", errors="ignore"))
+    p.close()
+    counts = {f"h{n}": 0 for n in range(1, 7)}
+    for level, _ in p.levelled:
+        counts[f"h{level}"] += 1
+    return counts
 
 
 def page_headings(path):
@@ -844,7 +879,15 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     t = board["tuple"]
     siblings = {p: s for p, s in ledger.get("pages", {}).items() if p != slug}
     tw = set(t.get("takeaway", []))
-    triple = tuple(t.get(k) or "" for k in ("hero", "dial", "rail"))
+    # The narrow signature. It used to be hero+dial+rail, on the reading that those three
+    # are the page's chrome and a page that wears all three the same way is the same page.
+    # Project 4 retired that: the breeder picked ONE dial style and ONE sheet style on the
+    # contact board and they are baked into the kit, so every rebuilt page carries the same
+    # two — the triple degenerated to "no two pages may share a hero style", which failed
+    # privacy-policy-uk against thank-you-blue-staffy-puppies-journey on a hero pick alone.
+    # The signature is now the tuple MINUS the two baked axes: what a page is made of that
+    # the breeder can still choose differently.
+    signature = (t.get("hero") or "", t.get("faq") or "", tuple(sorted(tw)))
 
     identical = [p for p, s in siblings.items()
                  if all((s.get(k) or "") == (t.get(k) or "") for k in TUPLE_ID_KEYS)
@@ -855,11 +898,15 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     rest = {p: s for p, s in siblings.items() if p not in identical}
 
     trip = []
-    if any(triple):
-        trip = [p for p, s in rest.items() if tuple(s.get(k) or "" for k in ("hero", "dial", "rail")) == triple]
+    if any(signature[:2]) or tw:
+        trip = [p for p, s in rest.items()
+                if (s.get("hero") or "", s.get("faq") or "",
+                    tuple(sorted(set(s.get("takeaway", []))))) == signature]
         if trip:
-            add("ledger-triple-owned", "FAIL",
-                f"hero+dial+rail {'+'.join(x or '—' for x in triple)} is the same signature as {', '.join(trip)}")
+            shown = "+".join(x or "—" for x in
+                             (signature[0], signature[1], ", ".join(signature[2]) or ""))
+            add("ledger-tuple-owned", "FAIL",
+                f"hero+faq+takeaway {shown} is the same signature as {', '.join(trip)}")
     if tw:
         sets = [p for p, s in rest.items() if set(s.get("takeaway", [])) == tw]
         if sets:
@@ -897,10 +944,23 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     for h in faq_hits(board, live):
         add("faq-collision", "WARN", f"{h['kind']}: FAQ question {h['heading']!r} vs {h['page']} {h['with']!r}")
 
-    counts = distribution(board)["h_counts"]
+    # The floor is a property of the PAGE, and where the page exists that is what to count.
+    # A board record's tree stops at the H3/H4 the breeder approved — the outline is a plan
+    # for sections, not a transcript of every sub-point — so counting it would force H5 and
+    # H6 rows into an approved outline purely to satisfy an arithmetic check. A rebuilt page
+    # earns the floor the way the migrated pages did: H4/H5 sub-points and the "<prefix>:"
+    # H6 lines are written inside the sections at build time. A record NOT yet rebuilt has
+    # no built page to read, so it keeps the tree reading and the floor stays a planning
+    # constraint. `source` is named in the message: a floor met two ways must say which.
+    built = DIST / slug / "index.html"
+    if slug in rebuilt_slugs() and built.exists():
+        counts, source = page_h_counts(built), "built page"
+    else:
+        counts, source = distribution(board)["h_counts"], "record tree"
     if counts["h5"] < 5 or counts["h6"] < 5:
         sev = "WARN" if board["meta"]["page_type"] in ADVISORY_MIN_H5H6 else "FAIL"
-        add("min-h5-h6", sev, f"H5 {counts['h5']} / H6 {counts['h6']} — floor is 5 each")
+        add("min-h5-h6", sev,
+            f"H5 {counts['h5']} / H6 {counts['h6']} ({source}) — floor is 5 each")
 
     ms = board["meta_set"]
     # A recommendation is a draft, not a choice. At build the page can be written against

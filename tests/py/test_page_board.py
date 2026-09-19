@@ -538,16 +538,100 @@ def _checks(board, ledger):
     return {x["check"] for x in PB.gate_findings(board, ONT_OK, ledger, live={}, stage="build") if x["sev"] == "FAIL"}
 
 
-def test_gate_flags_a_copied_hero_dial_rail_triple():
-    """Components are shared by design; the signature the reader sees first is not."""
+def _h_page(dist, slug, h5, h6):
+    p = dist / slug / "index.html"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("<html><body><h1>T</h1><h2>S</h2>"
+                 + "".join(f"<h5>Point {i}</h5>" for i in range(h5))
+                 + "".join(f"<h6>Privacy Note: {i}</h6>" for i in range(h6))
+                 + "</body></html>", encoding="utf-8")
+
+
+def test_min_h5_h6_reads_the_record_tree_for_a_record_not_yet_rebuilt(tmp_path, monkeypatch):
+    """The floor stays a planning constraint while the page is still an outline."""
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")      # absent → no slug rebuilt
     b = _approved(MIN_BOARD)
-    same = _checks(b, _ledger_with(hero="hero-a", dial="dial-1", rail="rail-a", toc="t9", table="table-z", faq="faq-z"))
-    assert "ledger-triple-owned" in same
-    # and the triple names the hero already, so the shell rule does not say it twice
-    assert "ledger-shell-owned" not in same, same
-    diff = _checks(b, _ledger_with(hero="hero-a", dial="dial-2", rail="rail-a", toc="t9", table="table-z", faq="faq-z"))
-    assert "ledger-triple-owned" not in diff
-    assert "ledger-shell-owned" in diff, diff      # a shared hero on its own is still a shell finding
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "record tree" in hit[0]["msg"], hit
+
+
+def test_min_h5_h6_reads_the_built_page_for_a_rebuilt_slug(tmp_path, monkeypatch):
+    """A rebuilt page earns the floor the way the migrated pages did: H5 sub-points and
+    "<prefix>:" H6 lines written INSIDE the sections at build time. The approved outline
+    stops at the H3 the breeder saw, and must not be padded to satisfy arithmetic."""
+    dist, rebuilt = tmp_path / "dist", tmp_path / "rebuilt.json"
+    monkeypatch.setattr(PB, "DIST", dist)
+    monkeypatch.setattr(PB, "REBUILT", rebuilt)
+    rebuilt.write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    b = _approved(MIN_BOARD)
+
+    _h_page(dist, MIN_BOARD["meta"]["slug"], h5=5, h6=5)
+    assert not [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+                if x["check"] == "min-h5-h6"]
+
+    _h_page(dist, MIN_BOARD["meta"]["slug"], h5=5, h6=4)               # one H6 short
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "built page" in hit[0]["msg"] and "H6 4" in hit[0]["msg"], hit
+
+
+def test_min_h5_h6_falls_back_to_the_tree_when_a_rebuilt_slug_has_no_built_page(tmp_path, monkeypatch):
+    """A missing build is not a pass. `dist/` is absent before the first `npm run build`,
+    and reading zero headings out of nothing would clear the floor for free."""
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")
+    (tmp_path / "rebuilt.json").write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    hit = [x for x in PB.gate_findings(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "record tree" in hit[0]["msg"], hit
+
+
+def test_page_h_counts_ignores_site_chrome():
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = pathlib.Path(d) / "index.html"
+        p.write_text("<html><body><nav><h5>Jump</h5></nav><h5>Real</h5>"
+                     "<footer><h6>Chrome</h6></footer><h6>Privacy Note: x</h6></body></html>",
+                     encoding="utf-8")
+        assert PB.page_h_counts(p)["h5"] == 1 and PB.page_h_counts(p)["h6"] == 1
+
+
+def _sig_ledger(**over):
+    """A sibling matching MIN_BOARD's hero+faq+takeaway signature, every other axis
+    different so `ledger-tuple-identical` does not fire first and swallow the finding."""
+    t = {"hero": "hero-a", "faq": "faq-a", "takeaway": ["k1"],
+         "dial": "dial-9", "rail": "rail-9", "toc": "t9", "table": "table-z"}
+    t.update(over)
+    return _ledger_with(**t)
+
+
+def test_gate_flags_a_copied_hero_faq_takeaway_signature():
+    """Components are shared by design; the signature the reader sees first is not.
+
+    The signature is the tuple MINUS `dial` and `rail`. Those two stopped telling pages
+    apart in project 4: the breeder picked one dial style and one sheet style for the whole
+    site on the contact board and both are baked into the kit, so including them reduced
+    the rule to "no two pages may share a hero style"."""
+    b = _approved(MIN_BOARD)
+    assert "ledger-tuple-owned" in _checks(b, _sig_ledger())
+    # A different dial and rail buy a page nothing: they are not the breeder's to vary.
+    assert "ledger-tuple-owned" in _checks(b, _sig_ledger(dial="dial-4", rail="rail-4"))
+    # A different FAQ shell does separate two pages — which is what separates
+    # privacy-policy-uk (faq-s1) from thank-you-…-journey (faq-s3) on a shared hero S3.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(faq="faq-z"))
+    # ...and so does a different takeaway set.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(takeaway=["k9"]))
+
+
+def test_gate_does_not_name_the_hero_twice_when_the_signature_is_owned():
+    """The signature finding names the hero already, so the shell rule stays quiet about
+    it — the shared FAQ shell is still reported in its own right."""
+    found = PB.gate_findings(_approved(MIN_BOARD), ONT_OK, _sig_ledger(), live={}, stage="build")
+    shells = [x["msg"] for x in found if x["check"] == "ledger-shell-owned"]
+    assert any("faq" in m for m in shells), shells
+    assert not any("hero" in m for m in shells), shells
 
 
 def test_gate_flags_a_takeaway_set_a_sibling_already_uses():

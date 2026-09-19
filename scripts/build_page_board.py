@@ -15,6 +15,7 @@ sandboxed srcdoc iframes at 1280 / 768 / 375. Run, in order:
 
 Publish with the Artifact tool: file_path=<html>, capabilities={"db": {}}."""
 import html as H, json, pathlib, re, sys
+from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 
@@ -85,6 +86,13 @@ fieldset.styles legend{font-size:12px;font-weight:600;letter-spacing:.06em;text-
 .frame span{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
 .frame iframe{border:1px solid var(--line);border-radius:6px;background:var(--paper);display:block}
 .noprev{font-size:13px;color:var(--warn);margin:6px 0 0}
+.lk{font-size:12px;font-weight:600;letter-spacing:.03em;white-space:nowrap}
+.lk-ok{color:var(--green)}
+.lk-wait{color:var(--clay-ink)}
+.lk-bad{color:var(--warn)}
+.lk-ext{color:var(--ink-3);font-weight:400}
+.lk-none{font-size:13px;color:var(--ink-3);margin:4px 0 10px}
+.lk-tot{font-size:14px;font-weight:600;color:var(--ink-2)}
 """
 
 
@@ -424,6 +432,127 @@ def image_plan_table(board):
     return md_table(["Section", "Slot", "Kind", "Required", "Prompt"], rows)
 
 
+LINK_HEADERS = ["Target", "Anchor", "Purpose", "Resolves"]
+
+
+def route_of(href):
+    """An internal href → the route it lands on: query and fragment dropped, one leading and
+    one trailing slash. `/x`, `/x/`, `/x/?a=1` and `/x/#faq` are one route, and the board must
+    not report three of them dead because the record spelled them three ways."""
+    path = urlsplit(str(href or "")).path.strip()
+    if not path.startswith("/"):
+        path = "/" + path
+    if not path.endswith("/"):
+        path += "/"
+    return re.sub(r"/{2,}", "/", path)
+
+
+def load_routes():
+    """What a route can be checked against: the routes the last build actually wrote, and the
+    routes the page map plans.
+
+    `built` is None — not an empty set — when there is no dist/ at all, because "nothing is
+    built" and "this page is not built" have to read differently: with no build on disk the
+    board falls back to the page map and says nothing about what a build would emit."""
+    built = None
+    if PB.DIST.exists():
+        built = set()
+        for p in PB.DIST.rglob("index.html"):
+            rel = p.parent.relative_to(PB.DIST).as_posix()
+            built.add("/" if rel == "." else route_of("/" + rel))
+    mapped = set()
+    pm = PB.ROOT / "data" / "page-map.json"
+    if pm.exists():
+        for row in json.loads(pm.read_text(encoding="utf-8")).get("pages", []):
+            if row.get("url"):
+                mapped.add(route_of(row["url"]))
+    return {"built": built, "mapped": mapped}
+
+
+def resolve_internal(href, routes):
+    """(text, css class) for one internal target. A route the build wrote resolves; a route
+    only the page map knows is planned but unbuilt; a route neither knows is dead, and a dead
+    internal link is the one thing on this block that has to be rewritten before approval."""
+    r = route_of(href)
+    built, mapped = routes["built"], routes["mapped"]
+    if built is None:
+        return ("yes", "lk-ok") if r in mapped else ("no (dead)", "lk-bad")
+    if r in built:
+        return ("yes", "lk-ok")
+    if r in mapped:
+        return ("no (not built yet)", "lk-wait")
+    return ("no (dead)", "lk-bad")
+
+
+def link_rows(section, routes):
+    """Every link row of one section, internal first, each as the four table cells.
+
+    The record gives an internal row no purpose field of its own, so the purpose IS its
+    placement rule: `nav: true` is a navigational link, anything else is required by the
+    schema to start a sentence. An external row carries its library row, which is the
+    purpose the link was admitted for."""
+    rows = []
+    for l in section["links"]["internal"]:
+        text, cls = resolve_internal(l["href"], routes)
+        rows.append([f"`{md(l['href'])}`", md(l["anchor"]),
+                     "nav link" if l.get("nav") else "in copy, sentence start",
+                     f'<span class="lk {cls}">{esc(text)}</span>'])
+    for l in section["links"]["external"]:
+        domain = urlsplit(l["href"]).netloc or "unknown host"
+        rows.append([f"`{md(l['href'])}`", md(l["anchor"]), md(l["library_row"]),
+                     f'<span class="lk lk-ext">external · {esc(domain)}</span>'])
+    return rows
+
+
+def links_block(board, routes):
+    """Working rule 12: every internal and external link the page will carry, per section and
+    then once for the page. The page table is deduplicated by target, because a link repeated
+    in four sections is one destination with four placements — and the sections column is what
+    tells the breeder where each one is said."""
+    out, seen, order = [], {}, []
+    for s in board["sections"]:
+        out.append(f"### {s['n']:02d} · {md(s['heading'])}")
+        rows = link_rows(s, routes)
+        out.append(md_table(LINK_HEADERS, rows) if rows
+                   else '<p class="lk-none">No links in this section.</p>')
+        for l in s["links"]["internal"] + s["links"]["external"]:
+            key = l["href"]
+            if key not in seen:
+                seen[key] = {"row": l, "kind": "external" if "library_row" in l else "internal",
+                             "anchors": [], "sections": []}
+                order.append(key)
+            e = seen[key]
+            if l["anchor"] not in e["anchors"]:
+                e["anchors"].append(l["anchor"])
+            label = f"{s['n']:02d} {s['heading']}"
+            if label not in e["sections"]:
+                e["sections"].append(label)
+    page_rows = []
+    for key in order:
+        e = seen[key]
+        l = e["row"]
+        if e["kind"] == "internal":
+            text, cls = resolve_internal(l["href"], routes)
+            purpose = "nav link" if l.get("nav") else "in copy, sentence start"
+            cell = f'<span class="lk {cls}">{esc(text)}</span>'
+        else:
+            purpose = md(l["library_row"])
+            cell = f'<span class="lk lk-ext">external · {esc(urlsplit(l["href"]).netloc or "unknown host")}</span>'
+        page_rows.append([f"`{md(key)}`", " / ".join(md(a) for a in e["anchors"]),
+                          purpose, cell, ", ".join(md(x) for x in e["sections"])])
+    n_int = sum(1 for k in order if seen[k]["kind"] == "internal")
+    n_ext = len(order) - n_int
+    placements = sum(len(s["links"]["internal"]) + len(s["links"]["external"]) for s in board["sections"])
+    out.append("### Every link on this page")
+    out.append(md_table(LINK_HEADERS + ["Sections"], page_rows) if page_rows
+               else '<p class="lk-none">No links on this page.</p>')
+    out.append(f'<p class="lk-tot">Totals: {n_int} internal · {n_ext} external</p>')
+    out.append(f"Deduplicated by target: {len(order)} distinct target(s) across {placements} placement(s). "
+               "An internal target that resolves to _no_ is either a page this cluster has not built yet or a "
+               "dead route — either way the board cannot be built against it as written.")
+    return "\n\n".join(out)
+
+
 def decisions_lines(brief):
     """The page-level decisions the brief gates on (§8, §10, §14, §16d), one bold-led line
     each, so the sitting reads them beside the strategy they serve."""
@@ -436,8 +565,9 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
-def render(board, ont, ledger, live, thumbs, slug, previews=None):
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
+    routes = routes if routes is not None else load_routes()
     hits = PB.header_hits(board, live)          # exactly what the gate will fail on
     qhits = PB.faq_hits(board, live)            # and what it will warn on
     d = PB.distribution(board)
