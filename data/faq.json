@@ -18,6 +18,24 @@
     "source": "src/pages/index.astro"
   },
   {
+    "id": "enquiry-reply-time",
+    "q": "How long will you take to reply to my enquiry?",
+    "a": "We personally review and respond to every message within 24-48 business hours. If nothing has arrived by then, please check your spam or junk folder before writing again.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
+    "id": "enquiry-while-you-wait",
+    "q": "What can I read while I wait for your reply?",
+    "a": "Our Staffy breed guide covers temperament and needs, our health and care pages set out what stands behind every litter, and the blog guides are written for new owners. You can also see which puppies are ready to find their forever home.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
+    "id": "enquiry-follow-up",
+    "q": "How do I follow up on my enquiry?",
+    "a": "You can contact our purebred Blue Staffy breeders again at any time rather than waiting, and our privacy policy sets out how the details you sent are handled.",
+    "source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro"
+  },
+  {
     "id": "privacy-data-collected",
     "q": "What personal information does BlueStaffyUK collect?",
     "a": "When you enquire we collect your name, email address, phone number, postal address and anything you choose to tell us about your home and family. The website also records automated data such as your IP address, browser type and the pages you visit.",

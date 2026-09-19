@@ -21,6 +21,6 @@ None.
 | puppy-sitemap.xml | 6 |
 | video-sitemap.xml | 4 |
 
-31 of 54 built pages are indexable; each must appear in exactly one URL shard.
+31 of 55 built pages are indexable; each must appear in exactly one URL shard.
 
-examined 54 built pages, 5 shards, 35 sitemap urls; 0 problems
+examined 55 built pages, 5 shards, 35 sitemap urls; 0 problems

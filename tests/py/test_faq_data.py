@@ -28,6 +28,9 @@ TOKENS = {
 # treat as a promise. Each must appear on the page that row names.
 FACT_PHRASES = {
     "puppy-package": ["first vaccinations", "microchip", "puppy pack"],
+    "enquiry-reply-time": ["personally review and respond", "24-48 business hours", "spam or junk folder"],
+    "enquiry-while-you-wait": ["Staffy breed guide", "health and care", "ready to find their forever home"],
+    "enquiry-follow-up": ["contact our purebred Blue Staffy breeders", "Privacy Policy"],
     "privacy-data-collected": ["name, email, phone", "IP address", "browser type"],
     "privacy-cookies": ["essential cookies", "Google Analytics"],
     "privacy-delete-data": ["view, edit, or delete your data", "within one month"],
