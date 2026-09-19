@@ -140,6 +140,11 @@ growing. Every other rule moved to a pack.
     file; a replacement image is added beside the old one, never in its place. (Breeder,
     2026-09-19.)
 
+12. **Every link on the board.** A page board lists every internal and external link the
+    page will carry — per section (target URL, anchor text, purpose, and whether the target
+    resolves today) and again as one page-level table — before the breeder approves it. A
+    link that is not on the approved board is not built. (Breeder, 2026-09-19.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how
