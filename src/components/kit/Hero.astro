@@ -39,6 +39,12 @@ type Props = HTMLAttributes<'section'> & {
   eyebrow?: string;
   title?: string;
   lede?: string;
+  /** The photo. An `ImageMetadata` (a src/assets import) goes through astro:assets and is
+   *  re-encoded and hashed; a STRING is a public path taken verbatim, which is how the
+   *  legacy `/images/…` files are reused (working rule 11: every existing image keeps its
+   *  original path). Omitted → the kit's own master. */
+  image?: ImageMetadata | string;
+  imageAlt?: string;
 };
 // Every figure and claim below is in data/settings.json or on the live homepage
 // (KC registration, health-tested parents): rule 9, nothing is typed from memory.
@@ -50,25 +56,43 @@ const {
   // wording ("Kennel Club registration paperwork") ran to three and pushed the CTA row past
   // the 450px ceiling. This is demo copy; project 4 writes the page's own.
   lede = `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
+  image = hero,
+  imageAlt,
   class: cls,
   ...rest
 } = Astro.props;
 // Backed on the homepage today: KC registration, L-2-HGA/HC-HSF4 clear parents, home rearing.
 const chips = ['KC registered', 'DNA-tested parents', 'Raised in the home'];
-const alt = 'A blue Staffordshire Bull Terrier puppy resting in a family home';
+const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
+// A public path cannot go through <Image>: astro:assets only handles files it can read at
+// build time out of src/. So a string src renders a plain <img> with the same class, sizes
+// and loading behaviour, and the CSS below does not care which branch produced it.
+const legacy = typeof image === 'string';
 ---
 <section {...rest} class:list={['kit-hero', cls]}>
   <div class="container inner">
-    <Image
-      src={hero}
-      alt={alt}
-      widths={[480, 800, 1200]}
-      sizes="(max-width: 900px) 100vw, 560px"
-      class="pic"
-      loading="eager"
-      fetchpriority="high"
-      decoding="async"
-    />
+    {legacy ? (
+      <img
+        src={image as string}
+        alt={alt}
+        sizes="(max-width: 900px) 100vw, 560px"
+        class="pic"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    ) : (
+      <Image
+        src={image as ImageMetadata}
+        alt={alt}
+        widths={[480, 800, 1200]}
+        sizes="(max-width: 900px) 100vw, 560px"
+        class="pic"
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    )}
     <div class="copy">
       <p class="eyebrow">{eyebrow}</p>
       <Heading class="title">{title}</Heading>

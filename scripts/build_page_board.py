@@ -45,7 +45,7 @@ header.masthead{display:grid;grid-template-columns:1fr auto;gap:24px;align-items
 h1.title{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
 .meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
 .pill{display:inline-block;border-radius:50px;padding:2px 9px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
-section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px 26px;margin:0 0 20px}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px 26px;margin:0 0 20px;min-width:0;overflow:hidden}
 section.sec h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;margin:0 0 10px;line-height:1.2}
 .md p,.md li{max-width:72ch}.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
 .md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--green);padding:6px 10px;white-space:nowrap}
@@ -74,13 +74,13 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .kit .opt .pill:first-child{justify-self:start;background:var(--paper);border-color:var(--line);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
 @media (max-width:640px){header.masthead{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:18px 16px 20px}}
 .howto{margin:0 0 18px;padding:10px 14px;border-left:3px solid var(--clay);background:var(--clay-soft);color:var(--ink);font-size:14px;border-radius:0 6px 6px 0}
-fieldset.styles{border:1px solid var(--line);border-radius:8px;padding:10px 12px 14px;margin:8px 0 6px;background:var(--paper)}
+fieldset.styles{border:1px solid var(--line);border-radius:8px;padding:10px 12px 14px;margin:8px 0 6px;background:var(--paper);min-width:0}
 fieldset.styles legend{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:0 6px}
 .style{border-top:1px dashed var(--line);padding:10px 0 4px}
 .style:first-of-type{border-top:0}
 .style label{display:flex;gap:8px;align-items:baseline;font-size:15px;font-weight:600;cursor:pointer}
 .style label .why{font-weight:400;font-size:12px;color:var(--ink-3)}
-.frames{display:flex;gap:10px;overflow-x:auto;padding:8px 0 2px;align-items:flex-start}
+.frames{display:flex;gap:10px;overflow-x:auto;max-width:100%;padding:8px 0 2px;align-items:flex-start}
 .frame{flex:none;display:grid;gap:4px}
 .frame span{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
 .frame iframe{border:1px solid var(--line);border-radius:6px;background:var(--paper);display:block}
@@ -301,7 +301,17 @@ def style_fieldset(section, previews):
     Each style shows three frames (1280 / 768 / 375). The frames are filled at load from
     one copy of the blocks and one copy of the page CSS (see BLOCKS/PREVIEW_CSS in the
     board's script): a static `srcdoc` per frame would paste the whole kit stylesheet nine
-    times per section, and the board is a committed file."""
+    times per section, and the board is a committed file.
+
+    `loading="eager"`, not lazy: the three frames sit in a horizontal scroller, so the 768
+    and 375 ones are off to the right of the board's own column and a lazy frame would stay
+    blank until the reader scrolled it in — which reads as a style that renders to nothing.
+
+    `sandbox=""` grants the frame NOTHING, and the one thing that matters here is what it
+    therefore withholds: `allow-forms`. A `form`-shaped section embeds the kit's enquiry
+    form nine times, and without the flag a click on its submit button does nothing at all
+    — no navigation, no POST to Formspree. (No script runs either, so the previews are
+    static renderings; that is a consequence, not the reason.)"""
     sid = section["id"]
     pick = section["options"]["pick"]
     rows = []
@@ -311,7 +321,7 @@ def style_fieldset(section, previews):
         have = key in previews["blocks"]
         frames = "".join(
             f'<div class="frame"><span>{w}px</span>'
-            f'<iframe title="{esc(style)} at {w} pixels wide" sandbox="" loading="lazy" '
+            f'<iframe title="{esc(style)} at {w} pixels wide" sandbox="" loading="eager" '
             f'scrolling="auto" data-block="{esc(key)}" width="{w}" height="{PREVIEW_H}" '
             f'style="width:{w}px;height:{PREVIEW_H}px"></iframe></div>'
             for w in PREVIEW_W) if have else (
@@ -327,13 +337,30 @@ def style_fieldset(section, previews):
             + "".join(rows) + "</fieldset>")
 
 
-def picked_sections(board):
+def picked_sections(board, ledger=None, slug=None):
     """Every section id the approve button must see an answer for.
 
-    A styled section owes its style; a section with no styles but a non-`standard` shape
-    owes its ledger component, as it always has. One list, so the button and the record
-    can never disagree about what a complete board is."""
-    return [s["id"] for s in board["sections"] if s.get("styles") or s["shape"] != "standard"]
+    A styled section owes its style. A section with no styles owes its ledger component, as
+    it always has — but only if the board actually SHOWS it one: a `standard` section is
+    offered nothing by design, and a section whose pool comes back empty is shown nothing
+    either. Demanding an answer to a question the board never asked is a board nobody can
+    approve, which is worse than one that guesses.
+
+    `ledger`/`slug` are optional so a one-argument call still works; without them the
+    emptiness test falls back to the `standard` rule alone."""
+    out = []
+    for s in board["sections"]:
+        if s.get("styles"):
+            out.append(s["id"])
+            continue
+        if s["shape"] == "standard":
+            continue
+        if ledger is not None and not s["options"]["pick"]:
+            cands, _ = PB.candidates_for(s["shape"], ledger, slug)
+            if not cands:
+                continue
+        out.append(s["id"])
+    return out
 
 
 STANDARD_FORM_DEFAULT = "kit two-column inquiry form (field contract by slug)"
@@ -601,7 +628,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None):
       +PREVIEW_CSS+'</style>'+inner;
   }});
   var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js(picked_sections(board))};
+  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{

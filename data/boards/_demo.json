@@ -129,7 +129,14 @@
       },
       "entities": [],
       "tree": [],
-      "images": [],
+      "images": [
+        {
+          "slot": "opening-photo",
+          "kind": "photo",
+          "required": false,
+          "prompt": "the opener photo, reused at its original public path"
+        }
+      ],
       "links": {
         "internal": [],
         "external": []
@@ -347,6 +354,16 @@
     ]
   },
   "assets": [
+    {
+      "slot": "opening-photo",
+      "kind": "photo",
+      "w": 612,
+      "h": 612,
+      "required": false,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-for-sale-uk.webp",
+      "alt": "A blue Staffordshire Bull Terrier puppy for sale in the UK"
+    },
     {
       "slot": "raise-photo",
       "kind": "photo",

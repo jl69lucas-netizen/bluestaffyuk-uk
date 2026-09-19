@@ -161,11 +161,20 @@
                                                                  "owners": {"type": "array", "items": {"type": "string"}}}}},
                                      "pick": {"type": ["string", "null"]}, "note": {"type": "string"}}}
         },
-        "allOf": [{
-          "if": {"required": ["id", "shape"],
-                 "properties": {"id": {"const": "faq"}, "shape": {"const": "standard"}}},
-          "then": {"required": ["questions"]}
-        }]
+        "allOf": [
+          {
+            "if": {"required": ["id", "shape"],
+                   "properties": {"id": {"const": "faq"}, "shape": {"const": "standard"}}},
+            "then": {"required": ["questions"]}
+          },
+          {
+            "comment": "A KIT shape draws its component from src/lib/boardStyles.ts, not from a ledger pool, so its board offers rendered arrangements and nothing else. A kit-shaped section with no `styles` would therefore reach the approve button owing a pick it is never shown a control for — an unapprovable board. The nine are required to carry the three. `standard` is deliberately NOT among them: it is shared with the ported CAG shapes, it is what every section of the existing homepage record is, and its board still offers the ledger default.",
+            "if": {"required": ["shape"],
+                   "properties": {"shape": {"enum": ["hero", "takeaways", "puppies", "reviews", "faq",
+                                                     "form", "stats", "trust", "divider"]}}},
+            "then": {"required": ["styles"], "properties": {"styles": {"minItems": 3}}}
+          }
+        ]
       }
     },
     "tuple": {

@@ -135,8 +135,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "hi-i-am-sharine-amelia",
@@ -176,8 +175,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "meet-our-affordable-blue-staffy-puppies-ready-for-their-forever-homes",
@@ -217,8 +215,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "why-choose-a-pure-bred-staffy-pup-for-sale-from-bluestaffyuk-uk",
@@ -258,8 +255,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "understanding-the-wonderful-blue-staffordshire-bull-terrier-breed",
@@ -299,8 +295,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "blue-staffy-news-join-500-readers",
@@ -340,8 +335,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "our-happy-blue-staffy-owners-speak",
@@ -381,8 +375,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "our-commitment-to-excellence-in-blue-staffy-breeding",
@@ -422,8 +415,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "meet-the-proud-parents-of-our-blue-staffy-puppies",
@@ -463,8 +455,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "our-commitment-to-the-health-of-our-blue-staffy-puppies",
@@ -504,8 +495,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "connecting-families-across-the-uk-we-ship-our-blue-staffy-puppies-to-your-doorstep",
@@ -545,8 +535,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "your-questions-about-blue-staffies-answered",
@@ -586,8 +575,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     },
     {
       "id": "how-to-buy-your-blue-staffy-puppy",
@@ -628,8 +616,7 @@
         "pick": null,
         "note": "standard shape — no component choice"
       },
-      "cta": 1,
-      "styles": []
+      "cta": 1
     },
     {
       "id": "available-blue-staffy-puppies",
@@ -669,8 +656,7 @@
         "excluded": [],
         "pick": null,
         "note": "standard shape — no component choice"
-      },
-      "styles": []
+      }
     }
   ],
   "tuple": {
@@ -701,6 +687,6 @@
     "picks": {},
     "notes": {},
     "canvas_version": "none",
-    "record_hash": "3a1f15041a631bffaaeb7b97f5af4f1cb7398f1cff4093def1fd33011bd36be4"
+    "record_hash": "2f847f857da2aa49a00c5b7143c8ce84d343dccf55fda4994206ba04978bd78b"
   }
 }
