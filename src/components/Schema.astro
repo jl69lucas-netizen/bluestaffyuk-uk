@@ -2,13 +2,28 @@
 import { SITE, SITE_URL, LOGO_RASTER, abs, crumbs } from '../lib/site';
 interface Props { extra?: unknown[]; path: string; title: string }
 const { extra = [], path, title } = Astro.props;
+// The address carries only the fields data/settings.json actually holds. Known Issue 16:
+// the breeder relocated and has not supplied a street, a postcode or coordinates for the
+// new place, so PostalAddress is town-level and there is NO geo node. An address key set
+// to undefined serialises away silently, but a `geo` node built from two undefined numbers
+// would ship `{"@type":"GeoCoordinates"}` — a coordinate claim with no coordinates — so
+// each optional field is added only when it is there to add.
+type Address = { city: string; country: string;
+                 region?: string; street?: string; postcode?: string; lat?: number; lng?: number };
+const addr = SITE.address as Address;
+const address: Record<string, unknown> = {
+  '@type': 'PostalAddress', addressLocality: addr.city, addressCountry: addr.country };
+if (addr.region) address.addressRegion = addr.region;
+if (addr.street) address.streetAddress = addr.street;
+if (addr.postcode) address.postalCode = addr.postcode;
 const org: Record<string, unknown> = {
   '@context': 'https://schema.org', '@type': 'LocalBusiness', '@id': `${SITE_URL}/#business`,
   name: SITE.site_name, url: SITE_URL, email: SITE.email, priceRange: SITE.price_range,
-  address: { '@type': 'PostalAddress', streetAddress: SITE.address.street, addressLocality: SITE.address.city, postalCode: SITE.address.postcode, addressCountry: SITE.address.country },
-  geo: { '@type': 'GeoCoordinates', latitude: SITE.address.lat, longitude: SITE.address.lng },
+  address,
   openingHours: SITE.hours, sameAs: Object.values(SITE.socials), image: abs(LOGO_RASTER),
 };
+if (typeof addr.lat === 'number' && typeof addr.lng === 'number')
+  org.geo = { '@type': 'GeoCoordinates', latitude: addr.lat, longitude: addr.lng };
 if (SITE.phone !== 'PHONE_PLACEHOLDER') org.telephone = SITE.phone;
 const website = { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${SITE_URL}/#website`, url: SITE_URL, name: SITE.site_name };
 // Same trail the visible breadcrumb renders, so the two can never disagree.

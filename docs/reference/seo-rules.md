@@ -15,11 +15,11 @@ both state 57, and all three must be changed together.
 
 **Rule 1 — Brand Name**
 Use **"BlueStaffyUK"** as the brand name everywhere — page copy, footer, schema, agent
-references. Never use the bare domain as a brand name. `BlueStaffyUK – Glasgow` is the
+references. Never use the bare domain as a brand name. `BlueStaffyUK – Carlisle` is the
 long form. Organization schema matches.
 
 **Rule 2 — Breeder Identity**
-The breeder is **Lisa Bright**, 40 Coltmuir Street, Glasgow G22 6LU. Content uses the
+The breeder is **Lisa Bright**, Carlisle, Cumbria. Content uses the
 first-person breeder voice — *we / us / our* — not "the breeder" or third-person
 directory language.
 
@@ -113,7 +113,7 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 | Primary keyword (exact) | 30–35× | 1–2% density; natural, not stuffed |
 | LSI keywords | 20–25× | Synonyms and related terms |
 | Long-tail keywords | 15–20× | In headers and paragraphs, conversational |
-| Branded keywords (BlueStaffyUK, Lisa Bright, Glasgow) | 10–15× | Throughout |
+| Branded keywords (BlueStaffyUK, Lisa Bright, Carlisle) | 10–15× | Throughout |
 | Conversational search queries | 23× | Headers and subheaders, voice search |
 | Comparison keywords (blue vs black Staffy, Staffy vs Bull Terrier) | 5–8× | |
 | Solution keywords | 5–10× | |
@@ -128,7 +128,7 @@ Primary keyword 0.8–1.2% per section. LSI distributed naturally, never force-i
 Every product or availability page addresses at least one:
 - `"blue staffy puppy scam"` → counter with what this kennel documents and shows
 - `"cheap blue staffy puppies"` → position on health screening and aftercare, not price
-- `"blue staffy puppy farm"` → counter with collection-in-Glasgow and seeing the litter
+- `"blue staffy puppy farm"` → counter with collection-in-Carlisle and seeing the litter
 
 Each counter states only what the repo can back. Nothing here licenses a welfare or
 licensing claim — see Rule 7.
@@ -149,7 +149,7 @@ conversational query] + BlueStaffyUK`
 3. **Include a power word** — Trusted, Healthy, Home-Reared, Hand-Socialised.
 4. **Insert a long-tail conversational query** — `blue staffy breeder near me with puppies
    available now`.
-5. **End with the brand** — `BlueStaffyUK` (or `BlueStaffyUK – Glasgow`).
+5. **End with the brand** — `BlueStaffyUK` (or `BlueStaffyUK – Carlisle`).
 6. One clause, no pipe separators.
 - **Title cap: ≤ 70 characters, one clause.**
 - **Description cap: ≤ 160 characters.**
@@ -162,8 +162,8 @@ rendered into a title or description tag.
 **Rule 23 — Meta Description**
 - ≤ 160 characters, conversational, benefit-driven, one sentence flow.
 - Must carry: primary keyword + a long-tail or LSI variation + a trust signal + a CTA.
-- Emphasise what is locked: home-reared in Glasgow, UK delivery £200–£350 by distance via
-  DEFRA-approved transport or collection in Glasgow, £500 refundable deposit.
+- Emphasise what is locked: home-reared in Carlisle, UK delivery £200–£350 by distance via
+  DEFRA-approved transport or collection in Carlisle, £500 refundable deposit.
 - Never emphasise a licence, a statute, a guarantee length or a review count — none of
   those is established.
 
@@ -172,7 +172,7 @@ Unique title and description on every page. Duplicates are a cannibalisation sig
 `python3 scripts/dup_content_audit.py` is the gate.
 
 **Rule 25 — Branded Search Optimization**
-Optimise for `"BlueStaffyUK reviews"`, `"BlueStaffyUK Glasgow pricing"` and
+Optimise for `"BlueStaffyUK reviews"`, `"BlueStaffyUK Carlisle pricing"` and
 `"BlueStaffyUK vs [competitor]"`. No historical branded-search data exists here; treat
 these as targets, not as measured demand.
 
@@ -209,7 +209,7 @@ is checked by `tests/render/checks/nav.ts`.
 Four counters immediately after the hero, under four words each, each starting with a
 number or percentage, each stating something BlueStaffyUK can back:
 `£500 Refundable Deposit` / `12–14 Year Lifespan` / `28 UK Cities Covered` /
-`Home-Reared in Glasgow`. A counter that asserts a licence, an award or a review count is
+`Home-Reared in Carlisle`. A counter that asserts a licence, an award or a review count is
 a defect, not a variation.
 
 **Rule 32 — Contact Form Placement (3× Per Page)**
@@ -260,12 +260,12 @@ asserts a health screen, a licence or a guarantee is a claim, and Rule 7 applies
 
 **Rule 37 — Opening Paragraph Formula (Every Section)**
 Every section's opening 1–2 sentences carry all four:
-- **Entity** — puppy name, colour, BlueStaffyUK, Glasgow
+- **Entity** — puppy name, colour, BlueStaffyUK, Carlisle
 - **Feature** — a measurable, locked fact (price, deposit, delivery band, age)
 - **Benefit** — what it means for the buyer
 - **Purpose** — the deeper reason it matters
 
-Example: *"Roman is a blue Staffordshire Bull Terrier pup reared at home in Glasgow
+Example: *"Roman is a blue Staffordshire Bull Terrier pup reared at home in Carlisle
 (entity) at £1,500 with a £500 refundable deposit (feature), handled daily so he settles
 into a new household within days rather than weeks (benefit) — the start of a 12–14 year
 relationship (purpose)."*
@@ -293,7 +293,7 @@ Establish the angle before writing any section.
 **Rule 40 — Opening Paragraph Snippet Formula**
 Every section opening (50–80 words) includes a direct answer in the first sentence, the
 primary keyword early, specific locked numbers (£1,500 / £1,700, £500 deposit, £200–£350
-delivery, 12–14 years), entity mentions (BlueStaffyUK, Lisa Bright, Glasgow), a benefit
+delivery, 12–14 years), entity mentions (BlueStaffyUK, Lisa Bright, Carlisle), a benefit
 statement, and a trust signal that is true.
 
 **Rule 41 — Featured Snippet Format Rules**
@@ -427,7 +427,7 @@ assumed — count the keyword variants it actually uses, and target that count *
 Record the competitor URL and its count in the session brief. The ten categories organise
 the fan-out: transactional · long-tail conversational (6+ words) · voice search (How /
 What / Are / Can / Is / Do) · problem-solution · comparison · UK geographic (the 28 cities
-in `data/locations.json`) · LSI · NLP · branded (BlueStaffyUK, Lisa Bright, Glasgow) ·
+in `data/locations.json`) · LSI · NLP · branded (BlueStaffyUK, Lisa Bright, Carlisle) ·
 review and testimonial. Full template:
 `.claude/skills/bsuk-seo-master-checklist/SKILL.md`.
 
@@ -436,7 +436,7 @@ Every full-length page carries 95–105 **distinct** named entities from
 `.claude/skills/bsuk-entity-agent/SKILL.md`, each said ONCE where it is load-bearing. A
 repeated term is a term-budget defect, not a score — `data/quality/evidence-budgets.json`
 sets the ceilings and `scripts/evidence_audit.py` enforces them. Categories: people ·
-UK locations (the 28 cities plus Glasgow) · health and veterinary terms, each cited under
+UK locations (the 28 cities plus Carlisle) · health and veterinary terms, each cited under
 Rule 64 · food and product brands · statistical entities drawn only from locked facts
 (£1,500 / £1,700, £500 deposit, £200–£350 delivery, 12–14 years) · credentials, which are
 `LICENCE_CLAIM_PLACEHOLDER` until confirmed. Density target 8–12 entities per 100 words,

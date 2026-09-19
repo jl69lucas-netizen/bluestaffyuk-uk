@@ -91,6 +91,22 @@ WHITELIST_SNIPPETS = [
 
     # document-title + skip-link chrome that leaks into the text stream
     "blue staffy puppy for sale blue staffy uk skip to content",
+
+    # ── review quotes (spec §5 "Reviews", added 2026-09-19, project 4 Task 6) ──────
+    # The three rows of data/reviews.json, tokenised. They are the only real buyer quotes
+    # the site has, every page's board picks which of them fill its review slots, and
+    # CLAUDE.md mandates they be reused VERBATIM — so the same sentences render on several
+    # pages by design, and the gate reporting them trains everyone to ignore it. Sitewide
+    # lines, not page prose.
+    #
+    # Written out as literals, not read from data/reviews.json at import, because
+    # tests/render/lib/dupCorpus.ts parses this list with a regex over the source and a
+    # computed entry would be invisible to the harness — the two gates would then disagree
+    # about the same passage. tests/py/test_dup_whitelist_measured.py holds them in step
+    # with the data file and measures them against the built pages.
+    "we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first enquiry to bringing her home the process was seamless and incredibly professional she s got the most wonderful temperament playful loving and fantastic with our kids it s clear she was raised with so much care and early socialisation she truly is the heart of our family",
+    "after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy puppy arrived happy and healthy with all his papers and medical records meticulously organized their commitment to ethical breeding and health testing truly shines through he s exactly what we wanted loyal intelligent and incredibly affectionate we highly recommend them if you re looking to buy a staffordshire bull terrier in the uk",
+    "the health checks the communication and the home raised environment everything was top notch i wouldn t go anywhere else for a staffy",
 ]
 
 SKIP_TAGS = {"script", "style", "noscript", "header", "footer", "nav", "form"}

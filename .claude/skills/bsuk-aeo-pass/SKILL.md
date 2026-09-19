@@ -39,7 +39,7 @@ Three claims in circulation are wrong. Never write them, and correct them on sig
 | any price typed by hand | **£1,500** (Roman, Byrd, Ince) · **£1,700** (Vennie, Christa, Cheryl) — the litter spans **£1,500–£1,700** | Every figure comes from `data/price-matrix.json` through a helper. A hand-typed price is a defect even when it is currently right. |
 | any health-guarantee length | **NOT FETCHED** | `data/settings.json` has `guarantee_days: null`. Until the breeder confirms a window, the page says a written health guarantee is supplied and gives no number. |
 
-Verified safe to use: `Lisa Bright` · `40 Coltmuir Street, Glasgow G22 6LU` ·
+Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
 `DEFRA-approved transport` · the 28 UK cities in `data/locations.json` ·
 `Staffordshire Bull Terrier` · the coat descriptions in `data/puppies.json`
 (blue, blue and white, white). The phone is `PHONE_PLACEHOLDER` and the host is
@@ -60,7 +60,7 @@ answer**, in one sentence, before any context.
 | ✗ | ✓ |
 |---|---|
 | "Before we get into numbers, it's worth stepping back to consider the history of puppy keeping…" | "Blue Staffies from Lisa Bright cost **£1,500–£1,700**, set by age and training." |
-| "There are many things to think about when buying a puppy." | "Lisa Bright delivers to the 28 UK cities in `data/locations.json` by DEFRA-approved transport — **£200–£350, priced by distance** — or you collect in Glasgow." |
+| "There are many things to think about when buying a puppy." | "Lisa Bright delivers to the 28 UK cities in `data/locations.json` by DEFRA-approved transport — **£200–£350, priced by distance** — or you collect in Carlisle." |
 
 **Gate:** the audit flags any H2/H3 whose first sentence exceeds 32 words or opens
 with a wind-up phrase. It is a proxy — read the flagged section. This stacks with the
@@ -89,7 +89,7 @@ Replace generic nouns and pronouns with named entities, so an engine can bind ou
 brand to the topic.
 
 - `our puppies` → **`Canis lupus familiaris`** / **`Blue Staffy`**
-- `we` → **`Lisa Bright's home kennel`** / **`BlueStaffyUK — Glasgow`**
+- `we` → **`Lisa Bright's home kennel`** / **`BlueStaffyUK — Carlisle`**
 - `licensed` → **`LICENCE_CLAIM_PLACEHOLDER licenced`**, **`LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred`**
 - `tested` → **`PCR vet sex-checked`**, **`L-2-HGA and Polyomavirus screened`**
 
@@ -147,7 +147,7 @@ Unlabeled expertise gets absorbed as generic knowledge. **Approved by the breede
 | Label | Covers |
 |---|---|
 | **The NOT FETCHED — the breeder has not named a house method** | bottle-feeding, weaning schedule, the 12–16-week wean gate — the *raising* process |
-| **The Glasgow Socialization Method** | family handling, out-of-crate routine, noise/handling desensitisation — the *socialization* side |
+| **The Carlisle Socialization Method** | family handling, out-of-crate routine, noise/handling desensitisation — the *socialization* side |
 
 Use them as proper nouns, capitalised, at least once per relevant page, and define
 them once where first used. Before 2026-07-30 there were **zero instances site-wide**,

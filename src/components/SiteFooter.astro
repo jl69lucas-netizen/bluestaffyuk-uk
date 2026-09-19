@@ -24,7 +24,9 @@ import logo from '../../public/brand/logo-mono.svg?raw';
         <Fragment set:html={logo} />
       </h2>
       <p>{SITE.tagline}</p>
-      <p>{SITE.address.street}, {SITE.address.city} {SITE.address.postcode}<br /><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+      {/* Town-level only: the breeder relocated and has supplied no street or postcode
+          for the new place (Known Issue 16). `location_label` is the one written form. */}
+      <p>{SITE.location_label}<br /><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
       <p><a href={SITE.socials.facebook} rel="noopener" target="_blank">Facebook</a> · <a href={SITE.socials.instagram} rel="noopener" target="_blank">Instagram</a> · <a href={SITE.socials.youtube} rel="noopener" target="_blank">YouTube</a> · <a href={SITE.socials.x} rel="noopener" target="_blank">X</a></p>
     </div>
     <div><h2>Quick Pages</h2><ul>{NAV.map((n) => <li><a href={n.href}>{n.label}</a></li>)}<li><a href="/privacy-policy-uk/">Privacy Policy</a></li></ul></div>

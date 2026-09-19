@@ -19,12 +19,19 @@ def test_exactly_one_contact_form(html):
     assert len(forms) == 1, forms
 
 
-def test_puppy_select_has_six_pups_plus_two_extras(html):
+def test_puppy_select_has_six_pups_plus_the_waiting_list(html):
+    """The kit form's option set, built from the same data (project 4 Task 6).
+
+    The collection option that used to follow the litter named a collection point the
+    breeder has left (Known Issue 16); dropping it is what lets this form and
+    src/components/kit/ContactFormKit.astro pass the same `full` form contract.
+    """
     select = re.search(r"<select[^>]*name=\"puppy\".*?</select>", html, re.S).group(0)
     options = re.findall(r"<option[^>]*value=\"([^\"]*)\"", select)
     assert options[0] == "", "first option should be the empty 'Choose…' prompt"
-    assert options[-2:] == ["collection-glasgow", "waiting-list"]
-    assert len(options) == 1 + 6 + 2, options
+    assert options[-1] == "waiting-list"
+    assert "collection-glasgow" not in options
+    assert len(options) == 1 + 6 + 1, options
 
 
 def test_next_points_at_thank_you(html):

@@ -89,8 +89,8 @@ Bottom Bar:
   - LEGAL_CLAIM_PLACEHOLDER (the statute line, prose only — never a heading or a route)
 ```
 
-> **NAP consistency:** Name / Address / Phone are BlueStaffyUK · 40 Coltmuir Street,
-> Glasgow G22 6LU · `PHONE_PLACEHOLDER` (the real number is NOT FETCHED until project 6).
+> **NAP consistency:** Name / Address / Phone are BlueStaffyUK · Carlisle,
+> Carlisle, Cumbria · `PHONE_PLACEHOLDER` (the real number is NOT FETCHED until project 6).
 > `docs/reference/credentials.md` names the env keys; these three values are the NAP record.
 > Per the site privacy rule, the footer uses **city-level** location in body copy — the full
 > address belongs to the LocalBusiness schema and the footer's contact block only.

@@ -11,7 +11,7 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** https://SITE_URL_PLACEHOLDER — home-raised Blue Staffordshire Bull Terrier breeder in Glasgow, Scotland
+> **Site:** https://SITE_URL_PLACEHOLDER — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
@@ -60,7 +60,7 @@ Rules:
 **Good BSUK Attention hook:**
 ```
 H1: "Blue or blue brindle — which Staffy puppy is the right companion for your family?"
-Subhead: "[X] years. [N]+ families. One Glasgow breeder who answers the phone after the sale — with KC registration and a vet health check on every puppy."
+Subhead: "[X] years. [N]+ families. One Carlisle breeder who answers the phone after the sale — with KC registration and a vet health check on every puppy."
 ```
 
 **Bad Attention hook:**

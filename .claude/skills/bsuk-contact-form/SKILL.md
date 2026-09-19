@@ -53,7 +53,7 @@ it. Never hardcode a name or a price into the form.
 
 **Delivery, where a form asks about it** — the two options are the only two that exist:
 **UK home delivery £200–£350 by distance, by DEFRA-approved transport**, and **collection in
-person from Glasgow**. It is a band, never a single figure, and the £500 deposit is refundable
+person from Carlisle**. It is a band, never a single figure, and the £500 deposit is refundable
 wherever the band is stated (`rules/puppies.md` `delivery-band-on-every-card`).
 
 ## Presentation layer

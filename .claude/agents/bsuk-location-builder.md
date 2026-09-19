@@ -12,10 +12,10 @@ effort: max
 ---
 
 ## BSUK Project Context
-> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Glasgow kennel of Staffordshire Bull Terriers (40 Coltmuir Street, Glasgow G22 6LU)
+> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Glasgow or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -59,15 +59,15 @@ ls dist/uk-locations/<slug>/ 2>/dev/null && echo "EXISTS" || echo "NEW"
 
 Every location page is built by substituting these variables into its derived section list:
 
-| Variable | Example (Glasgow) | Source |
+| Variable | Example (the Manchester page) | Source |
 |----------|------------------|--------|
-| `{CITY}` | Glasgow | `data/locations.json` → `city` |
-| `{SLUG}` | staffy-puppies-for-sale-glasgow | `data/locations.json` → `slug` |
-| `{H1}` | staffy puppies for sale Glasgow | `data/locations.json` → `h1` (never rewrite it here) |
-| `{CANONICAL}` | /uk-locations/staffy-puppies-for-sale-glasgow/ | `data/locations.json` → `canonical` |
-| `{NEARBY_TOWNS}` | Edinburgh, Dundee, Paisley | the delivery-band table below |
+| `{CITY}` | Manchester | `data/locations.json` → `city` |
+| `{SLUG}` | staffy-puppies-for-sale-manchester | `data/locations.json` → `slug` |
+| `{H1}` | staffy puppies for sale Manchester | `data/locations.json` → `h1` (never rewrite it here) |
+| `{CANONICAL}` | /uk-locations/staffy-puppies-for-sale-manchester/ | `data/locations.json` → `canonical` |
+| `{NEARBY_TOWNS}` | Liverpool, Leeds, York | the delivery-band table below |
 | `{CITY_VET_NOTE}` | we recommend a vet check within 72 hours of collection, with your own vet | fixed — never name a clinic |
-| `{CITY_TRAVEL_NOTE}` | collection at 40 Coltmuir Street, or UK home delivery £200–£350 by distance (DEFRA-approved transport) | `data/settings.json` |
+| `{CITY_TRAVEL_NOTE}` | collection in Carlisle, or UK home delivery £200–£350 by distance (DEFRA-approved transport) | `data/settings.json` |
 | `{PRICE_FROM}` | £1,500 (Roman, Byrd, Ince) | `data/puppies.json` → `price_gbp` |
 | `{PRICE_TO}` | £1,700 (Vennie, Christa, Cheryl) | `data/puppies.json` → `price_gbp` |
 | `{DEPOSIT}` | £500 refundable | `data/settings.json` |
@@ -79,19 +79,21 @@ Every location page is built by substituting these variables into its derived se
 `data/locations.json` is the source of truth for all 28 live city pages — slug, city,
 title, h1, description and canonical. It carries no travel, vet or demographic facts, and
 this agent must not invent any. What is genuinely city-specific at BSUK is the journey from
-Glasgow, so that is the only built-in table:
+Carlisle, so that is the only built-in table. The bands below were drawn around the OLD
+home base and are being re-planned around Carlisle in project 5 (Known Issue 16): read them
+as journey tone, never as a mileage or a near-ring claim, and never write a distance.
 
-| Delivery band | Approximate journey from Glasgow | Cities in `data/locations.json` | Price |
+| Delivery band | Approximate journey from Carlisle | Cities in `data/locations.json` | Price |
 |---|---|---|---|
-| Collection | 0 miles — the buyer comes to 40 Coltmuir Street | Glasgow | free |
-| Band 1 | Scotland and the far north | Edinburgh, Dundee, Aberdeen, Inverness | £200–£350 by distance |
+| Collection | 0 miles — the buyer comes to Carlisle | the home base itself; `data/locations.json` has no row for it yet | free |
+| Band 1 | Cumbria, the Borders and Scotland | Edinburgh, Dundee, Aberdeen, Inverness | £200–£350 by distance |
 | Band 2 | Northern England | Newcastle, Sunderland, Middlesbrough, Hull, Leeds, York, Manchester, Liverpool, South Yorkshire | £200–£350 by distance |
 | Band 3 | Midlands and Wales | Birmingham, Wolverhampton, Coventry, Leicester, Nottingham, Newcastle-under-Lyme, Cardiff | £200–£350 by distance |
 | Band 4 | South and the far south-west | London, Oxford, Bristol, Essex, Cornwall | £200–£350 by distance |
 
 The band decides the *tone* of the travel paragraph, never a number: the price is always
 written as the locked range `£200–£350 by distance (DEFRA-approved transport)`, or as
-collection in Glasgow. `data/settings.json` is the only place a delivery figure may come
+collection in Carlisle. `data/settings.json` is the only place a delivery figure may come
 from, and no page may narrow the range to a single number until the breeder gives one.
 
 **What you may NOT write into a city page:**

@@ -24,7 +24,7 @@ enforced: untested
 family: COPY
 ---
 
-- **Delivery band on every card + delivery section (ALWAYS) — applies to every card/section builder** — Any puppy/listing card MUST display the delivery cost directly (canonical line under the trust badges: `UK home delivery £200–£350 by distance · or collect in Glasgow`), and every delivery section MUST show both options in full: **UK home delivery £200–£350, priced by distance, by DEFRA-approved transport**, and **collection in person from Glasgow**. It is a **band, not a flat fee** — never print a single figure as "the" delivery price, and never quote a number outside £200–£350. The £500 deposit is refundable and is stated wherever the band is. Figures live in `data/settings.json` and `data/price-matrix.json` — read them, never hardcode a different number. Never ship a card without the delivery line.
+- **Delivery band on every card + delivery section (ALWAYS) — applies to every card/section builder** — Any puppy/listing card MUST display the delivery cost directly (canonical line under the trust badges: `UK home delivery £200–£350 by distance · or collect in Carlisle`), and every delivery section MUST show both options in full: **UK home delivery £200–£350, priced by distance, by DEFRA-approved transport**, and **collection in person from Carlisle**. It is a **band, not a flat fee** — never print a single figure as "the" delivery price, and never quote a number outside £200–£350. The £500 deposit is refundable and is stated wherever the band is. Figures live in `data/settings.json` and `data/price-matrix.json` — read them, never hardcode a different number. Never ship a card without the delivery line.
 
 ---
 id: product-schema-per-pup

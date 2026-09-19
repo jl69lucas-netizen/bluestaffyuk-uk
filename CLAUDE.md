@@ -1,7 +1,8 @@
 # BlueStaffyUK — Project Guide
 
-BlueStaffyUK is a Glasgow breeder of Staffordshire Bull Terriers, Blue Staffies in
-particular (Lisa Bright, 40 Coltmuir Street, G22 6LU). The site is transactional +
+BlueStaffyUK is a Carlisle breeder of Staffordshire Bull Terriers, Blue Staffies in
+particular (Lisa Bright, Carlisle, Cumbria — town-level only; the breeder has supplied
+no street or postcode for the new place, Known Issue 16). The site is transactional +
 informational: the buy and location pages take enquiries, the care and guide pages earn
 the traffic.
 
@@ -218,11 +219,12 @@ and the delivery band. `data/puppies.json` and `data/price-matrix.json` carry th
 litter and the prices — never type a price by hand. The locked facts, from the Foundation
 spec under `docs/superpowers/specs/`:
 
-- Breeder **Lisa Bright**, Glasgow (40 Coltmuir Street, G22 6LU).
+- Breeder **Lisa Bright**, Carlisle, Cumbria. Town and region only — there is no street
+  and no postcode until the breeder supplies them (Known Issue 16).
 - Prices **£1,500** (Roman, Byrd, Ince) and **£1,700** (Vennie, Christa, Cheryl). Deposit
   **£500, refundable**.
 - Delivery **£200–£350** for UK home delivery, by DEFRA-approved transport, priced by
-  distance; collection in Glasgow is the alternative.
+  distance; collection in Carlisle is the alternative.
 - Phone is `PHONE_PLACEHOLDER` until project 6 provisions a number. It is the only allowed
   representation of the phone number anywhere in this repo, and the site URL is
   `SITE_URL_PLACEHOLDER` on the same terms.

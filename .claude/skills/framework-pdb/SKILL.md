@@ -11,7 +11,7 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Glasgow, Scotland (Lisa Bright)
+> **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Carlisle, Cumbria (Lisa Bright)
 > **Coat lines:** Blue and blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle and rarer blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised

@@ -162,3 +162,51 @@ def test_list_valued_availability_is_allowed_on_an_available_pup():
               '["https://schema.org/InStock"]}}</script>')
     r = audit_html(listed, available_slugs={"roman"}, slug="available-puppies/roman")
     assert r["blocking"] == []
+
+
+# --- address: incomplete is fine, empty is not (Known Issue 16) -------------------
+
+def _ld(obj):
+    return '<script type="application/ld+json">%s</script>' % json.dumps(obj)
+
+
+def test_town_level_address_without_street_or_postcode_is_clean():
+    """Known Issue 16: the breeder relocated and has supplied no street or postcode.
+
+    The gate must accept the address the site can honestly state, or the only way to a
+    green run is to put the old street back — publishing a location the business has left.
+    """
+    html = _ld({"@type": "LocalBusiness", "name": "x", "address": {
+        "@type": "PostalAddress", "addressLocality": "Carlisle",
+        "addressRegion": "Cumbria", "addressCountry": "GB"}})
+    r = audit_html(html, available_slugs=set(), slug="index")
+    assert r["blocking"] == [] and r["advisory"] == []
+
+
+def test_an_empty_street_or_postcode_is_blocking():
+    """A key written with nothing in it is a stated address with no address in it."""
+    html = _ld({"@type": "LocalBusiness", "address": {
+        "@type": "PostalAddress", "addressLocality": "Carlisle",
+        "streetAddress": "", "postalCode": None, "addressCountry": "GB"}})
+    b = audit_html(html, available_slugs=set(), slug="index")["blocking"]
+    assert any("empty streetAddress" in p for p in b), b
+    assert any("empty postalCode" in p for p in b), b
+
+
+def test_an_address_with_no_locality_is_not_blocking_while_the_ported_graph_stands():
+    """The generated rich pages still carry Rank Math's graph, which puts the city in
+    `addressRegion` and states no locality. Tasks 7–18 rewrite those bodies one page at a
+    time; a locality rule today would block eleven pages for a defect their own task
+    closes, and the only quick way green would be editing a page out of turn."""
+    html = _ld({"@type": "LocalBusiness", "address": {
+        "@type": "PostalAddress", "addressRegion": "Cumbria", "addressCountry": "GB"}})
+    assert audit_html(html, available_slugs=set(), slug="index")["blocking"] == []
+
+
+def test_a_geo_node_with_no_coordinates_is_blocking():
+    """The shape src/components/Schema.astro would ship if it built `geo` unconditionally
+    from a settings record that no longer carries lat/lng."""
+    html = _ld({"@type": "LocalBusiness", "geo": {"@type": "GeoCoordinates"}})
+    b = audit_html(html, available_slugs=set(), slug="index")["blocking"]
+    assert any("GeoCoordinates without latitude" in p for p in b), b
+    assert any("GeoCoordinates without longitude" in p for p in b), b

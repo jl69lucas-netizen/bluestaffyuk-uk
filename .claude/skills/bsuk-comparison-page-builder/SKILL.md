@@ -41,7 +41,7 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 | Poodle | Amazon Puppy |
 | puppy / puppies / dog / litter | pup / pups / puppy / puppy / litter |
 | adoption | reservation / bringing your puppy home |
-| Lawrence & Cathy | Lisa Bright (Glasgow, since 2014) |
+| Lawrence & Cathy | Lisa Bright (Carlisle, since 2014) |
 | Virtual Adoption Consultant | **Virtual Litter Consultant** (the BlueStaffyUK decision-guide voice — still first-person we/us/our) |
 | "Genetic ROI" | **Health-Documentation ROI** — L-2-HGA and HC-HSF4 screening, vet sex-checking, canine-vet exam, whelp certificate, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER paperwork |
 | OFA / CHIC / Embark DNA | L-2-HGA PCR panel · HC-HSF4 PCR · vet sex-checking certificate · canine veterinarian wellness exam · closed leg band |
@@ -130,7 +130,7 @@ Snippet Box (📌 Quick Answer) opens every section — 1–2 sentence AI-extrac
 
 ## 6. E-E-A-T & Voice Rules (converted)
 
-- **Author box** near top: Lisa Bright, BlueStaffyUK – Glasgow, linking to `/blue-staffy-uk-breeders/`.
+- **Author box** near top: Lisa Bright, BlueStaffyUK – Carlisle, linking to `/blue-staffy-uk-breeders/`.
 - **Original breeder data signals** — real, non-obvious observations from our own kennel, in Lisa Bright's voice; NEVER invented statistics. If we don't have the number, we don't print a number.
 - **External authority links** in health sections — the RSPCA, the PDSA, Blue Cross, the RVC, thekennelclub.org.uk (curl 403 = bot-block, retry with UA, not dead). 6–8 diverse outbound links per page, anchored at sentence start (Link-First).
 - First-person plural brand voice throughout; encyclopedic exceptions for taxonomy/research.
@@ -177,7 +177,7 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
 3. **Photo-first cards everywhere.** A puppy card is that pup's real photo (800×800 crop) +
    a colour badge + the price from `data/price-matrix.json` + the delivery line. Delivery
    renders as two cards — **UK home delivery £200–£350 by distance,
-   by DEFRA-approved transport**, and **collection in Glasgow** — each with its own photo and
+   by DEFRA-approved transport**, and **collection in Carlisle** — each with its own photo and
    + a 7-place state/city pill row with FRESH anchors (each comparison page uses a different angle set).
 4. **Sticky offsets** — site header is `sticky` and **96px** tall: jump rail `top:96px`, desktop TOC
    `top:calc(96px + 24px)`, every section `scroll-margin-top:calc(96px + 18px)`, `:global(html){scroll-behavior:smooth}`
@@ -189,7 +189,7 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
    generic link rule silently overrides it.
 6. **Form = what we sell** — short inquiry form with: interest select (Blue / Blue-Brindle / breeding pair /
    fertile eggs / not sure, prices visible), first + last name, cell + confirm, email + confirm,
-   delivery select (£200–£350 airport / £200–£350 home / Glasgow pickup), optional home note. Pass
+   delivery select (£200–£350 airport / £200–£350 home / Carlisle pickup), optional home note. Pass
    `hideGlobalCta` and ship NO page-level newsletter band (the form is the single closer).
 7. **Testimonials = real reviews only**, pulled from the verified homepage `bottomReviews[]` set with
    real name + city; never the fabricated pair this page originally carried.
@@ -197,7 +197,7 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
 9. **Links at the START of sentences only (Link-First rule) — never mid-sentence, never the final words.** Seam dividers use
    `bsuk-footer-logo-80.webp` (the 200×66 original wastes ~7KiB per Lighthouse).
 10. **Schema** — no page-level BreadcrumbList (the Breadcrumb component emits it; duplicates FAIL the
-    gate). Title = 4-part ending in `BlueStaffyUK – <LSI keyword>` (never "BlueStaffyUK – Glasgow" again).
+    gate). Title = 4-part ending in `BlueStaffyUK – <LSI keyword>` (never "BlueStaffyUK – Carlisle" again).
 11. **Gate** — `python3 scripts/final_page_audit.py --comparison` (profile added 2026-07-04) must
     return PASS/PASS-WITH-WARNINGS; the old `no_userselect_none` site-wide FAIL was a Tailwind
     `.select-none` false positive, fixed in the auditor.
@@ -264,7 +264,7 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    padding — that was the "rushed" look). Put band padding on the section: `.cvt-counter{padding:14px
    0}` desktop, `9px 0` mobile.
 5. **Hero eyebrow (prefix) is UNIQUE per spoke, drawn from the page's own premise.** Never reuse the
-   "Home-raised · LICENCE_CLAIM_PLACEHOLDER-documented · Glasgow" trust string across spokes — trust tokens live in
+   "Home-raised · LICENCE_CLAIM_PLACEHOLDER-documented · Carlisle" trust string across spokes — trust tokens live in
    the hero-meta pills. Shipped set: CvM "11 english bull terrier species sized against one quiet genius" · CvC "The
    cuddler and the family dog, weighed honestly" · CvT "Two Staffy subspecies, raised side by side since
    2014" · MvF "Cock or hen · DNA-certain before you ever pay". A new spoke writes its own from the

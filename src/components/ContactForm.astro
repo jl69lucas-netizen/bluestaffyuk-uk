@@ -1,6 +1,6 @@
 ---
 import puppiesJson from '../../data/puppies.json';
-import { SITE, abs, type PuppyRow } from '../lib/site';
+import { abs, type PuppyRow } from '../lib/site';
 const puppies = puppiesJson as PuppyRow[];
 const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
 const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
@@ -35,7 +35,10 @@ const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
     <label style="display:grid;gap:4px">Which puppy? <span class="req">(required)</span> <select name="puppy" required>
       <option value="">Choose…</option>
       {puppies.filter((p) => p.status === 'Available').map((p) => <option value={p.slug}>{p.name} · {p.sex === 'male' ? 'Male' : 'Female'} · {gbp(p.price_gbp)}</option>)}
-      <option value="collection-glasgow">Collection in Glasgow after a refundable {gbp(SITE.deposit_gbp)} deposit</option>
+      {/* The option set is the kit form's, from the same data: the Available rows above
+          plus this one. The collection option that used to sit here named a collection
+          point the breeder has left (Known Issue 16), and it was the only difference
+          between this form and src/components/kit/ContactFormKit.astro. */}
       <option value="waiting-list">Join the waiting list for the next litter</option>
     </select></label>
     <label style="display:grid;gap:4px">Message <span class="req">(required)</span> <textarea name="message" rows="5" required></textarea></label>

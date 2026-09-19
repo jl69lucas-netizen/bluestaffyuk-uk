@@ -81,14 +81,14 @@ GOOD = f"""<form action="{END}" method="POST">
 <input type="text" name="_gotcha" style="display:none">
 <input name="name" required><input type="email" name="email" required>
 <input type="tel" name="phone"><input name="location">
-<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="collection-glasgow">Collection in Glasgow after a refundable £500 deposit</option></select>
+<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="waiting-list">Join the waiting list for the next litter</option></select>
 <textarea name="message" required></textarea></form>"""
 
 
 PUPPY_SELECT = ('<select name="puppy" required><option value="">-</option>'
                 '<option value="roman">Roman</option>'
-                '<option value="collection-glasgow">Collection in Glasgow after a '
-                'refundable £500 deposit</option></select>')
+                '<option value="waiting-list">Join the waiting list for the '
+                'next litter</option></select>')
 
 
 def page(*forms):
@@ -117,7 +117,7 @@ def test_search_form_is_not_examined():
 
 
 def test_missing_puppy_select_is_named():
-    html = page(GOOD.replace('<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="collection-glasgow">Collection in Glasgow after a refundable £500 deposit</option></select>', ""))
+    html = page(GOOD.replace('<select name="puppy" required><option value="">-</option><option value="roman">Roman</option><option value="waiting-list">Join the waiting list for the next litter</option></select>', ""))
     assert any("puppy absent" in p for p in problems(html))
 
 
@@ -139,18 +139,23 @@ def test_missing_hidden_field_is_named():
     assert any("_next absent" in p for p in problems(html))
 
 
-# --- spec §5: the puppy control is a <select> carrying the collection option ------
+# --- spec §5: the puppy control is a <select> carrying the waiting-list option ----
+#
+# Re-based in project 4 Task 6: the option used to be `collection-glasgow`, a collection
+# point the breeder has left (Known Issue 16). The contract now names the one option the
+# kit form (src/components/kit/ContactFormKit.astro) builds that is not read from
+# data/puppies.json, so the kit form and the legacy form pass the same contract.
 
-def test_puppy_select_with_the_collection_option_is_clean():
+def test_puppy_select_with_the_waiting_list_option_is_clean():
     assert not [p for p in problems(page(GOOD)) if "puppy" in p]
 
 
-def test_puppy_select_without_the_collection_option_is_a_problem():
+def test_puppy_select_without_the_waiting_list_option_is_a_problem():
     stripped = PUPPY_SELECT.replace(
-        '<option value="collection-glasgow">Collection in Glasgow after a '
-        'refundable £500 deposit</option>', "")
+        '<option value="waiting-list">Join the waiting list for the '
+        'next litter</option>', "")
     ps = problems(page(GOOD.replace(PUPPY_SELECT, stripped)))
-    assert any("puppy select missing the collection-glasgow option" in p for p in ps)
+    assert any("puppy select missing the waiting-list option" in p for p in ps)
 
 
 def test_puppy_as_a_text_input_is_a_problem():
@@ -380,3 +385,30 @@ def test_required_empty_string_attribute_counts_as_required():
     html = GOOD.replace('name="name" required', 'name="name" required=""')
     rows = F.audit_html(page(html), "blue-staffy-vs-staffordshire-bull-terrier")
     assert not any("name" in p for p in rows[0]["problems"])
+
+
+def test_puppy_option_is_not_bound_to_the_old_city():
+    """Known Issue 16: the contract may not require the geography the breeder has left.
+
+    The constant used to be `collection-glasgow`, so the gate REQUIRED the wrong city of
+    every page it audited in full, and reported the correct kit form as broken (Known
+    Issue 22). It is now the kit form's own non-puppy option.
+    """
+    assert "glasgow" not in F.PUPPY_OPTION.lower(), F.PUPPY_OPTION
+    assert F.PUPPY_OPTION == "waiting-list"
+
+
+def test_the_two_forms_offer_the_same_options_from_the_same_data():
+    """The legacy form and the kit form must pass the same `full` contract.
+
+    Both build their puppy select from data/puppies.json's Available rows plus the one
+    waiting-list option, so the contract can name an option that exists on both. A literal
+    option list in either file would be a second source of truth for the litter.
+    """
+    root = pathlib.Path(__file__).resolve().parents[2]
+    legacy = (root / "src/components/ContactForm.astro").read_text(encoding="utf-8")
+    kit = (root / "src/components/kit/ContactFormKit.astro").read_text(encoding="utf-8")
+    for src, name in ((legacy, "ContactForm.astro"), (kit, "ContactFormKit.astro")):
+        assert "puppies.json" in src, name
+        assert f'value="{F.PUPPY_OPTION}"' in src, name
+        assert "collection-glasgow" not in src, name

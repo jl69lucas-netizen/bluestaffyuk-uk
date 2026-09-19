@@ -59,7 +59,18 @@ BANNED = (
     # The previous site's palette and type, replaced by src/styles/tokens.css in project 3.
     # An instruction file still quoting these teaches a writer the dead design system.
     "#2D6A4F", "#e8604c", "#faf7f4", "Newsreader", "IBM Plex",
+    # The city the breeder has LEFT (Known Issue 16). An instruction file that still names
+    # it teaches every agent the wrong home base, and the geography an agent believes ends
+    # up in copy, in schema and in a meta template. The breeder is in Carlisle, Cumbria.
+    "Glasgow",
 ) + CAG_GEO
+
+# `Glasgow` has exactly two honest uses left in the instruction tree, and a line carrying
+# one of them is allowed to name the city: the outreach page's slug, which is a URL that
+# still ranks and is never renamed, and the debt note itself, which cannot be written
+# without saying what the debt is. Nothing else — a trust pillar, a meta template, a
+# delivery table — may say it.
+GLASGOW_ALLOWED = re.compile(r"staffy-breeding-dogs-glasgow|Known Issue 16")
 
 # DEFRA is real here in exactly one form: the transport that carries a puppy. "DEFRA-approved
 # breeder" / "DEFRA-compliant kennel" are claims nobody has verified.
@@ -169,6 +180,8 @@ def violations(path: pathlib.Path):
             # Word bans stay case-sensitive: "captive" should not fire on a capitalised
             # sentence start that means something else.
             hit = tok.lower() in line.lower() if tok.startswith("#") else tok in line
+            if hit and tok == "Glasgow" and GLASGOW_ALLOWED.search(line):
+                continue
             if hit:
                 bad("banned token %r" % tok)
 
@@ -282,3 +295,16 @@ def test_the_lint_bans_cag_geography(tmp_path):
     bad = violations(p)
     assert len(bad) == 3, bad
     assert all("banned token" in v for v in bad), bad
+
+
+def test_the_lint_bans_the_old_city_but_spares_the_slug_and_the_debt_note(tmp_path):
+    """Known Issue 16: the city is banned, its two honest uses are not."""
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "Collection in Glasgow after a refundable deposit.\n"
+        "The Glasgow outreach page /uk-locations/staffy-breeding-dogs-glasgow/ keeps its URL.\n"
+        "Known Issue 16: everything that says Glasgow is now wrong.\n",
+        encoding="utf-8")
+    bad = [v for v in violations(p) if "'Glasgow'" in v]
+    assert len(bad) == 1, bad
+    assert "Collection in Glasgow" in bad[0], bad

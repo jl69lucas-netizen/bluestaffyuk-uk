@@ -107,7 +107,7 @@ For state/city location pages, use the city center as the map target:
 |---|---|
 | Arizona | `Arizona%2C%20UK` |
 | London | `London%2C%20UK` |
-| Glasgow | `Glasgow%2C%20UK` |
+| Carlisle | `Carlisle%2C%20UK` |
 | Georgia | `Georgia%2C%20UK` |
 | New York | `New%20York%2C%20UK` |
 | Manchester | `Manchester%2C%20UK` |

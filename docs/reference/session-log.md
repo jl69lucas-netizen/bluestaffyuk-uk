@@ -12,7 +12,7 @@ Full report and evidence: `docs/reports/foundation-gate-report.md`.
 ## Project 2 — System transfer (2026-09-16/17) — COMPLETE
 
 Moves the site operating system — rules, agents, skills, gate scripts and reference docs —
-from the source repo into this one, re-based onto a Glasgow Staffordshire Bull
+from the source repo into this one, re-based onto a Carlisle Staffordshire Bull
 Terrier breeder, with `scripts/marker_check.py` as the zero-tolerance
 proof. `data/port-manifest.json` is the record of every file that crossed.
 Plan: `docs/superpowers/plans/2026-09-16-system-transfer.md`.
@@ -164,24 +164,38 @@ and 17–25 are new from the design system.
     its legacy skill file were scrubbed to env refs and committed locally (not pushed);
     rotation still pending.
 
-16. **The breeder has relocated: Carlisle, Cumbria, England — not Glasgow.** Confirmed by
+16. **The breeder has relocated: Carlisle, Cumbria, England.** Confirmed by
     the user 2026-09-18 during the build 3 brainstorm, as a full relocation of the business
     and the website. Address is town-level only (Carlisle, Cumbria) until the breeder says
-    otherwise. Everything that currently says Glasgow is now wrong: the homepage and page
+    otherwise. Everything that named the old city was wrong: the homepage and page
     copy, `data/settings.json`, the schema `address` / `areaServed`, the fact lint's locked
     geography in `tests/py/test_agent_facts.py`, agents and skills, and
     `/uk-locations/staffy-breeding-dogs-glasgow/`, which becomes an outreach page rather
-    than the home base. **Build 3** carries Carlisle in the logo lockups and tokens only;
-    **build 4** rewrites the copy and settings; **build 5** re-plans the 28 locations around
+    than the home base and keeps its URL. **Build 3** carried the new city in the logo
+    lockups and tokens only; **build 5** re-plans the 28 locations around
     Carlisle (Cumbria, the Borders, the North West and North East are now the near ring).
-    One strand of this debt is machine-readable and easy to miss: the form contract's
+    One strand of this debt was machine-readable and easy to miss: the form contract's
     `PUPPY_OPTION` constant in `scripts/form_contract_audit.py`, and the matching
-    `<option>` value and visible label in `src/components/ContactForm.astro`, name the old
-    city in a collection choice — so the gate currently *requires* the wrong geography of
-    every page it audits in full, and the shipped contact page offers a collection point
-    the breeder has left. **Build 4** re-bases all three together when it replaces the
-    contact form with `src/components/kit/ContactFormKit.astro`, which carries no such
-    option (design-system spec §11 amendment 2).
+    `<option>` value and visible label in `src/components/ContactForm.astro`, named the old
+    city in a collection choice — so the gate *required* the wrong geography of
+    every page it audited in full, and the shipped contact page offered a collection point
+    the breeder had left.
+
+    **Status 2026-09-19 (project 4 Task 6): settings, schema, the instruction tree and the
+    form contract are done.** `data/settings.json` `address` is
+    `{city: Carlisle, region: Cumbria, country: GB}` — no street, no postcode, no
+    coordinates, because the breeder has not supplied them; `src/components/Schema.astro`
+    emits only the fields that are there and no `geo` node, and `scripts/schema_check.py`
+    accepts an address without a street or a postcode while blocking one that states a
+    field it has nothing to put in. `PUPPY_OPTION` is now `waiting-list`, the option
+    `src/components/kit/ContactFormKit.astro` builds, and
+    `src/components/ContactForm.astro` emits the same set from the same data, which also
+    closes Known Issue 22. Every instruction file under `.claude/`, `CLAUDE.md`, `rules/`
+    and `docs/reference/` names Carlisle, and the fact lint bans the old city outright,
+    allowing it only on a line carrying the outreach page's slug or this issue's number.
+    **Page bodies and their ported schema follow per page in Tasks 7–18** — the eleven rich
+    pages and the blog are rewritten one at a time and are not edited ahead of their task,
+    so the old city is still in the generated page bodies until each is rebuilt.
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the
@@ -214,8 +228,9 @@ and 17–25 are new from the design system.
     reports one advisory row at all three viewports on `/kit-preview/`: the puppy select is
     missing the collection option that `scripts/form_contract_audit.py`'s `PUPPY_OPTION`
     constant requires. The kit form is right and the constant is wrong — the option names a
-    collection point the breeder has left (Known Issue 16). **Project 4** re-bases the constant,
-    the option and the visible label together.
+    collection point the breeder has left (Known Issue 16). **Closed 2026-09-19** by project 4
+    Task 6: the constant is `waiting-list`, the option the kit form builds, and the legacy
+    form now emits the same set from the same data.
 23. **Page weight of the inline lockups.** The header inlines the horizontal lockup and the
     footer the mono one, about 15 KB of SVG each, and the mark sprite adds about 3 KB per
     document; the built homepage is roughly 163 KB, of which about 52 KB is inline SVG. It cost

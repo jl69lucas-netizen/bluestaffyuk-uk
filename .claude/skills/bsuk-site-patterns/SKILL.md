@@ -208,7 +208,7 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
           <div class="p-5 flex flex-col flex-1">
             <div class="flex items-baseline justify-between mb-1">
               <h3 class="font-display font-bold text-xl text-brand">{puppy.name}</h3>
-              <span class="text-stone-400 text-xs font-body">📍 Glasgow</span>
+              <span class="text-stone-400 text-xs font-body">📍 Carlisle</span>
             </div>
             <p class="text-stone-500 text-xs font-body mb-3">{puppy.sex} · {puppy.age} · Blue Staffy</p>
             <p class="text-stone-600 text-sm leading-relaxed mb-4 flex-1">{puppy.notes}</p>

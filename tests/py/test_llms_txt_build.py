@@ -10,7 +10,10 @@ def test_llms_txt_content(tmp_path):
     assert "](/): " in text, "homepage missing"
     assert text.startswith("# Blue Staffy UK: ")
     assert "- [XML sitemap](/sitemap_index.xml)" in text
-    assert "40 Coltmuir Street" in text
+    # Town and region only: the breeder relocated and has supplied no street or postcode
+    # for the new place (Known Issue 16), so the summary line names what is true.
+    assert "in Carlisle, Cumbria," in text
+    assert "40 Coltmuir Street" not in text
 
 
 def test_llms_txt_pages_sorted_by_url(tmp_path):
