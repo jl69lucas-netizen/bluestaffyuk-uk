@@ -49,11 +49,12 @@ import ContactFormKit from './ContactFormKit.astro';
 import PageNav from './PageNav.astro';
 import SiteFooterKit from './SiteFooterKit.astro';
 import PageDial from './PageDial.astro';
+import SectionSheet from './SectionSheet.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider' | 'page-dial';
+  | 'section-divider' | 'page-dial' | 'section-sheet';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -198,6 +199,16 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // preview's `kit-<component-id>` section anchors that the PageNav demo points at.
   'page-dial': {
     C: PageDial,
+    demo: [{ sections: DEMO_SECTIONS }],
+    wrap: 'with-targets',
+  },
+  // The same six sections and the same wrap, for the same two reasons: the sheet's links
+  // must resolve, and its scroll-spy must have something to observe. The bar is
+  // `position: fixed`, so on the preview it docks to the viewport rather than to this
+  // section — which is exactly how it behaves on a real page, and what makes the preview
+  // a fair place to look at it.
+  'section-sheet': {
+    C: SectionSheet,
     demo: [{ sections: DEMO_SECTIONS }],
     wrap: 'with-targets',
   },

@@ -1,0 +1,222 @@
+---
+// src/components/kit/SectionSheet.astro — mobile/tablet in-page nav (spec §3): a fixed
+// bottom tab bar (Home · Puppies · Contact · Sections) whose Sections tab opens a native
+// <dialog> bottom sheet listing the page's sections with scroll-spy.
+//
+// Hidden at >=1024px, where PageDial takes over: the pair is one component split by width
+// and a page mounts both, so neither may be visible at a width the other owns.
+//
+// The <dialog> is NATIVE on purpose. `showModal()` gives the focus trap, the inert
+// background and the Escape key for free; a div-with-role="dialog" would need all three
+// hand-written, and the two that get forgotten are always Escape and the trap.
+//
+// The bar is 64px tall and RESERVES that space with body padding, so no in-page jump target
+// can land underneath it. That is not a cosmetic detail: it is the whole of what
+// `nav-bottom-chrome-clear` (blocking, tests/render/checks/nav.ts) measures.
+//
+// Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
+// 6 (`@layer components`). Icons are inline stroke SVG — never an emoji, never an <img>.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+import Button from './Button.astro';
+type Props = HTMLAttributes<'div'> & {
+  sections: SectionRef[];
+  ctaLabel?: string;
+  ctaHref?: string;
+};
+const {
+  sections,
+  ctaLabel = 'Available puppies',
+  ctaHref = '/available-puppies/',
+  class: cls,
+  ...rest
+} = Astro.props;
+// One path each, on the same 24 grid with the same stroke weight, so the four read as one
+// set rather than as four icons that happen to sit in a row.
+const I = {
+  home: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6',
+  pup: 'M4 8c0-3 2-5 5-5h6c3 0 5 2 5 5v8a5 5 0 0 1-10 0V8 M9 20h6',
+  mail: 'M4 5h16v14H4z M4 7l8 6 8-6',
+  list: 'M4 7h16M4 12h16M4 17h10',
+};
+const tabs: [string, string, string][] = [
+  ['Home', '/', I.home],
+  ['Puppies', '/available-puppies/', I.pup],
+  ['Contact', '/uk-blue-staffy-breeders-contact/', I.mail],
+];
+---
+<div class:list={['kit-sheet', cls]} data-sheet {...rest}>
+  <nav class="kit-tabbar" aria-label="Site">
+    {tabs.map(([label, href, d]) => (
+      <a href={href}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
+        <span>{label}</span>
+      </a>
+    ))}
+    <button type="button" data-open aria-haspopup="dialog">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
+      <span>Sections</span>
+    </button>
+  </nav>
+  <dialog class="sheet" aria-label="Sections" data-dialog>
+    <div class="grab" aria-hidden="true"></div>
+    <ol>
+      {sections.map((s, i) => (
+        <li>
+          <a href={`#${s.id}`} data-spy={s.id}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="lab">{s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+    <div class="cta">
+      <Button kind="primary" href={ctaHref} label={ctaLabel} />
+      <button type="button" class="close" data-close>Close</button>
+    </div>
+  </dialog>
+</div>
+<script>
+  const root = document.querySelector<HTMLElement>('[data-sheet]');
+  const dlg = root?.querySelector<HTMLDialogElement>('[data-dialog]');
+  if (root && dlg) {
+    // showModal(), not show(): the modal form is what supplies the focus trap, the inert
+    // background and Escape. The three handlers below are the only things it does not give.
+    root.querySelector('[data-open]')?.addEventListener('click', () => dlg.showModal());
+    root.querySelector('[data-close]')?.addEventListener('click', () => dlg.close());
+    // A click that lands on the dialog element itself is a click on the backdrop: the
+    // sheet's own content sits in children, so `e.target === dlg` cannot be a mis-hit.
+    dlg.addEventListener('click', (e) => {
+      if (e.target === dlg) dlg.close();
+    });
+    // Following a section link must dismiss the sheet, or the reader jumps to a section
+    // they cannot see behind the modal.
+    dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+
+    // The same reading band PageDial uses, so the two never disagree about the current
+    // section on a width where a reader could rotate from one to the other.
+    const links = [...dlg.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+    const targets = links
+      .map((a) => document.getElementById(a.dataset.spy!))
+      .filter((t): t is HTMLElement => Boolean(t));
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible[0]) return;
+        const i = targets.indexOf(visible[0].target as HTMLElement);
+        links.forEach((a, j) => a.toggleAttribute('aria-current', j === i));
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    targets.forEach((t) => io.observe(t));
+  }
+</script>
+<style is:global>
+  /* `is:global` deliberately, and it reaches <body> — a scoped rule cannot. The bar is
+     `position: fixed`, so it is out of flow and would otherwise sit ON TOP of the last
+     64px of every page: the end of the final section, and any jump target near it.
+     `:has()` keeps the reservation tied to the bar actually being mounted, so a page
+     without the sheet gets no mystery gap. The number is the bar's own height; both are
+     64 and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction. */
+  @media (max-width: 1023px) {
+    body:has(.kit-sheet) { padding-bottom: 64px; }
+  }
+</style>
+<style>
+  @layer components {
+    /* `display: contents` — the wrapper exists to scope the script and the `:has()` hook,
+       and must not introduce a box of its own between the bar and the body. */
+    .kit-sheet { display: contents; }
+    .kit-tabbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 40;
+      height: 64px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--color-surface-raised);
+      border-top: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+    }
+    /* 44px minimum on every tab: WCAG 2.5.8, and `layout-tap-target-size` is blocking. */
+    .kit-tabbar a,
+    .kit-tabbar button {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 44px;
+      font: 600 var(--text-xs) / 1 var(--font-body);
+      color: var(--color-brand);
+      text-decoration: none;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .kit-tabbar svg { width: 22px; height: 22px; }
+    /* `outline-offset: -3px` — the bar is flush to the viewport edge, so an outward ring
+       would be clipped on the bottom tab row. */
+    .kit-tabbar :focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -3px; }
+    .sheet {
+      border: 0;
+      padding: var(--space-4) var(--space-5) var(--space-6);
+      width: min(100%, 560px);
+      max-height: 80vh;
+      /* `margin: auto auto 0` is what makes a centred modal a BOTTOM sheet. */
+      margin: auto auto 0;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      background: var(--color-surface-raised);
+      color: var(--color-text);
+    }
+    /* The scrim is the deep surface at half alpha. `color-mix` keeps it a token rather
+       than a hand-spelled colour — rule 1 bans the hex, not just the `#`. */
+    .sheet::backdrop { background: color-mix(in srgb, var(--color-surface-deep) 50%, transparent); }
+    .grab {
+      width: 40px;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-border);
+      margin: 0 auto var(--space-3);
+    }
+    .sheet ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+    .sheet li a {
+      display: flex;
+      gap: var(--space-3);
+      align-items: center;
+      min-height: 44px;
+      padding: 0 var(--space-2);
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    .sheet li a[aria-current] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    .sheet li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
+    .num { font-feature-settings: 'tnum'; color: var(--color-text-muted); font-size: var(--text-xs); }
+    .lab { min-width: 0; overflow-wrap: anywhere; }
+    .cta { display: flex; gap: var(--space-3); margin-top: var(--space-4); align-items: center; }
+    .close {
+      min-height: 44px;
+      padding: 0 var(--space-4);
+      background: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--btn-radius);
+      font: 600 var(--text-sm) var(--font-body);
+      color: var(--color-text);
+      cursor: pointer;
+    }
+    /* At >=1024px PageDial is the in-page nav. Both the bar and the sheet go, so the tab
+       bar's links are not a second copy of the header nav in the desktop tab order. */
+    @media (min-width: 1024px) {
+      .kit-tabbar,
+      .sheet { display: none; }
+    }
+    @media print {
+      .kit-tabbar { display: none; }
+    }
+  }
+</style>

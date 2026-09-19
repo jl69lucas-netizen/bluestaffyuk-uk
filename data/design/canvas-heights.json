@@ -39,8 +39,11 @@
  "footer-t768": 872,
  "section-divider-t768": 176,
  "page-dial": 336,
+ "section-sheet": 336,
  "page-dial-m375": 336,
+ "section-sheet-m375": 336,
  "page-dial-t768": 336,
+ "section-sheet-t768": 336,
  "hero_overflow": {
   "hero": {
    "1024": {

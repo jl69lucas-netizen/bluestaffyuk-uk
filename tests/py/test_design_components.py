@@ -11,7 +11,7 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
        "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider",
        # Project 4 adds the two in-page navigation components. They are LAST on purpose: the
        # numbering in `title` is the spec's reading order and the board sheets are cut in it.
-       "page-dial"]
+       "page-dial", "section-sheet"]
 
 
 def load():
@@ -769,3 +769,34 @@ def test_built_page_dial_has_ring_list_and_spy_hooks():
     # test_built_sections_spell_no_hex_in_a_style_attribute, narrowed to this section.
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
 
+
+def test_components_json_has_fifteen_rows_after_project_4_additions():
+    """Project 4's two additions are appended, not interleaved. Spelled as its own test
+    because IDS above is the list every other test walks: if the two rows were ever moved
+    ahead of the project 3 thirteen the board sheets and the artboard numbering would
+    silently renumber while `test_every_component_in_spec_order` stayed green."""
+    ids = [r["id"] for r in load()]
+    assert len(ids) == 15, ids
+    assert ids[-2:] == ["page-dial", "section-sheet"], ids[-2:]
+    by_project = {r["id"]: r["project"] for r in load()}
+    assert [i for i, p in by_project.items() if p == 4] == ["page-dial", "section-sheet"]
+    assert len([i for i, p in by_project.items() if p == 3]) == 13
+
+
+def test_built_section_sheet_has_tab_bar_and_dialog():
+    """Convention 8. The sheet is the dial's other half: a fixed tab bar carrying three
+    site destinations and a Sections button, and a native <dialog> holding the same six
+    sections. `<dialog>` is load-bearing — showModal() is what gives the sheet its focus
+    trap and its Escape key, and swapping it for a <div> would lose both silently."""
+    s = _sections("section-sheet")
+    assert _has_class(s, "kit-tabbar")
+    assert s.count("<a ") >= 3, s.count("<a ")
+    assert "<button" in s
+    assert "<dialog" in s and 'aria-label="Sections"' in s
+    # Four line icons, drawn not lettered: three tabs plus Sections. Never an <img>, never
+    # an emoji glyph — the same bar the footer's icon row is held to.
+    assert s.count("<svg") >= 4, s.count("<svg")
+    assert "<img" not in s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+    assert s.count('data-spy="') >= 6, s
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s

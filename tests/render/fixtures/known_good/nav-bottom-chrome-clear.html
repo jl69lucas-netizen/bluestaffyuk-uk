@@ -1,0 +1,32 @@
+<!doctype html><meta charset=utf-8><title>known-good: a fixed bottom bar that reserves its own height</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  A 64px fixed bottom bar, and `body { padding-bottom: 64px }` reserving exactly that. The
+  short final section is the unit that matters: scrollIntoView() on a tall section lands its
+  top at the viewport top and can never be under the bar, so a fixture made only of tall
+  sections would pass this check with the padding taken away too. The reservation buys the
+  document 64px of extra scroll, which is what lifts #s6's top clear of the bar.
+  Fixtures are test data, so hex is spelled here; the no-hex rule scans src/.
+-->
+<style>
+  body { margin:0; font:16px/1.5 system-ui; color:#1F3A52; background:#F4F1EA; padding-bottom:64px; }
+  nav.jumps { padding:16px; }
+  nav.jumps a { display:inline-block; min-height:24px; padding:4px 8px; color:#1F3A52; }
+  section { padding:24px 16px; }
+  #s1,#s2,#s3,#s4,#s5 { min-height:70vh; }
+  #s6 { min-height:0; height:40px; padding:0 16px; }
+  .tabbar { position:fixed; left:0; right:0; bottom:0; height:64px; background:#FAF8F3; border-top:1px solid #DAD6CC; display:flex; align-items:center; justify-content:space-around; }
+</style>
+<nav class="jumps" aria-label="Sections">
+  <a href="#s1">Health</a><a href="#s2">Delivery</a><a href="#s3">Deposit</a>
+  <a href="#s4">Puppies</a><a href="#s5">FAQ</a><a href="#s6">Contact</a>
+</nav>
+<main>
+  <section id="s1"><h2>Health</h2><p>Body copy.</p></section>
+  <section id="s2"><h2>Delivery</h2><p>Body copy.</p></section>
+  <section id="s3"><h2>Deposit</h2><p>Body copy.</p></section>
+  <section id="s4"><h2>Puppies</h2><p>Body copy.</p></section>
+  <section id="s5"><h2>FAQ</h2><p>Body copy.</p></section>
+  <section id="s6"><h2>Contact</h2></section>
+</main>
+<nav class="tabbar" aria-label="Site"><a href="/">Home</a><a href="/available-puppies/">Puppies</a><a href="/uk-blue-staffy-breeders-contact/">Contact</a><button type="button">Sections</button></nav>

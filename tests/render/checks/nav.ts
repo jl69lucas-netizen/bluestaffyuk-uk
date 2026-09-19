@@ -330,3 +330,82 @@ register({
     return { examined: targets.length, defects };
   },
 });
+
+/**
+ * A fixed bottom bar must never cover the landing position of an in-page jump target.
+ *
+ * The sibling of `nav-jump-target-lands`, at the other end of the viewport. That check
+ * measures a target against the chrome pinned to the TOP, which `scroll-margin-top`
+ * answers. Nothing in CSS answers the bottom: a `position: fixed` bar is out of flow, so
+ * the last section of a document simply ends underneath it, and a jump to a short final
+ * section lands the whole section in the 64px the reader cannot see. The only fix is for
+ * the bar to RESERVE its own height (`body { padding-bottom }`), and this is what measures
+ * that it did — SectionSheet's global rule is the shipped instance.
+ *
+ * Judged unit: one in-page link target. Measured: the target's top after the jump, against
+ * the bar's top. A bar is any `position: fixed` element whose box touches the viewport
+ * bottom, spans at least 80% of the width, and is under 40% of the viewport tall — the last
+ * clause so a full-screen fixed overlay is not read as chrome.
+ *
+ * Zero bars is zero examined, not a pass with a number: a page with no bottom chrome has
+ * nothing for this check to say, and `minExamined` is 1 so the fixture pair still has to
+ * contain one.
+ */
+register({
+  id: 'nav-bottom-chrome-clear',
+  family: 'NAV',
+  severity: 'blocking',
+  describe: 'a fixed bottom bar must not cover in-page jump targets',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    // `scrollIntoView()` here rather than a real click: this check is about GEOMETRY, and
+    // the smooth-scroll settling that nav-jump-target-lands has to defeat is irrelevant
+    // when the question is where a target sits relative to a bar that never moves.
+    const r = await page.evaluate(() => {
+      const H = window.innerHeight;
+      const W = window.innerWidth;
+      const bars = Array.from(document.body.querySelectorAll<HTMLElement>('*')).filter((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.position !== 'fixed' || cs.display === 'none' || cs.visibility === 'hidden') return false;
+        const b = el.getBoundingClientRect();
+        return b.bottom >= H - 1 && b.width >= W * 0.8 && b.height > 0 && b.height < H * 0.4;
+      });
+      if (!bars.length) return { examined: 0, bad: [] as string[] };
+      const barTop = Math.min(...bars.map((b) => b.getBoundingClientRect().top));
+
+      const seen = new Set<string>();
+      const bad: string[] = [];
+      let examined = 0;
+      for (const a of Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))) {
+        const href = a.getAttribute('href') || '';
+        if (href.length < 2 || seen.has(href)) continue;
+        const t = document.getElementById(decodeURIComponent(href.slice(1)));
+        if (!t) continue; // a dead anchor is nav-anchors-resolve's defect, not this one
+        seen.add(href);
+        examined++;
+        t.scrollIntoView();
+        if (t.getBoundingClientRect().top >= barTop) bad.push(href);
+      }
+      window.scrollTo(0, 0);
+      return { examined, bad: bad.slice(0, 10) };
+    });
+
+    // One row, not one per anchor. See the counting note on nav-jump-target-lands: a
+    // family total is only comparable if every check in it counts failure MODES in rows
+    // and magnitude in `count`.
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [
+            {
+              checkId: 'nav-bottom-chrome-clear',
+              family: 'NAV' as const,
+              viewport,
+              count: r.bad.length,
+              message: `jump target(s) landing under the fixed bottom bar: ${r.bad.join(', ')} — the bar must reserve its own height (body padding-bottom)`,
+            },
+          ]
+        : [],
+    };
+  },
+});

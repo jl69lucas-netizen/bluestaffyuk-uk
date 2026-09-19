@@ -1614,6 +1614,70 @@ test.describe('layout-hero-counter-separation [kit CounterStrip]', () => {
 });
 
 /**
+ * The KIT's section sheet, not a generic bottom bar.
+ *
+ * The generic loop judges `nav-bottom-chrome-clear` against the fixture named after the
+ * check, which proves the check can tell a reserved bar from an unreserved one. It says
+ * nothing about whether src/components/kit/SectionSheet.astro reserves. This pair is that
+ * component's own resolved geometry: the 64px `.kit-tabbar` and the `is:global`
+ * `body:has(.kit-sheet) { padding-bottom: 64px }` that pays for it. The known_broken half
+ * is the same markup with that ONE declaration deleted — the edit that would put the last
+ * section of every page back under the bar while every other test stayed green.
+ *
+ * Convention 10 in kit form: the bar is chrome measured against the scroll, so on the
+ * preview page it examines what the preview happens to contain. The fixture pair IS the
+ * coverage for the shipped component.
+ */
+// The bar is `display: none` at >=1024px, where PageDial is the in-page nav. At vp1280 the
+// fixture therefore contains no bottom chrome at all and the check examines zero — which is
+// the component behaving correctly, not a pair that failed to prove anything. Skipped
+// rather than asserted-empty, so that adding a fourth viewport project above 1024 does not
+// quietly turn this pair into two vacuous passes.
+const DESKTOP = (info: { project: { use: { viewport?: { width: number } | null } } }) =>
+  (info.project.use.viewport?.width ?? 0) >= 1024;
+const DESKTOP_REASON = 'SectionSheet is hidden at >=1024px; PageDial owns in-page nav there';
+
+test.describe('nav-bottom-chrome-clear [kit SectionSheet]', () => {
+  const check = () => registry.find((c) => c.id === 'nav-bottom-chrome-clear')!;
+
+  // The bar is `display: none` at >=1024px, where PageDial is the in-page nav. At vp1280
+  // the fixture therefore contains no bottom chrome at all and the check examines zero —
+  // which is the component behaving correctly, not a pair that failed to prove anything.
+  // Skipped rather than asserted-empty, so a viewport project added above 1024 later does
+  // not quietly turn this pair into two vacuous passes.
+
+  test('is silent on the kit bar that reserves its own height', async ({ page }, testInfo) => {
+    test.skip(DESKTOP(testInfo), DESKTOP_REASON);
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-bottom-chrome-clear.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    // Six, not "at least one": a fixture that silently lost five of its sections would
+    // otherwise pass while proving a sixth of what it claims.
+    expect(r.examined, 'all six section targets must be judged').toBe(6);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the kit bar keeps its height but drops the body reservation', async ({
+    page,
+  }, testInfo) => {
+    test.skip(DESKTOP(testInfo), DESKTOP_REASON);
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-bottom-chrome-covers.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(6);
+    expect(r.defects.length, 'a covered jump target must be reported').toBeGreaterThan(0);
+    // The short final section is the one that lands under the bar; the five tall ones
+    // scroll their own tops to the viewport top and cannot.
+    expect(r.defects[0].message).toContain('#d-f');
+    expect(r.defects[0].count).toBe(1);
+  });
+});
+
+/**
  * The KIT's info card, not a generic one.
  *
  * The generic loop above resolves a fixture BY CHECK ID, so it judges
