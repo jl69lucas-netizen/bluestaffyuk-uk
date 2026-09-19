@@ -11,20 +11,19 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 27
+    "checks": 25
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
-    "layout-min-font-size": 175,
-    "layout-tap-target-size": 94,
+    "layout-min-font-size": 234,
+    "layout-tap-target-size": 144,
     "layout-hero-counter-separation": 0,
     "layout-h3-image-first": 0,
-    "layout-image-box-reserved": 12,
+    "layout-image-box-reserved": 11,
     "img-srcset-within-2x": 18,
     "img-alt-present-and-unique": 18,
     "nav-anchors-resolve": 3,
     "nav-jump-target-lands": 3,
-    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 21,
     "sem-all-six-levels": 21,
     "sem-title-case-headings": 21,
@@ -32,26 +31,25 @@
     "sem-statement-label-visible": 0,
     "schema-single-product-offer": 0,
     "schema-sold-not-instock": 0,
-    "schema-date-modified-present": 12,
+    "schema-date-modified-present": 9,
     "schema-no-visible-date": 3,
-    "css-class-resolves": 225,
-    "css-no-dead-component-rule": 288,
-    "css-component-color-not-overridden": 11,
-    "dup-no-sibling-crossover": 156,
-    "a11y-text-contrast-aa": 175,
-    "a11y-no-duplicate-ids": 24,
+    "css-class-resolves": 48,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 228,
     "form-inquiry-contract": 0
   },
   "defects": {
     "SEM": 6,
-    "CSS": 3
+    "SCHEMA": 3
   },
   "instances": {
     "SEM": 15,
-    "CSS": 150
+    "SCHEMA": 3
   },
   "total": 9,
-  "total_instances": 165,
+  "total_instances": 18,
   "overrides": [],
   "details": [
     {
@@ -68,9 +66,9 @@
     },
     {
       "viewport": 1280,
-      "checkId": "css-no-dead-component-rule",
-      "count": 50,
-      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
     },
     {
       "viewport": 375,
@@ -86,9 +84,9 @@
     },
     {
       "viewport": 375,
-      "checkId": "css-no-dead-component-rule",
-      "count": 50,
-      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
     },
     {
       "viewport": 768,
@@ -104,9 +102,9 @@
     },
     {
       "viewport": 768,
-      "checkId": "css-no-dead-component-rule",
-      "count": 50,
-      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
     }
   ]
 }
