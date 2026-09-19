@@ -2462,7 +2462,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - Create: `docs/reports/design-system-gate-report.md`, `docs/reports/design-system-run.log`, `docs/artifacts/bsuk-design-system-gate-report.html`, `docs/artifacts/bsuk-design-system-plan.html`
 - Modify: `docs/reference/session-log.md`, `docs/reference/system-registry.md` (via `build_system_registry.py`), memory
 
-- [ ] **Step 1: Two full runs into the log**
+- [x] **Step 1: Two full runs into the log**
 
 ```bash
 set -a; source .env; set +a
@@ -2471,13 +2471,13 @@ for run in 1 2; do echo "=== RUN $run ==="; npm run build && npm run check:all &
 
 Expected: both halves identical after normalising times; every zero-tolerance gate at 0; pytest green; meta green with no `DEFERRED`; pages at the project 3 baseline; `python3 scripts/render_baseline.py --check` `0 problems`. Grep the log for token shapes: `python3 -m pytest tests/py/test_secret_shapes.py tests/py/test_no_env_value_committed.py -q` must be green with the log present.
 
-- [ ] **Step 2: Lighthouse**
+- [x] **Step 2: Lighthouse**
 
 Run: `ls scripts/lighthouse && cat scripts/lighthouse/README* 2>/dev/null | head -20` to find the Foundation sweep command; run it for the same five page types (warm median of 3). Expected: no category score below the Foundation baseline table in the spec §9.7. Record the table.
 
-- [ ] **Step 3: Write the gate report** — same structure as `docs/reports/system-transfer-gate-report.md`: Context; Build; Tokens (test counts, contrast pairs); Logo; Kit (thirteen components, picks table with the note column); Canvas and picks (URLs, artboard count); Harness (meta, pages table vs project 2, the three promotions, `img-srcset-within-2x` 0); Ported gates table (every script, summary line, exit, baseline/regression tag); Lighthouse; Placeholders (with `REVIEW_PLACEHOLDER` count); Second-run confirmation; Open items for later projects (carry Known Issues 3, 5–16 with status; add any new ones); Definition of done §9 line by line with PASS / PASS-WITH-DEVIATION / FAIL. Numbers come from the log, never typed from memory.
+- [x] **Step 3: Write the gate report** — same structure as `docs/reports/system-transfer-gate-report.md`: Context; Build; Tokens (test counts, contrast pairs); Logo; Kit (thirteen components, picks table with the note column); Canvas and picks (URLs, artboard count); Harness (meta, pages table vs project 2, the three promotions, `img-srcset-within-2x` 0); Ported gates table (every script, summary line, exit, baseline/regression tag); Lighthouse; Placeholders (with `REVIEW_PLACEHOLDER` count); Second-run confirmation; Open items for later projects (carry Known Issues 3, 5–16 with status; add any new ones); Definition of done §9 line by line with PASS / PASS-WITH-DEVIATION / FAIL. Numbers come from the log, never typed from memory.
 
-- [ ] **Step 4: Session log, registry, Artifacts**
+- [x] **Step 4: Session log, registry, Artifacts**
 
 Add a `## Project 3 — Design system (2026-09-18/…) — COMPLETE` section to `docs/reference/session-log.md` in the style of project 2's; update Known Issue 4 to CLOSED and any others the report changed; append new flags. Run `python3 scripts/build_system_registry.py` (no `--check`) so the new scripts and tests are registered, then `--check`. Build the Artifacts:
 
@@ -2488,7 +2488,8 @@ python3 scripts/build_plan_artifact.py docs/superpowers/plans/2026-09-18-design-
 
 (Check each builder's argument order with `head -20` first; they mirror `build_spec_artifact.py`.) The controller publishes both and the re-built spec.
 
-- [ ] **Step 5: Commit, merge, memory**
+- [ ] **Step 5: Commit, merge, memory** — the close-out commit is made; the merge, the memory
+  update and the session-closer are the controller's, with the user's approval.
 
 ```bash
 python3 scripts/marker_check.py | tail -1 && python3 -m pytest tests/py -q | tail -1

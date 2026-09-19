@@ -35,11 +35,48 @@ the Claude desktop config, which was backed up first as
 `claude_desktop_config.json.bak-20260917-022840`; `~/bsuk-mcp-server` was deleted. Only
 `gscServer` remains.
 
+## Project 3 — Design system (2026-09-18/19) — COMPLETE
+
+Gives the site a visual system of its own: a three-layer token file, the L1 badge mark and
+its four lockups, and a thirteen-component kit picked by the user from five variants each on
+a published design canvas. Nothing of the kit is mounted on a real page yet except the shell
+— project 4 does that — so the site's content gates are unchanged by design.
+Plan: `docs/superpowers/plans/2026-09-18-design-system.md`.
+Spec: `docs/superpowers/specs/2026-09-18-design-system-design.md`, approved and amended seven
+times during execution; §11 is where every in-flight decision is recorded.
+
+Closed 2026-09-19 on branch `design-system`, 59 commits from `e049f55` including the
+close-out, no remote and nothing pushed. Every gate was run twice with identical results; the transcript is
+`docs/reports/design-system-run.log`, and the two halves are proven identical as multisets of
+time-normalised lines. Full report and evidence:
+`docs/reports/design-system-gate-report.md`.
+
+Headline numbers: 51 pages built; 66 design tokens with 20 contrast pairs asserted at AA;
+thirteen kit components and thirteen owner picks; the canvas went 65 → 91 → 39 boards as the
+mobile and tablet rows arrived and the losing variants were pruned; the `/design-canvas/`
+route was replaced by `/kit-preview/`, which is a measured target page rather than a hidden
+one; 1353 pytest tests pass; the render meta gate is at 324 passed with the three formerly
+deferred checks promoted and no `DEFERRED` line; the pages gate is at the recorded project 3
+baseline, `8 passed, 46 failed`, with blocking rows 67 → 58 and no new blocking row anywhere.
+The fall is the image pass: `img-srcset-within-2x` went from 15 rows to 6, and the puppy
+page's Lighthouse Performance rose 98 → 100 with LCP 2277 ms → 1516 ms. No Lighthouse category
+score fell on any of the five page types. The placeholder total fell 1698 → 1605.
+
+A correction to an in-flight report: during Task 16 the controller reported the pages gate as
+"0 failed". That was a stale-scorecard artefact. The true figure is 46 failing pages,
+unchanged from project 2.
+
+Three Artifacts were published and their URLs recorded in `data/design/artifacts.json`: the
+design canvas, the picks board, and the Design System — the last replacing the spec's original
+draft of a prompt pack, because the artifact type's own format is a token-and-component
+document rather than a set of prompts.
+
 ## Known Issues
 
-Seeded from the Foundation gate report's "Open items" 1–8 and extended by project 2's gate
-report. Items 1 and 2 are closed by project 2; 3–8 are carried forward with their owning
-project; 9–14 are new from the system transfer.
+Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
+Items 1 and 2 are closed by project 2 and item 4 by project 3; 3 and 5–8 are carried forward
+with their owning project; 9–14 are new from the system transfer, 15–16 were added after it,
+and 17–25 are new from the design system.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -53,8 +90,13 @@ project; 9–14 are new from the system transfer.
    function cannot prove any route orphaned, static pages included. The mtime comparison is
    the only remaining freshness signal. A real answer needs a check that reads the content
    collection rather than the filesystem. **Carried forward.**
-4. **Puppy `srcset` 2x rows.** 15 blocking rows over 6 pages, the same images as the puppy
-   page's 2277 ms LCP. **Project 3's image pass** should fix both at once.
+4. **Puppy `srcset` 2x rows — CLOSED by project 3.** The puppy photos moved to `astro:assets`
+   with a bounded `srcset`. `img-srcset-within-2x` fell from 15 blocking rows over 6 pages to
+   **6 rows over 3 pages**, and the puppy page's Lighthouse LCP fell 2277 ms → 1516 ms with
+   Performance 98 → 100 — the two numbers moved together, as Foundation predicted. The six
+   remaining rows are two plain `<img>` tags in migrated WordPress body copy on three pages,
+   named in `docs/reports/design-system-gate-report.md`; they are not kit output and belong
+   to **project 4**'s content pass.
 5. **`nav-jump-target-lands` baseline.** 18 rows over 6 pages remain after the shell fix.
    `--hdr` is measured from the header (`--hdr-measured`), with the media query kept as the
    no-JS fallback, so the remaining rows are migrated in-page anchors rather than chrome
@@ -139,3 +181,52 @@ project; 9–14 are new from the system transfer.
     the breeder has left. **Build 4** re-bases all three together when it replaces the
     contact form with `src/components/kit/ContactFormKit.astro`, which carries no such
     option (design-system spec §11 amendment 2).
+
+17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
+    was rebuilt in project 3 around a per-city competitor scan, and it names the
+    query-augmentation step — expand the primary keyword into the real questions before
+    writing, mirror the strongest six into the FAQ — while recording that no skill performs it.
+    Today it is done by hand or not at all. **Project 5** needs one before it builds 28 city
+    pages from that skill.
+18. **The hero lede is clamped to two lines, and the copy must fit it.** Design rule 10 clamps
+    the lede and `scripts/measure_canvas_heights.mjs` records `lede_overflow`, which the test
+    requires to be zero — so copy needing a third line fails the build rather than being
+    silently truncated by the clamp. Measured at zero today at 1024, 1100 and 1280. It is a
+    standing constraint on every hero **project 4** writes.
+19. **`Button.kind` keeps all five treatments — AWAITING THE USER'S CONFIRMATION.** The prune
+    deleted every other variant prop, but `Button` kept five treatments renamed as `kind`
+    (primary, outline, inverse, submit, text) on the reasoning that a page needs more than one
+    button and these are five jobs rather than five styles. That is a judgment made during
+    execution and the user has not confirmed it. Deleting an unwanted treatment is a one-line
+    registry change plus its fixtures and is cheapest **before project 4** mounts buttons on
+    real pages.
+20. **`data/page-dates.json` is generated but unwired.** `npm run dates` writes it from git
+    history, and `/kit-preview/` is its only consumer — it reads the file for its `WebPage`
+    `dateModified` rather than calling `new Date()`. The 18 `schema-date-modified-present` rows
+    in Known Issue 8 are exactly the real pages that do not read it yet. **Project 4** wires it
+    into the content pass and into sitemap `lastmod`.
+21. **The separator dot misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
+    on `/kit-preview/` at 768 and 1280: the middle-dot separator measures 4.49:1 where AA wants
+    4.50:1. Decorative, but a real row; the fix is one token step darker, with the pair added to
+    `data/design/contrast.json` so the token test guards it thereafter. **Project 4.**
+22. **The kit contact form reports one missing screening option.** `form-inquiry-contract`
+    reports one advisory row at all three viewports on `/kit-preview/`: the puppy select is
+    missing the collection option that `scripts/form_contract_audit.py`'s `PUPPY_OPTION`
+    constant requires. The kit form is right and the constant is wrong — the option names a
+    collection point the breeder has left (Known Issue 16). **Project 4** re-bases the constant,
+    the option and the visible label together.
+23. **Page weight of the inline lockups.** The header inlines the horizontal lockup and the
+    footer the mono one, about 15 KB of SVG each, and the mark sprite adds about 3 KB per
+    document; the built homepage is roughly 163 KB, of which about 52 KB is inline SVG. It cost
+    no Lighthouse category on project 3's sweep, but it is paid on every page and shrinks with
+    nothing. If it needs to come back, the lockups can become `<use>` references into the sprite
+    the mark already emits, at the cost of one request. Recorded, not yet a defect.
+24. **The fonts are not vendored.** Fraunces and Source Sans 3 load from Google Fonts, which is
+    why the Design System artifact's font list is empty (spec §11 amendment 7c). That is a
+    third-party request on every page and a privacy consideration. **Project 6** should decide
+    whether to self-host before the site is public.
+25. **`scripts/render_baseline.py`'s default report is now project 3's.** Its `REPORT` constant
+    points at `docs/reports/render-baseline-project3.md`; the project 2 file is a published
+    record of a finished run and is never regenerated. Whoever opens **project 4** must repoint
+    the default at a new project 4 baseline file, or `npm run baseline` will keep judging
+    project 4's scorecards against project 3's table.
