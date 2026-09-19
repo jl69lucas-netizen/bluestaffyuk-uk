@@ -20,7 +20,6 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /buy-blue-staffy-puppies-uk/ | 2488→2254→2254 | 27→27 | 7→7 | 1→1 | 5 | PASS |
 | /buy-staffy-puppies-for-sale-uk/ | 4706→4706→4706 | 50→50 | 13→13 | 1→1 | 0 | PASS |
 | / | 3369→3112→3112 | 59→59 | 14→14 | 2→2 | 4 | PASS |
-| /privacy-policy-uk/ | 1015→1015→1015 | 23→23 | 3→3 | 0→0 | 0 | PASS |
 | /thank-you-blue-staffy-puppies-journey/ | 422→422→422 | 5→5 | 1→1 | 0→0 | 0 | PASS |
 | /uk-blue-staffy-breeders-contact/ | 397→397→397 | 6→6 | 1→1 | 0→0 | 0 | PASS |
 | /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
@@ -54,4 +53,4 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
 
-examined 40 pages, 0 failing, skipped 0 rebuilt
+examined 39 pages, 0 failing, skipped 1 rebuilt

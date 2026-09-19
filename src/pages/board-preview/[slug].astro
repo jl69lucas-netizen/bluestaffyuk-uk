@@ -203,14 +203,19 @@ const stubTargets = (s: Section, styleId: string) =>
                   )}
                   {CHROME_SHAPES.includes(s.shape) && (
                     <div class="bp-chrome">
+                      {/* The picks are MADE (2026-09-19): dial S2, sheet S2, strip S2, and
+                          the losing arrangements are deleted from the three components. A
+                          chrome section on an existing record still renders three blocks —
+                          its three historical style ids — but all three now show the one
+                          shipped arrangement, which is the honest thing for a board that is
+                          being re-read after the decision rather than before it. */}
                       {s.shape === 'dial' && (
-                        <PageDial sections={stubTargets(s, st.id)} style={st.id} idPrefix={`${s.id}-${st.id}-dial`} />
+                        <PageDial sections={stubTargets(s, st.id)} idPrefix={`${s.id}-${st.id}-dial`} />
                       )}
-                      {s.shape === 'sheet' && <SectionSheet sections={stubTargets(s, st.id)} style={st.id} />}
+                      {s.shape === 'sheet' && <SectionSheet sections={stubTargets(s, st.id)} />}
                       {/* The strip is `position: sticky`, and inside a preview frame it pins
-                          to the FRAME, not to the viewport — which is what lets three of them
-                          be looked at side by side on one document. */}
-                      {s.shape === 'strip' && <SectionStrip sections={stubTargets(s, st.id)} style={st.id} />}
+                          to the FRAME, not to the viewport. */}
+                      {s.shape === 'strip' && <SectionStrip sections={stubTargets(s, st.id)} />}
                       <div class="bp-targets">
                         {stubTargets(s, st.id).map((t, i) => (
                           <div>

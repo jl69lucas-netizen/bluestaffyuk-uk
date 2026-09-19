@@ -43,10 +43,15 @@ if (sections.length > 0 && !nav) {
 }
 ---
 <BaseLayout {...head}>
-  <SiteHeaderKit slot="header" />
-  {/* Before the shell, and outside the dial's grid: the strip is a full-bleed band that
-      pins under the header, so it must not be a grid child sitting beside the dial column. */}
-  {nav && <SectionStrip sections={sections} />}
+  {/* Both in the HEADER slot, so the strip sits OUTSIDE `<main id="main">`. It is chrome,
+      not content: BaseLayout's skip link points at `#main`, and a strip rendered inside it
+      would put 61px of sticky chrome above the very target the skip link jumps to — which
+      is `nav-jump-target-lands` measuring a target it can never land clear of (it fired on
+      `#main` at 768 for exactly this). Outside it, `#main` begins below the whole band. */}
+  <Fragment slot="header">
+    <SiteHeaderKit />
+    {nav && <SectionStrip sections={sections} />}
+  </Fragment>
   <div class:list={['page-shell', { 'has-dial': nav }]}>
     {nav && <PageDial sections={sections} />}
     <div class="page-body"><slot /></div>

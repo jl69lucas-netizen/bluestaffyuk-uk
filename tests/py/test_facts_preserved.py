@@ -141,3 +141,28 @@ def test_the_checker_runs_clean_over_the_committed_state():
                           capture_output=True, text=True)
     assert proc.returncode == 0, proc.stdout + proc.stderr
     assert "examined" in proc.stdout
+
+
+def test_a_dropped_entry_carries_its_reason_and_is_still_matched():
+    """`dropped` is "<the fact> — <why it is not carried>", and the reason is the point of
+    the field: a bare list of paths records that something went, not that anyone agreed it
+    should. The fact is read off the front of the line, so the two forms are equivalent to
+    the gate and a record is never pushed into dropping the explanation to pass."""
+    facts = {"images": ["/images/a.webp", "/images/b.webp"]}
+    html = "<article><p>No images at all.</p></article>"
+    reasoned = {"images": [
+        "/images/a.webp — the rebuilt page is text-led legal prose and carries one image only.",
+        "/images/b.webp — illustrates no clause on this page.",
+    ]}
+    assert F.missing(facts, html, reasoned) == {}
+    # the bare form the older records wrote still works
+    assert F.missing(facts, html, {"images": ["/images/a.webp", "/images/b.webp"]}) == {}
+    # and a fact nobody dropped is still reported
+    assert F.missing(facts, html, {"images": ["/images/a.webp — reason"]}) == {"images": ["/images/b.webp"]}
+
+
+def test_drop_facts_reads_the_fact_off_the_front_of_the_line():
+    assert F.drop_facts(["/images/x.webp — because"]) >= {"/images/x.webp"}
+    assert F.drop_facts(["£1,200 – the old band, superseded"]) >= {"£1,200"}
+    assert F.drop_facts(["Kane"]) == {"Kane"}
+    assert F.drop_facts(None) == set()

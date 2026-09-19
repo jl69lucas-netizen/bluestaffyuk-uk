@@ -196,6 +196,11 @@ and 17–25 are new from the design system.
     **Page bodies and their ported schema follow per page in Tasks 7–18** — the eleven rich
     pages and the blog are rewritten one at a time and are not edited ahead of their task,
     so the old city is still in the generated page bodies until each is rebuilt.
+    **1 of 12 rebuilt (Task 7, `/privacy-policy-uk/`, 2026-09-19).** That page no longer
+    carries the old city anywhere: its body is written fresh, and the legacy schema graph
+    that hard-coded a street address, a postcode and coordinates for the former city is gone
+    with it — `BaseLayout` now emits the `WebPage` node from `data/page-dates.json` instead.
+    11 page bodies to go.
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the

@@ -6,6 +6,7 @@ file makes that claim falsifiable: the file has to exist, and when the source is
 the facts the answer leans on have to be words that page actually says.
 """
 import json
+from html import unescape
 import pathlib
 import re
 
@@ -31,16 +32,55 @@ FACT_PHRASES = {
     "enquiry-reply-time": ["personally review and respond", "24-48 business hours", "spam or junk folder"],
     "enquiry-while-you-wait": ["Staffy breed guide", "health and care", "ready to find their forever home"],
     "enquiry-follow-up": ["contact our purebred Blue Staffy breeders", "Privacy Policy"],
-    "privacy-data-collected": ["name, email, phone", "IP address", "browser type"],
-    "privacy-cookies": ["essential cookies", "Google Analytics"],
-    "privacy-delete-data": ["view, edit, or delete your data", "within one month"],
+    # The three privacy rows are verified against the REBUILT page's prose (the accordion
+    # that renders them is cut out first), so the phrases are the ones that page uses.
+    "privacy-data-collected": ["email address, phone number and postal address", "IP address"],
+    "privacy-cookies": ["Essential cookies", "Google Analytics"],
+    "privacy-delete-data": ["Right to erasure", "within one month"],
     "contact-visit": ["walk-in facility", "by appointment only"],
     "contact-what-to-say": ["as much detail as possible", "24-48 business hours"],
 }
 
 
+REBUILT = set(json.loads((ROOT / "data/facts/rebuilt.json").read_text()))
+_FAQ_BLOCK = re.compile(r'<div[^>]*class="[^"]*kit-faq[^"]*"[^>]*>.*?</div>', re.S)
+_TAG = re.compile(r"<[^>]+>")
+_SCRIPTY = re.compile(r"<(script|style)\b.*?</\1>", re.S)
+
+
+def _slug_of(path):
+    """`src/pages/<slug>/index.astro` -> `<slug>`; `src/pages/index.astro` -> `index`.
+    Nested slugs keep their full path, the same key every other gate uses."""
+    m = re.fullmatch(r"src/pages/(?:(.+)/)?index\.astro", path)
+    assert m, path
+    return m.group(1) or "index"
+
+
+def _built_text(slug):
+    """The visible text of a REBUILT page, with the FAQ accordion cut out.
+
+    Cutting it is the whole point. The accordion renders these very answers, so a phrase
+    checked against a page that includes it would be checking the answer against itself and
+    would pass for any wording at all. What the rule-9 assertion actually asks is whether
+    the PAGE'S OWN PROSE still says the thing the answer leans on, so the block the answers
+    are rendered into comes out before the text is read."""
+    html = (ROOT / "dist" / slug / "index.html").read_text(encoding="utf-8")
+    html = _SCRIPTY.sub(" ", html)
+    html = _FAQ_BLOCK.sub(" ", html)
+    return re.sub(r"\s+", " ", unescape(_TAG.sub(" ", html)))
+
+
 def _page_text(path):
-    """The visible-ish text of a migrated page: the escaped `body` string, unescaped."""
+    """The text a page-sourced answer is verified against.
+
+    A MIGRATED page is read from its `const body` string — the source file is the page. A
+    REBUILT page (listed in data/facts/rebuilt.json) is hand-written Astro with the prose in
+    markup, so there is no body string to read and the source file is the wrong artefact
+    anyway: what the reader is told is what the BUILD emits. So the built page is read
+    instead, and the switch is keyed on the same list every other rebuilt-page gate uses."""
+    slug = _slug_of(path)
+    if slug in REBUILT:
+        return _built_text(slug)
     src = (ROOT / path).read_text()
     m = re.search(r'const body = "(.*?)";\n', src, re.S)
     assert m, f"{path} has no migrated body string"

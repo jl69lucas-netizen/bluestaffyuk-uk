@@ -1,24 +1,30 @@
 ---
 // src/components/kit/SectionSheet.astro — mobile/tablet in-page nav (spec §3): a fixed
-// bottom tab bar (Home · Puppies · Contact · Sections) whose Sections tab opens a native
-// <dialog> bottom sheet listing the page's sections with scroll-spy.
+// bottom bar of three site links (Home · Puppies · Contact) with a full-width Sections pill
+// above it, opening a native <dialog> bottom sheet of the page's sections with scroll-spy.
 //
-// Hidden at >=1024px, where PageDial takes over: the pair is one component split by width
-// and a page mounts both, so neither may be visible at a width the other owns.
+// Hidden at >=1024px, where PageDial takes over: the set is one component split by width
+// and a page mounts all three, so none may be visible at a width another owns.
+//
+// THE PILL, NOT A FOURTH TAB. The breeder picked S2 on the contact board (2026-09-19):
+// Sections is the control this component exists for, and as a fourth icon tab it read as
+// one site destination among four. Lifted onto its own full-width row it is unmistakable,
+// and the three site links keep a third of the bar each. This file used to carry all three
+// arrangements behind a `style` prop; the two that lost are deleted, along with the prop.
 //
 // The <dialog> is NATIVE on purpose. `showModal()` gives the focus trap, the inert
 // background and the Escape key for free; a div-with-role="dialog" would need all three
 // hand-written, and the two that get forgotten are always Escape and the trap.
 //
-// The bar is 64px tall and RESERVES that space with body padding, so no in-page jump target
-// can land underneath it. That is not a cosmetic detail: it is the whole of what
+// The bar is 64px tall and the pill adds 52px above it; the pair RESERVES all 116px with
+// body padding, so no in-page jump target can land underneath either. That is not a cosmetic detail: it is the whole of what
 // `nav-bottom-chrome-clear` (blocking, tests/render/checks/nav.ts) measures.
 //
 // THAT RESERVATION DEPENDS ON `:has()`. `body:has(.kit-sheet)` scopes the padding to pages
 // that actually mount the bar, so a page without one gets no mystery gap — but a browser
 // without `:has()` support drops the whole rule and every such page loses the reservation
 // silently. The global block therefore carries an `@supports not selector(:has(*))`
-// fallback that pads the body unconditionally: a 64px gap on a page with no bar is a
+// fallback that pads the body unconditionally: a 116px gap on a page with no bar is a
 // cosmetic cost, and a jump target under the bar is a blocking one.
 //
 // `aria-current="location"`, never a bare `aria-current`: `toggleAttribute` emits
@@ -26,19 +32,6 @@
 //
 // Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
 // 6 (`@layer components`). Icons are inline stroke SVG — never an emoji, never an <img>.
-//
-// TEMPORARY `style` PROP (project 4, Task 9). The sheet is one of the two pieces of chrome
-// the contact board puts three arrangements of in front of the breeder, so all three live
-// here at once behind `style`: S1 is the shipped four-tab bar above, S2 keeps a three-tab
-// bar and lifts Sections out into a full-width pill over it, S3 drops the bar entirely for
-// a floating round Sections button in the bottom-right corner. The map that names them is
-// `sheet` in src/lib/boardStyles.ts. AFTER THE PICK THE OTHER TWO ARE DELETED along with
-// this prop — the same prune project 3 ran on the kit's style options.
-//
-// EACH ARRANGEMENT RESERVES ITS OWN HEIGHT. The reservation is the point of the global block
-// below, so a style that is taller than 64px (S2's pill sits above the bar) or that is not
-// a bar at all (S3's button) has to say so, or `nav-bottom-chrome-clear` finds a jump
-// target under it.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
 import Button from './Button.astro';
@@ -46,18 +39,16 @@ type Props = HTMLAttributes<'div'> & {
   sections: SectionRef[];
   ctaLabel?: string;
   ctaHref?: string;
-  style?: 'S1' | 'S2' | 'S3';
 };
 const {
   sections,
   ctaLabel = 'Available puppies',
   ctaHref = '/available-puppies/',
-  style: styleId = 'S1',
   class: cls,
   ...rest
 } = Astro.props;
-// One path each, on the same 24 grid with the same stroke weight, so the four read as one
-// set rather than as four icons that happen to sit in a row.
+// One path each, on the same 24 grid with the same stroke weight, so they read as one set
+// rather than as icons that happen to sit in a row.
 const I = {
   home: 'M3 11l9-8 9 8v10H3z M9 21v-6h6v6',
   pup: 'M4 8c0-3 2-5 5-5h6c3 0 5 2 5 5v8a5 5 0 0 1-10 0V8 M9 20h6',
@@ -70,41 +61,23 @@ const tabs: [string, string, string][] = [
   ['Contact', '/uk-blue-staffy-breeders-contact/', I.mail],
 ];
 ---
-<div class:list={['kit-sheet', `sheet-${styleId.toLowerCase()}`, cls]} data-sheet {...rest}>
-  {/* S3 has no bar at all: its three site links are the header's job at that width, and the
-      only thing the sheet contributes is the Sections button. */}
-  {styleId !== 'S3' && (
-    <nav class="kit-tabbar" aria-label="Site">
-      {tabs.map(([label, href, d]) => (
-        <a href={href}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
-          <span>{label}</span>
-        </a>
-      ))}
-      {styleId === 'S1' && (
-        <button type="button" data-open aria-haspopup="dialog" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
-          <span>Sections</span>
-        </button>
-      )}
-    </nav>
-  )}
-  {/* ONE `[data-open]` on the page, wherever the style puts it — the script binds a single
-      opener, and a second copy would be a control that silently does nothing. */}
-  {styleId === 'S2' && (
-    <div class="kit-pillbar">
-      <button type="button" class="pill" data-open aria-haspopup="dialog" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
-        <span>Sections</span>
-      </button>
-    </div>
-  )}
-  {styleId === 'S3' && (
-    <button type="button" class="fab" data-open aria-haspopup="dialog" aria-expanded="false">
+<div class:list={['kit-sheet', cls]} data-sheet {...rest}>
+  <nav class="kit-tabbar" aria-label="Site">
+    {tabs.map(([label, href, d]) => (
+      <a href={href}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
+        <span>{label}</span>
+      </a>
+    ))}
+  </nav>
+  {/* ONE `[data-open]` on the page — the script binds a single opener, and a second copy
+      would be a control that silently does nothing. */}
+  <div class="kit-pillbar">
+    <button type="button" class="pill" data-open aria-haspopup="dialog" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
       <span>Sections</span>
     </button>
-  )}
+  </div>
   <dialog class="sheet" aria-label="Sections" data-dialog>
     <div class="grab" aria-hidden="true"></div>
     <ol>
@@ -196,8 +169,8 @@ const tabs: [string, string, string][] = [
      `position: fixed`, so it is out of flow and would otherwise sit ON TOP of the last
      64px of every page: the end of the final section, and any jump target near it.
      `:has()` keeps the reservation tied to the bar actually being mounted, so a page
-     without the sheet gets no mystery gap. The number is the bar's own height; both are
-     64 and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction.
+     without the sheet gets no mystery gap. The number is the bar plus the pill above it —
+     64 + 52 — and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction.
 
      `@layer components` here as well as in the scoped block (convention 6): a global rule
      outside every layer beats any Tailwind utility a page might use to override the
@@ -210,14 +183,10 @@ const tabs: [string, string, string][] = [
      hidden under the bar is a blocking one. */
   @layer components {
     @media (max-width: 1023px) {
-      body:has(.kit-sheet) { padding-bottom: 64px; }
-      /* S2 stacks a 52px pill on top of the 64px bar, and S3's floating button occupies a
-         56px circle with a 16px margin under it. Each style reserves what it actually
-         covers; the later rules win on equal specificity, which is why they sit here. */
-      body:has(.sheet-s2) { padding-bottom: 116px; }
-      body:has(.sheet-s3) { padding-bottom: 88px; }
+      /* 116px: the 64px bar plus the 52px pill row above it. One number said twice — here
+         and in the two heights below — and `nav-bottom-chrome-clear` measures the pair. */
+      body:has(.kit-sheet) { padding-bottom: 116px; }
       @supports not selector(:has(*)) {
-        /* No `:has()`, so no way to tell which style is mounted — reserve the tallest. */
         body { padding-bottom: 116px; }
       }
     }
@@ -236,7 +205,7 @@ const tabs: [string, string, string][] = [
       z-index: 40;
       height: 64px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       background: var(--color-surface-raised);
       border-top: 1px solid var(--color-border);
       box-shadow: var(--shadow-card);
@@ -308,13 +277,11 @@ const tabs: [string, string, string][] = [
       color: var(--color-text);
       cursor: pointer;
     }
-    /* At >=1024px PageDial is the in-page nav. Both the bar and the sheet go, so the tab
-       bar's links are not a second copy of the header nav in the desktop tab order. */
-    /* --- the two style arrangements the contact board offers (temporary, see the header) --- */
+    /* At >=1024px PageDial is the in-page nav. The bar, the pill and the sheet all go, so
+       the bar's links are not a second copy of the header nav in the desktop tab order. */
 
-    /* S2 — three tabs, and Sections lifted into a full-width pill over the bar. The bar
-       loses its fourth column, so the three site links get a third of the width each. */
-    .sheet-s2 .kit-tabbar { grid-template-columns: repeat(3, 1fr); }
+    /* Sections, lifted out of the bar onto its own full-width row. 52px, which with the
+       64px bar is the 116px the body reserves above. */
     .kit-pillbar {
       position: fixed;
       left: 0;
@@ -342,41 +309,14 @@ const tabs: [string, string, string][] = [
     .kit-pillbar .pill svg { width: 20px; height: 20px; }
     .kit-pillbar .pill:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
 
-    /* S3 — no bar: one round button in the bottom-right corner. 56px, which clears the
-       44px tap-target floor with room for the label under the icon. */
-    .fab {
-      position: fixed;
-      right: var(--space-4);
-      bottom: var(--space-4);
-      z-index: 40;
-      width: 56px;
-      height: 56px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1px;
-      border: 1px solid var(--color-border);
-      border-radius: 50%;
-      background: var(--color-surface-raised);
-      box-shadow: var(--shadow-card);
-      font: 600 var(--text-xs) / 1 var(--font-body);
-      color: var(--color-brand);
-      cursor: pointer;
-    }
-    .fab svg { width: 20px; height: 20px; }
-    .fab:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
-
     @media (min-width: 1024px) {
       .kit-tabbar,
       .kit-pillbar,
-      .fab,
       .sheet { display: none; }
     }
     @media print {
       .kit-tabbar,
-      .kit-pillbar,
-      .fab { display: none; }
+      .kit-pillbar { display: none; }
     }
   }
 </style>

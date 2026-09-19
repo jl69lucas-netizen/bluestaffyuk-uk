@@ -630,21 +630,18 @@ def page_headings(path):
     return p.headings
 
 
-# Routes that render a SPECIMEN of another page rather than a page of their own.
-# `/board-preview/<slug>/` renders the board record's own headings three styles over, and
-# `/kit-preview/` renders the kit's components with their demo headings. Both are noindex
-# scaffolding. Left in the corpus they make every board collide with its own preview —
-# 31 of the 33 FAILs on the first three approved records — and report a copied heading
-# where there is one heading rendered three ways.
-SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+# The specimen routes are DUP's list, not a second copy of it: `dup_content_audit.py`
+# excludes them from the duplicate-content corpus for the same reason the heading
+# pre-check excludes them here, and two lists would drift. See the note beside
+# DUP.SPECIMEN_PREFIXES. Left in this corpus they made every board collide with its own
+# preview — 31 of the 33 FAILs on the first three approved records.
+SPECIMEN_PREFIXES = DUP.SPECIMEN_PREFIXES
 
 
 def _is_specimen(rel):
     """True for the specimen routes' pages, at any depth. `rel` is the dist-relative
-    directory ("." for the homepage), so a real page whose slug merely CONTAINS
-    "kit-preview" further down its path is not caught — the prefix is anchored."""
-    r = ("" if rel == "." else rel) + "/"
-    return r.startswith(SPECIMEN_PREFIXES)
+    directory ("." for the homepage); DUP.is_specimen takes the same shape as a page key."""
+    return DUP.is_specimen("" if rel == "." else rel)
 
 
 def live_headings(dist=DIST):

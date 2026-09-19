@@ -753,10 +753,15 @@ def test_built_section_divider_is_the_mark_between_two_rules():
 
 
 
-def test_built_page_dial_has_ring_list_and_spy_hooks():
-    """Convention 8. The dial is three things at once — a progress ring, a numbered list
-    and a scroll-spy — and losing any one of them still builds and still looks like a
-    sidebar. The six `<li>` are the demo fixture's six sections."""
+def test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring():
+    """Convention 8. The dial is two things at once — a numbered list and a scroll-spy —
+    and losing either still builds and still looks like a sidebar. The six `<li>` are the
+    demo fixture's six sections.
+
+    THE RING IS ASSERTED ABSENT, not merely unmentioned. The breeder picked S2 on the
+    contact board (2026-09-19) and PageDial was pruned to it; a ring creeping back would be
+    a second progress indicator saying what the numbered rows already say, and the inline
+    dash geometry it needed was the component's only inline style."""
     dial = _sections("page-dial")
     assert _has_class(dial, "kit-dial")
     # Labelled BY the visible heading, never by a duplicate literal: a `<nav aria-label>`
@@ -766,12 +771,13 @@ def test_built_page_dial_has_ring_list_and_spy_hooks():
     assert 'id="kit-dial-title"' in dial
     assert dial.count("<li") >= 6, dial.count("<li")
     assert dial.count('data-spy="') >= 6, dial
-    # The progress ring: a track and a fill, both <circle>, drawn not lettered.
-    assert "<svg" in dial and dial.count("<circle") == 2, dial.count("<circle")
-    assert "data-ring" in dial and "data-ring-n" in dial
-    # Rule 1, restated at the component: the dial writes ONE inline style (the ring's
-    # dash geometry) and it must carry no colour. Same shape as
-    # test_built_sections_spell_no_hex_in_a_style_attribute, narrowed to this section.
+    # Every row is numbered — that is what the picked arrangement is.
+    assert dial.count('class="num"') >= 6, dial.count('class="num"')
+    # …and the ring is gone, markup, hooks and all.
+    assert "<circle" not in dial, dial
+    assert "data-ring" not in dial, dial
+    # Rule 1, restated at the component. The dial no longer writes ANY inline style — the
+    # ring's dash geometry was the only one — so the hex probe has nothing to find.
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
 
 

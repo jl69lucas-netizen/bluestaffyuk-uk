@@ -33,24 +33,22 @@
 // Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
 // 6 (`@layer components`). No emoji, no hex — tokens only.
 //
-// TEMPORARY `style` PROP (project 4). The strip is the third piece of chrome the contact
-// board puts three arrangements of in front of the breeder, so all three live here at once
-// behind `style`: S1 outlined pills with the number in a second colour, S2 filled tab chips,
-// S3 flat text links with an underline on the active one and a dot between. The map that
-// names them is `strip` in src/lib/boardStyles.ts. AFTER THE PICK THE OTHER TWO ARE DELETED
-// along with this prop — the same prune project 3 ran on the kit's style options, and the
-// same one Task 9 runs on the dial and the sheet.
+// FILLED CHIPS. The breeder picked S2 on the contact board (2026-09-19): against the bone
+// page the outlined pills of S1 read as a row of empty buttons, and S3's underlined text
+// links did not survive being scrolled — a half-visible chip at the rail's edge had nothing
+// to mark it as a control. A filled chip keeps its shape at any scroll offset. This file
+// used to carry all three arrangements behind a `style` prop; the two that lost are
+// deleted, along with the prop.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
 type Props = HTMLAttributes<'nav'> & {
   sections: SectionRef[];
   label?: string;
-  style?: 'S1' | 'S2' | 'S3';
 };
-const { sections, label = 'Sections', style: styleId = 'S1', class: cls, ...rest } = Astro.props;
+const { sections, label = 'Sections', class: cls, ...rest } = Astro.props;
 ---
 <nav
-  class:list={['kit-strip', `strip-${styleId.toLowerCase()}`, cls]}
+  class:list={['kit-strip', cls]}
   aria-label={label}
   data-strip
   {...rest}
@@ -113,15 +111,26 @@ const { sections, label = 'Sections', style: styleId = 'S1', class: cls, ...rest
         if (j === i) r.link.setAttribute('aria-current', 'location');
         else r.link.removeAttribute('aria-current');
       });
-      // Keep the active chip on screen. `nearest` in BOTH axes: `center` would scroll the
-      // PAGE as well as the rail, fighting the very scroll that moved the spy — the bug
-      // that makes a strip jitter on every scroll. `nearest` also means no scroll at all
-      // when the chip is already visible, which is the common case.
-      rows[i].link.scrollIntoView({
-        block: 'nearest',
-        inline: 'nearest',
-        behavior: settled ? 'smooth' : 'auto',
-      });
+      // Keep the active chip on screen by scrolling the RAIL, never by calling
+      // `scrollIntoView` on the chip. Even `block: 'nearest'` is allowed to scroll the
+      // PAGE when the rail is not fully in view, and it does: jumping to a section fired
+      // the spy, which scrolled the document a second time and left the target outside the
+      // band `nav-jump-target-lands` measures (3 of 11 targets on this page, at 375 and
+      // 768). Writing `scrollLeft` on the overflow container cannot move the document.
+      const rail = rows[i].link.closest('ol');
+      if (rail) {
+        const chip = rows[i].link.getBoundingClientRect();
+        const box = rail.getBoundingClientRect();
+        const pad = 16;
+        let dx = 0;
+        if (chip.left < box.left + pad) dx = chip.left - box.left - pad;
+        else if (chip.right > box.right - pad) dx = chip.right - box.right + pad;
+        // INSTANT, always. An animated rail is still animating while the document's own
+        // smooth jump settles, and `nav-jump-target-lands` then measures a moving page: the
+        // set of targets it reported outside the band changed from run to run. The rail
+        // moves a few hundred pixels inside its own box and nobody misses the tween.
+        if (dx) rail.scrollLeft += dx;
+      }
       settled = true;
     };
     const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
@@ -205,64 +214,20 @@ const { sections, label = 'Sections', style: styleId = 'S1', class: cls, ...rest
     .num { font-feature-settings: 'tnum'; }
     .kit-strip a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -2px; }
 
-    /* --- the three arrangements the contact board offers (temporary, see the header) --- */
-
-    /* S1 — outlined pills, the number in the brand colour against the bone surface. The
-       active pill is marked by its BORDER rather than a fill, so the row keeps one weight
-       and the reader's eye is drawn by the outline, not by a block of colour. */
-    .strip-s1 a {
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-pill);
-      background: var(--color-white);
-    }
-    .strip-s1 .num { color: var(--color-brand); }
-    .strip-s1 a[aria-current='location'] {
-      border-color: var(--color-cta);
-      border-width: 2px;
-      /* The 1px the second border pixel takes back, so the pill does not grow on activation
-         and shove every chip after it along the rail. */
-      padding: 0 calc(var(--space-3) - 1px);
-    }
-
-    /* S2 — filled tab chips. The active chip is filled with the brand colour and its text
-       flips to bone; `--color-cta-ink` is not used here because the fill is brand, not CTA,
-       and the pair that is contrast-checked is brand/bone. */
-    .strip-s2 a {
+    /* The chip. Filled against the rail so it keeps its shape at any scroll offset; the
+       active chip flips to the brand colour with bone text, which is the pair the contrast
+       check is run on. `--color-cta-ink` is deliberately not used — the fill is brand. */
+    .kit-strip a {
       border: 1px solid transparent;
       border-radius: var(--radius-sm);
       background: var(--color-bone-100);
     }
-    .strip-s2 .num { color: var(--color-brand); }
-    .strip-s2 a[aria-current='location'] {
+    .kit-strip .num { color: var(--color-brand); }
+    .kit-strip a[aria-current='location'] {
       background: var(--color-brand);
       color: var(--color-bone-50);
     }
-    .strip-s2 a[aria-current='location'] .num { color: var(--color-bone-50); }
-
-    /* S3 — flat text links, a 3px underline under the active one, a dot between chips. The
-       dot is a pseudo-element on the LI so it is never read out; the last one is dropped so
-       the rail does not end on a separator. */
-    .strip-s3 a {
-      border: 0;
-      border-bottom: 3px solid transparent;
-      background: none;
-      padding: 0 var(--space-2);
-    }
-    .strip-s3 .num { color: var(--color-brand); }
-    .strip-s3 a[aria-current='location'] {
-      border-bottom-color: var(--color-cta);
-      color: var(--color-brand);
-    }
-    .strip-s3 li { display: flex; align-items: center; }
-    .strip-s3 li::after {
-      content: '';
-      width: 3px;
-      height: 3px;
-      border-radius: 50%;
-      background: var(--color-border);
-      margin-inline-start: var(--space-2);
-    }
-    .strip-s3 li:last-child::after { content: none; }
+    .kit-strip a[aria-current='location'] .num { color: var(--color-bone-50); }
 
     /* At >=1024px PageDial is the in-page nav, and the strip would be a second copy of the
        same six links in the tab order. */

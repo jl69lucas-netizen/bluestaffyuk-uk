@@ -45,6 +45,14 @@ type Props = HTMLAttributes<'section'> & {
    *  original path). Omitted → the kit's own master. */
   image?: ImageMetadata | string;
   imageAlt?: string;
+  /** Intrinsic size of a STRING `image`. astro:assets supplies both for an `ImageMetadata`
+   *  import, but a public path is copied verbatim and nothing knows its dimensions — so an
+   *  `<img>` with no `width`/`height` ships, the browser reserves no box for it, and the
+   *  page reflows when it loads. `img_dims` (scripts/final_page_audit.py) is blocking on
+   *  exactly that. Required in practice whenever `image` is a string; the board record
+   *  carries the numbers in its `assets` row. */
+  imageWidth?: number;
+  imageHeight?: number;
 };
 // Every figure and claim below is in data/settings.json or on the live homepage
 // (KC registration, health-tested parents): rule 9, nothing is typed from memory.
@@ -58,6 +66,8 @@ const {
   lede = `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
   image = hero,
   imageAlt,
+  imageWidth,
+  imageHeight,
   class: cls,
   ...rest
 } = Astro.props;
@@ -75,6 +85,8 @@ const legacy = typeof image === 'string';
       <img
         src={image as string}
         alt={alt}
+        width={imageWidth}
+        height={imageHeight}
         sizes="(max-width: 900px) 100vw, 560px"
         class="pic"
         loading="eager"

@@ -454,20 +454,20 @@ COMPONENTS = {
     # is really the same rule said twice.
     "page-dial": dict(
         comp="PageDial", group="Navigation",
-        summary="The desktop in-page dial: a sticky 196px card with a brass progress ring, a numbered section list and a scroll-spy.",
+        summary="The desktop in-page dial: a sticky 196px column of hairline-ruled, numbered section rows with a scroll-spy.",
         props=["`sections: SectionRef[]` — the page's own sections, `{ id, label }`, in the page's order. "
                "`src/lib/sections.ts` builds the list from a board record with `sectionsFromRecord()`; the "
                "component never derives it, because the order belongs to the page.",
                "`title?: string` — the list heading, default `'On this page'`.",
                "`class` and any `HTMLAttributes<'aside'>` attribute, spread onto the root."],
-        states=["Hidden below 1024px — SectionSheet is the in-page nav there, and a dial that merely shrank "
-                "would be a second copy of the same links in the tab order.",
+        states=["Hidden below 1024px — SectionStrip and SectionSheet are the in-page nav there, and a dial "
+                "that merely shrank would be a second copy of the same links in the tab order.",
                 "Scroll-spy active: the current row carries `aria-current`, painted `color-brand-soft` on "
-                "`color-brand`, and the ring fills to n of N. The reading band is `-40% 0px -55% 0px`, the "
-                "same window SectionSheet uses, so the two never disagree about which section the reader is in.",
+                "`color-brand`. The reading band is `-40% 0px -55% 0px`, the same window SectionStrip and "
+                "SectionSheet use, so the three never disagree about which section the reader is in.",
                 "Resting, hover and focus on every row; the focus ring is `--kit-ring` at 3px.",
-                "`prefers-reduced-motion: reduce` drops the ring's `stroke-dashoffset` transition."],
-        checks=["`test_built_page_dial_has_ring_list_and_spy_hooks`",
+                "Row one is marked current at render, so the dial is never blank before JS runs."],
+        checks=["`test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring`",
                 "`test_no_built_page_ships_an_empty_aria_current` and "
                 "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
                 "`a11y-no-duplicate-ids` (render harness, advisory) — the demo's six stub targets are "
@@ -481,25 +481,25 @@ COMPONENTS = {
                "would be announced as the one row that is NOT current. Use "
                "`setAttribute('aria-current', 'location')` and `removeAttribute`, and match "
                "`[aria-current=\"location\"]` in CSS so the paint and the announcement cannot disagree.",
-               "Do not spell the ring's colour in the inline style. The one inline style the component writes is "
-               "the dash geometry, which depends on N; colour comes from `--color-cta` in the stylesheet (design rule 1).",
-               "Do not shrink the \"of N\" caption below `--text-xs`. The source site sets it at 7px and "
-               "`layout-min-font-size` is blocking at 12.5px — a caption nobody can read is texture, not text.",
-               "Do not mount this without SectionSheet: below 1024px the page would have no in-page nav at all."]),
+               "Do not bring back the progress ring. The breeder picked the ringless arrangement on the "
+               "contact board (2026-09-19): it repeated in a second place what the numbered rows already "
+               "say, and its dash geometry was the only inline style this component wrote.",
+               "Do not mount this without SectionStrip and SectionSheet: below 1024px the page would have "
+               "no in-page nav at all."]),
     "section-sheet": dict(
         comp="SectionSheet", group="Navigation",
-        summary="The mobile in-page nav: a fixed 64px bottom tab bar whose Sections tab opens a native `<dialog>` bottom sheet of the page's sections.",
+        summary="The mobile in-page nav: a fixed 64px bar of three site links with a full-width Sections pill above it, opening a native `<dialog>` bottom sheet of the page's sections.",
         props=["`sections: SectionRef[]` — the same list PageDial takes, from the same `src/lib/sections.ts` helper.",
                "`ctaLabel?: string` / `ctaHref?: string` — the sheet's primary button, default "
                "`'Available puppies'` to `/available-puppies/`.",
                "`class` and any `HTMLAttributes<'div'>` attribute, spread onto the root."],
         states=["Hidden at 1024px and above, and in print — PageDial owns in-page nav there.",
-                "Bar: resting, hover and focus on all four tabs. The focus ring is `--kit-ring` at 3px with "
+                "Bar: resting, hover and focus on the three tabs and the pill. The focus ring is `--kit-ring` at 3px with "
                 "`outline-offset: -3px`, because the bar is flush to the viewport edge.",
                 "Sheet closed, and open via `showModal()` — which is what supplies the focus trap, the inert "
                 "background and the Escape key. Following a section link closes it, and so does a backdrop click.",
                 "Scroll-spy active: the current row in the sheet carries `aria-current`, on the same reading "
-                "band as the dial."],
+                "band as the dial and the strip."],
         checks=["`test_built_section_sheet_has_tab_bar_and_dialog`",
                 "`test_no_built_page_ships_an_empty_aria_current` and "
                 "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
@@ -508,19 +508,22 @@ COMPONENTS = {
                 "`tests/render/fixtures/{known_good/kit-bottom-chrome-clear,known_broken/kit-bottom-chrome-covers}.html` "
                 "is this component's own geometry.",
                 "`layout-tap-target-size` (render harness, blocking) — every tab is at least 44px."],
-        donts=["Do not delete the `is:global` `body:has(.kit-sheet) { padding-bottom: 64px }`. The bar is "
-               "`position: fixed` and out of flow, so without the reservation the last 64px of every page — "
+        donts=["Do not delete the `is:global` `body:has(.kit-sheet) { padding-bottom: 116px }`. The bar is "
+               "`position: fixed` and out of flow, so without the reservation the last 116px of every page — "
                "including a short final section a reader jumps to — sits underneath it.",
                "Do not delete the `@supports not selector(:has(*))` fallback beside it either. The scoped "
                "reservation depends on `:has()`; a browser without it drops the rule and loses the padding "
                "with no symptom until someone jumps to the last section. The fallback pads the body "
-               "unconditionally there — a 64px gap on a page with no bar is cosmetic, a covered jump target "
+               "unconditionally there — a 116px gap on a page with no bar is cosmetic, a covered jump target "
                "is blocking.",
                "Do not replace the `<dialog>` with a div and `role=\"dialog\"`: the focus trap and Escape are "
                "native there, and the two that get forgotten by hand are always those two.",
-               "Do not change the bar's 64px height without changing the body reservation to match; they are "
-               "one number said twice and `nav-bottom-chrome-clear` measures the pair.",
-               "Do not use an emoji or an `<img>` for a tab icon — the four are inline stroke SVG on one 24 grid."]),
+               "Do not change the 64px bar or the 52px pill row without changing the 116px body reservation "
+               "to match; they are one number said twice and `nav-bottom-chrome-clear` measures the pair.",
+               "Do not use an emoji or an `<img>` for a tab icon — all four are inline stroke SVG on one 24 grid.",
+               "Do not fold Sections back into the bar as a fourth tab. The breeder picked the pill on the "
+               "contact board (2026-09-19): as one icon among four, the control this component exists for "
+               "read as a site destination."]),
     "section-strip": dict(
         comp="SectionStrip", group="Navigation",
         summary="The mobile top chrome: a sticky, horizontally scrolling rail of numbered section chips "
@@ -554,7 +557,10 @@ COMPONENTS = {
                "Do not use `scrollIntoView({ inline: 'center' })` for the active chip — `center` scrolls the "
                "PAGE as well as the rail, fighting the scroll that moved the spy, and the strip jitters.",
                "Do not mount this without SectionSheet: the strip is the quick jump, the sheet is the full "
-               "list, and below 1024px a long page needs both."]),
+               "list, and below 1024px a long page needs both.",
+               "Do not return the chips to outlines or to plain underlined text. The breeder picked the "
+               "filled chip on the contact board (2026-09-19): a filled chip keeps its shape when it is "
+               "half-scrolled at the rail's edge, and the other two did not."]),
 }
 
 #: The marker's `group`, in the order the artifact's component table should read.

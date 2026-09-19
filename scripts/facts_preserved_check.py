@@ -124,6 +124,25 @@ def page_body(html):
     return found.group(1) if found else html
 
 
+# A `dropped` entry is "<the fact> — <the reason it is not carried>". The reason is the whole
+# point of the field: a bare list of paths records that something went, not that anyone
+# agreed it should. So the fact is read off the FRONT of the line, up to the em dash, and an
+# entry with no dash is taken whole — which is what the older records wrote.
+_DROP_SPLIT = re.compile(r"\s+[—–-]\s+")
+
+
+def drop_facts(entries):
+    """The fact each `dropped` line names, with its reason stripped off."""
+    out = set()
+    for e in entries or []:
+        if not isinstance(e, str):
+            continue
+        e = e.strip()
+        out.add(e)
+        out.add(_DROP_SPLIT.split(e, 1)[0].strip())
+    return out
+
+
 def missing(facts, new_html, dropped=None):
     """{kind: [facts the new page neither carries nor declares dropped]}.
 
@@ -137,7 +156,7 @@ def missing(facts, new_html, dropped=None):
     here = {pence(p) for p in PRICE.findall(text)}
     out = {}
     for k, vals in facts.items():
-        drop = set(dropped.get(k, []))
+        drop = drop_facts(dropped.get(k, []))
         dropped_pence = {pence(p) for p in drop} if k == "prices" else set()
         miss = []
         for v in vals:

@@ -161,6 +161,14 @@ export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
     def('S2', 'Inverse seam on a band', { frame: 'band', heading: 'eyebrow' }),
     def('S3', 'Seam beside the section label', { columns: 2, heading: 'inline' }),
   ],
+  // THE THREE CHROME SHAPES ARE DECIDED. The breeder picked dial S2, sheet S2 and strip S2
+  // on the contact board (2026-09-19), and PageDial, SectionSheet and SectionStrip have been
+  // pruned to those arrangements — the losing markup and CSS are gone, and so are the
+  // components' `style` props. These entries STAY because the approved records name
+  // `styles: ["S1","S2","S3"]` on their chrome sections and `board_approve.py` matches a
+  // pick against that list: deleting them would make three approved records refuse to
+  // re-approve. They are a record of a decision taken, not a menu still open, and the
+  // preview route now renders the one shipped arrangement whichever id it is asked for.
   dial: [
     def('S1', 'Progress ring above a numbered list', { ring: 'shown', marks: 'number', list: 'stack' }),
     def('S2', 'Compact numbered strip, no ring', { ring: 'hidden', marks: 'number', list: 'rail' }),

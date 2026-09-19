@@ -109,6 +109,25 @@ WHITELIST_SNIPPETS = [
     "the health checks the communication and the home raised environment everything was top notch i wouldn t go anywhere else for a staffy",
 ]
 
+# Routes that render a SPECIMEN of another page's content rather than a page of their own.
+# `/board-preview/<slug>/` renders a board record's own sections three styles over, and
+# `/kit-preview/` renders every kit component against demo data — including the FAQ
+# accordion, which loads every row in data/faq.json. Both are noindex scaffolding and
+# neither competes for anything, so a passage shared with one is not duplicate content: it
+# is one passage rendered twice, once as the page and once as the specimen of it.
+#
+# Defined HERE rather than in pageboard.py because pageboard imports this module for its
+# chrome-skipping walker, and the dependency must not run both ways. pageboard's
+# `live_headings()` reads the same list.
+SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+
+
+def is_specimen(key):
+    """True for a specimen route's page key, at any depth. The prefix is anchored, so a real
+    slug that merely CONTAINS "kit-preview" further down its path is not caught."""
+    return (key + "/").startswith(SPECIMEN_PREFIXES)
+
+
 SKIP_TAGS = {"script", "style", "noscript", "header", "footer", "nav", "form"}
 VOID_TAGS = {"br", "img", "hr", "input", "meta", "link", "source", "track", "wbr", "area", "base", "col", "embed"}
 # chrome elements not wrapped in a semantic tag: jump rails, TOC card grids,
@@ -326,7 +345,8 @@ def main(argv=None):
     args = ns.slugs
     MIN_WORDS = ns.min_words
     dist = Path(ns.dist)
-    pages = {page_key(p, dist): p for p in dist.rglob("index.html")}
+    pages = {k: v for k, v in ((page_key(p, dist), p) for p in dist.rglob("index.html"))
+             if not is_specimen(k)}
     if args:
         pages = {k: v for k, v in pages.items() if k in args}
     base = {"mode": "headers" if ns.headers else "body", "dist": str(dist),
