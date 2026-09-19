@@ -3,7 +3,13 @@ import { crumbs } from '../lib/site';
 interface Props { path: string; title: string }
 const { path, title } = Astro.props;
 const trail = crumbs(path, title);
+// EVERY CRUMB LINK IS AT LEAST 24px TALL (`layout-tap-target-size`, blocking; WCAG 2.5.8).
+// A 14px link is a 17px box, and the check forgives a small target only while nothing else
+// sits within 24px of its centre. That exemption held while the legacy header left the trail
+// alone in its band; the kit header is a different height, and the moment a hub moved onto
+// it the four crumb links on those pages started failing. `display:inline-block` is what
+// makes the vertical padding count towards the box at all.
 ---
 {trail.length > 1 && <nav aria-label="Breadcrumb" class="container" style="font-size:14px;padding-top:12px"><ol style="display:flex;gap:8px;list-style:none;padding:0;margin:0;flex-wrap:wrap">
-  {trail.map((c, i) => <li>{i > 0 && <span aria-hidden="true">›</span>} {i === trail.length - 1 ? <span aria-current="page">{c.label}</span> : <a href={c.href}>{c.label}</a>}</li>)}
+  {trail.map((c, i) => <li>{i > 0 && <span aria-hidden="true">›</span>} {i === trail.length - 1 ? <span aria-current="page">{c.label}</span> : <a href={c.href} style="display:inline-block;padding-block:4px">{c.label}</a>}</li>)}
 </ol></nav>}

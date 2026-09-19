@@ -5,9 +5,10 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "astro dev",
+    "prebuild": "python3 scripts/generate_page_dates.py",
     "build": "astro build",
     "postbuild": "python3 scripts/generate_sitemaps.py && python3 scripts/build_search_index.py",
-    "build:release": "bash scripts/release_guard.sh && astro build && python3 scripts/generate_sitemaps.py && python3 scripts/build_search_index.py && npx -y pagefind --site dist",
+    "build:release": "bash scripts/release_guard.sh && python3 scripts/generate_page_dates.py && astro build && python3 scripts/generate_sitemaps.py && python3 scripts/build_search_index.py && npx -y pagefind --site dist",
     "preview": "astro preview",
     "extract": "python3 scripts/extract_wp.py",
     "bake": "python3 scripts/bake_images.py",

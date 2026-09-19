@@ -1,10 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageShell from '../../layouts/PageShell.astro';
 const posts = (await getCollection('blog')).sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
 ---
-<BaseLayout title="Blue Staffy Blog and Guides | Blue Staffy UK" description="Guides from Blue Staffy UK in Glasgow on choosing, buying and raising a Blue Staffordshire Bull Terrier puppy in the UK." canonical="/blog/" crumbTitle="Blog">
+<PageShell title="Blue Staffy Blog and Guides | Blue Staffy UK" description="Guides from Blue Staffy UK in Glasgow on choosing, buying and raising a Blue Staffordshire Bull Terrier puppy in the UK." canonical="/blog/" crumbTitle="Blog">
   <section class="container container-text"><h1>Blue Staffy Blog and Guides</h1>
     <ul style="list-style:none;padding:0;display:grid;gap:24px">{posts.map((p) => <li><h2 style="margin:0 0 4px"><a href={`/${p.data.slug}/`}>{p.data.title.split(' | ')[0]}</a></h2><p style="margin:0">{p.data.description}</p></li>)}</ul>
   </section>
-</BaseLayout>
+</PageShell>

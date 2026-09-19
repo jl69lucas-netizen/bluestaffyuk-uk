@@ -12,6 +12,7 @@ monkeypatched `git log` would test the plumbing while assuming away the thing th
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -186,3 +187,58 @@ def test_a_write_that_fails_leaves_the_previous_map_intact(repo, monkeypatch):
 def test_check_and_dry_run_are_mutually_exclusive(repo):
     with pytest.raises(SystemExit):
         G.main(["--check", "--dry-run"])
+
+
+# --- The map, wired into the build (project 4 task 3) -------------------------------------
+#
+# The tests above prove the map is derived honestly. These two prove the built site actually
+# USES it: a correct data/page-dates.json that no page reads is the same freshness lie it
+# was written to end, just harder to see.
+#
+# `selfDated` is the contract between the two halves. A migrated page carries its own
+# WebPage node with the dates from the old site inside its ported meta, so BaseLayout must
+# NOT add a second one — two dateModified values on one page is worse than none. Every other
+# page gets its node from the layout, and its date must be the git-derived one, to the day.
+
+REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
+DATE_MODIFIED = re.compile(r'"dateModified":\s*"(\d{4}-\d{2}-\d{2})')
+
+
+def _built_routes():
+    dist = REPO_ROOT / "dist"
+    if not dist.is_dir():
+        pytest.skip("no dist/ — run `npm run build` first")
+    out = {}
+    for html in sorted(dist.rglob("index.html")):
+        rel = html.parent.relative_to(dist).as_posix()
+        out["/" if rel == "." else f"/{rel}/"] = html
+    return out
+
+
+def test_every_built_page_the_map_dates_carries_that_exact_date_modified():
+    routes = json.loads((REPO_ROOT / "data/page-dates.json").read_text())["routes"]
+    wrong = []
+    for route, html in _built_routes().items():
+        row = routes.get(route)
+        if not row or row.get("selfDated"):
+            continue
+        found = DATE_MODIFIED.search(html.read_text(encoding="utf-8"))
+        if not found or found.group(1) != row["dateModified"]:
+            wrong.append(f"{route}: {found.group(1) if found else 'none'} != {row['dateModified']}")
+    assert not wrong, "pages whose dateModified is not the git-derived one: " + ", ".join(wrong)
+
+
+def test_every_built_page_carries_a_date_modified_of_some_kind():
+    """The pytest twin of `schema-date-modified-present` (blocking). A page the map dates and
+    the layout still ships undated is the exact hole the location pages fell through: the
+    generator marked all eleven `selfDated` because ONE row of data/locations.json carries a
+    date, and the rows that carry none shipped with nothing."""
+    undated = [route for route, html in _built_routes().items()
+               if not DATE_MODIFIED.search(html.read_text(encoding="utf-8"))]
+    assert not undated, "built pages with no dateModified in any JSON-LD block: " + ", ".join(undated)
+
+
+def test_no_built_page_carries_two_contradicting_date_modified_values():
+    for route, html in _built_routes().items():
+        found = set(DATE_MODIFIED.findall(html.read_text(encoding="utf-8")))
+        assert len(found) <= 1, f"{route} carries {sorted(found)}"

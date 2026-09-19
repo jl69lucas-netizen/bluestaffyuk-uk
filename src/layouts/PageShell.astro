@@ -1,0 +1,68 @@
+---
+// src/layouts/PageShell.astro — the kit shell every rebuilt page and every hub uses.
+//
+// It is BaseLayout (head, schema, sprite, breadcrumb, favicons, the measured header height)
+// with the two chrome slots filled by the kit: SiteHeaderKit above, SiteFooterKit below. The
+// head props pass straight through, so a page moving onto the kit changes its CHROME and
+// nothing else — the same title, description, canonical and schema it had before.
+//
+// THE DIAL IS OPT-IN AND THRESHOLDED. `sections` is what the page passes from its board
+// record (src/lib/sections.ts); a page that passes none — every hub, every puppy page — gets
+// no dial, no sheet and no bottom bar, which is the right answer for a page whose body is a
+// list rather than a long read. Below six sections the pair is noise on the page and a
+// second, shorter route to the same six links, so the threshold is six, in one place, here:
+// a page cannot mount the dial without the sheet or the sheet without the dial, and the two
+// are one component split by viewport width.
+import BaseLayout from './BaseLayout.astro';
+import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
+import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
+import PageDial from '../components/kit/PageDial.astro';
+import SectionSheet from '../components/kit/SectionSheet.astro';
+import type { SectionRef } from '../lib/sections';
+
+interface Props {
+  title: string;
+  description: string;
+  sections?: SectionRef[];
+  canonical?: string;
+  robots?: string;
+  noindex?: boolean;
+  ogType?: string;
+  ogImage?: string;
+  schema?: unknown[];
+  crumbTitle?: string;
+}
+const { sections = [], ...head } = Astro.props;
+const nav = sections.length >= 6;
+---
+<BaseLayout {...head}>
+  <SiteHeaderKit slot="header" />
+  <div class:list={['page-shell', { 'has-dial': nav }]}>
+    {nav && <PageDial sections={sections} />}
+    <div class="page-body"><slot /></div>
+  </div>
+  {nav && <SectionSheet sections={sections} />}
+  <SiteFooterKit slot="footer" />
+</BaseLayout>
+<style>
+  @layer components {
+    /* The shell adds NO width of its own until there is a dial to make room for. Every kit
+       section and every hub already owns its gutter (`container`), so a wrapper that also
+       set `max-width` and `padding-inline` would nest one container inside another and take
+       48px off the page for nothing. The only thing the shell is entitled to lay out is the
+       column pair, and that exists solely at the width the dial is visible at — the same
+       1024px breakpoint PageDial and SectionSheet split on. */
+    .page-body { min-width: 0; }
+    @media (min-width: 1024px) {
+      .page-shell.has-dial {
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-inline: var(--space-5);
+        display: grid;
+        grid-template-columns: 196px minmax(0, 1fr);
+        gap: var(--space-6);
+        align-items: start;
+      }
+    }
+  }
+</style>

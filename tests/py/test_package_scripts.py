@@ -50,6 +50,15 @@ def test_release_only_entries_sit_behind_the_guard():
     assert (ROOT / "scripts/release_guard.sh").is_file()
 
 
+def test_the_dates_map_is_regenerated_before_every_build():
+    """A committed map goes stale the moment a page is added or edited, and a stale map is a
+    WRONG `dateModified` on a real page rather than a missing one. `prebuild` is an npm
+    lifecycle hook, so it covers `npm run build` only — `build:release` calls `astro build`
+    directly and has to name the generator itself."""
+    assert SCRIPTS["prebuild"] == "python3 scripts/generate_page_dates.py"
+    assert "scripts/generate_page_dates.py" in SCRIPTS["build:release"]
+
+
 def test_the_check_all_chain_is_the_documented_one():
     expected = ["check:parity", "check:redirects", "check:schema", "check:sitemaps",
                 "check:placeholders", "check:markers", "agents"]
