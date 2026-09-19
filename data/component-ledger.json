@@ -1,56 +1,78 @@
 {
- "refresh_pools": [],
- "pools": {
-  "kit": [
-   "kit"
-  ]
- },
- "pages": {
-  "index": {
-   "hero": "",
-   "dial": "",
-   "rail": "",
-   "toc": "",
-   "table": "",
-   "faq": "",
-   "takeaway": [],
-   "h6_prefixes": []
+  "refresh_pools": [],
+  "pools": {
+    "hero": [
+      "hero-s1",
+      "hero-s2",
+      "hero-s3"
+    ],
+    "takeaways": [
+      "takeaways-s1",
+      "takeaways-s2",
+      "takeaways-s3"
+    ],
+    "faq": [
+      "faq-s1",
+      "faq-s2",
+      "faq-s3"
+    ],
+    "dial": [
+      "dial-s1",
+      "dial-s2",
+      "dial-s3"
+    ],
+    "rail": [
+      "rail-s1",
+      "rail-s2",
+      "rail-s3"
+    ],
+    "toc": [
+      "pagenav-c"
+    ],
+    "table": []
   },
-  "privacy-policy-uk": {
-   "hero": "kit",
-   "dial": "kit",
-   "rail": "",
-   "toc": "kit",
-   "table": "",
-   "faq": "kit",
-   "takeaway": [
-    "kit"
-   ],
-   "h6_prefixes": []
-  },
-  "thank-you-blue-staffy-puppies-journey": {
-   "hero": "kit",
-   "dial": "kit",
-   "rail": "",
-   "toc": "kit",
-   "table": "",
-   "faq": "kit",
-   "takeaway": [
-    "kit"
-   ],
-   "h6_prefixes": []
-  },
-  "uk-blue-staffy-breeders-contact": {
-   "hero": "kit",
-   "dial": "kit",
-   "rail": "",
-   "toc": "kit",
-   "table": "",
-   "faq": "kit",
-   "takeaway": [
-    "kit"
-   ],
-   "h6_prefixes": []
+  "pages": {
+    "index": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "",
+      "table": "",
+      "faq": "",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "privacy-policy-uk": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "thank-you-blue-staffy-puppies-journey": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "h6_prefixes": []
+    },
+    "uk-blue-staffy-breeders-contact": {
+      "hero": "hero-s1",
+      "dial": "dial-s2",
+      "rail": "rail-s3",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [],
+      "h6_prefixes": []
+    }
   }
- }
 }

@@ -446,6 +446,20 @@ def test_live_headings_skips_site_chrome_like_the_dup_gate():
         assert PB.live_headings(dist) == {"/p/": ["What Does a Blue Staffy Cost?"]}
 
 
+def test_live_headings_skips_the_specimen_routes():
+    """`/board-preview/<slug>/` and `/kit-preview/` render the SAME headings the board
+    proposes, three styles over. Counting them collides every board with its own preview
+    and reports a copied heading where there is one heading rendered three ways."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        dist = pathlib.Path(d)
+        for rel in ("board-preview/privacy-policy-uk", "board-preview/a/b", "kit-preview", "real"):
+            (dist / rel).mkdir(parents=True)
+            (dist / rel / "index.html").write_text(
+                "<html><body><h2>What information we collect</h2></body></html>", encoding="utf-8")
+        assert PB.live_headings(dist) == {"/real/": ["What information we collect"]}
+
+
 def test_header_precheck_excludes_the_page_being_rebuilt():
     live = {"/buy/": ["What Does a Blue Staffy Cost?"], "/other/": ["Where Do We Ship?"]}
     assert PB.header_precheck(["What Does a Blue Staffy Cost?"], live)[0]["kind"] == "exact"
@@ -804,14 +818,21 @@ def test_approve_writes_approval_ledger_and_promotions():
     out = BA.apply_approval(b, inbox, ont, ledger)
     # Picks and notes ARE hashed content, so the stamped hash is the record the breeder
     # saw WITH their choices in it — every field but record_hash is the inbox verbatim.
-    assert {k: v for k, v in out["board"]["approval"].items() if k != "record_hash"} == \
+    assert {k: v for k, v in out["board"]["approval"].items()
+            if k not in ("record_hash", "tuple_before")} == \
            {k: v for k, v in inbox.items() if k != "record_hash"}
+    # The authored tuple is stamped beside the hash so a re-run can undo the derivation.
+    assert out["board"]["approval"]["tuple_before"] == MIN_BOARD["tuple"]
     assert PB.approval_matches(out["board"]) is True
     assert out["board"]["meta"]["status"] == "approved"
     assert out["board"]["h1"]["pick"] == 2
     assert out["board"]["sections"][0]["options"]["pick"] == "avail-b"
     assert out["board"]["sections"][0]["options"]["note"] == "shorter eyebrow"
-    assert out["ledger"]["pages"]["hub-test"]["hero"] == "hero-a"
+    # The tuple is DERIVED from the picks now, not copied from the authored record: this
+    # board's one section is `puppies`, which is section content and not a tuple axis, so
+    # the authored `hero-a` is not carried and the hero axis records nothing.
+    assert out["ledger"]["pages"]["hub-test"]["hero"] == ""
+    assert out["ledger"]["pages"]["hub-test"]["toc"] == BA.FIXED_TOC
     auth = {e["id"]: e["authorization"] for e in out["ontology"]["entities"]}
     assert auth["ont:new-thing"] == "ASSERTED"          # referenced + sourced
     assert auth["ont:no-source"] == "PROPOSED"          # no source, never promoted
@@ -839,16 +860,31 @@ def test_approve_clears_a_note_with_an_empty_string():
     assert out["board"]["sections"][0]["options"]["note"] == ""
 
 
-def test_approve_refuses_an_unrenamed_refresh_placeholder_in_the_tuple():
+def test_ledger_refuses_an_unrenamed_refresh_placeholder_in_a_recorded_tuple():
+    """The guard lives on validate_ledger, which is what board_approve.py calls before it
+    writes. It is asserted here rather than through an approval because a DERIVED tuple can
+    no longer carry a `#refresh`: the id is built from a shape and a style pick, neither of
+    which can contain a `#`. An authored one is simply not carried any more."""
+    led = {"pools": {"hero": ["hero-a"]},
+           "pages": {"p": {"hero": "hero-a#refresh", "dial": "", "rail": "", "toc": "",
+                           "table": "", "faq": "", "takeaway": [], "h6_prefixes": []}}}
+    with pytest.raises(PB.BoardError) as e:
+        PB.validate_ledger(led)
+    assert "refresh" in str(e.value)
+
+
+def test_approve_drops_an_authored_refresh_placeholder_instead_of_recording_it():
     import board_approve as BA
     b = _hub_board()
     b["tuple"]["hero"] = "hero-a#refresh"
     inbox = {"approved_at": "t", "h1": 0, "picks": {"puppies": "avail-b"}, "notes": {},
              "canvas_version": None, "record_hash": PB.record_hash(b)}
-    with pytest.raises(PB.BoardError) as e:
-        BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)),
-                          {"pools": {"inventory": ["avail-b"]}, "pages": {}})
-    assert "refresh" in str(e.value)
+    out = BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)),
+                            {"pools": {"inventory": ["avail-b"]}, "pages": {}})
+    assert out["board"]["tuple"]["hero"] == ""
+    assert out["ledger"]["pages"]["hub-test"]["hero"] == ""
+    # ...but the authored value is still recoverable, so the derivation can be undone.
+    assert out["board"]["approval"]["tuple_before"]["hero"] == "hero-a#refresh"
 
 
 def test_approve_refuses_a_board_whose_signature_section_has_no_pick():
@@ -937,7 +973,7 @@ def test_approve_main_reads_a_wrapped_inbox_and_writes_all_three_files(tmp_path,
     BA.main()
     saved = PB.load_board("hub-test")
     assert saved["meta"]["status"] == "approved" and PB.approval_matches(saved) is True
-    assert PB.load_ledger()["pages"]["hub-test"]["hero"] == "hero-a"
+    assert PB.load_ledger()["pages"]["hub-test"]["toc"] == BA.FIXED_TOC   # the derived tuple landed
     assert {e["id"]: e["authorization"] for e in PB.load_ontology()["entities"]}["ont:new-thing"] == "ASSERTED"
 
 
@@ -1182,6 +1218,68 @@ def test_approve_twice_with_the_same_inbox_is_idempotent():
     assert second["board"]["sections"][0]["options"]["pick"] == "avail-b"
     assert second["board"]["sections"][0]["options"]["note"] == "shorter eyebrow"
     assert second["board"]["h1"]["pick"] == 2
+    assert PB.approval_matches(second["board"]) is True
+
+
+def _styled(shape, sid, pick):
+    s = json.loads(json.dumps(MIN_BOARD["sections"][0]))
+    s.update({"id": sid, "shape": shape, "styles": ["S1", "S2", "S3"]})
+    s["options"]["pick"] = pick
+    return s
+
+
+def test_derive_tuple_reads_each_axis_off_the_shape_that_feeds_it():
+    """One styled section per axis. `sheet` lands on `rail` (the ledger has no eighth
+    axis for the mobile sheet) and `toc` is the fixed kit page nav, picked by nobody."""
+    import board_approve as BA
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"] = [_styled("hero", "top", "S3"), _styled("faq", "questions", "S1"),
+                     _styled("takeaways", "keys", "S2"), _styled("dial", "desktop-dial", "S2"),
+                     _styled("sheet", "mobile-sections", "S3")]
+    t = BA.derive_tuple(b, MIN_BOARD["tuple"])
+    assert (t["hero"], t["faq"], t["dial"], t["rail"], t["toc"], t["table"]) == \
+           ("hero-s3", "faq-s1", "dial-s2", "rail-s3", "pagenav-c", "")
+    assert t["takeaway"] == ["takeaways-s2"]
+    # Authored, not derived: carried through untouched.
+    assert t["h6_prefixes"] == MIN_BOARD["tuple"]["h6_prefixes"]
+    assert t["newsletter"] == MIN_BOARD["tuple"]["newsletter"]
+
+
+def test_derive_tuple_ignores_the_shapes_that_are_section_content():
+    import board_approve as BA
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"] = [_styled(sh, sh, "S2") for sh in
+                     ("reviews", "puppies", "form", "trust", "stats", "divider")]
+    t = BA.derive_tuple(b, MIN_BOARD["tuple"])
+    assert [t[k] for k in BA.DERIVED_ID_AXES] == ["", "", "", "", ""]
+    assert t["takeaway"] == []
+
+
+def test_derive_tuple_gives_two_boards_that_picked_differently_different_tuples():
+    """The point of the change: `ledger-tuple-identical` fired between the first three
+    approved records because every one of them wore the authored "kit" sentinel."""
+    import board_approve as BA
+    a = json.loads(json.dumps(MIN_BOARD)); a["sections"] = [_styled("faq", "questions", "S1")]
+    c = json.loads(json.dumps(MIN_BOARD)); c["sections"] = [_styled("faq", "questions", "S3")]
+    assert BA.derive_tuple(a, MIN_BOARD["tuple"]) != BA.derive_tuple(c, MIN_BOARD["tuple"])
+
+
+def test_approve_twice_is_idempotent_when_the_outline_shipped_with_notes():
+    """The thank-you and contact records ship notes written by the OUTLINE author, which
+    the breeder's approval carried back unchanged. record_hash_bare() cleared them, so it
+    described a record that never existed and re-approving either was refused as a
+    post-approval edit — with the derived tuple in play, that refusal is permanent."""
+    import board_approve as BA
+    b = _hub_board()
+    b["sections"][0]["options"]["note"] = "written by the outline author"
+    ledger = {"pools": {"inventory": ["avail-b"]}, "pages": {}}
+    inbox = {"approved_at": "t", "h1": 2, "picks": {"puppies": "avail-b"},
+             "notes": {"puppies": "written by the outline author"}, "canvas_version": None,
+             "record_hash": PB.record_hash(b)}
+    first = BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)), ledger)
+    second = BA.apply_approval(first["board"], inbox, json.loads(json.dumps(ONT_PROMOTE)), ledger)
+    assert PB.record_hash(second["board"]) == PB.record_hash(first["board"])
+    assert second["board"]["tuple"] == first["board"]["tuple"]
     assert PB.approval_matches(second["board"]) is True
 
 

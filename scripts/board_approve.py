@@ -107,6 +107,67 @@ def spent_prefixes(board):
     return out
 
 
+# --- the tuple the picks imply -------------------------------------------------------
+#
+# Before this change the tuple was hand-authored, and the outline writer put the sentinel
+# "kit" on every axis of every record — so the first three approved boards wore an
+# IDENTICAL tuple and `ledger-tuple-identical` fired between each pair, although their
+# style picks differed. The tuple is not authored any more: the seven component axes are
+# READ OFF the approved picks, so the combo the ledger polices is the combo the breeder
+# actually chose.
+#
+# A styled section contributes to the axis its SHAPE names. The style id is lowercased
+# because a ledger component id is `^[a-z0-9-]+(#[a-z0-9-]+)?$`
+# (schemas/component-ledger.schema.json) and the board spells its styles "S1".."S3".
+SHAPE_TUPLE_AXIS = {"hero": "hero", "faq": "faq", "dial": "dial", "sheet": "rail"}
+# The mobile section sheet reuses the `rail` axis: both are the page's secondary
+# navigation chrome, and the ledger has no eighth axis to give it.
+SHAPE_TUPLE_SET = {"takeaways": "takeaway"}          # the one axis that holds a set
+# `toc` is not a picked section on any board: every rebuilt page mounts the one kit page
+# nav, so the axis records that fixed component instead of a sentinel.
+FIXED_TOC = "pagenav-c"
+# Shapes that render SECTION content rather than a page-level shell. They are deliberately
+# not tuple axes — the ledger asks how a page's chrome is combined, and a review mode or a
+# puppy grid is not chrome. `table` stays an axis with no shape feeding it: no board offers
+# a table section yet, and the axis is kept so one can be added without a schema change.
+NON_TUPLE_SHAPES = {"standard", "reviews", "puppies", "form", "trust", "stats", "divider"}
+DERIVED_ID_AXES = ("hero", "dial", "rail", "table", "faq")
+
+
+# A component id is normally `<shape>-<style>`. `sheet` is the exception: it is recorded
+# on the `rail` axis, and an id that named the shape would put `sheet-s3` in a pool called
+# `rail` — two names for one component, which is the confusion the ledger exists to avoid.
+SHAPE_ID_PREFIX = {"sheet": "rail"}
+
+
+def component_id(shape, pick):
+    """The ledger component id a (shape, style pick) pair names."""
+    return f"{SHAPE_ID_PREFIX.get(shape, shape)}-{pick}".lower()
+
+
+def derive_tuple(board, base):
+    """The tuple `board`'s picks imply, laid over `base` (the tuple as the author wrote it).
+
+    Only the seven component axes move. `stepper`, `newsletter` and the declared
+    `h6_prefixes` are authored content and are carried through untouched."""
+    t = json.loads(json.dumps(base))
+    for key in DERIVED_ID_AXES:
+        t[key] = ""
+    t["takeaway"] = []
+    t["toc"] = FIXED_TOC
+    for s in board["sections"]:
+        shape, pick = s["shape"], s["options"].get("pick")
+        if not pick or shape in NON_TUPLE_SHAPES:
+            continue
+        if shape in SHAPE_TUPLE_AXIS:
+            t[SHAPE_TUPLE_AXIS[shape]] = component_id(shape, pick)
+        elif shape in SHAPE_TUPLE_SET:
+            cid = component_id(shape, pick)
+            if cid not in t[SHAPE_TUPLE_SET[shape]]:
+                t[SHAPE_TUPLE_SET[shape]].append(cid)
+    return t
+
+
 def ledger_entry(board):
     """The row this page takes in data/component-ledger.json — the same eight keys every
     existing page carries, never a bare copy of the tuple (which would record the DECLARED
@@ -126,7 +187,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     # picks/notes/h1 into it: applying one approval twice (a rerun, a retry after a failed
     # write) is idempotent, while a heading edited after the fact moves BOTH hashes and is
     # still refused.
-    if inbox.get("record_hash") not in (PB.record_hash(board), PB.record_hash_bare(board)):
+    if inbox.get("record_hash") not in PB.pre_approval_hashes(board):
         raise PB.BoardError(
             "approval hash does not match the record — the record changed after the board was approved")
     b = json.loads(json.dumps(board))
@@ -174,7 +235,18 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
         raise PB.BoardError(f"no component pick for signature section(s): {', '.join(missing)}")
 
     changed = writeback_text(b, canvas_dir) if canvas_dir else []
+
+    # The tuple is derived from the picks above. `tuple_before` carries the authored tuple
+    # forward in the approval so a RE-RUN can undo the derivation before it hashes: without
+    # it the second run would hash a record whose tuple the first run had already rewritten,
+    # and the inbox's hash — taken against the record as the breeder saw it — would never
+    # match again. On a re-run the base comes from the stamp, not from the rewritten tuple.
+    prior = board.get("approval") or {}
+    tuple_before = prior.get("tuple_before") or json.loads(json.dumps(board["tuple"]))
+    b["tuple"] = derive_tuple(b, tuple_before)
+
     approval = dict(inbox)
+    approval["tuple_before"] = tuple_before
     # Picks, notes and the H1 index are hashed CONTENT, and so are the canvas tweaks above,
     # so the stamped hash is the record with the breeder's choices in it — which is exactly
     # the record the gate will hash when it asks whether this page is still approved.

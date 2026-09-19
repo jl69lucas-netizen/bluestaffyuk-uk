@@ -267,24 +267,50 @@ def record_hash(board):
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 
 
-def record_hash_bare(board):
+def record_hash_bare(board, clear_notes=True):
     """The hash the record carried BEFORE an approval wrote the breeder's choices into it:
     every `sections[].options.pick` back to null, every `.note` back to "", `h1.pick` back
-    to null. board_approve.py accepts an inbox that matches EITHER this or the record as it
-    stands, so re-running one approval twice is idempotent instead of reading as a
-    post-approval edit. Nothing else is reset: a heading the breeder changed after the fact
-    moves both hashes, which is exactly the edit the approval gate exists to catch."""
+    to null. board_approve.py accepts an inbox that matches this, the same with the notes
+    left alone, or the record as it stands, so re-running one approval twice is idempotent
+    instead of reading as a post-approval edit. Nothing else is reset: a heading the breeder
+    changed after the fact moves every hash, which is the edit the gate exists to catch.
+
+    `clear_notes=False` is the second reading, and it is not optional dressing: an outline
+    may SHIP with notes (the thank-you and contact records do — the note explaining which
+    review fills the single slot was written by the outline author, not the breeder), and
+    an approval that carries those notes back unchanged left them exactly as it found them.
+    Clearing them invents a record that never existed, and re-approving either of those two
+    records was refused as a post-approval edit because of it."""
     b = json.loads(json.dumps(board))
+    # The tuple is one of those choices from project 4 on: board_approve.py reads the seven
+    # component axes off the picks. It stamps the authored tuple into `approval.tuple_before`
+    # so the derivation can be undone here — restoring it is what keeps re-approving an
+    # already-approved record idempotent. A record whose approval predates the stamp has no
+    # derived tuple to undo, so the tuple it carries IS the authored one.
+    prior = b.get("approval")
+    if isinstance(prior, dict) and isinstance(prior.get("tuple_before"), dict):
+        b["tuple"] = prior["tuple_before"]
     for s in b.get("sections", []):
         if isinstance(s.get("options"), dict):
             s["options"]["pick"] = None
-            s["options"]["note"] = ""
+            if clear_notes:
+                s["options"]["note"] = ""
     if isinstance(b.get("h1"), dict):
         b["h1"]["pick"] = None
     ms = b.get("meta_set")
     if isinstance(ms, dict) and isinstance(ms.get("pick"), dict):
         ms["pick"] = {"title": None, "description": None}
     return record_hash(b)
+
+
+def pre_approval_hashes(board):
+    """Every hash an approval of THIS record may legitimately carry: the record as it
+    stands (an approval already applied), and the two readings of the record as it stood
+    before one was — notes cleared, and notes left as the outline author wrote them.
+    One source of truth for board_approve.py's acceptance test and its tests."""
+    return {record_hash(board),
+            record_hash_bare(board, clear_notes=True),
+            record_hash_bare(board, clear_notes=False)}
 
 
 def approval_matches(board):
@@ -566,11 +592,31 @@ def page_headings(path):
     return p.headings
 
 
+# Routes that render a SPECIMEN of another page rather than a page of their own.
+# `/board-preview/<slug>/` renders the board record's own headings three styles over, and
+# `/kit-preview/` renders the kit's components with their demo headings. Both are noindex
+# scaffolding. Left in the corpus they make every board collide with its own preview —
+# 31 of the 33 FAILs on the first three approved records — and report a copied heading
+# where there is one heading rendered three ways.
+SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+
+
+def _is_specimen(rel):
+    """True for the specimen routes' pages, at any depth. `rel` is the dist-relative
+    directory ("." for the homepage), so a real page whose slug merely CONTAINS
+    "kit-preview" further down its path is not caught — the prefix is anchored."""
+    r = ("" if rel == "." else rel) + "/"
+    return r.startswith(SPECIMEN_PREFIXES)
+
+
 def live_headings(dist=DIST):
-    """{page: [heading text, ...]} from every built page. Empty when dist/ is absent."""
+    """{page: [heading text, ...]} from every built page, minus the specimen routes.
+    Empty when dist/ is absent."""
     out = {}
     for page in sorted(pathlib.Path(dist).glob("**/index.html")):
         rel = page.parent.relative_to(dist).as_posix()
+        if _is_specimen(rel):
+            continue
         out["/" if rel == "." else "/" + rel + "/"] = page_headings(page)
     return out
 

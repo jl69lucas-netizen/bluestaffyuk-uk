@@ -800,15 +800,13 @@
     }
   ],
   "tuple": {
-    "hero": "kit",
-    "dial": "kit",
+    "hero": "hero-s3",
+    "dial": "",
     "rail": "",
-    "toc": "kit",
-    "takeaway": [
-      "kit"
-    ],
+    "toc": "pagenav-c",
+    "takeaway": [],
     "table": "",
-    "faq": "kit",
+    "faq": "faq-s1",
     "stepper": "",
     "newsletter": {
       "after": "",
@@ -860,6 +858,25 @@
       "opening": "S3",
       "questions": "S1"
     },
-    "record_hash": "7524cc3005f1cb3062e0f7b86e9215e03302e94b08988381e965890f4eb281b2"
+    "record_hash": "df9a0ff96bfd908a95619855643e40eddc810179d5bcaf80331081bac8102cba",
+    "tuple_before": {
+      "hero": "kit",
+      "dial": "kit",
+      "rail": "",
+      "toc": "kit",
+      "takeaway": [
+        "kit"
+      ],
+      "table": "",
+      "faq": "kit",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Privacy Note:"
+      ]
+    }
   }
 }

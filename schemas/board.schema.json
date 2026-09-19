@@ -214,7 +214,9 @@
         "picks": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"}, "additionalProperties": {"type": "string"}},
         "notes": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"}, "additionalProperties": {"type": "string"}},
         "canvas_version": {"type": ["string", "null"]},
-        "record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        "record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "tuple_before": {"$ref": "#/properties/tuple",
+                         "description": "the tuple as the author wrote it, before board_approve.py derived the seven component axes from the picks; restoring it is what keeps re-approving an already-approved record idempotent"}
       }
     }
   }

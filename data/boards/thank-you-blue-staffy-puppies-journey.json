@@ -637,15 +637,15 @@
     }
   ],
   "tuple": {
-    "hero": "kit",
-    "dial": "kit",
+    "hero": "hero-s3",
+    "dial": "",
     "rail": "",
-    "toc": "kit",
+    "toc": "pagenav-c",
     "takeaway": [
-      "kit"
+      "takeaways-s3"
     ],
     "table": "",
-    "faq": "kit",
+    "faq": "faq-s3",
     "stepper": "",
     "newsletter": {
       "after": "",
@@ -692,6 +692,25 @@
       "questions": "S3",
       "welcome": "S3"
     },
-    "record_hash": "e439270f3bcad112e5c453f0476b53a75deeb9f315c5d8224598af5734591781"
+    "record_hash": "7b41d2d861bbf6d6b130dd9ec8bfa7c8498008f141010a5b474a016f72499caa",
+    "tuple_before": {
+      "hero": "kit",
+      "dial": "kit",
+      "rail": "",
+      "toc": "kit",
+      "takeaway": [
+        "kit"
+      ],
+      "table": "",
+      "faq": "kit",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Next step:"
+      ]
+    }
   }
 }

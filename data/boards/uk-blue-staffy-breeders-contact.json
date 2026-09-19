@@ -775,15 +775,13 @@
     }
   ],
   "tuple": {
-    "hero": "kit",
-    "dial": "kit",
-    "rail": "",
-    "toc": "kit",
-    "takeaway": [
-      "kit"
-    ],
+    "hero": "hero-s1",
+    "dial": "dial-s2",
+    "rail": "rail-s3",
+    "toc": "pagenav-c",
+    "takeaway": [],
     "table": "",
-    "faq": "kit",
+    "faq": "faq-s1",
     "stepper": "",
     "newsletter": {
       "after": "",
@@ -842,6 +840,25 @@
       "top": "S1",
       "why-write": "S1"
     },
-    "record_hash": "00d7157e1caa50550902ba4f789d9300dd60a2b0a26a7a5a42241988f93a2459"
+    "record_hash": "949424a061c64c3ced5fb842ac10932e8b27339fe53a10266fff22453483a1cb",
+    "tuple_before": {
+      "hero": "kit",
+      "dial": "kit",
+      "rail": "",
+      "toc": "kit",
+      "takeaway": [
+        "kit"
+      ],
+      "table": "",
+      "faq": "kit",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "What to send:"
+      ]
+    }
   }
 }
