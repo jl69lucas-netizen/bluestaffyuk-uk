@@ -17,12 +17,42 @@
 // There are no per-component branches: the page walks components.json, looks each id up in
 // REGISTRY and renders one copy per demo fixture. BaseLayout already renders the page's
 // <main>, so this is a <div>.
+//
+// IT IS ALSO A TARGET PAGE (Task 21). The render harness runs all nine invariant families
+// over it under the page type `preview`, because it is the only built page carrying the
+// kit: the three checks that used to be deferred — the counter strip's separation, an H3
+// that owns its image, the statement label — have real nodes to judge here and nowhere
+// else until project 4 mounts the kit on the real pages. A blocking row on this page is a
+// defect in the kit, not a number to baseline.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import componentsJson from '../../../data/design/components.json';
+import { Image } from 'astro:assets';
 import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
 import Mark from '../../components/kit/Mark.astro';
+import specimen from '../../assets/puppies/Ince1.jpg';
+import pageDates from '../../../data/page-dates.json';
 const components = componentsJson as ComponentRow[];
 const title = 'Kit preview — BlueStaffyUK (project 3)';
+// FRESHNESS LIVES IN SCHEMA AND ONLY THERE (`schema-date-modified-present`, blocking). Every
+// other page carries a WebPage node with its dates inside its ported meta; this page is
+// authored in src/, so it names its own — from data/page-dates.json, which
+// scripts/generate_page_dates.py derives from real git history (`npm run dates`). Never
+// `new Date()`: a build-time stamp tells a crawler every page changed today, every day,
+// which is the visible-date dishonesty moved into JSON-LD. A missing route throws rather
+// than shipping a page with no date, because the alternative is a silent blocking defect.
+const ROUTE = '/kit-preview/';
+const dates = (pageDates.routes as Record<string, { datePublished: string; dateModified: string }>)[ROUTE];
+if (!dates) throw new Error(`data/page-dates.json has no entry for ${ROUTE} — run: npm run dates`);
+const schema = [{
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': `${ROUTE}#webpage`,
+  url: ROUTE,
+  name: title,
+  datePublished: dates.datePublished,
+  dateModified: dates.dateModified,
+  inLanguage: 'en-GB',
+}];
 const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
 // The demo box. `wrap` is the only thing that varies it, and it varies by ENTRY, not by id,
 // so this stays a lookup rather than becoming a per-component branch: 'sticky' gives a
@@ -38,7 +68,7 @@ const demoStyle = (wrap?: 'sticky' | 'after-band') =>
       ? 'display:block'
       : 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
 ---
-<BaseLayout title={title} description="Internal kit preview; not indexed." noindex={true}>
+<BaseLayout title={title} description="Internal kit preview; not indexed." noindex={true} schema={schema}>
   <div class="container" style="padding-block: var(--space-8);">
     <h1 style="font-family: var(--font-display);">Kit preview</h1>
     <!-- The mark is not a components.json row and has no artboard: it is shown here on both
@@ -61,8 +91,11 @@ const demoStyle = (wrap?: 'sticky' | 'after-band') =>
       // REGISTRY is a full Record<ComponentId, KitEntry>, so every row resolves — a missing
       // id is a type error in _registry.ts rather than a section quietly not rendered.
       const { C, demo = [{}], wrap } = REGISTRY[c.id];
+      // `id` so the page has anchors to be linked TO: the PageNav demo names four of them,
+      // and `nav-anchors-resolve` is blocking. Prefixed, because a component is free to use
+      // its own bare id inside itself.
       return (
-        <section data-component={c.id} data-width={c.board_width} class="kit-section">
+        <section id={`kit-${c.id}`} data-component={c.id} data-width={c.board_width} class="kit-section">
           <h3 style={h3}>{c.title}</h3>
           <div style={demoStyle(wrap)}>
             {wrap === 'after-band' && <div data-surface="inverse" style="height:80px"></div>}
@@ -71,5 +104,63 @@ const demoStyle = (wrap?: 'sticky' | 'after-band') =>
         </section>
       );
     })}
+
+    {/* THE CONVENTION SPECIMEN (Task 21). Not a components.json row, not an artboard: it
+        carries no `data-component`, so the measurer and scripts/build_design_canvas.py both
+        skip it. It is here because `layout-h3-image-first` needs an H3 that OWNS a
+        `.sec-img`, and the picked InfoCard does not have one — the image-top treatment was
+        among the five the prune dropped. This is the only built instance of the convention
+        until project 4 re-authors the page bodies, and without it the check examines zero
+        nodes everywhere and has to stay deferred instead of being promoted. */}
+    <section class="kit-section specimen">
+      <h3 style={h3}>Convention Specimen — an H3 That Owns Its Image</h3>
+      <Image
+        src={specimen}
+        alt="A blue Staffordshire Bull Terrier puppy standing on a lawn"
+        widths={[480, 800]}
+        sizes="(max-width: 900px) 100vw, 640px"
+        class="sec-img"
+        loading="lazy"
+        decoding="async"
+      />
+      <p class="prose">The sectional image sits between the heading and this paragraph, so
+      the reader meets the subject before the argument. That is the whole of the rule, and
+      it is the shape project 4 gives every H3 block it re-authors.</p>
+    </section>
   </div>
 </BaseLayout>
+<style>
+  /* The two convention classes, so the specimen is a rendered instance rather than two bare
+     class names: `css-class-resolves` counts a class no rule matches as a defect, and it is
+     right to — a convention nothing paints is a convention nobody is following. */
+  .specimen .sec-img { display: block; width: 100%; max-width: 640px; height: auto; margin-block: var(--space-4); border-radius: var(--card-radius); }
+  .specimen .prose { max-width: 66ch; }
+  .kit-section { margin-block: var(--space-8); }
+</style>
+<style is:global>
+  /* `is:global` deliberately: these rules reach INTO the mounted components, and a scoped
+     rule would be rewritten to match only elements this file authors — the demo box's
+     children are other components' root elements.
+
+     A flex item's automatic minimum size is its MAX-CONTENT width. So the three-up
+     Testimonial dropped into the demo row refused to shrink, held its 816px of grid tracks
+     at a 375px viewport, and pushed the whole document 465px sideways —
+     `layout-no-horizontal-overflow`, which is blocking, and rightly so. The defect is the
+     PREVIEW'S BOX, not the component: on a real page that same section is a block in
+     normal flow and its `auto-fit` grid wraps on its own. `min-width: 0` gives the demo
+     the width it is actually given. */
+  .kit-section > div > * { min-width: 0; max-width: 100%; }
+
+  /* THE SPECIMEN HEADER DOES NOT STICK. A page has one set of top chrome; this one was
+     mounting a second `position: sticky` site header as a board, and the harness's chrome
+     probe — which grows a band downwards from the viewport top through whatever full-width
+     sticky elements are pinned there — absorbed it. The band then measured 75px at 375,
+     116px at 1280 and 259px at 768 (where the specimen bar wraps to three rows), so no
+     single `scroll-margin-top` could land an anchor inside it and `nav-jump-target-lands`
+     failed as blocking. Nothing about that is the header component's fault, and nothing
+     about it is visible to a reader: the board box is `position: relative` and 220px tall,
+     so the bar has nowhere to stick to anyway. Making it static on THIS page leaves one
+     piece of chrome, which is what `--hdr-measured` and the global scroll-margin assume.
+     The board keeps its own height, so the artboard still captures the whole bar. */
+  .kit-section .kit-hdr { position: static; }
+</style>

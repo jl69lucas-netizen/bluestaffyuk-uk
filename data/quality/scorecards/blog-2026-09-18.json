@@ -1,0 +1,110 @@
+{
+  "slug": "blog",
+  "date": "2026-09-18",
+  "page_type": "hub",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 183,
+    "layout-tap-target-size": 129,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 0,
+    "img-alt-present-and-unique": 0,
+    "nav-anchors-resolve": 3,
+    "nav-jump-target-lands": 3,
+    "sem-heading-order": 6,
+    "sem-all-six-levels": 6,
+    "sem-title-case-headings": 6,
+    "sem-section-opening-paragraph": 6,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 9,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 45,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 177,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "SEM": 6,
+    "SCHEMA": 3
+  },
+  "instances": {
+    "SEM": 15,
+    "SCHEMA": 3
+  },
+  "total": 9,
+  "total_instances": 18,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:1 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"Blue Staffy Blog and Guides\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:1 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"Blue Staffy Blog and Guides\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 4,
+      "message": "heading level(s) absent: H3, H4, H5, H6 — inventory H1:1 H2:1 H3:0 H4:0 H5:0 H6:0"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-section-opening-paragraph",
+      "count": 1,
+      "message": "1 heading(s) with no opening paragraph: H1→H2 \"Blue Staffy Blog and Guides\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "schema-date-modified-present",
+      "count": 1,
+      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+    }
+  ]
+}

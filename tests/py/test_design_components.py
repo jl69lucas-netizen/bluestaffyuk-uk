@@ -447,7 +447,14 @@ def test_built_info_card_carries_a_kinded_statement_label():
     assert "sec-img" not in inner
 
 
-QUOTE_BLOCK_RE = re.compile(r'<section class="kit-quote([^"]*)"([^>]*)>(.*?)</section>', re.S)
+# Attribute ORDER is Astro's business, not this test's: the day the preview page grew a
+# <style> block, Astro began propagating its scope attribute onto the mounted components'
+# roots, `class` stopped being the first attribute on the section, and a pattern anchored to
+# `<section class="kit-quote` found nothing — reporting "the preview builds no testimonial"
+# for a page that builds two. Match the tag, then the class token inside it.
+QUOTE_BLOCK_RE = re.compile(
+    r'<section\b([^>]*\bclass="[^"]*\bkit-quote\b[^"]*"[^>]*)>(.*?)</section>', re.S
+)
 
 
 def _quote_blocks():
@@ -459,7 +466,7 @@ def _quote_blocks():
     if not DIST_ROUTE.exists():
         pytest.skip("run npm run build first")
     out = {}
-    for _cls, attrs, inner in QUOTE_BLOCK_RE.findall(DIST_ROUTE.read_text()):
+    for attrs, inner in QUOTE_BLOCK_RE.findall(DIST_ROUTE.read_text()):
         m = re.search(r'data-mode="(\w+)"', attrs)
         out[m.group(1) if m else "?"] = attrs + inner
     return out
@@ -632,15 +639,19 @@ def test_built_page_nav_carries_the_real_trail_and_the_chip_row():
     item is a link is the defect this catches. Second the jump list, which the picked
     treatment paints as a row of chips with no heading over it."""
     inner = _sections("page-nav")
-    labels = ["Temperament", "Health", "Exercise", "Cost"]
+    # The demo's four sections name kit-preview's OWN section anchors, because
+    # `nav-anchors-resolve` is blocking and a preview does not get a pass for linking to
+    # #temperament on a page that has no such element (Task 21).
+    jumps = [("kit-hero", "Hero"), ("kit-puppy-card", "Puppy Card"),
+             ("kit-faq", "FAQ"), ("kit-footer", "Footer")]
     assert 'aria-label="Breadcrumb"' in inner
     assert 'href="/"' in inner and ">Home<" in inner
     # The leaf is the page, not a link: crumbs() puts the title last.
     assert 'aria-current="page"' in inner
     assert "Staffordshire Bull Terrier guide" in inner
     assert 'aria-label="On this page"' in inner
-    for label in labels:
-        assert f'#{label.lower()}"' in inner, label
+    for anchor, label in jumps:
+        assert f'#{anchor}"' in inner, anchor
         assert label in inner, label
     # No visible heading over the chips, and no glyph in them: those belonged to the
     # treatments the prune did not keep.

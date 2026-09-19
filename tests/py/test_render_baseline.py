@@ -16,7 +16,10 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/render_baseline.py"
 REAL_SCORECARDS = ROOT / "data/quality/scorecards"
-REAL_REPORT = ROOT / "docs/reports/render-baseline-project2.md"
+# The LIVE baseline — the one the script defaults to and `npm run baseline` checks. Project
+# 2's report is a published record of the 2026-09-17 run and is never regenerated, so it is
+# not what "the committed report matches the real scorecards" can mean any more.
+REAL_REPORT = ROOT / "docs/reports/render-baseline-project3.md"
 START = "<!-- generated:start -->"
 END = "<!-- generated:end -->"
 

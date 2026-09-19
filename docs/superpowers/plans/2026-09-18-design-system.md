@@ -2274,7 +2274,21 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Files:**
 - Modify: `tests/render/targets.json` (`deferred_checks`), `src/pages/index.astro` (mount `CounterStrip` and `SectionDivider` below the migrated hero — the only shell change to a page in project 3), `docs/reports/render-baseline-project3.md`
 
-- [ ] **Step 1: Give the checks nodes to examine**
+> **SUPERSEDED, 2026-09-19 — spec §11 amendment 6.** Step 1 below is NOT what was done, and
+> `src/pages/index.astro` was not touched. Project 4 mounts the kit on the real pages at its
+> build 4; doing three components of that early, on the homepage, purely so three checks have
+> nodes to examine, is project 4's work in the most expensive place to get it wrong. The page
+> that carries the conventions is **`src/pages/kit-preview/`**, which already renders all
+> thirteen components once each. It is added to `tests/render/targets.json` as a target with a
+> new `page_type: "preview"` wired to all nine families and `corpus: false`, and it gains ONE
+> extra section — an `<h3>` owning an `<Image class="sec-img">` above a `<p class="prose">` —
+> because the picked InfoCard carries no `.sec-img` and `layout-h3-image-first` needs one.
+> Steps 2 to 4 stand as written. Measuring the preview for the first time found four real
+> defects in it (dead PageNav demo anchors, no `dateModified`, a flex-item overflow at 375, a
+> second sticky header inflating the chrome band); all four were fixed, and kit-preview
+> reports zero blocking rows at all three viewports.
+
+- [ ] ~~**Step 1: Give the checks nodes to examine**~~ *(superseded — see the note above)*
 
 The three checks need a built page that carries the convention. In `src/pages/index.astro`, immediately after the existing hero block, insert `<CounterStrip />` and after the first migrated `<section>` insert `<SectionDivider />` (imports from `../components/kit/`). Also add one `<InfoCard label="Health" title="What a health-tested litter means" body="…" />` (with `.stmt-label` and, if the picked InfoCard variant is `d`, the `.sec-img`) at the end of the homepage main. If the picked InfoCard is not `d`, add a `sec-img`-carrying `<figure>` under the first migrated H3 on `src/pages/blue-staffy-health-uk/index.astro` instead, using an existing image from that page. This adds components, not copy: parity must still pass (words unchanged; `migration_parity.py` scopes to `article.prose-migrated`).
 

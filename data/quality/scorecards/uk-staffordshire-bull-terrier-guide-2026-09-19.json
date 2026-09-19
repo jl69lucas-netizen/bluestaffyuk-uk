@@ -1,0 +1,150 @@
+{
+  "slug": "uk-staffordshire-bull-terrier-guide",
+  "date": "2026-09-19",
+  "page_type": "interior",
+  "run": "first",
+  "harness_version": "2.0.0",
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "examined": {
+    "pages": 1,
+    "checks": 25
+  },
+  "examined_by_check": {
+    "layout-no-horizontal-overflow": 3,
+    "layout-min-font-size": 1773,
+    "layout-tap-target-size": 186,
+    "layout-hero-counter-separation": 0,
+    "layout-h3-image-first": 0,
+    "layout-image-box-reserved": 0,
+    "img-srcset-within-2x": 30,
+    "img-alt-present-and-unique": 30,
+    "nav-anchors-resolve": 6,
+    "nav-jump-target-lands": 6,
+    "sem-heading-order": 216,
+    "sem-all-six-levels": 216,
+    "sem-title-case-headings": 216,
+    "sem-section-opening-paragraph": 216,
+    "sem-statement-label-visible": 0,
+    "schema-single-product-offer": 0,
+    "schema-sold-not-instock": 0,
+    "schema-date-modified-present": 15,
+    "schema-no-visible-date": 3,
+    "css-class-resolves": 4734,
+    "css-no-dead-component-rule": 45,
+    "css-component-color-not-overridden": 0,
+    "dup-no-sibling-crossover": 150,
+    "a11y-text-contrast-aa": 1380,
+    "form-inquiry-contract": 0
+  },
+  "defects": {
+    "NAV": 3,
+    "SEM": 6,
+    "CSS": 3,
+    "DUP": 3
+  },
+  "instances": {
+    "NAV": 3,
+    "SEM": 42,
+    "CSS": 897,
+    "DUP": 12
+  },
+  "total": 15,
+  "total_instances": 954,
+  "overrides": [],
+  "details": [
+    {
+      "viewport": 1280,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-sales@4748px"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-all-six-levels",
+      "count": 1,
+      "message": "below the 5-per-level floor: H6=4"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "sem-title-case-headings",
+      "count": 13,
+      "message": "13 heading(s) not in Title Case: H3 \"aspects\" in \"Key aspects of their personality include:\" | H3 \"with\" in \"Compatibility with Children\" | H3 \"with\" in \"Compatibility with Other Pets\" | H4 \"month)\" in \"Ongoing Monthly/Annual Costs (£80 – £150+ per \" | H3 \"with\" in \"Excellent with Kids\" | H3 \"weeks\" in \"Puppy Stage (8 weeks – 12 months)\" | H2 \"years)\" in \"Adult Stage (1 – 7 years)\" | H2 \"years)\" in \"Senior Stage (8+ years)\""
+    },
+    {
+      "viewport": 1280,
+      "checkId": "css-class-resolves",
+      "count": 299,
+      "message": "299 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x93, uagb-infobox__content-wrap x93, uagb-ifb-content x93, uagb-ifb-title-wrap x93, uagb-ifb-desc x82, uagb-ifb-title x70, wp-block-uagb-container x69, uagb-infobox-image-valign-top x66, uagb-infobox-icon-above-title x56, uagb-infobox-icon-left-title x37, uagb-infobox-left x37, uagb-ifb-left-title-image x37"
+    },
+    {
+      "viewport": 1280,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #Staffy-sales@3348px"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-all-six-levels",
+      "count": 1,
+      "message": "below the 5-per-level floor: H6=4"
+    },
+    {
+      "viewport": 375,
+      "checkId": "sem-title-case-headings",
+      "count": 13,
+      "message": "13 heading(s) not in Title Case: H3 \"aspects\" in \"Key aspects of their personality include:\" | H3 \"with\" in \"Compatibility with Children\" | H3 \"with\" in \"Compatibility with Other Pets\" | H4 \"month)\" in \"Ongoing Monthly/Annual Costs (£80 – £150+ per \" | H3 \"with\" in \"Excellent with Kids\" | H3 \"weeks\" in \"Puppy Stage (8 weeks – 12 months)\" | H2 \"years)\" in \"Adult Stage (1 – 7 years)\" | H2 \"years)\" in \"Senior Stage (8+ years)\""
+    },
+    {
+      "viewport": 375,
+      "checkId": "css-class-resolves",
+      "count": 299,
+      "message": "299 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x93, uagb-infobox__content-wrap x93, uagb-ifb-content x93, uagb-ifb-title-wrap x93, uagb-ifb-desc x82, uagb-ifb-title x70, wp-block-uagb-container x69, uagb-infobox-image-valign-top x66, uagb-infobox-icon-above-title x56, uagb-infobox-icon-left-title x37, uagb-infobox-left x37, uagb-ifb-left-title-image x37"
+    },
+    {
+      "viewport": 375,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "nav-jump-target-lands",
+      "count": 1,
+      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-sales@4750px"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-all-six-levels",
+      "count": 1,
+      "message": "below the 5-per-level floor: H6=4"
+    },
+    {
+      "viewport": 768,
+      "checkId": "sem-title-case-headings",
+      "count": 13,
+      "message": "13 heading(s) not in Title Case: H3 \"aspects\" in \"Key aspects of their personality include:\" | H3 \"with\" in \"Compatibility with Children\" | H3 \"with\" in \"Compatibility with Other Pets\" | H4 \"month)\" in \"Ongoing Monthly/Annual Costs (£80 – £150+ per \" | H3 \"with\" in \"Excellent with Kids\" | H3 \"weeks\" in \"Puppy Stage (8 weeks – 12 months)\" | H2 \"years)\" in \"Adult Stage (1 – 7 years)\" | H2 \"years)\" in \"Senior Stage (8+ years)\""
+    },
+    {
+      "viewport": 768,
+      "checkId": "css-class-resolves",
+      "count": 299,
+      "message": "299 class(es) on rendered elements match no CSS rule: wp-block-uagb-info-box x93, uagb-infobox__content-wrap x93, uagb-ifb-content x93, uagb-ifb-title-wrap x93, uagb-ifb-desc x82, uagb-ifb-title x70, wp-block-uagb-container x69, uagb-infobox-image-valign-top x66, uagb-infobox-icon-above-title x56, uagb-infobox-icon-left-title x37, uagb-infobox-left x37, uagb-ifb-left-title-image x37"
+    },
+    {
+      "viewport": 768,
+      "checkId": "dup-no-sibling-crossover",
+      "count": 4,
+      "message": "4 passage(s) shared with a sibling: 98w vs /blue-staffy-health-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /blue-staffy-pup-sale-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\" | 98w vs /uk-locations/blue-staffy-puppies-uk/ \"buy your blue staffy pup today only 850 to 1 200 current litter 12 week old blue staffy pu\""
+    }
+  ]
+}

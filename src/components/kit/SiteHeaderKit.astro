@@ -73,7 +73,9 @@ const here = Astro.url.pathname;
           region that also holds the active option is re-announced on every arrow press. */}
       <p id="site-search-status" class="vh" role="status" aria-live="polite"></p>
     </form>
-    <Button kind="primary" href="/available-puppies/" label="Available puppies" class="cta" />
+    {/* No `class="cta"`: nothing styles it. It was a hook one of the pruned header options
+        used, and a class no rule matches is what `css-class-resolves` is for. */}
+    <Button kind="primary" href="/available-puppies/" label="Available puppies" />
     <details class="drawer">
       {/* Two spans rather than a toggled aria-label: the summary's accessible name comes
           from its own text, so `details[open]` swapping which span is displayed renames

@@ -82,7 +82,10 @@ export interface ComponentRow {
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
   // positioned box with room in it; without one the bar docks to the page's own scroll
-  // container and the artboard captures a collapsed strip.
+  // container and the artboard captures a collapsed strip. The preview additionally makes
+  // this one copy `position: static` (see its own style block): a page has one set of top
+  // chrome, and a second sticky site header is measured as part of it by the render
+  // harness's chrome probe, which no `scroll-margin-top` can then satisfy at every width.
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
   // `as: 'h2'` — the preview page already owns an <h1>. The prop exists for exactly this:
   // on a real page the default 'h1' is correct.
@@ -141,14 +144,19 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // to no sections and renders the breadcrumb alone, because the component has no way of
   // knowing what a page's sections are. The path and title are the guide page's own, so
   // crumbs() produces the trail a real page would show.
+  // THE IDS MUST RESOLVE ON THE PAGE THAT MOUNTS THIS. `nav-anchors-resolve` is BLOCKING,
+  // and a demo pointing at #temperament on a page with no such element is a dead in-page
+  // anchor like any other — the preview does not get a pass for being a preview. So the
+  // four demo sections name kit-preview's own `kit-<component-id>` section anchors, which
+  // that page gives every section it renders. A real page passes its real sections.
   'page-nav': {
     C: PageNav,
     demo: [{
       sections: [
-        { id: 'temperament', label: 'Temperament' },
-        { id: 'health', label: 'Health' },
-        { id: 'exercise', label: 'Exercise' },
-        { id: 'cost', label: 'Cost' },
+        { id: 'kit-hero', label: 'Hero' },
+        { id: 'kit-puppy-card', label: 'Puppy Card' },
+        { id: 'kit-faq', label: 'FAQ' },
+        { id: 'kit-footer', label: 'Footer' },
       ],
     }],
   },

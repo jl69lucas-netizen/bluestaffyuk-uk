@@ -114,8 +114,11 @@ python3 scripts/marker_check.py || FAIL=1
 # check's `severity:` in tests/render/checks/*.ts. Hand-editing either side silently rots the
 # number the Task 20 gate report quotes, so the sweep regenerates it and compares.
 if [ -f scripts/render_baseline.py ] && ls data/quality/scorecards/*.json >/dev/null 2>&1; then
-  if python3 scripts/render_baseline.py --check; then pass "Render baseline report in sync"
-  else fail "Render baseline drift — run: python3 scripts/render_baseline.py --write docs/reports/render-baseline-project2.md"; fi
+  # The LIVE baseline is project 3's. Project 2's file is the published record of a finished
+  # run and is deliberately never regenerated or checked here.
+  BASELINE_REPORT=docs/reports/render-baseline-project3.md
+  if python3 scripts/render_baseline.py --check --out "$BASELINE_REPORT"; then pass "Render baseline report in sync"
+  else fail "Render baseline drift — run: python3 scripts/render_baseline.py --out $BASELINE_REPORT"; fi
 else
   warn "no scorecards yet — render-baseline check skipped (run node scripts/build_scorecard.mjs)"
 fi

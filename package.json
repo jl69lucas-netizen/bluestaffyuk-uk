@@ -19,7 +19,7 @@
     "port": "python3 scripts/port_from_cag.py",
     "agents": "python3 scripts/build_agent_registry.py --check",
     "registry": "python3 scripts/build_system_registry.py --check",
-    "baseline": "python3 scripts/render_baseline.py --check",
+    "baseline": "python3 scripts/render_baseline.py --check --out docs/reports/render-baseline-project3.md",
     "board:gate": "python3 scripts/board_gate.py",
     "board:approve": "python3 scripts/board_approve.py",
     "board:build": "python3 scripts/build_page_board.py",

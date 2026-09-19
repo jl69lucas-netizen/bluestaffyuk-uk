@@ -12,12 +12,19 @@ behaviour and the reason `--check` belongs in the sweep.
     python3 scripts/render_baseline.py                      # print the table for the latest run
     python3 scripts/render_baseline.py --date 2026-09-17    # ... for one run
     python3 scripts/render_baseline.py --compare 2026-09-16 # per-check deltas, other -> chosen
-    python3 scripts/render_baseline.py --write <report.md>  # regenerate the block in the report
+    python3 scripts/render_baseline.py --out <report.md>    # regenerate the block in that report
     python3 scripts/render_baseline.py --check              # exit 1 if the report is stale
+    python3 scripts/render_baseline.py --check --out <r.md> # ... for a report that is not the default
 
-`--write` replaces only the text between `<!-- generated:start -->` and `<!-- generated:end -->`,
-so the report's hand-written prose survives regeneration. `--check` implies the default report
-and never writes.
+`--out` names the report. `--write` is the same option under its older name and is kept
+because callers (and this script's own tests) already spell it that way; both write. The
+DEFAULT report is project 3's, because that is the live one — a baseline is a record of the
+run you just made, so each project writes its own file and the previous project's stays
+exactly as it was published. Pass `--out docs/reports/render-baseline-project2.md --date
+<that run's date>` to reproduce an older one; nothing regenerates it by accident.
+
+Writing replaces only the text between `<!-- generated:start -->` and `<!-- generated:end -->`,
+so the report's hand-written prose survives regeneration. `--check` never writes.
 """
 import argparse
 import collections
@@ -29,7 +36,9 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCORECARDS = ROOT / "data/quality/scorecards"
 CHECKS = ROOT / "tests/render/checks"
-REPORT = ROOT / "docs/reports/render-baseline-project2.md"
+# The live baseline. Project 2's file (docs/reports/render-baseline-project2.md) is a
+# published record of a run that is over: it is never the default and never regenerated here.
+REPORT = ROOT / "docs/reports/render-baseline-project3.md"
 START = "<!-- generated:start -->"
 END = "<!-- generated:end -->"
 
@@ -136,7 +145,10 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--date", help="scorecard date (default: the latest present)")
     ap.add_argument("--compare", metavar="DATE", help="print per-check deltas against DATE")
-    ap.add_argument("--write", metavar="REPORT", help="regenerate the block in REPORT")
+    # One dest, two spellings. `--out` is the name to use; `--write` is what the existing
+    # callers and tests already type, and an alias costs less than a rename that breaks them.
+    ap.add_argument("--out", "--write", dest="write", metavar="REPORT",
+                    help="the report to regenerate (default: the project 3 baseline)")
     ap.add_argument("--check", action="store_true", help="exit 1 if the report is stale")
     ap.add_argument("--scorecards-dir", default=str(SCORECARDS))
     ap.add_argument("--checks-dir", default=str(CHECKS))
