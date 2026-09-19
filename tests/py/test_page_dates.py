@@ -184,6 +184,30 @@ def test_a_write_that_fails_leaves_the_previous_map_intact(repo, monkeypatch):
     assert not list((repo / "data").glob("*.tmp*")), "the temp file must be cleaned up"
 
 
+def test_no_git_on_path_is_exit_2_with_a_sentence_not_a_traceback(repo, capsys, monkeypatch):
+    """This runs inside `prebuild`. A bare FileNotFoundError in the middle of a build reads
+    as a build failure with no cause attached, and every date in the map would be missing
+    rather than one of them."""
+    def no_git(*a, **k):
+        raise FileNotFoundError(2, "No such file or directory: 'git'")
+    monkeypatch.setattr(G.subprocess, "run", no_git)
+    assert G.main([]) == 2
+    assert "git" in capsys.readouterr().out
+
+
+def test_a_run_that_dates_fewer_routes_refuses_to_overwrite_the_committed_map(repo, capsys):
+    """A map that shrank by itself is a shallow checkout or a broken glob. Overwriting would
+    delete the honest dates of pages that still exist — and `prebuild` means nobody is
+    reading the diff."""
+    out = repo / "data" / "page-dates.json"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    before = json.dumps({"routes": {f"/page-{i}/": {} for i in range(99)}})
+    out.write_text(before)
+    assert G.main([]) == 1
+    assert out.read_text() == before, "the committed map must survive the refusal"
+    assert "REFUSING" in capsys.readouterr().out
+
+
 def test_check_and_dry_run_are_mutually_exclusive(repo):
     with pytest.raises(SystemExit):
         G.main(["--check", "--dry-run"])
@@ -195,13 +219,29 @@ def test_check_and_dry_run_are_mutually_exclusive(repo):
 # USES it: a correct data/page-dates.json that no page reads is the same freshness lie it
 # was written to end, just harder to see.
 #
-# `selfDated` is the contract between the two halves. A migrated page carries its own
-# WebPage node with the dates from the old site inside its ported meta, so BaseLayout must
-# NOT add a second one — two dateModified values on one page is worse than none. Every other
-# page gets its node from the layout, and its date must be the git-derived one, to the day.
+# WHAT DECIDES WHICH DATE A PAGE SHOULD CARRY. Not the map's `selfDated` flag: that is the
+# generator's source-level guess (true as soon as ANY source behind the route mentions the
+# word), and testing the layout against it would only prove the two halves agree about the
+# guess. The observable rule is the one BaseLayout implements — a page that ports its own
+# WebPage node keeps the old site's date, everything else gets the git-derived one — so these
+# tests ask the built page: you have a date; is it one of the two dates you are allowed?
+#
+# Timestamps are compared in FULL. Two nodes agreeing to the day and disagreeing on the hour
+# is still two answers to one question, and truncating to ten characters hid exactly that.
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-DATE_MODIFIED = re.compile(r'"dateModified":\s*"(\d{4}-\d{2}-\d{2})')
+DATE_MODIFIED = re.compile(r'"dateModified":\s*"([^"]+)"')
+
+
+def _ported_dates():
+    """Every dateModified value written into the repo's own sources — the ported meta in
+    src/pages/**, the blog frontmatter, and the rows of data/*.json. A built date that is
+    neither the git date nor one of these came from nowhere."""
+    out = set()
+    for path in [*(REPO_ROOT / "src").rglob("*.astro"), *(REPO_ROOT / "src").rglob("*.md"),
+                 *(REPO_ROOT / "data").glob("*.json")]:
+        out.update(DATE_MODIFIED.findall(path.read_text(encoding="utf-8", errors="ignore")))
+    return out
 
 
 def _built_routes():
@@ -215,30 +255,32 @@ def _built_routes():
     return out
 
 
-def test_every_built_page_the_map_dates_carries_that_exact_date_modified():
+def test_every_built_page_carries_either_its_ported_date_or_the_git_one_and_never_neither():
+    """The whole contract in one assertion, page by page.
+
+    A page that ports its own WebPage node keeps the old site's date and the layout adds
+    nothing; a page that does not gets the git-derived date from data/page-dates.json. There
+    is no third option, and "no date at all" is the hole the location pages fell through —
+    the generator marked all eleven `selfDated` because ONE row of data/locations.json carries
+    a date, and the rows that carry none shipped undated."""
     routes = json.loads((REPO_ROOT / "data/page-dates.json").read_text())["routes"]
+    ported = _ported_dates()
     wrong = []
     for route, html in _built_routes().items():
-        row = routes.get(route)
-        if not row or row.get("selfDated"):
+        found = DATE_MODIFIED.findall(html.read_text(encoding="utf-8"))
+        if not found:
+            wrong.append(f"{route}: no dateModified at all")
             continue
-        found = DATE_MODIFIED.search(html.read_text(encoding="utf-8"))
-        if not found or found.group(1) != row["dateModified"]:
-            wrong.append(f"{route}: {found.group(1) if found else 'none'} != {row['dateModified']}")
-    assert not wrong, "pages whose dateModified is not the git-derived one: " + ", ".join(wrong)
+        git = (routes.get(route) or {}).get("dateModified")
+        for value in set(found):
+            if value[:10] != git and value not in ported:
+                wrong.append(f"{route}: {value} is neither the git date ({git}) nor a ported one")
+    assert not wrong, "; ".join(wrong)
 
 
-def test_every_built_page_carries_a_date_modified_of_some_kind():
-    """The pytest twin of `schema-date-modified-present` (blocking). A page the map dates and
-    the layout still ships undated is the exact hole the location pages fell through: the
-    generator marked all eleven `selfDated` because ONE row of data/locations.json carries a
-    date, and the rows that carry none shipped with nothing."""
-    undated = [route for route, html in _built_routes().items()
-               if not DATE_MODIFIED.search(html.read_text(encoding="utf-8"))]
-    assert not undated, "built pages with no dateModified in any JSON-LD block: " + ", ".join(undated)
-
-
-def test_no_built_page_carries_two_contradicting_date_modified_values():
+def test_no_built_page_carries_two_dates_that_disagree():
+    """Compared in full, not to the day: two nodes that agree on the date and disagree on the
+    hour are still two answers, and a crawler reads whichever it reaches first."""
     for route, html in _built_routes().items():
         found = set(DATE_MODIFIED.findall(html.read_text(encoding="utf-8")))
         assert len(found) <= 1, f"{route} carries {sorted(found)}"

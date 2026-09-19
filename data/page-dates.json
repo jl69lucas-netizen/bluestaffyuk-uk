@@ -2,7 +2,7 @@
   "_meta": {
     "description": "Truthful per-page freshness map for JSON-LD dateModified/datePublished. Generated from git history by scripts/generate_page_dates.py \u2014 NOT at build time, because CI runs a shallow checkout and would stamp today's date on every page. Regenerate and commit after content changes.",
     "generated_by": "scripts/generate_page_dates.py",
-    "pages": 51
+    "pages": 52
   },
   "routes": {
     "/available-puppies/": {
@@ -28,6 +28,11 @@
     "/blue-staffy-uk-breeders/": {
       "datePublished": "2026-09-16",
       "dateModified": "2026-09-16",
+      "selfDated": true
+    },
+    "/board-preview/": {
+      "datePublished": "2026-09-19",
+      "dateModified": "2026-09-19",
       "selfDated": true
     },
     "/buy-blue-staffy-puppies-uk/": {

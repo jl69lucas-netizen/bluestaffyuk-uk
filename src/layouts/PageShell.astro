@@ -13,27 +13,27 @@
 // second, shorter route to the same six links, so the threshold is six, in one place, here:
 // a page cannot mount the dial without the sheet or the sheet without the dial, and the two
 // are one component split by viewport width.
-import BaseLayout from './BaseLayout.astro';
+import BaseLayout, { type BaseProps } from './BaseLayout.astro';
 import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
 import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
 import PageDial from '../components/kit/PageDial.astro';
 import SectionSheet from '../components/kit/SectionSheet.astro';
 import type { SectionRef } from '../lib/sections';
 
-interface Props {
-  title: string;
-  description: string;
-  sections?: SectionRef[];
-  canonical?: string;
-  robots?: string;
-  noindex?: boolean;
-  ogType?: string;
-  ogImage?: string;
-  schema?: unknown[];
-  crumbTitle?: string;
-}
+// Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
+// owns. Extending rather than restating means a prop added to the layout reaches the shell.
+interface Props extends BaseProps { sections?: SectionRef[] }
 const { sections = [], ...head } = Astro.props;
 const nav = sections.length >= 6;
+// A page that passes one to five sections gets NO in-page nav and no warning would be given
+// at runtime, because nothing is rendered — the author sees a page that simply has no dial
+// and has to guess whether the threshold or their list is wrong. Say which, at build time,
+// once per page. Not an error: below six the pair is genuinely the wrong furniture, so the
+// page is correct as built and this is the sentence that explains it.
+if (sections.length > 0 && !nav) {
+  console.warn(`PageShell: ${head.canonical ?? head.title} passed ${sections.length} section(s); `
+    + 'the dial and the section sheet need six. Rendering the page without them.');
+}
 ---
 <BaseLayout {...head}>
   <SiteHeaderKit slot="header" />

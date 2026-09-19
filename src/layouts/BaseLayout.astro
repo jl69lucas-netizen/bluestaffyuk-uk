@@ -7,7 +7,11 @@ import Breadcrumb from '../components/Breadcrumb.astro';
 import Schema from '../components/Schema.astro';
 import { SITE, LOGO_RASTER, abs } from '../lib/site';
 import pageDates from '../../data/page-dates.json';
-interface Props { title: string; description: string; canonical?: string; robots?: string; noindex?: boolean; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
+// Exported so src/layouts/PageShell.astro can EXTEND it rather than restate it. The shell
+// forwards every head prop untouched, and a second hand-written copy of this list is a copy
+// that goes out of date the first time one is added here.
+export interface BaseProps { title: string; description: string; canonical?: string; robots?: string; noindex?: boolean; ogType?: string; ogImage?: string; schema?: unknown[]; crumbTitle?: string }
+type Props = BaseProps;
 const { title, description, canonical = Astro.url.pathname, robots = 'index, follow', noindex = false, ogType = 'website', ogImage = LOGO_RASTER, schema = [], crumbTitle = title } = Astro.props;
 // `noindex` is the shorthand for the internal pages; it wins over any `robots` string and
 // still resolves to the SAME single robots meta below, because that one tag is what

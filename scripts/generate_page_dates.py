@@ -14,7 +14,16 @@ So: compute real dates HERE, from full local history, and commit the result.
 datePublished = the first commit that touched the page file.
 dateModified  = the most recent commit that touched it.
 
-Run after adding pages or before a freshness-relevant deploy, then commit the JSON.
+Run after adding pages or before a freshness-relevant deploy, then commit the JSON. It is
+also `prebuild` in package.json, so every `npm run build` refreshes the map first and no
+build can ship a page dated by a map that predates it. Two guards exist because of that —
+nobody reads a diff a build wrote:
+  * no git on PATH is exit 2 with a sentence saying so, not a FileNotFoundError traceback;
+  * a run that dates FEWER routes than the committed map refuses to write (exit 1). A map
+    that shrank by itself is a shallow checkout or a broken glob, and overwriting would
+    delete the honest dates of pages that still exist.
+Note that the dates come from COMMITTED history: an uncommitted edit does not move a page's
+date, which is the point — an unpushed working tree has changed nothing a crawler can see.
 
 Usage:
   python3 scripts/generate_page_dates.py            # write data/page-dates.json
@@ -24,7 +33,8 @@ Usage:
 Pages are `src/pages/**/*.astro|html` plus `src/content/blog/*.md` — BSUK's posts are a
 content collection and would otherwise carry no date at all.
 
-Exit: 0 current/written, 1 ran and found the map stale (or produced 0 routes), 2 cannot run.
+Exit: 0 current/written, 1 ran and found the map stale, produced 0 routes, or refused to
+shrink it, 2 cannot run (no git, or the committed map is unreadable under --check).
 """
 import argparse, json, os, re, subprocess, sys, glob, pathlib, tempfile
 
@@ -118,12 +128,21 @@ def coverage(routes, dist="dist"):
     return len(routes), len(built), {"built": len(built), "undated": undated}
 
 
+class NoGit(Exception):
+    """git itself is not on PATH. Distinct from "this path has no history": every date in
+    the map would be missing rather than one, and this now runs inside `prebuild`, where a
+    bare FileNotFoundError traceback in the middle of a build reads as a build failure with
+    no cause attached."""
+
+
 def git_dates(path):
     """(first, last) commit dates for a path as YYYY-MM-DD, or (None, None)."""
     try:
         out = subprocess.run(
             ["git", "log", "--follow", "--format=%cs", "--", path],
             cwd=str(ROOT), capture_output=True, text=True, check=True).stdout.split()
+    except FileNotFoundError as exc:
+        raise NoGit(exc) from exc
     except subprocess.CalledProcessError:
         return None, None
     if not out:
@@ -174,7 +193,13 @@ def main(argv=None):
     mode.add_argument("--dry-run", action="store_true", help="print the summary, write nothing")
     args = ap.parse_args(argv)
 
-    routes, skipped, _ = build()
+    try:
+        routes, skipped, _ = build()
+    except NoGit:
+        print("cannot run: `git` is not on PATH, so no date in this map would be a real one. "
+              "Install git, or check out with history — do NOT let the build proceed with the "
+              "committed map silently unrefreshed.")
+        return 2
     payload = {
         "_meta": {
             "description": ("Truthful per-page freshness map for JSON-LD "
@@ -205,6 +230,26 @@ def main(argv=None):
             return 1
         print(f"page-dates.json current — {len(routes)} routes")
         return 0
+
+    # THE MAP MAY GROW OR HOLD; IT MAY NOT SHRINK ON ITS OWN.
+    # This runs inside `prebuild` now, so it rewrites the committed map on every build, with
+    # nobody reading the diff. A shallow checkout, a half-configured worktree or a glob that
+    # stopped matching all express themselves the same way — fewer dated routes than last
+    # time — and the overwrite would then quietly delete the honest dates of pages that still
+    # exist and ship them undated. Fewer routes is therefore a refusal, not a write: the
+    # build fails with the two numbers in it, and a deliberate removal is recorded by running
+    # this once by hand and committing the smaller map.
+    committed = 0
+    try:
+        committed = len(json.loads(OUT.read_text())["routes"])
+    except (OSError, json.JSONDecodeError, KeyError, TypeError):
+        pass
+    if len(routes) < committed:
+        print(f"REFUSING to write: {len(routes)} dated route(s) against {committed} in the "
+              f"committed {OUT.name}. A map that shrank by itself means the run saw less "
+              "history or fewer pages than the repo has — fix that, or commit the smaller "
+              "map deliberately.")
+        return 1
 
     if not args.dry_run:
         # Atomic: the map is committed, so a half-written file is a corrupted record in git

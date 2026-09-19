@@ -30,11 +30,11 @@ const description = 'Blue Staffy puppies for sale across the UK from Blue Staffy
     <h1>Blue Staffy Puppies by UK Location</h1>
     <p>We are based in Glasgow. {SITE.delivery_note}, £{SITE.delivery_min_gbp} to £{SITE.delivery_max_gbp}, or collect from us in Glasgow after a refundable £{SITE.deposit_gbp} deposit. Choose your nearest area below.</p>
     <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:8px 24px;list-style:none;padding:0">
-      {/* `display:inline-block` with vertical padding is what lifts each link's box to 24px
+      {/* `.tap-24` (src/styles/kit.css) lifts each link's box to 24px
           (`layout-tap-target-size`, blocking; WCAG 2.5.8): a bare link here is a 20px target
           with a neighbour well inside 24px of its centre, and at 375px the whole list is one
           column of them. */}
-      {sorted.map((l) => <li><a href={`/uk-locations/${l.slug}/`} style="display:inline-block;padding-block:4px">{label(l)}</a></li>)}
+      {sorted.map((l) => <li><a href={`/uk-locations/${l.slug}/`} class="tap-24">{label(l)}</a></li>)}
     </ul>
   </section>
 </PageShell>

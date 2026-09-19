@@ -99,15 +99,41 @@ def test_rebuilt_json_lists_only_slugs_that_have_a_fact_set():
     assert not [s for s in rebuilt if not (ROOT / f"data/facts/{s}.json").is_file()]
 
 
-def test_parity_and_the_facts_gate_never_judge_the_same_page():
-    """The two gates are exclusive by construction: a rebuilt page's heading list is supposed
-    to change, so parity must stop looking at it on exactly the run the facts gate starts."""
+def test_a_slug_in_rebuilt_json_leaves_the_parity_report_and_is_counted_as_skipped(tmp_path):
+    """The handover, measured rather than restated.
+
+    A rebuilt page's heading list is SUPPOSED to change, so parity has to stop judging it on
+    exactly the run the facts gate starts. The second page below would fail parity outright —
+    its built body is one sentence where the export had a hundred and twenty words — so if
+    listing it in rebuilt.json did not remove it from the run, this test would see the failure
+    instead of the skip.
+    """
     import migration_parity as P
-    rebuilt = set(json.loads((ROOT / "data/facts/rebuilt.json").read_text()))
-    page_map = json.loads((ROOT / "data/page-map.json").read_text())
-    judged = {P.slug_of(row) for row in page_map["pages"]} - rebuilt
-    assert not (judged & rebuilt)
-    assert P.rebuilt_slugs(ROOT) == rebuilt
+
+    prose = " ".join(["alpha"] * 120)
+    body = f"<h2>Head</h2><p>{prose}</p>"
+    source = f'<html><body><div class="entry-content">{body}</div></body></html>'
+    root, src, dist = tmp_path / "root", tmp_path / "src", tmp_path / "dist"
+    for path, text in (
+        (root / "data/page-map.json", json.dumps(
+            {"generated_from": str(src), "pages": [
+                {"url": "/kept/", "kind": "rich", "defects": []},
+                {"url": "/redone/", "kind": "rich", "defects": []}]})),
+        (root / "data/facts/rebuilt.json", json.dumps(["redone"])),
+        (src / "kept/index.html", source),
+        (src / "redone/index.html", source),
+        (dist / "kept/index.html", f'<html><body><article class="prose-migrated">{body}</article></body></html>'),
+        (dist / "redone/index.html", "<html><body><main><p>Written fresh.</p></main></body></html>"),
+    ):
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+
+    assert P.rebuilt_slugs(root) == {"redone"}
+    P.main(root=root, src=src, dist=dist)          # no SystemExit: the failing page is skipped
+    report = (root / "docs/reports/parity.md").read_text(encoding="utf-8")
+    assert "examined 1 pages, 0 failing, skipped 1 rebuilt" in report
+    assert "| /redone/ |" not in report, "a skipped page must leave the table, not sit in it as a pass"
+    assert "| /kept/ |" in report
 
 
 def test_the_checker_runs_clean_over_the_committed_state():
