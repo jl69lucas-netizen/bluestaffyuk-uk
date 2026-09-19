@@ -8,14 +8,17 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 COMPONENTS = ROOT / "data/design/components.json"
 KIT = ROOT / "src/components/kit"
 IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-strip",
-       "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider"]
+       "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider",
+       # Project 4 adds the two in-page navigation components. They are LAST on purpose: the
+       # numbering in `title` is the spec's reading order and the board sheets are cut in it.
+       "page-dial"]
 
 
 def load():
     return json.loads(COMPONENTS.read_text())
 
 
-def test_thirteen_components_in_spec_order():
+def test_every_component_in_spec_order():
     rows = load()
     assert [r["id"] for r in rows] == IDS
 
@@ -25,6 +28,10 @@ def test_each_row_has_file_title_width():
         assert re.fullmatch(r"[A-Z][A-Za-z]+\.astro", r["file"]), r
         assert r["title"] and isinstance(r["title"], str)
         assert r["board_width"] in (640, 1280), r
+        # Which project added the row. The canvas, the picks board and the variant prune
+        # filter to 3 — they record project 3's closed five-option pick process; the kit
+        # preview, _registry.ts and the Design System artifact carry every row.
+        assert r["project"] in (3, 4), r
 
 
 def test_ids_and_files_are_unique():
@@ -742,3 +749,23 @@ def test_built_section_divider_is_the_mark_between_two_rules():
     # The mark is decorative here: title="" drops the <title> and hides the whole SVG.
     assert 'aria-hidden="true"' in inner
     assert "<title>" not in inner
+
+
+
+def test_built_page_dial_has_ring_list_and_spy_hooks():
+    """Convention 8. The dial is three things at once — a progress ring, a numbered list
+    and a scroll-spy — and losing any one of them still builds and still looks like a
+    sidebar. The six `<li>` are the demo fixture's six sections."""
+    dial = _sections("page-dial")
+    assert _has_class(dial, "kit-dial")
+    assert "<nav" in dial and 'aria-label="Sections"' in dial
+    assert dial.count("<li") >= 6, dial.count("<li")
+    assert dial.count('data-spy="') >= 6, dial
+    # The progress ring: a track and a fill, both <circle>, drawn not lettered.
+    assert "<svg" in dial and dial.count("<circle") == 2, dial.count("<circle")
+    assert "data-ring" in dial and "data-ring-n" in dial
+    # Rule 1, restated at the component: the dial writes ONE inline style (the ring's
+    # dash geometry) and it must carry no colour. Same shape as
+    # test_built_sections_spell_no_hex_in_a_style_attribute, narrowed to this section.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
+

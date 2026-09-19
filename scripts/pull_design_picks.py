@@ -16,7 +16,11 @@ def main(argv=None):
     ap.add_argument("--inbox", default=str(ROOT / "data/design/inbox/picks.json"))
     ap.add_argument("--out", default=str(ROOT / "data/design/picks.json"))
     a = ap.parse_args(argv)
-    ids = [r["id"] for r in json.loads((ROOT / "data/design/components.json").read_text())]
+    # Project 3 rows only — see the note in scripts/build_design_canvas.py. A project 4
+    # component in this list would make every pull refuse as "missing" a pick that the
+    # closed board could never have collected.
+    ids = [r["id"] for r in json.loads((ROOT / "data/design/components.json").read_text())
+           if r["project"] == 3]
     rows = json.loads(pathlib.Path(a.inbox).read_text())
     picks, bad = {}, []
     for i in ids:

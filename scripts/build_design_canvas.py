@@ -51,6 +51,18 @@ def artboard(sec, css, fonts_link, height, assets, width=None):
     )
 
 
+#: The five-option pick process (spec §6) ran in project 3 and is closed: picks.json is a
+#: record of what the user chose on 2026-09-18, the canvas holds the boards they chose from,
+#: and neither can grow a component retrospectively. Project 4's two in-page nav components
+#: therefore carry `"project": 4` in components.json and are filtered out here; their style
+#: pick is made on the contact page's board in Task 9 instead.
+PROJECT_3 = 3
+
+
+def project_3_rows(rows):
+    return [r for r in rows if r["project"] == PROJECT_3]
+
+
 #: The three rows, as (suffix, board width or None for the component's own, row title).
 #: Row 1 cuts each component at its components.json width; rows 2 and 3 are spec §11
 #: amendment 3d's phone and tablet passes over the same built section.
@@ -111,7 +123,7 @@ def main(argv=None):
     ap.add_argument("--heights", default=str(ROOT / "data/design/canvas-heights.json"))
     a = ap.parse_args(argv)
     html = pathlib.Path(a.dist).read_text()
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = project_3_rows(json.loads((ROOT / "data/design/components.json").read_text()))
     assets = json.loads((ROOT / "data/design/canvas-assets.json").read_text())
     heights = json.loads(pathlib.Path(a.heights).read_text()) if pathlib.Path(a.heights).exists() else {}
     css = page_css(html)
@@ -124,6 +136,10 @@ def main(argv=None):
         # The mark has no artboard at any width: it is shown on the preview page on both
         # surfaces it has to work on, and it is not a components.json row.
         if sec.component == "mark":
+            continue
+        # Project 4's components render on the preview route but have no board on this
+        # canvas: it is the artifact the project 3 picks were made from.
+        if sec.component not in {r["id"] for r in rows}:
             continue
         for m in IMG_SRC.finditer(sec.inner):
             for cand in m.group(2).split(","):

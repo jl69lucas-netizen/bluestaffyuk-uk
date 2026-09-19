@@ -76,7 +76,10 @@ textarea{{width:100%;box-sizing:border-box;margin:12px 0;padding:10px;border:1px
 
 
 def main(argv=None):
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    # Project 3 rows only: the board is the sheet the user picked a variant on, and a
+    # component added after the picks were pulled has no five options to show.
+    rows = [r for r in json.loads((ROOT / "data/design/components.json").read_text())
+            if r["project"] == 3]
     arts = json.loads((ROOT / "data/design/artifacts.json").read_text())
     page = build(rows, arts["canvas"])
     OUT.write_text(page)

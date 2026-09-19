@@ -38,6 +38,9 @@
  "page-nav-t768": 104,
  "footer-t768": 872,
  "section-divider-t768": 176,
+ "page-dial": 336,
+ "page-dial-m375": 336,
+ "page-dial-t768": 336,
  "hero_overflow": {
   "hero": {
    "1024": {

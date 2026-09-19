@@ -5,7 +5,12 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 PICKS = ROOT / "data/design/picks.json"
 KIT = ROOT / "src/components/kit"
-IDS = [r["id"] for r in json.loads((ROOT / "data/design/components.json").read_text())]
+# Project 3 rows only. picks.json records what the user chose on the board on 2026-09-18,
+# so it has an entry per component that WAS on that board. Project 4's page-dial and
+# section-sheet were written afterwards and carry `"project": 4`; their style pick is made
+# on the contact page's board in Task 9, not retrospectively here.
+IDS = [r["id"] for r in json.loads((ROOT / "data/design/components.json").read_text())
+       if r["project"] == 3]
 
 
 def test_pull_script_converts_inbox_rows(tmp_path):
@@ -38,7 +43,8 @@ def test_board_has_a_row_per_component_plus_the_mark():
     """The committed board must be what the builder produces from the current data."""
     mod = _builder()
     committed = (ROOT / "docs/artifacts/design-picks.html").read_text()
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    rows = [r for r in json.loads((ROOT / "data/design/components.json").read_text())
+            if r["project"] == 3]
     canvas = json.loads((ROOT / "data/design/artifacts.json").read_text())["canvas"]
     assert committed == mod.build(rows, canvas), "run python3 scripts/build_picks_board.py"
 

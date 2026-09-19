@@ -48,11 +48,12 @@ import Faq from './Faq.astro';
 import ContactFormKit from './ContactFormKit.astro';
 import PageNav from './PageNav.astro';
 import SiteFooterKit from './SiteFooterKit.astro';
+import PageDial from './PageDial.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider';
+  | 'section-divider' | 'page-dial';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -61,11 +62,17 @@ export interface KitEntry {
   /** Extra chrome the preview wraps the demo in, for components that need a context to be
    *  judged BY EYE. It never makes a positional check work — see convention 10.
    *
-   *  Two members, not three: the kit has no component that has to be judged on a dark band
-   *  of the preview's making. The footer paints its own, and the drawer panel is inside the
-   *  header. An `'inverse'` member nothing sets is a branch in the preview page nobody can
-   *  reach — add it back the day an entry needs it. */
-  wrap?: 'sticky' | 'after-band';
+   *  Three members, and every one of them is set by an entry below. There is still no
+   *  `'inverse'`: the kit has no component that has to be judged on a dark band of the
+   *  preview's making — the footer paints its own and the drawer panel is inside the header —
+   *  and a branch in the preview page nobody can reach reads as a feature rather than as
+   *  dead code. Add it back the day an entry needs it.
+   *
+   *  `'with-targets'` is the one member that is not purely cosmetic: the two in-page nav
+   *  components link to section ids, and without real elements behind those ids the demo
+   *  would ship dead anchors on a page the harness judges as a target. It supplies the
+   *  ANCHORS, not positional coverage. */
+  wrap?: 'sticky' | 'after-band' | 'with-targets';
 }
 
 /** The row in data/design/components.json, typed so a typo in an id fails the build. */
@@ -74,7 +81,24 @@ export interface ComponentRow {
   file: string;
   title: string;
   board_width: 640 | 1280;
+  /** Which project added the component. The canvas, the picks board and the variant prune
+   *  are records of project 3's closed five-option pick process and filter to `3`; the
+   *  kit preview, this registry and the Design System artifact carry every row. */
+  project: 3 | 4;
 }
+
+/** The six sections the dial and the sheet both demo. One list, not two: the pair is one
+ *  component split by viewport width, and two drifting fixtures would let the board show a
+ *  dial and a sheet that disagree about what a page's sections are. The ids are rendered as
+ *  stub `<section>`s by the preview's `with-targets` wrap, so every link resolves. */
+export const DEMO_SECTIONS = [
+  { id: 'd-a', label: 'Health' },
+  { id: 'd-b', label: 'Delivery' },
+  { id: 'd-c', label: 'Deposit' },
+  { id: 'd-d', label: 'Puppies' },
+  { id: 'd-e', label: 'FAQ' },
+  { id: 'd-f', label: 'Contact' },
+];
 
 /** Every id, no exceptions — a `Partial` here would let a component be dropped from the kit
  *  by deleting its entry, and the preview would simply render one section fewer while every
@@ -164,4 +188,17 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // be wrong here — the footer paints its own dark band and is full-bleed by nature.
   footer: { C: SiteFooterKit },
   'section-divider': { C: SectionDivider },
+  // `wrap: 'with-targets'` — the dial IS a scroll-spy over six section ids, so a demo with
+  // no such elements is a dial whose every link is a dead anchor (`nav-anchors-resolve`,
+  // blocking) and whose observer has nothing to observe. The wrap renders six stub sections
+  // carrying exactly these ids beside the dial. That is a CONTEXT for the eye and for the
+  // anchors; it is still not coverage for a positional check (convention 10).
+  //
+  // The ids are the demo's own `d-a`…`d-f`, prefixed so they cannot collide with the
+  // preview's `kit-<component-id>` section anchors that the PageNav demo points at.
+  'page-dial': {
+    C: PageDial,
+    demo: [{ sections: DEMO_SECTIONS }],
+    wrap: 'with-targets',
+  },
 };

@@ -100,7 +100,11 @@ def test_the_real_canvas_carries_thirteen_boards_in_each_of_the_three_rows():
     if not idx_path.exists():
         pytest.skip("run npm run canvas:build first")
     idx = json.loads(idx_path.read_text())
-    rows = json.loads((ROOT / "data/design/components.json").read_text())
+    # Project 3 rows only. The canvas is the artifact the five-option picks were made from
+    # on 2026-09-18 and it cannot grow a component retrospectively; project 4's two in-page
+    # nav components get their style pick on the contact page's board in Task 9 instead.
+    rows = [r for r in json.loads((ROOT / "data/design/components.json").read_text())
+            if r["project"] == 3]
     assert len(idx["boards"]) == 39, len(idx["boards"])
     for suffix, row_w, title in B.BOARD_ROWS:
         files = [B.board_name(r["id"], suffix) for r in rows]
