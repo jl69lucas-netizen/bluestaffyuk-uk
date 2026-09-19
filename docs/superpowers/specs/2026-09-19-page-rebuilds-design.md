@@ -235,3 +235,6 @@ run against them.
    two pages differ in their FAQ shell and their takeaway set. The signature is now the
    tuple minus the two baked axes — what a page is made of that the breeder can still
    choose differently — and the two records separate on `faq-s1` against `faq-s3`.
+
+3. **2026-09-19, user request during the first boards.** (a) Working rule 12: every page board lists every internal and external link the page will carry, per section and as one page table, before approval; the three boards already approved are rebuilt with the old pages' body links carried in and re-approved. (b) **Component 16, `SectionStrip`**: a sticky horizontally-scrolling rail of numbered section chips (`01 Label · 02 Label …`) under the header on mobile and tablet (<1024px), scroll-spy active chip, thumb-scrollable, matching the source site's home section strip; it complements the bottom sheet (the strip for quick jumps, the sheet for the full list). Three styles on the contact board; then fixed site-wide like the dial and sheet. `nav-bottom-chrome-clear`'s top-chrome counterpart: the strip's height is added to `scroll-margin-top` via `--hdr-measured` so no jump target lands under it.
+
