@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 30,
     "nav-anchors-resolve": 6,
     "nav-jump-target-lands": 6,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 216,
     "sem-all-six-levels": 216,
     "sem-title-case-headings": 216,
@@ -36,8 +37,9 @@
     "css-class-resolves": 4734,
     "css-no-dead-component-rule": 45,
     "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
+    "dup-no-sibling-crossover": 156,
     "a11y-text-contrast-aa": 1380,
+    "a11y-no-duplicate-ids": 21,
     "form-inquiry-contract": 0
   },
   "defects": {
@@ -60,7 +62,7 @@
       "viewport": 1280,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-sales@4748px"
+      "message": "1 of 2 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #Staffy-sales@4756px"
     },
     {
       "viewport": 1280,
@@ -90,7 +92,7 @@
       "viewport": 375,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #Staffy-sales@3348px"
+      "message": "1 of 2 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #Staffy-sales@3356px"
     },
     {
       "viewport": 375,
@@ -120,7 +122,7 @@
       "viewport": 768,
       "checkId": "nav-jump-target-lands",
       "count": 1,
-      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-sales@4750px"
+      "message": "1 of 2 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #Staffy-sales@4758px"
     },
     {
       "viewport": 768,

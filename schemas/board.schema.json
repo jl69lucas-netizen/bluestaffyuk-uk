@@ -19,7 +19,14 @@
     "meta": {
       "type": "object", "required": ["slug", "page_type", "status", "research_as_of", "sources"], "additionalProperties": false,
       "properties": {
-        "slug": {"type": "string", "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$"},
+        "slug": {
+          "comment": "A leading underscore on the first segment marks a record that is NOT a page (today: _demo, the fixture the board-preview route, the cutter and their tests render). No real slug starts with one, so the underscore is what keeps such a record out of every page consumer.",
+          "type": "string", "pattern": "^_?[a-z0-9-]+(/[a-z0-9-]+)*$"
+        },
+        "preview": {
+          "comment": "Render this record on /board-preview/<slug>/ even though it is not a draft. Only a record that is NOT a page ever sets it; the route already builds every draft.",
+          "type": "boolean"
+        },
         "page_type": {"enum": ["home", "hub", "location", "puppy", "blog", "about", "contact", "comparison", "interior", "for-sale"]},
         "status": {"enum": ["draft", "boarded", "approved", "built", "released"]},
         "research_as_of": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
@@ -102,7 +109,16 @@
           "framework": {"enum": ["EEBP", "FAB", "QAB", "PAS", "BAB", "PDB", "AIDA", "EBD", "HSS"]},
           "words": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
                     "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}},
-          "shape": {"enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard"]},
+          "shape": {
+            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The ten that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose.",
+            "enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard",
+                     "hero", "takeaways", "puppies", "reviews", "faq", "form", "stats", "trust", "divider"]
+          },
+          "styles": {
+            "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly the three src/lib/boardStyles.ts defines. scripts/build_board_previews.py refuses anything else, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
+            "type": "array", "uniqueItems": true, "items": {"enum": ["S1", "S2", "S3"]},
+            "oneOf": [{"maxItems": 0}, {"minItems": 3, "maxItems": 3}]
+          },
           "cta": {"type": "integer", "minimum": 0, "maximum": 6},
           "keywords": {"type": "object",
                        "required": ["primary", "lsi", "longtail", "brand", "geo", "conversational", "comparison", "solution", "transactional"],

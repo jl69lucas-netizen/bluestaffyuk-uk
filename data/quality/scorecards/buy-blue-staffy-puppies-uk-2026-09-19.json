@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 39,
     "nav-anchors-resolve": 12,
     "nav-jump-target-lands": 9,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 102,
     "sem-all-six-levels": 102,
     "sem-title-case-headings": 102,
@@ -36,8 +37,9 @@
     "css-class-resolves": 2166,
     "css-no-dead-component-rule": 45,
     "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
+    "dup-no-sibling-crossover": 156,
     "a11y-text-contrast-aa": 843,
+    "a11y-no-duplicate-ids": 27,
     "form-inquiry-contract": 0
   },
   "defects": {
@@ -50,17 +52,17 @@
     "NAV": 6,
     "SEM": 24,
     "CSS": 561,
-    "DUP": 12
+    "DUP": 15
   },
   "total": 18,
-  "total_instances": 603,
+  "total_instances": 606,
   "overrides": [],
   "details": [
     {
       "viewport": 1280,
       "checkId": "nav-jump-target-lands",
       "count": 2,
-      "message": "2 of 3 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #get-staffy@1465px, #contact-now@47406px"
+      "message": "2 of 3 in-page links land outside 65-133px (measured chrome 73px = header:73) — no single page-level cause identified; first: #get-staffy@1473px, #contact-now@47414px"
     },
     {
       "viewport": 1280,
@@ -89,14 +91,14 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 26w vs /board-preview/_demo/ \"the health checks the communication and the home raised environment everything was top not\" | 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
     },
     {
       "viewport": 375,
       "checkId": "nav-jump-target-lands",
       "count": 2,
-      "message": "2 of 3 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #get-staffy@1854px, #contact-now@30905px"
+      "message": "2 of 3 in-page links land outside 251-319px (measured chrome 259px = header:259) — no single page-level cause identified; first: #get-staffy@1862px, #contact-now@30913px"
     },
     {
       "viewport": 375,
@@ -125,14 +127,14 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 26w vs /board-preview/_demo/ \"the health checks the communication and the home raised environment everything was top not\" | 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
     },
     {
       "viewport": 768,
       "checkId": "nav-jump-target-lands",
       "count": 2,
-      "message": "2 of 3 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #get-staffy@1467px, #contact-now@47409px"
+      "message": "2 of 3 in-page links land outside 67-135px (measured chrome 75px = header:75) — no single page-level cause identified; first: #get-staffy@1475px, #contact-now@47417px"
     },
     {
       "viewport": 768,
@@ -161,8 +163,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 4,
-      "message": "4 passage(s) shared with a sibling: 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\" | 14w vs /index/ \"available blue staffy puppies 6 puppies available now males 1 500 females 1 700\""
+      "count": 5,
+      "message": "5 passage(s) shared with a sibling: 26w vs /board-preview/_demo/ \"the health checks the communication and the home raised environment everything was top not\" | 26w vs /kit-preview/ \"the health checks the communication and the home raised environment everything was top not\" | 21w vs /index/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
     }
   ]
 }

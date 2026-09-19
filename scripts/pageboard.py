@@ -177,7 +177,13 @@ def validate_ledger(ledger):
 # Mirrors schemas/board.schema.json's meta.slug pattern. BSUK routes nest
 # (`available-puppies/roman`), so a slug is one or more `[a-z0-9-]` segments joined by
 # single slashes: no leading or trailing slash, no empty segment, no traversal.
-SLUG = re.compile(r"^[a-z0-9-]+(/[a-z0-9-]+)*$")
+#
+# A leading underscore on the FIRST segment marks a record that is not a page: `_demo` is
+# the fixture the board-preview route, the cutter and their tests render, and no real slug
+# has ever started with one. It is inside the pattern rather than special-cased at the call
+# sites, so such a record still flattens to a filename, still validates, and still may not
+# contain `--`.
+SLUG = re.compile(r"^_?[a-z0-9-]+(/[a-z0-9-]+)*$")
 
 
 def slug_file(slug):
@@ -765,6 +771,18 @@ def gate_findings(board, ont, ledger, live, stage="build"):
 
     if not approval_matches(board):
         add("approval-hash", "FAIL", "no approval, or the record changed after it was approved — board it again")
+
+    # A section that offered three rendered styles and carries no pick would be built by
+    # someone guessing at which arrangement the breeder meant. DRAFTS SKIP IT: a record is
+    # boarded before it is picked, and failing the gate for not yet having been answered
+    # would make the board unreachable. Once the record says `approved`, every styled
+    # section owes an answer.
+    if board["meta"]["status"] == "approved":
+        picks = (board.get("approval") or {}).get("picks") or {}
+        for s in board["sections"]:
+            if s.get("styles") and s["id"] not in picks:
+                add("style-unpicked", "FAIL",
+                    f"section {s['id']} offers {'/'.join(s['styles'])} and the approval names no style for it")
 
     auth = authorization_check(board, ont)
     for e in auth["blocked"]:

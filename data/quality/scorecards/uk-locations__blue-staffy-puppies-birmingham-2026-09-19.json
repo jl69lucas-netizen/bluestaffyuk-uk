@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 0,
     "nav-anchors-resolve": 3,
     "nav-jump-target-lands": 3,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 0,
     "sem-all-six-levels": 0,
     "sem-title-case-headings": 0,
@@ -31,27 +32,26 @@
     "sem-statement-label-visible": 0,
     "schema-single-product-offer": 0,
     "schema-sold-not-instock": 0,
-    "schema-date-modified-present": 9,
+    "schema-date-modified-present": 12,
     "schema-no-visible-date": 3,
     "css-class-resolves": 48,
     "css-no-dead-component-rule": 45,
     "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
+    "dup-no-sibling-crossover": 156,
     "a11y-text-contrast-aa": 177,
+    "a11y-no-duplicate-ids": 15,
     "form-inquiry-contract": 0
   },
   "defects": {
     "SEM": 3,
-    "SCHEMA": 3,
     "CSS": 3
   },
   "instances": {
     "SEM": 18,
-    "SCHEMA": 3,
     "CSS": 3
   },
-  "total": 9,
-  "total_instances": 24,
+  "total": 6,
+  "total_instances": 21,
   "overrides": [],
   "details": [
     {
@@ -62,12 +62,6 @@
     },
     {
       "viewport": 1280,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
-    },
-    {
-      "viewport": 1280,
       "checkId": "css-class-resolves",
       "count": 1,
       "message": "1 class(es) on rendered elements match no CSS rule: prose-migrated x1"
@@ -80,12 +74,6 @@
     },
     {
       "viewport": 375,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
-    },
-    {
-      "viewport": 375,
       "checkId": "css-class-resolves",
       "count": 1,
       "message": "1 class(es) on rendered elements match no CSS rule: prose-migrated x1"
@@ -95,12 +83,6 @@
       "checkId": "sem-all-six-levels",
       "count": 6,
       "message": "heading level(s) absent: H1, H2, H3, H4, H5, H6 — inventory H1:0 H2:0 H3:0 H4:0 H5:0 H6:0"
-    },
-    {
-      "viewport": 768,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
     },
     {
       "viewport": 768,

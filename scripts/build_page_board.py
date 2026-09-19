@@ -2,33 +2,56 @@
 """build_page_board.py <slug>
 The board record → docs/artifacts/boards/<slug>.html, an Artifact with the db capability.
 Thumbnails are not part of this port (board_canvas.py and board_thumbs.mjs stay in CAG),
-so every option renders as a labelled box.
+so a section with no rendered styles renders every option as a labelled box.
+
+A section that DOES offer styles (`styles: ["S1","S2","S3"]`) gets the real thing: the
+three arrangements src/lib/boardStyles.ts defines, cut out of the built
+/board-preview/<slug>/ route by scripts/build_board_previews.py and mounted here in
+sandboxed srcdoc iframes at 1280 / 768 / 375. Run, in order:
+
+    npm run build
+    python3 scripts/build_board_previews.py <slug>
+    python3 scripts/build_page_board.py <slug>
+
 Publish with the Artifact tool: file_path=<html>, capabilities={"db": {}}."""
 import html as H, json, pathlib, re, sys
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
+PREVIEWS = PB.ROOT / "data" / "boards" / "previews"
 
+#: Every style preview iframe is this tall, and scrolls inside. Measuring the real height
+#: would mean a Playwright pass per block; a fixed frame with `overflow:auto` shows the top
+#: of every arrangement at three widths, which is what the pick is actually made on.
+PREVIEW_H = 520
+#: The three widths each style is shown at: desktop, tablet, phone.
+PREVIEW_W = (1280, 768, 375)
+
+# The board wears the SITE's palette, not a second one of its own: these are the values of
+# src/styles/tokens.css (steel / brass / bone), so an arrangement judged in a preview iframe
+# is judged against the same ground the real page will paint. Hex is spelled here because
+# this file GENERATES a standalone artifact document — the no-hex rule is about src/, which
+# has exactly one colour file, and an artifact cannot import it.
 CSS = """
-:root{--ground:#F7F5EE;--paper:#FFFFFF;--ink:#1E2A24;--ink-2:#4B5A52;--ink-3:#7A867F;--line:#DDD9CC;--green:#2D6A4F;--green-soft:#E3EEE8;--clay:#E8604C;--clay-ink:#c8472f;--clay-soft:#FBE7E2;--code-bg:#F0EEE5;--mark:#FFF3C4;--warn:#9C3A2A;--on-clay:#FFFFFF}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#151A17;--paper:#1D2420;--ink:#ECEBE3;--ink-2:#B7BDB6;--ink-3:#7F8983;--line:#2F3934;--green:#6FB48F;--green-soft:#1F2F28;--clay:#F08A78;--clay-ink:#F08A78;--clay-soft:#3A2622;--code-bg:#11161380;--mark:#4A3F16;--warn:#F2A08F;--on-clay:#191F1C}}
-:root[data-theme="dark"]{--ground:#151A17;--paper:#1D2420;--ink:#ECEBE3;--ink-2:#B7BDB6;--ink-3:#7F8983;--line:#2F3934;--green:#6FB48F;--green-soft:#1F2F28;--clay:#F08A78;--clay-ink:#F08A78;--clay-soft:#3A2622;--code-bg:#11161380;--mark:#4A3F16;--warn:#F2A08F;--on-clay:#191F1C}
+:root{--ground:#F4F1EA;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#5E6B7A;--line:#DAD6CC;--green:#1F3A52;--green-soft:#E4EAF1;--clay:#C9A227;--clay-ink:#A8861C;--clay-soft:#EFE3B4;--code-bg:#FAF8F3;--mark:#EFE3B4;--warn:#9A4A2A;--on-clay:#14202B}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#14202B;--paper:#1F3A52;--ink:#F4F1EA;--ink-2:#E4EAF1;--ink-3:#8FA3B8;--line:#5B7C99;--green:#8FA3B8;--green-soft:#1F3A52;--clay:#C9A227;--clay-ink:#EFE3B4;--clay-soft:#1F3A52;--code-bg:#14202B;--mark:#A8861C;--warn:#EFE3B4;--on-clay:#14202B}}
+:root[data-theme="dark"]{--ground:#14202B;--paper:#1F3A52;--ink:#F4F1EA;--ink-2:#E4EAF1;--ink-3:#8FA3B8;--line:#5B7C99;--green:#8FA3B8;--green-soft:#1F3A52;--clay:#C9A227;--clay-ink:#EFE3B4;--clay-soft:#1F3A52;--code-bg:#14202B;--mark:#A8861C;--warn:#EFE3B4;--on-clay:#14202B}
 *{box-sizing:border-box}
-body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,Segoe UI,sans-serif}
 .wrap{max-width:1120px;margin:0 auto;padding:36px 24px 96px}
 header.masthead{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:2px solid var(--green);margin-bottom:24px}
 .eyebrow{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--green);font-weight:600;margin:0 0 6px}
-h1.title{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+h1.title{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.1;margin:0;text-wrap:balance}
 .meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
 .pill{display:inline-block;border-radius:50px;padding:2px 9px;font-size:11px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
 section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:24px 28px 26px;margin:0 0 20px}
-section.sec h2{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-size:22px;margin:0 0 10px;line-height:1.2}
+section.sec h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22px;margin:0 0 10px;line-height:1.2}
 .md p,.md li{max-width:72ch}.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
 .md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--green);padding:6px 10px;white-space:nowrap}
 .md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
-.md code{font:13px/1.5 "IBM Plex Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
-.tree{font:13px/1.65 "IBM Plex Mono",ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
+.md code{font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.tree{font:13px/1.65 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
 .hit{color:var(--warn);font-weight:600}
 #entity-graph{height:440px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
 .legend{font-size:12px;color:var(--ink-3);margin:6px 0 0}
@@ -38,7 +61,7 @@ section.sec h2{font-family:"Source Serif 4",Georgia,serif;font-weight:700;font-s
 .opt.off{opacity:.55}.opt label{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:600;cursor:pointer}
 .opt .why{font-size:12px;color:var(--ink-3)}
 .opt .pill{justify-self:start;text-transform:none;letter-spacing:0;background:var(--green-soft);border-color:var(--green);color:var(--ink-2)}
-textarea.note{width:100%;min-height:52px;font:13px/1.5 "IBM Plex Sans",system-ui,sans-serif;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--ground);color:var(--ink)}
+textarea.note{width:100%;min-height:52px;font:13px/1.5 "Source Sans 3",system-ui,sans-serif;border:1px solid var(--line);border-radius:6px;padding:8px;background:var(--ground);color:var(--ink)}
 .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .slot{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:13px}.slot .st{font-weight:700}.slot .st.missing{color:var(--warn)}
 #approve{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -50,6 +73,18 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .kit .opt b{font-size:13px;font-weight:600}
 .kit .opt .pill:first-child{justify-self:start;background:var(--paper);border-color:var(--line);color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
 @media (max-width:640px){header.masthead{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:18px 16px 20px}}
+.howto{margin:0 0 18px;padding:10px 14px;border-left:3px solid var(--clay);background:var(--clay-soft);color:var(--ink);font-size:14px;border-radius:0 6px 6px 0}
+fieldset.styles{border:1px solid var(--line);border-radius:8px;padding:10px 12px 14px;margin:8px 0 6px;background:var(--paper)}
+fieldset.styles legend{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:0 6px}
+.style{border-top:1px dashed var(--line);padding:10px 0 4px}
+.style:first-of-type{border-top:0}
+.style label{display:flex;gap:8px;align-items:baseline;font-size:15px;font-weight:600;cursor:pointer}
+.style label .why{font-weight:400;font-size:12px;color:var(--ink-3)}
+.frames{display:flex;gap:10px;overflow-x:auto;padding:8px 0 2px;align-items:flex-start}
+.frame{flex:none;display:grid;gap:4px}
+.frame span{font-size:11px;color:var(--ink-3);letter-spacing:.04em}
+.frame iframe{border:1px solid var(--line);border-radius:6px;background:var(--paper);display:block}
+.noprev{font-size:13px;color:var(--warn);margin:6px 0 0}
 """
 
 
@@ -239,6 +274,68 @@ def kit_cards(board, ledger, thumbs, slug):
     return cards
 
 
+def load_previews(slug):
+    """The cut style blocks for this slug, or an empty payload when none were cut yet.
+
+    ABSENCE IS NOT AN ERROR here: a board is often built before the route has been rendered
+    (a record with no styled section never needs one at all). The fieldset then says, in
+    the board itself, that the renderings are missing and how to produce them — a silent
+    blank frame would read as a style that renders to nothing."""
+    p = PREVIEWS / (PB.slug_file(slug) + ".json")
+    if not p.exists():
+        return {"css": "", "blocks": {}, "names": {}, "images": {}}
+    data = json.loads(p.read_text(encoding="utf-8"))
+    data.setdefault("names", {})
+    data.setdefault("images", {})
+    return data
+
+
+def style_fieldset(section, previews):
+    """The three rendered arrangements this section offers, as one radio group.
+
+    The radio group is `pick-<section id>` — the SAME name a component option uses, because
+    it is the same decision in the same place: what this section is. A section that offers
+    styles offers them INSTEAD of a ledger component card, so the two can never both write
+    the record's pick.
+
+    Each style shows three frames (1280 / 768 / 375). The frames are filled at load from
+    one copy of the blocks and one copy of the page CSS (see BLOCKS/PREVIEW_CSS in the
+    board's script): a static `srcdoc` per frame would paste the whole kit stylesheet nine
+    times per section, and the board is a committed file."""
+    sid = section["id"]
+    pick = section["options"]["pick"]
+    rows = []
+    for style in section["styles"]:
+        key = f"{sid}|{style}"
+        name = previews["names"].get(key, "")
+        have = key in previews["blocks"]
+        frames = "".join(
+            f'<div class="frame"><span>{w}px</span>'
+            f'<iframe title="{esc(style)} at {w} pixels wide" sandbox="" loading="lazy" '
+            f'scrolling="auto" data-block="{esc(key)}" width="{w}" height="{PREVIEW_H}" '
+            f'style="width:{w}px;height:{PREVIEW_H}px"></iframe></div>'
+            for w in PREVIEW_W) if have else (
+            '<p class="noprev">Not rendered yet — run <code>npm run build</code>, then '
+            '<code>python3 scripts/build_board_previews.py &lt;slug&gt;</code>.</p>')
+        checked = " checked" if pick == style else ""
+        rows.append(
+            f'<div class="style"><label><input type="radio" name="pick-{esc(sid)}" '
+            f'value="{esc(style)}"{checked}> {esc(style)}'
+            + (f' <span class="why">{esc(name)}</span>' if name else "")
+            + f'</label><div class="frames">{frames}</div></div>')
+    return (f'<fieldset class="styles"><legend>Pick one arrangement for {esc(section["heading"])}</legend>'
+            + "".join(rows) + "</fieldset>")
+
+
+def picked_sections(board):
+    """Every section id the approve button must see an answer for.
+
+    A styled section owes its style; a section with no styles but a non-`standard` shape
+    owes its ledger component, as it always has. One list, so the button and the record
+    can never disagree about what a complete board is."""
+    return [s["id"] for s in board["sections"] if s.get("styles") or s["shape"] != "standard"]
+
+
 STANDARD_FORM_DEFAULT = "kit two-column inquiry form (field contract by slug)"
 
 
@@ -312,7 +409,8 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
-def render(board, ont, ledger, live, thumbs, slug):
+def render(board, ont, ledger, live, thumbs, slug, previews=None):
+    previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     hits = PB.header_hits(board, live)          # exactly what the gate will fail on
     qhits = PB.faq_hits(board, live)            # and what it will warn on
     d = PB.distribution(board)
@@ -391,6 +489,14 @@ def render(board, ont, ledger, live, thumbs, slug):
 
     opt_html = []
     for s in board["sections"]:
+        if s.get("styles"):
+            # A styled section is picked by ARRANGEMENT, not by ledger shell: the fieldset
+            # replaces the option cards so only one control ever writes picks[<id>].
+            opt_html.append(
+                f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n"
+                + style_fieldset(s, previews)
+                + f"\n<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
+            continue
         if s["shape"] == "standard":
             dflt = standard_default(s, board)
             cards = [f'<div class="opt"><div class="nothumb">{esc(dflt)}</div>'
@@ -415,12 +521,17 @@ def render(board, ont, ledger, live, thumbs, slug):
     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
     graph = js(entity_graph_data(board, ont))
     record_hash = PB.record_hash(board)
-    return f"""<title>Page Board: {esc(slug)}</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono:wght@400&display=swap">
+    # The charset is declared: the board carries em dashes and pound signs from the record
+    # and from src/lib/boardStyles.ts, and a document served without one is decoded as
+    # latin-1 by any viewer that does not send a charset of its own.
+    return f"""<meta charset="utf-8">
+<title>Page Board: {esc(slug)}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
 <style>{CSS}</style>
 <div class="wrap">
 <header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>
 <div class="meta"><span class="pill">status: {esc(m['status'])}</span> <span class="pill">research as of {esc(m['research_as_of'])}</span><br>record <code>{record_hash[:12]}</code></div></header>
+<p class="howto"><b>How to pick.</b> Read the outline in block 3, then work down block 6: each section shows its three arrangements rendered from the kit at 1280, 768 and 375 pixels. Choose the one whose SHAPE suits the section — the copy in the frames is the outline's own stub text, not the page's prose. Pick an H1 and a title/description pair in block 2, leave a note anywhere you want something changed, then approve in block 8.</p>
 <div id="doc"></div>
 </div>
 {blocks}
@@ -468,8 +579,29 @@ def render(board, ont, ledger, live, thumbs, slug):
       if(mq.addEventListener)mq.addEventListener('change',repaint);else if(mq.addListener)mq.addListener(repaint);
     }}
   }}
+  // The style frames are filled HERE rather than carrying a static srcdoc each: the page
+  // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
+  // per styled section inside the committed file.
+  var PREVIEW_CSS={js(previews["css"])};var BLOCKS={js(previews["blocks"])};
+  // A srcdoc frame is sandboxed and has NO origin, so `/images/x.webp` inside one resolves
+  // to nothing. The cutter carried every photo along as a data URI; each `src` is swapped
+  // for its entry as the frame is filled, once per frame rather than once per block.
+  var IMAGES={js(previews.get("images", {}))};
+  function withImages(html){{
+    return html.replace(/src="(\\/[^"]*)"/g,function(m,u){{
+      return IMAGES[u]?'src="'+IMAGES[u]+'"':m;
+    }});
+  }}
+  document.querySelectorAll('iframe[data-block]').forEach(function(f){{
+    var inner=BLOCKS[f.getAttribute('data-block')];
+    if(inner===undefined)return;
+    inner=withImages(inner);
+    f.srcdoc='<!doctype html><meta charset="utf-8"><style>html{{overflow:auto}}'
+      +'body{{margin:0;background:#F4F1EA;color:#1B2430;font-family:"Source Sans 3",system-ui,sans-serif}}'
+      +PREVIEW_CSS+'</style>'+inner;
+  }});
   var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js([s["id"] for s in board["sections"] if s["shape"] != "standard"])};
+  var SIGNATURE_SECTIONS={js(picked_sections(board))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
@@ -526,11 +658,18 @@ def main():
     # No thumbnails: board_thumbs.mjs is not ported, so the map stays empty and every
     # option card renders as its labelled box.
     thumbs = {}
+    previews = load_previews(slug)
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / (PB.slug_file(slug) + ".html")
-    out.write_text(render(board, ont, ledger, live, thumbs, slug), encoding="utf-8")
-    print("wrote %s — %d sections, %d live pages checked"
-          % (out.relative_to(PB.ROOT), len(board["sections"]), len(live)))
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews), encoding="utf-8")
+    styled = [s for s in board["sections"] if s.get("styles")]
+    want = sum(len(s["styles"]) for s in styled)
+    have = sum(1 for s in styled for st in s["styles"] if f"{s['id']}|{st}" in previews["blocks"])
+    print("wrote %s — %d sections, %d live pages checked, %d/%d style renderings embedded"
+          % (out.relative_to(PB.ROOT), len(board["sections"]), len(live), have, want))
+    if want and have < want:
+        print("  some styles are not rendered: run npm run build, then "
+              "python3 scripts/build_board_previews.py %s" % slug)
 
 
 if __name__ == "__main__":

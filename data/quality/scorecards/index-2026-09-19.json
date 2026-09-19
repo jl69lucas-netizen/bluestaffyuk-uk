@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 60,
     "nav-anchors-resolve": 15,
     "nav-jump-target-lands": 9,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 198,
     "sem-all-six-levels": 198,
     "sem-title-case-headings": 198,
@@ -36,8 +37,9 @@
     "css-class-resolves": 3405,
     "css-no-dead-component-rule": 45,
     "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
+    "dup-no-sibling-crossover": 156,
     "a11y-text-contrast-aa": 894,
+    "a11y-no-duplicate-ids": 48,
     "form-inquiry-contract": 0
   },
   "defects": {
@@ -52,10 +54,10 @@
     "NAV": 3,
     "SEM": 51,
     "CSS": 798,
-    "DUP": 36
+    "DUP": 42
   },
   "total": 20,
-  "total_instances": 890,
+  "total_instances": 896,
   "overrides": [],
   "details": [
     {
@@ -97,8 +99,8 @@
     {
       "viewport": 1280,
       "checkId": "dup-no-sibling-crossover",
-      "count": 12,
-      "message": "12 passage(s) shared with a sibling: 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /kit-preview/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 74w vs /board-preview/_demo/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /board-preview/_demo/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \""
     },
     {
       "viewport": 375,
@@ -133,8 +135,8 @@
     {
       "viewport": 375,
       "checkId": "dup-no-sibling-crossover",
-      "count": 12,
-      "message": "12 passage(s) shared with a sibling: 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /kit-preview/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 74w vs /board-preview/_demo/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /board-preview/_demo/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \""
     },
     {
       "viewport": 768,
@@ -175,8 +177,8 @@
     {
       "viewport": 768,
       "checkId": "dup-no-sibling-crossover",
-      "count": 12,
-      "message": "12 passage(s) shared with a sibling: 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /kit-preview/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \" | 21w vs /buy-blue-staffy-puppies-uk/ \"pets in litter males 2 females 2 age 12 weeks 6 days ready to leave now viewable with moth\""
+      "count": 14,
+      "message": "14 passage(s) shared with a sibling: 74w vs /board-preview/_demo/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 74w vs /kit-preview/ \"after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy\" | 65w vs /board-preview/_demo/ \"we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first \""
     }
   ]
 }

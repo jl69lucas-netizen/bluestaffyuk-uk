@@ -107,7 +107,13 @@ HUBS = ("available-puppies", "uk-locations", "blog")
 # endpoint: there is no stub allowance any more, because the canvas's `action` override —
 # five live endpoints on one page being five ways for a stray click to send a real enquiry
 # — went with the canvas, and the preview mounts exactly one form.
-NON_CONTENT_ROUTES = ("kit-preview",)
+#
+# `board-preview` is project 4's equivalent (src/pages/board-preview/[slug].astro): one
+# hidden noindex page per DRAFT board record, rendering that record's sections three ways
+# each so the page board can show arrangements rather than name them. A `form`-shaped
+# section mounts ContactFormKit there, three times over — specimens of one form, none of
+# them reachable.
+NON_CONTENT_ROUTES = ("kit-preview", "board-preview")
 
 
 # data/page-map.json's `kind` is what the build actually produced; a hand list of slugs
@@ -127,7 +133,11 @@ def _kinds():
 
 
 def _contract_name(slug: str) -> str:
-    if slug in NON_CONTENT_ROUTES:
+    # Whole slug OR first path segment: board-preview's slugs nest (`board-preview/_demo`),
+    # and an exclusion that only matched the bare name would leave every child of a
+    # non-content route audited as a content page. `kit-preview-notes` is unaffected — that
+    # is a different first segment, not a child of `kit-preview`.
+    if slug in NON_CONTENT_ROUTES or slug.split("/", 1)[0] in NON_CONTENT_ROUTES:
         return "none"
     kind = _kinds().get(slug)
     if kind in KIND_CONTRACT:

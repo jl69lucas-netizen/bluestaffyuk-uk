@@ -11,7 +11,7 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 39,
     "nav-anchors-resolve": 18,
     "nav-jump-target-lands": 9,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 150,
     "sem-all-six-levels": 150,
     "sem-title-case-headings": 147,
@@ -36,8 +37,9 @@
     "css-class-resolves": 3288,
     "css-no-dead-component-rule": 45,
     "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
+    "dup-no-sibling-crossover": 156,
     "a11y-text-contrast-aa": 1365,
+    "a11y-no-duplicate-ids": 21,
     "form-inquiry-contract": 0
   },
   "defects": {

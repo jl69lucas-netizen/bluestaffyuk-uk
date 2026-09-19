@@ -11,12 +11,12 @@
   ],
   "examined": {
     "pages": 1,
-    "checks": 25
+    "checks": 27
   },
   "examined_by_check": {
     "layout-no-horizontal-overflow": 3,
-    "layout-min-font-size": 264,
-    "layout-tap-target-size": 210,
+    "layout-min-font-size": 205,
+    "layout-tap-target-size": 160,
     "layout-hero-counter-separation": 0,
     "layout-h3-image-first": 0,
     "layout-image-box-reserved": 0,
@@ -24,6 +24,7 @@
     "img-alt-present-and-unique": 0,
     "nav-anchors-resolve": 3,
     "nav-jump-target-lands": 3,
+    "nav-bottom-chrome-clear": 0,
     "sem-heading-order": 3,
     "sem-all-six-levels": 3,
     "sem-title-case-headings": 3,
@@ -31,25 +32,26 @@
     "sem-statement-label-visible": 0,
     "schema-single-product-offer": 0,
     "schema-sold-not-instock": 0,
-    "schema-date-modified-present": 9,
+    "schema-date-modified-present": 12,
     "schema-no-visible-date": 3,
-    "css-class-resolves": 45,
-    "css-no-dead-component-rule": 45,
-    "css-component-color-not-overridden": 0,
-    "dup-no-sibling-crossover": 150,
-    "a11y-text-contrast-aa": 258,
+    "css-class-resolves": 222,
+    "css-no-dead-component-rule": 288,
+    "css-component-color-not-overridden": 11,
+    "dup-no-sibling-crossover": 156,
+    "a11y-text-contrast-aa": 205,
+    "a11y-no-duplicate-ids": 21,
     "form-inquiry-contract": 0
   },
   "defects": {
     "SEM": 3,
-    "SCHEMA": 3
+    "CSS": 3
   },
   "instances": {
     "SEM": 15,
-    "SCHEMA": 3
+    "CSS": 150
   },
   "total": 6,
-  "total_instances": 18,
+  "total_instances": 165,
   "overrides": [],
   "details": [
     {
@@ -60,9 +62,9 @@
     },
     {
       "viewport": 1280,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+      "checkId": "css-no-dead-component-rule",
+      "count": 50,
+      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 375,
@@ -72,9 +74,9 @@
     },
     {
       "viewport": 375,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+      "checkId": "css-no-dead-component-rule",
+      "count": 50,
+      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     },
     {
       "viewport": 768,
@@ -84,9 +86,9 @@
     },
     {
       "viewport": 768,
-      "checkId": "schema-date-modified-present",
-      "count": 1,
-      "message": "no dateModified in any of the 3 JSON-LD block(s) — scripts/generate_page_dates.py feeds this"
+      "checkId": "css-no-dead-component-rule",
+      "count": 50,
+      "message": "50 page-scoped rule(s) match nothing on the page: .site-header | .site-header > .container | .site-header__logo | .site-header__logo svg | .site-header nav ul | .site-footer | .site-footer__grid | .site-footer h2 | .site-footer a | .site-footer ul — triage each: a variant this page does not ship, or a component the spec mandates and the page never rendered"
     }
   ]
 }
