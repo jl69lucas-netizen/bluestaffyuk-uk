@@ -16,5 +16,23 @@
     "q": "What comes with a puppy?",
     "a": "A comprehensive puppy package: the first vaccinations, a microchip, a full veterinary health check, deworming and defleaing, the relevant paperwork, and a puppy pack to help them settle in.",
     "source": "src/pages/index.astro"
+  },
+  {
+    "id": "privacy-data-collected",
+    "q": "What personal information does BlueStaffyUK collect?",
+    "a": "When you enquire we collect your name, email address, phone number, postal address and anything you choose to tell us about your home and family. The website also records automated data such as your IP address, browser type and the pages you visit.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "privacy-cookies",
+    "q": "Does this website use cookies?",
+    "a": "Yes. Essential cookies keep the site working and analytics cookies, including Google Analytics, help us see how the site is used and improve it.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "privacy-delete-data",
+    "q": "How do I ask for my data to be deleted?",
+    "a": "Write to us at staffies@bluestaffyuk.uk or use the contact page. You can ask to view, correct or delete your data at any time, and we answer all legitimate requests within one month.",
+    "source": "src/pages/privacy-policy-uk/index.astro"
   }
 ]

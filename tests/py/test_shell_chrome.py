@@ -33,13 +33,20 @@ FOOTER_TAG = re.compile(r"<footer\b")
 KIT_ROUTES = {"/available-puppies/", "/uk-locations/", "/blog/"}
 KIT_PREFIXES = ("/available-puppies/",)
 
-# Internal preview routes, both noindex, both of which RENDER header specimens as their
-# CONTENT: /kit-preview/ demos the header component below its own, and /board-preview/_demo/
-# shows three styles of several sections at once. Their pages are on BaseLayout, so they also
-# carry the legacy header for real — a page that is simultaneously on the legacy chrome and
-# showing a kit header to look at is the one place where "both headers" is the correct
-# answer. Counting specimens as page chrome would make this a test about the previews.
-PREVIEWS = {"/kit-preview/", "/board-preview/_demo/"}
+# Internal preview routes, noindex, which RENDER header specimens as their CONTENT:
+# /kit-preview/ demos the header component below its own, and every /board-preview/<slug>/
+# shows three styles of several sections at once (a hero section is three header specimens
+# by itself). Their pages are on BaseLayout, so they also carry the legacy header for real —
+# a page that is simultaneously on the legacy chrome and showing a kit header to look at is
+# the one place where "both headers" is the correct answer. Counting specimens as page
+# chrome would make this a test about the previews. The prefix, not a fixed set: the route
+# builds one page per DRAFT record, so the set grows with every page board (task 7 onward).
+PREVIEW_PREFIXES = ("/board-preview/",)
+PREVIEWS = {"/kit-preview/"}
+
+
+def _is_preview(route):
+    return route in PREVIEWS or route.startswith(PREVIEW_PREFIXES)
 
 
 def _routes():
@@ -63,7 +70,7 @@ def test_every_built_page_has_exactly_one_header_and_one_footer():
     for route, html in _routes().items():
         headers = len(HEADER_TAG.findall(html))
         footers = len(FOOTER_TAG.findall(html))
-        if route in PREVIEWS:
+        if _is_preview(route):
             if headers < 1 or footers < 1:
                 bad.append(f"{route}: {headers} header(s), {footers} footer(s)")
             continue
@@ -75,7 +82,7 @@ def test_every_built_page_has_exactly_one_header_and_one_footer():
 def test_no_page_mounts_both_the_legacy_header_and_the_kit_one():
     """The slot fallback either fired or it did not. Both is the duplicate-header defect."""
     both = [route for route, html in _routes().items()
-            if route not in PREVIEWS
+            if not _is_preview(route)
             and 'class="site-header' in html and 'class="kit-hdr' in html]
     assert not both, "pages carrying both headers: " + ", ".join(both)
 
@@ -84,7 +91,7 @@ def test_each_page_carries_the_header_its_layout_is_supposed_to_give_it():
     rebuilt = set(json.loads((ROOT / "data/facts/rebuilt.json").read_text()))
     wrong = []
     for route, html in _routes().items():
-        if route in PREVIEWS:
+        if _is_preview(route):
             continue
         kit = 'class="kit-hdr' in html
         legacy = 'class="site-header' in html
