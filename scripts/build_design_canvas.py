@@ -9,7 +9,9 @@ their /_blob/ urls are kept in data/design/canvas-assets.json and reused.
 
 Astro inlines the built CSS, so there is no dist/_astro/*.css to read: the stylesheet for an
 artboard is every <style> block of the built route, pasted in document order so the @layer
-cascade survives.
+cascade survives. Reading the route -- the sections, that stylesheet and the asset rewriting --
+moved to scripts/_kit_sections.py in Task 22, so the Design System builder cuts the same
+sections from the same markup rather than keeping a second copy of these regexes.
 
 THIRTY-NINE BOARDS, NOT SIXTY-FIVE. Task 19 pruned the kit to the picks and deleted the
 canvas route, so there is no variant letter left to put on a board: each of the thirteen
@@ -22,58 +24,12 @@ Usage: python3 scripts/build_design_canvas.py [--dist dist/kit-preview/index.htm
        [--out docs/artifacts/canvas] [--heights data/design/canvas-heights.json]
 Heights come from scripts/measure_canvas_heights.mjs (Playwright) — run it first.
 """
-import argparse, dataclasses, html as H, json, pathlib, re, sys, datetime as dt
+import argparse, html as H, json, pathlib, re, sys, datetime as dt
+
+from _kit_sections import (FONTS_LINK, IMG_SRC, SEC, SCRIPT, STYLE, WIDTH, Section,
+                           find_sections, page_css, rewrite_assets)
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FONTS_LINK = ('<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
-              'family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">')
-SEC = re.compile(r'<section([^>]*)data-component="([a-z-]+)"([^>]*)>(.*?)</section>', re.S)
-WIDTH = re.compile(r'data-width="(\d+)"')
-IMG_SRC = re.compile(r'(src|srcset)="([^"]+)"')
-STYLE = re.compile(r"<style[^>]*>(.*?)</style>", re.S)
-SCRIPT = re.compile(r"<script\b[^>]*>.*?</script>", re.S)
-
-
-@dataclasses.dataclass
-class Section:
-    component: str
-    width: int
-    inner: str
-
-
-def find_sections(html):
-    """Every artboard section, with its behaviour stripped out.
-
-    A component's own `<script>` — SiteHeaderKit's search pill is the first — is hoisted into
-    the section by the build and points at a `/_astro/*.js` bundle. An artboard is a static
-    rendering for the eye, served from the canvas where that bundle does not exist and where
-    `/search-index.json` does not either, so the tag would be a 404 and nothing more. It is
-    dropped here, once, so neither the artboard nor the missing-asset scan ever sees it."""
-    out = []
-    for m in SEC.finditer(html):
-        attrs = m.group(1) + m.group(3)
-        w = WIDTH.search(attrs)
-        out.append(Section(m.group(2), int(w.group(1)) if w else 1280,
-                           SCRIPT.sub("", m.group(4)).strip()))
-    return out
-
-
-def page_css(html):
-    """Every inlined <style> block of the built page, in document order (@layer order matters)."""
-    return "\n".join(m.group(1).strip() for m in STYLE.finditer(html))
-
-
-def rewrite_assets(inner, assets):
-    def sub(m):
-        attr, val = m.group(1), m.group(2)
-        if attr == "srcset":
-            parts = []
-            for cand in val.split(","):
-                url, _, desc = cand.strip().partition(" ")
-                parts.append((assets.get(url, url) + (" " + desc if desc else "")))
-            return f'srcset="{", ".join(parts)}"'
-        return f'{attr}="{assets.get(val, val)}"'
-    return IMG_SRC.sub(sub, inner)
-
 
 def artboard(sec, css, fonts_link, height, assets, width=None):
     """One artboard. `width` overrides the section's own board width, which is how the same

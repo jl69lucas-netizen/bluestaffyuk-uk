@@ -15,3 +15,4 @@ docs/reports/**/*.json
 data/quality/perf/
 data/boards/inbox/
 docs/artifacts/canvas/
+docs/artifacts/design-system/

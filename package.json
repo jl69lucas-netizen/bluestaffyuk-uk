@@ -25,6 +25,8 @@
     "board:build": "python3 scripts/build_page_board.py",
     "canvas:heights": "node scripts/measure_canvas_heights.mjs",
     "canvas:build": "python3 scripts/build_design_canvas.py",
+    "ds:build": "python3 scripts/build_design_system.py",
+    "ds:manifest": "python3 scripts/design_system_publish_manifest.py",
     "picks:board": "python3 scripts/build_picks_board.py",
     "picks:pull": "python3 scripts/pull_design_picks.py",
     "brand:lockups": "python3 scripts/build_lockups.py",
