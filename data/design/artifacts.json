@@ -1,5 +1,8 @@
 {
  "canvas": "https://claude.ai/artifact/TAc7sSMqtcANRq9ujEQ5uR",
  "picks_board": "https://claude.ai/artifact/6SDNFTFxTj3KLhgC2Gpdc8",
- "design_system": "https://claude.ai/artifact/FfuXWrR6syXHkXHyAoAwno"
+ "design_system": "https://claude.ai/artifact/FfuXWrR6syXHkXHyAoAwno",
+ "boards": {
+  "privacy-policy-uk": "https://claude.ai/artifact/6GGxx5TDwfmiiSwqwcU8L1"
+ }
 }
