@@ -178,6 +178,15 @@ renderings are judged rather than assumed, and they earned their place immediate
 three-up `Testimonial` was holding 816px of grid tracks at a 375px viewport and pushing the
 document sideways, which only the 375 row could show.
 
+**How the picks were taken.** The board is an Artifact with a shared database; the owner
+clicked thirteen picks plus the mark into it, the rows were read back with the `ArtifactData`
+tool into a one-shot operator inbox, and `scripts/pull_design_picks.py` wrote
+`data/design/picks.json` from them. That inbox (`data/design/inbox/`) was a hand-off buffer for
+a single session and is **deleted at close-out**, together with the now-dead
+`scripts/canvas_publish_manifest.py`. `data/design/picks.json` is the committed record and the
+only thing anything reads; `scripts/design_system_publish_manifest.py` stays, because the
+Design System artifact is still republished from it.
+
 Image assets are de-duplicated through `data/design/canvas-assets.json` (eleven uploads for the
 canvas) and `data/design/design-system-assets.json` (fourteen for the Design System); the
 generators refuse to write an asset entry whose blob is missing, print the upload list and exit
@@ -409,6 +418,38 @@ in `.claude` with single prose statements.
 
 `BSUK_RELEASE=1 npm run check:placeholders` still refuses to ship any of them.
 
+## Working rule 11, and the two logo rasters this project nearly lost
+
+Found by the whole-branch review at close-out, after the two gate runs, and fixed in the
+review commit.
+
+Project 3 replaced the logo with SVG lockups and, while doing it, deleted the two rasters the
+old logo was served from — `public/images/blue-staffy-uk-official-logo0.png` and
+`public/images/blue-staffy-uk-header-logo-88.webp`. Nothing in `src/` referenced them any
+more, the build was green, and every gate stayed at zero, because no gate in this repo knew
+that a URL with no reference in the source tree can still be a URL somebody fetches. Both
+files had been served long enough to rank in Google Images.
+
+The breeder confirmed the constraint on 2026-09-19 and it is now **CLAUDE.md working rule
+11**: every file under `public/images/`, and the YouTube embeds in `data/settings.json`, is
+reused first by any page projects 4–6 build or rebuild, keeping the original filename, path
+and alt text; a served file is never renamed, deleted or re-encoded, and a replacement image
+is added *beside* the old one rather than in its place. It is carried as **Known Issue 26**, a
+standing constraint rather than a defect with an owner.
+
+Both rasters are restored at their original paths. The rule now has a mechanical backstop in
+two halves, so neither side can drift:
+
+| Test | What it asserts |
+|---|---|
+| `tests/py/test_images.py::test_legacy_logo_rasters_are_still_served` | both files **exist** under `public/images/`, citing rule 11 |
+| `tests/py/test_brand_assets.py::test_settings_and_shell_use_the_svg_logo` | no `.astro` **references** them — the shell is on the SVG lockups |
+
+The second test previously asserted the two files were *absent*; those two lines were the
+thing that would have re-deleted them on the next pass, and they are gone, with the reasoning
+recorded in their place. Absence of a reference is now proved without proving absence of the
+file, which is the distinction rule 11 turns on.
+
 ## The location-page-builder skill, rebuilt
 
 Out of the original plan and recorded here so it is not read as scope creep.
@@ -420,6 +461,20 @@ project 3 is what made the kit component names real — a skill that names `Info
 `Testimonial` could not have been written before they existed — and because project 5 will
 build 28 pages from it. The skill also names the query-augmentation step and records that there
 is no skill for it (amendment 3f); that gap is carried as a new open item.
+
+**Corrected at close-out.** The skill's page-spine table was written while the kit still had
+five variants per component, so every row named a variant letter (`Hero` variant `c`,
+`InfoCard` variant `b`) and a paragraph told the reader to take those letters from
+`data/design/picks.json`. After the prune there is no `variant` prop to pass, so those
+instructions would have produced a build error on the first city page project 5 tried. The
+table now names the real API — a component renders its picked design and takes no letter, and
+`Button kind`, `Testimonial mode` plus an optional `reviews`, `InfoCard kind`,
+`SectionDivider inverse` and `Hero as` are the only props there are — with `picks.json`
+described as the record of what was picked rather than an input. One substantive bug went with
+it: the newsletter block was specified as `InfoCard kind="note"`, and `note` is not in the
+statement vocabulary (`src/lib/statement.ts` holds exactly `fact`, `observed`,
+`recommendation`), so `sem-statement-label-visible` would have reported every newsletter block
+as a defect. It is now `kind="recommendation"` with an explicit `label="Newsletter"`.
 
 ## Second-run confirmation
 
@@ -480,7 +535,7 @@ and remain open as Known Issue 15.
 ## Open items for later projects
 
 Known Issue 4 is **closed by this project**. Items 3 and 5–16 carry forward with current status;
-17–24 are new.
+17–26 are new.
 
 3. **The orphan check is blinded by the catch-all route.** `builtRoutesWithoutSource()` in
    `tests/render/lib/freshness.ts` still cannot prove any route orphaned while
@@ -564,21 +619,23 @@ Known Issue 4 is **closed by this project**. Items 3 and 5–16 carry forward wi
     never regenerated. Whoever opens project 4 must repoint the default at a new project 4
     baseline file, or `npm run baseline` will keep judging project 4's scorecards against
     project 3's table.
+26. **Existing images and videos must be reused with their URLs intact — working rule 11.**
+    See the section below. **Standing constraint for projects 4–6.**
 
 ## Definition of done — spec §9, as amended by §11
 
 | # | Requirement (amended) | Verdict | Evidence |
 |---|---|---|---|
 | 1 | `check:all` green twice; marker gate `0 problems`; the placeholder total does not rise except for `REVIEW_PLACEHOLDER` slots, which are listed here | **PASS** | exit 0 both runs; `examined 240 files; 0 problems`; placeholders **1698 → 1605**, a fall; `REVIEW_PLACEHOLDER` **0**, table above |
-| 2 | `test:py` green twice, including `test_design_tokens.py`, `test_brand_assets.py` and `test_design_picks.py`, not skipped | **PASS** | `1353 passed, 7 skipped, 1 xfailed`, identical both runs; the three files contribute 10 + 7 + 5 tests and none is skipped; the `xfailed` is the strict-xfail proving the hex-ban detector still fires |
+| 2 | `test:py` green twice, including `test_design_tokens.py`, `test_brand_assets.py` and `test_design_picks.py`, not skipped | **PASS** | `1353 passed, 7 skipped, 1 xfailed` on both gate runs, and **`1355 passed, 7 skipped, 1 xfailed`** after the close-out review added two tests — the legacy-raster guard for working rule 11, and the artifact-name-to-file mapping guard; the three files contribute 10 + 7 + 5 tests and none is skipped; the `xfailed` is the strict-xfail proving the hex-ban detector still fires |
 | 3 | `test:render:meta` green, the three deferred checks promoted, Guard 2 prints no `DEFERRED`; `test:render:pages` at the recorded project 3 baseline with no new blocking row and `img-srcset-within-2x` at 0 | **PASS-WITH-DEVIATION** | meta `324 passed, 36 skipped`, exit 0, both runs, `deferred_checks` is `{}` and no `DEFERRED` line is printed; pages `8 passed, 46 failed` both runs against `render-baseline-project3.md`, `npm run baseline` `0 problems`, **no new blocking row on any page**. **Deviation:** `img-srcset-within-2x` is at **6**, not 0 — 15 → 6, with the remaining six named above. They are migrated-body `<img>` tags on three pages, not kit output; §9 assumed the image pass would reach every image, and it reached every image the kit owns |
 | 4 | `picks.json` holds thirteen picks; `src/components/kit/` has thirteen components and no `variant` prop; `/design-canvas/` is gone | **PASS** | `picks.json` — 13 picks, all `by: owner`, plus the separate mark pick; thirteen component files matching `components.json`, beside `Mark.astro`, `MarkSprite.astro`, `markShapes.ts` and `_registry.ts`, which are the mark machinery and the registry rather than components; `test_after_prune_no_variant_prop_remains` and `test_no_canvas_route_after_prune` both pass |
-| 5 | `public/brand/` holds the four lockups and the four favicon renders; header and footer render the SVG logo | **PASS** | four lockups (sizes tabled above) and `favicon.svg`, `favicon-32.png`, `apple-touch-icon.png`, `icon-512.png`; header inlines `logo-horizontal.svg`, footer inlines `logo-mono.svg` — the documented deviation from Task 20's "stacked at 96px", because a self-coloured lockup is invisible on the inverse band |
+| 5 | `public/brand/` holds the four lockups; the four favicon renders are built from them; header and footer render the SVG logo | **PASS** | the four lockups are in `public/brand/` (sizes tabled above). **The four favicon renders sit at the `public/` root, not under `public/brand/`** — `public/favicon.svg`, `public/favicon-32.png`, `public/apple-touch-icon.png`, `public/icon-512.png` — because a favicon is fetched from a fixed root path and moving it under `brand/` would break it; §9's wording folds them into the `brand/` sentence, the filesystem does not. Header inlines `logo-horizontal.svg`, footer inlines `logo-mono.svg` — the documented deviation from Task 20's "stacked at 96px", because a self-coloured lockup is invisible on the inverse band |
 | 6 | The three Artifacts are published and their URLs recorded in `data/design/artifacts.json`: the canvas, the picks board, the Design System | **PASS-WITH-DEVIATION** | all three URLs recorded and live. **Deviation of number, per amendment 4a:** the canvas is **39** boards, not §9's sixty-five — 65 at first publication, 91 after the mobile and tablet rows, 39 after the prune. `docs/artifacts/canvas/project/` holds 39 `.dc.html` files and `canvas.json` declares `boards: 39`. Per amendment 7, the third artifact is the **Design System** built by `scripts/build_design_system.py`, not §7's draft prompt pack, and it has no component bundle — the previews are static renderings cut from `dist/kit-preview/` |
 | 7 | Lighthouse warm median of 3 on the five Foundation page types: no category score below the Foundation baseline. Recorded, not a gate | **PASS** | table above; three page types equal on all four categories, location equal, and **puppy rises 98 → 100** on Performance with LCP 2277 → 1516 ms. Nothing fell. Same method as Foundation: `npx astro preview`, headless Chrome, Lighthouse 13.4.1, mobile emulation |
-| 8 | `docs/reports/design-system-gate-report.md` written and published as an Artifact; this spec and the plan published as Artifacts | **PASS-WITH-DEVIATION** | this file; `docs/artifacts/bsuk-design-system-gate-report.html`, `bsuk-design-system-plan.html` and `bsuk-design-system-spec.html` all built at close-out. **Two deviations.** (a) `scripts/build_report_artifact.py` takes **no arguments** — it is hard-wired to Foundation's two reports — so the gate-report artifact was built with `scripts/build_spec_artifact.py`, which takes exactly the argument order the plan quotes, and which is also what built project 2's gate-report artifact. (b) Publishing the three HTML files to claude.ai is the controller's step and is not done in this commit |
-| 9 | Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **PASS** | branch range `e049f55..HEAD`, `e049f55` being the cut point from `foundation`: **59** commits including the close-out, **59** carrying the trailer |
-| 10 | Session-closer names project 4 as next and lists the new open flags appended to `docs/reference/session-log.md` Known Issues | **PASS** | project 3 section added to the session log, Known Issue 4 marked CLOSED, and new items **17–25** appended; the session-closer names **project 4, page rebuilds** as next |
+| 8 | `docs/reports/design-system-gate-report.md` written and published as an Artifact; this spec and the plan published as Artifacts | **PASS-WITH-DEVIATION** | this file; `docs/artifacts/bsuk-design-system-gate-report.html`, `bsuk-design-system-plan.html` and `bsuk-design-system-spec.html` all built at close-out. **Two deviations.** (a) `scripts/build_report_artifact.py` takes **no arguments** — it is hard-wired to Foundation's two reports — so the gate-report artifact was built with `scripts/build_spec_artifact.py`, which takes exactly the argument order the plan quotes, and which is also what built project 2's gate-report artifact. (b) **All three are published**: gate report `https://claude.ai/artifact/4h6bFhh29coDkUSZM2XEuM`, plan `https://claude.ai/artifact/1n1t2aAZMv8mqeyrzdBfSx`, spec `https://claude.ai/artifact/T9UYfQtidvt6iN6NzrqWy9` |
+| 9 | Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **PASS** | branch range `e049f55..HEAD`, `e049f55` being the cut point from `foundation`: **61** commits — 58 of build, the close-out, the working-rule-11 commit and the review-fix commit — and **61** carrying the trailer |
+| 10 | Session-closer names project 4 as next and lists the new open flags appended to `docs/reference/session-log.md` Known Issues | **PASS** | project 3 section added to the session log, Known Issue 4 marked CLOSED, and new items **17–26** appended; the session-closer names **project 4, page rebuilds** as next |
 
 **Verdict count: 7 PASS · 3 PASS-WITH-DEVIATION · 0 FAIL.**
 
@@ -586,8 +643,7 @@ Rows 6 and 8(a) are recorded in spec §11 or are tooling facts with no bearing o
 3's deviation is the one that matters: `img-srcset-within-2x` is at 6 rather than 0, and those
 six rows are real, named, and belong to project 4's content pass — the definition of done
 assumed an image pass that could reach migrated body markup, and this project deliberately did
-not edit page content. Row 8(b) leaves three Artifacts built but unpublished, pending the
-controller.
+not edit page content. Row 8(b) is now closed: all three Artifacts are published, and their URLs are in the row.
 
 Two things are owed by people rather than by code before this project is fully closed: the
 **OAuth rotation** from project 2 (Known Issue 15), and the user's **confirmation of

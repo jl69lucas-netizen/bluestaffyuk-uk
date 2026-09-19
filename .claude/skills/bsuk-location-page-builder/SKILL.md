@@ -90,23 +90,42 @@ without an approved board, and `python3 scripts/board_gate.py <slug>` refuses ot
 Mandatory, in this order. Everything between **Key takeaways** and **FAQ** is the derived
 body from step 1.
 
-| # | Section | Kit component (picked variant) | Checks it must satisfy |
+| # | Section | Kit component and props | Checks it must satisfy |
 |---|---|---|---|
-| 1 | Hero — image first | `Hero` variant `c` | `layout-image-box-reserved` · `img-alt-present-and-unique` · `layout-no-horizontal-overflow` |
-| 2 | Counter strip | `CounterStrip` variant `d` | `layout-hero-counter-separation` |
-| 3 | Trust strip | `TrustStrip` variant `d` | `a11y-text-contrast-aa` |
-| 4 | Table of contents | `PageNav` variant `c` | `nav-anchors-resolve` · `nav-jump-target-lands` |
-| 5 | Key takeaways | `InfoCard` variant `b`, `kind="fact"` | `sem-statement-label-visible` |
-| 6 | Review — top | `Testimonial` variant `b` | `a11y-text-contrast-aa` |
-| 7…n | Derived body sections | `InfoCard` · `PuppyCard` variant `c` · `SectionDivider` variant `a` | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
-| — | Review — middle | `Testimonial` variant `b` | inside the body run, never two testimonials in a row |
-| — | Newsletter block | `InfoCard` variant `b`, `kind="note"` | `layout-tap-target-size` |
-| n+1 | Review — bottom | `Testimonial` variant `b` | `a11y-text-contrast-aa` |
-| n+2 | Contact form | `ContactFormKit` variant `c` | `form-inquiry-contract` · `layout-tap-target-size` |
-| n+3 | FAQ | `Faq` variant `c` | `sem-heading-order` · FAQPage schema below |
-| n+4 | Footer | `SiteFooterKit` variant `a` | inherited from `BaseLayout`; never hand-written |
+| 1 | Hero — image first | `Hero as="h1"` | `layout-image-box-reserved` · `img-alt-present-and-unique` · `layout-no-horizontal-overflow` |
+| 2 | Counter strip | `CounterStrip` | `layout-hero-counter-separation` |
+| 3 | Trust strip | `TrustStrip` | `a11y-text-contrast-aa` |
+| 4 | Table of contents | `PageNav` | `nav-anchors-resolve` · `nav-jump-target-lands` |
+| 5 | Key takeaways | `InfoCard kind="fact"` | `sem-statement-label-visible` |
+| 6 | Review — top | `Testimonial mode="single" reviews={…}` | `a11y-text-contrast-aa` |
+| 7…n | Derived body sections | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| — | Review — middle | `Testimonial mode="single" reviews={…}` | inside the body run, never two testimonials in a row |
+| — | Newsletter block | `InfoCard kind="recommendation" label="Newsletter"` | `layout-tap-target-size` |
+| n+1 | Review — bottom | `Testimonial mode="grid" reviews={…}` | `a11y-text-contrast-aa` |
+| n+2 | Contact form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
+| n+3 | FAQ | `Faq` | `sem-heading-order` · FAQPage schema below |
+| n+4 | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written |
 
-Variants come from `data/design/picks.json` — the breeder's picks, not a choice made here.
+**There is no `variant` prop.** Project 3's prune (design-system spec §11 amendment 4)
+deleted every losing variant and every `variant` prop with them: a kit component renders the
+breeder's picked design and takes no letter. `data/design/picks.json` is the *record* of what
+was picked, not an input you pass — the kit is already pruned to it. Reading a letter out of
+that file and handing it to a component is a build error.
+
+Four components take real props, and these are the only ones:
+
+| Component | Prop | Values |
+|---|---|---|
+| `Button` | `kind` | `primary` · `outline` · `inverse` · `submit` · `text` (default `primary`); also takes `label` |
+| `Testimonial` | `mode` | `single` · `grid` (default `single`); plus an optional `reviews` array — pass this page's rows from `data/reviews.json` so none is silently dropped |
+| `InfoCard` | `kind` | `fact` · `observed` · `recommendation` (the whole vocabulary, `src/lib/statement.ts`); plus an optional `label` to override the default word |
+| `SectionDivider` | `inverse` | boolean — set it when the divider sits on a dark band |
+| `Hero` | `as` | `h1` · `h2` — a location page's hero is the page's H1, so pass `as="h1"` |
+
+`InfoCard kind="note"` **does not exist**: `sem-statement-label-visible` accepts exactly the
+three kinds above and treats anything else as a defect. A newsletter block is a
+`recommendation` with an explicit `label` ("Newsletter"), which keeps the label visible and
+the check silent.
 
 **Hero.** The image comes before the copy, and its box is reserved so nothing reflows under
 it: 390–450px tall on desktop (the 400px band of `rules/design.md` rule 9), `auto` on
@@ -197,7 +216,7 @@ Per `rules/schema.md`, enforced by `python3 scripts/schema_check.py`:
 
 `data/faq.json` supplies the base questions. Add city-specific Q&A only where the page's own
 copy already backs the answer — an FAQ answer that introduces a new fact is a fabricated
-claim with extra steps. Six to ten questions total, `Faq` variant `c`, mirrored into FAQPage
+claim with extra steps. Six to ten questions total, rendered with `Faq`, mirrored into FAQPage
 schema, no visible date.
 
 ---

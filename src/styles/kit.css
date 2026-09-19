@@ -13,7 +13,7 @@
    No hex here; the spacing and radius literals are kept verbatim from the components these
    rules were lifted out of, so moving them changed nothing on screen. */
 @layer components {
-  /* The card shell: PuppyCard and TrustStrip variant b. */
+  /* The card shell: PuppyCard and TrustStrip. */
   .kit-card {
     background: var(--color-surface-raised);
     border: var(--card-border);
@@ -26,7 +26,7 @@
   }
   .kit-card--lift:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); }
 
-  /* The chip: PuppyCard's meta row and Hero variant c's trust chips. Brass is a FILL
+  /* The chip: PuppyCard's meta row and the Hero's trust chips. Brass is a FILL
      (--kit-chip-strong) carrying --color-cta-ink, never small brass text on a light card. */
   .kit-chip {
     display: inline-block;

@@ -2,8 +2,9 @@
 //
 // `tests/render/checks/sem.ts::sem-statement-label-visible` accepts exactly three values in
 // a `.stmt-label`'s `data-kind`, and anything else is a defect. The list therefore belongs
-// somewhere both the kit and the pages that ship after it can import, not inside a kit
-// component: src/components/kit/ is deleted by Task 19's prune, and the vocabulary is not.
+// somewhere both the kit and the pages that ship after it can import, rather than inside
+// any one kit component: the pages project 4 builds need the same three words, and a
+// vocabulary owned by a component is a vocabulary that moves when the component does.
 //
 // Adding a kind here is not enough on its own — the check's own array has to learn it too.
 export type StatementKind = 'fact' | 'observed' | 'recommendation';

@@ -113,7 +113,9 @@ def test_no_duplicate_urls():
 
 def test_noindex_routes_are_absent():
     have = {r["url"] for r in rows()}
-    for url in ("/design-canvas/", "/search/", "/thank-you-blue-staffy-puppies-journey/"):
+    # /kit-preview/ replaced /design-canvas/ at Task 19; it is noindex like its predecessor
+    # and must never be indexed — a component specimen is not a page a visitor searches for.
+    for url in ("/kit-preview/", "/search/", "/thank-you-blue-staffy-puppies-journey/"):
         assert url not in have, url
 
 

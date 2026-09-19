@@ -71,8 +71,10 @@ def test_settings_and_shell_use_the_svg_logo():
         assert "logo" in (ROOT / "src/components" / f).read_text().lower()
     src = "\n".join(p.read_text() for p in (ROOT / "src").rglob("*.astro"))
     assert "blue-staffy-uk-official-logo0.png" not in src and "header-logo-88.webp" not in src
-    assert not (ROOT / "public/images/blue-staffy-uk-official-logo0.png").exists()
-    assert not (ROOT / "public/images/blue-staffy-uk-header-logo-88.webp").exists()
+    # Deliberately NOT asserted absent. Working rule 11 (CLAUDE.md) requires every
+    # already-served image URL to keep resolving, so the two legacy logo rasters stay in
+    # public/images/ even though no component references them any more. Their continued
+    # presence is asserted in tests/py/test_images.py; this test owns only the reference side.
 
 
 def test_structured_data_and_og_point_at_the_raster():

@@ -230,3 +230,18 @@ def test_puppy_photos_live_in_src_assets_and_render_with_srcset():
     slots += [375 for _ in re.findall(r"100vw", sizes.group(1))]
     assert slots, sizes.group(1)
     assert widths[0] <= max(slots), (widths, slots)
+
+
+def test_legacy_logo_rasters_are_still_served():
+    """Working rule 11 (CLAUDE.md): never break a served image URL.
+
+    Project 3 replaced the logo with SVG lockups, and nothing under src/ references these
+    two files any more — but both have been served for long enough to rank in Google
+    Images, and rule 11 forbids deleting or renaming a file a visitor or a crawler can
+    already fetch. A replacement is added beside the old one, never in its place. The
+    reference side (no .astro points at them) is asserted in tests/py/test_brand_assets.py.
+    """
+    root = pathlib.Path(__file__).resolve().parents[2]
+    for name in ("blue-staffy-uk-official-logo0.png", "blue-staffy-uk-header-logo-88.webp"):
+        assert (root / "public/images" / name).exists(), (
+            f"public/images/{name} is a served URL; working rule 11 forbids removing it")

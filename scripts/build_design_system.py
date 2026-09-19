@@ -436,8 +436,10 @@ COMPONENTS = {
     "section-divider": dict(
         comp="SectionDivider", group="Brand",
         summary="The brand divider: the mark on a medal between two hairline rules.",
-        props=["`class` and any `HTMLAttributes<'section'>` attribute, spread onto the root."],
-        states=["One; the medal is `color-surface-raised` and the rules are `color-border`."],
+        props=["`inverse?: boolean` — set it when the divider sits on a dark band.",
+               "`class` and any `HTMLAttributes<'div'>` attribute, spread onto the root."],
+        states=["Two: the default, where the medal is `color-surface-raised` and the rules are "
+                "`color-border`; and `inverse`, for a dark band."],
         checks=["`test_built_section_divider_is_the_mark_between_two_rules`"],
         donts=["Do not substitute a glyph or an image for the mark: it is a `<use>` at the document sprite.",
                "Do not use this as a spacer — it is a brand beat, not a margin."]),
@@ -470,12 +472,25 @@ def preview_html(sec, css, sprite, height, images, group, comp):
 
 
 def component_readme(cid, spec):
-    """`components/<Comp>/README.md`. First sentence is the manifest summary."""
+    """`components/<Comp>/README.md`. First sentence is the manifest summary.
+
+    The opening paragraph states the file the artifact name maps to, ALWAYS and not only when
+    the two differ. Four of the thirteen are not named after their file — `SiteHeader` is
+    `SiteHeaderKit.astro`, `Buttons` is `Button.astro`, `Footer` is `SiteFooterKit.astro` and
+    `ContactForm` is `ContactFormKit.astro` — because the artifact groups components by what a
+    reader calls them and the repo names them for what they are. A reader who guesses the
+    filename from the heading is wrong four times in thirteen, so the mapping is printed
+    rather than implied, and those four say the difference in words as well.
+    """
     def bullets(rows):
         return "\n".join(f"- {r}" for r in rows)
+    file = FILE_BY_ID[cid]
+    aka = ("" if file == f"{spec['comp']}.astro" else
+           f" **The two names differ:** this artifact calls it *{spec['comp']}*,"
+           f" the repo calls it `{file[:-6]}` \u2014 mount `{file[:-6]}`, not `{spec['comp']}`.")
     return f"""# {spec['comp']}
 
-{spec['summary']} It is an Astro component in the site repo at `src/components/kit/{FILE_BY_ID[cid]}`; the preview beside this file is a static rendering of its built markup, not a live mount.
+{spec['summary']} It is an Astro component in the site repo at `src/components/kit/{file}`, and the preview beside this file is a static rendering of its built markup, not a live mount.{aka}
 
 ## Props
 

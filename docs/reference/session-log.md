@@ -45,8 +45,9 @@ Plan: `docs/superpowers/plans/2026-09-18-design-system.md`.
 Spec: `docs/superpowers/specs/2026-09-18-design-system-design.md`, approved and amended seven
 times during execution; §11 is where every in-flight decision is recorded.
 
-Closed 2026-09-19 on branch `design-system`, 59 commits from `e049f55` including the
-close-out, no remote and nothing pushed. Every gate was run twice with identical results; the transcript is
+Closed 2026-09-19 on branch `design-system`, 61 commits from `e049f55` including the
+close-out, the working-rule-11 commit and the close-out review's fixes, no remote and nothing
+pushed. Every gate was run twice with identical results; the transcript is
 `docs/reports/design-system-run.log`, and the two halves are proven identical as multisets of
 time-normalised lines. Full report and evidence:
 `docs/reports/design-system-gate-report.md`.

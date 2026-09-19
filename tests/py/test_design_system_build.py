@@ -229,6 +229,28 @@ def test_component_readme_leads_with_the_summary_and_names_its_checks():
             assert check in t, (spec["comp"], check)
 
 
+def test_every_component_readme_names_the_file_it_maps_to():
+    """Four of the thirteen artifact names are not their filenames — SiteHeader is
+    SiteHeaderKit.astro, Buttons is Button.astro, Footer is SiteFooterKit.astro and
+    ContactForm is ContactFormKit.astro — so a reader who guesses the file from the heading is
+    wrong four times in thirteen. Every README prints its source path, and the four that
+    differ say so in words as well."""
+    out = built()
+    # Read the mapping from its source of truth rather than D.FILE_BY_ID, which the builder
+    # populates inside main() and is empty in a test process that only imported the module.
+    files = {c["id"]: c["file"] for c in json.loads(
+        (pathlib.Path(__file__).resolve().parents[2] / "data/design/components.json").read_text())}
+    differing = set()
+    for cid, spec in D.COMPONENTS.items():
+        file = files[cid]
+        t = (out / "components" / spec["comp"] / "README.md").read_text()
+        assert f"`src/components/kit/{file}`" in t, (spec["comp"], file)
+        if file != f"{spec['comp']}.astro":
+            differing.add(spec["comp"])
+            assert "The two names differ" in t and f"`{file[:-6]}`" in t, spec["comp"]
+    assert differing == {"SiteHeader", "Buttons", "Footer", "ContactForm"}, differing
+
+
 def test_the_index_has_the_marker_the_namespace_and_the_logo_group():
     out = built()
     idx = json.loads((out / "design-system.json").read_text())
