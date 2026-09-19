@@ -509,7 +509,7 @@ def links_block(board, routes):
     then once for the page. The page table is deduplicated by target, because a link repeated
     in four sections is one destination with four placements — and the sections column is what
     tells the breeder where each one is said."""
-    out, seen, order = [], {}, []
+    out, seen, order = ["## Links — every link this page will carry"], {}, []
     for s in board["sections"]:
         out.append(f"### {s['n']:02d} · {md(s['heading'])}")
         rows = link_rows(s, routes)
@@ -610,7 +610,11 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
                      "the gate fails on any." if hits else
                      "No heading collides with a live page (exact, species-template or 5-word shingle).")
                   + (f"\n\n{len(qhits)} FAQ question(s) repeat a live heading — a warning, not a refusal."
-                     if qhits else "")))
+                     if qhits else "")
+                  # Working rule 12 rides with the outline rather than in a block of its own:
+                  # the links ARE part of the shape of the page, and the reader who has just
+                  # read the tree is the reader who can judge where each one is said.
+                  + "\n\n" + links_block(board, routes)))
 
     parts.append(("3b. Image plan", image_plan_table(board)
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
@@ -818,12 +822,19 @@ def main():
     previews = load_previews(slug)
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / (PB.slug_file(slug) + ".html")
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews), encoding="utf-8")
+    routes = load_routes()
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes), encoding="utf-8")
+    n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
+    n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
+    unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]
+                         if resolve_internal(l["href"], routes)[0] != "yes"})
     styled = [s for s in board["sections"] if s.get("styles")]
     want = sum(len(s["styles"]) for s in styled)
     have = sum(1 for s in styled for st in s["styles"] if f"{s['id']}|{st}" in previews["blocks"])
     print("wrote %s — %d sections, %d live pages checked, %d/%d style renderings embedded"
           % (out.relative_to(PB.ROOT), len(board["sections"]), len(live), have, want))
+    print("  links: %d internal · %d external%s"
+          % (n_int, n_ext, "" if not unresolved else " — unresolved: " + ", ".join(unresolved)))
     if want and have < want:
         print("  some styles are not rendered: run npm run build, then "
               "python3 scripts/build_board_previews.py %s" % slug)
