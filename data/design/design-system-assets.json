@@ -1,4 +1,40 @@
 {
- "assets": {},
- "images": {}
+ "assets": {
+  "logo-horizontal.svg": {
+   "blob": "5866a3ce0d13524dab8521cf7a7a1c32",
+   "size": 15277,
+   "type": "image/svg+xml"
+  },
+  "logo-stacked.svg": {
+   "blob": "35dbe40befae308a88ce2fe0cb90dee2",
+   "size": 15300,
+   "type": "image/svg+xml"
+  },
+  "logo-icon.svg": {
+   "blob": "6afd9b2bee7ece8e0a5b043f8782b957",
+   "size": 1513,
+   "type": "image/svg+xml"
+  },
+  "logo-mono.svg": {
+   "blob": "9d5ac70e3e1cc81a037c7baf23eec206",
+   "size": 15584,
+   "type": "image/svg+xml"
+  },
+  "favicon.svg": {
+   "blob": "8f7363ca984c819ca255c94e0fd2ebf0",
+   "size": 1513,
+   "type": "image/svg+xml"
+  }
+ },
+ "images": {
+  "/_astro/Cheryl1.BA5--lqv_2leFTW.webp": "/_blob/6575131e8dc8e0a4acc99012bb7f24da",
+  "/_astro/Cheryl1.BA5--lqv_Z1P5ulo.webp": "/_blob/7c59fae2eec89167490b00c0c97adb13",
+  "/_astro/Cheryl1.BA5--lqv_b7QRc.webp": "/_blob/01e29e8b6039167f8fa5248500866ce3",
+  "/_astro/Christa.DCD6hF9z_24FDMC.webp": "/_blob/12ee91aeedd0119b0a281685afc98cfb",
+  "/_astro/Christa.DCD6hF9z_T3FVW.webp": "/_blob/8a1262fc03998a53c9bc9f01ff4f7303",
+  "/_astro/Christa.DCD6hF9z_Z23bJ25.webp": "/_blob/903f682c93f042677fdcd7cd48da180a",
+  "/_astro/Roman2.C-A0j1ry_1uH9rQ.webp": "/_blob/0328d2f487985e71879fbc7c8348055f",
+  "/_astro/Roman2.C-A0j1ry_Z2h5Yfu.webp": "/_blob/aaf0d29bfc5b4ab34b0e89e62a4dac53",
+  "/_astro/Roman2.C-A0j1ry_sWg9c.webp": "/_blob/936c31a78a623df2ff37c7136dfc7bc5"
+ }
 }
