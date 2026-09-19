@@ -170,6 +170,12 @@
                                "w": {"type": "integer"}, "h": {"type": "integer"}, "required": {"type": "boolean"},
                                "status": {"enum": ["missing", "baked"]}, "file": {"type": ["string", "null"]}, "alt": {"type": "string"}}}
     },
+    "dropped": {
+      "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds). A fact listed here is one the user agreed to drop; a fact that simply vanished is a problem that gate reports.",
+      "type": "object",
+      "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds"]},
+      "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}
+    },
     "approval": {
       "type": ["object", "null"],
       "required": ["approved_at", "h1", "picks", "notes", "canvas_version", "record_hash"], "additionalProperties": false,

@@ -60,6 +60,9 @@ def test_the_dates_map_is_regenerated_before_every_build():
 
 
 def test_the_check_all_chain_is_the_documented_one():
-    expected = ["check:parity", "check:redirects", "check:schema", "check:sitemaps",
+    # `check:facts` sits immediately after `check:parity` because the two are one gate split
+    # in half: parity judges the pages project 4 has not rewritten yet, the facts gate judges
+    # the ones it has, and data/facts/rebuilt.json is what moves a page from one to the other.
+    expected = ["check:parity", "check:facts", "check:redirects", "check:schema", "check:sitemaps",
                 "check:placeholders", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

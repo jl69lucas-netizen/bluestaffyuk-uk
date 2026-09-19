@@ -7,7 +7,9 @@ the four sold pups' cards); `expected` is the same page after them; `built` is w
 chrome and dead forms are stripped, so it slightly understates the WordPress body.
 The gate compares expected → built with a 2% whitespace band; headings must match
 exactly, embeds must never decrease, a built page missing its article scope fails,
-and expected must keep at least 60% of raw's words.
+and expected must keep at least 60% of raw's words. Pages listed in
+`data/facts/rebuilt.json` are no longer migrated bodies and are skipped here:
+`scripts/facts_preserved_check.py` is their gate.
 
 | URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -52,4 +54,4 @@ and expected must keep at least 60% of raw's words.
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
 
-examined 40 pages, 0 failing
+examined 40 pages, 0 failing, skipped 0 rebuilt

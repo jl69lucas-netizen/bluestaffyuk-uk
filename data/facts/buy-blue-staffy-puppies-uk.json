@@ -1,0 +1,31 @@
+{
+ "prices": [
+  "£300",
+  "£850",
+  "£1,200"
+ ],
+ "names": [],
+ "tests": [
+  "L-2-HGA",
+  "HC-HSF4",
+  "HC",
+  "KC",
+  "microchip",
+  "vaccinat"
+ ],
+ "creds": [
+  "KC-registered",
+  "Kennel Club",
+  "DEFRA"
+ ],
+ "images": [
+  "/images/blue-staffy-puppy-delivery-uk.webp",
+  "/images/blue-staffy-puppy-testimonial-cardiff-daniel.webp",
+  "/images/blue-staffy-pups-near-you.webp",
+  "/images/blue-staffy-testimonial-london-happy-owner.webp",
+  "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+  "/images/staffordshire-bull-terrier-for-sale-uk-ready.webp",
+  "/images/uk-blue-staffy-breeders-trust.webp"
+ ],
+ "embeds": []
+}

@@ -1,0 +1,37 @@
+{
+ "prices": [
+  "£120",
+  "£850"
+ ],
+ "names": [],
+ "tests": [
+  "L-2-HGA",
+  "HC-HSF4",
+  "HC",
+  "KC",
+  "microchip",
+  "vaccinat"
+ ],
+ "creds": [
+  "KC-registered",
+  "Kennel Club",
+  "DEFRA"
+ ],
+ "images": [
+  "/images/blue-staffy-family-dog-uk.webp",
+  "/images/blue-staffy-puppy-delivery-uk.webp",
+  "/images/blue-staffy-puppy-for-sale-uk.webp",
+  "/images/blue-staffy-puppy-vet-check-uk.webp",
+  "/images/bluestaffyuk-nationwide-delivery.webp",
+  "/images/buy-staffy-health-guarantee-uk.webp",
+  "/images/healthy-staffy-breed-guide-1.webp",
+  "/images/kc-registered-blue-staffy-pups-london.webp",
+  "/images/kc-staffy-puppies-for-rehoming-uk.webp",
+  "/images/maggie-blue-staffy-dam-with-pups.webp",
+  "/images/mark-blue-staffy-london.webp",
+  "/images/playful-blue-staffy-lawn-uk.webp",
+  "/images/playful-staffy-puppies-uk-sale.webp",
+  "/images/victoria-family-blue-staffy-manchester.webp"
+ ],
+ "embeds": []
+}

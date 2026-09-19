@@ -1,0 +1,26 @@
+{
+ "prices": [
+  "£850",
+  "£1,200"
+ ],
+ "names": [],
+ "tests": [
+  "HC",
+  "KC",
+  "microchip",
+  "vaccinat"
+ ],
+ "creds": [
+  "KC-registered",
+  "Kennel Club",
+  "DEFRA"
+ ],
+ "images": [
+  "/images/blue-staffy-testimonial-london-happy-owner.webp",
+  "/images/bluestaffyuk-nationwide-delivery.webp",
+  "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+  "/images/maggie-blue-staffy-dam-with-pups.webp",
+  "/images/mark-blue-staffy-london.webp"
+ ],
+ "embeds": []
+}

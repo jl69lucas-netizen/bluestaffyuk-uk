@@ -1,0 +1,32 @@
+{
+ "prices": [
+  "£850",
+  "£1,200"
+ ],
+ "names": [],
+ "tests": [
+  "L-2-HGA",
+  "HC-HSF4",
+  "HC",
+  "DNA",
+  "KC",
+  "microchip",
+  "vaccinat"
+ ],
+ "creds": [
+  "KC-registered",
+  "Kennel Club",
+  "DEFRA"
+ ],
+ "images": [
+  "/images/blue-staffy-puppies-uk-litter1.webp",
+  "/images/blue-staffy-puppy-vet-check-uk.webp",
+  "/images/find-health-certified-staffy-breeders-uk.webp",
+  "/images/kc-registered-staffy-puppies.webp",
+  "/images/maggie-blue-staffy-dam-with-pups.webp",
+  "/images/puppy-vaccinations-uk.webp",
+  "/images/what-health-tests-blue-staffies-need.webp",
+  "/images/what-to-feed-new-blue-staffy-puppy.webp"
+ ],
+ "embeds": []
+}
