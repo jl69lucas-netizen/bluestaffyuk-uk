@@ -2,7 +2,7 @@
   "meta": {
     "slug": "uk-blue-staffy-breeders-contact",
     "page_type": "interior",
-    "status": "boarded",
+    "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -229,7 +229,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S1",
+        "pick": "S3",
         "note": ""
       },
       "styles": [
@@ -359,7 +359,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S1",
+        "pick": "S2",
         "note": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py."
       },
       "styles": [
@@ -689,7 +689,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S1",
+        "pick": "S3",
         "note": ""
       },
       "styles": [
@@ -793,7 +793,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S3",
+        "pick": "S2",
         "note": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5."
       },
       "styles": [
@@ -840,7 +840,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S2",
         "note": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5."
       },
       "styles": [
@@ -851,13 +851,13 @@
     }
   ],
   "tuple": {
-    "hero": "hero-s1",
+    "hero": "hero-s3",
     "dial": "dial-s2",
-    "rail": "rail-s3",
+    "rail": "rail-s2",
     "toc": "pagenav-c",
     "takeaway": [],
     "table": "",
-    "faq": "faq-s1",
+    "faq": "faq-s3",
     "stepper": "",
     "newsletter": {
       "after": "",
@@ -891,7 +891,55 @@
       "/uk-locations/staffy-breeding-dogs-glasgow/ (\"meet our Blue Staffy breeders\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). A contact page must not point a visitor at the former location."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-19T21:34:14.316Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
+      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
+      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
+      "mobile-strip": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5.",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
+      "top": "",
+      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
+      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+    },
+    "picks": {
+      "desktop-dial": "S2",
+      "enquiry": "S2",
+      "mobile-sections": "S2",
+      "mobile-strip": "S2",
+      "owners": "S1",
+      "questions": "S3",
+      "top": "S3",
+      "why-write": "S1"
+    },
+    "record_hash": "f3bbe0db076497f33883ecbeb8c177988391284645c8abfe703b6f7d5523b3ff",
+    "tuple_before": {
+      "hero": "hero-s1",
+      "dial": "dial-s2",
+      "rail": "rail-s3",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "What to send:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T19:34:59.305Z",
     "canvas_version": null,

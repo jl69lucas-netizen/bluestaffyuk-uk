@@ -2,7 +2,7 @@
   "meta": {
     "slug": "privacy-policy-uk",
     "page_type": "interior",
-    "status": "boarded",
+    "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -872,7 +872,49 @@
       "mailto:privacy@bluestaffyuk.uk (anchor \"staffies@bluestaffyuk.uk\") — the href and the visible address disagree in the migrated body, so neither can be carried as written. The page reaches us through the contact page until the correct address is confirmed."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-19T21:26:01.751Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "contact": "",
+      "cookies": "",
+      "how-we-use": "",
+      "opening": "",
+      "questions": "",
+      "security": "",
+      "sharing": "",
+      "third-parties": "",
+      "what-we-collect": "",
+      "your-rights": ""
+    },
+    "picks": {
+      "opening": "S3",
+      "questions": "S1"
+    },
+    "record_hash": "a810010f635496da50553272f51b82f730cdc9f34fba6f3a02b1fe25943f0c65",
+    "tuple_before": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Privacy Note:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T19:31:07.345Z",
     "canvas_version": null,

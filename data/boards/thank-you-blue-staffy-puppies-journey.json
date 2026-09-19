@@ -2,7 +2,7 @@
   "meta": {
     "slug": "thank-you-blue-staffy-puppies-journey",
     "page_type": "interior",
-    "status": "boarded",
+    "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -692,7 +692,51 @@
       "/uk-locations/staffy-breeding-dogs-glasgow/ (\"Staffy breeding parents in the …\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). The page keeps its URL, but a rebuilt page does not send a buyer to it."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-19T21:29:09.335Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "next-steps": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page.",
+      "welcome": "",
+      "while-you-wait": ""
+    },
+    "picks": {
+      "next-steps": "S3",
+      "owners": "S3",
+      "puppies": "S3",
+      "questions": "S3",
+      "welcome": "S3"
+    },
+    "record_hash": "1e28187939992526866205f30307f3314f86aa516be5e4fe444389b9afed6534",
+    "tuple_before": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Next step:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T19:33:21.793Z",
     "canvas_version": null,
