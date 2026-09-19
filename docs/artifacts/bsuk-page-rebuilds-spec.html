@@ -1,0 +1,248 @@
+<title>BSUK Page Rebuilds Spec</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Project 4 of 6</p><h1 class="title">Page rebuilds — design spec</h1></div>
+<div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-19</span><br>docs/superpowers/specs/2026-09-19-page-rebuilds-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+BlueStaffyUK rebuild, project 4 of 6. Date 2026-09-19. Branch `page-rebuilds`, cut from
+`foundation` at `63a7b12` (the project 3 merge). No remote; nothing is pushed.
+
+Approved in the brainstorm on 2026-09-19. Decisions taken there are locked facts of this spec:
+full rewrite per page through the board system (not a re-skin); three rendered styles per
+section on every board; all eleven rich pages rebuilt and every URL kept; the three real reviews
+rotated with `REVIEW_PLACEHOLDER` slots for the rest.
+</script>
+<script type="text/markdown" data-title="1. Goal and scope">
+Project 4 rebuilds every rich page on the project 3 kit, each written fresh from an approved
+outline through its own page board, and fixes the facts the migration carried wrong. It adds the
+two navigation components the original site had and the kit lacks: the desktop dial and the
+mobile section jump links.
+
+**In scope.** The eleven rich pages (`/`, `/blue-staffy-uk-breeders/`,
+`/buy-blue-staffy-puppies-uk/`, `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`,
+`/blue-staffy-health-uk/`, `/uk-staffordshire-bull-terrier-guide/`,
+`/uk-blue-staffy-puppy-buying-guide/`, `/uk-blue-staffy-breeders-contact/`,
+`/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/`), the blog index
+`/blue-staffy-blog-guides/` and its one post; the kit shell (header, footer, dial, jump links)
+on the three hubs and the puppy pages without rewriting their content; the Glasgow → Carlisle
+change in content, `data/settings.json` and schema (closes Known Issue 16); the locked prices,
+the byline, the three duplicate headers (Known Issues 9, 11, 12); `generate_page_dates.py`
+wired so `dateModified` is real (Known Issue 8, 20); the form-contract option value.
+
+**Out of scope.** The 28 location pages, the comparison cluster and the two new blog posts
+(project 5); domain, phone, GSC, GA4, Bing, IndexNow (project 6); any new photography (rule 11:
+existing images and videos are reused, never replaced).
+</script>
+<script type="text/markdown" data-title="2. Locked decisions">
+| Decision | Pick | Alternatives considered |
+|---|---|---|
+| Depth | **Full rewrite per page through the board** | re-skin + fact fixes; rewrite money pages only |
+| Board shape | **Three rendered styles per section, pick per section** | three whole-page styles |
+| Page set | **All eleven rich pages + blog, every URL kept** | six named pages; consolidate the three sale pages with 301s |
+| Reviews | **Rotate the three real reviews; empty slots are `REVIEW_PLACEHOLDER`** | reviews only where they were; wait for more |
+| Navigation | **Desktop dial (sticky sidebar, progress ring, numbered list, scroll-spy) + mobile section sheet and bottom tab bar** | none |
+
+Distinct intent per overlapping sale URL: `/buy-blue-staffy-puppies-uk/` = the listing and how
+to buy; `/blue-staffy-pup-sale-uk/` = price, deposit, delivery and what is included;
+`/buy-staffy-puppies-for-sale-uk/` = why this breeder (health testing, home raising, KC,
+after-care). The outline step records each page's intent and the dup gate holds them apart.
+</script>
+<script type="text/markdown" data-title="3. Components 14 and 15">
+**`PageDial.astro`** (desktop, ≥1024px). A sticky sidebar card in a `196px minmax(0,1fr)` grid
+with `gap: 28px`: a 64px progress ring (50px inner) showing `n of N` in Fraunces, then a
+numbered section list (rows ≥24px, dashed top rule) with the active row set by an
+IntersectionObserver scroll-spy. `position: sticky; top: calc(var(--hdr-measured, var(--hdr))
++ 16px); max-height: calc(100vh - var(--hdr) - 32px); overflow-y: auto`. Tokens only; card
+shell from `kit.css`; numerals ≥4.5:1. Props: `sections: {id,label}[]`, `title?`.
+
+**`SectionSheet.astro`** (mobile and tablet, <1024px). A fixed bottom tab bar (`Home`,
+`Puppies`, `Contact`, `Sections`; 44px targets; inline stroke icons; hidden on print) whose
+`Sections` tab opens a bottom sheet (`<dialog>`, native, `inert` background) listing the same
+sections with the same scroll-spy state and a CTA button. Props: `sections`, `ctaLabel`,
+`ctaHref`. The page's `scroll-margin-top` accounts for the header only; the tab bar sits below
+content so no jump target lands under it, and the harness's `nav-jump-target-lands` check gains
+a bottom-chrome measurement (the source repo's `bottom-bar-under-tabbar` idea, Known Issue 10)
+so the tab bar can never cover a target.
+
+Both components take three styles on the first page board (contact) and are then fixed for
+every page. `tests/py/test_design_components.py` gains dist assertions for both on
+`/kit-preview/`; `components.json` grows to fifteen rows; the Design System artifact gains two
+previews (regenerated by `scripts/build_design_system.py`).
+</script>
+<script type="text/markdown" data-title="4. The page board">
+One board per page, built by `scripts/build_page_board.py` (extended, re-palette'd to the
+tokens) from the board record `data/boards/<slug>.json`, published as an Artifact with the
+database capability, picks pulled by `scripts/board_approve.py`. A board holds:
+
+1. **Outline.** H1; the ordered section list with H2–H6 per section, each section's purpose,
+   word target and the facts it must carry (from the migrated page's body, `data/settings.json`,
+   `data/puppies.json`, `data/faq.json`, `data/reviews.json`); key takeaways; review slots
+   (top / middle / bottom, each `single` or `grid`); FAQ rows; internal links (target + intent);
+   the images the page reuses (from `data/image-manifest.json`, by original path) and the
+   YouTube embed(s); the meta title (three options) and description (three options); the
+   competitor scan summary (3–5 UK Staffy breeder pages for the same intent: sections, word
+   counts, FAQs, schema — recorded as data, `NOT FETCHED` where unavailable).
+2. **Three styles per section.** S1/S2/S3, each rendered at 1280 / 768 / 375 from the kit with
+   the section's real outline copy on a hidden noindex route `/board-preview/<slug>/` (one
+   `[data-section][data-style]` block per combination; the `NON_CONTENT_ROUTES` exclusion and
+   its self-expiry test cover it). `scripts/build_board_previews.py` reuses
+   `scripts/_kit_sections.py` to cut the built route into per-style HTML snippets embedded in
+   the board (inline, no artifact assets needed), styled by the same inlined CSS as the canvas.
+   Styles differ in structure, not tokens (the project 3 distinctness rule applies).
+3. **Picks.** Per section: style S1/S2/S3; per review slot: mode; the dial style (contact board
+   only); the meta title and description; a note per section. Saved to `boards/<slug>` in the
+   board's database in the shape `board_approve.py` already reads (`picks`, `notes`,
+   `approved_at`, `record_hash`).
+4. **Approval.** `board_approve.py <slug>` verifies the record hash, writes the picks and
+   `status: approved` into the record, and `board_gate.py <slug>` refuses a build whose board
+   is not approved or whose picks are incomplete.
+</script>
+<script type="text/markdown" data-title="5. Writing and content rules">
+- **Fresh prose from the outline** (working rule 8), first person as Lisa Bright (rule 1),
+  facts only from: the migrated page body, `data/*.json`, `rules/`, the competitor scan
+  (structure and topics only, never their claims). No claim without a source; unknowns are
+  `NOT FETCHED`; statutory and licence claims stay `LICENCE_CLAIM_PLACEHOLDER` /
+  `LEGAL_CLAIM_PLACEHOLDER` until Lisa confirms them.
+- **Facts preserved.** `scripts/facts_preserved_check.py` (new) extracts from the migrated
+  page: every price, puppy name, health test, credential phrase, image path and embed id, and
+  asserts each appears on the rebuilt page or in the board record's `dropped` list with a
+  reason. Replaces `migration_parity.py` for rebuilt pages (the parity gate keeps running for
+  pages not yet rebuilt; a rebuilt page is removed from its target list).
+- **Titles and descriptions.** Honest, descriptive, keyword-leading; the "No.1 BEST", "THE BEST
+  3", counts-in-title and year-stamped patterns are removed. Title 50–60 chars, description
+  140–160, three options each on the board.
+- **Location.** `Carlisle · Cumbria` everywhere; `data/settings.json` `address` becomes
+  `{"city": "Carlisle", "region": "Cumbria", "country": "GB"}` with no street, postcode or
+  coordinates until Lisa gives them (Known Issue 16); the Glasgow location page keeps its URL as
+  an outreach page (project 5 rewrites it); `scripts/form_contract_audit.py`'s `PUPPY_OPTION` and
+  `ContactForm.astro` are re-based to the kit form's option set.
+- **Reviews.** `data/reviews.json` rows only; each page's board chooses which of the three
+  real reviews fill which slot and in which mode; every unfilled slot renders
+  `REVIEW_PLACEHOLDER` visibly and the gate report counts them, so the number of reviews the
+  site still needs is a measured figure. Review quotes are whitelisted for the dup gate as
+  sitewide lines.
+- **Images and video.** Every image the old page carried is reused with its original path and
+  alt text (working rule 11); new placement only. YouTube embeds keep their ids. No new
+  photography. Puppy photos through `astro:assets` as in project 3.
+- **Headings.** H1 unique; H2–H6 present where the outline needs them (the `all_six_levels`
+  audit stays advisory); Title Case per `rules/headings.md`; no header collides with another
+  page's (`board_gate.py` header-collision at 0 for rebuilt pages).
+- **Links.** Link-first anchors (`rules/links.md`), anchor text varied, every internal target
+  resolves (`redirect_check.py` at 0), external links only to sources the copy cites.
+- **FAQ.** Page FAQs live in `data/faq.json` with `source` = the page; `FAQPage` schema from
+  the same rows; answers backed by page copy.
+- **Dates.** `scripts/generate_page_dates.py` wired into the build (`data/page-dates.json`
+  regenerated from git), `dateModified` on every page from it; `schema-date-modified-present`
+  rows go to 0 on rebuilt pages.
+- **Query augmentation.** For each page, the outline step expands the primary keyword into
+  the questions and entities AI search asks and maps each to a section or FAQ; recorded in the
+  board record. No dedicated skill yet (Known Issue 17); the step is written into the page
+  builder skills.
+</script>
+<script type="text/markdown" data-title="6. Order and gates">
+Easiest first, each page a task with the same shape: outline → board published → **user picks
+(the one pause per page)** → build → gates → commit.
+
+1. `/privacy-policy-uk/` 2. `/thank-you-blue-staffy-puppies-journey/` 3. `/uk-blue-staffy-breeders-contact/`
+(carries the dial and sheet style pick) 4. `/blue-staffy-uk-breeders/` 5. `/blue-staffy-health-uk/`
+6. `/uk-staffordshire-bull-terrier-guide/` 7. `/uk-blue-staffy-puppy-buying-guide/`
+8. `/blue-staffy-blog-guides/` + the post 9. `/blue-staffy-pup-sale-uk/` 10. `/buy-staffy-puppies-for-sale-uk/`
+11. `/buy-blue-staffy-puppies-uk/` 12. `/` (last; it draws on everything).
+
+Per-page gates: `npm run check:all` (parity for un-rebuilt pages, facts-preserved for rebuilt
+ones, redirects, schema, sitemaps, placeholders, marker, registries); `board_gate.py <slug>`
+green; `final_page_audit.py`, `dup_content_audit.py`, `aeo_audit.py`, `evidence_audit.py` with
+the page at 0 real errors; render harness with the page's own rows at 0 blocking and no new
+blocking row site-wide; Lighthouse not below the project 3 table for that page type.
+</script>
+<script type="text/markdown" data-title="7. Definition of done">
+1. Twelve pages (eleven rich + blog) rebuilt from approved boards; `data/boards/<slug>.json`
+   for each with `status: approved` and the picks; every board Artifact URL recorded in
+   `data/design/artifacts.json` under `boards`.
+2. Components 14 and 15 in the kit, on every rebuilt page and the hubs, with dist assertions
+   and the bottom-chrome harness measurement.
+3. `grep -rn Glasgow src data` = 0 outside `docs/` history and the Glasgow location page's own
+   slug; `settings.address` town-level; the form contract re-based (Known Issue 16 closed).
+4. Known Issues 8, 9, 11, 12, 20 closed; every `REVIEW_PLACEHOLDER` counted in the report.
+5. Render pages run: every rebuilt page at 0 blocking rows; blocking total below project 3's 58;
+   `schema-date-modified-present` at 0 on rebuilt pages.
+6. `npm run check:all`, pytest, render meta green twice; gate report
+   `docs/reports/page-rebuilds-gate-report.md` published with the spec and plan as Artifacts;
+   session-closer names project 5 and appends new open flags.
+7. Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`.
+</script>
+<script type="text/markdown" data-title="8. Risks">
+- *Twelve pauses for picks.* Boards are published as each outline is ready, so several can be
+  picked in one sitting; the build order never blocks on a later page's picks.
+- *Only three real reviews.* Placeholders are visible and counted; nothing is invented.
+- *Competitor scan needs the network.* Firecrawl / web search is available in-session; where a
+  fetch fails the scan records `NOT FETCHED` and the outline proceeds from the migrated page.
+- *Bottom tab bar covering jump targets.* Measured by the new harness check before the first
+  page ships.
+</script>
+<script type="text/markdown" data-title="9. Amendments">
+Recorded here as they happen. None yet.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Project 4 of 6: Page rebuilds\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>
