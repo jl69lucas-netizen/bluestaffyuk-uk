@@ -2,7 +2,7 @@
   "meta": {
     "slug": "uk-blue-staffy-breeders-contact",
     "page_type": "interior",
-    "status": "draft",
+    "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -149,7 +149,7 @@
       "Contact Blue Staffy UK — Carlisle, Cumbria"
     ],
     "recommended": 0,
-    "pick": null
+    "pick": 0
   },
   "meta_set": {
     "titles": [
@@ -167,8 +167,8 @@
       "description": 0
     },
     "pick": {
-      "title": null,
-      "description": null
+      "title": 0,
+      "description": 0
     }
   },
   "sections": [
@@ -229,7 +229,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": ""
       },
       "styles": [
@@ -284,7 +284,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
       },
       "styles": [
@@ -345,7 +345,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py."
       },
       "styles": [
@@ -581,7 +581,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages."
       },
       "styles": [
@@ -660,7 +660,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": ""
       },
       "styles": [
@@ -717,7 +717,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S2",
         "note": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5."
       },
       "styles": [
@@ -764,7 +764,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S3",
         "note": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5."
       },
       "styles": [
@@ -814,5 +814,34 @@
       "the form card's delivery notice — 'Delivery begins 24-48 hours after payment confirmation. Train station pickup is our default method (free)'. No file on disk states a free station pickup or that turnaround; data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what the FAQ row states instead."
     ]
   },
-  "approval": null
+  "approval": {
+    "approved_at": "2026-09-19T19:34:59.305Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
+      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
+      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
+      "top": "",
+      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
+      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+    },
+    "picks": {
+      "desktop-dial": "S2",
+      "enquiry": "S1",
+      "mobile-sections": "S3",
+      "owners": "S1",
+      "questions": "S1",
+      "top": "S1",
+      "why-write": "S1"
+    },
+    "record_hash": "00d7157e1caa50550902ba4f789d9300dd60a2b0a26a7a5a42241988f93a2459"
+  }
 }

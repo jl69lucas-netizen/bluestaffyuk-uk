@@ -138,6 +138,14 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
         # The pick has to come off the menu the board offered. It is matched on the BASE,
         # because renaming an offered `base` (or the `base#refresh` placeholder) to the axis
         # it actually varies — `toc-t2-chip-cloud#state-chips` — IS the documented workflow.
+        # A styled section (project 4: `styles` = ["S1","S2","S3"]) offers its styles as
+        # the menu instead of component candidates; the pick is the style id verbatim.
+        styles = by_id[sid].get("styles") or []
+        if styles:
+            if pick not in styles:
+                raise PB.BoardError(f"section {sid}: pick {pick!r} is not one of its styles {styles}")
+            by_id[sid]["options"]["pick"] = pick
+            continue
         menu = {PB.base_of(c) for c in by_id[sid]["options"]["candidates"]}
         if PB.base_of(pick) not in menu:
             raise PB.BoardError(

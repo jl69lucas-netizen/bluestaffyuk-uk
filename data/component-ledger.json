@@ -1,16 +1,56 @@
 {
-  "refresh_pools": [],
-  "pools": {},
-  "pages": {
-    "index": {
-      "hero": "",
-      "dial": "",
-      "rail": "",
-      "toc": "",
-      "table": "",
-      "faq": "",
-      "takeaway": [],
-      "h6_prefixes": []
-    }
+ "refresh_pools": [],
+ "pools": {
+  "kit": [
+   "kit"
+  ]
+ },
+ "pages": {
+  "index": {
+   "hero": "",
+   "dial": "",
+   "rail": "",
+   "toc": "",
+   "table": "",
+   "faq": "",
+   "takeaway": [],
+   "h6_prefixes": []
+  },
+  "privacy-policy-uk": {
+   "hero": "kit",
+   "dial": "kit",
+   "rail": "",
+   "toc": "kit",
+   "table": "",
+   "faq": "kit",
+   "takeaway": [
+    "kit"
+   ],
+   "h6_prefixes": []
+  },
+  "thank-you-blue-staffy-puppies-journey": {
+   "hero": "kit",
+   "dial": "kit",
+   "rail": "",
+   "toc": "kit",
+   "table": "",
+   "faq": "kit",
+   "takeaway": [
+    "kit"
+   ],
+   "h6_prefixes": []
+  },
+  "uk-blue-staffy-breeders-contact": {
+   "hero": "kit",
+   "dial": "kit",
+   "rail": "",
+   "toc": "kit",
+   "table": "",
+   "faq": "kit",
+   "takeaway": [
+    "kit"
+   ],
+   "h6_prefixes": []
   }
+ }
 }

@@ -2,7 +2,7 @@
   "meta": {
     "slug": "privacy-policy-uk",
     "page_type": "interior",
-    "status": "draft",
+    "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -118,7 +118,7 @@
       "Privacy and Your Data"
     ],
     "recommended": 0,
-    "pick": null
+    "pick": 0
   },
   "meta_set": {
     "titles": [
@@ -136,8 +136,8 @@
       "description": 0
     },
     "pick": {
-      "title": null,
-      "description": null
+      "title": 0,
+      "description": 0
     }
   },
   "sections": [
@@ -192,7 +192,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S3",
         "note": ""
       },
       "styles": [
@@ -778,7 +778,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "S1",
         "note": ""
       },
       "styles": [
@@ -836,5 +836,30 @@
       "/images/breeder-sitting-blue-staffy-puppy-home.webp — a breeder-and-puppy photo that illustrates no clause on this page; it is already carried by the pages about the dogs."
     ]
   },
-  "approval": null
+  "approval": {
+    "approved_at": "2026-09-19T19:31:07.345Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "contact": "",
+      "cookies": "",
+      "how-we-use": "",
+      "opening": "",
+      "questions": "",
+      "security": "",
+      "sharing": "",
+      "third-parties": "",
+      "what-we-collect": "",
+      "your-rights": ""
+    },
+    "picks": {
+      "opening": "S3",
+      "questions": "S1"
+    },
+    "record_hash": "7524cc3005f1cb3062e0f7b86e9215e03302e94b08988381e965890f4eb281b2"
+  }
 }
