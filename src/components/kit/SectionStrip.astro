@@ -1,0 +1,281 @@
+---
+// src/components/kit/SectionStrip.astro — kit component 16 (spec §9 amendment 3b): a sticky,
+// horizontally-scrolling rail of numbered section chips under the header below 1024px.
+//
+// It is the TOP-CHROME counterpart of SectionSheet's bottom bar, and the third member of the
+// in-page nav set: the dial owns >=1024px, and below that the strip is the quick jump
+// ("01 Health · 02 Delivery") while the sheet's bottom sheet is the full list. Hidden at
+// >=1024px, where the dial takes over — no two of the three are ever visible at one width.
+//
+// STICKY, NOT FIXED, and pinned to the SAME expression every jump target is offset by:
+// `top: calc(var(--hdr-measured, var(--hdr)))`. `--hdr-measured` is written by BaseLayout's
+// inline script from the header's real height (see the note in global.css on why it is a
+// second variable and not --hdr). Sticky rather than fixed because the strip belongs to the
+// document flow: it occupies its own height, so unlike the bottom bar it needs no body
+// padding to reserve space, and `nav-bottom-chrome-clear` has nothing to say about it.
+//
+// IT DOES, HOWEVER, MOVE EVERY JUMP TARGET DOWN. A target offset only by the header lands
+// UNDER the strip. The strip therefore publishes its own measured height as `--strip-h` on
+// `:root` (ResizeObserver, below) and global.css adds it to the `[id] { scroll-margin-top }`
+// expression. The ResizeObserver, not a constant: the chip row rewraps and the three styles
+// are three different heights, and a hard-coded number would be wrong for two of them and
+// wrong again the first time the font loaded late. `--strip-h` defaults to `0px` for every
+// page that mounts no strip, so the expression is unchanged there.
+//
+// `nav-jump-target-lands` (blocking) measures the pinned band with `measureTopChrome`, which
+// admits a sticky element spanning >=80% of the viewport and contiguous with the band above
+// it. The strip is full-bleed and sits directly under the header, so it is counted — that is
+// what makes the check judge landings against header+strip rather than header alone.
+//
+// `aria-current="location"`, never a bare `aria-current`: `toggleAttribute` emits
+// `aria-current=""`, which is the token `false`. Same note as PageDial and SectionSheet.
+//
+// Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
+// 6 (`@layer components`). No emoji, no hex — tokens only.
+//
+// TEMPORARY `style` PROP (project 4). The strip is the third piece of chrome the contact
+// board puts three arrangements of in front of the breeder, so all three live here at once
+// behind `style`: S1 outlined pills with the number in a second colour, S2 filled tab chips,
+// S3 flat text links with an underline on the active one and a dot between. The map that
+// names them is `strip` in src/lib/boardStyles.ts. AFTER THE PICK THE OTHER TWO ARE DELETED
+// along with this prop — the same prune project 3 ran on the kit's style options, and the
+// same one Task 9 runs on the dial and the sheet.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+type Props = HTMLAttributes<'nav'> & {
+  sections: SectionRef[];
+  label?: string;
+  style?: 'S1' | 'S2' | 'S3';
+};
+const { sections, label = 'Sections', style: styleId = 'S1', class: cls, ...rest } = Astro.props;
+---
+<nav
+  class:list={['kit-strip', `strip-${styleId.toLowerCase()}`, cls]}
+  aria-label={label}
+  data-strip
+  {...rest}
+>
+  <ol>
+    {sections.map((s, i) => (
+      <li>
+        {/* The first chip is marked current AT RENDER, not only by the spy — the same idiom
+            PageDial uses and for the same three reasons: a reader at the top of the page is
+            in section one, a rail that marks nothing until the first scroll event looks
+            broken before JS runs, and in a board preview the block is static markup the
+            script never runs against at all. */}
+        <a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="lab">{s.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+<script>
+  // Singleton by design: a page mounts ONE strip, as it mounts one header.
+  const strip = document.querySelector<HTMLElement>('[data-strip]');
+  if (strip) {
+    // --- the height every jump target has to clear -------------------------------------
+    // Published even when the strip is display:none at >=1024px, where its height is 0 and
+    // the expression collapses back to header + 16px on its own. Writing 0 is the correct
+    // answer there, not a special case.
+    const publish = () => {
+      const h = strip.offsetParent === null ? 0 : Math.round(strip.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--strip-h', h + 'px');
+    };
+    publish();
+    if (typeof ResizeObserver === 'function') new ResizeObserver(publish).observe(strip);
+    // The ResizeObserver sees the strip's own box change, but not the strip being hidden by
+    // the 1024px media query — that is a change of `display`, and an element with
+    // `display: none` reports the same zero box it reported while unobserved. The media
+    // query is watched directly so a rotate across the breakpoint republishes.
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', publish);
+
+    // --- scroll-spy ---------------------------------------------------------------------
+    // Paired links and targets, the same reading band and the same bottom-of-document
+    // fallback as PageDial and SectionSheet: the three must agree about the current section
+    // at every width a reader could rotate between, so the pattern is copied exactly.
+    const rows = [...strip.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
+    const N = rows.length;
+    // The markup already marks chip one current, so the first `apply()` is a no-op for the
+    // attributes — but it must not be a no-op for the RAIL when the page was opened on a
+    // hash deep in the document. `settled` is what separates the two: the first pass moves
+    // the rail without animating, every later one animates.
+    let current = 0;
+    let settled = false;
+    const set = (i: number) => {
+      if (i < 0 || i >= N) return;
+      if (i === current && settled) return;
+      current = i;
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+      // Keep the active chip on screen. `nearest` in BOTH axes: `center` would scroll the
+      // PAGE as well as the rail, fighting the very scroll that moved the spy — the bug
+      // that makes a strip jitter on every scroll. `nearest` also means no scroll at all
+      // when the chip is already visible, which is the common case.
+      rows[i].link.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest',
+        behavior: settled ? 'smooth' : 'auto',
+      });
+      settled = true;
+    };
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible[0]) return;
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
+  }
+</script>
+<style is:global>
+  /* `is:global` and it reaches `[id]` — a scoped rule cannot. global.css gives every id
+     `scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + 16px)`; the strip adds its own
+     measured height to that, so a jump target lands BELOW the strip rather than behind it.
+     Written here rather than in global.css so the whole of the strip's contract — its box and
+     the offset it imposes — is deleted with the file if the component ever is.
+
+     `--strip-h` falls back to 0px, so a page that mounts no strip keeps the original
+     expression exactly. The script sets it to a real number, and to 0 at >=1024px where the
+     strip is hidden and the dial has no sticky box of its own. */
+  @layer components {
+    [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
+  }
+</style>
+<style>
+  @layer components {
+    .kit-strip {
+      position: sticky;
+      /* The header's own height, measured. NOT the +16px of the jump offset: that gap is
+         breathing room under the chrome for a landing target, not a hole above the strip. */
+      top: var(--hdr-measured, var(--hdr));
+      z-index: 30;                       /* under the header (40+), over the prose */
+      background: var(--color-surface-raised);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .kit-strip ol {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-2) var(--space-4);
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      /* The rail scrolls, the page does not rubber-band with it. */
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;             /* Firefox */
+    }
+    /* No scrollbar chrome: the rail is a thumb-scrolled strip, and a bar under 44px chips
+       reads as a second control. The chips are still keyboard-reachable in the tab order. */
+    .kit-strip ol::-webkit-scrollbar { display: none; }
+    .kit-strip li { flex: 0 0 auto; scroll-snap-align: start; }
+    .kit-strip a {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      /* 44px: WCAG 2.5.8, and `layout-tap-target-size` is blocking. */
+      min-height: 44px;
+      padding: 0 var(--space-3);
+      white-space: nowrap;
+      font: 600 var(--text-sm) / 1 var(--font-body);
+      text-decoration: none;
+      color: var(--color-text);
+    }
+    /* `tnum` so "01" and "11" are the same width and the chips do not shuffle as the
+       active one changes. */
+    .num { font-feature-settings: 'tnum'; }
+    .kit-strip a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -2px; }
+
+    /* --- the three arrangements the contact board offers (temporary, see the header) --- */
+
+    /* S1 — outlined pills, the number in the brand colour against the bone surface. The
+       active pill is marked by its BORDER rather than a fill, so the row keeps one weight
+       and the reader's eye is drawn by the outline, not by a block of colour. */
+    .strip-s1 a {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      background: var(--color-white);
+    }
+    .strip-s1 .num { color: var(--color-brand); }
+    .strip-s1 a[aria-current='location'] {
+      border-color: var(--color-cta);
+      border-width: 2px;
+      /* The 1px the second border pixel takes back, so the pill does not grow on activation
+         and shove every chip after it along the rail. */
+      padding: 0 calc(var(--space-3) - 1px);
+    }
+
+    /* S2 — filled tab chips. The active chip is filled with the brand colour and its text
+       flips to bone; `--color-cta-ink` is not used here because the fill is brand, not CTA,
+       and the pair that is contrast-checked is brand/bone. */
+    .strip-s2 a {
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--color-bone-100);
+    }
+    .strip-s2 .num { color: var(--color-brand); }
+    .strip-s2 a[aria-current='location'] {
+      background: var(--color-brand);
+      color: var(--color-bone-50);
+    }
+    .strip-s2 a[aria-current='location'] .num { color: var(--color-bone-50); }
+
+    /* S3 — flat text links, a 3px underline under the active one, a dot between chips. The
+       dot is a pseudo-element on the LI so it is never read out; the last one is dropped so
+       the rail does not end on a separator. */
+    .strip-s3 a {
+      border: 0;
+      border-bottom: 3px solid transparent;
+      background: none;
+      padding: 0 var(--space-2);
+    }
+    .strip-s3 .num { color: var(--color-brand); }
+    .strip-s3 a[aria-current='location'] {
+      border-bottom-color: var(--color-cta);
+      color: var(--color-brand);
+    }
+    .strip-s3 li { display: flex; align-items: center; }
+    .strip-s3 li::after {
+      content: '';
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-border);
+      margin-inline-start: var(--space-2);
+    }
+    .strip-s3 li:last-child::after { content: none; }
+
+    /* At >=1024px PageDial is the in-page nav, and the strip would be a second copy of the
+       same six links in the tab order. */
+    @media (min-width: 1024px) {
+      .kit-strip { display: none; }
+    }
+    @media print {
+      .kit-strip { display: none; }
+    }
+    /* The active chip is scrolled into view with `behavior: 'smooth'`; a reader who has asked
+       for less motion gets the same jump without the animation. */
+    @media (prefers-reduced-motion: reduce) {
+      .kit-strip ol { scroll-behavior: auto; }
+    }
+  }
+</style>

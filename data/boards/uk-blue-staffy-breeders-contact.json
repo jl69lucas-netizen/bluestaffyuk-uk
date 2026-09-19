@@ -801,6 +801,53 @@
         "S2",
         "S3"
       ]
+    },
+    {
+      "id": "mobile-strip",
+      "n": 10,
+      "heading": "Mobile section strip",
+      "intent": "Not a section of the page: the sticky rail of numbered section chips that pins under the header below 1024px, boarded here for the same reason as the dial and the sheet. Each style is rendered over the same six stub targets at 375 on the preview route.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The strip is the first thing a phone reader sees under the header on a long page and the fastest way to the section they came for, and its height moves every in-page jump target on the site, so the shape of it is a decision worth making once and on purpose.",
+      "why_source": "docs/superpowers/specs/2026-09-19-page-rebuilds-design.md — §9 amendment 3(b); src/components/kit/SectionStrip.astro; tests/render/checks/nav.ts — nav-jump-target-lands",
+      "framework": "HSS",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "strip",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ]
     }
   ],
   "tuple": {

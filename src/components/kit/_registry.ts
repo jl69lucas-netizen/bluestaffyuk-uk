@@ -50,11 +50,12 @@ import PageNav from './PageNav.astro';
 import SiteFooterKit from './SiteFooterKit.astro';
 import PageDial from './PageDial.astro';
 import SectionSheet from './SectionSheet.astro';
+import SectionStrip from './SectionStrip.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider' | 'page-dial' | 'section-sheet';
+  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -214,6 +215,16 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // a fair place to look at it.
   'section-sheet': {
     C: SectionSheet,
+    demo: [{ sections: DEMO_SECTIONS }],
+    wrap: 'with-targets',
+  },
+  // The third member of the in-page nav set, and the same six sections for the same two
+  // reasons as the pair above: its links must resolve, and its scroll-spy must have
+  // something to observe. `position: sticky`, so on the preview it pins under the header
+  // exactly as it does on a real page — and because all THREE entries name DEMO_SECTIONS,
+  // the preview still renders those stubs once for the page, not three times.
+  'section-strip': {
+    C: SectionStrip,
     demo: [{ sections: DEMO_SECTIONS }],
     wrap: 'with-targets',
   },

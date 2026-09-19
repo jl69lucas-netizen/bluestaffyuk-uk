@@ -9,9 +9,10 @@ COMPONENTS = ROOT / "data/design/components.json"
 KIT = ROOT / "src/components/kit"
 IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-strip",
        "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider",
-       # Project 4 adds the two in-page navigation components. They are LAST on purpose: the
-       # numbering in `title` is the spec's reading order and the board sheets are cut in it.
-       "page-dial", "section-sheet"]
+       # Project 4 adds the three in-page navigation components. They are LAST on purpose:
+       # the numbering in `title` is the spec's reading order and the board sheets are cut
+       # in it. The set is the dial (>=1024px) and, below it, the strip and the sheet.
+       "page-dial", "section-sheet", "section-strip"]
 
 
 def load():
@@ -774,16 +775,19 @@ def test_built_page_dial_has_ring_list_and_spy_hooks():
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
 
 
-def test_components_json_has_fifteen_rows_after_project_4_additions():
-    """Project 4's two additions are appended, not interleaved. Spelled as its own test
-    because IDS above is the list every other test walks: if the two rows were ever moved
+PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip"]
+
+
+def test_components_json_has_sixteen_rows_after_project_4_additions():
+    """Project 4's three additions are appended, not interleaved. Spelled as its own test
+    because IDS above is the list every other test walks: if the three rows were ever moved
     ahead of the project 3 thirteen the board sheets and the artboard numbering would
     silently renumber while `test_every_component_in_spec_order` stayed green."""
     ids = [r["id"] for r in load()]
-    assert len(ids) == 15, ids
-    assert ids[-2:] == ["page-dial", "section-sheet"], ids[-2:]
+    assert len(ids) == 16, ids
+    assert ids[-3:] == PROJECT_4_IDS, ids[-3:]
     by_project = {r["id"]: r["project"] for r in load()}
-    assert [i for i, p in by_project.items() if p == 4] == ["page-dial", "section-sheet"]
+    assert [i for i, p in by_project.items() if p == 4] == PROJECT_4_IDS
     assert len([i for i, p in by_project.items() if p == 3]) == 13
 
 
@@ -852,3 +856,42 @@ def test_no_built_page_ships_a_duplicate_id():
         if dupes:
             offenders[str(p.relative_to(ROOT))] = dupes
     assert not offenders, offenders
+
+
+def test_built_section_strip_is_a_sticky_chip_rail_with_spy_hooks():
+    """Convention 8. Component 16 is the top-chrome third of the in-page nav set: a sticky
+    rail of six numbered chips that scrolls sideways under the thumb. Three things are
+    load-bearing and all three are asserted: it is STICKY (fixed would take it out of flow
+    and it would need the body padding the bottom bar needs), every chip carries a
+    `data-spy` so the scroll-spy has a row per section, and the chips clear the 44px tap
+    target the blocking `layout-tap-target-size` check measures."""
+    s = _sections("section-strip")
+    assert _has_class(s, "kit-strip")
+    assert "<nav" in s and 'aria-label="Sections"' in s
+    assert s.count("<li") >= 6, s.count("<li")
+    assert s.count('data-spy="') >= 6, s
+    # The numbers are rendered, zero-padded, and are part of the chip's text — not a CSS
+    # counter, which a screen reader would not read out.
+    assert ">01<" in s and ">06<" in s, s
+    # Icons would be wrong here and emoji are banned outright; the rail is text and numbers.
+    assert "<img" not in s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+
+
+def test_section_strip_pins_under_the_header_and_pays_for_its_own_height():
+    """The strip's two CSS contracts, read off the built stylesheet rather than the source.
+
+    1. It pins to the same measured header height every jump target is offset by. A literal
+       px `top` would drift the moment the header rewrapped.
+    2. It adds `--strip-h` to the global `[id] { scroll-margin-top }`. Without that a jump
+       target lands UNDER the strip — the top-chrome twin of the defect
+       `nav-bottom-chrome-clear` catches at the bottom of the viewport."""
+    # Read off the BUILT page, not a .css file: Astro inlines a component's scoped and
+    # global styles into the document that mounts it, so dist/ carries no stylesheet to read.
+    html = (ROOT / "dist" / "kit-preview" / "index.html").read_text(encoding="utf-8")
+    assert "--strip-h" in html, "the strip never publishes its height"
+    norm = re.sub(r"\s+", "", html)
+    assert "top:var(--hdr-measured,var(--hdr))" in norm, "the strip is not pinned to the measured header"
+    assert "scroll-margin-top:calc(var(--hdr-measured,var(--hdr))+var(--strip-h,0px)+16px)" in norm, \
+        "the jump offset does not include the strip's height"

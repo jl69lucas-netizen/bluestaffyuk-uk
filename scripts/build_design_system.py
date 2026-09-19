@@ -521,6 +521,40 @@ COMPONENTS = {
                "Do not change the bar's 64px height without changing the body reservation to match; they are "
                "one number said twice and `nav-bottom-chrome-clear` measures the pair.",
                "Do not use an emoji or an `<img>` for a tab icon — the four are inline stroke SVG on one 24 grid."]),
+    "section-strip": dict(
+        comp="SectionStrip", group="Navigation",
+        summary="The mobile top chrome: a sticky, horizontally scrolling rail of numbered section chips "
+                "(`01 Label · 02 Label …`) pinned under the header below 1024px.",
+        props=["`sections: SectionRef[]` — the same list PageDial and SectionSheet take, from the same "
+               "`src/lib/sections.ts` helper, so the three can never disagree about a page's sections.",
+               "`label?: string` — the rail's accessible name, default `'Sections'`.",
+               "`class` and any `HTMLAttributes<'nav'>` attribute, spread onto the root."],
+        states=["Hidden at 1024px and above, and in print — PageDial owns in-page nav there.",
+                "Chip resting, hover and focus. The focus ring is `--kit-ring` at 3px with "
+                "`outline-offset: -2px`, because a chip sits flush inside a rail that clips.",
+                "Scroll-spy active: the current chip carries `aria-current=\"location\"`, on the same reading "
+                "band as the dial and the sheet, and is scrolled back into view when it changes.",
+                "Chip one is marked current AT RENDER, so the rail is never blank before JS runs."],
+        checks=["`test_built_section_strip_is_a_sticky_chip_rail_with_spy_hooks`",
+                "`test_section_strip_pins_under_the_header_and_pays_for_its_own_height`",
+                "`nav-jump-target-lands` (render harness, blocking) — the strip is part of the pinned top "
+                "band `measureTopChrome` measures, and the fixture pair "
+                "`tests/render/fixtures/{known_good,known_broken}/nav-jump-target-lands.html` carries a strip "
+                "so a target landing underneath one is caught.",
+                "`layout-tap-target-size` (render harness, blocking) — every chip is at least 44px."],
+        donts=["Do not delete the `is:global` rule that adds `var(--strip-h, 0px)` to "
+               "`[id] { scroll-margin-top }`. The strip is sticky and pins UNDER the header, so a target "
+               "offset for the header alone lands behind the rail — the top-chrome twin of the defect "
+               "`nav-bottom-chrome-clear` catches at the bottom of the viewport.",
+               "Do not replace the ResizeObserver that publishes `--strip-h` with a constant. The rail is a "
+               "different height in each of its styles, it rewraps, and it changes again when the display "
+               "font loads — a hard-coded number is wrong in all three cases.",
+               "Do not give the rail a visible scrollbar: it is thumb-scrolled, and a bar under 44px chips "
+               "reads as a second control. The chips stay in the keyboard tab order regardless.",
+               "Do not use `scrollIntoView({ inline: 'center' })` for the active chip — `center` scrolls the "
+               "PAGE as well as the rail, fighting the scroll that moved the spy, and the strip jitters.",
+               "Do not mount this without SectionSheet: the strip is the quick jump, the sheet is the full "
+               "list, and below 1024px a long page needs both."]),
 }
 
 #: The marker's `group`, in the order the artifact's component table should read.

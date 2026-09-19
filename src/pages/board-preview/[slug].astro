@@ -41,6 +41,7 @@ import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 import SectionDivider from '../../components/kit/SectionDivider.astro';
 import PageDial from '../../components/kit/PageDial.astro';
 import SectionSheet from '../../components/kit/SectionSheet.astro';
+import SectionStrip from '../../components/kit/SectionStrip.astro';
 import Button from '../../components/kit/Button.astro';
 import { boxClass, stylesFor } from '../../lib/boardStyles';
 import { loadFaq } from '../../lib/faq';
@@ -128,16 +129,16 @@ const stub = (s: Section, i: number) => {
 
 /** The shapes with a renderer of their own; anything else falls through to prose. */
 const KIT_SHAPES = ['hero', 'trust', 'stats', 'divider', 'reviews', 'faq', 'form', 'puppies',
-                    'takeaways', 'dial', 'sheet'];
+                    'takeaways', 'dial', 'sheet', 'strip'];
 
-/** The two CHROME shapes. They are not a stretch of page: they are the in-page nav, and an
+/** The three CHROME shapes. They are not a stretch of page: they are the in-page nav, and an
  *  in-page nav with nothing to navigate is three identical empty lists. So each block gets
  *  its OWN six stub targets — real `<h3 id>` headings the dial's and the sheet's hrefs
  *  resolve to — and the ids carry the style id, because the same section is rendered three
  *  times on one document and a duplicated id would point every dial at the first block's
  *  copy. Six because that is the length the dial's ring was measured against (`of 6`), and
  *  the length at which a section list stops being a list and starts needing a dial. */
-const CHROME_SHAPES = ['dial', 'sheet'];
+const CHROME_SHAPES = ['dial', 'sheet', 'strip'];
 const STUB_LABELS = ['Where we are', 'Send a message', 'What to tell us',
                      'How we reply', 'Owners', 'Questions'];
 const stubTargets = (s: Section, styleId: string) =>
@@ -202,9 +203,14 @@ const stubTargets = (s: Section, styleId: string) =>
                   )}
                   {CHROME_SHAPES.includes(s.shape) && (
                     <div class="bp-chrome">
-                      {s.shape === 'dial'
-                        ? <PageDial sections={stubTargets(s, st.id)} style={st.id} idPrefix={`${s.id}-${st.id}-dial`} />
-                        : <SectionSheet sections={stubTargets(s, st.id)} style={st.id} />}
+                      {s.shape === 'dial' && (
+                        <PageDial sections={stubTargets(s, st.id)} style={st.id} idPrefix={`${s.id}-${st.id}-dial`} />
+                      )}
+                      {s.shape === 'sheet' && <SectionSheet sections={stubTargets(s, st.id)} style={st.id} />}
+                      {/* The strip is `position: sticky`, and inside a preview frame it pins
+                          to the FRAME, not to the viewport — which is what lets three of them
+                          be looked at side by side on one document. */}
+                      {s.shape === 'strip' && <SectionStrip sections={stubTargets(s, st.id)} style={st.id} />}
                       <div class="bp-targets">
                         {stubTargets(s, st.id).map((t, i) => (
                           <div>

@@ -13,5 +13,6 @@
   {"id": "footer",          "file": "SiteFooterKit.astro",   "title": "12 · Footer",                           "board_width": 1280, "project": 3},
   {"id": "section-divider", "file": "SectionDivider.astro",  "title": "13 · Section divider",                  "board_width": 1280, "project": 3},
   {"id": "page-dial",       "file": "PageDial.astro",        "title": "14 · Page dial (desktop)",              "board_width":  640, "project": 4},
-  {"id": "section-sheet",   "file": "SectionSheet.astro",    "title": "15 · Section sheet (mobile)",           "board_width":  640, "project": 4}
+  {"id": "section-sheet",   "file": "SectionSheet.astro",    "title": "15 · Section sheet (mobile)",           "board_width":  640, "project": 4},
+  {"id": "section-strip",   "file": "SectionStrip.astro",    "title": "16 · Section strip (mobile)",           "board_width":  640, "project": 4}
 ]

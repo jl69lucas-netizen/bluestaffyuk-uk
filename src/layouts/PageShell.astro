@@ -13,11 +13,18 @@
 // second, shorter route to the same six links, so the threshold is six, in one place, here:
 // a page cannot mount the dial without the sheet or the sheet without the dial, and the two
 // are one component split by viewport width.
+//
+// THE SET IS THREE, not two (spec §9 amendment 3b). Below 1024px the STRIP is the quick jump
+// pinned under the header and the SHEET is the full list behind a bottom control; at and
+// above 1024px both go and the DIAL takes the column. All three mount on the same `nav`
+// threshold and from the same `sections` list, so no width and no page can show two of them
+// disagreeing about what the page's sections are.
 import BaseLayout, { type BaseProps } from './BaseLayout.astro';
 import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
 import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
 import PageDial from '../components/kit/PageDial.astro';
 import SectionSheet from '../components/kit/SectionSheet.astro';
+import SectionStrip from '../components/kit/SectionStrip.astro';
 import type { SectionRef } from '../lib/sections';
 
 // Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
@@ -37,6 +44,9 @@ if (sections.length > 0 && !nav) {
 ---
 <BaseLayout {...head}>
   <SiteHeaderKit slot="header" />
+  {/* Before the shell, and outside the dial's grid: the strip is a full-bleed band that
+      pins under the header, so it must not be a grid child sitting beside the dial column. */}
+  {nav && <SectionStrip sections={sections} />}
   <div class:list={['page-shell', { 'has-dial': nav }]}>
     {nav && <PageDial sections={sections} />}
     <div class="page-body"><slot /></div>

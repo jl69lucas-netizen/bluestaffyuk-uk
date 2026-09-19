@@ -25,11 +25,11 @@
 export type Shape =
   | 'hero' | 'takeaways' | 'standard' | 'puppies' | 'reviews'
   | 'faq' | 'form' | 'stats' | 'trust' | 'divider'
-  | 'dial' | 'sheet';
+  | 'dial' | 'sheet' | 'strip';
 
 export const SHAPES: readonly Shape[] = [
   'hero', 'takeaways', 'standard', 'puppies', 'reviews', 'faq', 'form', 'stats', 'trust', 'divider',
-  'dial', 'sheet',
+  'dial', 'sheet', 'strip',
 ];
 
 /** Every axis a layout can state. All optional: a def sets only what its renderer reads,
@@ -55,6 +55,8 @@ export interface Layout {
   marks?: 'number' | 'label';
   /** SectionSheet only: the control that opens the sections sheet. */
   launcher?: 'tab' | 'pill' | 'fab';
+  /** SectionStrip only: how a chip on the sticky mobile rail is drawn. */
+  chip?: 'outline' | 'filled' | 'text';
 }
 
 export type Axis = keyof Layout;
@@ -101,6 +103,9 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   // or columns: a dial in a card and a dial on a band are the same dial.
   dial: ['ring', 'marks', 'list'],
   sheet: ['launcher'],
+  // SectionStrip joins them: its three styles are how one chip is drawn, nothing about the
+  // bed the rail sits on — the rail is always full-bleed under the header.
+  strip: ['chip'],
 };
 
 const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ id, name, layout });
@@ -165,6 +170,11 @@ export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
     def('S1', 'Sections as the fourth tab in the bar', { launcher: 'tab' }),
     def('S2', 'Full-width Sections pill above the bar', { launcher: 'pill' }),
     def('S3', 'Floating round Sections button, bottom right', { launcher: 'fab' }),
+  ],
+  strip: [
+    def('S1', 'Outlined pills, number in the brand colour', { chip: 'outline' }),
+    def('S2', 'Filled tab chips, active chip on brand', { chip: 'filled' }),
+    def('S3', 'Flat text links, underline on the active one', { chip: 'text' }),
   ],
 };
 
