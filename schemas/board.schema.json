@@ -110,9 +110,10 @@
           "words": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
                     "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}},
           "shape": {
-            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The ten that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose.",
+            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The twelve that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial` and `sheet` are the two CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial and the section sheet every rebuilt page then carries.",
             "enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard",
-                     "hero", "takeaways", "puppies", "reviews", "faq", "form", "stats", "trust", "divider"]
+                     "hero", "takeaways", "puppies", "reviews", "faq", "form", "stats", "trust", "divider",
+                     "dial", "sheet"]
           },
           "styles": {
             "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly the three src/lib/boardStyles.ts defines. scripts/build_board_previews.py refuses anything else, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
@@ -171,7 +172,8 @@
             "comment": "A KIT shape draws its component from src/lib/boardStyles.ts, not from a ledger pool, so its board offers rendered arrangements and nothing else. A kit-shaped section with no `styles` would therefore reach the approve button owing a pick it is never shown a control for — an unapprovable board. The nine are required to carry the three. `standard` is deliberately NOT among them: it is shared with the ported CAG shapes, it is what every section of the existing homepage record is, and its board still offers the ledger default.",
             "if": {"required": ["shape"],
                    "properties": {"shape": {"enum": ["hero", "takeaways", "puppies", "reviews", "faq",
-                                                     "form", "stats", "trust", "divider"]}}},
+                                                     "form", "stats", "trust", "divider",
+                                                     "dial", "sheet"]}}},
             "then": {"required": ["styles"], "properties": {"styles": {"minItems": 3}}}
           }
         ]

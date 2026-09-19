@@ -24,10 +24,12 @@
  *  the kit-backed shapes project 4 added to that enum. */
 export type Shape =
   | 'hero' | 'takeaways' | 'standard' | 'puppies' | 'reviews'
-  | 'faq' | 'form' | 'stats' | 'trust' | 'divider';
+  | 'faq' | 'form' | 'stats' | 'trust' | 'divider'
+  | 'dial' | 'sheet';
 
 export const SHAPES: readonly Shape[] = [
   'hero', 'takeaways', 'standard', 'puppies', 'reviews', 'faq', 'form', 'stats', 'trust', 'divider',
+  'dial', 'sheet',
 ];
 
 /** Every axis a layout can state. All optional: a def sets only what its renderer reads,
@@ -47,6 +49,12 @@ export interface Layout {
   heading?: 'above' | 'inline' | 'eyebrow';
   /** Passed straight to a kit component that takes a mode (Testimonial). */
   mode?: 'single' | 'grid';
+  /** PageDial only: whether the progress ring is drawn at all. */
+  ring?: 'shown' | 'hidden';
+  /** PageDial only: what each row of the section list carries beside its label. */
+  marks?: 'number' | 'label';
+  /** SectionSheet only: the control that opens the sections sheet. */
+  launcher?: 'tab' | 'pill' | 'fab';
 }
 
 export type Axis = keyof Layout;
@@ -63,8 +71,11 @@ export interface StyleDef {
  *  refuses a record whose `styles` is anything else. */
 export const STYLE_IDS: ReadonlyArray<StyleDef['id']> = ['S1', 'S2', 'S3'];
 
-/** The neutral value of each axis: what `boxClass()` writes when a def leaves it unset. */
-const NEUTRAL: Required<Omit<Layout, 'mode'>> = {
+/** The neutral value of each CLASS axis: what `boxClass()` writes when a def leaves it
+ *  unset. `mode`, `ring`, `marks` and `launcher` are not here and are not classes: they are
+ *  handed straight to a kit component as a prop (Testimonial's mode, PageDial's and
+ *  SectionSheet's style), so there is no `bl-*` rule for the stylesheet to key on. */
+const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher'>> = {
   frame: 'plain', columns: 1, media: 'none', list: 'stack', aside: 'none', heading: 'above',
 };
 
@@ -84,6 +95,12 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   trust: ['frame', 'columns', 'heading'],
   // SectionDivider takes `inverse`, and the band frame is what selects it.
   divider: ['frame', 'columns', 'heading'],
+  // PageDial and SectionSheet are the only two shapes whose three styles are STRUCTURAL
+  // variants of the component itself rather than of the bed it sits on — the dial's ring and
+  // row content, the sheet's launcher. So each reads its own props and nothing about frames
+  // or columns: a dial in a card and a dial on a band are the same dial.
+  dial: ['ring', 'marks', 'list'],
+  sheet: ['launcher'],
 };
 
 const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ id, name, layout });
@@ -138,6 +155,16 @@ export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
     def('S1', 'Light seam', {}),
     def('S2', 'Inverse seam on a band', { frame: 'band', heading: 'eyebrow' }),
     def('S3', 'Seam beside the section label', { columns: 2, heading: 'inline' }),
+  ],
+  dial: [
+    def('S1', 'Progress ring above a numbered list', { ring: 'shown', marks: 'number', list: 'stack' }),
+    def('S2', 'Compact numbered strip, no ring', { ring: 'hidden', marks: 'number', list: 'rail' }),
+    def('S3', 'Progress ring above labels only', { ring: 'shown', marks: 'label', list: 'stack' }),
+  ],
+  sheet: [
+    def('S1', 'Sections as the fourth tab in the bar', { launcher: 'tab' }),
+    def('S2', 'Full-width Sections pill above the bar', { launcher: 'pill' }),
+    def('S3', 'Floating round Sections button, bottom right', { launcher: 'fab' }),
   ],
 };
 

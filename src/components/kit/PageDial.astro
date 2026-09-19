@@ -19,33 +19,65 @@
 // section that way announces every row as NOT current, which is worse than marking none.
 // The CSS therefore matches `[aria-current="location"]` rather than bare `[aria-current]`,
 // so the paint and the announcement can never disagree.
+//
+// TEMPORARY `style` PROP (project 4, Task 9). The dial is one of the two pieces of chrome
+// the contact board puts three arrangements of in front of the breeder, so all three live
+// here at once behind `style`: S1 is the shipped dial above, S2 drops the ring for a compact
+// numbered strip, S3 keeps the ring and shows labels only with a thicker current bar. The
+// map that names them is `dial` in src/lib/boardStyles.ts. AFTER THE PICK THE OTHER TWO ARE
+// DELETED along with this prop — the same prune project 3 ran on the kit's style options.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
-type Props = HTMLAttributes<'aside'> & { sections: SectionRef[]; title?: string };
-const { sections, title = 'On this page', class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'aside'> & {
+  sections: SectionRef[];
+  title?: string;
+  style?: 'S1' | 'S2' | 'S3';
+  /** Distinguishes the ids of two dials on ONE document. A page mounts one dial and never
+   *  passes it; the board preview mounts three of the same section and must, or all three
+   *  `aria-labelledby` targets collapse onto the first heading. */
+  idPrefix?: string;
+};
+const {
+  sections,
+  title = 'On this page',
+  style: styleId = 'S1',
+  idPrefix = 'kit-dial',
+  class: cls,
+  ...rest
+} = Astro.props;
+// S2 is the one style with no ring, and S3 the one with no row numbers. Naming the two
+// facts once keeps the markup and the CSS from disagreeing about which style is which.
+const hasRing = styleId !== 'S2';
+const hasNumbers = styleId !== 'S3';
 const N = sections.length;
 const C = 2 * Math.PI * 22; // ring circumference at r=22, inside the 64px box
 const dash = C.toFixed(1);
 // The nav is labelled BY the visible heading, not by a duplicate literal: a reader who can
 // see "On this page" and a reader who hears the landmark then get the same words, and a
 // caller who passes `title` renames both at once.
-const titleId = 'kit-dial-title';
+const titleId = `${idPrefix}-title`;
 ---
-<aside class:list={['kit-dial kit-card', cls]} data-dial {...rest}>
-  <div class="ring" aria-hidden="true">
-    <svg viewBox="0 0 64 64" width="64" height="64">
-      <circle cx="32" cy="32" r="22" class="track" />
-      <circle cx="32" cy="32" r="22" class="fill" data-ring style={`stroke-dasharray:${dash};stroke-dashoffset:${dash}`} />
-    </svg>
-    <span class="n"><b data-ring-n>1</b><small>of {N}</small></span>
-  </div>
+<aside class:list={['kit-dial', `dial-${styleId.toLowerCase()}`, styleId !== 'S2' && 'kit-card', cls]} data-dial {...rest}>
+  {hasRing && (
+    <div class="ring" aria-hidden="true">
+      <svg viewBox="0 0 64 64" width="64" height="64">
+        <circle cx="32" cy="32" r="22" class="track" />
+        <circle cx="32" cy="32" r="22" class="fill" data-ring style={`stroke-dasharray:${dash};stroke-dashoffset:${dash}`} />
+      </svg>
+      <span class="n"><b data-ring-n>1</b><small>of {N}</small></span>
+    </div>
+  )}
   <nav aria-labelledby={titleId}>
     <p class="t" id={titleId}>{title}</p>
     <ol>
       {sections.map((s, i) => (
         <li>
-          <a href={`#${s.id}`} data-spy={s.id}>
-            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          {/* The first row is marked current AT RENDER, not only by the spy: a reader at
+              the top of the page is in section one, and a dial that marks nothing until
+              the first scroll event is a dial that looks broken before JS runs — and in a
+              board preview, where the block is static markup, it never runs at all. */}
+          <a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>
+            {hasNumbers && <span class="num">{String(i + 1).padStart(2, '0')}</span>}
             <span class="lab">{s.label}</span>
           </a>
         </li>
@@ -199,5 +231,28 @@ const titleId = 'kit-dial-title';
     @media (prefers-reduced-motion: reduce) {
       .fill { transition: none; }
     }
+
+    /* --- the two style arrangements the contact board offers (temporary, see the header) ---
+       Each is a STRUCTURAL change to the dial, never a recolour: S2 removes the ring and
+       the card and runs the rows as a ruled rail, S3 removes the row numbers and marks the
+       current section with a bar down its leading edge instead of a filled row. */
+
+    /* S2 — compact numbered strip. No card, no ring: a hairline rail of rows that takes
+       about half the height of S1, for a page whose dial would otherwise outrun its own
+       first screen. The rail rule is on the list, so the rows read as one strip. */
+    .dial-s2 { gap: 6px; padding: 0; background: none; border: 0; box-shadow: none; }
+    .dial-s2 ol { border-top: 0; padding-top: 4px; gap: 0; }
+    .dial-s2 li + li { border-top: 1px solid var(--color-border); }
+    .dial-s2 li a { min-height: 28px; padding: 4px 2px; }
+
+    /* S3 — ring and labels, no numbers. The current row is called out by a 3px bar on its
+       leading edge rather than by the soft fill, which is what makes it readable at a
+       glance from the body column. */
+    .dial-s3 li a {
+      padding-left: 7px;
+      border-left: 3px solid transparent;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .dial-s3 li a[aria-current='location'] { border-left-color: var(--color-cta); }
   }
 </style>

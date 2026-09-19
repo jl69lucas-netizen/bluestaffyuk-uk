@@ -229,8 +229,12 @@ STYLE_MAP = _parse_style_map()
 AXES = _rendered_axes()
 
 
-def test_the_parse_found_ten_shapes_with_three_styles_each():
-    assert len(STYLE_MAP) == 10, sorted(STYLE_MAP)
+def test_the_parse_found_twelve_shapes_with_three_styles_each():
+    """Ten section shapes, plus the two CHROME shapes the contact board adds — `dial` and
+    `sheet`, whose three styles are variants of PageDial and SectionSheet themselves rather
+    than of the bed a section sits on."""
+    assert len(STYLE_MAP) == 12, sorted(STYLE_MAP)
+    assert {"dial", "sheet"} <= set(STYLE_MAP), sorted(STYLE_MAP)
     assert all(len(v) == 3 for v in STYLE_MAP.values()), {k: len(v) for k, v in STYLE_MAP.items()}
     assert set(AXES) == set(STYLE_MAP), (sorted(AXES), sorted(STYLE_MAP))
 

@@ -52,5 +52,17 @@
     "q": "How do I ask for my data to be deleted?",
     "a": "Write to us at staffies@bluestaffyuk.uk or use the contact page. You can ask to view, correct or delete your data at any time, and we answer all legitimate requests within one month.",
     "source": "src/pages/privacy-policy-uk/index.astro"
+  },
+  {
+    "id": "contact-visit",
+    "q": "Can I visit you before I decide?",
+    "a": "We do not run a walk-in facility. Our dogs are raised in a family home, so visits are strictly by appointment only, arranged with you once we have talked through your enquiry.",
+    "source": "src/pages/uk-blue-staffy-breeders-contact/index.astro"
+  },
+  {
+    "id": "contact-what-to-say",
+    "q": "What should I put in my message?",
+    "a": "As much detail as possible: your household, whether you are asking about a particular puppy or about availability generally, and anything you want to know about how we breed. It lets us answer properly in one reply, and we aim to respond within 24-48 business hours.",
+    "source": "src/pages/uk-blue-staffy-breeders-contact/index.astro"
   }
 ]

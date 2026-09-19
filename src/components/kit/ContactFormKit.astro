@@ -28,8 +28,11 @@ import puppiesJson from '../../../data/puppies.json';
 import { abs, type PuppyRow } from '../../lib/site';
 import Button from './Button.astro';
 
-type Props = HTMLAttributes<'form'>;
-const { class: cls, ...rest } = Astro.props;
+// THE ID PREFIX IS A PROP because the board preview renders this form three times on one
+// document, once per style, and a `for`/`id` pair that repeats points every label at the
+// first form's field. A page mounts ONE form and never passes it.
+type Props = HTMLAttributes<'form'> & { idPrefix?: string };
+const { idPrefix = 'kit-contact-form', class: cls, ...rest } = Astro.props;
 
 const fid = import.meta.env.PUBLIC_FORMSPREE_ID || 'FORMSPREE_ID_PLACEHOLDER';
 const live = fid !== 'FORMSPREE_ID_PLACEHOLDER';
@@ -41,7 +44,7 @@ const puppies = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Availabl
 // the first puppy and the required check would pass on a choice nobody made.
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 
-const f = 'kit-contact-form';
+const f = idPrefix;
 const fields = [
   { key: 'name', label: 'Your name', type: 'text', autocomplete: 'name', required: true },
   { key: 'email', label: 'Email', type: 'email', autocomplete: 'email', required: true },

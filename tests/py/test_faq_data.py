@@ -34,6 +34,8 @@ FACT_PHRASES = {
     "privacy-data-collected": ["name, email, phone", "IP address", "browser type"],
     "privacy-cookies": ["essential cookies", "Google Analytics"],
     "privacy-delete-data": ["view, edit, or delete your data", "within one month"],
+    "contact-visit": ["walk-in facility", "by appointment only"],
+    "contact-what-to-say": ["as much detail as possible", "24-48 business hours"],
 }
 
 

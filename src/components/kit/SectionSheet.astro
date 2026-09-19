@@ -26,6 +26,19 @@
 //
 // Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
 // 6 (`@layer components`). Icons are inline stroke SVG — never an emoji, never an <img>.
+//
+// TEMPORARY `style` PROP (project 4, Task 9). The sheet is one of the two pieces of chrome
+// the contact board puts three arrangements of in front of the breeder, so all three live
+// here at once behind `style`: S1 is the shipped four-tab bar above, S2 keeps a three-tab
+// bar and lifts Sections out into a full-width pill over it, S3 drops the bar entirely for
+// a floating round Sections button in the bottom-right corner. The map that names them is
+// `sheet` in src/lib/boardStyles.ts. AFTER THE PICK THE OTHER TWO ARE DELETED along with
+// this prop — the same prune project 3 ran on the kit's style options.
+//
+// EACH ARRANGEMENT RESERVES ITS OWN HEIGHT. The reservation is the point of the global block
+// below, so a style that is taller than 64px (S2's pill sits above the bar) or that is not
+// a bar at all (S3's button) has to say so, or `nav-bottom-chrome-clear` finds a jump
+// target under it.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
 import Button from './Button.astro';
@@ -33,11 +46,13 @@ type Props = HTMLAttributes<'div'> & {
   sections: SectionRef[];
   ctaLabel?: string;
   ctaHref?: string;
+  style?: 'S1' | 'S2' | 'S3';
 };
 const {
   sections,
   ctaLabel = 'Available puppies',
   ctaHref = '/available-puppies/',
+  style: styleId = 'S1',
   class: cls,
   ...rest
 } = Astro.props;
@@ -55,19 +70,41 @@ const tabs: [string, string, string][] = [
   ['Contact', '/uk-blue-staffy-breeders-contact/', I.mail],
 ];
 ---
-<div class:list={['kit-sheet', cls]} data-sheet {...rest}>
-  <nav class="kit-tabbar" aria-label="Site">
-    {tabs.map(([label, href, d]) => (
-      <a href={href}>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
-        <span>{label}</span>
-      </a>
-    ))}
-    <button type="button" data-open aria-haspopup="dialog" aria-expanded="false">
+<div class:list={['kit-sheet', `sheet-${styleId.toLowerCase()}`, cls]} data-sheet {...rest}>
+  {/* S3 has no bar at all: its three site links are the header's job at that width, and the
+      only thing the sheet contributes is the Sections button. */}
+  {styleId !== 'S3' && (
+    <nav class="kit-tabbar" aria-label="Site">
+      {tabs.map(([label, href, d]) => (
+        <a href={href}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d={d} /></svg>
+          <span>{label}</span>
+        </a>
+      ))}
+      {styleId === 'S1' && (
+        <button type="button" data-open aria-haspopup="dialog" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
+          <span>Sections</span>
+        </button>
+      )}
+    </nav>
+  )}
+  {/* ONE `[data-open]` on the page, wherever the style puts it — the script binds a single
+      opener, and a second copy would be a control that silently does nothing. */}
+  {styleId === 'S2' && (
+    <div class="kit-pillbar">
+      <button type="button" class="pill" data-open aria-haspopup="dialog" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
+        <span>Sections</span>
+      </button>
+    </div>
+  )}
+  {styleId === 'S3' && (
+    <button type="button" class="fab" data-open aria-haspopup="dialog" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
       <span>Sections</span>
     </button>
-  </nav>
+  )}
   <dialog class="sheet" aria-label="Sections" data-dialog>
     <div class="grab" aria-hidden="true"></div>
     <ol>
@@ -174,8 +211,14 @@ const tabs: [string, string, string][] = [
   @layer components {
     @media (max-width: 1023px) {
       body:has(.kit-sheet) { padding-bottom: 64px; }
+      /* S2 stacks a 52px pill on top of the 64px bar, and S3's floating button occupies a
+         56px circle with a 16px margin under it. Each style reserves what it actually
+         covers; the later rules win on equal specificity, which is why they sit here. */
+      body:has(.sheet-s2) { padding-bottom: 116px; }
+      body:has(.sheet-s3) { padding-bottom: 88px; }
       @supports not selector(:has(*)) {
-        body { padding-bottom: 64px; }
+        /* No `:has()`, so no way to tell which style is mounted — reserve the tallest. */
+        body { padding-bottom: 116px; }
       }
     }
   }
@@ -267,12 +310,73 @@ const tabs: [string, string, string][] = [
     }
     /* At >=1024px PageDial is the in-page nav. Both the bar and the sheet go, so the tab
        bar's links are not a second copy of the header nav in the desktop tab order. */
+    /* --- the two style arrangements the contact board offers (temporary, see the header) --- */
+
+    /* S2 — three tabs, and Sections lifted into a full-width pill over the bar. The bar
+       loses its fourth column, so the three site links get a third of the width each. */
+    .sheet-s2 .kit-tabbar { grid-template-columns: repeat(3, 1fr); }
+    .kit-pillbar {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 64px;
+      z-index: 40;
+      padding: 4px var(--space-4);
+      background: var(--color-surface-raised);
+      border-top: 1px solid var(--color-border);
+    }
+    .kit-pillbar .pill {
+      display: flex;
+      width: 100%;
+      min-height: 44px;
+      gap: var(--space-2);
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: var(--color-brand-soft);
+      font: 600 var(--text-sm) / 1 var(--font-body);
+      color: var(--color-brand);
+      cursor: pointer;
+    }
+    .kit-pillbar .pill svg { width: 20px; height: 20px; }
+    .kit-pillbar .pill:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+
+    /* S3 — no bar: one round button in the bottom-right corner. 56px, which clears the
+       44px tap-target floor with room for the label under the icon. */
+    .fab {
+      position: fixed;
+      right: var(--space-4);
+      bottom: var(--space-4);
+      z-index: 40;
+      width: 56px;
+      height: 56px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1px;
+      border: 1px solid var(--color-border);
+      border-radius: 50%;
+      background: var(--color-surface-raised);
+      box-shadow: var(--shadow-card);
+      font: 600 var(--text-xs) / 1 var(--font-body);
+      color: var(--color-brand);
+      cursor: pointer;
+    }
+    .fab svg { width: 20px; height: 20px; }
+    .fab:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 2px; }
+
     @media (min-width: 1024px) {
       .kit-tabbar,
+      .kit-pillbar,
+      .fab,
       .sheet { display: none; }
     }
     @media print {
-      .kit-tabbar { display: none; }
+      .kit-tabbar,
+      .kit-pillbar,
+      .fab { display: none; }
     }
   }
 </style>
