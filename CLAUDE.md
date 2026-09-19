@@ -132,6 +132,13 @@ growing. Every other rule moved to a pack.
     (breeder, 2026-09-18): do not ask whether to use it. Text-only questions stay in the
     terminal.
 
+11. **Reuse every existing image and video; never break their URLs.** Every file under
+    `public/images/` (and the YouTube embeds in `data/settings.json`) already ranks in Google
+    Images / video search. Pages built or rebuilt in projects 4–6 reuse them first, keep the
+    original filename, path and alt text, and never rename, delete or re-encode a served
+    file; a replacement image is added beside the old one, never in its place. (Breeder,
+    2026-09-19.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how

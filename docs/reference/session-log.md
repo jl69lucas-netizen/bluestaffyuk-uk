@@ -230,3 +230,12 @@ and 17–25 are new from the design system.
     record of a finished run and is never regenerated. Whoever opens **project 4** must repoint
     the default at a new project 4 baseline file, or `npm run baseline` will keep judging
     project 4's scorecards against project 3's table.
+
+26. **Existing images and videos must be reused with their URLs intact.** Every file under
+    `public/images/` and the YouTube embeds in `data/settings.json` already rank; projects 4–6
+    reuse them first and never rename, delete or re-encode a served file (CLAUDE.md working
+    rule 11, breeder 2026-09-19). Project 3 briefly deleted the two legacy logo rasters
+    (`blue-staffy-uk-official-logo0.png`, `blue-staffy-uk-header-logo-88.webp`) when the SVG
+    lockups replaced them; both are restored at their original paths and stay served even
+    though no template references them. **Standing constraint for projects 4–6.**
+
