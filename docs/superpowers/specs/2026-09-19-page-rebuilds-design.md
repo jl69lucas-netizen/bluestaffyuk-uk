@@ -186,4 +186,24 @@ blocking row site-wide; Lighthouse not below the project 3 table for that page t
 
 ## 9. Amendments
 
-Recorded here as they happen. None yet.
+Recorded here as they happen.
+
+**Amendment 1 (2026-09-19, Tasks 1–2).** Two corrections to §3.
+
+1. **`nav-bottom-chrome-clear` is a SEPARATE check, not an extension of
+   `nav-jump-target-lands`.** They are siblings at opposite ends of the viewport and they
+   cannot be one check. `nav-jump-target-lands` measures a target against the chrome pinned
+   to the TOP, which `scroll-margin-top` answers, and it has to defeat smooth-scroll timing
+   to do it — `forceInstantRootScroll`, a settle probe, a budget and three defect buckets.
+   The bottom has no CSS answer at all: a `position: fixed` bar is out of flow, so the only
+   fix is for the bar to reserve its own height in the body, and the measurement is pure
+   geometry against an element that never moves. Folding the two together would put a
+   timing-sensitive scroll harness in front of a question that does not need one, and would
+   merge two failure modes with two different remedies into one defect row. They are
+   registered separately in `tests/render/checks/nav.ts`, both blocking, both NAV.
+
+2. **The 196px dial column lives in `PageShell.astro` (Task 3), not in `PageDial`.**
+   `PageDial` owns the card and sets its own `width: 196px`, but the page GRID that gives
+   the column its place beside the prose — and collapses it below 1024px — belongs to the
+   shell every rebuilt page mounts. A component that declared the grid would be deciding
+   the page's layout from inside a sidebar, and the two hubs would each need their own copy.

@@ -14,6 +14,16 @@
 // can land underneath it. That is not a cosmetic detail: it is the whole of what
 // `nav-bottom-chrome-clear` (blocking, tests/render/checks/nav.ts) measures.
 //
+// THAT RESERVATION DEPENDS ON `:has()`. `body:has(.kit-sheet)` scopes the padding to pages
+// that actually mount the bar, so a page without one gets no mystery gap — but a browser
+// without `:has()` support drops the whole rule and every such page loses the reservation
+// silently. The global block therefore carries an `@supports not selector(:has(*))`
+// fallback that pads the body unconditionally: a 64px gap on a page with no bar is a
+// cosmetic cost, and a jump target under the bar is a blocking one.
+//
+// `aria-current="location"`, never a bare `aria-current`: `toggleAttribute` emits
+// `aria-current=""`, which is the token `false`. See the same note in PageDial.astro.
+//
 // Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
 // 6 (`@layer components`). Icons are inline stroke SVG — never an emoji, never an <img>.
 import type { HTMLAttributes } from 'astro/types';
@@ -53,7 +63,7 @@ const tabs: [string, string, string][] = [
         <span>{label}</span>
       </a>
     ))}
-    <button type="button" data-open aria-haspopup="dialog">
+    <button type="button" data-open aria-haspopup="dialog" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d={I.list} /></svg>
       <span>Sections</span>
     </button>
@@ -77,12 +87,22 @@ const tabs: [string, string, string][] = [
   </dialog>
 </div>
 <script>
+  // Singleton by design: a page mounts ONE sheet, the way it mounts one site header.
   const root = document.querySelector<HTMLElement>('[data-sheet]');
   const dlg = root?.querySelector<HTMLDialogElement>('[data-dialog]');
   if (root && dlg) {
+    const opener = root.querySelector<HTMLButtonElement>('[data-open]');
     // showModal(), not show(): the modal form is what supplies the focus trap, the inert
-    // background and Escape. The three handlers below are the only things it does not give.
-    root.querySelector('[data-open]')?.addEventListener('click', () => dlg.showModal());
+    // background and Escape. Guarded, because a browser without the dialog API leaves
+    // showModal undefined and an unguarded call throws — the bar's other three tabs are
+    // ordinary links and must keep working. The fallback opens the sheet as a plain
+    // non-modal panel: no trap, no Escape, but the section list is reachable.
+    const open = () => {
+      if (typeof dlg.showModal === 'function') dlg.showModal();
+      else dlg.setAttribute('open', '');
+      opener?.setAttribute('aria-expanded', 'true');
+    };
+    opener?.addEventListener('click', open);
     root.querySelector('[data-close]')?.addEventListener('click', () => dlg.close());
     // A click that lands on the dialog element itself is a click on the backdrop: the
     // sheet's own content sits in children, so `e.target === dlg` cannot be a mis-hit.
@@ -92,25 +112,46 @@ const tabs: [string, string, string][] = [
     // Following a section link must dismiss the sheet, or the reader jumps to a section
     // they cannot see behind the modal.
     dlg.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', () => dlg.close()));
+    // `aria-expanded` is driven by the dialog's own `close` event, not by each call site.
+    // Escape and the backdrop close the sheet without going through any handler of ours,
+    // so a flag flipped beside `dlg.close()` would be wrong the first time a reader
+    // pressed Escape — which is the way most of them will close it.
+    dlg.addEventListener('close', () => opener?.setAttribute('aria-expanded', 'false'));
 
-    // The same reading band PageDial uses, so the two never disagree about the current
-    // section on a width where a reader could rotate from one to the other.
-    const links = [...dlg.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
-    const targets = links
-      .map((a) => document.getElementById(a.dataset.spy!))
-      .filter((t): t is HTMLElement => Boolean(t));
+    // Paired links and targets, the same reading band and the same bottom-of-document
+    // fallback as PageDial — see the fuller note there. The two must agree about the
+    // current section at every width a reader could rotate between.
+    const rows = [...dlg.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
+    const N = rows.length;
+    const set = (i: number) => {
+      if (i < 0 || i >= N) return;
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+    };
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
         if (!visible[0]) return;
-        const i = targets.indexOf(visible[0].target as HTMLElement);
-        links.forEach((a, j) => a.toggleAttribute('aria-current', j === i));
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
       },
       { rootMargin: '-40% 0px -55% 0px' },
     );
-    targets.forEach((t) => io.observe(t));
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
   }
 </script>
 <style is:global>
@@ -119,9 +160,24 @@ const tabs: [string, string, string][] = [
      64px of every page: the end of the final section, and any jump target near it.
      `:has()` keeps the reservation tied to the bar actually being mounted, so a page
      without the sheet gets no mystery gap. The number is the bar's own height; both are
-     64 and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction. */
-  @media (max-width: 1023px) {
-    body:has(.kit-sheet) { padding-bottom: 64px; }
+     64 and `nav-bottom-chrome-clear` measures the pair. Hex-free by construction.
+
+     `@layer components` here as well as in the scoped block (convention 6): a global rule
+     outside every layer beats any Tailwind utility a page might use to override the
+     padding, which is the opposite of what a kit component should do.
+
+     THE FALLBACK IS NOT DECORATION. A browser without `:has()` drops the first rule
+     entirely and the page loses its reservation with no symptom until someone jumps to the
+     last section. `@supports not selector(:has(*))` pads the body unconditionally there:
+     64px of empty space on a page that mounts no bar is a cosmetic cost, and a jump target
+     hidden under the bar is a blocking one. */
+  @layer components {
+    @media (max-width: 1023px) {
+      body:has(.kit-sheet) { padding-bottom: 64px; }
+      @supports not selector(:has(*)) {
+        body { padding-bottom: 64px; }
+      }
+    }
   }
 </style>
 <style>
@@ -194,7 +250,7 @@ const tabs: [string, string, string][] = [
       color: var(--color-text);
       text-decoration: none;
     }
-    .sheet li a[aria-current] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    .sheet li a[aria-current='location'] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
     .sheet li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
     .num { font-feature-settings: 'tnum'; color: var(--color-text-muted); font-size: var(--text-xs); }
     .lab { min-width: 0; overflow-wrap: anywhere; }

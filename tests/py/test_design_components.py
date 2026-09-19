@@ -758,7 +758,11 @@ def test_built_page_dial_has_ring_list_and_spy_hooks():
     sidebar. The six `<li>` are the demo fixture's six sections."""
     dial = _sections("page-dial")
     assert _has_class(dial, "kit-dial")
-    assert "<nav" in dial and 'aria-label="Sections"' in dial
+    # Labelled BY the visible heading, never by a duplicate literal: a `<nav aria-label>`
+    # and a visible "On this page" would give a screen-reader user different words from the
+    # ones on the screen.
+    assert "<nav" in dial and 'aria-labelledby="kit-dial-title"' in dial
+    assert 'id="kit-dial-title"' in dial
     assert dial.count("<li") >= 6, dial.count("<li")
     assert dial.count('data-spy="') >= 6, dial
     # The progress ring: a track and a fill, both <circle>, drawn not lettered.
@@ -793,6 +797,9 @@ def test_built_section_sheet_has_tab_bar_and_dialog():
     assert s.count("<a ") >= 3, s.count("<a ")
     assert "<button" in s
     assert "<dialog" in s and 'aria-label="Sections"' in s
+    # The opener ships its resting state; the script drives it from the dialog's own
+    # `close` event, so Escape and a backdrop click cannot leave it stuck on "true".
+    assert 'aria-haspopup="dialog"' in s and 'aria-expanded="false"' in s
     # Four line icons, drawn not lettered: three tabs plus Sections. Never an <img>, never
     # an emoji glyph — the same bar the footer's icon row is held to.
     assert s.count("<svg") >= 4, s.count("<svg")
@@ -800,3 +807,48 @@ def test_built_section_sheet_has_tab_bar_and_dialog():
     assert not [c for c in s if ord(c) >= 0x1F000]
     assert s.count('data-spy="') >= 6, s
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+
+
+#: Every built page, not just the preview. These two are dist-WIDE on purpose: both defects
+#: are produced by a component and shipped by whatever page mounts it, so checking only the
+#: page the component was written against would miss the next page that mounts it.
+DIST = ROOT / "dist"
+
+
+def _built_pages():
+    if not DIST.exists():
+        pytest.skip("run npm run build first")
+    return sorted(DIST.rglob("index.html"))
+
+
+def test_no_built_page_ships_an_empty_aria_current():
+    """`aria-current=""` is the token `false`.
+
+    `el.toggleAttribute('aria-current', true)` sets the attribute to the empty string, and
+    the empty string is not "unspecified" for this attribute — it is an explicit `false`.
+    A scroll-spy written that way marks the row the reader is IN as the one row that is
+    NOT current, which is worse than marking none of them. The two in-page nav components
+    use `setAttribute('aria-current', 'location')`; this is the guard that keeps the next
+    one from reaching for `toggleAttribute` because it reads shorter."""
+    bad = [(p.relative_to(ROOT), m) for p in _built_pages()
+           for m in re.findall(r'aria-current=""', p.read_text())]
+    assert not bad, bad[:5]
+
+
+def test_no_built_page_ships_a_duplicate_id():
+    """`getElementById` returns the FIRST match, so a second element with the same id is
+    unreachable by script and by fragment, and every `href="#x"` has two destinations with
+    only one of them ever chosen.
+
+    kit-preview shipped exactly this when the scroll-spy's six stub targets were rendered
+    inside every `with-targets` demo box instead of once per page: `nav-anchors-resolve`
+    stayed green because the anchors all resolved — to the first copy. The harness's
+    `a11y-no-duplicate-ids` catches it on a painted page; this catches it in dist without
+    a browser, on every route at once."""
+    offenders = {}
+    for p in _built_pages():
+        ids = re.findall(r'\sid="([^"]+)"', p.read_text())
+        dupes = sorted({i for i in ids if ids.count(i) > 1})
+        if dupes:
+            offenders[str(p.relative_to(ROOT))] = dupes
+    assert not offenders, offenders

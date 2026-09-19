@@ -71,8 +71,10 @@ export interface KitEntry {
    *
    *  `'with-targets'` is the one member that is not purely cosmetic: the two in-page nav
    *  components link to section ids, and without real elements behind those ids the demo
-   *  would ship dead anchors on a page the harness judges as a target. It supplies the
-   *  ANCHORS, not positional coverage. */
+   *  would ship dead anchors on a page the harness judges as a target. It DECLARES that
+   *  dependency; the preview renders the stub sections ONCE for the whole page, because
+   *  both entries name the same six ids and a copy per demo box would be a duplicate of
+   *  every one of them. It supplies the ANCHORS, not positional coverage. */
   wrap?: 'sticky' | 'after-band' | 'with-targets';
 }
 
@@ -91,7 +93,8 @@ export interface ComponentRow {
 /** The six sections the dial and the sheet both demo. One list, not two: the pair is one
  *  component split by viewport width, and two drifting fixtures would let the board show a
  *  dial and a sheet that disagree about what a page's sections are. The ids are rendered as
- *  stub `<section>`s by the preview's `with-targets` wrap, so every link resolves. */
+ *  stub `<section>`s once per page by the preview (see its `with-targets` note), so every
+ *  link resolves and no id is rendered twice. */
 export const DEMO_SECTIONS = [
   { id: 'd-a', label: 'Health' },
   { id: 'd-b', label: 'Delivery' },
@@ -191,9 +194,9 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'section-divider': { C: SectionDivider },
   // `wrap: 'with-targets'` — the dial IS a scroll-spy over six section ids, so a demo with
   // no such elements is a dial whose every link is a dead anchor (`nav-anchors-resolve`,
-  // blocking) and whose observer has nothing to observe. The wrap renders six stub sections
-  // carrying exactly these ids beside the dial. That is a CONTEXT for the eye and for the
-  // anchors; it is still not coverage for a positional check (convention 10).
+  // blocking) and whose observer has nothing to observe. The wrap declares that dependency;
+  // the preview renders the six stub sections once for the page. That is a CONTEXT for the
+  // eye and for the anchors; it is still not coverage for a positional check (convention 10).
   //
   // The ids are the demo's own `d-a`…`d-f`, prefixed so they cannot collide with the
   // preview's `kit-<component-id>` section anchors that the PageNav demo points at.
@@ -203,7 +206,9 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     wrap: 'with-targets',
   },
   // The same six sections and the same wrap, for the same two reasons: the sheet's links
-  // must resolve, and its scroll-spy must have something to observe. The bar is
+  // must resolve, and its scroll-spy must have something to observe — and because BOTH
+  // entries name DEMO_SECTIONS, the preview renders those stubs once rather than once per
+  // box, or `d-a`…`d-f` would each appear twice on the page. The bar is
   // `position: fixed`, so on the preview it docks to the viewport rather than to this
   // section — which is exactly how it behaves on a real page, and what makes the preview
   // a fair place to look at it.

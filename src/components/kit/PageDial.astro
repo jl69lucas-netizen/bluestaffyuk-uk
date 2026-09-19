@@ -13,6 +13,12 @@
 //
 // The ONE inline style is the ring's dash geometry, which depends on N and so cannot live
 // in a stylesheet. It carries no colour — rule 1, and the dist test asserts it.
+//
+// `aria-current="location"`, never a bare `aria-current`. `toggleAttribute` emits
+// `aria-current=""`, and the empty string is the token `false`: a dial marking its current
+// section that way announces every row as NOT current, which is worse than marking none.
+// The CSS therefore matches `[aria-current="location"]` rather than bare `[aria-current]`,
+// so the paint and the announcement can never disagree.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
 type Props = HTMLAttributes<'aside'> & { sections: SectionRef[]; title?: string };
@@ -20,6 +26,10 @@ const { sections, title = 'On this page', class: cls, ...rest } = Astro.props;
 const N = sections.length;
 const C = 2 * Math.PI * 22; // ring circumference at r=22, inside the 64px box
 const dash = C.toFixed(1);
+// The nav is labelled BY the visible heading, not by a duplicate literal: a reader who can
+// see "On this page" and a reader who hears the landmark then get the same words, and a
+// caller who passes `title` renames both at once.
+const titleId = 'kit-dial-title';
 ---
 <aside class:list={['kit-dial kit-card', cls]} data-dial {...rest}>
   <div class="ring" aria-hidden="true">
@@ -29,8 +39,8 @@ const dash = C.toFixed(1);
     </svg>
     <span class="n"><b data-ring-n>1</b><small>of {N}</small></span>
   </div>
-  <nav aria-label="Sections">
-    <p class="t">{title}</p>
+  <nav aria-labelledby={titleId}>
+    <p class="t" id={titleId}>{title}</p>
     <ol>
       {sections.map((s, i) => (
         <li>
@@ -48,32 +58,62 @@ const dash = C.toFixed(1);
   // The band is `-40% 0px -55% 0px`, so a section counts as current once its top passes 40%
   // down the viewport and stops counting once it leaves the bottom 45% — the same window the
   // sheet uses, so the two never disagree about which section the reader is in.
+  // Singleton by design: a page mounts ONE dial (and one SectionSheet), the way it mounts
+  // one site header. `querySelector` rather than a per-instance loop says so out loud —
+  // two dials would be two copies of the same links in the tab order, and the second would
+  // silently not be wired.
   const dial = document.querySelector<HTMLElement>('[data-dial]');
   if (dial) {
-    const links = [...dial.querySelectorAll<HTMLAnchorElement>('[data-spy]')];
+    // Links and targets are PAIRED, never zipped by index. Filtering them into two arrays
+    // independently lets one id that does not resolve shift every later pairing by one, so
+    // the spy would highlight the wrong row for the rest of the page — a silent failure
+    // that looks like a scroll bug. The pair also gives the ring an honest denominator:
+    // "n of N" counts the rows the spy can actually reach.
+    const rows = [...dial.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
     const ring = dial.querySelector<SVGCircleElement>('[data-ring]');
     const nEl = dial.querySelector<HTMLElement>('[data-ring-n]');
     const C = 2 * Math.PI * 22;
-    const targets = links
-      .map((a) => document.getElementById(a.dataset.spy!))
-      .filter((t): t is HTMLElement => Boolean(t));
+    const N = rows.length;
     const set = (i: number) => {
-      if (i < 0) return;
-      links.forEach((a, j) => a.toggleAttribute('aria-current', j === i));
-      if (ring) ring.style.strokeDashoffset = String(C * (1 - (i + 1) / links.length));
+      if (i < 0 || i >= N) return;
+      // setAttribute/removeAttribute, not toggleAttribute: `aria-current=""` is the token
+      // `false`, so a toggled attribute announces the current row as not current.
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+      if (ring) ring.style.strokeDashoffset = String(C * (1 - (i + 1) / N));
       if (nEl) nEl.textContent = String(i + 1);
     };
+    // The bottom of the document is a place the reading band cannot reach: a short final
+    // section never gets its top past 40% of the viewport, so the spy would sit on the
+    // second-to-last row while the reader is plainly at the end. When the page is scrolled
+    // to the bottom the last row IS the answer, whatever is intersecting.
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
     const io = new IntersectionObserver(
       (entries) => {
         const visible = entries
           .filter((e) => e.isIntersecting)
           .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) set(targets.indexOf(visible[0].target as HTMLElement));
+        if (!visible[0]) return;
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
       },
       { rootMargin: '-40% 0px -55% 0px' },
     );
-    targets.forEach((t) => io.observe(t));
-    set(0);
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    // Seed from the fragment: a reader arriving on /page/#deposit is already in that
+    // section, and starting at row 1 would be the dial disagreeing with the viewport
+    // until the first scroll event.
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
   }
 </script>
 <style>
@@ -150,7 +190,7 @@ const dash = C.toFixed(1);
       color: var(--color-text);
       text-decoration: none;
     }
-    li a[aria-current] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    li a[aria-current='location'] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
     li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
     .num { font-feature-settings: 'tnum'; color: var(--color-text-muted); font-size: var(--text-xs); }
     /* A flex item's automatic minimum size is its max-content width, so a two-word label

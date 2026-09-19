@@ -172,3 +172,60 @@ register({
     };
   },
 });
+
+/**
+ * Every `id` on the page must be unique.
+ *
+ * A duplicate id is not a style nit: `document.getElementById` returns the FIRST match, so
+ * a second element with the same id is unreachable by script and by fragment, and
+ * `href="#x"` has two possible destinations with only one of them ever chosen. Label
+ * association (`for=`), `aria-labelledby` and `aria-describedby` resolve the same way, so a
+ * duplicated id silently points assistive technology at the wrong element.
+ *
+ * It is the defect a component-per-fixture preview page produces almost by construction:
+ * kit-preview rendered the scroll-spy's six stub sections inside EVERY `with-targets` demo
+ * box, so `d-a`…`d-f` each shipped twice and both nav components' spies were resolving ids
+ * against whichever copy came first. Nothing else in the harness could see it — the anchors
+ * all resolved, so `nav-anchors-resolve` was green.
+ *
+ * Judged unit: one id VALUE present on the page (not one element), so a value on three
+ * elements is one failing unit and not two. ADVISORY on arrival, per the promotion rule in
+ * targets.json: it is promoted once it has passed its fixtures and produced zero false
+ * reports across one full cluster.
+ */
+register({
+  id: 'a11y-no-duplicate-ids',
+  family: 'A11Y',
+  severity: 'advisory',
+  describe: 'every id on the page must be unique',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const counts = new Map<string, number>();
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('[id]'))) {
+        const id = el.id;
+        if (!id) continue; // `id=""` is not an identifier; it is an empty attribute
+        counts.set(id, (counts.get(id) ?? 0) + 1);
+      }
+      const dupes = Array.from(counts.entries())
+        .filter(([, n]) => n > 1)
+        .map(([id, n]) => `#${id} ×${n}`);
+      return { examined: counts.size, dupes: dupes.slice(0, 10), total: dupes.length };
+    });
+
+    return {
+      examined: r.examined,
+      defects: r.total
+        ? [
+            {
+              checkId: 'a11y-no-duplicate-ids',
+              family: 'A11Y' as const,
+              viewport,
+              count: r.total,
+              message: `duplicate id(s): ${r.dupes.join(', ')} — getElementById and every #fragment resolve to the first only`,
+            },
+          ]
+        : [],
+    };
+  },
+});

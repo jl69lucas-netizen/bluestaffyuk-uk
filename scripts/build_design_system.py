@@ -286,12 +286,13 @@ def tokens_json(L=None):
 
 # --------------------------------------------------------------------------- components
 
-#: Every row of `data/design/components.json`, in its order — project 3's thirteen and
-#: project 4's two in-page nav components (spec §3: the Design System artifact gains a
-#: preview for each). Unlike the canvas and the picks board, this artifact is the CURRENT
-#: kit rather than a record of a closed pick process, so it does not filter on `project`. `group` sections the artifact's
-#: component table; the prose is written here because it is editorial, and each `checks` row
-#: names a test in `tests/py/test_design_components.py` that holds the component to it.
+#: Every row of `data/design/components.json`, in its order: project 3's thirteen, and
+#: project 4's two in-page nav components (spec §3 — the Design System artifact gains a
+#: preview for each). Unlike the canvas and the picks board, this artifact documents the
+#: CURRENT kit rather than a record of a closed pick process, so it does not filter on
+#: `project`. `group` sections the artifact's component table; the prose is written here
+#: because it is editorial, and each `checks` row names a test that holds the component
+#: to it, most of them in `tests/py/test_design_components.py`.
 COMPONENTS = {
     "site-header": dict(
         comp="SiteHeader", group="Navigation",
@@ -467,10 +468,19 @@ COMPONENTS = {
                 "Resting, hover and focus on every row; the focus ring is `--kit-ring` at 3px.",
                 "`prefers-reduced-motion: reduce` drops the ring's `stroke-dashoffset` transition."],
         checks=["`test_built_page_dial_has_ring_list_and_spy_hooks`",
+                "`test_no_built_page_ships_an_empty_aria_current` and "
+                "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
+                "`a11y-no-duplicate-ids` (render harness, advisory) — the demo's six stub targets are "
+                "rendered once per PAGE, not once per demo box.",
                 "`nav-jump-target-lands` (render harness, blocking) — every row's target must clear the top chrome.",
                 "`nav-anchors-resolve` (render harness, blocking) — a row pointing at no element is a dead anchor."],
         donts=["Do not pass sections whose ids are not on the page: the dial's rows are ordinary in-page links "
                "and the harness judges them as such.",
+               "Do not mark the current row with `toggleAttribute('aria-current', …)`. That emits "
+               "`aria-current=\"\"`, and the empty string is the token `false` — the row a reader is in "
+               "would be announced as the one row that is NOT current. Use "
+               "`setAttribute('aria-current', 'location')` and `removeAttribute`, and match "
+               "`[aria-current=\"location\"]` in CSS so the paint and the announcement cannot disagree.",
                "Do not spell the ring's colour in the inline style. The one inline style the component writes is "
                "the dash geometry, which depends on N; colour comes from `--color-cta` in the stylesheet (design rule 1).",
                "Do not shrink the \"of N\" caption below `--text-xs`. The source site sets it at 7px and "
@@ -491,6 +501,8 @@ COMPONENTS = {
                 "Scroll-spy active: the current row in the sheet carries `aria-current`, on the same reading "
                 "band as the dial."],
         checks=["`test_built_section_sheet_has_tab_bar_and_dialog`",
+                "`test_no_built_page_ships_an_empty_aria_current` and "
+                "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
                 "`nav-bottom-chrome-clear` (render harness, blocking) — the bar must never cover the landing "
                 "position of an in-page jump target. The fixture pair "
                 "`tests/render/fixtures/{known_good/kit-bottom-chrome-clear,known_broken/kit-bottom-chrome-covers}.html` "
@@ -499,6 +511,11 @@ COMPONENTS = {
         donts=["Do not delete the `is:global` `body:has(.kit-sheet) { padding-bottom: 64px }`. The bar is "
                "`position: fixed` and out of flow, so without the reservation the last 64px of every page — "
                "including a short final section a reader jumps to — sits underneath it.",
+               "Do not delete the `@supports not selector(:has(*))` fallback beside it either. The scoped "
+               "reservation depends on `:has()`; a browser without it drops the rule and loses the padding "
+               "with no symptom until someone jumps to the last section. The fallback pads the body "
+               "unconditionally there — a 64px gap on a page with no bar is cosmetic, a covered jump target "
+               "is blocking.",
                "Do not replace the `<dialog>` with a div and `role=\"dialog\"`: the focus trap and Escape are "
                "native there, and the two that get forgotten by hand are always those two.",
                "Do not change the bar's 64px height without changing the body reservation to match; they are "
