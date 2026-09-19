@@ -144,6 +144,7 @@
                 "properties": {"href": {"type": "string", "pattern": "^/"},
                                "anchor": {"type": "string", "minLength": 1},
                                "nav": {"type": "boolean"},
+                               "why": {"type": "string", "minLength": 1, "description": "where this link comes from, e.g. 'carried from the migrated page' (working rule 12)"},
                                "sentence_start": {"const": true}},
                 "if": {"required": ["nav"], "properties": {"nav": {"const": true}}},
                 "then": true,
@@ -152,6 +153,7 @@
                 "type": "object", "required": ["href", "anchor", "library_row"], "additionalProperties": false,
                 "properties": {"href": {"type": "string", "pattern": "^https?://"},
                                "anchor": {"type": "string", "minLength": 1},
+                               "why": {"type": "string", "minLength": 1, "description": "where this link comes from, e.g. 'carried from the migrated page' (working rule 12)"},
                                "library_row": {"type": "string", "minLength": 1}}}}
             }
           },
@@ -198,9 +200,9 @@
                                "status": {"enum": ["missing", "baked"]}, "file": {"type": ["string", "null"]}, "alt": {"type": "string"}}}
     },
     "dropped": {
-      "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds). A fact listed here is one the user agreed to drop; a fact that simply vanished is a problem that gate reports.",
+      "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds), plus `links` for a body link of the migrated page the outline does not carry (working rule 12). A fact or link listed here is one the user agreed to drop; one that simply vanished is a problem the gate reports.",
       "type": "object",
-      "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds"]},
+      "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds", "links"]},
       "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}
     },
     "approval": {
@@ -218,6 +220,10 @@
         "tuple_before": {"$ref": "#/properties/tuple",
                          "description": "the tuple as the author wrote it, before board_approve.py derived the seven component axes from the picks; restoring it is what keeps re-approving an already-approved record idempotent"}
       }
+    },
+    "approval_previous": {
+      "comment": "The approval a record carried before it was sent back to the board. Kept so the picks the user already made are not retyped, and so the diff between two approvals of one page is readable. It is NOT an approval: board_gate.py reads `approval` only, and a record holding this and a null `approval` is unapproved.",
+      "$ref": "#/properties/approval"
     }
   }
 }

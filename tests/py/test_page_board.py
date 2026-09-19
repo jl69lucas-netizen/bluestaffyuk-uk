@@ -39,6 +39,21 @@ import pageboard as PB
 
 from build_page_board import esc as BPB_esc      # the one None-safe escaper
 
+FIXTURE_LIBRARY = ROOT / "tests" / "py" / "fixtures" / "external-link-library.md"
+
+
+@pytest.fixture(autouse=True)
+def _fixture_link_library(monkeypatch):
+    """Every board fixture in this module is validated against a FIXTURE link library.
+
+    `validate_board()` refuses an external href that `docs/reference/external-link-library.md`
+    does not record. Pointing the unit tests at the real document would either couple them to
+    a content file that changes whenever a page cites something new, or push fixture URLs like
+    `https://example.com/foo_bar` into it. A test that needs an UNKNOWN url repoints the path
+    itself; this only sets the default."""
+    monkeypatch.setattr(PB, "EXTERNAL_LIBRARY", FIXTURE_LIBRARY)
+
+
 MIN_BOARD = {
     "meta": {"slug": "x", "page_type": "hub", "status": "draft", "research_as_of": "2026-09-12", "sources": []},
     "brief": {"goal": "g", "scope": "s", "gates": ["hardening"], "done": "d", "out_of_scope": [],

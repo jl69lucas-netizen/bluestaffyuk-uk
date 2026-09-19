@@ -13,6 +13,16 @@ import build_board_previews as P   # noqa: E402
 import pageboard as PB             # noqa: E402
 
 
+@pytest.fixture(autouse=True)
+def _fixture_link_library(monkeypatch):
+    """Validate this module's board fixtures against the FIXTURE link library, for the same
+    reason test_page_board.py does: `validate_board()` refuses an external href the real
+    `docs/reference/external-link-library.md` does not record, and a fixture URL has no
+    business in a content document."""
+    monkeypatch.setattr(PB, "EXTERNAL_LIBRARY",
+                        ROOT / "tests" / "py" / "fixtures" / "external-link-library.md")
+
+
 def test_style_blocks_are_cut_per_section_and_style():
     html = ('<section data-section="hero" data-style="S1">A</section>'
             '<section data-section="hero" data-style="S2">B</section>'

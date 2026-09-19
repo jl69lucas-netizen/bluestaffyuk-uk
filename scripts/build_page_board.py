@@ -432,7 +432,11 @@ def image_plan_table(board):
     return md_table(["Section", "Slot", "Kind", "Required", "Prompt"], rows)
 
 
-LINK_HEADERS = ["Target", "Anchor", "Purpose", "Resolves"]
+LINK_HEADERS = ["Target", "Anchor", "Purpose", "Resolves", "Source"]
+# What a row's `why` says when it says nothing: the link is the outline's own, not one the
+# migrated page carried. Spelled out rather than left blank so a breeder re-approving a
+# board can tell a link they already had from a link they are being asked to add.
+LINK_SOURCE_NEW = "new in this outline"
 
 
 def route_of(href):
@@ -496,11 +500,13 @@ def link_rows(section, routes):
         text, cls = resolve_internal(l["href"], routes)
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]),
                      "nav link" if l.get("nav") else "in copy, sentence start",
-                     f'<span class="lk {cls}">{esc(text)}</span>'])
+                     f'<span class="lk {cls}">{esc(text)}</span>',
+                     md(l.get("why") or LINK_SOURCE_NEW)])
     for l in section["links"]["external"]:
         domain = urlsplit(l["href"]).netloc or "unknown host"
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]), md(l["library_row"]),
-                     f'<span class="lk lk-ext">external · {esc(domain)}</span>'])
+                     f'<span class="lk lk-ext">external · {esc(domain)}</span>',
+                     md(l.get("why") or LINK_SOURCE_NEW)])
     return rows
 
 
@@ -539,7 +545,8 @@ def links_block(board, routes):
             purpose = md(l["library_row"])
             cell = f'<span class="lk lk-ext">external · {esc(urlsplit(l["href"]).netloc or "unknown host")}</span>'
         page_rows.append([f"`{md(key)}`", " / ".join(md(a) for a in e["anchors"]),
-                          purpose, cell, ", ".join(md(x) for x in e["sections"])])
+                          purpose, cell, md(l.get("why") or LINK_SOURCE_NEW),
+                          ", ".join(md(x) for x in e["sections"])])
     n_int = sum(1 for k in order if seen[k]["kind"] == "internal")
     n_ext = len(order) - n_int
     placements = sum(len(s["links"]["internal"]) + len(s["links"]["external"]) for s in board["sections"])

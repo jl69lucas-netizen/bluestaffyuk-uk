@@ -2,7 +2,7 @@
   "meta": {
     "slug": "uk-blue-staffy-breeders-contact",
     "page_type": "interior",
-    "status": "approved",
+    "status": "boarded",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -278,7 +278,20 @@
       "tree": [],
       "images": [],
       "links": {
-        "internal": [],
+        "internal": [
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "who we are",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/blue-staffy-blog-guides/",
+            "anchor": "our blog guides",
+            "why": "carried from the migrated page",
+            "nav": true
+          }
+        ],
         "external": []
       },
       "options": {
@@ -337,7 +350,8 @@
           {
             "href": "/privacy-policy-uk/",
             "anchor": "our privacy policy",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": []
@@ -429,14 +443,16 @@
           {
             "href": "/privacy-policy-uk/",
             "anchor": "how we handle what you send us",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": [
           {
             "href": "https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/",
             "anchor": "The Kennel Club Assured Breeder Scheme",
-            "library_row": "The Kennel Club — responsible breeding and registrations, carried over from the migrated body"
+            "library_row": "The Kennel Club — responsible breeding and registrations, carried over from the migrated body",
+            "why": "carried from the migrated page"
           }
         ]
       },
@@ -518,11 +534,24 @@
           {
             "href": "/buy-blue-staffy-puppies-uk/",
             "anchor": "the puppies looking for a home",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           },
           {
             "href": "/blue-staffy-pup-sale-uk/",
             "anchor": "what a puppy costs and how delivery works",
+            "nav": true
+          },
+          {
+            "href": "/uk-staffordshire-bull-terrier-guide/",
+            "anchor": "the Staffordshire Bull Terrier breed guide",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/blue-staffy-health-uk/",
+            "anchor": "how we health test and raise them",
+            "why": "carried from the migrated page",
             "nav": true
           }
         ],
@@ -810,9 +839,13 @@
     ],
     "prices": [
       "the form card's delivery notice — 'Delivery begins 24-48 hours after payment confirmation. Train station pickup is our default method (free)'. No file on disk states a free station pickup or that turnaround; data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what the FAQ row states instead."
+    ],
+    "links": [
+      "/uk-locations/staffy-breeding-dogs-glasgow/ (\"meet our Blue Staffy breeders\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). A contact page must not point a visitor at the former location."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T19:34:59.305Z",
     "canvas_version": null,
     "h1": 0,

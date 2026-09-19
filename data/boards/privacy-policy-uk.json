@@ -2,7 +2,7 @@
   "meta": {
     "slug": "privacy-policy-uk",
     "page_type": "interior",
-    "status": "approved",
+    "status": "boarded",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -187,7 +187,14 @@
       ],
       "links": {
         "internal": [],
-        "external": []
+        "external": [
+          {
+            "href": "https://www.gov.uk/data-protection",
+            "anchor": "the government's guide to data protection",
+            "library_row": "GOV.UK — plain-English summary of UK data protection law",
+            "why": "carried from the migrated page"
+          }
+        ]
       },
       "options": {
         "candidates": [],
@@ -396,7 +403,14 @@
       "images": [],
       "links": {
         "internal": [],
-        "external": []
+        "external": [
+          {
+            "href": "https://www.thekennelclub.org.uk/",
+            "anchor": "The Kennel Club",
+            "library_row": "The Kennel Club — the UK pedigree registry our litters are registered with",
+            "why": "carried from the migrated page"
+          }
+        ]
       },
       "options": {
         "candidates": [],
@@ -443,7 +457,14 @@
       "images": [],
       "links": {
         "internal": [],
-        "external": []
+        "external": [
+          {
+            "href": "https://policies.google.com/privacy",
+            "anchor": "Google's own privacy policy",
+            "library_row": "Google — what Google Analytics does with what it records",
+            "why": "carried from the migrated page"
+          }
+        ]
       },
       "options": {
         "candidates": [],
@@ -583,14 +604,22 @@
           {
             "href": "/uk-blue-staffy-breeders-contact/",
             "anchor": "contact us",
-            "sentence_start": true
+            "sentence_start": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": [
           {
             "href": "https://ico.org.uk/",
             "anchor": "Information Commissioner's Office",
-            "library_row": "ICO — the UK supervisory authority for data protection"
+            "library_row": "ICO — the UK supervisory authority for data protection",
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/",
+            "anchor": "Citizens Advice",
+            "library_row": "Citizens Advice — independent help with a data-protection question",
+            "why": "carried from the migrated page"
           }
         ]
       },
@@ -706,7 +735,8 @@
           {
             "href": "/uk-blue-staffy-breeders-contact/",
             "anchor": "the contact page",
-            "sentence_start": true
+            "sentence_start": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": []
@@ -832,9 +862,18 @@
     "images": [
       "/images/blue-staffy-privacy-policy-info-discussion.webp — the migrated page used it to illustrate 'How We Use Your Information'; the rebuilt page is text-led legal prose and carries one image only (plan Task 7), so this one is not placed.",
       "/images/breeder-sitting-blue-staffy-puppy-home.webp — a breeder-and-puppy photo that illustrates no clause on this page; it is already carried by the pages about the dogs."
+    ],
+    "links": [
+      "/buy-blue-staffy-puppies-uk/ (\"View All Staffies\") — a sales CTA the old legal page carried inline; the brief hides the global CTA on this page and routes its one ask to #contact, so a puppy-listing button does not belong in a privacy clause.",
+      "/blue-staffy-health-uk/ (\"health guarantee\", and again as \"health and care of Blue Staffies\") — no clause on this page is about health; the link is cross-sell, not privacy substance.",
+      "/uk-staffordshire-bull-terrier-guide/ (\"first-time blue staffy owner guide\") — same: related reading for a buyer, and nothing a data-protection clause needs.",
+      "/blue-staffy-blog-guides/ (\"c\") — the anchor in the migrated body is the single character \"c\", a defect in the old markup rather than a link anyone wrote.",
+      "/thank-you-blue-staffy-puppies-journey/ (\"our friendly team\") — the post-enquiry confirmation page; a reader with a privacy question is sent to the contact page, which this page already links twice.",
+      "mailto:privacy@bluestaffyuk.uk (anchor \"staffies@bluestaffyuk.uk\") — the href and the visible address disagree in the migrated body, so neither can be carried as written. The page reaches us through the contact page until the correct address is confirmed."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T19:31:07.345Z",
     "canvas_version": null,
     "h1": 0,

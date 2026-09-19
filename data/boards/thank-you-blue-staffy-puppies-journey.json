@@ -2,7 +2,7 @@
   "meta": {
     "slug": "thank-you-blue-staffy-puppies-journey",
     "page_type": "interior",
-    "status": "approved",
+    "status": "boarded",
     "preview": true,
     "research_as_of": "2026-09-19",
     "sources": [
@@ -342,12 +342,14 @@
           {
             "href": "/uk-staffordshire-bull-terrier-guide/",
             "anchor": "Staffy breed guide",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           },
           {
             "href": "/blue-staffy-health-uk/",
             "anchor": "health and care of blue Staffies",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           },
           {
             "href": "/uk-blue-staffy-puppy-buying-guide/",
@@ -357,6 +359,19 @@
           {
             "href": "/blue-staffy-blog-guides/",
             "anchor": "blog guides for new owners",
+            "nav": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/",
+            "anchor": "the home page",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/uk-locations/blue-staffy-puppies-uk/",
+            "anchor": "our UK puppy locations",
+            "why": "carried from the migrated page",
             "nav": true
           }
         ],
@@ -364,12 +379,14 @@
           {
             "href": "https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/",
             "anchor": "responsible breeding guidelines from The Kennel Club",
-            "library_row": "The Kennel Club — dog breeding regulations, carried over from the migrated body"
+            "library_row": "The Kennel Club — dog breeding regulations, carried over from the migrated body",
+            "why": "carried from the migrated page"
           },
           {
             "href": "https://www.gov.uk/bring-pet-to-great-britain",
             "anchor": "the official UK pet travel scheme",
-            "library_row": "GOV.UK — bringing a pet to Great Britain, carried over from the migrated body"
+            "library_row": "GOV.UK — bringing a pet to Great Britain, carried over from the migrated body",
+            "why": "carried from the migrated page"
           }
         ]
       },
@@ -475,7 +492,8 @@
           {
             "href": "/buy-blue-staffy-puppies-uk/",
             "anchor": "buy Staffy puppies in the UK",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": []
@@ -538,12 +556,14 @@
           {
             "href": "/uk-blue-staffy-breeders-contact/",
             "anchor": "the contact page",
-            "sentence_start": true
+            "sentence_start": true,
+            "why": "carried from the migrated page"
           },
           {
             "href": "/privacy-policy-uk/",
             "anchor": "our privacy policy",
-            "nav": true
+            "nav": true,
+            "why": "carried from the migrated page"
           }
         ],
         "external": []
@@ -667,8 +687,13 @@
       "alt": "Blue Staffy Puppies Journey | Thank you message from BlueStaffyUK with happy family and Blue Staffy puppy"
     }
   ],
-  "dropped": {},
-  "approval": {
+  "dropped": {
+    "links": [
+      "/uk-locations/staffy-breeding-dogs-glasgow/ (\"Staffy breeding parents in the …\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). The page keeps its URL, but a rebuilt page does not send a buyer to it."
+    ]
+  },
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T19:33:21.793Z",
     "canvas_version": null,
     "h1": 0,

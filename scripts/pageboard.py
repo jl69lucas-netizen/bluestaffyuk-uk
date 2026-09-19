@@ -69,7 +69,7 @@ def _library_urls(path, _mtime):
     return frozenset(normalise_url(u) for u in _LIB_URL.findall(p.read_text(encoding="utf-8")))
 
 
-def library_urls(path=EXTERNAL_LIBRARY):
+def library_urls(path=None):
     """Every URL docs/reference/external-link-library.md records, normalised. Grepped, not
     parsed: the library is three table shapes plus a prose citation block, and all of them
     write the URL plainly. Missing file → empty set, and validate_board then skips the
@@ -78,8 +78,11 @@ def library_urls(path=EXTERNAL_LIBRARY):
     Read once per (path, mtime): validate_board asks for the whole set on every record, and
     the near-me grid alone would otherwise re-read an 87-line file 30 times. Keying on the
     mtime rather than the path alone means an edited library is picked up in-process, which
-    is what the link agent does while it is adding a row."""
-    p = pathlib.Path(path)
+    is what the link agent does while it is adding a row.
+
+    The default is resolved at CALL time, not bound at import, so a caller (the board tests)
+    can repoint `PB.EXTERNAL_LIBRARY` at a fixture and have it take effect."""
+    p = pathlib.Path(EXTERNAL_LIBRARY if path is None else path)
     if not p.exists():
         return frozenset()
     return _library_urls(str(p), p.stat().st_mtime_ns)
