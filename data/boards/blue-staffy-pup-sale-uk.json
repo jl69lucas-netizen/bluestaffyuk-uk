@@ -1449,13 +1449,17 @@
     ],
     "text": [
       "'Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home.' — the vaccination half is restated in `whats-included`; the twelve-week age is not, because data/puppies.json holds no age for any of the six dogs.",
-      "'Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide' — the same age claim as a heading.",
+      "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide — the same age claim as a heading, and it opens the migrated litter paragraph. data/puppies.json holds no age for any of the six dogs, so the age is not written back; the paragraph's own opening sentence IS carried, word for word, as the `puppies` section's lede (verbatim.changed).",
       "'They receive comprehensive health checks, including clearances for common Staffy conditions (HC, L2HGA, DM), and are microchipped before entering their new homes.' — the health check and the microchip are restated in `whats-included`; the three named clearances are not, for the reason in `dropped.tests`, and the page links /blue-staffy-health-uk/ instead.",
       "'All our pups receive comprehensive health checks, are microchipped, and come with a health guarantee.' — the first two clauses are restated in `whats-included`; the guarantee is not, for the reason in `dropped.creds`.",
       "'95% On-Time Deliveries. Trusted DEFRA-approved transport to homes UK-wide.' — the DEFRA-approved transport is restated in `delivery`; the percentage is not, for the reason in `dropped.creds`.",
       "'Don't wait—our current litter won't last long!' — a scarcity line. The buying guide tells a reader to treat sales pressure as a warning sign, and a page that asks for £500 cannot apply it.",
       "'We focus on temperament, raising friendly, confident, and loving companions perfect for families.' and 'Our puppies come from Kennel Club (KC) registered lines, ensuring quality and verifiable heritage.' — two of the four migrated why-us pillars, neither of them an element of the verbatim set (neither H3 contains a target keyword). /buy-staffy-puppies-for-sale-uk/ owns the argument (spec section 2) and `why-choose` states each pillar in one sentence instead. The fourth pillar's opening, 'Our commitment to responsible breeding means healthy parents and happy puppies, always.', IS in the set and is carried verbatim under 'Ethical Breeding Standards'.",
-      "'Please ensure your mobile number is correct for prompt communication regarding your puppy inquiry.' — the migrated form's note. ContactFormKit renders its own note, and data/settings.json holds PHONE_PLACEHOLDER: we do not ring, we reply by email (project 6 owns the phone)."
+      "'Please ensure your mobile number is correct for prompt communication regarding your puppy inquiry.' — the migrated form's note. ContactFormKit renders its own note, and data/settings.json holds PHONE_PLACEHOLDER: we do not ring, we reply by email (project 6 owns the phone).",
+      "100% Vetted 95% Delivered 100% 5★ Rated 100% 24/7 Puppy Support — the migrated hero's four counters, with the VIEW PUPPIES button above them and the why-us heading beneath. No file on disk holds a vetting rate, a delivery rate, a star rating or a support window (working rule 9, dropped.creds). The kit CounterStrip carries four figures in their place and every one of them is read from data/price-matrix.json or data/settings.json.",
+      "Buy Your Blue Staffy Pup Today – Only £850 to £1,200! — the migrated litter section's own eyebrow, and the loudest of the three places the old band was written. It predates the locked prices (Known Issue 11): data/price-matrix.json holds £1,500 and £1,700, and the `prices` table states those. dropped.prices carries the band itself.",
+      "£850–£1,200 Price Range. — the same band again, as a sentence at the end of the migrated litter paragraph. Excised where that paragraph is carried (verbatim.changed) rather than restated wrongly or duplicated beside the price table.",
+      "We pride ourselves on being ethical Blue Staffy breeders UK —100% Health Checked. — the '100% Health Checked' half is one of the migrated hero's four unevidenced counters and working rule 9 forbids writing a number nobody can check (dropped.creds). The clause is excised from the `sale-kc-health-checked` FAQ answer, which carries every other word of the migrated answer, and the excision is recorded in verbatim.changed."
     ],
     "links": [
       "#Staffies-leaving and #contact-us — the migrated page's two in-page anchors, both pointing at fragments of the WordPress layout that no longer exists. The rebuilt page's own section ids are the jump targets and are owned by nav-anchors-resolve."
@@ -1587,6 +1591,12 @@
   },
   "verbatim": {
     "changed": [
+      {
+        "kind": "h1",
+        "old": "Blue Staffy Pup Sale UK: Your Perfect Match Awaits!",
+        "new": "What A Blue Staffy Puppy Costs With Us",
+        "reason": "a wrong fact about what the page is, and the breeder's own approved pick. `approval.h1` is 2, recorded 2026-09-20 with the record, and the reason is this record's own `sections[top].why`: the migrated H1 states no figure, and the outline moves the money to the top of the page precisely because the migrated page opened on a headline with nothing in it and put the only price — a band that is now wrong — six screens down. 'Your Perfect Match Awaits!' also promises a match, which is a claim about a reader rather than about a dog and rests on no file on disk (working rule 9). Every target keyword of the migrated H1 that names the subject is kept elsewhere on the page: the slug's own phrase is the picked title and the `top` section's eyebrow and lede, so nothing the old wording identified is lost. This is the one element of the set the breeder changed by choosing between variants rather than the rewrite repairing a fact, and it is recorded here for that reason."
+      },
       {
         "kind": "heading",
         "old": "Why Choose a Blue Staffy from BlueStaffyUK.uk?",

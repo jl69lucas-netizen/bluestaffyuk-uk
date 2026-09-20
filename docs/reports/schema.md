@@ -18,4 +18,4 @@ None.
 None.
 
 
-examined 64 pages; 0 blocking, 0 advisory
+examined 56 pages; 0 blocking, 0 advisory

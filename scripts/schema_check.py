@@ -272,7 +272,15 @@ def audit_html(text, available_slugs, slug):
             if "WebPage" in _types(d) and not d.get("name"):
                 advisory.append("WebPage without name")
     for offer in offers:
-        has_price, has_cur = "price" in offer, "priceCurrency" in offer
+        # `lowPrice`/`highPrice` ARE this node's price when it is an AggregateOffer: that is
+        # how schema.org spells a band, and an AggregateOffer never carries `price`. The rule
+        # is about a figure with no currency beside it, so the question is whether the node
+        # names A price at all — asking only for `price` made the correct markup for a price
+        # range read as "priceCurrency without price". Charged to the harness 2026-09-20,
+        # project 4 Task 15, when /blue-staffy-pup-sale-uk/ became the first rebuilt page to
+        # carry a band rather than a single figure.
+        has_price = any(k in offer for k in ("price", "lowPrice", "highPrice"))
+        has_cur = "priceCurrency" in offer
         if has_price != has_cur:
             blocking.append("Offer states %s without %s"
                             % ("price" if has_price else "priceCurrency",

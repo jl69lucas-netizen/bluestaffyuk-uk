@@ -63,6 +63,23 @@ def test_product_without_offers_and_half_priced_offer_are_blocking():
     assert len(r["blocking"]) == 2
 
 
+def test_aggregate_offer_price_band_with_a_currency_is_not_half_priced():
+    """`lowPrice`/`highPrice` ARE an AggregateOffer's price (project 4 Task 15).
+
+    The rule is about a figure with no currency beside it. An AggregateOffer never carries
+    `price`, so asking only for that key made the correct markup for a price range — the
+    shape /blue-staffy-pup-sale-uk/ carries — read as "priceCurrency without price". The
+    reverse still blocks: a band with no currency is exactly the defect the rule is for."""
+    band = ('<script type="application/ld+json">{"@type":"Product","name":"p","offers":'
+            '{"@type":"AggregateOffer","lowPrice":"1500","highPrice":"1700",'
+            '"priceCurrency":"GBP","offerCount":"6"}}</script>')
+    assert audit_html(band, available_slugs=set(), slug="x")["blocking"] == []
+    bare = ('<script type="application/ld+json">{"@type":"Product","name":"p","offers":'
+            '{"@type":"AggregateOffer","lowPrice":"1500","highPrice":"1700"}}</script>')
+    r = audit_html(bare, available_slugs=set(), slug="x")
+    assert len(r["blocking"]) == 1 and "priceCurrency" in r["blocking"][0]
+
+
 @pytest.mark.parametrize("pup", ["byrd", "ince"])
 def test_pup_page_absent_from_available_slugs_may_not_claim_instock(pup):
     # A pup whose data/puppies.json status is not Available is simply missing from
