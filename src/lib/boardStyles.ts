@@ -66,12 +66,32 @@ export interface Layout {
    *  the first click. A PROP, not a class — the two arrangements are different MARKUP (a
    *  button and a thumbnail, or an iframe), which no stylesheet can turn into the other. */
   play?: 'facade' | 'iframe';
+  /** Hero only (working rule 16): the ARRANGEMENT of copy against media. A PROP, for the
+   *  `play` axis's reason — a mosaic of four tiles and a single portrait are different
+   *  markup, and a panel with no photo column is a different grid, none of which a
+   *  stylesheet can turn into another. `split` is the shipped two-column hero. */
+  hero?: 'split' | 'stacked' | 'mosaic' | 'panel' | 'bleed';
+  /** Hero only: the block under the lede. A PROP. `chips` is the credential pill row,
+   *  `stats` the figure tiles, `aside` the key-facts / quote card beside the copy, `ticks`
+   *  the inline checked list. Each renders ONLY if the page handed the hero the data for it:
+   *  an empty ledge is a hero with nothing under its lede, never an invented claim. */
+  ledge?: 'none' | 'chips' | 'stats' | 'aside' | 'ticks';
+  /** Hero only: where the copy column's text sits. A PROP. */
+  align?: 'left' | 'center';
+  /** CounterStrip only (working rule 16): how one figure tile is drawn. A PROP, for the
+   *  `play` axis's reason — a ring is an SVG, a card is a bordered box and the inline line is
+   *  a flex row of pairs; the three are different markup, not three paint jobs. */
+  tiles?: 'inline' | 'ruled' | 'card' | 'ring' | 'seam';
 }
 
 export type Axis = keyof Layout;
 
 export interface StyleDef {
-  id: 'S1' | 'S2' | 'S3';
+  /** `S1`/`S2`/`S3` for a shape whose three options are the same on every page. The hero and
+   *  the counter strip are NOT: working rule 16 gives each page type its own three, and those
+   *  carry their own ids (`H-FS1`, `C-GD2`, …) so that one id names one arrangement across
+   *  the whole repo and a record's pick can never be read against the wrong set. */
+  id: string;
   /** The one-line label the board prints over the preview. It says what the style
    *  RENDERS — an axis outside `RENDERED_AXES` may not be named in it. */
   name: string;
@@ -90,7 +110,8 @@ export const STYLE_IDS: ReadonlyArray<StyleDef['id']> = ['S1', 'S2', 'S3'];
  *  made this type ask for a neutral value no caller could ever have used.
  *  `chrome` IS here: DataTable's three arrangements are pure CSS over identical markup,
  *  which is exactly what a class axis is for. */
-const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip' | 'play'>> = {
+const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip' | 'play'
+  | 'hero' | 'ledge' | 'align' | 'tiles'>> = {
   frame: 'plain', columns: 1, media: 'none', list: 'stack', aside: 'none', heading: 'above',
   chrome: 'ruled',
 };
@@ -99,7 +120,9 @@ const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'c
 export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   // The kit Hero owns its own copy, chips and CTA row; what a board can move is the bed it
   // sits on and which side its photo is on (board-styles.css reorders `.kit-hero`).
-  hero: ['frame', 'media'],
+  // Working rule 16: the hero is per PAGE TYPE, so the axes are the ones Hero.astro reads as
+  // props (`hero`, `ledge`, `align`) as well as the bed and the photo side the box writes.
+  hero: ['frame', 'media', 'hero', 'ledge', 'align'],
   takeaways: ['frame', 'list', 'columns', 'aside', 'heading'],
   standard: ['frame', 'media', 'columns', 'aside', 'heading'],
   puppies: ['frame', 'list', 'columns', 'heading'],
@@ -107,7 +130,9 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   reviews: ['frame', 'mode', 'columns', 'heading'],
   faq: ['frame', 'columns', 'aside', 'heading'],
   form: ['frame', 'columns', 'aside', 'heading'],
-  stats: ['frame', 'columns', 'heading'],
+  // Working rule 16 again: `tiles` is how ONE figure is drawn, and CounterStrip reads it as
+  // a prop. The bed, the column count and the heading position are the ordinary three.
+  stats: ['frame', 'columns', 'heading', 'tiles'],
   trust: ['frame', 'columns', 'heading'],
   // SectionDivider takes `inverse`, and the band frame is what selects it.
   divider: ['frame', 'columns', 'heading'],
@@ -132,6 +157,178 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
 };
 
 const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ id, name, layout });
+
+// ── working rule 16: the hero and the counter strip are PER PAGE TYPE ──────────────────────
+//
+// "No two pages share the same hero layout or the same counter strip." Two shapes therefore
+// have no single trio: each PAGE TYPE gets three, and the three differ structurally from each
+// other AND from every other page type's three, so a set of three pages of one type can take
+// one arrangement each and still share nothing. `tests/py/test_board_previews.py` holds all
+// eighteen hero defs (and all eighteen counter defs) to unique axis tuples.
+//
+// THE LAYOUTS COME FROM THE BREEDER'S IDEA SHEETS. The commit that added them names the sheet
+// each one was drawn from, so a layout is traceable to a reference rather than to taste.
+//
+// A page type is NOT the same thing as `meta.page_type`: eight of the thirteen records are
+// `interior`, and a privacy policy, a breed guide and an about page do not want one hero
+// between them. `layoutTypeFor()` below is the mapping, and a record may state its own
+// `meta.layout_type` when the mapping would guess wrong.
+
+/** The six layout families the hero and the counter strip are cut for. */
+export type LayoutType =
+  | 'home' | 'for-sale' | 'interior-guide' | 'interior-about' | 'interior-utility' | 'blog';
+
+export const LAYOUT_TYPES: readonly LayoutType[] = [
+  'home', 'for-sale', 'interior-guide', 'interior-about', 'interior-utility', 'blog',
+];
+
+/** `meta.page_type` -> the layout family, when the record does not state one itself. The
+ *  `interior` fallback is the GUIDE set, because that is what most interior pages are; the
+ *  three utility pages (privacy, thank-you, contact) say so in their own records. */
+const LAYOUT_BY_PAGE_TYPE: Record<string, LayoutType> = {
+  home: 'home',
+  'for-sale': 'for-sale',
+  puppy: 'for-sale',
+  hub: 'for-sale',
+  blog: 'blog',
+  about: 'interior-about',
+  contact: 'interior-utility',
+  interior: 'interior-guide',
+  comparison: 'interior-guide',
+  location: 'interior-guide',
+};
+
+/** The layout family a record belongs to. An explicit `meta.layout_type` wins; anything
+ *  unrecognised falls to the guide set rather than throwing, so a new page type renders. */
+export function layoutTypeFor(pageType: string, explicit?: string | null): LayoutType {
+  if (explicit && (LAYOUT_TYPES as readonly string[]).includes(explicit)) {
+    return explicit as LayoutType;
+  }
+  return LAYOUT_BY_PAGE_TYPE[pageType] ?? 'interior-guide';
+}
+
+/** Three heroes per layout family. Every one of the eighteen has its own axis tuple.
+ *
+ *  Rule 10 binds all of them: the photo precedes the copy in source order and the band is
+ *  held between 390px and 450px at 1024px and up with nothing clipped. `stacked`, `mosaic`
+ *  and `bleed` release the ceiling where the arrangement is no longer a split hero (a 450px
+ *  cap over a stacked hero is a guillotine, not a clamp) — board-styles.css does that, and
+ *  scripts/measure_canvas_heights.mjs measures what actually happens. */
+export const HERO_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
+  // hero-idea00 (copy left on a band, photo card right, a credentials card beneath it),
+  // hero-idea (a photo mosaic right with figure tiles under it), hero-idea-1 (a full-bleed
+  // photo filling the right half, one CTA, quiet copy left).
+  home: [
+    def('H-HM1', 'Copy left on a steel band, photo card right, credential chips under the lede',
+        { hero: 'split', media: 'right', frame: 'band', ledge: 'chips', align: 'left' }),
+    def('H-HM2', 'Copy left, four-photo mosaic right, figure tiles beneath it',
+        { hero: 'mosaic', media: 'right', ledge: 'stats', align: 'left' }),
+    def('H-HM3', 'Full-bleed photo on the right half, centred copy left',
+        { hero: 'bleed', media: 'right', ledge: 'none', align: 'center' }),
+  ],
+  // hero-idea66 (a staggered portrait mosaic right, a tick list under the CTAs), hero-idea77
+  // (a figure row above the H1 and one large photo card right), hero-idea-3 (copy on a band
+  // with a chip grid beneath the photo).
+  'for-sale': [
+    def('H-FS1', 'Copy left with a tick list, puppy grid peek right',
+        { hero: 'mosaic', media: 'right', ledge: 'ticks', align: 'left' }),
+    def('H-FS2', 'Full-bleed photo above the copy, price chips under the lede',
+        { hero: 'bleed', media: 'top', ledge: 'chips', align: 'left' }),
+    def('H-FS3', 'Stacked card on a steel band, figures under the CTA row',
+        { hero: 'stacked', media: 'top', frame: 'band', ledge: 'stats', align: 'center' }),
+  ],
+  // component-idea-faq1 (an editorial two-column: prose left, one image right), component-
+  // idea5 (an image left and a specification column right), component-idea444 (a centred
+  // lede over three ruled columns).
+  'interior-guide': [
+    def('H-GD1', 'Editorial two-column: copy left, key-facts aside, photo right',
+        { hero: 'split', media: 'right', ledge: 'aside', align: 'left' }),
+    def('H-GD2', 'Magazine: image above the copy, chips under the lede',
+        { hero: 'stacked', media: 'top', ledge: 'chips', align: 'left' }),
+    def('H-GD3', 'Text-led card with a contents aside, photo left',
+        { hero: 'panel', media: 'left', frame: 'card', ledge: 'aside', align: 'left' }),
+  ],
+  // hero-idea-5 (a portrait right of the copy with a caption chip and a credential line),
+  // hero-idea66 again for the mosaic of named portraits, hero-idea00 for the band treatment.
+  'interior-about': [
+    def('H-AB1', 'Portrait left of the copy, a quote in the aside',
+        { hero: 'split', media: 'left', ledge: 'aside', align: 'left' }),
+    def('H-AB2', 'Photo mosaic left of the copy, chips under the lede',
+        { hero: 'mosaic', media: 'left', ledge: 'chips', align: 'left' }),
+    def('H-AB3', 'Family band: photo above centred copy on steel, tick list beneath',
+        { hero: 'stacked', media: 'top', frame: 'band', ledge: 'ticks', align: 'center' }),
+  ],
+  // The quiet set. A privacy policy, a thank-you page and a contact page are not selling
+  // anything, so none of the three carries a claim under its lede.
+  'interior-utility': [
+    def('H-UT1', 'Title panel with a slim photo above it',
+        { hero: 'panel', media: 'top', ledge: 'none', align: 'left' }),
+    def('H-UT2', 'Copy left in a card, small photo right',
+        { hero: 'split', media: 'right', frame: 'card', ledge: 'none', align: 'left' }),
+    def('H-UT3', 'Full-bleed photo above centred copy on a steel band',
+        { hero: 'bleed', media: 'top', frame: 'band', ledge: 'none', align: 'center' }),
+  ],
+  // component-idea55 (release cards with a ruled meta block at the foot), component-idea33
+  // (wide rows in a card, title left and summary right), component-idea3 (numbered columns
+  // divided by vertical rules on a dark band).
+  blog: [
+    def('H-BL1', 'Post card: copy left, photo right, post counts beneath',
+        { hero: 'split', media: 'right', frame: 'card', ledge: 'stats', align: 'left' }),
+    def('H-BL2', 'Cover image above the copy in a card, topic list aside',
+        { hero: 'stacked', media: 'top', frame: 'card', ledge: 'aside', align: 'left' }),
+    def('H-BL3', 'Index panel on a steel band, photo right, topic chips',
+        { hero: 'panel', media: 'right', frame: 'band', ledge: 'chips', align: 'left' }),
+  ],
+};
+
+/** Three counter strips per layout family, on the same construction and the same rule: all
+ *  eighteen tuples are distinct. The FIGURES never come from here — they come from the
+ *  record's `sections[].stats`, each row sourced to a path in `data/*.json` (working rules 9
+ *  and 16). A style decides how a figure is drawn, never what it says. */
+export const COUNTER_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
+  // hero-idea (the figure tiles under the mosaic), component-idea3 (numbered columns with
+  // vertical rules), component-idea1 (three cards in a row under one heading).
+  home: [
+    def('C-HM1', 'One flush line of figure-and-label pairs', { tiles: 'inline' }),
+    def('C-HM2', 'Ruled columns on a steel band', { tiles: 'ruled', frame: 'band', heading: 'eyebrow' }),
+    def('C-HM3', 'Figure cards beside the heading', { tiles: 'card', columns: 2, heading: 'inline' }),
+  ],
+  // hero-idea77 (a ruled figure row above the H1), component-idea1 (cards), and the seam the
+  // kit already owns (--seam-gradient) as the third.
+  'for-sale': [
+    def('C-FS1', 'Figure cards across the full width', { tiles: 'card' }),
+    def('C-FS2', 'Seam bar on a steel band, figures along it', { tiles: 'seam', frame: 'band' }),
+    def('C-FS3', 'Ruled columns beside the heading', { tiles: 'ruled', columns: 2, heading: 'inline' }),
+  ],
+  // component-idea2 (an icon-led ruled list), component-idea444 (ruled columns), and the ring
+  // the kit's PageDial already draws, reused at figure size.
+  'interior-guide': [
+    def('C-GD1', 'Ring tiles, the figure inside the ring', { tiles: 'ring' }),
+    def('C-GD2', 'One flush line on a steel band', { tiles: 'inline', frame: 'band', heading: 'eyebrow' }),
+    def('C-GD3', 'Ruled columns inside a card', { tiles: 'ruled', frame: 'card' }),
+  ],
+  'interior-about': [
+    def('C-AB1', 'Figure cards on a steel band', { tiles: 'card', frame: 'band' }),
+    def('C-AB2', 'Ring tiles beside the heading', { tiles: 'ring', columns: 2, heading: 'inline' }),
+    def('C-AB3', 'Seam bar across the bone surface', { tiles: 'seam', heading: 'eyebrow' }),
+  ],
+  'interior-utility': [
+    def('C-UT1', 'One flush line under an eyebrow', { tiles: 'inline', heading: 'eyebrow' }),
+    def('C-UT2', 'Ruled columns across the full width', { tiles: 'ruled' }),
+    def('C-UT3', 'Seam bar inside a card', { tiles: 'seam', frame: 'card' }),
+  ],
+  // component-idea55 (the ruled meta block at the foot of a release card), component-idea33
+  // (wide rows in a card).
+  blog: [
+    def('C-BL1', 'Figure cards, two columns', { tiles: 'card', columns: 2 }),
+    def('C-BL2', 'Ring tiles on a steel band', { tiles: 'ring', frame: 'band' }),
+    def('C-BL3', 'One flush line inside a card, beside the heading',
+        { tiles: 'inline', frame: 'card', heading: 'inline' }),
+  ],
+};
+
+/** The shapes whose three styles depend on the page's layout family. */
+export const PER_PAGE_SHAPES: readonly Shape[] = ['hero', 'stats'];
 
 export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
   hero: [
@@ -240,13 +437,48 @@ export function boxClass(style: StyleDef | Layout): string {
   ].join(' ');
 }
 
-/** The three styles a shape offers, or the `standard` trio for a shape this map has not
- *  learned yet — a board is never rendered with an empty option set. */
-export function stylesFor(shape: string): [StyleDef, StyleDef, StyleDef] {
+/** Every per-page def, by its own id. One id names one arrangement across the whole repo, so
+ *  a pick can be resolved without knowing which page it was made on — which is what lets the
+ *  preview route render a record's own `styles` list rather than a shape's default trio. */
+export const STYLES_BY_ID: Record<string, StyleDef> = Object.fromEntries(
+  [...Object.values(HERO_STYLES_BY_PAGE_TYPE), ...Object.values(COUNTER_STYLES_BY_PAGE_TYPE)]
+    .flat().map((s) => [s.id, s]),
+);
+
+/** The three styles a shape offers on a page of this layout family.
+ *
+ *  `hero` and `stats` are per page type (working rule 16); every other shape has one trio.
+ *  A shape this map has not learned yet falls to the `standard` trio — a board is never
+ *  rendered with an empty option set. Omitting `layout` keeps the LEGACY S1/S2/S3 trio for
+ *  the hero and the counter, which is what the four pages built before this rule still name. */
+export function stylesFor(shape: string, layout?: LayoutType | null): [StyleDef, StyleDef, StyleDef] {
+  if (layout) {
+    if (shape === 'hero') return HERO_STYLES_BY_PAGE_TYPE[layout] ?? STYLES.hero;
+    if (shape === 'stats') return COUNTER_STYLES_BY_PAGE_TYPE[layout] ?? STYLES.stats;
+  }
   return STYLES[shape as Shape] ?? STYLES.standard;
 }
 
-/** The one style a pick names. Unknown id → S1, so a stale pick renders rather than throws. */
-export function styleById(shape: string, id: string): StyleDef {
-  return stylesFor(shape).find((s) => s.id === id) ?? stylesFor(shape)[0];
+/** The three styles a RECORD's section offers: the ids it names, resolved one by one, or the
+ *  shape's trio for the layout family when it names none. A record is the authority on which
+ *  three it is offering — reading the map instead would render one set and approve another. */
+export function stylesForSection(
+  shape: string, ids: readonly string[] | undefined, layout?: LayoutType | null,
+): StyleDef[] {
+  if (ids && ids.length) return ids.map((id) => styleById(shape, id, layout));
+  return [...stylesFor(shape, layout)];
+}
+
+/** The one style a pick names. The per-page ids are looked up by id alone; an S1/S2/S3 pick
+ *  is read against the shape's own trio. An unknown id falls back to the first style of the
+ *  trio, so a stale pick renders rather than throws. */
+export function styleById(shape: string, id: string, layout?: LayoutType | null): StyleDef {
+  // ORDER MATTERS. `S1` on a hero means the SHAPE-WIDE trio — the arrangement the four pages
+  // built before working rule 16 approved — and must not be resolved against this page's
+  // per-page set, where no `S1` exists and a `find` would miss and hand back H-…1 for all
+  // three. So: the per-page ids by id, then the shape's own trio, then the family's.
+  return STYLES_BY_ID[id]
+    ?? (STYLES[shape as Shape] ?? STYLES.standard).find((s) => s.id === id)
+    ?? stylesFor(shape, layout).find((s) => s.id === id)
+    ?? stylesFor(shape, layout)[0];
 }

@@ -40,8 +40,25 @@ from _kit_sections import page_css
 
 OUT = PB.ROOT / "data" / "boards" / "previews"
 
-#: The three ids a styled section offers, in order. Mirrors STYLE_IDS in src/lib/boardStyles.ts.
+#: The three ids an ORDINARY styled section offers, in order. Mirrors STYLE_IDS in
+#: src/lib/boardStyles.ts.
 STYLE_IDS = ("S1", "S2", "S3")
+
+#: Working rule 16: the hero and the counter strip have no single trio. Each LAYOUT FAMILY
+#: gets three of its own, with ids of their own, so one id names one arrangement across the
+#: whole repo. Mirrors HERO_STYLES_BY_PAGE_TYPE / COUNTER_STYLES_BY_PAGE_TYPE. A second copy
+#: of the LAYOUTS would drift; a second copy of the ID LIST cannot say anything the TypeScript
+#: does not, and `tests/py/test_board_previews.py` reads both files and holds them equal.
+FAMILY_SUFFIXES = ("HM", "FS", "GD", "AB", "UT", "BL")
+PER_PAGE_TRIPLES = tuple(
+    tuple("%s-%s%d" % (prefix, fam, i) for i in (1, 2, 3))
+    for prefix in ("H", "C") for fam in FAMILY_SUFFIXES
+)
+
+#: Every list a section's `styles` may be. Membership, not shape: a section offering S1/S3/S3
+#: or H-FS1/H-GD2/H-UT3 would render three blocks the board could show and no page could ever
+#: resolve against one set.
+VALID_TRIPLES = (STYLE_IDS,) + PER_PAGE_TRIPLES
 
 _OPEN = re.compile(r"<section\b([^>]*)>", re.I)
 _TAG = re.compile(r"</?section\b[^>]*>", re.I)
@@ -68,15 +85,21 @@ def validate_styles(record):
     three-radio fieldset with a blank in it; a section offering four would give the page
     build a pick `src/lib/boardStyles.ts` has no entry for. Both are the same fault —
     the record and the style map have drifted — so both are refused here, by name, before
-    anything is cut."""
+    anything is cut.
+
+    Working rule 16 added a second question: three ids that each exist but belong to three
+    DIFFERENT per-page sets would render three real arrangements and still be a pick nobody
+    can approve, because no page type offers that combination. So the check is membership of
+    a known TRIPLE rather than of a known id set."""
     for sec in record.get("sections", []):
         styles = sec.get("styles")
         if not styles:
             continue
-        if list(styles) != list(STYLE_IDS):
+        if tuple(styles) not in VALID_TRIPLES:
             raise StyleError(
                 f"section {sec.get('id')}: styles {styles!r} — a styled section offers "
-                f"exactly {list(STYLE_IDS)}")
+                f"exactly one shape's own three: {list(STYLE_IDS)}, or one of working rule "
+                f"16's per-page sets ({', '.join('/'.join(t) for t in PER_PAGE_TRIPLES)})")
     return True
 
 

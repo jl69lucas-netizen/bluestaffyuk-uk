@@ -1,42 +1,71 @@
 ---
 // src/components/kit/CounterStrip.astro — the stat strip (spec §5 #6). Picked 2026-09-18:
 // the inline hero-edge treatment — one flush line of figure-then-label pairs, lifted onto
-// the hero's bottom edge.
+// the hero's bottom edge. That arrangement is `tiles="inline"` and is still the default.
+//
+// WORKING RULE 16 made this component per-page in two ways, and they are different questions:
+//
+//   WHAT it says   — the `stats` prop. A page hands its OWN figures, each resolved by the
+//                    page (or the board record) from data/*.json with a `source` recorded
+//                    beside it. Omitted, the strip falls back to the three site-wide figures
+//                    below, which is what the pages built before this rule carry.
+//   HOW it is drawn — the `tiles` prop, one of five arrangements. COUNTER_STYLES_BY_PAGE_TYPE
+//                    in src/lib/boardStyles.ts gives each page type three of them, and no two
+//                    page types get the same three.
 //
 // It satisfies rules/design.md `layout-hero-counter-separation`: a background TONE SHIFT
 // (steel-100 against the hero's bone) AND a rule (the 2px brand border), because the check
 // asks for both and a strip carrying only one of them reads as hero furniture, at which
-// point the figures stop registering as claims.
+// point the figures stop registering as claims. All five arrangements keep both halves —
+// that is why the border and the bed sit on `.kit-counter` itself rather than on a tile.
 //
 // `.counter-wrap` and `[data-counters]` are the harness hooks the check selects on
 // (tests/render/checks/layout.ts) — renaming either makes the check silently examine zero.
 //
-// FIGURES COME FROM DATA (rule 9): the availability count is derived from
+// FIGURES COME FROM DATA (rule 9): the fallback availability count is derived from
 // data/puppies.json and the money comes from data/settings.json. Nothing here is typed
-// from memory, so a sold puppy or a price change is a data edit, not a component edit.
+// from memory, so a sold puppy or a price change is a data edit, not a component edit — and
+// a page that passes its own `stats` has done the same work in its own record.
 import type { HTMLAttributes } from 'astro/types';
 import pups from '../../../data/puppies.json';
 import { SITE, type PuppyRow } from '../../lib/site';
-type Props = HTMLAttributes<'section'>;
-const { class: cls, ...rest } = Astro.props;
+type Props = HTMLAttributes<'section'> & {
+  /** This page's own figures. `source` is the path in `data/*.json` the figure came from; it
+   *  is carried so the board and the record can be checked against the data, and is NOT
+   *  rendered — a strip that printed its own footnotes would be a citation list, not a
+   *  counter. An empty array renders the fallback; that is deliberate, because a page with
+   *  nothing it can source should not be able to produce an empty strip by accident. */
+  stats?: { n: string; label: string; source?: string }[];
+  /** How one figure is drawn. */
+  tiles?: 'inline' | 'ruled' | 'card' | 'ring' | 'seam';
+};
+const { stats, tiles = 'inline', class: cls, ...rest } = Astro.props;
 const available = (pups as PuppyRow[]).filter((p) => p.status === 'Available').length;
-const stats = [
-  { n: String(available), l: available === 1 ? 'puppy available now' : 'puppies available now' },
-  { n: `£${SITE.deposit_gbp}`, l: SITE.deposit_refundable ? 'refundable deposit' : 'deposit' },
-  { n: `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`, l: 'UK delivery by distance' },
+const fallback = [
+  { n: String(available), label: available === 1 ? 'puppy available now' : 'puppies available now' },
+  { n: `£${SITE.deposit_gbp}`, label: SITE.deposit_refundable ? 'refundable deposit' : 'deposit' },
+  { n: `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`, label: 'UK delivery by distance' },
 ];
+const rows = stats && stats.length ? stats : fallback;
 ---
 <section
   {...rest}
   class:list={['counter-wrap', 'kit-counter', cls]}
   data-counters
+  data-tiles={tiles}
   aria-label="At a glance"
 >
   <ul class="container list">
-    {stats.map((s, i) => (
+    {rows.map((s, i) => (
       <li>
-        <strong>{s.n}</strong><span>{s.l}</span>
-        {i < stats.length - 1 && <span class="dot" aria-hidden="true">·</span>}
+        {tiles === 'ring' ? (
+          /* The ring is the one arrangement that is not text on a bed: the figure sits inside
+             a drawn circle, so it needs an element to sit inside. aria-hidden, because the
+             figure beside it is the accessible content and a decorative circle is not. */
+          <span class="ring" aria-hidden="true"></span>
+        ) : null}
+        <strong>{s.n}</strong><span class="lbl">{s.label}</span>
+        {tiles === 'inline' && i < rows.length - 1 && <span class="dot" aria-hidden="true">·</span>}
       </li>
     ))}
   </ul>
@@ -45,7 +74,7 @@ const stats = [
   @layer components {
     /* Steel-100 bed and a 2px brand rule: both halves of
        layout-hero-counter-separation, kept intact under the negative overlap that lifts
-       the line onto the hero's bottom edge. */
+       the line onto the hero's bottom edge. Every arrangement keeps both. */
     .kit-counter {
       position: relative;
       background: var(--color-brand-soft);
@@ -63,13 +92,72 @@ const stats = [
     strong { display: block; font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1; font-feature-settings: "tnum"; }
     /* Steel-100 is a light bed: --color-text-muted (ink-3) measures 4.49:1 on it, under the
        4.5:1 AA floor, so the labels take the full text colour. */
-    span { font-size: var(--text-sm); color: var(--color-text); }
-    /* The dot is this line's own furniture: an inline row needs something between the
-       pairs. aria-hidden, so it is punctuation for the eye only. */
+    .lbl { font-size: var(--text-sm); color: var(--color-text); }
+    /* The dot is the INLINE line's own furniture: a flush row needs something between the
+       pairs. aria-hidden, so it is punctuation for the eye only. The other four arrangements
+       separate their figures with geometry and never render it. */
     .dot { color: var(--color-text-muted); padding-inline-start: var(--space-4); }
+
+    /* ── the five arrangements (working rule 16) ─────────────────────────────────────────
+       Each is a different SHAPE for one figure, never a different palette: the bed, the rule
+       and the type scale are the same in all five. */
+
+    /* RULED — equal columns divided by hairlines, the figure over its label. */
+    [data-tiles="ruled"] .list { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 0; align-items: stretch; }
+    [data-tiles="ruled"] li { flex-direction: column; align-items: flex-start; gap: var(--space-1);
+                              padding-inline: var(--space-5); border-inline-start: 1px solid var(--color-brand-mid); }
+    [data-tiles="ruled"] li:first-child { border-inline-start: 0; padding-inline-start: 0; }
+    [data-tiles="ruled"] strong { font-size: var(--text-2xl); }
+
+    /* CARD — each figure in its own bordered box on the bed. */
+    [data-tiles="card"] .list { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: var(--space-3); }
+    [data-tiles="card"] li { flex-direction: column; align-items: flex-start; gap: var(--space-1);
+                             background: var(--color-surface); border: var(--card-border);
+                             border-radius: var(--card-radius); padding: var(--space-4); }
+    [data-tiles="card"] strong { font-size: var(--text-2xl); }
+
+    /* RING — the figure inside a drawn circle, the label beneath it. The ring is a border,
+       not an SVG: one circle at one size needs no geometry file. */
+    [data-tiles="ring"] .list { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: var(--space-4); }
+    [data-tiles="ring"] li { position: relative; flex-direction: column; align-items: center;
+                             text-align: center; gap: var(--space-1); padding-block-start: var(--space-2); }
+    [data-tiles="ring"] .ring { position: absolute; inset-block-start: 0; inset-inline-start: 50%;
+                                translate: -50% 0; width: 72px; height: 72px; border-radius: 50%;
+                                border: 3px solid var(--color-cta); }
+    [data-tiles="ring"] strong { position: relative; display: grid; place-items: center;
+                                 width: 72px; height: 72px; font-size: var(--text-xl); }
+    [data-tiles="ring"] .lbl { max-width: 14ch; }
+
+    /* SEAM — the figures sit along the kit's own brand-to-brass seam, which is the one piece
+       of furniture the site already uses to mark a boundary. */
+    [data-tiles="seam"] .list { display: flex; gap: var(--space-6); padding-block-start: var(--space-4); position: relative; }
+    [data-tiles="seam"] .list::before {
+      content: ""; position: absolute; inset-block-start: 0; inset-inline: 0;
+      height: 3px; background: var(--seam-gradient);
+    }
+    [data-tiles="seam"] li { flex-direction: column; align-items: flex-start; gap: 2px; }
+
     @media (max-width: 720px) {
+      /* Working rule 13's sibling: every arrangement STACKS on a phone. A grid of ring tiles
+         at 375px is three circles a third of a circle wide. */
       .list { flex-direction: column; align-items: flex-start; gap: var(--space-3); }
       .dot { display: none; }
+      [data-tiles="ruled"] .list,
+      [data-tiles="card"] .list,
+      [data-tiles="ring"] .list { display: grid; grid-auto-flow: row; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+      [data-tiles="ruled"] li { border-inline-start: 0; padding-inline: 0;
+                                border-block-start: 1px solid var(--color-brand-mid); padding-block-start: var(--space-3); }
+      [data-tiles="ruled"] li:first-child { border-block-start: 0; padding-block-start: 0; }
+      /* The ring comes OFF at phone width. Three 72px circles in one column is a column of
+         circles, not a strip of figures, and shrinking them puts the numerals under the
+         readable floor — so the arrangement degrades to the stacked pair every other one
+         uses, and the ring is simply not drawn. */
+      [data-tiles="ring"] li { flex-direction: column; align-items: flex-start; text-align: left;
+                               padding-block-start: 0; gap: var(--space-1); }
+      [data-tiles="ring"] .ring { display: none; }
+      [data-tiles="ring"] strong { position: static; display: block; width: auto; height: auto; }
+      [data-tiles="ring"] .lbl { max-width: none; }
+      [data-tiles="seam"] .list { flex-direction: column; }
     }
   }
 </style>

@@ -10,6 +10,7 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 import build_board_previews as P   # noqa: E402
+import build_board_previews as BBP  # noqa: E402  (the per-page id triples, read by name)
 import pageboard as PB             # noqa: E402
 
 
@@ -71,7 +72,15 @@ def test_the_demo_record_loads_and_offers_three_styles_on_every_styled_section()
     rec = PB.load_board("_demo")
     assert rec["meta"]["preview"] is True and rec["meta"]["status"] == "draft"
     assert P.validate_styles(rec)
-    assert [s["styles"] for s in rec["sections"]] == [["S1", "S2", "S3"]] * len(rec["sections"])
+    # Working rule 16: the fixture's hero and counter carry the interior-guide sets so that
+    # the per-page path is BUILT and measured, not only unit-tested. Every other section keeps
+    # the shape-wide trio, which is what the four pages built before that rule still name.
+    assert rec["meta"]["layout_type"] == "interior-guide"
+    offered = {s["id"]: s["styles"] for s in rec["sections"]}
+    assert offered["opening"] == ["H-GD1", "H-GD2", "H-GD3"]
+    assert offered["at-a-glance"] == ["C-GD1", "C-GD2", "C-GD3"]
+    assert all(v == ["S1", "S2", "S3"] for k, v in offered.items()
+               if k not in {"opening", "at-a-glance"})
 
 
 def test_main_refuses_a_slug_with_no_built_preview(tmp_path, monkeypatch, capsys):
@@ -82,9 +91,10 @@ def test_main_refuses_a_slug_with_no_built_preview(tmp_path, monkeypatch, capsys
 
 def test_main_writes_css_and_blocks_from_the_built_page(tmp_path, monkeypatch):
     rec = PB.load_board("_demo")
+    wanted = [(s["id"], sid) for s in rec["sections"] for sid in s["styles"]]
     ids = [s["id"] for s in rec["sections"]]
     body = "".join(f'<section data-section="{i}" data-style="{s}">x{i}{s}</section>'
-                   for i in ids for s in ("S1", "S2", "S3"))
+                   for i, s in wanted)
     page = tmp_path / "dist" / "board-preview" / "_demo" / "index.html"
     page.parent.mkdir(parents=True)
     page.write_text(f"<html><style>.a{{color:red}}</style>{body}</html>", encoding="utf-8")
@@ -93,7 +103,8 @@ def test_main_writes_css_and_blocks_from_the_built_page(tmp_path, monkeypatch):
     assert P.main(["_demo"]) == 0
     out = json.loads((tmp_path / "previews" / "_demo.json").read_text())
     assert out["css"] == ".a{color:red}"
-    assert out["blocks"][f"{ids[0]}|S2"] == f"x{ids[0]}S2"
+    second = wanted[1]
+    assert out["blocks"][f"{second[0]}|{second[1]}"] == f"x{second[0]}{second[1]}"
     assert len(out["blocks"]) == 3 * len(ids)
 
 
@@ -101,14 +112,16 @@ def test_main_reports_a_styled_section_the_built_page_did_not_render(tmp_path, m
     """A gate that examined nothing is not a pass: a block the record asked for and the
     page did not produce is named, not silently written out as an empty iframe."""
     rec = PB.load_board("_demo")
-    first = rec["sections"][0]["id"]
+    first = rec["sections"][0]
+    one, missing = first["styles"][0], first["styles"][1]
     page = tmp_path / "dist" / "board-preview" / "_demo" / "index.html"
     page.parent.mkdir(parents=True)
-    page.write_text(f'<section data-section="{first}" data-style="S1">x</section>', encoding="utf-8")
+    page.write_text(f'<section data-section="{first["id"]}" data-style="{one}">x</section>',
+                    encoding="utf-8")
     monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
     monkeypatch.setattr(P, "OUT", tmp_path / "previews")
     assert P.main(["_demo"]) == 1
-    assert f"{first}|S2" in capsys.readouterr().out
+    assert f"{first['id']}|{missing}" in capsys.readouterr().out
 
 
 # --- the gate rule and the board's style fieldset ----------------------------------------
@@ -313,12 +326,60 @@ def _box_classes(inner):
     return " ".join(sorted(c for c in m.group(1).split() if c.startswith("bl-")))
 
 
+def _demo_section(sec_id):
+    return next(s for s in PB.load_board("_demo")["sections"] if s["id"] == sec_id)
+
+
+def _demo_style_ids(sec_id):
+    """The ids the RECORD offers for a section. Hardcoding S1/S2/S3 stopped being right when
+    working rule 16 gave the hero and the counter strip per-page-type sets of their own: the
+    fixture's hero now offers H-GD1..3 and its counter C-GD1..3, and a test that kept asking
+    for S1 would raise a KeyError rather than report a layout defect."""
+    return list(_demo_section(sec_id).get("styles") or list(P.STYLE_IDS))
+
+
+def _demo_defs(sec_id):
+    """[(id, name, layout), ×3] for a section, from whichever map owns its ids."""
+    shape = _demo_section(sec_id)["shape"]
+    out = []
+    for sid in _demo_style_ids(sec_id):
+        if sid.startswith("H-") or sid.startswith("C-"):
+            sets = HERO_SETS if sid.startswith("H-") else COUNTER_SETS
+            row = next(r for rows in sets.values() for r in rows if r[0] == sid)
+        else:
+            row = next(r for r in STYLE_MAP[shape] if r[0] == sid)
+        out.append(row)
+    return out
+
+
 def test_built_blocks_carry_three_distinct_layouts_per_section():
     """The `bl-*` class list IS the layout: it is what boxClass() emits and what
-    board-styles.css keys on, so three identical lists are three identical renderings."""
+    board-styles.css keys on, so three identical lists are three identical renderings.
+
+    A CAVEAT working rule 16 introduced: the hero's and the counter's per-page axes are PROPS,
+    not classes, so two of their styles can differ genuinely and still emit the same box. Those
+    two shapes are held by the markup test below instead, which is the stricter check anyway."""
+    prop_only = {"hero", "stats"}
     for sec, styles in _demo_blocks().items():
-        lists = [_box_classes(styles[s]) for s in ("S1", "S2", "S3")]
+        if _demo_section(sec)["shape"] in prop_only:
+            continue
+        lists = [_box_classes(styles[s]) for s in _demo_style_ids(sec)]
         assert len(set(lists)) == 3, (sec, lists)
+
+
+def test_the_per_page_shapes_render_three_distinct_markups():
+    """The other half of the test above. A hero whose three arrangements are props has to
+    prove itself in the MARKUP, because its box classes may legitimately agree."""
+    checked = 0
+    for sec, styles in _demo_blocks().items():
+        if _demo_section(sec)["shape"] not in {"hero", "stats"}:
+            continue
+        bodies = [_normalised(styles[s]) for s in _demo_style_ids(sec)]
+        assert len(set(bodies)) == 3, (sec, [b[:120] for b in bodies])
+        checked += 1
+    assert checked == 2, (
+        f"the fixture exercised {checked} per-page shape(s) — it owes a hero and a counter, "
+        "or this test is measuring nothing")
 
 
 def _markup_signature(layout):
@@ -329,7 +390,12 @@ def _markup_signature(layout):
     even though `eyebrow` adds a paragraph: that paragraph is the style's own CAPTION, and
     `_normalised()` strips it, because a board that only ever differed by its own label
     would be three identical renderings with three names on them."""
-    return (layout.get("aside"), layout.get("mode"), layout.get("list") == "grid-2")
+    return (layout.get("aside"), layout.get("mode"), layout.get("list") == "grid-2",
+            # Working rule 16's four: a mosaic is four `<img>` where a split is one, a panel
+            # drops the photo column, a ledge is a whole block under the lede and a ring tile
+            # is a drawn circle. None of the four is a stylesheet doing something to identical
+            # markup, which is exactly what puts them on this list.
+            layout.get("hero"), layout.get("ledge"), layout.get("tiles"))
 
 
 def test_built_blocks_differ_in_markup_wherever_the_styles_promise_they_will():
@@ -341,14 +407,15 @@ def test_built_blocks_differ_in_markup_wherever_the_styles_promise_they_will():
     the record is offering a pick on."""
     checked = 0
     for sec, styles in _demo_blocks().items():
-        shape = next(s["shape"] for s in PB.load_board("_demo")["sections"] if s["id"] == sec)
-        sigs = [_markup_signature(l) for _i, _n, l in STYLE_MAP[shape]]
-        bodies = [_normalised(styles[s]) for s in ("S1", "S2", "S3")]
+        shape = _demo_section(sec)["shape"]
+        ids = _demo_style_ids(sec)
+        sigs = [_markup_signature(l) for _i, _n, l in _demo_defs(sec)]
+        bodies = [_normalised(styles[s]) for s in ids]
         for i in range(3):
             for j in range(i + 1, 3):
                 if sigs[i] == sigs[j]:
                     continue
-                assert bodies[i] != bodies[j], (sec, shape, f"S{i + 1}", f"S{j + 1}")
+                assert bodies[i] != bodies[j], (sec, shape, ids[i], ids[j])
                 checked += 1
     assert checked >= 4, f"only {checked} pair(s) had a markup difference to check"
 
@@ -436,3 +503,141 @@ def test_picked_sections_skips_a_section_the_board_offers_nothing_for():
     assert BPB.picked_sections(b, stocked, "x") == [sid]
     # And with no ledger passed, the old rule stands.
     assert BPB.picked_sections(b) == [sid]
+
+
+# --- working rule 16: the per-page hero and counter sets ----------------------------------
+#
+# "No two pages share the same hero layout or the same counter strip." The construction that
+# delivers it is six sets of three, one per LAYOUT FAMILY, and the guarantee is only as good
+# as the distinctness of the eighteen: two families sharing an arrangement would let two pages
+# of different types ship the same hero while every within-set check stayed green. So the
+# tuples are checked across all eighteen, not within each three.
+
+PER_PAGE_RX = re.compile(
+    r"def\('([HC]-[A-Z]{2}[123])',\s*'(.*?)',\s*(\{.*?\})\),", re.S)
+FAMILY_RX = re.compile(r"^  '?([a-z-]+)'?:\s*\[\s*$", re.M)
+
+
+def _parse_per_page(const_name):
+    """{family: [(id, name, layout dict), ×3]} out of one of the two per-page maps.
+
+    Brittle in the same deliberate way as `_parse_style_map`: it expects the `def(…)` form
+    the file is written in, and the count assertions below fail loudly on a reformat rather
+    than quietly testing nothing."""
+    import ast
+    src = TS.read_text(encoding="utf-8").split("export const " + const_name, 1)[1]
+    src = src.split("\n};", 1)[0]
+    out, order = {}, [m.group(1) for m in FAMILY_RX.finditer(src)]
+    chunks = re.split(FAMILY_RX, src)[1:]
+    for i in range(0, len(chunks), 2):
+        fam, body = chunks[i], chunks[i + 1]
+        rows = []
+        for m in PER_PAGE_RX.finditer(body):
+            obj = re.sub(r"(\w+):", r"'\1':", " ".join(m.group(3).split()))
+            rows.append((m.group(1), m.group(2), ast.literal_eval(obj)))
+        out[fam] = rows
+    assert list(out) == order, (list(out), order)
+    return out
+
+
+HERO_SETS = _parse_per_page("HERO_STYLES_BY_PAGE_TYPE")
+COUNTER_SETS = _parse_per_page("COUNTER_STYLES_BY_PAGE_TYPE")
+FAMILIES = ["home", "for-sale", "interior-guide", "interior-about", "interior-utility", "blog"]
+
+
+@pytest.mark.parametrize("sets,which", [(HERO_SETS, "hero"), (COUNTER_SETS, "stats")])
+def test_every_layout_family_offers_exactly_three(sets, which):
+    assert list(sets) == FAMILIES, sorted(sets)
+    assert all(len(v) == 3 for v in sets.values()), {k: len(v) for k, v in sets.items()}
+
+
+@pytest.mark.parametrize("sets,which", [(HERO_SETS, "hero"), (COUNTER_SETS, "stats")])
+def test_no_per_page_style_sets_an_axis_its_renderer_ignores(sets, which):
+    allowed = set(AXES[which])
+    for fam, rows in sets.items():
+        for sid, _name, layout in rows:
+            assert set(layout) <= allowed, (fam, sid, sorted(set(layout) - allowed))
+
+
+@pytest.mark.parametrize("sets,which", [(HERO_SETS, "hero"), (COUNTER_SETS, "stats")])
+def test_all_eighteen_per_page_styles_have_distinct_axis_tuples(sets, which):
+    """Within a set AND across the six sets. A tuple shared by two families is how two pages
+    of different types come to ship the same arrangement with rule 16 still reporting green."""
+    axes = AXES[which]
+    seen = {}
+    for fam, rows in sets.items():
+        for sid, _name, layout in rows:
+            key = tuple(layout.get(a) for a in axes)
+            assert key not in seen, (
+                f"{which}: {sid} ({fam}) renders exactly what {seen[key]} does — {key}")
+            seen[key] = f"{sid} ({fam})"
+    assert len(seen) == 18, len(seen)
+
+
+@pytest.mark.parametrize("sets", [HERO_SETS, COUNTER_SETS])
+def test_per_page_ids_and_names_are_unique(sets):
+    ids = [sid for rows in sets.values() for sid, _n, _l in rows]
+    names = [n for rows in sets.values() for _s, n, _l in rows]
+    assert len(set(ids)) == 18, sorted(ids)
+    assert len(set(names)) == 18, sorted(names)
+
+
+def test_the_python_side_knows_the_same_eighteen_ids():
+    """`scripts/build_board_previews.py` carries the id TRIPLES so it can refuse a record
+    that mixes two families' styles. A second copy of a list is a copy that drifts, so the
+    two are read here and compared."""
+    ts_ids = {sid for sets in (HERO_SETS, COUNTER_SETS)
+              for rows in sets.values() for sid, _n, _l in rows}
+    py_ids = {sid for triple in BBP.PER_PAGE_TRIPLES for sid in triple}
+    assert ts_ids == py_ids, sorted(ts_ids ^ py_ids)
+    assert all(len(t) == 3 for t in BBP.PER_PAGE_TRIPLES)
+
+
+def test_a_record_mixing_two_families_styles_is_refused():
+    """Three ids that each exist, from three different sets. Every one of them resolves, and
+    the combination is still a pick no page type offers."""
+    with pytest.raises(BBP.StyleError, match="per-page"):
+        BBP.validate_styles({"sections": [
+            {"id": "top", "styles": ["H-FS1", "H-GD2", "H-UT3"]}]})
+
+
+def test_a_per_page_triple_is_accepted_and_so_is_the_legacy_one():
+    assert BBP.validate_styles({"sections": [
+        {"id": "top", "styles": ["H-FS1", "H-FS2", "H-FS3"]},
+        {"id": "glance", "styles": ["C-FS1", "C-FS2", "C-FS3"]},
+        {"id": "old", "styles": ["S1", "S2", "S3"]},
+    ]})
+
+
+# --- and the figures those counters print -------------------------------------------------
+
+def test_every_stats_row_in_every_record_resolves_to_a_file_on_disk():
+    """Rule 9 through working rule 16: a counter figure carries the path it came from, and a
+    path nobody resolves is a citation format rather than a citation."""
+    bad = []
+    for f in sorted((ROOT / "data/boards").glob("*.json")):
+        record = json.loads(f.read_text(encoding="utf-8"))
+        bad += [(f.stem, *row) for row in PB.stat_source_problems(record)]
+    assert bad == [], bad
+
+
+@pytest.mark.parametrize("spec,want", [
+    ("data/settings.json#deposit_gbp", 500),
+    ("data/puppies.json#len", 6),
+    ("data/puppies.json#count(status=Available)", 6),
+])
+def test_the_source_resolver_reads_the_three_forms(spec, want):
+    assert PB.resolve_stat_source(spec) == want
+
+
+@pytest.mark.parametrize("spec", [
+    "not-a-source",
+    "data/settings.json#no_such_key",
+    "data/nope.json#len",
+    "data/settings.json#count(status=Available)",
+])
+def test_the_source_resolver_refuses_what_does_not_resolve(spec):
+    """A resolver that silently returned None for a bad path would make the gate above
+    report PASS over exactly the numbers it exists to catch."""
+    with pytest.raises(PB.SourceError):
+        PB.resolve_stat_source(spec)

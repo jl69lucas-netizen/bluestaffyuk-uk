@@ -121,6 +121,17 @@
        }
       }
      }
+    },
+    "layout_type": {
+     "comment": "Working rule 16: the hero and the counter strip are cut per LAYOUT FAMILY, and a family is not the same thing as page_type — eight of the thirteen records are `interior`, and a privacy policy, a breed guide and an about page do not want one hero between them. Absent, src/lib/boardStyles.ts derives it from page_type (interior -> interior-guide). A record states it when that guess would be wrong.",
+     "enum": [
+      "home",
+      "for-sale",
+      "interior-guide",
+      "interior-about",
+      "interior-utility",
+      "blog"
+     ]
     }
    }
   },
@@ -558,14 +569,50 @@
       ]
      },
      "styles": {
-      "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly the three src/lib/boardStyles.ts defines. scripts/build_board_previews.py refuses anything else, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
+      "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly three. `S1`/`S2`/`S3` are the shape-wide trio every ordinary shape offers. The `H-*` and `C-*` ids are working rule 16's PER-PAGE-TYPE sets for the hero and the counter strip (src/lib/boardStyles.ts): one id names one arrangement across the whole repo, so a pick can never be read against the wrong set, and the four pages built before that rule keep naming S1/S2/S3. scripts/build_board_previews.py refuses a list that is not one shape's own three, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
       "type": "array",
       "uniqueItems": true,
       "items": {
        "enum": [
         "S1",
         "S2",
-        "S3"
+        "S3",
+        "H-HM1",
+        "H-HM2",
+        "H-HM3",
+        "H-FS1",
+        "H-FS2",
+        "H-FS3",
+        "H-GD1",
+        "H-GD2",
+        "H-GD3",
+        "H-AB1",
+        "H-AB2",
+        "H-AB3",
+        "H-UT1",
+        "H-UT2",
+        "H-UT3",
+        "H-BL1",
+        "H-BL2",
+        "H-BL3",
+        "C-HM1",
+        "C-HM2",
+        "C-HM3",
+        "C-FS1",
+        "C-FS2",
+        "C-FS3",
+        "C-GD1",
+        "C-GD2",
+        "C-GD3",
+        "C-AB1",
+        "C-AB2",
+        "C-AB3",
+        "C-UT1",
+        "C-UT2",
+        "C-UT3",
+        "C-BL1",
+        "C-BL2",
+        "C-BL3"
        ]
       },
       "oneOf": [
@@ -577,6 +624,61 @@
         "maxItems": 3
        }
       ]
+     },
+     "stats": {
+      "comment": "Working rule 16: the figures a `stats` section's counter strip prints, and the ONLY place a board states them. Each row carries the PATH in data/*.json the figure came from; tests/py/test_board_previews.py resolves every one of them, so a typed number is a failing test rather than a plausible sentence (rule 9). A hero whose style has `ledge: 'stats'` prints these too. Where nothing on disk backs a figure the record ships fewer rows — never an invented one.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+       "type": "object",
+       "required": [
+        "n",
+        "label",
+        "source"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "n": {
+         "type": "string",
+         "minLength": 1
+        },
+        "label": {
+         "type": "string",
+         "minLength": 2
+        },
+        "source": {
+         "comment": "A path into a data file, `data/<file>.json#<pointer>`, or `data/<file>.json#count(<expr>)` for a derived count. The test resolves it and fails when it does not resolve.",
+         "type": "string",
+         "minLength": 5
+        }
+       }
+      }
+     },
+     "refresh": {
+      "comment": "Working rule 16's second half: the small, deliberate delta this section carries so the page does not read as a sibling with the words swapped. `axis` is one of the five dimensions .claude/skills/bsuk-component-refresh/SKILL.md allows — never the palette — and `note` says what the delta is and which page it is a delta FROM, so the rotation is in the record rather than in somebody's memory.",
+      "type": "object",
+      "required": [
+       "axis",
+       "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "axis": {
+        "enum": [
+         "layout",
+         "accent",
+         "motif",
+         "container",
+         "density"
+        ]
+       },
+       "note": {
+        "type": "string",
+        "minLength": 15,
+        "maxLength": 300
+       }
+      }
      },
      "table": {
       "comment": "A `table`-shaped section's own data, and the only place a board states one. Required on that shape and forbidden on every other, because a table whose rows lived in the tree could not be rendered on the preview route and a table block on a prose section would never be rendered at all. `numeric` names the zero-based column indexes DataTable right-aligns; every row must be as long as `columns`, which the board gate checks.",
@@ -646,6 +748,73 @@
        },
        "caption": {
         "type": "string"
+       }
+      }
+     },
+     "hero": {
+      "comment": "A `hero`-shaped section's own per-page furniture, and the only place a board states it. Optional on that shape and forbidden on every other. The picked style's `ledge` axis decides WHICH of these is drawn; this block is the DATA, and a ledge whose data is absent renders nothing rather than a default claim — the 2026-09-20 review removed Hero.astro's hard-coded chips for exactly that reason.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "chips": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+         "type": "string",
+         "minLength": 2
+        }
+       },
+       "ticks": {
+        "type": "array",
+        "maxItems": 6,
+        "items": {
+         "type": "string",
+         "minLength": 2
+        }
+       },
+       "aside": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+         "title": {
+          "type": "string",
+          "minLength": 2
+         },
+         "quote": {
+          "type": "string",
+          "minLength": 10
+         },
+         "rows": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+           "type": "object",
+           "required": [
+            "label",
+            "value"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "label": {
+             "type": "string",
+             "minLength": 1
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1
+            }
+           }
+          }
+         },
+         "items": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+           "type": "string",
+           "minLength": 2
+          }
+         }
+        }
        }
       }
      },

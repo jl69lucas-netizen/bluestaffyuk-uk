@@ -45,7 +45,7 @@ import SectionStrip from '../../components/kit/SectionStrip.astro';
 import DataTable from '../../components/kit/DataTable.astro';
 import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import Button from '../../components/kit/Button.astro';
-import { boxClass, stylesFor } from '../../lib/boardStyles';
+import { boxClass, layoutTypeFor, stylesForSection } from '../../lib/boardStyles';
 import { loadFaq } from '../../lib/faq';
 import puppies from '../../../data/puppies.json';
 
@@ -62,9 +62,21 @@ interface TableData { caption: string; columns: string[]; rows: (string | number
 /** A `video`-shaped section's own data. The id is the OLD SITE's YouTube id, reused
  *  (working rule 14); the route never invents one, exactly as it never invents a table. */
 interface VideoData { id: string; title: string; caption?: string }
+/** Working rule 16. `stats` is what a counter strip (or a hero with a `stats` ledge) PRINTS,
+ *  each row carrying the data path it came from; `hero` is the per-page furniture a hero's
+ *  `ledge` axis selects between; `refresh` is the section's recorded delta. All three live on
+ *  the record for the `table` block's reason: a figure the route derived would be a figure
+ *  nobody approved. */
+interface StatRow { n: string; label: string; source: string }
+interface HeroData {
+  chips?: string[]; ticks?: string[];
+  aside?: { title?: string; quote?: string; rows?: { label: string; value: string }[]; items?: string[] };
+}
+interface RefreshData { axis: string; note: string }
 interface Section {
   id: string; n: number; heading: string; intent: string; shape: string;
   tree: TreeNode[]; images: ImageSlot[]; styles?: string[]; table?: TableData; video?: VideoData;
+  stats?: StatRow[]; hero?: HeroData; refresh?: RefreshData;
 }
 /** The parts of `schemas/board.schema.json` this route reads — named in full, so a field
  *  that moves in the schema is a type error here rather than an `undefined` at build. */
@@ -72,6 +84,8 @@ interface BoardRecord {
   meta: {
     slug: string;
     page_type: string;
+    /** Working rule 16's layout family, when the record states one. */
+    layout_type?: string;
     status: 'draft' | 'boarded' | 'approved' | 'built' | 'released';
     preview?: boolean;
     research_as_of: string;
@@ -118,6 +132,18 @@ const assetFor = (s: Section) => {
   const a = record.assets.find((x) => x.slot === slot && x.file);
   return a ? { src: a.file as string, alt: a.alt || s.heading } : null;
 };
+
+/** EVERY filled photo a section names, for the `mosaic` hero layout. Fewer than two and the
+ *  hero falls back to the single photo — the arrangement degrades rather than inventing a
+ *  tile, which is rule 9 applied to a layout instead of to a sentence. */
+const assetsFor = (s: Section) =>
+  s.images
+    .map((slot) => record.assets.find((x) => x.slot === slot.slot && x.file))
+    .filter((a): a is Asset => !!a)
+    .map((a) => ({ src: a.file as string, alt: a.alt || s.heading, caption: undefined as string | undefined }));
+
+/** The layout family this record's hero and counter strip are cut for (working rule 16). */
+const layoutType = layoutTypeFor(record.meta.page_type, record.meta.layout_type ?? null);
 
 /** The FAQ rows a `faq`-shaped section names. A record names its rows by `data/faq.json`
  *  id in the section's tree (one node per row); a section that names none shows them all,
@@ -169,8 +195,13 @@ const stubTargets = (s: Section, styleId: string) =>
 
     {record.sections.map((s) => (
       <div class="bp-group">
-        <p class="bp-label">{String(s.n).padStart(2, '0')} · {s.heading} <span>{s.shape}</span></p>
-        {stylesFor(s.shape).map((st) => {
+        <p class="bp-label">{String(s.n).padStart(2, '0')} · {s.heading} <span>{s.shape}</span>
+          {/* The recorded refresh delta, printed where the arrangement it describes is
+              rendered. It is preview chrome, not part of a style — the cutter takes the
+              inside of [data-section][data-style] and this sits outside it. */}
+          {s.refresh && <em class="bp-refresh">{s.refresh.axis}: {s.refresh.note}</em>}
+        </p>
+        {stylesForSection(s.shape, s.styles, layoutType).map((st) => {
           const l = st.layout;
           const img = assetFor(s);
           const heads = s.tree;
@@ -188,6 +219,10 @@ const stubTargets = (s: Section, styleId: string) =>
                 )}
 
                 <div class="bl-body">
+                  {/* Working rule 16. The ARRANGEMENT comes from the picked style's own
+                      axes; the DATA comes from the record. A ledge the record supplied
+                      nothing for renders nothing — Hero.astro decides that, not this route,
+                      so the same hero on a rebuilt page behaves identically. */}
                   {s.shape === 'hero' && (
                     <Hero
                       as="h2"
@@ -195,10 +230,24 @@ const stubTargets = (s: Section, styleId: string) =>
                       lede={sentences(s.intent)[0] ?? s.intent}
                       image={img?.src}
                       imageAlt={img?.alt}
+                      layout={l.hero ?? 'split'}
+                      align={l.align ?? 'left'}
+                      media={l.media ?? 'right'}
+                      ledge={l.ledge ?? 'none'}
+                      chips={s.hero?.chips ?? []}
+                      ticks={s.hero?.ticks ?? []}
+                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
+                      aside={s.hero?.aside}
+                      mosaic={assetsFor(s)}
                     />
                   )}
                   {s.shape === 'trust' && <TrustStrip />}
-                  {s.shape === 'stats' && <CounterStrip />}
+                  {s.shape === 'stats' && (
+                    <CounterStrip
+                      tiles={l.tiles ?? 'inline'}
+                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label, source: r.source }))}
+                    />
+                  )}
                   {s.shape === 'divider' && <SectionDivider inverse={l.frame === 'band'} />}
                   {s.shape === 'reviews' && <Testimonial mode={l.mode ?? 'single'} />}
                   {s.shape === 'faq' && <Faq items={faqFor(s)} />}
@@ -315,6 +364,8 @@ const stubTargets = (s: Section, styleId: string) =>
     .bp-label { margin: var(--space-8) 0 var(--space-2); font-size: var(--text-xs); font-weight: 600;
                 letter-spacing: .1em; text-transform: uppercase; color: var(--color-text-muted); }
     .bp-label span { color: var(--color-brand); }
+    .bp-refresh { display: block; margin-top: var(--space-1); font-style: normal;
+                  text-transform: none; letter-spacing: 0; color: var(--color-text); }
     .bp-style { margin: 0 0 var(--space-6); }
     /* The chrome shapes only: the nav on the left (where PageShell puts it) and the six
        stub targets beside it, so the dial has something to point at and the sheet's bar or

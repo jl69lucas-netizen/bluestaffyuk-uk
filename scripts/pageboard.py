@@ -914,6 +914,95 @@ def distribution(board):
 ADVISORY_MIN_H5H6 = {"home", "location"}          # rules/headings.md, 2026-09-09
 LIBRARY_LINK_MIN = 3
 LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster and its hub
+# ── working rule 16: a counter figure resolves to a file on disk ───────────────────────────
+#
+# Every row of a section's `stats` carries the PATH its figure came from. Rule 9 says no number
+# is typed from memory, and a `source` string nobody resolves is a citation format, not a
+# citation — so the gate resolves each one and reports the figure it found beside the figure
+# the record printed. Three forms, and deliberately only three:
+#
+#   data/settings.json#deposit_gbp              a dotted path into the file
+#   data/puppies.json#count(status=Available)   how many array items carry that field value
+#   data/puppies.json#len                       how long the array (or object) is
+#   src/content/blog#files(*.md)                how many files match, for a content collection
+#
+# The gate does NOT insist the rendered figure equals the resolved one: "£500" is the honest
+# rendering of `500`, "£200–£350" of two fields, and "12–14 years" of a breed range. What it
+# insists is that the path RESOLVES — a source pointing at a key nobody has is the defect this
+# exists to catch, and it is the defect that makes an invented number look sourced.
+_SOURCE = re.compile(r"^([A-Za-z0-9_./*-]+)#(.+)$")
+
+
+class SourceError(Exception):
+    """A `stats` row whose `source` does not resolve to anything on disk."""
+
+
+def resolve_stat_source(spec, root=None):
+    """The value a `source` string names, or SourceError with the reason it did not resolve."""
+    root = ROOT if root is None else pathlib.Path(root)
+    m = _SOURCE.match(spec or "")
+    if not m:
+        raise SourceError(f"{spec!r} is not <path>#<selector>")
+    rel, sel = m.group(1), m.group(2).strip()
+
+    if sel.startswith("files(") and sel.endswith(")"):
+        pattern = sel[len("files("):-1].strip() or "*"
+        d = root / rel
+        if not d.is_dir():
+            raise SourceError(f"{spec}: {rel} is not a directory")
+        return len(sorted(d.glob(pattern)))
+
+    f = root / rel
+    if not f.is_file():
+        raise SourceError(f"{spec}: {rel} is not a file")
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+    except ValueError as e:
+        raise SourceError(f"{spec}: {rel} is not readable JSON ({e})")
+
+    if sel == "len":
+        try:
+            return len(data)
+        except TypeError:
+            raise SourceError(f"{spec}: the file's top level has no length")
+
+    if sel.startswith("count(") and sel.endswith(")"):
+        inner = sel[len("count("):-1]
+        if not isinstance(data, list):
+            raise SourceError(f"{spec}: count() needs a JSON array at the top level")
+        if "=" not in inner:
+            raise SourceError(f"{spec}: count() takes <field>=<value>")
+        field, want = (x.strip() for x in inner.split("=", 1))
+        return sum(1 for row in data if isinstance(row, dict) and str(row.get(field)) == want)
+
+    node = data
+    for step in sel.split("."):
+        key, idx = step, None
+        if step.endswith("]") and "[" in step:
+            key, idx = step[:step.index("[")], int(step[step.index("[") + 1:-1])
+        if key:
+            if not isinstance(node, dict) or key not in node:
+                raise SourceError(f"{spec}: no key {key!r} at that point")
+            node = node[key]
+        if idx is not None:
+            if not isinstance(node, list) or idx >= len(node):
+                raise SourceError(f"{spec}: index {idx} is past the end")
+            node = node[idx]
+    return node
+
+
+def stat_source_problems(board, root=None):
+    """[(section id, source, reason)] for every `stats` row that does not resolve."""
+    out = []
+    for sec in board.get("sections", []):
+        for row in sec.get("stats") or []:
+            try:
+                resolve_stat_source(row.get("source"), root)
+            except SourceError as e:
+                out.append((sec["id"], row.get("source"), str(e)))
+    return out
+
+
 GATE_STAGES = ("build", "release")
 _WHITELIST_TOKENS = [t for t in (tokens(w) for w in HEADER_WHITELIST) if t]
 _CARD_TOKENS = {tuple(t) for t in (tokens(w) for w in PUPPY_CARD_HEADINGS) if t}
@@ -1035,6 +1124,13 @@ def gate_findings(board, ont, ledger, live, stage="build"):
             if s.get("styles") and s["id"] not in picks:
                 add("style-unpicked", "FAIL",
                     f"section {s['id']} offers {'/'.join(s['styles'])} and the approval names no style for it")
+
+    # Working rule 16 and rule 9: a figure with a source nobody can resolve is a figure with
+    # no source. FAIL rather than WARN — the whole point of carrying the path is that it is
+    # checked, and a warning here is a number that ships.
+    for sid, spec, why in stat_source_problems(board):
+        add("stat-source-unresolved", "FAIL",
+            f"section {sid}: stats source {spec!r} does not resolve — {why}")
 
     auth = authorization_check(board, ont)
     for e in auth["blocked"]:

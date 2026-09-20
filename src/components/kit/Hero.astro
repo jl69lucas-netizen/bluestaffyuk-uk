@@ -72,6 +72,36 @@ type Props = HTMLAttributes<'section'> & {
    *  not list and `scripts/link_parity_check.py` could not reconcile. A page passes the
    *  buttons its record's `links` and `cta` allow. */
   ctas?: { label: string; href: string; kind?: 'primary' | 'outline' | 'inverse' | 'text' }[];
+
+  // ── working rule 16: the per-page arrangement ───────────────────────────────────────────
+  // Five props, ALL OPTIONAL and none of them with a default that asserts content. `layout`,
+  // `align` and `ledge` come from the picked StyleDef (src/lib/boardStyles.ts); `aside`,
+  // `mosaic`, `stats` and `ticks` are the DATA a ledge or a layout needs, and a ledge whose
+  // data the page did not supply renders nothing at all. That is the 2026-09-20 review's rule
+  // restated: a hero states only what the page that mounted it handed it, so an about page's
+  // quote band is not silently available to a privacy policy.
+  /** The arrangement of copy against media. `split` is the shipped two-column hero. */
+  layout?: 'split' | 'stacked' | 'mosaic' | 'panel' | 'bleed';
+  /** Where the copy column's text sits. */
+  align?: 'left' | 'center';
+  /** Which side the photo is on, mirrored from the box's `bl-media-*` class so the component
+   *  can key its own rules on it. Keying on `.bl-media-*` instead would put component rules
+   *  in board-styles.css and lose the Astro scope hash that keeps them from tying with it. */
+  media?: 'none' | 'left' | 'right' | 'top';
+  /** Which block sits under the lede (or, for `aside`, beside the copy). */
+  ledge?: 'none' | 'chips' | 'stats' | 'aside' | 'ticks';
+  /** `ledge: 'ticks'` — a checked list of things the page can actually back. */
+  ticks?: string[];
+  /** `ledge: 'stats'` — figures the PAGE resolved from data/*.json. The hero never derives
+   *  one: it prints what it is given, and a page with nothing to print passes none. */
+  stats?: { n: string; label: string }[];
+  /** `ledge: 'aside'` — the key-facts / contents / quote card beside the copy. A `quote` and
+   *  a row list are both allowed because a guide's aside is a fact table and an about page's
+   *  is somebody's sentence, and neither is the other with different padding. */
+  aside?: { title?: string; rows?: { label: string; value: string }[]; items?: string[]; quote?: string };
+  /** `layout: 'mosaic'` — the tiles the photo column becomes. Fewer than two falls back to
+   *  the single photo, because a one-tile mosaic is a photo with extra markup. */
+  mosaic?: { src: string; alt: string; caption?: string }[];
 };
 // Every figure and claim below is in data/settings.json or on the live homepage
 // (KC registration, health-tested parents): rule 9, nothing is typed from memory.
@@ -90,9 +120,32 @@ const {
   imageSrcset,
   chips = [],
   ctas = [],
+  layout = 'split',
+  align = 'left',
+  media = 'right',
+  ledge = 'none',
+  ticks = [],
+  stats = [],
+  aside,
+  mosaic = [],
   class: cls,
   ...rest
 } = Astro.props;
+// A mosaic needs tiles. With fewer than two the layout renders as a split hero rather than
+// as a grid with a hole in it — the arrangement degrades, it never invents a tile.
+const tiles = layout === 'mosaic' && mosaic.length >= 2 ? mosaic.slice(0, 4) : [];
+const asIsMosaic = tiles.length > 0;
+// A ledge renders ONLY when the page handed it something. `none` is not a special case: an
+// empty chip list and a `ledge: 'chips'` with no chips are the same hero.
+// `chips` predates the ledge axis and three pages already pass it with no style behind them,
+// so an UNSET ledge still shows them. A ledge that names a different block does not: a style
+// whose ledge is `stats` is a style that put figures under the lede, and a hero showing both
+// would be neither arrangement.
+const showChips = chips.length > 0 && (ledge === 'chips' || ledge === 'none');
+const showTicks = ledge === 'ticks' && ticks.length > 0;
+const showStats = ledge === 'stats' && stats.length > 0;
+const showAside = ledge === 'aside' && !!aside
+  && !!(aside.quote || aside.title || (aside.rows?.length) || (aside.items?.length));
 // NOTHING IS ASSERTED HERE ANY MORE. The chip list and the CTA row were literals in this
 // file; both are props now and both default to empty, so a hero states only what the page
 // that mounted it handed it.
@@ -103,9 +156,35 @@ const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a fa
 // and loading behaviour, and the CSS below does not care which branch produced it.
 const legacy = typeof image === 'string';
 ---
-<section {...rest} class:list={['kit-hero', cls]}>
+<section
+  {...rest}
+  class:list={['kit-hero', cls]}
+  data-hero-layout={layout}
+  data-hero-align={align}
+  data-hero-media={media}
+  data-hero-ledge={ledge}
+>
   <div class="container inner">
-    {legacy ? (
+    {asIsMosaic ? (
+      /* Rule 10's DOM order holds for a mosaic too: the tiles PRECEDE the copy in source and
+         `order` puts them back on the media side. The first tile is the LCP element and is
+         the one that gets `eager`/`high`; the rest are lazy, because a hero that fetches four
+         photos at high priority has no priority. */
+      <ul class="mosaic pic">
+        {tiles.map((t, i) => (
+          <li>
+            <img
+              src={t.src}
+              alt={t.alt}
+              loading={i === 0 ? 'eager' : 'lazy'}
+              fetchpriority={i === 0 ? 'high' : 'auto'}
+              decoding="async"
+            />
+            {t.caption && <span class="cap">{t.caption}</span>}
+          </li>
+        ))}
+      </ul>
+    ) : legacy ? (
       <img
         src={image as string}
         alt={alt}
@@ -134,8 +213,26 @@ const legacy = typeof image === 'string';
       <p class="eyebrow">{eyebrow}</p>
       <Heading class="title">{title}</Heading>
       <p class="lede">{lede}</p>
-      {chips.length > 0 && (
+      {showChips && (
         <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>
+      )}
+      {showTicks && (
+        <ul class="ticks">
+          {ticks.map((t) => (
+            <li>
+              <svg class="tick" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2.2" stroke-linecap="round"
+                   stroke-linejoin="round" aria-hidden="true" focusable="false"
+              ><path d="M20 6 9 17l-5-5" /></svg>
+              <span>{t}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {showStats && (
+        <ul class="hstats">
+          {stats.map((s) => <li><strong>{s.n}</strong><span>{s.label}</span></li>)}
+        </ul>
       )}
       {ctas.length > 0 && (
         <div class="ctas">
@@ -143,6 +240,20 @@ const legacy = typeof image === 'string';
         </div>
       )}
     </div>
+    {showAside && (
+      <aside class="hero-aside">
+        {aside!.title && <p class="aside-title">{aside!.title}</p>}
+        {aside!.quote && <blockquote class="aside-quote">{aside!.quote}</blockquote>}
+        {aside!.rows && aside!.rows.length > 0 && (
+          <dl class="aside-rows">
+            {aside!.rows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
+          </dl>
+        )}
+        {aside!.items && aside!.items.length > 0 && (
+          <ul class="aside-items">{aside!.items.map((i) => <li>{i}</li>)}</ul>
+        )}
+      </aside>
+    )}
   </div>
 </section>
 <style>
@@ -191,6 +302,158 @@ const legacy = typeof image === 'string';
       .inner { grid-template-columns: 1fr; }
       .title { font-size: var(--text-3xl); }
       .pic { aspect-ratio: 3/2; }
+    }
+
+    /* ── working rule 16: the per-page arrangements ──────────────────────────────────────
+       Everything above is the SPLIT hero, which is what `data-hero-layout="split"` still
+       gets and what the four pages built before this rule still render. The blocks below are
+       the other four arrangements and the four ledges, and every one of them is held to the
+       same rule 10 ceiling: the band is 390-450px at 1024px and up, the copy is SIZED to fit
+       and only the photo is cropped. A layout that cannot make its copy fit does not get to
+       hide the overflow — it gets a shorter photo. */
+
+    /* The ledges. All four sit in the copy column, under the lede, above the CTA row. */
+    .ticks { list-style: none; margin: 0 0 var(--space-4); padding: 0;
+             display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+    .ticks li { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); }
+    .tick { color: var(--color-cta); flex: none; }
+    .hstats { list-style: none; margin: 0 0 var(--space-4); padding: 0;
+              display: flex; flex-wrap: wrap; gap: var(--space-5); align-items: baseline; }
+    .hstats li { display: flex; flex-direction: column; gap: 2px; }
+    .hstats strong { font-family: var(--font-display); font-size: var(--text-xl); line-height: 1.1;
+                     font-feature-settings: "tnum"; color: var(--color-brand); }
+    .hstats span { font-size: var(--text-xs); color: var(--color-text); }
+    /* The aside is a THIRD column, not a card floated into the copy: the copy has to keep
+       its measure or the lede's two-line clamp starts hiding words. */
+    .hero-aside { order: 3; align-self: center; background: var(--color-surface-raised);
+                  border: var(--card-border); border-radius: var(--card-radius);
+                  padding: var(--space-4); font-size: var(--text-sm); }
+    .aside-title { margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
+                   letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
+    .aside-quote { margin: 0; font-family: var(--font-display); font-size: var(--text-lg);
+                   line-height: 1.3; border-inline-start: 3px solid var(--color-cta);
+                   padding-inline-start: var(--space-3); }
+    .aside-rows { margin: 0; display: grid; grid-template-columns: auto 1fr;
+                  gap: var(--space-1) var(--space-3); }
+    .aside-rows dt { color: var(--color-text-muted); }
+    .aside-rows dd { margin: 0; font-weight: 600; }
+    .aside-items { margin: 0; padding-inline-start: var(--space-4); display: grid; gap: var(--space-1); }
+    .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1.1fr 1fr; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr minmax(0, 1fr) 15rem; }
+      .kit-hero[data-hero-ledge="aside"][data-hero-layout="panel"] .inner {
+        grid-template-columns: minmax(0, 14rem) minmax(0, 1fr) 15rem;
+      }
+    }
+
+    /* Centre alignment. The lede loses its 52ch cap or a centred column reads as ragged. */
+    .kit-hero[data-hero-align="center"] .copy { text-align: center; }
+    .kit-hero[data-hero-align="center"] .lede { max-width: 60ch; margin-inline: auto; }
+    .kit-hero[data-hero-align="center"] .ctas,
+    .kit-hero[data-hero-align="center"] .chips,
+    .kit-hero[data-hero-align="center"] .ticks,
+    .kit-hero[data-hero-align="center"] .hstats { justify-content: center; }
+
+    /* MOSAIC — the photo column becomes up to four tiles. The column geometry is the split
+       hero's, so the clamp behaves identically; only what fills the column changes. */
+    .mosaic { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2);
+              grid-template-columns: 1fr 1fr; box-shadow: none; }
+    .mosaic li { position: relative; margin: 0; }
+    .mosaic img { display: block; width: 100%; height: 100%; aspect-ratio: 1;
+                  object-fit: cover; border-radius: var(--card-radius); }
+    /* The caption sits ON the tile, as the idea sheets draw it, so it reads as a label for
+       that photo rather than as a sentence of the page. Steel scrim, bone text. */
+    .mosaic .cap { position: absolute; inset-inline: var(--space-2); bottom: var(--space-2);
+                   background: var(--color-surface-inverse); color: var(--color-text-on-inverse);
+                   font-size: var(--text-xs); padding: 2px 8px; border-radius: var(--card-radius); }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="mosaic"] .mosaic {
+        max-height: calc(450px - 2 * var(--space-6)); overflow: clip;
+      }
+    }
+
+    /* PANEL — text-led. The photo keeps rule 10's DOM position but takes a narrow column, so
+       the page reads as prose with a picture beside it rather than as a sales band. */
+    .kit-hero[data-hero-layout="panel"] .inner { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="panel"] .pic { aspect-ratio: 3/4; }
+
+    /* BLEED — the photo spills to the edge of the band on its own side and drops its radius
+       and lift; it is the surface there, not an object on it. */
+    .kit-hero[data-hero-layout="bleed"] .pic { border-radius: 0; box-shadow: none; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="bleed"] .inner { padding-block: 0; }
+      .kit-hero[data-hero-layout="bleed"] .copy { padding-block: var(--space-6); }
+      .kit-hero[data-hero-layout="bleed"] .pic {
+        max-height: 450px; height: 450px; margin-inline-end: calc(-50vw + 50%);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="left"] .pic {
+        margin-inline: calc(-50vw + 50%) 0;
+      }
+    }
+
+    /* STACKED — photo ABOVE the copy. The ceiling stays on (a stacked hero that released it
+       would be the one page on the site with a 700px band), so the photo is a short landscape
+       strip and the copy is what the remaining space is budgeted for. Measured, not asserted:
+       npm run test:render:pages reads the band height at 1280 and the CTA row's bottom edge. */
+    /* The photo is already FIRST in source order (rule 10); a stacked hero is the one
+       arrangement that wants it first on screen too, so the `order` the split hero uses to
+       send it right has to be undone rather than inherited. */
+    .kit-hero[data-hero-layout="stacked"] .inner { grid-template-columns: minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="stacked"] .pic { order: 1; aspect-ratio: 24/5; }
+    .kit-hero[data-hero-layout="stacked"] .copy { order: 2; }
+    .kit-hero[data-hero-layout="stacked"] .hero-aside { order: 3; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="stacked"] .inner { gap: var(--space-4); padding-block: var(--space-5); }
+      .kit-hero[data-hero-layout="stacked"] .pic { height: 150px; max-height: 150px; aspect-ratio: auto; }
+      .kit-hero[data-hero-layout="stacked"] .title { font-size: var(--text-2xl); margin-bottom: var(--space-2); }
+      .kit-hero[data-hero-layout="stacked"] .lede { margin-bottom: var(--space-3); }
+      .kit-hero[data-hero-layout="stacked"] .chips,
+      .kit-hero[data-hero-layout="stacked"] .ticks,
+      .kit-hero[data-hero-layout="stacked"] .hstats { margin-bottom: var(--space-3); }
+    }
+    /* A STACKED hero with an aside puts the aside BESIDE the copy, not under it. Measured:
+       as a third row at 1280 it took the blog's H-BL2 13px past the ceiling, which is a hero
+       that fits only because something is scrolled out of sight. */
+    @media (min-width: 1024px) {
+      /* Explicit areas rather than `order`: a stacked hero with an aside is a photo across
+         the top and two columns under it, and auto-placement plus three `order` values put
+         the aside on a third row instead — 13px past the ceiling, measured on the blog
+         family's H-BL2 before this block existed. */
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-areas: "pic pic" "copy aside";
+      }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+    }
+
+    /* A bleed hero that puts its photo on TOP is stacked too, and wants the same budget. */
+    .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .inner { grid-template-columns: minmax(0, 1fr); }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .pic {
+        height: 150px; max-height: 150px; margin-inline: calc(-50vw + 50%);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .inner {
+        gap: var(--space-4); padding-block: 0 var(--space-5);
+      }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .copy { padding-block: 0; }
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .title {
+        font-size: var(--text-2xl); margin-bottom: var(--space-2);
+      }
+    }
+    /* Below the split breakpoint every arrangement is one column, because a phone has one
+       column. The height is auto there for rule 10's own reason: a phone hero that clipped
+       its own CTA would be worse than a tall one. */
+    @media (max-width: 900px) {
+      .kit-hero[data-hero-layout="panel"] .inner,
+      .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr; }
+      .kit-hero[data-hero-layout="panel"] .pic,
+      .kit-hero[data-hero-layout="stacked"] .pic { aspect-ratio: 16/9; }
+      .mosaic img { aspect-ratio: 4/3; }
+      .hero-aside { order: 3; }
     }
   }
 </style>

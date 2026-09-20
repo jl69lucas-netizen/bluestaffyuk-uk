@@ -135,11 +135,17 @@
   .bl-media-left .kit-hero .copy { order: 2; }
   /* `media: top` stacks the two, so the hero's rule-10 ceiling has to come off with it:
      450px is the height of a SPLIT hero, and applied to a stacked one it would simply cut
-     the copy off below the photo — a style that renders as a clipped one. */
-  .bl-box.bl-media-top .kit-hero { max-height: none; }
-  .bl-media-top .kit-hero .inner { grid-template-columns: minmax(0, 1fr); min-height: 0; }
-  .bl-media-top .kit-hero .pic { order: 1; aspect-ratio: 16 / 5; max-height: none; height: auto; }
-  .bl-media-top .kit-hero .copy { order: 2; }
+     the copy off below the photo — a style that renders as a clipped one.
+
+     Working rule 16 narrows all four to the SPLIT hero, which is the arrangement they were
+     written for and the one the four pages built before that rule carry. The per-page
+     `stacked` and `bleed` layouts stack by construction and budget their own height inside
+     the 450px ceiling (src/components/kit/Hero.astro), so releasing it for them would give
+     the site one page with a 700px band. */
+  .bl-box.bl-media-top .kit-hero[data-hero-layout="split"] { max-height: none; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .inner { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .pic { order: 1; aspect-ratio: 16 / 5; max-height: none; height: auto; }
+  .bl-media-top .kit-hero[data-hero-layout="split"] .copy { order: 2; }
   /* A hero on a band takes the band's colours; its own bed would otherwise paint over it. */
   .bl-box.bl-frame-band .kit-hero { background: transparent; color: inherit; }
   .bl-frame-band .kit-hero .title,
