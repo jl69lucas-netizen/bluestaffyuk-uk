@@ -163,6 +163,16 @@ growing. Every other rule moved to a pack.
     `scripts/facts_preserved_check.py` reports by name any id a rebuilt page drops.
     (Breeder, 2026-09-20.)
 
+15. **Faithful rewrite.** A rebuilt page carries its migrated page's VERBATIM SET word for
+    word: the old H1, every H2/H3 that contains the page's target keywords, the first
+    paragraph under each of those headings, the FAQ questions, and every image alt — unless
+    the wording states a wrong fact (the former city, an old price, the byline) or collides
+    with another page's heading, in which case the change is recorded in the board record's
+    `verbatim.changed` with the reason. Everything else is written fresh from the outline.
+    `scripts/verbatim_set_check.py` proves the set is on the built page. Applies from the
+    homepage onward; the three pages built before this rule (privacy, thank-you, contact)
+    stay as rewritten. (Breeder, 2026-09-20.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how
