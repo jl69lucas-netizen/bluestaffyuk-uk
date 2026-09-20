@@ -13,8 +13,9 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
        # the numbering in `title` is the spec's reading order and the board sheets are cut
        # in it. The set is the dial (>=1024px) and, below it, the strip and the sheet.
        "page-dial", "section-sheet", "section-strip",
-       # And component 17, the data table (working rule 13; spec §9 amendment 5).
-       "data-table"]
+       # And component 17, the data table (working rule 13; spec §9 amendment 5), and
+       # component 18, the video embed (working rule 14; spec §9 amendment 7).
+       "data-table", "video-embed"]
 
 
 def load():
@@ -790,17 +791,17 @@ def test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring():
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
 
 
-PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip", "data-table"]
+PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip", "data-table", "video-embed"]
 
 
-def test_components_json_has_seventeen_rows_after_project_4_additions():
-    """Project 4's four additions are appended, not interleaved. Spelled as its own test
-    because IDS above is the list every other test walks: if the four rows were ever moved
+def test_components_json_has_eighteen_rows_after_project_4_additions():
+    """Project 4's five additions are appended, not interleaved. Spelled as its own test
+    because IDS above is the list every other test walks: if the five rows were ever moved
     ahead of the project 3 thirteen, the board sheets and the artboard numbering would
     silently renumber while `test_every_component_in_spec_order` stayed green."""
     ids = [r["id"] for r in load()]
-    assert len(ids) == 17, ids
-    assert ids[-4:] == PROJECT_4_IDS, ids[-4:]
+    assert len(ids) == 18, ids
+    assert ids[-5:] == PROJECT_4_IDS, ids[-5:]
     by_project = {r["id"]: r["project"] for r in load()}
     assert [i for i, p in by_project.items() if p == 4] == PROJECT_4_IDS
     assert len([i for i, p in by_project.items() if p == 3]) == 13
@@ -981,3 +982,98 @@ def test_built_data_table_is_semantic_and_labels_every_cell_for_the_stack():
     # Tokens only, and no emoji: a table is text.
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
     assert not [c for c in s if ord(c) >= 0x1F000]
+
+
+def test_built_video_embed_reserves_its_box_and_loads_on_click():
+    """Convention 8. Component 18 is the video embed (working rule 14; spec §9 amendment 7).
+
+    What is asserted here is the half of the component that is NOT a board choice:
+
+    · the id is the old site's own. `data/settings.json`'s `youtube_embeds` is the list of
+      videos the migrated pages carry, and the demo reads its first entry — rule 9 forbids a
+      specimen from inventing an eleven-character id, and an invented one is a 404;
+    · the box is RESERVED. `aspect-ratio: 16 / 9` is declared on the frame, so the space is
+      the same size before and after the thumbnail decodes (`layout-image-box-reserved`);
+    · the default is the FACADE: the preview carries a play button and a thumbnail, and no
+      `<iframe>` outside the `<noscript>` fallback, so a page mounting three videos fetches
+      no player at all until someone presses one;
+    · the `<noscript>` block carries both the real player and the rule that hides the button,
+      which is what makes it a fallback rather than a second video;
+    · the player is `youtube-nocookie.com`, and the frame is named.
+
+    The three board arrangements are deliberately not asserted here: `frame` and `play` are
+    axes in src/lib/boardStyles.ts, so they live on /board-preview/<slug>/ and are held by
+    test_board_previews.py — the same split the data table's test makes."""
+    s = _sections("video-embed")
+    wanted = json.loads((ROOT / "data/settings.json").read_text())["youtube_embeds"][0]
+    assert wanted in s, wanted
+    assert f"https://i.ytimg.com/vi/{wanted}/hqdefault.jpg" in s, s[:400]
+    assert "data-video-play" in s and "data-video-frame" in s, s[:400]
+    # The facade is a real <button>, not a div with a click handler.
+    assert re.search(r'<button[^>]+type="button"[^>]*data-video-play', s), s[:600]
+    assert re.search(r'aria-label="Play the video: [^"]+"', s), s[:600]
+    # No eager player: every iframe on this section is inside the no-JS fallback.
+    outside = re.sub(r"<noscript>.*?</noscript>", "", s, flags=re.S)
+    assert "<iframe" not in outside, outside[:600]
+    noscript = re.search(r"<noscript>(.*?)</noscript>", s, re.S)
+    assert noscript, s[:600]
+    assert "<iframe" in noscript.group(1) and "data-video-play" in noscript.group(1), noscript.group(1)[:400]
+    # The player is the no-cookie host, in both places it is spelled.
+    assert "youtube.com/embed" not in s, s[:600]
+    assert f"youtube-nocookie.com/embed/{wanted}" in s
+    # Tokens only, and no emoji: the play mark is a path.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+
+
+def test_the_video_box_is_reserved_in_the_components_own_stylesheet():
+    """The 16:9 is declared in the component, not left to the page: a caller who forgot it
+    would ship the largest layout shift a page can have, and the check that measures it is
+    an advisory one, so nothing would refuse the build."""
+    css = (KIT / "VideoEmbed.astro").read_text()
+    assert re.search(r"aspect-ratio:\s*16\s*/\s*9", css), css[:200]
+    # Convention 2, read off the RULE rather than off the file: the comment above it names
+    # --color-focus in order to say what the ring is not.
+    ring = re.search(r"focus-visible \{[^}]*\}", css)
+    assert ring and "--kit-ring" in ring.group(0) and "--color-focus" not in ring.group(0), ring
+    # Rule 1: no hex anywhere in src/. The thumbnail url is not a colour.
+    assert not re.findall(r"#[0-9A-Fa-f]{3,6}\b", css), css
+
+
+#: The three pages project 4 has rebuilt onto `PageShell`. They are the only pages that pass
+#: a section list, so they are the only ones that mount the in-page nav set.
+REBUILT_PAGES = ["privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
+                 "uk-blue-staffy-breeders-contact"]
+
+
+@pytest.mark.parametrize("slug", REBUILT_PAGES)
+def test_every_rebuilt_page_mounts_the_toc_below_its_hero(slug):
+    """Component 11 is the fourth member of the in-page nav set, and `PageShell` mounts it.
+
+    Before this, the dial, the strip and the sheet were all mounted by the shell and the TOC
+    was mounted by nobody — it existed in the kit and on `/kit-preview/`, and every rebuilt
+    page shipped without it. The shell now renders it between the `hero` slot and the body,
+    which is what makes the board's "Navigation on this page" block a true statement.
+
+    Two things are asserted beyond its presence:
+
+    · it comes AFTER the page's opening section. A list of where to go that a reader meets
+      before the page has said what it is is a table of contents for an unknown document;
+    · there is exactly ONE breadcrumb landmark. BaseLayout already renders the trail above
+      `<main>`, so the shell passes `crumbs={false}` — two `nav[aria-label="Breadcrumb"]`
+      with the same links is a duplicate landmark and a duplicated trail for a crawler."""
+    page = ROOT / "dist" / slug / "index.html"
+    if not page.exists():
+        pytest.skip("run npm run build first")
+    html = page.read_text(encoding="utf-8")
+    assert html.count('aria-label="Breadcrumb"') == 1, html.count('aria-label="Breadcrumb"')
+    toc = html.find('aria-label="On this page"')
+    assert toc > 0, "PageShell did not mount PageNav"
+    # The hero is the first `<section id=…>` of the body; the TOC follows it.
+    first_section = re.search(r'<section[^>]*\sid="([a-z][a-z0-9-]*)"', html)
+    assert first_section and first_section.start() < toc, (first_section, toc)
+    # Every jump link resolves to an id the page actually carries (nav-anchors-resolve).
+    block = html[html.find('class="kit-nav', 0):toc + 4000]
+    for href in set(re.findall(r'<a href="#([a-z][a-z0-9-]*)"', block)):
+        assert f'id="{href}"' in html, href
+

@@ -18,6 +18,7 @@ import html as H, json, pathlib, re, sys
 from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
 PREVIEWS = PB.ROOT / "data" / "boards" / "previews"
@@ -28,6 +29,34 @@ PREVIEWS = PB.ROOT / "data" / "boards" / "previews"
 PREVIEW_H = 520
 #: The three widths each style is shown at: desktop, tablet, phone.
 PREVIEW_W = (1280, 768, 375)
+
+#: THE NAVIGATION BLOCK (spec §9 amendment 7). Four pieces of furniture that belong to the
+#: PAGE rather than to any one section — so they are never offered as a section's three
+#: styles and, before this block existed, were never shown on a board at all. They are
+#: rendered from `dist/kit-preview/`, which is the one built page carrying the whole kit, and
+#: each one is BAKED: the dial, the strip and the sheet were pruned to the arrangement the
+#: breeder picked on the contact board (2026-09-19), so what is shown is a statement of what
+#: the page wears, not a menu. Per row: the component id, what it is, the width to show it
+#: at, and where it mounts.
+NAV_COMPONENTS = (
+    ("page-dial", "PageDial — S2, the compact numbered strip, no ring", 1280,
+     "Desktop only, 1024px and up: the 196px column beside the body, following the reader down the page."),
+    ("section-strip", "SectionStrip — S2, filled tab chips", 375,
+     "Below 1024px: the sticky chip rail pinned directly under the site header, outside <main>."),
+    ("section-sheet", "SectionSheet — S2, the full-width Sections pill", 375,
+     "Below 1024px: the bottom bar, with the full section list behind the Sections control."),
+    ("page-nav", "PageNav — the breadcrumb + in-page TOC, the chip row picked in build 3", 768,
+     "Below the hero, mounted by PageShell on every rebuilt page, and shown below 1024px — "
+     "the dial is its desktop copy, so the two are never on screen together. The trail is "
+     "suppressed here because BaseLayout already renders one above <main>."),
+)
+#: The navigation frames are shorter than a section preview: none of these is a stretch of
+#: page, and a 520px frame around a 61px chip rail is mostly empty board.
+NAV_H = 300
+#: The dial and the sheet are only mounted at all on a page with six or more sections. One
+#: number, and it is PageShell's — a board that promised a dial on a four-section page would
+#: be promising furniture the shell refuses to render.
+NAV_THRESHOLD = 6
 
 # The board wears the SITE's palette, not a second one of its own: these are the values of
 # src/styles/tokens.css (steel / brass / bone), so an arrangement judged in a preview iframe
@@ -280,6 +309,85 @@ def kit_cards(board, ledger, thumbs, slug):
         cards.append('<div class="opt off"><span class="pill">newsletter</span><div class="nothumb">none</div>'
                      '<span class="why">this page places no newsletter</span></div>')
     return cards
+
+
+#: The built kit preview: the only page that carries every component once, and therefore the
+#: only honest source for a rendering of furniture no section owns.
+KIT_PREVIEW = PB.DIST / "kit-preview" / "index.html"
+
+
+def load_nav_previews():
+    """The four navigation components, cut out of `dist/kit-preview/index.html`.
+
+    The cut is `scripts/_kit_sections.py`'s, the same one the Design System artifact and the
+    canvas use, so the board shows the markup the build emits rather than a second rendering
+    of the same description. Absence is not an error for the same reason it is not one in
+    `load_previews`: a board is often built before a build has run, and the block then says
+    so in the board itself.
+
+    The route's own `<h3>` caption is dropped — it is the preview page's chrome, not the
+    component — and the document sprite is pasted back in when a block references it, because
+    a srcdoc frame has no document to borrow a `<symbol>` from.
+
+    THE STUB ANCHORS DO NOT COME WITH IT. The dial, the strip and the sheet point at
+    `d-a`…`d-f`, which the preview renders once for the whole page and outside every section.
+    Inside these frames those links therefore lead nowhere. That is a property of the frame,
+    not of the component: what the block is showing is the furniture's SHAPE, and on a real
+    page the shell hands all three the page's own section list."""
+    if not KIT_PREVIEW.exists():
+        return {"css": "", "blocks": {}}
+    html = KIT_PREVIEW.read_text(encoding="utf-8")
+    by_id = {s.component: s.inner for s in find_sections(html)}
+    sprite = page_sprite(html)
+    blocks = {}
+    for cid, _label, _w, _where in NAV_COMPONENTS:
+        inner = by_id.get(cid)
+        if inner is None:
+            continue
+        inner = re.sub(r"<h3[^>]*>.*?</h3>\s*", "", inner, count=1, flags=re.S)
+        blocks[cid] = (sprite + inner) if (sprite and uses_sprite(inner)) else inner
+    return {"css": page_css(html), "blocks": blocks}
+
+
+def navigation_block(board, nav):
+    """Block 3c: the four pieces of in-page navigation this page wears, rendered.
+
+    WHY IT IS ON EVERY BOARD AND WHY IT IS NOT A PICK. Three of the four were decided on the
+    contact board and pruned to one arrangement each; the fourth is the chip row build 3
+    picked. What is still open on any given page is whether the set is right FOR THAT PAGE —
+    which is a sentence, not a radio — so the block ends in one note box, saved with the
+    approval as `notes.navigation`.
+
+    The six-section threshold is stated out loud, per page: below it PageShell renders none
+    of the sticky three, and a board that showed them anyway would be describing a page that
+    does not exist."""
+    n = len(board["sections"])
+    mounted = n >= NAV_THRESHOLD
+    rows = []
+    for cid, label, width, where in NAV_COMPONENTS:
+        have = cid in nav["blocks"]
+        frame = (f'<div class="frames"><div class="frame"><span>{width}px</span>'
+                 f'<iframe title="{esc(label)} at {width} pixels wide" sandbox="" loading="eager" '
+                 f'scrolling="auto" data-nav="{esc(cid)}" width="{width}" height="{NAV_H}" '
+                 f'style="width:{width}px;height:{NAV_H}px"></iframe></div></div>'
+                 if have else
+                 '<p class="noprev">Not rendered yet — run <code>npm run build</code>.</p>')
+        rows.append(f'<div class="style"><label><b>{esc(label)}</b></label>'
+                    f'<p class="why">{esc(where)}</p>{frame}</div>')
+    head = (f"All four mount on this page: it has {n} sections, and PageShell's threshold for the "
+            f"dial, the strip and the sheet is {NAV_THRESHOLD}."
+            if mounted else
+            f"**Only the TOC mounts on this page.** It has {n} sections and PageShell renders the "
+            f"dial, the strip and the sheet only at {NAV_THRESHOLD} or more — below that the pair is "
+            "a second, shorter route to a list the reader can already see.")
+    return (head + "\n\n<fieldset class=\"styles\"><legend>Navigation on this page</legend>"
+            + "".join(rows) + "</fieldset>\n\n"
+            "These four are shown, not offered: the dial, the strip and the sheet were picked on the "
+            "contact board on 2026-09-19 and the losing arrangements are deleted from the kit, and the "
+            "TOC is build 3's chip row. What is still open is whether the set suits THIS page — say so "
+            "here and it is saved with the approval.\n\n"
+            "<textarea class=\"note\" name=\"note-navigation\" "
+            "placeholder=\"Navigation notes (optional) — saved with the approval\"></textarea>")
 
 
 def load_previews(slug):
@@ -572,8 +680,9 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
-def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
+    nav = nav if nav is not None else {"css": "", "blocks": {}}
     routes = routes if routes is not None else load_routes()
     hits = PB.header_hits(board, live)          # exactly what the gate will fail on
     qhits = PB.faq_hits(board, live)            # and what it will warn on
@@ -622,6 +731,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
                   # the links ARE part of the shape of the page, and the reader who has just
                   # read the tree is the reader who can judge where each one is said.
                   + "\n\n" + links_block(board, routes)))
+
+    # After the outline, because the question it asks — is this the right furniture for this
+    # page — is one a reader can only answer once they have seen the page's shape.
+    parts.append(("3c. Navigation on this page", navigation_block(board, nav)))
 
     parts.append(("3b. Image plan", image_plan_table(board)
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
@@ -751,6 +864,11 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
   // per styled section inside the committed file.
   var PREVIEW_CSS={js(previews["css"])};var BLOCKS={js(previews["blocks"])};
+  // The navigation block's own pair. A SECOND stylesheet, because those four renderings are
+  // cut from /kit-preview/ and the style previews from /board-preview/<slug>/ — two built
+  // pages, two inlined cascades, and pasting one into the other's frames would be showing a
+  // component under a stylesheet it was not built with.
+  var NAV_CSS={js(nav["css"])};var NAV_BLOCKS={js(nav["blocks"])};
   // A srcdoc frame is sandboxed and has NO origin, so `/images/x.webp` inside one resolves
   // to nothing. The cutter carried every photo along as a data URI; each `src` is swapped
   // for its entry as the frame is filled, once per frame rather than once per block.
@@ -767,6 +885,13 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None):
     f.srcdoc='<!doctype html><meta charset="utf-8"><style>html{{overflow:auto}}'
       +'body{{margin:0;background:#F4F1EA;color:#1B2430;font-family:"Source Sans 3",system-ui,sans-serif}}'
       +PREVIEW_CSS+'</style>'+inner;
+  }});
+  document.querySelectorAll('iframe[data-nav]').forEach(function(f){{
+    var inner=NAV_BLOCKS[f.getAttribute('data-nav')];
+    if(inner===undefined)return;
+    f.srcdoc='<!doctype html><meta charset="utf-8"><style>html{{overflow:auto}}'
+      +'body{{margin:0;background:#F4F1EA;color:#1B2430;font-family:"Source Sans 3",system-ui,sans-serif}}'
+      +NAV_CSS+'</style>'+inner;
   }});
   var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
   var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug))};
@@ -827,10 +952,11 @@ def main():
     # option card renders as its labelled box.
     thumbs = {}
     previews = load_previews(slug)
+    nav = load_nav_previews()
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / (PB.slug_file(slug) + ".html")
     routes = load_routes()
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes), encoding="utf-8")
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav), encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
     n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
     unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]
@@ -840,6 +966,8 @@ def main():
     have = sum(1 for s in styled for st in s["styles"] if f"{s['id']}|{st}" in previews["blocks"])
     print("wrote %s — %d sections, %d live pages checked, %d/%d style renderings embedded"
           % (out.relative_to(PB.ROOT), len(board["sections"]), len(live), have, want))
+    print("  navigation: %d/%d component(s) rendered from dist/kit-preview/"
+          % (len(nav["blocks"]), len(NAV_COMPONENTS)))
     print("  links: %d internal · %d external%s"
           % (n_int, n_ext, "" if not unresolved else " — unresolved: " + ", ".join(unresolved)))
     if want and have < want:

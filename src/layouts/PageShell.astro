@@ -14,6 +14,17 @@
 // a page cannot mount the dial without the sheet or the sheet without the dial, and the two
 // are one component split by viewport width.
 //
+// PAGENAV IS THE FOURTH, AND IT IS NOT A WIDTH VARIANT OF THE OTHER THREE. The dial, the
+// strip and the sheet are sticky furniture that follows the reader; the TOC is a list the
+// reader meets ONCE, below the hero, before deciding whether to read on — which is why it
+// mounts here rather than in the page body of three files, and why it sits after the
+// `hero` slot rather than above it. `crumbs={false}`: BaseLayout already renders the trail
+// above `<main>`, and two breadcrumb landmarks on one page is one too many.
+//
+// A page puts its opening section in `slot="hero"`. Both slots are inside `.page-body`, so
+// the column the dial shares is unchanged — the only difference is that the TOC lands
+// between the hero and the rest, which is where a reader looks for it.
+//
 // THE SET IS THREE, not two (spec §9 amendment 3b). Below 1024px the STRIP is the quick jump
 // pinned under the header and the SHEET is the full list behind a bottom control; at and
 // above 1024px both go and the DIAL takes the column. All three mount on the same `nav`
@@ -25,6 +36,7 @@ import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
 import PageDial from '../components/kit/PageDial.astro';
 import SectionSheet from '../components/kit/SectionSheet.astro';
 import SectionStrip from '../components/kit/SectionStrip.astro';
+import PageNav from '../components/kit/PageNav.astro';
 import type { SectionRef } from '../lib/sections';
 
 // Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
@@ -54,7 +66,11 @@ if (sections.length > 0 && !nav) {
   </Fragment>
   <div class:list={['page-shell', { 'has-dial': nav }]}>
     {nav && <PageDial sections={sections} />}
-    <div class="page-body"><slot /></div>
+    <div class="page-body">
+      <slot name="hero" />
+      {nav && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      <slot />
+    </div>
   </div>
   {nav && <SectionSheet sections={sections} />}
   <SiteFooterKit slot="footer" />
@@ -68,6 +84,19 @@ if (sections.length > 0 && !nav) {
        column pair, and that exists solely at the width the dial is visible at — the same
        1024px breakpoint PageDial and SectionSheet split on. */
     .page-body { min-width: 0; }
+    /* The TOC is a block between the hero and the body, so it owns the gutter every kit
+       section owns — the shell adds none of its own until the dial is visible. */
+    .page-body > .page-toc {
+      max-width: var(--container);
+      margin: var(--space-6) auto;
+      padding-inline: var(--space-5);
+    }
+    @media (min-width: 1024px) {
+      /* Inside the dial's column the gutter is already the grid's, and the dial IS the
+         persistent copy of this list — so the TOC steps out of the way rather than
+         repeating it beside itself. */
+      .page-shell.has-dial > .page-body > .page-toc { display: none; }
+    }
     @media (min-width: 1024px) {
       .page-shell.has-dial {
         max-width: var(--container);

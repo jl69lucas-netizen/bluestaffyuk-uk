@@ -2,7 +2,7 @@
  "meta": {
   "slug": "blue-staffy-uk-breeders",
   "page_type": "interior",
-  "status": "draft",
+  "status": "boarded",
   "research_as_of": "2026-09-20",
   "sources": [
    {
@@ -978,6 +978,58 @@
     "How much does a blue Staffy puppy cost, and how much is the deposit?",
     "How do you get a puppy to a buyer at the other end of the country?"
    ]
+  },
+  {
+   "id": "video-our-home",
+   "n": 11,
+   "heading": "Come Round, On Film",
+   "intent": "The page's own video, kept where the migrated body had it — at the foot of the page, after the closing invitation — at its original id.",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "The migrated page carried this video and the rebuild carries it at the same id and in the same place (working rule 14). It was an `embed` line in a note before this: a video the breeder could not see rendered, and could not pick an arrangement for.",
+   "why_source": "src/pages/blue-staffy-uk-breeders/index.astro — the migrated body's only iframe, at the foot of the body after the reserve block; data/facts/blue-staffy-uk-breeders.json embeds fXhu9jDS6CA; VideoObject uploadDate 2025-05-27",
+   "framework": "EBD",
+   "words": {
+    "min": 25,
+    "max": 60
+   },
+   "shape": "video",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "video": {
+    "id": "fXhu9jDS6CA",
+    "title": "Blue Staffy UK breeders — family-raised puppies",
+    "caption": "The video this page has carried since May 2025, at its original id."
+   },
+   "keywords": {
+    "primary": [],
+    "lsi": [],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+   }
   }
  ],
  "tuple": {

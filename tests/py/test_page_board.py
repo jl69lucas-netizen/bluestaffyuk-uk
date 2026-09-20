@@ -981,7 +981,9 @@ def test_board_html_escapes_record_text_in_every_context():
     assert "\\# a \\| b \\*c\\* \\_d\\_" in html                  # the heading, markdown-neutral
     assert "<\\/script>" in html                                  # the graph label, JSON-escaped
     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
-    assert len(blocks) == 10    # eight numbered blocks plus 3b (image plan) and 5b (the kit strip)
+    # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
+    # kit strip).
+    assert len(blocks) == 11
     for i, blk in enumerate(blocks):
         assert "</script" not in blk, i
 

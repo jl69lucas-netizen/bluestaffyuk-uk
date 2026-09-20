@@ -179,6 +179,12 @@ def ledger_entry(board):
     return entry
 
 
+#: Note keys that are the PAGE's and not a section's. They are kept in `approval.notes`
+#: verbatim and are never written into a section's `options.note`. One member today:
+#: `navigation`, the answer to the board's "Navigation on this page" block.
+PAGE_NOTE_KEYS = frozenset({"navigation"})
+
+
 def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
@@ -214,6 +220,14 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
                 f"({', '.join(by_id[sid]['options']['candidates']) or 'none offered'})")
         by_id[sid]["options"]["pick"] = pick
     for sid, note in inbox.get("notes", {}).items():
+        # PAGE notes are not section notes. The board's "Navigation on this page" block
+        # (spec §9 amendment 7) asks about furniture the SHELL mounts — the dial, the strip,
+        # the sheet and the TOC — which belongs to no section and therefore has no
+        # `options.note` to be written into. Its answer lives in `approval.notes` and
+        # nowhere else, so it is skipped here rather than refused: refusing it would make
+        # the one page-level question on the board the one question that cannot be answered.
+        if sid in PAGE_NOTE_KEYS:
+            continue
         if sid not in by_id:
             raise PB.BoardError(f"approval notes section {sid!r}, which is not in the record")
         by_id[sid]["options"]["note"] = note          # "" is the breeder clearing the note

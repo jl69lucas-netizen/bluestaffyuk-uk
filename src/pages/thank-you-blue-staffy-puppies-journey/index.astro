@@ -102,7 +102,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
 >
   {/* 01 — the confirmation. Hero in the picked style S3 (photo left of the copy, in a card),
       carrying the migrated photograph at its original path with its original alt. */}
-  <section id="welcome" data-section-label="Thank you — we have your enquiry" class={welcomeBox}>
+  <section slot="hero" id="welcome" data-section-label="Thank you — we have your enquiry" class={welcomeBox}>
     <Hero
       as="h1"
       eyebrow={`Enquiry received · ${SITE.location_label}`}
