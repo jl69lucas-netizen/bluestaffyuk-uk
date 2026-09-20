@@ -442,5 +442,53 @@
     "q": "How can I avoid buying from a puppy farm?",
     "a": "See the mother with the litter in the home the puppies were raised in, ask for the original registration and DNA certificates rather than copies, and read the written contract before any money moves. A seller who will only meet you away from the premises, or who cannot produce the paperwork on the day, is a puppy farm until proved otherwise.",
     "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "guide-first-time-dog-owners",
+    "q": "Are Staffordshire Bull Terriers good for first-time dog owners?",
+    "a": "Yes, with commitment to early socialisation and consistent positive reinforcement training, Staffordshire Bull Terriers can be excellent companions for first-time owners. Their eagerness to please and people-oriented nature make them highly trainable. Our UK Staffordshire Bull Terrier care tips can help guide you.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-exercise-daily",
+    "q": "How much exercise does a Staffordshire Bull Terrier need daily?",
+    "a": "Staffies are energetic and require at least 1 hour of vigorous exercise daily, ideally split into two sessions. This can include brisk walks, playtime, and mental stimulation. Regular exercise is crucial for their physical and mental Blue Staffy health .",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-flats-uk",
+    "q": "Can Staffordshire Bull Terriers live in flats in the UK?",
+    "a": "Yes, Staffordshire Bull Terriers can adapt well to flat living, provided they receive sufficient daily exercise and mental stimulation. Their moderate size and people-focused nature mean they do not necessarily require a large garden, as long as their outdoor needs are met with regular walks and park visits.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-children-pets",
+    "q": "Do Staffies get along with children and other pets?",
+    "a": "Staffies are renowned for being excellent with children due to their affectionate and patient nature, earning them the “nanny dog” nickname. With careful and early socialisation with other pets , they can coexist peacefully. Supervision is always recommended, especially with young children or new pet introductions.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-downsides",
+    "q": "What are the downsides of Staffies?",
+    "a": "Like any breed, Staffies have potential downsides. They can be strong-willed and require consistent training and socialization from a young age. Due to their history, they can have a prey drive, so early socialization with other animals is crucial. Responsible ownership and understanding the breed’s needs are key.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-left-alone-8h",
+    "q": "Can Staffies be left alone for 8 hours?",
+    "a": "While adult Staffies can learn to tolerate being left alone for reasonable periods, consistently leaving any dog alone for 8 hours or more is generally not recommended. Staffies thrive on companionship and can become bored or anxious if left alone for too long. Gradual acclimatization and providing plenty of mental and physical stimulation are important.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-male-female",
+    "q": "Is a male or female Staffy better?",
+    "a": "The “better” sex depends entirely on individual preferences and lifestyle. Male Staffies can sometimes be more boisterous and overtly affectionate, while females may be slightly more independent. However, temperament is largely influenced by training, socialization, and individual personality, not just sex.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-attached-one-person",
+    "q": "Do Staffies get attached to one person?",
+    "a": "Staffordshire Bull Terriers are known for forming strong bonds with their families and can be particularly devoted to their primary caregiver. However, with proper socialization, they can be affectionate with all members of the household.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
   }
 ]

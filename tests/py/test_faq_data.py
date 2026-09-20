@@ -233,6 +233,26 @@ FACT_PHRASES = {
     "health-kc-fewer-risks": ["registration", "DNA test"],
     "health-average-lifespan": ["12–14 years", "Staffordshire Bull Terrier Club"],
     "health-avoid-puppy-farm": ["puppy farm", "written contract"],
+    # Eight more rows on the breed guide in project 4 Task 18b. Working rule 15 carries that
+    # page's nine migrated FAQ questions word for word; the ninth asks what Staffies most
+    # often die of, dropped.text strikes the question and its answer by name as a mortality
+    # claim with no source on disk, and it is a `verbatim.changed` drop rather than a row
+    # (data/boards/uk-staffordshire-bull-terrier-guide.json). All eight carry the migrated
+    # ANSWER too, because not one of them leans on a figure or a claim this repo cannot hold.
+    # Every phrase below is one that page's MIGRATED body says today AND one its own board
+    # record keeps after P5: "first-time owners" and "socialisation" are `temperament`,
+    # "vigorous exercise" and "two sessions" are `daily-care`, "flat living" and "mental
+    # stimulation" are `temperament` and `daily-care`, "nanny dog" is `legal-status`'s myths
+    # node, "prey drive" and "training" are `temperament` and `daily-care`, "left alone" is
+    # `temperament`, "temperament" is `breed-facts`, and "attached" is `temperament`.
+    "guide-first-time-dog-owners": ["first-time owners", "socialisation"],
+    "guide-exercise-daily": ["vigorous exercise", "two sessions"],
+    "guide-flats-uk": ["flat living", "mental stimulation"],
+    "guide-children-pets": ["nanny dog", "socialisation"],
+    "guide-downsides": ["prey drive", "training"],
+    "guide-left-alone-8h": ["left alone"],
+    "guide-male-female": ["temperament"],
+    "guide-attached-one-person": ["attached"],
 }
 
 
