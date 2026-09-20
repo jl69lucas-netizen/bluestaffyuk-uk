@@ -373,9 +373,27 @@ const legacy = typeof image === 'string';
     }
 
     /* PANEL — text-led. The photo keeps rule 10's DOM position but takes a narrow column, so
-       the page reads as prose with a picture beside it rather than as a sales band. */
+       the page reads as prose with a picture beside it rather than as a sales band. The copy
+       column is WIDER than a split hero's, which is exactly why its type steps down: measured,
+       the blog family's H-BL3 ran 23px of copy past the ceiling on a long H1 before it did. */
     .kit-hero[data-hero-layout="panel"] .inner { grid-template-columns: minmax(0, 14rem) minmax(0, 1fr); }
     .kit-hero[data-hero-layout="panel"] .pic { aspect-ratio: 3/4; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height); margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="panel"] .lede { margin-bottom: var(--space-3); }
+      .kit-hero[data-hero-layout="panel"] .chips,
+      .kit-hero[data-hero-layout="panel"] .ticks,
+      .kit-hero[data-hero-layout="panel"] .hstats { margin-bottom: var(--space-3); }
+    }
+    /* A STATS ledge is the tallest of the four — two lines per figure — and a stacked hero has
+       already spent 150px of its budget on the photo. Measured: the why-us page's H-FS3 ran
+       8px over before the figures were put on one line here. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="stacked"] .hstats li { flex-direction: row; align-items: baseline; gap: var(--space-2); }
+      .kit-hero[data-hero-layout="stacked"] .hstats strong { font-size: var(--text-lg); }
+    }
 
     /* BLEED — the photo spills to the edge of the band on its own side and drops its radius
        and lift; it is the surface there, not an object on it. */

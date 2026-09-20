@@ -108,6 +108,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .howto{margin:0 0 18px;padding:10px 14px;border-left:3px solid var(--clay);background:var(--clay-soft);color:var(--ink);font-size:14px;border-radius:0 6px 6px 0}
 fieldset.styles{border:1px solid var(--line);border-radius:8px;padding:10px 12px 14px;margin:8px 0 6px;background:var(--paper);min-width:0}
 fieldset.styles legend{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:0 6px}
+fieldset.styles.locked{background:var(--green-soft)}
+fieldset.styles.locked legend{color:var(--green)}
+
 .style{border-top:1px dashed var(--line);padding:10px 0 4px}
 .style:first-of-type{border-top:0}
 .style label{display:flex;gap:8px;align-items:baseline;font-size:15px;font-weight:600;cursor:pointer}
@@ -456,7 +459,7 @@ def load_previews(slug):
     return data
 
 
-def style_fieldset(section, previews):
+def style_fieldset(section, previews, locked=None):
     """The three rendered arrangements this section offers, as one radio group.
 
     The radio group is `pick-<section id>` — the SAME name a component option uses, because
@@ -480,6 +483,15 @@ def style_fieldset(section, previews):
     static renderings; that is a consequence, not the reason.)"""
     sid = section["id"]
     pick = section["options"]["pick"]
+    # Working rule 16: a re-boarded record carries every pick it already had for a section it
+    # is not being re-asked about (PB.locked_picks). The radios are rendered DISABLED with the
+    # carried answer checked — a disabled checked radio still matches the `:checked` selector
+    # the approve button reads, so the answer is submitted and cannot be changed by accident,
+    # which is the whole point of carrying it. The previews still render: the breeder is
+    # entitled to see what they agreed to, not only to be told they agreed to it.
+    carried = (locked or {}).get(sid)
+    if carried:
+        pick = carried
     rows = []
     for style in section["styles"]:
         key = f"{sid}|{style}"
@@ -496,10 +508,12 @@ def style_fieldset(section, previews):
         checked = " checked" if pick == style else ""
         rows.append(
             f'<div class="style"><label><input type="radio" name="pick-{esc(sid)}" '
-            f'value="{esc(style)}"{checked}> {esc(style)}'
+            f'value="{esc(style)}"{checked}{" disabled" if carried else ""}> {esc(style)}'
             + (f' <span class="why">{esc(name)}</span>' if name else "")
             + f'</label><div class="frames">{frames}</div></div>')
-    return (f'<fieldset class="styles"><legend>Pick one arrangement for {esc(section["heading"])}</legend>'
+    legend = (f'Locked — {esc(carried)}, carried from the previous approval'
+              if carried else f'Pick one arrangement for {esc(section["heading"])}')
+    return (f'<fieldset class="styles{" locked" if carried else ""}"><legend>{legend}</legend>'
             + "".join(rows) + "</fieldset>")
 
 
@@ -822,6 +836,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   "\n\nThe page-level tuple, for reading. Picks happen in block 6; a shell that is wrong here is "
                   "a record edit, not a radio."))
 
+    # The picks a re-boarded record carries forward, shown answered and locked (working rule 16).
+    locked = PB.locked_picks(board)
     opt_html = []
     for s in board["sections"]:
         if s.get("styles"):
@@ -829,7 +845,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
             # replaces the option cards so only one control ever writes picks[<id>].
             opt_html.append(
                 f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n"
-                + style_fieldset(s, previews)
+                + style_fieldset(s, previews, locked)
                 + f"\n<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
             continue
         if s["shape"] == "standard":

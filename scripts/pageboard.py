@@ -918,23 +918,60 @@ LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster an
 #
 # Every row of a section's `stats` carries the PATH its figure came from. Rule 9 says no number
 # is typed from memory, and a `source` string nobody resolves is a citation format, not a
-# citation — so the gate resolves each one and reports the figure it found beside the figure
-# the record printed. Three forms, and deliberately only three:
+# citation — so the gate resolves each one and refuses the record when one does not.
 #
-#   data/settings.json#deposit_gbp              a dotted path into the file
-#   data/puppies.json#count(status=Available)   how many array items carry that field value
-#   data/puppies.json#len                       how long the array (or object) is
-#   src/content/blog#files(*.md)                how many files match, for a content collection
+#   data/settings.json#deposit_gbp                     a dotted path into the file
+#   data/puppies.json#count(status=Available)          array items carrying that field value
+#   data/puppies.json#len                              the top level's length
+#   data/boards/x.json#len(sections[costs].table.rows) the length of anything a path reaches
+#   data/boards/x.json#cell(sections[breed-facts].table.rows, Lifespan)
+#                                                      the LAST cell of the row whose first
+#                                                      cell starts with that label
+#   src/content/blog#files(*.md)                       how many files match, for a collection
+#
+# A bracket step is an INDEX when it is a number and an ID LOOKUP otherwise, so
+# `sections[costs]` finds the section whose `id` is `costs` and survives a section being
+# inserted above it. An index that silently shifted would resolve to a different fact and
+# report green, which is the one failure a source check cannot afford.
 #
 # The gate does NOT insist the rendered figure equals the resolved one: "£500" is the honest
-# rendering of `500`, "£200–£350" of two fields, and "12–14 years" of a breed range. What it
-# insists is that the path RESOLVES — a source pointing at a key nobody has is the defect this
-# exists to catch, and it is the defect that makes an invented number look sourced.
+# rendering of `500`, "£200–£350" of two fields, and "11–17 kg" of a sentence that says
+# "11 to 17 kg (24 to 38 lbs)". What it insists is that the path RESOLVES — a source pointing
+# at a key nobody has is the defect that makes an invented number look sourced.
 _SOURCE = re.compile(r"^([A-Za-z0-9_./*-]+)#(.+)$")
+_STEP = re.compile(r"([A-Za-z0-9_-]*)((?:\[[^\]]+\])*)")
 
 
 class SourceError(Exception):
     """A `stats` row whose `source` does not resolve to anything on disk."""
+
+
+def _walk(node, path, spec):
+    """Follow a dotted path with `[index]` / `[id]` steps. Raises SourceError, never None."""
+    for step in path.split("."):
+        m = _STEP.fullmatch(step.strip())
+        if not m:
+            raise SourceError(f"{spec}: {step!r} is not a path step")
+        key, brackets = m.group(1), re.findall(r"\[([^\]]+)\]", m.group(2))
+        if key:
+            if not isinstance(node, dict) or key not in node:
+                raise SourceError(f"{spec}: no key {key!r} at that point")
+            node = node[key]
+        for b in brackets:
+            if not isinstance(node, list):
+                raise SourceError(f"{spec}: [{b}] needs a list, found {type(node).__name__}")
+            if b.lstrip("-").isdigit():
+                i = int(b)
+                if i >= len(node) or i < -len(node):
+                    raise SourceError(f"{spec}: index {i} is past the end")
+                node = node[i]
+            else:
+                hit = next((x for x in node
+                            if isinstance(x, dict) and str(x.get("id")) == b), None)
+                if hit is None:
+                    raise SourceError(f"{spec}: no item with id {b!r} in that list")
+                node = hit
+    return node
 
 
 def resolve_stat_source(spec, root=None):
@@ -966,6 +1003,26 @@ def resolve_stat_source(spec, root=None):
         except TypeError:
             raise SourceError(f"{spec}: the file's top level has no length")
 
+    if sel.startswith("len(") and sel.endswith(")"):
+        node = _walk(data, sel[len("len("):-1].strip(), spec)
+        try:
+            return len(node)
+        except TypeError:
+            raise SourceError(f"{spec}: that path reaches a {type(node).__name__}, which has no length")
+
+    if sel.startswith("cell(") and sel.endswith(")"):
+        inner = sel[len("cell("):-1]
+        if "," not in inner:
+            raise SourceError(f"{spec}: cell() takes <path to rows>, <row label>")
+        path, label = (x.strip() for x in inner.split(",", 1))
+        rows = _walk(data, path, spec)
+        if not isinstance(rows, list):
+            raise SourceError(f"{spec}: cell() needs a list of rows")
+        for row in rows:
+            if isinstance(row, list) and row and str(row[0]).startswith(label):
+                return row[-1]
+        raise SourceError(f"{spec}: no row whose first cell starts with {label!r}")
+
     if sel.startswith("count(") and sel.endswith(")"):
         inner = sel[len("count("):-1]
         if not isinstance(data, list):
@@ -975,20 +1032,7 @@ def resolve_stat_source(spec, root=None):
         field, want = (x.strip() for x in inner.split("=", 1))
         return sum(1 for row in data if isinstance(row, dict) and str(row.get(field)) == want)
 
-    node = data
-    for step in sel.split("."):
-        key, idx = step, None
-        if step.endswith("]") and "[" in step:
-            key, idx = step[:step.index("[")], int(step[step.index("[") + 1:-1])
-        if key:
-            if not isinstance(node, dict) or key not in node:
-                raise SourceError(f"{spec}: no key {key!r} at that point")
-            node = node[key]
-        if idx is not None:
-            if not isinstance(node, list) or idx >= len(node):
-                raise SourceError(f"{spec}: index {idx} is past the end")
-            node = node[idx]
-    return node
+    return _walk(data, sel, spec)
 
 
 def stat_source_problems(board, root=None):
@@ -1000,6 +1044,34 @@ def stat_source_problems(board, root=None):
                 resolve_stat_source(row.get("source"), root)
             except SourceError as e:
                 out.append((sec["id"], row.get("source"), str(e)))
+    return out
+
+
+# ── working rule 16: the picks a re-boarded record carries forward ─────────────────────────
+#
+# Four approved records went back to the board for ONE question: their hero and their counter
+# strip, which rule 16 makes per-page. Their other picks were already agreed, so the old
+# approval is kept under `approval_previous` and every pick in it for a section that is NOT
+# being re-asked is shown on the board already answered and locked. The breeder answers the
+# two that changed.
+#
+# A locked pick still has to be on the menu. A section whose style set was replaced under it
+# has no valid carried answer, and pre-filling one would put an id on the board that
+# `board_approve.py` would then refuse — so it is dropped here and asked again.
+PER_PAGE_SHAPES = ("hero", "stats")
+
+
+def locked_picks(board):
+    """{section id: style id} the board shows answered and locked, from `approval_previous`."""
+    picks = ((board.get("approval_previous") or {}).get("picks")) or {}
+    by_id = {s["id"]: s for s in board.get("sections", [])}
+    out = {}
+    for sid, pick in picks.items():
+        s = by_id.get(sid)
+        if not s or s["shape"] in PER_PAGE_SHAPES:
+            continue
+        if pick in (s.get("styles") or []):
+            out[sid] = pick
     return out
 
 

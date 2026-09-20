@@ -1,1874 +1,1972 @@
 {
-  "meta": {
-    "slug": "uk-staffordshire-bull-terrier-guide",
-    "page_type": "interior",
-    "status": "boarded",
-    "research_as_of": "2026-09-20",
-    "sources": [
-      {
-        "path": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "dist/uk-staffordshire-bull-terrier-guide/index.html",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/facts/uk-staffordshire-bull-terrier-guide.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/page-map.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/settings.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/price-matrix.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/reviews.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/faq.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/puppies.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/image-manifest.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "data/bsuk-ontology.json",
-        "fetched": "2026-09-20"
-      },
-      {
-        "path": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
-        "fetched": "2026-09-20 — ~3,156 words; 17 H2s (Staffordshire Bull Terrier breed information; Key facts and characteristics; Common health problems; Caring for your Staffordshire Bull Terrier; Staffies and barking; Training and socialisation; Exercise; Grooming; Staffordshire Bull Terriers and children; …and other pets; Food; The cost of owning a Staffordshire Bull Terrier; Fun facts; Getting a Staffordshire Bull Terrier; Rehoming centres; Breeders; Not sure if a Staffordshire Bull Terrier is the right pet for you?); 0 FAQ rows; schema Dog/Breed, no FAQPage; a cost table and a key-facts panel giving 11-17 kg and over 12 years; the most complete care page scanned, and it says nothing about the law or the American Bully."
-      },
-      {
-        "path": "https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier",
-        "fetched": "2026-09-20 — breed library page; a key-facts panel (lifespan 12–14 years; males 13–17 kg, females 11–15.4 kg; height 36–41 cm; colours; Kennel Club group Terrier), an Appearance, Personality, Vet Rating, Ideal Owner and Grooming section, and a health list naming hip dysplasia, PHPV, hereditary cataracts and skin allergies with DNA testing for HC and L-2-HGA; 0 FAQ rows; no FAQPage; no legal content and no owner review."
-      },
-      {
-        "path": "https://www.barkingmad.uk.com/blog/dog-ownership/owning-a-staffordshire-bull-terrier-guide/",
-        "fetched": "2026-09-20 — ~1,064 words; 8 H2s (Quick Facts; History of the Breed; Lifespan & Health; Temperament: Traits & Personality; Physical Characteristics; Training & Socialisation; Looking After a Staffordshire Bull Terrier: Are They Right for You?; FAQs); 8 FAQ rows; schema Dog/Breed, no FAQPage; states 12–14 years and males 13–17 kg / females 11–15.4 kg; the only scanned page that covers both the UK legal position and the American Bully, and it does each in a paragraph."
-      },
-      {
-        "path": "https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide",
-        "fetched": "2026-09-20 — ~3,002 words; 14 H2s, nine of them product sections (beds, toys, chews, walking accessories, food); 6 FAQ rows; schema Article/DogBreed, no FAQPage; states no weight range and no lifespan, and carries no legal content, no breed comparison and no facts table — a retailer's guide with the buying advice pointed at its own shop."
-      }
-    ]
-  },
-  "meta_set": {
-    "titles": [
-      "UK Staffordshire Bull Terrier Guide | Breed Facts & Care",
-      "Staffordshire Bull Terrier Guide UK: Temperament And Care",
-      "Staffy Breed Guide UK | Size, Temperament, Health, The Law"
-    ],
-    "descriptions": [
-      "A UK breeder's guide to the Staffordshire Bull Terrier: size and weight, temperament, daily care, health testing, the law on banned breeds, and costs.",
-      "What a Staffordshire Bull Terrier is really like: 14 to 16 inches, 11 to 17 kg, 12 to 14 years, an hour of exercise a day, and not a banned breed in the UK.",
-      "Our breed guide covers Staffy size, coat and temperament, exercise and feeding, the two DNA tests, UK law, four myths, and how to spot an ethical breeder."
-    ],
-    "recommended": {
-      "title": 0,
-      "description": 0
-    },
-    "pick": {
-      "title": null,
-      "description": null
-    }
-  },
-  "brief": {
-    "goal": "Rebuild the breed guide so a UK family deciding whether a Staffordshire Bull Terrier is the right dog for their home can get the whole answer in one pass — build and weight, temperament and the home it suits, the daily work, the inherited conditions, the legal position, and how to tell an ethical breeder from a bad one — without meeting a single unevidenced badge or an out-of-date price.",
-    "scope": "Fourteen sections: hero, four key takeaways, the breed-facts table, history, temperament and the home that suits one, daily care, health, the law and four myths, the American Bully comparison, five tests for a breeder, one review, the live puppy grid, a nine-row FAQ and a closing section carrying the locked prices. All ten migrated images at their original paths and the one YouTube embed (g9iV9RVr_Sk) at its original id.",
-    "gates": [
-      "facts-preserved",
-      "link-parity",
-      "marker",
-      "schema",
-      "sitemap",
-      "board-previews",
-      "render"
-    ],
-    "done": "The page states 14 to 16 inches and 11 to 17 kg in a table that stacks into labelled rows below 640px, gives the 12-14 year figure, the 1935 registry recognition, the hour of daily exercise, the two DNA tests and both parents clear, the Dangerous Dogs Act 1991 position and the four myths, the American Bully distinction and the five breeder tests, carries all ten migrated images at their original paths and the embed at its original id, shows one review, the live puppy grid and four FAQ rows, states the locked £1,500 / £1,700 prices, the £500 refundable deposit and the £200-£350 delivery band, names no former city, no insurance provider and no invented weight or cost band, and passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
-    "out_of_scope": [
-      "the old £850 to £1,200 banner and the £850 to £2,500+ purchase band: both are below or beside the locked prices in data/price-matrix.json (Known Issue 11), and both are listed in `dropped.prices`",
-      "the whole invented cost-of-ownership table — puppy classes at £60-£150, food at £30-£60 a month, insurance at £20-£50 a month, routine vet care at £60-£100 a year, parasite control at £10-£25, daycare at £10-£25 and boarding at £20-£40 a night: no file on disk holds one of those figures, and rule 9 forbids writing a number nobody can check",
-      "a health guarantee of any length: data/settings.json holds guarantee_days: null, so no number may be written",
-      "the four named insurance providers and the insurance comparison site: we do not sell insurance and no file on disk records a relationship with an insurer",
-      "the '12-week-old' litter age and the 'current litter won't last long' urgency: data/puppies.json holds no age and no scarcity, and the puppy grid is what states availability",
-      "the former city and everything attached to it: data/settings.json is Carlisle · Cumbria at town level (Known Issue 16)",
-      "a prevalence figure, a percentage or a prognosis for any named condition: the migrated body gives none and the health page owns the detail",
-      "the newsletter block: no file on disk holds a subscriber count, and `tuple.newsletter` is empty on this record",
-      "an enquiry form: the contact page carries the one form the form audit measures, and this page links to it"
-    ],
-    "primary_keyword": "uk staffordshire bull terrier guide",
-    "angles": [
-      {
-        "name": "the honest owner's manual",
-        "hook": "answer the three questions a UK buyer actually has — what is it like to live with, is it legal, and how do I avoid a bad breeder — and put the breed facts in a table they can scan",
-        "why_not": ""
-      },
-      {
-        "name": "the care encyclopaedia",
-        "hook": "a section per care topic, the way the vet charities and the retailer guides write it",
-        "why_not": "the PDSA already does that in 3,156 words with a vet behind it, and the retailer guide shows where the format ends up — nine of its fourteen sections are products; we would be writing a worse copy of a reference"
-      },
-      {
-        "name": "the breed-love page",
-        "hook": "badges, superlatives and photographs, which is what the migrated page does",
-        "why_not": "it is the page the rebuild exists to replace: 'ZERO BANNED', '#1 AFFECTION' and '100% TESTED' are four counters with no evidence attached to any of them, and the guide's own facts are strong enough without them"
-      }
-    ],
-    "strategy": {
-      "name": "the honest owner's manual",
-      "why": "Of the four pages scanned, two ignore UK law entirely, none makes the American Bully distinction in any depth, none names a bad fit plainly, and only one has an FAQ worth the name. The migrated body already carries all four of those, buried under badges and a cost table nobody can source.",
-      "trade_off": "It puts a table and the law high on a page a reader may have arrived at for puppy photographs, and it gives less room to the care detail the vet charities already cover better."
-    },
-    "cta": {
-      "cadence": {
-        "min": 200,
-        "max": 400
-      },
-      "destination": "#talk-to-us",
-      "anchors": [
-        "Ask us about the breed",
-        "See the puppies we are raising now"
-      ],
-      "global_cta": "hidden"
-    },
-    "tool": {
-      "pick": "none",
-      "evidence": "The figures on this page are a height band, a weight band, a lifespan range, a daily exercise figure and two locked prices, all stated as sentences or as the one table; there is nothing for a reader to work out.",
-      "trade_off": "A cost-of-ownership calculator is the obvious tool for a breed guide, and it is exactly the thing this rebuild cannot have: every running-cost figure the migrated page fed such a calculator is unsourced and is listed in `dropped.prices`."
-    },
-    "schema": {
-      "types": [
-        "WebPage",
-        "Article",
-        "FAQPage"
-      ],
-      "offer_model": "none"
-    }
-  },
-  "h1": {
-    "variants": [
-      "Comprehensive Breed Insight: The Ultimate UK Staffordshire Bull Terrier Guide Handbook",
-      "The UK Staffordshire Bull Terrier Guide, From The People Who Raise Them",
-      "Staffordshire Bull Terrier: A UK Owner's Guide To The Breed",
-      "What A Staffordshire Bull Terrier Is Really Like To Live With",
-      "Our Staffordshire Bull Terrier Guide: Build, Temperament, Health And The Law"
-    ],
-    "recommended": 0,
-    "pick": null,
-    "verbatim_heading": true
-  },
-  "sections": [
-    {
-      "id": "top",
-      "n": 1,
-      "heading": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
-      "intent": "The opening, in Lisa Bright's first person, with the litter photograph and the page's one YouTube embed (id g9iV9RVr_Sk, kept at its original id): what this guide is, who wrote it, and what a reader will have at the end of it — the build, the temperament, the daily care, the legal position and how to tell an ethical breeder from a bad one. No price, no badge and no guarantee length in the hero; the kit Hero is given no trust chips and no CTA buttons (spec §9 amendment 6a).",
-      "category": "A",
-      "group": "MANDATORY",
-      "framework": "EEBP",
-      "why": "The migrated page opened on four unevidenced badges — ZERO BANNED, #1 AFFECTION, 100% TESTED, 12+ YEARS — and a price banner; a guide earns its reader by saying what it covers, not by shouting a superlative at them.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the migrated H1 and the four badge counters; data/settings.json — breeder_name Lisa Bright",
-      "words": {
-        "min": 145,
-        "max": 180
-      },
-      "shape": "hero",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "Staffordshire Bull Terrier",
-          "Staffy",
-          "blue Staffy",
-          "breed guide"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [
-          "Carlisle",
-          "Cumbria"
-        ],
-        "conversational": [
-          "what is a staffordshire bull terrier like"
-        ],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier",
-        "ont:blue-coat",
-        "ont:lisa-bright"
-      ],
-      "tree": [],
-      "images": [
-        {
-          "slot": "guide-litter",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's photograph of a litter of blue Staffy puppies for sale in the UK, reused at its original path and alt text (working rule 11)"
-        }
-      ],
-      "links": {
-        "internal": [],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "Image first, and the page's one embed sits in this band: the hero styles that put the photograph above or before the copy are S2 (photo above, on a band) and S3 (photo left, in a card). The YouTube embed g9iV9RVr_Sk is carried at its original id under the hero copy; facts_preserved_check.py gates the id."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "verbatim_heading": true,
-      "verbatim_opening": "Bold. Loving. Loyal. The Staffordshire Bull Terrier is more than just a dog—it’s a devoted companion and a beloved member of many UK households. Known affectionately as “Staffies,” these remarkable dogs possess a unique blend of strength, courage, and unparalleled affection. If you’re considering welcoming a Staffordshire Bull Terrier into your life, our comprehensive Staffordshire Bull Terrier guide UK is your essential resource."
-    },
-    {
-      "id": "video-breed-guide",
-      "n": 2,
-      "heading": "The Guide In Short, On Film",
-      "intent": "The guide's own video, kept where the migrated body had it — directly below the opening, ahead of the breed table and the history — at its original id.",
-      "category": "A",
-      "group": "MANDATORY",
-      "why": "The migrated page carried this video and the rebuild carries it at the same id and in the same place (working rule 14). It was an `embed` line in a note before this: a video the breeder could not see rendered, and could not pick an arrangement for.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the migrated body's only iframe, directly below the opening; data/facts/uk-staffordshire-bull-terrier-guide.json embeds g9iV9RVr_Sk; VideoObject uploadDate 2025-05-29",
-      "framework": "EBD",
-      "words": {
-        "min": 25,
-        "max": 60
-      },
-      "shape": "video",
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "video": {
-        "id": "g9iV9RVr_Sk",
-        "title": "A UK Staffordshire Bull Terrier breed guide",
-        "caption": "The video this guide has carried since May 2025, at its original id."
-      },
-      "keywords": {
-        "primary": [],
-        "lsi": [],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [],
-      "tree": [],
-      "images": [],
-      "links": {
-        "internal": [],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
-      }
-    },
-    {
-      "id": "takeaways",
-      "n": 3,
-      "heading": "Why Choose a Staffordshire Bull Terrier?",
-      "intent": "Four statement cards, each the one-line form of a section below: a medium, muscular terrier of 14 to 16 inches and 11 to 17 kg; a people-first temperament that needs company and an hour of vigorous exercise a day; not a banned breed under the Dangerous Dogs Act 1991; and a life of twelve to fourteen years on good care and good genetics. Every figure is the migrated body's own. Renamed at Task 18b to the migrated page's own 'Why Choose a Staffordshire Bull Terrier?' H2, which is an element of the verbatim set and which also retires the heading board_gate.py failed against the rebuilt homepage's 'Watch A Litter Being Raised, Before You Read Any Further'.",
-      "category": "A",
-      "group": "MANDATORY",
-      "framework": "FAB",
-      "why": "A reader deciding whether to keep reading wants the shape of the breed in four lines; the strongest scanned page buries its key facts in a 3,000-word run of care advice.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Size, Weight, Lifespan and Legal Status blocks; https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier (scan 2026-09-20) — 17 H2s, no summary",
-      "words": {
-        "min": 115,
-        "max": 150
-      },
-      "shape": "takeaways",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "14-16 inches",
-          "11-17 kg",
-          "12-14 years",
-          "not a banned breed"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "what should i know about staffies before getting one"
-        ],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "A Medium, Muscular Terrier",
-          "intent": "14 to 16 inches at the shoulder and 11 to 17 kg, males at the higher end.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "A People Dog Before Anything Else",
-          "intent": "Affectionate, loyal, and unhappy left alone for long stretches.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Legal To Own, Breed And Import In The UK",
-          "intent": "The Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Twelve To Fourteen Years With Good Care",
-          "intent": "The lifespan the migrated guide gives for a well-cared-for, well-bred Staffy. Renamed at Task 18b: data/boards/blue-staffy-health-uk.json plans the same four words as its lifespan node, and two records may not plan the same heading.",
-          "children": []
-        }
-      ],
-      "images": [],
-      "links": {
-        "internal": [],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "verbatim_heading": true,
-      "verbatim_opening": "The Staffordshire Bull Terrier is truly a breed like no other, offering unique qualities that make them a fantastic choice for many UK households:"
-    },
-    {
-      "id": "breed-facts",
-      "n": 4,
-      "heading": "Blue Staffy Breed Information: Characteristics at a Glance",
-      "intent": "The breed facts as a table a reader can hold against a dog in front of them. Eight rows, every figure taken from the migrated body — height, weight, coat, colours, head and ears, tail, lifespan and temperament. Nothing is added: no weight figure beyond the migrated body's own 11 to 17 kg, and no breed-average the fact lint would call invented.",
-      "category": "A",
-      "group": "COMPETITOR-BASED",
-      "framework": "EEBP",
-      "why": "Three of the four scanned pages open on a facts panel, and the one with no panel is the hardest to use; the migrated body already carried the same nine numbered traits as a run of unlabelled cards rather than as a table anyone could scan.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the nine numbered traits (Size, Weight, Coat, Colours, Eyes, Head, Ears, Tail); https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier (scan 2026-09-20) — a key-facts panel",
-      "words": {
-        "min": 180,
-        "max": 225
-      },
-      "shape": "table",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "Staffordshire Bull Terrier size",
-          "Staffy weight",
-          "short coat",
-          "Staffy lifespan"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "how big does a staffordshire bull terrier get",
-          "how much does a staffy weigh"
-        ],
-        "comparison": [
-          "staffy size compared to other terriers"
-        ],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier",
-        "ont:blue-coat"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "What The Blue Coat Is, And Is Not",
-          "intent": "Blue is one of the breed's recognised colours, not a separate breed or a separate standard.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-handbook",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's cover image for the comprehensive UK Staffordshire Bull Terrier guide, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [],
-        "external": [
-          {
-            "href": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
-            "anchor": "the registry's own breed standard for the Staffordshire Bull Terrier",
-            "why": "the migrated body described the breed's build in its own words and cited nobody; this is the standard those words are describing",
-            "library_row": "royalkennelclub.com — Staffordshire Bull Terrier breed standard"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "table": {
-        "caption": "Staffordshire Bull Terrier breed facts, as the migrated guide states them",
-        "columns": [
-          "Trait",
-          "The Staffordshire Bull Terrier"
-        ],
-        "rows": [
-          [
-            "Height at the shoulder",
-            "14 to 16 inches (35 to 41 cm)"
-          ],
-          [
-            "Weight",
-            "11 to 17 kg (24 to 38 lbs), males generally at the higher end"
-          ],
-          [
-            "Coat",
-            "Short, smooth and close-lying, with no undercoat"
-          ],
-          [
-            "Colours",
-            "Red, fawn, white, black, brindle and blue, and those colours with white"
-          ],
-          [
-            "Head and ears",
-            "Broad and deep, pronounced cheek muscles, a distinct stop; rose or half-pricked ears"
-          ],
-          [
-            "Eyes",
-            "Usually dark, round, and set to look straight ahead"
-          ],
-          [
-            "Tail",
-            "Medium length, low set, tapering to a point, not curled over the back"
-          ],
-          [
-            "Lifespan",
-            "12 to 14 years with good care and good genetics"
-          ],
-          [
-            "Temperament",
-            "Loyal, affectionate, courageous, alert and playful; people-centred"
-          ]
-        ]
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "The Staffordshire Bull Terrier is a distinct and instantly recognisable breed. Our focus on Blue Staffy breed information highlights their striking coat colour, but their physical traits are universally Staffy: These characteristics combine to create a powerful, agile, and expressive dog that is well-suited to various activities and lifestyles."
-    },
-    {
-      "id": "history",
-      "n": 5,
-      "heading": "History & Heritage of the Staffordshire Bull Terrier in the UK",
-      "intent": "The nineteenth-century Staffordshire and Black Country origin, the baiting and fighting the breed was made for, and the one fact that explains the modern dog: a dog handled in the pit had to be safe with the people handling it, so affection towards people was bred in from the start. Formal recognition by the registry in 1935 closes the section. No claim beyond the migrated body's own.",
-      "category": "A",
-      "group": "MANDATORY",
-      "framework": "BAB",
-      "why": "The breed's reputation is the first thing a UK buyer meets, and the history is the only honest answer to it; the migrated body already carries the 1935 date and the pit-handling explanation.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the History & Heritage block and 'formal recognition by The Kennel Club in 1935'",
-      "words": {
-        "min": 250,
-        "max": 305
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "Staffordshire",
-          "Black Country",
-          "bull and terrier",
-          "1935",
-          "nanny dog"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "why were staffordshire bull terriers bred"
-        ],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "Bred In The Industrial Midlands",
-          "intent": "Staffordshire and the Black Country, in the nineteenth century.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Why It Had To Be Safe With People",
-          "intent": "A dog its owner had to handle could not be dangerous to handle.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Recognised By The Registry In 1935",
-          "intent": "The date the breed became a distinct, registered breed.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-history",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's historical montage of the breed's evolution from the pit to the family sofa, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [],
-        "external": [
-          {
-            "href": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
-            "anchor": "the registry's own Staffordshire Bull Terrier breed page",
-            "why": "carried from the migrated page, which linked the registry's breed page through a search-engine wrapper (anchor 'The Kennel Club in 1935')",
-            "library_row": "royalkennelclub.com — Staffordshire Bull Terrier breed page"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "verbatim_heading": true,
-      "verbatim_opening": "The Staffordshire Bull Terrier’s story is deeply interwoven with the industrial heartlands of 19th-century England, particularly Staffordshire and the Black Country. Bred originally for bull and bear-baiting, and later for dog fighting, these tenacious dogs required immense courage, strength, and agility. However, as these cruel sports were outlawed, the breed’s incredible temperament and loyalty quickly shone through."
-    },
-    {
-      "id": "temperament",
-      "n": 6,
-      "heading": "Staffy Temperament Guide for Families: Loyalty, Love, and Laughter",
-      "intent": "The five traits the migrated body names — unwavering loyalty, an affectionate lap-dog streak, courage and alertness, playful energy that lasts into adulthood, and a need for human company — and then the home that fits them: an active family, an owner willing to train consistently, a securely fenced garden, supervision around children as with any dog, and careful introductions to other pets because the prey drive is real. First-time owners and flat living both work, given the exercise and the mental stimulation. The one hard 'not ideal': long hours alone.",
-      "category": "A",
-      "group": "COMPETITOR-BASED",
-      "framework": "PAS",
-      "why": "Every scanned page describes the temperament and only one of the four says plainly who the breed is wrong for; a guide that will not name a bad fit is a sales page.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Temperament Guide and Ideal UK Home Setup blocks; https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier (scan 2026-09-20) — an Ideal Owner section",
-      "words": {
-        "min": 400,
-        "max": 480
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "Staffy temperament",
-          "nanny dog",
-          "separation anxiety",
-          "socialisation",
-          "prey drive",
-          "flat living",
-          "first-time owners"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "are staffies good with children",
-          "can staffies be left alone all day",
-          "are staffies good for first-time owners"
-        ],
-        "comparison": [],
-        "solution": [
-          "staffy temperament guide for families"
-        ],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "Loyal, And Attached To Its People",
-          "intent": "The bond a Staffy forms with its family is the breed's defining trait.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Affectionate To The Point Of Being A Lap Dog",
-          "intent": "A muscular dog that wants to be on the sofa with you.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Courageous And Alert, Rarely A Guard Dog",
-          "intent": "Brave but balanced; alert enough to notice, small enough not to intimidate.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Playful Into Adulthood",
-          "intent": "Fetch, tug and general goofiness well past puppyhood.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Ideal UK Home Setup for a Staffordshire Bull Terrier",
-          "intent": "The home a Staffy fits, in the migrated page's own words: a secure garden or a reliable walking routine, people in and out of the house, and an owner who is in rather than away all day. No square footage and no minimum garden size — no file on disk holds one.",
-          "children": [],
-          "verbatim_heading": true,
-          "verbatim_opening": "Choosing the right dog involves ensuring your lifestyle and home environment match the breed’s needs. A Staffordshire Bull Terrier can adapt well to various UK living situations, but certain aspects are ideal for their well-being:"
-        },
-        {
-          "level": 3,
-          "heading": "First-Time Owners",
-          "intent": "A first-time owner can do well with this breed, given early socialisation and reward-based training kept up consistently.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Where A Staffy Is The Wrong Dog",
-          "intent": "Long hours alone; the breed is people-centred and gets destructive without company.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Children And Other Pets",
-          "intent": "Famously gentle with children, supervised as any dog should be; other pets need slow, early introductions.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-breeder-care",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's photograph of a Staffy breeder holding and caring for two tiny blue Staffy pups, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [
-          {
-            "href": "/blue-staffy-uk-breeders/",
-            "anchor": "Read about the two parents our puppies are socialised around",
-            "why": "carried from the migrated page (anchor 'Blue Staffy UK breeders')",
-            "sentence_start": true
-          }
-        ],
-        "external": [
-          {
-            "href": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
-            "anchor": "the RSPCA's independent advice on socialising a puppy",
-            "why": "carried from the migrated page, which linked the RSPCA's socialisation advice through a search-engine wrapper (anchor 'socialisation')",
-            "library_row": "rspca.org.uk — puppy advice"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "The Staffy temperament guide for families defines the breed’s true appeal. Staffies are renowned for their incredibly affectionate and people-oriented nature. Often referred to as “nanny dogs” due to their historical reputation for gentleness and patience with children, they thrive on human companionship and love nothing more than being an integral part of family life."
-    },
-    {
-      "id": "daily-care",
-      "n": 7,
-      "heading": "Daily Care Tips: Ensuring Your Staffy’s Thriving Life",
-      "intent": "The four ordinary jobs. Exercise: at least one hour of vigorous exercise a day, split into two sessions, plus the mental stimulation a clever dog needs. Feeding: a food formulated for the life stage, treats used sparingly, and no overfeeding, because this breed puts weight on. Training: positive reinforcement, early socialisation, basic commands, and the same rules from every person in the house. Grooming: a weekly brush, baths only when needed, nails, ears and teeth. No brand is named and no gram figure given — no file on disk holds either.",
-      "category": "B",
-      "group": "SUGGESTED-RECOMMENDED",
-      "framework": "PDB",
-      "why": "This is the part of ownership a reader actually does every day, and the migrated body already carries a daily exercise figure and a grooming routine that need nothing added.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Daily Care Tips block and 'at least 1 hour of vigorous exercise daily'",
-      "words": {
-        "min": 390,
-        "max": 465
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "vigorous exercise",
-          "two sessions",
-          "mental stimulation",
-          "puppy food",
-          "positive reinforcement",
-          "grooming"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "how much exercise does a staffordshire bull terrier need",
-          "how do you train a staffordshire bull terrier"
-        ],
-        "comparison": [],
-        "solution": [
-          "best diet for staffy puppies uk"
-        ],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "An Hour A Day, Split Into Two Sessions",
-          "intent": "Brisk walks in varied places, play, and dog sports for the ones that take to them.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Mental Stimulation",
-          "intent": "Agility, obedience, flyball and scent work all suit the breed.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Feeding A Staffy Without Overfeeding One",
-          "intent": "Life-stage food, measured meals, treats used for training rather than as snacks.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Training That Works On This Breed",
-          "intent": "Consistent, reward-based, started early, and identical from every adult in the house.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Grooming A Short Coat",
-          "intent": "A weekly brush, baths only when needed, nails, ears and teeth.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Life Stage Care for Your Staffordshire Bull Terrier",
-          "intent": "How the four above change as a dog ages: a puppy, an adult and a senior want different amounts of the same things. The migrated page's own life-stage heading and its opening paragraph; the meal counts, the worming intervals and the vet-visit frequencies under it are dropped.text — a veterinary schedule with no source on disk — and the health page states a puppy's own position.",
-          "children": [],
-          "verbatim_heading": true,
-          "verbatim_opening": "As your Blue Staffy grows, their needs evolve across puppyhood, adulthood, and senior years. Understanding these life stages ensures your Staffy remains healthy, happy, and well-adjusted throughout life."
-        }
-      ],
-      "images": [],
-      "links": {
-        "internal": [
-          {
-            "href": "/blue-staffy-blog-guides/",
-            "anchor": "Our blog guides go further on feeding and training a new puppy",
-            "why": "new: the blog is where day-to-day care is written at length, and this section deliberately stops at what the migrated body states",
-            "sentence_start": true
-          }
-        ],
-        "external": [
-          {
-            "href": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
-            "anchor": "the PDSA's veterinary guide to caring for a Staffordshire Bull Terrier",
-            "why": "the migrated body gives care advice and cites nobody for it; the PDSA's breed page is the independent veterinary version of the same ground",
-            "library_row": "pdsa.org.uk — Staffordshire Bull Terrier breed care"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "Providing excellent UK Staffordshire Bull Terrier care tips involves attention to exercise, diet, training, and grooming."
-    },
-    {
-      "id": "health",
-      "n": 8,
-      "heading": "Common Health Concerns & Our Ethical Breeding Commitment",
-      "intent": "A short version of the health page, not a second copy of it. The two inherited conditions the breed is DNA tested for — L-2-HGA and HC-HSF4 — and the fact that both our parents are tested clear; skin allergies and demodicosis; hip and elbow joints, screened under the BVA/KC schemes where they apply; and the vaccination course against distemper, parvovirus, leptospirosis and hepatitis. No prevalence figure and no percentage: the migrated body gives none. The health page carries the detail.",
-      "category": "A",
-      "group": "MANDATORY",
-      "framework": "EEBP",
-      "why": "A breed guide that skips the inherited conditions is the guide a buyer regrets reading, and the two DNA tests are the one hard credential this business can put a result against.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Common Health Concerns block; data/facts/uk-staffordshire-bull-terrier-guide.json — tests L-2-HGA, HC-HSF4, microchip, vaccinat",
-      "words": {
-        "min": 285,
-        "max": 350
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "L-2-HGA",
-          "HC-HSF4",
-          "hereditary cataracts",
-          "BVA/KC screening",
-          "demodicosis"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "what health problems do staffordshire bull terriers have",
-          "what health tests should a staffy breeder do"
-        ],
-        "comparison": [],
-        "solution": [
-          "l-2-hga and hc-hsf4 tested staffy breeders"
-        ],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "The Two DNA Tests",
-          "intent": "L-2-hydroxyglutaric aciduria and hereditary cataracts, the two the breed is screened for.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Clear By Parentage",
-          "intent": "Two clear parents cannot pass on either condition, because both are recessive.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Skin, And Why A Short Coat Shows It Early",
-          "intent": "Allergies and demodicosis are the breed's other common complaints.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Joints And The BVA/KC Schemes",
-          "intent": "Hip and elbow scoring, where it applies.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "The Vaccination Course",
-          "intent": "Distemper, parvovirus, leptospirosis and hepatitis.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-health-certified",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's illustration of a UK buyer checking a list of health-certified Staffy breeders, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [
-          {
-            "href": "/blue-staffy-health-uk/",
-            "anchor": "Our health page sets out every test we run and what the results were",
-            "why": "carried from the migrated page (anchors 'Blue Staffy Health page' and 'health-tested Staffy puppies')",
-            "sentence_start": true
-          }
-        ],
-        "external": [
-          {
-            "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/",
-            "anchor": "the registry's own page on the L-2-HGA DNA test",
-            "why": "the migrated body names the test and cites nobody; this is the registry's page for the test itself, already a library row",
-            "library_row": "royalkennelclub.com — DNA test L-2-HGA"
-          },
-          {
-            "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/",
-            "anchor": "the registry's own page on the HC-HSF4 DNA test",
-            "why": "the same citation, for the second of the two tests this section names",
-            "library_row": "royalkennelclub.com — DNA test HC-HSF4"
-          },
-          {
-            "href": "https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines",
-            "anchor": "the PDSA's guide to dog vaccinations",
-            "why": "carried from the migrated page, which linked the PDSA's vaccination advice through a search-engine wrapper (anchor 'UK vaccination schedule for Staffy puppies')",
-            "library_row": "pdsa.org.uk — dog vaccines"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "verbatim_heading": true,
-      "verbatim_opening": "While generally healthy, staying informed about your Staffy health and potential concerns is part of being a responsible Staffy owner . For a deep dive into our commitment to health, please visit our dedicated Blue Staffy Health page . Here, we provide a brief overview:",
-      "cta": 1
-    },
-    {
-      "id": "legal-status",
-      "n": 9,
-      "heading": "Staffies and UK Law: Understanding the Breed’s Legal Status & Public Perception",
-      "intent": "The legal position first: the Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991, and is legal to own, breed and import in the UK. Then the practical consequence — a landlord or housing association may still restrict the breed, so ask for a pet policy in writing before signing. Then the four myths the migrated body answers: that Staffies are inherently aggressive, that they have locking jaws, that they do not feel pain, and that they are untrainable. Each answered in one paragraph, with no claim beyond the migrated body's own.",
-      "category": "A",
-      "group": "COMPETITOR-BASED",
-      "framework": "QAB",
-      "why": "Two of the four scanned pages ignore the law entirely and none of them answers the locking-jaw myth; for a UK buyer the legal status is the single question the breed's reputation raises first.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Staffies and UK Law block and the four Myths vs Facts blocks; https://www.barkingmad.uk.com/blog/dog-ownership/owning-a-staffordshire-bull-terrier-guide/ (scan 2026-09-20) — 8 H2s, no myths",
-      "words": {
-        "min": 380,
-        "max": 445
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "Dangerous Dogs Act 1991",
-          "not a banned breed",
-          "locking jaw",
-          "pet policy",
-          "misidentification"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "are staffordshire bull terriers banned in the uk",
-          "do staffies have locking jaws"
-        ],
-        "comparison": [
-          "staffy versus banned breeds uk"
-        ],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "Legal Status in the UK",
-          "intent": "The one thing a reader came for: the Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991, and the four types that are. The migrated page's own paragraph, which names the Act and the four types, carried word for word; the link under it is the government's own list (dropped.links strikes the search-engine wrapper it used).",
-          "children": [],
-          "verbatim_heading": true,
-          "verbatim_opening": "It is critically important to know that the Staffordshire Bull Terrier is NOT a banned breed under the Dangerous Dogs Act 1991 in the UK . This act bans specific types of dogs, including the Pit Bull Terrier, Japanese Tosa, Dogo Argentino, and Fila Brasileiro. The Staffordshire Bull Terrier is a distinct and recognised Kennel Club breed that is entirely legal to own, breed, and import in the UK."
-        },
-        {
-          "level": 3,
-          "heading": "Landlords And Housing Associations",
-          "intent": "Restrictions can still apply; ask for the pet policy in writing before you sign.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Staffy Myths vs. Facts: Dispelling Common Misconceptions",
-          "intent": "The four myths the migrated page answered, under its own heading: inherent aggression, locking jaws, not feeling pain, and being untrainable. Each is answered in one sentence and none is answered with a statistic no file on disk holds.",
-          "children": [
-            {
-              "level": 4,
-              "heading": "Myth: Staffies Are Inherently Aggressive",
-              "intent": "Breeding, socialisation and handling decide a dog's behaviour, not the breed label.",
-              "children": []
-            },
-            {
-              "level": 4,
-              "heading": "Myth: Staffies Have Locking Jaws",
-              "intent": "No dog breed has a locking jaw; the mechanism does not exist.",
-              "children": []
-            },
-            {
-              "level": 4,
-              "heading": "Myth: Staffies Do Not Feel Pain",
-              "intent": "They are stoic and hide discomfort, which is a reason to watch them more closely, not less.",
-              "children": []
-            },
-            {
-              "level": 4,
-              "heading": "Myth: Staffies Are Untrainable",
-              "intent": "They are intelligent and eager to please, and respond to reward-based training.",
-              "children": []
-            }
-          ],
-          "verbatim_heading": true,
-          "verbatim_opening": "Beyond legal misunderstandings, the Staffordshire Bull Terrier is often subject to various myths. Let’s separate fact from fiction to truly appreciate this wonderful breed."
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-legal-status",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's photograph of a brindle Staffordshire Bull Terrier beside a sign stating the breed is not banned under the Dangerous Dogs Act 1991, reused at its original path and alt text"
-        },
-        {
-          "slot": "guide-myths",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's photograph of a friendly Staffy interacting gently with a child, used to debunk common Staffy myths, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [],
-        "external": [
-          {
-            "href": "https://www.gov.uk/control-dog-public/banned-dogs",
-            "anchor": "the government's own list of banned dog types",
-            "why": "carried from the migrated page, which linked the Dangerous Dogs Act guidance through a search-engine wrapper (anchor 'Dangerous Dogs Act 1991 in the UK')",
-            "library_row": "gov.uk — banned dogs"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "For any UK resident considering a Staffordshire Bull Terrier , it’s vital to understand their legal standing and common public perceptions. Due to historical events and often misinformed media narratives, some bull breeds face unfair scrutiny. While the Staffordshire Bull Terrier is not banned in the UK, there are key legal and practical housing considerations to know before bringing one home."
-    },
-    {
-      "id": "bully-comparison",
-      "n": 10,
-      "heading": "Staffordshire Bull Terrier vs. American Bully: Know the Difference",
-      "intent": "The distinction that has legal consequences in the UK. Origin, recognition, build and legal status for each: a Staffordshire Bull Terrier is a UK breed recognised by the registry, 14 to 16 inches and 11 to 17 kg, and legal; the American Bully is a US type from the 1990s, not recognised by the registry, highly variable in size, and the XL Bully is banned in the UK under the Dangerous Dogs Act 1991. The practical advice the migrated body gives: be wary of anyone selling an oversized Staffy or a Staffy cross.",
-      "category": "A",
-      "group": "COMPETITOR-BASED",
-      "framework": "QAB",
-      "why": "None of the four scanned pages makes the comparison, and it is the one confusion that can put a UK buyer on the wrong side of the law.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Staffordshire Bull Terrier vs. American Bully block; https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide (scan 2026-09-20) — 14 H2s, no comparison",
-      "words": {
-        "min": 275,
-        "max": 330
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "American Bully",
-          "XL Bully",
-          "banned in the UK",
-          "oversized Staffy"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "what is the difference between a staffy and an american bully"
-        ],
-        "comparison": [
-          "staffordshire bull terrier vs american bully"
-        ],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "Staffordshire Bull Terrier (Staffy)",
-          "intent": "A UK breed, registry-recognised, 14 to 16 inches and 11 to 17 kg, legal to own.",
-          "children": [],
-          "verbatim_heading": true
-        },
-        {
-          "level": 3,
-          "heading": "American Bully",
-          "intent": "A US type from the 1990s, not registry-recognised, and highly variable in size.",
-          "children": [],
-          "verbatim_heading": true
-        },
-        {
-          "level": 3,
-          "heading": "Why The Difference Matters Here",
-          "intent": "Many American Bully types, the XL in particular, are banned in the UK.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "What To Be Wary Of",
-          "intent": "An advert offering an oversized Staffy or a Staffy cross.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-bully-comparison",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's side-by-side comparison of a Staffordshire Bull Terrier and an American Bully showing the physical differences, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [
-          {
-            "href": "/buy-blue-staffy-puppies-uk/",
-            "anchor": "See the registered Staffordshire Bull Terrier puppies we have here",
-            "why": "carried from the migrated page (anchor 'KC registered Staffy puppies')",
-            "sentence_start": true
-          }
-        ],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "verbatim_heading": true,
-      "verbatim_opening": "A common point of confusion, particularly in the UK, is the distinction between the Staffordshire Bull Terrier and the American Bully . While they might share some superficial resemblances due to their common ancestry in bull and terrier types, they are distinct breeds with different characteristics, temperaments, and, crucially, legal statuses in the UK.",
-      "cta": 1
-    },
-    {
-      "id": "choosing-breeder",
-      "n": 11,
-      "heading": "Finding Your Forever Staffy: Choosing an Ethical Breeder in the UK",
-      "intent": "The five the migrated body names, written as tests a reader can apply to anyone, including us: health-test results shown for both parents; registration papers; puppies raised in a home and socialised from birth; support after the sale; and a breeder who asks the buyer questions in return. The section says plainly which of the five this business can evidence and where the evidence is, rather than asserting all five.",
-      "category": "B",
-      "group": "SUGGESTED-RECOMMENDED",
-      "framework": "EEBP",
-      "why": "The migrated body ends its breeder advice by naming itself as the answer; a guide is worth more when the reader can use it on every breeder they meet, and the buying guide carries the full checklist.",
-      "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Finding Your Forever Staffy block (transparency, registration, environment, support, welfare)",
-      "words": {
-        "min": 290,
-        "max": 345
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "ethical Staffy breeder",
-          "health test results",
-          "KC registration",
-          "home raised"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "how do i find an ethical staffy breeder in the uk"
-        ],
-        "comparison": [],
-        "solution": [
-          "health certified staffy breeders uk"
-        ],
-        "transactional": []
-      },
-      "entities": [
-        "ont:staffordshire-bull-terrier",
-        "ont:lisa-bright"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "They Show You The Test Results",
-          "intent": "Both parents, both tests, the certificates rather than a claim.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "They Show You The Registration",
-          "intent": "The original papers, with the names matching the dogs in front of you.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "The Puppies Are Raised In A Home",
-          "intent": "Socialised from birth around household noise and people.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "They Are There After You Leave",
-          "intent": "Advice for the life of the dog, and a puppy taken back if you cannot keep it.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "They Ask You Questions Too",
-          "intent": "A breeder who does not interview you is not choosing where the puppy goes.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-kc-papers",
-          "kind": "photo",
-          "required": true,
-          "prompt": "the migrated page's photograph of a blue Staffy puppy beside its Kennel Club registration papers, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [
-          {
-            "href": "/",
-            "anchor": "Our own answers to those five are on the home page",
-            "why": "carried from the migrated page (anchor 'BlueStaffyUK')",
-            "sentence_start": true
-          }
-        ],
-        "external": [
-          {
-            "href": "https://www.thekennelclub.org.uk/",
-            "anchor": "The Kennel Club, the registry our litters are registered with",
-            "why": "carried from the migrated page (anchor 'The Kennel Club')",
-            "library_row": "thekennelclub.org.uk — the registry"
-          }
-        ]
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:"
-    },
-    {
-      "id": "owner-review",
-      "n": 12,
-      "heading": "What One Family Says About The Temperament",
-      "intent": "One review, given room. MODE: single, data/reviews.json entry 1 — The Victoria Family, Manchester — because it is the only one of the three that speaks to temperament and early socialisation, which is what the temperament and daily-care sections above claim.",
-      "category": "B",
-      "group": "SUGGESTED-RECOMMENDED",
-      "framework": "EBD",
-      "why": "A temperament claim is worth more when an owner makes it, and not one of the four scanned pages carries an owner review beside its temperament content.",
-      "why_source": "data/reviews.json — entry 1, The Victoria Family, Manchester: 'the most wonderful temperament – playful, loving, and fantastic with our kids'; competitor scan 2026-09-20 — 0 of 4 carry a review",
-      "words": {
-        "min": 40,
-        "max": 55
-      },
-      "shape": "reviews",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "review",
-          "temperament",
-          "socialisation"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [
-          "Manchester"
-        ],
-        "conversational": [],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [],
-      "tree": [],
-      "images": [],
-      "links": {
-        "internal": [],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 1, The Victoria Family (Manchester). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ]
-    },
-    {
-      "id": "puppies",
-      "n": 13,
-      "heading": "The Staffordshire Bull Terriers We Are Raising Now",
-      "intent": "The live litter from data/puppies.json as kit puppy cards, so a breed guide ends on real dogs rather than on an abstraction. The card links are the grid's own rows and are exempt from link parity (spec §9 amendment 6b).",
-      "category": "C",
-      "group": "SUGGESTED-RECOMMENDED",
-      "framework": "FAB",
-      "why": "A reader who has just read what the breed is like wants to see one; the migrated page sent them to a price banner instead.",
-      "why_source": "data/puppies.json — six rows, all status Available; src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the 'Meet Our Staffies' jump",
-      "words": {
-        "min": 40,
-        "max": 55
-      },
-      "shape": "puppies",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "available puppies",
-          "blue and white"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [],
-        "comparison": [],
-        "solution": [],
-        "transactional": [
-          "blue staffy puppies available uk"
-        ]
-      },
-      "entities": [],
-      "tree": [],
-      "images": [],
-      "links": {
-        "internal": [
-          {
-            "href": "/blue-staffy-pup-sale-uk/",
-            "anchor": "what a puppy costs and what is included",
-            "nav": true,
-            "why": "new: the grid states a price per card and the price page is where the deposit and delivery bands live"
-          }
-        ],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "cta": 1
-    },
-    {
-      "id": "questions",
-      "n": 14,
-      "heading": "Blue Staffy FAQs: Quick Answers from Our Breed Guide",
-      "intent": "Nine rows from data/faq.json. One is the outline's own — guide-banned-breed, which the migrated accordion did not ask — and eight are working rule 15's: the migrated page asked nine questions and every one is carried word for word except the mortality question, which dropped.text strikes by name and whose row is a `verbatim.changed` drop. All eight carry the migrated answer too, because not one of them leans on a figure or a claim this repo cannot hold. guide-first-time-owners, guide-exercise and guide-flat-living leave this page's tree because the migrated page asks those three questions in its own words; the rows stay in data/faq.json. Accordion answers sit outside the section's word band (spec section 9 amendment 4a).",
-      "category": "A",
-      "group": "COMPETITOR-BASED",
-      "framework": "QAB",
-      "why": "Two of the four scanned pages carry no FAQ block at all and only one carries FAQPage markup; these are the four questions this guide answers on the way past.",
-      "why_source": "https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide (scan 2026-09-20) — 6 FAQ rows and no FAQPage; data/faq.json — the four new rows",
-      "words": {
-        "min": 75,
-        "max": 95
-      },
-      "shape": "faq",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "first-time owners",
-          "exercise",
-          "banned breed",
-          "flat living"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [],
-        "conversational": [
-          "are staffies good for first time owners",
-          "can a staffy live in a flat"
-        ],
-        "comparison": [],
-        "solution": [],
-        "transactional": []
-      },
-      "entities": [],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "guide-banned-breed",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-first-time-dog-owners",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-exercise-daily",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-flats-uk",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-children-pets",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-downsides",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-left-alone-8h",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-male-female",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "guide-attached-one-person",
-          "intent": "",
-          "children": []
-        }
-      ],
-      "images": [],
-      "links": {
-        "internal": [],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": "Query augmentation for 'uk staffordshire bull terrier guide', ten questions, each mapped to a section or a row: q1 -> temperament and the guide-first-time-owners row; q2 -> daily-care and the guide-exercise row; q3 -> legal-status and the guide-banned-breed row; q4 -> temperament and the guide-flat-living row; q5 and q6 -> breed-facts; q7 -> temperament; q8 -> bully-comparison; q9 -> legal-status; q10 -> health. No row is added for a question this page's body does not answer."
-      },
-      "styles": [
-        "S1",
-        "S2",
-        "S3"
-      ],
-      "questions": [
-        "Are Staffordshire Bull Terriers good for first-time owners?",
-        "How much exercise does a Staffordshire Bull Terrier need each day?",
-        "Are Staffordshire Bull Terriers banned in the UK?",
-        "Can a Staffordshire Bull Terrier live in a flat?",
-        "How big does a Staffordshire Bull Terrier get?",
-        "How long do Staffordshire Bull Terriers live?",
-        "Are Staffies good with children and other pets?",
-        "What is the difference between a Staffy and an American Bully?",
-        "Do Staffordshire Bull Terriers have locking jaws?",
-        "What health tests should a Staffordshire Bull Terrier breeder do?"
-      ],
-      "verbatim_heading": true,
-      "verbatim_opening": "Need fast facts about Staffies? These frequently asked questions are drawn directly from our trusted UK Blue Staffy Breed Guide to help you make the right choice with confidence."
-    },
-    {
-      "id": "talk-to-us",
-      "n": 15,
-      "heading": "Begin Your Blue Staffy Adventure Today",
-      "intent": "The close. What a puppy from us costs — £1,500 for Roman, Byrd and Ince and £1,700 for Vennie, Christa and Cheryl, from data/price-matrix.json — the £500 refundable deposit, UK home delivery by DEFRA-approved transport at £200 to £350 by distance, and an invitation to write with a question the guide left open. None of the migrated page's own cost bands is restated anywhere on this page; see `dropped.prices`.",
-      "category": "C",
-      "group": "SUGGESTED-RECOMMENDED",
-      "framework": "AIDA",
-      "why": "A guide that never says what a puppy costs sends a reader who is now decided back to a search engine, and the locked prices are on disk.",
-      "why_source": "data/price-matrix.json — male_gbp 1500, female_gbp 1700, deposit_gbp 500; data/settings.json — delivery £200 to £350",
-      "words": {
-        "min": 190,
-        "max": 240
-      },
-      "shape": "standard",
-      "keywords": {
-        "primary": [
-          "uk staffordshire bull terrier guide"
-        ],
-        "lsi": [
-          "deposit",
-          "delivery",
-          "reserve"
-        ],
-        "longtail": [],
-        "brand": [
-          "Blue Staffy UK"
-        ],
-        "geo": [
-          "Carlisle",
-          "Cumbria"
-        ],
-        "conversational": [],
-        "comparison": [],
-        "solution": [],
-        "transactional": [
-          "buy a blue staffy puppy uk",
-          "reserve a blue staffy puppy"
-        ]
-      },
-      "entities": [
-        "ont:refundable-deposit",
-        "ont:defra-approved-transport"
-      ],
-      "tree": [
-        {
-          "level": 3,
-          "heading": "The True Cost of a Staffy: What to Expect Financially",
-          "intent": "What owning one costs, under the migrated page's own heading: the two locked purchase prices from data/price-matrix.json, the £500 refundable deposit and the delivery band from data/settings.json. Not one of the migrated page's own figures survives — dropped.prices strikes the £850–£2,500+ purchase estimate, the class, food, insurance, vet, parasite, walker and boarding bands and the monthly total built from them, because nobody on disk made any of them.",
-          "children": [
-            {
-              "level": 4,
-              "heading": "Initial Costs",
-              "intent": "What a buyer pays before the puppy is home: the price of the puppy itself, the deposit that holds it, and delivery if it is not collected. Every figure comes from data/, and the migrated block's own estimates are not restated.",
-              "children": []
-            }
-          ],
-          "verbatim_heading": true,
-          "verbatim_opening": "Bringing a Staffordshire Bull Terrier into your life is a significant commitment, and understanding the financial aspects is crucial for responsible ownership . While the love they give is priceless, owning a Staffy does come with ongoing expenses. Being prepared ensures you can provide the best possible life for your loyal companion."
-        },
-        {
-          "level": 3,
-          "heading": "Getting A Puppy Home",
-          "intent": "Collection in Carlisle, or DEFRA-approved transport priced by distance.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "Write To Us",
-          "intent": "The email address, and what to put in the message.",
-          "children": []
-        }
-      ],
-      "images": [
-        {
-          "slot": "guide-cost-infographic",
-          "kind": "infographic",
-          "required": true,
-          "prompt": "the migrated page's infographic summarising the true cost of a Staffy for budgeting new owners, reused at its original path and alt text"
-        }
-      ],
-      "links": {
-        "internal": [
-          {
-            "href": "/uk-blue-staffy-breeders-contact/",
-            "anchor": "Write to us with the question this guide did not answer",
-            "why": "carried from the migrated page (anchor 'Contact Us')",
-            "sentence_start": true
-          }
-        ],
-        "external": []
-      },
-      "options": {
-        "candidates": [],
-        "excluded": [],
-        "pick": null,
-        "note": ""
-      },
-      "cta": 1,
-      "verbatim_heading": true,
-      "verbatim_opening": "The Staffordshire Bull Terrier is a decision you won’t regret. They are exceptional companions who offer unconditional love and boundless energy. We hope this Staffordshire Bull Terrier guide UK has provided you with valuable Blue Staffy breed information to aid your decision."
-    }
+ "meta": {
+  "slug": "uk-staffordshire-bull-terrier-guide",
+  "page_type": "interior",
+  "layout_type": "interior-guide",
+  "status": "boarded",
+  "research_as_of": "2026-09-20",
+  "sources": [
+   {
+    "path": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "dist/uk-staffordshire-bull-terrier-guide/index.html",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/facts/uk-staffordshire-bull-terrier-guide.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/page-map.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/settings.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/price-matrix.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/reviews.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/faq.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/puppies.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/image-manifest.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/bsuk-ontology.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+    "fetched": "2026-09-20 — ~3,156 words; 17 H2s (Staffordshire Bull Terrier breed information; Key facts and characteristics; Common health problems; Caring for your Staffordshire Bull Terrier; Staffies and barking; Training and socialisation; Exercise; Grooming; Staffordshire Bull Terriers and children; …and other pets; Food; The cost of owning a Staffordshire Bull Terrier; Fun facts; Getting a Staffordshire Bull Terrier; Rehoming centres; Breeders; Not sure if a Staffordshire Bull Terrier is the right pet for you?); 0 FAQ rows; schema Dog/Breed, no FAQPage; a cost table and a key-facts panel giving 11-17 kg and over 12 years; the most complete care page scanned, and it says nothing about the law or the American Bully."
+   },
+   {
+    "path": "https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier",
+    "fetched": "2026-09-20 — breed library page; a key-facts panel (lifespan 12–14 years; males 13–17 kg, females 11–15.4 kg; height 36–41 cm; colours; Kennel Club group Terrier), an Appearance, Personality, Vet Rating, Ideal Owner and Grooming section, and a health list naming hip dysplasia, PHPV, hereditary cataracts and skin allergies with DNA testing for HC and L-2-HGA; 0 FAQ rows; no FAQPage; no legal content and no owner review."
+   },
+   {
+    "path": "https://www.barkingmad.uk.com/blog/dog-ownership/owning-a-staffordshire-bull-terrier-guide/",
+    "fetched": "2026-09-20 — ~1,064 words; 8 H2s (Quick Facts; History of the Breed; Lifespan & Health; Temperament: Traits & Personality; Physical Characteristics; Training & Socialisation; Looking After a Staffordshire Bull Terrier: Are They Right for You?; FAQs); 8 FAQ rows; schema Dog/Breed, no FAQPage; states 12–14 years and males 13–17 kg / females 11–15.4 kg; the only scanned page that covers both the UK legal position and the American Bully, and it does each in a paragraph."
+   },
+   {
+    "path": "https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide",
+    "fetched": "2026-09-20 — ~3,002 words; 14 H2s, nine of them product sections (beds, toys, chews, walking accessories, food); 6 FAQ rows; schema Article/DogBreed, no FAQPage; states no weight range and no lifespan, and carries no legal content, no breed comparison and no facts table — a retailer's guide with the buying advice pointed at its own shop."
+   }
+  ]
+ },
+ "meta_set": {
+  "titles": [
+   "UK Staffordshire Bull Terrier Guide | Breed Facts & Care",
+   "Staffordshire Bull Terrier Guide UK: Temperament And Care",
+   "Staffy Breed Guide UK | Size, Temperament, Health, The Law"
   ],
-  "tuple": {
-    "hero": "",
-    "dial": "",
-    "rail": "",
-    "toc": "pagenav-c",
-    "takeaway": [],
-    "table": "",
-    "faq": "",
-    "stepper": "",
-    "newsletter": {
-      "after": "",
-      "variant": ""
-    },
-    "h6_prefixes": [
-      "Breed Note:"
-    ]
-  },
-  "assets": [
-    {
-      "slot": "guide-litter",
-      "kind": "photo",
-      "w": 612,
-      "h": 612,
-      "required": true,
-      "status": "baked",
-      "file": "/images/blue-staffy-puppy-for-sale-uk.webp",
-      "alt": "Adorable litter of blue Staffy puppies for sale in the UK."
-    },
-    {
-      "slot": "guide-handbook",
-      "kind": "photo",
-      "w": 512,
-      "h": 464,
-      "required": true,
-      "status": "baked",
-      "file": "/images/comprehensive-uk-staffordshire-bull-terrier-guide-book.webp",
-      "alt": "A cover image for the comprehensive UK Staffordshire Bull Terrier Guide, detailing care, training, and health information."
-    },
-    {
-      "slot": "guide-history",
-      "kind": "photo",
-      "w": 500,
-      "h": 500,
-      "required": true,
-      "status": "baked",
-      "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
-      "alt": "A historical montage or illustration showing the evolution of the Staffordshire Bull Terrier. One side depicts a stylized 19th-century Bull and Terrier dog in an old fighting pit setting, while the other side shows a modern Staffy affectionately licking the face of a small child on a sofa, symbolizing its transformation."
-    },
-    {
-      "slot": "guide-breeder-care",
-      "kind": "photo",
-      "w": 640,
-      "h": 360,
-      "required": true,
-      "status": "baked",
-      "file": "/images/dedicated-blue-staffy-pup-care-glasgow.webp",
-      "alt": "A Staffy breeder gently holding and caring for two tiny blue Staffy pups, symbolizing dedicated puppy care."
-    },
-    {
-      "slot": "guide-health-certified",
-      "kind": "photo",
-      "w": 550,
-      "h": 367,
-      "required": true,
-      "status": "baked",
-      "file": "/images/find-health-certified-staffy-breeders-uk.webp",
-      "alt": "UK buyer checking a list of health-certified Staffy breeders"
-    },
-    {
-      "slot": "guide-legal-status",
-      "kind": "photo",
-      "w": 436,
-      "h": 540,
-      "required": true,
-      "status": "baked",
-      "file": "/images/sbt-uk-legal-status-public-perception.webp",
-      "alt": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\""
-    },
-    {
-      "slot": "guide-myths",
-      "kind": "photo",
-      "w": 512,
-      "h": 469,
-      "required": true,
-      "status": "baked",
-      "file": "/images/busting-common-staffy-myths-loving-family-dog.webp",
-      "alt": "A friendly Staffy interacting gently with a child, used to debunk common Staffy myths about aggression."
-    },
-    {
-      "slot": "guide-bully-comparison",
-      "kind": "photo",
-      "w": 500,
-      "h": 333,
-      "required": true,
-      "status": "baked",
-      "file": "/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp",
-      "alt": "Side-by-side comparison of a Staffordshire Bull Terrier and an American Bully showing physical differences."
-    },
-    {
-      "slot": "guide-kc-papers",
-      "kind": "photo",
-      "w": 500,
-      "h": 750,
-      "required": true,
-      "status": "baked",
-      "file": "/images/kc-registered-staffy-puppies.webp",
-      "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies."
-    },
-    {
-      "slot": "guide-cost-infographic",
-      "kind": "infographic",
-      "w": 512,
-      "h": 469,
-      "required": true,
-      "status": "baked",
-      "file": "/images/true-cost-of-a-staffy-lifetime-budget-planning.webp",
-      "alt": "An infographic summarizing The True Cost of a Staffy, including food, vet bills, and insurance, for budgeting new owners."
-    }
+  "descriptions": [
+   "A UK breeder's guide to the Staffordshire Bull Terrier: size and weight, temperament, daily care, health testing, the law on banned breeds, and costs.",
+   "What a Staffordshire Bull Terrier is really like: 14 to 16 inches, 11 to 17 kg, 12 to 14 years, an hour of exercise a day, and not a banned breed in the UK.",
+   "Our breed guide covers Staffy size, coat and temperament, exercise and feeding, the two DNA tests, UK law, four myths, and how to spot an ethical breeder."
   ],
-  "dropped": {
-    "prices": [
-      "£850 to £1,200 — the migrated page's 'Buy Your Blue Staffy Pup Today – Only £850 to £1,200!' banner and its '£850–£1,200 Price Range' line. The band is below the locked prices and predates them (Known Issue 11): data/price-matrix.json holds £1,500 and £1,700 and a £500 refundable deposit, and `talk-to-us` states those instead.",
-      "£850 – £2,500+ — the migrated 'Initial Costs' purchase band for a registered puppy from an ethical breeder. It is a market estimate nobody on disk made; our own two prices are locked and are what the page states.",
-      "£60-£150 puppy classes, £30-£60+ a month food, £20-£50+ a month insurance, £60-£100 a year routine vet care, £10-£25 a month parasite control, £10-£25 a session for a dog walker or daycare, £20-£40+ a night boarding, and the £80 – £150+ per month running total built from them — the migrated 'True Cost of a Staffy' block. Not one of those figures has a source on disk, and rule 9 forbids writing a number nobody can check. The cost infographic is still carried, in `talk-to-us`, beside the prices that ARE locked."
-    ],
-    "names": [
-      "the former city, which the migrated page names only in the file name of one image (/images/dedicated-blue-staffy-pup-care-glasgow.webp) that working rule 11 requires to be reused at its original path. No sentence on the rebuilt page names it: data/settings.json is Carlisle · Cumbria at town level and Known Issue 16 owns the correction."
-    ],
-    "links": [
-      "https://www.google.com/search?q=https://www.thekennelclub.org.uk/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ (\"The Kennel Club in 1935\") — a search-engine wrapper around a registry URL, not a destination. `history` links the registry's own breed page, which is already a library row.",
-      "https://www.google.com/search?q=https://www.rspca.org.uk/adviceandwelfare/pets/dogs/training/socialisation (\"socialisation\") — the same wrapper pattern, and the wrapped path 404s today. `temperament` links the RSPCA's puppy advice instead, which is already a library row and covers socialisation.",
-      "https://www.google.com/search?q=https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/vaccinations (\"UK vaccination schedule for Staffy puppies\") — the same wrapper pattern. `health` links the PDSA's dog-vaccines page, already a library row.",
-      "https://www.google.com/search?q=https://www.gov.uk/control-dog-public-place/dangerous-dogs (\"Dangerous Dogs Act 1991 in the UK\") — the same wrapper pattern, and the wrapped path 404s today. `legal-status` links https://www.gov.uk/control-dog-public/banned-dogs, the government's own list, verified 200.",
-      "https://chatgpt.com/share/688ba8f3-bbf8-8005-8b59-04c134da3448 (\"Learn About KC vs Non-KC Registered Puppies →\") — a shared chat transcript offered as a source. It is not one, and it is not a page we control or can keep alive. What registration does and does not cover is stated in `choosing-breeder` in our own words.",
-      "https://www.moneysupermarket.com/pet-insurance/ (\"MoneySuperMarket\"), https://quote.kcinsurance.co.uk/ (\"Kennel Club Pet Insurance\"), https://www.kcinsurance.co.uk/ (\"The Kennel Club Pet Insurance\"), https://www.pdsa.org.uk/ (\"PDSA Pet Insurance\") and https://www.animalfriends.co.uk/ (\"Animal Friends Insurance\") — an insurance comparison site and four insurance providers. We are not selling insurance and no file on disk records a relationship with any of them; the whole insurance costing is dropped with them.",
-      "the two \"Gov.uk – Model Tenancy Agreements\" and \"Citizens Advice – Renting with Pets\" anchors — both were rendered in the migrated body with no href at all, so there is no destination to carry. The renting advice is stated in `legal-status` as one sentence: ask for the pet policy in writing.",
-      "https://www.instagram.com/bluestaffyukingdom (\"@bluestaffyukingdom on Instagram\"), https://www.youtube.com/@BlueStaffyUK-v2d (\"YouTube @BlueStaffyUK-v2d\") and https://www.tiktok.com/@bluestaffyuk.uk (\"TikTok @bluestaffyuk.uk\") — the site footer already carries the accounts data/settings.json holds, and a body copy of them is a second list that goes stale. The TikTok account is not in data/settings.json at all.",
-      "#Staffy-sales (\"Meet Our Staffies\") — the migrated in-page jump to the price banner that is dropped with the old band. The puppy grid is `#puppies` and the closing section is `#talk-to-us`."
-    ],
-    "text": [
-      "ZERO BANNED / #1 AFFECTION / 100% TESTED / 12+ YEARS — four counters with no evidence attached to any of them. Each is either restated as an evidenced sentence (the legal status in `legal-status`, the two DNA tests in `health`, the 12-14 year figure in `breed-facts` and `takeaways`) or dropped; '#1 AFFECTION' is a ranking against nobody.",
-      "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers — a superlative in a heading, removed under the titles rule in spec §5.",
-      "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide … Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home … Don't wait—our current litter won't last long! — no file on disk states an age for the current litter, and data/puppies.json holds no scarcity. The `puppies` grid states availability from the rows themselves.",
-      "Top-quality Staffies at affordable UK family prices. Each Staffy is microchipped and raised with care. — 'affordable' is a price claim against the dropped band; the microchipping and the home raising are restated in `health` and `choosing-breeder`.",
-      "Puppies: Growing Staffies need food specifically formulated for puppies of their size, rich in protein for muscle development … Adults: A high-protein, nutritionally complete kibble or a well-researched raw diet can be suitable. — carried in `daily-care` as life-stage food and measured meals, without the protein and raw-diet recommendations: no file on disk holds a feeding specification and this business is not the reader's vet.",
-      "Puppy Stage (8 weeks – 12 months) … 3–4 small meals per day … Flea/worming treatments every 2–4 weeks … Adult Stage (1 – 7 years) … 60 minutes per day … Senior Stage (8+ years) … Bi-annual vet visits — the three life-stage blocks. The exercise figure is carried in `daily-care`; the meal counts, the worming intervals and the visit frequencies are a veterinary schedule with no source on disk, and the health page is where a puppy's own vaccination and worming position is stated.",
-      "Our breeding dogs undergo relevant BVA/KC screening where applicable. — carried in `health` as the BVA/KC schemes for hips and elbows. 'Where applicable' is the hedge that makes it unfalsifiable and it is not carried; the health page states what is actually screened.",
-      "Provide your landlord with a pet CV for your Staffy (include health certificates and training proof) · Offer a pet deposit or cleaning guarantee · Choose DEFRA-compliant breeders like us to show you're a responsible owner. — the pet-CV and pet-deposit tips are tenancy advice with no source on disk, and 'DEFRA-compliant breeders like us' is a compliance claim against a named body: LICENCE_CLAIM_PLACEHOLDER territory until Lisa Bright confirms it (Known Issue 7). `legal-status` keeps the one sentence that is checkable — ask for the pet policy in writing.",
-      "What is the most common cause of death in Staffordshire Bull Terriers? Common causes of death … can include cancer, old age-related issues, and heart problems. — a mortality claim with no source on disk. `health` names the conditions the breed is screened for and stops there.",
-      "🐾 Reserve Your Blue Staffy Puppy … ⏰ Delivery Note: Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free). — no file on disk states that turnaround or that pickup default. data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what `talk-to-us` states."
-    ]
+  "recommended": {
+   "title": 0,
+   "description": 0
   },
-  "approval": null,
-  "verbatim": {
-    "changed": [
-      {
-        "kind": "heading",
-        "old": "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
-        "new": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
-        "reason": "'The #1 UK Staffordshire Bull Terrier Guide' is a ranking claim against every other breed guide in the country and nothing on disk measures it. dropped.text strikes the superlative by name under the titles rule in spec section 5, and it is the same '#1 AFFECTION' counter the migrated page ran across the top of the page. The glyph comes out and every other word of the heading is carried."
-      },
-      {
-        "kind": "heading-dropped",
-        "old": "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide",
-        "new": "",
-        "reason": "the heading is /blue-staffy-pup-sale-uk/'s, and that record already carries it. dropped.text strikes the block by name here: no file on disk states an age for the current litter, data/puppies.json holds no scarcity, and a breed guide is not where a buyer is sold a puppy. The `puppies` grid renders the live litter from data/puppies.json instead."
-      },
-      {
-        "kind": "opening",
-        "old": "Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.",
-        "new": "",
-        "reason": "its heading goes to /blue-staffy-pup-sale-uk/ and an opening paragraph has no page without the heading it opens. Both of its facts are struck in their own right: the 12-week age by dropped.text and the '£850–£1,200 Price Range' by dropped.prices, which is below the locked £1,500 and £1,700 of data/price-matrix.json (Known Issue 11)."
-      },
-      {
-        "kind": "heading",
-        "old": "Initial Costs (Estimated at £850 – £2,500+ in the UK)",
-        "new": "Initial Costs",
-        "reason": "'(Estimated at £850 – £2,500+ in the UK)' is a market estimate nobody on disk made, and dropped.prices strikes it by name: data/price-matrix.json holds £1,500 and £1,700 and those are the only purchase figures this site may print (Known Issue 11, working rule 9). The two words that name what the block is are carried and the parenthesis goes."
-      },
-      {
-        "kind": "opening",
-        "old": "Purchase Price: From an ethical Staffy breeder , a KC-registered Staffordshire puppy can range from £850 to £2,500+, depending on lineage, health testing, and breeder reputation. Initial Vet Visit: Post-adoption check-up, possibly second vaccinations if not already completed by the breeder. Essential Supplies: Collar, lead, harness, ID tag, bed, food and water bowls, initial high-quality puppy food, chew toys, training treats. Crate: A safe space for house training and comfort. Microchipping: Legally required in the UK (often done by the breeder). Puppy Classes: Group training sessions can cost £60-£150.",
-        "new": "",
-        "reason": "the whole paragraph is figures nobody on disk made: the £850–£2,500+ purchase band and £60-£150 puppy classes, both struck by name in dropped.prices, plus a post-adoption vet visit, a supplies list and a crate that are a shopping list rather than anything this business holds. The heading above it is carried and the section states the two locked prices, the £500 refundable deposit and the delivery band instead."
-      },
-      {
-        "kind": "heading-dropped",
-        "old": "🐾 Reserve Your Blue Staffy Puppy",
-        "new": "",
-        "reason": "a form widget's label on a page that plans no form. The migrated site printed '🐾 Reserve Your Blue Staffy Puppy' unchanged on five pages, so it identifies no page; the rebuilt homepage changed it to the name of the section its own form sits in. This outline carries no form — /uk-blue-staffy-breeders-contact/ owns the enquiry and `talk-to-us` links it — so there is nothing here for the label to head. It is also an emoji heading."
-      },
-      {
-        "kind": "opening",
-        "old": "Fill in your details below and we'll be in touch within 24 hours",
-        "new": "",
-        "reason": "its heading is dropped with the form, and an opening paragraph has no page without the heading it opens. The sentence also promises a reply 'within 24 hours', which contradicts the 24-48 business hours data/faq.json's enquiry rows and every rebuilt page state."
-      },
-      {
-        "kind": "faq",
-        "old": "What is the most common cause of death in Staffordshire Bull Terriers?",
-        "new": "",
-        "reason": "dropped.text strikes the question and its answer by name: 'cancer, old age-related issues, and heart problems' is a mortality claim about a breed with no source on disk and none this business could give. `health` names the conditions the breed is actually screened for and stops there, and `breed-facts` gives the 12-14 year figure with the club it comes from."
-      },
-      {
-        "kind": "alt",
-        "old": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states:",
-        "new": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
-        "src": "/images/sbt-uk-legal-status-public-perception.webp",
-        "reason": "the migrated alt is not a sentence: it ends on 'a professional sign or infographic that clearly states:' and then stops, so a screen reader is read a colon where the sign's words should be. An alt is page copy and there is no wording here to carry word for word — the half that matters was never written. Task 17 finished the clause with what the sign in the photograph actually says, which is the legal position `legal-status` states in prose; nothing else about the alt changed."
-      }
-    ]
+  "pick": {
+   "title": null,
+   "description": null
   }
+ },
+ "brief": {
+  "goal": "Rebuild the breed guide so a UK family deciding whether a Staffordshire Bull Terrier is the right dog for their home can get the whole answer in one pass — build and weight, temperament and the home it suits, the daily work, the inherited conditions, the legal position, and how to tell an ethical breeder from a bad one — without meeting a single unevidenced badge or an out-of-date price.",
+  "scope": "Fourteen sections: hero, four key takeaways, the breed-facts table, history, temperament and the home that suits one, daily care, health, the law and four myths, the American Bully comparison, five tests for a breeder, one review, the live puppy grid, a nine-row FAQ and a closing section carrying the locked prices. All ten migrated images at their original paths and the one YouTube embed (g9iV9RVr_Sk) at its original id.",
+  "gates": [
+   "facts-preserved",
+   "link-parity",
+   "marker",
+   "schema",
+   "sitemap",
+   "board-previews",
+   "render"
+  ],
+  "done": "The page states 14 to 16 inches and 11 to 17 kg in a table that stacks into labelled rows below 640px, gives the 12-14 year figure, the 1935 registry recognition, the hour of daily exercise, the two DNA tests and both parents clear, the Dangerous Dogs Act 1991 position and the four myths, the American Bully distinction and the five breeder tests, carries all ten migrated images at their original paths and the embed at its original id, shows one review, the live puppy grid and four FAQ rows, states the locked £1,500 / £1,700 prices, the £500 refundable deposit and the £200-£350 delivery band, names no former city, no insurance provider and no invented weight or cost band, and passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
+  "out_of_scope": [
+   "the old £850 to £1,200 banner and the £850 to £2,500+ purchase band: both are below or beside the locked prices in data/price-matrix.json (Known Issue 11), and both are listed in `dropped.prices`",
+   "the whole invented cost-of-ownership table — puppy classes at £60-£150, food at £30-£60 a month, insurance at £20-£50 a month, routine vet care at £60-£100 a year, parasite control at £10-£25, daycare at £10-£25 and boarding at £20-£40 a night: no file on disk holds one of those figures, and rule 9 forbids writing a number nobody can check",
+   "a health guarantee of any length: data/settings.json holds guarantee_days: null, so no number may be written",
+   "the four named insurance providers and the insurance comparison site: we do not sell insurance and no file on disk records a relationship with an insurer",
+   "the '12-week-old' litter age and the 'current litter won't last long' urgency: data/puppies.json holds no age and no scarcity, and the puppy grid is what states availability",
+   "the former city and everything attached to it: data/settings.json is Carlisle · Cumbria at town level (Known Issue 16)",
+   "a prevalence figure, a percentage or a prognosis for any named condition: the migrated body gives none and the health page owns the detail",
+   "the newsletter block: no file on disk holds a subscriber count, and `tuple.newsletter` is empty on this record",
+   "an enquiry form: the contact page carries the one form the form audit measures, and this page links to it"
+  ],
+  "primary_keyword": "uk staffordshire bull terrier guide",
+  "angles": [
+   {
+    "name": "the honest owner's manual",
+    "hook": "answer the three questions a UK buyer actually has — what is it like to live with, is it legal, and how do I avoid a bad breeder — and put the breed facts in a table they can scan",
+    "why_not": ""
+   },
+   {
+    "name": "the care encyclopaedia",
+    "hook": "a section per care topic, the way the vet charities and the retailer guides write it",
+    "why_not": "the PDSA already does that in 3,156 words with a vet behind it, and the retailer guide shows where the format ends up — nine of its fourteen sections are products; we would be writing a worse copy of a reference"
+   },
+   {
+    "name": "the breed-love page",
+    "hook": "badges, superlatives and photographs, which is what the migrated page does",
+    "why_not": "it is the page the rebuild exists to replace: 'ZERO BANNED', '#1 AFFECTION' and '100% TESTED' are four counters with no evidence attached to any of them, and the guide's own facts are strong enough without them"
+   }
+  ],
+  "strategy": {
+   "name": "the honest owner's manual",
+   "why": "Of the four pages scanned, two ignore UK law entirely, none makes the American Bully distinction in any depth, none names a bad fit plainly, and only one has an FAQ worth the name. The migrated body already carries all four of those, buried under badges and a cost table nobody can source.",
+   "trade_off": "It puts a table and the law high on a page a reader may have arrived at for puppy photographs, and it gives less room to the care detail the vet charities already cover better."
+  },
+  "cta": {
+   "cadence": {
+    "min": 200,
+    "max": 400
+   },
+   "destination": "#talk-to-us",
+   "anchors": [
+    "Ask us about the breed",
+    "See the puppies we are raising now"
+   ],
+   "global_cta": "hidden"
+  },
+  "tool": {
+   "pick": "none",
+   "evidence": "The figures on this page are a height band, a weight band, a lifespan range, a daily exercise figure and two locked prices, all stated as sentences or as the one table; there is nothing for a reader to work out.",
+   "trade_off": "A cost-of-ownership calculator is the obvious tool for a breed guide, and it is exactly the thing this rebuild cannot have: every running-cost figure the migrated page fed such a calculator is unsourced and is listed in `dropped.prices`."
+  },
+  "schema": {
+   "types": [
+    "WebPage",
+    "Article",
+    "FAQPage"
+   ],
+   "offer_model": "none"
+  }
+ },
+ "h1": {
+  "variants": [
+   "Comprehensive Breed Insight: The Ultimate UK Staffordshire Bull Terrier Guide Handbook",
+   "The UK Staffordshire Bull Terrier Guide, From The People Who Raise Them",
+   "Staffordshire Bull Terrier: A UK Owner's Guide To The Breed",
+   "What A Staffordshire Bull Terrier Is Really Like To Live With",
+   "Our Staffordshire Bull Terrier Guide: Build, Temperament, Health And The Law"
+  ],
+  "recommended": 0,
+  "pick": null,
+  "verbatim_heading": true
+ },
+ "sections": [
+  {
+   "id": "top",
+   "n": 1,
+   "heading": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
+   "intent": "The opening, in Lisa Bright's first person, with the litter photograph and the page's one YouTube embed (id g9iV9RVr_Sk, kept at its original id): what this guide is, who wrote it, and what a reader will have at the end of it — the build, the temperament, the daily care, the legal position and how to tell an ethical breeder from a bad one. No price, no badge and no guarantee length in the hero; the kit Hero is given no trust chips and no CTA buttons (spec §9 amendment 6a).",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "The migrated page opened on four unevidenced badges — ZERO BANNED, #1 AFFECTION, 100% TESTED, 12+ YEARS — and a price banner; a guide earns its reader by saying what it covers, not by shouting a superlative at them.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the migrated H1 and the four badge counters; data/settings.json — breeder_name Lisa Bright",
+   "framework": "EEBP",
+   "words": {
+    "min": 145,
+    "max": 180
+   },
+   "shape": "hero",
+   "styles": [
+    "H-GD1",
+    "H-GD2",
+    "H-GD3"
+   ],
+   "refresh": {
+    "axis": "layout",
+    "note": "a magazine hero with the image above the copy, where the health page splits its hero in two"
+   },
+   "hero": {
+    "chips": [
+     "Breed standard",
+     "Temperament",
+     "Care and health"
+    ],
+    "aside": {
+     "title": "In this guide",
+     "items": [
+      "The breed standard, trait by trait",
+      "Temperament, and the myths about it",
+      "Daily care, health and legal status"
+     ]
+    }
+   },
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "Staffordshire Bull Terrier",
+     "Staffy",
+     "blue Staffy",
+     "breed guide"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "Carlisle",
+     "Cumbria"
+    ],
+    "conversational": [
+     "what is a staffordshire bull terrier like"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier",
+    "ont:blue-coat",
+    "ont:lisa-bright"
+   ],
+   "tree": [],
+   "images": [
+    {
+     "slot": "guide-litter",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's photograph of a litter of blue Staffy puppies for sale in the UK, reused at its original path and alt text (working rule 11)"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Image first, and the page's one embed sits in this band: the hero styles that put the photograph above or before the copy are S2 (photo above, on a band) and S3 (photo left, in a card). The YouTube embed g9iV9RVr_Sk is carried at its original id under the hero copy; facts_preserved_check.py gates the id."
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "Bold. Loving. Loyal. The Staffordshire Bull Terrier is more than just a dog—it’s a devoted companion and a beloved member of many UK households. Known affectionately as “Staffies,” these remarkable dogs possess a unique blend of strength, courage, and unparalleled affection. If you’re considering welcoming a Staffordshire Bull Terrier into your life, our comprehensive Staffordshire Bull Terrier guide UK is your essential resource."
+  },
+  {
+   "id": "video-breed-guide",
+   "n": 2,
+   "heading": "The Guide In Short, On Film",
+   "intent": "The guide's own video, kept where the migrated body had it — directly below the opening, ahead of the breed table and the history — at its original id.",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "The migrated page carried this video and the rebuild carries it at the same id and in the same place (working rule 14). It was an `embed` line in a note before this: a video the breeder could not see rendered, and could not pick an arrangement for.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the migrated body's only iframe, directly below the opening; data/facts/uk-staffordshire-bull-terrier-guide.json embeds g9iV9RVr_Sk; VideoObject uploadDate 2025-05-29",
+   "framework": "EBD",
+   "words": {
+    "min": 25,
+    "max": 60
+   },
+   "shape": "video",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "video": {
+    "id": "g9iV9RVr_Sk",
+    "title": "A UK Staffordshire Bull Terrier breed guide",
+    "caption": "The video this guide has carried since May 2025, at its original id."
+   },
+   "keywords": {
+    "primary": [],
+    "lsi": [],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+   }
+  },
+  {
+   "id": "takeaways",
+   "n": 3,
+   "heading": "Why Choose a Staffordshire Bull Terrier?",
+   "intent": "Four statement cards, each the one-line form of a section below: a medium, muscular terrier of 14 to 16 inches and 11 to 17 kg; a people-first temperament that needs company and an hour of vigorous exercise a day; not a banned breed under the Dangerous Dogs Act 1991; and a life of twelve to fourteen years on good care and good genetics. Every figure is the migrated body's own. Renamed at Task 18b to the migrated page's own 'Why Choose a Staffordshire Bull Terrier?' H2, which is an element of the verbatim set and which also retires the heading board_gate.py failed against the rebuilt homepage's 'Watch A Litter Being Raised, Before You Read Any Further'.",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "A reader deciding whether to keep reading wants the shape of the breed in four lines; the strongest scanned page buries its key facts in a 3,000-word run of care advice.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Size, Weight, Lifespan and Legal Status blocks; https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier (scan 2026-09-20) — 17 H2s, no summary",
+   "framework": "FAB",
+   "words": {
+    "min": 115,
+    "max": 150
+   },
+   "shape": "takeaways",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "14-16 inches",
+     "11-17 kg",
+     "12-14 years",
+     "not a banned breed"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what should i know about staffies before getting one"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "A Medium, Muscular Terrier",
+     "intent": "14 to 16 inches at the shoulder and 11 to 17 kg, males at the higher end.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "A People Dog Before Anything Else",
+     "intent": "Affectionate, loyal, and unhappy left alone for long stretches.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Legal To Own, Breed And Import In The UK",
+     "intent": "The Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Twelve To Fourteen Years With Good Care",
+     "intent": "The lifespan the migrated guide gives for a well-cared-for, well-bred Staffy. Renamed at Task 18b: data/boards/blue-staffy-health-uk.json plans the same four words as its lifespan node, and two records may not plan the same heading.",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them."
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "The Staffordshire Bull Terrier is truly a breed like no other, offering unique qualities that make them a fantastic choice for many UK households:"
+  },
+  {
+   "id": "stats",
+   "n": 4,
+   "heading": "The Breed, In Three Figures",
+   "intent": "The three measurements the breed standard gives, lifted from the breed facts table further down this page.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A breed guide is looked up for its numbers, and a reader who only wants those should not have to scroll.",
+   "why_source": "CLAUDE.md working rule 16 (breeder, 2026-09-20)",
+   "framework": "FAB",
+   "words": {
+    "min": 0,
+    "max": 40
+   },
+   "shape": "stats",
+   "styles": [
+    "C-GD1",
+    "C-GD2",
+    "C-GD3"
+   ],
+   "stats": [
+    {
+     "n": "11–17 kg",
+     "label": "adult weight",
+     "source": "data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Weight)"
+    },
+    {
+     "n": "14–16 in",
+     "label": "height at the shoulder",
+     "source": "data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Height)"
+    },
+    {
+     "n": "12–14 years",
+     "label": "typical lifespan",
+     "source": "data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Lifespan)"
+    }
+   ],
+   "refresh": {
+    "axis": "accent",
+    "note": "one flush line on the steel band, quieter than the health page ring tiles"
+   },
+   "keywords": {
+    "primary": [],
+    "lsi": [],
+    "longtail": [],
+    "brand": [],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   }
+  },
+  {
+   "id": "breed-facts",
+   "n": 5,
+   "heading": "Blue Staffy Breed Information: Characteristics at a Glance",
+   "intent": "The breed facts as a table a reader can hold against a dog in front of them. Eight rows, every figure taken from the migrated body — height, weight, coat, colours, head and ears, tail, lifespan and temperament. Nothing is added: no weight figure beyond the migrated body's own 11 to 17 kg, and no breed-average the fact lint would call invented.",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "why": "Three of the four scanned pages open on a facts panel, and the one with no panel is the hardest to use; the migrated body already carried the same nine numbered traits as a run of unlabelled cards rather than as a table anyone could scan.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the nine numbered traits (Size, Weight, Coat, Colours, Eyes, Head, Ears, Tail); https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier (scan 2026-09-20) — a key-facts panel",
+   "framework": "EEBP",
+   "words": {
+    "min": 180,
+    "max": 225
+   },
+   "shape": "table",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "refresh": {
+    "axis": "container",
+    "note": "the facts table zebra-ruled inside a card, not the banded table the health page uses"
+   },
+   "table": {
+    "caption": "Staffordshire Bull Terrier breed facts, as the migrated guide states them",
+    "columns": [
+     "Trait",
+     "The Staffordshire Bull Terrier"
+    ],
+    "rows": [
+     [
+      "Height at the shoulder",
+      "14 to 16 inches (35 to 41 cm)"
+     ],
+     [
+      "Weight",
+      "11 to 17 kg (24 to 38 lbs), males generally at the higher end"
+     ],
+     [
+      "Coat",
+      "Short, smooth and close-lying, with no undercoat"
+     ],
+     [
+      "Colours",
+      "Red, fawn, white, black, brindle and blue, and those colours with white"
+     ],
+     [
+      "Head and ears",
+      "Broad and deep, pronounced cheek muscles, a distinct stop; rose or half-pricked ears"
+     ],
+     [
+      "Eyes",
+      "Usually dark, round, and set to look straight ahead"
+     ],
+     [
+      "Tail",
+      "Medium length, low set, tapering to a point, not curled over the back"
+     ],
+     [
+      "Lifespan",
+      "12 to 14 years with good care and good genetics"
+     ],
+     [
+      "Temperament",
+      "Loyal, affectionate, courageous, alert and playful; people-centred"
+     ]
+    ]
+   },
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "Staffordshire Bull Terrier size",
+     "Staffy weight",
+     "short coat",
+     "Staffy lifespan"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "how big does a staffordshire bull terrier get",
+     "how much does a staffy weigh"
+    ],
+    "comparison": [
+     "staffy size compared to other terriers"
+    ],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier",
+    "ont:blue-coat"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "What The Blue Coat Is, And Is Not",
+     "intent": "Blue is one of the breed's recognised colours, not a separate breed or a separate standard.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-handbook",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's cover image for the comprehensive UK Staffordshire Bull Terrier guide, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": [
+     {
+      "href": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/",
+      "anchor": "the registry's own breed standard for the Staffordshire Bull Terrier",
+      "why": "the migrated body described the breed's build in its own words and cited nobody; this is the standard those words are describing",
+      "library_row": "royalkennelclub.com — Staffordshire Bull Terrier breed standard"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4."
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "The Staffordshire Bull Terrier is a distinct and instantly recognisable breed. Our focus on Blue Staffy breed information highlights their striking coat colour, but their physical traits are universally Staffy: These characteristics combine to create a powerful, agile, and expressive dog that is well-suited to various activities and lifestyles."
+  },
+  {
+   "id": "history",
+   "n": 6,
+   "heading": "History & Heritage of the Staffordshire Bull Terrier in the UK",
+   "intent": "The nineteenth-century Staffordshire and Black Country origin, the baiting and fighting the breed was made for, and the one fact that explains the modern dog: a dog handled in the pit had to be safe with the people handling it, so affection towards people was bred in from the start. Formal recognition by the registry in 1935 closes the section. No claim beyond the migrated body's own.",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "The breed's reputation is the first thing a UK buyer meets, and the history is the only honest answer to it; the migrated body already carries the 1935 date and the pit-handling explanation.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the History & Heritage block and 'formal recognition by The Kennel Club in 1935'",
+   "framework": "BAB",
+   "words": {
+    "min": 250,
+    "max": 305
+   },
+   "shape": "standard",
+   "refresh": {
+    "axis": "motif",
+    "note": "the history section image-top, reading as a chapter opener"
+   },
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "Staffordshire",
+     "Black Country",
+     "bull and terrier",
+     "1935",
+     "nanny dog"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "why were staffordshire bull terriers bred"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Bred In The Industrial Midlands",
+     "intent": "Staffordshire and the Black Country, in the nineteenth century.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Why It Had To Be Safe With People",
+     "intent": "A dog its owner had to handle could not be dangerous to handle.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Recognised By The Registry In 1935",
+     "intent": "The date the breed became a distinct, registered breed.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-history",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's historical montage of the breed's evolution from the pit to the family sofa, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": [
+     {
+      "href": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
+      "anchor": "the registry's own Staffordshire Bull Terrier breed page",
+      "why": "carried from the migrated page, which linked the registry's breed page through a search-engine wrapper (anchor 'The Kennel Club in 1935')",
+      "library_row": "royalkennelclub.com — Staffordshire Bull Terrier breed page"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "The Staffordshire Bull Terrier’s story is deeply interwoven with the industrial heartlands of 19th-century England, particularly Staffordshire and the Black Country. Bred originally for bull and bear-baiting, and later for dog fighting, these tenacious dogs required immense courage, strength, and agility. However, as these cruel sports were outlawed, the breed’s incredible temperament and loyalty quickly shone through."
+  },
+  {
+   "id": "temperament",
+   "n": 7,
+   "heading": "Staffy Temperament Guide for Families: Loyalty, Love, and Laughter",
+   "intent": "The five traits the migrated body names — unwavering loyalty, an affectionate lap-dog streak, courage and alertness, playful energy that lasts into adulthood, and a need for human company — and then the home that fits them: an active family, an owner willing to train consistently, a securely fenced garden, supervision around children as with any dog, and careful introductions to other pets because the prey drive is real. First-time owners and flat living both work, given the exercise and the mental stimulation. The one hard 'not ideal': long hours alone.",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "why": "Every scanned page describes the temperament and only one of the four says plainly who the breed is wrong for; a guide that will not name a bad fit is a sales page.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Temperament Guide and Ideal UK Home Setup blocks; https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier (scan 2026-09-20) — an Ideal Owner section",
+   "framework": "PAS",
+   "words": {
+    "min": 400,
+    "max": 480
+   },
+   "shape": "standard",
+   "refresh": {
+    "axis": "density",
+    "note": "the temperament section two-column and airy, against the compact care rows"
+   },
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "Staffy temperament",
+     "nanny dog",
+     "separation anxiety",
+     "socialisation",
+     "prey drive",
+     "flat living",
+     "first-time owners"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "are staffies good with children",
+     "can staffies be left alone all day",
+     "are staffies good for first-time owners"
+    ],
+    "comparison": [],
+    "solution": [
+     "staffy temperament guide for families"
+    ],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Loyal, And Attached To Its People",
+     "intent": "The bond a Staffy forms with its family is the breed's defining trait.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Affectionate To The Point Of Being A Lap Dog",
+     "intent": "A muscular dog that wants to be on the sofa with you.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Courageous And Alert, Rarely A Guard Dog",
+     "intent": "Brave but balanced; alert enough to notice, small enough not to intimidate.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Playful Into Adulthood",
+     "intent": "Fetch, tug and general goofiness well past puppyhood.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Ideal UK Home Setup for a Staffordshire Bull Terrier",
+     "intent": "The home a Staffy fits, in the migrated page's own words: a secure garden or a reliable walking routine, people in and out of the house, and an owner who is in rather than away all day. No square footage and no minimum garden size — no file on disk holds one.",
+     "children": [],
+     "verbatim_heading": true,
+     "verbatim_opening": "Choosing the right dog involves ensuring your lifestyle and home environment match the breed’s needs. A Staffordshire Bull Terrier can adapt well to various UK living situations, but certain aspects are ideal for their well-being:"
+    },
+    {
+     "level": 3,
+     "heading": "First-Time Owners",
+     "intent": "A first-time owner can do well with this breed, given early socialisation and reward-based training kept up consistently.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Where A Staffy Is The Wrong Dog",
+     "intent": "Long hours alone; the breed is people-centred and gets destructive without company.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Children And Other Pets",
+     "intent": "Famously gentle with children, supervised as any dog should be; other pets need slow, early introductions.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-breeder-care",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's photograph of a Staffy breeder holding and caring for two tiny blue Staffy pups, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [
+     {
+      "href": "/blue-staffy-uk-breeders/",
+      "anchor": "Read about the two parents our puppies are socialised around",
+      "why": "carried from the migrated page (anchor 'Blue Staffy UK breeders')",
+      "sentence_start": true
+     }
+    ],
+    "external": [
+     {
+      "href": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
+      "anchor": "the RSPCA's independent advice on socialising a puppy",
+      "why": "carried from the migrated page, which linked the RSPCA's socialisation advice through a search-engine wrapper (anchor 'socialisation')",
+      "library_row": "rspca.org.uk — puppy advice"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "The Staffy temperament guide for families defines the breed’s true appeal. Staffies are renowned for their incredibly affectionate and people-oriented nature. Often referred to as “nanny dogs” due to their historical reputation for gentleness and patience with children, they thrive on human companionship and love nothing more than being an integral part of family life."
+  },
+  {
+   "id": "daily-care",
+   "n": 8,
+   "heading": "Daily Care Tips: Ensuring Your Staffy’s Thriving Life",
+   "intent": "The four ordinary jobs. Exercise: at least one hour of vigorous exercise a day, split into two sessions, plus the mental stimulation a clever dog needs. Feeding: a food formulated for the life stage, treats used sparingly, and no overfeeding, because this breed puts weight on. Training: positive reinforcement, early socialisation, basic commands, and the same rules from every person in the house. Grooming: a weekly brush, baths only when needed, nails, ears and teeth. No brand is named and no gram figure given — no file on disk holds either.",
+   "category": "B",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "This is the part of ownership a reader actually does every day, and the migrated body already carries a daily exercise figure and a grooming routine that need nothing added.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Daily Care Tips block and 'at least 1 hour of vigorous exercise daily'",
+   "framework": "PDB",
+   "words": {
+    "min": 390,
+    "max": 465
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "vigorous exercise",
+     "two sessions",
+     "mental stimulation",
+     "puppy food",
+     "positive reinforcement",
+     "grooming"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "how much exercise does a staffordshire bull terrier need",
+     "how do you train a staffordshire bull terrier"
+    ],
+    "comparison": [],
+    "solution": [
+     "best diet for staffy puppies uk"
+    ],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "An Hour A Day, Split Into Two Sessions",
+     "intent": "Brisk walks in varied places, play, and dog sports for the ones that take to them.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Mental Stimulation",
+     "intent": "Agility, obedience, flyball and scent work all suit the breed.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Feeding A Staffy Without Overfeeding One",
+     "intent": "Life-stage food, measured meals, treats used for training rather than as snacks.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Training That Works On This Breed",
+     "intent": "Consistent, reward-based, started early, and identical from every adult in the house.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Grooming A Short Coat",
+     "intent": "A weekly brush, baths only when needed, nails, ears and teeth.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Life Stage Care for Your Staffordshire Bull Terrier",
+     "intent": "How the four above change as a dog ages: a puppy, an adult and a senior want different amounts of the same things. The migrated page's own life-stage heading and its opening paragraph; the meal counts, the worming intervals and the vet-visit frequencies under it are dropped.text — a veterinary schedule with no source on disk — and the health page states a puppy's own position.",
+     "children": [],
+     "verbatim_heading": true,
+     "verbatim_opening": "As your Blue Staffy grows, their needs evolve across puppyhood, adulthood, and senior years. Understanding these life stages ensures your Staffy remains healthy, happy, and well-adjusted throughout life."
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [
+     {
+      "href": "/blue-staffy-blog-guides/",
+      "anchor": "Our blog guides go further on feeding and training a new puppy",
+      "why": "new: the blog is where day-to-day care is written at length, and this section deliberately stops at what the migrated body states",
+      "sentence_start": true
+     }
+    ],
+    "external": [
+     {
+      "href": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+      "anchor": "the PDSA's veterinary guide to caring for a Staffordshire Bull Terrier",
+      "why": "the migrated body gives care advice and cites nobody for it; the PDSA's breed page is the independent veterinary version of the same ground",
+      "library_row": "pdsa.org.uk — Staffordshire Bull Terrier breed care"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "Providing excellent UK Staffordshire Bull Terrier care tips involves attention to exercise, diet, training, and grooming."
+  },
+  {
+   "id": "health",
+   "n": 9,
+   "heading": "Common Health Concerns & Our Ethical Breeding Commitment",
+   "intent": "A short version of the health page, not a second copy of it. The two inherited conditions the breed is DNA tested for — L-2-HGA and HC-HSF4 — and the fact that both our parents are tested clear; skin allergies and demodicosis; hip and elbow joints, screened under the BVA/KC schemes where they apply; and the vaccination course against distemper, parvovirus, leptospirosis and hepatitis. No prevalence figure and no percentage: the migrated body gives none. The health page carries the detail.",
+   "category": "A",
+   "group": "MANDATORY",
+   "why": "A breed guide that skips the inherited conditions is the guide a buyer regrets reading, and the two DNA tests are the one hard credential this business can put a result against.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Common Health Concerns block; data/facts/uk-staffordshire-bull-terrier-guide.json — tests L-2-HGA, HC-HSF4, microchip, vaccinat",
+   "framework": "EEBP",
+   "words": {
+    "min": 285,
+    "max": 350
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "L-2-HGA",
+     "HC-HSF4",
+     "hereditary cataracts",
+     "BVA/KC screening",
+     "demodicosis"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what health problems do staffordshire bull terriers have",
+     "what health tests should a staffy breeder do"
+    ],
+    "comparison": [],
+    "solution": [
+     "l-2-hga and hc-hsf4 tested staffy breeders"
+    ],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "The Two DNA Tests",
+     "intent": "L-2-hydroxyglutaric aciduria and hereditary cataracts, the two the breed is screened for.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Clear By Parentage",
+     "intent": "Two clear parents cannot pass on either condition, because both are recessive.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Skin, And Why A Short Coat Shows It Early",
+     "intent": "Allergies and demodicosis are the breed's other common complaints.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Joints And The BVA/KC Schemes",
+     "intent": "Hip and elbow scoring, where it applies.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "The Vaccination Course",
+     "intent": "Distemper, parvovirus, leptospirosis and hepatitis.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-health-certified",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's illustration of a UK buyer checking a list of health-certified Staffy breeders, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [
+     {
+      "href": "/blue-staffy-health-uk/",
+      "anchor": "Our health page sets out every test we run and what the results were",
+      "why": "carried from the migrated page (anchors 'Blue Staffy Health page' and 'health-tested Staffy puppies')",
+      "sentence_start": true
+     }
+    ],
+    "external": [
+     {
+      "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/",
+      "anchor": "the registry's own page on the L-2-HGA DNA test",
+      "why": "the migrated body names the test and cites nobody; this is the registry's page for the test itself, already a library row",
+      "library_row": "royalkennelclub.com — DNA test L-2-HGA"
+     },
+     {
+      "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/",
+      "anchor": "the registry's own page on the HC-HSF4 DNA test",
+      "why": "the same citation, for the second of the two tests this section names",
+      "library_row": "royalkennelclub.com — DNA test HC-HSF4"
+     },
+     {
+      "href": "https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines",
+      "anchor": "the PDSA's guide to dog vaccinations",
+      "why": "carried from the migrated page, which linked the PDSA's vaccination advice through a search-engine wrapper (anchor 'UK vaccination schedule for Staffy puppies')",
+      "library_row": "pdsa.org.uk — dog vaccines"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "While generally healthy, staying informed about your Staffy health and potential concerns is part of being a responsible Staffy owner . For a deep dive into our commitment to health, please visit our dedicated Blue Staffy Health page . Here, we provide a brief overview:"
+  },
+  {
+   "id": "legal-status",
+   "n": 10,
+   "heading": "Staffies and UK Law: Understanding the Breed’s Legal Status & Public Perception",
+   "intent": "The legal position first: the Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991, and is legal to own, breed and import in the UK. Then the practical consequence — a landlord or housing association may still restrict the breed, so ask for a pet policy in writing before signing. Then the four myths the migrated body answers: that Staffies are inherently aggressive, that they have locking jaws, that they do not feel pain, and that they are untrainable. Each answered in one paragraph, with no claim beyond the migrated body's own.",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "why": "Two of the four scanned pages ignore the law entirely and none of them answers the locking-jaw myth; for a UK buyer the legal status is the single question the breed's reputation raises first.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Staffies and UK Law block and the four Myths vs Facts blocks; https://www.barkingmad.uk.com/blog/dog-ownership/owning-a-staffordshire-bull-terrier-guide/ (scan 2026-09-20) — 8 H2s, no myths",
+   "framework": "QAB",
+   "words": {
+    "min": 380,
+    "max": 445
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "Dangerous Dogs Act 1991",
+     "not a banned breed",
+     "locking jaw",
+     "pet policy",
+     "misidentification"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "are staffordshire bull terriers banned in the uk",
+     "do staffies have locking jaws"
+    ],
+    "comparison": [
+     "staffy versus banned breeds uk"
+    ],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Legal Status in the UK",
+     "intent": "The one thing a reader came for: the Staffordshire Bull Terrier is not a banned breed under the Dangerous Dogs Act 1991, and the four types that are. The migrated page's own paragraph, which names the Act and the four types, carried word for word; the link under it is the government's own list (dropped.links strikes the search-engine wrapper it used).",
+     "children": [],
+     "verbatim_heading": true,
+     "verbatim_opening": "It is critically important to know that the Staffordshire Bull Terrier is NOT a banned breed under the Dangerous Dogs Act 1991 in the UK . This act bans specific types of dogs, including the Pit Bull Terrier, Japanese Tosa, Dogo Argentino, and Fila Brasileiro. The Staffordshire Bull Terrier is a distinct and recognised Kennel Club breed that is entirely legal to own, breed, and import in the UK."
+    },
+    {
+     "level": 3,
+     "heading": "Landlords And Housing Associations",
+     "intent": "Restrictions can still apply; ask for the pet policy in writing before you sign.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Staffy Myths vs. Facts: Dispelling Common Misconceptions",
+     "intent": "The four myths the migrated page answered, under its own heading: inherent aggression, locking jaws, not feeling pain, and being untrainable. Each is answered in one sentence and none is answered with a statistic no file on disk holds.",
+     "children": [
+      {
+       "level": 4,
+       "heading": "Myth: Staffies Are Inherently Aggressive",
+       "intent": "Breeding, socialisation and handling decide a dog's behaviour, not the breed label.",
+       "children": []
+      },
+      {
+       "level": 4,
+       "heading": "Myth: Staffies Have Locking Jaws",
+       "intent": "No dog breed has a locking jaw; the mechanism does not exist.",
+       "children": []
+      },
+      {
+       "level": 4,
+       "heading": "Myth: Staffies Do Not Feel Pain",
+       "intent": "They are stoic and hide discomfort, which is a reason to watch them more closely, not less.",
+       "children": []
+      },
+      {
+       "level": 4,
+       "heading": "Myth: Staffies Are Untrainable",
+       "intent": "They are intelligent and eager to please, and respond to reward-based training.",
+       "children": []
+      }
+     ],
+     "verbatim_heading": true,
+     "verbatim_opening": "Beyond legal misunderstandings, the Staffordshire Bull Terrier is often subject to various myths. Let’s separate fact from fiction to truly appreciate this wonderful breed."
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-legal-status",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's photograph of a brindle Staffordshire Bull Terrier beside a sign stating the breed is not banned under the Dangerous Dogs Act 1991, reused at its original path and alt text"
+    },
+    {
+     "slot": "guide-myths",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's photograph of a friendly Staffy interacting gently with a child, used to debunk common Staffy myths, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": [
+     {
+      "href": "https://www.gov.uk/control-dog-public/banned-dogs",
+      "anchor": "the government's own list of banned dog types",
+      "why": "carried from the migrated page, which linked the Dangerous Dogs Act guidance through a search-engine wrapper (anchor 'Dangerous Dogs Act 1991 in the UK')",
+      "library_row": "gov.uk — banned dogs"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "For any UK resident considering a Staffordshire Bull Terrier , it’s vital to understand their legal standing and common public perceptions. Due to historical events and often misinformed media narratives, some bull breeds face unfair scrutiny. While the Staffordshire Bull Terrier is not banned in the UK, there are key legal and practical housing considerations to know before bringing one home."
+  },
+  {
+   "id": "bully-comparison",
+   "n": 11,
+   "heading": "Staffordshire Bull Terrier vs. American Bully: Know the Difference",
+   "intent": "The distinction that has legal consequences in the UK. Origin, recognition, build and legal status for each: a Staffordshire Bull Terrier is a UK breed recognised by the registry, 14 to 16 inches and 11 to 17 kg, and legal; the American Bully is a US type from the 1990s, not recognised by the registry, highly variable in size, and the XL Bully is banned in the UK under the Dangerous Dogs Act 1991. The practical advice the migrated body gives: be wary of anyone selling an oversized Staffy or a Staffy cross.",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "why": "None of the four scanned pages makes the comparison, and it is the one confusion that can put a UK buyer on the wrong side of the law.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Staffordshire Bull Terrier vs. American Bully block; https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide (scan 2026-09-20) — 14 H2s, no comparison",
+   "framework": "QAB",
+   "words": {
+    "min": 275,
+    "max": 330
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "American Bully",
+     "XL Bully",
+     "banned in the UK",
+     "oversized Staffy"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what is the difference between a staffy and an american bully"
+    ],
+    "comparison": [
+     "staffordshire bull terrier vs american bully"
+    ],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Staffordshire Bull Terrier (Staffy)",
+     "intent": "A UK breed, registry-recognised, 14 to 16 inches and 11 to 17 kg, legal to own.",
+     "children": [],
+     "verbatim_heading": true
+    },
+    {
+     "level": 3,
+     "heading": "American Bully",
+     "intent": "A US type from the 1990s, not registry-recognised, and highly variable in size.",
+     "children": [],
+     "verbatim_heading": true
+    },
+    {
+     "level": 3,
+     "heading": "Why The Difference Matters Here",
+     "intent": "Many American Bully types, the XL in particular, are banned in the UK.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "What To Be Wary Of",
+     "intent": "An advert offering an oversized Staffy or a Staffy cross.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-bully-comparison",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's side-by-side comparison of a Staffordshire Bull Terrier and an American Bully showing the physical differences, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [
+     {
+      "href": "/buy-blue-staffy-puppies-uk/",
+      "anchor": "See the registered Staffordshire Bull Terrier puppies we have here",
+      "why": "carried from the migrated page (anchor 'KC registered Staffy puppies')",
+      "sentence_start": true
+     }
+    ],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "A common point of confusion, particularly in the UK, is the distinction between the Staffordshire Bull Terrier and the American Bully . While they might share some superficial resemblances due to their common ancestry in bull and terrier types, they are distinct breeds with different characteristics, temperaments, and, crucially, legal statuses in the UK."
+  },
+  {
+   "id": "choosing-breeder",
+   "n": 12,
+   "heading": "Finding Your Forever Staffy: Choosing an Ethical Breeder in the UK",
+   "intent": "The five the migrated body names, written as tests a reader can apply to anyone, including us: health-test results shown for both parents; registration papers; puppies raised in a home and socialised from birth; support after the sale; and a breeder who asks the buyer questions in return. The section says plainly which of the five this business can evidence and where the evidence is, rather than asserting all five.",
+   "category": "B",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "The migrated body ends its breeder advice by naming itself as the answer; a guide is worth more when the reader can use it on every breeder they meet, and the buying guide carries the full checklist.",
+   "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the Finding Your Forever Staffy block (transparency, registration, environment, support, welfare)",
+   "framework": "EEBP",
+   "words": {
+    "min": 290,
+    "max": 345
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "ethical Staffy breeder",
+     "health test results",
+     "KC registration",
+     "home raised"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "how do i find an ethical staffy breeder in the uk"
+    ],
+    "comparison": [],
+    "solution": [
+     "health certified staffy breeders uk"
+    ],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier",
+    "ont:lisa-bright"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "They Show You The Test Results",
+     "intent": "Both parents, both tests, the certificates rather than a claim.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "They Show You The Registration",
+     "intent": "The original papers, with the names matching the dogs in front of you.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "The Puppies Are Raised In A Home",
+     "intent": "Socialised from birth around household noise and people.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "They Are There After You Leave",
+     "intent": "Advice for the life of the dog, and a puppy taken back if you cannot keep it.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "They Ask You Questions Too",
+     "intent": "A breeder who does not interview you is not choosing where the puppy goes.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-kc-papers",
+     "kind": "photo",
+     "required": true,
+     "prompt": "the migrated page's photograph of a blue Staffy puppy beside its Kennel Club registration papers, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [
+     {
+      "href": "/",
+      "anchor": "Our own answers to those five are on the home page",
+      "why": "carried from the migrated page (anchor 'BlueStaffyUK')",
+      "sentence_start": true
+     }
+    ],
+    "external": [
+     {
+      "href": "https://www.thekennelclub.org.uk/",
+      "anchor": "The Kennel Club, the registry our litters are registered with",
+      "why": "carried from the migrated page (anchor 'The Kennel Club')",
+      "library_row": "thekennelclub.org.uk — the registry"
+     }
+    ]
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:"
+  },
+  {
+   "id": "owner-review",
+   "n": 13,
+   "heading": "What One Family Says About The Temperament",
+   "intent": "One review, given room. MODE: single, data/reviews.json entry 1 — The Victoria Family, Manchester — because it is the only one of the three that speaks to temperament and early socialisation, which is what the temperament and daily-care sections above claim.",
+   "category": "B",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A temperament claim is worth more when an owner makes it, and not one of the four scanned pages carries an owner review beside its temperament content.",
+   "why_source": "data/reviews.json — entry 1, The Victoria Family, Manchester: 'the most wonderful temperament – playful, loving, and fantastic with our kids'; competitor scan 2026-09-20 — 0 of 4 carry a review",
+   "framework": "EBD",
+   "words": {
+    "min": 40,
+    "max": 55
+   },
+   "shape": "reviews",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "review",
+     "temperament",
+     "socialisation"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "Manchester"
+    ],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 1, The Victoria Family (Manchester). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
+   }
+  },
+  {
+   "id": "puppies",
+   "n": 14,
+   "heading": "The Staffordshire Bull Terriers We Are Raising Now",
+   "intent": "The live litter from data/puppies.json as kit puppy cards, so a breed guide ends on real dogs rather than on an abstraction. The card links are the grid's own rows and are exempt from link parity (spec §9 amendment 6b).",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A reader who has just read what the breed is like wants to see one; the migrated page sent them to a price banner instead.",
+   "why_source": "data/puppies.json — six rows, all status Available; src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the 'Meet Our Staffies' jump",
+   "framework": "FAB",
+   "words": {
+    "min": 40,
+    "max": 55
+   },
+   "shape": "puppies",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "available puppies",
+     "blue and white"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": [
+     "blue staffy puppies available uk"
+    ]
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [
+     {
+      "href": "/blue-staffy-pup-sale-uk/",
+      "anchor": "what a puppy costs and what is included",
+      "nav": true,
+      "why": "new: the grid states a price per card and the price page is where the deposit and delivery bands live"
+     }
+    ],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count."
+   }
+  },
+  {
+   "id": "questions",
+   "n": 15,
+   "heading": "Blue Staffy FAQs: Quick Answers from Our Breed Guide",
+   "intent": "Nine rows from data/faq.json. One is the outline's own — guide-banned-breed, which the migrated accordion did not ask — and eight are working rule 15's: the migrated page asked nine questions and every one is carried word for word except the mortality question, which dropped.text strikes by name and whose row is a `verbatim.changed` drop. All eight carry the migrated answer too, because not one of them leans on a figure or a claim this repo cannot hold. guide-first-time-owners, guide-exercise and guide-flat-living leave this page's tree because the migrated page asks those three questions in its own words; the rows stay in data/faq.json. Accordion answers sit outside the section's word band (spec section 9 amendment 4a).",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "why": "Two of the four scanned pages carry no FAQ block at all and only one carries FAQPage markup; these are the four questions this guide answers on the way past.",
+   "why_source": "https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide (scan 2026-09-20) — 6 FAQ rows and no FAQPage; data/faq.json — the four new rows",
+   "framework": "QAB",
+   "words": {
+    "min": 75,
+    "max": 95
+   },
+   "shape": "faq",
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "first-time owners",
+     "exercise",
+     "banned breed",
+     "flat living"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "are staffies good for first time owners",
+     "can a staffy live in a flat"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "guide-banned-breed",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-first-time-dog-owners",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-exercise-daily",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-flats-uk",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-children-pets",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-downsides",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-left-alone-8h",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-male-female",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "guide-attached-one-person",
+     "intent": "",
+     "children": []
+    }
+   ],
+   "questions": [
+    "Are Staffordshire Bull Terriers good for first-time owners?",
+    "How much exercise does a Staffordshire Bull Terrier need each day?",
+    "Are Staffordshire Bull Terriers banned in the UK?",
+    "Can a Staffordshire Bull Terrier live in a flat?",
+    "How big does a Staffordshire Bull Terrier get?",
+    "How long do Staffordshire Bull Terriers live?",
+    "Are Staffies good with children and other pets?",
+    "What is the difference between a Staffy and an American Bully?",
+    "Do Staffordshire Bull Terriers have locking jaws?",
+    "What health tests should a Staffordshire Bull Terrier breeder do?"
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Query augmentation for 'uk staffordshire bull terrier guide', ten questions, each mapped to a section or a row: q1 -> temperament and the guide-first-time-owners row; q2 -> daily-care and the guide-exercise row; q3 -> legal-status and the guide-banned-breed row; q4 -> temperament and the guide-flat-living row; q5 and q6 -> breed-facts; q7 -> temperament; q8 -> bully-comparison; q9 -> legal-status; q10 -> health. No row is added for a question this page's body does not answer."
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "Need fast facts about Staffies? These frequently asked questions are drawn directly from our trusted UK Blue Staffy Breed Guide to help you make the right choice with confidence."
+  },
+  {
+   "id": "talk-to-us",
+   "n": 16,
+   "heading": "Begin Your Blue Staffy Adventure Today",
+   "intent": "The close. What a puppy from us costs — £1,500 for Roman, Byrd and Ince and £1,700 for Vennie, Christa and Cheryl, from data/price-matrix.json — the £500 refundable deposit, UK home delivery by DEFRA-approved transport at £200 to £350 by distance, and an invitation to write with a question the guide left open. None of the migrated page's own cost bands is restated anywhere on this page; see `dropped.prices`.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "why": "A guide that never says what a puppy costs sends a reader who is now decided back to a search engine, and the locked prices are on disk.",
+   "why_source": "data/price-matrix.json — male_gbp 1500, female_gbp 1700, deposit_gbp 500; data/settings.json — delivery £200 to £350",
+   "framework": "AIDA",
+   "words": {
+    "min": 190,
+    "max": 240
+   },
+   "shape": "standard",
+   "cta": 1,
+   "keywords": {
+    "primary": [
+     "uk staffordshire bull terrier guide"
+    ],
+    "lsi": [
+     "deposit",
+     "delivery",
+     "reserve"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "Carlisle",
+     "Cumbria"
+    ],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": [
+     "buy a blue staffy puppy uk",
+     "reserve a blue staffy puppy"
+    ]
+   },
+   "entities": [
+    "ont:refundable-deposit",
+    "ont:defra-approved-transport"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "The True Cost of a Staffy: What to Expect Financially",
+     "intent": "What owning one costs, under the migrated page's own heading: the two locked purchase prices from data/price-matrix.json, the £500 refundable deposit and the delivery band from data/settings.json. Not one of the migrated page's own figures survives — dropped.prices strikes the £850–£2,500+ purchase estimate, the class, food, insurance, vet, parasite, walker and boarding bands and the monthly total built from them, because nobody on disk made any of them.",
+     "children": [
+      {
+       "level": 4,
+       "heading": "Initial Costs",
+       "intent": "What a buyer pays before the puppy is home: the price of the puppy itself, the deposit that holds it, and delivery if it is not collected. Every figure comes from data/, and the migrated block's own estimates are not restated.",
+       "children": []
+      }
+     ],
+     "verbatim_heading": true,
+     "verbatim_opening": "Bringing a Staffordshire Bull Terrier into your life is a significant commitment, and understanding the financial aspects is crucial for responsible ownership . While the love they give is priceless, owning a Staffy does come with ongoing expenses. Being prepared ensures you can provide the best possible life for your loyal companion."
+    },
+    {
+     "level": 3,
+     "heading": "Getting A Puppy Home",
+     "intent": "Collection in Carlisle, or DEFRA-approved transport priced by distance.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Write To Us",
+     "intent": "The email address, and what to put in the message.",
+     "children": []
+    }
+   ],
+   "images": [
+    {
+     "slot": "guide-cost-infographic",
+     "kind": "infographic",
+     "required": true,
+     "prompt": "the migrated page's infographic summarising the true cost of a Staffy for budgeting new owners, reused at its original path and alt text"
+    }
+   ],
+   "links": {
+    "internal": [
+     {
+      "href": "/uk-blue-staffy-breeders-contact/",
+      "anchor": "Write to us with the question this guide did not answer",
+      "why": "carried from the migrated page (anchor 'Contact Us')",
+      "sentence_start": true
+     }
+    ],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "verbatim_heading": true,
+   "verbatim_opening": "The Staffordshire Bull Terrier is a decision you won’t regret. They are exceptional companions who offer unconditional love and boundless energy. We hope this Staffordshire Bull Terrier guide UK has provided you with valuable Blue Staffy breed information to aid your decision."
+  }
+ ],
+ "tuple": {
+  "hero": "",
+  "dial": "",
+  "rail": "",
+  "toc": "pagenav-c",
+  "takeaway": [],
+  "table": "",
+  "faq": "",
+  "stepper": "",
+  "newsletter": {
+   "after": "",
+   "variant": ""
+  },
+  "h6_prefixes": [
+   "Breed Note:"
+  ]
+ },
+ "assets": [
+  {
+   "slot": "guide-litter",
+   "kind": "photo",
+   "w": 612,
+   "h": 612,
+   "required": true,
+   "status": "baked",
+   "file": "/images/blue-staffy-puppy-for-sale-uk.webp",
+   "alt": "Adorable litter of blue Staffy puppies for sale in the UK."
+  },
+  {
+   "slot": "guide-handbook",
+   "kind": "photo",
+   "w": 512,
+   "h": 464,
+   "required": true,
+   "status": "baked",
+   "file": "/images/comprehensive-uk-staffordshire-bull-terrier-guide-book.webp",
+   "alt": "A cover image for the comprehensive UK Staffordshire Bull Terrier Guide, detailing care, training, and health information."
+  },
+  {
+   "slot": "guide-history",
+   "kind": "photo",
+   "w": 500,
+   "h": 500,
+   "required": true,
+   "status": "baked",
+   "file": "/images/sbt-history-heritage-from-pit-to-pet.webp",
+   "alt": "A historical montage or illustration showing the evolution of the Staffordshire Bull Terrier. One side depicts a stylized 19th-century Bull and Terrier dog in an old fighting pit setting, while the other side shows a modern Staffy affectionately licking the face of a small child on a sofa, symbolizing its transformation."
+  },
+  {
+   "slot": "guide-breeder-care",
+   "kind": "photo",
+   "w": 640,
+   "h": 360,
+   "required": true,
+   "status": "baked",
+   "file": "/images/dedicated-blue-staffy-pup-care-glasgow.webp",
+   "alt": "A Staffy breeder gently holding and caring for two tiny blue Staffy pups, symbolizing dedicated puppy care."
+  },
+  {
+   "slot": "guide-health-certified",
+   "kind": "photo",
+   "w": 550,
+   "h": 367,
+   "required": true,
+   "status": "baked",
+   "file": "/images/find-health-certified-staffy-breeders-uk.webp",
+   "alt": "UK buyer checking a list of health-certified Staffy breeders"
+  },
+  {
+   "slot": "guide-legal-status",
+   "kind": "photo",
+   "w": 436,
+   "h": 540,
+   "required": true,
+   "status": "baked",
+   "file": "/images/sbt-uk-legal-status-public-perception.webp",
+   "alt": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\""
+  },
+  {
+   "slot": "guide-myths",
+   "kind": "photo",
+   "w": 512,
+   "h": 469,
+   "required": true,
+   "status": "baked",
+   "file": "/images/busting-common-staffy-myths-loving-family-dog.webp",
+   "alt": "A friendly Staffy interacting gently with a child, used to debunk common Staffy myths about aggression."
+  },
+  {
+   "slot": "guide-bully-comparison",
+   "kind": "photo",
+   "w": 500,
+   "h": 333,
+   "required": true,
+   "status": "baked",
+   "file": "/images/staffordshire-bull-terrier-vs-american-bully-comparison.webp",
+   "alt": "Side-by-side comparison of a Staffordshire Bull Terrier and an American Bully showing physical differences."
+  },
+  {
+   "slot": "guide-kc-papers",
+   "kind": "photo",
+   "w": 500,
+   "h": 750,
+   "required": true,
+   "status": "baked",
+   "file": "/images/kc-registered-staffy-puppies.webp",
+   "alt": "A cute blue Staffy puppy sitting next to its official Kennel Club registration papers, symbolizing KC registered Staffy puppies."
+  },
+  {
+   "slot": "guide-cost-infographic",
+   "kind": "infographic",
+   "w": 512,
+   "h": 469,
+   "required": true,
+   "status": "baked",
+   "file": "/images/true-cost-of-a-staffy-lifetime-budget-planning.webp",
+   "alt": "An infographic summarizing The True Cost of a Staffy, including food, vet bills, and insurance, for budgeting new owners."
+  }
+ ],
+ "dropped": {
+  "prices": [
+   "£850 to £1,200 — the migrated page's 'Buy Your Blue Staffy Pup Today – Only £850 to £1,200!' banner and its '£850–£1,200 Price Range' line. The band is below the locked prices and predates them (Known Issue 11): data/price-matrix.json holds £1,500 and £1,700 and a £500 refundable deposit, and `talk-to-us` states those instead.",
+   "£850 – £2,500+ — the migrated 'Initial Costs' purchase band for a registered puppy from an ethical breeder. It is a market estimate nobody on disk made; our own two prices are locked and are what the page states.",
+   "£60-£150 puppy classes, £30-£60+ a month food, £20-£50+ a month insurance, £60-£100 a year routine vet care, £10-£25 a month parasite control, £10-£25 a session for a dog walker or daycare, £20-£40+ a night boarding, and the £80 – £150+ per month running total built from them — the migrated 'True Cost of a Staffy' block. Not one of those figures has a source on disk, and rule 9 forbids writing a number nobody can check. The cost infographic is still carried, in `talk-to-us`, beside the prices that ARE locked."
+  ],
+  "names": [
+   "the former city, which the migrated page names only in the file name of one image (/images/dedicated-blue-staffy-pup-care-glasgow.webp) that working rule 11 requires to be reused at its original path. No sentence on the rebuilt page names it: data/settings.json is Carlisle · Cumbria at town level and Known Issue 16 owns the correction."
+  ],
+  "links": [
+   "https://www.google.com/search?q=https://www.thekennelclub.org.uk/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ (\"The Kennel Club in 1935\") — a search-engine wrapper around a registry URL, not a destination. `history` links the registry's own breed page, which is already a library row.",
+   "https://www.google.com/search?q=https://www.rspca.org.uk/adviceandwelfare/pets/dogs/training/socialisation (\"socialisation\") — the same wrapper pattern, and the wrapped path 404s today. `temperament` links the RSPCA's puppy advice instead, which is already a library row and covers socialisation.",
+   "https://www.google.com/search?q=https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/vaccinations (\"UK vaccination schedule for Staffy puppies\") — the same wrapper pattern. `health` links the PDSA's dog-vaccines page, already a library row.",
+   "https://www.google.com/search?q=https://www.gov.uk/control-dog-public-place/dangerous-dogs (\"Dangerous Dogs Act 1991 in the UK\") — the same wrapper pattern, and the wrapped path 404s today. `legal-status` links https://www.gov.uk/control-dog-public/banned-dogs, the government's own list, verified 200.",
+   "https://chatgpt.com/share/688ba8f3-bbf8-8005-8b59-04c134da3448 (\"Learn About KC vs Non-KC Registered Puppies →\") — a shared chat transcript offered as a source. It is not one, and it is not a page we control or can keep alive. What registration does and does not cover is stated in `choosing-breeder` in our own words.",
+   "https://www.moneysupermarket.com/pet-insurance/ (\"MoneySuperMarket\"), https://quote.kcinsurance.co.uk/ (\"Kennel Club Pet Insurance\"), https://www.kcinsurance.co.uk/ (\"The Kennel Club Pet Insurance\"), https://www.pdsa.org.uk/ (\"PDSA Pet Insurance\") and https://www.animalfriends.co.uk/ (\"Animal Friends Insurance\") — an insurance comparison site and four insurance providers. We are not selling insurance and no file on disk records a relationship with any of them; the whole insurance costing is dropped with them.",
+   "the two \"Gov.uk – Model Tenancy Agreements\" and \"Citizens Advice – Renting with Pets\" anchors — both were rendered in the migrated body with no href at all, so there is no destination to carry. The renting advice is stated in `legal-status` as one sentence: ask for the pet policy in writing.",
+   "https://www.instagram.com/bluestaffyukingdom (\"@bluestaffyukingdom on Instagram\"), https://www.youtube.com/@BlueStaffyUK-v2d (\"YouTube @BlueStaffyUK-v2d\") and https://www.tiktok.com/@bluestaffyuk.uk (\"TikTok @bluestaffyuk.uk\") — the site footer already carries the accounts data/settings.json holds, and a body copy of them is a second list that goes stale. The TikTok account is not in data/settings.json at all.",
+   "#Staffy-sales (\"Meet Our Staffies\") — the migrated in-page jump to the price banner that is dropped with the old band. The puppy grid is `#puppies` and the closing section is `#talk-to-us`."
+  ],
+  "text": [
+   "ZERO BANNED / #1 AFFECTION / 100% TESTED / 12+ YEARS — four counters with no evidence attached to any of them. Each is either restated as an evidenced sentence (the legal status in `legal-status`, the two DNA tests in `health`, the 12-14 year figure in `breed-facts` and `takeaways`) or dropped; '#1 AFFECTION' is a ranking against nobody.",
+   "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers — a superlative in a heading, removed under the titles rule in spec §5.",
+   "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide … Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home … Don't wait—our current litter won't last long! — no file on disk states an age for the current litter, and data/puppies.json holds no scarcity. The `puppies` grid states availability from the rows themselves.",
+   "Top-quality Staffies at affordable UK family prices. Each Staffy is microchipped and raised with care. — 'affordable' is a price claim against the dropped band; the microchipping and the home raising are restated in `health` and `choosing-breeder`.",
+   "Puppies: Growing Staffies need food specifically formulated for puppies of their size, rich in protein for muscle development … Adults: A high-protein, nutritionally complete kibble or a well-researched raw diet can be suitable. — carried in `daily-care` as life-stage food and measured meals, without the protein and raw-diet recommendations: no file on disk holds a feeding specification and this business is not the reader's vet.",
+   "Puppy Stage (8 weeks – 12 months) … 3–4 small meals per day … Flea/worming treatments every 2–4 weeks … Adult Stage (1 – 7 years) … 60 minutes per day … Senior Stage (8+ years) … Bi-annual vet visits — the three life-stage blocks. The exercise figure is carried in `daily-care`; the meal counts, the worming intervals and the visit frequencies are a veterinary schedule with no source on disk, and the health page is where a puppy's own vaccination and worming position is stated.",
+   "Our breeding dogs undergo relevant BVA/KC screening where applicable. — carried in `health` as the BVA/KC schemes for hips and elbows. 'Where applicable' is the hedge that makes it unfalsifiable and it is not carried; the health page states what is actually screened.",
+   "Provide your landlord with a pet CV for your Staffy (include health certificates and training proof) · Offer a pet deposit or cleaning guarantee · Choose DEFRA-compliant breeders like us to show you're a responsible owner. — the pet-CV and pet-deposit tips are tenancy advice with no source on disk, and 'DEFRA-compliant breeders like us' is a compliance claim against a named body: LICENCE_CLAIM_PLACEHOLDER territory until Lisa Bright confirms it (Known Issue 7). `legal-status` keeps the one sentence that is checkable — ask for the pet policy in writing.",
+   "What is the most common cause of death in Staffordshire Bull Terriers? Common causes of death … can include cancer, old age-related issues, and heart problems. — a mortality claim with no source on disk. `health` names the conditions the breed is screened for and stops there.",
+   "🐾 Reserve Your Blue Staffy Puppy … ⏰ Delivery Note: Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free). — no file on disk states that turnaround or that pickup default. data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what `talk-to-us` states."
+  ]
+ },
+ "approval": null,
+ "verbatim": {
+  "changed": [
+   {
+    "kind": "heading",
+    "old": "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
+    "new": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
+    "reason": "'The #1 UK Staffordshire Bull Terrier Guide' is a ranking claim against every other breed guide in the country and nothing on disk measures it. dropped.text strikes the superlative by name under the titles rule in spec section 5, and it is the same '#1 AFFECTION' counter the migrated page ran across the top of the page. The glyph comes out and every other word of the heading is carried."
+   },
+   {
+    "kind": "heading-dropped",
+    "old": "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide",
+    "new": "",
+    "reason": "the heading is /blue-staffy-pup-sale-uk/'s, and that record already carries it. dropped.text strikes the block by name here: no file on disk states an age for the current litter, data/puppies.json holds no scarcity, and a breed guide is not where a buyer is sold a puppy. The `puppies` grid renders the live litter from data/puppies.json instead."
+   },
+   {
+    "kind": "opening",
+    "old": "Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.",
+    "new": "",
+    "reason": "its heading goes to /blue-staffy-pup-sale-uk/ and an opening paragraph has no page without the heading it opens. Both of its facts are struck in their own right: the 12-week age by dropped.text and the '£850–£1,200 Price Range' by dropped.prices, which is below the locked £1,500 and £1,700 of data/price-matrix.json (Known Issue 11)."
+   },
+   {
+    "kind": "heading",
+    "old": "Initial Costs (Estimated at £850 – £2,500+ in the UK)",
+    "new": "Initial Costs",
+    "reason": "'(Estimated at £850 – £2,500+ in the UK)' is a market estimate nobody on disk made, and dropped.prices strikes it by name: data/price-matrix.json holds £1,500 and £1,700 and those are the only purchase figures this site may print (Known Issue 11, working rule 9). The two words that name what the block is are carried and the parenthesis goes."
+   },
+   {
+    "kind": "opening",
+    "old": "Purchase Price: From an ethical Staffy breeder , a KC-registered Staffordshire puppy can range from £850 to £2,500+, depending on lineage, health testing, and breeder reputation. Initial Vet Visit: Post-adoption check-up, possibly second vaccinations if not already completed by the breeder. Essential Supplies: Collar, lead, harness, ID tag, bed, food and water bowls, initial high-quality puppy food, chew toys, training treats. Crate: A safe space for house training and comfort. Microchipping: Legally required in the UK (often done by the breeder). Puppy Classes: Group training sessions can cost £60-£150.",
+    "new": "",
+    "reason": "the whole paragraph is figures nobody on disk made: the £850–£2,500+ purchase band and £60-£150 puppy classes, both struck by name in dropped.prices, plus a post-adoption vet visit, a supplies list and a crate that are a shopping list rather than anything this business holds. The heading above it is carried and the section states the two locked prices, the £500 refundable deposit and the delivery band instead."
+   },
+   {
+    "kind": "heading-dropped",
+    "old": "🐾 Reserve Your Blue Staffy Puppy",
+    "new": "",
+    "reason": "a form widget's label on a page that plans no form. The migrated site printed '🐾 Reserve Your Blue Staffy Puppy' unchanged on five pages, so it identifies no page; the rebuilt homepage changed it to the name of the section its own form sits in. This outline carries no form — /uk-blue-staffy-breeders-contact/ owns the enquiry and `talk-to-us` links it — so there is nothing here for the label to head. It is also an emoji heading."
+   },
+   {
+    "kind": "opening",
+    "old": "Fill in your details below and we'll be in touch within 24 hours",
+    "new": "",
+    "reason": "its heading is dropped with the form, and an opening paragraph has no page without the heading it opens. The sentence also promises a reply 'within 24 hours', which contradicts the 24-48 business hours data/faq.json's enquiry rows and every rebuilt page state."
+   },
+   {
+    "kind": "faq",
+    "old": "What is the most common cause of death in Staffordshire Bull Terriers?",
+    "new": "",
+    "reason": "dropped.text strikes the question and its answer by name: 'cancer, old age-related issues, and heart problems' is a mortality claim about a breed with no source on disk and none this business could give. `health` names the conditions the breed is actually screened for and stops there, and `breed-facts` gives the 12-14 year figure with the club it comes from."
+   },
+   {
+    "kind": "alt",
+    "old": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states:",
+    "new": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
+    "src": "/images/sbt-uk-legal-status-public-perception.webp",
+    "reason": "the migrated alt is not a sentence: it ends on 'a professional sign or infographic that clearly states:' and then stops, so a screen reader is read a colon where the sign's words should be. An alt is page copy and there is no wording here to carry word for word — the half that matters was never written. Task 17 finished the clause with what the sign in the photograph actually says, which is the legal position `legal-status` states in prose; nothing else about the alt changed."
+   }
+  ]
+ }
 }
