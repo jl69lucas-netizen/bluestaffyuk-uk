@@ -613,6 +613,87 @@ def test_page_h_counts_ignores_site_chrome():
         assert PB.page_h_counts(p)["h5"] == 1 and PB.page_h_counts(p)["h6"] == 1
 
 
+# ---------------------------------------------------------------- words-out-of-band
+# Spec §9 amendment 4a: a band counts the section's OWN prose. The H4-H6 ladder the page
+# writes to meet `min-h5-h6` and the FAQ accordion's answers are outside it, and so is
+# every heading — a band pays for body copy, not for the outline the breeder approved.
+
+_PROSE_PAGE = (
+    "<html><body>"
+    "<nav><p>one two three four five</p></nav>"          # chrome: never a section's prose
+    "<main>"
+    "<section id='puppies'>"
+    "<h2>Six Word Heading Right Here Now</h2>"           # headings do not count
+    "<p>one two three four five six seven eight nine ten</p>"
+    "<h3>Another Heading That Is Not Prose</h3>"
+    "<p>eleven twelve</p>"
+    "<h4>The Ladder Starts Here</h4>"
+    "<p>ladder words that must not count at all</p>"
+    "<h5>Still The Ladder</h5><p>more ladder words</p>"
+    "<details><summary><h3>A Question</h3></summary><p>an answer from data faq json</p></details>"
+    "</section>"
+    "<section id='afterwards'><p>alpha beta gamma</p></section>"
+    "</main></body></html>"
+)
+
+
+def _prose_page(dist, slug, html=_PROSE_PAGE):
+    p = pathlib.Path(dist) / slug / "index.html"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(html, encoding="utf-8")
+    return p
+
+
+def test_page_section_words_counts_prose_and_skips_headings_ladder_details_and_chrome(tmp_path):
+    got = PB.page_section_words(_prose_page(tmp_path, "x"))
+    assert got == {"puppies": 12, "afterwards": 3}, got
+
+
+def test_word_band_findings_is_silent_when_every_section_is_in_band(tmp_path):
+    _prose_page(tmp_path, "x")
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 10, "max": 15}
+    assert PB.word_band_findings(b, dist=tmp_path) == []
+
+
+def test_word_band_findings_warns_per_section_and_never_fails(tmp_path):
+    """WARN, never FAIL: a section twenty words short is not a page that may not ship."""
+    _prose_page(tmp_path, "x")
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 400, "max": 600}
+    f = PB.word_band_findings(b, dist=tmp_path)
+    assert {x[1] for x in f} == {"WARN"}, f
+    assert any("section puppies: 12 prose words against the record's 400-600" in x[2] for x in f), f
+    assert any(x[2].startswith("page: 12 prose words against 400-600") for x in f), f
+
+
+def test_word_band_findings_reports_a_section_the_built_page_does_not_carry(tmp_path):
+    """A band measured against nothing is not a band that passed."""
+    _prose_page(tmp_path, "x")
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "not-on-the-page"
+    f = PB.word_band_findings(b, dist=tmp_path)
+    assert any("not on the built page" in x[2] and x[1] == "WARN" for x in f), f
+
+
+def test_word_band_findings_says_nothing_when_the_page_is_not_built(tmp_path):
+    """`min-h5-h6` already fails a rebuilt slug with no build; this one stays quiet rather
+    than reporting every section of every unbuilt record as short."""
+    assert PB.word_band_findings(MIN_BOARD, dist=tmp_path) == []
+
+
+def test_gate_reports_words_out_of_band_as_a_warning(tmp_path, monkeypatch):
+    monkeypatch.setattr(PB, "DIST", tmp_path)
+    _prose_page(tmp_path, MIN_BOARD["meta"]["slug"])
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["id"] = "puppies"
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "words-out-of-band"]
+    assert hit and {x["sev"] for x in hit} == {"WARN"}, hit
+
+
 def _sig_ledger(**over):
     """A sibling matching MIN_BOARD's hero+faq+takeaway signature, every other axis
     different so `ledger-tuple-identical` does not fire first and swallow the finding."""

@@ -660,6 +660,113 @@ def page_headings(path):
     return p.headings
 
 
+class _SectionProse(DUP.Text):
+    """Per-section prose word counts on one built page, counted the way spec §9 amendment
+    4a defines a word band.
+
+    Three things are outside a band and so outside this count:
+
+    * **Headings.** A band counts prose. The outline is what the breeder approved at H2/H3,
+      and re-counting it as body words would pay a section for its own table of contents.
+    * **The H4-H6 ladder.** It is written at P5 to meet `min-h5-h6`, roughly 25-30 words a
+      section, and the bands were not set against it. A ladder opens at the first h4/h5/h6
+      and runs to the next h1-h3 or to the end of the section, so its paragraphs leave the
+      count along with its headings.
+    * **`<details>`.** The FAQ accordion's answers come from `data/faq.json`, a different
+      record with its own review.
+
+    Inherits the dup gate's chrome rules for the reason `_Headings` does: a nav link, a
+    read-card title or a footer line is not a section's prose, and a second copy of that
+    rule would drift from the one the dup gate enforces."""
+
+    def __init__(self):
+        super().__init__()
+        self.counts = {}
+        self._sec = None        # (section id, len(self.stack) the <section> opened at)
+        self._ladder = False
+        self._head_at = None    # the same depth mark, for a heading and for <details>
+        self._det_at = None
+
+    def handle_starttag(self, tag, attrs):
+        super().handle_starttag(tag, attrs)
+        depth, a = len(self.stack), dict(attrs)
+        # Top-level only: a nested <section> is part of its parent's prose, and the record
+        # has no band for it.
+        if tag == "section" and a.get("id") and self._sec is None:
+            self._sec = (a["id"], depth)
+            self.counts.setdefault(a["id"], 0)
+            self._ladder = False
+        if tag in HEADING_TAGS and self._head_at is None:
+            self._head_at = depth
+            if self._sec is not None:
+                self._ladder = tag in ("h4", "h5", "h6")
+        if tag == "details" and self._det_at is None:
+            self._det_at = depth
+
+    def handle_endtag(self, tag):
+        super().handle_endtag(tag)
+        # DUP.Text truncates its stack to the matched tag, so a depth that is no longer
+        # reachable is the close of whatever opened at it — unclosed tags included.
+        depth = len(self.stack)
+        if self._head_at is not None and depth < self._head_at:
+            self._head_at = None
+        if self._det_at is not None and depth < self._det_at:
+            self._det_at = None
+        if self._sec is not None and depth < self._sec[1]:
+            self._sec, self._ladder = None, False
+
+    def handle_data(self, data):
+        super().handle_data(data)
+        if self._sec is None or self._ladder or self._head_at is not None or self._det_at is not None:
+            return
+        if self.stack and self.stack[-1][1]:
+            return
+        self.counts[self._sec[0]] += len([w for w in data.split() if re.search(r"[0-9A-Za-z]", w)])
+
+
+def page_section_words(path):
+    """{section id: prose words} for one built page — see `_SectionProse`."""
+    p = _SectionProse()
+    p.feed(pathlib.Path(path).read_text(encoding="utf-8", errors="ignore"))
+    p.close()
+    return p.counts
+
+
+def word_band_findings(board, dist=None):
+    """[(check, sev, msg)] comparing each section's prose on the BUILT page against the band
+    its record sets, plus one page-level row when the total leaves the summed bands.
+
+    WARN, never FAIL (spec §9 amendment 4a). A band is the length a section was planned at;
+    a section that reads well twenty words short is not a page that may not ship. An
+    unbuilt page measures nothing and says nothing — `min-h5-h6` already fails a rebuilt
+    slug with no build — but a section the built page does not carry IS reported, because a
+    band measured against nothing is not a band that passed."""
+    root = pathlib.Path(DIST if dist is None else dist)
+    slug = board["meta"]["slug"]
+    page = root / "index.html" if slug == "index" else root / slug / "index.html"
+    if not page.exists():
+        return []
+    got, out = page_section_words(page), []
+    total = lo = hi = 0
+    for sec in board["sections"]:
+        sid, w = sec["id"], sec["words"]
+        lo, hi = lo + w["min"], hi + w["max"]
+        if sid not in got:
+            out.append(("words-out-of-band", "WARN",
+                        f"section {sid} is not on the built page — its {w['min']}-{w['max']} band examined nothing"))
+            continue
+        n = got[sid]
+        total += n
+        if not w["min"] <= n <= w["max"]:
+            out.append(("words-out-of-band", "WARN",
+                        f"section {sid}: {n} prose words against the record's {w['min']}-{w['max']}"))
+    if not lo <= total <= hi:
+        out.append(("words-out-of-band", "WARN",
+                    f"page: {total} prose words against {lo}-{hi} (the section bands summed; "
+                    "the H4-H6 ladder and the FAQ answers are outside both)"))
+    return out
+
+
 # The specimen routes are DUP's list, not a second copy of it: `dup_content_audit.py`
 # excludes them from the duplicate-content corpus for the same reason the heading
 # pre-check excludes them here, and two lists would drift. See the note beside
@@ -1007,6 +1114,11 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     for i, d_ in enumerate(ms["descriptions"]):
         if not DESC_MIN <= len(d_) <= DESC_MAX:
             add("meta-length", "FAIL", f"description variant {i} is {len(d_)} chars — band is {DESC_MIN}–{DESC_MAX}")
+
+    # Measured from the built page, not from the record: the record carries the plan and
+    # only the page carries the prose. WARN at both stages (spec §9 amendment 4a).
+    for check, sev, msg in word_band_findings(board):
+        add(check, sev, msg)
 
     for sid in image_gaps(board):
         add("image-coverage", "WARN", f"section {sid} plans no image slot — the brief puts one under every H2 (§15b)")

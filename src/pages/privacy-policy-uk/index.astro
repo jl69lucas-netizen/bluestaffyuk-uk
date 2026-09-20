@@ -92,18 +92,26 @@ const email = SITE.email;
   {/* 02 */}
   <section id="what-we-collect" data-section-label="What information we collect">
     <h2>{T('What information we collect')}</h2>
-    <p>Two kinds: what you send me, and what the website records on its own.</p>
+    <p>
+      Two kinds: what you send me, and what the website records on its own. The first arrives
+      through a direct interaction — an enquiry form, or an email. The second is collected
+      automatically while you read.
+    </p>
 
     <h3>{T('What you give us when you enquire')}</h3>
     <p>
       Your name, email address, phone number and postal address, with anything you choose to
-      tell me about your home and family — children, another dog, the garden.
+      tell me about your home and family — children, another dog, the garden. That is the
+      information you choose to hand over when you write to me about a puppy, and it goes no
+      further than the reason you sent it.
     </p>
 
     <h3>{T('What the website records automatically')}</h3>
     <p>
       Your IP address, your browser, the pages you visit and how long you spend on them,
-      collected through cookies.
+      collected through cookies. It tells me which pages are read and which are skipped, which
+      is how the pages on this site get improved. The cookies section below says what those
+      cookies are and how they are split.
     </p>
     <h4>{T('Why I Ask for the Home Details')}</h4>
     <p>
@@ -121,7 +129,9 @@ const email = SITE.email;
     <h2>{T('How we use your information')}</h2>
     <p>
       Five things, each with its lawful basis named beside it rather than in a table at the
-      bottom, where this sort of thing goes to be ignored.
+      bottom, where this sort of thing goes to be ignored. The five are the whole list. I use
+      what you send me to keep you well informed, from the first enquiry through to the day a
+      puppy travels, and for nothing else.
     </p>
 
     <h3>{T('Answering your enquiry')}</h3>
@@ -155,6 +165,8 @@ const email = SITE.email;
     <p>
       BlueStaffyUK does not sell, trade or pass your personal information to anyone for
       marketing. It goes further than me in three circumstances, and this is the whole list.
+      Each one is limited to what the other side actually needs, and none of them is a general
+      handover of your file.
     </p>
 
     <h3>{T('Service providers who help us run the site')}</h3>
@@ -216,29 +228,44 @@ const email = SITE.email;
     <p>
       As a UK resident you hold seven rights over what I keep about you, under UK GDPR and the
       Data Protection Act 2018. No reason is needed —
-      <a href="/uk-blue-staffy-breeders-contact/">contact us</a> and say what you want.
+      <a href="/uk-blue-staffy-breeders-contact/">contact us</a> and say what you want. They are
+      not favours, and I do not need to be told why you are asking.
     </p>
 
     <h3>{T('Right to access')}</h3>
-    <p>You can ask for a copy of the personal data we hold about you.</p>
+    <p>
+      You can ask for a copy of the personal data we hold about you, and I will send it rather
+      than describe it.
+    </p>
 
     <h3>{T('Right to erasure')}</h3>
-    <p>In certain circumstances you can ask us to delete it.</p>
+    <p>In certain circumstances you can ask us to delete it, and where I can I will.</p>
 
     <h3>{T('Right to data portability')}</h3>
-    <p>You can ask for it in a structured, commonly used, machine-readable format.</p>
+    <p>
+      You can ask for it in a structured, commonly used, machine-readable format, so you can
+      take it elsewhere.
+    </p>
 
     <h3>{T('Right to rectification')}</h3>
-    <p>You can ask us to correct anything inaccurate or incomplete.</p>
+    <p>
+      You can ask us to correct anything inaccurate or incomplete. Tell me what is wrong and I
+      will fix it.
+    </p>
 
     <h3>{T('Right to restrict processing')}</h3>
-    <p>You can ask us to limit how it is used.</p>
+    <p>You can ask us to limit how it is used while something is being sorted out.</p>
 
     <h3>{T('Right to object')}</h3>
-    <p>You can object to processing based on legitimate interest.</p>
+    <p>
+      You can object to processing based on legitimate interest, which covers most of what is
+      above.
+    </p>
 
     <h3>{T('Right to withdraw consent')}</h3>
-    <p>Where consent is the basis, you can withdraw it whenever you like.</p>
+    <p>
+      Where consent is the basis, you can withdraw it whenever you like — say so and it stops.
+    </p>
     <h4>{T('How Long a Request Takes')}</h4>
     <p>
       Every legitimate request is answered within one month. If it is complicated I will say
@@ -260,7 +287,10 @@ const email = SITE.email;
   {/* 08 */}
   <section id="cookies" data-section-label="Cookies, and changes to this policy">
     <h2>{T('Cookies, and changes to this policy')}</h2>
-    <p>This website uses cookies, and they fall into two kinds.</p>
+    <p>
+      This website uses cookies, and they fall into two kinds. One kind the site cannot work
+      without, and one that only tells me how it is used.
+    </p>
 
     <h3>{T('Essential cookies')}</h3>
     <p>The ones the site needs to work at all. Without them the pages do not load properly.</p>
@@ -268,7 +298,7 @@ const email = SITE.email;
     <h3>{T('Analytics cookies')}</h3>
     <p>
       The ones that let me see how the site is used, Google Analytics among them, so that I
-      can improve it.
+      can improve it. What they record is covered by Google's own policy, linked above.
     </p>
 
     <h3>{T('Changes to this policy')}</h3>
@@ -300,6 +330,11 @@ const email = SITE.email;
       ones data/faq.json sources to this page; the record names the same three ids. */}
   <section id="questions" data-section-label="Questions we are asked about privacy" class={questionsBox}>
     <h2>{T('Questions we are asked about privacy')}</h2>
+    <p>
+      Three questions are asked often enough to be worth answering here in short, rather than
+      leaving them inside the sections above. If yours is not one of them, the contact section
+      is a few lines up and I would far rather answer it than leave you guessing.
+    </p>
     <Faq items={faqs} />
   </section>
 </PageShell>
