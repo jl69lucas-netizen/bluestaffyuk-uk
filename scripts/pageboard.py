@@ -288,8 +288,16 @@ def record_hash(board, legacy_dropped=False):
     and have been since the first board: a field the pipeline fills in after approval is not
     a choice the approval covered. The drop list is still content in every other sense —
     board_gate and facts_preserved_check both read it, the schema requires a reason on every
-    line, and the gate report prints it per page."""
-    skip = ("approval",) if legacy_dropped else ("approval", "dropped")
+    line, and the gate report prints it per page.
+
+    `verbatim` (working rule 15) is excluded on the identical argument and named separately
+    only so the reasoning is not inherited by accident: it is the list of verbatim-set
+    elements the rewrite could not carry word for word, which is discovered while the prose
+    is being written — after approval, by construction — and hashing it would make recording
+    one reworded heading read as a post-approval edit of the outline. It is not in the
+    `legacy_dropped` reading because no record approved before rule 15 has the key at all,
+    so both readings of an old record are unchanged by its exclusion."""
+    skip = ("approval", "verbatim") if legacy_dropped else ("approval", "dropped", "verbatim")
     body = {k: v for k, v in board.items() if k not in skip}
     meta = body.get("meta")
     if isinstance(meta, dict):

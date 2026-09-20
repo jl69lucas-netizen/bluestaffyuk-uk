@@ -67,6 +67,10 @@ def test_the_check_all_chain_is_the_documented_one():
     # of one question about a rebuilt page — facts-preserved asks what it LOST, link parity
     # asks what it ADDED — and reading them apart is how a link nobody approved slipped
     # through (project 4, 2026-09-20 review).
-    expected = ["check:parity", "check:facts", "check:links", "check:redirects", "check:schema",
+    # `check:verbatim` closes that run (working rule 15, Task 18b): facts asks what a rebuilt
+    # page LOST, links asks what it ADDED, verbatim asks whether it kept the old page's
+    # WORDING — the one thing a page can lose with every fact still on it.
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:redirects", "check:schema",
                 "check:sitemaps", "check:placeholders", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

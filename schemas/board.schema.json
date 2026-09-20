@@ -238,6 +238,25 @@
       "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds", "links", "text"]},
       "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}
     },
+    "verbatim": {
+      "comment": "Working rule 15's accounting: the elements of the migrated page's VERBATIM SET (data/verbatim/<slug>.json — the old H1, the keyword H2/H3s, the first paragraph under each of them, the FAQ questions and every image alt) this rebuild does NOT carry word for word, and why. A row is allowed for exactly two reasons the rule names: the old wording states a wrong fact (the former city, an old price, the byline) or it collides with another page's heading. Every other element is carried. `kind` `heading-dropped` is the one row that is not a substitution — a keyword heading the outline removed outright — and the rule says to prefer restoring the section over writing one. scripts/verbatim_set_check.py --check requires the `new` text on the built page wherever a row excuses the `old` one. Like `dropped`, this sits OUTSIDE the record hash (scripts/pageboard.py::record_hash) and for the same reason: it records what the rebuild did, and the rebuild happens after approval.",
+      "type": "object", "required": ["changed"], "additionalProperties": false,
+      "properties": {
+        "changed": {
+          "type": "array",
+          "items": {
+            "type": "object", "required": ["kind", "old", "new", "reason"], "additionalProperties": false,
+            "properties": {
+              "kind": {"enum": ["h1", "heading", "heading-dropped", "opening", "faq", "alt"]},
+              "old": {"type": "string", "minLength": 1},
+              "new": {"type": "string"},
+              "reason": {"type": "string", "minLength": 10},
+              "src": {"type": "string", "description": "the image an `alt` row is about; an alt is the one element whose identity is its src and not its own text"}
+            }
+          }
+        }
+      }
+    },
     "approval": {
       "type": ["object", "null"],
       "required": ["approved_at", "h1", "picks", "notes", "canvas_version", "record_hash"], "additionalProperties": false,
