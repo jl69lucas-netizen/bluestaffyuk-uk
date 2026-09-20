@@ -358,8 +358,8 @@
         },
         {
           "level": 3,
-          "heading": "Twelve To Fourteen Years",
-          "intent": "The lifespan the migrated guide gives for a well-cared-for, well-bred Staffy.",
+          "heading": "Twelve To Fourteen Years With Good Care",
+          "intent": "The lifespan the migrated guide gives for a well-cared-for, well-bred Staffy. Renamed at Task 18b: data/boards/blue-staffy-health-uk.json plans the same four words as its lifespan node, and two records may not plan the same heading.",
           "children": []
         }
       ],
