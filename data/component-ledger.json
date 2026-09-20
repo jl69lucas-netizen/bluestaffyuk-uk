@@ -33,13 +33,15 @@
   },
   "pages": {
     "index": {
-      "hero": "",
+      "hero": "hero-s3",
       "dial": "",
       "rail": "",
-      "toc": "",
+      "toc": "pagenav-c",
       "table": "",
-      "faq": "",
-      "takeaway": [],
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s3"
+      ],
       "h6_prefixes": []
     },
     "privacy-policy-uk": {

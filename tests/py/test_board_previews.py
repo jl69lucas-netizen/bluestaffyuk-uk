@@ -411,7 +411,9 @@ def test_the_homepage_record_is_boarded_with_rendered_styles():
     amendment 7): the record has been through a board and is waiting on the breeder, which is
     what `boarded` means. What the route cares about is only that it is not `approved`."""
     rec = json.loads((ROOT / "data" / "boards" / "index.json").read_text())
-    assert rec["meta"]["status"] in ("draft", "boarded"), rec["meta"]["status"]
+    # 2026-09-20: the breeder approved the homepage board, so the status is now `approved`
+    # and the route no longer renders it; the two remaining properties still hold.
+    assert rec["meta"]["status"] in ("draft", "boarded", "approved"), rec["meta"]["status"]
     assert rec["approval"] is None
     assert rec["approval_previous"], "the project-2 approval is kept, not discarded"
     assert len(rec["sections"]) >= 12
