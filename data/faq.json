@@ -76,5 +76,23 @@
     "q": "Are the puppies raised in a family home or in kennels?",
     "a": "In our home, not in kennels. Every litter grows up indoors with the family, with constant interaction, early socialisation and everyday household sights and sounds, and meets children, cats and older people before it leaves.",
     "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "health-dna-tests",
+    "q": "Which genetic tests are the parents cleared for?",
+    "a": "Both parents are DNA tested clear for L-2-HGA, a neurological disorder affecting metabolism, and HC-HSF4, an inherited cataract. Both conditions are recessive, so two clear parents cannot pass either one to a puppy.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vaccinations",
+    "q": "What has a puppy had before it comes home?",
+    "a": "A veterinary health check, a first vaccination covering distemper, parvovirus, leptospirosis and hepatitis, a microchip, and deworming and flea treatment. It all goes on a vet-signed health card that comes with the puppy.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-lifespan",
+    "q": "How long does a Staffordshire Bull Terrier live?",
+    "a": "Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog. Diet, daily exercise and regular vet checks are what decide where in that range a dog lands.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
   }
 ]

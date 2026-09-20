@@ -30,13 +30,27 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's own Staffordshire Bull Terrier breed page — the breed standard and what a registration covers, in the registry's words rather than ours | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
 | https://crufts.org.uk/ | crufts.org.uk | Crufts, the UK breed show the migrated about page names as where the breed is celebrated | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
 | https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy | rspca.org.uk | The RSPCA's puppy advice — independent guidance for a first-time owner, which we are not the right people to give | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/ | royalkennelclub.com | The registry's own page for the L-2-HGA DNA test — what the test is and what a clear, carrier or affected result means | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/ | royalkennelclub.com | The registry's own page for the HC-HSF4 hereditary cataract DNA test, the second of the two the breed is screened for | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
+| https://www.bva.co.uk/canine-health-schemes/eye-scheme/ | bva.co.uk | The British Veterinary Association's eye scheme — the examination that looks for inherited eye disease the HC-HSF4 DNA test does not cover | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
+| https://www.gov.uk/get-your-dog-cat-microchipped | gov.uk | The government's guidance on the microchipping law every puppy leaving us has to satisfy | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
+| https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines | pdsa.org.uk | The PDSA's guide to dog vaccinations — independent detail on the second dose and the booster, which are the owner's own vet's | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
 
 ## Provenance
 
 Every row above is a URL the migrated WordPress body already carried on the page named in
 "First page using it"; none is a new citation invented for the rebuild. The first eight were
 re-checked on 2026-09-19 and returned 200 following redirects; the three added on 2026-09-20
-for `/blue-staffy-uk-breeders/` were checked the same way on that date.
+for `/blue-staffy-uk-breeders/` were checked the same way on that date. The five added on
+2026-09-20 for `/blue-staffy-health-uk/` were checked the same way again, and two of them are
+written at the URL the check RESOLVED to rather than at the migrated body's spelling:
+`https://www.gov.uk/get-your-dog-microchipped` 301s to `get-your-dog-cat-microchipped`, and
+the PDSA's `/looking-after-your-pet/puppies-dogs/vaccinating-your-dog` 301s into the pet health
+hub. The two registry DNA-test pages are not in the migrated body as URLs; the body cites the
+registry for "Staffordshire Bull Terrier genetic health" through a search-engine wrapper and a
+shop page, and the scan (sbtpedigree, Bullscaff, Willaby) is what justifies citing the test
+itself instead. The shop page and the wrapper are logged in the health record's
+`dropped.links`.
 
 Two of the three are written here at the URL the check RESOLVED to, not at the spelling the
 migrated body used, because in both cases the old spelling is a redirect to a row rather than a

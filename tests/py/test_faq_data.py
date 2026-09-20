@@ -55,6 +55,14 @@ FACT_PHRASES = {
     # phrase; the rebuilt page says which detail instead, field by field, which is the
     # thing the answer actually leans on.
     "contact-what-to-say": ["your household", "24-48 business hours"],
+    # The three health rows are verified against the MIGRATED body today and against the
+    # rebuilt page from Task 11's P5, so every phrase below is one the board record's own
+    # outline keeps: the two test names are the `dna-tests` table's first column, the health
+    # card and distemper are `vaccinations`, and the lifespan figure and the club it is
+    # attributed to are `lifespan`. The en dash in "12–14 years" is the migrated body's.
+    "health-dna-tests": ["L-2-HGA", "HC-HSF4"],
+    "health-vaccinations": ["vet-signed health card", "distemper"],
+    "health-lifespan": ["12–14 years", "Staffordshire Bull Terrier Club"],
 }
 
 
