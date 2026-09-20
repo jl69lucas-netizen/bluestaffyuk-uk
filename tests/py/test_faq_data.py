@@ -138,6 +138,24 @@ FACT_PHRASES = {
     "listing-left-alone": ["left alone"],
     "listing-training": ["training", "socialisation"],
     "listing-sleep": ["life stage"],
+    # Six more rows on the about page in project 4 Task 18b. Working rule 15 carries that page's
+    # six migrated FAQ questions word for word — four of them changed only where the wording named
+    # the former city or collided with a live heading — and four carry the migrated ANSWER too,
+    # because that answer is an opening of the same set. `about-health-tested` does not: the
+    # migrated answer to it is the `health-testing` section's own opening, so the row states the
+    # same two tests in its own words. Every phrase below is one the sourced page's MIGRATED body
+    # says today AND one its own board record keeps after P5: "Maggie", "Jones", the two test
+    # names, "temperament" and "DEFRA" are data/boards/blue-staffy-uk-breeders.json's own
+    # `health-testing`, `our-story` and `delivery` sections, "first-time" and "socialisation" are
+    # data/boards/uk-blue-staffy-puppy-buying-guide.json, and "terrier" with "breed standard" are
+    # data/boards/uk-staffordshire-bull-terrier-guide.json, which owns the breed history this page
+    # no longer answers.
+    "about-ethical": ["Maggie", "Jones"],
+    "about-health-tested": ["L-2-HGA", "HC-HSF4"],
+    "about-temperament": ["temperament"],
+    "about-delivery-home": ["DEFRA"],
+    "about-first-time": ["first-time", "socialisation"],
+    "about-two-breeds": ["terrier", "breed standard"],
     # Eight more rows on the why-us page in project 4 Task 18b. Working rule 15 carries that
     # page's migrated questions word for word: four of them were marked up as keyword H3s and
     # four sat in its accordion behind a "+" glyph. Four are breed-identity questions the why-us

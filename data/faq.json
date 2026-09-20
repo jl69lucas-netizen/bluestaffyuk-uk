@@ -358,5 +358,41 @@
     "q": "Why Should Families Choose BlueStaffyUK as Their Trusted Breeding Partner for Staffordshire Bull Terriers in the UK?",
     "a": "Because everything this page claims can be handed to you: both parents’ DNA results, the Kennel Club paperwork, the veterinary health check and the written puppy purchase contract. Nothing on this page rests on a badge.",
     "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "about-ethical",
+    "q": "What makes BlueStaffyUK ethical as a blue Staffy breeder?",
+    "a": "We prioritise the welfare, health, and temperament of our parent dogs above all else. This means comprehensive health testing for our Dam (Maggie) and Sire (Jones), KC registration, and raising puppies in a loving home environment. We are dedicated to transparent and responsible practices.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-health-tested",
+    "q": "Are your Staffordshire Bull Terrier puppies health-tested?",
+    "a": "Yes. Both parents, Maggie and Jones, are DNA tested and certified clear for L-2-HGA and HC-HSF4 before any mating, and every puppy has a veterinary health check before it leaves us.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-temperament",
+    "q": "What is the typical temperament of our puppies?",
+    "a": "Our home-raised blue Staffy puppies are known for their loving, confident, and well-socialized temperaments. Thanks to early exposure to family life and our careful breeding, they are ideal family dogs UK , known for their loyalty and playful nature.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-delivery-home",
+    "q": "Can I get a blue Staffy puppy delivered to my home?",
+    "a": "We offer safe and reliable UK-wide puppy delivery using DEFRA-approved pet transport services. This means wherever you are in the UK, your new de-wormed Staffy pup can arrive at your doorstep comfortably and securely.",
+    "source": "src/pages/blue-staffy-uk-breeders/index.astro"
+  },
+  {
+    "id": "about-first-time",
+    "q": "What should a first-time dog owner know before getting a blue Staffy?",
+    "a": "For first-time dog owners, welcoming a blue Staffy is an exciting journey! We provide a comprehensive Puppy Care Guide, ensuring a smooth transition for both you and your new blue Staffy pup. Find helpful puppy care guidance from the RSPCA",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "about-two-breeds",
+    "q": "What two breeds make a Staffy?",
+    "a": "Bulldog and terrier crosses, in 19th-century England. Our breed guide sets out the history and the breed standard it produced.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
   }
 ]
