@@ -79,6 +79,11 @@ FACT_PHRASES = {
     "buying-what-to-ask": ["L-2-HGA", "HC-HSF4", "registration certificates"],
     "buying-best-age": ["eight weeks", "bite inhibition"],
     "buying-puppy-farm": ["puppy farm", "written contract"],
+    # The pup-sale row is verified against the MIGRATED body today and against the rebuilt
+    # page from Task 15's P5: the reply window is the migrated reservation sentence and is
+    # kept by the record's `deposit` section, and "microchipped" is the migrated litter
+    # sentence and is kept by `whats-included`.
+    "sale-reserve": ["24-48 business hours", "microchipped"],
 }
 
 

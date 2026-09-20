@@ -136,5 +136,11 @@
     "q": "How do I tell an ethical breeder from a puppy farm?",
     "a": "An ethical breeder invites you to their home, shows you the mother with the litter, shows original registration and DNA certificates, puts the terms in writing and stays reachable afterwards. A car-park meeting, an absent dam, paperwork that is in the post or pressure to decide today are each reason enough to leave.",
     "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "sale-reserve",
+    "q": "How do I reserve a puppy?",
+    "a": "Tell us which puppy you would like and we will confirm whether they are still available. We reply within 24-48 business hours, and a £{deposit_gbp} {deposit_terms} deposit then holds that named puppy for you. Every puppy is microchipped and health-checked before they leave us.",
+    "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
   }
 ]
