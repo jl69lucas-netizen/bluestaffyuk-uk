@@ -414,7 +414,7 @@ def test_the_homepage_record_is_boarded_with_rendered_styles():
     # 2026-09-20: the breeder approved the homepage board, so the status is now `approved`
     # and the route no longer renders it; the two remaining properties still hold.
     assert rec["meta"]["status"] in ("draft", "boarded", "approved"), rec["meta"]["status"]
-    assert rec["approval"] is None
+    assert rec["approval"] is None or rec["approval"]["approved_at"] >= "2026-09-20"  # the 2026-09-20 board approval
     assert rec["approval_previous"], "the project-2 approval is kept, not discarded"
     assert len(rec["sections"]) >= 12
     for s in rec["sections"]:
