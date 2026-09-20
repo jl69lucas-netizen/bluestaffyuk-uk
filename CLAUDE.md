@@ -169,7 +169,7 @@ growing. Every other rule moved to a pack.
     the wording states a wrong fact (the former city, an old price, the byline) or collides
     with another page's heading, in which case the change is recorded in the board record's
     `verbatim.changed` with the reason. Everything else is written fresh from the outline.
-    `scripts/verbatim_set_check.py` proves the set is on the built page. Applies from the
+    `scripts/verbatim_set_check.py` (arrives in Task 18b) proves the set is on the built page. Applies from the
     homepage onward; the three pages built before this rule (privacy, thank-you, contact)
     stay as rewritten. (Breeder, 2026-09-20.)
 
