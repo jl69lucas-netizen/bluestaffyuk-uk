@@ -73,7 +73,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 53
+## Skills — 55
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -83,6 +83,8 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-blog-post/SKILL.md`
 - `.claude/skills/bsuk-broken-links/SKILL.md`
 - `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
+- `.claude/skills/bsuk-component-refresh/SKILL.md`
+- `.claude/skills/bsuk-component-variations/SKILL.md`
 - `.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`
 - `.claude/skills/bsuk-contact-form/SKILL.md`
 - `.claude/skills/bsuk-cta-strategy/SKILL.md`
@@ -244,9 +246,9 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 41 rows are `deferred`.
+deliberately did not. 39 rows are `deferred`.
 
-- **project 3** — 10 rows (deferred to project 3, see data/port-manifest.json)
+- **project 3** — 8 rows (deferred to project 3, see data/port-manifest.json)
 - **project 6** — 25 rows (deferred to project 6, see data/port-manifest.json)
 - **no project** — 6 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)
