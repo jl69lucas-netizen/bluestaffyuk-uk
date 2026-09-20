@@ -908,3 +908,37 @@ def test_section_strip_pins_under_the_header_and_pays_for_its_own_height():
     assert "top:var(--hdr-measured,var(--hdr))" in norm, "the strip is not pinned to the measured header"
     assert "scroll-margin-top:calc(var(--hdr-measured,var(--hdr))+var(--strip-h,0px)+16px)" in norm, \
         "the jump offset does not include the strip's height"
+
+
+def test_the_preview_specimen_strip_is_not_the_previews_top_chrome():
+    """A specimen is a picture of the component, and it must not move the page's anchors.
+
+    The `/kit-preview/` strip sits in a short `position: relative` demo box, so it cannot
+    pin and `measureTopChrome` does not count it — but it was still publishing its own
+    measured height as `--strip-h`, so every id on that page declared
+    `scroll-margin-top: 152px` against 75px of real chrome. `nav-jump-target-lands` reported
+    10 of 11 targets outside the band at 375 and 768: two blocking rows on a page whose only
+    strip is a photograph of one.
+
+    `data-strip` is now the one selector that says "this strip IS this document's top
+    chrome", and both halves of the offset key off it — the script that publishes
+    `--strip-h`, and the no-JS floor."""
+    preview = (ROOT / "dist" / "kit-preview" / "index.html").read_text(encoding="utf-8")
+    strips = re.findall(r'<nav[^>]*class="kit-strip"[^>]*>', preview)
+    assert len(strips) == 1, strips
+    assert "data-strip" not in strips[0], strips[0]
+
+    norm = re.sub(r"\s+", "", preview)
+    assert ":root:has(.kit-strip[data-strip]){--strip-h:48px}" in norm, \
+        "the no-JS floor still fires on a specimen strip"
+    # Astro scopes the rule with its own `data-astro-cid-*` attribute, so match around it.
+    assert re.search(r"\.kit-strip\[data-astro-cid-[a-z0-9]+\]:not\(\[data-strip\]\)\{position:static\}", norm), \
+        "the specimen still claims to be sticky chrome"
+
+
+def test_a_shell_mounted_strip_is_still_the_pages_top_chrome():
+    """The other half of the same contract: a strip the shell mounts keeps `data-strip`, so
+    it keeps the script, the floor and the offset. Read off a rebuilt page, not the preview."""
+    page = (ROOT / "dist" / "privacy-policy-uk" / "index.html").read_text(encoding="utf-8")
+    strips = re.findall(r'<nav[^>]*class="kit-strip"[^>]*>', page)
+    assert len(strips) == 1 and "data-strip" in strips[0], strips

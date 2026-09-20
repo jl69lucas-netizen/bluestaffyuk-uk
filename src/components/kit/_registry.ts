@@ -233,12 +233,18 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   },
   // The third member of the in-page nav set, and the same six sections for the same two
   // reasons as the pair above: its links must resolve, and its scroll-spy must have
-  // something to observe. `position: sticky`, so on the preview it pins under the header
-  // exactly as it does on a real page — and because all THREE entries name DEMO_SECTIONS,
-  // the preview still renders those stubs once for the page, not three times.
+  // something to observe. Because all THREE entries name DEMO_SECTIONS, the preview renders
+  // those stubs once for the page, not three times.
+  //
+  // `chrome: false`, like the specimen site header's `position: static` in the preview's own
+  // stylesheet, and for the same reason. A demo box is `position: relative` and a few hundred
+  // pixels tall, so the strip has nothing to pin to — but it was still publishing its height
+  // as the offset every anchor on `/kit-preview/` had to clear, which put all eleven targets
+  // 77px below a band measured off 75px of real chrome. The prop says out loud what the
+  // preview is showing: a picture of the component, not this page's top chrome.
   'section-strip': {
     C: SectionStrip,
-    demo: [{ sections: DEMO_SECTIONS }],
+    demo: [{ sections: DEMO_SECTIONS, chrome: false }],
     wrap: 'with-targets',
   },
 };

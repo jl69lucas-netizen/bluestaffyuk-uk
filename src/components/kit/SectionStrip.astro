@@ -45,16 +45,34 @@
 // deleted, along with the prop.
 import type { HTMLAttributes } from 'astro/types';
 import type { SectionRef } from '../../lib/sections';
+// `chrome` IS THE WHOLE CONTRACT OF `data-strip`. A strip mounted by the shell is this
+// document's top chrome: it pins under the header, and every jump target on the page has to
+// clear it, which is what `--strip-h` and the `[id] { scroll-margin-top }` rule at the foot
+// exist for. A strip mounted as a SPECIMEN — the `/kit-preview/` board, a board preview — is
+// a picture of that component inside a short relative box. It cannot pin, `measureTopChrome`
+// correctly refuses to count it, and it must not move the page's anchors either.
+//
+// It did. The specimen on `/kit-preview/` published its own 61px height to `:root`, so every
+// id on that page declared `scroll-margin-top: 152px` against 75px of real chrome and
+// `nav-jump-target-lands` reported 10 of 11 targets outside the band at 375 and 768 — two
+// blocking rows, on a page whose only strip is a photograph of one. Same shape as the
+// specimen site header, which `/kit-preview/` already makes `position: static` for the same
+// reason and says so.
+//
+// So `data-strip` is written only when the strip IS chrome, and it is the single selector
+// both halves of the offset key off: the script that publishes `--strip-h` and the no-JS
+// floor below. A specimen carries neither, and is not sticky.
 type Props = HTMLAttributes<'nav'> & {
   sections: SectionRef[];
   label?: string;
+  chrome?: boolean;
 };
-const { sections, label = 'Sections', class: cls, ...rest } = Astro.props;
+const { sections, label = 'Sections', chrome = true, class: cls, ...rest } = Astro.props;
 ---
 <nav
   class:list={['kit-strip', cls]}
   aria-label={label}
-  data-strip
+  data-strip={chrome ? true : undefined}
   {...rest}
 >
   <ol>
@@ -180,6 +198,10 @@ const { sections, label = 'Sections', class: cls, ...rest } = Astro.props;
      measures more — which is why a constant alone would not do and the observer is still
      the answer wherever it can run.
 
+     THE FLOOR KEYS OFF `[data-strip]`, not off `.kit-strip`, and so does the script: a
+     specimen strip is a picture of the component, not this document's chrome, and it must
+     not move the page's anchors. See the note on the `chrome` prop above.
+
      TWICE-SCOPED, and both halves are load-bearing. <1024px, because the strip is
      `display: none` above it. And `:has(.kit-strip)`, because this is an `is:global` block
      and Astro bundles it into stylesheets that reach pages mounting no strip at all — a bare
@@ -193,12 +215,16 @@ const { sections, label = 'Sections', class: cls, ...rest } = Astro.props;
   @layer components {
     [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
     @media (max-width: 1023px) {
-      :root:has(.kit-strip) { --strip-h: 48px; }
+      :root:has(.kit-strip[data-strip]) { --strip-h: 48px; }
     }
   }
 </style>
 <style>
   @layer components {
+    /* A specimen occupies its own box and nothing else. Sticky here would be a claim the
+       preview's short relative wrapper cannot honour anyway, and it reads to the next person
+       as chrome this page does not have. */
+    .kit-strip:not([data-strip]) { position: static; }
     .kit-strip {
       position: sticky;
       /* The header's own height, measured. NOT the +16px of the jump offset: that gap is
