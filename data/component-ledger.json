@@ -79,6 +79,28 @@
       "faq": "faq-s3",
       "takeaway": [],
       "h6_prefixes": []
+    },
+    "blue-staffy-pup-sale-uk": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "buy-blue-staffy-puppies-uk": {
+      "hero": "hero-s2",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
     }
   }
 }
