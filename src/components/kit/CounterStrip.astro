@@ -38,14 +38,24 @@ type Props = HTMLAttributes<'section'> & {
   stats?: { n: string; label: string; source?: string }[];
   /** How one figure is drawn. */
   tiles?: 'inline' | 'ruled' | 'card' | 'ring' | 'seam';
+  /** Where one figure's LABEL sits against the figure. Structural: `beside` is a row, `under`
+   *  and `above` are a column read in opposite directions, and `above` reverses the DOM order
+   *  so the label is read first by a screen reader too, not only seen first. */
+  label?: 'under' | 'beside' | 'above';
 };
-const { stats, tiles = 'inline', class: cls, ...rest } = Astro.props;
+const { stats, tiles = 'inline', label = 'under', class: cls, ...rest } = Astro.props;
 const available = (pups as PuppyRow[]).filter((p) => p.status === 'Available').length;
 const fallback = [
   { n: String(available), label: available === 1 ? 'puppy available now' : 'puppies available now' },
   { n: `£${SITE.deposit_gbp}`, label: SITE.deposit_refundable ? 'refundable deposit' : 'deposit' },
   { n: `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`, label: 'UK delivery by distance' },
 ];
+// DEPRECATED, and kept for exactly one reason: the four pages built before working rule 16
+// mount this component without a `stats` prop, and removing the fallback would silently blank
+// their strip. Nothing new may rely on it — the preview route always passes `stats`, and
+// tests/py/test_board_previews.py holds every board record's stats section to carrying its own
+// rows, so a record can never ship the site-wide three by omission. Delete it with the fourth
+// page's rebuild.
 const rows = stats && stats.length ? stats : fallback;
 ---
 <section
@@ -53,6 +63,7 @@ const rows = stats && stats.length ? stats : fallback;
   class:list={['counter-wrap', 'kit-counter', cls]}
   data-counters
   data-tiles={tiles}
+  data-label={label}
   aria-label="At a glance"
 >
   <ul class="container list">
@@ -64,7 +75,9 @@ const rows = stats && stats.length ? stats : fallback;
              figure beside it is the accessible content and a decorative circle is not. */
           <span class="ring" aria-hidden="true"></span>
         ) : null}
-        <strong>{s.n}</strong><span class="lbl">{s.label}</span>
+        {label === 'above'
+          ? <><span class="lbl">{s.label}</span><strong>{s.n}</strong></>
+          : <><strong>{s.n}</strong><span class="lbl">{s.label}</span></>}
         {tiles === 'inline' && i < rows.length - 1 && <span class="dot" aria-hidden="true">·</span>}
       </li>
     ))}
@@ -136,6 +149,15 @@ const rows = stats && stats.length ? stats : fallback;
       height: 3px; background: var(--seam-gradient);
     }
     [data-tiles="seam"] li { flex-direction: column; align-items: flex-start; gap: 2px; }
+
+    /* WHERE THE LABEL SITS. `above` is the only one that also reverses the DOM order (the
+       markup above), because a label read after its figure by a screen reader while printed
+       before it on screen is two different readings of one tile. */
+    [data-label="beside"] li { flex-direction: row; align-items: baseline; gap: var(--space-2); }
+    [data-label="under"] li, [data-label="above"] li { flex-direction: column; }
+    /* No `order` here: the MARKUP is already in reading order for all three, which is the
+       point of reversing it rather than painting it reversed. */
+    [data-label="above"] strong { margin-block-start: 2px; }
 
     @media (max-width: 720px) {
       /* Working rule 13's sibling: every arrangement STACKS on a phone. A grid of ring tiles

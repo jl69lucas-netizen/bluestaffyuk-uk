@@ -48,12 +48,13 @@ import Button from '../../components/kit/Button.astro';
 import { boxClass, layoutTypeFor, stylesForSection } from '../../lib/boardStyles';
 import { loadFaq } from '../../lib/faq';
 import puppies from '../../../data/puppies.json';
+import imageManifest from '../../../data/image-manifest.json';
 
 interface TreeNode { level: number; heading: string; intent: string; children: TreeNode[] }
 interface ImageSlot { slot: string; kind: string; required: boolean; prompt: string }
 interface Asset {
   slot: string; kind: string; w: number; h: number;
-  required: boolean; status: string; file: string | null; alt: string;
+  required: boolean; status: string; file: string | null; alt: string; caption?: string;
 }
 /** A `table`-shaped section's own data. Optional on every other shape, and the ONLY place
  *  a table's numbers live: the route never derives a table from the tree, because a column
@@ -135,11 +136,33 @@ const faqRows = loadFaq();
 const pupSlugs = (puppies as { slug: string }[]).map((p) => p.slug);
 
 /** The file a section's first image slot resolves to, from the record's asset list. */
+/** The baked `-<width>.webp` sibling a legacy image has, if it has one.
+ *
+ *  A public path is copied verbatim and nothing in the build knows its candidates, so a hero
+ *  `<img>` with no `srcset` decodes one file at whatever the slot happens to be — which is
+ *  `img-srcset-within-2x` (blocking) the moment the card paints narrower than half the file's
+ *  intrinsic width, as it does at 375px. `data/image-manifest.json` records the sibling's
+ *  width as `sib_w`, so the candidates are read from the manifest rather than guessed. */
+const MANIFEST = imageManifest as Record<string, { w: number; h: number; sib_w: number | null }>;
+const srcsetFor = (file: string, w: number) => {
+  const stem = file.replace(/^.*\//, '').replace(/\.[a-z0-9]+$/i, '');
+  const ext = (file.match(/\.[a-z0-9]+$/i) || ['.webp'])[0];
+  const sib = MANIFEST[stem]?.sib_w;
+  if (!sib || !w || sib >= w) return undefined;
+  return `${file.replace(ext, '')}-${sib}${ext} ${sib}w, ${file} ${w}w`;
+};
+
+/** The first filled photo a section names, WITH its intrinsic size. The size is not optional
+ *  furniture: an `<img>` without `width`/`height` reserves no box, so the page reflows when
+ *  the photo lands, and `img_dims` (scripts/final_page_audit.py) is blocking on exactly that.
+ *  Every hero on the eight new preview routes shipped without one until this returned them. */
 const assetFor = (s: Section) => {
   const slot = s.images[0]?.slot;
   if (!slot) return null;
   const a = record.assets.find((x) => x.slot === slot && x.file);
-  return a ? { src: a.file as string, alt: a.alt || s.heading } : null;
+  if (!a) return null;
+  const src = a.file as string;
+  return { src, alt: a.alt || s.heading, w: a.w, h: a.h, srcset: srcsetFor(src, a.w) };
 };
 
 /** EVERY filled photo a section names, for the `mosaic` hero layout. Fewer than two and the
@@ -149,7 +172,8 @@ const assetsFor = (s: Section) =>
   s.images
     .map((slot) => record.assets.find((x) => x.slot === slot.slot && x.file))
     .filter((a): a is Asset => !!a)
-    .map((a) => ({ src: a.file as string, alt: a.alt || s.heading, caption: undefined as string | undefined }));
+    .map((a) => ({ src: a.file as string, alt: a.alt || s.heading,
+                   w: a.w, h: a.h, caption: a.caption }));
 
 /** The TEXT of a ledge entry. The `source` beside it is the record's business and the gate's
  *  (`ledge-source-unresolved`); a hero never renders a citation, so it is dropped here and
@@ -245,6 +269,9 @@ const stubTargets = (s: Section, styleId: string) =>
                       lede={sentences(s.intent)[0] ?? s.intent}
                       image={img?.src}
                       imageAlt={img?.alt}
+                      imageWidth={img?.w}
+                      imageHeight={img?.h}
+                      imageSrcset={img?.srcset}
                       layout={l.hero ?? 'split'}
                       align={l.align ?? 'left'}
                       media={l.media ?? 'right'}
@@ -252,19 +279,35 @@ const stubTargets = (s: Section, styleId: string) =>
                       chips={ledgeList(s.hero?.chips)}
                       ticks={ledgeList(s.hero?.ticks)}
                       stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
-                      aside={s.hero?.aside && {
-                        title: s.hero.aside.title,
-                        quote: s.hero.aside.quote,
-                        rows: (s.hero.aside.rows ?? []).map((r) => ({ label: r.label, value: r.value })),
-                        items: ledgeList(s.hero.aside.items),
-                      }}
                       mosaic={assetsFor(s)}
-                    />
+                    >
+                      {/* The aside is the PAGE's markup, handed to the hero's box through the
+                          slot. A rebuilt page writes its own; this is the record's, rendered
+                          the same way so the arrangement on the board is the arrangement that
+                          ships. `ledge: 'aside'` with nothing here renders no aside at all. */}
+                      {l.ledge === 'aside' && s.hero?.aside && (
+                        <div slot="aside">
+                          {s.hero.aside.title && <p class="aside-title">{s.hero.aside.title}</p>}
+                          {s.hero.aside.quote && <blockquote class="aside-quote">{s.hero.aside.quote}</blockquote>}
+                          {(s.hero.aside.rows ?? []).length > 0 && (
+                            <dl class="aside-rows">
+                              {(s.hero.aside.rows ?? []).map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
+                            </dl>
+                          )}
+                          {(s.hero.aside.items ?? []).length > 0 && (
+                            <ul class="aside-items">
+                              {ledgeList(s.hero.aside.items).map((i) => <li>{i}</li>)}
+                            </ul>
+                          )}
+                        </div>
+                      )}
+                    </Hero>
                   )}
                   {s.shape === 'trust' && <TrustStrip />}
                   {s.shape === 'stats' && (
                     <CounterStrip
                       tiles={l.tiles ?? 'inline'}
+                      label={l.label ?? 'under'}
                       stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
                     />
                   )}

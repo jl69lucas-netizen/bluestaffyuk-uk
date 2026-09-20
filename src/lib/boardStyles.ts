@@ -82,6 +82,37 @@ export interface Layout {
    *  `play` axis's reason — a ring is an SVG, a card is a bordered box and the inline line is
    *  a flex row of pairs; the three are different markup, not three paint jobs. */
   tiles?: 'inline' | 'ruled' | 'card' | 'ring' | 'seam';
+  /** CounterStrip only: where one figure's LABEL sits against the figure. A PROP and a
+   *  structural axis: `beside` is a row, `under` and `above` are a column read in opposite
+   *  directions, and the three are different DOM order, not three paddings. It exists because
+   *  the counter needed a fourth structural axis to be able to offer eighteen arrangements no
+   *  two of which are one axis apart — with three, the arithmetic caps the set at six. */
+  label?: 'under' | 'beside' | 'above';
+}
+
+/** THE AXES A DISTINCTNESS CLAIM IS MADE ON, per shape, and the one place they are named.
+ *
+ *  Working rule 16's promise is that no two pages share a hero or a counter. A pair of styles
+ *  one axis apart does not keep it: `media: 'left'` against `media: 'right'` is the same hero
+ *  with the photo on the other side, and a board offering both is offering one arrangement
+ *  twice. So the rule the tests enforce is TWO: every pair of the eighteen, within a family
+ *  and across families, differs on at least two of these.
+ *
+ *  What is deliberately NOT here: the photo's SIDE (left against right is a mirror, not an
+ *  arrangement) and the heading's position (`heading`, which moves a label, not a layout).
+ *  `stack` is not an axis of `Layout` at all — it is `media === 'top'`, the one part of the
+ *  media axis that IS structural, and `structuralKey()` below is what derives it. */
+export const STRUCTURAL_AXES: Record<'hero' | 'stats', readonly string[]> = {
+  hero: ['hero', 'ledge', 'stack', 'frame'],
+  stats: ['tiles', 'label', 'frame', 'columns'],
+};
+
+/** The structural fingerprint of a layout, for the shape whose distinctness is being judged.
+ *  Two styles are DIFFERENT ENOUGH when these differ in at least two places. */
+export function structuralKey(shape: 'hero' | 'stats', l: Layout): (string | number | undefined)[] {
+  return STRUCTURAL_AXES[shape].map((axis) =>
+    axis === 'stack' ? (l.media === 'top' ? 'top' : 'side')
+      : (l as Record<string, unknown>)[axis] as string | number | undefined);
 }
 
 export type Axis = keyof Layout;
@@ -111,7 +142,7 @@ export const STYLE_IDS: ReadonlyArray<StyleDef['id']> = ['S1', 'S2', 'S3'];
  *  `chrome` IS here: DataTable's three arrangements are pure CSS over identical markup,
  *  which is exactly what a class axis is for. */
 const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip' | 'play'
-  | 'hero' | 'ledge' | 'align' | 'tiles'>> = {
+  | 'hero' | 'ledge' | 'align' | 'tiles' | 'label'>> = {
   frame: 'plain', columns: 1, media: 'none', list: 'stack', aside: 'none', heading: 'above',
   chrome: 'ruled',
 };
@@ -132,7 +163,7 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   form: ['frame', 'columns', 'aside', 'heading'],
   // Working rule 16 again: `tiles` is how ONE figure is drawn, and CounterStrip reads it as
   // a prop. The bed, the column count and the heading position are the ordinary three.
-  stats: ['frame', 'columns', 'heading', 'tiles'],
+  stats: ['frame', 'columns', 'heading', 'tiles', 'label'],
   trust: ['frame', 'columns', 'heading'],
   // SectionDivider takes `inverse`, and the band frame is what selects it.
   divider: ['frame', 'columns', 'heading'],
@@ -185,7 +216,15 @@ export const LAYOUT_TYPES: readonly LayoutType[] = [
 /** `meta.page_type` -> the layout family, when the record does not state one itself. The
  *  `interior` fallback is the GUIDE set, because that is what most interior pages are; the
  *  three utility pages (privacy, thank-you, contact) say so in their own records. */
-const LAYOUT_BY_PAGE_TYPE: Record<string, LayoutType> = {
+/** Every value `meta.page_type` may take, as `schemas/board.schema.json` enumerates them.
+ *  `tests/py/test_board_previews.py` reads the schema and this union and holds them equal, so
+ *  a page type added to the schema and forgotten here is a failing test rather than a page
+ *  that silently falls back to the guide set. */
+export type PageType =
+  | 'home' | 'hub' | 'location' | 'puppy' | 'blog'
+  | 'about' | 'contact' | 'comparison' | 'interior' | 'for-sale';
+
+const LAYOUT_BY_PAGE_TYPE: Record<PageType, LayoutType> = {
   home: 'home',
   'for-sale': 'for-sale',
   puppy: 'for-sale',
@@ -204,7 +243,7 @@ export function layoutTypeFor(pageType: string, explicit?: string | null): Layou
   if (explicit && (LAYOUT_TYPES as readonly string[]).includes(explicit)) {
     return explicit as LayoutType;
   }
-  return LAYOUT_BY_PAGE_TYPE[pageType] ?? 'interior-guide';
+  return LAYOUT_BY_PAGE_TYPE[pageType as PageType] ?? 'interior-guide';
 }
 
 /** Three heroes per layout family. Every one of the eighteen has its own axis tuple.
@@ -216,118 +255,147 @@ export function layoutTypeFor(pageType: string, explicit?: string | null): Layou
  *  scripts/measure_canvas_heights.mjs measures what actually happens. */
 export const HERO_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
   // hero-idea00 (copy left on a band, photo card right, a credentials card beneath it),
-  // hero-idea (a photo mosaic right with figure tiles under it), hero-idea-1 (a full-bleed
-  // photo filling the right half, one CTA, quiet copy left).
+  // hero-idea (a photo mosaic with figure tiles under it), hero-idea-1 (a full-bleed photo
+  // filling one half, one CTA, quiet copy beside it).
   home: [
-    def('H-HM1', 'Copy left on a steel band, photo card right, credential chips under the lede',
-        { hero: 'split', media: 'right', frame: 'band', ledge: 'chips', align: 'left' }),
-    def('H-HM2', 'Copy left, four-photo mosaic right, figure tiles beneath it',
-        { hero: 'mosaic', media: 'right', ledge: 'stats', align: 'left' }),
-    def('H-HM3', 'Full-bleed photo on the right half, centred copy left',
-        { hero: 'bleed', media: 'right', ledge: 'none', align: 'center' }),
+    def('H-HM1', 'Copy left on a steel band, photo right, credential chips under the lede',
+        { hero: 'split', ledge: 'chips', media: 'right', frame: 'band', align: 'left' }),
+    def('H-HM2', 'Four-photo mosaic above the copy, figure tiles beneath it',
+        { hero: 'mosaic', ledge: 'stats', media: 'top', align: 'center' }),
+    def('H-HM3', 'Full-bleed photo on the right half, quiet copy left',
+        { hero: 'bleed', ledge: 'none', media: 'right', align: 'left' }),
   ],
-  // hero-idea66 (a staggered portrait mosaic right, a tick list under the CTAs), hero-idea77
-  // (a figure row above the H1 and one large photo card right), hero-idea-3 (copy on a band
-  // with a chip grid beneath the photo).
+  // hero-idea66 (a staggered portrait mosaic with a tick list under the CTAs), hero-idea-3
+  // (a full-bleed band over the copy with a chip row), hero-idea77 (a figure row and one
+  // large photo, stacked).
   'for-sale': [
-    def('H-FS1', 'Copy left with a tick list, puppy grid peek right',
-        { hero: 'mosaic', media: 'right', ledge: 'ticks', align: 'left' }),
+    def('H-FS1', 'Puppy grid peek right of the copy, tick list under the lede',
+        { hero: 'mosaic', ledge: 'ticks', media: 'right', align: 'left' }),
     def('H-FS2', 'Full-bleed photo above the copy, price chips under the lede',
-        { hero: 'bleed', media: 'top', ledge: 'chips', align: 'left' }),
-    def('H-FS3', 'Stacked card on a steel band, figures under the CTA row',
-        { hero: 'stacked', media: 'top', frame: 'band', ledge: 'stats', align: 'center' }),
+        { hero: 'bleed', ledge: 'chips', media: 'top', align: 'left' }),
+    def('H-FS3', 'Stacked on a steel band, figures under the CTA row',
+        { hero: 'stacked', ledge: 'stats', media: 'top', frame: 'band', align: 'center' }),
   ],
-  // component-idea-faq1 (an editorial two-column: prose left, one image right), component-
-  // idea5 (an image left and a specification column right), component-idea444 (a centred
-  // lede over three ruled columns).
+  // component-idea-faq1 (an editorial two-column: prose left, one image right),
+  // component-idea5 (an image and a specification column), component-idea33 (wide rows in a
+  // card, title left and summary right).
   'interior-guide': [
     def('H-GD1', 'Editorial two-column: copy left, key-facts aside, photo right',
-        { hero: 'split', media: 'right', ledge: 'aside', align: 'left' }),
-    def('H-GD2', 'Magazine: image above the copy, chips under the lede',
-        { hero: 'stacked', media: 'top', ledge: 'chips', align: 'left' }),
+        { hero: 'split', ledge: 'aside', media: 'right', align: 'left' }),
+    def('H-GD2', 'Magazine: image above the copy in a card, chips under the lede',
+        { hero: 'stacked', ledge: 'chips', media: 'top', frame: 'card', align: 'left' }),
     def('H-GD3', 'Text-led card with a contents aside, photo left',
-        { hero: 'panel', media: 'left', frame: 'card', ledge: 'aside', align: 'left' }),
+        { hero: 'panel', ledge: 'aside', media: 'left', frame: 'card', align: 'left' }),
   ],
-  // hero-idea-5 (a portrait right of the copy with a caption chip and a credential line),
-  // hero-idea66 again for the mosaic of named portraits, hero-idea00 for the band treatment.
+  // hero-idea-5 (a portrait with a caption chip and a credential line), hero-idea66 (named
+  // portraits), hero-idea00 (the band treatment).
   'interior-about': [
-    def('H-AB1', 'Portrait left of the copy, a quote in the aside',
-        { hero: 'split', media: 'left', ledge: 'aside', align: 'left' }),
-    def('H-AB2', 'Photo mosaic left of the copy, chips under the lede',
-        { hero: 'mosaic', media: 'left', ledge: 'chips', align: 'left' }),
-    def('H-AB3', 'Family band: photo above centred copy on steel, tick list beneath',
-        { hero: 'stacked', media: 'top', frame: 'band', ledge: 'ticks', align: 'center' }),
+    def('H-AB1', 'Photo mosaic left of the copy on a steel band, quote in the aside',
+        { hero: 'mosaic', ledge: 'aside', media: 'left', frame: 'band', align: 'left' }),
+    def('H-AB2', 'Portrait right of the copy in a card, tick list under the lede',
+        { hero: 'split', ledge: 'ticks', media: 'right', frame: 'card', align: 'left' }),
+    def('H-AB3', 'Photo above centred copy, tick list beneath it',
+        { hero: 'stacked', ledge: 'ticks', media: 'top', align: 'center' }),
   ],
   // The quiet set. A privacy policy, a thank-you page and a contact page are not selling
-  // anything, so none of the three carries a claim under its lede.
+  // anything, so none of the three carries a claim under its lede — `ledge: 'none'` on all
+  // three, which is why their distinctness has to come from the layout and the bed.
   'interior-utility': [
-    def('H-UT1', 'Title panel with a slim photo above it',
-        { hero: 'panel', media: 'top', ledge: 'none', align: 'left' }),
-    def('H-UT2', 'Copy left in a card, small photo right',
-        { hero: 'split', media: 'right', frame: 'card', ledge: 'none', align: 'left' }),
-    def('H-UT3', 'Full-bleed photo above centred copy on a steel band',
-        { hero: 'bleed', media: 'top', frame: 'band', ledge: 'none', align: 'center' }),
+    def('H-UT1', 'Small photo mosaic right of the copy, in a card',
+        { hero: 'mosaic', ledge: 'none', media: 'right', frame: 'card', align: 'left' }),
+    def('H-UT2', 'Full-bleed photo above the copy, in a card',
+        { hero: 'bleed', ledge: 'none', media: 'top', frame: 'card', align: 'left' }),
+    def('H-UT3', 'Title panel on a steel band with a slim photo above it',
+        { hero: 'panel', ledge: 'none', media: 'top', frame: 'band', align: 'center' }),
   ],
-  // component-idea55 (release cards with a ruled meta block at the foot), component-idea33
-  // (wide rows in a card, title left and summary right), component-idea3 (numbered columns
-  // divided by vertical rules on a dark band).
+  // component-idea55 (release cards with a ruled meta block at the foot), component-idea3
+  // (numbered columns divided by vertical rules), component-idea-modern (a tab row over one
+  // wide panel).
   blog: [
-    def('H-BL1', 'Post card: copy left, photo right, post counts beneath',
-        { hero: 'split', media: 'right', frame: 'card', ledge: 'stats', align: 'left' }),
-    def('H-BL2', 'Cover image above the copy in a card, topic list aside',
-        { hero: 'stacked', media: 'top', frame: 'card', ledge: 'aside', align: 'left' }),
-    def('H-BL3', 'Index panel on a steel band, photo right, topic chips',
-        { hero: 'panel', media: 'right', frame: 'band', ledge: 'chips', align: 'left' }),
+    def('H-BL1', 'Full-bleed photo one side on a steel band, post counts beneath',
+        { hero: 'bleed', ledge: 'stats', media: 'right', frame: 'band', align: 'left' }),
+    def('H-BL2', 'Contents panel with the cover image above it',
+        { hero: 'panel', ledge: 'aside', media: 'top', align: 'left' }),
+    def('H-BL3', 'Photo mosaic above the copy on a steel band, topic chips',
+        { hero: 'mosaic', ledge: 'chips', media: 'top', frame: 'band', align: 'center' }),
   ],
 };
 
-/** Three counter strips per layout family, on the same construction and the same rule: all
- *  eighteen tuples are distinct. The FIGURES never come from here — they come from the
- *  record's `sections[].stats`, each row sourced to a path in `data/*.json` (working rules 9
- *  and 16). A style decides how a figure is drawn, never what it says. */
+/** Three counter strips per layout family, on the same construction and the same rule.
+ *
+ *  The FIGURES never come from here — they come from the record's `sections[].stats`, each row
+ *  sourced to a path in `data/*.json` (working rules 9 and 16). A style decides how a figure is
+ *  drawn, never what it says.
+ *
+ *  `label` is the fourth structural axis, and it is here because of arithmetic rather than
+ *  taste: with three axes of five, three and two values, no more than six arrangements can be
+ *  pairwise two axes apart, and eighteen are needed. With `label` the set exists — and it
+ *  exists exactly, so every one of the eighteen `frame`/`columns`/`label` combinations is used
+ *  once. That is a tight fit, and it is recorded here so the next person does not try to add a
+ *  nineteenth. */
 export const COUNTER_STYLES_BY_PAGE_TYPE: Record<LayoutType, [StyleDef, StyleDef, StyleDef]> = {
-  // hero-idea (the figure tiles under the mosaic), component-idea3 (numbered columns with
-  // vertical rules), component-idea1 (three cards in a row under one heading).
+  // hero-idea (the figure tiles under the mosaic), component-idea3 (columns with vertical
+  // rules), component-idea55 (the ruled meta block at the foot of a card).
   home: [
-    def('C-HM1', 'One flush line of figure-and-label pairs', { tiles: 'inline' }),
-    def('C-HM2', 'Ruled columns on a steel band', { tiles: 'ruled', frame: 'band', heading: 'eyebrow' }),
-    def('C-HM3', 'Figure cards beside the heading', { tiles: 'card', columns: 2, heading: 'inline' }),
+    def('C-HM1', 'One flush line of figure-and-label pairs',
+        { tiles: 'inline', label: 'under' }),
+    def('C-HM2', 'Ruled columns, the label beside each figure',
+        { tiles: 'ruled', label: 'beside' }),
+    def('C-HM3', 'Seam bar inside a card, labels above the figures',
+        { tiles: 'seam', frame: 'card', label: 'above' }),
   ],
-  // hero-idea77 (a ruled figure row above the H1), component-idea1 (cards), and the seam the
-  // kit already owns (--seam-gradient) as the third.
+  // hero-idea77 (a ruled figure row), component-idea1 (three cards in a row), and the seam
+  // the kit already owns (--seam-gradient).
   'for-sale': [
-    def('C-FS1', 'Figure cards across the full width', { tiles: 'card' }),
-    def('C-FS2', 'Seam bar on a steel band, figures along it', { tiles: 'seam', frame: 'band' }),
-    def('C-FS3', 'Ruled columns beside the heading', { tiles: 'ruled', columns: 2, heading: 'inline' }),
+    def('C-FS1', 'Figure cards, labels above the figures',
+        { tiles: 'card', label: 'above' }),
+    def('C-FS2', 'Ring tiles in a card, beside the heading',
+        { tiles: 'ring', frame: 'card', columns: 2, label: 'under' }),
+    def('C-FS3', 'Seam bar in a card, beside the heading, labels beside the figures',
+        { tiles: 'seam', frame: 'card', columns: 2, label: 'beside' }),
   ],
   // component-idea2 (an icon-led ruled list), component-idea444 (ruled columns), and the ring
   // the kit's PageDial already draws, reused at figure size.
   'interior-guide': [
-    def('C-GD1', 'Ring tiles, the figure inside the ring', { tiles: 'ring' }),
-    def('C-GD2', 'One flush line on a steel band', { tiles: 'inline', frame: 'band', heading: 'eyebrow' }),
-    def('C-GD3', 'Ruled columns inside a card', { tiles: 'ruled', frame: 'card' }),
+    def('C-GD1', 'Ruled columns beside the heading',
+        { tiles: 'ruled', columns: 2, label: 'under' }),
+    def('C-GD2', 'Ring tiles beside the heading, labels above',
+        { tiles: 'ring', columns: 2, label: 'above' }),
+    def('C-GD3', 'Figure cards inside a card',
+        { tiles: 'card', frame: 'card', label: 'under' }),
   ],
+  // The about page's set is the one that takes the steel band on all three: a page about who
+  // we are is the page that can afford the loudest bed.
   'interior-about': [
-    def('C-AB1', 'Figure cards on a steel band', { tiles: 'card', frame: 'band' }),
-    def('C-AB2', 'Ring tiles beside the heading', { tiles: 'ring', columns: 2, heading: 'inline' }),
-    def('C-AB3', 'Seam bar across the bone surface', { tiles: 'seam', heading: 'eyebrow' }),
+    def('C-AB1', 'Figure cards on a steel band, beside the heading',
+        { tiles: 'card', frame: 'band', columns: 2, label: 'under' }),
+    def('C-AB2', 'Ring tiles on a steel band, labels above',
+        { tiles: 'ring', frame: 'band', label: 'above' }),
+    def('C-AB3', 'Seam bar on a steel band, beside the heading, labels above',
+        { tiles: 'seam', frame: 'band', columns: 2, label: 'above' }),
   ],
   'interior-utility': [
-    def('C-UT1', 'One flush line under an eyebrow', { tiles: 'inline', heading: 'eyebrow' }),
-    def('C-UT2', 'Ruled columns across the full width', { tiles: 'ruled' }),
-    def('C-UT3', 'Seam bar inside a card', { tiles: 'seam', frame: 'card' }),
+    def('C-UT1', 'One flush line in a card, beside the heading, labels above',
+        { tiles: 'inline', frame: 'card', columns: 2, label: 'above' }),
+    def('C-UT2', 'Ring tiles in a card, labels beside the figures',
+        { tiles: 'ring', frame: 'card', label: 'beside' }),
+    def('C-UT3', 'Figure cards on a steel band, labels beside the figures',
+        { tiles: 'card', frame: 'band', label: 'beside' }),
   ],
-  // component-idea55 (the ruled meta block at the foot of a release card), component-idea33
-  // (wide rows in a card).
   blog: [
-    def('C-BL1', 'Figure cards, two columns', { tiles: 'card', columns: 2 }),
-    def('C-BL2', 'Ring tiles on a steel band', { tiles: 'ring', frame: 'band' }),
-    def('C-BL3', 'One flush line inside a card, beside the heading',
-        { tiles: 'inline', frame: 'card', heading: 'inline' }),
+    def('C-BL1', 'Figure cards beside the heading, labels beside the figures',
+        { tiles: 'card', columns: 2, label: 'beside' }),
+    def('C-BL2', 'Ruled columns on a steel band',
+        { tiles: 'ruled', frame: 'band', label: 'under' }),
+    def('C-BL3', 'Ring tiles on a steel band, beside the heading, labels beside',
+        { tiles: 'ring', frame: 'band', columns: 2, label: 'beside' }),
   ],
 };
 
-/** The shapes whose three styles depend on the page's layout family. */
+/** The shapes whose three styles depend on the page's layout family — working rule 16's two.
+ *  `scripts/pageboard.py` carries the same tuple (it is what `locked_picks` re-asks), and
+ *  `tests/py/test_board_previews.py` reads both and holds them equal: two copies of a list
+ *  that disagree is a section re-asked on the board and locked in the record, or the reverse. */
 export const PER_PAGE_SHAPES: readonly Shape[] = ['hero', 'stats'];
 
 export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {

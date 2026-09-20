@@ -43,6 +43,7 @@ import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
 import PuppyCard from './PuppyCard.astro';
 import Hero from './Hero.astro';
+import { SITE } from '../../lib/site';
 import TrustStrip from './TrustStrip.astro';
 import CounterStrip from './CounterStrip.astro';
 import InfoCard from './InfoCard.astro';
@@ -135,10 +136,18 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // The chips and the CTA row are PROPS now and default to none (project 4, 2026-09-20
   // review): a component may not assert a page's credentials or invent its links. The board
   // is where those weights are judged, so the specimen passes the set the homepage carries.
+  // The eyebrow, the headline and the lede are PROPS with no default now (the 2026-09-20
+  // review's last hiding place: a component that defaults to "KC registered · Carlisle" is a
+  // component asserting a page's credentials for it). The specimen therefore states its own,
+  // which is the honest arrangement — a board specimen shows what a caller passes, and every
+  // figure in these three is in data/settings.json.
   hero: {
     C: Hero,
     demo: [{
       as: 'h2',
+      eyebrow: `KC registered · ${SITE.location_label}`,
+      title: 'Blue Staffy puppies raised in a family home',
+      lede: `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
       chips: ['KC registered', 'DNA-tested parents', 'Raised in the home'],
       ctas: [
         { label: 'Meet the puppies', href: '/available-puppies/' },

@@ -75,10 +75,14 @@ def test_the_demo_record_loads_and_offers_three_styles_on_every_styled_section()
     # Working rule 16: the fixture's hero and counter carry the interior-guide sets so that
     # the per-page path is BUILT and measured, not only unit-tested. Every other section keeps
     # the shape-wide trio, which is what the four pages built before that rule still name.
-    assert rec["meta"]["layout_type"] == "interior-guide"
+    # The fixture carries the INTERIOR-UTILITY sets. It is the only record that can: the
+    # three utility pages (privacy, thank-you, contact) were built before working rule 16 and
+    # still name S1/S2/S3, so without the fixture those six arrangements would be six styles
+    # nothing ever builds, renders or measures.
+    assert rec["meta"]["layout_type"] == "interior-utility"
     offered = {s["id"]: s["styles"] for s in rec["sections"]}
-    assert offered["opening"] == ["H-GD1", "H-GD2", "H-GD3"]
-    assert offered["at-a-glance"] == ["C-GD1", "C-GD2", "C-GD3"]
+    assert offered["opening"] == ["H-UT1", "H-UT2", "H-UT3"]
+    assert offered["at-a-glance"] == ["C-UT1", "C-UT2", "C-UT3"]
     assert all(v == ["S1", "S2", "S3"] for k, v in offered.items()
                if k not in {"opening", "at-a-glance"})
 
@@ -559,19 +563,83 @@ def test_no_per_page_style_sets_an_axis_its_renderer_ignores(sets, which):
             assert set(layout) <= allowed, (fam, sid, sorted(set(layout) - allowed))
 
 
+# The axes a distinctness claim is made on, read out of src/lib/boardStyles.ts rather than
+# retyped: a second copy of the list is a copy that drifts, and the whole point of naming them
+# in one place is that the rule and the styles cannot disagree about what "different" means.
+def _structural_axes():
+    src = TS.read_text(encoding="utf-8").split("export const STRUCTURAL_AXES", 1)[1]
+    src = src.split("};", 1)[0]
+    return {m.group(1): re.findall(r"'(\w+)'", m.group(2))
+            for m in re.finditer(r"^\s*([a-z]+):\s*\[(.*?)\],\s*$", src, re.M)}
+
+
+STRUCTURAL = _structural_axes()
+
+
+def test_the_structural_axes_are_read_from_the_source_and_are_what_we_think():
+    """`stack` is `media === 'top'`, not an axis of Layout: left-against-right is a mirror of
+    one arrangement, top-against-side is two. `heading` is absent on purpose — it moves a
+    label, not a layout."""
+    assert STRUCTURAL == {"hero": ["hero", "ledge", "stack", "frame"],
+                          "stats": ["tiles", "label", "frame", "columns"]}, STRUCTURAL
+    for which, axes in STRUCTURAL.items():
+        assert "media" not in axes and "heading" not in axes and "align" not in axes, (which, axes)
+        # every structural axis except the derived `stack` must be one the renderer reads
+        assert set(axes) - {"stack"} <= set(AXES[which]), (which, axes)
+
+
+def _structural_key(which, layout):
+    return tuple(
+        ("top" if layout.get("media") == "top" else "side") if axis == "stack"
+        else layout.get(axis)
+        for axis in STRUCTURAL[which])
+
+
 @pytest.mark.parametrize("sets,which", [(HERO_SETS, "hero"), (COUNTER_SETS, "stats")])
-def test_all_eighteen_per_page_styles_have_distinct_axis_tuples(sets, which):
-    """Within a set AND across the six sets. A tuple shared by two families is how two pages
-    of different types come to ship the same arrangement with rule 16 still reporting green."""
-    axes = AXES[which]
-    seen = {}
+def test_every_pair_of_the_eighteen_differs_on_two_structural_axes(sets, which):
+    """WITHIN a family and ACROSS families, and two axes rather than one.
+
+    One axis apart is not an arrangement apart: `H-GD1` and `H-AB1` were a guide hero and an
+    about hero that differed by which side the photo sat on, and `C-FS1` and `C-BL1` were the
+    same counter with a different column count. A board offering either pair is offering one
+    arrangement twice, and working rule 16's promise — no two pages share a hero or a counter —
+    is kept by the id, not by the layout. So: two."""
+    keys = {}
     for fam, rows in sets.items():
         for sid, _name, layout in rows:
-            key = tuple(layout.get(a) for a in axes)
-            assert key not in seen, (
-                f"{which}: {sid} ({fam}) renders exactly what {seen[key]} does — {key}")
-            seen[key] = f"{sid} ({fam})"
-    assert len(seen) == 18, len(seen)
+            keys[f"{sid} ({fam})"] = _structural_key(which, layout)
+    assert len(keys) == 18, sorted(keys)
+    names = sorted(keys)
+    for i, a in enumerate(names):
+        for b in names[i + 1:]:
+            d = sum(1 for x, y in zip(keys[a], keys[b]) if x != y)
+            assert d >= 2, (
+                f"{which}: {a} and {b} are {d} structural axis apart — "
+                f"{keys[a]} against {keys[b]} on {STRUCTURAL[which]}")
+
+
+@pytest.mark.parametrize("sets,which,axis", [(HERO_SETS, "hero", "hero"),
+                                             (COUNTER_SETS, "stats", "tiles")])
+def test_each_family_offers_three_different_layouts_not_three_variations(sets, which, axis):
+    """A menu whose three options share a layout is two options and a variation of one."""
+    for fam, rows in sets.items():
+        got = [l.get(axis) for _s, _n, l in rows]
+        assert len(set(got)) == 3, (which, fam, got)
+
+
+def test_a_hero_layout_and_its_media_placement_agree():
+    """`stacked` is the arrangement whose photo is ABOVE the copy and `split` is the one whose
+    photo is beside it — a def that says otherwise describes a layout the CSS will not build."""
+    for fam, rows in HERO_SETS.items():
+        for sid, _n, l in rows:
+            top = l.get("media") == "top"
+            if l.get("hero") == "stacked":
+                assert top, (sid, fam, l)
+            # `panel` is text-led and takes its photo on either side OR above: a title panel
+            # with a slim photo band over it is the same text-led arrangement, and it is the
+            # one the utility set's H-UT3 is. Only `split` is side-by-side by definition.
+            if l.get("hero") == "split":
+                assert not top, (sid, fam, l)
 
 
 @pytest.mark.parametrize("sets", [HERO_SETS, COUNTER_SETS])
@@ -740,3 +808,268 @@ def test_the_record_sweep_is_not_vacuous():
                for f in (ROOT / "data/boards").glob("*.json")
                for s in json.loads(f.read_text(encoding="utf-8"))["sections"])
     assert rows >= 30, f"only {rows} sourced figure(s) on the boards — the sweep proves little"
+
+
+# ── the two lists that exist in TypeScript and in Python ──────────────────────────────────
+
+def test_the_page_type_union_matches_the_schema_enum():
+    """`LAYOUT_BY_PAGE_TYPE` maps every page type to a layout family. A type added to the
+    schema and forgotten there does not raise — it falls through to the guide set, which is a
+    page silently offered the wrong three heroes."""
+    schema = json.loads((ROOT / "schemas/board.schema.json").read_text(encoding="utf-8"))
+    enum = set(schema["properties"]["meta"]["properties"]["page_type"]["enum"])
+    src = TS.read_text(encoding="utf-8")
+    union = set(re.findall(r"'([a-z-]+)'",
+                           src.split("export type PageType =", 1)[1].split(";", 1)[0]))
+    table = set(re.findall(r"^\s*'?([a-z-]+)'?:\s*'[a-z-]+',\s*$",
+                           src.split("const LAYOUT_BY_PAGE_TYPE", 1)[1].split("};", 1)[0], re.M))
+    assert union == enum, sorted(union ^ enum)
+    assert table == enum, sorted(table ^ enum)
+
+
+def test_per_page_shapes_agrees_across_typescript_python_and_this_file():
+    """The hero and the counter are what a re-board re-asks. Two copies of that list that
+    disagree is a section re-asked on the board and locked in the record, or the reverse."""
+    ts = re.findall(r"'(\w+)'",
+                    TS.read_text(encoding="utf-8")
+                      .split("export const PER_PAGE_SHAPES", 1)[1].split(";", 1)[0])
+    assert tuple(ts) == tuple(PB.PER_PAGE_SHAPES) == ("hero", "stats"), (ts, PB.PER_PAGE_SHAPES)
+
+
+# ── the picks a re-boarded record carries forward ─────────────────────────────────────────
+
+def _carry_board(**over):
+    """A two-section record with an approval to carry: one prose section and one hero."""
+    prose = {"id": "prose", "shape": "standard", "heading": "Prose",
+             "styles": ["S1", "S2", "S3"], "options": {"pick": None}, "n": 2}
+    hero = {"id": "top", "shape": "hero", "heading": "Top",
+            "styles": ["H-GD1", "H-GD2", "H-GD3"], "options": {"pick": None}, "n": 1}
+    board = {"sections": [hero, prose],
+             "approval_previous": {"picks": {"prose": "S2", "top": "H-GD1"},
+                                   "section_hashes": {}}}
+    board["approval_previous"]["section_hashes"] = {
+        s["id"]: PB.section_fingerprint(s) for s in board["sections"]}
+    for k, v in over.items():
+        board[k] = v
+    return board
+
+
+def test_a_carried_pick_is_locked_when_nothing_about_its_section_moved():
+    assert PB.locked_picks(_carry_board()) == {"prose": "S2"}
+
+
+def test_the_per_page_shapes_are_never_carried():
+    """They are what the re-board is FOR. Carrying the hero forward would answer the one
+    question the breeder was brought back to answer."""
+    assert "top" not in PB.locked_picks(_carry_board())
+
+
+def test_a_pick_for_a_section_that_is_gone_is_not_carried():
+    b = _carry_board()
+    b["sections"] = [s for s in b["sections"] if s["id"] != "prose"]
+    assert PB.locked_picks(b) == {}
+
+
+def test_a_pick_that_is_no_longer_on_the_menu_is_not_carried():
+    """Pre-filling an id `board_approve.py` would then refuse is worse than asking again."""
+    b = _carry_board()
+    prose = next(s for s in b["sections"] if s["id"] == "prose")
+    prose["styles"] = ["C-GD1", "C-GD2", "C-GD3"]
+    b["approval_previous"]["section_hashes"]["prose"] = PB.section_fingerprint(prose)
+    assert PB.locked_picks(b) == {}
+
+
+def test_a_pick_whose_section_changed_under_it_is_not_carried():
+    """The breeder answered a question about THIS section. Change the question and the answer
+    is not theirs any more, whatever the record says."""
+    b = _carry_board()
+    prose = next(s for s in b["sections"] if s["id"] == "prose")
+    prose["heading"] = "Prose, rewritten"
+    assert PB.locked_picks(b) == {}
+
+
+def test_a_refresh_delta_does_not_unlock_a_carried_pick():
+    """A delta is a NOTE about which sibling the section departs from; the arrangement it
+    departs INTO is the pick, unchanged. Counting it would have unlocked every carried pick
+    on the day working rule 16 gave every section a delta."""
+    b = _carry_board()
+    prose = next(s for s in b["sections"] if s["id"] == "prose")
+    prose["refresh"] = {"axis": "accent", "note": "brass as a hairline, not a fill, against the buy pages"}
+    assert PB.locked_picks(b) == {"prose": "S2"}
+
+
+def test_an_approval_with_no_recorded_hashes_locks_nothing():
+    """An approval that kept no record of what it approved cannot prove anything stayed still,
+    and a lock that cannot prove it is a lock on the breeder's behalf."""
+    b = _carry_board()
+    b["approval_previous"]["section_hashes"] = {}
+    assert PB.locked_picks(b) == {}
+
+
+def test_a_moved_section_position_does_not_unlock():
+    """`n` is where a section sits, not what it says."""
+    b = _carry_board()
+    next(s for s in b["sections"] if s["id"] == "prose")["n"] = 9
+    assert PB.locked_picks(b) == {"prose": "S2"}
+
+
+def test_the_real_reboarded_records_carry_what_they_should():
+    """Four records went back to the board for two questions each. Every other answer they
+    already had is still theirs."""
+    expected = {"blue-staffy-pup-sale-uk": {"at-a-glance", "top"},
+                "buy-blue-staffy-puppies-uk": {"at-a-glance", "top"},
+                "buy-staffy-puppies-for-sale-uk": {"top"},
+                "blue-staffy-uk-breeders": {"top"}}
+    for slug, reasked in expected.items():
+        record = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
+        prev = set(record["approval_previous"]["picks"])
+        locked = set(PB.locked_picks(record))
+        assert locked, f"{slug} carried nothing forward"
+        assert prev - locked == reasked, (slug, sorted(prev - locked))
+
+
+def test_a_locked_radio_is_checked_and_disabled_and_still_submits():
+    """The board's approve button reads `input[name^="pick-"]:checked`. A disabled radio still
+    matches that selector, which is what lets a carried answer be submitted and not changed."""
+    import build_page_board as BPB
+    record = json.loads((ROOT / "data/boards/blue-staffy-pup-sale-uk.json")
+                        .read_text(encoding="utf-8"))
+    locked = PB.locked_picks(record)
+    assert locked, "the fixture record carries nothing — this test would prove nothing"
+    sid, pick = sorted(locked.items())[0]
+    section = next(s for s in record["sections"] if s["id"] == sid)
+    html = BPB.style_fieldset(section, {"names": {}, "blocks": {}}, locked)
+    assert 'class="styles locked"' in html
+    assert f'value="{pick}" checked disabled' in html, html[:400]
+    assert html.count(" disabled") == 3, "all three radios are disabled, one of them checked"
+    # and an UNLOCKED section is left alone
+    plain = BPB.style_fieldset(section, {"names": {}, "blocks": {}}, {})
+    assert " disabled" not in plain
+
+
+def test_a_record_pick_that_disagrees_with_the_carried_one_stops_the_build():
+    """Two answers to one question. Quietly preferring either is the board telling the breeder
+    they decided something they did not."""
+    import build_page_board as BPB
+    section = {"id": "prose", "shape": "standard", "heading": "Prose",
+               "styles": ["S1", "S2", "S3"], "options": {"pick": "S3", "note": ""}}
+    with pytest.raises(PB.BoardError, match="two answers to one question"):
+        BPB.style_fieldset(section, {"names": {}, "blocks": {}}, {"prose": "S1"})
+    # agreeing is fine
+    section["options"]["pick"] = "S1"
+    assert BPB.style_fieldset(section, {"names": {}, "blocks": {}}, {"prose": "S1"})
+
+
+# ── every section carries a refresh delta ─────────────────────────────────────────────────
+
+BOARDED = ("boarded", "approved", "built", "released")
+
+
+def _under_rule_16(record):
+    """A record is under working rule 16 once it names its LAYOUT FAMILY.
+
+    Not an allowlist and not a date: the four pages built before the rule still name S1/S2/S3
+    on their hero and carry no `meta.layout_type`, and the later task that refreshes them adds
+    one — at which point the two checks below start asking them for what they ask everybody
+    else. A slug list here would have to be edited by hand on that day, and would not be."""
+    return bool(record["meta"].get("layout_type"))
+
+
+def test_every_section_of_every_boarded_record_carries_a_refresh_delta():
+    """Working rule 16 asks EVERY section for one, not the three to five a page felt like
+    writing. The hero and the counter are exempt: they are per-page by construction, and their
+    delta is the style set itself."""
+    bad = []
+    for f in sorted((ROOT / "data/boards").glob("*.json")):
+        record = json.loads(f.read_text(encoding="utf-8"))
+        if record["meta"]["status"] not in BOARDED or not _under_rule_16(record):
+            continue
+        bad += [(f.stem, s["id"]) for s in record["sections"]
+                if s["shape"] not in PB.PER_PAGE_SHAPES and not s.get("refresh")]
+    assert bad == [], bad
+
+
+def test_the_refresh_sweep_covers_the_eight_records():
+    boarded = [f.stem for f in sorted((ROOT / "data/boards").glob("*.json"))
+               if json.loads(f.read_text(encoding="utf-8"))["meta"]["status"] in BOARDED
+               and _under_rule_16(json.loads(f.read_text(encoding="utf-8")))]
+    assert len(boarded) >= 8, boarded
+
+
+#: A delta is a DEPARTURE, so its note has to name something to have departed from. The list
+#: is the ways the notes actually say it — a plain "against the …", a comparative ("roomier
+#: than", "the only … on the site"), or a correction ("reversing", "instead of"). It is
+#: deliberately generous and still rejects a bare description of the section, which is what
+#: four of them were before this test existed.
+COMPARATIVE = ("against", "rather than", "instead", "not the", "not a", "where", "unlike",
+               "than", "no other", "the only", "matching", "reversing", "any guide")
+
+
+def test_a_refresh_note_says_what_it_is_a_delta_from():
+    """A delta with no sibling named is a description of a section, not a departure from one.
+    The skill's wording: what the delta is, and which page it is a delta FROM."""
+    thin = []
+    for f in sorted((ROOT / "data/boards").glob("*.json")):
+        for s in json.loads(f.read_text(encoding="utf-8"))["sections"]:
+            r = s.get("refresh")
+            if r and not any(w in r["note"].lower() for w in COMPARATIVE):
+                thin.append((f.stem, s["id"], r["note"]))
+    assert thin == [], thin
+
+
+# ── the counter strip's deprecated fallback ───────────────────────────────────────────────
+
+def test_no_board_record_relies_on_the_counter_strips_fallback_figures():
+    """CounterStrip prints three site-wide figures when a page passes none, and that fallback
+    exists for exactly one reason: the four pages built before working rule 16 mount it
+    without a `stats` prop. A RECORD that reached the fallback would be a board showing the
+    homepage's numbers on somebody else's page."""
+    bad = []
+    for f in sorted((ROOT / "data/boards").glob("*.json")):
+        record = json.loads(f.read_text(encoding="utf-8"))
+        if not _under_rule_16(record):
+            continue          # the four built before the rule; their counters are a later task
+        for s in record["sections"]:
+            if s["shape"] == "stats" and not (s.get("stats") or []):
+                bad.append((f.stem, s["id"]))
+    assert bad == [], bad
+    assert any(_under_rule_16(json.loads(f.read_text(encoding="utf-8")))
+               for f in (ROOT / "data/boards").glob("*.json")), "the sweep examined nothing"
+
+
+def test_the_fallback_is_marked_deprecated_where_it_lives():
+    src = (ROOT / "src/components/kit/CounterStrip.astro").read_text(encoding="utf-8")
+    assert "DEPRECATED" in src, "the fallback is kept on sufferance and has to say so"
+
+
+# ── the gate does not read a build in progress ────────────────────────────────────────────
+
+def test_a_built_page_older_than_its_sources_is_not_fresh(tmp_path):
+    """`min-h5-h6` read `dist/` mid-build and flipped on the same record. A file existing is
+    not a build having finished."""
+    import time
+    (tmp_path / "src").mkdir()
+    (tmp_path / "dist").mkdir()
+    built = tmp_path / "dist/index.html"
+    built.write_text("<h5>x</h5>", encoding="utf-8")
+    assert PB.dist_page_is_fresh(built, tmp_path)
+    time.sleep(0.01)
+    (tmp_path / "src/page.astro").write_text("edited\n", encoding="utf-8")
+    assert not PB.dist_page_is_fresh(built, tmp_path)
+
+
+def test_a_missing_built_page_is_never_fresh(tmp_path):
+    assert not PB.dist_page_is_fresh(tmp_path / "dist/nope.html", tmp_path)
+
+
+def test_the_preview_payloads_do_not_make_every_build_stale(tmp_path):
+    """`data/boards/previews/` is written BY the build. Counting it would make every build
+    instantly stale against its own output."""
+    import time
+    (tmp_path / "data/boards/previews").mkdir(parents=True)
+    (tmp_path / "dist").mkdir()
+    built = tmp_path / "dist/index.html"
+    built.write_text("x", encoding="utf-8")
+    time.sleep(0.01)
+    (tmp_path / "data/boards/previews/x.json").write_text("{}", encoding="utf-8")
+    assert PB.dist_page_is_fresh(built, tmp_path)

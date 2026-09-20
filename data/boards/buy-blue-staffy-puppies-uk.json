@@ -626,6 +626,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "The Mother And Father Of This Litter: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   },
    "keywords": {
     "primary": [
      "buy blue staffy puppies uk"
@@ -824,6 +828,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "What Your Blue Staffy Puppy Comes With: the photo full width above two columns of prose, against the photo-right default"
+   },
    "keywords": {
     "primary": [
      "buy blue staffy puppies uk"
@@ -894,6 +902,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Why Buy From BlueStaffyUK: Ethical Breeding and Health: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+   },
    "keywords": {
     "primary": [
      "buy blue staffy puppies uk"
@@ -961,6 +973,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "Need Staffy puppy delivery to London, Manchester, or beyond? We can help!: compact rows, tighter than the section above it, against the airy default this cluster uses"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1087,6 +1103,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "Why UK Families Trust BlueStaffyUK: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "buy blue staffy puppies uk"
@@ -1160,6 +1180,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Your Journey to a Blue Staffy: FAQs for Buyers: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "buy blue staffy puppies uk"
@@ -1316,6 +1340,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Ask About A Particular Puppy: the form in a card with the heading beside it, against the full-width form under its heading"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1382,6 +1410,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "accent",
+    "note": "Before You Send Anything, Come And Look: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1652,6 +1684,21 @@
    "top": "S2",
    "whats-included": "S1",
    "why-choose": "S1"
+  },
+  "section_hashes": {
+   "top": "6fb164cc1f3b5834be81d10538b10ce69c201a64631b9062d867f5490d23575b",
+   "at-a-glance": "e73b3fd4730b2fdec1539da9e7730debd04a929bebc458f545d82141210da196",
+   "puppies": "3bb07d98be0c290ba00d70a48fe7d386e2360e171cacd7e819549e7da11a820c",
+   "gallery": "8fb4c8255993c3d0e5c423726289d0ecdbdbd6349313089d225c87a66523b289",
+   "parents": "9fee093f6fe4684bc7e194626c7534af9db2d3d332f8a51870495eb3b26399f0",
+   "steps": "499a671f70043f1ca084c036b41bec28f35e5f83cc279729c9e6b4eb280e1f57",
+   "whats-included": "fbe4d8d4a46e8b17ef7ca3b54a91c9112e1888b2a7aeafa9cb8cc2b97db01381",
+   "why-choose": "f3f5ccfa45d48db4fe460fa98fb451b021d1294d2fa7b49efcf911040db4618f",
+   "delivery": "26400d657f9184aed52297c128fd79ee5d767dd73174c44eb78118726ec94b28",
+   "owners": "9e32c5075a3b3b871cfadcd3f931cfe487ff9ac9bd3cf56206ddaf8e257e0543",
+   "questions": "4df1b07568758547eb1cbdedaec9d92c72b18cbe4c905172a2fefbf1ee0a2bc2",
+   "enquiry": "9d98ee6d997954dea66e7d0ed31d4e961cf7bbe7ff11346e17886b5f4b716724",
+   "talk-to-us": "9551a8cfcb8c513a7406659d23c144bb703d37f20b3da3257f9e2049fd514093"
   },
   "record_hash": "6d6030cac3dba8da7b796e337dbc67e9488c9ad11d4bd0243b2cecc74c116915",
   "tuple_before": {

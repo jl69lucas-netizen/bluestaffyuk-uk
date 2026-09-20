@@ -491,6 +491,14 @@ def style_fieldset(section, previews, locked=None):
     # entitled to see what they agreed to, not only to be told they agreed to it.
     carried = (locked or {}).get(sid)
     if carried:
+        # A record whose own `options.pick` disagrees with the carried one is two answers to
+        # one question, and quietly preferring either is the board telling the breeder they
+        # decided something they did not. It is a record fault, so it stops the build.
+        if pick and pick != carried:
+            raise PB.BoardError(
+                f"section {sid}: the record's pick is {pick!r} and the approval it is "
+                f"carrying forward says {carried!r} — two answers to one question. Clear "
+                "`options.pick` to re-ask it, or drop the row from `approval_previous.picks`.")
         pick = carried
     rows = []
     for style in section["styles"]:

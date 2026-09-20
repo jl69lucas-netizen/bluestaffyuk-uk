@@ -231,7 +231,7 @@
    ],
    "refresh": {
     "axis": "density",
-    "note": "a stacked hero on the steel band, the quietest of the three buy pages"
+    "note": "a stacked hero on the steel band, quieter than the mosaic and the full-bleed the other two buy pages lead with"
    },
    "hero": {
     "chips": [
@@ -359,6 +359,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "motif",
+    "note": "The Same Case, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
+   },
    "video": {
     "id": "g88qOo9C94c",
     "title": "Staffy puppies for sale UK — the reasons families choose us",
@@ -787,6 +791,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "What Makes BlueStaffyUK More Than Just a Kennel?: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -901,6 +909,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "The Paperwork That Travels With A KC-Registered Puppy: the photo full width above two columns of prose, against the photo-right default"
+   },
    "keywords": {
     "primary": [
      "buy staffy puppies for sale uk"
@@ -1013,6 +1025,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "After You Take Them Home: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1207,7 +1223,11 @@
     "note": "A standard section: no shell, no table and no strip. The migrated page put four near-identical comparison H3s in three different places; they are one section here, and the `why-affordable-vs-premium` graphic moves with them from `reasons` (working rule 11: the same file, the same path, the same alt)."
    },
    "verbatim_heading": true,
-   "verbatim_opening": "When comparing BlueStaffyUK vs. Classified Ads for purchasing a Staffy puppy , you should prioritize BlueStaffyUK’s certified health protocols over the inherent risks and lack of transparency found on open classified platforms."
+   "verbatim_opening": "When comparing BlueStaffyUK vs. Classified Ads for purchasing a Staffy puppy , you should prioritize BlueStaffyUK’s certified health protocols over the inherent risks and lack of transparency found on open classified platforms.",
+   "refresh": {
+    "axis": "density",
+    "note": "How Does BlueStaffyUK Compare to Generic Classified Puppy Ads in the UK?: compact rows, tighter than the section above it, against the airy default this cluster uses"
+   }
   },
   {
    "id": "owners",
@@ -1229,6 +1249,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "One Family On What Choosing Us Was Like: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "buy staffy puppies for sale uk"
@@ -1300,6 +1324,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "Where Can I Find Staffordshire Bull Terriers in the UK Without Compromising on Health?: the puppy cards two-up beside the heading, against the three-up grid the price page runs"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1443,7 +1471,11 @@
     "note": "A standard section and deliberately the shortest on the page. Delivery is /blue-staffy-pup-sale-uk/'s subject; what this page owes the reader is that a puppy can be collected or delivered and that the paperwork travels with it."
    },
    "verbatim_heading": true,
-   "verbatim_opening": "At BlueStaffyUK.uk, every BlueStaffyUK Staffy puppy’s journey home is handled with DEFRA-approved transport, ensuring delivery is safe, legal, and stress-free for both the puppy and the family. Not every family can travel across the country to collect their new puppy. That’s why we provide safe options for UK-wide puppy delivery."
+   "verbatim_opening": "At BlueStaffyUK.uk, every BlueStaffyUK Staffy puppy’s journey home is handled with DEFRA-approved transport, ensuring delivery is safe, legal, and stress-free for both the puppy and the family. Not every family can travel across the country to collect their new puppy. That’s why we provide safe options for UK-wide puppy delivery.",
+   "refresh": {
+    "axis": "accent",
+    "note": "How Does BlueStaffyUK Ensure Safe, Legal, and Stress-Free Puppy Transport Across the UK?: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+   }
   },
   {
    "id": "questions",
@@ -1465,6 +1497,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Questions About How We Raise Them: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "buy staffy puppies for sale uk"
@@ -1623,6 +1659,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Ask Us Anything Before You Decide: the form in a card with the heading beside it, against the full-width form under its heading"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1698,6 +1738,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "motif",
+    "note": "Conclusion – The BlueStaffyUK Promise: a two-column ledger rather than a prose block, against the running prose the rest of the page is written in"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -2036,6 +2080,23 @@
    "talk-to-us": "S2",
    "top": "S3",
    "video-why-us": "S3"
+  },
+  "section_hashes": {
+   "top": "19a9e810f4410d2fe2b92a85dd4d1aa577d33ae5cfb0595d117a7bd0df7dfb76",
+   "video-why-us": "9919627772aa2f7c8b74492922e627d6a39828304ad5a8a208a0ae109cb185e6",
+   "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
+   "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
+   "health-testing": "c61341606ed4c7b2823272b8e73e508cdcc992b0dc6e97048ed790a13a4cfc0d",
+   "home-raised": "c4af2a9868db5ca415c13cc96e23dad323e65aa5573490fe467c451d8b284a27",
+   "kennel-club": "c659126c6efa96d5369cf3adc06e670bee4364a56123406e8019e2020b4caaad",
+   "after-care": "ef5305be66e18b25a10ba94705f48715d15893f04e75c02683e822371ddc14cb",
+   "compared": "5979095880e80a1150cb9b12b0aec8f99df7c22a04a82265e895e92a81d39bad",
+   "owners": "0e8442a7a96f907735aa959a0f082198eddbc813ae22a99b5293182cc59e37a8",
+   "puppies": "87fbbf63a4ef625e50fa278f83147d78216804fe58739becb6a183ba196d3f0c",
+   "getting-home": "fc65d7239f68fc6d18d1f58280452719ac71c58b3ebe080ba4d2f2ab56509c2b",
+   "questions": "af230a540d5adf2fd73ed4eebdf70c0d5a9202fcd2e6c0b02a4d8d64aaccec2d",
+   "enquiry": "bc842984167b31222b6c940b317653c8f1bb60288656b23318dd677450845f7d",
+   "talk-to-us": "abbfc74b1abdfbd30d43edee09e551605ee4c61af9683ce401695fc45c39954a"
   },
   "record_hash": "ec24a55624e52407ff0195f0b3c0117e3b7277f8b37ebdf18d8cd7be5d99f9cc",
   "tuple_before": {

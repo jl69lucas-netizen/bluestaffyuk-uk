@@ -1225,18 +1225,60 @@ def ledge_problems(board, root=None):
 # `board_approve.py` would then refuse — so it is dropped here and asked again.
 PER_PAGE_SHAPES = ("hero", "stats")
 
+#: What a section's fingerprint is NOT taken over.
+#:
+#: `options` holds the pick and the note, which is the ANSWER rather than the question. `n` is
+#: the section's position, which moves when a section is inserted above it and says nothing
+#: about this one. `refresh` is the judgement call: a delta is a NOTE to whoever builds the
+#: section — which sibling it departs from, on which of the five axes — and the arrangement it
+#: departs INTO is the style pick itself, unchanged. Counting it would have unlocked all
+#: forty-three carried picks the day working rule 16 gave every section a delta, which is a
+#: board asking the breeder to re-answer forty-three questions to record forty-three notes.
+#:
+#: This is NOT the guard against a record changing under its approval: `approval_matches()`
+#: hashes the whole record and fails on any edit at all. This decides, once that has already
+#: failed and the record is being re-boarded, which questions are worth asking again.
+FINGERPRINT_SKIPS = ("options", "n", "refresh")
+
+
+def section_fingerprint(section):
+    """A stable hash of everything about a section except the answer to it."""
+    body = {k: v for k, v in section.items() if k not in FINGERPRINT_SKIPS}
+    return hashlib.sha256(
+        json.dumps(body, sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()
+
 
 def locked_picks(board):
-    """{section id: style id} the board shows answered and locked, from `approval_previous`."""
-    picks = ((board.get("approval_previous") or {}).get("picks")) or {}
+    """{section id: style id} the board shows answered and locked, from `approval_previous`.
+
+    THREE reasons a carried pick is dropped and the question asked again:
+
+      the section is gone        — an answer to a question nobody is asking
+      the section is per-page    — the hero and the counter are what the re-board is FOR
+      the pick is off the menu   — its style set was replaced under it, and pre-filling an id
+                                   `board_approve.py` would refuse is worse than asking
+      the section CHANGED        — `approval_previous.section_hashes` records what each
+                                   section looked like when it was answered; a section whose
+                                   fingerprint has moved is a different proposal, and carrying
+                                   the old answer forward would put the breeder's name on a
+                                   decision they were never shown. Absent hashes lock nothing:
+                                   an approval with no record of what it approved cannot prove
+                                   anything stayed still.
+    """
+    prev = board.get("approval_previous") or {}
+    picks = prev.get("picks") or {}
+    hashes = prev.get("section_hashes") or {}
     by_id = {s["id"]: s for s in board.get("sections", [])}
     out = {}
     for sid, pick in picks.items():
         s = by_id.get(sid)
         if not s or s["shape"] in PER_PAGE_SHAPES:
             continue
-        if pick in (s.get("styles") or []):
-            out[sid] = pick
+        if pick not in (s.get("styles") or []):
+            continue
+        if hashes.get(sid) != section_fingerprint(s):
+            continue
+        out[sid] = pick
     return out
 
 
@@ -1339,6 +1381,58 @@ def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     return f
 
 
+# ── is dist/ a build, or a build in progress? ──────────────────────────────────────────────
+#
+# `min-h5-h6` reads the BUILT page when one exists, and once read a half-written `dist/` gives
+# a real number about a page nobody shipped: the check flipped from PASS to FAIL and back on
+# the same record, because it ran while `astro build` was still writing. A file existing is not
+# a build having finished.
+#
+# So: the built page is only believed when it is NEWER than everything that produces it. The
+# comparison is the same one the render harness makes in TypeScript (`checkDistFreshness`),
+# kept here in the same shape rather than shared, because a gate that imported the harness
+# would not run without it.
+#
+# A stale or mid-flight `dist/` is a WARN and a FALLBACK, never a FAIL: the record's own tree
+# is what the check read before the page was built, and reading it again says "not measurable
+# yet", which is true. A FAIL would be the gate asserting a defect it cannot see.
+FRESHNESS_ROOTS = ("src", "data/boards")
+#: Files the build itself writes back into a watched root. Counting them makes every build
+#: instantly stale against itself.
+FRESHNESS_SKIP = ("data/boards/previews",)
+
+
+def _relpath(path):
+    """The path as the repo spells it, or absolute when it is outside (a test's tmp_path)."""
+    try:
+        return str(pathlib.Path(path).relative_to(ROOT))
+    except ValueError:
+        return str(path)
+
+
+def newest_input_mtime(root=None):
+    """The newest mtime under the roots a built page is produced from."""
+    root = ROOT if root is None else pathlib.Path(root)
+    newest = 0.0
+    for rel in FRESHNESS_ROOTS:
+        base = root / rel
+        if not base.exists():
+            continue
+        for f in base.rglob("*"):
+            if not f.is_file():
+                continue
+            if any(str(f.relative_to(root)).startswith(skip) for skip in FRESHNESS_SKIP):
+                continue
+            newest = max(newest, f.stat().st_mtime)
+    return newest
+
+
+def dist_page_is_fresh(built, root=None):
+    """True when `built` is newer than every source that produces it."""
+    built = pathlib.Path(built)
+    return built.exists() and built.stat().st_mtime >= newest_input_mtime(root)
+
+
 def gate_findings(board, ont, ledger, live, stage="build"):
     """Every reason this record may not be built (or released). Pure: no printing."""
     if stage not in GATE_STAGES:
@@ -1370,6 +1464,25 @@ def gate_findings(board, ont, ledger, live, stage="build"):
             f"section {sid}: stats source {spec!r} does not hold up — {why}")
     for sid, where, why in ledge_problems(board):
         add("ledge-source-unresolved", "FAIL", f"section {sid} {where}: {why}")
+
+    # Working rule 16's second half: EVERY section carries a refresh delta, not the three to
+    # five a page felt like writing. The hero and the counter strip are exempt because they are
+    # per-page by construction — their delta IS the style set — and a draft is exempt because a
+    # record is drafted before it is differentiated. From `boarded` on, a section with no
+    # recorded delta is a section that will be built as a sibling's twin.
+    # Scoped to records that name their LAYOUT FAMILY, which is what says a record has been
+    # brought under working rule 16. The four pages built before it still name S1/S2/S3 and
+    # have no `layout_type`; the later task that refreshes them adds one, and the check starts
+    # asking them then. A slug list here would be an allowlist nobody would remember to edit.
+    if (board["meta"]["status"] in ("boarded", "approved", "built", "released")
+            and board["meta"].get("layout_type")):
+        missing = [s["id"] for s in board["sections"]
+                   if s["shape"] not in PER_PAGE_SHAPES and not s.get("refresh")]
+        if missing:
+            add("refresh-missing", "FAIL",
+                f"{len(missing)} section(s) carry no refresh delta: {', '.join(missing)} — "
+                "working rule 16 asks every section for one, and "
+                ".claude/skills/bsuk-component-refresh/SKILL.md names the five axes")
 
     auth = authorization_check(board, ont)
     for e in auth["blocked"]:
@@ -1476,10 +1589,17 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # the one page that is the site's front door would silently keep the record-tree reading
     # for ever. Same spelling as verbatim_set_check.dist_html and word_band_findings.
     built = DIST / ("" if slug == "index" else slug) / "index.html"
-    if slug in rebuilt_slugs() and built.exists():
+    fresh = dist_page_is_fresh(built)
+    if slug in rebuilt_slugs() and built.exists() and fresh:
         counts, source = page_h_counts(built), "built page"
     else:
         counts, source = distribution(board)["h_counts"], "record tree"
+        if slug in rebuilt_slugs() and built.exists() and not fresh:
+            add("dist-stale", "WARN",
+                f"{_relpath(built)} is older than the sources that produce it — the heading "
+                "floor was read from the record tree instead. Run npm run build and re-run "
+                "this gate; a page read mid-build gives a real number about a page nobody "
+                "shipped.")
     if counts["h5"] < 5 or counts["h6"] < 5:
         sev = "WARN" if board["meta"]["page_type"] in ADVISORY_MIN_H5H6 else "FAIL"
         add("min-h5-h6", sev,

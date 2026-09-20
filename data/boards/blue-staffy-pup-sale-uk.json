@@ -440,6 +440,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "Why Families Choose a Blue Staffy Pup from BlueStaffyUK.uk: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   },
    "keywords": {
     "primary": [
      "blue staffy pup sale uk"
@@ -519,7 +523,7 @@
    ],
    "refresh": {
     "axis": "accent",
-    "note": "the price table on a brand header band, so the money reads first on a money page"
+    "note": "the price table on a brand header band so the money reads first, against the zebra-in-a-card the guide tables take"
    },
    "table": {
     "caption": "Puppy prices and the deposit, from data/price-matrix.json",
@@ -856,6 +860,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "How The Deposit Works: the photo full width above two columns of prose, against the photo-right default"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -931,6 +939,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "What Families Said After They Paid: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "blue staffy pup sale uk"
@@ -997,6 +1009,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "The Puppies These Prices Belong To: the puppy cards two-up beside the heading, against the three-up grid the price page runs"
+   },
    "keywords": {
     "primary": [
      "blue staffy pup sale uk"
@@ -1069,6 +1085,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Your Questions, Answered: Blue Staffy Puppies FAQs: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "blue staffy pup sale uk"
@@ -1176,6 +1196,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Tell Us About Your Dream Pup!: the form in a card with the heading beside it, against the full-width form under its heading"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1306,6 +1330,10 @@
     "excluded": [],
     "pick": null,
     "note": ""
+   },
+   "refresh": {
+    "axis": "container",
+    "note": "Come And See Them First: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
    }
   }
  ],
@@ -1469,6 +1497,20 @@
    "top": "S3",
    "whats-included": "S1",
    "why-choose": "S1"
+  },
+  "section_hashes": {
+   "top": "e449128fe07d4839bb015f6f11d2dce51b56b0c8741e00144aed4d6e9af16adf",
+   "at-a-glance": "35dbafcf4beac668cf27f9d526b73c5d44d9763ba03825851768786261af957e",
+   "why-choose": "4ddf8a009911b40944b4ddb8eb5606cf60ceedfa511381f8ff4075a2ee0f587a",
+   "prices": "5a221c5f747101f99da4d642e1e15e4971d918ef9a551bff231711f5ebed158e",
+   "whats-included": "5b54ed4c250139d7228cfc74e6930319dcb8c50a33890ecbd7c4a879c32d4845",
+   "delivery": "bbbf133f00b60d2e4284eb4c26a05fac6bbfaa4e17cf24c6bdbbdb919ec309e7",
+   "deposit": "c49becf8196d068805240062fb24e65e1009335060885314b10c39a2f7f40408",
+   "owners": "c6f38ccae20573c6eb874af69d970be7d4fec29f132a20f4dcfd16cdff61ded3",
+   "puppies": "abc460ecd97c09b497f233068e3be0732978924b4d53b082981ddae718c4827e",
+   "questions": "a6ab8ff75e4d06b4689dc0f4175e5c4c5b3a487e9f0aed0257cfebb9c616189e",
+   "enquiry": "ffba5003dd7b0018e9c7f96a2898f2aacc999bbb71eb0072feb2879a445ff4a5",
+   "talk-to-us": "6970f5c32df3052899ed5178e0a2e29108914ca6ac88c997295caa0f84d683f5"
   },
   "record_hash": "c1196282825f59b269b2906f29ff76d3a853446f314d91464d95f94569572b89",
   "tuple_before": {

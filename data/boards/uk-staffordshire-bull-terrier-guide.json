@@ -285,6 +285,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "motif",
+    "note": "The Guide In Short, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
+   },
    "video": {
     "id": "g9iV9RVr_Sk",
     "title": "A UK Staffordshire Bull Terrier breed guide",
@@ -337,6 +341,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "Why Choose a Staffordshire Bull Terrier?: a rail of cards beside the heading, against the stacked cards the guides use"
+   },
    "keywords": {
     "primary": [
      "uk staffordshire bull terrier guide"
@@ -620,7 +628,7 @@
    "shape": "standard",
    "refresh": {
     "axis": "motif",
-    "note": "the history section image-top, reading as a chapter opener"
+    "note": "the history section image-top, reading as a chapter opener rather than the photo-right prose every other section here takes"
    },
    "keywords": {
     "primary": [
@@ -947,7 +955,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Providing excellent UK Staffordshire Bull Terrier care tips involves attention to exercise, diet, training, and grooming."
+   "verbatim_opening": "Providing excellent UK Staffordshire Bull Terrier care tips involves attention to exercise, diet, training, and grooming.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Daily Care Tips: Ensuring Your Staffy’s Thriving Life: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   }
   },
   {
    "id": "health",
@@ -1071,7 +1083,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "While generally healthy, staying informed about your Staffy health and potential concerns is part of being a responsible Staffy owner . For a deep dive into our commitment to health, please visit our dedicated Blue Staffy Health page . Here, we provide a brief overview:"
+   "verbatim_opening": "While generally healthy, staying informed about your Staffy health and potential concerns is part of being a responsible Staffy owner . For a deep dive into our commitment to health, please visit our dedicated Blue Staffy Health page . Here, we provide a brief overview:",
+   "refresh": {
+    "axis": "layout",
+    "note": "Common Health Concerns & Our Ethical Breeding Commitment: the photo full width above two columns of prose, against the photo-right default"
+   }
   },
   {
    "id": "legal-status",
@@ -1199,7 +1215,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "For any UK resident considering a Staffordshire Bull Terrier , it’s vital to understand their legal standing and common public perceptions. Due to historical events and often misinformed media narratives, some bull breeds face unfair scrutiny. While the Staffordshire Bull Terrier is not banned in the UK, there are key legal and practical housing considerations to know before bringing one home."
+   "verbatim_opening": "For any UK resident considering a Staffordshire Bull Terrier , it’s vital to understand their legal standing and common public perceptions. Due to historical events and often misinformed media narratives, some bull breeds face unfair scrutiny. While the Staffordshire Bull Terrier is not banned in the UK, there are key legal and practical housing considerations to know before bringing one home.",
+   "refresh": {
+    "axis": "container",
+    "note": "Staffies and UK Law: Understanding the Breed’s Legal Status & Public Perception: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+   }
   },
   {
    "id": "bully-comparison",
@@ -1298,7 +1318,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "A common point of confusion, particularly in the UK, is the distinction between the Staffordshire Bull Terrier and the American Bully . While they might share some superficial resemblances due to their common ancestry in bull and terrier types, they are distinct breeds with different characteristics, temperaments, and, crucially, legal statuses in the UK."
+   "verbatim_opening": "A common point of confusion, particularly in the UK, is the distinction between the Staffordshire Bull Terrier and the American Bully . While they might share some superficial resemblances due to their common ancestry in bull and terrier types, they are distinct breeds with different characteristics, temperaments, and, crucially, legal statuses in the UK.",
+   "refresh": {
+    "axis": "density",
+    "note": "Staffordshire Bull Terrier vs. American Bully: Know the Difference: compact rows, tighter than the section above it, against the airy default this cluster uses"
+   }
   },
   {
    "id": "choosing-breeder",
@@ -1409,7 +1433,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:"
+   "verbatim_opening": "When ready to buy a Staffordshire Bull Terrier puppy , the most crucial step is finding an ethical Staffy breeder UK . A responsible breeder prioritises health, temperament, and the welfare of their dogs above all else. Here’s how to find health-certified Staffy breeders like BlueStaffyUK:",
+   "refresh": {
+    "axis": "accent",
+    "note": "Finding Your Forever Staffy: Choosing an Ethical Breeder in the UK: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+   }
   },
   {
    "id": "owner-review",
@@ -1431,6 +1459,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "What One Family Says About The Temperament: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "uk staffordshire bull terrier guide"
@@ -1486,6 +1518,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "The Staffordshire Bull Terriers We Are Raising Now: the puppy cards two-up beside the heading, against the three-up grid the price page runs"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1548,6 +1584,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Blue Staffy FAQs: Quick Answers from Our Breed Guide: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "uk staffordshire bull terrier guide"
@@ -1754,7 +1794,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "The Staffordshire Bull Terrier is a decision you won’t regret. They are exceptional companions who offer unconditional love and boundless energy. We hope this Staffordshire Bull Terrier guide UK has provided you with valuable Blue Staffy breed information to aid your decision."
+   "verbatim_opening": "The Staffordshire Bull Terrier is a decision you won’t regret. They are exceptional companions who offer unconditional love and boundless energy. We hope this Staffordshire Bull Terrier guide UK has provided you with valuable Blue Staffy breed information to aid your decision.",
+   "refresh": {
+    "axis": "motif",
+    "note": "Begin Your Blue Staffy Adventure Today: a two-column ledger rather than a prose block, against the running prose the rest of the page is written in"
+   }
   }
  ],
  "tuple": {

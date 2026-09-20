@@ -1636,6 +1636,17 @@
     "tuple_before": {
      "$ref": "#/properties/tuple",
      "description": "the tuple as the author wrote it, before board_approve.py derived the seven component axes from the picks; restoring it is what keeps re-approving an already-approved record idempotent"
+    },
+    "section_hashes": {
+     "comment": "What each section LOOKED LIKE when this approval was made, as scripts/pageboard.py section_fingerprint() hashes it (everything but `options` and `n`). It exists so a re-boarded record can carry an answer forward only while the question it answered has not moved: scripts/build_page_board.py locks a carried pick whose fingerprint still matches and asks again when it does not.",
+     "type": "object",
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "additionalProperties": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
     }
    }
   },

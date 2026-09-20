@@ -294,6 +294,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "What A Health-Tested Litter Actually Means: a rail of cards beside the heading, against the stacked cards the guides use"
+   },
    "keywords": {
     "primary": [
      "blue staffy health uk"
@@ -650,7 +654,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "At BlueStaffyUK , our proactive approach to the importance of health screening for Staffy parents is central to our reputation as a reliable Staffordshire Bull Terrier breeder in the UK. We go above and beyond the standard, ensuring both our breeding parents, Maggie and Jones, and their puppies are thoroughly screened."
+   "verbatim_opening": "At BlueStaffyUK , our proactive approach to the importance of health screening for Staffy parents is central to our reputation as a reliable Staffordshire Bull Terrier breeder in the UK. We go above and beyond the standard, ensuring both our breeding parents, Maggie and Jones, and their puppies are thoroughly screened.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Our Rigorous Health Testing Process : Ensuring Peace of Mind: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   }
   },
   {
    "id": "vaccinations",
@@ -773,7 +781,11 @@
     "pick": null,
     "note": ""
    },
-   "verbatim_heading": true
+   "verbatim_heading": true,
+   "refresh": {
+    "axis": "layout",
+    "note": "UK Vaccination Schedule for Staffy Puppies and Ongoing Care: the photo full width above two columns of prose, against the photo-right default"
+   }
   },
   {
    "id": "registration",
@@ -860,7 +872,11 @@
     "note": "A standard section: no shell."
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Choosing KC-reg Staffy puppies from an ethical Staffy breeder offers a crucial layer of reassurance regarding Staffordshire Bull Terrier health tests . The Kennel Club registration provides:"
+   "verbatim_opening": "Choosing KC-reg Staffy puppies from an ethical Staffy breeder offers a crucial layer of reassurance regarding Staffordshire Bull Terrier health tests . The Kennel Club registration provides:",
+   "refresh": {
+    "axis": "container",
+    "note": "What is included with a KC registered Staffy puppy : A Mark of Health and Pedigree: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+   }
   },
   {
    "id": "vet-checks",
@@ -949,7 +965,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "“ When should I take my puppy to the vet ?” Your first vet visit with your new blue Staffy puppy should be scheduled within 48-72 hours of bringing them home. This initial veterinary care for puppies allows your vet to:"
+   "verbatim_opening": "“ When should I take my puppy to the vet ?” Your first vet visit with your new blue Staffy puppy should be scheduled within 48-72 hours of bringing them home. This initial veterinary care for puppies allows your vet to:",
+   "refresh": {
+    "axis": "density",
+    "note": "Regular Health Check for Puppies: A Partnership for Lifetime Health: compact rows, tighter than the section above it, against the airy default this cluster uses"
+   }
   },
   {
    "id": "diet",
@@ -1044,7 +1064,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "“ What should I feed my new puppy ?” A high-quality, balanced nutrition for blue Staffy puppies is paramount for your Staffy puppy’s health and development."
+   "verbatim_opening": "“ What should I feed my new puppy ?” A high-quality, balanced nutrition for blue Staffy puppies is paramount for your Staffy puppy’s health and development.",
+   "refresh": {
+    "axis": "accent",
+    "note": "Diet and Nutrition: Fueling Your Blue Staffy’s Health: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+   }
   },
   {
    "id": "exercise",
@@ -1120,7 +1144,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Maintaining your blue Staffy’s health goes beyond genetic testing and routine vet visits. A holistic approach focusing on their daily life is crucial for their physical and mental well-being throughout their lives. This comprehensive care helps prevent health issues in puppies and adult dogs alike."
+   "verbatim_opening": "Maintaining your blue Staffy’s health goes beyond genetic testing and routine vet visits. A holistic approach focusing on their daily life is crucial for their physical and mental well-being throughout their lives. This comprehensive care helps prevent health issues in puppies and adult dogs alike.",
+   "refresh": {
+    "axis": "motif",
+    "note": "Holistic Health & Lifestyle: Beyond the Vet Clinic: a two-column ledger rather than a prose block, against the running prose the rest of the page is written in"
+   }
   },
   {
    "id": "conditions",
@@ -1139,7 +1167,7 @@
    "shape": "standard",
    "refresh": {
     "axis": "container",
-    "note": "the conditions on a band with an InfoCard caveat beside them"
+    "note": "the conditions on a band with an InfoCard caveat beside them, against the plain prose the breed guide gives the same material"
    },
    "cta": 1,
    "keywords": {
@@ -1347,6 +1375,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "One Owner On The Paperwork: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "blue staffy health uk"
@@ -1402,6 +1434,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "FAQs: Blue Staffy Health & Care: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "blue staffy health uk"
@@ -1599,7 +1635,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Choosing a blue Staffy puppy from BlueStaffyUK means choosing a companion whose health and well-being have been prioritised from day one. Our commitment to being trusted blue Staffy breeders’ health champions ensures you’re bringing home a happy, robust, and loving family member."
+   "verbatim_opening": "Choosing a blue Staffy puppy from BlueStaffyUK means choosing a companion whose health and well-being have been prioritised from day one. Our commitment to being trusted blue Staffy breeders’ health champions ensures you’re bringing home a happy, robust, and loving family member.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Ready to Welcome a Healthy Blue Staffy?: the photo on the left, reversing the page habit, against photo-right, which every other section here takes"
+   }
   }
  ],
  "tuple": {

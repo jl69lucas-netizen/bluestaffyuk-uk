@@ -286,6 +286,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "What You Will Find Here: a rail of cards beside the heading, against the stacked cards the guides use"
+   },
    "keywords": {
     "primary": [
      "blue staffy blog guides"
@@ -383,7 +387,7 @@
    ],
    "refresh": {
     "axis": "density",
-    "note": "figure cards in two columns, the roomiest counter on the site because there are only two"
+    "note": "figure cards in two columns, roomier than every other counter on the site because this page has only two figures to print"
    },
    "keywords": {
     "primary": [],
@@ -504,7 +508,7 @@
    ],
    "refresh": {
     "axis": "motif",
-    "note": "start-here as a rail of links, reading as a shelf"
+    "note": "start-here as a rail of links reading as a shelf, against the stacked prose list the guide pages use"
    },
    "cta": 1,
    "keywords": {
@@ -627,7 +631,7 @@
    ],
    "refresh": {
     "axis": "accent",
-    "note": "one review given room, on the bone surface, no band"
+    "note": "one review given room on the bone surface, against the banded review grid the three buy pages run"
    },
    "keywords": {
     "primary": [
@@ -684,6 +688,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Questions About These Guides: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "blue staffy blog guides"
@@ -832,6 +840,10 @@
     "excluded": [],
     "pick": null,
     "note": ""
+   },
+   "refresh": {
+    "axis": "layout",
+    "note": "Ask Us Something A Guide Does Not Answer: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
    }
   }
  ],

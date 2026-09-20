@@ -302,6 +302,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "Four Rules That Will Keep You Out Of Trouble: a rail of cards beside the heading, against the stacked cards the guides use"
+   },
    "keywords": {
     "primary": [
      "uk blue staffy puppy buying guide"
@@ -874,6 +878,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "accent",
+    "note": "What A Puppy From Us Costs, And What The Deposit Covers: the table under a brand header band, against the zebra-in-a-card the other guides use"
+   },
    "table": {
     "caption": "What you pay us, from data/price-matrix.json and data/settings.json",
     "columns": [
@@ -1097,7 +1105,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Before welcoming any puppy, it’s imperative to understand the breed’s characteristics to ensure a harmonious match with your lifestyle. Owning a puppy comes with long-term responsibilities, so preparation is essential. Essential health and care advice for Staffies from PDSA is a reliable resource that explains key aspects of diet, exercise, and preventive healthcare."
+   "verbatim_opening": "Before welcoming any puppy, it’s imperative to understand the breed’s characteristics to ensure a harmonious match with your lifestyle. Owning a puppy comes with long-term responsibilities, so preparation is essential. Essential health and care advice for Staffies from PDSA is a reliable resource that explains key aspects of diet, exercise, and preventive healthcare.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Understanding the Blue Staffordshire Bull Terrier: Temperament & Lifestyle: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   }
   },
   {
    "id": "health-checks",
@@ -1228,7 +1240,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "At BlueStaffyUK.uk , prioritizing health & genetics is at the core of our breeding program. Responsible breeders go to great lengths to ensure the health of their puppies. We provide detailed information on required genetic testing and vaccination protocols in our Blue Staffy health guide, so families know exactly how their puppy’s well-being is safeguarded."
+   "verbatim_opening": "At BlueStaffyUK.uk , prioritizing health & genetics is at the core of our breeding program. Responsible breeders go to great lengths to ensure the health of their puppies. We provide detailed information on required genetic testing and vaccination protocols in our Blue Staffy health guide, so families know exactly how their puppy’s well-being is safeguarded.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Blue Staffy Health: Prioritising Well-being: the photo full width above two columns of prose, against the photo-right default"
+   }
   },
   {
    "id": "eight-weeks",
@@ -1316,7 +1332,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "What are the risks of taking a Staffordshire Bull Terrier puppy home before 8 weeks of age? The best age to bring a Blue Staffy puppy home is a critical topic that every new owner must understand. Experts, including the Kennel Club, universally recommend waiting until a puppy is at least eight weeks old. This period with their mother and littermates is essential for their development, as they learn fundamental social skills, such as bite inhibition, boundaries, and canine communication."
+   "verbatim_opening": "What are the risks of taking a Staffordshire Bull Terrier puppy home before 8 weeks of age? The best age to bring a Blue Staffy puppy home is a critical topic that every new owner must understand. Experts, including the Kennel Club, universally recommend waiting until a puppy is at least eight weeks old. This period with their mother and littermates is essential for their development, as they learn fundamental social skills, such as bite inhibition, boundaries, and canine communication.",
+   "refresh": {
+    "axis": "container",
+    "note": "What is the best age to bring home a blue Staffy puppy, and why is waiting until they are 8 weeks old important?: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+   }
   },
   {
    "id": "home-prep",
@@ -1420,7 +1440,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "As you prepare to welcome a new Staffordshire puppy into your home, a top question for many prospective owners is “what do I need to buy for my new Staffy puppy in the UK and how do I prepare my home?” This guide will walk you through all the essentials, from creating a safe space to gathering all the supplies needed for a smooth and happy transition. This comprehensive approach ensures you’re not just ready for their arrival but also setting a foundation for their health and well-being."
+   "verbatim_opening": "As you prepare to welcome a new Staffordshire puppy into your home, a top question for many prospective owners is “what do I need to buy for my new Staffy puppy in the UK and how do I prepare my home?” This guide will walk you through all the essentials, from creating a safe space to gathering all the supplies needed for a smooth and happy transition. This comprehensive approach ensures you’re not just ready for their arrival but also setting a foundation for their health and well-being.",
+   "refresh": {
+    "axis": "density",
+    "note": "What should I do to prepare my home, and what essential items do I need to buy for a new Blue Staffy puppy?: compact rows, tighter than the section above it, against the airy default this cluster uses"
+   }
   },
   {
    "id": "socialisation",
@@ -1535,7 +1559,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "Bringing a new puppy home is just the beginning of their incredible journey! The first few months are crucial for shaping their temperament and ensuring they develop into confident, well-adjusted adult dogs. As a new owner, you’re probably asking, “What should I do to socialise my Staffy puppy in its first three months properly?” This checklist provides a clear, Staffy puppy step-by-step guide to help you get started."
+   "verbatim_opening": "Bringing a new puppy home is just the beginning of their incredible journey! The first few months are crucial for shaping their temperament and ensuring they develop into confident, well-adjusted adult dogs. As a new owner, you’re probably asking, “What should I do to socialise my Staffy puppy in its first three months properly?” This checklist provides a clear, Staffy puppy step-by-step guide to help you get started.",
+   "refresh": {
+    "axis": "accent",
+    "note": "Your Essential Blue Staffy Puppy Socialisation Checklist! – How do I safely introduce my Blue Staffy puppy to other dogs and new people in the UK?: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+   }
   },
   {
    "id": "first-30-days",
@@ -1622,7 +1650,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "The first month sets the foundation for your puppy's entire life. Follow this week-by-week timeline to get it right."
+   "verbatim_opening": "The first month sets the foundation for your puppy's entire life. Follow this week-by-week timeline to get it right.",
+   "refresh": {
+    "axis": "motif",
+    "note": "Your First 30 Days with a Blue Staffy Puppy — Complete Checklist: a two-column ledger rather than a prose block, against the running prose the rest of the page is written in"
+   }
   },
   {
    "id": "delivery",
@@ -1733,7 +1765,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "What is the process for finding and reserving your perfect puppy in the UK? At BlueStaffyUK.uk , we pride ourselves on ethical blue Staffordshire Bull Terrier breeders near me (for local searches) and our ability to connect families nationwide."
+   "verbatim_opening": "What is the process for finding and reserving your perfect puppy in the UK? At BlueStaffyUK.uk , we pride ourselves on ethical blue Staffordshire Bull Terrier breeders near me (for local searches) and our ability to connect families nationwide.",
+   "refresh": {
+    "axis": "layout",
+    "note": "How This Blue Staffy Puppy Buying Guide Helps You Avoid Common Mistakes on Delivery: the photo on the left, reversing the page habit, against photo-right, which every other section here takes"
+   }
   },
   {
    "id": "adoption-vs-buying",
@@ -1817,7 +1853,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "While adopting a blue Staffy puppy vs buying from a breeder is a personal choice, buying from a purebred breeder like BlueStaffyUK.uk provides known lineage, guaranteed health testing and early socialisation, offering peace of mind that a rescue might not always provide regarding background."
+   "verbatim_opening": "While adopting a blue Staffy puppy vs buying from a breeder is a personal choice, buying from a purebred breeder like BlueStaffyUK.uk provides known lineage, guaranteed health testing and early socialisation, offering peace of mind that a rescue might not always provide regarding background.",
+   "refresh": {
+    "axis": "container",
+    "note": "Adopting a Blue Staffy Puppy vs Buying From a Breeder UK: in a card on the bone surface, against the full-bleed band the section below takes"
+   }
   },
   {
    "id": "owner-review",
@@ -1839,6 +1879,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "density",
+    "note": "What One Buyer Said About The Process: one review given room, against the review grid the buy pages run"
+   },
    "keywords": {
     "primary": [
      "uk blue staffy puppy buying guide"
@@ -1901,6 +1945,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "layout",
+    "note": "You Have Done Your Research — Now Meet Our Puppies: the puppy cards two-up beside the heading, against the three-up grid the price page runs"
+   },
    "cta": 1,
    "keywords": {
     "primary": [
@@ -1964,6 +2012,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "container",
+    "note": "Questions Families Ask Before They Buy: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+   },
    "keywords": {
     "primary": [
      "uk blue staffy puppy buying guide"
@@ -2124,7 +2176,11 @@
     "note": ""
    },
    "verbatim_heading": true,
-   "verbatim_opening": "We hope this guide has provided valuable insights into owning a Blue Staffordshire Bull Terrier. For specific questions about how much a blue Staffy puppy costs from a pedigree breeder? Or to discuss bluestaffyuk puppy price , please contact us directly."
+   "verbatim_opening": "We hope this guide has provided valuable insights into owning a Blue Staffordshire Bull Terrier. For specific questions about how much a blue Staffy puppy costs from a pedigree breeder? Or to discuss bluestaffyuk puppy price , please contact us directly.",
+   "refresh": {
+    "axis": "layout",
+    "note": "Ready to Welcome Your Blue Staffy?: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+   }
   },
   {
    "id": "video-what-to-expect",
@@ -2146,6 +2202,10 @@
     "S2",
     "S3"
    ],
+   "refresh": {
+    "axis": "motif",
+    "note": "Real Footage, Before You Enquire: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
+   },
    "video": {
     "id": "WuA0yo6HZKE",
     "title": "Blue Staffy Puppy for Sale UK — BlueStaffyUK Short",

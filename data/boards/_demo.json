@@ -2,7 +2,7 @@
  "meta": {
   "slug": "_demo",
   "page_type": "interior",
-  "layout_type": "interior-guide",
+  "layout_type": "interior-utility",
   "status": "draft",
   "preview": true,
   "research_as_of": "2026-09-19",
@@ -115,9 +115,9 @@
    },
    "shape": "hero",
    "styles": [
-    "H-GD1",
-    "H-GD2",
-    "H-GD3"
+    "H-UT1",
+    "H-UT2",
+    "H-UT3"
    ],
    "hero": {
     "chips": [
@@ -206,9 +206,9 @@
    },
    "shape": "stats",
    "styles": [
-    "C-GD1",
-    "C-GD2",
-    "C-GD3"
+    "C-UT1",
+    "C-UT2",
+    "C-UT3"
    ],
    "stats": [
     {

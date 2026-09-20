@@ -36,6 +36,12 @@ import { SITE } from '../../lib/site';
 import Button from './Button.astro';
 type Props = HTMLAttributes<'section'> & {
   as?: 'h1' | 'h2';
+  /** The three copy props. ALL DEFAULT TO EMPTY, and an empty one renders no element at all.
+   *  They used to default to a real eyebrow, a real headline and a real lede — "KC registered ·
+   *  Carlisle", "Blue Staffy puppies raised in a family home", "Health-tested parents, Kennel
+   *  Club paperwork" — which is the 2026-09-20 review's defect in its last hiding place: a
+   *  component asserting a page's credentials for it. True on the homepage, a sales line on a
+   *  privacy policy, and on neither of them a claim the page's own board record approved. */
   eyebrow?: string;
   title?: string;
   lede?: string;
@@ -95,24 +101,30 @@ type Props = HTMLAttributes<'section'> & {
   /** `ledge: 'stats'` — figures the PAGE resolved from data/*.json. The hero never derives
    *  one: it prints what it is given, and a page with nothing to print passes none. */
   stats?: { n: string; label: string }[];
-  /** `ledge: 'aside'` — the key-facts / contents / quote card beside the copy. A `quote` and
-   *  a row list are both allowed because a guide's aside is a fact table and an about page's
-   *  is somebody's sentence, and neither is the other with different padding. */
-  aside?: { title?: string; rows?: { label: string; value: string }[]; items?: string[]; quote?: string };
+  // `ledge: 'aside'` is a SLOT, not a prop. A guide's aside is a fact table, an about page's
+  // is somebody's sentence and a blog index's is a contents list, and a prop shaped to hold
+  // all three is a prop that has stopped describing anything. The page passes the markup:
+  //
+  //     <Hero ledge="aside"><div slot="aside">…</div></Hero>
+  //
+  // The hero owns the BOX (`.hero-aside`, its bed, its column and its place in the grid) and
+  // the typography of what goes in it, which is why the inner rules below are `:global()`
+  // under `.hero-aside`: slotted content belongs to the caller's scope, not to this one.
   /** `layout: 'mosaic'` — the tiles the photo column becomes. Fewer than two falls back to
    *  the single photo, because a one-tile mosaic is a photo with extra markup. */
-  mosaic?: { src: string; alt: string; caption?: string }[];
+  mosaic?: { src: string; alt: string; w?: number; h?: number; caption?: string }[];
 };
-// Every figure and claim below is in data/settings.json or on the live homepage
-// (KC registration, health-tested parents): rule 9, nothing is typed from memory.
+// NOTHING IS ASSERTED HERE. The eyebrow, the title and the lede are the page's, and a hero
+// mounted with none of them renders a photo and a CTA row — which is a hero with nothing to
+// say, visibly, rather than a hero saying something nobody approved.
+//
+// The lede is held to two lines at the desktop clamp, which is what rule 10 leaves it: a
+// third line pushes the CTA row past the 450px ceiling, so a page writing one keeps it short.
 const {
   as: Heading = 'h1',
-  eyebrow = `KC registered · ${SITE.location_label}`,
-  title = 'Blue Staffy puppies raised in a family home',
-  // Two lines at the desktop clamp, which is what rule 10 leaves the lede: the longer
-  // wording ("Kennel Club registration paperwork") ran to three and pushed the CTA row past
-  // the 450px ceiling. This is demo copy; project 4 writes the page's own.
-  lede = `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
+  eyebrow = '',
+  title = '',
+  lede = '',
   image = hero,
   imageAlt,
   imageWidth,
@@ -126,7 +138,6 @@ const {
   ledge = 'none',
   ticks = [],
   stats = [],
-  aside,
   mosaic = [],
   class: cls,
   ...rest
@@ -144,8 +155,7 @@ const asIsMosaic = tiles.length > 0;
 const showChips = chips.length > 0 && (ledge === 'chips' || ledge === 'none');
 const showTicks = ledge === 'ticks' && ticks.length > 0;
 const showStats = ledge === 'stats' && stats.length > 0;
-const showAside = ledge === 'aside' && !!aside
-  && !!(aside.quote || aside.title || (aside.rows?.length) || (aside.items?.length));
+const showAside = ledge === 'aside' && Astro.slots.has('aside');
 // NOTHING IS ASSERTED HERE ANY MORE. The chip list and the CTA row were literals in this
 // file; both are props now and both default to empty, so a hero states only what the page
 // that mounted it handed it.
@@ -176,6 +186,8 @@ const legacy = typeof image === 'string';
             <img
               src={t.src}
               alt={t.alt}
+              width={t.w}
+              height={t.h}
               loading={i === 0 ? 'eager' : 'lazy'}
               fetchpriority={i === 0 ? 'high' : 'auto'}
               decoding="async"
@@ -210,9 +222,9 @@ const legacy = typeof image === 'string';
       />
     )}
     <div class="copy">
-      <p class="eyebrow">{eyebrow}</p>
-      <Heading class="title">{title}</Heading>
-      <p class="lede">{lede}</p>
+      {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+      {title && <Heading class="title">{title}</Heading>}
+      {lede && <p class="lede">{lede}</p>}
       {showChips && (
         <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>
       )}
@@ -241,18 +253,7 @@ const legacy = typeof image === 'string';
       )}
     </div>
     {showAside && (
-      <aside class="hero-aside">
-        {aside!.title && <p class="aside-title">{aside!.title}</p>}
-        {aside!.quote && <blockquote class="aside-quote">{aside!.quote}</blockquote>}
-        {aside!.rows && aside!.rows.length > 0 && (
-          <dl class="aside-rows">
-            {aside!.rows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
-          </dl>
-        )}
-        {aside!.items && aside!.items.length > 0 && (
-          <ul class="aside-items">{aside!.items.map((i) => <li>{i}</li>)}</ul>
-        )}
-      </aside>
+      <aside class="hero-aside"><slot name="aside" /></aside>
     )}
   </div>
 </section>
@@ -328,16 +329,16 @@ const legacy = typeof image === 'string';
     .hero-aside { order: 3; align-self: center; background: var(--color-surface-raised);
                   border: var(--card-border); border-radius: var(--card-radius);
                   padding: var(--space-4); font-size: var(--text-sm); }
-    .aside-title { margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
+    .hero-aside :global(.aside-title) { margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700;
                    letter-spacing: .12em; text-transform: uppercase; color: var(--color-brand); }
-    .aside-quote { margin: 0; font-family: var(--font-display); font-size: var(--text-lg);
+    .hero-aside :global(.aside-quote) { margin: 0; font-family: var(--font-display); font-size: var(--text-lg);
                    line-height: 1.3; border-inline-start: 3px solid var(--color-cta);
                    padding-inline-start: var(--space-3); }
-    .aside-rows { margin: 0; display: grid; grid-template-columns: auto 1fr;
+    .hero-aside :global(.aside-rows) { margin: 0; display: grid; grid-template-columns: auto 1fr;
                   gap: var(--space-1) var(--space-3); }
-    .aside-rows dt { color: var(--color-text-muted); }
-    .aside-rows dd { margin: 0; font-weight: 600; }
-    .aside-items { margin: 0; padding-inline-start: var(--space-4); display: grid; gap: var(--space-1); }
+    .hero-aside :global(.aside-rows dt) { color: var(--color-text-muted); }
+    .hero-aside :global(.aside-rows dd) { margin: 0; font-weight: 600; }
+    .hero-aside :global(.aside-items) { margin: 0; padding-inline-start: var(--space-4); display: grid; gap: var(--space-1); }
     .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1.1fr 1fr; }
     @media (min-width: 1024px) {
       .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr minmax(0, 1fr) 15rem; }
@@ -444,6 +445,32 @@ const legacy = typeof image === 'string';
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .pic { grid-area: pic; }
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .copy { grid-area: copy; }
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+    }
+
+    /* A PANEL that puts its photo on top is one column, not a narrow photo column beside the
+       copy — a title panel with a slim photo band over it. Same height budget as `stacked`,
+       for the same reason: the ceiling stays on, so the photo is short and the copy is what
+       the rest is spent on. */
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .inner { grid-template-columns: minmax(0, 1fr); }
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .pic { order: 1; aspect-ratio: 24/5; }
+    .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .copy { order: 2; }
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .inner {
+        gap: var(--space-4); padding-block: var(--space-5);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"] .pic {
+        height: 150px; max-height: 150px; aspect-ratio: auto;
+      }
+      /* With an aside it is the stacked hero's two-row grid: photo across, copy and aside under. */
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1fr) 15rem;
+        grid-template-areas: "pic pic" "copy aside";
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="panel"][data-hero-media="top"][data-hero-ledge="aside"] .hero-aside {
         grid-area: aside; align-self: start;
       }
     }
