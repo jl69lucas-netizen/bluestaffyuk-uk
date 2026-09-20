@@ -109,6 +109,30 @@ FACT_PHRASES = {
     # updated regularly", and the record's `puppies` section keeps that sentence, which is
     # the only thing the answer leans on.
     "listing-availability": ["available puppies", "updated regularly"],
+    # Twelve more listing rows in project 4 Task 18b: working rule 15 carries that page's
+    # twelve migrated FAQ questions word for word (data/boards/buy-blue-staffy-puppies-uk.json),
+    # and seven of them are breed or behaviour questions the listing page does not own. Each
+    # row is therefore SOURCED to the page that evidences it rather than to the page that
+    # asks it, which is what a `source` is for — the same move the two homepage rows sourced
+    # to data/settings.json make. Every phrase below is one that page's MIGRATED body says
+    # today AND one its own board record keeps after P5: "first-time owners", "socialisation",
+    # "training", "American Bully", "nanny dog", "not a banned breed", "left alone" and the
+    # life stage section are all in data/boards/uk-staffordshire-bull-terrier-guide.json, the
+    # allergies and the 12–14 years are in data/boards/blue-staffy-health-uk.json, the puppy
+    # farm and the written contract are in data/boards/uk-blue-staffy-puppy-buying-guide.json,
+    # and the two test names are the listing record's own `parents` section. `listing-cost`
+    # names data/settings.json and interpolates the deposit, so no answer types a price.
+    "listing-health-clearances": ["L-2-HGA", "HC-HSF4"],
+    "listing-first-time-owners": ["first-time owners", "socialisation"],
+    "listing-reputable-breeders": ["puppy farm", "written contract"],
+    "listing-pitbull": ["American Bully"],
+    "listing-scratching": ["allergies"],
+    "listing-family-dog": ["nanny dog"],
+    "listing-life-expectancy": ["12–14 years"],
+    "listing-aggressive": ["not a banned breed"],
+    "listing-left-alone": ["left alone"],
+    "listing-training": ["training", "socialisation"],
+    "listing-sleep": ["life stage"],
     # The two homepage rows are new in project 4 Task 18 and are verified against the
     # MIGRATED body today and against the rebuilt page from Task 18's P5. Every phrase is
     # one the migrated key-takeaway block already uses AND one the board record's own
