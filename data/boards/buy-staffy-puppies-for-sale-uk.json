@@ -334,8 +334,8 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "H-FS1",
-        "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. The YouTube embed g88qOo9C94c is carried at its original id in this section, which is where the migrated body placed it."
+        "pick": "H-FS2",
+        "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. The YouTube embed g88qOo9C94c is carried at its original id in this section, which is where the migrated body placed it. | 2026-09-20: breeder chose H-FS2 + C-FS2 for why-us to clear ledger-tuple-identical against the listing page (user decision in chat). | 2026-09-20: breeder chose H-FS2 + C-FS2 in chat to clear ledger-tuple-identical against the listing page."
       },
       "verbatim_opening": "If you’re ready to welcome a new blue staffy puppy, finding a breeder who offers KC-registered pedigree dogs is essential. When you start your search to buy a Staffy puppy for sale near you, it’s a journey filled with excitement, hope, and a lot of questions. The challenge isn’t just about finding honest Staffy breeders near you; it’s about finding one you can trust, one that shares your values and prioritises the well-being of their dogs above all else. This isn’t just a moment in time—it’s the beginning of a lifelong relationship with a new Bull Staffy."
     },
@@ -531,7 +531,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "C-FS3",
+        "pick": "C-FS2",
         "note": ""
       }
     },
@@ -1817,7 +1817,7 @@
     }
   ],
   "tuple": {
-    "hero": "hero-h-fs1",
+    "hero": "hero-h-fs2",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -2063,7 +2063,7 @@
       "reasons": "Seven cards, so S2's three-up grid and S3's rail both read; S1 stacks them as statement cards. tuple.takeaway records the pick. The count is seven because seven is what the body substantiates — see dropped.creds and dropped.prices for the two the migrated tick list carried that are not here.",
       "stats": "",
       "talk-to-us": "",
-      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. The YouTube embed g88qOo9C94c is carried at its original id in this section, which is where the migrated body placed it.",
+      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. The YouTube embed g88qOo9C94c is carried at its original id in this section, which is where the migrated body placed it. | 2026-09-20: breeder chose H-FS2 + C-FS2 for why-us to clear ledger-tuple-identical against the listing page (user decision in chat). | 2026-09-20: breeder chose H-FS2 + C-FS2 in chat to clear ledger-tuple-identical against the listing page.",
       "video-why-us": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
     },
     "picks": {
@@ -2077,12 +2077,12 @@
       "puppies": "S3",
       "questions": "S1",
       "reasons": "S2",
-      "stats": "C-FS3",
+      "stats": "C-FS2",
       "talk-to-us": "S2",
-      "top": "H-FS1",
+      "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "24ff6aa1d5cfef492daaaa2dcd4e1ac476729dada44f9a8a94e27c0ce6a831b1",
+    "record_hash": "0146ee7725069e268dab05cf2cb5d1e475c50b7eeab3dfe48094a3cfabf19e5d",
     "tuple_before": {
       "hero": "",
       "dial": "",
