@@ -40,6 +40,7 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.gov.uk/control-dog-public/banned-dogs | gov.uk | The government's own list of dog types banned under the Dangerous Dogs Act 1991 — the page behind the statement that the Staffordshire Bull Terrier is not one of them | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
 | https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ | royalkennelclub.com | The registry's own list of questions to ask a breeder before and during a visit — the independent version of the fifteen-question checklist | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
 | https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales | rspca.org.uk | The RSPCA on spotting a puppy dealer's advert and on finding a good breeder — the independent authority behind the red-flag table | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
+| https://www.bluecross.org.uk/advice/dog/socialising-your-puppy | bluecross.org.uk | The Blue Cross on socialising a puppy — independent advice on what a puppy should meet in its first weeks, which is what our home-raising section describes doing | `/buy-staffy-puppies-for-sale-uk/` | 2026-09-20 · 200 |
 
 ## Provenance
 
@@ -87,3 +88,15 @@ citation for the red-flag table, justified by the scan (neither that page nor th
 puppy-farm page lays the two columns side by side). The migrated body's own pet-travel link
 redirects to the government's international travel page, which does not describe a domestic
 delivery, so it is logged in the buying guide record's `dropped.links` rather than given a row.
+
+The one added on 2026-09-20 for `/buy-staffy-puppies-for-sale-uk/` is a URL the migrated body
+already carried, and it was re-checked that day. The Blue Cross socialisation page answers a
+plain `curl` with 403 — the site's bot filter, not a dead page — so it was checked through a
+headless browser instead and returned 200 at the same URL; that is the only row in this table
+whose check needed one.
+
+That board adds no other row. Every other outside URL the migrated body carried is logged in
+the record's `dropped.links`: an encyclopaedia entry, two image libraries, a North American
+veterinary group, a feed brand, a named courier, a classified site's breeder directory, a
+consumer-money site and `https://www.gov.uk/take-pet-abroad`, which redirects to the
+government's international pet travel page and does not describe a domestic delivery.

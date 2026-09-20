@@ -84,6 +84,13 @@ FACT_PHRASES = {
     # kept by the record's `deposit` section, and "microchipped" is the migrated litter
     # sentence and is kept by `whats-included`.
     "sale-reserve": ["24-48 business hours", "microchipped"],
+    # The two why-us rows are verified against the MIGRATED body today and against the
+    # rebuilt page from Task 16's P5, so every phrase below is one the board record's own
+    # outline keeps: the contract, the vaccination records and the microchipping details
+    # are the three documents `kennel-club` names, and the screening results and the
+    # veterinary records are what `health-testing` offers to show a buyer.
+    "whyus-paperwork": ["puppy purchase contract", "vaccination records", "microchipping details"],
+    "whyus-evidence": ["genetic screening results", "veterinary records"],
 }
 
 

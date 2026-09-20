@@ -142,5 +142,17 @@
     "q": "How do I reserve a puppy?",
     "a": "Tell us which puppy you would like and we will confirm whether they are still available. We reply within 24-48 business hours, and a £{deposit_gbp} {deposit_terms} deposit then holds that named puppy for you. Every puppy is microchipped and health-checked before they leave us.",
     "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-paperwork",
+    "q": "What paperwork comes with a puppy?",
+    "a": "The Kennel Club registration paperwork, the vaccination records, the microchipping details and a written puppy purchase contract. We can also give you the registration numbers of both parents, so you can check the pedigree yourself.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-evidence",
+    "q": "Can I see the health test results for both parents?",
+    "a": "Yes. We will show you the genetic screening results and the veterinary records for both parents before you commit to a puppy, and again on the day you collect.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
   }
 ]
