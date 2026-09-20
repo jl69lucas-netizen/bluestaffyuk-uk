@@ -43,6 +43,8 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.bluecross.org.uk/advice/dog/socialising-your-puppy | bluecross.org.uk | The Blue Cross on socialising a puppy — independent advice on what a puppy should meet in its first weeks, which is what our home-raising section describes doing | `/buy-staffy-puppies-for-sale-uk/` | 2026-09-20 · 200 |
 | https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare | rspca.org.uk | The RSPCA on caring for a new puppy — the independent version of "what to do in the first weeks", which a listing page should not be the only source of | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
 | https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf | assets.publishing.service.gov.uk | The government's welfare-in-transport guidance for dogs and cats (PB10308) — the rules the transport a puppy travels in has to satisfy | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
+| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need | pdsa.org.uk | The PDSA on how much exercise a dog of this size needs — the independent figure behind "an hour a day", which a homepage should not be the source of | `/` | 2026-09-20 · 200 |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/ | royalkennelclub.com | The registry on canine genetics and what a DNA test result tells you — the page behind "DNA tested clear", in the registry's words rather than ours | `/` | 2026-09-20 · 200 |
 
 ## Provenance
 
@@ -114,3 +116,15 @@ Guidance)" and it still resolves at the same URL; it is the first PDF in this ta
 That board adds no other row either. The rest of its migrated outbound links are internal
 location-cluster pages project 5 owns, two in-page fragments and a self-link, all logged in the
 record's `dropped.links`.
+
+The two added on 2026-09-20 for `/` are both URLs the migrated homepage body already carried, and
+both were checked that day with a following-redirects request. The PDSA exercise page resolves at
+the spelling the body used and gets a row at it. The registry's canine-genetics page was linked as
+`https://www.thekennelclub.org.uk/health-and-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/`
+under the anchor "Animal Health Trust (now part of the Kennel Club Genetics Centre)", and it 301s
+to the `royalkennelclub.com` path recorded above, which is the spelling the row uses — the same
+treatment the breed page and the two DNA-test pages already have. The homepage board adds no other
+row: its remaining migrated outbound links are two more copies of the registry's breed page
+(already a row above) and the RSPCA puppy-care page (already a row above), and everything else it
+carried was internal, a fragment, or the map embed of the former address, all logged in
+`data/boards/index.json`'s `dropped`.

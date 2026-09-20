@@ -160,5 +160,17 @@
     "q": "How do I know a puppy is still available?",
     "a": "The cards on our listing page are generated from our own list of available puppies, and that list is updated regularly, so a puppy still showing there is one nobody has reserved. Tell us which one you like and we will confirm before you pay anything.",
     "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
+  },
+  {
+    "id": "home-ethical-breeder",
+    "q": "What makes you an ethical blue Staffy breeder?",
+    "a": "Three things you can check rather than take on trust: the puppies grow up in our house and not a kennel, both parents are DNA tested clear of L-2-HGA and HC-HSF4, and every puppy is microchipped and has had its first vaccination before it leaves us.",
+    "source": "src/pages/index.astro"
+  },
+  {
+    "id": "home-family-children",
+    "q": "Are blue Staffies good family pets with children?",
+    "a": "A well-socialised, responsibly bred Staffordshire Bull Terrier is an excellent family companion, which is the reason the breed has been called the nursemaid dog. Ours meet children and ordinary household noise in our home before they leave.",
+    "source": "src/pages/index.astro"
   }
 ]

@@ -375,14 +375,43 @@ def test_the_schema_refuses_a_kit_shape_with_no_styles():
     PB.validate_board(b)
 
 
-def test_standard_keeps_its_exemption_so_the_homepage_record_still_validates():
-    """`standard` is shared with the ported CAG shapes and is what every section of
-    data/boards/index.json is. Requiring styles of it would invalidate the one approved
-    record on the repo."""
-    rec = PB.load_board("index")
-    assert {s["shape"] for s in rec["sections"]} == {"standard"}
-    assert not any("styles" in s for s in rec["sections"])
-    assert PB.approval_matches(rec)
+def test_standard_keeps_its_exemption_from_the_styles_requirement():
+    """`standard` is shared with the ported CAG shapes, so it is the one shape a record may
+    use with no `styles` at all — and it must also still ACCEPT the three, because a rebuilt
+    page's prose sections are boarded with rendered arrangements like every other section.
+
+    Written against this module's own fixture rather than against `data/boards/index.json`.
+    It used to load the homepage record, on the reading that the record was all-`standard`,
+    style-less and approved; project 4 Task 18 re-cut that record into fifteen sections of
+    ten shapes, each offering S1/S2/S3, so the assertion had stopped describing the
+    exemption and started describing one page's outline. It also read the real link library
+    through this module's autouse repoint, which the homepage's citations are not in.
+    """
+    import json as _json
+    from test_page_board import MIN_BOARD
+    b = _json.loads(_json.dumps(MIN_BOARD))
+    b["sections"][0]["shape"] = "standard"
+    b["sections"][0].pop("styles", None)
+    PB.validate_board(b)                       # no styles: allowed
+    b["sections"][0]["styles"] = ["S1", "S2", "S3"]
+    PB.validate_board(b)                       # three styles: also allowed
+
+
+def test_the_homepage_record_is_boarded_with_rendered_styles():
+    """Task 18 migrated `data/boards/index.json` from the project-2 placeholder — fourteen
+    style-less `standard` sections carrying the migrated headings — into a draft record the
+    board-preview route renders. Three properties are load-bearing downstream: the route
+    builds only a record whose status is not `approved`, `build_board_previews.py` refuses a
+    section whose `styles` is neither empty nor exactly three, and the project-2 approval is
+    kept rather than discarded so the picks already made are not retyped."""
+    rec = json.loads((ROOT / "data" / "boards" / "index.json").read_text())
+    assert rec["meta"]["status"] == "draft", rec["meta"]["status"]
+    assert rec["approval"] is None
+    assert rec["approval_previous"], "the project-2 approval is kept, not discarded"
+    assert len(rec["sections"]) >= 12
+    for s in rec["sections"]:
+        assert s.get("styles") == ["S1", "S2", "S3"], s["id"]
+    P.validate_styles(rec)
 
 
 def test_picked_sections_skips_a_section_the_board_offers_nothing_for():

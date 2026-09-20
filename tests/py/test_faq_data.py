@@ -96,6 +96,14 @@ FACT_PHRASES = {
     # updated regularly", and the record's `puppies` section keeps that sentence, which is
     # the only thing the answer leans on.
     "listing-availability": ["available puppies", "updated regularly"],
+    # The two homepage rows are new in project 4 Task 18 and are verified against the
+    # MIGRATED body today and against the rebuilt page from Task 18's P5. Every phrase is
+    # one the migrated key-takeaway block already uses AND one the board record's own
+    # outline keeps: "not a kennel" is `who-we-are`, the two test names are `health`, and
+    # "excellent family companion" with "well-socialised" are what the family claim in
+    # `who-we-are` rests on. Nothing here leans on a wording only the old body has.
+    "home-ethical-breeder": ["not a kennel", "L-2-HGA", "HC-HSF4"],
+    "home-family-children": ["excellent family companion", "well-socialised"],
 }
 
 
