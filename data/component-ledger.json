@@ -101,6 +101,28 @@
         "takeaways-s2"
       ],
       "h6_prefixes": []
+    },
+    "buy-staffy-puppies-for-sale-uk": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
+    },
+    "blue-staffy-uk-breeders": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [],
+      "h6_prefixes": []
     }
   }
 }
