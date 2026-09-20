@@ -243,11 +243,12 @@ run against them.
 5. **2026-09-20, user request.** Working rule 13: every table on a rebuilt page is a `table`-shaped board section with three rendered styles (kit `DataTable` component 17: S1 ruled rows with a brand header band, S2 zebra card, S3 borderless with brass column rules — all three stack into `data-label` rows below 640px, tested by the harness's stacked-table check), and `tuple.table` records the pick. Pages that carry tables: pup-sale (price and delivery bands), the two guides (breed facts, health tests), buy-staffy (reasons/comparison), homepage (at a glance).
 
 
-**Amendment 5 (2026-09-20, build review of the first three rebuilt pages).** Seven rulings,
-taken after `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
-`/uk-blue-staffy-breeders-contact/` were read side by side.
+6. **2026-09-20, build review of the first three rebuilt pages.** Seven rulings, taken after
+   `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
+   `/uk-blue-staffy-breeders-contact/` were read side by side. Referred to elsewhere as
+   amendment 6a-6g, in this order.
 
-1. **A kit component may not assert a page's credentials or invent its links.**
+   (a) **A kit component may not assert a page's credentials or invent its links.**
    `Hero.astro` hard-coded three trust chips ("KC registered", "DNA-tested parents", "Raised
    in the home") and two CTA buttons. On the homepage those are true and approved; on a
    privacy policy they are a sales line, and the two buttons were two hrefs no board record
@@ -255,7 +256,7 @@ taken after `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
    passes the homepage's set through the registry. The three rebuilt pages pass neither:
    their records give the hero no `cta` and no links.
 
-2. **Link parity is a gate.** `scripts/link_parity_check.py --check` walks `<main>` on every
+   (b) **Link parity is a gate.** `scripts/link_parity_check.py --check` walks `<main>` on every
    slug in `data/facts/rebuilt.json` minus the in-page nav chrome, and diffs the hrefs both
    ways against the record's `sections[].links`: an extra fails, a missing fails, and an
    href in `dropped.links` fails as its own kind. It runs in `check:all` directly after
@@ -266,7 +267,7 @@ taken after `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
    `PuppyCard` on a section of shape `puppies` and would go stale in a record the day a
    litter changed. `mailto:` is NOT exempt; the three pages state the address as text.
 
-3. **`dropped.text`: a claim can leave a page without a token going missing.** The fact set's
+   (c) **`dropped.text`: a claim can leave a page without a token going missing.** The fact set's
    six kinds are tokens — a price, a name, a test, an image. A migrated body also makes
    CLAIMS, and a rebuild that simply does not rewrite one drops it silently.
    `facts_preserved_check.py` now extracts the migrated body's claim sentences (those
@@ -278,7 +279,7 @@ taken after `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
    demanding the verb back would be demanding the old sentence back. All twelve fact sets
    carry the kind; the nine unrebuilt ones captured theirs while their bodies still exist.
 
-4. **`dropped` leaves `record_hash`.** It is the accounting of what the rebuild did not
+   (d) **`dropped` leaves `record_hash`.** It is the accounting of what the rebuild did not
    carry and cannot be complete before the rebuild exists, which is after approval by
    construction — the same argument that already excludes `assets[].status` and `.file`,
    which the bake fills in. Hashing it made ruling 3 unusable on every approved record: the
@@ -288,21 +289,21 @@ taken after `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
    `dropped.text` key reproduces the stored hash exactly, so nothing outside `dropped` moved.
    `approval_matches` also accepts the old formula, for records whose `dropped` is untouched.
 
-5. **A privacy policy renders its real last-updated date.** Four sentences of that page lean
+   (e) **A privacy policy renders its real last-updated date.** Four sentences of that page lean
    on a date the page did not show. `src/components/kit/PageDate.astro` renders it from the
    same `data/page-dates.json` row `BaseLayout` puts in the WebPage node, so the visible date
    and the machine-readable one cannot disagree, and a route with no row renders nothing
    rather than today. The `no_visible_date` rule stays what it was: freshness belongs in the
    schema on a sales page, and this is the exception that rule was never about.
 
-6. **Every H4–H6 ladder sentence traces to the migrated body or to `data/`.** The ladder is
+   (f) **Every H4–H6 ladder sentence traces to the migrated body or to `data/`.** The ladder is
    written at P5 rather than approved on the board, which is exactly why it is where an
    invented claim lands. Nine were reworded across the three pages — "there is no list",
    "no fee, and no effect", "no archive of old wordings", "most often ends up", "usually
    saves two more" and the like. The test is the same as for body prose (rule 9): a sentence
    states what a file on disk says, or it states nothing.
 
-7. **FAQ question headings take Title Case.** `rules/headings.md` exempted them on the
+   (g) **FAQ question headings take Title Case.** `rules/headings.md` exempted them on the
    ground that they "live in `<summary>`, not a heading tag". `Faq.astro` puts an `<h3>`
    inside the summary — which is what makes the answers navigable as a heading list — and
    both title-case checkers select every `h1`–`h6` under `<main>`, so the exemption was one
