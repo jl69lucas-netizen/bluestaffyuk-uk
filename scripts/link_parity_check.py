@@ -1,0 +1,205 @@
+#!/usr/bin/env python3
+"""link_parity_check.py — a rebuilt page links where its board record says, and nowhere else.
+
+  python3 scripts/link_parity_check.py --check        # every slug in data/facts/rebuilt.json
+  python3 scripts/link_parity_check.py <slug> [...]   # named slugs
+  python3 scripts/link_parity_check.py --check --list # also print the reconciled set per page
+
+WHY THIS EXISTS. `facts_preserved_check.py` asks whether the rebuilt page still carries the
+facts the migrated page carried. It says nothing about what the page ADDED. Working rule 12
+(spec §9 amendment 3a) is the other direction: every link on a rebuilt page is one the
+breeder approved on the board, and every link they approved is on the page. Without a gate
+the drift is silent and cheap — a component's hard-coded CTA, a second link to a source
+already cited, a `mailto:` nobody signed off — and each one is a destination the board never
+showed anyone.
+
+WHAT COUNTS AS A LINK ON THE PAGE. Every `<a href>` inside `<main>`, minus:
+
+  * CHROME. The in-page nav set (`kit-dial`, `kit-sheet`, `kit-tabbar`, `kit-strip`, the
+    sections `<dialog>`) renders inside `<main>` and links only to the page's own sections
+    and to three fixed site routes. It is furniture, it is identical on every page that
+    mounts it, and no board record describes it. The header, the footer and the breadcrumb
+    are outside `<main>` already and never reach this walker.
+  * SAME-PAGE FRAGMENTS. `#section-id` is a jump, not a destination; `nav-anchors-resolve`
+    is the gate that owns those.
+  * THE PUPPY GRID'S OWN CARDS. A section of shape `puppies` IS the grid: its cards are rows
+    of data/puppies.json rendered by `PuppyCard`, and each row links to that puppy's page.
+    Those hrefs are DATA, not prose the breeder wrote an anchor for — a record that listed
+    them would go stale the day a litter changed, which is the thing the shape exists to
+    avoid. So `/available-puppies/<slug>/` is allowed on a page whose record has a
+    `puppies`-shaped section, and ONLY for slugs that are actually in data/puppies.json.
+    Every other href on such a page is judged normally.
+
+`mailto:` is NOT exempt. An email address is a channel the board can list and did not, so a
+`mailto:` reports as an extra until a record names it — which is the honest outcome: the
+address can still be written as text, and linking it is a decision somebody should take.
+
+WHAT THE RECORD ALLOWS. The union of `sections[].links.internal[].href` and
+`sections[].links.external[].href`, and nothing else. `dropped.links` is the opposite: an
+href listed there is one the record says the page must NOT carry, so finding it is a
+failure of its own kind rather than a plain extra — the reason it was dropped is in the
+record beside it.
+
+Exit: 0 clean, 1 any page out of parity, 2 cannot run (no dist/, no record).
+"""
+import argparse
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+DIST = ROOT / "dist"
+BOARDS = ROOT / "data" / "boards"
+REBUILT = ROOT / "data" / "facts" / "rebuilt.json"
+
+MAIN = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)
+ANCHOR = re.compile(r"""<a\b[^>]*?\shref\s*=\s*["']([^"']*)["']""", re.I)
+
+# The in-page nav set, by the class each component puts on its own root. Kept as a literal
+# list rather than a regex over "nav|dial|sheet": a page section could legitimately carry a
+# class with one of those words in it, and this gate silently dropping a real link would be
+# worse than it reporting one.
+CHROME_CLASSES = ("kit-dial", "kit-sheet", "kit-tabbar", "kit-strip")
+# `<dialog class="sheet">` is SectionSheet's bottom sheet; it sits inside `.kit-sheet`
+# (`display: contents`) but is cut here too so the walker does not depend on nesting.
+CHROME_TAGS = ("dialog",)
+
+
+def _strip_chrome(html):
+    """`html` with every chrome subtree removed, by walking tags and tracking depth.
+
+    A regex cannot do this: the subtrees nest, and `.*?</div>` stops at the first close tag
+    rather than the matching one — which would leave half a dial's links in the corpus and
+    cut a real paragraph out of the middle of a section.
+    """
+    out = []
+    pos = 0
+    depth = 0          # nesting depth inside a chrome subtree, 0 = not in one
+    chrome_tag = None  # the tag name that opened the subtree we are in
+    for m in re.finditer(r"<(/?)([a-zA-Z][\w-]*)([^>]*)>", html):
+        close, tag, attrs = m.group(1), m.group(2).lower(), m.group(3)
+        if depth == 0:
+            out.append(html[pos:m.start()])
+            pos = m.start()
+            cls = " ".join(re.findall(r"""(?:class|id)\s*=\s*["']([^"']*)["']""", attrs))
+            starts = (not close) and not attrs.rstrip().endswith("/") and (
+                tag in CHROME_TAGS or any(c in cls.split() for c in CHROME_CLASSES))
+            if starts:
+                depth, chrome_tag = 1, tag
+                pos = m.end()
+        elif tag == chrome_tag:
+            depth += -1 if close else 1
+            if depth == 0:
+                pos = m.end()
+    out.append(html[pos:])
+    return "".join(out)
+
+
+def page_links(html):
+    """Every href a rebuilt page's own body offers, chrome and same-page jumps removed."""
+    body = MAIN.search(html)
+    inner = _strip_chrome(body.group(1) if body else html)
+    hrefs = []
+    for h in ANCHOR.findall(inner):
+        h = h.strip()
+        if not h or h.startswith("#"):
+            continue
+        hrefs.append(h)
+    return hrefs
+
+
+# `<the fact> — <the reason>`, the same shape facts_preserved_check.py reads. Em or en dash
+# only: a hyphen is part of a slug, and splitting on one cut `/uk-locations/...` in half.
+_DROP_SPLIT = re.compile(r"\s+[—–]\s+")
+
+
+def dropped_links(record):
+    """The hrefs the record says the page must not carry, read off the front of each line."""
+    out = set()
+    for line in (record.get("dropped") or {}).get("links", []) or []:
+        if not isinstance(line, str):
+            continue
+        head = _DROP_SPLIT.split(line.strip(), 1)[0].strip()
+        # The entry usually reads `/path/ ("the old anchor")`; the href is the first token.
+        out.add(head.split()[0] if head.split() else head)
+    return out
+
+
+def record_links(record):
+    """Every href the record's sections list, internal and external."""
+    out = set()
+    for s in record["sections"]:
+        for side in ("internal", "external"):
+            for l in s["links"][side]:
+                out.add(l["href"].strip())
+    return out
+
+
+def puppy_hrefs(record):
+    """`/available-puppies/<slug>/` for every row of data/puppies.json — allowed only on a
+    page whose record has a `puppies`-shaped section (see the note at the top)."""
+    if not any(s["shape"] == "puppies" for s in record["sections"]):
+        return set()
+    rows = json.loads((ROOT / "data/puppies.json").read_text(encoding="utf-8"))
+    return {f"/available-puppies/{p['slug']}/" for p in rows}
+
+
+def check(slug):
+    """(problems, examined) for one rebuilt slug. `problems` are printable strings."""
+    page = DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
+    rec_path = BOARDS / f"{slug}.json"
+    if not page.exists():
+        return [f"{slug}: no built page at dist/{page.relative_to(DIST)} — run the build"], 0
+    if not rec_path.exists():
+        return [f"{slug}: no board record at {rec_path.relative_to(ROOT)}"], 0
+    record = json.loads(rec_path.read_text(encoding="utf-8"))
+
+    on_page = page_links(page.read_text(encoding="utf-8", errors="ignore"))
+    allowed = record_links(record)
+    data_ok = puppy_hrefs(record)
+    banned = dropped_links(record)
+
+    problems = []
+    for h in sorted(set(on_page)):
+        if h in banned:
+            problems.append(f"{slug}: {h} is listed in the record's `dropped.links` and is on the page")
+        elif h not in allowed and h not in data_ok:
+            problems.append(f"{slug}: {h} is on the page and in no section's `links`")
+    for h in sorted(allowed - set(on_page)):
+        problems.append(f"{slug}: {h} is in the record's `links` and not on the page")
+    return problems, len(set(on_page))
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.strip().splitlines()[0])
+    ap.add_argument("slugs", nargs="*", help="check these slugs")
+    ap.add_argument("--check", action="store_true", help="check every slug in data/facts/rebuilt.json")
+    ap.add_argument("--list", action="store_true", help="print each page's reconciled href set")
+    ns = ap.parse_args(sys.argv[1:] if argv is None else argv)
+
+    slugs = ns.slugs or (json.loads(REBUILT.read_text(encoding="utf-8")) if ns.check and REBUILT.exists() else [])
+    if not slugs:
+        print("link-parity ERROR nothing to check — pass a slug or --check with a "
+              "non-empty data/facts/rebuilt.json")
+        return 2
+
+    total, links = 0, 0
+    for slug in slugs:
+        problems, n = check(slug)
+        links += n
+        for p in problems:
+            print(f"  {p}")
+        total += len(problems)
+        if ns.list:
+            page = DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
+            if page.exists():
+                for h in sorted(set(page_links(page.read_text(encoding="utf-8", errors="ignore")))):
+                    print(f"    {slug}  {h}")
+    # A gate that examined nothing is not a pass (.claude/skills/bsuk-gate-integrity).
+    print(f"examined {len(slugs)} rebuilt page(s), {links} distinct body link(s); {total} problems")
+    return 1 if total else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

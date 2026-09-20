@@ -118,7 +118,20 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
   // `as: 'h2'` — the preview page already owns an <h1>. The prop exists for exactly this:
   // on a real page the default 'h1' is correct.
-  hero: { C: Hero, demo: [{ as: 'h2' }] },
+  // The chips and the CTA row are PROPS now and default to none (project 4, 2026-09-20
+  // review): a component may not assert a page's credentials or invent its links. The board
+  // is where those weights are judged, so the specimen passes the set the homepage carries.
+  hero: {
+    C: Hero,
+    demo: [{
+      as: 'h2',
+      chips: ['KC registered', 'DNA-tested parents', 'Raised in the home'],
+      ctas: [
+        { label: 'Meet the puppies', href: '/available-puppies/' },
+        { label: 'Ask a question', href: '/uk-blue-staffy-breeders-contact/', kind: 'outline' },
+      ],
+    }],
+  },
   // All five button KINDS on one board, because a page uses more than one of them and the
   // board is where their weights are judged against each other.
   buttons: {

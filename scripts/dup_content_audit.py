@@ -82,14 +82,12 @@ WHITELIST_SNIPPETS = [
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",
 
-    # ── the kit Hero's own chip row and CTA pair (project 4, 2026-09-20) ───────────
-    # `src/components/kit/Hero.astro` renders three fixed trust chips and two fixed
-    # buttons under every hero on the site; only the eyebrow, title and lede above them
-    # are the page's own. Two rebuilt pages already carry the run verbatim and every
-    # page rebuilt after them will, so it is chrome by the same measure as the CTA band
-    # above — one component rendered across page types, not a passage anybody wrote
-    # twice. The stem starts at the first chip because the lede before it varies.
-    "kc registered dna tested parents raised in the home meet the puppies ask a question",
+    # The kit Hero's chip row and CTA pair were whitelisted here on 2026-09-20 and REMOVED
+    # the same day. They were shared chrome only because the component hard-coded them; the
+    # build review made both of them props defaulting to none, so the only page that still
+    # renders that run is /kit-preview/, which passes the homepage's set as a specimen. One
+    # page is not repeated content, and an exemption carried for one page is dead weight
+    # that reads as evidence (tests/py/test_dup_whitelist_measured.py holds the floor at 3).
 
     # newsletter block
     "get blue staffy updates new litters breeder tips puppy availability straight to your inbox",

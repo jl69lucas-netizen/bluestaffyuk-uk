@@ -150,12 +150,12 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
           body="Home delivery by DEFRA-approved transport, priced by distance, between £200 and £350."
         />
       </div>
-      <h4>{T('None of This Starts Until I Have Written Back')}</h4>
-      <p>You are not on a clock. Nothing is decided while you are waiting for a first reply.</p>
-      <h5>{T('A Deposit Is Never Asked for by Email First')}</h5>
-      <p>We talk about your home before any money is mentioned at all.</p>
+      <h4>{T('The Four Steps Are in Order')}</h4>
+      <p>The reply comes first, and nothing after it happens before it has.</p>
+      <h5>{T('The Conversation Comes Before the Deposit')}</h5>
+      <p>Step two is your home; step three is the £500 that reserves a puppy.</p>
       <h6>{T('Next step: Read the Reply, Then Answer It')}</h6>
-      <p>That one exchange settles most of what people are wondering about.</p>
+      <p>It will ask about your household, which is where step two begins.</p>
     </div>
   </section>
 
@@ -185,11 +185,11 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
       and <a href="https://www.gov.uk/bring-pet-to-great-britain" target="_blank" rel="noopener noreferrer">the official UK pet travel scheme</a>.
     </p>
     <h4>{T('Read Them in Any Order')}</h4>
-    <p>None of it is homework, and no answer of mine depends on your having read it.</p>
+    <p>The pages above stand on their own, and the reply is being written either way.</p>
     <h5>{T('Bring a Question Back With You')}</h5>
-    <p>Anything one of those pages leaves open is a good thing to put in your next message.</p>
+    <p>Anything one of those pages leaves open is worth putting in your next message.</p>
     <h6>{T('Next step: Note What You Want Asked')}</h6>
-    <p>Two or three written-down questions make my reply far more useful to you.</p>
+    <p>A written-down question is easier to answer than a remembered one.</p>
   </section>
 
   {/* 04 — one review, in the picked bed S3, mode `single` per the approval note. */}
@@ -206,11 +206,11 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
         first message, the wait, and bringing her home.
       </p>
       <h4>{T('Three Reviews, Not Thirty')}</h4>
-      <p>We publish the ones families actually sent us, and no others.</p>
-      <h5>{T('Yours Is Never Asked for in Advance')}</h5>
-      <p>Nobody is asked to write one before a puppy has been home a good while.</p>
-      <h6>{T('Next step: Ask to Speak to an Owner')}</h6>
-      <p>If that would help you decide, say so in your reply and I will ask one of them.</p>
+      <p>Three families have written to us, and all three are quoted on this site.</p>
+      <h5>{T('Each One Is Named')}</h5>
+      <p>This one is The Victoria Family, in Manchester; the other two name themselves too.</p>
+      <h6>{T('Next step: Say What It Leaves Open')}</h6>
+      <p>Whatever a review does not answer is a good line for your reply.</p>
     </div>
   </section>
 
@@ -246,10 +246,11 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
       holds PHONE_PLACEHOLDER, and a placeholder must never reach a page. */}
   <section id="reach-us" data-section-label="If you need us sooner">
     <h2>{T('If you need us sooner')}</h2>
+    <p>Two ways, and both of them come to me.</p>
 
     <h3>{T('Where to write')}</h3>
     <p>
-      Write straight to <a href={`mailto:${email}`}>{email}</a>, or use
+      Write straight to {email}, or use
       <a href="/uk-blue-staffy-breeders-contact/">the contact page</a> if you would rather
       send a form. Both of them reach me.
     </p>
@@ -260,12 +261,12 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
       the way <a href="/privacy-policy-uk/">our privacy policy</a> describes, and nowhere else.
     </p>
     <p><Button kind="primary" href="/uk-blue-staffy-breeders-contact/" label="Write to us" /></p>
-    <h4>{T('A Second Message Does No Harm')}</h4>
-    <p>Writing again moves you down no list. There is no list.</p>
-    <h5>{T('Late Messages Are Still Read')}</h5>
-    <p>Anything sent at the end of an evening is answered the following day.</p>
-    <h6>{T('Next step: Check the Junk Folder First')}</h6>
-    <p>It is where a first reply from an unfamiliar address most often ends up.</p>
+    <h4>{T('Writing Again Is Fine')}</h4>
+    <p>Following up rather than waiting is fine, as the questions below say.</p>
+    <h5>{T('Messages Are Read Late')}</h5>
+    <p>The inbox is read until 23:00, seven days a week.</p>
+    <h6>{T('Next step: Check Spam or Junk First')}</h6>
+    <p>Look there before writing again, which is what the first step above asks.</p>
   </section>
 
   {/* 07 — the FAQ, in the picked style S3 (accordion in a card with a jump list beside it).

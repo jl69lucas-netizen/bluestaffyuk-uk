@@ -46,7 +46,35 @@ def test_check_reports_missing_unless_dropped():
     # embed, which would require the checker to treat the specific test name (L-2-HGA) as
     # covering the general claim (DNA tested) — two different facts, and letting one stand in
     # for the other is exactly the quiet loss this gate exists to catch.
-    assert missing == {"tests": ["DNA"], "embeds": ["g9iV9RVr_Sk"]}
+    # `text` joins them (project 4, 2026-09-20): the fixture's two sentences are both claim
+    # sentences — one carries prices, one carries a health test and two names — and the new
+    # body restates neither closely enough to clear the six-word overlap. That is the point of
+    # the kind: a sentence can leave a page without a single TOKEN going missing with it.
+    assert missing == {
+        "tests": ["DNA"],
+        "embeds": ["g9iV9RVr_Sk"],
+        "text": ["Puppies from £1,500 and £1,700.",
+                 "Roman and Byrd are DNA tested for L-2-HGA."],
+    }
+
+
+def test_a_claim_is_carried_when_its_triggers_and_six_words_survive():
+    """The other half of the `text` kind: a rebuild that REWRITES a claim keeps it."""
+    facts = {"text": ["Our dedicated team aims to personally review and respond to all "
+                      "inquiries within 24-48 business hours."]}
+    reworded = ("<main><p>Every inquiry is read and answered personally by our team, within "
+                "24-48 business hours.</p></main>")
+    assert F.missing(facts, reworded) == {}
+    # Drop the number and the claim is gone, however much of the wording survives.
+    gutted = ("<main><p>Every inquiry is read and answered personally by our team, quickly."
+              "</p></main>")
+    assert F.missing(facts, gutted) == facts
+
+
+def test_a_dropped_text_line_may_quote_the_phrase_rather_than_the_sentence():
+    facts = {"text": ["This includes secure servers and regular staff training."]}
+    dropped = {"text": ["regular staff training — no file on disk records a programme"]}
+    assert F.missing(facts, "<main><p>Nothing here.</p></main>", dropped) == {}
 
 
 # --- The committed fact sets and the wiring -----------------------------------------------
@@ -68,16 +96,16 @@ def test_every_page_this_project_rebuilds_has_a_committed_fact_set():
     assert not missing, "no fact set for: " + ", ".join(missing)
 
 
-KINDS = ["prices", "names", "tests", "creds", "images", "embeds"]
+KINDS = ["prices", "names", "tests", "creds", "images", "embeds", "text"]
 
-# The blog post is the one page with nothing to preserve, and that is a measured fact about
-# it rather than an extraction that failed: its body is a 1,150-character introduction with
-# no price, no image, no embed and no health test in it. Named here so an empty fact set
+# The blog post is the one page with almost nothing to preserve, and that is a measured fact
+# about it rather than an extraction that failed: its body is a 1,150-character introduction
+# with no price, no image, no embed and no health test in it. Named here so an empty fact set
 # anywhere ELSE stays a failure.
 FACTLESS = {"blue-staffy-blog-guides"}
 
 
-def test_every_fact_set_has_the_six_kinds_and_nothing_else():
+def test_every_fact_set_has_the_seven_kinds_and_nothing_else():
     for slug in TWELVE:
         facts = json.loads((ROOT / f"data/facts/{slug}.json").read_text())
         assert sorted(facts) == sorted(KINDS), slug

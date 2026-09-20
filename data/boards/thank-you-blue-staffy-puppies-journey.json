@@ -690,6 +690,9 @@
   "dropped": {
     "links": [
       "/uk-locations/staffy-breeding-dogs-glasgow/ (\"Staffy breeding parents in the …\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). The page keeps its URL, but a rebuilt page does not send a buyer to it."
+    ],
+    "text": [
+      "Blue Staffy News: Join 500+ Readers! — the newsletter band. The 500+ figure has no source on disk, the WordPress form behind it was already removed at migration, and `brief.out_of_scope` rules the block out. Nothing replaces it: a confirmation page asking for a second sign-up before it has answered the first message is the opposite of what it is for."
     ]
   },
   "approval": {
@@ -716,7 +719,7 @@
       "questions": "S3",
       "welcome": "S3"
     },
-    "record_hash": "1e28187939992526866205f30307f3314f86aa516be5e4fe444389b9afed6534",
+    "record_hash": "fcc79313a8d67086135791bf84fabbf6f60d0ce4fce18516d89b98bd16dcfda4",
     "tuple_before": {
       "hero": "hero-s3",
       "dial": "",

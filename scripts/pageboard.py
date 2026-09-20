@@ -248,15 +248,32 @@ def load_ledger():
 LIFECYCLE_ASSET_KEYS = ("status", "file")
 
 
-def record_hash(board):
-    """sha256 of the record's CONTENT, keys sorted. Four fields are excluded because they
+def record_hash(board, legacy_dropped=False):
+    """sha256 of the record's CONTENT, keys sorted. Five fields are excluded because they
     are lifecycle state rather than content, and they move after approval by design:
     the top-level `approval`, `meta.status` (board_approve.py flips it to "approved"
-    the moment it stamps the hash), and every asset's `status` and `file` (baking a photo
-    fills them in). Hashing any of them would make every legitimate approval, and every
-    later bake, read as a post-approval edit. An edit anywhere else DOES change the hash,
-    which is how a real post-approval edit sends the page back to the board."""
-    body = {k: v for k, v in board.items() if k != "approval"}
+    the moment it stamps the hash), every asset's `status` and `file` (baking a photo
+    fills them in), and the top-level `dropped`. Hashing any of them would make every
+    legitimate approval, every later bake, and every completed drop-list read as a
+    post-approval edit. An edit anywhere else DOES change the hash, which is how a real
+    post-approval edit sends the page back to the board.
+
+    WHY `dropped` IS LIFECYCLE AND NOT CONTENT (project 4, 2026-09-20 review). It is the
+    accounting of what the rebuild did NOT carry, and it cannot be complete before the
+    rebuild exists — which is after approval, by construction. The breeder approves an
+    OUTLINE: headings, styles, links, an H1 and a meta set. Nothing on the board asks them
+    which sentence of the migrated body the writer will find no room for; that is discovered
+    at P5 and reported by scripts/facts_preserved_check.py, and `dropped` is where the answer
+    is written down with its reason. Hashing it made the `text` kind unusable on every
+    approved record — the only way to record a dropped claim would have been to re-board a
+    page the breeder had already signed off, or to re-stamp the hash by hand, which is
+    forging an approval. `assets[].status` and `.file` are excluded on exactly this argument
+    and have been since the first board: a field the pipeline fills in after approval is not
+    a choice the approval covered. The drop list is still content in every other sense —
+    board_gate and facts_preserved_check both read it, the schema requires a reason on every
+    line, and the gate report prints it per page."""
+    skip = ("approval",) if legacy_dropped else ("approval", "dropped")
+    body = {k: v for k, v in board.items() if k not in skip}
     meta = body.get("meta")
     if isinstance(meta, dict):
         body["meta"] = {k: v for k, v in meta.items() if k != "status"}
@@ -312,13 +329,26 @@ def pre_approval_hashes(board):
     before one was — notes cleared, and notes left as the outline author wrote them.
     One source of truth for board_approve.py's acceptance test and its tests."""
     return {record_hash(board),
+            record_hash(board, legacy_dropped=True),
             record_hash_bare(board, clear_notes=True),
             record_hash_bare(board, clear_notes=False)}
 
 
 def approval_matches(board):
+    """True when the approval on the record covers the record as it stands.
+
+    `legacy_dropped` is a ONE-TIME compatibility reading, not a loosening. The three records
+    approved before 2026-09-20 carry a hash computed when `dropped` was still inside it, so
+    every one of them would read as edited the moment the exclusion above landed — and the
+    fix for that cannot be "re-stamp the hash", which is the one thing this function exists
+    to make impossible. Accepting the old formula keeps those three stamps exactly as the
+    breeder left them and changes nothing about what a POST-approval edit does: an edit to
+    any hashed field still moves both hashes and still fails. It can be deleted once every
+    record has been approved under the new formula."""
     a = board.get("approval")
-    return isinstance(a, dict) and a.get("record_hash") == record_hash(board)
+    if not isinstance(a, dict):
+        return False
+    return a.get("record_hash") in (record_hash(board), record_hash(board, legacy_dropped=True))
 
 
 def base_of(component_id):

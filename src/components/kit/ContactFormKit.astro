@@ -61,7 +61,10 @@ const fields = [
   data-live={String(live)}
   aria-labelledby={`${f}-h`}
 >
-  <h2 id={`${f}-h`}>Enquire about a puppy</h2>
+  {/* Title Case, like every other heading on the site (rules/headings.md). It is a
+      literal rather than a `titleCase()` call because it is the component's own string and
+      not a page's approved wording — there is nothing here for a caser to normalise. */}
+  <h2 id={`${f}-h`}>Enquire About a Puppy</h2>
 
   <input type="hidden" name="_next" value={abs('/thank-you-blue-staffy-puppies-journey/')} />
   <input type="hidden" name="_subject" value="New Blue Staffy enquiry" />

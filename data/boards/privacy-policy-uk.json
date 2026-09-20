@@ -870,6 +870,11 @@
       "/blue-staffy-blog-guides/ (\"c\") — the anchor in the migrated body is the single character \"c\", a defect in the old markup rather than a link anyone wrote.",
       "/thank-you-blue-staffy-puppies-journey/ (\"our friendly team\") — the post-enquiry confirmation page; a reader with a privacy question is sent to the contact page, which this page already links twice.",
       "mailto:privacy@bluestaffyuk.uk (anchor \"staffies@bluestaffyuk.uk\") — the href and the visible address disagree in the migrated body, so neither can be carried as written. The page reaches us through the contact page until the correct address is confirmed."
+    ],
+    "text": [
+      "regular staff training — the migrated body listed it among the security measures. No file on disk records a training programme, a schedule or who has taken it, and a policy that claims one the business cannot evidence is the kind of statutory-adjacent claim rule 9 holds back (see LEGAL_CLAIM_PLACEHOLDER). The three measures that ARE evidenced — secure servers, SSL in transit, access restricted to the people who need it — are all carried.",
+      "We encourage you to review this policy periodically — the rebuilt page renders its own last-updated date from data/page-dates.json instead, so a reader can SEE whether the wording has moved since they last read it rather than being asked to keep checking.",
+      "Last Updated: June 20, 2025 — a hard-typed stamp from the old site, two dates and one rebuild out of date. The page now renders the real date through the PageDate component, off the same data/page-dates.json row BaseLayout puts in the WebPage node, so the visible date and the machine-readable one cannot disagree. The contact block the same sentence carried (the email address and an invitation to write) is kept, in 'Asking us about your privacy'."
     ]
   },
   "approval": {
@@ -896,7 +901,7 @@
       "opening": "S3",
       "questions": "S1"
     },
-    "record_hash": "a810010f635496da50553272f51b82f730cdc9f34fba6f3a02b1fe25943f0c65",
+    "record_hash": "4e18202c50ebe3b2f5827c18d5bdd335f85f085ddd0ab7dd72d9f02f979945c3",
     "tuple_before": {
       "hero": "hero-s3",
       "dial": "",

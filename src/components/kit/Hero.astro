@@ -53,6 +53,17 @@ type Props = HTMLAttributes<'section'> & {
    *  carries the numbers in its `assets` row. */
   imageWidth?: number;
   imageHeight?: number;
+  /** The trust chips under the lede. DEFAULTS TO NONE (project 4, 2026-09-20 review). They
+   *  used to be three hard-coded claims — "KC registered", "DNA-tested parents", "Raised in
+   *  the home" — which is a component asserting a page's credentials for it: true on the
+   *  homepage, a sales line on a privacy policy, and a claim the page's own board record
+   *  never approved on any of them. A page that wants them passes them. */
+  chips?: string[];
+  /** The CTA row. DEFAULTS TO NONE, for the same reason and one more: the two buttons were
+   *  hard-coded LINKS, so every page mounting a hero carried two hrefs its board record did
+   *  not list and `scripts/link_parity_check.py` could not reconcile. A page passes the
+   *  buttons its record's `links` and `cta` allow. */
+  ctas?: { label: string; href: string; kind?: 'primary' | 'outline' | 'inverse' | 'text' }[];
 };
 // Every figure and claim below is in data/settings.json or on the live homepage
 // (KC registration, health-tested parents): rule 9, nothing is typed from memory.
@@ -68,11 +79,15 @@ const {
   imageAlt,
   imageWidth,
   imageHeight,
+  chips = [],
+  ctas = [],
   class: cls,
   ...rest
 } = Astro.props;
-// Backed on the homepage today: KC registration, L-2-HGA/HC-HSF4 clear parents, home rearing.
-const chips = ['KC registered', 'DNA-tested parents', 'Raised in the home'];
+// NOTHING IS ASSERTED HERE ANY MORE. The chip list and the CTA row were literals in this
+// file; both are props now and both default to empty, so a hero states only what the page
+// that mounted it handed it.
+
 const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
 // A public path cannot go through <Image>: astro:assets only handles files it can read at
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
@@ -109,11 +124,14 @@ const legacy = typeof image === 'string';
       <p class="eyebrow">{eyebrow}</p>
       <Heading class="title">{title}</Heading>
       <p class="lede">{lede}</p>
-      <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>
-      <div class="ctas">
-        <Button kind="primary" href="/available-puppies/" label="Meet the puppies" />
-        <Button kind="outline" href="/uk-blue-staffy-breeders-contact/" label="Ask a question" />
-      </div>
+      {chips.length > 0 && (
+        <ul class="chips">{chips.map((c) => <li class="kit-chip">{c}</li>)}</ul>
+      )}
+      {ctas.length > 0 && (
+        <div class="ctas">
+          {ctas.map((c) => <Button kind={c.kind ?? 'primary'} href={c.href} label={c.label} />)}
+        </div>
+      )}
     </div>
   </div>
 </section>

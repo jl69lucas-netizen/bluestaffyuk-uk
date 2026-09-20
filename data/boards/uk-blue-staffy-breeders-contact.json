@@ -880,15 +880,18 @@
     }
   ],
   "dropped": {
+    "prices": [
+      "the form card's delivery notice — 'Delivery begins 24-48 hours after payment confirmation. Train station pickup is our default method (free)'. No file on disk states a free station pickup or that turnaround; data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what the FAQ row states instead."
+    ],
     "names": [
       "the street address, postcode and map coordinates in the migrated page's legacy Place schema node, and the 'Our Location (By Appointment Only)' paragraph built on them: they name a Scottish city the breeder does not operate from. data/settings.json is Carlisle · Cumbria at town level, and Known Issue 16 owns the correction. The by-appointment-only fact itself is kept, in 'How to reach us' and in the contact-visit FAQ row.",
       "the internal link to the breeding-dogs location page, whose anchor named that same city"
     ],
-    "prices": [
-      "the form card's delivery notice — 'Delivery begins 24-48 hours after payment confirmation. Train station pickup is our default method (free)'. No file on disk states a free station pickup or that turnaround; data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what the FAQ row states instead."
-    ],
     "links": [
       "/uk-locations/staffy-breeding-dogs-glasgow/ (\"meet our Blue Staffy breeders\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). A contact page must not point a visitor at the former location."
+    ],
+    "text": [
+      "We can also discuss UK-wide and international puppy transport options, including compliant DEFRA pet transport solutions for safe delivery — `brief.out_of_scope`: no file on disk states a route, a price or a carrier for international transport. UK delivery IS carried, with the figures data/settings.json holds: DEFRA-approved transport, priced by distance between £200 and £350, in the delivery FAQ row."
     ]
   },
   "approval": {
@@ -921,7 +924,7 @@
       "top": "S3",
       "why-write": "S1"
     },
-    "record_hash": "f3bbe0db076497f33883ecbeb8c177988391284645c8abfe703b6f7d5523b3ff",
+    "record_hash": "3e73d91db01436aebdcb1a5316f38e481a887a5ab858eced18e84f360b6cab33",
     "tuple_before": {
       "hero": "hero-s1",
       "dial": "dial-s2",

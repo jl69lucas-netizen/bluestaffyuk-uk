@@ -16,11 +16,15 @@
 //
 // IT DOES, HOWEVER, MOVE EVERY JUMP TARGET DOWN. A target offset only by the header lands
 // UNDER the strip. The strip therefore publishes its own measured height as `--strip-h` on
-// `:root` (ResizeObserver, below) and global.css adds it to the `[id] { scroll-margin-top }`
-// expression. The ResizeObserver, not a constant: the chip row rewraps and the three styles
-// are three different heights, and a hard-coded number would be wrong for two of them and
-// wrong again the first time the font loaded late. `--strip-h` defaults to `0px` for every
-// page that mounts no strip, so the expression is unchanged there.
+// `:root` (ResizeObserver, below) and the global block at the foot of this file adds it to
+// the `[id] { scroll-margin-top }` expression. The ResizeObserver, not a constant: the chip
+// row rewraps, the font loads late, and the chip labels are whatever the page's own section
+// headings are, so one hard-coded number is wrong on some page at some width. (It used to
+// say "wrong for two of the three styles" — the two that lost the pick are deleted, and the
+// reason the observer is still right is the rewrap, not the styles.) The CSS at the foot
+// does carry a FLOOR for a reader with no scripting; see the note on it. `--strip-h` is
+// `0px` at >=1024px and for every page that mounts no strip, so the expression is unchanged
+// there.
 //
 // `nav-jump-target-lands` (blocking) measures the pinned band with `measureTopChrome`, which
 // admits a sticky element spanning >=80% of the viewport and contiguous with the band above
@@ -164,9 +168,33 @@ const { sections, label = 'Sections', class: cls, ...rest } = Astro.props;
 
      `--strip-h` falls back to 0px, so a page that mounts no strip keeps the original
      expression exactly. The script sets it to a real number, and to 0 at >=1024px where the
-     strip is hidden and the dial has no sticky box of its own. */
+     strip is hidden and the dial has no sticky box of its own.
+
+     THE FLOOR IS FOR A READER WITH NO JAVASCRIPT. Without the script `--strip-h` is never
+     written, the 0px fallback applies, and every in-page jump on a phone lands behind a
+     sticky rail — the exact defect `nav-jump-target-lands` is blocking for, on the one
+     configuration the harness cannot see, because the harness runs scripting. So the strip
+     declares a static minimum at the width it is visible at, and the observer REPLACES it
+     with the measured height the moment the script runs. 48px is a FLOOR, not the height:
+     one line of chips at the shipped font size measures about that, and a wrapped row
+     measures more — which is why a constant alone would not do and the observer is still
+     the answer wherever it can run.
+
+     TWICE-SCOPED, and both halves are load-bearing. <1024px, because the strip is
+     `display: none` above it. And `:has(.kit-strip)`, because this is an `is:global` block
+     and Astro bundles it into stylesheets that reach pages mounting no strip at all — a bare
+     `:root` floor pushed every jump target on the homepage and the for-sale cluster down by
+     48px they had no chrome to clear, and `nav-jump-target-lands` failed 31 partials on
+     pages this component is not even on (measured 2026-09-20). `:has()` asks the question
+     the rule actually means: is there a strip on this document? Where the selector is not
+     supported the whole declaration is dropped and the fallback is `0px`, which is exactly
+     today's shipped behaviour — the floor is an improvement for no-JS readers on modern
+     browsers and never a regression for anyone. */
   @layer components {
     [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
+    @media (max-width: 1023px) {
+      :root:has(.kit-strip) { --strip-h: 48px; }
+    }
   }
 </style>
 <style>

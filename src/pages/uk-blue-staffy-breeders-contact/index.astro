@@ -180,12 +180,12 @@ const pageSchema = [
         There is no second form on this site, so an enquiry cannot be sent anywhere I do
         not read.
       </p>
-      <h4>{T('Send It Once')}</h4>
-      <p>A second copy of the same message does not reach me any faster.</p>
-      <h5>{T('Every Field but Four Is Optional')}</h5>
-      <p>Name, email, which puppy and a message are all that is required of you.</p>
-      <h6>{T('What to send: As Much as You Can Spare')}</h6>
-      <p>A full first message usually saves two more.</p>
+      <h4>{T('Sending It Once Is Enough')}</h4>
+      <p>Either way the reply comes within 24-48 business hours.</p>
+      <h5>{T('Only Four Fields Are Required')}</h5>
+      <p>Your name, your email, which puppy, and a message. The rest of the form is optional.</p>
+      <h6>{T('What to send: As Much Detail as Possible')}</h6>
+      <p>That is what the form asks for, and the next section says which detail.</p>
     </div>
     <aside class="bl-aside">
       <InfoCard
@@ -199,10 +199,11 @@ const pageSchema = [
   {/* 04 — the direct channels. `standard` with no pick: prose is prose. */}
   <section id="reach-us" data-section-label="How to reach us">
     <h2>{T('How to reach us')}</h2>
+    <p>Three channels, plainly.</p>
 
     <h3>{T('Email')}</h3>
     <p>
-      Write to <a href={`mailto:${email}`}>{email}</a>. It comes to me, and is answered
+      Write to {email}. It comes to me, and is answered
       within 24-48 business hours. See
       <a href="/privacy-policy-uk/">how we handle what you send us</a>.
     </p>
@@ -222,8 +223,8 @@ const pageSchema = [
       We post the dogs on X, YouTube, Instagram and Facebook — places to see them, not a
       second enquiry channel.
     </p>
-    <h4>{T('Nothing Is Answered Out of Order')}</h4>
-    <p>Messages are answered as they arrive, whichever way they came in.</p>
+    <h4>{T('Both Routes Are the Same Route')}</h4>
+    <p>Form or email, the reply comes within 24-48 business hours.</p>
     <h5>{T('No Telephone Number Yet')}</h5>
     <p>There is no number to publish, so none is printed here rather than a wrong one.</p>
     <h6>{T('What to send: One Channel Is Enough')}</h6>
@@ -234,9 +235,10 @@ const pageSchema = [
       form's own field groups, so this section can never describe a field the form lacks. */}
   <section id="what-to-tell-us" data-section-label="What to tell us">
     <h2>{T('What to tell us')}</h2>
+    <p>What each field is for.</p>
 
     <h3>{T('Your name and email')}</h3>
-    <p>The two required fields. They are how the reply reaches you, and nothing else is done with them.</p>
+    <p>The two required fields: how the reply reaches you, and nothing else.</p>
 
     <h3>{T('Phone and your town or postcode')}</h3>
     <p>Both optional. A town lets me price delivery by distance from Carlisle before you ask.</p>
@@ -256,11 +258,11 @@ const pageSchema = [
       left you wondering.
     </p>
     <h4>{T('Detail Is Not a Test')}</h4>
-    <p>Nobody is scored on their answer. It only lets me reply properly the first time.</p>
+    <p>The fields above are there so the first reply can answer properly.</p>
     <h5>{T('A Short Message Is Still Answered')}</h5>
-    <p>Two lines get a reply as surely as twenty do.</p>
+    <p>Every enquiry is answered, whatever length it arrives at.</p>
     <h6>{T('What to send: Your Town, if Nothing Else')}</h6>
-    <p>It is the one detail that changes what I can tell you about delivery.</p>
+    <p>Delivery is priced by distance, so a town is what makes that answerable.</p>
   </section>
 
   {/* 06 — one review, in the picked style S1 (one review given room). */}
@@ -277,11 +279,11 @@ const pageSchema = [
         is the part worth knowing first.
       </p>
       <h4>{T('Three Reviews, All Real')}</h4>
-      <p>We publish the ones families sent us, and we have three.</p>
+      <p>We hold three, sent to us by the families who wrote them. There are no others.</p>
       <h5>{T('The Other Two Are Elsewhere')}</h5>
-      <p>Each sits on the page whose question it actually answers.</p>
-      <h6>{T('What to send: Ask for a Reference')}</h6>
-      <p>If speaking to an owner would settle it, say so and I will ask one.</p>
+      <p>This one is Rachel L., in London; the other two sit on other pages.</p>
+      <h6>{T('What to send: The Thing One Review Cannot Tell You')}</h6>
+      <p>Ask it in the form above; that is what the message box is for.</p>
     </div>
   </section>
 
@@ -302,7 +304,7 @@ const pageSchema = [
       <h5>{T('Anything Missing Is Worth Asking')}</h5>
       <p>Four rows is not the whole of what we can tell you.</p>
       <h6>{T('What to send: The Question These Miss')}</h6>
-      <p>That is usually the most useful line in an enquiry.</p>
+      <p>Put it in the message rather than waiting for the reply to invite it.</p>
     </div>
     <aside class="bl-aside">
       <p class="bl-eyebrow">In this section</p>

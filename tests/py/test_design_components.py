@@ -566,8 +566,15 @@ def test_built_faq_is_native_details_with_backed_answers():
     assert inner.count("<summary") == len(rows)
     # The question is a heading inside the summary, so the answers are a navigable list.
     assert len(re.findall(r'<h3[^>]*\bq\b[^>]*>', inner)) == len(rows)
+    # CASE-INSENSITIVE, deliberately. The question is rendered in Title Case
+    # (rules/headings.md, amended 2026-09-20: an `<h3>` inside a `<summary>` is still a
+    # heading) while data/faq.json keeps the sentence-case wording, which is what the FAQPage
+    # schema `name` and the dup gate read. Asserting the exact cased string here would need a
+    # Python port of src/lib/headings.ts, and a second caser is a caser that drifts — the CASE
+    # is already measured by tests/render/checks/sem.ts::sem-title-case-headings, which sees
+    # these h3s. What this test owns is that the ROW reached the page at all.
     for r in resolved:
-        assert r["q"] in inner, r["q"]
+        assert r["q"].lower() in inner.lower(), r["q"]
         assert r["a"] in inner, r["a"]
     # The picked treatment is the numbered one, and it carries no marker glyph.
     assert ">01<" in inner and f">{len(rows):02d}<" in inner

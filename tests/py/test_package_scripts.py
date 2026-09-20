@@ -63,6 +63,10 @@ def test_the_check_all_chain_is_the_documented_one():
     # `check:facts` sits immediately after `check:parity` because the two are one gate split
     # in half: parity judges the pages project 4 has not rewritten yet, the facts gate judges
     # the ones it has, and data/facts/rebuilt.json is what moves a page from one to the other.
-    expected = ["check:parity", "check:facts", "check:redirects", "check:schema", "check:sitemaps",
-                "check:placeholders", "check:markers", "agents"]
+    # `check:links` sits immediately after `check:facts` on purpose: the two are the halves
+    # of one question about a rebuilt page — facts-preserved asks what it LOST, link parity
+    # asks what it ADDED — and reading them apart is how a link nobody approved slipped
+    # through (project 4, 2026-09-20 review).
+    expected = ["check:parity", "check:facts", "check:links", "check:redirects", "check:schema",
+                "check:sitemaps", "check:placeholders", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

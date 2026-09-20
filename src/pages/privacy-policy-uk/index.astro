@@ -32,6 +32,7 @@
 import PageShell from '../../layouts/PageShell.astro';
 import Hero from '../../components/kit/Hero.astro';
 import Faq from '../../components/kit/Faq.astro';
+import PageDate from '../../components/kit/PageDate.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
@@ -84,7 +85,7 @@ const email = SITE.email;
       know where that went too. So: read this once, and if anything is unclear
       <a href="#contact">ask me about your data</a>. The government's
       <a href="https://www.gov.uk/data-protection" target="_blank" rel="noopener noreferrer">guide to data protection</a>
-      sets out the law behind it.
+      on GOV.UK sets out the law behind it.
     </p>
   </section>
 
@@ -111,8 +112,8 @@ const email = SITE.email;
     </p>
     <h5>{T('You Choose How Much to Say')}</h5>
     <p>Send only a name and an email address if you prefer. I will still reply.</p>
-    <h6>{T('Privacy Note: A Short Enquiry Is Never a Worse One')}</h6>
-    <p>Leaving a field blank moves you down no list. There is no list.</p>
+    <h6>{T('Privacy Note: A Short Enquiry Is Still Answered')}</h6>
+    <p>None of the home details is required to get an answer, as the section above says.</p>
   </section>
 
   {/* 03 */}
@@ -174,7 +175,7 @@ const email = SITE.email;
     <p>
       Registering a litter with
       <a href="https://www.thekennelclub.org.uk/" target="_blank" rel="noopener noreferrer">The Kennel Club</a>
-      is about the dogs, not about you. Your enquiry is no part of it.
+      is paperwork about the dogs. It is not one of the three circumstances above.
     </p>
     <h5>{T('Delivery Details Are Shared Late')}</h5>
     <p>An address and a phone number, once a delivery is being booked. Never our correspondence.</p>
@@ -186,9 +187,8 @@ const email = SITE.email;
   <section id="third-parties" data-section-label="The third-party services we use">
     <h2>{T('The third-party services we use')}</h2>
     <p>
-      Three, named plainly. We work with
-      <a href="https://www.thekennelclub.org.uk/" target="_blank" rel="noopener noreferrer">the pedigree registry</a>
-      for the dogs' paperwork, with DEFRA-approved pet transport services when a puppy needs
+      Three, named plainly. We work with the pedigree registry linked above for the dogs'
+      paperwork, with DEFRA-approved pet transport services when a puppy needs
       delivering, and with Google Analytics to understand how this site is used. Google
       handles what it records under
       <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's own privacy policy</a>,
@@ -247,13 +247,14 @@ const email = SITE.email;
     <h5>{T('If You Are Not Happy With the Answer')}</h5>
     <p>
       Complain to the
-      <a href="https://ico.org.uk/" target="_blank" rel="noopener noreferrer">Information Commissioner's Office</a>,
-      the supervisory authority for data protection, with or without raising it first.
+      <a href="https://ico.org.uk/" target="_blank" rel="noopener noreferrer">Information Commissioner's Office</a>
+      (the ICO), the supervisory authority for data protection here, with or without raising
+      it with me first. For general guidance on your rights,
       <a href="https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/" target="_blank" rel="noopener noreferrer">Citizens Advice</a>
-      is independent.
+      is independent of both of us.
     </p>
-    <h6>{T('Privacy Note: Asking Costs You Nothing')}</h6>
-    <p>No fee, and no effect on an enquiry or a reservation.</p>
+    <h6>{T('Privacy Note: No Reason Has to Be Given')}</h6>
+    <p>As the section above says, you need give none — say what you want and it is done.</p>
   </section>
 
   {/* 08 */}
@@ -276,11 +277,12 @@ const email = SITE.email;
       the current one.
     </p>
     <h4>{T('Why the Date Matters')}</h4>
-    <p>There is no archive of old wordings; the date is the whole change history.</p>
+    <p>It is how you tell the wording you are reading from the one you read before.</p>
     <h5>{T('Nothing Applies Retroactively')}</h5>
     <p>A change governs what happens after it is posted.</p>
     <h6>{T('Privacy Note: Check the Date First')}</h6>
     <p>On a printed or cached copy, the version on this page is the one that counts.</p>
+    <PageDate path={path} />
   </section>
 
   {/* 09 */}
@@ -288,7 +290,7 @@ const email = SITE.email;
     <h2>{T('Asking us about your privacy')}</h2>
     <p>
       Any question about this policy, or about what I hold and why, comes to me rather than to
-      an inbox nobody reads. Write to <a href={`mailto:${email}`}>{email}</a> or use
+      an inbox nobody reads. Write to {email}, or use
       <a href="/uk-blue-staffy-breeders-contact/">the contact page</a> and say what you would
       like to know. I would far rather answer a question than have you wondering about it.
     </p>

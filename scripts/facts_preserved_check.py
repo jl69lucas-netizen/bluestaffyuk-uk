@@ -57,6 +57,105 @@ PRICE = re.compile(r"£\s?\d+(?:,\d{3})*(?:\.\d\d)?(?!\d)")
 TESTS = ["L-2-HGA", "HC-HSF4", "DNA", "microchip", "vaccinat"]
 CREDS = ["KC-registered", "Kennel Club", "DEFRA", "licence", "Lucy"]
 SCRIPTY = re.compile(r"<(script|style)\b[^>]*>.*?</\1>", re.S | re.I)
+
+# ── CLAIM SENTENCES (the `text` kind, spec §9 amendment 4 / 2026-09-20 review) ────────────
+#
+# The other six kinds are TOKENS: a price, a name, a test, an image path. A migrated page
+# also makes CLAIMS — "we respond to all inquiries within 24-48 business hours", "regular
+# staff training" — and a rebuild that simply does not rewrite one drops it with nothing
+# reporting the loss, because no token went missing. This kind closes that hole.
+#
+# A claim sentence is one carrying at least one TRIGGER: a number, a named organisation, or a
+# named process. Those three are what makes a sentence checkable — a sentence with none of
+# them is voice, and voice is exactly what a rebuild is supposed to replace.
+CLAIM_ORGS = ["Kennel Club", "DEFRA", "Google", "ICO", "Information Commissioner",
+              "Citizens Advice", "GOV.UK", "Formspree", "BVA", "RSPCA"]
+CLAIM_PROCESSES = ["training", "review", "audit", "screening", "vaccinat", "microchip",
+                   "health test", "inspection", "assessment", "socialis"]
+CLAIM_NUMBER = re.compile(r"\b\d")
+SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
+# Words that carry no evidence. A six-word overlap made of "the of and to a is" would match
+# any two sentences in English, which is the failure mode this list exists to prevent.
+STOPWORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "been", "but", "by", "can", "do", "for",
+    "from", "has", "have", "how", "i", "if", "in", "is", "it", "its", "me", "my", "no",
+    "not", "of", "on", "or", "our", "out", "so", "that", "the", "their", "them", "then",
+    "there", "they", "this", "to", "up", "us", "was", "we", "what", "when", "which", "who",
+    "will", "with", "you", "your",
+}
+# Collected at four content words, judged at six. A short sentence can still be a claim
+# ("We provide regular staff training."), and refusing to collect it would let the shortest,
+# most quotable promises leave a page unreported; but judging a four-word claim on a
+# six-word overlap is impossible, so the overlap is capped at the claim's own length.
+MIN_CLAIM_WORDS = 4
+CLAIM_OVERLAP = 6
+
+
+def _tokens(s):
+    return re.findall(r"[a-z0-9£'-]+", s.lower())
+
+
+def _content(s):
+    """The evidence-bearing words of a sentence, in order, without duplicates."""
+    out = []
+    for w in _tokens(s):
+        if w not in STOPWORDS and len(w) > 1 and w not in out:
+            out.append(w)
+    return out
+
+
+def _triggers(sentence):
+    """What made this sentence a claim: the numbers, organisations and processes in it."""
+    return _hard_triggers(sentence) + [pr for pr in CLAIM_PROCESSES if _stem(pr, sentence)]
+
+
+def _hard_triggers(sentence):
+    """The triggers a rebuild may NOT paraphrase away: every number and every named
+    organisation.
+
+    A PROCESS word is deliberately not here. "review and respond within 24-48 business
+    hours" is honestly rewritten as "read and answered within 24-48 business hours", and a
+    gate that demanded the word `review` would be demanding the old sentence back — which is
+    the one thing working rule 8 forbids. A NUMBER or an ORGANISATION is different in kind:
+    there is no paraphrase of 24-48, and a page that stopped naming The Kennel Club stopped
+    making the claim. So processes qualify a sentence as a claim and then count toward the
+    overlap like any other content word, while numbers and names have to be there."""
+    found = re.findall(r"\b\d[\d,.:-]*", sentence) if CLAIM_NUMBER.search(sentence) else []
+    return found + [o for o in CLAIM_ORGS if _stem(o, sentence)]
+
+
+def claims(text):
+    """Every claim sentence of a page body, collapsed to one line each.
+
+    Deliberately the SENTENCE and not a summary of it: the entry a record writes under
+    `dropped.text` has to be findable in the migrated body by somebody reading the record,
+    and a paraphrase is not findable."""
+    out = []
+    for raw in SENTENCE_SPLIT.split(re.sub(r"\s+", " ", text)):
+        s = raw.strip()
+        if len(_content(s)) < MIN_CLAIM_WORDS or not _triggers(s):
+            continue
+        if s not in out:
+            out.append(s)
+    return out
+
+
+def claim_present(claim, page_text):
+    """True when the rebuilt page still makes this claim.
+
+    TWO conditions, because either alone is wrong. Every HARD trigger must appear — a page that
+    dropped "24-48" has dropped the reply window whatever else it kept. And at least six of
+    the claim's content words must appear (or all of them, for a claim shorter than that),
+    so a shared "Kennel Club" between two unrelated sentences is not read as the claim
+    surviving."""
+    for trig in _hard_triggers(claim):
+        if not _stem(trig, page_text):
+            return False
+    words = _content(claim)
+    hits = sum(1 for w in words if _stem(w, page_text))
+    return hits >= min(CLAIM_OVERLAP, len(words))
+
+
 MAIN = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)
 # Either quote style: the build emits double quotes, but a fact set is also read against
 # hand-written HTML in the tests, and an extractor that silently finds no images in half the
@@ -111,6 +210,7 @@ def extract(html, names):
         "creds": [c for c in CREDS if _stem(c, text)],
         "images": sorted(set(IMG.findall(html))),
         "embeds": sorted(set(EMBED.findall(html))),
+        "text": claims(text),
     }
 
 
@@ -126,9 +226,16 @@ def page_body(html):
 
 # A `dropped` entry is "<the fact> — <the reason it is not carried>". The reason is the whole
 # point of the field: a bare list of paths records that something went, not that anyone
-# agreed it should. So the fact is read off the FRONT of the line, up to the em dash, and an
+# agreed it should. So the fact is read off the FRONT of the line, up to the dash, and an
 # entry with no dash is taken whole — which is what the older records wrote.
-_DROP_SPLIT = re.compile(r"\s+[—–-]\s+")
+#
+# EM AND EN DASH ONLY. A spaced HYPHEN was in this class and should never have been: the
+# facts it separates are slugs, paths, prices and health tests, and every one of those can
+# contain a hyphen — `L-2-HGA`, `/uk-locations/blue-staffy-puppies-uk/`, `24-48`. A line
+# whose fact happened to be followed by " - " split in the wrong place and the gate then
+# looked for half a fact. The records all use the em dash, which is also what the schema's
+# own description spells (2026-09-20 review).
+_DROP_SPLIT = re.compile(r"\s+[—–]\s+")
 
 
 def drop_facts(entries):
@@ -170,12 +277,21 @@ def missing(facts, new_html, dropped=None):
         for v in vals:
             if v in drop or (k == "prices" and pence(v) in dropped_pence):
                 continue
+            # A `dropped.text` line quotes the claim, and a record is allowed to quote the
+            # PHRASE that carries it ("regular staff training") rather than transcribe a
+            # forty-word sentence. Either containment counts, in either direction, so the
+            # record stays readable and the match stays exact enough to be wrong loudly.
+            if k == "text" and any(d and (d.lower() in v.lower() or v.lower() in d.lower())
+                                   for d in drop):
+                continue
             if k in ("images", "embeds"):
                 present = v in body
             elif k == "prices":
                 present = pence(v) in here
             elif k == "names":
                 present = _word(v, text)
+            elif k == "text":
+                present = claim_present(v, text)
             else:
                 present = _stem(v, text)
             if not present:

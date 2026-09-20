@@ -52,7 +52,12 @@ FACT_PHRASES = {
 
 
 REBUILT = set(json.loads((ROOT / "data/facts/rebuilt.json").read_text()))
-_FAQ_BLOCK = re.compile(r'<div[^>]*class="[^"]*kit-faq[^"]*"[^>]*>.*?</div>', re.S)
+# Each ACCORDION ROW, not the wrapper. `<div class="kit-faq">.*?</div>` is non-greedy and
+# `</div>` is not the accordion's own close tag — the first nested div ends the match, so the
+# cut landed in the middle of the first row and left every answer after it in the text the
+# rule-9 assertion reads. A `<details>` element cannot nest another `<details>` here (Faq.astro
+# emits one per row, flat), so row-by-row is both correct and the smallest thing to cut.
+_FAQ_BLOCK = re.compile(r"<details\b[^>]*>.*?</details>", re.S | re.I)
 _TAG = re.compile(r"<[^>]+>")
 _SCRIPTY = re.compile(r"<(script|style)\b.*?</\1>", re.S)
 

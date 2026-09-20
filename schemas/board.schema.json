@@ -200,9 +200,9 @@
                                "status": {"enum": ["missing", "baked"]}, "file": {"type": ["string", "null"]}, "alt": {"type": "string"}}}
     },
     "dropped": {
-      "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds), plus `links` for a body link of the migrated page the outline does not carry (working rule 12). A fact or link listed here is one the user agreed to drop; one that simply vanished is a problem the gate reports.",
+      "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds), plus `links` for a body link of the migrated page the outline does not carry (working rule 12) and `text` for a CLAIM SENTENCE of the migrated body the rebuilt prose does not restate. Every entry reads \"<the fact, or enough of it to find> \u2014 <why it is not carried>\". For `text` the checker extracts the migrated body's claim sentences -- the ones carrying a number, a named organisation or a named process (training, review, audit, screening, vaccination) -- and asks that each is either restated on the rebuilt page or listed here, so a claim cannot leave a page by being quietly not rewritten. A fact, link or claim listed here is one the user agreed to drop; one that simply vanished is a problem the gate reports.",
       "type": "object",
-      "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds", "links"]},
+      "propertyNames": {"enum": ["prices", "names", "tests", "creds", "images", "embeds", "links", "text"]},
       "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}
     },
     "approval": {
