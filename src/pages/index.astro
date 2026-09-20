@@ -316,6 +316,9 @@ const pageSchema = [
       </p>
     </div>
     <div class="bl-body">
+      {/* mode="single" is the RECORD's note, not the style's `mode` axis: S2 is the bed this
+          slot was picked for (steel band, eyebrow heading) and the note is what says how many
+          reviews sit on it. Ratified by the breeder 2026-09-20. */}
       <Testimonial mode="single" reviews={[victoria]} />
       <img
         class="bl-img"
@@ -1026,15 +1029,21 @@ const pageSchema = [
 
   {/* 21 talk-to-us — standard, picked style S1. The close, and a link rather than a form: one
       enquiry form per money page, and the contact page and the listing carry the site's two.
-      The heading replaces a reserve-form label that is live on five other pages
-      (verbatim.changed); its opening paragraph is carried whole, in quotation marks, because
-      the form it pointed at is not on this page any more and the window it promised is not
-      the one this site holds itself to. No countdown and no scarcity. */}
+      The heading replaces a reserve-form label that is live on five other pages, and its
+      opening paragraph is DROPPED rather than carried — both rows are in `verbatim.changed`
+      with their reasons, and `dropped.text` logs the sentence too. Rule 15 carries the old
+      wording UNLESS it states a wrong fact, and that opening states two: it tells the reader
+      to fill in details below, and there is no form on this page (one enquiry form per money
+      page); and it promises 24 hours, where this site commits to 24-48 BUSINESS hours
+      (data/faq.json, the sale-reserve row) on every other page that says so. The real window
+      is stated below in fresh prose. No countdown and no scarcity. */}
   <section id="talk-to-us" data-section-label="Come and see them before you decide" class={box('talk-to-us')}>
     <div class="bl-head">
       <h2>{T('Come And See Them Before You Decide')}</h2>
       <p class="bl-lede">
-        “Fill in your details below and we'll be in touch within 24 hours” is the line this page used to carry, over an enquiry form the migration removed. The form is on our contact page now, and the window we hold ourselves to is 24 to 48 business hours.
+        Come and meet the litter before you decide anything. Write to us first, we arrange a
+        time, and you see the puppies with their mother in the room they were born in. Every
+        enquiry is answered within 24 to 48 business hours, by me and not by an agency.
       </p>
     </div>
     <div class="bl-body">

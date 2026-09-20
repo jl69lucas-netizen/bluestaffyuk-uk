@@ -2493,6 +2493,12 @@
         "old": "Do you offer health guarantees for your blue staffy puppies ?",
         "new": "Do you offer health guarantees for your blue staffy puppies?",
         "reason": "typography, not wording: the migrated accordion carries a stray space before the question mark, and data/faq.json's `home-health-guarantee` row — which is what the page renders and what the FAQPage node's `name` and the dup gate read — spells the question without it. Every word of the question is carried; the same disposition as the two emoji rows above, which drop a glyph and keep the wording whole."
+      },
+      {
+        "kind": "opening",
+        "old": "Fill in your details below and we'll be in touch within 24 hours",
+        "new": "",
+        "reason": "wrong fact, twice over, and the heading it opened is already replaced above. There is no form BELOW it: the homepage carries none (one enquiry form per money page; /uk-blue-staffy-breeders-contact/ and /buy-blue-staffy-puppies-uk/ carry the site's two), so the sentence instructs a reader to fill in fields that are not on the page. And the window is not ours: this site commits to 24-48 BUSINESS hours, which is what data/faq.json's sale-reserve row holds and what the rebuilt contact and thank-you pages both state — a front page promising 24 would undercut every other page on the site. dropped.text already logs the sentence with the same reason; this row is the verbatim set's side of the same decision. `talk-to-us` states the real window in fresh prose and links the page that has the form."
       }
     ]
   }

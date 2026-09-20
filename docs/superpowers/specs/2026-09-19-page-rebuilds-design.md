@@ -310,3 +310,97 @@ run against them.
    no checker implemented. The question is cased at RENDER through the same `titleCase()`
    the pages use; `data/faq.json` keeps the sentence-case wording, which is what the FAQPage
    schema's `name` and the dup gate read.
+
+**Amendment 7 (2026-09-20, breeder — working rule 14, the video component).** Recorded here
+after the fact: the boards and `src/lib/boardStyles.ts` have cited "spec §9 amendment 7" since
+the day the rule was given, and this section did not carry it.
+
+Every YouTube video the old site had is carried by the rebuild **at the same id** — the ids in
+`data/settings.json` `youtube_embeds` plus any a page carries of its own. An id that already
+ranks in video search is the asset; a fresh one starts at zero, so no id is minted and no
+footage is re-uploaded. A page that had a video keeps it in the same place, and the homepage
+carries the site's videos.
+
+On a board a video is a **`video` shape** with its own `video` block (`id`, `title`,
+`caption`) and three rendered styles at 1280 / 768 / 375 — never an `embed` line in a note.
+The component is **`VideoEmbed`, component 18**, and its three styles are its bed and its play
+axis: **S1** the player in a card with the caption beneath it, **S2** the player full width on
+a steel band, **S3** a click-to-play facade that fetches the player on the first press. All
+three reserve the same 16:9 box. **S3 is what a rebuilt page ships unless the breeder picks
+otherwise**, because it is the only one that does not load a player before anybody asks for
+one. `play` is a PROP and not a class: S1 and S2 are the same markup on different beds, S3 is
+different markup, and no stylesheet turns one into the other.
+
+`scripts/facts_preserved_check.py` reports by name any id a rebuilt page drops, and the record
+lists a genuinely dropped embed under `dropped.embeds` with its reason. `video` is deliberately
+NOT a tuple axis: the ledger asks how a page's chrome is combined, and a video is section
+content.
+
+**Amendment 8 (2026-09-20, breeder — working rule 15, the faithful rewrite).** Also recorded
+after the fact, for the same reason: `data/verbatim/`, `scripts/verbatim_set_check.py` and
+every board record's `verbatim` block are built on it.
+
+A rebuilt page carries its migrated page's **VERBATIM SET** word for word. The set is five
+kinds and not the whole page: the old **H1**; every **H2/H3 containing a target keyword**; the
+**first paragraph under each of those headings**; the **FAQ questions**; and **every image
+alt**, against its own `src`. Everything else is written fresh from the outline. Target
+keywords are derived, never hand-written — the page-map row's title words minus stopwords,
+plus the site-wide terms and the breeder's city — so no page can quietly narrow its own set.
+
+**The three exclusions**, each of which is a case where the old wording may not stand:
+
+1. **A wrong fact.** The former city, an old price, a byline belonging to nobody on this site,
+   a reply window the site does not hold itself to. The wording is repaired, not re-pointed —
+   a clause naming the old city comes out rather than being swapped for the new one.
+2. **A collision with another page's heading.** `board_gate.py` fails an exact match and a
+   five-word shingle against every live page, and a heading that identifies no page is not
+   worth keeping. The change keeps the words that name what the section is and moves only the
+   colliding tail.
+3. **An element the outline removes outright**, and the opening paragraph that went with it —
+   a form widget's label, a newsletter block with an unsourced subscriber count. Its
+   `verbatim.changed` row carries an EMPTY `new`, which excuses the element and requires
+   nothing on the page.
+
+Every deviation is a row in the board record's `verbatim.changed`: `{kind, old, new, reason}`,
+where `kind` is one of `h1` / `heading` / `opening` / `faq` / `alt`, or the two deviation kinds
+`heading-dropped` and `faq-merged`, which fold back to `heading` and `faq`. `verbatim` sits
+OUTSIDE `record_hash` for the reason `dropped` does: it is the accounting of what the rewrite
+did, and the rewrite happens after approval. Headings, the H1 and FAQ questions are compared
+case-insensitively (case belongs to `rules/headings.md` and is applied at render); openings and
+alts are compared case-sensitively and by containment, so a section may open with the old
+paragraph and carry on in the writer's own words.
+
+`scripts/verbatim_set_check.py --extract <slug>` takes the set from the migrated source at the
+frozen migration commit and `--check` proves it on `dist/`, judging every slug in BOTH
+`data/facts/rebuilt.json` and `data/verbatim/applies.json`. The rule applies **from the
+homepage onward**; the three pages built before it (privacy, thank-you, contact) stay as
+rewritten and are excluded by name in `applies.json`.
+
+**Amendment 9 (2026-09-20, Task 18 — three harness fixes the homepage exposed, ratified by the
+breeder).** Each is a case of the gate being wrong about the page rather than the reverse,
+which is what CLAUDE.md means by charging a defect to the harness.
+
+1. **`table` is a tuple axis.** `board_approve.py`'s `SHAPE_TUPLE_AXIS` skipped the `table`
+   shape on a comment reading "no board offers a table section yet, and the axis is kept so
+   one can be added without a schema change". Amendment 5 ended that condition — working rule
+   13 says in as many words that `tuple.table` records the pick — so the shape now feeds its
+   axis like every other picked shell, `data/component-ledger.json`'s `table` pool carries
+   `table-s1..s3`, and the homepage is the first record to fill it. **And the
+   `ledger-tuple-owned` signature grows to hero + faq + table + takeaway.** Amendment 2.2
+   defined that signature as "the tuple minus the two baked axes"; `table` was outside it only
+   because it was dead. Two pages that differ by carrying a table are not the same page, and
+   without this the homepage read as identical to `/thank-you-blue-staffy-puppies-journey/`.
+2. **`ledger-takeaway-set-owned` fires on a set of TWO OR MORE.** The rule is about a page
+   copying another page's COMBINATION of takeaway shells. With project 4's three styles and one
+   `takeaways` section on most pages, a singleton set is a pick from a pool of three, and under
+   a set rule the fourth page to want a takeaway block could not have one whatever it said —
+   the same degeneration amendment 2.2 fixed for hero+dial+rail. The combination is still
+   policed: `takeaway` is one of the four axes of the signature above.
+3. **The root slug's built file is `dist/index.html`.** Four places spelled it
+   `dist/index/index.html`, which exists on no build: `pageboard.py`'s `min-h5-h6` (so the one
+   page that is the site's front door would have kept the record-tree reading for ever),
+   `tests/py/test_faq_data.py`'s `_built_text`, `tests/py/test_shell_chrome.py`'s
+   `_expected_kit` (where `"/".strip("/")` is the empty string and matches no rebuilt slug, so
+   the homepage was expected on the legacy chrome for ever), and
+   `tests/py/test_design_components.py`'s review-source reader, which additionally now falls
+   back to the migration commit for a rebuilt page's `const body`.

@@ -272,7 +272,7 @@
   {
     "id": "home-after-support",
     "q": "Do you offer support after I take my puppy home?",
-    "a": "Our relationship doesn’t end when you take your puppy home. We provide lifetime support and are always available to help with questions about training, nutrition, or behavior.",
+    "a": "Your puppy leaves with a puppy pack, its health records and the rest of its paperwork, and you are welcome to write to us before or after the puppy is home. A question asked after the handover is answered the same way as one asked before it, within 24 to 48 business hours, and by us rather than by an agency.",
     "source": "src/pages/index.astro"
   },
   {

@@ -159,13 +159,14 @@ FACT_PHRASES = {
     "home-parents-health-tested": ["L-2-HGA", "HC-HSF4"],
     # NOT "lifetime support" (project 4 Task 18). The record's `dropped.creds` drops
     # "We provide lifetime support and are always available to help" by name, as an
-    # open-ended commitment no file on disk records, so the rebuilt page may not state it and
-    # a phrase list demanding it would be demanding a rule-9 violation. What the page does
-    # back is the part of the answer that is about WHEN we answer, which `first-steps` step
-    # five states. THE ROW'S OWN ANSWER still contains the dropped sentence: that is a
-    # conflict between data/faq.json and the approved record, flagged at Task 18 for the
-    # breeder to settle, and it is the answer that has to move, not this list.
-    "home-after-support": ["before or after the puppy is home"],
+    # open-ended commitment no file on disk records, so the rebuilt page may not state it —
+    # and a phrase list demanding it would have been demanding a rule-9 violation. The ANSWER
+    # was the thing out of step, not this list, and the breeder moved it (2026-09-20): the row
+    # now states what disk holds — the puppy pack and paperwork, which are the last rows of
+    # the `whats-included` table, and the reply window, which `first-steps` step five and
+    # `talk-to-us` both state. The question keeps its migrated wording (rule 15).
+    "home-after-support": ["puppy pack", "before or after the puppy is home",
+                           "24 to 48 business hours"],
     "home-health-tests": ["L-2-HGA", "HC-HSF4"],
     "home-whats-included": ["first vaccination", "microchip", "puppy pack"],
     "home-health-guarantee": ["health guarantee"],
