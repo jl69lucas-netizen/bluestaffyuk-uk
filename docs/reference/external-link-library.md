@@ -38,6 +38,8 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's breed standard for the Staffordshire Bull Terrier — the build, head, coat, tail and temperament our breed-facts table describes, in the standard's own words | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
 | https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier | pdsa.org.uk | The PDSA's veterinary breed page for the Staffordshire Bull Terrier — independent care, exercise, feeding and grooming advice, which we are not the right people to give | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
 | https://www.gov.uk/control-dog-public/banned-dogs | gov.uk | The government's own list of dog types banned under the Dangerous Dogs Act 1991 — the page behind the statement that the Staffordshire Bull Terrier is not one of them | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
+| https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ | royalkennelclub.com | The registry's own list of questions to ask a breeder before and during a visit — the independent version of the fifteen-question checklist | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales | rspca.org.uk | The RSPCA on spotting a puppy dealer's advert and on finding a good breeder — the independent authority behind the red-flag table | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
 
 ## Provenance
 
@@ -77,3 +79,11 @@ paths (`gov.uk/control-dog-public-place/dangerous-dogs` and
 own list at the path that resolves; the breed standard is a new citation for the breed-facts
 table, justified by the scan (three of the four pages read open on a facts panel). All four
 wrappers are logged in the guide record's `dropped.links`.
+
+The two added on 2026-09-20 for `/uk-blue-staffy-puppy-buying-guide/` were checked the same way.
+The registry's questions-for-the-breeder page is written at the `royalkennelclub.com` spelling
+the migrated body's `thekennelclub.org.uk` path 301s to; the RSPCA's puppy-sales page is a new
+citation for the red-flag table, justified by the scan (neither that page nor the PDSA's
+puppy-farm page lays the two columns side by side). The migrated body's own pet-travel link
+redirects to the government's international travel page, which does not describe a domestic
+delivery, so it is logged in the buying guide record's `dropped.links` rather than given a row.

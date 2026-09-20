@@ -72,6 +72,13 @@ FACT_PHRASES = {
     "guide-exercise": ["vigorous exercise", "two sessions"],
     "guide-banned-breed": ["not a banned breed", "dangerous dogs act 1991"],
     "guide-flat-living": ["flat living", "mental stimulation"],
+    # The three buying-guide rows are verified the same way against Task 13's record: the two
+    # test names and "registration certificates" are rows of the `breeder-questions` table,
+    # "eight weeks" and "bite inhibition" are `eight-weeks`, and "puppy farm" and "written
+    # contract" are `red-flags`.
+    "buying-what-to-ask": ["L-2-HGA", "HC-HSF4", "registration certificates"],
+    "buying-best-age": ["eight weeks", "bite inhibition"],
+    "buying-puppy-farm": ["puppy farm", "written contract"],
 }
 
 

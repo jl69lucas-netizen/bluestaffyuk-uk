@@ -118,5 +118,23 @@
     "q": "Can a Staffordshire Bull Terrier live in a flat?",
     "a": "Yes, provided the dog gets its daily exercise and mental stimulation. The breed is a medium size and is people-focused rather than territorial, so a large garden is not essential as long as walks and outdoor time are regular.",
     "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "buying-what-to-ask",
+    "q": "What should I ask a blue Staffy breeder before I buy?",
+    "a": "Ask to see the KC registration certificates for both parents and their L-2-HGA and HC-HSF4 DNA results, ask to see the puppy with its mother, and ask about vet checks, vaccinations, microchipping, worming, socialisation, the written contract and what happens if you cannot keep the dog.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "buying-best-age",
+    "q": "How old should a blue Staffy puppy be before it comes home?",
+    "a": "Eight weeks at the earliest. Those last weeks with the mother and the litter are where a puppy learns bite inhibition, boundaries and how to read another dog, and a breeder willing to let one go sooner is telling you something about how they work.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "buying-puppy-farm",
+    "q": "How do I tell an ethical breeder from a puppy farm?",
+    "a": "An ethical breeder invites you to their home, shows you the mother with the litter, shows original registration and DNA certificates, puts the terms in writing and stays reachable afterwards. A car-park meeting, an absent dam, paperwork that is in the post or pressure to decide today are each reason enough to leave.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
   }
 ]

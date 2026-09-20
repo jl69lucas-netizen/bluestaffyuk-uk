@@ -1,0 +1,2148 @@
+{
+  "meta": {
+    "slug": "uk-blue-staffy-puppy-buying-guide",
+    "page_type": "interior",
+    "status": "draft",
+    "research_as_of": "2026-09-20",
+    "sources": [
+      {
+        "path": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "dist/uk-blue-staffy-puppy-buying-guide/index.html",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/facts/uk-blue-staffy-puppy-buying-guide.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/page-map.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/settings.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/price-matrix.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/reviews.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/faq.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/puppies.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/image-manifest.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/bsuk-ontology.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/boards/index.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/",
+        "fetched": "2026-09-20 — ~993 words; 4 H2s (Don't be afraid to ask lots of questions; Questions to ask before you visit the puppy; Questions to ask during your visit; Next step – Research the parents' health); 22 questions in an accordion, marked up as FAQPage; schema Article/FAQPage; the longest checklist found and it gives no expected answer for any question, no cost content and no red-flag table."
+      },
+      {
+        "path": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales",
+        "fetched": "2026-09-20 — ~1,093 words; 4 H2s (Spot online adverts from puppy dealers; Finding a good puppy breeder; Could you rehome a rescued dog?; Find out more); 0 FAQ rows; schema WebPage/Article; covers red flags and green flags in prose with no table, no questions checklist, no costs and nothing about the weeks after collection."
+      },
+      {
+        "path": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/could-you-spot-a-puppy-farm",
+        "fetched": "2026-09-20 — ~1,652 words; 6 H2s (Could you spot a puppy farm?; Will you give now…; Could you recognise a puppy farm?; What is a puppy farm?; How to recognise a puppy farm; What should I do if I think it's a puppy farm?); 0 FAQ rows; schema WebPage/Article; strong on recognising a dealer, silent on price, on what to ask, and on what happens after you buy."
+      },
+      {
+        "path": "https://www.bva.co.uk/news-and-blog/blog-article/thinking-of-buying-a-puppy-here-are-some-top-questions-to-ask-breeders-to-avoid-heartache/",
+        "fetched": "2026-09-20 — ~870 words; 2 H2s (What is The Puppy Contract?; Top questions to ask a breeder); 6 questions; schema BlogPosting, no FAQPage; the only scanned page that mentions the period after collection, and the only one that leads on a written contract; no costs and no breed-specific content."
+      }
+    ]
+  },
+  "meta_set": {
+    "titles": [
+      "UK Blue Staffy Puppy Buying Guide | Questions & Red Flags",
+      "How To Buy A Blue Staffy Puppy In The UK: A Full Guide",
+      "Blue Staffy Puppy Buying Guide UK | Breeders, Costs, Checks"
+    ],
+    "descriptions": [
+      "How to buy a blue Staffy puppy in the UK: fifteen questions for any breeder, the puppy-farm red flags, health certificates, our prices and your first month.",
+      "A UK breeder's buying guide: the five steps from enquiry to collection, what to ask, how to spot a puppy farm, what a puppy costs here, and how to prepare.",
+      "Choosing a blue Staffy breeder in the UK: the DNA tests to ask for, why eight weeks matters, the red flags, delivery by approved transport and the deposit."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": null,
+      "description": null
+    }
+  },
+  "brief": {
+    "goal": "Rebuild the buying guide so a UK family who has already chosen the breed can work out, in one pass, how to choose a breeder without being taken in — the steps, the fifteen questions with the answers to listen for, the red flags laid beside the green ones, the health evidence to ask for, what a puppy actually costs here, and what the first month looks like — and can put every one of those tests to us as readily as to anyone else.",
+    "scope": "Eighteen sections: hero, four takeaways, the five buying steps, the fifteen-question table, the ethical-breeder-against-puppy-farm table, the costs table, the fit check, health evidence, the eight-week rule, home preparation, socialisation and vaccinations, the first thirty days, delivery, rehoming against buying, one review, the live puppy grid, a four-row FAQ and the close. All seventeen migrated images at their original paths and the one YouTube embed (WuA0yo6HZKE) at its original id.",
+    "gates": [
+      "facts-preserved",
+      "link-parity",
+      "marker",
+      "schema",
+      "sitemap",
+      "board-previews",
+      "render"
+    ],
+    "done": "The page carries the five buying steps under a heading the homepage does not use (Known Issue 9), the fifteen questions and the eight-row red-flag comparison as tables that stack into labelled rows below 640px, a costs table holding only £1,500, £1,700, £500 and £200 to £350, the two DNA tests and the seven-point puppy check, the eight-week rule, home preparation, socialisation and the vaccination course, the four-week first-month plan, delivery by DEFRA-approved transport, the rehoming alternative, one review, the live puppy grid with the embed at its original id, four FAQ rows, all seventeen migrated images at their original paths, and no restatement of any of the old price bands, no health-guarantee length, no named laboratory, no former city and no location landing pages; and it passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
+    "out_of_scope": [
+      "the whole first-year budget table — £850 to £1,200 for the puppy, £300 to £600 vet bills, £240 to £600 insurance, £300 to £700 food, £150 to £400 equipment, £80 to £250 training, £50 to £120 grooming, the £1,970 to £3,870 first-year total, the £900 to £2,000 ongoing years and the £500 to £1,000 emergency fund: not one of those figures has a source on disk, and the £850 to £1,200 band is below the locked prices (Known Issue 11). All are listed in `dropped.prices`",
+      "the four named puppies and their prices — BETH £1,100, KANE £1,000, ALIS £1,200, KOBE £850: data/puppies.json holds six different dogs at the two locked prices, and the puppy grid renders those rows",
+      "a health guarantee of any length or terms: data/settings.json holds guarantee_days: null, so no number and no cover may be written",
+      "the named testing laboratory: data/boards/blue-staffy-health-uk.json states that no file on disk names one, and a second page naming a lab the health page does not would be two answers to one question",
+      "the four counters — 100% KC Registered, 24/7 Puppy Support, 8-Point Health Check, 1x Verified Pedigree: no file on disk holds a support window, a check-point count or a pedigree verification",
+      "the quiz, the calculator and the downloadable checklist: the quiz scored nothing, the calculator anchor pointed at a fragment that did not exist, and the download link pointed at an image file (`brief.tool.pick` is none)",
+      "the five city landing pages and the 'based in' sentence: data/settings.json is Carlisle · Cumbria at town level (Known Issue 16) and project 5 owns the location cluster",
+      "the two invented owner testimonials — Sarah & Alex of Leeds, and the Johnson Family of Manchester: data/reviews.json holds three real reviews and one of them is on this page",
+      "the newsletter and waiting-list blocks: no file on disk holds a waiting list, and `tuple.newsletter` is empty on this record",
+      "an enquiry form: the contact page carries the one form the form audit measures, and this page links to it"
+    ],
+    "primary_keyword": "uk blue staffy puppy buying guide",
+    "angles": [
+      {
+        "name": "the checklist you take to the visit",
+        "hook": "lead on the fifteen questions and the red-flag table, printable and usable on any breeder including us, and hang the rest of the process around them",
+        "why_not": ""
+      },
+      {
+        "name": "the cost-of-ownership guide",
+        "hook": "open on the money: what a puppy costs, what the first year costs, what the running costs are",
+        "why_not": "every running-cost figure the migrated page carried is a range with no source on disk, so the page would be four locked numbers and a lot of silence; the cost table that remains is one section, not the spine"
+      },
+      {
+        "name": "the reassurance page",
+        "hook": "counters, testimonials and a quiz, which is what the migrated page does",
+        "why_not": "it is the page the rebuild exists to replace — the counters are unevidenced, two of the three testimonials are invented, and the quiz scored nothing; worse, a page telling a reader to distrust sales pressure cannot itself be one"
+      }
+    ],
+    "strategy": {
+      "name": "the checklist you take to the visit",
+      "why": "Of the four pages scanned, the registry's gives twenty-two questions and no expected answers, the RSPCA and the PDSA cover puppy farms in prose with no table, and the veterinary blog gives six questions. Nobody pairs the question with the answer to listen for, and the migrated body already has all fifteen pairs written.",
+      "trade_off": "It makes the page an instrument rather than a pitch, so the puppies and the prices arrive late and the reader is explicitly invited to test us against the same list."
+    },
+    "cta": {
+      "cadence": {
+        "min": 250,
+        "max": 450
+      },
+      "destination": "#talk-to-us",
+      "anchors": [
+        "Put the fifteen questions to us",
+        "See the puppies and what they cost"
+      ],
+      "global_cta": "hidden"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "The migrated page carried a seven-question quiz that scored nothing and a cost calculator whose anchor pointed at a fragment the page did not contain. What is left after the unsourced running costs go is four locked figures, which are a table, not a calculation.",
+      "trade_off": "A first-year cost calculator is the tool this page is shaped for, and it cannot be built honestly: every input except our own price is a figure no file on disk holds."
+    },
+    "schema": {
+      "types": [
+        "WebPage",
+        "Article",
+        "FAQPage"
+      ],
+      "offer_model": "none"
+    }
+  },
+  "h1": {
+    "variants": [
+      "The UK Blue Staffy Puppy Buying Guide: Choosing A Breeder You Can Check",
+      "Buying A Blue Staffy Puppy In The UK: The Whole Process",
+      "How To Choose A Blue Staffy Breeder, And What To Ask Them",
+      "Our UK Buying Guide: Questions, Red Flags, Costs And The First Month",
+      "Blue Staffy Puppy Buying Guide: Fifteen Questions And Eight Red Flags"
+    ],
+    "recommended": 0,
+    "pick": null
+  },
+  "sections": [
+    {
+      "id": "top",
+      "n": 1,
+      "heading": "Buying A Blue Staffy Puppy In The UK, Without Getting It Wrong",
+      "intent": "The opening, in Lisa Bright's first person: what this guide is for — a family who has decided on the breed and now has to choose a breeder without walking into a puppy farm. It names what the guide contains: the steps, the fifteen questions, the red flags, what it costs here, how a puppy reaches you, and the first month. The kit Hero is given no trust chips and no CTA buttons (spec §9 amendment 6a).",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "EEBP",
+      "why": "The migrated page opened on four unevidenced counters — 100% KC Registered, 24/7 Puppy Support, 8-Point Health Check, 1x Verified Pedigree — none of which any file on disk supports; a buying guide earns trust by being useful about other breeders first.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the migrated H1 and the four counters; data/settings.json — breeder_name Lisa Bright",
+      "words": {
+        "min": 110,
+        "max": 140
+      },
+      "shape": "hero",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "blue Staffy puppy",
+          "buying guide",
+          "ethical breeder",
+          "puppy farm"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "how do i buy a blue staffy puppy in the uk"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier",
+        "ont:blue-coat",
+        "ont:lisa-bright"
+      ],
+      "tree": [],
+      "images": [
+        {
+          "slot": "buy-steps-hero",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a blue Staffy puppy looking at an open book, standing for the process of learning the right steps to buy a puppy, reused at its original path and alt text (working rule 11)"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "Image first: S2 puts the photograph above the copy on a band, S3 puts it left in a card. No CTA buttons and no trust chips on the hero."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "id": "takeaways",
+      "n": 2,
+      "heading": "Four Rules That Will Keep You Out Of Trouble",
+      "intent": "Four statement cards, each the one-line form of a section below: see the puppy with its mother or walk away; ask for the L-2-HGA and HC-HSF4 certificates for both parents; eight weeks is the earliest a puppy leaves; and a written contract, not a cash handover. Every one is a claim the migrated body already makes.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "FAB",
+      "why": "A reader who takes nothing else from a buying guide should take the four things that separate an ethical breeder from a dealer, and the migrated body buries all four inside a 6,700-word run.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the fifteen questions and the ethical breeder vs puppy farm table",
+      "words": {
+        "min": 90,
+        "max": 120
+      },
+      "shape": "takeaways",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "see the mother",
+          "L-2-HGA",
+          "HC-HSF4",
+          "eight weeks",
+          "written contract"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what should i check before buying a puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "See The Puppy With Its Mother",
+          "intent": "If the dam is not there, walk away — it is the single biggest puppy-farm signal.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Ask For Both Certificates",
+          "intent": "L-2-HGA and HC-HSF4, for both parents, as originals.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Eight Weeks Is The Earliest",
+          "intent": "A puppy leaving before eight weeks has not finished learning from its litter.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "A Written Contract, Not A Cash Handover",
+          "intent": "Reputable breeders put the terms in writing.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "id": "buying-steps",
+      "n": 3,
+      "heading": "The Five Steps From First Enquiry To Your Puppy Coming Home",
+      "intent": "The buying process, and the section that resolves Known Issue 9: THIS page owns the buying steps, and its heading is worded so it cannot collide with the homepage's 'How to Buy Your Blue Staffy Puppy'. Five steps from the migrated body: browse the puppies, send an enquiry, talk to us about your home, pay a deposit to reserve, then collection or delivery. Each step says what we do and what the buyer does.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "PDB",
+      "why": "The migrated body scattered its process across three blocks and repeated the homepage's heading verbatim; the process is the spine of a buying guide and belongs in one place, under a heading only this page uses.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'How to Buy Your Blue Staffy Puppy from BlueStaffyUK.uk' block (browse, enquire, reserve, collect or deliver); data/boards/index.json — the colliding homepage heading",
+      "words": {
+        "min": 260,
+        "max": 320
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "buying process",
+          "reserve a puppy",
+          "deposit",
+          "collection"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what is the process for buying a blue staffy puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "reserve a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:refundable-deposit"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Step One: See Who Is Here",
+          "intent": "The live litter, with a price and a status on every card.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Two: Write To Us",
+          "intent": "What to put in the message so the first reply is useful.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Three: We Talk About Your Home",
+          "intent": "We ask questions too; a breeder who does not is not choosing where the puppy goes.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Four: A Deposit Reserves The Puppy",
+          "intent": "£500, refundable, from data/price-matrix.json.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Five: Collection Or Delivery",
+          "intent": "Collection in Carlisle, or DEFRA-approved transport priced by distance.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-research",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a person reading a blue Staffordshire Bull Terrier buying guide on a tablet, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-transport-process",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's infographic of the step-by-step process of safely transporting a Staffy puppy with DEFRA-approved partners, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/",
+            "anchor": "Everything we do as breeders starts on our home page",
+            "why": "carried from the migrated page (anchor 'BlueStaffyUK.uk')",
+            "sentence_start": true
+          },
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "Read who we are before you write to us",
+            "why": "carried from the migrated page (anchors 'How do I find a Certified Staffy breeder in the UK' and 'Discover Our Process')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "cta": 1
+    },
+    {
+      "id": "breeder-questions",
+      "n": 4,
+      "heading": "Fifteen Questions To Ask Any Breeder, And The Answers To Listen For",
+      "intent": "The migrated page's fifteen-question checklist, turned into a table a reader can print and take to a visit. Two columns: the question, and what a good answer looks like — the second column is the migrated body's own follow-up sentence for each question, not an invention. Nothing is added and nothing is softened: the checklist is meant to be used on us as well as on anyone else.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "framework": "QAB",
+      "why": "The registry's own list is twenty-two questions and gives no answer to listen for; the veterinary blog gives six. Fifteen with the expected answer beside each is the version a buyer can actually use standing in someone's kitchen.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the '15 Questions to Ask Any Blue Staffy Breeder Before You Buy' block; https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ (scan 2026-09-20) — 22 questions, no expected answers",
+      "words": {
+        "min": 170,
+        "max": 210
+      },
+      "shape": "table",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "questions to ask a breeder",
+          "KC registration",
+          "DNA certificates",
+          "puppy contract"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what questions should i ask a blue staffy breeder"
+        ],
+        "comparison": [],
+        "solution": [
+          "blue staffy breeder checklist"
+        ],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "How To Use The List",
+          "intent": "Print it, take it, and treat a dodged question as the answer.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-family-breeder",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a family kneeling on a rug petting a blue Staffordshire Bull Terrier puppy while an ethical breeder watches, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/",
+            "anchor": "the registry's own questions to ask a breeder",
+            "why": "carried from the migrated page (anchor 'what questions to ask a potential licensed Staffy breeder'), at the URL the old spelling resolves to",
+            "library_row": "royalkennelclub.com — questions to ask the breeder"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page. Two columns rather than three: the migrated body gives a question and one follow-up sentence per row, so a third 'why it matters' column would have to be written from nothing."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "table": {
+        "caption": "Fifteen questions to ask a blue Staffy breeder, and the answer to listen for",
+        "columns": [
+          "Ask the breeder",
+          "What a good answer looks like"
+        ],
+        "rows": [
+          [
+            "Are both parents KC-registered?",
+            "The original KC registration certificates, shown to you, not photocopies."
+          ],
+          [
+            "Can I see the L-2-HGA and HC-HSF4 DNA test results?",
+            "Both parents clear, or carrier to clear — never carrier to carrier."
+          ],
+          [
+            "Can I see the mother with the puppies?",
+            "Yes. If the mother is not present, walk away: it is the single biggest puppy-farm signal."
+          ],
+          [
+            "How many litters does the dam have per year?",
+            "No more than four litters in her lifetime, as the registry recommends; more than two a year is a warning sign."
+          ],
+          [
+            "Have the puppies been vet-checked?",
+            "The name of the vet practice and the date of the check."
+          ],
+          [
+            "What vaccinations have they received?",
+            "At least the first vaccination before the puppy leaves at eight weeks."
+          ],
+          [
+            "Have they been microchipped?",
+            "Yes — UK law requires microchipping before sale."
+          ],
+          [
+            "What worming programme have they been on?",
+            "Wormed at two, five and eight weeks as a minimum."
+          ],
+          [
+            "Do you offer a health guarantee or purchase contract?",
+            "A written contract covering hereditary conditions."
+          ],
+          [
+            "Have the puppies been socialised with children, other dogs and household noise?",
+            "Yes, during the critical socialisation window of three to twelve weeks."
+          ],
+          [
+            "What food are they currently eating?",
+            "A feeding schedule, and a supply of the current food to take home."
+          ],
+          [
+            "Can I have references from previous buyers?",
+            "Contact details for past puppy families, offered without hesitation."
+          ],
+          [
+            "What happens if I can no longer keep the puppy?",
+            "The breeder takes the puppy back rather than let it go to a rescue."
+          ],
+          [
+            "Are you a member of the Staffordshire Bull Terrier Club?",
+            "Club membership, which shows a commitment to breed standards."
+          ],
+          [
+            "Can I visit the puppies more than once before deciding?",
+            "Yes. Any pressure to buy now or lose your spot is a manipulation tactic."
+          ]
+        ]
+      },
+      "cta": 1
+    },
+    {
+      "id": "red-flags",
+      "n": 5,
+      "heading": "Telling An Ethical Breeder From A Puppy Farm At A Glance",
+      "intent": "The migrated page's comparison, kept as a table: eight topics, what an ethical breeder does, and what a dealer does instead — meeting place, the mother, paperwork, DNA certificates, price pressure, microchipping, the contract, and what happens after the money changes hands. Every cell is the migrated body's own wording, rewritten as plain sentences.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "framework": "PAS",
+      "why": "The RSPCA and the PDSA both cover puppy farms in prose and neither lays the two side by side; a buyer standing in a doorway needs the comparison, not an essay.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Ethical Breeder vs Puppy Farm' table; https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales (scan 2026-09-20) — the same ground in ~1,093 words of prose, no table",
+      "words": {
+        "min": 150,
+        "max": 190
+      },
+      "shape": "table",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "puppy farm",
+          "red flags",
+          "dam present",
+          "microchip certificate"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how do i spot a puppy farm"
+        ],
+        "comparison": [
+          "ethical breeder versus puppy farm"
+        ],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "One Red Flag Is Enough",
+          "intent": "These are not points to score: any single column-three answer is a reason to leave.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales",
+            "anchor": "the RSPCA's guide to spotting a puppy dealer's advert",
+            "why": "the migrated body makes the puppy-farm case and cites nobody for it; this is the independent authority on the same ground",
+            "library_row": "rspca.org.uk — buying a puppy, avoiding puppy farms"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "table": {
+        "caption": "Ethical breeder against puppy farm, topic by topic",
+        "columns": [
+          "Topic",
+          "An ethical breeder",
+          "A puppy farm or a scam"
+        ],
+        "rows": [
+          [
+            "Where you meet",
+            "Invites you to their home to see the litter",
+            "Offers to meet in a car park, or to deliver to you"
+          ],
+          [
+            "Is the mother there?",
+            "The dam is present, healthy and relaxed",
+            "“She is at the vet”, or “not available today”"
+          ],
+          [
+            "Registration paperwork",
+            "Original registration shown, and the names match",
+            "Vague about paperwork, or says it is in the post"
+          ],
+          [
+            "DNA health tests",
+            "L-2-HGA and HC-HSF4 certificates shown",
+            "“They are naturally healthy, no tests needed”"
+          ],
+          [
+            "Price pressure",
+            "No urgency; happy for you to think it over",
+            "“Another family wants this puppy today”"
+          ],
+          [
+            "Microchip",
+            "Done, with the certificate and the chip number to show",
+            "Not done, or “you can do it yourself”"
+          ],
+          [
+            "Purchase contract",
+            "A written contract covering hereditary conditions",
+            "Cash only, no paperwork, no receipt"
+          ],
+          [
+            "After the sale",
+            "Gives a phone number and checks in after collection",
+            "Unreachable once the money has changed hands"
+          ]
+        ]
+      }
+    },
+    {
+      "id": "costs",
+      "n": 6,
+      "heading": "What A Puppy From Us Costs, And What The Deposit Covers",
+      "intent": "The only cost figures on this page, and all four come from locked data: £1,500 for a male, £1,700 for a female, a £500 refundable deposit and UK home delivery at £200 to £350 by distance. The migrated page's whole first-year budget — the £850 to £1,200 puppy band, the vet, insurance, food, equipment, training and grooming ranges and the £1,970 to £3,870 total — is not restated anywhere; see `dropped.prices`.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "EEBP",
+      "why": "A buying guide that will not say what the writer charges is asking the reader to trust it about everybody else, and the locked prices are on disk.",
+      "why_source": "data/price-matrix.json — male_gbp 1500, female_gbp 1700, deposit_gbp 500, deposit_refundable true; data/settings.json — delivery £200 to £350",
+      "words": {
+        "min": 120,
+        "max": 150
+      },
+      "shape": "table",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "puppy price",
+          "deposit",
+          "delivery cost"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how much is a blue staffy puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "blue staffy puppy price uk",
+          "reserve a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:refundable-deposit",
+        "ont:defra-approved-transport"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Why There Is No First-Year Budget Here",
+          "intent": "Every running-cost figure the old page carried was a range with no source behind it.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What The Deposit Does",
+          "intent": "It reserves one named puppy, and it is refundable.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "See what is included in the price and how delivery is worked out",
+            "why": "carried from the migrated page (anchor 'Blue Staffy puppy')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "table": {
+        "caption": "What you pay us, from data/price-matrix.json and data/settings.json",
+        "columns": [
+          "What you pay",
+          "Amount"
+        ],
+        "rows": [
+          [
+            "A male puppy — Roman, Byrd or Ince",
+            "£1,500"
+          ],
+          [
+            "A female puppy — Vennie, Christa or Cheryl",
+            "£1,700"
+          ],
+          [
+            "Deposit to reserve a named puppy, refundable",
+            "£500"
+          ],
+          [
+            "UK home delivery by DEFRA-approved transport, priced by distance",
+            "£200 to £350"
+          ]
+        ],
+        "numeric": [
+          1
+        ]
+      },
+      "cta": 1
+    },
+    {
+      "id": "temperament-fit",
+      "n": 7,
+      "heading": "Is A Blue Staffy The Right Dog For Your Household?",
+      "intent": "The honest fit check before anyone pays a deposit: the temperament, sixty to ninety minutes of vigorous exercise a day, how the breed does with children and with other pets, and the six advantages and six drawbacks the migrated body lists as pros and cons. The drawbacks are stated as plainly as the advantages — strong chewers, separation anxiety, consistent training needed, high energy, and introductions to other dogs that have to be managed.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "PAS",
+      "why": "The single most expensive mistake in this process is buying the wrong breed, and a page that sells puppies has to make the case against itself before it makes the case for itself.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Understanding the Blue Staffordshire Bull Terrier' block, the 60-90 minute exercise figure and the pros and cons table",
+      "words": {
+        "min": 250,
+        "max": 310
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "Staffy temperament",
+          "60-90 minutes",
+          "separation anxiety",
+          "prey drive"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "is a blue staffy a good family dog",
+          "how much exercise does a blue staffy need daily"
+        ],
+        "comparison": [
+          "pros and cons of owning a blue staffy"
+        ],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "What The Breed Is Like",
+          "intent": "Affectionate, loyal, courageous, playful, and happiest in company.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Sixty To Ninety Minutes A Day",
+          "intent": "Vigorous exercise, split into two or more sessions, plus something for the mind.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Children And Other Pets",
+          "intent": "Generally excellent with children; other pets need early, careful introductions.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What Is Hard About Them",
+          "intent": "Strong chewers, prone to separation anxiety, and unforgiving of inconsistent training.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "First-Time Owners",
+          "intent": "Yes, with socialisation, consistent training and the time the breed needs.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-pros-cons",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a thoughtful blue Staffy beside a book, standing for the balanced considerations of ownership, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-male-rehoming",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a blue male Staffy showing his head and build, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-staffordshire-bull-terrier-guide/",
+            "anchor": "Our breed guide covers the temperament, the history and the law in full",
+            "why": "carried from the migrated page (anchors 'Staffordshire Bull Terrier guide' and 'Explore Breed Temperament')",
+            "sentence_start": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+            "anchor": "the PDSA's veterinary view of what living with a Staffy involves",
+            "why": "carried from the migrated page (anchor 'Staffies from PDSA')",
+            "library_row": "pdsa.org.uk — Staffordshire Bull Terrier breed care"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "cta": 1
+    },
+    {
+      "id": "health-checks",
+      "n": 8,
+      "heading": "The Health Evidence A Breeder Should Be Able To Show You",
+      "intent": "What to ask for and what to look at. The two DNA tests every Staffy breeder should have run on both parents — L-2-HGA and HC-HSF4 — and the conditions the migrated body names beyond them; then the seven things to check on the puppy in front of you: eyes, ears, nose, body condition, demeanour, rear end and movement. Our own parents are stated as clear, and the health page is where the results live. No laboratory is named.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "EEBP",
+      "why": "Health testing is the one claim in this whole process that can be checked against a piece of paper, and the checklist for looking at the puppy itself costs a buyer nothing.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Blue Staffy Health' block, the common issues list and the seven-point 'What to Look for in a Healthy Blue Staffy Puppy' list",
+      "words": {
+        "min": 230,
+        "max": 280
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "L-2-HGA",
+          "HC-HSF4",
+          "health certificates",
+          "healthy puppy checklist"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what health tests should a blue staffy breeder provide",
+          "what does a healthy puppy look like"
+        ],
+        "comparison": [],
+        "solution": [
+          "health tested blue staffy puppies"
+        ],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "The Two DNA Tests, For Both Parents",
+          "intent": "L-2-HGA and HC-HSF4, as certificates rather than as a claim.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What Else The Breed Is Watched For",
+          "intent": "Degenerative myelopathy, other eye conditions, and skin allergies.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Seven Things To Look At On The Puppy",
+          "intent": "Eyes, ears, nose, body condition, demeanour, rear end and movement.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What We Can Show You",
+          "intent": "Both our parents are tested clear; the health page has the detail.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-health-wellbeing",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a blue Staffy sitting in a clean, peaceful home environment, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-vet-check",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a blue Staffordshire Bull Terrier on an examination table with a UK veterinarian, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-health-uk/",
+            "anchor": "Our health page states what both parents were tested for and what the results were",
+            "why": "carried from the migrated page (anchors 'Blue Staffy health guide' and 'Understand Health Tests')",
+            "sentence_start": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/",
+            "anchor": "the registry's own page on the L-2-HGA DNA test",
+            "why": "carried from the migrated page, which linked the registry's DNA-testing SHOP for the same test (anchor 'The Kennel Club')",
+            "library_row": "royalkennelclub.com — DNA test L-2-HGA"
+          },
+          {
+            "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/",
+            "anchor": "the registry's own page on the HC-HSF4 DNA test",
+            "why": "the same citation, for the second of the two tests this section names",
+            "library_row": "royalkennelclub.com — DNA test HC-HSF4"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "eight-weeks",
+      "n": 9,
+      "heading": "Why Eight Weeks Is The Earliest A Puppy Should Leave",
+      "intent": "The one date in the process that is not negotiable. What a puppy learns from its mother and littermates between six and eight weeks — bite inhibition, boundaries, how to read another dog — and what taking it early costs: anxiety, poor social skills and problems that last. The registry's own recommendation is eight weeks, and a breeder who offers earlier is telling you something about themselves.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "PAS",
+      "why": "It is the one thing on this page a buyer can be talked out of in the moment, standing in front of a puppy they have already decided they want.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'best age to bring a blue Staffy puppy home' block and 'Experts, including the Kennel Club, universally recommend waiting until a puppy is at least eight weeks old'",
+      "words": {
+        "min": 160,
+        "max": 200
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "eight weeks",
+          "bite inhibition",
+          "weaning",
+          "socialisation window"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "when can a puppy leave its mother"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "What The Last Two Weeks Teach",
+          "intent": "Bite inhibition, boundaries and canine communication.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What Leaving Early Costs",
+          "intent": "Anxiety and poor social skills that follow the dog into adulthood.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What It Tells You About The Breeder",
+          "intent": "A breeder who will let a puppy go at six weeks is not keeping to the rule.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-healthy-litter",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a litter of healthy blue Staffy pups playing in a clean, professional environment, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
+            "anchor": "the RSPCA's independent advice on a puppy's first weeks",
+            "why": "new: the migrated body attributes the eight-week rule to the registry and cites nobody a buyer can read; the RSPCA's puppy advice is already a library row and covers the same ground",
+            "library_row": "rspca.org.uk — puppy advice"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "home-prep",
+      "n": 10,
+      "heading": "Getting Your Home Ready Before Collection Day",
+      "intent": "What to do and what to buy before the puppy arrives: puppy-proofing — cords secured, toxic plants out, chemicals stored, unsafe rooms blocked; a quiet crate or bed in a safe indoor space; the supply list the migrated body gives, which is bowls, toys, a collar and lead, grooming tools, bedding, flea and worm treatment and a pen or crate; and toilet training, which starts with deciding where the spot is. No brand is named.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "PDB",
+      "why": "It is the part of the process a first-time buyer forgets until the week before, and the migrated body already carries the whole list.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'prepare my home' block: puppy proofing, puppy space, puppy necessities and dog toilet training",
+      "words": {
+        "min": 230,
+        "max": 280
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "puppy proofing",
+          "crate",
+          "puppy supplies",
+          "toilet training"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what do i need to buy for a new puppy",
+          "how do i puppy proof my house"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Puppy-Proofing, Room By Room",
+          "intent": "Cords, plants, chemicals and the rooms to keep shut.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Where The Puppy Sleeps",
+          "intent": "A crate or bed in a quiet corner, indoors.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "The Supply List",
+          "intent": "Bowls, toys, collar, lead, grooming tools, bedding, flea and worm treatment.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Toilet Training From Day One",
+          "intent": "Pick the spot before the puppy arrives, and keep to it.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-preparation",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a person arranging a new dog bed beside a crate with food bowls and puppy toys nearby, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-ready-infographic",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's infographic of a blue Staffy puppy surrounded by icons of essential supplies, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-blog-guides/",
+            "anchor": "Our blog guides go further on the first weeks at home",
+            "why": "carried from the migrated page (anchor 'Check out our Blue Staffy blog guides')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "socialisation",
+      "n": 11,
+      "heading": "Socialisation, Training And The Vaccination Course",
+      "intent": "The three months that decide what kind of adult dog you have. Positive exposure to safe sights, sounds, people and vaccinated dogs; puppy classes; gentle handling so a vet visit is not a fight. Then the vaccination course, which starts at around eight weeks and covers distemper, parvovirus, leptospirosis and hepatitis: we give the first vaccination and the owner's own vet completes the course. Feeding stays on the breeder's food at first and changes slowly.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "PDB",
+      "why": "The critical window is three to twelve weeks and most of it happens in the buyer's house, not ours, so a buying guide that stops at collection day has stopped too early.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the socialisation checklist block, the three-month socialisation tips and the vaccination schedule block",
+      "words": {
+        "min": 230,
+        "max": 280
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "socialisation",
+          "puppy classes",
+          "vaccinations",
+          "distemper",
+          "parvovirus"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how do i socialise a blue staffy puppy",
+          "what vaccinations does a staffy puppy need"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Positive Exposure, Not Volume",
+          "intent": "Safe sights, sounds, people and vaccinated dogs, a few at a time.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Puppy Classes",
+          "intent": "A local socialisation class in the first three months.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Gentle Handling",
+          "intent": "Ears, paws and mouth, so the first vet visit is ordinary.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "The Vaccination Course",
+          "intent": "First dose from us at around eight weeks; the rest from your own vet.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Changing Food Slowly",
+          "intent": "Stay on the breeder's food first, then transition gradually.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-socialisation-checklist",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's infographic of a blue Staffy puppy surrounded by icons of a person, another dog and a park, representing a socialisation checklist, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-training-socialisation",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's two-part infographic of socialisation icons and training commands for a blue Staffy puppy, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines",
+            "anchor": "the PDSA's guide to the vaccination course",
+            "why": "new: the migrated body states the schedule and cites nobody; the PDSA page is already a library row and covers the second dose and the booster, which are the owner's vet's",
+            "library_row": "pdsa.org.uk — dog vaccines"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "cta": 1
+    },
+    {
+      "id": "first-30-days",
+      "n": 12,
+      "heading": "Your First Month Together, Week By Week",
+      "intent": "The migrated page's four-week plan, kept as it is because it is the most useful thing on the page. Week one: a calm house, few visitors, the breeder's food, a toilet routine, a vet registered within forty-eight hours and the second vaccination booked. Week two: name recognition, the first command, handling exercises, insurance in place. Week three: controlled walks once vaccination is complete, introductions to vaccinated adult dogs, a training class booked. Week four: the first class, short periods alone, a weigh-in, and the first car journeys.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "PDB",
+      "why": "Not one of the four scanned pages goes past the day of collection, and the month after collection is where a well-bred puppy is made or undone.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Your First 30 Days' checklist, weeks 1 to 4; https://www.bva.co.uk/news-and-blog/blog-article/thinking-of-buying-a-puppy-here-are-some-top-questions-to-ask-breeders-to-avoid-heartache/ (scan 2026-09-20)",
+      "words": {
+        "min": 250,
+        "max": 300
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "first month",
+          "crate training",
+          "recall",
+          "alone time"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what should i do in the first week with a new puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Week One: Settling In",
+          "intent": "A calm house, the breeder's food, a toilet routine, and a vet registered.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Week Two: First Routines",
+          "intent": "Name recognition, the first command, handling exercises, insurance.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Week Three: Socialisation Begins",
+          "intent": "Controlled walks, vaccinated adult dogs, a class booked.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Week Four: Building Confidence",
+          "intent": "First class, short spells alone, a weigh-in and the first car trips.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.gov.uk/get-your-dog-cat-microchipped",
+            "anchor": "the government's guidance on transferring the microchip details",
+            "why": "new: the first month is when the chip record has to be put in the new owner's name, and the guidance is already a library row",
+            "library_row": "gov.uk — get your dog or cat microchipped"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "delivery",
+      "n": 13,
+      "heading": "How A Puppy Gets From Carlisle To Your Door",
+      "intent": "The two ways a puppy leaves: collection in Carlisle, or UK home delivery by DEFRA-approved transport, priced from £200 to £350 by distance, from data/settings.json. What the transport involves — collection from our home, care and breaks on the way, and a direct handover at your door. No turnaround time is stated: no file on disk holds one.",
+      "category": "A",
+      "group": "MANDATORY",
+      "framework": "PDB",
+      "why": "Distance is the reason most families rule a breeder out, and the delivery band and the method are both locked data that answer it.",
+      "why_source": "data/settings.json — delivery_note, delivery_min_gbp 200, delivery_max_gbp 350, location_label Carlisle · Cumbria; src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the DEFRA-approved transport block",
+      "words": {
+        "min": 170,
+        "max": 210
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "DEFRA-approved transport",
+          "puppy delivery",
+          "collection"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "do you deliver puppies across the uk"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "blue staffy puppy delivery uk"
+        ]
+      },
+      "entities": [
+        "ont:defra-approved-transport"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Collecting In Person",
+          "intent": "The option we prefer, because you see where the puppy was raised.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Home Delivery By Approved Transport",
+          "intent": "£200 to £350 by distance, by a DEFRA-approved carrier.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What Happens On The Journey",
+          "intent": "Collection from our home, breaks on the way, and a handover at your door.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-nationwide",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's infographic of a UK map with families and puppies connected by lines, representing nationwide delivery, reused at its original path and alt text"
+        },
+        {
+          "slot": "buy-uk-family",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a family with two children and a blue Staffy in front of a stylised map of the United Kingdom, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-staffy-puppies-for-sale-uk/",
+            "anchor": "Read why families across the UK choose us",
+            "why": "carried from the migrated page (anchors 'View Available Puppies' and 'view current litter')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "adoption-vs-buying",
+      "n": 14,
+      "heading": "Rehoming A Staffy Instead Of Buying One",
+      "intent": "The alternative, stated fairly. Rehoming gives a dog that needs a home and costs less; buying from a breeder gives a known pedigree, health-tested parents, early socialisation and someone to ring afterwards. The migrated body's own framing, with the rescue option named rather than dismissed — Staffies are one of the most commonly rehomed breeds in the UK, and a reader who ends up at a rescue has still made a good decision.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "BAB",
+      "why": "A buying guide that pretends rehoming does not exist is the kind of page the rest of this one warns about.",
+      "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Adopting a Blue Staffy Puppy vs Buying From a Breeder UK' block",
+      "words": {
+        "min": 130,
+        "max": 170
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "rehoming",
+          "rescue",
+          "known pedigree",
+          "lifetime support"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "should i adopt or buy a staffy"
+        ],
+        "comparison": [
+          "adopting versus buying a blue staffy"
+        ],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "What Rehoming Gives You",
+          "intent": "A dog that needs a home, at a lower cost, often already grown.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What A Breeder Gives You",
+          "intent": "Known parents, health-tested, socialised from birth, and support afterwards.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "buy-adoption-infographic",
+          "kind": "infographic",
+          "required": true,
+          "prompt": "the migrated page's infographic comparing puppy adoption with buying from a breeder, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": [
+          {
+            "href": "https://www.thekennelclub.org.uk/",
+            "anchor": "The Kennel Club, the registry our litters are registered with",
+            "why": "carried from the migrated page (anchor 'The Kennel Club')",
+            "library_row": "thekennelclub.org.uk — the registry"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      }
+    },
+    {
+      "id": "owner-review",
+      "n": 15,
+      "heading": "What One Buyer Said About The Process",
+      "intent": "One review, given room. MODE: single, data/reviews.json entry 3 — Rachel L., London — because it is the one of the three that speaks to the buying process itself: the health checks, the communication and the home-raised environment, which is what every section above tells a reader to look for.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "EBD",
+      "why": "A checklist is worth more when a buyer who used it says what they found, and none of the four scanned pages carries an owner's account at all.",
+      "why_source": "data/reviews.json — entry 3, Rachel L., London: 'The health checks, the communication, and the home-raised environment — everything was top-notch'; competitor scan 2026-09-20 — 0 of 4 carry a review",
+      "words": {
+        "min": 40,
+        "max": 55
+      },
+      "shape": "reviews",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "review",
+          "health checks",
+          "communication"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "London"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [
+        {
+          "slot": "buy-reviews",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a happy family with their puppy, reflecting owner satisfaction, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 3, Rachel L. (London); entry 1 is on the breed guide and entry 2 on the health page, so no page repeats a review. An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "id": "puppies",
+      "n": 16,
+      "heading": "The Puppies You Would Be Choosing Between",
+      "intent": "The live litter from data/puppies.json as kit puppy cards, and the page's one YouTube embed (id WuA0yo6HZKE, kept at its original id) beside it, which is the migrated page's own footage of the puppies. The card links are the grid's own rows and are exempt from link parity (spec §9 amendment 6b).",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "FAB",
+      "why": "A reader who has worked through fifteen questions and a red-flag table should be able to apply them to the actual dogs without leaving the page.",
+      "why_source": "data/puppies.json — six rows, all status Available; data/facts/uk-blue-staffy-puppy-buying-guide.json — embeds WuA0yo6HZKE",
+      "words": {
+        "min": 45,
+        "max": 60
+      },
+      "shape": "puppies",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "available puppies",
+          "blue and white"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "blue staffy puppies available uk"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-blue-staffy-puppies-uk/",
+            "anchor": "the puppies we have available now",
+            "nav": true,
+            "why": "carried from the migrated page (anchors 'buy a Blue Staffy puppy in the UK' and 'Begin Your Puppy Search')"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count. The one embed the migrated page carried (YouTube WuA0yo6HZKE) is kept here at its original id; the record does not describe what is in it, because no file on disk says. facts_preserved_check.py gates the id."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ]
+    },
+    {
+      "id": "questions",
+      "n": 17,
+      "heading": "Questions Families Ask Before They Buy",
+      "intent": "Four rows from data/faq.json: three new rows sourced to this page — what to ask a breeder, how old a puppy should be, and how to tell an ethical breeder from a puppy farm — plus the deposit row, which data/settings.json already sources. Every answer is one this page's own body states.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "framework": "QAB",
+      "why": "Only one of the four scanned pages carries FAQPage markup, and these are the four questions this guide answers on the way past.",
+      "why_source": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales and https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/could-you-spot-a-puppy-farm (scan 2026-09-20) — 0 FAQ rows and no FAQPage on either; data/faq.json — the four rows",
+      "words": {
+        "min": 50,
+        "max": 65
+      },
+      "shape": "faq",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "questions to ask",
+          "eight weeks",
+          "puppy farm",
+          "deposit"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what should i ask a blue staffy breeder",
+          "how do i know a breeder is ethical"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "buying-what-to-ask",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "buying-best-age",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "buying-puppy-farm",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "deposit",
+          "intent": "",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "Query augmentation for 'uk blue staffy puppy buying guide', ten questions, each mapped to a section or a row: q1 -> breeder-questions and the buying-what-to-ask row; q2 -> eight-weeks and the buying-best-age row; q3 -> red-flags and the buying-puppy-farm row; q4 -> costs and the deposit row; q5 -> costs; q6 -> health-checks; q7 -> red-flags; q8 -> delivery; q9 -> home-prep; q10 -> first-30-days. No row is added for a question this page's body does not answer."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "questions": [
+        "What should I ask a blue Staffy breeder before I buy?",
+        "How old should a blue Staffy puppy be before it comes home?",
+        "How do I tell an ethical breeder from a puppy farm?",
+        "How much is the deposit, and is it refundable?",
+        "How much does a blue Staffy puppy cost in the UK?",
+        "What health tests should both parents have had?",
+        "Can I see the puppy with its mother before I decide?",
+        "Do you deliver a puppy, and what does delivery cost?",
+        "What do I need to buy before a puppy comes home?",
+        "What should the first month with a new puppy look like?"
+      ]
+    },
+    {
+      "id": "talk-to-us",
+      "n": 18,
+      "heading": "Use This List On Us First",
+      "intent": "The close, and the only ask on the page: take the fifteen questions and the red-flag table and put them to us before you put them to anyone else. It restates the email address and what to put in a first message, the £500 refundable deposit and the two locked prices, and it invites a visit. No urgency, no countdown and no scarcity: the page has just spent two thousand words telling a reader that pressure is a warning sign.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "framework": "AIDA",
+      "why": "A guide that teaches a buyer to interrogate breeders has to offer itself to the same test, and the close is the only place that offer can be made without irony.",
+      "why_source": "data/settings.json — email staffies@bluestaffyuk.uk, hours Mo-Su 09:00-23:00, location_label Carlisle · Cumbria; data/price-matrix.json — £1,500, £1,700, £500 deposit",
+      "words": {
+        "min": 110,
+        "max": 150
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "uk blue staffy puppy buying guide"
+        ],
+        "lsi": [
+          "contact",
+          "visit",
+          "deposit"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "buy a blue staffy puppy uk",
+          "reserve a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:lisa-bright",
+        "ont:refundable-deposit"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Ask Us The Fifteen",
+          "intent": "We would rather answer all of them than sell to somebody who asked none.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Come And See",
+          "intent": "The puppies are with their mother in our house, and you are welcome to visit.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-breeders-contact/",
+            "anchor": "Write to us and put the list to us",
+            "why": "carried from the migrated page (anchor 'BlueStaffyUK.uk Today to Inquire')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "cta": 1
+    }
+  ],
+  "tuple": {
+    "hero": "",
+    "dial": "",
+    "rail": "",
+    "toc": "pagenav-c",
+    "takeaway": [],
+    "table": "",
+    "faq": "",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "Buyer Note:"
+    ]
+  },
+  "assets": [
+    {
+      "slot": "buy-steps-hero",
+      "kind": "photo",
+      "w": 512,
+      "h": 474,
+      "required": true,
+      "status": "baked",
+      "file": "/images/how-to-buy-blue-staffy-puppy-uk-steps1.webp",
+      "alt": "A blue Staffy puppy looking inquisitively at an open book, symbolizing the process of learning and following the right steps to buy a puppy. The dog's curious expression reflects a buyer's initial questions. | UK Blue Staffy Puppy Buying Guide"
+    },
+    {
+      "slot": "buy-research",
+      "kind": "photo",
+      "w": 615,
+      "h": 573,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-research.webp",
+      "alt": "A person viewing a \"Blue Staffordshire Bull Terrier Buying Guide\" webpage on a tablet with a cup of coffee nearby, representing the research phase of getting a new puppy."
+    },
+    {
+      "slot": "buy-transport-process",
+      "kind": "infographic",
+      "w": 512,
+      "h": 512,
+      "required": true,
+      "status": "baked",
+      "file": "/images/defra-pet-transport-process.webp",
+      "alt": "An infographic showing the step-by-step, circular process of safely transporting a Staffy puppy with DEFRA-approved partners."
+    },
+    {
+      "slot": "buy-family-breeder",
+      "kind": "photo",
+      "w": 512,
+      "h": 478,
+      "required": true,
+      "status": "baked",
+      "file": "/images/1blue-staffy-family-breeder.webp",
+      "alt": "A happy family with two children kneeling on a rug, petting a blue Staffordshire Bull Terrier puppy held by their mother while an ethical breeder watches in the background."
+    },
+    {
+      "slot": "buy-pros-cons",
+      "kind": "photo",
+      "w": 512,
+      "h": 512,
+      "required": true,
+      "status": "baked",
+      "file": "/images/pros-and-cons-of-owning-a-blue-staffy-uk.webp",
+      "alt": "A thoughtful-looking blue Staffy dog or puppies next to a book, representing the balanced considerations of ownership. The image encourages readers to carefully think through all aspects before making a decision."
+    },
+    {
+      "slot": "buy-male-rehoming",
+      "kind": "photo",
+      "w": 400,
+      "h": 400,
+      "required": true,
+      "status": "baked",
+      "file": "/images/purebred-blue-male-staffy-available-for-rehoming.webp",
+      "alt": "A striking blue male staffy available for immediate rehoming, showcasing his strong head and excellent build."
+    },
+    {
+      "slot": "buy-health-wellbeing",
+      "kind": "photo",
+      "w": 512,
+      "h": 768,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-health-prioritising-wellbeing.webp",
+      "alt": "Blue Staffy dog sitting in a clean, peaceful home environment representing health and care."
+    },
+    {
+      "slot": "buy-vet-check",
+      "kind": "photo",
+      "w": 512,
+      "h": 477,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-vet-check.webp",
+      "alt": "A happy and healthy blue Staffordshire Bull Terrier dog sitting on an examination table while a smiling UK veterinarian gently pets its head during a check-up."
+    },
+    {
+      "slot": "buy-healthy-litter",
+      "kind": "photo",
+      "w": 400,
+      "h": 400,
+      "required": true,
+      "status": "baked",
+      "file": "/images/healthy-blue-staffy-pups-for-sale-certified.webp",
+      "alt": "Adorable litter of healthy blue staffy pups for sale, currently playing in a clean, professional environment."
+    },
+    {
+      "slot": "buy-preparation",
+      "kind": "photo",
+      "w": 512,
+      "h": 475,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-preparation.webp",
+      "alt": "A person kneeling in a clean living room, arranging a new dog bed next to a crate, with food bowls and puppy toys nearby."
+    },
+    {
+      "slot": "buy-ready-infographic",
+      "kind": "infographic",
+      "w": 512,
+      "h": 512,
+      "required": true,
+      "status": "baked",
+      "file": "/images/ready-to-welcome-blue-staffy-infographic.webp",
+      "alt": "An infographic showing a Blue Staffy puppy surrounded by icons of essential supplies like food bowls, a bed, toys, a leash, and a vet checklist."
+    },
+    {
+      "slot": "buy-socialisation-checklist",
+      "kind": "infographic",
+      "w": 512,
+      "h": 478,
+      "required": true,
+      "status": "baked",
+      "file": "/images/1blue-staffy-socialisation-checklist.webp",
+      "alt": "An infographic-style image of a happy Blue Staffy puppy surrounded by icons of a person, another dog, and a park, representing a socialisation checklist."
+    },
+    {
+      "slot": "buy-training-socialisation",
+      "kind": "infographic",
+      "w": 512,
+      "h": 481,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-training-socialisation.webp",
+      "alt": "A two-part infographic showing a happy Blue Staffy puppy. The left side has icons for socialization with people and other dogs, and the right side has icons for training commands like 'sit' and 'stay'."
+    },
+    {
+      "slot": "buy-nationwide",
+      "kind": "infographic",
+      "w": 512,
+      "h": 512,
+      "required": true,
+      "status": "baked",
+      "file": "/images/bluestaffyuk-nationwide-infographic.webp",
+      "alt": "A clean infographic of a UK map with icons of families and puppies connected by lines, representing nationwide delivery."
+    },
+    {
+      "slot": "buy-uk-family",
+      "kind": "photo",
+      "w": 604,
+      "h": 562,
+      "required": true,
+      "status": "baked",
+      "file": "/images/uk-family-blue-staffy.webp",
+      "alt": "A joyful family with two children and a Blue Staffy dog standing in front of a stylized map of the United Kingdom."
+    },
+    {
+      "slot": "buy-adoption-infographic",
+      "kind": "infographic",
+      "w": 512,
+      "h": 477,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-adoption-vs-buying-infographic.webp",
+      "alt": "An infographic comparing puppy adoption with buying from a breeder, showing pros like emotional reward and cons like unknown history for adoption, versus known health and higher cost for buying."
+    },
+    {
+      "slot": "buy-reviews",
+      "kind": "photo",
+      "w": 400,
+      "h": 300,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-uk-reviews-owner-testimonials.webp",
+      "alt": "A happy family with their puppy, reflecting excellent blue staffy uk reviews and owner satisfaction with BlueStaffyUK."
+    }
+  ],
+  "dropped": {
+    "prices": [
+      "£850 to £1,200 — the migrated page's stated cost of a registered blue Staffy puppy in the UK, repeated in the prose and again as the first row of the first-year budget table. The band is below the locked prices and predates them (Known Issue 11): data/price-matrix.json holds £1,500 and £1,700 and a £500 refundable deposit, and the `costs` table states those instead.",
+      "£1,100, £1,000, £1,200 and £850 — the four prices on the migrated page's 'BETH (£1,100), KANE (£1,000), ALIS (£1,200) and KOBE (£850) are available now' line. Those four dogs are not in data/puppies.json, which holds Roman, Byrd, Ince, Vennie, Christa and Cheryl at £1,500 and £1,700; the puppy grid renders the rows that exist.",
+      "£300 to £600 first-year vet bills, £240 to £600 a year pet insurance, £300 to £700 a year food, £150 to £400 equipment, £80 to £250 puppy training classes, £50 to £120 a year grooming, the £1,970 to £3,870 first-year total, the £900 to £2,000 ongoing years and the £500 to £1,000 emergency vet fund — the migrated 'True Cost of a Blue Staffy in Year 1' table in full. Not one of those figures has a source on disk, and rule 9 forbids writing a number nobody can check. The `costs` table carries the four figures that are locked.",
+      "'avoid under £500' — the migrated budget table's note beside the puppy price. It is a price threshold for other breeders' dogs, set by nobody, and it goes with the band it annotates."
+    ],
+    "names": [
+      "the former city, which the migrated page names in the sentence 'While we are based in Glasgow, Scotland' and in the URL of its breeding-dogs location page. data/settings.json is Carlisle · Cumbria at town level and Known Issue 16 owns the correction; the outreach location pages keep their URLs and project 5 rewrites them.",
+      "Laboklin, named in 'Official KC-approved L-2-HGA and HC-HSF4 DNA testing via Laboklin'. data/boards/blue-staffy-health-uk.json records that no file on disk names a testing laboratory, so naming one here would be a credential nobody can check and a second answer to a question the health page already answers.",
+      "Sarah & Alex of Leeds, the Johnson Family of Manchester, and the dogs Luna, Rex and Max — three testimonials and three dogs that appear nowhere in data/reviews.json. The one review on this page is Rachel L. of London, entry 3, which is real.",
+      "Royal Canin, named as the food to buy in the home-preparation checklist. No file on disk records a brand, and `home-prep` names none."
+    ],
+    "links": [
+      "https://www.rspca.org.uk/findapet (\"Staffordshire Bull Terrier for rehoming\") — the charity's rehoming search. `adoption-vs-buying` makes the rehoming case in its own words and links no rehoming search: sending a reader to a live listing from a page that sells puppies is a referral we cannot keep accurate.",
+      "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ (\"The Kennel Club\") — 301s to the registry's breed page on royalkennelclub.com, which is already a library row and is linked from the breed guide. This page links the registry's questions-for-the-breeder page instead, which is the claim its sentence actually makes.",
+      "https://www.thekennelclub.org.uk/shop/dna-testing/the-kennel-club-dna-testing-services-individual-dna-tests/l2-hydroxyglutaric-aciduria-l2-hga/ (\"The Kennel Club\") — the registry's DNA-testing SHOP, priced at the buyer. `health-checks` links the registry's two DNA-test explainer pages, which are what the anchor was promising.",
+      "https://www.thekennelclub.org.uk/getting-a-dog/buying-a-dog/questions-for-the-breeder (\"what questions to ask a potential licensed Staffy breeder\") — superseded by the royalkennelclub.com spelling the check resolved to, which is the library row `breeder-questions` links.",
+      "https://www.laboklin.co.uk/laboklin/showGeneticTest.jsp?testID=8712 (\"L-2-HGA and HC-HSF4 DNA testing via Laboklin\") — a commercial test-kit product page, and the anchor names a laboratory no file on disk records. Dropped with the name.",
+      "https://www.canine-genetics.org.uk/spotlight-on-the-staffordshire-bull-terrier/ (\"Staffordshire Bull Terriers (HC & L-2-HGA) by Canine Genetics UK\") — a research spotlight cited for 'the scientific basis of these screenings', a claim `health-checks` does not make. The registry's two test pages are the citation this page needs and they are already library rows.",
+      "https://www.royalcanin.com/uk/dogs/products/retail-products (\"premium Royal Canin dog food\") — a manufacturer's shop. `home-prep` names no brand.",
+      "https://www.barkingmad.uk.com/blog/dog-ownership/owning-a-staffordshire-bull-terrier-guide/ (\"owning Staffordshire Bull Terriers\") — a dog-sitting company's blog, cited for a balanced view of the breed. It is in the breed guide's competitor scan as data; `temperament-fit` links the PDSA's veterinary page instead, and the breed guide is the internal destination for the long version.",
+      "https://www.gov.uk/guidance/pet-travel-to-and-from-great-britain (\"Trusted DEFRA-Approved Pet Transport Partners\") — redirects to the government's taking-your-pet-abroad page, which is about international travel. Our delivery is domestic, so the anchor and the destination do not describe the same thing; `delivery` states the method and the band from data/settings.json and links nothing.",
+      "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier is KEPT (in `temperament-fit`); the migrated page's other PDSA link, to the charity's home page as an insurance provider, is not: we are not selling insurance.",
+      "/uk-locations/uk-staffordshire-bull-terrier-breeder/, /uk-locations/blue-staffy-puppies-uk/, /uk-locations/blue-staffy-puppies-london/, /uk-locations/blue-staffy-puppies-manchester-uk/, /uk-locations/staffy-puppies-for-sale-liverpool/, /uk-locations/staffy-puppies-for-sale-glasgow/, /uk-locations/blue-staffy-puppies-birmingham/ and /uk-locations/staffy-breeding-dogs-glasgow/ — eight outreach location pages, one of them for the city the business has left (Known Issue 16). Project 5 rewrites the location cluster and the guide does not send a reader into it mid-process.",
+      "/blog/ (\"how to buy a blue Staffy puppy\") — not a route this site serves; the blog index is /blue-staffy-blog-guides/, which `home-prep` links.",
+      "/uk-blue-staffy-puppy-buying-guide/ (\"Learn more about Blue Staffies in our comprehensive guide.\") — the migrated body linked this page to itself.",
+      "/images/1blue-staffy-family-breeder.webp (\"Download Your Free Checklist\") — an anchor promising a downloadable checklist and pointing at a photograph. There is no checklist file; `breeder-questions` and `red-flags` are the checklist, on the page, printable.",
+      "#contact-us (\"Arrange Puppy Transport\" and \"Fill the form below\"), #contact-form (\"Make an Enquiry\") and #cost-breakdown (\"Blue Staffy Calculator\") — three in-page jumps to blocks this rebuild does not carry: there is no form on this page and no calculator. The close is #talk-to-us.",
+      "https://www.youtube.com/@BlueStaffyUK-v2d (\"YouTube @BlueStaffyUK\") — the site footer already carries the accounts data/settings.json holds, and a body copy of them is a second list that goes stale."
+    ],
+    "text": [
+      "100% KC Registered / 24/7 Puppy Support / 8-Point Health Check / 1x Verified Pedigree — four counters with no evidence attached to any of them. No file on disk holds a support window, a count of health-check points, or a pedigree verification; registration and the two DNA tests, which ARE on disk, are stated in their own right in `health-checks`.",
+      "Our bluestaffyuk champion bloodline ensures not only stunning aesthetics but also sound temperament and health … finding Champion-line, Kennel Club–registered breeders — a champion-bloodline claim. No file on disk records a champion line for Maggie or Jones.",
+      "Is a Blue Staffy Right for YOU? Take Our Quick Quiz! — seven questions, three answers each and a 'See My Results!' button that scored nothing. `temperament-fit` asks the same question in prose and answers it; `brief.tool.pick` is none.",
+      "Download your FREE \"Blue Staffy Puppy Socialisation & Home Prep Checklist\" now … Week-by-Week Socialisation Goals — a download that does not exist; the link pointed at a photograph. The socialisation content itself is carried in `socialisation`.",
+      "please use our True Cost of Owning a Blue Staffy Calculator — a calculator the page did not contain, behind an anchor pointing at a fragment that was not on the page.",
+      "We offer continuous advice … Our bluestaffyuk health guarantee details are provided transparently in our contract … By offering a transparent health guarantee, we assure you that your puppy has been screened for common genetic conditions, mitigating future health risks. — the guarantee and its cover. data/settings.json holds guarantee_days: null, and no length or cover may be written (rule 9). `breeder-questions` still tells a reader to ask every breeder for a written contract, which is the checkable version of the same point.",
+      "Be the First to Know: Get Puppy Availability Alerts! … Join our exclusive waiting list … Early Access – Be notified before general announcements. — a waiting list with a sign-up that went nowhere. No file on disk holds a waiting list and `tuple.newsletter` is empty on this record.",
+      "We handle everything for you, from a supported reservation to a safe, DEFRA-approved transport … This includes confirming DEFRA licensing, setting up health checks before travel, arranging the safest route, and providing updates until your puppy arrives. — carried in `delivery` as collection from our home, breaks on the way and a handover at your door. The licence-confirmation and pre-travel-health-check steps are a process claim against a named body: LICENCE_CLAIM_PLACEHOLDER until Lisa Bright confirms it (Known Issue 7).",
+      "⏰ Delivery Note: Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free). — no file on disk states that turnaround or that default. data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what `delivery` and `costs` state.",
+      "Fill in your details below and we'll be in touch within 24 hours — a reply-time promise made twice on the migrated page. data/faq.json already carries the enquiry reply time sourced to the thank-you page, and this page carries no form.",
+      "Eye Conditions: Such as Distichiasis or Persistent Pupillary Membranes … Degenerative Myelopathy (DM): A progressive disease of the spinal cord. — carried in `health-checks` as the conditions the breed is watched for beyond the two DNA tests, named without the clinical descriptions: we are breeders, not vets, and the health page is where conditions are described.",
+      "Puppies should be wormed at 2, 5, and 8 weeks minimum … The KC recommends no more than 4 litters per dam lifetime. More than 2 per year is a warning sign. — both are carried, in the `breeder-questions` table, as the answer to listen for rather than as our own practice: no file on disk records our worming schedule or Maggie's litter history."
+    ]
+  },
+  "approval": null
+}
