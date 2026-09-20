@@ -404,3 +404,180 @@ which is what CLAUDE.md means by charging a defect to the harness.
    the homepage was expected on the legacy chrome for ever), and
    `tests/py/test_design_components.py`'s review-source reader, which additionally now falls
    back to the migration commit for a rebuilt page's `const body`.
+
+**Amendment 10 (2026-09-20, breeder — working rule 16, the per-page hero and counter, and
+the refresh delta).** Task 18c. The rule is one sentence — *no two pages share the same hero
+layout or the same counter strip, and every other section carries a small deliberate refresh
+delta* — and almost everything below is what it took to make that sentence mean something a
+gate can check rather than something a reviewer can hope for.
+
+**The two skills it names.** `.claude/skills/bsuk-component-refresh/SKILL.md` (the method:
+invariants, budget, dimension, matrix, record, log) and
+`.claude/skills/bsuk-component-variations/SKILL.md` (three rendered options per section) are
+ported from the source repo and re-based onto the BOARD system rather than onto a design
+canvas. That is the substantive change: a variation here is a `StyleDef` the real kit renders
+on `/board-preview/<slug>/`, so what the breeder approves is what `boxClass()` builds, and an
+artboard can never assert a claim the page will not carry.
+
+**1. A layout FAMILY, not a page type.** `meta.page_type` cannot carry this: eight of the
+thirteen records are `interior`, and a privacy policy, a breed guide and an about page do not
+want one hero between them. `meta.layout_type` names one of six families — `home`,
+`for-sale`, `interior-guide`, `interior-about`, `interior-utility`, `blog` — and
+`layoutTypeFor()` derives it from `page_type` when a record does not state one. Naming a
+`layout_type` is also what says a record has been brought under this rule: the four pages
+built before it have none, still name `S1`/`S2`/`S3` on their hero, and are therefore not yet
+asked for the things below. The later task that refreshes them adds one, and the checks start
+asking. A slug list would have been an allowlist nobody would remember to edit.
+
+**2. Six sets of three, with ids of their own.** `HERO_STYLES_BY_PAGE_TYPE` and
+`COUNTER_STYLES_BY_PAGE_TYPE` in `src/lib/boardStyles.ts` carry `H-HM1…H-BL3` and
+`C-HM1…C-BL3`. One id names one arrangement across the whole repo, so a pick can never be
+read against the wrong set, and `S1`/`S2`/`S3` still resolve against the shape's own trio —
+which is what keeps the four already-built pages working. Three pages of one family take one
+arrangement each and share nothing. The layouts are drawn from the breeder's idea sheets
+(`Assets/Components-Ideas/`), and the commit that added them names the sheet each one came
+from so the choice is traceable to a reference rather than to taste.
+
+**3. `STRUCTURAL_AXES`, and the distance is TWO.** The first cut of the sets kept the promise
+with the id rather than with the layout: `H-GD1` and `H-AB1` were the same hero with the photo
+on the other side, and `C-FS1` and `C-BL1` the same counter with a different column count. A
+pair one axis apart is one arrangement offered twice. So `STRUCTURAL_AXES` is the ONE place
+"different" is defined — `hero`, `ledge`, `stack`, `frame` for the hero; `tiles`, `label`,
+`frame`, `columns` for the counter — and every pair of the eighteen, **within a family and
+across families**, differs on at least two of them. `stack` is `media === 'top'`, not an axis
+of `Layout`: top-against-side is two arrangements, left-against-right is a mirror of one.
+`heading` is deliberately absent — it moves a label, not a layout.
+
+The counter needed a FOURTH structural axis to be able to satisfy that at all. With three axes
+of five, three and two values the ceiling on a two-apart set is six, and eighteen were needed;
+the arithmetic, not taste, is why `CounterStrip` gained `label` (`under` / `beside` / `above`,
+and `above` reverses the DOM order so a screen reader reads the label first too). The fit is
+exact: all eighteen `frame`/`columns`/`label` combinations are used once, so a nineteenth
+counter arrangement is impossible without a fifth axis. That is recorded in the map.
+
+Both per-page axis sets are PROPS rather than classes, for the `play` axis's reason: a mosaic
+of four tiles, a panel with no photo column and a drawn ring are different markup, and no
+stylesheet turns one into the other.
+
+**4. Rule 10 holds for all eighteen, measured.** Every hero renders 390–450px at 1280 with
+nothing clipped — no copy overflow, no scroll overflow, no horizontal page overflow at 1280 or
+375 — and the measurement is what found the defects: a stacked hero inherited the split hero's
+`order` and painted its copy above its photo, the blog family's stacked-with-aside hero put the
+aside on a third row and ran 13px over, a stats ledge on a stacked hero ran 8px over, and the
+panel layout's wider copy column ran a long H1 23px over. Layouts that stack budget their own
+height inside the ceiling rather than releasing it; `board-styles.css` releases it only for the
+legacy `split` hero, which is the arrangement that rule was written for.
+
+**5. The figures are the page's own, and they are SOURCED.** A counter's numbers live in the
+record, as `sections[].stats` rows of `{n, label, source}`, never in the component. A row's
+`source` is a path into a data file, or a LIST of them when the figure is made of more than one
+fact — `£200–£350` is two, and citing only the minimum leaves the maximum unsourced while
+reading as sourced. Selectors: a dotted path with `[index]` or `[id]` steps, `count(f=v)`,
+`len`, `len(<path>)`, `cell(<path to rows>, <row label>)` and `files(<glob>)`. A bracket step is
+an ID LOOKUP when it is not a number, so `sections[costs]` survives a section being inserted
+above it — an index that silently shifted would resolve to a different fact and report green.
+
+Three rules the gate enforces (`stat-source-unresolved`, blocking):
+
+  (a) **The path resolves.**
+  (b) **The terminal is a SCALAR.** `facts/<slug>.json#tests` is a five-item array on one page
+      and a three-item array on another, and both stood behind a tile printing "2". A value a
+      figure cannot be compared against is not a source.
+  (c) **The figure is IN what its sources resolved to.** Every standalone number the tile
+      prints must appear, in the order it prints them. Weaker than equality on purpose —
+      `cell()` returns prose, and "12–14 years" is the honest rendering of "12 to 14 years with
+      good care and good genetics" — and much stronger than "it resolved": "12–17 kg" fails
+      against that sentence, and so does "17–11 kg". STANDALONE, because the digits in
+      `L-2-HGA` and `HC-HSF4` are parts of a test's name.
+
+**Where nothing on disk backs a figure the page ships fewer tiles.** The buying guide has no
+honest source for "five steps" (its tree carries six nodes, five of them steps) and counts its
+tables instead; the listing page dropped the weeks nobody recorded; the about page dropped the
+years the breeder has not given.
+
+**6. The hero's LEDGE is sourced on the same terms** (`ledge-source-unresolved`, blocking).
+"£500 deposit, refundable" under a lede and "£500 / refundable deposit" in a counter tile are
+one claim, and only one of them was carrying its path. A ledge entry — a chip, a tick, an aside
+row, an aside item — is a plain string when it states no figure and `{text, source}` when it
+does. Three of them were numbers written as WORDS ("Six puppies in this litter", "Three males
+and three females", "Fifteen questions to ask the breeder"), which slipped past a digit rule
+and past the reader's sense that a figure needs a source; all three are digits now.
+
+**7. Nothing in the hero asserts content.** `eyebrow`, `title` and `lede` defaulted to real
+copy — "KC registered · Carlisle", "Blue Staffy puppies raised in a family home" — which is a
+component asserting a page's credentials for it, true on the homepage and a sales line on a
+privacy policy. All three default to empty and render nothing when empty; the kit specimen
+states its own. The `ledge` data props behave the same way: a ledge whose data the page did not
+supply renders nothing.
+
+**The one default that STAYS is `image`.** The hero still falls back to
+`src/assets/puppies/Cheryl1.jpeg`, and that is a deliberate carry, not an oversight: a hero
+with no photo is not a quieter hero, it is a broken one, and the four pages built before this
+rule mount the component expecting it. It comes out with their refresh pass, when each of them
+passes its own. The same reasoning keeps `CounterStrip`'s three site-wide fallback figures,
+which are marked DEPRECATED in the component: the preview route always passes `stats`, and a
+test holds every rule-16 record's stats section to carrying its own rows, so no BOARD can reach
+them by omission.
+
+**8. `aside` is a named SLOT, not a prop.** A guide's aside is a fact table, an about page's is
+somebody's sentence and a blog index's is a contents list; a prop shaped to hold all three had
+stopped describing anything. The hero owns the box, its bed and its place in the grid, and the
+typography of what goes in it (`:global()` under `.hero-aside`, because slotted content belongs
+to the caller's scope).
+
+**9. A refresh delta on EVERY section** — `refresh: {axis, note}`, where `axis` is one of the
+five the refresh skill allows (`layout`, `accent`, `motif`, `container`, `density`, never the
+palette) and `note` says what the delta is and which page it is a delta FROM. Not the three to
+five a page felt like writing: `refresh-missing` is blocking from `boarded` onward, scoped to
+records that name a `layout_type`. `scripts/build_page_board.py` prints each delta as a muted
+line under that section's options, including under a LOCKED fieldset — a delta the breeder
+cannot see is a decision taken on their behalf, and it matters most exactly there.
+
+**10. `locked_picks`, and a lock that can prove itself.** Four approved records went back to
+the board for one question — their hero and their counter — and throwing eleven agreed answers
+away to ask two would be asking the breeder to redo work they had done. The old approval moves
+to `approval_previous`; `scripts/build_page_board.py` pre-fills and DISABLES every pick it
+holds for a section that is not being re-asked (a disabled checked radio still matches the
+approve button's `:checked` selector, so the answer is submitted and cannot be changed by
+accident), and the previews still render under it, because the breeder is entitled to see what
+they agreed to.
+
+A carried pick is dropped, and the question asked again, when the section is gone, when it is
+one of `PER_PAGE_SHAPES`, when the pick is no longer on the section's menu, or when the section
+CHANGED: `approval_previous.section_hashes` records each section's fingerprint as it was when
+approved, and a fingerprint that has moved is a different proposal. An approval with no
+recorded hashes locks nothing — an approval that kept no record of what it approved cannot
+prove anything stayed still. A record whose own `options.pick` disagrees with the carried one
+raises rather than silently preferring either: two answers to one question is a board telling
+the breeder they decided something they did not.
+
+**The fingerprint skips `options`, `n` and `refresh`.** `options` is the ANSWER rather than the
+question and `n` is a position, but `refresh` is a judgement call and is recorded as one: a
+delta is a NOTE about which sibling a section departs from, and the arrangement it departs INTO
+is the pick, unchanged. Counting it would have unlocked all forty-three carried picks on the
+day §9 above gave every section a delta — a board asking the breeder to re-answer forty-three
+questions in order to record forty-three notes. This is NOT the guard against a record changing
+under its approval: `approval_matches()` hashes the whole record and fails on any edit at all.
+It decides, once that has already failed and the record is being re-boarded, which questions
+are worth asking again.
+
+**11. `dist-stale`, and the gate that read a build in progress.** `min-h5-h6` reads the BUILT
+page when one exists, and once read a half-written `dist/` gave a real number about a page
+nobody shipped — the check flipped PASS to FAIL and back on the same record. A file existing is
+not a build having finished, so a built page is believed only when it is newer than everything
+under `src/` and `data/boards/`; otherwise the record tree is read, as it was before the page
+existed, and `dist-stale` WARNs. A WARN and a fallback rather than a FAIL: the gate cannot see
+a defect there, and saying "not measurable yet" is what is true. The build's own
+`data/boards/previews/` output is excluded from the comparison, or every build would be
+instantly stale against itself.
+
+**12. The ledger.** The four re-boarded pages come OUT of `data/component-ledger.json`, because
+an unapproved record's combo is not spent. That is what clears `privacy-policy-uk`'s
+`ledger-tuple-identical` against `blue-staffy-uk-breeders`: the about record's `tuple.hero` is
+empty until its new hero is picked, and its stale ledger row is no longer there to match
+privacy's.
+
+**The fixture.** `data/boards/_demo.json` carries the INTERIOR-UTILITY sets, and it is the only
+record that can: the three utility pages were built before this rule and still name
+`S1`/`S2`/`S3`, so without the fixture six of the eighteen hero arrangements and six of the
+eighteen counters would be styles nothing ever builds, renders or measures.

@@ -1073,3 +1073,38 @@ def test_the_preview_payloads_do_not_make_every_build_stale(tmp_path):
     time.sleep(0.01)
     (tmp_path / "data/boards/previews/x.json").write_text("{}", encoding="utf-8")
     assert PB.dist_page_is_fresh(built, tmp_path)
+
+
+# ── the delta is printed where the pick is made ───────────────────────────────────────────
+
+def test_the_refresh_delta_is_printed_under_a_sections_options():
+    import build_page_board as BPB
+    sec = {"id": "prices", "shape": "table", "heading": "Prices",
+           "refresh": {"axis": "accent", "note": "the price table on a brand header band"}}
+    html = BPB.refresh_line(sec)
+    assert "Refresh" in html and "accent" in html
+    assert "the price table on a brand header band" in html
+    assert BPB.refresh_line({"id": "x", "shape": "standard"}) == "", "no delta, no empty row"
+
+
+def test_every_delta_reaches_the_built_board_including_the_locked_ones():
+    """A delta the breeder cannot see is a decision taken on their behalf, and it matters most
+    under a LOCKED fieldset: the pick says "you already chose this" and the note says what has
+    changed about the section since."""
+    from html import escape
+    for slug in ("blue-staffy-pup-sale-uk", "uk-blue-staffy-puppy-buying-guide"):
+        page = ROOT / "docs/artifacts/boards" / f"{slug}.html"
+        if not page.exists():
+            pytest.skip("run scripts/build_page_board.py first")
+        html = page.read_text(encoding="utf-8")
+        record = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
+        deltas = [s for s in record["sections"] if s.get("refresh")]
+        assert deltas, slug
+        missing = [s["id"] for s in deltas if escape(s["refresh"]["note"], quote=False) not in html]
+        assert missing == [], (slug, missing)
+        assert html.count('class="refresh"') == len(deltas), slug
+        # and at least one of them sits under a fieldset the record is carrying a pick across
+        locked = PB.locked_picks(record)
+        if locked:
+            both = [s for s in deltas if s["id"] in locked]
+            assert both, f"{slug} locks picks but prints no delta beside any of them"

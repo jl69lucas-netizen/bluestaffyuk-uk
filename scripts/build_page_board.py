@@ -110,6 +110,9 @@ fieldset.styles{border:1px solid var(--line);border-radius:8px;padding:10px 12px
 fieldset.styles legend{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);padding:0 6px}
 fieldset.styles.locked{background:var(--green-soft)}
 fieldset.styles.locked legend{color:var(--green)}
+p.refresh{margin:6px 0 0;font-size:12.5px;line-height:1.5;color:var(--ink-3)}
+p.refresh b{color:var(--green);font-weight:600}
+
 
 .style{border-top:1px dashed var(--line);padding:10px 0 4px}
 .style:first-of-type{border-top:0}
@@ -525,6 +528,20 @@ def style_fieldset(section, previews, locked=None):
             + "".join(rows) + "</fieldset>")
 
 
+def refresh_line(section):
+    """The section's recorded refresh delta, as one muted line under its options.
+
+    Working rule 16 puts a delta on every section, and a delta the breeder cannot see is a
+    decision taken on their behalf. It matters most under a LOCKED fieldset: a carried pick
+    says "you already chose this arrangement", and the note beside it says what has changed
+    about the section since — which is the difference between carrying an answer forward and
+    assuming one. A section with no delta prints nothing rather than an empty row."""
+    r = section.get("refresh")
+    if not r:
+        return ""
+    return (f'<p class="refresh"><b>Refresh</b> · {esc(r["axis"])} — {esc(r["note"])}</p>')
+
+
 def picked_sections(board, ledger=None, slug=None):
     """Every section id the approve button must see an answer for.
 
@@ -854,6 +871,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
             opt_html.append(
                 f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n"
                 + style_fieldset(s, previews, locked)
+                + refresh_line(s)
                 + f"\n<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
             continue
         if s["shape"] == "standard":
@@ -863,7 +881,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         else:
             cards = option_cards(s, ledger, slug, thumbs)
         opt_html.append(f"### {s['n']:02d} · {md(s['heading'])} <span class=\"pill\">{md(s['shape'])}</span>\n\n<div class=\"opts\">{''.join(cards)}</div>\n"
-                        f"<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
+                        + refresh_line(s)
+                        + f"<textarea class=\"note\" name=\"note-{s['id']}\" placeholder=\"Note for this section (optional)\">{esc(s['options']['note'])}</textarea>")
     parts.append(("6. Component options", "\n\n".join(opt_html) or "_No sections._"))
 
     slots = "".join(
