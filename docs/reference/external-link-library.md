@@ -35,6 +35,9 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.bva.co.uk/canine-health-schemes/eye-scheme/ | bva.co.uk | The British Veterinary Association's eye scheme — the examination that looks for inherited eye disease the HC-HSF4 DNA test does not cover | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
 | https://www.gov.uk/get-your-dog-cat-microchipped | gov.uk | The government's guidance on the microchipping law every puppy leaving us has to satisfy | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
 | https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines | pdsa.org.uk | The PDSA's guide to dog vaccinations — independent detail on the second dose and the booster, which are the owner's own vet's | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
+| https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's breed standard for the Staffordshire Bull Terrier — the build, head, coat, tail and temperament our breed-facts table describes, in the standard's own words | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
+| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier | pdsa.org.uk | The PDSA's veterinary breed page for the Staffordshire Bull Terrier — independent care, exercise, feeding and grooming advice, which we are not the right people to give | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
+| https://www.gov.uk/control-dog-public/banned-dogs | gov.uk | The government's own list of dog types banned under the Dangerous Dogs Act 1991 — the page behind the statement that the Staffordshire Bull Terrier is not one of them | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
 
 ## Provenance
 
@@ -64,3 +67,13 @@ destination of its own:
 - `https://www.gov.uk/take-pet-abroad`, which the migrated about page used as its
   pet-transport citation, redirects to `https://www.gov.uk/bring-pet-to-great-britain` — already a row. It
   gets no row of its own, and the about record logs the old spelling under `dropped.links`.
+
+The three added on 2026-09-20 for `/uk-staffordshire-bull-terrier-guide/` were checked the same
+way. Two are written at a URL the migrated body did not carry as a URL at all: the body linked
+the registry's breed page, the RSPCA's socialisation advice, the PDSA's vaccination advice and
+the Dangerous Dogs Act guidance through `google.com/search?q=` WRAPPERS, and two of the wrapped
+paths (`gov.uk/control-dog-public-place/dangerous-dogs` and
+`rspca.org.uk/…/dogs/training/socialisation`) 404 today. The banned-dogs row is the government's
+own list at the path that resolves; the breed standard is a new citation for the breed-facts
+table, justified by the scan (three of the four pages read open on a facts panel). All four
+wrappers are logged in the guide record's `dropped.links`.

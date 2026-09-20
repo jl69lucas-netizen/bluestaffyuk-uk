@@ -94,5 +94,29 @@
     "q": "How long does a Staffordshire Bull Terrier live?",
     "a": "Twelve to fourteen years is the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog. Diet, daily exercise and regular vet checks are what decide where in that range a dog lands.",
     "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "guide-first-time-owners",
+    "q": "Are Staffordshire Bull Terriers good for first-time owners?",
+    "a": "Yes, as long as you are ready to socialise the puppy early and train consistently with rewards. Staffies are intelligent and eager to please, which makes them trainable, but they are strong-willed and they need company, so the commitment matters more than the experience.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-exercise",
+    "q": "How much exercise does a Staffordshire Bull Terrier need each day?",
+    "a": "At least an hour of vigorous exercise a day, ideally split into two sessions, plus something that works the mind. Brisk walks, play and dog sports such as agility, obedience, flyball or scent work all suit the breed.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-banned-breed",
+    "q": "Is the Staffordshire Bull Terrier a banned breed in the UK?",
+    "a": "No. The Staffordshire Bull Terrier is not a banned type under the Dangerous Dogs Act 1991, and it is legal to own, breed and import in the UK. A landlord or housing association may still restrict the breed, so ask for the pet policy in writing before you sign.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "guide-flat-living",
+    "q": "Can a Staffordshire Bull Terrier live in a flat?",
+    "a": "Yes, provided the dog gets its daily exercise and mental stimulation. The breed is a medium size and is people-focused rather than territorial, so a large garden is not essential as long as walks and outdoor time are regular.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
   }
 ]

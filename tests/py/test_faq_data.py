@@ -63,6 +63,15 @@ FACT_PHRASES = {
     "health-dna-tests": ["L-2-HGA", "HC-HSF4"],
     "health-vaccinations": ["vet-signed health card", "distemper"],
     "health-lifespan": ["12–14 years", "Staffordshire Bull Terrier Club"],
+    # The four breed-guide rows are verified against the MIGRATED body today and against the
+    # rebuilt page from Task 12's P5, so every phrase below is one the board record's own
+    # outline keeps: "first-time owners" and "flat living" are nodes of `temperament`,
+    # "vigorous exercise", "two sessions" and "mental stimulation" are `daily-care`, and
+    # "not a banned breed" with the Act that does not ban it is `legal-status`.
+    "guide-first-time-owners": ["first-time owners", "socialisation"],
+    "guide-exercise": ["vigorous exercise", "two sessions"],
+    "guide-banned-breed": ["not a banned breed", "dangerous dogs act 1991"],
+    "guide-flat-living": ["flat living", "mental stimulation"],
 }
 
 
