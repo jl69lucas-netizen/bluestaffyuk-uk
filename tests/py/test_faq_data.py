@@ -84,6 +84,19 @@ FACT_PHRASES = {
     # kept by the record's `deposit` section, and "microchipped" is the migrated litter
     # sentence and is kept by `whats-included`.
     "sale-reserve": ["24-48 business hours", "microchipped"],
+    # Three more pup-sale rows in project 4 Task 18b, because working rule 15 carries the
+    # migrated page's four FAQ questions word for word and that page asked them as keyword
+    # H3s, so they are elements of its verbatim set rather than the outline's to reword
+    # (data/boards/blue-staffy-pup-sale-uk.json `verbatim.changed`). Every phrase below is
+    # one the MIGRATED body already says AND one the board record's own outline keeps after
+    # P5: the veterinary health check and the microchip are two rows of the `whats-included`
+    # list, the puppy pack is a third, and the DEFRA-approved transport is the second row of
+    # the `delivery` table. Nothing here leans on a figure — the prices, the deposit and the
+    # delivery band are read from data by the rows that name data/settings.json as their
+    # source — and nothing leans on a wording only the old body has.
+    "sale-kc-health-checked": ["health check", "microchip"],
+    "sale-delivery-uk": ["DEFRA-approved"],
+    "sale-whats-included": ["health check", "microchip", "puppy pack"],
     # The two why-us rows are verified against the MIGRATED body today and against the
     # rebuilt page from Task 16's P5, so every phrase below is one the board record's own
     # outline keeps: the contract, the vaccination records and the microchipping details
