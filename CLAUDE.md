@@ -173,6 +173,15 @@ growing. Every other rule moved to a pack.
     homepage onward; the three pages built before this rule (privacy, thank-you, contact)
     stay as rewritten. (Breeder, 2026-09-20.)
 
+16. **Per-page hero and counter; a refresh delta on every section.** No two pages share the
+    same hero layout or the same counter strip: the counter's figures are that page's own facts
+    (from `data/*.json` and the page's record, never invented) and each board offers three hero
+    styles and three counter styles designed for that page from the breeder's idea sheets
+    (`Assets/Components-Ideas/`) on the same tokens. Every other section carries a small,
+    deliberate refresh delta per page — layout, accent role or motif, never the palette —
+    per `bsuk-component-refresh` (arrives in Task 18c) and `bsuk-component-variations`
+    (arrives in Task 18c). (Breeder, 2026-09-20.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how
