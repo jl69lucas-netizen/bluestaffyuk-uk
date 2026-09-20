@@ -1,0 +1,752 @@
+{
+ "meta": {
+  "slug": "blue-staffy-blog-guides",
+  "page_type": "blog",
+  "status": "draft",
+  "research_as_of": "2026-09-20",
+  "sources": [
+   {
+    "path": "src/content/blog/blue-staffy-blog-guides.md",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "src/pages/[...post].astro",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "src/pages/blog/index.astro",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "dist/blue-staffy-blog-guides/index.html",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/facts/blue-staffy-blog-guides.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/page-map.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/settings.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/reviews.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/faq.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/image-manifest.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "data/bsuk-ontology.json",
+    "fetched": "2026-09-20"
+   },
+   {
+    "path": "https://www.pets4homes.co.uk/pet-advice/",
+    "fetched": "2026-09-20 — ~1,352 words; 11 H2s, all of them species names (Dogs; Cats; Pets general; Rabbits; Birds; Horses; Rodents; Invertebrates; Poultry; Reptiles; Fish); 42 article cards, each with an image and NO date and NO author; 0 FAQ rows; schema WebSite/Organization; the largest hub scanned and the one that tells a reader least about how current any of it is."
+   },
+   {
+    "path": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs",
+    "fetched": "2026-09-20 — ~0 words of hub prose above the grid; 1 H2 (Puppies and dogs); 12 guide cards, no date, no author and no image on the card; 0 FAQ rows on the hub itself; schema WebPage/FAQPage; a bare index with a veterinary byline claimed sitewide rather than per guide."
+   },
+   {
+    "path": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
+    "fetched": "2026-09-20 — ~1,085 words; 8 H2s (Buying a puppy; Pet cost calculator; Buying from a breeder; Which dog is right for your family?; Buying a puppy from a breeder; RSPCA Pet Insurance; Taking your new puppy home; Find out more); 6 cards with images, no dates, no authors; 0 FAQ rows; schema WebPage; the only one of the three that writes real prose around its links, and two of its eight H2s are its own insurance and calculator."
+   }
+  ]
+ },
+ "meta_set": {
+  "titles": [
+   "Blue Staffy Guides | Breed, Health And Buying Advice",
+   "Blue Staffy Blog And Guides | Advice From Our Kennel",
+   "Blue Staffy Guides UK: Everything We Have Written Down"
+  ],
+  "descriptions": [
+   "Every guide we have written about the blue Staffordshire Bull Terrier in one place: the breed itself, the DNA tests and vaccinations, and how to pick.",
+   "Our blue Staffy guides index: what the breed needs, what we test for, and the questions to put to any UK breeder before you part with a deposit here.",
+   "A UK breeder's reading list for blue Staffy buyers: the breed guide, the health page and the buying guide, plus how to ask us what they do not answer."
+  ],
+  "recommended": {
+   "title": 0,
+   "description": 0
+  },
+  "pick": {
+   "title": null,
+   "description": null
+  }
+ },
+ "brief": {
+  "goal": "Turn an archive stub with no body, no H1 and two linked headings into the index of everything Blue Staffy UK has written down, so a reader who arrives from a search result can see the whole set — one post and three long guides — understand what each one answers, and know who wrote them and how to ask for what is missing.",
+  "scope": "Seven sections: hero, four takeaway cards, the post list from the `blog` content collection, the three long guides as link-first sentences, one review, a three-row FAQ and the close. One image, a puppy master reused at its original path and alt text, because data/page-map.json records the migrated URL as carrying none.",
+  "gates": [
+   "facts-preserved",
+   "link-parity",
+   "marker",
+   "schema",
+   "sitemap",
+   "board-previews",
+   "render"
+  ],
+  "done": "The URL renders a real hub on PageShell: an H1, a card list generated from the `blog` collection, the three long guides linked once each with link-first anchors, one review, three FAQ rows written into data/faq.json in the same commit as the page, a close that states the email address and the hours, and no invented publication schedule, no claim about a guide that does not exist and no second copy of the enquiry form; it passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
+  "out_of_scope": [
+   "rewriting the one post's copy: build 5 owns blog copy, and this task rebuilds the hub and the post's LAYOUT only (plan Task 14)",
+   "a publication cadence of any kind — weekly, monthly, 'regularly updated': no file on disk holds a schedule, and inventing one is the easiest false promise a blog index can make",
+   "author bylines other than Lisa Bright: data/settings.json holds breeder_name Lisa Bright and the collection entry's `author` is the generic 'Blue Staffy UK Team'; Known Issue 12 is about a byline nobody can verify",
+   "tags, categories, an archive by month and a search box: the collection holds one entry, and taxonomy over one item is furniture",
+   "a newsletter or subscribe block: no file on disk holds a list, and `tuple.newsletter` is empty on this record",
+   "an enquiry form: the contact page carries the one form the form audit measures, and this page links to it",
+   "the puppy grid and the prices: a reading index is not a listing, and /blue-staffy-pup-sale-uk/ and /buy-blue-staffy-puppies-uk/ are the pages that carry them",
+   "the site's other index at /blog/: two indexes of one collection linking each other is a loop, and the link is logged in `dropped.links`"
+  ],
+  "primary_keyword": "blue staffy blog guides",
+  "angles": [
+   {
+    "name": "the reading list",
+    "hook": "say what the whole set is, in order, with one link-first sentence per guide saying what that page answers that the others do not",
+    "why_not": ""
+   },
+   {
+    "name": "the magazine front page",
+    "hook": "a card grid of posts with dates, categories and a featured lead story",
+    "why_not": "the collection holds one entry and it carries no date on disk (refresh_flags date-not-fetched), so the grid would be one card and every other affordance would be empty chrome"
+   },
+   {
+    "name": "the topic hub",
+    "hook": "cluster the writing under themes — health, buying, living with the breed — with a landing block per theme",
+    "why_not": "three guides do not make three clusters; each theme would be one link under a heading, which is the same list with more furniture"
+   }
+  ],
+  "strategy": {
+   "name": "the reading list",
+   "why": "Of the three hubs scanned, two are bare card grids with no dates and no authors and the third spends two of its eight H2s on its own insurance and cost calculator; none of them says why one guide rather than another. Saying what each page answers is both the reader's question and the whole gap.",
+   "trade_off": "It makes the hub short and honest about being small — one post and three guides — where a competitor's grid of forty-two cards looks larger at a glance."
+  },
+  "cta": {
+   "cadence": {
+    "min": 200,
+    "max": 400
+   },
+   "destination": "#talk-to-us",
+   "anchors": [
+    "Write to us with a question the guides left open",
+    "Read the buying guide before you contact any breeder"
+   ],
+   "global_cta": "hidden"
+  },
+  "tool": {
+   "pick": "none",
+   "evidence": "The RSPCA hub carries a pet cost calculator, which is the only interactive element on any of the three scanned pages. Every running-cost figure such a calculator would need is a number no file on disk holds, and the buying guide record already logs that whole budget under dropped.prices.",
+   "trade_off": ""
+  },
+  "schema": {
+   "types": [
+    "CollectionPage",
+    "FAQPage"
+   ],
+   "offer_model": "none"
+  }
+ },
+ "h1": {
+  "variants": [
+   "Blue Staffy Guides, Written By The Breeder",
+   "Our Blue Staffy Guides: Breed, Health And Buying",
+   "Everything We Have Written About Blue Staffies",
+   "The Blue Staffy Reading List, In One Place",
+   "Blue Staffy Blog And Guides"
+  ],
+  "recommended": 0,
+  "pick": null
+ },
+ "sections": [
+  {
+   "id": "top",
+   "n": 1,
+   "heading": "Blue Staffy Guides, Written By The Breeder",
+   "intent": "The opening, in Lisa Bright's first person: this URL is the index of everything we have written down about choosing, checking and living with a blue Staffordshire Bull Terrier, and it exists so a reader can see the whole set at once instead of finding one page at a time from a search result. It says what the set is today — one post and three long guides — and it says who wrote them. The kit Hero is given no trust chips and no CTA buttons (spec section 9 amendment 6a).",
+   "category": "A",
+   "group": "MANDATORY",
+   "framework": "EEBP",
+   "why": "The migrated URL is an archive stub: data/page-map.json records 0 words of body, no H1 and the defects empty-h1 and stub, so a reader who lands on it is told nothing at all about what the site has written or who wrote it.",
+   "why_source": "data/page-map.json — /blue-staffy-blog-guides/ word_count 0, defects [empty-h1, stub]; data/settings.json — breeder_name Lisa Bright",
+   "words": {
+    "min": 70,
+    "max": 90
+   },
+   "shape": "hero",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "blue Staffy guides",
+     "Staffordshire Bull Terrier",
+     "puppy guides"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "Carlisle",
+     "Cumbria"
+    ],
+    "conversational": [
+     "where can i read your blue staffy guides"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier",
+    "ont:blue-coat",
+    "ont:lisa-bright"
+   ],
+   "tree": [],
+   "images": [
+    {
+     "slot": "guides-hub-hero",
+     "kind": "photo",
+     "required": true,
+     "prompt": "a blue Staffy puppy photograph already on the site, reused at its original path and original alt text (working rule 11); the archive stub carried no image of its own and data/page-map.json records images 0, so the hero borrows a puppy master rather than asking for new photography"
+    }
+   ],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ]
+  },
+  {
+   "id": "takeaways",
+   "n": 2,
+   "heading": "What You Will Find Here",
+   "intent": "Four statement cards, each of them a fact about this set of pages rather than a claim about puppies: how many guides there are, who writes them, where the numbers in them come from, and how honest the set is about its own size. Nothing here describes a guide that does not exist.",
+   "category": "A",
+   "group": "MANDATORY",
+   "framework": "FAB",
+   "why": "A hub that opens by listing links tells a reader nothing about whether the links are worth following; four cards say what kind of writing this is before the reader spends a click on it.",
+   "why_source": "src/content/blog/blue-staffy-blog-guides.md — the collection holds one entry; data/page-map.json — the three long guide URLs; data/settings.json — breeder_name Lisa Bright, price_range, deposit_gbp, delivery band",
+   "words": {
+    "min": 60,
+    "max": 80
+   },
+   "shape": "takeaways",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "breed guide",
+     "health page",
+     "buying guide",
+     "one post"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what do your blue staffy guides cover"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:lisa-bright"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Three Long Guides",
+     "intent": "The breed guide, the health page and the buying guide are where the substance is.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "One Post So Far",
+     "intent": "The blog collection holds a single entry today, and this page says so rather than padding the grid.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Written In The First Person",
+     "intent": "Lisa Bright writes them, and data/settings.json is where that name comes from.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Every Figure Comes From A File",
+     "intent": "Prices, the deposit and the delivery band are read from data, not typed into prose.",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Four cards, so S2's three-up grid wraps to 3+1, S3's rail shows four and S1 stacks them."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ]
+  },
+  {
+   "id": "latest-guides",
+   "n": 3,
+   "heading": "The Latest Guide",
+   "intent": "The post list: one card per entry in the `blog` content collection, each card carrying the entry's title, its description and its date when the entry has one. Today the collection holds a single entry, so the section renders one card and the prose says that plainly instead of implying a stream. The cards are generated from the collection at build time, which is why this section carries no link rows of its own — see the note.",
+   "category": "A",
+   "group": "MANDATORY",
+   "framework": "PDB",
+   "why": "The migrated archive stub listed its entries as two linked H2s with no dates and no descriptions, which is a heading list pretending to be an index; a card list from the collection is the same information a reader can actually scan.",
+   "why_source": "src/content/blog/blue-staffy-blog-guides.md — title, description, slug, schema_type CollectionPage, refresh_flags archive-page and date-not-fetched; src/pages/blog/index.astro — the existing index reads the same collection",
+   "words": {
+    "min": 55,
+    "max": 75
+   },
+   "shape": "standard",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "latest guide",
+     "blog post",
+     "puppy guide"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what have you written most recently"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "One Entry Today",
+     "intent": "The collection holds a single post and the card grid shows it without filler.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Dates Where We Have Them",
+     "intent": "The one entry carries no date on disk, so no date is shown for it.",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Shape `standard` rather than a new board shape: the preview route already renders three arrangements for `standard` (S1 prose with the image right, S2 image above two-column prose, S3 band with an InfoCard aside), and the CARD STYLE of a post card is a build-time choice at P5 using the kit's PuppyCard-like card shell, not a fourth thing for the breeder to pick here. Adding a `cards` shape would mean editing schemas/board.schema.json, src/lib/boardStyles.ts, RENDERED_AXES, the preview route and tests/py/test_board_previews.py for one section on one page. NO LINK ROWS: the card hrefs are rows of the `blog` content collection, the same argument that exempts the puppy grid's card links from link parity (spec section 9 amendment 6b) — and today the collection's one entry claims THIS page's own slug, so P5 has to move that post to a slug of its own before the hub can link it (src/pages/[...post].astro throws when a post slug collides with a page route). That move is a P5 decision and a redirect row, not something this record can invent. If link parity will not accept a collection-generated card link, the exemption list in scripts/link_parity_check.py is where it is stated, exactly as the puppy grid's is."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ]
+  },
+  {
+   "id": "start-here",
+   "n": 4,
+   "heading": "Start Here: The Three Long Guides",
+   "intent": "Three link-first sentences, one per long guide, each saying what that page answers that the other two do not: the breed guide for what a Staffordshire Bull Terrier is and needs, the health page for the DNA tests, vaccinations and lifespan, and the buying guide for how to choose a breeder without being taken in. This is where the archive stub's one claim sentence — ethical breeders, health screening, delivery and temperament as a roadmap — is restated, against the pages that actually carry each of those.",
+   "category": "A",
+   "group": "MANDATORY",
+   "framework": "EEBP",
+   "why": "The archive stub promised a roadmap through ethical breeders, health screening, delivery and temperament and then linked two pages, one of them the site's other index; the three long guides are where those four subjects are actually written.",
+   "why_source": "src/content/blog/blue-staffy-blog-guides.md — 'choosing ethical breeders and understanding health screening to navigating delivery and temperament'; the three long guides' board records in data/boards/",
+   "words": {
+    "min": 90,
+    "max": 120
+   },
+   "shape": "standard",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "breed guide",
+     "health testing",
+     "buying guide",
+     "ethical breeder",
+     "temperament"
+    ],
+    "longtail": [
+     "blue staffy breed guide uk",
+     "blue staffy health testing uk"
+    ],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "which guide should i read first",
+     "where do i start with a blue staffy"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [
+    "ont:staffordshire-bull-terrier",
+    "ont:blue-coat"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "The Breed Guide",
+     "intent": "What the breed is, what it needs daily, and where it stands in law.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "The Health Page",
+     "intent": "The two DNA tests, the vaccination course and what a Staffy's life expectancy is.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "The Buying Guide",
+     "intent": "The questions to ask any breeder, and the signs that say walk away.",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [
+     {
+      "href": "/uk-staffordshire-bull-terrier-guide/",
+      "anchor": "Read the Staffordshire Bull Terrier breed guide",
+      "why": "the first of the three long guides this hub indexes",
+      "sentence_start": true
+     },
+     {
+      "href": "/blue-staffy-health-uk/",
+      "anchor": "Read what we test for and what a Staffy's health looks like",
+      "why": "the second of the three long guides this hub indexes",
+      "sentence_start": true
+     },
+     {
+      "href": "/uk-blue-staffy-puppy-buying-guide/",
+      "anchor": "Read the buying guide before you contact any breeder",
+      "why": "carried from the migrated archive stub (heading link 'UK Blue Staffy Puppy Buying Guideinformation UK')",
+      "sentence_start": true
+     }
+    ],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "Three link-first sentences (rules/links.md). S3's InfoCard aside is the arrangement that can carry a one-line 'what this guide is for' beside the three."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ]
+  },
+  {
+   "id": "owner-review",
+   "n": 5,
+   "heading": "What One Reader Said After Doing The Research",
+   "intent": "One review, given room. MODE: single, data/reviews.json entry 2 — Mark J, London — because it is the only one of the three that describes reading before buying ('After extensive research, we chose BlueStaffyUK.uk'), which is what a guides hub is for.",
+   "category": "B",
+   "group": "SUGGESTED-RECOMMENDED",
+   "framework": "EBD",
+   "why": "A page of guides is asking a reader to spend an hour reading before they act, and the one review that says a buyer did exactly that is the only proof on disk that it is worth doing.",
+   "why_source": "data/reviews.json — entry 2, Mark J, London: 'After extensive research, we chose BlueStaffyUK.uk, and we're so glad we did'",
+   "words": {
+    "min": 35,
+    "max": 45
+   },
+   "shape": "reviews",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "review",
+     "research",
+     "ethical breeding"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "London"
+    ],
+    "conversational": [],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ]
+  },
+  {
+   "id": "questions",
+   "n": 6,
+   "heading": "Questions About These Guides",
+   "intent": "Three rows: what the guides cover, how often we add one, and how to ask something none of them answers. Every answer is one this page's own body states, and none of them invents a publication schedule — there is no schedule on disk and the honest answer says so.",
+   "category": "A",
+   "group": "COMPETITOR-BASED",
+   "framework": "QAB",
+   "why": "None of the three scanned UK advice hubs carries a single FAQ row about the hub itself — what it covers, how current it is, or how to ask — so a reader has to guess whether the set is finished or abandoned.",
+   "why_source": "https://www.pets4homes.co.uk/pet-advice/ and https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs and https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy (scan 2026-09-20) — 0 FAQ rows about the hub on all three",
+   "words": {
+    "min": 40,
+    "max": 55
+   },
+   "shape": "faq",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "guides",
+     "updates",
+     "ask a question"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [],
+    "conversational": [
+     "what do your guides cover",
+     "how often do you add a guide",
+     "how do i ask you a question"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": []
+   },
+   "entities": [],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "blog-what-we-cover",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "blog-updates",
+     "intent": "",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "blog-ask-a-question",
+     "intent": "",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": "ROWS NOT YET IN data/faq.json, AND THAT IS DELIBERATE. tests/py/test_faq_data.py requires a page-sourced row's `source` file to exist on disk and requires its fact phrases to appear in that page's text; there is no src/pages/blue-staffy-blog-guides/index.astro today (the URL is served from src/content/blog by src/pages/[...post].astro), so adding the three rows now would fail the suite before the page they cite exists. They are written into data/faq.json at P5, with `source: src/pages/blue-staffy-blog-guides/index.astro` and a FACT_PHRASES entry each, in the same commit that creates the page. The three ids and the wording are fixed here: blog-what-we-cover 'What do your blue Staffy guides cover?'; blog-updates 'How often do you add a new guide?' — answered without a cadence, because no file on disk holds one, and pointing instead at the last-updated date each page renders from data/page-dates.json; blog-ask-a-question 'How do I ask something the guides do not answer?' — answered with the email address and the hours in data/settings.json. QUERY AUGMENTATION for 'blue staffy blog guides', eight questions, each mapped to a section or a row: q1 -> start-here and the blog-what-we-cover row; q2 -> latest-guides and the blog-updates row; q3 -> talk-to-us and the blog-ask-a-question row; q4 -> start-here (breed guide); q5 -> start-here (health page); q6 -> start-here (buying guide); q7 -> top and takeaways (who writes them); q8 -> owner-review. No row is added for a question this page's body does not answer."
+   },
+   "styles": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "questions": [
+    "What do your blue Staffy guides cover?",
+    "How often do you add a new guide?",
+    "How do I ask something the guides do not answer?",
+    "Where do I read about the Staffordshire Bull Terrier breed itself?",
+    "Which health tests do you write about?",
+    "What should I read before I contact a breeder?",
+    "Who writes these guides?",
+    "Has anyone bought a puppy after reading them?"
+   ]
+  },
+  {
+   "id": "talk-to-us",
+   "n": 7,
+   "heading": "Ask Us Something A Guide Does Not Answer",
+   "intent": "The close, and the only ask on the page: if a guide leaves a question open, write and ask it. It states the email address and the hours from data/settings.json, says what to put in a first message, and points at the page that says why families choose us. No urgency and no scarcity: a hub of reading is not a sales page.",
+   "category": "C",
+   "group": "SUGGESTED-RECOMMENDED",
+   "framework": "AIDA",
+   "why": "A set of guides that answers everything except the question the reader actually has is a dead end, and the email address and the hours are both on disk.",
+   "why_source": "data/settings.json — email staffies@bluestaffyuk.uk, hours Mo-Su 09:00-23:00, location_label Carlisle · Cumbria",
+   "words": {
+    "min": 50,
+    "max": 65
+   },
+   "shape": "standard",
+   "keywords": {
+    "primary": [
+     "blue staffy blog guides"
+    ],
+    "lsi": [
+     "contact",
+     "email",
+     "question"
+    ],
+    "longtail": [],
+    "brand": [
+     "Blue Staffy UK"
+    ],
+    "geo": [
+     "Carlisle",
+     "Cumbria"
+    ],
+    "conversational": [
+     "how do i get in touch"
+    ],
+    "comparison": [],
+    "solution": [],
+    "transactional": [
+     "contact blue staffy uk"
+    ]
+   },
+   "entities": [
+    "ont:lisa-bright"
+   ],
+   "tree": [
+    {
+     "level": 3,
+     "heading": "Write And Ask",
+     "intent": "We would rather answer a question twice than have it go unasked.",
+     "children": []
+    },
+    {
+     "level": 3,
+     "heading": "Why Families Choose Us",
+     "intent": "The reasons page is the one that answers the question these guides do not.",
+     "children": []
+    }
+   ],
+   "images": [],
+   "links": {
+    "internal": [
+     {
+      "href": "/uk-blue-staffy-breeders-contact/",
+      "anchor": "Write to us with a question the guides left open",
+      "why": "the site's one enquiry form, which this hub does not duplicate",
+      "sentence_start": true
+     },
+     {
+      "href": "/buy-staffy-puppies-for-sale-uk/",
+      "anchor": "Read why families choose us",
+      "why": "carried from the migrated archive stub (heading link 'Buy Staffy Puppies for Sale UK')",
+      "sentence_start": true
+     }
+    ],
+    "external": []
+   },
+   "options": {
+    "candidates": [],
+    "excluded": [],
+    "pick": null,
+    "note": ""
+   },
+   "cta": 1
+  }
+ ],
+ "tuple": {
+  "hero": "",
+  "dial": "",
+  "rail": "",
+  "toc": "pagenav-c",
+  "takeaway": [],
+  "table": "",
+  "faq": "",
+  "stepper": "",
+  "newsletter": {
+   "after": "",
+   "variant": ""
+  },
+  "h6_prefixes": [
+   "Guide Note:"
+  ]
+ },
+ "assets": [
+  {
+   "slot": "guides-hub-hero",
+   "kind": "photo",
+   "w": 512,
+   "h": 768,
+   "required": true,
+   "status": "baked",
+   "file": "/images/blue-staffy-puppies-near-me-uk-available.webp",
+   "alt": "An alert and playful blue Staffy puppy ready to explore, representing blue Staffy puppies available near me for families across the UK."
+  }
+ ],
+ "dropped": {
+  "links": [
+   "/blog/ — the site's other index of the same `blog` content collection, linked twice from the migrated archive stub as the anchor 'Puppy Buying Guide UK'. This URL is now the guides index; two indexes of one collection linking each other is a loop, and a reader sent from one to the other arrives at the same list."
+  ]
+ },
+ "approval": null
+}
