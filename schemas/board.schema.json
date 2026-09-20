@@ -110,10 +110,10 @@
           "words": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
                     "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}},
           "shape": {
-            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The fourteen that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial`, `sheet` and `strip` are the three CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial, the section sheet and the mobile section strip every rebuilt page then carries. `table` is component 17, DataTable (spec \u00a79 amendment 5): a section that renders a table carries its columns and rows in its own `table` block, is offered three chrome arrangements, and stacks into labelled rows below 640px in every one of them.",
+            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The fourteen that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial`, `sheet` and `strip` are the three CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial, the section sheet and the mobile section strip every rebuilt page then carries. `video` is component 18, VideoEmbed (spec \u00a79 amendment 7): a section that reuses one of the old site's YouTube videos at its original id, offered three arrangements and carrying its id, title and caption in its own `video` block. `table` is component 17, DataTable (spec \u00a79 amendment 5): a section that renders a table carries its columns and rows in its own `table` block, is offered three chrome arrangements, and stacks into labelled rows below 640px in every one of them.",
             "enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard",
                      "hero", "takeaways", "puppies", "reviews", "faq", "form", "stats", "trust", "divider",
-                     "dial", "sheet", "strip", "table"]
+                     "dial", "sheet", "strip", "table", "video"]
           },
           "styles": {
             "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly the three src/lib/boardStyles.ts defines. scripts/build_board_previews.py refuses anything else, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
@@ -130,6 +130,15 @@
                        "items": {"type": "array", "minItems": 2, "maxItems": 6,
                                  "items": {"type": ["string", "number"]}}},
               "numeric": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 5}}
+            }
+          },
+          "video": {
+            "comment": "A `video`-shaped section's own data, and the only place a board states one. Required on that shape and forbidden on every other, for the `table` block's two reasons. `id` is the YouTube id the OLD SITE used and nothing else: working rule 14 reuses every video at its original id, so a new id here is a video nobody has ever ranked. `title` is required because it is the player's accessible name, in the iframe and on the facade's play button alike.",
+            "type": "object", "required": ["id", "title"], "additionalProperties": false,
+            "properties": {
+              "id": {"type": "string", "pattern": "^[A-Za-z0-9_-]{6,}$"},
+              "title": {"type": "string", "minLength": 3},
+              "caption": {"type": "string"}
             }
           },
           "cta": {"type": "integer", "minimum": 0, "maximum": 6},
@@ -187,7 +196,7 @@
             "if": {"required": ["shape"],
                    "properties": {"shape": {"enum": ["hero", "takeaways", "puppies", "reviews", "faq",
                                                      "form", "stats", "trust", "divider",
-                                                     "dial", "sheet", "strip", "table"]}}},
+                                                     "dial", "sheet", "strip", "table", "video"]}}},
             "then": {"required": ["styles"], "properties": {"styles": {"minItems": 3}}}
           },
           {
@@ -195,6 +204,12 @@
             "if": {"required": ["shape"], "properties": {"shape": {"const": "table"}}},
             "then": {"required": ["table"]},
             "else": {"not": {"required": ["table"]}}
+          },
+          {
+            "comment": "The `video` block belongs to the `video` shape and to nothing else, stated in both directions for the same reason the `table` pair is.",
+            "if": {"required": ["shape"], "properties": {"shape": {"const": "video"}}},
+            "then": {"required": ["video"]},
+            "else": {"not": {"required": ["video"]}}
           }
         ]
       }

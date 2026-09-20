@@ -27,7 +27,10 @@ HOW A FACT IS MATCHED, since none of this is plain substring search:
   creds   — the same stem rule, case-insensitively. `KC-registered` is a CREDENTIAL, not a
             test, and is matched here only.
   images  — the src, in the markup.
-  embeds  — the YouTube id, in the markup.
+  embeds  — the YouTube id, in the markup, in any of the five spellings EMBED knows:
+            `/embed/<id>`, `youtu.be/<id>`, `watch?v=<id>`, a `<lite-youtube videoid>` and
+            a `data-video-id` attribute. The CHECK side still looks for the bare id in the
+            rebuilt markup, so a page that re-spells one of them still passes.
 
 A fact may be dropped only DELIBERATELY: the board record (data/boards/<slug>.json) lists it
 under `dropped` with the reason the user accepted. Slugs in data/facts/rebuilt.json are exempt
@@ -161,7 +164,28 @@ MAIN = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)
 # hand-written HTML in the tests, and an extractor that silently finds no images in half the
 # HTML it is given is a gate that passes by finding nothing.
 IMG = re.compile(r"""<img[^>]+src=["']([^"']+)["']""")
-EMBED = re.compile(r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})")
+# FIVE SPELLINGS OF ONE FACT. The original pattern read `…/embed/<id>` only, which is the
+# form a WordPress oEmbed happens to produce and the form this kit's VideoEmbed emits — so
+# it found every video on the pages that were extracted first and would have found none on a
+# page whose author had pasted a share link, a watch url or a lite-player element. A video id
+# silently absent from a fact set is a video that can leave the site with nothing reporting
+# it, which is the one failure this file exists to prevent. Each alternative captures the id
+# in its own group; `ids()` below collects whichever one matched.
+#
+# `youtu.be/<id>` and `watch?v=<id>` are bounded by a lookahead rather than by the end of the
+# match, so `youtu.be/abcdefghijk?t=30` is the same fact as `youtu.be/abcdefghijk`.
+EMBED = re.compile(
+    r"youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})"
+    r"|youtu\.be/([A-Za-z0-9_-]{6,})(?![A-Za-z0-9_-])"
+    r"|youtube\.com/watch\?(?:[^\s\"'<>]*&(?:amp;)?)?v=([A-Za-z0-9_-]{6,})(?![A-Za-z0-9_-])"
+    r"|<lite-youtube[^>]*\bvideoid=[\"']([A-Za-z0-9_-]{6,})"
+    r"|\bdata-video-id=[\"']([A-Za-z0-9_-]{6,})"
+)
+
+
+def embed_ids(html):
+    """Every distinct YouTube id in the markup, however it is spelled."""
+    return sorted({g for match in EMBED.findall(html) for g in match if g})
 TAG = re.compile(r"<[^>]+>")
 
 
@@ -209,7 +233,7 @@ def extract(html, names):
         "tests": [t for t in TESTS if _stem(t, text)],
         "creds": [c for c in CREDS if _stem(c, text)],
         "images": sorted(set(IMG.findall(html))),
-        "embeds": sorted(set(EMBED.findall(html))),
+        "embeds": embed_ids(html),
         "text": claims(text),
     }
 

@@ -239,13 +239,15 @@ STYLE_MAP = _parse_style_map()
 AXES = _rendered_axes()
 
 
-def test_the_parse_found_fourteen_shapes_with_three_styles_each():
+def test_the_parse_found_fifteen_shapes_with_three_styles_each():
     """Ten section shapes, plus the three CHROME shapes the contact board adds — `dial`,
     `sheet` and `strip`, whose three styles are variants of PageDial, SectionSheet and
     SectionStrip themselves rather than of the bed a section sits on — plus `table`,
-    component 17's shape, whose three styles are the `chrome` axis (spec §9 amendment 5)."""
-    assert len(STYLE_MAP) == 14, sorted(STYLE_MAP)
-    assert {"dial", "sheet", "strip", "table"} <= set(STYLE_MAP), sorted(STYLE_MAP)
+    component 17's shape, whose three styles are the `chrome` axis (spec §9 amendment 5), plus
+    `video`, component 18's shape, whose three styles are the `frame` and `play` axes (spec
+    §9 amendment 7)."""
+    assert len(STYLE_MAP) == 15, sorted(STYLE_MAP)
+    assert {"dial", "sheet", "strip", "table", "video"} <= set(STYLE_MAP), sorted(STYLE_MAP)
     assert all(len(v) == 3 for v in STYLE_MAP.values()), {k: len(v) for k, v in STYLE_MAP.items()}
     assert set(AXES) == set(STYLE_MAP), (sorted(AXES), sorted(STYLE_MAP))
 
@@ -403,9 +405,13 @@ def test_the_homepage_record_is_boarded_with_rendered_styles():
     board-preview route renders. Three properties are load-bearing downstream: the route
     builds only a record whose status is not `approved`, `build_board_previews.py` refuses a
     section whose `styles` is neither empty nor exactly three, and the project-2 approval is
-    kept rather than discarded so the picks already made are not retyped."""
+    kept rather than discarded so the picks already made are not retyped.
+
+    The status is `boarded` rather than `draft` since the video sections were added (spec §9
+    amendment 7): the record has been through a board and is waiting on the breeder, which is
+    what `boarded` means. What the route cares about is only that it is not `approved`."""
     rec = json.loads((ROOT / "data" / "boards" / "index.json").read_text())
-    assert rec["meta"]["status"] == "draft", rec["meta"]["status"]
+    assert rec["meta"]["status"] in ("draft", "boarded"), rec["meta"]["status"]
     assert rec["approval"] is None
     assert rec["approval_previous"], "the project-2 approval is kept, not discarded"
     assert len(rec["sections"]) >= 12

@@ -15,5 +15,6 @@
   {"id": "page-dial",       "file": "PageDial.astro",        "title": "14 · Page dial (desktop)",              "board_width":  640, "project": 4},
   {"id": "section-sheet",   "file": "SectionSheet.astro",    "title": "15 · Section sheet (mobile)",           "board_width":  640, "project": 4},
   {"id": "section-strip",   "file": "SectionStrip.astro",    "title": "16 · Section strip (mobile)",           "board_width":  640, "project": 4},
-  {"id": "data-table",      "file": "DataTable.astro",       "title": "17 · Data table",                       "board_width":  640, "project": 4}
+  {"id": "data-table",      "file": "DataTable.astro",       "title": "17 · Data table",                       "board_width":  640, "project": 4},
+  {"id": "video-embed",     "file": "VideoEmbed.astro",      "title": "18 · Video embed",                      "board_width":  640, "project": 4}
 ]

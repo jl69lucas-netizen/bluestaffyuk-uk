@@ -607,6 +607,40 @@ COMPONENTS = {
                "record's own `table` block (rule 9).",
                "Do not use the first column's `<th scope=\"row\">` for an ordinary value — it is the "
                "row's title, and it is what a screen reader announces before every cell in the row."]),
+    # Component 18 (working rule 14; spec §9 amendment 7). The one component whose board
+    # axes are half class and half prop: the bed is CSS, the facade is markup.
+    "video-embed": dict(
+        comp="VideoEmbed", group="Content",
+        summary="A YouTube video from the old site, reused at its original id, in a reserved 16:9 box "
+                "that loads its player only when someone presses play.",
+        props=["`id: string` — the eleven-character YouTube id, never a url and never a pasted embed "
+               "code. Working rule 14: it is the id the old site already carries.",
+               "`title: string` — required. It is the accessible name, on the `<iframe>` and on the "
+               "facade's play button alike; an unnamed frame is unnavigable.",
+               "`caption?: string` — one line under the box, as a real `<figcaption>`.",
+               "`play?: 'facade' | 'iframe'` — `facade` (the default) draws the thumbnail and injects "
+               "the player on the first click; `iframe` puts the player in the document immediately.",
+               "`class` and any `HTMLAttributes<'figure'>` attribute, spread onto the root."],
+        states=["Three board arrangements on the `frame` and `play` axes of `src/lib/boardStyles.ts`: "
+                "S1 the player in a card with the caption beneath it, S2 the player full width on a "
+                "steel band, S3 the click-to-play facade. S3 is what a rebuilt page takes unless the "
+                "board says otherwise, because it is the only one that costs nothing before a click.",
+                "Without scripting the facade is replaced by the plain player: the `<noscript>` block "
+                "carries both the `<iframe>` and the rule that hides the button.",
+                "The 16:9 box is reserved by `aspect-ratio`, so nothing below the video moves when the "
+                "thumbnail decodes."],
+        checks=["`test_built_video_embed_reserves_its_box_and_loads_on_click`",
+                "`layout-image-box-reserved` (render harness) — the reserved box and the painted box "
+                "are the same box.",
+                "`scripts/facts_preserved_check.py` — a video id the migrated page carried and the "
+                "rebuilt page does not is a dropped fact, reported by name."],
+        donts=["Do not mint a new video id, and do not re-upload the footage. Every id already ranks in "
+               "video search; a fresh one starts at zero (working rule 14).",
+               "Do not point the player at `youtube.com`. The component uses `youtube-nocookie.com`, and "
+               "the facade makes no request at all before the click except the thumbnail.",
+               "Do not drop the `title`. It is the frame's only accessible name.",
+               "Do not set a fixed height on the box or wrap it in a padding-ratio hack: the "
+               "`aspect-ratio` here is what the CLS check measures."]),
 }
 
 #: The marker's `group`, in the order the artifact's component table should read.
@@ -620,6 +654,12 @@ def preview_html(sec, css, sprite, height, images, group, comp):
     page's stylesheet inlined and the sprite pasted back in when the section references it."""
     inner = rewrite_assets(sec.inner, images)
     inner = re.sub(r"<h3[^>]*>.*?</h3>\s*", "", inner, count=1, flags=re.S)   # the route's caption
+    # A `<noscript>` fallback is BEHAVIOUR, not a picture of the component. VideoEmbed's
+    # carries the real player, and an artifact preview is a static document served with
+    # scripting on — so the block would never be shown to a reader and would only make the
+    # one preview in the set that embeds a third-party frame. Stripped for the same reason
+    # `_kit_sections.find_sections` strips `<script>`.
+    inner = re.sub(r"<noscript>.*?</noscript>", "", inner, flags=re.S)
     head_sprite = f"{sprite}\n" if sprite and uses_sprite(inner) else ""
     return (
         f'<!-- @dsCard group="{group}" height={height} width={sec.width} -->\n'

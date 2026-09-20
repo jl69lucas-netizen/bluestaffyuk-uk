@@ -151,6 +151,18 @@ growing. Every other rule moved to a pack.
     below 640px (`.stack-table` with `data-label` cells) — no horizontal scroll, no clipped
     columns. Clean and readable is the bar. (Breeder, 2026-09-20.)
 
+14. **Every video is reused, at its original id, and the boards show it.** Every YouTube
+    video the old site carried is carried by the rebuild at the SAME id — the ids in
+    `data/settings.json` `youtube_embeds` plus any a page carries of its own. A page that had
+    one keeps it in the same place; the homepage carries the site's videos. On a board a
+    video is a `video` shape with three rendered styles at 1280 / 768 / 375 (player in a
+    card, player on a steel band, click-to-play facade), never an `embed` line in a note, and
+    the facade is what a rebuilt page ships unless the breeder picks otherwise. Never mint a
+    new id and never re-upload the footage: an id that already ranks in video search is the
+    asset, and a fresh one starts at zero. This is working rule 11 restated for video, and
+    `scripts/facts_preserved_check.py` reports by name any id a rebuilt page drops.
+    (Breeder, 2026-09-20.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how

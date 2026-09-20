@@ -25,11 +25,11 @@
 export type Shape =
   | 'hero' | 'takeaways' | 'standard' | 'puppies' | 'reviews'
   | 'faq' | 'form' | 'stats' | 'trust' | 'divider'
-  | 'dial' | 'sheet' | 'strip' | 'table';
+  | 'dial' | 'sheet' | 'strip' | 'table' | 'video';
 
 export const SHAPES: readonly Shape[] = [
   'hero', 'takeaways', 'standard', 'puppies', 'reviews', 'faq', 'form', 'stats', 'trust', 'divider',
-  'dial', 'sheet', 'strip', 'table',
+  'dial', 'sheet', 'strip', 'table', 'video',
 ];
 
 /** Every axis a layout can state. All optional: a def sets only what its renderer reads,
@@ -62,6 +62,10 @@ export interface Layout {
    *  breeder approves on the board is the same rule the rebuilt page resolves. Stacking
    *  below 640px is NOT on this axis: all three stack, always (working rule 13). */
   chrome?: 'ruled' | 'zebra' | 'brass';
+  /** VideoEmbed only: whether the player is in the document from the start, or injected on
+   *  the first click. A PROP, not a class — the two arrangements are different MARKUP (a
+   *  button and a thumbnail, or an iframe), which no stylesheet can turn into the other. */
+  play?: 'facade' | 'iframe';
 }
 
 export type Axis = keyof Layout;
@@ -86,7 +90,7 @@ export const STYLE_IDS: ReadonlyArray<StyleDef['id']> = ['S1', 'S2', 'S3'];
  *  made this type ask for a neutral value no caller could ever have used.
  *  `chrome` IS here: DataTable's three arrangements are pure CSS over identical markup,
  *  which is exactly what a class axis is for. */
-const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip'>> = {
+const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip' | 'play'>> = {
   frame: 'plain', columns: 1, media: 'none', list: 'stack', aside: 'none', heading: 'above',
   chrome: 'ruled',
 };
@@ -120,6 +124,11 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   // `heading` are the ordinary bed and heading position every prose section has. `columns`
   // is deliberately absent: a table beside a narrow column is a table with a scrollbar.
   table: ['chrome', 'frame', 'heading'],
+  // VideoEmbed (component 18). `frame` is the question the board asks — the bed the 16:9 box
+  // sits on — and `play` is the second half of it, because the lightest arrangement is not a
+  // bed at all but a thumbnail that fetches the player only when someone presses it.
+  // `columns` is absent for the table's reason: a 16:9 box in a narrow column is a stamp.
+  video: ['frame', 'play'],
 };
 
 const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ id, name, layout });
@@ -204,6 +213,14 @@ export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
     def('S1', 'Ruled rows under a brand header band', { chrome: 'ruled' }),
     def('S2', 'Zebra rows inside a card', { frame: 'card', chrome: 'zebra' }),
     def('S3', 'Borderless rows with brass column rules', { chrome: 'brass' }),
+  ],
+  // Component 18, the video (spec §9 amendment 7; working rule 14). S3 is the one a rebuilt
+  // page takes unless the board says otherwise: it is the only arrangement that does not
+  // load a player before anybody asks for one.
+  video: [
+    def('S1', 'Player in a card, caption beneath it', { frame: 'card', play: 'iframe' }),
+    def('S2', 'Player full width on a steel band', { frame: 'band', play: 'iframe' }),
+    def('S3', 'Thumbnail with a play button, player loaded on click', { play: 'facade' }),
   ],
 };
 

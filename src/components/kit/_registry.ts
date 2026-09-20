@@ -36,6 +36,7 @@
 // never the colour of small text on a light surface: it is 2.1:1 there.
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
 import puppies from '../../../data/puppies.json';
+import settings from '../../../data/settings.json';
 import prices from '../../../data/price-matrix.json';
 import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
@@ -54,11 +55,13 @@ import PageDial from './PageDial.astro';
 import SectionSheet from './SectionSheet.astro';
 import SectionStrip from './SectionStrip.astro';
 import DataTable from './DataTable.astro';
+import VideoEmbed from './VideoEmbed.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip' | 'data-table';
+  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip' | 'data-table'
+  | 'video-embed';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -280,6 +283,23 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       columns: ['Puppy', 'Sex', 'Price', 'Deposit'],
       rows: PRICE_ROWS,
       numeric: [2, 3],
+    }],
+  },
+  // Component 18, the video embed (working rule 14; spec §9 amendment 7). THE ID IS DATA:
+  // it is the first entry of `data/settings.json`'s `youtube_embeds`, which is the list of
+  // videos the old site already carries — rule 9 forbids a specimen from inventing one, and
+  // an invented eleven-character id is a 404 nobody would notice on a hidden preview.
+  //
+  // ONE fixture, and it is the DEFAULT `play` mode — the click-to-play facade, which is
+  // what a rebuilt page mounts. The two eager arrangements are the `play` and `frame` axes
+  // of src/lib/boardStyles.ts, so they live on /board-preview/<slug>/ like the table's
+  // chrome and not here.
+  'video-embed': {
+    C: VideoEmbed,
+    demo: [{
+      id: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
+      title: 'Blue Staffy puppies at home with us',
+      caption: 'One of the videos the site already carries, reused at its original id.',
     }],
   },
 };
