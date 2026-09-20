@@ -740,9 +740,18 @@ def word_band_findings(board, dist=None):
     a section that reads well twenty words short is not a page that may not ship. An
     unbuilt page measures nothing and says nothing — `min-h5-h6` already fails a rebuilt
     slug with no build — but a section the built page does not carry IS reported, because a
-    band measured against nothing is not a band that passed."""
+    band measured against nothing is not a band that passed.
+
+    NOT YET REBUILT MEANS NOT YET MEASURABLE, the same rule and the same list `min-h5-h6`
+    reads (spec §9 amendment 2.1). Before P5 the built page is still the MIGRATED body, which
+    holds none of the record's section ids and none of its prose, so every band would report
+    "not on the built page" — ten rows saying only that the page has not been written yet, on
+    the board the author is still drafting. A rebuilt slug's page is the record's page, and
+    that is the only page whose prose a band describes."""
     root = pathlib.Path(DIST if dist is None else dist)
     slug = board["meta"]["slug"]
+    if slug not in rebuilt_slugs():
+        return []
     page = root / "index.html" if slug == "index" else root / slug / "index.html"
     if not page.exists():
         return []

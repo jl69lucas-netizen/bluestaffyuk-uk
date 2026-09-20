@@ -637,11 +637,30 @@ _PROSE_PAGE = (
 )
 
 
-def _prose_page(dist, slug, html=_PROSE_PAGE):
+def _prose_page(dist, slug, html=_PROSE_PAGE, monkeypatch=None):
+    """The built page for `slug`, and — when a monkeypatch is given — the rebuilt list that
+    says this page IS the record's page. Before P5 the built page is still the migrated body,
+    and `word_band_findings` measures nothing there on purpose."""
     p = pathlib.Path(dist) / slug / "index.html"
     p.parent.mkdir(parents=True, exist_ok=True)
     p.write_text(html, encoding="utf-8")
+    if monkeypatch is not None:
+        rebuilt = pathlib.Path(dist) / "rebuilt.json"
+        rebuilt.write_text(json.dumps([slug]), encoding="utf-8")
+        monkeypatch.setattr(PB, "REBUILT", rebuilt)
     return p
+
+
+def test_word_band_findings_measures_nothing_until_the_page_is_rebuilt(tmp_path, monkeypatch):
+    """Before P5 the built page is the MIGRATED body: none of the record's section ids, none
+    of its prose. Reporting every band as "not on the built page" would say only that the page
+    has not been written yet, ten times, on the board the author is still drafting."""
+    _prose_page(tmp_path, "x")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "absent.json")
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 400, "max": 600}
+    assert PB.word_band_findings(b, dist=tmp_path) == []
 
 
 def test_page_section_words_counts_prose_and_skips_headings_ladder_details_and_chrome(tmp_path):
@@ -649,17 +668,17 @@ def test_page_section_words_counts_prose_and_skips_headings_ladder_details_and_c
     assert got == {"puppies": 12, "afterwards": 3}, got
 
 
-def test_word_band_findings_is_silent_when_every_section_is_in_band(tmp_path):
-    _prose_page(tmp_path, "x")
+def test_word_band_findings_is_silent_when_every_section_is_in_band(tmp_path, monkeypatch):
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
     b = json.loads(json.dumps(MIN_BOARD))
     b["sections"][0]["id"] = "puppies"
     b["sections"][0]["words"] = {"min": 10, "max": 15}
     assert PB.word_band_findings(b, dist=tmp_path) == []
 
 
-def test_word_band_findings_warns_per_section_and_never_fails(tmp_path):
+def test_word_band_findings_warns_per_section_and_never_fails(tmp_path, monkeypatch):
     """WARN, never FAIL: a section twenty words short is not a page that may not ship."""
-    _prose_page(tmp_path, "x")
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
     b = json.loads(json.dumps(MIN_BOARD))
     b["sections"][0]["id"] = "puppies"
     b["sections"][0]["words"] = {"min": 400, "max": 600}
@@ -669,24 +688,26 @@ def test_word_band_findings_warns_per_section_and_never_fails(tmp_path):
     assert any(x[2].startswith("page: 12 prose words against 400-600") for x in f), f
 
 
-def test_word_band_findings_reports_a_section_the_built_page_does_not_carry(tmp_path):
+def test_word_band_findings_reports_a_section_the_built_page_does_not_carry(tmp_path, monkeypatch):
     """A band measured against nothing is not a band that passed."""
-    _prose_page(tmp_path, "x")
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
     b = json.loads(json.dumps(MIN_BOARD))
     b["sections"][0]["id"] = "not-on-the-page"
     f = PB.word_band_findings(b, dist=tmp_path)
     assert any("not on the built page" in x[2] and x[1] == "WARN" for x in f), f
 
 
-def test_word_band_findings_says_nothing_when_the_page_is_not_built(tmp_path):
+def test_word_band_findings_says_nothing_when_the_page_is_not_built(tmp_path, monkeypatch):
     """`min-h5-h6` already fails a rebuilt slug with no build; this one stays quiet rather
     than reporting every section of every unbuilt record as short."""
+    (tmp_path / "rebuilt.json").write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")
     assert PB.word_band_findings(MIN_BOARD, dist=tmp_path) == []
 
 
 def test_gate_reports_words_out_of_band_as_a_warning(tmp_path, monkeypatch):
     monkeypatch.setattr(PB, "DIST", tmp_path)
-    _prose_page(tmp_path, MIN_BOARD["meta"]["slug"])
+    _prose_page(tmp_path, MIN_BOARD["meta"]["slug"], monkeypatch=monkeypatch)
     b = _approved(MIN_BOARD)
     b["sections"][0]["id"] = "puppies"
     hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")

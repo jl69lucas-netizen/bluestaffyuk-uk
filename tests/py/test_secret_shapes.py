@@ -52,6 +52,18 @@ SHAPES = {
 # other shape still is: no fixture has any business holding a `GOCSPX-` string.
 HEX_EXEMPT_PREFIX = "tests/py/fixtures/"
 
+# A `data:` URI's payload is BYTES, not text, and its base64 alphabet includes `/` and `-`.
+# The board builder inlines every preview image that way, and one 100KiB webp payload
+# happened to contain the four characters `1//0` followed by base64 — which is exactly the
+# refresh-token shape. That is a coin flip on image content, not a credential, and a guard
+# that fails on it teaches the next person to delete a row rather than read it.
+#
+# So the payload is cut out before the line is scanned, and only the payload: the `data:`
+# prefix, the media type and everything around it stay. No real credential can hide in the
+# cut, because a credential that had been base64-encoded would no longer match any shape
+# here — every shape is the token's PLAINTEXT spelling.
+_B64_PAYLOAD = re.compile(r"(?<=;base64,)[A-Za-z0-9+/=]+")
+
 
 @functools.lru_cache(maxsize=1)
 def _git_ignored():
@@ -108,6 +120,7 @@ def _hits(path):
     except OSError:
         return []
     for n, line in enumerate(text.splitlines(), 1):
+        line = _B64_PAYLOAD.sub("", line)
         for name, pat in SHAPES.items():
             if name == "bare-32-hex" and rel.startswith(HEX_EXEMPT_PREFIX):
                 continue

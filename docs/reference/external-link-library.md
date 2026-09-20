@@ -27,9 +27,26 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/ | thekennelclub.org.uk | The Kennel Club's guidance on the regulations a UK breeder works under | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 |
 | https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/ | thekennelclub.org.uk | The Kennel Club on its registrations structure and responsible breeding | `/uk-blue-staffy-breeders-contact/` | 2026-09-19 · 200 |
 | https://www.gov.uk/bring-pet-to-great-britain | gov.uk | The official rules for bringing a pet into Great Britain, for a buyer arranging transport | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 |
+| https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's own Staffordshire Bull Terrier breed page — the breed standard and what a registration covers, in the registry's words rather than ours | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
+| https://crufts.org.uk/ | crufts.org.uk | Crufts, the UK breed show the migrated about page names as where the breed is celebrated | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy | rspca.org.uk | The RSPCA's puppy advice — independent guidance for a first-time owner, which we are not the right people to give | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
 
 ## Provenance
 
 Every row above is a URL the migrated WordPress body already carried on the page named in
-"First page using it"; none is a new citation invented for the rebuild. All eight were
-re-checked on 2026-09-19 and returned 200 following redirects.
+"First page using it"; none is a new citation invented for the rebuild. The first eight were
+re-checked on 2026-09-19 and returned 200 following redirects; the three added on 2026-09-20
+for `/blue-staffy-uk-breeders/` were checked the same way on that date.
+
+Two of the three are written here at the URL the check RESOLVED to, not at the spelling the
+migrated body used, because in both cases the old spelling is a redirect to a row rather than a
+destination of its own:
+
+- The registry's breed page was linked as
+  `https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/`
+  and 301s to `royalkennelclub.com`. The three `thekennelclub.org.uk` rows above still resolve
+  under that host and are left as they are; a rename is one migration, not eight edits made
+  from one observation.
+- `https://www.gov.uk/take-pet-abroad`, which the migrated about page used as its
+  pet-transport citation, redirects to `https://www.gov.uk/bring-pet-to-great-britain` — already a row. It
+  gets no row of its own, and the about record logs the old spelling under `dropped.links`.

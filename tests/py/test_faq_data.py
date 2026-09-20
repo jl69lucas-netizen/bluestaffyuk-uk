@@ -43,6 +43,13 @@ FACT_PHRASES = {
     "privacy-cookies": ["Essential cookies", "Google Analytics"],
     "privacy-delete-data": ["Right to erasure", "within one month"],
     "contact-visit": ["walk-in facility", "by appointment only"],
+    # The two about rows are verified against the MIGRATED body today and against the rebuilt
+    # page from Task 10's P5 — `_page_text` switches on data/facts/rebuilt.json, so the
+    # phrases below are chosen to be true of both: the two test names and the KC registration
+    # are the board record's own evidence section, and "in our home" / "early socialisation"
+    # are what its home-raising section is for.
+    "about-health-tests": ["L-2-HGA", "HC-HSF4", "KC-registered"],
+    "about-home-raised": ["in our home", "early socialisation"],
     # Verified against the REBUILT contact page (project 4 Task 9), the same way the
     # enquiry and privacy rows are. "As much detail as possible" was the migrated body's
     # phrase; the rebuilt page says which detail instead, field by field, which is the
