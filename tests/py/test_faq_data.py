@@ -209,6 +209,30 @@ FACT_PHRASES = {
     "home-whats-included": ["first vaccination", "microchip", "puppy pack"],
     "home-health-guarantee": ["health guarantee"],
     "home-find-breeders": ["Staffordshire Bull Terrier puppies", "United Kingdom"],
+    # Eight more rows on the health page in project 4 Task 18b. Working rule 15 carries that
+    # page's nine migrated FAQ questions word for word; the ninth asks how long the health
+    # guarantee is, data/settings.json holds guarantee_days: null, and a question this site
+    # cannot answer is a `verbatim.changed` drop rather than a row
+    # (data/boards/blue-staffy-health-uk.json). Seven of the eight carry the migrated ANSWER
+    # too. `health-avoid-puppy-farm` does not: the migrated answer rested on a comparison
+    # with "generic classifieds" that no file on disk evidences, so the row is SOURCED to
+    # /uk-blue-staffy-puppy-buying-guide/, which owns the subject, and written fresh — the
+    # same move the twelve listing rows and the four why-us rows above make. Every phrase
+    # below is one the sourced page's MIGRATED body says today AND one its own board record
+    # keeps after P5: the two test names are `dna-tests`, the full condition name is
+    # `conditions`, the health card and distemper are `vaccinations`, the certificate and the
+    # deworming are `vaccinations` too, the puppy food is `diet`, the registration and the DNA
+    # test are `registration` and `dna-tests`, the 12–14 years and the club are `lifespan`,
+    # and the puppy farm with the written contract are
+    # data/boards/uk-blue-staffy-puppy-buying-guide.json's `red-flags`.
+    "health-genetic-tested": ["L-2-HGA", "HC-HSF4"],
+    "health-l2hga-meaning": ["L-2-Hydroxyglutaric Aciduria"],
+    "health-vaccinations-before-home": ["vet-signed health card", "distemper"],
+    "health-vet-records": ["health certificate", "deworming"],
+    "health-puppy-diet": ["puppy food"],
+    "health-kc-fewer-risks": ["registration", "DNA test"],
+    "health-average-lifespan": ["12–14 years", "Staffordshire Bull Terrier Club"],
+    "health-avoid-puppy-farm": ["puppy farm", "written contract"],
 }
 
 

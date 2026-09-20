@@ -89,7 +89,7 @@
   },
   "brief": {
     "goal": "Rebuild the health page so that a family choosing between breeders can see, in one pass, exactly what was tested and what the result was — the two DNA tests and the parents' status in a table they can hold a certificate against — and then find the ordinary care that keeps a Staffy well for twelve to fourteen years.",
-    "scope": "Thirteen sections: hero, four key takeaways, the DNA-test table, the wider screening, vaccinations and paperwork, vet checks and warning signs, diet, exercise, the conditions the breed is watched for, lifespan and registration, one review, a four-row FAQ and a closing CTA carrying the locked prices. All eight migrated images at their original paths; the page carries no embed, because data/facts/blue-staffy-health-uk.json records none.",
+    "scope": "Fourteen sections: hero, four key takeaways, the DNA-test table, the wider screening, vaccinations and the health card, Kennel Club registration, vet checks and warning signs, diet, exercise and grooming, the conditions the breed is watched for, lifespan, one review, a nine-row FAQ and a closing CTA carrying the locked prices. `registration` is restored at Task 18b so the migrated registration H2 and its 'Commitment to Health' H3 have a section to stand in rather than being dropped (working rule 15). All eight migrated images at their original paths and alt text; the page carries no embed, because data/facts/blue-staffy-health-uk.json records none.",
     "gates": [
       "facts-preserved",
       "link-parity",
@@ -160,20 +160,21 @@
   },
   "h1": {
     "variants": [
+      "Our Health Blueprint: The KC-Standard for Blue Staffy Well-being",
       "Blue Staffy Health: What We Test, And What We Found",
       "Health Testing And Care For Our Blue Staffy Puppies",
       "The Evidence Behind Every Blue Staffy Litter We Raise",
-      "Blue Staffy Health UK — The Tests, The Paperwork And The Care",
-      "Our Blue Staffy Health Page: Evidence, Not Badges"
+      "Blue Staffy Health UK — The Tests, The Paperwork And The Care"
     ],
     "recommended": 0,
-    "pick": null
+    "pick": null,
+    "verbatim_heading": true
   },
   "sections": [
     {
       "id": "top",
       "shape": "hero",
-      "heading": "The Evidence Behind Every Litter We Raise",
+      "heading": "Blue Staffy Health UK : Our Commitment to Happy, Healthy Puppies",
       "intent": "The opening, in Lisa Bright's first person, with the litter photograph first: the two DNA tests the parents are clear of, the vet check and first vaccination every puppy leaves with, and the fact that the rest of this page is the working: what we screen, what we feed, what we watch for. No price and no guarantee length in the hero — data/settings.json holds guarantee_days: null.",
       "category": "A",
       "group": "MANDATORY",
@@ -181,8 +182,8 @@
       "why": "A health page's first screen has to say what was actually tested before it says anything is healthy; the migrated page opened on four '100%' badges with no evidence attached to any of them.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — the migrated H1 and the four '100%' H2 badges; data/settings.json — breeder_name Lisa Bright",
       "words": {
-        "min": 90,
-        "max": 120
+        "min": 130,
+        "max": 170
       },
       "keywords": {
         "primary": [
@@ -239,7 +240,9 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "verbatim_heading": true,
+      "verbatim_opening": "Welcome to BlueStaffyUK , where the health and well-being of our blue Staffordshire Bull Terrier puppies are at the very heart of everything we do. For us, health is not just a phrase; it’s a foundational principle that guides every aspect of our breeding program. We understand that when you’re looking for where to buy a blue staffy puppy in the UK, you want assurance of their health and longevity."
     },
     {
       "id": "takeaways",
@@ -328,7 +331,7 @@
     {
       "id": "dna-tests",
       "shape": "table",
-      "heading": "The Two DNA Tests, And Where The Parents Stand",
+      "heading": "HC-HSF4 and L-2-HGA Tested Staffy Breeders",
       "intent": "The evidence, as a table: each test, the one thing it screens for, and the status of Maggie and Jones. Three columns and two rows, every figure and every status taken from the migrated body — 'Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts)'. Nothing is added: no laboratory is named, because no file on disk names one.",
       "category": "A",
       "group": "COMPETITOR-BASED",
@@ -336,8 +339,8 @@
       "why": "The two named tests are the one hard credential this page can carry, and a table is what a buyer can check against a certificate; https://willaby.net/puppies/a-health-tested-puppy/ gives its reader exactly such a list and is the only scanned page that does.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — 'Maggie and Jones are DNA tested clear for L-2-HGA … and HC-HSF4'; https://willaby.net/puppies/a-health-tested-puppy/ (scan 2026-09-20) — a per-test checklist",
       "words": {
-        "min": 70,
-        "max": 100
+        "min": 110,
+        "max": 145
       },
       "keywords": {
         "primary": [
@@ -440,12 +443,14 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "verbatim_heading": true,
+      "verbatim_opening": "This is non-negotiable for us. Both our beloved Maggie and Jones are DNA tested clear for L-2-HGA (L-2-Hydroxyglutaric Aciduria) and HC-HSF4 (Hereditary Cataracts). This means your KC registered Staffy puppies will not be genetically affected by these debilitating diseases. “ What does L-2-HGA testing mean ?” It means we’re actively preventing serious neurological and eye conditions through responsible breeding."
     },
     {
       "id": "screening",
       "shape": "standard",
-      "heading": "What Else The Parents Are Screened For",
+      "heading": "Our Rigorous Health Testing Process : Ensuring Peace of Mind",
       "intent": "Beyond the two DNA tests: the BVA/KC eye examination, which catches inherited eye disease the HC-HSF4 test does not cover, and patella grading for knee health. Both are claims the migrated body already makes, and both are stated as what we do rather than as a score, because no file on disk holds a grade.",
       "category": "A",
       "group": "MANDATORY",
@@ -453,8 +458,8 @@
       "why": "A DNA test is two conditions; the scan's most careful page lists eye examination and joint scoring beside the DNA results, and the migrated body already claims both.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — 'BVA/KC eye examinations … and patella grading to assess knee health'; https://willaby.net/puppies/a-health-tested-puppy/ (scan 2026-09-20) — CERF/CAER and hip scoring beside the two DNA tests",
       "words": {
-        "min": 120,
-        "max": 160
+        "min": 190,
+        "max": 240
       },
       "keywords": {
         "primary": [
@@ -484,9 +489,11 @@
       "tree": [
         {
           "level": 3,
-          "heading": "The Eye Examination",
-          "intent": "A BVA/KC eye examination looks for inherited eye disease the HC-HSF4 DNA test does not cover.",
-          "children": []
+          "heading": "BVA/KC Health Schemes",
+          "intent": "The BVA/KC schemes in the migrated page's own words: the eye examination that catches inherited eye disease the HC-HSF4 DNA test does not cover, and patella grading for knee health.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Our breeding dogs also undergo relevant BVA/KC eye examinations to check for other inherited eye diseases not covered by the HC-HSF4 DNA test, and patella grading to assess knee health."
         },
         {
           "level": 3,
@@ -496,8 +503,16 @@
         },
         {
           "level": 3,
-          "heading": "A Veterinary Examination Before Breeding",
-          "intent": "Both parents are examined by a vet before a litter is planned.",
+          "heading": "General Health Checks",
+          "intent": "The ordinary veterinary check every parent dog has before a mating, stated as the migrated page stated it and without the compliance claim that followed it.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues."
+        },
+        {
+          "level": 3,
+          "heading": "Why Health Matters in Staffy Breeding",
+          "intent": "Why two clear parents matter to a buyer rather than to a breeder: a recessive condition needs two copies, so screening the parents is the only point at which a litter's risk can still be changed. No standards body is named, because no file on disk records an accreditation (Known Issue 7).",
           "children": []
         }
       ],
@@ -533,12 +548,14 @@
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "At BlueStaffyUK , our proactive approach to the importance of health screening for Staffy parents is central to our reputation as a reliable Staffordshire Bull Terrier breeder in the UK. We go above and beyond the standard, ensuring both our breeding parents, Maggie and Jones, and their puppies are thoroughly screened."
     },
     {
       "id": "vaccinations",
       "shape": "standard",
-      "heading": "Vaccinations, Microchipping And The Paperwork",
+      "heading": "UK Vaccination Schedule for Staffy Puppies and Ongoing Care",
       "intent": "What a puppy has had before it leaves and what the new owner does next: the first vaccination against distemper, parvovirus, leptospirosis and hepatitis, the microchip UK law has required since 2016 with the details ready to transfer, deworming and flea treatment, and the vet-signed health card that records all of it. The second vaccination and the annual booster are the owner's own vet's, and are named as such.",
       "category": "A",
       "group": "MANDATORY",
@@ -546,8 +563,8 @@
       "why": "'What vaccinations do your puppies have' is the single most-asked question the migrated body records, and the microchip is a legal requirement a buyer can be prosecuted over.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — the vaccination schedule block and 'Since 2016, UK law requires all dogs to be microchipped'; data/facts/blue-staffy-health-uk.json — tests microchip, vaccinat",
       "words": {
-        "min": 140,
-        "max": 190
+        "min": 200,
+        "max": 250
       },
       "keywords": {
         "primary": [
@@ -581,15 +598,19 @@
       "tree": [
         {
           "level": 3,
-          "heading": "The First Vaccination",
-          "intent": "Given before the puppy leaves, against distemper, parvovirus, leptospirosis and hepatitis.",
-          "children": []
+          "heading": "Blue Staffy Puppy Vaccination Schedule UK",
+          "intent": "What every puppy leaving this house has had: the first vaccination against distemper, parvovirus, leptospirosis and hepatitis, the microchip and the worming, in the migrated page's own lead-in.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Your future companion’s health journey continues even after they are born. Every blue Staffy puppy leaving BlueStaffyUK undergoes:"
         },
         {
           "level": 3,
-          "heading": "The Second Vaccination And The Booster",
-          "intent": "Arranged with the owner's own vet a few weeks later, then annually.",
-          "children": []
+          "heading": "One of the most common queries we hear is: “What vaccines does my Blue Staffy need in the UK?” Here’s a simple breakdown:",
+          "intent": "The rest of the course, which the owner's own vet gives: the second vaccination and the yearly booster, with the PDSA's guidance for the cost. No 16-week kennel-cough row: the migrated body already calls it optional and it is the owner's vet's decision (dropped.text).",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Understanding the costs of initial puppy shots, injections, and vaccinations is essential for your blue Staffy’s health. For general advice on puppy vaccinations UK , the PDSA offers excellent guidance."
         },
         {
           "level": 3,
@@ -602,6 +623,14 @@
           "heading": "Deworming And Flea Treatment",
           "intent": "Done before the puppy leaves and recorded on the card.",
           "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Our Blue Staffy Health Certificate",
+          "intent": "The vet-signed health card itself: the vaccination record, the microchip number and the result of the veterinary health check, in one document that comes with the puppy. No guarantee length is written here — data/settings.json holds guarantee_days: null (working rule 9).",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "We are proud to offer a comprehensive blue Staffy health certificate with every puppy, detailing their vaccination records, microchip number, and vet health check results."
         }
       ],
       "images": [
@@ -643,12 +672,100 @@
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true
+    },
+    {
+      "id": "registration",
+      "n": 6,
+      "heading": "What is included with a KC registered Staffy puppy : A Mark of Health and Pedigree",
+      "intent": "What Kennel Club registration is and what it hands a buyer: the pedigree, the record of the litter and the breeder behind it, and the two things it does not do. Restored at Task 18b so the migrated page's registration H2, its 'Commitment to Health' H3 and both opening paragraphs have a section to stand in rather than being dropped (working rule 15).",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Registration is the one piece of paper every buyer asks about and the one most often described as more than it is; the migrated page gave it a section of its own and this outline had folded it into `lifespan` as two H3s.",
+      "why_source": "src/pages/blue-staffy-health-uk/index.astro — the migrated 'What is included with a KC registered blue staffy puppy' block and its 'Commitment to Health' H3; data/facts/blue-staffy-health-uk.json — both parents KC-registered",
+      "framework": "EEBP",
+      "words": {
+        "min": 120,
+        "max": 155
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "kc registered staffy puppies"
+        ],
+        "lsi": [
+          "Kennel Club",
+          "pedigree",
+          "registration certificate",
+          "breed standard"
+        ],
+        "longtail": [
+          "what is included with a kc registered blue staffy puppy"
+        ],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what does kc registration actually cover"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier",
+        "ont:blue-coat"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Commitment to Health",
+          "intent": "Why a breeder who registers a litter tends also to test it: the registry publishes health-testing recommendations and a registered breeder is reading them.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Breeders who register their litters with the KC are often more invested in adhering to health testing recommendations."
+        },
+        {
+          "level": 3,
+          "heading": "What The Papers Actually Record",
+          "intent": "Parentage, the litter and the breeder — the three things on the certificate, and the reason a buyer should be handed the original rather than a photocopy.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "What Registration Does Not Do",
+          "intent": "It is not a health test and it is not a quality mark. The DNA results are the evidence of health, and they are in `dna-tests`.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "See the parents each litter is registered to",
+            "why": "the about page names Maggie and Jones and holds their registration and pedigree",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "A standard section: no shell."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "Choosing KC-reg Staffy puppies from an ethical Staffy breeder offers a crucial layer of reassurance regarding Staffordshire Bull Terrier health tests . The Kennel Club registration provides:",
+      "cta": 1
     },
     {
       "id": "vet-checks",
       "shape": "standard",
-      "heading": "Vet Checks, And What To Watch For At Home",
+      "heading": "Regular Health Check for Puppies: A Partnership for Lifetime Health",
       "intent": "The first vet visit within 48-72 hours of coming home, and the six signals the migrated body lists as worth a phone call: appetite or thirst changing, unusual tiredness, persistent vomiting or diarrhoea, limping, excessive itching, and coughing or nasal discharge. Stated as what to watch for, never as a diagnosis — we are breeders, not vets.",
       "category": "B",
       "group": "SUGGESTED-RECOMMENDED",
@@ -656,8 +773,8 @@
       "why": "Not one of the four scanned pages tells a new owner what an early warning looks like; the migrated body already has the list and it is the most useful thing on the page.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — the six numbered signals and 'within 48-72 hours of bringing them home'",
       "words": {
-        "min": 130,
-        "max": 170
+        "min": 175,
+        "max": 220
       },
       "keywords": {
         "primary": [
@@ -692,9 +809,11 @@
         },
         {
           "level": 3,
-          "heading": "The Six Signals Worth A Phone Call",
-          "intent": "Appetite or thirst, lethargy, vomiting or diarrhoea, limping, itching, coughing.",
-          "children": []
+          "heading": "Recognizing Early Health Signals: When to Contact Your Vet",
+          "intent": "The six signals the migrated body lists as worth a phone call — appetite or thirst changing, unusual tiredness, persistent vomiting or diarrhoea, limping, coughing, and a change in the coat or the skin — under the migrated page's own heading, with its own reminder that this is not veterinary advice.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Being attentive to your blue Staffy’s health is key to prompt treatment. While you’ll establish a great relationship with your vet, knowing when to take your pup to the vet for common Staffy health issues can make a big difference. Remember, this information is not a substitute for professional veterinary advice, but a guide to help you recognise puppy health issues early."
         },
         {
           "level": 3,
@@ -722,18 +841,20 @@
           }
         ]
       },
-      "n": 6,
+      "n": 7,
       "options": {
         "candidates": [],
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "“ When should I take my puppy to the vet ?” Your first vet visit with your new blue Staffy puppy should be scheduled within 48-72 hours of bringing them home. This initial veterinary care for puppies allows your vet to:"
     },
     {
       "id": "diet",
       "shape": "standard",
-      "heading": "Diet And Feeding A Growing Blue Staffy",
+      "heading": "Diet and Nutrition: Fueling Your Blue Staffy’s Health",
       "intent": "What a puppy is weaned onto and what to keep doing: a premium puppy food, a feeding schedule rather than free feeding, clean water always available, and the foods to keep away from a dog. No brand is named and no quantity is given — no file on disk holds either, and a gram figure invented here would be the kind of claim rule 9 forbids.",
       "category": "B",
       "group": "SUGGESTED-RECOMMENDED",
@@ -741,8 +862,8 @@
       "why": "Weight is the single thing an owner controls that shortens a Staffy's life, and the strongest scanned page devotes a whole section to it.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — the Diet and Nutrition block (premium puppy food, feeding schedule, hydration, foods to avoid); https://ukstaffypups.uk/staffy-puppies-for-sale/ (scan 2026-09-20) — a diet and weight-management section",
       "words": {
-        "min": 120,
-        "max": 160
+        "min": 140,
+        "max": 180
       },
       "keywords": {
         "primary": [
@@ -815,18 +936,20 @@
         ],
         "external": []
       },
-      "n": 7,
+      "n": 8,
       "options": {
         "candidates": [],
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "“ What should I feed my new puppy ?” A high-quality, balanced nutrition for blue Staffy puppies is paramount for your Staffy puppy’s health and development."
     },
     {
       "id": "exercise",
       "shape": "standard",
-      "heading": "Exercise And Keeping A Clever Dog Busy",
+      "heading": "Holistic Health & Lifestyle: Beyond the Vet Clinic",
       "intent": "One to two hours of daily activity for a grown dog — brisk walks, play, and games that work the mind — and the reason it matters for this breed in particular: a bored Staffy chews. The figure is the migrated body's own; nothing beyond it is stated.",
       "category": "B",
       "group": "SUGGESTED-RECOMMENDED",
@@ -834,8 +957,8 @@
       "why": "Exercise is where the breed's health and its behaviour are the same subject, and the migrated body already carries a daily figure.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — 'Aim for at least 1-2 hours of daily activity' and the puppy mental stimulation block",
       "words": {
-        "min": 110,
-        "max": 150
+        "min": 150,
+        "max": 195
       },
       "keywords": {
         "primary": [
@@ -877,12 +1000,14 @@
         },
         {
           "level": 3,
-          "heading": "Grooming And Skin",
-          "intent": "A short coat is little work, and the checking is the point.",
-          "children": []
+          "heading": "Staffy Grooming & Hygiene",
+          "intent": "The short-coat routine the migrated page set out: regular brushing, nails, ears and dental care, and why the skin is the part of a blue Staffy worth watching.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "While Staffies have short coats, routine grooming is still important. Regular brushing with the best dog brush for Staffy coats helps with overall coat health and manages shedding. Always pay attention to nail trims, ear cleaning, and especially dog dental care UK, as poor dental hygiene can lead to serious health problems."
         }
       ],
-      "n": 8,
+      "n": 9,
       "images": [],
       "links": {
         "internal": [],
@@ -893,12 +1018,14 @@
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "Maintaining your blue Staffy’s health goes beyond genetic testing and routine vet visits. A holistic approach focusing on their daily life is crucial for their physical and mental well-being throughout their lives. This comprehensive care helps prevent health issues in puppies and adult dogs alike."
     },
     {
       "id": "conditions",
       "shape": "standard",
-      "heading": "The Conditions This Breed Is Watched For",
+      "heading": "Understanding Staffordshire Bull Terrier Health UK : Common Concerns",
       "intent": "The five the migrated body names and no others: L-2-HGA, hereditary cataracts, patellar luxation, skin allergies and demodectic mange. Each gets one plain sentence saying what it is. No prevalence figure, no percentage, no prognosis — the migrated body gives none and this page invents none.",
       "category": "A",
       "group": "COMPETITOR-BASED",
@@ -906,8 +1033,8 @@
       "why": "Naming what can go wrong is what separates a health page from a sales page, and only one of the four scanned pages does it; the rest name the two DNA tests and stop.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — the five H3s under 'Some Common Health Concerns in Blue Staffies'; https://www.bullscaff.co.uk/news/reasons-for-genetic-testing (scan 2026-09-20) — names L-2-HGA and HC only",
       "words": {
-        "min": 150,
-        "max": 200
+        "min": 215,
+        "max": 270
       },
       "keywords": {
         "primary": [
@@ -939,15 +1066,27 @@
       "tree": [
         {
           "level": 3,
-          "heading": "L-2-Hydroxyglutaric Aciduria",
-          "intent": "A neurological disorder affecting metabolism.",
-          "children": []
+          "heading": "Some Common Health Concerns in Blue Staffies include:",
+          "intent": "The question a buyer arrives with — are blue Staffies prone to health issues — answered before the list that follows it.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Many new owners ask: “Are Blue Staffies prone to health issues?” The truth is, while KC-registered Staffordshire Bull Terriers are generally healthy, there are some breed-specific conditions to be aware of."
         },
         {
           "level": 3,
-          "heading": "Hereditary Cataracts",
+          "heading": "L-2-Hydroxyglutaric Aciduria (L-2-HGA)",
+          "intent": "A neurological disorder affecting metabolism.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "A neurological disorder affecting metabolism."
+        },
+        {
+          "level": 3,
+          "heading": "Hereditary Cataracts (HC-HSF4)",
           "intent": "An inherited eye condition affecting sight.",
-          "children": []
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "An inherited eye condition that can lead to blindness."
         },
         {
           "level": 3,
@@ -957,9 +1096,11 @@
         },
         {
           "level": 3,
-          "heading": "Skin Allergies",
+          "heading": "Staffy Skin Allergies",
           "intent": "Itching and irritation, which a short-coated dog shows early.",
-          "children": []
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Blue Staffies are sometimes prone to skin allergies . Symptoms include itching, redness, or hair loss. A balanced diet, gentle grooming products, and vet-recommended treatments can help manage these issues."
         },
         {
           "level": 3,
@@ -995,27 +1136,29 @@
           }
         ]
       },
-      "n": 9,
+      "n": 10,
       "options": {
         "candidates": [],
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "The Staffordshire Bull Terrier is, by nature, a robust and resilient breed known for its vitality and affectionate spirit. However, like all breeds, they can be predisposed to certain hereditary health conditions. A reputable blue staffy breeder will be fully transparent about these issues and actively work to minimise their occurrence through careful breeding and inbreeding coefficient (COI) for staffies."
     },
     {
       "id": "lifespan",
       "shape": "standard",
       "heading": "How Long A Staffordshire Bull Terrier Lives",
-      "intent": "Twelve to fourteen years, the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog, and what the rest of this page has to do with reaching it. The registration paperwork sits here too: what a Kennel Club registration records, and what it does not — it is a pedigree record, not a health certificate.",
+      "intent": "Twelve to fourteen years, the figure the Staffordshire Bull Terrier Club gives for a healthy, well-cared-for dog, and what the rest of this page has to do with reaching it. The registration paperwork moved to its own `registration` section at Task 18b.",
       "category": "A",
       "group": "MANDATORY",
       "framework": "BAB",
       "why": "Lifespan is the question a family actually has behind every other question on this page, and the migrated body already attributes the figure to a named club.",
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — 'can live 12–14 years, according to the Staffordshire Bull Terrier Club'; data/page-map.json — the migrated KC-registration block",
       "words": {
-        "min": 120,
-        "max": 160
+        "min": 90,
+        "max": 120
       },
       "keywords": {
         "primary": [
@@ -1051,14 +1194,8 @@
         },
         {
           "level": 3,
-          "heading": "What Registration Records",
-          "intent": "A verified pedigree and the breed standard.",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "What Registration Does Not Do",
-          "intent": "It is not a health certificate; the DNA results are.",
+          "heading": "What Decides Where In That Range A Dog Lands",
+          "intent": "Diet, daily exercise and regular vet checks — the three this page has already covered, gathered as what the figure depends on. No prevalence figure and no promise.",
           "children": []
         }
       ],
@@ -1070,7 +1207,7 @@
           "prompt": "the migrated page's photograph of a blue Staffy puppy beside its Kennel Club registration papers, reused at its original path and alt text"
         }
       ],
-      "n": 10,
+      "n": 11,
       "links": {
         "internal": [],
         "external": []
@@ -1085,8 +1222,8 @@
     {
       "id": "paperwork-review",
       "shape": "reviews",
-      "heading": "What One Owner Found In The Folder",
-      "intent": "One review, given room. MODE: single, data/reviews.json entry 2 — Mark J, London — because it is the only one of the three that names the paperwork and the health testing, which is what every section above this one claims.",
+      "heading": "One Owner On The Paperwork",
+      "intent": "One review, given room. MODE: single, data/reviews.json entry 2 — Mark J, London — because it is the only one of the three that names the paperwork and the health testing, which is what every section above this one claims. Renamed at Task 18b: 'What One Owner Found In The Folder' is the heading data/boards/blue-staffy-uk-breeders.json plans for its own review section, and two records may not plan the same heading.",
       "category": "B",
       "group": "SUGGESTED-RECOMMENDED",
       "framework": "EBD",
@@ -1123,7 +1260,7 @@
         "pick": null,
         "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 2, Mark J (London). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
       },
-      "n": 11,
+      "n": 12,
       "entities": [],
       "tree": [],
       "images": [],
@@ -1140,16 +1277,16 @@
     {
       "id": "questions",
       "shape": "faq",
-      "heading": "Questions Families Ask About Health",
-      "intent": "Four rows from data/faq.json: three new rows sourced to this page — the two DNA tests, what a puppy has had before it leaves, and how long the breed lives — plus what comes with a puppy, which the homepage already sources. Every answer is one this page's own body states.",
+      "heading": "FAQs: Blue Staffy Health & Care",
+      "intent": "Nine rows from data/faq.json. One is the outline's own — puppy-package, sourced to the homepage — and eight are working rule 15's: the migrated page asked nine questions in an accordion and every one is carried word for word except the health guarantee, whose length data/settings.json does not hold (guarantee_days: null, working rule 9) and whose row is a `verbatim.changed` drop. Seven of the eight carry the migrated answer as well; the puppy-farm answer does not, because it rested on a comparison with 'generic classifieds' that no file on disk evidences, so that row is sourced to /uk-blue-staffy-puppy-buying-guide/ and written fresh. health-dna-tests, health-vaccinations and health-lifespan leave this page's tree because the migrated page asks the same three questions in its own words; the rows stay in data/faq.json, and the homepage still carries health-dna-tests. Accordion answers sit outside the section's word band (spec section 9 amendment 4a).",
       "category": "A",
       "group": "COMPETITOR-BASED",
       "framework": "QAB",
       "why": "Not one of the four scanned pages carries an FAQ block or FAQPage markup, and these are the four questions this page answers on the way past.",
       "why_source": "https://www.bullscaff.co.uk/news/reasons-for-genetic-testing, https://willaby.net/puppies/a-health-tested-puppy/ and https://ukstaffypups.uk/staffy-puppies-for-sale/ (scan 2026-09-20) — 0 FAQPage on any of them; data/faq.json — the four rows",
       "words": {
-        "min": 45,
-        "max": 60
+        "min": 70,
+        "max": 90
       },
       "keywords": {
         "primary": [
@@ -1177,25 +1314,55 @@
       "tree": [
         {
           "level": 3,
-          "heading": "health-dna-tests",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "health-vaccinations",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
-          "heading": "health-lifespan",
-          "intent": "",
-          "children": []
-        },
-        {
-          "level": 3,
           "heading": "puppy-package",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-genetic-tested",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-l2hga-meaning",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-vaccinations-before-home",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-vet-records",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-puppy-diet",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-kc-fewer-risks",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-average-lifespan",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "health-avoid-puppy-farm",
           "intent": "",
           "children": []
         }
@@ -1218,7 +1385,7 @@
         "pick": null,
         "note": "Query augmentation for 'blue staffy health uk', ten questions, each mapped to a section or a row: q1 -> dna-tests and the health-dna-tests row; q2 and q3 -> dna-tests; q4, q5 and q6 -> vaccinations and the health-vaccinations row; q7 -> lifespan and the health-lifespan row; q8 -> conditions; q9 -> exercise; q10 -> diet. No row is added for a question this page's body does not answer."
       },
-      "n": 12,
+      "n": 13,
       "entities": [],
       "images": [],
       "links": {
@@ -1229,12 +1396,14 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "verbatim_heading": true,
+      "verbatim_opening": "Here are some frequently asked questions regarding Staffordshire Bull Terrier genetic health and our breeding practices:"
     },
     {
       "id": "talk-to-us",
       "shape": "standard",
-      "heading": "Ask Us What The Parents Were Tested For",
+      "heading": "Ready to Welcome a Healthy Blue Staffy?",
       "intent": "The close. What a puppy costs — £1,500 for Roman, Byrd and Ince and £1,700 for Vennie, Christa and Cheryl, from data/price-matrix.json — the £500 refundable deposit, and the invitation to ask for the test results before paying anything. The old £850 to £1,200 band is not restated anywhere on this page; see `dropped.prices`.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
@@ -1242,8 +1411,8 @@
       "why": "A health page that never says what a puppy costs sends a reader who is now convinced back to a search engine, and the locked prices are on disk.",
       "why_source": "data/price-matrix.json — male_gbp 1500, female_gbp 1700, deposit_gbp 500, deposit_refundable true; data/settings.json — delivery £200 to £350",
       "words": {
-        "min": 90,
-        "max": 130
+        "min": 145,
+        "max": 190
       },
       "keywords": {
         "primary": [
@@ -1285,6 +1454,14 @@
           "heading": "Ask For The Results First",
           "intent": "The certificates are there to be read before anyone pays.",
           "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Why BlueStaffyUK is Your Confident Choice",
+          "intent": "The one-paragraph summary of what this page has evidenced, in the migrated page's own words and without the ranking claim that closed it.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "When you choose a blue Staffy puppy from BlueStaffyUK, you’re not just buying blue Staffy puppies UK ; you’re investing in a lifetime of healthy companionship."
         }
       ],
       "links": {
@@ -1305,14 +1482,16 @@
         "external": []
       },
       "cta": 1,
-      "n": 13,
+      "n": 14,
       "images": [],
       "options": {
         "candidates": [],
         "excluded": [],
         "pick": null,
         "note": ""
-      }
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "Choosing a blue Staffy puppy from BlueStaffyUK means choosing a companion whose health and well-being have been prioritised from day one. Our commitment to being trusted blue Staffy breeders’ health champions ensures you’re bringing home a happy, robust, and loving family member."
     }
   ],
   "tuple": {
@@ -1445,5 +1624,135 @@
       "– 8 Weeks: First vaccinations … – 12 Weeks: Second round … – 16 Weeks (optional): Kennel cough. — the week-by-week schedule is carried in `vaccinations` as what we give and what the owner's vet gives, without the 16-week optional row: kennel cough is a decision for the owner's vet and the migrated body already calls it optional."
     ]
   },
-  "approval": null
+  "approval": null,
+  "verbatim": {
+    "changed": [
+      {
+        "kind": "opening",
+        "old": "Welcome to BlueStaffyUK , where the health and well-being of our blue Staffordshire Bull Terrier puppies are at the very heart of everything we do. For us, being licensed blue staffy breeders in the UK, health is not just a phrase; it’s a foundational principle that guides every aspect of our breeding program. We understand that when you’re looking for where to buy a blue staffy puppy in the UK, you want assurance of their health and longevity.",
+        "new": "Welcome to BlueStaffyUK , where the health and well-being of our blue Staffordshire Bull Terrier puppies are at the very heart of everything we do. For us, health is not just a phrase; it’s a foundational principle that guides every aspect of our breeding program. We understand that when you’re looking for where to buy a blue staffy puppy in the UK, you want assurance of their health and longevity.",
+        "reason": "'being licensed blue staffy breeders in the UK' is a licensing claim against no file on disk. No licence number, authority or expiry is recorded anywhere in data/, LICENCE_CLAIM_PLACEHOLDER holds the wording until Lisa Bright confirms it (Known Issue 7), and dropped.links strikes the one anchor on the migrated page that made the same claim. The clause comes out and every other word of the welcome is carried."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide",
+        "new": "",
+        "reason": "the heading is /blue-staffy-pup-sale-uk/'s, and that record already carries it: 'Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide' is a litter-availability H2 the migrated site repeated, and a health page is not where a buyer is sold a puppy. It also carries two facts this repo does not hold: no file states an age for the current litter (data/puppies.json is what a puppy grid renders and it holds none) and the 12-week claim is struck by dropped.text. The live litter is linked from `talk-to-us` instead."
+      },
+      {
+        "kind": "opening",
+        "old": "Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.",
+        "new": "",
+        "reason": "its heading goes to /blue-staffy-pup-sale-uk/ and an opening paragraph has no page without the heading it opens. Both of its facts are struck in their own right as well: the 12-week age by dropped.text and the '£850–£1,200 Price Range' by dropped.prices, which is below the locked £1,500 and £1,700 of data/price-matrix.json (Known Issue 11)."
+      },
+      {
+        "kind": "opening",
+        "old": "We follow strict health protocols in line with The Kennel Club (KC) and DEFRA standards to ensure all our puppies are not only beautiful but also physically and mentally sound. Ethical breeding helps reduce hereditary conditions and gives each Staffy puppy the best start in life.",
+        "new": "",
+        "reason": "dropped.text strikes this paragraph by name: 'We follow strict health protocols in line with The Kennel Club (KC) and DEFRA standards' is a compliance claim against two named bodies and no file on disk records an accreditation from either (LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER, Known Issue 7). The HEADING above it is carried word for word into `screening`, where the registration and the DNA testing this page can evidence answer the same question in their own right."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Staffy Health & Wellness: Join 500+ Pet Parents!",
+        "new": "",
+        "reason": "a newsletter block claiming '500+ Pet Parents'. No file on disk holds a subscriber count, dropped.text strikes both newsletter blocks by name and `tuple.newsletter` is empty on this record, so there is no block for the heading to head."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "📬 Get Blue Staffy Updates",
+        "new": "",
+        "reason": "the same newsletter block's H3, dropped with it. It is also an emoji heading, and no page in this rebuild ships an emoji in a heading."
+      },
+      {
+        "kind": "opening",
+        "old": "New litters, breeder tips & puppy availability — straight to your inbox",
+        "new": "",
+        "reason": "the newsletter block's own line, dropped with the two headings above it: there is no inbox to promise and `tuple.newsletter` is empty."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Optimal Staffy Health: Join 500+ for Exclusive Insights!",
+        "new": "",
+        "reason": "the second newsletter block, and the second claim of '500+'. Dropped for the reason the first one is, and the migrated page printed the two within four sections of each other."
+      },
+      {
+        "kind": "opening",
+        "old": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues. This forms part of our DEFRA-approved breeder health checks .",
+        "new": "Beyond genetic tests, our parent dogs receive regular veterinary check-ups to ensure they are in peak physical condition. They are free from any other underlying health issues.",
+        "reason": "'This forms part of our DEFRA-approved breeder health checks' states an approval that does not exist in this form: DEFRA approves pet transport, which is what data/settings.json's delivery_note records, and it does not approve a breeder's veterinary check-ups. The sentence is struck for the reason dropped.text strikes the KC/DEFRA compliance claim; the check-ups themselves are carried word for word."
+      },
+      {
+        "kind": "heading",
+        "old": "Our Blue Staffy Health Certificate and Health Guarantee",
+        "new": "Our Blue Staffy Health Certificate",
+        "reason": "the guarantee half of the heading has nothing behind it. data/settings.json holds guarantee_days: null and working rule 9 forbids writing a length that no file states, so dropped.text strikes the guarantee and its coverage description by name. The CERTIFICATE is carried — it is the vet-signed health card `vaccinations` already plans — and the words that name it are kept."
+      },
+      {
+        "kind": "opening",
+        "old": "We are proud to offer a comprehensive blue Staffy health certificate with every puppy, detailing their vaccination records, microchip number, and vet health check results. Furthermore, addressing “ do you offer a health guarantee for your puppies ?” and “ what does your puppy health guarantee cover ?”, we provide a written puppy health warranty against life-limiting hereditary conditions for a specified period, as outlined in our Puppy Sale Contract. This reflects our confidence in our breeding practices and our commitment to you. “ How long is your health guarantee ?” The terms of our guarantee against congenital defects will be fully explained during your inquiry process.",
+        "new": "We are proud to offer a comprehensive blue Staffy health certificate with every puppy, detailing their vaccination records, microchip number, and vet health check results.",
+        "reason": "the first sentence is the certificate and is carried word for word. Everything after it is the guarantee: a warranty 'for a specified period' that no file on disk specifies, a Puppy Sale Contract this repo does not hold, and a closing line that answers 'How long is your health guarantee?' by saying it will be explained later. data/settings.json holds guarantee_days: null (working rule 9) and dropped.text strikes all of it."
+      },
+      {
+        "kind": "heading",
+        "old": "Our Unwavering Health Promise: Why BlueStaffyUK is Your Confident Choice",
+        "new": "Why BlueStaffyUK is Your Confident Choice",
+        "reason": "'Our Unwavering Health Promise' is an open-ended promise with no term, no end date and no file on disk behind it, which is the same thing working rule 9 refuses in the guarantee two sections above. The question the heading actually asks — why this breeder — is carried whole, and the page answers it with the evidence above rather than with a promise."
+      },
+      {
+        "kind": "opening",
+        "old": "When you choose a blue Staffy puppy from BlueStaffyUK, you’re not just buying blue Staffy puppies UK ; you’re investing in a lifetime of healthy companionship. Our dedication to responsible Staffy breeders’ health standards is unmatched.",
+        "new": "When you choose a blue Staffy puppy from BlueStaffyUK, you’re not just buying blue Staffy puppies UK ; you’re investing in a lifetime of healthy companionship.",
+        "reason": "'Our dedication to responsible Staffy breeders’ health standards is unmatched' is a ranking claim against every other breeder in the country and nothing on disk measures it (working rule 9, rules/copy.md). The sentence before it is carried word for word."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "🐕 Case Study – A Healthy Blue Staffy Journey",
+        "new": "",
+        "reason": "dropped.text strikes the case study by name: Milo of Manchester and his breeder are an invented owner and an invented dog. data/reviews.json holds three real reviews and one of them, Mark J of London, is this page's `paperwork-review` section. It is also an emoji heading."
+      },
+      {
+        "kind": "opening",
+        "old": "Take Milo, a Blue Staffy from Manchester. His breeder, registered with The Kennel Club , provided DNA health certificates, vaccination records, and a microchip ID. Milo’s owners followed advice from the RSPCA on puppy care and invested in a balanced diet with regular vet visits.",
+        "new": "",
+        "reason": "the case study itself — the invented dog, the invented breeder and the invented owners — dropped with its heading."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "🐾 Reserve Your Blue Staffy Puppy",
+        "new": "",
+        "reason": "a form widget's label on a page that plans no form. The migrated site printed '🐾 Reserve Your Blue Staffy Puppy' unchanged on five pages, so it identifies no page; the rebuilt homepage changed it to the name of the section its own form sits in. This outline carries no form — /uk-blue-staffy-breeders-contact/ owns the enquiry and `talk-to-us` links it — so there is nothing here for the label to head. It is also an emoji heading."
+      },
+      {
+        "kind": "opening",
+        "old": "Fill in your details below and we'll be in touch within 24 hours",
+        "new": "",
+        "reason": "its heading is dropped with the form, and an opening paragraph has no page without the heading it opens. The sentence also promises a reply 'within 24 hours', which contradicts the 24-48 business hours data/faq.json's enquiry rows and every rebuilt page state."
+      },
+      {
+        "kind": "faq",
+        "old": "What does your puppy health guarantee cover, and how long is it?",
+        "new": "",
+        "reason": "the one question of the nine this site cannot answer. data/settings.json holds guarantee_days: null, working rule 9 forbids writing a length no file states, and dropped.text strikes both the guarantee sentence and its coverage description ('It covers specific life-limiting hereditary conditions…'). A question whose answer would have to be invented is not put into FAQPage markup; the home-health-guarantee row already tells a reader to ask for the wording before paying a deposit, and `vaccinations` carries the certificate, which is the part of this that exists."
+      },
+      {
+        "kind": "heading",
+        "old": "L-2-HGA and HC-HSF4 Tested Staffy Breeders",
+        "new": "HC-HSF4 and L-2-HGA Tested Staffy Breeders",
+        "reason": "collides with another page's heading: the run 'l 2 hga and hc' is shared with the live /uk-blue-staffy-puppy-buying-guide/ heading 'What Health Tests Should a Blue Staffy Puppy Breeder Provide? What are L-2-HGA and HC-HSF4 in Staffies?', and board_gate.py fails it. The two test names are the whole point of the heading and neither may go, so the ORDER of the pair is what moves: every word is kept and the colliding run is broken. This is the heading scripts/verbatim_set_check.py's own docstring names as the thing rule 15 exists to protect, and it is protected — what changed is which test is read first."
+      },
+      {
+        "kind": "heading",
+        "old": "What is included with a KC registered blue staffy puppy : A Mark of Health and Pedigree",
+        "new": "What is included with a KC registered Staffy puppy : A Mark of Health and Pedigree",
+        "reason": "collides with another page's heading: the run 'kc registered blue staffy puppy' is shared with the live /uk-blue-staffy-puppy-buying-guide/ heading 'What is the typical cost for a KC-registered blue Staffy puppy in the UK…', and board_gate.py fails it. The colour word is the one token that can go without changing what the heading says — every puppy on this site is a blue Staffy and the H1 above says so — so 'blue' comes out and the question, the registration and the 'Mark of Health and Pedigree' are all carried."
+      },
+      {
+        "kind": "heading",
+        "old": "Ready to Welcome a Healthy Blue Staffy Puppy?",
+        "new": "Ready to Welcome a Healthy Blue Staffy?",
+        "reason": "collides with another page's heading: the run 'a healthy blue staffy puppy' is shared with the live /uk-blue-staffy-puppy-buying-guide/ heading 'What to Look for in a Healthy Blue Staffy Puppy?', and board_gate.py fails it. The invitation is carried whole and only the last noun goes; 'Ready to Welcome a Healthy Blue Staffy?' was checked against every live page and against the other four records being reconciled in this task, and collides with none."
+      }
+    ]
+  }
 }

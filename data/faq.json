@@ -394,5 +394,53 @@
     "q": "What two breeds make a Staffy?",
     "a": "Bulldog and terrier crosses, in 19th-century England. Our breed guide sets out the history and the breed standard it produced.",
     "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "health-genetic-tested",
+    "q": "Are your puppies health tested for genetic diseases?",
+    "a": "Yes. Our parent Staffordshire Bull Terrier dogs are extensively DNA tested and certified clear for key hereditary conditions like L-2-HGA and HC-HSF4, which are the primary hereditary conditions in blue Staffies . This ensures our blue Staffy puppies are free from these specific genetic predispositions.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-l2hga-meaning",
+    "q": "What does L-2-HGA testing mean for my puppy’s health?",
+    "a": "L-2-HGA testing (L-2-Hydroxyglutaric Aciduria) is a crucial genetic screening for Staffies . A ‘clear’ result means your puppy will not develop this severe neurological disorder that affects the brain, spinal cord, and muscles. It’s a key indicator of responsible breeding for health .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vaccinations-before-home",
+    "q": "What vaccinations do your puppies have before I take them home?",
+    "a": "Our blue Staffy puppies receive their first set of core puppy vaccinations UK (often for Distemper, Parvovirus, Leptospirosis, and Hepatitis) before leaving us, as part of the UK vaccination schedule for Staffy puppies . We provide a comprehensive vet-signed health card detailing their vaccination history.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-vet-records",
+    "q": "Do your puppies come with vet records and a health certificate?",
+    "a": "Yes, every KC registered Staffy puppy comes with a full blue Staffy health certificate , including detailed vet records of their initial health check, vaccinations, and deworming schedule. This provides a clear overview of their early initial veterinary care for puppies .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-puppy-diet",
+    "q": "What should I feed my new Staffy puppy for the best diet?",
+    "a": "We recommend continuing with the high-quality puppy food your Staffy has been raised on initially (we provide a starter pack). This is crucial for how to keep my Staffy puppy healthy . Your vet can provide long-term advice on the best diet for Staffordshire Bull Terrier puppies based on their individual needs.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-kc-fewer-risks",
+    "q": "Do KC registered Staffies have fewer health risks?",
+    "a": "Yes. KC registration, combined with breeder DNA testing, reduces the chances of hereditary issues being passed down.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-average-lifespan",
+    "q": "What is the average lifespan of a Blue Staffy?",
+    "a": "A healthy, well-cared-for Staffordshire Bull Terrier can live 12–14 years , according to the Staffordshire Bull Terrier Club .",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "health-avoid-puppy-farm",
+    "q": "How can I avoid buying from a puppy farm?",
+    "a": "See the mother with the litter in the home the puppies were raised in, ask for the original registration and DNA certificates rather than copies, and read the written contract before any money moves. A seller who will only meet you away from the premises, or who cannot produce the paperwork on the day, is a puppy farm until proved otherwise.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
   }
 ]
