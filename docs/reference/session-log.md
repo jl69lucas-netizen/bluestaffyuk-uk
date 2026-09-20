@@ -121,12 +121,17 @@ and 17–25 are new from the design system.
    **project 4** — the same project that gives pages a real edit history for sitemap
    `lastmod`.
 
-9. **Three carried header duplicates.** `board_gate.py index` reports three
-   `header-collision` FAILs in migrated copy: the homepage's *Meet the Proud Parents of Our
-   Blue Staffy Puppies* and *Our Commitment to the Health of Our Blue Staffy Puppies*
-   against `/uk-locations/staffy-breeding-dogs-glasgow/`, and *How to Buy Your Blue Staffy
-   Puppy* against `/uk-blue-staffy-puppy-buying-guide/`. Down from five; the two chrome rows
-   cleared with the harness re-base. **Project 4.**
+9. **Three carried header duplicates. CLOSED 2026-09-20 (project 4 Task 18).**
+   `board_gate.py index` reported three `header-collision` FAILs in migrated copy: the
+   homepage's *Meet the Proud Parents of Our Blue Staffy Puppies* and *Our Commitment to the
+   Health of Our Blue Staffy Puppies* against `/uk-locations/staffy-breeding-dogs-glasgow/`,
+   and *How to Buy Your Blue Staffy Puppy* against `/uk-blue-staffy-puppy-buying-guide/`.
+   All three are gone from the rebuilt homepage, each reworded under working rule 15 with its
+   reason recorded in `data/boards/index.json` `verbatim.changed`: the first two keep every
+   word up to the colliding five-word tail (*…of This Litter*, *…of Every Puppy We Raise*),
+   and the third keeps the four words that carry the promise (*How to Buy Your Puppy, Step by
+   Step*), because every nearer wording collided too. `board_gate.py index` is at **0 FAIL**
+   against 50 live pages, header-collision 0.
 10. **Deferred-check id drift.** `bottom-bar-under-tabbar` and `analytics-double-load` are
     Python page-hardening checks in the source repo, not render-harness checks, so they could
     not be deferred in `tests/render/targets.json`. Defer them if a later project ports them
@@ -196,17 +201,27 @@ and 17–25 are new from the design system.
     **Page bodies and their ported schema follow per page in Tasks 7–18** — the eleven rich
     pages and the blog are rewritten one at a time and are not edited ahead of their task,
     so the old city is still in the generated page bodies until each is rebuilt.
-    **3 of 12 rebuilt (Task 7, `/privacy-policy-uk/`, 2026-09-19; Task 8,
-    `/thank-you-blue-staffy-puppies-journey/`, and Task 9,
-    `/uk-blue-staffy-breeders-contact/`, both 2026-09-20).** None of the three carries the
-    old city anywhere: every body is written fresh, and the legacy schema graph that
+    **4 of 12 rebuilt (Task 7, `/privacy-policy-uk/`, 2026-09-19; Task 8,
+    `/thank-you-blue-staffy-puppies-journey/`, Task 9,
+    `/uk-blue-staffy-breeders-contact/`, and Task 18, `/`, all 2026-09-20).** None of the
+    four carries the old city anywhere: every body is written fresh, and the legacy schema
+    graph that
     hard-coded a street address, a postcode and coordinates for the former city is gone with
     them — `BaseLayout` now emits the `WebPage` node from `data/page-dates.json` instead, and
     the contact page emits its own `ContactPage` and `FAQPage` nodes and nothing else. Both
     new pages drop the migrated body's link to that city's breeding-dogs page, and the
     contact page drops the "Our Location" paragraph built on the old address, each recorded
     with its reason in the board record's `dropped`; the by-appointment-only fact itself is
-    kept. 9 page bodies to go.
+    kept. The homepage is the loudest of the four: the migrated body named the old city three
+    times — as the home city in the delivery list, as where the puppies were socialised, and
+    in the FAQ lede — plus a landmark in it, and the Google Maps iframe at the foot encoded
+    the old street, postcode and coordinates in its URL. All of it is gone, each strand
+    logged with its reason in `dropped.names`, `dropped.text` and `dropped.embeds`, and the
+    FAQ lede is carried under rule 15 with the city clause removed rather than re-pointed
+    (`verbatim.changed`). The one surviving reference anywhere on the rebuilt page is the
+    href of `/uk-locations/staffy-breeding-dogs-glasgow/`, whose URL rule 11 keeps and whose
+    anchor on this page names our breeding dogs rather than a town.
+    **8 page bodies to go.**
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the

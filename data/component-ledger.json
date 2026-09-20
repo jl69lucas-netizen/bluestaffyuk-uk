@@ -29,7 +29,11 @@
     "toc": [
       "pagenav-c"
     ],
-    "table": []
+    "table": [
+      "table-s1",
+      "table-s2",
+      "table-s3"
+    ]
   },
   "pages": {
     "index": {
@@ -37,7 +41,7 @@
       "dial": "",
       "rail": "",
       "toc": "pagenav-c",
-      "table": "",
+      "table": "table-s2",
       "faq": "faq-s3",
       "takeaway": [
         "takeaways-s3"

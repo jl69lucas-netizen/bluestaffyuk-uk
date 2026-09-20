@@ -1057,8 +1057,13 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # two — the triple degenerated to "no two pages may share a hero style", which failed
     # privacy-policy-uk against thank-you-blue-staffy-puppies-journey on a hero pick alone.
     # The signature is now the tuple MINUS the two baked axes: what a page is made of that
-    # the breeder can still choose differently.
-    signature = (t.get("hero") or "", t.get("faq") or "", tuple(sorted(tw)))
+    # the breeder can still choose differently. `toc` is outside it on the same argument —
+    # every rebuilt page mounts the one kit page nav — while `table` is INSIDE it as of spec
+    # §9 amendment 5 (working rule 13): a table is a picked shell with three rendered styles
+    # and "tuple.table records the pick", so two pages that differ by carrying one are not
+    # the same page. It was left out only while no board offered a table section.
+    signature = (t.get("hero") or "", t.get("faq") or "", t.get("table") or "",
+                 tuple(sorted(tw)))
 
     identical = [p for p, s in siblings.items()
                  if all((s.get(k) or "") == (t.get(k) or "") for k in TUPLE_ID_KEYS)
@@ -1069,16 +1074,24 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     rest = {p: s for p, s in siblings.items() if p not in identical}
 
     trip = []
-    if any(signature[:2]) or tw:
+    if any(signature[:3]) or tw:
         trip = [p for p, s in rest.items()
-                if (s.get("hero") or "", s.get("faq") or "",
+                if (s.get("hero") or "", s.get("faq") or "", s.get("table") or "",
                     tuple(sorted(set(s.get("takeaway", []))))) == signature]
         if trip:
             shown = "+".join(x or "—" for x in
-                             (signature[0], signature[1], ", ".join(signature[2]) or ""))
+                             (signature[0], signature[1], signature[2],
+                              ", ".join(signature[3]) or ""))
             add("ledger-tuple-owned", "FAIL",
-                f"hero+faq+takeaway {shown} is the same signature as {', '.join(trip)}")
-    if tw:
+                f"hero+faq+table+takeaway {shown} is the same signature as {', '.join(trip)}")
+    # A SET, and only a set. The rule is about a page copying another page's COMBINATION of
+    # takeaway shells; it degenerates the way hero+dial+rail did in spec §9 amendment 2.2 the
+    # moment a page carries exactly one. Project 4 gives a `takeaways` section three styles
+    # and most pages carry one such section, so a singleton set is a pick from a pool of
+    # three — under a set rule the fourth page to want a takeaway block could not have one,
+    # whatever it said. The combination is still policed: `takeaway` is one of the four axes
+    # of the signature above, so two pages that agree on it must differ somewhere else.
+    if len(tw) > 1:
         sets = [p for p, s in rest.items() if set(s.get("takeaway", [])) == tw]
         if sets:
             add("ledger-takeaway-set-owned", "FAIL",
@@ -1123,7 +1136,11 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # H6 lines are written inside the sections at build time. A record NOT yet rebuilt has
     # no built page to read, so it keeps the tree reading and the floor stays a planning
     # constraint. `source` is named in the message: a floor met two ways must say which.
-    built = DIST / slug / "index.html"
+    # The homepage's built file is dist/index.html, not dist/index/index.html: `index` is
+    # the slug this repo gives "/", and a path built the ordinary way would never exist, so
+    # the one page that is the site's front door would silently keep the record-tree reading
+    # for ever. Same spelling as verbatim_set_check.dist_html and word_band_findings.
+    built = DIST / ("" if slug == "index" else slug) / "index.html"
     if slug in rebuilt_slugs() and built.exists():
         counts, source = page_h_counts(built), "built page"
     else:

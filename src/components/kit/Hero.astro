@@ -53,6 +53,14 @@ type Props = HTMLAttributes<'section'> & {
    *  carries the numbers in its `assets` row. */
   imageWidth?: number;
   imageHeight?: number;
+  /** Candidate list for a STRING `image`, e.g. "/images/x-440.webp 440w, /images/x.webp 612w".
+   *  astro:assets builds one for an `ImageMetadata` import; a public path has whatever
+   *  siblings were baked beside it and nothing here can know them, so the page states them.
+   *  Without it the `sizes` below has no candidates to choose between and the one file is
+   *  decoded at whatever the slot happens to be — which is `img-srcset-within-2x` (blocking)
+   *  the moment the hero card paints narrower than half the file's intrinsic width, as it
+   *  does at 375px. Omitted renders no `srcset`, exactly as before. */
+  imageSrcset?: string;
   /** The trust chips under the lede. DEFAULTS TO NONE (project 4, 2026-09-20 review). They
    *  used to be three hard-coded claims — "KC registered", "DNA-tested parents", "Raised in
    *  the home" — which is a component asserting a page's credentials for it: true on the
@@ -79,6 +87,7 @@ const {
   imageAlt,
   imageWidth,
   imageHeight,
+  imageSrcset,
   chips = [],
   ctas = [],
   class: cls,
@@ -102,6 +111,7 @@ const legacy = typeof image === 'string';
         alt={alt}
         width={imageWidth}
         height={imageHeight}
+        srcset={imageSrcset}
         sizes="(max-width: 900px) 100vw, 560px"
         class="pic"
         loading="eager"

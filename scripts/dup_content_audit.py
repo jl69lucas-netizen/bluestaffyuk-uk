@@ -72,6 +72,11 @@ WHITELIST_SNIPPETS = [
     # invariant core (9 pages): the trailing `in glasgow` is present on six of them only,
     # and including it left the 15-word remainder reported eight times
     "uk home delivery by defra approved transport priced by distance 200 to 350 or collect",
+    # the same delivery_note as an FAQ ANSWER rather than as a page line — data/faq.json's
+    # `delivery` and `home-safe-delivery` rows interpolate the setting and put "from" in
+    # front of the band, so the stem above stops at "distance" and this one is the accordion's
+    # spelling. Measured on dist/ 2026-09-20: 6 pages (project 4 Task 18).
+    "uk home delivery by defra approved transport priced by distance from 200 to 350",
     "train station handover free we meet you at your nearest mainline station",
     "ground transport 100 defra approved delivery to your front door",
     "halfway meet up 100 we meet you at a convenient midpoint location",
@@ -81,6 +86,11 @@ WHITELIST_SNIPPETS = [
 
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",
+    # the KIT trust strip (component 7). Its three chips and their sub-lines are hard-coded
+    # in src/components/kit/TrustStrip.astro, so every page that mounts it renders the same
+    # 42 words — it is a component, not page prose. Measured on dist/ 2026-09-20: 5 pages
+    # (project 4 Task 18).
+    "kc registered kc registered breeder registration paperwork with every puppy dna tested parents dam and sire clear of l 2 hga and hc hsf4 results on request raised in the home reared in a family home not a kennel and socialised early",
 
     # The kit Hero's chip row and CTA pair were whitelisted here on 2026-09-20 and REMOVED
     # the same day. They were shared chrome only because the component hard-coded them; the
@@ -89,12 +99,28 @@ WHITELIST_SNIPPETS = [
     # page is not repeated content, and an exemption carried for one page is dead weight
     # that reads as evidence (tests/py/test_dup_whitelist_measured.py holds the floor at 3).
 
-    # newsletter block
-    "get blue staffy updates new litters breeder tips puppy availability straight to your inbox",
+    # The migrated newsletter block was whitelisted here until 2026-09-20 and is REMOVED.
+    # It was carried by three pages, one of which was the homepage; the homepage's approved
+    # record drops the block outright — "Join 500+ Readers!" is a subscriber count no file
+    # on disk holds (working rule 9) — so the run is down to the two pages that are still
+    # the migrated body, and a two-page stem is below the chrome floor. The two remaining
+    # copies are the migrated-content baseline and belong in the gate report, which is
+    # exactly what the comment at the top of this list says about baseline prose.
 
-    # puppy-grid card data — name, sex, colour, price read straight off the litter
-    # record; sync with data/puppies.json when the litter changes
-    "roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female blue and white 1 700 christa female blue 1 700 cheryl female blue with white blaze 1 700",
+    # puppy-grid card data — name, sex, colour and price read straight off the litter record;
+    # sync with data/puppies.json when the litter changes. SIX STEMS, one per card, not one
+    # run of all six: PuppyCard now renders a status and an "Ask about <name>" CTA between
+    # the cards, so the six-card run differs between the pages that mount the kit card and
+    # the two hubs that do not, and a single long stem exempted neither. Each card's own
+    # words are the invariant core and each is under the 12-word reporting floor, so what
+    # sits between them can never add up to a reportable passage. Measured on dist/
+    # 2026-09-20: 12, 11, 11, 4, 5 and 4 pages (project 4 Task 18).
+    "roman male blue and white 1 500",
+    "byrd male white 1 500",
+    "ince male blue 1 500",
+    "vennie female blue and white 1 700",
+    "christa female blue 1 700",
+    "cheryl female blue with white blaze 1 700",
 
     # document-title + skip-link chrome that leaks into the text stream
     "blue staffy puppy for sale blue staffy uk skip to content",

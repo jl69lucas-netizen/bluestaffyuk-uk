@@ -119,7 +119,8 @@ def spent_prefixes(board):
 # A styled section contributes to the axis its SHAPE names. The style id is lowercased
 # because a ledger component id is `^[a-z0-9-]+(#[a-z0-9-]+)?$`
 # (schemas/component-ledger.schema.json) and the board spells its styles "S1".."S3".
-SHAPE_TUPLE_AXIS = {"hero": "hero", "faq": "faq", "dial": "dial", "sheet": "rail"}
+SHAPE_TUPLE_AXIS = {"hero": "hero", "faq": "faq", "dial": "dial", "sheet": "rail",
+                    "table": "table"}
 # The mobile section sheet reuses the `rail` axis: both are the page's secondary
 # navigation chrome, and the ledger has no eighth axis to give it.
 SHAPE_TUPLE_SET = {"takeaways": "takeaway"}          # the one axis that holds a set
@@ -128,8 +129,11 @@ SHAPE_TUPLE_SET = {"takeaways": "takeaway"}          # the one axis that holds a
 FIXED_TOC = "pagenav-c"
 # Shapes that render SECTION content rather than a page-level shell. They are deliberately
 # not tuple axes — the ledger asks how a page's chrome is combined, and a review mode or a
-# puppy grid is not chrome. `table` stays an axis with no shape feeding it: no board offers
-# a table section yet, and the axis is kept so one can be added without a schema change.
+# puppy grid is not chrome. `table` USED TO BE one of them, on the note that no board offered
+# a table section yet; spec §9 amendment 5 (working rule 13) ended that condition — a table is
+# a `table`-shaped section with three rendered styles and "tuple.table records the pick" — so
+# the shape now feeds its axis like every other picked shell, and the homepage is the first
+# record to fill it.
 NON_TUPLE_SHAPES = {"standard", "reviews", "puppies", "form", "trust", "stats", "divider"}
 DERIVED_ID_AXES = ("hero", "dial", "rail", "table", "faq")
 

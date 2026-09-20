@@ -28,7 +28,12 @@ TOKENS = {
 # The phrases an answer asserts that are NOT a settings value — the part a reader would
 # treat as a promise. Each must appear on the page that row names.
 FACT_PHRASES = {
-    "puppy-package": ["first vaccinations", "microchip", "puppy pack"],
+    # "first vaccination", singular, from project 4 Task 18: the migrated body wrote
+    # "initial vaccinations" and "first vaccinations", the rebuilt homepage writes "its first
+    # vaccination" in `health` and "First vaccination" in the `whats-included` table, and the
+    # singular is a substring of the plural — so the phrase is true of the migrated body AND
+    # of the rebuilt page, which is what a row verified against both has to be.
+    "puppy-package": ["first vaccination", "microchip", "puppy pack"],
     # The three enquiry rows are verified against the REBUILT thank-you page's prose, the
     # same way the privacy rows below are: the migrated body's wording ("personally review
     # and respond", "ready to find their forever home", "contact our purebred Blue Staffy
@@ -152,9 +157,17 @@ FACT_PHRASES = {
     # old body has, and nothing leans on a figure: the prices and the deposit are interpolated
     # from data/settings.json by the two rows that name it as their source.
     "home-parents-health-tested": ["L-2-HGA", "HC-HSF4"],
-    "home-after-support": ["lifetime support"],
+    # NOT "lifetime support" (project 4 Task 18). The record's `dropped.creds` drops
+    # "We provide lifetime support and are always available to help" by name, as an
+    # open-ended commitment no file on disk records, so the rebuilt page may not state it and
+    # a phrase list demanding it would be demanding a rule-9 violation. What the page does
+    # back is the part of the answer that is about WHEN we answer, which `first-steps` step
+    # five states. THE ROW'S OWN ANSWER still contains the dropped sentence: that is a
+    # conflict between data/faq.json and the approved record, flagged at Task 18 for the
+    # breeder to settle, and it is the answer that has to move, not this list.
+    "home-after-support": ["before or after the puppy is home"],
     "home-health-tests": ["L-2-HGA", "HC-HSF4"],
-    "home-whats-included": ["first vaccinations", "microchip", "puppy pack"],
+    "home-whats-included": ["first vaccination", "microchip", "puppy pack"],
     "home-health-guarantee": ["health guarantee"],
     "home-find-breeders": ["Staffordshire Bull Terrier puppies", "United Kingdom"],
 }
@@ -187,7 +200,9 @@ def _built_text(slug):
     would pass for any wording at all. What the rule-9 assertion actually asks is whether
     the PAGE'S OWN PROSE still says the thing the answer leans on, so the block the answers
     are rendered into comes out before the text is read."""
-    html = (ROOT / "dist" / slug / "index.html").read_text(encoding="utf-8")
+    # `index` is the slug this repo gives "/", and its built file is dist/index.html, not
+    # dist/index/index.html — the same spelling verbatim_set_check.dist_html uses.
+    html = (ROOT / "dist" / ("" if slug == "index" else slug) / "index.html").read_text(encoding="utf-8")
     html = _SCRIPTY.sub(" ", html)
     html = _FAQ_BLOCK.sub(" ", html)
     return re.sub(r"\s+", " ", unescape(_TAG.sub(" ", html)))

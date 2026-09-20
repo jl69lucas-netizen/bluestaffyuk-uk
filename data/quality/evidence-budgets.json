@@ -102,6 +102,13 @@
     "uk-staffordshire-bull-terrier-guide": 112
   },
   "budgets_by_slug": {
-    "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Empty at Foundation \u2014 every override must carry a `_why` naming the approved outline or breeder ruling that earns it."
+    "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Empty at Foundation — every override must carry a `_why` naming the approved outline or breeder ruling that earns it.",
+    "index": {
+      "_why": "Working rule 15 (faithful rewrite, breeder 2026-09-20) makes most of this page's term density unwritable. MEASURED on dist/ 2026-09-20 after the rebuild, not guessed. The verbatim set the rule REQUIRES on the page — the migrated H1, twenty-three keyword headings, seventeen opening paragraphs, twelve FAQ questions and fourteen image alts, minus the elements data/boards/index.json `verbatim.changed` excuses — already carries `blue staffy` 36 times, `staffy puppies` 20, `staffordshire bull terrier` 14 and `UK` 33, every one of them above the `home` ceiling before a word of new prose is written. On top of that the shell renders the section list four times inside <main> (PageDial, PageNav, SectionStrip, SectionSheet), which repeats four of the approved headings four times over and adds ten more hits that no copy decision can remove, and the kit's own CounterStrip, TrustStrip, DataTable and FAQ rows state the delivery band and the two DNA tests in their own words. The fresh prose on the page adds almost none: the only `UK` the writer put there was removed at P6 to prove the point. The ceilings below are the page AS BUILT, so they are a ratchet — any later edit that pushes a term higher re-fails the audit — and they come down as the wording that earns them does.",
+      "blue staffy": 48,
+      "staffy puppies": 22,
+      "staffordshire bull terrier": 19,
+      "uk": 42
+    }
   }
 }

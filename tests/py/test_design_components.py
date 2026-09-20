@@ -1,8 +1,10 @@
 """data/design/components.json is the one list of kit components; everything else
 (the kit folder, the canvas route, the picks board, picks.json) is checked against it."""
-import json, pathlib, re
+import json, pathlib, re, subprocess
 
 import pytest
+
+import verbatim_set_check as V
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 COMPONENTS = ROOT / "data/design/components.json"
@@ -529,7 +531,15 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
     """Rule 9, enforced at the source. Each row carries the path it was copied from; this
     reads that file and fails if the quote or the attribution is not in it character for
     character. A REVIEW_PLACEHOLDER row has no source and is exempt — that is the whole
-    point of the placeholder."""
+    point of the placeholder.
+
+    THE SOURCE IS THE MIGRATED PAGE, so a REBUILT page is read at the migration commit and
+    not out of the working tree. `source` records where a quote was copied FROM — a
+    WordPress body the extractor wrote into `const body` — and project 4 replaces those
+    files one at a time: from Task 18 the homepage is a hand-written Astro page with no
+    `const body` in it at all, and reading the working tree would fail a row whose evidence
+    is intact. `verbatim_set_check.MIGRATED` is the same frozen commit rule 15's own gate
+    reads, for the same reason: it is history and cannot move."""
     reviews = json.loads((ROOT / "data/reviews.json").read_text())
     for r in reviews:
         if r["quote"] == "REVIEW_PLACEHOLDER":
@@ -537,6 +547,12 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
             continue
         page = (ROOT / r["source"]).read_text()
         m = re.search(r'const body = "(.*?)";\n', page, re.S)
+        if not m:
+            migrated = subprocess.run(
+                ["git", "show", f"{V.MIGRATED}:{r['source']}"],
+                cwd=ROOT, capture_output=True, text=True)
+            assert migrated.returncode == 0, (r["source"], migrated.stderr)
+            m = re.search(r'const body = "(.*?)";\n', migrated.stdout, re.S)
         assert m, r["source"]
         body = m.group(1).encode().decode("unicode_escape").encode("latin-1").decode("utf-8")
         assert r["quote"] in body, (r["source"], r["quote"][:60])

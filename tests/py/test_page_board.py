@@ -716,21 +716,21 @@ def test_gate_reports_words_out_of_band_as_a_warning(tmp_path, monkeypatch):
 
 
 def _sig_ledger(**over):
-    """A sibling matching MIN_BOARD's hero+faq+takeaway signature, every other axis
+    """A sibling matching MIN_BOARD's hero+faq+table+takeaway signature, every other axis
     different so `ledger-tuple-identical` does not fire first and swallow the finding."""
-    t = {"hero": "hero-a", "faq": "faq-a", "takeaway": ["k1"],
-         "dial": "dial-9", "rail": "rail-9", "toc": "t9", "table": "table-z"}
+    t = {"hero": "hero-a", "faq": "faq-a", "table": "table-a", "takeaway": ["k1"],
+         "dial": "dial-9", "rail": "rail-9", "toc": "t9"}
     t.update(over)
     return _ledger_with(**t)
 
 
-def test_gate_flags_a_copied_hero_faq_takeaway_signature():
+def test_gate_flags_a_copied_hero_faq_table_takeaway_signature():
     """Components are shared by design; the signature the reader sees first is not.
 
-    The signature is the tuple MINUS `dial` and `rail`. Those two stopped telling pages
-    apart in project 4: the breeder picked one dial style and one sheet style for the whole
-    site on the contact board and both are baked into the kit, so including them reduced
-    the rule to "no two pages may share a hero style"."""
+    The signature is the tuple MINUS `dial`, `rail` and the fixed `toc`. The first two
+    stopped telling pages apart in project 4: the breeder picked one dial style and one
+    sheet style for the whole site on the contact board and both are baked into the kit, so
+    including them reduced the rule to "no two pages may share a hero style"."""
     b = _approved(MIN_BOARD)
     assert "ledger-tuple-owned" in _checks(b, _sig_ledger())
     # A different dial and rail buy a page nothing: they are not the breeder's to vary.
@@ -740,6 +740,10 @@ def test_gate_flags_a_copied_hero_faq_takeaway_signature():
     assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(faq="faq-z"))
     # ...and so does a different takeaway set.
     assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(takeaway=["k9"]))
+    # ...and so does the table (spec §9 amendment 5): carrying one, or carrying a different
+    # chrome for it, is a choice the breeder makes on the board.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(table="table-z"))
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(table=""))
 
 
 def test_gate_does_not_name_the_hero_twice_when_the_signature_is_owned():

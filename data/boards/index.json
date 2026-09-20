@@ -2114,7 +2114,7 @@
     "takeaway": [
       "takeaways-s3"
     ],
-    "table": "",
+    "table": "table-s2",
     "faq": "faq-s3",
     "stepper": "",
     "newsletter": {
@@ -2312,7 +2312,14 @@
       "'How to Buy Your Blue Staffy Puppy Step 1: Browse Puppies … Step 5: Contact US' — the migrated five-step block, and the heading that is one of Known Issue 9's three collisions. Three of the five steps are decisions a buyer makes and are restated in `first-steps` under a heading worded distinctly from /uk-blue-staffy-puppy-buying-guide/'s; browsing and 'contact us' are not decisions and are not steps.",
       "'Fill in your details below and we'll be in touch within 24 hours' and 'Delivery Note: Delivery begins 24–48 hours after payment confirmation. Train station pickup is our default method (free).' — the migrated reservation block under a form the migration removed. The reply window this site states is the 24-48 business hours of data/faq.json's sale-reserve row; the delivery timing and the train-station default are promises no file on disk holds, and `talk-to-us` carries a CTA to the contact page rather than a third enquiry form.",
       "'Blue Staffy News: Join 500+ Readers!' and 'New litters, breeder tips & puppy availability — straight to your inbox' — the newsletter block. No file on disk holds a subscriber list, and tuple.newsletter is empty on this record.",
-      "'We offer advice on care, training, nutrition, and any questions you may have' and 'We are always here to help you and your new companion' — the support promise, in the migrated FAQ. `talk-to-us` states the hours from data/settings.json, which is the version of that promise a file on disk backs."
+      "'We offer advice on care, training, nutrition, and any questions you may have' and 'We are always here to help you and your new companion' — the support promise, in the migrated FAQ. `talk-to-us` states the hours from data/settings.json, which is the version of that promise a file on disk backs.",
+      "Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes Our UK Blue Staffy Litter Details Discover Our Current Litter of 12-Week-Old Blue Staffy Pups UK — the litter heading that priced the whole litter in its own words. The band is below the locked prices and predates them (Known Issue 11; data/price-matrix.json holds £1,500 and £1,700, which `whats-included` prints), and the twelve-week age is a figure data/puppies.json does not hold for any of the six dogs. The heading's first clause survives as the section heading; the price clause and the age do not.",
+      "Beyond our home, our pups receive early socialisation, experiencing the vibrant city life of — the socialisation sentence, which names the FORMER city and a landmark in it as where the puppies meet the world. data/settings.json is Carlisle · Cumbria at town level (Known Issue 16) and spec section 7 requires the old name to be absent from src and data, so the claim is carried as what it actually is — `who-we-are` says the puppies meet the ordinary noise of a family house before they leave — and the city clause is not re-pointed at a town we cannot evidence them being walked in.",
+      "Training Consistent and positive reinforcement-based training is essential. — one of the four care sub-claims of the migrated breed block. /uk-staffordshire-bull-terrier-guide/ is the page that owns training, feeding and exercise (data/boards/uk-staffordshire-bull-terrier-guide.json), and `the-breed` carries the block's own heading, its opening paragraph and a link out rather than restating the guide on the front page — which is the duplication the dup gate holds these pages apart to prevent.",
+      "Their intelligence makes them eager to learn, but early socialisation and consistent boundaries are key. — the second half of the same training sub-claim, with the same disposition: the breed guide owns it and `the-breed` links there.",
+      "Jones, our magnificent 3-year-old blue Staffordshire Bull Terrier Sire , embodies strength, confidence, and a wonderfully calm demeanor. — the sire's age and character sentence. Jones is named in `meet-the-parents` and in `health`, his photograph is carried, and what he is cleared of is stated; his AGE is a figure no file on disk holds, and the adjectives are the about page's to make at length (/blue-staffy-uk-breeders/, which this section links).",
+      "we exclusively partner with DEFRA-approved pet transport services. — an exclusivity claim about a commercial arrangement. data/settings.json records the delivery_note 'UK home delivery by DEFRA-approved transport, priced by distance' and no partner, no contract and no exclusivity, so `delivery` states the transport standard and stops there; the five carriers the same block named are in dropped.names.",
+      "We partner with trusted, DEFRA-approved pet transport services experienced in nationwide puppy delivery. — the same partnership claim in the shipping block, dropped for the same reason: the approval standard is on disk and the partnership is not."
     ]
   },
   "approval": {
@@ -2370,7 +2377,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "977ced4f566678ee70fde458b6df23fe42e15e248a959759db7b835af4689620",
+    "record_hash": "ffa3d5e4fd875ee5aff20235e357cdad2cf18062ee030a05b8407c9f16e80d56",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2480,6 +2487,12 @@
         "old": "How to Buy Your Blue Staffy Puppy",
         "new": "How to Buy Your Puppy, Step by Step",
         "reason": "collides with another page's heading: /uk-blue-staffy-puppy-buying-guide/ is live with ‘How to Buy Your Blue Staffy Puppy from BlueStaffyUK.uk’, of which this heading is an exact prefix, and the buying guide is the page that owns the subject. Every nearer wording collides too — ‘buy a blue staffy puppy’ is a five-word shingle of a live heading on /blue-staffy-pup-sale-uk/ and ‘of our blue staffy puppies’ of one on /uk-locations/staffy-breeding-dogs-glasgow/ — so the breed words come out and the four words that carry the promise stay."
+      },
+      {
+        "kind": "faq",
+        "old": "Do you offer health guarantees for your blue staffy puppies ?",
+        "new": "Do you offer health guarantees for your blue staffy puppies?",
+        "reason": "typography, not wording: the migrated accordion carries a stray space before the question mark, and data/faq.json's `home-health-guarantee` row — which is what the page renders and what the FAQPage node's `name` and the dup gate read — spells the question without it. Every word of the question is carried; the same disposition as the two emoji rows above, which drop a glyph and keep the wording whole."
       }
     ]
   }

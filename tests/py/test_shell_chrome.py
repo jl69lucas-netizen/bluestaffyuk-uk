@@ -62,7 +62,12 @@ def _routes():
 def _expected_kit(route, rebuilt):
     if route in KIT_ROUTES or (route.startswith(KIT_PREFIXES) and route not in KIT_ROUTES):
         return True
-    return route.strip("/") in rebuilt
+    # "/" is the slug `index` everywhere else in this repo (data/facts/rebuilt.json,
+    # data/boards/index.json, the scorecards). `"/".strip("/")` is the empty string, which is
+    # in no list, so without this the homepage would be expected on the legacy chrome for
+    # ever — and the day it was rebuilt onto the kit shell the expectation would report the
+    # rebuild as the defect (project 4 Task 18).
+    return (route.strip("/") or "index") in rebuilt
 
 
 def test_every_built_page_has_exactly_one_header_and_one_footer():
