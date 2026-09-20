@@ -310,5 +310,53 @@
     "q": "Where can I find blue staffy breeders in the UK?",
     "a": "Here, and on the pages this site keeps for each part of the country. We raise blue Staffordshire Bull Terrier puppies in our own home in Carlisle and deliver across the United Kingdom, and our breeders page sets out who we are.",
     "source": "src/pages/index.astro"
+  },
+  {
+    "id": "whyus-start",
+    "q": "I’m looking into getting a Staffy puppy. Where should I start?",
+    "a": "Start by finding a reputable, KC-registered breeder who performs genetic health checks. An ethical breeder will prioritize the puppy’s health and temperament and will be transparent about their breeding practices.",
+    "source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro"
+  },
+  {
+    "id": "whyus-american-english",
+    "q": "How can I tell if my puppy is an American or an English Staffy?",
+    "a": "A definitive way to tell is by checking its pedigree papers and Kennel Club registration. An English Staffordshire Bull Terrier from the UK will be registered with The Kennel Club and will adhere to their specific breed standard, which is smaller and more compact than the American variety.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-not-banned",
+    "q": "Why weren’t Staffordshire Bull Terriers banned in the UK?",
+    "a": "The Staffordshire Bull Terrier is not on the UK’s list of banned breeds. They are legally permitted in the UK due to their history as a family companion breed and their well-documented temperament as a “nanny dog.”",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-pit-bull",
+    "q": "What is the difference between a Staffy and a Pit Bull?",
+    "a": "The Staffordshire Bull Terrier is a distinct and officially recognized breed by The Kennel Club in the UK. The term “Pit Bull” is a general term often used to describe a type of dog, including breeds like the American Pit Bull Terrier, which are not recognized by the UK Kennel Club and are banned under the Dangerous Dogs Act. Staffies are a separate breed with a well-documented history as a family-friendly companion.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-amstaff",
+    "q": "What is the difference between an Amstaff and a Staffordshire Terrier (English)?",
+    "a": "The Amstaff is the American Staffordshire Terrier, a separate and larger breed. An English Staffordshire Bull Terrier is registered with The Kennel Club and is judged against its own breed standard, which our breed guide sets out in full.",
+    "source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro"
+  },
+  {
+    "id": "whyus-prone-to",
+    "q": "What are Staffies prone to?",
+    "a": "Mainly two inherited conditions, L-2-HGA and HC-HSF4, which is why both parents are DNA tested clear before any mating, and the skin allergies the breed is known for. Our health page covers both.",
+    "source": "src/pages/blue-staffy-health-uk/index.astro"
+  },
+  {
+    "id": "whyus-stud-dogs",
+    "q": "Who Are the BlueStaffyUK Stud Dogs and How Do We Ensure Temperament in Our Breeding Program?",
+    "a": "Our own dogs. The parent dogs we breed from are chosen for a settled temperament as well as for their health results, and you are welcome to meet the mother with the litter before you decide.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "whyus-partner",
+    "q": "Why Should Families Choose BlueStaffyUK as Their Trusted Breeding Partner for Staffordshire Bull Terriers in the UK?",
+    "a": "Because everything this page claims can be handed to you: both parents’ DNA results, the Kennel Club paperwork, the veterinary health check and the written puppy purchase contract. Nothing on this page rests on a badge.",
+    "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
   }
 ]

@@ -138,6 +138,26 @@ FACT_PHRASES = {
     "listing-left-alone": ["left alone"],
     "listing-training": ["training", "socialisation"],
     "listing-sleep": ["life stage"],
+    # Eight more rows on the why-us page in project 4 Task 18b. Working rule 15 carries that
+    # page's migrated questions word for word: four of them were marked up as keyword H3s and
+    # four sat in its accordion behind a "+" glyph. Four are breed-identity questions the why-us
+    # page does not own, so each is SOURCED to the page that evidences it — the same move the
+    # twelve listing rows above make. Every phrase below is one the sourced page's MIGRATED body
+    # says today AND one its own board record keeps after P5: "reputable" and "ethical breeder"
+    # are data/boards/uk-blue-staffy-puppy-buying-guide.json, "breed standard", "Kennel Club",
+    # "Dangerous Dogs Act", "banned breed" and "nanny dog" are
+    # data/boards/uk-staffordshire-bull-terrier-guide.json, and "L-2-HGA" and "skin" are
+    # data/boards/blue-staffy-health-uk.json. The two rows sourced to the why-us page itself lean
+    # only on prose that record keeps OUTSIDE the accordion — "parent dogs" is the migrated
+    # opening `home-raised` carries and "puppy purchase contract" is the H1 and `promises`.
+    "whyus-start": ["reputable", "ethical breeder"],
+    "whyus-american-english": ["Kennel Club", "breed standard"],
+    "whyus-not-banned": ["banned breed", "nanny dog"],
+    "whyus-pit-bull": ["Dangerous Dogs Act", "Kennel Club"],
+    "whyus-amstaff": ["breed standard", "Kennel Club"],
+    "whyus-prone-to": ["L-2-HGA", "skin"],
+    "whyus-stud-dogs": ["parent dogs", "temperament"],
+    "whyus-partner": ["puppy purchase contract", "KC-registered"],
     # The two homepage rows are new in project 4 Task 18 and are verified against the
     # MIGRATED body today and against the rebuilt page from Task 18's P5. Every phrase is
     # one the migrated key-takeaway block already uses AND one the board record's own
