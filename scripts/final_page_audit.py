@@ -163,8 +163,37 @@ PROFILES = {
         "single_canonical": "FAIL",      # exactly one canonical link
     },
 }
-def severity(page_type, check):
-    """Per-check severity, falling back to the profile's `_default`, then global."""
+# ── Page-type exemptions for interior legal/utility slugs (spec §9 amendment 4c) ─────────
+# Three of the interior checks below are SALES-PAGE checks wearing an interior profile's
+# clothes: `cites_credentials_early` wants "KC registered" or "DEFRA" inside the first 300
+# words, `lifespan_12_14` wants the breed's lifespan stated, and `newsletter_present` wants a
+# sign-up band. A privacy policy that opened on its own licence number, and a post-enquiry
+# confirmation that told a reader who has just written to us how long a Staffy lives, would
+# both be worse pages for satisfying the check. So the exemption is per SLUG and carries its
+# reason, rather than being switched off for every interior page — the guide and health pages
+# are interior too, and those three checks are exactly right there.
+#
+# `phone_in_footer` is NOT here. It fails on every page on the site because
+# data/settings.json holds PHONE_PLACEHOLDER until project 6 supplies a number, and a
+# site-wide baseline row that the report counts is the honest way to carry that.
+SALES_SHAPED_CHECKS = ("cites_credentials_early", "lifespan_12_14", "newsletter_present")
+INTERIOR_UTILITY_EXEMPT = {
+    "privacy-policy-uk":
+        "legal page: the copy is a data-protection notice, and a credentials line, a lifespan "
+        "figure or a newsletter band in it would be a sales page in a policy's clothes",
+    "thank-you-blue-staffy-puppies-journey":
+        "post-enquiry confirmation: the reader has already written to us, so the page owes "
+        "them a reply window rather than credentials, a lifespan figure or a sign-up band",
+}
+
+
+def severity(page_type, check, slug=None):
+    """Per-check severity, falling back to the profile's `_default`, then global.
+
+    A slug in INTERIOR_UTILITY_EXEMPT takes NA on the three sales-shaped checks."""
+    if (slug in INTERIOR_UTILITY_EXEMPT and page_type == "interior"
+            and check in SALES_SHAPED_CHECKS):
+        return "NA"
     prof = PROFILES.get(page_type, {})
     return prof.get(check, prof.get("_default", DEFAULT_SEVERITY))
 
@@ -233,7 +262,7 @@ def audit_html(slug, html, page_type="interior"):
     # Product whose `offers` is an AggregateOffer, plus an ItemList of per-puppy
     # Product+Offer, and a flat type-name search called the correct shape a defect.
     stray_aggregate = [a for a in aggregates if a not in owned_aggregates]
-    r["no_aggregateoffer"] = (not aggregates) if severity(page_type, "no_aggregateoffer") == "FAIL" \
+    r["no_aggregateoffer"] = (not aggregates) if severity(page_type, "no_aggregateoffer", slug) == "FAIL" \
                              else not stray_aggregate
     # Delivery band from data/settings.json: delivery_min_gbp 200, delivery_max_gbp 350.
     r["shipping_line"] = bool(SHIP_RE.search(bodytext))
@@ -366,7 +395,7 @@ def audit_html(slug, html, page_type="interior"):
             visible, re.I)
         r["no_visible_date"] = r["no_visible_date"] and not blog_date
     # severity only applies to boolean pass/fail checks — skip info keys (counts/strings)
-    r["_severity"] = {k: severity(page_type, k) for k in r
+    r["_severity"] = {k: severity(page_type, k, slug) for k in r
                       if not k.startswith("_") and isinstance(r[k], bool)}
     hard_fails = [k for k, v in r.items() if v is False and r["_severity"].get(k) == "FAIL"]
     warns = [k for k, v in r.items() if v is False and r["_severity"].get(k) == "WARN"]
@@ -473,6 +502,8 @@ def main(argv=None):
             print(f"  ✗ {s}: dist/ MISSING — run `npx astro build`"); continue
         tag = "  [migration baseline]" if baseline_only(r) else ""
         print(f"[{r['_verdict']}]{tag} {s}   {r['h_counts']} | FAQPage×{r['faqpage_count']} | schema:{r['schema_types']}")
+        if s in INTERIOR_UTILITY_EXEMPT and r.get("_page_type") == "interior":
+            print(f"    EXEMPT → {', '.join(SALES_SHAPED_CHECKS)} — {INTERIOR_UTILITY_EXEMPT[s]}")
         if r["_hard_fails"]: print("    FAIL → " + ", ".join(r["_hard_fails"]))
         if r["_warns"]:      print("    WARN → " + ", ".join(r["_warns"]))
     npass = sum(1 for r in rows.values() if r.get("_verdict") == "PASS")

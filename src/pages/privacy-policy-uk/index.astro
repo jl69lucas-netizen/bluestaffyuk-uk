@@ -23,12 +23,19 @@
 // `min-h5-h6` reads the built page for a rebuilt slug (spec §9 amendment 2). Levels descend
 // with no skips: every H5 sits under an H4 and every H6 under an H5. The H6 lines all open
 // on the record's own `tuple.h6_prefixes` entry, "Privacy Note:".
+//
+// EVERY HEADING RENDERS THROUGH `titleCase()` (spec §9 amendment 4b). The breeder approved
+// the WORDING — the record's own section headings and the picked H1 — and the case is
+// presentation, fixed for the whole site by rules/headings.md. So the strings below stay in
+// the spelling that was signed off and `src/lib/headings.ts` cases them at render, which is
+// the only way the page and the record can hold ONE spelling of an approved heading.
 import PageShell from '../../layouts/PageShell.astro';
 import Hero from '../../components/kit/Hero.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
+import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE } from '../../lib/site';
 import record from '../../../data/boards/privacy-policy-uk.json';
@@ -65,7 +72,7 @@ const email = SITE.email;
     <Hero
       as="h1"
       eyebrow="UK GDPR · Data Protection Act 2018"
-      title={h1}
+      title={T(h1)}
       lede="I am Lisa Bright, and BlueStaffyUK is the data controller for everything you send us. This page says what I collect when you enquire about a puppy, why I hold it, who else ever sees it, and what you can ask me to do with it."
       image={mark.file}
       imageAlt={mark.alt}
@@ -83,101 +90,101 @@ const email = SITE.email;
 
   {/* 02 */}
   <section id="what-we-collect" data-section-label="What information we collect">
-    <h2>What information we collect</h2>
+    <h2>{T('What information we collect')}</h2>
     <p>Two kinds: what you send me, and what the website records on its own.</p>
 
-    <h3>What you give us when you enquire</h3>
+    <h3>{T('What you give us when you enquire')}</h3>
     <p>
       Your name, email address, phone number and postal address, with anything you choose to
       tell me about your home and family — children, another dog, the garden.
     </p>
 
-    <h3>What the website records automatically</h3>
+    <h3>{T('What the website records automatically')}</h3>
     <p>
       Your IP address, your browser, the pages you visit and how long you spend on them,
       collected through cookies.
     </p>
-    <h4>Why I Ask for the Home Details</h4>
+    <h4>{T('Why I Ask for the Home Details')}</h4>
     <p>
       None of it is required to get an answer. A Staffy that suits a quiet flat is not always
       the one that suits a house with three children in it.
     </p>
-    <h5>You Choose How Much to Say</h5>
+    <h5>{T('You Choose How Much to Say')}</h5>
     <p>Send only a name and an email address if you prefer. I will still reply.</p>
-    <h6>Privacy Note: A Short Enquiry Is Never a Worse One</h6>
+    <h6>{T('Privacy Note: A Short Enquiry Is Never a Worse One')}</h6>
     <p>Leaving a field blank moves you down no list. There is no list.</p>
   </section>
 
   {/* 03 */}
   <section id="how-we-use" data-section-label="How we use your information">
-    <h2>How we use your information</h2>
+    <h2>{T('How we use your information')}</h2>
     <p>
       Five things, each with its lawful basis named beside it rather than in a table at the
       bottom, where this sort of thing goes to be ignored.
     </p>
 
-    <h3>Answering your enquiry</h3>
+    <h3>{T('Answering your enquiry')}</h3>
     <p>Replying about a puppy. Basis: performance of a contract, or legitimate interest.</p>
 
-    <h3>Telling you about our dogs and services</h3>
+    <h3>{T('Telling you about our dogs and services')}</h3>
     <p>
       The dogs, the litters and how delivery works, where you asked. Basis: performance of a
       contract, or legitimate interest.
     </p>
 
-    <h3>Improving the website</h3>
+    <h3>{T('Improving the website')}</h3>
     <p>Making the pages clearer, using what the analytics show. Basis: legitimate interest.</p>
 
-    <h3>Record keeping and administration</h3>
+    <h3>{T('Record keeping and administration')}</h3>
     <p>Our records of enquiries, deposits and litters. Basis: legitimate interest.</p>
 
-    <h3>Meeting legal obligations</h3>
+    <h3>{T('Meeting legal obligations')}</h3>
     <p>Anything the law requires a breeder to record. Basis: legal obligation.</p>
-    <h4>What I Never Use It For</h4>
+    <h4>{T('What I Never Use It For')}</h4>
     <p>No unasked-for marketing, and no profile built out of what you read.</p>
-    <h5>Consent Is Not the Basis for a Reply</h5>
+    <h5>{T('Consent Is Not the Basis for a Reply')}</h5>
     <p>You wrote to me, so answering is legitimate interest. Consent covers the extras.</p>
-    <h6>Privacy Note: A Lawful Basis Is Not a Blank Cheque</h6>
+    <h6>{T('Privacy Note: A Lawful Basis Is Not a Blank Cheque')}</h6>
     <p>Legitimate interest is still balanced against your rights.</p>
   </section>
 
   {/* 04 */}
   <section id="sharing" data-section-label="When we share your information">
-    <h2>When we share your information</h2>
+    <h2>{T('When we share your information')}</h2>
     <p>
       BlueStaffyUK does not sell, trade or pass your personal information to anyone for
       marketing. It goes further than me in three circumstances, and this is the whole list.
     </p>
 
-    <h3>Service providers who help us run the site</h3>
+    <h3>{T('Service providers who help us run the site')}</h3>
     <p>
       The providers behind the website and our email, and only where they have agreed to keep
       what they handle confidential.
     </p>
 
-    <h3>DEFRA-approved pet transport</h3>
+    <h3>{T('DEFRA-approved pet transport')}</h3>
     <p>
       When you have asked us to arrange delivery, the transport service gets the details it
       needs to bring your puppy to you safely and lawfully, and nothing more.
     </p>
 
-    <h3>When the law requires it</h3>
+    <h3>{T('When the law requires it')}</h3>
     <p>In response to a court order, or a comparable legal process.</p>
-    <h4>Registration Paperwork Is Separate</h4>
+    <h4>{T('Registration Paperwork Is Separate')}</h4>
     <p>
       Registering a litter with
       <a href="https://www.thekennelclub.org.uk/" target="_blank" rel="noopener noreferrer">The Kennel Club</a>
       is about the dogs, not about you. Your enquiry is no part of it.
     </p>
-    <h5>Delivery Details Are Shared Late</h5>
+    <h5>{T('Delivery Details Are Shared Late')}</h5>
     <p>An address and a phone number, once a delivery is being booked. Never our correspondence.</p>
-    <h6>Privacy Note: No One Buys This Data</h6>
+    <h6>{T('Privacy Note: No One Buys This Data')}</h6>
     <p>Your details are not sold, and never will be.</p>
   </section>
 
   {/* 05 */}
   <section id="third-parties" data-section-label="The third-party services we use">
-    <h2>The third-party services we use</h2>
+    <h2>{T('The third-party services we use')}</h2>
     <p>
       Three, named plainly. We work with
       <a href="https://www.thekennelclub.org.uk/" target="_blank" rel="noopener noreferrer">the pedigree registry</a>
@@ -192,7 +199,7 @@ const email = SITE.email;
 
   {/* 06 */}
   <section id="security" data-section-label="How your data is kept safe">
-    <h2>How your data is kept safe</h2>
+    <h2>{T('How your data is kept safe')}</h2>
     <p>
       The measures are technical and organisational: secure servers, encryption in transit
       through SSL, and access restricted to the people who need it to answer you or arrange a
@@ -205,39 +212,39 @@ const email = SITE.email;
 
   {/* 07 */}
   <section id="your-rights" data-section-label="Your rights over your data">
-    <h2>Your rights over your data</h2>
+    <h2>{T('Your rights over your data')}</h2>
     <p>
       As a UK resident you hold seven rights over what I keep about you, under UK GDPR and the
       Data Protection Act 2018. No reason is needed —
       <a href="/uk-blue-staffy-breeders-contact/">contact us</a> and say what you want.
     </p>
 
-    <h3>Right to access</h3>
+    <h3>{T('Right to access')}</h3>
     <p>You can ask for a copy of the personal data we hold about you.</p>
 
-    <h3>Right to erasure</h3>
+    <h3>{T('Right to erasure')}</h3>
     <p>In certain circumstances you can ask us to delete it.</p>
 
-    <h3>Right to data portability</h3>
+    <h3>{T('Right to data portability')}</h3>
     <p>You can ask for it in a structured, commonly used, machine-readable format.</p>
 
-    <h3>Right to rectification</h3>
+    <h3>{T('Right to rectification')}</h3>
     <p>You can ask us to correct anything inaccurate or incomplete.</p>
 
-    <h3>Right to restrict processing</h3>
+    <h3>{T('Right to restrict processing')}</h3>
     <p>You can ask us to limit how it is used.</p>
 
-    <h3>Right to object</h3>
+    <h3>{T('Right to object')}</h3>
     <p>You can object to processing based on legitimate interest.</p>
 
-    <h3>Right to withdraw consent</h3>
+    <h3>{T('Right to withdraw consent')}</h3>
     <p>Where consent is the basis, you can withdraw it whenever you like.</p>
-    <h4>How Long a Request Takes</h4>
+    <h4>{T('How Long a Request Takes')}</h4>
     <p>
       Every legitimate request is answered within one month. If it is complicated I will say
       so inside that month.
     </p>
-    <h5>If You Are Not Happy With the Answer</h5>
+    <h5>{T('If You Are Not Happy With the Answer')}</h5>
     <p>
       Complain to the
       <a href="https://ico.org.uk/" target="_blank" rel="noopener noreferrer">Information Commissioner's Office</a>,
@@ -245,40 +252,40 @@ const email = SITE.email;
       <a href="https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/" target="_blank" rel="noopener noreferrer">Citizens Advice</a>
       is independent.
     </p>
-    <h6>Privacy Note: Asking Costs You Nothing</h6>
+    <h6>{T('Privacy Note: Asking Costs You Nothing')}</h6>
     <p>No fee, and no effect on an enquiry or a reservation.</p>
   </section>
 
   {/* 08 */}
   <section id="cookies" data-section-label="Cookies, and changes to this policy">
-    <h2>Cookies, and changes to this policy</h2>
+    <h2>{T('Cookies, and changes to this policy')}</h2>
     <p>This website uses cookies, and they fall into two kinds.</p>
 
-    <h3>Essential cookies</h3>
+    <h3>{T('Essential cookies')}</h3>
     <p>The ones the site needs to work at all. Without them the pages do not load properly.</p>
 
-    <h3>Analytics cookies</h3>
+    <h3>{T('Analytics cookies')}</h3>
     <p>
       The ones that let me see how the site is used, Google Analytics among them, so that I
       can improve it.
     </p>
 
-    <h3>Changes to this policy</h3>
+    <h3>{T('Changes to this policy')}</h3>
     <p>
       Any change is posted here with an updated date, so the version you are reading is always
       the current one.
     </p>
-    <h4>Why the Date Matters</h4>
+    <h4>{T('Why the Date Matters')}</h4>
     <p>There is no archive of old wordings; the date is the whole change history.</p>
-    <h5>Nothing Applies Retroactively</h5>
+    <h5>{T('Nothing Applies Retroactively')}</h5>
     <p>A change governs what happens after it is posted.</p>
-    <h6>Privacy Note: Check the Date First</h6>
+    <h6>{T('Privacy Note: Check the Date First')}</h6>
     <p>On a printed or cached copy, the version on this page is the one that counts.</p>
   </section>
 
   {/* 09 */}
   <section id="contact" data-section-label="Asking us about your privacy">
-    <h2>Asking us about your privacy</h2>
+    <h2>{T('Asking us about your privacy')}</h2>
     <p>
       Any question about this policy, or about what I hold and why, comes to me rather than to
       an inbox nobody reads. Write to <a href={`mailto:${email}`}>{email}</a> or use
@@ -290,7 +297,7 @@ const email = SITE.email;
   {/* 10 — the FAQ, in the picked style S1 (full-width accordion). The three rows are the
       ones data/faq.json sources to this page; the record names the same three ids. */}
   <section id="questions" data-section-label="Questions we are asked about privacy" class={questionsBox}>
-    <h2>Questions we are asked about privacy</h2>
+    <h2>{T('Questions we are asked about privacy')}</h2>
     <Faq items={faqs} />
   </section>
 </PageShell>

@@ -82,6 +82,15 @@ WHITELIST_SNIPPETS = [
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",
 
+    # ── the kit Hero's own chip row and CTA pair (project 4, 2026-09-20) ───────────
+    # `src/components/kit/Hero.astro` renders three fixed trust chips and two fixed
+    # buttons under every hero on the site; only the eyebrow, title and lede above them
+    # are the page's own. Two rebuilt pages already carry the run verbatim and every
+    # page rebuilt after them will, so it is chrome by the same measure as the CTA band
+    # above — one component rendered across page types, not a passage anybody wrote
+    # twice. The stem starts at the first chip because the lede before it varies.
+    "kc registered dna tested parents raised in the home meet the puppies ask a question",
+
     # newsletter block
     "get blue staffy updates new litters breeder tips puppy availability straight to your inbox",
 
@@ -142,6 +151,17 @@ VOID_TAGS = {"br", "img", "hr", "input", "meta", "link", "source", "track", "wbr
 # cross-sell strip, is still compared in full.
 CHROME_RE = re.compile(r"jump|toc|rail|msp-|crumb|review|testimonial|read-c|quote-c", re.I)
 
+# The board-style axis classes are NOT chrome (project 4, 2026-09-20). `boxClass()` in
+# src/lib/boardStyles.ts writes one `bl-<axis>-<value>` class per axis onto the SECTION a
+# rebuilt page's prose lives in, and two of the values it can write — `bl-list-rail` and
+# `bl-aside-jump` — contain the substrings CHROME_RE uses to spot a jump rail. A section
+# whose approved style happens to be a rail therefore had its entire body, headings and all,
+# read as site chrome: on the first page built with those picks the heading pre-check saw 6
+# of its 17 headings and `min-h5-h6` failed a page carrying five of each. The axis names are
+# a layout vocabulary that only ever appears on page CONTENT, so they are stripped from the
+# blob before the chrome test rather than the chrome test being loosened.
+BL_CLASS_RE = re.compile(r"\bbl-[a-z0-9-]+")
+
 class Text(HTMLParser):
     def __init__(self):
         super().__init__(); self.parts=[]; self.stack=[]
@@ -150,6 +170,7 @@ class Text(HTMLParser):
         skipping = bool(self.stack and self.stack[-1][1])
         if not skipping:
             blob = " ".join(v for k,v in attrs if v and k in ("class","id","aria-label"))
+            blob = BL_CLASS_RE.sub(" ", blob)
             skipping = t in SKIP_TAGS or bool(CHROME_RE.search(blob))
         self.stack.append((t, skipping))
     def handle_endtag(self,t):

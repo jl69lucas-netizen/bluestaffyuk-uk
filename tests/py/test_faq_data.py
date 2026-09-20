@@ -29,9 +29,14 @@ TOKENS = {
 # treat as a promise. Each must appear on the page that row names.
 FACT_PHRASES = {
     "puppy-package": ["first vaccinations", "microchip", "puppy pack"],
-    "enquiry-reply-time": ["personally review and respond", "24-48 business hours", "spam or junk folder"],
-    "enquiry-while-you-wait": ["Staffy breed guide", "health and care", "ready to find their forever home"],
-    "enquiry-follow-up": ["contact our purebred Blue Staffy breeders", "Privacy Policy"],
+    # The three enquiry rows are verified against the REBUILT thank-you page's prose, the
+    # same way the privacy rows below are: the migrated body's wording ("personally review
+    # and respond", "ready to find their forever home", "contact our purebred Blue Staffy
+    # breeders") went with the migrated body, and a phrase list left pointing at it would
+    # be asserting rule 9 against a page that no longer exists (project 4 Task 8).
+    "enquiry-reply-time": ["read and answered personally", "24-48 business hours", "spam or junk folder"],
+    "enquiry-while-you-wait": ["Staffy breed guide", "health and care", "here today"],
+    "enquiry-follow-up": ["Writing again", "privacy policy"],
     # The three privacy rows are verified against the REBUILT page's prose (the accordion
     # that renders them is cut out first), so the phrases are the ones that page uses.
     "privacy-data-collected": ["email address, phone number and postal address", "IP address"],

@@ -39,7 +39,12 @@
     box-shadow: var(--shadow-card);
   }
   .bl-frame-band { background: var(--color-surface-inverse); color: var(--color-text-on-inverse); }
-  .bl-frame-band a { color: var(--color-link-on-inverse); }
+  /* UNDERLINED, not just recoloured. `--color-link-on-inverse` against the band's own text
+     colour is under the 3:1 Lighthouse asks of a link told apart by colour alone
+     (`link-in-text-block`, measured on /thank-you-blue-staffy-puppies-journey/ 2026-09-20,
+     accessibility 96), and rules/links.md wants body links underlined regardless. The bone
+     surfaces already underline through global.css; the band did not. */
+  .bl-frame-band a { color: var(--color-link-on-inverse); text-decoration: underline; text-underline-offset: 2px; }
 
   .bl-box h2 {
     font-family: var(--font-display);
@@ -147,6 +152,17 @@
     border-color: currentColor;
   }
   .bl-box.bl-frame-card .kit-hero { background: transparent; }
+  /* THE PHOTO KEEPS ITS RATIO INSIDE A BOARD BOX. At >=1024px the kit Hero drops `.pic`'s
+     4:5 ratio for `height: 100%` so the photo fills a 390-450px band the page owns. Inside a
+     `.bl-box` the band is not the page's any more — the box's own padding and grid decide the
+     row — so before the photo loads the row is sized by the image's INTRINSIC 500x500 and
+     after it loads by the copy, and the section shrinks by 35-60px as it arrives. That is
+     `layout-image-box-reserved` (blocking, measured at 1280 on all three rebuilt pages,
+     2026-09-20). Restoring the declared ratio makes the reserved box and the painted box the
+     same box, which is what the check asks of every image. */
+  @media (min-width: 1024px) {
+    .bl-box .kit-hero .pic { aspect-ratio: 4 / 5; height: auto; align-self: center; }
+  }
 
   /* --- lists ------------------------------------------------------------------------ */
   .bl-cards { display: grid; gap: var(--space-4); min-width: 0; }
