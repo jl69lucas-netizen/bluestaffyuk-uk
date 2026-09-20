@@ -648,9 +648,23 @@
          "minLength": 2
         },
         "source": {
-         "comment": "A path into a data file, `data/<file>.json#<pointer>`, or `data/<file>.json#count(<expr>)` for a derived count. The test resolves it and fails when it does not resolve.",
-         "type": "string",
-         "minLength": 5
+         "comment": "A path into a data file, `data/<file>.json#<selector>`, or a LIST of them when the figure is made of more than one fact: `£200–£350` is a range, and citing only the minimum leaves the maximum unsourced while reading as sourced. Selectors: a dotted path (with `[index]` or `[id]` steps), `count(<field>=<value>)`, `len`, `len(<path>)`, `cell(<path to rows>, <row label>)` and `files(<glob>)`. Every one must resolve to a SINGLE value, and every number the figure prints must appear in what the sources resolve to, in order — tests/py/test_board_previews.py and scripts/board_gate.py both check it.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 5
+          },
+          {
+           "type": "array",
+           "minItems": 1,
+           "maxItems": 4,
+           "uniqueItems": true,
+           "items": {
+            "type": "string",
+            "minLength": 5
+           }
+          }
+         ]
         }
        }
       }
@@ -760,16 +774,90 @@
         "type": "array",
         "maxItems": 4,
         "items": {
-         "type": "string",
-         "minLength": 2
+         "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 2
+          },
+          {
+           "type": "object",
+           "required": [
+            "text",
+            "source"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "text": {
+             "type": "string",
+             "minLength": 2
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
+            }
+           }
+          }
+         ]
         }
        },
        "ticks": {
         "type": "array",
         "maxItems": 6,
         "items": {
-         "type": "string",
-         "minLength": 2
+         "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 2
+          },
+          {
+           "type": "object",
+           "required": [
+            "text",
+            "source"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "text": {
+             "type": "string",
+             "minLength": 2
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
+            }
+           }
+          }
+         ]
         }
        },
        "aside": {
@@ -802,6 +890,24 @@
             "value": {
              "type": "string",
              "minLength": 1
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
             }
            }
           }
@@ -810,8 +916,45 @@
           "type": "array",
           "maxItems": 8,
           "items": {
-           "type": "string",
-           "minLength": 2
+           "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+           "oneOf": [
+            {
+             "type": "string",
+             "minLength": 2
+            },
+            {
+             "type": "object",
+             "required": [
+              "text",
+              "source"
+             ],
+             "additionalProperties": false,
+             "properties": {
+              "text": {
+               "type": "string",
+               "minLength": 2
+              },
+              "source": {
+               "oneOf": [
+                {
+                 "type": "string",
+                 "minLength": 5
+                },
+                {
+                 "type": "array",
+                 "minItems": 1,
+                 "maxItems": 4,
+                 "uniqueItems": true,
+                 "items": {
+                  "type": "string",
+                  "minLength": 5
+                 }
+                }
+               ]
+              }
+             }
+            }
+           ]
           }
          }
         }
@@ -1335,6 +1478,12 @@
      },
      "alt": {
       "type": "string"
+     },
+     "caption": {
+      "comment": "A short label drawn ON the photo, for a hero mosaic tile (the breeder's hero-idea sheets caption the lead tile). It is not the alt text and never repeats it: the alt describes the photo for somebody who cannot see it, the caption names it for somebody who can. Absent means the tile carries no label.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 60
      }
     }
    }

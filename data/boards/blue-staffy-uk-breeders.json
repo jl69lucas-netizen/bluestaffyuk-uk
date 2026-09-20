@@ -209,7 +209,13 @@
     "ticks": [
      "Both parents DNA tested clear",
      "Puppies raised in the house",
-     "UK home delivery, £200–£350 by distance"
+     {
+      "text": "UK home delivery, £200–£350 by distance",
+      "source": [
+       "data/settings.json#delivery_min_gbp",
+       "data/settings.json#delivery_max_gbp"
+      ]
+     }
     ],
     "aside": {
      "title": "Who we are",
@@ -506,7 +512,7 @@
     {
      "n": "2",
      "label": "DNA clearances on both parents",
-     "source": "data/facts/blue-staffy-uk-breeders.json#tests"
+     "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
     },
     {
      "n": "6",
@@ -516,7 +522,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {
@@ -1372,7 +1381,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/breeder-sitting-blue-staffy-puppy-home.webp",
-   "alt": "Lisa Bright sitting with a blue Staffy puppy at home in Carlisle"
+   "alt": "Lisa Bright sitting with a blue Staffy puppy at home in Carlisle",
+   "caption": "Lisa, at home"
   },
   {
    "slot": "about-hero-tile-3",
@@ -1382,7 +1392,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/playful-blue-staffy-lawn-uk.webp",
-   "alt": "A playful blue Staffy on the lawn at our home in Cumbria"
+   "alt": "A playful blue Staffy on the lawn at our home in Cumbria",
+   "caption": "Out on the lawn"
   }
  ],
  "dropped": {

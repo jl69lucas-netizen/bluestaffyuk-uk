@@ -222,7 +222,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {
@@ -237,7 +240,10 @@
     ],
     "ticks": [
      "Both parents DNA tested clear",
-     "£500 deposit, refundable",
+     {
+      "text": "£500 deposit, refundable",
+      "source": "data/settings.json#deposit_gbp"
+     },
      "UK home delivery by DEFRA-approved transport"
     ],
     "aside": {
@@ -245,15 +251,18 @@
      "rows": [
       {
        "label": "Males",
-       "value": "£1,500"
+       "value": "£1,500",
+       "source": "data/price-matrix.json#male_gbp"
       },
       {
        "label": "Females",
-       "value": "£1,700"
+       "value": "£1,700",
+       "source": "data/price-matrix.json#female_gbp"
       },
       {
        "label": "Deposit",
-       "value": "£500, refundable"
+       "value": "£500, refundable",
+       "source": "data/settings.json#deposit_gbp"
       }
      ]
     }
@@ -362,7 +371,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {
@@ -1373,7 +1385,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/maggie-blue-staffy-dam-with-pups.webp",
-   "alt": "Maggie, the dam, with her blue Staffy puppies at home"
+   "alt": "Maggie, the dam, with her blue Staffy puppies at home",
+   "caption": "Maggie with the litter"
   },
   {
    "slot": "sale-hero-tile-3",
@@ -1383,7 +1396,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/bluestaffyuk-nationwide-delivery.webp",
-   "alt": "The van we use for UK home delivery of a blue Staffy puppy"
+   "alt": "The van we use for UK home delivery of a blue Staffy puppy",
+   "caption": "Delivered to your door"
   }
  ],
  "dropped": {

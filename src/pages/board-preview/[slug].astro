@@ -67,10 +67,19 @@ interface VideoData { id: string; title: string; caption?: string }
  *  `ledge` axis selects between; `refresh` is the section's recorded delta. All three live on
  *  the record for the `table` block's reason: a figure the route derived would be a figure
  *  nobody approved. */
-interface StatRow { n: string; label: string; source: string }
+/** A source is one path or several: `£200–£350` is two facts and cites two. */
+type Source = string | string[];
+interface StatRow { n: string; label: string; source: Source }
+/** A ledge entry is a plain string when it states no figure, and `{text, source}` when it
+ *  does — the record carries the path, the renderer only ever sees the text. */
+type LedgeEntry = string | { text: string; source: Source };
 interface HeroData {
-  chips?: string[]; ticks?: string[];
-  aside?: { title?: string; quote?: string; rows?: { label: string; value: string }[]; items?: string[] };
+  chips?: LedgeEntry[]; ticks?: LedgeEntry[];
+  aside?: {
+    title?: string; quote?: string;
+    rows?: { label: string; value: string; source?: Source }[];
+    items?: LedgeEntry[];
+  };
 }
 interface RefreshData { axis: string; note: string }
 interface Section {
@@ -141,6 +150,12 @@ const assetsFor = (s: Section) =>
     .map((slot) => record.assets.find((x) => x.slot === slot.slot && x.file))
     .filter((a): a is Asset => !!a)
     .map((a) => ({ src: a.file as string, alt: a.alt || s.heading, caption: undefined as string | undefined }));
+
+/** The TEXT of a ledge entry. The `source` beside it is the record's business and the gate's
+ *  (`ledge-source-unresolved`); a hero never renders a citation, so it is dropped here and
+ *  the kit component keeps taking plain strings. */
+const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+const ledgeList = (xs: LedgeEntry[] | undefined) => (xs ?? []).map(ledgeText);
 
 /** The layout family this record's hero and counter strip are cut for (working rule 16). */
 const layoutType = layoutTypeFor(record.meta.page_type, record.meta.layout_type ?? null);
@@ -234,10 +249,15 @@ const stubTargets = (s: Section, styleId: string) =>
                       align={l.align ?? 'left'}
                       media={l.media ?? 'right'}
                       ledge={l.ledge ?? 'none'}
-                      chips={s.hero?.chips ?? []}
-                      ticks={s.hero?.ticks ?? []}
+                      chips={ledgeList(s.hero?.chips)}
+                      ticks={ledgeList(s.hero?.ticks)}
                       stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
-                      aside={s.hero?.aside}
+                      aside={s.hero?.aside && {
+                        title: s.hero.aside.title,
+                        quote: s.hero.aside.quote,
+                        rows: (s.hero.aside.rows ?? []).map((r) => ({ label: r.label, value: r.value })),
+                        items: ledgeList(s.hero.aside.items),
+                      }}
                       mosaic={assetsFor(s)}
                     />
                   )}
@@ -245,7 +265,7 @@ const stubTargets = (s: Section, styleId: string) =>
                   {s.shape === 'stats' && (
                     <CounterStrip
                       tiles={l.tiles ?? 'inline'}
-                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label, source: r.source }))}
+                      stats={(s.stats ?? []).map((r) => ({ n: r.n, label: r.label }))}
                     />
                   )}
                   {s.shape === 'divider' && <SectionDivider inverse={l.frame === 'band'} />}

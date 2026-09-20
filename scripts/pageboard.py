@@ -929,15 +929,27 @@ LINK_FLOOR_TYPES = {"for-sale", "hub"}            # the transactional cluster an
 #                                                      cell starts with that label
 #   src/content/blog#files(*.md)                       how many files match, for a collection
 #
+# A row may cite a LIST of sources instead of one, and a figure that is a range has to: the
+# string "£200–£350" is two facts, and a row citing only `delivery_min_gbp` had a source for
+# the 200 and none at all for the 350 — a half-sourced figure that reads as a sourced one.
+#
+# THE TERMINAL VALUE MUST BE A SCALAR. A path that lands on a list or an object resolves
+# "successfully" and proves nothing: `facts/<slug>.json#tests` is a five-item array, and it was
+# cited by a row printing "2". Every such source is refused here by name, so the row is either
+# repointed at something that really yields the figure or the tile is dropped.
+#
 # A bracket step is an INDEX when it is a number and an ID LOOKUP otherwise, so
 # `sections[costs]` finds the section whose `id` is `costs` and survives a section being
 # inserted above it. An index that silently shifted would resolve to a different fact and
 # report green, which is the one failure a source check cannot afford.
 #
-# The gate does NOT insist the rendered figure equals the resolved one: "£500" is the honest
-# rendering of `500`, "£200–£350" of two fields, and "11–17 kg" of a sentence that says
-# "11 to 17 kg (24 to 38 lbs)". What it insists is that the path RESOLVES — a source pointing
-# at a key nobody has is the defect that makes an invented number look sourced.
+# The gate does NOT insist the rendered figure equals the resolved one CHARACTER FOR CHARACTER:
+# "£500" is the honest rendering of `500`, and "11–17 kg" of a sentence that says "11 to 17 kg
+# (24 to 38 lbs), males generally at the higher end". What it does insist on is weaker than
+# equality and much stronger than nothing: every NUMBER the figure prints must appear in the
+# resolved text, in the order it prints them (`figure_mismatch`). "11–17 kg" against that
+# sentence passes; "12–17 kg" does not, and neither does "2" against a five-item list of test
+# names — which is the defect this rule was written for.
 _SOURCE = re.compile(r"^([A-Za-z0-9_./*-]+)#(.+)$")
 _STEP = re.compile(r"([A-Za-z0-9_-]*)((?:\[[^\]]+\])*)")
 
@@ -1032,18 +1044,171 @@ def resolve_stat_source(spec, root=None):
         field, want = (x.strip() for x in inner.split("=", 1))
         return sum(1 for row in data if isinstance(row, dict) and str(row.get(field)) == want)
 
-    return _walk(data, sel, spec)
+    value = _walk(data, sel, spec)
+    _scalar(value, spec)
+    return value
+
+
+def _scalar(value, spec):
+    """Refuse a terminal that is not a single fact.
+
+    A path landing on a list or an object resolves without error and proves nothing: the
+    why-us and about records both cited a `tests` ARRAY for a row printing "2", and the array
+    happened to hold five entries on one page and three on the other. A source whose value
+    cannot be compared to the figure beside it is not a source."""
+    if value is None or isinstance(value, (list, dict, tuple, set)):
+        kind = "nothing" if value is None else type(value).__name__
+        raise SourceError(
+            f"{spec}: that path reaches {kind}, not a single value — a figure cannot be "
+            "checked against a list, so cite something that resolves to the figure itself "
+            "(count(...), len(...), cell(...)) or drop the tile")
+    return value
+
+
+def sources_of(row):
+    """The source list a `stats` row carries, whether it wrote one string or several."""
+    src = (row or {}).get("source")
+    if isinstance(src, str):
+        return [src]
+    return list(src or [])
+
+
+def resolve_stat_sources(row, root=None):
+    """[value, …] for every source a row cites, in the order it cites them."""
+    srcs = sources_of(row)
+    if not srcs:
+        raise SourceError("a stats row cites no source at all")
+    return [resolve_stat_source(s, root) for s in srcs]
+
+
+#: A STANDALONE run of digits: one not glued to a letter or to another digit-bearing token.
+#: `£1,500` is one number once the comma is gone, `11–17` is two, and `L-2-HGA` / `HC-HSF4`
+#: are none — those digits are parts of a test's NAME, and a rule that read them as
+#: quantities would demand a source for the name of a DNA test.
+_DIGITS = re.compile(r"(?<![A-Za-z0-9-])(\d+)(?![A-Za-z0-9])")
+
+
+def figure_numbers(text):
+    """Every number a string prints, in order, as digit strings with separators removed."""
+    # Commas go (a thousands separator is not a boundary), spaces STAY: stripping them glued
+    # the unit to the number and "11–17 kg" became "11–17kg", whose 17 then read as part of
+    # an identifier and vanished from the check.
+    return _DIGITS.findall(str(text).replace(",", ""))
+
+
+def figure_matches(n, values):
+    """True when every number the figure prints appears, in order, in the resolved text.
+
+    Deliberately weaker than equality and deliberately stronger than "it resolved". `cell()`
+    returns prose — "12 to 14 years with good care and good genetics" — and the tile prints
+    "12–14 years"; insisting on equality would ban the one selector that reads a breed table,
+    and insisting on nothing is what let a five-item array stand behind a "2". So the rule is
+    ORDER: 12 then 14, both present. A figure that prints no number at all ("Clear") has
+    nothing to check and passes — its source still has to resolve to a scalar."""
+    # A value that is not a single fact can never stand behind a figure, and stringifying a
+    # list would let "2" match the 2 in "L-2-HGA". `resolve_stat_source` refuses those
+    # already; this is the second lock, because `figure_matches` is called directly by the
+    # tests and by anything that resolves its own values.
+    if any(v is None or isinstance(v, (list, dict, tuple, set)) for v in values):
+        return False
+    want = figure_numbers(n)
+    if not want:
+        return True
+    hay = " ".join(str(v) for v in values).replace(",", "")
+    at = 0
+    for num in want:
+        i = hay.find(num, at)
+        if i < 0:
+            return False
+        at = i + len(num)
+    return True
 
 
 def stat_source_problems(board, root=None):
-    """[(section id, source, reason)] for every `stats` row that does not resolve."""
+    """[(section id, source, reason)] for every `stats` row that does not hold up.
+
+    Two failures, reported the same way: a source that does not resolve to a single value,
+    and a figure whose numbers are not in what the sources resolved to."""
     out = []
     for sec in board.get("sections", []):
         for row in sec.get("stats") or []:
+            srcs = sources_of(row)
             try:
-                resolve_stat_source(row.get("source"), root)
+                values = resolve_stat_sources(row, root)
             except SourceError as e:
                 out.append((sec["id"], row.get("source"), str(e)))
+                continue
+            if not figure_matches(row.get("n"), values):
+                out.append((sec["id"], row.get("source"),
+                            f"the figure {row.get('n')!r} prints "
+                            f"{'/'.join(figure_numbers(row.get('n')))}, which is not what "
+                            f"{', '.join(srcs)} resolves to ({', '.join(repr(v) for v in values)})"))
+    return out
+
+
+# ── working rule 16: the hero's LEDGE states figures too ───────────────────────────────────
+#
+# The counter strip was sourced and the hero's ledge was not, which is the same claim in a
+# different box: "£500 deposit, refundable" under a lede and "£500 / refundable deposit" in a
+# counter tile are one fact, and only one of them was carrying its path. So a ledge entry is
+# either a plain STRING, when it states no figure, or `{text, source}`, when it does — and the
+# same two checks apply: the sources resolve to single values, and the standalone numbers the
+# entry prints are in what they resolved to, in order.
+#
+# An entry that prints a number and cites nothing is the defect, and it is reported as loudly
+# as an unresolvable path: an unsourced figure that reads like a sourced one is worse than an
+# obviously missing citation.
+
+def ledge_entries(sec):
+    """[(where, text, [source, …]), …] for every figure-bearing part of a hero's ledge."""
+    hero = sec.get("hero") or {}
+    out = []
+
+    def add(where, entry):
+        if isinstance(entry, dict):
+            out.append((where, entry.get("text", ""), sources_of(entry)))
+        else:
+            out.append((where, entry, []))
+
+    for key in ("chips", "ticks"):
+        for i, e in enumerate(hero.get(key) or []):
+            add(f"{key}[{i}]", e)
+    aside = hero.get("aside") or {}
+    for i, e in enumerate(aside.get("items") or []):
+        add(f"aside.items[{i}]", e)
+    for i, r in enumerate(aside.get("rows") or []):
+        out.append((f"aside.rows[{i}]", r.get("value", ""), sources_of(r)))
+    # `title` and `quote` are prose, and prose with a standalone number in it is still a
+    # claim — the quote is checked for the same reason a tick is.
+    for key in ("title", "quote"):
+        if aside.get(key):
+            out.append((f"aside.{key}", aside[key], []))
+    return out
+
+
+def ledge_problems(board, root=None):
+    """[(section id, where, reason)] for every ledge entry that states an unbacked figure."""
+    out = []
+    for sec in board.get("sections", []):
+        for where, text, srcs in ledge_entries(sec):
+            nums = figure_numbers(text)
+            if not nums and not srcs:
+                continue
+            if nums and not srcs:
+                out.append((sec["id"], where,
+                            f"{text!r} prints {'/'.join(nums)} and cites nothing — a figure "
+                            "under a lede is a claim, so it carries the path it came from"))
+                continue
+            try:
+                values = [resolve_stat_source(x, root) for x in srcs]
+            except SourceError as e:
+                out.append((sec["id"], where, str(e)))
+                continue
+            if not figure_matches(text, values):
+                out.append((sec["id"], where,
+                            f"{text!r} prints {'/'.join(nums) or 'no number'}, which is not "
+                            f"what {', '.join(srcs)} resolves to "
+                            f"({', '.join(repr(v) for v in values)})"))
     return out
 
 
@@ -1202,7 +1367,9 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # checked, and a warning here is a number that ships.
     for sid, spec, why in stat_source_problems(board):
         add("stat-source-unresolved", "FAIL",
-            f"section {sid}: stats source {spec!r} does not resolve — {why}")
+            f"section {sid}: stats source {spec!r} does not hold up — {why}")
+    for sid, where, why in ledge_problems(board):
+        add("ledge-source-unresolved", "FAIL", f"section {sid} {where}: {why}")
 
     auth = authorization_check(board, ont)
     for e in auth["blocked"]:

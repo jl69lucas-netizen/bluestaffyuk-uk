@@ -611,23 +611,37 @@ def test_a_per_page_triple_is_accepted_and_so_is_the_legacy_one():
 
 # --- and the figures those counters print -------------------------------------------------
 
-def test_every_stats_row_in_every_record_resolves_to_a_file_on_disk():
-    """Rule 9 through working rule 16: a counter figure carries the path it came from, and a
-    path nobody resolves is a citation format rather than a citation."""
-    bad = []
-    for f in sorted((ROOT / "data/boards").glob("*.json")):
-        record = json.loads(f.read_text(encoding="utf-8"))
-        bad += [(f.stem, *row) for row in PB.stat_source_problems(record)]
-    assert bad == [], bad
-
-
 @pytest.mark.parametrize("spec,want", [
     ("data/settings.json#deposit_gbp", 500),
+    ("data/settings.json#delivery_max_gbp", 350),
     ("data/puppies.json#len", 6),
     ("data/puppies.json#count(status=Available)", 6),
+    ("data/puppies.json#count(sex=female)", 3),
+    ("src/content/blog#files(*.md)", 1),
+    ("data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)", 2),
+    ("data/boards/uk-blue-staffy-puppy-buying-guide.json#len(sections[breeder-questions].table.rows)", 15),
+    ("data/boards/uk-staffordshire-bull-terrier-guide.json"
+     "#cell(sections[breed-facts].table.rows, Lifespan)",
+     "12 to 14 years with good care and good genetics"),
 ])
-def test_the_source_resolver_reads_the_three_forms(spec, want):
+def test_the_source_resolver_reads_every_form(spec, want):
     assert PB.resolve_stat_source(spec) == want
+
+
+def test_a_section_is_found_by_id_not_by_position():
+    """`sections[costs]` has to survive a section being inserted above it. An index that
+    silently shifted would resolve to a different fact and still report green, which is the
+    one failure a source check cannot afford."""
+    record = json.loads((ROOT / "data/boards/uk-blue-staffy-puppy-buying-guide.json")
+                        .read_text(encoding="utf-8"))
+    positions = [s["id"] for s in record["sections"]]
+    assert positions.index("costs") > 0, "the fixture only means something mid-list"
+    by_id = PB.resolve_stat_source(
+        "data/boards/uk-blue-staffy-puppy-buying-guide.json#len(sections[costs].table.rows)")
+    by_index = PB.resolve_stat_source(
+        "data/boards/uk-blue-staffy-puppy-buying-guide.json"
+        "#len(sections[%d].table.rows)" % positions.index("costs"))
+    assert by_id == by_index == 4
 
 
 @pytest.mark.parametrize("spec", [
@@ -635,9 +649,94 @@ def test_the_source_resolver_reads_the_three_forms(spec, want):
     "data/settings.json#no_such_key",
     "data/nope.json#len",
     "data/settings.json#count(status=Available)",
+    "data/boards/_demo.json#len(sections[no-such-section].table.rows)",
+    "data/boards/uk-staffordshire-bull-terrier-guide.json"
+    "#cell(sections[breed-facts].table.rows, No Such Trait)",
+    "src/content/nowhere#files(*.md)",
 ])
 def test_the_source_resolver_refuses_what_does_not_resolve(spec):
-    """A resolver that silently returned None for a bad path would make the gate above
-    report PASS over exactly the numbers it exists to catch."""
+    """A resolver that silently returned None for a bad path would make the gate report PASS
+    over exactly the numbers it exists to catch."""
     with pytest.raises(PB.SourceError):
         PB.resolve_stat_source(spec)
+
+
+@pytest.mark.parametrize("spec", [
+    "data/facts/blue-staffy-uk-breeders.json#tests",      # a three-item array
+    "data/facts/buy-staffy-puppies-for-sale-uk.json#tests",  # a five-item array
+    "data/settings.json#socials",                         # a whole object
+])
+def test_a_source_that_lands_on_a_list_or_an_object_is_refused(spec):
+    """THE DEFECT THIS RULE WAS WRITTEN FOR. Both `#tests` sources resolved without error and
+    proved nothing: one is a five-item array, the other a three-item array, and both stood
+    behind a tile printing "2". A value a figure cannot be compared against is not a source."""
+    with pytest.raises(PB.SourceError, match="not a single value"):
+        PB.resolve_stat_source(spec)
+
+
+# ── the figure has to be IN what its sources resolved to ──────────────────────────────────
+
+@pytest.mark.parametrize("n,values", [
+    ("£500", [500]),
+    ("£1,500", [1500]),
+    ("6", [6]),
+    ("£200–£350", [200, 350]),
+    ("11–17 kg", ["11 to 17 kg (24 to 38 lbs), males generally at the higher end"]),
+    ("12–14 years", ["12 to 14 years with good care and good genetics"]),
+    ("14–16 in", ["14 to 16 inches (35 to 41 cm)"]),
+    ("Clear", ["DNA tested clear"]),          # no digits to check
+    # `L-2-HGA` and `HC-HSF4` are the NAMES of two DNA tests. A digit rule that read them as
+    # quantities would demand a source for a test's name, so only standalone numbers count.
+    ("L-2-HGA and HC-HSF4 tested clear", ["DNA tested clear"]),
+])
+def test_a_figure_whose_numbers_are_in_its_sources_passes(n, values):
+    assert PB.figure_matches(n, values)
+
+
+@pytest.mark.parametrize("n,values", [
+    ("2", [["L-2-HGA", "HC-HSF4", "DNA", "microchip", "vaccinat"]]),  # the original defect
+    ("2", [None]),
+    ("12–17 kg", ["11 to 17 kg (24 to 38 lbs)"]),                     # first number wrong
+    ("17–11 kg", ["11 to 17 kg (24 to 38 lbs)"]),                     # right numbers, wrong ORDER
+    ("£200–£350", [200]),                                             # the range half-sourced
+    ("£1,700", [1500]),
+    ("7", [6]),
+])
+def test_a_figure_whose_numbers_are_not_in_its_sources_fails(n, values):
+    assert not PB.figure_matches(n, values)
+
+
+def test_a_range_needs_both_of_its_sources():
+    """`£200–£350` is two facts. Citing only the minimum leaves the maximum unsourced while
+    reading as sourced, which is the state every delivery tile shipped in before this."""
+    row_one = {"n": "£200–£350", "source": "data/settings.json#delivery_min_gbp"}
+    row_both = {"n": "£200–£350", "source": ["data/settings.json#delivery_min_gbp",
+                                             "data/settings.json#delivery_max_gbp"]}
+    assert PB.sources_of(row_one) == ["data/settings.json#delivery_min_gbp"]
+    assert len(PB.sources_of(row_both)) == 2
+    assert not PB.figure_matches(row_one["n"], PB.resolve_stat_sources(row_one))
+    assert PB.figure_matches(row_both["n"], PB.resolve_stat_sources(row_both))
+
+
+def test_a_row_citing_no_source_at_all_is_refused():
+    with pytest.raises(PB.SourceError):
+        PB.resolve_stat_sources({"n": "6", "label": "puppies"})
+
+
+def test_every_stats_row_in_every_record_resolves_and_matches():
+    """Rule 9 through working rule 16, over the real records: a counter figure carries the
+    paths it came from, every one of them resolves to a single value, and the numbers the
+    tile prints are in what they resolved to."""
+    bad = []
+    for f in sorted((ROOT / "data/boards").glob("*.json")):
+        record = json.loads(f.read_text(encoding="utf-8"))
+        bad += [(f.stem, *row) for row in PB.stat_source_problems(record)]
+    assert bad == [], bad
+
+
+def test_the_record_sweep_is_not_vacuous():
+    """The sweep above passes trivially over records with no `stats`. Count the rows."""
+    rows = sum(len(s.get("stats") or [])
+               for f in (ROOT / "data/boards").glob("*.json")
+               for s in json.loads(f.read_text(encoding="utf-8"))["sections"])
+    assert rows >= 30, f"only {rows} sourced figure(s) on the boards — the sweep proves little"

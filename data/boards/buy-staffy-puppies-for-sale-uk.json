@@ -213,7 +213,7 @@
     {
      "n": "2",
      "label": "DNA tests on both parents",
-     "source": "data/facts/buy-staffy-puppies-for-sale-uk.json#tests"
+     "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
     },
     {
      "n": "6",
@@ -223,7 +223,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {
@@ -239,7 +242,13 @@
     "ticks": [
      "L-2-HGA and HC-HSF4 tested clear",
      "Raised in our own home",
-     "UK home delivery, £200–£350 by distance"
+     {
+      "text": "UK home delivery, £200–£350 by distance",
+      "source": [
+       "data/settings.json#delivery_min_gbp",
+       "data/settings.json#delivery_max_gbp"
+      ]
+     }
     ],
     "aside": {
      "title": "Why families choose us",
@@ -477,7 +486,7 @@
     {
      "n": "2",
      "label": "DNA tests on both parents",
-     "source": "data/facts/buy-staffy-puppies-for-sale-uk.json#tests"
+     "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
     },
     {
      "n": "6",
@@ -487,7 +496,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {
@@ -1918,7 +1930,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/vet-checked-blue-staffy-puppy-near-me.webp",
-   "alt": "A vet-checked blue Staffy puppy before it leaves us"
+   "alt": "A vet-checked blue Staffy puppy before it leaves us",
+   "caption": "Vet checked"
   },
   {
    "slot": "why-hero-tile-3",
@@ -1928,7 +1941,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/healthy-staffy-puppy-for-sale-uk.webp",
-   "alt": "A healthy Staffy puppy for sale in the UK"
+   "alt": "A healthy Staffy puppy for sale in the UK",
+   "caption": "Raised in the house"
   }
  ],
  "dropped": {

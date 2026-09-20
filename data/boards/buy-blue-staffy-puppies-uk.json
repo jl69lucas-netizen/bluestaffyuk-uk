@@ -240,12 +240,21 @@
    },
    "hero": {
     "chips": [
-     "Six puppies in this litter",
+     {
+      "text": "6 puppies in this litter",
+      "source": "data/puppies.json#count(status=Available)"
+     },
      "KC registered",
      "Carlisle, Cumbria"
     ],
     "ticks": [
-     "Three males and three females",
+     {
+      "text": "3 males and 3 females",
+      "source": [
+       "data/puppies.json#count(sex=male)",
+       "data/puppies.json#count(sex=female)"
+      ]
+     },
      "See the mother with the puppies",
      "Collection in Carlisle or UK delivery"
     ],
@@ -254,15 +263,18 @@
      "rows": [
       {
        "label": "Available",
-       "value": "6"
+       "value": "6",
+       "source": "data/puppies.json#count(status=Available)"
       },
       {
        "label": "Males",
-       "value": "3"
+       "value": "3",
+       "source": "data/puppies.json#count(sex=male)"
       },
       {
        "label": "Females",
-       "value": "3"
+       "value": "3",
+       "source": "data/puppies.json#count(sex=female)"
       }
      ]
     }
@@ -1546,7 +1558,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/blue-staffy-pups-near-you.webp",
-   "alt": "Blue Staffy puppies available near you in the UK"
+   "alt": "Blue Staffy puppies available near you in the UK",
+   "caption": "Available now"
   },
   {
    "slot": "listing-hero-tile-3",
@@ -1556,7 +1569,8 @@
    "required": false,
    "status": "baked",
    "file": "/images/blue-staffy-puppy-delivery-uk.webp",
-   "alt": "A blue Staffy puppy ready for UK home delivery"
+   "alt": "A blue Staffy puppy ready for UK home delivery",
+   "caption": "Ready to travel"
   }
  ],
  "dropped": {

@@ -129,11 +129,16 @@
      "rows": [
       {
        "label": "Deposit",
-       "value": "£500, refundable"
+       "value": "£500, refundable",
+       "source": "data/settings.json#deposit_gbp"
       },
       {
        "label": "Delivery",
-       "value": "£200–£350"
+       "value": "£200–£350",
+       "source": [
+        "data/settings.json#delivery_min_gbp",
+        "data/settings.json#delivery_max_gbp"
+       ]
       }
      ]
     }
@@ -219,7 +224,10 @@
     {
      "n": "£200–£350",
      "label": "UK delivery by distance",
-     "source": "data/settings.json#delivery_min_gbp"
+     "source": [
+      "data/settings.json#delivery_min_gbp",
+      "data/settings.json#delivery_max_gbp"
+     ]
     }
    ],
    "refresh": {

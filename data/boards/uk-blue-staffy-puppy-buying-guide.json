@@ -212,7 +212,10 @@
     "aside": {
      "title": "Before you pay",
      "items": [
-      "Fifteen questions to ask the breeder",
+      {
+       "text": "15 questions to ask the breeder",
+       "source": "data/boards/uk-blue-staffy-puppy-buying-guide.json#len(sections[breeder-questions].table.rows)"
+      },
       "The red flags that end a conversation",
       "What the puppy and the first year cost"
      ]

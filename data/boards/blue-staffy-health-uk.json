@@ -3,7 +3,7 @@
   "slug": "blue-staffy-health-uk",
   "page_type": "interior",
   "layout_type": "interior-guide",
-  "status": "draft",
+  "status": "boarded",
   "research_as_of": "2026-09-20",
   "sources": [
    {
@@ -215,7 +215,8 @@
       },
       {
        "label": "Lifespan",
-       "value": "12 to 14 years"
+       "value": "12 to 14 years",
+       "source": "data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Lifespan)"
       }
      ]
     }
