@@ -91,6 +91,11 @@ FACT_PHRASES = {
     # veterinary records are what `health-testing` offers to show a buyer.
     "whyus-paperwork": ["puppy purchase contract", "vaccination records", "microchipping details"],
     "whyus-evidence": ["genetic screening results", "veterinary records"],
+    # The listing row is verified against the MIGRATED body today and against the rebuilt
+    # page from Task 17's P5: both phrases are the migrated note "Our available puppies are
+    # updated regularly", and the record's `puppies` section keeps that sentence, which is
+    # the only thing the answer leans on.
+    "listing-availability": ["available puppies", "updated regularly"],
 }
 
 

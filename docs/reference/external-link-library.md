@@ -41,6 +41,8 @@ and no others. A different path is a different row — `/dog-breeding/…` and
 | https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ | royalkennelclub.com | The registry's own list of questions to ask a breeder before and during a visit — the independent version of the fifteen-question checklist | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
 | https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales | rspca.org.uk | The RSPCA on spotting a puppy dealer's advert and on finding a good breeder — the independent authority behind the red-flag table | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
 | https://www.bluecross.org.uk/advice/dog/socialising-your-puppy | bluecross.org.uk | The Blue Cross on socialising a puppy — independent advice on what a puppy should meet in its first weeks, which is what our home-raising section describes doing | `/buy-staffy-puppies-for-sale-uk/` | 2026-09-20 · 200 |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare | rspca.org.uk | The RSPCA on caring for a new puppy — the independent version of "what to do in the first weeks", which a listing page should not be the only source of | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
+| https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf | assets.publishing.service.gov.uk | The government's welfare-in-transport guidance for dogs and cats (PB10308) — the rules the transport a puppy travels in has to satisfy | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
 
 ## Provenance
 
@@ -100,3 +102,15 @@ the record's `dropped.links`: an encyclopaedia entry, two image libraries, a Nor
 veterinary group, a feed brand, a named courier, a classified site's breeder directory, a
 consumer-money site and `https://www.gov.uk/take-pet-abroad`, which redirects to the
 government's international pet travel page and does not describe a domestic delivery.
+
+The two added on 2026-09-20 for `/buy-blue-staffy-puppies-uk/` are both URLs the migrated body
+already carried, and both were re-checked that day. The RSPCA's `/dogs/health/puppycare` path
+is a live destination of its own and not a redirect to the `/dogs/puppy` row above it, so it
+gets its own row rather than being folded into that one. The welfare-in-transport PDF is the
+document the migrated body linked as "DEFRA's guidance on Transporting your pet (General
+Guidance)" and it still resolves at the same URL; it is the first PDF in this table, and
+`normalise_url()` treats it as any other path.
+
+That board adds no other row either. The rest of its migrated outbound links are internal
+location-cluster pages project 5 owns, two in-page fragments and a self-link, all logged in the
+record's `dropped.links`.

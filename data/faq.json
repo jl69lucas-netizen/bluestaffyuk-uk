@@ -154,5 +154,11 @@
     "q": "Can I see the health test results for both parents?",
     "a": "Yes. We will show you the genetic screening results and the veterinary records for both parents before you commit to a puppy, and again on the day you collect.",
     "source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro"
+  },
+  {
+    "id": "listing-availability",
+    "q": "How do I know a puppy is still available?",
+    "a": "The cards on our listing page are generated from our own list of available puppies, and that list is updated regularly, so a puppy still showing there is one nobody has reserved. Tell us which one you like and we will confirm before you pay anything.",
+    "source": "src/pages/buy-blue-staffy-puppies-uk/index.astro"
   }
 ]
