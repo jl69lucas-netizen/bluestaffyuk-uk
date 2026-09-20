@@ -145,6 +145,12 @@ growing. Every other rule moved to a pack.
     resolves today) and again as one page-level table — before the breeder approves it. A
     link that is not on the approved board is not built. (Breeder, 2026-09-19.)
 
+13. **Tables: three styles on the board, stacked on mobile.** Any page section that renders a
+    table (prices, comparisons, health tests, delivery bands) is a `table` shape on its board
+    with three rendered styles at 1280 / 768 / 375, and every table stacks into labelled rows
+    below 640px (`.stack-table` with `data-label` cells) — no horizontal scroll, no clipped
+    columns. Clean and readable is the bar. (Breeder, 2026-09-20.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how
