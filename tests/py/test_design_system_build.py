@@ -175,10 +175,10 @@ def test_every_component_folder_plus_the_cover_each_carries_a_ds_card_line():
     rows = json.loads((ROOT / "data/design/components.json").read_text())
     expected = {D.COMPONENTS[r["id"]]["comp"] for r in rows} | {"Cover"}
     assert {p.name for p in (out / "components").iterdir()} == expected
-    # Sixteen components and the cover. Unlike the canvas and the picks board, this
-    # artifact documents the CURRENT kit, so it carries project 4's three rows too
-    # (spec §3, and §9 amendment 3b for SectionStrip).
-    assert len(expected) == 17
+    # Seventeen components and the cover. Unlike the canvas and the picks board, this
+    # artifact documents the CURRENT kit, so it carries project 4's four rows too
+    # (spec §3, §9 amendment 3b for SectionStrip and §9 amendment 5 for DataTable).
+    assert len(expected) == 18
     heights = json.loads((ROOT / "data/design/canvas-heights.json").read_text())
     for r in rows:
         spec = D.COMPONENTS[r["id"]]

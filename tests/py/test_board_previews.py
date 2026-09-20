@@ -239,12 +239,13 @@ STYLE_MAP = _parse_style_map()
 AXES = _rendered_axes()
 
 
-def test_the_parse_found_thirteen_shapes_with_three_styles_each():
+def test_the_parse_found_fourteen_shapes_with_three_styles_each():
     """Ten section shapes, plus the three CHROME shapes the contact board adds — `dial`,
     `sheet` and `strip`, whose three styles are variants of PageDial, SectionSheet and
-    SectionStrip themselves rather than of the bed a section sits on."""
-    assert len(STYLE_MAP) == 13, sorted(STYLE_MAP)
-    assert {"dial", "sheet", "strip"} <= set(STYLE_MAP), sorted(STYLE_MAP)
+    SectionStrip themselves rather than of the bed a section sits on — plus `table`,
+    component 17's shape, whose three styles are the `chrome` axis (spec §9 amendment 5)."""
+    assert len(STYLE_MAP) == 14, sorted(STYLE_MAP)
+    assert {"dial", "sheet", "strip", "table"} <= set(STYLE_MAP), sorted(STYLE_MAP)
     assert all(len(v) == 3 for v in STYLE_MAP.values()), {k: len(v) for k, v in STYLE_MAP.items()}
     assert set(AXES) == set(STYLE_MAP), (sorted(AXES), sorted(STYLE_MAP))
 
@@ -279,7 +280,7 @@ def test_every_style_name_is_distinct_within_its_shape():
 DIST_DEMO = ROOT / "dist/board-preview/_demo/index.html"
 _CID = re.compile(r'\s+data-astro-cid-[a-z0-9]+(="[^"]*")?')
 _STYLE_ATTRS = re.compile(r'\s+data-style(-name)?="[^"]*"')
-_BL = re.compile(r"\bbl-(?:frame|cols|media|list|aside|head)-[a-z0-9-]+\s*")
+_BL = re.compile(r"\bbl-(?:frame|cols|media|list|aside|head|chrome)-[a-z0-9-]+\s*")
 
 
 def _normalised(inner):

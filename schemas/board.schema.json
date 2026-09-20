@@ -110,15 +110,27 @@
           "words": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
                     "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}},
           "shape": {
-            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The thirteen that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial`, `sheet` and `strip` are the three CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial, the section sheet and the mobile section strip every rebuilt page then carries.",
+            "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The fourteen that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial`, `sheet` and `strip` are the three CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial, the section sheet and the mobile section strip every rebuilt page then carries. `table` is component 17, DataTable (spec \u00a79 amendment 5): a section that renders a table carries its columns and rows in its own `table` block, is offered three chrome arrangements, and stacks into labelled rows below 640px in every one of them.",
             "enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard",
                      "hero", "takeaways", "puppies", "reviews", "faq", "form", "stats", "trust", "divider",
-                     "dial", "sheet", "strip"]
+                     "dial", "sheet", "strip", "table"]
           },
           "styles": {
             "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly the three src/lib/boardStyles.ts defines. scripts/build_board_previews.py refuses anything else, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
             "type": "array", "uniqueItems": true, "items": {"enum": ["S1", "S2", "S3"]},
             "oneOf": [{"maxItems": 0}, {"minItems": 3, "maxItems": 3}]
+          },
+          "table": {
+            "comment": "A `table`-shaped section's own data, and the only place a board states one. Required on that shape and forbidden on every other, because a table whose rows lived in the tree could not be rendered on the preview route and a table block on a prose section would never be rendered at all. `numeric` names the zero-based column indexes DataTable right-aligns; every row must be as long as `columns`, which the board gate checks.",
+            "type": "object", "required": ["caption", "columns", "rows"], "additionalProperties": false,
+            "properties": {
+              "caption": {"type": "string", "minLength": 3},
+              "columns": {"type": "array", "minItems": 2, "maxItems": 6, "items": {"type": "string", "minLength": 1}},
+              "rows": {"type": "array", "minItems": 1,
+                       "items": {"type": "array", "minItems": 2, "maxItems": 6,
+                                 "items": {"type": ["string", "number"]}}},
+              "numeric": {"type": "array", "uniqueItems": true, "items": {"type": "integer", "minimum": 0, "maximum": 5}}
+            }
           },
           "cta": {"type": "integer", "minimum": 0, "maximum": 6},
           "keywords": {"type": "object",
@@ -175,8 +187,14 @@
             "if": {"required": ["shape"],
                    "properties": {"shape": {"enum": ["hero", "takeaways", "puppies", "reviews", "faq",
                                                      "form", "stats", "trust", "divider",
-                                                     "dial", "sheet", "strip"]}}},
+                                                     "dial", "sheet", "strip", "table"]}}},
             "then": {"required": ["styles"], "properties": {"styles": {"minItems": 3}}}
+          },
+          {
+            "comment": "The `table` block belongs to the `table` shape and to nothing else. Both directions are stated: a table section with no data is an empty board box, and a table block on a prose section is content no renderer reads.",
+            "if": {"required": ["shape"], "properties": {"shape": {"const": "table"}}},
+            "then": {"required": ["table"]},
+            "else": {"not": {"required": ["table"]}}
           }
         ]
       }

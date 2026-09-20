@@ -42,6 +42,7 @@ import SectionDivider from '../../components/kit/SectionDivider.astro';
 import PageDial from '../../components/kit/PageDial.astro';
 import SectionSheet from '../../components/kit/SectionSheet.astro';
 import SectionStrip from '../../components/kit/SectionStrip.astro';
+import DataTable from '../../components/kit/DataTable.astro';
 import Button from '../../components/kit/Button.astro';
 import { boxClass, stylesFor } from '../../lib/boardStyles';
 import { loadFaq } from '../../lib/faq';
@@ -53,9 +54,13 @@ interface Asset {
   slot: string; kind: string; w: number; h: number;
   required: boolean; status: string; file: string | null; alt: string;
 }
+/** A `table`-shaped section's own data. Optional on every other shape, and the ONLY place
+ *  a table's numbers live: the route never derives a table from the tree, because a column
+ *  order and a row order are content decisions the board has to show before it is approved. */
+interface TableData { caption: string; columns: string[]; rows: (string | number)[][]; numeric?: number[] }
 interface Section {
   id: string; n: number; heading: string; intent: string; shape: string;
-  tree: TreeNode[]; images: ImageSlot[]; styles?: string[];
+  tree: TreeNode[]; images: ImageSlot[]; styles?: string[]; table?: TableData;
 }
 /** The parts of `schemas/board.schema.json` this route reads — named in full, so a field
  *  that moves in the schema is a type error here rather than an `undefined` at build. */
@@ -129,7 +134,7 @@ const stub = (s: Section, i: number) => {
 
 /** The shapes with a renderer of their own; anything else falls through to prose. */
 const KIT_SHAPES = ['hero', 'trust', 'stats', 'divider', 'reviews', 'faq', 'form', 'puppies',
-                    'takeaways', 'dial', 'sheet', 'strip'];
+                    'takeaways', 'dial', 'sheet', 'strip', 'table'];
 
 /** The three CHROME shapes. They are not a stretch of page: they are the in-page nav, and an
  *  in-page nav with nothing to navigate is three identical empty lists. So each block gets
@@ -193,6 +198,19 @@ const stubTargets = (s: Section, styleId: string) =>
                   {s.shape === 'divider' && <SectionDivider inverse={l.frame === 'band'} />}
                   {s.shape === 'reviews' && <Testimonial mode={l.mode ?? 'single'} />}
                   {s.shape === 'faq' && <Faq items={faqFor(s)} />}
+                  {/* The three arrangements are the box's `bl-chrome-*` class, not a prop:
+                      one component, three stylesheets' worth of chrome, and the same
+                      stacking below 640px in all three (working rule 13). A `table` section
+                      with no `table` block renders nothing rather than an invented grid —
+                      rule 9 applies to a preview exactly as it applies to a page. */}
+                  {s.shape === 'table' && s.table && (
+                    <DataTable
+                      caption={s.table.caption}
+                      columns={s.table.columns}
+                      rows={s.table.rows}
+                      numeric={s.table.numeric}
+                    />
+                  )}
                   {/* Three copies of one form on one document: each needs its own id space
                       or every label points at the first copy's field. */}
                   {s.shape === 'form' && <ContactFormKit idPrefix={`${s.id}-${st.id}-form`} />}

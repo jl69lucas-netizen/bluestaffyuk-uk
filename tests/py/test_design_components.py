@@ -12,7 +12,9 @@ IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-s
        # Project 4 adds the three in-page navigation components. They are LAST on purpose:
        # the numbering in `title` is the spec's reading order and the board sheets are cut
        # in it. The set is the dial (>=1024px) and, below it, the strip and the sheet.
-       "page-dial", "section-sheet", "section-strip"]
+       "page-dial", "section-sheet", "section-strip",
+       # And component 17, the data table (working rule 13; spec §9 amendment 5).
+       "data-table"]
 
 
 def load():
@@ -788,17 +790,17 @@ def test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring():
     assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
 
 
-PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip"]
+PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip", "data-table"]
 
 
-def test_components_json_has_sixteen_rows_after_project_4_additions():
-    """Project 4's three additions are appended, not interleaved. Spelled as its own test
-    because IDS above is the list every other test walks: if the three rows were ever moved
-    ahead of the project 3 thirteen the board sheets and the artboard numbering would
+def test_components_json_has_seventeen_rows_after_project_4_additions():
+    """Project 4's four additions are appended, not interleaved. Spelled as its own test
+    because IDS above is the list every other test walks: if the four rows were ever moved
+    ahead of the project 3 thirteen, the board sheets and the artboard numbering would
     silently renumber while `test_every_component_in_spec_order` stayed green."""
     ids = [r["id"] for r in load()]
-    assert len(ids) == 16, ids
-    assert ids[-3:] == PROJECT_4_IDS, ids[-3:]
+    assert len(ids) == 17, ids
+    assert ids[-4:] == PROJECT_4_IDS, ids[-4:]
     by_project = {r["id"]: r["project"] for r in load()}
     assert [i for i, p in by_project.items() if p == 4] == PROJECT_4_IDS
     assert len([i for i, p in by_project.items() if p == 3]) == 13
@@ -942,3 +944,40 @@ def test_a_shell_mounted_strip_is_still_the_pages_top_chrome():
     page = (ROOT / "dist" / "privacy-policy-uk" / "index.html").read_text(encoding="utf-8")
     strips = re.findall(r'<nav[^>]*class="kit-strip"[^>]*>', page)
     assert len(strips) == 1 and "data-strip" in strips[0], strips
+
+
+def test_built_data_table_is_semantic_and_labels_every_cell_for_the_stack():
+    """Convention 8. Component 17 is the data table (working rule 13; spec §9 amendment 5),
+    and everything asserted here is what makes it stack CLEANLY rather than merely narrowly:
+
+    · it carries `.stack-table`, whose below-640px rules in global.css turn every cell into
+      a block and move the `<thead>` off-screen;
+    · every `<td>` carries a `data-label` naming its column, because with the header row
+      gone that attribute is the only thing left saying what a cell is;
+    · the row's first cell is a `<th scope="row">` — the row's own title, which is why it
+      takes no label of its own — and each column header is a `<th scope="col">`;
+    · the numbers are DATA. The demo reads `data/puppies.json` and
+      `data/price-matrix.json`, so no price in this repo can be typed by hand (rule 9).
+
+    The three board arrangements are deliberately NOT asserted here: `chrome` is a layout
+    axis in src/lib/boardStyles.ts, so they exist on /board-preview/<slug>/ and are held by
+    test_board_previews.py. What the preview carries is the component's own default."""
+    s = _sections("data-table")
+    assert _has_class(s, "kit-table") and _has_class(s, "stack-table"), s[:300]
+    assert "<caption" in s
+    assert s.count('scope="col"') == 4, s.count('scope="col"')
+    assert s.count('scope="row"') == 4, s.count('scope="row"')
+    tds = re.findall(r"<td[^>]*>", s)
+    assert len(tds) == 12, len(tds)
+    unlabelled = [t for t in tds if not re.search(r'data-label="[^"]+"', t)]
+    assert not unlabelled, unlabelled
+    # The prices come from data/, never from this file or that one.
+    pups = json.loads((ROOT / "data/puppies.json").read_text())[:4]
+    prices = json.loads((ROOT / "data/price-matrix.json").read_text())
+    for p in pups:
+        assert f">{p['name']}<" in s, p["name"]
+        assert f"£{p['price_gbp']:,}" in s, p
+    assert f"£{prices['deposit_gbp']:,}" in s
+    # Tokens only, and no emoji: a table is text.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+    assert not [c for c in s if ord(c) >= 0x1F000]

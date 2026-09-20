@@ -561,6 +561,52 @@ COMPONENTS = {
                "Do not return the chips to outlines or to plain underlined text. The breeder picked the "
                "filled chip on the contact board (2026-09-19): a filled chip keeps its shape when it is "
                "half-scrolled at the rail's edge, and the other two did not."]),
+    # Component 17 (working rule 13; spec §9 amendment 5). The only kit component whose
+    # three board arrangements are a LAYOUT axis rather than a prop, which is why its
+    # "don'ts" are mostly about the stack: the arrangement is a choice, the stacking is not.
+    "data-table": dict(
+        comp="DataTable", group="Content",
+        summary="The data table: prices, delivery bands, health tests and comparisons, as a semantic "
+                "`<table>` that stacks into labelled rows below 640px.",
+        props=["`caption: string` — the table's name, rendered as a real `<caption>`. Not optional: a "
+               "table with no name is a grid, and stacked it is a grid with no title either.",
+               "`columns: string[]` — the column headers, in order. They are also the source of every "
+               "cell's `data-label`, so the two can never disagree.",
+               "`rows: (string | number)[][]` — one array per row, as long as `columns`. "
+               "`scripts/pageboard.py` refuses a board record whose rows are any other length.",
+               "`numeric?: number[]` — zero-based indexes of the columns to right-align. A LIST, not a "
+               "guess from the content: `£1,500` and `£850 to £1,200` are both strings.",
+               "`class` and any `HTMLAttributes<'table'>` attribute, spread onto the root."],
+        states=["Three board arrangements on the `chrome` axis of `src/lib/boardStyles.ts`, resolved to "
+                "`bl-chrome-*` classes by `boxClass()` and painted in `src/styles/board-styles.css`: "
+                "S1 ruled rows under a brand header band, S2 zebra rows inside a card, S3 borderless with "
+                "brass column rules. S1 is the component's own default, so a copy mounted outside a board "
+                "box is a finished table.",
+                "Stacked, below 640px: `.stack-table` turns every cell into a block, moves the `<thead>` "
+                "off-screen and prints each cell's `data-label` before its value. All three arrangements "
+                "stack the same way — it is not one of the three.",
+                "On a steel band the header band re-points to `color-surface-deep`, and the caption and "
+                "the row headers inherit the band's own text colour."],
+        checks=["`test_built_data_table_is_semantic_and_labels_every_cell_for_the_stack`",
+                "`layout-table-stacks-on-mobile` (render harness, blocking) — every `<table>` under "
+                "`<main>` labels its cells, and below 640px lays its rows out as blocks with no sideways "
+                "scroll. The fixture pair "
+                "`tests/render/fixtures/{known_good,known_broken}/layout-table-stacks-on-mobile.html` "
+                "is this component's own contract.",
+                "`layout-no-horizontal-overflow` (render harness, blocking) — a table is the commonest "
+                "way a page comes to scroll sideways on a phone."],
+        donts=["Do not add a `chrome` prop. The three arrangements are a board axis so that what the "
+               "breeder approves on `/board-preview/<slug>/` and what the rebuilt page resolves are one "
+               "rule in one stylesheet; a prop would be the same decision written twice.",
+               "Do not wrap it in `.table-wrap` to make it scroll. A sideways-scrolling table is the "
+               "defect working rule 13 exists to stop, not the fallback for a wide one — drop a column.",
+               "Do not omit `data-label` on a cell, or write one that is not its column's name. With the "
+               "header row moved off-screen it is the only thing left saying what the cell is.",
+               "Do not type a price, a delivery band or a test result in here by hand: the numbers come "
+               "from `data/price-matrix.json`, `data/puppies.json`, `data/settings.json` or the board "
+               "record's own `table` block (rule 9).",
+               "Do not use the first column's `<th scope=\"row\">` for an ordinary value — it is the "
+               "row's title, and it is what a screen reader announces before every cell in the row."]),
 }
 
 #: The marker's `group`, in the order the artifact's component table should read.

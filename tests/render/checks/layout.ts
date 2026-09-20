@@ -474,3 +474,89 @@ register({
     }
   },
 });
+
+/**
+ * WORKING RULE 13, MEASURED. Any table a page carries stacks into labelled rows below
+ * 640px: no horizontal scroll, no clipped columns, and every cell still saying which
+ * column it came from. The kit's `DataTable` (component 17) writes `data-label` on every
+ * `<td>` from its column list and carries `.stack-table`, whose rules live in
+ * src/styles/global.css; the migrated bodies that already ship tables carry both too. This
+ * check is what stops the next one from not.
+ *
+ * WHY IT IS NOT A vp375-ONLY CHECK. The meta gate runs every fixture pair at all three
+ * viewports and requires the broken one to FIRE at each of them, so a check that only had
+ * an opinion below 640px would examine its own fixture and pass it twice. The requirement
+ * is therefore split honestly: the LABELLING is structural and judged at every width — a
+ * `<td>` with no `data-label` is a cell that will be an unlabelled block the moment the
+ * table stacks, and that is true at 1280 — while the GEOMETRY (rows laid out as blocks, no
+ * sideways scroll) is judged where it exists, at 640px and below.
+ *
+ * THE UNIT IS ONE TABLE, so `examined` is the table count and a page with no table
+ * contributes none. Guard 2 in build_scorecard.mjs fails a check that examined zero nodes
+ * across EVERY page, which is the right bar here: /kit-preview/ mounts the component and
+ * /uk-blue-staffy-puppy-buying-guide/ carries three migrated tables, so the check always
+ * has subjects even before a rebuilt page boards one.
+ */
+register({
+  id: 'layout-table-stacks-on-mobile',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'every table stacks into labelled rows below 640px, with no sideways scroll',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const tables = Array.from(document.querySelectorAll<HTMLTableElement>('main table'));
+      // The geometry half applies where the stack does. Read off the document rather than
+      // off the harness's viewport argument, so the two can never disagree about which
+      // side of the breakpoint the page was actually rendered at.
+      const stacked = document.documentElement.clientWidth <= 640;
+      const bad: string[] = [];
+      tables.forEach((t, i) => {
+        const cap = (t.querySelector('caption')?.textContent || '').trim();
+        const name = cap ? `"${cap.slice(0, 40)}"` : `table ${i + 1}`;
+        const reasons: string[] = [];
+        const cells = Array.from(t.querySelectorAll('tbody td'));
+        if (!cells.length) {
+          reasons.push('no <td> in a <tbody> — a table with no body rows is not a table');
+        } else {
+          const unlabelled = cells.filter(
+            (c) => !(c.getAttribute('data-label') || '').trim(),
+          ).length;
+          if (unlabelled) {
+            reasons.push(
+              `${unlabelled} of ${cells.length} <td> carry no data-label, so they stack as unlabelled blocks`,
+            );
+          }
+        }
+        if (stacked) {
+          const rows = Array.from(t.querySelectorAll('tbody tr'));
+          const notBlock = rows.filter((row) => getComputedStyle(row).display !== 'block').length;
+          if (notBlock) {
+            reasons.push(
+              `${notBlock} of ${rows.length} row(s) still lay out as table rows below 640px — .stack-table is missing`,
+            );
+          }
+          const over = t.scrollWidth - t.clientWidth;
+          if (over > 1) reasons.push(`scrolls sideways by ${over}px`);
+        }
+        if (reasons.length) bad.push(`${name}: ${reasons.join('; ')}`);
+      });
+      return { examined: tables.length, bad };
+    });
+
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [
+            {
+              checkId: 'layout-table-stacks-on-mobile',
+              family: 'LAYOUT' as const,
+              viewport,
+              count: r.bad.length,
+              message: `${r.bad.length} table(s) do not stack cleanly: ${r.bad.slice(0, 5).join(' | ')}`,
+            },
+          ]
+        : [],
+    };
+  },
+});

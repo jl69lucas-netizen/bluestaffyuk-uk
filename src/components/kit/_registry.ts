@@ -35,6 +35,8 @@
 // Brass (--color-cta) is a FILL with --color-cta-ink text or an accent on a dark band. It is
 // never the colour of small text on a light surface: it is 2.1:1 there.
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import puppies from '../../../data/puppies.json';
+import prices from '../../../data/price-matrix.json';
 import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
@@ -51,11 +53,12 @@ import SiteFooterKit from './SiteFooterKit.astro';
 import PageDial from './PageDial.astro';
 import SectionSheet from './SectionSheet.astro';
 import SectionStrip from './SectionStrip.astro';
+import DataTable from './DataTable.astro';
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip';
+  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip' | 'data-table';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -108,6 +111,14 @@ export const DEMO_SECTIONS = [
 /** Every id, no exceptions — a `Partial` here would let a component be dropped from the kit
  *  by deleting its entry, and the preview would simply render one section fewer while every
  *  test that walks components.json went on passing. `Record` makes that a type error. */
+/** The data table's demo rows, built from data rather than typed: `data/puppies.json` for
+ *  the litter and `data/price-matrix.json` for the deposit every puppy carries. Four of the
+ *  six, in file order, so the specimen shows both a £1,500 row and a £1,700 one. */
+const money = (n: number) => `£${n.toLocaleString('en-GB')}`;
+const PRICE_ROWS: (string | number)[][] = (puppies as { name: string; sex: string; price_gbp: number }[])
+  .slice(0, 4)
+  .map((p) => [p.name, p.sex === 'male' ? 'Male' : 'Female', money(p.price_gbp), money(prices.deposit_gbp)]);
+
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
   // positioned box with room in it; without one the bar docks to the page's own scroll
@@ -246,5 +257,29 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
     C: SectionStrip,
     demo: [{ sections: DEMO_SECTIONS, chrome: false }],
     wrap: 'with-targets',
+  },
+  // Component 17, the data table (working rule 13; spec §9 amendment 5). THE NUMBERS ARE
+  // DATA: the four rows are data/puppies.json and the price column is `price_gbp`, which is
+  // data/price-matrix.json's male/female pair per puppy — rule 9 forbids a specimen from
+  // typing a price by hand, and a demo that did would be the one place in the repo where a
+  // price could drift. Four rows of a six-puppy litter, because the board width is 640 and
+  // the question the eye is asked here is what a row looks like, not how long the list is.
+  //
+  // The deposit column is one figure repeated, and that is the point: it is per puppy, not
+  // per litter, and a table that showed it once in a caption would read as the other way.
+  //
+  // Only ONE fixture, unlike the multi-state entries above: the three board arrangements
+  // are a `chrome` CLASS axis (src/lib/boardStyles.ts), so they exist on
+  // /board-preview/<slug>/ and not here. What this copy demos is the component's own
+  // default — S1, ruled rows under a brand header band — and its stacking, which is the
+  // half of the component that is not a choice.
+  'data-table': {
+    C: DataTable,
+    demo: [{
+      caption: 'This litter — price and deposit',
+      columns: ['Puppy', 'Sex', 'Price', 'Deposit'],
+      rows: PRICE_ROWS,
+      numeric: [2, 3],
+    }],
   },
 };

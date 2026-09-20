@@ -1,0 +1,108 @@
+---
+// src/components/kit/DataTable.astro — component 17, the data table (spec §9 amendment 5,
+// CLAUDE.md working rule 13). Prices, delivery bands, health tests, comparisons: every
+// table a rebuilt page carries is this component on a `table`-shaped board section.
+//
+// IT STACKS, ALWAYS. The root carries `.stack-table`, whose below-640px rules already live
+// in src/styles/global.css — every cell becomes a block, the `<thead>` is moved off-screen,
+// and each `<td>` prints its own column name from `data-label`. That is not an option a
+// caller can switch off: a table that scrolls sideways on a phone is the defect working
+// rule 13 exists to stop, and `layout-table-stacks-on-mobile` (blocking) measures it.
+// So `data-label` is written here, from the column list, on every single `<td>`.
+//
+// THE THREE BOARD STYLES ARE NOT PROPS. `chrome` is a LAYOUT axis in src/lib/boardStyles.ts
+// (`ruled` / `zebra` / `brass`) and resolves to a `bl-chrome-*` class on the box, with the
+// rules in src/styles/board-styles.css. The default painted below IS S1 — ruled rows under
+// a brand header band — so a copy mounted outside a board box (the kit preview) is a real
+// rendering rather than an unstyled one, and the other two are the stylesheet's job. A
+// `chrome` prop would have put the same decision in two places and let a page ship an
+// arrangement no board ever offered.
+//
+// SEMANTICS FIRST. `<caption>` names the table, `<th scope="col">` names each column, and
+// the first cell of every row is a `<th scope="row">` — so a screen reader can announce
+// "Roman, price, £1,500" rather than reading a grid of loose numbers. The row header takes
+// no `data-label`: stacked, it is the row's own title.
+//
+// `numeric` right-aligns the columns whose values are money or counts. It is a list of
+// COLUMN INDEXES, not a guess from the content: "£1,500" and "£850 to £1,200" are both
+// strings, and a component that sniffed them would align one and not the other.
+//
+// Convention 3: no `--color-brand` on anything that has to survive a dark band — the header
+// band reads `--kit-band`, which defaults to brand and is re-pointed by board-styles.css.
+// Convention 4: `...rest` on the root, `class` through `class:list`.
+// Tokens only; brass appears as a RULE, never as the colour of small text (2.1:1 on bone).
+import type { HTMLAttributes } from 'astro/types';
+
+type Cell = string | number;
+type Props = HTMLAttributes<'table'> & {
+  /** The table's name. Rendered as a real `<caption>`, never as a paragraph above it. */
+  caption: string;
+  columns: string[];
+  rows: Cell[][];
+  /** Zero-based column indexes to right-align. */
+  numeric?: number[];
+};
+const { caption, columns, rows, numeric = [], class: cls, ...rest } = Astro.props;
+const right = new Set(numeric);
+---
+<table {...rest} class:list={['kit-table', 'stack-table', cls]}>
+  <caption>{caption}</caption>
+  <thead>
+    <tr>{columns.map((c, i) => (
+      <th scope="col" data-align={right.has(i) ? 'right' : 'left'}>{c}</th>
+    ))}</tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr>
+        {row.map((cell, i) => (i === 0
+          ? <th scope="row">{cell}</th>
+          : <td data-label={columns[i] ?? ''} data-align={right.has(i) ? 'right' : 'left'}>{cell}</td>
+        ))}
+      </tr>
+    ))}
+  </tbody>
+</table>
+<style>
+  @layer components {
+    /* S1, the default: ruled rows under a brand header band. `--kit-band` so a table
+       dropped on a dark band can be re-pointed by the surface rather than by a prop. */
+    .kit-table {
+      --kit-band: var(--color-brand);
+      width: 100%;
+      border-collapse: collapse;
+      color: var(--color-text);
+      font-size: var(--text-sm);
+    }
+    caption {
+      caption-side: top;
+      text-align: left;
+      font-family: var(--font-display);
+      font-size: var(--text-lg);
+      color: var(--color-brand);
+      padding-bottom: var(--space-2);
+    }
+    thead th {
+      background: var(--kit-band);
+      color: var(--color-text-on-inverse);
+      font-weight: 600;
+      border-bottom: 0;
+    }
+    th, td { padding: var(--space-2) var(--space-3); vertical-align: top; }
+    tbody th, tbody td { border-bottom: 1px solid var(--color-rule); }
+    tbody th { text-align: left; font-weight: 600; color: var(--color-brand); }
+    [data-align='right'] { text-align: right; font-feature-settings: 'tnum'; }
+    /* BELOW 640px THIS BLOCK GETS OUT OF THE WAY. `.stack-table`'s own rules live in
+       global.css's @layer base, and @layer components beats base unconditionally — so the
+       cell padding and the per-cell rule above would survive into the stacked view and
+       draw a hairline under every LINE rather than under every ROW. They are unset here
+       rather than moved, because at 641px and up they are what the table looks like.
+       A right-aligned money column beside its own printed label is also just a gap in the
+       middle of a line once the cell is a block. */
+    @media (max-width: 640px) {
+      .kit-table th, .kit-table td { border: 0; padding: 4px 0; }
+      .kit-table [data-align='right'] { text-align: left; }
+      caption { padding-bottom: var(--space-1); }
+    }
+  }
+</style>

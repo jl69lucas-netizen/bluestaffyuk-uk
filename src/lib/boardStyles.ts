@@ -25,11 +25,11 @@
 export type Shape =
   | 'hero' | 'takeaways' | 'standard' | 'puppies' | 'reviews'
   | 'faq' | 'form' | 'stats' | 'trust' | 'divider'
-  | 'dial' | 'sheet' | 'strip';
+  | 'dial' | 'sheet' | 'strip' | 'table';
 
 export const SHAPES: readonly Shape[] = [
   'hero', 'takeaways', 'standard', 'puppies', 'reviews', 'faq', 'form', 'stats', 'trust', 'divider',
-  'dial', 'sheet', 'strip',
+  'dial', 'sheet', 'strip', 'table',
 ];
 
 /** Every axis a layout can state. All optional: a def sets only what its renderer reads,
@@ -57,6 +57,11 @@ export interface Layout {
   launcher?: 'tab' | 'pill' | 'fab';
   /** SectionStrip only: how a chip on the sticky mobile rail is drawn. */
   chip?: 'outline' | 'filled' | 'text';
+  /** DataTable only: how the table's rows and header are drawn. A CLASS axis, not a prop —
+   *  `boxClass()` emits `bl-chrome-*` and board-styles.css paints it, so the arrangement the
+   *  breeder approves on the board is the same rule the rebuilt page resolves. Stacking
+   *  below 640px is NOT on this axis: all three stack, always (working rule 13). */
+  chrome?: 'ruled' | 'zebra' | 'brass';
 }
 
 export type Axis = keyof Layout;
@@ -74,11 +79,16 @@ export interface StyleDef {
 export const STYLE_IDS: ReadonlyArray<StyleDef['id']> = ['S1', 'S2', 'S3'];
 
 /** The neutral value of each CLASS axis: what `boxClass()` writes when a def leaves it
- *  unset. `mode`, `ring`, `marks` and `launcher` are not here and are not classes: they are
- *  handed straight to a kit component as a prop (Testimonial's mode, PageDial's and
- *  SectionSheet's style), so there is no `bl-*` rule for the stylesheet to key on. */
-const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher'>> = {
+ *  unset. `mode`, `ring`, `marks`, `launcher` and `chip` are not here and are not classes:
+ *  they are handed straight to a kit component as a prop (Testimonial's mode, PageDial's,
+ *  SectionSheet's and SectionStrip's style), so there is no `bl-*` rule for the stylesheet
+ *  to key on — `chip` was missing from the omit list until component 17 was added, which
+ *  made this type ask for a neutral value no caller could ever have used.
+ *  `chrome` IS here: DataTable's three arrangements are pure CSS over identical markup,
+ *  which is exactly what a class axis is for. */
+const NEUTRAL: Required<Omit<Layout, 'mode' | 'ring' | 'marks' | 'launcher' | 'chip'>> = {
   frame: 'plain', columns: 1, media: 'none', list: 'stack', aside: 'none', heading: 'above',
+  chrome: 'ruled',
 };
 
 /** Per shape, the axes that shape's RENDERER reads. Anything else would be decoration. */
@@ -106,6 +116,10 @@ export const RENDERED_AXES: Record<Shape, readonly Axis[]> = {
   // SectionStrip joins them: its three styles are how one chip is drawn, nothing about the
   // bed the rail sits on — the rail is always full-bleed under the header.
   strip: ['chip'],
+  // DataTable (component 17). `chrome` is the question the board asks; `frame` and
+  // `heading` are the ordinary bed and heading position every prose section has. `columns`
+  // is deliberately absent: a table beside a narrow column is a table with a scrollbar.
+  table: ['chrome', 'frame', 'heading'],
 };
 
 const def = (id: StyleDef['id'], name: string, layout: Layout): StyleDef => ({ id, name, layout });
@@ -184,6 +198,13 @@ export const STYLES: Record<Shape, [StyleDef, StyleDef, StyleDef]> = {
     def('S2', 'Filled tab chips, active chip on brand', { chip: 'filled' }),
     def('S3', 'Flat text links, underline on the active one', { chip: 'text' }),
   ],
+  // All three stack into labelled rows below 640px — that is working rule 13 and is not
+  // one of the options. What differs is the chrome above that breakpoint.
+  table: [
+    def('S1', 'Ruled rows under a brand header band', { chrome: 'ruled' }),
+    def('S2', 'Zebra rows inside a card', { frame: 'card', chrome: 'zebra' }),
+    def('S3', 'Borderless rows with brass column rules', { chrome: 'brass' }),
+  ],
 };
 
 /** The class list a layout resolves to — the ONE place a style becomes markup. Both the
@@ -198,6 +219,7 @@ export function boxClass(style: StyleDef | Layout): string {
     `bl-list-${l.list ?? NEUTRAL.list}`,
     `bl-aside-${l.aside ?? NEUTRAL.aside}`,
     `bl-head-${l.heading ?? NEUTRAL.heading}`,
+    `bl-chrome-${l.chrome ?? NEUTRAL.chrome}`,
   ].join(' ');
 }
 

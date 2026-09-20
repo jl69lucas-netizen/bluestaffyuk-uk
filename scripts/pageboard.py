@@ -102,6 +102,23 @@ def validate_board(board):
         if sec["group"] == "COMPETITOR-BASED" and not re.search(r"https?://[^\s/]+\.[^\s/]+", sec["why_source"]):
             raise BoardError(f"section {sec['id']}: a COMPETITOR-BASED section cites the competitor it answers — "
                              "why_source carries no URL")
+        # A table is the one section whose CONTENT has a shape the schema cannot state: JSON
+        # Schema can hold every row to 2-6 cells, but not to the same count as THIS table's
+        # own columns. A short row is a cell DataTable never renders and a reader never sees;
+        # an over-long one is a cell with no column name to put in its `data-label`, which is
+        # an unlabelled block once the table stacks. Both are a silently truncated table
+        # rather than a refused record.
+        tbl = sec.get("table")
+        if tbl:
+            width = len(tbl["columns"])
+            bad = [i for i, row in enumerate(tbl["rows"]) if len(row) != width]
+            if bad:
+                raise BoardError(f"section {sec['id']}: table row(s) {', '.join(str(i) for i in bad)} do not carry "
+                                 f"{width} cells, one per column ({', '.join(tbl['columns'])})")
+            over = [i for i in tbl.get("numeric", []) if i >= width]
+            if over:
+                raise BoardError(f"section {sec['id']}: table.numeric names column "
+                                 f"{', '.join(str(i) for i in over)} — there are only {width}")
         ids.append(sec["id"])
         ns.append(sec["n"])
     for label, values in (("id", ids), ("n", ns)):

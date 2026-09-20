@@ -175,6 +175,46 @@
     padding-bottom: var(--space-2);
   }
 
+  /* --- the table chrome --------------------------------------------------------------
+     DataTable's three board styles (component 17, spec §9 amendment 5). The component
+     paints S1 itself, so a copy outside a board box is a finished table rather than an
+     unstyled one; these rules are the other two, plus the band re-point S1 needs when it
+     lands on a steel bed.
+
+     NONE OF THEM TOUCHES THE STACK. Below 640px `.stack-table` turns every cell into a
+     block with its column name printed from `data-label`, and that is working rule 13, not
+     an option — so every rule here is written to disappear at that width rather than to
+     survive it. `layout-table-stacks-on-mobile` is what holds them to it.
+
+     `.bl-box` prefixes the rules that reach the TABLE ROOT, for the specificity reason the
+     hero rules above already carry: Astro scopes the component's own `.kit-table` with an
+     attribute selector, which is (0,2,0). A rule that reaches INSIDE (a row, a cell) is
+     already past that and needs no prefix. */
+  .bl-box.bl-frame-band .kit-table { --kit-band: var(--color-surface-deep); color: inherit; }
+  .bl-frame-band .kit-table caption,
+  .bl-frame-band .kit-table tbody th { color: inherit; }
+
+  @media (min-width: 641px) {
+    /* S2 — zebra rows inside a card. The stripe is a tint of the page surface rather than a
+       second grey, so the card it sits in stays the lighter of the two, and the horizontal
+       rules come off: the banding is already saying where a row ends. */
+    .bl-chrome-zebra .kit-table tbody tr:nth-child(even) > * { background: var(--color-surface); }
+    .bl-chrome-zebra .kit-table tbody th,
+    .bl-chrome-zebra .kit-table tbody td { border-bottom: 0; }
+
+    /* S3 — no horizontal rules at all; the columns are told apart by a brass hairline
+       between them, and the header band becomes brand text over the page's own surface.
+       Brass is the RULE here, never the colour of the text beside it (2.1:1 on bone). */
+    .bl-chrome-brass .kit-table tbody th,
+    .bl-chrome-brass .kit-table tbody td { border-bottom: 0; }
+    .bl-chrome-brass .kit-table thead th { background: transparent; color: var(--color-brand); }
+    .bl-chrome-brass .kit-table thead tr { border-bottom: 2px solid var(--color-cta); }
+    .bl-chrome-brass .kit-table thead th + th,
+    .bl-chrome-brass .kit-table tbody th ~ td { border-left: 2px solid var(--color-cta); }
+    .bl-frame-band .bl-chrome-brass .kit-table thead th,
+    .bl-chrome-brass.bl-frame-band .kit-table thead th { color: inherit; }
+  }
+
   /* --- the aside -------------------------------------------------------------------- */
   .bl-aside { display: grid; gap: var(--space-3); align-content: start; }
   .bl-aside ul { margin: 0; padding-left: var(--space-5); }

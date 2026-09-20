@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>a table that does not stack</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  main { padding: 16px; }
+  /* No `.stack-table`, and the cells are given a width no phone has — the two halves of
+     the defect the check is written for. Below 640px the rows stay table rows, the columns
+     are clipped, and the cells carry no `data-label` to fall back on, so a reader on a
+     phone is handed a grid of numbers with nothing saying which column each came from.
+     `table-layout: fixed` with a min-width is how a migrated body usually arrives at this:
+     nobody chose it, the columns simply never wrapped. */
+  table { border-collapse: collapse; min-width: 900px; table-layout: fixed; }
+  td, th { padding: 6px 10px; border-bottom: 1px solid #d8d8d8; text-align: left; white-space: nowrap; }
+  .scroller { overflow-x: auto; }
+</style>
+</head><body>
+<main>
+  <h1>Delivery</h1>
+  <div class="scroller">
+    <table>
+      <caption>Home delivery bands</caption>
+      <thead><tr><th scope="col">Band</th><th scope="col">Distance from Carlisle</th><th scope="col">Cost</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Near</th><td>Under one hundred miles by road</td><td>200</td></tr>
+        <tr><th scope="row">Mid</th><td>One hundred to two hundred and fifty miles</td><td>275</td></tr>
+        <tr><th scope="row">Far</th><td>Over two hundred and fifty miles by road</td><td>350</td></tr>
+      </tbody>
+    </table>
+  </div>
+</main>
+</body></html>
