@@ -50,7 +50,12 @@ A CHANGED ELEMENT is not a missing one. Where the old wording states a wrong fac
 former city, an old price, the byline) or collides with another page's heading, the record
 says so in `verbatim.changed`:
     {"kind": "heading", "old": "...", "new": "...", "reason": "..."}
-and the gate then requires the NEW text on the page instead. `verbatim` sits outside the
+and the gate then requires the NEW text on the page instead. Two row kinds name a deviation
+rather than an element and are folded back to the element they excuse (ROW_KIND_ELEMENT):
+`heading-dropped` is a heading the outline removed outright and `faq-merged` is a question the
+old page asked twice, answered by the row that carries the other wording. A row whose `new` is
+the EMPTY STRING excuses its element and requires nothing on the page — that is what a drop
+is — and every other row requires its `new` text there. `verbatim` sits outside the
 record hash for the reason `dropped` does (scripts/pageboard.py::record_hash): it is the
 accounting of what the rebuild did, and the rebuild happens after approval.
 
@@ -378,6 +383,14 @@ def elements(vset):
     return out
 
 
+#: A row's `kind` says what KIND OF DEVIATION it is; the element it excuses is one of the five
+#: kinds elements() yields. Two row kinds are not element kinds and have to be folded back, or
+#: the row would key on a pair no element produces and the gate would quietly go on demanding
+#: the old wording it was written to excuse — the loudest possible way for an accounting file
+#: to do nothing. `heading-dropped` is a heading; `faq-merged` is an FAQ question.
+ROW_KIND_ELEMENT = {"heading-dropped": "heading", "faq-merged": "faq"}
+
+
 def changed_rows(record):
     """The record's `verbatim.changed` rows, keyed (kind, old) — the pair that identifies the
     element the row excuses. A row naming a `src` keys on that instead of the old alt, since
@@ -386,7 +399,8 @@ def changed_rows(record):
     for r in (record.get("verbatim") or {}).get("changed", []):
         if not isinstance(r, dict):
             continue
-        key = (r.get("kind"), r.get("src") or r.get("old"))
+        kind = ROW_KIND_ELEMENT.get(r.get("kind"), r.get("kind"))
+        key = (kind, r.get("src") or r.get("old"))
         rows[key] = r
     return rows
 
@@ -403,6 +417,12 @@ def judge(vset, html, record):
         if row is not None:
             changed += 1
             new = row.get("new", "")
+            if not new:
+                # An EMPTY `new` is the record saying the element is gone and nothing stands in
+                # for it: a keyword heading the outline removed outright (`heading-dropped`) and
+                # the opening paragraph that went with it. Demanding the empty string on the page
+                # would pass for any page at all, so the row is counted and nothing is looked up.
+                continue
             ok = page.has_alt(src, new) if kind == "alt" else _present(page, kind, new)
             if not ok:
                 misses.append(f"changed {kind} not on the page: {new!r} "

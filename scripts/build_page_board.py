@@ -18,6 +18,7 @@ import html as H, json, pathlib, re, sys
 from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import verbatim_set_check as VSC
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -98,6 +99,7 @@ textarea.note{width:100%;min-height:52px;font:13px/1.5 "Source Sans 3",system-ui
 button.btn{font:inherit;font-size:14px;font-weight:600;padding:10px 18px;border-radius:50px;border:1px solid var(--clay-ink);background:var(--clay-ink);color:var(--on-clay);cursor:pointer}
 button.btn[disabled]{opacity:.5;cursor:default}
 .status{font-size:13px;color:var(--ink-2)}
+.vtag{font-size:11px;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--clay);border-radius:3px;padding:0 4px;margin-left:6px}
 button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--clay);outline-offset:2px}
 .kit .opt{gap:5px}
 .kit .opt b{font-size:13px;font-weight:600}
@@ -183,19 +185,67 @@ def flag(heading, hit_by):
     return f'   <span class="hit">⚠ {kind} {esc(h["page"])}</span>'
 
 
+def vtag(is_verbatim):
+    """The `verbatim` tag the outline hangs on a heading the migrated page wrote (rule 15).
+
+    It sits in the tree rather than only in the verbatim block below because the tree is what
+    the breeder reads to judge the page: a heading that cannot be reworded on a whim is a
+    different kind of heading from one that can, and the outline is where that has to show."""
+    return ' <span class="vtag">verbatim</span>' if is_verbatim else ""
+
+
+def verbatim_block(slug, board):
+    """Working rule 15's accounting, element by element: every entry of
+    data/verbatim/<slug>.json badged CARRIED, CHANGED (with the reason) or DROPPED (with the
+    reason). The record's `verbatim.changed` is the only input for the last two, so a board
+    cannot show a reason the gate will not read, and an element with no row is carried by
+    definition — which is what makes the count at the top of the block worth reading."""
+    vpath = PB.ROOT / f"data/verbatim/{slug}.json"
+    applies = json.loads((PB.ROOT / "data/verbatim/applies.json").read_text(encoding="utf-8"))
+    if slug in (applies.get("excluded") or {}):
+        why = applies["excluded"][slug]
+        return (f"**Rule 15 does not reach this page.** {md(why if isinstance(why, str) else applies['excluded']['comment'])}")
+    if not vpath.exists():
+        return "_No verbatim set has been extracted for this page._"
+    vset = json.loads(vpath.read_text(encoding="utf-8"))
+    rows = {}
+    for r in (board.get("verbatim") or {}).get("changed", []):
+        kind = VSC.ROW_KIND_ELEMENT.get(r["kind"], r["kind"])
+        rows[(kind, r.get("src") or r["old"])] = r
+    out, tally = [], {"CARRIED": 0, "CHANGED": 0, "DROPPED": 0}
+    for kind, old, src in VSC.elements(vset):
+        r = rows.get((kind, src if kind == "alt" else old))
+        if r is None:
+            badge, detail = "CARRIED", ""
+        elif not r.get("new"):
+            badge, detail = "DROPPED", md(r["reason"])
+        else:
+            badge, detail = "CHANGED", f"→ **{md(r['new'])}** · {md(r['reason'])}"
+        tally[badge] += 1
+        label = f"{kind} · {md(src)}" if kind == "alt" else kind
+        out.append([f"`{badge}`", label, md(old), detail or "—"])
+    head = (f"**{tally['CARRIED']} carried · {tally['CHANGED']} changed · {tally['DROPPED']} dropped** "
+            f"of {sum(tally.values())} elements in `data/verbatim/{esc(slug)}.json`. "
+            "Rule 15 carries the migrated page's H1, its keyword H2/H3s, the first paragraph under each of "
+            "them, its FAQ questions and every image alt, word for word. A row here is the record's own "
+            "`verbatim.changed`, and `scripts/verbatim_set_check.py` proves every one of them on the built "
+            "page after P5.")
+    return head + "\n\n" + md_table(["", "Kind", "The migrated page's wording", "What happens to it"], out)
+
+
 def outline_block(board, hits):
     """The whole outline as one tree, H1 included — read from all_headings() so the board
     shows the same H1 the gate judged, whether it came from a pick or the recommendation."""
     hit_by = {h["heading"]: h for h in hits}
     h1 = PB.all_headings(board)[0][1]
-    lines = [f"H1  {esc(h1)}" + flag(h1, hit_by)]
+    lines = [f"H1  {esc(h1)}" + vtag(board.get("h1", {}).get("verbatim_heading")) + flag(h1, hit_by)]
     for s in board["sections"]:
         cta = f" · CTA×{s['cta']}" if s.get("cta") else ""
-        lines.append(f"├─ H2 {s['n']:02d}  {esc(s['heading'])}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]" + flag(s["heading"], hit_by))
+        lines.append(f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]" + flag(s["heading"], hit_by))
 
         def walk(nodes, depth):
             for n in nodes:
-                lines.append("│   " * depth + f"├─ H{n['level']} {esc(n['heading'])}" + flag(n["heading"], hit_by))
+                lines.append("│   " * depth + f"├─ H{n['level']} {esc(n['heading'])}{vtag(n.get('verbatim_heading'))}" + flag(n["heading"], hit_by))
                 walk(n["children"], depth + 1)
         walk(s["tree"], 1)
         for i, q in enumerate(s.get("questions", []), 1):
@@ -731,6 +781,10 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   # the links ARE part of the shape of the page, and the reader who has just
                   # read the tree is the reader who can judge where each one is said.
                   + "\n\n" + links_block(board, routes)))
+
+    # Straight after the outline, because it is the outline audited: the tree says what the
+    # page will be headed and this says which of those headings are not the writer's to choose.
+    parts.append(("3a. Verbatim set", verbatim_block(slug, board)))
 
     # After the outline, because the question it asks — is this the right furniture for this
     # page — is one a reader can only answer once they have seen the page's shape.

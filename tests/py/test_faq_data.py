@@ -104,6 +104,22 @@ FACT_PHRASES = {
     # `who-we-are` rests on. Nothing here leans on a wording only the old body has.
     "home-ethical-breeder": ["not a kennel", "L-2-HGA", "HC-HSF4"],
     "home-family-children": ["excellent family companion", "well-socialised"],
+    # Eight more homepage rows in project 4 Task 18b, because working rule 15 carries the
+    # migrated page's TWELVE FAQ questions word for word and two of the twelve are duplicates
+    # of another two (data/boards/index.json `verbatim.changed`, kind `faq-merged`). Every
+    # phrase below is one the MIGRATED key-takeaway or accordion block already says AND one the
+    # board record's own outline keeps after P5: the two test names are `health` and
+    # `meet-the-parents`, "lifetime support" is `talk-to-us`, the puppy-package phrases are the
+    # `whats-included` table's own rows, "health guarantee" is that table too, and the breed
+    # and country are `the-breed` and `uk-locations`. Nothing here leans on a wording only the
+    # old body has, and nothing leans on a figure: the prices and the deposit are interpolated
+    # from data/settings.json by the two rows that name it as their source.
+    "home-parents-health-tested": ["L-2-HGA", "HC-HSF4"],
+    "home-after-support": ["lifetime support"],
+    "home-health-tests": ["L-2-HGA", "HC-HSF4"],
+    "home-whats-included": ["first vaccinations", "microchip", "puppy pack"],
+    "home-health-guarantee": ["health guarantee"],
+    "home-find-breeders": ["Staffordshire Bull Terrier puppies", "United Kingdom"],
 }
 
 

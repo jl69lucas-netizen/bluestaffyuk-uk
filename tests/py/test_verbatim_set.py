@@ -150,6 +150,33 @@ def test_a_changed_row_whose_new_text_is_absent_is_still_a_miss():
     assert any("changed heading not on the page" in m for m in misses)
 
 
+def test_a_heading_dropped_row_excuses_the_heading_and_demands_nothing():
+    """`heading-dropped` is a deviation kind, not an element kind. If it were keyed as it is
+    written the row would match no element, the gate would go on demanding the old heading, and
+    an accounting file would silently excuse nothing at all."""
+    page = FAITHFUL.replace("<h2>Blue Staffy Puppies in Carlisle</h2>", "")
+    record = {"verbatim": {"changed": [{
+        "kind": "heading-dropped", "old": "Blue Staffy Puppies in Carlisle", "new": "",
+        "reason": "the outline removed the section outright and nothing stands in for it",
+    }]}}
+    _, changed, misses = V.judge(vset(), page, record)
+    assert changed == 1
+    assert not any("Blue Staffy Puppies in Carlisle" in m for m in misses)
+
+
+def test_a_faq_merged_row_is_judged_as_the_question_it_merges_into():
+    page = FAITHFUL.replace("Are the parents health tested?",
+                            "Are the parents of your puppies health tested?")
+    record = {"verbatim": {"changed": [{
+        "kind": "faq-merged", "old": "Are the parents health tested?",
+        "new": "Are the parents of your puppies health tested?",
+        "reason": "the old page asked the same question twice and one row answers both",
+    }]}}
+    _, changed, misses = V.judge(vset(), page, record)
+    assert changed == 1
+    assert misses == []
+
+
 def test_an_opening_may_be_followed_by_fresh_prose_but_not_reworded():
     page = FAITHFUL.replace("Every litter is raised in the kitchen, not a kennel.",
                             "Every litter is raised at home.")

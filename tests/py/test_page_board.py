@@ -983,7 +983,7 @@ def test_board_html_escapes_record_text_in_every_context():
     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
     # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
     # kit strip).
-    assert len(blocks) == 11
+    assert len(blocks) == 12
     for i, blk in enumerate(blocks):
         assert "</script" not in blk, i
 
