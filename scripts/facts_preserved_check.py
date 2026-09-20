@@ -157,7 +157,15 @@ def missing(facts, new_html, dropped=None):
     out = {}
     for k, vals in facts.items():
         drop = drop_facts(dropped.get(k, []))
-        dropped_pence = {pence(p) for p in drop} if k == "prices" else set()
+        # The AMOUNTS inside the dropped lines, not the lines themselves. A `dropped`
+        # entry is prose ("the form card's delivery notice — 'Delivery begins 24-48 hours
+        # …'"), and the fact it names is not always the bit before the em dash: the contact
+        # record's price entry is a whole paragraph, and handing that to `pence()` raised
+        # ValueError on the "…" it contains rather than reporting anything (found 2026-09-20,
+        # project 4 Task 9). Reading every £ amount out of the line keeps the intent — a
+        # price this record says it dropped is not missing — and cannot be fed a non-price.
+        dropped_pence = ({pence(m) for line in drop for m in PRICE.findall(line)}
+                         if k == "prices" else set())
         miss = []
         for v in vals:
             if v in drop or (k == "prices" and pence(v) in dropped_pence):

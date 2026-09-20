@@ -196,13 +196,17 @@ and 17–25 are new from the design system.
     **Page bodies and their ported schema follow per page in Tasks 7–18** — the eleven rich
     pages and the blog are rewritten one at a time and are not edited ahead of their task,
     so the old city is still in the generated page bodies until each is rebuilt.
-    **2 of 12 rebuilt (Task 7, `/privacy-policy-uk/`, 2026-09-19; Task 8,
-    `/thank-you-blue-staffy-puppies-journey/`, 2026-09-20).** Neither page carries the old
-    city anywhere: both bodies are written fresh, and the legacy schema graph that hard-coded
-    a street address, a postcode and coordinates for the former city is gone with them —
-    `BaseLayout` now emits the `WebPage` node from `data/page-dates.json` instead. The
-    thank-you page also drops the migrated body's link to that city's breeding-dogs page,
-    recorded with its reason in the board record's `dropped`. 10 page bodies to go.
+    **3 of 12 rebuilt (Task 7, `/privacy-policy-uk/`, 2026-09-19; Task 8,
+    `/thank-you-blue-staffy-puppies-journey/`, and Task 9,
+    `/uk-blue-staffy-breeders-contact/`, both 2026-09-20).** None of the three carries the
+    old city anywhere: every body is written fresh, and the legacy schema graph that
+    hard-coded a street address, a postcode and coordinates for the former city is gone with
+    them — `BaseLayout` now emits the `WebPage` node from `data/page-dates.json` instead, and
+    the contact page emits its own `ContactPage` and `FAQPage` nodes and nothing else. Both
+    new pages drop the migrated body's link to that city's breeding-dogs page, and the
+    contact page drops the "Our Location" paragraph built on the old address, each recorded
+    with its reason in the board record's `dropped`; the by-appointment-only fact itself is
+    kept. 9 page bodies to go.
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the

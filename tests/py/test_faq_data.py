@@ -43,7 +43,11 @@ FACT_PHRASES = {
     "privacy-cookies": ["Essential cookies", "Google Analytics"],
     "privacy-delete-data": ["Right to erasure", "within one month"],
     "contact-visit": ["walk-in facility", "by appointment only"],
-    "contact-what-to-say": ["as much detail as possible", "24-48 business hours"],
+    # Verified against the REBUILT contact page (project 4 Task 9), the same way the
+    # enquiry and privacy rows are. "As much detail as possible" was the migrated body's
+    # phrase; the rebuilt page says which detail instead, field by field, which is the
+    # thing the answer actually leans on.
+    "contact-what-to-say": ["your household", "24-48 business hours"],
 }
 
 

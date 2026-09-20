@@ -184,6 +184,11 @@ INTERIOR_UTILITY_EXEMPT = {
     "thank-you-blue-staffy-puppies-journey":
         "post-enquiry confirmation: the reader has already written to us, so the page owes "
         "them a reply window rather than credentials, a lifespan figure or a sign-up band",
+    "uk-blue-staffy-breeders-contact":
+        "contact utility page: it is one enquiry form and the channels around it, and "
+        "`cites_credentials_early` asks for 'microchipped' or 'vet checked' in its first 300 "
+        "words — a contact page that opened on a puppy's worming record would be a sales "
+        "page wearing a form; the KC and DEFRA claims it does make sit in the trust strip",
 }
 
 

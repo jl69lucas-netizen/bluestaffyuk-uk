@@ -17,6 +17,6 @@ None.
 
 None.
 
-SITE_URL_PLACEHOLDER occurrences: 623 (expected until launch)
+SITE_URL_PLACEHOLDER occurrences: 626 (expected until launch)
 
-examined 18 redirects, 2180 internal refs (distinct per page); 0 redirected refs; 0 problems
+examined 18 redirects, 2158 internal refs (distinct per page); 0 redirected refs; 0 problems
