@@ -324,11 +324,19 @@ class Page:
         self.headings = [text(m.group(2)) for m in HEADING.finditer(body)]
         self.h1s = [text(m.group(2)) for m in HEADING.finditer(body) if m.group(1) == "1"]
         self.paras = [text(m.group(1)) for m in PARA.finditer(body)]
+        # EVERY alt a src is rendered with, not the first one. A page may legitimately render
+        # one file twice — the listing page's hero mosaic reuses two of its own section
+        # photographs as tiles — and `img-alt-present-and-unique` (tests/render/checks/img.ts)
+        # then REQUIRES the two renderings to carry DIFFERENT wording, so the pair is a rule
+        # rather than a defect. With `setdefault` the first rendering won and rule 15 read the
+        # other one as missing: the page carried the migrated alt on the migrated src and the
+        # gate said it did not. Rule 15 asks for the old wording to be on the page against its
+        # own src (spec §9 amendment 8), which is a membership question, not an ordering one.
         self.alts = {}
         for tag in IMG_TAG.findall(body):
             a = {k.lower(): v for k, v in ATTR.findall(tag)}
             if a.get("src"):
-                self.alts.setdefault(a["src"].strip(), norm(a.get("alt", "")))
+                self.alts.setdefault(a["src"].strip(), set()).add(norm(a.get("alt", "")))
         self.questions = self.headings + [text(m.group(1)) for m in SUMMARY.finditer(body)] \
             + [text(m.group(2)) for m in QUESTION_EL.finditer(body)]
 
@@ -348,7 +356,10 @@ class Page:
         return any(q.lower() == t.lower() for q in self.questions)
 
     def has_alt(self, src, alt):
-        return src in self.alts and self.alts[src] == alt
+        """True when SOME rendering of `src` carries this alt. See `__init__`: one file may be
+        rendered twice and the two alts must differ, so "the page's alt for this src" is a set
+        and not a single value."""
+        return alt in self.alts.get(src, ())
 
 
 # ── the check ─────────────────────────────────────────────────────────────────────────────

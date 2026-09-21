@@ -111,8 +111,17 @@ type Props = HTMLAttributes<'section'> & {
   // the typography of what goes in it, which is why the inner rules below are `:global()`
   // under `.hero-aside`: slotted content belongs to the caller's scope, not to this one.
   /** `layout: 'mosaic'` — the tiles the photo column becomes. Fewer than two falls back to
-   *  the single photo, because a one-tile mosaic is a photo with extra markup. */
-  mosaic?: { src: string; alt: string; w?: number; h?: number; caption?: string }[];
+   *  the single photo, because a one-tile mosaic is a photo with extra markup.
+   *
+   *  `srcset`/`sizes` are per TILE and exist for `imageSrcset`'s reason, one size down: a
+   *  tile is a cell of a two-column grid inside the media column, so it paints at roughly
+   *  180px at 1280 and 140px at 375 — a public-path master decodes there at five to eight
+   *  times the width it paints, which is `img-srcset-within-2x` (blocking) every time. The
+   *  single-photo branch has been able to say what candidates a `/images/…` file has since
+   *  the kit shipped; the mosaic could not, and this is the first page to mount one. Both
+   *  are optional: a tile with no candidates renders exactly as it did before. */
+  mosaic?: { src: string; alt: string; w?: number; h?: number; caption?: string;
+             srcset?: string; sizes?: string }[];
 };
 // NOTHING IS ASSERTED HERE. The eyebrow, the title and the lede are the page's, and a hero
 // mounted with none of them renders a photo and a CTA row — which is a hero with nothing to
@@ -160,6 +169,12 @@ const showAside = ledge === 'aside' && Astro.slots.has('aside');
 // file; both are props now and both default to empty, so a hero states only what the page
 // that mounted it handed it.
 
+// What a mosaic TILE actually paints, measured on this arrangement rather than guessed: the
+// tiles are a two-column grid inside the media column, so ~180px at 1024px and up, ~340px in
+// the tablet band where the media column is full width, and ~145px on a phone. A tile that
+// states its candidates but not its widths would let the browser assume 100vw and choose the
+// largest of them, which is the defect this exists to close.
+const MOSAIC_SIZES = '(min-width: 1024px) 190px, (min-width: 768px) 340px, 145px';
 const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
 // A public path cannot go through <Image>: astro:assets only handles files it can read at
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
@@ -188,6 +203,8 @@ const legacy = typeof image === 'string';
               alt={t.alt}
               width={t.w}
               height={t.h}
+              srcset={t.srcset}
+              sizes={t.srcset ? (t.sizes ?? MOSAIC_SIZES) : undefined}
               loading={i === 0 ? 'eager' : 'lazy'}
               fetchpriority={i === 0 ? 'high' : 'auto'}
               decoding="async"

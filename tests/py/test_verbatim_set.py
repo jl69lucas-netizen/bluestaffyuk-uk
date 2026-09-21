@@ -201,6 +201,30 @@ def test_an_alt_row_keys_on_the_src_so_two_empty_alts_do_not_collide():
     assert (changed, misses) == (1, [])
 
 
+def test_an_alt_is_found_on_a_later_rendering_of_the_same_src():
+    """One file, rendered twice, with DIFFERENT wording each time — which is not an accident
+    but what `img-alt-present-and-unique` requires of a page reusing a photograph (the listing
+    page's hero mosaic reuses two of its own section photographs as tiles). The migrated alt is
+    on the page, against its own src, so rule 15 is satisfied whichever rendering carries it.
+    Reading only the FIRST rendering failed the page for wording it was actually carrying."""
+    page = FAITHFUL.replace(
+        '<img src="/images/pup.webp" alt="A blue Staffy puppy on a lawn">',
+        '<img src="/images/pup.webp" alt="A hero tile of the same puppy">'
+        '<img src="/images/pup.webp" alt="A blue Staffy puppy on a lawn">')
+    _, _, misses = V.judge(vset(), page, {})
+    assert misses == []
+
+
+def test_an_alt_no_rendering_of_the_src_carries_is_still_missing():
+    """The other half of the rule above: a set of alts is not a licence to lose one."""
+    page = FAITHFUL.replace(
+        '<img src="/images/pup.webp" alt="A blue Staffy puppy on a lawn">',
+        '<img src="/images/pup.webp" alt="A hero tile">'
+        '<img src="/images/pup.webp" alt="A second tile">')
+    _, _, misses = V.judge(vset(), page, {})
+    assert any("missing alt on /images/pup.webp" in m for m in misses)
+
+
 def test_the_scope_is_main_so_a_heading_in_the_header_does_not_count():
     page = built("<h1>Our Blue Staffy Promise</h1>")
     _, _, misses = V.judge(vset(), page, {})
