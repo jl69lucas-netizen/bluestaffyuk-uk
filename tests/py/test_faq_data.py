@@ -253,6 +253,22 @@ FACT_PHRASES = {
     "guide-left-alone-8h": ["left alone"],
     "guide-male-female": ["temperament"],
     "guide-attached-one-person": ["attached"],
+    # Three rows on the blog hub in project 4 Task 14. The migrated archive stub asked nothing
+    # — it had no FAQ block and no H1 — so none of the three is a rule-15 carry: they are the
+    # record's own query augmentation for "blue staffy blog guides", and
+    # data/boards/blue-staffy-blog-guides.json fixes their ids and their wording. The record's
+    # note says in as many words why they could not be written before now: a page-sourced row's
+    # `source` file has to exist on disk and its phrases have to be on that page, and until P5
+    # the URL was served from src/content/blog by src/pages/[...post].astro with no page file
+    # behind it. Every phrase below is one the REBUILT hub's own prose says outside the
+    # accordion: the three subjects are `start-here`'s four H3s and its lede, "last updated" is
+    # what the post card's PageDate renders from data/page-dates.json, and the address is
+    # `talk-to-us`, read out of data/settings.json. NOTHING here leans on a publication
+    # cadence: no file on disk holds one, `blog-updates` says so, and a phrase list demanding a
+    # frequency would have been demanding a rule-9 violation.
+    "blog-what-we-cover": ["breed guide", "health page", "buying guide"],
+    "blog-updates": ["last updated"],
+    "blog-ask-a-question": ["staffies@bluestaffyuk.uk"],
 }
 
 

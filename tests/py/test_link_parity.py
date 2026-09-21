@@ -72,6 +72,44 @@ def test_the_puppy_grid_is_allowed_only_where_the_record_has_that_shape():
     assert L.puppy_hrefs(without) == set()
 
 
+def _collection_slugs():
+    """Every slug a post file on disk claims, read the way the exemption reads it."""
+    out = set()
+    for f in sorted((ROOT / "src/content/blog").glob("*.md")):
+        m = L._POST_SLUG.search(f.read_text(encoding="utf-8"))
+        if m:
+            out.add(m.group(1).strip().strip("/"))
+    return out
+
+
+def test_the_blog_hubs_post_cards_are_allowed_only_on_a_blog_page_type():
+    """The blog hub's card hrefs are rows of src/content/blog, not anchors on a board — the
+    puppy grid's argument, one collection over. It is scoped the same way: a `blog` record
+    gets the exemption and nothing else does."""
+    slugs = _collection_slugs()
+    assert slugs, "src/content/blog holds no post with a frontmatter slug"
+    hub = {"meta": {"page_type": "blog"}, "sections": []}
+    not_a_hub = {"meta": {"page_type": "guide"}, "sections": []}
+    assert L.post_hrefs(hub) == {f"/{s}/" for s in slugs}
+    assert L.post_hrefs(not_a_hub) == set()
+    assert L.post_hrefs({"sections": []}) == set()
+
+
+def test_the_post_slug_comes_from_the_frontmatter_and_not_from_the_filename():
+    """A post's route is its `slug:`, which is what src/pages/[...post].astro builds and what
+    the hub's cards link. Deriving it from the filename would exempt a url nothing serves."""
+    for f in sorted((ROOT / "src/content/blog").glob("*.md")):
+        assert L._POST_SLUG.search(f.read_text(encoding="utf-8")), f"{f.name} has no slug"
+
+
+def test_no_post_claims_the_blog_hubs_own_url():
+    """The defect project 4 Task 14 fixed, kept fixed. While a post's slug was
+    `blue-staffy-blog-guides` the hub URL was served by src/pages/[...post].astro — the index
+    WAS one post's body — and src/pages/blue-staffy-blog-guides/index.astro could not exist
+    beside it."""
+    assert "blue-staffy-blog-guides" not in _collection_slugs()
+
+
 # --- against the real build ----------------------------------------------------------------
 
 REBUILT = json.loads((ROOT / "data/facts/rebuilt.json").read_text())

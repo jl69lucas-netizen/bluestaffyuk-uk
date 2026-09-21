@@ -29,6 +29,11 @@ WHAT COUNTS AS A LINK ON THE PAGE. Every `<a href>` inside `<main>`, minus:
     avoid. So `/available-puppies/<slug>/` is allowed on a page whose record has a
     `puppies`-shaped section, and ONLY for slugs that are actually in data/puppies.json.
     Every other href on such a page is judged normally.
+  * THE BLOG HUB'S OWN POST CARDS. The same argument, one collection over: a record whose
+    `meta.page_type` is `blog` is an index of src/content/blog, and its cards' hrefs are
+    rows of that collection rendered at build rather than anchors anybody wrote on a board.
+    So `/<post slug>/` is allowed on such a page, and ONLY for slugs a post file on disk
+    actually claims.
 
 `mailto:` is NOT exempt. An email address is a channel the board can list and did not, so a
 `mailto:` reports as an extra until a record names it — which is the honest outcome: the
@@ -145,6 +150,37 @@ def puppy_hrefs(record):
     return {f"/available-puppies/{p['slug']}/" for p in rows}
 
 
+#: The `slug:` line of a blog post's frontmatter — the route the post actually builds at.
+#: Deriving it from the FILENAME would invent a url nothing serves, the same trap
+#: scripts/generate_page_dates.py::post_slug records.
+_POST_SLUG = re.compile(r"^slug:\s*[\"']?([^\"'\n]+)", re.M)
+
+
+def post_hrefs(record):
+    """`/<post slug>/` for every entry of the `blog` content collection — allowed only on a
+    page whose record is a BLOG HUB (`meta.page_type == "blog"`).
+
+    THE PUPPY GRID'S ARGUMENT, ONE COLLECTION OVER. The hub's post cards are rows of
+    src/content/blog rendered at build: their hrefs are DATA, not anchors the breeder wrote
+    on a board, and a record that listed them would go stale the day a post was published —
+    which is the thing a generated card list exists to avoid. So
+    data/boards/blue-staffy-blog-guides.json's `latest-guides` section carries no `links`
+    rows and says so in its own note, and this is the exemption that note points at.
+
+    SCOPED THE SAME WAY the puppy grid's is, and for the same reason: a page type, not a
+    global allowance. Only a `blog` page-type record gets it, and only for slugs a post file
+    on disk actually claims — an href to a post that does not exist is judged normally.
+    """
+    if (record.get("meta") or {}).get("page_type") != "blog":
+        return set()
+    out = set()
+    for f in sorted((ROOT / "src/content/blog").glob("*.md")):
+        m = _POST_SLUG.search(f.read_text(encoding="utf-8"))
+        if m:
+            out.add(f"/{m.group(1).strip().strip('/')}/")
+    return out
+
+
 def check(slug):
     """(problems, examined) for one rebuilt slug. `problems` are printable strings."""
     page = DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
@@ -157,7 +193,7 @@ def check(slug):
 
     on_page = page_links(page.read_text(encoding="utf-8", errors="ignore"))
     allowed = record_links(record)
-    data_ok = puppy_hrefs(record)
+    data_ok = puppy_hrefs(record) | post_hrefs(record)
     banned = dropped_links(record)
 
     problems = []
