@@ -33,10 +33,22 @@
 // WORKING RULE 16. The hero is `H-AB1` — a photo mosaic LEFT of the copy on a steel band,
 // with a quote in the aside — and the counter strip is `C-AB1`, figure cards on a steel band
 // beside the heading. Both are the about family's own arrangements, resolved through
-// `pickedStyle()`, and neither is one any for-sale page took. The aside quote is the one the
-// record carries in `sections[top].hero.aside.quote`, in Lisa's own words, so nothing in the
-// hero is invented here. That hero is also what keeps this page's tuple apart from
-// /privacy-policy-uk/'s: the interior-utility heroes all carry `ledge: 'none'`.
+// `pickedStyle()`, and neither is one any for-sale page took. That hero is also what keeps
+// this page's tuple apart from /privacy-policy-uk/'s: the interior-utility heroes all carry
+// `ledge: 'none'`.
+//
+// NOTHING IN THE ASIDE IS WRITTEN HERE AND NOTHING IN IT IS UNSOURCED. The quote is the
+// record's `sections[top].hero.aside.quote`, which is now the THIRD SENTENCE of the migrated
+// page's own opening paragraph — a pull quote out of the paragraph this page renders in full
+// under the H3 below — and the build asserts that containment rather than trusting it. The
+// sentence the record was approved with read as Lisa's and appeared in no file on disk; it is
+// replaced and re-approved (spec §9 amendment 11). The record's three CHIPS are rendered in
+// the same box, as one credential line: `Hero` shows a chip row only for `ledge: 'chips'`, so
+// on H-AB1 the prop is handed over and dropped, and a claim the breeder approved is not worth
+// losing to an arrangement. The three TICKS are the one thing the box cannot hold — measured,
+// they are 60-80px past the 450px ceiling at 1024 — and all three are stated in the paragraph
+// under the hero instead. Both are still PASSED to the component, so a re-pick of H-AB2 or
+// H-AB3, whose ledge is `ticks`, renders them the component's way with no page edit.
 //
 // THREE FIGURES, ALL COUNTED AT BUILD (amendment 10.5, and the lesson da9c34e wrote down).
 // The record's `n` is a hand-written number — true on the day it was boarded — so each tile
@@ -77,9 +89,12 @@ import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
+import { existsSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
-import { bakedAssets } from '../../lib/assets';
+import { bakedAssets, bakedSrcset } from '../../lib/assets';
+import { recordText, countedFigures, ledgeText, sourceKey, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -147,60 +162,32 @@ const faqs = faqSection.tree.map((n) => {
 });
 
 // The carried wording, read off the record rather than retyped (see the rule 15 note above).
-const sec = (id: string) => record.sections.find((s) => s.id === id)!;
-const heading = (id: string) => sec(id).heading;
-const opening = (id: string) => {
-  const o = (sec(id) as { verbatim_opening?: string }).verbatim_opening;
-  if (!o) throw new Error(`blue-staffy-uk-breeders: section ${id} carries no verbatim opening`);
-  return o;
-};
-interface TreeNode { heading: string; verbatim_opening?: string }
-const node = (id: string, i: number): TreeNode => {
-  const n = (sec(id).tree as TreeNode[])[i];
-  if (!n) throw new Error(`blue-staffy-uk-breeders: section ${id} has no tree node ${i}`);
-  return n;
-};
-const nodeOpening = (id: string, i: number) => {
-  const n = node(id, i);
-  if (!n.verbatim_opening) {
-    throw new Error(`blue-staffy-uk-breeders: ${id} tree node ${i} carries no verbatim opening`);
-  }
-  return n.verbatim_opening;
-};
-
-// A ledge entry is either a bare string or a `{text, source}` row, depending on whether the
-// board author had a path to cite for it. One unwrap, used by the chips and the ticks.
-type LedgeEntry = string | { text: string; source?: string[] };
-const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+// The five readers and the figure check are `src/lib/recordText.ts`, hoisted out of the three
+// other rebuilt pages at the review of c1b18d6; this page had written its own copy of each.
+const { sec, heading, opening, node, nodeOpening } = recordText(record);
 
 // EVERY FIGURE THIS PAGE PRINTS IS COUNTED HERE, and the record's `n` is the expectation it is
 // counted against. A figure made of MORE than one fact cites more than one path (amendment
 // 10.5), so its key is the whole list joined: citing only the minimum would leave the maximum
 // unsourced while reading as sourced.
+//
+// `data/puppies.json#len` IS THE LITTER, AND THAT IS WHAT ITS TILE SAYS. The puppy grid three
+// sections down filters on `status === 'Available'` and this tile does not, which looks like a
+// disagreement and is not: the grid sells, so it shows what is still for sale, while the tile
+// states how big the litter is. A puppy that is reserved has left the grid and has not left
+// the litter. The two happen to be the same number today because every row is Available; if
+// they ever diverge, `#len` is still the honest source for "puppies in the current litter".
 const dnaTests = healthRecord.sections.find((s) => s.id === 'dna-tests')!.table!.rows.length;
+const DELIVERY_SOURCES = ['data/settings.json#delivery_min_gbp', 'data/settings.json#delivery_max_gbp'];
+const DELIVERY_BAND = `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`;
 const COUNTED: Record<string, string> = {
   'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)': String(dnaTests),
   'data/puppies.json#len': String((puppiesJson as PuppyRow[]).length),
+  [DELIVERY_SOURCES.join('|')]: DELIVERY_BAND,
 };
-const DELIVERY_SOURCES = ['data/settings.json#delivery_min_gbp', 'data/settings.json#delivery_max_gbp'];
-const DELIVERY_BAND = `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`;
-COUNTED[DELIVERY_SOURCES.join('|')] = DELIVERY_BAND;
+const counted = countedFigures(COUNTED, 'blue-staffy-uk-breeders');
 
-const counted = (row: { n: string; label: string; source?: string | string[] }) => {
-  const key = Array.isArray(row.source) ? row.source.join('|') : (row.source ?? '');
-  const n = COUNTED[key];
-  if (n === undefined) {
-    throw new Error(`blue-staffy-uk-breeders: no build-time count for ${key || '(no source)'} `
-      + '— a figure this page prints must be derived from data, not copied from the record');
-  }
-  if (n !== row.n) {
-    throw new Error(`blue-staffy-uk-breeders: ${key} reads ${n} today and the approved `
-      + `record expects ${row.n} — the fact moved, so the board's figure needs a look`);
-  }
-  return { n, label: row.label };
-};
-
-const heroSection = sec('top');
+const heroSection = sec('top') as typeof record.sections[number];
 const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
 // The hero's third tick states the delivery band, which is the same claim as the counter's
 // third tile — so it is REBUILT from the two settings rather than printed out of the record,
@@ -208,16 +195,42 @@ const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
 // inserted above it cannot change which one is rebuilt, and a tick that starts citing a path
 // this page cannot count throws.
 const heroTicks = (heroSection.hero!.ticks as LedgeEntry[]).map((t) => {
-  const src = typeof t === 'string' ? undefined : t.source;
+  const src = typeof t === 'string' ? undefined : (t as { source?: string[] }).source;
   if (!src) return ledgeText(t);
-  if (src.join('|') !== DELIVERY_SOURCES.join('|')) {
-    throw new Error(`blue-staffy-uk-breeders: a hero tick cites ${src.join('|')}, which this `
+  if (sourceKey(src) !== sourceKey(DELIVERY_SOURCES)) {
+    throw new Error(`blue-staffy-uk-breeders: a hero tick cites ${sourceKey(src)}, which this `
       + 'page has no build-time count for');
   }
   return `UK home delivery, ${DELIVERY_BAND} by distance`;
 });
 const counterStats = sec('stats').stats!.map(counted);
+
+// THE ASIDE QUOTE IS A VERBATIM-SET SENTENCE, and this is what holds it to that (rule 9).
+// The quote the record was approved with — "Our puppies are raised in the house, underfoot,
+// with the family around them." — read as Lisa's and appears in no file on disk, which is a
+// claim this site invented for itself. It is replaced, and re-approved, with the second
+// sentence of the migrated page's own opening paragraph, which this page also renders in full
+// under the H3 below: a pull quote out of the paragraph beneath it, in the site's first
+// person. The containment is asserted rather than trusted, so the two can never drift apart
+// and the aside can never quietly go back to being a line somebody wrote for the board.
 const heroAside = heroSection.hero!.aside!;
+const ASIDE_SOURCE = 'sections[top].tree[0].verbatim_opening';
+if (!nodeOpening('top', 0).includes(heroAside.quote!)) {
+  throw new Error('blue-staffy-uk-breeders: the hero aside quote is not a sentence of '
+    + `${ASIDE_SOURCE} — an aside quote is a claim and rule 9 gives it no other source`);
+}
+
+// THE CANDIDATE LISTS ARE BUILT FROM THE FILES THAT EXIST, not spelled into the markup. Seven
+// hand-written `srcset` strings shipped at 8472c06, each of them a filename duplicated away
+// from its file: rename or re-bake a sibling and the page keeps serving the string, the
+// browser 404s the candidate it picked, and `img-srcset-within-2x` is satisfied because the
+// MASTER is what painted. `bakedSrcset` derives each row from the master's own path and throws
+// naming the file when one is missing. `existsSync` is the build's own filesystem — this route
+// is prerendered, so it runs once at build and never in a browser.
+const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
+const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(a, widths, inPublic);
+const TILE_SIZES = '(max-width: 900px) 45vw, 130px';
+const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
 
@@ -298,16 +311,31 @@ const pageSchema = [
       ticks={heroTicks}
       mosaic={[
         { src: familyDog.file, alt: familyDog.alt, w: familyDog.w, h: familyDog.h,
-          srcset: '/images/blue-staffy-family-dog-uk-240.webp 240w, /images/blue-staffy-family-dog-uk-400.webp 400w, /images/blue-staffy-family-dog-uk.webp 600w' },
+          srcset: srcsetOf(familyDog, [240, 400]), sizes: TILE_SIZES },
         { src: heroTile2.file, alt: heroTile2.alt, w: heroTile2.w, h: heroTile2.h, caption: heroTile2.caption,
-          srcset: '/images/breeder-sitting-blue-staffy-puppy-home-240.webp 240w, /images/breeder-sitting-blue-staffy-puppy-home-400.webp 400w, /images/breeder-sitting-blue-staffy-puppy-home.webp 640w' },
+          srcset: srcsetOf(heroTile2, [240, 400]), sizes: TILE_SIZES },
         { src: heroTile3.file, alt: heroTile3.alt, w: heroTile3.w, h: heroTile3.h, caption: heroTile3.caption,
-          srcset: '/images/playful-blue-staffy-lawn-uk-240.webp 240w, /images/playful-blue-staffy-lawn-uk-400.webp 400w, /images/playful-blue-staffy-lawn-uk-760.webp 760w' },
+          srcset: srcsetOf(heroTile3, [240, 400, 760]), sizes: TILE_SIZES },
       ]}
     >
+      {/* THE ASIDE IS THE PAGE'S MARKUP, and it carries the record's chips as well as its
+          quote. `Hero` renders the chip row and the tick list only for `ledge: 'chips'` and
+          `ledge: 'ticks'` — correctly, because a hero showing two ledges is neither
+          arrangement — so on H-AB1 the props are handed over and dropped. The record approved
+          three chips and three ticks for this hero. THE CHIPS ARE RENDERED HERE, as a single
+          credential line rather than a wrapped row, because a row costs the band two lines it
+          does not have. THE THREE TICKS ARE NOT, and that is measured rather than chosen: with
+          the mosaic, the H1, the lede, the quote and the credential line the band is already at
+          its 450px ceiling at 1024, and a tick list is 60-80px more of it. Every one of the
+          three is stated in the paragraph directly under this hero, and the delivery band again
+          on the counter two sections down, so what they lose here is a position and not a
+          claim. They are still PASSED to the component, so a re-pick of H-AB2 or H-AB3 — whose
+          ledge IS `ticks` — renders them the component's way with no page edit, and the
+          build-time check that rebuilds the delivery tick from its two settings stays live. */}
       <div slot="aside">
         <p class="aside-title">{heroAside.title}</p>
         <blockquote class="aside-quote">{heroAside.quote}</blockquote>
+        <p class="aside-chips">{heroChips.join(' · ')}</p>
       </div>
     </Hero>
     <h2>{T(heading('top'))}</h2>
@@ -339,35 +367,32 @@ const pageSchema = [
       height={breederHome.h}
       {/* 640px intrinsic against a 420px column: inside `img-srcset-within-2x` but flagged by
           page_hardening_scan, and the 400 candidate already exists for the hero mosaic. */}
-      srcset="/images/breeder-sitting-blue-staffy-puppy-home-400.webp 400w, /images/breeder-sitting-blue-staffy-puppy-home.webp 640w"
-      sizes="(max-width: 640px) 100vw, 420px"
+      srcset={srcsetOf(breederHome, [400])}
+      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
     <p>
-      There was no business plan behind this. There was a Staffy in the house, and then there
-      was a second one, and the reading and the paperwork and the vet's appointments grew up
-      around them until the thing we were doing had a name. We are not a kennel with a
-      reception and a waiting list. We are a family in {town} who breed one litter at a time,
-      from two dogs that live here, and who would far rather be asked a hard question than
-      believed on the strength of a photograph.
+      There was no business plan behind this. There was a Staffy in the house, then a second
+      one, and the reading and the vet's appointments grew up around them until the thing we
+      were doing had a name. We breed one litter at a time in {town}, from two dogs that live
+      here, and we would far rather be asked a hard question than believed.
     </p>
 
     <h3>{T(node('our-story', 0).heading)}</h3>
     <p>
-      For the temperament, mostly. A Staffy is a dog that wants to be in the room with you —
-      steady with children, absurdly affectionate, and stubborn in a way that becomes funny
-      once you stop arguing with it. It is a breed that is celebrated at
+      For the temperament. A Staffy wants to be in the room with you — steady with children,
+      absurdly affectionate, stubborn in a way that becomes funny once you stop arguing with
+      it. It is a breed celebrated at
       <a href="https://crufts.org.uk/" target="_blank" rel="noopener noreferrer">Crufts</a> and
-      misread almost everywhere else, and both halves of that are part of why we care where its
-      puppies end up.
+      misread almost everywhere else, and both halves of that are why we mind where its puppies
+      end up.
     </p>
 
     <h3>{T(node('our-story', 1).heading)}</h3>
     <p>
       BlueStaffyUK is a family home in {SITE.location_label}, not a kennel business. The person
-      who raises the puppies is the person who answers the enquiry, so the answers are
-      first-hand and the wait for them is only as long as it takes me to read the email.
+      who raises the puppies is the person who answers the enquiry.
       <a href="/uk-blue-staffy-breeders-contact/">Write to us about a puppy</a> and it is me you
       are writing to.
     </p>
@@ -375,16 +400,15 @@ const pageSchema = [
     <h3>{T(node('our-story', 2).heading)}</h3>
     <p>{nodeOpening('our-story', 2)}</p>
     <p>
-      Both parents named, and both results set out below. The house a litter grows up in
-      described in detail rather than in a phrase. What registration does and does not cover,
-      said out loud. And every figure on this page traced back to a file, so that anything we
-      have not established is simply absent from it.
+      Both parents named and both results set out below. The house described rather than
+      asserted. What registration does and does not cover, said out loud. Every figure traced
+      to a file, so anything unestablished is simply absent.
     </p>
 
     <h4>{T('One Litter At A Time')}</h4>
     <p>
-      Two parent dogs and one litter is the whole of it, and that is the reason we can tell you
-      who has handled each puppy and what has been going on in the room while they slept.
+      Two parent dogs and one litter is the whole of it, which is why we can tell you who has
+      handled each puppy.
     </p>
     <h5>{T('The Breed Came First')}</h5>
     <p>The dogs were here long before there was anything to sell, and that order still holds.</p>
@@ -408,10 +432,10 @@ const pageSchema = [
       width={playfulLawn.w}
       height={playfulLawn.h}
       {/* The 780px master decodes at 2.08x on a phone, which is `img-srcset-within-2x`
-          (blocking) at 375. The 240 and 400 candidates are baked BESIDE it (working rule 11:
-          the served file is untouched) and `sizes` says what the column actually paints. */}
-      srcset="/images/playful-blue-staffy-lawn-uk-400.webp 400w, /images/playful-blue-staffy-lawn-uk-760.webp 760w, /images/playful-blue-staffy-lawn-uk.webp 780w"
-      sizes="(max-width: 640px) 100vw, 420px"
+          (blocking) at 375. Two candidates are baked BESIDE it (working rule 11: the served
+          file is untouched) and `sizes` says what the column actually paints. */}
+      srcset={srcsetOf(playfulLawn, [400, 760])}
+      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -528,32 +552,31 @@ const pageSchema = [
       height={familyFriendly.h}
       {/* 640px intrinsic, same reason as `our-story`'s: a 400 candidate is baked beside the
           served master, which is untouched (working rule 11). */}
-      srcset="/images/family-friendly-blue-staffy-glasgow-400.webp 400w, /images/family-friendly-blue-staffy-glasgow.webp 640w"
-      sizes="(max-width: 640px) 100vw, 420px"
+      srcset={srcsetOf(familyFriendly, [400])}
+      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
     <p>
-      Home-raised is a phrase two of the three breeder pages we read use once and never explain,
-      so here is what it consists of here. The litter is indoors with us from the first day.
-      They are handled every day by the people who live in the house. They are awake in the
-      middle of an ordinary evening rather than in a quiet outbuilding, and by the time they
-      leave, very little a normal home does is new to them. That is the point of it: a puppy is
-      about to change houses, and confidence is the thing that makes that survivable.
+      Home-raised is a phrase two of the three breeder pages we read use once and never
+      explain, so here is what it consists of here. The litter is indoors with us from the
+      first day, handled by the people who live in the house, awake in the middle of an
+      ordinary evening rather than in a quiet outbuilding. By the time they leave, very little
+      a normal home does is new to them — which matters because a puppy is about to change
+      houses, and confidence is what makes that survivable.
     </p>
 
     <h3>{T(node('home-raising', 0).heading)}</h3>
     <p>
-      The kettle, the hoover, the washing machine, the television, the door going, somebody
-      dropping a pan in the kitchen. None of it is staged and none of it is avoided, and a
-      litter that has slept through all of it stops flinching at any of it.
+      The kettle, the hoover, the television, the door going, somebody dropping a pan. None of
+      it is staged and none avoided, and a litter that has slept through all of it stops
+      flinching at any of it.
     </p>
 
     <h3>{T(node('home-raising', 1).heading)}</h3>
     <p>
-      Children, cats and older people — the three the migrated version of this page named, and
-      still the three that matter most, because each of them moves, sounds and smells
-      differently from the others.
+      Children, cats and older people — the three that matter most, because each moves, sounds
+      and smells differently.
       <a href="/blue-staffy-blog-guides/">Our guides for new Staffy owners</a> pick up where we
       leave off, and
       <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy" target="_blank" rel="noopener noreferrer">The RSPCA's puppy advice</a> is
@@ -562,9 +585,8 @@ const pageSchema = [
 
     <h4>{T('What Eight Weeks Indoors Can And Cannot Do')}</h4>
     <p>
-      It shortens the list of things that frighten a young dog. It settles nothing about the
-      adult they become, because the years in your house will weigh more than the weeks in
-      ours, and any breeder telling you otherwise is selling you something.
+      It shortens the list of things that frighten a young dog and settles nothing about the
+      adult they become: the years in your house weigh more than the weeks in ours.
     </p>
     <h5>{T('Nowhere Else For Them To Be')}</h5>
     <p>This is a house with no outbuilding attached to it, so indoors is not a policy here — it is the only room there is.</p>
@@ -581,36 +603,34 @@ const pageSchema = [
   <section id="kennel-club" data-section-label="What KC registration means">
     <h2>{T(heading('kennel-club'))}</h2>
     <p>
-      Both parents are registered with the Kennel Club and both have full pedigrees, and our
-      litters are registered too. That sentence is worth exactly what it says and not a word
-      more, which is why the two paragraphs under it split it in half.
+      Both parents are registered with the Kennel Club with full pedigrees, and our litters
+      are registered too. That sentence is worth what it says and not a word more, which is
+      why the two paragraphs under it split it in half.
     </p>
 
     <h3>{T(node('kennel-club', 0).heading)}</h3>
     <p>
-      It records who a puppy's parents are and what line they come from: a paper trail, kept by
-      the registry, that you can check against the numbers we give you rather than take from us.
+      It records who a puppy's parents are and what line they come from: a paper trail kept by
+      the registry, checkable against the numbers we give you.
       <a href="https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/" target="_blank" rel="noopener noreferrer">The Kennel Club's breed page for the Staffordshire Bull Terrier</a> sets
       out the standard away from any breeder's website, which is where it is worth reading.
     </p>
 
     <h3>{T(node('kennel-club', 1).heading)}</h3>
     <p>
-      It is not a health test. The DNA screening two sections up is the thing that speaks to
-      health, and the two are separate documents on purpose. It is not a licence either, and
-      this site states no licence wording and no statutory compliance claim until there is a
-      document to put behind one.
+      It is not a health test — the DNA screening two sections up is what speaks to health,
+      and the two are separate documents on purpose. It is not a licence either, and this site
+      states no licence wording until there is a document behind one.
     </p>
 
     <h4>{T('A Badge Is Not An Argument')}</h4>
     <p>
-      Two of the three breeder pages we read print the phrase with nothing behind it. The honest
-      version of the same signal is to say what registration covers and then to say what it does
-      not, which costs a paragraph and is worth the paragraph.
+      Two of the three breeder pages we read print the phrase with nothing behind it. Saying
+      what registration covers and then what it does not costs a paragraph and is worth it.
     </p>
     <h5>{T('You Can Check The Pedigree Yourself')}</h5>
     <p>
-      Both parents' registration numbers are yours on request, so the trail is one you can walk
+      Both parents' registration numbers are yours on request, so you can walk the trail
       without us.
     </p>
     <h6>{T('Breeder Note: Registration is paperwork, not health')}</h6>
@@ -635,8 +655,8 @@ const pageSchema = [
       height={deliveryVan.h}
       {/* 800px master, 2.13x on a phone — the 400 candidate is baked beside it for the
           reason above, and the 760 sibling was already there. */}
-      srcset="/images/bluestaffyuk-nationwide-delivery-400.webp 400w, /images/bluestaffyuk-nationwide-delivery-760.webp 760w, /images/bluestaffyuk-nationwide-delivery.webp 800w"
-      sizes="(max-width: 640px) 100vw, 420px"
+      srcset={srcsetOf(deliveryVan, [400, 760])}
+      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -758,12 +778,21 @@ const pageSchema = [
       <p class="bl-lede">{opening('questions')}</p>
     </div>
     <div class="bl-body">
+      {/* The section's own words, which the accordion answers do not supply: `board_gate`
+          counts an accordion's answers outside the band (amendment 4a), so a section that
+          renders nothing but rows reads as having said nothing. No new claim is made here —
+          it says where each group of rows comes from and which page answers it. */}
+      <p>
+        Six of the nine below are questions this page was already being asked, kept in the
+        wording they were asked in; the other three arrive in our inbox. Two of the six are
+        about the breed rather than us, so each gets a line and a link to the page that
+        evidences it.
+      </p>
       <Faq items={faqs} />
       <h4>{T('Nothing Down Here Is New')}</h4>
       <p>
-        Every answer below restates something the sections above have already argued at length.
-        That is on purpose. These rows are a way past the page for somebody in a hurry, and a
-        fact that appeared only in an accordion would be a fact we were hiding.
+        Every answer restates something argued at length above, on purpose: a fact that
+        appeared only in an accordion would be a fact we were hiding.
       </p>
       <h5>{T('Two Of These Are Answered Elsewhere')}</h5>
       <p>

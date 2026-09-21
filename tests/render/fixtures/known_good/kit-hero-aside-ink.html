@@ -1,0 +1,59 @@
+<!doctype html><meta charset=utf-8><title>known-good: the kit hero aside states the ink for the bed it paints</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  THE KIT's own hero aside, on the bed it is mounted on. `.hero-aside` paints
+  `--color-surface-raised` (a near-white card) and sits inside a hero whose box may be
+  `.bl-frame-band`, which sets `color: --color-text-on-inverse` on everything under it. The
+  aside therefore has to state its OWN ink or it inherits bone text onto a white card.
+
+  This pair is the regression guard for that. The BROKEN sibling is the same markup with the
+  one `color` declaration removed — which is exactly what shipped on
+  /blue-staffy-uk-breeders/ at 8472c06 and measured 1.05:1, an invisible quote. The defect was
+  invisible to a source grep because neither declaration is wrong alone (the bed is a real
+  token, the band's ink is a real token) and invisible to a reader of the component because
+  every OTHER element in the box — `.aside-title`, `.aside-rows dt` — happens to name a colour
+  of its own. Only the composed result is wrong, which is what `a11y-text-contrast-aa` is for.
+
+  Fixtures are static test data and cannot read tokens.css, so the hex is spelled here; the
+  no-hex rule scans src/ only. The values are the tokens this markup resolves to:
+  --color-surface-inverse #1F3A52, --color-text-on-inverse #F4F1EA,
+  --color-surface-raised #FAF8F3, --color-text #22303C, --color-brand #1F3A52.
+-->
+<style>
+  body { margin:0; font:16px/1.5 system-ui; }
+  .bl-frame-band { background:#1F3A52; color:#F4F1EA; padding:24px; }
+  .kit-hero { background:transparent; color:inherit; }
+  .inner { display:grid; grid-template-columns:1fr 15rem; gap:24px; align-items:start; }
+  .copy h1 { margin:0 0 8px; font-size:30px; }
+  .lede { margin:0; font-size:18px; }
+  .hero-aside {
+    background:#FAF8F3;
+    color:#22303C;
+    border:1px solid #DAD6CC; border-radius:12px; padding:16px; font-size:14px;
+  }
+  .aside-title { margin:0 0 8px; font-size:12px; font-weight:700; letter-spacing:.12em;
+                 text-transform:uppercase; color:#1F3A52; }
+  .aside-quote { margin:0; font-size:18px; line-height:1.3; border-inline-start:3px solid #B08D3F;
+                 padding-inline-start:12px; }
+  .aside-items { margin:8px 0 0; padding-inline-start:16px; }
+</style>
+<main>
+  <section class="bl-box bl-frame-band">
+    <section class="kit-hero" data-hero-ledge="aside">
+      <div class="inner">
+        <div class="copy">
+          <h1>Home-Raised Blue Staffy Puppies From Passionate Breeders</h1>
+          <p class="lede">I am Lisa Bright, and this is our house and our two parent dogs.</p>
+        </div>
+        <aside class="hero-aside">
+          <p class="aside-title">Who we are</p>
+          <blockquote class="aside-quote">As the owner, I believe in raising exceptional blue Staffy puppies.</blockquote>
+          <ul class="aside-items">
+            <li>Both parents DNA tested clear</li>
+            <li>Puppies raised in the house</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </section>
+</main>

@@ -1748,3 +1748,43 @@ test.describe('sem-statement-label-visible [kit InfoCard]', () => {
     expect(r.defects[0].message).toMatch(/kind/);
   });
 });
+
+test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
+  const check = () => registry.find((c) => c.id === 'a11y-text-contrast-aa')!;
+
+  // THE BUG CLASS THIS PAIR PINS is "component paints a bed, child keeps the inherited ink".
+  // `.hero-aside` fills `--color-surface-raised` inside a hero whose box may be
+  // `.bl-frame-band`, which sets `--color-text-on-inverse` on everything beneath it — so an
+  // aside that does not state its own `color` renders bone text on a near-white card. That
+  // is what /blue-staffy-uk-breeders/ shipped at 8472c06: the quote measured 1.05:1 and was
+  // invisible. Neither declaration is wrong on its own and every other element in the box
+  // names a colour of its own, so only a RENDERED measurement can see it.
+  test('is silent on the aside once it states the ink for the bed it paints', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-hero-aside-ink.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'H1, lede, aside title, quote and two items').toBeGreaterThanOrEqual(6);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires on the aside that inherits the band ink onto its own light bed', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-hero-aside-ink-inherited.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'the same six nodes are judged either way').toBeGreaterThanOrEqual(6);
+    // Matched loosely: the assertion is that the QUOTE is caught and that the ratio reported
+    // is the near-1:1 one, not that the check's prose never gets reworded. The aside's title
+    // still passes in both fixtures, which is the point — it names a colour of its own.
+    expect(r.defects.length, 'the pair differs by one declaration').toBe(1);
+    expect(r.defects[0].message).toMatch(/aside-quote/);
+    expect(r.defects[0].message).toMatch(/1\.0\d:1/);
+  });
+});

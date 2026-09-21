@@ -219,7 +219,7 @@
         ],
         "aside": {
           "title": "Who we are",
-          "quote": "Our puppies are raised in the house, underfoot, with the family around them."
+          "quote": "We are committed to upholding the highest standards for responsible breeding throughout the UK."
         }
       },
       "cta": 0,
@@ -290,7 +290,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "H-AB1",
-        "note": "No CTA and no links in the hero: the kit Hero's buttons and trust chips default to NONE (spec §9 amendment 6a) and this record gives it neither."
+        "note": "No CTA and no links in the hero: the kit Hero's buttons and trust chips default to NONE (spec §9 amendment 6a) and this record gives it neither. THE ASIDE QUOTE IS A VERBATIM-SET SENTENCE, not a line written for the board: it is the third sentence of `sections[top].tree[0].verbatim_opening`, the migrated page's own opening paragraph carried word for word under the heading it opens, in the site's first person (data/verbatim/blue-staffy-uk-breeders.json `openings`, the row for “KC‑registered, health‑checked Staffy puppies…”). The page asserts that containment at build, so the quote cannot drift from the paragraph it is pulled out of. The sentence it replaces — “Our puppies are raised in the house, underfoot, with the family around them.” — read as Lisa's but appears in no file on disk, which is working rule 9."
       }
     },
     {
@@ -1287,7 +1287,7 @@
       "video": {
         "id": "fXhu9jDS6CA",
         "title": "Blue Staffy UK breeders — family-raised puppies",
-        "caption": "The video this page has carried since May 2025, at its original id."
+        "caption": "The video this page has always carried, at its original id."
       },
       "keywords": {
         "primary": [],
@@ -1485,7 +1485,7 @@
       "puppies": "The one embed the migrated page carried (YouTube fXhu9jDS6CA) is kept here at its original id; the record does not describe what is in it, because no file on disk says. facts_preserved_check.py gates the id.",
       "questions": "A fifth row, \"Who will I be dealing with?\", was written and then NOT kept: its answer leans on Lisa Bright and on Carlisle, and neither word is in the migrated body, so tests/py/test_faq_data.py could not verify it against a source until P5 rewrites the page. It belongs on this page and should be added with the rebuild. Query augmentation for 'blue staffy uk breeders', mapped: q1 -> top and our-story; q2 and q3 -> health-testing and the about-health-tests FAQ row; q4 -> home-raising and the about-home-raised row; q5 -> kennel-club; q6 and q8 -> delivery; q7 -> delivery and puppies.",
       "stats": "",
-      "top": "No CTA and no links in the hero: the kit Hero's buttons and trust chips default to NONE (spec §9 amendment 6a) and this record gives it neither.",
+      "top": "No CTA and no links in the hero: the kit Hero's buttons and trust chips default to NONE (spec §9 amendment 6a) and this record gives it neither. THE ASIDE QUOTE IS A VERBATIM-SET SENTENCE, not a line written for the board: it is the third sentence of `sections[top].tree[0].verbatim_opening`, the migrated page's own opening paragraph carried word for word under the heading it opens, in the site's first person (data/verbatim/blue-staffy-uk-breeders.json `openings`, the row for “KC‑registered, health‑checked Staffy puppies…”). The page asserts that containment at build, so the quote cannot drift from the paragraph it is pulled out of. The sentence it replaces — “Our puppies are raised in the house, underfoot, with the family around them.” — read as Lisa's but appears in no file on disk, which is working rule 9.",
       "video-our-home": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
       "welcome": "A standard section: no shell and no form. The migrated page put a reservation form here; the enquiry form on this site lives on /uk-blue-staffy-breeders-contact/, which this section links, so the form's own label and its 24-hour promise are dropped rather than rebuilt."
     },
@@ -1498,7 +1498,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "30ca5ce52fa98b9ca0cd5a07a0474e7a1b344eca28be7fb061b2cc17a59cdd38",
+    "record_hash": "d52c89bd3e0ab23bf4c9834ea8e2f2cfe4a36064d83bdc14cea4f84764d82f14",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1515,7 +1515,30 @@
       "h6_prefixes": [
         "Breeder Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T05:00:33Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T04:50:51Z",
+        "reason": "aside quote replaced with a sourced one; picks unchanged",
+        "changed_paths": [
+          "/sections/0/hero/aside/quote",
+          "/sections/0/options/note",
+          "/sections/12/video/caption"
+        ]
+      },
+      {
+        "at": "2026-09-21T05:00:33Z",
+        "reason": "aside quote replaced with a sourced one; picks unchanged",
+        "changed_paths": [
+          "/approval_previous/section_hashes/top",
+          "/approval_previous/section_hashes/video-our-home",
+          "/sections/0/hero/aside/quote",
+          "/sections/0/options/note",
+          "/sections/12/video/caption"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-20T18:28:02.773Z",
@@ -1549,7 +1572,7 @@
       "video-our-home": "S1"
     },
     "section_hashes": {
-      "top": "5bc46c86d24e53971530d6e2551ec97d7d7e52c4acbc38b035dddf4d9a56d685",
+      "top": "c75dfd2d9dd5a632f9b3228039ebf32a3020b2e6cf819dd370ce80dfca7d7ae9",
       "our-story": "51729879ba54305c15dafaa8d4fe1dca2da0eee98b7a1ca5e3b7de41a7f78be3",
       "health-testing": "ed95caa96691b9e80138dd672e167a34242d2c8db560f48b43d8ac734aa2fd36",
       "paperwork-proof": "729757a70dfea8a62529d3801fd35bbb1e022deaf8a97e69a1775242464118e4",
@@ -1560,7 +1583,7 @@
       "puppies": "7943ae38f562c7f9ced8e861097c2c986eff0eead2dac19092b0f6cd09d62be2",
       "questions": "25ce11401edffe22b3ed1b84f6a169f89a6eaa5139f6061ae2518141af50b764",
       "welcome": "52f34333a8848a28304baf23f1600c545354646de6df9390d8761f9387f1d53e",
-      "video-our-home": "2a6bb76293c9d99fea37f7f988d2073bf54d40e82f187854ef01c8304d6578ad"
+      "video-our-home": "633a4f609f3e66c5fad65fd8c4735b13ff9cf555c31b25450aaca8e42f46ad6c"
     },
     "record_hash": "3aa7af9bde50a00786e7580d847ea840e444fe1a8e783ba82a9c13ba5c4ea715",
     "tuple_before": {

@@ -1,3 +1,4 @@
+import re
 import pathlib
 import pytest
 from PIL import Image
@@ -245,3 +246,36 @@ def test_legacy_logo_rasters_are_still_served():
     for name in ("blue-staffy-uk-official-logo0.png", "blue-staffy-uk-header-logo-88.webp"):
         assert (root / "public/images" / name).exists(), (
             f"public/images/{name} is a served URL; working rule 11 forbids removing it")
+
+
+def test_every_srcset_candidate_on_a_built_page_is_a_file_that_exists():
+    """A candidate the browser can choose and then 404 is invisible to every other gate.
+
+    `img-srcset-within-2x` measures the image that ACTUALLY PAINTED, so when a candidate
+    404s the master paints and the check reports the master's own ratio — satisfied, while
+    the reader on a phone has just downloaded the biggest file on the page. The rebuilt
+    pages spell `/images/<name>-<w>.webp` candidates for public-path photographs, which are
+    filenames duplicated away from their files; `src/lib/assets.ts::bakedSrcset` derives them
+    and throws at build, and this is the same invariant asserted over what shipped, for every
+    page including the ones that still write the string by hand.
+
+    Both roots are accepted: `public/` is the source of a verbatim-copied file and `dist/` is
+    where the build puts everything, including what astro:assets hashed into `_astro/`.
+    """
+    root = pathlib.Path(__file__).resolve().parents[2]
+    dist = root / "dist"
+    if not dist.exists():
+        pytest.skip("no dist/ — run npm run build")
+    missing = []
+    for page in sorted(dist.rglob("index.html")):
+        html = page.read_text(encoding="utf-8", errors="ignore")
+        for attr in re.findall(r'srcset="([^"]+)"', html):
+            for part in attr.split(","):
+                url = part.strip().split(" ")[0]
+                if not url.startswith("/"):
+                    continue
+                rel = url.lstrip("/")
+                if (dist / rel).exists() or (root / "public" / rel).exists():
+                    continue
+                missing.append(f"{page.relative_to(dist)} -> {url}")
+    assert not missing, missing[:10]
