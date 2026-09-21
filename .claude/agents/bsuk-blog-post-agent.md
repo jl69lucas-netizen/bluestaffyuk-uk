@@ -264,12 +264,20 @@ Save each blog post to:
 src/content/blog/<slug>.md
 ```
 
-Example: `src/content/blog/how-to-choose-the-right-blue-staffy-puppy-for-your-family.md` is
-the one post that exists today. The frontmatter `slug` is what builds the route, not the
-filename — and a post may never claim `blue-staffy-blog-guides`, which is the blog hub's own
-page route (`src/pages/blue-staffy-blog-guides/index.astro`). `[...post].astro` throws on that
-collision, and it is the collision project 4 Task 14 untangled: until then the post owned the
-hub's URL and the index was one post's body.
+**THE ROUTE IS THE FRONTMATTER `slug`, NOT THE FILENAME.** `src/pages/[...post].astro` builds
+`/<slug>/` at the site root, and `src/pages/blog/index.astro` and the guides hub both link
+`/<slug>/`. A filename that disagrees with the slug builds nothing at the filename.
+
+**RESERVED ROUTES — a post may claim none of these.** The set is derived, not listed, so it
+cannot go stale: every route a real page file owns (`src/pages/**/index.astro`, so
+`blue-staffy-blog-guides`, `blue-staffy-health-uk`, `uk-blue-staffy-breeders-contact` and the
+rest), plus `blog`, `uk-locations` and `available-puppies`, which are index or dynamic routes
+of their own. `getStaticPaths()` in `[...post].astro` builds that set with
+`import.meta.glob('./**/index.astro')` and THROWS on a collision rather than letting the page
+route silently shadow the post — a post that vanished from the build with a green exit code is
+the failure the guard exists for. Project 4 Task 14 is why: a post's slug was
+`blue-staffy-blog-guides`, so the guides hub's own URL served that one post's body, and the
+hub could not be written until the post moved to a slug of its own.
 
 After creating the file, add to sitemap:
 ```bash

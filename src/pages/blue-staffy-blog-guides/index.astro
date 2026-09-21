@@ -141,12 +141,13 @@ if (posts.length !== MD_FILES.length) {
 }
 
 // ── THE HERO'S OWN DATA ─────────────────────────────────────────────────────────────────────
-// H-BL3's ledge is `chips`, so the record's two approved chips are what sits under the lede.
-// The record ALSO carries a `hero.aside` — a three-line "Start here" contents list — and this
-// arrangement has no aside slot to put it in. It is not dropped: its three lines are the first
+// H-BL3's ledge is `chips`, so the record's two approved chips are what sits under the lede,
+// and the type above declares CHIPS AND NOTHING ELSE. The record also carries a `hero.aside` —
+// a three-line "Start here" contents list — which this arrangement has no slot for; naming it
+// in the type would be this file claiming to read a block it never renders, and the next
+// person would go looking for where. It is not dropped either: those three lines are the first
 // three destinations of `start-here` below, which is the section that owns them and links them.
-const heroSection = sec('top') as unknown as
-  { hero: { chips: LedgeEntry[]; aside: { title: string; items: LedgeEntry[] } } };
+const heroSection = sec('top') as unknown as { hero: { chips: LedgeEntry[] } };
 const heroChips = heroSection.hero.chips.map(ledgeText);
 
 // ── THE REVIEW, BY NAME ─────────────────────────────────────────────────────────────────────
@@ -361,8 +362,8 @@ const pageSchema = [
 
       <h3>{T(node('latest-guides', 1).heading)}</h3>
       <p>
-        The post carries no published date, so the card shows the last updated date from our
-        committed history.
+        The post carries no published date, so the card shows our committed history's last
+        updated date.
       </p>
 
       <h4>{T('A Card Says What A Heading Cannot')}</h4>

@@ -263,7 +263,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "H-BL3",
-        "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero."
+        "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. PICK H-BL3, AND ITS MOSAIC DEGRADES TO A SINGLE PHOTOGRAPH, deliberately and visibly: H-BL3 is “photo mosaic above the copy on a steel band, topic chips”, src/components/kit/Hero.astro builds a mosaic only from two tiles or more, and this record bakes ONE asset (`assets[guides-hub-hero]`). The band therefore carries that one photograph above centred copy, with the two approved chips under the lede. A second tile would have to be a puppy photograph this page has no record for, which is working rule 11 (reuse what the migrated page served, at its own path) and rule 9 (invent nothing) at once, and a one-tile mosaic is a photo with extra markup. The arrangement degrades; it never invents a tile."
       }
     },
     {
@@ -665,7 +665,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "S2",
-        "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
+        "note": "PICK S2 (grid), AND THIS NOTE NO LONGER ARGUES WITH IT. It read “MODE: single — pick S1, the only reviews style that renders one review”, which contradicted the pick the breeder made: a builder reading the record found the note asking for one arrangement and `approval.picks` naming another, and the rule is that the pick is the answer and the note is the argument. The pick stands and is what ships. The note’s worry does not apply as written — it is about a grid whose other slots render REVIEW_PLACEHOLDER, and src/components/kit/Testimonial.astro opens a slot only for a review it is HANDED, so the one review this section names renders as a single card on the band with no placeholder beside it. MODE: single on data/reviews.json entry 2, Mark J of London, the only one of the three that describes reading before buying. WHICH review is this record’s own sentence; HOW the block is drawn is the pick."
       }
     },
     {
@@ -894,13 +894,13 @@
     "notes": {
       "latest-guides": "Shape `standard` rather than a new board shape: the preview route already renders three arrangements for `standard` (S1 prose with the image right, S2 image above two-column prose, S3 band with an InfoCard aside), and the CARD STYLE of a post card is a build-time choice at P5 using the kit's PuppyCard-like card shell, not a fourth thing for the breeder to pick here. Adding a `cards` shape would mean editing schemas/board.schema.json, src/lib/boardStyles.ts, RENDERED_AXES, the preview route and tests/py/test_board_previews.py for one section on one page. NO LINK ROWS: the card hrefs are rows of the `blog` content collection, the same argument that exempts the puppy grid's card links from link parity (spec section 9 amendment 6b) — and today the collection's one entry claims THIS page's own slug, so P5 has to move that post to a slug of its own before the hub can link it (src/pages/[...post].astro throws when a post slug collides with a page route). That move is a P5 decision and a redirect row, not something this record can invent. If link parity will not accept a collection-generated card link, the exemption list in scripts/link_parity_check.py is where it is stated, exactly as the puppy grid's is.",
       "navigation": "",
-      "owner-review": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured.",
+      "owner-review": "PICK S2 (grid), AND THIS NOTE NO LONGER ARGUES WITH IT. It read “MODE: single — pick S1, the only reviews style that renders one review”, which contradicted the pick the breeder made: a builder reading the record found the note asking for one arrangement and `approval.picks` naming another, and the rule is that the pick is the answer and the note is the argument. The pick stands and is what ships. The note’s worry does not apply as written — it is about a grid whose other slots render REVIEW_PLACEHOLDER, and src/components/kit/Testimonial.astro opens a slot only for a review it is HANDED, so the one review this section names renders as a single card on the band with no placeholder beside it. MODE: single on data/reviews.json entry 2, Mark J of London, the only one of the three that describes reading before buying. WHICH review is this record’s own sentence; HOW the block is drawn is the pick.",
       "questions": "ROWS NOT YET IN data/faq.json, AND THAT IS DELIBERATE. tests/py/test_faq_data.py requires a page-sourced row's `source` file to exist on disk and requires its fact phrases to appear in that page's text; there is no src/pages/blue-staffy-blog-guides/index.astro today (the URL is served from src/content/blog by src/pages/[...post].astro), so adding the three rows now would fail the suite before the page they cite exists. They are written into data/faq.json at P5, with `source: src/pages/blue-staffy-blog-guides/index.astro` and a FACT_PHRASES entry each, in the same commit that creates the page. The three ids and the wording are fixed here: blog-what-we-cover 'What do your blue Staffy guides cover?'; blog-updates 'How often do you add a new guide?' — answered without a cadence, because no file on disk holds one, and pointing instead at the last-updated date each page renders from data/page-dates.json; blog-ask-a-question 'How do I ask something the guides do not answer?' — answered with the email address and the hours in data/settings.json. QUERY AUGMENTATION for 'blue staffy blog guides', eight questions, each mapped to a section or a row: q1 -> start-here and the blog-what-we-cover row; q2 -> latest-guides and the blog-updates row; q3 -> talk-to-us and the blog-ask-a-question row; q4 -> start-here (breed guide); q5 -> start-here (health page); q6 -> start-here (buying guide); q7 -> top and takeaways (who writes them); q8 -> owner-review. No row is added for a question this page's body does not answer.",
       "start-here": "Three link-first sentences (rules/links.md). S3's InfoCard aside is the arrangement that can carry a one-line 'what this guide is for' beside the three.",
       "stats": "",
       "takeaways": "Four cards, so S2's three-up grid wraps to 3+1, S3's rail shows four and S1 stacks them.",
       "talk-to-us": "",
-      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero."
+      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. PICK H-BL3, AND ITS MOSAIC DEGRADES TO A SINGLE PHOTOGRAPH, deliberately and visibly: H-BL3 is “photo mosaic above the copy on a steel band, topic chips”, src/components/kit/Hero.astro builds a mosaic only from two tiles or more, and this record bakes ONE asset (`assets[guides-hub-hero]`). The band therefore carries that one photograph above centred copy, with the two approved chips under the lede. A second tile would have to be a puppy photograph this page has no record for, which is working rule 11 (reuse what the migrated page served, at its own path) and rule 9 (invent nothing) at once, and a one-tile mosaic is a photo with extra markup. The arrangement degrades; it never invents a tile."
     },
     "picks": {
       "latest-guides": "S1",
@@ -911,7 +911,7 @@
       "takeaways": "S3",
       "top": "H-BL3"
     },
-    "record_hash": "13fa162592c911a18a4dea11eaccf08590ee5c0c72aff05531b09e07fa1213d3",
+    "record_hash": "fa1f2b552ba7440d0afc7fbb62795fb0242c491a578c971dce163f4a2cde4ec4",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -928,7 +928,18 @@
       "h6_prefixes": [
         "Guide Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T12:55:58Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T12:55:58Z",
+        "reason": "note contradicted the pick; pick honoured — and H-BL3's mosaic degradation to a single photograph recorded on the hero's own note, because the record bakes one asset (rules 11 and 9)",
+        "changed_paths": [
+          "/sections/0/options/note",
+          "/sections/5/options/note"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [

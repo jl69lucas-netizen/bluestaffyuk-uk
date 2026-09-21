@@ -240,6 +240,16 @@ const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a fa
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
 // and loading behaviour, and the CSS below does not care which branch produced it.
 const legacy = typeof image === 'string';
+// A HERO WITH NO PHOTOGRAPH. `media: 'none'` is on the `Layout` axis and, until now, the
+// component ignored it: every branch below painted a picture, so a page with nothing to show
+// had to hand over somebody else's. That is the one thing working rules 9 and 11 both forbid
+// — a blog post with no featured image on disk does not get a borrowed puppy to look
+// illustrated — and `src/pages/[...post].astro` is the first caller that has no image to
+// give. So the media column is DROPPED rather than filled: the copy takes the whole band,
+// the rule 10 floor and ceiling still apply (`.inner` keeps its `min-height`, the section
+// its `max-height`), and nothing else about the arrangement changes. No page passed
+// `media="none"` before this, so no shipped hero moves.
+const showPhoto = media !== 'none';
 ---
 <section
   {...rest}
@@ -250,7 +260,7 @@ const legacy = typeof image === 'string';
   data-hero-ledge={ledge}
 >
   <div class="container inner">
-    {asIsMosaic ? (
+    {!showPhoto ? null : asIsMosaic ? (
       /* Rule 10's DOM order holds for a mosaic too: the tiles PRECEDE the copy in source and
          `order` puts them back on the media side. The first tile is the LCP element and is
          the one that gets `eager`/`high`; the rest are lazy, because a hero that fetches four
@@ -381,6 +391,13 @@ const legacy = typeof image === 'string';
       .title { font-size: var(--text-3xl); }
       .pic { aspect-ratio: 3/2; }
     }
+
+    /* `media: 'none'` — no photo, so no media column. One column at every width, and the
+       copy is allowed the full measure rather than the 52ch a two-column hero holds it to,
+       because there is no picture beside it for the line length to relate to. The rule 10
+       floor and ceiling are inherited untouched: a photoless hero is still a hero band. */
+    .kit-hero[data-hero-media="none"] .inner { grid-template-columns: 1fr; }
+    .kit-hero[data-hero-media="none"] .lede { max-width: 68ch; }
 
     /* ── working rule 16: the per-page arrangements ──────────────────────────────────────
        Everything above is the SPLIT hero, which is what `data-hero-layout="split"` still

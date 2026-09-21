@@ -33,6 +33,28 @@ FOOTER_TAG = re.compile(r"<footer\b")
 KIT_ROUTES = {"/available-puppies/", "/uk-locations/", "/blog/"}
 KIT_PREFIXES = ("/available-puppies/",)
 
+# EVERY POST OF THE `blog` CONTENT COLLECTION, which `src/pages/[...post].astro` builds at the
+# site root. That route moved onto PageShell in project 4 Task 14: the hub indexing these posts
+# is on the kit, so a reader following a card off it was landing on the previous site's chrome.
+# The routes are read off disk rather than listed, because the route is ONE template and build
+# 5 adds posts to it — a fixed list here would expect the legacy header on the first post
+# nobody remembered to add. They are deliberately NOT in data/facts/rebuilt.json: that file is
+# the list of hand-written PAGES the rebuild gates judge, and a post is markdown behind a
+# shared template.
+_POST_SLUG = re.compile(r"""^slug:\s*["']?([^"'\n]+)""", re.M)
+
+
+def _post_routes():
+    out = set()
+    for f in sorted((ROOT / "src/content/blog").glob("*.md")):
+        m = _POST_SLUG.search(f.read_text(encoding="utf-8"))
+        if m:
+            out.add(f"/{m.group(1).strip().strip('/')}/")
+    return out
+
+
+POST_ROUTES = _post_routes()
+
 # Internal preview routes, noindex, which RENDER header specimens as their CONTENT:
 # /kit-preview/ demos the header component below its own, and every /board-preview/<slug>/
 # shows three styles of several sections at once (a hero section is three header specimens
@@ -61,6 +83,9 @@ def _routes():
 
 def _expected_kit(route, rebuilt):
     if route in KIT_ROUTES or (route.startswith(KIT_PREFIXES) and route not in KIT_ROUTES):
+        return True
+    # A collection post is on the kit through its shared template, not through rebuilt.json.
+    if route in POST_ROUTES:
         return True
     # "/" is the slug `index` everywhere else in this repo (data/facts/rebuilt.json,
     # data/boards/index.json, the scorecards). `"/".strip("/")` is the empty string, which is
@@ -116,6 +141,7 @@ def test_a_rich_page_that_has_not_been_rebuilt_yet_is_still_on_the_legacy_chrome
     routes = _routes()
     remaining = [r for r in routes if r.strip("/") and r.strip("/") not in rebuilt
                  and not r.startswith("/available-puppies/") and not r.startswith("/uk-locations/")
-                 and r not in {"/blog/", "/kit-preview/"} and not r.startswith("/board-preview/")]
+                 and r not in {"/blog/", "/kit-preview/"} and r not in POST_ROUTES
+                 and not r.startswith("/board-preview/")]
     assert remaining, "no un-rebuilt rich pages left — retire this test with the legacy header"
     assert all('class="site-header' in routes[r] for r in remaining), remaining
