@@ -500,13 +500,13 @@
   {
     "id": "blog-updates",
     "q": "How often do you add a new guide?",
-    "a": "We do not publish a schedule, and we would rather say so than invent one. What you can check instead is the last updated date each page renders: it comes from this repository's own committed history, so it moves when the page actually moves and never because a date needed refreshing.",
+    "a": "We do not publish a schedule, and we would rather say so than invent one. What you can check instead is the last updated date each page renders: it comes from the committed history of this repository, so it moves when the page moves and never because a date needed refreshing.",
     "source": "src/pages/blue-staffy-blog-guides/index.astro"
   },
   {
     "id": "blog-ask-a-question",
     "q": "How do I ask something the guides do not answer?",
-    "a": "Write to staffies@bluestaffyuk.uk. Lisa Bright reads it herself, from 09:00 to 23:00, seven days a week, between feeds. Tell us which guide you were reading and what it left open — that is what tells us which page was not clear.",
+    "a": "Send it to staffies@bluestaffyuk.uk. Every message lands with Lisa Bright rather than with an agency, and the inbox is watched between feeds, 09:00 to 23:00, seven days a week. Name the guide you were on and the part it left open — that tells us which page was not clear.",
     "source": "src/pages/blue-staffy-blog-guides/index.astro"
   }
 ]

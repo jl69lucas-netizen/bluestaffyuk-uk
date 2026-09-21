@@ -264,7 +264,12 @@ Save each blog post to:
 src/content/blog/<slug>.md
 ```
 
-Example: `src/content/blog/blue-staffy-blog-guides.md` is the one post that exists today
+Example: `src/content/blog/how-to-choose-the-right-blue-staffy-puppy-for-your-family.md` is
+the one post that exists today. The frontmatter `slug` is what builds the route, not the
+filename — and a post may never claim `blue-staffy-blog-guides`, which is the blog hub's own
+page route (`src/pages/blue-staffy-blog-guides/index.astro`). `[...post].astro` throws on that
+collision, and it is the collision project 4 Task 14 untangled: until then the post owned the
+hub's URL and the index was one post's body.
 
 After creating the file, add to sitemap:
 ```bash

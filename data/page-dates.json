@@ -2,7 +2,7 @@
   "_meta": {
     "description": "Truthful per-page freshness map for JSON-LD dateModified/datePublished. Generated from git history by scripts/generate_page_dates.py \u2014 NOT at build time, because CI runs a shallow checkout and would stamp today's date on every page. Regenerate and commit after content changes.",
     "generated_by": "scripts/generate_page_dates.py",
-    "pages": 52
+    "pages": 53
   },
   "routes": {
     "/available-puppies/": {
@@ -12,7 +12,12 @@
     },
     "/blog/": {
       "datePublished": "2026-09-16",
-      "dateModified": "2026-09-19",
+      "dateModified": "2026-09-21",
+      "selfDated": false
+    },
+    "/blue-staffy-blog-guides/": {
+      "datePublished": "2026-09-21",
+      "dateModified": "2026-09-21",
       "selfDated": false
     },
     "/blue-staffy-health-uk/": {
@@ -77,7 +82,7 @@
     },
     "/uk-blue-staffy-puppy-buying-guide/": {
       "datePublished": "2026-09-16",
-      "dateModified": "2026-09-16",
+      "dateModified": "2026-09-21",
       "selfDated": true
     },
     "/uk-locations/": {
@@ -90,9 +95,9 @@
       "dateModified": "2026-09-21",
       "selfDated": true
     },
-    "/blue-staffy-blog-guides/": {
+    "/how-to-choose-the-right-blue-staffy-puppy-for-your-family/": {
       "datePublished": "2026-09-16",
-      "dateModified": "2026-09-19",
+      "dateModified": "2026-09-21",
       "selfDated": false
     },
     "/available-puppies/roman/": {

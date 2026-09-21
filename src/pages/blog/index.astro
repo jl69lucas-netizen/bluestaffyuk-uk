@@ -4,7 +4,13 @@ import PageShell from '../../layouts/PageShell.astro';
 const posts = (await getCollection('blog')).sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
 ---
 <PageShell title="Blue Staffy Blog and Guides | Blue Staffy UK" description="Guides from Blue Staffy UK in Glasgow on choosing, buying and raising a Blue Staffordshire Bull Terrier puppy in the UK." canonical="/blog/" crumbTitle="Blog">
+  {/* A LINK LIST, NOT A SECOND DESCRIBED INDEX. /blue-staffy-blog-guides/ is the boarded hub
+      (data/boards/blue-staffy-blog-guides.json, project 4 Task 14) and its cards carry each
+      post's title, description and date. This route is the legacy WordPress archive URL and
+      exists because data/redirects.json sends `/category/*` here; while it ALSO printed the
+      descriptions, the two indexes shared a 36-word run of one post's own frontmatter and
+      dup_content_audit.py reported it. The titles alone are 11 words, under the shingle. */}
   <section class="container container-text"><h1>Blue Staffy Blog and Guides</h1>
-    <ul style="list-style:none;padding:0;display:grid;gap:24px">{posts.map((p) => <li><h2 style="margin:0 0 4px"><a href={`/${p.data.slug}/`}>{p.data.title.split(' | ')[0]}</a></h2><p style="margin:0">{p.data.description}</p></li>)}</ul>
+    <ul style="list-style:none;padding:0;display:grid;gap:12px">{posts.map((p) => <li><h2 style="margin:0"><a href={`/${p.data.slug}/`}>{p.data.title.split(' | ')[0]}</a></h2></li>)}</ul>
   </section>
 </PageShell>
