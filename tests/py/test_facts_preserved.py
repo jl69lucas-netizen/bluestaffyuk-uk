@@ -194,3 +194,28 @@ def test_drop_facts_reads_the_fact_off_the_front_of_the_line():
     assert F.drop_facts(["£1,200 – the old band, superseded"]) >= {"£1,200"}
     assert F.drop_facts(["Kane"]) == {"Kane"}
     assert F.drop_facts(None) == set()
+
+
+def test_a_dropped_claim_matches_through_the_extractors_space_before_a_comma():
+    """The WordPress body wrapped emphasised runs in their own tags, so `extract()` reads a
+    claim sentence back with a stray space in front of its punctuation — "…(BVA) ,
+    Staffordshire Bull Terriers …". A `dropped.text` line quotes the claim the way a person
+    reads it, and before `_claim_key` the gate demanded that the record transcribe the
+    artifact: two claims the why-us record strikes BY NAME, with reasons, reported as
+    unaccounted for (2026-09-21). The match is still exact about every word.
+    """
+    facts = {"text": [
+        "According to the British Veterinary Association (BVA) , Staffordshire Bull Terriers "
+        "can be prone to hip and elbow dysplasia , and responsible breeders take measures."
+    ]}
+    html = "<article><p>Nothing of the sort is claimed here.</p></article>"
+    clean = {"text": [
+        "'According to the British Veterinary Association (BVA), Staffordshire Bull Terriers "
+        "can be prone to hip and elbow dysplasia, and responsible breeders take measures.' — "
+        "the health page owns the breed's wider screening and this page links it."
+    ]}
+    assert F.missing(facts, html, clean) == {}
+    # And a claim the record does NOT account for is still reported: the forgiveness is about
+    # a typographic accident, never about which words are there.
+    other = {"text": ["'Some entirely different sentence.' — a reason"]}
+    assert F.missing(facts, html, other)["text"] == facts["text"]

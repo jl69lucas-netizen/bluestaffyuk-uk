@@ -262,6 +262,22 @@ def page_body(html):
 _DROP_SPLIT = re.compile(r"\s+[—–]\s+")
 
 
+def _claim_key(s):
+    """A claim sentence reduced to what a record can be expected to reproduce.
+
+    THE SPACE BEFORE THE COMMA IS THE WORDPRESS EXTRACTOR'S, NOT THE RECORD'S. The old body
+    wrapped emphasised runs in their own tags, so `extract()` reads the sentence back as
+    "…(BVA) , Staffordshire Bull Terriers …" and "…£1,200 , covering…" — a stray space in
+    front of the punctuation, several times in one sentence. A `dropped.text` line quotes the
+    claim the way a person reads it, and demanding that the record transcribe the artifact
+    made two claims this record DOES strike, with reasons, report as unaccounted for
+    (2026-09-21, the why-us page). Comparing the two with the space removed keeps the match
+    exact about every word and forgiving only about a typographic accident nobody typed.
+    Casefolded here too, so the caller does not do it twice.
+    """
+    return re.sub(r"\s+([,.;:!?])", r"\1", re.sub(r"\s+", " ", s)).strip().lower()
+
+
 def drop_facts(entries):
     """The fact each `dropped` line names, with its reason stripped off."""
     out = set()
@@ -305,9 +321,11 @@ def missing(facts, new_html, dropped=None):
             # PHRASE that carries it ("regular staff training") rather than transcribe a
             # forty-word sentence. Either containment counts, in either direction, so the
             # record stays readable and the match stays exact enough to be wrong loudly.
-            if k == "text" and any(d and (d.lower() in v.lower() or v.lower() in d.lower())
-                                   for d in drop):
-                continue
+            # Both sides go through `_claim_key` first — see its docstring.
+            if k == "text":
+                nv = _claim_key(v)
+                if any(d and (_claim_key(d) in nv or nv in _claim_key(d)) for d in drop):
+                    continue
             if k in ("images", "embeds"):
                 present = v in body
             elif k == "prices":
