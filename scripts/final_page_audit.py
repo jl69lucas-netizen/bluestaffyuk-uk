@@ -30,6 +30,10 @@ DEFAULT_JSON = ROOT / "docs/reports/final_page_audit.json"
 BASELINE_CHECKS = {"all_six_levels", "min_h5_5", "min_h6_5"}
 # data/settings.json: delivery_min_gbp 200, delivery_max_gbp 350.
 SHIP_RE = re.compile(r"£\s?200\b[\s\S]{0,80}£\s?350\b|£200\s*[–-]\s*£350")
+#: `<p class="kit-pagedate">Last updated: …</p>`, the kit component's own line. Flat by
+#: construction (PageDate emits one paragraph), so a lazy `</p>` is the matching close tag.
+PAGEDATE_RE = re.compile(
+    r"""<p\b[^>]*\bclass\s*=\s*["'][^"']*\bkit-pagedate\b[^"']*["'][^>]*>[\s\S]*?</p>""", re.I)
 def dist_path(slug):
     """Resolve a flat or nested slug to its rendered index.html (`index` = the
     homepage), via the shared convention in scripts/_slugs.py."""
@@ -192,13 +196,76 @@ INTERIOR_UTILITY_EXEMPT = {
 }
 
 
+# ── A COLLECTION POST IS NOT A RICH PAGE (project 4 Task 14 review) ──────────────────────
+# The `blog` profile was written for the /blog/ archive and for rich blog pages, and it is
+# the right profile for the boarded guides hub. It is the WRONG profile for a post of the
+# `blog` content collection in two places, and both are recorded here rather than argued
+# about in a report:
+#
+#   * THE HEADING FLOOR. `all_six_levels`, `min_h5_5` and `min_h6_5` ask a page for all six
+#     levels and five H5 plus five H6. That floor exists because a 2,000-word rich page that
+#     carries only H2s has an outline nobody can scan. A post is a different artefact: the
+#     one on disk is a 300-word introduction, and the only way it reaches five H6 is by
+#     inventing eleven sub-points it does not have — headings written for a checker, which is
+#     what `.claude/skills/bsuk-gate-integrity` calls a page written for a gate. The floor is
+#     a RICH-PAGE rule; a post's length rule is its own word band, which build 5 sets.
+#   * FRESHNESS. `no_visible_date` says dates live in schema and never on the page, because a
+#     visible "updated" stamp on a sales page is a recency signal dressed as information. On a
+#     POST it is the opposite: a reader deciding whether advice is current is entitled to the
+#     date, and this repo can evidence it — frontmatter first, then the git-derived
+#     data/page-dates.json. So the check now fires on exactly the case it was written for: a
+#     post showing a date NO FILE ON DISK SOURCES. A page whose date is sourced, post or hub,
+#     is NA.
+#   * THE FAQ BLOCK. `faqpage_present` asks every blog-profile page for FAQPage markup. A
+#     post's FAQ is its own `faqs` frontmatter, and src/pages/[...post].astro renders the
+#     accordion AND mints the schema the moment an entry carries one. A post with no questions
+#     on disk has nothing to mark up, and a template that minted an empty FAQPage — or a
+#     writer who invented three questions to satisfy a gate — would be putting schema on a
+#     page for content that is not on it, which is the one thing structured data may not do.
+POST_EXEMPT_CHECKS = ("all_six_levels", "min_h5_5", "min_h6_5", "faqpage_present")
+POST_HEADING_FLOOR = POST_EXEMPT_CHECKS
+POST_EXEMPT_REASON = (
+    "collection post: the six-level outline, the 5xH5 / 5xH6 floor and the FAQ block are "
+    "rich-page rules. A post that met them would carry headings written for a checker and "
+    "questions nobody asked; a post's length rule is its own word band and its FAQ is its "
+    "own `faqs` frontmatter, both of which build 5 writes"
+)
+_POST_FM = re.compile(r"^(slug|date):\s*[\"']?([^\"'\n]+)", re.M)
+
+
+def _posts():
+    """{post slug: has an own `date:` in frontmatter} for every entry of the collection."""
+    out = {}
+    for f in sorted((ROOT / "src/content/blog").glob("*.md")):
+        fm = dict((m.group(1), m.group(2).strip()) for m in _POST_FM.finditer(f.read_text(encoding="utf-8")))
+        if fm.get("slug"):
+            out[fm["slug"].strip("/")] = bool(fm.get("date"))
+    return out
+
+
+POSTS = _posts()
+_DATE_ROUTES = set(json.loads((ROOT / "data/page-dates.json").read_text())["routes"])
+
+
+def date_is_sourced(slug):
+    """True when a file on disk gives this route a date: the post's own frontmatter, or the
+    git-derived map every page's schema and `PageDate` already read."""
+    return bool(POSTS.get(slug)) or f"/{slug.strip('/')}/" in _DATE_ROUTES
+
+
 def severity(page_type, check, slug=None):
     """Per-check severity, falling back to the profile's `_default`, then global.
 
-    A slug in INTERIOR_UTILITY_EXEMPT takes NA on the three sales-shaped checks."""
+    A slug in INTERIOR_UTILITY_EXEMPT takes NA on the three sales-shaped checks, and a
+    collection post takes NA on the heading floor (see the block above)."""
     if (slug in INTERIOR_UTILITY_EXEMPT and page_type == "interior"
             and check in SALES_SHAPED_CHECKS):
         return "NA"
+    if page_type == "blog":
+        if slug in POSTS and check in POST_HEADING_FLOOR:
+            return "NA"
+        if check == "no_visible_date":
+            return "FAIL" if (slug in POSTS and not date_is_sourced(slug)) else "NA"
     prof = PROFILES.get(page_type, {})
     return prof.get(check, prof.get("_default", DEFAULT_SEVERITY))
 
@@ -375,8 +442,26 @@ def audit_html(slug, html, page_type="interior"):
     # page. Pass = NO visible "Updated/Last updated <Month> <Year>" text (scripts
     # stripped so schema dateModified does not trigger).
     visible=re.sub(r"<script[\s\S]*?</script>","",raw)
+    # `PageDate` IS THE SOURCED DATE, AND IT IS CUT BEFORE THE CHECK LOOKS.
+    # src/components/kit/PageDate.astro renders nothing at all unless data/page-dates.json —
+    # written by scripts/generate_page_dates.py from committed git history — has a row for the
+    # route, and BaseLayout reads that same row for the WebPage node. So a `.kit-pagedate`
+    # line cannot be a date somebody typed: it is the same number the schema carries, which is
+    # what this check wants freshness to be. What the check exists to catch is a recency
+    # signal dressed as information — "Updated March 2026" written into prose, backed by
+    # nothing — and every one of those is still in `visible` after this cut. Before the regex
+    # below was fixed to cross a day number, the distinction did not matter because the check
+    # could not see either kind; now it can, and /privacy-policy-uk/, whose own copy tells the
+    # reader the version they are reading is the one with the current date on it, would have
+    # started failing for rendering the honest one.
+    visible=PAGEDATE_RE.sub(" ", visible)
     visible=re.sub(r"<[^>]+>"," ",visible)
-    r["no_visible_date"]=not re.search(r"(?:updated|last updated|last modified)\b[^0-9]{0,18}\b20\d\d", visible, re.I)
+    # `[^0-9]{0,18}` could not cross a DAY NUMBER, so "Last updated: 21 September 2026" — the
+    # exact string `PageDate` renders — slipped past a check written to catch it, and only the
+    # dateless months of the year were ever caught. `.{0,24}?` is lazy and digit-tolerant, so
+    # the label finds its year across a day number and a separator and still cannot reach a
+    # year two sentences away.
+    r["no_visible_date"]=not re.search(r"(?:updated|last updated|last modified)\b.{0,24}?20\d\d", visible, re.I)
     # --- blog-only gates (page_type == "blog") ---
     # Computed only for blog so these never add new FAIL gates to puppy/interior rows.
     if page_type in ("blog", "comparison"):
@@ -429,14 +514,43 @@ FORSALE = ["buy-blue-staffy-puppies-uk",
            "buy-staffy-puppies-for-sale-uk"]
 
 def blog_targets():
-    """Discover the /blog/ hub (dist/blog/index.html) + every dist/blog/<slug>/ post."""
+    """Every page of the blog cluster: the legacy /blog/ archive, any nested dist/blog/<slug>/
+    page, the BOARDED guides hub, and every entry of the `blog` content collection.
+
+    WHY THE LAST TWO ARE DISCOVERED AND NOT READ OFF data/page-map.json. `SLUGS` above takes
+    the audit's interior list from page-map's `kind == "rich"` rows, and that map is the
+    EXTRACTOR's record of the OLD WordPress site — `/blue-staffy-blog-guides/` was an archive
+    stub there, `kind: blog`, and the post's new URL never existed there at all. Editing the
+    map so the audit can see them would be hand-editing a generated file (README's list) to
+    make a record of the old site describe the new one, and the next `npm run extract` would
+    undo it. What actually changed is which pages BELONG to this cluster, so that is what is
+    derived: a rebuilt slug whose board record is a blog page type is the hub, and
+    src/content/blog is the post list. Both are read off disk, so a post added in build 5 is
+    audited the day it lands.
+    """
     targets = []
     blog = DIST / "blog"
     if (blog / "index.html").exists():
         targets.append(("blog", "blog"))
     for f in sorted(blog.glob("*/index.html")):
         targets.append((f"blog/{f.parent.name}", "blog"))
-    return targets
+    # The boarded hub(s): a rebuilt page whose record says it indexes the collection.
+    rebuilt = ROOT / "data/facts/rebuilt.json"
+    for slug in (json.loads(rebuilt.read_text()) if rebuilt.exists() else []):
+        rec = ROOT / f"data/boards/{slug}.json"
+        if not rec.exists():
+            continue
+        if (json.loads(rec.read_text()).get("meta") or {}).get("page_type") == "blog":
+            targets.append((slug, "blog"))
+    targets += [(slug, "blog") for slug in sorted(POSTS)]
+    # Two discovery paths can name one page (a post nested under dist/blog/ would), and a
+    # page audited twice is a row counted twice.
+    seen, out = set(), []
+    for t in targets:
+        if t[0] not in seen:
+            seen.add(t[0])
+            out.append(t)
+    return out
 
 def json_report(rows):
     """Machine-readable result: per page its slug, status and every failing check as
@@ -509,6 +623,13 @@ def main(argv=None):
         print(f"[{r['_verdict']}]{tag} {s}   {r['h_counts']} | FAQPage×{r['faqpage_count']} | schema:{r['schema_types']}")
         if s in INTERIOR_UTILITY_EXEMPT and r.get("_page_type") == "interior":
             print(f"    EXEMPT → {', '.join(SALES_SHAPED_CHECKS)} — {INTERIOR_UTILITY_EXEMPT[s]}")
+        if s in POSTS and r.get("_page_type") == "blog":
+            print(f"    EXEMPT → {', '.join(POST_HEADING_FLOOR)} — {POST_EXEMPT_REASON}")
+            if date_is_sourced(s):
+                print("    EXEMPT → no_visible_date — the visible date is sourced "
+                      "(the post's own frontmatter, or the git-derived data/page-dates.json "
+                      "that its schema and PageDate read); the check fires on a post showing "
+                      "a date no file on disk backs")
         if r["_hard_fails"]: print("    FAIL → " + ", ".join(r["_hard_fails"]))
         if r["_warns"]:      print("    WARN → " + ", ".join(r["_warns"]))
     npass = sum(1 for r in rows.values() if r.get("_verdict") == "PASS")

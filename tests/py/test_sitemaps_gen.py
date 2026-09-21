@@ -100,6 +100,42 @@ def test_noindex_pages_excluded(tmp_path):
     assert all(not u.endswith("/n/") for u, _ in shards["page"])
 
 
+def test_a_noindex_page_leaves_every_shard_not_just_the_page_one(tmp_path):
+    """The exclusion is applied before the shard is chosen, so it has to hold for a post and
+    a location too. Without this, a noindex blog entry would drop out of `page` and reappear
+    in `post`, which is the shard a crawler actually reads for a collection."""
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/a-post/": _page(robots="noindex, nofollow"),
+        "/uk-locations/somewhere/": _page(robots="noindex, nofollow"),
+    })
+    shards = build_shards(d, "https://example.test", blog_slugs={"a-post"})
+    listed = {u for rows in shards.values() for u, _ in rows}
+    assert not [u for u in listed if u.endswith("/a-post/")]
+    assert not [u for u in listed if u.endswith("/somewhere/")]
+
+
+def test_the_legacy_blog_archive_is_noindex_and_out_of_the_shards_while_the_hub_is_in():
+    """The live case, against the real build. /blog/ is the old WordPress archive address and
+    /blue-staffy-blog-guides/ is the boarded guides index; two indexable indexes of one
+    collection is a duplicate somebody has to choose between, so the legacy one is `noindex`
+    with its canonical on the hub. A test on the generator alone would not notice the day the
+    page stopped declaring it."""
+    dist = pathlib.Path(__file__).resolve().parents[2] / "dist"
+    blog = dist / "blog" / "index.html"
+    hub = dist / "blue-staffy-blog-guides" / "index.html"
+    if not blog.exists() or not hub.exists():
+        import pytest
+        pytest.skip("no dist/ — run the build first")
+    assert "noindex" in gs._meta(blog.read_text(encoding="utf-8"), "robots")
+    assert "blue-staffy-blog-guides/" in blog.read_text(encoding="utf-8").split("rel=\"canonical\"")[1][:120]
+    assert "noindex" not in gs._meta(hub.read_text(encoding="utf-8"), "robots")
+    shards = build_shards(dist, "https://example.test", gs.blog_slugs_from_content())
+    listed = {u for rows in shards.values() for u, _ in rows}
+    assert not [u for u in listed if u.endswith("/blog/")]
+    assert [u for u in listed if u.endswith("/blue-staffy-blog-guides/")]
+
+
 def test_meta_tolerates_quote_style_and_attribute_order():
     assert "noindex" in gs._meta("<meta name='robots' content='noindex, follow'>", "robots")
     assert "noindex" in gs._meta('<meta content="noindex" name="robots">', "robots")

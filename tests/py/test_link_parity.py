@@ -95,6 +95,75 @@ def test_the_blog_hubs_post_cards_are_allowed_only_on_a_blog_page_type():
     assert L.post_hrefs({"sections": []}) == set()
 
 
+# --- the exemption is POSITIONAL, not page-wide ----------------------------------------------
+
+POST = "/how-to-choose-the-right-blue-staffy-puppy-for-your-family/"
+HUB_PAGE = """
+<main>
+  <section id="latest-guides">
+    <div class="bl-cards">
+      <article class="kit-card post-card"><h3><a href="%s">The post</a></h3></article>
+    </div>
+  </section>
+  <section id="talk-to-us"><p><a href="/uk-blue-staffy-breeders-contact/">write</a></p></section>
+</main>
+""" % POST
+HUB_PAGE_WITH_PROSE_LINK = HUB_PAGE.replace(
+    '<p><a href="/uk-blue-staffy-breeders-contact/">write</a></p>',
+    '<p><a href="/uk-blue-staffy-breeders-contact/">write</a> and '
+    '<a href="%s">the post again</a></p>' % POST)
+
+
+def test_a_card_link_leaves_the_corpus_and_a_prose_link_to_the_same_post_does_not():
+    """The whole point of cutting the cards rather than allowing the href page-wide: the two
+    are the same destination and only one of them is a decision somebody took. A page-wide
+    allowance cannot tell them apart, so the prose link would ship unapproved."""
+    assert L.page_links(HUB_PAGE, cut_cards=True) == ["/uk-blue-staffy-breeders-contact/"]
+    assert L.card_links(HUB_PAGE) == [POST]
+    # And with the same href ALSO written into a sentence, the sentence's copy survives the cut.
+    assert L.page_links(HUB_PAGE_WITH_PROSE_LINK, cut_cards=True) == [
+        "/uk-blue-staffy-breeders-contact/", POST]
+
+
+def test_cut_cards_is_off_by_default_so_a_non_hub_is_judged_on_every_anchor():
+    assert POST in L.page_links(HUB_PAGE)
+
+
+def test_a_card_subtree_is_cut_at_its_matching_close_tag():
+    """The nesting regression `_strip_chrome` was written for, on the card walker: a card holds
+    a heading inside a div, and `.*?</...>` would stop at the first close tag and leave the
+    rest of the page cut out with it."""
+    page = ('<main><article class="post-card"><div><div>'
+            '<a href="/swallowed/">x</a></div></div></article>'
+            '<p><a href="/kept/">y</a></p></main>')
+    assert L.page_links(page, cut_cards=True) == ["/kept/"]
+    assert L.card_links(page) == ["/swallowed/"]
+
+
+def test_a_card_carrying_something_that_is_not_a_collection_row_is_reported():
+    """Cutting the cards must not become a hole: what a card contains is checked, not trusted.
+    A `.post-card` with an arbitrary href in it would otherwise be a link the board never
+    showed anybody, invisible to the gate."""
+    record = {"meta": {"page_type": "blog"}, "sections": [], "dropped": {"links": []}}
+    collection = L.post_hrefs(record)
+    assert POST in collection, "the moved post should be a row of the collection"
+    assert "/some-other-page/" not in collection
+
+
+def test_the_real_hub_exercises_the_card_cut():
+    """A rule nothing on the built site reaches is a rule nobody is testing. The hub must
+    actually carry at least one card link, or the two assertions above are theatre."""
+    page = DIST / "blue-staffy-blog-guides" / "index.html"
+    if not page.is_dir() and not page.exists():
+        pytest.skip("no dist/ — run the build first")
+    html = page.read_text(encoding="utf-8")
+    cards = L.card_links(html)
+    assert cards, "the hub built no .post-card links"
+    assert set(cards) <= L.collection_hrefs()
+    assert not (set(cards) & set(L.page_links(html, cut_cards=True))), (
+        "a card href is still in the page corpus — the cut did not happen")
+
+
 def test_the_post_slug_comes_from_the_frontmatter_and_not_from_the_filename():
     """A post's route is its `slug:`, which is what src/pages/[...post].astro builds and what
     the hub's cards link. Deriving it from the filename would exempt a url nothing serves."""

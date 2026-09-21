@@ -300,3 +300,91 @@ def test_puppy_page_product_carrying_aggregateoffer_still_fails():
 def test_single_product_offer_page_passes_on_both_profiles():
     for pt in ("puppy", "for-sale"):
         assert A.audit_html("available-puppies/roman", MINIMAL_PUPPY, pt)["no_aggregateoffer"] is True, pt
+
+
+# ── freshness: the regex that could not cross a day number (project 4 Task 14 review) ──────
+
+_DOC = "<html><body><main>%s</main></body></html>"
+
+
+def test_a_typed_updated_stamp_is_caught_across_a_day_number():
+    """The defect: `[^0-9]{0,18}` could not pass a DAY, so the only stamps the check ever
+    caught were the ones with no day in them. "Last updated: 21 September 2026" — the exact
+    string the kit renders — walked straight through a check written to catch it."""
+    caught = _DOC % "<p>Last updated: 21 September 2026</p>"
+    assert A.audit_html("x", caught, "interior")["no_visible_date"] is False
+    # The old shape still fails, so nothing was traded away for the new one.
+    assert A.audit_html("x", _DOC % "<p>Updated September 2026</p>", "interior")["no_visible_date"] is False
+
+
+def test_the_label_cannot_reach_a_year_two_sentences_away():
+    """`.{0,24}?` is lazy AND bounded: it crosses a separator and a day, not a paragraph. A
+    greedy or unbounded version would report any page that used the word 'updated' anywhere
+    above a year, which is most of them."""
+    far = _DOC % ("<p>This page is updated whenever the litter changes, which is more often "
+                  "than people expect, and the current litter arrived in 2026.</p>")
+    assert A.audit_html("x", far, "interior")["no_visible_date"] is True
+
+
+def test_the_kit_pagedate_line_is_not_a_visible_date_defect():
+    """`PageDate` renders nothing unless data/page-dates.json has a row, and that map is git
+    history — so its line IS the schema's date, not a recency signal somebody typed. Cutting
+    it is what lets the fixed regex ship without failing /privacy-policy-uk/, whose own copy
+    tells the reader the version they are reading carries the current date."""
+    sourced = _DOC % '<p class="kit-pagedate">Last updated: <time datetime="2026-09-21">21 September 2026</time></p>'
+    assert A.audit_html("privacy-policy-uk", sourced, "interior")["no_visible_date"] is True
+    # A typed stamp NEXT TO the component's line is still caught: the cut is the element, not
+    # the page.
+    both = _DOC % ('<p class="kit-pagedate">Last updated: 21 September 2026</p>'
+                   '<p>Updated 4 March 2026 by our team.</p>')
+    assert A.audit_html("privacy-policy-uk", both, "interior")["no_visible_date"] is False
+
+
+# ── a collection post is not a rich page ───────────────────────────────────────────────────
+
+def test_the_heading_floor_and_the_faq_block_are_na_on_a_collection_post():
+    """A 300-word post reaches five H5 and five H6 only by inventing eleven sub-points, and
+    mints an FAQPage only by inventing questions. Both are rich-page rules; the exemption is
+    per POST and carries its reason, so the /blog/ archive and the boarded hub still answer
+    for them."""
+    assert A.POSTS, "src/content/blog holds no post with a frontmatter slug"
+    post = sorted(A.POSTS)[0]
+    for check in A.POST_EXEMPT_CHECKS:
+        assert A.severity("blog", check, post) == "NA", check
+        assert A.severity("blog", check, "blog") == "FAIL", check
+        assert A.severity("blog", check, "blue-staffy-blog-guides") == "FAIL", check
+    assert len(A.POST_EXEMPT_REASON) > 40
+
+
+def test_no_visible_date_fires_only_on_a_post_whose_date_nothing_sources():
+    """The rule the profile now states: a post is entitled to show its date, and what the
+    check is for is a post showing one no file on disk backs."""
+    post = sorted(A.POSTS)[0]
+    assert A.date_is_sourced(post), "the moved post should be dated by data/page-dates.json"
+    assert A.severity("blog", "no_visible_date", post) == "NA"
+    assert A.severity("blog", "no_visible_date", "blue-staffy-blog-guides") == "NA"
+    assert A.severity("blog", "no_visible_date", "blog") == "NA"
+    # A post nothing dates is the case the check keeps.
+    A.POSTS["ghost-post"] = False
+    try:
+        assert A.date_is_sourced("ghost-post") is False
+        assert A.severity("blog", "no_visible_date", "ghost-post") == "FAIL"
+    finally:
+        del A.POSTS["ghost-post"]
+
+
+def test_the_blog_cluster_is_discovered_and_holds_the_hub_and_every_post():
+    """The audit used to see only dist/blog/*, so the boarded hub and the post at its own slug
+    were audited by nothing. Discovery is off disk — rebuilt.json plus the board's page type
+    for the hub, src/content/blog for the posts — so build 5's posts are audited the day they
+    land, and data/page-map.json stays the extractor's record of the OLD site."""
+    if not (A.DIST / "blog" / "index.html").exists():
+        import pytest
+        pytest.skip("no dist/ — run the build first")
+    slugs = [s for s, _ in A.blog_targets()]
+    assert len(slugs) == len(set(slugs)), slugs
+    assert "blog" in slugs
+    assert "blue-staffy-blog-guides" in slugs
+    for post in A.POSTS:
+        assert post in slugs, post
+    assert all(t == "blog" for _, t in A.blog_targets())
