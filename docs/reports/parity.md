@@ -14,7 +14,6 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
 | --- | --- | --- | --- | --- | --- | --- |
 | /blue-staffy-blog-guides/ | 0→0→142 | 0→3 | 0→0 | 0→0 | 0 | PASS (archive) |
-| /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
 | /uk-locations/blue-staffies-newcastle-under-lyme/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-aberdeen/ | 476→443→443 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-birmingham/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
@@ -44,4 +43,4 @@ and expected must keep at least 60% of raw's words. Pages listed in
 | /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 
-examined 30 pages, 0 failing, skipped 10 rebuilt
+examined 29 pages, 0 failing, skipped 11 rebuilt
