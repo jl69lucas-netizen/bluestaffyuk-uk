@@ -1182,7 +1182,7 @@
         },
         {
           "level": 3,
-          "heading": "What We Can Show You",
+          "heading": "The Results We Hand Over",
           "intent": "Both our parents are tested clear; the health page has the detail.",
           "children": []
         },
@@ -2519,7 +2519,7 @@
       "top": "H-GD3",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "f4538b4c67fd26126600a62e64125d792b981baed30bb42dafeff86934bc2f52",
+    "record_hash": "c99d27398e92d36444d1890dfb8b75f26dfcc904947ef18d0773d11aaba3d92f",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2536,7 +2536,17 @@
       "h6_prefixes": [
         "Buyer Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T03:23:15Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T03:23:15Z",
+        "reason": "header-collision: this H3 was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board (working rule 15 protects neither — the phrase is in no page's verbatim set). The node's intent is the two DNA results we hand a buyer, so the wording that names them is what it takes; no pick, figure, source or section id moves.",
+        "changed_paths": [
+          "/sections/8/tree/3/heading"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [

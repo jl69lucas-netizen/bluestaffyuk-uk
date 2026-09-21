@@ -390,6 +390,53 @@ const legacy = typeof image === 'string';
       }
     }
 
+    /* MOSAIC WITH AN ASIDE is the only arrangement in the eighteen that puts THREE columns
+       beside each other — tiles, copy, aside — so the `1fr minmax(0, 1fr) 15rem` the aside
+       ledge sets leaves it the narrowest copy column on the site: 246px at 1280 and 158px at
+       1024, measured on /blue-staffy-uk-breeders/, where the approved H1 took seven lines in
+       it and ran 41px of copy past the 450px ceiling while the two-line lede clamp quietly
+       hid a third and a fourth line. H-AB1 is the one style in the eighteen with this pair.
+       THREE COLUMNS DO NOT FIT AT ANY DESKTOP WIDTH: the band is ~800px of content at 1280
+       and ~620px at 1024, and three tracks plus two gaps leave the copy under 250px of it
+       however they are split — every split measured ran either the H1 or the clamped lede
+       over. So the aside becomes a SECOND ROW beneath the copy, beside the tiles, and the
+       arrangement stays the one the breeder picked: tiles left, copy right, the quote in its
+       own box. The other two changes are `panel`'s answer to the same problem (see below) —
+       the TILES give up their equal share, which costs them nothing because they are
+       height-capped above and crop either way, and the TYPE STEPS DOWN. Measured after:
+       443px at 1024 and 1100, 415px at 1280, hero overflow and lede overflow 0 at all three. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+        grid-template-areas: "pic copy" "pic aside";
+        align-items: start;
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start;
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height);
+        margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .lede {
+        margin-bottom: var(--space-3);
+      }
+    }
+    /* Between 1024 and 1199 the band is ~620px of content rather than ~800 and the copy has
+       180px less to spend, so the tiles take a smaller share still and the aside's own box
+       tightens. Measured: 27px over the ceiling before this rule, 443px after it, with 1280
+       unaffected because it is outside the query. */
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+      }
+      .kit-hero[data-hero-layout="mosaic"][data-hero-ledge="aside"] .hero-aside {
+        padding: var(--space-3);
+      }
+    }
+
     /* PANEL — text-led. The photo keeps rule 10's DOM position but takes a narrow column, so
        the page reads as prose with a picture beside it rather than as a sales band. The copy
        column is WIDER than a split hero's, which is exactly why its type steps down: measured,

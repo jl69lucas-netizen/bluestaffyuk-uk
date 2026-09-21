@@ -106,7 +106,14 @@ MAIN = re.compile(r"<main\b[^>]*>(.*?)</main>", re.S | re.I)
 HEADING = re.compile(r"<h([1-6])\b[^>]*>(.*?)</h\1>", re.S | re.I)
 PARA = re.compile(r"<p\b[^>]*>(.*?)</p>", re.S | re.I)
 IMG_TAG = re.compile(r"<img\b[^>]*>", re.I)
-ATTR = re.compile(r"""\b(src|alt)\s*=\s*["']([^"']*)["']""", re.I)
+# THE CLOSING QUOTE IS THE OPENING ONE — a backreference, not "either quote". Written as
+# `["']([^"']*)["']` this truncated any double-quoted value containing an apostrophe, and an
+# alt is a SENTENCE: "emphasizing the puppy's playful temperament." was read back as
+# "emphasizing the puppy". That half-sentence went into `--extract`'s stored set, and `--check`
+# then reported the page's correct, complete alt as missing — the gate being wrong about the
+# page rather than the reverse (CLAUDE.md, "charge it to the harness"). The VALUE is group 3,
+# because the quote itself is group 2; `_attrs()` is the one reader of this pattern.
+ATTR = re.compile(r"""\b(src|alt)\s*=\s*(["'])(.*?)\2""", re.I | re.S)
 SUMMARY = re.compile(r"<summary\b[^>]*>(.*?)</summary>", re.S | re.I)
 #: An old-site FAQ question is a `uagb-question` element; a hand-written one may be a
 #: <summary> or a "Q:" line. `quiz` is excluded by name: the buying guide's `quiz-question`
@@ -232,6 +239,11 @@ def _blocks(body):
     return found
 
 
+def _attrs(tag):
+    """`{name: value}` for the `src` and `alt` of one tag, quote-balanced. See `ATTR`."""
+    return {m.group(1).lower(): m.group(3) for m in ATTR.finditer(tag)}
+
+
 def alts(body):
     """[{src, alt}] for every image of the body, first spelling of each src kept.
 
@@ -240,7 +252,7 @@ def alts(body):
     page give it a sentence nobody wrote."""
     out, seen = [], set()
     for tag in IMG_TAG.findall(body):
-        a = {k.lower(): v for k, v in ATTR.findall(tag)}
+        a = _attrs(tag)
         src = a.get("src", "").strip()
         if not src or src in seen:
             continue
@@ -334,7 +346,7 @@ class Page:
         # own src (spec §9 amendment 8), which is a membership question, not an ordering one.
         self.alts = {}
         for tag in IMG_TAG.findall(body):
-            a = {k.lower(): v for k, v in ATTR.findall(tag)}
+            a = _attrs(tag)
             if a.get("src"):
                 self.alts.setdefault(a["src"].strip(), set()).add(norm(a.get("alt", "")))
         self.questions = self.headings + [text(m.group(1)) for m in SUMMARY.finditer(body)] \

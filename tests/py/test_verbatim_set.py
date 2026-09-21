@@ -270,3 +270,43 @@ def test_check_skips_an_excluded_slug_even_once_it_is_rebuilt():
     rebuilt = json.loads((ROOT / "data/facts/rebuilt.json").read_text(encoding="utf-8"))
     assert set(EXCLUDED) <= set(rebuilt)
     assert not set(V.applicable_slugs()) & set(EXCLUDED)
+
+
+# ── ATTR: a double-quoted attribute value may contain an apostrophe ────────────────────────
+# The pattern used to be `["']([^"']*)["']`, which closes on EITHER quote — so an alt is cut
+# at the first apostrophe in it and a complete sentence is stored, and then demanded, as a
+# fragment. Both directions are pinned: the apostrophe is read through, and a genuinely
+# different alt is still missing.
+
+APOSTROPHE_IMG = (
+    '<img src="/images/pup.webp" width="450" '
+    '''alt="David playing gently with his pup, emphasizing the puppy's playful temperament." '''
+    'height="450">'
+)
+
+
+def test_an_alt_containing_an_apostrophe_is_read_whole():
+    rows = V.alts(APOSTROPHE_IMG)
+    assert rows == [{
+        "src": "/images/pup.webp",
+        "alt": "David playing gently with his pup, emphasizing the puppy's playful temperament.",
+    }], rows
+
+
+def test_a_single_quoted_attribute_is_still_read():
+    assert V.alts("<img src='/images/a.webp' alt='A plain alt'>") \
+        == [{"src": "/images/a.webp", "alt": "A plain alt"}]
+
+
+def test_the_page_side_reads_the_same_apostrophe_alt_back():
+    page = V.Page(f"<main>{APOSTROPHE_IMG}</main>")
+    whole = "David playing gently with his pup, emphasizing the puppy's playful temperament."
+    assert page.has_alt("/images/pup.webp", whole)
+    # And the fragment the broken pattern used to store is NOT what the page carries, so a
+    # stale set cannot quietly keep passing once the pattern is fixed.
+    assert not page.has_alt("/images/pup.webp", "David playing gently with his pup")
+
+
+def test_an_alt_the_page_does_not_carry_is_still_missing():
+    page = V.Page(f"<main>{APOSTROPHE_IMG}</main>")
+    assert not page.has_alt("/images/pup.webp", "A completely different sentence.")
