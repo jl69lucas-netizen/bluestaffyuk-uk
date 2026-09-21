@@ -34,7 +34,7 @@ import Hero from '../../components/kit/Hero.astro';
 import Faq from '../../components/kit/Faq.astro';
 import PageDate from '../../components/kit/PageDate.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -43,9 +43,13 @@ import record from '../../../data/boards/privacy-policy-uk.json';
 
 const path = '/privacy-policy-uk/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// `approvalInForce()`, not `record.approval`: these three are INDICES, and the record
+// is back on the board for its hero and its counter (working rule 16) with its approval
+// carried under `approval_previous`. What the page is called was never the question.
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The lead image, at its ORIGINAL path with its original alt (working rule 11). Both come
 // from the record's `assets`, which is where the bake recorded them.

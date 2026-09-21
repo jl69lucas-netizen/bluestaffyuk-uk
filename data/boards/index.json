@@ -2,7 +2,9 @@
   "meta": {
     "slug": "index",
     "page_type": "home",
+    "layout_type": "home",
     "status": "approved",
+    "preview": true,
     "research_as_of": "2026-09-20",
     "sources": [
       {
@@ -245,7 +247,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S3",
+        "pick": null,
         "note": "Image left, right or above: the three hero arrangements from src/lib/boardStyles.ts. No trust chips and no CTA buttons on the hero (spec section 9 amendment 6a) — the trust strip is its own section two below."
       },
       "tree": [],
@@ -286,9 +288,9 @@
         ]
       },
       "styles": [
-        "S1",
-        "S2",
-        "S3"
+        "H-HM1",
+        "H-HM2",
+        "H-HM3"
       ],
       "id": "top",
       "heading": "Blue Staffy Puppies, Raised At Home In Carlisle",
@@ -301,7 +303,11 @@
         "max": 165
       },
       "cta": 1,
-      "n": 1
+      "n": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "the home family's own hero: copy and credential chips on a steel band with the photo beside them, where every interior page leads with a card or a panel. It is a delta from /buy-staffy-puppies-for-sale-uk/, the nearest page in intent."
+      }
     },
     {
       "images": [],
@@ -312,8 +318,8 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S2",
-        "note": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers. No image: the strip IS the content."
+        "pick": null,
+        "note": "The counter arrangement is one of the two questions this re-board asks. The menu is the home family’s own three (spec §9 amendment 10.2), the figures are this page’s own and every one carries the path it came from (amendment 10.5)."
       },
       "tree": [],
       "entities": [
@@ -346,9 +352,9 @@
         ]
       },
       "styles": [
-        "S1",
-        "S2",
-        "S3"
+        "C-HM1",
+        "C-HM2",
+        "C-HM3"
       ],
       "id": "at-a-glance",
       "heading": "Today's Figures, Read Straight From Our Files",
@@ -360,7 +366,31 @@
         "min": 50,
         "max": 65
       },
-      "n": 2
+      "n": 2,
+      "stats": [
+        {
+          "n": "6",
+          "label": "puppies available right now",
+          "source": "data/puppies.json#count(status=Available)"
+        },
+        {
+          "n": "2",
+          "label": "DNA tests on both parents",
+          "source": "data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)"
+        },
+        {
+          "n": "£200–£350",
+          "label": "UK delivery by distance",
+          "source": [
+            "data/settings.json#delivery_min_gbp",
+            "data/settings.json#delivery_max_gbp"
+          ]
+        }
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the counter as one flush line of figure-and-label pairs, against the ring tiles and figure cards the utility and guide pages take. A delta from /blue-staffy-pup-sale-uk/'s strip."
+      }
     },
     {
       "images": [
@@ -443,7 +473,11 @@
       },
       "n": 3,
       "verbatim_heading": true,
-      "verbatim_opening": "We are a small, family-run team dedicated to the health and well-being of every puppy. We are KC-registered and DEFRA-approved , and all our puppies are raised in a loving home environment, not a kennel."
+      "verbatim_opening": "We are a small, family-run team dedicated to the health and well-being of every puppy. We are KC-registered and DEFRA-approved , and all our puppies are raised in a loving home environment, not a kennel.",
+      "refresh": {
+        "axis": "accent",
+        "note": "brass rules between the four promise rows rather than the tinted cards /uk-blue-staffy-breeders-contact/ uses for the same kit strip."
+      }
     },
     {
       "id": "why-choose",
@@ -521,7 +555,11 @@
         "note": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the trust strip and the litter, and a third image there pushes the puppies below the fold. The four pillars are one sentence each — /buy-staffy-puppies-for-sale-uk/ is the page that argues them."
       },
       "verbatim_heading": true,
-      "verbatim_opening": "When buying a blue staffy puppy in the UK, you want quality assurance, health, and ethical breeding. At BlueStaffyUK.uk, we prioritize:"
+      "verbatim_opening": "When buying a blue staffy puppy in the UK, you want quality assurance, health, and ethical breeding. At BlueStaffyUK.uk, we prioritize:",
+      "refresh": {
+        "axis": "container",
+        "note": "full-bleed on the bone bed, where /buy-staffy-puppies-for-sale-uk/ boxes the same argument in a card."
+      }
     },
     {
       "images": [
@@ -585,7 +623,11 @@
         "min": 60,
         "max": 75
       },
-      "n": 5
+      "n": 5,
+      "refresh": {
+        "axis": "density",
+        "note": "one review given the whole row, against the three-across grid the same kit renders lower down this page."
+      }
     },
     {
       "images": [
@@ -697,7 +739,11 @@
       },
       "cta": 1,
       "n": 6,
-      "verbatim_heading": true
+      "verbatim_heading": true,
+      "refresh": {
+        "axis": "layout",
+        "note": "the litter grid above the fold-and-a-half rather than at the foot, which is where /blue-staffy-pup-sale-uk/ puts it."
+      }
     },
     {
       "id": "video-litter",
@@ -749,6 +795,10 @@
         "excluded": [],
         "pick": "S1",
         "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the player in a card on the bone bed, where the other two videos on this page take a steel band and a facade."
       }
     },
     {
@@ -846,7 +896,11 @@
       },
       "n": 8,
       "verbatim_heading": true,
-      "verbatim_opening": "At BlueStaffyUK.uk, our passion for the Staffordshire Bull Terrier breed drives every aspect of our work. We are dedicated to the highest standards of responsible and ethical breeding, ensuring that every Staffordshire Bull Terrier for sale from our care is a healthy, happy blue staffy puppy, well-prepared to become a cherished member of your family. Our commitment extends through several key pillars:"
+      "verbatim_opening": "At BlueStaffyUK.uk, our passion for the Staffordshire Bull Terrier breed drives every aspect of our work. We are dedicated to the highest standards of responsible and ethical breeding, ensuring that every Staffordshire Bull Terrier for sale from our care is a healthy, happy blue staffy puppy, well-prepared to become a cherished member of your family. Our commitment extends through several key pillars:",
+      "refresh": {
+        "axis": "motif",
+        "note": "the house photograph as the section's own motif, not repeated anywhere else on the page."
+      }
     },
     {
       "id": "video-our-home",
@@ -898,6 +952,10 @@
         "excluded": [],
         "pick": "S3",
         "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+      },
+      "refresh": {
+        "axis": "layout",
+        "note": "a click-to-play facade set inside the who-we-are block rather than in a band of its own, unlike the litter video above it."
       }
     },
     {
@@ -996,7 +1054,11 @@
         "note": "Restored under rule 15. Two photographs, so S2's split and S3's aside both read. The two H3s are the migrated page's own, carried at their old wording though neither is a keyword heading. The images move here from `health` and `first-steps`, which is where the old page had them."
       },
       "verbatim_opening": "The exceptional quality of our blue Staffy puppies begins with their parents. We carefully select our breeding dogs for their outstanding health, impeccable temperaments, and adherence to the Staffordshire Bull Terrier breed standard . Meet Maggie and Jones, the loving foundation of our current litters.",
-      "cta": 1
+      "cta": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "two portraits side by side with the copy beneath, against the photo-beside-copy the sections above and below use."
+      }
     },
     {
       "images": [
@@ -1091,7 +1153,11 @@
         "max": 150
       },
       "n": 11,
-      "verbatim_opening": "At BlueStaffyUK.uk, the health and well-being of our blue Staffordshire Bull Terrier puppies are our top priorities. As responsible dog breeders in the UK , we adhere to stringent health protocols and ensure our breeding dogs undergo all relevant health testing."
+      "verbatim_opening": "At BlueStaffyUK.uk, the health and well-being of our blue Staffordshire Bull Terrier puppies are our top priorities. As responsible dog breeders in the UK , we adhere to stringent health protocols and ensure our breeding dogs undergo all relevant health testing.",
+      "refresh": {
+        "axis": "accent",
+        "note": "the brass tick as the list marker, where /blue-staffy-health-uk/ rules the same claims into a table."
+      }
     },
     {
       "id": "the-breed",
@@ -1205,7 +1271,11 @@
         "pick": "S1",
         "note": "Restored under rule 15. The two external links and the guide link move here from `guides`, which is where they had been parked when this block was cut; `guides` keeps the health, buying and blog links and drops to a 60–80 word band. One photograph, the old block's own, moved from `whats-included`."
       },
-      "verbatim_heading": true
+      "verbatim_heading": true,
+      "refresh": {
+        "axis": "density",
+        "note": "a tighter three-paragraph summary than /uk-staffordshire-bull-terrier-guide/ gives the same subject, because that page is the long form and this is the pointer to it."
+      }
     },
     {
       "id": "video-breed",
@@ -1257,6 +1327,10 @@
         "excluded": [],
         "pick": "S1",
         "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the player in a card, matching video-litter above rather than taking a third bed, so the page's three videos read as two."
       }
     },
     {
@@ -1387,7 +1461,11 @@
         ]
       },
       "cta": 1,
-      "n": 14
+      "n": 14,
+      "refresh": {
+        "axis": "layout",
+        "note": "the table on the bone bed under a brand header band, against the zebra rows /blue-staffy-pup-sale-uk/ picked for its own price table."
+      }
     },
     {
       "images": [
@@ -1501,7 +1579,11 @@
       },
       "cta": 1,
       "n": 15,
-      "verbatim_opening": "We understand that finding the perfect blue staffy puppies near me, UK, can sometimes feel challenging. That’s why BlueStaffyUK offers a safe and reliable puppy shipping across the UK service, ensuring our beloved blue Staffies can reach their forever homes in cities like:"
+      "verbatim_opening": "We understand that finding the perfect blue staffy puppies near me, UK, can sometimes feel challenging. That’s why BlueStaffyUK offers a safe and reliable puppy shipping across the UK service, ensuring our beloved blue Staffies can reach their forever homes in cities like:",
+      "refresh": {
+        "axis": "motif",
+        "note": "the delivery band as a figure in the running copy rather than a boxed callout, which is /blue-staffy-pup-sale-uk/'s treatment."
+      }
     },
     {
       "images": [],
@@ -1607,7 +1689,11 @@
         "max": 190
       },
       "cta": 1,
-      "n": 16
+      "n": 16,
+      "refresh": {
+        "axis": "layout",
+        "note": "the steps numbered down a single column, against the cards /thank-you-blue-staffy-puppies-journey/ uses for the same kit."
+      }
     },
     {
       "images": [],
@@ -1740,7 +1826,11 @@
         "min": 95,
         "max": 125
       },
-      "n": 17
+      "n": 17,
+      "refresh": {
+        "axis": "density",
+        "note": "a dense town list in columns, where the location pages themselves carry one town each with room."
+      }
     },
     {
       "images": [],
@@ -1812,7 +1902,11 @@
         "min": 60,
         "max": 80
       },
-      "n": 18
+      "n": 18,
+      "refresh": {
+        "axis": "container",
+        "note": "the four guides as a plain ruled list, not the cards /blue-staffy-blog-guides/ gives the same set."
+      }
     },
     {
       "images": [
@@ -1879,7 +1973,11 @@
         "max": 90
       },
       "n": 19,
-      "verbatim_heading": true
+      "verbatim_heading": true,
+      "refresh": {
+        "axis": "density",
+        "note": "all three reviews across one row, tighter than owners-top's single review higher up the same page."
+      }
     },
     {
       "images": [],
@@ -2017,7 +2115,11 @@
       ],
       "n": 20,
       "verbatim_heading": true,
-      "verbatim_opening": "Considering welcoming a blue Staffy puppy into your home, anywhere across the UK? We’ve compiled answers to the most frequently asked questions by our families. Find quick insights and comprehensive Blue Staffy care and breed guides below."
+      "verbatim_opening": "Considering welcoming a blue Staffy puppy into your home, anywhere across the UK? We’ve compiled answers to the most frequently asked questions by our families. Find quick insights and comprehensive Blue Staffy care and breed guides below.",
+      "refresh": {
+        "axis": "accent",
+        "note": "brass on the open row's marker only, quieter than the filled rows /uk-blue-staffy-breeders-contact/ uses."
+      }
     },
     {
       "images": [],
@@ -2103,11 +2205,15 @@
       },
       "cta": 1,
       "n": 21,
-      "verbatim_opening": "Fill in your details below and we'll be in touch within 24 hours"
+      "verbatim_opening": "Fill in your details below and we'll be in touch within 24 hours",
+      "refresh": {
+        "axis": "layout",
+        "note": "the closing invitation beside the location line rather than above it, unlike /uk-blue-staffy-breeders-contact/'s stacked reach-us block."
+      }
     }
   ],
   "tuple": {
-    "hero": "hero-s3",
+    "hero": "",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -2322,7 +2428,8 @@
       "We partner with trusted, DEFRA-approved pet transport services experienced in nationwide puppy delivery. — the same partnership claim in the shipping block, dropped for the same reason: the approval standard is on disk and the partnership is not."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-20T14:13:43.023Z",
     "canvas_version": null,
     "h1": 0,
@@ -2377,15 +2484,40 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
+    "section_hashes": {
+      "top": "d5dfd6bff9dab2b83158873cf1d03b6e2c79c52507754ba940a1c562a48a6e9c",
+      "at-a-glance": "e348745dcd9db979c084807762590cdc58b7d7ac55dcd8fa71e127e07bdeaaa1",
+      "trust": "a956905135bf4087c2e8cb167a1d2ef76ab626072efdc7bcf2ebc741a60232e7",
+      "why-choose": "565d3b0548cefd06899a77ebb318dd84744adf8eb8f2a43cf903e920e03555d5",
+      "owners-top": "b997a89160c1cbbbe1c8184f19d1dc46043b46dae45d8d330c89f81b40c91d13",
+      "available-blue-staffy-puppies": "1c73acd428bd934a744e99c23e3cf5ed4a77952a8cd67effb2527c30fca75aea",
+      "video-litter": "010b556d9f4806dc43e24e17f1433630430925c275c604b6205ee59eb7efe418",
+      "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
+      "video-our-home": "4c551e9184eb2a0d8dfd64799e6e1c1d12ba5b2178d06ef5487ec1a72aa4c999",
+      "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
+      "health": "a32d13a62ca89063cdf866207007416ce280afbd1a73c6e2b9fb75094420e2fe",
+      "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
+      "video-breed": "5b023427b863e49e6e93f6ecd437eef370ddc0eac1db10f94845cfd99975d0d2",
+      "whats-included": "3239578349a688d9f172d76f1c49f36de27bbf196e6b13f0d9bae48d2235d74c",
+      "delivery": "288981741ce67319e6dd88ef942f52de3b2bfd8f0dbe6ede0543bb350628f3c9",
+      "first-steps": "cdbbc0fc41bb5ad33ae0a73acfd463b3c62fc57f28d1ecc531a1c3adc6f10c7e",
+      "uk-locations": "666b023d1a81300494758edfc883fb4d55885c5ba7dbd63741b7af1d72845709",
+      "guides": "fb706a9f66414e0fa8fd025d0d9e91f03c2a78faf757ff35868cb5865c15eada",
+      "our-happy-blue-staffy-owners-speak": "71d45812ba9e8027481b4110c5ae923a361227d1a55e08585c4ad712e9e0a9d8",
+      "your-questions-about-blue-staffies-answered": "bc6bd1810ea12f4cc590427a66ce28cc0e9ded8091bcd09d7af2f183a4f9cb1f",
+      "talk-to-us": "3da8363274fdfe0558abf23c8ad02334d86e7612214629cc9c3eb59780a60857"
+    },
     "record_hash": "4ed050935ae57a4afdbbdfd8fc4ae25440e228a55fef5e98e5c01cbe5d381635",
     "tuple_before": {
-      "hero": "",
+      "hero": "hero-s3",
       "dial": "",
       "rail": "",
       "toc": "pagenav-c",
-      "takeaway": [],
-      "table": "",
-      "faq": "",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s3",
       "stepper": "",
       "newsletter": {
         "after": "",
@@ -2394,33 +2526,7 @@
       "h6_prefixes": [
         "Kennel Note:"
       ]
-    },
-    "reapproved_at": "2026-09-21T13:36:51Z",
-    "reapprovals": [
-      {
-        "at": "2026-09-21T13:36:51Z",
-        "reason": "Wording only; no pick, figure, source, menu or section id touched. Three video captions asserted 'since June 2025' / 'since May 2025' and no file on disk holds those dates: their only source is each migrated theme's own VideoObject uploadDate, which 1c500e5 ruled is the old site's markup rather than a fact this repo keeps, and ad7592d applied the same correction to the breed guide. All three reworded to the about page's form ('has always carried ... at its original id'). The same unsourced date was restated twice more in prose about the same embeds — sections[video-our-home].intent promised the caption would name 'the month it went up', which it no longer does, and its why said the breeders page 'has had footage of the house since May 2025'; both now say the same thing without the date. why_source is untouched: it cites where the migrated markup lives, which is true, and is the pointer the ruling is about.",
-        "changed_paths": [
-          "/sections/6/video/caption",
-          "/sections/8/intent",
-          "/sections/8/video/caption",
-          "/sections/8/why",
-          "/sections/12/video/caption"
-        ]
-      }
-    ]
-  },
-  "approval_previous": {
-    "approved_at": "2026-09-16T00:00:00Z",
-    "h1": 0,
-    "meta": {
-      "title": 0,
-      "description": 0
-    },
-    "picks": {},
-    "notes": {},
-    "canvas_version": "none",
-    "record_hash": "2f847f857da2aa49a00c5b7143c8ce84d343dccf55fda4994206ba04978bd78b"
+    }
   },
   "verbatim": {
     "changed": [

@@ -2,6 +2,7 @@
   "meta": {
     "slug": "uk-blue-staffy-breeders-contact",
     "page_type": "interior",
+    "layout_type": "interior-utility",
     "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
@@ -229,19 +230,84 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S3",
+        "pick": null,
         "note": ""
       },
       "styles": [
-        "S1",
-        "S2",
-        "S3"
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
       ],
-      "cta": 0
+      "cta": 0,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero with a small photo mosaic beside the copy in a card, a delta from /privacy-policy-uk/'s title panel and /thank-you-blue-staffy-puppies-journey/'s full-bleed photo."
+      }
+    },
+    {
+      "id": "stats",
+      "n": 2,
+      "heading": "When You Will Hear Back",
+      "intent": "Two figures and no more, because two is all this page can source: the hours we answer, from data/settings.json `hours`, and the 24–48 business hours to a reply, from the data/faq.json row the hero and the form lede both already state in prose. No telephone figure, because data/settings.json holds PHONE_PLACEHOLDER; no appointment figure, because no file on disk records one.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "Both facts are stated twice in prose on this page and appear nowhere a reader scanning for them can find them, which is the whole case for a counter on a contact page.",
+      "why_source": "data/settings.json — hours \"Mo-Su 09:00-23:00\"; data/faq.json — enquiry-reply-time; CLAUDE.md working rule 16 (breeder, 2026-09-20)",
+      "framework": "FAB",
+      "words": {
+        "min": 0,
+        "max": 40
+      },
+      "shape": "stats",
+      "styles": [
+        "C-UT1",
+        "C-UT2",
+        "C-UT3"
+      ],
+      "stats": [
+        {
+          "n": "09:00–23:00",
+          "label": "the hours we answer, every day",
+          "source": "data/settings.json#hours"
+        },
+        {
+          "n": "24–48",
+          "label": "business hours to a reply",
+          "source": "data/faq.json#[enquiry-reply-time].a"
+        }
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "the counter as figure cards on a steel band, against the thank-you page's ring tiles in a card and the homepage's flush line."
+      },
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
+      }
     },
     {
       "id": "why-write",
-      "n": 2,
+      "n": 3,
       "heading": "What we can help with",
       "intent": "The trust strip: the four standing facts a reader wants confirmed before they write — KC registration, the health tests, home raising, and UK delivery — rendered from the kit rather than restated as prose.",
       "category": "A",
@@ -304,11 +370,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "the four standing facts in tinted cards, where the homepage rules the same kit strip with brass."
+      }
     },
     {
       "id": "enquiry",
-      "n": 3,
+      "n": 4,
       "heading": "Send us a message",
       "intent": "The one enquiry form on the page, with a short lede saying what happens after it is sent: the message reaches Lisa directly, and a reply comes within 24-48 business hours.",
       "category": "A",
@@ -367,11 +437,15 @@
         "S2",
         "S3"
       ],
-      "cta": 1
+      "cta": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "the form in two columns above 768px, the only two-column form on the site."
+      }
     },
     {
       "id": "reach-us",
-      "n": 4,
+      "n": 5,
       "heading": "How to reach us",
       "intent": "The direct channels: the email address from settings, the hours we answer, that we are in Carlisle in Cumbria, and the four accounts we post from. No telephone number, because data/settings.json holds a placeholder rather than a number.",
       "category": "A",
@@ -462,11 +536,15 @@
         "pick": null,
         "note": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials."
       },
-      "cta": 0
+      "cta": 0,
+      "refresh": {
+        "axis": "container",
+        "note": "the channels stacked in one bordered panel, roomier than /thank-you-blue-staffy-puppies-journey/'s inline version of the same facts."
+      }
     },
     {
       "id": "what-to-tell-us",
-      "n": 5,
+      "n": 6,
       "heading": "What to tell us",
       "intent": "What the form asks for and why each answer helps: your name and email so we can reply, a phone number and town if you want us to work out delivery, which puppy or the waiting list, and a message about your household.",
       "category": "B",
@@ -563,11 +641,15 @@
         "pick": null,
         "note": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have."
       },
-      "cta": 0
+      "cta": 0,
+      "refresh": {
+        "axis": "density",
+        "note": "one tight line per field, terser than any other prose section on the site, because it sits directly beside the form it describes."
+      }
     },
     {
       "id": "owners",
-      "n": 6,
+      "n": 7,
       "heading": "What it is like to deal with us",
       "intent": "One review, given room, chosen because it names the communication rather than the puppy: the thing a reader about to write to a stranger is actually weighing.",
       "category": "B",
@@ -617,11 +699,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "one review, given room, and the only review on the site chosen for what it says about answering rather than about a puppy."
+      }
     },
     {
       "id": "questions",
-      "n": 7,
+      "n": 8,
       "heading": "Before you write",
       "intent": "Four rows from data/faq.json: the deposit, UK delivery, whether you can visit, and what to put in a message. Every answer is one the body above or data/settings.json already states.",
       "category": "A",
@@ -706,11 +792,15 @@
         "How long do you take to reply to an enquiry?",
         "How do I join the waiting list for the next litter?",
         "What health tests have the parents had?"
-      ]
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "filled rows rather than the homepage's open-marker-only treatment of the same kit."
+      }
     },
     {
       "id": "desktop-dial",
-      "n": 8,
+      "n": 9,
       "heading": "Desktop dial",
       "intent": "Not a section of the page: the in-page dial itself, boarded here so the arrangement is picked once and every rebuilt page carries the same one. Each style is rendered over six stub targets on the preview route.",
       "category": "C",
@@ -753,11 +843,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the in-page dial, boarded once here for every rebuilt page, and its delta is that it is the site's single arrangement rather than a per-page one."
+      }
     },
     {
       "id": "mobile-sections",
-      "n": 9,
+      "n": 10,
       "heading": "Mobile sections",
       "intent": "Not a section of the page either: the mobile section sheet, boarded here for the same reason as the dial. Each style is rendered over the same six stub targets at 375 on the preview route.",
       "category": "C",
@@ -800,11 +894,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the mobile section sheet, boarded once here on the same terms as the dial."
+      }
     },
     {
       "id": "mobile-strip",
-      "n": 10,
+      "n": 11,
       "heading": "Mobile section strip",
       "intent": "Not a section of the page: the sticky rail of numbered section chips that pins under the header below 1024px, boarded here for the same reason as the dial and the sheet. Each style is rendered over the same six stub targets at 375 on the preview route.",
       "category": "C",
@@ -847,11 +945,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the sticky numbered chip rail below 1024px, boarded once here on the same terms as the dial."
+      }
     }
   ],
   "tuple": {
-    "hero": "hero-s3",
+    "hero": "",
     "dial": "dial-s2",
     "rail": "rail-s2",
     "toc": "pagenav-c",
@@ -894,7 +996,8 @@
       "We can also discuss UK-wide and international puppy transport options, including compliant DEFRA pet transport solutions for safe delivery — `brief.out_of_scope`: no file on disk states a route, a price or a carrier for international transport. UK delivery IS carried, with the figures data/settings.json holds: DEFRA-approved transport, priced by distance between £200 and £350, in the delivery FAQ row."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T21:34:14.316Z",
     "canvas_version": null,
     "h1": 0,
@@ -924,64 +1027,28 @@
       "top": "S3",
       "why-write": "S1"
     },
+    "section_hashes": {
+      "top": "10ed4da5c76a8ba979b9fff2e37f558f2e252f0ad4de956fe8a4c6c7b806987e",
+      "stats": "201777555e359fb375f0df5e792e1d545ab9a22c0502278618db6fec9918cdfd",
+      "why-write": "9db31453e3a8c29435c24930bc0ed57d812ed567c74c44dbee460ca3543d1de7",
+      "enquiry": "6bcc35a31209f46257e64e222496841fc0ecf66a2f07a370e1ac1a3bffc218da",
+      "reach-us": "9fc0588485c7324f3d92dce80584cf1d6192e9b2dcaadf9cdd87188ad840c252",
+      "what-to-tell-us": "3a432a0ea7d62427eee1265d4f05a4f80c108167808f62af705168393a58a44f",
+      "owners": "84dbd7c50aedc889528d4e5dd2072775cf5c988729072cdee1969814002fb0b5",
+      "questions": "54b1dca1366da50796ffde9fd60882c1dc5bed6bdfa52a00ae5b8b16ee85b859",
+      "desktop-dial": "8598ed05fb0e1c5bdb28da686742bfe0209577cafe3fcc20be6983c2d8c61c97",
+      "mobile-sections": "350f62e09980a4643840815ee364a2e076200f22bc228b1a00dfc96a23cd4032",
+      "mobile-strip": "425e9f10c5cc3ca354eaf914eeda2af220ef8b728982edae52f1f9f2eb63d7d9"
+    },
     "record_hash": "3e73d91db01436aebdcb1a5316f38e481a887a5ab858eced18e84f360b6cab33",
     "tuple_before": {
-      "hero": "hero-s1",
+      "hero": "hero-s3",
       "dial": "dial-s2",
-      "rail": "rail-s3",
+      "rail": "rail-s2",
       "toc": "pagenav-c",
       "takeaway": [],
       "table": "",
-      "faq": "faq-s1",
-      "stepper": "",
-      "newsletter": {
-        "after": "",
-        "variant": ""
-      },
-      "h6_prefixes": [
-        "What to send:"
-      ]
-    }
-  },
-  "approval_previous": {
-    "approved_at": "2026-09-19T19:34:59.305Z",
-    "canvas_version": null,
-    "h1": 0,
-    "meta": {
-      "description": 0,
-      "title": 0
-    },
-    "notes": {
-      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
-      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
-      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
-      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
-      "questions": "",
-      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
-      "top": "",
-      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
-      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
-    },
-    "picks": {
-      "desktop-dial": "S2",
-      "enquiry": "S1",
-      "mobile-sections": "S3",
-      "owners": "S1",
-      "questions": "S1",
-      "top": "S1",
-      "why-write": "S1"
-    },
-    "record_hash": "949424a061c64c3ced5fb842ac10932e8b27339fe53a10266fff22453483a1cb",
-    "tuple_before": {
-      "hero": "kit",
-      "dial": "kit",
-      "rail": "",
-      "toc": "kit",
-      "takeaway": [
-        "kit"
-      ],
-      "table": "",
-      "faq": "kit",
+      "faq": "faq-s3",
       "stepper": "",
       "newsletter": {
         "after": "",

@@ -2,6 +2,7 @@
   "meta": {
     "slug": "thank-you-blue-staffy-puppies-journey",
     "page_type": "interior",
+    "layout_type": "interior-utility",
     "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
@@ -209,19 +210,92 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S3",
+        "pick": null,
         "note": ""
       },
       "styles": [
-        "S1",
-        "S2",
-        "S3"
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
       ],
-      "cta": 0
+      "cta": 0,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero with the photograph full-bleed above the copy, unlike /privacy-policy-uk/'s title panel and /uk-blue-staffy-breeders-contact/'s photo beside the copy."
+      }
+    },
+    {
+      "id": "stats",
+      "n": 2,
+      "heading": "Where Your Enquiry Stands",
+      "intent": "Three figures, each read off a file rather than typed: how long a reply takes (data/faq.json, the enquiry-reply-time row this page already quotes), how many puppies are available while the reader waits (data/puppies.json), and the UK delivery band (data/settings.json). Working rule 16: a counter prints the page’s own facts, and every one of them is sourced.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The reader of this page is waiting for something, and the one question the migrated thank-you page never answered in a figure is how long the wait is. It is answered in prose in the FAQ and nowhere a reader scanning the page can see it.",
+      "why_source": "data/faq.json — enquiry-reply-time; data/puppies.json; data/settings.json delivery_min_gbp and delivery_max_gbp; CLAUDE.md working rule 16 (breeder, 2026-09-20)",
+      "framework": "FAB",
+      "words": {
+        "min": 0,
+        "max": 40
+      },
+      "shape": "stats",
+      "styles": [
+        "C-UT1",
+        "C-UT2",
+        "C-UT3"
+      ],
+      "stats": [
+        {
+          "n": "24–48",
+          "label": "business hours to a reply",
+          "source": "data/faq.json#[enquiry-reply-time].a"
+        },
+        {
+          "n": "6",
+          "label": "puppies available right now",
+          "source": "data/puppies.json#count(status=Available)"
+        },
+        {
+          "n": "£200–£350",
+          "label": "UK delivery by distance",
+          "source": [
+            "data/settings.json#delivery_min_gbp",
+            "data/settings.json#delivery_max_gbp"
+          ]
+        }
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the counter as ring tiles in a card, against the homepage's flush line and the contact page's figure cards on a band."
+      },
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
+      }
     },
     {
       "id": "next-steps",
-      "n": 2,
+      "n": 3,
       "heading": "What happens next",
       "intent": "Four steps, each one a fact the migrated body or data/settings.json already states: when we reply and to check the junk folder, what we will talk about, what reserves a puppy, and how a puppy travels home.",
       "category": "A",
@@ -296,11 +370,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the four steps as cards in a two-by-two grid, where the homepage numbers the same kit down one column."
+      }
     },
     {
       "id": "while-you-wait",
-      "n": 3,
+      "n": 4,
       "heading": "While you wait",
       "intent": "A short reading block: the breed guide, the health and care pages, the buying guide and the blog guides, each with one line saying what is in it. Prose with a link list, not a link dump.",
       "category": "B",
@@ -395,11 +473,15 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the reading list inside a single tinted block, not the ruled list the homepage gives the same four guides."
       }
     },
     {
       "id": "owners",
-      "n": 4,
+      "n": 5,
       "heading": "From a family who waited too",
       "intent": "One review, given room, chosen because it describes the enquiry-to-home process rather than the puppy — the thing this reader is in the middle of.",
       "category": "B",
@@ -449,11 +531,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "one review at full width with room around it, rather than the three-across grid the homepage gives the same kit."
+      }
     },
     {
       "id": "puppies",
-      "n": 5,
+      "n": 6,
       "heading": "The puppies looking for a home",
       "intent": "The available puppies from data/puppies.json as cards, so the reader can see who is actually here while the reply is written.",
       "category": "A",
@@ -508,11 +594,15 @@
         "S1",
         "S2",
         "S3"
-      ]
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the litter as a horizontal strip of cards rather than the grid /blue-staffy-pup-sale-uk/ and the homepage use."
+      }
     },
     {
       "id": "reach-us",
-      "n": 6,
+      "n": 7,
       "heading": "If you need us sooner",
       "intent": "The fallback: the email address from settings, the hours, where we are, and the contact page. No telephone number is shown because data/settings.json holds a placeholder rather than a number.",
       "category": "A",
@@ -574,11 +664,15 @@
         "pick": null,
         "note": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page."
       },
-      "cta": 1
+      "cta": 1,
+      "refresh": {
+        "axis": "accent",
+        "note": "the email in brass on a bone bed, quieter than the contact page's own reach-us block."
+      }
     },
     {
       "id": "questions",
-      "n": 7,
+      "n": 8,
       "heading": "Questions people ask after writing to us",
       "intent": "Three rows from data/faq.json, each answering something the migrated body already answers: the reply window, what to read while waiting, and how to follow up.",
       "category": "A",
@@ -653,11 +747,15 @@
         "Do you deliver a puppy to my home?",
         "Which puppies are available right now?",
         "What do you do with the details I sent you?"
-      ]
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "three rows with the first one open, against /privacy-policy-uk/'s all-closed list."
+      }
     }
   ],
   "tuple": {
-    "hero": "hero-s3",
+    "hero": "",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -695,7 +793,8 @@
       "Blue Staffy News: Join 500+ Readers! — the newsletter band. The 500+ figure has no source on disk, the WordPress form behind it was already removed at migration, and `brief.out_of_scope` rules the block out. Nothing replaces it: a confirmation page asking for a second sign-up before it has answered the first message is the opposite of what it is for."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T21:29:09.335Z",
     "canvas_version": null,
     "h1": 0,
@@ -719,6 +818,16 @@
       "questions": "S3",
       "welcome": "S3"
     },
+    "section_hashes": {
+      "welcome": "3ab548ca36030d2faba796ae58cdd1898ee99fe7202c14bec79bb2476a405f29",
+      "stats": "9fec40f9aa506e0146a59d51fd99b71cf48838bb91ea63e3162480266e055532",
+      "next-steps": "327a70fc52370db6fdd0d6aad407ea11f169701ea21da4dcd68a5456661ca341",
+      "while-you-wait": "469420fcfdc981550044a2ff6c9516fc444185057ab202a767c3000a29f99235",
+      "owners": "ce96d200edc52e85de8873ebd6092a0b52710390556b67512ae6ea525306317c",
+      "puppies": "4f67640ecd16730aab0d946ffbdffb7aaa8167ffddb96cf02165d45c68b5c9f3",
+      "reach-us": "fd95bbd8b59d872c4aebbdbd055bc831de3ed4eccf501423cf736aec40d93e09",
+      "questions": "1aa64acdfe275c72abce4b96597aac89260afda79f7b4c04545ecf57fb228198"
+    },
     "record_hash": "fcc79313a8d67086135791bf84fabbf6f60d0ce4fce18516d89b98bd16dcfda4",
     "tuple_before": {
       "hero": "hero-s3",
@@ -730,51 +839,6 @@
       ],
       "table": "",
       "faq": "faq-s3",
-      "stepper": "",
-      "newsletter": {
-        "after": "",
-        "variant": ""
-      },
-      "h6_prefixes": [
-        "Next step:"
-      ]
-    }
-  },
-  "approval_previous": {
-    "approved_at": "2026-09-19T19:33:21.793Z",
-    "canvas_version": null,
-    "h1": 0,
-    "meta": {
-      "description": 0,
-      "title": 0
-    },
-    "notes": {
-      "next-steps": "",
-      "owners": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page.",
-      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
-      "questions": "",
-      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page.",
-      "welcome": "",
-      "while-you-wait": ""
-    },
-    "picks": {
-      "next-steps": "S3",
-      "owners": "S3",
-      "puppies": "S3",
-      "questions": "S3",
-      "welcome": "S3"
-    },
-    "record_hash": "7b41d2d861bbf6d6b130dd9ec8bfa7c8498008f141010a5b474a016f72499caa",
-    "tuple_before": {
-      "hero": "kit",
-      "dial": "kit",
-      "rail": "",
-      "toc": "kit",
-      "takeaway": [
-        "kit"
-      ],
-      "table": "",
-      "faq": "kit",
       "stepper": "",
       "newsletter": {
         "after": "",

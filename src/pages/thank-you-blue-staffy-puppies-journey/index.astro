@@ -39,7 +39,7 @@ import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
 import Button from '../../components/kit/Button.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -50,9 +50,13 @@ import record from '../../../data/boards/thank-you-blue-staffy-puppies-journey.j
 
 const path = '/thank-you-blue-staffy-puppies-journey/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// `approvalInForce()`, not `record.approval`: these three are INDICES, and the record
+// is back on the board for its hero and its counter (working rule 16) with its approval
+// carried under `approval_previous`. What the page is called was never the question.
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The one image the migrated page carried, at its ORIGINAL path with its original alt
 // (working rule 11). Both come from the record's `assets`, where the bake recorded them.
@@ -86,7 +90,12 @@ const nextStepsBox = boxClass(pickedStyle(record, 'next-steps'));
 const ownersBox = boxClass(pickedStyle(record, 'owners'));
 const puppiesBox = boxClass(pickedStyle(record, 'puppies'));
 const questionsBox = boxClass(pickedStyle(record, 'questions'));
-const sections = sectionsFromRecord(record);
+// The `stats` counter is BOARDED and not yet BUILT. Working rule 16 put a counter strip on
+// this record, and the page that renders it is the later task's; until then the section
+// exists on the board and not in this body, and a dial link to an id the page does not
+// carry is the dead anchor `nav-anchors-resolve` exists to block. The filter comes out in
+// the same commit that adds the `<section id="stats">`.
+const sections = sectionsFromRecord(record).filter((s) => s.id !== 'stats');
 const email = SITE.email;
 // "Mo-Su 09:00-23:00" as a sentence. The hours are data/settings.json's, not prose typed
 // here, so a change to the setting reaches this line.

@@ -44,7 +44,7 @@ import Testimonial from '../../components/kit/Testimonial.astro';
 import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -54,9 +54,13 @@ import record from '../../../data/boards/uk-blue-staffy-breeders-contact.json';
 
 const path = '/uk-blue-staffy-breeders-contact/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// `approvalInForce()`, not `record.approval`: these three are INDICES, and the record
+// is back on the board for its hero and its counter (working rule 16) with its approval
+// carried under `approval_previous`. What the page is called was never the question.
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The one image the migrated page carried, at its ORIGINAL path with its original alt
 // (working rule 11), from the record's `assets` where the bake recorded it.
@@ -80,8 +84,13 @@ const rachel = reviewsJson.find((r) => r.name === 'Rachel L.')!;
 
 // The three chrome entries are not sections of the page (see the note at the top).
 const CHROME_SHAPES = ['dial', 'sheet', 'strip'];
+// `stats` is BOARDED and not yet BUILT. Working rule 16 put a counter strip on this record,
+// and the page that renders it is the later task's; until then the section exists on the
+// board and not in this body, and a dial link to an id the page does not carry is the dead
+// anchor `nav-anchors-resolve` exists to block. It comes out of this filter in the same
+// commit that adds the `<section id="stats">`.
 const sections = sectionsFromRecord({
-  sections: record.sections.filter((s) => !CHROME_SHAPES.includes(s.shape)),
+  sections: record.sections.filter((s) => !CHROME_SHAPES.includes(s.shape) && s.id !== 'stats'),
 });
 
 const topBox = boxClass(pickedStyle(record, 'top'));

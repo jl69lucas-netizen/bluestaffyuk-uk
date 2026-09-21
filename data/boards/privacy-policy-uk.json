@@ -2,6 +2,7 @@
   "meta": {
     "slug": "privacy-policy-uk",
     "page_type": "interior",
+    "layout_type": "interior-utility",
     "status": "approved",
     "preview": true,
     "research_as_of": "2026-09-19",
@@ -199,15 +200,19 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S3",
+        "pick": null,
         "note": ""
       },
       "styles": [
-        "S1",
-        "S2",
-        "S3"
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
       ],
-      "cta": 1
+      "cta": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero: a title panel with a slim photo, quieter than the homepage's steel band and than either of the other two utility pages' heroes."
+      }
     },
     {
       "id": "what-we-collect",
@@ -268,6 +273,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "each clause in a plain ruled block rather than a card, so a policy reads as a document and not as marketing."
       }
     },
     {
@@ -345,6 +354,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "density",
+        "note": "tighter leading than any other page's body, because this one is read in full or not at all."
       }
     },
     {
@@ -417,6 +430,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "accent",
+        "note": "no brass anywhere in this section; the rule is the only divider."
       }
     },
     {
@@ -471,6 +488,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "layout",
+        "note": "the named services as a definition list, against the prose paragraphs the sections around it use."
       }
     },
     {
@@ -517,6 +538,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "motif",
+        "note": "no photograph and no icon, unlike every other section on the site, which all carry an image of some kind."
       }
     },
     {
@@ -628,6 +653,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "density",
+        "note": "each right on its own short line, roomier than the clauses above it, because this is the part a reader scans for."
       }
     },
     {
@@ -692,6 +721,10 @@
         "excluded": [],
         "pick": null,
         "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the two subjects folded into one boxed note rather than two sections, unlike every other clause here."
       }
     },
     {
@@ -747,7 +780,11 @@
         "pick": null,
         "note": ""
       },
-      "cta": 1
+      "cta": 1,
+      "refresh": {
+        "axis": "accent",
+        "note": "the email address is the only brass on the page."
+      }
     },
     {
       "id": "questions",
@@ -826,11 +863,15 @@
         "How do I ask for my data to be deleted?",
         "How long does a data request take to answer?",
         "How do I complain about how my data was handled?"
-      ]
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the FAQ rows closed by default and unnumbered, against the numbered open row /thank-you-blue-staffy-puppies-journey/ leads with."
+      }
     }
   ],
   "tuple": {
-    "hero": "hero-s3",
+    "hero": "",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -877,7 +918,8 @@
       "Last Updated: June 20, 2025 — a hard-typed stamp from the old site, two dates and one rebuild out of date. The page now renders the real date through the PageDate component, off the same data/page-dates.json row BaseLayout puts in the WebPage node, so the visible date and the machine-readable one cannot disagree. The contact block the same sentence carried (the email address and an invitation to write) is kept, in 'Asking us about your privacy'."
     ]
   },
-  "approval": {
+  "approval": null,
+  "approval_previous": {
     "approved_at": "2026-09-19T21:26:01.751Z",
     "canvas_version": null,
     "h1": 0,
@@ -901,6 +943,18 @@
       "opening": "S3",
       "questions": "S1"
     },
+    "section_hashes": {
+      "opening": "05711b35e15f6e949052614777633053f3541caa736df7eb963b791ca815e121",
+      "what-we-collect": "6fd932c1765f0db094ffb85cbc831cc506a8dfc6f1501eddf21ae9609a6c0b57",
+      "how-we-use": "f4b21ab06f343b6ac08224695c2d3ae61ce3a3dfcd3a8e5ac82f0dd23b24e033",
+      "sharing": "12e1d2d914924fa208620ebe9fdfc7d0db97a614113a39420cc179356a55cb9d",
+      "third-parties": "3d0fec068ea1e2152cee94291ec006796dcaefcb3eebe2fe4b5a8eeee6f9ebcb",
+      "security": "cc17d7b765135e9c3a3d68b0c0ad7da9ee48bc686bd59b72f94ea9d5ab0c98d4",
+      "your-rights": "dd1fcc11dc2a03f2e47cfe95542ca1fd9cc8958393a9463a245aee909b9a0d49",
+      "cookies": "e0c4cd215d4ff546356e9c28ef409be60fed8014ae4dad2a711cbe98f480070c",
+      "contact": "a56c7e5c34021c4d4994c8706ea537dfc83c7e5d936325f08768c8c5225ecb4d",
+      "questions": "78d5d5d57483a5fbb629cb1095248e72eac76446362e367cb748a020d9aae927"
+    },
     "record_hash": "4e18202c50ebe3b2f5827c18d5bdd335f85f085ddd0ab7dd72d9f02f979945c3",
     "tuple_before": {
       "hero": "hero-s3",
@@ -910,51 +964,6 @@
       "takeaway": [],
       "table": "",
       "faq": "faq-s1",
-      "stepper": "",
-      "newsletter": {
-        "after": "",
-        "variant": ""
-      },
-      "h6_prefixes": [
-        "Privacy Note:"
-      ]
-    }
-  },
-  "approval_previous": {
-    "approved_at": "2026-09-19T19:31:07.345Z",
-    "canvas_version": null,
-    "h1": 0,
-    "meta": {
-      "description": 0,
-      "title": 0
-    },
-    "notes": {
-      "contact": "",
-      "cookies": "",
-      "how-we-use": "",
-      "opening": "",
-      "questions": "",
-      "security": "",
-      "sharing": "",
-      "third-parties": "",
-      "what-we-collect": "",
-      "your-rights": ""
-    },
-    "picks": {
-      "opening": "S3",
-      "questions": "S1"
-    },
-    "record_hash": "df9a0ff96bfd908a95619855643e40eddc810179d5bcaf80331081bac8102cba",
-    "tuple_before": {
-      "hero": "kit",
-      "dial": "kit",
-      "rail": "",
-      "toc": "kit",
-      "takeaway": [
-        "kit"
-      ],
-      "table": "",
-      "faq": "kit",
       "stepper": "",
       "newsletter": {
         "after": "",

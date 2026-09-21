@@ -488,8 +488,15 @@ def test_the_homepage_record_is_boarded_with_rendered_styles():
     assert rec["approval"] is None or rec["approval"]["approved_at"] >= "2026-09-20"  # the 2026-09-20 board approval
     assert rec["approval_previous"], "the project-2 approval is kept, not discarded"
     assert len(rec["sections"]) >= 12
+    # THREE, not the shape-wide trio by name. The homepage came under working rule 16 with the
+    # rest of the four pre-rule-16 pages, so its hero and its counter offer the HOME family's
+    # own arrangements (`H-HM1..3`, `C-HM1..3`, spec §9 amendment 10.2) and everything else
+    # still offers `S1`/`S2`/`S3`. What `build_board_previews.py` refuses is a `styles` that is
+    # neither empty nor exactly three, which is the property this line was always standing in
+    # for; naming the trio made the assertion fail the day the rule it predates arrived.
+    PER_PAGE = {"hero": ["H-HM1", "H-HM2", "H-HM3"], "stats": ["C-HM1", "C-HM2", "C-HM3"]}
     for s in rec["sections"]:
-        assert s.get("styles") == ["S1", "S2", "S3"], s["id"]
+        assert s.get("styles") == PER_PAGE.get(s["shape"], ["S1", "S2", "S3"]), s["id"]
     P.validate_styles(rec)
 
 

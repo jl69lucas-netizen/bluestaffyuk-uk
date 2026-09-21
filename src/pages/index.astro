@@ -45,7 +45,7 @@ import Testimonial from '../components/kit/Testimonial.astro';
 import VideoEmbed from '../components/kit/VideoEmbed.astro';
 import Faq from '../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../lib/sections';
-import { pickedStyle } from '../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../lib/pickedStyle';
 import { bakedAssets } from '../lib/assets';
 import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
@@ -59,9 +59,13 @@ import record from '../../data/boards/index.json';
 const path = '/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here. `h1`
 // index 0 IS the migrated H1, carried whole (rule 15).
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// `approvalInForce()`, not `record.approval`: these three are INDICES, and the record
+// is back on the board for its hero and its counter (working rule 16) with its approval
+// carried under `approval_previous`. What the page is called was never the question.
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The fourteen photographs, by slot, at their ORIGINAL public paths with their ORIGINAL alt
 // text (working rule 11; those alts are also fourteen elements of the verbatim set). A
