@@ -1,12 +1,12 @@
 ---
 title: "How To Choose The Right Blue Staffy Puppy For Your Family | Blue Staffy Blog Guides"
-slug: blue-staffy-blog-guides
+slug: how-to-choose-the-right-blue-staffy-puppy-for-your-family
 author: Blue Staffy UK Team
 description: "Learn how to find the perfect Blue Staffordshire Bull Terrier for your home. Explore temperament, socialisation tips, and more in our Blue Staffy Blog Guides."
-canonical: "/blue-staffy-blog-guides/"
-schema_type: CollectionPage
+canonical: "/how-to-choose-the-right-blue-staffy-puppy-for-your-family/"
+schema_type: BlogPosting
 faqs: []
-refresh_flags: ["legacy-schema-nodes-dropped:3", "archive-page", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image"]
+refresh_flags: ["legacy-schema-nodes-dropped:3", "moved-off-the-hub-url", "needs-real-post-body", "archive-links-rewritten", "date-not-fetched", "no-featured-image"]
 ---
 
 ## [Buy Staffy Puppies for Sale UK](/buy-staffy-puppies-for-sale-uk/)
