@@ -25,8 +25,12 @@
 // questions and every image alt — is carried WORD FOR WORD, and the carried wording is READ
 // OFF THE RECORD (`sections[].heading`, `sections[].verbatim_opening`, the tree nodes' own
 // pair, `assets[].alt`) rather than retyped here, so a curly quote cannot drift between the
-// record the breeder approved and the page that ships. Forty-six deviations are recorded in
-// `verbatim.changed` with their reasons. THE H1 IS NOT ONE OF THEM: `h1.pick` is variant 0,
+// record the breeder approved and the page that ships. THE THREE NUMBERS, and which is which:
+// the set holds 91 ELEMENTS, `verbatim.changed` holds 47 ROWS, and those rows account for 48
+// ELEMENTS — one more than there are rows, because the migrated body printed one opening
+// paragraph under two different headings and a single row excuses both readings of it.
+// `verbatim_set_check --check` counts ELEMENTS (91 examined / 48 changed / 0 missing) and the
+// record holds the rows. THE H1 IS NOT ONE OF THEM: `h1.pick` is variant 0,
 // which is the migrated H1 word for word (`h1.verbatim_heading: true`), so the picked H1 and
 // the verbatim H1 are one string and no `h1` row is owed. Everything else on the page is
 // written fresh, in Lisa Bright's first person, from the record's outline.
@@ -63,7 +67,7 @@
 import PageShell from '../../layouts/PageShell.astro';
 import Hero from '../../components/kit/Hero.astro';
 import CounterStrip from '../../components/kit/CounterStrip.astro';
-import TrustStrip from '../../components/kit/TrustStrip.astro';
+import TrustStrip, { type TrustItem } from '../../components/kit/TrustStrip.astro';
 import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import InfoCard from '../../components/kit/InfoCard.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
@@ -74,6 +78,7 @@ import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets } from '../../lib/assets';
 import { boxClass } from '../../lib/boardStyles';
+import { recordText, countedFigures, sourceKey, ledgeText, type LedgeEntry } from '../../lib/recordText';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE, abs, type PuppyRow } from '../../lib/site';
@@ -115,18 +120,40 @@ const localBreeders = asset('why-local-breeders');
 // link parity (amendment 6b). No per-puppy Offer is emitted here — the listing owns them.
 const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
 
-// ONE review, given room. The record's `owners` intent is explicit — "MODE: single,
-// data/reviews.json entry 1 — The Victoria Family, Manchester … The other two slots are not
-// rendered, so no REVIEW_PLACEHOLDER is counted here" — and that sentence is inside
-// `record_hash`, so it is the breeder's answer to HOW MANY. `approval.picks` gives the section
-// its S3 BED and the mode is passed explicitly, which is the same split
-// /blue-staffy-pup-sale-uk/ and /buy-blue-staffy-puppies-uk/ both make. The Victoria Family is
-// the row that speaks to the two things this page argues: the care a puppy was raised with and
-// the temperament that came of it.
-const victoria = reviewsJson.filter((r) => r.name === 'The Victoria Family');
-if (victoria.length !== 1) {
-  throw new Error('buy-staffy-puppies-for-sale-uk: data/reviews.json no longer holds The Victoria Family row');
-}
+// ALL THREE REVIEWS, as a grid. `approval.picks` gives `owners` S3, and S3's own definition
+// IS `mode: 'grid'` (src/lib/boardStyles.ts) — `mode` is one of the axes RENDERED_AXES lists
+// for the reviews shape, so on this shape the pick decides the count as well as the bed. The
+// first build passed `mode="single"` from `approval.notes.owners`, which reads "MODE: single —
+// pick S1"; the note and the pick were two answers to one question and THE PICK IS THE
+// ANSWER THE BREEDER GAVE. The note has been amended through
+// `board_approve.py --reapprove` (spec §9 amendment 11) to say what the pick says, and the
+// mode now comes from the StyleDef like every other axis. Every slot is filled, so no
+// REVIEW_PLACEHOLDER renders here.
+const allReviews = reviewsJson;
+
+// THE FOUR DOCUMENTS THE RECORD'S `promises` SECTION NAMES, passed to the kit strip rather
+// than left to its default three. The record's intent says "the four things we can actually
+// hand a reader", the paragraph beside the strip lists four, and a strip printing three made
+// the section contradict itself. Each of the four is backed on disk, which is the condition
+// working rule 9 puts on a credential: KC registration is `data/facts/…json` creds and the
+// `whyus-paperwork` FAQ row; the two DNA clearances are that file's `tests` and the
+// `about-health-tests` row; the veterinary check and the microchip are its `tests` again and
+// the `puppy-package` row; and the written puppy purchase contract is the migrated sentence
+// data/facts records ("…and a full puppy purchase contract"), the `whyus-paperwork` row, a
+// FACT_PHRASE tests/py/test_faq_data.py holds this page to, and the approved H1's own clause.
+const PROMISED: TrustItem[] = [
+  { t: 'Kennel Club registered', d: 'Registration paperwork for the litter, and both parents’ numbers on request.',
+    i: 'M12 2l3 6 6 1-4.5 4.5L18 20l-6-3-6 3 1.5-6.5L3 9l6-1z' },
+  // NOT the kit default's wording, which the homepage renders: "Dam and sire clear of L-2-HGA
+  // and HC-HSF4, results on request" would have put a fourteen-word run on two pages, which is
+  // the crossover the dup gate exists to catch (rule 8). Same two tests, this page's sentence.
+  { t: 'Two DNA clearances', d: 'Screened for L-2-HGA and HC-HSF4 before a mating, and the certificates are yours to read.',
+    i: 'M6 3v6a6 6 0 0 0 12 0V3M6 21v-6a6 6 0 0 1 12 0v6' },
+  { t: 'Vet checked and chipped', d: 'A veterinary health check and a microchip before a puppy leaves us, both dated.',
+    i: 'M12 5v14M5 12h14' },
+  { t: 'A written contract', d: 'A puppy purchase contract you read before anything is paid, not after.',
+    i: 'M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h4' },
+];
 
 // THE THIRTEEN FAQ ROWS THE RECORD NAMES, BY ID, in the record's order. Eight of them carry
 // the migrated page's own questions word for word (rule 15) — four the migrated body marked up
@@ -142,64 +169,27 @@ const faqs = faqSection.tree.map((n) => {
 
 // The carried wording, read off the record rather than retyped (see the rule 15 note above).
 // `heading` is the approved heading — already the repaired one where `verbatim.changed` says
-// so — and `opening` is the first paragraph the section carries word for word. `node` is the
-// same pair one level down, for the keyword H3s the migrated body put under an H2.
-const sec = (id: string) => record.sections.find((s) => s.id === id)!;
-const heading = (id: string) => sec(id).heading;
-const opening = (id: string) => {
-  const o = (sec(id) as { verbatim_opening?: string }).verbatim_opening;
-  if (!o) throw new Error(`buy-staffy-puppies-for-sale-uk: section ${id} carries no verbatim opening`);
-  return o;
-};
-interface TreeNode { heading: string; verbatim_opening?: string }
-const node = (id: string, i: number): TreeNode => {
-  const n = (sec(id).tree as TreeNode[])[i];
-  if (!n) throw new Error(`buy-staffy-puppies-for-sale-uk: section ${id} has no tree node ${i}`);
-  return n;
-};
-const nodeOpening = (id: string, i: number) => {
-  const n = node(id, i);
-  if (!n.verbatim_opening) {
-    throw new Error(`buy-staffy-puppies-for-sale-uk: ${id} tree node ${i} carries no verbatim opening`);
-  }
-  return n.verbatim_opening;
-};
-
-// A ledge entry is either a bare string or a `{text, source}` row, depending on whether the
-// board author had a path to cite for it. One unwrap, used by the chips and the ticks.
-type LedgeEntry = string | { text: string };
-const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+// so — `opening` is the first paragraph the section carries word for word, and `node` is the
+// same pair one level down, for the keyword H3s the migrated body put under an H2. All five
+// readers are `src/lib/recordText.ts`, shared with the listing and the price page.
+const { sec, heading, opening, node, nodeOpening } = recordText(record);
 
 // EVERY FIGURE THIS PAGE PRINTS IS COUNTED HERE, and the record's `n` is the expectation it is
-// counted against — the lesson da9c34e wrote down. The record's `n` is a hand-written number:
-// true on the day it was boarded, and the first thing to go stale when a puppy is reserved or
-// a screen is added to the health board. So each figure is derived from the file its `source`
-// names, and a count that no longer equals what the breeder approved throws at build with both
-// numbers in the message rather than printing a figure nobody checked.
+// counted against — the lesson da9c34e wrote down, now `countedFigures()`. The record's `n` is
+// a hand-written number: true on the day it was boarded, and the first thing to go stale when
+// a puppy is reserved or a screen is added to the health board. So each figure is derived from
+// the file its `source` names, and a count that no longer matches throws at build.
 const dnaTests = healthRecord.sections.find((s) => s.id === 'dna-tests')!.table!.rows.length;
+// A figure made of MORE than one fact cites more than one path (amendment 10.5), so its key is
+// the whole list joined by `sourceKey()`: citing only the minimum would leave the maximum
+// unsourced while reading as sourced.
+const DELIVERY_SOURCES = ['data/settings.json#delivery_min_gbp', 'data/settings.json#delivery_max_gbp'];
 const COUNTED: Record<string, string> = {
   'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)': String(dnaTests),
   'data/puppies.json#len': String((puppiesJson as PuppyRow[]).length),
+  [sourceKey(DELIVERY_SOURCES)]: `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`,
 };
-// A figure made of MORE than one fact cites more than one path (amendment 10.5), so its key is
-// the whole list joined: citing only the minimum would leave the maximum unsourced while
-// reading as sourced.
-const DELIVERY_SOURCES = ['data/settings.json#delivery_min_gbp', 'data/settings.json#delivery_max_gbp'];
-COUNTED[DELIVERY_SOURCES.join('|')] = `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`;
-
-const counted = (row: { n: string; label: string; source?: string | string[] }) => {
-  const key = Array.isArray(row.source) ? row.source.join('|') : (row.source ?? '');
-  const n = COUNTED[key];
-  if (n === undefined) {
-    throw new Error(`buy-staffy-puppies-for-sale-uk: no build-time count for ${key || '(no source)'} `
-      + '— a figure this page prints must be derived from data, not copied from the record');
-  }
-  if (n !== row.n) {
-    throw new Error(`buy-staffy-puppies-for-sale-uk: ${key} reads ${n} today and the approved `
-      + `record expects ${row.n} — the fact moved, so the board's figure needs a look`);
-  }
-  return { n, label: row.label };
-};
+const counted = countedFigures(COUNTED, 'buy-staffy-puppies-for-sale-uk');
 
 const heroSection = sec('top');
 const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
@@ -215,6 +205,7 @@ const box = (id: string) => boxClass(style(id));
 const heroStyle = style('top');
 const counterStyle = style('stats');
 const videoStyle = style('video-why-us');
+const ownersStyle = style('owners');
 const video = sec('video-why-us').video!;
 
 // "Mo-Su 09:00-23:00" as a sentence, from the setting rather than typed as prose.
@@ -327,7 +318,7 @@ const pageSchema = [
       <p class="bl-lede">{opening('promises')}</p>
     </div>
     <div class="bl-body">
-      <TrustStrip />
+      <TrustStrip items={PROMISED} />
       <div class="bl-prose">
         <img
           class="bl-img"
@@ -383,10 +374,7 @@ const pageSchema = [
     <div class="bl-head">
       <p class="bl-eyebrow">One sentence, and the file behind it</p>
       <h2>{T(heading('reasons'))}</h2>
-      <p class="bl-lede">
-        Each one attached to the test result, the registration, the record or the contract it
-        rests on.
-      </p>
+      <p class="bl-lede">Each attached to the test result, the record or the contract it rests on.</p>
     </div>
     <div class="bl-body">
       <div class="bl-cards">
@@ -398,12 +386,15 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T(node('reasons', 1).heading)}
-          body="Both parents are DNA tested clear of L-2-HGA and HC-HSF4 before any mating is considered, and every puppy has a veterinary health check before it leaves us."
+          {/* Not "…and every puppy has a veterinary health check before it leaves us": that is
+              the closing clause of data/faq.json's `about-health-tested`, which
+              /blue-staffy-uk-breeders/ renders, and the two shared a twelve-word run. */}
+          body="Both parents are DNA tested clear of L-2-HGA and HC-HSF4 before any mating is considered, and a vet examines each puppy in the days before collection."
         />
         <InfoCard
           kind="fact"
           heading={T(node('reasons', 2).heading)}
-          body="You see the parents, then the results, then the contract and the records — in that order, and all of it before any money changes hands."
+          body="The parents, then the results, then the contract and the records — in that order, and all of it before any money changes hands."
         />
         <InfoCard
           kind="fact"
@@ -418,12 +409,12 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T(node('reasons', 5).heading)}
-          body="Every reason above names the document or the test result it rests on, which is the one thing you can check before you travel."
+          body="Every reason above names the document or the test result it rests on, which is what you can check before you travel."
         />
         <InfoCard
           kind="fact"
           heading={T(node('reasons', 6).heading)}
-          body="No rating, no percentage and no guarantee length. No file on disk holds one, so none is printed, and a reason we cannot evidence is not a reason."
+          body="No rating, no percentage and no guarantee length. No file on disk holds one, and a reason we cannot evidence is not a reason."
         />
       </div>
       <div class="bl-prose">
@@ -438,8 +429,8 @@ const pageSchema = [
         />
         <div class="bl-stub">
           <p>
-            <a href="/uk-blue-staffy-puppy-buying-guide/">Put our own buying-guide questions to us</a> if
-            you would rather test the list than read it. We would rather be asked than believed.
+            <a href="/uk-blue-staffy-puppy-buying-guide/">Put our own buying-guide questions to us</a> rather
+            than read the list. We would rather be asked than believed.
           </p>
         </div>
       </div>
@@ -790,23 +781,21 @@ const pageSchema = [
     </p>
   </section>
 
-  {/* 11 owners — reviews, picked style S3 as the BED, with the record's own MODE: single
-      passed explicitly — the same split the two other for-sale pages make. The Victoria Family
-      is the one of the three real reviews that speaks to the care and the socialisation this
-      page argues. The other two slots are not opened, so no REVIEW_PLACEHOLDER is counted. The
-      two testimonials the migrated page carried, Jane and Tom of Croydon and Pamela M of
-      Stockport, are in `dropped.names`: neither appears in any file on disk. Both photographs
-      are carried, at their original paths and alt text. */}
-  <section id="owners" data-section-label="One family on what choosing us was like" class={box('owners')}>
+  {/* 11 owners — reviews, picked style S3: a review GRID beside the heading. `mode` is one of
+      the axes `RENDERED_AXES.reviews` lists, so on this shape the pick decides the count too,
+      and it is read off the StyleDef here rather than passed as a literal. The heading axis is
+      `inline`, so the head column is the heading and its lede and carries no eyebrow. All
+      three rows of data/reviews.json render, which is every real review the site holds, so no
+      REVIEW_PLACEHOLDER is counted. The two testimonials the migrated page carried, Jane and
+      Tom of Croydon and Pamela M of Stockport, are in `dropped.names`: neither appears in any
+      file on disk. Both photographs are carried, at their original paths and alt text. */}
+  <section id="owners" data-section-label="What families said about the care" class={box('owners')}>
     <div class="bl-head">
-      <p class="bl-eyebrow">One voice, given room</p>
       <h2>{T(heading('owners'))}</h2>
-      <p class="bl-lede">
-        One family, named, on the care their puppy was raised with.
-      </p>
+      <p class="bl-lede">Three families, named, on the care their puppies were raised with.</p>
     </div>
     <div class="bl-body">
-      <Testimonial mode="single" reviews={victoria} />
+      <Testimonial mode={ownersStyle.layout.mode ?? 'grid'} reviews={allReviews} />
       <div class="bl-prose">
         <img
           class="bl-img"
@@ -827,7 +816,7 @@ const pageSchema = [
           decoding="async"
         />
       </div>
-      <p>One review rather than three, because one voice carries a single argument.</p>
+      <p>Three is what our file holds, and no fourth will appear on it.</p>
     </div>
   </section>
 
@@ -902,17 +891,16 @@ const pageSchema = [
     <div class="bl-head">
       <h2>{T(heading('questions'))}</h2>
       <p class="bl-lede">
-        Thirteen rows, in the order they arrive in our inbox, and not one of them states a
-        price, a percentage or a guarantee length.
+        Thirteen rows, in the order they arrive in our inbox. None states a price.
       </p>
     </div>
     <div class="bl-body">
       <p>
         The first five are about how we work: the testing, the house, what comes with a puppy,
         what paperwork you get and whether you may read the results. Eight more were put to the
-        old version of this page and are kept exactly as they were typed. Four of those eight
-        are about the breed rather than about us, so each is answered in a line and sent on to
-        whichever page carries the evidence for it.
+        old version of this page and are kept exactly as they were typed — four of those about
+        the breed rather than about us, each answered in a line and sent on to the page that
+        evidences it.
       </p>
       <Faq items={faqs} />
       <h4>{T('The Accordion Adds No New Claim')}</h4>

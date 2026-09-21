@@ -278,6 +278,17 @@ def _claim_key(s):
     return re.sub(r"\s+([,.;:!?])", r"\1", re.sub(r"\s+", " ", s)).strip().lower()
 
 
+#: The shortest `dropped.text` line that may EXCUSE a claim by containment. The match runs in
+#: both directions so a record can quote the PHRASE that carries a claim rather than transcribe
+#: a forty-word sentence — but a short enough phrase stops identifying anything. "Community
+#: support" is eighteen characters and would excuse every claim sentence with those two words
+#: in it; a bare "KC" would excuse most of the page. Twelve characters is the floor: long
+#: enough that the phrase names a claim, short enough that no honest quotation is refused (the
+#: shortest on any record today is "8-12-week-old", fourteen). A line below it is still matched
+#: EXACTLY, by `v in drop`, so nothing that used to pass on an exact line stops passing.
+MIN_DROP_PHRASE = 12
+
+
 def drop_facts(entries):
     """The fact each `dropped` line names, with its reason stripped off."""
     out = set()
@@ -321,10 +332,13 @@ def missing(facts, new_html, dropped=None):
             # PHRASE that carries it ("regular staff training") rather than transcribe a
             # forty-word sentence. Either containment counts, in either direction, so the
             # record stays readable and the match stays exact enough to be wrong loudly.
-            # Both sides go through `_claim_key` first — see its docstring.
+            # Both sides go through `_claim_key` first — see its docstring — and a line
+            # shorter than `MIN_DROP_PHRASE` may not excuse a claim by CONTAINMENT, because a
+            # two-word phrase stops naming one claim and starts matching several.
             if k == "text":
                 nv = _claim_key(v)
-                if any(d and (_claim_key(d) in nv or nv in _claim_key(d)) for d in drop):
+                if any(len(nd := _claim_key(d)) >= MIN_DROP_PHRASE and (nd in nv or nv in nd)
+                       for d in drop):
                     continue
             if k in ("images", "embeds"):
                 present = v in body

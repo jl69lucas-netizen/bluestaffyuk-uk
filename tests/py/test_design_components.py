@@ -1093,3 +1093,51 @@ def test_every_rebuilt_page_mounts_the_toc_below_its_hero(slug):
     for href in set(re.findall(r'<a href="#([a-z][a-z0-9-]*)"', block)):
         assert f'id="{href}"' in html, href
 
+
+
+TRUST_DEFAULT = ("KC registered", "DNA-tested parents", "Raised in the home")
+
+
+def _trust_items(built):
+    """(count, [titles]) for the one `kit-trust` strip on a built page."""
+    html = built.read_text(encoding="utf-8")
+    m = re.search(r"<section[^>]*kit-trust[^>]*>.*?</section>", html, re.S)
+    assert m, f"{built} renders no trust strip"
+    seg = m.group(0)
+    return len(re.findall(r"<li", seg)), re.findall(r"<strong[^>]*>(.*?)</strong>", seg)
+
+
+def test_trust_strip_default_is_unchanged_for_every_page_that_passes_no_items():
+    """`items` was added at the 2026-09-21 review so /buy-staffy-puppies-for-sale-uk/ could
+    print the FOUR documents its record's `promises` section names. The prop is optional and
+    the default is the same three claims the component always carried, so the three callers
+    that pass nothing must be byte-for-byte what they were — that is the whole safety argument
+    for adding the prop rather than editing the list."""
+    # The root slug's built file is `dist/index.html` and NOT `dist/index/index.html`, which
+    # exists on no build — spec §9 amendment 9.3, the four places that spelled it wrong.
+    for built in (ROOT / "dist/index.html",
+                  ROOT / "dist/uk-blue-staffy-breeders-contact/index.html",
+                  ROOT / "dist/kit-preview/index.html"):
+        assert built.exists(), f"{built} not built — run npm run build"
+        count, titles = _trust_items(built)
+        assert count == 3, (built.parent.name, count)
+        assert tuple(titles) == TRUST_DEFAULT, (built.parent.name, titles)
+
+
+def test_the_why_us_page_passes_the_four_documents_its_record_names():
+    """Rule 9 follows a page's own `items` exactly as it governs the default: each of the four
+    is a document backed on disk, and the paragraph beside the strip names the same four. The
+    record's `promises` intent says "the four things we can actually hand a reader", and a
+    strip printing three made that section contradict itself."""
+    built = ROOT / "dist/buy-staffy-puppies-for-sale-uk/index.html"
+    if not built.exists():
+        pytest.skip("why-us page not built")
+    count, titles = _trust_items(built)
+    assert count == 4, titles
+    assert tuple(titles) == (
+        "Kennel Club registered", "Two DNA clearances", "Vet checked and chipped",
+        "A written contract",
+    ), titles
+    # Not the kit default's wording: a shared sentence between this strip and the homepage's
+    # is the rule 8 crossover the dup gate catches.
+    assert "DNA-tested parents" not in titles

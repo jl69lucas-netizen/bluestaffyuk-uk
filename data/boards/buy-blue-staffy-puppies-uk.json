@@ -667,8 +667,8 @@
         },
         {
           "level": 3,
-          "heading": "What Both Parents Are Clear Of",
-          "intent": "The two DNA clearances, with the health page for the detail.",
+          "heading": "The Two Clearances Maggie And Jones Carry",
+          "intent": "The two DNA clearances, with the health page for the detail. Renamed 2026-09-21: the old wording, 'What Both Parents Are Clear Of', failed board_gate's five-token shingle against /blue-staffy-health-uk/'s own 'Both Parents Are Clear Of Two Inherited Conditions'. The health page owns the DNA table and this is a passing mention that links to it, so the listing is the side that moves. The heading was written fresh at Task 17 and is in no verbatim set, so nothing rule 15 carries is touched.",
           "children": []
         }
       ],
@@ -1696,7 +1696,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "154b0abf598881e0624c0a703a47bbd34d731f97530e42609b6d40666d018881",
+    "record_hash": "665616f05fedd6c40d29ca4c76a303065bf6409f64a9953c9e23a10472fc3870",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1716,7 +1716,7 @@
         "Step Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T01:47:41Z",
+    "reapproved_at": "2026-09-21T04:25:56Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:47:41Z",
@@ -1724,6 +1724,14 @@
         "changed_paths": [
           "/sections/9/options/note",
           "/sections/12/tree/0/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T04:25:56Z",
+        "reason": "tree heading collided with /blue-staffy-health-uk/'s own; the page that owns the DNA table keeps the wording",
+        "changed_paths": [
+          "/sections/4/tree/1/heading",
+          "/sections/4/tree/1/intent"
         ]
       }
     ]
@@ -1772,7 +1780,7 @@
       "at-a-glance": "1cbb714de92df065253f80bf12cf117115c8befee2e68dc8463917f388e3d261",
       "puppies": "3bb07d98be0c290ba00d70a48fe7d386e2360e171cacd7e819549e7da11a820c",
       "gallery": "8fb4c8255993c3d0e5c423726289d0ecdbdbd6349313089d225c87a66523b289",
-      "parents": "9fee093f6fe4684bc7e194626c7534af9db2d3d332f8a51870495eb3b26399f0",
+      "parents": "593465f3a9f4c3e8dc7294b312c63a18d2485a9ec28bf7652922824dc12c669a",
       "steps": "499a671f70043f1ca084c036b41bec28f35e5f83cc279729c9e6b4eb280e1f57",
       "whats-included": "fbe4d8d4a46e8b17ef7ca3b54a91c9112e1888b2a7aeafa9cb8cc2b97db01381",
       "why-choose": "f3f5ccfa45d48db4fe460fa98fb451b021d1294d2fa7b49efcf911040db4618f",

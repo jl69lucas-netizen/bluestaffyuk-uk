@@ -63,6 +63,7 @@ import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets } from '../../lib/assets';
+import { recordText, countedFigures, ledgeText, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -128,49 +129,28 @@ const faqs = faqSection.tree.map((n) => {
 // The carried wording, read off the record rather than retyped (see the rule 15 note above).
 // `heading` is the approved heading — already the repaired one where `verbatim.changed` says
 // so — and `opening` is the first paragraph the section carries word for word.
-const sec = (id: string) => record.sections.find((s) => s.id === id)!;
-const heading = (id: string) => sec(id).heading;
-const opening = (id: string) => {
-  const o = (sec(id) as { verbatim_opening?: string }).verbatim_opening;
-  if (!o) throw new Error(`buy-blue-staffy-puppies-uk: section ${id} carries no verbatim opening`);
-  return o;
-};
+// All five readers are `src/lib/recordText.ts`, shared with the why-us and the price page.
+const { sec, heading, opening, node } = recordText(record);
 // The delivery H3 and its paragraph are a TREE node's, not a section's: the migrated page put
 // that keyword heading one level down, so the record carries the pair there — already with
 // the former city excised (verbatim.changed, Known Issue 16).
-const deliveryH3 = sec('delivery').tree[0] as { heading: string; verbatim_opening?: string };
-
-// A ledge entry is either a bare string or a `{text, source}` row, depending on whether the
-// board author had a path to cite for it. One unwrap, used by the chips and the ticks: two
-// copies of it is two places for the shapes to drift apart.
-type LedgeEntry = string | { text: string };
-const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+const deliveryH3 = node('delivery', 0);
 
 // EVERY FIGURE ON THIS PAGE IS COUNTED HERE, and the record's `n` is the expectation it is
-// counted against. The section below says in as many words that none of these figures is
-// written by hand; mapping the record's `n` straight onto the strip made that sentence false,
-// because the record's `n` IS a hand-written number — a true one on the day it was boarded,
-// and the first thing to go stale when a puppy is reserved. So the counts come from the same
-// filtered list the grid renders, and a count that no longer equals what the board approved
-// throws at build rather than printing a figure nobody checked. That is the point of keeping
-// both: the data decides what prints, and the record decides when a human has to look.
+// counted against — `countedFigures()` in the same module. The section below says in as many
+// words that none of these figures is written by hand; mapping the record's `n` straight onto
+// the strip made that sentence false, because the record's `n` IS a hand-written number — a
+// true one on the day it was boarded, and the first thing to go stale when a puppy is
+// reserved. So the counts come from the same filtered list the grid renders, and a count that
+// no longer equals what the board approved throws at build rather than printing a figure
+// nobody checked. That is the point of keeping both: the data decides what prints, and the
+// record decides when a human has to look.
 const COUNTED: Record<string, number> = {
   'data/puppies.json#count(status=Available)': available.length,
   'data/puppies.json#count(sex=male)': available.filter((p) => p.sex === 'male').length,
   'data/puppies.json#count(sex=female)': available.filter((p) => p.sex === 'female').length,
 };
-const counted = (row: { n: string; label: string; source?: string }) => {
-  const n = COUNTED[row.source ?? ''];
-  if (n === undefined) {
-    throw new Error(`buy-blue-staffy-puppies-uk: no build-time count for ${row.source ?? '(no source)'} `
-      + `— a figure this page prints must be derived from data, not copied from the record`);
-  }
-  if (String(n) !== row.n) {
-    throw new Error(`buy-blue-staffy-puppies-uk: ${row.source} counts ${n} today and the approved `
-      + `record expects ${row.n} — the litter moved, so the board's figure needs a look`);
-  }
-  return { n: String(n), label: row.label };
-};
+const counted = countedFigures(COUNTED, 'buy-blue-staffy-puppies-uk');
 
 const heroSection = sec('top');
 const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
@@ -429,7 +409,12 @@ const pageSchema = [
         cannot be faked at all, which is why we would rather you came and watched it than took
         our word for it.
       </p>
-      <h3>{T('What Both Parents Are Clear Of')}</h3>
+      {/* Renamed 2026-09-21 from "What Both Parents Are Clear Of", which failed board_gate's
+          five-token shingle against /blue-staffy-health-uk/'s own "Both Parents Are Clear Of
+          Two Inherited Conditions". The health page owns the DNA table and this is the passing
+          mention that links to it, so the listing is the side that moves; the heading was
+          written fresh at Task 17 and is in no verbatim set. Record re-approved (amendment 11). */}
+      <h3>{T(node('parents', 1).heading)}</h3>
       <p>
         Both are KC-registered, and both carry clear DNA results for the two conditions this
         breed is screened against, L-2-HGA and HC-HSF4.

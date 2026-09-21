@@ -1233,7 +1233,7 @@
       "id": "owners",
       "n": 11,
       "heading": "One Family On What Choosing Us Was Like",
-      "intent": "One review, given room. MODE: single, data/reviews.json entry 1 — The Victoria Family, Manchester — because it is the only one of the three that speaks to the two things this page argues: the care and the early socialisation a puppy was raised with, and the temperament that came of it. Single rather than grid is a deliberate difference from /blue-staffy-pup-sale-uk/, which puts all three side by side because it is the page asking for money; this page is making one argument and one voice carries it. The other two slots are not rendered, so no REVIEW_PLACEHOLDER is counted here.",
+      "intent": "Every review the site holds, as a grid. MODE: grid, from the S3 pick — all three rows of data/reviews.json, which is every real review on disk, so no REVIEW_PLACEHOLDER is counted here. The two migrated testimonials are in dropped.names: neither appears in any file on disk.",
       "category": "B",
       "group": "SUGGESTED-RECOMMENDED",
       "why": "The migrated page carried two testimonials that appear in no file on disk — Jane and Tom of Croydon and Pamela M of Stockport — and none of the three real reviews.",
@@ -1301,7 +1301,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "S3",
-        "note": "MODE: single — pick S1, the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Recorded here because /blue-staffy-pup-sale-uk/ already uses the grid and two money pages with the same three quotes side by side is one page's evidence spent twice."
+        "note": "MODE: grid — the pick is S3, and S3 IS the grid (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'), so all three rows of data/reviews.json render beside the heading. This note used to read 'MODE: single — pick S1', which was a second answer to the question the pick had already answered; the pick is what the breeder chose and the note is what had to agree with it."
       }
     },
     {
@@ -2064,7 +2064,7 @@
       "home-raised": "One photograph and prose; S3's InfoCard aside can hold the short list of what a puppy has met.",
       "kennel-club": "Two photographs, so S2's image-above-two-columns and S1's image-right both read. The alt text of the first image is the one alt on this record that is not the migrated wording — the reason is in dropped.creds.",
       "navigation": "",
-      "owners": "MODE: single — pick S1, the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Recorded here because /blue-staffy-pup-sale-uk/ already uses the grid and two money pages with the same three quotes side by side is one page's evidence spent twice.",
+      "owners": "MODE: grid — the pick is S3, and S3 IS the grid (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'), so all three rows of data/reviews.json render beside the heading. This note used to read 'MODE: single — pick S1', which was a second answer to the question the pick had already answered; the pick is what the breeder chose and the note is what had to agree with it.",
       "promises": "TrustStrip is a kit component and owns its own four items; the three styles move the bed it sits on and where the heading goes, not the items. No percentage and no rating appears on it — see dropped.creds.",
       "puppies": "All six rows of data/puppies.json are status Available today. No price is written into this section's prose: /blue-staffy-pup-sale-uk/ owns the figures and the cards carry their own.",
       "questions": "Three rows are reused as they stand (about-health-tests and about-home-raised are sourced to src/pages/blue-staffy-uk-breeders/index.astro; puppy-package to src/pages/index.astro) and two are NEW, both sourced to src/pages/buy-staffy-puppies-for-sale-uk/index.astro: `whyus-paperwork`, 'What paperwork comes with a puppy?', whose tests/py/test_faq_data.py fact phrases are 'puppy purchase contract', 'vaccination records' and 'microchipping details'; and `whyus-evidence`, 'Can I see the health test results for both parents?', whose phrases are 'genetic screening results' and 'veterinary records'. All five phrases are in the migrated body today and all five are kept by this outline (`kennel-club` and `health-testing`). QUERY AUGMENTATION for 'buy staffy puppies for sale uk', ten questions, each mapped to a section or a row: q1 -> top; q2 -> reasons; q3 -> health-testing and the about-health-tests row; q4 -> health-testing and the whyus-evidence row; q5 -> home-raised and the about-home-raised row; q6 -> kennel-club; q7 -> kennel-club and the whyus-paperwork row; q8 -> after-care and the puppy-package row; q9 -> owners; q10 -> talk-to-us. No row is added for a question this page's body does not answer; price and delivery questions go to /blue-staffy-pup-sale-uk/. EIGHT ROWS ADDED AT TASK 18B under working rule 15. `whyus-start`, `whyus-american-english`, `whyus-not-banned` and `whyus-pit-bull` are the four questions the migrated page marked up as keyword H3s, and their migrated first paragraphs are openings of the same set: the first, second and fourth carry that paragraph as the answer word for word and the third carries it without its closing sentence about the Dangerous Dogs Act, which states the Act's test wrongly. `whyus-amstaff` and `whyus-prone-to` are two accordion questions carried verbatim with fresh answers, sourced to the breed guide and the health page. `whyus-stud-dogs` and `whyus-partner` are the last two accordion questions, carried without the '+' the old theme printed in front of them and sourced here: the parent dogs are `home-raised`'s own paragraph and the four documents are `promises`. No answer types a price, a percentage or a guarantee length.",
@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "0146ee7725069e268dab05cf2cb5d1e475c50b7eeab3dfe48094a3cfabf19e5d",
+    "record_hash": "831d70b770d8ea50c2eef82e4d93ae5929b6c6dd0797509aa983c6f8ddf686f7",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2109,7 +2109,18 @@
       "h6_prefixes": [
         "Reason Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T04:12:30Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T04:12:30Z",
+        "reason": "note contradicted the pick; pick honoured",
+        "changed_paths": [
+          "/sections/10/intent",
+          "/sections/10/options/note"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-20T18:35:40.220Z",
@@ -2153,7 +2164,7 @@
       "video-why-us": "S3"
     },
     "section_hashes": {
-      "top": "19a9e810f4410d2fe2b92a85dd4d1aa577d33ae5cfb0595d117a7bd0df7dfb76",
+      "top": "8d0d1805a42b02e6a752e25a1be9b2dedaa8fbd0e804a97f3636ea79a49cd584",
       "video-why-us": "9919627772aa2f7c8b74492922e627d6a39828304ad5a8a208a0ae109cb185e6",
       "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
       "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
@@ -2162,7 +2173,7 @@
       "kennel-club": "c659126c6efa96d5369cf3adc06e670bee4364a56123406e8019e2020b4caaad",
       "after-care": "ef5305be66e18b25a10ba94705f48715d15893f04e75c02683e822371ddc14cb",
       "compared": "5979095880e80a1150cb9b12b0aec8f99df7c22a04a82265e895e92a81d39bad",
-      "owners": "0e8442a7a96f907735aa959a0f082198eddbc813ae22a99b5293182cc59e37a8",
+      "owners": "16131411df8446b4700f138ddddb2a9d23077451e166960b3bb136addd01d39c",
       "puppies": "87fbbf63a4ef625e50fa278f83147d78216804fe58739becb6a183ba196d3f0c",
       "getting-home": "fc65d7239f68fc6d18d1f58280452719ac71c58b3ebe080ba4d2f2ab56509c2b",
       "questions": "af230a540d5adf2fd73ed4eebdf70c0d5a9202fcd2e6c0b02a4d8d64aaccec2d",
@@ -2466,6 +2477,13 @@
         "new": "A breeder holding a KC-registered Staffy puppy, illustrating what Kennel Club registration records about a litter and what it does not.",
         "reason": "the migrated alt asserts the Kennel Club Assured Breeder scheme twice in one sentence — 'A trusted Kennel Club Assured Breeder' and 'what sets a Kennel Club Assured Breeder apart' — and an alt is page copy, so dropped.creds reaches it like any other sentence. Task 17 rewrote it to what the photograph actually shows and what registration actually records; it is the one alt of the thirteen that is not the migrated wording.",
         "src": "/images/kennel-club-assured-breeder-vs-others-bluestaffyuk.webp"
+      },
+      {
+        "kind": "alt",
+        "old": "Connect with ethical local blue staffy breeders near me through BlueStaffyUK’s certified health program.",
+        "new": "Connect with ethical local blue staffy breeders near me through BlueStaffyUK",
+        "reason": "the migrated alt ends on a credential no file on disk records — a “certified health program”, certified by nobody named, which is the same claim dropped.creds strikes as the BVA/RSPCA alignment and the Assured Breeder scheme. An alt is page copy, so working rule 9 reaches it like any other sentence, and the record's asset row already carried the repaired wording. IT ONLY BECAME VISIBLE AT 8472c06: verbatim_set_check's ATTR pattern stopped at the apostrophe in “BlueStaffyUK’s”, so the extracted set held the sentence truncated to exactly the repaired form and the deviation read as no deviation at all. The set was re-extracted against the fixed pattern and this row is what the rebuild owed it. Everything up to that clause is carried word for word.",
+        "src": "/images/local-blue-staffy-breeders-near-me-uk.webp"
       }
     ]
   }

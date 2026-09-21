@@ -219,3 +219,24 @@ def test_a_dropped_claim_matches_through_the_extractors_space_before_a_comma():
     # a typographic accident, never about which words are there.
     other = {"text": ["'Some entirely different sentence.' — a reason"]}
     assert F.missing(facts, html, other)["text"] == facts["text"]
+
+
+def test_a_dropped_text_line_too_short_to_name_a_claim_cannot_excuse_one():
+    """The `text` match runs in BOTH directions so a record may quote the phrase that carries
+    a claim rather than transcribe a forty-word sentence. Below a floor that stops naming one
+    claim: "kc" would excuse most of a breeder page, and the why-us record's own community
+    line all but reached for a two-word quote. `MIN_DROP_PHRASE` is the floor for the
+    CONTAINMENT path only — an exact line still matches at any length, so nothing that passed
+    on an exact quotation stops passing.
+    """
+    facts = {"text": ["We are KC registered and the parents are DNA tested clear of L-2-HGA."]}
+    html = "<article><p>Nothing at all.</p></article>"
+    assert len(F._claim_key("KC")) < F.MIN_DROP_PHRASE
+    assert F.missing(facts, html, {"text": ["KC — too short to name anything"]}) == facts
+    # A phrase long enough to identify the claim still excuses it.
+    long_enough = "DNA tested clear of L-2-HGA"
+    assert len(F._claim_key(long_enough)) >= F.MIN_DROP_PHRASE
+    assert F.missing(facts, html, {"text": [f"{long_enough} — the health page owns it"]}) == {}
+    # And an EXACT line is matched whatever its length, by the plain `v in drop` path.
+    short_fact = {"text": ["KC"]}
+    assert F.missing(short_fact, html, {"text": ["KC"]}) == {}

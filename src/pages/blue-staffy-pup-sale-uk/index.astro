@@ -55,6 +55,8 @@ import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
+import { bakedAssets } from '../../lib/assets';
+import { recordText, ledgeText, type LedgeEntry } from '../../lib/recordText';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE, abs, type PuppyRow } from '../../lib/site';
@@ -72,11 +74,7 @@ const h1 = record.h1.variants[record.approval!.h1];
 // The five photographs, by slot, at their ORIGINAL public paths with their ORIGINAL alt text
 // (working rule 11; those five alts are also five elements of the verbatim set). A missing
 // slot throws at build rather than rendering an image with no alt.
-const asset = (slot: string) => {
-  const a = record.assets.find((x) => x.slot === slot);
-  if (!a || !a.file) throw new Error(`blue-staffy-pup-sale-uk: the record has no baked asset for ${slot}`);
-  return a;
-};
+const asset = bakedAssets(record);
 const heroPhoto = asset('sale-hero');
 const damWithPups = asset('sale-dam-with-pups');
 const deliveryVan = asset('sale-delivery');
@@ -98,7 +96,11 @@ const allReviews = reviewsJson;
 // THE FIVE FAQ ROWS THE RECORD NAMES, BY ID, in the record's order. Four of the five carry
 // the migrated page's own questions word for word (rule 15); `deposit` is the fifth and its
 // answer IS a setting, which is why the rows are selected by id rather than by `source`.
-const faqSection = record.sections.find((s) => s.id === 'questions')!;
+// `sec` is `src/lib/recordText.ts`, shared with the listing and the why-us page: a section a
+// rename has removed throws with this record's slug in the message rather than handing back
+// `undefined` for a `!` to wave through.
+const { sec } = recordText(record);
+const faqSection = sec('questions');
 const faqRows = loadFaq();
 const faqs = faqSection.tree.map((n) => {
   const row = faqRows.find((r) => r.id === n.heading);
@@ -109,11 +111,11 @@ const faqs = faqSection.tree.map((n) => {
 // The two tables, cell for cell from the record. Every figure in them is a value on disk, and
 // they are the only places on this page a money figure is printed. Both stack into labelled
 // rows below 640px — `DataTable` carries `.stack-table` unconditionally (working rule 13).
-const priceTable = record.sections.find((s) => s.id === 'prices')!.table!;
-const deliveryTable = record.sections.find((s) => s.id === 'delivery')!.table!;
+const priceTable = sec('prices').table!;
+const deliveryTable = sec('delivery').table!;
 
 // The hero's and the counter's own data, off the record. Nothing here is derived on the page.
-const heroSection = record.sections.find((s) => s.id === 'top')!;
+const heroSection = sec('top');
 // THE LEDGE STATES THE TWO PRICES, not all four figures. The hero and the counter strip sit
 // one section apart and the record hands both the same four `stats` rows, so printing all
 // four twice made the second strip a reprint rather than a summary. The hero takes the two
@@ -130,10 +132,9 @@ const heroStats = heroSection.stats!
 if (heroStats.length !== PRICE_LEDGE.length) {
   throw new Error('blue-staffy-pup-sale-uk: the record no longer carries both price stat rows');
 }
-const heroChips = heroSection.hero!.chips as string[];
-const heroTicks = heroSection.hero!.ticks.map((t) => (typeof t === 'string' ? t : t.text));
-const counterStats = record.sections.find((s) => s.id === 'at-a-glance')!.stats!
-  .map((r) => ({ n: r.n, label: r.label }));
+const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
+const heroTicks = (heroSection.hero!.ticks as LedgeEntry[]).map(ledgeText);
+const counterStats = sec('at-a-glance').stats!.map((r) => ({ n: r.n, label: r.label }));
 
 const sections = sectionsFromRecord(record);
 

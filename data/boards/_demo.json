@@ -102,8 +102,8 @@
   {
    "id": "opening",
    "n": 1,
-   "heading": "Raised in a family home",
-   "intent": "The opener says who we are and what the visitor is looking at. It carries the promise the rest of the page has to keep.",
+   "heading": "Indoors With Us From Day One",
+   "intent": "The opener says who we are and what the visitor is looking at. It carries the promise the rest of the page has to keep. The heading is deliberately NOT a wording any real page carries: this is a fixture, it is measured against every live page by `board_gate.py`, and a heading it shares with one of them is a collision no page edit can end.",
    "category": "C",
    "group": "SUGGESTED-RECOMMENDED",
    "why": "The first screen decides whether the rest of the page is read, so the opener is judged as its own arrangement.",
