@@ -213,19 +213,6 @@
           "n": "£1,700",
           "label": "a female puppy",
           "source": "data/price-matrix.json#female_gbp"
-        },
-        {
-          "n": "£500",
-          "label": "refundable deposit",
-          "source": "data/price-matrix.json#deposit_gbp"
-        },
-        {
-          "n": "£200–£350",
-          "label": "UK delivery by distance",
-          "source": [
-            "data/settings.json#delivery_min_gbp",
-            "data/settings.json#delivery_max_gbp"
-          ]
         }
       ],
       "refresh": {
@@ -335,8 +322,8 @@
     {
       "id": "at-a-glance",
       "n": 2,
-      "heading": "The Three Figures, Up Front",
-      "intent": "The kit CounterStrip, which reads all three of its figures from data: the number of puppies whose status is Available in data/puppies.json, the £500 refundable deposit from data/settings.json, and the £200 to £350 UK delivery band from the same file. No figure on this strip is typed into the page, so a sold puppy or a price change is a data edit.",
+      "heading": "The Four Figures, Up Front",
+      "intent": "The kit CounterStrip, which reads all four of its figures from data: the £1,500 and £1,700 prices from data/price-matrix.json, the £500 refundable deposit from the same file, and the £200 to £350 UK delivery band from data/settings.json. No figure on this strip is typed into the page, so a sold puppy or a price change is a data edit.",
       "category": "A",
       "group": "MANDATORY",
       "why": "The migrated strip carried four percentages — 100% Vetted, 95% Delivered, 100% 5-star Rated, 24/7 Puppy Support — and not one of them has a file on disk behind it, while the three figures a buyer actually came for were nowhere near the top.",
@@ -491,7 +478,14 @@
             "sentence_start": true
           }
         ],
-        "external": []
+        "external": [
+          {
+            "href": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/",
+            "anchor": "The registry's own page for the L-2-HGA DNA test",
+            "why": "the section states both parents are clear of L-2-HGA; the registry that runs the scheme is where a reader checks what the test is, rather than taking a breeder's word",
+            "library_row": "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/"
+          }
+        ]
       },
       "options": {
         "candidates": [],
@@ -829,7 +823,14 @@
       ],
       "links": {
         "internal": [],
-        "external": []
+        "external": [
+          {
+            "href": "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf",
+            "anchor": "The government's welfare rules for animals in transport",
+            "why": "the section names DEFRA-approved transport; this is the standard that phrase points at, so the claim is checkable without leaving the reader to search for it",
+            "library_row": "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf"
+          }
+        ]
       },
       "options": {
         "candidates": [],
@@ -1474,7 +1475,7 @@
       "title": 0
     },
     "notes": {
-      "at-a-glance": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers.",
+      "at-a-glance": "COUNTER HEADING CORRECTED AFTER APPROVAL (build review, 2026-09-21; spec §9 amendment 11). The heading and the intent both said THREE while the strip carries four figures — the two prices, the deposit and the delivery band — which is what the record's own `stats` list and the built page have always shown. The style pick and the four rows are unchanged.",
       "delivery": "Two rows only, because two is what data/settings.json supports. Same three chrome arrangements as the price table and the same `tuple.table` pick; all three stack into labelled rows below 640px (working rule 13).",
       "deposit": "Prose, no table: the figures are already in the price table one section up and repeating them as a grid would be two answers to one question.",
       "enquiry": "ContactFormKit, the one enquiry form on this page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py; the contact page's form is unchanged and this one is audited as a second inquiry form, not as a replacement.",
@@ -1484,7 +1485,7 @@
       "puppies": "All six rows of data/puppies.json are status Available today. The migrated page carried no video embed (data/facts/blue-staffy-pup-sale-uk.json — embeds empty), so none is placed here.",
       "questions": "Working rule 15 rewrote this block. `sale-reserve` keeps its id and takes the migrated question's exact wording; three rows are NEW and carry the other three old questions word for word — `sale-kc-health-checked`, `sale-delivery-uk` and `sale-whats-included`, all sourced to src/pages/blue-staffy-pup-sale-uk/index.astro, each with a tests/py/test_faq_data.py fact-phrase entry the migrated body says today and this outline keeps after P5. Each answer is the migrated answer with the one unbacked clause excised and the excision recorded in verbatim.changed. The reused `delivery` and `puppy-package` rows are dropped from this page's tree because the old questions replace them. QUERY AUGMENTATION for 'blue staffy pup sale uk', ten questions, each mapped to a section or a row: q1 -> prices; q2 -> prices; q3 -> deposit and the deposit row; q4 -> deposit and the sale-reserve row; q5 -> whats-included and the sale-whats-included row; q6 -> delivery and the sale-delivery-uk row; q7 -> delivery; q8 -> puppies; q9 -> owners; q10 -> why-choose and the sale-kc-health-checked row. No row is added for a question this page's body does not answer.",
       "talk-to-us": "",
-      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero.",
+      "top": "LEDGE TRIMMED AFTER APPROVAL (build review, 2026-09-21; spec §9 amendment 11). The hero and the counter sat one section apart printing the same four rows, so the second read as a reprint rather than a summary. The page has printed the two PRICE rows on the ledge since 89342fc and filtered them on their recorded source; the record now lists the two it prints. The deposit and the delivery band are the counter's, one section down. The style pick is unchanged and no figure or source was edited — two whole rows were removed.",
       "whats-included": "Six items, so S3's InfoCard aside can hold the short list beside the prose while S1 and S2 run it as sub-headings.",
       "why-choose": "Restored under rule 15 to carry the migrated H2's opening and its 'Ethical Breeding Standards' H3. No photograph: it sits between the counter strip and the price table, and a picture there pushes the prices below the fold on a phone. Kept to four sentences on purpose — the spec gives the why-us argument to /buy-staffy-puppies-for-sale-uk/, and this page is the money page."
     },
@@ -1501,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "41df3497626c17ec91da203dd482549958de25469fe0dc9e29937eec7b332b6e",
+    "record_hash": "4fb1073c486f97aa1eda99e8250dab13eaef6ba6bcc19d68b6361e6ef0c68fce",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1518,7 +1519,22 @@
       "h6_prefixes": [
         "Price Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T01:55:06Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T01:55:06Z",
+        "reason": "post-approval wording/link fix from build review; picks unchanged",
+        "changed_paths": [
+          "/sections/0/stats/2",
+          "/sections/0/stats/3",
+          "/sections/1/heading",
+          "/sections/1/intent",
+          "/sections/2/links/external/0",
+          "/sections/5/links/external/0"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-20T17:37:23.279Z",
@@ -1557,12 +1573,12 @@
       "why-choose": "S1"
     },
     "section_hashes": {
-      "top": "e449128fe07d4839bb015f6f11d2dce51b56b0c8741e00144aed4d6e9af16adf",
-      "at-a-glance": "35dbafcf4beac668cf27f9d526b73c5d44d9763ba03825851768786261af957e",
-      "why-choose": "4ddf8a009911b40944b4ddb8eb5606cf60ceedfa511381f8ff4075a2ee0f587a",
+      "top": "c31e2a44918758fc14ad53ea1442ab9e330f7de9bbefdf808ad7db2229b76440",
+      "at-a-glance": "5e22814f24b5bc5b9c49a1c426a3df734da2cb03d22f25807031fca02165cc9d",
+      "why-choose": "b0cc650268f76d10dd4d09277a67cc0071cf5c9ccf1b5bd39e7226ea1bbadb85",
       "prices": "5a221c5f747101f99da4d642e1e15e4971d918ef9a551bff231711f5ebed158e",
       "whats-included": "5b54ed4c250139d7228cfc74e6930319dcb8c50a33890ecbd7c4a879c32d4845",
-      "delivery": "bbbf133f00b60d2e4284eb4c26a05fac6bbfaa4e17cf24c6bdbbdb919ec309e7",
+      "delivery": "6f543fa23647fa604e6d622a79ae1399fc7e12cf84b1eb5cbf5334b5627f78d1",
       "deposit": "c49becf8196d068805240062fb24e65e1009335060885314b10c39a2f7f40408",
       "owners": "c6f38ccae20573c6eb874af69d970be7d4fec29f132a20f4dcfd16cdff61ded3",
       "puppies": "abc460ecd97c09b497f233068e3be0732978924b4d53b082981ddae718c4827e",
