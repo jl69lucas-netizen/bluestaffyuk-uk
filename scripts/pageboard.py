@@ -15,6 +15,13 @@ HEADER_WHITELIST = DUP.HEADER_WHITELIST   # phrases the dup gate already forgive
 PUPPY_CARD_HEADINGS = DUP.PUPPY_CARD_HEADINGS  # whole headings: a puppy card's name
 HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page must be free to write
 
+# `dropped-vs-verbatim` reads the front of a `dropped` line, and it must read it the SAME way
+# the gate that EXCUSES a claim with that line reads it — a fragment split differently in two
+# places is a record that is dropped over here and carried over there. So the splitter is
+# borrowed rather than copied, exactly as the header rules above are.
+import facts_preserved_check as FACTS
+_DROP_SPLIT = FACTS._DROP_SPLIT
+
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
 ONTOLOGY = ROOT / "data" / "bsuk-ontology.json"
@@ -508,6 +515,89 @@ def all_headings(board):
     for s in board["sections"]:
         out.append((2, s["heading"]))
         walk(s["tree"])
+    return out
+
+
+#: The shortest `dropped` fragment that may be reported as colliding with carried wording.
+#: The same floor, and the same reasoning, as `facts_preserved_check.MIN_DROP_PHRASE`: below
+#: about twelve characters a fragment stops naming one sentence and starts matching any
+#: sentence with those words in it, and a gate that fires on "the puppy" is a gate nobody can
+#: act on. The two constants are kept equal deliberately — a fragment too short to EXCUSE a
+#: claim over there is too short to ACCUSE a record over here.
+MIN_DROP_FRAGMENT = 12
+
+#: A `dropped` line may quote MORE THAN ONE run of the migrated body, joined by an ellipsis —
+#: the records' own convention for "these two sentences go together and the words between them
+#: are not the point". Each quoted run is judged on its own, because a line whose FIRST run is
+#: carried and whose second is not is exactly the defect this check exists to find: the whole
+#: fragment matches nothing, every gate is satisfied, and the page renders the first sentence
+#: under a board that says it was struck. Both the real ellipsis and three full stops count.
+_DROP_ELLIPSIS = re.compile(r"\s*(?:…|\.\.\.)\s*")
+
+#: `dropped` kinds whose lines quote page PROSE. `links`, `prices` and `names` quote a url, an
+#: amount and a proper noun, all of which legitimately appear in wording the page carries —
+#: a record drops the £850 band and still prints "£1,500", and it drops a location page's url
+#: and still names the town. Only `text` lines quote sentences, so only `text` is judged.
+_DROP_PROSE_KINDS = ("text",)
+
+
+def carried_wording(board):
+    """[(where, text)] — every string on this record that the page must render word for word.
+
+    Working rule 15's set as the RECORD holds it: each section's heading and its carried
+    opening, and the same pair on every tree node at every depth. The FAQ rows are not here
+    and are not this function's business — they live in data/faq.json, a different record with
+    its own review, and a `dropped` line quoting one would be quoting somebody else's file.
+    """
+    out = []
+
+    def walk(sid, nodes, path):
+        for i, n in enumerate(nodes):
+            at = f"{path}[{i}]"
+            if n.get("heading"):
+                out.append((f"{sid} {at} heading", n["heading"]))
+            if n.get("verbatim_opening"):
+                out.append((f"{sid} {at} opening", n["verbatim_opening"]))
+            walk(sid, n.get("children") or [], f"{at}.children")
+    for s in board["sections"]:
+        if s.get("heading"):
+            out.append((f"{s['id']} heading", s["heading"]))
+        if s.get("verbatim_opening"):
+            out.append((f"{s['id']} opening", s["verbatim_opening"]))
+        walk(s["id"], s.get("tree") or [], "tree")
+    return out
+
+
+def dropped_vs_verbatim(board):
+    """[{kind, fragment, where}] — every `dropped.text` fragment the record ALSO carries.
+
+    A `dropped` line is "<the fact> — <the reason it is not carried>", so the fragment judged
+    is the front of the line, the same reading `facts_preserved_check.drop_facts` takes; the
+    reason is prose about the record and may quote anything it likes. A line whose fragment is
+    a substring of a heading or of a carried opening is a record that has struck a sentence and
+    kept it, which is not a wording decision anybody made — it is two passes over one record
+    that never met.
+
+    Found on /uk-blue-staffy-puppy-buying-guide/ (2026-09-21 review): `dropped.text` struck
+    "We handle everything for you, from a supported reservation to a safe, DEFRA-approved
+    transport", which is a sentence of `delivery`'s own first tree node's `verbatim_opening`
+    and renders on the page. Both gates were satisfied and the page contradicted its board.
+    """
+    carried = carried_wording(board)
+    out = []
+    seen = set()
+    for kind in _DROP_PROSE_KINDS:
+        for line in (board.get("dropped") or {}).get(kind, []) or []:
+            if not isinstance(line, str):
+                continue
+            head = _DROP_SPLIT.split(line.strip(), 1)[0].strip()
+            for fragment in (q.strip() for q in _DROP_ELLIPSIS.split(head)):
+                if len(fragment) < MIN_DROP_FRAGMENT:
+                    continue
+                for where, text in carried:
+                    if fragment in text and (kind, fragment, where) not in seen:
+                        seen.add((kind, fragment, where))
+                        out.append({"kind": kind, "fragment": fragment, "where": where})
     return out
 
 
@@ -1597,6 +1687,18 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     for p in t.get("h6_prefixes", []):
         if p in spent:
             add("ledger-spent-prefix", "FAIL", f"H6 prefix {p!r} is spent by {', '.join(spent[p])}")
+
+    # A RECORD MAY NOT BOTH DROP A SENTENCE AND RENDER IT. `dropped` is the accounting of
+    # what the rebuild did NOT carry and the verbatim set is the accounting of what it MUST
+    # carry word for word, so a fragment in both is the record contradicting itself — and the
+    # contradiction is invisible to every other gate, because each of the two reads only its
+    # own field. `facts_preserved_check.py` sees the claim excused and stops looking;
+    # `verbatim_set_check.py` sees the opening present and passes; the page ships a paragraph
+    # its own board says was struck, with a reason underneath explaining why it is not there.
+    for d in dropped_vs_verbatim(board):
+        add("dropped-vs-verbatim", "FAIL",
+            f"dropped.{d['kind']} strikes {d['fragment']!r}, which {d['where']} carries word for "
+            "word — a record cannot both drop a sentence and render it")
 
     if not live:
         add("header-precheck-examined-zero", "FAIL",

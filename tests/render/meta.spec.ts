@@ -160,7 +160,17 @@ test.describe('dup-no-sibling-crossover sees a crossover adjacent to a whitelist
     expect(r.defects[0].count, 'one finding per non-whitelisted segment: A before, B after').toBe(2);
     const msg = r.defects[0].message;
     expect(msg).toContain('18w vs /sibling-staffy-puppies-glasgow/ "before a puppy leaves');
-    expect(msg).toContain('17w vs /sibling-staffy-puppies-glasgow/ "tell us which puppy');
+    // PASSAGE B IS 19 WORDS, NOT 17, AND THE TWO EXTRA ARE THE POINT. The delivery stem was
+    // re-measured on 2026-09-21 and shortened by one word: `…priced by distance 200 to 350 or
+    // collect` was carried by 8 built pages and the same run without the trailing `or collect`
+    // by 9, so the longer stem exempted nothing on the ninth (/blue-staffy-pup-sale-uk/, which
+    // states the band and stops) — the "whitelist the CORE, never the longest run on one page"
+    // rule in scripts/dup_content_audit.py's own header. `or collect` is therefore no longer
+    // chrome, it is page wording, and this fixture's passage B legitimately starts with it.
+    // The assertion moves to the measured value rather than the fixture losing the words:
+    // what this test pins is that the two passages fire SEPARATELY and that the exempt line
+    // itself is never the defect, and both still hold.
+    expect(msg).toContain('19w vs /sibling-staffy-puppies-glasgow/ "or collect tell us which puppy');
     expect(msg, 'the whitelisted line is not the defect').not.toContain('defra approved transport');
   });
 });

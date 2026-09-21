@@ -38,6 +38,9 @@ import pageboard as PB
 
 
 from build_page_board import esc as BPB_esc      # the one None-safe escaper
+# `dropped-vs-verbatim` pins its floor to the one the gate that EXCUSES a claim with the same
+# line already uses, and the equality is asserted rather than assumed.
+from facts_preserved_check import MIN_DROP_PHRASE as FACTS_MIN_DROP_PHRASE
 
 FIXTURE_LIBRARY = ROOT / "tests" / "py" / "fixtures" / "external-link-library.md"
 
@@ -2473,3 +2476,79 @@ def test_gate_still_fails_a_collision_that_merely_contains_a_puppy_name():
     msgs = [x["msg"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live=live, stage="build")
             if x["check"] == "header-collision"]
     assert any("Roman Roads" in m for m in msgs), msgs
+
+
+# ── dropped-vs-verbatim (2026-09-21 review) ─────────────────────────────────────────────────
+# A record may not both strike a sentence in `dropped.text` and carry it in a heading or a
+# `verbatim_opening`. Neither of the two gates that read those fields can see the
+# contradiction: `facts_preserved_check.py` finds the claim excused and stops looking, and
+# `verbatim_set_check.py` finds the opening present and passes. The page then renders a
+# paragraph its own board says was dropped, with a reason underneath explaining its absence.
+
+def _with_drop(line, opening="We handle everything for you, from a supported reservation."):
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["tree"][0]["verbatim_opening"] = opening
+    b["dropped"] = {"prices": [], "names": [], "links": [], "text": [line]}
+    return b
+
+
+def test_dropped_text_that_quotes_a_carried_opening_fails():
+    b = _with_drop("We handle everything for you, from a supported reservation. — the reason")
+    hits = PB.dropped_vs_verbatim(b)
+    assert len(hits) == 1, hits
+    assert hits[0]["kind"] == "text"
+    assert "We handle everything" in hits[0]["fragment"]
+    msgs = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={"/other/": []}, stage="build")
+            if x["check"] == "dropped-vs-verbatim"]
+    assert msgs and msgs[0]["sev"] == "FAIL", msgs
+
+
+def test_each_quote_of_an_ellipsis_joined_drop_line_is_judged_on_its_own():
+    """THE SHAPE THE REAL DEFECT HAD, and the reason a whole-fragment test is not enough.
+
+    A `dropped.text` line may quote two runs of the migrated body joined by an ellipsis. On
+    /uk-blue-staffy-puppy-buying-guide/ the FIRST run was a sentence `delivery`'s own tree node
+    carries word for word and the second was a licence claim that is genuinely dropped, so the
+    fragment as a whole matched nothing anywhere and every gate was satisfied.
+    """
+    b = _with_drop("We handle everything for you, from a supported reservation. … This "
+                   "includes confirming DEFRA licensing. — the reason")
+    hits = PB.dropped_vs_verbatim(b)
+    assert len(hits) == 1, hits
+    assert hits[0]["fragment"] == "We handle everything for you, from a supported reservation."
+
+
+def test_a_drop_line_that_quotes_only_dropped_wording_passes():
+    b = _with_drop("This includes confirming DEFRA licensing before travel. — the reason")
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_a_drop_fragment_too_short_to_name_one_sentence_is_not_reported():
+    """The floor is `facts_preserved_check.MIN_DROP_PHRASE`'s, and for its reason: a fragment
+    short enough to match any sentence accuses every record of everything."""
+    assert PB.MIN_DROP_FRAGMENT == FACTS_MIN_DROP_PHRASE
+    b = _with_drop("We handle — the reason")
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_prices_names_and_links_are_not_judged_as_prose():
+    """Only `text` lines quote sentences. A record drops the £850 band and still prints
+    £1,500; it drops a location url and still names the town; it drops a laboratory and still
+    writes the word 'testing'. Judging those kinds would fire on every record."""
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["tree"][0]["verbatim_opening"] = "We deliver to Glasgow for £850 today."
+    b["dropped"] = {"prices": ["We deliver to Glasgow for £850 today. — reason"],
+                    "names": ["We deliver to Glasgow for £850 today. — reason"],
+                    "links": ["We deliver to Glasgow for £850 today. — reason"], "text": []}
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_every_shipped_board_record_is_free_of_the_contradiction():
+    """The gate is only worth its line if the corpus it guards is clean. Reads the real
+    records, so a future board that strikes a sentence it renders fails here as well."""
+    checked = 0
+    for path in sorted((PB.ROOT / "data" / "boards").glob("*.json")):
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        assert PB.dropped_vs_verbatim(rec) == [], path.name
+        checked += 1
+    assert checked >= 13, checked
