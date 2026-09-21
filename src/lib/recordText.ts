@@ -225,3 +225,35 @@ export function countedFigures(
     return { n, label: row.label };
   };
 }
+
+// ── a derived count, written the way prose writes it ────────────────────────────────────────
+
+/** The English words for the small counts a page states in a sentence. A table has a digit in
+ *  a cell and a counter tile has one on a ring; a paragraph says "fifteen", and a page that
+ *  wrote the digit there to keep the number derived would be choosing the gate over the
+ *  reader. Stops at twenty because past that prose writes the digit too. */
+const NUMBER_WORDS = [
+  'zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+  'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
+  'nineteen', 'twenty',
+];
+
+/**
+ * `numberWord(15)` -> "fifteen", for a DERIVED count a sentence spells out.
+ *
+ * WHY IT IS HERE AND NOT A STRING IN THE PAGE. A count that is derived for the counter tile
+ * and then typed as a word in the prose is the same number in two places, which is the defect
+ * `countedFigures` exists to stop one level up: the buying guide's `breeder-questions` table
+ * lost or gained a row and the tile would have thrown while the sentence "the fifteen
+ * questions" carried on reading perfectly. Out of range it throws rather than falling back to
+ * the digit — a silent switch from "fifteen" to "21" mid-paragraph is a typo nobody typed.
+ */
+export function numberWord(n: number): string {
+  const w = Number.isInteger(n) ? NUMBER_WORDS[n] : undefined;
+  if (!w) {
+    throw new Error(`numberWord: ${n} is not a whole number this helper spells — a count a `
+      + 'sentence writes out in words is between zero and twenty, and one that has left that '
+      + 'range needs the sentence looked at, not a digit substituted into it');
+  }
+  return w;
+}

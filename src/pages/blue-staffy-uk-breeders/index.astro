@@ -89,11 +89,9 @@ import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
-import { bakedAssets, bakedSrcset } from '../../lib/assets';
+import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, ledgeText, sourceKey, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
@@ -228,7 +226,6 @@ if (!nodeOpening('top', 0).includes(heroAside.quote!)) {
 // MASTER is what painted. `bakedSrcset` derives each row from the master's own path and throws
 // naming the file when one is missing. `existsSync` is the build's own filesystem — this route
 // is prerendered, so it runs once at build and never in a browser.
-const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
 const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(a, widths, inPublic);
 // WHAT A TILE PAINTS ON *THIS* ARRANGEMENT, at the CSS's own breakpoints and measured at
 // twelve widths rather than estimated. H-AB1 is the mosaic WITH an aside, so its media column
@@ -239,7 +236,6 @@ const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(
 // about the box and `img-sizes-matches-box` now measures it at all four widths.
 const TILE_SIZES = '(max-width: 900px) calc(50vw - 52px), (max-width: 1023px) calc(26.2vw - 42px), '
   + '(max-width: 1199px) 68px, 124px';
-const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
 

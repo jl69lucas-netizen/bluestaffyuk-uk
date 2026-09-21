@@ -1,3 +1,6 @@
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
 // src/lib/assets.ts — a board record's baked photographs, by slot.
 //
 // Working rule 11: every image a rebuilt page renders is one the migrated site already served,
@@ -87,3 +90,46 @@ export function bakedSrcset(
   });
   return [...rows, `${asset.file} ${asset.w}w`].join(', ');
 }
+
+// ── the two constants every rebuilt page had written for itself ─────────────────────────────
+
+/** The project's `public/`, found once. */
+const PUBLIC_DIR = join(process.cwd(), 'public');
+
+/**
+ * Does `publicPath` exist under `public/`?
+ *
+ * `bakedSrcset` takes this as an argument rather than importing `node:fs` itself, so that it
+ * stays testable — but FOUR rebuilt pages had each written the same
+ * `existsSync(fileURLToPath(new URL('../../../public' + p, import.meta.url)))`, differing only
+ * in how many `../` the page's own depth needed. A relative path repeated per caller is a
+ * relative path that breaks the day a page moves a directory, and it broke nothing only
+ * because none of them had.
+ *
+ * IT IS RESOLVED FROM THE WORKING DIRECTORY, NOT FROM `import.meta.url`, and that is the
+ * correction this hoist needed. A page's frontmatter keeps its own module identity through
+ * the build, so `../../../public` from inside a page happened to be right; a LIBRARY module is
+ * bundled, `import.meta.url` becomes the chunk's url under `.astro/`, and the first build
+ * after the hoist reported the freshly baked candidate as missing and refused to render the
+ * page — loudly, which is `bakedSrcset`'s own design working. `astro build` runs from the
+ * project root, so `public/` is one join away from it, and the throw below says so rather
+ * than letting a wrong root read as an empty one.
+ */
+export const inPublic = (publicPath: string) => {
+  if (!existsSync(PUBLIC_DIR)) {
+    throw new Error(`inPublic: ${PUBLIC_DIR} is not there — this resolves public/ from the `
+      + 'working directory, and the build is being run from somewhere other than the project root');
+  }
+  return existsSync(join(PUBLIC_DIR, publicPath));
+};
+
+/**
+ * The `sizes` an in-body photograph paints at on a page inside `PageShell`.
+ *
+ * MEASURED, not chosen: `.bl-img` inside a prose column is capped at 420px from 900px up
+ * (src/styles/board-styles.css) and is full width below 640px. The same string was written
+ * into four rebuilt pages, and `img-sizes-matches-box` (blocking) measures the promise
+ * against the box on every one of them — so a change to that cap has to reach four files
+ * today and one after this. A page whose geometry is genuinely different states its own.
+ */
+export const BODY_SIZES = '(max-width: 640px) 100vw, 420px';

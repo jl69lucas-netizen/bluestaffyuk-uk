@@ -59,3 +59,12 @@ export interface PuppyRow {
   status: 'Available' | 'Reserved' | 'Sold'; colour: string;
   card_photo: string; gallery: string[];
 }
+
+/**
+ * A GBP amount with its thousands separator, as `PuppyCard` writes a price: 1500 is a number
+ * and £1,500 is money. The £ is NOT included — three pages interpolate the sign themselves,
+ * inside a sentence or a table cell where the currency belongs to the sentence rather than to
+ * the figure, and a helper that carried it would have those three stripping it back off.
+ * `available-puppies/index.astro` keeps its own £-inclusive spelling for that reason.
+ */
+export const gbp = (n: number) => n.toLocaleString('en-GB');

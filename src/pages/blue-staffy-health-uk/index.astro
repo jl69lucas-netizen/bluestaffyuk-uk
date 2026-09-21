@@ -92,11 +92,9 @@ import DataTable from '../../components/kit/DataTable.astro';
 import InfoCard from '../../components/kit/InfoCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
-import { bakedAssets, bakedSrcset } from '../../lib/assets';
+import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
@@ -237,7 +235,6 @@ const asideRows = heroAside.rows!.map((r) => {
 // THE CANDIDATE LISTS ARE BUILT FROM THE FILES THAT EXIST, not spelled into the markup (the fix
 // 1c500e5 made): a hand-written `srcset` is a filename duplicated away from its file, and a 404
 // candidate is invisible to `img-srcset-within-2x` because the master is what paints.
-const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
 const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(a, widths, inPublic);
 // The panel hero's photo column is 14rem at 1024 and above and the full width of a phone below
 // 900px, so two small candidates are baked beside the master rather than the master being
@@ -248,7 +245,6 @@ const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(
 // `img-srcset-within-2x` at every width, so nothing is baked beside them — and a `sizes` on an
 // image with no `srcset` is inert markup that reads like a decision. It is on the two that DO
 // offer candidates, the 780px dam and the 1080px vet check, and on nowhere else.
-const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
 

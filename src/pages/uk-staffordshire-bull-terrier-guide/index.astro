@@ -102,17 +102,15 @@ import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
-import { bakedAssets, bakedSrcset } from '../../lib/assets';
+import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, sourceKey, ledgeText, breedFactsCell,
   sentenceAnchor as S, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs, type PuppyRow } from '../../lib/site';
+import { SITE, gbp, abs, type PuppyRow } from '../../lib/site';
 import pageDates from '../../../data/page-dates.json';
 import { videoObject } from '../../lib/video';
 import puppiesJson from '../../../data/puppies.json';
@@ -237,7 +235,6 @@ const asideItems = heroAside.items.map((item) => {
 // The candidate list is built from the files that exist, not spelled into the markup (the fix
 // 1c500e5 made): a hand-written `srcset` is a filename duplicated away from its file, and a 404
 // candidate is invisible to `img-srcset-within-2x` because the master is what paints.
-const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
 // The panel hero paints its photo in a 224px column above 900px and full width below it, which
 // is the `sizes` Hero writes for this arrangement (the fix 8c71fcd made). The 440 candidate
 // already baked beside the 612px master covers both readings inside 2x, so nothing is
@@ -247,7 +244,6 @@ const heroSrcset = bakedSrcset(litter, [440], inPublic);
 // that paints at about 420px, so the widest ratio on the page is 1.52x — inside
 // `img-srcset-within-2x` on the master alone. Offering a candidate that is not on disk is the
 // 404 `bakedSrcset` refuses to write.
-const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
 /** The git-derived dates BaseLayout reads for its WebPage node, for the Article to agree with. */
@@ -269,7 +265,6 @@ const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Availa
 const town = SITE.location_label.split(' · ')[0];
 const hours = SITE.hours.replace('Mo-Su ', 'from ').replace('-', ' to ');
 /** Thousands separator, as `PuppyCard` writes a price: 1500 is a number, £1,500 is money. */
-const gbp = (n: number) => n.toLocaleString('en-GB');
 const delivery = `£${gbp(settings.delivery_min_gbp)} to £${gbp(settings.delivery_max_gbp)}`;
 
 // Article + FAQPage + VideoObject. The FAQPage is built from the SAME nine rows the accordion

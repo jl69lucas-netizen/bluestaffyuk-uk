@@ -134,17 +134,16 @@ import VideoEmbed from '../../components/kit/VideoEmbed.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
-import { existsSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import BodyImage from '../../components/BodyImage.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
-import { bakedAssets, bakedSrcset } from '../../lib/assets';
-import { recordText, countedFigures, sourceKey, ledgeText,
-  sentenceAnchor as S, type LedgeEntry } from '../../lib/recordText';
+import { bakedAssets, bakedSrcset, inPublic } from '../../lib/assets';
+import { recordText, countedFigures, numberWord, sourceKey, ledgeText,
+  sentenceAnchor as S, type LedgeEntry, type StatRow } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
-import { SITE, abs, type PuppyRow } from '../../lib/site';
+import { SITE, abs, gbp, type PuppyRow } from '../../lib/site';
 import pageDates from '../../../data/page-dates.json';
 import { videoObject } from '../../lib/video';
 import puppiesJson from '../../../data/puppies.json';
@@ -155,10 +154,25 @@ import record from '../../../data/boards/uk-blue-staffy-puppy-buying-guide.json'
 
 const path = '/uk-blue-staffy-puppy-buying-guide/';
 const SLUG = 'uk-blue-staffy-puppy-buying-guide';
-// The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// The picked meta variants and H1, BY INDEX from the approval — never retyped here. The
+// indices are read through a named check rather than through `!`: a non-null assertion is a
+// promise to the type checker and nothing at all to the build, so an unapproved record would
+// have rendered `undefined` into the `<title>`, the meta description and the H1 and shipped
+// it. `board_gate.py` would have caught the record; nothing would have caught the page.
+const approval = record.approval;
+if (!approval || !approval.meta) {
+  throw new Error(`${SLUG}: the record carries no approval, so there is no picked title, `
+    + 'description or H1 to render — run scripts/board_approve.py before building the page');
+}
+const title = record.meta_set.titles[approval.meta.title];
+const description = record.meta_set.descriptions[approval.meta.description];
+const h1 = record.h1.variants[approval.h1];
+for (const [what, value] of [['title', title], ['description', description], ['h1', h1]]) {
+  if (!value) {
+    throw new Error(`${SLUG}: the approval names a ${what} index the record has no variant `
+      + 'for — the menu and the answer to it have stopped agreeing');
+  }
+}
 
 // The seventeen migrated images, by slot, at their ORIGINAL public paths with the alt text the
 // record baked (working rule 11; all seventeen alts are elements of the verbatim set). Three
@@ -216,16 +230,14 @@ if (rachel.length !== 1) {
 // page — what to ask a breeder, how old a puppy should be, and how to tell an ethical breeder
 // from a puppy farm — and the fourth, the deposit, is data/settings.json's. Every answer
 // restates something the body above already says.
-const faqSection = record.sections.find((s) => s.id === 'questions')!;
+const faqSection = record.sections.find((s) => s.id === 'questions');
+if (!faqSection) throw new Error(`${SLUG}: the record has no questions section to build the FAQ from`);
 const faqRows = loadFaq();
 const faqs = faqSection.tree.map((n) => {
   const row = faqRows.find((r) => r.id === n.heading);
   if (!row) throw new Error(`${SLUG}: data/faq.json has no row ${n.heading}`);
   return row;
 });
-
-/** Thousands separator, as `PuppyCard` writes a price: 1500 is a number, £1,500 is money. */
-const gbp = (n: number) => n.toLocaleString('en-GB');
 
 // ── EVERY FIGURE, DERIVED FROM THE FILE ITS `source` NAMES ──────────────────────────────────
 // Two kinds of source appear on this record: a row count of one of this page's own tables, and
@@ -245,7 +257,6 @@ const resolveFigure = (source: string): string => {
 // The three counter tiles. `countedFigures` throws with BOTH readings when a derived figure has
 // stopped equalling the one the breeder approved: the data decides what prints, and the record
 // decides when a human has to look at the board again.
-interface StatRow { n: string; label: string; source?: string }
 const statRows = (sec('stats') as unknown as { stats: StatRow[] }).stats;
 const COUNTED: Record<string, string> = Object.fromEntries(
   statRows.map((row) => [sourceKey(row.source), resolveFigure(String(row.source))]),
@@ -314,18 +325,17 @@ const asideItems = heroAside.items.map((item) => {
 
 // The candidate list is built from the files that exist, not spelled into the markup: a
 // hand-written `srcset` is a filename duplicated away from its file, and a 404 candidate is
-// invisible to `img-srcset-within-2x` because the master is what paints.
-const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
+// invisible to `img-srcset-within-2x` because the master is what paints. `inPublic` and
+// `BODY_SIZES` are src/lib/assets.ts's — four rebuilt pages had written both for themselves.
 // The panel hero paints its photo in a 224px column at 1280 and 144px between 1024 and 1199,
 // and the 512px master alone decodes at 2.3x the wider of those. The 240 and 400 candidates
 // baked BESIDE it (working rule 11: added, never in its place — the master is untouched, keeps
 // its filename and is still the largest row) bring both readings inside 2x.
 const heroSrcset = bakedSrcset(stepsHero, [240, 400], inPublic);
-// NO BODY `srcset`. Every in-body master here is between 400px and 615px wide against a column
-// that paints at about 420px, so the widest ratio on the page is 1.46x — inside
+// NO BODY `srcset`. Every in-body master here is between 400px and 615px wide against a
+// column that paints at about 420px, so the widest ratio on the page is 1.46x — inside
 // `img-srcset-within-2x` on the master alone. Offering a candidate that is not on disk is the
 // 404 `bakedSrcset` refuses to write.
-const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
 /** The git-derived dates BaseLayout reads for its WebPage node, for the Article to agree with. */
@@ -350,9 +360,38 @@ const delivery = `£${gbp(settings.delivery_min_gbp)} to £${gbp(settings.delive
 const deposit = `£${gbp(settings.deposit_gbp)}`;
 // The two counts the prose states, off the same tables the counter counts rather than typed:
 // the opening promises a number of questions and a number of warnings, and both are the
-// length of a table further down this page.
+// length of a table further down this page. `questionWord` is the same count as a sentence
+// writes it — the section label and the counter tile print the digit, the close prints the
+// word, and all three are one reading of one table (the fix the 2026-09-21 review asked for:
+// two hand-typed fifteens would have outlived the row that left the table).
 const questionCount = String(questionsTable.rows.length);
 const redFlagCount = String(redFlagsTable.rows.length);
+const questionWord = numberWord(questionsTable.rows.length);
+
+// THE PRICE SENTENCE NAMES THE DOGS DATA/PUPPIES.JSON HOLDS, not six names typed into a
+// paragraph. The old spelling listed Roman, Byrd and Ince against one price and Vennie,
+// Christa and Cheryl against the other, which is the litter written down twice — once in the
+// data the grid renders and once in prose nobody would think to change when a puppy is
+// reserved. The split is derived, and it is CHECKED: a price in data/puppies.json that has
+// stopped matching data/price-matrix.json, or a sex with nobody in it, stops the build rather
+// than printing a sentence the table two sections up contradicts.
+const nameList = (rows: PuppyRow[]) => rows.map((r) => r.name).join(', ').replace(/, ([^,]*)$/, ' and $1');
+const bySex = (sex: PuppyRow['sex'], expected: number) => {
+  const rows = available.filter((p) => p.sex === sex);
+  if (!rows.length) {
+    throw new Error(`${SLUG}: data/puppies.json has no available ${sex} puppy, and the close `
+      + 'names a price for one');
+  }
+  const wrong = rows.filter((r) => r.price_gbp !== expected);
+  if (wrong.length) {
+    throw new Error(`${SLUG}: ${wrong.map((r) => `${r.name} (£${r.price_gbp})`).join(', ')} `
+      + `${wrong.length === 1 ? 'is' : 'are'} not at the £${expected} data/price-matrix.json `
+      + `holds for a ${sex} — the close and the costs table would print two different prices`);
+  }
+  return nameList(rows);
+};
+const males = bySex('male', prices.male_gbp);
+const females = bySex('female', prices.female_gbp);
 
 // Article + VideoObject + FAQPage. The FAQPage is built from the SAME four rows the accordion
 // renders; data/faq.json keeps the sentence-case wording, which is what `name` reads
@@ -410,20 +449,27 @@ const pageSchema = [
   <section slot="hero" id="top" data-section-label="The buying guide" class={box('top')}>
     <Hero
       as="h1"
-      eyebrow={`A UK breeder's buying guide · ${SITE.location_label}`}
+      eyebrow={`A UK breeder's buying guide · ${town}`}
       title={T(h1)}
-      {/* ONE SHORT SENTENCE, AND THE SHORTNESS IS MEASURED. The desktop lede is
-          `-webkit-line-clamp: 2` and a clamp HIDES its overflow, so a third line disappears
-          rather than pushing anything past the ceiling — invisible on the page, and only a
-          measurement finds it. This hero has a second, tighter constraint the breed guide's
-          does not: the picked H1 is the migrated one and it is 103 characters, so the title
-          takes three lines in the panel's copy column where the breed guide's takes two. A
-          two-line lede on top of that made the inner grid row taller than the 450px ceiling,
-          and because `.hero-aside` is `align-self: center` the aside was centred in the taller
-          row and ran 4px out of the bottom of the band — `hero-aside-no-clip`, measured at
-          1280 and invisible in a screenshot. One line of lede is 33px, which is the whole of
-          the difference. */}
-      lede="The questions to ask, and the answers to listen for."
+      {/* ONE SENTENCE, ON ONE LINE, AND BOTH HALVES OF THAT ARE MEASURED.
+          A SENTENCE: the lede used to be a noun phrase ("The questions to ask, and the answers
+          to listen for") and a hero's lede is read aloud by a screen reader straight after the
+          H1, where a fragment is a caption rather than a sentence. It has a finite verb now.
+          ON ONE LINE, and that is the constraint the sentence had to be written inside. The
+          picked H1 is the migrated one and it is 104 characters, so the title takes three lines
+          in the panel's copy column where the breed guide's takes two, and the copy column has
+          exactly one line of lede left before it grows the inner grid row past the 450px
+          ceiling. `.hero-aside` is `align-self: center`, so a row taller than the band centres
+          the aside in the overflow and the BOTTOM of it is clipped — `hero-aside-no-clip`,
+          which fires at 1280 and which a screenshot does not show. Measured: one line of lede
+          is 33px and leaves the aside 29px inside the band; two lines put it 4px outside. The
+          desktop lede is also `-webkit-line-clamp: 2`, and a clamp HIDES its overflow, so a
+          third line would disappear rather than push — invisible, and only a measurement finds
+          it. The review asked for "This guide gives you the questions to ask a breeder, and the
+          answers to listen for" and for it to be verified at one line: at 83 characters it
+          measures two lines at 1024, 1100 and 1280 and puts the aside back outside the band, so
+          this is the same sentence written to the measurement. */}
+      lede="Here is what to ask a breeder, and what to listen for."
       image={stepsHero.file}
       imageAlt={stepsHero.alt}
       imageWidth={stepsHero.w}
@@ -452,12 +498,8 @@ const pageSchema = [
     <h3>{T(node('top', 0).heading)}</h3>
     <p>{nodeOpening('top', 0)}</p>
     <p>
-      What follows is the whole of it, in the order it happens: how our own process runs, the
-      {' '}{questionCount} questions worth putting to any breeder and the answer to listen for
-      after each one, the {redFlagCount} warnings that should end a conversation, what a puppy
-      from us costs, the evidence to ask for, and what the first month at home looks like. Use it
-      on us first. Every number below can be traced to a file behind this site; the ones that
-      could not be traced are not below.
+      {questionCount} questions with the answer to listen for after each, and {redFlagCount}
+      warnings that end a conversation.
     </p>
   </section>
 
@@ -469,7 +511,7 @@ const pageSchema = [
   <section id="takeaways" data-section-label="Four rules" class={box('takeaways')}>
     <div class="bl-head">
       <h2>{T(heading('takeaways'))}</h2>
-      <p class="bl-lede">Four things worth more than everything else on this page put together.</p>
+      <p class="bl-lede">Four things worth more than the rest.</p>
     </div>
     <div class="bl-body">
       <div class="bl-cards">
@@ -528,16 +570,7 @@ const pageSchema = [
   <section id="buying-steps" data-section-label="The buying process">
     <h2>{T(heading('buying-steps'))}</h2>
     <p>{opening('buying-steps')}</p>
-    <img
-      class="bl-img"
-      src={research.file}
-      alt={research.alt}
-      width={research.w}
-      height={research.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={research} />
 
     <h3>{T(node('buying-steps', 0).heading)}</h3>
     <p>{nodeOpening('buying-steps', 0)}</p>
@@ -581,16 +614,7 @@ const pageSchema = [
       <a href="#talk-to-us">Ask us where you are in the process</a> at any point; we would rather
       answer twice than have you guess.
     </p>
-    <img
-      class="bl-img"
-      src={transport.file}
-      alt={transport.alt}
-      width={transport.w}
-      height={transport.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={transport} />
 
     <h4>{T('The Order Matters More Than The Speed')}</h4>
     <p>
@@ -615,7 +639,7 @@ const pageSchema = [
       into labelled rows below 640px — `DataTable` carries `.stack-table` unconditionally
       (working rule 13). The H2 is `verbatim.changed`: the paw glyph is gone and nothing else
       moved. The recorded refresh delta is the ACCENT. */}
-  <section id="breeder-questions" data-section-label="15 questions to ask" class={box('breeder-questions')}>
+  <section id="breeder-questions" data-section-label={`${questionCount} questions to ask`} class={box('breeder-questions')}>
     <div class="bl-head">
       <h2>{T(heading('breeder-questions'))}</h2>
       <p class="bl-lede">{opening('breeder-questions')}</p>
@@ -623,16 +647,7 @@ const pageSchema = [
     <div class="bl-body">
       <h3>{T(node('breeder-questions', 0).heading)}</h3>
       <p>{nodeOpening('breeder-questions', 0)}</p>
-      <img
-        class="bl-img"
-        src={familyBreeder.file}
-        alt={familyBreeder.alt}
-        width={familyBreeder.w}
-        height={familyBreeder.h}
-        sizes={BODY_SIZES}
-        loading="lazy"
-        decoding="async"
-      />
+      <BodyImage asset={familyBreeder} />
       <DataTable
         caption={questionsTable.caption}
         columns={questionsTable.columns}
@@ -770,28 +785,15 @@ const pageSchema = [
   <section id="temperament-fit" data-section-label="Is the breed right for you">
     <h2>{T(heading('temperament-fit'))}</h2>
     <p>{opening('temperament-fit')}</p>
-    <img
-      class="bl-img"
-      src={prosCons.file}
-      alt={prosCons.alt}
-      width={prosCons.w}
-      height={prosCons.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={prosCons} />
 
     <h3>{T(node('temperament-fit', 0).heading)}</h3>
     <p>{nodeOpening('temperament-fit', 0)}</p>
     <p>
-      Two more traits belong beside the affection. Historically bred for courage, a Staffy is
-      fearless and determined in a way that surprises people who came expecting a lapdog, and a
-      well-bred one, socialised early, directs that appropriately rather than at the first dog
-      it meets. And they are smart and eager to learn, responding well to positive reinforcement
-      training given consistently by everybody in the house — which is also why an inconsistent
-      household teaches this breed something nobody intended.
-      {' '}<a href="/uk-staffordshire-bull-terrier-guide/">{S('Our breed guide covers the temperament, the history and the law in full')}</a>,
-      and this section is only the part of it you need before you pay a deposit.
+      Historically bred for courage, they are fearless and determined, and a well-bred one
+      socialised early directs that appropriately. They are smart and eager to learn too,
+      responding well to positive reinforcement training kept consistent by everybody.
+      {' '}<a href="/uk-staffordshire-bull-terrier-guide/">{S('Our breed guide covers the temperament, the history and the law in full')}</a>.
     </p>
 
     <h3>{T(node('temperament-fit', 1).heading)}</h3>
@@ -803,34 +805,17 @@ const pageSchema = [
     <h3>{T(node('temperament-fit', 3).heading)}</h3>
     <p>{nodeOpening('temperament-fit', 3)}</p>
     <p>
-      In the breed's favour: affectionate and loyal, generally good with children, intelligent and
-      eager to please, undemanding to groom, compact for their strength, and happiest with people
-      around. Against: strong chewers that get through toys, prone to separation anxiety, in need
-      of consistent training and socialisation, energetic enough that the exercise above is a
-      floor rather than a target, subject to the inherited conditions the next section names, and
-      not always at ease with another dog without a slow introduction. Six each, and the second
-      six are the ones worth reading twice.
-      {' '}<a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier" target="_blank" rel="noopener noreferrer">{S("the PDSA's veterinary view of what living with a Staffy involves")}</a> says
-      much the same with a vet behind it.
+      Six advantages and six drawbacks; the second six matter more.
+      {' '}<a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier" target="_blank" rel="noopener noreferrer">{S("the PDSA's veterinary view of what living with a Staffy involves")}</a> has
+      a vet behind it.
     </p>
-    <img
-      class="bl-img"
-      src={maleRehoming.file}
-      alt={maleRehoming.alt}
-      width={maleRehoming.w}
-      height={maleRehoming.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={maleRehoming} />
 
     <h3>{T(node('temperament-fit', 4).heading)}</h3>
     <p>{nodeOpening('temperament-fit', 4)}</p>
     <p>
-      The one household we will talk you out of is the empty one. A breed bred to want company
-      does not stop wanting it because nobody happens to be in, and a garden, however large, is
-      no substitute for somebody moving about the house.
-      <a href="#talk-to-us">Tell us about your week</a> and we will say so plainly either way.
+      The one household we talk people out of is the empty one.
+      <a href="#talk-to-us">Tell us about your week</a>.
     </p>
   </section>
 
@@ -846,16 +831,7 @@ const pageSchema = [
       well, both for collisions with the health page. The recorded refresh delta is the LAYOUT. */}
   <section id="health-checks" data-section-label="Health evidence to ask for">
     <h2>{T(heading('health-checks'))}</h2>
-    <img
-      class="bl-img"
-      src={healthWellbeing.file}
-      alt={healthWellbeing.alt}
-      width={healthWellbeing.w}
-      height={healthWellbeing.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={healthWellbeing} />
     <p>{opening('health-checks')}</p>
 
     <h3>{T(node('health-checks', 0).heading)}</h3>
@@ -864,61 +840,43 @@ const pageSchema = [
       <a href="https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/" target="_blank" rel="noopener noreferrer">{S("the registry's own page on the L-2-HGA DNA test")}</a> explains
       the first, and
       {' '}<a href="https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/" target="_blank" rel="noopener noreferrer">the registry's own page on the HC-HSF4 DNA test</a> the
-      second. Two questions cover the whole of it: what health tests have the parents undergone,
-      and can I see the certificates? Ask to hold the paper rather than to be told about it. A
-      certificate carries a dog's name, the test run on it and the outcome, and all three want
-      checking against the animal in the room.
+      second. Two questions cover it: what health tests have the parents undergone, and can I see
+      the certificates? Ask to hold the paper, and check the name on it against the dog.
     </p>
 
     <h3>{T(node('health-checks', 1).heading)}</h3>
     <p>{nodeOpening('health-checks', 1)}</p>
     <p>
-      L-2-HGA, or L-2-hydroxyglutaric aciduria, is a neurological condition that affects
-      coordination and the way a dog moves. HC-HSF4 is hereditary cataracts, an inherited eye
-      condition that can take a dog's sight. Those two are why the two tests exist, and both are
-      avoidable in a litter whose parents were screened before they were ever mated.
+      L-2-hydroxyglutaric aciduria is neurological and affects coordination and gait; HC-HSF4 is
+      hereditary cataracts, and takes the sight. Both are avoidable in a litter whose parents were
+      screened before mating.
     </p>
 
     <h3>{T(node('health-checks', 2).heading)}</h3>
     <p>{nodeOpening('health-checks', 2)}</p>
     <p>
-      Seven things, none of which needs a vet standing beside you. Bright, clear eyes with no
-      discharge or redness. Clean ears, without heavy wax or a smell. A clean, moist nose. A body
-      that is neither thin nor bloated. A puppy that is alert and playful rather than cowering or
-      snapping. A clean rear end. And easy movement, with no limping and no stiffness. A puppy
-      that fails one of those is not necessarily an unhealthy puppy, but it is a question to ask
-      out loud before you leave.
+      Seven things, and none needs a vet beside you. Bright, clear eyes, no discharge or redness.
+      Clean ears, no heavy wax or odour. A clean, moist nose. Good body condition, neither thin
+      nor bloated. Alert and playful, not timid or snappy. A clean rear end. Good mobility, no
+      limping or stiffness. One failure is a question to ask out loud, not a verdict.
     </p>
-    <img
-      class="bl-img"
-      src={vetCheck.file}
-      alt={vetCheck.alt}
-      width={vetCheck.w}
-      height={vetCheck.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={vetCheck} />
 
     <h3>{T(node('health-checks', 3).heading)}</h3>
     <p>
-      Both our parents are recorded clear of both conditions. That is the only sentence in this
-      section about our own dogs; the rest of it is about the breed.
+      Both ours are recorded clear of both. That is the only sentence here about our own dogs.
       {' '}<a href="/blue-staffy-health-uk/">{S('Our health page states what both parents were tested for and what the results were')}</a>,
-      sets the two certificates out against the dogs they belong to, and explains at length what
-      a clear pair actually means for a puppy. No laboratory appears there or here: no file we
-      keep records one.
+      against the dogs they belong to. No laboratory is named there or here: no file we keep
+      records one.
     </p>
 
     <h3>{T(node('health-checks', 4).heading)}</h3>
     <p>{nodeOpening('health-checks', 4)}</p>
     <p>
-      Beyond the two screened conditions, the complaints this breed brings to a vet most often are
-      skin irritation and joint wear. Neither has a DNA test behind it, and neither gets a
-      percentage beside it here: we hold no prevalence data for this breed, and inventing a
-      figure to sound authoritative would be the same fabrication the rest of this page warns
-      you about. <a href="#talk-to-us">Ask us to see the certificates</a> before you ask anybody
-      else to.
+      Beyond those two, skin irritation and joint wear are what the vet sees most. Neither is
+      given a percentage here: we hold no prevalence data, and a figure invented to sound
+      authoritative is the fabrication this page warns about.
+      {' '}<a href="#talk-to-us">Ask us to see the certificates</a> first.
     </p>
 
     <h4>{T('Two Tests, And Only Two')}</h4>
@@ -943,23 +901,13 @@ const pageSchema = [
   <section id="eight-weeks" data-section-label="Why eight weeks">
     <h2>{T(heading('eight-weeks'))}</h2>
     <p>{opening('eight-weeks')}</p>
-    <img
-      class="bl-img"
-      src={healthyLitter.file}
-      alt={healthyLitter.alt}
-      width={healthyLitter.w}
-      height={healthyLitter.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={healthyLitter} />
 
     <h3>{T(node('eight-weeks', 0).heading)}</h3>
     <p>
-      Bite inhibition is learned from littermates who yelp and stop playing, not from a person
-      saying no. Boundaries are learned from a mother who has run out of patience. Reading another
-      dog's signals is learned by getting them wrong in a room where getting them wrong is safe.
-      None of the three can be taught afterwards to the same standard.
+      Bite inhibition comes from littermates who yelp and stop playing, not from a person saying
+      no. Boundaries come from a mother out of patience. Reading another dog comes from getting
+      it wrong somewhere safe. None of the three is taught as well afterwards.
     </p>
 
     <h3>{T(node('eight-weeks', 1).heading)}</h3>
@@ -988,59 +936,37 @@ const pageSchema = [
   <section id="home-prep" data-section-label="Preparing your home">
     <h2>{T(heading('home-prep'))}</h2>
     <p>{opening('home-prep')}</p>
-    <img
-      class="bl-img"
-      src={preparation.file}
-      alt={preparation.alt}
-      width={preparation.w}
-      height={preparation.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={preparation} />
 
     <h3>{T(node('home-prep', 0).heading)}</h3>
     <p>
-      Cables secured or lifted out of reach, cleaning products and medicines behind a door that
-      shuts, toxic houseplants moved or given away, and a gate across anything you would rather a
-      puppy did not investigate at three in the morning. Do it the week before, not on the
-      morning itself.
+      Cables secured, cleaning products and medicines behind a door that shuts, toxic houseplants
+      out, and a gate across anything better left uninvestigated at three in the morning. Do it
+      the week before.
     </p>
 
     <h3>{T(node('home-prep', 1).heading)}</h3>
     <p>
-      One quiet indoor corner, out of the through-traffic of the house but not shut away from it:
-      a crate or a bed where the puppy can stop being looked at. Put something in it that smells
-      of you. A dog with somewhere to retreat to settles faster than one with nowhere.
+      A crate or bed in one quiet indoor corner, out of the through-traffic but not shut away,
+      with something in it that smells of you. Somewhere to retreat to settles a dog faster.
     </p>
 
     <h3>{T(node('home-prep', 2).heading)}</h3>
     <p>{nodeOpening('home-prep', 2)}</p>
     <p>
-      Food and water bowls, a collar and lead, a few toys tough enough for a breed that chews, a
-      brush, bedding, flea and worm treatment, and a crate or pen. No brand is named here: no file
-      we keep records one, and whatever your puppy has been eating with us is what it should carry
-      on eating for the first week or two.
+      Bowls, a collar and lead, toys tough enough for a chewer, a brush, bedding, flea and worm
+      treatment, and a crate or pen. No brand is named: no file we keep records one, and whatever
+      has been fed here is what to carry on with.
       {' '}<a href="/blue-staffy-blog-guides/">{S('Our blog guides go further on the first weeks at home')}</a>.
     </p>
-    <img
-      class="bl-img"
-      src={readyInfographic.file}
-      alt={readyInfographic.alt}
-      width={readyInfographic.w}
-      height={readyInfographic.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={readyInfographic} />
 
     <h3>{T(node('home-prep', 3).heading)}</h3>
     <p>
-      Decide where the spot is before the puppy arrives, and take it there by the same route every
-      time: after waking, after eating, after play, and every couple of hours in between. Praise
-      the moment it happens outside. Accidents indoors are cleaned up without a word said.
-      <a href="#talk-to-us">Ask us what your puppy is used to</a> and you can have the routine
-      half-built before it arrives.
+      Pick the spot before arrival and use the same route every time: after waking, after eating,
+      after play. Praise it outdoors; clean up indoors without a word.
+      <a href="#talk-to-us">Ask us what your puppy is used to</a> and the routine is half-built
+      already.
     </p>
   </section>
 
@@ -1055,57 +981,36 @@ const pageSchema = [
   <section id="socialisation" data-section-label="Socialisation and vaccinations">
     <h2>{T(heading('socialisation'))}</h2>
     <p>{opening('socialisation')}</p>
-    <img
-      class="bl-img"
-      src={socialChecklist.file}
-      alt={socialChecklist.alt}
-      width={socialChecklist.w}
-      height={socialChecklist.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={socialChecklist} />
 
     <h3>{T(node('socialisation', 0).heading)}</h3>
     <p>{nodeOpening('socialisation', 0)}</p>
     <p>
-      Sights, sounds, surfaces and people, in small positive doses and never to the point of
-      fright. Other dogs only once they are vaccinated and only once you know them. A puppy
-      carried out to watch traffic from a distance is being socialised as surely as one walking.
+      Sights, sounds, surfaces and people in small positive doses, never to the point of fright;
+      other dogs only once vaccinated. One carried out to watch traffic is being socialised.
     </p>
 
     <h3>{T(node('socialisation', 1).heading)}</h3>
     <p>
-      Enrolling in local puppy socialisation classes is worth doing before you collect, because
-      the good ones fill up. A class is where a puppy learns to concentrate with other dogs in
-      the room, which is a different skill from concentrating in your kitchen and the one that
-      matters on a pavement.
+      Enrolling in local puppy socialisation classes is worth doing before you collect: the good
+      ones fill. Concentrating with other dogs in the room is a different skill from concentrating
+      in your kitchen, and it is the one that matters on a pavement.
     </p>
 
     <h3>{T(node('socialisation', 2).heading)}</h3>
     <p>
-      Ears, paws, mouth and tail, every day, by everyone in the house, for a few seconds at a
-      time. Do it now and a vet visit is a mild inconvenience. Skip it and a nail trim is a
-      wrestling match for the next decade.
+      Ears, paws, mouth and tail, daily, by everyone. Do it now and a vet visit is an
+      inconvenience; skip it and a nail trim is a decade of wrestling.
     </p>
-    <img
-      class="bl-img"
-      src={trainingSocial.file}
-      alt={trainingSocial.alt}
-      width={trainingSocial.w}
-      height={trainingSocial.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={trainingSocial} />
 
     <h3>{T(node('socialisation', 3).heading)}</h3>
     <p>{nodeOpening('socialisation', 3)}</p>
     <p>
       <a href="https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines" target="_blank" rel="noopener noreferrer">{S("the PDSA's guide to the vaccination course")}</a> sets
-      out the second dose and the booster, both of which belong to your own vet rather than to us.
-      <a href="#talk-to-us">Ask us what has already been given</a> and we will put it in writing
-      with the rest of the paperwork.
+      out the second dose and the booster, both your own vet's rather than ours.
+      <a href="#talk-to-us">Ask us what has already been given</a> and it goes in writing with the
+      paperwork.
     </p>
 
     <h3>{T(node('socialisation', 4).heading)}</h3>
@@ -1183,16 +1088,7 @@ const pageSchema = [
   <section id="delivery" data-section-label="Collection and delivery">
     <h2>{T(heading('delivery'))}</h2>
     <p>{opening('delivery')}</p>
-    <img
-      class="bl-img"
-      src={nationwide.file}
-      alt={nationwide.alt}
-      width={nationwide.w}
-      height={nationwide.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={nationwide} />
 
     <h3>{T(node('delivery', 0).heading)}</h3>
     <p>{nodeOpening('delivery', 0)}</p>
@@ -1217,16 +1113,7 @@ const pageSchema = [
       towards where the journey is short enough: seeing where a puppy was raised answers most of
       the questions on this page in a single afternoon.
     </p>
-    <img
-      class="bl-img"
-      src={ukFamily.file}
-      alt={ukFamily.alt}
-      width={ukFamily.w}
-      height={ukFamily.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={ukFamily} />
   </section>
 
   {/* 15 adoption-vs-buying — standard, NO PICK. The alternative, stated fairly and named rather
@@ -1238,16 +1125,7 @@ const pageSchema = [
   <section id="adoption-vs-buying" data-section-label="Rehoming or buying">
     <h2>{T(heading('adoption-vs-buying'))}</h2>
     <p>{opening('adoption-vs-buying')}</p>
-    <img
-      class="bl-img"
-      src={adoptionInfographic.file}
-      alt={adoptionInfographic.alt}
-      width={adoptionInfographic.w}
-      height={adoptionInfographic.h}
-      sizes={BODY_SIZES}
-      loading="lazy"
-      decoding="async"
-    />
+    <BodyImage asset={adoptionInfographic} />
 
     <h3>{T(node('adoption-vs-buying', 0).heading)}</h3>
     <p>
@@ -1285,16 +1163,7 @@ const pageSchema = [
         Everything above is a breeder describing her own process. One family in London, named,
         describing it from the other end, is a different kind of sentence.
       </p>
-      <img
-        class="bl-img"
-        src={reviewsPhoto.file}
-        alt={reviewsPhoto.alt}
-        width={reviewsPhoto.w}
-        height={reviewsPhoto.h}
-        sizes={BODY_SIZES}
-        loading="lazy"
-        decoding="async"
-      />
+      <BodyImage asset={reviewsPhoto} />
     </div>
   </section>
 
@@ -1308,17 +1177,14 @@ const pageSchema = [
   <section id="puppies" data-section-label="Meet our puppies" class={box('puppies')}>
     <div class="bl-head">
       <h2>{T(heading('puppies'))}</h2>
-      <p class="bl-lede">You have the list. These are the dogs to use it on.</p>
     </div>
     <div class="bl-body">
       <div class="bl-cards">
         {available.map((p) => <PuppyCard slug={p.slug} />)}
       </div>
       <p>
-        <a href="/buy-blue-staffy-puppies-uk/">{S('the puppies we have available now')}</a> is the
-        same litter with the reserving and the paperwork set out beside it, and
-        {' '}<a href="#talk-to-us">the fifteen questions are still open to us</a> whichever one you
-        are asking about.
+        <a href="/buy-blue-staffy-puppies-uk/">{S('the puppies we have available now')}</a>.
+        {' '}<a href="#talk-to-us">Put the {questionWord} questions to us</a>.
       </p>
     </div>
   </section>
@@ -1339,11 +1205,10 @@ const pageSchema = [
           an accordion's answers outside the band (amendment 4a), so a section rendering nothing
           but rows reads as having said nothing. No new claim is made here. */}
       <p>
-        Every answer below restates something this page has already said in a section with a
-        heading on it. Nothing is kept back for the accordion, and nothing lives only behind a
-        disclosure triangle. Three of the four are questions families put to us in a first
-        email; the fourth is the deposit, which is the one people are most reluctant to ask
-        about and the one with the shortest answer.
+        Every answer below restates something said above it under a heading: nothing is kept
+        back for the accordion, and nothing lives only behind a disclosure triangle. Three come
+        from first emails; the fourth is the deposit, the one people are least willing to ask
+        about.
       </p>
       <Faq items={faqs} />
     </div>
@@ -1374,15 +1239,13 @@ const pageSchema = [
 
     <h3>{T(node('talk-to-us', 2).heading)}</h3>
     <p>
-      The price is £{gbp(prices.male_gbp)} for Roman, Byrd or Ince and £{gbp(prices.female_gbp)}
-      for Vennie, Christa or Cheryl. {deposit} reserves whichever one you name, and you have it
-      back if you change your mind. {settings.delivery_note} — {delivery} — or collect in {town}
-      and see for yourself where the litter was raised.
+      £{gbp(prices.male_gbp)} for {males}; £{gbp(prices.female_gbp)} for {females}. {deposit}
+      reserves whichever you name, and you have it back if you change your mind.
+      {' '}{settings.delivery_note} — {delivery} — or collect in {town}.
       {' '}<a href="/uk-blue-staffy-breeders-contact/">{S('Write to us and put the list to us')}</a> —
-      name the puppy and tell us who is at home during the day. Everything comes to
-      {' '}{SITE.email}, which {SITE.breeder_name} reads herself between feeds, {hours}. No
-      telephone number is published on this site because there is not one to publish. Visitors
-      are welcome, and we would rather you came.
+      name the puppy and say who is at home in the day. Everything comes to {SITE.email}, which
+      {' '}{SITE.breeder_name} reads herself between feeds, {hours}. No telephone number is
+      published yet. Visitors are welcome.
     </p>
 
     <h4>{T('The Close Of A Guide Like This Has To Be An Invitation')}</h4>
