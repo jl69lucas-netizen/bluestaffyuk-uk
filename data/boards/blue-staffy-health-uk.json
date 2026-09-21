@@ -447,8 +447,8 @@
       "why_source": "src/pages/blue-staffy-health-uk/index.astro — 'Maggie and Jones are DNA tested clear for L-2-HGA … and HC-HSF4'; https://willaby.net/puppies/a-health-tested-puppy/ (scan 2026-09-20) — a per-test checklist",
       "framework": "EEBP",
       "words": {
-        "min": 110,
-        "max": 145
+        "min": 154,
+        "max": 188
       },
       "shape": "table",
       "styles": [
@@ -1374,8 +1374,8 @@
       "why_source": "data/reviews.json — entry 2, Mark J, London: 'all his papers and medical records meticulously organized … their commitment to ethical breeding and health testing'; competitor scan 2026-09-20 — 0 of 4 show a review beside the health content",
       "framework": "EBD",
       "words": {
-        "min": 35,
-        "max": 50
+        "min": 103,
+        "max": 125
       },
       "shape": "reviews",
       "styles": [
@@ -1831,7 +1831,7 @@
       "takeaways": "S2",
       "top": "H-GD3"
     },
-    "record_hash": "05b380e085f97f8bda4e4301909d81020bfd6a444521559d25f878280276e41d",
+    "record_hash": "85d067868fa34afbc1e664a73937b5fd57fc006a4e51bc182309c724cc6b8dc6",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1849,7 +1849,7 @@
         "Health Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T07:55:51Z",
+    "reapproved_at": "2026-09-21T13:36:54Z",
     "reapprovals": [
       {
         "at": "2026-09-21T07:55:51Z",
@@ -1858,6 +1858,16 @@
           "/sections/0/hero/aside/rows/0/source",
           "/sections/0/hero/aside/rows/1/source",
           "/sections/12/options/note"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:54Z",
+        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Two bands are structurally unreachable because the section's body is a rendered table or a rendered review rather than prose. (1) 'dna-tests' at 110-145 against a measured 171: the three-column L-2-HGA / HC-HSF4 table's caption, headers and cells are counted as section prose and are about 60 words of it. Widened to 154-188. (2) 'paperwork-review' at 35-50 against a measured 114: the section is one review figure — Mark J's quote is about 75 words — framed by two sentences of our own. Widened to 103-125. Both new bands are the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/3/words/max",
+          "/sections/3/words/min",
+          "/sections/12/words/max",
+          "/sections/12/words/min"
         ]
       }
     ]

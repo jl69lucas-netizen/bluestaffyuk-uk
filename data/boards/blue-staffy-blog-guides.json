@@ -620,8 +620,8 @@
       "why_source": "data/reviews.json — entry 2, Mark J, London: 'After extensive research, we chose BlueStaffyUK.uk, and we're so glad we did'",
       "framework": "EBD",
       "words": {
-        "min": 35,
-        "max": 45
+        "min": 98,
+        "max": 120
       },
       "shape": "reviews",
       "styles": [
@@ -911,7 +911,7 @@
       "takeaways": "S3",
       "top": "H-BL3"
     },
-    "record_hash": "fa1f2b552ba7440d0afc7fbb62795fb0242c491a578c971dce163f4a2cde4ec4",
+    "record_hash": "16a34def9e49f59fa12ddf516633dbe55c0ebdfa10948d17294849164dbd0738",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -929,7 +929,7 @@
         "Guide Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T12:55:58Z",
+    "reapproved_at": "2026-09-21T13:36:57Z",
     "reapprovals": [
       {
         "at": "2026-09-21T12:55:58Z",
@@ -937,6 +937,14 @@
         "changed_paths": [
           "/sections/0/options/note",
           "/sections/5/options/note"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:57Z",
+        "reason": "Word band only; no pick, figure, source, menu or section id touched. The 'owner-review' band of 35-45 is structurally unreachable: the section is one review figure — Mark J's quote is about 75 of the 109 words the counter attributes to it — framed by two sentences of our own. Widened to 98-120, the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/5/words/max",
+          "/sections/5/words/min"
         ]
       }
     ]

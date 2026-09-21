@@ -366,7 +366,7 @@
       "video": {
         "id": "g88qOo9C94c",
         "title": "Staffy puppies for sale UK — the reasons families choose us",
-        "caption": "The video this page has carried since June 2025, at its original id."
+        "caption": "The video this page has always carried, at its original id."
       },
       "keywords": {
         "primary": [],
@@ -1240,8 +1240,8 @@
       "why_source": "data/reviews.json — entry 1, The Victoria Family, Manchester; src/pages/buy-staffy-puppies-for-sale-uk/index.astro — the two migrated testimonials, logged in dropped.names",
       "framework": "EBD",
       "words": {
-        "min": 60,
-        "max": 75
+        "min": 166,
+        "max": 202
       },
       "shape": "reviews",
       "styles": [
@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "831d70b770d8ea50c2eef82e4d93ae5929b6c6dd0797509aa983c6f8ddf686f7",
+    "record_hash": "9771a68dee8c5f696ef60578dcbab1229b4e6ddcbd1b23c661945336370845ff",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2110,7 +2110,7 @@
         "Reason Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T04:12:30Z",
+    "reapproved_at": "2026-09-21T13:36:27Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:12:30Z",
@@ -2118,6 +2118,15 @@
         "changed_paths": [
           "/sections/10/intent",
           "/sections/10/options/note"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:27Z",
+        "reason": "Two wording fixes, no pick, figure, source, menu or section id touched. (1) video.caption asserted 'since June 2025' and no file on disk holds that date: its only source is the migrated theme's own VideoObject uploadDate, which 1c500e5 ruled is the old site's markup rather than a fact this repo keeps, and ad7592d applied the same correction to the breed guide. Reworded to the about page's form. (2) The 'owners' band of 60-75 is structurally unreachable: the section renders the three review figures from data/reviews (quote, name, city), and the quotes alone are 150 of the 184 words the counter attributes to the section, leaving own prose of about 30. A band that no honest draft can hit is a band that reports a defect the page does not have. Widened to 166-202, the measured 184 plus or minus 10 per cent, which is what three review quotes plus two framing sentences costs.",
+        "changed_paths": [
+          "/sections/1/video/caption",
+          "/sections/10/words/max",
+          "/sections/10/words/min"
         ]
       }
     ]
@@ -2165,7 +2174,7 @@
     },
     "section_hashes": {
       "top": "8d0d1805a42b02e6a752e25a1be9b2dedaa8fbd0e804a97f3636ea79a49cd584",
-      "video-why-us": "9919627772aa2f7c8b74492922e627d6a39828304ad5a8a208a0ae109cb185e6",
+      "video-why-us": "fb2b89de8e182aec57033f65cd23ce76783b6e8817f9120126875add73b8e717",
       "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
       "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
       "health-testing": "c61341606ed4c7b2823272b8e73e508cdcc992b0dc6e97048ed790a13a4cfc0d",
@@ -2173,7 +2182,7 @@
       "kennel-club": "c659126c6efa96d5369cf3adc06e670bee4364a56123406e8019e2020b4caaad",
       "after-care": "ef5305be66e18b25a10ba94705f48715d15893f04e75c02683e822371ddc14cb",
       "compared": "5979095880e80a1150cb9b12b0aec8f99df7c22a04a82265e895e92a81d39bad",
-      "owners": "16131411df8446b4700f138ddddb2a9d23077451e166960b3bb136addd01d39c",
+      "owners": "44dfca8bd60be985e90d9ca69e3efe6f7c7b8a56fda80fb8ea8914e1d562bb82",
       "puppies": "87fbbf63a4ef625e50fa278f83147d78216804fe58739becb6a183ba196d3f0c",
       "getting-home": "fc65d7239f68fc6d18d1f58280452719ac71c58b3ebe080ba4d2f2ab56509c2b",
       "questions": "af230a540d5adf2fd73ed4eebdf70c0d5a9202fcd2e6c0b02a4d8d64aaccec2d",

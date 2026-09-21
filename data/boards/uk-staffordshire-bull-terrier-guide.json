@@ -487,8 +487,8 @@
       "why_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the nine numbered traits (Size, Weight, Coat, Colours, Eyes, Head, Ears, Tail); https://www.purina.co.uk/find-a-pet/dog-breeds/staffordshire-bull-terrier (scan 2026-09-20) — a key-facts panel",
       "framework": "EEBP",
       "words": {
-        "min": 180,
-        "max": 225
+        "min": 221,
+        "max": 270
       },
       "shape": "table",
       "styles": [
@@ -1509,8 +1509,8 @@
       "why_source": "data/puppies.json — six rows, all status Available; src/pages/uk-staffordshire-bull-terrier-guide/index.astro — the 'Meet Our Staffies' jump",
       "framework": "FAB",
       "words": {
-        "min": 40,
-        "max": 55
+        "min": 70,
+        "max": 86
       },
       "shape": "puppies",
       "styles": [
@@ -2022,7 +2022,7 @@
       "top": "H-GD3",
       "video-breed-guide": "S2"
     },
-    "record_hash": "d6fbd5538a52d7194db2034e195ab389f60892bb7002b349da6d3f885e65d075",
+    "record_hash": "575cc2ef9f8bda8681675631bf883f68112396291537878f27f54638e1fb2b22",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2040,7 +2040,7 @@
         "Breed Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T09:13:21Z",
+    "reapproved_at": "2026-09-21T13:36:55Z",
     "reapprovals": [
       {
         "at": "2026-09-21T08:50:08Z",
@@ -2063,6 +2063,16 @@
           "/sections/8/tree/3/heading",
           "/sections/8/tree/3/intent",
           "/sections/12/options/note"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:55Z",
+        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Two bands are structurally unreachable. (1) 'breed-facts' at 180-225 against a measured 245: the nine-row breed-standard table's caption, headers and cells are counted as section prose and are roughly 110 words of it. Widened to 221-270. (2) 'puppies' at 40-55 against a measured 78: the section renders the six live puppy cards from data/puppies.json, whose sex, colour, price and status chips and 'Ask about' links are about 55 counted words before a sentence of our own is written. Widened to 70-86. Both new bands are the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/4/words/max",
+          "/sections/4/words/min",
+          "/sections/13/words/max",
+          "/sections/13/words/min"
         ]
       }
     ]

@@ -146,10 +146,12 @@ def test_kit_has_no_hex_literals():
 LEGACY_HEX_FILES = (
     # SiteHeader.astro and SiteFooter.astro came off this list in Task 20: the shell moved
     # to the SVG lockups, and its inline style attributes became scoped rules over tokens.
+    # The why-us page and the buying guide came off it in project 4's sweep: both were
+    # rebuilt from an approved board onto the kit and neither spells a colour any more.
+    # What is left is the two files project 4 never rebuilt — the shared contact form and
+    # the data-driven puppy detail route.
     "src/components/ContactForm.astro",
     "src/pages/available-puppies/[slug].astro",
-    "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
-    "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
 )
 
 
@@ -159,7 +161,7 @@ LEGACY_HEX_FILES = (
 def test_no_hex_anywhere_in_src_except_tokens():
     """Rule 1: tokens.css is the only file in src/ that spells a colour.
 
-    Strict-xfail because projects 1-2 left hexes in the six files above. The moment
+    Strict-xfail because projects 1-2 left hexes in the files above. The moment
     Tasks 6-20 finish replacing them this test passes, xfail(strict) turns that pass
     into a failure, and whoever sees it deletes the marker — so the rule starts being
     enforced for real instead of being quietly forgotten.

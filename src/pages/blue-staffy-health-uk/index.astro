@@ -95,7 +95,8 @@ import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
-import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
+  sentenceAnchor, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -188,10 +189,9 @@ const lifespanCell = lifespan.text;
 const lifespanRange = lifespan.range();
 const lifespanClause = lifespan.clause;
 
-const sentenceCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const COUNTED: Record<string, string> = {
   [DNA_ROWS]: String(dnaTable.rows.length),
-  [DNA_CLEAR]: sentenceCase(verdict),
+  [DNA_CLEAR]: sentenceAnchor(verdict),
   [LIFESPAN_SOURCE]: lifespanRange,
 };
 const counted = countedFigures(COUNTED, 'blue-staffy-health-uk');

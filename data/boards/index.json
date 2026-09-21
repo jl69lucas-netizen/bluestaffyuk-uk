@@ -722,7 +722,7 @@
       "video": {
         "id": "g88qOo9C94c",
         "title": "Staffy puppies for sale UK — the reasons families choose us",
-        "caption": "The video our why-us page has carried since June 2025, reused here at its original id."
+        "caption": "The video our why-us page has always carried, reused here at its original id."
       },
       "keywords": {
         "primary": [],
@@ -852,10 +852,10 @@
       "id": "video-our-home",
       "n": 9,
       "heading": "Our House, On Film, With The Dogs In It",
-      "intent": "The breeders video, placed under the who-we-are section it belongs to, so the claim that these puppies are raised underfoot in a family house is something the reader can look at rather than only read. Reused at its original id; the caption names the page it comes from and the month it went up.",
+      "intent": "The breeders video, placed under the who-we-are section it belongs to, so the claim that these puppies are raised underfoot in a family house is something the reader can look at rather than only read. Reused at its original id; the caption names the page it comes from.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
-      "why": "Who-we-are is the section a reader checks before they trust anything else on the page, and it was prose alone. The breeders page has had footage of the house since May 2025 and the homepage never linked to it.",
+      "why": "Who-we-are is the section a reader checks before they trust anything else on the page, and it was prose alone. The breeders page has long carried footage of the house and the homepage never linked to it.",
       "why_source": "data/settings.json youtube_embeds — fXhu9jDS6CA; old-page placement: src/pages/blue-staffy-uk-breeders/index.astro, at the foot of the body after the reserve block, VideoObject uploadDate 2025-05-27",
       "framework": "EBD",
       "words": {
@@ -871,7 +871,7 @@
       "video": {
         "id": "fXhu9jDS6CA",
         "title": "Blue Staffy UK breeders — family-raised puppies",
-        "caption": "The video our breeders page has carried since May 2025, reused here at its original id."
+        "caption": "The video our breeders page has always carried, reused here at its original id."
       },
       "keywords": {
         "primary": [],
@@ -1230,7 +1230,7 @@
       "video": {
         "id": "g9iV9RVr_Sk",
         "title": "A UK Staffordshire Bull Terrier breed guide",
-        "caption": "The video our breed guide has carried since May 2025, reused here at its original id."
+        "caption": "The video our breed guide has always carried, reused here at its original id."
       },
       "keywords": {
         "primary": [],
@@ -2377,7 +2377,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "ffa3d5e4fd875ee5aff20235e357cdad2cf18062ee030a05b8407c9f16e80d56",
+    "record_hash": "4ed050935ae57a4afdbbdfd8fc4ae25440e228a55fef5e98e5c01cbe5d381635",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2394,7 +2394,21 @@
       "h6_prefixes": [
         "Kennel Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T13:36:51Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T13:36:51Z",
+        "reason": "Wording only; no pick, figure, source, menu or section id touched. Three video captions asserted 'since June 2025' / 'since May 2025' and no file on disk holds those dates: their only source is each migrated theme's own VideoObject uploadDate, which 1c500e5 ruled is the old site's markup rather than a fact this repo keeps, and ad7592d applied the same correction to the breed guide. All three reworded to the about page's form ('has always carried ... at its original id'). The same unsourced date was restated twice more in prose about the same embeds — sections[video-our-home].intent promised the caption would name 'the month it went up', which it no longer does, and its why said the breeders page 'has had footage of the house since May 2025'; both now say the same thing without the date. why_source is untouched: it cites where the migrated markup lives, which is true, and is the pointer the ruling is about.",
+        "changed_paths": [
+          "/sections/6/video/caption",
+          "/sections/8/intent",
+          "/sections/8/video/caption",
+          "/sections/8/why",
+          "/sections/12/video/caption"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-16T00:00:00Z",

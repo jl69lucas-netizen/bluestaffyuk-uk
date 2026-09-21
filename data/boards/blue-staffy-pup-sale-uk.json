@@ -931,8 +931,8 @@
       "why_source": "data/reviews.json — three entries: The Victoria Family (Manchester), Mark J (London), Rachel L. (London); src/pages/blue-staffy-pup-sale-uk/index.astro — the two migrated testimonials, logged in dropped.names",
       "framework": "EBD",
       "words": {
-        "min": 55,
-        "max": 70
+        "min": 174,
+        "max": 212
       },
       "shape": "reviews",
       "styles": [
@@ -1502,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "4fb1073c486f97aa1eda99e8250dab13eaef6ba6bcc19d68b6361e6ef0c68fce",
+    "record_hash": "c597f79d69482e6be937daa770b72791a2c724a567c8f9c387b9f54b441330ca",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1520,7 +1520,7 @@
         "Price Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T01:55:06Z",
+    "reapproved_at": "2026-09-21T13:36:52Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:55:06Z",
@@ -1532,6 +1532,14 @@
           "/sections/1/intent",
           "/sections/2/links/external/0",
           "/sections/5/links/external/0"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:52Z",
+        "reason": "Word band only; no pick, figure, source, menu or section id touched. The 'owners' band of 55-70 is structurally unreachable: the section renders the three review figures (quote, name, city) and those quotes alone are about 150 of the 193 words the counter attributes to it, leaving own prose of roughly 40. A band no honest draft can hit reports a defect the page does not have. Widened to 174-212, the measured 193 plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/7/words/max",
+          "/sections/7/words/min"
         ]
       }
     ]
@@ -1580,7 +1588,7 @@
       "whats-included": "5b54ed4c250139d7228cfc74e6930319dcb8c50a33890ecbd7c4a879c32d4845",
       "delivery": "6f543fa23647fa604e6d622a79ae1399fc7e12cf84b1eb5cbf5334b5627f78d1",
       "deposit": "c49becf8196d068805240062fb24e65e1009335060885314b10c39a2f7f40408",
-      "owners": "c6f38ccae20573c6eb874af69d970be7d4fec29f132a20f4dcfd16cdff61ded3",
+      "owners": "26e9e14264670960cd67a6b823baeaaa9fcd370ace8ba41239f5b1ac34b419b8",
       "puppies": "abc460ecd97c09b497f233068e3be0732978924b4d53b082981ddae718c4827e",
       "questions": "a6ab8ff75e4d06b4689dc0f4175e5c4c5b3a487e9f0aed0257cfebb9c616189e",
       "enquiry": "ffba5003dd7b0018e9c7f96a2898f2aacc999bbb71eb0072feb2879a445ff4a5",

@@ -297,3 +297,50 @@ and 17–25 are new from the design system.
     the real upload dates from the YouTube channel**, which is a two-minute read of the
     channel's video list and cannot be derived from anything on disk.
 
+28. **The heroes of the four pages built before rule 16 clamp their lede at 1024, and three
+    heroes run past their own box there.** Measured on `dist/` at 1024x900 (Chromium, file://).
+    Two separate defects share one cause — the hero's `max-height: 450px` ceiling is written
+    for 1280 and the copy column is narrower at 1024, so the same words take more lines.
+    (a) **The lede clamp.** `.lede` is `-webkit-line-clamp: 2` on the legacy split hero, and at
+    1024 it hides **198px on `/` and `/privacy-policy-uk/`, 165px on
+    `/uk-blue-staffy-breeders-contact/` and 99px on
+    `/thank-you-blue-staffy-puppies-journey/`** — between three and six lines of the page's own
+    opening sentence, silently. All four are pages built before working rule 16; none has a
+    `layout_type` and all four still mount the legacy `split` hero, which is the one
+    arrangement `src/styles/board-styles.css` releases the ceiling for.
+    (b) **The container overrun.** `.container.inner` is taller than the hero it sits in:
+    **41px on `/` , 45px on `/buy-blue-staffy-puppies-uk/` (the listing) and 12px on
+    `/buy-staffy-puppies-for-sale-uk/` (why-us)**. The hero's `overflow` is `visible`, so
+    nothing is cut — the content spills downward, and on two of the three it reaches the next
+    section: the homepage's hero content ends 17px inside the section below it and the
+    listing's 21px inside. The why-us page's 12px stays inside the gap and overlaps nothing.
+    **Not a copy-length defect, so not fixed page-side.** The same copy fits at 1280 on all
+    three (inner 450/455/462 against a 450 box, and no overlap at all), and what grows at 1024
+    is the H1's line count — the listing's H1 goes from four lines to five. That H1 is in the
+    page's VERBATIM SET under working rule 15, so shortening it is a board round-trip and not
+    a page-side edit. The candidate fix is CSS and not copy: release the `max-height` ceiling
+    below 1280, where rule 10's 390-450 band is not measured anyway. That contradicts spec §9
+    amendment 10.4, which released it only for the legacy `split` hero on purpose, so it is
+    a decision for the breeder rather than a sweep. **Closes when that ruling is given.**
+
+29. **`/blog/` is a legacy archive that cannot pass the profile it is measured against.**
+    `tests/render/targets.json` lists `{"slug": "blog", "page_type": "hub", "corpus": false}`,
+    but the built page is `noindex, nofollow` with its canonical pointed at
+    `/blue-staffy-blog-guides/` — the real hub, rebuilt at `5ed62ed`. A page that is
+    deliberately de-indexed and canonicalised away is not a hub, and holding it to the hub
+    profile measures a page nobody intends to ship. **A decision is owed: retire the route
+    outright (it is reachable from no navigation and no sitemap shard) or keep it as a
+    redirect target and exempt it by name from the profile.** Recorded rather than decided
+    here, because retiring a URL the old site served is the breeder's call, not a sweep's.
+
+30. **The H-GD3 hero's photo column pins two pages at exactly 450px.** `.pic` in the
+    interior-guide panel arrangement carries `aspect-ratio: 3 / 4`, and at 1280 that makes the
+    photo 299px tall, which with the panel's 32px padding puts
+    `/uk-blue-staffy-puppy-buying-guide/` and `/uk-staffordshire-bull-terrier-guide/` at
+    **exactly 450px** — the very top of rule 10's 390-450 band, with the buying guide's inner
+    content already 3px past its own box. `/blue-staffy-health-uk/`, the third H-GD3 page, sits
+    at 444 because its copy column is shorter. Nothing is clipped today and the band is met,
+    but two of the three pages have zero headroom: one extra line of H1, eyebrow or aside on
+    either of them puts the arrangement over the ceiling, which is how the defects amendment
+    10.4 lists were found. **Closes when the aspect is budgeted rather than fixed** — the
+    photo box sized from the space the copy leaves, not the other way round.

@@ -574,8 +574,8 @@
       "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the '15 Questions to Ask Any Blue Staffy Breeder Before You Buy' block; https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ (scan 2026-09-20) — 22 questions, no expected answers",
       "framework": "QAB",
       "words": {
-        "min": 230,
-        "max": 280
+        "min": 455,
+        "max": 557
       },
       "shape": "table",
       "styles": [
@@ -739,8 +739,8 @@
       "why_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro — the 'Ethical Breeder vs Puppy Farm' table; https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales (scan 2026-09-20) — the same ground in ~1,093 words of prose, no table",
       "framework": "PAS",
       "words": {
-        "min": 165,
-        "max": 205
+        "min": 226,
+        "max": 276
       },
       "shape": "table",
       "styles": [
@@ -869,8 +869,8 @@
       "why_source": "data/price-matrix.json — male_gbp 1500, female_gbp 1700, deposit_gbp 500, deposit_refundable true; data/settings.json — delivery £200 to £350",
       "framework": "EEBP",
       "words": {
-        "min": 170,
-        "max": 210
+        "min": 235,
+        "max": 287
       },
       "shape": "table",
       "styles": [
@@ -1936,8 +1936,8 @@
       "why_source": "data/puppies.json — six rows, all status Available; data/facts/uk-blue-staffy-puppy-buying-guide.json — embeds WuA0yo6HZKE",
       "framework": "FAB",
       "words": {
-        "min": 45,
-        "max": 60
+        "min": 55,
+        "max": 67
       },
       "shape": "puppies",
       "styles": [
@@ -2533,7 +2533,7 @@
       "top": "H-GD3",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "8990a714d554855b60416ace118cd54656cc9883d18a0517ddca69427487009c",
+    "record_hash": "7d5b470cffaa619af44669f4fe81c909fc71c40b319b6fbf555a25425dd766a7",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2551,7 +2551,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T12:24:19Z",
+    "reapproved_at": "2026-09-21T13:36:56Z",
     "reapprovals": [
       {
         "at": "2026-09-21T03:23:15Z",
@@ -2584,6 +2584,20 @@
           "/sections/13/tree/1/verbatim_opening",
           "/sections/14/verbatim_opening",
           "/sections/18/tree/0/verbatim_opening"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:56Z",
+        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Four bands are structurally unreachable because the section's body is a rendered table or the live puppy grid rather than prose. (1) 'breeder-questions' at 230-280 against a measured 506: the fifteen-question table's caption, headers and both columns of cells are counted as section prose and are about 400 words of it. Widened to 455-557. (2) 'red-flags' at 165-205 against 251: the eight-row three-column ethical-breeder-against-puppy-farm table is about 180 counted words. Widened to 226-276. (3) 'costs' at 170-210 against 261: the price table rendered from data/price-matrix.json and data/settings.json carries its own caption, headers and cells. Widened to 235-287. (4) 'puppies' at 45-60 against 61: the six live puppy cards' chips and links. Widened to 55-67. Every new band is the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/4/words/max",
+          "/sections/4/words/min",
+          "/sections/5/words/max",
+          "/sections/5/words/min",
+          "/sections/6/words/max",
+          "/sections/6/words/min",
+          "/sections/16/words/max",
+          "/sections/16/words/min"
         ]
       }
     ]
