@@ -281,3 +281,19 @@ and 17–25 are new from the design system.
     lockups replaced them; both are restored at their original paths and stay served even
     though no template references them. **Standing constraint for projects 4–6.**
 
+27. **No `uploadDate` for any VideoObject — no file in this repo holds one.** Project 4 Task 12
+    mints a `VideoObject` on each of the four rebuilt pages that carry a YouTube embed (the
+    homepage's three ids, `/blue-staffy-uk-breeders/`, `/buy-staffy-puppies-for-sale-uk/` and
+    `/uk-staffordshire-bull-terrier-guide/`), built from the record's own `video` block through
+    `src/lib/video.ts` so the schema and `video-sitemap.xml` describe one id in one spelling.
+    Google wants an `uploadDate` for a video rich result and **none is written**, because the
+    only two dates available would both be inventions: the migrated theme's own
+    `VideoObject.uploadDate` is the old site's markup rather than a fact this repo keeps (the
+    same reasoning that removed "since May 2025" from the about page's video caption at
+    1c500e5), and `data/page-dates.json` records when the PAGE changed, which says nothing
+    about when the footage was published. `scripts/schema_check.py` accepts the node without
+    one — it blocks five specific defects and a missing optional field is not among them — so
+    this is a rich-result gap rather than a gate failure. **Closes when the breeder supplies
+    the real upload dates from the YouTube channel**, which is a two-minute read of the
+    channel's video list and cannot be derived from anything on disk.
+

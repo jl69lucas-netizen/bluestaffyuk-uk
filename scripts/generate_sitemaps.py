@@ -24,7 +24,11 @@ VIDEO_DESC_MAX = 2048
 # exists to keep those ids ranking, and dropping them out of the video sitemap is the same
 # loss by another route. `player_loc` below stays on `youtube.com`, which is the canonical
 # watch host Google expects there and is not what the page requests.
-EMBED_SRC = re.compile(r'youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})')
+# LEFT-BOUND. Without the boundary `youtube.com` also matches `notyoutube.com` and
+# `evil-youtube.com`, so a third-party embed on somebody else's lookalike host would be
+# submitted as one of ours. `(?:^|[/.])` admits the host at the start of the string, after
+# the `//` of a url, or as a subdomain label (`www.youtube.com`), and nothing else.
+EMBED_SRC = re.compile(r'(?:^|[/.])youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})')
 
 
 def _clip(text, limit):

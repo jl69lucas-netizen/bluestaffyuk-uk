@@ -82,6 +82,7 @@ import { recordText, countedFigures, sourceKey, ledgeText, type LedgeEntry } fro
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE, abs, type PuppyRow } from '../../lib/site';
+import { videoObject } from '../../lib/video';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
 import settings from '../../../data/settings.json';
@@ -218,6 +219,11 @@ const town = SITE.location_label.split(' · ')[0];
 // reads, and the visible question is cased at render (amendment 6g). No `dateModified` here on
 // purpose — BaseLayout adds the WebPage node with the git-derived dates.
 const pageSchema = [
+  // The VideoObject(s) for the embed(s) this page carries, built from the record's own
+  // `video` block through `src/lib/video.ts` — one id, one spelling, shared with the video
+  // sitemap. No `uploadDate`: no file in this repo holds one and rule 9 forbids inventing a
+  // date (Known Issue 17).
+  videoObject(video, abs(path)),
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',

@@ -97,7 +97,7 @@ import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset } from '../../lib/assets';
-import { recordText, countedFigures, ledgeText, sourceKey, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -181,20 +181,14 @@ const [verdict] = [...verdicts];
 // data/boards/uk-staffordshire-bull-terrier-guide.json. The tile prints the range and the aside
 // prints the clause, and both are cut from that sentence here — so the day the guide's cell
 // moves, this page stops building rather than quietly disagreeing with the page it belongs to.
+// ONE PARSER, TWO CALLERS: `breedFactsCell()` is the lookup and the cut, and the breed guide —
+// which OWNS the table — reads its own three cells through the same function. Two copies of one
+// reading is the thing a citation exists to prevent.
 const LIFESPAN_SOURCE = 'data/boards/uk-staffordshire-bull-terrier-guide.json#cell(sections[breed-facts].table.rows, Lifespan)';
-const lifespanRow = guideRecord.sections
-  .find((s) => s.id === 'breed-facts')!.table!.rows.find((r) => r[0] === 'Lifespan');
-if (!lifespanRow) {
-  throw new Error('blue-staffy-health-uk: the breed guide record no longer carries a Lifespan row');
-}
-const lifespanCell = String(lifespanRow[1]);
-const lifespanMatch = /^(\d+) to (\d+) years/.exec(lifespanCell);
-if (!lifespanMatch) {
-  throw new Error(`blue-staffy-health-uk: the breed guide's lifespan cell reads "${lifespanCell}", `
-    + 'which this page cannot cut a range out of');
-}
-const lifespanRange = `${lifespanMatch[1]}–${lifespanMatch[2]} years`;
-const lifespanClause = `${lifespanMatch[1]} to ${lifespanMatch[2]} years`;
+const lifespan = breedFactsCell(guideRecord, 'Lifespan', 'blue-staffy-health-uk');
+const lifespanCell = lifespan.text;
+const lifespanRange = lifespan.range();
+const lifespanClause = lifespan.clause;
 
 const sentenceCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const COUNTED: Record<string, string> = {

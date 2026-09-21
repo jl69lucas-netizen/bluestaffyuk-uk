@@ -71,6 +71,27 @@ def test_a_nocookie_player_is_the_same_video_as_a_youtube_com_one(tmp_path):
     assert "youtube-nocookie" not in raw, raw
 
 
+def test_the_facade_is_an_embed_and_a_lookalike_host_is_not(tmp_path):
+    """`VideoEmbed`'s DEFAULT arrangement ships no `<iframe>` at all until somebody clicks:
+    the player url is a `data-src` on the frame and an `<iframe>` inside `<noscript>`. Both
+    carry the id, so both count — a page whose video is the light arrangement is still a page
+    with a video. And the pattern is LEFT-BOUND, so `notyoutube.com/embed/<id>` is somebody
+    else's lookalike host and is not submitted as ours."""
+    facade = ('<div data-video-frame data-src="https://www.youtube-nocookie.com/embed/aaaaaaaaaaa?autoplay=1">'
+              '<button data-video-play></button>'
+              '<noscript><iframe src="https://www.youtube-nocookie.com/embed/aaaaaaaaaaa"></iframe></noscript>'
+              '</div>')
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/facade/": _page(title="F", desc="D", body=facade),
+        "/lookalike/": _page(title="L", desc="D", body=(
+            '<iframe src="https://notyoutube.com/embed/bbbbbbbbbbb"></iframe>')),
+    })
+    shards = build_shards(d, "https://example.test", set())
+    got = {u: [v["id"] for v in vids] for u, vids in shards["video"]}
+    assert got == {"https://example.test/facade/": ["aaaaaaaaaaa"]}, got
+
+
 def test_noindex_pages_excluded(tmp_path):
     d = tmp_path / "dist"; (d / "n").mkdir(parents=True)
     (d / "n/index.html").write_text('<html><head><meta name="robots" content="noindex, follow"></head><body></body></html>', encoding="utf-8")

@@ -107,11 +107,14 @@ import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset } from '../../lib/assets';
-import { recordText, countedFigures, sourceKey, ledgeText, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, sourceKey, ledgeText, breedFactsCell,
+  sentenceAnchor as S, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE, abs, type PuppyRow } from '../../lib/site';
+import pageDates from '../../../data/page-dates.json';
+import { videoObject } from '../../lib/video';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
 import settings from '../../../data/settings.json';
@@ -179,42 +182,39 @@ const factsTable = (sec('breed-facts') as unknown as
 const statRows = (sec('stats') as unknown as
   { stats: { n: string; label: string; source: string }[] }).stats;
 const CELL_RE = /#cell\(sections\[breed-facts\]\.table\.rows, ([A-Za-z]+)\)$/;
-/** The unit each cited cell's range is printed in. A cell outside this map throws below. */
-const UNITS: Record<string, string> = { Weight: 'kg', Height: 'in', Lifespan: 'years' };
-const cellText = (label: string) => {
-  const row = factsTable.rows.find((r) => String(r[0]).startsWith(label));
-  if (!row) {
-    throw new Error(`uk-staffordshire-bull-terrier-guide: the breed-facts table has no ${label} `
-      + 'row — this page prints a figure off that cell and the health page cites one of them');
-  }
-  return String(row[1]);
-};
-/** "11 to 17 kg (24 to 38 lbs), males…" → "11–17 kg". The cell is prose; the tile is a range. */
-const rangeFrom = (label: string) => {
-  const text = cellText(label);
-  const m = /^(\d+) to (\d+)\b/.exec(text);
-  if (!m) {
-    throw new Error(`uk-staffordshire-bull-terrier-guide: the ${label} cell reads "${text}", which `
-      + 'this page cannot cut a range out of');
-  }
-  return `${m[1]}–${m[2]} ${UNITS[label]}`;
-};
+/** One reading of one row, shared with /blue-staffy-health-uk/, which cites the Lifespan cell.
+ *  `breedFactsCell` matches the label at the START of the row label, so `Height` finds "Height
+ *  at the shoulder" and a label that has stopped existing throws instead of resolving to a
+ *  neighbouring row. */
+const fact = (label: string) => breedFactsCell(record, label, 'uk-staffordshire-bull-terrier-guide');
+/** The unit the APPROVED TILE prints, taken off the record's own `n`. NOTHING in this file names
+ *  a unit: a `{Height: 'in'}` map here would be the unit typed in two places, so re-cutting the
+ *  table from inches to centimetres would have left the tile still reading "in" and every gate
+ *  satisfied. `range()` checks the abbreviation against the cell's own unit and throws if the
+ *  table has moved under it. */
+const TILE_UNIT = /^\d+\u2013\d+\s+(.+)$/;
 const COUNTED: Record<string, string> = Object.fromEntries(statRows.map((row) => {
   const m = CELL_RE.exec(String(row.source));
-  if (!m || !UNITS[m[1]]) {
+  if (!m) {
     throw new Error(`uk-staffordshire-bull-terrier-guide: the counter row "${row.label}" cites `
       + `${row.source}, which is not one of this page's own breed-facts cells`);
   }
-  return [sourceKey(row.source), rangeFrom(m[1])];
+  const unit = TILE_UNIT.exec(row.n);
+  if (!unit) {
+    throw new Error(`uk-staffordshire-bull-terrier-guide: the counter row "${row.label}" prints `
+      + `"${row.n}", which is not a "<lo>-<hi> <unit>" range and has no unit to check the cell's `
+      + 'own against');
+  }
+  return [sourceKey(row.source), fact(m[1]).range(unit[1])];
 }));
 const counted = countedFigures(COUNTED, 'uk-staffordshire-bull-terrier-guide');
 const counterStats = statRows.map(counted);
 // The height, weight and lifespan cells WHOLE, for the three places the page states them in a
 // sentence rather than as a tile. Same cells, same single source, so the prose and the counter
 // cannot drift apart either.
-const heightCell = cellText('Height');
-const weightCell = cellText('Weight');
-const lifespanCell = cellText('Lifespan');
+const heightCell = fact('Height').text;
+const weightCell = fact('Weight').text;
+const lifespanCell = fact('Lifespan').text;
 
 // ── THE HERO'S OWN DATA ─────────────────────────────────────────────────────────────────────
 const heroSection = sec('top') as unknown as
@@ -250,6 +250,8 @@ const heroSrcset = bakedSrcset(litter, [440], inPublic);
 const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
+/** The git-derived dates BaseLayout reads for its WebPage node, for the Article to agree with. */
+const articleDates = (pageDates.routes as Record<string, { datePublished: string }>)[path];
 
 // Each section's approved arrangement, resolved through the same `boxClass()` the board preview
 // called: what the breeder signed off is what ships. Only the eight sections that carry a pick
@@ -266,24 +268,42 @@ const video = (sec('video-breed-guide') as unknown as
 const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
 const town = SITE.location_label.split(' · ')[0];
 const hours = SITE.hours.replace('Mo-Su ', 'from ').replace('-', ' to ');
-const deposit = `£${settings.deposit_gbp}, ${settings.deposit_refundable ? 'refundable' : 'non-refundable'}`;
-const delivery = `£${settings.delivery_min_gbp} to £${settings.delivery_max_gbp}`;
+/** Thousands separator, as `PuppyCard` writes a price: 1500 is a number, £1,500 is money. */
+const gbp = (n: number) => n.toLocaleString('en-GB');
+const delivery = `£${gbp(settings.delivery_min_gbp)} to £${gbp(settings.delivery_max_gbp)}`;
 
-// Article + FAQPage. The FAQPage is built from the SAME nine rows the accordion renders;
-// data/faq.json keeps the sentence-case wording, which is what `name` reads (amendment 6g).
+// Article + FAQPage + VideoObject. The FAQPage is built from the SAME nine rows the accordion
+// renders; data/faq.json keeps the sentence-case wording, which is what `name` reads
+// (amendment 6g). The VideoObject is built from the record's own `video` block through
+// `src/lib/video.ts`, so the schema and the video sitemap describe one id in one spelling.
+//
+// `@id`s ARE ABSOLUTE, and the two REFERENCES are not, deliberately. Every node this site
+// mints of its own — `#business`, `#website` — is absolute, and these three now match. The
+// `isPartOf` and `mainEntityOfPage` pointers have to match the spelling of the node they point
+// AT, and BaseLayout writes its WebPage `@id` relative (`/slug/#webpage`); a reference in the
+// other spelling is the dangling `@id` `schema_check.py` blocks on. When BaseLayout's node goes
+// absolute these follow it, and the gate says so the moment they do not.
+const WEBPAGE = { '@id': `${path}#webpage` };
 const pageSchema = [
   {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    '@id': `${path}#article`,
+    '@id': `${abs(path)}#article`,
     headline: h1,
     description,
     inLanguage: 'en-GB',
-    isPartOf: { '@id': `${path}#webpage` },
-    mainEntityOfPage: { '@id': `${path}#webpage` },
+    // `datePublished` ONLY. It is git-derived, from the same map BaseLayout reads, so the
+    // Article and the WebPage cannot state two different first-published dates. There is no
+    // `dateModified` here on purpose: BaseLayout drops its own WebPage node the moment a
+    // page's schema mentions one (`selfDated`), and the Article's `isPartOf` would then point
+    // at a node nobody emitted.
+    ...(articleDates ? { datePublished: articleDates.datePublished } : {}),
+    isPartOf: WEBPAGE,
+    mainEntityOfPage: WEBPAGE,
     author: { '@id': `${abs('/')}#business` },
     publisher: { '@id': `${abs('/')}#business` },
   },
+  videoObject(video, abs(path)),
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -295,6 +315,7 @@ const pageSchema = [
     })),
   },
 ];
+
 ---
 <PageShell
   title={title}
@@ -328,14 +349,13 @@ const pageSchema = [
       align={heroStyle.layout.align ?? 'left'}
       media={heroStyle.layout.media ?? 'left'}
       ledge={heroStyle.layout.ledge ?? 'aside'}
-      chips={heroChips}
     >
       {/* THE ASIDE IS THE PAGE'S MARKUP, and it carries the record's chips as well as its items.
           `Hero` renders the chip row only for `ledge: 'chips'` — correctly, because a hero
           showing two ledges is neither arrangement — so on H-GD3 the prop is handed over and
           dropped. The three chips are rendered here as a single line rather than a wrapped row,
           because a row costs the card two lines it does not have. */}
-      <div slot="aside" class="guide-aside">
+      <div slot="aside">
         <p class="aside-title">{heroAside.title}</p>
         <ul class="aside-items">
           {asideItems.map((item) => <li>{item}</li>)}
@@ -346,10 +366,10 @@ const pageSchema = [
     <h2>{T(heading('top'))}</h2>
     <p>{opening('top')}</p>
     <p>
-      We breed this one dog, in {town}: our litters are KC registered, and every puppy is
+      We breed this one dog, in {town}. Our litters are KC registered; every puppy is
       microchipped and vet checked before it goes. What follows is the build, the temperament,
-      the work a day asks for, the conditions the breed is screened for, the legal position, and
-      five things worth asking any breeder — us included. Where a figure is not on a file we
+      the work a day asks for, the conditions the breed is screened for, the law, and five
+      things worth asking any breeder, us included. Where a figure is not on a file we
       keep, it is not here.
     </p>
   </section>
@@ -463,7 +483,7 @@ const pageSchema = [
         decoding="async"
       />
       <p>
-        <a href="https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/" target="_blank" rel="noopener noreferrer">the registry's own breed standard for the Staffordshire Bull Terrier</a> is
+        <a href="https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/" target="_blank" rel="noopener noreferrer">{S("the registry's own breed standard for the Staffordshire Bull Terrier")}</a> is
         what those rows describe, in the standard's own words.
         <a href="#talk-to-us">Ask us about the breed</a> if a dog you have met does not match
         them.
@@ -532,15 +552,15 @@ const pageSchema = [
     <p>
       The breed gained formal recognition by the registry in 1935, which is the point at which it
       stopped being a type and became a breed with a written standard behind it.
-      <a href="https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/" target="_blank" rel="noopener noreferrer">the registry's own Staffordshire Bull Terrier breed page</a> is
+      <a href="https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/" target="_blank" rel="noopener noreferrer">{S("the registry's own Staffordshire Bull Terrier breed page")}</a> is
       where that standard and what a registration covers are set out.
     </p>
 
-    <h4>{T('One Date, Because One Is What We Have')}</h4>
+    <h4>{T('One Date In This Section, Because One Is What We Have')}</h4>
     <p>
-      1935 is the only year this page prints. The century is the migrated body's own and the rest
-      of the story is told without dates, because a year invented to tidy a paragraph is exactly
-      what a reader cannot check.
+      1935 is the only year the history carries. The century is the migrated body's own and the
+      rest of the story is told without dates, because a year invented to tidy a paragraph is
+      exactly what a reader cannot check.
     </p>
     <h5>{T('The Reputation Came From The Job, Not From The Dog')}</h5>
     <p>
@@ -611,7 +631,7 @@ const pageSchema = [
     <p>
       First-time owners can certainly succeed with this breed, given a real commitment to two
       things kept up rather than merely started: early socialisation, and reward-based training.
-      <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy" target="_blank" rel="noopener noreferrer">the RSPCA's independent advice on socialising a puppy</a> is
+      <a href="https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy" target="_blank" rel="noopener noreferrer">{S("the RSPCA's independent advice on socialising a puppy")}</a> is
       written by people with nothing to sell you, which is why we point at them rather than at
       ourselves. Flat living works on the same terms, given the exercise and the mental
       stimulation below.
@@ -697,7 +717,7 @@ const pageSchema = [
       A short, close-lying coat with no undercoat wants a weekly brush and very little else. Baths
       when the dog has found something worth a bath, and not on a schedule. Nails, ears and teeth
       are the parts owners put off, and the teeth are the ones that cost the most later.
-      <a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier" target="_blank" rel="noopener noreferrer">the PDSA's veterinary guide to caring for a Staffordshire Bull Terrier</a> covers
+      <a href="https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier" target="_blank" rel="noopener noreferrer">{S("the PDSA's veterinary guide to caring for a Staffordshire Bull Terrier")}</a> covers
       the same ground with a vet behind it.
     </p>
 
@@ -746,22 +766,20 @@ const pageSchema = [
 
     <h3>{T(node('health', 0).heading)}</h3>
     <p>
-      L-2-hydroxyglutaric aciduria and hereditary cataracts — L-2-HGA and HC-HSF4 — are the two
-      conditions this breed has a DNA screen for, and they are the cornerstone of breeding it
-      responsibly. Two is the number, and a third named anywhere on a breeder's site is a
-      credential nobody can check.
-      <a href="https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/" target="_blank" rel="noopener noreferrer">the registry's own page on the L-2-HGA DNA test</a> describes
-      the first, in the registry's own words rather than in a breeder's. For the second,
+      <a href="https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/" target="_blank" rel="noopener noreferrer">{S("the registry's own page on the L-2-HGA DNA test")}</a> names
+      the first: L-2-hydroxyglutaric aciduria. For hereditary cataracts,
       <a href="https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/" target="_blank" rel="noopener noreferrer">the registry's own page on the HC-HSF4 DNA test</a> does
-      the same.
+      the same job. Two is the number of DNA screens this breed has, and a third named on a
+      breeder's site is a credential nobody can check.
     </p>
 
     <h3>{T(node('health', 1).heading)}</h3>
     <p>
-      Both conditions are recessive: a puppy has to inherit two copies before it is affected at
-      all. Two parents recorded clear therefore have nothing between them to pass on. Ours are.
+      Both our parents are recorded clear of both conditions, which is the one claim in this
+      section about our own dogs rather than about the breed.
       <a href="/blue-staffy-health-uk/">Our health page sets out every test we run and what the results were</a>,
-      with each certificate named against a dog rather than against the kennel.
+      names each certificate against a dog rather than against the kennel, and is where what a
+      clear pair means for a puppy is explained at length.
     </p>
 
     <h3>{T(node('health', 2).heading)}</h3>
@@ -773,9 +791,10 @@ const pageSchema = [
 
     <h3>{T(node('health', 3).heading)}</h3>
     <p>
-      Hips and elbows are screened under the BVA/KC schemes where those apply. We say that the
-      screening happens and print no score, because a score is a number and the page that holds
-      our numbers is the health page.
+      Beyond the two DNA tests, the health page records two BVA/KC screens for our own dogs: an
+      eye examination for inherited eye disease the HC-HSF4 test does not cover, and patella
+      grading for knee health. Neither prints a score, there or here, because a score is a number
+      and no file we keep holds one. No hip or elbow score is claimed anywhere on this site.
     </p>
 
     <h3>{T(node('health', 4).heading)}</h3>
@@ -784,7 +803,7 @@ const pageSchema = [
       part is done before a puppy leaves us and the rest belongs to your own vet. Every puppy is
       also microchipped before it goes, which is legally required in the UK and often done by
       the breeder, and the number is ready to transfer into your name.
-      <a href="https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines" target="_blank" rel="noopener noreferrer">the PDSA's guide to dog vaccinations</a> sets
+      <a href="https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines" target="_blank" rel="noopener noreferrer">{S("the PDSA's guide to dog vaccinations")}</a> sets
       the whole schedule out, written by a charity with no puppies to sell.
     </p>
 
@@ -829,7 +848,7 @@ const pageSchema = [
     <h3>{T(node('legal-status', 0).heading)}</h3>
     <p>{nodeOpening('legal-status', 0)}</p>
     <p>
-      <a href="https://www.gov.uk/control-dog-public/banned-dogs" target="_blank" rel="noopener noreferrer">the government's own list of banned dog types</a> is
+      <a href="https://www.gov.uk/control-dog-public/banned-dogs" target="_blank" rel="noopener noreferrer">{S("the government's own list of banned dog types")}</a> is
       where to read that rather than take our word for it, and it is the list the paragraph above
       is describing.
     </p>
@@ -995,7 +1014,7 @@ const pageSchema = [
     <p>
       Both parents, both DNA tests, the certificates in your hand rather than a sentence on a
       website. A breeder who says the parents are clear and cannot produce the paper has told you
-      nothing at all. Ours are on the health page, and they are emailed before anyone travels.
+      nothing at all. Ours are on the health page, named against the dogs they belong to.
     </p>
 
     <h3>{T(node('choosing-breeder', 1).heading)}</h3>
@@ -1152,8 +1171,8 @@ const pageSchema = [
 
     <h4>{T(node('talk-to-us', 0).children[0].heading)}</h4>
     <p>
-      Roman, Byrd and Ince are £{prices.male_gbp}; Vennie, Christa and Cheryl are
-      £{prices.female_gbp}. A deposit of £{settings.deposit_gbp} holds one dog by name and is
+      Roman, Byrd and Ince are £{gbp(prices.male_gbp)}; Vennie, Christa and Cheryl are
+      £{gbp(prices.female_gbp)}. A deposit of £{gbp(settings.deposit_gbp)} holds one dog by name and is
       {settings.deposit_refundable ? 'refundable' : 'non-refundable'}. Those are the only purchase
       figures this site prints. The running costs the old version of this page estimated are gone
       from it, because nobody here worked them out and nobody here can check them.
@@ -1188,21 +1207,3 @@ const pageSchema = [
     <p>Who is home, and when, is what decides whether this breed suits you. It is our first question.</p>
   </section>
 </PageShell>
-<style>
-  /* The aside is slotted content, so it belongs to THIS page's scope — the hero owns the box
-     and the typography of the title, the contents list and the credential line (`:global()`
-     under `.hero-aside`), and nothing here restates any of it.
-     TWO RULES, AND BOTH ARE MEASUREMENTS. The first separates the contents list from the
-     credential line beneath it, because on H-GD3 the aside carries both. The second is the
-     reason `.guide-aside` exists at all: the kit's `.aside-items` is sized for a short list,
-     and THREE contents lines plus a title plus a credential row made this aside 180px, which
-     pushed the band 19px past the 450px ceiling at 1024 and 30px past it at 1280 — clipped,
-     which is a defect a screenshot does not show. The list is stepped to `--text-xs` and its
-     gap closed, which is 34px and is the whole of the difference. The wrapper carries both
-     selectors so this page's scope hash beats `Hero`'s `:global()` rule without `!important`,
-     and /blue-staffy-health-uk/, which mounts the same arrangement with a `dl`, is untouched. */
-  .guide-aside .aside-items { font-size: var(--text-xs); line-height: 1.35; gap: 0; }
-  .guide-aside .aside-items + .aside-chips {
-    border-top: 1px solid var(--color-border); padding-top: var(--space-2);
-  }
-</style>

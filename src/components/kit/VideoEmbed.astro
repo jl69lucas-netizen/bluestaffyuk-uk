@@ -39,6 +39,7 @@
 // the muted ink and is re-pointed by board-styles.css on a band.
 // Convention 4: `...rest` on the root, `class` through `class:list`. Tokens only.
 import type { HTMLAttributes } from 'astro/types';
+import { youtubeEmbedUrl, youtubeThumbUrl } from '../../lib/video';
 
 type Props = HTMLAttributes<'figure'> & {
   /** The YouTube video id — the eleven characters, never a url. */
@@ -52,8 +53,12 @@ type Props = HTMLAttributes<'figure'> & {
 };
 const { id, title, caption, play = 'facade', class: cls, ...rest } = Astro.props;
 
-const src = `https://www.youtube-nocookie.com/embed/${id}`;
-const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+// THE TWO URL SHAPES LIVE IN `src/lib/video.ts`, not here. A page that mints a VideoObject
+// needs the same embed url and the same thumbnail, and `scripts/generate_sitemaps.py` needs to
+// recognise the embed host — three readers of one spelling, and the last time they drifted
+// four ranking ids left the video sitemap with no gate reporting it (e963c53).
+const src = youtubeEmbedUrl(id);
+const thumb = youtubeThumbUrl(id);
 // One string, used by the eager iframe, by the `<noscript>` fallback and — through
 // `data-src` — by the script that swaps the facade out. `autoplay=1` is added only on the
 // click path: a player that is in the document from the start must not start itself.

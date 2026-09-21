@@ -51,6 +51,7 @@ import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
 import { loadFaq } from '../lib/faq';
 import { SITE, abs, type PuppyRow } from '../lib/site';
+import { videoObject } from '../lib/video';
 import puppiesJson from '../../data/puppies.json';
 import reviewsJson from '../../data/reviews.json';
 import record from '../../data/boards/index.json';
@@ -140,6 +141,13 @@ const hours = SITE.hours.replace('Mo-Su ', 'from ').replace('-', ' to ');
 // 6g). No `dateModified` here on purpose — BaseLayout adds the WebPage node with the
 // git-derived dates, and a second date on one page is worse than one.
 const pageSchema = [
+  // The VideoObject(s) for the embed(s) this page carries, built from the record's own
+  // `video` block through `src/lib/video.ts` — one id, one spelling, shared with the video
+  // sitemap. No `uploadDate`: no file in this repo holds one and rule 9 forbids inventing a
+  // date (Known Issue 17).
+  videoObject(videoLitter, abs(path)),
+  videoObject(videoOurHome, abs(path)),
+  videoObject(videoBreed, abs(path)),
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
