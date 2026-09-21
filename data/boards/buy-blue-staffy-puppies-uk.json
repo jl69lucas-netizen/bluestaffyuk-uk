@@ -1155,7 +1155,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "S3",
-        "note": "MODE: single — pick S1, the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names."
+        "note": "MODE: single — the picked S3 is the BED and the mode is passed explicitly, the same split /blue-staffy-pup-sale-uk/ makes in the other direction (boxClass() emits no mode, so the bed is the style's and the count is the board's). One review renders, not the grid S3 would carry on its own. Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names."
       },
       "verbatim_heading": true,
       "verbatim_opening": "From first-time dog owners to lifelong Staffy lovers, our customers value the care, transparency, and lifelong support they receive. Read their heartfelt stories about finding their perfect pup."
@@ -1448,7 +1448,7 @@
       "tree": [
         {
           "level": 3,
-          "heading": "Visits Are By Appointment",
+          "heading": "Arranging A Time To Visit Us",
           "intent": "We are a family home, not a kennel with opening hours.",
           "children": []
         },
@@ -1671,12 +1671,12 @@
       "enquiry": "ContactFormKit, the one enquiry form on this page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py; the puppy field is the one this page most needs, because the answer to it is a row of data/puppies.json.",
       "gallery": "Restored under rule 15. The photograph moves here from `puppies`, which keeps its own; no new image is added, because working rule 11 reuses what is already served and this page's seven images are all spoken for. The migrated 'See Our Blue Staffy Puppies in Action!' block is NOT restored beside it — data/facts records this page's embeds as empty, so there is no video to put under it.",
       "navigation": "",
-      "owners": "MODE: single — pick S1, the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names.",
+      "owners": "MODE: single — the picked S3 is the BED and the mode is passed explicitly, the same split /blue-staffy-pup-sale-uk/ makes in the other direction (boxClass() emits no mode, so the bed is the style's and the count is the board's). One review renders, not the grid S3 would carry on its own. Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names.",
       "parents": "No photograph: the two parent photographs on this site are on /blue-staffy-pup-sale-uk/ and /blue-staffy-health-uk/ at their original paths, and data/facts/buy-blue-staffy-puppies-uk.json does not list either of them for this page. S3's InfoCard aside can carry the two test names beside the prose.",
       "puppies": "All six rows of data/puppies.json are status Available today. The prose says the puppies are updated regularly and names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs and the migrated block's own counts are logged in dropped.text.",
       "questions": "Working rule 15 rewrote this block. All twelve migrated questions are carried word for word as NEW rows of data/faq.json, `listing-`-prefixed, each with a tests/py/test_faq_data.py fact-phrase entry checked against the page its `source` names. The answers are written fresh (working rules 8 and 9): not one carries the migrated £850-£1,200 band, the £300 non-refundable deposit or the twelve-to-fourteen-hour sleep figures, and `listing-cost` names data/settings.json as its source and interpolates the deposit rather than typing a price. The five rows this record reused before — sale-reserve, contact-visit, buying-best-age and health-vaccinations — leave this page's tree: the carried questions ask the same ground in this page's own words, and an accordion carrying both would ask each twice. QUERY AUGMENTATION for 'buy blue staffy puppies uk', ten questions, each mapped to a section or a row: q1 -> puppies and the listing-availability row; q2 -> puppies; q3 -> gallery; q4 -> steps; q5 -> steps and the listing-cost row; q6 -> whats-included; q7 -> parents and the listing-health-clearances row; q8 -> delivery; q9 -> why-choose and the listing-reputable-breeders row; q10 -> owners. No row is added for a question this page's body does not answer.",
       "steps": "Three cards, so S1's stack and S3's rail both read; S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure and its terms are stated once here and the price table stays on /blue-staffy-pup-sale-uk/.",
-      "talk-to-us": "",
+      "talk-to-us": "RETITLED AFTER APPROVAL (build review, 2026-09-21; spec §9 amendment 11). The H3 read \"Visits Are By Appointment\", which /blue-staffy-pup-sale-uk/ — built from its own board after this one was approved — carries live, and board_gate.py fails the exact match on both boards. Neither page's verbatim set contains it, so working rule 15 does not decide between them; the price page was built first and keeps it, and this page's close is \"come and look\", so its sub-heading now says how a visit is arranged rather than restating the policy label. The section, its style pick and its links are unchanged.",
       "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. data/facts/buy-blue-staffy-puppies-uk.json records no embed for this page and data/page-map.json records embeds 0, so none is placed here — the migrated 'See Our Blue Staffy Puppies in Action!' heading had no iframe under it and is logged in dropped.text.",
       "whats-included": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the step ladder and `why-choose`, and both of its neighbours on either side already carry one. Kept to a short list — the health page owns what a puppy has had done and the price page owns what it costs.",
       "why-choose": "Restored under rule 15 to carry the migrated 'Why Choose' H2's opening. Its heading is NOT the old wording: the migrated site put a near-identical why-us H2 on this page and on /blue-staffy-pup-sale-uk/, and each one's wording fails board_gate.py on a five-token shingle against the other page's live heading, so both records change theirs. No photograph: it sits between the step ladder and the delivery block, both of which carry one."
@@ -1696,7 +1696,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "63194443a6b2f4af769362a8e2dd4f9445a49c6cff5b13380e0c4b8a22f16822",
+    "record_hash": "154b0abf598881e0624c0a703a47bbd34d731f97530e42609b6d40666d018881",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1715,7 +1715,18 @@
       "h6_prefixes": [
         "Step Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T01:47:41Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T01:47:41Z",
+        "reason": "post-approval wording/link fix from build review; picks unchanged",
+        "changed_paths": [
+          "/sections/9/options/note",
+          "/sections/12/tree/0/heading"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-20T17:32:09.708Z",
@@ -1757,8 +1768,8 @@
       "why-choose": "S1"
     },
     "section_hashes": {
-      "top": "6fb164cc1f3b5834be81d10538b10ce69c201a64631b9062d867f5490d23575b",
-      "at-a-glance": "e73b3fd4730b2fdec1539da9e7730debd04a929bebc458f545d82141210da196",
+      "top": "f15b53ae8928dbd6cbe67cb6490f3bec9239b595869476075cb3fb4fb66dbeef",
+      "at-a-glance": "1cbb714de92df065253f80bf12cf117115c8befee2e68dc8463917f388e3d261",
       "puppies": "3bb07d98be0c290ba00d70a48fe7d386e2360e171cacd7e819549e7da11a820c",
       "gallery": "8fb4c8255993c3d0e5c423726289d0ecdbdbd6349313089d225c87a66523b289",
       "parents": "9fee093f6fe4684bc7e194626c7534af9db2d3d332f8a51870495eb3b26399f0",
@@ -1769,7 +1780,7 @@
       "owners": "9e32c5075a3b3b871cfadcd3f931cfe487ff9ac9bd3cf56206ddaf8e257e0543",
       "questions": "4df1b07568758547eb1cbdedaec9d92c72b18cbe4c905172a2fefbf1ee0a2bc2",
       "enquiry": "9d98ee6d997954dea66e7d0ed31d4e961cf7bbe7ff11346e17886b5f4b716724",
-      "talk-to-us": "9551a8cfcb8c513a7406659d23c144bb703d37f20b3da3257f9e2049fd514093"
+      "talk-to-us": "deab5e301c4a24ad74ecab2c6538c86cb555c4e0b9a8704eac17a3e31650ac4c"
     },
     "record_hash": "6d6030cac3dba8da7b796e337dbc67e9488c9ad11d4bd0243b2cecc74c116915",
     "tuple_before": {
@@ -1796,7 +1807,7 @@
         "kind": "h1",
         "old": "Your #1-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically",
         "new": "Your One-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically",
-        "reason": "a ranking claim measured against nothing (dropped.creds, working rule 9): '#1' asserts a position in a market no file on disk measures, and spec section 5 strikes the No.1 patterns from this rebuild's titles and headings. The phrase it puns on is written out instead — 'One-Stop Shop' is the same words without the rank — so every other word of the migrated H1 is carried, and this is the same excision the emoji rows make elsewhere in this list."
+        "reason": "a ranking claim measured against nothing (dropped.creds, working rule 9): '#1' asserts a position in a market no file on disk measures, and working rule 9 forbids a claim no file on disk measures, and spec section 5 strikes the No.1 patterns from this rebuild's titles and descriptions. The phrase it puns on is written out instead — 'One-Stop Shop' is the same words without the rank — so every other word of the migrated H1 is carried, and this is the same excision the emoji rows make elsewhere in this list."
       },
       {
         "kind": "heading",
@@ -1876,6 +1887,12 @@
         "old": "Blue Staffy puppy representing ethical breeding from trusted UK breeders in Glasgow. | Buy Blue Staffy Puppies UK",
         "new": "Blue Staffy puppy representing ethical breeding from trusted UK breeders in Carlisle. | Buy Blue Staffy Puppies UK",
         "reason": "wrong fact: the migrated alt names the FORMER city as where the trusted UK breeders are (Known Issue 16). The kennel is in Carlisle, Cumbria (data/settings.json) and spec section 7 requires the old name to be absent from src and data, so Task 17 replaced the one word and changed nothing else in the sentence. The file itself keeps its path and is not re-encoded (working rule 11). It is the only one of this page's seven alts that is not the migrated wording."
+      },
+      {
+        "kind": "faq",
+        "old": "Is a blue Staffy a good family dog?",
+        "new": "Do blue Staffies suit a family home?",
+        "reason": "collides with another page's heading: /uk-blue-staffy-puppy-buying-guide/'s board carries \"Is a Blue Staffy a Good Family Dog for First-Time Owners UK?\", which is an element of THAT page's verbatim set, and board_gate.py fails the five-token run \"is a blue staffy a\" between the two. Working rule 15 exclusion 2 moves the wording that is not carrying a set; the guide's is and this one is not. The question asks the same thing in this page's own words, and its `listing-family-dog` id — which is what the record's tree stores and what data/faq.json is read by — does not move, so the approved outline is untouched. The answer and its source are unchanged."
       }
     ]
   }

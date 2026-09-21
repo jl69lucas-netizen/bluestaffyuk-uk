@@ -103,8 +103,11 @@ const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Availa
 // ONE review, given room. `approval.picks` gives this section the S3 BED and the mode is the
 // record's own note ("MODE: single"), passed explicitly — the same split
 // /blue-staffy-pup-sale-uk/ makes in the other direction. Rachel L. is the row
-// data/reviews.json sources to THIS page, and she is neither of the two the other sale pages
-// lead with. The other two slots are not opened, so no REVIEW_PLACEHOLDER is counted here.
+// data/reviews.json sources to THIS page, which is why she is the one this page gives its
+// single slot. She is NOT exclusive to it: /blue-staffy-pup-sale-uk/ renders all three rows as
+// a grid, so the rotation the record describes is about which review each page gives a slot of
+// its own — three real reviews and no fourth to invent. The other two slots here are not
+// opened, so no REVIEW_PLACEHOLDER is counted.
 const rachel = reviewsJson.filter((r) => r.name === 'Rachel L.');
 if (rachel.length !== 1) {
   throw new Error('buy-blue-staffy-puppies-uk: data/reviews.json no longer holds the Rachel L. row');
@@ -137,13 +140,59 @@ const opening = (id: string) => {
 // the former city excised (verbatim.changed, Known Issue 16).
 const deliveryH3 = sec('delivery').tree[0] as { heading: string; verbatim_opening?: string };
 
-// The hero's and the counter's own data, off the record. Nothing here is derived on the page:
-// the ticks and the three figures each carry the data/puppies.json filter they came from.
+// A ledge entry is either a bare string or a `{text, source}` row, depending on whether the
+// board author had a path to cite for it. One unwrap, used by the chips and the ticks: two
+// copies of it is two places for the shapes to drift apart.
+type LedgeEntry = string | { text: string };
+const ledgeText = (e: LedgeEntry) => (typeof e === 'string' ? e : e.text);
+
+// EVERY FIGURE ON THIS PAGE IS COUNTED HERE, and the record's `n` is the expectation it is
+// counted against. The section below says in as many words that none of these figures is
+// written by hand; mapping the record's `n` straight onto the strip made that sentence false,
+// because the record's `n` IS a hand-written number — a true one on the day it was boarded,
+// and the first thing to go stale when a puppy is reserved. So the counts come from the same
+// filtered list the grid renders, and a count that no longer equals what the board approved
+// throws at build rather than printing a figure nobody checked. That is the point of keeping
+// both: the data decides what prints, and the record decides when a human has to look.
+const COUNTED: Record<string, number> = {
+  'data/puppies.json#count(status=Available)': available.length,
+  'data/puppies.json#count(sex=male)': available.filter((p) => p.sex === 'male').length,
+  'data/puppies.json#count(sex=female)': available.filter((p) => p.sex === 'female').length,
+};
+const counted = (row: { n: string; label: string; source?: string }) => {
+  const n = COUNTED[row.source ?? ''];
+  if (n === undefined) {
+    throw new Error(`buy-blue-staffy-puppies-uk: no build-time count for ${row.source ?? '(no source)'} `
+      + `— a figure this page prints must be derived from data, not copied from the record`);
+  }
+  if (String(n) !== row.n) {
+    throw new Error(`buy-blue-staffy-puppies-uk: ${row.source} counts ${n} today and the approved `
+      + `record expects ${row.n} — the litter moved, so the board's figure needs a look`);
+  }
+  return { n: String(n), label: row.label };
+};
+
 const heroSection = sec('top');
-const heroChips = heroSection.hero!.chips.map((c: unknown) => (typeof c === 'string' ? c : (c as { text: string }).text));
-const heroTicks = heroSection.hero!.ticks.map((t: unknown) => (typeof t === 'string' ? t : (t as { text: string }).text));
-const heroStats = heroSection.stats!.map((r) => ({ n: r.n, label: r.label }));
-const counterStats = sec('at-a-glance').stats!.map((r) => ({ n: r.n, label: r.label }));
+const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
+// THE HERO LEDGE IS COUNTED TOO. H-FS1's ledge is `ticks`, and the first of the record's three
+// says "3 males and 3 females" — two figures, in a sentence, and typing them here would be the
+// same defect one element further down the page. The sentence is rebuilt from the counts and
+// checked against the wording the breeder approved, so a litter that changes fails the build
+// instead of shipping a hero that contradicts the strip under it.
+const males = COUNTED['data/puppies.json#count(sex=male)'];
+const females = COUNTED['data/puppies.json#count(sex=female)'];
+const heroTicks = (heroSection.hero!.ticks as LedgeEntry[]).map((t, i) => {
+  const approvedText = ledgeText(t);
+  if (i !== 0) return approvedText;
+  const derived = `${males} males and ${females} females`;
+  if (derived !== approvedText) {
+    throw new Error(`buy-blue-staffy-puppies-uk: the approved hero tick reads "${approvedText}" `
+      + `and data/puppies.json counts "${derived}" — the litter moved`);
+  }
+  return derived;
+});
+const heroStats = heroSection.stats!.map(counted);
+const counterStats = sec('at-a-glance').stats!.map(counted);
 
 const sections = sectionsFromRecord(record);
 
@@ -212,9 +261,14 @@ const pageSchema = [
   <section slot="hero" id="top" data-section-label="The puppies we have for sale today" class={box('top')}>
     <Hero
       as="h1"
-      eyebrow={`KC registered · Microchipped · ${SITE.location_label}`}
+      {/* TWO WORDS, because rule 10 is measured and this arrangement is tight. At 1024 the
+          mosaic leaves the copy a 316px column, the approved H1 takes five lines in it, and a
+          three-word eyebrow wrapped to two — which pushed the third tick 19px past the 450px
+          ceiling. The kennel's town is on the tick under it and in every section below, so the
+          line the eyebrow gives up is the one the page repeats anyway. */}
+      eyebrow="KC registered · Microchipped"
       title={T(h1)}
-      lede="I am Lisa Bright, and these are the blue Staffy puppies looking for homes from our own house in Carlisle."
+      lede="I am Lisa Bright. These are our blue Staffy puppies looking for homes."
       layout={heroStyle.layout.hero ?? 'mosaic'}
       align={heroStyle.layout.align ?? 'left'}
       media={heroStyle.layout.media ?? 'right'}
@@ -237,14 +291,15 @@ const pageSchema = [
       <a href="/blue-staffy-pup-sale-uk/">What a puppy costs and what delivery adds</a> is set out
       there as well, in two tables, so nothing here has to be worked out twice. On this page you
       pick a dog, see who their parents are, and read the three steps between a first message
-      and collection day.
+      and collection day. Everything on it is here in the house with us in Carlisle: there is no
+      waiting list, and nothing below is a litter that has not been born yet.
     </p>
   </section>
 
   {/* 02 at-a-glance — stats, picked style C-FS3 (a seam bar in a card beside the heading, each
       label beside its figure). The strip prints the record's three `stats` rows, and all three
       are filters over data/puppies.json rather than numbers typed into this page. */}
-  <section id="at-a-glance" data-section-label="Available now, the deposit, and delivery" class={box('at-a-glance')}>
+  <section id="at-a-glance" data-section-label="How many are left, and the sex split" class={box('at-a-glance')}>
     <div class="bl-head">
       <p class="bl-eyebrow">Counted from our own list</p>
       <h2>{T(heading('at-a-glance'))}</h2>
@@ -413,7 +468,7 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T('Step Three: Reserve And Arrange Collection')}
-          body="A £500 deposit, refundable, holds that one named puppy and comes off the price. Then we fix collection in Carlisle or arrange the journey to you."
+          body={`A £${SITE.deposit_gbp} deposit, ${SITE.deposit_refundable ? 'refundable' : 'non-refundable'}, holds that one named puppy and comes off the price. Then we fix collection in ${SITE.location_label.split(' · ')[0]} or arrange the journey to you.`}
         />
       </div>
       <img
@@ -684,7 +739,7 @@ const pageSchema = [
       </p>
     </div>
     <div class="bl-body">
-      <h3>{T('Visits Are By Appointment')}</h3>
+      <h3>{T('Arranging A Time To Visit Us')}</h3>
       <p>
         The puppies live in our house, and a house has no reception desk and no viewing hours.
         Agree a time with us and somebody will be in, the litter will be awake, and you will not

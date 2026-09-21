@@ -297,19 +297,6 @@ HEADER_WHITELIST = frozenset((
     "\U0001f43e reserve your blue staffy puppy",
     # Owner card (the breeder's name is the breeder's name)
     "lisa bright",
-    # A STANDING HOUSE POLICY, not a page's own heading (project 4 Tasks 15 and 17,
-    # 2026-09-21). Two boards the breeder approved — data/boards/blue-staffy-pup-sale-uk.json
-    # and data/boards/buy-blue-staffy-puppies-uk.json — both put this H3 in their close, and
-    # neither page's VERBATIM SET contains it, so rule 15's "keep the wording the old page
-    # ranked for" does not decide between them. Nothing else could: a tree heading is inside
-    # `record_hash`, so retitling it on either record reads as a post-approval edit and fails
-    # `approval-hash`, and whichever of the two pages renders it breaks the OTHER board's
-    # `header-collision` — the collision is symmetric and no page edit can end it. It belongs
-    # here for the reason "get in touch" does: it labels a policy every page inviting a visit
-    # has to be free to state, it identifies no page, and the prose under it is different on
-    # each. Rule 15 exclusion 2 asks a colliding heading to be retitled; it also says a
-    # heading that identifies no page is not worth keeping, and this one identifies none.
-    "visits are by appointment",
 ))
 
 # Puppy-name card headings, kept SEPARATE from HEADER_WHITELIST — sync with
