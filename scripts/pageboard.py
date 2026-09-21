@@ -1400,6 +1400,17 @@ FRESHNESS_ROOTS = ("src", "data/boards")
 #: Files the build itself writes back into a watched root. Counting them makes every build
 #: instantly stale against itself.
 FRESHNESS_SKIP = ("data/boards/previews",)
+#: What a page's dist actually depends on, when the caller can name the page.
+#:
+#: The whole-tree sweep above is right when nobody can say which page is being judged, and
+#: WRONG the moment two agents work the same tree: agent A writing
+#: `data/boards/<other>.json` made every other page's `dist/` read as stale, and
+#: `min-h5-h6` fell back to the record tree and failed a page whose built file was perfectly
+#: current. Freshness is a question about ONE page, so it is answered from that page's own
+#: sources — its `src/pages/<slug>/` (or `src/pages/index.astro` for the root), its own
+#: record — plus the shared shell every page renders through and the data files every page
+#: reads. A sibling's record is not among them, because no page renders a sibling's record.
+FRESHNESS_SHARED = ("src/layouts", "src/components", "src/lib", "src/styles")
 
 
 def _relpath(path):
@@ -1410,27 +1421,48 @@ def _relpath(path):
         return str(path)
 
 
-def newest_input_mtime(root=None):
-    """The newest mtime under the roots a built page is produced from."""
-    root = ROOT if root is None else pathlib.Path(root)
-    newest = 0.0
-    for rel in FRESHNESS_ROOTS:
+def freshness_inputs(root, slug=None):
+    """The files a built page's freshness is measured against.
+
+    `slug` None keeps the whole-tree sweep, which is what a caller that cannot name a page
+    has to do. Naming one narrows it to that page's own sources, the shared shell and the
+    top-level data files — see FRESHNESS_SHARED for why that is not a loosening."""
+    root = pathlib.Path(root)
+    if slug is None:
+        for rel in FRESHNESS_ROOTS:
+            base = root / rel
+            if base.exists():
+                yield from (f for f in base.rglob("*") if f.is_file()
+                            and not any(str(f.relative_to(root)).startswith(k) for k in FRESHNESS_SKIP))
+        return
+    # The root slug's page is `src/pages/index.astro`, not `src/pages/index/index.astro` —
+    # the same spelling verbatim_set_check.dist_html and the min-h5-h6 reader use.
+    own = [root / "src" / "pages" / (f"{slug}.astro" if slug == "index" else slug),
+           root / "data" / "boards" / f"{slug_file(slug)}.json"]
+    for base in own:
+        if base.is_file():
+            yield base
+        elif base.is_dir():
+            yield from (f for f in base.rglob("*") if f.is_file())
+    for rel in FRESHNESS_SHARED:
         base = root / rel
-        if not base.exists():
-            continue
-        for f in base.rglob("*"):
-            if not f.is_file():
-                continue
-            if any(str(f.relative_to(root)).startswith(skip) for skip in FRESHNESS_SKIP):
-                continue
-            newest = max(newest, f.stat().st_mtime)
-    return newest
+        if base.exists():
+            yield from (f for f in base.rglob("*") if f.is_file())
+    data = root / "data"
+    if data.exists():
+        yield from (f for f in data.glob("*.json") if f.is_file())
 
 
-def dist_page_is_fresh(built, root=None):
+def newest_input_mtime(root=None, slug=None):
+    """The newest mtime among the sources a built page is produced from."""
+    root = ROOT if root is None else pathlib.Path(root)
+    return max((f.stat().st_mtime for f in freshness_inputs(root, slug)), default=0.0)
+
+
+def dist_page_is_fresh(built, root=None, slug=None):
     """True when `built` is newer than every source that produces it."""
     built = pathlib.Path(built)
-    return built.exists() and built.stat().st_mtime >= newest_input_mtime(root)
+    return built.exists() and built.stat().st_mtime >= newest_input_mtime(root, slug)
 
 
 def gate_findings(board, ont, ledger, live, stage="build"):
@@ -1589,7 +1621,7 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # the one page that is the site's front door would silently keep the record-tree reading
     # for ever. Same spelling as verbatim_set_check.dist_html and word_band_findings.
     built = DIST / ("" if slug == "index" else slug) / "index.html"
-    fresh = dist_page_is_fresh(built)
+    fresh = dist_page_is_fresh(built, slug=slug)
     if slug in rebuilt_slugs() and built.exists() and fresh:
         counts, source = page_h_counts(built), "built page"
     else:

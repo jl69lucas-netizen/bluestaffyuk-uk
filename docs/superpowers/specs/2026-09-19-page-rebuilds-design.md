@@ -581,3 +581,31 @@ privacy's.
 record that can: the three utility pages were built before this rule and still name
 `S1`/`S2`/`S3`, so without the fixture six of the eighteen hero arrangements and six of the
 eighteen counters would be styles nothing ever builds, renders or measures.
+
+
+**Amendment 11 (2026-09-21, controller — re-approval of a post-approval wording fix).** Plan
+step P4b. A build review finds wording inside `record_hash` that has to move, and the
+sanctioned route cannot reach it: `data/boards/inbox/<slug>.json` carries the PRE-approval
+hash, and once `approval`, `approval_previous` and `tuple.hero` have moved, none of the four
+readings in `pre_approval_hashes()` reproduces it — verified against two records at three
+commits each. That left hand-stamping a hash, which is forging an approval, or shipping the
+defect. Neither is acceptable, so there is now a third thing: the CONTROLLER re-approves,
+with a reason, and the record says so.
+
+`scripts/board_approve.py --reapprove <slug> --reason "<text>"` keeps every pick, the H1
+index, the meta indices and the notes exactly as the breeder left them, recomputes
+`record_hash` over the record as it stands, stamps `approval.reapproved_at` and appends
+`{at, reason, changed_paths}` to `approval.reapprovals`. `changed_paths` is the JSON-pointer
+diff between `git show HEAD:data/boards/<slug>.json` and the record now, taken over the
+HASHED projection, so it names what moved inside the hash and nothing that was always
+outside it. It refuses a baseline that does not match its own approval, an empty diff, a
+missing reason, and any edit that moves the page's ledger row.
+
+**Picks are never touched this way, and that is the whole of the safety argument.** A
+`options.pick`, a `styles` menu, a figure's `n` or its `source`, a ledge source, a section id
+and the section list are answers the breeder GAVE; changing one with a stamp is what this
+mode must never become, so the diff is refused and the page goes back to the board. What it
+may move is wording — headings, intents, notes, titles — additions to a links block, and the
+removal of a whole row from a hero ledge: none of those changes what was chosen, only what
+it says. A removed `stats` row is judged by row identity rather than by index, because
+dropping row 0 of four otherwise reads as editing the other three.

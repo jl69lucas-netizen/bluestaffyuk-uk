@@ -16,6 +16,33 @@
 One approval, three documents. apply_approval() is pure — it raises before anything is
 written — and main() serialises all three before it replaces any of them, so a refused
 approval leaves the tree exactly as it found it.
+
+  python3 scripts/board_approve.py --reapprove <slug> --reason "<text>"
+
+RE-APPROVAL is the second mode, and it is a different act. A build review finds wording
+inside `record_hash` that has to move — a heading that collides with a page built after the
+board was approved, a links block two rows short of the floor, a counter heading that says
+"three" over four tiles — and the sanctioned route, editing the record and replaying
+`data/boards/inbox/<slug>.json`, cannot work once an approval has been applied: the inbox
+carries the PRE-approval hash and none of the four readings in `pre_approval_hashes()`
+reproduces it after `approval`, `approval_previous` and `tuple.hero` have moved. Verified
+on two records. The only alternatives were to hand-stamp a hash, which is forging an
+approval, or to leave the defect on the page.
+
+So the controller re-approves, with a reason, and the record says so. `--reapprove` keeps
+every pick, the H1 index, the meta indices and the notes EXACTLY as the breeder left them,
+recomputes `record_hash` over the record as it now stands, stamps `approval.reapproved_at`
+and appends `{at, reason, changed_paths}` to `approval.reapprovals`. `changed_paths` is the
+JSON-pointer diff between the record at HEAD and the record now, taken over the HASHED
+projection — so it lists exactly what moved inside the hash and nothing that was always
+outside it.
+
+WHAT IT REFUSES, and why the list is what it is. A pick, a `styles` menu, a figure's `n` or
+its `source`, a ledge source, a section id, a removed section: every one of those is a
+question the breeder ANSWERED, and changing the answer with a stamp is the thing this mode
+must never become. They need a real re-pick on the board. What is allowed is wording
+(headings, intents, notes, titles), additions to a links block, and removing a whole row
+from a hero ledge — none of which changes what was chosen, only what it says.
 """
 import argparse
 import html as _html
@@ -288,6 +315,178 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 
+# ── re-approval (a controller's post-approval wording fix) ─────────────────────────────────
+#
+# The hashed projection is what a re-approval reports on, because it is what a re-approval
+# is FOR: a field outside the hash (`dropped`, `verbatim`, `meta.status`, an asset's baked
+# file) never needed one in the first place, and listing its churn would bury the one line
+# that matters.
+def _hashed_body(board):
+    """The record as `PB.record_hash()` hashes it — same exclusions, one source of truth."""
+    skip = ("approval", "dropped", "verbatim")
+    body = {k: v for k, v in board.items() if k not in skip}
+    meta = body.get("meta")
+    if isinstance(meta, dict):
+        body["meta"] = {k: v for k, v in meta.items() if k != "status"}
+    assets = body.get("assets")
+    if isinstance(assets, list):
+        body["assets"] = [{k: v for k, v in a.items() if k not in PB.LIFECYCLE_ASSET_KEYS}
+                          if isinstance(a, dict) else a for a in assets]
+    return body
+
+
+def _esc(token):
+    """RFC 6901: `~` is `~0` and `/` is `~1`, so a pointer segment is unambiguous."""
+    return str(token).replace("~", "~0").replace("/", "~1")
+
+
+def json_pointer_diff(old, new, at="", out=None):
+    """Every JSON pointer at which `old` and `new` differ, deepest leaf first.
+
+    A list is compared BY INDEX, deliberately: a pointer the reader can paste into the
+    record is worth more than a minimal edit script, and the one list whose rows move —
+    `stats` — is judged by identity in `stats_change()` instead, before this ever runs."""
+    out = [] if out is None else out
+    if isinstance(old, dict) and isinstance(new, dict):
+        for k in sorted(set(old) | set(new)):
+            if k not in old:
+                out.append(f"{at}/{_esc(k)}")
+            elif k not in new:
+                out.append(f"{at}/{_esc(k)}")
+            else:
+                json_pointer_diff(old[k], new[k], f"{at}/{_esc(k)}", out)
+    elif isinstance(old, list) and isinstance(new, list):
+        for i in range(max(len(old), len(new))):
+            if i >= len(old) or i >= len(new):
+                out.append(f"{at}/{i}")
+            else:
+                json_pointer_diff(old[i], new[i], f"{at}/{i}", out)
+    elif old != new:
+        out.append(at or "/")
+    return out
+
+
+def stats_change(old_board, new_board):
+    """(removed, other) for every section's `stats` list, compared by ROW rather than index.
+
+    Removing the two figures a hero ledge no longer prints is an allowed wording-class fix;
+    changing a figure or its source is not. Index-wise those look the same — drop row 0 of
+    four and every remaining `n` "changes" — so the rows are matched as values and the
+    verdict is taken from what is actually gone. `other` holds the sections where a row was
+    ADDED or EDITED, which is what the caller refuses on."""
+    old_by, new_by = _sections_by_id(old_board), _sections_by_id(new_board)
+    removed, other = [], []
+    for sid in sorted(set(old_by) & set(new_by)):
+        o = old_by[sid].get("stats") or []
+        n = new_by[sid].get("stats") or []
+        okeys = [json.dumps(r, sort_keys=True) for r in o]
+        nkeys = [json.dumps(r, sort_keys=True) for r in n]
+        rest = list(okeys)
+        added = []
+        for k in nkeys:
+            if k in rest:
+                rest.remove(k)
+            else:
+                added.append(k)
+        if added:
+            other.append(sid)
+        elif rest:
+            removed.append(sid)
+    return removed, other
+
+
+def _sections_by_id(board):
+    return {s["id"]: s for s in board.get("sections", []) if isinstance(s, dict) and "id" in s}
+
+
+#: A pointer touching one of these is an answer the breeder gave, not wording. Matched on
+#: the pointer text because that is what the refusal has to print: a reviewer who is told
+#: `/sections/3/options/pick` can open the record at it.
+REAPPROVE_REFUSED = (
+    ("/options/pick", "a component or style pick"),
+    ("/styles", "the menu of styles a section offered"),
+    ("/source", "the data path a figure or a ledge entry cites"),
+)
+
+
+def reapprove_refusals(old_board, new_board, paths):
+    """Why this diff may not be re-approved, as printable lines. Empty means it may."""
+    bad = []
+    old_ids = [s.get("id") for s in old_board.get("sections", [])]
+    new_ids = [s.get("id") for s in new_board.get("sections", [])]
+    if old_ids != new_ids:
+        gone = [i for i in old_ids if i not in new_ids]
+        fresh = [i for i in new_ids if i not in old_ids]
+        bad.append("the section list moved" + (f" — removed {', '.join(gone)}" if gone else "")
+                   + (f", added {', '.join(fresh)}" if fresh else "")
+                   + ": a section is a question on the board, not wording")
+    _, edited = stats_change(old_board, new_board)
+    for sid in edited:
+        bad.append(f"section {sid}: a `stats` row was added or edited — a figure and its source "
+                   "are what the breeder approved; only removing a whole row is wording")
+    for p in paths:
+        # A `stats` pointer that survived stats_change() is a row REMOVAL reported by index,
+        # which is the one allowed shape; anything real about stats was caught just above.
+        if "/stats/" in p or p.endswith("/stats"):
+            continue
+        for frag, what in REAPPROVE_REFUSED:
+            if frag in p:
+                bad.append(f"{p}: {what} may not move in a re-approval — re-board the page")
+    return bad
+
+
+def apply_reapproval(board, reason, old_board, now):
+    """The record after a controller's re-approval. Pure, like apply_approval().
+
+    `old_board` is the record as of the commit whose hash the approval currently carries —
+    the baseline the diff is taken against and the proof that this record WAS approved as it
+    stood. Everything the breeder answered is copied through untouched; only the hash, the
+    stamp and the log move."""
+    approval = board.get("approval")
+    if not isinstance(approval, dict) or not approval.get("record_hash"):
+        raise PB.BoardError("no approval on this record — there is nothing to re-approve")
+    if board["meta"]["status"] not in ("approved", "built"):
+        raise PB.BoardError(
+            f"meta.status is {board['meta']['status']!r} — re-approval is for a record that was "
+            "already approved; a draft is approved the ordinary way")
+    if not (reason or "").strip():
+        raise PB.BoardError("--reason is required: a re-approval nobody explained is a hand-stamped hash")
+    if not PB.approval_matches(old_board):
+        raise PB.BoardError(
+            "the baseline record does not match its own approval — the diff would be taken "
+            "against a record that was never approved as it stood")
+    paths = json_pointer_diff(_hashed_body(old_board), _hashed_body(board))
+    if not paths:
+        raise PB.BoardError("nothing inside record_hash has changed — this record needs no re-approval")
+    refusals = reapprove_refusals(old_board, board, paths)
+    if refusals:
+        raise PB.BoardError("this diff is not a wording fix:\n  - " + "\n  - ".join(refusals))
+
+    b = json.loads(json.dumps(board))
+    # A carried ANSWER whose question was reworded is still the answer. `section_hashes`
+    # records what a section looked like when it was picked, and `locked_picks()` re-asks a
+    # section whose fingerprint has moved — which is right for a re-board and wrong here: a
+    # re-approval has already refused every edit that could change what was chosen, so all a
+    # moved fingerprint says is that somebody fixed a heading. Left alone it would make the
+    # next re-board ask a question the breeder has answered, for a reason nobody could see.
+    # Refreshed where a hash already exists, never invented: a record that never carried
+    # fingerprints does not start now.
+    fresh = {sec["id"]: PB.section_fingerprint(sec) for sec in b["sections"]}
+    for holder in (b.get("approval"), b.get("approval_previous")):
+        hashes = (holder or {}).get("section_hashes")
+        if isinstance(hashes, dict):
+            for sid in list(hashes):
+                if sid in fresh:
+                    hashes[sid] = fresh[sid]
+    a = b["approval"]
+    a["reapproved_at"] = now
+    a.setdefault("reapprovals", []).append({"at": now, "reason": reason.strip(), "changed_paths": paths})
+    # LAST, because `approval_previous` is inside the hash and the refresh above moved it.
+    a["record_hash"] = PB.record_hash(b)
+    PB.validate_board(b)
+    return {"board": b, "changed_paths": paths}
+
+
 def _atomic_write(path, text):
     """Write through a sibling temp file and rename over the target. A half-written
     component ledger is worse than an unwritten one: the next page reads it to learn what
@@ -315,12 +514,68 @@ def parse_args(argv=None):
     p.add_argument("slug")
     p.add_argument("--canvas-dir", default=None,
                    help="artboard directory (default: docs/design/board-<slug> when it exists)")
+    p.add_argument("--reapprove", action="store_true",
+                   help="re-approve an already-approved record after a post-approval WORDING fix: "
+                        "keeps every pick, recomputes record_hash, logs the reason and the "
+                        "JSON-pointer diff. Refuses a diff that touches a pick, a menu, a figure "
+                        "or a section id.")
+    p.add_argument("--reason", default="",
+                   help="required with --reapprove: why the record was edited after approval")
     return p.parse_args(sys.argv[1:] if argv is None else argv)
+
+
+def baseline_board(slug, ref="HEAD"):
+    """The record as `ref` has it — the state whose hash the current approval carries.
+
+    Read from git rather than from a backup file: the committed record is the only copy
+    whose approval is known to have covered it, and a re-approval that took its diff against
+    anything else would be measuring against a record nobody signed."""
+    import subprocess
+    rel = f"data/boards/{PB.slug_file(slug)}.json"
+    try:
+        raw = subprocess.run(["git", "show", f"{ref}:{rel}"], cwd=PB.ROOT, check=True,
+                             capture_output=True, text=True).stdout
+    except (subprocess.CalledProcessError, FileNotFoundError) as e:
+        raise PB.BoardError(f"cannot read {rel} at {ref}: {getattr(e, 'stderr', e)}") from None
+    return json.loads(raw)
+
+
+def reapprove_main(slug):
+    """`--reapprove`: stamp, log, write. One document — the ledger and the ontology cannot
+    move, because the picks and the entities they are derived from cannot."""
+    import datetime
+    a = parse_args()
+    board = PB.load_board(slug)
+    now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    out = apply_reapproval(board, a.reason, baseline_board(slug), now)
+    # The ledger records what the TUPLE and the H6 prefixes spend. Neither can move under a
+    # wording fix — but a heading edit is how an H6 prefix WOULD move, so it is checked
+    # rather than assumed: a re-approval that silently desynced the ledger would hand the
+    # next page a component the ledger still thinks is free.
+    ledger = PB.load_ledger()
+    was = (ledger.get("pages") or {}).get(slug)
+    if was is not None and ledger_entry(out["board"]) != was:
+        raise PB.BoardError(
+            "this edit moves the page's ledger row (its tuple or its spent H6 prefixes) — "
+            "that is a component claim, not wording; re-board the page")
+    _atomic_write(PB.board_path(slug), _json_text(out["board"]))
+    print(f"re-approved {slug} at {now} — {len(out['changed_paths'])} hashed path(s) moved:")
+    for path in out["changed_paths"]:
+        print(f"  {path}")
+    print(f"  reason: {a.reason.strip()}")
 
 
 def main():
     a = parse_args()                                  # argparse itself exits 2 on a bad invocation
     slug = a.slug
+    if a.reapprove:
+        try:
+            PB.slug_file(slug)
+            reapprove_main(slug)
+        except (PB.BoardError, OSError) as e:
+            print(f"board-approve ERROR {e}")
+            sys.exit(2)
+        return
     try:
         # Before any path is built: a slug that is not a slug names a file the caller
         # never asked for, and the gate refuses it the same way.

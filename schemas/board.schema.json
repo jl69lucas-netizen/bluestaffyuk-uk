@@ -1647,6 +1647,39 @@
       "type": "string",
       "pattern": "^[0-9a-f]{64}$"
      }
+    },
+    "reapproved_at": {
+     "comment": "When a CONTROLLER last re-approved this record after a post-approval WORDING fix (scripts/board_approve.py --reapprove). It is not a second breeder approval: every pick, the H1 index and the meta indices are carried through untouched, and the mode refuses a diff that touches one. Absent on a record nobody has had to re-approve.",
+     "type": "string"
+    },
+    "reapprovals": {
+     "comment": "One row per re-approval, oldest first. `changed_paths` is the JSON-pointer diff between the record at the previous hash's commit and the record as re-approved, taken over the HASHED projection — so it names exactly what moved inside record_hash and nothing that was always outside it.",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "at",
+       "reason",
+       "changed_paths"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "at": {
+        "type": "string"
+       },
+       "reason": {
+        "type": "string",
+        "minLength": 1
+       },
+       "changed_paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "minItems": 1
+       }
+      }
+     }
     }
    }
   },

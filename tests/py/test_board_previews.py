@@ -1075,6 +1075,66 @@ def test_the_preview_payloads_do_not_make_every_build_stale(tmp_path):
     assert PB.dist_page_is_fresh(built, tmp_path)
 
 
+def test_a_siblings_record_does_not_make_this_pages_dist_stale(tmp_path):
+    """Two agents in one tree. Agent A writing data/boards/<other>.json made EVERY page read
+    as stale, `min-h5-h6` fell back to the record tree, and a page whose built file was
+    perfectly current failed the gate. Freshness is a question about one page."""
+    import time
+    (tmp_path / "src/pages/mine").mkdir(parents=True)
+    (tmp_path / "data/boards").mkdir(parents=True)
+    (tmp_path / "dist/mine").mkdir(parents=True)
+    (tmp_path / "src/pages/mine/index.astro").write_text("page", encoding="utf-8")
+    (tmp_path / "data/boards/mine.json").write_text("{}", encoding="utf-8")
+    built = tmp_path / "dist/mine/index.html"
+    built.write_text("<h5>x</h5>", encoding="utf-8")
+    time.sleep(0.01)
+    (tmp_path / "data/boards/other.json").write_text("{}", encoding="utf-8")
+    assert PB.dist_page_is_fresh(built, tmp_path, slug="mine")
+    # ...and the whole-tree sweep, which a caller that cannot name a page still gets, is the
+    # reading that was wrong. Kept in the same test so the contrast cannot drift apart.
+    assert not PB.dist_page_is_fresh(built, tmp_path)
+
+
+def test_the_pages_own_sources_and_the_shared_shell_still_make_it_stale(tmp_path):
+    """Narrowing the sweep is only safe if it still catches what a page is actually built
+    from: its own file, its own record, and the kit every page renders through."""
+    import time
+
+    def tree():
+        for d in ("src/pages/mine", "data/boards", "dist/mine", "src/components/kit", "src/lib"):
+            (tmp_path / d).mkdir(parents=True, exist_ok=True)
+        (tmp_path / "src/pages/mine/index.astro").write_text("page", encoding="utf-8")
+        (tmp_path / "data/boards/mine.json").write_text("{}", encoding="utf-8")
+        b = tmp_path / "dist/mine/index.html"
+        b.write_text("x", encoding="utf-8")
+        return b
+
+    for rel in ("src/pages/mine/index.astro", "data/boards/mine.json",
+                "src/components/kit/Hero.astro", "src/lib/boardStyles.ts", "data/puppies.json"):
+        built = tree()
+        assert PB.dist_page_is_fresh(built, tmp_path, slug="mine"), rel
+        time.sleep(0.01)
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / rel).write_text("edited", encoding="utf-8")
+        assert not PB.dist_page_is_fresh(built, tmp_path, slug="mine"), rel
+
+
+def test_the_root_slugs_page_is_src_pages_index_astro(tmp_path):
+    """`index` is the slug this repo gives "/", and `src/pages/index/index.astro` exists on
+    no tree — the same spelling amendment 9.3 fixed in four other places."""
+    import time
+    (tmp_path / "src/pages").mkdir(parents=True)
+    (tmp_path / "data/boards").mkdir(parents=True)
+    (tmp_path / "dist").mkdir(parents=True)
+    (tmp_path / "src/pages/index.astro").write_text("home", encoding="utf-8")
+    built = tmp_path / "dist/index.html"
+    built.write_text("x", encoding="utf-8")
+    assert PB.dist_page_is_fresh(built, tmp_path, slug="index")
+    time.sleep(0.01)
+    (tmp_path / "src/pages/index.astro").write_text("edited", encoding="utf-8")
+    assert not PB.dist_page_is_fresh(built, tmp_path, slug="index")
+
+
 # ── the delta is printed where the pick is made ───────────────────────────────────────────
 
 def test_the_refresh_delta_is_printed_under_a_sections_options():
