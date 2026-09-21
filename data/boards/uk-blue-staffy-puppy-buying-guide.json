@@ -1188,7 +1188,7 @@
         },
         {
           "level": 3,
-          "heading": "What is the average lifespan of a Blue Staffordshire Bull Terrier, and what health problems are they prone to?",
+          "heading": "Blue Staffordshire Bull Terrier Lifespan, and the Health Problems They Are Prone To",
           "intent": "How long the breed lives and what it is prone to, in one node: the 12 to 14 years data/facts and the Staffordshire Bull Terrier Club both give, and a pointer to /blue-staffy-health-uk/ for the conditions themselves.",
           "children": [],
           "verbatim_heading": true,
@@ -2519,7 +2519,7 @@
       "top": "H-GD3",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "c99d27398e92d36444d1890dfb8b75f26dfcc904947ef18d0773d11aaba3d92f",
+    "record_hash": "21438da5d0d96061c0b0c2999f8b54979f8463e965158673b7bee9aef0b76ccb",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2537,13 +2537,20 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T03:23:15Z",
+    "reapproved_at": "2026-09-21T05:54:52Z",
     "reapprovals": [
       {
         "at": "2026-09-21T03:23:15Z",
         "reason": "header-collision: this H3 was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board (working rule 15 protects neither — the phrase is in no page's verbatim set). The node's intent is the two DNA results we hand a buyer, so the wording that names them is what it takes; no pick, figure, source or section id moves.",
         "changed_paths": [
           "/sections/8/tree/3/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T05:54:52Z",
+        "reason": "header collision with /blue-staffy-health-uk/, built after this board was approved: the health page renders data/faq.json row health-average-lifespan, whose question shares a five-word shingle with this record's health-checks H3. The health page owns the lifespan fact, so the wording moves here; no pick, figure, source or section id is touched and the deviation is recorded in verbatim.changed.",
+        "changed_paths": [
+          "/sections/8/tree/4/heading"
         ]
       }
     ]
@@ -2780,6 +2787,12 @@
         "new": "A two-part infographic showing a happy Blue Staffy puppy. The left side has icons for socialization with people and other dogs, and the right side has icons for training commands like 'sit' and 'stay'.",
         "src": "/images/blue-staffy-training-socialisation.webp",
         "reason": "the migrated alt is not a sentence: the attribute was closed early by a quote character inside the description itself, so the wording breaks off at 'icons for training commands like' and a screen reader is read half a clause. An alt is page copy and there is no wording here to carry word for word, because the rest of it never reached the attribute. Task 17 restored the description; nothing else about the alt changed."
+      },
+      {
+        "kind": "heading",
+        "old": "What is the average lifespan of a Blue Staffordshire Bull Terrier, and what health problems are they prone to?",
+        "new": "Blue Staffordshire Bull Terrier Lifespan, and the Health Problems They Are Prone To",
+        "reason": "a collision with /blue-staffy-health-uk/, which was built after this board was approved: the five-word shingle \"what is the average lifespan\" matches the data/faq.json row `health-average-lifespan` (\"What is the average lifespan of a Blue Staffy?\"), a verbatim-set FAQ question that page now renders. The HEALTH page owns the lifespan fact — it carries the figure, cited to the breed guide's own cell — so the change is made on the side that does not own the subject, and it keeps every word that names what the section is while moving only the colliding interrogative opening."
       }
     ]
   }

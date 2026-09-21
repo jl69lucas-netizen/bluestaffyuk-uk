@@ -175,7 +175,17 @@ const showAside = ledge === 'aside' && Astro.slots.has('aside');
 // states its candidates but not its widths would let the browser assume 100vw and choose the
 // largest of them, which is the defect this exists to close.
 const MOSAIC_SIZES = '(min-width: 1024px) 190px, (min-width: 768px) 340px, 145px';
-const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
+// WHAT THE SINGLE PHOTO PAINTS, PER ARRANGEMENT. `560px` is the SPLIT hero's media column and
+// was the only reading this component had — a measurement borrowed from one layout the moment
+// working rule 16 gave the hero five of them. The PANEL arrangement puts the photo in a
+// `minmax(0, 14rem)` column, 224px, so the browser chose a candidate two and a half times the
+// box it painted and `img-srcset-within-2x` (blocking) reported it on /blue-staffy-health-uk/
+// at 1280. Everything that is not a panel keeps the split hero's own reading, so no page built
+// before this moves a byte; a panel that puts its photo on TOP is one column wide and says so.
+const PIC_SIZES = layout !== 'panel'
+  ? '(max-width: 900px) 100vw, 560px'
+  : media === 'top' ? '100vw' : '(max-width: 900px) 100vw, 224px';
+const alt = imageAlt ??'A blue Staffordshire Bull Terrier puppy resting in a family home';
 // A public path cannot go through <Image>: astro:assets only handles files it can read at
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
 // and loading behaviour, and the CSS below does not care which branch produced it.
@@ -220,7 +230,7 @@ const legacy = typeof image === 'string';
         width={imageWidth}
         height={imageHeight}
         srcset={imageSrcset}
-        sizes="(max-width: 900px) 100vw, 560px"
+        sizes={PIC_SIZES}
         class="pic"
         loading="eager"
         fetchpriority="high"
@@ -231,7 +241,7 @@ const legacy = typeof image === 'string';
         src={image as ImageMetadata}
         alt={alt}
         widths={[480, 800, 1200]}
-        sizes="(max-width: 900px) 100vw, 560px"
+        sizes={PIC_SIZES}
         class="pic"
         loading="eager"
         fetchpriority="high"
@@ -550,6 +560,52 @@ const legacy = typeof image === 'string';
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .copy { grid-area: copy; }
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .hero-aside {
         grid-area: aside; align-self: start;
+      }
+    }
+
+    /* A PANEL WITH AN ASIDE IS THE MOSAIC'S PROBLEM AGAIN, and it takes the mosaic's answer.
+       `ledge: 'aside'` sets `1fr minmax(0, 1fr) 15rem` above 1024 and the panel narrows the
+       first track to 14rem, which still leaves THREE tracks and two gaps in ~620px of content
+       at 1024: measured on /blue-staffy-health-uk/ (H-GD3), the copy column was under 150px,
+       the H1 ran 211px of section overflow past the ceiling and the clamped two-line lede hid
+       297px of itself — invisible on the page, because a clamp does not push, it cuts. So the
+       aside becomes a SECOND ROW beneath the copy, beside the photo, exactly as it does on
+       H-AB1, and the arrangement stays the one the breeder picked: photo left, copy right, the
+       key facts in their own box. Measured after, with the aside carrying three rows and a
+       credential line: no section overflow and no lede overflow at 1024, 1100 or 1280. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 14rem) minmax(0, 1fr);
+        grid-template-areas: "pic copy" "pic aside";
+        align-items: start;
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start; padding: var(--space-3);
+      }
+      /* The ROW gap is the one the two-row grid spends twice and needs once: at 1280 the
+         column gap is 48px and the same value between the copy and the aside was 29 of the
+         30px the band ran over, measured. The column gap is untouched. */
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner { row-gap: var(--space-3); }
+    }
+    /* Between 1024 and 1199 the band is ~620px of content rather than ~800, so the photo column
+       narrows and the aside's own spacing tightens — the same order the mosaic's fix was
+       measured in, and for the same reason: the copy column is what the difference comes out
+       of otherwise. 1280 is outside the query and is unaffected. */
+    @media (min-width: 1024px) and (max-width: 1199px) {
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 9rem) minmax(0, 1fr); gap: var(--space-5);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .lede { margin-bottom: var(--space-2); }
+      /* The copy column is ~180px narrower here, so a long H1 takes a third line: 108px of
+         title against 72px at 1280, which is the last 21px of the ceiling. The type steps down
+         one notch rather than the aside losing a row of facts. */
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-xl); line-height: var(--text-xl--line-height);
+      }
+      .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] :global(.aside-title) {
+        margin-bottom: var(--space-1);
       }
     }
 
