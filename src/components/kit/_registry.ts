@@ -153,6 +153,14 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
         { label: 'Meet the puppies', href: '/available-puppies/' },
         { label: 'Ask a question', href: '/uk-blue-staffy-breeders-contact/', kind: 'outline' },
       ],
+      // THE SPECIMEN STATES ITS OWN BOX, because it is not inside `PageShell`. Every real page
+      // mounts the hero in the shell, which reserves the dial a 196px column at 1024 and above,
+      // and `Hero`'s own `sizes` is measured there — 315px at 1024, 408px at 1280. This board
+      // has the full width, so the same hero paints 419px and 503px and the component's default
+      // would under-promise by 23%: a soft photograph on the one page whose job is showing what
+      // the component looks like. Measured at 375, 768, 900, 901, 1024, 1100, 1199, 1280 and
+      // 1600; `img-sizes-matches-box` reads it back against the box at each viewport.
+      imageSizes: '(max-width: 900px) calc(100vw - 96px), (max-width: 1199px) calc(47.5vw - 68px), 503px',
     }],
   },
   // All five button KINDS on one board, because a page uses more than one of them and the

@@ -7,9 +7,11 @@
 // directly (portrait, so the desktop clamp below crops it) until project 4 supplies a real
 // hero photo; swapping that import is then the whole change.
 //
-// SIZES. `.pic` paints at ~560px on desktop and full width below 900px, which is what the
-// `sizes` attribute says — a hero that claimed 100vw everywhere would download the 1200px
-// candidate onto a 560px box. `.pic` is the LCP element, so it is eager with
+// SIZES. What `.pic` paints depends on the ARRANGEMENT and on the viewport band, and the list
+// it declares is built per arrangement from measurements at twelve widths — see `PIC_SIZES`
+// below, and `img-sizes-matches-box`, which measures the promise against the box on every
+// built page. This header used to say "~560px on desktop", which was the split hero's column
+// stated as the whole component's behaviour. `.pic` is the LCP element, so it is eager with
 // fetchpriority="high" rather than lazy. The crop is CSS (aspect-ratio + object-fit), never
 // a baked one, so one master serves every width.
 //
@@ -67,6 +69,16 @@ type Props = HTMLAttributes<'section'> & {
    *  the moment the hero card paints narrower than half the file's intrinsic width, as it
    *  does at 375px. Omitted renders no `srcset`, exactly as before. */
   imageSrcset?: string;
+  /** The box the photo paints, for a page whose geometry is not `PageShell`'s.
+   *
+   *  `PIC_SIZES` below is measured on pages inside the shell, which reserves the dial its own
+   *  196px column at 1024 and above — so the same split hero paints 408px on a real page and
+   *  503px on `/kit-preview/`, which mounts the specimen outside the shell deliberately. A
+   *  23% difference cannot be split between them by one list, and neither reading is wrong;
+   *  they are different boxes. So a page outside the shell states its own, and every page
+   *  inside it says nothing and gets the measured default. `img-sizes-matches-box` reads both
+   *  against what they actually paint. */
+  imageSizes?: string;
   /** The trust chips under the lede. DEFAULTS TO NONE (project 4, 2026-09-20 review). They
    *  used to be three hard-coded claims — "KC registered", "DNA-tested parents", "Raised in
    *  the home" — which is a component asserting a page's credentials for it: true on the
@@ -139,6 +151,7 @@ const {
   imageWidth,
   imageHeight,
   imageSrcset,
+  imageSizes,
   chips = [],
   ctas = [],
   layout = 'split',
@@ -169,23 +182,60 @@ const showAside = ledge === 'aside' && Astro.slots.has('aside');
 // file; both are props now and both default to empty, so a hero states only what the page
 // that mounted it handed it.
 
-// What a mosaic TILE actually paints, measured on this arrangement rather than guessed: the
-// tiles are a two-column grid inside the media column, so ~180px at 1024px and up, ~340px in
-// the tablet band where the media column is full width, and ~145px on a phone. A tile that
-// states its candidates but not its widths would let the browser assume 100vw and choose the
-// largest of them, which is the defect this exists to close.
-const MOSAIC_SIZES = '(min-width: 1024px) 190px, (min-width: 768px) 340px, 145px';
-// WHAT THE SINGLE PHOTO PAINTS, PER ARRANGEMENT. `560px` is the SPLIT hero's media column and
-// was the only reading this component had — a measurement borrowed from one layout the moment
-// working rule 16 gave the hero five of them. The PANEL arrangement puts the photo in a
-// `minmax(0, 14rem)` column, 224px, so the browser chose a candidate two and a half times the
-// box it painted and `img-srcset-within-2x` (blocking) reported it on /blue-staffy-health-uk/
-// at 1280. Everything that is not a panel keeps the split hero's own reading, so no page built
-// before this moves a byte; a panel that puts its photo on TOP is one column wide and says so.
-const PIC_SIZES = layout !== 'panel'
-  ? '(max-width: 900px) 100vw, 560px'
-  : media === 'top' ? '100vw' : '(max-width: 900px) 100vw, 224px';
-const alt = imageAlt ??'A blue Staffordshire Bull Terrier puppy resting in a family home';
+// ── WHAT THE HERO'S PHOTOGRAPHY ACTUALLY PAINTS ─────────────────────────────────────────────
+//
+// `sizes` is a PROMISE about the box, and every value below was read off a real built page at
+// twelve widths rather than reasoned about. The promise had been wrong on every arrangement at
+// once: `(max-width: 900px) 100vw, 560px` is the SPLIT hero's desktop column, written before
+// working rule 16 gave the hero five layouts, and measured at 1280 the split paints 408px
+// (declared 560, over), stacked and bleed paint 828px (declared 560, UNDER — the browser was
+// choosing a candidate too small for the box), and the panel with an aside paints 224px above
+// 1200 and 144px between 1024 and 1199. Even the mobile branch was wrong by a third: `100vw`
+// is the viewport and the photo is inside a padded container, so it paints 277px at 375.
+//
+// THE THREE BREAKPOINTS ARE THE CSS'S OWN, not round numbers: 900px is where every arrangement
+// becomes one column (the `@media (max-width: 900px)` block at the foot of this file), 1024px
+// is where `PageShell` gives the dial its column and the content band loses ~196px, and 1200px
+// is where the container stops growing. A `sizes` list that ignored them would be right in one
+// band and wrong in the next, which is how the single 560px reading survived this long.
+//
+// `img-sizes-matches-box` (tests/render/checks/img.ts) measures each of these against the box
+// it paints at 375/768/1024/1280 on every built page and fails outside 0.9-1.25x, so a layout
+// change that moves a column cannot leave a stale promise behind it again.
+//
+// A mosaic TILE is two columns inside the media column, so it is that column's width less the
+// gap, halved. The aside arrangements narrow the media column and get their own list from the
+// page (`mosaic[].sizes`); this is the default for a mosaic with no aside, measured on
+// /buy-blue-staffy-puppies-uk/: 136px at 375, 332px at 768, 140px at 1024 and 182px at 1280.
+const MOSAIC_SIZES = '(max-width: 900px) calc(50vw - 52px), '
+  + '(max-width: 1023px) calc(23.8vw - 38px), (max-width: 1199px) calc(23.4vw - 100px), 182px';
+// The single photo, per arrangement.
+//   TOP    — stacked, bleed-on-top and panel-on-top are one column: the whole content band,
+//            which is `100vw` less the container padding below 1024 and less the dial column
+//            as well above it. Measured on /blue-staffy-pup-sale-uk/ and
+//            /buy-staffy-puppies-for-sale-uk/: 279 / 672 / 652 / 828 at 375 / 768 / 1024 / 1280.
+//   PANEL  — a `minmax(0, 14rem)` column, 224px, which the aside arrangement narrows to 9rem
+//            between 1024 and 1199 (see the panel+aside block in the stylesheet). Measured on
+//            /blue-staffy-health-uk/: 277 / 670 / 144 / 224.
+//   SPLIT  — the two-column hero's media column, fluid between 900 and 1200 and capped at
+//            408px. Measured on /: 277 / 670 / 315 / 408. This is also where a BLEED hero with
+//            side media would land, and it is the one combination no approved record renders
+//            today: its photo runs from its column to the viewport edge, so it declares `50vw`
+//            from the CSS's own `margin-inline: calc(-50vw + 50%)` rather than from a
+//            measurement, and `img-sizes-matches-box` is what will read it the day H-HM3 ships.
+const BELOW_900 = (px: number) => `(max-width: 900px) calc(100vw - ${px}px)`;
+const MEASURED_PIC_SIZES = media === 'top'
+  ? `(max-width: 1023px) calc(100vw - 96px), (max-width: 1199px) calc(100vw - 372px), 828px`
+  : layout === 'panel'
+    ? (ledge === 'aside'
+      ? `${BELOW_900(98)}, (max-width: 1023px) 224px, (max-width: 1199px) 144px, 224px`
+      : `${BELOW_900(98)}, 224px`)
+    : layout === 'bleed'
+      ? `${BELOW_900(98)}, 50vw`
+      : `${BELOW_900(98)}, (max-width: 1023px) calc(52.5vw - 78px), `
+        + `(max-width: 1199px) calc(52.5vw - 224px), 408px`;
+const PIC_SIZES = imageSizes ?? MEASURED_PIC_SIZES;
+const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
 // A public path cannot go through <Image>: astro:assets only handles files it can read at
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
 // and loading behaviour, and the CSS below does not care which branch produced it.
@@ -382,6 +432,25 @@ const legacy = typeof image === 'string';
     .hero-aside :global(.aside-rows dt) { color: var(--color-text-muted); }
     .hero-aside :global(.aside-rows dd) { margin: 0; font-weight: 600; }
     .hero-aside :global(.aside-items) { margin: 0; padding-inline-start: var(--space-4); display: grid; gap: var(--space-1); }
+    /* THE SEAM BETWEEN THE FACTS AND THE CREDENTIAL LINE. An aside that carries a list of facts
+       AND the credential line under it needs the two told apart, and both pages that mount this
+       arrangement had written the same rule in their own scope — /blue-staffy-health-uk/ for its
+       `dl` and /uk-staffordshire-bull-terrier-guide/ for its `ul`. A rule copied into two pages
+       is a rule that can be fixed in one, so it lives here with the rest of the aside's
+       typography, which the hero already owns. */
+    .hero-aside :global(:is(.aside-rows, .aside-items) + .aside-chips) {
+      border-top: 1px solid var(--color-border); padding-top: var(--space-2);
+    }
+    /* A CONTENTS LIST IN A PANEL'S ASIDE IS SIZED FOR THE CEILING, and that is a measurement:
+       at the kit's default size three contents lines plus a title plus a credential row made
+       the breed guide's aside 180px and pushed the band 19px past 450 at 1024 and 30px past it
+       at 1280 — clipped, which is a defect a screenshot does not show. `--text-xs` with the gap
+       closed is 34px and is the whole of the difference. Scoped to `panel` + `aside`, which is
+       the arrangement with the narrowest aside column and the tightest budget, and to
+       `.aside-items` only: a `dl` of key facts is three short rows and is left alone. */
+    .kit-hero[data-hero-layout="panel"][data-hero-ledge="aside"] :global(.aside-items) {
+      font-size: var(--text-xs); line-height: 1.35; gap: 0;
+    }
     .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1.1fr 1fr; }
     @media (min-width: 1024px) {
       .kit-hero[data-hero-ledge="aside"] .inner { grid-template-columns: 1fr minmax(0, 1fr) 15rem; }

@@ -229,7 +229,15 @@ if (!nodeOpening('top', 0).includes(heroAside.quote!)) {
 // is prerendered, so it runs once at build and never in a browser.
 const inPublic = (p: string) => existsSync(fileURLToPath(new URL(`../../../public${p}`, import.meta.url)));
 const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(a, widths, inPublic);
-const TILE_SIZES = '(max-width: 900px) 45vw, 130px';
+// WHAT A TILE PAINTS ON *THIS* ARRANGEMENT, at the CSS's own breakpoints and measured at
+// twelve widths rather than estimated. H-AB1 is the mosaic WITH an aside, so its media column
+// is not the one `Hero`'s own `MOSAIC_SIZES` default describes: it is 16rem above 1200 and
+// 9rem between 1024 and 1199, and a tile is half of that less the grid gap. Measured here:
+// 136px at 375, 332px at 768, 68px at 1024 and 124px at 1280 — against the 130px this used to
+// promise at every desktop width, which was nearly twice the box at 1024. `sizes` is a promise
+// about the box and `img-sizes-matches-box` now measures it at all four widths.
+const TILE_SIZES = '(max-width: 900px) calc(50vw - 52px), (max-width: 1023px) calc(26.2vw - 42px), '
+  + '(max-width: 1199px) 68px, 124px';
 const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);

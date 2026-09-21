@@ -207,11 +207,19 @@
           "rows": [
             {
               "label": "DNA tests",
-              "value": "L-2-HGA and HC-HSF4"
+              "value": "L-2-HGA and HC-HSF4",
+              "source": [
+                "data/boards/blue-staffy-health-uk.json#sections[dna-tests].table.rows[0][0]",
+                "data/boards/blue-staffy-health-uk.json#sections[dna-tests].table.rows[1][0]"
+              ]
             },
             {
               "label": "Both parents",
-              "value": "Tested clear"
+              "value": "Tested clear",
+              "source": [
+                "data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, L-2-HGA)",
+                "data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, HC-HSF4)"
+              ]
             },
             {
               "label": "Lifespan",
@@ -1411,7 +1419,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "S3",
-        "note": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 2, Mark J (London). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured."
+        "note": "MODE: the pick decides how the block is drawn, and on a `reviews` section that includes the COUNT: `mode` is one of the axes RENDERED_AXES.reviews lists, and S3 (src/lib/boardStyles.ts) is the grid beside the heading. WHICH review is this section's intent, inside record_hash: data/reviews.json entry 2, Mark J (London), the only one of the three who names the paperwork and the health testing. So the page renders that one review in S3's bed, with `mode` read off the StyleDef rather than hard-coded. An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured. (Amended 2026-09-21: this note previously read \"MODE: single — pick S1\", which was a second answer to a question the pick had already answered.)"
       }
     },
     {
@@ -1823,7 +1831,7 @@
       "takeaways": "S2",
       "top": "H-GD3"
     },
-    "record_hash": "9fe5e2ddc9bfada79ed9faaea1b7eceebde2dac3a5a30d494fd2de0412bed653",
+    "record_hash": "05b380e085f97f8bda4e4301909d81020bfd6a444521559d25f878280276e41d",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1840,7 +1848,19 @@
       "h6_prefixes": [
         "Health Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-21T07:55:51Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T07:55:51Z",
+        "reason": "aside rows declared their sources: sections[top].hero.aside rows 0 and 1 state the two test names and both parents' status and cited nothing, though the page has always derived both from the dna-tests table — the paths are now on the record so the source gate can read them. Same re-approval amends the paperwork-review note, which read 'MODE: single — pick S1' against an approval of S3: the pick stands and the note now says what it says. No pick, figure, stats source, section id or section list moved.",
+        "changed_paths": [
+          "/sections/0/hero/aside/rows/0/source",
+          "/sections/0/hero/aside/rows/1/source",
+          "/sections/12/options/note"
+        ]
+      }
+    ]
   },
   "verbatim": {
     "changed": [

@@ -186,6 +186,26 @@ CHROME_RE = re.compile(r"jump|toc|rail|msp-|crumb|review|testimonial|read-c|quot
 # blob before the chrome test rather than the chrome test being loosened.
 BL_CLASS_RE = re.compile(r"\bbl-[a-z0-9-]+")
 
+# A BOARD SECTION'S OWN ID IS A NAME FOR CONTENT, NOT A CHROME MARKER (project 4, 2026-09-21).
+# CHROME_RE is a substring test over class, id and aria-label, and the ids the BOARD gives a
+# page's sections are chosen by the breeder to say what a section is ABOUT: `paperwork-review`
+# on /blue-staffy-health-uk/ and `owner-review` on /buy-blue-staffy-puppies-uk/ both contain
+# "review", so every word in those sections — the prose, the headings and the one real buyer
+# quote — was classed as site chrome and left out of both the dup corpus and `pageboard.py`'s
+# word count, which read one of them as 0 prose words against a 35-50 band and could not have
+# reported a crossover in either.
+#
+# ANCHORING THE ALTERNATIVES CANNOT SEPARATE THESE. The discriminator is not position: the kit
+# ships `class="kit-nav page-toc"` and `class="toc"`, so a token at the END of a hyphenated
+# name has to stay chrome, and that is the same shape as `paperwork-review`. What differs is
+# the ATTRIBUTE and the element: a chrome marker is a CLASS the kit writes, while these are the
+# `id` of a `<section>` carrying `data-section-label`, which is the marker every rebuilt page
+# writes on a section of its board record. So the id of a board section is left out of the
+# chrome blob; its class and aria-label are still read, and every other element's id still is.
+def _is_board_section(tag, attrs):
+    return tag == "section" and "data-section-label" in attrs
+
+
 class Text(HTMLParser):
     def __init__(self):
         super().__init__(); self.parts=[]; self.stack=[]
@@ -193,7 +213,9 @@ class Text(HTMLParser):
         if t in VOID_TAGS: return
         skipping = bool(self.stack and self.stack[-1][1])
         if not skipping:
-            blob = " ".join(v for k,v in attrs if v and k in ("class","id","aria-label"))
+            a = dict(attrs)
+            keys = ("class","aria-label") if _is_board_section(t, a) else ("class","id","aria-label")
+            blob = " ".join(v for k,v in attrs if v and k in keys)
             blob = BL_CLASS_RE.sub(" ", blob)
             skipping = t in SKIP_TAGS or bool(CHROME_RE.search(blob))
         self.stack.append((t, skipping))

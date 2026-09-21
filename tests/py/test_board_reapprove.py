@@ -174,6 +174,39 @@ def test_a_moved_ledge_source_is_refused():
         BA.apply_reapproval(new, REASON, old, NOW)
 
 
+def test_a_ledge_source_that_is_REMOVED_is_refused_like_one_that_moves():
+    """Un-citing a claim is the same edit as re-pointing it, read backwards."""
+    old = approved()
+    old["sections"][0]["hero"] = {"ticks": [{"text": "3 males", "source": "data/puppies.json#m"}]}
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    del new["sections"][0]["hero"]["ticks"][0]["source"]
+    with pytest.raises(PB.BoardError, match="/source"):
+        BA.apply_reapproval(new, REASON, old, NOW)
+
+
+def test_a_ledge_source_that_is_purely_ADDED_is_allowed():
+    """The one `/source` edit that is not an answer moving.
+
+    A ledge row carrying no citation is a claim nothing could check. Adding the path it was
+    always derived from leaves the label and the value exactly as the breeder approved them
+    and hands the source gate a row it could not see before, so the record comes out stricter
+    rather than looser. The refusal is about a source that MOVES; this one arrives.
+    """
+    old = approved()
+    old["sections"][0]["hero"] = {"aside": {"title": "Key facts",
+                                            "rows": [{"label": "Tests", "value": "two named"}]}}
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    new["sections"][0]["hero"]["aside"]["rows"][0]["source"] = "data/puppies.json#len"
+    out = BA.apply_reapproval(new, REASON, old, NOW)
+    row = out["board"]["sections"][0]["hero"]["aside"]["rows"][0]
+    assert row["source"] == "data/puppies.json#len"
+    assert any("/source" in p for p in out["board"]["approval"]["reapprovals"][-1]["changed_paths"])
+    # The value it cites is untouched: an addition may not smuggle an edit in beside itself.
+    assert row["value"] == "two named"
+
+
 def test_a_removed_section_is_refused():
     old, new = edited(lambda b: b["sections"].pop())
     with pytest.raises(PB.BoardError, match="section list moved"):

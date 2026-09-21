@@ -49,10 +49,12 @@
 // its own status column, and the lifespan from the BREED GUIDE's cell — this page cites that
 // cell and does not retype it. Each derived value is asserted against the wording the breeder
 // approved, so a fact that moves throws at build with both readings in the message rather than
-// printing one nobody has checked. The three approved CHIPS are rendered in the same box as a
-// single credential line: `Hero` shows a chip row only for `ledge: 'chips'`, so on H-GD3 the
-// prop is handed over and dropped, and a claim the breeder approved is not worth losing to an
-// arrangement.
+// printing one nobody has checked. Each row is found by the PATH IT CITES rather than by its
+// label, so a row renamed on the board cannot pick up another row's derivation. The three
+// approved CHIPS are rendered in the same box as a single credential line: `Hero` shows a chip
+// ROW only for `ledge: 'chips'`, so on H-GD3 the prop is handed over and dropped, and a claim
+// the breeder approved is not worth losing to an arrangement — the chips are on this page, in
+// the aside, and it is only the component's own chip row that H-GD3 does not render.
 //
 // THE CONTENTS THE STYLE'S NAME PROMISES IS `PageNav`, THREE LINES BELOW THE HERO, and that is
 // a measurement rather than a preference. The aside is a 15rem column inside a band held
@@ -95,7 +97,7 @@ import { fileURLToPath } from 'node:url';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset } from '../../lib/assets';
-import { recordText, countedFigures, ledgeText, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, ledgeText, sourceKey, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -162,13 +164,17 @@ if (testNames.length !== 2) {
   throw new Error(`blue-staffy-health-uk: the DNA table holds ${testNames.length} tests and this `
     + 'page, the about page and the listing are all written on there being two');
 }
-// "Clear" on the counter is the table's own status column reduced to one word, not a word
-// copied off the record: if a status ever stops reading "…clear" the tile cannot be printed.
+// "Clear" on the counter and "Tested clear" in the hero aside are the SAME reading of the
+// table's own status column, so they are taken once: the last word of every status, which must
+// be the same word in every row and must be "clear". A status that stops saying it cannot be
+// summarised, and the build says so rather than printing a word off the record.
 const statuses = dnaTable.rows.map((r) => String(r[2]));
-if (!statuses.every((s) => /\bclear$/i.test(s))) {
-  throw new Error(`blue-staffy-health-uk: a DNA row reads ${statuses.join(' / ')} — the counter `
+const verdicts = new Set(statuses.map((s) => s.split(/\s+/).pop()!.toLowerCase()));
+if (verdicts.size !== 1 || !verdicts.has('clear')) {
+  throw new Error(`blue-staffy-health-uk: the DNA rows read ${statuses.join(' / ')} — the counter `
     + 'tile and the hero aside both say the parents are clear, and neither may outlive the table');
 }
+const [verdict] = [...verdicts];
 
 // THE LIFESPAN IS THE BREED GUIDE'S CELL, CITED AND NOT RETYPED. Both the hero aside and the
 // third counter tile stand on `sections[breed-facts].table.rows` → "Lifespan" in
@@ -190,31 +196,42 @@ if (!lifespanMatch) {
 const lifespanRange = `${lifespanMatch[1]}–${lifespanMatch[2]} years`;
 const lifespanClause = `${lifespanMatch[1]} to ${lifespanMatch[2]} years`;
 
+const sentenceCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const COUNTED: Record<string, string> = {
   [DNA_ROWS]: String(dnaTable.rows.length),
-  [DNA_CLEAR]: 'Clear',
+  [DNA_CLEAR]: sentenceCase(verdict),
   [LIFESPAN_SOURCE]: lifespanRange,
 };
 const counted = countedFigures(COUNTED, 'blue-staffy-health-uk');
 const counterStats = sec('stats').stats!.map(counted);
 
 // ── THE HERO'S OWN DATA ─────────────────────────────────────────────────────────────────────
-const heroSection = sec('top') as typeof record.sections[number];
+const heroSection = sec('top');
 const heroChips = (heroSection.hero!.chips as LedgeEntry[]).map(ledgeText);
 const heroAside = heroSection.hero!.aside!;
-// Every aside row is DERIVED and then checked against the wording the breeder approved. A row
-// this page cannot rebuild from a file is a row it does not print: that is amendment 10.6's
-// rule for a ledge, applied to the three rows of this one.
+// EVERY ASIDE ROW IS DERIVED, AND IT IS FOUND BY THE PATH IT CITES RATHER THAN BY ITS LABEL.
+// All three rows now carry a `source` (added in the 2026-09-21 re-approval), so the row that
+// states the two test names is the row citing the two label cells, wherever it sits and
+// whatever it is called — a row renamed or moved on the board cannot silently pick up another
+// row's derivation, and a row citing a path this page cannot rebuild throws rather than
+// printing wording off the record. `sourceKey()` is the same join `countedFigures` uses, so a
+// value standing on TWO cells is keyed on both of them (amendment 10.5).
+const DNA_NAMES = dnaTable.rows.map((_, i) =>
+  `data/boards/blue-staffy-health-uk.json#sections[dna-tests].table.rows[${i}][0]`);
+const DNA_STATUSES = testNames.map((t) =>
+  `data/boards/blue-staffy-health-uk.json#cell(sections[dna-tests].table.rows, ${t})`);
 const ASIDE_VALUES: Record<string, string> = {
-  'DNA tests': testNames.join(' and '),
-  'Both parents': `Tested ${statuses[0].split(' ').pop()!.toLowerCase()}`,
-  Lifespan: lifespanClause,
+  [sourceKey(DNA_NAMES)]: testNames.join(' and '),
+  [sourceKey(DNA_STATUSES)]: `Tested ${verdict}`,
+  [sourceKey(LIFESPAN_SOURCE)]: lifespanClause,
 };
 const asideRows = heroAside.rows!.map((r) => {
-  const derived = ASIDE_VALUES[r.label];
+  const key = sourceKey((r as { source?: string | string[] }).source);
+  const derived = ASIDE_VALUES[key];
   if (derived === undefined) {
-    throw new Error(`blue-staffy-health-uk: the hero aside row "${r.label}" has no build-time `
-      + 'derivation — an aside row states a fact and rule 9 gives it no other source');
+    throw new Error(`blue-staffy-health-uk: the hero aside row "${r.label}" cites `
+      + `${key || '(no source)'}, which this page has no build-time derivation for — an aside `
+      + 'row states a fact and rule 9 gives it no other source');
   }
   if (derived !== r.value) {
     throw new Error(`blue-staffy-health-uk: the aside row "${r.label}" reads "${derived}" today `
@@ -231,6 +248,12 @@ const srcsetOf = (a: ReturnType<typeof asset>, widths: number[]) => bakedSrcset(
 // The panel hero's photo column is 14rem at 1024 and above and the full width of a phone below
 // 900px, so two small candidates are baked beside the master rather than the master being
 // re-encoded (working rule 11); `Hero` owns the `sizes` attribute that chooses between them.
+//
+// IN THE BODY, `sizes` IS WRITTEN ONLY WHERE THERE ARE CANDIDATES TO CHOOSE BETWEEN. Five of
+// this page's eight photographs are 500-550px masters against a 420px column — inside
+// `img-srcset-within-2x` at every width, so nothing is baked beside them — and a `sizes` on an
+// image with no `srcset` is inert markup that reads like a decision. It is on the two that DO
+// offer candidates, the 780px dam and the 1080px vet check, and on nowhere else.
 const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
 
 const sections = sectionsFromRecord(record);
@@ -274,8 +297,9 @@ const pageSchema = [
   {/* 01 top — hero, picked style H-GD3 (a text-led panel in a card: the photograph in a narrow
       column on the left, the copy beside it, the key-facts aside in a third column). The aside
       is a SLOT (amendment 8) and what goes in it is the record's own `hero.aside`, every row of
-      it derived above. No CTA buttons and no trust-chip row: the record gives the hero neither,
-      and the arrangement's ledge is `aside` (amendment 6a). */}
+      it derived above, and its three chips are the credential line at the foot of that box. No
+      CTA buttons: the record gives the hero none (amendment 6a), and no separate chip ROW,
+      because the arrangement's ledge is `aside`. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy health" class={box('top')}>
     <Hero
       as="h1"
@@ -403,7 +427,6 @@ const pageSchema = [
         alt={testsGraphic.alt}
         width={testsGraphic.w}
         height={testsGraphic.h}
-        sizes={BODY_SIZES}
         loading="lazy"
         decoding="async"
       />
@@ -517,7 +540,6 @@ const pageSchema = [
       alt={vaccinationPhoto.alt}
       width={vaccinationPhoto.w}
       height={vaccinationPhoto.h}
-      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -691,7 +713,6 @@ const pageSchema = [
       alt={feeding.alt}
       width={feeding.w}
       height={feeding.h}
-      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -783,7 +804,6 @@ const pageSchema = [
       alt={certifiedBreeders.alt}
       width={certifiedBreeders.w}
       height={certifiedBreeders.h}
-      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -854,7 +874,6 @@ const pageSchema = [
       alt={kcPapers.alt}
       width={kcPapers.w}
       height={kcPapers.h}
-      sizes={BODY_SIZES}
       loading="lazy"
       decoding="async"
     />
@@ -983,11 +1002,3 @@ const pageSchema = [
     <p>They travel with the puppy, and they belong to the dog rather than to us.</p>
   </section>
 </PageShell>
-<style>
-  /* The aside is slotted content, so it belongs to THIS page's scope — the hero owns the box
-     and the typography of the title, the rows and the credential line (`:global()` under
-     `.hero-aside`), and nothing here restates any of it. The one rule this page adds is the
-     separation between the derived rows and the credential line beneath them, because on H-GD3
-     the aside carries both. */
-  .aside-rows + .aside-chips { border-top: 1px solid var(--color-border); padding-top: var(--space-2); }
-</style>

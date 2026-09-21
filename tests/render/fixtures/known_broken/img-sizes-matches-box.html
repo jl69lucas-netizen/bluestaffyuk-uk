@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>sizes that promises a box it has not got</title>
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  .kit-hero .pic { display: block; width: 300px; height: auto; }
+</style>
+</head><body>
+<div class="kit-hero">
+  <!-- 900px promised against a 300px box: 3x, which is the shape of every stale reading the
+       check was written for, and the shape `img-srcset-within-2x` cannot see when the chosen
+       candidate happens to land inside twice the box. -->
+  <img class="pic"
+       src="../assets/narrow-400.png"
+       srcset="../assets/narrow-400.png 400w, ../assets/wide-1600.png 1600w"
+       sizes="900px"
+       alt="A blue Staffy puppy sitting on a garden step">
+</div>
+</body></html>

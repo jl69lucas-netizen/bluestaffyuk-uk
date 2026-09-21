@@ -409,6 +409,45 @@ REAPPROVE_REFUSED = (
 )
 
 
+_MISSING = object()
+
+
+def _at(doc, pointer):
+    """The value at a JSON pointer, or `_MISSING` when nothing is there."""
+    node = doc
+    for raw in pointer.split("/")[1:]:
+        key = raw.replace("~1", "/").replace("~0", "~")
+        if isinstance(node, dict):
+            if key not in node:
+                return _MISSING
+            node = node[key]
+        elif isinstance(node, list):
+            if not key.isdigit() or int(key) >= len(node):
+                return _MISSING
+            node = node[int(key)]
+        else:
+            return _MISSING
+    return node
+
+
+def _source_is_purely_added(old_board, new_board, pointer):
+    """True when this `/source` pointer is a citation that did not exist before.
+
+    THE REFUSAL IS ABOUT A SOURCE THAT MOVES, not about one that arrives. A `source` the
+    breeder approved is an answer — "this figure came from that file" — and re-pointing it
+    with a stamp is what this mode must never become. But a ledge row that carried NO source
+    is a row whose claim was never cited at all, and adding the path it was always derived
+    from changes nothing the breeder chose: the label and the value are untouched, the gate
+    that reads sources gains a row it could not see before, and the record gets stricter
+    rather than looser. Found on /blue-staffy-health-uk/, whose hero aside states the two
+    test names and both parents' status with no citation between them, and where the only
+    other routes were to re-board an approved page over two additions or to leave two claims
+    uncited for ever. An added source that does not resolve is still refused — by
+    `validate_board()`, which every re-approval runs.
+    """
+    return _at(old_board, pointer) is _MISSING and _at(new_board, pointer) is not _MISSING
+
+
 def reapprove_refusals(old_board, new_board, paths):
     """Why this diff may not be re-approved, as printable lines. Empty means it may."""
     bad = []
@@ -430,8 +469,11 @@ def reapprove_refusals(old_board, new_board, paths):
         if "/stats/" in p or p.endswith("/stats"):
             continue
         for frag, what in REAPPROVE_REFUSED:
-            if frag in p:
-                bad.append(f"{p}: {what} may not move in a re-approval — re-board the page")
+            if frag not in p:
+                continue
+            if frag == "/source" and _source_is_purely_added(old_board, new_board, p):
+                continue
+            bad.append(f"{p}: {what} may not move in a re-approval — re-board the page")
     return bad
 
 

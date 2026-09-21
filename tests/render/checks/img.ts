@@ -209,3 +209,137 @@ register({
     return { examined: r.examined, defects };
   },
 });
+
+/**
+ * `sizes` IS A PROMISE ABOUT A BOX, AND NOTHING MEASURED IT.
+ *
+ * `img-srcset-within-2x` reads the candidate the browser CHOSE against the box it painted, so
+ * it catches a promise that is too LARGE and only once the chosen candidate is more than twice
+ * the box. It is blind to the other half: a `sizes` that UNDER-states the box makes the browser
+ * choose a candidate too small, which is a soft photograph rather than a heavy one and reads as
+ * a pass on every gate the repo has. It is also blind to an over-statement that happens to land
+ * inside 2x, and to the whole middle of the breakpoint range — `/blue-staffy-pup-sale-uk/`'s
+ * stacked hero promised 560px for a box that paints 828px at 1280 for six weeks, and
+ * `/blue-staffy-uk-breeders/`'s mosaic promised 130px for a 68px tile at 1024, and neither was
+ * reportable by anything here.
+ *
+ * So this measures the promise itself: the `sizes` list is resolved the way the BROWSER
+ * resolves it — first matching media condition wins, and the length is handed to the CSS engine
+ * rather than parsed, so `calc(52.5vw - 224px)` is evaluated by the thing that will evaluate it
+ * in production — and compared against the box the image actually paints.
+ *
+ * THE WINDOW IS 0.9-1.25x, and it is asymmetric on purpose. Under 0.9 the browser is being told
+ * to fetch less than it needs and the photograph is soft; over 1.25 it is being told to fetch
+ * more, which is bytes rather than blur and is what a DPR-2 screen partly redeems. A `sizes`
+ * cannot be exact at every width — it is a list of bands over a fluid layout — so a window is
+ * the honest form of the check, and 1.25 is tight enough that a whole stale breakpoint cannot
+ * hide inside it (every stale reading found was 1.35x or worse).
+ *
+ * HERO PHOTOGRAPHY ONLY. The hero is where `sizes` is written by a COMPONENT rather than beside
+ * the image it describes, which is what let one arrangement's column become five arrangements'
+ * promise; body images state their own beside their own `srcset`. Both shapes are examined: the
+ * single photo IS `.pic`, and a mosaic's tiles are inside it.
+ */
+register({
+  id: 'img-sizes-matches-box',
+  family: 'IMG',
+  severity: 'blocking',
+  describe: "a hero image's sizes must resolve to within 0.9-1.25x of the box it paints",
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    const r = await page.evaluate(() => {
+      // The browser's own rules, in the browser: split the list on TOP-LEVEL commas (a
+      // `calc()` or a media condition may hold its own), take the first entry whose media
+      // condition matches — a bare length matches unconditionally and is the default — and
+      // resolve its length through the CSS engine rather than through a regex, so `100vw`,
+      // `calc(50vw - 52px)` and `14rem` all mean here exactly what they will mean in
+      // production.
+      const split = (list: string): string[] => {
+        const out: string[] = [];
+        let depth = 0;
+        let cur = '';
+        for (const ch of list) {
+          if (ch === '(') depth++;
+          if (ch === ')') depth--;
+          if (ch === ',' && depth === 0) { out.push(cur); cur = ''; continue; }
+          cur += ch;
+        }
+        if (cur.trim()) out.push(cur);
+        return out.map((s) => s.trim()).filter(Boolean);
+      };
+      const ruler = document.createElement('div');
+      ruler.style.cssText = 'position:absolute;top:0;left:0;visibility:hidden;height:0';
+      document.body.appendChild(ruler);
+      const toPx = (length: string): number | null => {
+        ruler.style.width = '';
+        ruler.style.width = length;
+        if (!ruler.style.width) return null;
+        return ruler.getBoundingClientRect().width;
+      };
+      const resolve = (list: string): number | null => {
+        for (const entry of split(list)) {
+          const m = /^(\(.*\))\s+(.+)$/.exec(entry);
+          if (!m) return toPx(entry);
+          if (window.matchMedia(m[1]).matches) return toPx(m[2]);
+        }
+        return null;
+      };
+
+      const pic = document.querySelector('.kit-hero .pic');
+      const imgs: HTMLImageElement[] = [];
+      if (pic instanceof HTMLImageElement) imgs.push(pic);
+      else if (pic) imgs.push(...Array.from(pic.querySelectorAll('img')));
+
+      let examined = 0;
+      const bad: string[] = [];
+      const unresolved: string[] = [];
+      for (const img of imgs) {
+        const list = img.getAttribute('sizes');
+        // No `sizes` is not a defect here: an image with one candidate has nothing to choose
+        // between, and `img-srcset-within-2x` owns the case where it should have had more.
+        if (!list || !img.getAttribute('srcset')) continue;
+        const box = img.getBoundingClientRect().width;
+        if (box < 1) continue;
+        const name = (img.getAttribute('src') || '(no src)').split('/').pop() as string;
+        const declared = resolve(list);
+        if (declared === null || declared <= 0) {
+          unresolved.push(`${name} sizes="${list}"`);
+          continue;
+        }
+        examined++;
+        const ratio = declared / box;
+        if (ratio < 0.9 || ratio > 1.25) {
+          bad.push(`${name} declares ${Math.round(declared)}px, paints ${Math.round(box)}px `
+            + `(${ratio.toFixed(2)}x) via sizes="${list}"`);
+        }
+      }
+      ruler.remove();
+      return { examined, bad: bad.slice(0, 6), count: bad.length, unresolved };
+    });
+
+    const defects = [];
+    if (r.count) {
+      defects.push({
+        checkId: 'img-sizes-matches-box',
+        family: 'IMG' as const,
+        viewport,
+        count: r.count,
+        message: `${r.count} hero image(s) whose sizes does not match the box: ${r.bad.join(' | ')}`,
+      });
+    }
+    // A `sizes` the CSS engine will not parse is a `sizes` the browser ignores, which is the
+    // same thing as having written none — reported rather than skipped, because skipping it
+    // would let a typo buy silence from the very check written to stop that.
+    if (r.unresolved.length) {
+      defects.push({
+        checkId: 'img-sizes-matches-box',
+        family: 'IMG' as const,
+        viewport,
+        count: r.unresolved.length,
+        message: `${r.unresolved.length} hero image(s) with a sizes the browser cannot resolve: ${r.unresolved.join(' | ')}`,
+      });
+    }
+    return { examined: r.examined, defects };
+  },
+});

@@ -281,3 +281,41 @@ def test_the_audit_drops_the_specimen_routes_from_its_corpus(tmp_path):
     d.main(["--dist", str(tmp_path), "--json", str(out)])
     res = json.loads(out.read_text())
     assert res["pages"] == 2 and res["problems"] >= 1, res
+
+
+# ── a board section's id is not a chrome marker ────────────────────────────────────────────
+
+def _chrome(tag, attrs):
+    """Whether `Text` would treat this element, and everything in it, as site chrome."""
+    p = d.Text()
+    p.handle_starttag(tag, attrs)
+    return p.stack[-1][1]
+
+
+def test_a_board_sections_own_id_is_not_read_as_chrome():
+    """`paperwork-review` and `owner-review` are what two sections are ABOUT.
+
+    CHROME_RE is a substring test, so the breeder's own section id put the whole section —
+    prose, headings and a real buyer quote — outside the dup corpus and outside the word
+    count, which read one of them as 0 prose words against a 35-50 band.
+    """
+    section = [("id", "paperwork-review"), ("data-section-label", "One owner on the paperwork"),
+               ("class", "bl-box bl-frame-plain bl-cols-2 bl-head-inline")]
+    assert _chrome("section", section) is False
+    assert _chrome("section", [("id", "owner-review"), ("data-section-label", "x")]) is False
+
+
+def test_a_chrome_class_is_still_chrome_wherever_the_token_sits():
+    """The fix is about the ATTRIBUTE, not the position, and it has to be: the kit ships
+    `page-toc`, where the token is the tail of a hyphenated name exactly as it is in
+    `paperwork-review`. Anchoring the alternatives would have taken the table of contents out
+    of the chrome set along with the false positive."""
+    for cls in ("review-rail", "kit-nav page-toc", "toc", "msp-card", "read-card", "crumbs"):
+        assert _chrome("div", [("class", cls)]) is True, cls
+
+
+def test_a_section_id_is_still_chrome_when_it_is_not_a_board_section():
+    """`data-section-label` is what a rebuilt page writes on a section of its record. Without
+    it this is an ordinary element and its id is read as it always was."""
+    assert _chrome("section", [("id", "paperwork-review")]) is True
+    assert _chrome("div", [("id", "jump-list")]) is True

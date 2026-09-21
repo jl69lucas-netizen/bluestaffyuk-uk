@@ -1,4 +1,5 @@
 import { register, type CheckResult } from '../lib/registry.js';
+import { settlePage } from '../lib/probes.js';
 import type { Page } from '@playwright/test';
 
 register({
@@ -556,6 +557,63 @@ register({
               message: `${r.bad.length} table(s) do not stack cleanly: ${r.bad.slice(0, 5).join(' | ')}`,
             },
           ]
+        : [],
+    };
+  },
+});
+
+/**
+ * THE HERO ASIDE IS THE ONE BLOCK IN THE BAND THAT CAN BE CUT WITHOUT SHOWING IT.
+ *
+ * Rule 10 holds the hero between 390 and 450px at desktop, and it holds it with a `max-height`
+ * and a hidden overflow — which is the right way to keep a ceiling and the reason a ceiling
+ * needs measuring rather than reading. A copy column pushes its own text past the fold and the
+ * page looks wrong; the ASIDE is a bordered card in its own column, so when the band runs out
+ * the card is simply guillotined along the ceiling and the missing row looks like a design
+ * choice. It was found twice in two days on the two H-GD3 pages — 19px at 1024 and 30px at
+ * 1280 on the breed guide's contents list, both invisible in a screenshot until the numbers
+ * were taken.
+ *
+ * Two readings, because they are different failures. The aside OVERFLOWING ITSELF is content
+ * the card cannot hold; the aside HANGING BELOW THE HERO is content the band cannot hold. One
+ * pixel of tolerance on each, for sub-pixel layout.
+ */
+register({
+  id: 'hero-aside-no-clip',
+  family: 'LAYOUT',
+  severity: 'blocking',
+  describe: 'a hero aside is never cut off by its own box or by the hero\'s height ceiling',
+  minExamined: 1,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    await settlePage(page);
+    const r = await page.evaluate(() => {
+      let examined = 0;
+      const bad: string[] = [];
+      for (const hero of Array.from(document.querySelectorAll('.kit-hero'))) {
+        const aside = hero.querySelector('.hero-aside');
+        if (!aside) continue;
+        const box = aside.getBoundingClientRect();
+        if (box.width < 1 || box.height < 1) continue;
+        examined++;
+        const own = aside.scrollHeight - aside.clientHeight;
+        if (own > 1) bad.push(`the aside's own content is ${Math.round(own)}px taller than its box`);
+        const below = box.bottom - hero.getBoundingClientRect().bottom;
+        if (below > 1) {
+          bad.push(`the aside runs ${Math.round(below)}px below the hero, which clips it`);
+        }
+      }
+      return { examined, bad };
+    });
+    return {
+      examined: r.examined,
+      defects: r.bad.length
+        ? [{
+          checkId: 'hero-aside-no-clip',
+          family: 'LAYOUT' as const,
+          viewport,
+          count: r.bad.length,
+          message: r.bad.join(' | '),
+        }]
         : [],
     };
   },
