@@ -47,6 +47,30 @@ def test_video_shard_from_embeds(tmp_path):
     assert shards["video"][0][1][0]["id"] == "g9iV9RVr_Sk"
 
 
+def test_a_nocookie_player_is_the_same_video_as_a_youtube_com_one(tmp_path):
+    """`VideoEmbed` (component 18) requests `youtube-nocookie.com`, deliberately, and the
+    shard builder matched `youtube.com/embed/` alone — so every page rebuilt with the kit's
+    video component left the video sitemap without one gate reporting it. Working rule 14
+    keeps an already-ranking id; losing its sitemap row loses the same thing by another
+    route. Both hosts are one video, and `player_loc` stays canonical either way."""
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/nocookie/": _page(title="N", desc="D", body=(
+            '<iframe src="https://www.youtube-nocookie.com/embed/g9iV9RVr_Sk"></iframe>')),
+        "/plain/": _page(title="P", desc="D", body=_embed("WuA0yo6HZKE")),
+    })
+    shards = build_shards(d, "https://example.test", set())
+    got = {u: [v["id"] for v in vids] for u, vids in shards["video"]}
+    assert got == {"https://example.test/nocookie/": ["g9iV9RVr_Sk"],
+                   "https://example.test/plain/": ["WuA0yo6HZKE"]}, got
+    gs.write(shards, dist=d, base="https://example.test")
+    raw = (d / "video-sitemap.xml").read_text(encoding="utf-8")
+    # The PLAYER url is the canonical watch host on both, which is what Google expects there
+    # and is not the host the page itself asked the browser for.
+    assert raw.count("<video:player_loc>https://www.youtube.com/embed/") == 2, raw
+    assert "youtube-nocookie" not in raw, raw
+
+
 def test_noindex_pages_excluded(tmp_path):
     d = tmp_path / "dist"; (d / "n").mkdir(parents=True)
     (d / "n/index.html").write_text('<html><head><meta name="robots" content="noindex, follow"></head><body></body></html>', encoding="utf-8")

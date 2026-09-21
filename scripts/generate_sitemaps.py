@@ -15,6 +15,16 @@ TODAY = datetime.date.today().isoformat()
 SHARDS = ("page", "post", "location", "puppy", "video")
 VIDEO_TITLE_MAX = 100
 VIDEO_DESC_MAX = 2048
+# THE PLAYER HOST IS `youtube-nocookie.com` ON EVERY REBUILT PAGE, and this pattern read
+# `youtube\.com/embed/` alone. `src/components/kit/VideoEmbed.astro` (component 18, working
+# rule 14) embeds the privacy-preserving host deliberately, so from the first rebuilt page
+# with a video onward this shard was silently losing entries: the homepage's two ids, the
+# why-us page's and the about page's had all left the video sitemap without one gate saying
+# so, because nothing checks that a page carrying an embed appears here. Working rule 14
+# exists to keep those ids ranking, and dropping them out of the video sitemap is the same
+# loss by another route. `player_loc` below stays on `youtube.com`, which is the canonical
+# watch host Google expects there and is not what the page requests.
+EMBED_SRC = re.compile(r'youtube(?:-nocookie)?\.com/embed/([A-Za-z0-9_-]{6,})')
 
 
 def _clip(text, limit):
@@ -80,7 +90,7 @@ def build_shards(dist, base, blog_slugs):
         if s is None:
             continue
         out[s].append((base + url_path, TODAY))
-        vids = list(dict.fromkeys(re.findall(r'youtube\.com/embed/([A-Za-z0-9_-]{6,})', text)))
+        vids = list(dict.fromkeys(EMBED_SRC.findall(text)))
         if vids:
             t = re.search(r"<title>(.*?)</title>", text, re.S)
             title = html.unescape(t.group(1)).strip() if t else url_path
