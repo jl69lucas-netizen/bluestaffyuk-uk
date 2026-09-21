@@ -46,6 +46,7 @@ import VideoEmbed from '../components/kit/VideoEmbed.astro';
 import Faq from '../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../lib/sections';
 import { pickedStyle } from '../lib/pickedStyle';
+import { bakedAssets } from '../lib/assets';
 import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
 import { loadFaq } from '../lib/faq';
@@ -64,11 +65,7 @@ const h1 = record.h1.variants[record.approval!.h1];
 // The fourteen photographs, by slot, at their ORIGINAL public paths with their ORIGINAL alt
 // text (working rule 11; those alts are also fourteen elements of the verbatim set). A
 // missing slot throws at build rather than rendering an image with no alt.
-const asset = (slot: string) => {
-  const a = record.assets.find((x) => x.slot === slot);
-  if (!a || !a.file) throw new Error(`index.astro: the record has no baked asset for ${slot}`);
-  return a;
-};
+const asset = bakedAssets(record, 'index.astro');
 const heroPhoto = asset('home-hero');
 const guarantee = asset('home-guarantee');
 const ownerManchester = asset('home-owner-manchester');

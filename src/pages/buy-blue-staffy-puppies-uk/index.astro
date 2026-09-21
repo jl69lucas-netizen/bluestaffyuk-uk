@@ -62,6 +62,7 @@ import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
+import { bakedAssets } from '../../lib/assets';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -83,11 +84,7 @@ const h1 = record.h1.variants[record.approval!.h1];
 // paths and carry their own alt, because a page may not render the same alt twice
 // (`img-alt-present-and-unique`) and may not rename a served file (working rule 11).
 // A missing slot throws at build rather than rendering an image with no alt.
-const asset = (slot: string) => {
-  const a = record.assets.find((x) => x.slot === slot);
-  if (!a || !a.file) throw new Error(`buy-blue-staffy-puppies-uk: the record has no baked asset for ${slot}`);
-  return a;
-};
+const asset = bakedAssets(record);
 const heroPhoto = asset('listing-hero');
 const heroTile2 = asset('listing-hero-tile-2');
 const heroTile3 = asset('listing-hero-tile-3');

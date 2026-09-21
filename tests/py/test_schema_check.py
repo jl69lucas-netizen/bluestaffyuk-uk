@@ -80,6 +80,22 @@ def test_aggregate_offer_price_band_with_a_currency_is_not_half_priced():
     assert len(r["blocking"]) == 1 and "priceCurrency" in r["blocking"][0]
 
 
+def test_a_plain_offer_gets_no_band_exemption():
+    """The band reading is gated on the TYPE, not on the key (review of 0128e21).
+
+    `lowPrice` on a plain Offer is not a price band; it is a typo for `price`. Ungated, the
+    exemption above would have excused exactly the defect the rule exists for — a figure
+    with no currency beside it — on any node that happened to misspell the key."""
+    priced = ('<script type="application/ld+json">{"@type":"Product","name":"p","offers":'
+              '{"@type":"Offer","lowPrice":"1500","priceCurrency":"GBP"}}</script>')
+    r = audit_html(priced, available_slugs=set(), slug="x")
+    assert len(r["blocking"]) == 1 and "priceCurrency without price" in r["blocking"][0]
+    # And with neither, it stays the bare availability statement the rule leaves alone.
+    neither = ('<script type="application/ld+json">{"@type":"Product","name":"p","offers":'
+               '{"@type":"Offer","lowPrice":"1500"}}</script>')
+    assert audit_html(neither, available_slugs=set(), slug="x")["blocking"] == []
+
+
 @pytest.mark.parametrize("pup", ["byrd", "ince"])
 def test_pup_page_absent_from_available_slugs_may_not_claim_instock(pup):
     # A pup whose data/puppies.json status is not Available is simply missing from

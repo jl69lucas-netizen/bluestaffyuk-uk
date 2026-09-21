@@ -278,8 +278,12 @@ def audit_html(text, available_slugs, slug):
         # names A price at all — asking only for `price` made the correct markup for a price
         # range read as "priceCurrency without price". Charged to the harness 2026-09-20,
         # project 4 Task 15, when /blue-staffy-pup-sale-uk/ became the first rebuilt page to
-        # carry a band rather than a single figure.
-        has_price = any(k in offer for k in ("price", "lowPrice", "highPrice"))
+        # carry a band rather than a single figure. GATED ON THE TYPE, because the two keys
+        # mean nothing on a plain Offer: one that spelled its figure `lowPrice` and gave no
+        # currency would be excused by a reading that never asked what kind of node it was,
+        # and a bare `lowPrice` on an Offer is not a price band — it is a typo for `price`.
+        band_ok = "AggregateOffer" in _types(offer)
+        has_price = "price" in offer or (band_ok and any(k in offer for k in ("lowPrice", "highPrice")))
         has_cur = "priceCurrency" in offer
         if has_price != has_cur:
             blocking.append("Offer states %s without %s"

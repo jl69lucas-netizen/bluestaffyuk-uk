@@ -2,13 +2,11 @@
 //
 // A rebuilt page must mount the arrangement the breeder actually picked on the board, and
 // it must mount the same one the preview showed them. Both sides therefore resolve through
-// `STYLES` in src/lib/boardStyles.ts: the preview route renders every style a section
-// offers, and a page renders the single one `approval.picks` names. A page that hard-coded
-// its own `boxClass({...})` would be free to drift from the board the breeder signed off.
-import {
-  STYLES, STYLE_IDS, STYLES_BY_ID, layoutTypeFor, stylesFor,
-  type Shape, type StyleDef,
-} from './boardStyles';
+// src/lib/boardStyles.ts: the preview route calls `stylesForSection()` to render every style
+// a section offers, and a page calls this to render the single one `approval.picks` names. A
+// page that hard-coded its own `boxClass({...})` would be free to drift from the board the
+// breeder signed off.
+import { stylesForSection, styleById, layoutTypeFor, type StyleDef } from './boardStyles';
 
 /** The shape of a board record this helper needs. Structural, so the imported JSON fits.
  *
@@ -30,31 +28,28 @@ export interface PickedStyleSource {
  * block is the record OF the decision while `options.pick` is a convenience copy — so the
  * approval wins where they ever disagree.
  *
- * Throws rather than falling back to S1. A page whose section silently rendered an
- * arrangement nobody chose is the exact failure the board exists to prevent, and it would
- * ship looking perfectly fine.
+ * TWO STEPS, and the second is the one that matters. `styleById()` resolves an id against the
+ * whole repo — per-page ids first, then the shape's trio, then the family's — and it is reused
+ * here rather than copied, so the page and the preview route can never disagree about what an
+ * id means. But `styleById()` is deliberately forgiving: an id it cannot place falls back to
+ * the first style of the trio, which on a page would be an arrangement nobody chose, rendering
+ * perfectly fine. So the def it returns is then checked for MEMBERSHIP of the menu this
+ * section actually offered — `stylesForSection()`, the same call the board preview made — and
+ * anything else throws. That also catches the subtler failure the global lookup allows: a
+ * `stats` section picking `H-FS3`, or a for-sale hero picking `H-GD1`, both of which resolve
+ * by id and neither of which was ever on this section's board.
  */
 export function pickedStyle(record: PickedStyleSource, id: string): StyleDef {
   const section = record.sections.find((s) => s.id === id);
   if (!section) throw new Error(`pickedStyle: the record has no section ${id}`);
   const pick = record.approval?.picks?.[id] ?? section.options?.pick ?? null;
   if (!pick) throw new Error(`pickedStyle: section ${id} carries no approved style pick`);
-  // ORDER MATTERS, and it is `styleById()`'s order for `styleById()`'s reason: a per-page id
-  // (`H-FS3`, `C-FS1`) names ONE arrangement across the whole repo and is looked up by id,
-  // while `S1` on a hero means the shape-wide trio the pre-rule-16 pages approved. The
-  // family's own trio is the last resort, for a record that names a family and an id the
-  // global map has not learned. Unlike `styleById()` this throws rather than falling back to
-  // the first style: a page silently rendering an arrangement nobody chose is the exact
-  // failure the board exists to prevent, and it would ship looking perfectly fine.
-  const shapeStyles = STYLES[section.shape as Shape];
-  if (!shapeStyles) throw new Error(`pickedStyle: section ${id} has shape ${section.shape}, which offers no styles`);
   const family = layoutTypeFor(record.meta?.page_type ?? '', record.meta?.layout_type ?? null);
-  const found = STYLES_BY_ID[pick]
-    ?? shapeStyles.find((s) => s.id === pick)
-    ?? stylesFor(section.shape, family).find((s) => s.id === pick);
-  if (!found) {
-    throw new Error(`pickedStyle: section ${id} was picked ${pick}, which is neither `
-      + `${STYLE_IDS.join('/')} nor a per-page style id`);
+  const offered = stylesForSection(section.shape, section.styles ?? undefined, family);
+  const found = styleById(section.shape, pick, family);
+  if (!offered.some((s) => s.id === found.id)) {
+    throw new Error(`pickedStyle: section ${id} was picked ${pick}, which is not one of the `
+      + `styles it offers (${offered.map((s) => s.id).join('/')})`);
   }
   return found;
 }

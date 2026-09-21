@@ -5,29 +5,31 @@
 // `migration_parity.py` skips it and `facts_preserved_check.py`, `link_parity_check.py` and
 // `verbatim_set_check.py` are its gates instead.
 //
-// THIS IS THE MONEY PAGE. Four figures and no others: £1,500 for a male, £1,700 for a
+// THIS IS THE MONEY PAGE. Four money figures and no others: £1,500 for a male, £1,700 for a
 // female, a £500 refundable deposit and £200 to £350 for UK home delivery. Every one of them
 // is a value in data/price-matrix.json or data/settings.json, read here rather than typed —
-// the counter strip prints the record's own `stats` rows and the two tables print the
-// record's own cells. The migrated page's £850 to £1,200 band is nowhere on it (Known Issue
-// 11, `dropped.prices`), and neither is the health guarantee (`guarantee_days: null`), the
-// four unevidenced counters, the four puppy names, the twelve-week age or the six delivery
-// cities — each logged in the record's `dropped` with its reason.
+// the counter strip prints all four of the record's own `stats` rows, the hero's ledge prints
+// the two prices, and the two tables print the record's own cells. The migrated page's £850
+// to £1,200 band is nowhere on it (Known Issue 11, `dropped.prices`), and neither is the
+// health guarantee (`guarantee_days: null`), the four unevidenced counters, the four puppy
+// names, the twelve-week age or the six delivery cities — the last of which came out of the
+// `sale-delivery-uk` FAQ answer too. Each is logged in the record's `dropped` with its reason.
 //
 // WORKING RULE 15 (faithful rewrite). The VERBATIM SET — the migrated H1, every H2/H3
 // carrying a target keyword, the first paragraph under each of those headings and every
 // image alt — is carried WORD FOR WORD from the migrated body at 63a7b12. Everything else is
 // written fresh, in Lisa Bright's first person, from the record's outline; not one sentence
-// of it is pasted. Eight deviations are recorded in the record's `verbatim.changed` with
+// of it is pasted. Nine deviations are recorded in the record's `verbatim.changed` with
 // their reasons, and `scripts/verbatim_set_check.py --check` proves every element is
 // accounted for.
 //
 // WORKING RULE 16. The hero is `H-FS3` and the counter strip is `C-FS1` — the for-sale
 // family's own arrangements from HERO_STYLES_BY_PAGE_TYPE and COUNTER_STYLES_BY_PAGE_TYPE,
 // resolved through `pickedStyle()` exactly as every other section's pick is. The hero's ledge
-// is `stats`, so it prints the record's four sourced figures and no trust chips and no CTA
-// buttons (amendment 6a); the record's `chips` and `ticks` are handed over unchanged and the
-// arrangement is what decides that they do not render.
+// is `stats`, so it prints the two PRICE rows of the record's sourced figures — the counter
+// two sections down owns all four — and no trust chips and no CTA buttons (amendment 6a);
+// the record's `chips` and `ticks` are handed over unchanged and the arrangement is what
+// decides that they do not render.
 //
 // TWELVE SECTIONS, in the record's order, each mounted in the style `approval.picks` names.
 // No link, image or section is here that the board does not carry. NO EMBED: the migrated
@@ -110,10 +112,24 @@ const faqs = faqSection.tree.map((n) => {
 const priceTable = record.sections.find((s) => s.id === 'prices')!.table!;
 const deliveryTable = record.sections.find((s) => s.id === 'delivery')!.table!;
 
-// The hero's and the counter's own data, off the record: the four sourced figures and the
-// ledge entries the arrangement selects between. Nothing here is derived on the page.
+// The hero's and the counter's own data, off the record. Nothing here is derived on the page.
 const heroSection = record.sections.find((s) => s.id === 'top')!;
-const heroStats = heroSection.stats!.map((r) => ({ n: r.n, label: r.label }));
+// THE LEDGE STATES THE TWO PRICES, not all four figures. The hero and the counter strip sit
+// one section apart and the record hands both the same four `stats` rows, so printing all
+// four twice made the second strip a reprint rather than a summary. The hero takes the two
+// the H1 asks about — what a puppy costs — and the deposit and the delivery band are read on
+// the counter, which is the section whose whole job they are. The filter is on the recorded
+// SOURCE path and not on a position, so a row inserted above one cannot change which two are
+// printed, and neither figure is typed here. The record still lists four rows on `top`
+// because `sections[].stats` is inside `record_hash`: trimming it needs a board round-trip,
+// and it is logged for the next one.
+const PRICE_LEDGE = ['data/price-matrix.json#male_gbp', 'data/price-matrix.json#female_gbp'];
+const heroStats = heroSection.stats!
+  .filter((r) => typeof r.source === 'string' && PRICE_LEDGE.includes(r.source))
+  .map((r) => ({ n: r.n, label: r.label }));
+if (heroStats.length !== PRICE_LEDGE.length) {
+  throw new Error('blue-staffy-pup-sale-uk: the record no longer carries both price stat rows');
+}
 const heroChips = heroSection.hero!.chips as string[];
 const heroTicks = heroSection.hero!.ticks.map((t) => (typeof t === 'string' ? t : t.text));
 const counterStats = record.sections.find((s) => s.id === 'at-a-glance')!.stats!
@@ -191,7 +207,7 @@ const pageSchema = [
       as="h1"
       eyebrow={`KC registered · ${SITE.location_label}`}
       title={T(h1)}
-      lede="I am Lisa Bright, and this is the page that answers the money questions in full: what a blue Staffy puppy costs here, what the deposit is and whether it comes back, what is included in the price and what it costs to get a puppy home."
+      lede="I am Lisa Bright, and this is the Blue Staffy pup sale UK page that answers the money questions in full: what a puppy costs here, what the deposit is and whether it comes back, what is included in the price and what it costs to get a puppy home."
       image={heroPhoto.file}
       imageAlt={heroPhoto.alt}
       imageWidth={heroPhoto.w}

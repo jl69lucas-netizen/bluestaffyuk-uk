@@ -152,7 +152,7 @@
   {
     "id": "sale-delivery-uk",
     "q": "Can you deliver a Blue Staffy puppy to my location in the UK?",
-    "a": "Yes, we offer safe and reliable Staffy puppy UK delivery services! We can arrange secure transport for your new family member directly to your doorstep, whether in London, Birmingham, Manchester, Leeds, Cornwall, Essex, or anywhere else in the UK. Trusted DEFRA-approved transport to homes UK-wide.",
+    "a": "Yes, we offer safe and reliable Staffy puppy UK delivery services! We can arrange secure transport for your new family member directly to your doorstep, anywhere in the UK. Trusted DEFRA-approved transport to homes UK-wide.",
     "source": "src/pages/blue-staffy-pup-sale-uk/index.astro"
   },
   {

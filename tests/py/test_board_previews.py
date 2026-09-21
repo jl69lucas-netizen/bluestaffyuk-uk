@@ -1108,3 +1108,55 @@ def test_every_delta_reaches_the_built_board_including_the_locked_ones():
         if locked:
             both = [s for s in deltas if s["id"] in locked]
             assert both, f"{slug} locks picks but prints no delta beside any of them"
+
+
+# ── pickedStyle(): a page may only mount a style its own section offered ───────────────────
+#
+# The TypeScript has no unit harness in this repo, so the guard is proved from two directions
+# rather than one: the source is held to enforcing it, and the invariant it enforces is checked
+# against every record on disk. Added in the review of 0128e21, where `pickedStyle()` had been
+# widened to resolve working rule 16's per-page ids (`H-FS3`, `C-FS1`) through the global
+# `STYLES_BY_ID` map and, in doing so, had stopped asking whether the id it found belonged to
+# the section that named it.
+
+PICKED_STYLE_TS = (ROOT / "src/lib/pickedStyle.ts").read_text(encoding="utf-8")
+
+
+def test_picked_style_reuses_style_by_id_and_refuses_a_style_the_section_never_offered():
+    """It resolves through the shared helpers and throws on a def outside the section's menu.
+
+    `styleById()` is deliberately forgiving — an id it cannot place falls back to the first
+    style of the trio — which is right for a preview route and wrong for a page: the fallback
+    would be an arrangement nobody chose, rendering perfectly fine. So the resolved def is
+    checked for membership of `stylesForSection()`, the same menu the board preview rendered,
+    and the chain is not re-implemented here where it could drift from the one the preview
+    calls."""
+    src = PICKED_STYLE_TS
+    assert "styleById(" in src, "the id chain is reused, not copied"
+    assert "STYLES_BY_ID" not in src, "resolving by id belongs to styleById(), not to a copy here"
+    offered = src.split("const offered = ", 1)
+    assert len(offered) == 2 and offered[1].startswith("stylesForSection("), \
+        "the menu comes from stylesForSection(), the call the preview route makes"
+    guard = src.split("const found = styleById(", 1)[1]
+    assert "offered.some((s) => s.id === found.id)" in guard, "membership is asserted"
+    assert "throw new Error(" in guard, "and a non-member throws rather than rendering"
+
+
+def test_every_record_pick_is_one_of_that_sections_own_styles():
+    """The invariant the guard enforces, against the records as they stand.
+
+    `board_approve.py` refuses a pick outside the section's `styles` at approval time; this is
+    the second opinion on what is on disk now, and it is what would have caught a `stats`
+    section carrying a hero's id — which resolves by id, renders, and is nobody's decision."""
+    bad = []
+    for path in sorted((ROOT / "data/boards").glob("*.json")):
+        record = json.loads(path.read_text(encoding="utf-8"))
+        picks = dict(((record.get("approval") or {}).get("picks") or {}))
+        for section in record["sections"]:
+            styles = section.get("styles") or []
+            pick = picks.get(section["id"]) or (section.get("options") or {}).get("pick")
+            if not pick or not styles:
+                continue
+            if pick not in styles:
+                bad.append(f"{record['meta']['slug']}/{section['id']}: {pick} not in {styles}")
+    assert bad == [], bad
