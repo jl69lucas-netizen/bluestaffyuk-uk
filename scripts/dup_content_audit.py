@@ -63,15 +63,29 @@ WHITELIST_SNIPPETS = [
     # is the INVARIANT CORE (10 pages), not the longest run on one page: the heading above
     # it varies, and a stem starting `reserve your blue staffy puppy` left the 13-word
     # remainder reported nine times.
-    "fill in your details below and we'll be in touch within 24 hours",
+    #
+    # TWO STEMS OF THIS GROUP HAVE GONE, re-measured 2026-09-21 on the build that rebuilt
+    # /uk-blue-staffy-puppy-buying-guide/ (project 4 Task 13). "fill in your details below and
+    # we'll be in touch within 24 hours" and the "delivery note delivery begins 24 48 hours…"
+    # line were each on three pages; the buying guide's rebuild dropped the migrated reserve
+    # form and the migrated delivery note (both struck by that record's `dropped.text`, one
+    # for a reply-time promise data/faq.json contradicts and one for a turnaround no file on
+    # disk holds), which left each stem on TWO location pages. Two carriers of one templated
+    # cluster is the migrated-content baseline, not chrome — this file's own header says that
+    # baseline belongs in the gate report rather than in the exemption list — and
+    # tests/py/test_dup_whitelist_measured.py fails a stem below the three-page threshold.
+    # They come out rather than being re-justified; project 5 rewrites the location pages.
     "complete our short enquiry form choose your puppy and we'll be in touch within 24 hours start your enquiry",
     "reserve your puppy today kc aware ethical breeders full health tested",
 
-    # delivery band — the canonical delivery terms, mandated identical wherever they render
-    "delivery note delivery begins 24 48 hours after payment confirmation train station pickup is our default method free",
-    # invariant core (9 pages): the trailing `in glasgow` is present on six of them only,
-    # and including it left the 15-word remainder reported eight times
-    "uk home delivery by defra approved transport priced by distance 200 to 350 or collect",
+    # delivery band — the canonical delivery terms, mandated identical wherever they render.
+    # THE STEM IS ONE WORD SHORTER THAN IT WAS, re-measured 2026-09-21 on the same build. The
+    # trailing `or collect` was carried by 8 pages and the run without it by 9: the ninth is
+    # /blue-staffy-pup-sale-uk/, which states the band and then stops. That is precisely the
+    # failure this list's own header warns about — "whitelist the CORE, never the longest run
+    # on one page" — and it stayed invisible only because no other page carried the shorter
+    # variant until the buying guide was rebuilt. The core below exempts all nine.
+    "uk home delivery by defra approved transport priced by distance 200 to 350",
     # the same delivery_note as an FAQ ANSWER rather than as a page line — data/faq.json's
     # `delivery` and `home-safe-delivery` rows interpolate the setting and put "from" in
     # front of the band, so the stem above stops at "distance" and this one is the accordion's
