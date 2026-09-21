@@ -297,41 +297,49 @@ and 17–25 are new from the design system.
     the real upload dates from the YouTube channel**, which is a two-minute read of the
     channel's video list and cannot be derived from anything on disk.
 
-28. **The heroes of the four pages built before rule 16 clamp their lede at 1024, and three
-    heroes run past their own box there.** Measured on `dist/` at 1024x900 (Chromium, file://).
-    Two separate defects share one cause — the hero's `max-height: 450px` ceiling is written
-    for 1280 and the copy column is narrower at 1024, so the same words take more lines.
-    (a) **The lede clamp.** `.lede` is `-webkit-line-clamp: 2` on the legacy split hero, and at
-    1024 it hides **198px on `/` and `/privacy-policy-uk/`, 165px on
-    `/uk-blue-staffy-breeders-contact/` and 99px on
-    `/thank-you-blue-staffy-puppies-journey/`** — between three and six lines of the page's own
-    opening sentence, silently. All four are pages built before working rule 16; none has a
-    `layout_type` and all four still mount the legacy `split` hero, which is the one
-    arrangement `src/styles/board-styles.css` releases the ceiling for.
-    (b) **The container overrun.** `.container.inner` is taller than the hero it sits in:
-    **41px on `/` , 45px on `/buy-blue-staffy-puppies-uk/` (the listing) and 12px on
-    `/buy-staffy-puppies-for-sale-uk/` (why-us)**. The hero's `overflow` is `visible`, so
-    nothing is cut — the content spills downward, and on two of the three it reaches the next
-    section: the homepage's hero content ends 17px inside the section below it and the
-    listing's 21px inside. The why-us page's 12px stays inside the gap and overlaps nothing.
-    **Not a copy-length defect, so not fixed page-side.** The same copy fits at 1280 on all
-    three (inner 450/455/462 against a 450 box, and no overlap at all), and what grows at 1024
-    is the H1's line count — the listing's H1 goes from four lines to five. That H1 is in the
-    page's VERBATIM SET under working rule 15, so shortening it is a board round-trip and not
-    a page-side edit. The candidate fix is CSS and not copy: release the `max-height` ceiling
-    below 1280, where rule 10's 390-450 band is not measured anyway. That contradicts spec §9
-    amendment 10.4, which released it only for the legacy `split` hero on purpose, so it is
-    a decision for the breeder rather than a sweep. **Closes when that ruling is given.**
+28. **RESOLVED 2026-09-21 — the hero ceiling was a 1280 measure applied from 1024.** At 1024
+    the legacy `split` hero's two-line `.lede` clamp hid **198px of `/` and
+    `/privacy-policy-uk/`, 165px of `/uk-blue-staffy-breeders-contact/` and 99px of
+    `/thank-you-blue-staffy-puppies-journey/`** — three to six lines of each page's own
+    opening sentence — and the hero's `.container.inner` ran past its box by **41px on `/`,
+    45px on `/buy-blue-staffy-puppies-uk/` and 12px on `/buy-staffy-puppies-for-sale-uk/`**,
+    far enough on the first two to end 17px and 21px inside the section below. One cause: the
+    copy column is narrower at 1024 than at 1280, so the same words take more lines, and the
+    band was not allowed to grow. Not a copy defect — the same copy fits at 1280 — and the H1
+    that grows is in the page's VERBATIM SET, so it cannot be shortened to fit a band.
+    **The breeder's ruling (2026-09-21): the band gives way below 1280.** `max-height: 450px`
+    and the lede's line-clamp are now scoped to `min-width: 1280px`; the 390 floor, the type
+    step-down and the photo column's absolute cap stay on from 1024, so a hero still reads as
+    a hero and its photograph still cannot set its height. Recorded as spec §9 amendment 10.4
+    sub-note. Measured after, on `/`, the listing, why-us, privacy, thank-you and contact at
+    1024 / 1100 / 1280: **0 hidden copy, 0 clipping and 0 overlap with the next section at
+    every width**, and 390–450 held at 1280 on all six. The harness now asks the same
+    question: `scripts/measure_canvas_heights.mjs` records `content_below` and `next_overlap` (its
+    three older figures were all taken INSIDE the hero, which is why this was found by hand),
+    and the band assertion applies only at 1280 while the overlap assertion applies at all
+    three widths.
+    **What is left, deliberately, is at 1280 only.** The two-line clamp is how the 390-450
+    band is kept there, so on the four pre-rule-16 pages it still hides the tail of a long
+    lede at that width — measured **165px on `/`, 132px on `/privacy-policy-uk/` and
+    `/uk-blue-staffy-breeders-contact/`, 66px on `/thank-you-blue-staffy-puppies-journey/`**.
+    That is unchanged from before the ruling rather than introduced by it, and it is a COPY
+    length to settle when each of those four is rebuilt against its own rule-16 board, not a
+    second release of the ceiling: the lede is written fresh under working rule 15 and can be
+    cut to two lines, which the verbatim H1 beside it cannot.
 
-29. **`/blog/` is a legacy archive that cannot pass the profile it is measured against.**
-    `tests/render/targets.json` lists `{"slug": "blog", "page_type": "hub", "corpus": false}`,
-    but the built page is `noindex, nofollow` with its canonical pointed at
-    `/blue-staffy-blog-guides/` — the real hub, rebuilt at `5ed62ed`. A page that is
-    deliberately de-indexed and canonicalised away is not a hub, and holding it to the hub
-    profile measures a page nobody intends to ship. **A decision is owed: retire the route
-    outright (it is reachable from no navigation and no sitemap shard) or keep it as a
-    redirect target and exempt it by name from the profile.** Recorded rather than decided
-    here, because retiring a URL the old site served is the breeder's call, not a sweep's.
+29. **RESOLVED 2026-09-21 — `/blog/` is kept as the legacy archive and exempted by name.**
+    The built page is `noindex, nofollow` with its canonical on `/blue-staffy-blog-guides/`,
+    the real guides hub rebuilt at `5ed62ed`, and it was failing the rich-page floor
+    (`all_six_levels`, `min_h5_5`, `min_h6_5`, `faqpage_present`). **The breeder's ruling: keep
+    the route** — `public/_redirects` sends `/category/*` to it with a 301, and retiring it
+    would turn every category URL the previous site served into a 404 — **and exempt it by
+    name.** A de-indexed redirect target could satisfy those four only by inventing eleven
+    sub-points and three questions it does not have, which is a page written for a gate and
+    schema for content that is not there. `ARCHIVE_EXEMPT` in `scripts/final_page_audit.py`
+    carries the slug and the reason, and the audit prints both; the exemption is by SLUG
+    rather than by profile, because the guides hub is on the same profile and the four checks
+    are exactly right there. `--blog` now reports 3 PASS, 0 problems. **Project 5 may retire
+    the route** once its two new posts land and the archive carries nothing the hub does not.
 
 30. **The H-GD3 hero's photo column pins two pages at exactly 450px.** `.pic` in the
     interior-guide panel arrangement carries `aspect-ratio: 3 / 4`, and at 1280 that makes the
@@ -342,5 +350,28 @@ and 17–25 are new from the design system.
     at 444 because its copy column is shorter. Nothing is clipped today and the band is met,
     but two of the three pages have zero headroom: one extra line of H1, eyebrow or aside on
     either of them puts the arrangement over the ceiling, which is how the defects amendment
-    10.4 lists were found. **Closes when the aspect is budgeted rather than fixed** — the
-    photo box sized from the space the copy leaves, not the other way round.
+    10.4 lists were found. Known Issue 28's ruling relieves this BELOW 1280 — the band may now
+    grow there, so an extra line at 1024 is absorbed rather than clipped — and leaves it
+    exactly as it was AT 1280, where the ceiling still holds and these two have nothing spare.
+    **Closes when the aspect is budgeted rather than fixed** — the photo box sized from the
+    space the copy leaves, not the other way round.
+
+31. **A skipped heading level on the two data-driven routes.** `test:render:pages` reports
+    `[SEM] 1 skipped heading level(s): H1→H3 at "Roman"` on `/available-puppies/` and on
+    `/uk-locations/blue-staffy-puppies-uk/`, at all three viewports — six failing rows. Both
+    are generated from `data/puppies.json` and `data/locations.json` through
+    `src/pages/available-puppies/[slug].astro` and the locations route, neither of which
+    project 4 rebuilt: the card grid opens each puppy at H3 under the page's H1 with no H2
+    between them. Verified identical at `7b5be27`, so it is inherited rather than introduced,
+    and it is the only thing standing between `test:render:pages` and a clean exit — every one
+    of the twelve boarded pages passes. **Project 5's puppy and location cluster owns these
+    two routes** and closes it, either with the missing H2 or by opening the cards at H2.
+
+32. **606px of horizontal overflow at 375 on the contact board-preview route.** `NAV.kit-strip`
+    inside `.bp-targets` on `/board-preview/uk-blue-staffy-breeders-contact/` is 933px wide in
+    a 375px viewport, and the page scrolls sideways. It is the mobile section STRIP specimen
+    rendered over its six stub targets — scaffolding the preview route builds so the breeder
+    can see the arrangement, not a section of any page. Verified identical at `7b5be27`. The
+    contact page itself has zero horizontal overflow at 375, and so does every counter and
+    hero rendering on that route. PREVIEW-ONLY, and it closes when the specimen's target row
+    is given a scroller of its own rather than being allowed to set the page's width.

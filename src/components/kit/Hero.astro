@@ -373,18 +373,36 @@ const showPhoto = media !== 'none';
        picture drops its 4:5 crop, stretches to the row and is cropped by `object-fit`, so
        it can never set the height. */
     @media (min-width: 1024px) {
-      .kit-hero { max-height: 450px; }
       .inner { min-height: 390px; padding-block: var(--space-6); }
       .eyebrow { margin-bottom: var(--space-2); }
       .title { font-size: var(--text-3xl); line-height: var(--text-3xl--line-height); margin-bottom: var(--space-3); }
-      .lede { margin-bottom: var(--space-4); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
+      .lede { margin-bottom: var(--space-4); }
       .chips { margin-bottom: var(--space-4); }
       /* `height: 100%` alone is not enough: the grid row is sized BY its items, so the
          percentage has nothing definite to resolve against and the portrait master falls
          back to its intrinsic height — a 690px row that the ceiling then slices, taking the
          centred copy's CTA row with it. The cap is therefore absolute, and it is exactly
-         the content box the 450px ceiling leaves once the padding is taken out. */
+         the content box the 450px ceiling leaves once the padding is taken out. It stays on
+         from 1024 even though the ceiling above it does not: the photo is what must never
+         SET the height, at any width, and capping it is what makes the copy the only thing
+         the band is sized by. */
       .pic { align-self: stretch; height: 100%; max-height: calc(450px - 2 * var(--space-6)); aspect-ratio: auto; object-fit: cover; overflow: clip; }
+    }
+    /* THE CEILING IS A DESKTOP MEASURE (spec §9 amendment 10.4 sub-note, breeder 2026-09-21).
+       Rule 10's 390-450 band is measured at 1280 and the arrangements are budgeted for the
+       copy column 1280 gives them. Between 1024 and 1279 that column is narrower and the same
+       words take more lines, so a ceiling written for 1280 stops being a budget and becomes a
+       blade: it hid three to six lines of four pages' own opening sentences behind the lede's
+       two-line clamp, and let the homepage's and the listing's hero content run 17px and 21px
+       into the section below (Known Issue 28, measured). A VERBATIM H1 WINS BELOW 1280 —
+       working rule 15 puts the old H1 on the page word for word, so it cannot be shortened to
+       fit a band, and the band is what gives way. The clamp and the lede's line-clamp are
+       therefore scoped to 1280 and up; the 390 floor, the type step-down and the photo's own
+       cap stay on from 1024, so the band still reads as a hero and still cannot be set by its
+       photograph. Below 1024 neither has ever applied. */
+    @media (min-width: 1280px) {
+      .kit-hero { max-height: 450px; }
+      .lede { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; }
     }
     @media (max-width: 900px) {
       .inner { grid-template-columns: 1fr; }
@@ -602,8 +620,19 @@ const showPhoto = media !== 'none';
     @media (min-width: 1024px) {
       .kit-hero[data-hero-layout="bleed"] .inner { padding-block: 0; }
       .kit-hero[data-hero-layout="bleed"] .copy { padding-block: var(--space-6); }
-      .kit-hero[data-hero-layout="bleed"] .pic {
-        max-height: 450px; height: 450px; margin-inline-end: calc(-50vw + 50%);
+      /* 450 is a FLOOR here and a ceiling only where the ceiling still applies. Below 1280
+         the band grows to the copy (the sub-note above), and a bleed photo pinned to 450 in a
+         480px band would leave a strip of bare bed at the edge it is supposed to BE — so it
+         stretches to the row and 450 becomes the minimum rather than the height. */
+      .kit-hero[data-hero-layout="bleed"]:not([data-hero-media="top"]) .pic {
+        align-self: stretch; height: auto; min-height: 450px; margin-inline-end: calc(-50vw + 50%);
+      }
+      /* `media: top` is a bleed hero STACKED — a slim photo band over the copy, on the same
+         150px budget as `panel`+top and `stacked`. `min-height` beats `max-height` in the
+         cascade, so the stretch rule above must not reach it: unscoped it made the why-us
+         hero's 150px strip 450px tall and ran the band 312px past its own box. */
+      .kit-hero[data-hero-layout="bleed"][data-hero-media="top"] .pic {
+        margin-inline-end: calc(-50vw + 50%);
       }
       .kit-hero[data-hero-layout="bleed"][data-hero-media="left"] .pic {
         margin-inline: calc(-50vw + 50%) 0;

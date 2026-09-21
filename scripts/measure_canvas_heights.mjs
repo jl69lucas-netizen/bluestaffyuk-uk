@@ -85,6 +85,15 @@ for (const [width, suffix] of [[375, 'm375'], [768, 't768']]) {
 // overflow of `.inner`, of the section and of the LEDE (0 when nothing is cut off), how far
 // the CTA row sits below the section's own bottom edge (<= 0 when it is inside), and the
 // section height (which rule 10 holds between 390 and 450).
+//
+// THE BAND IS A 1280 MEASURE; THE OVERLAP IS NOT (spec §9 amendment 10.4 sub-note, breeder
+// 2026-09-21). Below 1280 the clamp is released and the band grows to what a verbatim H1 and
+// its lede need, so `height` is only compared against 390-450 at 1280 — the width rule 10 is
+// written for. What must hold at EVERY width is that the hero does not run into the section
+// under it, and that had never been measured here at all: the three overflow figures are all
+// taken INSIDE the hero, so content spilling out of a released box was invisible to every one
+// of them. `next_overlap` is the deepest painted descendant against the next board's top
+// edge, and `content_below` is the same bottom against the hero's own.
 const heroOverflow = {};
 for (const width of [1024, 1100, 1280]) {
   const page = await browser.newPage({ viewport: { width, height: 900 } });
@@ -99,8 +108,21 @@ for (const width of [1024, 1100, 1280]) {
     const ctas = el.querySelector('.ctas');
     const lede = el.querySelector('.lede');
     const box = el.getBoundingClientRect();
+    // The deepest edge anything in the hero actually paints to. Out-of-flow boxes are
+    // skipped: a scrim or a decorative rule is positioned against the band on purpose and
+    // says nothing about whether the copy fits in it.
+    let deepest = box.bottom;
+    for (const d of el.querySelectorAll('*')) {
+      const cs = getComputedStyle(d);
+      if (cs.position === 'absolute' || cs.position === 'fixed' || cs.display === 'none') continue;
+      const r = d.getBoundingClientRect();
+      if (r.height) deepest = Math.max(deepest, r.bottom);
+    }
+    const nxt = board ? board.nextElementSibling : el.nextElementSibling;
     return [key, {
       height: Math.round(box.height),
+      content_below: Math.round(deepest - box.bottom),
+      next_overlap: nxt ? Math.round(deepest - nxt.getBoundingClientRect().top) : null,
       overflow: inner ? inner.scrollHeight - inner.clientHeight : 0,
       section_overflow: el.scrollHeight - el.clientHeight,
       // The lede is the one element rule 10 deliberately CLAMPS, and a clamp hides its own

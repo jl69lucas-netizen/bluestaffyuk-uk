@@ -345,15 +345,42 @@ def test_the_kit_pagedate_line_is_not_a_visible_date_defect():
 def test_the_heading_floor_and_the_faq_block_are_na_on_a_collection_post():
     """A 300-word post reaches five H5 and five H6 only by inventing eleven sub-points, and
     mints an FAQPage only by inventing questions. Both are rich-page rules; the exemption is
-    per POST and carries its reason, so the /blog/ archive and the boarded hub still answer
-    for them."""
+    per POST and carries its reason, so the boarded hub still answers for them.
+
+    `/blog/` used to be the negative control here and is no longer: Known Issue 29 exempted it
+    too, by name and for a different reason — it is a de-indexed legacy archive kept only as
+    the `/category/*` redirect target (`ARCHIVE_EXEMPT`). The boarded guides hub is the control
+    now, and it is the better one: it is the page the profile was actually written for."""
     assert A.POSTS, "src/content/blog holds no post with a frontmatter slug"
     post = sorted(A.POSTS)[0]
     for check in A.POST_EXEMPT_CHECKS:
         assert A.severity("blog", check, post) == "NA", check
-        assert A.severity("blog", check, "blog") == "FAIL", check
         assert A.severity("blog", check, "blue-staffy-blog-guides") == "FAIL", check
     assert len(A.POST_EXEMPT_REASON) > 40
+
+
+def test_the_legacy_blog_archive_is_exempt_by_name_and_says_why():
+    """Known Issue 29. `/blog/` ships `noindex, nofollow` with its canonical on the rebuilt
+    guides hub and is kept only because `public/_redirects` sends `/category/*` to it. The
+    exemption is by SLUG rather than by profile — the hub is measured by the same profile and
+    the four checks are exactly right there — and it carries its reason, which the audit
+    prints beside the page."""
+    assert "blog" in A.ARCHIVE_EXEMPT
+    for check in A.POST_EXEMPT_CHECKS:
+        assert A.severity("blog", check, "blog") == "NA", check
+        # By slug, so the profile it happens to be measured under does not change the answer:
+        # --blog discovers it as `blog` and tests/render/targets.json lists it as a `hub`.
+        assert A.severity("hub", check, "blog") == "NA", check
+    reason = A.ARCHIVE_EXEMPT["blog"]
+    assert "noindex" in reason and "/category/*" in reason and len(reason) > 80
+    # The route it exists for is real, and the canonical it defers to is the rebuilt hub.
+    redirects = (A.ROOT / "public/_redirects").read_text(encoding="utf-8")
+    assert "/category/* /blog/ 301" in redirects
+    built = A.ROOT / "dist/blog/index.html"
+    if built.exists():
+        html = built.read_text(encoding="utf-8")
+        assert 'content="noindex, nofollow"' in html
+        assert "/blue-staffy-blog-guides/" in html
 
 
 def test_no_visible_date_fires_only_on_a_post_whose_date_nothing_sources():

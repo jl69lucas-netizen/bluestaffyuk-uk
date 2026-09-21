@@ -468,6 +468,40 @@ panel layout's wider copy column ran a long H1 23px over. Layouts that stack bud
 height inside the ceiling rather than releasing it; `board-styles.css` releases it only for the
 legacy `split` hero, which is the arrangement that rule was written for.
 
+**4a. SUB-NOTE (2026-09-21, breeder — Known Issue 28): the ceiling is a DESKTOP measure, and
+a verbatim H1 wins below it.** Everything in §4 is measured at 1280, and the eighteen
+arrangements are budgeted for the copy column 1280 gives them. Between 1024 and 1279 that
+column is narrower and the same words take more lines, so a ceiling written for 1280 stops
+being a budget and becomes a blade. Measured on `dist/` at 1024: the legacy `split` hero's
+two-line `.lede` clamp hid **198px of the homepage's and the privacy policy's own opening
+sentence, 165px of the contact page's and 99px of the thank-you page's**, and the hero's
+`.container.inner` ran past its box by **41px on the homepage, 45px on the listing and 12px
+on why-us** — far enough on two of the three to end 17px and 21px INSIDE the section below.
+
+The copy is not the thing that gives way, because it cannot: working rule 15 puts the
+migrated H1 on the page word for word, so it can be repaired for a wrong fact or a collision
+and for nothing else — certainly not for a band. **So the band gives way.** `max-height:
+450px` on the section and the `.lede` line-clamp are scoped to `min-width: 1280px`; between
+1024 and 1279 the band grows to whatever the H1 and the lede need, and nothing is hidden.
+What stays on from 1024 is the 390 FLOOR (`.inner`'s `min-height`, so a short hero still
+reads as a hero), the type step-down, the tightened block margins, and the photo column's own
+absolute cap — the photograph must never SET the height at any width, which is what makes the
+copy the only thing the band is sized by. Below 1024 neither ever applied.
+
+A bleed hero's photo takes 450 as a MINIMUM below 1280 rather than a fixed height, so it
+still reaches the edge of a band that has grown; `media: top` is excluded, because a bleed
+hero stacked is a 150px strip and `min-height` beats `max-height` in the cascade — unscoped,
+the release made why-us's strip 450px tall and ran its band 312px past its own box.
+
+**And the harness asks the right question at the right width.** `measure_canvas_heights.mjs`
+recorded three overflow figures, all of them taken INSIDE the hero, so content spilling out
+of a released box registered as zero on every one of them — which is why Known Issue 28 was
+found by hand rather than by the gate. It now also records `content_below` and
+`next_overlap`, the deepest painted descendant against the hero's own bottom edge and against
+the next board's top. `test_measured_hero_fits_its_clamp_without_clipping_anything` asserts
+the 390 floor, zero clipping and **zero overlap with the section below at every width**, and
+the 450 ceiling **only at 1280**. Asserting 450 below it was asserting the defect.
+
 **5. The figures are the page's own, and they are SOURCED.** A counter's numbers live in the
 record, as `sections[].stats` rows of `{n, label, source}`, never in the component. A row's
 `source` is a path into a data file, or a LIST of them when the figure is made of more than one
@@ -609,3 +643,48 @@ may move is wording — headings, intents, notes, titles — additions to a link
 removal of a whole row from a hero ledge: none of those changes what was chosen, only what
 it says. A removed `stats` row is judged by row identity rather than by index, because
 dropping row 0 of four otherwise reads as editing the other three.
+
+**11a. THE RE-BOARD RULE (2026-09-21, breeder — the other half of the same problem).**
+Amendment 11 is about a record that stays approved while its wording is fixed. This is the
+opposite case: a record whose approval is WITHDRAWN while the page it built stays live.
+
+Working rule 16 sent the last four records back to the board — the homepage and the three
+utility pages — and they were the first re-board in the project's history of a page that had
+already been BUILT. Every earlier one (amendment 10.10's four) was of a record whose page had
+not been written, so nothing read the approval while it moved. These four broke on the first
+build after it: `approval` is null under a re-board, and `record.approval!.meta!.title`,
+`.description`, `.h1` and `pickedStyle()` all read it. Four pages that had shipped for days
+stopped having a title, a description, an H1 or a hero.
+
+**A re-board withdraws the answer to the question it is asking, and nothing else.** The
+questions are the hero and the counter (`PER_PAGE_SHAPES`); the meta variant, the description
+variant, the H1 and every other section's pick are answers the breeder gave and still stand —
+`board_approve.py` already copies the three indices forward untouched for exactly that reason,
+and `locked_picks()` already pre-fills and disables the rest on the board. So the page reads
+the approval IN FORCE:
+
+- `approvalInForce(record)` (`src/lib/pickedStyle.ts`) returns the live approval, else the
+  carried one, and throws only when a record has never been approved at all.
+- `pickedStyle()` reads `approval.picks`, then the section's own `options.pick`, then
+  `approval_previous.picks`.
+- **A CARRIED pick is judged against the menu it was picked FROM.** `pickedStyle()`'s
+  membership test refuses an id that is not on the section's menu, which is what catches a
+  `stats` section picking `H-FS3`. But a re-board is usually what CHANGES a menu — each of
+  these four heroes went from `S1`/`S2`/`S3` to its family's three arrangements — so holding
+  last week's answer to this week's question would fail every carried pick on sight, which is
+  the opposite of what carrying it is for. The test therefore runs on every pick the record
+  itself makes and is skipped for one that is only carried.
+- A section that is BOARDED and not yet BUILT is filtered out of the page's own dial list
+  until its markup exists. The dial is derived from the record, and a link to an id the page
+  does not carry is the dead anchor `nav-anchors-resolve` blocks. The filter is removed in the
+  same commit that adds the section.
+
+**The guarantee, and the test that holds it.** The built page does not move. That was verified
+once by diffing `dist/` against a build of the parent commit — which proves it for one commit
+and for no other — so the durable form is
+`test_a_re_boarded_record_still_renders_its_carried_approval`: for each of the four, the
+page's `<title>`, meta description and H1 are the record's own `meta_set` and `h1.variants`
+entries **at the carried indices**, compared on normalised text because Title Case is applied
+at render, and every carried pick that is not per-page is still locked.
+`test_a_re_boarded_record_asks_only_for_its_hero_and_its_counter` is the other side: a record
+that re-asked anything else would be asking the breeder to redo work they have done.

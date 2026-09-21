@@ -352,7 +352,27 @@ def test_measured_hero_fits_its_clamp_without_clipping_anything():
             )
             if m["ctas_below"] is not None:
                 assert m["ctas_below"] <= 0, (key, w, m, "the CTA row hangs below the hero")
-            assert 390 <= m["height"] <= 450, (key, w, m["height"])
+            # NOT RUNNING INTO THE NEXT SECTION holds at EVERY width, and it is the one thing
+            # the three figures above cannot see: all three are taken INSIDE the hero, so
+            # content spilling out of a box whose ceiling has been released registers as zero
+            # on every one of them. That is exactly what Known Issue 28 was — the homepage's
+            # hero content ended 17px inside the section below it at 1024, and nothing here
+            # noticed.
+            if m.get("next_overlap") is not None:
+                assert m["next_overlap"] <= 0, (
+                    key, w, m, "the hero's content runs into the section below it")
+            # The 390 FLOOR is live from 1024 (`.inner` keeps its `min-height`), so a hero
+            # that collapses is still caught at every width.
+            assert m["height"] >= 390, (key, w, m["height"])
+            # THE CEILING IS A 1280 MEASURE (spec §9 amendment 10.4 sub-note, breeder
+            # 2026-09-21). Between 1024 and 1279 the copy column is narrower and the same
+            # words take more lines; a verbatim H1 cannot be shortened to fit a band written
+            # for 1280 (working rule 15), so the band gives way and the clamp is scoped to
+            # 1280 and up. Asserting 450 below it is asserting the defect: it is what hid
+            # three to six lines of four pages' ledes and ran two heroes into the section
+            # beneath them.
+            if w == "1280":
+                assert m["height"] <= 450, (key, w, m["height"])
 
 
 def test_built_buttons_show_all_five_kinds():

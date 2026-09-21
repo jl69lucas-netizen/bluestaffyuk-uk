@@ -244,14 +244,37 @@ def _ported_dates():
     return out
 
 
-def _built_routes():
+#: Build scaffolding, not pages, and deliberately dated by something else.
+#:
+#: `/board-preview/<slug>/` renders ONE board record three ways per section so the breeder can
+#: see what they are picking, and `src/pages/board-preview/[slug].astro` dates it
+#: `record.meta.research_as_of` on purpose — "this page is generated from one file, and the
+#: honest date for it is the day that record's research was done. It moves when the record
+#: moves." That is a deliberate answer to `schema-date-modified-present`, not a page date, so
+#: the git map does not describe it and never will: the routes are `noindex, nofollow`, they
+#: are in no sitemap shard, and no reader is sent to one.
+#:
+#: Until working rule 16 re-boarded the homepage, the three preview routes that existed
+#: happened to carry 2026-09-19, which `_ported_dates()` finds written somewhere else in
+#: `src/` — so they passed by coincidence rather than by rule. `/board-preview/index/` carries
+#: its record's 2026-09-20 and has no such twin, which is what surfaced this. Excluded by
+#: PREFIX and with the reason, rather than by widening `_ported_dates()` to read every board
+#: record: that would make any date typed into any record a date any page may carry, which is
+#: the opposite of what this contract is for.
+PREVIEW_PREFIXES = ("/board-preview/",)
+
+
+def _built_routes(scaffolding=False):
     dist = REPO_ROOT / "dist"
     if not dist.is_dir():
         pytest.skip("no dist/ — run `npm run build` first")
     out = {}
     for html in sorted(dist.rglob("index.html")):
         rel = html.parent.relative_to(dist).as_posix()
-        out["/" if rel == "." else f"/{rel}/"] = html
+        route = "/" if rel == "." else f"/{rel}/"
+        if not scaffolding and route.startswith(PREVIEW_PREFIXES):
+            continue
+        out[route] = html
     return out
 
 
@@ -284,3 +307,31 @@ def test_no_built_page_carries_two_dates_that_disagree():
     for route, html in _built_routes().items():
         found = set(DATE_MODIFIED.findall(html.read_text(encoding="utf-8")))
         assert len(found) <= 1, f"{route} carries {sorted(found)}"
+
+
+def test_a_preview_route_is_dated_by_its_record_and_is_never_indexed():
+    """The other half of PREVIEW_PREFIXES: an exclusion nobody checks is a hole.
+
+    A board-preview route is excused the git-date contract because it is scaffolding dated by
+    its record — so it has to actually BE that: `noindex, nofollow`, and carrying the
+    `research_as_of` of the record it renders. The day one of these is served to a reader, or
+    starts inventing a date of its own, the excuse stops applying and this fails."""
+    import json as _json
+    stamps = {}
+    for f in sorted((REPO_ROOT / "data/boards").glob("*.json")):
+        rec = _json.loads(f.read_text(encoding="utf-8"))
+        stamps[rec["meta"]["slug"]] = rec["meta"]["research_as_of"]
+    seen = 0
+    for route, html in _built_routes(scaffolding=True).items():
+        if not route.startswith(PREVIEW_PREFIXES):
+            continue
+        text = html.read_text(encoding="utf-8")
+        assert 'content="noindex, nofollow"' in text, (route, "a preview route must not be indexed")
+        slug = route[len("/board-preview/"):].strip("/")
+        if not slug:            # the listing page, which is not one record
+            continue
+        seen += 1
+        assert slug in stamps, (route, "a preview route with no board record behind it")
+        assert set(DATE_MODIFIED.findall(text)) == {stamps[slug]}, (
+            route, "a preview route is dated by its record's research_as_of and by nothing else")
+    assert seen >= 4, seen

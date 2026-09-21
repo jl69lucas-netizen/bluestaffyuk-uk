@@ -230,6 +230,36 @@ POST_EXEMPT_REASON = (
     "questions nobody asked; a post's length rule is its own word band and its FAQ is its "
     "own `faqs` frontmatter, both of which build 5 writes"
 )
+
+# ── /blog/ IS A LEGACY ARCHIVE, NOT A HUB (Known Issue 29, breeder 2026-09-21) ────────────
+# The built page is `noindex, nofollow` with its canonical pointed at
+# /blue-staffy-blog-guides/, which is the real guides hub and was rebuilt from an approved
+# board at 5ed62ed. The route is KEPT rather than retired because `public/_redirects` sends
+# `/category/*` to it with a 301: it is a redirect target, and retiring it would turn every
+# category URL the previous site served into a 404 for the sake of a page nobody is asked
+# to read.
+#
+# Which makes the rich-page floor the wrong instrument, for the same reason it is wrong on a
+# collection post. `all_six_levels`, `min_h5_5` and `min_h6_5` exist so a 2,000-word page
+# cannot ship an outline nobody can scan, and `faqpage_present` wants FAQPage markup — on a
+# de-indexed archive stub the only way to satisfy any of them is to invent eleven sub-points
+# and three questions for a page whose own markup asks Google not to look at it. That is a
+# page written for a gate, and marking up questions nobody asked is the one thing structured
+# data may not do. Exempt BY NAME rather than by relaxing the profile: the guides hub is on
+# this same profile and the four checks are exactly right there, which is what the PASS
+# beside this FAIL was already saying.
+#
+# PROJECT 5 MAY RETIRE IT. Two new posts land in that project; once the archive carries
+# nothing the hub does not, the route can become a 301 of its own and this entry goes too.
+ARCHIVE_EXEMPT = {
+    "blog":
+        "legacy archive: the page is noindex, nofollow with its canonical on "
+        "/blue-staffy-blog-guides/, and it is kept only because public/_redirects sends "
+        "/category/* to it with a 301. The six-level outline, the 5xH5 / 5xH6 floor and the "
+        "FAQ block are rich-page rules, and a de-indexed redirect target could satisfy them "
+        "only by inventing headings and questions it does not have. Project 5 may retire "
+        "the route once its two new posts land",
+}
 _POST_FM = re.compile(r"^(slug|date):\s*[\"']?([^\"'\n]+)", re.M)
 
 
@@ -256,10 +286,16 @@ def date_is_sourced(slug):
 def severity(page_type, check, slug=None):
     """Per-check severity, falling back to the profile's `_default`, then global.
 
-    A slug in INTERIOR_UTILITY_EXEMPT takes NA on the three sales-shaped checks, and a
-    collection post takes NA on the heading floor (see the block above)."""
+    A slug in INTERIOR_UTILITY_EXEMPT takes NA on the three sales-shaped checks, a
+    collection post takes NA on the heading floor, and a slug in ARCHIVE_EXEMPT takes NA on
+    the same four rich-page checks (see the blocks above)."""
     if (slug in INTERIOR_UTILITY_EXEMPT and page_type == "interior"
             and check in SALES_SHAPED_CHECKS):
+        return "NA"
+    # By SLUG and not by profile: /blog/ is discovered as `blog` by --blog and listed as a
+    # `hub` in tests/render/targets.json, and the exemption is about the page rather than
+    # about which profile happens to be measuring it.
+    if slug in ARCHIVE_EXEMPT and check in POST_EXEMPT_CHECKS:
         return "NA"
     if page_type == "blog":
         if slug in POSTS and check in POST_HEADING_FLOOR:
@@ -623,6 +659,8 @@ def main(argv=None):
         print(f"[{r['_verdict']}]{tag} {s}   {r['h_counts']} | FAQPage×{r['faqpage_count']} | schema:{r['schema_types']}")
         if s in INTERIOR_UTILITY_EXEMPT and r.get("_page_type") == "interior":
             print(f"    EXEMPT → {', '.join(SALES_SHAPED_CHECKS)} — {INTERIOR_UTILITY_EXEMPT[s]}")
+        if s in ARCHIVE_EXEMPT:
+            print(f"    EXEMPT → {', '.join(POST_EXEMPT_CHECKS)} — {ARCHIVE_EXEMPT[s]}")
         if s in POSTS and r.get("_page_type") == "blog":
             print(f"    EXEMPT → {', '.join(POST_HEADING_FLOOR)} — {POST_EXEMPT_REASON}")
             if date_is_sourced(s):
