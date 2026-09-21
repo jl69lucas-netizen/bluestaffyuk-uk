@@ -1035,7 +1035,7 @@
         },
         {
           "level": 3,
-          "heading": "Are Blue Staffies High-Energy Dogs? How Much Exercise Does a Blue Staffy Need Daily?",
+          "heading": "Are Blue Staffies High-Energy Dogs? The Daily Exercise a Blue Staffy Needs",
           "intent": "Vigorous exercise, split into two or more sessions, plus something for the mind.",
           "children": [],
           "verbatim_heading": true,
@@ -1043,7 +1043,7 @@
         },
         {
           "level": 3,
-          "heading": "Do Blue Staffies Get Along with Children and Other Pets?",
+          "heading": "Blue Staffies With Children, and With Other Pets in the House",
           "intent": "Generally excellent with children; other pets need early, careful introductions.",
           "children": [],
           "verbatim_heading": true,
@@ -2519,7 +2519,7 @@
       "top": "H-GD3",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "21438da5d0d96061c0b0c2999f8b54979f8463e965158673b7bee9aef0b76ccb",
+    "record_hash": "ec7923901917b68ef2ec2c3072378944f3599c770febeedf44202bf07af6255e",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2537,7 +2537,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T05:54:52Z",
+    "reapproved_at": "2026-09-21T07:07:43Z",
     "reapprovals": [
       {
         "at": "2026-09-21T03:23:15Z",
@@ -2551,6 +2551,14 @@
         "reason": "header collision with /blue-staffy-health-uk/, built after this board was approved: the health page renders data/faq.json row health-average-lifespan, whose question shares a five-word shingle with this record's health-checks H3. The health page owns the lifespan fact, so the wording moves here; no pick, figure, source or section id is touched and the deviation is recorded in verbatim.changed.",
         "changed_paths": [
           "/sections/8/tree/4/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T07:07:43Z",
+        "reason": "Two H3 headings collide with /uk-staffordshire-bull-terrier-guide/, built after this board was approved: it renders data/faq.json's guide-exercise-daily and guide-children-pets rows, both elements of its own verbatim set under working rule 15, and board_gate fails the five-word shingles 'how much exercise does a' and 'get along with children and' against them. The breed guide owns the daily exercise figure and the children-and-other-pets question; this page owns buying, so the wording moves here. Every subject word is kept and only the shared tail goes. Recorded in this record's verbatim.changed.",
+        "changed_paths": [
+          "/sections/7/tree/1/heading",
+          "/sections/7/tree/2/heading"
         ]
       }
     ]
@@ -2793,6 +2801,18 @@
         "old": "What is the average lifespan of a Blue Staffordshire Bull Terrier, and what health problems are they prone to?",
         "new": "Blue Staffordshire Bull Terrier Lifespan, and the Health Problems They Are Prone To",
         "reason": "a collision with /blue-staffy-health-uk/, which was built after this board was approved: the five-word shingle \"what is the average lifespan\" matches the data/faq.json row `health-average-lifespan` (\"What is the average lifespan of a Blue Staffy?\"), a verbatim-set FAQ question that page now renders. The HEALTH page owns the lifespan fact — it carries the figure, cited to the breed guide's own cell — so the change is made on the side that does not own the subject, and it keeps every word that names what the section is while moving only the colliding interrogative opening."
+      },
+      {
+        "kind": "heading",
+        "old": "Are Blue Staffies High-Energy Dogs? How Much Exercise Does a Blue Staffy Need Daily?",
+        "new": "Are Blue Staffies High-Energy Dogs? The Daily Exercise a Blue Staffy Needs",
+        "reason": "a collision with a page built AFTER this board was approved, which is the case spec §9 amendment 11 was written for. /uk-staffordshire-bull-terrier-guide/ renders data/faq.json's `guide-exercise-daily` row — \"How much exercise does a Staffordshire Bull Terrier need daily?\", an element of THAT page's verbatim set under working rule 15 — and board_gate.py fails the five-word shingle \"how much exercise does a\" against it. The breed guide owns the daily exercise figure (its `daily-care` section states it and its `questions` note maps the row there); this page owns buying. So the wording moves on this side: every word naming the subject is kept and only the interrogative tail goes."
+      },
+      {
+        "kind": "heading",
+        "old": "Do Blue Staffies Get Along with Children and Other Pets?",
+        "new": "Blue Staffies With Children, and With Other Pets in the House",
+        "reason": "the same collision, for the same reason: /uk-staffordshire-bull-terrier-guide/ renders data/faq.json's `guide-children-pets` row — \"Do Staffies get along with children and other pets?\", an element of that page's verbatim set — and the shingle \"get along with children and\" fails against it. The breed guide's `temperament` section owns children and other pets. The subject words are all kept here and the shared verb phrase is what moves."
       }
     ]
   }
