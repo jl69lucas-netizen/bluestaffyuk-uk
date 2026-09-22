@@ -14,7 +14,7 @@
 #                                        step 9); BSUK delivers by road.
 # Tests added by the port: the exit code (plan step 2.13), repo-rooted DIST, the
 # argparse profile choices, the JSON report shape, and the migration-baseline count.
-import sys, pathlib
+import json, sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import final_page_audit as A
 
@@ -55,8 +55,45 @@ def test_profile_marks_newsletter_na_for_puppy():
 
 
 def test_profile_marks_newsletter_fail_for_interior():
-    r = A.audit_html("uk-blue-staffy-puppy-buying-guide", MINIMAL_PUPPY, "interior")
+    # A slug that is NOT a rebuilt page: the rebuilt ones whose approved record boards no
+    # newsletter band are exempt by name (see the next test), and that must not leak into
+    # the profile.
+    r = A.audit_html("some-unrebuilt-interior-page", MINIMAL_PUPPY, "interior")
     assert r["_severity"]["newsletter_present"] in ("FAIL", "WARN"), r["_severity"]
+
+
+def test_a_rebuilt_page_with_no_boarded_newsletter_is_exempt_with_a_reason():
+    assert "uk-blue-staffy-puppy-buying-guide" in A.NO_NEWSLETTER
+    r = A.audit_html("uk-blue-staffy-puppy-buying-guide", MINIMAL_PUPPY, "interior")
+    assert r["_severity"]["newsletter_present"] == "NA"
+    printed = A.exemptions_for("uk-blue-staffy-puppy-buying-guide", "interior")
+    assert any("newsletter_present" in c and why for c, why in printed)
+
+
+def test_rebuilt_exemptions_are_per_slug_and_always_carry_a_reason():
+    for slug, checks in A.REBUILT_EXEMPT.items():
+        for check, why in checks.items():
+            assert len(why) > 40, (slug, check)
+            assert A.severity("interior", check, slug) == "NA"
+            assert A.severity("interior", check, "some-unrebuilt-interior-page") != "NA" or \
+                A.PROFILES["interior"].get(check) == "NA", (slug, check)
+
+
+def test_a_long_alt_is_exempt_only_for_its_own_slug_and_src():
+    (slug, src), = [k for k in A.IMG_ALT_EXEMPT if k[0] == "uk-staffordshire-bull-terrier-guide"][:1]
+    long_alt = "x" * 250
+    page = f'<html><body><main><h1>X</h1><img src="{src}" alt="{long_alt}" width="1" height="1"></main></body></html>'
+    assert A.audit_html(slug, page)["img_alt_le190"] is True
+    other = page.replace(src, "/images/some-other.webp")
+    assert A.audit_html(slug, other)["img_alt_le190"] is False
+    assert A.audit_html("some-unrebuilt-interior-page", page)["img_alt_le190"] is False
+
+
+def test_the_phone_exemption_is_conditional_on_the_stand_in():
+    phone = json.loads((A.ROOT / "data/settings.json").read_text())["phone"]
+    assert A.PHONE_PENDING == ("PLACEHOLDER" in phone)
+    if A.PHONE_PENDING:
+        assert A.severity("interior", "phone_in_footer", "any") == "NA"
 
 
 BAD_PUPPY = """

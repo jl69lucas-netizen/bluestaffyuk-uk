@@ -13,7 +13,14 @@
 
   Fixtures cannot read tokens.css, so the hex is spelled here; the no-hex rule scans src/ only:
   --color-surface-inverse #1F3A52, --color-text-on-inverse #F4F1EA,
-  --color-surface-raised #FFFFFF, --color-text #22303C, --color-brand #1F3A52.
+  --color-surface-raised #FFFFFF, --color-text #22303C, --color-brand #1F3A52,
+  --color-text-muted #5E6B7A.
+
+  VIDEO CAPTIONS ARE THE SAME DEFECT ONE COMPONENT OVER (2026-09-22 audit). The breed guide's
+  S2 video sits on a steel band, and VideoEmbed's caption reads `--kit-caption`, which the
+  component defaults to the muted ink: 2.16:1 on steel. BROKEN keeps that default; GOOD
+  re-points it to the band's ink, as board-styles.css now does. The caption is the seventh
+  judged node.
 -->
 <style>
   body { margin:0; font:16px/1.5 system-ui; }
@@ -27,6 +34,9 @@
   .hstats span { font-size:12px; color:#F4F1EA; }
   .chips { list-style:none; margin:0; padding:0; display:flex; gap:8px; }
   .chips li { padding:6px 12px; background:#FFFFFF; color:#22303C; border:1px solid #DAD6CC; }
+  .kit-video { margin:24px 0 0; }
+  .kit-video .frame { width:320px; height:180px; background:#0B1620; }
+  .kit-video figcaption { font-size:14px; color:#F4F1EA; }
 </style>
 <main>
   <section class="bl-box bl-frame-band">
@@ -43,5 +53,11 @@
         </div>
       </div>
     </section>
+  </section>
+  <section class="bl-box bl-frame-band">
+    <figure class="kit-video">
+      <div class="frame"></div>
+      <figcaption>The breed guide in short, on film.</figcaption>
+    </figure>
   </section>
 </main>

@@ -114,11 +114,17 @@ python3 scripts/marker_check.py || FAIL=1
 # check's `severity:` in tests/render/checks/*.ts. Hand-editing either side silently rots the
 # number the Task 20 gate report quotes, so the sweep regenerates it and compares.
 if [ -f scripts/render_baseline.py ] && ls data/quality/scorecards/*.json >/dev/null 2>&1; then
-  # The LIVE baseline is project 3's. Project 2's file is the published record of a finished
-  # run and is deliberately never regenerated or checked here.
-  BASELINE_REPORT=docs/reports/render-baseline-project3.md
-  if python3 scripts/render_baseline.py --check --out "$BASELINE_REPORT"; then pass "Render baseline report in sync"
-  else fail "Render baseline drift — run: python3 scripts/render_baseline.py --out $BASELINE_REPORT"; fi
+  # The LIVE baseline is project 4's. Project 2's and project 3's files are the published
+  # records of finished runs and are deliberately never regenerated or checked here. A
+  # project's file is opened with an EMPTY generated block that its close-out run fills, so an
+  # empty block is "not run yet", not drift.
+  BASELINE_REPORT=docs/reports/render-baseline-project4.md
+  if python3 -c "import sys;t=open(sys.argv[1]).read();sys.exit(0 if t.split('<!-- generated:start -->',1)[1].split('<!-- generated:end -->',1)[0].strip() else 1)" "$BASELINE_REPORT" 2>/dev/null; then
+    if python3 scripts/render_baseline.py --check --out "$BASELINE_REPORT"; then pass "Render baseline report in sync"
+    else fail "Render baseline drift — run: python3 scripts/render_baseline.py --out $BASELINE_REPORT"; fi
+  else
+    warn "$BASELINE_REPORT has no generated block yet — the close-out run fills it"
+  fi
 else
   warn "no scorecards yet — render-baseline check skipped (run node scripts/build_scorecard.mjs)"
 fi

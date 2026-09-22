@@ -115,7 +115,10 @@ and 17–25 are new from the design system.
    The two legal-claim stand-ins — the breeder-licence claim and the Lucy's-Law claim — were
    added by project 2's skill re-base and await **Lisa Bright's** confirmation of the
    wording. `BSUK_RELEASE=1 npm run check:placeholders` refuses to ship any of them
-   (exit 1, confirmed).
+   (exit 1, confirmed). While the phone stand-in is in `data/settings.json`,
+   `scripts/final_page_audit.py` exempts `phone_in_footer` on every page with this entry as
+   its printed reason (2026-09-22); the exemption reads the setting, so it lapses on its own
+   the run after a real number lands.
 8. **`schema-date-modified-present`.** 18 rows over 6 pages; needs
    `scripts/generate_page_dates.py` wired into the content pass, which arrives with
    **project 4** — the same project that gives pages a real edit history for sitemap
@@ -267,11 +270,16 @@ and 17–25 are new from the design system.
     why the Design System artifact's font list is empty (spec §11 amendment 7c). That is a
     third-party request on every page and a privacy consideration. **Project 6** should decide
     whether to self-host before the site is public.
-25. **`scripts/render_baseline.py`'s default report is now project 3's.** Its `REPORT` constant
-    points at `docs/reports/render-baseline-project3.md`; the project 2 file is a published
-    record of a finished run and is never regenerated. Whoever opens **project 4** must repoint
-    the default at a new project 4 baseline file, or `npm run baseline` will keep judging
-    project 4's scorecards against project 3's table.
+25. **CLOSED 2026-09-22 (project 4 close-out audit) — `scripts/render_baseline.py`'s default
+    report is project 4's.** `REPORT`, `tests/py/test_render_baseline.py`'s `REAL_REPORT`,
+    `npm run baseline` and `scripts/health-sweep.sh` all name
+    `docs/reports/render-baseline-project4.md`, which exists as a skeleton with the two
+    generated-block markers and no numbers — Task 19 fills it. Until then the two
+    real-scorecard tests skip (an empty block is "not run yet", not drift) and the sweep
+    warns. `--out` now creates a missing report, `--check` on a missing one exits 1 instead of
+    crashing, and the plan's Task 19 command no longer combines `--out` with `--write` (they
+    are one option; argparse read the pair as a second `--out` with no value). Projects 2's
+    and 3's files stay as published.
 
 26. **Existing images and videos must be reused with their URLs intact.** Every file under
     `public/images/` and the YouTube embeds in `data/settings.json` already rank; projects 4–6
@@ -365,16 +373,22 @@ and 17–25 are new from the design system.
     **Closes when the aspect is budgeted rather than fixed** — the photo box sized from the
     space the copy leaves, not the other way round.
 
-31. **A skipped heading level on the two data-driven routes.** `test:render:pages` reports
-    `[SEM] 1 skipped heading level(s): H1→H3 at "Roman"` on `/available-puppies/` and on
-    `/uk-locations/blue-staffy-puppies-uk/`, at all three viewports — six failing rows. Both
-    are generated from `data/puppies.json` and `data/locations.json` through
-    `src/pages/available-puppies/[slug].astro` and the locations route, neither of which
-    project 4 rebuilt: the card grid opens each puppy at H3 under the page's H1 with no H2
-    between them. Verified identical at `7b5be27`, so it is inherited rather than introduced,
-    and it is the only thing standing between `test:render:pages` and a clean exit — every one
-    of the twelve boarded pages passes. **Project 5's puppy and location cluster owns these
-    two routes** and closes it, either with the missing H2 or by opening the cards at H2.
+31. **Two blocking rows on the two data-driven routes (corrected 2026-09-22).**
+    `test:render:pages` fails six rows on two pages project 4 did not rebuild, and the two are
+    DIFFERENT failures — this entry first said both were SEM, and the close-out audit's run
+    shows otherwise:
+    - `/available-puppies/` — `[SEM] 1 skipped heading level(s): H1→H3 at "Roman"` at all three
+      viewports: the card grid opens each puppy at H3 under the page's H1 with no H2 between
+      them (from `data/puppies.json`).
+    - `/uk-locations/blue-staffy-puppies-uk/` — `[NAV] 1 of 2 in-page links land outside` the
+      landing band, at all three viewports, first `#Staffy-adoption` (at 2903px / 3436px /
+      3439px): the migrated body's own anchor target sits outside the band the sticky header
+      leaves. It is not a heading skip.
+    Both are inherited rather than introduced (identical at `7b5be27`), and they are the only
+    rows standing between `test:render:pages` and a clean exit — every one of the twelve
+    boarded pages passes. **Project 5's puppy and location cluster owns both routes** and
+    closes them: the missing H2 (or cards opened at H2) on the first, the anchor target on the
+    second.
 
 32. **606px of horizontal overflow at 375 on the contact board-preview route.** `NAV.kit-strip`
     inside `.bp-targets` on `/board-preview/uk-blue-staffy-breeders-contact/` is 933px wide in
@@ -395,7 +409,27 @@ and 17–25 are new from the design system.
     thank-you and contact both picked C-UT1, so rule 16's "no two pages share the same hero
     layout or counter strip" is not met between them; their `refresh` notes still describe
     the H-UT2/H-UT3 arrangements they did not pick. Separately, C-UT1 (`tiles: inline`,
-    `label: above`) prints its inter-figure `·` on a line of its own under the first figure,
-    because the dot is inside a column-flex tile — visible on the board preview too.
+    `label: above`) printed its inter-figure `·` on a line of its own under the first figure,
+    because the dot was inside a column-flex tile — FIXED 2026-09-22 in `CounterStrip`: the dot
+    is positioned out of flow in the gap after its tile (verified at 375 / 768 / 1280 on
+    thank-you, contact and the contact board preview; hidden below 720px as before).
     **Closes with a breeder decision**: more photographs and ledge rows on the four records
     (and new refresh notes), or new picks. The page renders what was approved until then.
+
+34. **Per-slug evidence budgets for the twelve rebuilt pages (2026-09-22).**
+    `scripts/evidence_audit.py --all` raised term-budget ERRORs on every rebuilt page, and not
+    because the writing is stuffed: working rule 15 requires each page's migrated H1, keyword
+    H2/H3s, their opening paragraphs and its FAQ questions word for word, the page shell repeats
+    the approved headings in the section dial, strip, sheet and table of contents, and the
+    approved tables and counters state the head terms in their own rows. The page-type ceilings
+    in `data/quality/evidence-budgets.json` are uncalibrated proposals re-based from the source
+    repo (`calibrated: null`) and were never sized for any of that. So each rebuilt slug now has
+    a `budgets_by_slug` entry, MEASURED on `dist/`: budget = carried count (the verbatim set on
+    the page plus the shell's repetition of it) + the page type's own-prose ceiling, floored at
+    the count as built — a ratchet, so any later edit that raises a term re-fails. Each entry's
+    `_why` prints the decomposition per term, and names the terms where the page's own text
+    (which includes the kit's table, counter, FAQ and review rows) is already over the proposed
+    ceiling. **Project 5's location and puppy pages carry no override** and are judged on the
+    page-type defaults; the audit still ERRORs on three location routes, the blog post and the
+    board-preview routes, none of them rebuilt pages. A calibration pass that measures the
+    ceilings against cited pages should retire most of these entries.

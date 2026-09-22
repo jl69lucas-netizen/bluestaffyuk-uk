@@ -243,7 +243,14 @@ register({
  * "£1,700", ink on steel (1.33:1) for their labels. Neither declaration is wrong alone; only
  * the composed result is, which is exactly the bug class this family exists for.
  *
- * Scoped to `.kit-hero :is(.hstats, .chips, .ticks)`, so the false-positive classes the
+ * VIDEO CAPTIONS (2026-09-22). `.kit-video figcaption` is judged here too, for the same
+ * reason and by the same bug class: VideoEmbed's caption reads `--kit-caption`, the component
+ * defaults it to the muted ink, and on a steel band that is 2.16:1 — the breed guide shipped
+ * it, and the page-wide advisory check reported it as one row among hundreds. A caption is
+ * one short line with no photo behind it (it sits UNDER the frame, not over it), so it has
+ * none of the page-wide check's false-positive classes either.
+ *
+ * Scoped to `.kit-hero :is(.hstats, .chips, .ticks)` and `.kit-video figcaption`, so the false-positive classes the
  * page-wide check still carries (labels over photos, translucent layers) cannot reach it,
  * and that is what earns it BLOCKING on arrival. The floor is 4.5:1 for every ledge node,
  * large type included: a ledge figure is the claim the hero is making, and "large text may
@@ -258,10 +265,11 @@ register({
   id: 'a11y-hero-ledge-contrast',
   family: 'A11Y',
   severity: 'blocking',
-  describe: 'hero ledge text (figures, chips, ticks) must read at 4.5:1 on the bed it paints on',
-  // The fixture pair carries two figures and two labels on a band, plus a chip row on its own
-  // light bed: six nodes. The floor is that, so the pair cannot pass by judging one.
-  minExamined: 6,
+  describe: 'hero ledge text (figures, chips, ticks) and video captions must read at 4.5:1 on the bed they paint on',
+  // The fixture pair carries two figures and two labels on a band, a chip row on its own
+  // light bed, and one video caption on a band: seven nodes. The floor is that, so the pair
+  // cannot pass by judging one.
+  minExamined: 7,
   async run(page: Page, viewport: number): Promise<CheckResult> {
     const r = await page.evaluate(() => {
       const px = document.createElement('canvas');
@@ -297,7 +305,7 @@ register({
       const fails: string[] = [];
       let examined = 0;
       const nodes = document.querySelectorAll(
-        '.kit-hero :is(.hstats, .chips, .ticks), .kit-hero :is(.hstats, .chips, .ticks) *',
+        '.kit-hero :is(.hstats, .chips, .ticks), .kit-hero :is(.hstats, .chips, .ticks) *, .kit-video figcaption',
       );
       for (const el of Array.from(nodes)) {
         const own = Array.from(el.childNodes)
@@ -333,7 +341,7 @@ register({
           family: 'A11Y' as const,
           viewport,
           count: r.fails.length,
-          message: `${r.fails.length} hero ledge node(s) below 4.5:1: ${r.fails.slice(0, 6).join(' | ')}`,
+          message: `${r.fails.length} hero ledge / video caption node(s) below 4.5:1: ${r.fails.slice(0, 6).join(' | ')}`,
         }]
         : [],
     };
