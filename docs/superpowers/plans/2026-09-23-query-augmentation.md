@@ -1208,7 +1208,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 Built markup the gate relies on:
 - `src/components/kit/Faq.astro` renders `<div class="kit-faq">` → `<details>` → `<summary><span class="num">01</span><h3 class="q">Title Cased Question</h3></summary><p>answer</p>`. The H3 is title-cased at render, so the gate compares `normalise()`d text.
-- Body sections are `<section id="…" data-section-label="…">`. A section that holds a frame part — a kit hero (`kit-hero`), counter (`kit-counter`), trust strip (`kit-trust`), page nav (`kit-nav`), review (`kit-quote`), FAQ block (`kit-faq`) or any `<form>` — is frame, never body (Task 1's template, "The fixed frame").
+- Body sections are `<section id="…" data-section-label="…">`. A section that holds a frame part — a kit hero (`kit-hero`), counter (`kit-counter`), trust strip (`kit-trust`), page nav (`kit-nav`), review (`kit-quote`), FAQ block (`kit-faq`) or any `<form>` — is frame, never body; so are `#top`, `#key-takeaways` and `#newsletter` (Task 1's template, "The fixed frame").
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1393,7 +1393,7 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
   3. FAQPage schema naming exactly the visible FAQ questions;
   4. every extra section's recorded heading as an H2;
   5. on location pages, at least section_target.total body sections — a body section is a
-     <section data-section-label> that is not #top or #key-takeaways and holds no frame part:
+     <section data-section-label> that is not #top, #key-takeaways or #newsletter and holds no frame part:
      no kit hero, counter, trust strip, page nav, review, FAQ block and no form
      (docs/reference/location-page-template.md, "The fixed frame" — frame is never counted).
 
@@ -1415,7 +1415,7 @@ from query_augment import BLOCKS, FAQ_MAX, FAQ_MIN, FAQ_TOTAL_MAX, normalise  # 
 
 ROOT = Path(__file__).resolve().parents[1]
 FAQ_TOTAL_MIN = 15
-FRAME_IDS = {"top", "key-takeaways"}
+FRAME_IDS = {"top", "key-takeaways", "newsletter"}
 # The kit components that make up the fixed frame. A section holding one is frame, not body.
 FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
