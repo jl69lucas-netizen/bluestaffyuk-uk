@@ -405,6 +405,20 @@ figure (Merge section). Every other line of the two runs is identical.
 | form | 8 forms, 0 problems | 8 forms, 0 problems |
 | page dates `--check` | current, 53 routes | current, 53 routes |
 </script>
+<script type="text/markdown" data-title="Merge">
+`page-rebuilds` is merged into `foundation` with `git merge --no-ff` (the controller's
+instruction; the plan said fast-forward) and `page-rebuilds` is kept. After the first merge,
+build, `check:all` and pytest were re-run on `foundation`: build `58 page(s) built`,
+`check:all` exit 0 with every line as in the table above — and pytest **`1 failed, 1702
+passed, 13 skipped`**. The failure was this close-out's own: the new session-log text cited
+four scripts and the baseline file by bare filename, and
+`test_rules_index.py::test_every_repo_path_cited_in_a_reference_doc_exists_or_is_marked`
+requires a repo path. The two gate runs did not see it because the session log was written
+after them. The paths were corrected on `page-rebuilds` (`tests/py/test_rules_index.py` 87
+passed), the unpushed merge was discarded and taken again, and the re-run on `foundation`
+after the second merge is recorded in the session closer's report: build 58 pages,
+`check:all` exit 0, pytest `1703 passed, 13 skipped, 1 xfailed` — the run-2 figure.
+</script>
 <script type="text/markdown" data-title="Credentials">
 No credential value appears in this report, the run log or any committed file.
 `tests/py/test_secret_shapes.py` and `tests/py/test_no_env_value_committed.py` ran inside both
@@ -441,7 +455,7 @@ Closed by this build: **8, 9, 11, 12, 16 (for the twelve pages; see 16 below), 2
 | 34 | Evidence budgets per slug are measured ratchets; ceilings uncalibrated; the post and location routes still ERROR | build 5 |
 | 35 | **NEW.** The three guides (health, breed guide, buying guide) all picked H-GD3 — rule 16 "no two pages share a hero layout" is not met between them | **user** (new picks) |
 | 36 | **NEW.** 17 duplicate passages ≥12 words touch rebuilt pages: the shared FAQ answer "a comprehensive puppy package…" on four pages and "are the puppies raised in a family home…" on two (FAQ rows rendered from `data/faq.json` on more than one page), the review attribution tail "…is the heart of our family — the Victoria Family, Manchester" crossing the quote whitelist on three pairs, three rule-15 verbatim openings the homepage shares with its sources, the post against the buying guide (35 words), and pup-sale's "healthy, vaccinated and ready" line against two location bodies | build 5 |
-| 37 | **NEW.** Definition of done 7 names the `Claude Fable 5.1` trailer; the last eight commits of this branch carry `Claude Opus 5.5`, by the controller's instruction for this session | user (ruling) |
+| 37 | **NEW.** Definition of done 7 names the `Claude Fable 5.1` trailer; the last nine commits of this branch carry `Claude Opus 5.5`, by the controller's instruction for this session | user (ruling) |
 | 38 | **NEW.** The breed guide's S2 video loads `youtube-nocookie.com` with the page and raises a Chrome cookie issue — Lighthouse Best Practices 96 on both profiles; the S3 facade would not | **user** (keep S2, or pick S3) |
 </script>
 <script type="text/markdown" data-title="What build 5 inherits">
@@ -476,7 +490,7 @@ Closed by this build: **8, 9, 11, 12, 16 (for the twelve pages; see 16 below), 2
 | 4 | Known Issues 8, 9, 11, 12, 20 closed; every `REVIEW_PLACEHOLDER` counted | **PASS** | `schema-date-modified-present` 0; `board_gate.py index` header-collision 0; old band and old byline 0 times on every rebuilt page; `data/page-dates.json` wired through `prebuild` and `BaseLayout`; `REVIEW_PLACEHOLDER` 0 rendered, 0 counted |
 | 5 | Every rebuilt page at 0 blocking rows; blocking total below 58; `schema-date-modified-present` 0 on rebuilt pages | **PASS** | blocking **58 → 6**, none on a rebuilt page; `schema-date-modified-present` 0 site-wide |
 | 6 | `check:all`, pytest, render meta green twice; gate report published with spec and plan as Artifacts; session-closer names project 5 and appends open flags | **PASS-WITH-DEVIATION** | `check:all` and render meta identical and green in both runs; pytest green in both with the two-test skip drift explained and fixed above; this report plus `docs/artifacts/bsuk-page-rebuilds-gate-report.html`, `…-spec.html` (regenerated with amendments 1–11) and `…-plan.html` built for the user to publish; session log names build 5 and appends Known Issues 35–38 |
-| 7 | Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **DEVIATION** | every commit on the branch carries a `Co-Authored-By` trailer; 111 carry Fable 5.1 and the last eight — `2ce9e93` onward, including step 0 and this report — carry `Claude Opus 5.5`, as does the merge commit on `foundation`, as the controller instructed for this session (Known Issue 37) |
+| 7 | Every commit carries `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` | **DEVIATION** | every commit on the branch carries a `Co-Authored-By` trailer; 111 carry Fable 5.1 and the last nine — `2ce9e93` onward, including step 0, this report and its path fix — carry `Claude Opus 5.5`, as does the merge commit on `foundation`, as the controller instructed for this session (Known Issue 37) |
 
 **Verdict count: 4 PASS · 1 PASS-WITH-DEVIATION · 1 DEVIATION · 1 FAIL (partial).**
 

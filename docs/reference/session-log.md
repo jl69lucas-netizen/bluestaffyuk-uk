@@ -80,12 +80,12 @@ Plan: `docs/superpowers/plans/2026-09-19-page-rebuilds.md`.
 Spec: `docs/superpowers/specs/2026-09-19-page-rebuilds-design.md`, amended eleven times during
 execution; §9 is where every in-flight decision is recorded.
 
-Closed 2026-09-22 on branch `page-rebuilds`, cut from `foundation` at `63a7b12`, 119 commits
+Closed 2026-09-22 on branch `page-rebuilds`, cut from `foundation` at `63a7b12`, 120 commits
 including step 0 (`f94baee`, the video copy that described silent puppy clips as a voice, a
 tour and a guide) and the close-out, merged into `foundation` with `--no-ff`; no remote and
 nothing pushed. Every gate was run twice; the transcript is
 `docs/reports/page-rebuilds-run.log`. One line drifted between the runs — pytest's two
-real-scorecard baseline tests skip until `render-baseline-project4.md` has a generated block,
+real-scorecard baseline tests skip until `docs/reports/render-baseline-project4.md` has a generated block,
 and run 1's pytest ran before run 1 filled it — and the cause is removed by committing the
 filled block. Full report and evidence: `docs/reports/page-rebuilds-gate-report.md`.
 
@@ -95,7 +95,7 @@ video embed — eighteen in all), the first three on every rebuilt page and the 
 15's verbatim set carried on nine pages, 507 elements, 181 changed with reasons, 0 missing;
 the review-slot stand-in at 0 — every review slot filled from the three real reviews; render blocking
 rows **58 → 6**, none on a rebuilt page (the six are Known Issue 31's two routes);
-`schema-date-modified-present` 18 → 0; `img-srcset-within-2x` 6 → 0; `final_page_audit.py`
+`schema-date-modified-present` 18 → 0; `img-srcset-within-2x` 6 → 0; `scripts/final_page_audit.py`
 12 FAIL → 0 FAIL; AEO 38 baseline-only FAIL pages → 0; pytest 1355 → 1703 passed; render meta
 324 → 370 passed. Lighthouse (warm median of 3, mobile and desktop, fourteen pages): 100 in all five categories everywhere except the thank-you page's SEO 69 (`noindex` by design), the breed guide's Best Practices 96 (Known Issue 38), the location route's SEO 92 (migrated link text) and three mobile Performance 99s — the blog hub's, the one fall against project 3, is TBT variance. Working rules 12–16 were given during the build; rules 10–11 (project 3's
 close) were applied to real pages for the first time.
@@ -290,7 +290,7 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
     execution and the user has not confirmed it. Deleting an unwanted treatment is a one-line
     registry change plus its fixtures and is cheapest **before project 4** mounts buttons on
     real pages.
-20. **CLOSED 2026-09-22 (project 4).** `prebuild` runs `generate_page_dates.py`, `BaseLayout`
+20. **CLOSED 2026-09-22 (project 4).** `prebuild` runs `scripts/generate_page_dates.py`, `BaseLayout`
     emits `dateModified` from it, and `generate_page_dates.py --check` is green. Was: **`data/page-dates.json` is generated but unwired.** `npm run dates` writes it from git
     history, and `/kit-preview/` is its only consumer — it reads the file for its `WebPage`
     `dateModified` rather than calling `new Date()`. The 18 `schema-date-modified-present` rows
@@ -493,7 +493,7 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
     and should be followed by a board-gate row that fails a shared per-page hero or counter
     outright.
 
-36. **Seventeen duplicate passages touch rebuilt pages (2026-09-22).** `dup_content_audit.py`
+36. **Seventeen duplicate passages touch rebuilt pages (2026-09-22).** `scripts/dup_content_audit.py`
     reports 131 passages; 114 lie between pages project 4 did not rebuild, and 17 touch one it
     did: the FAQ answer "a comprehensive puppy package…" rendered from one `data/faq.json` row
     on four pages, and "are the puppies raised in a family home…" on two; the review
@@ -506,7 +506,7 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
 
 37. **The commit trailer (2026-09-22).** Spec §7.7 names `Co-Authored-By: Claude Fable 5.1`.
     Every commit on `page-rebuilds` carries a `Co-Authored-By` trailer; 111 carry Fable 5.1 and
-    the last eight (`2ce9e93` onward, including step 0 and the close-out), plus the merge commit
+    the last nine (`2ce9e93` onward, including step 0 and the two close-out commits), plus the merge commit
     on `foundation`, carry `Claude Opus 5.5`, by the controller's instruction for those
     sessions. **Closes with the user's ruling** on which trailer project 5 uses.
 
