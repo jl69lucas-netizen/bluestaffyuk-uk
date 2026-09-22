@@ -5,7 +5,7 @@
 // data/facts/rebuilt.json, so `migration_parity.py` skips it and `facts_preserved_check.py`
 // is its gate instead.
 //
-// Seven sections, in the record's order, each with the record's own id and heading. Five of
+// Eight sections, in the record's order, each with the record's own id and heading. Six of
 // them carry a style the breeder picked, and every one of those resolves through
 // `pickedStyle()` → `boxClass()` — the same pair the board preview rendered them with, so
 // the page cannot drift from the board they signed off. `while-you-wait` and `reach-us` are
@@ -26,13 +26,14 @@
 // H4-H6 ARE WRITTEN HERE, not in the record. The approved outline stops at the H3 the
 // breeder read; the floor of five H5 and five H6 (rules/headings.md) is met by the page and
 // `min-h5-h6` reads the built page for a rebuilt slug (spec §9 amendment 2). Levels descend
-// with no skips, and the ladder sits in five of the seven sections. The H6 lines all open on
+// with no skips, and the ladder sits in five of the eight sections. The H6 lines all open on
 // the record's own `tuple.h6_prefixes` entry, "Next step:".
 //
 // EVERY HEADING RENDERS THROUGH `titleCase()` (spec §9 amendment 4b): the breeder approved
 // the wording, and the case is presentation, fixed site-wide by rules/headings.md.
 import PageShell from '../../layouts/PageShell.astro';
 import Hero from '../../components/kit/Hero.astro';
+import CounterStrip from '../../components/kit/CounterStrip.astro';
 import InfoCard from '../../components/kit/InfoCard.astro';
 import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
@@ -43,6 +44,7 @@ import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
+import { countedFigures, type StatRow } from '../../lib/recordText';
 import { SITE, type PuppyRow } from '../../lib/site';
 import puppiesJson from '../../../data/puppies.json';
 import reviewsJson from '../../../data/reviews.json';
@@ -64,7 +66,8 @@ const family = record.assets.find((a) => a.slot === 'thank-you-family')!;
 
 // The three FAQ rows this page owns, filtered by `source`: a row added to data/faq.json for
 // another page can never appear here, and the three ids the record names cannot drift.
-const faqs = loadFaq().filter(
+const faqRows = loadFaq();
+const faqs = faqRows.filter(
   (r) => r.source === 'src/pages/thank-you-blue-staffy-puppies-journey/index.astro',
 );
 
@@ -80,7 +83,41 @@ const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Availa
 // worse than a build that stops. The slot is filled, so no REVIEW_PLACEHOLDER renders here.
 const victoria = reviewsJson.find((r) => r.name === 'The Victoria Family')!;
 
-const welcomeBox = boxClass(pickedStyle(record, 'welcome'));
+// WORKING RULE 16 — the per-page hero and counter the breeder picked on 2026-09-22: H-UT1 (a
+// small photo mosaic right of the copy, in a card) and C-UT1 (one flush line in a card beside
+// the heading, labels above), the interior-utility family's own, resolved through
+// `pickedStyle()` so the page mounts what the board rendered. The hero's ledge is `none`, and
+// its tiles are the photographs the record's `welcome` names: one, so it degrades to the
+// single photo just as the board drew it.
+const welcomeStyle = pickedStyle(record, 'welcome');
+const welcomeBox = boxClass(welcomeStyle);
+const welcomeTiles = record.sections.find((s) => s.id === 'welcome')!.images.map((i) => {
+  const a = record.assets.find((x) => x.slot === i.slot && x.file)!;
+  return { src: a.file, alt: a.alt, w: a.w, h: a.h };
+});
+const statsStyle = pickedStyle(record, 'stats');
+const statsBox = boxClass(statsStyle);
+const statsSection = record.sections.find((s) => s.id === 'stats')!;
+
+// THE COUNTER'S FIGURES ARE DERIVED HERE, and the record's `n` is what each one is checked
+// against (`countedFigures()`, src/lib/recordText.ts): the data decides what prints, and the
+// record decides when a human has to look. The reply window is cut out of the SAME
+// data/faq.json answer this page's accordion renders, so the tile and the answer cannot
+// disagree; the count is the grid's own filter; the band is the two settings.
+const replyAnswer = faqRows.find((r) => r.id === 'enquiry-reply-time');
+const replyWindow = replyAnswer && /(\d+)\s*[-–]\s*(\d+) business hours/.exec(replyAnswer.a);
+if (!replyWindow) {
+  throw new Error('thank-you-blue-staffy-puppies-journey: data/faq.json enquiry-reply-time no '
+    + 'longer states an "<lo>-<hi> business hours" window for the counter to read');
+}
+const COUNTED: Record<string, string> = {
+  'data/faq.json#[enquiry-reply-time].a': `${replyWindow[1]}–${replyWindow[2]}`,
+  'data/puppies.json#count(status=Available)': String(available.length),
+  'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp':
+    `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`,
+};
+const counterStats = (statsSection.stats as StatRow[])
+  .map(countedFigures(COUNTED, 'thank-you-blue-staffy-puppies-journey'));
 const nextStepsBox = boxClass(pickedStyle(record, 'next-steps'));
 // `owners` was picked S3, the reviews GRID arrangement — but the approval NOTE on that same
 // section fixes the mode as `single` with one named review, and one review in a grid of one
@@ -90,12 +127,7 @@ const nextStepsBox = boxClass(pickedStyle(record, 'next-steps'));
 const ownersBox = boxClass(pickedStyle(record, 'owners'));
 const puppiesBox = boxClass(pickedStyle(record, 'puppies'));
 const questionsBox = boxClass(pickedStyle(record, 'questions'));
-// The `stats` counter is BOARDED and not yet BUILT. Working rule 16 put a counter strip on
-// this record, and the page that renders it is the later task's; until then the section
-// exists on the board and not in this body, and a dial link to an id the page does not
-// carry is the dead anchor `nav-anchors-resolve` exists to block. The filter comes out in
-// the same commit that adds the `<section id="stats">`.
-const sections = sectionsFromRecord(record).filter((s) => s.id !== 'stats');
+const sections = sectionsFromRecord(record);
 const email = SITE.email;
 // "Mo-Su 09:00-23:00" as a sentence. The hours are data/settings.json's, not prose typed
 // here, so a change to the setting reaches this line.
@@ -109,26 +141,53 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
   robots="noindex, follow"
   sections={sections}
 >
-  {/* 01 — the confirmation. Hero in the picked style S3 (photo left of the copy, in a card),
-      carrying the migrated photograph at its original path with its original alt. */}
+  {/* 01 — the confirmation. Hero in the picked style H-UT1 (a small photo mosaic right of
+      the copy, in a card), carrying the migrated photograph at its original path with its
+      original alt. */}
   <section slot="hero" id="welcome" data-section-label="Thank you — we have your enquiry" class={welcomeBox}>
     <Hero
       as="h1"
       eyebrow={`Enquiry received · ${SITE.location_label}`}
       title={T(h1)}
-      lede="Your message reached us, and I am glad you wrote. I am Lisa Bright, and every enquiry about a blue Staffy comes to me rather than to an inbox nobody reads."
+      lede="Your message reached me. I am Lisa Bright, and I reply myself."
       image={family.file}
       imageAlt={family.alt}
       imageWidth={family.w}
       imageHeight={family.h}
+      layout={welcomeStyle.layout.hero ?? 'split'}
+      align={welcomeStyle.layout.align ?? 'left'}
+      media={welcomeStyle.layout.media ?? 'right'}
+      ledge={welcomeStyle.layout.ledge ?? 'none'}
+      mosaic={welcomeTiles}
     />
+    <p>
+      I am glad you wrote. Every enquiry about a blue Staffy comes to me rather than to an inbox
+      nobody reads.
+    </p>
     <p>
       I am writing your reply now. Below is what happens next, what is worth reading while
       you wait, and how to reach me if you need me sooner than that.
     </p>
   </section>
 
-  {/* 02 — the four steps, in the picked style S3 (a rail of cards beside the heading). Each
+  {/* 02 — the counter, in the picked style C-UT1 (one flush line in a card beside the
+      heading, labels above). It prints the record's three sourced `stats` rows, each figure
+      derived above from the file its row cites. */}
+  <section id="stats" data-section-label="Where your enquiry stands" class={statsBox}>
+    <div class="bl-head">
+      <h2>{T(statsSection.heading)}</h2>
+      <p class="bl-lede">Three facts for the wait, each read from our own files rather than typed into this page.</p>
+    </div>
+    <div class="bl-body">
+      <CounterStrip
+        stats={counterStats}
+        tiles={statsStyle.layout.tiles ?? 'inline'}
+        label={statsStyle.layout.label ?? 'under'}
+      />
+    </div>
+  </section>
+
+  {/* 03 — the four steps, in the picked style S3 (a rail of cards beside the heading). Each
       card is one node of the record's tree, and every figure in it is in the migrated body
       or in data/settings.json. */}
   <section id="next-steps" data-section-label="What happens next" class={nextStepsBox}>
@@ -168,7 +227,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
     </div>
   </section>
 
-  {/* 03 — the reading list. `standard` with no pick: prose is prose. The eight links are the
+  {/* 04 — the reading list. `standard` with no pick: prose is prose. The eight links are the
       record's own, carried over from the migrated body. */}
   <section id="while-you-wait" data-section-label="While you wait">
     <h2>{T('While you wait')}</h2>
@@ -201,7 +260,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
     <p>A written-down question is easier to answer than a remembered one.</p>
   </section>
 
-  {/* 04 — one review, in the picked bed S3, mode `single` per the approval note. */}
+  {/* 05 — one review, in the picked bed S3, mode `single` per the approval note. */}
   <section id="owners" data-section-label="From a family who waited too" class={ownersBox}>
     <div class="bl-head">
       <h2>{T('From a family who waited too')}</h2>
@@ -223,7 +282,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
     </div>
   </section>
 
-  {/* 05 — the available puppies, in the picked style S3 (a scrolling rail on a band). The
+  {/* 06 — the available puppies, in the picked style S3 (a scrolling rail on a band). The
       grid filters data/puppies.json on status. */}
   <section id="puppies" data-section-label="The puppies looking for a home" class={puppiesBox}>
     <div class="bl-head">
@@ -251,7 +310,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
     </div>
   </section>
 
-  {/* 06 — the fallback. `standard` with no pick. No telephone is rendered: data/settings.json
+  {/* 07 — the fallback. `standard` with no pick. No telephone is rendered: data/settings.json
       holds PHONE_PLACEHOLDER, and a placeholder must never reach a page. */}
   <section id="reach-us" data-section-label="If you need us sooner">
     <h2>{T('If you need us sooner')}</h2>
@@ -278,7 +337,7 @@ const hours = SITE.hours.replace('Mo-Su ', 'every day, ').replace('-', ' to ');
     <p>Look there before writing again, which is what the first step above asks.</p>
   </section>
 
-  {/* 07 — the FAQ, in the picked style S3 (accordion in a card with a jump list beside it).
+  {/* 08 — the FAQ, in the picked style S3 (accordion in a card with a jump list beside it).
       The three rows are the ones data/faq.json sources to this page; the record names the
       same three ids. */}
   <section id="questions" data-section-label="Questions people ask after writing to us" class={questionsBox}>

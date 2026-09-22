@@ -223,8 +223,15 @@ const MOSAIC_SIZES = '(max-width: 900px) calc(50vw - 52px), '
 //            today: its photo runs from its column to the viewport edge, so it declares `50vw`
 //            from the CSS's own `margin-inline: calc(-50vw + 50%)` rather than from a
 //            measurement, and `img-sizes-matches-box` is what will read it the day H-HM3 ships.
+//   A MOSAIC WITH ONE PHOTO is the split hero, whatever its `media` says. `media: top` is
+//            what STACKS a stacked, panel or bleed hero — each has its own one-column rule —
+//            but no rule stacks a mosaic, so a mosaic that degraded to its single photo paints
+//            the split hero's column. Reading `top` there promised 828px for a 408px box on
+//            `/` (H-HM2, whose record names one photograph), which is the `sizes` defect this
+//            block exists to prevent, one arrangement over.
 const BELOW_900 = (px: number) => `(max-width: 900px) calc(100vw - ${px}px)`;
-const MEASURED_PIC_SIZES = media === 'top'
+const stacksOnTop = media === 'top' && layout !== 'mosaic';
+const MEASURED_PIC_SIZES = stacksOnTop
   ? `(max-width: 1023px) calc(100vw - 96px), (max-width: 1199px) calc(100vw - 372px), 828px`
   : layout === 'panel'
     ? (ledge === 'aside'

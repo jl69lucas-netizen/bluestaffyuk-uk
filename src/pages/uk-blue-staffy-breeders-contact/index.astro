@@ -5,7 +5,7 @@
 // data/facts/rebuilt.json, so `migration_parity.py` skips it and `facts_preserved_check.py`
 // is its gate instead.
 //
-// THE RECORD HAS TEN ENTRIES AND THE PAGE HAS SEVEN SECTIONS. The last three —
+// THE RECORD HAS ELEVEN ENTRIES AND THE PAGE HAS EIGHT SECTIONS. The last three —
 // `desktop-dial`, `mobile-sections`, `mobile-strip` — are not sections of this page at all:
 // they are the chrome the breeder settled on this board for the whole rebuild (dial S2,
 // sheet S2, strip S2), already baked into PageDial, SectionSheet and SectionStrip. They are
@@ -33,11 +33,12 @@
 //
 // H4-H6 ARE WRITTEN HERE, not in the record (spec §9 amendment 2): the approved outline
 // stops at the H3 the breeder read, and the floor of five H5 and five H6 is met by the
-// page, with the ladder in five of the seven sections. The H6 lines all open on the
+// page, with the ladder in five of the eight sections. The H6 lines all open on the
 // record's own `tuple.h6_prefixes` entry, "What to send:". Every heading renders through
 // `titleCase()` (amendment 4b) — approved wording, site-wide case.
 import PageShell from '../../layouts/PageShell.astro';
 import Hero from '../../components/kit/Hero.astro';
+import CounterStrip from '../../components/kit/CounterStrip.astro';
 import InfoCard from '../../components/kit/InfoCard.astro';
 import TrustStrip from '../../components/kit/TrustStrip.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
@@ -48,6 +49,7 @@ import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
+import { countedFigures, type StatRow } from '../../lib/recordText';
 import { SITE, abs } from '../../lib/site';
 import reviewsJson from '../../../data/reviews.json';
 import record from '../../../data/boards/uk-blue-staffy-breeders-contact.json';
@@ -84,16 +86,44 @@ const rachel = reviewsJson.find((r) => r.name === 'Rachel L.')!;
 
 // The three chrome entries are not sections of the page (see the note at the top).
 const CHROME_SHAPES = ['dial', 'sheet', 'strip'];
-// `stats` is BOARDED and not yet BUILT. Working rule 16 put a counter strip on this record,
-// and the page that renders it is the later task's; until then the section exists on the
-// board and not in this body, and a dial link to an id the page does not carry is the dead
-// anchor `nav-anchors-resolve` exists to block. It comes out of this filter in the same
-// commit that adds the `<section id="stats">`.
 const sections = sectionsFromRecord({
-  sections: record.sections.filter((s) => !CHROME_SHAPES.includes(s.shape) && s.id !== 'stats'),
+  sections: record.sections.filter((s) => !CHROME_SHAPES.includes(s.shape)),
 });
 
-const topBox = boxClass(pickedStyle(record, 'top'));
+// WORKING RULE 16 — the per-page hero and counter the breeder picked on 2026-09-22: H-UT1 (a
+// small photo mosaic right of the copy, in a card) and C-UT1 (one flush line in a card beside
+// the heading, labels above), the interior-utility family's own, resolved through
+// `pickedStyle()` so the page mounts what the board rendered. The hero's ledge is `none`, and
+// its tiles are the photographs the record's `top` names: one, so it degrades to the single
+// photo just as the board drew it.
+const topStyle = pickedStyle(record, 'top');
+const topBox = boxClass(topStyle);
+const topTiles = record.sections.find((s) => s.id === 'top')!.images.map((i) => {
+  const a = record.assets.find((x) => x.slot === i.slot && x.file)!;
+  return { src: a.file, alt: a.alt, w: a.w, h: a.h };
+});
+const statsStyle = pickedStyle(record, 'stats');
+const statsBox = boxClass(statsStyle);
+const statsSection = record.sections.find((s) => s.id === 'stats')!;
+
+// THE COUNTER'S TWO FIGURES ARE DERIVED HERE, and the record's `n` is what each is checked
+// against (`countedFigures()`, src/lib/recordText.ts). The hours are cut out of the setting
+// the footer and the prose below both read; the reply window out of the data/faq.json answer
+// the hero's own paragraph and the form's lede state in words. Two tiles and no more: no file
+// holds a telephone figure or an appointment figure, so the page does not print one.
+const hoursRange = /(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/.exec(SITE.hours);
+const replyAnswer = rows.find((r) => r.id === 'enquiry-reply-time');
+const replyWindow = replyAnswer && /(\d+)\s*[-–]\s*(\d+) business hours/.exec(replyAnswer.a);
+if (!hoursRange || !replyWindow) {
+  throw new Error('uk-blue-staffy-breeders-contact: data/settings.json hours or data/faq.json '
+    + 'enquiry-reply-time no longer states the range the counter reads out of it');
+}
+const COUNTED: Record<string, string> = {
+  'data/settings.json#hours': `${hoursRange[1]}–${hoursRange[2]}`,
+  'data/faq.json#[enquiry-reply-time].a': `${replyWindow[1]}–${replyWindow[2]}`,
+};
+const counterStats = (statsSection.stats as StatRow[])
+  .map(countedFigures(COUNTED, 'uk-blue-staffy-breeders-contact'));
 const whyWriteBox = boxClass(pickedStyle(record, 'why-write'));
 const enquiryBox = boxClass(pickedStyle(record, 'enquiry'));
 const ownersBox = boxClass(pickedStyle(record, 'owners'));
@@ -136,19 +166,29 @@ const pageSchema = [
   schema={pageSchema}
   sections={sections}
 >
-  {/* 01 — the opening. Hero in the picked style S3 (photo left of the copy, in a card),
-      carrying the migrated photograph at its original path with its original alt. */}
+  {/* 01 — the opening. Hero in the picked style H-UT1 (a small photo mosaic right of the
+      copy, in a card), carrying the migrated photograph at its original path with its
+      original alt. */}
   <section slot="hero" id="top" data-section-label="Contact Blue Staffy UK" class={topBox}>
     <Hero
       as="h1"
       eyebrow={`Enquiries · ${SITE.location_label}`}
       title={T(h1)}
-      lede="I am Lisa Bright, and this is the one place to write to us about a blue Staffy. Whether you are ready to reserve a puppy or only want more information, the form below is the quickest route and it comes straight to me."
+      lede="I am Lisa Bright, and the form below comes straight to me."
       image={support.file}
       imageAlt={support.alt}
       imageWidth={support.w}
       imageHeight={support.h}
+      layout={topStyle.layout.hero ?? 'split'}
+      align={topStyle.layout.align ?? 'left'}
+      media={topStyle.layout.media ?? 'right'}
+      ledge={topStyle.layout.ledge ?? 'none'}
+      mosaic={topTiles}
     />
+    <p>
+      This is the one place to write to us. Whether you are ready to reserve a puppy or only
+      want more information, the form is the quickest route.
+    </p>
     <p>
       Every enquiry is answered within 24-48 business hours, and it is answered by me rather
       than by an agency. If you would rather not use a form, the email address is a little
@@ -156,7 +196,24 @@ const pageSchema = [
     </p>
   </section>
 
-  {/* 02 — the trust strip, in the picked style S1 (full width). The three claims are the
+  {/* 02 — the counter, in the picked style C-UT1 (one flush line in a card beside the
+      heading, labels above). It prints the record's two sourced `stats` rows, each figure
+      derived above from the file its row cites. */}
+  <section id="stats" data-section-label="When you will hear back" class={statsBox}>
+    <div class="bl-head">
+      <h2>{T(statsSection.heading)}</h2>
+      <p class="bl-lede">Two facts, both read from our own files: the hours I answer in, and how soon a reply follows.</p>
+    </div>
+    <div class="bl-body">
+      <CounterStrip
+        stats={counterStats}
+        tiles={statsStyle.layout.tiles ?? 'inline'}
+        label={statsStyle.layout.label ?? 'under'}
+      />
+    </div>
+  </section>
+
+  {/* 03 — the trust strip, in the picked style S1 (full width). The three claims are the
       kit's own and are backed on the site today; nothing is written here but the lede. */}
   <section id="why-write" data-section-label="What we can help with" class={whyWriteBox}>
     <div class="bl-head">
@@ -172,7 +229,7 @@ const pageSchema = [
     </div>
   </section>
 
-  {/* 03 — the one enquiry form, in the picked style S2 (form beside the reasons to write).
+  {/* 04 — the one enquiry form, in the picked style S2 (form beside the reasons to write).
       ContactFormKit takes its default idPrefix: one form, one id space. */}
   <section id="enquiry" data-section-label="Send us a message" class={enquiryBox}>
     <div class="bl-head">
@@ -205,7 +262,7 @@ const pageSchema = [
     </aside>
   </section>
 
-  {/* 04 — the direct channels. `standard` with no pick: prose is prose. */}
+  {/* 05 — the direct channels. `standard` with no pick: prose is prose. */}
   <section id="reach-us" data-section-label="How to reach us">
     <h2>{T('How to reach us')}</h2>
     <p>Three channels, plainly.</p>
@@ -240,7 +297,7 @@ const pageSchema = [
     <p>The form and the email address reach the same inbox.</p>
   </section>
 
-  {/* 05 — what each field is for. `standard` with no pick. The four sub-headings are the
+  {/* 06 — what each field is for. `standard` with no pick. The four sub-headings are the
       form's own field groups, so this section can never describe a field the form lacks. */}
   <section id="what-to-tell-us" data-section-label="What to tell us">
     <h2>{T('What to tell us')}</h2>
@@ -274,7 +331,7 @@ const pageSchema = [
     <p>Delivery is priced by distance, so a town is what makes that answerable.</p>
   </section>
 
-  {/* 06 — one review, in the picked style S1 (one review given room). */}
+  {/* 07 — one review, in the picked style S1 (one review given room). */}
   <section id="owners" data-section-label="What it is like to deal with us" class={ownersBox}>
     <div class="bl-head">
       <h2>{T('What it is like to deal with us')}</h2>
@@ -296,7 +353,7 @@ const pageSchema = [
     </div>
   </section>
 
-  {/* 07 — the FAQ, in the picked style S3 (accordion in a card with a jump list beside it).
+  {/* 08 — the FAQ, in the picked style S3 (accordion in a card with a jump list beside it).
       The four rows are the ones the record names, in the record's order. */}
   <section id="questions" data-section-label="Before you write" class={questionsBox}>
     <div class="bl-head">

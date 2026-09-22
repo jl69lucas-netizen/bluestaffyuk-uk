@@ -47,6 +47,7 @@ import Faq from '../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../lib/sections';
 import { pickedStyle, approvalInForce } from '../lib/pickedStyle';
 import { bakedAssets } from '../lib/assets';
+import { countedFigures, type StatRow } from '../lib/recordText';
 import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
 import { loadFaq } from '../lib/faq';
@@ -55,6 +56,7 @@ import { videoObject } from '../lib/video';
 import puppiesJson from '../../data/puppies.json';
 import reviewsJson from '../../data/reviews.json';
 import record from '../../data/boards/index.json';
+import healthRecord from '../../data/boards/blue-staffy-health-uk.json';
 
 const path = '/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here. `h1`
@@ -135,6 +137,41 @@ const sections = sectionsFromRecord(record);
 // preview called: what the breeder signed off is what ships.
 const style = (id: string) => pickedStyle(record, id);
 const box = (id: string) => boxClass(style(id));
+const heroStyle = style('top');
+const counterStyle = style('at-a-glance');
+
+// WORKING RULE 16 — the per-page hero and counter the breeder picked on 2026-09-22: H-HM2 and
+// C-HM2, the home family's own arrangements, resolved through `pickedStyle()` like every other
+// section so the page mounts what the board rendered.
+//
+// THE COUNTER'S FIGURES ARE DERIVED HERE, and the record's `n` is the expectation each one is
+// counted against (`countedFigures()`, src/lib/recordText.ts). The record's three rows cite a
+// filter over data/puppies.json, the length of the health record's own DNA table (the page
+// that OWNS those two tests) and the two ends of the delivery band in data/settings.json. A
+// puppy reserved, a test added or a band re-priced changes the figure here and then stops the
+// build until the board's `n` has been looked at, rather than printing a number nobody checked.
+const heroSection = record.sections.find((s) => s.id === 'top')!;
+const counterSection = record.sections.find((s) => s.id === 'at-a-glance')!;
+const dnaTests = healthRecord.sections.find((s) => s.id === 'dna-tests')!.table!.rows.length;
+const COUNTED: Record<string, string> = {
+  'data/puppies.json#count(status=Available)': String(available.length),
+  'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)': String(dnaTests),
+  'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp':
+    `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`,
+};
+const counted = countedFigures(COUNTED, 'index.astro');
+const counterStats = (counterSection.stats as StatRow[]).map(counted);
+// H-HM2's ledge is `stats`, and its entries are the RECORD's: the hero section carries none, so
+// the ledge renders nothing — exactly what the board rendered — and the figures stay in the
+// counter one section down, where rule 16 and the hero/counter separation put them.
+const heroStats = ((heroSection.stats ?? []) as StatRow[]).map(counted);
+// The mosaic's tiles are the photographs the record's hero section names, at their original
+// paths and alts (working rule 11). The record names one, so the arrangement degrades to the
+// single photo exactly as the board preview drew it: Hero never invents a tile.
+const heroTiles = heroSection.images.map((i) => {
+  const a = asset(i.slot);
+  return { src: a.file, alt: a.alt, w: a.w, h: a.h, caption: a.caption };
+});
 
 // "Mo-Su 09:00-23:00" as a sentence, from the setting rather than typed as prose.
 const hours = SITE.hours.replace('Mo-Su ', 'from ').replace('-', ' to ');
@@ -171,22 +208,35 @@ const pageSchema = [
   schema={pageSchema}
   sections={sections}
 >
-  {/* 01 top — hero, picked style S3 (photo left of the copy, in a card). No trust chips and
-      no CTA buttons (amendment 6a): the trust strip is its own section two below. The H1 is
-      the migrated H1, carried whole (rule 15), and the photograph is the migrated page's own
-      primaryImageOfPage at its original path and alt. */}
+  {/* 01 top — hero, picked style H-HM2 (the home family's mosaic above centred copy, figure
+      tiles as its ledge). No trust chips and no CTA buttons (amendment 6a): the trust strip is
+      its own section two below. The H1 is the migrated H1, carried whole (rule 15), and the
+      photograph is the migrated page's own primaryImageOfPage at its original path and alt.
+      The record names one photograph and no ledge figures, so the arrangement renders as the
+      board drew it: the single photo beside the centred copy, and no ledge. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy puppies raised at home" class={box('top')}>
     <Hero
       as="h1"
       eyebrow={`KC registered · Microchipped · ${SITE.location_label}`}
       title={T(h1)}
-      lede="I am Lisa Bright, and we raise blue Staffordshire Bull Terrier puppies in our own house in Carlisle. Both parents are DNA tested clear of L-2-HGA and HC-HSF4, and every puppy is microchipped and has had its first vaccination before it goes."
+      lede="I am Lisa Bright. We raise our blue Staffy puppies at home."
       image={heroPhoto.file}
       imageAlt={heroPhoto.alt}
       imageWidth={heroPhoto.w}
       imageHeight={heroPhoto.h}
       imageSrcset="/images/blue-staffy-puppy-for-sale-uk-440.webp 440w, /images/blue-staffy-puppy-for-sale-uk.webp 612w"
+      layout={heroStyle.layout.hero ?? 'split'}
+      align={heroStyle.layout.align ?? 'left'}
+      media={heroStyle.layout.media ?? 'right'}
+      ledge={heroStyle.layout.ledge ?? 'none'}
+      stats={heroStats}
+      mosaic={heroTiles}
     />
+    <p>
+      Home is our own house in Carlisle, and the puppies are blue Staffordshire Bull Terriers.
+      Both parents are DNA tested clear of L-2-HGA and HC-HSF4, and every puppy is microchipped
+      and has had its first vaccination before it goes.
+    </p>
     <p>
       <a href="/buy-blue-staffy-puppies-uk/">See which puppies are looking for homes</a> — every
       one of ours is on that page by name, with its sex, its colour, its price and whether it
@@ -200,20 +250,25 @@ const pageSchema = [
     </p>
   </section>
 
-  {/* 02 at-a-glance — stats, picked style S2 (counter strip on a band). CounterStrip reads
-      all three figures from data/puppies.json and data/settings.json; not one of them is
-      typed here, which is what stops a front page going stale between litters. */}
+  {/* 02 at-a-glance — stats, picked style C-HM2 (ruled columns, the label beside each
+      figure). The strip prints the record's three sourced `stats` rows, every figure derived
+      above from the file its row cites; not one of them is typed here, which is what stops a
+      front page going stale between litters. */}
   <section id="at-a-glance" data-section-label="Today's figures" class={box('at-a-glance')}>
     <div class="bl-head">
       <p class="bl-eyebrow">Read straight from our files</p>
-      <h2>{T("Today's Figures, Read Straight From Our Files")}</h2>
+      <h2>{T(counterSection.heading)}</h2>
       <p class="bl-lede">
-        Three numbers, none of them typed into this page: how many puppies our own list still
-        has free, what the deposit is, and what home delivery costs.
+        Three numbers, none typed into this page: how many puppies our list still has free, how
+        many DNA tests stand behind both parents, and what home delivery costs.
       </p>
     </div>
     <div class="bl-body">
-      <CounterStrip />
+      <CounterStrip
+        stats={counterStats}
+        tiles={counterStyle.layout.tiles ?? 'inline'}
+        label={counterStyle.layout.label ?? 'under'}
+      />
       <p>When a puppy is reserved the first figure moves, because the figure is the list.</p>
     </div>
   </section>

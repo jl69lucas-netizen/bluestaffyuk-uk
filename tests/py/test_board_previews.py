@@ -1243,6 +1243,10 @@ def test_every_record_pick_is_one_of_that_sections_own_styles():
 # This is the durable form of the same claim — the page still renders precisely what the
 # carried approval says, index for index and pick for pick, so a regression in either helper
 # shows up as a page that has stopped matching the answers the breeder actually gave.
+#
+# THE RE-BOARD WAS ANSWERED on 2026-09-22 (`2ce9e93`), so the two tests below now hold the
+# ANSWER to the carried approval: the page renders the live one, and the live one differs from
+# the carried one only on the hero and the counter the re-board asked about.
 RE_BOARDED = ("index", "privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
               "uk-blue-staffy-breeders-contact")
 
@@ -1253,60 +1257,62 @@ def _built(slug):
 
 
 @pytest.mark.parametrize("slug", RE_BOARDED)
-def test_a_re_boarded_record_still_renders_its_carried_approval(slug):
+def test_a_re_boarded_record_renders_the_approval_it_came_back_with(slug):
+    """The re-board is ANSWERED (breeder, 2026-09-22), so the page renders the live approval —
+    and the live approval must still be the carried one everywhere the re-board did not ask.
+    While these four were on the board this test held the page to `approval_previous`; now it
+    holds the answer to the carried one, index for index, so the approval that closed the
+    re-board cannot have quietly moved what the page is called or re-picked a locked section."""
     rec = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
-    assert rec["approval"] is None, "this test is about a record whose approval has moved"
-    prev = rec["approval_previous"]
-    assert prev and prev.get("picks"), "a re-board keeps the approval it is replacing"
+    live, prev = rec["approval"], rec["approval_previous"]
+    assert live and live.get("picks"), (slug, "the re-board has been answered")
+    assert prev and prev.get("picks"), "a re-board keeps the approval it replaced"
+
+    # The three INDICES were not the question, so they are carried unchanged.
+    for key in ("title", "description"):
+        assert live["meta"][key] == prev["meta"][key], (slug, key, "moved under a re-board")
+    assert live["h1"] == prev["h1"], (slug, "the H1 index moved under a re-board")
 
     page = _built(slug)
     if not page.exists():
         pytest.skip("run npm run build first")
     html = page.read_text(encoding="utf-8")
-
-    # The three INDICES. A re-board asks about the hero and the counter; it does not withdraw
-    # the breeder's answer about what the page is called, and `approvalInForce()` is what
-    # keeps that true. Read off the record, found on the page — never retyped here.
-    title = rec["meta_set"]["titles"][prev["meta"]["title"]]
-    description = rec["meta_set"]["descriptions"][prev["meta"]["description"]]
-    h1 = rec["h1"]["variants"][prev["h1"]]
+    title = rec["meta_set"]["titles"][live["meta"]["title"]]
+    description = rec["meta_set"]["descriptions"][live["meta"]["description"]]
+    h1 = rec["h1"]["variants"][live["h1"]]
     # Compared on normalised TEXT: `rules/headings.md` applies Title Case at render and the
     # serializer escapes `&`, so an exact string match would be testing the renderer's
-    # spelling rather than which variant the page chose. The words and their order are the
-    # claim — a different INDEX is a different sentence, which is what this has to catch.
+    # spelling rather than which variant the page chose.
     def norm(t):
         return " ".join(html_mod.unescape(re.sub(r"<[^>]+>", " ", t)).split()).casefold()
     got_title = re.search(r"<title>(.*?)</title>", html, re.S)
-    assert got_title and norm(got_title.group(1)) == norm(title), (
-        slug, "the carried title index is not on the page")
+    assert got_title and norm(got_title.group(1)) == norm(title), (slug, "title index")
     got_desc = re.search(r'<meta name="description" content="(.*?)"', html, re.S)
-    assert got_desc and norm(got_desc.group(1)) == norm(description), (
-        slug, "the carried description index is not on the page")
+    assert got_desc and norm(got_desc.group(1)) == norm(description), (slug, "description index")
     got = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
-    assert got and norm(got.group(1)) == norm(h1), (
-        slug, "the carried H1 index is not on the page", got and norm(got.group(1)), norm(h1))
+    assert got and norm(got.group(1)) == norm(h1), (slug, "H1 index", got and norm(got.group(1)))
 
-    # EVERY CARRIED PICK IS STILL LOCKED except the two the re-board is for. `locked_picks()`
-    # drops a pick whose section is gone, is per-page, is off its menu, or has changed under
-    # it — so this also catches a section edited without the board noticing.
-    locked = PB.locked_picks(rec)
+    # EVERY CARRIED PICK SURVIVED THE ANSWER except the two the re-board was for.
     per_page = {s["id"] for s in rec["sections"] if s["shape"] in PB.PER_PAGE_SHAPES}
     for sid, pick in prev["picks"].items():
         if sid in per_page:
-            assert sid not in locked, (slug, sid, "a per-page pick is the question being asked")
             continue
-        assert locked.get(sid) == pick, (
-            slug, sid, "a carried answer was dropped — the breeder would be asked it again")
+        assert live["picks"].get(sid) == pick, (
+            slug, sid, "a carried answer changed when the re-board was approved")
 
 
 @pytest.mark.parametrize("slug", RE_BOARDED)
-def test_a_re_boarded_record_asks_only_for_its_hero_and_its_counter(slug):
+def test_a_re_boarded_record_was_answered_only_on_its_hero_and_its_counter(slug):
     """The hero and the counter are `PER_PAGE_SHAPES`, and they are the whole of what working
-    rule 16 sends these four records back to the board for. A record that re-asked anything
-    else would be asking the breeder to redo work they have done (spec §9 amendment 10.10)."""
+    rule 16 sent these four records back to the board for (spec §9 amendment 10.10). Answered,
+    every styled section carries a pick, and the only picks that differ from the carried
+    approval are on those two shapes — or on a section the re-board added."""
     rec = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
-    asked = [s["id"] for s in rec["sections"]
-             if s.get("styles") and not (s.get("options") or {}).get("pick")]
+    unpicked = [s["id"] for s in rec["sections"]
+                if s.get("styles") and not (s.get("options") or {}).get("pick")]
+    assert unpicked == [], (slug, unpicked)
     shapes = {s["id"]: s["shape"] for s in rec["sections"]}
-    assert asked, slug
-    assert all(shapes[sid] in PB.PER_PAGE_SHAPES for sid in asked), (slug, asked)
+    prev = rec["approval_previous"]["picks"]
+    moved = [sid for sid, pick in rec["approval"]["picks"].items() if prev.get(sid) != pick]
+    assert moved, (slug, "a rule-16 re-board answers at least the hero")
+    assert all(shapes[sid] in PB.PER_PAGE_SHAPES for sid in moved), (slug, moved)

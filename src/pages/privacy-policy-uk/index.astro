@@ -6,9 +6,10 @@
 //
 // Every section below is one section of the record, in the record's order, with the
 // record's own id and heading. The opening is the kit Hero in the style the breeder picked
-// (S3) and the FAQ is the kit accordion in the style they picked (S1); both resolve through
-// `pickedStyle()` so the page cannot drift from the board they signed off. The eight policy
-// sections are `standard` prose, which the record does not style — prose is prose.
+// (H-UT1, working rule 16) and the FAQ is the kit accordion in the style they picked (S1);
+// both resolve through `pickedStyle()` so the page cannot drift from the board they signed
+// off. The eight policy sections are `standard` prose, which the record does not style —
+// prose is prose.
 //
 // THE PROSE IS WRITTEN FRESH, in Lisa Bright's first person, from the record's outline. Not
 // one sentence is pasted from the migrated body. Every fact in it is carried from that body
@@ -59,7 +60,18 @@ const mark = record.assets.find((a) => a.slot === 'privacy-mark')!;
 // another page can never appear here and the three ids the record names cannot drift.
 const faqs = loadFaq().filter((r) => r.source === 'src/pages/privacy-policy-uk/index.astro');
 
-const openingBox = boxClass(pickedStyle(record, 'opening'));
+// WORKING RULE 16 — the per-page hero the breeder picked on 2026-09-22: H-UT1, the
+// interior-utility family's small photo mosaic right of the copy, in a card. Its axes come
+// from the picked StyleDef, so the page mounts the arrangement the board rendered. The ledge
+// is `none` (the quiet set asserts nothing under a policy's lede), and the mosaic's tiles are
+// the photographs the record's `opening` names: one, so it degrades to the single photo just
+// as the board drew it. NO COUNTER: a privacy policy owns no figure (the record says why).
+const openingStyle = pickedStyle(record, 'opening');
+const openingBox = boxClass(openingStyle);
+const openingTiles = record.sections.find((s) => s.id === 'opening')!.images.map((i) => {
+  const a = record.assets.find((x) => x.slot === i.slot && x.file)!;
+  return { src: a.file, alt: a.alt, w: a.w, h: a.h };
+});
 const questionsBox = boxClass(pickedStyle(record, 'questions'));
 const sections = sectionsFromRecord(record);
 const email = SITE.email;
@@ -71,19 +83,29 @@ const email = SITE.email;
   ogType="article"
   sections={sections}
 >
-  {/* 01 — the opening. Hero in the picked style S3 (photo left of the copy, in a card),
-      mounted through the same `bl-*` classes the board preview rendered it with. */}
+  {/* 01 — the opening. Hero in the picked style H-UT1 (a small photo mosaic right of the
+      copy, in a card), mounted through the same `bl-*` classes the board preview rendered it
+      with. */}
   <section slot="hero" id="opening" data-section-label="How we look after your information" class={openingBox}>
     <Hero
       as="h1"
       eyebrow="UK GDPR · Data Protection Act 2018"
       title={T(h1)}
-      lede="I am Lisa Bright, and BlueStaffyUK is the data controller for everything you send us. This page says what I collect when you enquire about a puppy, why I hold it, who else ever sees it, and what you can ask me to do with it."
+      lede="I am Lisa Bright, and BlueStaffyUK is the data controller here."
       image={mark.file}
       imageAlt={mark.alt}
       imageWidth={mark.w}
       imageHeight={mark.h}
+      layout={openingStyle.layout.hero ?? 'split'}
+      align={openingStyle.layout.align ?? 'left'}
+      media={openingStyle.layout.media ?? 'right'}
+      ledge={openingStyle.layout.ledge ?? 'none'}
+      mosaic={openingTiles}
     />
+    <p>
+      This page says what I collect when you enquire about a puppy, why I hold it, who else
+      ever sees it, and what you can ask me to do with it.
+    </p>
     <p>
       Writing to a breeder means handing over your name and your address, and I would want to
       know where that went too. So: read this once, and if anything is unclear

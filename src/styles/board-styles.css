@@ -150,6 +150,16 @@
   .bl-box.bl-frame-band .kit-hero { background: transparent; color: inherit; }
   .bl-frame-band .kit-hero .title,
   .bl-frame-band .kit-hero .eyebrow { color: inherit; }
+  /* THE LEDGE FOLLOWS THE BAND. `.hstats strong` and `.hstats span` name `--color-brand` and
+     `--color-text` in Hero.astro, which is right on the bone surface and invisible on steel:
+     /blue-staffy-pup-sale-uk/'s H-FS3 printed "£1,500" and "£1,700" at 1:1 and their labels at
+     1.33:1. On a band the figures and their labels take the band's own ink. Chips need nothing
+     here — `.kit-chip` paints its own light bed and names its own ink — and ticks inherit.
+     `a11y-hero-ledge-contrast` (blocking) measures every ledge node against its painted bed. */
+  /* `.bl-box` prefix for the reason the hero rules above carry: the scoped `.hstats strong` is
+     (0,3,1) with its two cid attributes, so an unprefixed rule would tie and lose on order. */
+  .bl-box.bl-frame-band .kit-hero .hstats strong,
+  .bl-box.bl-frame-band .kit-hero .hstats span { color: var(--color-text-on-inverse); }
   /* An `outline` button is steel on steel here, which is a CTA nobody can see. On a band it
      takes the band's own colour, the way the kit's `inverse` kind does. */
   .bl-frame-band .kit-btn[data-kind="outline"],

@@ -326,6 +326,15 @@ and 17–25 are new from the design system.
     length to settle when each of those four is rebuilt against its own rule-16 board, not a
     second release of the ceiling: the lede is written fresh under working rule 15 and can be
     cut to two lines, which the verbatim H1 beside it cannot.
+    **Residual CLOSED 2026-09-22**, with the four rule-16 rebuilds (H-HM2/C-HM2 on `/`, H-UT1
+    on privacy, H-UT1/C-UT1 on thank-you and contact). Each page's own lede was rewritten to
+    two lines at every desktop width, and the sentences it gave up moved into the hero
+    section's own paragraph beneath the band rather than being dropped (working rule 6).
+    Measured on `dist/`, `.kit-hero` height / lede overflow at 1024 · 1100 · 1280:
+    `/` 451/0 · 450/0 · 450/0; `/privacy-policy-uk/` 422/0 · 450/0 · 450/0;
+    `/thank-you-blue-staffy-puppies-journey/` 422/0 · 450/0 · 450/0;
+    `/uk-blue-staffy-breeders-contact/` 422/0 · 450/0 · 450/0 — two lede lines at all three
+    widths on all four, no clipping, and no overlap with the section below.
 
 29. **RESOLVED 2026-09-21 — `/blog/` is kept as the legacy archive and exempted by name.**
     The built page is `noindex, nofollow` with its canonical on `/blue-staffy-blog-guides/`,
@@ -375,3 +384,18 @@ and 17–25 are new from the design system.
     contact page itself has zero horizontal overflow at 375, and so does every counter and
     hero rendering on that route. PREVIEW-ONLY, and it closes when the specimen's target row
     is given a scroller of its own rather than being allowed to set the page's width.
+
+33. **Two approved picks render as their DEGRADED arrangements, faithfully.** H-HM2 on `/` is
+    "four-photo mosaic above the copy, figure tiles beneath it", but the homepage record's
+    `top` names ONE photograph and no ledge figures, so the hero renders — on the board the
+    breeder approved and on the page — as the single photo beside centred copy with no ledge:
+    `Hero` degrades a mosaic of fewer than two tiles rather than inventing one, and a ledge
+    whose data the record did not supply renders nothing. The same is true of H-UT1 on all
+    three utility pages (one photograph each). And those three pages all picked H-UT1, and
+    thank-you and contact both picked C-UT1, so rule 16's "no two pages share the same hero
+    layout or counter strip" is not met between them; their `refresh` notes still describe
+    the H-UT2/H-UT3 arrangements they did not pick. Separately, C-UT1 (`tiles: inline`,
+    `label: above`) prints its inter-figure `·` on a line of its own under the first figure,
+    because the dot is inside a column-flex tile — visible on the board preview too.
+    **Closes with a breeder decision**: more photographs and ledge rows on the four records
+    (and new refresh notes), or new picks. The page renders what was approved until then.

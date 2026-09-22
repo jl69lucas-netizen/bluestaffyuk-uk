@@ -229,3 +229,113 @@ register({
     };
   },
 });
+
+/**
+ * The hero's LEDGE text — the figures, chips and ticks under the lede — must read at 4.5:1
+ * against the bed it actually paints on.
+ *
+ * WHY A CHECK OF ITS OWN when `a11y-text-contrast-aa` already measures every text node: that
+ * check is ADVISORY and page-wide (see its header), so a ledge painted invisible reports as
+ * one row among hundreds and gates nothing. That is how /blue-staffy-pup-sale-uk/ shipped its
+ * two prices at 1:1. H-FS3 puts the hero on a steel band (`frame: band`), the band sets
+ * `--color-text-on-inverse` on everything beneath it, and `.hstats strong` / `.hstats span`
+ * in Hero.astro named `--color-brand` and `--color-text` — steel on steel for "£1,500" and
+ * "£1,700", ink on steel (1.33:1) for their labels. Neither declaration is wrong alone; only
+ * the composed result is, which is exactly the bug class this family exists for.
+ *
+ * Scoped to `.kit-hero :is(.hstats, .chips, .ticks)`, so the false-positive classes the
+ * page-wide check still carries (labels over photos, translucent layers) cannot reach it,
+ * and that is what earns it BLOCKING on arrival. The floor is 4.5:1 for every ledge node,
+ * large type included: a ledge figure is the claim the hero is making, and "large text may
+ * be 3:1" is a floor for headings, not for the number a reader came to read.
+ *
+ * Judged unit: one ledge element with its own text. A page whose hero has no ledge examines
+ * zero, and that is true rather than vacuous — there is nothing under the lede to read.
+ * The colour and backdrop readers are the page-wide check's, repeated because a
+ * `page.evaluate` body cannot close over a module helper.
+ */
+register({
+  id: 'a11y-hero-ledge-contrast',
+  family: 'A11Y',
+  severity: 'blocking',
+  describe: 'hero ledge text (figures, chips, ticks) must read at 4.5:1 on the bed it paints on',
+  // The fixture pair carries two figures and two labels on a band, plus a chip row on its own
+  // light bed: six nodes. The floor is that, so the pair cannot pass by judging one.
+  minExamined: 6,
+  async run(page: Page, viewport: number): Promise<CheckResult> {
+    const r = await page.evaluate(() => {
+      const px = document.createElement('canvas');
+      px.width = 1;
+      px.height = 1;
+      const cvs = px.getContext('2d', { willReadFrequently: true })!;
+      const rgba = (s: string): number[] | null => {
+        if (!s || s === 'transparent') return null;
+        cvs.clearRect(0, 0, 1, 1);
+        cvs.fillStyle = s;
+        cvs.fillRect(0, 0, 1, 1);
+        return Array.from(cvs.getImageData(0, 0, 1, 1).data);
+      };
+      const lum = (c: number[]) => {
+        const [r, g, b] = c.slice(0, 3).map((v) => {
+          const x = v / 255;
+          return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+      };
+      const backdrop = (el: Element): number[] | null => {
+        let n: Element | null = el;
+        while (n && n !== document.documentElement) {
+          const cs = getComputedStyle(n);
+          if (cs.backgroundImage && cs.backgroundImage !== 'none') return null;
+          const p = rgba(cs.backgroundColor);
+          if (p && p[3] === 255) return p;
+          if (p && p[3] > 0) return null;
+          n = n.parentElement;
+        }
+        return [255, 255, 255, 255];
+      };
+      const fails: string[] = [];
+      let examined = 0;
+      const nodes = document.querySelectorAll(
+        '.kit-hero :is(.hstats, .chips, .ticks), .kit-hero :is(.hstats, .chips, .ticks) *',
+      );
+      for (const el of Array.from(nodes)) {
+        const own = Array.from(el.childNodes)
+          .filter((n) => n.nodeType === 3 && (n.textContent ?? '').trim())
+          .map((n) => (n.textContent ?? '').trim())
+          .join(' ');
+        if (!own) continue;
+        const cs = getComputedStyle(el);
+        if (cs.visibility === 'hidden' || cs.display === 'none' || Number(cs.opacity) === 0) continue;
+        const box = (el as HTMLElement).getBoundingClientRect();
+        if (!box.width || !box.height) continue;
+        const fg = rgba(cs.color);
+        if (!fg || fg[3] < 255) continue;
+        const bg = backdrop(el);
+        if (!bg) continue;
+        examined++;
+        const a = lum(fg);
+        const b = lum(bg);
+        const ratio = (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+        if (ratio < 4.5 - 0.005) {
+          const cls = typeof el.className === 'string' && el.className.trim()
+            ? '.' + el.className.trim().split(/\s+/)[0] : el.tagName.toLowerCase();
+          fails.push(`${cls} "${own.slice(0, 24)}" ${Math.round(ratio * 100) / 100}:1`);
+        }
+      }
+      return { examined, fails };
+    });
+    return {
+      examined: r.examined,
+      defects: r.fails.length
+        ? [{
+          checkId: 'a11y-hero-ledge-contrast',
+          family: 'A11Y' as const,
+          viewport,
+          count: r.fails.length,
+          message: `${r.fails.length} hero ledge node(s) below 4.5:1: ${r.fails.slice(0, 6).join(' | ')}`,
+        }]
+        : [],
+    };
+  },
+});
