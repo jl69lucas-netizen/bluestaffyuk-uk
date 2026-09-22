@@ -768,7 +768,7 @@
       "video": {
         "id": "g88qOo9C94c",
         "title": "Staffy puppies for sale UK — the reasons families choose us",
-        "caption": "The video our why-us page has always carried, reused here at its original id."
+        "caption": "Our blue Staffy puppies, on film. The same film is on our why-us page."
       },
       "keywords": {
         "primary": [],
@@ -925,7 +925,7 @@
       "video": {
         "id": "fXhu9jDS6CA",
         "title": "Blue Staffy UK breeders — family-raised puppies",
-        "caption": "The video our breeders page has always carried, reused here at its original id."
+        "caption": "One of our puppies, on film. The same film is on our breeders page."
       },
       "keywords": {
         "primary": [],
@@ -1300,7 +1300,7 @@
       "video": {
         "id": "g9iV9RVr_Sk",
         "title": "A UK Staffordshire Bull Terrier breed guide",
-        "caption": "The video our breed guide has always carried, reused here at its original id."
+        "caption": "Puppies from one of our litters, on film. The same film is in our breed guide."
       },
       "keywords": {
         "primary": [],
@@ -1403,7 +1403,7 @@
         "max": 120
       },
       "table": {
-        "caption": "What a puppy costs and what comes with it, from data/price-matrix.json and data/settings.json",
+        "caption": "What a puppy costs and what comes with it",
         "columns": [
           "Item",
           "What it means",
@@ -2483,7 +2483,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "09ae4dcb5ed5678e520804fcd779924575b6af45b1d1089fc479e6e39e23e6f5",
+    "record_hash": "829875d943201fc8e06d692bf1b056fbd4d2d1e9e5d0e03ce3540f63b4af7634",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2502,7 +2502,20 @@
       "h6_prefixes": [
         "Kennel Note:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-22T19:39:55Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-22T19:39:55Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/6/video/caption",
+          "/sections/8/video/caption",
+          "/sections/12/video/caption",
+          "/sections/13/table/caption"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-20T14:13:43.023Z",
@@ -2566,14 +2579,14 @@
       "why-choose": "565d3b0548cefd06899a77ebb318dd84744adf8eb8f2a43cf903e920e03555d5",
       "owners-top": "b997a89160c1cbbbe1c8184f19d1dc46043b46dae45d8d330c89f81b40c91d13",
       "available-blue-staffy-puppies": "1c73acd428bd934a744e99c23e3cf5ed4a77952a8cd67effb2527c30fca75aea",
-      "video-litter": "010b556d9f4806dc43e24e17f1433630430925c275c604b6205ee59eb7efe418",
+      "video-litter": "2fe41b480759317fc00f447cf6fcfa4106254d61ca561e566e3481b91f10ed47",
       "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
-      "video-our-home": "4c551e9184eb2a0d8dfd64799e6e1c1d12ba5b2178d06ef5487ec1a72aa4c999",
+      "video-our-home": "84d38f89fc32dd52cf7234aa9308bf35170ab2d46ead4da33b07db61d70c59ec",
       "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
       "health": "a32d13a62ca89063cdf866207007416ce280afbd1a73c6e2b9fb75094420e2fe",
       "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
-      "video-breed": "5b023427b863e49e6e93f6ecd437eef370ddc0eac1db10f94845cfd99975d0d2",
-      "whats-included": "3239578349a688d9f172d76f1c49f36de27bbf196e6b13f0d9bae48d2235d74c",
+      "video-breed": "a9a01014793a96a7c744a07d981df84f753605ebe9349741d1a49e53f4e7e470",
+      "whats-included": "98936a3a1589c30ad0aee559b9076443456cb8376c2d9507b6f68277d6cf6bb3",
       "delivery": "288981741ce67319e6dd88ef942f52de3b2bfd8f0dbe6ede0543bb350628f3c9",
       "first-steps": "cdbbc0fc41bb5ad33ae0a73acfd463b3c62fc57f28d1ecc531a1c3adc6f10c7e",
       "uk-locations": "666b023d1a81300494758edfc883fb4d55885c5ba7dbd63741b7af1d72845709",

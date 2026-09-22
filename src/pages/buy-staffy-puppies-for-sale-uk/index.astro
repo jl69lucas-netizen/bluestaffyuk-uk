@@ -78,7 +78,7 @@ import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets } from '../../lib/assets';
 import { boxClass } from '../../lib/boardStyles';
-import { recordText, countedFigures, sourceKey, ledgeText, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, sourceKey, ledgeText, numberWord, type LedgeEntry } from '../../lib/recordText';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
 import { SITE, abs, type PuppyRow } from '../../lib/site';
@@ -174,6 +174,12 @@ const faqs = faqSection.tree.map((n) => {
 // same pair one level down, for the keyword H3s the migrated body put under an H2. All five
 // readers are `src/lib/recordText.ts`, shared with the listing and the price page.
 const { sec, heading, opening, node, nodeOpening } = recordText(record);
+// The puppies section's eyebrow counts the reasons above it and the dogs beside it. Both are
+// DERIVED — the record's reason nodes and data/puppies.json — so a reason added on the board
+// or a puppy added to the list moves the sentence instead of leaving it wrong.
+const reasonCount = (sec('reasons').tree ?? []).length;
+const litterCount = (puppiesJson as PuppyRow[]).length;
+const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
 
 // EVERY FIGURE THIS PAGE PRINTS IS COUNTED HERE, and the record's `n` is the expectation it is
 // counted against — the lesson da9c34e wrote down, now `countedFigures()`. The record's `n` is
@@ -420,7 +426,7 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T(node('reasons', 6).heading)}
-          body="No rating, no percentage and no guarantee length. No file on disk holds one, and a reason we cannot evidence is not a reason."
+          body="No rating, no percentage and no guarantee length. We hold no document for any of them, and a reason we cannot evidence is not a reason."
         />
       </div>
       <div class="bl-prose">
@@ -616,8 +622,9 @@ const pageSchema = [
           <h3>{T(node('kennel-club', 1).heading)}</h3>
           <p>{nodeOpening('kennel-club', 1)}</p>
           <p>
-            The chip is done here and registered before the puppy leaves, which is what
-            <a href="https://www.gov.uk/get-your-dog-cat-microchipped" target="_blank" rel="noopener noreferrer">the government's microchipping rules every puppy has to satisfy</a> require,
+            The chip is done here and registered before the puppy leaves. That is not our
+            choice but the law, set out in
+            <a href="https://www.gov.uk/get-your-dog-cat-microchipped" target="_blank" rel="noopener noreferrer">the government's microchipping rules every puppy has to satisfy</a>,
             and the dates are written on the record that travels with the dog.
           </p>
         </div>
@@ -725,12 +732,12 @@ const pageSchema = [
       </div>
       <h4>{T('No Term Is Stated, Because None Is Held')}</h4>
       <p>
-        Our own settings record no guarantee length and no support period, so this page prints
+        We have confirmed no guarantee length and no support period, so this page prints
         neither. An inbox with hours on it is smaller than a lifetime promise, and it is the one
         that is true.
       </p>
       <h5>{T('An Inbox We Can Stand Behind')}</h5>
-      <p>The hours are in our own settings file, which is why this page can print them.</p>
+      <p>The hours above are the hours we keep, before collection and after it.</p>
       <h6>{T('Reason Note: Write before you collect, not after')}</h6>
       <p>
         <a href="#enquiry">Tell us what you would like to see</a> and the answer can be ready on
@@ -835,7 +842,7 @@ const pageSchema = [
       listing page owns it. */}
   <section id="puppies" data-section-label="The puppies these reasons belong to" class={box('puppies')}>
     <div class="bl-head">
-      <p class="bl-eyebrow">Seven reasons, six actual dogs</p>
+      <p class="bl-eyebrow">{`${cap(numberWord(reasonCount))} reasons, ${numberWord(litterCount)} actual dogs`}</p>
       <h2>{T(heading('puppies'))}</h2>
       <p class="bl-lede">{opening('puppies')}</p>
     </div>

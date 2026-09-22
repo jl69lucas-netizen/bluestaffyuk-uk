@@ -1287,7 +1287,7 @@
       "video": {
         "id": "fXhu9jDS6CA",
         "title": "Blue Staffy UK breeders — family-raised puppies",
-        "caption": "The video this page has always carried, at its original id."
+        "caption": "One of our puppies, on film."
       },
       "keywords": {
         "primary": [],
@@ -1498,7 +1498,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "d52c89bd3e0ab23bf4c9834ea8e2f2cfe4a36064d83bdc14cea4f84764d82f14",
+    "record_hash": "dbaed44cc7fe911d6104169d1bb4fbf5740c7a6f2f49ee873b2cddcf395548f9",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1516,7 +1516,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T05:00:33Z",
+    "reapproved_at": "2026-09-22T19:39:56Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1535,6 +1535,13 @@
           "/approval_previous/section_hashes/video-our-home",
           "/sections/0/hero/aside/quote",
           "/sections/0/options/note",
+          "/sections/12/video/caption"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:56Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
           "/sections/12/video/caption"
         ]
       }
@@ -1583,7 +1590,7 @@
       "puppies": "7943ae38f562c7f9ced8e861097c2c986eff0eead2dac19092b0f6cd09d62be2",
       "questions": "25ce11401edffe22b3ed1b84f6a169f89a6eaa5139f6061ae2518141af50b764",
       "welcome": "52f34333a8848a28304baf23f1600c545354646de6df9390d8761f9387f1d53e",
-      "video-our-home": "633a4f609f3e66c5fad65fd8c4735b13ff9cf555c31b25450aaca8e42f46ad6c"
+      "video-our-home": "31b24928fe859013d12b3d860162778e6f714d4619fcdf8b974c4119f1a3a931"
     },
     "record_hash": "3aa7af9bde50a00786e7580d847ea840e444fe1a8e783ba82a9c13ba5c4ea715",
     "tuple_before": {

@@ -292,7 +292,7 @@
       "video": {
         "id": "g9iV9RVr_Sk",
         "title": "A UK Staffordshire Bull Terrier breed guide",
-        "caption": "The video this guide has always carried, at its original id."
+        "caption": "Puppies from one of our litters, on film."
       },
       "keywords": {
         "primary": [],
@@ -501,7 +501,7 @@
         "note": "the facts table zebra-ruled inside a card, not the banded table the health page uses"
       },
       "table": {
-        "caption": "Staffordshire Bull Terrier breed facts, as the migrated guide states them",
+        "caption": "Staffordshire Bull Terrier breed facts at a glance",
         "columns": [
           "Trait",
           "The Staffordshire Bull Terrier"
@@ -2022,7 +2022,7 @@
       "top": "H-GD3",
       "video-breed-guide": "S2"
     },
-    "record_hash": "575cc2ef9f8bda8681675631bf883f68112396291537878f27f54638e1fb2b22",
+    "record_hash": "373aadff2cc515b1298b61a18929c72ba8fc937d1415f2ef60fe09c313e2c8cd",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2040,7 +2040,7 @@
         "Breed Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T13:36:55Z",
+    "reapproved_at": "2026-09-22T19:39:57Z",
     "reapprovals": [
       {
         "at": "2026-09-21T08:50:08Z",
@@ -2073,6 +2073,14 @@
           "/sections/4/words/min",
           "/sections/13/words/max",
           "/sections/13/words/min"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:57Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/1/video/caption",
+          "/sections/4/table/caption"
         ]
       }
     ]

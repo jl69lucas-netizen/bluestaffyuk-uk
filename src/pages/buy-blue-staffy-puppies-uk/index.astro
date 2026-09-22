@@ -63,7 +63,7 @@ import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
 import { pickedStyle } from '../../lib/pickedStyle';
 import { bakedAssets } from '../../lib/assets';
-import { recordText, countedFigures, ledgeText, type LedgeEntry } from '../../lib/recordText';
+import { recordText, countedFigures, ledgeText, numberWord, type LedgeEntry } from '../../lib/recordText';
 import { boxClass } from '../../lib/boardStyles';
 import { titleCase as T } from '../../lib/headings';
 import { loadFaq } from '../../lib/faq';
@@ -74,7 +74,7 @@ import record from '../../../data/boards/buy-blue-staffy-puppies-uk.json';
 
 const path = '/buy-blue-staffy-puppies-uk/';
 // The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
+const approvedTitle = record.meta_set.titles[record.approval!.meta!.title];
 const description = record.meta_set.descriptions[record.approval!.meta!.description];
 const h1 = record.h1.variants[record.approval!.h1];
 
@@ -100,6 +100,28 @@ const ownerCardiff = asset('listing-owner-cardiff');
 // data edit, not a page edit. All six rows are Available today. Their card links are the
 // grid's own data and are exempt from link parity (amendment 6b).
 const available = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+
+// THE TITLE'S COUNT IS DERIVED. The approved title reads "…: Six Available In Carlisle", and
+// "Six" is a count of the rows above, not a word the breeder chose: typed, it goes wrong the
+// day a puppy is reserved while every card and counter beside it moves. So the page renders
+// the approved wording with that ONE word replaced by the live count. The assert is the other
+// half: the approved title must carry exactly one "<Number> Available", or there is nothing
+// honest to replace and the build stops — a reworded title goes back to the board rather
+// than being quietly re-counted, and a litter with nobody available cannot claim "Zero".
+const COUNT_WORD = /\b(One|Two|Three|Four|Five|Six|Seven|Eight|Nine|Ten|Eleven|Twelve) Available\b/g;
+const countHits = approvedTitle.match(COUNT_WORD) ?? [];
+if (countHits.length !== 1) {
+  throw new Error(`buy-blue-staffy-puppies-uk: the approved title "${approvedTitle}" carries `
+    + `${countHits.length} "<Number> Available" phrases — exactly one is derived from data/puppies.json`);
+}
+if (available.length === 0) {
+  throw new Error('buy-blue-staffy-puppies-uk: no puppy is Available, and the approved title states '
+    + 'a count of available puppies — re-board the title before building');
+}
+const countWord = numberWord(available.length);
+const title = approvedTitle.replace(COUNT_WORD, `${countWord.charAt(0).toUpperCase()}${countWord.slice(1)} Available`);
+// "All six puppies came from the same two dogs" counts the LITTER — every row, sold or not.
+const litterWord = numberWord((puppiesJson as PuppyRow[]).length);
 
 // ONE review, given room. `approval.picks` gives this section the S3 BED and the mode is the
 // record's own note ("MODE: single"), passed explicitly — the same split
@@ -195,9 +217,19 @@ const hours = SITE.hours.replace('Mo-Su ', 'from ').replace('-', ' to ');
 // data/faq.json keeps the sentence-case wording, which is what `name` reads, and the visible
 // question is cased at render (amendment 6g). No `dateModified` here on purpose — BaseLayout
 // adds the WebPage node with the git-derived dates.
+// The Products sit inside ONE ItemList: they are a catalogue of the litter, not the page's own
+// single offer, which is what tests/render/checks/schema.ts's `inItemList` reads them as.
 const pageSchema = [
-  ...available.map((p) => ({
+  {
     '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    '@id': `${abs(path)}#available-puppies`,
+    name: 'Blue Staffy puppies available now',
+    numberOfItems: available.length,
+    itemListElement: available.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: {
     '@type': 'Product',
     '@id': `${abs(path)}#puppy-${p.slug}`,
     name: `${p.name} – Blue Staffy puppy`,
@@ -212,7 +244,9 @@ const pageSchema = [
       url: abs(`/available-puppies/${p.slug}/`),
       seller: { '@id': `${SITE_URL}/#business` },
     },
-  })),
+      },
+    })),
+  },
   {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -397,7 +431,7 @@ const pageSchema = [
     <div class="bl-head">
       <h2>{T(heading('parents'))}</h2>
       <p class="bl-lede">
-        All six puppies came from the same two dogs, and both of them live here. Maggie is the
+        All {litterWord} puppies came from the same two dogs, and both of them live here. Maggie is the
         dam and Jones is the sire, and our litters are registered with the Kennel Club.
       </p>
     </div>
@@ -501,7 +535,7 @@ const pageSchema = [
         The first vaccinations, the worming, the microchip, a full veterinary health check and
         the paperwork that records all four. Each is dated on the sheet, so the next person to
         treat the puppy knows exactly what has already been done and when. We state no health
-        guarantee: our own settings record no term for one.
+        guarantee, because we have not confirmed a term for one.
         <a href="/blue-staffy-pup-sale-uk/">What a puppy costs, and what the deposit holds</a> is
         the other half of this, on the price page.
       </p>
@@ -516,8 +550,8 @@ const pageSchema = [
         Five items, then the list stops. We do not invoice for any of them afterwards and we
         have not padded the list to make a puppy sound better equipped.
       </p>
-      <h5>{T('Our Own Files Are What This Is Read From')}</h5>
-      <p>No term is stated for a guarantee, because no file on disk holds one.</p>
+      <h5>{T('Nothing Here Is Promised That Is Not Written Down')}</h5>
+      <p>No term is stated for a guarantee, because we have not confirmed one.</p>
       <h6>{T('Step Note: Ask for the paperwork before you pay')}</h6>
       <p>We would rather you asked than assumed, and the answer is the same either way.</p>
     </div>
@@ -675,10 +709,10 @@ const pageSchema = [
         and a link to the page that evidences it.
       </p>
       <Faq items={faqs} />
-      <h4>{T('No Answer Here Types A Price')}</h4>
+      <h4>{T('No Answer Here Sets A Price Of Its Own')}</h4>
       <p>
-        The one that mentions the deposit reads it out of our settings file, which is the file
-        the cards and the steps above read too.
+        The one that mentions the deposit gives the same figure as the cards and the steps
+        above.
       </p>
       <h5>{T('Ask Us The One That Is Not Here')}</h5>
       <p>Thirteen rows cannot cover a litter. Put the fourteenth to us and we will answer it.</p>

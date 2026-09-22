@@ -883,7 +883,7 @@
         "note": "What A Puppy From Us Costs, And What The Deposit Covers: the table under a brand header band, against the zebra-in-a-card the other guides use"
       },
       "table": {
-        "caption": "What you pay us, from data/price-matrix.json and data/settings.json",
+        "caption": "What you pay us",
         "columns": [
           "What you pay",
           "Amount"
@@ -2209,7 +2209,7 @@
       "video": {
         "id": "WuA0yo6HZKE",
         "title": "Blue Staffy Puppy for Sale UK — BlueStaffyUK Short",
-        "caption": "The short this guide has carried since it was published, at its original id."
+        "caption": "A short clip of our puppies."
       },
       "keywords": {
         "primary": [],
@@ -2533,7 +2533,7 @@
       "top": "H-GD3",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "7d5b470cffaa619af44669f4fe81c909fc71c40b319b6fbf555a25425dd766a7",
+    "record_hash": "b487aeab06baa9a58d45a4956b21b629688c850ee7da08de932bcea6e6616646",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2551,7 +2551,7 @@
         "Buyer Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T13:36:56Z",
+    "reapproved_at": "2026-09-22T19:39:58Z",
     "reapprovals": [
       {
         "at": "2026-09-21T03:23:15Z",
@@ -2598,6 +2598,14 @@
           "/sections/6/words/min",
           "/sections/16/words/max",
           "/sections/16/words/min"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:58Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/6/table/caption",
+          "/sections/19/video/caption"
         ]
       }
     ]

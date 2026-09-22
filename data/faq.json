@@ -500,7 +500,7 @@
   {
     "id": "blog-updates",
     "q": "How often do you add a new guide?",
-    "a": "We do not publish a schedule, and we would rather say so than invent one. What you can check instead is the last updated date each page renders: it comes from the committed history of this repository, so it moves when the page moves and never because a date needed refreshing.",
+    "a": "We do not publish a schedule, and we would rather say so than invent one. What you can check instead is the last updated date on each page: it moves when the page is actually edited, and never because a date needed refreshing.",
     "source": "src/pages/blue-staffy-blog-guides/index.astro"
   },
   {

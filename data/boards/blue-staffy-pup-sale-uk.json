@@ -520,7 +520,7 @@
         "note": "the price table on a brand header band so the money reads first, against the zebra-in-a-card the guide tables take"
       },
       "table": {
-        "caption": "Puppy prices and the deposit, from data/price-matrix.json",
+        "caption": "Puppy prices and the deposit",
         "columns": [
           "Sex",
           "Price",
@@ -749,7 +749,7 @@
         "note": "the delivery bands compact against the roomier price table above them"
       },
       "table": {
-        "caption": "How a puppy gets home, from data/settings.json",
+        "caption": "How a puppy gets home, and what it costs",
         "columns": [
           "How the puppy travels",
           "Cost"
@@ -1502,7 +1502,7 @@
       "whats-included": "S1",
       "why-choose": "S1"
     },
-    "record_hash": "c597f79d69482e6be937daa770b72791a2c724a567c8f9c387b9f54b441330ca",
+    "record_hash": "75fc434c0f7e2317e5cc1214cebba2d5e93483a98225db179ff7d6a4d36a91e1",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1520,7 +1520,7 @@
         "Price Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T13:36:52Z",
+    "reapproved_at": "2026-09-22T19:39:59Z",
     "reapprovals": [
       {
         "at": "2026-09-21T01:55:06Z",
@@ -1540,6 +1540,14 @@
         "changed_paths": [
           "/sections/7/words/max",
           "/sections/7/words/min"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:59Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/3/table/caption",
+          "/sections/5/table/caption"
         ]
       }
     ]
@@ -1584,9 +1592,9 @@
       "top": "c31e2a44918758fc14ad53ea1442ab9e330f7de9bbefdf808ad7db2229b76440",
       "at-a-glance": "5e22814f24b5bc5b9c49a1c426a3df734da2cb03d22f25807031fca02165cc9d",
       "why-choose": "b0cc650268f76d10dd4d09277a67cc0071cf5c9ccf1b5bd39e7226ea1bbadb85",
-      "prices": "5a221c5f747101f99da4d642e1e15e4971d918ef9a551bff231711f5ebed158e",
+      "prices": "011b81997bfe93b8090d34ea45b8425639618e757b499aee8ac2a009b81c9c28",
       "whats-included": "5b54ed4c250139d7228cfc74e6930319dcb8c50a33890ecbd7c4a879c32d4845",
-      "delivery": "6f543fa23647fa604e6d622a79ae1399fc7e12cf84b1eb5cbf5334b5627f78d1",
+      "delivery": "77b64a08c27a73b54fd7064aa16e384625c659c0beb8e754f82afb65a8d08889",
       "deposit": "c49becf8196d068805240062fb24e65e1009335060885314b10c39a2f7f40408",
       "owners": "26e9e14264670960cd67a6b823baeaaa9fcd370ace8ba41239f5b1ac34b419b8",
       "puppies": "abc460ecd97c09b497f233068e3be0732978924b4d53b082981ddae718c4827e",

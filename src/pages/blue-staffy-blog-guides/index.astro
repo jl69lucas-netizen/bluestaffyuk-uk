@@ -297,7 +297,7 @@ const pageSchema = [
         <InfoCard
           kind="fact"
           heading={T(node('takeaways', 3).heading)}
-          body="Prices, the deposit and the delivery band are read out of data, never typed into prose."
+          body="Prices, the deposit and the delivery band come from one price list, so every page quotes the same figures."
         />
       </div>
 
@@ -362,8 +362,7 @@ const pageSchema = [
 
       <h3>{T(node('latest-guides', 1).heading)}</h3>
       <p>
-        The post carries no published date, so the card shows our committed history's last
-        updated date.
+        The post carries no published date, so the card shows the date it was last updated.
       </p>
 
       <h4>{T('A Card Says What A Heading Cannot')}</h4>
@@ -376,8 +375,8 @@ const pageSchema = [
         A list of one is honest. A grid of one repeated four times to fill a row is not, and
         that is the only reason this section looks short.
       </p>
-      <h6>{T('Guide Note: The date is the repository’s, not a marketing stamp')}</h6>
-      <p>It moves when the file moves, and never because somebody wanted the page to look fresh.</p>
+      <h6>{T('Guide Note: The date is a real edit, not a marketing stamp')}</h6>
+      <p>It moves when the page is edited, and never because somebody wanted it to look fresh.</p>
     </div>
   </section>
 
@@ -431,11 +430,10 @@ const pageSchema = [
         Breed first, then health, then the buying process: each one assumes you have read the
         one before it, and none of them repeats the others.
       </p>
-      <h5>{T('Two Of These Headings Are The Old Page’s Own')}</h5>
+      <h5>{T('Two Of These Links Keep Their Old Names')}</h5>
       <p>
-        They were the archive's two entries, and they are carried word for word bar one noun
-        apiece — each collided with the live heading of the page it pointed at, and the
-        record's own accounting says which word moved and why.
+        They were the two entries this page listed before, and they keep their wording but for
+        one word each, changed so that no link repeats the heading of the page it opens.
       </p>
       <h6>{T('Guide Note: None of the four is a summary of another')}</h6>
       <p>Where two pages touch a subject, one owns it and the other links it.</p>
@@ -454,7 +452,7 @@ const pageSchema = [
       <Testimonial mode={reviewStyle.layout.mode ?? 'grid'} reviews={markJ} />
       <p>
         This page asks for an hour of reading before anybody writes to us. One family, named,
-        saying they did exactly that is the only evidence on disk that it is worth the hour.
+        saying they did exactly that is the only evidence we have that it is worth the hour.
       </p>
     </div>
   </section>

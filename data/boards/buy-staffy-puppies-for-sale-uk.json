@@ -366,7 +366,7 @@
       "video": {
         "id": "g88qOo9C94c",
         "title": "Staffy puppies for sale UK — the reasons families choose us",
-        "caption": "The video this page has always carried, at its original id."
+        "caption": "Our blue Staffy puppies, on film."
       },
       "keywords": {
         "primary": [],
@@ -2090,7 +2090,7 @@
       "top": "H-FS2",
       "video-why-us": "S3"
     },
-    "record_hash": "9771a68dee8c5f696ef60578dcbab1229b4e6ddcbd1b23c661945336370845ff",
+    "record_hash": "a578cd3d3a5b5e925a9117957a1d42a719c44d3c226a8455ef2227102ba8e590",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2110,7 +2110,7 @@
         "Reason Note:"
       ]
     },
-    "reapproved_at": "2026-09-21T13:36:27Z",
+    "reapproved_at": "2026-09-22T19:39:57Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:12:30Z",
@@ -2127,6 +2127,13 @@
           "/sections/1/video/caption",
           "/sections/10/words/max",
           "/sections/10/words/min"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:57Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/1/video/caption"
         ]
       }
     ]
@@ -2174,7 +2181,7 @@
     },
     "section_hashes": {
       "top": "8d0d1805a42b02e6a752e25a1be9b2dedaa8fbd0e804a97f3636ea79a49cd584",
-      "video-why-us": "fb2b89de8e182aec57033f65cd23ce76783b6e8817f9120126875add73b8e717",
+      "video-why-us": "56bd7ddff396180fc41fe2793c6558d9dbec2acf6c25dac39ff684780b49c78a",
       "promises": "8024cfeaeb32dec3ce3b8e33084b50837102cd3d52af18203f1cf3abf3d11915",
       "reasons": "3180cf3981e7322ff909cd7385adb26d9d51cd40dcb97499f186ad0a30b6a5bf",
       "health-testing": "c61341606ed4c7b2823272b8e73e508cdcc992b0dc6e97048ed790a13a4cfc0d",
