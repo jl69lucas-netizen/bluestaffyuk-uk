@@ -210,7 +210,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "H-UT1",
         "note": ""
       },
       "styles": [
@@ -289,7 +289,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "C-UT1",
         "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
       }
     },
@@ -755,7 +755,7 @@
     }
   ],
   "tuple": {
-    "hero": "",
+    "hero": "hero-h-ut1",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -793,7 +793,54 @@
       "Blue Staffy News: Join 500+ Readers! — the newsletter band. The 500+ figure has no source on disk, the WordPress form behind it was already removed at migration, and `brief.out_of_scope` rules the block out. Nothing replaces it: a confirmation page asking for a second sign-up before it has answered the first message is the opposite of what it is for."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-22T17:56:50.638Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "navigation": "",
+      "next-steps": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page.",
+      "stats": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried.",
+      "welcome": "",
+      "while-you-wait": ""
+    },
+    "picks": {
+      "next-steps": "S3",
+      "owners": "S3",
+      "puppies": "S3",
+      "questions": "S3",
+      "stats": "C-UT1",
+      "welcome": "H-UT1"
+    },
+    "record_hash": "10b767d9c6fb5d3acb95cd37b6609496a1382580c2beb17a1eb984201ff5b9a0",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Next step:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T21:29:09.335Z",
     "canvas_version": null,

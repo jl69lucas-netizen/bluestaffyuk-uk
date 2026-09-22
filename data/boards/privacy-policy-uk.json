@@ -200,7 +200,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "H-UT1",
         "note": ""
       },
       "styles": [
@@ -871,7 +871,7 @@
     }
   ],
   "tuple": {
-    "hero": "",
+    "hero": "hero-h-ut1",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -918,7 +918,50 @@
       "Last Updated: June 20, 2025 — a hard-typed stamp from the old site, two dates and one rebuild out of date. The page now renders the real date through the PageDate component, off the same data/page-dates.json row BaseLayout puts in the WebPage node, so the visible date and the machine-readable one cannot disagree. The contact block the same sentence carried (the email address and an invitation to write) is kept, in 'Asking us about your privacy'."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-22T17:59:52.663Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "contact": "",
+      "cookies": "",
+      "how-we-use": "",
+      "navigation": "",
+      "opening": "",
+      "questions": "",
+      "security": "",
+      "sharing": "",
+      "third-parties": "",
+      "what-we-collect": "",
+      "your-rights": ""
+    },
+    "picks": {
+      "opening": "H-UT1",
+      "questions": "S1"
+    },
+    "record_hash": "9fcba2653c0c08c35cf9140804648ee6421d2d2473e34602d714e329dcb17cbc",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Privacy Note:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T21:26:01.751Z",
     "canvas_version": null,

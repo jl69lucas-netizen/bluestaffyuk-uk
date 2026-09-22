@@ -230,7 +230,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "H-UT1",
         "note": ""
       },
       "styles": [
@@ -301,7 +301,7 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": null,
+        "pick": "C-UT1",
         "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
       }
     },
@@ -953,7 +953,7 @@
     }
   ],
   "tuple": {
-    "hero": "",
+    "hero": "hero-h-ut1",
     "dial": "dial-s2",
     "rail": "rail-s2",
     "toc": "pagenav-c",
@@ -996,7 +996,58 @@
       "We can also discuss UK-wide and international puppy transport options, including compliant DEFRA pet transport solutions for safe delivery — `brief.out_of_scope`: no file on disk states a route, a price or a carrier for international transport. UK delivery IS carried, with the figures data/settings.json holds: DEFRA-approved transport, priced by distance between £200 and £350, in the delivery FAQ row."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-22T17:58:36.668Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
+      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
+      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
+      "mobile-strip": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5.",
+      "navigation": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
+      "stats": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried.",
+      "top": "",
+      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
+      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+    },
+    "picks": {
+      "desktop-dial": "S2",
+      "enquiry": "S2",
+      "mobile-sections": "S2",
+      "mobile-strip": "S2",
+      "owners": "S1",
+      "questions": "S3",
+      "stats": "C-UT1",
+      "top": "H-UT1",
+      "why-write": "S1"
+    },
+    "record_hash": "de9ab0a44c0f64360c423993d474f1adf2f2f4ab129d13342314b150f44cebcc",
+    "tuple_before": {
+      "hero": "",
+      "dial": "dial-s2",
+      "rail": "rail-s2",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "What to send:"
+      ]
+    }
+  },
   "approval_previous": {
     "approved_at": "2026-09-19T21:34:14.316Z",
     "canvas_version": null,
