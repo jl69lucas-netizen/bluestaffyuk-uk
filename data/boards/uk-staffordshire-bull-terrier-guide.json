@@ -268,7 +268,7 @@
     {
       "id": "video-breed-guide",
       "n": 2,
-      "heading": "The Guide In Short, On Film",
+      "heading": "The Breed Itself, On Film",
       "intent": "The guide's own video, kept where the migrated body had it — directly below the opening, ahead of the breed table and the history — at its original id.",
       "category": "A",
       "group": "MANDATORY",
@@ -287,11 +287,11 @@
       ],
       "refresh": {
         "axis": "motif",
-        "note": "The Guide In Short, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
+        "note": "The Breed Itself, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
       },
       "video": {
         "id": "g9iV9RVr_Sk",
-        "title": "A UK Staffordshire Bull Terrier breed guide",
+        "title": "Staffordshire Bull Terrier puppies — a litter of ours on film",
         "caption": "Puppies from one of our litters, on film."
       },
       "keywords": {
@@ -2022,7 +2022,7 @@
       "top": "H-GD3",
       "video-breed-guide": "S2"
     },
-    "record_hash": "373aadff2cc515b1298b61a18929c72ba8fc937d1415f2ef60fe09c313e2c8cd",
+    "record_hash": "c0e5af51bcfc82e1555904d874506d3e1e33df9bba8fa406530767bd26a422a4",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2040,7 +2040,7 @@
         "Breed Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T19:39:57Z",
+    "reapproved_at": "2026-09-22T20:01:47Z",
     "reapprovals": [
       {
         "at": "2026-09-21T08:50:08Z",
@@ -2081,6 +2081,15 @@
         "changed_paths": [
           "/sections/1/video/caption",
           "/sections/4/table/caption"
+        ]
+      },
+      {
+        "at": "2026-09-22T20:01:47Z",
+        "reason": "Close-out step 0: copy around the video embeds described the films as narration, a house tour, a breed guide and 'the same case' in our own voice; every embed is a short silent clip of our puppies. Headings, video titles, intents, why lines and refresh notes reworded to say what the film shows. Wording only; no pick, id, caption, source or section moved.",
+        "changed_paths": [
+          "/sections/1/heading",
+          "/sections/1/refresh/note",
+          "/sections/1/video/title"
         ]
       }
     ]

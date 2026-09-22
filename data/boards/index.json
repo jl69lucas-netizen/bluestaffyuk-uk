@@ -748,8 +748,8 @@
     {
       "id": "video-litter",
       "n": 7,
-      "heading": "Watch A Litter Being Raised, Before You Read Any Further",
-      "intent": "The site's puppies-for-sale video, placed straight under the card grid so the reader who has just seen six photographs can watch the same puppies move. Reused at its original id (working rule 14): nothing is re-uploaded and no new id is minted. The caption says which page has carried it and since when; the section states no claim the video is asked to prove.",
+      "heading": "Watch Our Puppies Move, Before You Read Any Further",
+      "intent": "The site's puppies-for-sale video, placed straight under the card grid so the reader who has just seen six photographs can watch puppies of ours move. Reused at its original id (working rule 14): nothing is re-uploaded and no new id is minted. The caption says which page has carried it and since when; the section states no claim the video is asked to prove.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
       "why": "The migrated homepage carried no YouTube video at all — its two embeds are a Google Maps iframe and a self-hosted MP4 — while three of the site's interior pages each carry one. The homepage is where a first-time reader lands, and it was the only page with nothing to watch.",
@@ -767,7 +767,7 @@
       ],
       "video": {
         "id": "g88qOo9C94c",
-        "title": "Staffy puppies for sale UK — the reasons families choose us",
+        "title": "Staffy puppies for sale UK — our blue Staffy puppies on film",
         "caption": "Our blue Staffy puppies, on film. The same film is on our why-us page."
       },
       "keywords": {
@@ -905,11 +905,11 @@
     {
       "id": "video-our-home",
       "n": 9,
-      "heading": "Our House, On Film, With The Dogs In It",
-      "intent": "The breeders video, placed under the who-we-are section it belongs to, so the claim that these puppies are raised underfoot in a family house is something the reader can look at rather than only read. Reused at its original id; the caption names the page it comes from.",
+      "heading": "One Of Our Puppies, On Film",
+      "intent": "The breeders video, placed under the who-we-are section it belongs to, so the reader who has just read how our puppies are raised can look at one of them. It is a short clip of a puppy with no commentary, not a tour of the house. Reused at its original id; the caption names the page it comes from.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
-      "why": "Who-we-are is the section a reader checks before they trust anything else on the page, and it was prose alone. The breeders page has long carried footage of the house and the homepage never linked to it.",
+      "why": "Who-we-are is the section a reader checks before they trust anything else on the page, and it was prose alone. The breeders page has long carried a short film of one of our puppies and the homepage never linked to it.",
       "why_source": "data/settings.json youtube_embeds — fXhu9jDS6CA; old-page placement: src/pages/blue-staffy-uk-breeders/index.astro, at the foot of the body after the reserve block, VideoObject uploadDate 2025-05-27",
       "framework": "EBD",
       "words": {
@@ -1280,11 +1280,11 @@
     {
       "id": "video-breed",
       "n": 13,
-      "heading": "The Breed Itself, In A Few Minutes",
+      "heading": "The Breed Itself, In A Short Clip",
       "intent": "The breed-guide video, under the health section, for the reader who has got as far as the two DNA tests and wants to know what kind of dog they are testing. Reused at its original id, with the long guide it comes from named in the caption.",
       "category": "C",
       "group": "SUGGESTED-RECOMMENDED",
-      "why": "The health section ends by sending a reader to the breed guide, which is a long read; the guide already has a video that answers the same question in a few minutes, and the homepage was not offering it.",
+      "why": "The health section ends by sending a reader to the breed guide, which is a long read; the guide already carries a short clip of puppies from one of our litters, and the homepage was not offering it.",
       "why_source": "data/settings.json youtube_embeds — g9iV9RVr_Sk; old-page placement: src/pages/uk-staffordshire-bull-terrier-guide/index.astro, directly below the opening, VideoObject uploadDate 2025-05-29",
       "framework": "EBD",
       "words": {
@@ -1299,7 +1299,7 @@
       ],
       "video": {
         "id": "g9iV9RVr_Sk",
-        "title": "A UK Staffordshire Bull Terrier breed guide",
+        "title": "Staffordshire Bull Terrier puppies — a litter of ours on film",
         "caption": "Puppies from one of our litters, on film. The same film is in our breed guide."
       },
       "keywords": {
@@ -2483,7 +2483,7 @@
       "why-choose": "S2",
       "your-questions-about-blue-staffies-answered": "S3"
     },
-    "record_hash": "829875d943201fc8e06d692bf1b056fbd4d2d1e9e5d0e03ce3540f63b4af7634",
+    "record_hash": "f57efacf5cd5559534ec36b7952a0e979aa08a41da23a1d84917db88e081b686",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -2503,7 +2503,7 @@
         "Kennel Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T19:39:55Z",
+    "reapproved_at": "2026-09-22T20:01:44Z",
     "reapprovals": [
       {
         "at": "2026-09-22T19:39:55Z",
@@ -2513,6 +2513,21 @@
           "/sections/8/video/caption",
           "/sections/12/video/caption",
           "/sections/13/table/caption"
+        ]
+      },
+      {
+        "at": "2026-09-22T20:01:44Z",
+        "reason": "Close-out step 0: copy around the video embeds described the films as narration, a house tour, a breed guide and 'the same case' in our own voice; every embed is a short silent clip of our puppies. Headings, video titles, intents, why lines and refresh notes reworded to say what the film shows. Wording only; no pick, id, caption, source or section moved.",
+        "changed_paths": [
+          "/sections/6/heading",
+          "/sections/6/intent",
+          "/sections/6/video/title",
+          "/sections/8/heading",
+          "/sections/8/intent",
+          "/sections/8/why",
+          "/sections/12/heading",
+          "/sections/12/video/title",
+          "/sections/12/why"
         ]
       }
     ]
@@ -2579,13 +2594,13 @@
       "why-choose": "565d3b0548cefd06899a77ebb318dd84744adf8eb8f2a43cf903e920e03555d5",
       "owners-top": "b997a89160c1cbbbe1c8184f19d1dc46043b46dae45d8d330c89f81b40c91d13",
       "available-blue-staffy-puppies": "1c73acd428bd934a744e99c23e3cf5ed4a77952a8cd67effb2527c30fca75aea",
-      "video-litter": "2fe41b480759317fc00f447cf6fcfa4106254d61ca561e566e3481b91f10ed47",
+      "video-litter": "893dde6a3ee1821317311cbefa93759861043b76c4e5a8ea58276bfd87f7b764",
       "who-we-are": "c74cb5e289e587c1906740311d00bd8606d27c8dc211fd7e5f95fa96d9016d11",
-      "video-our-home": "84d38f89fc32dd52cf7234aa9308bf35170ab2d46ead4da33b07db61d70c59ec",
+      "video-our-home": "ba9b41dd8834759641785ea8233954dfe4eac2e06631b6ac3fcd12c4f4046866",
       "meet-the-parents": "6d13c65121185276bad824ba8bfcc9ff30d970f44be069b3dc12762e71ec0c3b",
       "health": "a32d13a62ca89063cdf866207007416ce280afbd1a73c6e2b9fb75094420e2fe",
       "the-breed": "92f3ddc3d8200101dfd967ed521f1b9eb5034eab083832fc3b5a6765402e1607",
-      "video-breed": "a9a01014793a96a7c744a07d981df84f753605ebe9349741d1a49e53f4e7e470",
+      "video-breed": "960f94f5f13fa4d40bfcc3224d195c0c5297f83904c8bf6db965262cd763317c",
       "whats-included": "98936a3a1589c30ad0aee559b9076443456cb8376c2d9507b6f68277d6cf6bb3",
       "delivery": "288981741ce67319e6dd88ef942f52de3b2bfd8f0dbe6ede0543bb350628f3c9",
       "first-steps": "cdbbc0fc41bb5ad33ae0a73acfd463b3c62fc57f28d1ecc531a1c3adc6f10c7e",

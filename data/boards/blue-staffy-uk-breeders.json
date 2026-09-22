@@ -1263,7 +1263,7 @@
     {
       "id": "video-our-home",
       "n": 13,
-      "heading": "Come Round, On Film",
+      "heading": "A Puppy Of Ours, On Film",
       "intent": "The page's own video, kept where the migrated body had it — at the foot of the page, after the closing invitation — at its original id.",
       "category": "A",
       "group": "MANDATORY",
@@ -1282,7 +1282,7 @@
       ],
       "refresh": {
         "axis": "motif",
-        "note": "Come Round, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
+        "note": "A Puppy Of Ours, On Film: a click-to-play thumbnail rather than an embedded player, against the player-in-a-card the other video sections take"
       },
       "video": {
         "id": "fXhu9jDS6CA",
@@ -1498,7 +1498,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "dbaed44cc7fe911d6104169d1bb4fbf5740c7a6f2f49ee873b2cddcf395548f9",
+    "record_hash": "7d448a5a0ca303877426caea20de2bb7458dd18933a8ac6d69b08dfd57c517ab",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1516,7 +1516,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T19:39:56Z",
+    "reapproved_at": "2026-09-22T20:01:46Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1543,6 +1543,14 @@
         "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
         "changed_paths": [
           "/sections/12/video/caption"
+        ]
+      },
+      {
+        "at": "2026-09-22T20:01:46Z",
+        "reason": "Close-out step 0: copy around the video embeds described the films as narration, a house tour, a breed guide and 'the same case' in our own voice; every embed is a short silent clip of our puppies. Headings, video titles, intents, why lines and refresh notes reworded to say what the film shows. Wording only; no pick, id, caption, source or section moved.",
+        "changed_paths": [
+          "/sections/12/heading",
+          "/sections/12/refresh/note"
         ]
       }
     ]
@@ -1590,7 +1598,7 @@
       "puppies": "7943ae38f562c7f9ced8e861097c2c986eff0eead2dac19092b0f6cd09d62be2",
       "questions": "25ce11401edffe22b3ed1b84f6a169f89a6eaa5139f6061ae2518141af50b764",
       "welcome": "52f34333a8848a28304baf23f1600c545354646de6df9390d8761f9387f1d53e",
-      "video-our-home": "31b24928fe859013d12b3d860162778e6f714d4619fcdf8b974c4119f1a3a931"
+      "video-our-home": "661e8b595b21b369693feaad410780961d5bbc8375722eaa22e9c893f533861a"
     },
     "record_hash": "3aa7af9bde50a00786e7580d847ea840e444fe1a8e783ba82a9c13ba5c4ea715",
     "tuple_before": {
