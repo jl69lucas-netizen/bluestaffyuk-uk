@@ -7,42 +7,69 @@ document wins for structure, FAQ format and tone.
 
 ## What a city page is for
 
-One UK city, one buyer: someone near that city deciding whether to buy a blue Staffordshire
-Bull Terrier puppy from Lisa Bright in Carlisle · Cumbria. The page answers what that buyer
-asks, in the order they ask it, with the city's own geography — not the same page with a new
-city name.
+One UK city or area, one buyer: someone near that city or area deciding whether to buy a blue
+Staffordshire Bull Terrier puppy from Lisa Bright in Carlisle · Cumbria. The page answers what
+that buyer asks, in the order they ask it, with the place's own geography — not the same page
+with a new city name.
 
 ## Section count — competitors decide, never a fixed number
 
-1. Pool: the top-5 breeder or location pages for the city query on Google plus the top-5 on
-   Bing, merged. Marketplaces and directories are excluded.
+1. Pool: for each of the skill's three query shapes — `staffy puppies for sale <city>`,
+   `blue staffy puppies <city>`, `staffordshire bull terrier breeder near <city>` — the top-5
+   breeder or location pages on Google plus the top-5 on Bing, merged. Marketplaces and
+   directories are excluded.
 2. Strip non-content H2s: sidebar, footer, related posts, repeated calls to action, reviews
    and FAQ headings (ours are frame, so theirs are not counted either).
 3. Match the highest cleaned H2 count in the pool. If it is more than 1.5× the next highest
    it is an outlier: record it and match the next highest.
 4. Add three sections: the strongest topics in the page's question file that no pooled page
-   covers (`extra_sections` in `data/queries/<slug>.json`).
+   covers (`extra_sections` in `data/queries/<slug>.json`). Fewer than three uncovered topics:
+   the strongest covered topics fill the gap, marked `uncovered: false`.
 5. Only body H2s count, on both sides. The fixed frame below is never counted.
+6. Record every competitor's URL, its positions, its raw and cleaned H2 counts, and which set
+   the number. Fewer than three usable pages is a finding, not a blocker: record it and derive
+   from what exists.
 
 `scripts/query_augment.py` (arrives in Task 2) computes this; `scripts/query_coverage_check.py` (arrives in Task 6)
 fails a built page that falls short.
 
 ## The fixed frame
 
-Hero (H1, image first) · counter strip · trust strip · table of contents · key takeaways
-(3–5 bullets, `id="key-takeaways"`) · review top · review middle · review bottom · newsletter ·
-enquiry form · FAQ top · FAQ middle · FAQ bottom. Body sections sit between them; the FAQ
-blocks sit at the top, middle and bottom of the body as in the source template.
+In this order:
+
+1. Hero (H1, image first)
+2. Counter strip
+3. Trust strip
+4. Table of contents
+5. Key takeaways (3–5 bullets, `id="key-takeaways"`)
+6. Review top
+7. FAQ top
+   — body sections, first third —
+8. Review middle
+9. FAQ middle
+   — body sections, second third —
+10. Newsletter
+    — body sections, last third —
+11. Review bottom
+12. FAQ bottom
+13. Enquiry form
+
+Frame parts sit in their own sections and are never counted as body sections. The body
+sections are split roughly evenly across the three gaps.
 
 ## FAQ format
 
 - Three blocks: **top** 5–7 questions (buying and logistics — price, deposit, delivery to this
   city, reserving), **middle** 5–7 (process and trust — paperwork, health testing, visiting,
   age at collection), **bottom** 7–10 (breed and lifestyle — flats, children and other pets,
-  training, the 12–14 year lifespan, coat). 17–20 questions in practice.
+  training, the 12–14 year lifespan, coat).
+- 17–20 questions: the block minimums force 17; the gate checks 15–20 in total and each
+  block's own range.
+- If the question file cannot fill a block to its minimum, stop and report it. Never pad a
+  block with an invented question or a reworded duplicate.
 - Every question is an H3. A concise, direct answer follows it. Internal and external links
   sit inside answers, anchor first.
-- Questions are written the way buyers ask them aloud ("Do you deliver Staffy puppies to
+- Questions are written the way buyers ask them aloud ("Do You Deliver Staffy Puppies to
   Manchester?"), taken from the page's question file, never invented.
 - FAQPage schema carries exactly the visible questions.
 
@@ -50,7 +77,13 @@ blocks sit at the top, middle and bottom of the body as in the source template.
 
 - Every H1–H6 has a one-to-two-sentence opening paragraph that restates what the heading
   promises.
-- Subheaders are long-form, conversational, Reddit-style questions where the topic allows.
+- Every heading, FAQ questions included, is AP-style Title Case (`title-case-headings` in
+  `rules/headings.md`).
+- The outline declares its header style and register with a reason (`header-style-declared`);
+  the location default is Style 2, Conversational Hybrid. Subheaders are long-form
+  conversational questions where the topic allows.
+- Headings descend with no skipped level and the page carries all six levels
+  (`heading-hierarchy-outline-gate`).
 - Short paragraphs (two to four sentences), bullets for scanning, bold for the one fact a
   skimmer must not miss, a subheader every 200–300 words.
 
@@ -58,31 +91,47 @@ blocks sit at the top, middle and bottom of the body as in the source template.
 
 - Anchors start the sentence or paragraph, never trail it.
 - Vary anchor text: exact, partial, descriptive. Never "click here".
-- Internal: every relevant BSUK page at least once — available puppies, the buying guide,
-  the breed guide, health, delivery and pricing wording, about, contact, 3–5 nearby city
-  pages — then varied repeats where they genuinely help. The source template's "50+ internal
-  links" assumed a larger site; BSUK has 11 pages plus 28 cities.
-- External: breed and health authorities only (The Kennel Club, the breed's DNA-test bodies,
-  UK government pages for the law sections). Never a competitor, a marketplace, or a local
-  business BSUK has not verified.
+- Internal: every relevant BSUK page at least once, then varied repeats where they genuinely
+  help:
+  - available puppies — `/available-puppies/` and each `/available-puppies/<slug>/` puppy page
+  - the buy pages — `/buy-blue-staffy-puppies-uk/`, `/buy-staffy-puppies-for-sale-uk/`,
+    `/blue-staffy-pup-sale-uk/`
+  - the buying guide — `/uk-blue-staffy-puppy-buying-guide/`
+  - the breed guide — `/uk-staffordshire-bull-terrier-guide/`
+  - health — `/blue-staffy-health-uk/`
+  - the breeder story (about) — `/blue-staffy-uk-breeders/`
+  - contact — `/uk-blue-staffy-breeders-contact/`
+  - the homepage — `/`
+  - the blog hub `/blue-staffy-blog-guides/` and its posts where one fits
+  - 3–5 nearby city pages — `/uk-locations/<slug>/`
+- There is no delivery page and no pricing page. Delivery and price facts come from
+  `data/settings.json` and `data/price-matrix.json` and are stated on the page itself.
+- Inventory: `data/page-map.json` lists 40 routes — the homepage, 10 other pages, the blog
+  hub and 28 city pages. The build also renders `/available-puppies/` with six puppy pages,
+  and the blog posts (one today). The source template's "50+ internal links" assumed a
+  larger site.
+- External: only URLs recorded in `docs/reference/external-link-library.md`; a board naming
+  any other is refused. For a city page that means the breed and health rows (the Kennel
+  Club's breed and DNA-test pages, the BVA eye scheme, PDSA, RSPCA, Blue Cross) and the
+  gov.uk rows for law topics. Never a competitor, a marketplace, or a local business.
 
 ## Topics carried over from the source, converted
 
 | Source topic | BSUK version |
 |---|---|
 | Why choose the breeder | Lisa Bright, home-raised litters, Carlisle · Cumbria — only facts in the skill's fact table |
-| Available puppies by type | The litter in `data/puppies.json`: £1,500 and £1,700 pups, deposit £500 refundable |
-| Temperament | Staffordshire Bull Terrier temperament, sourced from the breed guide page |
-| Health and wellness | DNA tests the breed is screened for, only where the evidence ledger records them |
+| Available puppies by type | The litter in `data/puppies.json`, prices from `data/price-matrix.json`: £1,500 and £1,700 pups, deposit £500 refundable |
+| Temperament | Breed facts consistent with the breed guide; prose written fresh (`CLAUDE.md` rule 8); link to it |
+| Health and wellness | Only what `data/quality/evidence-ledger.json` records. The health entities (BVA hip and elbow scores; the L2-HGA, HC and PHPV DNA tests) stay `NOT FETCHED` until the certificate is on file (`rules/copy.md`) |
 | Grooming | Short coat, nail, ear and teeth care |
 | Training | Positive-reinforcement basics, socialisation |
 | Delivery to the state, airports | Delivery to the city: £200–£350 priced by distance by DEFRA-approved transport, or collection from Carlisle; the main roads and stations that link the city to Cumbria |
 | Cities served | Nearby BSUK city pages from `data/locations.json` |
-| Dog-friendly activities, parks | Real local walks and parks the page can name and link |
-| Climate | The city's weather and what it means for a short-coated dog |
-| Pricing and payment | Locked prices and deposit only |
+| Dog-friendly activities, parks | Local walks and parks named only from verified public sources, and not linked. No local business is named |
+| Climate | Qualitative only: the city's weather and what it means for a short-coated dog. Any figure is `NOT FETCHED` on the board unless sourced and recorded; an unfetched figure is left out of the prose |
+| Pricing and payment | Locked prices from `data/price-matrix.json` and the deposit from `data/settings.json` only |
 | Testimonials | The three real reviews in `data/reviews.json`, rotated; `REVIEW_PLACEHOLDER` slots otherwise |
-| Regulations | UK law a buyer asks about (the Dangerous Dogs Act and whether it covers the breed; microchipping) — every statute line is `LEGAL_CLAIM_PLACEHOLDER` unless it cites the gov.uk page it comes from; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
+| Regulations | Topics may be named (the Dangerous Dogs Act, microchipping) but never asserted. Every statute line is `LEGAL_CLAIM_PLACEHOLDER` until confirmed (`CLAUDE.md` rule 9, `rules/copy.md`); any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
 | Preparing your home | Puppy-proofing and the first week |
 | Newsletter | The site's real newsletter form; no subscriber count |
 | Final call to action | Enquiry form, email, `PHONE_PLACEHOLDER` until launch |
@@ -92,6 +141,6 @@ blocks sit at the top, middle and bottom of the body as in the source template.
 The source's breeder claims belong to another business: its years in business, its
 multi-year health guarantee, its neurological-stimulation and puppy-culture programmes, its
 US DNA-testing provider, its US federal licence, its subscriber count, its business-bureau
-rating and its invented-format testimonials. None is a BSUK fact. The fixed 22-section
-structure is replaced by the competitor rule above; the 4,500-word target and "150+
-entities" become "as many real local entities as the city supports, none invented".
+rating and its testimonials BSUK cannot attribute to a real buyer. None is a BSUK fact. The
+fixed 22-section structure is replaced by the competitor rule above; the 4,500-word target
+and "150+ entities" become "as many real local entities as the city supports, none invented".
