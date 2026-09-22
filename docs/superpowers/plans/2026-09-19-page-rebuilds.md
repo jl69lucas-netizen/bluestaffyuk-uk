@@ -659,11 +659,13 @@ Intent: everything above, condensed; reuses `data/boards/index.json` (migrate th
 
 ### Task 19: Close-out
 
-- [ ] Two full runs into `docs/reports/page-rebuilds-run.log` (build, `check:all`, pytest, render meta, render pages, scorecard, `python3 scripts/render_baseline.py --out docs/reports/render-baseline-project4.md` then `python3 scripts/render_baseline.py --check --out docs/reports/render-baseline-project4.md` (`--write` is `--out`'s older spelling and takes the path itself, so the two are never combined)); halves identical after normalisation.
-- [ ] Lighthouse warm median of 3 on the five page types vs the project 3 table.
-- [ ] `docs/reports/page-rebuilds-gate-report.md` (structure as project 3's): Context; Build; Components 14–15; Shell; Facts preserved (per page: kept / dropped with reasons); Boards (12 URLs, picks summary); Pages (per page: sections, words, images reused, reviews used / placeholders); Harness (family table vs project 3, rebuilt pages at 0 blocking, `nav-bottom-chrome-clear`); Ported gates table; Placeholders (`REVIEW_PLACEHOLDER` count = reviews still needed); Lighthouse; Second run; Open items (carry 3, 5–7, 10, 13–15, 17–19, 21–26 with status; close 8, 9, 11, 12, 16, 20; add new); Definition of done §7 line by line.
-- [ ] Session log project 4 section; Known Issues updated; registries; Artifacts for report, plan (executed) and spec (amended); `data/design/artifacts.json` `boards` complete.
-- [ ] Commit; verify trailer count = commit count; then (controller) merge `page-rebuilds` into `foundation` fast-forward, memory update, session-closer naming project 5.
+- [x] Two full runs into `docs/reports/page-rebuilds-run.log` (build, `check:all`, pytest, render meta, render pages, scorecard, `python3 scripts/render_baseline.py --out docs/reports/render-baseline-project4.md` then `python3 scripts/render_baseline.py --check --out docs/reports/render-baseline-project4.md` (`--write` is `--out`'s older spelling and takes the path itself, so the two are never combined)); halves identical after normalisation.
+- [x] Lighthouse warm median of 3 on the five page types vs the project 3 table.
+- [x] `docs/reports/page-rebuilds-gate-report.md` (structure as project 3's): Context; Build; Components 14–15; Shell; Facts preserved (per page: kept / dropped with reasons); Boards (12 URLs, picks summary); Pages (per page: sections, words, images reused, reviews used / placeholders); Harness (family table vs project 3, rebuilt pages at 0 blocking, `nav-bottom-chrome-clear`); Ported gates table; Placeholders (`REVIEW_PLACEHOLDER` count = reviews still needed); Lighthouse; Second run; Open items (carry 3, 5–7, 10, 13–15, 17–19, 21–26 with status; close 8, 9, 11, 12, 16, 20; add new); Definition of done §7 line by line.
+- [x] Session log project 4 section; Known Issues updated; registries; Artifacts for report, plan (executed) and spec (amended); `data/design/artifacts.json` `boards` complete.
+- [x] Commit; verify trailer count = commit count; then (controller) merge `page-rebuilds` into `foundation` fast-forward, memory update, session-closer naming project 5.
+
+**Executed 2026-09-22.** Step 0 (`f94baee`) corrected the copy around four video sections before measuring. Both runs are in `docs/reports/page-rebuilds-run.log`; one pytest line drifted (two tests that skip until the project 4 baseline block exists) and its cause is fixed by committing the block. Lighthouse ran on the five page types and the twelve rebuilt pages, mobile and desktop. The merge into `foundation` was taken with `--no-ff` at the controller's instruction rather than fast-forward, so the build keeps one merge commit; `page-rebuilds` is kept. Report: `docs/reports/page-rebuilds-gate-report.md`.
 
 ---
 

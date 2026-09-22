@@ -72,12 +72,47 @@ design canvas, the picks board, and the Design System — the last replacing the
 draft of a prompt pack, because the artifact type's own format is a token-and-component
 document rather than a set of prompts.
 
+## Project 4 — Page rebuilds (2026-09-19/22) — COMPLETE
+
+Rebuilds every rich page on the project 3 kit, each written fresh from an approved outline
+through its own page board, and fixes the facts the migration carried wrong.
+Plan: `docs/superpowers/plans/2026-09-19-page-rebuilds.md`.
+Spec: `docs/superpowers/specs/2026-09-19-page-rebuilds-design.md`, amended eleven times during
+execution; §9 is where every in-flight decision is recorded.
+
+Closed 2026-09-22 on branch `page-rebuilds`, cut from `foundation` at `63a7b12`, 119 commits
+including step 0 (`f94baee`, the video copy that described silent puppy clips as a voice, a
+tour and a guide) and the close-out, merged into `foundation` with `--no-ff`; no remote and
+nothing pushed. Every gate was run twice; the transcript is
+`docs/reports/page-rebuilds-run.log`. One line drifted between the runs — pytest's two
+real-scorecard baseline tests skip until `render-baseline-project4.md` has a generated block,
+and run 1's pytest ran before run 1 filled it — and the cause is removed by committing the
+filled block. Full report and evidence: `docs/reports/page-rebuilds-gate-report.md`.
+
+Headline numbers: twelve pages rebuilt from twelve approved boards (URLs in
+`data/design/artifacts.json` `boards`); five new kit components (dial, sheet, strip, data table,
+video embed — eighteen in all), the first three on every rebuilt page and the three hubs; rule
+15's verbatim set carried on nine pages, 507 elements, 181 changed with reasons, 0 missing;
+the review-slot stand-in at 0 — every review slot filled from the three real reviews; render blocking
+rows **58 → 6**, none on a rebuilt page (the six are Known Issue 31's two routes);
+`schema-date-modified-present` 18 → 0; `img-srcset-within-2x` 6 → 0; `final_page_audit.py`
+12 FAIL → 0 FAIL; AEO 38 baseline-only FAIL pages → 0; pytest 1355 → 1703 passed; render meta
+324 → 370 passed. Lighthouse (warm median of 3, mobile and desktop, fourteen pages): 100 in all five categories everywhere except the thank-you page's SEO 69 (`noindex` by design), the breed guide's Best Practices 96 (Known Issue 38), the location route's SEO 92 (migrated link text) and three mobile Performance 99s — the blog hub's, the one fall against project 3, is TBT variance. Working rules 12–16 were given during the build; rules 10–11 (project 3's
+close) were applied to real pages for the first time.
+
+Definition of done: 4 PASS, 1 PASS-WITH-DEVIATION, 1 DEVIATION (the trailer, Known Issue 37),
+1 FAIL (partial) — the former city is gone from every rebuilt page, settings, schema and the
+form, but not from the puppy and location pages this build gave the shell only (Known Issue 16,
+build 5). **Next: project 5 — the 28 location pages, the comparison cluster and the two new
+blog posts.**
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
 Items 1 and 2 are closed by project 2 and item 4 by project 3; 3 and 5–8 are carried forward
 with their owning project; 9–14 are new from the system transfer, 15–16 were added after it,
-and 17–25 are new from the design system.
+17–26 are new from the design system, and 27–38 are new from the page rebuilds. Project 4
+closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -99,6 +134,8 @@ and 17–25 are new from the design system.
    named in `docs/reports/design-system-gate-report.md`; they are not kit output and belong
    to **project 4**'s content pass.
 5. **`nav-jump-target-lands` baseline.** 18 rows over 6 pages remain after the shell fix.
+   **2026-09-22 (project 4 close): 3 rows on 1 page** — the rebuilt pages carry none; what is
+   left is `/uk-locations/blue-staffy-puppies-uk/`'s `#Staffy-adoption` (Known Issue 31). Build 5.
    `--hdr` is measured from the header (`--hdr-measured`), with the media query kept as the
    no-JS fallback, so the remaining rows are migrated in-page anchors rather than chrome
    miscalculation. **Carried forward.**
@@ -119,7 +156,7 @@ and 17–25 are new from the design system.
    `scripts/final_page_audit.py` exempts `phone_in_footer` on every page with this entry as
    its printed reason (2026-09-22); the exemption reads the setting, so it lapses on its own
    the run after a real number lands.
-8. **`schema-date-modified-present`.** 18 rows over 6 pages; needs
+8. **CLOSED 2026-09-22 (project 4) — `schema-date-modified-present` 18 → 0.** Was: 18 rows over 6 pages; needs
    `scripts/generate_page_dates.py` wired into the content pass, which arrives with
    **project 4** — the same project that gives pages a real edit history for sitemap
    `lastmod`.
@@ -139,11 +176,13 @@ and 17–25 are new from the design system.
     Python page-hardening checks in the source repo, not render-harness checks, so they could
     not be deferred in `tests/render/targets.json`. Defer them if a later project ports them
     into the harness.
-11. **Old price range in migrated copy.** A pre-migration price band, below the locked
+11. **CLOSED 2026-09-22 (project 4).** The old band is 0 times on every rebuilt page, listed in
+    each record's `dropped.prices`. Was: **Old price range in migrated copy.** A pre-migration price band, below the locked
     £1,500 / £1,700, persists in several migrated page bodies (see the project-2 gate
     report, open item 11, for the exact pages). The fact lint covers `.claude/agents` and
     `.claude/skills` only; page bodies are content. **Project 4.**
-12. **`Sharine Amelia` byline.** The migrated author byline persists on the homepage and the
+12. **CLOSED 2026-09-22 (project 4).** The old byline is on no built page; it is in the
+    homepage's and breeders page's `dropped.names`. Was: **`Sharine Amelia` byline.** The migrated author byline persists on the homepage and the
     breeders page. **Project 4.**
 13. **`INDEXNOW_KEY` empty, `SITE_URL` still the placeholder.** IndexNow and pagefind are
     ported and guarded (`scripts/indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` and again on
@@ -225,6 +264,13 @@ and 17–25 are new from the design system.
     href of `/uk-locations/staffy-breeding-dogs-glasgow/`, whose URL rule 11 keeps and whose
     anchor on this page names our breeding dogs rather than a town.
     **8 page bodies to go.**
+    **2026-09-22 (project 4 close): all twelve rebuilt pages carry the former city 0 times.**
+    What is left is outside project 4's rewrite scope and is **build 5**'s: the meta
+    descriptions and hub copy of `/available-puppies/` and its six puppy pages
+    (`src/pages/available-puppies/index.astro`, `[slug].astro`, `src/components/PuppyList.astro`),
+    `/uk-locations/` (`src/pages/uk-locations/index.astro`), `/search/` (two
+    `data/page-map.json` titles), and the 28 location bodies. Spec §7.3's literal grep is
+    therefore not yet 0; the gate report records it as the one partial FAIL.
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the
@@ -244,12 +290,15 @@ and 17–25 are new from the design system.
     execution and the user has not confirmed it. Deleting an unwanted treatment is a one-line
     registry change plus its fixtures and is cheapest **before project 4** mounts buttons on
     real pages.
-20. **`data/page-dates.json` is generated but unwired.** `npm run dates` writes it from git
+20. **CLOSED 2026-09-22 (project 4).** `prebuild` runs `generate_page_dates.py`, `BaseLayout`
+    emits `dateModified` from it, and `generate_page_dates.py --check` is green. Was: **`data/page-dates.json` is generated but unwired.** `npm run dates` writes it from git
     history, and `/kit-preview/` is its only consumer — it reads the file for its `WebPage`
     `dateModified` rather than calling `new Date()`. The 18 `schema-date-modified-present` rows
     in Known Issue 8 are exactly the real pages that do not read it yet. **Project 4** wires it
     into the content pass and into sitemap `lastmod`.
-21. **The separator dot misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
+21. **(2026-09-22: now also on `/thank-you-blue-staffy-puppies-journey/` and
+    `/uk-blue-staffy-breeders-contact/`, through C-UT1's inline dot — 6 advisory rows on 3 pages;
+    still open, build 5.)** **The separator dot misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
     on `/kit-preview/` at 768 and 1280: the middle-dot separator measures 4.49:1 where AA wants
     4.50:1. Decorative, but a real row; the fix is one token step darker, with the pair added to
     `data/design/contrast.json` so the token test guards it thereafter. **Project 4.**
@@ -433,3 +482,37 @@ and 17–25 are new from the design system.
     page-type defaults; the audit still ERRORs on three location routes, the blog post and the
     board-preview routes, none of them rebuilt pages. A calibration pass that measures the
     ceilings against cited pages should retire most of these entries.
+
+35. **The three guides share one hero arrangement (2026-09-22).** `/blue-staffy-health-uk/`,
+    `/uk-staffordshire-bull-terrier-guide/` and `/uk-blue-staffy-puppy-buying-guide/` all picked
+    H-GD3, so working rule 16's "no two pages share the same hero layout" is not met between
+    them — the same gap Known Issue 33 records for the three utility pages' H-UT1. Their
+    counters differ (C-GD1, C-GD3, C-GD2). `ledger-tuple-owned` does not catch it because its
+    signature is hero + faq + table + takeaway, and the three differ on the other axes.
+    **Closes with the breeder's new picks** for two of the three (H-GD1 and H-GD2 are unused),
+    and should be followed by a board-gate row that fails a shared per-page hero or counter
+    outright.
+
+36. **Seventeen duplicate passages touch rebuilt pages (2026-09-22).** `dup_content_audit.py`
+    reports 131 passages; 114 lie between pages project 4 did not rebuild, and 17 touch one it
+    did: the FAQ answer "a comprehensive puppy package…" rendered from one `data/faq.json` row
+    on four pages, and "are the puppies raised in a family home…" on two; the review
+    attribution tail "…is the heart of our family — the Victoria Family, Manchester" crossing
+    the quote whitelist on three pairs; three working-rule-15 openings the homepage carries from
+    the pages it summarises; the post against the buying guide (35 words); and pup-sale's
+    "healthy, vaccinated and ready" line against two location bodies. **Build 5**: whitelist
+    shared FAQ rows and review attributions as sitewide lines (as the quotes already are), and
+    rewrite the rest when the location and post bodies are rewritten.
+
+37. **The commit trailer (2026-09-22).** Spec §7.7 names `Co-Authored-By: Claude Fable 5.1`.
+    Every commit on `page-rebuilds` carries a `Co-Authored-By` trailer; 111 carry Fable 5.1 and
+    the last eight (`2ce9e93` onward, including step 0 and the close-out), plus the merge commit
+    on `foundation`, carry `Claude Opus 5.5`, by the controller's instruction for those
+    sessions. **Closes with the user's ruling** on which trailer project 5 uses.
+
+38. **The breed guide's video player loads with the page (2026-09-22).** The breeder picked S2
+    (the player full width on a steel band) for `/uk-staffordshire-bull-terrier-guide/`, so
+    `youtube-nocookie.com/embed/g9iV9RVr_Sk` loads on page load and Chrome raises a cookie
+    issue: Lighthouse Best Practices 96 on mobile and desktop, every other rebuilt page 100.
+    The S3 facade — rule 14's default — fetches the player only on a press. **Closes with the
+    breeder's choice**: keep S2 and accept the score, or pick S3.
