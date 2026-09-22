@@ -207,6 +207,11 @@
      attribute selector, which is (0,2,0). A rule that reaches INSIDE (a row, a cell) is
      already past that and needs no prefix. */
   .bl-box.bl-frame-band .kit-table { --kit-band: var(--color-surface-deep); color: inherit; }
+  /* A video on a band re-points its caption token to the band's ink (VideoEmbed's convention
+     3). `--kit-caption` defaults to the muted ink, which is 2.16:1 on steel — the breed guide's
+     S2 caption shipped at that. The VideoEmbed root is a scoped `.kit-video[data-astro-cid-…]`
+     (0,2,0), so the re-point needs (0,3,0) to win inside the same layer. */
+  .bl-box.bl-frame-band .kit-video { --kit-caption: var(--color-text-on-inverse); }
   .bl-frame-band .kit-table caption,
   .bl-frame-band .kit-table tbody th { color: inherit; }
 

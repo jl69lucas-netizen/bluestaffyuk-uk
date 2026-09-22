@@ -100,7 +100,17 @@ const rows = stats;
     /* The dot is the INLINE line's own furniture: a flush row needs something between the
        pairs. aria-hidden, so it is punctuation for the eye only. The other four arrangements
        separate their figures with geometry and never render it. */
-    .dot { color: var(--color-text-muted); padding-inline-start: var(--space-4); }
+    /* It is taken OUT OF FLOW and centred in the gap after its tile. In flow it was a third
+       flex item of the tile, and with `label: under` or `above` the tile is a COLUMN, so the
+       dot printed on a line of its own beneath the first figure (C-UT1 on thank-you, contact
+       and the board preview, Known Issue 33). Positioned against the tile, it sits between
+       the pairs whatever direction the tile runs, and `.list` clips the one a wrapped row
+       leaves hanging at its end rather than letting it widen the page. */
+    [data-tiles="inline"] li { position: relative; }
+    .dot { position: absolute; inset-inline-start: 100%; inset-block-start: 50%;
+           translate: 0 -50%; inline-size: var(--space-6); text-align: center;
+           color: var(--color-text-muted); line-height: 1; }
+    [data-tiles="inline"] .list { overflow-x: clip; }
 
     /* ── the five arrangements (working rule 16) ─────────────────────────────────────────
        Each is a different SHAPE for one figure, never a different palette: the bed, the rule
