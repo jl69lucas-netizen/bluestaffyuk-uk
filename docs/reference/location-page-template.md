@@ -14,10 +14,11 @@ with a new city name.
 
 ## Section count — competitors decide, never a fixed number
 
-1. Pool: for each of the skill's three query shapes — `staffy puppies for sale <city>`,
-   `blue staffy puppies <city>`, `staffordshire bull terrier breeder near <city>` — the top-5
-   breeder or location pages on Google plus the top-5 on Bing, merged. Marketplaces and
-   directories are excluded.
+1. Pool: the top-5 breeder or location pages for the page's primary keyword (the city row's
+   H1 keyword) on Google plus the top-5 on Bing, merged. Marketplaces and directories are
+   excluded. The skill's three query shapes (`staffy puppies for sale <city>`,
+   `blue staffy puppies <city>`, `staffordshire bull terrier breeder near <city>`) may be run
+   as an optional free gap scan: they supply topics, never the count.
 2. Strip non-content H2s: sidebar, footer, related posts, repeated calls to action, reviews
    and FAQ headings (ours are frame, so theirs are not counted either).
 3. Match the highest cleaned H2 count in the pool. If it is more than 1.5× the next highest
@@ -48,7 +49,7 @@ In this order:
 8. Review middle
 9. FAQ middle
    — body sections, second third —
-10. Newsletter
+10. Newsletter (`id="newsletter"`)
     — body sections, last third —
 11. Review bottom
 12. FAQ bottom
@@ -127,7 +128,7 @@ sections are split roughly evenly across the three gaps.
 | Training | Positive-reinforcement basics, socialisation |
 | Delivery to the state, airports | Delivery to the city: £200–£350 priced by distance by DEFRA-approved transport, or collection from Carlisle; the main roads and stations that link the city to Cumbria |
 | Cities served | Nearby BSUK city pages from `data/locations.json` |
-| Dog-friendly activities, parks | Local walks and parks named only from verified public sources, and not linked. No local business is named |
+| Dog-friendly activities, parks | Local walks and parks named from a source recorded on the board (`CLAUDE.md` rule 12), not linked. No local business is named |
 | Climate | Qualitative only: the city's weather and what it means for a short-coated dog. Any figure is `NOT FETCHED` on the board unless sourced and recorded; an unfetched figure is left out of the prose |
 | Pricing and payment | Locked prices from `data/price-matrix.json` and the deposit from `data/settings.json` only |
 | Testimonials | The three real reviews in `data/reviews.json`, rotated; `REVIEW_PLACEHOLDER` slots otherwise |
