@@ -11,7 +11,7 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
+> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
 > **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
@@ -41,7 +41,7 @@ BSUK operates in a trust-scarce market. Blue Staffy buyers have been burned by:
 - Sites that say "home-raised" with no paperwork to show
 - "Cheap blue staffy" sites with no LICENCE_CLAIM_PLACEHOLDER, no vet check, no recourse
 
-EBP converts vague claims into verifiable proof. "All our puppies are documented" becomes "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable with Glasgow City Council."
+EBP converts vague claims into verifiable proof. "All our puppies are documented" becomes "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable with the local licensing authority."
 
 ---
 
@@ -49,8 +49,8 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 
 | Claim | Evidence Source | How to Cite |
 |-------|---------------|-------------|
-| Legally sold | LEGAL_CLAIM_PLACEHOLDER compliance | "LEGAL_CLAIM_PLACEHOLDER compliant — puppy seen with its mother at our Glasgow home" |
-| Licensed breeder | LICENCE_CLAIM_PLACEHOLDER | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at glasgow.gov.uk" |
+| Legally sold | LEGAL_CLAIM_PLACEHOLDER compliance | "LEGAL_CLAIM_PLACEHOLDER compliant — puppy seen with its mother at our Carlisle home" |
+| Licensed breeder | LICENCE_CLAIM_PLACEHOLDER | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at the issuing council's register" |
 | Pedigree verified | KC registration | "Kennel Club registration — [KC_NUMBER], papers handed over at collection" |
 | Health tested | Vet health check | "Vet health check — [VET_NAME], issued on [date]" |
 | Home-raised | Socialisation log | "Socialisation log from birth — documented week by week" |
@@ -65,7 +65,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 ### Basic EBP Block (for inline credibility)
 ```
 [Claim]: Staffordshire Bull Terriers from BlueStaffyUK are bred under a LICENCE_CLAIM_PLACEHOLDER.
-[Evidence]: Licence issued by Glasgow City Council under UK animal-activity licensing rules. Licence number
+[Evidence]: Licence issued by the local licensing authority under UK animal-activity licensing rules. Licence number
             available before any deposit is sent. Verifiable independently with the council.
 [Profile]: Every puppy leaves with KC registration, microchip number, vet health check, first vaccinations,
            and a worming record. No buyer has ever had a paperwork problem at their first vet visit.
@@ -83,7 +83,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
        outside authority rather than self-reported.
        Licence number available before any deposit is sent.</p>
     <p class="bsuk-evidence-note">Evidence: LICENCE_CLAIM_PLACEHOLDER number supplied with every puppy.
-       Verifiable independently at glasgow.gov.uk.</p>
+       Verifiable independently at the issuing council's register.</p>
   </div>
 
   <div class="bsuk-ebp-item">
@@ -119,7 +119,7 @@ Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price is the lock
 
 | Assertion (weak) | EBP (strong) |
 |-----------------|-------------|
-| "All our puppies are legal" | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at glasgow.gov.uk" |
+| "All our puppies are legal" | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER] — verifiable at the issuing council's register" |
 | "Our puppies are health tested" | "Vet health check — [VET_NAME], certificate included" |
 | "KC registered" | "Kennel Club registration — [KC_NUMBER], papers at collection" |
 | "Home-raised from birth" | "Socialisation log from day 1 — available on request" |

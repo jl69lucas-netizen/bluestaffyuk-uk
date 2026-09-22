@@ -7,21 +7,12 @@ the four sold pups' cards); `expected` is the same page after them; `built` is w
 chrome and dead forms are stripped, so it slightly understates the WordPress body.
 The gate compares expected → built with a 2% whitespace band; headings must match
 exactly, embeds must never decrease, a built page missing its article scope fails,
-and expected must keep at least 60% of raw's words.
+and expected must keep at least 60% of raw's words. Pages listed in
+`data/facts/rebuilt.json` are no longer migrated bodies and are skipped here:
+`scripts/facts_preserved_check.py` is their gate.
 
 | URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |
 | --- | --- | --- | --- | --- | --- | --- |
-| /blue-staffy-blog-guides/ | 0→0→142 | 0→3 | 0→0 | 0→0 | 0 | PASS (archive) |
-| /blue-staffy-health-uk/ | 3510→3165→3165 | 62→62 | 8→8 | 0→0 | 4 | PASS |
-| /blue-staffy-pup-sale-uk/ | 1133→788→788 | 18→18 | 5→5 | 0→0 | 4 | PASS |
-| /blue-staffy-uk-breeders/ | 2316→1780→1780 | 27→27 | 7→7 | 1→1 | 4 | PASS |
-| /buy-blue-staffy-puppies-uk/ | 2488→2254→2254 | 27→27 | 7→7 | 1→1 | 5 | PASS |
-| /buy-staffy-puppies-for-sale-uk/ | 4706→4706→4706 | 50→50 | 13→13 | 1→1 | 0 | PASS |
-| / | 3369→3112→3112 | 59→59 | 14→14 | 2→2 | 4 | PASS |
-| /privacy-policy-uk/ | 1015→1015→1015 | 23→23 | 3→3 | 0→0 | 0 | PASS |
-| /thank-you-blue-staffy-puppies-journey/ | 422→422→422 | 5→5 | 1→1 | 0→0 | 0 | PASS |
-| /uk-blue-staffy-breeders-contact/ | 397→397→397 | 6→6 | 1→1 | 0→0 | 0 | PASS |
-| /uk-blue-staffy-puppy-buying-guide/ | 6117→6117→6117 | 68→68 | 17→17 | 1→1 | 0 | PASS |
 | /uk-locations/blue-staffies-newcastle-under-lyme/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/blue-staffy-puppies-aberdeen/ | 476→443→443 | 10→10 | 0→0 | 0→0 | 4 | PASS (puppy-grid-emptied) |
 | /uk-locations/blue-staffy-puppies-birmingham/ | 4→4→4 | 0→0 | 0→0 | 0→0 | 0 | PASS |
@@ -50,6 +41,5 @@ and expected must keep at least 60% of raw's words.
 | /uk-locations/staffy-puppies-for-sale-nottingham/ | 5→5→5 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/staffy-puppies-wolverhampton/ | 3→3→3 | 0→0 | 0→0 | 0→0 | 0 | PASS |
 | /uk-locations/uk-staffordshire-bull-terrier-breeder/ | 0→0→0 | 0→0 | 0→0 | 0→0 | 0 | PASS |
-| /uk-staffordshire-bull-terrier-guide/ | 4975→4630→4630 | 72→72 | 10→10 | 1→1 | 4 | PASS |
 
-examined 40 pages, 0 failing
+examined 28 pages, 0 failing, skipped 12 rebuilt

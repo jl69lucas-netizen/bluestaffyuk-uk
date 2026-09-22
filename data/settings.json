@@ -4,12 +4,9 @@
   "breeder_name": "Lisa Bright",
   "location_label": "Carlisle · Cumbria",
   "address": {
-    "street": "40 Coltmuir Street",
-    "city": "Glasgow",
-    "postcode": "G22 6LU",
-    "country": "GB",
-    "lat": 55.89156,
-    "lng": -4.256577
+    "city": "Carlisle",
+    "region": "Cumbria",
+    "country": "GB"
   },
   "phone": "PHONE_PLACEHOLDER",
   "email": "staffies@bluestaffyuk.uk",

@@ -212,14 +212,14 @@
   {
     "src": ".claude/skills/cag-component-refresh/SKILL.md",
     "dst": ".claude/skills/bsuk-component-refresh/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "re-based onto the board system in Task 18c: boardStyles.ts + /board-preview/, not a design canvas"
   },
   {
     "src": ".claude/skills/cag-component-variations/SKILL.md",
     "dst": ".claude/skills/bsuk-component-variations/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "re-based onto the board system in Task 18c: boardStyles.ts + /board-preview/, not a design canvas"
   },
   {
     "src": ".claude/skills/cag-multi-agent-design/SKILL.md",

@@ -17,11 +17,29 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/render_baseline.py"
 REAL_SCORECARDS = ROOT / "data/quality/scorecards"
 # The LIVE baseline — the one the script defaults to and `npm run baseline` checks. Project
-# 2's report is a published record of the 2026-09-17 run and is never regenerated, so it is
-# not what "the committed report matches the real scorecards" can mean any more.
-REAL_REPORT = ROOT / "docs/reports/render-baseline-project3.md"
+# 2's and project 3's reports are published records of finished runs and are never
+# regenerated, so neither is what "the committed report matches the real scorecards" can mean
+# any more (Known Issue 25).
+REAL_REPORT = ROOT / "docs/reports/render-baseline-project4.md"
 START = "<!-- generated:start -->"
 END = "<!-- generated:end -->"
+
+
+def _generated_block(report):
+    """The text between the markers, stripped — empty for a report whose run has not happened."""
+    text = report.read_text(encoding="utf-8")
+    return text.split(START, 1)[1].split(END, 1)[0].strip()
+
+
+# A project's baseline file is opened with an EMPTY generated block and filled by that
+# project's close-out run (project 4: Task 19). Until then there is no table to compare, and
+# failing on "stale" would be failing on a report nobody has written yet — which is exactly
+# the second-run failure Known Issue 25 recorded. Once the block is filled, both tests below
+# hold it to the scorecards on every run.
+NOT_YET_GENERATED = pytest.mark.skipif(
+    not REAL_REPORT.is_file() or not _generated_block(REAL_REPORT),
+    reason=f"{REAL_REPORT.name} has no generated block yet — its close-out run fills it",
+)
 
 
 def run(*args, expect=None):
@@ -156,6 +174,28 @@ def test_check_is_green_right_after_a_write(tmp_path, fake):
     run(*args(fake, "--check", "--write", str(report)), expect=0)
 
 
+def test_out_creates_a_report_that_does_not_exist(tmp_path, fake):
+    report = tmp_path / "nested" / "render-baseline-new.md"
+    run(*args(fake, "--out", str(report)), expect=0)
+    text = report.read_text()
+    assert text.count(START) == 1 and text.count(END) == 1
+    assert "| **Total** | **2** | **2** | **2** |" in text
+    run(*args(fake, "--check", "--out", str(report)), expect=0)
+
+
+def test_check_on_a_missing_report_is_stale_not_a_crash(tmp_path, fake):
+    report = tmp_path / "absent.md"
+    proc = run(*args(fake, "--check", "--out", str(report)))
+    assert proc.returncode == 1, proc.stderr
+    assert "does not exist" in proc.stdout
+    assert not report.exists(), "--check must never create the report"
+
+
+def test_the_default_report_is_project_4s():
+    src = SCRIPT.read_text(encoding="utf-8")
+    assert 'REPORT = ROOT / "docs/reports/render-baseline-project4.md"' in src
+
+
 def test_check_exits_one_when_the_block_is_stale(tmp_path, fake):
     report = tmp_path / "report.md"
     report.write_text(f"# t\n\n{START}\nSTALE\n{END}\n")
@@ -168,6 +208,7 @@ def test_check_exits_one_when_the_block_is_stale(tmp_path, fake):
     not REAL_SCORECARDS.is_dir() or not any(REAL_SCORECARDS.glob("*.json")),
     reason="no scorecards built",
 )
+@NOT_YET_GENERATED
 def test_the_committed_report_matches_the_real_scorecards():
     run("--check", expect=0)
 
@@ -176,6 +217,7 @@ def test_the_committed_report_matches_the_real_scorecards():
     not REAL_SCORECARDS.is_dir() or not any(REAL_SCORECARDS.glob("*.json")),
     reason="no scorecards built",
 )
+@NOT_YET_GENERATED
 def test_the_reports_total_row_equals_the_real_scorecard_sums():
     latest = sorted(p.stem[-10:] for p in REAL_SCORECARDS.glob("*.json"))[-1]
     total = 0

@@ -1,0 +1,1113 @@
+{
+  "meta": {
+    "slug": "uk-blue-staffy-breeders-contact",
+    "page_type": "interior",
+    "layout_type": "interior-utility",
+    "status": "approved",
+    "preview": true,
+    "research_as_of": "2026-09-19",
+    "sources": [
+      {
+        "path": "src/pages/uk-blue-staffy-breeders-contact/index.astro",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "dist/uk-blue-staffy-breeders-contact/index.html",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/facts/uk-blue-staffy-breeders-contact.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/page-map.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/settings.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/reviews.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/faq.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/image-manifest.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "src/components/kit/ContactFormKit.astro",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.trojanstaffuk.com/contact",
+        "fetched": "2026-09-19 — ~150 words; H2 Contact Us, Let's Chat!; 0 FAQ rows; no JSON-LD; two named people with mobiles, a town, a structured enquiry form with home-check questions, live chat"
+      },
+      {
+        "path": "https://www.exodusbulls.co.uk/contact",
+        "fetched": "2026-09-19 — ~35 words; no H2 (H3 only: Come visit us, Contact Us, Follow us); 0 FAQ rows; no JSON-LD; a county, a map, a mobile, an email, two socials"
+      },
+      {
+        "path": "https://www.bullscaff.co.uk/contact",
+        "fetched": "2026-09-19 — ~70 words; H2 Bullscaff, Thank You; 0 FAQ rows; no JSON-LD; a town, a map, a mobile, an email, a privacy link"
+      },
+      {
+        "path": "https://ukstaffypups.uk/contact-us/",
+        "fetched": "2026-09-19 — ~60 words; no H2; 0 FAQ rows; Yoast JSON-LD (WebPage, WebSite, Article, BreadcrumbList, ImageObject, Organization, Person); a KC-registered claim in the footer and a vague reply promise; no email, phone, town or hours"
+      },
+      {
+        "path": "https://www.riskysstaffords.co.uk/contact.html",
+        "fetched": "2026-09-19 — ~45 words; no H2; 0 FAQ rows; no JSON-LD; two named breeders, an established-1998 claim, an email, a mobile, three socials; no form"
+      },
+      {
+        "path": "search: Staffordshire Bull Terrier breeder UK contact us page puppies",
+        "fetched": "2026-09-19 — 10 results; the five pages above were reached from this and the query below"
+      },
+      {
+        "path": "search: \"blue staffy\" OR \"blue staffordshire bull terrier\" breeder uk contact",
+        "fetched": "2026-09-19 — 10 results; no further UK contact page with an FAQ or ContactPage markup was found"
+      }
+    ]
+  },
+  "brief": {
+    "goal": "Rebuild the contact page on the kit so that someone deciding whether to write to a stranger about a £1,500 puppy can see, on one screen, who they are writing to, what we can answer, how long a reply takes and what to put in the message — and then write it, in the one form on the page.",
+    "scope": "Nine entries: seven page sections — hero with the migrated photograph, trust strip, the kit enquiry form, how to reach us, what to tell us, one review and a four-row FAQ — plus the two chrome entries (the desktop dial and the mobile section sheet) whose styles this board exists to settle for the whole rebuild.",
+    "gates": [
+      "facts-preserved",
+      "marker",
+      "schema",
+      "sitemap",
+      "form-contract",
+      "board-previews",
+      "render"
+    ],
+    "done": "The page states the email address, the hours, Carlisle · Cumbria and the 24-48 business hour reply window, carries the one migrated image and the one kit form, shows one review and four FAQ rows, names no telephone and no Scottish address, and comes to about 397 words with the facts-preserved gate reporting nothing missing that `dropped` does not explain.",
+    "out_of_scope": [
+      "the telephone number: data/settings.json holds PHONE_PLACEHOLDER, so no number is shown anywhere on this page",
+      "the postal address, postcode and map coordinates the migrated page's legacy Place schema carried: they name a city the breeder does not operate from (Known Issue 16), and data/settings.json is town-level by design",
+      "international puppy transport, which the migrated body offers to discuss: no file on disk states a route, a price or a carrier for it",
+      "a second enquiry form or a mailto-only fallback: the form audit measures one field contract per content route, and two forms are two places an enquiry can be lost",
+      "prices per puppy and offer schema: the puppy pages own the offer, and this page links to them"
+    ],
+    "primary_keyword": "contact blue staffy breeders uk",
+    "angles": [
+      {
+        "name": "the answerable breeder",
+        "hook": "lead with what we can answer and how fast, put the form second, and say what to put in it",
+        "why_not": ""
+      },
+      {
+        "name": "the bare form",
+        "hook": "an H1, a form and a phone number, which is what all five scanned competitor pages are",
+        "why_not": "it is the page we already have, and it gives a reader no reason to choose us over the other five"
+      },
+      {
+        "name": "the sales landing page",
+        "hook": "treat contact as the bottom of the funnel: price, availability and a deposit button above the form",
+        "why_not": "nobody has spoken to us yet, and asking for money before a first reply is the opposite of the trust this page has to build"
+      }
+    ],
+    "strategy": {
+      "name": "the answerable breeder",
+      "why": "The scan found five contact pages that are a form and a mobile number, none with hours, a reply window, an FAQ or ContactPage markup; saying plainly what we answer, when, and what to tell us is both the reader's question and the whole competitive gap.",
+      "trade_off": "It is a longer contact page than any competitor's, and a reader who only wants the email address has to read one heading to find it."
+    },
+    "cta": {
+      "cadence": {
+        "min": 120,
+        "max": 250
+      },
+      "destination": "#enquiry",
+      "anchors": [
+        "Send us a message",
+        "Write to us"
+      ],
+      "global_cta": "hidden"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "The only figures on this page are a reply window, a deposit and a delivery band, all stated as sentences from data/settings.json; there is nothing for a reader to work out.",
+      "trade_off": "A delivery-cost estimator would suit the 'your town or postcode' field, but no file on disk gives distances or a rate, so it would have to invent them."
+    },
+    "schema": {
+      "types": [
+        "ContactPage",
+        "FAQPage"
+      ],
+      "offer_model": "none"
+    }
+  },
+  "h1": {
+    "variants": [
+      "Contact Blue Staffy UK",
+      "Contact our UK blue Staffy breeders",
+      "Get in touch about a blue Staffy puppy",
+      "Talk to us about a blue Staffy",
+      "Contact Blue Staffy UK — Carlisle, Cumbria"
+    ],
+    "recommended": 0,
+    "pick": 0
+  },
+  "meta_set": {
+    "titles": [
+      "Contact Blue Staffy UK | Blue Staffy Puppy Enquiries",
+      "Contact UK Blue Staffy Breeders | Blue Staffy UK, Carlisle",
+      "Contact Us | Blue Staffy Puppy Enquiries | Blue Staffy UK"
+    ],
+    "descriptions": [
+      "Contact Blue Staffy UK about a blue Staffy puppy. Send the form, email us, or read what to tell us. We reply to every enquiry within 24-48 business hours.",
+      "Write to our UK blue Staffy breeders in Carlisle, Cumbria. One form, one email address, our hours, and the answers to the questions buyers ask us most.",
+      "Enquire about a KC-registered blue Staffy puppy. Our form, email and hours, what to put in your message, and a reply within 24-48 business hours."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": 0,
+      "description": 0
+    }
+  },
+  "sections": [
+    {
+      "id": "top",
+      "n": 1,
+      "heading": "Contact Blue Staffy UK",
+      "intent": "A short, plain opening in Lisa Bright's first person: this is the one place to write to us about a blue Staffy, the form below is the quickest route, and a reply comes within 24-48 business hours. Carries the migrated photograph of a breeder helping a family through an enquiry.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page opens on the same promise — ready to reserve or wanting more information, the family-run team is here to help — and a contact page that makes a reader scroll to find out how to reach anyone has wasted its first screen.",
+      "why_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro — 'Whether you’re ready to reserve a puppy or need more information, our family-run breeding team … is here to help.'; data/page-map.json — the migrated H1 and the one image",
+      "framework": "EEBP",
+      "words": {
+        "min": 65,
+        "max": 85
+      },
+      "shape": "hero",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "contact",
+          "blue Staffy",
+          "enquiry"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK",
+          "Lisa Bright"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "contact blue staffy breeder"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [
+        {
+          "slot": "contact-form-support",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a Staffy breeder helping a family through a blue puppy enquiry, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "H-UT1",
+        "note": ""
+      },
+      "styles": [
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
+      ],
+      "cta": 0,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero with a small photo mosaic beside the copy in a card, a delta from /privacy-policy-uk/'s title panel and /thank-you-blue-staffy-puppies-journey/'s full-bleed photo."
+      }
+    },
+    {
+      "id": "stats",
+      "n": 2,
+      "heading": "When You Will Hear Back",
+      "intent": "Two figures and no more, because two is all this page can source: the hours we answer, from data/settings.json `hours`, and the 24–48 business hours to a reply, from the data/faq.json row the hero and the form lede both already state in prose. No telephone figure, because data/settings.json holds PHONE_PLACEHOLDER; no appointment figure, because no file on disk records one.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "Both facts are stated twice in prose on this page and appear nowhere a reader scanning for them can find them, which is the whole case for a counter on a contact page.",
+      "why_source": "data/settings.json — hours \"Mo-Su 09:00-23:00\"; data/faq.json — enquiry-reply-time; CLAUDE.md working rule 16 (breeder, 2026-09-20)",
+      "framework": "FAB",
+      "words": {
+        "min": 0,
+        "max": 40
+      },
+      "shape": "stats",
+      "styles": [
+        "C-UT1",
+        "C-UT2",
+        "C-UT3"
+      ],
+      "stats": [
+        {
+          "n": "09:00–23:00",
+          "label": "the hours we answer, every day",
+          "source": "data/settings.json#hours"
+        },
+        {
+          "n": "24–48",
+          "label": "business hours to a reply",
+          "source": "data/faq.json#[enquiry-reply-time].a"
+        }
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "the counter as figure cards on a steel band, against the thank-you page's ring tiles in a card and the homepage's flush line."
+      },
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "C-UT1",
+        "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
+      }
+    },
+    {
+      "id": "why-write",
+      "n": 3,
+      "heading": "What we can help with",
+      "intent": "The trust strip: the four standing facts a reader wants confirmed before they write — KC registration, the health tests, home raising, and UK delivery — rendered from the kit rather than restated as prose.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "why": "Not one of the five UK breeder contact pages scanned restates KC registration, named health tests or delivery terms on the contact page itself, although several hold that content elsewhere on the site; putting it beside the form is the clearest gap the scan found.",
+      "why_source": "https://www.trojanstaffuk.com/contact and https://www.bullscaff.co.uk/contact — neither restates KC registration, health tests or delivery on its contact page (0 of 5 in the 2026-09-19 scan do); src/pages/uk-blue-staffy-breeders-contact/index.astro — 'ethical breeding practices'",
+      "framework": "FAB",
+      "words": {
+        "min": 20,
+        "max": 30
+      },
+      "shape": "trust",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "KC registered",
+          "health tested",
+          "home raised",
+          "UK delivery"
+        ],
+        "longtail": [],
+        "brand": [
+          "The Kennel Club"
+        ],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "who we are",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/blue-staffy-blog-guides/",
+            "anchor": "our blog guides",
+            "why": "carried from the migrated page",
+            "nav": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "the four standing facts in tinted cards, where the homepage rules the same kit strip with brass."
+      }
+    },
+    {
+      "id": "enquiry",
+      "n": 4,
+      "heading": "Send us a message",
+      "intent": "The one enquiry form on the page, with a short lede saying what happens after it is sent: the message reaches Lisa directly, and a reply comes within 24-48 business hours.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page carries one form and calls it the easiest way to get in touch, and the field contract the form audit measures is the kit form's; a second form on a contact page is two places an enquiry can go missing.",
+      "why_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro — 'The easiest way to get in touch is by using our quick online form below' and 'We aim to respond to all emails and calls within 24-48 business hours'",
+      "framework": "AIDA",
+      "words": {
+        "min": 50,
+        "max": 65
+      },
+      "shape": "form",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "enquiry form",
+          "reserve a puppy",
+          "waiting list"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "how do I enquire about a blue staffy puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "enquire about a blue staffy puppy"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/privacy-policy-uk/",
+            "anchor": "our privacy policy",
+            "nav": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "cta": 1,
+      "refresh": {
+        "axis": "layout",
+        "note": "the form in two columns above 768px, the only two-column form on the site."
+      }
+    },
+    {
+      "id": "reach-us",
+      "n": 5,
+      "heading": "How to reach us",
+      "intent": "The direct channels: the email address from settings, the hours we answer, that we are in Carlisle in Cumbria, and the four accounts we post from. No telephone number, because data/settings.json holds a placeholder rather than a number.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Every competitor contact page scanned gives at least one direct channel and most give a phone; ours can honestly give email, hours and a town, and stating the hours is something none of the five did.",
+      "why_source": "data/settings.json — email staffies@bluestaffyuk.uk, hours Mo-Su 09:00-23:00, location_label 'Carlisle · Cumbria', phone PHONE_PLACEHOLDER, socials x/youtube/instagram/facebook; competitor scan 2026-09-19 — 0 of 5 state opening hours",
+      "framework": "EEBP",
+      "words": {
+        "min": 65,
+        "max": 85
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "email",
+          "opening hours",
+          "social"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "what are your opening hours"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "email blue staffy breeder"
+        ]
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Email",
+          "intent": "The address in data/settings.json, written out so it can be copied, with the 24-48 business hour reply window repeated once.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "When we answer",
+          "intent": "The hours from data/settings.json, stated as the window we read messages in rather than as an office day.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Where we are",
+          "intent": "Carlisle in Cumbria, by appointment only: we do not run a walk-in facility and visits are arranged after we have talked.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Where we post",
+          "intent": "The four accounts from data/settings.json, named as places to see the dogs rather than as a second enquiry channel.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/privacy-policy-uk/",
+            "anchor": "how we handle what you send us",
+            "nav": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/",
+            "anchor": "The Kennel Club Assured Breeder Scheme",
+            "library_row": "The Kennel Club — responsible breeding and registrations, carried over from the migrated body",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials."
+      },
+      "cta": 0,
+      "refresh": {
+        "axis": "container",
+        "note": "the channels stacked in one bordered panel, roomier than /thank-you-blue-staffy-puppies-journey/'s inline version of the same facts."
+      }
+    },
+    {
+      "id": "what-to-tell-us",
+      "n": 6,
+      "heading": "What to tell us",
+      "intent": "What the form asks for and why each answer helps: your name and email so we can reply, a phone number and town if you want us to work out delivery, which puppy or the waiting list, and a message about your household.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The migrated page asks for as much detail as possible but never says which detail, and the one competitor with a structured enquiry form qualifies the buyer by asking what home they can provide — saying out loud what each field is for is the honest version of that.",
+      "why_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro — 'provide as much detail as possible'; src/components/kit/ContactFormKit.astro — the six named fields; https://www.trojanstaffuk.com/contact — home-check questions in its enquiry form",
+      "framework": "QAB",
+      "words": {
+        "min": 70,
+        "max": 90
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "enquiry details",
+          "waiting list",
+          "delivery distance"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [
+          "Carlisle"
+        ],
+        "conversational": [
+          "what should I ask a blue staffy breeder",
+          "what should I put in my enquiry"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Your name and email",
+          "intent": "The two required fields: they are how the reply reaches you, and nothing else is done with them.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Phone and your town or postcode",
+          "intent": "Both optional. A town lets us price delivery by distance from Carlisle before you ask.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Which puppy, or the waiting list",
+          "intent": "The form lists the puppies that are available today and a waiting-list choice for the next litter.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Your message",
+          "intent": "Your household, your hours, other dogs or children, and anything you want to know about how the litter was raised.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-blue-staffy-puppies-uk/",
+            "anchor": "the puppies looking for a home",
+            "nav": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "what a puppy costs and how delivery works",
+            "nav": true
+          },
+          {
+            "href": "/uk-staffordshire-bull-terrier-guide/",
+            "anchor": "the Staffordshire Bull Terrier breed guide",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/blue-staffy-health-uk/",
+            "anchor": "how we health test and raise them",
+            "why": "carried from the migrated page",
+            "nav": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have."
+      },
+      "cta": 0,
+      "refresh": {
+        "axis": "density",
+        "note": "one tight line per field, terser than any other prose section on the site, because it sits directly beside the form it describes."
+      }
+    },
+    {
+      "id": "owners",
+      "n": 7,
+      "heading": "What it is like to deal with us",
+      "intent": "One review, given room, chosen because it names the communication rather than the puppy: the thing a reader about to write to a stranger is actually weighing.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "None of the five competitor contact pages carries a review, and the one thing a reader deciding whether to write wants is evidence that a breeder answers.",
+      "why_source": "data/reviews.json — entry 3, Rachel L., London: 'The health checks, the communication, and the home-raised environment — everything was top-notch.'; competitor scan 2026-09-19 — 0 of 5 show a review on the contact page",
+      "framework": "EBD",
+      "words": {
+        "min": 30,
+        "max": 40
+      },
+      "shape": "reviews",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "review",
+          "communication"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "London"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "one review, given room, and the only review on the site chosen for what it says about answering rather than about a puppy."
+      }
+    },
+    {
+      "id": "questions",
+      "n": 8,
+      "heading": "Before you write",
+      "intent": "Four rows from data/faq.json: the deposit, UK delivery, whether you can visit, and what to put in a message. Every answer is one the body above or data/settings.json already states.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "why": "Not one of the five UK breeder contact pages scanned carries an FAQ block or FAQPage markup, and these four are the questions the migrated body answers in passing on the way to the form.",
+      "why_source": "https://www.trojanstaffuk.com/contact and https://ukstaffypups.uk/contact-us/ — no FAQ block on either (0 of 5 in the 2026-09-19 scan); data/faq.json — deposit, delivery, contact-visit, contact-what-to-say; src/pages/uk-blue-staffy-breeders-contact/index.astro — 'walk-in facility'",
+      "framework": "QAB",
+      "words": {
+        "min": 40,
+        "max": 55
+      },
+      "shape": "faq",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [
+          "deposit",
+          "UK delivery",
+          "visit by appointment"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "can I visit the puppies before buying",
+          "how much is a blue staffy deposit"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "deposit",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "delivery",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "contact-visit",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "contact-what-to-say",
+          "intent": "",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": ""
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "questions": [
+        "How do I contact a KC-registered blue Staffordshire Bull Terrier breeder in the UK?",
+        "What should I ask a blue Staffy breeder before putting down a deposit?",
+        "How much is the deposit for a blue Staffy puppy, and is it refundable?",
+        "Can I visit the puppies before I decide, and how do I arrange it?",
+        "Do you deliver a puppy anywhere in the UK, or do I collect?",
+        "How long do you take to reply to an enquiry?",
+        "How do I join the waiting list for the next litter?",
+        "What health tests have the parents had?"
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "filled rows rather than the homepage's open-marker-only treatment of the same kit."
+      }
+    },
+    {
+      "id": "desktop-dial",
+      "n": 9,
+      "heading": "Desktop dial",
+      "intent": "Not a section of the page: the in-page dial itself, boarded here so the arrangement is picked once and every rebuilt page carries the same one. Each style is rendered over six stub targets on the preview route.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The dial is chrome every rebuilt page mounts, so it is picked once rather than per page, and this is the first board with enough sections for the pick to be a real question.",
+      "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md — Task 9, 'This board also carries the dial and section-sheet style picks'; src/components/kit/PageDial.astro",
+      "framework": "HSS",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "dial",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the in-page dial, boarded once here for every rebuilt page, and its delta is that it is the site's single arrangement rather than a per-page one."
+      }
+    },
+    {
+      "id": "mobile-sections",
+      "n": 10,
+      "heading": "Mobile sections",
+      "intent": "Not a section of the page either: the mobile section sheet, boarded here for the same reason as the dial. Each style is rendered over the same six stub targets at 375 on the preview route.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The bottom chrome is what a phone reader navigates a long page with, and it is the one piece of the kit whose height a blocking render check measures, so the shape of it is a decision worth making once and on purpose.",
+      "why_source": "docs/superpowers/plans/2026-09-19-page-rebuilds.md — Task 9; src/components/kit/SectionSheet.astro; tests/render/checks/nav.ts — nav-bottom-chrome-clear",
+      "framework": "HSS",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "sheet",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the mobile section sheet, boarded once here on the same terms as the dial."
+      }
+    },
+    {
+      "id": "mobile-strip",
+      "n": 11,
+      "heading": "Mobile section strip",
+      "intent": "Not a section of the page: the sticky rail of numbered section chips that pins under the header below 1024px, boarded here for the same reason as the dial and the sheet. Each style is rendered over the same six stub targets at 375 on the preview route.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The strip is the first thing a phone reader sees under the header on a long page and the fastest way to the section they came for, and its height moves every in-page jump target on the site, so the shape of it is a decision worth making once and on purpose.",
+      "why_source": "docs/superpowers/specs/2026-09-19-page-rebuilds-design.md — §9 amendment 3(b); src/components/kit/SectionStrip.astro; tests/render/checks/nav.ts — nav-jump-target-lands",
+      "framework": "HSS",
+      "words": {
+        "min": 0,
+        "max": 0
+      },
+      "shape": "strip",
+      "keywords": {
+        "primary": [
+          "contact blue staffy breeders uk"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "not a page section: the sticky numbered chip rail below 1024px, boarded once here on the same terms as the dial."
+      }
+    }
+  ],
+  "tuple": {
+    "hero": "hero-h-ut1",
+    "dial": "dial-s2",
+    "rail": "rail-s2",
+    "toc": "pagenav-c",
+    "takeaway": [],
+    "table": "",
+    "faq": "faq-s3",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "What to send:"
+    ]
+  },
+  "assets": [
+    {
+      "slot": "contact-form-support",
+      "kind": "photo",
+      "w": 500,
+      "h": 500,
+      "required": true,
+      "status": "baked",
+      "file": "/images/uk-blue-staffy-breeders-contact-form-support.webp",
+      "alt": "Staffy breeder in UK assisting a family with a blue puppy enquiry | UK Blue Staffy Breeders Contact"
+    }
+  ],
+  "dropped": {
+    "prices": [
+      "the form card's delivery notice — 'Delivery begins 24-48 hours after payment confirmation. Train station pickup is our default method (free)'. No file on disk states a free station pickup or that turnaround; data/settings.json prices UK home delivery by DEFRA-approved transport at £200 to £350 by distance, which is what the FAQ row states instead."
+    ],
+    "names": [
+      "the street address, postcode and map coordinates in the migrated page's legacy Place schema node, and the 'Our Location (By Appointment Only)' paragraph built on them: they name a Scottish city the breeder does not operate from. data/settings.json is Carlisle · Cumbria at town level, and Known Issue 16 owns the correction. The by-appointment-only fact itself is kept, in 'How to reach us' and in the contact-visit FAQ row.",
+      "the internal link to the breeding-dogs location page, whose anchor named that same city"
+    ],
+    "links": [
+      "/uk-locations/staffy-breeding-dogs-glasgow/ (\"meet our Blue Staffy breeders\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). A contact page must not point a visitor at the former location."
+    ],
+    "text": [
+      "We can also discuss UK-wide and international puppy transport options, including compliant DEFRA pet transport solutions for safe delivery — `brief.out_of_scope`: no file on disk states a route, a price or a carrier for international transport. UK delivery IS carried, with the figures data/settings.json holds: DEFRA-approved transport, priced by distance between £200 and £350, in the delivery FAQ row."
+    ]
+  },
+  "approval": {
+    "approved_at": "2026-09-22T17:58:36.668Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
+      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
+      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
+      "mobile-strip": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5.",
+      "navigation": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
+      "stats": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried.",
+      "top": "",
+      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
+      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+    },
+    "picks": {
+      "desktop-dial": "S2",
+      "enquiry": "S2",
+      "mobile-sections": "S2",
+      "mobile-strip": "S2",
+      "owners": "S1",
+      "questions": "S3",
+      "stats": "C-UT1",
+      "top": "H-UT1",
+      "why-write": "S1"
+    },
+    "record_hash": "de9ab0a44c0f64360c423993d474f1adf2f2f4ab129d13342314b150f44cebcc",
+    "tuple_before": {
+      "hero": "",
+      "dial": "dial-s2",
+      "rail": "rail-s2",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "What to send:"
+      ]
+    }
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-19T21:34:14.316Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "desktop-dial": "An internal label, never a heading on the built page. S1 is the shipped dial (progress ring over a numbered list); S2 drops the ring for a compact numbered strip; S3 keeps the ring and shows labels only with a thicker current bar. The two that are not picked are deleted from PageDial.astro before P5.",
+      "enquiry": "ContactFormKit, the one inquiry form on the page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py.",
+      "mobile-sections": "An internal label, never a heading on the built page. S1 is the shipped four-tab bar with Sections as the fourth tab; S2 keeps three tabs and lifts Sections into a full-width pill above the bar; S3 drops the bar for a floating round Sections button in the bottom-right corner. Each reserves its own height so no jump target lands under it. The two that are not picked are deleted from SectionSheet.astro before P5.",
+      "mobile-strip": "An internal label, never a heading on the built page. S1 is outlined pills with the number in the brand colour and the active pill marked by its border; S2 is filled tab chips with the active chip on brand and its text in bone; S3 is flat text links with a 3px underline under the active one and a dot between. All three pin under the header, scroll sideways under the thumb and add their own height to every jump target. The two that are not picked are deleted from SectionStrip.astro before P5.",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 3, Rachel L. (London) — the only one of the three that names the communication, which is what this page is about. Entry 1 (The Victoria Family) is already used on /thank-you-blue-staffy-puppies-journey/ and is not reused here; entry 2 (Mark J) is about paperwork and health testing and is held for the about and health pages.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page. The four socials come from data/settings.json.socials.",
+      "top": "",
+      "what-to-tell-us": "The four sub-headings are the form's own field groups, so the section can never describe a field the form does not have.",
+      "why-write": "TrustStrip renders from the kit's own standing facts; no copy is written here beyond the section lede."
+    },
+    "picks": {
+      "desktop-dial": "S2",
+      "enquiry": "S2",
+      "mobile-sections": "S2",
+      "mobile-strip": "S2",
+      "owners": "S1",
+      "questions": "S3",
+      "top": "S3",
+      "why-write": "S1"
+    },
+    "section_hashes": {
+      "top": "10ed4da5c76a8ba979b9fff2e37f558f2e252f0ad4de956fe8a4c6c7b806987e",
+      "stats": "201777555e359fb375f0df5e792e1d545ab9a22c0502278618db6fec9918cdfd",
+      "why-write": "9db31453e3a8c29435c24930bc0ed57d812ed567c74c44dbee460ca3543d1de7",
+      "enquiry": "6bcc35a31209f46257e64e222496841fc0ecf66a2f07a370e1ac1a3bffc218da",
+      "reach-us": "9fc0588485c7324f3d92dce80584cf1d6192e9b2dcaadf9cdd87188ad840c252",
+      "what-to-tell-us": "3a432a0ea7d62427eee1265d4f05a4f80c108167808f62af705168393a58a44f",
+      "owners": "84dbd7c50aedc889528d4e5dd2072775cf5c988729072cdee1969814002fb0b5",
+      "questions": "54b1dca1366da50796ffde9fd60882c1dc5bed6bdfa52a00ae5b8b16ee85b859",
+      "desktop-dial": "8598ed05fb0e1c5bdb28da686742bfe0209577cafe3fcc20be6983c2d8c61c97",
+      "mobile-sections": "350f62e09980a4643840815ee364a2e076200f22bc228b1a00dfc96a23cd4032",
+      "mobile-strip": "425e9f10c5cc3ca354eaf914eeda2af220ef8b728982edae52f1f9f2eb63d7d9"
+    },
+    "record_hash": "3e73d91db01436aebdcb1a5316f38e481a887a5ab858eced18e84f360b6cab33",
+    "tuple_before": {
+      "hero": "hero-s3",
+      "dial": "dial-s2",
+      "rail": "rail-s2",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "What to send:"
+      ]
+    }
+  }
+}

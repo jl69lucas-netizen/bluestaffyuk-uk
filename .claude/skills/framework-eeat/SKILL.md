@@ -11,7 +11,7 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Glasgow, Scotland
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
 > **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
@@ -42,12 +42,12 @@ BlueStaffyUK is a YMYL site (buying a living animal is a significant decision). 
 - Lisa Bright: [X]+ years breeding Staffordshire Bull Terriers at home
 - [N]+ families served — named in testimonials
 - Specific litter stories, whelping observations, home-raising notes
-- Glasgow, Scotland (specific, verifiable)
+- Carlisle, Cumbria (specific, verifiable)
 - Blue vs blue brindle vs black brindle breeding distinctions from direct experience
 
 ### Expertise Signals (knowledge, credentials)
 - LICENCE_CLAIM_PLACEHOLDER — include licence number where possible
-- LEGAL_CLAIM_PLACEHOLDER compliance — mum always seen with the pups at our Glasgow home
+- LEGAL_CLAIM_PLACEHOLDER compliance — mum always seen with the pups at our Carlisle home
 - KC registration paperwork — names the registered kennel and litter
 - Vet health check — names the vet practice and vet
 - Home-raising and socialisation protocol — documented from birth
@@ -79,7 +79,7 @@ Every content-heavy page should name the source of expertise:
 <div class="bsuk-author-block">
   <p class="bsuk-body">
     <strong>Written by Lisa Bright,</strong> Blue Staffy breeder (LICENCE_CLAIM_PLACEHOLDER) 
-    in Glasgow, Scotland. Specialising in home-raised blue and blue brindle Staffordshire Bull 
+    in Carlisle, Cumbria. Specialising in home-raised blue and blue brindle Staffordshire Bull 
     Terriers with full KC registration and health paperwork.
   </p>
 </div>
@@ -99,7 +99,7 @@ With: "In our years of breeding, we've placed Blue Staffy puppies with hundreds 
   "name": "Lisa Bright",
   "jobTitle": "Licensed Blue Staffordshire Bull Terrier Breeder",
   "worksFor": { "@type": "Organization", "name": "BlueStaffyUK" },
-  "address": { "@type": "PostalAddress", "addressLocality": "Glasgow" }
+  "address": { "@type": "PostalAddress", "addressLocality": "Carlisle" }
 }
 ```
 
@@ -110,7 +110,7 @@ With: "In our years of breeding, we've placed Blue Staffy puppies with hundreds 
   "@type": "LocalBusiness",
   "name": "BlueStaffyUK",
   "founder": "Lisa Bright",
-  "address": { "addressLocality": "Glasgow" },
+  "address": { "addressLocality": "Carlisle" },
   "aggregateRating": {
     "@type": "AggregateRating",
     "ratingValue": "[RATING]",
@@ -162,7 +162,7 @@ For any page audit, score each dimension 1–5 (total range: 4–20):
 ### Authoritativeness (1–5)
 - [ ] Testimonials with full names and UK regions
 - [ ] LICENCE_CLAIM_PLACEHOLDER number or KC registration reference
-- [ ] External links to verifiable sources (Glasgow City Council, vet practice, The Kennel Club)
+- [ ] External links to verifiable sources (the local licensing authority, vet practice, The Kennel Club)
 
 ### Trustworthiness (1–5)
 - [ ] Contact info visible (not just a form)
@@ -188,7 +188,7 @@ For any page audit, score each dimension 1–5 (total range: 4–20):
 | No author name on content | Add Lisa Bright author block |
 | Prices hidden ("contact us") | Show prices openly (£1,500 Roman, Byrd, Ince; £1,700 Vennie, Christa, Cheryl) |
 | Generic testimonials | Name + UK region + specific outcome |
-| "Our puppies are home-raised" | "Home-raised under LEGAL_CLAIM_PLACEHOLDER — mum viewable with the litter at our Glasgow home" |
+| "Our puppies are home-raised" | "Home-raised under LEGAL_CLAIM_PLACEHOLDER — mum viewable with the litter at our Carlisle home" |
 
 ---
 

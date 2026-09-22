@@ -1,10 +1,36 @@
 ---
+// src/pages/blog/index.astro — the LEGACY archive route, kept because data/redirects.json
+// sends `/category/*` here and because the old site linked it. It is NOT the guides index:
+// /blue-staffy-blog-guides/ is, from an approved board (project 4 Task 14).
+//
+// SO IT IS `noindex` AND ITS CANONICAL POINTS AT THE HUB. Two indexable indexes of one
+// collection is a duplicate this site was asking a search engine to choose between, and the
+// honest answer is that only one of them was designed to be read: the hub carries each post's
+// title, description and date on a card, with the guides and the close around it. This one is
+// a link list so the two do not share a word run — while it printed the descriptions too,
+// `dup_content_audit.py` reported the 36-word run of one post's own frontmatter across both.
+// scripts/generate_sitemaps.py drops a noindex page from every shard and
+// scripts/sitemap_check.py fails one that appears anyway, so the route stays reachable and
+// stops competing.
+//
+// THE DESCRIPTION SAID "in Glasgow". That is the former city (Known Issue 16) on a live page,
+// and it is now read from data/settings.json rather than typed, so the day the breeder moves
+// again this line moves with every other one.
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageShell from '../../layouts/PageShell.astro';
+import { SITE } from '../../lib/site';
 const posts = (await getCollection('blog')).sort((a, b) => (b.data.date ?? '').localeCompare(a.data.date ?? ''));
+const HUB = '/blue-staffy-blog-guides/';
 ---
-<BaseLayout title="Blue Staffy Blog and Guides | Blue Staffy UK" description="Guides from Blue Staffy UK in Glasgow on choosing, buying and raising a Blue Staffordshire Bull Terrier puppy in the UK." canonical="/blog/" crumbTitle="Blog">
+<PageShell
+  title="Blue Staffy Blog and Guides | Blue Staffy UK"
+  description={`Guides from Blue Staffy UK in ${SITE.location_label} on choosing, buying and raising a Blue Staffordshire Bull Terrier puppy in the UK.`}
+  canonical={HUB}
+  noindex={true}
+  crumbTitle="Blog"
+>
   <section class="container container-text"><h1>Blue Staffy Blog and Guides</h1>
-    <ul style="list-style:none;padding:0;display:grid;gap:24px">{posts.map((p) => <li><h2 style="margin:0 0 4px"><a href={`/${p.data.slug}/`}>{p.data.title.split(' | ')[0]}</a></h2><p style="margin:0">{p.data.description}</p></li>)}</ul>
+    <p>The guides index is at <a href={HUB}>Blue Staffy guides, written by the breeder</a>. This page is the old archive address and lists the posts only.</p>
+    <ul style="list-style:none;padding:0;display:grid;gap:12px">{posts.map((p) => <li><h2 style="margin:0"><a href={`/${p.data.slug}/`}>{p.data.title.split(' | ')[0]}</a></h2></li>)}</ul>
   </section>
-</BaseLayout>
+</PageShell>

@@ -27,7 +27,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import componentsJson from '../../../data/design/components.json';
 import { Image } from 'astro:assets';
-import { REGISTRY, type ComponentRow } from '../../components/kit/_registry';
+import { REGISTRY, DEMO_SECTIONS, type ComponentRow } from '../../components/kit/_registry';
 import Mark from '../../components/kit/Mark.astro';
 import specimen from '../../assets/puppies/Ince1.jpg';
 import pageDates from '../../../data/page-dates.json';
@@ -61,12 +61,19 @@ const h3 = 'font-size:var(--text-sm);color:var(--color-text-muted)';
 // precedes it has something to be judged against by eye. There is no 'inverse' wrap: no
 // entry asked for one, and a branch nothing can reach reads as a feature of the preview
 // rather than as dead code.
-const demoStyle = (wrap?: 'sticky' | 'after-band') =>
+const demoStyle = (wrap?: 'sticky' | 'after-band' | 'with-targets') =>
   wrap === 'sticky'
     ? 'position:relative;min-height:220px;overflow:visible'
     : wrap === 'after-band'
       ? 'display:block'
-      : 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
+      : wrap === 'with-targets'
+        ? 'display:flex;gap:var(--space-6);align-items:flex-start'
+        : 'display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:center';
+// `'with-targets'` no longer renders anything inside the demo box — the stub sections it
+// names are a SINGLE block above the component sections, because both nav components ask
+// for the same six ids and two copies would be two of every id. The member survives as the
+// box's own layout (the dial is a 196px column beside its stubs, not a centred row) and as
+// the declaration that an entry depends on those ids existing.
 ---
 <BaseLayout title={title} description="Internal kit preview; not indexed." noindex={true} schema={schema}>
   <div class="container" style="padding-block: var(--space-8);">
@@ -86,6 +93,25 @@ const demoStyle = (wrap?: 'sticky' | 'after-band') =>
         </figure>
       </div>
     </section>
+
+    {/* THE SCROLL-SPY'S TARGETS, ONCE PER PAGE — not once per demo box.
+        A dial or a sheet whose six links point at nothing is six dead anchors on a page
+        `nav-anchors-resolve` judges as a target, and an IntersectionObserver with nothing to
+        observe. But BOTH in-page nav components take the same DEMO_SECTIONS, so rendering
+        the stubs inside each `with-targets` box put `d-a`…`d-f` on the page twice: duplicate
+        ids, which make `getElementById` a coin flip between two elements and give every
+        `href="#d-a"` two possible destinations. `a11y-no-duplicate-ids` now catches that.
+        One block, rendered before the component sections, serves every component that
+        asks for a `with-targets` wrap. The stub heading is an H3, not an H4: the block sits
+        directly after the mark section's H2, and `sem-heading-order` is blocking. */}
+    <div class="spy-targets">
+      {DEMO_SECTIONS.map((s, i) => (
+        <section id={s.id}>
+          <h3>{String(i + 1).padStart(2, '0')} · {s.label}</h3>
+          <p>Stub target, so the dial and the sheet have somewhere to scroll to.</p>
+        </section>
+      ))}
+    </div>
 
     {components.map((c) => {
       // REGISTRY is a full Record<ComponentId, KitEntry>, so every row resolves — a missing
@@ -136,6 +162,12 @@ const demoStyle = (wrap?: 'sticky' | 'after-band') =>
   .specimen .sec-img { display: block; width: 100%; max-width: 640px; height: auto; margin-block: var(--space-4); border-radius: var(--card-radius); }
   .specimen .prose { max-width: 66ch; }
   .kit-section { margin-block: var(--space-8); }
+  /* The `with-targets` stubs, one block for the whole page. Tall enough that the spy's
+     -40%/-55% reading band can hold one at a time, and scrollable inside its own box so six
+     stub sections do not make the preview page six screens longer. */
+  .spy-targets { min-width: 0; max-height: 320px; overflow-y: auto; border: 1px dashed var(--color-border); border-radius: var(--card-radius); padding: var(--space-4); }
+  .spy-targets section { min-height: 120px; }
+  .spy-targets h3 { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--color-text-muted); }
 </style>
 <style is:global>
   /* `is:global` deliberately: these rules reach INTO the mounted components, and a scoped

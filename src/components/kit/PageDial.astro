@@ -1,0 +1,184 @@
+---
+// src/components/kit/PageDial.astro — desktop in-page dial (spec §3): a sticky, compact
+// numbered strip of the page's sections in a 196px column, with scroll-spy.
+//
+// Hidden below 1024px, where SectionStrip and SectionSheet take over — the three are one
+// component split by width, and a page mounts all three. A 196px column, hairline-ruled
+// rows of at least 28px, no card and no ring.
+//
+// THE RING IS GONE. The breeder picked S2 on the contact board (2026-09-19): the ringed
+// card of S1 outran its own first screen on a ten-section page, and "n of N" repeated in a
+// second place what the numbered rows already say. This file used to carry all three
+// arrangements behind a `style` prop; the two that lost are deleted, along with the prop.
+//
+// Convention 2: the focus ring reads `--kit-ring`. Convention 4: Props extends
+// HTMLAttributes<'aside'>, `...rest` is spread, `class` is applied with `class:list`.
+// Convention 6: everything overridable is in `@layer components`.
+//
+// `aria-current="location"`, never a bare `aria-current`. `toggleAttribute` emits
+// `aria-current=""`, and the empty string is the token `false`: a dial marking its current
+// section that way announces every row as NOT current, which is worse than marking none.
+// The CSS therefore matches `[aria-current="location"]` rather than bare `[aria-current]`,
+// so the paint and the announcement can never disagree.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+type Props = HTMLAttributes<'aside'> & {
+  sections: SectionRef[];
+  title?: string;
+  /** Distinguishes the ids of two dials on ONE document. A page mounts one dial and never
+   *  passes it; the board preview mounts three of the same section and must, or all three
+   *  `aria-labelledby` targets collapse onto the first heading. */
+  idPrefix?: string;
+};
+const {
+  sections,
+  title = 'On this page',
+  idPrefix = 'kit-dial',
+  class: cls,
+  ...rest
+} = Astro.props;
+// The nav is labelled BY the visible heading, not by a duplicate literal: a reader who can
+// see "On this page" and a reader who hears the landmark then get the same words, and a
+// caller who passes `title` renames both at once.
+const titleId = `${idPrefix}-title`;
+---
+<aside class:list={['kit-dial', cls]} data-dial {...rest}>
+  <nav aria-labelledby={titleId}>
+    <p class="t" id={titleId}>{title}</p>
+    <ol>
+      {sections.map((s, i) => (
+        <li>
+          {/* The first row is marked current AT RENDER, not only by the spy: a reader at
+              the top of the page is in section one, and a dial that marks nothing until
+              the first scroll event is a dial that looks broken before JS runs — and in a
+              board preview, where the block is static markup, it never runs at all. */}
+          <a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>
+            <span class="num">{String(i + 1).padStart(2, '0')}</span>
+            <span class="lab">{s.label}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </nav>
+</aside>
+<script>
+  // Scroll-spy. The section nearest the top of the reading band wins.
+  // The band is `-40% 0px -55% 0px`, so a section counts as current once its top passes 40%
+  // down the viewport and stops counting once it leaves the bottom 45% — the same window the
+  // sheet uses, so the two never disagree about which section the reader is in.
+  // Singleton by design: a page mounts ONE dial (and one strip, and one sheet), the way it
+  // mounts one site header. `querySelector` rather than a per-instance loop says so out loud —
+  // two dials would be two copies of the same links in the tab order, and the second would
+  // silently not be wired.
+  const dial = document.querySelector<HTMLElement>('[data-dial]');
+  if (dial) {
+    // Links and targets are PAIRED, never zipped by index. Filtering them into two arrays
+    // independently lets one id that does not resolve shift every later pairing by one, so
+    // the spy would highlight the wrong row for the rest of the page — a silent failure
+    // that looks like a scroll bug.
+    const rows = [...dial.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
+    const N = rows.length;
+    const set = (i: number) => {
+      if (i < 0 || i >= N) return;
+      // setAttribute/removeAttribute, not toggleAttribute: `aria-current=""` is the token
+      // `false`, so a toggled attribute announces the current row as not current.
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+    };
+    // The bottom of the document is a place the reading band cannot reach: a short final
+    // section never gets its top past 40% of the viewport, so the spy would sit on the
+    // second-to-last row while the reader is plainly at the end. When the page is scrolled
+    // to the bottom the last row IS the answer, whatever is intersecting.
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible[0]) return;
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    // Seed from the fragment: a reader arriving on /page/#deposit is already in that
+    // section, and starting at row 1 would be the dial disagreeing with the viewport
+    // until the first scroll event.
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
+  }
+</script>
+<style>
+  @layer components {
+    /* Hidden by default: below 1024px SectionSheet is the in-page nav, and a dial that
+       merely shrank would be a second copy of the same links in the tab order. */
+    .kit-dial { display: none; }
+    @media (min-width: 1024px) {
+      .kit-dial {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: stretch;
+        width: 196px;
+        /* No card and no padding of its own: the picked arrangement is a hairline rail that
+           sits directly in the column, at about half the height the ringed card took. */
+        padding: 0;
+        position: sticky;
+        /* Same expression global.css gives every [id] its scroll-margin-top from, so the
+           dial clears exactly the chrome a jump target clears. */
+        top: calc(var(--hdr-measured, var(--hdr)) + 16px);
+        max-height: calc(100vh - var(--hdr) - 32px);
+        overflow-y: auto;
+        color: var(--color-text);
+      }
+    }
+    .t {
+      margin: 0;
+      font-size: var(--text-xs);
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    /* The rule is on the ROWS, not above the list: the rail reads as one strip. */
+    ol {
+      list-style: none;
+      margin: 0;
+      padding: 4px 0 0;
+      display: grid;
+      gap: 0;
+    }
+    li + li { border-top: 1px solid var(--color-border); }
+    li a {
+      display: flex;
+      gap: 7px;
+      align-items: baseline;
+      min-height: 28px;
+      padding: 4px 2px;
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      color: var(--color-text);
+      text-decoration: none;
+    }
+    li a[aria-current='location'] { background: var(--color-brand-soft); color: var(--color-brand); font-weight: 600; }
+    /* The number goes brand WITH its row. Left muted it was ink-3 on brand-soft, which
+       measures 4.49:1 — a hundredth under AA, and `a11y-text-contrast-aa` reports it. The
+       current row reads as one colour now, which is what it should have been anyway. */
+    li a[aria-current='location'] .num { color: inherit; }
+    li a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: 1px; }
+    .num { font-feature-settings: 'tnum'; color: var(--color-text-muted); font-size: var(--text-xs); }
+    /* A flex item's automatic minimum size is its max-content width, so a two-word label
+       would hold the 196px column open rather than wrapping inside it. */
+    .lab { min-width: 0; overflow-wrap: anywhere; }
+  }
+</style>

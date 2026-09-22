@@ -38,6 +38,24 @@ import pageboard as PB
 
 
 from build_page_board import esc as BPB_esc      # the one None-safe escaper
+# `dropped-vs-verbatim` pins its floor to the one the gate that EXCUSES a claim with the same
+# line already uses, and the equality is asserted rather than assumed.
+from facts_preserved_check import MIN_DROP_PHRASE as FACTS_MIN_DROP_PHRASE
+
+FIXTURE_LIBRARY = ROOT / "tests" / "py" / "fixtures" / "external-link-library.md"
+
+
+@pytest.fixture(autouse=True)
+def _fixture_link_library(monkeypatch):
+    """Every board fixture in this module is validated against a FIXTURE link library.
+
+    `validate_board()` refuses an external href that `docs/reference/external-link-library.md`
+    does not record. Pointing the unit tests at the real document would either couple them to
+    a content file that changes whenever a page cites something new, or push fixture URLs like
+    `https://example.com/foo_bar` into it. A test that needs an UNKNOWN url repoints the path
+    itself; this only sets the default."""
+    monkeypatch.setattr(PB, "EXTERNAL_LIBRARY", FIXTURE_LIBRARY)
+
 
 MIN_BOARD = {
     "meta": {"slug": "x", "page_type": "hub", "status": "draft", "research_as_of": "2026-09-12", "sources": []},
@@ -446,6 +464,20 @@ def test_live_headings_skips_site_chrome_like_the_dup_gate():
         assert PB.live_headings(dist) == {"/p/": ["What Does a Blue Staffy Cost?"]}
 
 
+def test_live_headings_skips_the_specimen_routes():
+    """`/board-preview/<slug>/` and `/kit-preview/` render the SAME headings the board
+    proposes, three styles over. Counting them collides every board with its own preview
+    and reports a copied heading where there is one heading rendered three ways."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        dist = pathlib.Path(d)
+        for rel in ("board-preview/privacy-policy-uk", "board-preview/a/b", "kit-preview", "real"):
+            (dist / rel).mkdir(parents=True)
+            (dist / rel / "index.html").write_text(
+                "<html><body><h2>What information we collect</h2></body></html>", encoding="utf-8")
+        assert PB.live_headings(dist) == {"/real/": ["What information we collect"]}
+
+
 def test_header_precheck_excludes_the_page_being_rebuilt():
     live = {"/buy/": ["What Does a Blue Staffy Cost?"], "/other/": ["Where Do We Ship?"]}
     assert PB.header_precheck(["What Does a Blue Staffy Cost?"], live)[0]["kind"] == "exact"
@@ -524,16 +556,206 @@ def _checks(board, ledger):
     return {x["check"] for x in PB.gate_findings(board, ONT_OK, ledger, live={}, stage="build") if x["sev"] == "FAIL"}
 
 
-def test_gate_flags_a_copied_hero_dial_rail_triple():
-    """Components are shared by design; the signature the reader sees first is not."""
+def _h_page(dist, slug, h5, h6):
+    p = dist / slug / "index.html"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text("<html><body><h1>T</h1><h2>S</h2>"
+                 + "".join(f"<h5>Point {i}</h5>" for i in range(h5))
+                 + "".join(f"<h6>Privacy Note: {i}</h6>" for i in range(h6))
+                 + "</body></html>", encoding="utf-8")
+
+
+def test_min_h5_h6_reads_the_record_tree_for_a_record_not_yet_rebuilt(tmp_path, monkeypatch):
+    """The floor stays a planning constraint while the page is still an outline."""
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")      # absent → no slug rebuilt
     b = _approved(MIN_BOARD)
-    same = _checks(b, _ledger_with(hero="hero-a", dial="dial-1", rail="rail-a", toc="t9", table="table-z", faq="faq-z"))
-    assert "ledger-triple-owned" in same
-    # and the triple names the hero already, so the shell rule does not say it twice
-    assert "ledger-shell-owned" not in same, same
-    diff = _checks(b, _ledger_with(hero="hero-a", dial="dial-2", rail="rail-a", toc="t9", table="table-z", faq="faq-z"))
-    assert "ledger-triple-owned" not in diff
-    assert "ledger-shell-owned" in diff, diff      # a shared hero on its own is still a shell finding
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "record tree" in hit[0]["msg"], hit
+
+
+def test_min_h5_h6_reads_the_built_page_for_a_rebuilt_slug(tmp_path, monkeypatch):
+    """A rebuilt page earns the floor the way the migrated pages did: H5 sub-points and
+    "<prefix>:" H6 lines written INSIDE the sections at build time. The approved outline
+    stops at the H3 the breeder saw, and must not be padded to satisfy arithmetic."""
+    dist, rebuilt = tmp_path / "dist", tmp_path / "rebuilt.json"
+    monkeypatch.setattr(PB, "DIST", dist)
+    monkeypatch.setattr(PB, "REBUILT", rebuilt)
+    rebuilt.write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    b = _approved(MIN_BOARD)
+
+    _h_page(dist, MIN_BOARD["meta"]["slug"], h5=5, h6=5)
+    assert not [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+                if x["check"] == "min-h5-h6"]
+
+    _h_page(dist, MIN_BOARD["meta"]["slug"], h5=5, h6=4)               # one H6 short
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "built page" in hit[0]["msg"] and "H6 4" in hit[0]["msg"], hit
+
+
+def test_min_h5_h6_falls_back_to_the_tree_when_a_rebuilt_slug_has_no_built_page(tmp_path, monkeypatch):
+    """A missing build is not a pass. `dist/` is absent before the first `npm run build`,
+    and reading zero headings out of nothing would clear the floor for free."""
+    monkeypatch.setattr(PB, "DIST", tmp_path / "dist")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")
+    (tmp_path / "rebuilt.json").write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    hit = [x for x in PB.gate_findings(_approved(MIN_BOARD), ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "min-h5-h6"]
+    assert hit and "record tree" in hit[0]["msg"], hit
+
+
+def test_page_h_counts_ignores_site_chrome():
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        p = pathlib.Path(d) / "index.html"
+        p.write_text("<html><body><nav><h5>Jump</h5></nav><h5>Real</h5>"
+                     "<footer><h6>Chrome</h6></footer><h6>Privacy Note: x</h6></body></html>",
+                     encoding="utf-8")
+        assert PB.page_h_counts(p)["h5"] == 1 and PB.page_h_counts(p)["h6"] == 1
+
+
+# ---------------------------------------------------------------- words-out-of-band
+# Spec §9 amendment 4a: a band counts the section's OWN prose. The H4-H6 ladder the page
+# writes to meet `min-h5-h6` and the FAQ accordion's answers are outside it, and so is
+# every heading — a band pays for body copy, not for the outline the breeder approved.
+
+_PROSE_PAGE = (
+    "<html><body>"
+    "<nav><p>one two three four five</p></nav>"          # chrome: never a section's prose
+    "<main>"
+    "<section id='puppies'>"
+    "<h2>Six Word Heading Right Here Now</h2>"           # headings do not count
+    "<p>one two three four five six seven eight nine ten</p>"
+    "<h3>Another Heading That Is Not Prose</h3>"
+    "<p>eleven twelve</p>"
+    "<h4>The Ladder Starts Here</h4>"
+    "<p>ladder words that must not count at all</p>"
+    "<h5>Still The Ladder</h5><p>more ladder words</p>"
+    "<details><summary><h3>A Question</h3></summary><p>an answer from data faq json</p></details>"
+    "</section>"
+    "<section id='afterwards'><p>alpha beta gamma</p></section>"
+    "</main></body></html>"
+)
+
+
+def _prose_page(dist, slug, html=_PROSE_PAGE, monkeypatch=None):
+    """The built page for `slug`, and — when a monkeypatch is given — the rebuilt list that
+    says this page IS the record's page. Before P5 the built page is still the migrated body,
+    and `word_band_findings` measures nothing there on purpose."""
+    p = pathlib.Path(dist) / slug / "index.html"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(html, encoding="utf-8")
+    if monkeypatch is not None:
+        rebuilt = pathlib.Path(dist) / "rebuilt.json"
+        rebuilt.write_text(json.dumps([slug]), encoding="utf-8")
+        monkeypatch.setattr(PB, "REBUILT", rebuilt)
+    return p
+
+
+def test_word_band_findings_measures_nothing_until_the_page_is_rebuilt(tmp_path, monkeypatch):
+    """Before P5 the built page is the MIGRATED body: none of the record's section ids, none
+    of its prose. Reporting every band as "not on the built page" would say only that the page
+    has not been written yet, ten times, on the board the author is still drafting."""
+    _prose_page(tmp_path, "x")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "absent.json")
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 400, "max": 600}
+    assert PB.word_band_findings(b, dist=tmp_path) == []
+
+
+def test_page_section_words_counts_prose_and_skips_headings_ladder_details_and_chrome(tmp_path):
+    got = PB.page_section_words(_prose_page(tmp_path, "x"))
+    assert got == {"puppies": 12, "afterwards": 3}, got
+
+
+def test_word_band_findings_is_silent_when_every_section_is_in_band(tmp_path, monkeypatch):
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 10, "max": 15}
+    assert PB.word_band_findings(b, dist=tmp_path) == []
+
+
+def test_word_band_findings_warns_per_section_and_never_fails(tmp_path, monkeypatch):
+    """WARN, never FAIL: a section twenty words short is not a page that may not ship."""
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "puppies"
+    b["sections"][0]["words"] = {"min": 400, "max": 600}
+    f = PB.word_band_findings(b, dist=tmp_path)
+    assert {x[1] for x in f} == {"WARN"}, f
+    assert any("section puppies: 12 prose words against the record's 400-600" in x[2] for x in f), f
+    assert any(x[2].startswith("page: 12 prose words against 400-600") for x in f), f
+
+
+def test_word_band_findings_reports_a_section_the_built_page_does_not_carry(tmp_path, monkeypatch):
+    """A band measured against nothing is not a band that passed."""
+    _prose_page(tmp_path, "x", monkeypatch=monkeypatch)
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"][0]["id"] = "not-on-the-page"
+    f = PB.word_band_findings(b, dist=tmp_path)
+    assert any("not on the built page" in x[2] and x[1] == "WARN" for x in f), f
+
+
+def test_word_band_findings_says_nothing_when_the_page_is_not_built(tmp_path, monkeypatch):
+    """`min-h5-h6` already fails a rebuilt slug with no build; this one stays quiet rather
+    than reporting every section of every unbuilt record as short."""
+    (tmp_path / "rebuilt.json").write_text(json.dumps([MIN_BOARD["meta"]["slug"]]), encoding="utf-8")
+    monkeypatch.setattr(PB, "REBUILT", tmp_path / "rebuilt.json")
+    assert PB.word_band_findings(MIN_BOARD, dist=tmp_path) == []
+
+
+def test_gate_reports_words_out_of_band_as_a_warning(tmp_path, monkeypatch):
+    monkeypatch.setattr(PB, "DIST", tmp_path)
+    _prose_page(tmp_path, MIN_BOARD["meta"]["slug"], monkeypatch=monkeypatch)
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["id"] = "puppies"
+    hit = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+           if x["check"] == "words-out-of-band"]
+    assert hit and {x["sev"] for x in hit} == {"WARN"}, hit
+
+
+def _sig_ledger(**over):
+    """A sibling matching MIN_BOARD's hero+faq+table+takeaway signature, every other axis
+    different so `ledger-tuple-identical` does not fire first and swallow the finding."""
+    t = {"hero": "hero-a", "faq": "faq-a", "table": "table-a", "takeaway": ["k1"],
+         "dial": "dial-9", "rail": "rail-9", "toc": "t9"}
+    t.update(over)
+    return _ledger_with(**t)
+
+
+def test_gate_flags_a_copied_hero_faq_table_takeaway_signature():
+    """Components are shared by design; the signature the reader sees first is not.
+
+    The signature is the tuple MINUS `dial`, `rail` and the fixed `toc`. The first two
+    stopped telling pages apart in project 4: the breeder picked one dial style and one
+    sheet style for the whole site on the contact board and both are baked into the kit, so
+    including them reduced the rule to "no two pages may share a hero style"."""
+    b = _approved(MIN_BOARD)
+    assert "ledger-tuple-owned" in _checks(b, _sig_ledger())
+    # A different dial and rail buy a page nothing: they are not the breeder's to vary.
+    assert "ledger-tuple-owned" in _checks(b, _sig_ledger(dial="dial-4", rail="rail-4"))
+    # A different FAQ shell does separate two pages — which is what separates
+    # privacy-policy-uk (faq-s1) from thank-you-…-journey (faq-s3) on a shared hero S3.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(faq="faq-z"))
+    # ...and so does a different takeaway set.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(takeaway=["k9"]))
+    # ...and so does the table (spec §9 amendment 5): carrying one, or carrying a different
+    # chrome for it, is a choice the breeder makes on the board.
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(table="table-z"))
+    assert "ledger-tuple-owned" not in _checks(b, _sig_ledger(table=""))
+
+
+def test_gate_does_not_name_the_hero_twice_when_the_signature_is_owned():
+    """The signature finding names the hero already, so the shell rule stays quiet about
+    it — the shared FAQ shell is still reported in its own right."""
+    found = PB.gate_findings(_approved(MIN_BOARD), ONT_OK, _sig_ledger(), live={}, stage="build")
+    shells = [x["msg"] for x in found if x["check"] == "ledger-shell-owned"]
+    assert any("faq" in m for m in shells), shells
+    assert not any("hero" in m for m in shells), shells
 
 
 def test_gate_flags_a_takeaway_set_a_sibling_already_uses():
@@ -766,7 +988,9 @@ def test_board_html_escapes_record_text_in_every_context():
     assert "\\# a \\| b \\*c\\* \\_d\\_" in html                  # the heading, markdown-neutral
     assert "<\\/script>" in html                                  # the graph label, JSON-escaped
     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
-    assert len(blocks) == 10    # eight numbered blocks plus 3b (image plan) and 5b (the kit strip)
+    # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
+    # kit strip).
+    assert len(blocks) == 12
     for i, blk in enumerate(blocks):
         assert "</script" not in blk, i
 
@@ -804,14 +1028,21 @@ def test_approve_writes_approval_ledger_and_promotions():
     out = BA.apply_approval(b, inbox, ont, ledger)
     # Picks and notes ARE hashed content, so the stamped hash is the record the breeder
     # saw WITH their choices in it — every field but record_hash is the inbox verbatim.
-    assert {k: v for k, v in out["board"]["approval"].items() if k != "record_hash"} == \
+    assert {k: v for k, v in out["board"]["approval"].items()
+            if k not in ("record_hash", "tuple_before")} == \
            {k: v for k, v in inbox.items() if k != "record_hash"}
+    # The authored tuple is stamped beside the hash so a re-run can undo the derivation.
+    assert out["board"]["approval"]["tuple_before"] == MIN_BOARD["tuple"]
     assert PB.approval_matches(out["board"]) is True
     assert out["board"]["meta"]["status"] == "approved"
     assert out["board"]["h1"]["pick"] == 2
     assert out["board"]["sections"][0]["options"]["pick"] == "avail-b"
     assert out["board"]["sections"][0]["options"]["note"] == "shorter eyebrow"
-    assert out["ledger"]["pages"]["hub-test"]["hero"] == "hero-a"
+    # The tuple is DERIVED from the picks now, not copied from the authored record: this
+    # board's one section is `puppies`, which is section content and not a tuple axis, so
+    # the authored `hero-a` is not carried and the hero axis records nothing.
+    assert out["ledger"]["pages"]["hub-test"]["hero"] == ""
+    assert out["ledger"]["pages"]["hub-test"]["toc"] == BA.FIXED_TOC
     auth = {e["id"]: e["authorization"] for e in out["ontology"]["entities"]}
     assert auth["ont:new-thing"] == "ASSERTED"          # referenced + sourced
     assert auth["ont:no-source"] == "PROPOSED"          # no source, never promoted
@@ -839,16 +1070,31 @@ def test_approve_clears_a_note_with_an_empty_string():
     assert out["board"]["sections"][0]["options"]["note"] == ""
 
 
-def test_approve_refuses_an_unrenamed_refresh_placeholder_in_the_tuple():
+def test_ledger_refuses_an_unrenamed_refresh_placeholder_in_a_recorded_tuple():
+    """The guard lives on validate_ledger, which is what board_approve.py calls before it
+    writes. It is asserted here rather than through an approval because a DERIVED tuple can
+    no longer carry a `#refresh`: the id is built from a shape and a style pick, neither of
+    which can contain a `#`. An authored one is simply not carried any more."""
+    led = {"pools": {"hero": ["hero-a"]},
+           "pages": {"p": {"hero": "hero-a#refresh", "dial": "", "rail": "", "toc": "",
+                           "table": "", "faq": "", "takeaway": [], "h6_prefixes": []}}}
+    with pytest.raises(PB.BoardError) as e:
+        PB.validate_ledger(led)
+    assert "refresh" in str(e.value)
+
+
+def test_approve_drops_an_authored_refresh_placeholder_instead_of_recording_it():
     import board_approve as BA
     b = _hub_board()
     b["tuple"]["hero"] = "hero-a#refresh"
     inbox = {"approved_at": "t", "h1": 0, "picks": {"puppies": "avail-b"}, "notes": {},
              "canvas_version": None, "record_hash": PB.record_hash(b)}
-    with pytest.raises(PB.BoardError) as e:
-        BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)),
-                          {"pools": {"inventory": ["avail-b"]}, "pages": {}})
-    assert "refresh" in str(e.value)
+    out = BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)),
+                            {"pools": {"inventory": ["avail-b"]}, "pages": {}})
+    assert out["board"]["tuple"]["hero"] == ""
+    assert out["ledger"]["pages"]["hub-test"]["hero"] == ""
+    # ...but the authored value is still recoverable, so the derivation can be undone.
+    assert out["board"]["approval"]["tuple_before"]["hero"] == "hero-a#refresh"
 
 
 def test_approve_refuses_a_board_whose_signature_section_has_no_pick():
@@ -937,7 +1183,7 @@ def test_approve_main_reads_a_wrapped_inbox_and_writes_all_three_files(tmp_path,
     BA.main()
     saved = PB.load_board("hub-test")
     assert saved["meta"]["status"] == "approved" and PB.approval_matches(saved) is True
-    assert PB.load_ledger()["pages"]["hub-test"]["hero"] == "hero-a"
+    assert PB.load_ledger()["pages"]["hub-test"]["toc"] == BA.FIXED_TOC   # the derived tuple landed
     assert {e["id"]: e["authorization"] for e in PB.load_ontology()["entities"]}["ont:new-thing"] == "ASSERTED"
 
 
@@ -1182,6 +1428,68 @@ def test_approve_twice_with_the_same_inbox_is_idempotent():
     assert second["board"]["sections"][0]["options"]["pick"] == "avail-b"
     assert second["board"]["sections"][0]["options"]["note"] == "shorter eyebrow"
     assert second["board"]["h1"]["pick"] == 2
+    assert PB.approval_matches(second["board"]) is True
+
+
+def _styled(shape, sid, pick):
+    s = json.loads(json.dumps(MIN_BOARD["sections"][0]))
+    s.update({"id": sid, "shape": shape, "styles": ["S1", "S2", "S3"]})
+    s["options"]["pick"] = pick
+    return s
+
+
+def test_derive_tuple_reads_each_axis_off_the_shape_that_feeds_it():
+    """One styled section per axis. `sheet` lands on `rail` (the ledger has no eighth
+    axis for the mobile sheet) and `toc` is the fixed kit page nav, picked by nobody."""
+    import board_approve as BA
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"] = [_styled("hero", "top", "S3"), _styled("faq", "questions", "S1"),
+                     _styled("takeaways", "keys", "S2"), _styled("dial", "desktop-dial", "S2"),
+                     _styled("sheet", "mobile-sections", "S3")]
+    t = BA.derive_tuple(b, MIN_BOARD["tuple"])
+    assert (t["hero"], t["faq"], t["dial"], t["rail"], t["toc"], t["table"]) == \
+           ("hero-s3", "faq-s1", "dial-s2", "rail-s3", "pagenav-c", "")
+    assert t["takeaway"] == ["takeaways-s2"]
+    # Authored, not derived: carried through untouched.
+    assert t["h6_prefixes"] == MIN_BOARD["tuple"]["h6_prefixes"]
+    assert t["newsletter"] == MIN_BOARD["tuple"]["newsletter"]
+
+
+def test_derive_tuple_ignores_the_shapes_that_are_section_content():
+    import board_approve as BA
+    b = json.loads(json.dumps(MIN_BOARD))
+    b["sections"] = [_styled(sh, sh, "S2") for sh in
+                     ("reviews", "puppies", "form", "trust", "stats", "divider")]
+    t = BA.derive_tuple(b, MIN_BOARD["tuple"])
+    assert [t[k] for k in BA.DERIVED_ID_AXES] == ["", "", "", "", ""]
+    assert t["takeaway"] == []
+
+
+def test_derive_tuple_gives_two_boards_that_picked_differently_different_tuples():
+    """The point of the change: `ledger-tuple-identical` fired between the first three
+    approved records because every one of them wore the authored "kit" sentinel."""
+    import board_approve as BA
+    a = json.loads(json.dumps(MIN_BOARD)); a["sections"] = [_styled("faq", "questions", "S1")]
+    c = json.loads(json.dumps(MIN_BOARD)); c["sections"] = [_styled("faq", "questions", "S3")]
+    assert BA.derive_tuple(a, MIN_BOARD["tuple"]) != BA.derive_tuple(c, MIN_BOARD["tuple"])
+
+
+def test_approve_twice_is_idempotent_when_the_outline_shipped_with_notes():
+    """The thank-you and contact records ship notes written by the OUTLINE author, which
+    the breeder's approval carried back unchanged. record_hash_bare() cleared them, so it
+    described a record that never existed and re-approving either was refused as a
+    post-approval edit — with the derived tuple in play, that refusal is permanent."""
+    import board_approve as BA
+    b = _hub_board()
+    b["sections"][0]["options"]["note"] = "written by the outline author"
+    ledger = {"pools": {"inventory": ["avail-b"]}, "pages": {}}
+    inbox = {"approved_at": "t", "h1": 2, "picks": {"puppies": "avail-b"},
+             "notes": {"puppies": "written by the outline author"}, "canvas_version": None,
+             "record_hash": PB.record_hash(b)}
+    first = BA.apply_approval(b, inbox, json.loads(json.dumps(ONT_PROMOTE)), ledger)
+    second = BA.apply_approval(first["board"], inbox, json.loads(json.dumps(ONT_PROMOTE)), ledger)
+    assert PB.record_hash(second["board"]) == PB.record_hash(first["board"])
+    assert second["board"]["tuple"] == first["board"]["tuple"]
     assert PB.approval_matches(second["board"]) is True
 
 
@@ -2168,3 +2476,79 @@ def test_gate_still_fails_a_collision_that_merely_contains_a_puppy_name():
     msgs = [x["msg"] for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live=live, stage="build")
             if x["check"] == "header-collision"]
     assert any("Roman Roads" in m for m in msgs), msgs
+
+
+# ── dropped-vs-verbatim (2026-09-21 review) ─────────────────────────────────────────────────
+# A record may not both strike a sentence in `dropped.text` and carry it in a heading or a
+# `verbatim_opening`. Neither of the two gates that read those fields can see the
+# contradiction: `facts_preserved_check.py` finds the claim excused and stops looking, and
+# `verbatim_set_check.py` finds the opening present and passes. The page then renders a
+# paragraph its own board says was dropped, with a reason underneath explaining its absence.
+
+def _with_drop(line, opening="We handle everything for you, from a supported reservation."):
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["tree"][0]["verbatim_opening"] = opening
+    b["dropped"] = {"prices": [], "names": [], "links": [], "text": [line]}
+    return b
+
+
+def test_dropped_text_that_quotes_a_carried_opening_fails():
+    b = _with_drop("We handle everything for you, from a supported reservation. — the reason")
+    hits = PB.dropped_vs_verbatim(b)
+    assert len(hits) == 1, hits
+    assert hits[0]["kind"] == "text"
+    assert "We handle everything" in hits[0]["fragment"]
+    msgs = [x for x in PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={"/other/": []}, stage="build")
+            if x["check"] == "dropped-vs-verbatim"]
+    assert msgs and msgs[0]["sev"] == "FAIL", msgs
+
+
+def test_each_quote_of_an_ellipsis_joined_drop_line_is_judged_on_its_own():
+    """THE SHAPE THE REAL DEFECT HAD, and the reason a whole-fragment test is not enough.
+
+    A `dropped.text` line may quote two runs of the migrated body joined by an ellipsis. On
+    /uk-blue-staffy-puppy-buying-guide/ the FIRST run was a sentence `delivery`'s own tree node
+    carries word for word and the second was a licence claim that is genuinely dropped, so the
+    fragment as a whole matched nothing anywhere and every gate was satisfied.
+    """
+    b = _with_drop("We handle everything for you, from a supported reservation. … This "
+                   "includes confirming DEFRA licensing. — the reason")
+    hits = PB.dropped_vs_verbatim(b)
+    assert len(hits) == 1, hits
+    assert hits[0]["fragment"] == "We handle everything for you, from a supported reservation."
+
+
+def test_a_drop_line_that_quotes_only_dropped_wording_passes():
+    b = _with_drop("This includes confirming DEFRA licensing before travel. — the reason")
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_a_drop_fragment_too_short_to_name_one_sentence_is_not_reported():
+    """The floor is `facts_preserved_check.MIN_DROP_PHRASE`'s, and for its reason: a fragment
+    short enough to match any sentence accuses every record of everything."""
+    assert PB.MIN_DROP_FRAGMENT == FACTS_MIN_DROP_PHRASE
+    b = _with_drop("We handle — the reason")
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_prices_names_and_links_are_not_judged_as_prose():
+    """Only `text` lines quote sentences. A record drops the £850 band and still prints
+    £1,500; it drops a location url and still names the town; it drops a laboratory and still
+    writes the word 'testing'. Judging those kinds would fire on every record."""
+    b = _approved(MIN_BOARD)
+    b["sections"][0]["tree"][0]["verbatim_opening"] = "We deliver to Glasgow for £850 today."
+    b["dropped"] = {"prices": ["We deliver to Glasgow for £850 today. — reason"],
+                    "names": ["We deliver to Glasgow for £850 today. — reason"],
+                    "links": ["We deliver to Glasgow for £850 today. — reason"], "text": []}
+    assert PB.dropped_vs_verbatim(b) == []
+
+
+def test_every_shipped_board_record_is_free_of_the_contradiction():
+    """The gate is only worth its line if the corpus it guards is clean. Reads the real
+    records, so a future board that strikes a sentence it renders fails here as well."""
+    checked = 0
+    for path in sorted((PB.ROOT / "data" / "boards").glob("*.json")):
+        rec = json.loads(path.read_text(encoding="utf-8"))
+        assert PB.dropped_vs_verbatim(rec) == [], path.name
+        checked += 1
+    assert checked >= 13, checked

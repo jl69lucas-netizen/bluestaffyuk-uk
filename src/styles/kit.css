@@ -13,6 +13,30 @@
    No hex here; the spacing and radius literals are kept verbatim from the components these
    rules were lifted out of, so moving them changed nothing on screen. */
 @layer components {
+  /* The mark: Mark.astro's `<use>` svg, mounted by the header, the footer and
+     SectionDivider. It carried no rule at all, which is what the advisory
+     `css-class-resolves` rows on the real pages were reporting — a class in the markup
+     that resolves to nothing. Minimal on purpose: the svg is given its width and height as
+     attributes, so all a rule owes it is a box that is exactly those attributes.
+
+     `display: block`, not `inline-block`: an inline-level replaced element sits on the text
+     baseline and drags the line box's descender space along with it, which is the few stray
+     pixels under a logo that make a header read as mis-centred and that `vertical-align`
+     only approximates away. All three mounts (header, footer, SectionDivider) are flex
+     containers, where display is blockified regardless and the honest declaration is the
+     block one; `flex: none` is the half that does real work there — it stops the mark being
+     shrunk below its own width when the row runs short, which is a squashed logo rather than
+     a wrapped one. */
+  .kit-mark { display: block; flex: none; }
+
+  /* A 24px tap target for a link that is otherwise just a line of text
+     (`layout-tap-target-size`, blocking; WCAG 2.5.8). A 14-16px link is a 17-20px box, and
+     the check forgives a small target only while nothing sits within 24px of its centre —
+     which is never true of a breadcrumb trail or a list of links. `display: inline-block` is
+     what makes the vertical padding count towards the box at all. Used by Breadcrumb.astro
+     and the locations hub; it earned its place here the moment there were two of them. */
+  .tap-24 { display: inline-block; padding-block: 4px; }
+
   /* The card shell: PuppyCard and TrustStrip. */
   .kit-card {
     background: var(--color-surface-raised);

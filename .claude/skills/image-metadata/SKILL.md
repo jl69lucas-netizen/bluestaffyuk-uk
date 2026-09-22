@@ -54,12 +54,12 @@ You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all i
 - **Format:** Sentence-style, no keyword stuffing, describes what a screen-reader user needs.
 - **Never:** "image001," "photo," "picture of puppy," empty `alt=""`, generic 🐶.
 - **Accessibility caveat (honest):** screen readers often truncate alt around ~125 chars, so front-load the most important description in the first 125; the remaining length carries SEO entities.
-- **Example:** `Home-raised blue Staffy puppy held by Lisa Bright at BlueStaffyUK in Glasgow — KC registered, microchipped, vet-checked with first vaccinations under a LICENCE_CLAIM_PLACEHOLDER, ready to reserve`
+- **Example:** `Home-raised blue Staffy puppy held by Lisa Bright at BlueStaffyUK in Carlisle — KC registered, microchipped, vet-checked with first vaccinations under a LICENCE_CLAIM_PLACEHOLDER, ready to reserve`
 
 ### 3. Title (keyword + benefit)
 - Shown on hover; pairs the keyword with a concrete benefit.
 - **Pattern:** `[Primary keyword + coat colour] — [benefit] | BSUK`
-- **Example:** `Blue Staffordshire Bull Terrier Puppy — KC registered & vet-checked | BSUK – Glasgow, Scotland`
+- **Example:** `Blue Staffordshire Bull Terrier Puppy — KC registered & vet-checked | BSUK – Carlisle, Cumbria`
 
 ### 4. Caption (conversational, with CTA)
 - Visible below the image; adds info not obvious from the photo + a soft CTA.
@@ -67,7 +67,7 @@ You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all i
 
 ### 5. Description (250+ words, comprehensive)
 - Long-form, for the media-library field, `ImageObject` schema `description`, and/or on-page `<figcaption>`/figure copy.
-- Must weave: primary keyword + 2–3 GSC variations/LSI, coat colour (blue / blue brindle / black brindle), location (Glasgow, Scotland), trust entities (KC registration, microchip number, vet health check, first vaccinations, LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliance), and a closing CTA to `/uk-blue-staffy-breeders-contact/`.
+- Must weave: primary keyword + 2–3 GSC variations/LSI, coat colour (blue / blue brindle / black brindle), location (Carlisle, Cumbria), trust entities (KC registration, microchip number, vet health check, first vaccinations, LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliance), and a closing CTA to `/uk-blue-staffy-breeders-contact/`.
 - Entity-rich and conversational — written as if answering "what am I looking at and why does it matter?"
 - **Never** fabricate a puppy's age, sex, price, or health status — pull only from `data/litter-inventory.json` / `data/price-matrix.json` or confirmed breeder input.
 
@@ -93,7 +93,7 @@ grep -n 'src="[^"]*\(IMG_\|DSC\|photo\|image[0-9]\)' site/content/[slug]/index.h
 ### Puppy Portrait
 ```
 File name: [coat-colour]-staffy-puppy-[location]-[nn].jpg
-Alt text:  [Coat colour] Staffordshire Bull Terrier puppy at BlueStaffyUK Glasgow Scotland — [health claim] — available [season/year]
+Alt text:  [Coat colour] Staffordshire Bull Terrier puppy at BlueStaffyUK Carlisle Cumbria — [health claim] — available [season/year]
 Title:     [Coat colour] Staffy puppy | BlueStaffyUK
 Caption:   [Optional: adult weight estimate, price range]
 ```
@@ -101,7 +101,7 @@ Caption:   [Optional: adult weight estimate, price range]
 ### Lifestyle / Family Photo
 ```
 File name: blue-staffy-puppy-with-[family-type]-[location]-[nn].jpg
-Alt text:  [Family type] with blue Staffordshire Bull Terrier puppy in [setting] — BlueStaffyUK Glasgow Scotland
+Alt text:  [Family type] with blue Staffordshire Bull Terrier puppy in [setting] — BlueStaffyUK Carlisle Cumbria
 Title:     Blue Staffy puppy with [family type] | BSUK
 Caption:   [Optional: "Perfect for [lifestyle] — ask about our blue or blue brindle Staffy puppies"]
 ```

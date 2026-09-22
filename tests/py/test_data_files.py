@@ -43,9 +43,24 @@ def test_puppy_photo_filenames_are_unique_across_the_litter():
 
 def test_site_settings_do_not_say_glasgow():
     """Known Issue 16: the breeder relocated. The kit reads `location_label`, so these
-    three keys are the ones that would put the old city back on every page. `address` is
-    deliberately excluded — Known Issue 16 owns it and project 4 rewrites it."""
+    three keys are the ones that would put the old city back on every page. The `address`
+    object is checked by the test below, which project 4 Task 6 rewrote."""
     s = load("settings.json")
     for key in ("location_label", "tagline", "site_name"):
         assert "glasgow" not in str(s[key]).lower(), (key, s[key])
     assert s["location_label"] == "Carlisle · Cumbria"
+
+
+def test_address_is_town_level_only():
+    """Known Issue 16: the address is Carlisle, Cumbria and nothing else.
+
+    The breeder has not supplied a street, a postcode or coordinates for the new place,
+    so the only honest address is the town and the region. A stale street or a stale
+    lat/lng is worse than no address at all: it publishes a location the business has
+    left, in the one field a map consumer trusts absolutely. Any of these keys coming
+    back means somebody restored the old record rather than waiting for the new one.
+    """
+    a = load("settings.json")["address"]
+    assert a == {"city": "Carlisle", "region": "Cumbria", "country": "GB"}, a
+    for gone in ("street", "postcode", "lat", "lng"):
+        assert gone not in a, gone

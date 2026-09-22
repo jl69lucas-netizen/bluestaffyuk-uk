@@ -106,6 +106,35 @@ def test_contrast_pairs_clear_aa():
     assert not failures, failures
 
 
+#: Every kit rule that fills a BACKGROUND on an element whose text can be inherited from a
+#: dark band, and which must therefore state its own `color`. One entry per rule, because the
+#: failure is per-rule: `.hero-aside` shipped a raised fill with no ink of its own and rendered
+#: bone text on a near-white card at 1.05:1 inside `.bl-frame-band` (/blue-staffy-uk-breeders/,
+#: 8472c06). Neither declaration was wrong alone, which is why a token-pair table could not see
+#: it — `--color-text` on `--color-surface-raised` is in CONTRAST and has always passed. What
+#: was missing was the component naming the pair at all.
+#:
+#: The RENDERED proof is the fixture pair tests/render/fixtures/{known_good,known_broken}/
+#: kit-hero-aside-ink*.html, measured by `a11y-text-contrast-aa` in the meta gate. This is the
+#: cheap source-level guard beside it: a reader deleting the line sees a named test fail
+#: without waiting for a browser.
+SELF_BEDDED_KIT_RULES = (
+    ("src/components/kit/Hero.astro", ".hero-aside"),
+)
+
+
+@pytest.mark.parametrize(("path", "selector"), SELF_BEDDED_KIT_RULES)
+def test_a_kit_rule_that_paints_its_own_bed_also_states_its_own_ink(path, selector):
+    src = (ROOT / path).read_text(encoding="utf-8")
+    start = src.index(selector + " {")
+    block = src[start:src.index("}", start)]
+    assert "background:" in block, f"{path} {selector} no longer paints a bed — update the list"
+    assert "color:" in block, (
+        f"{path} {selector} fills a background but states no `color`, so its text takes "
+        "whatever the surrounding band set — bone ink on a light card is 1.05:1"
+    )
+
+
 def test_kit_has_no_hex_literals():
     # The strict-xfail this carried until Task 4 is gone: the kit folder now exists, so the
     # check has something real to say and must stay green for every component added after.
@@ -117,10 +146,12 @@ def test_kit_has_no_hex_literals():
 LEGACY_HEX_FILES = (
     # SiteHeader.astro and SiteFooter.astro came off this list in Task 20: the shell moved
     # to the SVG lockups, and its inline style attributes became scoped rules over tokens.
+    # The why-us page and the buying guide came off it in project 4's sweep: both were
+    # rebuilt from an approved board onto the kit and neither spells a colour any more.
+    # What is left is the two files project 4 never rebuilt — the shared contact form and
+    # the data-driven puppy detail route.
     "src/components/ContactForm.astro",
     "src/pages/available-puppies/[slug].astro",
-    "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
-    "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
 )
 
 
@@ -130,7 +161,7 @@ LEGACY_HEX_FILES = (
 def test_no_hex_anywhere_in_src_except_tokens():
     """Rule 1: tokens.css is the only file in src/ that spells a colour.
 
-    Strict-xfail because projects 1-2 left hexes in the six files above. The moment
+    Strict-xfail because projects 1-2 left hexes in the files above. The moment
     Tasks 6-20 finish replacing them this test passes, xfail(strict) turns that pass
     into a failure, and whoever sees it deletes the marker — so the rule starts being
     enforced for real instead of being quietly forgotten.

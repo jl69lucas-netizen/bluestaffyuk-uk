@@ -1,0 +1,1907 @@
+{
+  "meta": {
+    "slug": "buy-blue-staffy-puppies-uk",
+    "page_type": "for-sale",
+    "layout_type": "for-sale",
+    "status": "approved",
+    "research_as_of": "2026-09-20",
+    "sources": [
+      {
+        "path": "src/pages/buy-blue-staffy-puppies-uk/index.astro",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "dist/buy-blue-staffy-puppies-uk/index.html",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/facts/buy-blue-staffy-puppies-uk.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/page-map.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/settings.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/puppies.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/price-matrix.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/reviews.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/faq.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/image-manifest.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/bsuk-ontology.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/boards/blue-staffy-pup-sale-uk.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/boards/buy-staffy-puppies-for-sale-uk.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "data/boards/blue-staffy-health-uk.json",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "docs/reference/external-link-library.md",
+        "fetched": "2026-09-20"
+      },
+      {
+        "path": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+        "fetched": "2026-09-20 — scan row reused from data/boards/blue-staffy-pup-sale-uk.json, not refetched. ~1,070 words; 2 H2s (Staffordshire Bull Terrier Puppies for sale in the UK; FAQs); 4 FAQ rows, none about reserving a named dog; schema Product/FAQPage, marked up on the PAGE rather than per advert; 140 sellers' listings and the trust signals are per-advert badges."
+      },
+      {
+        "path": "https://www.staffie-owners.co.uk/staffies-for-sale",
+        "fetched": "2026-09-20 — scan row reused from data/boards/blue-staffy-pup-sale-uk.json, not refetched. ~867 words; 3 H2s (Staffordshire Bull Terrier Puppies For Sale; Search Filters; Frequently Asked Questions); 4 FAQ rows; schema WebSite/WebPage and no Product; 54 adverts, no deposit terms and no delivery."
+      },
+      {
+        "path": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier",
+        "fetched": "2026-09-20 — scan row reused from data/boards/blue-staffy-pup-sale-uk.json, not refetched. ~1,835 words; 2 H2s; 0 FAQ rows; schema Product/Organization; prices to £2,600 and deposits mentioned only inside individual adverts, so a reader cannot tell which dog is still available from the markup."
+      },
+      {
+        "path": "https://ukstaffypups.uk/staffy-puppies-for-sale/",
+        "fetched": "2026-09-20 — NEW for this board. ~2,882 words; 14 H2s, of which the first is the listing ('Are there blue staffy puppies for sale near me?') and the other thirteen are a breed guide bolted underneath it; eleven named puppies (Milo, Stella, Duke, Ruby, Brenda, Clara, Nina, Carter, Ben, Micky, Wallace) at £1,000 each as H3 cards carrying sex, age, health and status; 0 FAQ rows; one JSON-LD block holding Organization, WebSite, WebPage, Article, BreadcrumbList, ListItem, Person and ImageObject and NO Product and NO Offer on any of the eleven. It states a health guarantee and a puppy pack, gives no deposit terms and no delivery, and names no parent — the closest scanned page to this one's intent and the clearest demonstration of what a listing leaves unmarked."
+      },
+      {
+        "path": "https://www.trojanstaffuk.com/",
+        "fetched": "2026-09-20 — NEW for this board, and shared with data/boards/buy-staffy-puppies-for-sale-uk.json. ~1,113 words; 14 H2s; 0 FAQ rows; schema Organization, LocalBusiness, WebSite, WebPage, Article, Person, ImageObject and no Product and no Offer. It is a breeder site with no litter listing at all — the puppies are photographs in a strip with no name, no price and no status — so a reader who wants to know what is available has to telephone."
+      }
+    ]
+  },
+  "meta_set": {
+    "titles": [
+      "Blue Staffy Puppies For Sale UK — Available Litter",
+      "Buy Blue Staffy Puppies UK: Six Available In Carlisle",
+      "Blue Staffy Puppies UK | The Litter, And How To Reserve"
+    ],
+    "descriptions": [
+      "The blue Staffy puppies we have for sale in the UK right now, each with sex, colour and price, and the three steps from your first message to collection day.",
+      "Buy blue Staffy puppies in the UK from a Carlisle family home: see the litter, meet them with their mother, then reserve with a refundable deposit. No pressure.",
+      "Our available blue Staffy puppies, the parents they came from, and how to reserve one — write to us, meet them, then a refundable deposit holds your puppy."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": 1,
+      "description": 1
+    }
+  },
+  "brief": {
+    "goal": "Rebuild this page as the site's listing: which puppies are available today, who their parents are, and the three steps from a first message to collection day — so a reader can go from 'which one' to 'reserved' without leaving the page, and so the machine-readable version of 'this dog, this price, still available' lives here and nowhere else.",
+    "scope": "Ten sections: hero, the three-figure counter strip, the six-puppy grid, the parents, the three buying steps, collection and delivery, one review, a five-row FAQ, the enquiry form and the close. All seven migrated images at their original paths; data/facts/buy-blue-staffy-puppies-uk.json records no embed for this page and none is placed.",
+    "gates": [
+      "facts-preserved",
+      "link-parity",
+      "marker",
+      "schema",
+      "sitemap",
+      "board-previews",
+      "form-contract",
+      "render"
+    ],
+    "done": "The page renders all six rows of data/puppies.json as cards, each with a Product node, an Offer and availability InStock, and it is the only page on the site that does; the counter strip reads its three figures from data; the three steps state the £500 refundable deposit and the 24-48 business hour reply and no other money figure; the delivery section links the price page's table rather than printing a second one; one review renders (Rachel L.) and the other two slots are not opened; five FAQ rows, one of them new and sourced here; all seven migrated images at their original paths; and no restatement of the £850 to £1,200 band, the £300 non-refundable deposit, the five weeks' free insurance, the 500-reader newsletter, the litter's counts and ages, the former city, or the four location towns — and it passes facts-preserved and link parity with nothing missing that `dropped` does not explain.",
+    "out_of_scope": [
+      "the price band £850 to £1,200 and the £300 non-refundable deposit: data/price-matrix.json holds £1,500, £1,700 and a £500 REFUNDABLE deposit, and Known Issue 11 owns the correction; the cards carry their own price from data/puppies.json and /blue-staffy-pup-sale-uk/ states the table",
+      "the price table and the delivery table: /blue-staffy-pup-sale-uk/ owns both and this page links them",
+      "the case for choosing us — ethical breeding, health testing argued at length, home raising, the seven reasons: /buy-staffy-puppies-for-sale-uk/ is the why-us page (plan Task 16) and this page links it rather than arguing it a third time",
+      "five weeks' free insurance: no file on disk records an insurance arrangement",
+      "a health guarantee, and the 'all health guarantees and terms' the migrated contract sentence promises: data/settings.json holds guarantee_days null",
+      "the litter's composition — 'Males: 2 Females: 2 Age: 12 weeks, 6 days Ready to Leave: Now': data/puppies.json holds six dogs and no age for any of them, and a count typed into prose is the thing that goes stale first",
+      "the 500-reader newsletter and the waiting list: no file on disk holds a subscriber count or a waiting list, and `tuple.newsletter` is empty on this record",
+      "the former city, named twice in the migrated body and once in an image alt: data/settings.json is Carlisle · Cumbria at town level (Known Issue 16) and spec section 7 requires the old name to be absent from src and data",
+      "the four location towns the migrated delivery block links: project 5 owns the location cluster",
+      "the twelve breed-behaviour FAQ answers (sleep hours, being left alone, aggression, first-time owners, lifespan): /uk-staffordshire-bull-terrier-guide/ and /blue-staffy-health-uk/ own them"
+    ],
+    "primary_keyword": "buy blue staffy puppies uk",
+    "angles": [
+      {
+        "name": "the listing",
+        "hook": "the six puppies first, then who their parents are and the three steps to reserving one, with the price page and the why-us page one link away",
+        "why_not": ""
+      },
+      {
+        "name": "the how-to-buy guide",
+        "hook": "lead on the six-step journey and hang the litter off step one",
+        "why_not": "/uk-blue-staffy-puppy-buying-guide/ is the buying guide in the plan's own split and carries the five steps and the fifteen questions; a second set of steps as the page's spine is that page's content spent twice"
+      },
+      {
+        "name": "the trust pitch",
+        "hook": "open on why we are ethical breeders and reach the puppies at the bottom",
+        "why_not": "/buy-staffy-puppies-for-sale-uk/ is the why-us page, and a reader who typed 'buy blue staffy puppies uk' came to see what is available"
+      }
+    ],
+    "strategy": {
+      "name": "the listing",
+      "why": "Four scanned pages list Staffordshire Bull Terrier puppies and not one marks a single dog up as a Product with an Offer — the closest of them puts eleven named puppies at £1,000 each on the page with no Product node anywhere, and the two classifieds mark up the page rather than the advert. Naming six dogs, pricing each one, saying who their parents are and marking each up properly is the gap, and it is what a listing page is for.",
+      "trade_off": "A page built round six cards is a page that has to be rebuilt when the litter changes; every figure on it is therefore read from data/puppies.json and data/settings.json rather than typed, which is why no count and no age appears in the prose."
+    },
+    "cta": {
+      "cadence": {
+        "min": 200,
+        "max": 350
+      },
+      "destination": "#enquiry",
+      "anchors": [
+        "Tell us which one",
+        "Ask whether they are still available",
+        "Arrange a visit to meet the litter"
+      ],
+      "global_cta": "hidden"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "The obvious tool is a filter over the six cards by sex, colour and price, and with six rows a filter hides more than it finds; data/puppies.json is small enough that the grid IS the filter, and the cards already carry all three fields.",
+      "trade_off": "If a future litter is much larger than six, the grid will need one."
+    },
+    "schema": {
+      "types": [
+        "WebPage",
+        "Product",
+        "Offer",
+        "FAQPage"
+      ],
+      "offer_model": "product-offer-per-puppy"
+    }
+  },
+  "h1": {
+    "variants": [
+      "Your One-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically",
+      "Blue Staffy Puppies Available To Reserve Right Now",
+      "Buy Blue Staffy Puppies UK: This Litter, And How To Reserve One",
+      "The Six Blue Staffy Puppies We Have Looking For Homes",
+      "Blue Staffy Puppies UK, And The Three Steps To Buying One"
+    ],
+    "recommended": 0,
+    "pick": 0
+  },
+  "sections": [
+    {
+      "id": "top",
+      "n": 1,
+      "heading": "The Blue Staffy Puppies We Have For Sale Today",
+      "intent": "The opening, in Lisa Bright's first person, and the page's whole promise in one paragraph: this is the listing. It says how many puppies are looking for homes, that they are here in Carlisle with their mother, and what the next three steps are, and it sends a reader to /blue-staffy-pup-sale-uk/ for the money and to /buy-staffy-puppies-for-sale-uk/ for the case, so none of the three sale pages argues another one's argument. The kit Hero is given no trust chips and no CTA buttons (spec section 9 amendment 6a).",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page opened on 'Your #1-Stop Shop', a superlative with nothing behind it, and put the litter block below a newsletter sign-up, a gallery and a video heading.",
+      "why_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro — the migrated H1; data/page-map.json — the migrated title 'THE BEST 3 Safe Steps…'; data/puppies.json — six rows, all Available",
+      "framework": "EEBP",
+      "words": {
+        "min": 115,
+        "max": 145
+      },
+      "shape": "hero",
+      "styles": [
+        "H-FS1",
+        "H-FS2",
+        "H-FS3"
+      ],
+      "stats": [
+        {
+          "n": "6",
+          "label": "puppies available now",
+          "source": "data/puppies.json#count(status=Available)"
+        },
+        {
+          "n": "3",
+          "label": "males",
+          "source": "data/puppies.json#count(sex=male)"
+        },
+        {
+          "n": "3",
+          "label": "females",
+          "source": "data/puppies.json#count(sex=female)"
+        }
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "a full-bleed photo over the copy, where the price page splits its hero into copy and a grid"
+      },
+      "hero": {
+        "chips": [
+          {
+            "text": "6 puppies in this litter",
+            "source": "data/puppies.json#count(status=Available)"
+          },
+          "KC registered",
+          "Carlisle, Cumbria"
+        ],
+        "ticks": [
+          {
+            "text": "3 males and 3 females",
+            "source": [
+              "data/puppies.json#count(sex=male)",
+              "data/puppies.json#count(sex=female)"
+            ]
+          },
+          "See the mother with the puppies",
+          "Collection in Carlisle or UK delivery"
+        ],
+        "aside": {
+          "title": "This litter",
+          "rows": [
+            {
+              "label": "Available",
+              "value": "6",
+              "source": "data/puppies.json#count(status=Available)"
+            },
+            {
+              "label": "Males",
+              "value": "3",
+              "source": "data/puppies.json#count(sex=male)"
+            },
+            {
+              "label": "Females",
+              "value": "3",
+              "source": "data/puppies.json#count(sex=female)"
+            }
+          ]
+        }
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "blue Staffy puppies",
+          "available now",
+          "reserve a puppy",
+          "litter"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "where can i buy a blue staffy puppy in the uk"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "buy blue staffy puppies uk",
+          "blue staffy puppies for sale uk"
+        ]
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier",
+        "ont:blue-coat",
+        "ont:lisa-bright"
+      ],
+      "tree": [],
+      "images": [
+        {
+          "slot": "listing-hero",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a KC-registered Staffordshire Bull Terrier puppy ready to reserve, reused at its original path and alt text (working rule 11)"
+        },
+        {
+          "slot": "listing-hero-tile-2",
+          "kind": "photo",
+          "required": false,
+          "prompt": "a mosaic tile for the hero, reused at its original public path"
+        },
+        {
+          "slot": "listing-hero-tile-3",
+          "kind": "photo",
+          "required": false,
+          "prompt": "a mosaic tile for the hero, reused at its original public path"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-staffy-puppies-for-sale-uk/",
+            "anchor": "Why families choose us, and the evidence for it",
+            "why": "carried from the migrated page (anchor 'blue Staffy puppies available'); the why-us page owns the case",
+            "sentence_start": true
+          },
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "What a puppy costs and what delivery adds",
+            "why": "carried from the migrated page (anchor 'Staffy puppy for sale'); the price page owns the figures",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "H-FS1",
+        "note": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. data/facts/buy-blue-staffy-puppies-uk.json records no embed for this page and data/page-map.json records embeds 0, so none is placed here — the migrated 'See Our Blue Staffy Puppies in Action!' heading had no iframe under it and is logged in dropped.text."
+      }
+    },
+    {
+      "id": "at-a-glance",
+      "n": 2,
+      "heading": "Available Now, The Deposit, And Delivery",
+      "intent": "The kit CounterStrip, which reads all three of its figures from data: the number of puppies whose status is Available in data/puppies.json, the £500 refundable deposit from data/settings.json, and the £200 to £350 UK delivery band from the same file. No figure on this strip is typed into the page, so a puppy going off the list is a data edit and not a page edit — which is the whole point of putting it on the listing page.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page stated its litter as a fixed block — 'Males: 2 Females: 2 Age: 12 weeks, 6 days' — which was already wrong by the time it was ported, and carried a £300 non-refundable deposit the price matrix contradicts.",
+      "why_source": "src/components/kit/CounterStrip.astro — availability from data/puppies.json, deposit and delivery band from data/settings.json; src/pages/buy-blue-staffy-puppies-uk/index.astro — the migrated litter block and the £300 deposit",
+      "framework": "FAB",
+      "words": {
+        "min": 55,
+        "max": 70
+      },
+      "shape": "stats",
+      "styles": [
+        "C-FS1",
+        "C-FS2",
+        "C-FS3"
+      ],
+      "stats": [
+        {
+          "n": "6",
+          "label": "puppies available now",
+          "source": "data/puppies.json#count(status=Available)"
+        },
+        {
+          "n": "3",
+          "label": "males",
+          "source": "data/puppies.json#count(sex=male)"
+        },
+        {
+          "n": "3",
+          "label": "females",
+          "source": "data/puppies.json#count(sex=female)"
+        }
+      ],
+      "refresh": {
+        "axis": "motif",
+        "note": "the seam bar counts this litter, against the price page four cards of money"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "puppies available",
+          "refundable deposit",
+          "UK delivery"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how many blue staffy puppies do you have left"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "reserve a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:refundable-deposit"
+      ],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "C-FS3",
+        "note": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers. The strip is on this page as well as on /blue-staffy-pup-sale-uk/ because it is the one component whose figures are the answer to 'is one still available', which is this page's own question; the surrounding prose is about the litter, not about the price."
+      }
+    },
+    {
+      "id": "puppies",
+      "n": 3,
+      "heading": "Buy Blue Staffy Puppies UK-Wide",
+      "intent": "The listing itself: every row of data/puppies.json as kit puppy cards, with each puppy's name, sex, colour, price and status from the data. THIS PAGE OWNS THE PER-PUPPY MARKUP — a Product node with an Offer and availability InStock for each available dog, which is why the other two sale pages carry no offer at all and /blue-staffy-pup-sale-uk/ marks its range up as an AggregateOffer instead. The grid filters on status rather than hard-coding a count, and the card links are the grid's own rows and are exempt from link parity (spec section 9 amendment 6b).",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "None of the four scanned listing pages marks a single puppy up as a Product with an Offer — the two classifieds mark up the page, the breeder listing with eleven named puppies on it has no Product node anywhere — so the machine-readable version of 'this dog, this price, still available' is unclaimed.",
+      "why_source": "data/puppies.json — six rows, all status Available, Roman, Byrd and Ince at £1,500 and Vennie, Christa and Cheryl at £1,700; https://ukstaffypups.uk/staffy-puppies-for-sale/ (scan 2026-09-20) — eleven puppies, no Product and no Offer",
+      "framework": "FAB",
+      "words": {
+        "min": 130,
+        "max": 165
+      },
+      "shape": "puppies",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "the puppy grid two-up beside the heading, roomier than the price page three-up"
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "available puppies",
+          "blue and white",
+          "male",
+          "female",
+          "litter"
+        ],
+        "longtail": [
+          "blue staffy puppies available now uk"
+        ],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "which blue staffy puppies are available right now"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "buy blue staffy puppies uk",
+          "reserve a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:blue-coat"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "What Each Card Tells You",
+          "intent": "Name, sex, colour, price and whether the puppy is still available.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Why The List Changes",
+          "intent": "It is generated from our own list, so it changes when the litter does.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "listing-buy-now",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a confident blue Staffordshire Bull Terrier available to buy in the UK, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "the price table, and what the deposit leaves to pay",
+            "nav": true,
+            "why": "the price page owns the two figures and the balance; the cards carry their own price from data/puppies.json"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "All six rows of data/puppies.json are status Available today. The prose says the puppies are updated regularly and names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs and the migrated block's own counts are logged in dropped.text."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "Meet Our Available Blue Staffy Puppies"
+    },
+    {
+      "id": "gallery",
+      "n": 4,
+      "heading": "Blue Staffy Puppy Gallery",
+      "intent": "More photographs of the litter than a card grid has room for, at the migrated page's own heading and opening paragraph. Every picture is one this site already serves, reused at its original path and alt text (working rule 11); nothing new is shot and nothing is renamed. Two sentences of prose and the pictures do the rest.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Rule 15: a keyword H2 with its own opening paragraph, and the outline had folded the photographs into the puppy grid with no heading of their own. A buyer who wants to see more of a puppy is looking for a block, not a card.",
+      "why_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro at 63a7b12 — the migrated gallery block and its opening; data/image-manifest.json; CLAUDE.md working rules 11 and 15",
+      "framework": "EEBP",
+      "words": {
+        "min": 55,
+        "max": 70
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "the gallery full-bleed rather than in a card, so the photos are the section"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "blue Staffy puppies",
+          "photographs",
+          "litter"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "can i see more photos of your blue staffy puppies"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:blue-coat"
+      ],
+      "tree": [],
+      "images": [
+        {
+          "slot": "listing-pups-near-you",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a group of blue Staffy puppies, reused at its original path and alt text (working rule 11)"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "Restored under rule 15. The photograph moves here from `puppies`, which keeps its own; no new image is added, because working rule 11 reuses what is already served and this page's seven images are all spoken for. The migrated 'See Our Blue Staffy Puppies in Action!' block is NOT restored beside it — data/facts records this page's embeds as empty, so there is no video to put under it."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "Explore more photos of our delightful blue staff puppies for sale. Each picture tells a story of the love and care they receive, ensuring they’re well-adjusted and confident."
+    },
+    {
+      "id": "parents",
+      "n": 5,
+      "heading": "The Mother And Father Of This Litter",
+      "intent": "Who the six puppies came from: Maggie, the dam, and Jones, the sire, both DNA-tested clear for L-2-HGA and HC-HSF4, both KC-registered. It says the puppies are viewable with their mother, which is what a buyer is entitled to see and the one thing a classified advert cannot offer, and it links /blue-staffy-health-uk/ for the test results rather than repeating that page's table.",
+      "category": "B",
+      "group": "COMPETITOR-BASED",
+      "why": "The scanned breeder listing puts eleven puppies on one page and never names a parent; the classifieds cannot, because the dogs belong to other people. Naming both parents and offering to show them with the litter is the thing a listing page can say that a directory cannot.",
+      "why_source": "data/boards/blue-staffy-health-uk.json — Maggie and Jones, L-2-HGA and HC-HSF4 clear; src/pages/buy-blue-staffy-puppies-uk/index.astro — 'Viewable with Mother'; https://ukstaffypups.uk/staffy-puppies-for-sale/ (scan 2026-09-20) — no parent named",
+      "framework": "EEBP",
+      "words": {
+        "min": 140,
+        "max": 175
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "The Mother And Father Of This Litter: prose with the photo on the right, against the two-column image-top the guide cluster defaults to"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "dam",
+          "sire",
+          "L-2-HGA",
+          "HC-HSF4",
+          "viewable with mother",
+          "KC registered"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "can i see the puppy with its mother",
+          "who are the parents of the litter"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Seeing Them Together",
+          "intent": "The puppies are with their mother here, and you are welcome to see that.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "The Two Clearances Maggie And Jones Carry",
+          "intent": "The two DNA clearances, with the health page for the detail. Renamed 2026-09-21: the old wording, 'What Both Parents Are Clear Of', failed board_gate's five-token shingle against /blue-staffy-health-uk/'s own 'Both Parents Are Clear Of Two Inherited Conditions'. The health page owns the DNA table and this is a passing mention that links to it, so the listing is the side that moves. The heading was written fresh at Task 17 and is in no verbatim set, so nothing rule 15 carries is touched.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-health-uk/",
+            "anchor": "The test results for both parents, in full",
+            "why": "carried from the migrated page (anchor 'Health & Care Page'); the health page owns the DNA table",
+            "sentence_start": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
+            "anchor": "The registry's own page for the breed",
+            "why": "carried from the migrated page, which linked it at the thekennelclub.org.uk spelling that 301s to this one",
+            "library_row": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "No photograph: the two parent photographs on this site are on /blue-staffy-pup-sale-uk/ and /blue-staffy-health-uk/ at their original paths, and data/facts/buy-blue-staffy-puppies-uk.json does not list either of them for this page. S3's InfoCard aside can carry the two test names beside the prose."
+      }
+    },
+    {
+      "id": "steps",
+      "n": 6,
+      "heading": "Your Adoption Journey: Bringing a Blue Staffy Home",
+      "intent": "The how-to-buy, as three kit InfoCards drawn from the migrated page's own six-step journey. Step one: pick a puppy from the grid and write to us, saying which one, where you are and who is in the house; we reply within 24 to 48 business hours. Step two: meet them — a video call, or a visit here by appointment to see the puppy with their mother — and ask for the paperwork before you decide. Step three: reserve, with the £500 refundable deposit that holds that named puppy, and agree collection or delivery. The migrated page's six steps collapse into three because two of them (progress photos, and browsing) are not decisions a buyer makes, and the deposit terms it stated are the wrong ones.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated meta title sold 'THE BEST 3 Safe Steps' and the body then listed six numbered steps, one of which committed the reader to a non-refundable deposit the price matrix contradicts.",
+      "why_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro — the six-step adoption journey and the £300 non-refundable deposit; data/price-matrix.json — deposit_gbp 500, deposit_refundable true; data/faq.json — the sale-reserve row",
+      "framework": "PDB",
+      "words": {
+        "min": 170,
+        "max": 205
+      },
+      "shape": "takeaways",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "the steps on the steel band, which no other buy page spends its band on"
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "how to buy",
+          "reserve",
+          "deposit",
+          "video call",
+          "visit"
+        ],
+        "longtail": [
+          "how to reserve a blue staffy puppy uk"
+        ],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how do i buy one of your puppies",
+          "what happens after i enquire"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "reserve a blue staffy puppy",
+          "enquire about a blue staffy puppy"
+        ]
+      },
+      "entities": [
+        "ont:refundable-deposit"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Step One: Tell Us Which Puppy",
+          "intent": "What to put in a first message, and how long we take to reply.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Two: Meet Them First",
+          "intent": "A video call or a visit by appointment, and the paperwork to ask for.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Step Three: Reserve And Arrange Collection",
+          "intent": "The refundable deposit holds one named puppy; then collection or delivery.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "listing-trust",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a blue Staffy puppy representing ethical breeding from trusted UK breeders, reused at its original path"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-puppy-buying-guide/",
+            "anchor": "Our buying guide, and the questions to put to us",
+            "why": "carried from the migrated page (anchor 'Puppy Buying Guide')",
+            "sentence_start": true
+          },
+          {
+            "href": "/blue-staffy-uk-breeders/",
+            "anchor": "Who we are, and where the litter is raised",
+            "why": "carried from the migrated page (anchor 'Learn About Us')",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "Three cards, so S1's stack and S3's rail both read; S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure and its terms are stated once here and the price table stays on /blue-staffy-pup-sale-uk/."
+      },
+      "verbatim_opening": "We aim to make the process of bringing home your new blue Staffordshire Bull Terrier puppy as transparent and smooth as possible."
+    },
+    {
+      "id": "whats-included",
+      "n": 7,
+      "heading": "What Your Blue Staffy Puppy Comes With",
+      "intent": "What leaves with the puppy, listed once and short, at the migrated page's own heading and opening paragraph: the first vaccinations, the worming, the microchip, the veterinary check and the paperwork. It is the contents, not the price — /blue-staffy-pup-sale-uk/ owns what those contents cost (spec section 2) and this section links it. The migrated block's free-insurance line and its health guarantee are not restated (dropped.prices, dropped.creds).",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Rule 15: a keyword H2 with its own opening paragraph, and the outline had logged the material away to an FAQ row. A buyer deciding between listings reads the inclusions on the listing, not in an accordion.",
+      "why_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro at 63a7b12 — the migrated block and its opening; data/faq.json — the puppy-package row; data/settings.json — guarantee_days null",
+      "framework": "FAB",
+      "words": {
+        "min": 75,
+        "max": 95
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "What Your Blue Staffy Puppy Comes With: the photo full width above two columns of prose, against the photo-right default"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "first vaccinations",
+          "microchip",
+          "worming",
+          "vet check",
+          "paperwork"
+        ],
+        "longtail": [
+          "what comes with a blue staffy puppy uk"
+        ],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "what does a blue staffy puppy come with"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier"
+      ],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "What a puppy costs, and what the deposit holds",
+            "why": "the price page owns the figures; this section is the contents, so neither page states the other's subject",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the step ladder and `why-choose`, and both of its neighbours on either side already carry one. Kept to a short list — the health page owns what a puppy has had done and the price page owns what it costs."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "We ensure every blue Staffy puppy leaves us with everything they need for a comfortable start in their new home, highlighting our commitment as responsible breeders of blue Staffies L-2-HGA clear :"
+    },
+    {
+      "id": "why-choose",
+      "n": 8,
+      "heading": "Why Buy From BlueStaffyUK: Ethical Breeding and Health",
+      "intent": "The three pillars the migrated page put under its second why-us H2 — ethical and responsible breeding, health, and a puppy raised in the house — one sentence each, with the old opening paragraph as the section's first paragraph. It is short on purpose and it links out: spec section 2 gives the case for choosing this breeder to /buy-staffy-puppies-for-sale-uk/, and this page is the listing.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Rule 15: a keyword H2 with its own opening, and the outline had no section whose substance it was. The rule restores the section; the WORDING cannot come back, because both of the migrated page's why-us H2s fail board_gate.py against a live sibling.",
+      "why_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro at 63a7b12 — the two migrated why-us H2s, their openings and the three H3s; data/verbatim/buy-blue-staffy-puppies-uk.json; rule 15",
+      "framework": "FAB",
+      "words": {
+        "min": 85,
+        "max": 110
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "Why Buy From BlueStaffyUK: Ethical Breeding and Health: on the steel band with an InfoCard caveat beside it, against the plain bone surface the section above sits on"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "ethical breeding",
+          "health tested",
+          "home raised",
+          "KC registered"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "why buy a blue staffy puppy from you"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:staffordshire-bull-terrier",
+        "ont:lisa-bright"
+      ],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-staffy-puppies-for-sale-uk/",
+            "anchor": "The full case, reason by reason",
+            "why": "the why-us page owns the argument; this section is the short form, so the listing does not argue it twice",
+            "sentence_start": true
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "Restored under rule 15 to carry the migrated 'Why Choose' H2's opening. Its heading is NOT the old wording: the migrated site put a near-identical why-us H2 on this page and on /blue-staffy-pup-sale-uk/, and each one's wording fails board_gate.py on a five-token shingle against the other page's live heading, so both records change theirs. No photograph: it sits between the step ladder and the delivery block, both of which carry one."
+      },
+      "verbatim_opening": "When you choose to buy purebred blue Staffy puppies from us, you’re not just getting a pet; you’re gaining a loyal family member bred with integrity and passion."
+    },
+    {
+      "id": "delivery",
+      "n": 9,
+      "heading": "Need Staffy puppy delivery to London, Manchester, or beyond? We can help!",
+      "intent": "How the puppy you reserved actually gets to you: you are welcome to collect from us in Carlisle, or we arrange UK home delivery by DEFRA-approved transport, priced by distance. The band itself and the collection row live in the delivery table on /blue-staffy-pup-sale-uk/, and this section links it rather than printing a second table; what it adds is the part that belongs to a listing — what collection day looks like, what travels with the puppy, and what to have ready at the other end. No town is priced and no delivery window is promised.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "Not one of the four scanned listing pages mentions transport at all, so a buyer more than a drive away is left to ask; the migrated page answered with a list of towns and a promise that delivery begins 24 to 48 hours after payment.",
+      "why_source": "data/settings.json — delivery_note, delivery_min_gbp 200, delivery_max_gbp 350, location_label Carlisle · Cumbria; src/pages/buy-blue-staffy-puppies-uk/index.astro — 'DEFRA-approved pet transport services'",
+      "framework": "EEBP",
+      "words": {
+        "min": 140,
+        "max": 170
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "Need Staffy puppy delivery to London, Manchester, or beyond? We can help!: compact rows, tighter than the section above it, against the airy default this cluster uses"
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "collection",
+          "UK delivery",
+          "DEFRA-approved transport",
+          "handover"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "do you deliver a puppy to my door",
+          "can i collect the puppy myself"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "blue staffy puppy delivery uk"
+        ]
+      },
+      "entities": [
+        "ont:defra-approved-transport"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Safe & Convenient UK-Wide Puppy Delivery",
+          "intent": "Who carries the puppy, and what the journey looks like.",
+          "children": [],
+          "verbatim_heading": true,
+          "verbatim_opening": "Don’t let distance stand between you and your dream blue and tan staffy or a pure blue staffy. We provide safe and reliable UK-wide puppy delivery using trusted, DEFRA-approved pet transport services . This means whether you’re looking for pedigree blue staffy pups for sale and are located in the vibrant West Midlands of Wolverhampton , the capital of Wales in Cardiff , or the historic city of Newcastle , your new family member will arrive safely and comfortably. For general guidance on pet transport, you can review DEFRA’s guidance on Transporting your pet (General Guidance) ."
+        },
+        {
+          "level": 3,
+          "heading": "Coming To Collect",
+          "intent": "What to bring, and how long to allow for the handover.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "If We Bring Them To You",
+          "intent": "Who travels with the puppy and what they travel with.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "The First Night",
+          "intent": "What to have ready before the puppy arrives.",
+          "children": []
+        }
+      ],
+      "images": [
+        {
+          "slot": "listing-delivery",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of blue Staffy puppies inside a safe delivery van for UK nationwide transport, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [
+          {
+            "href": "/blue-staffy-pup-sale-uk/",
+            "anchor": "What collection and delivery cost, side by side",
+            "why": "the price page owns the delivery table; this section describes the day rather than the band",
+            "sentence_start": true
+          },
+          {
+            "href": "/blue-staffy-blog-guides/",
+            "anchor": "Our guides on the first weeks at home",
+            "why": "carried from the migrated page (anchor 'Puppy Care Guides')",
+            "sentence_start": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf",
+            "anchor": "The government's welfare rules for animals in transport",
+            "why": "carried from the migrated page (anchor 'DEFRA's guidance on Transporting your pet (General Guidance)')",
+            "library_row": "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf"
+          },
+          {
+            "href": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare",
+            "anchor": "The RSPCA on caring for a puppy in its first weeks",
+            "why": "carried from the migrated page (anchor 'to Take Care of Your Dog, the RSPCA')",
+            "library_row": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": "Prose, not a table: /blue-staffy-pup-sale-uk/ carries the two-row delivery table and a second copy here is the duplication the dup gate is for."
+      },
+      "verbatim_heading": true
+    },
+    {
+      "id": "owners",
+      "n": 10,
+      "heading": "Why UK Families Trust BlueStaffyUK",
+      "intent": "One review, given room. MODE: single, data/reviews.json entry 3 — Rachel L., London — because it is the one of the three that speaks to the process a reader of this page is about to start: the health checks, the communication and the home-raised environment. It is deliberately not the review /blue-staffy-pup-sale-uk/ leads its grid with and not the one /buy-staffy-puppies-for-sale-uk/ gives its single slot, so the three sale pages rotate through the three real reviews rather than repeating one. The other two slots are not rendered, so no REVIEW_PLACEHOLDER is counted here.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "Rachel L.'s review was written on this very page's migrated body and is the only one of the three data/reviews.json sources to it, and the rebuilt page would otherwise be the one page on the site not showing the review it is the source of.",
+      "why_source": "data/reviews.json — entry 3, Rachel L., London, source src/pages/buy-blue-staffy-puppies-uk/index.astro",
+      "framework": "EBD",
+      "words": {
+        "min": 65,
+        "max": 80
+      },
+      "shape": "reviews",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "Why UK Families Trust BlueStaffyUK: one review given room, against the review grid the buy pages run"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "reviews",
+          "health checks",
+          "communication",
+          "home-raised"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "London"
+        ],
+        "conversational": [
+          "what was it like buying from you"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [
+        {
+          "slot": "listing-owner-london",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a happy Blue Staffy puppy owner from London sharing a testimonial, reused at its original path and alt text"
+        },
+        {
+          "slot": "listing-owner-cardiff",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's photograph of a smiling owner from Cardiff with a new Blue Staffy puppy, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": "MODE: single — the picked S3 is the BED and the mode is passed explicitly, the same split /blue-staffy-pup-sale-uk/ makes in the other direction (boxClass() emits no mode, so the bed is the style's and the count is the board's). One review renders, not the grid S3 would carry on its own. Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "From first-time dog owners to lifelong Staffy lovers, our customers value the care, transparency, and lifelong support they receive. Read their heartfelt stories about finding their perfect pup."
+    },
+    {
+      "id": "questions",
+      "n": 11,
+      "heading": "Your Journey to a Blue Staffy: FAQs for Buyers",
+      "intent": "Thirteen rows of data/faq.json. Twelve of them are the migrated page's own accordion, carried question for question under working rule 15 — the questions are elements of this page's verbatim set and not the outline's to reword — and the thirteenth is `listing-availability`, this page's own row about the list going out of date. Seven of the twelve are breed and behaviour questions this page does not own: each one is answered in a sentence and its row is SOURCED to the page that evidences it, /uk-staffordshire-bull-terrier-guide/ or /blue-staffy-health-uk/, so no answer leans on a fact this page does not hold.",
+      "category": "A",
+      "group": "COMPETITOR-BASED",
+      "why": "The two classified listings carry four FAQ rows each and neither answers a question about reserving a particular dog; the breeder listing with eleven puppies on it and the stud page carry no FAQ markup at all.",
+      "why_source": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/ and https://ukstaffypups.uk/staffy-puppies-for-sale/ (scan 2026-09-20) — 4 rows and 0 rows",
+      "framework": "QAB",
+      "words": {
+        "min": 80,
+        "max": 105
+      },
+      "shape": "faq",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "Your Journey to a Blue Staffy: FAQs for Buyers: the accordion in a card with a jump list, against the full-width accordion the shorter pages use"
+      },
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "still available",
+          "reserve",
+          "visit",
+          "eight weeks",
+          "vaccinations"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "is that puppy still available",
+          "how do i reserve a puppy",
+          "can i visit before i decide",
+          "how old will the puppy be",
+          "what has the puppy had before it leaves"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [
+        "ont:refundable-deposit"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "listing-availability",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-health-clearances",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-first-time-owners",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-reputable-breeders",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-cost",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-pitbull",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-scratching",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-family-dog",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-life-expectancy",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-aggressive",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-left-alone",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-training",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "listing-sleep",
+          "intent": "",
+          "children": []
+        }
+      ],
+      "questions": [
+        "Where can I buy a blue Staffy puppy in the UK?",
+        "Which blue Staffy puppies do you have available right now?",
+        "How do I know a puppy on this page is still available?",
+        "How do I reserve one of these puppies?",
+        "What happens between my enquiry and collection day?",
+        "Can I come and see the puppy with its mother?",
+        "Who are the parents of this litter, and are they tested?",
+        "Do you deliver, or do I collect the puppy myself?",
+        "What has the puppy had before it leaves you?",
+        "How old should a puppy be before it comes home?"
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S1",
+        "note": "Working rule 15 rewrote this block. All twelve migrated questions are carried word for word as NEW rows of data/faq.json, `listing-`-prefixed, each with a tests/py/test_faq_data.py fact-phrase entry checked against the page its `source` names. The answers are written fresh (working rules 8 and 9): not one carries the migrated £850-£1,200 band, the £300 non-refundable deposit or the twelve-to-fourteen-hour sleep figures, and `listing-cost` names data/settings.json as its source and interpolates the deposit rather than typing a price. The five rows this record reused before — sale-reserve, contact-visit, buying-best-age and health-vaccinations — leave this page's tree: the carried questions ask the same ground in this page's own words, and an accordion carrying both would ask each twice. QUERY AUGMENTATION for 'buy blue staffy puppies uk', ten questions, each mapped to a section or a row: q1 -> puppies and the listing-availability row; q2 -> puppies; q3 -> gallery; q4 -> steps; q5 -> steps and the listing-cost row; q6 -> whats-included; q7 -> parents and the listing-health-clearances row; q8 -> delivery; q9 -> why-choose and the listing-reputable-breeders row; q10 -> owners. No row is added for a question this page's body does not answer."
+      },
+      "verbatim_heading": true,
+      "verbatim_opening": "We understand you’ll have questions when looking for a credible blue Staffordshire terrier breeder. Here are some common inquiries to help you in your search:"
+    },
+    {
+      "id": "enquiry",
+      "n": 12,
+      "heading": "Ask About A Particular Puppy",
+      "intent": "The kit ContactFormKit, and the one enquiry form on this page. It is here because this is the listing and the spec puts the form where the transaction is: a reader who has just read six cards should be able to name one without navigating. The copy above it says what to put in the message — the puppy's name, where you are, and who is in the house — and the form's own note carries the privacy link.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page's enquiry form was a WordPress form removed at migration (data/page-map.json refresh_flags wp-form-removed), so the site's own listing page has had nothing on it for a reader to fill in since the port.",
+      "why_source": "data/page-map.json — /buy-blue-staffy-puppies-uk/ refresh_flags wp-form-removed; src/components/kit/ContactFormKit.astro — the field contract scripts/form_contract_audit.py fixes",
+      "framework": "AIDA",
+      "words": {
+        "min": 55,
+        "max": 70
+      },
+      "shape": "form",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "container",
+        "note": "Ask About A Particular Puppy: the form in a card with the heading beside it, against the full-width form under its heading"
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "enquiry",
+          "reserve",
+          "contact"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [],
+        "conversational": [
+          "how do i enquire about one of these puppies"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "enquire about a blue staffy puppy"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/privacy-policy-uk/",
+            "anchor": "our privacy policy",
+            "nav": true,
+            "why": "carried from the migrated page, and rendered by ContactFormKit's own note"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": "ContactFormKit, the one enquiry form on this page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py; the puppy field is the one this page most needs, because the answer to it is a row of data/puppies.json."
+      },
+      "verbatim_opening": "Fill in your details below and we'll be in touch"
+    },
+    {
+      "id": "talk-to-us",
+      "n": 13,
+      "heading": "Before You Send Anything, Come And Look",
+      "intent": "The close, and the calmest thing a listing can say: nothing has to be decided from a photograph. It restates the email address and the hours from data/settings.json, says visits are by appointment because this is a family house, and points at the contact page and the breed guide for anyone who is not sure a Staffordshire Bull Terrier is the right dog at all. No countdown, no scarcity and no 'before they're gone': the migrated title's urgency is not restated.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The migrated title was 'THE BEST 3 Safe Steps To Buy Blue Staffy Puppies UK Before They're Gone' and the body closed on a 24-hour response promise and a delivery countdown, which is pressure applied to the exact reader the buying guide tells to slow down.",
+      "why_source": "data/settings.json — email staffies@bluestaffyuk.uk, hours Mo-Su 09:00-23:00, location_label Carlisle · Cumbria; data/page-map.json — the migrated title",
+      "framework": "AIDA",
+      "words": {
+        "min": 120,
+        "max": 150
+      },
+      "shape": "standard",
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "accent",
+        "note": "Before You Send Anything, Come And Look: brass as a hairline under the heading rather than as a fill, against the brass-filled callout the buy pages use"
+      },
+      "cta": 1,
+      "keywords": {
+        "primary": [
+          "buy blue staffy puppies uk"
+        ],
+        "lsi": [
+          "visit",
+          "appointment",
+          "contact",
+          "is a staffy right for me"
+        ],
+        "longtail": [],
+        "brand": [
+          "Blue Staffy UK"
+        ],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "can i visit before i reserve a puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "contact blue staffy uk"
+        ]
+      },
+      "entities": [
+        "ont:lisa-bright"
+      ],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "Arranging A Time To Visit Us",
+          "intent": "We are a family home, not a kennel with opening hours.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "If You Are Not Sure Yet",
+          "intent": "The breed guide is the honest place to start, not this page.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-breeders-contact/",
+            "anchor": "Write to us about a particular puppy",
+            "why": "carried from the migrated page (anchor 'Contact Us')",
+            "sentence_start": true
+          },
+          {
+            "href": "/uk-staffordshire-bull-terrier-guide/",
+            "anchor": "Our guide to living with the breed",
+            "why": "carried from the migrated page (anchor 'Breed Guide')",
+            "sentence_start": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+            "anchor": "The PDSA's veterinary page for the breed",
+            "why": "carried from the migrated page (anchor 'Staffordshire Bull Terrier Health Issues from PDSA')",
+            "library_row": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S2",
+        "note": ""
+      }
+    }
+  ],
+  "tuple": {
+    "hero": "hero-h-fs1",
+    "dial": "",
+    "rail": "",
+    "toc": "pagenav-c",
+    "takeaway": [
+      "takeaways-s2"
+    ],
+    "table": "",
+    "faq": "faq-s1",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "Step Note:"
+    ]
+  },
+  "assets": [
+    {
+      "slot": "listing-hero",
+      "kind": "photo",
+      "w": 1080,
+      "h": 917,
+      "required": true,
+      "status": "baked",
+      "file": "/images/staffordshire-bull-terrier-for-sale-uk-ready.webp",
+      "alt": "KC-registered Staffordshire Bull Terrier puppy for sale UK — ready to reserve"
+    },
+    {
+      "slot": "listing-buy-now",
+      "kind": "photo",
+      "w": 918,
+      "h": 602,
+      "required": true,
+      "status": "baked",
+      "file": "/images/buy-staffordshire-bull-terrier-uk-now.webp",
+      "alt": "A confident blue Staffordshire Bull Terrier pups available to buy in the UK."
+    },
+    {
+      "slot": "listing-pups-near-you",
+      "kind": "photo",
+      "w": 870,
+      "h": 1080,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-pups-near-you.webp",
+      "alt": "A group of adorable blue Staffy puppies, suggesting availability and local options."
+    },
+    {
+      "slot": "listing-trust",
+      "kind": "photo",
+      "w": 952,
+      "h": 1080,
+      "required": true,
+      "status": "baked",
+      "file": "/images/uk-blue-staffy-breeders-trust.webp",
+      "alt": "Blue Staffy puppy representing ethical breeding from trusted UK breeders in Carlisle. | Buy Blue Staffy Puppies UK"
+    },
+    {
+      "slot": "listing-delivery",
+      "kind": "photo",
+      "w": 1024,
+      "h": 1024,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+      "alt": "Blue Staffy puppies inside a safe delivery van for UK nationwide transport."
+    },
+    {
+      "slot": "listing-owner-london",
+      "kind": "photo",
+      "w": 400,
+      "h": 437,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-testimonial-london-happy-owner.webp",
+      "alt": "Happy Blue Staffy puppy owner from London sharing a testimonial"
+    },
+    {
+      "slot": "listing-owner-cardiff",
+      "kind": "photo",
+      "w": 640,
+      "h": 480,
+      "required": true,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-testimonial-cardiff-daniel.webp",
+      "alt": "Smiling Daniel from Cardiff with his new Blue Staffy puppy, testimonial quote displayed"
+    },
+    {
+      "slot": "listing-hero-tile-2",
+      "kind": "photo",
+      "w": 870,
+      "h": 1080,
+      "required": false,
+      "status": "baked",
+      "file": "/images/blue-staffy-pups-near-you.webp",
+      "alt": "Blue Staffy puppies available near you in the UK",
+      "caption": "Available now"
+    },
+    {
+      "slot": "listing-hero-tile-3",
+      "kind": "photo",
+      "w": 1024,
+      "h": 1024,
+      "required": false,
+      "status": "baked",
+      "file": "/images/blue-staffy-puppy-delivery-uk.webp",
+      "alt": "A blue Staffy puppy ready for UK home delivery",
+      "caption": "Ready to travel"
+    }
+  ],
+  "dropped": {
+    "prices": [
+      "£850 to £1,200 — the migrated page's stated price, written twice ('typically priced between £850 – £1,200, depending on lineage and specific traits' and, in the FAQ, 'typically range from £850 to £1,200'). The band is below the locked prices and predates them (Known Issue 11): data/price-matrix.json holds £1,500 for a male and £1,700 for a female, and the puppy cards render the price_gbp of each row of data/puppies.json.",
+      "£300, 'a non-refundable deposit of £300 is required to reserve your chosen puppy', written twice. Both the amount and the terms are wrong: data/price-matrix.json holds deposit_gbp 500 and deposit_refundable true, and `steps` states those.",
+      "'depending on lineage and specific traits' — a pricing rule the matrix does not have. The only thing that moves a price in data/price-matrix.json is the puppy's sex.",
+      "'5 Weeks Free Insurance: Peace of mind for their initial weeks with you.' — an insurance arrangement, with a term, that no file on disk records."
+    ],
+    "names": [
+      "Becky W. of Leeds and Daniel H. of Cardiff — the migrated page's two named testimonials, neither of which appears in data/reviews.json. The Cardiff photograph is still carried at its original path and alt text (working rule 11) and the alt text still describes the person in it; the QUOTE beside it is not carried, and the only review this page renders is Rachel L., which data/reviews.json sources to this very page.",
+      "Wolverhampton, Cardiff, Newcastle-under-Lyme, London and Manchester as LINKED location pages. Project 5 owns the location cluster and rewrites those pages; linking them from a rebuilt page before they are rewritten would point a reader at the material Known Issue 16 is about. The town names themselves are not struck from the prose: they are destinations a reader might live in rather than claims about this kennel, and they are carried inside two elements of the verbatim set — the delivery H2 and the paragraph under its H3 — with only the former city removed from the second (verbatim.changed).",
+      "the city the migrated body names twice as where the puppies are raised, and once inside an image alt. It is not written back into this record or onto the rebuilt page: data/settings.json is Carlisle · Cumbria (Known Issue 16) and spec section 7 requires the old name to be absent from src and data, which is why `listing-trust` is the one asset on this record whose alt is not the migrated wording — the name is replaced with Carlisle and nothing else in the sentence is changed."
+    ],
+    "creds": [
+      "'Your #1-Stop Shop' — a ranking claim measured against nothing, and the migrated H1.",
+      "'THE BEST 3 Safe Steps … Before They're Gone' — the migrated meta title's superlative and its scarcity clause. The three steps are carried; the ranking and the urgency are not.",
+      "the health guarantees the migrated contract sentence promises ('our comprehensive Puppy Sales Contract outlining all health guarantees and terms'). data/settings.json holds guarantee_days null, so there is no term, no length and no cover to state; the contract itself is carried on /buy-staffy-puppies-for-sale-uk/, which is the page that lists the paperwork.",
+      "'Join 500+ Readers!' — a subscriber count with no file behind it, on a newsletter block this record does not carry.",
+      "'a lifelong commitment to quality and care' — an open-ended promise. The page states the hours from data/settings.json instead."
+    ],
+    "text": [
+      "'Pets in litter: Males: 2 Females: 2 Age: 12 weeks, 6 days Ready to Leave: Now Viewable with Mother KC Registered' — 'Viewable with Mother' and the KC registration are restated in `parents`; the counts and the age are not, because data/puppies.json holds six dogs and no age for any of them, and a count typed into prose is the first thing on a listing to go stale.",
+      "'Please note: Our available puppies are updated regularly.' — restated in `puppies`, and it is the sentence the new `listing-availability` FAQ row is answered from.",
+      "'Our pups come with full KC registration, health papers, and will receive constant interaction, early socialisation, and the best possible start in life.' — the KC registration is restated in `parents`; the socialisation case is /buy-staffy-puppies-for-sale-uk/'s and this page links it.",
+      "'Our puppies are microchipped and wormed, have received their first vaccinations, and come with comprehensive care instructions.' — carried into the FAQ through the health-vaccinations row rather than restated in prose, because /blue-staffy-health-uk/ owns what a puppy has had before it leaves.",
+      "'A non-refundable deposit of £300 is required to reserve your chosen puppy.' and '04 Deposit & Contract If it's a perfect match, a non-refundable deposit secures your chosen puppy, accompanied by our comprehensive Puppy Sales Contract outlining all health guarantees and terms.' — reserving a named puppy with a deposit and a contract is restated in `steps`; the amount, the terms and the guarantees are not, for the reasons in dropped.prices and dropped.creds.",
+      "'05 Puppy Updates We'll keep you updated with photos and videos of your puppy's progress as they grow.' — one of the six migrated steps. It is not a decision a buyer makes, so it is not one of the three steps; and it is a service commitment no file on disk records.",
+      "'06 Collection or Delivery Your Staffyy puppy will be ready to join your family at 12 weeks old.' — collection and delivery are restated in `delivery`; the twelve-week figure is not, for the reason above.",
+      "'5 Weeks Free Insurance: Peace of mind for their initial weeks with you.' and 'Puppy Care Guide: Our comprehensive guide with tips on training, feeding, and socialization.' — the guide is /blue-staffy-blog-guides/ and this page links it; the insurance is in dropped.prices.",
+      "'We provide safe and reliable UK-wide puppy delivery using trusted, DEFRA-approved pet transport services.' — restated in `delivery`, which is also where the government's welfare-in-transport guidance is cited; the band itself stays on /blue-staffy-pup-sale-uk/.",
+      "'A healthy blue Staffy typically has a life expectancy of 12 to 14 years, though many live even longer with proper care.' and the eleven other migrated ANSWERS around it (sleep hours, being left alone, aggression, first-time owners, training). data/boards/uk-staffordshire-bull-terrier-guide.json and data/boards/blue-staffy-health-uk.json own that material and this page links both. The twelve QUESTIONS are a different matter: working rule 15 carries them word for word as rows of data/faq.json, each answered in a sentence and sourced to the page that evidences it. What is dropped here is the migrated wording of the answers, including its sleep figures, which no file on disk holds.",
+      "'Blue Staffy News: Join 500+ Readers!' and '📬 Get Blue Staffy Updates' — the newsletter block. No file on disk holds a subscriber list, and `tuple.newsletter` is empty on this record.",
+      "'See Our Blue Staffy Puppies in Action!' — a heading with no video under it. data/facts/buy-blue-staffy-puppies-uk.json records embeds as empty and data/page-map.json records embeds 0, so there is no embed to carry and no heading to carry it. It is an element of the verbatim set, so the drop is also recorded in verbatim.changed with its opening.",
+      "'Contact Us Today 🐾 Reserve Your Blue Staffy Puppy Fill in your details below and we'll be in touch within 24 hours ⏰ Delivery Note: Delivery begins 24–48 hours after payment confirmation.' — the migrated reservation block. ContactFormKit renders its own note; the reply window this site states is the 24-48 business hours of data/faq.json's sale-reserve row, and the delivery timing is a promise no file on disk holds.",
+      "'Your #1-Stop Shop to Buy Blue Staffy Puppies UK, Safely &amp; Ethically From browsing to doorstep delivery — everything you need to know to welcome a happy, healthy Blue Staffy into your life.' — the migrated H1 and the eyebrow line under it. The H1's rank claim is struck and the rest of its wording is carried as the page's own H1 (verbatim.changed, `dropped.creds`); the eyebrow is a slogan rather than a claim, and the hero's lede says what the page is in this kennel's own words instead.",
+      "'Pricing &amp; Reservation: Our KC-registered blue Staffy puppies are typically priced between £850 – £1,200 , depending on lineage and specific traits.' — the £850 to £1,200 band in its first spelling. See `dropped.prices`: data/price-matrix.json holds £1,500 and £1,700, /blue-staffy-pup-sale-uk/ states the table, and the cards on this page carry each dog's own price_gbp. 'depending on lineage and specific traits' is a pricing rule the matrix does not have.",
+      "'The Staffy puppy prices for a KC registered Staffy from a reputable breeder in the UK, like BlueStaffyUK.uk, typically range from £850 to £1,200.' — the £850 to £1,200 band in its second spelling, inside the migrated FAQ answer to 'How much does a blue Staffy cost UK?'. The QUESTION is carried word for word as the `listing-cost` row of data/faq.json (working rule 15); the answer is rewritten to name data/settings.json and interpolate the deposit rather than to state a price at all.",
+      "'02 Expression of Interest Contact Us to express your interest in a specific puppy or an upcoming litter.' — one of the six migrated steps. Writing to us about a named puppy is restated as step one of `steps`, in this page's own words; the migrated numbering goes with the six-into-three collapse, and the offer to register interest in 'an upcoming litter' is not restated because no file on disk holds a waiting list or an unborn litter.",
+      "'This constant human interaction and early socialisation lay the foundation for a confident, adaptable, and affectionate Staffy temperament, making them ideal family pets.' — the socialisation case. /buy-staffy-puppies-for-sale-uk/ is the why-us page (plan Task 16) and owns the argument at length; this page links it and states in one line that the puppies are raised in the kitchen. Spec section 2 is what keeps the three sale pages from arguing one another's case.",
+      "'The Staffy is recognized as a separate breed by The Kennel Club and has its specific breed standard, as we mentioned on our homepage.' — the migrated answer to 'Is a Staffy a pitbull?'. The QUESTION is carried word for word as the `listing-pitbull` row of data/faq.json; the answer is rewritten in one sentence and SOURCED to /uk-staffordshire-bull-terrier-guide/, which owns the breed standard and the comparison, so no answer here leans on a fact this page does not hold.",
+      "'Aggression in any dog breed typically stems from poor socialization, lack of training, or past negative experiences, not their inherent nature.' — the migrated answer to 'Are blue Staffies aggressive?'. The question is carried as the `listing-aggressive` row; the answer is rewritten and sourced to /uk-staffordshire-bull-terrier-guide/, which owns the law and the reputation together.",
+      "'While they can be trained to tolerate short periods of being alone (e.g., 2-4 hours for an adult dog), they are not a breed that should be left in isolation for extended durations.' — the migrated answer to 'Can blue Staffies be left alone?', including its two-to-four-hour figure. The question is carried as the `listing-left-alone` row; the figure is not restated because no file on disk holds it, and /uk-staffordshire-bull-terrier-guide/ owns how long a Staffy can reasonably be left.",
+      "'However, they can also be strong-willed, requiring consistent and firm training from a young age.' — part of the migrated answer to 'Are Staffies hard to train?'. The question is carried as the `listing-training` row and answered in a sentence sourced to /uk-staffordshire-bull-terrier-guide/, which owns training and early socialisation.",
+      "'Early socialisation and positive reinforcement methods work best.' — the rest of the migrated training answer, dropped with the sentence above it and for the same reason: the training method is the breed guide's material, not the listing's.",
+      "'Adult dogs typically sleep around 12-14 hours a day, often including naps during the day.' — the migrated answer to 'How long do Staffies sleep at night?'. The question is carried as the `listing-sleep` row; the twelve-to-fourteen-hour figure is not restated, because no file on disk holds it and /uk-staffordshire-bull-terrier-guide/'s life stage section is what the row is sourced to.",
+      "'Puppies, including Staffy puppies, tend to sleep even more, around 18-20 hours, to support their growth and development.' — the second half of the same sleep answer, with its eighteen-to-twenty-hour figure, dropped on the same ground: an unsourced number is not restated, and the row that carries the question points at the page that covers rest by life stage."
+    ],
+    "links": [
+      "/uk-locations/uk-staffordshire-bull-terrier-breeder/, /uk-locations/staffy-breeding-dogs-glasgow/, /uk-locations/staffy-puppies-for-sale-glasgow/, /uk-locations/staffy-puppies-wolverhampton/, /uk-locations/staffy-puppies-cardiff-wales/, /uk-locations/blue-staffies-newcastle-under-lyme/ and /uk-locations/blue-staffy-puppies-uk/ — the migrated location-cluster links. Project 5 owns the location cluster and rewrites those pages; linking them from a rebuilt page before they are rewritten would point a reader at the material Known Issue 16 is about. The two hrefs above that carry the old city in their own slug are kept as slugs of unrebuilt pages and are not linked.",
+      "/buy-blue-staffy-puppies-uk/ — the migrated body linked this page to itself, with the anchor 'Staffy puppy care'.",
+      "#get-staffy (twice) and #contact-now — the migrated page's in-page anchors, pointing at fragments of the WordPress layout that no longer exists. The rebuilt page's own section ids are the jump targets and are owned by nav-anchors-resolve."
+    ]
+  },
+  "approval": {
+    "approved_at": "2026-09-20T22:05:09.411Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 1,
+      "title": 1
+    },
+    "notes": {
+      "at-a-glance": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers. The strip is on this page as well as on /blue-staffy-pup-sale-uk/ because it is the one component whose figures are the answer to 'is one still available', which is this page's own question; the surrounding prose is about the litter, not about the price.",
+      "delivery": "Prose, not a table: /blue-staffy-pup-sale-uk/ carries the two-row delivery table and a second copy here is the duplication the dup gate is for.",
+      "enquiry": "ContactFormKit, the one enquiry form on this page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py; the puppy field is the one this page most needs, because the answer to it is a row of data/puppies.json.",
+      "gallery": "Restored under rule 15. The photograph moves here from `puppies`, which keeps its own; no new image is added, because working rule 11 reuses what is already served and this page's seven images are all spoken for. The migrated 'See Our Blue Staffy Puppies in Action!' block is NOT restored beside it — data/facts records this page's embeds as empty, so there is no video to put under it.",
+      "navigation": "",
+      "owners": "MODE: single — the picked S3 is the BED and the mode is passed explicitly, the same split /blue-staffy-pup-sale-uk/ makes in the other direction (boxClass() emits no mode, so the bed is the style's and the count is the board's). One review renders, not the grid S3 would carry on its own. Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names.",
+      "parents": "No photograph: the two parent photographs on this site are on /blue-staffy-pup-sale-uk/ and /blue-staffy-health-uk/ at their original paths, and data/facts/buy-blue-staffy-puppies-uk.json does not list either of them for this page. S3's InfoCard aside can carry the two test names beside the prose.",
+      "puppies": "All six rows of data/puppies.json are status Available today. The prose says the puppies are updated regularly and names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs and the migrated block's own counts are logged in dropped.text.",
+      "questions": "Working rule 15 rewrote this block. All twelve migrated questions are carried word for word as NEW rows of data/faq.json, `listing-`-prefixed, each with a tests/py/test_faq_data.py fact-phrase entry checked against the page its `source` names. The answers are written fresh (working rules 8 and 9): not one carries the migrated £850-£1,200 band, the £300 non-refundable deposit or the twelve-to-fourteen-hour sleep figures, and `listing-cost` names data/settings.json as its source and interpolates the deposit rather than typing a price. The five rows this record reused before — sale-reserve, contact-visit, buying-best-age and health-vaccinations — leave this page's tree: the carried questions ask the same ground in this page's own words, and an accordion carrying both would ask each twice. QUERY AUGMENTATION for 'buy blue staffy puppies uk', ten questions, each mapped to a section or a row: q1 -> puppies and the listing-availability row; q2 -> puppies; q3 -> gallery; q4 -> steps; q5 -> steps and the listing-cost row; q6 -> whats-included; q7 -> parents and the listing-health-clearances row; q8 -> delivery; q9 -> why-choose and the listing-reputable-breeders row; q10 -> owners. No row is added for a question this page's body does not answer.",
+      "steps": "Three cards, so S1's stack and S3's rail both read; S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure and its terms are stated once here and the price table stays on /blue-staffy-pup-sale-uk/.",
+      "talk-to-us": "RETITLED AFTER APPROVAL (build review, 2026-09-21; spec §9 amendment 11). The H3 read \"Visits Are By Appointment\", which /blue-staffy-pup-sale-uk/ — built from its own board after this one was approved — carries live, and board_gate.py fails the exact match on both boards. Neither page's verbatim set contains it, so working rule 15 does not decide between them; the price page was built first and keeps it, and this page's close is \"come and look\", so its sub-heading now says how a visit is arranged rather than restating the policy label. The section, its style pick and its links are unchanged.",
+      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. data/facts/buy-blue-staffy-puppies-uk.json records no embed for this page and data/page-map.json records embeds 0, so none is placed here — the migrated 'See Our Blue Staffy Puppies in Action!' heading had no iframe under it and is logged in dropped.text.",
+      "whats-included": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the step ladder and `why-choose`, and both of its neighbours on either side already carry one. Kept to a short list — the health page owns what a puppy has had done and the price page owns what it costs.",
+      "why-choose": "Restored under rule 15 to carry the migrated 'Why Choose' H2's opening. Its heading is NOT the old wording: the migrated site put a near-identical why-us H2 on this page and on /blue-staffy-pup-sale-uk/, and each one's wording fails board_gate.py on a five-token shingle against the other page's live heading, so both records change theirs. No photograph: it sits between the step ladder and the delivery block, both of which carry one."
+    },
+    "picks": {
+      "at-a-glance": "C-FS3",
+      "delivery": "S2",
+      "enquiry": "S3",
+      "gallery": "S1",
+      "owners": "S3",
+      "parents": "S1",
+      "puppies": "S2",
+      "questions": "S1",
+      "steps": "S2",
+      "talk-to-us": "S2",
+      "top": "H-FS1",
+      "whats-included": "S1",
+      "why-choose": "S1"
+    },
+    "record_hash": "665616f05fedd6c40d29ca4c76a303065bf6409f64a9953c9e23a10472fc3870",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "table": "",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Step Note:"
+      ]
+    },
+    "reapproved_at": "2026-09-21T04:25:56Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T01:47:41Z",
+        "reason": "post-approval wording/link fix from build review; picks unchanged",
+        "changed_paths": [
+          "/sections/9/options/note",
+          "/sections/12/tree/0/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T04:25:56Z",
+        "reason": "tree heading collided with /blue-staffy-health-uk/'s own; the page that owns the DNA table keeps the wording",
+        "changed_paths": [
+          "/sections/4/tree/1/heading",
+          "/sections/4/tree/1/intent"
+        ]
+      }
+    ]
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-20T17:32:09.708Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 1,
+      "title": 1
+    },
+    "notes": {
+      "at-a-glance": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers. The strip is on this page as well as on /blue-staffy-pup-sale-uk/ because it is the one component whose figures are the answer to 'is one still available', which is this page's own question; the surrounding prose is about the litter, not about the price.",
+      "delivery": "Prose, not a table: /blue-staffy-pup-sale-uk/ carries the two-row delivery table and a second copy here is the duplication the dup gate is for.",
+      "enquiry": "ContactFormKit, the one enquiry form on this page. Its field contract (name, email, phone, location, puppy, message, the honeypot and the two hidden fields) is fixed by scripts/form_contract_audit.py; the puppy field is the one this page most needs, because the answer to it is a row of data/puppies.json.",
+      "gallery": "Restored under rule 15. The photograph moves here from `puppies`, which keeps its own; no new image is added, because working rule 11 reuses what is already served and this page's seven images are all spoken for. The migrated 'See Our Blue Staffy Puppies in Action!' block is NOT restored beside it — data/facts records this page's embeds as empty, so there is no video to put under it.",
+      "navigation": "",
+      "owners": "MODE: single — pick S1, the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Both migrated photographs are carried at their original paths and alt text (working rule 11); the quotation beside the second one is not carried, because the only quotes this page renders are rows of data/reviews.json — see dropped.names.",
+      "parents": "No photograph: the two parent photographs on this site are on /blue-staffy-pup-sale-uk/ and /blue-staffy-health-uk/ at their original paths, and data/facts/buy-blue-staffy-puppies-uk.json does not list either of them for this page. S3's InfoCard aside can carry the two test names beside the prose.",
+      "puppies": "All six rows of data/puppies.json are status Available today. The prose says the puppies are updated regularly and names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs and the migrated block's own counts are logged in dropped.text.",
+      "questions": "Working rule 15 rewrote this block. All twelve migrated questions are carried word for word as NEW rows of data/faq.json, `listing-`-prefixed, each with a tests/py/test_faq_data.py fact-phrase entry checked against the page its `source` names. The answers are written fresh (working rules 8 and 9): not one carries the migrated £850-£1,200 band, the £300 non-refundable deposit or the twelve-to-fourteen-hour sleep figures, and `listing-cost` names data/settings.json as its source and interpolates the deposit rather than typing a price. The five rows this record reused before — sale-reserve, contact-visit, buying-best-age and health-vaccinations — leave this page's tree: the carried questions ask the same ground in this page's own words, and an accordion carrying both would ask each twice. QUERY AUGMENTATION for 'buy blue staffy puppies uk', ten questions, each mapped to a section or a row: q1 -> puppies and the listing-availability row; q2 -> puppies; q3 -> gallery; q4 -> steps; q5 -> steps and the listing-cost row; q6 -> whats-included; q7 -> parents and the listing-health-clearances row; q8 -> delivery; q9 -> why-choose and the listing-reputable-breeders row; q10 -> owners. No row is added for a question this page's body does not answer.",
+      "steps": "Three cards, so S1's stack and S3's rail both read; S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure and its terms are stated once here and the price table stays on /blue-staffy-pup-sale-uk/.",
+      "talk-to-us": "",
+      "top": "Image right, above or left: the three hero arrangements from src/lib/boardStyles.ts. No CTA buttons and no trust chips on the hero. data/facts/buy-blue-staffy-puppies-uk.json records no embed for this page and data/page-map.json records embeds 0, so none is placed here — the migrated 'See Our Blue Staffy Puppies in Action!' heading had no iframe under it and is logged in dropped.text.",
+      "whats-included": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the step ladder and `why-choose`, and both of its neighbours on either side already carry one. Kept to a short list — the health page owns what a puppy has had done and the price page owns what it costs.",
+      "why-choose": "Restored under rule 15 to carry the migrated 'Why Choose' H2's opening. Its heading is NOT the old wording: the migrated site put a near-identical why-us H2 on this page and on /blue-staffy-pup-sale-uk/, and each one's wording fails board_gate.py on a five-token shingle against the other page's live heading, so both records change theirs. No photograph: it sits between the step ladder and the delivery block, both of which carry one."
+    },
+    "picks": {
+      "at-a-glance": "S2",
+      "delivery": "S2",
+      "enquiry": "S3",
+      "gallery": "S1",
+      "owners": "S3",
+      "parents": "S1",
+      "puppies": "S2",
+      "questions": "S1",
+      "steps": "S2",
+      "talk-to-us": "S2",
+      "top": "S2",
+      "whats-included": "S1",
+      "why-choose": "S1"
+    },
+    "section_hashes": {
+      "top": "f15b53ae8928dbd6cbe67cb6490f3bec9239b595869476075cb3fb4fb66dbeef",
+      "at-a-glance": "1cbb714de92df065253f80bf12cf117115c8befee2e68dc8463917f388e3d261",
+      "puppies": "3bb07d98be0c290ba00d70a48fe7d386e2360e171cacd7e819549e7da11a820c",
+      "gallery": "8fb4c8255993c3d0e5c423726289d0ecdbdbd6349313089d225c87a66523b289",
+      "parents": "593465f3a9f4c3e8dc7294b312c63a18d2485a9ec28bf7652922824dc12c669a",
+      "steps": "499a671f70043f1ca084c036b41bec28f35e5f83cc279729c9e6b4eb280e1f57",
+      "whats-included": "fbe4d8d4a46e8b17ef7ca3b54a91c9112e1888b2a7aeafa9cb8cc2b97db01381",
+      "why-choose": "f3f5ccfa45d48db4fe460fa98fb451b021d1294d2fa7b49efcf911040db4618f",
+      "delivery": "26400d657f9184aed52297c128fd79ee5d767dd73174c44eb78118726ec94b28",
+      "owners": "9e32c5075a3b3b871cfadcd3f931cfe487ff9ac9bd3cf56206ddaf8e257e0543",
+      "questions": "4df1b07568758547eb1cbdedaec9d92c72b18cbe4c905172a2fefbf1ee0a2bc2",
+      "enquiry": "9d98ee6d997954dea66e7d0ed31d4e961cf7bbe7ff11346e17886b5f4b716724",
+      "talk-to-us": "deab5e301c4a24ad74ecab2c6538c86cb555c4e0b9a8704eac17a3e31650ac4c"
+    },
+    "record_hash": "6d6030cac3dba8da7b796e337dbc67e9488c9ad11d4bd0243b2cecc74c116915",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Step Note:"
+      ]
+    }
+  },
+  "verbatim": {
+    "changed": [
+      {
+        "kind": "h1",
+        "old": "Your #1-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically",
+        "new": "Your One-Stop Shop to Buy Blue Staffy Puppies UK, Safely & Ethically",
+        "reason": "a ranking claim measured against nothing (dropped.creds, working rule 9): '#1' asserts a position in a market no file on disk measures, and working rule 9 forbids a claim no file on disk measures, and spec section 5 strikes the No.1 patterns from this rebuild's titles and descriptions. The phrase it puns on is written out instead — 'One-Stop Shop' is the same words without the rank — so every other word of the migrated H1 is carried, and this is the same excision the emoji rows make elsewhere in this list."
+      },
+      {
+        "kind": "heading",
+        "old": "Why Choose a Blue Staffy from BlueStaffyUK?",
+        "new": "Why Buy From BlueStaffyUK: Ethical Breeding and Health",
+        "reason": "collides with another page's heading: /blue-staffy-pup-sale-uk/ carries 'Why Choose a Blue Staffy from BlueStaffyUK.uk?' live today and board_gate.py fails this wording on the five-token run 'a blue staffy from bluestaffyuk'. The collision is mutual — the migrated site put a near-identical why-us H2 on both sale pages — so both records change theirs rather than one page claiming a wording it cannot pass the gate with while the other is still the migrated page. The section is restored and its opening paragraph is carried word for word."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Why Buy a Blue Staffy from BlueStaffyUK? Our Commitment to Ethical Breeding and Health",
+        "new": "",
+        "reason": "the first of two near-identical why-us H2s on the same migrated page, and the outline carries one why section. Its block is the 'Who We Are' and 'Our Mission' byline about the breeder, which /blue-staffy-uk-breeders/ owns, not the listing page; and it collides with the live /blue-staffy-pup-sale-uk/ heading on the same 'a blue staffy from bluestaffyuk' run as the other one, so it could not be carried as written either. The pillars under the second H2 are what `why-choose` restores. Its opening paragraph goes with it."
+      },
+      {
+        "kind": "opening",
+        "old": "Dreaming of welcoming a loyal and loving blue Staffordshire Bull Terrier puppy into your family? At BlueStaffyUK.uk, we are dedicated to connecting you with the highest quality, KC-registered blue Staffy puppies available in the UK.",
+        "new": "",
+        "reason": "its heading is dropped as the duplicate why-us H2, and an opening paragraph has no page without the heading it opens. It also calls this kennel's puppies 'the highest quality … available in the UK', a superlative measured against nothing (working rule 9)."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "See Our Blue Staffy Puppies in Action!",
+        "new": "",
+        "reason": "a heading with no video under it. data/facts/buy-blue-staffy-puppies-uk.json records this page's embeds as empty and data/page-map.json records embeds 0, so working rule 14 has no id to carry and there is nothing for the heading to head. The photographs it promised are the `gallery` section's, restored above at its own migrated heading."
+      },
+      {
+        "kind": "opening",
+        "old": "Get a real feel for the vibrant personalities of our blue Staffy puppies thriving in their home environment. Watch them play, interact, and show off their unique charms.",
+        "new": "",
+        "reason": "its heading is dropped with the empty video block, and 'Watch them play, interact, and show off their unique charms' is an instruction to watch a film this page does not have."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Blue Staffy News: Join 500+ Readers!",
+        "new": "",
+        "reason": "an unsourced figure: '500+ Readers' is a subscriber count no file on disk holds, which working rule 9 forbids asserting (dropped.creds). `tuple.newsletter` is empty on this record, so there is no newsletter block for it to head either."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "📬 Get Blue Staffy Updates",
+        "new": "",
+        "reason": "a newsletter widget's label, not a section: the migrated site repeats it unchanged on / and on /blue-staffy-health-uk/, so it names no page, and this outline carries no newsletter block for it to head (tuple.newsletter is empty)."
+      },
+      {
+        "kind": "opening",
+        "old": "New litters, breeder tips & puppy availability — straight to your inbox",
+        "new": "",
+        "reason": "its heading is dropped with the newsletter widget, and an opening paragraph has no page without the heading it opens."
+      },
+      {
+        "kind": "heading",
+        "old": "Your Adoption Journey: How to Welcome a Blue Staffy",
+        "new": "Your Adoption Journey: Bringing a Blue Staffy Home",
+        "reason": "collides with another page's heading: the tail 'to welcome a blue staffy' is a five-token shingle match with the live /blue-staffy-uk-breeders/ heading 'Ready to Welcome a Blue Staffy into Your Home?' and board_gate.py fails it. The first three words — the part that names what the section is — are carried unchanged and the tail says the same thing in different words. Its opening paragraph is carried."
+      },
+      {
+        "kind": "opening",
+        "old": "Don’t let distance stand between you and your dream blue and tan staffy or a pure blue staffy. We provide safe and reliable UK-wide puppy delivery using trusted, DEFRA-approved pet transport services . This means whether you’re looking for pedigree blue staffy pups for sale and are located in bustling Glasgow , the vibrant West Midlands of Wolverhampton , the capital of Wales in Cardiff , or the historic city of Newcastle , your new family member will arrive safely and comfortably. For general guidance on pet transport, you can review DEFRA’s guidance on Transporting your pet (General Guidance) .",
+        "new": "Don’t let distance stand between you and your dream blue and tan staffy or a pure blue staffy. We provide safe and reliable UK-wide puppy delivery using trusted, DEFRA-approved pet transport services . This means whether you’re looking for pedigree blue staffy pups for sale and are located in the vibrant West Midlands of Wolverhampton , the capital of Wales in Cardiff , or the historic city of Newcastle , your new family member will arrive safely and comfortably. For general guidance on pet transport, you can review DEFRA’s guidance on Transporting your pet (General Guidance) .",
+        "reason": "wrong fact: the paragraph names the FORMER city as one of the places a reader might be (Known Issue 16), and spec section 7 requires that name to be absent from src and data. The kennel is in Carlisle, Cumbria (data/settings.json). The clause is excised and every other word — the DEFRA-approved transport, the other three destinations and the government's guidance — is carried."
+      },
+      {
+        "kind": "heading",
+        "old": "🐾 Reserve Your Blue Staffy Puppy",
+        "new": "Ask About A Particular Puppy",
+        "reason": "collides with another page's heading: the migrated site repeats this exact reserve-form heading on /, /blue-staffy-health-uk/, /blue-staffy-uk-breeders/, /buy-staffy-puppies-for-sale-uk/ and /uk-staffordshire-bull-terrier-guide/, so it identifies no page and board_gate.py fails an exact match against every one of them. It is a form widget's label, not this page's heading, and data/boards/index.json changed it on the same ground. Its opening paragraph is carried."
+      },
+      {
+        "kind": "opening",
+        "old": "Fill in your details below and we'll be in touch within 24 hours",
+        "new": "Fill in your details below and we'll be in touch",
+        "reason": "wrong fact: '24 hours' contradicts the reply window this site states everywhere else — the 24-48 business hours of data/faq.json's sale-reserve row, which is the only reply time any file on disk holds (dropped.text). The promise is excised rather than re-timed, and the rest of the sentence is carried."
+      },
+      {
+        "kind": "alt",
+        "src": "/images/uk-blue-staffy-breeders-trust.webp",
+        "old": "Blue Staffy puppy representing ethical breeding from trusted UK breeders in Glasgow. | Buy Blue Staffy Puppies UK",
+        "new": "Blue Staffy puppy representing ethical breeding from trusted UK breeders in Carlisle. | Buy Blue Staffy Puppies UK",
+        "reason": "wrong fact: the migrated alt names the FORMER city as where the trusted UK breeders are (Known Issue 16). The kennel is in Carlisle, Cumbria (data/settings.json) and spec section 7 requires the old name to be absent from src and data, so Task 17 replaced the one word and changed nothing else in the sentence. The file itself keeps its path and is not re-encoded (working rule 11). It is the only one of this page's seven alts that is not the migrated wording."
+      },
+      {
+        "kind": "faq",
+        "old": "Is a blue Staffy a good family dog?",
+        "new": "Do blue Staffies suit a family home?",
+        "reason": "collides with another page's heading: /uk-blue-staffy-puppy-buying-guide/'s board carries \"Is a Blue Staffy a Good Family Dog for First-Time Owners UK?\", which is an element of THAT page's verbatim set, and board_gate.py fails the five-token run \"is a blue staffy a\" between the two. Working rule 15 exclusion 2 moves the wording that is not carrying a set; the guide's is and this one is not. The question asks the same thing in this page's own words, and its `listing-family-dog` id — which is what the record's tree stores and what data/faq.json is read by — does not move, so the approved outline is untouched. The answer and its source are unchanged."
+      }
+    ]
+  }
+}

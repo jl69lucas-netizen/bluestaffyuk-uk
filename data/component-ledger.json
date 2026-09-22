@@ -1,14 +1,182 @@
 {
   "refresh_pools": [],
-  "pools": {},
+  "pools": {
+    "hero": [
+      "hero-s1",
+      "hero-s2",
+      "hero-s3",
+      "hero-h-ab1",
+      "hero-h-bl3",
+      "hero-h-fs1",
+      "hero-h-fs2",
+      "hero-h-fs3",
+      "hero-h-gd3",
+      "hero-h-hm2",
+      "hero-h-ut1"
+    ],
+    "takeaways": [
+      "takeaways-s1",
+      "takeaways-s2",
+      "takeaways-s3"
+    ],
+    "faq": [
+      "faq-s1",
+      "faq-s2",
+      "faq-s3"
+    ],
+    "dial": [
+      "dial-s1",
+      "dial-s2",
+      "dial-s3"
+    ],
+    "rail": [
+      "rail-s1",
+      "rail-s2",
+      "rail-s3"
+    ],
+    "toc": [
+      "pagenav-c"
+    ],
+    "table": [
+      "table-s1",
+      "table-s2",
+      "table-s3"
+    ]
+  },
   "pages": {
-    "index": {
-      "hero": "",
+    "blue-staffy-pup-sale-uk": {
+      "hero": "hero-h-fs3",
       "dial": "",
       "rail": "",
-      "toc": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "buy-blue-staffy-puppies-uk": {
+      "hero": "hero-h-fs1",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
       "table": "",
-      "faq": "",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
+    },
+    "buy-staffy-puppies-for-sale-uk": {
+      "hero": "hero-h-fs2",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
+    },
+    "blue-staffy-uk-breeders": {
+      "hero": "hero-h-ab1",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "blue-staffy-health-uk": {
+      "hero": "hero-h-gd3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
+    },
+    "uk-staffordshire-bull-terrier-guide": {
+      "hero": "hero-h-gd3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s1"
+      ],
+      "h6_prefixes": []
+    },
+    "uk-blue-staffy-puppy-buying-guide": {
+      "hero": "hero-h-gd3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s1",
+      "faq": "faq-s2",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "h6_prefixes": []
+    },
+    "blue-staffy-blog-guides": {
+      "hero": "hero-h-bl3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "h6_prefixes": []
+    },
+    "index": {
+      "hero": "hero-h-hm2",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "h6_prefixes": []
+    },
+    "privacy-policy-uk": {
+      "hero": "hero-h-ut1",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s1",
+      "takeaway": [],
+      "h6_prefixes": []
+    },
+    "thank-you-blue-staffy-puppies-journey": {
+      "hero": "hero-h-ut1",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "h6_prefixes": []
+    },
+    "uk-blue-staffy-breeders-contact": {
+      "hero": "hero-h-ut1",
+      "dial": "dial-s2",
+      "rail": "rail-s2",
+      "toc": "pagenav-c",
+      "table": "",
+      "faq": "faq-s3",
       "takeaway": [],
       "h6_prefixes": []
     }

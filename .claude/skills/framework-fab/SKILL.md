@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
+> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
 > **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700)
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Facts source:** `data/price-matrix.json` · `data/puppies.json` · `data/locations.json` · Verified-Claim Ledger — never invent a spec.
@@ -43,7 +43,7 @@ B — Benefit:   What it means for THIS buyer. ("You know on day one that your S
 
 ## BSUK Worked Example (delivery tier row)
 
-- **F:** "Door-to-door delivery, £350 — a dedicated driver, air-conditioned van, straight from our Glasgow home to yours."
+- **F:** "Door-to-door delivery, £350 — a dedicated driver, air-conditioned van, straight from our Carlisle home to yours."
 - **A:** "Unlike a motorway service-station handover, your puppy never changes hands in a car park and you never drive six hours each way."
 - **B:** "Your Staffy steps out of the crate into its new living room — one calm transition instead of three stressful ones."
 

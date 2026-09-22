@@ -1,0 +1,300 @@
+---
+// src/components/kit/SectionStrip.astro — kit component 16 (spec §9 amendment 3b): a sticky,
+// horizontally-scrolling rail of numbered section chips under the header below 1024px.
+//
+// It is the TOP-CHROME counterpart of SectionSheet's bottom bar, and the third member of the
+// in-page nav set: the dial owns >=1024px, and below that the strip is the quick jump
+// ("01 Health · 02 Delivery") while the sheet's bottom sheet is the full list. Hidden at
+// >=1024px, where the dial takes over — no two of the three are ever visible at one width.
+//
+// STICKY, NOT FIXED, and pinned to the SAME expression every jump target is offset by:
+// `top: calc(var(--hdr-measured, var(--hdr)))`. `--hdr-measured` is written by BaseLayout's
+// inline script from the header's real height (see the note in global.css on why it is a
+// second variable and not --hdr). Sticky rather than fixed because the strip belongs to the
+// document flow: it occupies its own height, so unlike the bottom bar it needs no body
+// padding to reserve space, and `nav-bottom-chrome-clear` has nothing to say about it.
+//
+// IT DOES, HOWEVER, MOVE EVERY JUMP TARGET DOWN. A target offset only by the header lands
+// UNDER the strip. The strip therefore publishes its own measured height as `--strip-h` on
+// `:root` (ResizeObserver, below) and the global block at the foot of this file adds it to
+// the `[id] { scroll-margin-top }` expression. The ResizeObserver, not a constant: the chip
+// row rewraps, the font loads late, and the chip labels are whatever the page's own section
+// headings are, so one hard-coded number is wrong on some page at some width. (It used to
+// say "wrong for two of the three styles" — the two that lost the pick are deleted, and the
+// reason the observer is still right is the rewrap, not the styles.) The CSS at the foot
+// does carry a FLOOR for a reader with no scripting; see the note on it. `--strip-h` is
+// `0px` at >=1024px and for every page that mounts no strip, so the expression is unchanged
+// there.
+//
+// `nav-jump-target-lands` (blocking) measures the pinned band with `measureTopChrome`, which
+// admits a sticky element spanning >=80% of the viewport and contiguous with the band above
+// it. The strip is full-bleed and sits directly under the header, so it is counted — that is
+// what makes the check judge landings against header+strip rather than header alone.
+//
+// `aria-current="location"`, never a bare `aria-current`: `toggleAttribute` emits
+// `aria-current=""`, which is the token `false`. Same note as PageDial and SectionSheet.
+//
+// Conventions 2 (`--kit-ring`), 4 (`HTMLAttributes` + `...rest` + `class:list`),
+// 6 (`@layer components`). No emoji, no hex — tokens only.
+//
+// FILLED CHIPS. The breeder picked S2 on the contact board (2026-09-19): against the bone
+// page the outlined pills of S1 read as a row of empty buttons, and S3's underlined text
+// links did not survive being scrolled — a half-visible chip at the rail's edge had nothing
+// to mark it as a control. A filled chip keeps its shape at any scroll offset. This file
+// used to carry all three arrangements behind a `style` prop; the two that lost are
+// deleted, along with the prop.
+import type { HTMLAttributes } from 'astro/types';
+import type { SectionRef } from '../../lib/sections';
+// `chrome` IS THE WHOLE CONTRACT OF `data-strip`. A strip mounted by the shell is this
+// document's top chrome: it pins under the header, and every jump target on the page has to
+// clear it, which is what `--strip-h` and the `[id] { scroll-margin-top }` rule at the foot
+// exist for. A strip mounted as a SPECIMEN — the `/kit-preview/` board, a board preview — is
+// a picture of that component inside a short relative box. It cannot pin, `measureTopChrome`
+// correctly refuses to count it, and it must not move the page's anchors either.
+//
+// It did. The specimen on `/kit-preview/` published its own 61px height to `:root`, so every
+// id on that page declared `scroll-margin-top: 152px` against 75px of real chrome and
+// `nav-jump-target-lands` reported 10 of 11 targets outside the band at 375 and 768 — two
+// blocking rows, on a page whose only strip is a photograph of one. Same shape as the
+// specimen site header, which `/kit-preview/` already makes `position: static` for the same
+// reason and says so.
+//
+// So `data-strip` is written only when the strip IS chrome, and it is the single selector
+// both halves of the offset key off: the script that publishes `--strip-h` and the no-JS
+// floor below. A specimen carries neither, and is not sticky.
+type Props = HTMLAttributes<'nav'> & {
+  sections: SectionRef[];
+  label?: string;
+  chrome?: boolean;
+};
+const { sections, label = 'Sections', chrome = true, class: cls, ...rest } = Astro.props;
+---
+<nav
+  class:list={['kit-strip', cls]}
+  aria-label={label}
+  data-strip={chrome ? true : undefined}
+  {...rest}
+>
+  <ol>
+    {sections.map((s, i) => (
+      <li>
+        {/* The first chip is marked current AT RENDER, not only by the spy — the same idiom
+            PageDial uses and for the same three reasons: a reader at the top of the page is
+            in section one, a rail that marks nothing until the first scroll event looks
+            broken before JS runs, and in a board preview the block is static markup the
+            script never runs against at all. */}
+        <a href={`#${s.id}`} data-spy={s.id} aria-current={i === 0 ? 'location' : undefined}>
+          <span class="num">{String(i + 1).padStart(2, '0')}</span>
+          <span class="lab">{s.label}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>
+<script>
+  // Singleton by design: a page mounts ONE strip, as it mounts one header.
+  const strip = document.querySelector<HTMLElement>('[data-strip]');
+  if (strip) {
+    // --- the height every jump target has to clear -------------------------------------
+    // Published even when the strip is display:none at >=1024px, where its height is 0 and
+    // the expression collapses back to header + 16px on its own. Writing 0 is the correct
+    // answer there, not a special case.
+    const publish = () => {
+      const h = strip.offsetParent === null ? 0 : Math.round(strip.getBoundingClientRect().height);
+      document.documentElement.style.setProperty('--strip-h', h + 'px');
+    };
+    publish();
+    if (typeof ResizeObserver === 'function') new ResizeObserver(publish).observe(strip);
+    // The ResizeObserver sees the strip's own box change, but not the strip being hidden by
+    // the 1024px media query — that is a change of `display`, and an element with
+    // `display: none` reports the same zero box it reported while unobserved. The media
+    // query is watched directly so a rotate across the breakpoint republishes.
+    window.matchMedia('(min-width: 1024px)').addEventListener('change', publish);
+
+    // --- scroll-spy ---------------------------------------------------------------------
+    // Paired links and targets, the same reading band and the same bottom-of-document
+    // fallback as PageDial and SectionSheet: the three must agree about the current section
+    // at every width a reader could rotate between, so the pattern is copied exactly.
+    const rows = [...strip.querySelectorAll<HTMLAnchorElement>('[data-spy]')]
+      .map((link) => ({ link, target: document.getElementById(link.dataset.spy!) }))
+      .filter((r): r is { link: HTMLAnchorElement; target: HTMLElement } => r.target !== null);
+    const N = rows.length;
+    // The markup already marks chip one current, so the first `apply()` is a no-op for the
+    // attributes — but it must not be a no-op for the RAIL when the page was opened on a
+    // hash deep in the document. `settled` is what separates the two: the first pass moves
+    // the rail without animating, every later one animates.
+    let current = 0;
+    let settled = false;
+    const set = (i: number) => {
+      if (i < 0 || i >= N) return;
+      if (i === current && settled) return;
+      current = i;
+      rows.forEach((r, j) => {
+        if (j === i) r.link.setAttribute('aria-current', 'location');
+        else r.link.removeAttribute('aria-current');
+      });
+      // Keep the active chip on screen by scrolling the RAIL, never by calling
+      // `scrollIntoView` on the chip. Even `block: 'nearest'` is allowed to scroll the
+      // PAGE when the rail is not fully in view, and it does: jumping to a section fired
+      // the spy, which scrolled the document a second time and left the target outside the
+      // band `nav-jump-target-lands` measures (3 of 11 targets on this page, at 375 and
+      // 768). Writing `scrollLeft` on the overflow container cannot move the document.
+      const rail = rows[i].link.closest('ol');
+      if (rail) {
+        const chip = rows[i].link.getBoundingClientRect();
+        const box = rail.getBoundingClientRect();
+        const pad = 16;
+        let dx = 0;
+        if (chip.left < box.left + pad) dx = chip.left - box.left - pad;
+        else if (chip.right > box.right - pad) dx = chip.right - box.right + pad;
+        // INSTANT, always. An animated rail is still animating while the document's own
+        // smooth jump settles, and `nav-jump-target-lands` then measures a moving page: the
+        // set of targets it reported outside the band changed from run to run. The rail
+        // moves a few hundred pixels inside its own box and nobody misses the tween.
+        if (dx) rail.scrollLeft += dx;
+      }
+      settled = true;
+    };
+    const atBottom = () => window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2;
+    let fromObserver = 0;
+    const apply = () => set(atBottom() ? N - 1 : fromObserver);
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (!visible[0]) return;
+        const i = rows.findIndex((r) => r.target === visible[0].target);
+        if (i >= 0) fromObserver = i;
+        apply();
+      },
+      { rootMargin: '-40% 0px -55% 0px' },
+    );
+    rows.forEach((r) => io.observe(r.target));
+    window.addEventListener('scroll', apply, { passive: true });
+    const fromHash = rows.findIndex((r) => r.target.id === decodeURIComponent(location.hash.slice(1)));
+    if (fromHash >= 0) fromObserver = fromHash;
+    apply();
+  }
+</script>
+<style is:global>
+  /* `is:global` and it reaches `[id]` — a scoped rule cannot. global.css gives every id
+     `scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + 16px)`; the strip adds its own
+     measured height to that, so a jump target lands BELOW the strip rather than behind it.
+     Written here rather than in global.css so the whole of the strip's contract — its box and
+     the offset it imposes — is deleted with the file if the component ever is.
+
+     `--strip-h` falls back to 0px, so a page that mounts no strip keeps the original
+     expression exactly. The script sets it to a real number, and to 0 at >=1024px where the
+     strip is hidden and the dial has no sticky box of its own.
+
+     THE FLOOR IS FOR A READER WITH NO JAVASCRIPT. Without the script `--strip-h` is never
+     written, the 0px fallback applies, and every in-page jump on a phone lands behind a
+     sticky rail — the exact defect `nav-jump-target-lands` is blocking for, on the one
+     configuration the harness cannot see, because the harness runs scripting. So the strip
+     declares a static minimum at the width it is visible at, and the observer REPLACES it
+     with the measured height the moment the script runs. 48px is a FLOOR, not the height:
+     one line of chips at the shipped font size measures about that, and a wrapped row
+     measures more — which is why a constant alone would not do and the observer is still
+     the answer wherever it can run.
+
+     THE FLOOR KEYS OFF `[data-strip]`, not off `.kit-strip`, and so does the script: a
+     specimen strip is a picture of the component, not this document's chrome, and it must
+     not move the page's anchors. See the note on the `chrome` prop above.
+
+     TWICE-SCOPED, and both halves are load-bearing. <1024px, because the strip is
+     `display: none` above it. And `:has(.kit-strip)`, because this is an `is:global` block
+     and Astro bundles it into stylesheets that reach pages mounting no strip at all — a bare
+     `:root` floor pushed every jump target on the homepage and the for-sale cluster down by
+     48px they had no chrome to clear, and `nav-jump-target-lands` failed 31 partials on
+     pages this component is not even on (measured 2026-09-20). `:has()` asks the question
+     the rule actually means: is there a strip on this document? Where the selector is not
+     supported the whole declaration is dropped and the fallback is `0px`, which is exactly
+     today's shipped behaviour — the floor is an improvement for no-JS readers on modern
+     browsers and never a regression for anyone. */
+  @layer components {
+    [id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + var(--strip-h, 0px) + 16px); }
+    @media (max-width: 1023px) {
+      :root:has(.kit-strip[data-strip]) { --strip-h: 48px; }
+    }
+  }
+</style>
+<style>
+  @layer components {
+    /* A specimen occupies its own box and nothing else. Sticky here would be a claim the
+       preview's short relative wrapper cannot honour anyway, and it reads to the next person
+       as chrome this page does not have. */
+    .kit-strip:not([data-strip]) { position: static; }
+    .kit-strip {
+      position: sticky;
+      /* The header's own height, measured. NOT the +16px of the jump offset: that gap is
+         breathing room under the chrome for a landing target, not a hole above the strip. */
+      top: var(--hdr-measured, var(--hdr));
+      z-index: 30;                       /* under the header (40+), over the prose */
+      background: var(--color-surface-raised);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .kit-strip ol {
+      list-style: none;
+      margin: 0;
+      padding: var(--space-2) var(--space-4);
+      display: flex;
+      gap: var(--space-2);
+      overflow-x: auto;
+      /* The rail scrolls, the page does not rubber-band with it. */
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;             /* Firefox */
+    }
+    /* No scrollbar chrome: the rail is a thumb-scrolled strip, and a bar under 44px chips
+       reads as a second control. The chips are still keyboard-reachable in the tab order. */
+    .kit-strip ol::-webkit-scrollbar { display: none; }
+    .kit-strip li { flex: 0 0 auto; scroll-snap-align: start; }
+    .kit-strip a {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      /* 44px: WCAG 2.5.8, and `layout-tap-target-size` is blocking. */
+      min-height: 44px;
+      padding: 0 var(--space-3);
+      white-space: nowrap;
+      font: 600 var(--text-sm) / 1 var(--font-body);
+      text-decoration: none;
+      color: var(--color-text);
+    }
+    /* `tnum` so "01" and "11" are the same width and the chips do not shuffle as the
+       active one changes. */
+    .num { font-feature-settings: 'tnum'; }
+    .kit-strip a:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -2px; }
+
+    /* The chip. Filled against the rail so it keeps its shape at any scroll offset; the
+       active chip flips to the brand colour with bone text, which is the pair the contrast
+       check is run on. `--color-cta-ink` is deliberately not used — the fill is brand. */
+    .kit-strip a {
+      border: 1px solid transparent;
+      border-radius: var(--radius-sm);
+      background: var(--color-bone-100);
+    }
+    .kit-strip .num { color: var(--color-brand); }
+    .kit-strip a[aria-current='location'] {
+      background: var(--color-brand);
+      color: var(--color-bone-50);
+    }
+    .kit-strip a[aria-current='location'] .num { color: var(--color-bone-50); }
+
+    /* At >=1024px PageDial is the in-page nav, and the strip would be a second copy of the
+       same six links in the tab order. */
+    @media (min-width: 1024px) {
+      .kit-strip { display: none; }
+    }
+    @media print {
+      .kit-strip { display: none; }
+    }
+    /* The active chip is scrolled into view with `behavior: 'smooth'`; a reader who has asked
+       for less motion gets the same jump without the animation. */
+    @media (prefers-reduced-motion: reduce) {
+      .kit-strip ol { scroll-behavior: auto; }
+    }
+  }
+</style>

@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>an aside the ceiling cuts</title>
+<style>
+  body { margin: 0; font: 16px/1.5 system-ui; }
+  /* The ceiling rule 10 sets, against an aside that needs more than the band has. The card is
+     guillotined along the bottom edge and nothing on the page says so. */
+  .kit-hero { max-height: 200px; overflow: clip; background: #f7f5f2; }
+  .inner { display: grid; grid-template-columns: 1fr 240px; gap: 24px; padding: 24px; }
+  .hero-aside { border: 1px solid #ccc; padding: 16px; align-self: start; }
+  .hero-aside p { margin: 0 0 8px; }
+</style>
+</head><body>
+<section class="kit-hero" data-hero-layout="panel" data-hero-ledge="aside">
+  <div class="inner">
+    <div class="copy"><p>Two DNA tests, two parents, and the paperwork behind every puppy.</p></div>
+    <div class="hero-aside">
+      <p>Key facts</p>
+      <p>Both parents tested clear</p>
+      <p>Screening before every mating</p>
+      <p>A vet-signed card with each puppy</p>
+      <p>A microchip before the puppy leaves</p>
+      <p>Twelve to fourteen years with good care</p>
+    </div>
+  </div>
+</section>
+</body></html>

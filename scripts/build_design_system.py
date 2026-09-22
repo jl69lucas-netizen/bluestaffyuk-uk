@@ -286,9 +286,13 @@ def tokens_json(L=None):
 
 # --------------------------------------------------------------------------- components
 
-#: The thirteen, in `data/design/components.json` order. `group` sections the artifact's
-#: component table; the prose is written here because it is editorial, and each `checks` row
-#: names a test in `tests/py/test_design_components.py` that holds the component to it.
+#: Every row of `data/design/components.json`, in its order: project 3's thirteen, and
+#: project 4's two in-page nav components (spec §3 — the Design System artifact gains a
+#: preview for each). Unlike the canvas and the picks board, this artifact documents the
+#: CURRENT kit rather than a record of a closed pick process, so it does not filter on
+#: `project`. `group` sections the artifact's component table; the prose is written here
+#: because it is editorial, and each `checks` row names a test that holds the component
+#: to it, most of them in `tests/py/test_design_components.py`.
 COMPONENTS = {
     "site-header": dict(
         comp="SiteHeader", group="Navigation",
@@ -313,7 +317,8 @@ COMPONENTS = {
                "`title?: string` — default `Blue Staffy puppies raised in a family home`.",
                "`lede?: string` — default names the health-tested parents, the Kennel Club paperwork and the delivery floor; two lines at the desktop clamp.",
                "`class` and any `HTMLAttributes<'section'>` attribute, spread onto the root."],
-        states=["Desktop (≥1024px): the band is clamped between 390px and 450px and the photo is what the clamp crops.",
+        states=["1280px and up: the band is clamped between 390px and 450px and the photo is what the clamp crops.",
+                "1024–1279px: the 390px floor holds and the CEILING is released (spec §9 amendment 10.4 sub-note) — the copy column is narrower here, so the band grows to what a verbatim H1 and its lede need rather than clipping them. The photo keeps its own cap, so it still cannot set the height.",
                 "Below 1024px: height is auto, so a phone hero never clips its own call to action.",
                 "Hover and focus on both CTAs."],
         checks=["`test_built_hero_carries_its_photo_copy_chips_and_ctas`",
@@ -443,6 +448,200 @@ COMPONENTS = {
         checks=["`test_built_section_divider_is_the_mark_between_two_rules`"],
         donts=["Do not substitute a glyph or an image for the mark: it is a `<use>` at the document sprite.",
                "Do not use this as a spacer — it is a brand beat, not a margin."]),
+    # ------------------------------------------------------------------ project 4 (spec §3)
+    # The pair is ONE piece of in-page navigation split at 1024px: the dial owns desktop, the
+    # sheet owns everything below it, and a page mounts both. Documented as two components
+    # because they are two files with two APIs, but every "don't" that names the breakpoint
+    # is really the same rule said twice.
+    "page-dial": dict(
+        comp="PageDial", group="Navigation",
+        summary="The desktop in-page dial: a sticky 196px column of hairline-ruled, numbered section rows with a scroll-spy.",
+        props=["`sections: SectionRef[]` — the page's own sections, `{ id, label }`, in the page's order. "
+               "`src/lib/sections.ts` builds the list from a board record with `sectionsFromRecord()`; the "
+               "component never derives it, because the order belongs to the page.",
+               "`title?: string` — the list heading, default `'On this page'`.",
+               "`class` and any `HTMLAttributes<'aside'>` attribute, spread onto the root."],
+        states=["Hidden below 1024px — SectionStrip and SectionSheet are the in-page nav there, and a dial "
+                "that merely shrank would be a second copy of the same links in the tab order.",
+                "Scroll-spy active: the current row carries `aria-current`, painted `color-brand-soft` on "
+                "`color-brand`. The reading band is `-40% 0px -55% 0px`, the same window SectionStrip and "
+                "SectionSheet use, so the three never disagree about which section the reader is in.",
+                "Resting, hover and focus on every row; the focus ring is `--kit-ring` at 3px.",
+                "Row one is marked current at render, so the dial is never blank before JS runs."],
+        checks=["`test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring`",
+                "`test_no_built_page_ships_an_empty_aria_current` and "
+                "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
+                "`a11y-no-duplicate-ids` (render harness, advisory) — the demo's six stub targets are "
+                "rendered once per PAGE, not once per demo box.",
+                "`nav-jump-target-lands` (render harness, blocking) — every row's target must clear the top chrome.",
+                "`nav-anchors-resolve` (render harness, blocking) — a row pointing at no element is a dead anchor."],
+        donts=["Do not pass sections whose ids are not on the page: the dial's rows are ordinary in-page links "
+               "and the harness judges them as such.",
+               "Do not mark the current row with `toggleAttribute('aria-current', …)`. That emits "
+               "`aria-current=\"\"`, and the empty string is the token `false` — the row a reader is in "
+               "would be announced as the one row that is NOT current. Use "
+               "`setAttribute('aria-current', 'location')` and `removeAttribute`, and match "
+               "`[aria-current=\"location\"]` in CSS so the paint and the announcement cannot disagree.",
+               "Do not bring back the progress ring. The breeder picked the ringless arrangement on the "
+               "contact board (2026-09-19): it repeated in a second place what the numbered rows already "
+               "say, and its dash geometry was the only inline style this component wrote.",
+               "Do not mount this without SectionStrip and SectionSheet: below 1024px the page would have "
+               "no in-page nav at all."]),
+    "section-sheet": dict(
+        comp="SectionSheet", group="Navigation",
+        summary="The mobile in-page nav: a fixed 64px bar of three site links with a full-width Sections pill above it, opening a native `<dialog>` bottom sheet of the page's sections.",
+        props=["`sections: SectionRef[]` — the same list PageDial takes, from the same `src/lib/sections.ts` helper.",
+               "`ctaLabel?: string` / `ctaHref?: string` — the sheet's primary button, default "
+               "`'Available puppies'` to `/available-puppies/`.",
+               "`class` and any `HTMLAttributes<'div'>` attribute, spread onto the root."],
+        states=["Hidden at 1024px and above, and in print — PageDial owns in-page nav there.",
+                "Bar: resting, hover and focus on the three tabs and the pill. The focus ring is `--kit-ring` at 3px with "
+                "`outline-offset: -3px`, because the bar is flush to the viewport edge.",
+                "Sheet closed, and open via `showModal()` — which is what supplies the focus trap, the inert "
+                "background and the Escape key. Following a section link closes it, and so does a backdrop click.",
+                "Scroll-spy active: the current row in the sheet carries `aria-current`, on the same reading "
+                "band as the dial and the strip."],
+        checks=["`test_built_section_sheet_has_tab_bar_and_dialog`",
+                "`test_no_built_page_ships_an_empty_aria_current` and "
+                "`test_no_built_page_ships_a_duplicate_id` (dist-wide).",
+                "`nav-bottom-chrome-clear` (render harness, blocking) — the bar must never cover the landing "
+                "position of an in-page jump target. The fixture pair "
+                "`tests/render/fixtures/{known_good/kit-bottom-chrome-clear,known_broken/kit-bottom-chrome-covers}.html` "
+                "is this component's own geometry.",
+                "`layout-tap-target-size` (render harness, blocking) — every tab is at least 44px."],
+        donts=["Do not delete the `is:global` `body:has(.kit-sheet) { padding-bottom: 116px }`. The bar is "
+               "`position: fixed` and out of flow, so without the reservation the last 116px of every page — "
+               "including a short final section a reader jumps to — sits underneath it.",
+               "Do not delete the `@supports not selector(:has(*))` fallback beside it either. The scoped "
+               "reservation depends on `:has()`; a browser without it drops the rule and loses the padding "
+               "with no symptom until someone jumps to the last section. The fallback pads the body "
+               "unconditionally there — a 116px gap on a page with no bar is cosmetic, a covered jump target "
+               "is blocking.",
+               "Do not replace the `<dialog>` with a div and `role=\"dialog\"`: the focus trap and Escape are "
+               "native there, and the two that get forgotten by hand are always those two.",
+               "Do not change the 64px bar or the 52px pill row without changing the 116px body reservation "
+               "to match; they are one number said twice and `nav-bottom-chrome-clear` measures the pair.",
+               "Do not use an emoji or an `<img>` for a tab icon — all four are inline stroke SVG on one 24 grid.",
+               "Do not fold Sections back into the bar as a fourth tab. The breeder picked the pill on the "
+               "contact board (2026-09-19): as one icon among four, the control this component exists for "
+               "read as a site destination."]),
+    "section-strip": dict(
+        comp="SectionStrip", group="Navigation",
+        summary="The mobile top chrome: a sticky, horizontally scrolling rail of numbered section chips "
+                "(`01 Label · 02 Label …`) pinned under the header below 1024px.",
+        props=["`sections: SectionRef[]` — the same list PageDial and SectionSheet take, from the same "
+               "`src/lib/sections.ts` helper, so the three can never disagree about a page's sections.",
+               "`label?: string` — the rail's accessible name, default `'Sections'`.",
+               "`class` and any `HTMLAttributes<'nav'>` attribute, spread onto the root."],
+        states=["Hidden at 1024px and above, and in print — PageDial owns in-page nav there.",
+                "Chip resting, hover and focus. The focus ring is `--kit-ring` at 3px with "
+                "`outline-offset: -2px`, because a chip sits flush inside a rail that clips.",
+                "Scroll-spy active: the current chip carries `aria-current=\"location\"`, on the same reading "
+                "band as the dial and the sheet, and is scrolled back into view when it changes.",
+                "Chip one is marked current AT RENDER, so the rail is never blank before JS runs."],
+        checks=["`test_built_section_strip_is_a_sticky_chip_rail_with_spy_hooks`",
+                "`test_section_strip_pins_under_the_header_and_pays_for_its_own_height`",
+                "`nav-jump-target-lands` (render harness, blocking) — the strip is part of the pinned top "
+                "band `measureTopChrome` measures, and the fixture pair "
+                "`tests/render/fixtures/{known_good,known_broken}/nav-jump-target-lands.html` carries a strip "
+                "so a target landing underneath one is caught.",
+                "`layout-tap-target-size` (render harness, blocking) — every chip is at least 44px."],
+        donts=["Do not delete the `is:global` rule that adds `var(--strip-h, 0px)` to "
+               "`[id] { scroll-margin-top }`. The strip is sticky and pins UNDER the header, so a target "
+               "offset for the header alone lands behind the rail — the top-chrome twin of the defect "
+               "`nav-bottom-chrome-clear` catches at the bottom of the viewport.",
+               "Do not replace the ResizeObserver that publishes `--strip-h` with a constant. The rail is a "
+               "different height in each of its styles, it rewraps, and it changes again when the display "
+               "font loads — a hard-coded number is wrong in all three cases.",
+               "Do not give the rail a visible scrollbar: it is thumb-scrolled, and a bar under 44px chips "
+               "reads as a second control. The chips stay in the keyboard tab order regardless.",
+               "Do not use `scrollIntoView({ inline: 'center' })` for the active chip — `center` scrolls the "
+               "PAGE as well as the rail, fighting the scroll that moved the spy, and the strip jitters.",
+               "Do not mount this without SectionSheet: the strip is the quick jump, the sheet is the full "
+               "list, and below 1024px a long page needs both.",
+               "Do not return the chips to outlines or to plain underlined text. The breeder picked the "
+               "filled chip on the contact board (2026-09-19): a filled chip keeps its shape when it is "
+               "half-scrolled at the rail's edge, and the other two did not."]),
+    # Component 17 (working rule 13; spec §9 amendment 5). The only kit component whose
+    # three board arrangements are a LAYOUT axis rather than a prop, which is why its
+    # "don'ts" are mostly about the stack: the arrangement is a choice, the stacking is not.
+    "data-table": dict(
+        comp="DataTable", group="Content",
+        summary="The data table: prices, delivery bands, health tests and comparisons, as a semantic "
+                "`<table>` that stacks into labelled rows below 640px.",
+        props=["`caption: string` — the table's name, rendered as a real `<caption>`. Not optional: a "
+               "table with no name is a grid, and stacked it is a grid with no title either.",
+               "`columns: string[]` — the column headers, in order. They are also the source of every "
+               "cell's `data-label`, so the two can never disagree.",
+               "`rows: (string | number)[][]` — one array per row, as long as `columns`. "
+               "`scripts/pageboard.py` refuses a board record whose rows are any other length.",
+               "`numeric?: number[]` — zero-based indexes of the columns to right-align. A LIST, not a "
+               "guess from the content: `£1,500` and `£850 to £1,200` are both strings.",
+               "`class` and any `HTMLAttributes<'table'>` attribute, spread onto the root."],
+        states=["Three board arrangements on the `chrome` axis of `src/lib/boardStyles.ts`, resolved to "
+                "`bl-chrome-*` classes by `boxClass()` and painted in `src/styles/board-styles.css`: "
+                "S1 ruled rows under a brand header band, S2 zebra rows inside a card, S3 borderless with "
+                "brass column rules. S1 is the component's own default, so a copy mounted outside a board "
+                "box is a finished table.",
+                "Stacked, below 640px: `.stack-table` turns every cell into a block, moves the `<thead>` "
+                "off-screen and prints each cell's `data-label` before its value. All three arrangements "
+                "stack the same way — it is not one of the three.",
+                "On a steel band the header band re-points to `color-surface-deep`, and the caption and "
+                "the row headers inherit the band's own text colour."],
+        checks=["`test_built_data_table_is_semantic_and_labels_every_cell_for_the_stack`",
+                "`layout-table-stacks-on-mobile` (render harness, blocking) — every `<table>` under "
+                "`<main>` labels its cells, and below 640px lays its rows out as blocks with no sideways "
+                "scroll. The fixture pair "
+                "`tests/render/fixtures/{known_good,known_broken}/layout-table-stacks-on-mobile.html` "
+                "is this component's own contract.",
+                "`layout-no-horizontal-overflow` (render harness, blocking) — a table is the commonest "
+                "way a page comes to scroll sideways on a phone."],
+        donts=["Do not add a `chrome` prop. The three arrangements are a board axis so that what the "
+               "breeder approves on `/board-preview/<slug>/` and what the rebuilt page resolves are one "
+               "rule in one stylesheet; a prop would be the same decision written twice.",
+               "Do not wrap it in `.table-wrap` to make it scroll. A sideways-scrolling table is the "
+               "defect working rule 13 exists to stop, not the fallback for a wide one — drop a column.",
+               "Do not omit `data-label` on a cell, or write one that is not its column's name. With the "
+               "header row moved off-screen it is the only thing left saying what the cell is.",
+               "Do not type a price, a delivery band or a test result in here by hand: the numbers come "
+               "from `data/price-matrix.json`, `data/puppies.json`, `data/settings.json` or the board "
+               "record's own `table` block (rule 9).",
+               "Do not use the first column's `<th scope=\"row\">` for an ordinary value — it is the "
+               "row's title, and it is what a screen reader announces before every cell in the row."]),
+    # Component 18 (working rule 14; spec §9 amendment 7). The one component whose board
+    # axes are half class and half prop: the bed is CSS, the facade is markup.
+    "video-embed": dict(
+        comp="VideoEmbed", group="Content",
+        summary="A YouTube video from the old site, reused at its original id, in a reserved 16:9 box "
+                "that loads its player only when someone presses play.",
+        props=["`id: string` — the eleven-character YouTube id, never a url and never a pasted embed "
+               "code. Working rule 14: it is the id the old site already carries.",
+               "`title: string` — required. It is the accessible name, on the `<iframe>` and on the "
+               "facade's play button alike; an unnamed frame is unnavigable.",
+               "`caption?: string` — one line under the box, as a real `<figcaption>`.",
+               "`play?: 'facade' | 'iframe'` — `facade` (the default) draws the thumbnail and injects "
+               "the player on the first click; `iframe` puts the player in the document immediately.",
+               "`class` and any `HTMLAttributes<'figure'>` attribute, spread onto the root."],
+        states=["Three board arrangements on the `frame` and `play` axes of `src/lib/boardStyles.ts`: "
+                "S1 the player in a card with the caption beneath it, S2 the player full width on a "
+                "steel band, S3 the click-to-play facade. S3 is what a rebuilt page takes unless the "
+                "board says otherwise, because it is the only one that costs nothing before a click.",
+                "Without scripting the facade is replaced by the plain player: the `<noscript>` block "
+                "carries both the `<iframe>` and the rule that hides the button.",
+                "The 16:9 box is reserved by `aspect-ratio`, so nothing below the video moves when the "
+                "thumbnail decodes."],
+        checks=["`test_built_video_embed_reserves_its_box_and_loads_on_click`",
+                "`layout-image-box-reserved` (render harness) — the reserved box and the painted box "
+                "are the same box.",
+                "`scripts/facts_preserved_check.py` — a video id the migrated page carried and the "
+                "rebuilt page does not is a dropped fact, reported by name."],
+        donts=["Do not mint a new video id, and do not re-upload the footage. Every id already ranks in "
+               "video search; a fresh one starts at zero (working rule 14).",
+               "Do not point the player at `youtube.com`. The component uses `youtube-nocookie.com`, and "
+               "the facade makes no request at all before the click except the thumbnail.",
+               "Do not drop the `title`. It is the frame's only accessible name.",
+               "Do not set a fixed height on the box or wrap it in a padding-ratio hack: the "
+               "`aspect-ratio` here is what the CLS check measures."]),
 }
 
 #: The marker's `group`, in the order the artifact's component table should read.
@@ -456,6 +655,12 @@ def preview_html(sec, css, sprite, height, images, group, comp):
     page's stylesheet inlined and the sprite pasted back in when the section references it."""
     inner = rewrite_assets(sec.inner, images)
     inner = re.sub(r"<h3[^>]*>.*?</h3>\s*", "", inner, count=1, flags=re.S)   # the route's caption
+    # A `<noscript>` fallback is BEHAVIOUR, not a picture of the component. VideoEmbed's
+    # carries the real player, and an artifact preview is a static document served with
+    # scripting on — so the block would never be shown to a reader and would only make the
+    # one preview in the set that embeds a third-party frame. Stripped for the same reason
+    # `_kit_sections.find_sections` strips `<script>`.
+    inner = re.sub(r"<noscript>.*?</noscript>", "", inner, flags=re.S)
     head_sprite = f"{sprite}\n" if sprite and uses_sprite(inner) else ""
     return (
         f'<!-- @dsCard group="{group}" height={height} width={sec.width} -->\n'
@@ -640,7 +845,7 @@ def readme(tokens, settings, rules_text, comps):
     return f"""# BlueStaffyUK
 
 The design system behind Blue Staffy UK: the tokens every surface reads, the brand mark and
-its lockups, and the thirteen components the site is built from.
+its lockups, and the {len(comps)} components the site is built from.
 
 Generated by `scripts/build_design_system.py` from `src/styles/tokens.css`,
 `data/design/components.json`, `data/settings.json`, `rules/design.md`, `public/brand/` and the
@@ -794,7 +999,7 @@ markers.
 
 ## Components
 
-Thirteen, in the order `data/design/components.json` lists them. Each has a folder here with a
+All {len(comps)}, in the order `data/design/components.json` lists them. Each has a folder here with a
 static preview and its own README.
 
 | Component | Group | Source | What it is |

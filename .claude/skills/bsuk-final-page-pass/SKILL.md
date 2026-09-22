@@ -50,7 +50,7 @@ script.
 |---|---|---|
 | `no_aggregateoffer` | `AggregateOffer` present anywhere in schema | Puppy page must be a **single `Product`+`Offer`**; `AggregateOffer` is the variant page (`bsuk-puppy-listing-page`). |
 | health-test claim | A parent health-test claim (L-2-HGA, HC-HSF4) asserted without a certificate in `data/quality/evidence-ledger.json` | **Not a mechanical gate** — read it by eye. An unrecorded health claim is NOT FETCHED and must not appear. |
-| `shipping_line` | The `£200–£350` delivery band missing from the visible body | Delivery-on-every-card is non-negotiable (`rules/puppies.md` `delivery-band-on-every-card`). Canonical line: `UK home delivery £200–£350 by distance · or collect in Glasgow`. |
+| `shipping_line` | The `£200–£350` delivery band missing from the visible body | Delivery-on-every-card is non-negotiable (`rules/puppies.md` `delivery-band-on-every-card`). Canonical line: `UK home delivery £200–£350 by distance · or collect in Carlisle`. |
 | `sold_not_instock` | Sold/reserved STATUS signal present AND schema still shows `InStock` | Sell-and-retire lifecycle: sold → 301, never `InStock`. Note: commerce phrases like "sold together" do NOT trigger; only explicit status signals ("now sold", "has been sold", "status: sold", "is reserved", etc.). |
 | `canonical_abs` | Relative canonical (not `https://…`) | Site-wide hard gate — applies to all page types. |
 | `no_svg_in_content` | `<svg>` inside CSS `content:` | Site-wide trap; see false-positive traps below. |
@@ -157,7 +157,7 @@ SUBJECTIVE (read 3 sample pages: 1 transactional, 1 pillar, 1 trust)
 [ ] A named house method is used ONLY once the breeder confirms one — never invented (WARN until then)
 [ ] LSI/NLP keyword coverage: "blue Staffy", "blue-brindle Staffy", "home-raised",
     "Staffordshire Bull Terrier puppy", "UK home delivery by DEFRA-approved transport",
-    "collection in Glasgow" present where natural — not forced, not stuffed
+    "collection in Carlisle" present where natural — not forced, not stuffed
 
 TRIAGE every ✗ as: REAL (fix) · ACCEPTED (page-type) · FALSE POSITIVE (heuristic) · NET-NEW/BY-DESIGN
 
@@ -169,7 +169,7 @@ HARD GATES (FAIL — fix before deploy)
 [ ] Schema uses single Product + single Offer — NO AggregateOffer anywhere
 [ ] A parent health-test claim appears ONLY if the certificate is in
     data/quality/evidence-ledger.json; otherwise NOT FETCHED
-[ ] Delivery line visible in body: UK home delivery £200–£350 by distance, or collect in Glasgow
+[ ] Delivery line visible in body: UK home delivery £200–£350 by distance, or collect in Carlisle
 [ ] If the pup is sold/reserved in data/puppies.json: schema shows SoldOut or PreOrder, never InStock
 [ ] Canonical is absolute (https://SITE_URL_PLACEHOLDER/available-puppies/<slug>/)
 
@@ -193,7 +193,7 @@ These are recommendations surfaced for the breeder — the gate never auto-resol
 
 - **House-method name** (WARN on all pages until confirmed) — upgrade check from WARN to enforced only after the breeder supplies a confirmed term for inclusion in the Verified-Claim Ledger.
 - **Extra authority-link targets** — beyond the standard library (The Kennel Club, the RSPCA, a veterinary school, a government animal-welfare page), the gate may suggest further credible `.org/.ac.uk/.gov.uk` targets for link variety. Verify 200 before inserting; the external-link library is deferred to project 6.
-- **Delivery and local-authority entities** — the gate flags *whether a given page type warrants* logistics entities (DEFRA-approved transport, the delivery band, collection in Glasgow) or local-authority signals. Puppy listing pages generally inherit these from the price/delivery cluster rather than carrying them inline; the flag is informational only.
+- **Delivery and local-authority entities** — the gate flags *whether a given page type warrants* logistics entities (DEFRA-approved transport, the delivery band, collection in Carlisle) or local-authority signals. Puppy listing pages generally inherit these from the price/delivery cluster rather than carrying them inline; the flag is informational only.
 
 ## Common mistakes
 

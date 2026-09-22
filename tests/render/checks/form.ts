@@ -39,7 +39,7 @@ import type { Page } from '@playwright/test';
  *
  * The contract below is BSUK's own, read off the built contact page and held in lock-step
  * with scripts/form_contract_audit.py: same six controls, same required/optional split,
- * same `puppy` <select> with the `collection-glasgow` option, same two hidden fields, same
+ * same `puppy` <select> with the `waiting-list` option, same two hidden fields, same
  * `_gotcha` exclusion. Two gates that disagree about what an inquiry form is would give
  * different verdicts on the same page, which is the one failure this pair exists to refuse.
  */
@@ -146,8 +146,11 @@ register({
         // the next agent to add a constraint the breeder did not ask for.
         const REQUIRED = ['name', 'email', 'puppy', 'message'];
         const HIDDEN = ['_next', '_subject'];
-        // Spec §5: the puppy control is a <select> carrying the Glasgow collection choice.
-        const PUPPY_OPTION = 'collection-glasgow';
+        // Spec §5: the puppy control is a <select> carrying the waiting-list choice — the
+        // one option both forms build that is not a row of data/puppies.json. Re-based in
+        // project 4 Task 6 with scripts/form_contract_audit.py: the old `collection-glasgow`
+        // named a collection point the breeder has left (Known Issue 16).
+        const PUPPY_OPTION = 'waiting-list';
         const SHORT = ['name', 'email', 'message'];
         const KEYS = contract === 'short' ? ALL.filter(([n]) => SHORT.includes(n)) : ALL;
         const fieldsApply = contract !== 'none';

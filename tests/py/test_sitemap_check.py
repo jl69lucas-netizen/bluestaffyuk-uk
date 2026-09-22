@@ -36,6 +36,49 @@ def _clean(d, extra_pages=(), shards=None, robots=None):
     _w(d / "robots.txt", robots or _robots())
 
 
+def test_a_page_with_an_embed_must_be_in_the_video_shard(tmp_path):
+    """The counterpart of "every indexable page is in exactly one shard", and the half that
+    was missing: nothing checked that a page CARRYING a video is submitted as one. The
+    generator matched `youtube.com/embed/` while the kit serves `youtube-nocookie.com/embed/`,
+    so four already-ranking ids left the video sitemap and every gate stayed green (e963c53).
+    The pattern this reads is the generator's own, so the two cannot disagree about what an
+    embed is. The facade arrangement counts too — a `data-src` is a video the page carries."""
+    d = tmp_path
+    _clean(d, extra_pages=["/v/", "/facade/", "/plain/"])
+    _w(d / "v/index.html",
+       '<html><body><iframe src="https://www.youtube-nocookie.com/embed/aaaaaaaaaaa">'
+       '</iframe></body></html>')
+    _w(d / "facade/index.html",
+       '<html><body><div data-video-frame '
+       'data-src="https://www.youtube-nocookie.com/embed/bbbbbbbbbbb?autoplay=1"></div></body></html>')
+    _w(d / "plain/index.html", "<html><body>no video here</body></html>")
+
+    # No video shard at all: both video pages are reported, the plain one is not.
+    problems = audit(d, BASE)
+    assert sorted(problems) == [
+        "FAIL /facade/ carries embed(s) bbbbbbbbbbb and is in no video shard",
+        "FAIL /v/ carries embed(s) aaaaaaaaaaa and is in no video shard",
+    ], problems
+
+    # With the shard listing both, clean — and the supplementary shard still does not count
+    # toward "exactly one URL shard".
+    _w(d / "video-sitemap.xml", _urlset("/v/", "/facade/"))
+    _w(d / "sitemap_index.xml", _index("page-sitemap.xml", "video-sitemap.xml"))
+    assert audit(d, BASE) == []
+
+
+def test_a_noindex_page_with_an_embed_is_not_wanted_in_the_video_shard(tmp_path):
+    """A noindex page must not be submitted anywhere, so carrying a video does not put it in
+    the video shard either — the rule above would otherwise contradict `listed => built`."""
+    d = tmp_path
+    _clean(d)
+    _w(d / "n/index.html",
+       '<html><head><meta name="robots" content="noindex, follow"></head>'
+       '<body><iframe src="https://www.youtube-nocookie.com/embed/ccccccccccc"></iframe>'
+       '</body></html>')
+    assert audit(d, BASE) == []
+
+
 def test_audit(tmp_path):
     d = tmp_path
     (d / "a").mkdir()

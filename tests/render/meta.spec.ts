@@ -160,7 +160,17 @@ test.describe('dup-no-sibling-crossover sees a crossover adjacent to a whitelist
     expect(r.defects[0].count, 'one finding per non-whitelisted segment: A before, B after').toBe(2);
     const msg = r.defects[0].message;
     expect(msg).toContain('18w vs /sibling-staffy-puppies-glasgow/ "before a puppy leaves');
-    expect(msg).toContain('17w vs /sibling-staffy-puppies-glasgow/ "tell us which puppy');
+    // PASSAGE B IS 19 WORDS, NOT 17, AND THE TWO EXTRA ARE THE POINT. The delivery stem was
+    // re-measured on 2026-09-21 and shortened by one word: `…priced by distance 200 to 350 or
+    // collect` was carried by 8 built pages and the same run without the trailing `or collect`
+    // by 9, so the longer stem exempted nothing on the ninth (/blue-staffy-pup-sale-uk/, which
+    // states the band and stops) — the "whitelist the CORE, never the longest run on one page"
+    // rule in scripts/dup_content_audit.py's own header. `or collect` is therefore no longer
+    // chrome, it is page wording, and this fixture's passage B legitimately starts with it.
+    // The assertion moves to the measured value rather than the fixture losing the words:
+    // what this test pins is that the two passages fire SEPARATELY and that the exempt line
+    // itself is never the defect, and both still hold.
+    expect(msg).toContain('19w vs /sibling-staffy-puppies-glasgow/ "or collect tell us which puppy');
     expect(msg, 'the whitelisted line is not the defect').not.toContain('defra approved transport');
   });
 });
@@ -1614,6 +1624,70 @@ test.describe('layout-hero-counter-separation [kit CounterStrip]', () => {
 });
 
 /**
+ * The KIT's section sheet, not a generic bottom bar.
+ *
+ * The generic loop judges `nav-bottom-chrome-clear` against the fixture named after the
+ * check, which proves the check can tell a reserved bar from an unreserved one. It says
+ * nothing about whether src/components/kit/SectionSheet.astro reserves. This pair is that
+ * component's own resolved geometry: the 64px `.kit-tabbar` and the `is:global`
+ * `body:has(.kit-sheet) { padding-bottom: 64px }` that pays for it. The known_broken half
+ * is the same markup with that ONE declaration deleted — the edit that would put the last
+ * section of every page back under the bar while every other test stayed green.
+ *
+ * Convention 10 in kit form: the bar is chrome measured against the scroll, so on the
+ * preview page it examines what the preview happens to contain. The fixture pair IS the
+ * coverage for the shipped component.
+ */
+// The bar is `display: none` at >=1024px, where PageDial is the in-page nav. At vp1280 the
+// fixture therefore contains no bottom chrome at all and the check examines zero — which is
+// the component behaving correctly, not a pair that failed to prove anything. Skipped
+// rather than asserted-empty, so that adding a fourth viewport project above 1024 does not
+// quietly turn this pair into two vacuous passes.
+const DESKTOP = (info: { project: { use: { viewport?: { width: number } | null } } }) =>
+  (info.project.use.viewport?.width ?? 0) >= 1024;
+const DESKTOP_REASON = 'SectionSheet is hidden at >=1024px; PageDial owns in-page nav there';
+
+test.describe('nav-bottom-chrome-clear [kit SectionSheet]', () => {
+  const check = () => registry.find((c) => c.id === 'nav-bottom-chrome-clear')!;
+
+  // The bar is `display: none` at >=1024px, where PageDial is the in-page nav. At vp1280
+  // the fixture therefore contains no bottom chrome at all and the check examines zero —
+  // which is the component behaving correctly, not a pair that failed to prove anything.
+  // Skipped rather than asserted-empty, so a viewport project added above 1024 later does
+  // not quietly turn this pair into two vacuous passes.
+
+  test('is silent on the kit bar that reserves its own height', async ({ page }, testInfo) => {
+    test.skip(DESKTOP(testInfo), DESKTOP_REASON);
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-bottom-chrome-clear.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    // Six, not "at least one": a fixture that silently lost five of its sections would
+    // otherwise pass while proving a sixth of what it claims.
+    expect(r.examined, 'all six section targets must be judged').toBe(6);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires when the kit bar keeps its height but drops the body reservation', async ({
+    page,
+  }, testInfo) => {
+    test.skip(DESKTOP(testInfo), DESKTOP_REASON);
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-bottom-chrome-covers.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined).toBe(6);
+    expect(r.defects.length, 'a covered jump target must be reported').toBeGreaterThan(0);
+    // The short final section is the one that lands under the bar; the five tall ones
+    // scroll their own tops to the viewport top and cannot.
+    expect(r.defects[0].message).toContain('#d-f');
+    expect(r.defects[0].count).toBe(1);
+  });
+});
+
+/**
  * The KIT's info card, not a generic one.
  *
  * The generic loop above resolves a fixture BY CHECK ID, so it judges
@@ -1682,5 +1756,45 @@ test.describe('sem-statement-label-visible [kit InfoCard]', () => {
     expect(r.defects[0].count).toBe(2);
     expect(r.defects[0].message).toMatch(/hidden/);
     expect(r.defects[0].message).toMatch(/kind/);
+  });
+});
+
+test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
+  const check = () => registry.find((c) => c.id === 'a11y-text-contrast-aa')!;
+
+  // THE BUG CLASS THIS PAIR PINS is "component paints a bed, child keeps the inherited ink".
+  // `.hero-aside` fills `--color-surface-raised` inside a hero whose box may be
+  // `.bl-frame-band`, which sets `--color-text-on-inverse` on everything beneath it — so an
+  // aside that does not state its own `color` renders bone text on a near-white card. That
+  // is what /blue-staffy-uk-breeders/ shipped at 8472c06: the quote measured 1.05:1 and was
+  // invisible. Neither declaration is wrong on its own and every other element in the box
+  // names a colour of its own, so only a RENDERED measurement can see it.
+  test('is silent on the aside once it states the ink for the bed it paints', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_good/kit-hero-aside-ink.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'H1, lede, aside title, quote and two items').toBeGreaterThanOrEqual(6);
+    expect(r.defects.map((d) => d.message)).toEqual([]);
+  });
+
+  test('fires on the aside that inherits the band ink onto its own light bed', async ({
+    page,
+  }, testInfo) => {
+    const res = await page.goto(
+      `${FIXTURE_BASE}/tests/render/fixtures/known_broken/kit-hero-aside-ink-inherited.html`,
+    );
+    expect(res?.status(), 'fixture must load').toBe(200);
+    const r = await runCheck(check(), page, testInfo.project.use.viewport!.width, FIXTURE_CTX);
+    expect(r.examined, 'the same six nodes are judged either way').toBeGreaterThanOrEqual(6);
+    // Matched loosely: the assertion is that the QUOTE is caught and that the ratio reported
+    // is the near-1:1 one, not that the check's prose never gets reworded. The aside's title
+    // still passes in both fixtures, which is the point — it names a colour of its own.
+    expect(r.defects.length, 'the pair differs by one declaration').toBe(1);
+    expect(r.defects[0].message).toMatch(/aside-quote/);
+    expect(r.defects[0].message).toMatch(/1\.0\d:1/);
   });
 });

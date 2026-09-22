@@ -1,0 +1,112 @@
+---
+// src/layouts/PageShell.astro — the kit shell every rebuilt page and every hub uses.
+//
+// It is BaseLayout (head, schema, sprite, breadcrumb, favicons, the measured header height)
+// with the two chrome slots filled by the kit: SiteHeaderKit above, SiteFooterKit below. The
+// head props pass straight through, so a page moving onto the kit changes its CHROME and
+// nothing else — the same title, description, canonical and schema it had before.
+//
+// THE DIAL IS OPT-IN AND THRESHOLDED. `sections` is what the page passes from its board
+// record (src/lib/sections.ts); a page that passes none — every hub, every puppy page — gets
+// no dial, no sheet and no bottom bar, which is the right answer for a page whose body is a
+// list rather than a long read. Below six sections the pair is noise on the page and a
+// second, shorter route to the same six links, so the threshold is six, in one place, here:
+// a page cannot mount the dial without the sheet or the sheet without the dial, and the two
+// are one component split by viewport width.
+//
+// PAGENAV IS THE FOURTH, AND IT IS NOT A WIDTH VARIANT OF THE OTHER THREE. The dial, the
+// strip and the sheet are sticky furniture that follows the reader; the TOC is a list the
+// reader meets ONCE, below the hero, before deciding whether to read on — which is why it
+// mounts here rather than in the page body of three files, and why it sits after the
+// `hero` slot rather than above it. `crumbs={false}`: BaseLayout already renders the trail
+// above `<main>`, and two breadcrumb landmarks on one page is one too many.
+//
+// A page puts its opening section in `slot="hero"`. Both slots are inside `.page-body`, so
+// the column the dial shares is unchanged — the only difference is that the TOC lands
+// between the hero and the rest, which is where a reader looks for it.
+//
+// THE SET IS THREE, not two (spec §9 amendment 3b). Below 1024px the STRIP is the quick jump
+// pinned under the header and the SHEET is the full list behind a bottom control; at and
+// above 1024px both go and the DIAL takes the column. All three mount on the same `nav`
+// threshold and from the same `sections` list, so no width and no page can show two of them
+// disagreeing about what the page's sections are.
+import BaseLayout, { type BaseProps } from './BaseLayout.astro';
+import SiteHeaderKit from '../components/kit/SiteHeaderKit.astro';
+import SiteFooterKit from '../components/kit/SiteFooterKit.astro';
+import PageDial from '../components/kit/PageDial.astro';
+import SectionSheet from '../components/kit/SectionSheet.astro';
+import SectionStrip from '../components/kit/SectionStrip.astro';
+import PageNav from '../components/kit/PageNav.astro';
+import type { SectionRef } from '../lib/sections';
+
+// Every head prop is BaseLayout's, forwarded untouched; `sections` is the only one the shell
+// owns. Extending rather than restating means a prop added to the layout reaches the shell.
+interface Props extends BaseProps { sections?: SectionRef[] }
+const { sections = [], ...head } = Astro.props;
+const nav = sections.length >= 6;
+// A page that passes one to five sections gets NO in-page nav and no warning would be given
+// at runtime, because nothing is rendered — the author sees a page that simply has no dial
+// and has to guess whether the threshold or their list is wrong. Say which, at build time,
+// once per page. Not an error: below six the pair is genuinely the wrong furniture, so the
+// page is correct as built and this is the sentence that explains it.
+if (sections.length > 0 && !nav) {
+  console.warn(`PageShell: ${head.canonical ?? head.title} passed ${sections.length} section(s); `
+    + 'the dial and the section sheet need six. Rendering the page without them.');
+}
+---
+<BaseLayout {...head}>
+  {/* Both in the HEADER slot, so the strip sits OUTSIDE `<main id="main">`. It is chrome,
+      not content: BaseLayout's skip link points at `#main`, and a strip rendered inside it
+      would put 61px of sticky chrome above the very target the skip link jumps to — which
+      is `nav-jump-target-lands` measuring a target it can never land clear of (it fired on
+      `#main` at 768 for exactly this). Outside it, `#main` begins below the whole band. */}
+  <Fragment slot="header">
+    <SiteHeaderKit />
+    {nav && <SectionStrip sections={sections} />}
+  </Fragment>
+  <div class:list={['page-shell', { 'has-dial': nav }]}>
+    {nav && <PageDial sections={sections} />}
+    <div class="page-body">
+      <slot name="hero" />
+      {nav && <PageNav sections={sections} crumbs={false} class="page-toc" />}
+      <slot />
+    </div>
+  </div>
+  {nav && <SectionSheet sections={sections} />}
+  <SiteFooterKit slot="footer" />
+</BaseLayout>
+<style>
+  @layer components {
+    /* The shell adds NO width of its own until there is a dial to make room for. Every kit
+       section and every hub already owns its gutter (`container`), so a wrapper that also
+       set `max-width` and `padding-inline` would nest one container inside another and take
+       48px off the page for nothing. The only thing the shell is entitled to lay out is the
+       column pair, and that exists solely at the width the dial is visible at — the same
+       1024px breakpoint PageDial and SectionSheet split on. */
+    .page-body { min-width: 0; }
+    /* The TOC is a block between the hero and the body, so it owns the gutter every kit
+       section owns — the shell adds none of its own until the dial is visible. */
+    .page-body > .page-toc {
+      max-width: var(--container);
+      margin: var(--space-6) auto;
+      padding-inline: var(--space-5);
+    }
+    @media (min-width: 1024px) {
+      /* Inside the dial's column the gutter is already the grid's, and the dial IS the
+         persistent copy of this list — so the TOC steps out of the way rather than
+         repeating it beside itself. */
+      .page-shell.has-dial > .page-body > .page-toc { display: none; }
+    }
+    @media (min-width: 1024px) {
+      .page-shell.has-dial {
+        max-width: var(--container);
+        margin-inline: auto;
+        padding-inline: var(--space-5);
+        display: grid;
+        grid-template-columns: 196px minmax(0, 1fr);
+        gap: var(--space-6);
+        align-items: start;
+      }
+    }
+  }
+</style>

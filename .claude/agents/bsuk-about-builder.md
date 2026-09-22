@@ -1,6 +1,6 @@
 ---
 name: bsuk-about-builder
-description: Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Glasgow. Builds trust through the H-S-S (Hook, Story, Solution) framework in first-person brand voice. Every credential, licence or registration sentence is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies evidence; the guarantee length is NOT FETCHED.
+description: Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle. Builds trust through the H-S-S (Hook, Story, Solution) framework in first-person brand voice. Every credential, licence or registration sentence is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies evidence; the guarantee length is NOT FETCHED.
 tools: [Read, Write, Bash]
 model: inherit
 effort: high
@@ -13,10 +13,10 @@ effort: high
 ---
 
 ## BSUK Project Context
-> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Glasgow kennel of Staffordshire Bull Terriers (40 Coltmuir Street, Glasgow G22 6LU)
+> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Glasgow or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -62,7 +62,7 @@ The Blue Staffy puppy scam market — Facebook Marketplace sellers claiming "LIC
 - Years breeding Blue Staffies: NOT FETCHED — never write a number the breeder has not given
 - The breeder's verifiable legal standing: LICENCE_CLAIM_PLACEHOLDER (no licence number may be printed)
 - Any Act, statute or council requirement: LEGAL_CLAIM_PLACEHOLDER
-- Located at 40 Coltmuir Street, Glasgow G22 6LU
+- Located at Carlisle, Cumbria
 
 ### Solution (what BSUK built)
 - What travels with a puppy is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence — list nothing you have not seen
@@ -102,7 +102,7 @@ Always read the current page content to extract real facts before writing:
 - Years in business: read from page
 - Puppies raised: read from page
 - Variants: Blue Staffy + Blue and white Staffy
-- Location: Glasgow
+- Location: Carlisle
 - the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER): verify from page
 - Breeder name: Lisa Bright
 

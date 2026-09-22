@@ -15,10 +15,10 @@ effort: max
 ---
 
 ## BSUK Project Context
-> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Glasgow kennel of Staffordshire Bull Terriers (40 Coltmuir Street, Glasgow G22 6LU)
+> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Glasgow or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -264,7 +264,20 @@ Save each blog post to:
 src/content/blog/<slug>.md
 ```
 
-Example: `src/content/blog/blue-staffy-blog-guides.md` is the one post that exists today
+**THE ROUTE IS THE FRONTMATTER `slug`, NOT THE FILENAME.** `src/pages/[...post].astro` builds
+`/<slug>/` at the site root, and `src/pages/blog/index.astro` and the guides hub both link
+`/<slug>/`. A filename that disagrees with the slug builds nothing at the filename.
+
+**RESERVED ROUTES — a post may claim none of these.** The set is derived, not listed, so it
+cannot go stale: every route a real page file owns (`src/pages/**/index.astro`, so
+`blue-staffy-blog-guides`, `blue-staffy-health-uk`, `uk-blue-staffy-breeders-contact` and the
+rest), plus `blog`, `uk-locations` and `available-puppies`, which are index or dynamic routes
+of their own. `getStaticPaths()` in `[...post].astro` builds that set with
+`import.meta.glob('./**/index.astro')` and THROWS on a collision rather than letting the page
+route silently shadow the post — a post that vanished from the build with a green exit code is
+the failure the guard exists for. Project 4 Task 14 is why: a post's slug was
+`blue-staffy-blog-guides`, so the guides hub's own URL served that one post's body, and the
+hub could not be written until the post moved to a slug of its own.
 
 After creating the file, add to sitemap:
 ```bash

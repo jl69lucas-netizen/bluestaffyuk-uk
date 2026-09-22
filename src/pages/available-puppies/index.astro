@@ -1,5 +1,5 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageShell from '../../layouts/PageShell.astro';
 import PuppyList from '../../components/PuppyList.astro';
 import puppiesJson from '../../../data/puppies.json';
 import pm from '../../../data/price-matrix.json';
@@ -9,10 +9,10 @@ const males = avail.filter((p) => p.sex === 'male').length;
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 const description = `${avail.length} Blue Staffy puppies available now from Blue Staffy UK in Glasgow: ${males} males at ${gbp(pm.male_gbp)} and ${avail.length - males} females at ${gbp(pm.female_gbp)}, with UK-wide delivery.`;
 ---
-<BaseLayout title="Available Blue Staffy Puppies | Blue Staffy UK" description={description} canonical="/available-puppies/" crumbTitle="Available Puppies">
+<PageShell title="Available Blue Staffy Puppies | Blue Staffy UK" description={description} canonical="/available-puppies/" crumbTitle="Available Puppies">
   <div class="container container-text">
     <h1>Available Blue Staffy Puppies</h1>
     <p>{avail.length} Staffordshire Bull Terrier puppies are available now: {males} males at {gbp(pm.male_gbp)} and {avail.length - males} females at {gbp(pm.female_gbp)}.</p>
   </div>
   <PuppyList heading="none" />
-</BaseLayout>
+</PageShell>

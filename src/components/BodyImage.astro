@@ -1,0 +1,53 @@
+---
+// src/components/BodyImage.astro — one migrated photograph, in the body of a rebuilt page.
+//
+// WHY IT IS A COMPONENT. Working rule 11 says every image a rebuilt page renders is one the
+// migrated site already served, at its ORIGINAL public path with its ORIGINAL alt text and its
+// measured intrinsic size — and `src/lib/assets.ts` already hands the page a row carrying all
+// four. What each page then wrote was nine identical lines of `<img>` per photograph: sixteen
+// copies on /uk-blue-staffy-puppy-buying-guide/ alone, ten on the breed guide, and the same
+// again on the health and about pages. Nine lines repeated sixteen times is not a style
+// problem: `sizes`, `loading` and `decoding` are all measured decisions that `img-sizes-
+// matches-box`, `img-no-lazy-hero` and `img-srcset-within-2x` judge, and a decision spelled
+// forty times is a decision that can be changed thirty-nine times.
+//
+// NOT IN THE KIT, DELIBERATELY. `src/components/kit/` is project 3's component set: eighteen
+// rows in data/design/components.json, a measured height in data/design/canvas-heights.json,
+// a `@dsCard` preview folder in the published design system and a specimen on /kit-preview/,
+// all of which `tests/py/test_design_system_build.py` holds to each other. A nine-line `<img>`
+// wrapper earns none of that, and adding it would mean re-publishing the design system to
+// document a tag. It sits beside `Breadcrumb.astro` and `Schema.astro` instead — the
+// site-level components that were never kit rows — so the kit's registry, its canvas and its
+// hex gate are all untouched.
+//
+// IT TAKES THE ASSET ROW WHOLE rather than four props, because the row is the unit
+// `bakedAssets()` returns and splitting it at every call site is how a width and a height
+// drift apart from the file they measure.
+import type { FilledAsset } from '../lib/assets';
+import { BODY_SIZES } from '../lib/assets';
+
+interface Props {
+  /** The record's baked row: original path, original alt, measured intrinsic size. */
+  asset: FilledAsset;
+  /** Candidate list, for a master wide enough to need one. Omitted renders no `srcset`. */
+  srcset?: string;
+  /** The box the photo paints, for a page whose prose column is not `PageShell`'s. */
+  sizes?: string;
+}
+const { asset, srcset, sizes = BODY_SIZES } = Astro.props;
+---
+{/* `loading="lazy"` and `decoding="async"` are right for every in-body photograph and wrong
+    for a hero: the hero is the LCP element and is eager with `fetchpriority="high"`, which is
+    `Hero.astro`'s own business. This component is for the body only, which is why neither is
+    a prop. */}
+<img
+  class="bl-img"
+  src={asset.file}
+  alt={asset.alt}
+  width={asset.w}
+  height={asset.h}
+  srcset={srcset}
+  sizes={sizes}
+  loading="lazy"
+  decoding="async"
+/>

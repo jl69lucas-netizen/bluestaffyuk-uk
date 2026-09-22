@@ -25,11 +25,13 @@
     { "slug": "blue-staffy-health-uk", "page_type": "interior", "corpus": false },
     { "slug": "blue-staffy-uk-breeders", "page_type": "interior", "corpus": false },
     { "slug": "uk-blue-staffy-breeders-contact", "page_type": "interior", "corpus": false },
+    { "slug": "thank-you-blue-staffy-puppies-journey", "page_type": "interior", "corpus": false },
     { "slug": "privacy-policy-uk", "page_type": "interior", "corpus": false },
     { "slug": "uk-locations", "page_type": "hub", "corpus": true },
     { "slug": "uk-locations/blue-staffy-puppies-birmingham", "page_type": "location", "corpus": true },
     { "slug": "uk-locations/blue-staffy-puppies-uk", "page_type": "location", "corpus": false },
     { "slug": "blue-staffy-blog-guides", "page_type": "blog", "corpus": true },
+    { "slug": "how-to-choose-the-right-blue-staffy-puppy-for-your-family", "page_type": "blog", "corpus": false },
     { "slug": "blog", "page_type": "hub", "corpus": false },
     { "slug": "kit-preview", "page_type": "preview", "corpus": false }
   ]

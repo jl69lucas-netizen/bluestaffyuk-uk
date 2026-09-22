@@ -1,6 +1,6 @@
 ---
 name: bsuk-purchase-guide
-description: Rebuilds /buy-blue-staffy-puppies-uk/ section-by-section. The high-intent buyer page: walks a UK buyer through the £500 refundable deposit, collection in Glasgow or home delivery £200–£350 by distance (DEFRA-approved transport), what paperwork is promised (LICENCE_CLAIM_PLACEHOLDER) and post-arrival support. Calls bsuk-section-builder for each section.
+description: Rebuilds /buy-blue-staffy-puppies-uk/ section-by-section. The high-intent buyer page: walks a UK buyer through the £500 refundable deposit, collection in Carlisle or home delivery £200–£350 by distance (DEFRA-approved transport), what paperwork is promised (LICENCE_CLAIM_PLACEHOLDER) and post-arrival support. Calls bsuk-section-builder for each section.
 tools: [Read, Write, Bash]
 model: inherit
 effort: max
@@ -13,10 +13,10 @@ effort: max
 ---
 
 ## BSUK Project Context
-> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Glasgow kennel of Staffordshire Bull Terriers (40 Coltmuir Street, Glasgow G22 6LU)
+> **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Glasgow or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
@@ -170,7 +170,7 @@ Build [section type]:
 - Pull city list from `data/locations.json` — only list cities where `"live": true`
 - Format as a 3-column grid of city badges
 - Each city badge links to its `/uk-locations/<slug>/` page
-- Headline: "UK Home Delivery by DEFRA-approved transport, or Collection in Glasgow"
+- Headline: "UK Home Delivery by DEFRA-approved transport, or Collection in Carlisle"
 - Note: LICENCE_CLAIM_PLACEHOLDER health certificate required for interstate transport — included
 
 ### Section 12 — FAQ

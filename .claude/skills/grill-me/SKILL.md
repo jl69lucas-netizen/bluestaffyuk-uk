@@ -15,7 +15,7 @@ This rule applies to you and every agent you hand off to.
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Glasgow
+> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
 > **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
@@ -110,7 +110,7 @@ Announce that you've loaded the project context before Q1:
 For each answer:
 1. **Append** the verbatim Q&A to the `## Q&A Log (Verbatim)` section:
    ```markdown
-   **Q6 — Specific Target:** "/uk-locations/glasgow/"
+   **Q6 — Specific Target:** "/uk-locations/staffy-puppies-for-sale-manchester/"
    ```
 2. **Update** `> **Next question:**` and `> **Last updated:**` in the header.
 3. If the answer settles a decision (framework, AIO approach, component style) → add a line to `## Decisions Log`.
@@ -123,7 +123,7 @@ Use the Write tool to rewrite the file each time (read-modify-write), or append 
 ### Don't ask what the repo already answers
 
 Before asking any question, check whether the answer is already on disk. If it is, **read it, state it, and confirm** instead of asking cold:
-- ✅ "Your last brief says the next target is the Glasgow location page — picking that up?" (read from `sessions/`)
+- ✅ "Your last brief says the next target is the Manchester location page — picking that up?" (read from `sessions/`)
 - ✅ "`structure.json` already has this page under the `/available-puppies/` hub — confirmed?"
 - ❌ "What hub does this page belong to?" (when `structure.json` already says)
 

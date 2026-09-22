@@ -15,9 +15,12 @@ def indexable(page):
 def render(pages, settings):
     a = settings["address"]
     out = ["# %s: %s" % (settings["site_name"], settings["tagline"]), ""]
+    # Town and region only: the breeder relocated and has supplied no street, postcode or
+    # coordinates for the new place (Known Issue 16). This line used to read keys that no
+    # longer exist, and a KeyError here takes the whole llms.txt build down.
     out.append(
-        "> %s is a Glasgow-based Staffordshire Bull Terrier breeder at %s, %s %s, breeding blue Staffy puppies for homes across the UK."
-        % (settings["site_name"], a["street"], a["city"], a["postcode"])
+        "> %s is a Staffordshire Bull Terrier breeder in %s, %s, breeding blue Staffy puppies for homes across the UK."
+        % (settings["site_name"], a["city"], a["region"])
     )
     out += ["", "## Sitemaps", "", "- [XML sitemap](/sitemap_index.xml)", "", "## Pages", ""]
     for p in sorted((q for q in pages if indexable(q)), key=lambda q: q["url"]):

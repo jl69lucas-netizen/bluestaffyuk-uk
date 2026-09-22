@@ -243,3 +243,79 @@ def test_fail_on_error_is_documented_in_the_docstring():
     doc = d.__doc__
     assert "--fail-on-error" in doc
     assert "Exit" in doc
+
+
+def test_is_specimen_matches_the_two_preview_routes_and_nothing_else():
+    """`/board-preview/<slug>/` and `/kit-preview/` render other pages' content as
+    specimens — the board preview shows a record's own sections three styles over, and the
+    kit preview renders the FAQ accordion over every row in data/faq.json. A passage shared
+    with one of them is one passage rendered twice, not duplicate content, and both routes
+    are noindex. The prefix is anchored so a real slug is never caught by containing one."""
+    assert d.is_specimen("kit-preview")
+    assert d.is_specimen("board-preview/privacy-policy-uk")
+    assert d.is_specimen("board-preview/a/b")
+    assert not d.is_specimen("index")
+    assert not d.is_specimen("privacy-policy-uk")
+    # anchored: a real page may not be excluded because its path mentions one
+    assert not d.is_specimen("guides/kit-preview-notes")
+    assert not d.is_specimen("kit-previewer")
+
+
+def test_the_audit_drops_the_specimen_routes_from_its_corpus(tmp_path):
+    """End to end: the same passage on a real page and on a specimen route is NOT a
+    finding, while the same passage on two real pages still is."""
+    shared = " ".join(["staffy"] * 6 + ["puppies raised in a family home with children"])
+    for key in ("real-a", "kit-preview", "board-preview/real-a"):
+        p = tmp_path / key / "index.html"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_text(f"<html><body><main><p>{shared}</p></main></body></html>", encoding="utf-8")
+    out = tmp_path / "r.json"
+    d.main(["--dist", str(tmp_path), "--json", str(out)])
+    res = json.loads(out.read_text())
+    assert res["pages"] == 1, res["pages"]
+    assert res["problems"] == 0, res["findings"]
+
+    (tmp_path / "real-b").mkdir()
+    (tmp_path / "real-b" / "index.html").write_text(
+        f"<html><body><main><p>{shared}</p></main></body></html>", encoding="utf-8")
+    d.main(["--dist", str(tmp_path), "--json", str(out)])
+    res = json.loads(out.read_text())
+    assert res["pages"] == 2 and res["problems"] >= 1, res
+
+
+# ── a board section's id is not a chrome marker ────────────────────────────────────────────
+
+def _chrome(tag, attrs):
+    """Whether `Text` would treat this element, and everything in it, as site chrome."""
+    p = d.Text()
+    p.handle_starttag(tag, attrs)
+    return p.stack[-1][1]
+
+
+def test_a_board_sections_own_id_is_not_read_as_chrome():
+    """`paperwork-review` and `owner-review` are what two sections are ABOUT.
+
+    CHROME_RE is a substring test, so the breeder's own section id put the whole section —
+    prose, headings and a real buyer quote — outside the dup corpus and outside the word
+    count, which read one of them as 0 prose words against a 35-50 band.
+    """
+    section = [("id", "paperwork-review"), ("data-section-label", "One owner on the paperwork"),
+               ("class", "bl-box bl-frame-plain bl-cols-2 bl-head-inline")]
+    assert _chrome("section", section) is False
+    assert _chrome("section", [("id", "owner-review"), ("data-section-label", "x")]) is False
+
+
+def test_a_chrome_class_is_still_chrome_wherever_the_token_sits():
+    """The fix is about the ATTRIBUTE, not the position, and it has to be: the kit ships
+    `page-toc`, where the token is the tail of a hyphenated name exactly as it is in
+    `paperwork-review`. Anchoring the alternatives would have taken the table of contents out
+    of the chrome set along with the false positive."""
+    for cls in ("review-rail", "kit-nav page-toc", "toc", "msp-card", "read-card", "crumbs"):
+        assert _chrome("div", [("class", cls)]) is True, cls
+
+
+def test_a_section_id_is_still_chrome_when_it_is_not_a_board_section():
+    """`data-section-label` is what a rebuilt page writes on a section of its record. Without
+    it this is an ordinary element and its id is read as it always was."""
+    assert _chrome("section", [("id", "paperwork-review")]) is True
+    assert _chrome("div", [("id", "jump-list")]) is True

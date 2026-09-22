@@ -47,12 +47,93 @@ def test_video_shard_from_embeds(tmp_path):
     assert shards["video"][0][1][0]["id"] == "g9iV9RVr_Sk"
 
 
+def test_a_nocookie_player_is_the_same_video_as_a_youtube_com_one(tmp_path):
+    """`VideoEmbed` (component 18) requests `youtube-nocookie.com`, deliberately, and the
+    shard builder matched `youtube.com/embed/` alone — so every page rebuilt with the kit's
+    video component left the video sitemap without one gate reporting it. Working rule 14
+    keeps an already-ranking id; losing its sitemap row loses the same thing by another
+    route. Both hosts are one video, and `player_loc` stays canonical either way."""
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/nocookie/": _page(title="N", desc="D", body=(
+            '<iframe src="https://www.youtube-nocookie.com/embed/g9iV9RVr_Sk"></iframe>')),
+        "/plain/": _page(title="P", desc="D", body=_embed("WuA0yo6HZKE")),
+    })
+    shards = build_shards(d, "https://example.test", set())
+    got = {u: [v["id"] for v in vids] for u, vids in shards["video"]}
+    assert got == {"https://example.test/nocookie/": ["g9iV9RVr_Sk"],
+                   "https://example.test/plain/": ["WuA0yo6HZKE"]}, got
+    gs.write(shards, dist=d, base="https://example.test")
+    raw = (d / "video-sitemap.xml").read_text(encoding="utf-8")
+    # The PLAYER url is the canonical watch host on both, which is what Google expects there
+    # and is not the host the page itself asked the browser for.
+    assert raw.count("<video:player_loc>https://www.youtube.com/embed/") == 2, raw
+    assert "youtube-nocookie" not in raw, raw
+
+
+def test_the_facade_is_an_embed_and_a_lookalike_host_is_not(tmp_path):
+    """`VideoEmbed`'s DEFAULT arrangement ships no `<iframe>` at all until somebody clicks:
+    the player url is a `data-src` on the frame and an `<iframe>` inside `<noscript>`. Both
+    carry the id, so both count — a page whose video is the light arrangement is still a page
+    with a video. And the pattern is LEFT-BOUND, so `notyoutube.com/embed/<id>` is somebody
+    else's lookalike host and is not submitted as ours."""
+    facade = ('<div data-video-frame data-src="https://www.youtube-nocookie.com/embed/aaaaaaaaaaa?autoplay=1">'
+              '<button data-video-play></button>'
+              '<noscript><iframe src="https://www.youtube-nocookie.com/embed/aaaaaaaaaaa"></iframe></noscript>'
+              '</div>')
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/facade/": _page(title="F", desc="D", body=facade),
+        "/lookalike/": _page(title="L", desc="D", body=(
+            '<iframe src="https://notyoutube.com/embed/bbbbbbbbbbb"></iframe>')),
+    })
+    shards = build_shards(d, "https://example.test", set())
+    got = {u: [v["id"] for v in vids] for u, vids in shards["video"]}
+    assert got == {"https://example.test/facade/": ["aaaaaaaaaaa"]}, got
+
+
 def test_noindex_pages_excluded(tmp_path):
     d = tmp_path / "dist"; (d / "n").mkdir(parents=True)
     (d / "n/index.html").write_text('<html><head><meta name="robots" content="noindex, follow"></head><body></body></html>', encoding="utf-8")
     (d / "index.html").write_text("<html><head></head><body></body></html>", encoding="utf-8")
     shards = build_shards(d, "https://example.test", blog_slugs=set())
     assert all(not u.endswith("/n/") for u, _ in shards["page"])
+
+
+def test_a_noindex_page_leaves_every_shard_not_just_the_page_one(tmp_path):
+    """The exclusion is applied before the shard is chosen, so it has to hold for a post and
+    a location too. Without this, a noindex blog entry would drop out of `page` and reappear
+    in `post`, which is the shard a crawler actually reads for a collection."""
+    d = _dist(tmp_path, {
+        "/": _page(),
+        "/a-post/": _page(robots="noindex, nofollow"),
+        "/uk-locations/somewhere/": _page(robots="noindex, nofollow"),
+    })
+    shards = build_shards(d, "https://example.test", blog_slugs={"a-post"})
+    listed = {u for rows in shards.values() for u, _ in rows}
+    assert not [u for u in listed if u.endswith("/a-post/")]
+    assert not [u for u in listed if u.endswith("/somewhere/")]
+
+
+def test_the_legacy_blog_archive_is_noindex_and_out_of_the_shards_while_the_hub_is_in():
+    """The live case, against the real build. /blog/ is the old WordPress archive address and
+    /blue-staffy-blog-guides/ is the boarded guides index; two indexable indexes of one
+    collection is a duplicate somebody has to choose between, so the legacy one is `noindex`
+    with its canonical on the hub. A test on the generator alone would not notice the day the
+    page stopped declaring it."""
+    dist = pathlib.Path(__file__).resolve().parents[2] / "dist"
+    blog = dist / "blog" / "index.html"
+    hub = dist / "blue-staffy-blog-guides" / "index.html"
+    if not blog.exists() or not hub.exists():
+        import pytest
+        pytest.skip("no dist/ — run the build first")
+    assert "noindex" in gs._meta(blog.read_text(encoding="utf-8"), "robots")
+    assert "blue-staffy-blog-guides/" in blog.read_text(encoding="utf-8").split("rel=\"canonical\"")[1][:120]
+    assert "noindex" not in gs._meta(hub.read_text(encoding="utf-8"), "robots")
+    shards = build_shards(dist, "https://example.test", gs.blog_slugs_from_content())
+    listed = {u for rows in shards.values() for u, _ in rows}
+    assert not [u for u in listed if u.endswith("/blog/")]
+    assert [u for u in listed if u.endswith("/blue-staffy-blog-guides/")]
 
 
 def test_meta_tolerates_quote_style_and_attribute_order():

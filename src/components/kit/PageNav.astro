@@ -11,6 +11,13 @@
 // `sections` DEFAULTS TO EMPTY, and an empty list renders the breadcrumb alone. The
 // component has no opinion about what a page's sections are.
 //
+// `crumbs` DEFAULTS TO TRUE, and `PageShell` is the one caller that passes false. BaseLayout
+// already renders `<Breadcrumb>` above `<main>`, so a shell-mounted copy of this component
+// would put a SECOND trail on every rebuilt page — two `nav[aria-label="Breadcrumb"]`
+// landmarks with the same links, which is a duplicate landmark to a screen reader and a
+// duplicated BreadcrumbList to a crawler. The trail is not dropped from the component,
+// because the kit preview and any page that mounts it directly still want it.
+//
 // The jump links rely on the global `[id]` scroll-margin rule (nav-jump-target-lands) for
 // the landing offset, and nothing here re-states it. Nothing here pins itself above the
 // target either: the sticky treatment was one of the five and the prune did not keep it, so
@@ -28,11 +35,14 @@ type Props = HTMLAttributes<'div'> & {
   path?: string;
   title?: string;
   sections?: NavSection[];
+  /** Render the breadcrumb trail. False where the page already has one above `<main>`. */
+  crumbs?: boolean;
 };
 const {
   path = '/uk-staffordshire-bull-terrier-guide/',
   title = 'Staffordshire Bull Terrier guide',
   sections = [],
+  crumbs: showCrumbs = true,
   class: cls,
   ...rest
 } = Astro.props;
@@ -40,17 +50,19 @@ const {
 const trail = crumbs(path, title);
 ---
 <div {...rest} class:list={['kit-nav', cls]}>
-  <nav aria-label="Breadcrumb" class="crumbs">
-    <ol>
-      {trail.map((c, i) => (
-        <li>
-          {i < trail.length - 1
-            ? <a href={c.href}>{c.label}</a>
-            : <span aria-current="page">{c.label}</span>}
-        </li>
-      ))}
-    </ol>
-  </nav>
+  {showCrumbs && (
+    <nav aria-label="Breadcrumb" class="crumbs">
+      <ol>
+        {trail.map((c, i) => (
+          <li>
+            {i < trail.length - 1
+              ? <a href={c.href}>{c.label}</a>
+              : <span aria-current="page">{c.label}</span>}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )}
 
   {sections.length > 0 && (
     <nav aria-label="On this page" class="toc">

@@ -1,188 +1,1691 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "BSUK Page Board record",
-  "type": "object",
-  "required": ["meta", "meta_set", "brief", "h1", "sections", "tuple", "assets", "approval"],
-  "additionalProperties": false,
-  "$defs": {
-    "node": {
-      "type": "object", "required": ["level", "heading", "intent", "children"], "additionalProperties": false,
-      "properties": {
-        "level": {"type": "integer", "minimum": 3, "maximum": 6},
-        "heading": {"type": "string", "minLength": 1},
-        "intent": {"type": "string"},
-        "children": {"type": "array", "items": {"$ref": "#/$defs/node"}}
-      }
-    }
-  },
-  "properties": {
-    "meta": {
-      "type": "object", "required": ["slug", "page_type", "status", "research_as_of", "sources"], "additionalProperties": false,
-      "properties": {
-        "slug": {"type": "string", "pattern": "^[a-z0-9-]+(/[a-z0-9-]+)*$"},
-        "page_type": {"enum": ["home", "hub", "location", "puppy", "blog", "about", "contact", "comparison", "interior", "for-sale"]},
-        "status": {"enum": ["draft", "boarded", "approved", "built", "released"]},
-        "research_as_of": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
-        "sources": {"type": "array", "items": {"type": "object", "required": ["path", "fetched"], "additionalProperties": false,
-                    "properties": {"path": {"type": "string"}, "fetched": {"type": "string"}}}}
-      }
+ "$schema": "https://json-schema.org/draft/2020-12/schema",
+ "title": "BSUK Page Board record",
+ "type": "object",
+ "required": [
+  "meta",
+  "meta_set",
+  "brief",
+  "h1",
+  "sections",
+  "tuple",
+  "assets",
+  "approval"
+ ],
+ "additionalProperties": false,
+ "$defs": {
+  "node": {
+   "type": "object",
+   "required": [
+    "level",
+    "heading",
+    "intent",
+    "children"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "level": {
+     "type": "integer",
+     "minimum": 3,
+     "maximum": 6
     },
-    "brief": {
-      "type": "object", "required": ["goal", "scope", "gates", "done", "out_of_scope", "primary_keyword", "angles", "strategy", "cta", "tool", "schema"],
+    "heading": {
+     "type": "string",
+     "minLength": 1
+    },
+    "intent": {
+     "type": "string"
+    },
+    "children": {
+     "type": "array",
+     "items": {
+      "$ref": "#/$defs/node"
+     }
+    },
+    "verbatim_heading": {
+     "type": "boolean",
+     "description": "working rule 15: this heading is the migrated page's own wording, carried word for word from data/verbatim/<slug>.json. Absent or false means the heading is the outline's own. A heading that had to be altered is NOT flagged here — it is a row of `verbatim.changed`."
+    },
+    "verbatim_opening": {
+     "type": "string",
+     "minLength": 1,
+     "description": "working rule 15: the migrated page's first paragraph under this heading, which the build pastes as the section's (or node's) FIRST paragraph before any fresh prose. Where the old paragraph stated a wrong fact this holds the CORRECTED text and `verbatim.changed` carries the row that says so."
+    }
+   },
+   "comment": "An H3–H6 of the outline. It carries the two rule-15 fields for the same reason a section does: eleven of the homepage's twenty-three keyword headings are H3s, and nine of the seventeen opening paragraphs belong to one. Without them the rule would be satisfiable only for H2s, and the set would lose the half of itself that sits a level down."
+  }
+ },
+ "properties": {
+  "meta": {
+   "type": "object",
+   "required": [
+    "slug",
+    "page_type",
+    "status",
+    "research_as_of",
+    "sources"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "slug": {
+     "comment": "A leading underscore on the first segment marks a record that is NOT a page (today: _demo, the fixture the board-preview route, the cutter and their tests render). No real slug starts with one, so the underscore is what keeps such a record out of every page consumer.",
+     "type": "string",
+     "pattern": "^_?[a-z0-9-]+(/[a-z0-9-]+)*$"
+    },
+    "preview": {
+     "comment": "Render this record on /board-preview/<slug>/ even though it is not a draft. Only a record that is NOT a page ever sets it; the route already builds every draft.",
+     "type": "boolean"
+    },
+    "page_type": {
+     "enum": [
+      "home",
+      "hub",
+      "location",
+      "puppy",
+      "blog",
+      "about",
+      "contact",
+      "comparison",
+      "interior",
+      "for-sale"
+     ]
+    },
+    "status": {
+     "enum": [
+      "draft",
+      "boarded",
+      "approved",
+      "built",
+      "released"
+     ]
+    },
+    "research_as_of": {
+     "type": "string",
+     "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "sources": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "path",
+       "fetched"
+      ],
       "additionalProperties": false,
       "properties": {
-        "goal": {"type": "string"}, "scope": {"type": "string"}, "done": {"type": "string"},
-        "gates": {"type": "array", "items": {"type": "string"}},
-        "out_of_scope": {"type": "array", "items": {"type": "string"}},
-        "primary_keyword": {"type": "string", "minLength": 3},
-        "angles": {
-          "type": "array", "minItems": 2, "maxItems": 3,
-          "items": {"type": "object", "required": ["name", "hook", "why_not"], "additionalProperties": false,
-                    "properties": {"name": {"type": "string", "minLength": 1, "maxLength": 240},
-                                   "hook": {"type": "string", "minLength": 1, "maxLength": 240},
-                                   "why_not": {"type": "string", "maxLength": 240}}}
+       "path": {
+        "type": "string"
+       },
+       "fetched": {
+        "type": "string"
+       }
+      }
+     }
+    },
+    "layout_type": {
+     "comment": "Working rule 16: the hero and the counter strip are cut per LAYOUT FAMILY, and a family is not the same thing as page_type — eight of the thirteen records are `interior`, and a privacy policy, a breed guide and an about page do not want one hero between them. Absent, src/lib/boardStyles.ts derives it from page_type (interior -> interior-guide). A record states it when that guess would be wrong.",
+     "enum": [
+      "home",
+      "for-sale",
+      "interior-guide",
+      "interior-about",
+      "interior-utility",
+      "blog"
+     ]
+    }
+   }
+  },
+  "brief": {
+   "type": "object",
+   "required": [
+    "goal",
+    "scope",
+    "gates",
+    "done",
+    "out_of_scope",
+    "primary_keyword",
+    "angles",
+    "strategy",
+    "cta",
+    "tool",
+    "schema"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "goal": {
+     "type": "string"
+    },
+    "scope": {
+     "type": "string"
+    },
+    "done": {
+     "type": "string"
+    },
+    "gates": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "out_of_scope": {
+     "type": "array",
+     "items": {
+      "type": "string"
+     }
+    },
+    "primary_keyword": {
+     "type": "string",
+     "minLength": 3
+    },
+    "angles": {
+     "type": "array",
+     "minItems": 2,
+     "maxItems": 3,
+     "items": {
+      "type": "object",
+      "required": [
+       "name",
+       "hook",
+       "why_not"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 240
+       },
+       "hook": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 240
+       },
+       "why_not": {
+        "type": "string",
+        "maxLength": 240
+       }
+      }
+     }
+    },
+    "strategy": {
+     "type": "object",
+     "required": [
+      "name",
+      "why",
+      "trade_off"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "name": {
+       "type": "string"
+      },
+      "why": {
+       "type": "string"
+      },
+      "trade_off": {
+       "type": "string"
+      }
+     }
+    },
+    "cta": {
+     "type": "object",
+     "required": [
+      "cadence",
+      "destination",
+      "anchors",
+      "global_cta"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "cadence": {
+       "type": "object",
+       "required": [
+        "min",
+        "max"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "min": {
+         "type": "integer",
+         "minimum": 100
         },
-        "strategy": {"type": "object", "required": ["name", "why", "trade_off"], "additionalProperties": false,
-                     "properties": {"name": {"type": "string"}, "why": {"type": "string"}, "trade_off": {"type": "string"}}},
-        "cta": {"type": "object", "required": ["cadence", "destination", "anchors", "global_cta"], "additionalProperties": false,
-                "properties": {
-                  "cadence": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
-                              "properties": {"min": {"type": "integer", "minimum": 100}, "max": {"type": "integer", "minimum": 100}}},
-                  "destination": {"type": "string", "pattern": "^#[a-z][a-z0-9-]*$"},
-                  "anchors": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 2, "maxLength": 60}},
-                  "global_cta": {"enum": ["hidden", "shown"]}}},
-        "tool": {"type": "object", "required": ["pick", "evidence", "trade_off"], "additionalProperties": false,
-                 "properties": {"pick": {"type": "string", "minLength": 1, "maxLength": 120},
-                                "evidence": {"type": "string", "minLength": 20, "maxLength": 400},
-                                "trade_off": {"type": "string", "maxLength": 240}}},
-        "schema": {"type": "object", "required": ["types", "offer_model"], "additionalProperties": false,
-                   "properties": {"types": {"type": "array", "minItems": 1, "uniqueItems": true,
-                                            "items": {"type": "string", "pattern": "^[A-Z][A-Za-z]+$"}},
-                                  "offer_model": {"enum": ["product-offer-per-puppy", "aggregate-offer", "none"]}}}
+        "max": {
+         "type": "integer",
+         "minimum": 100
+        }
+       }
+      },
+      "destination": {
+       "type": "string",
+       "pattern": "^#[a-z][a-z0-9-]*$"
+      },
+      "anchors": {
+       "type": "array",
+       "minItems": 1,
+       "uniqueItems": true,
+       "items": {
+        "type": "string",
+        "minLength": 2,
+        "maxLength": 60
+       }
+      },
+      "global_cta": {
+       "enum": [
+        "hidden",
+        "shown"
+       ]
       }
+     }
     },
-    "h1": {
-      "type": "object", "required": ["variants", "recommended", "pick"], "additionalProperties": false,
+    "tool": {
+     "type": "object",
+     "required": [
+      "pick",
+      "evidence",
+      "trade_off"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "pick": {
+       "type": "string",
+       "minLength": 1,
+       "maxLength": 120
+      },
+      "evidence": {
+       "type": "string",
+       "minLength": 20,
+       "maxLength": 400
+      },
+      "trade_off": {
+       "type": "string",
+       "maxLength": 240
+      }
+     }
+    },
+    "schema": {
+     "type": "object",
+     "required": [
+      "types",
+      "offer_model"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "types": {
+       "type": "array",
+       "minItems": 1,
+       "uniqueItems": true,
+       "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Za-z]+$"
+       }
+      },
+      "offer_model": {
+       "enum": [
+        "product-offer-per-puppy",
+        "aggregate-offer",
+        "none"
+       ]
+      }
+     }
+    }
+   }
+  },
+  "h1": {
+   "type": "object",
+   "required": [
+    "variants",
+    "recommended",
+    "pick"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "variants": {
+     "type": "array",
+     "minItems": 5,
+     "maxItems": 5,
+     "items": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "recommended": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 4
+    },
+    "pick": {
+     "type": [
+      "integer",
+      "null"
+     ],
+     "minimum": 0,
+     "maximum": 4
+    },
+    "verbatim_heading": {
+     "type": "boolean",
+     "description": "working rule 15: variants[0] is the migrated page's own H1, carried word for word, and it is the recommendation. Absent or false means the H1 is this outline's own."
+    }
+   }
+  },
+  "meta_set": {
+   "type": "object",
+   "required": [
+    "titles",
+    "descriptions",
+    "recommended",
+    "pick"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "titles": {
+     "type": "array",
+     "minItems": 3,
+     "maxItems": 3,
+     "items": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 70
+     }
+    },
+    "descriptions": {
+     "type": "array",
+     "minItems": 3,
+     "maxItems": 3,
+     "items": {
+      "type": "string",
+      "minLength": 140,
+      "maxLength": 160
+     }
+    },
+    "recommended": {
+     "type": "object",
+     "required": [
+      "title",
+      "description"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "title": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 2
+      },
+      "description": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 2
+      }
+     }
+    },
+    "pick": {
+     "type": "object",
+     "required": [
+      "title",
+      "description"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "title": {
+       "type": [
+        "integer",
+        "null"
+       ],
+       "minimum": 0,
+       "maximum": 2
+      },
+      "description": {
+       "type": [
+        "integer",
+        "null"
+       ],
+       "minimum": 0,
+       "maximum": 2
+      }
+     }
+    }
+   }
+  },
+  "sections": {
+   "type": "array",
+   "minItems": 1,
+   "items": {
+    "type": "object",
+    "required": [
+     "id",
+     "n",
+     "heading",
+     "intent",
+     "category",
+     "group",
+     "why",
+     "why_source",
+     "framework",
+     "words",
+     "shape",
+     "keywords",
+     "entities",
+     "tree",
+     "images",
+     "links",
+     "options"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "n": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "heading": {
+      "type": "string",
+      "minLength": 1
+     },
+     "intent": {
+      "type": "string"
+     },
+     "category": {
+      "enum": [
+       "A",
+       "B",
+       "C"
+      ]
+     },
+     "group": {
+      "enum": [
+       "MANDATORY",
+       "COMPETITOR-BASED",
+       "SUGGESTED-RECOMMENDED"
+      ]
+     },
+     "why": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 400
+     },
+     "why_source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 300
+     },
+     "framework": {
+      "enum": [
+       "EEBP",
+       "FAB",
+       "QAB",
+       "PAS",
+       "BAB",
+       "PDB",
+       "AIDA",
+       "EBD",
+       "HSS"
+      ]
+     },
+     "words": {
+      "type": "object",
+      "required": [
+       "min",
+       "max"
+      ],
+      "additionalProperties": false,
       "properties": {
-        "variants": {"type": "array", "minItems": 5, "maxItems": 5, "items": {"type": "string", "minLength": 1}},
-        "recommended": {"type": "integer", "minimum": 0, "maximum": 4},
-        "pick": {"type": ["integer", "null"], "minimum": 0, "maximum": 4}
+       "min": {
+        "type": "integer",
+        "minimum": 0
+       },
+       "max": {
+        "type": "integer",
+        "minimum": 0
+       }
       }
-    },
-    "meta_set": {
-      "type": "object", "required": ["titles", "descriptions", "recommended", "pick"], "additionalProperties": false,
-      "properties": {
-        "titles": {"type": "array", "minItems": 3, "maxItems": 3,
-                   "items": {"type": "string", "minLength": 1, "maxLength": 70}},
-        "descriptions": {"type": "array", "minItems": 3, "maxItems": 3,
-                         "items": {"type": "string", "minLength": 140, "maxLength": 160}},
-        "recommended": {"type": "object", "required": ["title", "description"], "additionalProperties": false,
-          "properties": {"title": {"type": "integer", "minimum": 0, "maximum": 2},
-                         "description": {"type": "integer", "minimum": 0, "maximum": 2}}},
-        "pick": {"type": "object", "required": ["title", "description"], "additionalProperties": false,
-          "properties": {"title": {"type": ["integer", "null"], "minimum": 0, "maximum": 2},
-                         "description": {"type": ["integer", "null"], "minimum": 0, "maximum": 2}}}
-      }
-    },
-    "sections": {
-      "type": "array", "minItems": 1,
+     },
+     "shape": {
+      "comment": "The first eight are the ported CAG shapes, which name the pool a section's component option comes from. The fourteen that follow are project 4's KIT shapes: each names an arrangement family src/lib/boardStyles.ts renders three ways on /board-preview/<slug>/. `standard` is in both worlds and keeps its meaning — prose. `dial`, `sheet` and `strip` are the three CHROME shapes: not a stretch of page a reader scrolls past but the in-page nav itself, boarded once — on the contact board — so the breeder picks the dial, the section sheet and the mobile section strip every rebuilt page then carries. `video` is component 18, VideoEmbed (spec §9 amendment 7): a section that reuses one of the old site's YouTube videos at its original id, offered three arrangements and carrying its id, title and caption in its own `video` block. `table` is component 17, DataTable (spec §9 amendment 5): a section that renders a table carries its columns and rows in its own `table` block, is offered three chrome arrangements, and stacks into labelled rows below 640px in every one of them.",
+      "enum": [
+       "inventory",
+       "compare",
+       "sequence",
+       "proof",
+       "price",
+       "nav",
+       "narrative",
+       "standard",
+       "hero",
+       "takeaways",
+       "puppies",
+       "reviews",
+       "faq",
+       "form",
+       "stats",
+       "trust",
+       "divider",
+       "dial",
+       "sheet",
+       "strip",
+       "table",
+       "video"
+      ]
+     },
+     "styles": {
+      "comment": "The style options this section offers on its board: empty (no style pick — the section is not rendered on the preview route) or exactly three. `S1`/`S2`/`S3` are the shape-wide trio every ordinary shape offers. The `H-*` and `C-*` ids are working rule 16's PER-PAGE-TYPE sets for the hero and the counter strip (src/lib/boardStyles.ts): one id names one arrangement across the whole repo, so a pick can never be read against the wrong set, and the four pages built before that rule keep naming S1/S2/S3. scripts/build_board_previews.py refuses a list that is not one shape's own three, and board_gate.py FAILs `style-unpicked` when an approved record leaves one of these sections without a pick.",
+      "type": "array",
+      "uniqueItems": true,
       "items": {
+       "enum": [
+        "S1",
+        "S2",
+        "S3",
+        "H-HM1",
+        "H-HM2",
+        "H-HM3",
+        "H-FS1",
+        "H-FS2",
+        "H-FS3",
+        "H-GD1",
+        "H-GD2",
+        "H-GD3",
+        "H-AB1",
+        "H-AB2",
+        "H-AB3",
+        "H-UT1",
+        "H-UT2",
+        "H-UT3",
+        "H-BL1",
+        "H-BL2",
+        "H-BL3",
+        "C-HM1",
+        "C-HM2",
+        "C-HM3",
+        "C-FS1",
+        "C-FS2",
+        "C-FS3",
+        "C-GD1",
+        "C-GD2",
+        "C-GD3",
+        "C-AB1",
+        "C-AB2",
+        "C-AB3",
+        "C-UT1",
+        "C-UT2",
+        "C-UT3",
+        "C-BL1",
+        "C-BL2",
+        "C-BL3"
+       ]
+      },
+      "oneOf": [
+       {
+        "maxItems": 0
+       },
+       {
+        "minItems": 3,
+        "maxItems": 3
+       }
+      ]
+     },
+     "stats": {
+      "comment": "Working rule 16: the figures a `stats` section's counter strip prints, and the ONLY place a board states them. Each row carries the PATH in data/*.json the figure came from; tests/py/test_board_previews.py resolves every one of them, so a typed number is a failing test rather than a plausible sentence (rule 9). A hero whose style has `ledge: 'stats'` prints these too. Where nothing on disk backs a figure the record ships fewer rows — never an invented one.",
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 6,
+      "items": {
+       "type": "object",
+       "required": [
+        "n",
+        "label",
+        "source"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "n": {
+         "type": "string",
+         "minLength": 1
+        },
+        "label": {
+         "type": "string",
+         "minLength": 2
+        },
+        "source": {
+         "comment": "A path into a data file, `data/<file>.json#<selector>`, or a LIST of them when the figure is made of more than one fact: `£200–£350` is a range, and citing only the minimum leaves the maximum unsourced while reading as sourced. Selectors: a dotted path (with `[index]` or `[id]` steps), `count(<field>=<value>)`, `len`, `len(<path>)`, `cell(<path to rows>, <row label>)` and `files(<glob>)`. Every one must resolve to a SINGLE value, and every number the figure prints must appear in what the sources resolve to, in order — tests/py/test_board_previews.py and scripts/board_gate.py both check it.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 5
+          },
+          {
+           "type": "array",
+           "minItems": 1,
+           "maxItems": 4,
+           "uniqueItems": true,
+           "items": {
+            "type": "string",
+            "minLength": 5
+           }
+          }
+         ]
+        }
+       }
+      }
+     },
+     "refresh": {
+      "comment": "Working rule 16's second half: the small, deliberate delta this section carries so the page does not read as a sibling with the words swapped. `axis` is one of the five dimensions .claude/skills/bsuk-component-refresh/SKILL.md allows — never the palette — and `note` says what the delta is and which page it is a delta FROM, so the rotation is in the record rather than in somebody's memory.",
+      "type": "object",
+      "required": [
+       "axis",
+       "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "axis": {
+        "enum": [
+         "layout",
+         "accent",
+         "motif",
+         "container",
+         "density"
+        ]
+       },
+       "note": {
+        "type": "string",
+        "minLength": 15,
+        "maxLength": 300
+       }
+      }
+     },
+     "table": {
+      "comment": "A `table`-shaped section's own data, and the only place a board states one. Required on that shape and forbidden on every other, because a table whose rows lived in the tree could not be rendered on the preview route and a table block on a prose section would never be rendered at all. `numeric` names the zero-based column indexes DataTable right-aligns; every row must be as long as `columns`, which the board gate checks.",
+      "type": "object",
+      "required": [
+       "caption",
+       "columns",
+       "rows"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "caption": {
+        "type": "string",
+        "minLength": 3
+       },
+       "columns": {
+        "type": "array",
+        "minItems": 2,
+        "maxItems": 6,
+        "items": {
+         "type": "string",
+         "minLength": 1
+        }
+       },
+       "rows": {
+        "type": "array",
+        "minItems": 1,
+        "items": {
+         "type": "array",
+         "minItems": 2,
+         "maxItems": 6,
+         "items": {
+          "type": [
+           "string",
+           "number"
+          ]
+         }
+        }
+       },
+       "numeric": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+         "type": "integer",
+         "minimum": 0,
+         "maximum": 5
+        }
+       }
+      }
+     },
+     "video": {
+      "comment": "A `video`-shaped section's own data, and the only place a board states one. Required on that shape and forbidden on every other, for the `table` block's two reasons. `id` is the YouTube id the OLD SITE used and nothing else: working rule 14 reuses every video at its original id, so a new id here is a video nobody has ever ranked. `title` is required because it is the player's accessible name, in the iframe and on the facade's play button alike.",
+      "type": "object",
+      "required": [
+       "id",
+       "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "id": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9_-]{6,}$"
+       },
+       "title": {
+        "type": "string",
+        "minLength": 3
+       },
+       "caption": {
+        "type": "string"
+       }
+      }
+     },
+     "hero": {
+      "comment": "A `hero`-shaped section's own per-page furniture, and the only place a board states it. Optional on that shape and forbidden on every other. The picked style's `ledge` axis decides WHICH of these is drawn; this block is the DATA, and a ledge whose data is absent renders nothing rather than a default claim — the 2026-09-20 review removed Hero.astro's hard-coded chips for exactly that reason.",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+       "chips": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+         "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 2
+          },
+          {
+           "type": "object",
+           "required": [
+            "text",
+            "source"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "text": {
+             "type": "string",
+             "minLength": 2
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
+            }
+           }
+          }
+         ]
+        }
+       },
+       "ticks": {
+        "type": "array",
+        "maxItems": 6,
+        "items": {
+         "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+         "oneOf": [
+          {
+           "type": "string",
+           "minLength": 2
+          },
+          {
+           "type": "object",
+           "required": [
+            "text",
+            "source"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "text": {
+             "type": "string",
+             "minLength": 2
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
+            }
+           }
+          }
+         ]
+        }
+       },
+       "aside": {
         "type": "object",
-        "required": ["id", "n", "heading", "intent", "category", "group", "why", "why_source", "framework", "words", "shape", "keywords", "entities", "tree", "images", "links", "options"],
         "additionalProperties": false,
         "properties": {
-          "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
-          "n": {"type": "integer", "minimum": 1},
-          "heading": {"type": "string", "minLength": 1},
-          "intent": {"type": "string"},
-          "category": {"enum": ["A", "B", "C"]},
-          "group": {"enum": ["MANDATORY", "COMPETITOR-BASED", "SUGGESTED-RECOMMENDED"]},
-          "why": {"type": "string", "minLength": 20, "maxLength": 400},
-          "why_source": {"type": "string", "minLength": 1, "maxLength": 300},
-          "framework": {"enum": ["EEBP", "FAB", "QAB", "PAS", "BAB", "PDB", "AIDA", "EBD", "HSS"]},
-          "words": {"type": "object", "required": ["min", "max"], "additionalProperties": false,
-                    "properties": {"min": {"type": "integer", "minimum": 0}, "max": {"type": "integer", "minimum": 0}}},
-          "shape": {"enum": ["inventory", "compare", "sequence", "proof", "price", "nav", "narrative", "standard"]},
-          "cta": {"type": "integer", "minimum": 0, "maximum": 6},
-          "keywords": {"type": "object",
-                       "required": ["primary", "lsi", "longtail", "brand", "geo", "conversational", "comparison", "solution", "transactional"],
-                       "additionalProperties": false,
-                       "properties": {"primary": {"type": "array", "items": {"type": "string"}}, "lsi": {"type": "array", "items": {"type": "string"}},
-                                      "longtail": {"type": "array", "items": {"type": "string"}}, "brand": {"type": "array", "items": {"type": "string"}},
-                                      "geo": {"type": "array", "items": {"type": "string"}},
-                                      "conversational": {"type": "array", "items": {"type": "string"}}, "comparison": {"type": "array", "items": {"type": "string"}},
-                                      "solution": {"type": "array", "items": {"type": "string"}}, "transactional": {"type": "array", "items": {"type": "string"}}}},
-          "entities": {"type": "array", "items": {"type": "string", "pattern": "^ont:[a-z0-9-]+$"}},
-          "tree": {"type": "array", "items": {"$ref": "#/$defs/node"}},
-          "questions": {"type": "array", "minItems": 8, "maxItems": 14, "uniqueItems": true,
-                        "items": {"type": "string", "minLength": 8, "pattern": "\\?$"}},
-          "images": {"type": "array", "items": {"type": "object", "required": ["slot", "kind", "required", "prompt"], "additionalProperties": false,
-                     "properties": {"slot": {"type": "string"}, "kind": {"enum": ["photo", "infographic"]},
-                                    "required": {"type": "boolean"}, "prompt": {"type": "string"}}}},
-          "links": {
-            "type": "object", "required": ["internal", "external"], "additionalProperties": false,
-            "properties": {
-              "internal": {"type": "array", "items": {
-                "type": "object", "required": ["href", "anchor"], "additionalProperties": false,
-                "properties": {"href": {"type": "string", "pattern": "^/"},
-                               "anchor": {"type": "string", "minLength": 1},
-                               "nav": {"type": "boolean"},
-                               "sentence_start": {"const": true}},
-                "if": {"required": ["nav"], "properties": {"nav": {"const": true}}},
-                "then": true,
-                "else": {"required": ["sentence_start"]}}},
-              "external": {"type": "array", "items": {
-                "type": "object", "required": ["href", "anchor", "library_row"], "additionalProperties": false,
-                "properties": {"href": {"type": "string", "pattern": "^https?://"},
-                               "anchor": {"type": "string", "minLength": 1},
-                               "library_row": {"type": "string", "minLength": 1}}}}
+         "title": {
+          "type": "string",
+          "minLength": 2
+         },
+         "quote": {
+          "type": "string",
+          "minLength": 10
+         },
+         "rows": {
+          "type": "array",
+          "maxItems": 6,
+          "items": {
+           "type": "object",
+           "required": [
+            "label",
+            "value"
+           ],
+           "additionalProperties": false,
+           "properties": {
+            "label": {
+             "type": "string",
+             "minLength": 1
+            },
+            "value": {
+             "type": "string",
+             "minLength": 1
+            },
+            "source": {
+             "oneOf": [
+              {
+               "type": "string",
+               "minLength": 5
+              },
+              {
+               "type": "array",
+               "minItems": 1,
+               "maxItems": 4,
+               "uniqueItems": true,
+               "items": {
+                "type": "string",
+                "minLength": 5
+               }
+              }
+             ]
             }
-          },
-          "options": {"type": "object", "required": ["candidates", "excluded", "pick", "note"], "additionalProperties": false,
-                      "properties": {"candidates": {"type": "array", "items": {"type": "string"}},
-                                     "excluded": {"type": "array", "items": {"type": "object", "required": ["component", "owner"], "additionalProperties": false,
-                                                  "properties": {"component": {"type": "string"}, "owner": {"type": "string"},
-                                                                 "owners": {"type": "array", "items": {"type": "string"}}}}},
-                                     "pick": {"type": ["string", "null"]}, "note": {"type": "string"}}}
-        },
-        "allOf": [{
-          "if": {"required": ["id", "shape"],
-                 "properties": {"id": {"const": "faq"}, "shape": {"const": "standard"}}},
-          "then": {"required": ["questions"]}
-        }]
+           }
+          }
+         },
+         "items": {
+          "type": "array",
+          "maxItems": 8,
+          "items": {
+           "comment": "A ledge entry. A plain string when it states no figure; an object when it does, because a figure is a claim and a claim carries the path it came from (rule 9). `scripts/board_gate.py` FAILs `ledge-source-unresolved` on an entry that prints a standalone number and has no source, and on a source that does not resolve or does not contain the number.",
+           "oneOf": [
+            {
+             "type": "string",
+             "minLength": 2
+            },
+            {
+             "type": "object",
+             "required": [
+              "text",
+              "source"
+             ],
+             "additionalProperties": false,
+             "properties": {
+              "text": {
+               "type": "string",
+               "minLength": 2
+              },
+              "source": {
+               "oneOf": [
+                {
+                 "type": "string",
+                 "minLength": 5
+                },
+                {
+                 "type": "array",
+                 "minItems": 1,
+                 "maxItems": 4,
+                 "uniqueItems": true,
+                 "items": {
+                  "type": "string",
+                  "minLength": 5
+                 }
+                }
+               ]
+              }
+             }
+            }
+           ]
+          }
+         }
+        }
+       }
       }
-    },
-    "tuple": {
-      "type": "object", "required": ["hero", "dial", "rail", "toc", "takeaway", "table", "faq", "stepper", "newsletter", "h6_prefixes"], "additionalProperties": false,
+     },
+     "cta": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 6
+     },
+     "keywords": {
+      "type": "object",
+      "required": [
+       "primary",
+       "lsi",
+       "longtail",
+       "brand",
+       "geo",
+       "conversational",
+       "comparison",
+       "solution",
+       "transactional"
+      ],
+      "additionalProperties": false,
       "properties": {
-        "hero": {"type": "string"}, "dial": {"type": "string"}, "rail": {"type": "string"}, "toc": {"type": "string"},
-        "takeaway": {"type": "array", "items": {"type": "string", "minLength": 1}}, "table": {"type": "string"}, "faq": {"type": "string"},
-        "stepper": {"type": "string"},
-        "newsletter": {"type": "object", "required": ["after", "variant"], "additionalProperties": false,
-                       "properties": {"after": {"type": "string"}, "variant": {"enum": ["", "A", "B", "C"]}}},
-        "h6_prefixes": {"type": "array", "minItems": 1, "items": {"type": "string", "pattern": ":$"}}
+       "primary": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lsi": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "longtail": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "brand": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "geo": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "conversational": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "comparison": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "solution": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "transactional": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
       }
-    },
-    "assets": {
+     },
+     "entities": {
       "type": "array",
-      "items": {"type": "object", "required": ["slot", "kind", "w", "h", "required", "status", "file", "alt"], "additionalProperties": false,
-                "properties": {"slot": {"type": "string"}, "kind": {"enum": ["photo", "infographic"]},
-                               "w": {"type": "integer"}, "h": {"type": "integer"}, "required": {"type": "boolean"},
-                               "status": {"enum": ["missing", "baked"]}, "file": {"type": ["string", "null"]}, "alt": {"type": "string"}}}
-    },
-    "approval": {
-      "type": ["object", "null"],
-      "required": ["approved_at", "h1", "picks", "notes", "canvas_version", "record_hash"], "additionalProperties": false,
-      "properties": {
-        "approved_at": {"type": "string"}, "h1": {"type": "integer", "minimum": 0, "maximum": 4},
-        "meta": {"type": "object", "required": ["title", "description"], "additionalProperties": false,
-                 "properties": {"title": {"type": "integer", "minimum": 0, "maximum": 2},
-                                "description": {"type": "integer", "minimum": 0, "maximum": 2}}},
-        "picks": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"}, "additionalProperties": {"type": "string"}},
-        "notes": {"type": "object", "propertyNames": {"pattern": "^[a-z][a-z0-9-]*$"}, "additionalProperties": {"type": "string"}},
-        "canvas_version": {"type": ["string", "null"]},
-        "record_hash": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      "items": {
+       "type": "string",
+       "pattern": "^ont:[a-z0-9-]+$"
       }
+     },
+     "tree": {
+      "type": "array",
+      "items": {
+       "$ref": "#/$defs/node"
+      }
+     },
+     "questions": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 14,
+      "uniqueItems": true,
+      "items": {
+       "type": "string",
+       "minLength": 8,
+       "pattern": "\\?$"
+      }
+     },
+     "images": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "required": [
+        "slot",
+        "kind",
+        "required",
+        "prompt"
+       ],
+       "additionalProperties": false,
+       "properties": {
+        "slot": {
+         "type": "string"
+        },
+        "kind": {
+         "enum": [
+          "photo",
+          "infographic"
+         ]
+        },
+        "required": {
+         "type": "boolean"
+        },
+        "prompt": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "links": {
+      "type": "object",
+      "required": [
+       "internal",
+       "external"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "internal": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "href",
+          "anchor"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "href": {
+           "type": "string",
+           "pattern": "^/"
+          },
+          "anchor": {
+           "type": "string",
+           "minLength": 1
+          },
+          "nav": {
+           "type": "boolean"
+          },
+          "why": {
+           "type": "string",
+           "minLength": 1,
+           "description": "where this link comes from, e.g. 'carried from the migrated page' (working rule 12)"
+          },
+          "sentence_start": {
+           "const": true
+          }
+         },
+         "if": {
+          "required": [
+           "nav"
+          ],
+          "properties": {
+           "nav": {
+            "const": true
+           }
+          }
+         },
+         "then": true,
+         "else": {
+          "required": [
+           "sentence_start"
+          ]
+         }
+        }
+       },
+       "external": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "href",
+          "anchor",
+          "library_row"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "href": {
+           "type": "string",
+           "pattern": "^https?://"
+          },
+          "anchor": {
+           "type": "string",
+           "minLength": 1
+          },
+          "why": {
+           "type": "string",
+           "minLength": 1,
+           "description": "where this link comes from, e.g. 'carried from the migrated page' (working rule 12)"
+          },
+          "library_row": {
+           "type": "string",
+           "minLength": 1
+          }
+         }
+        }
+       }
+      }
+     },
+     "options": {
+      "type": "object",
+      "required": [
+       "candidates",
+       "excluded",
+       "pick",
+       "note"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "candidates": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "excluded": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "required": [
+          "component",
+          "owner"
+         ],
+         "additionalProperties": false,
+         "properties": {
+          "component": {
+           "type": "string"
+          },
+          "owner": {
+           "type": "string"
+          },
+          "owners": {
+           "type": "array",
+           "items": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       },
+       "pick": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "note": {
+        "type": "string"
+       }
+      }
+     },
+     "verbatim_heading": {
+      "type": "boolean",
+      "description": "working rule 15: this heading is the migrated page's own wording, carried word for word from data/verbatim/<slug>.json. Absent or false means the heading is the outline's own. A heading that had to be altered is NOT flagged here — it is a row of `verbatim.changed`."
+     },
+     "verbatim_opening": {
+      "type": "string",
+      "minLength": 1,
+      "description": "working rule 15: the migrated page's first paragraph under this heading, which the build pastes as the section's (or node's) FIRST paragraph before any fresh prose. Where the old paragraph stated a wrong fact this holds the CORRECTED text and `verbatim.changed` carries the row that says so."
+     }
+    },
+    "allOf": [
+     {
+      "if": {
+       "required": [
+        "id",
+        "shape"
+       ],
+       "properties": {
+        "id": {
+         "const": "faq"
+        },
+        "shape": {
+         "const": "standard"
+        }
+       }
+      },
+      "then": {
+       "required": [
+        "questions"
+       ]
+      }
+     },
+     {
+      "comment": "A KIT shape draws its component from src/lib/boardStyles.ts, not from a ledger pool, so its board offers rendered arrangements and nothing else. A kit-shaped section with no `styles` would therefore reach the approve button owing a pick it is never shown a control for — an unapprovable board. The nine are required to carry the three. `standard` is deliberately NOT among them: it is shared with the ported CAG shapes, it is what every section of the existing homepage record is, and its board still offers the ledger default.",
+      "if": {
+       "required": [
+        "shape"
+       ],
+       "properties": {
+        "shape": {
+         "enum": [
+          "hero",
+          "takeaways",
+          "puppies",
+          "reviews",
+          "faq",
+          "form",
+          "stats",
+          "trust",
+          "divider",
+          "dial",
+          "sheet",
+          "strip",
+          "table",
+          "video"
+         ]
+        }
+       }
+      },
+      "then": {
+       "required": [
+        "styles"
+       ],
+       "properties": {
+        "styles": {
+         "minItems": 3
+        }
+       }
+      }
+     },
+     {
+      "comment": "The `table` block belongs to the `table` shape and to nothing else. Both directions are stated: a table section with no data is an empty board box, and a table block on a prose section is content no renderer reads.",
+      "if": {
+       "required": [
+        "shape"
+       ],
+       "properties": {
+        "shape": {
+         "const": "table"
+        }
+       }
+      },
+      "then": {
+       "required": [
+        "table"
+       ]
+      },
+      "else": {
+       "not": {
+        "required": [
+         "table"
+        ]
+       }
+      }
+     },
+     {
+      "comment": "The `video` block belongs to the `video` shape and to nothing else, stated in both directions for the same reason the `table` pair is.",
+      "if": {
+       "required": [
+        "shape"
+       ],
+       "properties": {
+        "shape": {
+         "const": "video"
+        }
+       }
+      },
+      "then": {
+       "required": [
+        "video"
+       ]
+      },
+      "else": {
+       "not": {
+        "required": [
+         "video"
+        ]
+       }
+      }
+     }
+    ]
+   }
+  },
+  "tuple": {
+   "type": "object",
+   "required": [
+    "hero",
+    "dial",
+    "rail",
+    "toc",
+    "takeaway",
+    "table",
+    "faq",
+    "stepper",
+    "newsletter",
+    "h6_prefixes"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "hero": {
+     "type": "string"
+    },
+    "dial": {
+     "type": "string"
+    },
+    "rail": {
+     "type": "string"
+    },
+    "toc": {
+     "type": "string"
+    },
+    "takeaway": {
+     "type": "array",
+     "items": {
+      "type": "string",
+      "minLength": 1
+     }
+    },
+    "table": {
+     "type": "string"
+    },
+    "faq": {
+     "type": "string"
+    },
+    "stepper": {
+     "type": "string"
+    },
+    "newsletter": {
+     "type": "object",
+     "required": [
+      "after",
+      "variant"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "after": {
+       "type": "string"
+      },
+      "variant": {
+       "enum": [
+        "",
+        "A",
+        "B",
+        "C"
+       ]
+      }
+     }
+    },
+    "h6_prefixes": {
+     "type": "array",
+     "minItems": 1,
+     "items": {
+      "type": "string",
+      "pattern": ":$"
+     }
     }
+   }
+  },
+  "assets": {
+   "type": "array",
+   "items": {
+    "type": "object",
+    "required": [
+     "slot",
+     "kind",
+     "w",
+     "h",
+     "required",
+     "status",
+     "file",
+     "alt"
+    ],
+    "additionalProperties": false,
+    "properties": {
+     "slot": {
+      "type": "string"
+     },
+     "kind": {
+      "enum": [
+       "photo",
+       "infographic"
+      ]
+     },
+     "w": {
+      "type": "integer"
+     },
+     "h": {
+      "type": "integer"
+     },
+     "required": {
+      "type": "boolean"
+     },
+     "status": {
+      "enum": [
+       "missing",
+       "baked"
+      ]
+     },
+     "file": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "alt": {
+      "type": "string"
+     },
+     "caption": {
+      "comment": "A short label drawn ON the photo, for a hero mosaic tile (the breeder's hero-idea sheets caption the lead tile). It is not the alt text and never repeats it: the alt describes the photo for somebody who cannot see it, the caption names it for somebody who can. Absent means the tile carries no label.",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 60
+     }
+    }
+   }
+  },
+  "dropped": {
+   "comment": "Facts of the migrated page this rebuild deliberately leaves out, keyed by the fact kind scripts/facts_preserved_check.py names (prices, names, tests, creds, images, embeds), plus `links` for a body link of the migrated page the outline does not carry (working rule 12) and `text` for a CLAIM SENTENCE of the migrated body the rebuilt prose does not restate. Every entry reads \"<the fact, or enough of it to find> — <why it is not carried>\". For `text` the checker extracts the migrated body's claim sentences -- the ones carrying a number, a named organisation or a named process (training, review, audit, screening, vaccination) -- and asks that each is either restated on the rebuilt page or listed here, so a claim cannot leave a page by being quietly not rewritten. A fact, link or claim listed here is one the user agreed to drop; one that simply vanished is a problem the gate reports.",
+   "type": "object",
+   "propertyNames": {
+    "enum": [
+     "prices",
+     "names",
+     "tests",
+     "creds",
+     "images",
+     "embeds",
+     "links",
+     "text"
+    ]
+   },
+   "additionalProperties": {
+    "type": "array",
+    "items": {
+     "type": "string",
+     "minLength": 1
+    }
+   }
+  },
+  "verbatim": {
+   "comment": "Working rule 15's accounting: the elements of the migrated page's VERBATIM SET (data/verbatim/<slug>.json — the old H1, the keyword H2/H3s, the first paragraph under each of them, the FAQ questions and every image alt) this rebuild does NOT carry word for word, and why. A row is allowed for exactly two reasons the rule names: the old wording states a wrong fact (the former city, an old price, the byline) or it collides with another page's heading. Every other element is carried. `kind` `heading-dropped` is the one row that is not a substitution — a keyword heading the outline removed outright — and the rule says to prefer restoring the section over writing one. scripts/verbatim_set_check.py --check requires the `new` text on the built page wherever a row excuses the `old` one. Like `dropped`, this sits OUTSIDE the record hash (scripts/pageboard.py::record_hash) and for the same reason: it records what the rebuild did, and the rebuild happens after approval. `faq-merged` is the FAQ's version of a substitution: the migrated page asked the same question twice and one wording is answered by the row that carries the other. `heading-dropped` and any row whose `new` is the empty string excuse their element outright — nothing is required on the page in its place — and every other row requires its `new` text there.",
+   "type": "object",
+   "required": [
+    "changed"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "changed": {
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "kind",
+       "old",
+       "new",
+       "reason"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "kind": {
+        "enum": [
+         "h1",
+         "heading",
+         "heading-dropped",
+         "opening",
+         "faq",
+         "alt",
+         "faq-merged"
+        ]
+       },
+       "old": {
+        "type": "string",
+        "minLength": 1
+       },
+       "new": {
+        "type": "string"
+       },
+       "reason": {
+        "type": "string",
+        "minLength": 10
+       },
+       "src": {
+        "type": "string",
+        "description": "the image an `alt` row is about; an alt is the one element whose identity is its src and not its own text"
+       }
+      }
+     }
+    }
+   }
+  },
+  "approval": {
+   "type": [
+    "object",
+    "null"
+   ],
+   "required": [
+    "approved_at",
+    "h1",
+    "picks",
+    "notes",
+    "canvas_version",
+    "record_hash"
+   ],
+   "additionalProperties": false,
+   "properties": {
+    "approved_at": {
+     "type": "string"
+    },
+    "h1": {
+     "type": "integer",
+     "minimum": 0,
+     "maximum": 4
+    },
+    "meta": {
+     "type": "object",
+     "required": [
+      "title",
+      "description"
+     ],
+     "additionalProperties": false,
+     "properties": {
+      "title": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 2
+      },
+      "description": {
+       "type": "integer",
+       "minimum": 0,
+       "maximum": 2
+      }
+     }
+    },
+    "picks": {
+     "type": "object",
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
+    "notes": {
+     "type": "object",
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "additionalProperties": {
+      "type": "string"
+     }
+    },
+    "canvas_version": {
+     "type": [
+      "string",
+      "null"
+     ]
+    },
+    "record_hash": {
+     "type": "string",
+     "pattern": "^[0-9a-f]{64}$"
+    },
+    "tuple_before": {
+     "$ref": "#/properties/tuple",
+     "description": "the tuple as the author wrote it, before board_approve.py derived the seven component axes from the picks; restoring it is what keeps re-approving an already-approved record idempotent"
+    },
+    "section_hashes": {
+     "comment": "What each section LOOKED LIKE when this approval was made, as scripts/pageboard.py section_fingerprint() hashes it (everything but `options` and `n`). It exists so a re-boarded record can carry an answer forward only while the question it answered has not moved: scripts/build_page_board.py locks a carried pick whose fingerprint still matches and asks again when it does not.",
+     "type": "object",
+     "propertyNames": {
+      "pattern": "^[a-z][a-z0-9-]*$"
+     },
+     "additionalProperties": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+     }
+    },
+    "reapproved_at": {
+     "comment": "When a CONTROLLER last re-approved this record after a post-approval WORDING fix (scripts/board_approve.py --reapprove). It is not a second breeder approval: every pick, the H1 index and the meta indices are carried through untouched, and the mode refuses a diff that touches one. Absent on a record nobody has had to re-approve.",
+     "type": "string"
+    },
+    "reapprovals": {
+     "comment": "One row per re-approval, oldest first. `changed_paths` is the JSON-pointer diff between the record at the previous hash's commit and the record as re-approved, taken over the HASHED projection — so it names exactly what moved inside record_hash and nothing that was always outside it.",
+     "type": "array",
+     "items": {
+      "type": "object",
+      "required": [
+       "at",
+       "reason",
+       "changed_paths"
+      ],
+      "additionalProperties": false,
+      "properties": {
+       "at": {
+        "type": "string"
+       },
+       "reason": {
+        "type": "string",
+        "minLength": 1
+       },
+       "changed_paths": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        },
+        "minItems": 1
+       }
+      }
+     }
+    }
+   }
+  },
+  "approval_previous": {
+   "comment": "The approval a record carried before it was sent back to the board. Kept so the picks the user already made are not retyped, and so the diff between two approvals of one page is readable. It is NOT an approval: board_gate.py reads `approval` only, and a record holding this and a null `approval` is unapproved.",
+   "$ref": "#/properties/approval"
   }
+ }
 }

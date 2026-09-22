@@ -17,11 +17,18 @@ behaviour and the reason `--check` belongs in the sweep.
     python3 scripts/render_baseline.py --check --out <r.md> # ... for a report that is not the default
 
 `--out` names the report. `--write` is the same option under its older name and is kept
-because callers (and this script's own tests) already spell it that way; both write. The
-DEFAULT report is project 3's, because that is the live one — a baseline is a record of the
-run you just made, so each project writes its own file and the previous project's stays
-exactly as it was published. Pass `--out docs/reports/render-baseline-project2.md --date
-<that run's date>` to reproduce an older one; nothing regenerates it by accident.
+because callers (and this script's own tests) already spell it that way; both write. It
+TAKES the report path as its value, so the two are never combined: `--out <r.md> --write` is
+argparse reading `--write` as a second `--out` with no value, and it exits 2. The DEFAULT
+report is project 4's, because that is the live one — a baseline is a record of the run you
+just made, so each project writes its own file and the previous project's stays exactly as it
+was published. Pass `--out docs/reports/render-baseline-project3.md --date <that run's date>`
+to reproduce an older one; nothing regenerates it by accident.
+
+A report that does not exist yet is CREATED by a write, as a one-line title and the two
+markers around the generated block, so opening a new project's baseline is one command rather
+than a hand-made file. `--check` never creates anything: a missing report is stale by
+definition, and it says so and exits 1 instead of crashing on the read.
 
 Writing replaces only the text between `<!-- generated:start -->` and `<!-- generated:end -->`,
 so the report's hand-written prose survives regeneration. `--check` never writes.
@@ -36,9 +43,10 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SCORECARDS = ROOT / "data/quality/scorecards"
 CHECKS = ROOT / "tests/render/checks"
-# The live baseline. Project 2's file (docs/reports/render-baseline-project2.md) is a
-# published record of a run that is over: it is never the default and never regenerated here.
-REPORT = ROOT / "docs/reports/render-baseline-project3.md"
+# The live baseline. Project 2's and project 3's files are published records of runs that are
+# over: neither is the default and neither is regenerated here (Known Issue 25, closed when
+# project 4 repointed this at its own file).
+REPORT = ROOT / "docs/reports/render-baseline-project4.md"
 START = "<!-- generated:start -->"
 END = "<!-- generated:end -->"
 
@@ -132,8 +140,14 @@ def compare(cards_dir, date, other):
     return "\n".join(lines) + "\n"
 
 
+def skeleton(report):
+    """The text a write starts from when the report does not exist yet: a title and the two
+    markers, nothing else. The prose around the table is the author's, never this script's."""
+    return f"# Render harness baseline — {report.stem}\n\n{START}\n{END}\n"
+
+
 def splice(report, block):
-    text = report.read_text(encoding="utf-8")
+    text = report.read_text(encoding="utf-8") if report.exists() else skeleton(report)
     if START not in text or END not in text:
         sys.exit(f"{report} carries no {START} / {END} markers — add them around the table")
     head, rest = text.split(START, 1)
@@ -148,7 +162,7 @@ def main():
     # One dest, two spellings. `--out` is the name to use; `--write` is what the existing
     # callers and tests already type, and an alias costs less than a rename that breaks them.
     ap.add_argument("--out", "--write", dest="write", metavar="REPORT",
-                    help="the report to regenerate (default: the project 3 baseline)")
+                    help="the report to regenerate, created if missing (default: the project 4 baseline)")
     ap.add_argument("--check", action="store_true", help="exit 1 if the report is stale")
     ap.add_argument("--scorecards-dir", default=str(SCORECARDS))
     ap.add_argument("--checks-dir", default=str(CHECKS))
@@ -167,6 +181,9 @@ def main():
     report = pathlib.Path(args.write) if args.write else REPORT
 
     if args.check:
+        if not report.exists():
+            print(f"{report} does not exist — run: python3 scripts/render_baseline.py --out {report}")
+            return 1
         want = splice(report, block)
         if report.read_text(encoding="utf-8") != want:
             print(f"{report} is stale — run: python3 scripts/render_baseline.py --write {report}")
@@ -175,6 +192,7 @@ def main():
         return 0
 
     if args.write:
+        report.parent.mkdir(parents=True, exist_ok=True)
         report.write_text(splice(report, block), encoding="utf-8")
         print(f"wrote the generated block in {report}")
     else:

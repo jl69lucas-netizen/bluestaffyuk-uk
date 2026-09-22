@@ -68,7 +68,7 @@ then, and none may be invented.
 Every H2/H3/H4 opens with 1–2 sentences carrying **Entity + Feature + Benefit + Purpose**,
 in first-person voice (`rules/copy.md`):
 
-> "Roman (entity) is a blue-and-white male we home-raised here in Glasgow (feature); he
+> "Roman (entity) is a blue-and-white male we home-raised here in Carlisle (feature); he
 > settles quickly in a busy family house (benefit), which is why we match him to homes with
 > children and activity rather than a quiet flat (purpose)."
 
@@ -81,7 +81,7 @@ Draft 5 A/B variants for H1 and each major H2 at outline stage; the breeder pick
 hybrid headers per page — zero exact or template crossover with siblings (dup-gate `--headers`).
 
 ### 2d. Entity variety
-85–112 **DIFFERENT** entities per page (the pups by name, Glasgow and the 28 cities,
+85–112 **DIFFERENT** entities per page (the pups by name, Carlisle and the 28 cities,
 Staffordshire Bull Terrier, the Kennel Club, L-2-HGA and HC-HSF4 where the ledger records
 them, DEFRA-approved transport, vet and microchip terms) — each mentioned a natural number
 of times. The failure mode is documented: the business name in every sentence is unreadable
@@ -114,7 +114,7 @@ library is deferred to project 6.
 
 1. **Puppy cards near the fold** — real pups from `data/puppies.json`, price from
    `data/price-matrix.json` through a helper, and the delivery line under the trust badges:
-   `UK home delivery £200–£350 by distance · or collect in Glasgow`. **Never a card without
+   `UK home delivery £200–£350 by distance · or collect in Carlisle`. **Never a card without
    the delivery line** (`rules/puppies.md` `delivery-band-on-every-card`). The refundable
    £500 deposit is stated wherever the band is.
 2. **Schema** — one `Product` with exactly one `Offer` per pup, several pups wrapped in an
@@ -135,7 +135,7 @@ library is deferred to project 6.
 6. **Enquiry form on every page in the cluster** — `src/components/ContactForm.astro`. Its
    `puppy` select lists each ACTUAL pup with its price, sourced from `data/puppies.json` and
    `data/price-matrix.json`, never hardcoded; the delivery question offers exactly the two
-   real options (UK home delivery £200–£350 by distance, or collection in Glasgow).
+   real options (UK home delivery £200–£350 by distance, or collection in Carlisle).
    Contract: `.claude/skills/bsuk-contact-form/SKILL.md`.
 
 ## 4. Build phases

@@ -42,7 +42,7 @@ and regenerate — never the other way round.
 
 | Agent | Does |
 |---|---|
-| `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Glasgow |
+| `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle |
 | `.claude/agents/bsuk-comparison-builder.md` | Builds and rebuilds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — landing under … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |
@@ -73,7 +73,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 53
+## Skills — 55
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -83,6 +83,8 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-blog-post/SKILL.md`
 - `.claude/skills/bsuk-broken-links/SKILL.md`
 - `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
+- `.claude/skills/bsuk-component-refresh/SKILL.md`
+- `.claude/skills/bsuk-component-variations/SKILL.md`
 - `.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md`
 - `.claude/skills/bsuk-contact-form/SKILL.md`
 - `.claude/skills/bsuk-cta-strategy/SKILL.md`
@@ -132,7 +134,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/session-closer/SKILL.md`
 - `.claude/skills/sitemap-agent/SKILL.md`
 
-## Scripts — 53
+## Scripts — 57
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -145,6 +147,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/board_approve.py`
 - `scripts/board_gate.py`
 - `scripts/build_agent_registry.py`
+- `scripts/build_board_previews.py`
 - `scripts/build_design_canvas.py`
 - `scripts/build_design_system.py`
 - `scripts/build_favicons.py`
@@ -167,12 +170,14 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/extract_images.py`
 - `scripts/extract_wp.py`
 - `scripts/extract_writers.py`
+- `scripts/facts_preserved_check.py`
 - `scripts/final_page_audit.py`
 - `scripts/form_contract_audit.py`
 - `scripts/generate_page_dates.py`
 - `scripts/generate_sitemaps.py`
 - `scripts/health-sweep.sh`
 - `scripts/indexnow_submit.py`
+- `scripts/link_parity_check.py`
 - `scripts/marker_check.py`
 - `scripts/measure_canvas_heights.mjs`
 - `scripts/measure_chrome.py`
@@ -190,14 +195,16 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/render_baseline.py`
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
+- `scripts/verbatim_set_check.py`
 
-## Data files — 18
+## Data files — 20
 
 - `data/agent-registry.json`
 - `data/boards/`
 - `data/bsuk-ontology.json`
 - `data/component-ledger.json`
 - `data/design/`
+- `data/facts/`
 - `data/faq.json`
 - `data/image-centering.json`
 - `data/image-manifest.json`
@@ -211,6 +218,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/redirects.json`
 - `data/reviews.json`
 - `data/settings.json`
+- `data/verbatim/`
 
 ## Gates
 
@@ -238,9 +246,9 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 41 rows are `deferred`.
+deliberately did not. 39 rows are `deferred`.
 
-- **project 3** — 10 rows (deferred to project 3, see data/port-manifest.json)
+- **project 3** — 8 rows (deferred to project 3, see data/port-manifest.json)
 - **project 6** — 25 rows (deferred to project 6, see data/port-manifest.json)
 - **no project** — 6 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)

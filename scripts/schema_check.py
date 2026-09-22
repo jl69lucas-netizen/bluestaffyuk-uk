@@ -21,6 +21,12 @@ tells Google something untrue:
                     whose X no node on the same page defines. Deduping the legacy Rank
                     Math graph is exactly the operation that can strand a reference, so
                     the gate checks the result rather than trusting it.
+  address         — a PostalAddress may not state a field it has nothing to put in
+                    (`"streetAddress": ""`, `"postalCode": null`). An address WITHOUT a street
+                    or a postcode is fine: Known Issue 16 leaves both unknown until the
+                    breeder supplies them, and an incomplete address is honest where a
+                    stale one is not. A GeoCoordinates node missing a number is the same
+                    defect in the field a map consumer trusts absolutely.
   Product/Offer   — a Product must carry `offers`; an Offer that states one of
                     price/priceCurrency must state both. A price with no currency is
                     ambiguous; an Offer with neither (a bare availability statement) is
@@ -174,6 +180,43 @@ def _types(node):
     return [t] if isinstance(t, str) else [x for x in (t or []) if isinstance(x, str)]
 
 
+# An address is allowed to be INCOMPLETE and is not allowed to be EMPTY.
+#
+# Known Issue 16: the breeder relocated to Carlisle, Cumbria and has not supplied a street,
+# a postcode or coordinates for the new place, so data/settings.json holds the town, the
+# region and the country and nothing else. A rule that demanded a full postal address would
+# fail every page for telling the truth, and the pressure it creates is to put the OLD
+# street back — publishing a location the business has left, in the field a map consumer
+# trusts absolutely. So street and postcode are optional here, for as long as they are
+# unknown, and what is blocking instead is a field that is PRESENT AND EMPTY: `""` or
+# `null` under streetAddress/postalCode/addressLocality is a stated address with nothing in
+# it, which is how a dropped key looks when a template writes it anyway. The same for a
+# GeoCoordinates node with no latitude or longitude: a coordinate claim with no coordinate.
+#
+# A MISSING addressLocality is not blocking either, and deliberately so while Tasks 7–18
+# run: the generated rich pages still carry Rank Math's ported graph, which puts the city
+# in `addressRegion` and states no locality at all. Those bodies are rewritten one page per
+# task and are not edited ahead of their task, so a locality rule today would block eleven
+# pages for a defect their own task closes.
+ADDRESS_FIELDS = ("streetAddress", "addressLocality", "addressRegion", "postalCode",
+                  "addressCountry")
+
+
+def _address_problems(d):
+    out = []
+    if "PostalAddress" in _types(d):
+        for key in ADDRESS_FIELDS:
+            if key in d and (d[key] is None or (isinstance(d[key], str) and not d[key].strip())):
+                out.append("empty %s on PostalAddress (omit the key until it is known"
+                           " — Known Issue 16)" % key)
+    if "GeoCoordinates" in _types(d):
+        for key in ("latitude", "longitude"):
+            if d.get(key) is None:
+                out.append("GeoCoordinates without %s (omit the geo node until the"
+                           " coordinates are known — Known Issue 16)" % key)
+    return out
+
+
 def audit_html(text, available_slugs, slug):
     """Audit one built page's JSON-LD.
 
@@ -194,6 +237,7 @@ def audit_html(text, available_slugs, slug):
                 blocking.append("placeholder telephone: %r" % phone)
             if isinstance(d.get("url"), str) and d["url"] == "":
                 advisory.append('empty url on %s node' % (",".join(_types(d)) or "untyped"))
+            blocking += _address_problems(d)
 
     offers = _offer_nodes(blocks)
     if not may_be_in_stock:
@@ -228,7 +272,19 @@ def audit_html(text, available_slugs, slug):
             if "WebPage" in _types(d) and not d.get("name"):
                 advisory.append("WebPage without name")
     for offer in offers:
-        has_price, has_cur = "price" in offer, "priceCurrency" in offer
+        # `lowPrice`/`highPrice` ARE this node's price when it is an AggregateOffer: that is
+        # how schema.org spells a band, and an AggregateOffer never carries `price`. The rule
+        # is about a figure with no currency beside it, so the question is whether the node
+        # names A price at all — asking only for `price` made the correct markup for a price
+        # range read as "priceCurrency without price". Charged to the harness 2026-09-20,
+        # project 4 Task 15, when /blue-staffy-pup-sale-uk/ became the first rebuilt page to
+        # carry a band rather than a single figure. GATED ON THE TYPE, because the two keys
+        # mean nothing on a plain Offer: one that spelled its figure `lowPrice` and gave no
+        # currency would be excused by a reading that never asked what kind of node it was,
+        # and a bare `lowPrice` on an Offer is not a price band — it is a typo for `price`.
+        band_ok = "AggregateOffer" in _types(offer)
+        has_price = "price" in offer or (band_ok and any(k in offer for k in ("lowPrice", "highPrice")))
+        has_cur = "priceCurrency" in offer
         if has_price != has_cur:
             blocking.append("Offer states %s without %s"
                             % ("price" if has_price else "priceCurrency",

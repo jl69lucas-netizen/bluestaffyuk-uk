@@ -35,11 +35,18 @@
 // Brass (--color-cta) is a FILL with --color-cta-ink text or an accent on a dark band. It is
 // never the colour of small text on a light surface: it is 2.1:1 there.
 import type { AstroComponentFactory } from 'astro/runtime/server/index.js';
+import puppies from '../../../data/puppies.json';
+import settings from '../../../data/settings.json';
+import prices from '../../../data/price-matrix.json';
 import Button from './Button.astro';
 import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
 import PuppyCard from './PuppyCard.astro';
 import Hero from './Hero.astro';
+import { SITE, type PuppyRow } from '../../lib/site';
+// The hero specimen's photograph. Named here, by the specimen, since Hero no longer falls back
+// to it: the same master the component defaulted to, so the specimen renders what it always did.
+import heroSpecimen from '../../assets/puppies/Cheryl1.jpeg';
 import TrustStrip from './TrustStrip.astro';
 import CounterStrip from './CounterStrip.astro';
 import InfoCard from './InfoCard.astro';
@@ -48,11 +55,20 @@ import Faq from './Faq.astro';
 import ContactFormKit from './ContactFormKit.astro';
 import PageNav from './PageNav.astro';
 import SiteFooterKit from './SiteFooterKit.astro';
+import PageDial from './PageDial.astro';
+import SectionSheet from './SectionSheet.astro';
+import SectionStrip from './SectionStrip.astro';
+import DataTable from './DataTable.astro';
+import VideoEmbed from './VideoEmbed.astro';
+
+/** The counter specimen's availability figure, counted the way every page counts it. */
+const availableNow = (puppies as PuppyRow[]).filter((p) => p.status === 'Available').length;
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
   | 'info-card' | 'testimonial' | 'faq' | 'contact-form' | 'page-nav' | 'footer'
-  | 'section-divider';
+  | 'section-divider' | 'page-dial' | 'section-sheet' | 'section-strip' | 'data-table'
+  | 'video-embed';
 
 export interface KitEntry {
   C: AstroComponentFactory;
@@ -61,11 +77,19 @@ export interface KitEntry {
   /** Extra chrome the preview wraps the demo in, for components that need a context to be
    *  judged BY EYE. It never makes a positional check work — see convention 10.
    *
-   *  Two members, not three: the kit has no component that has to be judged on a dark band
-   *  of the preview's making. The footer paints its own, and the drawer panel is inside the
-   *  header. An `'inverse'` member nothing sets is a branch in the preview page nobody can
-   *  reach — add it back the day an entry needs it. */
-  wrap?: 'sticky' | 'after-band';
+   *  Three members, and every one of them is set by an entry below. There is still no
+   *  `'inverse'`: the kit has no component that has to be judged on a dark band of the
+   *  preview's making — the footer paints its own and the drawer panel is inside the header —
+   *  and a branch in the preview page nobody can reach reads as a feature rather than as
+   *  dead code. Add it back the day an entry needs it.
+   *
+   *  `'with-targets'` is the one member that is not purely cosmetic: the two in-page nav
+   *  components link to section ids, and without real elements behind those ids the demo
+   *  would ship dead anchors on a page the harness judges as a target. It DECLARES that
+   *  dependency; the preview renders the stub sections ONCE for the whole page, because
+   *  both entries name the same six ids and a copy per demo box would be a duplicate of
+   *  every one of them. It supplies the ANCHORS, not positional coverage. */
+  wrap?: 'sticky' | 'after-band' | 'with-targets';
 }
 
 /** The row in data/design/components.json, typed so a typo in an id fails the build. */
@@ -74,11 +98,37 @@ export interface ComponentRow {
   file: string;
   title: string;
   board_width: 640 | 1280;
+  /** Which project added the component. The canvas, the picks board and the variant prune
+   *  are records of project 3's closed five-option pick process and filter to `3`; the
+   *  kit preview, this registry and the Design System artifact carry every row. */
+  project: 3 | 4;
 }
+
+/** The six sections the dial and the sheet both demo. One list, not two: the pair is one
+ *  component split by viewport width, and two drifting fixtures would let the board show a
+ *  dial and a sheet that disagree about what a page's sections are. The ids are rendered as
+ *  stub `<section>`s once per page by the preview (see its `with-targets` note), so every
+ *  link resolves and no id is rendered twice. */
+export const DEMO_SECTIONS = [
+  { id: 'd-a', label: 'Health' },
+  { id: 'd-b', label: 'Delivery' },
+  { id: 'd-c', label: 'Deposit' },
+  { id: 'd-d', label: 'Puppies' },
+  { id: 'd-e', label: 'FAQ' },
+  { id: 'd-f', label: 'Contact' },
+];
 
 /** Every id, no exceptions — a `Partial` here would let a component be dropped from the kit
  *  by deleting its entry, and the preview would simply render one section fewer while every
  *  test that walks components.json went on passing. `Record` makes that a type error. */
+/** The data table's demo rows, built from data rather than typed: `data/puppies.json` for
+ *  the litter and `data/price-matrix.json` for the deposit every puppy carries. Four of the
+ *  six, in file order, so the specimen shows both a £1,500 row and a £1,700 one. */
+const money = (n: number) => `£${n.toLocaleString('en-GB')}`;
+const PRICE_ROWS: (string | number)[][] = (puppies as { name: string; sex: string; price_gbp: number }[])
+  .slice(0, 4)
+  .map((p) => [p.name, p.sex === 'male' ? 'Male' : 'Female', money(p.price_gbp), money(prices.deposit_gbp)]);
+
 export const REGISTRY: Record<ComponentId, KitEntry> = {
   // `wrap: 'sticky'` — the header is position: sticky, so on a preview page it needs a
   // positioned box with room in it; without one the bar docks to the page's own scroll
@@ -89,7 +139,38 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   'site-header': { C: SiteHeaderKit, wrap: 'sticky' },
   // `as: 'h2'` — the preview page already owns an <h1>. The prop exists for exactly this:
   // on a real page the default 'h1' is correct.
-  hero: { C: Hero, demo: [{ as: 'h2' }] },
+  // The chips and the CTA row are PROPS now and default to none (project 4, 2026-09-20
+  // review): a component may not assert a page's credentials or invent its links. The board
+  // is where those weights are judged, so the specimen passes the set the homepage carries.
+  // The eyebrow, the headline and the lede are PROPS with no default now (the 2026-09-20
+  // review's last hiding place: a component that defaults to "KC registered · Carlisle" is a
+  // component asserting a page's credentials for it). The specimen therefore states its own,
+  // which is the honest arrangement — a board specimen shows what a caller passes, and every
+  // figure in these three is in data/settings.json.
+  hero: {
+    C: Hero,
+    demo: [{
+      as: 'h2',
+      eyebrow: `KC registered · ${SITE.location_label}`,
+      title: 'Blue Staffy puppies raised in a family home',
+      lede: `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
+      chips: ['KC registered', 'DNA-tested parents', 'Raised in the home'],
+      image: heroSpecimen,
+      imageAlt: 'A blue Staffordshire Bull Terrier puppy resting in a family home',
+      ctas: [
+        { label: 'Meet the puppies', href: '/available-puppies/' },
+        { label: 'Ask a question', href: '/uk-blue-staffy-breeders-contact/', kind: 'outline' },
+      ],
+      // THE SPECIMEN STATES ITS OWN BOX, because it is not inside `PageShell`. Every real page
+      // mounts the hero in the shell, which reserves the dial a 196px column at 1024 and above,
+      // and `Hero`'s own `sizes` is measured there — 315px at 1024, 408px at 1280. This board
+      // has the full width, so the same hero paints 419px and 503px and the component's default
+      // would under-promise by 23%: a soft photograph on the one page whose job is showing what
+      // the component looks like. Measured at 375, 768, 900, 901, 1024, 1100, 1199, 1280 and
+      // 1600; `img-sizes-matches-box` reads it back against the box at each viewport.
+      imageSizes: '(max-width: 900px) calc(100vw - 96px), (max-width: 1199px) calc(47.5vw - 68px), 503px',
+    }],
+  },
   // All five button KINDS on one board, because a page uses more than one of them and the
   // board is where their weights are judged against each other.
   buttons: {
@@ -112,7 +193,26 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // the fixture pair
   // tests/render/fixtures/{known_good/kit-counter-separated,known_broken/kit-counter-flush}.html,
   // which pins the shipped component's own resolved geometry.
-  'counter-strip': { C: CounterStrip, wrap: 'after-band' },
+  // THE SPECIMEN STATES ITS OWN FIGURES, because the component no longer has any. The three it
+  // used to fall back to, derived the same way from the same two files, so the board shows the
+  // same strip: the available count, the deposit and its terms, and the delivery band.
+  'counter-strip': {
+    C: CounterStrip,
+    wrap: 'after-band',
+    demo: [{
+      stats: [
+        { n: String(availableNow),
+          label: availableNow === 1 ? 'puppy available now' : 'puppies available now',
+          source: 'data/puppies.json#count(status=Available)' },
+        { n: `£${settings.deposit_gbp}`,
+          label: settings.deposit_refundable ? 'refundable deposit' : 'deposit',
+          source: 'data/settings.json#deposit_gbp' },
+        { n: `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`,
+          label: 'UK delivery by distance',
+          source: 'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp' },
+      ],
+    }],
+  },
   // Two fixtures, not one: the card's statement label is the deferred
   // sem-statement-label-visible check's only subject in the kit, and a board showing a
   // single `fact` label would hide whether the other kinds paint at all.
@@ -164,4 +264,86 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // be wrong here — the footer paints its own dark band and is full-bleed by nature.
   footer: { C: SiteFooterKit },
   'section-divider': { C: SectionDivider },
+  // `wrap: 'with-targets'` — the dial IS a scroll-spy over six section ids, so a demo with
+  // no such elements is a dial whose every link is a dead anchor (`nav-anchors-resolve`,
+  // blocking) and whose observer has nothing to observe. The wrap declares that dependency;
+  // the preview renders the six stub sections once for the page. That is a CONTEXT for the
+  // eye and for the anchors; it is still not coverage for a positional check (convention 10).
+  //
+  // The ids are the demo's own `d-a`…`d-f`, prefixed so they cannot collide with the
+  // preview's `kit-<component-id>` section anchors that the PageNav demo points at.
+  'page-dial': {
+    C: PageDial,
+    demo: [{ sections: DEMO_SECTIONS }],
+    wrap: 'with-targets',
+  },
+  // The same six sections and the same wrap, for the same two reasons: the sheet's links
+  // must resolve, and its scroll-spy must have something to observe — and because BOTH
+  // entries name DEMO_SECTIONS, the preview renders those stubs once rather than once per
+  // box, or `d-a`…`d-f` would each appear twice on the page. The bar is
+  // `position: fixed`, so on the preview it docks to the viewport rather than to this
+  // section — which is exactly how it behaves on a real page, and what makes the preview
+  // a fair place to look at it.
+  'section-sheet': {
+    C: SectionSheet,
+    demo: [{ sections: DEMO_SECTIONS }],
+    wrap: 'with-targets',
+  },
+  // The third member of the in-page nav set, and the same six sections for the same two
+  // reasons as the pair above: its links must resolve, and its scroll-spy must have
+  // something to observe. Because all THREE entries name DEMO_SECTIONS, the preview renders
+  // those stubs once for the page, not three times.
+  //
+  // `chrome: false`, like the specimen site header's `position: static` in the preview's own
+  // stylesheet, and for the same reason. A demo box is `position: relative` and a few hundred
+  // pixels tall, so the strip has nothing to pin to — but it was still publishing its height
+  // as the offset every anchor on `/kit-preview/` had to clear, which put all eleven targets
+  // 77px below a band measured off 75px of real chrome. The prop says out loud what the
+  // preview is showing: a picture of the component, not this page's top chrome.
+  'section-strip': {
+    C: SectionStrip,
+    demo: [{ sections: DEMO_SECTIONS, chrome: false }],
+    wrap: 'with-targets',
+  },
+  // Component 17, the data table (working rule 13; spec §9 amendment 5). THE NUMBERS ARE
+  // DATA: the four rows are data/puppies.json and the price column is `price_gbp`, which is
+  // data/price-matrix.json's male/female pair per puppy — rule 9 forbids a specimen from
+  // typing a price by hand, and a demo that did would be the one place in the repo where a
+  // price could drift. Four rows of a six-puppy litter, because the board width is 640 and
+  // the question the eye is asked here is what a row looks like, not how long the list is.
+  //
+  // The deposit column is one figure repeated, and that is the point: it is per puppy, not
+  // per litter, and a table that showed it once in a caption would read as the other way.
+  //
+  // Only ONE fixture, unlike the multi-state entries above: the three board arrangements
+  // are a `chrome` CLASS axis (src/lib/boardStyles.ts), so they exist on
+  // /board-preview/<slug>/ and not here. What this copy demos is the component's own
+  // default — S1, ruled rows under a brand header band — and its stacking, which is the
+  // half of the component that is not a choice.
+  'data-table': {
+    C: DataTable,
+    demo: [{
+      caption: 'This litter — price and deposit',
+      columns: ['Puppy', 'Sex', 'Price', 'Deposit'],
+      rows: PRICE_ROWS,
+      numeric: [2, 3],
+    }],
+  },
+  // Component 18, the video embed (working rule 14; spec §9 amendment 7). THE ID IS DATA:
+  // it is the first entry of `data/settings.json`'s `youtube_embeds`, which is the list of
+  // videos the old site already carries — rule 9 forbids a specimen from inventing one, and
+  // an invented eleven-character id is a 404 nobody would notice on a hidden preview.
+  //
+  // ONE fixture, and it is the DEFAULT `play` mode — the click-to-play facade, which is
+  // what a rebuilt page mounts. The two eager arrangements are the `play` and `frame` axes
+  // of src/lib/boardStyles.ts, so they live on /board-preview/<slug>/ like the table's
+  // chrome and not here.
+  'video-embed': {
+    C: VideoEmbed,
+    demo: [{
+      id: (settings as { youtube_embeds: string[] }).youtube_embeds[0],
+      title: 'Blue Staffy puppies at home with us',
+      caption: 'One of the videos the site already carries, reused at its original id.',
+    }],
+  },
 };

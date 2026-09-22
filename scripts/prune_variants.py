@@ -51,7 +51,9 @@ CANVAS_ROUTE = ROOT / "src/pages/design-canvas"
 def rows():
     picks = json.loads((ROOT / "data/design/picks.json").read_text())
     comps = json.loads((ROOT / "data/design/components.json").read_text())
-    out = [(r["file"], picks["picks"][r["id"]]["variant"]) for r in comps]
+    # Project 3 rows only: the prune collapses a `variant` prop against a pick, and the
+    # project 4 components were written after the prune and never had one.
+    out = [(r["file"], picks["picks"][r["id"]]["variant"]) for r in comps if r["project"] == 3]
     # The mark is not a components.json row: its pick is the top-level `mark` key, and the
     # three components that pass `markVariant` collapse against THAT, not against their own.
     out.append(("Mark.astro", picks["mark"]))

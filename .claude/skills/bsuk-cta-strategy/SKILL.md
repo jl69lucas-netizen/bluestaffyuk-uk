@@ -19,10 +19,10 @@ Each section provides three CTA variations. Select the voice matching the reader
 
 Place the selected CTA as an H2 or lead paragraph directly above the button pair.
 
-> **Brand note:** the breeder is **Lisa Bright**, 40 Coltmuir Street, Glasgow G22 6LU. Locked figures:
+> **Brand note:** the breeder is **Lisa Bright**, Carlisle, Cumbria. Locked figures:
 > six named pups at **£1,500** (Roman, Byrd, Ince) and **£1,700** (Vennie, Christa, Cheryl);
 > a refundable **£500** deposit; **UK home delivery £200–£350** by distance,
-> by DEFRA-approved transport, or collection in Glasgow; **28 UK cities**; a **12–14 year** breed lifespan.
+> by DEFRA-approved transport, or collection in Carlisle; **28 UK cities**; a **12–14 year** breed lifespan.
 > Everything else is NOT FETCHED. The licence line is LICENCE_CLAIM_PLACEHOLDER.
 > Never let another breeder's vocabulary back in — see
 > `.claude/skills/bsuk-seo-master-checklist/SKILL.md` Appendix C. Button emoji: canonical set only (✅ ✈️ 📞) — never marketing emoji.
@@ -208,11 +208,11 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 12: About Lisa Bright
 
 🛡️ **Trust & Security:**
-> "You're not buying from a website. You're buying from Lisa Bright in Glasgow — and her phone number is on every page."
+> "You're not buying from a website. You're buying from Lisa Bright in Carlisle — and her phone number is on every page."
 > **Button:** Meet the Breeder
 
 ⚡ **Direct & Transactional:**
-> "One family kennel in Glasgow. One phone number. Six pups, named."
+> "One family kennel in Carlisle. One phone number. Six pups, named."
 > **Button:** Call Us Now
 
 🌱 **Ethical & Quality:**

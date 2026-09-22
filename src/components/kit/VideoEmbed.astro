@@ -1,0 +1,205 @@
+---
+// src/components/kit/VideoEmbed.astro — component 18, the YouTube embed (spec §9
+// amendment 7, CLAUDE.md working rule 14). Every video the old site carried is reused at
+// its ORIGINAL id: a video url that already ranks is an asset, and a rebuild that re-uploads
+// the same footage under a new id throws that away (working rule 11, restated for video).
+//
+// THE ID IS ALL A CALLER GIVES. There is no url prop and no embed-code prop: a board record
+// names `video: { id, title, caption }` and the markup is this component's business, so a
+// page cannot ship a tracking-domain iframe or a stale `?feature=` query by pasting one in.
+//
+// `title` IS REQUIRED AND IT IS THE ACCESSIBLE NAME. An `<iframe>` with no title is an
+// unlabelled frame in every screen reader's list of frames, and the facade below is a
+// BUTTON whose only visible content is a photograph — both read `title`, so a video with no
+// name simply cannot be mounted.
+//
+// TWO PLAY MODES, AND THEY ARE A BOARD AXIS, NOT A GUESS. `play` is the `play` axis in
+// src/lib/boardStyles.ts:
+//   · `iframe` — the player is in the document from the start. What S1 and S2 render.
+//   · `facade` — a thumbnail and a play button; the player is injected on the first click.
+//     THE DEFAULT, and the arrangement a rebuilt page takes after the pick: a YouTube
+//     iframe costs about half a megabyte and a dozen requests before anyone presses play,
+//     and a page carrying three of them pays for three players nobody asked for.
+// The facade's no-JS fallback is the plain iframe: the `<noscript>` block below carries both
+// the player and a rule that hides the button, so a reader without scripting gets a working
+// video rather than a photograph that does nothing when clicked.
+//
+// THE BOX IS RESERVED. `.frame` declares `aspect-ratio: 16 / 9` and the player fills it
+// absolutely, so the space is the same size before and after the thumbnail decodes —
+// `layout-image-box-reserved` measures exactly that, and a 16:9 hole that appears late is
+// the largest layout shift a page can ship.
+//
+// PRIVACY: the player is `youtube-nocookie.com`, and the facade's thumbnail is the only
+// request made before a click. The thumbnail url is spelled here rather than tokenised
+// because it is YouTube's own path shape, not a colour — rule 1 is about src/ spelling
+// brand hex, and there is none here.
+//
+// Convention 3: no `--color-brand` on anything that has to survive the steel band S2 paints
+// — the play badge reads `currentColor` and the caption `--kit-caption`, which defaults to
+// the muted ink and is re-pointed by board-styles.css on a band.
+// Convention 4: `...rest` on the root, `class` through `class:list`. Tokens only.
+import type { HTMLAttributes } from 'astro/types';
+import { youtubeEmbedUrl, youtubeThumbUrl } from '../../lib/video';
+
+type Props = HTMLAttributes<'figure'> & {
+  /** The YouTube video id — the eleven characters, never a url. */
+  id: string;
+  /** The video's name. The iframe's `title` and the facade button's accessible name. */
+  title: string;
+  /** One line under the box, in the reader's own voice. Omitted renders no `<figcaption>`. */
+  caption?: string;
+  /** `facade` (the default) injects the player on click; `iframe` embeds it immediately. */
+  play?: 'facade' | 'iframe';
+};
+const { id, title, caption, play = 'facade', class: cls, ...rest } = Astro.props;
+
+// THE TWO URL SHAPES LIVE IN `src/lib/video.ts`, not here. A page that mints a VideoObject
+// needs the same embed url and the same thumbnail, and `scripts/generate_sitemaps.py` needs to
+// recognise the embed host — three readers of one spelling, and the last time they drifted
+// four ranking ids left the video sitemap with no gate reporting it (e963c53).
+const src = youtubeEmbedUrl(id);
+const thumb = youtubeThumbUrl(id);
+// One string, used by the eager iframe, by the `<noscript>` fallback and — through
+// `data-src` — by the script that swaps the facade out. `autoplay=1` is added only on the
+// click path: a player that is in the document from the start must not start itself.
+const allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+// The `<noscript>` rule, as a string. It is `is:inline` and written through `set:html` for
+// one reason each: Astro would otherwise HOIST the block out of the `<noscript>` into the
+// page's stylesheet, where it would hide the button for everybody, and the braces would be
+// read as an expression in the template.
+const NOSCRIPT_CSS = '.kit-video [data-video-play]{display:none}';
+---
+<figure {...rest} class:list={['kit-video', cls]}>
+  <div class="frame" data-video-frame data-src={`${src}?autoplay=1`} data-title={title}>
+    {play === 'facade' ? (
+      <button type="button" class="facade" data-video-play aria-label={`Play the video: ${title}`}>
+        {/* `alt=""`: the button already carries the name, and a described thumbnail would
+            make a screen reader read the same video twice. */}
+        <img src={thumb} alt="" width="480" height="360" loading="lazy" decoding="async" />
+        <span class="badge" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="34" height="34" focusable="false"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
+        </span>
+      </button>
+    ) : (
+      <iframe
+        src={src}
+        title={title}
+        loading="lazy"
+        allow={allow}
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    )}
+    {play === 'facade' && (
+      <noscript>
+        {/* The `<style>` is what makes this a FALLBACK rather than a second video: without
+            scripting the button can never do anything, so it is taken out of the box and
+            the real player takes its place. */}
+        <style is:inline set:html={NOSCRIPT_CSS}></style>
+        <iframe
+          src={src}
+          title={title}
+          loading="lazy"
+          allow={allow}
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen
+        ></iframe>
+      </noscript>
+    )}
+  </div>
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+  // ONE DELEGATED LISTENER for the whole document, not one per video: a page may carry
+  // three of these, and three listeners doing the same thing is three chances for one of
+  // them to be bound to a copy that was re-rendered.
+  document.addEventListener('click', (event) => {
+    const target = event.target as Element | null;
+    const button = target?.closest?.('[data-video-play]');
+    if (!button) return;
+    const frame = button.closest('[data-video-frame]') as HTMLElement | null;
+    if (!frame) return;
+    const player = document.createElement('iframe');
+    player.src = frame.dataset.src ?? '';
+    player.title = frame.dataset.title ?? 'Video';
+    player.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    player.referrerPolicy = 'strict-origin-when-cross-origin';
+    player.allowFullscreen = true;
+    button.replaceWith(player);
+    // Focus was on the button that has just gone; without this the reader is returned to
+    // the top of the document mid-page.
+    player.focus();
+  });
+</script>
+
+<style>
+  @layer components {
+    .kit-video {
+      --kit-caption: var(--color-text-muted);
+      margin: 0;
+      display: grid;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+    /* THE RESERVED BOX. Declared once, here, so every arrangement of every board reserves
+       the same 16:9 hole and nothing below the video moves when the thumbnail arrives. */
+    .frame {
+      position: relative;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-inverse);
+    }
+    .frame > iframe,
+    .frame > noscript iframe,
+    .facade {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .facade {
+      display: grid;
+      place-items: center;
+      padding: 0;
+      background: none;
+      color: var(--color-text-on-inverse);
+      cursor: pointer;
+    }
+    .facade img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* The badge is drawn over the photograph, so it carries its own contrast rather than
+       relying on whatever the frame happens to show behind it. */
+    .badge {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 68px;
+      height: 68px;
+      border-radius: var(--radius-pill);
+      background: var(--color-cta);
+      color: var(--color-cta-ink);
+      box-shadow: var(--shadow-card);
+    }
+    .facade:hover .badge { transform: scale(1.06); }
+    /* Convention 2: --kit-ring, never --color-focus, because this box lands on steel bands. */
+    .facade:focus-visible { outline: 3px solid var(--kit-ring); outline-offset: -3px; }
+    figcaption {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--kit-caption);
+      max-width: 60ch;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .facade:hover .badge { transform: none; }
+    }
+  }
+</style>

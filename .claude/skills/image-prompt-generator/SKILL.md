@@ -1,6 +1,6 @@
 ---
 name: image-prompt-generator
-description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue/blue brindle Staffy puppies, Glasgow, Scotland home setting). Reads content/prompts/ for existing prompt templates.
+description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue/blue brindle Staffy puppies, Carlisle, Cumbria home setting). Reads content/prompts/ for existing prompt templates.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -100,7 +100,7 @@ Do NOT include: 3D effects, gradients, clip art
 2. **Negative prompts** for AI tools — always include "Do NOT include: text, watermarks, blurry, distorted, other breeds"
 3. **Lighting specification** — natural light preferred, avoid flash/studio
 4. **Emotion over action** — "puppy looking curiously at camera" > "puppy doing tricks"
-5. **BSUK setting anchors** — "Glasgow, Scotland home," "family living room," "puppy pen" — not generic
+5. **BSUK setting anchors** — "Carlisle, Cumbria home," "family living room," "puppy pen" — not generic
 6. **Real-world scale** — always include size reference elements (cupped hands, forearm cradle)
 
 ---

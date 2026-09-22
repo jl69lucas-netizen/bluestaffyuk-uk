@@ -1,0 +1,899 @@
+{
+  "meta": {
+    "slug": "thank-you-blue-staffy-puppies-journey",
+    "page_type": "interior",
+    "layout_type": "interior-utility",
+    "status": "approved",
+    "preview": true,
+    "research_as_of": "2026-09-19",
+    "sources": [
+      {
+        "path": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "dist/thank-you-blue-staffy-puppies-journey/index.html",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/facts/thank-you-blue-staffy-puppies-journey.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/page-map.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/settings.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/reviews.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/puppies.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "data/image-manifest.json",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.trojanstaffuk.com/how-we-roll",
+        "fetched": "2026-09-19"
+      },
+      {
+        "path": "https://www.bullscaff.co.uk/thank-you",
+        "fetched": "2026-09-19 — NOT FETCHED: the host answers /thank-you with the homepage; the site has no reachable enquiry-received page"
+      },
+      {
+        "path": "search: UK Staffordshire Bull Terrier breeder \"thank you\" enquiry received page",
+        "fetched": "2026-09-19 — NOT FETCHED: no indexed UK breeder thank-you page in the results"
+      },
+      {
+        "path": "search: inurl:thank-you puppies for sale UK breeder \"your enquiry\" message received",
+        "fetched": "2026-09-19 — NOT FETCHED: no indexed UK breeder thank-you page in the results"
+      },
+      {
+        "path": "search: puppy breeder UK \"thank you for your enquiry\" \"what happens next\" 24-48 hours reply",
+        "fetched": "2026-09-19 — NOT FETCHED: only forum and social posts; no breeder confirmation page"
+      }
+    ]
+  },
+  "brief": {
+    "goal": "Rebuild the post-enquiry confirmation on the kit so that someone who has just written to us is told, in Lisa Bright's first person, that the message arrived, how long our reply takes, what happens after it, and what is worth reading in the meantime.",
+    "scope": "Seven sections: a hero with the migrated thank-you photograph, a four-step what-happens-next list, a short reading block, one review, the available puppies, a contact fallback by email, and a three-row FAQ. The page stays noindex, follow as data/page-map.json records it.",
+    "gates": [
+      "facts-preserved",
+      "marker",
+      "schema",
+      "sitemap",
+      "form-contract",
+      "board-previews"
+    ],
+    "done": "The page confirms the enquiry arrived, states the 24-48 business hour reply window and the spam-folder check, names the deposit and delivery terms from settings, carries the one migrated image, shows one review and the available puppies, and gives the email address to write to — in about 420 words, with the facts-preserved gate reporting nothing missing that `dropped` does not explain.",
+    "out_of_scope": [
+      "the 'meet the litter' or kennel-visit step: neither the migrated body nor data/settings.json states a visit policy, so no such step is written (working rule 9)",
+      "the newsletter block the migrated page carried ('Blue Staffy News: Join 500+ Readers!'): the 500+ figure has no source on disk and the WordPress form was already removed at migration",
+      "the link the migrated body made to the breeding-dogs location page, whose anchor named a city the project does not write outside Known Issue 16 and that page's own slug",
+      "prices per puppy as schema offers: the page is noindex and the puppy cards link to the pages that own the offer",
+      "the phone number: data/settings.json holds PHONE_PLACEHOLDER, so no telephone is shown anywhere on this page"
+    ],
+    "primary_keyword": "blue staffy puppy enquiry received",
+    "angles": [
+      {
+        "name": "the honest holding note",
+        "hook": "say plainly that the message arrived, give the reply window and the spam-folder check, then hand the reader four things to do while they wait",
+        "why_not": ""
+      },
+      {
+        "name": "the link farm",
+        "hook": "a thank-you line followed by the nine links the migrated page listed, one per paragraph",
+        "why_not": "it is what the migrated page already does, and a reader who has just written to us needs the reply window before a reading list"
+      },
+      {
+        "name": "the sales push",
+        "hook": "treat the confirmation as the moment to drive a deposit, leading with price and availability",
+        "why_not": "nobody has been answered yet; asking for money before we have written back is the opposite of the trust this page exists to build"
+      }
+    ],
+    "strategy": {
+      "name": "the honest holding note",
+      "why": "The one question this reader has is when they will hear back, and the migrated body already answers it with 24-48 business hours; putting that first and the reading list second is the whole improvement.",
+      "trade_off": "It is a shorter, quieter page than the migrated one, and several of the old outbound links do not survive the cut."
+    },
+    "cta": {
+      "cadence": {
+        "min": 150,
+        "max": 300
+      },
+      "destination": "#reach-us",
+      "anchors": [
+        "Write to us",
+        "Reach us directly"
+      ],
+      "global_cta": "hidden"
+    },
+    "tool": {
+      "pick": "none",
+      "evidence": "A confirmation page asks the reader to work nothing out: the only number on it is a waiting time, and the deposit and delivery figures come from settings already stated as plain sentences.",
+      "trade_off": ""
+    },
+    "schema": {
+      "types": [
+        "WebPage"
+      ],
+      "offer_model": "none"
+    }
+  },
+  "h1": {
+    "variants": [
+      "Thank you — we have your enquiry",
+      "Thank you — your message is with us",
+      "Your enquiry has reached us",
+      "Thanks for getting in touch about a Blue Staffy",
+      "Message received — here is what happens next"
+    ],
+    "recommended": 0,
+    "pick": 0
+  },
+  "meta_set": {
+    "titles": [
+      "Thank You for Your Enquiry | BlueStaffyUK Blue Staffies",
+      "Enquiry Received | What Happens Next at BlueStaffyUK",
+      "Thank You for Your Blue Staffy Enquiry | BlueStaffyUK"
+    ],
+    "descriptions": [
+      "Thank you for your enquiry about a blue Staffy puppy. Here is what happens next, how soon we reply, and what you can read while you wait for us.",
+      "Your message has reached us. We answer every enquiry within 24-48 business hours; meanwhile, meet the puppies who are looking for their home.",
+      "We have your enquiry about a blue Staffy puppy. Read what happens next, how long our reply takes, and where to reach us if you need us sooner."
+    ],
+    "recommended": {
+      "title": 0,
+      "description": 0
+    },
+    "pick": {
+      "title": 0,
+      "description": 0
+    }
+  },
+  "sections": [
+    {
+      "id": "welcome",
+      "n": 1,
+      "heading": "Thank you — we have your enquiry",
+      "intent": "A warm, short confirmation in Lisa's first person: the message arrived, we are glad it did, and a reply is being written. Carries the migrated thank-you photograph.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated page opens on exactly this reassurance, and a reader who has just pressed send needs it before anything else on the page.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'We've successfully received your inquiry and are thrilled you're interested in our Staffy family.'",
+      "framework": "EEBP",
+      "words": {
+        "min": 55,
+        "max": 75
+      },
+      "shape": "hero",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "thank you",
+          "message received",
+          "enquiry"
+        ],
+        "longtail": [],
+        "brand": [
+          "BlueStaffyUK"
+        ],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [
+        {
+          "slot": "thank-you-family",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the migrated page's thank-you photograph of a family with a blue Staffy puppy, reused at its original path and alt text"
+        }
+      ],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "H-UT1",
+        "note": ""
+      },
+      "styles": [
+        "H-UT1",
+        "H-UT2",
+        "H-UT3"
+      ],
+      "cta": 0,
+      "refresh": {
+        "axis": "layout",
+        "note": "the interior-utility hero with the photograph full-bleed above the copy, unlike /privacy-policy-uk/'s title panel and /uk-blue-staffy-breeders-contact/'s photo beside the copy."
+      }
+    },
+    {
+      "id": "stats",
+      "n": 2,
+      "heading": "Where Your Enquiry Stands",
+      "intent": "Three figures, each read off a file rather than typed: how long a reply takes (data/faq.json, the enquiry-reply-time row this page already quotes), how many puppies are available while the reader waits (data/puppies.json), and the UK delivery band (data/settings.json). Working rule 16: a counter prints the page’s own facts, and every one of them is sourced.",
+      "category": "C",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The reader of this page is waiting for something, and the one question the migrated thank-you page never answered in a figure is how long the wait is. It is answered in prose in the FAQ and nowhere a reader scanning the page can see it.",
+      "why_source": "data/faq.json — enquiry-reply-time; data/puppies.json; data/settings.json delivery_min_gbp and delivery_max_gbp; CLAUDE.md working rule 16 (breeder, 2026-09-20)",
+      "framework": "FAB",
+      "words": {
+        "min": 0,
+        "max": 40
+      },
+      "shape": "stats",
+      "styles": [
+        "C-UT1",
+        "C-UT2",
+        "C-UT3"
+      ],
+      "stats": [
+        {
+          "n": "24–48",
+          "label": "business hours to a reply",
+          "source": "data/faq.json#[enquiry-reply-time].a"
+        },
+        {
+          "n": "6",
+          "label": "puppies available right now",
+          "source": "data/puppies.json#count(status=Available)"
+        },
+        {
+          "n": "£200–£350",
+          "label": "UK delivery by distance",
+          "source": [
+            "data/settings.json#delivery_min_gbp",
+            "data/settings.json#delivery_max_gbp"
+          ]
+        }
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the counter as ring tiles in a card, against the homepage's flush line and the contact page's figure cards on a band."
+      },
+      "keywords": {
+        "primary": [],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "C-UT1",
+        "note": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried."
+      }
+    },
+    {
+      "id": "next-steps",
+      "n": 3,
+      "heading": "What happens next",
+      "intent": "Four steps, each one a fact the migrated body or data/settings.json already states: when we reply and to check the junk folder, what we will talk about, what reserves a puppy, and how a puppy travels home.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The reply window is the single question this page exists to answer, and the migrated body states it as 24-48 business hours with a spam-folder check; the three steps after it are the only further steps the data on disk supports.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'respond to all inquiries within 24-48 business hours' and 'check your spam or junk folder'; data/settings.json — deposit_gbp 500, deposit_refundable true, delivery_note, delivery_min_gbp 200, delivery_max_gbp 350",
+      "framework": "PDB",
+      "words": {
+        "min": 100,
+        "max": 130
+      },
+      "shape": "takeaways",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "24-48 business hours",
+          "spam or junk folder",
+          "deposit",
+          "UK delivery"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "how long does a breeder take to reply"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "We read and answer your message",
+          "intent": "Every enquiry is reviewed personally and answered within 24-48 business hours; if nothing has arrived, the spam or junk folder is the first place to look.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "We talk about your home",
+          "intent": "Our reply picks up whatever you told us about your home and family, and asks about anything you have not mentioned yet.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "A deposit reserves your puppy",
+          "intent": "When you have chosen, a refundable deposit of £500 holds that puppy for you.",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "Your puppy comes home",
+          "intent": "UK home delivery by DEFRA-approved transport, priced by distance between £200 and £350.",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": ""
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the four steps as cards in a two-by-two grid, where the homepage numbers the same kit down one column."
+      }
+    },
+    {
+      "id": "while-you-wait",
+      "n": 4,
+      "heading": "While you wait",
+      "intent": "A short reading block: the breed guide, the health and care pages, the buying guide and the blog guides, each with one line saying what is in it. Prose with a link list, not a link dump.",
+      "category": "B",
+      "group": "COMPETITOR-BASED",
+      "why": "The migrated body hands the waiting reader a reading list, and the one competitor page reachable for this intent does the same by walking the reader through the stages ahead of them.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'While You Wait, Explore More of the BlueStaffyUK World!' and its guide, health and blog links; https://www.trojanstaffuk.com/how-we-roll — stage-by-stage 'what to expect' walkthrough",
+      "framework": "FAB",
+      "words": {
+        "min": 65,
+        "max": 85
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "Staffy breed guide",
+          "health and care",
+          "blog guides"
+        ],
+        "longtail": [],
+        "brand": [
+          "The Kennel Club"
+        ],
+        "geo": [],
+        "conversational": [
+          "what should I read before buying a Staffy puppy"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-staffordshire-bull-terrier-guide/",
+            "anchor": "Staffy breed guide",
+            "nav": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/blue-staffy-health-uk/",
+            "anchor": "health and care of blue Staffies",
+            "nav": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/uk-blue-staffy-puppy-buying-guide/",
+            "anchor": "puppy buying guide",
+            "nav": true
+          },
+          {
+            "href": "/blue-staffy-blog-guides/",
+            "anchor": "blog guides for new owners",
+            "nav": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/",
+            "anchor": "the home page",
+            "why": "carried from the migrated page",
+            "nav": true
+          },
+          {
+            "href": "/uk-locations/blue-staffy-puppies-uk/",
+            "anchor": "our UK puppy locations",
+            "why": "carried from the migrated page",
+            "nav": true
+          }
+        ],
+        "external": [
+          {
+            "href": "https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/",
+            "anchor": "responsible breeding guidelines from The Kennel Club",
+            "library_row": "The Kennel Club — dog breeding regulations, carried over from the migrated body",
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "https://www.gov.uk/bring-pet-to-great-britain",
+            "anchor": "the official UK pet travel scheme",
+            "library_row": "GOV.UK — bringing a pet to Great Britain, carried over from the migrated body",
+            "why": "carried from the migrated page"
+          }
+        ]
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": ""
+      },
+      "refresh": {
+        "axis": "container",
+        "note": "the reading list inside a single tinted block, not the ruled list the homepage gives the same four guides."
+      }
+    },
+    {
+      "id": "owners",
+      "n": 5,
+      "heading": "From a family who waited too",
+      "intent": "One review, given room, chosen because it describes the enquiry-to-home process rather than the puppy — the thing this reader is in the middle of.",
+      "category": "B",
+      "group": "SUGGESTED-RECOMMENDED",
+      "why": "The migrated body promises 'Hear From Happy Families' but links nowhere and shows nothing; one real review, placed where the reader is waiting, is what that promise was reaching for.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'Hear From Happy Families'; data/reviews.json — review 1 (The Victoria Family, Manchester)",
+      "framework": "EBD",
+      "words": {
+        "min": 30,
+        "max": 40
+      },
+      "shape": "reviews",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "review",
+          "temperament"
+        ],
+        "longtail": [],
+        "brand": [
+          "BlueStaffyUK"
+        ],
+        "geo": [
+          "Manchester"
+        ],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "density",
+        "note": "one review at full width with room around it, rather than the three-across grid the homepage gives the same kit."
+      }
+    },
+    {
+      "id": "puppies",
+      "n": 6,
+      "heading": "The puppies looking for a home",
+      "intent": "The available puppies from data/puppies.json as cards, so the reader can see who is actually here while the reply is written.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "The migrated body's first invitation is to see who is currently ready to find their forever home, and a card grid answers that better than the link it used.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'Discover Our Adorable Puppies: See who's currently ready to find their forever home.'; data/puppies.json — six rows, all status Available",
+      "framework": "FAB",
+      "words": {
+        "min": 35,
+        "max": 50
+      },
+      "shape": "puppies",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "available puppies",
+          "blue and white"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "buy staffy puppies in the uk"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/buy-blue-staffy-puppies-uk/",
+            "anchor": "buy Staffy puppies in the UK",
+            "nav": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count."
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "the litter as a horizontal strip of cards rather than the grid /blue-staffy-pup-sale-uk/ and the homepage use."
+      }
+    },
+    {
+      "id": "reach-us",
+      "n": 7,
+      "heading": "If you need us sooner",
+      "intent": "The fallback: the email address from settings, the hours, where we are, and the contact page. No telephone number is shown because data/settings.json holds a placeholder rather than a number.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "A confirmation page has to say what to do when the reply has not come, and the only channel the data supports is email.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — 'you can always contact our purebred Blue Staffy breeders'; data/settings.json — email staffies@bluestaffyuk.uk, hours Mo-Su 09:00-23:00, location_label Carlisle · Cumbria, phone PHONE_PLACEHOLDER",
+      "framework": "EEBP",
+      "words": {
+        "min": 45,
+        "max": 60
+      },
+      "shape": "standard",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [
+          "email",
+          "hours"
+        ],
+        "longtail": [],
+        "brand": [],
+        "geo": [
+          "Carlisle",
+          "Cumbria"
+        ],
+        "conversational": [
+          "how do I chase up a breeder enquiry"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": [
+          "contact blue staffy breeder"
+        ]
+      },
+      "entities": [],
+      "tree": [],
+      "images": [],
+      "links": {
+        "internal": [
+          {
+            "href": "/uk-blue-staffy-breeders-contact/",
+            "anchor": "the contact page",
+            "sentence_start": true,
+            "why": "carried from the migrated page"
+          },
+          {
+            "href": "/privacy-policy-uk/",
+            "anchor": "our privacy policy",
+            "nav": true,
+            "why": "carried from the migrated page"
+          }
+        ],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": null,
+        "note": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page."
+      },
+      "cta": 1,
+      "refresh": {
+        "axis": "accent",
+        "note": "the email in brass on a bone bed, quieter than the contact page's own reach-us block."
+      }
+    },
+    {
+      "id": "questions",
+      "n": 8,
+      "heading": "Questions people ask after writing to us",
+      "intent": "Three rows from data/faq.json, each answering something the migrated body already answers: the reply window, what to read while waiting, and how to follow up.",
+      "category": "A",
+      "group": "MANDATORY",
+      "why": "These are the three things a reader writes back to ask in the days after an enquiry, and each answer is already carried by the body above it.",
+      "why_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro — the reply-window, reading-list and follow-up passages",
+      "framework": "QAB",
+      "words": {
+        "min": 35,
+        "max": 45
+      },
+      "shape": "faq",
+      "keywords": {
+        "primary": [
+          "blue staffy puppy enquiry received"
+        ],
+        "lsi": [],
+        "longtail": [],
+        "brand": [],
+        "geo": [],
+        "conversational": [
+          "how long does a staffy breeder take to reply"
+        ],
+        "comparison": [],
+        "solution": [],
+        "transactional": []
+      },
+      "entities": [],
+      "tree": [
+        {
+          "level": 3,
+          "heading": "enquiry-reply-time",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "enquiry-while-you-wait",
+          "intent": "",
+          "children": []
+        },
+        {
+          "level": 3,
+          "heading": "enquiry-follow-up",
+          "intent": "",
+          "children": []
+        }
+      ],
+      "images": [],
+      "links": {
+        "internal": [],
+        "external": []
+      },
+      "options": {
+        "candidates": [],
+        "excluded": [],
+        "pick": "S3",
+        "note": ""
+      },
+      "styles": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "questions": [
+        "How long will you take to reply to my enquiry?",
+        "What if your reply does not arrive?",
+        "What can I read while I wait for your reply?",
+        "How do I follow up on my enquiry?",
+        "What happens after you reply to me?",
+        "How much is the deposit and is it refundable?",
+        "Do you deliver a puppy to my home?",
+        "Which puppies are available right now?",
+        "What do you do with the details I sent you?"
+      ],
+      "refresh": {
+        "axis": "layout",
+        "note": "three rows with the first one open, against /privacy-policy-uk/'s all-closed list."
+      }
+    }
+  ],
+  "tuple": {
+    "hero": "hero-h-ut1",
+    "dial": "",
+    "rail": "",
+    "toc": "pagenav-c",
+    "takeaway": [
+      "takeaways-s3"
+    ],
+    "table": "",
+    "faq": "faq-s3",
+    "stepper": "",
+    "newsletter": {
+      "after": "",
+      "variant": ""
+    },
+    "h6_prefixes": [
+      "Next step:"
+    ]
+  },
+  "assets": [
+    {
+      "slot": "thank-you-family",
+      "kind": "photo",
+      "w": 500,
+      "h": 500,
+      "required": true,
+      "status": "baked",
+      "file": "/images/thank-you-from-bluestaffyuk-happy-family-blue-staffy.webp",
+      "alt": "Blue Staffy Puppies Journey | Thank you message from BlueStaffyUK with happy family and Blue Staffy puppy"
+    }
+  ],
+  "dropped": {
+    "links": [
+      "/uk-locations/staffy-breeding-dogs-glasgow/ (\"Staffy breeding parents in the …\") — the outreach page for the city the business has left (Known Issue 16, relocated to Carlisle, Cumbria). The page keeps its URL, but a rebuilt page does not send a buyer to it."
+    ],
+    "text": [
+      "Blue Staffy News: Join 500+ Readers! — the newsletter band. The 500+ figure has no source on disk, the WordPress form behind it was already removed at migration, and `brief.out_of_scope` rules the block out. Nothing replaces it: a confirmation page asking for a second sign-up before it has answered the first message is the opposite of what it is for."
+    ]
+  },
+  "approval": {
+    "approved_at": "2026-09-22T17:56:50.638Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "navigation": "",
+      "next-steps": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page.",
+      "stats": "The counter arrangement is the question this re-board asks; the menu is the interior-utility family’s own three (spec §9 amendment 10.2) and no pick is carried.",
+      "welcome": "",
+      "while-you-wait": ""
+    },
+    "picks": {
+      "next-steps": "S3",
+      "owners": "S3",
+      "puppies": "S3",
+      "questions": "S3",
+      "stats": "C-UT1",
+      "welcome": "H-UT1"
+    },
+    "record_hash": "10b767d9c6fb5d3acb95cd37b6609496a1382580c2beb17a1eb984201ff5b9a0",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Next step:"
+      ]
+    }
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-19T21:29:09.335Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "next-steps": "",
+      "owners": "Mode `single`. Slot filled with data/reviews.json entry 1, The Victoria Family, Manchester — the only one of the three that describes the process from first enquiry to bringing the puppy home, which is the stage this reader is at. Mark J (entry 2) speaks to paperwork and health testing and belongs on the health and about pages; Rachel L. (entry 3) is the shortest and is already used on the for-sale page.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "",
+      "reach-us": "No telephone is rendered: data/settings.json phone is PHONE_PLACEHOLDER, and a placeholder must never reach a page.",
+      "welcome": "",
+      "while-you-wait": ""
+    },
+    "picks": {
+      "next-steps": "S3",
+      "owners": "S3",
+      "puppies": "S3",
+      "questions": "S3",
+      "welcome": "S3"
+    },
+    "section_hashes": {
+      "welcome": "3ab548ca36030d2faba796ae58cdd1898ee99fe7202c14bec79bb2476a405f29",
+      "stats": "9fec40f9aa506e0146a59d51fd99b71cf48838bb91ea63e3162480266e055532",
+      "next-steps": "327a70fc52370db6fdd0d6aad407ea11f169701ea21da4dcd68a5456661ca341",
+      "while-you-wait": "469420fcfdc981550044a2ff6c9516fc444185057ab202a767c3000a29f99235",
+      "owners": "ce96d200edc52e85de8873ebd6092a0b52710390556b67512ae6ea525306317c",
+      "puppies": "4f67640ecd16730aab0d946ffbdffb7aaa8167ffddb96cf02165d45c68b5c9f3",
+      "reach-us": "fd95bbd8b59d872c4aebbdbd055bc831de3ed4eccf501423cf736aec40d93e09",
+      "questions": "1aa64acdfe275c72abce4b96597aac89260afda79f7b4c04545ecf57fb228198"
+    },
+    "record_hash": "fcc79313a8d67086135791bf84fabbf6f60d0ce4fce18516d89b98bd16dcfda4",
+    "tuple_before": {
+      "hero": "hero-s3",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Next step:"
+      ]
+    }
+  }
+}

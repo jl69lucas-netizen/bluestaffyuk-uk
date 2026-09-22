@@ -96,7 +96,7 @@ All 8 inherit the site tokens (do NOT re-implement per page). Reference the toke
 
 - **Heading Outline Gate** — present full H1→H6 outline (all six levels, sequential, ≥5 H5 AND ≥5 H6) + get explicit approval **BEFORE any page code**. No skipped levels. See `rules/headings.md` (`heading-hierarchy-outline-gate`); the rule moved out of CLAUDE.md on 2026-08-02.
 - **Line-icons not emoji** — Coat-style SVGs (`1em`, `currentColor`). Keep only ✔ ✗ ★ text glyphs. Never use 💡 ⚠ or any pictograph emoji.
-- **Delivery line on every card** — `UK home delivery £200–£350 by distance · or collect in Glasgow`. Pull from `data/settings.json` and `data/price-matrix.json`. No hardcoded figures.
+- **Delivery line on every card** — `UK home delivery £200–£350 by distance · or collect in Carlisle`. Pull from `data/settings.json` and `data/price-matrix.json`. No hardcoded figures.
 - **Schema visible + verified in `dist/`** — extend existing JSON-LD, never duplicate. Verify with grep on `dist/` output, not source files.
 - **One CTA per page** — BaseLayout global band; `hideGlobalCta` when a section owns the CTA.
 - **NEVER a visible date** — freshness in schema only (`dateModified` / `datePublished`). No "Updated June 2026" visible text anywhere.

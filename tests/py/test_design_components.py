@@ -1,21 +1,30 @@
 """data/design/components.json is the one list of kit components; everything else
 (the kit folder, the canvas route, the picks board, picks.json) is checked against it."""
-import json, pathlib, re
+import json, pathlib, re, subprocess
 
 import pytest
+
+import verbatim_set_check as V
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 COMPONENTS = ROOT / "data/design/components.json"
 KIT = ROOT / "src/components/kit"
 IDS = ["site-header", "hero", "buttons", "puppy-card", "trust-strip", "counter-strip",
-       "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider"]
+       "info-card", "testimonial", "faq", "contact-form", "page-nav", "footer", "section-divider",
+       # Project 4 adds the three in-page navigation components. They are LAST on purpose:
+       # the numbering in `title` is the spec's reading order and the board sheets are cut
+       # in it. The set is the dial (>=1024px) and, below it, the strip and the sheet.
+       "page-dial", "section-sheet", "section-strip",
+       # And component 17, the data table (working rule 13; spec §9 amendment 5), and
+       # component 18, the video embed (working rule 14; spec §9 amendment 7).
+       "data-table", "video-embed"]
 
 
 def load():
     return json.loads(COMPONENTS.read_text())
 
 
-def test_thirteen_components_in_spec_order():
+def test_every_component_in_spec_order():
     rows = load()
     assert [r["id"] for r in rows] == IDS
 
@@ -25,6 +34,10 @@ def test_each_row_has_file_title_width():
         assert re.fullmatch(r"[A-Z][A-Za-z]+\.astro", r["file"]), r
         assert r["title"] and isinstance(r["title"], str)
         assert r["board_width"] in (640, 1280), r
+        # Which project added the row. The canvas, the picks board and the variant prune
+        # filter to 3 — they record project 3's closed five-option pick process; the kit
+        # preview, _registry.ts and the Design System artifact carry every row.
+        assert r["project"] in (3, 4), r
 
 
 def test_ids_and_files_are_unique():
@@ -339,7 +352,27 @@ def test_measured_hero_fits_its_clamp_without_clipping_anything():
             )
             if m["ctas_below"] is not None:
                 assert m["ctas_below"] <= 0, (key, w, m, "the CTA row hangs below the hero")
-            assert 390 <= m["height"] <= 450, (key, w, m["height"])
+            # NOT RUNNING INTO THE NEXT SECTION holds at EVERY width, and it is the one thing
+            # the three figures above cannot see: all three are taken INSIDE the hero, so
+            # content spilling out of a box whose ceiling has been released registers as zero
+            # on every one of them. That is exactly what Known Issue 28 was — the homepage's
+            # hero content ended 17px inside the section below it at 1024, and nothing here
+            # noticed.
+            if m.get("next_overlap") is not None:
+                assert m["next_overlap"] <= 0, (
+                    key, w, m, "the hero's content runs into the section below it")
+            # The 390 FLOOR is live from 1024 (`.inner` keeps its `min-height`), so a hero
+            # that collapses is still caught at every width.
+            assert m["height"] >= 390, (key, w, m["height"])
+            # THE CEILING IS A 1280 MEASURE (spec §9 amendment 10.4 sub-note, breeder
+            # 2026-09-21). Between 1024 and 1279 the copy column is narrower and the same
+            # words take more lines; a verbatim H1 cannot be shortened to fit a band written
+            # for 1280 (working rule 15), so the band gives way and the clamp is scoped to
+            # 1280 and up. Asserting 450 below it is asserting the defect: it is what hid
+            # three to six lines of four pages' ledes and ran two heroes into the section
+            # beneath them.
+            if w == "1280":
+                assert m["height"] <= 450, (key, w, m["height"])
 
 
 def test_built_buttons_show_all_five_kinds():
@@ -518,7 +551,15 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
     """Rule 9, enforced at the source. Each row carries the path it was copied from; this
     reads that file and fails if the quote or the attribution is not in it character for
     character. A REVIEW_PLACEHOLDER row has no source and is exempt — that is the whole
-    point of the placeholder."""
+    point of the placeholder.
+
+    THE SOURCE IS THE MIGRATED PAGE, so a REBUILT page is read at the migration commit and
+    not out of the working tree. `source` records where a quote was copied FROM — a
+    WordPress body the extractor wrote into `const body` — and project 4 replaces those
+    files one at a time: from Task 18 the homepage is a hand-written Astro page with no
+    `const body` in it at all, and reading the working tree would fail a row whose evidence
+    is intact. `verbatim_set_check.MIGRATED` is the same frozen commit rule 15's own gate
+    reads, for the same reason: it is history and cannot move."""
     reviews = json.loads((ROOT / "data/reviews.json").read_text())
     for r in reviews:
         if r["quote"] == "REVIEW_PLACEHOLDER":
@@ -526,6 +567,12 @@ def test_reviews_json_quotes_exist_verbatim_on_the_page_each_one_names():
             continue
         page = (ROOT / r["source"]).read_text()
         m = re.search(r'const body = "(.*?)";\n', page, re.S)
+        if not m:
+            migrated = subprocess.run(
+                ["git", "show", f"{V.MIGRATED}:{r['source']}"],
+                cwd=ROOT, capture_output=True, text=True)
+            assert migrated.returncode == 0, (r["source"], migrated.stderr)
+            m = re.search(r'const body = "(.*?)";\n', migrated.stdout, re.S)
         assert m, r["source"]
         body = m.group(1).encode().decode("unicode_escape").encode("latin-1").decode("utf-8")
         assert r["quote"] in body, (r["source"], r["quote"][:60])
@@ -558,8 +605,15 @@ def test_built_faq_is_native_details_with_backed_answers():
     assert inner.count("<summary") == len(rows)
     # The question is a heading inside the summary, so the answers are a navigable list.
     assert len(re.findall(r'<h3[^>]*\bq\b[^>]*>', inner)) == len(rows)
+    # CASE-INSENSITIVE, deliberately. The question is rendered in Title Case
+    # (rules/headings.md, amended 2026-09-20: an `<h3>` inside a `<summary>` is still a
+    # heading) while data/faq.json keeps the sentence-case wording, which is what the FAQPage
+    # schema `name` and the dup gate read. Asserting the exact cased string here would need a
+    # Python port of src/lib/headings.ts, and a second caser is a caser that drifts — the CASE
+    # is already measured by tests/render/checks/sem.ts::sem-title-case-headings, which sees
+    # these h3s. What this test owns is that the ROW reached the page at all.
     for r in resolved:
-        assert r["q"] in inner, r["q"]
+        assert r["q"].lower() in inner.lower(), r["q"]
         assert r["a"] in inner, r["a"]
     # The picked treatment is the numbered one, and it carries no marker glyph.
     assert ">01<" in inner and f">{len(rows):02d}<" in inner
@@ -742,3 +796,368 @@ def test_built_section_divider_is_the_mark_between_two_rules():
     # The mark is decorative here: title="" drops the <title> and hides the whole SVG.
     assert 'aria-hidden="true"' in inner
     assert "<title>" not in inner
+
+
+
+def test_built_page_dial_is_a_numbered_strip_with_spy_hooks_and_no_ring():
+    """Convention 8. The dial is two things at once — a numbered list and a scroll-spy —
+    and losing either still builds and still looks like a sidebar. The six `<li>` are the
+    demo fixture's six sections.
+
+    THE RING IS ASSERTED ABSENT, not merely unmentioned. The breeder picked S2 on the
+    contact board (2026-09-19) and PageDial was pruned to it; a ring creeping back would be
+    a second progress indicator saying what the numbered rows already say, and the inline
+    dash geometry it needed was the component's only inline style."""
+    dial = _sections("page-dial")
+    assert _has_class(dial, "kit-dial")
+    # Labelled BY the visible heading, never by a duplicate literal: a `<nav aria-label>`
+    # and a visible "On this page" would give a screen-reader user different words from the
+    # ones on the screen.
+    assert "<nav" in dial and 'aria-labelledby="kit-dial-title"' in dial
+    assert 'id="kit-dial-title"' in dial
+    assert dial.count("<li") >= 6, dial.count("<li")
+    assert dial.count('data-spy="') >= 6, dial
+    # Every row is numbered — that is what the picked arrangement is.
+    assert dial.count('class="num"') >= 6, dial.count('class="num"')
+    # …and the ring is gone, markup, hooks and all.
+    assert "<circle" not in dial, dial
+    assert "data-ring" not in dial, dial
+    # Rule 1, restated at the component. The dial no longer writes ANY inline style — the
+    # ring's dash geometry was the only one — so the hex probe has nothing to find.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', dial), dial
+
+
+PROJECT_4_IDS = ["page-dial", "section-sheet", "section-strip", "data-table", "video-embed"]
+
+
+def test_components_json_has_eighteen_rows_after_project_4_additions():
+    """Project 4's five additions are appended, not interleaved. Spelled as its own test
+    because IDS above is the list every other test walks: if the five rows were ever moved
+    ahead of the project 3 thirteen, the board sheets and the artboard numbering would
+    silently renumber while `test_every_component_in_spec_order` stayed green."""
+    ids = [r["id"] for r in load()]
+    assert len(ids) == 18, ids
+    assert ids[-5:] == PROJECT_4_IDS, ids[-5:]
+    by_project = {r["id"]: r["project"] for r in load()}
+    assert [i for i, p in by_project.items() if p == 4] == PROJECT_4_IDS
+    assert len([i for i, p in by_project.items() if p == 3]) == 13
+
+
+def test_built_section_sheet_has_tab_bar_and_dialog():
+    """Convention 8. The sheet is the dial's other half: a fixed tab bar carrying three
+    site destinations and a Sections button, and a native <dialog> holding the same six
+    sections. `<dialog>` is load-bearing — showModal() is what gives the sheet its focus
+    trap and its Escape key, and swapping it for a <div> would lose both silently."""
+    s = _sections("section-sheet")
+    assert _has_class(s, "kit-tabbar")
+    assert s.count("<a ") >= 3, s.count("<a ")
+    assert "<button" in s
+    assert "<dialog" in s and 'aria-label="Sections"' in s
+    # The opener ships its resting state; the script drives it from the dialog's own
+    # `close` event, so Escape and a backdrop click cannot leave it stuck on "true".
+    assert 'aria-haspopup="dialog"' in s and 'aria-expanded="false"' in s
+    # Four line icons, drawn not lettered: three tabs plus Sections. Never an <img>, never
+    # an emoji glyph — the same bar the footer's icon row is held to.
+    assert s.count("<svg") >= 4, s.count("<svg")
+    assert "<img" not in s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+    assert s.count('data-spy="') >= 6, s
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+
+
+#: Every built page, not just the preview. These two are dist-WIDE on purpose: both defects
+#: are produced by a component and shipped by whatever page mounts it, so checking only the
+#: page the component was written against would miss the next page that mounts it.
+DIST = ROOT / "dist"
+
+
+def _built_pages():
+    if not DIST.exists():
+        pytest.skip("run npm run build first")
+    return sorted(DIST.rglob("index.html"))
+
+
+def test_no_built_page_ships_an_empty_aria_current():
+    """`aria-current=""` is the token `false`.
+
+    `el.toggleAttribute('aria-current', true)` sets the attribute to the empty string, and
+    the empty string is not "unspecified" for this attribute — it is an explicit `false`.
+    A scroll-spy written that way marks the row the reader is IN as the one row that is
+    NOT current, which is worse than marking none of them. The two in-page nav components
+    use `setAttribute('aria-current', 'location')`; this is the guard that keeps the next
+    one from reaching for `toggleAttribute` because it reads shorter."""
+    bad = [(p.relative_to(ROOT), m) for p in _built_pages()
+           for m in re.findall(r'aria-current=""', p.read_text())]
+    assert not bad, bad[:5]
+
+
+def test_no_built_page_ships_a_duplicate_id():
+    """`getElementById` returns the FIRST match, so a second element with the same id is
+    unreachable by script and by fragment, and every `href="#x"` has two destinations with
+    only one of them ever chosen.
+
+    kit-preview shipped exactly this when the scroll-spy's six stub targets were rendered
+    inside every `with-targets` demo box instead of once per page: `nav-anchors-resolve`
+    stayed green because the anchors all resolved — to the first copy. The harness's
+    `a11y-no-duplicate-ids` catches it on a painted page; this catches it in dist without
+    a browser, on every route at once."""
+    offenders = {}
+    for p in _built_pages():
+        ids = re.findall(r'\sid="([^"]+)"', p.read_text())
+        dupes = sorted({i for i in ids if ids.count(i) > 1})
+        if dupes:
+            offenders[str(p.relative_to(ROOT))] = dupes
+    assert not offenders, offenders
+
+
+def test_built_section_strip_is_a_sticky_chip_rail_with_spy_hooks():
+    """Convention 8. Component 16 is the top-chrome third of the in-page nav set: a sticky
+    rail of six numbered chips that scrolls sideways under the thumb. Three things are
+    load-bearing and all three are asserted: it is STICKY (fixed would take it out of flow
+    and it would need the body padding the bottom bar needs), every chip carries a
+    `data-spy` so the scroll-spy has a row per section, and the chips clear the 44px tap
+    target the blocking `layout-tap-target-size` check measures."""
+    s = _sections("section-strip")
+    assert _has_class(s, "kit-strip")
+    assert "<nav" in s and 'aria-label="Sections"' in s
+    assert s.count("<li") >= 6, s.count("<li")
+    assert s.count('data-spy="') >= 6, s
+    # The numbers are rendered, zero-padded, and are part of the chip's text — not a CSS
+    # counter, which a screen reader would not read out.
+    assert ">01<" in s and ">06<" in s, s
+    # Icons would be wrong here and emoji are banned outright; the rail is text and numbers.
+    assert "<img" not in s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+
+
+def test_section_strip_pins_under_the_header_and_pays_for_its_own_height():
+    """The strip's two CSS contracts, read off the built stylesheet rather than the source.
+
+    1. It pins to the same measured header height every jump target is offset by. A literal
+       px `top` would drift the moment the header rewrapped.
+    2. It adds `--strip-h` to the global `[id] { scroll-margin-top }`. Without that a jump
+       target lands UNDER the strip — the top-chrome twin of the defect
+       `nav-bottom-chrome-clear` catches at the bottom of the viewport."""
+    # Read off the BUILT page, not a .css file: Astro inlines a component's scoped and
+    # global styles into the document that mounts it, so dist/ carries no stylesheet to read.
+    html = (ROOT / "dist" / "kit-preview" / "index.html").read_text(encoding="utf-8")
+    assert "--strip-h" in html, "the strip never publishes its height"
+    norm = re.sub(r"\s+", "", html)
+    assert "top:var(--hdr-measured,var(--hdr))" in norm, "the strip is not pinned to the measured header"
+    assert "scroll-margin-top:calc(var(--hdr-measured,var(--hdr))+var(--strip-h,0px)+16px)" in norm, \
+        "the jump offset does not include the strip's height"
+
+
+def test_the_preview_specimen_strip_is_not_the_previews_top_chrome():
+    """A specimen is a picture of the component, and it must not move the page's anchors.
+
+    The `/kit-preview/` strip sits in a short `position: relative` demo box, so it cannot
+    pin and `measureTopChrome` does not count it — but it was still publishing its own
+    measured height as `--strip-h`, so every id on that page declared
+    `scroll-margin-top: 152px` against 75px of real chrome. `nav-jump-target-lands` reported
+    10 of 11 targets outside the band at 375 and 768: two blocking rows on a page whose only
+    strip is a photograph of one.
+
+    `data-strip` is now the one selector that says "this strip IS this document's top
+    chrome", and both halves of the offset key off it — the script that publishes
+    `--strip-h`, and the no-JS floor."""
+    preview = (ROOT / "dist" / "kit-preview" / "index.html").read_text(encoding="utf-8")
+    strips = re.findall(r'<nav[^>]*class="kit-strip"[^>]*>', preview)
+    assert len(strips) == 1, strips
+    assert "data-strip" not in strips[0], strips[0]
+
+    norm = re.sub(r"\s+", "", preview)
+    assert ":root:has(.kit-strip[data-strip]){--strip-h:48px}" in norm, \
+        "the no-JS floor still fires on a specimen strip"
+    # Astro scopes the rule with its own `data-astro-cid-*` attribute, so match around it.
+    assert re.search(r"\.kit-strip\[data-astro-cid-[a-z0-9]+\]:not\(\[data-strip\]\)\{position:static\}", norm), \
+        "the specimen still claims to be sticky chrome"
+
+
+def test_a_shell_mounted_strip_is_still_the_pages_top_chrome():
+    """The other half of the same contract: a strip the shell mounts keeps `data-strip`, so
+    it keeps the script, the floor and the offset. Read off a rebuilt page, not the preview."""
+    page = (ROOT / "dist" / "privacy-policy-uk" / "index.html").read_text(encoding="utf-8")
+    strips = re.findall(r'<nav[^>]*class="kit-strip"[^>]*>', page)
+    assert len(strips) == 1 and "data-strip" in strips[0], strips
+
+
+def test_built_data_table_is_semantic_and_labels_every_cell_for_the_stack():
+    """Convention 8. Component 17 is the data table (working rule 13; spec §9 amendment 5),
+    and everything asserted here is what makes it stack CLEANLY rather than merely narrowly:
+
+    · it carries `.stack-table`, whose below-640px rules in global.css turn every cell into
+      a block and move the `<thead>` off-screen;
+    · every `<td>` carries a `data-label` naming its column, because with the header row
+      gone that attribute is the only thing left saying what a cell is;
+    · the row's first cell is a `<th scope="row">` — the row's own title, which is why it
+      takes no label of its own — and each column header is a `<th scope="col">`;
+    · the numbers are DATA. The demo reads `data/puppies.json` and
+      `data/price-matrix.json`, so no price in this repo can be typed by hand (rule 9).
+
+    The three board arrangements are deliberately NOT asserted here: `chrome` is a layout
+    axis in src/lib/boardStyles.ts, so they exist on /board-preview/<slug>/ and are held by
+    test_board_previews.py. What the preview carries is the component's own default."""
+    s = _sections("data-table")
+    assert _has_class(s, "kit-table") and _has_class(s, "stack-table"), s[:300]
+    assert "<caption" in s
+    assert s.count('scope="col"') == 4, s.count('scope="col"')
+    assert s.count('scope="row"') == 4, s.count('scope="row"')
+    tds = re.findall(r"<td[^>]*>", s)
+    assert len(tds) == 12, len(tds)
+    unlabelled = [t for t in tds if not re.search(r'data-label="[^"]+"', t)]
+    assert not unlabelled, unlabelled
+    # The prices come from data/, never from this file or that one.
+    pups = json.loads((ROOT / "data/puppies.json").read_text())[:4]
+    prices = json.loads((ROOT / "data/price-matrix.json").read_text())
+    for p in pups:
+        assert f">{p['name']}<" in s, p["name"]
+        assert f"£{p['price_gbp']:,}" in s, p
+    assert f"£{prices['deposit_gbp']:,}" in s
+    # Tokens only, and no emoji: a table is text.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+
+
+def test_built_video_embed_reserves_its_box_and_loads_on_click():
+    """Convention 8. Component 18 is the video embed (working rule 14; spec §9 amendment 7).
+
+    What is asserted here is the half of the component that is NOT a board choice:
+
+    · the id is the old site's own. `data/settings.json`'s `youtube_embeds` is the list of
+      videos the migrated pages carry, and the demo reads its first entry — rule 9 forbids a
+      specimen from inventing an eleven-character id, and an invented one is a 404;
+    · the box is RESERVED. `aspect-ratio: 16 / 9` is declared on the frame, so the space is
+      the same size before and after the thumbnail decodes (`layout-image-box-reserved`);
+    · the default is the FACADE: the preview carries a play button and a thumbnail, and no
+      `<iframe>` outside the `<noscript>` fallback, so a page mounting three videos fetches
+      no player at all until someone presses one;
+    · the `<noscript>` block carries both the real player and the rule that hides the button,
+      which is what makes it a fallback rather than a second video;
+    · the player is `youtube-nocookie.com`, and the frame is named.
+
+    The three board arrangements are deliberately not asserted here: `frame` and `play` are
+    axes in src/lib/boardStyles.ts, so they live on /board-preview/<slug>/ and are held by
+    test_board_previews.py — the same split the data table's test makes."""
+    s = _sections("video-embed")
+    wanted = json.loads((ROOT / "data/settings.json").read_text())["youtube_embeds"][0]
+    assert wanted in s, wanted
+    assert f"https://i.ytimg.com/vi/{wanted}/hqdefault.jpg" in s, s[:400]
+    assert "data-video-play" in s and "data-video-frame" in s, s[:400]
+    # The facade is a real <button>, not a div with a click handler.
+    assert re.search(r'<button[^>]+type="button"[^>]*data-video-play', s), s[:600]
+    assert re.search(r'aria-label="Play the video: [^"]+"', s), s[:600]
+    # No eager player: every iframe on this section is inside the no-JS fallback.
+    outside = re.sub(r"<noscript>.*?</noscript>", "", s, flags=re.S)
+    assert "<iframe" not in outside, outside[:600]
+    noscript = re.search(r"<noscript>(.*?)</noscript>", s, re.S)
+    assert noscript, s[:600]
+    assert "<iframe" in noscript.group(1) and "data-video-play" in noscript.group(1), noscript.group(1)[:400]
+    # The player is the no-cookie host, in both places it is spelled.
+    assert "youtube.com/embed" not in s, s[:600]
+    assert f"youtube-nocookie.com/embed/{wanted}" in s
+    # Tokens only, and no emoji: the play mark is a path.
+    assert not re.findall(r'style="[^"]*#[0-9A-Fa-f]{3,6}', s), s
+    assert not [c for c in s if ord(c) >= 0x1F000]
+
+
+def test_the_video_box_is_reserved_in_the_components_own_stylesheet():
+    """The 16:9 is declared in the component, not left to the page: a caller who forgot it
+    would ship the largest layout shift a page can have, and the check that measures it is
+    an advisory one, so nothing would refuse the build."""
+    css = (KIT / "VideoEmbed.astro").read_text()
+    assert re.search(r"aspect-ratio:\s*16\s*/\s*9", css), css[:200]
+    # Convention 2, read off the RULE rather than off the file: the comment above it names
+    # --color-focus in order to say what the ring is not.
+    ring = re.search(r"focus-visible \{[^}]*\}", css)
+    assert ring and "--kit-ring" in ring.group(0) and "--color-focus" not in ring.group(0), ring
+    # Rule 1: no hex anywhere in src/. The thumbnail url is not a colour.
+    assert not re.findall(r"#[0-9A-Fa-f]{3,6}\b", css), css
+
+
+#: The three pages project 4 has rebuilt onto `PageShell`. They are the only pages that pass
+#: a section list, so they are the only ones that mount the in-page nav set.
+REBUILT_PAGES = ["privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
+                 "uk-blue-staffy-breeders-contact"]
+
+
+@pytest.mark.parametrize("slug", REBUILT_PAGES)
+def test_every_rebuilt_page_mounts_the_toc_below_its_hero(slug):
+    """Component 11 is the fourth member of the in-page nav set, and `PageShell` mounts it.
+
+    Before this, the dial, the strip and the sheet were all mounted by the shell and the TOC
+    was mounted by nobody — it existed in the kit and on `/kit-preview/`, and every rebuilt
+    page shipped without it. The shell now renders it between the `hero` slot and the body,
+    which is what makes the board's "Navigation on this page" block a true statement.
+
+    Two things are asserted beyond its presence:
+
+    · it comes AFTER the page's opening section. A list of where to go that a reader meets
+      before the page has said what it is is a table of contents for an unknown document;
+    · there is exactly ONE breadcrumb landmark. BaseLayout already renders the trail above
+      `<main>`, so the shell passes `crumbs={false}` — two `nav[aria-label="Breadcrumb"]`
+      with the same links is a duplicate landmark and a duplicated trail for a crawler."""
+    page = ROOT / "dist" / slug / "index.html"
+    if not page.exists():
+        pytest.skip("run npm run build first")
+    html = page.read_text(encoding="utf-8")
+    assert html.count('aria-label="Breadcrumb"') == 1, html.count('aria-label="Breadcrumb"')
+    toc = html.find('aria-label="On this page"')
+    assert toc > 0, "PageShell did not mount PageNav"
+    # The hero is the first `<section id=…>` of the body; the TOC follows it.
+    first_section = re.search(r'<section[^>]*\sid="([a-z][a-z0-9-]*)"', html)
+    assert first_section and first_section.start() < toc, (first_section, toc)
+    # Every jump link resolves to an id the page actually carries (nav-anchors-resolve).
+    block = html[html.find('class="kit-nav', 0):toc + 4000]
+    for href in set(re.findall(r'<a href="#([a-z][a-z0-9-]*)"', block)):
+        assert f'id="{href}"' in html, href
+
+
+
+TRUST_DEFAULT = ("KC registered", "DNA-tested parents", "Raised in the home")
+
+
+def _trust_items(built):
+    """(count, [titles]) for the one `kit-trust` strip on a built page."""
+    html = built.read_text(encoding="utf-8")
+    m = re.search(r"<section[^>]*kit-trust[^>]*>.*?</section>", html, re.S)
+    assert m, f"{built} renders no trust strip"
+    seg = m.group(0)
+    return len(re.findall(r"<li", seg)), re.findall(r"<strong[^>]*>(.*?)</strong>", seg)
+
+
+def test_trust_strip_default_is_unchanged_for_every_page_that_passes_no_items():
+    """`items` was added at the 2026-09-21 review so /buy-staffy-puppies-for-sale-uk/ could
+    print the FOUR documents its record's `promises` section names. The prop is optional and
+    the default is the same three claims the component always carried, so the three callers
+    that pass nothing must be byte-for-byte what they were — that is the whole safety argument
+    for adding the prop rather than editing the list."""
+    # The root slug's built file is `dist/index.html` and NOT `dist/index/index.html`, which
+    # exists on no build — spec §9 amendment 9.3, the four places that spelled it wrong.
+    for built in (ROOT / "dist/index.html",
+                  ROOT / "dist/uk-blue-staffy-breeders-contact/index.html",
+                  ROOT / "dist/kit-preview/index.html"):
+        assert built.exists(), f"{built} not built — run npm run build"
+        count, titles = _trust_items(built)
+        assert count == 3, (built.parent.name, count)
+        assert tuple(titles) == TRUST_DEFAULT, (built.parent.name, titles)
+
+
+def test_the_why_us_page_passes_the_four_documents_its_record_names():
+    """Rule 9 follows a page's own `items` exactly as it governs the default: each of the four
+    is a document backed on disk, and the paragraph beside the strip names the same four. The
+    record's `promises` intent says "the four things we can actually hand a reader", and a
+    strip printing three made that section contradict itself."""
+    built = ROOT / "dist/buy-staffy-puppies-for-sale-uk/index.html"
+    if not built.exists():
+        pytest.skip("why-us page not built")
+    count, titles = _trust_items(built)
+    assert count == 4, titles
+    assert tuple(titles) == (
+        "Kennel Club registered", "Two DNA clearances", "Vet checked and chipped",
+        "A written contract",
+    ), titles
+    # Not the kit default's wording: a shared sentence between this strip and the homepage's
+    # is the rule 8 crossover the dup gate catches.
+    assert "DNA-tested parents" not in titles

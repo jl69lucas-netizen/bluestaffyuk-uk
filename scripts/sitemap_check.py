@@ -18,6 +18,17 @@ is checked here rather than in Search Console:
                     ambiguous canonical signal. `video-sitemap.xml` is supplementary — it
                     annotates pages already listed elsewhere, so it is excluded from that
                     exclusivity count.
+  embed => video  — a built page that CARRIES a YouTube embed must appear in the video
+                    shard. This is the counterpart of the rule above, and it exists because
+                    nothing had it: `generate_sitemaps.py` matched `youtube.com/embed/`
+                    while the kit's `VideoEmbed` serves `youtube-nocookie.com/embed/`, so
+                    four already-ranking ids left the video sitemap and every gate stayed
+                    green (e963c53). The generator's regex is now the one this gate reads,
+                    so a host the builder cannot see is a host this cannot see either — but
+                    a page whose embed the builder DROPS for any other reason now fails
+                    here, which is the half that was missing. Working rule 14 keeps an id
+                    that already ranks; a url nobody submits is that id lost by another
+                    route.
   robots          — robots.txt must point at exactly `<base>/sitemap_index.xml`; a stale
                     Sitemap line sends crawlers to the previous host.
 
@@ -29,7 +40,7 @@ import re
 import sys
 import xml.etree.ElementTree as ET
 
-from generate_sitemaps import _meta
+from generate_sitemaps import EMBED_SRC, _meta
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 BASE = (os.environ.get("SITE_URL") or "https://SITE_URL_PLACEHOLDER").rstrip("/")
@@ -140,6 +151,20 @@ def audit(dist, base):
             if name not in SUPPLEMENTARY:
                 shard_paths.setdefault(url_path, []).append(name)
 
+    # embed => video. Read from the page's own markup with the generator's own pattern, so
+    # the two can never disagree about what counts as an embed. `video_locs` is the shard as
+    # written; a page carrying an id and absent from it is the defect.
+    video_shard = dist / "video-sitemap.xml"
+    video_locs = {(loc[len(base):] or "/")
+                  for loc in ((_locs(video_shard) or []) if video_shard.is_file() else [])}
+    for url_path, text in sorted(pages.items()):
+        if "noindex" in _meta(text, "robots"):
+            continue
+        ids = sorted(set(EMBED_SRC.findall(text)))
+        if ids and url_path not in video_locs:
+            problems.append("FAIL %s carries embed(s) %s and is in no video shard"
+                            % (url_path, ", ".join(ids)))
+
     indexable = [u for u, text in pages.items() if "noindex" not in _meta(text, "robots")]
     for url_path in indexable:
         where = shard_paths.get(url_path, [])
@@ -162,7 +187,8 @@ HEADER = [
     "supplementary and excluded from that count. Every `<loc>` must be a built page (or a",
     "served asset) that is not `noindex`, must start with the site base, and must not",
     "repeat within its shard. The index must list every shard in dist/ and nothing else,",
-    "and robots.txt must point at exactly `<base>/sitemap_index.xml`.", "",
+    "and robots.txt must point at exactly `<base>/sitemap_index.xml`. A built page that",
+    "carries a YouTube embed must also appear in `video-sitemap.xml`.", "",
 ]
 
 

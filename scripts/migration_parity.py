@@ -184,10 +184,28 @@ HEADER = [
     "chrome and dead forms are stripped, so it slightly understates the WordPress body.",
     "The gate compares expected → built with a 2% whitespace band; headings must match",
     "exactly, embeds must never decrease, a built page missing its article scope fails,",
-    "and expected must keep at least 60% of raw's words.", "",
+    "and expected must keep at least 60% of raw's words. Pages listed in",
+    "`data/facts/rebuilt.json` are no longer migrated bodies and are skipped here:",
+    "`scripts/facts_preserved_check.py` is their gate.", "",
     "| URL | words raw→expected→built | headings exp→built | images exp→built | embeds exp→built | cards removed | result |",
     "| --- | --- | --- | --- | --- | --- | --- |",
 ]
+
+
+def slug_of(row):
+    """A page-map row's slug: the url with its slashes off, and `index` for the site root.
+    The same key scripts/facts_preserved_check.py names its fact sets by."""
+    return row["url"].strip("/").split("/")[-1] or "index"
+
+
+def rebuilt_slugs(root=ROOT):
+    """Slugs project 4 has REWRITTEN. Their bodies are no longer the migrated body, so this
+    gate has nothing true to say about them and scripts/facts_preserved_check.py takes over.
+    Empty until the first page task lands, and the handover is one-way: a slug added here
+    must already have a committed data/facts/<slug>.json, or it is a page with no content
+    gate at all."""
+    path = pathlib.Path(root) / "data" / "facts" / "rebuilt.json"
+    return set(json.loads(path.read_text(encoding="utf-8"))) if path.exists() else set()
 
 
 def main(root=ROOT, src=None, dist=None):
@@ -195,14 +213,20 @@ def main(root=ROOT, src=None, dist=None):
     page_map = json.loads((root / "data" / "page-map.json").read_text(encoding="utf-8"))
     src = pathlib.Path(src) if src else pathlib.Path(page_map["generated_from"])
     dist = pathlib.Path(dist) if dist else root / "dist"
+    rebuilt = rebuilt_slugs(root)
 
-    rows, failing = [], 0
+    rows, failing, skipped = [], 0, 0
     for row in page_map["pages"]:
+        if slug_of(row) in rebuilt:
+            skipped += 1
+            continue
         tup, ok = _page_row(row, source_path(row, src), dist_path(row, dist))
         rows.append(tup)
         failing += 0 if ok else 1
 
-    summary = "examined %d pages, %d failing" % (len(rows), failing)
+    # `skipped` is printed even when it is zero: a page that quietly left this gate and never
+    # arrived at the other one is the one failure mode the handover can have.
+    summary = "examined %d pages, %d failing, skipped %d rebuilt" % (len(rows), failing, skipped)
     report = "\n".join(HEADER + ["| %s | %s | %s | %s | %s | %s | %s |" % r for r in rows]
                        + ["", summary, ""])
     out = root / "docs" / "reports" / "parity.md"

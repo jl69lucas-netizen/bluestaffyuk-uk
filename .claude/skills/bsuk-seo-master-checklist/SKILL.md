@@ -75,7 +75,7 @@ full H1–H6 band · the 4-Move entity loop + Verified-Claim Ledger · Link-Firs
 
 **H1 recommendation (approved):**
 ```
-Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Glasgow
+Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle
 ```
 
 **Homepage CTA rule:** ALL CTAs use form links — NO phone number in body. Phone PHONE_PLACEHOLDER appears ONLY in the footer.
@@ -218,7 +218,7 @@ Develop 100+ keyword variations across these categories:
 - `BlueStaffyUK blue staffies`
 - `BlueStaffyUK`
 - `Lisa Bright blue staffy breeders`
-- `Glasgow Manchester blue staffy kennel`
+- `Carlisle Manchester blue staffy kennel`
 
 **10. Review/Testimonial:**
 - `blue staffy reviews`
@@ -237,7 +237,7 @@ Develop 100+ keyword variations across these categories:
 Every full-length page carries 95–105 **distinct** named entities, each said ONCE where load-bearing (breeder correction 2026-09-09; the old "150+ mentions" floor is retired — a repeated term is a `term-budget-per-page` defect, not a score). The 6 categories:
 
 **1. People Entities (10+ required):**
-- Lisa Bright (breeder, BlueStaffyUK, 40 Coltmuir Street, Glasgow G22 6LU)
+- Lisa Bright (breeder, BlueStaffyUK, Carlisle, Cumbria)
 - (no second person has been confirmed — NOT FETCHED)
 - Dr. Irene Pepperberg (famous canine researcher, Alex studies creator)
 - Alex (Dr. Pepperberg's famous Blue Staffy research subject)
@@ -247,10 +247,10 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - Dr. SUKn Friedman (Applied Behavior Analysis, BehaviorWorks)
 
 **2. Location Entities (80+ required):**
-- **Primary:** Glasgow · 40 Coltmuir Street, Glasgow G22 6LU
+- **Primary:** Carlisle · Cumbria (town and region only — no street, no postcode, Known Issue 16)
 - **Target cities:** From `data/locations.json` — include all states + major cities
-- **Delivery routes:** the road legs from Glasgow to the 28 cities — never an airport code; delivery here is by road
-- **Regions:** Scotland, the North East, the North West, Yorkshire, the Midlands, Wales, the South West, Greater London
+- **Delivery routes:** the road legs from Carlisle to the 28 cities — never an airport code; delivery here is by road
+- **Regions:** Cumbria, the Borders, the North West, the North East, Yorkshire, Scotland, the Midlands, Wales, the South West, Greater London
 - **DEFRA-approved transport coverage:** Cross-reference with `data/locations.json`
 
 **3. Medical/Health Entities (40+ required):**
@@ -424,7 +424,7 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - Airport codes for all major delivery hubs
 - DEFRA-approved pet transport companies serving target states
 - Delta Cargo, United PetSafe programs for delivery driver coordination
-- Ground transit time estimates from Glasgow to target cities
+- Ground transit time estimates from Carlisle to target cities
 
 ---
 
@@ -614,7 +614,7 @@ TIER 4: ENTITY & TRUST
 9. Geographic Entities (3–5 per section):
    ☐ Cities: [specific cities mentioned]
    ☐ States/Regions: [regions referenced]
-   ☐ Delivery routes / travel time from Glasgow: [if relevant]
+   ☐ Delivery routes / travel time from Carlisle: [if relevant]
 
 10. Authority Entities (1–2 per section):
     ☐ [Canine vet organization / credential]
@@ -875,12 +875,12 @@ Apply thoughtfully, not forced. Four humor modes:
 #### C. Opening Paragraph Formula (Rule 37)
 
 Every section opening (1–2 sentences) must contain all four:
-- **Entity** — who/what (puppy name, variant, BlueStaffyUK, Glasgow)
+- **Entity** — who/what (puppy name, variant, BlueStaffyUK, Carlisle)
 - **Feature** — measurable fact (weight, age, price, LICENCE_CLAIM_PLACEHOLDER status)
 - **Benefit** — what it means for the buyer
 - **Purpose** — the deeper reason it matters (a 12–14 year bond, a family commitment)
 
-Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at BlueStaffyUK in Glasgow, weighing 380g (feature), socialized daily with our family so she bonds naturally and immediately with yours (benefit) — the foundation of a 12–14 year relationship that begins the moment she comes home (purpose)."*
+Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at BlueStaffyUK in Carlisle, weighing 380g (feature), socialized daily with our family so she bonds naturally and immediately with yours (benefit) — the foundation of a 12–14 year relationship that begins the moment she comes home (purpose)."*
 
 #### D. Conversational Header Format (Rules 38, 52)
 
@@ -889,10 +889,10 @@ Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at Blu
 H1 examples:
 1. "Where Can I Buy a Home-Reared Blue Staffy Puppy with LICENCE_CLAIM_PLACEHOLDER Documentation?"
 2. "Looking for an Intelligent Companion? Meet Our Home-Bred Blue Staffy Puppies"
-3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 50+ States from Glasgow"
+3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 50+ States from Carlisle"
 4. "Why Are BlueStaffyUK Blue Staffies Chosen by 500+ Happy Families?"
 5. "Ready for a Lifelong Canine Companion? Our Blue Staffies Come with Lifetime Breeder Support"
-6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Glasgow"
+6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle"
 
 H2 examples:
 - "What Makes the Blue Staffy the Ultimate Companion Puppy?"
@@ -921,7 +921,7 @@ H6 examples (voice search — must be present):
 
 **Opening paragraph format (first 150 words of page):**
 1. Answer the primary question immediately
-2. Include location-specific details (Glasgow + target state)
+2. Include location-specific details (Carlisle + target state)
 3. Integrate 5+ entities naturally
 4. Add clear call-to-action (form link)
 5. Use long-tail keyword variations
@@ -944,13 +944,13 @@ H6 examples (voice search — must be present):
 
 **Standard Meta Title Formula (Rule 21):**
 ```
-[Primary Keyword] | [Power Word] + [Number] | [Long-tail Conversational Query] | BlueStaffyUK - Glasgow
+[Primary Keyword] | [Power Word] + [Number] | [Long-tail Conversational Query] | BlueStaffyUK - Carlisle
 ```
 - Begin with primary keyword
 - Add a number ONLY where it is locked: £1,500 / £1,700, £500 deposit, £200–£350 delivery, 28 cities, 12–14 years. Anything else is NOT FETCHED.
 - Power word: Certified, Ethical, Trusted, LICENCE_CLAIM_PLACEHOLDER-Documented, Home-Bred
 - Insert long-tail conversational query
-- End with `BlueStaffyUK - Glasgow`
+- End with `BlueStaffyUK - Carlisle`
 - Use `|` separators
 - Max 275 characters
 
@@ -964,10 +964,10 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 > Blue Staffy for Sale | How Much Does a Blue Staffy Cost? | BlueStaffyUK vs Other Breeders, BSUK vs Blue-Brindle Comparison | #1 Canine Biotech Tested Ethical Breeder — Full LICENCE_CLAIM_PLACEHOLDER Compliance
 
 **💰 TRANSACTIONAL TONE:**
-> Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Glasgow — Family-Owned Kennel Specialists
+> Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Carlisle — Family-Owned Kennel Specialists
 
 **🛡️ TRUST/HEALTH TONE:**
-> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | DNA Tested, LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Glasgow — 500+ Families Trust Our Home-Bred Guarantee
+> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | DNA Tested, LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — 500+ Families Trust Our Home-Bred Guarantee
 
 **Meta Description (Rule 23):**
 - Standard: max 155 characters
@@ -978,7 +978,7 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 **BSUK Meta Description Examples:**
 
 Standard (155 chars):
-> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. DNA sexed pups from BlueStaffyUK - Glasgow. Nationwide DEFRA-approved transport delivery.
+> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. DNA sexed pups from BlueStaffyUK - Carlisle. Nationwide DEFRA-approved transport delivery.
 
 Extended Urgency (290 chars):
 > Blue Staffy for sale — only 6 pups available this litter | Don't miss out — NOT FETCHED families chose BlueStaffyUK over other breeders | £200–£350 home-reared pups vs £200–£350+ at pet stores | Canine Biotech DNA tested, delivery by DEFRA-approved transport driver to 28 UK cities | Reserve yours before they're gone | Act now
@@ -987,7 +987,7 @@ Extended Urgency (290 chars):
 
 Implement these schema types on every full page:
 1. **Organization Schema** — BlueStaffyUK business information (managed by `src/components/Schema.astro`)
-2. **LocalBusiness Schema** — Glasgow location, hours, contact
+2. **LocalBusiness Schema** — Carlisle location, hours, contact
 3. **Product Schema** — Individual puppy listings with price, availability
 4. **AggregateRating Schema** — Review aggregate on puppy listing/product pages
 5. **FAQPage Schema** — 30+ FAQ questions and answers
@@ -1064,9 +1064,9 @@ Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh be
 
 **Alt text example (location-specific, 250+ chars):**
 ```
-Blue Staffy puppies for sale from BlueStaffyUK in Glasgow showing three healthy
+Blue Staffy puppies for sale from BlueStaffyUK in Carlisle showing three healthy
 Canine Biotech DNA-tested Blue Staffy pups with silver coat and bright red tails
-available for nationwide delivery by DEFRA-approved transport to families in Manchester, Glasgow, and
+available for nationwide delivery by DEFRA-approved transport to families in Manchester, Carlisle, and
 London seeking home-bred LICENCE_CLAIM_PLACEHOLDER-documented Blue Staffy puppies from ethical breeders
 ```
 
@@ -1421,7 +1421,7 @@ When migrating content from dog-breeder templates or MFS reference material, app
 |---|---|
 | MFS / Maltipoos For Sale | BlueStaffyUK / BlueStaffyUK |
 | Lawrence & Cathy Magee | Lisa Bright |
-| Omaha, Nebraska | Glasgow |
+| Omaha, Nebraska | Carlisle |
 | Puppy / Puppies | Pup / Pups |
 | Litter | Litter |
 | Puppy Culture | Puppy Culture |

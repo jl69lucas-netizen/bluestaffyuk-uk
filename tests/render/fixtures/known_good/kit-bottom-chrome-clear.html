@@ -1,0 +1,47 @@
+<!doctype html><meta charset=utf-8><title>known-good: the kit SectionSheet reserves its bar's height</title>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<!--
+  The KIT's own geometry, not a generic one. known_good/nav-bottom-chrome-clear.html already
+  proves the CHECK can tell a covered target from a clear one; this pair proves the shipped
+  component clears the bar — the same split the kit CounterStrip pair makes.
+
+  The values below are what src/components/kit/SectionSheet.astro resolves its tokens to:
+  --color-surface-raised = white, --color-border = rule, --color-brand = steel-700,
+  --color-surface = bone-100, --color-text = ink. The two numbers that matter are the bar's
+  64px height and the `body:has(.kit-sheet)` reservation of the same 64px — the component's
+  ONE is:global rule, and the one an edit could delete while every other test stayed green.
+  Fixtures are test data, so hex is spelled here; the no-hex rule scans src/.
+-->
+<style>
+  body { margin:0; font:16px/1.5 system-ui; color:#1B2430; background:#F4F1EA; }
+  /* SectionSheet's is:global rule, verbatim. */
+  @media (max-width: 1023px) { body:has(.kit-sheet) { padding-bottom: 64px; } }
+  .jumps { padding:16px; }
+  .jumps a { display:inline-block; min-height:24px; padding:4px 8px; color:#1B2430; }
+  section { padding:24px 16px; }
+  #d-a,#d-b,#d-c,#d-d,#d-e { min-height:70vh; }
+  /* The short final section: the only unit a bottom bar can actually swallow. */
+  #d-f { min-height:0; height:40px; padding:0 16px; }
+  .kit-sheet { display:contents; }
+  .kit-tabbar { position:fixed; left:0; right:0; bottom:0; z-index:40; height:64px; display:grid; grid-template-columns:repeat(4,1fr); background:#FFFFFF; border-top:1px solid #DAD6CC; box-shadow:0 1px 2px rgb(27 36 48 / .06); }
+  .kit-tabbar a, .kit-tabbar button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; min-height:44px; font:600 13px/1 system-ui; color:#1F3A52; text-decoration:none; background:none; border:0; }
+  @media (min-width: 1024px) { .kit-tabbar { display:none; } }
+</style>
+<nav class="jumps" aria-label="Sections">
+  <a href="#d-a">Health</a><a href="#d-b">Delivery</a><a href="#d-c">Deposit</a>
+  <a href="#d-d">Puppies</a><a href="#d-e">FAQ</a><a href="#d-f">Contact</a>
+</nav>
+<main>
+  <section id="d-a"><h2>Health</h2><p>Body copy.</p></section>
+  <section id="d-b"><h2>Delivery</h2><p>Body copy.</p></section>
+  <section id="d-c"><h2>Deposit</h2><p>Body copy.</p></section>
+  <section id="d-d"><h2>Puppies</h2><p>Body copy.</p></section>
+  <section id="d-e"><h2>FAQ</h2><p>Body copy.</p></section>
+  <section id="d-f"><h2>Contact</h2></section>
+</main>
+<div class="kit-sheet">
+  <nav class="kit-tabbar" aria-label="Site">
+    <a href="/">Home</a><a href="/available-puppies/">Puppies</a><a href="/uk-blue-staffy-breeders-contact/">Contact</a>
+    <button type="button">Sections</button>
+  </nav>
+</div>

@@ -63,15 +63,34 @@ WHITELIST_SNIPPETS = [
     # is the INVARIANT CORE (10 pages), not the longest run on one page: the heading above
     # it varies, and a stem starting `reserve your blue staffy puppy` left the 13-word
     # remainder reported nine times.
-    "fill in your details below and we'll be in touch within 24 hours",
+    #
+    # TWO STEMS OF THIS GROUP HAVE GONE, re-measured 2026-09-21 on the build that rebuilt
+    # /uk-blue-staffy-puppy-buying-guide/ (project 4 Task 13). "fill in your details below and
+    # we'll be in touch within 24 hours" and the "delivery note delivery begins 24 48 hours…"
+    # line were each on three pages; the buying guide's rebuild dropped the migrated reserve
+    # form and the migrated delivery note (both struck by that record's `dropped.text`, one
+    # for a reply-time promise data/faq.json contradicts and one for a turnaround no file on
+    # disk holds), which left each stem on TWO location pages. Two carriers of one templated
+    # cluster is the migrated-content baseline, not chrome — this file's own header says that
+    # baseline belongs in the gate report rather than in the exemption list — and
+    # tests/py/test_dup_whitelist_measured.py fails a stem below the three-page threshold.
+    # They come out rather than being re-justified; project 5 rewrites the location pages.
     "complete our short enquiry form choose your puppy and we'll be in touch within 24 hours start your enquiry",
     "reserve your puppy today kc aware ethical breeders full health tested",
 
-    # delivery band — the canonical delivery terms, mandated identical wherever they render
-    "delivery note delivery begins 24 48 hours after payment confirmation train station pickup is our default method free",
-    # invariant core (9 pages): the trailing `in glasgow` is present on six of them only,
-    # and including it left the 15-word remainder reported eight times
-    "uk home delivery by defra approved transport priced by distance 200 to 350 or collect",
+    # delivery band — the canonical delivery terms, mandated identical wherever they render.
+    # THE STEM IS ONE WORD SHORTER THAN IT WAS, re-measured 2026-09-21 on the same build. The
+    # trailing `or collect` was carried by 8 pages and the run without it by 9: the ninth is
+    # /blue-staffy-pup-sale-uk/, which states the band and then stops. That is precisely the
+    # failure this list's own header warns about — "whitelist the CORE, never the longest run
+    # on one page" — and it stayed invisible only because no other page carried the shorter
+    # variant until the buying guide was rebuilt. The core below exempts all nine.
+    "uk home delivery by defra approved transport priced by distance 200 to 350",
+    # the same delivery_note as an FAQ ANSWER rather than as a page line — data/faq.json's
+    # `delivery` and `home-safe-delivery` rows interpolate the setting and put "from" in
+    # front of the band, so the stem above stops at "distance" and this one is the accordion's
+    # spelling. Measured on dist/ 2026-09-20: 6 pages (project 4 Task 18).
+    "uk home delivery by defra approved transport priced by distance from 200 to 350",
     "train station handover free we meet you at your nearest mainline station",
     "ground transport 100 defra approved delivery to your front door",
     "halfway meet up 100 we meet you at a convenient midpoint location",
@@ -81,17 +100,80 @@ WHITELIST_SNIPPETS = [
 
     # trust strip under the hero
     "family raised puppies lifetime support available blue staffy puppies delivery options",
+    # the KIT trust strip (component 7). Its three chips and their sub-lines are hard-coded
+    # in src/components/kit/TrustStrip.astro, so every page that mounts it renders the same
+    # 42 words — it is a component, not page prose. Measured on dist/ 2026-09-20: 5 pages
+    # (project 4 Task 18).
+    "kc registered kc registered breeder registration paperwork with every puppy dna tested parents dam and sire clear of l 2 hga and hc hsf4 results on request raised in the home reared in a family home not a kennel and socialised early",
 
-    # newsletter block
-    "get blue staffy updates new litters breeder tips puppy availability straight to your inbox",
+    # The kit Hero's chip row and CTA pair were whitelisted here on 2026-09-20 and REMOVED
+    # the same day. They were shared chrome only because the component hard-coded them; the
+    # build review made both of them props defaulting to none, so the only page that still
+    # renders that run is /kit-preview/, which passes the homepage's set as a specimen. One
+    # page is not repeated content, and an exemption carried for one page is dead weight
+    # that reads as evidence (tests/py/test_dup_whitelist_measured.py holds the floor at 3).
 
-    # puppy-grid card data — name, sex, colour, price read straight off the litter
-    # record; sync with data/puppies.json when the litter changes
-    "roman male blue and white 1 500 byrd male white 1 500 ince male blue 1 500 vennie female blue and white 1 700 christa female blue 1 700 cheryl female blue with white blaze 1 700",
+    # The migrated newsletter block was whitelisted here until 2026-09-20 and is REMOVED.
+    # It was carried by three pages, one of which was the homepage; the homepage's approved
+    # record drops the block outright — "Join 500+ Readers!" is a subscriber count no file
+    # on disk holds (working rule 9) — so the run is down to the two pages that are still
+    # the migrated body, and a two-page stem is below the chrome floor. The two remaining
+    # copies are the migrated-content baseline and belong in the gate report, which is
+    # exactly what the comment at the top of this list says about baseline prose.
+
+    # puppy-grid card data — name, sex, colour and price read straight off the litter record;
+    # sync with data/puppies.json when the litter changes. SIX STEMS, one per card, not one
+    # run of all six: PuppyCard now renders a status and an "Ask about <name>" CTA between
+    # the cards, so the six-card run differs between the pages that mount the kit card and
+    # the two hubs that do not, and a single long stem exempted neither. Each card's own
+    # words are the invariant core and each is under the 12-word reporting floor, so what
+    # sits between them can never add up to a reportable passage. Measured on dist/
+    # 2026-09-20: 12, 11, 11, 4, 5 and 4 pages (project 4 Task 18).
+    "roman male blue and white 1 500",
+    "byrd male white 1 500",
+    "ince male blue 1 500",
+    "vennie female blue and white 1 700",
+    "christa female blue 1 700",
+    "cheryl female blue with white blaze 1 700",
 
     # document-title + skip-link chrome that leaks into the text stream
     "blue staffy puppy for sale blue staffy uk skip to content",
+
+    # ── review quotes (spec §5 "Reviews", added 2026-09-19, project 4 Task 6) ──────
+    # The three rows of data/reviews.json, tokenised. They are the only real buyer quotes
+    # the site has, every page's board picks which of them fill its review slots, and
+    # CLAUDE.md mandates they be reused VERBATIM — so the same sentences render on several
+    # pages by design, and the gate reporting them trains everyone to ignore it. Sitewide
+    # lines, not page prose.
+    #
+    # Written out as literals, not read from data/reviews.json at import, because
+    # tests/render/lib/dupCorpus.ts parses this list with a regex over the source and a
+    # computed entry would be invisible to the harness — the two gates would then disagree
+    # about the same passage. tests/py/test_dup_whitelist_measured.py holds them in step
+    # with the data file and measures them against the built pages.
+    "we couldn t be happier with our beautiful blue staffy from bluestaffyuk uk from the first enquiry to bringing her home the process was seamless and incredibly professional she s got the most wonderful temperament playful loving and fantastic with our kids it s clear she was raised with so much care and early socialisation she truly is the heart of our family",
+    "after extensive research we chose bluestaffyuk uk and we re so glad we did our blue staffy puppy arrived happy and healthy with all his papers and medical records meticulously organized their commitment to ethical breeding and health testing truly shines through he s exactly what we wanted loyal intelligent and incredibly affectionate we highly recommend them if you re looking to buy a staffordshire bull terrier in the uk",
+    "the health checks the communication and the home raised environment everything was top notch i wouldn t go anywhere else for a staffy",
 ]
+
+# Routes that render a SPECIMEN of another page's content rather than a page of their own.
+# `/board-preview/<slug>/` renders a board record's own sections three styles over, and
+# `/kit-preview/` renders every kit component against demo data — including the FAQ
+# accordion, which loads every row in data/faq.json. Both are noindex scaffolding and
+# neither competes for anything, so a passage shared with one is not duplicate content: it
+# is one passage rendered twice, once as the page and once as the specimen of it.
+#
+# Defined HERE rather than in pageboard.py because pageboard imports this module for its
+# chrome-skipping walker, and the dependency must not run both ways. pageboard's
+# `live_headings()` reads the same list.
+SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
+
+
+def is_specimen(key):
+    """True for a specimen route's page key, at any depth. The prefix is anchored, so a real
+    slug that merely CONTAINS "kit-preview" further down its path is not caught."""
+    return (key + "/").startswith(SPECIMEN_PREFIXES)
+
 
 SKIP_TAGS = {"script", "style", "noscript", "header", "footer", "nav", "form"}
 VOID_TAGS = {"br", "img", "hr", "input", "meta", "link", "source", "track", "wbr", "area", "base", "col", "embed"}
@@ -107,6 +189,37 @@ VOID_TAGS = {"br", "img", "hr", "input", "meta", "link", "source", "track", "wbr
 # cross-sell strip, is still compared in full.
 CHROME_RE = re.compile(r"jump|toc|rail|msp-|crumb|review|testimonial|read-c|quote-c", re.I)
 
+# The board-style axis classes are NOT chrome (project 4, 2026-09-20). `boxClass()` in
+# src/lib/boardStyles.ts writes one `bl-<axis>-<value>` class per axis onto the SECTION a
+# rebuilt page's prose lives in, and two of the values it can write — `bl-list-rail` and
+# `bl-aside-jump` — contain the substrings CHROME_RE uses to spot a jump rail. A section
+# whose approved style happens to be a rail therefore had its entire body, headings and all,
+# read as site chrome: on the first page built with those picks the heading pre-check saw 6
+# of its 17 headings and `min-h5-h6` failed a page carrying five of each. The axis names are
+# a layout vocabulary that only ever appears on page CONTENT, so they are stripped from the
+# blob before the chrome test rather than the chrome test being loosened.
+BL_CLASS_RE = re.compile(r"\bbl-[a-z0-9-]+")
+
+# A BOARD SECTION'S OWN ID IS A NAME FOR CONTENT, NOT A CHROME MARKER (project 4, 2026-09-21).
+# CHROME_RE is a substring test over class, id and aria-label, and the ids the BOARD gives a
+# page's sections are chosen by the breeder to say what a section is ABOUT: `paperwork-review`
+# on /blue-staffy-health-uk/ and `owner-review` on /buy-blue-staffy-puppies-uk/ both contain
+# "review", so every word in those sections — the prose, the headings and the one real buyer
+# quote — was classed as site chrome and left out of both the dup corpus and `pageboard.py`'s
+# word count, which read one of them as 0 prose words against a 35-50 band and could not have
+# reported a crossover in either.
+#
+# ANCHORING THE ALTERNATIVES CANNOT SEPARATE THESE. The discriminator is not position: the kit
+# ships `class="kit-nav page-toc"` and `class="toc"`, so a token at the END of a hyphenated
+# name has to stay chrome, and that is the same shape as `paperwork-review`. What differs is
+# the ATTRIBUTE and the element: a chrome marker is a CLASS the kit writes, while these are the
+# `id` of a `<section>` carrying `data-section-label`, which is the marker every rebuilt page
+# writes on a section of its board record. So the id of a board section is left out of the
+# chrome blob; its class and aria-label are still read, and every other element's id still is.
+def _is_board_section(tag, attrs):
+    return tag == "section" and "data-section-label" in attrs
+
+
 class Text(HTMLParser):
     def __init__(self):
         super().__init__(); self.parts=[]; self.stack=[]
@@ -114,7 +227,10 @@ class Text(HTMLParser):
         if t in VOID_TAGS: return
         skipping = bool(self.stack and self.stack[-1][1])
         if not skipping:
-            blob = " ".join(v for k,v in attrs if v and k in ("class","id","aria-label"))
+            a = dict(attrs)
+            keys = ("class","aria-label") if _is_board_section(t, a) else ("class","id","aria-label")
+            blob = " ".join(v for k,v in attrs if v and k in keys)
+            blob = BL_CLASS_RE.sub(" ", blob)
             skipping = t in SKIP_TAGS or bool(CHROME_RE.search(blob))
         self.stack.append((t, skipping))
     def handle_endtag(self,t):
@@ -310,7 +426,8 @@ def main(argv=None):
     args = ns.slugs
     MIN_WORDS = ns.min_words
     dist = Path(ns.dist)
-    pages = {page_key(p, dist): p for p in dist.rglob("index.html")}
+    pages = {k: v for k, v in ((page_key(p, dist), p) for p in dist.rglob("index.html"))
+             if not is_specimen(k)}
     if args:
         pages = {k: v for k, v in pages.items() if k in args}
     base = {"mode": "headers" if ns.headers else "body", "dist": str(dist),

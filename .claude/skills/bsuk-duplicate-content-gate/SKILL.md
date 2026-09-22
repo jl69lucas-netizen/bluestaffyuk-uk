@@ -44,7 +44,7 @@ Exit 1 = FAIL. `--headers` normalizes breed/coat names to `{breed}`, so "Is an E
 
 | Element | Where | Why |
 |---|---|---|
-| Delivery line (`UK home delivery £200–£350 by distance · or collect in Glasgow`) | every card + delivery section | `rules/puppies.md` `delivery-band-on-every-card` |
+| Delivery line (`UK home delivery £200–£350 by distance · or collect in Carlisle`) | every card + delivery section | `rules/puppies.md` `delivery-band-on-every-card` |
 | Documentation badge stack (L-2-HGA and HC-HSF4 parent test certificates, vet check, microchip, vaccination record) | puppy cards/pages | canonical trust set |
 | The licence and statute notice (LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER) | footer bottom bar | legal |
 | Nav, footer, newsletter, global CTA band | site chrome | stripped by the parser already |
@@ -77,7 +77,7 @@ Exit 1 = FAIL. `--headers` normalizes breed/coat names to `{breed}`, so "Is an E
 | Repeated anchor text cross-page | Route to `.claude/skills/internal-link-agent/SKILL.md` Anchor Diversity Ledger |
 | Same intent, whole page | Not a rewrite job — cannibalization: route to `@bsuk-site-hygiene-agent` (301 decision) |
 
-**Distribution discipline (prevents dupes at the source):** sibling pages divide shared resources up front — each spoke owns a DISTINCT set of location links, distinct FAQ questions, distinct owner quotes, distinct stats (e.g. one spoke owns Aberdeen/Dundee/Inverness/Edinburgh/Glasgow; another owns London/Birmingham/Manchester/Leeds/Liverpool — all 28 from `data/locations.json`). Write the distribution matrix into the session brief before building spoke #2.
+**Distribution discipline (prevents dupes at the source):** sibling pages divide shared resources up front — each spoke owns a DISTINCT set of location links, distinct FAQ questions, distinct owner quotes, distinct stats (e.g. one spoke owns Aberdeen/Dundee/Inverness/Edinburgh/Carlisle; another owns London/Birmingham/Manchester/Leeds/Liverpool — all 28 from `data/locations.json`). Write the distribution matrix into the session brief before building spoke #2.
 
 ## Common Mistakes
 - **De-duping only against the flagship** — duplication is pairwise; spoke #4 must be checked against spokes #1–3 too, and the hub against everything.

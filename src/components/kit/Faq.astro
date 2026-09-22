@@ -16,8 +16,17 @@
 // the puppy package the homepage already describes.
 //
 // Convention 2: the summary's focus ring reads --kit-ring, so it survives on a dark band.
+//
+// THE QUESTION IS A HEADING, SO IT IS TITLE CASE (rules/headings.md, amended 2026-09-20).
+// The old exemption said FAQ questions "live in `<summary>`, not a heading tag" — but this
+// component puts an `<h3>` inside the summary, which is what makes the answers navigable as
+// a heading list, and both title-case checkers select every h1-h6 under `<main>`. So the
+// question is measured like any other heading and is cased like one here, at RENDER: the
+// row in data/faq.json keeps its natural sentence-case wording, which is what the FAQPage
+// schema's `name` and the dup gate read, and the page shows the heading form of it.
 import type { HTMLAttributes } from 'astro/types';
 import { loadFaq, type FaqRow } from '../../lib/faq';
+import { titleCase } from '../../lib/headings';
 
 type Props = HTMLAttributes<'div'> & { items?: FaqRow[] };
 const { items = loadFaq(), class: cls, ...rest } = Astro.props;
@@ -27,7 +36,7 @@ const { items = loadFaq(), class: cls, ...rest } = Astro.props;
     <details>
       <summary>
         <span class="num">{String(i + 1).padStart(2, '0')}</span>
-        <h3 class="q">{it.q}</h3>
+        <h3 class="q">{titleCase(it.q)}</h3>
       </summary>
       <p>{it.a}</p>
     </details>

@@ -1,7 +1,8 @@
 # BlueStaffyUK — Project Guide
 
-BlueStaffyUK is a Glasgow breeder of Staffordshire Bull Terriers, Blue Staffies in
-particular (Lisa Bright, 40 Coltmuir Street, G22 6LU). The site is transactional +
+BlueStaffyUK is a Carlisle breeder of Staffordshire Bull Terriers, Blue Staffies in
+particular (Lisa Bright, Carlisle, Cumbria — town-level only; the breeder has supplied
+no street or postcode for the new place, Known Issue 16). The site is transactional +
 informational: the buy and location pages take enquiries, the care and guide pages earn
 the traffic.
 
@@ -139,6 +140,48 @@ growing. Every other rule moved to a pack.
     file; a replacement image is added beside the old one, never in its place. (Breeder,
     2026-09-19.)
 
+12. **Every link on the board.** A page board lists every internal and external link the
+    page will carry — per section (target URL, anchor text, purpose, and whether the target
+    resolves today) and again as one page-level table — before the breeder approves it. A
+    link that is not on the approved board is not built. (Breeder, 2026-09-19.)
+
+13. **Tables: three styles on the board, stacked on mobile.** Any page section that renders a
+    table (prices, comparisons, health tests, delivery bands) is a `table` shape on its board
+    with three rendered styles at 1280 / 768 / 375, and every table stacks into labelled rows
+    below 640px (`.stack-table` with `data-label` cells) — no horizontal scroll, no clipped
+    columns. Clean and readable is the bar. (Breeder, 2026-09-20.)
+
+14. **Every video is reused, at its original id, and the boards show it.** Every YouTube
+    video the old site carried is carried by the rebuild at the SAME id — the ids in
+    `data/settings.json` `youtube_embeds` plus any a page carries of its own. A page that had
+    one keeps it in the same place; the homepage carries the site's videos. On a board a
+    video is a `video` shape with three rendered styles at 1280 / 768 / 375 (player in a
+    card, player on a steel band, click-to-play facade), never an `embed` line in a note, and
+    the facade is what a rebuilt page ships unless the breeder picks otherwise. Never mint a
+    new id and never re-upload the footage: an id that already ranks in video search is the
+    asset, and a fresh one starts at zero. This is working rule 11 restated for video, and
+    `scripts/facts_preserved_check.py` reports by name any id a rebuilt page drops.
+    (Breeder, 2026-09-20.)
+
+15. **Faithful rewrite.** A rebuilt page carries its migrated page's VERBATIM SET word for
+    word: the old H1, every H2/H3 that contains the page's target keywords, the first
+    paragraph under each of those headings, the FAQ questions, and every image alt — unless
+    the wording states a wrong fact (the former city, an old price, the byline) or collides
+    with another page's heading, in which case the change is recorded in the board record's
+    `verbatim.changed` with the reason. Everything else is written fresh from the outline.
+    `scripts/verbatim_set_check.py` (arrives in Task 18b) proves the set is on the built page. Applies from the
+    homepage onward; the three pages built before this rule (privacy, thank-you, contact)
+    stay as rewritten. (Breeder, 2026-09-20.)
+
+16. **Per-page hero and counter; a refresh delta on every section.** No two pages share the
+    same hero layout or the same counter strip: the counter's figures are that page's own facts
+    (from `data/*.json` and the page's record, never invented) and each board offers three hero
+    styles and three counter styles designed for that page from the breeder's idea sheets
+    (`Assets/Components-Ideas/`) on the same tokens. Every other section carries a small,
+    deliberate refresh delta per page — layout, accent role or motif, never the palette —
+    per `.claude/skills/bsuk-component-refresh/SKILL.md` and
+    `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
+
 ### Two standing rules that are not judgment exemptions
 
 Both have a mechanical backstop, so neither takes a slot under the cap — but both govern how
@@ -218,11 +261,12 @@ and the delivery band. `data/puppies.json` and `data/price-matrix.json` carry th
 litter and the prices — never type a price by hand. The locked facts, from the Foundation
 spec under `docs/superpowers/specs/`:
 
-- Breeder **Lisa Bright**, Glasgow (40 Coltmuir Street, G22 6LU).
+- Breeder **Lisa Bright**, Carlisle, Cumbria. Town and region only — there is no street
+  and no postcode until the breeder supplies them (Known Issue 16).
 - Prices **£1,500** (Roman, Byrd, Ince) and **£1,700** (Vennie, Christa, Cheryl). Deposit
   **£500, refundable**.
 - Delivery **£200–£350** for UK home delivery, by DEFRA-approved transport, priced by
-  distance; collection in Glasgow is the alternative.
+  distance; collection in Carlisle is the alternative.
 - Phone is `PHONE_PLACEHOLDER` until project 6 provisions a number. It is the only allowed
   representation of the phone number anywhere in this repo, and the site URL is
   `SITE_URL_PLACEHOLDER` on the same terms.

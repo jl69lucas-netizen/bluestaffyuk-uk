@@ -80,9 +80,17 @@ KEYS = [
 # would report the shipped page as broken.
 REQUIRED = ("name", "email", "puppy", "message")
 HIDDEN = ("_next", "_subject")
-# Spec §5: the puppy control is a <select>, and one of its options is the Glasgow
-# collection choice (value read off the built page, 2026-09-16).
-PUPPY_OPTION = "collection-glasgow"
+# Spec §5: the puppy control is a <select>, and one of its options is the waiting-list
+# choice — the one option both forms build that is not a row of data/puppies.json.
+#
+# Re-based in project 4 Task 6. Until then the constant named a collection point in the
+# city the breeder has LEFT (Known Issue 16), which made this gate require the wrong
+# geography of every page it audits in full, and made it report the correct kit form
+# (src/components/kit/ContactFormKit.astro) as missing an option — the advisory row of
+# Known Issue 22. The kit form is the reference: the Available rows of data/puppies.json
+# plus `waiting-list`, and src/components/ContactForm.astro now emits the same set from
+# the same data, so both pass the same `full` contract.
+PUPPY_OPTION = "waiting-list"
 SHORT = ("name", "email", "message")
 LOCATION = re.compile(r"^uk-locations/")
 HUBS = ("available-puppies", "uk-locations", "blog")
@@ -107,7 +115,13 @@ HUBS = ("available-puppies", "uk-locations", "blog")
 # endpoint: there is no stub allowance any more, because the canvas's `action` override —
 # five live endpoints on one page being five ways for a stray click to send a real enquiry
 # — went with the canvas, and the preview mounts exactly one form.
-NON_CONTENT_ROUTES = ("kit-preview",)
+#
+# `board-preview` is project 4's equivalent (src/pages/board-preview/[slug].astro): one
+# hidden noindex page per DRAFT board record, rendering that record's sections three ways
+# each so the page board can show arrangements rather than name them. A `form`-shaped
+# section mounts ContactFormKit there, three times over — specimens of one form, none of
+# them reachable.
+NON_CONTENT_ROUTES = ("kit-preview", "board-preview")
 
 
 # data/page-map.json's `kind` is what the build actually produced; a hand list of slugs
@@ -127,7 +141,11 @@ def _kinds():
 
 
 def _contract_name(slug: str) -> str:
-    if slug in NON_CONTENT_ROUTES:
+    # Whole slug OR first path segment: board-preview's slugs nest (`board-preview/_demo`),
+    # and an exclusion that only matched the bare name would leave every child of a
+    # non-content route audited as a content page. `kit-preview-notes` is unaffected — that
+    # is a different first segment, not a child of `kit-preview`.
+    if slug in NON_CONTENT_ROUTES or slug.split("/", 1)[0] in NON_CONTENT_ROUTES:
         return "none"
     kind = _kinds().get(slug)
     if kind in KIND_CONTRACT:
