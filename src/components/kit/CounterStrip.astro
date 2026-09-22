@@ -5,10 +5,11 @@
 //
 // WORKING RULE 16 made this component per-page in two ways, and they are different questions:
 //
-//   WHAT it says   — the `stats` prop. A page hands its OWN figures, each resolved by the
-//                    page (or the board record) from data/*.json with a `source` recorded
-//                    beside it. Omitted, the strip falls back to the three site-wide figures
-//                    below, which is what the pages built before this rule carry.
+//   WHAT it says   — the `stats` prop, REQUIRED. A page hands its OWN figures, each derived
+//                    by the page from the data/*.json path its board record's row cites and
+//                    checked against the record (`countedFigures()`). There is no fallback:
+//                    the three site-wide figures that stood in for the four pages built before
+//                    this rule went with the last of their rebuilds.
 //   HOW it is drawn — the `tiles` prop, one of five arrangements. COUNTER_STYLES_BY_PAGE_TYPE
 //                    in src/lib/boardStyles.ts gives each page type three of them, and no two
 //                    page types get the same three.
@@ -22,20 +23,18 @@
 // `.counter-wrap` and `[data-counters]` are the harness hooks the check selects on
 // (tests/render/checks/layout.ts) — renaming either makes the check silently examine zero.
 //
-// FIGURES COME FROM DATA (rule 9): the fallback availability count is derived from
-// data/puppies.json and the money comes from data/settings.json. Nothing here is typed
-// from memory, so a sold puppy or a price change is a data edit, not a component edit — and
-// a page that passes its own `stats` has done the same work in its own record.
+// FIGURES COME FROM DATA (rule 9), and never from here: this component reads no data file.
+// It prints what the page derived, so a sold puppy or a price change is a data edit that the
+// page's own derivation carries — and a strip that knew figures of its own could show one
+// page's numbers on another.
 import type { HTMLAttributes } from 'astro/types';
-import pups from '../../../data/puppies.json';
-import { SITE, type PuppyRow } from '../../lib/site';
 type Props = HTMLAttributes<'section'> & {
   /** This page's own figures. `source` is the path in `data/*.json` the figure came from; it
    *  is carried so the board and the record can be checked against the data, and is NOT
    *  rendered — a strip that printed its own footnotes would be a citation list, not a
-   *  counter. An empty array renders the fallback; that is deliberate, because a page with
-   *  nothing it can source should not be able to produce an empty strip by accident. */
-  stats?: { n: string; label: string; source?: string }[];
+   *  counter. An empty array stops the build: a page with nothing it can source ships fewer
+   *  tiles or no counter (spec §9 amendment 10.5), never an empty strip. */
+  stats: { n: string; label: string; source?: string }[];
   /** How one figure is drawn. */
   tiles?: 'inline' | 'ruled' | 'card' | 'ring' | 'seam';
   /** Where one figure's LABEL sits against the figure. Structural: `beside` is a row, `under`
@@ -44,19 +43,11 @@ type Props = HTMLAttributes<'section'> & {
   label?: 'under' | 'beside' | 'above';
 };
 const { stats, tiles = 'inline', label = 'under', class: cls, ...rest } = Astro.props;
-const available = (pups as PuppyRow[]).filter((p) => p.status === 'Available').length;
-const fallback = [
-  { n: String(available), label: available === 1 ? 'puppy available now' : 'puppies available now' },
-  { n: `£${SITE.deposit_gbp}`, label: SITE.deposit_refundable ? 'refundable deposit' : 'deposit' },
-  { n: `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`, label: 'UK delivery by distance' },
-];
-// DEPRECATED, and kept for exactly one reason: the four pages built before working rule 16
-// mount this component without a `stats` prop, and removing the fallback would silently blank
-// their strip. Nothing new may rely on it — the preview route always passes `stats`, and
-// tests/py/test_board_previews.py holds every board record's stats section to carrying its own
-// rows, so a record can never ship the site-wide three by omission. Delete it with the fourth
-// page's rebuild.
-const rows = stats && stats.length ? stats : fallback;
+if (!stats || stats.length === 0) {
+  throw new Error('CounterStrip: no `stats` — a counter prints the page\'s own sourced figures and '
+    + 'has none of its own to fall back to. Ship fewer tiles, or no counter.');
+}
+const rows = stats;
 ---
 <section
   {...rest}

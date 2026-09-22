@@ -1028,10 +1028,9 @@ def test_a_refresh_note_says_what_it_is_a_delta_from():
 # ── the counter strip's deprecated fallback ───────────────────────────────────────────────
 
 def test_no_board_record_relies_on_the_counter_strips_fallback_figures():
-    """CounterStrip prints three site-wide figures when a page passes none, and that fallback
-    exists for exactly one reason: the four pages built before working rule 16 mount it
-    without a `stats` prop. A RECORD that reached the fallback would be a board showing the
-    homepage's numbers on somebody else's page."""
+    """CounterStrip used to print three site-wide figures when a page passed none; it now stops
+    the build instead. A stats section with no rows of its own is therefore a board whose
+    counter cannot render at all."""
     bad = []
     for f in sorted((ROOT / "data/boards").glob("*.json")):
         record = json.loads(f.read_text(encoding="utf-8"))
@@ -1045,9 +1044,27 @@ def test_no_board_record_relies_on_the_counter_strips_fallback_figures():
                for f in (ROOT / "data/boards").glob("*.json")), "the sweep examined nothing"
 
 
-def test_the_fallback_is_marked_deprecated_where_it_lives():
+def test_the_counter_strip_has_no_figures_of_its_own():
+    """The fallback was kept on sufferance for the four pages built before working rule 16 and
+    went with the last of their rebuilds. The component reads no data file and refuses an
+    empty `stats`, so no page can reach site-wide figures by omission."""
     src = (ROOT / "src/components/kit/CounterStrip.astro").read_text(encoding="utf-8")
-    assert "DEPRECATED" in src, "the fallback is kept on sufferance and has to say so"
+    front = src.split("---")[1]
+    imports = [l for l in front.splitlines() if l.startswith("import ")]
+    assert not [l for l in imports if "data/" in l or "lib/site" in l], (
+        "the strip reads a data file again", imports)
+    assert "fallback" not in front.split("const {")[1], "a fallback figure set is back"
+    assert "throw new Error" in front, "an empty strip must stop the build"
+
+
+def test_the_hero_has_no_default_photograph():
+    """Amendment 10.7 kept `image` defaulting to a kit master while the four early pages relied
+    on it. They pass their own now, so a hero with no photo says media="none" or stops."""
+    src = (ROOT / "src/components/kit/Hero.astro").read_text(encoding="utf-8")
+    front = src.split("---")[1]
+    imports = [l for l in front.splitlines() if l.startswith("import ")]
+    assert not [l for l in imports if "assets/" in l], ("Hero imports a photo again", imports)
+    assert re.search(r"^\s*image,\s*$", front, re.M), "`image` has a default again"
 
 
 # ── the gate does not read a build in progress ────────────────────────────────────────────

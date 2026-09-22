@@ -2,10 +2,13 @@
 // src/components/kit/Hero.astro — the hero (spec §5 #2). Picked 2026-09-18: the split
 // layout — copy left, photo right, trust chips under the lede, on the bone surface.
 //
-// THE PHOTO. There is no distinct homepage hero image in this repo and no src/assets/hero/:
-// the masters are the six puppy photos in src/assets/puppies/. The hero imports one of them
-// directly (portrait, so the desktop clamp below crops it) until project 4 supplies a real
-// hero photo; swapping that import is then the whole change.
+// THE PHOTO IS THE PAGE'S. The hero used to fall back to one of the kit's own puppy masters
+// (src/assets/puppies/Cheryl1.jpeg) when a caller passed none — carried deliberately while the
+// four pages built before working rule 16 mounted it that way (spec §9 amendment 10.7). All
+// four now pass their own photograph at its original path (working rule 11), the board
+// preview passes each record's, and the kit specimen names its own master, so the default is
+// gone: a hero with no photo either says `media="none"` or stops the build, because a
+// borrowed puppy on a page that never chose it is a claim, not a placeholder.
 //
 // SIZES. What `.pic` paints depends on the ARRANGEMENT and on the viewport band, and the list
 // it declares is built per arrangement from measurements at twelve widths — see `PIC_SIZES`
@@ -33,7 +36,6 @@
 // project 4 will use.
 import type { HTMLAttributes } from 'astro/types';
 import { Image } from 'astro:assets';
-import hero from '../../assets/puppies/Cheryl1.jpeg';
 import { SITE } from '../../lib/site';
 import Button from './Button.astro';
 type Props = HTMLAttributes<'section'> & {
@@ -50,7 +52,7 @@ type Props = HTMLAttributes<'section'> & {
   /** The photo. An `ImageMetadata` (a src/assets import) goes through astro:assets and is
    *  re-encoded and hashed; a STRING is a public path taken verbatim, which is how the
    *  legacy `/images/…` files are reused (working rule 11: every existing image keeps its
-   *  original path). Omitted → the kit's own master. */
+   *  original path). REQUIRED unless `media` is 'none' — there is no default photo. */
   image?: ImageMetadata | string;
   imageAlt?: string;
   /** Intrinsic size of a STRING `image`. astro:assets supplies both for an `ImageMetadata`
@@ -146,7 +148,7 @@ const {
   eyebrow = '',
   title = '',
   lede = '',
-  image = hero,
+  image,
   imageAlt,
   imageWidth,
   imageHeight,
@@ -242,7 +244,9 @@ const MEASURED_PIC_SIZES = stacksOnTop
       : `${BELOW_900(98)}, (max-width: 1023px) calc(52.5vw - 78px), `
         + `(max-width: 1199px) calc(52.5vw - 224px), 408px`;
 const PIC_SIZES = imageSizes ?? MEASURED_PIC_SIZES;
-const alt = imageAlt ?? 'A blue Staffordshire Bull Terrier puppy resting in a family home';
+// NO DEFAULT ALT EITHER. The sentence that used to stand in here described the kit's own
+// master, and it went with it: an alt is the page's description of the page's photograph.
+const alt = imageAlt ?? '';
 // A public path cannot go through <Image>: astro:assets only handles files it can read at
 // build time out of src/. So a string src renders a plain <img> with the same class, sizes
 // and loading behaviour, and the CSS below does not care which branch produced it.
@@ -257,6 +261,19 @@ const legacy = typeof image === 'string';
 // its `max-height`), and nothing else about the arrangement changes. No page passed
 // `media="none"` before this, so no shipped hero moves.
 const showPhoto = media !== 'none';
+// A photo column with nothing to put in it, or a photo with nothing to say about it, stops the
+// build with the caller's own heading in the message. A mosaic of two or more tiles carries its
+// own per-tile alts and needs neither.
+if (showPhoto && !(layout === 'mosaic' && mosaic.length >= 2)) {
+  if (!image) {
+    throw new Error(`Hero "${title}": no \`image\` and media is "${media}" — pass the page's own `
+      + 'photograph, or media="none" for a hero that has none. There is no default photo.');
+  }
+  if (!alt) {
+    throw new Error(`Hero "${title}": the photograph has no \`imageAlt\` — a page states what its `
+      + 'own picture shows.');
+  }
+}
 ---
 <section
   {...rest}

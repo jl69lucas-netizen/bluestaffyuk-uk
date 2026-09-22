@@ -43,7 +43,10 @@ import SectionDivider from './SectionDivider.astro';
 import SiteHeaderKit from './SiteHeaderKit.astro';
 import PuppyCard from './PuppyCard.astro';
 import Hero from './Hero.astro';
-import { SITE } from '../../lib/site';
+import { SITE, type PuppyRow } from '../../lib/site';
+// The hero specimen's photograph. Named here, by the specimen, since Hero no longer falls back
+// to it: the same master the component defaulted to, so the specimen renders what it always did.
+import heroSpecimen from '../../assets/puppies/Cheryl1.jpeg';
 import TrustStrip from './TrustStrip.astro';
 import CounterStrip from './CounterStrip.astro';
 import InfoCard from './InfoCard.astro';
@@ -57,6 +60,9 @@ import SectionSheet from './SectionSheet.astro';
 import SectionStrip from './SectionStrip.astro';
 import DataTable from './DataTable.astro';
 import VideoEmbed from './VideoEmbed.astro';
+
+/** The counter specimen's availability figure, counted the way every page counts it. */
+const availableNow = (puppies as PuppyRow[]).filter((p) => p.status === 'Available').length;
 
 export type ComponentId =
   | 'site-header' | 'hero' | 'buttons' | 'puppy-card' | 'trust-strip' | 'counter-strip'
@@ -149,6 +155,8 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
       title: 'Blue Staffy puppies raised in a family home',
       lede: `Health-tested parents, Kennel Club paperwork, UK delivery from £${SITE.delivery_min_gbp}.`,
       chips: ['KC registered', 'DNA-tested parents', 'Raised in the home'],
+      image: heroSpecimen,
+      imageAlt: 'A blue Staffordshire Bull Terrier puppy resting in a family home',
       ctas: [
         { label: 'Meet the puppies', href: '/available-puppies/' },
         { label: 'Ask a question', href: '/uk-blue-staffy-breeders-contact/', kind: 'outline' },
@@ -185,7 +193,26 @@ export const REGISTRY: Record<ComponentId, KitEntry> = {
   // the fixture pair
   // tests/render/fixtures/{known_good/kit-counter-separated,known_broken/kit-counter-flush}.html,
   // which pins the shipped component's own resolved geometry.
-  'counter-strip': { C: CounterStrip, wrap: 'after-band' },
+  // THE SPECIMEN STATES ITS OWN FIGURES, because the component no longer has any. The three it
+  // used to fall back to, derived the same way from the same two files, so the board shows the
+  // same strip: the available count, the deposit and its terms, and the delivery band.
+  'counter-strip': {
+    C: CounterStrip,
+    wrap: 'after-band',
+    demo: [{
+      stats: [
+        { n: String(availableNow),
+          label: availableNow === 1 ? 'puppy available now' : 'puppies available now',
+          source: 'data/puppies.json#count(status=Available)' },
+        { n: `£${settings.deposit_gbp}`,
+          label: settings.deposit_refundable ? 'refundable deposit' : 'deposit',
+          source: 'data/settings.json#deposit_gbp' },
+        { n: `£${settings.delivery_min_gbp}–£${settings.delivery_max_gbp}`,
+          label: 'UK delivery by distance',
+          source: 'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp' },
+      ],
+    }],
+  },
   // Two fixtures, not one: the card's statement label is the deferred
   // sem-statement-label-visible check's only subject in the kit, and a board showing a
   // single `fact` label would hide whether the other kinds paint at all.

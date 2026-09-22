@@ -553,6 +553,13 @@ which are marked DEPRECATED in the component: the preview route always passes `s
 test holds every rule-16 record's stats section to carrying its own rows, so no BOARD can reach
 them by omission.
 
+*Retired 2026-09-22.* Both carries came out with the four pages' rule-16 rebuild, as this
+paragraph said they would: every caller of `Hero` passes its own photograph (or `media="none"`)
+and every caller of `CounterStrip` its own derived `stats`. `Hero` now stops the build on a photo
+column with no image or no alt, `CounterStrip` on an empty `stats`, and the kit specimen names
+its own master and its own three figures in `_registry.ts`, so `/kit-preview/` renders exactly
+what it did.
+
 **8. `aside` is a named SLOT, not a prop.** A guide's aside is a fact table, an about page's is
 somebody's sentence and a blog index's is a contents list; a prop shaped to hold all three had
 stopped describing anything. The hero owns the box, its bed and its place in the grid, and the
