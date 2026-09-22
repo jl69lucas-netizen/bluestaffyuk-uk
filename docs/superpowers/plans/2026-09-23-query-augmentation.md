@@ -1208,7 +1208,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 Built markup the gate relies on:
 - `src/components/kit/Faq.astro` renders `<div class="kit-faq">` → `<details>` → `<summary><span class="num">01</span><h3 class="q">Title Cased Question</h3></summary><p>answer</p>`. The H3 is title-cased at render, so the gate compares `normalise()`d text.
-- Body sections are `<section id="…" data-section-label="…">`.
+- Body sections are `<section id="…" data-section-label="…">`. A section that holds a frame part — a kit hero (`kit-hero`), counter (`kit-counter`), trust strip (`kit-trust`), page nav (`kit-nav`), review (`kit-quote`), FAQ block (`kit-faq`) or any `<form>` — is frame, never body (Task 1's template, "The fixed frame").
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1334,6 +1334,15 @@ def test_too_few_body_sections_fails_and_frame_is_not_counted():
     assert any("body sections: 6, want at least 7" in p for p in probs)
 
 
+def test_review_and_counter_sections_are_frame_not_body():
+    extra = ('<section id="rev" data-section-label="Reviews"><h2>Reviews</h2>'
+             '<section class="kit-quote"><p>Lovely pup.</p></section></section>'
+             '<section id="stats" data-section-label="At a glance" class="kit-counter"><h2>Stats</h2></section>')
+    html = page_html().replace("</main>", extra + "</main>")
+    assert G.check_page(qfile(total=6), html) == []
+    assert any("body sections: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
+
+
 def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
     (tmp_path / "data/queries/m.json").write_text(json.dumps(qfile()))
@@ -1384,8 +1393,9 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
   3. FAQPage schema naming exactly the visible FAQ questions;
   4. every extra section's recorded heading as an H2;
   5. on location pages, at least section_target.total body sections — a body section is a
-     <section data-section-label> that is not #top or #key-takeaways and holds no FAQ block
-     and no form (the fixed frame is never counted).
+     <section data-section-label> that is not #top or #key-takeaways and holds no frame part:
+     no kit hero, counter, trust strip, page nav, review, FAQ block and no form
+     (docs/reference/location-page-template.md, "The fixed frame" — frame is never counted).
 
 A question file whose route is not built is skipped and counted: an unbuilt page ships
 nothing. Exit 1 on any problem, 0 otherwise.
@@ -1406,6 +1416,8 @@ from query_augment import BLOCKS, FAQ_MAX, FAQ_MIN, FAQ_TOTAL_MAX, normalise  # 
 ROOT = Path(__file__).resolve().parents[1]
 FAQ_TOTAL_MIN = 15
 FRAME_IDS = {"top", "key-takeaways"}
+# The kit components that make up the fixed frame. A section holding one is frame, not body.
+FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 
@@ -1414,7 +1426,7 @@ class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.stack = []          # [tag, section_index|None, faq_index|None]
-        self.sections = []       # {"id", "has_faq", "has_form"}
+        self.sections = []       # {"id", "frame"}
         self.faq_blocks = []     # {"h3": [text], "details": n}
         self.headings = []       # {"level", "text", "answer", "faq"}
         self.ld = []
@@ -1429,17 +1441,16 @@ class Page(HTMLParser):
         if tag in VOID:
             return
         sec = faq = None
+        classes = set((a.get("class") or "").split())
         if tag == "section" and "data-section-label" in a:
-            self.sections.append({"id": a.get("id") or "", "has_faq": False, "has_form": False})
+            self.sections.append({"id": a.get("id") or "", "frame": False})
             sec = len(self.sections) - 1
-        if tag == "form":
-            for i in self._open(1):
-                self.sections[i]["has_form"] = True
-        if tag == "div" and "kit-faq" in (a.get("class") or "").split():
+        if tag == "form" or classes & FRAME_CLASSES:
+            for i in self._open(1) + ([sec] if sec is not None else []):
+                self.sections[i]["frame"] = True
+        if tag == "div" and "kit-faq" in classes:
             self.faq_blocks.append({"h3": [], "details": 0})
             faq = len(self.faq_blocks) - 1
-            for i in self._open(1):
-                self.sections[i]["has_faq"] = True
         if tag == "details" and self._open(2):
             self.faq_blocks[self._open(2)[-1]]["details"] += 1
         if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
@@ -1547,8 +1558,7 @@ def check_page(q, html):
         elif normalise(e["heading"]) not in h2s:
             problems.append(f"extra section '{e['topic']}': '{e['heading']}' is not an H2 on the page")
     if q["page_type"] == "location":
-        body = [s for s in p.sections
-                if s["id"] not in FRAME_IDS and not s["has_faq"] and not s["has_form"]]
+        body = [s for s in p.sections if s["id"] not in FRAME_IDS and not s["frame"]]
         t = q["section_target"]
         if len(body) < t["total"]:
             problems.append(f"body sections: {len(body)}, want at least {t['total']} "
@@ -2031,6 +2041,12 @@ In the Manchester worked example table:
 - Replace the two `Competitor-gap section | NOT FETCHED — step 1 supplies the topic` rows with three rows reading `Extra section (question pool) | extra_sections[n] in data/queries/blue-staffy-puppies-manchester-uk.json`.
 
 Keep every other row unchanged.
+
+- [ ] **Step 5b: The spine, the precedence table and the fact table**
+
+- **Step 2 spine:** replace the rows of the table under `## Step 2 — the page spine` with the 13-part frame order in `docs/reference/location-page-template.md` ("The fixed frame"). Keep the table's three columns. Each frame row keeps the component and checks it has today; FAQ top, middle and bottom each use `Faq`; the form uses `ContactFormKit`. Mark the three body gaps as rows reading `Body sections (derived, step 1)`. Change the sentence above the table to say that the body sections fill the three gaps, split roughly evenly.
+- **Precedence table:** add a row to the table under `## What wins when this file and something else disagree`: `docs/reference/location-page-template.md` wins for structure, FAQ format and tone; this file's fact table wins for facts.
+- **Fact table:** add "home-raised: every puppy is raised in our home, not a kennel" with its source, the `data/faq.json` row whose answer says so. Add it only if that row exists; quote its `id`.
 
 - [ ] **Step 6: The other three builders**
 
