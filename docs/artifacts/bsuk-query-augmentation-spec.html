@@ -1,0 +1,282 @@
+<title>BSUK Query Augmentation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Query augmentation design spec</h1></div>
+<div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-23</span><br>docs/superpowers/specs/2026-09-23-query-augmentation-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+Status: approved in brainstorm 2026-09-23. Branch `query-augmentation`, cut from `foundation`
+at `db37ca1` (project 4 merged). A bridge build between project 4 and project 5: it closes
+Known Issue 17 before project 5 builds 28 city pages.
+</script>
+<script type="text/markdown" data-title="1. Decisions">
+| # | Decision | Picked |
+|---|---|---|
+| 1 | Scope | Query augmentation plus the thread-sourcing half of CAG's `reddit-strategy`, re-based for BSUK. `cag-visual-intelligence` stays an open item |
+| 2 | Question sources | DataForSEO (via the claude.ai connector) first; free sources as fallback; offline bank always |
+| 3 | `reddit-strategy` scope | Thread sourcing only. "Reddit-modifier" pages are recorded as a later option, not built |
+| 4 | Pages served | Every page builder — location, comparison, blog, puppy; location pages pilot it |
+| 5 | Enforcement | A per-page question file plus a check that fails `npm run check:all` |
+| 6 | Who calls DataForSEO | The skill calls the connector; scripts merge, score, cap spend and gate. No new credentials |
+| 7 | FAQ format | The user's Illinois template: three blocks (top 5–7, middle 5–7, bottom 7–10), 15–20 questions, each an H3 |
+| 8 | Location section count | Competitors' count + 3 research-suggested sections (rule in §6). Never a fixed 22 |
+| 9 | Skill authoring | `superpowers:writing-skills` (RED/GREEN/REFACTOR with subagents); scripts by `superpowers:test-driven-development` |
+</script>
+<script type="text/markdown" data-title="2. Components">
+New:
+
+- `.claude/skills/bsuk-query-augmentation/SKILL.md` — input: slug, page type, primary keyword.
+  Drives the paid and free sources, runs the scripts, hands the page builder its question file.
+- `.claude/skills/bsuk-reddit-threads/SKILL.md` — the thread-sourcing protocol from CAG's
+  `reddit-strategy` (derive queries from the page; search via the `research-recency` ladder;
+  score; open and verify; log), re-based to Staffy and UK subreddits/forums. Callable alone.
+- `scripts/query_augment.py` — `--preflight <slug>` (cache and budget check) and
+  `<slug>` (merge, dedupe, score, assign, write the question file).
+- `scripts/query_coverage_check.py` — the gate, added to `check:all`.
+- `data/queries/<slug>.json`, `data/queries/raw/<slug>/`, `data/queries/spend.json`.
+- `schemas/queries.schema.json` — the question-file contract.
+- `docs/reference/location-page-template.md` — the Illinois template converted to BSUK (§7).
+- `tests/py/test_query_augment.py`, `tests/py/test_query_coverage_check.py`, fixtures of
+  recorded DataForSEO responses under `tests/py/fixtures/queries/`.
+
+Changed:
+
+- `bsuk-location-page-builder` Step 1 (section rule, §6) and Step 5 (FAQ, §5); the
+  query-augmentation paragraph becomes a call to the new skill.
+- `bsuk-comparison-page-builder`, `bsuk-blog-post`, `bsuk-puppy-page-builder`: call the skill
+  before writing.
+- `data/settings.json`: `query_budget_usd` (start 0.50; set from the live test).
+- `data/port-manifest.json`: re-file `reddit-strategy` (thread half ported as
+  `bsuk-reddit-threads`); add rows for the ten CAG files the manifest never recorded
+  (`cag-bird-listing-page`, `cag-bird-page-build`, `cag-bird-page-excellence`,
+  `cag-bird-personality`, `cag-clutch-manager`, `cag-timneh-specialist`,
+  `cag-species-guide-builder`, `cag-variant-specialist`, `cag-competitor-pricing-alert-agent`,
+  `cag-competitor-registry`) with a stated reason each.
+- `docs/reference/session-log.md`: close Known Issue 17; open items for reddit-modifier pages
+  and `cag-visual-intelligence`.
+- Regenerated `docs/reference/system-registry.md` (57 skills).
+</script>
+<script type="text/markdown" data-title="3. Data flow">
+1. **Preflight.** `query_augment.py --preflight <slug>` exits 0 (proceed), 3 (cached — no call)
+   or 4 (budget would be exceeded — stop and report). Run before every paid call.
+2. **Paid, via the DataForSEO connector:** Google organic SERP for the primary keyword (PAA,
+   related searches, top-10 URLs); Bing organic SERP (top-10 URLs); AI-engine answers for the
+   keyword (the questions and entities the answer assembles). Each raw response saved to
+   `data/queries/raw/<slug>/<source>.json`; its reported `cost` appended to `spend.json`.
+3. **Free:** `bsuk-reddit-threads` through the `research-recency` ladder (Firecrawl → WebFetch →
+   headless browser → `/last30days`). Output `raw/<slug>/threads.json`. Unreachable =
+   `NOT FETCHED`, never invented. Fallback for step 2 when the connector is absent or out of
+   credit: browser PAA (`bsuk-paa-agent` protocol) and Firecrawl search.
+4. **Offline:** the question bank in `bsuk-paa-agent`, `data/faq.json`, and the fact files.
+5. **Merge.** `query_augment.py <slug>` writes `data/queries/<slug>.json`.
+6. **Write.** The page builder writes from the file and fills each `covered_by`.
+7. **Gate.** `query_coverage_check.py` over the built `dist/`.
+</script>
+<script type="text/markdown" data-title="4. The question file">
+```json
+{
+  "slug": "blue-staffy-puppies-manchester-uk",
+  "page_type": "location",
+  "primary_keyword": "blue staffy puppies manchester",
+  "fetched": "2026-09-23",
+  "spend_usd": 0.04,
+  "sources": { "serp_google": "ok", "serp_bing": "ok", "ai_engines": "ok", "threads": "ok", "bank": "ok" },
+  "competitors": [
+    { "url": "…", "google_pos": 1, "bing_pos": 3, "h2_raw": 16, "h2_clean": 12, "outlier": false }
+  ],
+  "section_target": { "matched": 12, "set_by": "…", "extra": 3, "total": 15 },
+  "extra_sections": [ { "topic": "…", "question_ids": ["q-…"] } ],
+  "questions": [
+    {
+      "id": "q-delivery",
+      "question": "Do you deliver Staffy puppies to Manchester?",
+      "found_in": ["serp_google_paa", "ai_chatgpt", "thread:r/StaffordshireBullTerrier/abc123"],
+      "score": 9,
+      "must_answer": true,
+      "faq": "top",
+      "fact_source": "data/settings.json#delivery_min_gbp",
+      "blocked": null,
+      "covered_by": { "where": "faq", "text": "Do you deliver Staffy puppies to Manchester?" }
+    }
+  ]
+}
+```
+
+Scoring (deterministic, in `query_augment.py`):
+
+- **Evidence:** +1 per distinct source type the question appears in (Google PAA, related
+  searches, Bing, AI engine, verified thread, bank).
+- **Page-type fit:** a fixed weight table per page type (location: delivery/distance/collection
+  highest; comparison: "X vs Y"; puppy: price/deposit/availability; blog: the post's topic).
+- **Dedupe first:** questions that normalise to the same text merge, keeping every source.
+- **Fact rule:** a question can be `must_answer` only when `fact_source` points at a real key in
+  a data file. Otherwise `must_answer: false, blocked: "unverified fact"`. The gate can never
+  force an invented claim.
+- **City-dependent answers** use only facts that exist. `data/locations.json` today holds stubs
+  (no distance, no delivery band); a delivery answer states the locked £200–£350 range "priced by
+  distance" and the city name. Per-city bands are out of scope until Lisa Bright supplies them.
+</script>
+<script type="text/markdown" data-title="5. FAQ rules (from the Illinois template)">
+- Three blocks: **top** 5–7 (buying and logistics: price, deposit, delivery to this city,
+  reserving), **middle** 5–7 (process and trust: paperwork, health testing, visiting,
+  collection age), **bottom** 7–10 (breed and lifestyle: flats, other pets, training,
+  lifespan 12–14, coat). 15–20 in total.
+- Each question is an H3; a concise direct answer follows; internal/external links sit inside
+  answers, link-first (`link-first-anchors`).
+- Block assignment by topic table per page type; order within a block by score.
+- FAQPage schema carries exactly the visible questions, no more.
+- If the pool cannot supply 15 fact-backed questions, the run **stops** and lists the blocked
+  questions — no padding.
+</script>
+<script type="text/markdown" data-title="6. Location section rule">
+1. **Pool:** the top-5 breeder/location pages for the city query on Google plus the top-5 on
+   Bing, merged; marketplaces and directories excluded.
+2. **Clean:** strip non-content H2s (sidebar, footer, related posts, repeated CTAs).
+3. **Match:** the highest cleaned H2 count in the pool. If it exceeds 1.5× the next highest, it
+   is recorded as an outlier and the next highest is matched.
+4. **+3:** three extra sections from the query pool's strongest topics no pooled page covers.
+5. **Count only body H2s** on both sides. Hero, counter, trust strip, TOC, key takeaways,
+   reviews, newsletter, form and the three FAQ blocks are the fixed frame and never counted.
+6. **Record** every competitor's URL, Google and Bing position, raw and cleaned counts, and which
+   page set the number, in the question file and on the board.
+7. Fewer than three usable pages is a finding: match what exists.
+</script>
+<script type="text/markdown" data-title="7. The converted template">
+`docs/reference/location-page-template.md` keeps the Illinois template's structure of intent
+(key takeaways, reviews top/middle/bottom, newsletter, conversational question headers with
+opening paragraphs, link-first anchors, varied anchor text, delivery/cities/local
+activities/regulations/climate topics, voice-search phrasing) and converts it:
+
+- MFS → BlueStaffyUK, Lisa Bright, Carlisle · Cumbria. Maltipoo/Maltese types → the locked pups
+  and prices (£1,500 / £1,700), deposit £500 refundable, delivery £200–£350 by distance.
+- State → city. Airports → roads, motorway junctions, stations for collection. Dog parks →
+  local walks. State regulations → UK law (Dangerous Dogs Act — Staffies are not banned;
+  microchipping). AKC → The Kennel Club. USD → £.
+- **Dropped as MFS-only or unbacked:** 20+ years, 10-year health guarantee, ENS, Puppy Culture,
+  Embark, USDA licence (→ `LICENCE_CLAIM_PLACEHOLDER`), "5,000+ subscribers", invented
+  testimonials (three real reviews + `REVIEW_PLACEHOLDER` slots), BBB rating.
+- **Resized:** "50+ internal links" → every relevant internal target at least once plus varied
+  repeats; "150+ entities" → as many real local entities as the city supports, none invented.
+- Section count: §6, not 22. FAQ: §5.
+
+The file passes the fact lint and path guard like any `docs/reference` document.
+</script>
+<script type="text/markdown" data-title="8. Spend cap">
+- `spend.json` logs `{ts, slug, endpoint, cost_usd}` per paid call. `query_budget_usd` in
+  settings caps one run; preflight refuses when log + typical call cost would exceed it.
+- Cached raw responses are never re-bought; `--refresh` is explicit.
+- The live pilot (§11 step 4) measures real cost per city; the cap is set from it. The account
+  holds $1.
+</script>
+<script type="text/markdown" data-title="9. Failure handling">
+| Failure | Behaviour |
+|---|---|
+| Connector absent or out of credit | Free fallback; `sources.*: "fallback"`; run continues |
+| Source still blocked after the ladder | `NOT FETCHED`; no questions invented |
+| Bing not returned by DataForSEO | Bing half via Firecrawl/WebFetch/browser; else `NOT FETCHED` |
+| Fewer than 3 usable competitors | Finding recorded; match what exists |
+| Fewer than 15 fact-backed FAQ questions | Stop; list blocked questions for the user |
+| Budget reached | Preflight exit 4; stop and report spend |
+</script>
+<script type="text/markdown" data-title="10. The gate">
+`scripts/query_coverage_check.py`, in `npm run check:all`, for every built page with a question
+file. Fails when:
+
+1. FAQ total is outside 15–20, a block is outside its range, or a question is not an H3.
+2. A `must_answer` question's `covered_by.text` is absent from the built page, or the answer
+   after it is empty.
+3. FAQPage schema questions differ from the visible FAQ questions.
+4. An `extra_sections` topic has no matching body H2.
+5. Body H2 count is below `section_target.total` (location pages).
+
+Prints `examined N pages; 0 problems`. Pages without a question file are skipped and counted, so
+existing project 4 pages stay green until they are re-run.
+</script>
+<script type="text/markdown" data-title="11. Build order">
+1. Convert the Illinois template → `docs/reference/location-page-template.md`.
+2. Question-file schema + `query_augment.py` + tests (TDD, recorded fixtures).
+3. `query_coverage_check.py` + tests; wire into `check:all`.
+4. Live pilot on Manchester: measure cost, confirm Bing via DataForSEO, set the cap.
+5. `bsuk-reddit-threads` via writing-skills (RED baseline → GREEN → REFACTOR).
+6. `bsuk-query-augmentation` via writing-skills.
+7. Rewrite location builder Steps 1 and 5; point comparison, blog and puppy builders at the
+   skill.
+8. Housekeeping: manifest rows, session log, registries.
+9. Close-out: whole-branch review, gate report Artifact, merge to `foundation`, session closer
+   names project 5.
+</script>
+<script type="text/markdown" data-title="12. Testing">
+- Pytest for merge, dedupe, scoring, block assignment, fact rule, preflight exits, outlier guard
+  and all five gate rules — passing and failing fixture each. No live calls in tests.
+- Writing-skills baseline: a subagent given the Manchester task without the skills; record its
+  failures (invented questions, FAQ count, fixed sections, skipped Bing, overspend); write the
+  skills against them; re-run until it complies.
+- Existing guards stay green: fact lint, skills frontmatter, table lint, path guard, registries,
+  marker gate.
+</script>
+<script type="text/markdown" data-title="13. Out of scope">
+Reddit-modifier pages; `cag-visual-intelligence`; building any of the 28 city pages (project 5);
+re-running the twelve project 4 pages; per-city delivery bands; scheduled/automatic refreshes.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild — Query augmentation\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>
