@@ -41,26 +41,37 @@ OUTLIER_RATIO = 1.5
 SYNONYMS = (
     (r"\bstaffordshire bull terriers?\b", "staffy"),
     (r"\bstaff(?:y|ie|ies|ys)\b", "staffy"),
-    (r"\bpuppies\b", "puppy"),
+    (r"\bpupp(?:ies|ys)\b", "puppy"),
     (r"\bpups?\b", "puppy"),
 )
 
+# Questions that are about the site, not the dog: never a page topic. Checked first.
+SKIP = r"\b(personal information|privacy|cookies?|data protection|gdpr|thank you page)\b"
+
 # First match wins, so order is precedence: a price question that mentions a blue coat is
-# a price question. Patterns run on normalise()d text.
+# a price question. Patterns run on normalise()d text (which strips the pound sign).
 TOPICS = (
-    ("price", "top", r"\b(costs?|prices?|how much|deposit|pay|payment|paying)\b"),
-    ("delivery", "top", r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance)\b"),
-    ("reserve", "top", r"\b(reserv\w*|waiting list|book\w*|available|availability)\b"),
-    ("paperwork", "middle", r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract)\b"),
-    ("health", "middle", r"\b(health\w*|test\w*|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*)\b"),
-    ("visit", "middle", r"\b(visit\w*|meet|mother|father|parents)\b"),
-    ("age", "middle", r"\b(weeks old|how old|leave\w* (its|their|the) mother)\b"),
+    ("price", "top",
+     r"\b(costs?|prices?|priced|deposit|pay|payment|paying|expensive|cheap\w*|afford\w*)\b"
+     r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
+    ("delivery", "top",
+     r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|post(age)?|courier)\b"),
+    ("reserve", "top", r"\b(reserv\w*|waiting list|wait\w*|book\w*|available|availability)\b"),
+    ("paperwork", "middle",
+     r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract|included|comes? with)\b"),
+    ("health", "middle", r"\b(health\w*|tests?|tested|testing|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*)\b"),
+    ("age", "middle",
+     r"\b(weeks old|how old|leave\w* (its|their|the) mother|when can (a |the )?puppy (leave|go home|come home))\b"),
+    ("visit", "middle",
+     r"\b(visit\w*|meet (the )?(mother|father|parents|mum|dad)|see (the )?(mother|father|parents|mum|dad|litter))\b"),
     ("home", "bottom", r"\b(flat|flats|apartment\w*|garden\w*|house|left alone|home alone)\b"),
     ("family", "bottom", r"\b(child\w*|kids?|family|families|cats?|other dogs|other pets)\b"),
     ("training", "bottom", r"\b(train\w*|potty|crate\w*)\b"),
-    ("lifespan", "bottom", r"\b(lifespan|life expectancy|how long do)\b"),
+    ("lifespan", "bottom",
+     r"\bhow long (do|does|will|can) .*\blive\b|\blive (for|to)\b|\blifespan\b|\blife expectancy\b"),
     ("coat", "bottom", r"\b(coat\w*|colou?rs?|shed\w*|groom\w*)\b"),
-    ("temperament", "bottom", r"\b(temperament|aggressive|dangerous|banned|friendly|energy|exercise)\b"),
+    ("temperament", "bottom",
+     r"\b(temperament|aggressive|dangerous|banned|friendly|energy|exercise|first time (dog )?owners?)\b"),
 )
 
 # Page-type fit: how much a topic matters on this kind of page. Unlisted topics weigh 1.
@@ -82,6 +93,8 @@ def normalise(text):
 
 def topic_of(text):
     n = normalise(text)
+    if re.search(SKIP, n):
+        return None, None
     for topic, block, pat in TOPICS:
         if re.search(pat, n):
             return topic, block
@@ -103,7 +116,7 @@ def fact_exists(ref, root=ROOT):
         return True
     try:
         node = json.loads(p.read_text(encoding="utf-8"))
-    except (ValueError, UnicodeDecodeError):
+    except (OSError, ValueError, UnicodeDecodeError):
         return False
     for part in key.split("."):
         if isinstance(node, dict) and part in node:

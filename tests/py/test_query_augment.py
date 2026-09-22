@@ -68,6 +68,36 @@ def test_topic_of_unknown_is_none():
     assert Q.topic_of("What is your favourite film?") == (None, None)
 
 
+@pytest.mark.parametrize("text,topic", [
+    ("How long does a Staffordshire Bull Terrier live?", "lifespan"),
+    ("When can puppies leave their mother?", "age"),
+    ("What personal information does BlueStaffyUK collect?", None),
+    ("Do you ship to Scotland?", "delivery"),
+    ("Are blue Staffies more expensive?", "price"),
+    ("Is a Staffy good for a first-time owner?", "temperament"),
+    ("How long do I have to wait for a puppy?", "reserve"),
+])
+def test_topic_of_routes_real_bank_questions(text, topic):
+    assert Q.topic_of(text)[0] == topic
+
+
+@pytest.mark.parametrize("text,not_topic", [
+    ("How much exercise does a Staffordshire Bull Terrier need each day?", "price"),
+    ("How long do Staffies sleep at night?", "lifespan"),
+    ("Do you have testimonials?", "health"),
+])
+def test_topic_of_does_not_misroute(text, not_topic):
+    assert Q.topic_of(text)[0] != not_topic
+
+
+def test_topic_of_skip_rule_returns_no_block():
+    assert Q.topic_of("What personal information does BlueStaffyUK collect?") == (None, None)
+
+
+def test_normalise_folds_possessive_puppy():
+    assert Q.normalise("puppy's price") == Q.normalise("puppy price")
+
+
 def test_fact_exists_resolves_file_and_json_key(tmp_path):
     root = make_root(tmp_path)
     assert Q.fact_exists("data/settings.json", root)
@@ -78,3 +108,25 @@ def test_fact_exists_resolves_file_and_json_key(tmp_path):
     assert not Q.fact_exists("../etc/passwd", root)
     assert not Q.fact_exists("/etc/passwd", root)
     assert not Q.fact_exists(None, root)
+
+
+def test_fact_exists_non_json_file_with_key_is_false(tmp_path):
+    (tmp_path / "notes.txt").write_text("not json")
+    assert not Q.fact_exists("notes.txt#key", tmp_path)
+
+
+def test_fact_exists_nested_key_and_zero_value(tmp_path):
+    (tmp_path / "f.json").write_text(json.dumps({"a": {"b": {"c": 1}}, "zero": 0}))
+    assert Q.fact_exists("f.json#a.b.c", tmp_path)
+    assert Q.fact_exists("f.json#zero", tmp_path)
+    assert not Q.fact_exists("f.json#a.b.x", tmp_path)
+
+
+def test_fact_exists_unreadable_file_is_false(tmp_path, monkeypatch):
+    (tmp_path / "f.json").write_text(json.dumps({"k": 1}))
+
+    def boom(*a, **k):
+        raise OSError("unreadable")
+
+    monkeypatch.setattr(pathlib.Path, "read_text", boom)
+    assert not Q.fact_exists("f.json#k", tmp_path)
