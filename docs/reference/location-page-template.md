@@ -82,7 +82,7 @@ blocks sit at the top, middle and bottom of the body as in the source template.
 | Climate | The city's weather and what it means for a short-coated dog |
 | Pricing and payment | Locked prices and deposit only |
 | Testimonials | The three real reviews in `data/reviews.json`, rotated; `REVIEW_PLACEHOLDER` slots otherwise |
-| Regulations | UK law a buyer asks about: the Dangerous Dogs Act (the Staffordshire Bull Terrier is not a banned breed), microchipping; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
+| Regulations | UK law a buyer asks about (the Dangerous Dogs Act and whether it covers the breed; microchipping) — every statute line is `LEGAL_CLAIM_PLACEHOLDER` unless it cites the gov.uk page it comes from; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
 | Preparing your home | Puppy-proofing and the first week |
 | Newsletter | The site's real newsletter form; no subscriber count |
 | Final call to action | Enquiry form, email, `PHONE_PLACEHOLDER` until launch |
