@@ -71,6 +71,7 @@ def test_topic_of_unknown_is_none():
 @pytest.mark.parametrize("text,topic", [
     ("How long does a Staffordshire Bull Terrier live?", "lifespan"),
     ("When can puppies leave their mother?", "age"),
+    ("How old should a blue Staffy puppy be before it comes home?", "age"),
     ("What personal information does BlueStaffyUK collect?", None),
     ("Do you ship to Scotland?", "delivery"),
     ("Are blue Staffies more expensive?", "price"),
@@ -92,6 +93,44 @@ def test_topic_of_does_not_misroute(text, not_topic):
 
 def test_topic_of_skip_rule_returns_no_block():
     assert Q.topic_of("What personal information does BlueStaffyUK collect?") == (None, None)
+
+
+# Exact data/faq.json wording for the buyer questions that had no topic.
+@pytest.mark.parametrize("text,topic", [
+    ("What should I ask a blue Staffy breeder before I buy?", "trust"),
+    ("How do I tell an ethical breeder from a puppy farm?", "trust"),
+    ("How do I know I’m buying from reputable blue Staffy breeders?", "trust"),
+    ("What makes BlueStaffyUK an ethical breeder?", "trust"),
+    ("What makes BlueStaffyUK ethical as a blue Staffy breeder?", "trust"),
+    ("How can I avoid buying from a puppy farm?", "trust"),
+    ("Do you offer support after I take my puppy home?", "trust"),
+    ("Is a Staffy a pitbull?", "breed"),
+    ("What is the difference between a Staffy and a Pit Bull?", "breed"),
+    ("What is the difference between an Amstaff and a Staffordshire Terrier (English)?", "breed"),
+    ("How can I tell if my puppy is an American or an English Staffy?", "breed"),
+    ("What two breeds make a Staffy?", "breed"),
+    ("What are Staffies prone to?", "health"),
+    ("Why do Staffies scratch so much?", "health"),
+    ("What should I feed my new Staffy puppy for the best diet?", "care"),
+    ("How long do Staffies sleep at night?", "care"),
+    ("What has a puppy had before it comes home?", "paperwork"),
+    ("What are the downsides of Staffies?", "temperament"),
+    ("Is a male or female Staffy better?", "temperament"),
+    ("Do Staffies get attached to one person?", "temperament"),
+    ("Where can I find blue staffy breeders in the UK?", "reserve"),
+    ("I’m looking into getting a Staffy puppy. Where should I start?", "reserve"),
+])
+def test_topic_of_routes_faq_bank_buyer_questions(text, topic):
+    assert Q.topic_of(text)[0] == topic
+
+
+@pytest.mark.parametrize("text", [
+    "How long will you take to reply to my enquiry?",
+    "Does this website use cookies?",
+    "How often do you add a new guide?",
+])
+def test_topic_of_leaves_site_questions_untopicked(text):
+    assert Q.topic_of(text) == (None, None)
 
 
 def test_normalise_folds_possessive_puppy():

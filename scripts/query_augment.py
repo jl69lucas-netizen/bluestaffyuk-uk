@@ -56,12 +56,17 @@ TOPICS = (
      r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|post(age)?|courier)\b"),
-    ("reserve", "top", r"\b(reserv\w*|waiting list|wait\w*|book\w*|available|availability)\b"),
-    ("paperwork", "middle",
-     r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract|included|comes? with)\b"),
-    ("health", "middle", r"\b(health\w*|tests?|tested|testing|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*)\b"),
+    ("reserve", "top", r"\b(reserv\w*|waiting list|wait\w*|book\w*|available|availability"
+     r"|where (can|do|should) i (find|buy|get|start)|where should i start)\b"),
     ("age", "middle",
      r"\b(weeks old|how old|leave\w* (its|their|the) mother|when can (a |the )?puppy (leave|go home|come home))\b"),
+    ("paperwork", "middle",
+     r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract|included|comes? with"
+     r"|before (it|they) comes? home|comes? home)\b"),
+    ("health", "middle",
+     r"\b(health\w*|tests?|tested|testing|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*"
+     r"|prone to|scratch\w*)\b"),
+    ("trust", "middle", r"\b(puppy farm\w*|ethical\w*|reputable|what (should|to) (i )?ask|support after)\b"),
     ("visit", "middle",
      r"\b(visit\w*|meet (the )?(mother|father|parents|mum|dad)|see (the )?(mother|father|parents|mum|dad|litter))\b"),
     ("home", "bottom", r"\b(flat|flats|apartment\w*|garden\w*|house|left alone|home alone)\b"),
@@ -71,7 +76,10 @@ TOPICS = (
      r"\bhow long (do|does|will|can) .*\blive\b|\blive (for|to)\b|\blifespan\b|\blife expectancy\b"),
     ("coat", "bottom", r"\b(coat\w*|colou?rs?|shed\w*|groom\w*)\b"),
     ("temperament", "bottom",
-     r"\b(temperament|aggressive|dangerous|banned|friendly|energy|exercise|first time (dog )?owners?)\b"),
+     r"\b(temperament|aggressive|dangerous|banned|friendly|energy|exercise|first time (dog )?owners?"
+     r"|downsides?|male or female|attached)\b"),
+    ("breed", "bottom", r"\b(pit ?bulls?|amstaff\w*|american|english staffy|two breeds|what breeds?)\b"),
+    ("care", "bottom", r"\b(feed\w*|diet|food|sleep\w*)\b"),
 )
 
 # Page-type fit: how much a topic matters on this kind of page. Unlisted topics weigh 1.
