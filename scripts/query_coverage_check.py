@@ -22,8 +22,13 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
      (docs/reference/location-page-template.md, "The fixed frame" — frame is never counted).
      Competitors' sections are counted by H2, so ours are too.
 
-Text inside <script>, <style> and <template> is never page text. A question file whose route
-is not built is skipped and counted: an unbuilt page ships nothing. A question file that is
+Text inside <script>, <style> and <template> is never page text. A question file is checked
+only when its page is built AND its page key is listed in data/facts/rebuilt.json (the list
+facts_preserved_check.py and final_page_audit.py read). The key is the route resolved through
+scripts/_slugs.py: "/uk-locations/<slug>/" -> "uk-locations/<slug>", "/" -> "index". A file
+whose route is not built is skipped and counted as not built (an unbuilt page ships nothing);
+one whose page is built but not yet rebuilt — the old site's page is still in dist/ — is
+skipped and counted as awaiting rebuild. A question file that is
 not valid JSON, or not valid against schemas/queries.schema.json, is a problem. Exit 1 on
 any problem, 0 otherwise.
 
@@ -39,6 +44,7 @@ from pathlib import Path
 import jsonschema
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from _slugs import dist_path, page_key  # noqa: E402  (one slug convention, shared)
 from query_augment import BLOCKS, FAQ_MAX, FAQ_MIN, FAQ_TOTAL_MAX, normalise  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -230,13 +236,24 @@ def check_page(q, html):
     return problems
 
 
+def page_key_for(route, dist=Path("dist")):
+    """The data/facts/rebuilt.json key for a route, via the shared _slugs convention."""
+    return page_key(dist_path(route.strip("/") or "index", dist), dist)
+
+
+def rebuilt_keys(root):
+    f = root / "data/facts/rebuilt.json"
+    return set(json.loads(f.read_text(encoding="utf-8"))) if f.is_file() else set()
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--root", default=str(ROOT))
     a = ap.parse_args(argv)
     root = Path(a.root)
     schema = json.loads((ROOT / "schemas/queries.schema.json").read_text(encoding="utf-8"))
-    examined = unbuilt = 0
+    rebuilt = rebuilt_keys(root)
+    examined = unbuilt = awaiting = 0
     problems = []
     for f in sorted((root / "data/queries").glob("*.json")):
         if f.name == "spend.json":
@@ -251,15 +268,18 @@ def main(argv=None):
         except jsonschema.ValidationError as e:
             problems.append(f"{f.stem}: invalid question file — {e.message}")
             continue
-        page = root / "dist" / q["route"].strip("/") / "index.html"
+        page = dist_path(q["route"].strip("/") or "index", root / "dist")
         if not page.is_file():
             unbuilt += 1
+            continue
+        if page_key_for(q["route"]) not in rebuilt:
+            awaiting += 1
             continue
         examined += 1
         problems += [f"{q['slug']}: {p}" for p in check_page(q, page.read_text(encoding="utf-8"))]
     for p in problems:
         print(p)
-    print(f"examined {examined} pages ({unbuilt} not built); {len(problems)} problems")
+    print(f"examined {examined} pages ({unbuilt} not built, {awaiting} awaiting rebuild); {len(problems)} problems")
     return 1 if problems else 0
 
 

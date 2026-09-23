@@ -219,19 +219,57 @@ def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
-    assert "examined 0 pages (1 not built); 0 problems" in r.stdout
+    assert "examined 0 pages (1 not built, 0 awaiting rebuild); 0 problems" in r.stdout
 
 
-def test_main_fails_a_built_page_with_problems(tmp_path):
+def build(tmp_path, q, rebuilt=True):
     (tmp_path / "data/queries").mkdir(parents=True)
-    (tmp_path / "data/queries/m.json").write_text(json.dumps(qfile(total=9)))
+    (tmp_path / "data/queries/m.json").write_text(json.dumps(q))
     out = tmp_path / "dist" / ROUTE.strip("/")
     out.mkdir(parents=True)
     (out / "index.html").write_text(page_html())
-    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
-                       capture_output=True, text=True)
+    (tmp_path / "data/facts").mkdir(parents=True)
+    keys = ["index", ROUTE.strip("/")] if rebuilt else ["index"]
+    (tmp_path / "data/facts/rebuilt.json").write_text(json.dumps(keys))
+
+
+def run(tmp_path):
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
+                          capture_output=True, text=True)
+
+
+def test_main_skips_a_built_page_that_is_not_rebuilt_yet(tmp_path):
+    # the old site's page is still in dist/ — its question file waits for the rebuild
+    build(tmp_path, qfile(total=9), rebuilt=False)
+    r = run(tmp_path)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "examined 0 pages (0 not built, 1 awaiting rebuild); 0 problems" in r.stdout
+
+
+def test_main_skips_when_rebuilt_json_is_missing(tmp_path):
+    build(tmp_path, qfile(total=9))
+    (tmp_path / "data/facts/rebuilt.json").unlink()
+    r = run(tmp_path)
+    assert r.returncode == 0 and "(0 not built, 1 awaiting rebuild)" in r.stdout
+
+
+def test_main_checks_a_built_and_rebuilt_page(tmp_path):
+    build(tmp_path, qfile())
+    r = run(tmp_path)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "examined 1 pages (0 not built, 0 awaiting rebuild); 0 problems" in r.stdout
+
+
+def test_page_key_follows_the_shared_slug_convention():
+    assert G.page_key_for(ROUTE) == "uk-locations/blue-staffy-puppies-manchester-uk"
+    assert G.page_key_for("/") == "index"
+
+
+def test_main_fails_a_built_page_with_problems(tmp_path):
+    build(tmp_path, qfile(total=9))
+    r = run(tmp_path)
     assert r.returncode == 1
-    assert "examined 1 pages (0 not built); 1 problems" in r.stdout
+    assert "examined 1 pages (0 not built, 0 awaiting rebuild); 1 problems" in r.stdout
 
 
 def test_main_rejects_an_invalid_question_file(tmp_path):
