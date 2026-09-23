@@ -35,7 +35,7 @@
       {"type": "object", "additionalProperties": false, "required": ["status", "values"],
        "properties": {"status": {"const": "ok"},
                       "values": {"type": "array", "uniqueItems": true,
-                                 "items": {"type": "string", "minLength": 1}}}}
+                                 "items": {"type": "string", "minLength": 1, "pattern": "\\S"}}}}
     ]},
     "page_types": {"oneOf": [
       {"$ref": "#/$defs/not_fetched"},
