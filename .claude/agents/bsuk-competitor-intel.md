@@ -15,7 +15,7 @@ effort: max
 
 1. Mode from the invocation: `<id>`, `--tier <n>`, `--all`, `--bsuk`, or `fetch approved: --all` / `fetch approved: --tier <n>`. Nothing named → the highest-priority entry with `last_analyzed: null`; say which in your first line.
 2. Read data/competitors.json. Missing (and the mode is not `--bsuk`) → stop and hand to `bsuk-competitor-registry`. An `<id>` not in it → stop and say so; never analyse an unregistered site.
-3. Unless the mode is `--bsuk`: if `git status --porcelain data/competitors.json` prints anything (the registry is uncommitted), or `python3 scripts/competitor_registry_check.py` already fails, stop and report — never analyse against a registry nobody approved.
+3. Unless the mode is `--bsuk`: stop and report if data/competitors.json is untracked (`git ls-files --error-unmatch data/competitors.json` fails), if `git diff data/competitors.json` changes any line other than `last_analyzed` lines (your own earlier runs' dates never block), or if `python3 scripts/competitor_registry_check.py` already fails — never analyse against a registry nobody approved.
 4. Read `schemas/competitor-report.schema.json` — the contract your JSON must pass.
 5. Read `data/locations.json` — the only city names you may write.
 6. Age check: if an entry you analyse has a `last_analyzed` more than 30 days old, or the registry's `_meta.last_discovery_run` is, say so in the first line of your report and carry on.
@@ -26,7 +26,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 
 ## What to fetch per competitor
 
-1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
+1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
 2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages from the URL list, markdown only: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
@@ -74,35 +74,90 @@ A price that is not printed is not a price: "please call us" about a deposit is 
 
 Headings count like any other text — the run rule decides, not the heading. Nothing else: no words joined from different places, each phrase once. Example, "Our blue staffy puppies for sale in Leeds": maximal runs `blue staffy puppies for sale` and `staffy puppies for sale in leeds`; shortest sub-runs `blue staffy puppies` and `staffy puppies for sale`.
 
-**`--bsuk` is like-for-like:** BSUK's keywords are its own phrases by the same rule **plus** every keyword in the existing competitor reports that appears in the visible text of `dist/` (lowercased, spaces collapsed). So `--bsuk` runs after the competitor runs, and is re-run after any new competitor report.
+**`--bsuk` is like-for-like:** BSUK's keywords are its own phrases by the same rule **plus** every keyword in the existing competitor reports that appears in the visible text of `dist/` (lowercased, punctuation and spaces collapsed). So `--bsuk` runs after the competitor runs, and is re-run after any new competitor report. Match with this script, never by eye; it prints the competitor phrases found in `dist/`:
+
+```bash
+python3 - <<'EOF'
+import glob, html, json, re, sys
+norm = lambda t: " " + re.sub(r"[^a-z0-9]+", " ", t.lower()).strip() + " "
+text = []
+for f in glob.glob("dist/**/*.html", recursive=True):
+    s = open(f, encoding="utf-8").read()
+    s = re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", s)
+    text.append(html.unescape(re.sub(r"<[^>]+>", " ", s)))
+body = norm(" ".join(text))
+phrases = set()
+for f in glob.glob("docs/research/competitors/*.json"):
+    r = json.load(open(f))
+    if r["id"] != "bsuk" and r["keywords"]["status"] == "ok":
+        phrases |= set(r["keywords"]["values"])
+print(json.dumps(sorted(p for p in phrases if norm(p) in body), indent=1))
+EOF
+```
 
 ### Page-type rule
 
-One type per URL: lowercase the path and take the **first** row that matches; a URL that matches none is not counted, and a type with a count of 0 is left out.
+One type per URL: lowercase the path and take the **first** row that matches; a URL that matches none is not counted, and a type with a count of 0 is left out. A "word" is a whole slug word, between `-` or `/` (so `breed` never matches "breeders" or "breeding").
 
 | Order | Type | Path contains |
 |---|---|---|
-| 1 | `blog` | `/blog/`, `/news/`, `/articles/`, `/posts/`, or a dated segment (`/2025/`, `/2025/09/`) |
-| 2 | `city` | a `data/locations.json` city as a slug (lowercase, spaces to hyphens), except `UK` and the outreach row |
+| 1 | `blog` | the word `blog`, `news`, `articles` or `posts`, or a dated segment (`/2025/`, `/2025/09/`) |
+| 2 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
 | 3 | `comparison` | `-vs-`, `versus` |
 | 4 | `price` | `price`, `cost`, `fees` |
-| 5 | `health` | `health`, `dna`, `testing` |
+| 5 | `health` | `health`, the word `dna`, `testing` |
 | 6 | `care-guide` | `care`, `feeding`, `training`, `grooming` |
-| 7 | `breed-guide` | `breed`, `guide`, `temperament` |
-| 8 | `faq` | `faq`, `questions` |
-| 9 | `about` | `about`, `our-story` |
-| 10 | `reviews` | `review`, `testimonial` |
-| 11 | `contact` | `contact`, `enquir` |
-| 12 | `listing` | `puppies`, `puppy`, `litter`, `available`, `for-sale` |
+| 7 | `contact` | `contact`, `enquir` |
+| 8 | `about` | the word `about`, `our-story` |
+| 9 | `breed-guide` | the word `breed` or `guide`, `breed-guide`, `breed-info`, `temperament` |
+| 10 | `faq` | `faq`, `questions` |
+| 11 | `reviews` | `review`, `testimonial` |
+| 12 | `listing` | `puppies`, `puppy`, the word `pup` or `sale`, `litter`, `available` |
 
-`--bsuk` takes its URL list from the `<loc>` entries of the sitemaps that `dist/sitemap_index.xml` lists (not the video sitemap), else from every `index.html` under `dist/`.
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye; it prints the `page_types` values:
+
+```bash
+python3 - "$MAP_LIST" <<'EOF'
+import json, re, sys
+from urllib.parse import urlparse
+urls = json.load(open(sys.argv[1]))
+rows = json.load(open("data/locations.json"))
+slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
+w = lambda t: r"(^|[-/])" + t + r"([-/]|$)"
+TABLE = [
+    ("blog", [w("blog"), w("news"), w("articles"), w("posts"), r"/(19|20)\d\d/"]),
+    ("city", [w(s) for s in slugs]),
+    ("comparison", [r"-vs-", r"versus"]),
+    ("price", [r"price", r"cost", r"fees"]),
+    ("health", [r"health", w("dna"), r"testing"]),
+    ("care-guide", [r"care", r"feeding", r"training", r"grooming"]),
+    ("contact", [r"contact", r"enquir"]),
+    ("about", [w("about"), r"our-story"]),
+    ("breed-guide", [w("breed"), w("guide"), r"breed-guide", r"breed-info", r"temperament"]),
+    ("faq", [r"faq", r"questions"]),
+    ("reviews", [r"review", r"testimonial"]),
+    ("listing", [r"puppies", r"puppy", w("pup"), r"litter", r"available", w("sale")]),
+]
+counts = {}
+for u in urls:
+    path = urlparse(u).path.lower()
+    t = next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
+    if t:
+        counts[t] = counts.get(t, 0) + 1
+print(json.dumps(counts, sort_keys=True))
+EOF
+```
+
+**Posts without a blog base.** A competitor's posts often sit at the root (`/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
+
+**`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog`, in `dist/location-sitemap.xml` is `city`, in `dist/puppy-sitemap.xml` is `listing`; only `dist/page-sitemap.xml` goes through the table (the video sitemap is not a page list). No sitemaps → every `index.html` under `dist/` through the table.
 
 ## Output
 
 1. `docs/research/competitors/<id>.json`: `id` (the file name without `.json`), `root_domain`, `analysed_on` (today), the ten fields, `pages`, `key_insight`.
 2. `docs/research/competitors/<id>.md`: a heading per category (anything NOT FETCHED says what was missing), then **Key insight** — one or two sentences on the single thing BSUK can learn from or beat. Your words throughout.
 3. data/competitors.json: set that entry's `last_analyzed` to today — no other key, entry, spacing or order changes — then run `python3 scripts/competitor_registry_check.py` (0 problems) and confirm `git diff data/competitors.json` shows only `last_analyzed` lines.
-4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write. The gap matrix reads BSUK's side from this file.
+4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The 375px check runs against `npm run preview` (it serves `dist/`), with Playwright at that local address. The gap matrix reads BSUK's side from this file.
 
 ## After a run
 
@@ -112,15 +167,15 @@ python3 scripts/gap_matrix.py --write
 npm run -s check:gaps && npm run -s check:competitors
 ```
 
-All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, an empty or blank value, a missing or mistyped field) — fix the report, never the schema or the script. Then report the files written, the fetch count, and any registry fix.
+All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, an empty or blank value, a missing or mistyped field) — fix the report, never the schema or the script. Then report the files written, the fetch count, and any registry fix. A new or changed competitor report makes the BSUK profile (docs/research/competitors/bsuk.json) stale: re-run `--bsuk` afterwards (and say so in the hand-back when you cannot).
 
 ## Handoff
 
-`bsuk-competitive-keyword-gap-agent` (reads the `pages` lists), then `bsuk-strategy-synthesizer`. A registry fix goes to `bsuk-competitor-registry` first.
+`bsuk-competitive-keyword-gap-agent` (reads the `pages` lists), then `bsuk-strategy-synthesizer`. A registry fix goes to `bsuk-competitor-registry` first. After any competitor run, `--bsuk` is re-run before the gap matrix is read.
 
 ## Red flags — stop
 
-- A number (word count, URL count, post count, score) for a page or map you did not fetch, or counted by eye.
+- A number (word count, URL count, post count, score) for a page or map you did not fetch; or counting, page-type classifying or phrase matching done by eye instead of by script.
 - `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` without the 375px check.
 - A price or deposit written that the page did not print.
 - A competitor sentence in the report word for word, or a quoted evidence table.

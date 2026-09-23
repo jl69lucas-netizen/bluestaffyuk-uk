@@ -20,22 +20,37 @@ PATTERNS = {
     # Any UK number, mobile or landline: national 0 + 9–10 digits (01/02/03/07/08…), or
     # +44 / 0044 (optionally "(0)") + 9–10 digits. Spaces, hyphens and brackets may sit between
     # digits. The digit count is the guard: a 13-digit ID or a date never fits it, and a number
-    # glued to a word, a path, a query value or a version string is not a phone.
-    "phone": re.compile(r"(?<![\w+./=-])(?:(?:\+|00)44[\s-]?(?:\(0\)[\s-]?)?|\(?0)[1-9]"
-                        r"(?:[\s()-]{0,2}\d){8,9}(?![\w/-]|\.\d)"),
+    # glued to a word, a path or a version string is not a phone. A `phone=` query value is a
+    # phone even without the + (447712345678).
+    "phone": re.compile(r"(?<![\w+./-])(?:(?:\+|00)44[\s-]?(?:\(0\)[\s-]?)?|\(?0)[1-9]"
+                        r"(?:[\s()-]{0,2}\d){8,9}(?![\w/-]|\.\d)"
+                        r"|(?<=phone=)(?:\+|00)?44[1-9]\d{8,9}(?!\d)"),
     # An image name like logo@2x.png is not an address: the last label may not be an image type.
     "email": re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"
                         r"(?![A-Za-z])(?<!\.png)(?<!\.jpg)(?<!\.jpeg)(?<!\.gif)(?<!\.webp)"
                         r"(?<!\.svg)(?<!\.avif)"),
-    "whatsapp": re.compile(r"wa\.me/\+?\d+|whatsapp\.com/send/?\?phone=\+?\d+"),
-    "postcode": re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}\b", re.I),
+    "whatsapp": re.compile(r"wa\.me/\+?\d+|wa\.link/\w+"
+                           r"|whatsapp(?:\.com/send/?|://send)\?phone=\+?\d+"),
+    # Upper case strictly; lower case too, but only with its space (a slug like k3x9qz is
+    # not a postcode) and never where the last part is an ordinal ("h2 3rd", "v8 1st").
+    "postcode": re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}\b"
+                           r"|(?i:\b[a-z]{1,2}\d[a-z\d]? \d(?!(?:st|nd|rd|th)\b)[a-z]{2}\b)"),
 }
 
 
 def find_contacts(text):
-    """[(line number, kind, match)] for every contact detail in `text`."""
-    return [(i, kind, m.group(0)) for i, line in enumerate(text.splitlines(), 1)
-            for kind, pat in PATTERNS.items() for m in pat.finditer(line)]
+    """[(line number, kind, match)] for every contact detail in `text`.
+
+    Anything inside a WhatsApp link is reported once, as the link."""
+    out = []
+    for i, line in enumerate(text.splitlines(), 1):
+        wa = [m.span() for m in PATTERNS["whatsapp"].finditer(line)]
+        for kind, pat in PATTERNS.items():
+            for m in pat.finditer(line):
+                if kind != "whatsapp" and any(a <= m.start() and m.end() <= b for a, b in wa):
+                    continue
+                out.append((i, kind, m.group(0)))
+    return out
 
 
 def committed_files(root=ROOT, dirs=SCANNED):
@@ -78,6 +93,11 @@ def contact_hits(root=ROOT, dirs=SCANNED):
     ("call 07712345678.", "phone"),
     ("https://api.whatsapp.com/send?phone=447712345678", "whatsapp"),
     ("https://wa.me/+447712345678", "whatsapp"),
+    ("https://wa.link/k3x9qz", "whatsapp"),
+    ("whatsapp://send?phone=447712345678", "whatsapp"),
+    ("https://example.co.uk/contact?phone=07712345678", "phone"),
+    ("https://example.co.uk/call?phone=447712345678&src=web", "phone"),
+    ("POSTCODE M3 1ST", "postcode"),
 ])
 def test_the_detector_finds_each_kind(text, kind):
     assert [k for _, k, _ in find_contacts(text)] == [kind]
@@ -88,6 +108,7 @@ def test_the_detector_finds_each_kind(text, kind):
     "cost_usd 0.0725", "id 76328", "serp position 7", "M62 motorway", "page 0161",
     "12/25", "7/12", "2026-09-23", "23/09/2026", "£1,500", "id 0771234567890",
     "ref 0113496000012", "logo@2x.png", "hero@3x.webp", "v0.1.1234",
+    "h2 3rd heading", "q3 2nd pass", "v8 1st run", "the m6 4th exit",
 ])
 def test_the_detector_ignores_ordinary_data(text):
     assert find_contacts(text) == []
