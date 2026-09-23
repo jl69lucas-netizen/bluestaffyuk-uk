@@ -71,6 +71,9 @@ TOPICS = (
     ("price", "top",
      r"\b(costs?|prices?|priced|deposit|pay|payment|paying|expensive|cheap\w*|afford\w*)\b"
      r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
+    # Intent before delivery's collect/deliver words: aftercare is trust, treatments paperwork.
+    ("trust", "middle", r"\b(support|advice|help)( \w+){0,2} after\b"),
+    ("paperwork", "middle", r"\b(vaccin\w*|microchip\w*|worm\w*|flea)\b"),
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
     ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (need to |have to )?wait|is there a wait|book\w*|available|availability"
@@ -398,6 +401,11 @@ MIN_USABLE_H2 = 3
 # (a two-question accordion is content). A <header> is furniture only outside
 # main/section/article (inside one it is a section's own heading).
 CARD_ANCESTORS = {"a", "nav", "footer", "aside", "form", "button", "template"}
+# Consent and cookie dialogs (vendor lists are full of H2s): an ancestor whose id or class
+# names one, or any dialog. "cmp" counts only as its own segment ("qc-cmp2-container"), so a
+# "cmpt-text" component is not caught.
+CONSENT = re.compile(r"consent|cookie|onetrust|gdpr|didomi|qc-cmp|(^|[-_\s])cmp(\d|[-_\s]|$)",
+                     re.I)
 HEADER_HOSTS = {"main", "section", "article"}
 MIN_CARD_ARTICLES = 2
 MIN_CARD_ITEMS = 3
@@ -458,8 +466,12 @@ class _H2s(HTMLParser):
                 e["nested"] = True
             self._h2 = {"depth": len(self.stack), "ancestors": list(self.stack),
                         "parts": [], "bare": []}
+        a = dict(attrs)
+        consent = (a.get("role") or "").lower() == "dialog" \
+            or (a.get("aria-modal") or "").lower() == "true" \
+            or bool(CONSENT.search(f"{a.get('id') or ''} {a.get('class') or ''}"))
         self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
-                           "h2": False, "nested": False})
+                           "h2": False, "nested": False, "consent": consent})
 
     def _close_open_item(self):
         """A new <li> closes an open <li> of the same list, as a browser does."""
@@ -514,7 +526,8 @@ class _H2s(HTMLParser):
         for ancestors, text, bare in self.found:
             tags = [e["tag"] for e in ancestors]
             # A heading that is nothing but links is a card title, not a section.
-            if not text or not bare or CARD_ANCESTORS & set(tags):
+            if not text or not bare or CARD_ANCESTORS & set(tags) \
+                    or any(e["consent"] for e in ancestors):
                 continue
             nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
             if nearest and id(nearest[0]) in card_articles:
@@ -728,9 +741,20 @@ def spend_for(slug, root=ROOT, day=None):
 
 
 def _is_cached(slug, source, root):
+    """A saved connector response means the call was already bought. A normalised file
+    counts only when its status is "ok": a "fallback" or "NOT FETCHED" file never blocks the
+    paid call. A normalised file that cannot be read fails closed (cached: no spend)."""
     d = Path(root) / "data/queries/raw" / slug
-    # a saved connector response means the call was already bought
-    return (d / f"{source}.json").is_file() or (d / f"{source}.response.json").is_file()
+    if (d / f"{source}.response.json").is_file():
+        return True
+    f = d / f"{source}.json"
+    if not f.is_file():
+        return False
+    try:
+        data = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return True
+    return not isinstance(data, dict) or data.get("status") not in ("fallback", "NOT FETCHED")
 
 
 def _budget_check(slug, source, root, today):

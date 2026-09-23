@@ -1531,3 +1531,61 @@ def test_a_second_matching_buyer_question_on_the_same_bank_row_joins(tmp_path):
 def test_see_the_puppy_with_its_mother_is_a_visit_question():
     assert Q.topic_of("Can I see the puppy with its mother?")[0] == "visit"
     assert Q.topic_of("Can I see the puppies with the mother?")[0] == "visit"
+
+
+# --- Task 9 GREEN run (Leeds): fallback files, intent routing, consent dialogs ------------
+
+@pytest.mark.parametrize("status,code", [("ok", 3), ("fallback", 0), ("NOT FETCHED", 0)])
+def test_preflight_only_an_ok_normalised_file_counts_as_cached(tmp_path, status, code):
+    root = make_root(tmp_path)
+    write_raw(root, "m", "serp_google", {"source": "serp_google", "status": status,
+                                         "questions": []})
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == code
+
+
+def test_preflight_a_saved_response_is_cached_whatever_the_normalised_status(tmp_path):
+    root = make_root(tmp_path)
+    write_raw(root, "m", "serp_google", {"source": "serp_google", "status": "fallback",
+                                         "questions": []})
+    (root / "data/queries/raw/m/serp_google.response.json").write_text("{}")
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_CACHED
+
+
+def test_preflight_an_unreadable_normalised_file_fails_closed_as_cached(tmp_path):
+    root = make_root(tmp_path)
+    d = root / "data/queries/raw/m"
+    d.mkdir(parents=True)
+    (d / "serp_google.json").write_text('{"status": "ok", "questions": [')
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_CACHED
+
+
+@pytest.mark.parametrize("text,topic", [
+    ("Will the breeder still support me after I collect the puppy?", "trust"),
+    ("Is there help after I take my puppy home?", "trust"),
+    ("Has the puppy had its first vaccination before I collect it?", "paperwork"),
+    ("Will the puppy be wormed and flea treated before delivery?", "paperwork"),
+    ("Can I collect my puppy?", "delivery"),
+    ("Do you deliver across the UK?", "delivery"),
+])
+def test_topic_of_routes_by_intent_before_delivery(text, topic):
+    assert Q.topic_of(text)[0] == topic
+
+
+CONSENT_LIKE = ("<body><div id='onetrust-consent-sdk'><div id='onetrust-pc-sdk'>"
+                + "".join(f"<section><h2>Vendor {i}</h2></section>" for i in range(12))
+                + "</div></div>"
+                "<div class='CookieConsent-banner'><h2>We value your privacy</h2></div>"
+                "<div class='qc-cmp2-container'><h2>Partners</h2></div>"
+                "<div role='dialog'><h2>Manage choices</h2></div>"
+                "<div aria-modal='true'><h2>Your data</h2></div>"
+                "<div id='didomi-host'><h2>Didomi</h2></div>"
+                "<div class='gdpr-box'><h2>GDPR</h2></div>"
+                "<main><section><h2>Blue Staffy Puppies in Leeds</h2></section>"
+                "<section class='cmpt-text'><h2>Health Testing</h2></section></main></body>")
+
+
+def test_extract_h2s_drops_consent_and_cookie_dialogs():
+    rep = Q.page_report(CONSENT_LIKE)
+    # "cmp" counts only as its own class/id segment, so a "cmpt-text" component is content.
+    assert rep["h2"] == ["Blue Staffy Puppies in Leeds", "Health Testing"]
+    assert rep["h2_all"] == 20
