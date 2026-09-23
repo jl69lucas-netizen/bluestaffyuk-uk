@@ -106,13 +106,50 @@ form, but not from the puppy and location pages this build gave the shell only (
 build 5). **Next: project 5 — the 28 location pages, the comparison cluster and the two new
 blog posts.**
 
+## Query augmentation bridge build (2026-09-23) — COMPLETE
+
+A bridge build between project 4 and project 5 that closes Known Issue 17: a question step
+every page builder runs first. `.claude/skills/bsuk-query-augmentation/SKILL.md` drives the
+sources (DataForSEO through the connector, a free Bing read, `data/faq.json`, and Reddit
+threads via `.claude/skills/bsuk-reddit-threads/SKILL.md`); `scripts/query_augment.py`
+merges, scores, caps spend and writes the page's question file under `data/queries/`;
+`scripts/query_coverage_check.py` gates the built page in `npm run check:all`. The Illinois
+city template is converted to `docs/reference/location-page-template.md`, and the location,
+comparison, blog and puppy builders call the skill first.
+Plan: `docs/superpowers/plans/2026-09-23-query-augmentation.md`.
+Spec: `docs/superpowers/specs/2026-09-23-query-augmentation-design.md`, amended 21 times
+during execution; §14 is where every in-flight decision is recorded.
+
+Closed 2026-09-23 on branch `query-augmentation`, cut from `foundation` at `db37ca1`, 61
+commits `1f655fd..24d9dc4` plus the close-out, every one with the Fable 5.1 trailer; no remote
+and nothing pushed. The whole-branch review was approved. `npm run build && npm run test:py &&
+npm run check:all` ran twice with identical counts, both exit 0. Full report and evidence:
+`docs/reports/query-augmentation-gate-report.md`.
+
+Headline numbers: pytest 1703 → 2071 passed; the new gate prints `examined 0 pages (0 not
+built, 2 awaiting rebuild); 0 problems` — the Manchester and Leeds question files wait for
+their project 5 rebuild; marker gate `examined 260 files; 0 problems`; 57 skills in the
+regenerated registry. The Manchester pilot made three paid calls (Google and ChatGPT usable,
+Bing off-topic and replaced by a free browser read), logged at a conservative $0.20 of the $1
+because the connector returns no cost; every ranking page was a marketplace or directory with
+no real sections, so the target is 9 via the floor. Leeds ran on free sources only, $0. Both
+files carry 20 FAQ picks, all fact-backed.
+
+User rulings: marketplaces and directories count; the section floor is 9; one AI engine per
+page; Task 10 fixes only what this build broke; competitor intelligence is its own build.
+Definition of done: 1 PASS, 12 PASS-WITH-DEVIATION (each an amendment in §14), 0 FAIL. Open
+items are Known Issues 39–46. **Next: project 5 — location, comparison and blog pages.** It
+starts with brainstorming; the nested-route prerequisite (Known Issue 39) comes first, and each
+page begins with `/bsuk-query-augmentation`.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
 Items 1 and 2 are closed by project 2 and item 4 by project 3; 3 and 5–8 are carried forward
 with their owning project; 9–14 are new from the system transfer, 15–16 were added after it,
 17–26 are new from the design system, and 27–38 are new from the page rebuilds. Project 4
-closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
+closed 8, 9, 11, 12, 20, 22, 25, 28 and 29. The query augmentation bridge build closed 17 and
+added 39–46.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
