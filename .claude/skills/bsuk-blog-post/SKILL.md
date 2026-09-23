@@ -28,7 +28,7 @@ Every blog post follows this fixed skeleton (all 9 posts + hub). Bucket codes: *
 7. **[SPECIAL-ELEMENT — MIDDLE] Mid-article conversion module** — Decision-Tree OR Myth-vs-Fact OR inline available-puppies soft-CTA, chosen per page from competitor-gap analysis.
 8. **Breeder Note / E-E-A-T block** — SUGGESTED moat. First-person BlueStaffyUK insight (bsuk-blog-breeder-note component).
 9. **"What you get from a real breeder" trust band** — SUGGESTED moat.
-10. **FAQ accordion** — MANDATORY. PAA-sourced. Visible FAQPage JSON-LD.
+10. **FAQ accordion** — MANDATORY. The question file's three blocks (top, middle, bottom): exactly the picks in `data/queries/<slug>.json`, each question an H3. Visible FAQPage JSON-LD carrying exactly the visible questions.
 11. **[SPECIAL-ELEMENT — BOTTOM] Bottom conversion module** — Available-puppy card + inquiry CTA. Delivery line: `Ships nationwide · £200–£350 airport · £200–£350 home`.
 12. **Related blog posts** — MANDATORY silo. bsuk-blog-related-posts component.
 13. **Newsletter block** — MANDATORY (lower placement; top strip does early capture).
@@ -201,7 +201,7 @@ Every page carries the 3 slot boxes (TOP/MIDDLE/BOTTOM, §1) plus draws from thi
 5. **Myth vs Fact** → `bsuk-blog-myth-fact`.
 6. **Decision Tree** (AI-extraction-friendly) → `bsuk-blog-decision-tree` (MIDDLE on beginners / vs-French Bulldog).
 7. **Comparison / spec table** (with "breeder verdict" row) → `bsuk-blog-comparison-table`.
-8. **FAQ accordion** (visible + FAQPage schema) → page `faqs[]` array.
+8. **FAQ accordion** (visible + FAQPage schema) → page `faqs[]` array, filled from the question file's three blocks (top, middle, bottom), each question an H3.
 Plus `bsuk-blog-related-posts` (bottom silo) and `bsuk-blog-sticky-cta` (mobile).
 
 ### 12. Toolbelt & BSUK Context (know these before building any post)

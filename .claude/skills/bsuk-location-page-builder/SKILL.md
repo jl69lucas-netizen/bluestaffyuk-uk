@@ -200,10 +200,14 @@ does `npm run check:queries` hold the page; until then it is skipped as awaiting
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
-targets: the buy page, the available puppies, the breed guide, delivery, the comparison
-page, contact, and 3–5 nearby city pages. External links go to breed and health authorities
-only; never to a competitor, a marketplace, or a page naming a local business BSUK has not
-verified.
+targets are the real routes in the "Links" list of `docs/reference/location-page-template.md`:
+`/available-puppies/` and its puppy pages, the buy pages (`/buy-blue-staffy-puppies-uk/`,
+`/buy-staffy-puppies-for-sale-uk/`, `/blue-staffy-pup-sale-uk/`), the buying guide, the breed
+guide, health, the breeder story, contact, the homepage, the blog hub and its posts, and 3–5
+nearby city pages. There is no delivery page and no pricing page: those facts are stated on
+the page itself. External links go only to URLs in `docs/reference/external-link-library.md`
+(breed and health authorities, gov.uk for law topics); never to a competitor, a marketplace,
+or a local business.
 
 **UK geography.** The nearby-city cluster is the other rows of `data/locations.json`, picked
 by real proximity to the target city. Distance and delivery are expressed only as
@@ -281,8 +285,8 @@ That row is a five-word stub today, carrying `"robots": "noindex, follow"` and
 rewritten here.
 
 **Question file: `data/queries/blue-staffy-puppies-manchester-uk.json`.** Every pooled page
-was a marketplace or directory with no body H2 left once the extractor had run (one was a
-challenge page, recorded as blocked), so `section_target.total` is the floor, 9; the three
+was a marketplace or directory, and the build's cleaning left none of them a body H2 (one was
+a challenge page, recorded as blocked), so `section_target.total` is the floor, 9; the three
 `extra_sections` are temperament, paperwork and health. Nothing below is an approved outline;
 it is the shape the list takes from that file, in the frame order of step 2: nine body
 sections, three in each gap.
@@ -298,11 +302,11 @@ sections, three in each gap.
 | 7 | FAQ — top | the `top` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` c |
 | 8 | Our Litter and What Each Puppy Costs | `data/puppies.json`; `PuppyCard` c |
 | 9 | Getting Your Puppy to Manchester | `settings.delivery_*`, or collection from `settings.location_label` |
-| 10 | Health Testing and the Paperwork You Get | `TrustStrip` facts; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
+| 10 | Reserving a Puppy With a £500 Refundable Deposit | `settings.deposit_gbp`, `settings.deposit_refundable` |
 | 11 | Review — middle | `data/reviews.json` |
 | 12 | FAQ — middle | the `middle` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` c |
 | 13 | Raised in Our Home, Not a Kennel | `rules/copy.md` evidence loop |
-| 14 | What a Blue Staffy Is Like to Live With | breed facts; lifespan 12–14 years |
+| 14 | Visiting Us in Carlisle Before You Decide | `data/faq.json` → row `contact-visit`; visits by appointment only |
 | 15 | Cities Near Manchester We Deliver To | sibling rows of `data/locations.json` |
 | 16 | Newsletter | `InfoCard` b, `kind="recommendation"`, `label="Newsletter"` |
 | 17 | Extra section (question pool) | `extra_sections[0]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |

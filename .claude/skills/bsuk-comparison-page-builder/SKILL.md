@@ -109,7 +109,7 @@ Pillar structure (adapt per page; hub compares staffy vs ALL species with 2–3 
 | 20 | H2 | Available Puppies / Breeding Pair / Fertile Eggs cards | link-out, don't re-teach; sold ≠ InStock |
 | 21 | H2 | Owner Story (BAB) + Reviews | REAL reviews only — never fabricate |
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
-| 23 | H2 | FAQ (8–12 PAA questions, QAB) | FAQPage JSON-LD, visible accordion |
+| 23 | H2 | FAQ — the question file's three blocks (top, middle, bottom), exactly the picks in `data/queries/<slug>.json`, each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
 | 24 | H2 | Blog / further-reading cards | 3 relevant posts |
 | 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; `idPrefix` if 2 forms |
 
