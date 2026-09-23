@@ -301,3 +301,53 @@ def pick_extra(questions, covered):
         extras.append({"topic": t, "uncovered": t not in covered, "question_ids": ids,
                        "heading": None})
     return extras
+
+
+def _read_json(path, default):
+    return json.loads(path.read_text(encoding="utf-8")) if path.is_file() else default
+
+
+def _write_json(path, data):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def load_settings(root=ROOT):
+    return _read_json(Path(root) / "data/settings.json", {})
+
+
+def load_spend(root=ROOT):
+    return _read_json(Path(root) / "data/queries/spend.json", [])
+
+
+def record(slug, source, endpoint, cost, root=ROOT, now=None):
+    now = now or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    log = load_spend(root)
+    log.append({"ts": now, "slug": slug, "source": source, "endpoint": endpoint,
+                "cost_usd": float(cost)})
+    _write_json(Path(root) / "data/queries/spend.json", log)
+
+
+def spend_for(slug, root=ROOT, day=None):
+    return round(sum(e["cost_usd"] for e in load_spend(root)
+                     if e["slug"] == slug and (day is None or e["ts"].startswith(day))), 6)
+
+
+def preflight(slug, source, root=ROOT, refresh=False, today=None):
+    """0 proceed · 3 cached · 4 a budget would be exceeded. Fails closed without a budget."""
+    today = today or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+    if (Path(root) / "data/queries/raw" / slug / f"{source}.json").is_file() and not refresh:
+        return EXIT_CACHED
+    if source not in PAID_SOURCES:
+        return EXIT_OK
+    s = load_settings(root)
+    page_cap, total_cap = s.get("query_budget_usd"), s.get("query_total_budget_usd")
+    if page_cap is None or total_cap is None:
+        return EXIT_BUDGET
+    log = load_spend(root)
+    seen = [e["cost_usd"] for e in log if e["source"] == source]
+    typical = max(seen) if seen else s.get("query_typical_call_usd", DEFAULT_TYPICAL_CALL_USD)
+    total = sum(e["cost_usd"] for e in log)
+    if spend_for(slug, root, day=today) + typical > page_cap or total + typical > total_cap:
+        return EXIT_BUDGET
+    return EXIT_OK

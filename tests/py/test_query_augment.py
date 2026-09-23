@@ -431,3 +431,59 @@ def test_clean_h2s_keeps_content_headings_that_contain_a_furniture_word():
                "Our Reviews and Health Guarantee", "Health Testing Reviews", "Reviews of Puppy Food"]
     assert Q.clean_h2s(content) == content
     assert Q.clean_h2s(FURNITURE + ["How to Enquire About a Puppy"]) == []
+
+
+# --- spend / preflight --------------------------------------------------------------
+
+NOW = "2026-09-23T10:00:00Z"
+
+
+def test_record_appends_to_the_spend_log(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "serp_google", "serp_organic_live_advanced", 0.002, root, now=NOW)
+    Q.record("m", "ai_engines", "llm_response", 0.01, root, now=NOW)
+    log = json.loads((root / "data/queries/spend.json").read_text())
+    assert [e["cost_usd"] for e in log] == [0.002, 0.01]
+    assert log[0] == {"ts": NOW, "slug": "m", "source": "serp_google",
+                      "endpoint": "serp_organic_live_advanced", "cost_usd": 0.002}
+
+
+def test_preflight_cached_makes_no_call(tmp_path):
+    root = make_root(tmp_path)
+    write_raw(root, "m", "serp_google", {"source": "serp_google", "status": "ok", "questions": []})
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_CACHED
+    assert Q.preflight("m", "serp_google", root, refresh=True, today="2026-09-23") == Q.EXIT_OK
+
+
+def test_preflight_refuses_over_the_page_budget(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "ai_engines", "llm_response", 0.46, root, now=NOW)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+    # another day is another run
+    assert Q.preflight("m", "serp_google", root, today="2026-09-24") == Q.EXIT_OK
+
+
+def test_preflight_refuses_over_the_total_budget(tmp_path):
+    root = make_root(tmp_path)
+    for slug in ("a", "b", "c"):
+        Q.record(slug, "ai_engines", "llm_response", 0.32, root, now=NOW)
+    assert Q.preflight("d", "serp_google", root, today="2026-09-30") == Q.EXIT_BUDGET
+
+
+def test_preflight_uses_the_largest_observed_cost_for_that_source(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("x", "ai_engines", "llm_response", 0.30, root, now=NOW)
+    # page m has spent nothing, but one ai_engines call has been seen to cost 0.30
+    Q.record("m", "serp_google", "serp", 0.25, root, now=NOW)
+    assert Q.preflight("m", "ai_engines", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+def test_preflight_free_source_is_never_budget_limited(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "ai_engines", "llm_response", 0.9, root, now=NOW)
+    assert Q.preflight("m", "threads", root, today="2026-09-23") == Q.EXIT_OK
+
+
+def test_preflight_without_a_budget_setting_fails_closed(tmp_path):
+    root = make_root(tmp_path, settings={"delivery_min_gbp": 200})
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
