@@ -13,7 +13,8 @@ scripts/query_coverage_check.py gates.
   query_augment.py SLUG --page-type TYPE --keyword "..." --route /path/
       exit 0 written · 5 too few fact-backed questions to fill the FAQ blocks
       · 6 an input file is unparseable or the wrong shape (nothing written)
-  Every mode: exit 2 for bad usage (a slug outside [a-z0-9-], a route not ending /SLUG/).
+  Every mode: exit 1 internal error (a bug; nothing written) · 2 bad usage (a slug outside
+  [a-z0-9-], a route not ending /SLUG/, more than one mode).
 
 Spec: docs/superpowers/specs/2026-09-23-query-augmentation-design.md §3–§9.
 """
@@ -32,7 +33,8 @@ ROOT = Path(__file__).resolve().parents[1]
 PAID_SOURCES = ("serp_google", "serp_bing", "ai_engines")
 CANDIDATE_SOURCES = PAID_SOURCES + ("threads",)
 PAGE_TYPES = ("location", "comparison", "blog", "puppy")
-EXIT_OK, EXIT_USAGE, EXIT_CACHED, EXIT_BUDGET, EXIT_SHORT, EXIT_BAD_INPUT = 0, 2, 3, 4, 5, 6
+EXIT_OK, EXIT_INTERNAL, EXIT_USAGE, EXIT_CACHED, EXIT_BUDGET, EXIT_SHORT, EXIT_BAD_INPUT = (
+    0, 1, 2, 3, 4, 5, 6)
 DEFAULT_TYPICAL_CALL_USD = 0.05
 
 BLOCKS = ("top", "middle", "bottom")
@@ -523,7 +525,20 @@ def load_previous(slug, root=ROOT):
             and all(isinstance(e, dict) and isinstance(e.get("topic"), str)
                     for e in d.get("extra_sections", []))):
         raise BadInput(path, "not a question file (questions / extra_sections malformed)")
+    for i, q in enumerate(d.get("questions", [])):
+        if not _valid_covered_by(q.get("covered_by")):
+            raise BadInput(path, f"questions[{i}].covered_by must be null or "
+                                 '{"where": "faq"|"heading", "text": non-empty string}')
+    for i, e in enumerate(d.get("extra_sections", [])):
+        if not _opt_str(e.get("heading")):
+            raise BadInput(path, f"extra_sections[{i}].heading must be a string or null")
     return d
+
+
+def _valid_covered_by(c):
+    return c is None or (isinstance(c, dict) and set(c) == {"where", "text"}
+                         and c["where"] in ("faq", "heading")
+                         and isinstance(c["text"], str) and c["text"].strip() != "")
 
 
 def _question_id(norm):
@@ -539,29 +554,31 @@ def _utc_today():
 def _carry_fills(prev, questions, extras):
     """Copy covered_by (matched by normalised question text) and headings (by topic).
 
-    Returns (kept, dropped): fills that found a home in this build, and fills that did not.
+    Returns {"kept", "dropped", "kept_covered_by", "kept_headings"}: kept is the fills that
+    found a home in this build (covered_by + headings), dropped the ones that did not.
     """
     if not prev:
-        return 0, 0
+        return {"kept": 0, "dropped": 0, "kept_covered_by": 0, "kept_headings": 0}
     covered = {normalise(q["question"]): q.get("covered_by") for q in prev.get("questions", [])
                if q.get("covered_by")}
     heads = {e["topic"]: e.get("heading") for e in prev.get("extra_sections", [])
              if e.get("heading")}
-    kept = 0
+    kept_c = kept_h = 0
     for q in questions:
         n = normalise(q["question"])
         if n in covered:
             q["covered_by"] = covered[n]
-            kept += 1
+            kept_c += 1
     for e in extras:
         if e["topic"] in heads:
             e["heading"] = heads[e["topic"]]
-            kept += 1
-    return kept, len(covered) + len(heads) - kept
+            kept_h += 1
+    return {"kept": kept_c + kept_h, "dropped": len(covered) + len(heads) - kept_c - kept_h,
+            "kept_covered_by": kept_c, "kept_headings": kept_h}
 
 
 def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
-    """The question file as a dict, with "_fills": (kept, dropped) for the caller to pop.
+    """(data, fills): the question file as a dict, and the fill counts from _carry_fills.
 
     Raises Short (with .blocked = [(block, question)]) when a FAQ block cannot be filled, and
     BadInput when an input file is unparseable or the wrong shape.
@@ -597,10 +614,11 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
     for q in questions:
         q["must_answer"] = bool(q["faq"]) or q["id"] in extra_ids
     fills = _carry_fills(prev, questions, extras)
-    return {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
+    data = {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
             "fetched": today, "spend_usd": spend_for(slug, root), "sources": status,
             "competitors": rows, "section_target": target, "extra_sections": extras,
-            "questions": questions, "_fills": fills}
+            "questions": questions}
+    return data, fills
 
 
 def check_schema(data):
@@ -656,7 +674,7 @@ def main(argv=None):
         ap.error(f"--route must match ^/([a-z0-9-]+/)*$ and end in /{slug}/, got {a.route!r}")
     out = root / "data/queries" / f"{slug}.json"
     try:
-        data = build(slug, a.page_type, a.keyword, a.route, root, a.today)
+        data, fills = build(slug, a.page_type, a.keyword, a.route, root, a.today)
     except BadInput as e:
         print(f"query_augment.py: bad input: {e}", file=sys.stderr)
         return EXIT_BAD_INPUT
@@ -666,13 +684,19 @@ def main(argv=None):
         for block, question in e.blocked:
             print(f"  blocked ({block}): {question}")
         return EXIT_SHORT
-    kept, dropped = data.pop("_fills", (0, 0))
-    check_schema(data)
+    import jsonschema   # only build needs it, so preflight/record work without it
+    try:
+        check_schema(data)
+    except jsonschema.ValidationError as e:   # a bug in this script, not in the inputs
+        print(f"query_augment.py: internal error: the built file breaks "
+              f"schemas/queries.schema.json ({e.message}); nothing written", file=sys.stderr)
+        return EXIT_INTERNAL
     _write_json(out, data)
     faq = sum(1 for q in data["questions"] if q["faq"])
     print(f"wrote data/queries/{slug}.json — {len(data['questions'])} questions, {faq} FAQ, "
           f"section target {data['section_target']['total']}; "
-          f"kept {kept} fills, dropped {dropped}")
+          f"kept {fills.get('kept_covered_by', 0)} covered_by and "
+          f"{fills.get('kept_headings', 0)} headings, dropped {fills['dropped']}")
     return EXIT_OK
 
 

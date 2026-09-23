@@ -745,7 +745,7 @@ def test_the_write_message_counts_kept_and_dropped_fills(tmp_path):
     data["extra_sections"][0]["heading"] = "Kept Heading"
     f.write_text(json.dumps(data))
     r = run(root, *BUILD)
-    assert "kept 2 fills, dropped 1" in r.stdout
+    assert "kept 1 covered_by and 1 headings, dropped 1" in r.stdout
 
 
 @pytest.mark.parametrize("name,payload", [
@@ -849,17 +849,52 @@ def test_a_bank_row_without_a_string_q_is_bad_input(tmp_path):
         Q.bank_candidates(root)
 
 
-def test_a_built_dict_that_breaks_the_schema_is_a_bug_and_raises(tmp_path, monkeypatch):
+def test_a_built_dict_that_breaks_the_schema_is_an_internal_error(tmp_path, monkeypatch, capsys):
     root = make_root(tmp_path); seed(root)
-    monkeypatch.setattr(Q, "build", lambda *a, **k: {"slug": "m"})
-    with pytest.raises(jsonschema.ValidationError):
-        Q.main(["--root", str(root), *BUILD])
+    monkeypatch.setattr(Q, "build", lambda *a, **k: ({"slug": "m"},
+                                                     {"kept": 0, "dropped": 0}))
+    assert Q.main(["--root", str(root), *BUILD]) == 1
+    err = capsys.readouterr().err.strip().splitlines()
+    assert len(err) == 1 and "internal error" in err[0] and "Traceback" not in err[0]
     assert not (root / "data/queries/m.json").exists()
 
 
 def test_build_default_today_is_the_utc_date(tmp_path, monkeypatch):
     root = make_root(tmp_path); seed(root)
-    data = Q.build("m", "location", "k", ROUTE, root)
+    data, _ = Q.build("m", "location", "k", ROUTE, root)
     import datetime as dt
     assert data["fetched"] == dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
 
+
+
+def test_build_returns_the_file_and_its_fill_counts(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    data, fills = Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    assert "_fills" not in data
+    jsonschema.validate(data, SCHEMA)
+    assert fills["kept"] == 0 and fills["dropped"] == 0
+
+
+@pytest.mark.parametrize("where,value", [
+    ("covered_by", {"where": "body", "text": "x"}),
+    ("covered_by", "yes"),
+    ("covered_by", {"where": "faq", "text": ""}),
+    ("covered_by", {"where": "faq", "text": "x", "extra": 1}),
+    ("heading", 5),
+])
+def test_a_bad_builder_fill_is_bad_input(tmp_path, where, value):
+    root = make_root(tmp_path); seed(root)
+    assert run(root, *BUILD).returncode == 0
+    f = root / "data/queries/m.json"
+    data = json.loads(f.read_text())
+    if where == "heading":
+        data["extra_sections"][0]["heading"] = value
+    else:
+        data["questions"][0]["covered_by"] = value
+    f.write_text(json.dumps(data))
+    before = f.read_text()
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_BAD_INPUT
+    lines = r.stderr.strip().splitlines()
+    assert len(lines) == 1 and "bad input" in lines[0] and "m.json" in lines[0]
+    assert f.read_text() == before
