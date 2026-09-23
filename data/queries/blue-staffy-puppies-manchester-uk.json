@@ -7,7 +7,7 @@
   "spend_usd": 0.2,
   "sources": {
     "serp_google": "ok",
-    "serp_bing": "fallback",
+    "serp_bing": "ok",
     "ai_engines": "ok",
     "threads": "ok",
     "bank": "ok",

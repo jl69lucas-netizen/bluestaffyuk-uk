@@ -280,6 +280,14 @@ def main(argv=None):
         except jsonschema.ValidationError as e:
             problems.append(f"{f.stem}: invalid question file — {e.message}")
             continue
+        if q["slug"] != f.stem:
+            problems.append(f"{f.stem}: invalid question file — slug '{q['slug']}' does not "
+                            f"match the file name '{f.stem}'")
+            continue
+        if route_slug(q["route"]) != q["slug"]:
+            problems.append(f"{f.stem}: invalid question file — route '{q['route']}' does not "
+                            f"end in /{q['slug']}/")
+            continue
         page = dist_path(q["route"].strip("/") or "index", root / "dist")
         if not page.is_file():
             unbuilt += 1

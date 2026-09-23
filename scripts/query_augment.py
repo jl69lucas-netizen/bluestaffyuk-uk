@@ -10,6 +10,8 @@ scripts/query_coverage_check.py gates.
   query_augment.py --preflight SLUG --source SOURCE [--refresh]
       exit 0 proceed · 3 cached, make no call · 4 a budget would be exceeded
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
+      exit 0 recorded · 2 refused (a free source such as serp_bing, a bad cost, or a damaged
+      spend log; nothing written)
   query_augment.py --extract-h2 FILE.html
       prints {"h2": [content H2s], "h2_all": N, "blocked": bool} (advert cards and
       navigation dropped; blocked = a bot challenge page) — how a competitors.json page's
@@ -37,8 +39,10 @@ from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
 
-PAID_SOURCES = ("serp_google", "serp_bing", "ai_engines")
-CANDIDATE_SOURCES = PAID_SOURCES + ("threads",)
+PAID_SOURCES = ("serp_google", "ai_engines")
+# Bing is read free in the browser (spec §14.5) and threads come from the recency ladder:
+# neither is ever budget-checked or recorded. Order is merge order: first phrasing wins.
+CANDIDATE_SOURCES = ("serp_google", "serp_bing", "ai_engines", "threads")
 PAGE_TYPES = ("location", "comparison", "blog", "puppy")
 EXIT_OK, EXIT_INTERNAL, EXIT_USAGE, EXIT_CACHED, EXIT_BUDGET, EXIT_SHORT, EXIT_BAD_INPUT = (
     0, 1, 2, 3, 4, 5, 6)
@@ -754,6 +758,20 @@ def spend_for(slug, root=ROOT, day=None):
                      if e["slug"] == slug and (day is None or e["ts"].startswith(day))), 6)
 
 
+def _page_spend(slug, root):
+    """spend_for, with an unreadable or malformed spend log turned into BadInput."""
+    path = Path(root) / "data/queries/spend.json"
+    log = _load(path, [])
+    if not isinstance(log, list):
+        raise BadInput(path, "top level must be a list")
+    for i, e in enumerate(log):
+        if not (isinstance(e, dict) and isinstance(e.get("slug"), str)
+                and isinstance(e.get("ts"), str) and _finite(e.get("cost_usd"))):
+            raise BadInput(path, f"entry {i} must have a string slug and ts and a finite "
+                                 "cost_usd")
+    return spend_for(slug, root)
+
+
 def _is_cached(slug, source, root):
     """A saved connector response means the call was already bought. A normalised file
     counts only when its status is "ok": a "fallback" or "NOT FETCHED" file never blocks the
@@ -1033,16 +1051,20 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
         q["must_answer"] = bool(q["faq"]) or q["id"] in extra_ids
     fills = _carry_fills(prev, questions, extras)
     data = {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
-            "fetched": today, "spend_usd": spend_for(slug, root), "sources": status,
+            "fetched": today, "spend_usd": _page_spend(slug, root), "sources": status,
             "competitors": rows, "section_target": target, "extra_sections": extras,
             "questions": questions}
     return data, fills
 
 
+def _jsonschema():
+    import jsonschema   # only build needs it, so preflight/record work without it
+    return jsonschema
+
+
 def check_schema(data):
     """A built dict that breaks schemas/queries.schema.json is a bug in this script: raise."""
-    import jsonschema   # only build needs it, so preflight/record work without it
-    jsonschema.validate(data, json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
+    _jsonschema().validate(data, json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
 
 
 def main(argv=None):
@@ -1093,6 +1115,10 @@ def main(argv=None):
                EXIT_BUDGET: "budget would be exceeded — stop and report"}[code])
         return code
     if a.record:
+        if a.source == "serp_bing":
+            print("query_augment.py: --record refused: Bing is read free — nothing to record",
+                  file=sys.stderr)
+            return EXIT_USAGE
         if a.source not in PAID_SOURCES or not a.endpoint or a.cost is None:
             ap.error("--record needs a paid --source, --endpoint and --cost")
         try:
@@ -1118,10 +1144,9 @@ def main(argv=None):
         for block, question in e.blocked:
             print(f"  blocked ({block}): {question}")
         return EXIT_SHORT
-    import jsonschema   # only build needs it, so preflight/record work without it
     try:
         check_schema(data)
-    except jsonschema.ValidationError as e:   # a bug in this script, not in the inputs
+    except _jsonschema().ValidationError as e:   # a bug in this script, not in the inputs
         print(f"query_augment.py: internal error: the built file breaks "
               f"schemas/queries.schema.json ({e.message}); nothing written", file=sys.stderr)
         return EXIT_INTERNAL

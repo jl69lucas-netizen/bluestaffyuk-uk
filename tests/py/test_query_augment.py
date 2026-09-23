@@ -1656,3 +1656,40 @@ def test_aftercare_routes_to_trust_unless_delivery_words_come_first(text, topic)
 ])
 def test_support_after_a_time_or_a_procedure_is_not_aftercare(text):
     assert Q.topic_of(text)[0] != "trust"
+
+
+# --- whole-branch review: Bing is free, a malformed spend log is bad input ---------------
+
+def test_bing_is_a_free_source():
+    assert "serp_bing" not in Q.PAID_SOURCES and "serp_bing" in Q.CANDIDATE_SOURCES
+    assert Q.CANDIDATE_SOURCES == ("serp_google", "serp_bing", "ai_engines", "threads")
+
+
+def test_preflight_bing_is_never_budget_checked(tmp_path):
+    root = make_root(tmp_path, settings={**SETTINGS, "query_budget_usd": 0.0,
+                                         "query_total_budget_usd": 0.0})
+    assert Q.preflight("m", "serp_bing", root, today="2026-09-23") == Q.EXIT_OK
+    write_raw(root, "m", "serp_bing", {"source": "serp_bing", "status": "ok", "questions": []})
+    assert Q.preflight("m", "serp_bing", root, today="2026-09-23") == Q.EXIT_CACHED
+
+
+def test_record_refuses_bing_with_exit_2(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "--record", "m", "--source", "serp_bing", "--endpoint", "serp", "--cost", "0.01")
+    assert r.returncode == 2
+    assert "Bing is read free — nothing to record" in r.stderr
+    assert not (root / "data/queries/spend.json").exists()
+
+
+@pytest.mark.parametrize("log", ['[{"ts": 1}]', '{"not": "a list"}', "[1, 2]",
+                                 '[{"slug": "m", "ts": "2026-09-23", "cost_usd": "x"}]', "[{"])
+def test_build_with_a_malformed_spend_log_is_bad_input(tmp_path, log):
+    root = make_root(tmp_path); seed(root)
+    (root / "data/queries").mkdir(parents=True, exist_ok=True)
+    (root / "data/queries/spend.json").write_text(log)
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_BAD_INPUT, r.stderr
+    lines = r.stderr.strip().splitlines()
+    assert len(lines) == 1 and "bad input" in lines[0] and "spend.json" in lines[0]
+    assert "Traceback" not in r.stderr
+    assert not (root / "data/queries/m.json").exists()

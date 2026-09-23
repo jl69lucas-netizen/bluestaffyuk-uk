@@ -4,11 +4,15 @@ import pathlib
 import subprocess
 import sys
 
+import pytest
+
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[2] / "scripts"))
 import query_coverage_check as G  # noqa: E402
 
 SCRIPT = pathlib.Path(__file__).resolve().parents[2] / "scripts" / "query_coverage_check.py"
 ROUTE = "/uk-locations/blue-staffy-puppies-manchester-uk/"
+SLUG = "blue-staffy-puppies-manchester-uk"   # the route's last segment, and the file's name
+QFILE = f"data/queries/{SLUG}.json"
 
 
 def faq_block(questions, answers=True, h3=True):
@@ -54,7 +58,7 @@ def qfile(blocks=(5, 5, 7), total=6, extra_heading="Life in a Manchester Flat"):
                        "topic": "price", "block": name, "fact_source": "data/settings.json",
                        "must_answer": True, "faq": name, "blocked": None,
                        "covered_by": {"where": "faq", "text": text}})
-    return {"slug": "m", "page_type": "location", "primary_keyword": "k", "route": ROUTE,
+    return {"slug": SLUG, "page_type": "location", "primary_keyword": "k", "route": ROUTE,
             "fetched": "2026-09-23", "spend_usd": 0.0, "sources": {}, "competitors": [],
             "section_target": {"matched": total - 3, "set_by": None, "extra": 3, "floor": 9,
                                "total": total},
@@ -214,7 +218,7 @@ def test_only_direct_child_details_count_as_questions():
 
 def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
-    (tmp_path / "data/queries/m.json").write_text(json.dumps(qfile()))
+    (tmp_path / QFILE).write_text(json.dumps(qfile()))
     (tmp_path / "data/queries/spend.json").write_text("[]")
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
@@ -224,7 +228,7 @@ def test_main_skips_unbuilt_pages_and_reports(tmp_path):
 
 def build(tmp_path, q, rebuilt=True, keys=None):
     (tmp_path / "data/queries").mkdir(parents=True)
-    (tmp_path / "data/queries/m.json").write_text(json.dumps(q))
+    (tmp_path / QFILE).write_text(json.dumps(q))
     out = tmp_path / "dist" / ROUTE.strip("/")
     out.mkdir(parents=True)
     (out / "index.html").write_text(page_html())
@@ -275,7 +279,7 @@ def test_main_fails_a_built_page_with_problems(tmp_path):
 
 def test_main_rejects_an_invalid_question_file(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
-    (tmp_path / "data/queries/m.json").write_text(json.dumps({"slug": "m"}))
+    (tmp_path / QFILE).write_text(json.dumps({"slug": "m"}))
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
     assert r.returncode == 1 and "invalid question file" in r.stdout
@@ -283,7 +287,7 @@ def test_main_rejects_an_invalid_question_file(tmp_path):
 
 def test_main_reports_a_question_file_that_is_not_json(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
-    (tmp_path / "data/queries/m.json").write_text("{not json")
+    (tmp_path / QFILE).write_text("{not json")
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
     assert r.returncode == 1 and "invalid question file" in r.stdout and "Traceback" not in r.stderr
@@ -340,3 +344,19 @@ def test_a_location_page_with_one_faq_block_fails():
     q = qfile()
     html = one_block_page([i["question"] for i in q["questions"]])
     assert any("FAQ blocks: 1, want 3" in p for p in G.check_page(q, html))
+
+
+@pytest.mark.parametrize("field,value,needle", [
+    ("slug", "leeds", f"slug 'leeds' does not match the file name '{SLUG}'"),
+    ("route", "/uk-locations/other/", f"route '/uk-locations/other/' does not end in /{SLUG}/"),
+])
+def test_main_reports_a_question_file_whose_slug_or_route_disagrees(tmp_path, field, value,
+                                                                    needle):
+    (tmp_path / "data/queries").mkdir(parents=True)
+    q = qfile()
+    q[field] = value
+    (tmp_path / QFILE).write_text(json.dumps(q))
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1, r.stdout
+    assert f"{SLUG}: invalid question file — {needle}" in r.stdout
