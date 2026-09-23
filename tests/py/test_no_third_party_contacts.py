@@ -17,12 +17,18 @@ RESEARCH = "docs/research"
 SCANNED = (RAW, RESEARCH)
 
 PATTERNS = {
-    # UK mobile (07… / +44 7…) and any +44 number: 9–10 digits after the prefix
-    "phone": re.compile(r"(?<![\w+])(?:\+44[\s-]?(?:\(0\)[\s-]?)?|0)7(?:[\s-]?\d){8,9}(?!\d)"
-                        r"|\+44[\s-]?(?:\(0\)[\s-]?)?[1-9](?:[\s-]?\d){8,9}(?!\d)"),
-    "email": re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"),
-    "whatsapp": re.compile(r"wa\.me/\+?\d+"),
-    "postcode": re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}\b"),
+    # Any UK number, mobile or landline: national 0 + 9–10 digits (01/02/03/07/08…), or
+    # +44 / 0044 (optionally "(0)") + 9–10 digits. Spaces, hyphens and brackets may sit between
+    # digits. The digit count is the guard: a 13-digit ID or a date never fits it, and a number
+    # glued to a word, a path, a query value or a version string is not a phone.
+    "phone": re.compile(r"(?<![\w+./=-])(?:(?:\+|00)44[\s-]?(?:\(0\)[\s-]?)?|\(?0)[1-9]"
+                        r"(?:[\s()-]{0,2}\d){8,9}(?![\w/-]|\.\d)"),
+    # An image name like logo@2x.png is not an address: the last label may not be an image type.
+    "email": re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"
+                        r"(?![A-Za-z])(?<!\.png)(?<!\.jpg)(?<!\.jpeg)(?<!\.gif)(?<!\.webp)"
+                        r"(?<!\.svg)(?<!\.avif)"),
+    "whatsapp": re.compile(r"wa\.me/\+?\d+|whatsapp\.com/send/?\?phone=\+?\d+"),
+    "postcode": re.compile(r"\b[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}\b", re.I),
 }
 
 
@@ -60,6 +66,18 @@ def contact_hits(root=ROOT, dirs=SCANNED):
     ("https://wa.me/447712345678", "whatsapp"),
     ("Deansgate, Manchester M3 4LZ", "postcode"),
     ("Leeds LS1 4DY", "postcode"),
+    ("leeds ls1 4dy", "postcode"),
+    ("office 0113 496 0000", "phone"),
+    ("ring 01228 123456", "phone"),
+    ("(0113) 496 0000", "phone"),
+    ("0161-496-0000", "phone"),
+    ("020 7946 0000", "phone"),
+    ("freephone 0800 123 4567", "phone"),
+    ("0044 7712 345678", "phone"),
+    ("0044 113 496 0000", "phone"),
+    ("call 07712345678.", "phone"),
+    ("https://api.whatsapp.com/send?phone=447712345678", "whatsapp"),
+    ("https://wa.me/+447712345678", "whatsapp"),
 ])
 def test_the_detector_finds_each_kind(text, kind):
     assert [k for _, k, _ in find_contacts(text)] == [kind]
@@ -68,6 +86,8 @@ def test_the_detector_finds_each_kind(text, kind):
 @pytest.mark.parametrize("text", [
     "L2-HGA and HC tests", "price £1,500 deposit £500", "2026-09-23T10:00:00Z",
     "cost_usd 0.0725", "id 76328", "serp position 7", "M62 motorway", "page 0161",
+    "12/25", "7/12", "2026-09-23", "23/09/2026", "£1,500", "id 0771234567890",
+    "ref 0113496000012", "logo@2x.png", "hero@3x.webp", "v0.1.1234",
 ])
 def test_the_detector_ignores_ordinary_data(text):
     assert find_contacts(text) == []
@@ -75,8 +95,12 @@ def test_the_detector_ignores_ordinary_data(text):
 
 def main(argv=None):
     """Scan files or folders given on the command line: exit 1 naming each hit, else 0."""
+    args = sys.argv[1:] if argv is None else argv
+    if not args:
+        print("contacts: name at least one file or folder to scan")
+        return 2
     hits = []
-    for arg in (sys.argv[1:] if argv is None else argv):
+    for arg in args:
         base = pathlib.Path(arg)
         if not base.exists():
             print(f"contacts: {arg} does not exist")
@@ -134,6 +158,7 @@ def test_the_scan_command_checks_uncommitted_reports_before_hand_off(tmp_path, c
     dirty.write_text("Phone shown: yes\n", encoding="utf-8")
     assert main([str(tmp_path)]) == 0
     assert main([str(tmp_path / "missing")]) == 2
+    assert main([]) == 2
 
 
 if __name__ == "__main__":

@@ -1,0 +1,10 @@
+{
+  "_note": "Invented fixture: a homepage scrape of old-staffy-breeder.co.uk whose final URL is another domain, in the shape firecrawl_scrape returns.",
+  "markdown": "# Staffy Puppies for Sale\n\nBrowse blue staffy puppies for sale from breeders across the UK.\n\n## Latest listings\n\n- Blue staffy puppies in Leeds\n- Staffordshire bull terrier puppies in Birmingham\n\n## Why buy through us\n\nEvery advert is checked before it goes live.",
+  "metadata": {
+    "title": "Staffy Puppies for Sale | Example Puppy Market",
+    "sourceURL": "https://old-staffy-breeder.co.uk/",
+    "url": "https://www.example-puppy-market.com/staffordshire-bull-terrier/",
+    "statusCode": 200
+  }
+}

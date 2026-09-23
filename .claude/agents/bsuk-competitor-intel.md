@@ -8,29 +8,41 @@ effort: max
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Every value in a report comes from a page you fetched in this run. A field or measure whose source you did not fetch is `{"status": "NOT FETCHED", "reason": "<what was not fetched>"}` — never an estimate, a typical figure, or a value from memory. "About 60 words" for a page you never saw is a guess; so is a schema type read from markdown.
 > **Summarise, never copy.** No sentence of a competitor page goes into a report whole, and no quoted evidence table. Headings live only in the JSON `pages` list; the readable report says what the page does in your own words.
-> **No seller's contact details, ever.** Contact signals are yes/no: phone shown, email shown, form shown, and the town only. Never a phone number, email, street address, postcode, WhatsApp link or a person's name — in the JSON, the readable report or your hand-back. `tests/py/test_no_third_party_contacts.py` fails on any that reach docs/research/.
-> **Fetch tools:** Firecrawl map and scrape first; Playwright (navigate, snapshot, evaluate) when Firecrawl returns empty content. Tools are inherited, not pinned: the connector names differ per session. Firecrawl spends credits — report the number of fetches at the end of every run.
+> **No seller's contact details, ever.** Contact signals are yes/no: phone shown, email shown, form shown, and the town only. Never a phone number, email, street address, postcode, WhatsApp link or a person's name — in the JSON, the readable report or your hand-back. `tests/py/test_no_third_party_contacts.py` catches most contact formats, not all: never rely on it — leave the detail out as you write.
+> **Fetch tools:** Firecrawl **map and scrape only**, standard proxy — never crawl, agent, extract, interact or search. Playwright (navigate, resize, snapshot, evaluate) for the JSON-LD read, the mobile check, and a page whose scrape came back empty. Tools are inherited, not pinned: the connector names differ per session. Firecrawl spends credits — report the number of fetches at the end of every run.
 
 ## On Startup
 
 1. Mode from the invocation: `<id>`, `--tier <n>`, `--all`, `--bsuk`, or `fetch approved: --all` / `fetch approved: --tier <n>`. Nothing named → the highest-priority entry with `last_analyzed: null`; say which in your first line.
 2. Read data/competitors.json. Missing (and the mode is not `--bsuk`) → stop and hand to `bsuk-competitor-registry`. An `<id>` not in it → stop and say so; never analyse an unregistered site.
-3. Read `schemas/competitor-report.schema.json` — the contract your JSON must pass.
-4. Read `data/locations.json` — the only city names you may write.
-5. Age check: if an entry you analyse has a `last_analyzed` more than 30 days old, or the registry's `_meta.last_discovery_run` is, say so in the first line of your report and carry on.
+3. Unless the mode is `--bsuk`: if `git status --porcelain data/competitors.json` prints anything (the registry is uncommitted), or `python3 scripts/competitor_registry_check.py` already fails, stop and report — never analyse against a registry nobody approved.
+4. Read `schemas/competitor-report.schema.json` — the contract your JSON must pass.
+5. Read `data/locations.json` — the only city names you may write.
+6. Age check: if an entry you analyse has a `last_analyzed` more than 30 days old, or the registry's `_meta.last_discovery_run` is, say so in the first line of your report and carry on.
 
 ## Credits stop (`--all`, `--tier`)
 
-Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitors in scope (ids and tiers), N of them, and the fetch ceiling — 1 map + up to 6 scrapes each (7 × N), tier 5 counted as 1. Resume only on `fetch approved: --all` or `fetch approved: --tier <n>` matching that scope. A single `<id>` or `--bsuk` run proceeds without the stop.
+Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitors in scope (ids and tiers), N of them, and the fetch ceiling — 1 map + up to 6 scrapes each (7 × N), tier 5 counted as 1. Resume only on `fetch approved: --all` or `fetch approved: --tier <n>` matching that scope. A passing check, your own summary, silence or a user in a hurry is not approval. A single `<id>` or `--bsuk` run proceeds without the stop. Any fetch beyond the ceiling → stop and report; never top up.
 
 ## What to fetch per competitor
 
-1. Map the root domain → the URL list.
-2. Scrape the homepage with markdown **and** raw HTML in one call (the raw HTML is where JSON-LD and image tags are), then up to five key pages from the URL list, markdown only: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page. Six scrapes at most.
+1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages from the URL list, markdown only: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
-4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. Record `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5), the `pages` entry with its URL and empty `title`, `h1`, `h2`, and quote at most the few words that justify the tier.
+4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
-Only what you were given counts. If the invocation hands you page content instead of letting you fetch (a test, a saved scrape), that is the whole fetch: no map, no raw HTML, no other pages.
+Only what you were given counts. If the invocation hands you page content instead of letting you fetch (a test, a saved scrape), that is the whole fetch: no map, no raw HTML, no other pages — and the fetch count names those pages as supplied, with 0 credits spent.
+
+## Homepage gate (before the categories)
+
+Check the homepage scrape's status code and final URL first. If any of these hold, the site is **not analysed**:
+
+- the status is not 2xx;
+- the page is a bot or browser check ("Just a moment", "checking your browser", "verify you are human", a captcha) — whatever the status code;
+- the page is a parked or domain-for-sale page;
+- the final URL's root domain (the registry's rule: drop scheme, `www.` and subdomains) differs from the entry's `root_domain`.
+
+Then every field — the ten categories and `pages` (even though the homepage was fetched) — is `NOT FETCHED` with one of these reasons: "homepage status <code>", "homepage is a bot check", "homepage is parked or for sale", "homepage redirects to <other root domain>" (the bare root domain), and `key_insight` says the site could not be analysed and why. Never fetch or follow the other domain, and never retry a bot check through Playwright or another proxy — a later re-run is the controller's call. Name it in the readable report and in your hand-back as a **registry fix for `bsuk-competitor-registry`** (moved, sold or merged — its call). Still set `last_analyzed` (Output step 3) and say you did, and still run **After a run** — the report is valid.
 
 ## The ten categories
 
@@ -38,20 +50,52 @@ Only what you were given counts. If the invocation hands you page content instea
 
 | # | Field | Needs | Record in `values` |
 |---|---|---|---|
-| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown` and `email_shown` (a number or address printed on the page, not "call us"), `reviews_shown` (a count) |
-| 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words`, `url_count`, `h2_per_page` (an object, fetched page URL → its H2 count) |
-| 3 | `keywords` | any page | buyer search phrases that appear on the pages as a run of words, exactly in that order — transactional, informational, city modifiers, comparisons; lowercase, two to six words, one per value; never assembled from words in different places, never a bare section heading ("available puppies") or a whole sentence |
-| 4 | `page_types` | the map | count per type in the URL list: `breed-guide`, `care-guide`, `health`, `price`, `comparison`, `city`, `blog`, `faq`, `about`, `listing`, `reviews`, `contact` |
-| 5 | `blog` | the map → `post_count`, `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `topics`, `posting_frequency`, `sampled_word_counts` |
+| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown` and `email_shown` (a number or address printed on the page or a `tel:` / `mailto:` link in the raw HTML, not "call us"), `contact_source` (`raw-html`, or `markdown-only` when no raw HTML was fetched — then `phone_shown` / `email_shown` say only what the markdown prints), `reviews_shown` (a count) |
+| 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
+| 3 | `keywords` | any page | see **Keyword rule** below |
+| 4 | `page_types` | the map | see **Page-type rule** below |
+| 5 | `blog` | the map → `post_count`; dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
 | 6 | `visual` | the homepage raw HTML or a snapshot (markdown alone never) | `homepage_images`, `video_present`, `alt_text` (descriptive, generic, missing) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
 | 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (a count, or null when no form or button was fetched); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
-| 10 | `technical` | a rendered page → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok`, `lighthouse_performance` |
+| 10 | `technical` | Playwright on the homepage at 375px width → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok` (false when `document.documentElement.scrollWidth > window.innerWidth`, else true; `NOT FETCHED` without that check), `lighthouse_performance` |
 
 A price that is not printed is not a price: "please call us" about a deposit is `prices_shown: false` and `deposit_terms: null`. Prices stay inside the report, never in BSUK copy.
 
 `pages` lists every page fetched — `url`, `title` (`""` when the scrape gave none), `h1`, `h2` — with `fetched_on`; the keyword-gap agent reuses it instead of fetching again. A business or site name is fine; a person's name is not.
+
+### Keyword rule
+
+**Pattern words:** a *breed term* — staffy, staffie, staffies, staffordshire bull terrier, sbt — and *intent or place words* — puppies, puppy, for sale, breeder, breeders, price, kc registered, blue, and any `city` in `data/locations.json`. A multi-word pattern word ("staffordshire bull terrier", "for sale", "kc registered") is one unit for where a run starts and ends, but each of its words counts toward the length. A qualifying run is a run of 2–6 consecutive words inside one sentence, heading or list item that starts and ends on a pattern word, holds a breed term and at least one intent or place word, and contains no part of a business, kennel or person's name (cut the run before the name: "blue staffy puppies from Example Breeder" gives `blue staffy puppies`). Record, lowercased:
+
+1. every **maximal** qualifying run (not inside a longer qualifying run);
+2. for each, its **shortest** qualifying sub-run of 3 or more words (the earliest on a tie), when it differs.
+
+Headings count like any other text — the run rule decides, not the heading. Nothing else: no words joined from different places, each phrase once. Example, "Our blue staffy puppies for sale in Leeds": maximal runs `blue staffy puppies for sale` and `staffy puppies for sale in leeds`; shortest sub-runs `blue staffy puppies` and `staffy puppies for sale`.
+
+**`--bsuk` is like-for-like:** BSUK's keywords are its own phrases by the same rule **plus** every keyword in the existing competitor reports that appears in the visible text of `dist/` (lowercased, spaces collapsed). So `--bsuk` runs after the competitor runs, and is re-run after any new competitor report.
+
+### Page-type rule
+
+One type per URL: lowercase the path and take the **first** row that matches; a URL that matches none is not counted, and a type with a count of 0 is left out.
+
+| Order | Type | Path contains |
+|---|---|---|
+| 1 | `blog` | `/blog/`, `/news/`, `/articles/`, `/posts/`, or a dated segment (`/2025/`, `/2025/09/`) |
+| 2 | `city` | a `data/locations.json` city as a slug (lowercase, spaces to hyphens), except `UK` and the outreach row |
+| 3 | `comparison` | `-vs-`, `versus` |
+| 4 | `price` | `price`, `cost`, `fees` |
+| 5 | `health` | `health`, `dna`, `testing` |
+| 6 | `care-guide` | `care`, `feeding`, `training`, `grooming` |
+| 7 | `breed-guide` | `breed`, `guide`, `temperament` |
+| 8 | `faq` | `faq`, `questions` |
+| 9 | `about` | `about`, `our-story` |
+| 10 | `reviews` | `review`, `testimonial` |
+| 11 | `contact` | `contact`, `enquir` |
+| 12 | `listing` | `puppies`, `puppy`, `litter`, `available`, `for-sale` |
+
+`--bsuk` takes its URL list from the `<loc>` entries of the sitemaps that `dist/sitemap_index.xml` lists (not the video sitemap), else from every `index.html` under `dist/`.
 
 ## Output
 
@@ -68,21 +112,23 @@ python3 scripts/gap_matrix.py --write
 npm run -s check:gaps && npm run -s check:competitors
 ```
 
-All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, an empty or blank value, a missing or mistyped field) — fix the report, never the schema or the script. Then report the files written and the fetch count.
+All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, an empty or blank value, a missing or mistyped field) — fix the report, never the schema or the script. Then report the files written, the fetch count, and any registry fix.
 
 ## Handoff
 
-`bsuk-competitive-keyword-gap-agent` (reads the `pages` lists), then `bsuk-strategy-synthesizer`.
+`bsuk-competitive-keyword-gap-agent` (reads the `pages` lists), then `bsuk-strategy-synthesizer`. A registry fix goes to `bsuk-competitor-registry` first.
 
 ## Red flags — stop
 
-- A number (word count, URL count, post count, score) for a page or map you did not fetch.
-- `schema_types`, `visual` or `technical` filled from markdown alone.
+- A number (word count, URL count, post count, score) for a page or map you did not fetch, or counted by eye.
+- `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` without the 375px check.
 - A price or deposit written that the page did not print.
 - A competitor sentence in the report word for word, or a quoted evidence table.
 - A phone number, email, street, postcode or seller's name anywhere in the output.
 - A city spelled differently from `data/locations.json`, or inferred from a region.
 - A tier-5 link followed, or its prices or wording copied.
+- A challenge, parked or redirected homepage analysed anyway, or the other domain fetched.
+- A Firecrawl crawl, agent, extract, interact or search call; a fetch beyond the ceiling.
 - An `--all` or `--tier` fetch before `fetch approved:`.
 - Any change to data/competitors.json beyond `last_analyzed`.
 - Prose only, with no JSON a script can count.
