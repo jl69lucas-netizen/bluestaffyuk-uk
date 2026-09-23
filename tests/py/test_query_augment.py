@@ -1137,3 +1137,60 @@ def test_bad_h2_all_or_blocked_is_bad_input(tmp_path, extra):
     r = run(root, *BUILD)
     assert r.returncode == Q.EXIT_BAD_INPUT
     assert "competitors.json" in r.stderr and next(iter(extra)) in r.stderr
+
+
+# --- re-review: blocked by title or Cloudflare markers; card grids counted by headings ---
+
+REAL_BODY = "<main><h1>Blue Staffies</h1>" + "<p>copy</p>" * 1000 + "</main>"
+
+
+@pytest.mark.parametrize("html,blocked", [
+    ("<html><head><title>Our dogs</title></head><body><main><h1>Hi</h1><p>Just a moment of "
+     "your time to meet our dogs.</p><h2>Our Dogs</h2></main></body></html>", False),
+    ("<html><body><noscript>Please enable JavaScript and cookies</noscript><main>"
+     "<h2>Health</h2><h2>Delivery</h2></main></body></html>", False),
+    ("<html><head><title>Kennel</title><script>var s = 'Just a moment...';</script></head>"
+     "<body>" + REAL_BODY + "</body></html>", False),
+    ("<html><body><div><h2>One</h2><h2>Two</h2><h2>Three</h2></div></body></html>", False),
+    ("<html><head><title>  ACCESS DENIED</title></head><body>" + REAL_BODY + "</body></html>",
+     True),
+    ("<html><body>" + REAL_BODY + "<script>window._cf_chl_opt={}</script></body></html>", True),
+    ("<html><body>" + REAL_BODY + "<script src='/cdn-cgi/challenge-platform/x.js'></script>"
+     "</body></html>", True),
+    ("<html><body><p>Enable JavaScript and cookies to continue</p>" + REAL_BODY
+     + "</body></html>", True),
+], ids=["body-moment", "noscript-with-h2s", "script-moment", "small-with-h2s", "access-denied",
+        "cf-chl-opt", "cdn-cgi", "enable-js-no-h2"])
+def test_blocked_by_title_or_cloudflare_markers(html, blocked):
+    assert Q.page_report(html)["blocked"] is blocked
+
+
+def test_the_cloudflare_fixture_is_blocked_by_its_title():
+    assert Q.page_report(CLOUDFLARE_LIKE)["blocked"] is True
+
+
+def test_one_h2_article_among_h3_related_posts_is_a_page_wrapper():
+    html = ("<main><article class='page'><h2>Our Puppies</h2><h2>Health Testing</h2>"
+            "<h2>Delivery</h2></article>"
+            "<aside class='related'><article><h3>Post one</h3></article>"
+            "<article><h3>Post two</h3></article></aside></main>")
+    assert Q.extract_h2s(html) == ["Our Puppies", "Health Testing", "Delivery"]
+
+
+def test_related_articles_outside_aside_with_h3s_still_keep_the_page_article():
+    html = ("<main><article><h2>A</h2><h2>B</h2><h2>C</h2></article>"
+            "<article><h3>Post one</h3></article><article><h3>Post two</h3></article></main>")
+    assert Q.extract_h2s(html) == ["A", "B", "C"]
+
+
+def test_a_list_grid_of_three_h2_cards_is_dropped():
+    html = ("<main><ul class='grid'>" + "".join(
+        f"<li><div class='card'><h2>Advert {i}</h2></div></li>" for i in range(3))
+        + "</ul><section><h2>Buying Advice</h2></section></main>")
+    assert Q.extract_h2s(html) == ["Buying Advice"]
+
+
+def test_an_accordion_of_two_h2_items_is_kept():
+    html = ("<main><ul class='accordion'><li><h2>Feeding</h2></li><li><h2>Exercise</h2></li>"
+            "<li><p>no heading</p></li></ul></main>")
+    assert Q.extract_h2s(html) == ["Feeding", "Exercise"]
