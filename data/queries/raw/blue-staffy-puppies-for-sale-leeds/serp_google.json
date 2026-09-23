@@ -1,0 +1,60 @@
+{
+  "source": "serp_google",
+  "status": "fallback",
+  "fetched": "2026-09-23",
+  "questions": [
+    {
+      "text": "Blue staffy puppies for sale leeds under 500",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Miniature blue staffy puppies for sale leeds",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Blue staffy puppies for sale leeds cheap",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Blue staffy puppies for sale leeds kennel club",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Staffy puppies for sale West Yorkshire",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Staffy puppies for sale west yorkshire under 500",
+      "detail": "serp_google_related",
+      "fact_source": null
+    }
+  ],
+  "results": [
+    {
+      "google_pos": 1,
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-yorkshire/leeds/"
+    },
+    {
+      "google_pos": 2,
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    },
+    {
+      "google_pos": 3,
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/leeds-west-yorkshire"
+    },
+    {
+      "google_pos": 4,
+      "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leeds-west-yorkshire"
+    },
+    {
+      "google_pos": 5,
+      "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier"
+    }
+  ],
+  "note": "Paid DataForSEO serp_organic_live_advanced NOT called: the user declined paid calls for this run (preflight exit 0). Free fallback per the skill: Google UK read in the headless Playwright browser (bsuk-paa-agent protocol), https://www.google.com/search?q=Blue+Staffy+Puppies+For+Sale+Leeds&gl=uk&hl=en-GB. No robot check. The page showed NO People Also Ask box, so no serp_google_paa questions; related searches recorded as shown. Top-5 organic URLs resolved by following Google's own result links. Positions are one unpersonalised browser read, not a DataForSEO depth-10 pull."
+}

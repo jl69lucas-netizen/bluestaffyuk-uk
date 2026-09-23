@@ -1,0 +1,1561 @@
+{
+  "slug": "blue-staffy-puppies-for-sale-leeds",
+  "page_type": "location",
+  "primary_keyword": "blue staffy puppies for sale leeds",
+  "route": "/uk-locations/blue-staffy-puppies-for-sale-leeds/",
+  "fetched": "2026-09-23",
+  "spend_usd": 0,
+  "sources": {
+    "serp_google": "fallback",
+    "serp_bing": "ok",
+    "ai_engines": "NOT FETCHED",
+    "threads": "ok",
+    "bank": "ok",
+    "competitors": "fallback"
+  },
+  "competitors": [
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-yorkshire/leeds/",
+      "google_pos": 1,
+      "bing_pos": 3,
+      "h2_raw": 1,
+      "h2_clean": 0,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+      "google_pos": 2,
+      "bing_pos": 2,
+      "h2_raw": 14,
+      "h2_clean": 1,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/leeds-west-yorkshire",
+      "google_pos": 3,
+      "bing_pos": null,
+      "h2_raw": 22,
+      "h2_clean": 0,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leeds-west-yorkshire",
+      "google_pos": 4,
+      "bing_pos": null,
+      "h2_raw": 3,
+      "h2_clean": 0,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier",
+      "google_pos": 5,
+      "bing_pos": null,
+      "h2_raw": 30,
+      "h2_clean": 0,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/colour/blue",
+      "google_pos": null,
+      "bing_pos": 1,
+      "h2_raw": 14,
+      "h2_clean": 1,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue+staf",
+      "google_pos": null,
+      "bing_pos": 4,
+      "h2_raw": 1,
+      "h2_clean": 0,
+      "outlier": false,
+      "blocked": false
+    },
+    {
+      "url": "https://englishbluestaffypuppies.com/available-blue-staffy",
+      "google_pos": null,
+      "bing_pos": 5,
+      "h2_raw": 3,
+      "h2_clean": 3,
+      "outlier": false,
+      "blocked": false
+    }
+  ],
+  "section_target": {
+    "matched": 3,
+    "set_by": "https://englishbluestaffypuppies.com/available-blue-staffy",
+    "extra": 3,
+    "floor": 9,
+    "total": 9
+  },
+  "extra_sections": [
+    {
+      "topic": "temperament",
+      "uncovered": true,
+      "question_ids": [
+        "q-do-staffy-get-attached-to-one-person-6d9e29",
+        "q-how-much-exercise-does-a-staffy-need-dail-0d2427",
+        "q-how-much-exercise-does-a-staffy-need-each-bd9421"
+      ],
+      "heading": null
+    },
+    {
+      "topic": "paperwork",
+      "uncovered": true,
+      "question_ids": [
+        "q-is-the-puppy-microchipped-before-it-comes-ec6db3",
+        "q-what-is-included-when-i-buy-a-blue-9734a9",
+        "q-are-your-blue-staffy-puppy-kennel-club-re-edca46"
+      ],
+      "heading": null
+    },
+    {
+      "topic": "breed",
+      "uncovered": true,
+      "question_ids": [
+        "q-how-can-i-tell-if-my-puppy-is-c8ea81",
+        "q-is-a-staffy-a-pitbull-e881f1",
+        "q-what-is-the-difference-between-a-staffy-a-3ff151"
+      ],
+      "heading": null
+    }
+  ],
+  "questions": [
+    {
+      "id": "q-are-blue-staffy-aggressive-55b447",
+      "question": "Are blue Staffies aggressive?",
+      "found_in": [
+        "bank:listing-aggressive"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-blue-staffy-good-family-pets-especial-7e3356",
+      "question": "Are Staffordshire Bull Terriers good family pets?",
+      "found_in": [
+        "serp_bing",
+        "bank:home-family-children"
+      ],
+      "score": 4,
+      "topic": "family",
+      "block": "bottom",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-blue-staffy-suitable-for-first-time-d-e4e6aa",
+      "question": "Are blue Staffies suitable for first-time dog owners?",
+      "found_in": [
+        "bank:listing-first-time-owners",
+        "bank:guide-first-time-dog-owners",
+        "bank:guide-first-time-owners"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-staffy-hard-to-train-a723a4",
+      "question": "Are Staffies hard to train?",
+      "found_in": [
+        "bank:listing-training"
+      ],
+      "score": 2,
+      "topic": "training",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-the-parents-eye-screened-as-well-as-3a8ae9",
+      "question": "Are the parents eye screened as well as DNA tested?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/"
+      ],
+      "score": 3,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-are-the-parents-of-your-blue-staffy-puppy-523777",
+      "question": "Are the puppy's parents health tested?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+        "bank:about-health-tests",
+        "bank:health-genetic-tested",
+        "bank:home-parents-health-tested",
+        "bank:about-health-tested",
+        "bank:whyus-evidence",
+        "bank:home-health-tests",
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/"
+      ],
+      "score": 4,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-uk-breeders/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-the-puppy-raised-in-a-family-home-c93ef5",
+      "question": "Are the puppies raised in a family home or in kennels?",
+      "found_in": [
+        "bank:about-home-raised"
+      ],
+      "score": 2,
+      "topic": "family",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-uk-breeders/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-are-your-blue-staffy-puppy-kennel-club-re-edca46",
+      "question": "Are your Blue Staffy puppies Kennel Club registered and health-checked?",
+      "found_in": [
+        "bank:sale-kc-health-checked"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-pup-sale-uk/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-blue-staffy-puppy-for-sale-leeds-cheap-537574",
+      "question": "Blue staffy puppies for sale leeds cheap",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 4,
+      "topic": "price",
+      "block": "top",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-blue-staffy-puppy-for-sale-leeds-kennel-c-beacae",
+      "question": "Blue staffy puppies for sale leeds kennel club",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 3,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-blue-staffy-puppy-for-sale-leeds-under-50-b77b33",
+      "question": "Blue staffy puppies for sale leeds under 500",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-can-a-staffy-live-in-a-flat-310055",
+      "question": "Can a Staffordshire Bull Terrier live in a flat?",
+      "found_in": [
+        "bank:guide-flat-living",
+        "bank:guide-flats-uk"
+      ],
+      "score": 2,
+      "topic": "home",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-can-blue-staffy-be-left-alone-ef945b",
+      "question": "Can blue Staffies be left alone?",
+      "found_in": [
+        "bank:listing-left-alone",
+        "bank:guide-left-alone-8h"
+      ],
+      "score": 2,
+      "topic": "home",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": "bottom",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-can-i-contact-the-breeders-vet-to-confirm-dea827",
+      "question": "Can I contact the breeder's vet to confirm what treatment a puppy has had?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/"
+      ],
+      "score": 3,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-can-i-get-a-blue-staffy-puppy-delivered-ad16e3",
+      "question": "Can I get a blue Staffy puppy delivered to my home?",
+      "found_in": [
+        "bank:about-delivery-home"
+      ],
+      "score": 4,
+      "topic": "delivery",
+      "block": "top",
+      "fact_source": "src/pages/blue-staffy-uk-breeders/index.astro",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-can-i-visit-you-before-i-decide-4fc075",
+      "question": "Can I visit you before I decide?",
+      "found_in": [
+        "bank:contact-visit"
+      ],
+      "score": 3,
+      "topic": "visit",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-can-you-deliver-a-blue-staffy-puppy-to-74fa14",
+      "question": "Can you deliver a Blue Staffy puppy to my location in the UK?",
+      "found_in": [
+        "bank:sale-delivery-uk"
+      ],
+      "score": 4,
+      "topic": "delivery",
+      "block": "top",
+      "fact_source": "src/pages/blue-staffy-pup-sale-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-blue-staffy-suit-a-family-home-d39c23",
+      "question": "Do blue Staffies suit a family home?",
+      "found_in": [
+        "bank:listing-family-dog"
+      ],
+      "score": 2,
+      "topic": "family",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-kc-registered-staffy-have-fewer-health-b37f61",
+      "question": "Do KC registered Staffies have fewer health risks?",
+      "found_in": [
+        "bank:health-kc-fewer-risks"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-staffy-get-along-with-children-and-oth-e9aa5f",
+      "question": "Do Staffies get along with children and other pets?",
+      "found_in": [
+        "bank:guide-children-pets"
+      ],
+      "score": 2,
+      "topic": "family",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-staffy-get-attached-to-one-person-6d9e29",
+      "question": "Do Staffies get attached to one person?",
+      "found_in": [
+        "bank:guide-attached-one-person"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-you-deliver-across-the-uk-fb0c4a",
+      "question": "Do you deliver across the UK?",
+      "found_in": [
+        "bank:delivery",
+        "bank:home-safe-delivery"
+      ],
+      "score": 4,
+      "topic": "delivery",
+      "block": "top",
+      "fact_source": "data/settings.json",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-you-offer-health-guarantees-for-your-b-04ef4b",
+      "question": "Is there a health guarantee if a vet finds a problem soon after I buy?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/",
+        "bank:home-health-guarantee"
+      ],
+      "score": 4,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-you-offer-support-after-i-take-my-d4ebe8",
+      "question": "Will the breeder still support me after I collect the puppy?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/",
+        "bank:home-after-support"
+      ],
+      "score": 4,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-do-your-puppy-come-with-vet-records-and-30768c",
+      "question": "Do your puppies come with vet records and a health certificate?",
+      "found_in": [
+        "bank:health-vet-records"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-does-this-website-use-cookies-548566",
+      "question": "Does this website use cookies?",
+      "found_in": [
+        "bank:privacy-cookies"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/privacy-policy-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-can-i-avoid-buying-from-a-puppy-5e9d7e",
+      "question": "How can I avoid buying from a puppy farm?",
+      "found_in": [
+        "bank:health-avoid-puppy-farm"
+      ],
+      "score": 2,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-can-i-be-sure-a-puppy-kennel-fb1d6b",
+      "question": "How can I be sure a puppy's Kennel Club registration will be issued if the papers are delayed?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/AskUK/comments/1okt0wb/buying_puppy_in_uk_are_we_getting_scamed/"
+      ],
+      "score": 3,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-can-i-check-that-a-puppy-has-3dc136",
+      "question": "How can I check that a puppy has really been seen by a vet?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/"
+      ],
+      "score": 3,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-can-i-tell-if-my-puppy-is-c8ea81",
+      "question": "How can I tell if my puppy is an American or an English Staffy?",
+      "found_in": [
+        "bank:whyus-american-english"
+      ],
+      "score": 2,
+      "topic": "breed",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-ask-for-my-data-to-6bfbd2",
+      "question": "How do I ask for my data to be deleted?",
+      "found_in": [
+        "bank:privacy-delete-data"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/privacy-policy-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-ask-something-the-guides-do-e24404",
+      "question": "How do I ask something the guides do not answer?",
+      "found_in": [
+        "bank:blog-ask-a-question"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/blue-staffy-blog-guides/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-follow-up-on-my-enquiry-9abed8",
+      "question": "How do I follow up on my enquiry?",
+      "found_in": [
+        "bank:enquiry-follow-up"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-know-a-puppy-is-still-cdf916",
+      "question": "How do I know a puppy is still available?",
+      "found_in": [
+        "bank:listing-availability"
+      ],
+      "score": 3,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-know-im-buying-from-reputable-0472b8",
+      "question": "How do I know I’m buying from reputable blue Staffy breeders?",
+      "found_in": [
+        "bank:listing-reputable-breeders"
+      ],
+      "score": 2,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-reserve-one-of-your-blue-309feb",
+      "question": "How do I reserve one of your Blue Staffy puppies?",
+      "found_in": [
+        "bank:sale-reserve"
+      ],
+      "score": 3,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": "src/pages/blue-staffy-pup-sale-uk/index.astro",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-tell-a-genuine-online-puppy-455a61",
+      "question": "How do I tell a genuine online puppy advert from a scam?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1uil782/pets4homesuk/"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-tell-a-responsible-blue-staffy-7f23e4",
+      "question": "How do I tell a responsible blue Staffy breeder from a backyard breeder?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-do-i-tell-an-ethical-breeder-from-414f97",
+      "question": "How do I tell an ethical breeder from a puppy farm?",
+      "found_in": [
+        "bank:buying-puppy-farm"
+      ],
+      "score": 2,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-long-do-staffy-sleep-at-night-c49bb1",
+      "question": "How long do Staffies sleep at night?",
+      "found_in": [
+        "bank:listing-sleep"
+      ],
+      "score": 2,
+      "topic": "care",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-long-does-a-staffy-live-8757a1",
+      "question": "How long does a Staffordshire Bull Terrier live?",
+      "found_in": [
+        "bank:health-lifespan"
+      ],
+      "score": 2,
+      "topic": "lifespan",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-long-will-you-take-to-reply-to-53b0c1",
+      "question": "How long will you take to reply to my enquiry?",
+      "found_in": [
+        "bank:enquiry-reply-time"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-many-kc-blue-staffy-puppy-are-there-fd0799",
+      "question": "How many KC Blue Staffordshire Bull Terrier puppies are there?",
+      "found_in": [
+        "serp_bing"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-much-does-a-blue-staffy-cost-uk-4051c2",
+      "question": "How much does a blue Staffy cost UK?",
+      "found_in": [
+        "bank:listing-cost"
+      ],
+      "score": 3,
+      "topic": "price",
+      "block": "top",
+      "fact_source": "data/settings.json",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-much-does-a-staffy-cost-f37c18",
+      "question": "How much does a Staffordshire Bull Terrier cost?",
+      "found_in": [
+        "serp_bing"
+      ],
+      "score": 4,
+      "topic": "price",
+      "block": "top",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-how-much-exercise-does-a-staffy-need-dail-0d2427",
+      "question": "How much exercise does a Staffordshire Bull Terrier need daily?",
+      "found_in": [
+        "bank:guide-exercise-daily"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-much-exercise-does-a-staffy-need-each-bd9421",
+      "question": "How much exercise does a Staffordshire Bull Terrier need each day?",
+      "found_in": [
+        "bank:guide-exercise"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-much-is-the-deposit-2cce23",
+      "question": "How much is the deposit?",
+      "found_in": [
+        "bank:deposit"
+      ],
+      "score": 3,
+      "topic": "price",
+      "block": "top",
+      "fact_source": "data/settings.json",
+      "must_answer": true,
+      "faq": "top",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-often-do-you-add-a-new-guide-156016",
+      "question": "How often do you add a new guide?",
+      "found_in": [
+        "bank:blog-updates"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/blue-staffy-blog-guides/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-how-old-should-a-blue-staffy-puppy-be-b72e0e",
+      "question": "How old should a blue Staffy puppy be before it comes home?",
+      "found_in": [
+        "bank:buying-best-age"
+      ],
+      "score": 2,
+      "topic": "age",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-im-looking-into-getting-a-staffy-puppy-wh-99b3ab",
+      "question": "I’m looking into getting a Staffy puppy. Where should I start?",
+      "found_in": [
+        "bank:whyus-start"
+      ],
+      "score": 3,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-is-a-male-or-female-staffy-better-d4eed7",
+      "question": "Is a male or female Staffy better?",
+      "found_in": [
+        "bank:guide-male-female"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-is-a-staffy-a-pitbull-e881f1",
+      "question": "Is a Staffy a pitbull?",
+      "found_in": [
+        "bank:listing-pitbull"
+      ],
+      "score": 2,
+      "topic": "breed",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-is-blue-staffy-a-good-dog-a47dc9",
+      "question": "Is blue Staffy a good dog?",
+      "found_in": [
+        "serp_bing"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-is-the-puppy-microchipped-before-it-comes-ec6db3",
+      "question": "Is the puppy microchipped before it comes home?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/"
+      ],
+      "score": 3,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-is-the-staffy-a-banned-breed-in-the-954365",
+      "question": "Is the Staffordshire Bull Terrier a banned breed in the UK?",
+      "found_in": [
+        "bank:guide-banned-breed"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-is-there-a-waiting-list-for-a-well-ae9f94",
+      "question": "Is there a waiting list for a well-bred Staffy puppy?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/"
+      ],
+      "score": 4,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-miniature-blue-staffy-puppy-for-sale-leed-8d9a41",
+      "question": "Miniature blue staffy puppies for sale leeds",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-should-i-adopt-a-rescue-dog-or-buy-4f3d8d",
+      "question": "Should I adopt a rescue dog or buy from a breeder?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1v3ixmh/adoptingbuying_a_dog/"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-should-i-walk-away-if-a-puppy-vet-b2021c",
+      "question": "Should I walk away if a puppy's vet checks or vaccinations do not match the advert?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/"
+      ],
+      "score": 3,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-staffy-puppy-for-sale-west-yorkshire-123ddf",
+      "question": "Staffy puppies for sale West Yorkshire",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-staffy-puppy-for-sale-west-yorkshire-unde-c5e601",
+      "question": "Staffy puppies for sale west yorkshire under 500",
+      "found_in": [
+        "serp_google_related"
+      ],
+      "score": 3,
+      "topic": null,
+      "block": null,
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-what-are-staffy-prone-to-323dfd",
+      "question": "What are Staffies prone to?",
+      "found_in": [
+        "bank:whyus-prone-to"
+      ],
+      "score": 2,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-are-the-downsides-of-staffy-c63e95",
+      "question": "What are the downsides of Staffies?",
+      "found_in": [
+        "bank:guide-downsides"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-can-i-read-while-i-wait-for-815768",
+      "question": "What can I read while I wait for your reply?",
+      "found_in": [
+        "bank:enquiry-while-you-wait"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/thank-you-blue-staffy-puppies-journey/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-comes-with-a-puppy-ccf7f1",
+      "question": "What comes with a puppy?",
+      "found_in": [
+        "bank:puppy-package"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-do-your-blue-staffy-guides-cover-e3dc8c",
+      "question": "What do your blue Staffy guides cover?",
+      "found_in": [
+        "bank:blog-what-we-cover"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/blue-staffy-blog-guides/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-does-l-2-hga-testing-mean-for-27d9f9",
+      "question": "What does L-2-HGA testing mean for my puppy’s health?",
+      "found_in": [
+        "bank:health-l2hga-meaning"
+      ],
+      "score": 2,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-has-a-puppy-had-before-it-comes-46de43",
+      "question": "Has the puppy had its first vaccination before I collect it?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/",
+        "bank:health-vaccinations"
+      ],
+      "score": 4,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-health-clearances-do-your-blue-staff-68eec7",
+      "question": "What health clearances do your blue Staffy puppies come with?",
+      "found_in": [
+        "bank:listing-health-clearances"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/buy-blue-staffy-puppies-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-included-when-i-buy-a-blue-9734a9",
+      "question": "What is included when I buy a Blue Staffy puppy from BlueStaffyUK.uk?",
+      "found_in": [
+        "bank:home-whats-included",
+        "bank:sale-whats-included"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-average-lifespan-of-a-blue-73b18f",
+      "question": "What is the average lifespan of a Blue Staffy?",
+      "found_in": [
+        "bank:health-average-lifespan"
+      ],
+      "score": 2,
+      "topic": "lifespan",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-difference-between-a-staffy-a-3ff151",
+      "question": "What is the difference between a Staffy and a Pit Bull?",
+      "found_in": [
+        "bank:whyus-pit-bull"
+      ],
+      "score": 2,
+      "topic": "breed",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": true,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-difference-between-a-vet-chec-9af1e0",
+      "question": "What is the difference between a vet-checked puppy and one from health-tested parents?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/"
+      ],
+      "score": 3,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-difference-between-an-amstaff-0fd204",
+      "question": "What is the difference between an Amstaff and a Staffordshire Terrier (English)?",
+      "found_in": [
+        "bank:whyus-amstaff"
+      ],
+      "score": 2,
+      "topic": "breed",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-life-expectancy-of-a-blue-3737ad",
+      "question": "What is the life expectancy of a blue Staffy?",
+      "found_in": [
+        "bank:listing-life-expectancy"
+      ],
+      "score": 2,
+      "topic": "lifespan",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-typical-price-range-for-a-9f4fdd",
+      "question": "What is the typical price range for a Blue Staffy puppy from BlueStaffyUK.uk?",
+      "found_in": [
+        "bank:home-price-range"
+      ],
+      "score": 3,
+      "topic": "price",
+      "block": "top",
+      "fact_source": "data/settings.json",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-is-the-typical-temperament-of-our-pu-c20d74",
+      "question": "What is the typical temperament of our puppies?",
+      "found_in": [
+        "bank:about-temperament"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-uk-breeders/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-makes-bluestaffyuk-an-ethical-breede-65923a",
+      "question": "What makes BlueStaffyUK an ethical breeder?",
+      "found_in": [
+        "bank:home-ethical-breeder",
+        "bank:about-ethical"
+      ],
+      "score": 2,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-paperwork-comes-with-a-puppy-7f78f0",
+      "question": "Does the puppy come with a written purchase contract?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1r9a4ad/help_before_buying/",
+        "bank:whyus-paperwork"
+      ],
+      "score": 4,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+      "must_answer": true,
+      "faq": "middle",
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-personal-information-does-bluestaffy-9e259c",
+      "question": "What personal information does BlueStaffyUK collect?",
+      "found_in": [
+        "bank:privacy-data-collected"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/privacy-policy-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-should-a-first-time-dog-owner-know-0cf517",
+      "question": "What should a first-time dog owner know before getting a blue Staffy?",
+      "found_in": [
+        "bank:about-first-time"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-should-i-ask-a-blue-staffy-breeder-432d61",
+      "question": "What should I ask a blue Staffy breeder before I buy?",
+      "found_in": [
+        "bank:buying-what-to-ask"
+      ],
+      "score": 2,
+      "topic": "trust",
+      "block": "middle",
+      "fact_source": "src/pages/uk-blue-staffy-puppy-buying-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-should-i-feed-my-new-staffy-puppy-018b55",
+      "question": "What should I feed my new Staffy puppy for the best diet?",
+      "found_in": [
+        "bank:health-puppy-diet"
+      ],
+      "score": 2,
+      "topic": "care",
+      "block": "bottom",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-should-i-put-in-my-message-516b4b",
+      "question": "What should I put in my message?",
+      "found_in": [
+        "bank:contact-what-to-say"
+      ],
+      "score": 2,
+      "topic": null,
+      "block": null,
+      "fact_source": "src/pages/uk-blue-staffy-breeders-contact/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-two-breeds-make-a-staffy-2ef527",
+      "question": "What two breeds make a Staffy?",
+      "found_in": [
+        "bank:about-two-breeds"
+      ],
+      "score": 2,
+      "topic": "breed",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-what-vaccinations-do-your-puppy-have-befo-cfc6a9",
+      "question": "What vaccinations do your puppies have before I take them home?",
+      "found_in": [
+        "bank:health-vaccinations-before-home"
+      ],
+      "score": 2,
+      "topic": "paperwork",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-where-can-i-find-a-reputable-health-teste-98aa24",
+      "question": "Where can I find a reputable, health-tested Staffy breeder in the UK?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/UK_Pets/comments/1sdvsvv/reputable_staffordshire_bull_terrier_breeders_uk/"
+      ],
+      "score": 4,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": null,
+      "must_answer": false,
+      "faq": null,
+      "blocked": "unverified fact",
+      "covered_by": null
+    },
+    {
+      "id": "q-where-can-i-find-blue-staffy-breeders-in-fbecea",
+      "question": "Where can I find blue staffy breeders in the UK?",
+      "found_in": [
+        "bank:home-find-breeders"
+      ],
+      "score": 3,
+      "topic": "reserve",
+      "block": "top",
+      "fact_source": "src/pages/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-which-genetic-tests-are-the-parents-clear-c94eed",
+      "question": "Are both parents DNA tested clear for L-2-HGA and HC-HSF4?",
+      "found_in": [
+        "thread:https://www.reddit.com/r/StaffordBullTerriers/comments/1o4hazd/a_question_for_owners_of_blues/",
+        "bank:health-dna-tests"
+      ],
+      "score": 4,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-who-are-the-bluestaffyuk-stud-dogs-and-ho-54449c",
+      "question": "Who Are the BlueStaffyUK Stud Dogs and How Do We Ensure Temperament in Our Breeding Program?",
+      "found_in": [
+        "bank:whyus-stud-dogs"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-why-do-staffy-scratch-so-much-5ca7a6",
+      "question": "Why do Staffies scratch so much?",
+      "found_in": [
+        "bank:listing-scratching"
+      ],
+      "score": 2,
+      "topic": "health",
+      "block": "middle",
+      "fact_source": "src/pages/blue-staffy-health-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-why-should-families-choose-bluestaffyuk-a-6d3355",
+      "question": "Why Should Families Choose BlueStaffyUK as Their Trusted Breeding Partner for Staffordshire Bull Terriers in the UK?",
+      "found_in": [
+        "bank:whyus-partner"
+      ],
+      "score": 2,
+      "topic": "family",
+      "block": "bottom",
+      "fact_source": "src/pages/buy-staffy-puppies-for-sale-uk/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    },
+    {
+      "id": "q-why-werent-staffy-banned-in-the-uk-9c6951",
+      "question": "Why weren’t Staffordshire Bull Terriers banned in the UK?",
+      "found_in": [
+        "bank:whyus-not-banned"
+      ],
+      "score": 2,
+      "topic": "temperament",
+      "block": "bottom",
+      "fact_source": "src/pages/uk-staffordshire-bull-terrier-guide/index.astro",
+      "must_answer": false,
+      "faq": null,
+      "blocked": null,
+      "covered_by": null
+    }
+  ]
+}
