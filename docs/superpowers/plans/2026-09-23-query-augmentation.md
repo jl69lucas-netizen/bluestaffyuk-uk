@@ -1648,7 +1648,7 @@ Expected from `npm run test:py`: every test passes, and the count rises by the n
 
 The controller runs this task, not a subagent, because it spends real money through the connector. **Ask the user before the first paid call and wait for a yes.**
 
-**Order for every paid call (Task 4 review):** preflight → call → **record the reported cost at once** → save the response → write the normalised file. One preflight and one record per paid call; each AI engine is its own call. A saved `.response.json` already counts as bought (preflight exit 3), so a crash after the call can never buy it twice.
+**Order for every paid call (Task 4 review):** preflight → call → **record the reported cost at once** → save the response → write the normalised file. One preflight and one record per paid call, and **one AI engine per page** (the cache is keyed per source). A saved `.response.json` already counts as bought (preflight exit 3), so a crash after the call can never buy it twice. If `--record` refuses a cost, still save `<source>.response.json` before stopping, and report the cost the response shows.
 
 - [ ] **Step 0: Confirm the balance**
 
@@ -1891,7 +1891,7 @@ python3 scripts/query_augment.py --preflight <slug> --source <serp_google|serp_b
 
 ## Step 2 — paid sources (DataForSEO connector)
 
-For each paid CALL (each AI engine is its own call): preflight → call → record the cost the
+For each paid CALL (one AI engine per page — the cache is keyed per source): preflight → call → record the cost the
 response reports, at once →
 save the response untouched as `data/queries/raw/<slug>/<source>.response.json` → write the
 normalised `data/queries/raw/<slug>/<source>.json`:
@@ -1901,6 +1901,8 @@ python3 scripts/query_augment.py --record <slug> --source <source> --endpoint <t
 ```
 
 A saved `.response.json` counts as bought: preflight returns 3 and you make no call. If
+`--record` refuses a cost, still save `<source>.response.json` before stopping and report
+the cost the response shows. If
 `--record` or preflight errors (a damaged spend log), stop and tell the user — never delete
 or edit `data/queries/spend.json`.
 
@@ -1961,7 +1963,7 @@ Re-running Step 5 keeps those fills. Then `npm run build && npm run check:querie
 
 - Making a paid call without preflight, or after exit 3 or 4.
 - Recording the cost after saving files instead of straight after the call.
-- One preflight covering several engine calls.
+- One preflight covering several engine calls, or asking a second AI engine for the same page.
 - Counting competitor sections by hand, or using a fixed section number.
 - One FAQ block, or fewer than the picked questions.
 - Setting `fact_source` to a file that does not answer the question.
