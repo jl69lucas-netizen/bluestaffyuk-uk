@@ -56,6 +56,12 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 
 ## 3. Per-Page Research Protocol (Sprint 0.5 — MANDATORY before any outline)
 
+**First, run `/bsuk-query-augmentation <slug> comparison "<primary keyword>" <route>`.** Its
+file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
+every `must_answer` question must be answered on the page with `covered_by` recorded —
+`npm run check:queries` fails the page otherwise. The research below builds on that file; it
+does not replace it.
+
 Write the same six research deliverables for each page, saved under `docs/superpowers/` beside the page's plan: a keyword universe, an entity map, an internal-linking plan, a visual-asset blueprint, an implementation roadmap and a search-quality checklist.
 
 **12-part deliverable per page** (breeder-approved format, one page per session, clustered):

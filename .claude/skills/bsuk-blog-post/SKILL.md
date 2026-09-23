@@ -58,6 +58,12 @@ All 8 inherit the site tokens (do NOT re-implement per page). Reference the toke
 
 ### 3. Tiered Sprint 0.5 Research Method + 17-Field Output Format
 
+**First, run `/bsuk-query-augmentation <slug> blog "<primary keyword>" <route>`.** Its
+file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
+every `must_answer` question must be answered on the page with `covered_by` recorded —
+`npm run check:queries` fails the page otherwise. The research below builds on that file; it
+does not replace it.
+
 **Depth:** a competitor scan to identify who owns each topic and where their gap is (no competitor registry was ported and none has been fetched — an un-fetched competitor is NOT FETCHED); deep audit of top 6 per page (3 Google from the per-page `.md` + 3 fresh Bing). Non-leaders get a light pass.
 
 **Per-page strategy doc** → `sessions/YYYY-MM-DD-blog-strategy-<slug>.md`. 17 required fields:

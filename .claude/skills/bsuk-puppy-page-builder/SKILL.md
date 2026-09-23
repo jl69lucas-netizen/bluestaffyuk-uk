@@ -25,6 +25,12 @@ No page in this cluster is built, rebuilt or polished before its row exists on t
 board: `python3 scripts/build_page_board.py`, then `python3 scripts/board_gate.py <slug>`.
 A build that starts without a board row has no record of what was approved.
 
+**First, run `/bsuk-query-augmentation <slug> puppy "<primary keyword>" <route>`.** Its
+file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
+every `must_answer` question must be answered on the page with `covered_by` recorded —
+`npm run check:queries` fails the page otherwise. The research below builds on that file; it
+does not replace it.
+
 ## 1. Page inventory & build order
 
 Confirm the on-disk route in `src/pages/` first; every slug below is in `data/page-map.json`.

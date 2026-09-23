@@ -1,6 +1,6 @@
 ---
 name: bsuk-location-page-builder
-description: Use when building or rebuilding any UK city location page at /uk-locations/<slug>/ on BlueStaffyUK — derives the section list from a live competitor scan rather than a fixed template, names the kit component and the render check for every section, and fixes the keyword, link, review, FAQ and schema rules for the 28 cities in data/locations.json. Triggers - "location page", "city page", "rebuild <city>", "/uk-locations/<slug>/".
+description: Use when building or rebuilding any UK city location page at /uk-locations/<slug>/ on BlueStaffyUK — derives the section list from a live competitor scan rather than a fixed template (competitors' section count + 3, via bsuk-query-augmentation), names the kit component and the render check for every section, and fixes the keyword, link, review, FAQ and schema rules for the 28 cities in data/locations.json. Triggers - "location page", "city page", "rebuild <city>", "/uk-locations/<slug>/".
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -22,6 +22,7 @@ and nowhere else. This file says how the page is shaped; the packs say how it is
 | `rules/schema.md` | structured data and `no-visible-date` |
 | `rules/gates.md` | `confidence-gate-97` · `verify-the-gate-first` |
 | `rules/puppies.md` | anything that states a price, a status or a delivery band |
+| `docs/reference/location-page-template.md` | structure, FAQ format and tone (this file's fact table wins for facts) |
 
 The packs win. Cite a rule id rather than restating the rule.
 
@@ -38,6 +39,7 @@ Everything here comes from a file, never from memory:
 | Breed lifespan 12–14 years | the Staffordshire Bull Terrier breed figure |
 | City, h1, title, description, canonical | `data/locations.json` |
 | Reviews | `data/reviews.json` — three real reviews, no others exist |
+| home-raised: every puppy is raised in our home, not a kennel | `data/faq.json` → row `about-home-raised` |
 | FAQ base set | `data/faq.json` |
 
 Not established, and therefore never written as a fact: a licence, a registration or a
@@ -56,11 +58,13 @@ The mandatory spine is fixed; the body sections are derived per city.
 
 ### Procedure
 
-1. Search, for the target city, the three query shapes a buyer actually types:
-   `staffy puppies for sale <city>`, `blue staffy puppies <city>`,
-   `staffordshire bull terrier breeder near <city>`.
-2. Take the **3–5 ranking pages that are breeder or location pages**, not marketplaces and
-   not directory listings. Fewer than three usable results is a finding, not a blocker:
+1. Search the page's primary keyword (the city row's H1 keyword) on Google and on Bing, as
+   `/bsuk-query-augmentation` sets out. The three query shapes a buyer also types
+   (`staffy puppies for sale <city>`, `blue staffy puppies <city>`,
+   `staffordshire bull terrier breeder near <city>`) are an optional free gap scan: they
+   supply topics, never the count.
+2. Take the top-5 on each engine, merged — **marketplaces and directories included**; only
+   off-topic results are dropped. Fewer than three usable pages is a finding, not a blocker:
    record it and derive from what exists.
 3. For each, record in the board's competitor block:
 
@@ -74,9 +78,19 @@ The mandatory spine is fixed; the body sections are derived per city.
    | schema | the `@type`s in its JSON-LD |
    | gaps | what a buyer asks that the page never answers |
 
-4. **Derive the section list**: the union of topics two or more of them cover, plus every
-   gap, minus anything BSUK cannot state from the fact table above. A typical result is
-   9–14 body sections. Drop a topic rather than pad it with a claim.
+4. **Set the section count** with `/bsuk-query-augmentation` (it runs this scan with Bing
+   included and writes `data/queries/<slug>.json`). The pool is the top-5 Google results
+   plus the top-5 Bing results for the primary keyword, merged, **marketplaces and
+   directories included** — only off-topic results are dropped. Competitor headings come
+   from `python3 scripts/query_augment.py --extract-h2` run on each saved page; advert cards
+   and navigation never count, and nobody counts H2s by hand. The page matches the highest
+   real count (an outlier over 1.5× the next is recorded and skipped), then adds the three
+   `extra_sections` the question pool suggests: the target is that count + 3, and **never
+   fewer than 9 body sections**. `section_target.total` is the minimum;
+   `scripts/query_coverage_check.py` fails a page below it. Body topics come from what the
+   pooled pages cover plus the gaps, minus anything BSUK cannot state from the fact table
+   above. Drop a topic rather than pad it with a claim.
+   `docs/reference/location-page-template.md` is the full rule and the page's structure.
 5. Anything the scan could not supply is written `NOT FETCHED` in the board. Never a guess.
 
 The scan output goes into `data/boards/<slug>.json` and the board is approved
@@ -87,8 +101,9 @@ without an approved board, and `python3 scripts/board_gate.py <slug>` refuses ot
 
 ## Step 2 — the page spine
 
-Mandatory, in this order. Everything between **Key takeaways** and **FAQ** is the derived
-body from step 1.
+The fixed frame, in the order `docs/reference/location-page-template.md` ("The fixed frame")
+sets. Frame parts sit in their own sections and are never counted as body sections. The
+derived body sections from step 1 fill the three gaps, split roughly evenly.
 
 | # | Section | Kit component and props | Checks it must satisfy |
 |---|---|---|---|
@@ -96,15 +111,19 @@ body from step 1.
 | 2 | Counter strip | `CounterStrip` | `layout-hero-counter-separation` |
 | 3 | Trust strip | `TrustStrip` | `a11y-text-contrast-aa` |
 | 4 | Table of contents | `PageNav` | `nav-anchors-resolve` · `nav-jump-target-lands` |
-| 5 | Key takeaways | `InfoCard kind="fact"` | `sem-statement-label-visible` |
-| 6 | Review — top | `Testimonial mode="single" reviews={…}` | `a11y-text-contrast-aa` |
-| 7…n | Derived body sections | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
-| — | Review — middle | `Testimonial mode="single" reviews={…}` | inside the body run, never two testimonials in a row |
-| — | Newsletter block | `InfoCard kind="recommendation" label="Newsletter"` | `layout-tap-target-size` |
-| n+1 | Review — bottom | `Testimonial mode="grid" reviews={…}` | `a11y-text-contrast-aa` |
-| n+2 | Contact form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
-| n+3 | FAQ | `Faq` | `sem-heading-order` · FAQPage schema below |
-| n+4 | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written |
+| 5 | Key takeaways, `id="key-takeaways"` | `InfoCard kind="fact"` | `sem-statement-label-visible` |
+| 6 | Review — top | `Testimonial mode="single" reviews={…}` | `a11y-text-contrast-aa` · its own section |
+| 7 | FAQ — top | `Faq` | `sem-heading-order` · FAQPage schema below |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 8 | Review — middle | `Testimonial mode="single" reviews={…}` | its own section, never inside a body section |
+| 9 | FAQ — middle | `Faq` | `sem-heading-order` · FAQPage schema below |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 10 | Newsletter, `id="newsletter"` | `InfoCard kind="recommendation" label="Newsletter"` | `layout-tap-target-size` · the only newsletter on the page |
+| — | Body sections (derived, step 1) | `InfoCard` · `PuppyCard` · `SectionDivider` (add `inverse` on a dark band) | `layout-h3-image-first` · `sem-section-opening-paragraph` · `sem-heading-order` · `sem-all-six-levels` |
+| 11 | Review — bottom | `Testimonial mode="grid" reviews={…}` | `a11y-text-contrast-aa` · its own section |
+| 12 | FAQ — bottom | `Faq` | `sem-heading-order` · FAQPage schema below |
+| 13 | Enquiry form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
+| — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
 
 **There is no `variant` prop.** Project 3's prune (design-system spec §11 amendment 4)
 deleted every losing variant and every `variant` prop with them: a kit component renders the
@@ -136,10 +155,12 @@ mobile. Hero and counter strip never share one continuous background — a tone 
 three, one per slot, or a single quote given room; a grid is used only where the page really
 has that many real reviews. A review is never written, never re-attributed to another city,
 and a slot with nothing real in it carries the placeholder the component already emits
-(`scripts/placeholder_check.py` counts it) rather than invented praise.
+(`scripts/placeholder_check.py` counts it) rather than invented praise. Each review sits in
+its own section, never inside a body section.
 
-**Newsletter.** One block mid-page; a second above the footer only on a page past ~2,000
-words. It says what a subscriber gets and nothing about how many subscribers there are.
+**Newsletter.** One block per location page, frame part 10 (`id="newsletter"`); there is
+never a second, and no other element takes that id. It says what a subscriber gets and
+nothing about how many subscribers there are.
 
 **Contact form.** `ContactFormKit` only — never a hand-rolled form. The contract is asserted
 by `form-inquiry-contract`, and `PUBLIC_FORMSPREE_ID` is unset until project 6.
@@ -170,13 +191,12 @@ from its own outline and its own competitor gaps:
 components, CSS and structure freely; never open another city's page to reword a paragraph.
 A page copied and then reworded passes `dup-no-sibling-crossover` and still breaks the rule.
 
-**Query augmentation (before writing).** Expand the primary keyword into the questions and
-entities an AI answer engine assembles when someone asks about buying a Staffy near that
-city: what it costs, whether delivery reaches there, what paperwork comes with the puppy,
-how old the puppy is at collection, what the breed is like in a flat, what health testing
-the parents had. Write each as a question, answer it on the page in its own sentence, and
-mirror the strongest six into the FAQ. There is **no dedicated query-augmentation skill in
-this repo yet** — this paragraph is the whole procedure until one exists.
+**Query augmentation (before writing).** Run `/bsuk-query-augmentation <slug> location
+"<primary keyword>" /uk-locations/<slug>/` before the outline. Its question file decides the
+FAQ picks, the three extra sections and the section target; answer every `must_answer`
+question on the page and record where in `covered_by`. When the page is rebuilt, add
+`uk-locations/<slug>` (its route without the slashes) to `data/facts/rebuilt.json` — only then
+does `npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
@@ -214,10 +234,18 @@ Per `rules/schema.md`, enforced by `python3 scripts/schema_check.py`:
 
 ## Step 5 — FAQ
 
-`data/faq.json` supplies the base questions. Add city-specific Q&A only where the page's own
-copy already backs the answer — an FAQ answer that introduces a new fact is a fabricated
-claim with extra steps. Six to ten questions total, rendered with `Faq`, mirrored into FAQPage
-schema, no visible date.
+Three `Faq` blocks — **top** (5–7: price, deposit, delivery to this city, reserving),
+**middle** (5–7: paperwork, health testing, visiting, age at collection) and **bottom**
+(7–10: flats, children and other pets, training, lifespan, coat) — carrying exactly the
+questions `data/queries/<slug>.json` picked for each block, 17–20 in practice. Picks come
+only from the question file: to change one, change the data (a bank row in `data/faq.json`,
+a settings key, a real sourced question) and rebuild the file — never swap, add or drop a
+pick by hand. A question may name the city ("Do You Deliver Staffy Puppies to Manchester?")
+only if its meaning and its fact are unchanged; record the wording used on the page in
+`covered_by.text`. Each question renders as an H3 with a short, direct answer that states
+only what its `fact_source` says; links sit inside answers, anchor first. An answer that
+introduces a new fact is a fabricated claim with extra steps. FAQPage schema carries exactly
+the visible questions, no visible date. `scripts/query_coverage_check.py` holds all of this.
 
 ---
 
@@ -252,8 +280,12 @@ That row is a five-word stub today, carrying `"robots": "noindex, follow"` and
 `/uk-locations/blue-staffy-puppies-manchester-uk/` — both taken from the row, never
 rewritten here.
 
-**Competitor scan: `NOT FETCHED`.** Nothing below is an approved outline; it is the shape a
-derived list takes once step 1 has actually run.
+**Question file: `data/queries/blue-staffy-puppies-manchester-uk.json`.** Every pooled page
+was a marketplace or directory with no body H2 left once the extractor had run (one was a
+challenge page, recorded as blocked), so `section_target.total` is the floor, 9; the three
+`extra_sections` are temperament, paperwork and health. Nothing below is an approved outline;
+it is the shape the list takes from that file, in the frame order of step 2: nine body
+sections, three in each gap.
 
 | # | Section | Where it comes from |
 |---|---|---|
@@ -263,19 +295,22 @@ derived list takes once step 1 has actually run.
 | 4 | On This Page | `PageNav` c, one entry per H2 below |
 | 5 | Key Takeaways | `InfoCard` b, `kind="fact"` |
 | 6 | Review — top | `data/reviews.json` |
-| 7 | Our Litter and What Each Puppy Costs | `data/puppies.json`; `PuppyCard` c |
-| 8 | Getting Your Puppy to Manchester | `settings.delivery_*`, or collection from `settings.location_label` |
-| 9 | Health Testing and the Paperwork You Get | `TrustStrip` facts; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
-| 10 | Review — middle | `data/reviews.json` |
-| 11 | Raised in Our Home, Not a Kennel | `rules/copy.md` evidence loop |
-| 12 | What a Blue Staffy Is Like to Live With | breed facts; lifespan 12–14 years |
-| 13 | Newsletter | `InfoCard` b, `kind="note"` |
-| 14 | Cities Near Manchester We Deliver To | sibling rows of `data/locations.json` |
-| 15 | Competitor-gap section | `NOT FETCHED` — step 1 supplies the topic |
-| 16 | Competitor-gap section | `NOT FETCHED` — step 1 supplies the topic |
-| 17 | Review — bottom | `data/reviews.json` |
-| 18 | Ask Us About a Puppy | `ContactFormKit` c |
-| 19 | Manchester Buyer Questions | `data/faq.json` plus page-backed Q&A; `Faq` c |
+| 7 | FAQ — top | the `top` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` c |
+| 8 | Our Litter and What Each Puppy Costs | `data/puppies.json`; `PuppyCard` c |
+| 9 | Getting Your Puppy to Manchester | `settings.delivery_*`, or collection from `settings.location_label` |
+| 10 | Health Testing and the Paperwork You Get | `TrustStrip` facts; any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
+| 11 | Review — middle | `data/reviews.json` |
+| 12 | FAQ — middle | the `middle` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` c |
+| 13 | Raised in Our Home, Not a Kennel | `rules/copy.md` evidence loop |
+| 14 | What a Blue Staffy Is Like to Live With | breed facts; lifespan 12–14 years |
+| 15 | Cities Near Manchester We Deliver To | sibling rows of `data/locations.json` |
+| 16 | Newsletter | `InfoCard` b, `kind="recommendation"`, `label="Newsletter"` |
+| 17 | Extra section (question pool) | `extra_sections[0]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 18 | Extra section (question pool) | `extra_sections[1]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 19 | Extra section (question pool) | `extra_sections[2]` in `data/queries/blue-staffy-puppies-manchester-uk.json` |
+| 20 | Review — bottom | `data/reviews.json` |
+| 21 | FAQ — bottom | the `bottom` picks in `data/queries/blue-staffy-puppies-manchester-uk.json`; `Faq` c |
+| 22 | Ask Us About a Puppy | `ContactFormKit` c |
 
 Word-count target: `NOT FETCHED` until the scan gives a competitor median. Never pick a
 number first and write to fill it.
@@ -291,7 +326,8 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
 
 1. Read the row in `data/locations.json`, then `data/settings.json`, `data/puppies.json`,
    `data/reviews.json`, `data/faq.json`, `data/design/picks.json`.
-2. Run the competitor scan and record it in the board.
+2. Run `/bsuk-query-augmentation` for the slug (competitor scan, questions, FAQ picks, section
+   target), and record the competitor block and section target in the board.
 3. Produce the outline — H1→H6 tree, the derived section list with its derivation, keyword
    distribution, review and newsletter positions, FAQ list, schema plan — and get it
    approved (`rules/headings.md` outline gate, `CLAUDE.md` rule 5).
