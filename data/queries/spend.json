@@ -1,0 +1,23 @@
+[
+  {
+    "ts": "2026-09-23T01:08:28Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google depth10 paa1 (response carries no cost; conservative estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T01:09:37Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "serp_bing",
+    "endpoint": "serp_organic_live_advanced bing depth10 (response carries no cost; conservative estimate; results were for 'blue' only — unusable)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T01:10:39Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK (response carries no cost; conservative estimate)",
+    "cost_usd": 0.1
+  }
+]

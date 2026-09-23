@@ -1,0 +1,68 @@
+{
+  "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23. Request: keyword 'blue staffy puppies manchester', language en, location United Kingdom, depth 10, search_engine bing. The connector's response carries no cost field. Bing returned results for 'blue' alone (the boy band, colour charts, YouTube) — nothing about Staffies. Saved condensed: rank, domain, url, title kept.",
+  "id": "09230109-2496-0139-0000-7e72cb4d2c31",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "rank_absolute": 1,
+      "domain": "en.wikipedia.org",
+      "url": "https://en.wikipedia.org/wiki/Blue_(English_group)",
+      "title": "Blue (English group) - Wikipedia"
+    },
+    {
+      "rank_absolute": 2,
+      "domain": "en.wikipedia.org",
+      "url": "https://en.wikipedia.org/wiki/Blue",
+      "title": "Blue - Wikipedia"
+    },
+    {
+      "rank_absolute": 3,
+      "domain": "www.youtube.com",
+      "url": "https://www.youtube.com/channel/UCc8GssgEdwTz1PmZfkgyS6g",
+      "title": "Official Blue - YouTube"
+    },
+    {
+      "rank_absolute": 4,
+      "domain": "www.officialblue.com",
+      "url": "https://www.officialblue.com/",
+      "title": "Blue | Official Website"
+    },
+    {
+      "rank_absolute": 5,
+      "domain": "www.artcraftblend.com",
+      "url": "https://www.artcraftblend.com/blogs/colors/shades-of-blue",
+      "title": "160 Shades of Blue: Color Names, Hex, RGB, CMYK Codes"
+    },
+    {
+      "rank_absolute": 6,
+      "domain": "www.color-meanings.com",
+      "url": "https://www.color-meanings.com/shades-of-blue-color-names-html-hex-rgb-codes/",
+      "title": "144 Shades of Blue: Color Names, Hex, RGB, CMYK Codes"
+    },
+    {
+      "rank_absolute": 7,
+      "domain": "creativebooster.net",
+      "url": "https://creativebooster.net/blogs/colors/blue",
+      "title": "All About the Color Blue | Meaning, Color Codes and Facts"
+    },
+    {
+      "rank_absolute": 8,
+      "domain": "www.heart.co.uk",
+      "url": "https://www.heart.co.uk/showbiz/music/blue-members-lee-duncan-antony-simon-now-ages-partners-children/",
+      "title": "Where are boyband Blue members now?"
+    },
+    {
+      "rank_absolute": 9,
+      "domain": "www.youtube.com",
+      "url": "https://www.youtube.com/watch?v=pPmhuHLkfFM",
+      "title": "Blue - One Last Time (Official Music Video) - YouTube"
+    },
+    {
+      "rank_absolute": 10,
+      "domain": "music.youtube.com",
+      "url": "https://music.youtube.com/channel/UCZ13GpYX5-b3ePvaGM-lWNA",
+      "title": "Blue - YouTube Music"
+    }
+  ]
+}

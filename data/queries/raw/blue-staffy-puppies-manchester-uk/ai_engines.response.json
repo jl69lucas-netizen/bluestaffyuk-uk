@@ -1,0 +1,95 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-23. Request: keyword 'Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field. Saved condensed by the controller: the answer's points summarised (not quoted in full), sources kept; local-business phone numbers, street addresses, ratings and profile URLs dropped (not needed and not BSUK's to keep).",
+  "id": "09230109-2496-0629-0000-b060a4a1b974",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "local_businesses": [
+    {
+      "title": "IDCBULLZ MANCHESTER",
+      "description": "Dog breeder",
+      "domain": "www.instagram.com"
+    },
+    {
+      "title": "Best Blue Staffy Puppies For Adoption",
+      "description": "Pet store",
+      "domain": null
+    },
+    {
+      "title": "Bonosue",
+      "description": "Dog breeder",
+      "domain": "www.bonosue.co.uk"
+    },
+    {
+      "title": "The Staffordshire Bull Terrier Club",
+      "description": "Club",
+      "domain": null
+    },
+    {
+      "title": "Ravenscroft Staffordshire Bull Terries Puppies",
+      "description": "Dog breeder",
+      "domain": "ukstaffypups.uk"
+    },
+    {
+      "title": "Westie World",
+      "description": "Dog breeder",
+      "domain": "wa.me"
+    },
+    {
+      "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+      "description": "Dog breeder",
+      "domain": "www.trojanstaffuk.com"
+    },
+    {
+      "title": "Starcinco Bull Terriers",
+      "description": "Dog breeder",
+      "domain": null
+    },
+    {
+      "title": "Future Frenchies",
+      "description": "Dog breeder",
+      "domain": "futurefrenchies.uk"
+    },
+    {
+      "title": "Earlsgrave Bull Terriers",
+      "description": "Dog breeder",
+      "domain": "www.earlsgravebullterriers.com"
+    },
+    {
+      "title": "Staffy Society UK",
+      "description": "Dog breeder",
+      "domain": null
+    },
+    {
+      "title": "Staffy Puppies for Sale UK",
+      "description": "Dog breeder",
+      "domain": "wa.me"
+    },
+    {
+      "title": "Staffordshire Bull Terrier Puppy Breeder",
+      "description": "Dog breeder",
+      "domain": null
+    },
+    {
+      "title": "Staffordshire Bull Terrier Puppies for sale",
+      "description": "Pet store",
+      "domain": "ukstaffypups.uk"
+    }
+  ],
+  "answer_points": [
+    "Prioritise a responsible, health-tested Staffy breeder over simply finding a blue puppy; blue is a colour, not a health guarantee.",
+    "Verify credentials rather than treating a directory listing or rating as an endorsement.",
+    "Cites The Kennel Club health standard: testing for hereditary cataracts (HC-HSF4), L-2-HGA, elbow dysplasia and eye conditions; prioritise genetic diversity.",
+    "What to ask: see the puppy with its mother where raised; see both parents' health-test certificates; L-2-HGA and HC tests; eye and elbow screening; KC registered names/numbers; COI vs breed average; microchipped and vet checked with records; vaccinations, worming, flea treatment; socialisation; current food; written contract and return-to-breeder policy; lifelong advice.",
+    "Red flags: won't show puppy with mother; car-park meet or delivery without showing where raised; many breeds/litters always available; deposit pressure; no health-test results; 'rare blue', 'XL', 'micro' marketing; selling before legally old enough; no microchip or vet documentation."
+  ],
+  "sources": [
+    {
+      "title": "The Kennel Club",
+      "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf"
+    },
+    {
+      "title": "The Kennel Club",
+      "url": "https://www.thekennelclub.org.uk/media/qvffqvwg/kc_health_standard.pdf"
+    }
+  ]
+}

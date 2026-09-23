@@ -1,0 +1,67 @@
+{
+  "source": "serp_google",
+  "status": "ok",
+  "fetched": "2026-09-23",
+  "questions": [
+    {
+      "text": "How much does a blue Staffy puppy cost?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-cost"
+    },
+    {
+      "text": "Are there blue Staffordshire Bull Terrier puppies available for sale in Manchester?",
+      "detail": "serp_google_paa",
+      "fact_source": null
+    },
+    {
+      "text": "Is it better to get a male or female Staffy?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:guide-male-female"
+    },
+    {
+      "text": "Are blue staffies good pets?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-family-dog"
+    },
+    {
+      "text": "Is blue Staffy aggressive?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:listing-aggressive"
+    },
+    {
+      "text": "Can a Staffy be left alone for hours?",
+      "detail": "serp_google_paa",
+      "fact_source": "bank:guide-left-alone-8h"
+    },
+    {
+      "text": "Blue staffy puppies manchester kennel club",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Blue staffy puppies manchester cheap",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Staffy puppies for sale Manchester under 500",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Free staffy puppies to good homes Manchester",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Staffy puppies for sale Manchester gumtree",
+      "detail": "serp_google_related",
+      "fact_source": null
+    },
+    {
+      "text": "Staffy puppies for sale near Salford",
+      "detail": "serp_google_related",
+      "fact_source": null
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23. Request: keyword 'blue staffy puppies manchester', language en, location United Kingdom, depth 10, search_engine google, people_also_ask_click_depth 1. The connector's response carries no cost field. Saved condensed by the controller: every item, rank, url, title and PAA/related text kept; price objects, breadcrumbs, highlighted terms and PAA expanded_element stubs dropped.",
+  "id": "09230108-2496-0139-0000-a1caab040a86",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "organic",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "domain": "www.pets4homes.co.uk",
+      "title": "Staffordshire Bull Terrier Puppies for sale in Manchester, ...",
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/",
+      "website_name": "Pets4Homes",
+      "description": "Find 29 Staffordshire Bull Terrier Puppies for sale in Manchester, Staffies have short, smooth coats that can come in various colors, BLUE STAFFORDSHIRE BULL ..."
+    },
+    {
+      "type": "organic",
+      "rank_group": 2,
+      "rank_absolute": 2,
+      "domain": "www.staffie-owners.co.uk",
+      "title": "Staffordshire Bull Terrier Puppies For Sale In Salford, ...",
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/salford-manchester",
+      "website_name": "Staffie Owners",
+      "description": "Find 14 Staffie puppies for sale in Salford, Manchester, with prices currently ranging from £50 to £3,000. Blue Staffy puppies"
+    },
+    {
+      "type": "organic",
+      "rank_group": 3,
+      "rank_absolute": 3,
+      "domain": "www.freeads.co.uk",
+      "title": "Staffordshire Bull Terrier - Manchester",
+      "url": "https://www.freeads.co.uk/manchester/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+      "website_name": "Freeads",
+      "description": "Find 244 Staffordshire Bull Terrier for sale on Freeads Pets in Manchester. 7 puppies available."
+    },
+    {
+      "type": "organic",
+      "rank_group": 4,
+      "rank_absolute": 4,
+      "domain": "www.gumtree.com",
+      "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in ...",
+      "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/manchester",
+      "website_name": "Gumtree",
+      "description": "adorable Staffordshire Bull Terrier. Puppies for adoption in Manchester on Gumtree."
+    },
+    {
+      "type": "organic",
+      "rank_group": 5,
+      "rank_absolute": 5,
+      "domain": "www.puppies.co.uk",
+      "title": "Staffordshire Bull Terrier puppies for Sale near me in ...",
+      "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/manchester",
+      "website_name": "Puppies.co.uk",
+      "description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in Manchester, 6 Puppies for sale"
+    },
+    {
+      "type": "people_also_ask",
+      "rank_absolute": 6,
+      "items": [
+        {
+          "type": "people_also_ask_element",
+          "title": "How much does a blue Staffy puppy cost?"
+        },
+        {
+          "type": "people_also_ask_element",
+          "title": "Are there blue Staffordshire Bull Terrier puppies available for sale in Manchester?"
+        },
+        {
+          "type": "people_also_ask_element",
+          "title": "Is it better to get a male or female Staffy?"
+        },
+        {
+          "type": "people_also_ask_element",
+          "title": "Are blue staffies good pets?"
+        },
+        {
+          "type": "people_also_ask_element",
+          "title": "Is blue Staffy aggressive?",
+          "seed_question": "Are blue staffies good pets?"
+        },
+        {
+          "type": "people_also_ask_element",
+          "title": "Can a Staffy be left alone for hours?",
+          "seed_question": "Are blue staffies good pets?"
+        }
+      ]
+    },
+    {
+      "type": "organic",
+      "rank_group": 6,
+      "rank_absolute": 7,
+      "domain": "www.staffie-owners.co.uk",
+      "title": "Blue Staffordshire Bull Terrier Puppies For Sale In Bolton, ...",
+      "url": "https://www.staffie-owners.co.uk/staffies-for-sale/bolton-manchester?colour=blue",
+      "website_name": "Staffie Owners",
+      "description": "Find 3 Blue Staffie puppies for sale in Bolton, Manchester. health tested litters."
+    },
+    {
+      "type": "organic",
+      "rank_group": 7,
+      "rank_absolute": 8,
+      "domain": "www.champdogs.co.uk",
+      "title": "All Staffordshire Bull Terrier Breeders near Manchester, ...",
+      "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders?start=all&pc=M1",
+      "website_name": "Champdogs",
+      "description": "Only the very best Staffordshire Bull Terrier Breeders near Manchester."
+    },
+    {
+      "type": "organic",
+      "rank_group": 8,
+      "rank_absolute": 9,
+      "domain": "www.preloved.co.uk",
+      "title": "staffy - Dogs & Puppies, For Sale in Manchester",
+      "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/manchester/staffy",
+      "website_name": "Preloved",
+      "description": "Find local staffy in dogs and puppies for sale and rehoming in Manchester."
+    },
+    {
+      "type": "organic",
+      "rank_group": 9,
+      "rank_absolute": 10,
+      "domain": "www.pets4homes.co.uk",
+      "title": "Staffordshire Bull Terrier Puppies for sale",
+      "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+      "website_name": "Pets4Homes",
+      "description": "139 Puppies found."
+    },
+    {
+      "type": "organic",
+      "rank_group": 10,
+      "rank_absolute": 11,
+      "domain": "www.gumtree.com",
+      "title": "Staffordshire dogs for sale in Manchester | Dogs & Puppies ...",
+      "url": "https://www.gumtree.com/uk/manchester/srpsearch+staffordshire+dogs+for+sale",
+      "website_name": "Gumtree",
+      "description": "Find a staffordshire dogs for sale in Manchester on Gumtree."
+    },
+    {
+      "type": "related_searches",
+      "rank_absolute": 12,
+      "items": [
+        "Blue staffy puppies manchester kennel club",
+        "Blue staffy puppies manchester cheap",
+        "Staffy puppies for sale Manchester under 500",
+        "Free staffy puppies to good homes Manchester",
+        "Staffy puppies for sale Manchester gumtree",
+        "Staffy puppies for sale near Salford"
+      ]
+    }
+  ]
+}

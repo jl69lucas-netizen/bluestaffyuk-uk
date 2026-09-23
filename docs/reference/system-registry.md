@@ -199,7 +199,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/sitemap_check.py`
 - `scripts/verbatim_set_check.py`
 
-## Data files — 20
+## Data files — 21
 
 - `data/agent-registry.json`
 - `data/boards/`
@@ -217,6 +217,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/price-matrix.json`
 - `data/puppies.json`
 - `data/quality/`
+- `data/queries/`
 - `data/redirects.json`
 - `data/reviews.json`
 - `data/settings.json`
