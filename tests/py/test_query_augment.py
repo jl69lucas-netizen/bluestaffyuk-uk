@@ -72,6 +72,7 @@ def test_topic_of_unknown_is_none():
     ("How long does a Staffordshire Bull Terrier live?", "lifespan"),
     ("When can puppies leave their mother?", "age"),
     ("How old should a blue Staffy puppy be before it comes home?", "age"),
+    ("When will my puppy come home?", "age"),
     ("What personal information does BlueStaffyUK collect?", None),
     ("Do you ship to Scotland?", "delivery"),
     ("Are blue Staffies more expensive?", "price"),
@@ -84,7 +85,7 @@ def test_topic_of_routes_real_bank_questions(text, topic):
 
 @pytest.mark.parametrize("text,not_topic", [
     ("How much exercise does a Staffordshire Bull Terrier need each day?", "price"),
-    ("How long do Staffies sleep at night?", "lifespan"),
+    ("Do you post photos of the litter?", "delivery"),
     ("Do you have testimonials?", "health"),
 ])
 def test_topic_of_does_not_misroute(text, not_topic):
@@ -128,6 +129,7 @@ def test_topic_of_routes_faq_bank_buyer_questions(text, topic):
     "How long will you take to reply to my enquiry?",
     "Does this website use cookies?",
     "How often do you add a new guide?",
+    "What can I read while I wait for your reply?",
 ])
 def test_topic_of_leaves_site_questions_untopicked(text):
     assert Q.topic_of(text) == (None, None)
@@ -169,3 +171,7 @@ def test_fact_exists_unreadable_file_is_false(tmp_path, monkeypatch):
 
     monkeypatch.setattr(pathlib.Path, "read_text", boom)
     assert not Q.fact_exists("f.json#k", tmp_path)
+
+
+def test_fit_weighs_breed_on_comparison_pages():
+    assert Q.FIT["comparison"]["breed"] == 2

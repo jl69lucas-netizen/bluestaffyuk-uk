@@ -46,7 +46,7 @@ SYNONYMS = (
 )
 
 # Questions that are about the site, not the dog: never a page topic. Checked first.
-SKIP = r"\b(personal information|privacy|cookies?|data protection|gdpr|thank you page)\b"
+SKIP = r"\b(personal information|privacy|cookies?|data protection|gdpr|thank you page|reply|enquiry|enquiries|data)\b"
 
 # First match wins, so order is precedence: a price question that mentions a blue coat is
 # a price question. Patterns run on normalise()d text (which strips the pound sign).
@@ -55,14 +55,15 @@ TOPICS = (
      r"\b(costs?|prices?|priced|deposit|pay|payment|paying|expensive|cheap\w*|afford\w*)\b"
      r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
     ("delivery", "top",
-     r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|post(age)?|courier)\b"),
-    ("reserve", "top", r"\b(reserv\w*|waiting list|wait\w*|book\w*|available|availability"
+     r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
+    ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (have to )?wait|book\w*|available|availability"
      r"|where (can|do|should) i (find|buy|get|start)|where should i start)\b"),
     ("age", "middle",
-     r"\b(weeks old|how old|leave\w* (its|their|the) mother|when can (a |the )?puppy (leave|go home|come home))\b"),
+     r"\b(weeks old|how old|leave\w* (its|their|the) mother|when can (a |the )?puppy (leave|go home|come home)"
+     r"|when will (my|the) puppy come home)\b"),
     ("paperwork", "middle",
      r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract|included|comes? with"
-     r"|before (it|they) comes? home|comes? home)\b"),
+     r"|before (it|they) comes? home)\b"),
     ("health", "middle",
      r"\b(health\w*|tests?|tested|testing|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*"
      r"|prone to|scratch\w*)\b"),
@@ -85,7 +86,7 @@ TOPICS = (
 # Page-type fit: how much a topic matters on this kind of page. Unlisted topics weigh 1.
 FIT = {
     "location": {"delivery": 3, "price": 2, "reserve": 2, "visit": 2},
-    "comparison": {"temperament": 2, "coat": 2, "health": 2},
+    "comparison": {"temperament": 2, "coat": 2, "health": 2, "breed": 2},
     "puppy": {"price": 3, "reserve": 3, "paperwork": 2},
     "blog": {},
 }
