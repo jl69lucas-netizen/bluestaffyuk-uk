@@ -49,6 +49,10 @@ def root(tmp_path):
     pmap = {"pages": [
         {"url": STUB, "title": "Blue Staffy Puppies Manchester UK", "h1": "",
          "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
+        {"url": "/uk-locations/blue-staffy-puppies-for-sale-leeds/", "title": "Blue Staffy Puppies For Sale Leeds",
+         "h1": "", "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
+        {"url": "/uk-locations/blue-staffies-newcastle-under-lyme/", "title": "Blue Staffies Newcastle Under Lyme",
+         "h1": "", "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
         {"url": "/uk-locations/blue-staffy-puppies-york/", "title": "Blue Staffy Puppies For Sale in York",
          "h1": "Blue Staffy Puppies For Sale in York, Yorkshire", "defects": [], "refresh_flags": []},
         {"url": "/buy-staffy-puppies-for-sale-uk/", "title": "Buy Staffy Puppies For Sale UK",
@@ -162,6 +166,8 @@ def test_a_city_stays_in_the_topic_and_only_the_same_city_covers_it(root):
     assert york["dedicated"] == 0
     leeds = row(d["gaps"], "blue staffy leeds")
     assert (leeds["intent"], leeds["score"], leeds["band"]) == (2, 8, "high")
+    assert leeds["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
+    assert ncl["noindex_page"] == "/uk-locations/blue-staffies-newcastle-under-lyme/"   # same city, not same words
 
 
 def test_a_whole_h1_topic_scores_no_dedicated_point_and_can_be_low(root):
@@ -233,3 +239,36 @@ def test_a_trust_word_anywhere_in_the_heading_makes_the_row_always_high(root):
     d = run(root, profile(root), write(root, "j.json", report("jay", [page("https://probe.com/j/", h)])))
     g = row(d["gaps"], "staffy puppies for sale uk breeder")    # the words sit outside the topic
     assert g["always_high"] is True and g["band"] == "high"
+
+
+def test_a_city_topic_is_covered_by_a_bsuk_city_page_naming_the_same_cities(root):
+    r = report("york", [page("https://y.co.uk/staffy-pups-york/", "Staffy Pups York"),
+                        page("https://y.co.uk/blue-staffy-breeder-york/", "Blue Staffy Breeder York")])
+    d = run(root, profile(root), write(root, "york.json", r))
+    york = row(d["covered"], "staffy pups york")                      # one city, one row
+    assert york["bsuk_page"] == f"{P}/uk-locations/blue-staffy-puppies-york/" and len(york["urls"]) == 2
+    assert d["gaps"] == []
+
+
+def test_one_city_is_one_row_with_its_urls_merged(root):
+    r = report("leeds", [page("https://l.co.uk/leeds/", "Staffy Puppies for Sale in Leeds"),
+                         page("https://l.co.uk/leeds-and-bradford/", "Blue Staffy Puppies Leeds and Bradford")])
+    d = run(root, profile(root), write(root, "leeds.json", r))
+    rows = [g for g in d["gaps"] if "leeds" in g["topic"]]
+    assert len(rows) == 1 and len(rows[0]["urls"]) == 2
+    assert rows[0]["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
+
+
+def test_a_comparison_core_is_a_dedicated_page(root):
+    d = run(root, profile(root), str(FIXTURE))
+    vs = row(d["gaps"], "blue staffy vs american bully")
+    assert (vs["dedicated"], vs["score"], vs["band"]) == (3, 6, "medium")
+
+
+def test_tested_alone_is_not_a_trust_word(root):
+    r = report("tips", [page("https://t.co.uk/training-tips/", "Tried and Tested Staffy Training Tips"),
+                        page("https://t.co.uk/tips/", "Tried and Tested Staffy Training Tips")])
+    d = run(root, profile(root), write(root, "tips.json", r))
+    g = row(d["gaps"], "tried and tested staffy training tips")   # care-guide; the untyped copy is skipped
+    assert g["always_high"] is False and g["band"] == "medium" and g["urls"] == ["https://t.co.uk/training-tips/"]
+    assert d["skipped"] == [{"url": "https://t.co.uk/tips/", "why": "no keyword topic"}]

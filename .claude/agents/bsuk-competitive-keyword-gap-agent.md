@@ -71,7 +71,7 @@ PLACE = {("puppies",), ("puppy",), ("for", "sale"), ("breeder",), ("breeders",),
 UNITS = sorted(BREED | PLACE, key=len, reverse=True)
 INTENT = [tuple(fold(x) for x in i) for i in [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")] + sorted(towns)]
 HIGH = [("licence",), ("license",), ("licensed",), ("licensing",), ("health", "test"), ("health", "tested"),
-        ("health", "testing"), ("tested",), ("l", "2", "hga"), ("hc",)]
+        ("health", "testing"), ("l", "2", "hga"), ("hc",)]
 STOP = {"a", "an", "the", "in", "for", "of", "to", "and", "with", "near", "our", "your", "how", "much", "is", "are", "what", "uk", "sale", "buy"}
 KEY = {"listing", "price", "faq", "care-guide", "breed-guide", "city", "about"}
 BY_TYPE = {"about", "contact", "faq"}  # a topic with no keyword run is covered by a BSUK page of the same type
@@ -109,7 +109,7 @@ def topic(page, ptype):
         i = clause.index("vs") if "vs" in clause else len(clause)
         core = clause[max(0, i - 3):i + 4]
         if core:
-            return " ".join(core), 3 if long_run(core) else 0
+            return " ".join(core), 3  # a comparison core is a dedicated page
     best = long_run(ws)
     if best is None and not runs(ws) and ptype in (None, "about", "contact", "listing") and not any(has(ws, h) for h in HIGH):
         return None, "no keyword topic"
@@ -120,8 +120,12 @@ def btype(x):  # a BSUK page's type: its route, else (not the homepage) its titl
     r = route(x["url"]).lower()
     slug = "/" + re.sub(r"[^a-z0-9]+", "-", (x.get("title") or "").split("|")[0].lower()).strip("-") + "/"
     return kind(r) or (kind(slug) if r != "/" else None)
-def covering(pages, c, cs, ptype):
-    hits = [x for x in pages if any(c <= content(f) and towns_in(f) == cs for f in (x.get("title") or "", x.get("h1") or ""))]
+CITYISH = {"city", "listing", None}  # a topic naming cities on these page types is a city topic
+def covering(pages, key, ptype):  # a city topic: a BSUK city page naming the same cities; else the words
+    if key[0] == "city":
+        hits = [x for x in pages if btype(x) == "city" and towns_in(x.get("title")) | towns_in(x.get("h1")) == key[1]]
+    else:
+        hits = [x for x in pages if any(key[1] <= content(f) and towns_in(f) == key[2] for f in (x.get("title") or "", x.get("h1") or ""))]
     return min(hits, key=lambda x: (btype(x) != ptype, len(x.get("title") or ""), x["url"]))["url"] if hits else None
 pmap = json.load(open("data/page-map.json"))["pages"]
 noindex = [p for p in pmap if "stub-noindexed" in p.get("refresh_flags", []) + p.get("defects", [])]
@@ -156,26 +160,27 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
             out["skipped"].append({"url": page["url"], "why": how})
             continue
         fw = [fold(x) for x in words(t)]
-        groups.setdefault(content(t), []).append({
+        cs = towns_in(t)
+        groups.setdefault(("city", cs) if cs and ptype in CITYISH else ("words", content(t), cs), []).append({
             "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
             "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) else 0,
             "always_high": any(has(words(text(page)), h) for h in HIGH)})  # anywhere in the heading
 gaps, covered = [], []
-for c, ps in groups.items():
+for key, ps in groups.items():
     types = sorted({q["type"] for q in ps if q["type"]})
     ptype = min(types, key=lambda t: (t not in KEY, t)) if types else None
     t = min((q["topic"] for q in ps), key=lambda s: (len(s), s))
     row = {"topic": t, "type": ptype, "types": types,
            "urls": sorted({q["url"] for q in ps if not q["tier5"]}), "tier5_urls": sorted({q["url"] for q in ps if q["tier5"]})}
     dedicated = max(q["dedicated"] for q in ps)
-    hit = covering(bsuk, c, towns_in(t), ptype)
+    hit = covering(bsuk, key, ptype)
     if hit is None and dedicated == 0 and ptype in BY_TYPE:
         same = [x for x in bsuk if btype(x) == ptype]
         hit = min(same, key=lambda x: (len(x.get("title") or ""), x["url"]))["url"] if same else None
     if hit:
         covered.append(dict(row, bsuk_page=hit))
         continue
-    row.update(tier5_only=not row["urls"], bsuk_page=None, noindex_page=covering(noindex, c, towns_in(t), ptype),
+    row.update(tier5_only=not row["urls"], bsuk_page=None, noindex_page=covering(noindex, key, ptype),
                dedicated=dedicated, key=max(q["key"] for q in ps), no_bsuk_page=3, intent=max(q["intent"] for q in ps),
                always_high=any(q["always_high"] for q in ps))
     row["score"] = row["dedicated"] + row["key"] + row["no_bsuk_page"] + row["intent"]
@@ -194,8 +199,8 @@ What decides a row (to explain it, never to redo it):
 
 - **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
-- **Covered:** every topic word (stop words out, plurals folded) in one BSUK page's title or H1, naming the same cities; an about, contact or FAQ topic with no run is covered by a BSUK page of that type. Same words = one row.
-- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing or health test(ed/ing), tested, L-2-HGA, HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
+- **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
+- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
 
 ## Output
 
