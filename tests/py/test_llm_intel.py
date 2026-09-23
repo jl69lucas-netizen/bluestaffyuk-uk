@@ -20,7 +20,26 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCHEMA = json.loads((ROOT / "schemas/llm-intel.schema.json").read_text(encoding="utf-8"))
 OUT_DIR = ROOT / "docs/research/llm-intel"
-OWN = "bluestaffyuk"
+PLACEHOLDER = "site_url_placeholder"
+
+
+def own_domains(root=ROOT):
+    """BSUK's own domains, matched exactly: a site-domain key in data/settings.json when one exists,
+    the domain of its business email, and the build placeholder."""
+    try:
+        s = json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        s = {}
+    vals = [s.get(k) for k in ("site_domain", "site_url", "domain")] + [str(s.get("email", "")).rpartition("@")[2]]
+    out = {PLACEHOLDER}
+    for v in vals:
+        if isinstance(v, str) and "." in v:
+            host = re.sub(r"^[a-z]+://", "", v.strip().lower()).split("/")[0]
+            out.add(host[4:] if host.startswith("www.") else host)
+    return out
+
+
+OWN = own_domains()
 
 
 def _band(words):
@@ -45,16 +64,20 @@ def problems(doc, name=None):
     else:
         if doc["bsuk_cited"] is not None or doc["answer_text"] is not None or sites or doc["entities"]:
             out.append("NOT FETCHED: bsuk_cited and answer_text are null, no sites and no entities")
-        if doc["format"]["status"] != "NOT FETCHED" or doc["paid_this_run"]:
-            out.append("NOT FETCHED: format is NOT FETCHED and nothing was paid")
-    own = any(OWN in s["domain"] for s in sites)
+        if doc["format"]["status"] != "NOT FETCHED":
+            out.append("NOT FETCHED: format is NOT FETCHED")
+        if doc["paid_this_run"] and not doc["fetched"]["reason"].startswith("connector error"):
+            out.append("NOT FETCHED: paid_this_run only for a connector error after the call was billed")
+    own = any(s["domain"] in OWN for s in sites)
     if ok and doc["bsuk_cited"] != own:
         out.append(f"bsuk_cited is {doc['bsuk_cited']} but a BSUK domain is {'' if own else 'not '}among the sites")
     for s in sites:
         if (s["registry_id"] is None) != (s["tier"] is None):
             out.append(f"{s['domain']}: registry_id and tier are both set or both null")
-        if OWN in s["domain"] and s["registry_id"] is not None:
+        if s["domain"] in OWN and s["registry_id"] is not None:
             out.append(f"{s['domain']}: BSUK's own domain has no registry id")
+        if s["platform"] and s["registry_id"] is not None:
+            out.append(f"{s['domain']}: a hosting platform is never a registry entry")
     gap = sorted({s["registry_id"] for s in sites if s["tier"] in (1, 2, 3, 4)}) if ok and not own else []
     if sorted(doc["citation_gap"]) != gap:
         out.append(f"citation_gap must be {gap} (registry tiers 1-4 cited while BSUK is not)")
@@ -66,10 +89,16 @@ def problems(doc, name=None):
         out.append("query_source: a question file is used alone; the gap matrix only when there is none")
     if qs["gap_topics"] and qs["gap_matrix"] is None:
         out.append("query_source: gap_topics need the gap_matrix they came from")
-    day = datetime.date.fromisoformat
     old = [] if not ok else [doc["fetched"]["fetched_on"]]
     old += [qs["gap_matrix"][-13:-3]] if qs["gap_matrix"] else []
-    if any((day(doc["date"]) - day(d)).days > 30 for d in old) and not doc["stale"]:
+    days = {}
+    for d in [doc["date"]] + old:
+        try:
+            days[d] = datetime.date.fromisoformat(d)
+        except ValueError:
+            out.append(f"impossible date {d}")
+    if all(d in days for d in [doc["date"]] + old) and \
+            any((days[doc["date"]] - days[d]).days > 30 for d in old) and not doc["stale"]:
         out.append("stale: the answer or the gap matrix is older than 30 days, so stale must say so")
     seen = set()
     for e in doc["entities"]:
@@ -120,9 +149,10 @@ GOOD = {
     "fetched": {"status": "ok", "fetched_on": "2026-09-23"},
     "raw": "data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json",
     "answer_text": "verbatim", "paid_this_run": False, "bsuk_cited": False,
-    "citations": [{"domain": "pets4homes.co.uk", "registry_id": "pets4homes", "tier": 2},
-                  {"domain": "thekennelclub.org.uk", "registry_id": None, "tier": None}],
-    "local_businesses": [{"domain": "cheap-pups-example.com", "registry_id": "cheap-pups-example", "tier": 5}],
+    "citations": [{"domain": "pets4homes.co.uk", "registry_id": "pets4homes", "tier": 2, "platform": False},
+                  {"domain": "thekennelclub.org.uk", "registry_id": None, "tier": None, "platform": False}],
+    "local_businesses": [{"domain": "cheap-pups-example.com", "registry_id": "cheap-pups-example", "tier": 5,
+                          "platform": False}],
     "citation_gap": ["pets4homes"],
     "risks": [{"domain": "cheap-pups-example.com", "registry_id": "cheap-pups-example",
                "reason": "tier 5 in the registry"}],
@@ -158,7 +188,10 @@ def test_a_not_fetched_file_passes():
     (lambda d: d.update(location="United States"), "schema: location"),
     (lambda d: d.pop("llm_mentions"), "schema"),
     (lambda d: d.update(bsuk_cited=True), "bsuk_cited"),
-    (lambda d: d["citations"].append({"domain": "bluestaffyuk.uk", "registry_id": None, "tier": None}), "bsuk_cited"),
+    (lambda d: d["citations"].append({"domain": "bluestaffyuk.uk", "registry_id": None, "tier": None, "platform": False}), "bsuk_cited"),
+    (lambda d: d["citations"].append({"domain": "blogspot.com", "registry_id": "blogspot", "tier": 1, "platform": True}), "hosting platform"),
+    (lambda d: d["fetched"].update(fetched_on="2026-02-30"), "impossible date"),
+    (lambda d: d.update(date="2026-13-01"), "impossible date"),
     (lambda d: d.update(citation_gap=[]), "citation_gap"),
     (lambda d: d.update(risks=[]), "risks"),
     (lambda d: d["risks"].append(dict(d["risks"][0])), "exactly once"),
@@ -269,6 +302,247 @@ def test_the_agent_script_reads_the_real_page_map_entry_with_no_build(tmp_path):
     assert "no built page in dist/" in doc["page_source"]["note"]
     assert doc["query_source"]["from"] == "page-map"
     assert problems(doc, f"{slug}-2026-09-23.json") == []
+
+
+# --- the agent's script, run end to end on saved responses ------------------------------------
+MAN = "blue-staffy-puppies-manchester-uk"
+MAN_Q = "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?"
+FIX = ROOT / "tests/py/fixtures/competitors"
+REGISTRY = {"competitors": [{"id": "pets4homes", "root_domain": "pets4homes.co.uk", "tier": 2},
+                            {"id": "cheap-pups", "root_domain": "cheap-pups.com", "tier": 5},
+                            {"id": "ukstaffypups", "root_domain": "ukstaffypups.uk", "tier": 4},
+                            {"id": "kc", "root_domain": "thekennelclub.org.uk", "tier": 1}]}
+
+
+def _root(tmp, registry=None, saved_on="2026-09-23", dist=None, qfile=True):
+    """A scratch repo root the script can run in: the real locations, page map, settings and
+    Manchester question file; a registry, the normalised ai_engines.json date and a dist page
+    when asked."""
+    (tmp / "scripts").mkdir(exist_ok=True)
+    shutil.copy(ROOT / "scripts/competitor_registry_check.py", tmp / "scripts")
+    (tmp / "data/queries/raw" / MAN).mkdir(parents=True, exist_ok=True)
+    for f in ("locations.json", "page-map.json", "settings.json"):
+        shutil.copy(ROOT / "data" / f, tmp / "data")
+    if qfile:
+        shutil.copy(ROOT / f"data/queries/{MAN}.json", tmp / "data/queries")
+    if registry:
+        (tmp / "data/competitors.json").write_text(json.dumps(registry), encoding="utf-8")
+    if saved_on:
+        (tmp / f"data/queries/raw/{MAN}/ai_engines.json").write_text(
+            json.dumps({"source": "ai_engines", "status": "ok", "fetched": saved_on, "questions": []}), encoding="utf-8")
+    if dist is not None:
+        page = tmp / f"dist/uk-locations/{MAN}/index.html"
+        page.parent.mkdir(parents=True, exist_ok=True)
+        page.write_text(dist, encoding="utf-8")
+    return tmp
+
+
+def _run(root, resp=None, slug=MAN, **env):
+    """(exit code, output doc or None, stderr) for the script run in `root` on `resp`."""
+    args = [sys.executable, "-", slug]
+    if resp is not None:
+        path = root / "resp.json"
+        path.write_text(json.dumps(resp) if not isinstance(resp, pathlib.Path) else resp.read_text(encoding="utf-8"),
+                        encoding="utf-8")
+        args.append(str(path))
+    e = {k: v for k, v in os.environ.items() if k not in ("PAID", "FETCHED_ON", "NOT_FETCHED", "GAP_TOPICS", "EXTRA")}
+    e.update({"QUERY": MAN_Q, "TODAY": "2026-09-23"}, **env)
+    run = subprocess.run(args, input=_agent_script(), cwd=root, env=e, capture_output=True, text=True)
+    return run.returncode, (json.loads(run.stdout) if run.returncode == 0 else None), run.stderr
+
+
+def _answer(markdown, keyword=MAN_Q, **extra):
+    return {"status_code": 20000, "tasks": [{"status_code": 20000, "result": [dict(keyword=keyword, markdown=markdown, **extra)]}]}
+
+
+def _site(domain, rid=None, tier=None, platform=False):
+    return {"domain": domain, "registry_id": rid, "tier": tier, "platform": platform}
+
+
+def _ent(name, kind, on):
+    return {"entity": name, "kind": kind, "on_page": on, "band": "high" if kind == "safety" and not on else "medium"}
+
+
+CASES = {
+    "fixture": dict(
+        resp=FIX / "chatgpt-manchester.json", registry=None, extra="pets4homes;kennel club;find a puppy",
+        bsuk=False,
+        citations=[_site("pets4homes.co.uk"), _site("thekennelclub.org.uk")], local=[],
+        entities=[_ent("health tests", "safety", True), _ent("meet the mother", "safety", True),
+                  _ent("microchip", "safety", False), _ent("pets4homes", "other", False),
+                  _ent("kennel club", "other", True), _ent("find a puppy", "other", False)],
+        format={"status": "ok", "list": "numbered", "length": "short", "words": 46, "opening": "recommendation"},
+        gap=[], risks=[]),
+    "synthetic full response": dict(
+        resp=FIX / "chatgpt-synthetic-full.json", registry=REGISTRY,
+        extra="kennel club;coefficient of inbreeding;pets4homes;rspca;written contract;coi|coefficient of inbreeding",
+        bsuk=True,
+        citations=[_site("pets4homes.co.uk", "pets4homes", 2), _site("thekennelclub.org.uk", "kc", 1),
+                   _site("bluestaffyuk-scam.com"), _site("bluestaffyuk.uk"), _site("ukstaffypups.uk", "ukstaffypups", 4)],
+        local=[_site("cheap-pups.com", "cheap-pups", 5), _site("pets-direct.co.uk"), _site("blogspot.com", platform=True)],
+        entities=[_ent("health tests", "safety", True), _ent("l-2-hga", "safety", True),
+                  _ent("meet the mother", "safety", True), _ent("licence", "safety", False),
+                  _ent("contract", "safety", False), _ent("kennel club", "other", True),
+                  _ent("coefficient of inbreeding", "other", False), _ent("pets4homes", "other", False)],
+        format={"status": "ok", "list": "table", "length": "short", "words": None, "opening": "recommendation"},
+        gap=[], risks=["cheap-pups.com"]),
+}
+
+
+@pytest.mark.parametrize("case", CASES, ids=list(CASES))
+def test_the_agent_script_reads_a_saved_response_exactly(tmp_path, case):
+    c = CASES[case]
+    code, doc, err = _run(_root(tmp_path, registry=c["registry"]), c["resp"], EXTRA=c["extra"])
+    assert code == 0, err
+    assert doc["bsuk_cited"] is c["bsuk"]
+    assert doc["citations"] == c["citations"]
+    assert doc["local_businesses"] == c["local"]  # social profiles dropped; a blog host flagged as a platform
+    assert doc["entities"] == c["entities"]
+    fmt = dict(c["format"], words=c["format"]["words"] or doc["format"]["words"])
+    assert doc["format"] == fmt
+    assert doc["citation_gap"] == c["gap"]
+    assert [r["domain"] for r in doc["risks"]] == c["risks"]
+    assert doc["page_source"]["kind"] == "question-file" and "ai_" in doc["page_source"]["note"]
+    assert problems(doc, f"{MAN}-2026-09-23.json") == []
+
+
+def test_the_synthetic_answer_drops_extra_entities_it_cannot_hold(tmp_path):
+    code, doc, err = _run(_root(tmp_path, registry=REGISTRY), FIX / "chatgpt-synthetic-full.json",
+                          EXTRA="rspca;written contract;coi|coefficient of inbreeding;xl breed|xl")
+    assert code == 0, err
+    dropped = err.splitlines()[-1]
+    for name in ("rspca", "written contract", "coi", "xl breed"):
+        assert name in dropped
+    assert all(e["kind"] == "safety" for e in doc["entities"])
+
+
+def test_ai_sourced_questions_are_not_page_text(tmp_path):
+    # the Manchester question file carries "Has the puppy been microchipped and vet checked?" only
+    # because ChatGPT's answer suggested it: checking the answer against it would check it against itself
+    code, doc, err = _run(_root(tmp_path), _answer("1. Check the puppy is microchipped.\n2. Ask for a vet check."))
+    assert code == 0, err
+    assert {e["entity"]: e["on_page"] for e in doc["entities"]} == {"microchip": False, "vet check": True}
+
+
+def test_a_query_that_does_not_match_the_response_stops(tmp_path):
+    code, _, err = _run(_root(tmp_path), _answer("Ask to meet the mother.", keyword="Another question?"))
+    assert code != 0 and "not QUERY" in err
+
+
+def test_a_city_page_takes_only_the_city_question(tmp_path):
+    q = "Staffy puppies in Manchester?"
+    code, _, err = _run(_root(tmp_path), _answer("Meet the mother.", keyword=q), QUERY=q)
+    assert code != 0 and "city page" in err
+
+
+def test_a_plural_on_the_page_matches_a_singular_in_the_answer(tmp_path):
+    page = ('<html><head><meta name="robots" content="index, follow"></head><body>'
+            "<main><p>Every puppy has had its flea treatments.</p></main></body></html>")
+    code, doc, err = _run(_root(tmp_path, dist=page), _answer("Ask about flea treatment."), EXTRA="flea treatment")
+    assert code == 0, err
+    assert doc["entities"] == [_ent("flea treatment", "other", True)]
+
+
+def test_a_saved_response_without_a_keyword_is_checked_against_its_note(tmp_path):
+    resp = {"_saved_note": f"Request: keyword '{MAN_Q}'.", "answer_points": ["Meet the mother."]}
+    assert _run(_root(tmp_path), resp)[0] == 0
+    resp["_saved_note"] = "Request: another question."
+    code, _, err = _run(_root(tmp_path), resp)
+    assert code != 0 and "cannot be verified" in err
+
+
+@pytest.mark.parametrize("robots,kind", [("noindex, follow", "question-file"), ("index, follow", "dist")])
+def test_a_noindex_build_is_not_the_page(tmp_path, robots, kind):
+    html_ = (f'<html><head><meta name="robots" content="{robots}"></head><body><nav>licence</nav>'
+             '<main><h1>Blue Staffy Puppies Manchester</h1><p>We never sell without a written contract.</p></main></body></html>')
+    code, doc, err = _run(_root(tmp_path, dist=html_), _answer("Ask for a contract and see the licence."))
+    assert code == 0, err
+    assert doc["page_source"]["kind"] == kind and doc["page_source"]["provisional"] is (kind != "dist")
+    on = {e["entity"]: e["on_page"] for e in doc["entities"]}
+    assert on == ({"licence": False, "contract": True} if kind == "dist" else {"licence": False, "contract": False})
+
+
+@pytest.mark.parametrize("saved_on,stale", [("2026-08-23", True), ("2026-08-24", False)])
+def test_an_answer_older_than_30_days_is_stale(tmp_path, saved_on, stale):
+    code, doc, err = _run(_root(tmp_path, saved_on=saved_on), _answer("Meet the mother."))
+    assert code == 0, err
+    assert bool(doc["stale"]) is stale and err.startswith("STALE") is stale
+    assert problems(doc) == []
+
+
+def test_a_paid_run_dates_the_answer_by_the_call(tmp_path):
+    code, doc, err = _run(_root(tmp_path, saved_on="2026-06-01"), _answer("Meet the mother."), PAID="1", FETCHED_ON="2026-09-23")
+    assert code == 0, err
+    assert doc["fetched"]["fetched_on"] == "2026-09-23" and doc["stale"] == [] and doc["paid_this_run"]
+    code, _, err = _run(_root(tmp_path), _answer("Meet the mother."), PAID="1")
+    assert code != 0 and "FETCHED_ON" in err
+
+
+def test_no_date_for_the_answer_stops(tmp_path):
+    code, _, err = _run(_root(tmp_path, saved_on=None), _answer("Meet the mother."))
+    assert code != 0 and "FETCHED_ON" in err
+
+
+@pytest.mark.parametrize("resp", [
+    {"status_code": 40501, "tasks": [{"status_code": 40501, "status_message": "Invalid Field"}]},
+    _answer(""),
+])
+def test_a_connector_error_exits_5(tmp_path, resp):
+    code, _, err = _run(_root(tmp_path), resp)
+    assert code == 5 and "connector error" in err
+
+
+def test_the_not_fetched_output_comes_from_the_script(tmp_path):
+    code, doc, err = _run(_root(tmp_path), None, NOT_FETCHED="spend declined")
+    assert code == 0, err
+    assert doc["fetched"] == {"status": "NOT FETCHED", "reason": "spend declined"}
+    assert doc["format"]["status"] == "NOT FETCHED" and doc["citations"] == [] and not doc["paid_this_run"]
+    assert problems(doc) == []
+    code, doc, err = _run(_root(tmp_path), None, NOT_FETCHED="connector error: status 40501", PAID="1")
+    assert code == 0 and doc["paid_this_run"] and problems(doc) == []
+
+
+def test_bsuk_is_its_own_domain_only(tmp_path):
+    code, doc, _ = _run(_root(tmp_path), _answer("See https://bluestaffyuk-scam.com/ and https://www.bluestaffyuk.uk.evil.com/"))
+    assert code == 0 and doc["bsuk_cited"] is False
+    code, doc, _ = _run(_root(tmp_path), _answer("See https://www.bluestaffyuk.uk/ for puppies."))
+    assert code == 0 and doc["bsuk_cited"] is True
+
+
+@pytest.mark.parametrize("markdown,want", [
+    ("**Short answer:**\nUse a licensed breeder near you.", ("paragraphs", "recommendation")),
+    ("---\nA blue Staffy is a Staffordshire Bull Terrier with a dilute coat.", ("paragraphs", "definition")),
+    ("# Where to buy\n\nHere are the best places to look for a puppy.", ("paragraphs", "recommendation")),
+    ("You can find breeders through the Kennel Club.", ("paragraphs", "recommendation")),
+    ("Prices vary, e.g. by region, and 60 percent of buyers pay a deposit first.", ("paragraphs", "statistic")),
+    ("| a | b |\n| c | d |", ("paragraphs", "statement")),
+    ("| Question | Why |\n|---|---|\n| Health tests? | Disease |", ("table", "statement")),
+    ("1. Visit the litter.\n   - see the mother\n   - see the father\n   - see the kennel\n2. Ask for tests.", ("numbered", "recommendation")),
+    ("- Visit the litter.\n- Ask for tests.\n\n---\n", ("bulleted", "recommendation")),
+    ("Is a blue Staffy right for you? It depends.", ("paragraphs", "question")),
+])
+def test_the_answer_format(tmp_path, markdown, want):
+    code, doc, err = _run(_root(tmp_path), _answer(markdown))
+    assert code == 0, err
+    assert (doc["format"]["list"], doc["format"]["opening"]) == want
+
+
+def test_gap_topics_must_be_a_matrix_row_and_the_matrix_is_named_only_with_them(tmp_path):
+    root = _root(tmp_path, qfile=False)
+    (root / "docs/research").mkdir(parents=True)
+    (root / "docs/research/gap-matrix-2026-09-20.md").write_text(
+        "| Value | Competitors |\n|---|---|\n| staffy puppy price uk | 3/5 |\n| blue staffy \\\\| health | 2/5 |\n", encoding="utf-8")
+    q = "How much is a Staffy puppy in the UK?"
+    resp = _answer("A Staffy puppy from a health tested litter costs more.", keyword=q)
+    slug = "uk-blue-staffy-puppy-buying-guide"
+    code, doc, err = _run(root, resp, slug=slug, QUERY=q, FETCHED_ON="2026-09-23")
+    assert code == 0, err
+    assert doc["query_source"] == {"from": "page-map", "gap_matrix": None, "gap_topics": []}
+    code, doc, err = _run(root, resp, slug=slug, QUERY=q, FETCHED_ON="2026-09-23", GAP_TOPICS="staffy puppy price uk")
+    assert code == 0, err
+    assert doc["query_source"]["gap_matrix"] == "docs/research/gap-matrix-2026-09-20.md"
+    code, _, err = _run(root, resp, slug=slug, QUERY=q, FETCHED_ON="2026-09-23", GAP_TOPICS="staffy puppy price")
+    assert code != 0 and "GAP_TOPICS" in err  # part of a row is not a row
 
 
 def test_a_file_named_for_another_slug_or_date_fails():
