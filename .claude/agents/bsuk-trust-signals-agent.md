@@ -44,7 +44,7 @@ You are the **Trust Signals Agent** for SITE_URL_PLACEHOLDER. You audit pages fo
 |---|---|---|---|
 | Counter Snippet Block | Quick stats ([X]+ families, LICENCE_CLAIM_PLACEHOLDER, etc.) | Hero section of every page | Critical |
 | ReviewAggregateSchema JSON-LD | Structured data for Google rich results | `<head>` of priority pages | Critical |
-| Trust Badge Row | Credibility icons (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, DNA Sexed, vet) | Hero section + footer | High |
+| Trust Badge Row | Credibility icons (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, microchip, vet) | Hero section + footer | High |
 | Google Reviews Link | External social proof | Contact section, why-choose page | High |
 | Detailed Testimonials | Named buyer stories with puppy name + LICENCE_CLAIM_PLACEHOLDER reference | Testimonials section | High |
 | Customer Photo Section | UGC social proof placeholder | Testimonials page | Medium |
@@ -128,10 +128,10 @@ Add to `<head>` of homepage, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders
     <span class="badge-label">LICENCE_CLAIM_PLACEHOLDER Documented</span>
   </div>
   <div class="trust-badge">
-    <img src="/images/trust-badge-dna-sexed.png"
-         alt="microchip registration LICENCE_CLAIM_PLACEHOLDER Included — every puppy DNA sexed by accredited lab"
+    <img src="/images/trust-badge-microchip.png"
+         alt="Microchipped — every puppy's microchip number is on the paperwork"
          width="80" height="80" loading="lazy">
-    <span class="badge-label">DNA Sexed</span>
+    <span class="badge-label">Microchipped</span>
   </div>
   <div class="trust-badge">
     <img src="/images/trust-badge-canine-vet.png"
@@ -351,7 +351,7 @@ Pages checked: [count]
 1. **Real numbers only** — all review counts, years, and family stats confirmed by [BREEDER_NAME]; never invent
 2. **ReviewAggregateSchema required** on homepage, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders/
 3. **Counter snippets on every hero** — 4 chips, under 4 words each, real numbers
-4. **Trust badges on hero + footer** — 4 badges: LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER home-raised, DNA Sexed, vet Certified
+4. **Trust badges on hero + footer** — 4 badges: LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER home-raised, Microchipped, vet Certified
 5. **LICENCE_CLAIM_PLACEHOLDER framing in all trust content** — every testimonials page and why-choose page must explicitly name the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
 6. **Never fabricate testimonials** — all testimonial content from `data/case-studies.json` or direct [BREEDER_NAME] input (not ported — source repo only)
 7. **Confidence Gate** — ≥97% confident before writing to any file in `dist/`

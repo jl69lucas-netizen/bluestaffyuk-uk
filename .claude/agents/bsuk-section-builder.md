@@ -348,7 +348,7 @@ counter_snippet:
   stats:
     - { emoji: "🛡️", label: "LICENCE_CLAIM_PLACEHOLDER Licensed" }
     - { emoji: "📄", label: "LICENCE_CLAIM_PLACEHOLDER Documented" }
-    - { emoji: "🧬", label: "DNA Sexed" }
+    - { emoji: "🏷️", label: "Microchipped" }
     - { emoji: "🏥", label: "vet Certified" }
 ```
 
@@ -366,8 +366,8 @@ counter_snippet:
         <span class="bsuk-stat-label">LICENCE_CLAIM_PLACEHOLDER Documented</span>
       </div>
       <div class="bsuk-stat-badge">
-        <span class="bsuk-stat-icon">🧬</span>
-        <span class="bsuk-stat-label">DNA Sexed</span>
+        <span class="bsuk-stat-icon">🏷️</span>
+        <span class="bsuk-stat-label">Microchipped</span>
       </div>
       <div class="bsuk-stat-badge">
         <span class="bsuk-stat-icon">🏥</span>
@@ -423,7 +423,7 @@ Inputs: none (trust signals are fixed)
 <div class="bsuk-trust-bar">
   <span class="bsuk-trust-item">✓ LICENCE_CLAIM_PLACEHOLDER Licensed</span>
   <span class="bsuk-trust-item">✓ LEGAL_CLAIM_PLACEHOLDER home-raised</span>
-  <span class="bsuk-trust-item">✓ DNA Sexed</span>
+  <span class="bsuk-trust-item">✓ Microchipped</span>
   <span class="bsuk-trust-item">✓ vet Certified</span>
 </div>
 ```

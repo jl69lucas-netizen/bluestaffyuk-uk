@@ -195,7 +195,7 @@ On individual puppy listing pages, incorporate FAQ snippets about the breeder's 
 Before a strong CTA, include 1 sentence from a relevant FAQ to address hesitation. Example: "Ready to bring home an Blue Staffy? As our FAQ explains, every puppy comes with full the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) and an vet health certificate."
 
 **Strategy 4 — As 'Good to Know' Callout Blocks**
-Visually distinct blocks that directly answer a single FAQ. Use `<aside>` or a styled callout box. Placement: puppy care section, breed guide, pricing page. Example: "Good to Know: DNA sexing is included — you'll know your puppy's sex before it goes home."
+Visually distinct blocks that directly answer a single FAQ. Use `<aside>` or a styled callout box. Placement: puppy care section, breed guide, pricing page. Example: "Good to Know: every pup has a vet health check before it goes home."
 
 **Strategy 5 — In Blog Posts**
 Use FAQs as seed content for blog articles. When a topic appears in the FAQ, write a 1,000+ word blog post expanding on it. Example: FAQ "What is the difference between Blue Staffy and Blue and white Staffy?" → blog post: "Blue Staffy vs Blue and white Staffy: Which Is Right for You?"

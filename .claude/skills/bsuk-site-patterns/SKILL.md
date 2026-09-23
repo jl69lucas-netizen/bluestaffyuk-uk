@@ -224,7 +224,7 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
       ))}
     </div>
     <p class="text-center text-stone-400 text-xs mt-8 font-body">
-      All puppies include LICENCE_CLAIM_PLACEHOLDER home-bred certificate · DNA sex certificate · Canine vet health certificate · Whelp certificate
+      All puppies include LICENCE_CLAIM_PLACEHOLDER home-bred certificate · Canine vet health certificate · Whelp certificate
     </p>
   </div>
 </section>

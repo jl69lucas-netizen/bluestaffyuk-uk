@@ -1,6 +1,6 @@
 ---
 name: bsuk-seo-master-checklist
-description: Use BEFORE starting any interior page build on BlueStaffyUK (homepage, species/care guides, blog, variant, trust, scam, purchase, FAQ, about) — the 4-phase master SEO execution checklist v2.0 (Pre-Build Research → Planning/Outline Gate → 5-Tier Section Form → Optimization + QA), the 10-category keyword fan-out, 95–105-distinct-entity research (Rule 57, 2026-09-09), 3 anchor-text strategies and the Internal Linking Library (Appendix A). NOT for location or comparison pages (they have their own builders). Triggers - "run the SEO checklist", "master checklist", "Rule 51 outline gate", "keyword fan-out", "Appendix A links".
+description: Use BEFORE starting any interior page build on BlueStaffyUK (homepage, breed/care guides, blog, variant, trust, scam, purchase, FAQ, about) — the 4-phase master SEO execution checklist v2.0 (Pre-Build Research → Planning/Outline Gate → 5-Tier Section Form → Optimization + QA), the 10-category keyword fan-out, 95–105-distinct-entity research (Rule 57, 2026-09-09), 3 anchor-text strategies and the Internal Linking Library (Appendix A). NOT for location or comparison pages (they have their own builders). Triggers - "run the SEO checklist", "master checklist", "Rule 51 outline gate", "keyword fan-out", "Appendix A links".
 ---
 
 # SKILL: BSUK Master SEO Execution Checklist (v2.0)
@@ -29,7 +29,7 @@ and the restatement is the copy to delete on the next pass.
 
 ## SCOPE
 
-**Applies to:** Homepage · Species guides · Care guides · Blog posts · Variant pages · Trust pages · Scam pages · Purchase guides · FAQ pages · About page · Any new hub or spoke page
+**Applies to:** Homepage · Breed guides · Care guides · Blog posts · Variant pages · Trust pages · Scam pages · Purchase guides · FAQ pages · About page · Any new hub or spoke page
 
 **Excluded:** Location pages (use `@bsuk-location-builder` template) · Comparison pages (use `@bsuk-comparison-builder` template)
 
@@ -93,7 +93,7 @@ Before writing ANY content, perform comprehensive competitor research.
 2. `[Primary keyword] near me`
 3. `buy [primary keyword]`
 4. `Blue Staffy breeders`
-5. `[Primary keyword] [state name]` — top 5 states
+5. `[Primary keyword] [city]` — the top 5 of the 28 UK cities in `data/locations.json`
 6. Also check GSC and GA4 for long-form queries (5+ words) already driving impressions
 
 **Competitors to analyze (8–12 minimum):**
@@ -155,7 +155,7 @@ The primary keyword is set by the page type:
 - **Homepage:** `blue staffy breeder`
 - **Blue variant page:** `blue staffy for sale`
 - **Blue-Brindle variant page:** `blue-brindle staffy for sale`
-- **Species guide:** `blue staffy guide` / `blue staffy care`
+- **Breed guide:** `blue staffy guide` / `blue staffy care`
 - **Purchase guide:** `buy blue staffy near me`
 - **Scam page:** `blue staffy scam`
 - **Price page:** `blue staffy price`
@@ -196,7 +196,7 @@ Develop 100+ keyword variations across these categories:
 - `blue staffy for sale [city]`
 - `blue staffy breeders near [city]`
 - `blue staffy nationwide delivery`
-- Include all target states from `data/locations.json`
+- Include all 28 UK cities from `data/locations.json`
 
 **7. LSI (Latent Semantic Indexing):**
 - Blue Staffy temperament, training, health
@@ -236,25 +236,23 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 
 **2. Location Entities (80+ required):**
 - **Primary:** Carlisle · Cumbria (town and region only — no street, no postcode, Known Issue 16)
-- **Target cities:** From `data/locations.json` — include all states + major cities
+- **Target cities:** From `data/locations.json` — include all 28 UK cities
 - **Delivery routes:** the road legs from Carlisle to the 28 cities — never an airport code; delivery here is by road
 - **Regions:** Cumbria, the Borders, the North West, the North East, Yorkshire, Scotland, the Midlands, Wales, the South West, Greater London
 - **DEFRA-approved transport coverage:** Cross-reference with `data/locations.json`
 
-**3. Medical/Health Entities (40+ required):**
+**3. Medical/Health Entities (ledger-bounded, no quota):**
 - L-2-HGA and HC-HSF4 — the hereditary conditions the breed is DNA-tested for, stated only where the evidence ledger records the certificate
 - any other health entity needs an evidence-ledger entry before it is named
-- LICENCE_CLAIM_PLACEHOLDER Form 7001 (Interstate Travel Health Certificate)
 - Canine First Aid protocol
 
 **4. Brand/Product Entities (20+ required):**
 - Puppy Culture (socialization and weaning protocol)
 - Early Neonatal Handling (ENH)
 - The Kennel Club (the UK breed registry)
-- LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER (Animal and Plant Health Inspection Service)
 
 **5. Statistical Entities (20+ required):**
-- 500+ puppies placed (since 2014)
+- puppies placed since 2014 — the count is NOT FETCHED
 - 12–14 years average lifespan
 - £1,500–£1,700 Blue Staffy price range
 - £1,500–£1,700 Blue-Brindle Staffy price range
@@ -284,7 +282,7 @@ Examples:
 - `blue staffies for sale [city]`
 - `purchase home-reared blue staffy pup`
 - `LICENCE_CLAIM_PLACEHOLDER documented blue staffy available`
-Generate 15–20 more targeting the page's primary keyword + state/city modifiers
+Generate 15–20 more targeting the page's primary keyword + city modifiers (the 28 UK cities in `data/locations.json`)
 
 **Category 2: Conversational/Voice Search**
 Examples:
@@ -315,7 +313,7 @@ Examples:
 - `safe blue staffy delivery nationwide`
 Generate 15–20 more
 
-**Category 6: City/State-Based Keywords**
+**Category 6: City-Based Keywords**
 Examples:
 - `blue staffies for sale [city] [city]`
 - `blue staffy breeders [city]`
@@ -373,17 +371,15 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - Top 10 cities in target region (population 50,000+)
 - Most puppy-friendly neighborhoods/communities in key cities
 - Top 5 canine vet clinics in key metro areas
-- State wildlife/puppy regulations relevant to Blue Staffy ownership
+- UK dog-ownership rules relevant to the cities in `data/locations.json` (LEGAL_CLAIM_PLACEHOLDER until confirmed)
 
 **Authority Entities Required:**
 - Top 3–5 canine veterinary hospitals in key delivery cities
-- Local the RVC member veterinarians in target states
-- State Veterinary Medical Associations
 - LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER regional offices
 - Local puppy/canine societies and clubs
 
 **Logistics Entities Required:**
-- DEFRA-approved pet transport companies serving target states
+- DEFRA-approved pet transport companies serving the 28 UK cities in `data/locations.json`
 - Ground transit time estimates from Carlisle to target cities
 
 ---
@@ -409,7 +405,7 @@ For pages with a delivery/delivery section, use web search to gather these entit
 Each header should pull double SEO duty: **[secondary/conversational keyword] + [related LSI · NLP · entity · concurrent keyword · or long-form modifier]**. Don't stop at the obvious keyword — append a second, *useful* term that broadens the header's reach without keyword-stuffing.
 - ✅ "Why Choose BlueStaffyUK For Your **Home-Reared** Blue Staffies?" (secondary KW + LSI "home-reared")
 - ✅ "How Much Does a **Blue** Blue Staffy Cost — and What's the **First-Year Total**?" (variant entity + long-form concurrent KW)
-- ✅ "How Does BlueStaffyUK **Ship** an Blue Staffy **to Your State**?" (transactional KW + geographic NLP)
+- ✅ "How Does BlueStaffyUK **Ship** an Blue Staffy **to Your City**?" (transactional KW + geographic NLP)
 - ❌ "Why Choose Us?" (no keyword) · ❌ "Delivery" (single bare term)
 Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword + one related term per header — never three+ stacked. Applies across H2–H4 especially.
 
@@ -441,7 +437,7 @@ Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword 
 | 22 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
 | 23 | Puppy Culture & Early Neonatal Handling (Video) | 100–150 | `#puppy-culture` |
 | 24 | Contact Information & Next Steps | 150–200 | `#contact` |
-| 25 | Related Blue Staffy Varieties & Companion Puppies | 200–300 | `#related-species` |
+| 25 | Related Blue Staffy Varieties & Companion Puppies | 200–300 | `#related-breeds` |
 | 26 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
 | 27 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
 
@@ -456,7 +452,7 @@ The Page Outline document must contain ALL of the following:
 **A. Page Identity**
 - Target URL slug
 - Primary keyword (exact match)
-- Page type (Transactional / Informational / Comparison / Scam Recovery / Species Guide / Care Guide)
+- Page type (Transactional / Informational / Comparison / Scam Recovery / Breed Guide / Care Guide)
 - Recommended framework (AIDA, PAS, QAB, EBD, BAB, H-S-S, Inverse Pyramid, Entity-Tree)
 - Target word count (top competitor's word count + 1,000 minimum)
 
@@ -572,7 +568,7 @@ TIER 4: ENTITY & TRUST
 —————————————————————————
 9. Geographic Entities (3–5 per section):
    ☐ Cities: [specific cities mentioned]
-   ☐ States/Regions: [regions referenced]
+   ☐ Cities/Regions: [cities from `data/locations.json` referenced]
    ☐ Delivery routes / travel time from Carlisle: [if relevant]
 
 10. Authority Entities (1–2 per section):
@@ -580,7 +576,7 @@ TIER 4: ENTITY & TRUST
     ☐ [Specific vet clinic / certifying body]
 
 11. Trust Signals (2–3 per section):
-    ☐ "500+ puppies placed since 2014..."
+    ☐ "[count NOT FETCHED] puppies placed since 2014..."
     ☐ "12–14 year lifespan commitment..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER licenced kennel..."
@@ -656,7 +652,7 @@ Example: `"Learn more about [LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER d
 
 #### B. External Links (50+ Required Per Full Page)
 
-The port left this library full of the source site's other-species sources (its labs, vets,
+The port left this library full of the source site's non-dog sources (its labs, vets,
 behaviourists, foods and air-cargo programmes); they were deleted on 2026-09-23. What remains is
 a starting point, not the 50 — every link is verified live before it is used.
 
@@ -684,9 +680,6 @@ a starting point, not the 50 — every link is verified live before it is used.
 **Animal Welfare & Ethics:**
 1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Animal Welfare Act](https://www.gov.uk/)
 2. [FTC Consumer Protection Against Puppy Scams](https://www.ftc.gov/)
-
-**Geographic/Delivery Resources:**
-1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Interstate Travel Regulations for Puppies](https://www.gov.uk/)
 
 #### C. 3 Anchor Text Strategies (Rule 58)
 
@@ -736,7 +729,7 @@ Under 4 words each, start with a number or percentage:
 **Newsletter Signups (3 per full hub page):**
 - Position 1 (Top — after Diet/Nutrition section): "Get our FREE Blue Staffy Diet & Nutrition Guide!"
 - Position 2 (Middle — after Delivery section): "Calculate your DEFRA-approved transport delivery cost!"
-- Position 3 (Bottom — after Contact section): "Join 500+ happy BlueStaffyUK families!"
+- Position 3 (Bottom — after Contact section): "Join [count NOT FETCHED] happy BlueStaffyUK families!"
 
 **Image Placeholders:**
 Leave clearly labeled placeholders for all images/videos:
@@ -816,7 +809,7 @@ H1 examples:
 1. "Where Can I Buy a Home-Reared Blue Staffy Puppy with LICENCE_CLAIM_PLACEHOLDER Documentation?"
 2. "Looking for an Intelligent Companion? Meet Our Home-Bred Blue Staffy Puppies"
 3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 28 UK Cities from Carlisle"
-4. "Why Are BlueStaffyUK Blue Staffies Chosen by 500+ Happy Families?"
+4. "Why Are BlueStaffyUK Blue Staffies Chosen by [count NOT FETCHED] Happy Families?"
 5. "Ready for a Lifelong Canine Companion? Our Blue Staffies Come with Lifetime Breeder Support"
 6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle"
 
@@ -845,7 +838,7 @@ H6 examples (voice search — must be present):
 
 **Opening paragraph format (first 150 words of page):**
 1. Answer the primary question immediately
-2. Include location-specific details (Carlisle + target state)
+2. Include location-specific details (Carlisle + the target city from `data/locations.json`)
 3. Integrate 5+ entities naturally
 4. Add clear call-to-action (form link)
 5. Use long-tail keyword variations
@@ -891,7 +884,7 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 > Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Carlisle — Family-Owned Kennel Specialists
 
 **🛡️ TRUST/HEALTH TONE:**
-> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | DNA Tested, LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — 500+ Families Trust Our Home-Bred Guarantee
+> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | Parents DNA-Tested Where the Ledger Records It, LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — [count NOT FETCHED] Families Trust Our Home-Bred Guarantee
 
 **Meta Description (Rule 23):**
 - Standard: max 155 characters
@@ -980,7 +973,7 @@ Optimized answer (first 50 words): lead with the adult height and weight from th
 
 **Portrait images:** 1200×2133px native (9:16) — CSS display width: 350px (Rule IMAGE-03)
 **Infographic widths (Rule 54):**
-- Species guide, blog, care guide: **760px** wrapper, 400px desktop height
+- Breed guide, blog, care guide: **760px** wrapper, 400px desktop height
 - Homepage, location pages, hero: **1100px** wrapper, 400px desktop height
 - Mobile: 100% width, auto height
 
@@ -1227,7 +1220,7 @@ Canonical BSUK URL list — verify in `src/pages/` before linking. All URLs use 
 - `https://SITE_URL_PLACEHOLDER/blog/uk-staffordshire-bull-terrier-guide/`
 - `https://SITE_URL_PLACEHOLDER/blog/blue-staffy-health-uk/`
 
-**Location/State Pages (sample — full list in `data/locations.json`):**
+**Location Pages (sample — full list in `data/locations.json`):**
 - `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-essex/`
 - `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-middlesbrough/`
 - `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-london/`
@@ -1347,9 +1340,9 @@ When migrating content from dog-breeder templates or MFS reference material, app
 | Delivery Driver | DEFRA-approved transport |
 | Ground transport | Climate-controlled canine ground transit |
 | Microchip | Microchip number on the paperwork |
-| THE KENNEL CLUB, BBB, AAHA | LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, THE KENNEL CLUB, the RVC |
+| Vaccination (DHPP, Nobivac) | the first vaccinations (puppy package, data/faq.json) |
 | BBB A+ Rating | LICENCE_CLAIM_PLACEHOLDER Licence + THE KENNEL CLUB Registered Kennel |
 | 12-15 year lifespan | 12–14 year lifespan |
-| Virginia / state-specific entities | National entities (BSUK ships nationwide) |
+| Virginia / state-specific entities | UK-wide entities (delivery by DEFRA-approved transport to the 28 cities in `data/locations.json`) |
 | Craigslist puppy scams | Online puppy scams (FTC canine fraud) |
 | Phone CTA in body copy | Form CTA — link to /contact-us/ ONLY (Rule 61) |

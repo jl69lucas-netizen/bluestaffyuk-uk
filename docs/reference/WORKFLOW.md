@@ -535,7 +535,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 
 4. bsuk-trust-signals-agent
    → Adds: Google Reviews widget HTML
-   → Adds: Trust Badge row (LICENCE_CLAIM_PLACEHOLDER / LICENCE_CLAIM_PLACEHOLDER / DNA Sexed / Veterinary Vet)
+   → Adds: Trust Badge row (LICENCE_CLAIM_PLACEHOLDER / LICENCE_CLAIM_PLACEHOLDER / Microchipped / Veterinary Vet)
    → Adds: ReviewAggregateSchema
    → Adds: Counter Snippet blocks
    → Works with: bsuk-case-study-agent for testimonial content

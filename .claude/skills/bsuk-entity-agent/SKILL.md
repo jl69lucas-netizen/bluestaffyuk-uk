@@ -29,11 +29,10 @@ For every entity mention on an MFS page:
 | Primary Entity | Variations | Where to Use |
 |---------------|-----------|-------------|
 | Blue Staffy puppy | Blue Staffy, puppy, home-bred | H1, H2, opening paragraphs, CTAs |
-| Blue Staffy | Blue, BSUK, larger Blue Staffy | Variant sections, H2, species guide |
-| Blue-Brindle Staffy | TAG, Blue-Brindle, smaller Blue Staffy | Variant sections, H2, species guide |
-| Canis lupus familiaris | Scientific name, canine nomenclature | Species guide, scientific sections |
-| LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER | LICENCE_CLAIM_PLACEHOLDER A-I, protected species | Credentials, legal pages |
-| Home-bred | Domestically bred, bred in captivity | Trust bar, credentials |
+| Blue Staffy | Blue, BSUK | Variant sections, H2, breed guide |
+| Blue-Brindle Staffy | Blue-Brindle | Variant sections, H2, breed guide |
+| Canis lupus familiaris | Scientific name, canine nomenclature | Breed guide, scientific sections |
+| Home-bred | Domestically bred | Trust bar, credentials |
 | Home-raised | Home-reared, socialized, behavioral training | Care sections, about page |
 | Lifetime breeder support | Ongoing breeder relationship, lifetime advisory | Trust, FAQ |
 
@@ -46,9 +45,9 @@ For every entity mention on an MFS page:
 | LICENCE_CLAIM_PLACEHOLDER license | LICENCE_CLAIM_PLACEHOLDER-licensed breeder, LICENCE_CLAIM_PLACEHOLDER inspection | Trust bar, about page |
 | LICENCE_CLAIM_PLACEHOLDER documentation | LICENCE_CLAIM_PLACEHOLDER permit, home-bred certificate | Credentials, legal compliance |
 | Behavioral socialization | Home-raised, taming, training | Care sections, about |
-| Nutritional support | Species-appropriate diet, puppy nutrition | Care guide, FAQ |
+| Nutritional support | Breed-appropriate diet, puppy nutrition | Care guide, FAQ |
 | Lifetime advisory | Ongoing breeder mentorship, lifetime support | Trust, FAQ |
-| Canine welfare standards | Species welfare, ethical breeding | Trust, credentials |
+| Canine welfare standards | Dog welfare, ethical breeding | Trust, credentials |
 
 ### Category 3 — Location Entities
 

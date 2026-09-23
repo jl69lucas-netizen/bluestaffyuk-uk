@@ -67,11 +67,17 @@ BANNED = (
     # builder, the SEO checklist and the content-audit agent). A dog page that promises a
     # leg band or warns about psittacosis tells the reader nobody checked it.
     "Psittac", "psittac", "leg band", "powder-down", "cloacal", "proventricular",
-    "Amazon Puppy", "Amazon puppy", "amazons =", "Google US", "UKge",
+    "Amazon Puppy |", "vs Amazon puppy", "amazons =", "Google US", "UKge",
     # Three more that the list above misses because the lint is case-sensitive, and that no
     # dog page can ever use: "Proventricular Dilatation Disease" in the content-audit agent,
     # "Keyword Ukge" in the SEO checklist, and "aviculture" (bird-keeping) in the same file.
     "Proventricular", "Ukge", "vicultur",
+    # A US regulator and its paperwork, borrowed from the source repo: BSUK delivers by road
+    # inside the UK, so no page may cite APHIS or an interstate certificate.
+    "Plant Health Inspection", "Interstate",
+    # A dog's sex is checked by the vet at the health check; DNA sexing is how a parrot
+    # breeder sexes a bird. Every "DNA sexed" badge on a dog site is a claim nobody made.
+    "DNA sex", "DNA-sex", "DNA Sex", "DNA-Sex",
 ) + CAG_GEO
 
 # `Glasgow` has exactly two honest uses left in the instruction tree, and a line carrying

@@ -253,7 +253,7 @@ Every post that makes a technical or clinical claim must cite it **once** to a c
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
 - **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (not ported — source repo only)
 
-Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a "how DNA sexing works" post cites the DNA test; a shipping post cites the animal-transport rules).
+Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a health-testing post cites the lab behind the L-2-HGA and HC-HSF4 tests; a shipping post cites the animal-transport rules).
 
 ---
 

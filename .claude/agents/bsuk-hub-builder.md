@@ -57,7 +57,7 @@ ls dist/blue-staffy-breeder-standing/ 2>/dev/null
 | Location Hub | `/available-puppies/` | 22 city pages (from data/locations.json) |
 | Comparison Hub | `/blue-staffy-uk-breeders/` | Blue Staffy vs blue and white Staffy, vs American Bully, vs French Bulldog, etc. |
 | Breed Hub | `/uk-staffordshire-bull-terrier-guide/` | care, health, training, training spokes |
-| Documentation Hub | `/blue-staffy-breeder-standing/` | LICENCE_CLAIM_PLACEHOLDER guide, LICENCE_CLAIM_PLACEHOLDER, DNA sexing spokes |
+| Documentation Hub | `/blue-staffy-breeder-standing/` | LICENCE_CLAIM_PLACEHOLDER guide, LICENCE_CLAIM_PLACEHOLDER, vet health check spokes |
 
 ---
 

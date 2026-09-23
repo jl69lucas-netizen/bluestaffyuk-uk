@@ -44,13 +44,13 @@ Every page uses Format 1. (Format 2 — the 4-part ≤205 pipe-stacked title —
 
 ### Format 1 — One-Clause Title (Title ≤ 70 / Desc ≤ 160)
 Used on: most content pages, care guides, single-keyword pages.
-> **`[What the page is, plainly] – BlueStaffyUK`** — one clause, ≤70 chars, no pipes, no question stacked on a claim. Example: `Blue Staffy Puppy Breeder in Midland, Birmingham – BlueStaffyUK`. (Retired 2026-09-09: the 4-part ≤205 pattern produced a 233-char homepage title.)
-**Description (≤160):** `[Trust hook + primary keyword] + [one trust signal: DNA-sexed / vet-checked / LICENCE_CLAIM_PLACEHOLDER] + [CTA + delivery]` — single conversational flow, no pipes.
+> **`[What the page is, plainly] – BlueStaffyUK`** — one clause, ≤70 chars, no pipes, no question stacked on a claim. Example: `Blue Staffy Puppy Breeder in Carlisle, Cumbria – BlueStaffyUK`. (Retired 2026-09-09: the 4-part ≤205 pattern produced a 233-char homepage title.)
+**Description (≤160):** `[Trust hook + primary keyword] + [one trust signal: vet-checked / microchipped / LICENCE_CLAIM_PLACEHOLDER] + [CTA + delivery]` — single conversational flow, no pipes.
 
 **Example:**
 ```
-Title (54): Blue Staffy Puppy Breeder in Midland, Birmingham – BlueStaffyUK
-Desc (156): Trusted Blue Staffy puppy breeder in Midland, TX. Lisa Bright hand-raise DNA-sexed, vet-checked Blue Staffy & blue and white Staffy Greys with the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER). Reserve yours today.
+Title (61): Blue Staffy Puppy Breeder in Carlisle, Cumbria – BlueStaffyUK
+Desc (159): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises vet-checked Blue and Blue-Brindle pups, delivered by DEFRA-approved transport. Reserve yours.
 ```
 
 > **BLOG POSTS = FORMAT 1, LOCKED (breeder rule, 2026-07-02).** Every `/blog/<slug>/` post uses Format 1 with this exact title order — no deviation:

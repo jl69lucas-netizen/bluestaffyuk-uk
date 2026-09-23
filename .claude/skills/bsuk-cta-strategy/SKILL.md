@@ -48,7 +48,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 2: Trust Bar / Credentials
 
 🛡️ **Trust & Security:**
-> "Every credential here is verifiable — look us up." LICENCE_CLAIM_PLACEHOLDER License · LICENCE_CLAIM_PLACEHOLDER Home-Bred Documentation · DNA Sexing · Canine Vet Health Certificates · 500+ Families
+> "Every credential here is verifiable — look us up." LICENCE_CLAIM_PLACEHOLDER License · LICENCE_CLAIM_PLACEHOLDER Home-Bred Documentation · Canine Vet Health Certificates
 > **Button:** Verify Our Credentials
 
 ⚡ **Direct & Transactional:**

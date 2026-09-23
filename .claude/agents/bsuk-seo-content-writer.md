@@ -225,7 +225,7 @@ When content touches ethical, competitor-comparison, or fear-based topics, use t
 "This Blue Staffy puppy for sale is a Blue Staffy that is for sale now and available."
 
 **Example — GOOD:**
-"Harlow is a 14-week-old male Blue Staffy, DNA sexed, L-2-HGA-screened, and ready to join your family. His LICENCE_CLAIM_PLACEHOLDER home-raised permit and vet health certificate are included."
+"Harlow is a 14-week-old male Blue Staffy, vet health checked and ready to join your family. His LICENCE_CLAIM_PLACEHOLDER home-raised permit and vet health certificate are included."
 
 **Generic-Slayer Filter (run before every output):**
 Scan the draft for these overused AI adjectives and delete or replace them:
