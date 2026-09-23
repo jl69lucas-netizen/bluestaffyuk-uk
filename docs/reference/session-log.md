@@ -156,8 +156,8 @@ execution (§16).
 
 Closed 2026-09-23 on branch `competitor-intel` (cut from `foundation` at `db37ca1`, rebased onto
 `c9c981c`): 49 commits `a116055..638a6d4`, then the close-out fix `7ece4ff` and its docs commit,
-every one with the Fable 5.1 trailer; no remote, nothing pushed. Merge hash: see the gate report,
-`docs/reports/competitor-intel-gate-report.md`. `python3 -m pytest tests/py -q` → 2375 passed, 27
+every one with the Fable 5.1 trailer; no remote, nothing pushed. Merged `--no-ff` into `foundation`
+at `dcf1f9a` (gate report `docs/reports/competitor-intel-gate-report.md`). `python3 -m pytest tests/py -q` → 2375 passed, 27
 skipped, 1 xfailed; `npm run -s check:all` exit 0 (`competitors: 21 entries; 1 banned domain; 83
 files scanned; 0 problems`, `gaps: gap-matrix-2026-09-23.md matches 4 reports (3 competitors, BSUK
 profile present)`, `examined 41 agents; 0 problems`).

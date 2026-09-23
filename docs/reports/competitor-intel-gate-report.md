@@ -4,8 +4,8 @@ BlueStaffyUK rebuild, the second bridge build between project 4 and project 5. W
 from the close-out runs, the pilot outputs under `docs/research/`, `data/competitors.json`, the
 spend log and the branch history. Date 2026-09-23. Branch `competitor-intel`, cut from
 `foundation` at `db37ca1` and rebased onto `c9c981c` (after `query-augmentation` merged); no
-remote, nothing pushed. **Merge:** done by the controller after this report is reviewed — the
-merge hash is recorded in `docs/reference/session-log.md` once it exists.
+remote, nothing pushed. **Merge:** `--no-ff` into `foundation` at `dcf1f9a`, after this report was
+reviewed by the controller.
 
 Spec: `docs/superpowers/specs/2026-09-23-competitor-intel-design.md`. Sections §1–§15 are the
 definition of done **as amended by §16 (amendments 1–19)**; where a section's literal text and an
