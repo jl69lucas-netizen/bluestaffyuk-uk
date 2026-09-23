@@ -46,7 +46,8 @@ SYNONYMS = (
 )
 
 # Questions that are about the site, not the dog: never a page topic. Checked first.
-SKIP = r"\b(personal information|privacy|cookies?|data protection|gdpr|thank you page|reply|enquiry|enquiries|data)\b"
+SKIP = (r"\b(personal information|privacy|cookies?|gdpr|thank you page|reply|enquiry|enquiries"
+        r"|(my|your|personal) data|data (protection|deleted|we hold)|what data)\b")
 
 # First match wins, so order is precedence: a price question that mentions a blue coat is
 # a price question. Patterns run on normalise()d text (which strips the pound sign).
@@ -56,11 +57,11 @@ TOPICS = (
      r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
-    ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (have to )?wait|book\w*|available|availability"
+    ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (need to |have to )?wait|is there a wait|book\w*|available|availability"
      r"|where (can|do|should) i (find|buy|get|start)|where should i start)\b"),
     ("age", "middle",
-     r"\b(weeks old|how old|leave\w* (its|their|the) mother|when can (a |the )?puppy (leave|go home|come home)"
-     r"|when will (my|the) puppy come home)\b"),
+     r"\b(weeks old|how old|leave\w* (its|their|the) mother"
+     r"|when (can|will|does) (my |the |a )?puppy (leave|go home|come home))\b"),
     ("paperwork", "middle",
      r"\b(paperwork|papers|microchip\w*|vaccin\w*|pedigree|regist\w*|kennel club|contract|included|comes? with"
      r"|before (it|they) comes? home)\b"),
@@ -133,3 +134,144 @@ def fact_exists(ref, root=ROOT):
         else:
             return False
     return node is not None
+
+
+class Short(Exception):
+    """A FAQ block cannot reach its minimum from fact-backed questions."""
+
+    def __init__(self, blocks):
+        super().__init__(", ".join(f"{b}: {have}/{need}" for b, (have, need) in blocks.items()))
+        self.blocks = blocks
+
+
+def _bank_sources(root):
+    """{faq.json row id: its source} under `root`; empty when the bank is missing or bad."""
+    try:
+        rows = json.loads((Path(root) / "data/faq.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return {}
+    if not isinstance(rows, list):
+        return {}
+    return {r["id"]: r.get("source") for r in rows if isinstance(r, dict) and "id" in r}
+
+
+def resolve_fact(fact, src, root=ROOT, bank=None):
+    """The fact_source a candidate may contribute, or None.
+
+    A bank candidate may cite a bare path (page copy backs it). Any other source must cite
+    "path#key" or "bank:<id>" (resolved to that faq.json row's source); a bare path is ignored.
+    """
+    if not fact:
+        return None
+    if src != "bank":
+        if fact.startswith("bank:"):
+            fact = (bank if bank is not None else _bank_sources(root)).get(fact[5:])
+        elif "#" not in fact:
+            return None
+    return fact if fact_exists(fact, root) else None
+
+
+def merge(cands, root=ROOT):
+    """cands: (text, source_type, detail, fact_source). Keyed by normalised text."""
+    merged, bank = {}, None
+    for text, src, detail, fact in cands:
+        n = normalise(text)
+        if not n:
+            continue
+        m = merged.setdefault(n, {"question": text.strip(), "types": set(),
+                                  "found_in": [], "fact_source": None})
+        m["types"].add(src)
+        if detail not in m["found_in"]:
+            m["found_in"].append(detail)
+        if m["fact_source"] is None and fact:
+            if bank is None and src != "bank" and fact.startswith("bank:"):
+                bank = _bank_sources(root)
+            m["fact_source"] = resolve_fact(fact, src, root, bank)
+    return merged
+
+
+def score(types, topic, page_type):
+    return len(types) + FIT.get(page_type, {}).get(topic, 1)
+
+
+# Headings that are page furniture, not content. Reviews and FAQ headings are removed too:
+# ours are fixed frame and never counted, so theirs are not counted either.
+NON_CONTENT_EXACT = re.compile(
+    r"(share|share this|follow us|subscribe|newsletter|sign up|contact us|get in touch|"
+    r"comments?|categories|tags|archives|search|menu|footer|sidebar|you may also like|"
+    r"call now|call us now|enquire now|book now|apply now|reviews?|testimonials?)")
+NON_CONTENT_PREFIX = re.compile(
+    r"(related|recent|popular|latest) (posts|articles|puppy)\b|leave a (reply|comment)\b|"
+    r"faqs?\b|frequently asked questions\b")
+
+
+def clean_h2s(h2s):
+    seen, out = set(), []
+    for h in h2s:
+        n = normalise(h)
+        if not n or n in seen or NON_CONTENT_EXACT.fullmatch(n) or NON_CONTENT_PREFIX.match(n):
+            continue
+        seen.add(n)
+        out.append(h)
+    return out
+
+
+def section_target(pages):
+    """(target, rows): match the highest cleaned H2 count unless it is an outlier."""
+    rows = [{"url": p["url"], "google_pos": p.get("google_pos"), "bing_pos": p.get("bing_pos"),
+             "h2_raw": len(p.get("h2", [])), "h2_clean": len(clean_h2s(p.get("h2", []))),
+             "outlier": False} for p in pages]
+    if not rows:
+        return {"matched": 0, "set_by": None, "extra": EXTRA_SECTIONS, "total": EXTRA_SECTIONS}, rows
+    ranked = sorted(rows, key=lambda r: -r["h2_clean"])
+    setter = ranked[0]
+    if len(ranked) > 1 and ranked[0]["h2_clean"] > OUTLIER_RATIO * ranked[1]["h2_clean"]:
+        ranked[0]["outlier"] = True
+        setter = ranked[1]
+    matched = setter["h2_clean"]
+    return {"matched": matched, "set_by": setter["url"], "extra": EXTRA_SECTIONS,
+            "total": matched + EXTRA_SECTIONS}, rows
+
+
+def covered_topics(pages):
+    return {topic_of(h)[0] for p in pages for h in clean_h2s(p.get("h2", []))} - {None}
+
+
+def _rank(q):
+    return (-q["score"], q["id"])
+
+
+def pick_faq(questions):
+    """Sets q["faq"] in place: block minimums first, then by score up to FAQ_TOTAL_MAX."""
+    by_block = {b: sorted((q for q in questions if q["fact_source"] and q["block"] == b), key=_rank)
+                for b in BLOCKS}
+    short = {b: (len(by_block[b]), FAQ_MIN[b]) for b in BLOCKS if len(by_block[b]) < FAQ_MIN[b]}
+    if short:
+        raise Short(short)
+    picked = {b: by_block[b][:FAQ_MIN[b]] for b in BLOCKS}
+    total = sum(len(v) for v in picked.values())
+    for q in sorted((q for b in BLOCKS for q in by_block[b][FAQ_MIN[b]:]), key=_rank):
+        if total >= FAQ_TOTAL_MAX:
+            break
+        if len(picked[q["block"]]) < FAQ_MAX[q["block"]]:
+            picked[q["block"]].append(q)
+            total += 1
+    for b in BLOCKS:
+        for q in picked[b]:
+            q["faq"] = b
+
+
+def pick_extra(questions, covered):
+    """The strongest fact-backed topics, uncovered ones first. heading is filled by the builder."""
+    weight = {}
+    for q in questions:
+        if q["fact_source"] and q["topic"]:
+            weight[q["topic"]] = weight.get(q["topic"], 0) + q["score"]
+    order = sorted(weight, key=lambda t: (t in covered, -weight[t], t))
+    extras = []
+    for t in order[:EXTRA_SECTIONS]:
+        ids = [q["id"] for q in sorted(questions, key=_rank)
+               if q["topic"] == t and q["fact_source"] and not q["faq"]][:3]
+        extras.append({"topic": t, "uncovered": t not in covered, "question_ids": ids,
+                       "heading": None})
+    return extras

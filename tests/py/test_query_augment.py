@@ -175,3 +175,148 @@ def test_fact_exists_unreadable_file_is_false(tmp_path, monkeypatch):
 
 def test_fit_weighs_breed_on_comparison_pages():
     assert Q.FIT["comparison"]["breed"] == 2
+
+
+# --- merge / score ------------------------------------------------------------------
+
+def test_merge_keeps_every_source_and_the_first_phrasing(tmp_path):
+    root = make_root(tmp_path)
+    cands = [("How much are Staffie pups?", "serp_google", "serp_google_paa", None),
+             ("how much are staffy puppies", "threads", "thread:r/x/1", None),
+             ("How much are staffy puppies?", "bank", "bank:b0", "data/settings.json")]
+    m = Q.merge(cands, root)
+    assert len(m) == 1
+    (only,) = m.values()
+    assert only["question"] == "How much are Staffie pups?"
+    assert only["types"] == {"serp_google", "threads", "bank"}
+    assert only["found_in"] == ["serp_google_paa", "thread:r/x/1", "bank:b0"]
+    assert only["fact_source"] == "data/settings.json"
+
+
+def test_merge_ignores_a_fact_source_that_does_not_resolve(tmp_path):
+    root = make_root(tmp_path)
+    m = Q.merge([("Is there a guarantee?", "serp_google", "serp_google_paa",
+                  "data/settings.json#guarantee_days")], root)
+    assert next(iter(m.values()))["fact_source"] is None
+
+
+def test_score_is_distinct_source_types_plus_page_fit():
+    assert Q.score({"serp_google", "bank"}, "delivery", "location") == 2 + 3
+    assert Q.score({"bank"}, "coat", "location") == 1 + 1
+    assert Q.score({"bank"}, None, "blog") == 1 + 1
+
+
+# --- competitors ----------------------------------------------------------------------
+
+def test_clean_h2s_strips_non_content_and_duplicates():
+    h2 = ["Our Puppies", "Related Posts", "Frequently Asked Questions About Staffies",
+          "Reviews", "Contact Us", "Our Puppies", "Health Testing", ""]
+    assert Q.clean_h2s(h2) == ["Our Puppies", "Health Testing"]
+
+
+def page(url, n, g=None, b=None):
+    return {"url": url, "google_pos": g, "bing_pos": b, "h2": [f"Section {i}" for i in range(n)]}
+
+
+def test_section_target_matches_the_highest_clean_count():
+    target, rows = Q.section_target([page("a", 8, g=1), page("b", 11, b=2), page("c", 14, g=3)])
+    assert target == {"matched": 14, "set_by": "c", "extra": 3, "total": 17}
+    assert [r["h2_clean"] for r in rows] == [8, 11, 14]
+    assert not any(r["outlier"] for r in rows)
+
+
+def test_section_target_outlier_matches_the_next_highest():
+    target, rows = Q.section_target([page("a", 10, g=1), page("b", 30, g=2)])
+    assert target["matched"] == 10 and target["set_by"] == "a" and target["total"] == 13
+    assert [r["outlier"] for r in rows] == [False, True]
+
+
+def test_section_target_with_no_pages_is_zero_plus_three():
+    target, rows = Q.section_target([])
+    assert target == {"matched": 0, "set_by": None, "extra": 3, "total": 3} and rows == []
+
+
+def test_covered_topics_reads_competitor_headings():
+    pages = [{"url": "a", "h2": ["Delivery Across the North West", "Our Prices"]}]
+    assert Q.covered_topics(pages) == {"delivery", "price"}
+
+
+# --- picks --------------------------------------------------------------------------
+
+def q(qid, text, sc, fact="data/settings.json"):
+    topic, block = Q.topic_of(text)
+    return {"id": qid, "question": text, "score": sc, "topic": topic, "block": block,
+            "fact_source": fact, "faq": None}
+
+
+def bank_questions():
+    out = []
+    for i, t in enumerate(TOP + MIDDLE + BOTTOM):
+        out.append(q(f"q-{i:02d}", t, 10 - (i % 5)))
+    return out
+
+
+def test_pick_faq_fills_minimums_then_by_score_to_twenty():
+    qs = bank_questions()
+    Q.pick_faq(qs)
+    counts = {b: sum(1 for x in qs if x["faq"] == b) for b in Q.BLOCKS}
+    assert sum(counts.values()) == 20
+    for b in Q.BLOCKS:
+        assert Q.FAQ_MIN[b] <= counts[b] <= Q.FAQ_MAX[b]
+
+
+def test_pick_faq_never_picks_an_unbacked_question():
+    qs = bank_questions() + [q("q-zz", "How much is a puppy in Leeds?", 99, fact=None)]
+    Q.pick_faq(qs)
+    assert next(x for x in qs if x["id"] == "q-zz")["faq"] is None
+
+
+def test_pick_faq_raises_short_naming_the_block():
+    qs = [x for x in bank_questions() if x["block"] != "middle"][:] + \
+         [q("q-m1", MIDDLE[0], 5), q("q-m2", MIDDLE[1], 5)]
+    with pytest.raises(Q.Short) as e:
+        Q.pick_faq(qs)
+    assert e.value.blocks == {"middle": (2, 5)}
+
+
+def test_pick_extra_prefers_topics_no_competitor_covers():
+    qs = bank_questions()
+    Q.pick_faq(qs)
+    extras = Q.pick_extra(qs, covered={"price", "delivery", "reserve", "home", "family"})
+    assert len(extras) == 3
+    assert all(e["uncovered"] for e in extras)
+    assert not {e["topic"] for e in extras} & {"price", "delivery", "reserve", "home", "family"}
+    assert all(e["heading"] is None for e in extras)
+
+
+# --- fact-source rule: non-bank candidates cite "path#key" or "bank:<id>" only ------------
+
+@pytest.mark.parametrize("ref,expected", [
+    ("data/settings.json", None),                                      # bare path: ignored
+    ("bank:b0", "data/settings.json"),                                 # resolves to the row's source
+    ("data/settings.json#delivery_min_gbp", "data/settings.json#delivery_min_gbp"),
+    ("bank:nope", None),                                               # no such bank row
+])
+def test_merge_non_bank_fact_source_rule(tmp_path, ref, expected):
+    root = make_root(tmp_path)
+    m = Q.merge([("Do you deliver to Leeds?", "serp_google", "serp_google_paa", ref)], root)
+    assert next(iter(m.values()))["fact_source"] == expected
+
+
+def test_merge_bank_candidate_keeps_a_bare_path(tmp_path):
+    root = make_root(tmp_path)
+    m = Q.merge([("Do you deliver to Leeds?", "bank", "bank:b0", "data/settings.json")], root)
+    assert next(iter(m.values()))["fact_source"] == "data/settings.json"
+
+
+# --- regex gaps from the Task 2 review ----------------------------------------------
+
+@pytest.mark.parametrize("text,topic", [
+    ("Can I see the health test data?", "health"),
+    ("What data do you collect?", None),
+    ("How long do I need to wait for a puppy?", "reserve"),
+    ("Is there a wait for puppies?", "reserve"),
+    ("When does the puppy come home?", "age"),
+])
+def test_topic_of_task2_review_gaps(text, topic):
+    assert Q.topic_of(text)[0] == topic
