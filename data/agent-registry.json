@@ -97,6 +97,9 @@
     "bsuk-keyword-verifier": {
       "tier": "tier_medium"
     },
+    "bsuk-llm-keyword-intel": {
+      "tier": "tier_high"
+    },
     "bsuk-location-builder": {
       "tier": "tier_max"
     },

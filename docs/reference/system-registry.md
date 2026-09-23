@@ -15,7 +15,7 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 39
+## Agents — 40
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
@@ -39,7 +39,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-seo-content-writer.md` | Writes SEO body copy for any BlueStaffyUK page or section, in Lisa Bright's first-person brand voice |
 | `.claude/agents/bsuk-structure-architect.md` | The BSUK silo architect — maps content clusters into Silo (top-down authority) or Reverse Silo (bottom-up ranking) shapes across … |
 
-### `tier_high` — 11
+### `tier_high` — 12
 
 | Agent | Does |
 |---|---|
@@ -51,6 +51,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/), the … |
 | `.claude/agents/bsuk-infographic-builder.md` | Builds 400–450px (in-body) and 760px (guide) HTML/CSS infographics for any BlueStaffyUK page section |
 | `.claude/agents/bsuk-interactive-component.md` | Builds interactive HTML components for BlueStaffyUK pages — first-year cost calculators in £, coat/temperament fit quizzes, paperwork … |
+| `.claude/agents/bsuk-llm-keyword-intel.md` | Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry … |
 | `.claude/agents/bsuk-rank-tracker.md` | Competitor and ranking monitoring — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-section-builder.md` | Builds one HTML section for a BlueStaffyUK page and returns a ready-to-paste block |
 | `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — review widgets, trust-badge sections, testimonial … |

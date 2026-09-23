@@ -1,0 +1,247 @@
+---
+name: bsuk-llm-keyword-intel
+description: Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry competitors), which entities it uses that the page lacks, and how the answer is shaped — before the strategy synthesizer runs or a page's FAQ answers are written. Run @bsuk-llm-keyword-intel <slug>; one engine per page.
+model: inherit
+effort: high
+---
+
+## Golden Rule
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Record only what the saved answer says, and every field from the script below — never a reading by eye. BSUK is cited only when a BSUK domain is among the answer's sources, its links or its local businesses.
+> **One paid endpoint, one call per page, behind a stop.** DataForSEO `ai_optimization_chat_gpt_scraper` with `location_name` "United Kingdom" (the connector defaults to the United States — always set it) and `language_code` "en", through the spend guard (`scripts/query_augment.py`). No call until the invocation reads `spend approved: <slug>; balance $<n>` (the DataForSEO dashboard balance stated today). A cached answer is reused, never bought again. Nothing else is bought: no second engine, and no `llm_mentions` until BSUK's domain is live (project 6) — until then `llm_mentions` is `NOT FETCHED`.
+> **No third party's contact details** — phone, email, street, postcode, WhatsApp or profile link, a person's name — in the saved response or the output. `tests/py/test_no_third_party_contacts.py` catches most formats, not all: leave them out as you write.
+
+## On Startup
+
+| Invocation | Go to |
+|---|---|
+| `<slug>` | Spend check |
+| `spend approved: <slug>; balance $<n>` | Buy, for exactly that slug. No `balance $<n>` → ask for it and make no call |
+| `spend declined` | NOT FETCHED output |
+
+1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`). The **query**, said in your first line: for a city page "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?" with the `city` exactly as `data/locations.json` writes it; for any other page, the question a buyer would ask for the `primary_keyword` in its `data/queries/<slug>.json`. When the page already has a saved answer, the query is the one that answer was bought for (its `keyword`, or its `_saved_note`).
+2. data/competitors.json, if it exists, maps cited domains to registry ids and tiers (the script reads it). Missing → every `registry_id` and `tier` is null and there is no citation gap; say so.
+3. The page text the entities are checked against is the script's choice, never yours (see **The script**).
+
+## Spend check
+
+`python3 scripts/query_augment.py --preflight <slug> --source ai_engines`
+
+| Exit | Meaning → do |
+|---|---|
+| 3 | cached: the page already has a bought answer. Reuse `data/queries/raw/<slug>/ai_engines.response.json`; no call, no stop → **The script** |
+| 0 | not bought. **STOP** with one budget line: slug, query, the typical cost (the larger of `query_typical_call_usd` in `data/settings.json` and the largest `ai_engines` cost in `data/queries/spend.json` — an estimate), the total logged against `query_total_budget_usd`; ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined` |
+| 4 | over budget, or the log is unreadable → stop, report the guard's stderr line; never work around it |
+| 1, 2 | the guard failed → stop and report its output |
+
+`--refresh` (re-buying a saved answer) only when the user asked for a fresh answer in so many words, and still behind the stop. A passing check, your own summary, silence or a user in a hurry is not `spend approved`.
+
+## Buy (after `spend approved`)
+
+1. Preflight again: exit 0 needed; 3 means it was bought meanwhile — reuse it.
+2. **Call** `ai_optimization_chat_gpt_scraper`: `keyword` = the query, `location_name` "United Kingdom", `language_code` "en". One call.
+3. **Record at once**, before saving anything: `python3 scripts/query_augment.py --record <slug> --source ai_engines --endpoint "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)" --cost <usd>` — `<usd>` the Spend check's typical cost (or the response's own cost when it shows one, and then no "estimate"). Exit 2 → still save (step 4), then stop and report the cost the call ran up; never repair the log.
+4. **Save** `data/queries/raw/<slug>/ai_engines.response.json`: the response as returned — the answer text (`markdown`) and `sources` whole, never condensed (the format layer reads the text) — minus third-party contact details: each local business's phone, address, rating and profile or WhatsApp URL, and any phone, email or WhatsApp link inside the answer text, with what was dropped said in `_saved_note`.
+5. The normalised ai_engines.json and its questions belong to `bsuk-query-augmentation`: hand it the slug; do not write that file here.
+
+**Connector missing, out of credit, or `spend declined`:** there is no free substitute for an engine's answer → NOT FETCHED output, then stop.
+
+## NOT FETCHED output
+
+The file and checks of **Output**, with `fetched` `{"status": "NOT FETCHED", "reason": "<connector unavailable | out of credit | spend declined>"}`; `raw`, `answer_text` and `bsuk_cited` null; `paid_this_run` false; every list empty; `format` NOT FETCHED with the same reason; `page_source` `{"kind": "none", "path": null, "provisional": true, "note": "no answer to check"}`; the rest as in the script.
+
+## The script
+
+Three layers — citations, entities, format — in one script, from the repo root. Its inputs:
+
+- `QUERY` — the query; the script stops if the response's `keyword` differs.
+- `TODAY` — the run date; it names the file. `PAID=1` only when this run bought the answer. `FETCHED_ON` — the call's date, needed only when `data/queries/raw/<slug>/ai_engines.json` (which the script reads it from) does not exist yet.
+- `EXTRA` — your one judgement: the **other** entities the answer uses — organisations, services, places, practices, tests and paperwork not in the script's buying-safety list — as `name|variant|variant;name|…`, lowercase, the variants being the words the answer or a page would use for it (`kennel club;coefficient of inbreeding|inbreeding coefficient`). Read the whole answer and list every one; generic words ("puppy", "breeder", "blue") are not entities. Each name and variant is whole words: multi-word, or one word of 4+ characters (`coi` fails — write `coefficient of inbreeding`), and never holding a safety entity's words (`mother`, `health-test certificates`, `written contract`…) — the whole entry is dropped otherwise. An organisation the answer names counts even when it is also cited. The script drops any whose words the answer does not contain, or whose name holds a safety entity's words ("health-test certificates" is health tests), and names them on stderr — you cannot add what the answer does not say.
+- The response path: the saved ai_engines.response.json, or the file the invocation hands you as its stand-in (`raw` still names the saved path).
+
+What the script decides (to explain it, never to redo it):
+
+- **Answer text:** the longest `markdown` or `answer` string in the response (the whole answer, not one item's part) — `answer_text: "verbatim"`. A condensed save holding only `answer_points` (an older save) is `"summary"`: its entities and citations count, its format is `NOT FETCHED`, and the hand-back says the format needs a `--refresh` re-buy — the user's call, behind the stop, never yours.
+- **Citations:** every `sources` / `citations` entry and every link in the answer text, reduced to the registry's root domain (two labels, or three under `co`, `org`, `me`, `ltd`, `plc`, `ac`, `gov`, `net`, `sch` or `com` plus a two-letter country code — imported from `scripts/competitor_registry_check.py`), once each. `search_results` (pages the engine read but did not cite) are not citations. **Local businesses** the answer lists are kept apart the same way; WhatsApp and social-profile hosts (Instagram, Facebook, TikTok, X, YouTube, Linktree…) are dropped as contact or profile links — never recorded, never handed to the registry as competitors. Each maps to a registry `id` and `tier`, or null. `citation_gap` = registry tiers 1–4 among them while BSUK is not; a tier-5 site goes to `risks`, never to the gap.
+- **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable (its `<main>`); a noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), else the page map's title, H1 and headings — both `provisional: true`, with the reason in `page_source.note`.
+- **Entities:** the buying-safety list (health tests, L-2-HGA, HC-HSF4, meeting the mother, microchip, vaccinations, vet check, KC registration, licence, contract), each recorded only when the answer uses it, then your `EXTRA`. Matched on normalised whole words (a plural `s` counts) against the page text. **High** = a safety entity missing from the page; everything else medium.
+- **Format:** list type (table, numbered, bulleted, paragraphs), words, length band (short under 100, medium to 300, long above) and opening move (question, recommendation, statistic, definition, statement) of the first sentence. This is the mirror template for the page's answer blocks.
+
+```bash
+mkdir -p docs/research/llm-intel
+OUT=docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json
+QUERY="<query>" TODAY=<YYYY-MM-DD> EXTRA="<name|variant;...>" \
+  python3 - <slug> data/queries/raw/<slug>/ai_engines.response.json > "$OUT" <<'EOF'; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"; echo "exit $rc"
+import datetime, html, json, os, re, sys
+from urllib.parse import urlparse
+sys.path.insert(0, "scripts")
+from competitor_registry_check import CC_SECOND_LEVELS  # the registry's root-domain rule
+slug, resp_path = sys.argv[1], sys.argv[2]
+QUERY = os.environ["QUERY"]  # the buyer question asked
+EXTRA = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in os.environ.get("EXTRA", "").split(";") if e.strip()]
+norm = lambda t: " " + re.sub(r"[^a-z0-9]+", " ", re.sub(r"['\u2019]s\b|['\u2019]", "", html.unescape(t or "").lower())).strip() + " "  # club's -> club
+said = lambda text, variants: any(norm(v) in text or norm(v)[:-1] + "s " in text for v in variants)  # whole words, normalised; a plural counts
+# buying-safety entities: name -> the words that count as it (answer and page alike)
+SAFETY = {
+    "health tests": ["health test", "health tests", "health tested", "health testing", "dna test", "dna tested", "genetic test", "genetic tests"],
+    "l-2-hga": ["l 2 hga", "l2hga"],
+    "hc-hsf4": ["hc hsf4", "hereditary cataract", "hereditary cataracts"],
+    "meet the mother": ["mother", "mum", "dam"],
+    "microchip": ["microchip", "microchips", "microchipped", "microchipping"],
+    "vaccinations": ["vaccination", "vaccinations", "vaccinated", "jabs"],
+    "vet check": ["vet check", "vet checks", "vet checked", "health check", "health checked"],
+    "kc registration": ["kc registered", "kc registration", "kennel club registered", "kennel club registration"],
+    "licence": ["licence", "license", "licensed", "licensing"],
+    "contract": ["contract", "contracts"],
+}
+PROFILE_HOSTS = {"wa.me", "wa.link", "whatsapp.com", "instagram.com", "facebook.com", "fb.com", "tiktok.com",
+                 "x.com", "twitter.com", "youtube.com", "linktr.ee", "snapchat.com", "google.com"}  # contact or profile links, never recorded
+def root(u):  # the registry's rule: two labels, or three under co/org/me/... + a 2-letter ccTLD
+    h = (urlparse(u if "//" in u else "//" + u).hostname or "").lower().rstrip(".")
+    try:
+        h = h.encode("idna").decode()
+    except UnicodeError:
+        pass
+    labels = h.split(".")
+    keep = 3 if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-1].isalpha() and labels[-2] in CC_SECOND_LEVELS else 2
+    return ".".join(labels[-keep:]) if len(labels) >= 2 else None
+def walk(x, key=None):
+    yield key, x
+    for k, v in (x.items() if isinstance(x, dict) else ((key, v) for v in x) if isinstance(x, list) else ()):
+        yield from walk(v, k)
+r = json.load(open(resp_path))
+nodes = list(walk(r))
+asked = {v for k, v in nodes if k == "keyword" and isinstance(v, str)}
+if asked and QUERY not in asked:
+    sys.exit(f"the response answers {sorted(asked)}, not QUERY")
+if not asked and QUERY not in str(r.get("_saved_note", "")):
+    sys.exit("the response names no keyword and its _saved_note does not hold QUERY: the query cannot be verified")
+md = [v for k, v in nodes if k in ("markdown", "answer") and isinstance(v, str) and v.strip()]
+points = [v for k, v in nodes if k == "answer_points" and isinstance(v, list)]
+if md:
+    answer, how = max(md, key=len), "verbatim"  # the whole answer, not one item's part
+elif points:
+    answer, how = "\n".join(p for p in points[0] if isinstance(p, str)), "summary"  # a condensed save
+else:
+    sys.exit("no answer text in the response")
+text = norm(answer)
+cited = [v.get("url") or v.get("domain") if isinstance(v, dict) else v
+         for k, v in nodes if k in ("sources", "citations") and not isinstance(v, list)]
+cited += re.findall(r"https?://[^\s)\]>\"']+", answer)
+local = [v.get("domain") or v.get("url") for k, v in nodes if isinstance(v, dict)
+         and (k == "local_businesses" or "local_business" in str(v.get("type", "")))]
+reg = json.load(open("data/competitors.json"))["competitors"] if os.path.exists("data/competitors.json") else []
+by_domain = {c["root_domain"]: c for c in reg}
+def sites(items):
+    out = []
+    for u in items:
+        d = root(u) if isinstance(u, str) and u.strip() else None
+        if d and d not in PROFILE_HOSTS and d not in [s["domain"] for s in out]:
+            c = by_domain.get(d)
+            out.append({"domain": d, "registry_id": c["id"] if c else None, "tier": c["tier"] if c else None})
+    return out
+citations, local_b = sites(cited), sites(local)
+everything = citations + local_b
+bsuk = any("bluestaffyuk" in s["domain"] for s in everything)
+# the page text: the built page if indexable, else the question file's page questions, else the page map
+qfile = f"data/queries/{slug}.json"
+q = json.load(open(qfile)) if os.path.exists(qfile) else None
+pm = next((p for p in json.load(open("data/page-map.json"))["pages"] if p["url"].rstrip("/").endswith("/" + slug)), None)
+route = (q or {}).get("route") or (pm or {}).get("url")
+built = f"dist{route}index.html" if route else None
+page, src = None, None
+if built and os.path.exists(built):
+    h = open(built, encoding="utf-8").read()
+    if re.search(r'<meta[^>]+name="robots"[^>]+noindex', h, re.I):
+        why = f"{built} is a noindex stub"
+    else:
+        body = re.search(r"<main\b.*?</main>", h, re.S | re.I)
+        body = re.sub(r"<(script|style)\b.*?</\1>", " ", body.group(0) if body else h, flags=re.S | re.I)
+        page, src = norm(re.sub(r"<[^>]+>", " ", body)), {"kind": "dist", "path": built, "provisional": False, "note": "built, indexable page"}
+else:
+    why = "no built page in dist/" if route else "no route for this slug"
+if page is None and q:
+    page = norm(" ".join(x["question"] for x in q["questions"] if x.get("faq") or x.get("must_answer")))
+    src = {"kind": "question-file", "path": qfile, "provisional": True, "note": f"{why}; checked against the questions the page must carry (faq picks and must_answer)"}
+elif page is None and pm:
+    page = norm(" ".join([pm.get("title", ""), pm.get("h1", "")] + [x if isinstance(x, str) else x.get("text", "") for x in pm.get("headings", [])]))
+    src = {"kind": "page-map", "path": "data/page-map.json", "provisional": True, "note": f"{why}; no question file; checked against the page map's title, H1 and headings"}
+elif page is None:
+    page, src = norm(""), {"kind": "none", "path": None, "provisional": True, "note": f"{why}; no question file or page-map entry"}
+entities, rejected = [], []
+for name, variants in SAFETY.items():
+    if said(text, variants):
+        on = said(page, variants)
+        entities.append({"entity": name, "kind": "safety", "on_page": on, "band": "medium" if on else "high"})
+for e in EXTRA:
+    name = re.sub(r"[^a-z0-9 '&-]+", " ", e[0]).strip()
+    ok = [v for v in e if len(norm(v).split()) > 1 or len(norm(v).strip()) >= 4]  # multi-word, or 4+ characters
+    if ok != e or not said(text, e) or any(said(norm(v), w) for v in e for w in SAFETY.values()):
+        rejected.append(name)  # too short, not in the answer, or overlapping a safety entity: never recorded
+    elif name not in [x["entity"] for x in entities]:
+        entities.append({"entity": name, "kind": "other", "on_page": said(page, e), "band": "medium"})
+if how == "verbatim":
+    lines = [l for l in answer.splitlines() if l.strip()]
+    num = sum(bool(re.match(r"\s*\d+[.)]\s", l)) for l in lines)
+    bul = sum(bool(re.match(r"\s*[-*•+]\s", l)) for l in lines)
+    lst = ("table" if any(re.match(r"\s*\|?\s*:?-{3,}", l) for l in lines) else "numbered" if num >= 2 and num >= bul
+           else "bulleted" if bul >= 2 else "paragraphs")
+    words = len(re.findall(r"[a-z0-9£%]+(?:'[a-z]+)?", re.sub(r"\]\([^)]*\)|https?://\S+", " ", answer.lower())))
+    first = re.sub(r"^\s*(?:\d+[.)]|[-*•+]|#+)\s*|\*\*|__", "", lines[0]).strip()
+    first = re.split(r"(?<=[.?!])\s", first)[0]
+    fw = norm(first).split()
+    opening = ("question" if first.endswith("?") else
+               "recommendation" if (fw[:1] and fw[0] in {"use", "ask", "choose", "look", "buy", "check", "find", "go", "visit", "contact",
+                                                          "avoid", "start", "consider", "get", "see", "try", "search", "prioritise",
+                                                          "prioritize", "verify", "only", "never", "always", "pick", "research"})
+               or re.search(r"\brecommend|\byou should\b|\bbest (?:place|way|option|bet)\b|\bi(?:'d)? suggest\b", first.lower()) else
+               "statistic" if re.search(r"\d", " ".join(fw[:12])) else
+               "definition" if re.match(r"^(?:a |an |the )?[a-z' -]{1,40}? (?:is|are|means|refers to) ", first.lower()) else "statement")
+    fmt = {"status": "ok", "list": lst, "length": "short" if words < 100 else "medium" if words <= 300 else "long", "words": words, "opening": opening}
+else:
+    fmt = {"status": "NOT FETCHED", "reason": "the saved response holds a summary of the answer, not its text"}
+norm_file = f"data/queries/raw/{slug}/ai_engines.json"
+fetched_on = json.load(open(norm_file)).get("fetched") if os.path.exists(norm_file) else os.environ.get("FETCHED_ON")
+today = os.environ.get("TODAY") or datetime.date.today().isoformat()
+out = {"slug": slug, "date": today, "engine": "chatgpt", "endpoint": "ai_optimization_chat_gpt_scraper",
+       "location": "United Kingdom", "query": QUERY, "fetched": {"status": "ok", "fetched_on": fetched_on or today},
+       "raw": f"data/queries/raw/{slug}/ai_engines.response.json", "answer_text": how,
+       "paid_this_run": os.environ.get("PAID") == "1", "bsuk_cited": bsuk, "citations": citations,
+       "local_businesses": local_b,
+       "citation_gap": [] if bsuk else sorted({s["registry_id"] for s in everything if s["tier"] in (1, 2, 3, 4)}),
+       "risks": [{"domain": s["domain"], "registry_id": s["registry_id"], "reason": "tier 5 (suspect seller) in data/competitors.json: a risk, never a model"}
+                 for s in everything if s["tier"] == 5],
+       "page_source": src, "entities": entities, "format": fmt,
+       "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}
+print(json.dumps(out, indent=1, ensure_ascii=False))
+print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'}; EXTRA dropped (too short, not in the answer, or holding a safety entity): {rejected or 'none'}", file=sys.stderr)
+
+EOF
+```
+
+`exit` other than 0 leaves no file: report its message (a query that does not match the response, no answer text) and stop; never write the file by hand.
+
+## Output
+
+docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json (contract `schemas/llm-intel.schema.json`), exactly as the script printed it. Then both must pass before hand-off:
+
+```bash
+python3 tests/py/test_llm_intel.py docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json
+python3 tests/py/test_no_third_party_contacts.py docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json data/queries/raw/<slug>/ai_engines.response.json
+```
+
+The first prints `0 problem(s)`; a problem means a wrong input (`EXTRA`, the response path) — re-run the script, never edit the file or the test. The contact scan names each hit: remove it from the saved response and say so in `_saved_note`.
+
+Hand back: the file path; the query; spend (none — cached, or the recorded estimate); `bsuk_cited`; the citations and local businesses with their registry ids (or "no registry"); the citation gap and any risks; the high entities; the format; `page_source` and, when provisional, why; the `EXTRA` entities the script dropped.
+
+## Handoff
+
+`bsuk-strategy-synthesizer` reads these files (quoting their figures as written). The page builders read `entities` (high first) and `format` when writing the page's FAQ answers; a provisional result is re-run once the page is rebuilt and indexable. A new competitor seen in `citations` or `local_businesses` with no registry id goes to `bsuk-competitor-registry` as a candidate add.
+
+## Red flags — stop
+
+- About to call the engine after preflight exit 3, without `spend approved: <slug>; balance $<n>`, a second time for the same page, with a second engine, or without `location_name` "United Kingdom".
+- `bsuk_cited: true` without a BSUK domain in the answer; a registry id not from data/competitors.json; a tier-5 site treated as a model to copy.
+- An entity, on-page mark or format value decided by eye, or an entity the answer does not contain.
+- A noindex stub's text used as the page — or the question file's, without `provisional`.
+- A response you save condensed, or still holding a phone, email, postcode or WhatsApp link. (An older condensed save that preflight reports cached is reused as it is: format `NOT FETCHED`, never re-bought without the user's `refresh`.)
+- Any edit to a site file (`src/`, `rules/`, `CLAUDE.md`, `public/`) or to data/competitors.json: this agent writes only the saved response, the spend record and its llm-intel file.
