@@ -48,10 +48,14 @@ r/puppy101, r/AskUK, r/unitedkingdom, and UK dog forums the search turns up.
 | Replies (10+ = 2, 3–9 = 1) | 0–2 |
 | UK signal (UK place, £, UK law, UK subreddit or forum) | 0–1 |
 
-**Recency:** prefer threads posted in the last 24 months. An older thread may be used only
-when fewer than 5 recent ones clear the bar, and each older one is marked `"stale": true`
-in the `threads` list. A US-only thread scores 0 for UK and cannot be the page's only source
-for a question.
+**Recency:** prefer threads posted in the last 24 months. The ONLY way an older thread
+enters is this exception: fewer than 5 recent threads clear the bar. Then older ones may fill
+the gap, each marked `"stale": true` in the `threads` list. No other reason — a better fit,
+more replies, a UK signal — lets an older thread in.
+
+**UK signal:** a thread with no UK signal scores 0 for UK, whether or not it is provably US.
+A question whose only source threads all score 0 for UK signal is dropped (not written to
+`questions`); it may stay only if a UK-scoring thread, or another source type, asks it too.
 
 ## Step D — open and verify
 
@@ -110,6 +114,8 @@ fact taken from the thread.
 - Treating a thread's advice as a fact for the page.
 - Using a thread older than 24 months while 5 recent ones exist, or leaving an old one
   without `"stale": true`.
+- Keeping a question because its thread is "not provably US" — if every thread it came from
+  scores 0 for UK signal, drop it unless a UK-scoring thread or another source type asks it.
 - Writing `questions` with no `threads` audit list, or a thread missing its `posted`,
   `replies` or `score`.
 - Linking `bank:<id>` because the row is on the same topic — it must answer the question.
