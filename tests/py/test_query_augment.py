@@ -573,3 +573,117 @@ def test_the_settings_typical_overrides_the_default(tmp_path):
     root = make_root(tmp_path, settings={**SETTINGS, "query_typical_call_usd": 0.2})
     Q.record("m", "ai_engines", "llm_response", 0.35, root, now=NOW)
     assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+# --- build / CLI --------------------------------------------------------------------
+
+import jsonschema  # noqa: E402
+
+SCHEMA = json.loads((pathlib.Path(__file__).resolve().parents[2]
+                     / "schemas/queries.schema.json").read_text())
+ROUTE = "/uk-locations/blue-staffy-puppies-manchester-uk/"
+
+
+def run(root, *args):
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root), *args],
+                          capture_output=True, text=True)
+
+
+def seed(root, slug="m"):
+    write_raw(root, slug, "serp_google", {"source": "serp_google", "status": "ok", "questions": [
+        {"text": "Do you deliver Staffy puppies to Manchester?", "detail": "serp_google_paa",
+         "fact_source": "data/settings.json#delivery_min_gbp"},
+        {"text": "Is there a Staffy puppy guarantee?", "detail": "serp_google_paa",
+         "fact_source": "data/settings.json#guarantee_days"}]})
+    write_raw(root, slug, "competitors", {"status": "ok", "pages": [
+        {"url": "https://a.example", "google_pos": 1, "bing_pos": None,
+         "h2": ["Our Prices", "Delivery to Manchester", "Health Testing",
+                "Our Puppies For Sale", "Reviews"]}]})
+
+
+def test_build_writes_a_schema_valid_file(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    r = run(root, "m", "--page-type", "location", "--keyword", "blue staffy puppies manchester",
+            "--route", ROUTE, "--today", "2026-09-23")
+    assert r.returncode == 0, r.stderr
+    data = json.loads((root / "data/queries/m.json").read_text())
+    jsonschema.validate(data, SCHEMA)
+    assert data["sources"]["serp_google"] == "ok"
+    assert data["sources"]["serp_bing"] == "NOT FETCHED"
+    assert data["sources"]["bank"] == "ok"
+    assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
+                                      "extra": 3, "total": 7}
+    faq = [x for x in data["questions"] if x["faq"]]
+    assert 17 <= len(faq) <= 20
+    assert all(x["must_answer"] for x in faq)
+
+
+def test_build_never_makes_an_unbacked_question_must_answer(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    run(root, "m", "--page-type", "location", "--keyword", "k", "--route", ROUTE,
+        "--today", "2026-09-23")
+    data = json.loads((root / "data/queries/m.json").read_text())
+    g = next(x for x in data["questions"] if "guarantee" in x["question"].lower())
+    assert g["must_answer"] is False and g["blocked"] == "unverified fact"
+
+
+def test_build_carries_over_covered_by_and_headings(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    args = ("m", "--page-type", "location", "--keyword", "k", "--route", ROUTE,
+            "--today", "2026-09-23")
+    run(root, *args)
+    f = root / "data/queries/m.json"
+    data = json.loads(f.read_text())
+    first = next(x for x in data["questions"] if x["faq"])
+    first["covered_by"] = {"where": "faq", "text": first["question"]}
+    data["extra_sections"][0]["heading"] = "A Heading We Wrote"
+    f.write_text(json.dumps(data))
+    run(root, *args)
+    again = json.loads(f.read_text())
+    assert next(x for x in again["questions"] if x["id"] == first["id"])["covered_by"] == \
+        first["covered_by"]
+    assert again["extra_sections"][0]["heading"] == "A Heading We Wrote"
+
+
+def test_build_short_exits_5_and_lists_what_is_blocked(tmp_path):
+    root = make_root(tmp_path, bank=TOP + BOTTOM)          # no middle questions at all
+    seed(root)
+    r = run(root, "m", "--page-type", "location", "--keyword", "k", "--route", ROUTE,
+            "--today", "2026-09-23")
+    assert r.returncode == Q.EXIT_SHORT
+    assert "middle: 0/5" in r.stdout
+    assert not (root / "data/queries/m.json").exists()
+
+
+def test_cli_preflight_and_record(tmp_path):
+    root = make_root(tmp_path)
+    assert run(root, "--preflight", "m", "--source", "serp_google",
+               "--today", "2026-09-23").returncode == 0
+    assert run(root, "--record", "m", "--source", "serp_google", "--endpoint", "serp",
+               "--cost", "0.002").returncode == 0
+    assert json.loads((root / "data/queries/spend.json").read_text())[0]["cost_usd"] == 0.002
+
+
+def test_cli_rejects_an_unknown_page_type(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "m", "--page-type", "hub", "--keyword", "k", "--route", ROUTE)
+    assert r.returncode == 2
+
+
+@pytest.mark.parametrize("cost", ["nan", "inf", "-0.002"])
+def test_cli_record_refuses_a_bad_cost_cleanly(tmp_path, cost):
+    root = make_root(tmp_path)
+    r = run(root, "--record", "m", "--source", "serp_google", "--endpoint", "serp",
+            "--cost", cost)
+    assert r.returncode == Q.EXIT_USAGE
+    assert "Traceback" not in r.stderr
+    assert len(r.stderr.strip().splitlines()) == 1
+    assert not (root / "data/queries/spend.json").exists()
+
+
+def test_cli_preflight_rejects_a_malformed_today_cleanly(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "--preflight", "m", "--source", "serp_google", "--today", "23-09-2026")
+    assert r.returncode == Q.EXIT_USAGE
+    assert "Traceback" not in r.stderr
+    assert "YYYY-MM-DD" in r.stderr

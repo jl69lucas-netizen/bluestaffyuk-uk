@@ -398,3 +398,129 @@ def preflight(slug, source, root=ROOT, refresh=False, today=None):
     if reason:
         print(f"preflight {slug}/{source}: {reason}", file=sys.stderr)
     return code
+
+
+def load_candidates(slug, root=ROOT):
+    raw = Path(root) / "data/queries/raw" / slug
+    cands, status = [], {}
+    for src in CANDIDATE_SOURCES:
+        d = _read_json(raw / f"{src}.json", None)
+        if d is None:
+            status[src] = "NOT FETCHED"
+            continue
+        status[src] = d.get("status", "ok")
+        for item in d.get("questions", []):
+            cands.append((item["text"], src, item.get("detail") or src, item.get("fact_source")))
+    return cands, status
+
+
+def bank_candidates(root=ROOT):
+    rows = _read_json(Path(root) / "data/faq.json", [])
+    return [(r["q"], "bank", f"bank:{r['id']}", r.get("source")) for r in rows]
+
+
+def _question_id(norm, taken):
+    base = ("q-" + "-".join(norm.split()[:8]))[:50].rstrip("-")
+    qid, i = base, 2
+    while qid in taken:
+        qid, i = f"{base}-{i}", i + 1
+    return qid
+
+
+def build(slug, page_type, keyword, route, root=ROOT, today=None):
+    """The question file as a dict. Raises Short when a FAQ block cannot be filled."""
+    today = today or datetime.date.today().isoformat()
+    cands, status = load_candidates(slug, root)
+    cands += bank_candidates(root)   # buyer phrasing first, so it wins the merge
+    status["bank"] = "ok"
+    merged = merge(cands, root)
+    questions, taken = [], set()
+    for n in sorted(merged):
+        m = merged[n]
+        topic, block = topic_of(m["question"])
+        qid = _question_id(n, taken)
+        taken.add(qid)
+        questions.append({
+            "id": qid, "question": m["question"], "found_in": m["found_in"],
+            "score": score(m["types"], topic, page_type), "topic": topic, "block": block,
+            "fact_source": m["fact_source"], "must_answer": False, "faq": None,
+            "blocked": None if m["fact_source"] else "unverified fact", "covered_by": None})
+    comp = _read_json(Path(root) / "data/queries/raw" / slug / "competitors.json",
+                      {"status": "NOT FETCHED", "pages": []})
+    status["competitors"] = comp.get("status", "ok")
+    target, rows = section_target(comp["pages"])
+    pick_faq(questions)
+    extras = pick_extra(questions, covered_topics(comp["pages"]))
+    extra_ids = {i for e in extras for i in e["question_ids"]}
+    for q in questions:
+        q["must_answer"] = bool(q["faq"]) or q["id"] in extra_ids
+    prev = _read_json(Path(root) / "data/queries" / f"{slug}.json", None)
+    if prev:
+        covered = {q["id"]: q.get("covered_by") for q in prev.get("questions", [])}
+        heads = {e["topic"]: e.get("heading") for e in prev.get("extra_sections", [])}
+        for q in questions:
+            q["covered_by"] = covered.get(q["id"])
+        for e in extras:
+            e["heading"] = heads.get(e["topic"])
+    return {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
+            "fetched": today, "spend_usd": spend_for(slug, root), "sources": status,
+            "competitors": rows, "section_target": target, "extra_sections": extras,
+            "questions": questions}
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("slug", nargs="?")
+    ap.add_argument("--root", default=str(ROOT))
+    ap.add_argument("--preflight", metavar="SLUG")
+    ap.add_argument("--record", metavar="SLUG")
+    ap.add_argument("--source")
+    ap.add_argument("--endpoint")
+    ap.add_argument("--cost", type=float)
+    ap.add_argument("--refresh", action="store_true")
+    ap.add_argument("--page-type")
+    ap.add_argument("--keyword")
+    ap.add_argument("--route")
+    ap.add_argument("--today")
+    a = ap.parse_args(argv)
+    root = Path(a.root)
+    if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
+        ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
+    if a.preflight:
+        if a.source not in CANDIDATE_SOURCES:
+            ap.error("--source must be one of " + ", ".join(CANDIDATE_SOURCES))
+        code = preflight(a.preflight, a.source, root, a.refresh, a.today)
+        print({EXIT_OK: "proceed", EXIT_CACHED: "cached — make no call",
+               EXIT_BUDGET: "budget would be exceeded — stop and report"}[code])
+        return code
+    if a.record:
+        if a.source not in PAID_SOURCES or not a.endpoint or a.cost is None:
+            ap.error("--record needs a paid --source, --endpoint and --cost")
+        try:
+            record(a.record, a.source, a.endpoint, a.cost, root)
+        except ValueError as e:   # a bad cost or an unreadable spend log; nothing written
+            print(f"query_augment.py: --record refused: {e}", file=sys.stderr)
+            return EXIT_USAGE
+        print(f"recorded {a.cost} for {a.record}; page total {spend_for(a.record, root)}")
+        return EXIT_OK
+    if not a.slug or a.page_type not in PAGE_TYPES or not a.keyword or not a.route:
+        ap.error("build needs SLUG, --page-type (" + "/".join(PAGE_TYPES) + "), --keyword, --route")
+    try:
+        data = build(a.slug, a.page_type, a.keyword, a.route, root, a.today)
+    except Short as e:
+        print(f"SHORT: too few fact-backed questions — {e}")
+        cands, _ = load_candidates(a.slug, root)
+        for n, m in sorted(merge(cands + bank_candidates(root), root).items()):
+            _, block = topic_of(m["question"])
+            if block in e.blocks and not m["fact_source"]:
+                print(f"  blocked ({block}): {m['question']}")
+        return EXIT_SHORT
+    _write_json(root / "data/queries" / f"{a.slug}.json", data)
+    faq = sum(1 for q in data["questions"] if q["faq"])
+    print(f"wrote data/queries/{a.slug}.json — {len(data['questions'])} questions, {faq} FAQ, "
+          f"section target {data['section_target']['total']}")
+    return EXIT_OK
+
+
+if __name__ == "__main__":
+    sys.exit(main())
