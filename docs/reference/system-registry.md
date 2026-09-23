@@ -15,7 +15,7 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 36
+## Agents — 37
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
@@ -53,7 +53,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-section-builder.md` | Builds one HTML section for a BlueStaffyUK page and returns a ready-to-paste block |
 | `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — review widgets, trust-badge sections, testimonial … |
 
-### `tier_medium` — 15
+### `tier_medium` — 16
 
 | Agent | Does |
 |---|---|
@@ -61,6 +61,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-agent-system-qa.md` | Quality review agent for the BSUK agent system |
 | `.claude/agents/bsuk-batch-rebuilder.md` | Coordinates a batch page rebuild by dispatching one Agent-tool call per page to its specialist agent, all in one message, then tracks … |
 | `.claude/agents/bsuk-canonical-fixer.md` | Converts relative canonical URLs to absolute across BlueStaffyUK pages |
+| `.claude/agents/bsuk-competitor-registry.md` | Discovers the national list of BlueStaffyUK competitors — UK Staffy breeders, marketplaces and directories, breed-information sites … |
 | `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-footer-standardizer.md` | Audits the BlueStaffyUK footer across the built site and standardises it on src/components/SiteFooter.astro, which … |
