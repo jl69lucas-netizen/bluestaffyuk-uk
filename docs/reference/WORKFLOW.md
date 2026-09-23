@@ -121,14 +121,15 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
 ```
 @bsuk-competitor-registry
   → Discover about 25 competitors (30 at most) from about ten seed keywords
-  → Classify: direct breeders / classifieds / informational / marketplaces
-  → USER GATE: approve competitor list
+  → Classify into five tiers: 1 breeder · 2 marketplace or directory · 3 breed information · 4 rescue or non-commercial · 5 suspect seller (never linked)
+  → USER GATE: approve competitor list (the proposal in docs/research/)
   → Output: data/competitors.json (checked by npm run check:competitors)
 
 @bsuk-competitor-intel --all
   → Analyse every registry competitor across 10 metric categories
   → Output: docs/research/competitors/<id>.json + <id>.md, then scripts/gap_matrix.py --write
-  → Then @bsuk-competitor-intel --bsuk (BSUK profile) before the matrix is built
+  → Then @bsuk-competitor-intel --bsuk (BSUK profile) and scripts/gap_matrix.py --write again
+  → The matrix is rebuilt after every intel run; the rebuild after --bsuk is the one to read
   → Output: docs/research/gap-matrix-[date].md (checked by npm run check:gaps)
 ```
 
@@ -142,8 +143,10 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
   → One engine per page (DataForSEO ChatGPT scraper through the spend guard; reuses a saved answer)
   → Records who the answer cites (BSUK or registry competitors), missing entities, answer format
   → Output: docs/research/llm-intel/<slug>-[date].json
-  → Runs after the keyword-gap list (Sprint 1 Step 2) when a gap-matrix row feeds its question
+  → Runs after the gap matrix (its rows feed the question as GAP_TOPICS) and the keyword-gap list (Sprint 1 Step 0a), and before the strategy synthesizer (Sprint 1 Step 0c)
 ```
+
+**Stop tokens** (each agent stops until the controller sends its exact wording): registry `spend approved: <seeds>; balance $<n>[; refresh]`, then `approved: docs/research/competitor-registry-proposal-<date>.md`; intel `fetch approved: --all` or `fetch approved: --tier <n>` (keyword-gap re-fetches take `fetch approved: --all` too); llm-intel `spend approved: <slug>; balance $<n>[; refresh]`. `spend declined` / `fetch declined` run without the call.
 
 **Note — Session Orientation moved to Sprint 0.5:**
 grill-me runs AFTER Sprint 0 Gate passes (gap matrix + top-pages must exist). See Sprint 0.5 block below.
@@ -203,9 +206,18 @@ Before proceeding to Sprint 1:
 ### Sequence (in order)
 
 ```
-Step 0: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
+Step 0a: bsuk-competitive-keyword-gap-agent
+  → Reuses the page lists in the competitor-intel reports and the BSUK profile (no new fetch unless a report is stale; more than one stale → `fetch approved: --all`)
+  → Scores gaps 1–10 with its script; every gap is proved by a competitor URL
+  → Score ≥7 = build this page (enters content queue); a gap whose BSUK page is a noindex stub routes as "rebuild the stub <url>" (project 5)
+  → Output: docs/research/keyword-gap-[date].md
+
+Step 0b: bsuk-llm-keyword-intel <slug> (one run per page in scope)
+  → Output: docs/research/llm-intel/<slug>-[date].json (see Sprint 0 Track B)
+
+Step 0c: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
   → Reads existing research only (gap matrix, keyword-gap list, competitor reports, LLM intel; GSC is NOT FETCHED until project 6) — does NOT re-run Sprint 0
-  → Needs the keyword-gap list (Step 2) and LLM intel first: registry → intel (+ --bsuk) → gap_matrix.py --write → keyword-gap → llm-intel → strategy-synthesizer
+  → Needs Steps 0a and 0b first: registry → intel (+ --bsuk) → gap_matrix.py --write → keyword-gap → llm-intel → strategy-synthesizer
   → Produces TWO reverse-engineered strategies, recommends ONE with a data-grounded WHY + named trade-off
   → Derives the concrete artifact for the cluster (e.g. the 9 blog topics + 1 hub)
   → Runs scripts/strategy_cite_check.py before handoff
@@ -216,13 +228,7 @@ Step 1: bsuk-structure-architect
   → Ensures every page is ≤3 clicks from homepage
   → Output: data/page-map.json
 
-Step 2: bsuk-competitive-keyword-gap-agent
-  → Reuses the page lists in the competitor-intel reports and the BSUK profile (no new fetch)
-  → Scores gaps 1–10 with its script; every gap is proved by a competitor URL
-  → Score ≥7 = build this page (enters content queue); a gap whose BSUK page is a noindex stub routes as "rebuild the stub <url>" (project 5)
-  → Output: docs/research/keyword-gap-[date].md
-
-Step 3: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
+Step 2: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
   → Creates aggregator hub pages:
     - /blue-staffy-dog-for-sale/ (location hub)
     - /blue-staffy-comparison/ (comparison hub)
@@ -230,12 +236,12 @@ Step 3: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
     - /cites-documentation/ (trust hub)
   → Hub pages link to all their spoke pages
 
-Step 4: bsuk-seasonal-content-agent
+Step 3: bsuk-seasonal-content-agent
   → Builds data/seasonal-calendar.json
   → Major peaks: Spring Puppy Season (Mar–May), Christmas, Valentine's Day, Mother's Day
   → Routes seasonal page briefs to content-architect
 
-Step 5: bsuk-content-architect
+Step 4: bsuk-content-architect
   → Reads: gap matrix + structure.json + the traffic baseline (deferred to project 6)
   → Assigns framework to each page in priority queue:
     | Page Type | Framework |

@@ -648,7 +648,8 @@ added 39–46.
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
     (2026-09-23): a separate build after this one, started separately (2026-09-23).
-    **Closed 2026-09-23 by the competitor intelligence build** (branch `competitor-intel`): five
+    **Closed 2026-09-23 by the competitor intelligence build** (agents and checks in; pilot
+    pending — Task 11; branch `competitor-intel`): five
     agents — `.claude/agents/bsuk-competitor-registry.md`, `.claude/agents/bsuk-competitor-intel.md`,
     `.claude/agents/bsuk-competitive-keyword-gap-agent.md`, `.claude/agents/bsuk-llm-keyword-intel.md`
     and `.claude/agents/bsuk-strategy-synthesizer.md` — and three scripts —
