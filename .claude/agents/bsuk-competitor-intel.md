@@ -67,7 +67,7 @@ A price that is not printed is not a price: "please call us" about a deposit is 
 
 ### Keyword rule
 
-**Pattern words:** a *breed term* — staffy, staffie, staffies, staffordshire bull terrier, sbt — and *intent or place words* — puppies, puppy, for sale, breeder, breeders, price, kc registered, blue, and any `city` in `data/locations.json`. A multi-word pattern word ("staffordshire bull terrier", "for sale", "kc registered") is one unit for where a run starts and ends, but each of its words counts toward the length. A qualifying run is a run of 2–6 consecutive words inside one sentence, heading or list item that starts and ends on a pattern word, holds a breed term and at least one intent or place word, and contains no part of a business, kennel or person's name (cut the run before the name: "blue staffy puppies from Example Breeder" gives `blue staffy puppies`). Record, lowercased:
+**Pattern words:** a *breed term* — staffy, staffie, staffies, staffordshire bull terrier, sbt — and *intent or place words* — puppies, puppy, for sale, breeder, breeders, price, kc registered, blue, and any `city` in `data/locations.json`. A multi-word pattern word ("staffordshire bull terrier", "for sale", "kc registered") is one unit for where a run starts and ends, but each of its words counts toward the length. A qualifying run is a run of 2–6 consecutive words inside one sentence, heading or list item that starts and ends on a pattern word, holds a breed term and at least one intent or place word, and contains no part of a business, kennel or person's name (cut the run before the name: "blue staffy puppies from Example Breeder" gives `blue staffy puppies`). No script can tell a name: the cut is the reader's call, here and in `bsuk-competitive-keyword-gap-agent`, which runs this rule by script on H1s and titles and applies the cut by re-running with the names it saw. Record, lowercased:
 
 1. every **maximal** qualifying run (not inside a longer qualifying run);
 2. for each, its **shortest** qualifying sub-run of 3 or more words (the earliest on a tie), when it differs.
@@ -165,14 +165,14 @@ EOF
 python3 -c 'import json,re,sys; L=lambda f: re.findall(r"<loc>([^<]+)</loc>", open(f).read()); seen={u for f in sys.argv[2:] for u in L(f)}; print(json.dumps([u for u in L(sys.argv[1]) if u not in seen]))' dist/page-sitemap.xml dist/post-sitemap.xml dist/location-sitemap.xml dist/puppy-sitemap.xml > "$MAP_LIST"
 ```
 
-No sitemaps → every `index.html` under `dist/` through the table.
+No sitemaps → every `index.html` under `dist/` through the table, skipping any page whose robots meta contains `noindex`.
 
 ## Output
 
 1. `docs/research/competitors/<id>.json`: `id` (the file name without `.json`), `root_domain`, `analysed_on` (today), the ten fields, `pages`, `key_insight`.
 2. `docs/research/competitors/<id>.md`: a heading per category (anything NOT FETCHED says what was missing), then **Key insight** — one or two sentences on the single thing BSUK can learn from or beat. Your words throughout.
 3. data/competitors.json: set that entry's `last_analyzed` to today — no other key, entry, spacing or order changes — then run `python3 scripts/competitor_registry_check.py` (0 problems) and confirm `git diff data/competitors.json` shows only `last_analyzed` lines.
-4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The 375px check runs against `npm run preview` (it serves `dist/`), with Playwright at that local address. The gap matrix reads BSUK's side from this file.
+4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The 375px check runs against `npm run preview` (it serves `dist/`), with Playwright at that local address. The profile's `pages` list holds **indexable pages only**: every `<loc>` URL in `dist/post-sitemap.xml`, `dist/location-sitemap.xml`, `dist/puppy-sitemap.xml` and `dist/page-sitemap.xml` (each once), with its `dist/` title, H1 and H2s — never a noindex page (the migrated stubs are noindex and out of the sitemaps until project 5 rebuilds them). Only when `dist/` has no sitemaps does it fall back to every `index.html`, skipping any page whose robots meta contains `noindex`. The gap matrix and `bsuk-competitive-keyword-gap-agent` read BSUK's side from this file.
 
 ## After a run
 
