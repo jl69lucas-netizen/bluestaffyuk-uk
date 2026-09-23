@@ -6,39 +6,38 @@ effort: high
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. One question: what does a competitor have a dedicated page for that BSUK does not? Every gap names a competitor URL from a report's `pages` list (or a page you re-fetched in this run under **Freshness**). Topics, page types, coverage, points and bands come from the script below and nothing else — never a search volume, a traffic or ranking figure, a "top pages" guess, or a reading of a page by eye.
-> **Summarise, never copy.** A topic is a lowercased keyword phrase; the one-line reasons are your words. No competitor sentence, no heading list, and no seller's contact details (phone, email, street, postcode, WhatsApp, a person's name) anywhere in the output.
-> **Fetch tools:** Firecrawl **map and scrape only**, standard proxy — never crawl, agent, extract, interact or search — and Playwright (navigate, snapshot) for a page whose scrape came back empty; only under **Freshness**. Tools are inherited, not pinned: the connector names differ per session. No paid call of any kind: DataForSEO is not this agent's.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. One question: what does a competitor have a dedicated page for that BSUK does not? Topics, page types, coverage, points and bands come from the script below and nothing else — never a search volume, traffic, ranking, a "top pages" guess or a reading by eye. If the script errors, stop and report it; never finish the table by hand.
+> **Summarise, never copy.** A topic is a lowercased keyword phrase; the reasons are your words. No competitor sentence, and no seller's contact details (phone, email, street, postcode, WhatsApp, a person's name) anywhere in the output.
+> **Fetch tools:** Firecrawl **map and scrape only**, standard proxy — never crawl, agent, extract, interact or search — and Playwright (navigate, snapshot) for an empty scrape; only under **Freshness**. Tools are inherited: connector names differ per session. No paid call; DataForSEO is not this agent's.
 
 ## On Startup
 
-1. Mode from the invocation: all competitors (default), one `<id>`, or `--type <city|comparison|care|price>` (`care` is the `care-guide` type). "First line" here and below means the first line of your hand-back and of the output file's header.
-2. **BSUK's side** — the BSUK profile, docs/research/competitors/bsuk.json (written by `bsuk-competitor-intel --bsuk` from the current build): its `pages` list (`url`, `title`, `h1`; indexable pages only) is the source. Only when that file is missing, or its `pages` is `NOT FETCHED` (the script then names the fallback itself), fall back to `data/page-map.json` (the migrated old pages, the same three keys) and say in your first line and in the output that the fallback was used and that `--bsuk` should be run. Never mix the two for coverage, never read `src/` or `dist/` yourself. **Coverage comes from indexable pages only.** With the page map as the source (the NOT FETCHED fallback included), the script drops every entry flagged `stub-noindexed` (the migrated noindex stubs project 5 rebuilds) from coverage. With the profile as the source, its `pages` are used as they are — intel writes indexable pages only, so a rebuilt page at a formerly stubbed URL counts as coverage; the page map is then read for one thing only, read-only: the `stub-noindexed` routes that are **not** among the profile's pages, to label a gap (below). It never adds coverage in that mode.
-3. **Competitors' side** — every docs/research/competitors/*.json except bsuk.json (or only `<id>.json`); an `<id>` with no report → stop and hand to `bsuk-competitor-intel`. data/competitors.json gives each competitor's tier; when it is missing, the tier is "unknown" — say so. An unknown tier is treated as tiers 1–4 (re-fetched when stale, not marked tier 5).
-4. The newest docs/research/gap-matrix-*.md, when there is one, holds the page-type and city counts: quote it, never recount. None → say so in the header.
+1. Mode: all competitors (default), one `<id>`, or `--type <city|comparison|care|price>` (`care` = `care-guide`). "First line" means the first line of your hand-back and of the output header.
+2. **BSUK's side:** the BSUK profile, docs/research/competitors/bsuk.json (`bsuk-competitor-intel --bsuk`; indexable pages only), used as it is — a rebuilt page at a formerly stubbed URL is coverage. Missing, or its `pages` `NOT FETCHED` → the fallback `data/page-map.json`, which the script names; say so in the first line and ask for `--bsuk`. With the page map as the source, its `stub-noindexed` entries never count as coverage. With the profile as the source, the page map is read once, read-only, for the `stub-noindexed` routes missing from the profile — to label a gap, never to cover one. Never read `src/` or `dist/` yourself.
+3. **Competitors' side:** every docs/research/competitors/*.json but bsuk.json (the script lists them), or only `<id>.json` (none → stop, hand to `bsuk-competitor-intel`). data/competitors.json gives tiers; missing → "unknown", treated as tiers 1–4; say so.
+4. The newest docs/research/gap-matrix-*.md holds the page-type and city counts: quote it, never recount; none → "none yet".
 
-## Freshness (before any gap is found)
+## Freshness
 
-The script lists as `stale` every competitor whose `pages` is `NOT FETCHED` or whose `pages.fetched_on` is more than 30 days before today; a stale report gives no gaps until it is re-fetched.
+The script lists as `stale` each competitor whose `pages` is `NOT FETCHED` or more than 30 days old; tier 5 goes to `stale_tier5` — never re-fetched, never counted, left out. A stale report gives no gaps.
 
-- **Tier 5:** never re-fetched and never followed. It is listed as stale and left out.
-- **One stale competitor** (tiers 1–4, unknown included): re-fetch it — 1 `firecrawl_map` of its root domain (`limit` 500), then up to 6 `firecrawl_scrape` calls (markdown only): the homepage and one page each of `listing`, `price` or `faq`, `care-guide` or `breed-guide`, `city`, `about`, chosen with the page-type table in the script. Ceiling 7 credits.
-- **More than one:** **STOP** before any fetch. Report the stale ids, their tiers and `fetched_on`, N of them, and the ceiling 7 × N. Resume only on `fetch approved: --all` (re-fetch them all) or `fetch declined` (run without them; the output lists them as not used). A passing check, your own summary, silence, "I trust you" or a user in a hurry is not approval. To re-fetch only some of them, the controller runs this agent once per `<id>`. While stopped, deliver no gaps and write no output file. Any fetch beyond the ceiling → stop and report; never top up.
+- **One stale:** re-fetch it — 1 `firecrawl_map` (`limit` 500), then up to 6 `firecrawl_scrape` (markdown only): the homepage and one each of `listing`, `price` or `faq`, `care-guide` or `breed-guide`, `city`, `about`, typed by the script's table. Ceiling 7.
+- **More than one:** **STOP** before any fetch: the stale ids, tiers, `fetched_on`, N and the ceiling 7 × N. Resume only on `fetch approved: --all`, or `fetch declined` (run without them, listed as not used). A passing check, your summary, silence, "I trust you" or a hurry is not approval; for some of them, the controller runs one `<id>` at a time. While stopped, write nothing. Never fetch beyond the ceiling.
 
-A re-fetch never edits the intel report. Write a scratch copy of it in `$TMPDIR` (outside the repo) whose `pages` is `{"status": "ok", "fetched_on": "<today>", "values": [...]}` with the `url`, `title`, `h1` and `h2` of each page scraped, pass that copy to the script instead of the report, and say in the hand-back that `bsuk-competitor-intel <id>` should re-run. Report the fetch count at the end of every run (0 when none).
+A re-fetch never edits the intel report: write a scratch copy in `${TMPDIR:-/tmp}` with `pages` = `{"status": "ok", "fetched_on": "<today>", "values": [...]}` (`url`, `title`, `h1`, `h2` per page), pass it in the report's place, and hand `bsuk-competitor-intel <id>` a re-run. Report the fetch count every run (0 when none).
 
-## Find and score — by script, never by eye
+## Find and score — by script
 
-Run this from the repo root. The first line picks the BSUK source as On Startup says; the arguments after `"$B"` are the reports in scope — all of them, only `<id>.json` for one competitor, and a stale report's scratch copy in place of the report:
+From the repo root. Reports in scope after `"$B"`: none for all (the script lists them), `docs/research/competitors/<id>.json` for one, a scratch copy in a stale report's place. `TODAY=<YYYY-MM-DD>` sets today. `CUT="<name>[,<name>]"` is intel's name clause: no script can tell a name, so read the first run's topics and, when one holds a business, kennel or person's name, re-run with it (whole words, lowercase); the text is cut before it.
 
 ```bash
 B=docs/research/competitors/bsuk.json; [ -f "$B" ] || B=data/page-map.json
-python3 - "$B" docs/research/competitors/*.json > "$TMPDIR/keyword-gap.json" <<'EOF'
-import datetime, json, os, re, sys
+python3 - "$B" > "${TMPDIR:-/tmp}/keyword-gap.json" <<'EOF'
+import datetime, glob, json, os, re, sys
 from urllib.parse import urlparse
 src, reports = sys.argv[1], sys.argv[2:]
 today = datetime.date.fromisoformat(os.environ.get("TODAY") or datetime.date.today().isoformat())
-CUT = [c.split() for c in os.environ.get("CUT", "").lower().split(",") if c.strip()]  # names to cut before
+CUT = [c.split() for c in os.environ.get("CUT", "").lower().split(",") if c.strip()]  # names to cut before, whole words
 # --- intel's page-type table, copied line for line (tests/py/test_agent_snippets.py keeps it so) ---
 rows = json.load(open("data/locations.json"))
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
@@ -59,18 +58,24 @@ TABLE = [
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
 # --- end of intel's table ---
-words = lambda t: re.findall(r"[a-z0-9]+", t.lower())
-def fold(x):  # singular: puppies -> puppy, prices -> price
+def words(t):  # lowercase word tokens; "versus" is written "vs"
+    return ["vs" if x == "versus" else x for x in re.findall(r"[a-z0-9]+", (t or "").lower())]
+def fold(x):  # singular, one spelling: puppies -> puppy, prices -> price, staffie -> staffy
+    x = "staffy" if x in ("staffie", "staffies") else x
     return x[:-3] + "y" if x.endswith("ies") and len(x) > 4 else x[:-1] if x.endswith("s") and not x.endswith("ss") and len(x) > 3 else x
 cities = {tuple(words(r["city"])) for r in rows if "(" not in r["city"]}
+towns = {c for c in cities if c != ("uk",)}
 # intel's keyword rule: breed terms, and intent or place words
 BREED = {("staffy",), ("staffie",), ("staffies",), ("staffordshire", "bull", "terrier"), ("sbt",)}
 PLACE = {("puppies",), ("puppy",), ("for", "sale"), ("breeder",), ("breeders",), ("price",), ("kc", "registered"), ("blue",)} | cities
 UNITS = sorted(BREED | PLACE, key=len, reverse=True)
-INTENT = [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")] + [c for c in cities if c != ("uk",)]
-HIGH = {"licence", "license", "licensed", "licensing", "health", "dna", "test", "tested", "testing"}
+INTENT = [tuple(fold(x) for x in i) for i in [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")] + sorted(towns)]
+HIGH = [("licence",), ("license",), ("licensed",), ("licensing",), ("health", "test"), ("health", "tested"),
+        ("health", "testing"), ("tested",), ("l", "2", "hga"), ("hc",)]
 STOP = {"a", "an", "the", "in", "for", "of", "to", "and", "with", "near", "our", "your", "how", "much", "is", "are", "what", "uk", "sale", "buy"}
 KEY = {"listing", "price", "faq", "care-guide", "breed-guide", "city", "about"}
+BY_TYPE = {"about", "contact", "faq"}  # a topic with no keyword run is covered by a BSUK page of the same type
+has = lambda ws, phrase: any(tuple(ws[i:i + len(phrase)]) == phrase for i in range(len(ws)))
 def runs(ws):  # maximal qualifying runs: 2-6 words, pattern unit to pattern unit, a breed term and an intent/place word
     units = []
     for i in range(len(ws)):
@@ -81,18 +86,45 @@ def runs(ws):  # maximal qualifying runs: 2-6 words, pattern unit to pattern uni
              and any(u[2] for u in units if a[0] <= u[0] and u[1] <= b[1])
              and any(not u[2] for u in units if a[0] <= u[0] and u[1] <= b[1])}
     return sorted(r for r in found if not any(o != r and o[0] <= r[0] and r[1] <= o[1] for o in found))
-def topic(page, ptype):  # the H1 (the title before its first | when there is no H1), cut before a CUT name
-    ws = words(page["h1"]) or words(page["title"].split("|")[0])
-    ws = ws[:min([i for c in CUT for i in range(len(ws)) if ws[i:i + len(c)] == c], default=len(ws))]
-    best = max(runs(ws), key=lambda r: (r[1] - r[0], -r[0]), default=None)
-    whole = ptype == "comparison" or best is None or best[1] - best[0] < 3
-    return " ".join(ws if whole else ws[best[0]:best[1]])
-has = lambda fw, phrase: any(tuple(fw[i:i + len(phrase)]) == phrase for i in range(len(fw)))
+long_run = lambda ws: max((r for r in runs(ws) if r[1] - r[0] >= 3), key=lambda r: (r[1] - r[0], -r[0]), default=None)
 content = lambda t: frozenset(fold(x) for x in words(t) if x not in STOP)
+towns_in = lambda t: frozenset(c for c in towns if has(words(t), c))
 route = lambda u: urlparse(u).path or "/"
+def text(page):  # the H1, or the title cut at its first "|", " – ", " — " or " - "
+    return (page.get("h1") or "").strip() or re.split(r"\||\s[–—-]\s", page.get("title") or "")[0].strip()
+def topic(page, ptype):
+    """(topic, dedicated) or (None, why skipped)."""
+    t = text(page)
+    ws = words(t)
+    if not ws:
+        return None, "no title or H1"
+    ws = ws[:min([i for c in CUT for i in range(len(ws)) if ws[i:i + len(c)] == c], default=len(ws))]
+    if not ws:
+        return None, "name only"
+    if not content(" ".join(ws)):
+        return None, "no content words"
+    if "vs" in ws and (ptype == "comparison" or ptype is None):  # the "X vs Y" core of the clause holding vs
+        clause = words(next(c for c in re.split(r"[:?!|,(.]|\s[–—-]\s", t.lower().replace("versus", "vs")) if "vs" in words(c)))
+        clause = clause[:min([i for c in CUT for i in range(len(clause)) if clause[i:i + len(c)] == c], default=len(clause))]
+        i = clause.index("vs") if "vs" in clause else len(clause)
+        core = clause[max(0, i - 3):i + 4]
+        if core:
+            return " ".join(core), 3 if long_run(core) else 0
+    best = long_run(ws)
+    if best is None and not runs(ws) and ptype in (None, "about", "contact", "listing") and not any(has(ws, h) for h in HIGH):
+        return None, "no keyword topic"
+    if best is None or any(has(ws, c) and not has(ws[best[0]:best[1]], c) for c in towns):
+        return " ".join(ws), 3 if best else 0  # whole H1: no run of 3+ words, or the run would cut the city
+    return " ".join(ws[best[0]:best[1]]), 3
+def btype(x):  # a BSUK page's type: its route, else (not the homepage) its title words, as intel's --bsuk does
+    r = route(x["url"]).lower()
+    slug = "/" + re.sub(r"[^a-z0-9]+", "-", (x.get("title") or "").split("|")[0].lower()).strip("-") + "/"
+    return kind(r) or (kind(slug) if r != "/" else None)
+def covering(pages, c, cs, ptype):
+    hits = [x for x in pages if any(c <= content(f) and towns_in(f) == cs for f in (x.get("title") or "", x.get("h1") or ""))]
+    return min(hits, key=lambda x: (btype(x) != ptype, len(x.get("title") or ""), x["url"]))["url"] if hits else None
 pmap = json.load(open("data/page-map.json"))["pages"]
 noindex = [p for p in pmap if "stub-noindexed" in p.get("refresh_flags", []) + p.get("defects", [])]
-shut = {route(p["url"]) for p in noindex}
 b = json.load(open(src))
 if "id" in b and b["pages"]["status"] != "ok":  # the profile holds no pages: fall back, and say so
     src, b = f"data/page-map.json (fallback: {src} pages NOT FETCHED)", {"pages": pmap}
@@ -100,104 +132,90 @@ if "id" in b:  # the profile: indexable pages only (intel), used as they are
     bsuk = b["pages"]["values"]
     noindex = [p for p in noindex if route(p["url"]) not in {route(x["url"]) for x in bsuk}]  # label lookup only
 else:  # the page map: its noindex stubs never count as coverage
-    bsuk = [x for x in b["pages"] if route(x["url"]) not in shut]
-match = lambda pages, c: next((x["url"] for x in pages if c <= content(x["title"]) or c <= content(x["h1"])), None)
+    bsuk = [x for x in b["pages"] if route(x["url"]) not in {route(p["url"]) for p in noindex}]
 reg = json.load(open("data/competitors.json"))["competitors"] if os.path.exists("data/competitors.json") else []
 tiers = {c["id"]: c.get("tier") for c in reg}
 out = {"today": str(today), "bsuk_source": src, "bsuk_pages": len(bsuk), "registry": bool(reg),
-       "cut": [" ".join(c) for c in CUT], "used": [], "stale": [], "skipped": [], "gaps": {}, "covered": {}}
-for path in reports:
+       "cut": [" ".join(c) for c in CUT], "used": [], "stale": [], "stale_tier5": [], "skipped": []}
+groups = {}
+for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
     r = json.load(open(path))
     if r["id"] == "bsuk":
         continue
     tier = tiers.get(r["id"], "unknown")
     p = r["pages"]
     if p["status"] != "ok" or (today - datetime.date.fromisoformat(p["fetched_on"])).days > 30:
-        out["stale"].append({"id": r["id"], "tier": tier, "fetched_on": p.get("fetched_on", "NOT FETCHED")})
+        out["stale_tier5" if tier == 5 else "stale"].append({"id": r["id"], "tier": tier, "fetched_on": p.get("fetched_on", "NOT FETCHED")})
         continue
     out["used"].append({"id": r["id"], "tier": tier, "fetched_on": p["fetched_on"]})
     for page in p["values"]:
-        path_ = urlparse(page["url"]).path.lower() or "/"
+        path_ = route(page["url"]).lower()
         ptype = kind(path_)
-        t = topic(page, ptype)
-        if not t:
-            out["skipped"].append({"url": page["url"], "why": "no title or H1"})
+        t, how = topic(page, ptype)
+        if t is None:
+            out["skipped"].append({"url": page["url"], "why": how})
             continue
-        c = content(t)
-        hit = match(bsuk, c)
-        row = (out["covered"] if hit else out["gaps"]).setdefault(
-            c, {"topic": t, "type": ptype, "urls": [], "tier5_urls": [], "bsuk_page": hit})
-        row["tier5_urls" if tier == 5 else "urls"].append(page["url"])
-        if hit:
-            continue
-        row["noindex_page"] = match(noindex, c)  # exists, not indexed: still a gap
         fw = [fold(x) for x in words(t)]
-        row["dedicated"] = 3
-        row["key"] = max(row.get("key", 0), 2 if ptype in KEY or path_ == "/" else 0)
-        row["no_bsuk_page"] = 3
-        row["intent"] = 2 if any(has(fw, i) for i in INTENT) else 0
-        row["score"] = row["dedicated"] + row["key"] + row["no_bsuk_page"] + row["intent"]
-        row["always_high"] = ptype == "health" or bool(set(fw) & HIGH)
-        row["band"] = "high" if row["score"] >= 7 or row["always_high"] else "medium" if row["score"] >= 4 else "low"
-out["gaps"] = sorted(out["gaps"].values(), key=lambda r: (-r["score"], r["topic"]))
-out["covered"] = sorted(out["covered"].values(), key=lambda r: r["topic"])
+        groups.setdefault(content(t), []).append({
+            "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
+            "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) else 0,
+            "always_high": any(has(words(t), h) for h in HIGH)})
+gaps, covered = [], []
+for c, ps in groups.items():
+    types = sorted({q["type"] for q in ps if q["type"]})
+    ptype = min(types, key=lambda t: (t not in KEY, t)) if types else None
+    t = min((q["topic"] for q in ps), key=lambda s: (len(s), s))
+    row = {"topic": t, "type": ptype, "types": types,
+           "urls": sorted({q["url"] for q in ps if not q["tier5"]}), "tier5_urls": sorted({q["url"] for q in ps if q["tier5"]})}
+    dedicated = max(q["dedicated"] for q in ps)
+    hit = covering(bsuk, c, towns_in(t), ptype)
+    if hit is None and dedicated == 0 and ptype in BY_TYPE:
+        same = [x for x in bsuk if btype(x) == ptype]
+        hit = min(same, key=lambda x: (len(x.get("title") or ""), x["url"]))["url"] if same else None
+    if hit:
+        covered.append(dict(row, bsuk_page=hit))
+        continue
+    row.update(tier5_only=not row["urls"], bsuk_page=None, noindex_page=covering(noindex, c, towns_in(t), ptype),
+               dedicated=dedicated, key=max(q["key"] for q in ps), no_bsuk_page=3, intent=max(q["intent"] for q in ps),
+               always_high=any(q["always_high"] for q in ps))
+    row["score"] = row["dedicated"] + row["key"] + row["no_bsuk_page"] + row["intent"]
+    row["band"] = "high" if row["score"] >= 7 or row["always_high"] else "medium" if row["score"] >= 4 else "low"
+    gaps.append(row)
+for k in ("used", "stale", "stale_tier5"):
+    out[k].sort(key=lambda s: s["id"])
+out["skipped"].sort(key=lambda s: (s["url"], s["why"]))
+out["gaps"] = sorted(gaps, key=lambda r: (-r["score"], r["topic"]))
+out["covered"] = sorted(covered, key=lambda r: r["topic"])
 print(json.dumps(out, indent=1))
 EOF
 ```
 
-(`TODAY=<YYYY-MM-DD>` before `python3` sets today when the invocation states one; `CUT=` as under **Topic**.) What it does, so you can explain a row — never to redo it by hand:
+What decides a row (to explain it, never to redo it):
 
-- **Page type:** `bsuk-competitor-intel`'s page-type table on the URL path, first match wins — the block between the two `---` comments is intel's code line for line, and `tests/py/test_agent_snippets.py` fails if the two drift; change it in intel first, then copy it here.
-- **Topic:** the competitor page's H1 (its title before the first `|` when there is no H1), run through intel's keyword rule. Intel's name clause (cut the run before a business, kennel or person's name) is applied through `CUT`: the script cannot tell a name, so after the first run read the printed topics, and when one holds such a name re-run with `CUT="<name>[,<name>]"` (lowercase) — the text is cut before the name. The header lists any names cut. The topic is the longest maximal qualifying run (earliest on a tie); when that run is under 3 words, when there is none, or when the page is a `comparison`, the topic is the whole H1, lowercased with punctuation dropped.
-- **Covered:** a topic is covered when every one of its words — minus the small stop list in `STOP` (a, the, in, for, uk, sale, buy …), plurals folded to singular — is in one indexable BSUK page's title or in its H1. A topic whose only match is a `stub-noindexed` page (in profile mode, one whose route is not among the profile's pages) is **not** covered: it is scored as a gap and the script gives that page as `noindex_page`. A passing mention in an H2 or body copy is not coverage. Pages with the same word set are one topic (their URLs listed together).
-- **Points**, only for uncovered topics:
-
-| Signal | Points | Decided by |
-|---|---|---|
-| Dedicated page | +3 | the topic is in that page's title or H1 — true of every topic, which is built from them |
-| Key page | +2 | the page type is one of intel's key-page types (`listing`, `price`, `faq`, `care-guide`, `breed-guide`, `city`, `about`) or the page is the homepage |
-| BSUK has no page | +3 | not covered (covered topics are not scored) |
-| Buyer intent | +2 | the topic holds one of intel's intent words — puppy or puppies, breeder or breeders, price or prices, "for sale", "kc registered" — or a `city` from `data/locations.json` other than `UK`; "blue" is the breed's colour, not intent |
-
-7 or more = **high** (to `bsuk-content-architect` now) · 4–6 = **medium** (content calendar) · below 4 = **low** (watch). A topic whose page type is `health`, or that holds licence, license, licensed, licensing, health, dna, test, tested or testing, is **always high** — it is trust content.
-
-If the script errors, stop and report it; never finish the table by hand.
+- **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
+- **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
+- **Covered:** every topic word (stop words out, plurals folded) in one BSUK page's title or H1, naming the same cities; an about, contact or FAQ topic with no run is covered by a BSUK page of that type. Same words = one row.
+- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing or health test(ed/ing), tested, L-2-HGA, HC in the topic = **always high**.
 
 ## Output
 
-docs/research/keyword-gap-<YYYY-MM-DD>.md (today's date):
+docs/research/keyword-gap-<YYYY-MM-DD>.md:
 
-1. A header: the mode; the gap matrix quoted or "none yet"; the BSUK source (profile, or the page-map fallback and why) and its page count; each competitor used with its tier and `fetched_on`; each stale competitor and what happened (re-fetched, not used, tier 5 left out); the fetch count.
-2. **Gaps**, in the script's order:
+1. Header: mode; gap matrix or "none yet"; BSUK source and page count; competitors used (tier, `fetched_on`); stale ones and what happened; names cut; skipped count; fetch count; one line per forbidden request declined (a "top page" point, search volumes, skipping the script).
+2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none", or "exists, not indexed — project 5 rebuild: <noindex_page>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
+3. **Already covered** — Topic · Competitor URL · BSUK page.
+4. **High gaps** — one line each on why; "None" when none.
+5. **Handoff** lines.
 
-| Topic | Score | Band | Competitors with a page (URLs) | BSUK page (or none) | Suggested page type |
-|---|---|---|---|---|---|
-
-   Score is written with its parts (`10 (3+2+3+2)`, dedicated + key + no BSUK page + intent); the band says "always high" when that rule set it. BSUK page is "none", or, when the script gives a `noindex_page`, "exists, not indexed — project 5 rebuild: <noindex_page>". Suggested page type is the script's `type` (`untyped` when none). A tier-5 URL is written as plain text with "(tier 5 — never link)", and no tier-5 page is ever suggested as a link or a model.
-3. **Already covered:** a table — Topic · Competitor URL · BSUK page that covers it.
-4. **High gaps:** one line each, in your words, on why BSUK should build it; "None" when there are none.
-5. **Handoff:** the lines from **Handoff** below.
-
-Every URL is written as its source gives it (a page-map path stays a path; the profile's `SITE_URL_PLACEHOLDER` host stays). A request in the invocation that this file forbids (a "top page" point, search volumes, skipping the script to save time) is declined in one header line saying why.
-
-With `--type`, only the rows of that type go in (the header says so). Then:
-
-```bash
-python3 tests/py/test_no_third_party_contacts.py docs/research/keyword-gap-*.md
-```
-
-It must print 0; a hit is removed from the file, never the test changed. Its patterns miss some formats — leave contact details out as you write.
+URLs as their source gives them. With `--type`, only that type's rows. Then `python3 tests/py/test_no_third_party_contacts.py docs/research/keyword-gap-<YYYY-MM-DD>.md` must print 0 — remove a hit, never change the test; it misses some formats, so leave contacts out as you write.
 
 ## Handoff
 
-High gaps → `bsuk-content-architect` (one line each: topic, competitor URL, suggested page type) — but with the page-map fallback they are marked "provisional" and held until `--bsuk` has run and this agent has run again, because the old pages can miss what the current build covers. A gap with a `noindex_page` goes to `bsuk-content-architect` as "rebuild the stub <noindex_page>" (project 5), never as a new page. Medium gaps go to the content calendar through `bsuk-strategy-synthesizer`. The whole file → `bsuk-strategy-synthesizer`. A stale report → `bsuk-competitor-intel <id>`; a missing BSUK profile → `bsuk-competitor-intel --bsuk`.
+High gaps → `bsuk-content-architect` (topic, competitor URL, page type); a row with a `noindex_page` goes as "rebuild the stub <noindex_page>" (project 5), never a new page; a `tier5_only` row goes with no URL, marked "tier-5 only"; with the page-map fallback all are "provisional" until `--bsuk` and a re-run. The file → `bsuk-strategy-synthesizer` (medium gaps to the content calendar). Stale report → `bsuk-competitor-intel <id>`; no profile → `bsuk-competitor-intel --bsuk`.
 
 ## Red flags — stop
 
-- A topic, page type, coverage call, point or band decided by eye, or a table finished by hand after the script failed.
-- A score using a search volume, traffic, ranking or a "top pages" judgement; any paid call.
-- A gap with no competitor URL from a `pages` list or this run's re-fetch.
-- A topic reported as missing while the BSUK source has an indexable page whose title or H1 carries it, or a `stub-noindexed` page counted as coverage; the page map used for coverage while the BSUK profile exists, or the two mixed (the read-only `stub-noindexed` label lookup is the one allowed read).
-- A fetch for a fresh report; more than one competitor re-fetched before `fetch approved: --all`; a Firecrawl crawl, agent, extract, interact or search call; a tier-5 page fetched or suggested as a link.
-- An intel report, data/competitors.json or any site file (`src/`, `rules/`, `CLAUDE.md`, `public/`, `data/`) edited. This agent writes only its keyword-gap file.
-- A competitor sentence copied, or a phone number, email, street, postcode or seller's name anywhere in the output.
+- A gap with no competitor URL from a `pages` list or this run's re-fetch (a tier-5-only row excepted, sent without one).
+- A `stub-noindexed` page counted as coverage, or the page map used for coverage while the profile exists.
+- A fetch for a fresh report or a tier-5 one; more than one re-fetched before `fetch approved: --all`.
+- An intel report, data/competitors.json or any site file (`src/`, `rules/`, `CLAUDE.md`, `public/`, `data/`) edited: this agent writes only its keyword-gap file.

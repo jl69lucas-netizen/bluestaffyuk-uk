@@ -1,0 +1,227 @@
+# tests/py/test_keyword_gap_script.py — runs the script embedded in
+# .claude/agents/bsuk-competitive-keyword-gap-agent.md on small inputs.
+#
+# The agent's gap list is only as good as that script: it names topics, decides coverage and
+# scores every row, and two readers must get the same list. So the heredoc is extracted from
+# the agent file exactly as a reader would run it, and run here on the Task 7 fixture, a tiny
+# BSUK profile and a tiny page map (with one migrated noindex stub).
+import json
+import pathlib
+import re
+import shutil
+import subprocess
+import sys
+
+import pytest
+
+REPO = pathlib.Path(__file__).resolve().parents[2]
+AGENT = REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md"
+FIXTURE = REPO / "tests/py/fixtures/competitors/report-example-breeder.json"
+HEREDOC = re.compile(r"<<'EOF'\n(.*?)\nEOF\n", re.S)
+STUB = "/uk-locations/blue-staffy-puppies-manchester-uk/"
+P = "https://SITE_URL_PLACEHOLDER"
+
+
+def script():
+    found = HEREDOC.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected exactly one <<'EOF' block, found {len(found)}"
+    return found[0]
+
+
+def page(url, title, h1=None):
+    return {"url": url, "title": title, "h1": title if h1 is None else h1, "h2": []}
+
+
+def report(rid, pages, fetched_on="2026-09-24"):
+    nf = {"status": "NOT FETCHED", "reason": "test"}
+    r = {"id": rid, "root_domain": f"{rid}.co.uk", "analysed_on": "2026-09-24",
+         "keywords": nf, "page_types": nf, "cities": nf, "schema_types": nf,
+         "pages": {"status": "ok", "fetched_on": fetched_on, "values": pages},
+         "trust": nf, "content": nf, "blog": nf, "visual": nf, "conversion": nf,
+         "technical": nf, "key_insight": "test"}
+    return r
+
+
+@pytest.fixture
+def root(tmp_path):
+    (tmp_path / "data").mkdir()
+    shutil.copy(REPO / "data/locations.json", tmp_path / "data/locations.json")
+    pmap = {"pages": [
+        {"url": STUB, "title": "Blue Staffy Puppies Manchester UK", "h1": "",
+         "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
+        {"url": "/uk-locations/blue-staffy-puppies-york/", "title": "Blue Staffy Puppies For Sale in York",
+         "h1": "Blue Staffy Puppies For Sale in York, Yorkshire", "defects": [], "refresh_flags": []},
+        {"url": "/buy-staffy-puppies-for-sale-uk/", "title": "Buy Staffy Puppies For Sale UK",
+         "h1": "Buy Staffy Puppies for Sale UK", "defects": [], "refresh_flags": []},
+    ]}
+    (tmp_path / "data/page-map.json").write_text(json.dumps(pmap))
+    (tmp_path / "gap.py").write_text(script())
+    return tmp_path
+
+
+def write(root, name, data):
+    path = root / name
+    path.write_text(json.dumps(data))
+    return str(path)
+
+
+def profile(root, extra=()):
+    pages = [page(f"{P}/blue-staffy-pup-sale-uk/", "Blue Staffy Puppy Prices UK | Deposit",
+                  "What A Blue Staffy Puppy Costs With Us"),
+             page(f"{P}/uk-locations/blue-staffy-puppies-york/", "Blue Staffy Puppies For Sale in York",
+                  "Blue Staffy Puppies For Sale in York, Yorkshire"),
+             page(f"{P}/uk-blue-staffy-breeders-contact/", "Contact Blue Staffy UK"),
+             *extra]
+    r = report("bsuk", pages, "2026-09-25")
+    return write(root, "bsuk.json", r)
+
+
+def run(root, src, *reports, env=None):
+    out = subprocess.run([sys.executable, "gap.py", src, *reports], cwd=root, capture_output=True,
+                         text=True, env={"TODAY": "2026-09-25", "PATH": "/usr/bin:/bin", **(env or {})})
+    assert out.returncode == 0, out.stderr
+    return json.loads(out.stdout)
+
+
+def row(rows, topic):
+    found = [r for r in rows if r["topic"] == topic]
+    assert len(found) == 1, (topic, [r["topic"] for r in rows])
+    return found[0]
+
+
+def test_page_map_mode_labels_the_noindex_stub_and_keeps_the_comparison(root):
+    d = run(root, "data/page-map.json", str(FIXTURE))
+    assert d["bsuk_source"] == "data/page-map.json"
+    man = row(d["gaps"], "blue staffy puppies in manchester")
+    assert (man["score"], man["band"], man["noindex_page"]) == (10, "high", STUB)
+    vs = row(d["gaps"], "blue staffy vs american bully")
+    assert vs["type"] == "comparison" and vs["urls"] == [
+        "https://example-breeder.co.uk/blue-staffy-vs-american-bully/"]
+    assert row(d["gaps"], "staffy puppy prices")["noindex_page"] is None
+
+
+def test_profile_mode_covers_price_and_labels_a_stub_absent_from_the_profile(root):
+    d = run(root, profile(root), str(FIXTURE))
+    assert row(d["covered"], "staffy puppy prices")["bsuk_page"] == f"{P}/blue-staffy-pup-sale-uk/"
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+
+
+def test_a_rebuilt_page_at_a_stub_route_is_coverage_in_profile_mode(root):
+    src = profile(root, [page(f"{P}{STUB}", "Blue Staffy Puppies Manchester", "")])
+    d = run(root, src, str(FIXTURE))
+    assert row(d["covered"], "blue staffy puppies in manchester")["bsuk_page"] == f"{P}{STUB}"
+
+
+def test_a_profile_without_pages_falls_back_to_the_page_map_by_name(root):
+    nf = report("bsuk", [])
+    nf["pages"] = {"status": "NOT FETCHED", "reason": "test"}
+    d = run(root, write(root, "bsuk.json", nf), str(FIXTURE))
+    assert d["bsuk_source"].startswith("data/page-map.json (fallback:")
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+
+
+def test_pages_with_no_keyword_topic_or_no_content_words_are_skipped(root):
+    r = report("alpha", [
+        page("https://alpha.co.uk/", "Alpha | Home", "Welcome to Alpha"),
+        page("https://alpha.co.uk/about-us/", "About Us"),
+        page("https://alpha.co.uk/for-sale/", "For Sale"),
+        page("https://alpha.co.uk/buy/", "Buy"),
+        page("https://alpha.co.uk/terms/", None, None),
+    ])
+    d = run(root, profile(root), write(root, "alpha.json", r))
+    why = {s["url"].split("/")[3]: s["why"] for s in d["skipped"]}
+    assert why == {"": "no keyword topic", "about-us": "no keyword topic",
+                   "for-sale": "no content words", "buy": "no content words",
+                   "terms": "no title or H1"}
+    assert d["gaps"] == [] and d["covered"] == []
+
+
+def test_contact_and_faq_are_covered_by_page_type(root):
+    r = report("alpha", [page("https://alpha.co.uk/contact/", "Get In Touch", "Get In Touch")])
+    d = run(root, profile(root), write(root, "alpha.json", r))
+    assert d["skipped"] and d["skipped"][0]["why"] == "no keyword topic"
+    r = report("beta", [page("https://beta.co.uk/faq/", "Frequently Asked Questions")])
+    d = run(root, profile(root), write(root, "beta.json", r))
+    faq = row(d["gaps"], "frequently asked questions")      # BSUK has no faq page
+    assert (faq["dedicated"], faq["key"], faq["intent"], faq["score"]) == (0, 2, 0, 5)
+    d = run(root, profile(root, [page(f"{P}/faq/", "Questions About Our Puppies")]),
+            write(root, "beta.json", r))
+    assert row(d["covered"], "frequently asked questions")["bsuk_page"] == f"{P}/faq/"
+
+
+def test_a_city_stays_in_the_topic_and_only_the_same_city_covers_it(root):
+    r = report("gamma", [
+        page("https://g.co.uk/k/", "Blue Staffy Puppies for Sale in Newcastle-under-Lyme"),
+        page("https://g.co.uk/y/", "Staffy Puppies Yorkshire"),
+        page("https://g.co.uk/d/", "Blue Staffy Leeds"),
+    ])
+    d = run(root, profile(root), write(root, "gamma.json", r))
+    ncl = row(d["gaps"], "blue staffy puppies for sale in newcastle under lyme")
+    assert ncl["dedicated"] == 3 and ncl["intent"] == 2
+    york = row(d["gaps"], "staffy puppies yorkshire")        # the York page is not coverage
+    assert york["dedicated"] == 0
+    leeds = row(d["gaps"], "blue staffy leeds")
+    assert (leeds["intent"], leeds["score"], leeds["band"]) == (2, 8, "high")
+
+
+def test_a_whole_h1_topic_scores_no_dedicated_point_and_can_be_low(root):
+    r = report("delta", [page("https://d.co.uk/blog/right-for-you/", "Is a Blue Staffy Right for You?")])
+    d = run(root, profile(root), write(root, "delta.json", r))
+    g = row(d["gaps"], "is a blue staffy right for you")
+    assert (g["dedicated"], g["key"], g["no_bsuk_page"], g["intent"], g["score"], g["band"]) == (
+        0, 0, 3, 0, 3, "low")
+
+
+def test_licence_and_health_testing_are_always_high_by_word(root):
+    r = report("eps", [page("https://e.co.uk/health-testing/", "DNA Health Testing", "Our DNA Health Testing"),
+                       page("https://e.co.uk/health-and-safety/", "Health and Safety Policy"),
+                       page("https://e.co.uk/licence/", "Our Staffy Licence")])
+    d = run(root, profile(root), write(root, "eps.json", r))
+    assert row(d["gaps"], "our dna health testing")["band"] == "high"
+    assert row(d["gaps"], "our staffy licence")["always_high"] is True
+    hs = row(d["gaps"], "health and safety policy")
+    assert hs["always_high"] is False and hs["band"] == "low"
+
+
+def test_the_output_does_not_depend_on_report_order(root):
+    a = write(root, "a.json", report("aaa", [
+        page("https://aaa.com/health/", "Staffy Wellbeing"),
+        page("https://aaa.com/blue-staffy-puppies-for-sale-leeds/", "x", "Blue Staffy Puppies For Sale in Leeds"),
+        page("https://aaa.com/blue-staffy-puppies-for-sale-leeds/", "x", "Blue Staffy Puppies For Sale in Leeds")]))
+    z = write(root, "z.json", report("zzz", [
+        page("https://zzz.com/wellbeing-licence/", "Staffy Wellbeing"),
+        page("https://zzz.com/leeds/", "Staffy Puppies Leeds")]))
+    src = profile(root)
+    one, two = run(root, src, a, z), run(root, src, z, a)
+    assert one == two
+    well = row(one["gaps"], "staffy wellbeing")
+    assert well["types"] == ["health"] and well["type"] == "health"
+    leeds = [r for r in one["gaps"] if "leeds" in r["topic"]]
+    assert len(leeds) == 1 and len(leeds[0]["urls"]) == 2     # one row, URLs deduped
+
+
+def test_comparison_topics_take_the_x_vs_y_core_and_versus_folds_to_vs(root):
+    r = report("zeta", [
+        page("https://z.co.uk/staffy-vs-pitbull/", "Staffy vs Pitbull: Which Is Right? | Z",
+             "Staffy vs Pitbull: Which Is Right For Your Family And Home In The UK Today"),
+        page("https://z.co.uk/staffy-versus-pitbull/", "Staffy Versus Pitbull")])
+    d = run(root, profile(root), write(root, "zeta.json", r))
+    vs = row(d["gaps"], "staffy vs pitbull")
+    assert len(vs["urls"]) == 2 and vs["type"] == "comparison"
+
+
+def test_cut_names_and_tier_5(root):
+    (root / "data/competitors.json").write_text(json.dumps(
+        {"competitors": [{"id": "t5", "tier": 5}, {"id": "old", "tier": 1}, {"id": "old5", "tier": 5}]}))
+    t5 = write(root, "t5.json", report("t5", [
+        page("https://t5.com/licence/", "Our Staffy Licence"),
+        page("https://t5.com/kennel/", "Smith Kennels", "Smith Kennels"),
+        page("https://t5.com/from/", "Blue Staffy Puppies from Smith Kennels")]))
+    old = write(root, "old.json", report("old", [], "2026-08-01"))
+    old5 = write(root, "old5.json", report("old5", [], "2026-08-01"))
+    d = run(root, profile(root), t5, old, old5, env={"CUT": "smith kennels,smi"})
+    lic = row(d["gaps"], "our staffy licence")
+    assert lic["urls"] == [] and lic["tier5_urls"] == ["https://t5.com/licence/"] and lic["tier5_only"]
+    assert any(s["why"] == "name only" for s in d["skipped"])
+    assert row(d["covered"], "blue staffy puppies")["tier5_urls"] == ["https://t5.com/from/"]  # cut, then covered
+    assert [s["id"] for s in d["stale"]] == ["old"] and [s["id"] for s in d["stale_tier5"]] == ["old5"]
