@@ -18,6 +18,8 @@ Spec: docs/superpowers/specs/2026-09-23-query-augmentation-design.md §3–§9.
 import argparse
 import datetime
 import json
+import math
+import os
 import re
 import sys
 from pathlib import Path, PurePosixPath
@@ -308,8 +310,15 @@ def _read_json(path, default):
 
 
 def _write_json(path, data):
+    """Write through a temp file in the same directory, then swap it in atomically."""
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    tmp = path.with_name(f".{path.name}.{os.getpid()}.tmp")
+    try:
+        tmp.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        os.replace(tmp, path)
+    finally:
+        if tmp.exists():
+            tmp.unlink()
 
 
 def load_settings(root=ROOT):
@@ -320,11 +329,21 @@ def load_spend(root=ROOT):
     return _read_json(Path(root) / "data/queries/spend.json", [])
 
 
+def _finite(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x)
+
+
 def record(slug, source, endpoint, cost, root=ROOT, now=None):
+    """Append one paid call. Refuses a bad cost; never overwrites a spend log it cannot read."""
+    cost = float(cost)
+    if not math.isfinite(cost) or cost < 0:
+        raise ValueError(f"cost must be a finite amount of 0 or more, got {cost!r}")
     now = now or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    log = load_spend(root)
+    log = load_spend(root)   # a damaged log raises here, so it is left as it is
+    if not isinstance(log, list):
+        raise ValueError("data/queries/spend.json is not a list")
     log.append({"ts": now, "slug": slug, "source": source, "endpoint": endpoint,
-                "cost_usd": float(cost)})
+                "cost_usd": cost})
     _write_json(Path(root) / "data/queries/spend.json", log)
 
 
@@ -333,21 +352,49 @@ def spend_for(slug, root=ROOT, day=None):
                      if e["slug"] == slug and (day is None or e["ts"].startswith(day))), 6)
 
 
+def _is_cached(slug, source, root):
+    d = Path(root) / "data/queries/raw" / slug
+    # a saved connector response means the call was already bought
+    return (d / f"{source}.json").is_file() or (d / f"{source}.response.json").is_file()
+
+
+def _budget_check(slug, source, root, today):
+    s = load_settings(root)
+    page_cap, total_cap = s.get("query_budget_usd"), s.get("query_total_budget_usd")
+    if not (_finite(page_cap) and _finite(total_cap)):
+        return EXIT_BUDGET, "query_budget_usd / query_total_budget_usd missing or not a number"
+    log = load_spend(root)
+    if not isinstance(log, list):
+        raise TypeError("data/queries/spend.json is not a list")
+    configured = s.get("query_typical_call_usd") or DEFAULT_TYPICAL_CALL_USD
+    seen = [e["cost_usd"] for e in log if e["source"] == source]
+    typical = max(seen + [configured])
+    total = round(sum(e["cost_usd"] for e in log), 6)
+    page = spend_for(slug, root, day=today)
+    if not all(_finite(x) for x in (typical, total, page)):
+        return EXIT_BUDGET, "a cost in the spend log or settings is not a finite number"
+    if round(page + typical, 6) > page_cap or round(total + typical, 6) > total_cap:
+        return EXIT_BUDGET, (f"budget: page {page} + {typical} vs {page_cap}, "
+                             f"total {total} + {typical} vs {total_cap}")
+    return EXIT_OK, None
+
+
 def preflight(slug, source, root=ROOT, refresh=False, today=None):
-    """0 proceed · 3 cached · 4 a budget would be exceeded. Fails closed without a budget."""
+    """0 proceed · 3 cached · 4 a budget would be exceeded, or the budget can't be read.
+
+    `today` is the UTC date (YYYY-MM-DD) whose spend counts as this page's run.
+    """
     today = today or datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
-    if (Path(root) / "data/queries/raw" / slug / f"{source}.json").is_file() and not refresh:
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(today)):
+        raise ValueError(f"today must be a YYYY-MM-DD UTC date, got {today!r}")
+    if _is_cached(slug, source, root) and not refresh:
         return EXIT_CACHED
     if source not in PAID_SOURCES:
         return EXIT_OK
-    s = load_settings(root)
-    page_cap, total_cap = s.get("query_budget_usd"), s.get("query_total_budget_usd")
-    if page_cap is None or total_cap is None:
-        return EXIT_BUDGET
-    log = load_spend(root)
-    seen = [e["cost_usd"] for e in log if e["source"] == source]
-    typical = max(seen) if seen else s.get("query_typical_call_usd", DEFAULT_TYPICAL_CALL_USD)
-    total = sum(e["cost_usd"] for e in log)
-    if spend_for(slug, root, day=today) + typical > page_cap or total + typical > total_cap:
-        return EXIT_BUDGET
-    return EXIT_OK
+    try:
+        code, reason = _budget_check(slug, source, root, today)
+    except (ValueError, KeyError, TypeError, AttributeError) as exc:
+        code, reason = EXIT_BUDGET, f"cannot read settings or spend log: {exc}"
+    if reason:
+        print(f"preflight {slug}/{source}: {reason}", file=sys.stderr)
+    return code

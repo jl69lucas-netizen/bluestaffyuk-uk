@@ -487,3 +487,89 @@ def test_preflight_free_source_is_never_budget_limited(tmp_path):
 def test_preflight_without_a_budget_setting_fails_closed(tmp_path):
     root = make_root(tmp_path, settings={"delivery_min_gbp": 200})
     assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+# --- spend guard hardening ------------------------------------------------------------
+
+def test_preflight_a_saved_response_alone_counts_as_cached(tmp_path):
+    root = make_root(tmp_path)
+    d = root / "data/queries/raw/m"
+    d.mkdir(parents=True)
+    (d / "serp_google.response.json").write_text("{}")
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_CACHED
+
+
+@pytest.mark.parametrize("cost", [float("nan"), float("inf"), -0.002])
+def test_record_refuses_a_bad_cost(tmp_path, cost):
+    root = make_root(tmp_path)
+    with pytest.raises(ValueError):
+        Q.record("m", "serp_google", "serp", cost, root, now=NOW)
+    assert not (root / "data/queries/spend.json").exists()
+
+
+@pytest.mark.parametrize("cost", ["NaN", "Infinity"])
+def test_preflight_refuses_a_log_with_a_non_finite_cost(tmp_path, cost):
+    root = make_root(tmp_path)
+    (root / "data/queries").mkdir(parents=True)
+    (root / "data/queries/spend.json").write_text(
+        '[{"ts": "%s", "slug": "x", "source": "serp_google", "endpoint": "serp", "cost_usd": %s}]'
+        % (NOW, cost))
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+def test_a_damaged_spend_log_blocks_calls_and_is_never_overwritten(tmp_path, capsys):
+    root = make_root(tmp_path)
+    Q.record("m", "serp_google", "serp", 0.01, root, now=NOW)
+    path = root / "data/queries/spend.json"
+    damaged = path.read_text()[:-10]
+    path.write_text(damaged)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+    assert capsys.readouterr().err.strip()
+    with pytest.raises(ValueError):
+        Q.record("m", "serp_google", "serp", 0.01, root, now=NOW)
+    assert path.read_text() == damaged
+
+
+@pytest.mark.parametrize("log", ['[{"slug": "x"}]', '{"a": 1}', '[1]'])
+def test_a_malformed_spend_log_blocks_calls(tmp_path, log):
+    root = make_root(tmp_path)
+    (root / "data/queries").mkdir(parents=True)
+    (root / "data/queries/spend.json").write_text(log)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+def test_damaged_settings_block_calls(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/settings.json").write_text('{"query_budget_usd": 0.5,')
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+def test_record_leaves_no_temp_file_behind(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "serp_google", "serp", 0.01, root, now=NOW)
+    assert [p.name for p in (root / "data/queries").iterdir()] == ["spend.json"]
+
+
+def test_preflight_rejects_a_malformed_day(tmp_path):
+    root = make_root(tmp_path)
+    with pytest.raises(ValueError):
+        Q.preflight("m", "serp_google", root, today="23-09-2026")
+
+
+def test_an_observed_zero_cost_does_not_lower_the_estimate(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "ai_engines", "llm_response", 0.47, root, now=NOW)
+    Q.record("x", "serp_google", "serp", 0.0, root, now=NOW)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
+
+
+def test_spend_plus_typical_exactly_at_the_cap_proceeds(tmp_path):
+    root = make_root(tmp_path)
+    Q.record("m", "ai_engines", "llm_response", 0.45, root, now=NOW)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_OK
+
+
+def test_the_settings_typical_overrides_the_default(tmp_path):
+    root = make_root(tmp_path, settings={**SETTINGS, "query_typical_call_usd": 0.2})
+    Q.record("m", "ai_engines", "llm_response", 0.35, root, now=NOW)
+    assert Q.preflight("m", "serp_google", root, today="2026-09-23") == Q.EXIT_BUDGET
