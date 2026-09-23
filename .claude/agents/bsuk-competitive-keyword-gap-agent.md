@@ -120,7 +120,17 @@ def btype(x):  # a BSUK page's type: its route, else (not the homepage) its titl
     r = route(x["url"]).lower()
     slug = "/" + re.sub(r"[^a-z0-9]+", "-", (x.get("title") or "").split("|")[0].lower()).strip("-") + "/"
     return kind(r) or (kind(slug) if r != "/" else None)
-CITYISH = {"city", "listing", None}  # a topic naming cities on these page types is a city topic
+CITYISH = {"city", "listing", None}  # a topic naming cities on these page types is a city topic ...
+CITY_OK = STOP | {"staffy", "staffie", "staffies", "staffordshire", "bull", "terrier", "sbt", "puppy", "puppies",
+                  "pup", "pups", "blue", "breeder", "breeders", "for", "sale", "price", "kc", "registered"}
+def city_topic(t):  # ... when its other words are breed or buyer words only (not rescue, training, vs ...)
+    cs = towns_in(t)
+    return bool(cs) and set(words(t)) - {x for c in cs for x in c} <= CITY_OK
+def page_type(path, t):  # intel's table, comparison winning over city; no city type unless a city topic
+    ptype = "comparison" if re.search(r"-vs-|versus", path) else kind(path)
+    if ptype == "city" and t is not None and not city_topic(t):
+        ptype = next((n for n, pats in TABLE if n != "city" and any(re.search(q, path) for q in pats)), None)
+    return ptype
 def covering(pages, key, ptype):  # a city topic: a BSUK city page naming the same cities; else the words
     if key[0] == "city":
         hits = [x for x in pages if btype(x) == "city" and towns_in(x.get("title")) | towns_in(x.get("h1")) == key[1]]
@@ -154,14 +164,14 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
     out["used"].append({"id": r["id"], "tier": tier, "fetched_on": p["fetched_on"]})
     for page in p["values"]:
         path_ = route(page["url"]).lower()
-        ptype = kind(path_)
-        t, how = topic(page, ptype)
+        t, how = topic(page, page_type(path_, None))
+        ptype = page_type(path_, t)
         if t is None:
             out["skipped"].append({"url": page["url"], "why": how})
             continue
         fw = [fold(x) for x in words(t)]
         cs = towns_in(t)
-        groups.setdefault(("city", cs) if cs and ptype in CITYISH else ("words", content(t), cs), []).append({
+        groups.setdefault(("city", cs) if city_topic(t) and ptype in CITYISH else ("words", content(t), cs), []).append({
             "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
             "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) else 0,
             "always_high": any(has(words(text(page)), h) for h in HIGH)})  # anywhere in the heading
@@ -199,7 +209,7 @@ What decides a row (to explain it, never to redo it):
 
 - **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
-- **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
+- **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
 - **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
 
 ## Output

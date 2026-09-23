@@ -272,3 +272,21 @@ def test_tested_alone_is_not_a_trust_word(root):
     g = row(d["gaps"], "tried and tested staffy training tips")   # care-guide; the untyped copy is skipped
     assert g["always_high"] is False and g["band"] == "medium" and g["urls"] == ["https://t.co.uk/training-tips/"]
     assert d["skipped"] == [{"url": "https://t.co.uk/tips/", "why": "no keyword topic"}]
+
+
+def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
+    r = report("york2", [
+        page("https://y.co.uk/staffy-pups-york/", "Staffy Pups York"),
+        page("https://y.co.uk/staffy-training-york/", "Staffy Training York"),
+        page("https://y.co.uk/staffy-rescue-york/", "Staffy Rescue York"),
+        page("https://y.co.uk/rescue/", "Staffy Rescue York"),
+        page("https://y.co.uk/blue-staffy-vs-pitbull-london/", "Blue Staffy vs Pitbull London")])
+    d = run(root, profile(root), write(root, "york2.json", r))
+    assert row(d["covered"], "staffy pups york")["urls"] == ["https://y.co.uk/staffy-pups-york/"]
+    training = row(d["gaps"], "staffy training york")
+    assert training["type"] == "care-guide" and training["noindex_page"] is None
+    rescue = row(d["gaps"], "staffy rescue york")                  # its own row, not the puppy row
+    assert rescue["urls"] == ["https://y.co.uk/rescue/", "https://y.co.uk/staffy-rescue-york/"]
+    assert rescue["type"] is None
+    vs = [g for g in d["gaps"] if "pitbull" in g["topic"]]
+    assert len(vs) == 1 and vs[0]["type"] == "comparison" and vs[0]["dedicated"] == 3
