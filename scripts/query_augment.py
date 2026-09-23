@@ -12,11 +12,14 @@ scripts/query_coverage_check.py gates.
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
   query_augment.py SLUG --page-type TYPE --keyword "..." --route /path/
       exit 0 written · 5 too few fact-backed questions to fill the FAQ blocks
+      · 6 an input file is unparseable or the wrong shape (nothing written)
+  Every mode: exit 2 for bad usage (a slug outside [a-z0-9-], a route not ending /SLUG/).
 
 Spec: docs/superpowers/specs/2026-09-23-query-augmentation-design.md §3–§9.
 """
 import argparse
 import datetime
+import hashlib
 import json
 import math
 import os
@@ -29,7 +32,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PAID_SOURCES = ("serp_google", "serp_bing", "ai_engines")
 CANDIDATE_SOURCES = PAID_SOURCES + ("threads",)
 PAGE_TYPES = ("location", "comparison", "blog", "puppy")
-EXIT_OK, EXIT_USAGE, EXIT_CACHED, EXIT_BUDGET, EXIT_SHORT = 0, 2, 3, 4, 5
+EXIT_OK, EXIT_USAGE, EXIT_CACHED, EXIT_BUDGET, EXIT_SHORT, EXIT_BAD_INPUT = 0, 2, 3, 4, 5, 6
 DEFAULT_TYPICAL_CALL_USD = 0.05
 
 BLOCKS = ("top", "middle", "bottom")
@@ -144,6 +147,7 @@ class Short(Exception):
     def __init__(self, blocks):
         super().__init__(", ".join(f"{b}: {have}/{need}" for b, (have, need) in blocks.items()))
         self.blocks = blocks
+        self.blocked = []   # (block, question) pairs, set by build()
 
 
 def _bank_sources(root):
@@ -400,72 +404,209 @@ def preflight(slug, source, root=ROOT, refresh=False, today=None):
     return code
 
 
+class BadInput(Exception):
+    """An input file the script reads is unparseable or the wrong shape. Nothing is written."""
+
+    def __init__(self, path, reason):
+        super().__init__(f"{path}: {reason}")
+
+
+STATUSES = ("ok", "fallback", "NOT FETCHED")
+SLUG_RE = re.compile(r"[a-z0-9-]+")
+ROUTE_RE = re.compile(r"/([a-z0-9-]+/)*")
+SCHEMA_PATH = ROOT / "schemas/queries.schema.json"
+
+
+def _load(path, default):
+    """_read_json, with a parse failure turned into BadInput naming the file."""
+    try:
+        return _read_json(path, default)
+    except (OSError, ValueError, UnicodeDecodeError) as exc:
+        raise BadInput(path, f"cannot parse ({exc})") from exc
+
+
+def _opt_str(x):
+    return x is None or isinstance(x, str)
+
+
+def _opt_int(x):
+    return x is None or (isinstance(x, int) and not isinstance(x, bool))
+
+
+def _status(d, path):
+    st = d.get("status", "ok")
+    if st not in STATUSES:
+        raise BadInput(path, f"status must be one of {', '.join(STATUSES)}, got {st!r}")
+    return st
+
+
 def load_candidates(slug, root=ROOT):
     raw = Path(root) / "data/queries/raw" / slug
     cands, status = [], {}
     for src in CANDIDATE_SOURCES:
-        d = _read_json(raw / f"{src}.json", None)
+        path = raw / f"{src}.json"
+        d = _load(path, None)
         if d is None:
             status[src] = "NOT FETCHED"
             continue
-        status[src] = d.get("status", "ok")
-        for item in d.get("questions", []):
-            cands.append((item["text"], src, item.get("detail") or src, item.get("fact_source")))
+        if not isinstance(d, dict):
+            raise BadInput(path, "top level must be an object")
+        status[src] = _status(d, path)
+        items = d.get("questions", [])
+        if not isinstance(items, list):
+            raise BadInput(path, "questions must be a list")
+        for i, item in enumerate(items):
+            if not isinstance(item, dict):
+                raise BadInput(path, f"questions[{i}] must be an object")
+            text = item.get("text")
+            if not isinstance(text, str) or not text.strip():
+                raise BadInput(path, f"questions[{i}].text must be a non-empty string")
+            for k in ("detail", "fact_source"):
+                if not _opt_str(item.get(k)):
+                    raise BadInput(path, f"questions[{i}].{k} must be a string or null")
+            cands.append((text, src, item.get("detail") or src, item.get("fact_source")))
     return cands, status
 
 
 def bank_candidates(root=ROOT):
-    rows = _read_json(Path(root) / "data/faq.json", [])
-    return [(r["q"], "bank", f"bank:{r['id']}", r.get("source")) for r in rows]
+    """(candidates, status). A missing bank is "NOT FETCHED"; a malformed one is BadInput."""
+    path = Path(root) / "data/faq.json"
+    rows = _load(path, None)
+    if rows is None:
+        return [], "NOT FETCHED"
+    if not isinstance(rows, list):
+        raise BadInput(path, "top level must be a list")
+    out = []
+    for i, r in enumerate(rows):
+        if not (isinstance(r, dict) and isinstance(r.get("q"), str)
+                and isinstance(r.get("id"), str)):
+            raise BadInput(path, f"row {i} must be an object with string q and id")
+        if not _opt_str(r.get("source")):
+            raise BadInput(path, f"row {i}: source must be a string or null")
+        out.append((r["q"], "bank", f"bank:{r['id']}", r.get("source")))
+    return out, "ok"
 
 
-def _question_id(norm, taken):
-    base = ("q-" + "-".join(norm.split()[:8]))[:50].rstrip("-")
-    qid, i = base, 2
-    while qid in taken:
-        qid, i = f"{base}-{i}", i + 1
-    return qid
+def load_competitors(slug, root=ROOT):
+    path = Path(root) / "data/queries/raw" / slug / "competitors.json"
+    d = _load(path, None)
+    if d is None:
+        return {"status": "NOT FETCHED", "pages": []}
+    if not isinstance(d, dict):
+        raise BadInput(path, "top level must be an object")
+    _status(d, path)
+    pages = d.get("pages")
+    if not isinstance(pages, list):
+        raise BadInput(path, "pages must be a list")
+    for i, p in enumerate(pages):
+        if not isinstance(p, dict) or not isinstance(p.get("url"), str):
+            raise BadInput(path, f"pages[{i}] must be an object with a string url")
+        for k in ("google_pos", "bing_pos"):
+            if not _opt_int(p.get(k)):
+                raise BadInput(path, f"pages[{i}].{k} must be an integer or null")
+        h2 = p.get("h2", [])
+        if not (isinstance(h2, list) and all(isinstance(h, str) for h in h2)):
+            raise BadInput(path, f"pages[{i}].h2 must be a list of strings")
+    return d
 
 
-def build(slug, page_type, keyword, route, root=ROOT, today=None):
-    """The question file as a dict. Raises Short when a FAQ block cannot be filled."""
-    today = today or datetime.date.today().isoformat()
+def load_previous(slug, root=ROOT):
+    """The page's existing question file, or None. The builder's fills are carried from it."""
+    path = Path(root) / "data/queries" / f"{slug}.json"
+    d = _load(path, None)
+    if d is None:
+        return None
+    if not (isinstance(d, dict) and isinstance(d.get("questions", []), list)
+            and isinstance(d.get("extra_sections", []), list)
+            and all(isinstance(q, dict) and isinstance(q.get("question"), str)
+                    for q in d.get("questions", []))
+            and all(isinstance(e, dict) and isinstance(e.get("topic"), str)
+                    for e in d.get("extra_sections", []))):
+        raise BadInput(path, "not a question file (questions / extra_sections malformed)")
+    return d
+
+
+def _question_id(norm):
+    """A pure function of the normalised text, so an id never moves to another question."""
+    base = ("q-" + "-".join(norm.split()[:8]))[:43].rstrip("-")
+    return f"{base}-{hashlib.sha1(norm.encode()).hexdigest()[:6]}"
+
+
+def _utc_today():
+    return datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d")
+
+
+def _carry_fills(prev, questions, extras):
+    """Copy covered_by (matched by normalised question text) and headings (by topic).
+
+    Returns (kept, dropped): fills that found a home in this build, and fills that did not.
+    """
+    if not prev:
+        return 0, 0
+    covered = {normalise(q["question"]): q.get("covered_by") for q in prev.get("questions", [])
+               if q.get("covered_by")}
+    heads = {e["topic"]: e.get("heading") for e in prev.get("extra_sections", [])
+             if e.get("heading")}
+    kept = 0
+    for q in questions:
+        n = normalise(q["question"])
+        if n in covered:
+            q["covered_by"] = covered[n]
+            kept += 1
+    for e in extras:
+        if e["topic"] in heads:
+            e["heading"] = heads[e["topic"]]
+            kept += 1
+    return kept, len(covered) + len(heads) - kept
+
+
+def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
+    """The question file as a dict, with "_fills": (kept, dropped) for the caller to pop.
+
+    Raises Short (with .blocked = [(block, question)]) when a FAQ block cannot be filled, and
+    BadInput when an input file is unparseable or the wrong shape.
+    """
+    today = today or _utc_today()
     cands, status = load_candidates(slug, root)
-    cands += bank_candidates(root)   # buyer phrasing first, so it wins the merge
-    status["bank"] = "ok"
+    bank, status["bank"] = bank_candidates(root)
+    cands += bank   # buyer phrasing first, so it wins the merge
     merged = merge(cands, root)
-    questions, taken = [], set()
+    questions = []
     for n in sorted(merged):
         m = merged[n]
         topic, block = topic_of(m["question"])
-        qid = _question_id(n, taken)
-        taken.add(qid)
         questions.append({
-            "id": qid, "question": m["question"], "found_in": m["found_in"],
+            "id": _question_id(n), "question": m["question"], "found_in": m["found_in"],
             "score": score(m["types"], topic, page_type), "topic": topic, "block": block,
             "fact_source": m["fact_source"], "must_answer": False, "faq": None,
             "blocked": None if m["fact_source"] else "unverified fact", "covered_by": None})
-    comp = _read_json(Path(root) / "data/queries/raw" / slug / "competitors.json",
-                      {"status": "NOT FETCHED", "pages": []})
+    assert len({q["id"] for q in questions}) == len(questions), "question id collision"
+    comp = load_competitors(slug, root)
     status["competitors"] = comp.get("status", "ok")
     target, rows = section_target(comp["pages"])
-    pick_faq(questions)
+    if prev is None:
+        prev = load_previous(slug, root)
+    try:
+        pick_faq(questions)
+    except Short as e:
+        e.blocked = [(q["block"], q["question"]) for q in questions
+                     if q["block"] in e.blocks and not q["fact_source"]]
+        raise
     extras = pick_extra(questions, covered_topics(comp["pages"]))
     extra_ids = {i for e in extras for i in e["question_ids"]}
     for q in questions:
         q["must_answer"] = bool(q["faq"]) or q["id"] in extra_ids
-    prev = _read_json(Path(root) / "data/queries" / f"{slug}.json", None)
-    if prev:
-        covered = {q["id"]: q.get("covered_by") for q in prev.get("questions", [])}
-        heads = {e["topic"]: e.get("heading") for e in prev.get("extra_sections", [])}
-        for q in questions:
-            q["covered_by"] = covered.get(q["id"])
-        for e in extras:
-            e["heading"] = heads.get(e["topic"])
+    fills = _carry_fills(prev, questions, extras)
     return {"slug": slug, "page_type": page_type, "primary_keyword": keyword, "route": route,
             "fetched": today, "spend_usd": spend_for(slug, root), "sources": status,
             "competitors": rows, "section_target": target, "extra_sections": extras,
-            "questions": questions}
+            "questions": questions, "_fills": fills}
+
+
+def check_schema(data):
+    """A built dict that breaks schemas/queries.schema.json is a bug in this script: raise."""
+    import jsonschema   # only build needs it, so preflight/record work without it
+    jsonschema.validate(data, json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
 
 
 def main(argv=None):
@@ -484,12 +625,18 @@ def main(argv=None):
     ap.add_argument("--today")
     a = ap.parse_args(argv)
     root = Path(a.root)
+    modes = [m for m in (a.preflight, a.record, a.slug) if m is not None]
+    if len(modes) != 1:
+        ap.error("give exactly one of --preflight SLUG, --record SLUG or a build SLUG")
+    slug = modes[0]
+    if not SLUG_RE.fullmatch(slug):
+        ap.error(f"slug must match ^[a-z0-9-]+$, got {slug!r}")
     if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
         ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
     if a.preflight:
         if a.source not in CANDIDATE_SOURCES:
             ap.error("--source must be one of " + ", ".join(CANDIDATE_SOURCES))
-        code = preflight(a.preflight, a.source, root, a.refresh, a.today)
+        code = preflight(slug, a.source, root, a.refresh, a.today)
         print({EXIT_OK: "proceed", EXIT_CACHED: "cached — make no call",
                EXIT_BUDGET: "budget would be exceeded — stop and report"}[code])
         return code
@@ -497,28 +644,35 @@ def main(argv=None):
         if a.source not in PAID_SOURCES or not a.endpoint or a.cost is None:
             ap.error("--record needs a paid --source, --endpoint and --cost")
         try:
-            record(a.record, a.source, a.endpoint, a.cost, root)
+            record(slug, a.source, a.endpoint, a.cost, root)
         except ValueError as e:   # a bad cost or an unreadable spend log; nothing written
             print(f"query_augment.py: --record refused: {e}", file=sys.stderr)
             return EXIT_USAGE
-        print(f"recorded {a.cost} for {a.record}; page total {spend_for(a.record, root)}")
+        print(f"recorded {a.cost} for {slug}; page total {spend_for(slug, root)}")
         return EXIT_OK
-    if not a.slug or a.page_type not in PAGE_TYPES or not a.keyword or not a.route:
+    if a.page_type not in PAGE_TYPES or not a.keyword or not a.route:
         ap.error("build needs SLUG, --page-type (" + "/".join(PAGE_TYPES) + "), --keyword, --route")
+    if not ROUTE_RE.fullmatch(a.route) or a.route.rstrip("/").rsplit("/", 1)[-1] != slug:
+        ap.error(f"--route must match ^/([a-z0-9-]+/)*$ and end in /{slug}/, got {a.route!r}")
+    out = root / "data/queries" / f"{slug}.json"
     try:
-        data = build(a.slug, a.page_type, a.keyword, a.route, root, a.today)
+        data = build(slug, a.page_type, a.keyword, a.route, root, a.today)
+    except BadInput as e:
+        print(f"query_augment.py: bad input: {e}", file=sys.stderr)
+        return EXIT_BAD_INPUT
     except Short as e:
-        print(f"SHORT: too few fact-backed questions — {e}")
-        cands, _ = load_candidates(a.slug, root)
-        for n, m in sorted(merge(cands + bank_candidates(root), root).items()):
-            _, block = topic_of(m["question"])
-            if block in e.blocks and not m["fact_source"]:
-                print(f"  blocked ({block}): {m['question']}")
+        kept = f"; existing data/queries/{slug}.json left unchanged" if out.exists() else ""
+        print(f"SHORT: too few fact-backed questions — {e}{kept}")
+        for block, question in e.blocked:
+            print(f"  blocked ({block}): {question}")
         return EXIT_SHORT
-    _write_json(root / "data/queries" / f"{a.slug}.json", data)
+    kept, dropped = data.pop("_fills", (0, 0))
+    check_schema(data)
+    _write_json(out, data)
     faq = sum(1 for q in data["questions"] if q["faq"])
-    print(f"wrote data/queries/{a.slug}.json — {len(data['questions'])} questions, {faq} FAQ, "
-          f"section target {data['section_target']['total']}")
+    print(f"wrote data/queries/{slug}.json — {len(data['questions'])} questions, {faq} FAQ, "
+          f"section target {data['section_target']['total']}; "
+          f"kept {kept} fills, dropped {dropped}")
     return EXIT_OK
 
 

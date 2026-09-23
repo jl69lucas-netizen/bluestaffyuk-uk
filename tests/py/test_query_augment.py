@@ -581,7 +581,7 @@ import jsonschema  # noqa: E402
 
 SCHEMA = json.loads((pathlib.Path(__file__).resolve().parents[2]
                      / "schemas/queries.schema.json").read_text())
-ROUTE = "/uk-locations/blue-staffy-puppies-manchester-uk/"
+ROUTE = "/uk-locations/m/"          # the last segment must equal the slug
 
 
 def run(root, *args):
@@ -687,3 +687,179 @@ def test_cli_preflight_rejects_a_malformed_today_cleanly(tmp_path):
     assert r.returncode == Q.EXIT_USAGE
     assert "Traceback" not in r.stderr
     assert "YYYY-MM-DD" in r.stderr
+
+
+# --- quality review: stable ids, bad input, slug/route, short re-runs -----------------
+
+MANC = "How much does a blue Staffy puppy cost in Manchester?"
+LEEDS = "How much does a blue Staffy puppy cost in Leeds?"      # same first 8 words, sorts first
+BUILD = ("m", "--page-type", "location", "--keyword", "k", "--route", ROUTE,
+         "--today", "2026-09-23")
+
+
+def add_raw_question(root, source, text, slug="m"):
+    f = root / "data/queries/raw" / slug / f"{source}.json"
+    d = json.loads(f.read_text()) if f.exists() else {"source": source, "status": "ok",
+                                                       "questions": []}
+    d["questions"].append({"text": text, "detail": f"{source}_paa",
+                           "fact_source": "data/settings.json#delivery_min_gbp"})
+    f.write_text(json.dumps(d))
+
+
+def test_ids_survive_a_new_question_that_sorts_first(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    add_raw_question(root, "serp_google", MANC)
+    assert run(root, *BUILD).returncode == 0
+    f = root / "data/queries/m.json"
+    first = json.loads(f.read_text())
+    manc = next(x for x in first["questions"] if x["question"] == MANC)
+    manc["covered_by"] = {"where": "heading", "text": "Staffy puppy prices in Manchester"}
+    f.write_text(json.dumps(first))
+    add_raw_question(root, "serp_bing", LEEDS)
+    r = run(root, *BUILD)
+    assert r.returncode == 0, r.stderr
+    again = json.loads(f.read_text())
+    by_q = {x["question"]: x for x in again["questions"]}
+    assert by_q[MANC]["covered_by"] == manc["covered_by"]
+    assert by_q[LEEDS]["covered_by"] is None
+    old_ids = {x["question"]: x["id"] for x in first["questions"]}
+    assert all(by_q[t]["id"] == i for t, i in old_ids.items())
+    assert len({x["id"] for x in again["questions"]}) == len(again["questions"])
+
+
+def test_question_id_is_a_pure_function_of_the_text():
+    n = Q.normalise(MANC)
+    assert Q._question_id(n) == Q._question_id(n)
+    assert Q._question_id(n) != Q._question_id(Q.normalise(LEEDS))
+    assert len(Q._question_id(n)) <= 50
+
+
+def test_the_write_message_counts_kept_and_dropped_fills(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    run(root, *BUILD)
+    f = root / "data/queries/m.json"
+    data = json.loads(f.read_text())
+    data["questions"][0]["covered_by"] = {"where": "faq", "text": "x"}
+    data["questions"].append({**data["questions"][1], "id": "q-gone", "question": "A gone question?",
+                              "covered_by": {"where": "faq", "text": "y"}})
+    data["extra_sections"][0]["heading"] = "Kept Heading"
+    f.write_text(json.dumps(data))
+    r = run(root, *BUILD)
+    assert "kept 2 fills, dropped 1" in r.stdout
+
+
+@pytest.mark.parametrize("name,payload", [
+    ("serp_google", {"status": "ok", "questions": [{"detail": "serp_google_paa"}]}),
+    ("serp_google", [{"text": "Is a list at the top level ok?"}]),
+    ("serp_google", {"status": "ok", "questions": [{"text": 7}]}),
+    ("serp_google", "BROKEN"),
+    ("competitors", {"status": "ok"}),
+    ("competitors", {"status": "ok", "pages": [{"url": "https://a.example", "google_pos": "1",
+                                                "bing_pos": None, "h2": []}]}),
+])
+def test_bad_input_exits_6_with_one_line_and_writes_nothing(tmp_path, name, payload):
+    root = make_root(tmp_path); seed(root)
+    f = root / "data/queries/raw/m" / f"{name}.json"
+    f.write_text('{"status": "ok", "questions": [' if payload == "BROKEN" else json.dumps(payload))
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_BAD_INPUT == 6
+    lines = r.stderr.strip().splitlines()
+    assert len(lines) == 1 and lines[0].startswith("query_augment.py: bad input: ")
+    assert f"{name}.json" in lines[0]
+    assert not (root / "data/queries/m.json").exists()
+
+
+def test_an_unparseable_previous_file_is_bad_input(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    (root / "data/queries/m.json").write_text("{not json")
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_BAD_INPUT
+    assert (root / "data/queries/m.json").read_text() == "{not json"
+
+
+EVIL = "../../evil"
+
+
+@pytest.mark.parametrize("args", [
+    ("--preflight", EVIL, "--source", "serp_google", "--today", "2026-09-23"),
+    ("--record", EVIL, "--source", "serp_google", "--endpoint", "serp", "--cost", "0.01"),
+    (EVIL, "--page-type", "location", "--keyword", "k", "--route", "/uk-locations/evil/"),
+])
+def test_a_path_like_slug_is_refused_in_every_mode(tmp_path, args):
+    root = make_root(tmp_path / "repo")
+    before = sorted(p for p in tmp_path.rglob("*"))
+    r = run(root, *args)
+    assert r.returncode == 2
+    assert "slug" in r.stderr
+    assert sorted(p for p in tmp_path.rglob("*")) == before
+
+
+@pytest.mark.parametrize("route", ["/uk-locations/other/", "/uk-locations/m", "uk-locations/m/",
+                                   "/UK/m/"])
+def test_a_route_that_does_not_end_in_the_slug_is_refused(tmp_path, route):
+    root = make_root(tmp_path); seed(root)
+    r = run(root, "m", "--page-type", "location", "--keyword", "k", "--route", route)
+    assert r.returncode == 2
+    assert not (root / "data/queries/m.json").exists()
+
+
+def test_the_modes_are_mutually_exclusive(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "m", "--preflight", "m", "--source", "serp_google")
+    assert r.returncode == 2
+    r = run(root, "--preflight", "m", "--record", "m", "--source", "serp_google",
+            "--endpoint", "serp", "--cost", "0.01")
+    assert r.returncode == 2
+    assert not (root / "data/queries/spend.json").exists()
+
+
+def test_a_short_rerun_leaves_the_existing_file_unchanged(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    assert run(root, *BUILD).returncode == 0
+    f = root / "data/queries/m.json"
+    before = f.read_text()
+    make_root(tmp_path, bank=TOP + BOTTOM)
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_SHORT
+    assert "existing data/queries/m.json left unchanged" in r.stdout
+    assert f.read_text() == before
+
+
+def test_short_carries_the_blocked_list(tmp_path):
+    root = make_root(tmp_path, bank=TOP + BOTTOM); seed(root)
+    add_raw_question(root, "serp_google", "Is the puppy vaccinated?")
+    (root / "data/queries/raw/m/threads.json").write_text(json.dumps(
+        {"status": "ok", "questions": [{"text": "Are the puppy's parents health tested here?"}]}))
+    with pytest.raises(Q.Short) as e:
+        Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    assert ("middle", "Are the puppy's parents health tested here?") in e.value.blocked
+
+
+def test_a_missing_bank_is_not_fetched(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/faq.json").unlink()
+    assert Q.bank_candidates(root) == ([], "NOT FETCHED")
+    assert Q.bank_candidates(make_root(tmp_path))[1] == "ok"
+
+
+def test_a_bank_row_without_a_string_q_is_bad_input(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/faq.json").write_text(json.dumps([{"id": "b1", "q": None}]))
+    with pytest.raises(Q.BadInput):
+        Q.bank_candidates(root)
+
+
+def test_a_built_dict_that_breaks_the_schema_is_a_bug_and_raises(tmp_path, monkeypatch):
+    root = make_root(tmp_path); seed(root)
+    monkeypatch.setattr(Q, "build", lambda *a, **k: {"slug": "m"})
+    with pytest.raises(jsonschema.ValidationError):
+        Q.main(["--root", str(root), *BUILD])
+    assert not (root / "data/queries/m.json").exists()
+
+
+def test_build_default_today_is_the_utc_date(tmp_path, monkeypatch):
+    root = make_root(tmp_path); seed(root)
+    data = Q.build("m", "location", "k", ROUTE, root)
+    import datetime as dt
+    assert data["fetched"] == dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%d")
+
