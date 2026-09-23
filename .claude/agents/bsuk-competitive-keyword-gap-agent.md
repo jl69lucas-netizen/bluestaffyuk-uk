@@ -69,7 +69,7 @@ towns = {c for c in cities if c != ("uk",)}
 BREED = {("staffy",), ("staffie",), ("staffies",), ("staffordshire", "bull", "terrier"), ("sbt",)}
 PLACE = {("puppies",), ("puppy",), ("for", "sale"), ("breeder",), ("breeders",), ("price",), ("kc", "registered"), ("blue",)} | cities
 UNITS = sorted(BREED | PLACE, key=len, reverse=True)
-INTENT = [tuple(fold(x) for x in i) for i in [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")] + sorted(towns)]
+INTENT = [tuple(fold(x) for x in i) for i in [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")]]  # + a city, on a city topic
 HIGH = [("licence",), ("license",), ("licensed",), ("licensing",), ("health", "test"), ("health", "tested"),
         ("health", "testing"), ("l", "2", "hga"), ("hc",)]
 STOP = {"a", "an", "the", "in", "for", "of", "to", "and", "with", "near", "our", "your", "how", "much", "is", "are", "what", "uk", "sale", "buy"}
@@ -173,7 +173,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
         cs = towns_in(t)
         groups.setdefault(("city", cs) if city_topic(t) and ptype in CITYISH else ("words", content(t), cs), []).append({
             "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
-            "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) else 0,
+            "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) or city_topic(t) else 0,
             "always_high": any(has(words(text(page)), h) for h in HIGH)})  # anywhere in the heading
 gaps, covered = [], []
 for key, ps in groups.items():
@@ -210,7 +210,7 @@ What decides a row (to explain it, never to redo it):
 - **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
 - **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
-- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
+- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered", or a city on a city topic only — never on a rescue, training, vet or other non-buyer topic; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
 
 ## Output
 

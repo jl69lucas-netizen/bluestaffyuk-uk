@@ -280,7 +280,8 @@ def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
         page("https://y.co.uk/staffy-training-york/", "Staffy Training York"),
         page("https://y.co.uk/staffy-rescue-york/", "Staffy Rescue York"),
         page("https://y.co.uk/rescue/", "Staffy Rescue York"),
-        page("https://y.co.uk/blue-staffy-vs-pitbull-london/", "Blue Staffy vs Pitbull London")])
+        page("https://y.co.uk/blue-staffy-vs-pitbull-london/", "Blue Staffy vs Pitbull London"),
+        page("https://y.co.uk/staffy-vet-aberdeen/", "Staffy Vet Aberdeen")])
     d = run(root, profile(root), write(root, "york2.json", r))
     assert row(d["covered"], "staffy pups york")["urls"] == ["https://y.co.uk/staffy-pups-york/"]
     training = row(d["gaps"], "staffy training york")
@@ -290,3 +291,6 @@ def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
     assert rescue["type"] is None
     vs = [g for g in d["gaps"] if "pitbull" in g["topic"]]
     assert len(vs) == 1 and vs[0]["type"] == "comparison" and vs[0]["dedicated"] == 3
+    vet = row(d["gaps"], "staffy vet aberdeen")                    # a city is intent only on a city topic
+    assert (vet["intent"], vet["score"], vet["band"]) == (0, 6, "medium")
+    assert (training["intent"], rescue["intent"]) == (0, 0)
