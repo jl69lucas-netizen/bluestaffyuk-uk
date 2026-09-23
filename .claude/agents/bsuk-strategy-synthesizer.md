@@ -1,6 +1,7 @@
 ---
 name: bsuk-strategy-synthesizer
 description: Use after the competitor research has run (gap matrix, keyword-gap list, competitor reports, LLM intel) and BlueStaffyUK needs a content strategy from it — for the location pages, the blog, a hub or a page type — before bsuk-content-architect plans or builds anything. Run @bsuk-strategy-synthesizer <topic>, optionally naming the concrete artefact wanted (a city-page build order, blog topics + hub).
+tools: [Read, Write, Bash]
 model: inherit
 effort: max
 ---
@@ -40,8 +41,9 @@ First line of the output and of your hand-back: `STALE: <file> (<date>)` or `MIS
 `scripts/strategy_cite_check.py` checks every figure under `## Recommendation` and `## Concrete Artifact` against the files under `## Sources`, as whole tokens:
 
 - Quote the figure exactly as its source writes it, suffix included: `39%` needs `39%`, `40k` needs `40k`, `2.5x` needs `2.5x`; `3/3` stays `3/3`.
-- A quantity from 1900 to 2099 takes a comma — "2,000 words", never "2000 words" — or it is read as a figure (and a year).
+- A quantity from 1900 to 2099 takes a comma — "2,000 words", never "2000 words". It is still a checked figure; without the comma, a bare 2000 after a cue word ("in", "by", "from") is skipped as a year, so an unsourced number would pass.
 - A year sits after a cue — "in 2027", "Q3 2027", "by 2027" — never "the 2027 plan".
+- A top-N (`top-3`, `top-10`) IS a checked figure: the source must print it too.
 - Single digits, the city count 28, dates (`2026-09-24`) and anything in backticks are not checked; do not hide a figure in backticks to dodge the check.
 
 ## Output — docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy.md
