@@ -978,7 +978,8 @@ def seed(root, slug="m"):
          "fact_source": "data/settings.json#guarantee_days"}]})
     write_raw(root, slug, "competitors", {"status": "ok", "pages": [
         {"url": "https://a.example", "google_pos": 1, "bing_pos": None,
-         "h2": ["Our Prices", "Delivery to Manchester", "Reviews"]}]})
+         "h2": ["Our Prices", "Delivery to Manchester", "Health Testing",
+                "Our Puppies For Sale", "Reviews"]}]})
 
 
 def test_build_writes_a_schema_valid_file(tmp_path):
@@ -991,8 +992,8 @@ def test_build_writes_a_schema_valid_file(tmp_path):
     assert data["sources"]["serp_google"] == "ok"
     assert data["sources"]["serp_bing"] == "NOT FETCHED"
     assert data["sources"]["bank"] == "ok"
-    assert data["section_target"] == {"matched": 2, "set_by": "https://a.example",
-                                      "extra": 3, "total": 5}
+    assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
+                                      "extra": 3, "total": 7}
     faq = [x for x in data["questions"] if x["faq"]]
     assert 17 <= len(faq) <= 20
     assert all(x["must_answer"] for x in faq)
@@ -1185,7 +1186,7 @@ if __name__ == "__main__":
 Run: `python3 -m pytest tests/py/test_query_augment.py -q`
 Expected: all pass. `argparse`'s `ap.error` exits 2, which is what `test_cli_rejects_an_unknown_page_type` checks.
 
-In `test_build_writes_a_schema_valid_file`, the competitor's cleaned headings are "Our Prices" and "Delivery to Manchester" ("Reviews" is removed), so `matched` is 2.
+In `test_build_writes_a_schema_valid_file`, the competitor keeps four cleaned headings ("Reviews" is removed), so `matched` is 4. A page needs at least three cleaned headings to be usable (`MIN_USABLE_H2`, added in Task 3's review).
 
 - [ ] **Step 5: Commit**
 
