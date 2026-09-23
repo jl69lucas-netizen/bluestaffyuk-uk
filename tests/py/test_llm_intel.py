@@ -207,7 +207,8 @@ def test_the_agent_script_uses_the_page_map_and_gap_matrix_without_a_question_fi
     (tmp_path / "data").mkdir()
     (tmp_path / "data/locations.json").write_text("[]", encoding="utf-8")
     (tmp_path / "data/page-map.json").write_text(json.dumps({"pages": [
-        {"url": "/staffy-price-guide/", "title": "Staffy Price Guide", "h1": "Staffy Price Guide", "headings": []}]}), encoding="utf-8")
+        {"url": "/staffy-price-guide/", "title": "Staffy Price Guide", "h1": "Staffy Price Guide",
+         "headings": [["h2", "How much is a Staffy?"], ["h2", "Why health tested litters cost more"]]}]}), encoding="utf-8")
     (tmp_path / "data/competitors.json").write_text(json.dumps({"competitors": [
         {"id": "cheap-pups", "root_domain": "cheap-pups.com", "tier": 5}]}), encoding="utf-8")
     (tmp_path / "docs/research").mkdir(parents=True)
@@ -231,6 +232,7 @@ def test_the_agent_script_uses_the_page_map_and_gap_matrix_without_a_question_fi
     assert doc["stale"] == ["docs/research/gap-matrix-2026-08-01.md is 53 days old"]
     assert run.stderr.startswith("STALE")
     assert doc["page_source"]["kind"] == "page-map" and doc["page_source"]["provisional"]
+    assert {"entity": "health tests", "kind": "safety", "on_page": True, "band": "medium"} in doc["entities"]  # from an H2 pair
     assert [s["domain"] for s in doc["local_businesses"]] == ["cheap-pups.com"]  # instagram is a profile link
     assert doc["risks"] == [{"domain": "cheap-pups.com", "registry_id": "cheap-pups",
                              "reason": doc["risks"][0]["reason"]}]
@@ -239,6 +241,34 @@ def test_the_agent_script_uses_the_page_map_and_gap_matrix_without_a_question_fi
     run = subprocess.run([sys.executable, "-", "staffy-price-guide", str(resp)], input=_agent_script(), cwd=tmp_path,
                          env=env, capture_output=True, text=True)
     assert run.returncode != 0 and "GAP_TOPICS not in" in run.stderr
+
+
+def test_the_agent_script_reads_the_real_page_map_entry_with_no_build(tmp_path):
+    # data/page-map.json headings are [tag, text] pairs; a page with no question file and no dist/
+    # build falls back to its entry. Run against a copy of the real entry for the buying guide.
+    slug = "uk-blue-staffy-puppy-buying-guide"
+    entry = next(p for p in json.loads((ROOT / "data/page-map.json").read_text(encoding="utf-8"))["pages"]
+                 if p["url"] == f"/{slug}/")
+    assert entry["headings"] and all(isinstance(h, list) for h in entry["headings"])
+    (tmp_path / "scripts").mkdir()
+    shutil.copy(ROOT / "scripts/competitor_registry_check.py", tmp_path / "scripts")
+    (tmp_path / "data").mkdir()
+    shutil.copy(ROOT / "data/locations.json", tmp_path / "data")
+    (tmp_path / "data/page-map.json").write_text(json.dumps({"pages": [entry]}), encoding="utf-8")
+    query = "How do I buy a blue Staffy puppy in the UK?"
+    resp = tmp_path / "resp.json"
+    resp.write_text(json.dumps({"tasks": [{"result": [{"keyword": query,
+        "markdown": "Choose a breeder who shows the puppy with its mother and shares health test results.",
+        "sources": [{"url": "https://www.thekennelclub.org.uk/"}]}]}]}), encoding="utf-8")
+    env = dict(os.environ, QUERY=query, TODAY="2026-09-23", FETCHED_ON="2026-09-23", EXTRA="", GAP_TOPICS="")
+    run = subprocess.run([sys.executable, "-", slug, str(resp)], input=_agent_script(), cwd=tmp_path,
+                         env=env, capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    doc = json.loads(run.stdout)
+    assert doc["page_source"]["kind"] == "page-map" and doc["page_source"]["provisional"]
+    assert "no built page in dist/" in doc["page_source"]["note"]
+    assert doc["query_source"]["from"] == "page-map"
+    assert problems(doc, f"{slug}-2026-09-23.json") == []
 
 
 def test_a_file_named_for_another_slug_or_date_fails():

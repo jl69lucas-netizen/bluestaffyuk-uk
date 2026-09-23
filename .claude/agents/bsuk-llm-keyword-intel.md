@@ -164,7 +164,8 @@ if page is None and q:
     page = norm(" ".join(x["question"] for x in q["questions"] if x.get("faq") or x.get("must_answer")))
     src = {"kind": "question-file", "path": qfile, "provisional": True, "note": f"{why}; checked against the questions the page must carry (faq picks and must_answer)"}
 elif page is None and pm:
-    page = norm(" ".join([pm.get("title", ""), pm.get("h1", "")] + [x if isinstance(x, str) else x.get("text", "") for x in pm.get("headings", [])]))
+    heads = [h[-1] if isinstance(h, list) and h else h.get("text") if isinstance(h, dict) else h for h in pm.get("headings") or []]  # [tag, text] pairs
+    page = norm(" ".join(str(x) for x in [pm.get("title"), pm.get("h1")] + heads if isinstance(x, str)))
     src = {"kind": "page-map", "path": "data/page-map.json", "provisional": True, "note": f"{why}; no question file; checked against the page map's title, H1 and headings"}
 elif page is None:
     page, src = norm(""), {"kind": "none", "path": None, "provisional": True, "note": f"{why}; no question file or page-map entry"}
