@@ -114,13 +114,14 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, the word `pup` or `sale`, `litter`, `available` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye; it prints the `page_types` values:
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye; it prints the `page_types` values. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
-import json, re, sys
+import html, json, pathlib, re, sys
 from urllib.parse import urlparse
 urls = json.load(open(sys.argv[1]))
+bsuk = "--bsuk" in sys.argv[2:]
 rows = json.load(open("data/locations.json"))
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
 w = lambda t: r"(^|[-/])" + t + r"([-/]|$)"
@@ -138,19 +139,33 @@ TABLE = [
     ("reviews", [r"review", r"testimonial"]),
     ("listing", [r"puppies", r"puppy", w("pup"), r"litter", r"available", w("sale")]),
 ]
+kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
+def title_slug(path):
+    f = pathlib.Path("dist") / path.strip("/") / "index.html"
+    m = re.search(r"(?is)<head\b.*?<title>(.*?)</title>", f.read_text(encoding="utf-8")) if f.is_file() else None
+    words = html.unescape(m.group(1)).split("|")[0] if m else ""
+    return "/" + re.sub(r"[^a-z0-9]+", "-", words.lower()).strip("-") + "/"
 counts = {}
 for u in urls:
     path = urlparse(u).path.lower()
-    t = next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
+    t = kind(path)
+    if t is None and bsuk and path != "/":
+        t = kind(title_slug(path))
     if t:
         counts[t] = counts.get(t, 0) + 1
 print(json.dumps(counts, sort_keys=True))
 EOF
 ```
 
-**Posts without a blog base.** A competitor's posts often sit at the root (`/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
+**Posts without a blog base.** A competitor's posts often sit at the root (`/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
 
-**`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog`, in `dist/location-sitemap.xml` is `city`, in `dist/puppy-sitemap.xml` is `listing`; only `dist/page-sitemap.xml` goes through the table (the video sitemap is not a page list). No sitemaps → every `index.html` under `dist/` through the table.
+**`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog`, in `dist/location-sitemap.xml` is `city`, in `dist/puppy-sitemap.xml` is `listing`; only `dist/page-sitemap.xml` goes through the table (the video sitemap is not a page list), minus any URL already counted from the other three, so no URL is counted twice. With `--bsuk` the classifier also types a page URL the table leaves untyped by running the same table over the words of its `dist/` `<title>` (the part before the first `|`; never the homepage) — a title that matches nothing stays untyped. This one-liner prints the first sitemap's `<loc>` URLs, minus every later sitemap's, as the JSON array the classifier reads; run it once per sitemap (with no later files) for the three direct counts:
+
+```bash
+python3 -c 'import json,re,sys; L=lambda f: re.findall(r"<loc>([^<]+)</loc>", open(f).read()); seen={u for f in sys.argv[2:] for u in L(f)}; print(json.dumps([u for u in L(sys.argv[1]) if u not in seen]))' dist/page-sitemap.xml dist/post-sitemap.xml dist/location-sitemap.xml dist/puppy-sitemap.xml > "$MAP_LIST"
+```
+
+No sitemaps → every `index.html` under `dist/` through the table.
 
 ## Output
 
