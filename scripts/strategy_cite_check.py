@@ -8,29 +8,38 @@
 
 Checked sections: `## Recommendation…` and `## Concrete Artifact…` / `## Concrete Artefact…`
 (case-blind, `##` then a space or tab, an optional `5.` number, any trailing text such as
-`:` or `(Strategy A)`). `###` subheadings stay inside their section.
+`:` or `(Strategy A)`). `###` subheadings stay inside their section. Between
+`## Recommendation` and `## Sources`, any other `##` heading is a problem (and its figures
+are still checked), so checking cannot be ended silently; headings before the pick, such as
+`## Strategy A`, are not checked.
 
 A figure is a whole number in one of these shapes, read the same way in the strategy and in
 every source: an N/M count (`7/12`, `7/12-competitor`), a percentage (`58%`, `40 %`), a
 decimal (`0.75`), a comma-thousands number (`1,200`), a whole number of two digits or more,
-or any number with a `k` or `x` multiplier (`40k`, `£12k`, `2.5x`, `3x`). A number glued to
-a unit or word gives its numeric core (`12-page`, `12th`, `40/mo`, `-12` → 12; the sign is
+or any number with a `k` or `x` multiplier (`40k`, `£12k`, `2.5x`, `3x`), or a `top-N`
+(`top-3`, `top-10`). A number glued to a unit or word gives its numeric core (`12-page`, `12th`, `40/mo`, `-12` → 12; the sign is
 dropped); a hyphen or en-dash range gives both ends (`20-39%` → 20 and 39%).
 Figures are compared as tokens, never as substrings: thousands commas are ignored
 (`1,500` = `1500`), `%`, `k` and `x` must match (`40k` needs `40k`, `39%` needs `39%`),
 other units are not compared (`12-page` needs only `12`). A source's N/M also supplies N and
 M on their own, so "of 12 competitors" may cite `7/12`; digits are never split otherwise.
 
-Not figures: single digits without %/k/x, 28 (the locked city count), years 1900–2099,
-dates (`2026-09-24`, `24/09/2026`), clock times (`10:30`), ordered-list markers (`10.`),
+Not figures: single digits without %/k/x, 28 (the locked city count), a 19xx/20xx year
+beside a year cue (in/by/since/until/from/before/after/during, Q1–Q4, H1/H2 or a month
+name, with early/mid/late allowed between; or a month name right after) — a bare
+`2000 searches` is still a figure — dates (`2026-09-24`, `24/09/2026`), clock times (`10:30`), ordered-list markers (`10.`),
 anything in backticks or a fenced code block, link URLs (the link text is still checked)
 and HTML comments. Dates, times and URLs are ignored on the source side too.
 
 Each figure must be a token of at least one file listed under `## Sources` (case-blind,
-trailing text allowed) — every backticked path and every `[text](path)` link on a `-`, `*`,
-`+` or `1.` bullet. Every listed file must exist, be readable UTF-8 text, resolve inside
-`docs/research/` or `data/` under --root (research sources only) and not be the strategy
-itself. The strategy agent quotes a source's figure exactly as the source writes it.
+trailing text allowed) — every backticked path (a span with a `/` or ending .md/.json; other
+code spans are ignored) and every `[text](path)` link on a `-`, `*`, `+` or `1.` bullet.
+Every listed file must exist, be readable UTF-8 text, not be the strategy itself, and
+resolve under --root to a research output: docs/research/gap-matrix-*.md,
+docs/research/keyword-gap-*.md, docs/research/competitors/*.json|*.md,
+docs/research/llm-intel/*.json, data/competitors.json, data/page-map.json,
+data/locations.json or data/queries/<slug>.json. Anything else is not a research source.
+The strategy agent quotes a source's figure exactly as the source writes it.
 
 The last line says what was examined:
   cite-check: strategy.md: 2 sources, 5 figures checked, 0 problems
@@ -45,7 +54,23 @@ import unicodedata
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 EXIT_OK, EXIT_FAIL, EXIT_BAD_INPUT = 0, 1, 2
-RESEARCH_DIRS = ("docs/research", "data")
+RESEARCH_SOURCES = (  # (pattern, as the message names it)
+    (r"docs/research/gap-matrix-[^/]+\.md", "docs/research/gap-matrix-*.md"),
+    (r"docs/research/keyword-gap-[^/]+\.md", "docs/research/keyword-gap-*.md"),
+    (r"docs/research/competitors/[^/]+\.(?:json|md)", "docs/research/competitors/*.json|*.md"),
+    (r"docs/research/llm-intel/[^/]+\.json", "docs/research/llm-intel/*.json"),
+    (r"data/(?:competitors|page-map|locations)\.json",
+     "data/competitors.json, data/page-map.json, data/locations.json"),
+    (r"data/queries/[^/]+\.json", "data/queries/<slug>.json"),
+)
+RESEARCH_SOURCE = re.compile("|".join(f"(?:{p})" for p, _ in RESEARCH_SOURCES))
+ALLOWED = "; ".join(name for _, name in RESEARCH_SOURCES)
+MONTH = (r"(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?"
+         r"|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)")
+YEAR_BEFORE = re.compile(
+    r"(?:\b(?:in|by|since|until|from|before|after|during|q[1-4]|h[12]|" + MONTH + r")\.?"
+    r"(?:\s+(?:early|mid|late))?|\b(?:early|mid|late))[\s-]+$", re.I)
+YEAR_AFTER = re.compile(r"^\s+" + MONTH + r"\b", re.I)
 ALWAYS_TRUE = {"28"}
 
 HEADING = re.compile(r"^##[ \t]+(?:\d+[.)]?[ \t]+)?(.*?)[ \t#]*$")
@@ -63,7 +88,9 @@ BULLET = re.compile(r"^\s*(?:[-*+]|\d+[.)])\s+")
 BACKTICKED = re.compile(r"`([^`]+)`")
 _NUM = r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?"
 TOKEN = re.compile(
-    r"(?<![\w.,/])(?<![A-Za-z_][-\u2013])"      # not glued to a word, a decimal or a path
+    r"(?<![\w.,/])(?:(?<=\b[Tt]op[-\u2013])|(?<![A-Za-z_][-\u2013]))"  # not glued to a word
+                                                                     # (top-10 is), a decimal
+                                                                     # or a path
     r"(?:(?P<n>\d+)/(?P<m>\d+)(?![\d/]|[.,]\d)"  # N/M
     rf"|(?P<core>{_NUM})"
     r"(?:[ ]?(?P<pct>%)|(?P<mul>[kKxX\u00d7])(?![A-Za-z0-9]))?"
@@ -95,9 +122,19 @@ def _tokens(text):
         suffix = "%" if m.group("pct") else ("x" if m.group("mul") in ("x", "X", "\u00d7")
                                              else "k" if m.group("mul") else "")
         plain_int = not suffix and "," not in raw and "." not in raw
-        figure = not (plain_int and (len(core) < 2 or core in ALWAYS_TRUE
-                                     or 1900 <= int(core) <= 2099 and len(core) == 4))
+        top_n = m.string[max(0, m.start() - 4):m.start()].lower() in ("top-", "top\u2013")
+        figure = top_n or not (plain_int and (len(core) < 2 or core in ALWAYS_TRUE
+                                              or _is_year(core, m)))
         yield core + suffix, figure, (), m.group(0)
+
+
+def _is_year(core, m):
+    """19xx/20xx is a year only beside a cue: in/by/since/until/from/before/after/during,
+    Q1–Q4, H1/H2 or a month (early/mid/late may sit between), or a month right after."""
+    if len(core) != 4 or not 1900 <= int(core) <= 2099:
+        return False
+    return bool(YEAR_BEFORE.search(m.string, 0, m.start())
+                or YEAR_AFTER.match(m.string[m.end():]))
 
 
 def figures(text):
@@ -134,9 +171,12 @@ def _read_source(root, s, strategy):
     try:
         root = pathlib.Path(root).resolve()
         p = (root / s).resolve()  # an absolute s replaces root and lands outside it
-        if not any(_inside(p, root / d) for d in RESEARCH_DIRS):
-            return None, (f"source {shown} is not under docs/research/ or data/ in the root "
-                          "— research sources only")
+        try:
+            rel = p.relative_to(root).as_posix()
+        except ValueError:
+            rel = None
+        if rel is None or not RESEARCH_SOURCE.fullmatch(rel):
+            return None, f"source {shown} is not a research source (allowed: {ALLOWED})"
         if p == pathlib.Path(strategy).resolve():
             return None, f"source {shown} is the strategy itself"
         if not p.exists():
@@ -150,18 +190,12 @@ def _read_source(root, s, strategy):
         return None, f"source {shown} cannot be read: {getattr(exc, 'strerror', None) or exc}"
 
 
-def _inside(p, d):
-    try:
-        p.relative_to(d.resolve())
-        return True
-    except ValueError:
-        return False
-
-
 def _source_paths(line):
     if not BULLET.match(line):
         return []
-    paths = BACKTICKED.findall(line) + [m.group(2).split("#")[0] for m in LINK.finditer(line)]
+    paths = [x for x in BACKTICKED.findall(line)  # `city` or `7/12` is not a path
+             if re.search(r"[A-Za-z]", x) and ("/" in x or x.endswith((".md", ".json")))]
+    paths += [m.group(2).split("#")[0] for m in LINK.finditer(line)]
     return [x.strip() for x in paths if x.strip()]
 
 
@@ -174,8 +208,8 @@ def examine(path, root=ROOT):
     text = pathlib.Path(path).read_text(encoding="utf-8-sig")
     text = COMMENT.sub(lambda m: "\n" * m.group(0).count("\n"), text)
     section, sources, found = None, [], []
-    has_sources = has_recommendation = False
-    fence = None
+    has_sources = has_recommendation = in_pick = False
+    fence, structure = None, []
     for i, line in enumerate(text.splitlines(), 1):
         f = FENCE.match(line)
         if fence:
@@ -189,10 +223,15 @@ def examine(path, root=ROOT):
         if h:
             title = h.group(1).strip("*_ \t")
             if SOURCES.match(title):
-                section, has_sources = "Sources", True
+                section, has_sources, in_pick = "Sources", True, False
             elif CHECKED.match(title):
                 section = h.group(1).strip()
-                has_recommendation |= title.lower().startswith("recommendation")
+                if title.lower().startswith("recommendation"):
+                    has_recommendation = in_pick = True
+            elif in_pick:  # checking must not end silently: flag it and keep checking
+                section = h.group(1).strip()
+                structure.append(f"line {i}: unrecognised section inside the pick: ## {section}"
+                                 " — keep the WHY under ## Recommendation")
             else:
                 section = None
             continue
@@ -210,6 +249,7 @@ def examine(path, root=ROOT):
         out.append("## Sources lists no backticked or linked paths")
     if not has_recommendation:
         out.append("no ## Recommendation section")
+    out += structure
     corpus = set()
     for s in sources:
         src, problem = _read_source(root, s, path)
