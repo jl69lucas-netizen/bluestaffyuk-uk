@@ -82,7 +82,10 @@ file (the script records it). Never solve, dodge or retry around a robot check.
    ```
    Connector responses carry no cost field: record `query_typical_call_usd` and say so in
    `--endpoint`, as above. If the response does show a cost, record that.
-4. Save the response untouched: `data/queries/raw/<slug>/<source>.response.json`.
+4. Save the response as `data/queries/raw/<slug>/<source>.response.json`, dropping third-party
+   contact details (phone numbers, street addresses, emails, profile/WhatsApp URLs) and noting
+   what was dropped in `_saved_note`. `tests/py/test_no_third_party_contacts.py` fails on any
+   that reach a committed raw file.
 5. Write the normalised `data/queries/raw/<slug>/<source>.json`.
 
 If preflight fails on a damaged spend log it returns 4 and no call is made: stop and report.

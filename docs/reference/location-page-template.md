@@ -39,8 +39,9 @@ with a new city name.
    fewer than 9 body sections — the target is the matched count + 3, or 9 if that is higher.
 5. Only body H2s count, on both sides. The fixed frame below is never counted.
 6. Record every competitor's URL, its positions, its raw and cleaned H2 counts, and which set
-   the number. Fewer than three usable pages is a finding, not a blocker: record it and derive
-   from what exists.
+   the number. A usable competitor page has at least 3 cleaned H2s and is not blocked
+   (`MIN_USABLE_H2` in `scripts/query_augment.py`). Fewer than three usable pages is a finding,
+   not a blocker: record it and derive from what exists.
 
 `scripts/query_augment.py` computes this; `scripts/query_coverage_check.py`
 fails a built page that falls short.

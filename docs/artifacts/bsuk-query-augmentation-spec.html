@@ -80,7 +80,7 @@ New:
 - `schemas/queries.schema.json` — the question-file contract.
 - `docs/reference/location-page-template.md` — the Illinois template converted to BSUK (§7).
 - `tests/py/test_query_augment.py`, `tests/py/test_query_coverage_check.py`, fixtures of
-  recorded DataForSEO responses under `tests/py/fixtures/queries/`.
+  recorded DataForSEO responses under `tests/py/fixtures/queries/`. (amended — see §14.20)
 
 Changed:
 
@@ -184,7 +184,7 @@ Scoring (deterministic, in `query_augment.py`):
    reviews, newsletter, form and the three FAQ blocks are the fixed frame and never counted. (amended — see §14.16)
 6. **Record** every competitor's URL, Google and Bing position, raw and cleaned counts, and which
    page set the number, in the question file and on the board. (amended — see §14.3, §14.18)
-7. Fewer than three usable pages is a finding: match what exists. (amended — see §14.4)
+7. Fewer than three usable pages is a finding: match what exists. (amended — see §14.4, §14.21)
 </script>
 <script type="text/markdown" data-title="7. The converted template">
 `docs/reference/location-page-template.md` keeps the Illinois template's structure of intent
@@ -239,7 +239,7 @@ existing project 4 pages stay green until they are re-run. (amended — see §14
 </script>
 <script type="text/markdown" data-title="11. Build order">
 1. Convert the Illinois template → `docs/reference/location-page-template.md`.
-2. Question-file schema + `query_augment.py` + tests (TDD, recorded fixtures).
+2. Question-file schema + `query_augment.py` + tests (TDD, recorded fixtures). (amended — see §14.20)
 3. `query_coverage_check.py` + tests; wire into `check:all`.
 4. Live pilot on Manchester: measure cost, confirm Bing via DataForSEO, set the cap. (amended — see §14.5, §14.6)
 5. `bsuk-reddit-threads` via writing-skills (RED baseline → GREEN → REFACTOR).
@@ -287,7 +287,9 @@ the plan's execution notes before Task 1). The superseded sentences above are ma
    ruling (99b7d5c).
 5. **Bing is read free in the browser.** DataForSEO's Bing SERP returned results for "blue" alone
    in the pilot (logged, unusable), so the skill reads `bing.com` with `cc=GB` and never buys or
-   preflights `serp_bing`. Review finding from the pilot (5666007, 4ee6a25, 3aa5e4f).
+   preflights `serp_bing`; the script treats it as a free source (never budget-checked) and
+   refuses `--record --source serp_bing` (exit 2). Review finding from the pilot (5666007,
+   4ee6a25, 3aa5e4f); whole-branch review (c22a3e2).
 6. **The connector returns no cost field.** Every paid call is logged at a conservative estimate
    and says so in the endpoint text — the pilot logged $0.20 across three calls — and
    `query_typical_call_usd` is the largest estimate (0.10). Review finding from the pilot
@@ -296,9 +298,12 @@ the plan's execution notes before Task 1). The superseded sentences above are ma
    save → normalise, one preflight per paid call; a saved `.response.json` counts as bought, a
    refused record still saves the response, the balance is confirmed first, and one AI engine
    (ChatGPT) is asked once per page. Review finding on Task 4 (3b705b0, a25f139, cfcb1f0).
-8. **Raw and normalised files.** The connector response is kept untouched as
-   `raw/<slug>/<source>.response.json` for audit; the script reads only the normalised
-   `raw/<slug>/<source>.json`. Plan refinement (15b0b40).
+8. **Raw and normalised files.** The connector response is saved as
+   `raw/<slug>/<source>.response.json` for audit, dropping third-party contact details (phone
+   numbers, street addresses, emails, profile/WhatsApp URLs) and noting what was dropped in
+   `_saved_note`; `tests/py/test_no_third_party_contacts.py` fails on any that reach a committed
+   raw file. The script reads only the normalised `raw/<slug>/<source>.json`. Plan refinement
+   (15b0b40); whole-branch review (c22a3e2).
 9. **Two budgets.** `query_budget_usd` caps one page's paid calls per UTC day and
    `query_total_budget_usd` (1.00) caps all spend, alongside `query_typical_call_usd`, all in
    `data/settings.json`. Plan refinement (15b0b40, cc2087f).
@@ -351,6 +356,13 @@ the plan's execution notes before Task 1). The superseded sentences above are ma
     `uk-locations/<slug>` routes before any city page enters `data/facts/rebuilt.json`. Known
     Issue 40 lists the builder quality items deferred to project 5. User ruling deferring them
     (870799a, c73f540).
+20. **No recorded fixtures.** The recorded DataForSEO fixtures under `tests/py/fixtures/queries/`
+    (§2, §11) were not created: the tests build inline synthetic data under `tmp_path`, and make
+    no live calls. Whole-branch review (c22a3e2).
+21. **A usable competitor page.** A page is usable when it has at least 3 cleaned H2s and is not
+    blocked (`MIN_USABLE_H2` in `scripts/query_augment.py`); only usable pages set the number or
+    count as an outlier's comparison, and every page is still recorded. Whole-branch review
+    (c22a3e2).
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
