@@ -86,7 +86,8 @@ TOPICS = (
      r"|prone to|scratch\w*)\b"),
     ("trust", "middle", r"\b(puppy farm\w*|ethical\w*|reputable|what (should|to) (i )?ask|support after)\b"),
     ("visit", "middle",
-     r"\b(visit\w*|meet (the )?(mother|father|parents|mum|dad)|see (the )?(mother|father|parents|mum|dad|litter))\b"),
+     r"\b(visit\w*|meet (the )?(mother|father|parents|mum|dad)|see (the )?(mother|father|parents|mum|dad|litter)"
+     r"|see (the )?puppy with (its|the) mother)\b"),
     ("home", "bottom", r"\b(flat|flats|apartment\w*|garden\w*|house|left alone|home alone)\b"),
     ("family", "bottom", r"\b(child\w*|kids?|family|families|cats?|other dogs|other pets)\b"),
     ("training", "bottom", r"\b(train\w*|potty|crate\w*)\b"),
@@ -194,30 +195,39 @@ def resolve_fact(fact, src, root=ROOT, bank=None):
     return fact if fact_exists(fact, root) else None
 
 
-def merge(cands, root=ROOT):
+def merge(cands, root=ROOT, keyword=""):
     """cands: (text, source_type, detail, fact_source). Keyed by normalised text.
 
     A non-bank candidate citing "bank:<id>" that resolves joins that bank row's entry (keyed
     on the row's normalised text). An entry's question is its first non-bank phrasing, so
-    buyer wording wins over the bank's; types and found_in are the union.
+    buyer wording wins over the bank's; types and found_in are the union. Once a bank-linked
+    entry holds buyer wording, a further buyer question citing the same row joins only if it
+    has the same topic and is a near-duplicate of that wording (_near_duplicate); otherwise
+    it stays its own entry, still backed by the row's fact. Every entry linked to a bank row
+    carries that row's text as bank_text, so entry_topic() can fall back to its topic.
     """
     merged, buyer, rows = {}, set(), None
     for text, src, detail, fact in cands:
         n = normalise(text)
         if not n:
             continue
-        key, resolved = n, None
+        key, resolved, bank_text = n, None, text.strip() if src == "bank" else None
         if fact:
             if src != "bank" and fact.startswith("bank:"):
                 if rows is None:
                     rows = _bank_rows(root)
                 resolved = resolve_fact(fact, src, root, {k: v[1] for k, v in rows.items()})
-                if resolved and normalise(rows[fact[5:]][0]):
-                    key = normalise(rows[fact[5:]][0])
+                row_text = rows[fact[5:]][0] if resolved else ""
+                if normalise(row_text):
+                    bank_text, key = row_text, normalise(row_text)
+                    if key in buyer and not _joins(merged[key], text, bank_text, keyword):
+                        key = n
             else:
                 resolved = resolve_fact(fact, src, root)
         m = merged.setdefault(key, {"question": text.strip(), "types": set(),
-                                    "found_in": [], "fact_source": None})
+                                    "found_in": [], "fact_source": None, "bank_text": None})
+        if m["bank_text"] is None and bank_text:
+            m["bank_text"] = bank_text
         if src != "bank" and key not in buyer:
             buyer.add(key)
             m["question"] = text.strip()
@@ -229,29 +239,63 @@ def merge(cands, root=ROOT):
     return merged
 
 
-# Near-duplicate collapse: content words are normalised tokens minus these, with a tiny stem
-# map so "deliver"/"delivery" and "tested"/"test" compare equal.
+def entry_topic(m):
+    """(topic, block) of a merged entry: its question's, else its linked bank row's."""
+    topic = topic_of(m["question"])
+    if topic[0] is None and m.get("bank_text"):
+        return topic_of(m["bank_text"])
+    return topic
+
+
+def _joins(m, text, bank_text, keyword):
+    """A second buyer question on a bank row joins that row's entry only as a near-duplicate."""
+    mine = entry_topic({"question": text, "bank_text": bank_text})[0]
+    return mine is not None and mine == entry_topic(m)[0] and _near_duplicate(
+        content_words(m["question"], keyword), content_words(text, keyword))
+
+
+# Near-duplicate collapse: content words are normalised tokens minus these stop words and the
+# page's primary-keyword tokens (so the city never counts as overlap), through a tiny stem map
+# ("delivery"/"deliver", "tested"/"test"), then a trailing "s" is stripped from words longer
+# than three letters (not "ss": "across", "less").
 STOP_WORDS = frozenset(
     "a an the is are do does can i you your we our my of to for in on with and or it its be "
     "how what when where which who why will would should there this that these those any have "
     "has had get got from at by as than then so if puppy puppies staffy staffies blue uk dog "
-    "dogs".split())
+    "dogs much more better near been was both now sale".split())
 STEMS = {"delivery": "deliver", "delivered": "deliver", "delivering": "deliver",
-         "tested": "test", "testing": "test", "tests": "test",
-         "owners": "owner", "trained": "train", "training": "train"}
+         "delivers": "deliver", "tested": "test", "testing": "test", "tests": "test",
+         "owners": "owner", "owner": "owner", "trained": "train", "training": "train",
+         "trains": "train", "vaccinated": "vaccin", "vaccinations": "vaccin",
+         "vaccination": "vaccin"}
 DUPLICATE_JACCARD = 0.5
+DUPLICATE_SHARED = 2     # and at least this many content words in common
 
 
-def content_words(text):
-    return {STEMS.get(t, t) for t in normalise(text).split() if t not in STOP_WORDS}
+def content_words(text, keyword=""):
+    skip = STOP_WORDS | set(normalise(keyword).split())
+    out = set()
+    for t in normalise(text).split():
+        if t in skip:
+            continue
+        t = STEMS.get(t, t)
+        if len(t) > 3 and t.endswith("s") and not t.endswith("ss"):
+            t = t[:-1]
+        out.add(t)
+    return out
+
+
+def _near_duplicate(a, b):
+    return len(a & b) >= DUPLICATE_SHARED and _jaccard(a, b) >= DUPLICATE_JACCARD
 
 
 def _jaccard(a, b):
     return len(a & b) / len(a | b) if a and b else 0.0
 
 
-def collapse_near_duplicates(merged):
-    """Fold entries of the same topic whose content words overlap (Jaccard >= 0.5).
+def collapse_near_duplicates(merged, keyword=""):
+    """Fold entries of the same topic that are near-duplicates: content words (with the
+    page's keyword stripped) overlapping at Jaccard >= 0.5 and sharing at least two words.
 
     Linked pairs join one group (transitively, so the result never depends on input order).
     Each group is led by its first entry in the order: fact-backed first, then more source
@@ -263,7 +307,7 @@ def collapse_near_duplicates(merged):
     order = sorted(merged, key=lambda k: (merged[k]["fact_source"] is None,
                                           -len(merged[k]["types"]),
                                           -len(merged[k]["found_in"]), k))
-    info = {k: (topic_of(merged[k]["question"])[0], content_words(merged[k]["question"]))
+    info = {k: (entry_topic(merged[k])[0], content_words(merged[k]["question"], keyword))
             for k in order}
     root = {k: k for k in order}
 
@@ -279,7 +323,7 @@ def collapse_near_duplicates(merged):
             continue
         for b in order[i + 1:]:
             tb, wb = info[b]
-            if tb == ta and _jaccard(wa, wb) >= DUPLICATE_JACCARD:
+            if tb == ta and _near_duplicate(wa, wb):
                 ra, rb = find(a), find(b)
                 if ra != rb:   # the earlier key in `order` stays the group's head
                     hi, lo = sorted((ra, rb), key=order.index)
@@ -290,7 +334,8 @@ def collapse_near_duplicates(merged):
         m = merged[k]
         if head not in out:
             out[head] = {"question": merged[head]["question"], "types": set(),
-                         "found_in": [], "fact_source": merged[head]["fact_source"]}
+                         "found_in": [], "fact_source": merged[head]["fact_source"],
+                         "bank_text": merged[head].get("bank_text")}
         g = out[head]
         g["types"] |= m["types"]
         g["found_in"] += [d for d in m["found_in"] if d not in g["found_in"]]
@@ -565,7 +610,10 @@ def covered_topics(pages):
 
 
 def _rank(q):
-    return (-q["score"], q["id"])
+    """Score, then more evidence, then a settings-backed fact (the file every figure comes
+    from), then id."""
+    return (-q["score"], -len(q["found_in"]),
+            not (q["fact_source"] or "").startswith("data/settings.json"), q["id"])
 
 
 def pick_faq(questions):
@@ -868,7 +916,13 @@ def _valid_covered_by(c):
 
 
 def _question_id(norm):
-    """A pure function of the normalised text, so an id never moves to another question."""
+    """A pure function of the entry's normalised key, so an id never moves to another question.
+
+    Ids are stable while a group's lead is unchanged: a collapsed group's id follows its lead
+    (a bank-linked entry's key is the bank row's text). If a re-run changes a lead, the id
+    changes with it; the builder's fills still carry, because they are matched by question
+    text (_carry_fills), not by id.
+    """
     base = ("q-" + "-".join(norm.split()[:8]))[:43].rstrip("-")
     return f"{base}-{hashlib.sha1(norm.encode()).hexdigest()[:6]}"
 
@@ -913,11 +967,11 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
     cands, status = load_candidates(slug, root)
     bank, status["bank"] = bank_candidates(root)
     cands += bank   # buyer phrasing first, so it wins the merge
-    merged = collapse_near_duplicates(merge(cands, root))
+    merged = collapse_near_duplicates(merge(cands, root, keyword), keyword)
     questions = []
     for n in sorted(merged):
         m = merged[n]
-        topic, block = topic_of(m["question"])
+        topic, block = entry_topic(m)
         questions.append({
             "id": _question_id(n), "question": m["question"], "found_in": m["found_in"],
             "score": score(m["types"], topic, page_type), "topic": topic, "block": block,

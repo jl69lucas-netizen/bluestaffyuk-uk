@@ -1757,6 +1757,8 @@ Found in the Manchester pilot's first question file (113 questions, 20 FAQ): eve
 
 Implementation note: the collapse links every same-topic pair at Jaccard ≥ 0.5 and folds linked entries transitively (a one-pass greedy fold is order-dependent: "…health tested for genetic diseases?" links to "…health-tested?" but not to "…parents … health-tested?"). Each group's head is its first entry in the order, which starts fact-backed first (controller ruling: a lead's visible question must be answerable by its own fact; an unbacked lead never borrows a duplicate's fact, so a group with no fact-backed member stays unbacked). Untopicked entries never collapse.
 
+Quality review of 651387d..c147f69 (folded in): a bank-linked entry keeps the row's text (`bank_text`) and takes its topic when its own wording has none (`entry_topic`), in build and collapse; `_rank` breaks score ties by longer `found_in`, then a `data/settings.json` fact, then id; near-duplicates need Jaccard ≥ 0.5 AND ≥ 2 shared content words, with the page's primary-keyword tokens (so its city) stripped, more stop words (`much more better near been was both now sale get`), extra stems (`delivers`, `trains`, `owner`, `vaccinated/vaccination(s)` → `vaccin`) and a trailing `s` stripped from words over three letters (not `ss`); a second buyer question citing an already-worded bank row joins only as a same-topic near-duplicate, else stays its own entry backed by that row's fact; `visit` also matches "see the puppy with its/the mother". Ids: stable while a group's lead is unchanged; a collapsed group's id follows its lead; the builder's fills carry by question text, not id.
+
 ---
 
 ### Task 8: `bsuk-reddit-threads` skill (writing-skills: RED → GREEN → REFACTOR)

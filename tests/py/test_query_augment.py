@@ -249,7 +249,7 @@ def test_covered_topics_reads_competitor_headings():
 def q(qid, text, sc, fact="data/settings.json"):
     topic, block = Q.topic_of(text)
     return {"id": qid, "question": text, "score": sc, "topic": topic, "block": block,
-            "fact_source": fact, "faq": None}
+            "fact_source": fact, "faq": None, "found_in": ["bank:" + qid]}
 
 
 def bank_questions():
@@ -416,7 +416,7 @@ def test_pick_extra_skips_a_topic_whose_questions_are_all_faq():
 def test_pick_faq_crowded_block_stops_at_max_fill_by_score_then_id():
     def mk(qid, block, sc):
         return {"id": qid, "question": qid, "score": sc, "topic": "x", "block": block,
-                "fact_source": "data/settings.json", "faq": None}
+                "fact_source": "data/settings.json", "faq": None, "found_in": ["bank:" + qid]}
     qs = ([mk(f"t{i:02d}", "top", 9) for i in range(15)] +
           [mk(f"m{i:02d}", "middle", 1) for i in range(6)] +
           [mk(f"b{i:02d}", "bottom", 5) for i in range(10)])
@@ -1216,11 +1216,13 @@ def test_merge_folds_a_bank_citing_buyer_question_into_that_bank_row(tmp_path):
 def test_merge_buyer_wording_wins_even_when_the_bank_row_comes_first(tmp_path):
     root = make_root(tmp_path)
     m = Q.merge([("How much does a puppy cost?", "bank", "bank:b0", "data/settings.json"),
-                 ("What do blue Staffy pups cost?", "ai_engines", "ai:chatgpt", "bank:b0"),
-                 ("Blue staffy price Manchester?", "serp_bing", "serp_bing_paa", "bank:b0")],
+                 ("What does it cost to buy a blue Staffy?", "ai_engines", "ai:chatgpt",
+                  "bank:b0"),
+                 ("How much does it cost to buy a Staffy pup?", "serp_bing", "serp_bing_paa",
+                  "bank:b0")],
                 root)
     (only,) = m.values()
-    assert only["question"] == "What do blue Staffy pups cost?"
+    assert only["question"] == "What does it cost to buy a blue Staffy?"
     assert only["types"] == {"bank", "ai_engines", "serp_bing"}
 
 
@@ -1237,9 +1239,9 @@ def entry(text, types=("bank",), found=None, fact="data/settings.json"):
             "fact_source": fact}
 
 
-def collapse(texts, **kw):
+def collapse(texts, keyword="", **kw):
     merged = {Q.normalise(t): entry(t, **kw) for t in texts}
-    return Q.collapse_near_duplicates(merged)
+    return Q.collapse_near_duplicates(merged, keyword)
 
 
 HEALTH_VARIANTS = ["Are the parents of your blue Staffy puppies health-tested?",
@@ -1256,7 +1258,7 @@ def test_content_words_drop_stop_words_and_stem():
     assert Q.content_words("Do you deliver across the UK?") == {"deliver", "across"}
     assert Q.content_words("How do you ensure the safe delivery of Staffies across the UK?") \
         == {"ensure", "safe", "deliver", "across"}
-    assert Q.content_words("Are the parents health tested?") == {"parents", "health", "test"}
+    assert Q.content_words("Are the parents health tested?") == {"parent", "health", "test"}
     assert Q.content_words("Good for first-time owners, trained?") \
         == {"good", "first", "time", "owner", "train"}
 
@@ -1418,3 +1420,114 @@ def test_a_nested_list_inside_an_unclosed_item_is_its_own_list():
     html = ("<main><ul><li><h2>Feeding</h2><ul><li>a<li>b</ul><li><h2>Exercise</h2></ul>"
             "</main>")
     assert Q.extract_h2s(html) == ["Feeding", "Exercise"]
+
+
+# --- quality review of 651387d..c147f69: topic fallback, tie-break, real overlap ---------
+
+def bank_root(tmp_path, rows):
+    root = make_root(tmp_path, bank=[])
+    faq = [{"id": i, "q": t, "a": "...", "source": src} for i, t, src in rows]
+    (root / "data/faq.json").write_text(json.dumps(faq))
+    return root
+
+
+def test_a_linked_question_with_no_topic_keeps_its_bank_rows_topic(tmp_path):
+    root = bank_root(tmp_path, [("fam", "Are Staffies good with children?", "data/settings.json")])
+    assert Q.topic_of("Are blue staffies good pets?") == (None, None)
+    m = Q.merge([("Are blue staffies good pets?", "serp_google", "serp_google_paa", "bank:fam")],
+                root)
+    (only,) = m.values()
+    assert only["bank_text"] == "Are Staffies good with children?"
+    assert Q.entry_topic(only) == ("family", "bottom")
+
+
+def test_build_makes_a_topicless_linked_question_faq_eligible(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    add_raw_question(root, "serp_google", "Are blue staffies good pets?")
+    f = root / "data/queries/raw/m/serp_google.json"
+    d = json.loads(f.read_text())
+    d["questions"][-1]["fact_source"] = "bank:b14"       # "Are Staffies good with children?"
+    f.write_text(json.dumps(d))
+    data, _ = Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    x = next(q for q in data["questions"] if q["question"] == "Are blue staffies good pets?")
+    assert (x["topic"], x["block"]) == ("family", "bottom")
+    assert x["faq"] == "bottom"      # 2 buyer + 1 bank + fit 1 = 4 outranks the bank-only rows
+
+
+def test_rank_breaks_score_ties_by_evidence_then_a_settings_fact():
+    a = dict(q("q-a", "Do you deliver to Bolton?", 5, fact="data/settings.json#delivery_min_gbp"))
+    b = dict(q("q-b", "Do you deliver to Bury?", 5, fact="src/pages/index.astro"),
+             found_in=["serp_google_paa", "bank:x"])
+    c = dict(q("q-0", "Do you deliver to Wigan?", 5, fact="src/pages/index.astro"))
+    assert [x["id"] for x in sorted([c, a, b], key=Q._rank)] == ["q-b", "q-a", "q-0"]
+
+
+KW = "blue staffy puppies manchester"
+
+
+def test_price_and_deposit_in_manchester_stay_separate():
+    out = collapse(["How much does a blue Staffy puppy cost in Manchester?",
+                    "How much is the deposit in Manchester?"], keyword=KW)
+    assert len(out) == 2
+
+
+def test_male_or_female_and_male_aggression_stay_separate():
+    out = collapse(["Is it better to get a male or female Staffy?",
+                    "Are male Staffies more aggressive?"], keyword=KW)
+    assert len(out) == 2
+
+
+def test_near_manchester_and_near_salford_stay_separate():
+    # {buy} vs {buy, salford}: Jaccard 0.5 but only one shared word -> not duplicates
+    a, b = ("Where can I buy a blue Staffy puppy near Manchester?",
+            "Where can I buy a blue Staffy puppy near Salford?")
+    assert Q.content_words(a, KW) == {"buy"} and Q.content_words(b, KW) == {"buy", "salford"}
+    assert len(collapse([a, b], keyword=KW)) == 2
+
+
+def test_the_health_and_first_time_groups_still_collapse_with_the_keyword():
+    assert len(collapse(HEALTH_VARIANTS, keyword=KW)) == 1
+    assert len(collapse(FIRST_TIME, keyword=KW)) == 1
+
+
+def test_content_words_strip_the_keyword_new_stop_words_and_plurals():
+    assert Q.content_words("Are there more Staffies for sale near Manchester now?", KW) == set()
+    assert Q.content_words("Can Staffies live in flats?") == {"live", "flat"}
+    assert Q.content_words("Are the puppies vaccinated? Vaccinations?") == {"vaccin"}
+    assert Q.content_words("Who delivers? Who trains owners?") == {"deliver", "train", "owner"}
+
+
+def test_flat_and_flats_collapse():
+    assert len(collapse(["Can Staffies live in flats?", "Can a Staffy live in a flat?"])) == 1
+
+
+def test_a_second_different_buyer_question_on_the_same_bank_row_stays_its_own(tmp_path):
+    root = bank_root(tmp_path, [("deposit", "How much is the deposit?", "data/settings.json")])
+    m = Q.merge([("How much deposit do I pay to reserve a puppy?", "serp_google",
+                  "serp_google_paa", "bank:deposit"),
+                 ("Is the deposit refundable if I change my mind?", "ai_engines", "ai_chatgpt",
+                  "bank:deposit"),
+                 ("How much is the deposit?", "bank", "bank:deposit", "data/settings.json")],
+                root, KW)
+    by_q = {v["question"]: v for v in m.values()}
+    assert set(by_q) == {"How much deposit do I pay to reserve a puppy?",
+                         "Is the deposit refundable if I change my mind?"}
+    lead = by_q["How much deposit do I pay to reserve a puppy?"]
+    assert lead["types"] == {"serp_google", "bank"}
+    other = by_q["Is the deposit refundable if I change my mind?"]
+    assert other["types"] == {"ai_engines"} and other["fact_source"] == "data/settings.json"
+
+
+def test_a_second_matching_buyer_question_on_the_same_bank_row_joins(tmp_path):
+    root = bank_root(tmp_path, [("deposit", "How much is the deposit?", "data/settings.json")])
+    m = Q.merge([("How much is the deposit to reserve a puppy?", "serp_google",
+                  "serp_google_paa", "bank:deposit"),
+                 ("What deposit do I pay to reserve a Staffy?", "ai_engines", "ai_chatgpt",
+                  "bank:deposit")], root, KW)
+    (only,) = m.values()
+    assert only["types"] == {"serp_google", "ai_engines"}
+
+
+def test_see_the_puppy_with_its_mother_is_a_visit_question():
+    assert Q.topic_of("Can I see the puppy with its mother?")[0] == "visit"
+    assert Q.topic_of("Can I see the puppies with the mother?")[0] == "visit"
