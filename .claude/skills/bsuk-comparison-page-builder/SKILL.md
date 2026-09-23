@@ -57,8 +57,9 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 ## 3. Per-Page Research Protocol (Sprint 0.5 — MANDATORY before any outline)
 
 **First, run `/bsuk-query-augmentation <slug> comparison "<primary keyword>" <route>`.** Its
-file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
-every `must_answer` question must be answered on the page with `covered_by` recorded —
+file (`data/queries/<slug>.json`) supplies the page's FAQ picks and three extra sections. Every
+pick appears on the page, each an H3 (one `Faq` block is fine here — the three-block split is
+a location-page rule), and every `must_answer` question is answered with `covered_by` recorded —
 `npm run check:queries` fails the page otherwise. The research below builds on that file; it
 does not replace it.
 
@@ -109,7 +110,7 @@ Pillar structure (adapt per page; hub compares staffy vs ALL species with 2–3 
 | 20 | H2 | Available Puppies / Breeding Pair / Fertile Eggs cards | link-out, don't re-teach; sold ≠ InStock |
 | 21 | H2 | Owner Story (BAB) + Reviews | REAL reviews only — never fabricate |
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
-| 23 | H2 | FAQ — the question file's three blocks (top, middle, bottom), exactly the picks in `data/queries/<slug>.json`, each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
+| 23 | H2 | FAQ — every pick in `data/queries/<slug>.json` (one `Faq` block is fine; the three-block split is location-only), each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
 | 24 | H2 | Blog / further-reading cards | 3 relevant posts |
 | 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; `idPrefix` if 2 forms |
 

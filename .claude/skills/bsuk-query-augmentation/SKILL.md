@@ -147,8 +147,11 @@ python3 scripts/query_augment.py <slug> --page-type <type> --keyword "<primary k
 
 The builder writes the page **from the file**, never from judgement:
 
-- **FAQ:** three `Faq` blocks (top, middle, bottom) with exactly the picked questions, in
-  score order. Picks come only from the question file. To change a pick, change the data —
+- **FAQ:** every picked question appears on the page, each an H3, in score order, and every
+  `must_answer` question is covered. **Location pages** carry three `Faq` blocks (top, middle,
+  bottom) with exactly each block's picks; the block split is a location-page rule. Comparison,
+  blog and puppy pages may render the picks in one `Faq` block, as their templates do. Pass
+  the picks as `items` — `Faq` with no `items` renders the whole bank. Picks come only from the question file. To change a pick, change the data —
   add a bank row to `data/faq.json`, a settings key, or a real sourced question — and rebuild
   (Step 5). Never swap, add or drop a pick by hand.
 - **City wording:** a question may name the city on the page ("Do You Deliver Staffy Puppies to
@@ -156,8 +159,9 @@ The builder writes the page **from the file**, never from judgement:
 - **Topics are the script's** (`topic` in the file). Aftercare ("support after…") is `trust`;
   treatments (vaccinations, microchip, worming, flea) are `paperwork`, even when the question
   also says "collect". Never move a question to another block or topic by hand.
-- **Answers** state only what the `fact_source` says: no figure, length or promise the source
-  does not give. A placeholder (`LICENCE_CLAIM_PLACEHOLDER`, `LEGAL_CLAIM_PLACEHOLDER`, a `null`
+- **Answers** are drawn only from the question's fact: the `a` of the `bank:<id>` row named in
+  its `found_in`, or the data key its `fact_source` names — never from the whole page file a
+  `fact_source` path may point at. No figure, length or promise the fact does not give. A placeholder (`LICENCE_CLAIM_PLACEHOLDER`, `LEGAL_CLAIM_PLACEHOLDER`, a `null`
   like `guarantee_days`) stays a placeholder.
 - **Body:** at least `section_target.total` body sections; one H2 per `extra_sections` topic.
   Extra sections are topics no competitor **section** covers — a competitor's FAQ or page
@@ -169,9 +173,9 @@ The builder writes the page **from the file**, never from judgement:
 Rerun Step 5 (it keeps the fills), then `npm run build && npm run check:queries`.
 
 **The gate holds a page only once it is rebuilt**, for every page type: after rebuilding a
-page, add its route without the slashes to `data/facts/rebuilt.json` — `uk-locations/<slug>`
-for a city page, `<slug>` for a top-level page. Until then `check:queries` skips it as
-awaiting rebuild.
+page, add its bare slug — the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`
+for a city page — to `data/facts/rebuilt.json`, the key the other gates use. Until then
+`check:queries` skips it as awaiting rebuild.
 
 ## Worked example
 
@@ -190,13 +194,13 @@ read in the browser, marketplaces in the pool, one challenge page recorded as bl
 - Excluding marketplaces from the pool, or counting competitor sections by hand, or using a
   fixed section number.
 - Calling a topic "covered" because a competitor's FAQ mentions it.
-- One FAQ block, or fewer than the picked questions, or hand-swapping a pick.
+- One FAQ block on a location page, or fewer than the picked questions, or hand-swapping a pick.
 - Inventing a city-named question, or localising one so its answer goes beyond its fact.
 - Answering with a figure (a guarantee length, a date) the fact source does not give.
 - Setting `fact_source` to a bare file, or to a bank row on the same topic that does not answer it.
 - Rewording a question on the page and not updating `covered_by.text`.
-- Forgetting the page's key (`uk-locations/<slug>`, or `<slug>` for a top-level page) in
-  `data/facts/rebuilt.json`, so the gate never checks the page.
+- Forgetting the page's bare slug (the route's last segment) in `data/facts/rebuilt.json`,
+  so the gate never checks the page.
 - Preflighting `serp_bing` — it is a free read.
 - Copying the repo to a scratch folder to run the script, or writing browser files into the repo.
 - Deleting or editing `data/queries/spend.json`.

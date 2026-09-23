@@ -28,7 +28,7 @@ Every blog post follows this fixed skeleton (all 9 posts + hub). Bucket codes: *
 7. **[SPECIAL-ELEMENT — MIDDLE] Mid-article conversion module** — Decision-Tree OR Myth-vs-Fact OR inline available-puppies soft-CTA, chosen per page from competitor-gap analysis.
 8. **Breeder Note / E-E-A-T block** — SUGGESTED moat. First-person BlueStaffyUK insight (bsuk-blog-breeder-note component).
 9. **"What you get from a real breeder" trust band** — SUGGESTED moat.
-10. **FAQ accordion** — MANDATORY. The question file's three blocks (top, middle, bottom): exactly the picks in `data/queries/<slug>.json`, each question an H3. Visible FAQPage JSON-LD carrying exactly the visible questions.
+10. **FAQ accordion** — MANDATORY. Every pick in `data/queries/<slug>.json`, each question an H3; one block, as the post template renders it (the three-block split is location-only). Visible FAQPage JSON-LD carrying exactly the visible questions.
 11. **[SPECIAL-ELEMENT — BOTTOM] Bottom conversion module** — Available-puppy card + inquiry CTA. Delivery line: `Ships nationwide · £200–£350 airport · £200–£350 home`.
 12. **Related blog posts** — MANDATORY silo. bsuk-blog-related-posts component.
 13. **Newsletter block** — MANDATORY (lower placement; top strip does early capture).
@@ -59,8 +59,9 @@ All 8 inherit the site tokens (do NOT re-implement per page). Reference the toke
 ### 3. Tiered Sprint 0.5 Research Method + 17-Field Output Format
 
 **First, run `/bsuk-query-augmentation <slug> blog "<primary keyword>" <route>`.** Its
-file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
-every `must_answer` question must be answered on the page with `covered_by` recorded —
+file (`data/queries/<slug>.json`) supplies the page's FAQ picks and three extra sections. Every
+pick appears on the page, each an H3 (one `Faq` block is fine here — the three-block split is
+a location-page rule), and every `must_answer` question is answered with `covered_by` recorded —
 `npm run check:queries` fails the page otherwise. The research below builds on that file; it
 does not replace it.
 
@@ -141,7 +142,7 @@ These are the things the breeder caught polishing the crate-setup pilot. Bake th
 **C. Hero eyebrow parity (do not ship `text-sm uppercase`).** Blog hero eyebrow = the Roys/homepage style: `font-body text-xs font-medium tracking-wide`, **sentence/Title case (NOT uppercase)**, color **`--color-link-on-inverse`** on the steel `--color-brand` hero. `text-sm uppercase tracking-widest` renders oversized on mobile (no fluid shrink) — the breeder flagged it explicitly.
   - **AA contrast on the steel hero (computed from `data/design/contrast.json`, project 3):** the eyebrow token `--color-link-on-inverse` is 9.1:1 on `--color-surface-inverse` and `--color-text-on-inverse` is 10.4:1, so both clear AA at `text-xs`. `--color-cta` is 4.9:1 there — fine for a large accent, never for `text-xs`. The old "body text on the band needs ≥0.85 alpha" rule does **not** carry over: the steel band is dark enough that `--color-text-on-inverse` at 0.7 alpha still measures 6.0:1. Do not put `--color-cta` on `--color-surface` (2.1:1) at any size.
 
-**D. "Page already shows for a query but has no coverage" → FAQ-first.** From project 6, when search console shows the page ranking for a query the body doesn't answer, **verify existing coverage first**, then add the answer as new entries in the page's `faqs` array (auto-feeds the visible accordion *and* FAQPage schema) plus, if it's a real subtopic, one sequential H3 (never skip a level — re-run `scripts/final_page_audit.py` to confirm ≥5 H5 / ≥5 H6 still hold). Watch for intent splits the single-topic page misses: e.g. crate-setup showed for **"two Blue Staffies"** and **"breeding crate size"** — both distinct from the single-companion-crate the page covered. Always show the placement map for approval before writing.
+**D. "Page already shows for a query but has no coverage" → FAQ-first.** From project 6, when search console shows the page ranking for a query the body doesn't answer, **verify existing coverage first**, then add the question to the data — a bank row in `data/faq.json` or a real sourced question in the page's raw files — rebuild the question file (`/bsuk-query-augmentation`), rebuild the page from its picks and fill `covered_by`. Never add an entry to the page's `faqs[]` directly. If it is a real subtopic, add one sequential H3 (never skip a level — re-run `scripts/final_page_audit.py` to confirm ≥5 H5 / ≥5 H6 still hold). Watch for intent splits the single-topic page misses: e.g. crate-setup showed for **"two Blue Staffies"** and **"breeding crate size"** — both distinct from the single-companion-crate the page covered. Always show the placement map for approval before writing.
 
 ---
 
@@ -201,7 +202,7 @@ Every page carries the 3 slot boxes (TOP/MIDDLE/BOTTOM, §1) plus draws from thi
 5. **Myth vs Fact** → `bsuk-blog-myth-fact`.
 6. **Decision Tree** (AI-extraction-friendly) → `bsuk-blog-decision-tree` (MIDDLE on beginners / vs-French Bulldog).
 7. **Comparison / spec table** (with "breeder verdict" row) → `bsuk-blog-comparison-table`.
-8. **FAQ accordion** (visible + FAQPage schema) → page `faqs[]` array, filled from the question file's three blocks (top, middle, bottom), each question an H3.
+8. **FAQ accordion** (visible + FAQPage schema) → page `faqs[]` array, filled with exactly the question file's picks (one block; the three-block split is location-only), each question an H3.
 Plus `bsuk-blog-related-posts` (bottom silo) and `bsuk-blog-sticky-cta` (mobile).
 
 ### 12. Toolbelt & BSUK Context (know these before building any post)

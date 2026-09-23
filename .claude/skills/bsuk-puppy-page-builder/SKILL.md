@@ -26,10 +26,17 @@ board: `python3 scripts/build_page_board.py`, then `python3 scripts/board_gate.p
 A build that starts without a board row has no record of what was approved.
 
 **First, run `/bsuk-query-augmentation <slug> puppy "<primary keyword>" <route>`.** Its
-file (`data/queries/<slug>.json`) supplies the page's FAQ blocks and three extra sections, and
-every `must_answer` question must be answered on the page with `covered_by` recorded —
+file (`data/queries/<slug>.json`) supplies the page's FAQ picks and three extra sections. Every
+pick appears on the page, each an H3 (one `Faq` block is fine here — the three-block split is
+a location-page rule), and every `must_answer` question is answered with `covered_by` recorded —
 `npm run check:queries` fails the page otherwise. The research below builds on that file; it
 does not replace it.
+
+**Caveat for pages already rebuilt.** Most of this cluster is already listed in
+`data/facts/rebuilt.json` and already carries one FAQ block. Creating
+`data/queries/<slug>.json` for such a page makes `check:queries` hold it at once, so run
+augmentation for an already-rebuilt page only together with its re-board and rebuild, in the
+same task — never on its own.
 
 ## 1. Page inventory & build order
 

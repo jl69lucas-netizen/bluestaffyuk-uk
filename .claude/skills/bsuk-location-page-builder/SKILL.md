@@ -125,21 +125,26 @@ derived body sections from step 1 fill the three gaps, split roughly evenly.
 | 13 | Enquiry form | `ContactFormKit` | `form-inquiry-contract` · `layout-tap-target-size` |
 | — | Footer | `SiteFooterKit` | inherited from `BaseLayout`; never hand-written, not a frame part |
 
-**There is no `variant` prop.** Project 3's prune (design-system spec §11 amendment 4)
-deleted every losing variant and every `variant` prop with them: a kit component renders the
-breeder's picked design and takes no letter. `data/design/picks.json` is the *record* of what
-was picked, not an input you pass — the kit is already pruned to it. Reading a letter out of
-that file and handing it to a component is a build error.
+**The letters in `data/design/picks.json` are a record, never a prop.** Project 3's prune
+(design-system spec §11 amendment 4) deleted every losing variant and every `variant` prop:
+a kit component renders the breeder's picked design and takes no letter. Reading a letter out
+of that file and handing it to a component is a build error.
 
-Four components take real props, and these are the only ones:
+The props a city page passes, as `src/components/kit/*.astro` declares them:
 
-| Component | Prop | Values |
-|---|---|---|
-| `Button` | `kind` | `primary` · `outline` · `inverse` · `submit` · `text` (default `primary`); also takes `label` |
-| `Testimonial` | `mode` | `single` · `grid` (default `single`); plus an optional `reviews` array — pass this page's rows from `data/reviews.json` so none is silently dropped |
-| `InfoCard` | `kind` | `fact` · `observed` · `recommendation` (the whole vocabulary, `src/lib/statement.ts`); plus an optional `label` to override the default word |
-| `SectionDivider` | `inverse` | boolean — set it when the divider sits on a dark band |
-| `Hero` | `as` | `h1` · `h2` — a location page's hero is the page's H1, so pass `as="h1"` |
+| Component | Props |
+|---|---|
+| `Hero` | `title`, `eyebrow`, `lede`, `image` (required — there is no default photo; `imageAlt` with it) and `as` (`h1` · `h2`; a location page's hero is the page's H1, so `as="h1"`) |
+| `CounterStrip` | `stats` (required: `[{n, label, source?}]`), `tiles`, `label` |
+| `TrustStrip` | `items` (`[{t, d, i}]`) |
+| `PageNav` | `sections` (`[{id, label}]`, one per H2, each id real) |
+| `Faq` | `items` (`[{q, a}]`). **Always pass the block's picks**: without `items` it renders the WHOLE bank. `q` is the question as written on the page (the `covered_by.text`), `a` is the bank row's answer or the settings-key fact |
+| `PuppyCard` | `slug` (a row of `data/puppies.json`) |
+| `Testimonial` | `mode` (`single` · `grid`, default `single`) and `reviews` — pass this page's rows from `data/reviews.json` so none is silently dropped |
+| `InfoCard` | `kind` (`fact` · `observed` · `recommendation`, the whole vocabulary in `src/lib/statement.ts`), `label` to override the default word; also `heading`, `body` |
+| `SectionDivider` | `inverse` — set it when the divider sits on a dark band |
+| `Button` | `kind` (`primary` · `outline` · `inverse` · `submit` · `text`, default `primary`) and `label` |
+| `ContactFormKit` | `idPrefix` only when a page carries two forms |
 
 `InfoCard kind="note"` **does not exist**: `sem-statement-label-visible` accepts exactly the
 three kinds above and treats anything else as a defect. A newsletter block is a
@@ -194,9 +199,10 @@ A page copied and then reworded passes `dup-no-sibling-crossover` and still brea
 **Query augmentation (before writing).** Run `/bsuk-query-augmentation <slug> location
 "<primary keyword>" /uk-locations/<slug>/` before the outline. Its question file decides the
 FAQ picks, the three extra sections and the section target; answer every `must_answer`
-question on the page and record where in `covered_by`. When the page is rebuilt, add
-`uk-locations/<slug>` (its route without the slashes) to `data/facts/rebuilt.json` — only then
-does `npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
+question on the page and record where in `covered_by`. When the page is rebuilt, add its
+bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) to
+`data/facts/rebuilt.json` — the key the other gates use — and only then does
+`npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
@@ -246,8 +252,10 @@ only from the question file: to change one, change the data (a bank row in `data
 a settings key, a real sourced question) and rebuild the file — never swap, add or drop a
 pick by hand. A question may name the city ("Do You Deliver Staffy Puppies to Manchester?")
 only if its meaning and its fact are unchanged; record the wording used on the page in
-`covered_by.text`. Each question renders as an H3 with a short, direct answer that states
-only what its `fact_source` says; links sit inside answers, anchor first. An answer that
+`covered_by.text`. Each question renders as an H3 with a short, direct answer drawn only from its fact: the
+`a` of the `bank:<id>` row named in the question's `found_in`, or the data key its
+`fact_source` names (`data/settings.json#deposit_gbp`) — never from the whole page file a
+`fact_source` path may point at. Links sit inside answers, anchor first. An answer that
 introduces a new fact is a fabricated claim with extra steps. FAQPage schema carries exactly
 the visible questions, no visible date. `scripts/query_coverage_check.py` holds all of this.
 
