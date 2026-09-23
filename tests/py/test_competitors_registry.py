@@ -34,7 +34,10 @@ def registry(*entries):
 
 
 def make_root(tmp_path, reg=None):
-    (tmp_path / "data").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "data/boards").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "src").mkdir(exist_ok=True)
+    (tmp_path / "docs/reference").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "docs/reference/external-link-library.md").write_text("")
     (tmp_path / "data/locations.json").write_text(
         json.dumps([{"slug": c.lower(), "city": c} for c in CITIES]))
     if reg is not None:
@@ -72,7 +75,8 @@ def test_total_must_equal_the_entry_count(tmp_path):
 
 
 @pytest.mark.parametrize("domain", ["https://a.co.uk", "a.co.uk/puppies", "www.a.co.uk",
-                                    "A.co.uk", "a.co.uk:443", "localhost"])
+                                                    "A.co.uk", "a.co.uk:443", "localhost", "-a.co.uk",
+                                    "a-.co.uk", "a..co.uk", "a.c0m", "bücher.de"])
 def test_root_domain_is_bare(tmp_path, domain):
     out = C.problems(registry(entry(root_domain=domain)), make_root(tmp_path))
     assert any("bare root domain" in p for p in out), out
@@ -128,7 +132,8 @@ def test_a_link_to_a_suspect_seller_is_found(tmp_path):
     page = root / "src/pages/x/index.astro"
     page.parent.mkdir(parents=True)
     page.write_text('<p>see <a href="https://www.bad.co.uk/pups">this</a></p>\n')
-    out = C.suspect_links(reg, root)
+    out, scanned = C.suspect_links(reg, root)
+    assert scanned == 2
     assert len(out) == 1 and "src/pages/x/index.astro:1" in out[0] and "bad.co.uk" in out[0]
 
 
@@ -136,10 +141,9 @@ def test_a_link_to_an_allowed_competitor_or_a_lookalike_is_fine(tmp_path):
     root = make_root(tmp_path)
     reg = registry(entry(), entry(id="bad", root_domain="bad.co.uk", tier=5,
                                   link_allowed=False, priority="high"))
-    (root / "docs/reference").mkdir(parents=True)
     (root / "docs/reference/external-link-library.md").write_text(
         "https://pets4homes.co.uk/a\nhttps://notbad.co.uk/b\n")
-    assert C.suspect_links(reg, root) == []
+    assert C.suspect_links(reg, root)[0] == []
 
 
 def test_cli_passes_with_no_registry(tmp_path):
@@ -166,3 +170,115 @@ def test_cli_fails_on_unreadable_json(tmp_path):
 def test_the_real_repo_passes():
     r = subprocess.run([sys.executable, str(SCRIPT)], capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+BANNED = (entry(), entry(id="bad", root_domain="bad.co.uk", tier=5, link_allowed=False,
+                        priority="high"))
+
+
+@pytest.mark.parametrize("line", [
+    '<a href="https://bad.co.uk?x=1">x</a>',
+    '<a href="https://bad.co.uk#a">x</a>',
+    '<a href="https://user@bad.co.uk/">x</a>',
+    '<a href="https://bad.co.uk./">x</a>',
+    '<a href="//bad.co.uk/x">x</a>',
+    "<img src=//bad.co.uk/x.jpg>",
+    "see https://shop.bad.co.uk/pups",
+])
+def test_the_link_guard_catches_every_url_form(tmp_path, line):
+    root = make_root(tmp_path)
+    (root / "src/x.astro").write_text(line + "\n")
+    out, _ = C.suspect_links(registry(*BANNED), root)
+    assert len(out) == 1 and "src/x.astro:1" in out[0], out
+
+
+def test_a_code_comment_naming_a_banned_domain_is_not_a_link(tmp_path):
+    root = make_root(tmp_path)
+    (root / "src/x.ts").write_text("// comment bad.co.uk\nconst a = 1; // bad.co.uk/x\n")
+    assert C.suspect_links(registry(*BANNED), root)[0] == []
+
+
+def test_a_missing_scan_path_is_a_problem_when_domains_are_banned(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/boards").rmdir()
+    out, _ = C.suspect_links(registry(*BANNED), root)
+    assert any("data/boards" in p and "does not exist" in p for p in out), out
+
+
+def test_a_missing_scan_path_is_fine_when_nothing_is_banned(tmp_path):
+    root = make_root(tmp_path)
+    (root / "data/boards").rmdir()
+    assert C.suspect_links(registry(), root) == ([], 0)
+
+
+@pytest.mark.parametrize("domain", ["shop.pets4homes.co.uk", "shop.example.com",
+                                    "a.b.example.org"])
+def test_a_subdomain_is_refused(tmp_path, domain):
+    out = C.problems(registry(entry(root_domain=domain)), make_root(tmp_path))
+    assert any("registrable domain" in p for p in out), out
+
+
+@pytest.mark.parametrize("domain", ["pets4homes.co.uk", "example.com", "kc.org.uk",
+                                    "xn--bcher-kva.de", "a-b.ltd.uk"])
+def test_a_registrable_domain_is_accepted(tmp_path, domain):
+    assert C.problems(registry(entry(root_domain=domain)), make_root(tmp_path)) == []
+
+
+def test_non_ascii_domains_are_told_to_use_punycode(tmp_path):
+    out = C.problems(registry(entry(root_domain="bücher.de")), make_root(tmp_path))
+    assert any("punycode" in p for p in out), out
+
+
+def test_an_entry_overlapping_another_entrys_domain_is_refused(tmp_path):
+    a = entry()
+    b = entry(id="couk", root_domain="co.uk")
+    out = C.problems(registry(a, b), make_root(tmp_path))
+    assert any("overlaps" in p and "co.uk" in p for p in out), out
+
+
+def test_empty_seed_hits_are_a_schema_error(tmp_path):
+    out = C.problems(registry(entry(seed_hits=[])), make_root(tmp_path))
+    assert any(p.startswith("schema:") and "seed_hits" in p for p in out), out
+
+
+@pytest.mark.parametrize("reg", [[], "x", {"competitors": "abc"}])
+def test_valid_json_of_the_wrong_shape_is_reported_not_raised(tmp_path, reg):
+    out = C.problems(reg, make_root(tmp_path))
+    assert out and all(p.startswith("schema:") for p in out)
+
+
+def run_cli(root):
+    return subprocess.run([sys.executable, str(SCRIPT), "--root", str(root)],
+                          capture_output=True, text=True)
+
+
+def test_cli_reports_a_json_array_without_a_traceback(tmp_path):
+    r = run_cli(make_root(tmp_path, []))
+    assert r.returncode == 1 and "Traceback" not in r.stderr, r.stderr
+    assert "schema:" in r.stdout and "? entries" in r.stdout
+
+
+@pytest.mark.parametrize("locations", [None, "{not json", '[{"slug": "leeds"}]', '"x"'])
+def test_cli_reports_unreadable_locations(tmp_path, locations):
+    root = make_root(tmp_path, registry())
+    if locations is None:
+        (root / "data/locations.json").unlink()
+    else:
+        (root / "data/locations.json").write_text(locations)
+    r = run_cli(root)
+    assert r.returncode == 1 and "Traceback" not in r.stderr, r.stderr
+    assert "locations.json unreadable" in r.stdout
+
+
+def test_cli_fails_on_a_banned_link_and_says_what_it_examined(tmp_path):
+    root = make_root(tmp_path, registry(*BANNED))
+    (root / "src/p.astro").write_text("ok\n<a href='https://bad.co.uk/'>x</a>\n")
+    r = run_cli(root)
+    assert r.returncode == 1 and "src/p.astro:2" in r.stdout, r.stdout
+    assert "2 entries; 1 banned domain; 2 files scanned; 1 problems" in r.stdout
+
+
+def test_cli_summary_on_a_clean_registry(tmp_path):
+    r = run_cli(make_root(tmp_path, registry()))
+    assert r.returncode == 0
+    assert "1 entries; 0 banned domains; 0 files scanned; 0 problems" in r.stdout
