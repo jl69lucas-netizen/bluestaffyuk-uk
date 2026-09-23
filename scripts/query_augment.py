@@ -48,6 +48,7 @@ BLOCKS = ("top", "middle", "bottom")
 FAQ_MIN = {"top": 5, "middle": 5, "bottom": 7}
 FAQ_MAX = {"top": 7, "middle": 7, "bottom": 10}
 FAQ_TOTAL_MAX = 20
+FAQ_TOPIC_CAP = 2      # questions per topic per FAQ block, unless the block cannot fill
 EXTRA_SECTIONS = 3
 SECTION_FLOOR = 9      # a location page never has fewer body sections than this
 OUTLIER_RATIO = 1.5
@@ -160,15 +161,21 @@ class Short(Exception):
         self.blocked = []   # (block, question) pairs, set by build()
 
 
-def _bank_sources(root):
-    """{faq.json row id: its source} under `root`; empty when the bank is missing or bad."""
+def _bank_rows(root):
+    """{faq.json row id: (its question, its source)}; empty when the bank is missing or bad."""
     try:
         rows = json.loads((Path(root) / "data/faq.json").read_text(encoding="utf-8"))
     except (OSError, ValueError, UnicodeDecodeError):
         return {}
     if not isinstance(rows, list):
         return {}
-    return {r["id"]: r.get("source") for r in rows if isinstance(r, dict) and "id" in r}
+    return {r["id"]: (r.get("q") if isinstance(r.get("q"), str) else "", r.get("source"))
+            for r in rows if isinstance(r, dict) and "id" in r}
+
+
+def _bank_sources(root):
+    """{faq.json row id: its source} under `root`; empty when the bank is missing or bad."""
+    return {k: src for k, (_, src) in _bank_rows(root).items()}
 
 
 def resolve_fact(fact, src, root=ROOT, bank=None):
@@ -188,26 +195,113 @@ def resolve_fact(fact, src, root=ROOT, bank=None):
 
 
 def merge(cands, root=ROOT):
-    """cands: (text, source_type, detail, fact_source). Keyed by normalised text."""
-    merged, bank = {}, None
+    """cands: (text, source_type, detail, fact_source). Keyed by normalised text.
+
+    A non-bank candidate citing "bank:<id>" that resolves joins that bank row's entry (keyed
+    on the row's normalised text). An entry's question is its first non-bank phrasing, so
+    buyer wording wins over the bank's; types and found_in are the union.
+    """
+    merged, buyer, rows = {}, set(), None
     for text, src, detail, fact in cands:
         n = normalise(text)
         if not n:
             continue
-        m = merged.setdefault(n, {"question": text.strip(), "types": set(),
-                                  "found_in": [], "fact_source": None})
+        key, resolved = n, None
+        if fact:
+            if src != "bank" and fact.startswith("bank:"):
+                if rows is None:
+                    rows = _bank_rows(root)
+                resolved = resolve_fact(fact, src, root, {k: v[1] for k, v in rows.items()})
+                if resolved and normalise(rows[fact[5:]][0]):
+                    key = normalise(rows[fact[5:]][0])
+            else:
+                resolved = resolve_fact(fact, src, root)
+        m = merged.setdefault(key, {"question": text.strip(), "types": set(),
+                                    "found_in": [], "fact_source": None})
+        if src != "bank" and key not in buyer:
+            buyer.add(key)
+            m["question"] = text.strip()
         m["types"].add(src)
         if detail not in m["found_in"]:
             m["found_in"].append(detail)
-        if m["fact_source"] is None and fact:
-            if bank is None and src != "bank" and fact.startswith("bank:"):
-                bank = _bank_sources(root)
-            m["fact_source"] = resolve_fact(fact, src, root, bank)
+        if m["fact_source"] is None and resolved:
+            m["fact_source"] = resolved
     return merged
 
 
+# Near-duplicate collapse: content words are normalised tokens minus these, with a tiny stem
+# map so "deliver"/"delivery" and "tested"/"test" compare equal.
+STOP_WORDS = frozenset(
+    "a an the is are do does can i you your we our my of to for in on with and or it its be "
+    "how what when where which who why will would should there this that these those any have "
+    "has had get got from at by as than then so if puppy puppies staffy staffies blue uk dog "
+    "dogs".split())
+STEMS = {"delivery": "deliver", "delivered": "deliver", "delivering": "deliver",
+         "tested": "test", "testing": "test", "tests": "test",
+         "owners": "owner", "trained": "train", "training": "train"}
+DUPLICATE_JACCARD = 0.5
+
+
+def content_words(text):
+    return {STEMS.get(t, t) for t in normalise(text).split() if t not in STOP_WORDS}
+
+
+def _jaccard(a, b):
+    return len(a & b) / len(a | b) if a and b else 0.0
+
+
+def collapse_near_duplicates(merged):
+    """Fold entries of the same topic whose content words overlap (Jaccard >= 0.5).
+
+    Linked pairs join one group (transitively, so the result never depends on input order).
+    Each group keeps the phrasing of its first entry in the order: more source types, then
+    longer found_in, then normalised text; types and found_in are unioned in that order, and
+    its fact is the first entry's, or the first duplicate's that has one. Untopicked entries
+    never collapse.
+    """
+    order = sorted(merged, key=lambda k: (-len(merged[k]["types"]),
+                                          -len(merged[k]["found_in"]), k))
+    info = {k: (topic_of(merged[k]["question"])[0], content_words(merged[k]["question"]))
+            for k in order}
+    root = {k: k for k in order}
+
+    def find(k):
+        while root[k] != k:
+            root[k] = root[root[k]]
+            k = root[k]
+        return k
+
+    for i, a in enumerate(order):
+        ta, wa = info[a]
+        if ta is None:
+            continue
+        for b in order[i + 1:]:
+            tb, wb = info[b]
+            if tb == ta and _jaccard(wa, wb) >= DUPLICATE_JACCARD:
+                ra, rb = find(a), find(b)
+                if ra != rb:   # the earlier key in `order` stays the group's head
+                    hi, lo = sorted((ra, rb), key=order.index)
+                    root[lo] = hi
+    out = {}
+    for k in order:
+        head = find(k)
+        m = merged[k]
+        if head not in out:
+            out[head] = {"question": merged[head]["question"], "types": set(),
+                         "found_in": [], "fact_source": merged[head]["fact_source"]}
+        g = out[head]
+        g["types"] |= m["types"]
+        g["found_in"] += [d for d in m["found_in"] if d not in g["found_in"]]
+        if g["fact_source"] is None:
+            g["fact_source"] = m["fact_source"]
+    return out
+
+
 def score(types, topic, page_type):
-    return len(types) + FIT.get(page_type, {}).get(topic, 1)
+    """2 per distinct non-bank source type, 1 if the bank has it, plus the page-type fit: a
+    buyer question also in the bank outranks a bank-only row."""
+    return (2 * len(set(types) - {"bank"}) + (1 if "bank" in types else 0)
+            + FIT.get(page_type, {}).get(topic, 1))
 
 
 # Headings that are page furniture, not content. Reviews and FAQ headings are removed too:
@@ -454,19 +548,39 @@ def _rank(q):
 
 
 def pick_faq(questions):
-    """Sets q["faq"] in place: block minimums first, then by score up to FAQ_TOTAL_MAX."""
+    """Sets q["faq"] in place: block minimums first, then by score up to FAQ_TOTAL_MAX.
+
+    At most FAQ_TOPIC_CAP questions per topic per block, in the minimum fill and the top-up.
+    A block that cannot reach its minimum under the cap has the cap lifted for that block
+    only: the cap never makes a block Short; too few fact-backed questions does.
+    """
     by_block = {b: sorted((q for q in questions if q["fact_source"] and q["block"] == b), key=_rank)
                 for b in BLOCKS}
     short = {b: (len(by_block[b]), FAQ_MIN[b]) for b in BLOCKS if len(by_block[b]) < FAQ_MIN[b]}
     if short:
         raise Short(short)
-    picked = {b: by_block[b][:FAQ_MIN[b]] for b in BLOCKS}
+    picked, per, lifted = {}, {}, set()
+    for b in BLOCKS:
+        picked[b], per[b] = [], Counter()
+        for q in by_block[b]:
+            if len(picked[b]) < FAQ_MIN[b] and per[b][q["topic"]] < FAQ_TOPIC_CAP:
+                picked[b].append(q)
+                per[b][q["topic"]] += 1
+        if len(picked[b]) < FAQ_MIN[b]:
+            lifted.add(b)
+            for q in by_block[b]:
+                if len(picked[b]) < FAQ_MIN[b] and not any(q is x for x in picked[b]):
+                    picked[b].append(q)
+                    per[b][q["topic"]] += 1
     total = sum(len(v) for v in picked.values())
-    for q in sorted((q for b in BLOCKS for q in by_block[b][FAQ_MIN[b]:]), key=_rank):
+    rest = [q for b in BLOCKS for q in by_block[b] if not any(q is x for x in picked[b])]
+    for q in sorted(rest, key=_rank):
         if total >= FAQ_TOTAL_MAX:
             break
-        if len(picked[q["block"]]) < FAQ_MAX[q["block"]]:
-            picked[q["block"]].append(q)
+        b = q["block"]
+        if len(picked[b]) < FAQ_MAX[b] and (b in lifted or per[b][q["topic"]] < FAQ_TOPIC_CAP):
+            picked[b].append(q)
+            per[b][q["topic"]] += 1
             total += 1
     for b in BLOCKS:
         for q in picked[b]:
@@ -778,7 +892,7 @@ def build(slug, page_type, keyword, route, root=ROOT, today=None, prev=None):
     cands, status = load_candidates(slug, root)
     bank, status["bank"] = bank_candidates(root)
     cands += bank   # buyer phrasing first, so it wins the merge
-    merged = merge(cands, root)
+    merged = collapse_near_duplicates(merge(cands, root))
     questions = []
     for n in sorted(merged):
         m = merged[n]

@@ -200,10 +200,12 @@ def test_merge_ignores_a_fact_source_that_does_not_resolve(tmp_path):
     assert next(iter(m.values()))["fact_source"] is None
 
 
-def test_score_is_distinct_source_types_plus_page_fit():
-    assert Q.score({"serp_google", "bank"}, "delivery", "location") == 2 + 3
+def test_score_weighs_buyer_sources_twice_the_bank_plus_page_fit():
+    assert Q.score({"serp_google", "bank"}, "delivery", "location") == 2 + 1 + 3
+    assert Q.score({"bank"}, "delivery", "location") == 1 + 3
     assert Q.score({"bank"}, "coat", "location") == 1 + 1
     assert Q.score({"bank"}, None, "blog") == 1 + 1
+    assert Q.score({"serp_google", "serp_bing", "threads"}, "coat", "blog") == 6 + 1
 
 
 # --- competitors ----------------------------------------------------------------------
@@ -281,7 +283,7 @@ def test_pick_faq_raises_short_naming_the_block():
 
 
 def test_pick_extra_prefers_topics_no_competitor_covers():
-    qs = bank_questions()
+    qs = real_shaped_questions()   # the two-per-topic cap leaves questions behind
     Q.pick_faq(qs)
     extras = Q.pick_extra(qs, covered={"price", "delivery", "reserve", "home", "family"})
     assert len(extras) == 3
@@ -693,7 +695,8 @@ def test_cli_preflight_rejects_a_malformed_today_cleanly(tmp_path):
 # --- quality review: stable ids, bad input, slug/route, short re-runs -----------------
 
 MANC = "How much does a blue Staffy puppy cost in Manchester?"
-LEEDS = "How much does a blue Staffy puppy cost in Leeds?"      # same first 8 words, sorts first
+# Same first 8 words and sorts first; different enough (Jaccard 2/7) not to collapse into MANC.
+LEEDS = "How much does a blue Staffy puppy cost in Leeds including vaccinations and food?"
 BUILD = ("m", "--page-type", "location", "--keyword", "k", "--route", ROUTE,
          "--today", "2026-09-23")
 
@@ -1194,3 +1197,164 @@ def test_an_accordion_of_two_h2_items_is_kept():
     html = ("<main><ul class='accordion'><li><h2>Feeding</h2></li><li><h2>Exercise</h2></li>"
             "<li><p>no heading</p></li></ul></main>")
     assert Q.extract_h2s(html) == ["Feeding", "Exercise"]
+
+
+# --- Task 7b: buyer wording wins, near-duplicates collapse, two per topic per block -----
+
+def test_merge_folds_a_bank_citing_buyer_question_into_that_bank_row(tmp_path):
+    root = make_root(tmp_path)        # bank row b0 is "How much does a puppy cost?"
+    m = Q.merge([("How much does a blue Staffy puppy cost?", "serp_google", "serp_google_paa",
+                  "bank:b0"),
+                 ("How much does a puppy cost?", "bank", "bank:b0", "data/settings.json")], root)
+    (only,) = m.values()
+    assert only["question"] == "How much does a blue Staffy puppy cost?"
+    assert only["types"] == {"serp_google", "bank"}
+    assert only["found_in"] == ["serp_google_paa", "bank:b0"]
+    assert only["fact_source"] == "data/settings.json"
+
+
+def test_merge_buyer_wording_wins_even_when_the_bank_row_comes_first(tmp_path):
+    root = make_root(tmp_path)
+    m = Q.merge([("How much does a puppy cost?", "bank", "bank:b0", "data/settings.json"),
+                 ("What do blue Staffy pups cost?", "ai_engines", "ai:chatgpt", "bank:b0"),
+                 ("Blue staffy price Manchester?", "serp_bing", "serp_bing_paa", "bank:b0")],
+                root)
+    (only,) = m.values()
+    assert only["question"] == "What do blue Staffy pups cost?"
+    assert only["types"] == {"bank", "ai_engines", "serp_bing"}
+
+
+def test_merge_an_unresolved_bank_citation_stays_its_own_entry(tmp_path):
+    root = make_root(tmp_path)
+    m = Q.merge([("How much does a blue Staffy puppy cost?", "serp_google", "serp_google_paa",
+                  "bank:nope"),
+                 ("How much does a puppy cost?", "bank", "bank:b0", "data/settings.json")], root)
+    assert len(m) == 2
+
+
+def entry(text, types=("bank",), found=None, fact="data/settings.json"):
+    return {"question": text, "types": set(types), "found_in": list(found or [f"bank:{text}"]),
+            "fact_source": fact}
+
+
+def collapse(texts, **kw):
+    merged = {Q.normalise(t): entry(t, **kw) for t in texts}
+    return Q.collapse_near_duplicates(merged)
+
+
+HEALTH_VARIANTS = ["Are the parents of your blue Staffy puppies health-tested?",
+                   "Are your puppies\u2019 parents health-tested?",
+                   "Are your Staffordshire Bull Terrier puppies health-tested?",
+                   "Are your puppies health tested for genetic diseases?",
+                   "Can I see the health test results for both parents?"]
+FIRST_TIME = ["Are Staffordshire Bull Terriers good for first-time owners?",
+              "Are blue Staffies suitable for first-time dog owners?",
+              "Are Staffordshire Bull Terriers good for first-time dog owners?"]
+
+
+def test_content_words_drop_stop_words_and_stem():
+    assert Q.content_words("Do you deliver across the UK?") == {"deliver", "across"}
+    assert Q.content_words("How do you ensure the safe delivery of Staffies across the UK?") \
+        == {"ensure", "safe", "deliver", "across"}
+    assert Q.content_words("Are the parents health tested?") == {"parents", "health", "test"}
+    assert Q.content_words("Good for first-time owners, trained?") \
+        == {"good", "first", "time", "owner", "train"}
+
+
+def test_the_five_health_test_variants_collapse_to_one():
+    out = collapse(HEALTH_VARIANTS + ["Do you offer health guarantees for your puppies?"])
+    assert len(out) == 2
+    kept = [m for m in out.values() if "guarantee" not in m["question"]]
+    assert len(kept) == 1 and len(kept[0]["found_in"]) == 5
+
+
+def test_the_three_first_time_owner_variants_collapse_to_one():
+    out = collapse(FIRST_TIME + ["What should a first-time dog owner know before getting a blue "
+                                 "Staffy?"])
+    assert len(out) == 2
+
+
+def test_uk_delivery_and_safe_delivery_collapse_by_the_rule():
+    # {deliver, across} vs {ensure, safe, deliver, across}: Jaccard 2/4 = 0.5 -> duplicates
+    out = collapse(["Do you deliver across the UK?",
+                    "How do you ensure the safe delivery of Staffies across the UK?",
+                    "Can you deliver a Blue Staffy puppy to my location in the UK?"])
+    assert sorted(m["question"] for m in out.values()) == [
+        "Can you deliver a Blue Staffy puppy to my location in the UK?",
+        "Do you deliver across the UK?"]
+
+
+def test_collapse_keeps_the_best_evidenced_phrasing_and_unions_sources():
+    merged = {"a": entry("Are the parents health tested?", types=("bank",), found=["bank:x"]),
+              "b": entry("Are both parents health tested?", types=("serp_google", "bank"),
+                         found=["serp_google_paa", "bank:y"], fact=None)}
+    (only,) = Q.collapse_near_duplicates(merged).values()
+    assert only["question"] == "Are both parents health tested?"
+    assert only["types"] == {"serp_google", "bank"}
+    assert only["found_in"] == ["serp_google_paa", "bank:y", "bank:x"]
+    assert only["fact_source"] == "data/settings.json"      # taken from the duplicate
+
+
+def test_collapse_never_joins_different_topics():
+    out = collapse(["Do Staffies shed their coat?", "Do Staffies need a garden?"])
+    assert len(out) == 2
+    out = collapse(["How much does delivery cost?", "Do you deliver across the UK?"])
+    assert len(out) == 2        # price vs delivery
+
+
+def test_collapse_is_deterministic_whatever_the_input_order():
+    a = collapse(HEALTH_VARIANTS)
+    b = collapse(list(reversed(HEALTH_VARIANTS)))
+    assert [m["question"] for m in a.values()] == [m["question"] for m in b.values()]
+
+
+def capped_pool():
+    top = [q(f"t-d{i}", f"Do you deliver to town {i}?", 20 - i) for i in range(6)] + \
+          [q("t-p0", "How much does a puppy cost?", 1)]
+    mid = [q(f"m-{i}", t, 5) for i, t in enumerate(MIDDLE)]
+    bot = [q(f"b-{i}", t, 5) for i, t in enumerate(BOTTOM)]
+    return top + mid + bot
+
+
+def test_pick_faq_takes_two_per_topic_then_lifts_the_cap_for_a_short_block():
+    qs = capped_pool()
+    Q.pick_faq(qs)
+    top = sorted((x for x in qs if x["faq"] == "top"), key=Q._rank)
+    ids = [x["id"] for x in top]
+    assert ids[:2] == ["t-d0", "t-d1"] and "t-p0" in ids
+    assert len(top) >= 5
+    assert set(ids) >= {"t-d0", "t-d1", "t-d2", "t-d3", "t-p0"}   # cap lifted, rest by score
+
+
+def test_pick_faq_caps_each_topic_at_two_when_the_block_can_fill():
+    qs = bank_questions()
+    Q.pick_faq(qs)
+    from collections import Counter
+    for b in Q.BLOCKS:
+        per = Counter(x["topic"] for x in qs if x["faq"] == b)
+        assert max(per.values()) <= Q.FAQ_TOPIC_CAP == 2
+
+
+def test_pick_faq_short_only_for_too_few_fact_backed_questions():
+    qs = capped_pool()
+    for x in qs:
+        if x["block"] == "top" and x["id"] != "t-p0":
+            x["fact_source"] = None
+    with pytest.raises(Q.Short) as e:
+        Q.pick_faq(qs)
+    assert e.value.blocks == {"top": (1, 5)}
+
+
+def test_build_puts_buyer_wording_in_the_faq(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    add_raw_question(root, "serp_google", "How much does a blue Staffy puppy cost in Manchester?")
+    f = root / "data/queries/raw/m/serp_google.json"
+    d = json.loads(f.read_text())
+    d["questions"][-1]["fact_source"] = "bank:b0"
+    f.write_text(json.dumps(d))
+    data, _ = Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    by_q = {x["question"]: x for x in data["questions"]}
+    buyer = by_q["How much does a blue Staffy puppy cost in Manchester?"]
+    assert "How much does a puppy cost?" not in by_q
+    assert buyer["faq"] == "top" and buyer["score"] == 2 + 1 + 2
+    assert buyer["found_in"] == ["serp_google_paa", "bank:b0"]
