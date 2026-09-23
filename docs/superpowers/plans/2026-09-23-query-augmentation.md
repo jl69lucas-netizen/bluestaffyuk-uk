@@ -1648,6 +1648,12 @@ Expected from `npm run test:py`: every test passes, and the count rises by the n
 
 The controller runs this task, not a subagent, because it spends real money through the connector. **Ask the user before the first paid call and wait for a yes.**
 
+**Order for every paid call (Task 4 review):** preflight → call → **record the reported cost at once** → save the response → write the normalised file. One preflight and one record per paid call; each AI engine is its own call. A saved `.response.json` already counts as bought (preflight exit 3), so a crash after the call can never buy it twice.
+
+- [ ] **Step 0: Confirm the balance**
+
+Ask the user for the DataForSEO account's current balance. Set `query_total_budget_usd` in `data/settings.json` to that figure if it is below 1.0. For the pilot, use one AI engine only.
+
 - [ ] **Step 1: Load the connector tools**
 
 Use ToolSearch `select:` to load the DataForSEO `serp_organic_live_advanced`, `ai_optimization_llm_response` (or `ai_optimization_chat_gpt_scraper`), and the Firecrawl `firecrawl_scrape` and `firecrawl_search` tools. Read each schema. In particular, record whether `serp_organic_live_advanced` accepts a Bing search engine, or whether a separate Bing endpoint exists.
@@ -1658,15 +1664,15 @@ Run: `python3 scripts/query_augment.py --preflight blue-staffy-puppies-mancheste
 Expected: `proceed`.
 
 Ask the user for approval. Then call the SERP tool with keyword `blue staffy puppies manchester`, location United Kingdom, language English, depth 10.
-- Save the response unchanged as `data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json`.
-- Write `serp_google.json` in the normalised format. Its questions come from the People Also Ask items and the related searches, and each `detail` is `serp_google_paa` or `serp_google_related`.
-- Record the response's reported cost:
+- Record the response's reported cost first:
 
 `python3 scripts/query_augment.py --record blue-staffy-puppies-manchester-uk --source serp_google --endpoint serp_organic_live_advanced --cost <reported cost>`
+- Save the response unchanged as `data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json`.
+- Write `serp_google.json` in the normalised format. Its questions come from the People Also Ask items and the related searches, and each `detail` is `serp_google_paa` or `serp_google_related`.
 
 - [ ] **Step 3: Bing, AI engines, competitors, threads**
 
-Repeat the preflight → call → save → normalise → record sequence for `serp_bing` and `ai_engines`. The AI-engine prompt is: `Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?` Its normalised questions are the questions the answer raises or implies, and each `detail` is `ai_<engine>`.
+Repeat the preflight → call → record → save → normalise sequence for `serp_bing` and `ai_engines` (one engine). The AI-engine prompt is: `Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?` Its normalised questions are the questions the answer raises or implies, and each `detail` is `ai_<engine>`.
 - If Bing is not available through DataForSEO, get the Bing top 10 with `firecrawl_search` (query plus `bing`), or else with the browser. Write `serp_bing.json` with `"status": "fallback"`. If neither source works, write nothing, so the file stays `NOT FETCHED`.
 - **Competitors:** from the Google and Bing top 10, keep the first five breeder or location pages from each engine; drop marketplaces and directories. For each kept page, `firecrawl_scrape` the URL with the markdown format and list its `## ` headings. Write `competitors.json`.
 - **Threads:** leave `threads.json` for Task 8, which pilots the thread skill on the same slug.
@@ -1885,13 +1891,18 @@ python3 scripts/query_augment.py --preflight <slug> --source <serp_google|serp_b
 
 ## Step 2 — paid sources (DataForSEO connector)
 
-For each paid source: preflight → call → save the response untouched as
-`data/queries/raw/<slug>/<source>.response.json` → write the normalised
-`data/queries/raw/<slug>/<source>.json` → record the cost the response reports:
+For each paid CALL (each AI engine is its own call): preflight → call → record the cost the
+response reports, at once →
+save the response untouched as `data/queries/raw/<slug>/<source>.response.json` → write the
+normalised `data/queries/raw/<slug>/<source>.json`:
 
 ```bash
 python3 scripts/query_augment.py --record <slug> --source <source> --endpoint <tool> --cost <cost>
 ```
+
+A saved `.response.json` counts as bought: preflight returns 3 and you make no call. If
+`--record` or preflight errors (a damaged spend log), stop and tell the user — never delete
+or edit `data/queries/spend.json`.
 
 | Source | Call | Normalised questions |
 |---|---|---|
@@ -1900,9 +1911,10 @@ python3 scripts/query_augment.py --record <slug> --source <source> --endpoint <t
 | `ai_engines` | an AI-engine answer to "Where can I buy a <breed phrase> near <city>, and what should I ask the breeder?" (location) or the page's core question | every question the answer raises (`ai_<engine>`) |
 
 Normalised file: `{"source", "status": "ok|fallback", "fetched", "questions": [{"text", "detail", "fact_source"}]}`.
-Set `fact_source` only when you can name the data file (and key) whose content answers the
-question — e.g. `data/settings.json#delivery_min_gbp`. If you are unsure, leave it `null`;
-the bank supplies fact-backed wording.
+Set `fact_source` only when you can name what answers the question: a data key
+(`data/settings.json#delivery_min_gbp`) or the bank row whose answer covers it (`bank:<id>`,
+an `id` in `data/faq.json`). Never a bare file path — the script ignores one. If you are
+unsure, leave it `null`; the bank supplies fact-backed wording.
 
 Connector missing or out of credit: say so, then use the free fallback — the
 `bsuk-paa-agent` browser People-Also-Ask protocol and Firecrawl search — with
@@ -1948,6 +1960,8 @@ Re-running Step 5 keeps those fills. Then `npm run build && npm run check:querie
 ## Common mistakes
 
 - Making a paid call without preflight, or after exit 3 or 4.
+- Recording the cost after saving files instead of straight after the call.
+- One preflight covering several engine calls.
 - Counting competitor sections by hand, or using a fixed section number.
 - One FAQ block, or fewer than the picked questions.
 - Setting `fact_source` to a file that does not answer the question.
