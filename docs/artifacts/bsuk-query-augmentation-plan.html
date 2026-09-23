@@ -39,7 +39,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 </style>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Query augmentation implementation plan</h1></div>
-<div class="meta"><span class="pill">status: ready to execute</span> <span class="pill">2026-09-23</span><br>docs/superpowers/plans/2026-09-23-query-augmentation.md</div></header>
+<div class="meta"><span class="pill">status: executed</span> <span class="pill">2026-09-23</span><br>docs/superpowers/plans/2026-09-23-query-augmentation.md</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
 <div id="doc"></div>
@@ -1008,7 +1008,8 @@ def seed(root, slug="m"):
          "fact_source": "data/settings.json#guarantee_days"}]})
     write_raw(root, slug, "competitors", {"status": "ok", "pages": [
         {"url": "https://a.example", "google_pos": 1, "bing_pos": None,
-         "h2": ["Our Prices", "Delivery to Manchester", "Reviews"]}]})
+         "h2": ["Our Prices", "Delivery to Manchester", "Health Testing",
+                "Our Puppies For Sale", "Reviews"]}]})
 
 
 def test_build_writes_a_schema_valid_file(tmp_path):
@@ -1021,8 +1022,8 @@ def test_build_writes_a_schema_valid_file(tmp_path):
     assert data["sources"]["serp_google"] == "ok"
     assert data["sources"]["serp_bing"] == "NOT FETCHED"
     assert data["sources"]["bank"] == "ok"
-    assert data["section_target"] == {"matched": 2, "set_by": "https://a.example",
-                                      "extra": 3, "total": 5}
+    assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
+                                      "extra": 3, "total": 7}
     faq = [x for x in data["questions"] if x["faq"]]
     assert 17 <= len(faq) <= 20
     assert all(x["must_answer"] for x in faq)
@@ -1215,7 +1216,7 @@ if __name__ == "__main__":
 Run: `python3 -m pytest tests/py/test_query_augment.py -q`
 Expected: all pass. `argparse`'s `ap.error` exits 2, which is what `test_cli_rejects_an_unknown_page_type` checks.
 
-In `test_build_writes_a_schema_valid_file`, the competitor's cleaned headings are "Our Prices" and "Delivery to Manchester" ("Reviews" is removed), so `matched` is 2.
+In `test_build_writes_a_schema_valid_file`, the competitor keeps four cleaned headings ("Reviews" is removed), so `matched` is 4. A page needs at least three cleaned headings to be usable (`MIN_USABLE_H2`, added in Task 3's review).
 
 - [ ] **Step 5: Commit**
 
@@ -1237,7 +1238,7 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 Built markup the gate relies on:
 - `src/components/kit/Faq.astro` renders `<div class="kit-faq">` → `<details>` → `<summary><span class="num">01</span><h3 class="q">Title Cased Question</h3></summary><p>answer</p>`. The H3 is title-cased at render, so the gate compares `normalise()`d text.
-- Body sections are `<section id="…" data-section-label="…">`.
+- Body sections are `<section id="…" data-section-label="…">`. A section that holds a frame part — a kit hero (`kit-hero`), counter (`kit-counter`), trust strip (`kit-trust`), page nav (`kit-nav`), review (`kit-quote`), FAQ block (`kit-faq`) or any `<form>` — is frame, never body; so are `#top`, `#key-takeaways` and `#newsletter` (Task 1's template, "The fixed frame").
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1363,6 +1364,15 @@ def test_too_few_body_sections_fails_and_frame_is_not_counted():
     assert any("body sections: 6, want at least 7" in p for p in probs)
 
 
+def test_review_and_counter_sections_are_frame_not_body():
+    extra = ('<section id="rev" data-section-label="Reviews"><h2>Reviews</h2>'
+             '<section class="kit-quote"><p>Lovely pup.</p></section></section>'
+             '<section id="stats" data-section-label="At a glance" class="kit-counter"><h2>Stats</h2></section>')
+    html = page_html().replace("</main>", extra + "</main>")
+    assert G.check_page(qfile(total=6), html) == []
+    assert any("body sections: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
+
+
 def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
     (tmp_path / "data/queries/m.json").write_text(json.dumps(qfile()))
@@ -1413,8 +1423,9 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
   3. FAQPage schema naming exactly the visible FAQ questions;
   4. every extra section's recorded heading as an H2;
   5. on location pages, at least section_target.total body sections — a body section is a
-     <section data-section-label> that is not #top or #key-takeaways and holds no FAQ block
-     and no form (the fixed frame is never counted).
+     <section data-section-label> that is not #top, #key-takeaways or #newsletter and holds no frame part:
+     no kit hero, counter, trust strip, page nav, review, FAQ block and no form
+     (docs/reference/location-page-template.md, "The fixed frame" — frame is never counted).
 
 A question file whose route is not built is skipped and counted: an unbuilt page ships
 nothing. Exit 1 on any problem, 0 otherwise.
@@ -1434,7 +1445,9 @@ from query_augment import BLOCKS, FAQ_MAX, FAQ_MIN, FAQ_TOTAL_MAX, normalise  # 
 
 ROOT = Path(__file__).resolve().parents[1]
 FAQ_TOTAL_MIN = 15
-FRAME_IDS = {"top", "key-takeaways"}
+FRAME_IDS = {"top", "key-takeaways", "newsletter"}
+# The kit components that make up the fixed frame. A section holding one is frame, not body.
+FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 
@@ -1443,7 +1456,7 @@ class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
         self.stack = []          # [tag, section_index|None, faq_index|None]
-        self.sections = []       # {"id", "has_faq", "has_form"}
+        self.sections = []       # {"id", "frame"}
         self.faq_blocks = []     # {"h3": [text], "details": n}
         self.headings = []       # {"level", "text", "answer", "faq"}
         self.ld = []
@@ -1458,17 +1471,16 @@ class Page(HTMLParser):
         if tag in VOID:
             return
         sec = faq = None
+        classes = set((a.get("class") or "").split())
         if tag == "section" and "data-section-label" in a:
-            self.sections.append({"id": a.get("id") or "", "has_faq": False, "has_form": False})
+            self.sections.append({"id": a.get("id") or "", "frame": False})
             sec = len(self.sections) - 1
-        if tag == "form":
-            for i in self._open(1):
-                self.sections[i]["has_form"] = True
-        if tag == "div" and "kit-faq" in (a.get("class") or "").split():
+        if tag == "form" or classes & FRAME_CLASSES:
+            for i in self._open(1) + ([sec] if sec is not None else []):
+                self.sections[i]["frame"] = True
+        if tag == "div" and "kit-faq" in classes:
             self.faq_blocks.append({"h3": [], "details": 0})
             faq = len(self.faq_blocks) - 1
-            for i in self._open(1):
-                self.sections[i]["has_faq"] = True
         if tag == "details" and self._open(2):
             self.faq_blocks[self._open(2)[-1]]["details"] += 1
         if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
@@ -1576,8 +1588,7 @@ def check_page(q, html):
         elif normalise(e["heading"]) not in h2s:
             problems.append(f"extra section '{e['topic']}': '{e['heading']}' is not an H2 on the page")
     if q["page_type"] == "location":
-        body = [s for s in p.sections
-                if s["id"] not in FRAME_IDS and not s["has_faq"] and not s["has_form"]]
+        body = [s for s in p.sections if s["id"] not in FRAME_IDS and not s["frame"]]
         t = q["section_target"]
         if len(body) < t["total"]:
             problems.append(f"body sections: {len(body)}, want at least {t['total']} "
@@ -1665,6 +1676,12 @@ Expected from `npm run test:py`: every test passes, and the count rises by the n
 
 The controller runs this task, not a subagent, because it spends real money through the connector. **Ask the user before the first paid call and wait for a yes.**
 
+**Order for every paid call (Task 4 review):** preflight → call → **record the reported cost at once** → save the response → write the normalised file. One preflight and one record per paid call, and **one AI engine per page** (the cache is keyed per source). A saved `.response.json` already counts as bought (preflight exit 3), so a crash after the call can never buy it twice. If `--record` refuses a cost, still save `<source>.response.json` before stopping, and report the cost the response shows.
+
+- [ ] **Step 0: Confirm the balance**
+
+Ask the user for the DataForSEO account's current balance. Set `query_total_budget_usd` in `data/settings.json` to that figure if it is below 1.0. For the pilot, use one AI engine only.
+
 - [ ] **Step 1: Load the connector tools**
 
 Use ToolSearch `select:` to load the DataForSEO `serp_organic_live_advanced`, `ai_optimization_llm_response` (or `ai_optimization_chat_gpt_scraper`), and the Firecrawl `firecrawl_scrape` and `firecrawl_search` tools. Read each schema. In particular, record whether `serp_organic_live_advanced` accepts a Bing search engine, or whether a separate Bing endpoint exists.
@@ -1675,17 +1692,20 @@ Run: `python3 scripts/query_augment.py --preflight blue-staffy-puppies-mancheste
 Expected: `proceed`.
 
 Ask the user for approval. Then call the SERP tool with keyword `blue staffy puppies manchester`, location United Kingdom, language English, depth 10.
-- Save the response unchanged as `data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json`.
-- Write `serp_google.json` in the normalised format. Its questions come from the People Also Ask items and the related searches, and each `detail` is `serp_google_paa` or `serp_google_related`.
-- Record the response's reported cost:
+- Record the response's reported cost first:
 
 `python3 scripts/query_augment.py --record blue-staffy-puppies-manchester-uk --source serp_google --endpoint serp_organic_live_advanced --cost <reported cost>`
+- Save the response unchanged as `data/queries/raw/blue-staffy-puppies-manchester-uk/serp_google.response.json`.
+- Write `serp_google.json` in the normalised format. Its questions come from the People Also Ask items and the related searches, and each `detail` is `serp_google_paa` or `serp_google_related`.
 
 - [ ] **Step 3: Bing, AI engines, competitors, threads**
 
-Repeat the preflight → call → save → normalise → record sequence for `serp_bing` and `ai_engines`. The AI-engine prompt is: `Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?` Its normalised questions are the questions the answer raises or implies, and each `detail` is `ai_<engine>`.
+Repeat the preflight → call → record → save → normalise sequence for `serp_bing` and `ai_engines` (one engine). The AI-engine prompt is: `Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?` Its normalised questions are the questions the answer raises or implies, and each `detail` is `ai_<engine>`.
 - If Bing is not available through DataForSEO, get the Bing top 10 with `firecrawl_search` (query plus `bing`), or else with the browser. Write `serp_bing.json` with `"status": "fallback"`. If neither source works, write nothing, so the file stays `NOT FETCHED`.
-- **Competitors:** from the Google and Bing top 10, keep the first five breeder or location pages from each engine; drop marketplaces and directories. For each kept page, `firecrawl_scrape` the URL with the markdown format and list its `## ` headings. Write `competitors.json`.
+- **Competitors (user ruling 2026-09-23 — marketplaces and directories COUNT):** take the Google top 5 and the Bing top 5 for the primary keyword, merged; drop only off-topic results. For each page:
+  1. Save its raw HTML to `data/queries/cache/<slug>/<n>.html` (gitignored — third-party pages carry advertisers' contact details). Use `curl -sL -A "<desktop browser UA>" -H "Accept-Language: en-GB"`; if that returns a 403 or a challenge page, use Firecrawl `rawHtml` with `onlyMainContent: false` saved to the same path (never the markdown format — it loses the wrappers the extractor needs).
+  2. Run `python3 scripts/query_augment.py --extract-h2 data/queries/cache/<slug>/<n>.html` and copy its `h2`, `h2_all` and `blocked` values into that page's record in `competitors.json` — never write headings by hand.
+  3. A `blocked: true` page is recorded as a finding, not counted.
 - **Threads:** leave `threads.json` for Task 8, which pilots the thread skill on the same slug.
 
 - [ ] **Step 4: Build, then look at the output**
@@ -1715,6 +1735,55 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 Expected from `npm run check:queries`: `examined 0 pages (1 not built); 0 problems`.
 
 Record the pilot's findings as an execution note at the top of Task 9, for the skill to encode: the tool names, whether Bing came from DataForSEO, and the cost per source.
+
+---
+</script>
+<script type="text/markdown" data-title="Task 7a: Real competitor headings, and the section floor (pilot amendment, 2026-09-23)">
+Found in the Manchester pilot. Every Google and Bing top-5 page is a marketplace or directory (Pets4Homes, Staffie Owners, Freeads, Gumtree, puppies.co.uk). User ruling: they COUNT in the pool. But their H2s are mostly advert-card titles ("Staffy £450", "Pablo") and navigation ("Refine your results", "Nearest towns and cities"), so counting H2s from markdown gives nonsense (Staffie Owners' 20-advert grid would set a target of 23). Second user ruling: body-section target = max(competitors' highest real count + 3, 9).
+
+Observed markup (fetched with curl, 2026-09-23):
+- Gumtree: advert H2s sit inside `<a>` inside `<article>` (`standard-card`).
+- Staffie Owners: advert H2s sit in `<ul><li><article>`; the "21 Staffie Puppies For Sale In Manchester" grid header sits in a `<header>`.
+- puppies.co.uk: "Recommended for you", "Nearest towns and cities", a newsletter H2 — furniture already stripped by `clean_h2s` or to be stripped.
+
+**Files:**
+- Modify: `scripts/query_augment.py`, `tests/py/test_query_augment.py`
+- Modify: `schemas/queries.schema.json` (`section_target.floor`)
+- Modify: `scripts/query_coverage_check.py` + its tests (body-count message names the floor)
+- Modify: `.gitignore` (`data/queries/cache/`)
+- Modify: `docs/reference/location-page-template.md` ("Section count" — marketplaces count; advert/nav headings never count; floor 9)
+
+**Steps (TDD for code):**
+
+1. `extract_h2s(html) -> list[str]` in `scripts/query_augment.py` (stdlib `html.parser`): returns the text of every `<h2>` except one (a) under any of `a, nav, footer, aside, form, button, template`; (b) whose NEAREST `<article>` ancestor is a card article — an article that contains an H2 and no H2-bearing article of its own, on a page with 2+ such articles (a page-wrapper article, one holding a block of summary cards, or articles titled in H3s, keeps its H2s); (c) under an `<li>` whose parent list has 3+ `<li>` children that each contain an H2 (a card grid; a shorter accordion is kept) — a new `<li>` implicitly closes an open `<li>` above the nearest `ul`/`ol`, as a browser does; (d) under a `<header>` that is not itself inside `main`, `section` or `article`. Text inside `script/style/template` ignored; `<br>` and block tags inside a heading separate words; whitespace collapsed; empty dropped. `page_report(html)` returns `{"h2", "h2_all", "blocked"}`: `h2_all` counts every `<h2>` before filtering; `blocked` is true when the `<title>` starts "Just a moment", "Attention Required" or "Access Denied" (case-insensitive), or the HTML carries `_cf_chl_opt` or `cf-browser-verification`; "enable javascript and cookies", the `/cdn-cgi/challenge-platform/` script (ordinary protected pages load it too), and a page under 10 KB with no `<main>`/`<h1>`, count only when `h2_all == 0`. Tests with fixtures shaped like the three observed layouts above (Gumtree card, Staffie Owners li>article and header, a plain content H2 inside `<main><section>` that IS kept, an H2 whose text is itself a link `<h2><a>…</a></h2>` — kept? NO: a heading that is entirely one link is a card title → dropped; a heading containing a link among other text is kept).
+2. CLI: `query_augment.py --extract-h2 FILE.html` prints the `page_report` JSON object to stdout, exit 0 (a one-line stderr warning when blocked; exit 6 BadInput if the file is missing/unreadable; decoded by `<meta charset>`, else UTF-8 with replacement). The skill uses this to fill a `competitors.json` page's `h2`, `h2_all` and `blocked` from saved HTML, never by hand; a blocked page never sets the number, and `h2_raw = h2_all` when present.
+3. `clean_h2s` furniture additions (on normalised text, only when `topic_of` is None, as today), anchored so a content heading that merely contains the words is kept: `^refine your results$|^you might also like\b|^(latest )?featured ads\b|^results from outside your search$|^recommended for you$|^nearest towns( and cities)?$|\bjoin(ing)? our pack\b|^(\d+ )?puppy found$|^(?!(19|20)\d\d )\d+ (\w+ ){0,4}for sale in\b` (the year guard keeps "2024 Litter: … for sale in Salford"); "other pets" is an exact-match entry in `NON_CONTENT_EXACT` (it names the `family` topic, so the topic guard would keep it). Kept by test: "Over 20 years breeding - puppies for sale in Manchester", "Why our 3 generations of staffies for sale in Cheshire are different", "2024 Litter: blue staffy puppies for sale in Salford", "Nearest towns to our kennel" — plus a test on the observed list: stripped — "Refine your results", "You might also like near Manchester", "Latest featured ads in Staffordshire Bull Terrier", "Other pets", "Results from outside your search", "Recommended for you", "Nearest towns and cities", "Fetch the latest puppy news by joining our pack", "30 Puppies found", "21 Staffie Puppies For Sale In Manchester"; kept — "Buyer's Advice", "Blue Staffy Puppies in Manchester UK", "Health Testing".
+4. `SECTION_FLOOR = 9`. `section_target` returns `{"matched", "set_by", "extra", "floor", "total"}` with `total = max(matched + extra, SECTION_FLOOR)`. Schema: add required `floor` (integer ≥ 0) to `section_target`. Update every test/fixture that builds a section_target (augment tests AND gate tests' `qfile`). Gate body-count message: `body sections with an H2: N, want at least T (competitors M + 3, floor 9)`.
+5. `.gitignore`: add `data/queries/cache/` (raw competitor HTML lives there — third-party pages with advertisers' contact details; never committed).
+6. Template doc "Section count": replace step 1's pool sentence with the user ruling — the top-5 on Google plus top-5 on Bing for the primary keyword, merged, **marketplaces and directories included** (only off-topic results dropped); add "advert-card titles and navigation headings never count — `query_augment.py --extract-h2` reads the saved page and drops any H2 inside a link, article, list item, nav, header, footer, aside or form"; add the floor ("never fewer than 9 body sections"). Keep the path guard green.
+7. Full suite, registry, commit: "queries: real competitor headings from saved pages, and a nine-section floor" + Fable trailer.
+
+---
+</script>
+<script type="text/markdown" data-title="Task 7b: Buyer wording wins, near-duplicates collapse (pilot amendment, 2026-09-23)">
+Found in the Manchester pilot's first question file (113 questions, 20 FAQ): every FAQ pick is a `data/faq.json` bank row, and the picks are near-duplicates — 4 delivery questions, 5 "are the parents health tested" variants, 3 "first-time owner" variants. Causes:
+- A Google/AI question that cites `bank:<id>` stays a separate entry from that bank row, ties with it on score (1 source type + fit each), and loses on id order — so buyer phrasing never reaches the FAQ.
+- `data/faq.json` gathers page-level FAQs from several pages, so the bank itself holds near-duplicates; `merge` only folds identical normalised text.
+
+**Files:** `scripts/query_augment.py`, `tests/py/test_query_augment.py` (+ the plan's docs where they describe scoring: `docs/reference/location-page-template.md` only if it states the scoring).
+
+**Steps (TDD):**
+
+1. **Bank-linked merge.** In `merge()`, a non-bank candidate whose `fact_source` is `bank:<id>` (and resolves) joins the entry of that bank row: the merged entry's `question` text is the FIRST non-bank phrasing (buyer wording wins), `types` and `found_in` are the union, `fact_source` is the bank row's source. Implement by keying such candidates on the bank row's normalised text (the bank rows are loaded anyway for `bank:` resolution). Test: a SERP "How much does a blue Staffy puppy cost?" citing `bank:b0` whose bank text is "How much does a puppy cost?" → one entry, question = the SERP wording, types = {serp_google, bank}, fact = the bank source.
+2. **Evidence weighting.** `score(types, topic, page_type)` = 2 per distinct NON-bank source type + 1 if "bank" in types + fit. So a buyer question also in the bank outranks a bank-only row. Update the existing score test's expected values; add: `{"serp_google","bank"}` delivery location → 2+1+3 = 6; `{"bank"}` → 1+3.
+3. **Near-duplicate collapse** (after merge, before scoring), deterministic: two entries with the same topic are duplicates when the Jaccard similarity of their content-word sets is ≥ 0.5, where content words = normalised tokens minus a stop list (`a an the is are do does can i you your we our my of to for in on with and or it its be how what when where which who why will would should there this that these those any have has had get got from at by as than then so if puppy puppies staffy staffies blue uk dog dogs`). Collapse in the order (fact-backed first, then more source types, then longer found_in, then normalised text), keeping the first entry's phrasing and fact, and unioning types/found_in. An unbacked entry never leads a group that has a fact-backed member, and never borrows a duplicate's fact (controller ruling, after review of 20721a4). Tests: the five health-test bank variants collapse to one; the three first-time-owner variants collapse to one; "Do you deliver across the UK?" and "How do you ensure the safe delivery of Staffies across the UK?" — decide by the rule and assert what it yields (content words {deliver, across} vs {ensure, safe, delivery, across} → normalise must map deliver/delivery to one stem: add a tiny stem step in the content-word function — strip a trailing `ies`→`y`, `y`… keep it minimal: map `delivery|delivered|delivering|deliver` → `deliver`, `tested|testing|tests|test` → `test`, `owners|owner` → `owner`, `trained|training|train` → `train`; document it).
+4. **Per-topic FAQ cap.** `pick_faq` takes at most `FAQ_TOPIC_CAP = 2` questions per topic per block, both in the minimum fill and the top-up; if a block cannot reach its minimum because of the cap, the cap is lifted for that block only (never Short because of the cap). Tests: a block with 6 delivery + 1 price eligible fills 2 delivery + 1 price + (cap lifted) the rest by score; `Short` still raised only for too few fact-backed questions.
+5. Re-run the controller-supplied check: build the real pilot slug and print the FAQ picks (do NOT commit data/queries/ — the controller does): `python3 scripts/query_augment.py blue-staffy-puppies-manchester-uk --page-type location --keyword "blue staffy puppies manchester" --route /uk-locations/blue-staffy-puppies-manchester-uk/` then list each block's picks with their found_in types. Report it. Then `git checkout -- data/queries/blue-staffy-puppies-manchester-uk.json` is NOT possible (untracked) — leave the rebuilt file in place; the controller commits it.
+6. Full suite (registry test still expected to fail only on data/queries/), commit: "queries: buyer wording wins, near-duplicates collapse, two per topic per FAQ block" + Fable trailer.
+
+Implementation note: the collapse links every same-topic pair at Jaccard ≥ 0.5 and folds linked entries transitively (a one-pass greedy fold is order-dependent: "…health tested for genetic diseases?" links to "…health-tested?" but not to "…parents … health-tested?"). Each group's head is its first entry in the order, which starts fact-backed first (controller ruling: a lead's visible question must be answerable by its own fact; an unbacked lead never borrows a duplicate's fact, so a group with no fact-backed member stays unbacked). Untopicked entries never collapse.
+
+Quality review of 651387d..c147f69 (folded in): a bank-linked entry keeps the row's text (`bank_text`) and takes its topic when its own wording has none (`entry_topic`), in build and collapse; `_rank` breaks score ties by longer `found_in`, then a `data/settings.json` fact, then id; near-duplicates need Jaccard ≥ 0.5 AND ≥ 2 shared content words, with the page's primary-keyword tokens (so its city) stripped, more stop words (`much more better near been was both now sale get`), extra stems (`delivers`, `trains`, `owner`, `vaccinated/vaccination(s)` → `vaccin`) and a trailing `s` stripped from words over three letters (not `ss`); a second buyer question citing an already-worded bank row joins only as a same-topic near-duplicate, else stays its own entry backed by that row's fact; `visit` also matches "see the puppy with its/the mother". Ids: stable while a group's lead is unchanged; a collapsed group's id follows its lead; the builder's fills carry by question text, not id.
 
 ---
 </script>
@@ -1889,13 +1958,20 @@ python3 scripts/query_augment.py --preflight <slug> --source <serp_google|serp_b
 - `--refresh` only when the user asked for fresh data.
 </script>
 <script type="text/markdown" data-title="Step 2 — paid sources (DataForSEO connector)">
-For each paid source: preflight → call → save the response untouched as
-`data/queries/raw/<slug>/<source>.response.json` → write the normalised
-`data/queries/raw/<slug>/<source>.json` → record the cost the response reports:
+For each paid CALL (one AI engine per page — the cache is keyed per source): preflight → call → record the cost the
+response reports, at once →
+save the response untouched as `data/queries/raw/<slug>/<source>.response.json` → write the
+normalised `data/queries/raw/<slug>/<source>.json`:
 
 ```bash
 python3 scripts/query_augment.py --record <slug> --source <source> --endpoint <tool> --cost <cost>
 ```
+
+A saved `.response.json` counts as bought: preflight returns 3 and you make no call. If
+`--record` refuses a cost, still save `<source>.response.json` before stopping and report
+the cost the response shows. If
+`--record` or preflight errors (a damaged spend log), stop and tell the user — never delete
+or edit `data/queries/spend.json`.
 
 | Source | Call | Normalised questions |
 |---|---|---|
@@ -1904,21 +1980,29 @@ python3 scripts/query_augment.py --record <slug> --source <source> --endpoint <t
 | `ai_engines` | an AI-engine answer to "Where can I buy a <breed phrase> near <city>, and what should I ask the breeder?" (location) or the page's core question | every question the answer raises (`ai_<engine>`) |
 
 Normalised file: `{"source", "status": "ok|fallback", "fetched", "questions": [{"text", "detail", "fact_source"}]}`.
-Set `fact_source` only when you can name the data file (and key) whose content answers the
-question — e.g. `data/settings.json#delivery_min_gbp`. If you are unsure, leave it `null`;
-the bank supplies fact-backed wording.
+Set `fact_source` only when you can name what answers the question: a data key
+(`data/settings.json#delivery_min_gbp`) or the bank row whose answer covers it (`bank:<id>`,
+an `id` in `data/faq.json`). Never a bare file path — the script ignores one. If you are
+unsure, leave it `null`; the bank supplies fact-backed wording.
 
 Connector missing or out of credit: say so, then use the free fallback — the
 `bsuk-paa-agent` browser People-Also-Ask protocol and Firecrawl search — with
 `"status": "fallback"`. Nothing reachable = no file (the script records `NOT FETCHED`).
 </script>
 <script type="text/markdown" data-title="Step 3 — competitors (location pages; optional elsewhere)">
-From the Google and Bing top 10, keep the first five breeder or location pages from each
-(never marketplaces or directories). Open each (Firecrawl scrape, markdown) and list its H2s:
+Take the Google top 5 and the Bing top 5 for the primary keyword, merged — marketplaces and
+directories included (Pets4Homes, Gumtree, Staffie Owners and the like are the real competition);
+drop only off-topic results. For each page: save its raw HTML to
+`data/queries/cache/<slug>/<n>.html` (gitignored; curl with a desktop browser user agent, or
+Firecrawl `rawHtml` with `onlyMainContent: false` when curl is blocked — never markdown), then run
+`python3 scripts/query_augment.py --extract-h2 <file>` and copy its `h2`, `h2_all` and `blocked`
+into the page's record:
 
-`data/queries/raw/<slug>/competitors.json` = `{"status", "pages": [{"url", "google_pos", "bing_pos", "h2": [...]}]}`.
+`data/queries/raw/<slug>/competitors.json` = `{"status", "pages": [{"url", "google_pos", "bing_pos", "h2": [...], "h2_all": N, "blocked": false}]}`.
 
-Do not clean or count them yourself — the script does, the same way every time.
+Never write or trim headings yourself — the extractor drops advert cards and navigation, and the
+script cleans and counts the same way every time. The target is competitors' highest real count
++ 3, never fewer than 9 body sections.
 </script>
 <script type="text/markdown" data-title="Step 4 — threads">
 Run `bsuk-reddit-threads` for the slug. It writes `raw/<slug>/threads.json`.
@@ -1947,7 +2031,10 @@ Re-running Step 5 keeps those fills. Then `npm run build && npm run check:querie
 </script>
 <script type="text/markdown" data-title="Common mistakes">
 - Making a paid call without preflight, or after exit 3 or 4.
+- Recording the cost after saving files instead of straight after the call.
+- One preflight covering several engine calls, or asking a second AI engine for the same page.
 - Counting competitor sections by hand, or using a fixed section number.
+- Dropping marketplaces or directories from the pool, or copying headings from a markdown scrape.
 - One FAQ block, or fewer than the picked questions.
 - Setting `fact_source` to a file that does not answer the question.
 - Rewording a question on the page and not updating `covered_by.text`.
@@ -2040,6 +2127,12 @@ In the Manchester worked example table:
 - Replace the two `Competitor-gap section | NOT FETCHED — step 1 supplies the topic` rows with three rows reading `Extra section (question pool) | extra_sections[n] in data/queries/blue-staffy-puppies-manchester-uk.json`.
 
 Keep every other row unchanged.
+
+- [ ] **Step 5b: The spine, the precedence table and the fact table**
+
+- **Step 2 spine:** replace the rows of the table under `## Step 2 — the page spine` with the 13-part frame order in `docs/reference/location-page-template.md` ("The fixed frame"). Keep the table's three columns. Each frame row keeps the component and checks it has today; FAQ top, middle and bottom each use `Faq`; the form uses `ContactFormKit`. Mark the three body gaps as rows reading `Body sections (derived, step 1)`. Change the sentence above the table to say that the body sections fill the three gaps, split roughly evenly.
+- **Precedence table:** add a row to the table under `## What wins when this file and something else disagree`: `docs/reference/location-page-template.md` wins for structure, FAQ format and tone; this file's fact table wins for facts.
+- **Fact table:** add "home-raised: every puppy is raised in our home, not a kennel" with its source, the `data/faq.json` row whose answer says so. Add it only if that row exists; quote its `id`.
 
 - [ ] **Step 6: The other three builders**
 
