@@ -11,9 +11,10 @@ scripts/query_coverage_check.py gates.
       exit 0 proceed · 3 cached, make no call · 4 a budget would be exceeded
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
   query_augment.py --extract-h2 FILE.html
-      prints the page's content H2s as a JSON list (advert cards and navigation dropped) —
-      how competitors.json "h2" is filled from a saved page, never by hand
-      exit 0 printed · 6 the file is missing or unreadable
+      prints {"h2": [content H2s], "h2_all": N, "blocked": bool} (advert cards and
+      navigation dropped; blocked = a bot challenge page) — how a competitors.json page's
+      h2, h2_all and blocked are filled from a saved page, never by hand
+      exit 0 printed (a blocked page also warns on stderr) · 6 the file is missing or unreadable
   query_augment.py SLUG --page-type TYPE --keyword "..." --route /path/
       exit 0 written · 5 too few fact-backed questions to fill the FAQ blocks
       · 6 an input file is unparseable or the wrong shape (nothing written)
@@ -225,10 +226,13 @@ NON_CONTENT_AROUND = re.compile(
     r"|get in touch|call us|enquire|follow us|share( this)?|sign up|newsletter"
     r"|(latest|recent) (news|posts)|(useful|quick) links)( \w+){0,3}$")
 # Marketplace and directory furniture: search filters, result counts, grid headers.
+# Anchored, so a content heading that merely contains the words is kept. A leading year
+# ("2024 Litter: ... for sale in Salford") is a litter, not a result count.
 NON_CONTENT_LISTING = re.compile(
-    r"refine your results|you might also like|(latest )?featured ads|other pets"
-    r"|results from outside your search|recommended for you|nearest towns( and cities)?"
-    r"|(join|joining) our pack|pupp(y|ies) found$|\d+ .* for sale in")
+    r"^refine your results$|^you might also like\b|^(latest )?featured ads\b"
+    r"|^results from outside your search$|^recommended for you$|^nearest towns( and cities)?$"
+    r"|\bjoin(ing)? our pack\b|^(\d+ )?puppy found$"
+    r"|^(?!(19|20)\d\d )\d+ (\w+ ){0,4}for sale in\b")
 
 
 def clean_h2s(h2s):
@@ -246,30 +250,57 @@ def clean_h2s(h2s):
 
 MIN_USABLE_H2 = 3
 
-# An H2 under one of these is an advert card, a grid header or navigation, never a section.
-CARD_ANCESTORS = {"a", "article", "li", "nav", "header", "footer", "aside", "form", "button",
-                  "template"}
+# An H2 under one of these is an advert card or navigation, never a section. An <article> is
+# a card only on a page with several (one article is a WordPress/Squarespace page wrapper); a
+# <header> is furniture only outside main/section/article (inside one it is a section's own
+# heading). <li> is not a card on its own: accordions put real sections in list items, and
+# advert cards also sit inside an <a> or <article>.
+CARD_ANCESTORS = {"a", "nav", "footer", "aside", "form", "button", "template"}
+HEADER_HOSTS = {"main", "section", "article"}
 RAW_TAGS = {"script", "style", "template"}   # their text is never page text
 VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
              "source", "track", "wbr"}
+# Inside a heading these separate words: "Blue<br>Staffy" reads "Blue Staffy".
+BREAK_TAGS = {"br", "hr", "p", "div", "li", "ul", "ol", "dl", "dt", "dd", "section", "article",
+              "header", "footer", "aside", "nav", "main", "figure", "figcaption", "blockquote",
+              "pre", "table", "tr", "td", "th", "address", "fieldset", "h1", "h3", "h4", "h5",
+              "h6"}
+CHALLENGE = re.compile(r"just a moment|enable javascript and cookies|attention required"
+                       r"|cf-browser-verification", re.I)
+SMALL_PAGE_BYTES = 10 * 1024
 
 
 class _H2s(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.stack, self.out = [], []
-        self._h2 = None   # {"depth", "keep", "parts", "bare"}: bare = text outside any link
+        self.stack, self.found = [], []   # found: (ancestor tags, text, has text outside links)
+        self.articles = self.h2_all = 0
+        self.has_main_or_h1 = False
+        self._h2 = None   # {"depth", "ancestors", "parts", "bare"}: bare = text outside links
+
+    def _space(self):
+        if self._h2 is not None:
+            self._h2["parts"].append(" ")
 
     def handle_starttag(self, tag, attrs):
+        if tag in BREAK_TAGS:
+            self._space()
         if tag in VOID_TAGS:
             return
+        if tag in ("main", "h1"):
+            self.has_main_or_h1 = True
+        if tag == "article":
+            self.articles += 1
         if tag == "h2":
+            self.h2_all += 1
             self._close_h2()
-            self._h2 = {"depth": len(self.stack), "parts": [], "bare": [],
-                        "keep": not any(t in CARD_ANCESTORS for t in self.stack)}
+            self._h2 = {"depth": len(self.stack), "ancestors": list(self.stack),
+                        "parts": [], "bare": []}
         self.stack.append(tag)
 
     def handle_endtag(self, tag):
+        if tag in BREAK_TAGS:
+            self._space()
         if tag not in self.stack:
             return          # a stray end tag closes nothing
         del self.stack[len(self.stack) - 1 - self.stack[::-1].index(tag):]
@@ -285,40 +316,85 @@ class _H2s(HTMLParser):
 
     def _close_h2(self):
         h, self._h2 = self._h2, None
-        text = " ".join("".join(h["parts"]).split()) if h else ""
-        # A heading that is nothing but links is a card title, not a section.
-        if text and h["keep"] and "".join(h["bare"]).strip():
-            self.out.append(text)
+        if h is not None:
+            self.found.append((h["ancestors"], " ".join("".join(h["parts"]).split()),
+                               bool("".join(h["bare"]).strip())))
 
     def close(self):
         super().close()
         self._close_h2()
 
+    def content_h2s(self):
+        out = []
+        for ancestors, text, bare in self.found:
+            # A heading that is nothing but links is a card title, not a section.
+            if not text or not bare or any(t in CARD_ANCESTORS for t in ancestors):
+                continue
+            if self.articles >= 2 and "article" in ancestors:
+                continue
+            if any(t == "header" and not HEADER_HOSTS & set(ancestors[:i])
+                   for i, t in enumerate(ancestors)):
+                continue
+            out.append(text)
+        return out
 
-def extract_h2s(html):
-    """The text of every content <h2> in `html`, in page order.
 
-    Dropped: an H2 with an ancestor in CARD_ANCESTORS (an advert card, a grid header, nav,
-    a form), and an H2 whose text is entirely inside links (a card title). Text inside
-    script/style/template is ignored; whitespace is collapsed; empty headings are dropped.
+def page_report(html):
+    """{"h2": content H2s, "h2_all": every <h2> before filtering, "blocked": bool}.
+
+    blocked: the page looks like a bot challenge or interstitial — it names one ("Just a
+    moment", "Enable JavaScript and cookies", "Attention Required",
+    "cf-browser-verification"), or it has neither <main> nor <h1> and is under 10 KB.
     """
     p = _H2s()
     p.feed(html)
     p.close()
-    return p.out
+    blocked = bool(CHALLENGE.search(html)) or (
+        not p.has_main_or_h1 and len(html.encode("utf-8")) < SMALL_PAGE_BYTES)
+    return {"h2": p.content_h2s(), "h2_all": p.h2_all, "blocked": blocked}
+
+
+def extract_h2s(html):
+    """The text of every content <h2> in `html`, in page order.
+
+    Dropped: an H2 under a link, nav, footer, aside, form, button or template; under an
+    <article> when the page has two or more (advert cards); under a <header> that is not
+    inside main/section/article; and an H2 whose text is entirely inside links (a card
+    title). Text inside script/style/template is ignored; block tags and <br> separate
+    words; whitespace is collapsed; empty headings are dropped.
+    """
+    return page_report(html)["h2"]
+
+
+META_CHARSET = re.compile(rb"""<meta[^>]+charset\s*=\s*["']?([A-Za-z0-9._:-]+)""", re.I)
+
+
+def decode_html(raw):
+    """Decode by the page's <meta charset> when it names a known codec, else UTF-8 with
+    replacement characters."""
+    m = META_CHARSET.search(raw[:4096])
+    if m:
+        try:
+            return raw.decode(m.group(1).decode("ascii"), errors="replace")
+        except LookupError:
+            pass
+    return raw.decode("utf-8", errors="replace")
 
 
 def section_target(pages):
     """(target, rows): match the highest cleaned H2 count unless it is an outlier.
 
-    Only usable pages (at least MIN_USABLE_H2 clean headings) set the number or count as the
+    Only usable pages (not blocked, at least MIN_USABLE_H2 clean headings) set the number or count as the
     outlier's comparison; every page is still reported in rows. Ties on the top count go to
     the better Google position, then Bing, then URL.
     """
     rows = [{"url": p["url"], "google_pos": p.get("google_pos"), "bing_pos": p.get("bing_pos"),
-             "h2_raw": len(p.get("h2", [])), "h2_clean": len(clean_h2s(p.get("h2", []))),
-             "outlier": False} for p in pages]
-    usable = [r for r in rows if r["h2_clean"] >= MIN_USABLE_H2]
+             "h2_raw": p.get("h2_all", len(p.get("h2", []))),
+             "h2_clean": len(clean_h2s(p.get("h2", []))), "outlier": False,
+             "blocked": bool(p.get("blocked", False))} for p in pages]
+    # A blocked page (a bot challenge) is never usable: it neither sets the number nor
+    # makes another page an outlier.
+    usable = [r for r in rows if r["h2_clean"] >= MIN_USABLE_H2 and not r["blocked"]]
     if not usable:
         return {"matched": 0, "set_by": None, "extra": EXTRA_SECTIONS, "floor": SECTION_FLOOR,
                 "total": max(EXTRA_SECTIONS, SECTION_FLOOR)}, rows
@@ -583,6 +659,11 @@ def load_competitors(slug, root=ROOT):
         h2 = p.get("h2", [])
         if not (isinstance(h2, list) and all(isinstance(h, str) for h in h2)):
             raise BadInput(path, f"pages[{i}].h2 must be a list of strings")
+        n = p.get("h2_all", 0)
+        if isinstance(n, bool) or not isinstance(n, int) or n < 0:
+            raise BadInput(path, f"pages[{i}].h2_all must be a non-negative integer")
+        if not isinstance(p.get("blocked", False), bool):
+            raise BadInput(path, f"pages[{i}].blocked must be true or false")
     return d
 
 
@@ -724,12 +805,17 @@ def main(argv=None):
                  "or a build SLUG")
     if a.extract_h2 is not None:
         try:
-            html = Path(a.extract_h2).read_bytes().decode("utf-8", errors="replace")
+            html = decode_html(Path(a.extract_h2).read_bytes())
         except OSError as e:
             print(f"query_augment.py: bad input: {a.extract_h2}: cannot read "
                   f"({e.strerror or e})", file=sys.stderr)
             return EXIT_BAD_INPUT
-        print(json.dumps(extract_h2s(html)))   # ASCII-escaped: safe on any stdout
+        rep = page_report(html)
+        if rep["blocked"]:
+            print(f"query_augment.py: warning: {a.extract_h2} looks blocked (a bot challenge "
+                  "or interstitial) — record it as blocked; it cannot set the section count",
+                  file=sys.stderr)
+        print(json.dumps(rep))   # ASCII-escaped: safe on any stdout
         return EXIT_OK
     slug = modes[0]
     if not SLUG_RE.fullmatch(slug):

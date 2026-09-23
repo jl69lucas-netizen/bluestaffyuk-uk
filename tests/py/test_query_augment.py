@@ -903,7 +903,7 @@ def test_a_bad_builder_fill_is_bad_input(tmp_path, where, value):
 
 # --- Task 7a: real competitor headings from saved pages, and the nine-section floor ----
 
-GUMTREE_LIKE = """<html><body><main><ul>
+GUMTREE_LIKE = """<html><body><header><h2>Site search</h2></header><main><ul>
 <li><article class="standard-card"><a href="/p/1"><div><h2 data-q="tile-title">Staffy £450</h2>
 </div></a></article></li>
 <li><article class="standard-card"><a href="/p/2"><h2>Pablo</h2></a></article></li></ul>
@@ -931,8 +931,10 @@ def test_extract_h2s_drops_advert_cards_inside_links_and_articles():
     assert Q.extract_h2s(GUMTREE_LIKE) == ["Results from outside your search"]
 
 
-def test_extract_h2s_drops_list_item_cards_and_the_grid_header():
-    assert Q.extract_h2s(STAFFIE_OWNERS_LIKE) == ["Buyer's Advice"]
+def test_extract_h2s_drops_advert_cards_and_keeps_the_grid_header_for_clean_h2s():
+    got = Q.extract_h2s(STAFFIE_OWNERS_LIKE)
+    assert got == ["21 Staffie Puppies For Sale In Manchester", "Buyer's Advice"]
+    assert Q.clean_h2s(got) == ["Buyer's Advice"]
 
 
 def test_extract_h2s_keeps_content_and_drops_navigation_and_link_only_headings():
@@ -941,8 +943,8 @@ def test_extract_h2s_keeps_content_and_drops_navigation_and_link_only_headings()
 
 
 def test_extract_h2s_survives_unclosed_and_stray_tags():
-    html = "<main><p>para<h2>Kept <br> Here</h2></a></li><li>item<h2>Dropped</h2></main>"
-    assert Q.extract_h2s(html) == ["Kept Here"]
+    html = "<main><p>para<h2>Kept <br> Here</h2></a></li><ul><li>item<h2>Also kept</h2></main>"
+    assert Q.extract_h2s(html) == ["Kept Here", "Also kept"]
 
 
 def test_cli_extract_h2_prints_the_json_list(tmp_path):
@@ -951,7 +953,9 @@ def test_cli_extract_h2_prints_the_json_list(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr
-    assert json.loads(r.stdout) == ["Buyer's Advice"]
+    assert json.loads(r.stdout) == {"h2": ["21 Staffie Puppies For Sale In Manchester",
+                                           "Buyer's Advice"], "h2_all": 4, "blocked": False}
+    assert r.stderr == ""
 
 
 def test_cli_extract_h2_missing_file_is_bad_input(tmp_path):
@@ -995,3 +999,141 @@ def test_the_schema_requires_the_floor(tmp_path):
     del data["section_target"]["floor"]
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(data, SCHEMA)
+
+
+# --- quality review: page wrappers, line breaks, anchored furniture, blocked pages -------
+
+def test_extract_h2s_keeps_a_wordpress_single_article_page():
+    html = ("<main><article class='page'><h2>Our Puppies</h2><p>a</p><h2>Health Testing</h2>"
+            "<h2>Delivery</h2></article></main>")
+    assert Q.extract_h2s(html) == ["Our Puppies", "Health Testing", "Delivery"]
+
+
+def test_extract_h2s_keeps_squarespace_sections_inside_one_article():
+    html = ("<main><article class='sections'><section><h2>About Us</h2></section>"
+            "<section><h2>Our Parents</h2></section></article></main>")
+    assert Q.extract_h2s(html) == ["About Us", "Our Parents"]
+
+
+def test_extract_h2s_keeps_a_header_inside_a_section_and_drops_the_site_header():
+    html = ("<header class='site'><h2>Menu</h2></header><main>"
+            "<section><header><h2>Our Puppies</h2></header></section></main>")
+    assert Q.extract_h2s(html) == ["Our Puppies"]
+
+
+def test_extract_h2s_keeps_accordion_list_items():
+    html = ("<main><ul class='accordion'><li><h2>Feeding</h2><p>x</p></li>"
+            "<li><h2>Exercise</h2></li></ul></main>")
+    assert Q.extract_h2s(html) == ["Feeding", "Exercise"]
+
+
+def test_extract_h2s_with_one_article_still_drops_a_link_card():
+    html = "<main><article><a href='/x'><h2>Staffy £450</h2></a></article><h2>Kept</h2></main>"
+    assert Q.extract_h2s(html) == ["Kept"]
+
+
+def test_extract_h2s_separates_words_at_line_breaks_and_blocks():
+    html = ("<main><h2>Blue<br>Staffy Puppies</h2><h2><span>Welcome</span><div>to Us</div></h2>"
+            "<h2>Blue<b>Staffy</b></h2></main>")
+    assert Q.extract_h2s(html) == ["Blue Staffy Puppies", "Welcome to Us", "BlueStaffy"]
+
+
+@pytest.mark.parametrize("heading", [
+    "Over 20 years breeding - puppies for sale in Manchester",
+    "Why our 3 generations of staffies for sale in Cheshire are different",
+    "2024 Litter: blue staffy puppies for sale in Salford",
+    "Nearest towns to our kennel",
+    "Puppies found in rescue centres",
+    "What we recommended for you last year",
+])
+def test_clean_h2s_anchored_furniture_keeps_content(heading):
+    assert Q.clean_h2s([heading]) == [heading]
+
+
+CLOUDFLARE_LIKE = ("<!DOCTYPE html><html><head><title>Just a moment...</title></head><body>"
+                   "<div class='main-content'><h1>www.example.com</h1><noscript>Enable "
+                   "JavaScript and cookies to continue</noscript></div></body></html>")
+
+
+@pytest.mark.parametrize("html,blocked", [
+    (CLOUDFLARE_LIKE, True),
+    ("<html><title>Attention Required! | Cloudflare</title><main><h1>x</h1></main></html>", True),
+    ("<div id='cf-browser-verification'><h1>x</h1></div>", True),
+    ("<html><body><p>tiny page, no main, no heading</p></body></html>", True),
+    ("<html><body><main><h2>Real</h2></main></body></html>", False),
+    ("<html><body><h1>Small but real</h1></body></html>", False),
+    ("<html><body>" + "<p>long page</p>" * 1000 + "</body></html>", False),
+], ids=["cloudflare", "attention", "cf-verify", "tiny", "main", "h1", "long"])
+def test_page_report_flags_challenge_pages(html, blocked):
+    assert Q.page_report(html)["blocked"] is blocked
+
+
+def test_page_report_counts_every_h2_before_filtering():
+    rep = Q.page_report(STAFFIE_OWNERS_LIKE)
+    assert rep == {"h2": ["21 Staffie Puppies For Sale In Manchester", "Buyer's Advice"],
+                   "h2_all": 4, "blocked": False}
+
+
+def test_cli_extract_h2_warns_on_a_blocked_page_and_exits_0(tmp_path):
+    f = tmp_path / "cf.html"
+    f.write_text(CLOUDFLARE_LIKE)
+    r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0
+    assert json.loads(r.stdout) == {"h2": [], "h2_all": 0, "blocked": True}
+    lines = r.stderr.strip().splitlines()
+    assert len(lines) == 1 and "blocked" in lines[0] and "cf.html" in lines[0]
+
+
+def test_cli_extract_h2_decodes_by_the_meta_charset(tmp_path):
+    f = tmp_path / "w.html"
+    html = ('<html><head><meta charset="windows-1252"></head><body><main>'
+            '<h2>Prices from \u00a3450</h2>' + "<p>x</p>" * 1000 + "</main></body></html>")
+    f.write_bytes(html.encode("cp1252"))
+    r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
+                       capture_output=True, text=True)
+    assert json.loads(r.stdout)["h2"] == ["Prices from \u00a3450"]
+
+
+def test_decode_html_falls_back_to_utf8_with_replacement():
+    assert Q.decode_html('<meta charset="no-such-codec"><h2>\u00a3</h2>'.encode()) \
+        == '<meta charset="no-such-codec"><h2>\u00a3</h2>'
+    assert Q.decode_html(b"<h2>\xff</h2>") == "<h2>\ufffd</h2>"
+
+
+def test_a_blocked_page_never_sets_or_blocks_the_number():
+    blocked = dict(page("cf", 20, g=1), h2_all=40, blocked=True)
+    target, rows = Q.section_target([blocked, page("b", 10, g=2), page("c", 7, g=3)])
+    assert target["set_by"] == "b" and target["matched"] == 10
+    assert rows[0]["blocked"] is True and rows[0]["h2_raw"] == 40
+    assert not rows[0]["outlier"] and rows[1]["blocked"] is False
+
+
+def test_h2_raw_is_h2_all_when_present():
+    _, rows = Q.section_target([dict(page("a", 3), h2_all=12), page("b", 3)])
+    assert [r["h2_raw"] for r in rows] == [12, 3]
+
+
+def test_build_accepts_blocked_and_h2_all_and_stays_schema_valid(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    f = root / "data/queries/raw/m/competitors.json"
+    d = json.loads(f.read_text())
+    d["pages"].append({"url": "https://cf.example", "google_pos": 2, "bing_pos": None,
+                       "h2": [], "h2_all": 0, "blocked": True})
+    f.write_text(json.dumps(d))
+    data, _ = Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    jsonschema.validate(data, SCHEMA)
+    assert [c["blocked"] for c in data["competitors"]] == [False, True]
+
+
+@pytest.mark.parametrize("extra", [{"h2_all": "3"}, {"h2_all": -1}, {"h2_all": True},
+                                   {"blocked": "yes"}, {"blocked": 1}])
+def test_bad_h2_all_or_blocked_is_bad_input(tmp_path, extra):
+    root = make_root(tmp_path); seed(root)
+    f = root / "data/queries/raw/m/competitors.json"
+    d = json.loads(f.read_text())
+    d["pages"][0].update(extra)
+    f.write_text(json.dumps(d))
+    r = run(root, *BUILD)
+    assert r.returncode == Q.EXIT_BAD_INPUT
+    assert "competitors.json" in r.stderr and next(iter(extra)) in r.stderr

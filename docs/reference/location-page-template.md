@@ -23,9 +23,12 @@ with a new city name.
 2. Strip non-content H2s: sidebar, footer, related posts, repeated calls to action, reviews
    and FAQ headings (ours are frame, so theirs are not counted either). Advert-card titles and
    navigation headings never count — `scripts/query_augment.py --extract-h2` reads the saved
-   page and drops any H2 inside a link, article, list item, nav, header, footer, aside or
-   form, and any H2 that is nothing but a link; search filters, result counts and grid
-   headers ("Refine your results", "30 Puppies found") are stripped as furniture.
+   page and drops any H2 inside a link, nav, footer, aside or form, inside an article when
+   the page has several (advert cards; one article is a page wrapper and counts), inside a
+   site header (a header within a section counts), and any H2 that is nothing but a link;
+   search filters, result counts and grid headers ("Refine your results",
+   "30 Puppies found") are stripped as furniture. A page that comes back as a bot challenge
+   is recorded as blocked: it is in the pool but never sets the number.
 3. Match the highest cleaned H2 count in the pool. If it is more than 1.5× the next highest
    it is an outlier: record it and match the next highest.
 4. Add three sections: the strongest topics in the page's question file that no pooled page

@@ -26,7 +26,8 @@
           "bing_pos": {"type": ["integer", "null"]},
           "h2_raw": {"type": "integer", "minimum": 0},
           "h2_clean": {"type": "integer", "minimum": 0},
-          "outlier": {"type": "boolean"}
+          "outlier": {"type": "boolean"},
+          "blocked": {"type": "boolean"}
         }
       }
     },
