@@ -1589,3 +1589,35 @@ def test_extract_h2s_drops_consent_and_cookie_dialogs():
     # "cmp" counts only as its own class/id segment, so a "cmpt-text" component is content.
     assert rep["h2"] == ["Blue Staffy Puppies in Leeds", "Health Testing"]
     assert rep["h2_all"] == 20
+
+
+# --- Task 9 review: page-level cookie classes, fleas, narrow aftercare ---------------------
+
+@pytest.mark.parametrize("wrapper", [
+    "<body class='home cookies-not-set'><main><section><h2>Our Puppies</h2></section></main></body>",
+    "<html class='cookie-consent-pending'><body><main><h2>Our Puppies</h2></main></body></html>",
+    "<main class='gdpr-ok'><h2>Our Puppies</h2></main>",
+    "<article class='consent-given'><h2>Our Puppies</h2></article>",
+    "<section id='cookie-policy-summary'><h2>Our Puppies</h2></section>",
+], ids=["body", "html", "main", "article", "section"])
+def test_a_cookie_class_on_a_page_level_element_is_not_a_consent_dialog(wrapper):
+    assert Q.extract_h2s(wrapper) == ["Our Puppies"]
+
+
+def test_the_consent_fixture_still_drops_its_vendor_headings():
+    assert Q.extract_h2s("<body class='cookies-not-set'>" + CONSENT_LIKE + "</body>") == \
+        ["Blue Staffy Puppies in Leeds", "Health Testing"]
+
+
+@pytest.mark.parametrize("text,topic", [
+    ("Does my puppy have fleas?", "paperwork"),
+    ("Is the puppy treated for flea and worms?", "paperwork"),
+    ("Do you offer support after I take my puppy home?", "trust"),
+    ("Can you help us after we bring the puppy home?", "trust"),
+    ("Will you give me advice after I get the puppy?", "trust"),
+    ("Can I get advice on feeding after it comes home?", "care"),
+    ("Can I get help after 5pm?", None),
+    ("Is there support after 5pm?", None),
+])
+def test_fleas_and_narrow_aftercare_route_precisely(text, topic):
+    assert Q.topic_of(text)[0] == topic

@@ -71,9 +71,11 @@ TOPICS = (
     ("price", "top",
      r"\b(costs?|prices?|priced|deposit|pay|payment|paying|expensive|cheap\w*|afford\w*)\b"
      r"|\bhow much\b(?!.*\b(exercise|food|feed|eat|weigh\w*|sleep\w*|walk\w*)\b)"),
-    # Intent before delivery's collect/deliver words: aftercare is trust, treatments paperwork.
-    ("trust", "middle", r"\b(support|advice|help)( \w+){0,2} after\b"),
-    ("paperwork", "middle", r"\b(vaccin\w*|microchip\w*|worm\w*|flea)\b"),
+    # Intent before delivery's collect/deliver words: aftercare once the puppy is collected or
+    # home is trust ("help after 5pm" is not), treatments are paperwork.
+    ("trust", "middle",
+     r"\b(support|advice|help)( (me|you|us|with))? after (i|we|you) (collect|take|bring|get)\b"),
+    ("paperwork", "middle", r"\b(vaccin\w*|microchip\w*|worm\w*|fleas?)\b"),
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
     ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (need to |have to )?wait|is there a wait|book\w*|available|availability"
@@ -87,7 +89,7 @@ TOPICS = (
     ("health", "middle",
      r"\b(health\w*|tests?|tested|testing|vets?|l2hga|l 2 hga|hereditary|cataract\w*|guarantee\w*"
      r"|prone to|scratch\w*)\b"),
-    ("trust", "middle", r"\b(puppy farm\w*|ethical\w*|reputable|what (should|to) (i )?ask|support after)\b"),
+    ("trust", "middle", r"\b(puppy farm\w*|ethical\w*|reputable|what (should|to) (i )?ask)\b"),
     ("visit", "middle",
      r"\b(visit\w*|meet (the )?(mother|father|parents|mum|dad)|see (the )?(mother|father|parents|mum|dad|litter)"
      r"|see (the )?puppy with (its|the) mother)\b"),
@@ -404,6 +406,7 @@ CARD_ANCESTORS = {"a", "nav", "footer", "aside", "form", "button", "template"}
 # Consent and cookie dialogs (vendor lists are full of H2s): an ancestor whose id or class
 # names one, or any dialog. "cmp" counts only as its own segment ("qc-cmp2-container"), so a
 # "cmpt-text" component is not caught.
+CONSENT_EXEMPT = {"html", "body", "main", "article", "section"}   # page level: never a dialog
 CONSENT = re.compile(r"consent|cookie|onetrust|gdpr|didomi|qc-cmp|(^|[-_\s])cmp(\d|[-_\s]|$)",
                      re.I)
 HEADER_HOSTS = {"main", "section", "article"}
@@ -467,9 +470,10 @@ class _H2s(HTMLParser):
             self._h2 = {"depth": len(self.stack), "ancestors": list(self.stack),
                         "parts": [], "bare": []}
         a = dict(attrs)
-        consent = (a.get("role") or "").lower() == "dialog" \
-            or (a.get("aria-modal") or "").lower() == "true" \
-            or bool(CONSENT.search(f"{a.get('id') or ''} {a.get('class') or ''}"))
+        consent = tag not in CONSENT_EXEMPT and (
+            (a.get("role") or "").lower() == "dialog"
+            or (a.get("aria-modal") or "").lower() == "true"
+            or bool(CONSENT.search(f"{a.get('id') or ''} {a.get('class') or ''}")))
         self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
                            "h2": False, "nested": False, "consent": consent})
 
@@ -566,7 +570,10 @@ def extract_h2s(html):
 
     Dropped: an H2 under a link, nav, footer, aside, form, button or template; whose
     nearest <article> is a card (an H2-bearing article holding no H2-bearing article, on a
-    page with two or more such); under an
+    page with two or more such); inside a consent or cookie dialog (an ancestor with
+    role="dialog" or aria-modal="true", or whose id or class names consent, cookie,
+    onetrust, gdpr, didomi, qc-cmp or a "cmp" segment — never html, body, main, article or
+    section, which carry page-level classes like "cookies-not-set"); under an
     <li> whose list has three or more H2-bearing items (a card grid); under a <header>
     that is not inside main/section/article; and an H2 whose text is entirely inside links (a card
     title). Text inside script/style/template is ignored; block tags and <br> separate
