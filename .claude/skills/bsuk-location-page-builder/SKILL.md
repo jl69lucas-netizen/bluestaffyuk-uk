@@ -353,6 +353,12 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
    `data/facts/<key>.json`) and, where rule 15 applies (the page is in
    `data/verbatim/applies.json`), `python3 scripts/verbatim_set_check.py --extract <key>`
    (its verbatim set into `data/verbatim/<key>.json`). Both read the built migrated page.
+   `<key>` is the page's bare slug (the bare slug for a top-level page, e.g.
+   `blue-staffy-health-uk`). For a city page (`uk-locations/<slug>`) this step is held by the
+   same STOP rule — `scripts/facts_preserved_check.py` and `scripts/verbatim_set_check.py` cannot yet read or
+   write nested routes. Once Project 5 fixes that, run these extracts FIRST, before any
+   rewrite, while `dist/` still holds the migrated page: the extraction cannot be redone
+   afterwards. Never start a city rewrite without them.
 5. Approve the board, then build. Add the page to `data/facts/rebuilt.json` only once the
    nested-route STOP rule above is cleared.
 6. Below 97% confidence: write what is not blocked, log the question to the brief's
