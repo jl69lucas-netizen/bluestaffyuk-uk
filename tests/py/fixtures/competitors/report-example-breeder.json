@@ -1,0 +1,19 @@
+{
+  "id": "example-breeder", "root_domain": "example-breeder.co.uk", "analysed_on": "2026-09-24",
+  "keywords": {"status": "ok", "values": ["blue staffy puppies manchester", "blue staffy vs american bully", "staffy puppy price"]},
+  "page_types": {"status": "ok", "values": {"city": 1, "comparison": 1, "price": 1}},
+  "cities": {"status": "ok", "values": ["Manchester"]},
+  "schema_types": {"status": "NOT FETCHED", "reason": "fixture"},
+  "pages": {"status": "ok", "fetched_on": "2026-09-24", "values": [
+    {"url": "https://example-breeder.co.uk/blue-staffy-puppies-manchester/", "title": "Blue Staffy Puppies Manchester", "h1": "Blue Staffy Puppies in Manchester", "h2": ["Available Puppies", "Delivery to Manchester"]},
+    {"url": "https://example-breeder.co.uk/blue-staffy-vs-american-bully/", "title": "Blue Staffy vs American Bully", "h1": "Blue Staffy vs American Bully", "h2": ["Size", "Temperament", "Law"]},
+    {"url": "https://example-breeder.co.uk/staffy-puppy-price/", "title": "How Much Is a Staffy Puppy?", "h1": "Staffy Puppy Prices", "h2": ["What Affects the Price", "Deposits"]}
+  ]},
+  "trust": {"status": "NOT FETCHED", "reason": "fixture"},
+  "content": {"status": "NOT FETCHED", "reason": "fixture"},
+  "blog": {"status": "NOT FETCHED", "reason": "fixture"},
+  "visual": {"status": "NOT FETCHED", "reason": "fixture"},
+  "conversion": {"status": "NOT FETCHED", "reason": "fixture"},
+  "technical": {"status": "NOT FETCHED", "reason": "fixture"},
+  "key_insight": "Fixture for the keyword-gap agent: three fetched pages, the rest not fetched."
+}

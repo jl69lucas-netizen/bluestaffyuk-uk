@@ -15,7 +15,7 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 38
+## Agents — 39
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
@@ -39,12 +39,13 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-seo-content-writer.md` | Writes SEO body copy for any BlueStaffyUK page or section, in Lisa Bright's first-person brand voice |
 | `.claude/agents/bsuk-structure-architect.md` | The BSUK silo architect — maps content clusters into Silo (top-down authority) or Reverse Silo (bottom-up ranking) shapes across … |
 
-### `tier_high` — 10
+### `tier_high` — 11
 
 | Agent | Does |
 |---|---|
 | `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle |
 | `.claude/agents/bsuk-comparison-builder.md` | Builds and rebuilds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — landing under … |
+| `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/), the … |

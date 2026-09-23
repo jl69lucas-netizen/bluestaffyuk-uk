@@ -327,3 +327,18 @@ def test_a_differing_matrix_shows_the_first_difference(tmp_path):
     assert r.returncode == 1
     assert "-| x | 1/1 | 0 | not fetched | high |" in r.stdout
     assert "+| x | 5/1 | 0 | not fetched | high |" in r.stdout
+
+
+def test_the_agent_fixture_report_is_schema_valid(tmp_path):
+    # The keyword-gap agent's RED/GREEN fixture must pass the same load the real reports do:
+    # the schema, the file-name id and the cities checked against data/locations.json.
+    fixture = REPO / "tests/py/fixtures/competitors/report-example-breeder.json"
+    d = tmp_path / "docs/research/competitors"
+    d.mkdir(parents=True)
+    (d / "example-breeder.json").write_text(fixture.read_text())
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/locations.json").write_text((REPO / "data/locations.json").read_text())
+    bsuk, comps = G.load_reports(tmp_path)
+    assert bsuk is None
+    assert list(comps) == ["example-breeder"]
+    assert comps["example-breeder"]["pages"]["status"] == "ok"

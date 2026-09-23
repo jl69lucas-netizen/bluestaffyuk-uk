@@ -46,6 +46,9 @@
     "bsuk-comparison-builder": {
       "tier": "tier_high"
     },
+    "bsuk-competitive-keyword-gap-agent": {
+      "tier": "tier_high"
+    },
     "bsuk-competitor-intel": {
       "tier": "tier_max"
     },
