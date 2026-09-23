@@ -346,9 +346,10 @@ def clean_h2s(h2s):
 MIN_USABLE_H2 = 3
 
 # An H2 under one of these is an advert card or navigation, never a section. An <article> is
-# a card only when the page has two or more articles that each hold an H2 (one is a
-# WordPress/Squarespace page wrapper; related-post articles titled in H3s do not make it a
-# grid). An <li> is a card only when its list has three or more items that each hold an H2
+# a card only when it holds an H2, holds no H2-bearing article of its own, and the page has
+# two or more such articles; an H2 is a card title only when its NEAREST article is a card.
+# So a WordPress/Squarespace page-wrapper article keeps its H2s even when it holds a block of
+# summary cards, and related-post articles titled in H3s never make a grid. An <li> is a card only when its list has three or more items that each hold an H2
 # (a two-question accordion is content). A <header> is furniture only outside
 # main/section/article (inside one it is a section's own heading).
 CARD_ANCESTORS = {"a", "nav", "footer", "aside", "form", "button", "template"}
@@ -367,15 +368,18 @@ BREAK_TAGS = {"br", "hr", "p", "div", "li", "ul", "ol", "dl", "dt", "dd", "secti
 # (the "enable JavaScript" line, a small page with no <main> or <h1>) count only on a page
 # with no H2 at all: a real page can say either.
 CHALLENGE_TITLE = re.compile(r"^\s*(just a moment|attention required|access denied)", re.I)
-CHALLENGE_MARKERS = ("_cf_chl_opt", "cf-browser-verification", "/cdn-cgi/challenge-platform/")
-CHALLENGE_WEAK = re.compile(r"enable javascript and cookies", re.I)
+CHALLENGE_MARKERS = ("_cf_chl_opt", "cf-browser-verification")
+# Ordinary protected pages also load the challenge-platform script, so it is weak.
+CHALLENGE_WEAK = re.compile(r"enable javascript and cookies|/cdn-cgi/challenge-platform/", re.I)
 SMALL_PAGE_BYTES = 10 * 1024
 
 
 class _H2s(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.stack = []   # open elements: {"tag", "parent", "h2"} (parent: the entry below)
+        # open elements: {"tag", "parent", "h2", "nested"}; parent is the entry below it;
+        # nested marks an article that holds an H2-bearing article
+        self.stack = []
         self.found = []   # (ancestor entries, text, has text outside links)
         self.h2_all = 0
         self.has_main_or_h1 = False
@@ -397,15 +401,31 @@ class _H2s(HTMLParser):
         if tag == "title" and self.title is None and self._title is None \
                 and not any(e["tag"] == "svg" for e in self.stack):
             self._title = []
+        if tag == "li":
+            self._close_open_item()
         if tag == "h2":
             self.h2_all += 1
             self._close_h2()
             for e in self.stack:
                 e["h2"] = True
+            articles = [e for e in self.stack if e["tag"] == "article"]
+            for e in articles[:-1]:
+                e["nested"] = True
             self._h2 = {"depth": len(self.stack), "ancestors": list(self.stack),
                         "parts": [], "bare": []}
         self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
-                           "h2": False})
+                           "h2": False, "nested": False})
+
+    def _close_open_item(self):
+        """A new <li> closes an open <li> of the same list, as a browser does."""
+        for i in range(len(self.stack) - 1, -1, -1):
+            if self.stack[i]["tag"] in ("ul", "ol", "menu"):
+                return
+            if self.stack[i]["tag"] == "li":
+                del self.stack[i:]
+                if self._h2 is not None and len(self.stack) <= self._h2["depth"]:
+                    self._close_h2()
+                return
 
     def handle_endtag(self, tag):
         if tag in BREAK_TAGS:
@@ -441,9 +461,8 @@ class _H2s(HTMLParser):
 
     def content_h2s(self):
         seen = {id(e): e for anc, _, _ in self.found for e in anc}.values()
-        h2_articles = [e for e in seen if e["tag"] == "article" and e["h2"]]
-        card_articles = ({id(e) for e in h2_articles}
-                         if len(h2_articles) >= MIN_CARD_ARTICLES else set())
+        leaves = [e for e in seen if e["tag"] == "article" and e["h2"] and not e["nested"]]
+        card_articles = {id(e) for e in leaves} if len(leaves) >= MIN_CARD_ARTICLES else set()
         items = Counter(id(e["parent"]) for e in seen
                         if e["tag"] == "li" and e["h2"] and e["parent"] is not None)
         out = []
@@ -452,7 +471,8 @@ class _H2s(HTMLParser):
             # A heading that is nothing but links is a card title, not a section.
             if not text or not bare or CARD_ANCESTORS & set(tags):
                 continue
-            if any(id(e) in card_articles for e in ancestors):
+            nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
+            if nearest and id(nearest[0]) in card_articles:
                 continue
             if any(e["tag"] == "li" and e["parent"] is not None
                    and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors):
@@ -469,9 +489,9 @@ def page_report(html):
 
     blocked: a bot challenge or interstitial — the <title> starts "Just a moment",
     "Attention Required" or "Access Denied", or the page carries a Cloudflare challenge
-    marker (_cf_chl_opt, cf-browser-verification, /cdn-cgi/challenge-platform/). On a page
-    with no <h2> at all, "Enable JavaScript and cookies", or being under 10 KB with neither
-    <main> nor <h1>, also counts.
+    marker (_cf_chl_opt, cf-browser-verification). On a page with no <h2> at all,
+    "Enable JavaScript and cookies", the /cdn-cgi/challenge-platform/ script, or being under
+    10 KB with neither <main> nor <h1>, also counts.
     """
     p = _H2s()
     p.feed(html)
@@ -486,8 +506,9 @@ def page_report(html):
 def extract_h2s(html):
     """The text of every content <h2> in `html`, in page order.
 
-    Dropped: an H2 under a link, nav, footer, aside, form, button or template; under an
-    <article> when the page has two or more H2-bearing articles (advert cards); under an
+    Dropped: an H2 under a link, nav, footer, aside, form, button or template; whose
+    nearest <article> is a card (an H2-bearing article holding no H2-bearing article, on a
+    page with two or more such); under an
     <li> whose list has three or more H2-bearing items (a card grid); under a <header>
     that is not inside main/section/article; and an H2 whose text is entirely inside links (a card
     title). Text inside script/style/template is ignored; block tags and <br> separate

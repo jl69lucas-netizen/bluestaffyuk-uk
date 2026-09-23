@@ -1358,3 +1358,32 @@ def test_build_puts_buyer_wording_in_the_faq(tmp_path):
     assert "How much does a puppy cost?" not in by_q
     assert buyer["faq"] == "top" and buyer["score"] == 2 + 1 + 2
     assert buyer["found_in"] == ["serp_google_paa", "bank:b0"]
+
+
+# --- extractor: page wrapper vs card, unclosed list items, the challenge script ----------
+
+def test_the_challenge_platform_script_alone_does_not_block_a_real_page():
+    html = ("<html><head><title>Kennel</title><script src='/cdn-cgi/challenge-platform/h/b/"
+            "scripts/jsd/main.js'></script></head><body><main><h2>Our Puppies</h2>"
+            "<h2>Health Testing</h2></main></body></html>")
+    assert Q.page_report(html)["blocked"] is False
+
+
+def test_a_squarespace_wrapper_keeps_its_h2s_and_its_summary_cards_drop():
+    html = ("<main><article class='sections'><section><h2>About Us</h2></section>"
+            "<section><h2>Our Parents</h2></section><section><h2>Delivery</h2>"
+            "<div class='summary-block'><article class='summary-item'><h2>Blog card one</h2>"
+            "</article><article class='summary-item'><h2>Blog card two</h2></article></div>"
+            "</section></article></main>")
+    assert Q.extract_h2s(html) == ["About Us", "Our Parents", "Delivery"]
+
+
+def test_unclosed_list_items_close_at_the_next_item():
+    html = "<main><ul><li><h2>Pablo</h2><li><h2>Rex</h2><li><h2>Staffy £500</h2></ul></main>"
+    assert Q.extract_h2s(html) == []
+
+
+def test_a_nested_list_inside_an_unclosed_item_is_its_own_list():
+    html = ("<main><ul><li><h2>Feeding</h2><ul><li>a<li>b</ul><li><h2>Exercise</h2></ul>"
+            "</main>")
+    assert Q.extract_h2s(html) == ["Feeding", "Exercise"]
