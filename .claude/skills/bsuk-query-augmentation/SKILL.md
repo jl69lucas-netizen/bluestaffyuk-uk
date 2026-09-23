@@ -27,6 +27,9 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 - **Money:** before each batch of paid calls, tell the user which calls, why, and the estimate
   (`query_typical_call_usd` in `data/settings.json` per call), and wait for a yes. Report the
   spend after. Never delete or edit `data/queries/spend.json`.
+- **Firecrawl is not free:** every Firecrawl search or scrape spends the user's Firecrawl
+  credits (the response shows `creditsUsed`). Add them up and put them in the spend report.
+  The free rungs are the browser and `curl`.
 
 ## Exit codes (every mode)
 
@@ -40,8 +43,10 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 python3 scripts/query_augment.py --preflight <slug> --source <serp_google|serp_bing|ai_engines>
 ```
 
-One preflight per call. `--refresh` only when the user asked for fresh data. A saved
-`<source>.json` or `<source>.response.json` counts as bought: exit 3, no call.
+One preflight per call. A saved `<source>.response.json`, or a `<source>.json` with
+`"status": "ok"`, counts as bought: exit 3, no call. A `fallback` or `NOT FETCHED` file does
+not block a later paid call — no `--refresh` needed for that. `--refresh` is only for
+re-buying a real response, and only when the user asked for fresh data.
 
 ## Step 2 — the three candidate sources
 
@@ -53,7 +58,8 @@ One preflight per call. `--refresh` only when the user asked for fresh data. A s
 
 **Where Google People Also Ask comes from:** the paid Google call above, behind preflight and
 the user's yes. The free fallback (connector missing, out of credit, or the user declines) is
-the `bsuk-paa-agent` browser protocol, then Firecrawl search, with `"status": "fallback"`. If
+the `bsuk-paa-agent` browser protocol (free), then Firecrawl search (spends Firecrawl
+credits — count them), with `"status": "fallback"`. If
 Google answers with a robot check or a challenge page, that source is **NOT FETCHED**: write no
 file (the script records it). Never solve, dodge or retry around a robot check.
 
@@ -91,8 +97,10 @@ Pool: the first five organic results from Google (the `serp_google` response) an
 five from Bing (the `results` in `raw/<slug>/serp_bing.json`), merged. **Marketplaces and
 directories are in the pool** — only off-topic results are dropped.
 
-For each pool page: save its HTML to the scratchpad (Firecrawl scrape raw HTML, or the browser),
-then:
+For each pool page, save its HTML to the scratchpad. Prefer the page's original HTML via
+`curl` (free, and cleanest). If that fails, use a browser capture (free, but a rendered capture
+can include consent dialogs; the extractor drops them). Firecrawl scrape raw HTML comes last
+because it spends credits. Then run:
 
 ```bash
 python3 scripts/query_augment.py --extract-h2 <scratchpad>/<page>.html
@@ -132,6 +140,9 @@ The builder writes the page **from the file**, never from judgement:
   (Step 5). Never swap, add or drop a pick by hand.
 - **City wording:** a question may name the city on the page ("Do You Deliver Staffy Puppies to
   Leeds?") only if its meaning is unchanged and its answer stays within its fact.
+- **Topics are the script's** (`topic` in the file). Aftercare ("support after…") is `trust`;
+  treatments (vaccinations, microchip, worming, flea) are `paperwork`, even when the question
+  also says "collect". Never move a question to another block or topic by hand.
 - **Answers** state only what the `fact_source` says: no figure, length or promise the source
   does not give. A placeholder (`LICENCE_CLAIM_PLACEHOLDER`, `LEGAL_CLAIM_PLACEHOLDER`, a `null`
   like `guarantee_days`) stays a placeholder.
@@ -173,3 +184,6 @@ read in the browser, marketplaces in the pool, one challenge page recorded as bl
 - Forgetting `uk-locations/<slug>` in `data/facts/rebuilt.json`, so the gate never checks the page.
 - Copying the repo to a scratch folder to run the script, or writing browser files into the repo.
 - Deleting or editing `data/queries/spend.json`.
+- Calling Firecrawl free, or leaving its credits out of the spend report.
+- Using `--refresh` to get past a `fallback` or `NOT FETCHED` file (it no longer blocks).
+- Capturing a competitor page in the browser or with Firecrawl when `curl` gets the source HTML.
