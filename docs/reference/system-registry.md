@@ -15,14 +15,14 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 40
+## Agents — 41
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
 `scripts/build_agent_registry.py`. To change an agent's effort, edit its frontmatter
 and regenerate — never the other way round.
 
-### `tier_max` — 12
+### `tier_max` — 13
 
 | Agent | Does |
 |---|---|
@@ -37,6 +37,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-non-commodity-content-agent.md` | Produces original, breeder-authentic Staffy content no generic model could write, via a 3-phase Triad (Archaeologist / Provocateur / … |
 | `.claude/agents/bsuk-purchase-guide.md` | Rebuilds /buy-blue-staffy-puppies-uk/ section-by-section |
 | `.claude/agents/bsuk-seo-content-writer.md` | Writes SEO body copy for any BlueStaffyUK page or section, in Lisa Bright's first-person brand voice |
+| `.claude/agents/bsuk-strategy-synthesizer.md` | Use after the competitor research has run (gap matrix, keyword-gap list, competitor reports, LLM intel) and BlueStaffyUK needs a content … |
 | `.claude/agents/bsuk-structure-architect.md` | The BSUK silo architect — maps content clusters into Silo (top-down authority) or Reverse Silo (bottom-up ranking) shapes across … |
 
 ### `tier_high` — 12

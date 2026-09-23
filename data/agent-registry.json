@@ -136,6 +136,9 @@
     "bsuk-site-hygiene-agent": {
       "tier": "tier_medium"
     },
+    "bsuk-strategy-synthesizer": {
+      "tier": "tier_max"
+    },
     "bsuk-structure-architect": {
       "tier": "tier_max"
     },
