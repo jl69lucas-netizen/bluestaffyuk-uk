@@ -87,7 +87,7 @@ What the script decides (to explain it, never to redo it):
 - **Citations:**
   - every `sources` / `citations` entry and every link in the answer text, reduced to the registry's root domain (two labels, or three under `co`, `org`, `me`, `ltd`, `plc`, `ac`, `gov`, `net`, `sch` or `com` plus a two-letter country code — imported from `scripts/competitor_registry_check.py`), once each;
   - `search_results` (pages the engine read but did not cite) are not citations;
-  - the answer's **local businesses** are kept apart the same way;
+  - the answer's **local businesses** are kept apart the same way — `local_businesses` entries and `brand_entities` items whose `category` is `local_business`; a brand entity with a title and no link is kept by `name`, mapped to a registry entry only when its name is that entry's name exactly (then it takes the entry's domain), else `domain: null`;
   - WhatsApp, maps and social-profile hosts are dropped as contact or profile links — never recorded;
   - hosted-platform hosts (Blogspot, WordPress.com, Wix, Squarespace, Weebly …) are kept with `platform: true` — a seller on a platform, never a registry candidate;
   - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains (the business email's domain in `data/settings.json`, a site-domain key there if one is added, and the build placeholder);
@@ -207,8 +207,11 @@ text = norm(answer)
 cited = [v.get("url") or v.get("domain") if isinstance(v, dict) else v
          for k, v in nodes if k in ("sources", "citations") and not isinstance(v, list)]
 cited += re.findall(r"https?://[^\s)\]>\"']+", answer)
-local = [v.get("domain") or v.get("url") for k, v in nodes if isinstance(v, dict)
-         and (k == "local_businesses" or "local_business" in str(v.get("type", "")))]
+is_local = lambda k, v: isinstance(v, dict) and (k == "local_businesses" or "local_business" in str(v.get("type", ""))
+                                                 or (k == "brand_entities" and v.get("category") == "local_business"))
+local = [v.get("domain") or v.get("url") for k, v in nodes if is_local(k, v)]
+named = [v["title"].strip() for k, v in nodes if is_local(k, v) and not (v.get("domain") or v.get("url"))
+         and isinstance(v.get("title"), str) and v["title"].strip()]  # a brand entity names a business, no link
 reg = json.load(open("data/competitors.json"))["competitors"] if os.path.exists("data/competitors.json") else []
 by_domain = {c["root_domain"]: c for c in reg}
 def sites(items):
@@ -221,6 +224,12 @@ def sites(items):
                         "platform": d in PLATFORM_HOSTS})
     return out
 citations, local_b = sites(cited), sites(local)
+by_name = {c["name"].casefold(): c for c in reg if isinstance(c.get("name"), str)}
+for n in named:  # a registry entry's exact name maps to it and its domain; any other name keeps domain null
+    c = by_name.get(n.casefold())
+    if n.casefold() not in [s.get("name", "").casefold() for s in local_b] and not (c and c["root_domain"] in [s["domain"] for s in local_b]):
+        local_b.append({"name": n, "domain": c["root_domain"] if c else None, "registry_id": c["id"] if c else None,
+                        "tier": c["tier"] if c else None, "platform": False})
 everything = citations + local_b
 bsuk = any(s["domain"] in OWN for s in everything)
 # the page text: the built page if indexable, else the question file's page questions, else the page map
@@ -295,7 +304,7 @@ if not fetched_on:
     fail("the answer's date is unknown: PAID=1 needs FETCHED_ON; otherwise no ai_engines.json and no FETCHED_ON")
 stale = [f"answer fetched {fetched_on or today}, {age(fetched_on or today)} days old"] if age(fetched_on or today) > 30 else []
 stale += [f"{matrix} is {age(matrix[-13:-3])} days old"] if matrix and age(matrix[-13:-3]) > 30 else []
-uniq = list({s["domain"]: s for s in everything}.values())  # a site both cited and listed counts once
+uniq = list({s["domain"] or s["name"]: s for s in everything}.values())  # a site both cited and listed counts once
 out = {"slug": slug, "date": today, "engine": "chatgpt", "endpoint": "ai_optimization_chat_gpt_scraper",
        "location": "United Kingdom", "query": QUERY, "query_source": qsrc, "stale": stale, "fetched": {"status": "ok", "fetched_on": fetched_on},
        "raw": f"data/queries/raw/{slug}/ai_engines.response.json", "answer_text": how,

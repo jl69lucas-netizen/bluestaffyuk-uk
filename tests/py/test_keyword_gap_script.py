@@ -294,3 +294,12 @@ def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
     vet = row(d["gaps"], "staffy vet aberdeen")                    # a city is intent only on a city topic
     assert (vet["intent"], vet["score"], vet["band"]) == (0, 6, "medium")
     assert (training["intent"], rescue["intent"]) == (0, 0)
+
+
+def test_every_licence_spelling_is_always_high_like_llm_intels_safety_list(root):
+    # the same spellings llm-intel's "licence" entity matches: licence, license, licensed, licenced, licensing
+    pages = [page(f"https://l.co.uk/{w}/", f"Staffy {w.title()} Info") for w in
+             ("licence", "license", "licensed", "licenced", "licensing")]
+    d = run(root, profile(root), write(root, "l.json", report("lic", pages)))
+    for w in ("licence", "license", "licensed", "licenced", "licensing"):
+        assert row(d["gaps"], f"staffy {w} info")["always_high"] is True, w

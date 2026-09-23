@@ -67,7 +67,7 @@ Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other bus
 
 ## Output — docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy.md
 
-`<topic>` is lowercase words joined by hyphens (`location-pages`); a second run the same day adds `-2` (then `-3`). Write this one file and nothing else.
+`<topic>` is lowercase words joined by hyphens (`location-pages`); a second run the same day adds `-2` (then `-3`) at the end of the name: `<YYYY-MM-DD>-<topic>-strategy-2.md`. Write this one file and nothing else.
 
 ```
 <STALE / MISSING lines, then one fresh line>

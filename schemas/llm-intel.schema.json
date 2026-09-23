@@ -33,7 +33,7 @@
     "paid_this_run": {"type": "boolean"},
     "bsuk_cited": {"type": ["boolean", "null"]},
     "citations": {"type": "array", "items": {"$ref": "#/$defs/site"}},
-    "local_businesses": {"type": "array", "items": {"$ref": "#/$defs/site"}},
+    "local_businesses": {"type": "array", "items": {"oneOf": [{"$ref": "#/$defs/site"}, {"$ref": "#/$defs/named_site"}]}},
     "citation_gap": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
     "risks": {"type": "array", "items": {
       "type": "object", "additionalProperties": false, "required": ["domain", "registry_id", "reason"],
@@ -82,6 +82,17 @@
       "properties": {
         "domain": {"$ref": "#/$defs/domain"},
         "platform": {"type": "boolean", "description": "a hosted-platform seller (blogspot.com, wixsite.com ...): never a registry candidate"},
+        "registry_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "tier": {"enum": [1, 2, 3, 4, 5, null]}
+      }
+    },
+    "named_site": {
+      "description": "a local business the answer names with no link (a brand entity in the local_business category): mapped to a registry entry only by its exact name, which gives it that entry's domain",
+      "type": "object", "additionalProperties": false, "required": ["name", "domain", "registry_id", "tier", "platform"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+        "domain": {"oneOf": [{"$ref": "#/$defs/domain"}, {"type": "null"}]},
+        "platform": {"const": false},
         "registry_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
         "tier": {"enum": [1, 2, 3, 4, 5, null]}
       }

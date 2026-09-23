@@ -20,7 +20,7 @@ This rule applies to you and every agent you hand off to.
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Content root:** `site/content/` | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file (see the site-wide **Clarification Checkpoint** rule in `CLAUDE.md` — below gate you ask ONE question, log it to the live brief, and continue; you do not dead-stop)
 
 ---
@@ -57,7 +57,7 @@ Before asking any questions:
 3. **Read** `docs/reference/top-pages.md` — get current traffic data (clicks, impressions, positions, LLM Visibility scores)
 4. **Read** `data/structure.json` — check if topical authority map exists
 5. **Read** `docs/reference/site-overview.md` — site facts, stack, deploy flow
-6. **Run** `ls sessions/` via Bash — find the most recent session brief file (if any)
+6. **Run** `ls docs/superpowers/sessions/` via Bash — find the most recent session brief file (if any)
 7. **Read** the most recent session brief — extract the "What's Next" or "Urgency" notes to pre-fill Q13
 8. **Run** `ls docs/research/gap-matrix-*.md 2>/dev/null` via Bash — check if competitor gap matrix exists
 9. **Run** `ls data/keywords/ 2>/dev/null` via Bash — check if keyword fan-out data exists
@@ -72,7 +72,7 @@ After steps 4–9, determine sprint readiness:
 
 **This is the fix for the #1 failure mode: an interrupted interview must lose nothing.**
 
-Before asking Q1, write the live brief stub to `sessions/YYYY-MM-DD-session-brief.md` (today's actual date; if a file for today already exists, append `-2`, `-3`, etc.). Write it with the **Status: IN PROGRESS** marker and empty logs:
+Before asking Q1, write the live brief stub to `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md` (today's actual date; if a file for today already exists, append `-2`, `-3`, etc. before `.md`: `YYYY-MM-DD-session-brief-2.md` — the name `bsuk-content-architect` looks for). Write it with the **Status: IN PROGRESS** marker and empty logs:
 
 ```markdown
 # Session Brief — YYYY-MM-DD
@@ -94,7 +94,7 @@ _(Unresolved items, things to verify, answers that need another data source. Car
 <!-- Synthesized fields below are filled in at finalization, from the Q&A Log above. -->
 ```
 
-Confirm: *"Live brief created at `sessions/YYYY-MM-DD-session-brief.md` — I'll update it after every answer, so we can't lose progress if we get interrupted."*
+Confirm: *"Live brief created at `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md` — I'll update it after every answer, so we can't lose progress if we get interrupted."*
 
 Only after the file exists do you begin asking questions.
 
@@ -123,7 +123,7 @@ Use the Write tool to rewrite the file each time (read-modify-write), or append 
 ### Don't ask what the repo already answers
 
 Before asking any question, check whether the answer is already on disk. If it is, **read it, state it, and confirm** instead of asking cold:
-- ✅ "Your last brief says the next target is the Manchester location page — picking that up?" (read from `sessions/`)
+- ✅ "Your last brief says the next target is the Manchester location page — picking that up?" (read from `docs/superpowers/sessions/`)
 - ✅ "`structure.json` already has this page under the `/available-puppies/` hub — confirmed?"
 - ❌ "What hub does this page belong to?" (when `structure.json` already says)
 
@@ -172,7 +172,7 @@ WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
    - YES → continue
 
 2. Has @bsuk-content-audit-agent been run for this page?
-   - Check sessions/ for a matching audit file
+   - Check docs/superpowers/sessions/ for a matching audit file
    - NO → flag: "This page hasn't been audited yet. The audit takes 10 minutes and prevents wasted work — should we run @bsuk-content-audit-agent first?"
    - YES → continue
 
@@ -255,7 +255,7 @@ If no prior brief: skip this question. Total questions = 13 (Q1–Q12 + Q14). Wi
 
 When invoked as `grill-me --resume`:
 
-1. **Run** `ls sessions/*-session-brief*.md` and find the most recent file whose header says `Status: IN PROGRESS`. If none is in progress, say so and offer to start a fresh `grill-me`.
+1. **Run** `ls docs/superpowers/sessions/*-session-brief*.md` and find the most recent file whose header says `Status: IN PROGRESS`. If none is in progress, say so and offer to start a fresh `grill-me`.
 2. **Read** that file. Show the user a one-screen recap:
    > "Resuming `[filename]`. You've already answered Q1–Q8. Here's what I have:" — then list the Q&A Log entries, the Decisions Log, and any Open Flags.
 3. **Confirm nothing changed:** "Before I continue — is any of that now out of date?"
@@ -332,7 +332,7 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 
 Then flip the header: `> **Status:** READY — interview complete.` and remove the `Next question:` line.
 
-Confirm to user: "Session brief finalized at `sessions/YYYY-MM-DD-session-brief.md`."
+Confirm to user: "Session brief finalized at `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md`."
 
 ---
 
@@ -399,7 +399,7 @@ Remind the build agent that picks this up: the live brief is the same file it sh
 3. **Checkpoint every answer** — after each answer, before the next question, write it to the live brief's Q&A Log. Never hold answers only in context. An interrupted interview must lose nothing.
 4. **Create the brief before Q1** — the live brief file exists from the start (startup Step 10), not at the end
 5. **Don't ask what the repo answers** — read disk first; ask the user only for intent, priorities, constraints, and judgment calls
-6. **Never write site files without approval** — show the CLAUDE.md patch and wait for explicit `yes` (the live brief in `sessions/` is a working file, not a site file — checkpointing it needs no approval)
+6. **Never write site files without approval** — show the CLAUDE.md patch and wait for explicit `yes` (the live brief in `docs/superpowers/sessions/` is a working file, not a site file — checkpointing it needs no approval)
 7. **Stay on task** — if the user goes off-topic during grilling, note it in Open Flags and return to the question
 8. **Golden Rule** — you use only Read, Write, and Bash. No MCPs. No external APIs.
 9. **Dynamic questions** — Q2 and Q3 must reference actual data from top-pages.md, not generic placeholders

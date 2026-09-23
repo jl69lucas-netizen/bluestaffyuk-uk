@@ -16,7 +16,7 @@ allowed-tools: [Read, Write, Bash]
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Content root:** `site/content/` | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -38,7 +38,7 @@ You never build pages or write HTML. You only write to session briefs and CLAUDE
 
 ## On Startup — Read These First
 
-1. **Run** `ls sessions/` — find today's session brief file (format: `YYYY-MM-DD-session-brief.md`)
+1. **Run** `ls docs/superpowers/sessions/` — find today's session brief file (format: `YYYY-MM-DD-session-brief.md`)
 2. **Read** today's session brief — understand what was planned at the start
 3. **Read** `CLAUDE.md` — check current "What's Next" and "Known Issues"
 4. **Run** `git log --oneline -10` — see what was actually committed this session
@@ -142,7 +142,7 @@ After writing (or skipping) the CLAUDE.md patch:
 
 > "Session closed.
 >
-> Brief: `sessions/[today's date]-session-brief.md` — What's Next filled.
+> Brief: `docs/superpowers/sessions/[today's date]-session-brief.md` — What's Next filled.
 > CLAUDE.md: [updated / no changes needed]
 > Next session: Sprint 0 done? **YES** → `/grill-me` · **NO** → `@bsuk-competitor-intel --all` first, then grill-me
 >
@@ -157,7 +157,7 @@ After writing (or skipping) the CLAUDE.md patch:
 3. **Read git log, not memory** — use actual commit history to summarize what was done
 4. **One question at a time** — if you need to ask about uncommitted changes AND about CLAUDE.md, ask sequentially
 5. **Never commit site/content/ files without preview gate approval** — always check before touching content files
-6. **Golden Rule** — only Read, Write, and Bash (`git log`, `git status`, `ls sessions/`). No MCPs.
+6. **Golden Rule** — only Read, Write, and Bash (`git log`, `git status`, `ls docs/superpowers/sessions/`). No MCPs.
 
 ---
 

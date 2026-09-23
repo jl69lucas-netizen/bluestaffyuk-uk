@@ -39,7 +39,29 @@
    "platform": false
   }
  ],
- "local_businesses": [],
+ "local_businesses": [
+  {
+   "name": "English Blue Staffies For Rehoming",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy puppies for adoption",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "StormNoir Staffordshire Bull Terriers",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
  "citation_gap": [
   "royalkennelclub",
   "rspca"

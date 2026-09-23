@@ -115,7 +115,13 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
 ## Sprint 0 — Intelligence Gathering
 *Run once per project, then quarterly. Takes ~1 session.*
 
-### Parallel Tracks (run all three simultaneously — three `Agent` calls in one message, results merged by the parent)
+### Tracks (run in dependency order — not all at once)
+
+Order: Track A's registry, then intel `--all`, then intel `--bsuk` and the gap-matrix rebuild;
+then the keyword-gap list (Sprint 1 Step 0a); then Track B's LLM intel per page (Step 0b); then
+the strategy synthesizer (Step 0c). `@bsuk-gsc-analytics` is deferred to project 6. Only
+independent runs of one step — intel on several competitors, LLM intel on several pages — go
+out as parallel `Agent` calls in one message.
 
 **Track A — Competitive Intelligence**
 ```
@@ -236,7 +242,7 @@ Step 2: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
     - /cites-documentation/ (trust hub)
   → Hub pages link to all their spoke pages
 
-Step 3: bsuk-seasonal-content-agent
+Step 3: bsuk-seasonal-content-agent (not ported — no agent file; skip this step)
   → Builds data/seasonal-calendar.json
   → Major peaks: Spring Puppy Season (Mar–May), Christmas, Valentine's Day, Mother's Day
   → Routes seasonal page briefs to content-architect
@@ -279,7 +285,11 @@ Step 4: bsuk-content-architect
 
 1.5. SECTION MAP + COMPONENT SELECTION GATE  ← MANDATORY BEFORE ANY WRITING
    → Based on audit output, list every section from Hero → final CTA
-   → For each section: assign component + variant from docs/reference/components.md
+   → For each section: assign a component from the kit — src/components/kit/ (listed in
+     data/design/components.json, demoed by src/components/kit/_registry.ts at /kit-preview/) —
+     and pick one of the THREE styles the page's board (data/boards/<slug>.json) renders for that
+     section (CLAUDE.md working rules 13, 14, 16; refresh delta per
+     .claude/skills/bsuk-component-refresh/SKILL.md and .claude/skills/bsuk-component-variations/SKILL.md)
    → Show user table: | Section | Content Purpose | Component | Variant |
    → USER APPROVES the full map — explicit approval required
    → LOCKED after approval — no component changes after this point

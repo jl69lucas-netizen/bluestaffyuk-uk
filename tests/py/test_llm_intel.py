@@ -569,3 +569,25 @@ def test_the_cli_checks_named_files(tmp_path, capsys):
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+def test_brand_entities_in_the_local_business_category_are_local_businesses(tmp_path):
+    # the connector's current shape (the Leeds response): items[].brand_entities[] with
+    # category "local_business" and a title, no domain. A name that is a registry entry's name
+    # maps to that entry (and its domain); any other name is kept with domain null.
+    reg = {"competitors": REGISTRY["competitors"] + [{"id": "stormnoir", "name": "StormNoir Staffordshire Bull Terriers",
+                                                       "root_domain": "stormnoir.co.uk", "tier": 5}]}
+    resp = _answer("Ask to see the mother and the health tests.", items=[{"type": "chat_gpt_text", "brand_entities": [
+        {"type": "chat_gpt_brand_entity", "title": "English Blue Staffies For Rehoming", "category": "local_business"},
+        {"type": "chat_gpt_brand_entity", "title": "stormnoir staffordshire bull terriers", "category": "local_business"},
+        {"type": "chat_gpt_brand_entity", "title": "Pets4Homes", "category": "marketplace"},
+        {"type": "chat_gpt_brand_entity", "title": "English Blue Staffies For Rehoming", "category": "local_business"}]}])
+    code, doc, err = _run(_root(tmp_path, registry=reg), resp)
+    assert code == 0, err
+    assert doc["local_businesses"] == [
+        {"name": "English Blue Staffies For Rehoming", "domain": None, "registry_id": None, "tier": None, "platform": False},
+        {"name": "stormnoir staffordshire bull terriers", "domain": "stormnoir.co.uk", "registry_id": "stormnoir",
+         "tier": 5, "platform": False}]
+    assert [r["domain"] for r in doc["risks"]] == ["stormnoir.co.uk"]
+    assert doc["bsuk_cited"] is False
+    assert problems(doc, f"{MAN}-2026-09-23.json") == []

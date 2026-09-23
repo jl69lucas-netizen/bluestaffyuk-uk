@@ -37,7 +37,7 @@ Score parts: dedicated + key page + BSUK has no page + buyer intent.
 - **staffordshire bull terrier puppies for sale** — a national listing page built around the full breed name plus "for sale"; BSUK's listing page is titled with "staffy", so no BSUK title or H1 holds the full-name phrase.
 - **staffordshire bull terrier puppies for sale in manchester greater manchester** — a city listing page. The script reads it as a words topic, not a city topic, because "greater" is neither a breed nor a buyer word, so the Manchester stub (/uk-locations/blue-staffy-puppies-manchester-uk/) was not matched as its label. Its natural home is still that stub's project 5 rebuild, not a second Manchester URL.
 - **staffy puppies quality blue** — a breeder homepage leading on blue staffy puppies as a quality claim; no BSUK page puts those words together in its title or H1.
-- **uk staffordshire bull terrier licenced breeders** — a page about being a licensed UK breeder. It scores high on points alone; the "licenced" spelling is not in the always-high word set, so the band comes from the score.
+- **uk staffordshire bull terrier licenced breeders** — a page about being a licensed UK breeder. It scored high on points alone: when this run was made the "licenced" spelling was not in the always-high word set. The close-out added it, so a re-run marks the row always-high; the band stays high.
 
 ## Handoff
 
