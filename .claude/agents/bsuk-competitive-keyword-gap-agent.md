@@ -13,7 +13,7 @@ effort: high
 ## On Startup
 
 1. Mode from the invocation: all competitors (default), one `<id>`, or `--type <city|comparison|care|price>` (`care` is the `care-guide` type). "First line" here and below means the first line of your hand-back and of the output file's header.
-2. **BSUK's side** — the BSUK profile, docs/research/competitors/bsuk.json (written by `bsuk-competitor-intel --bsuk` from the current build): its `pages` list (`url`, `title`, `h1`; indexable pages only) is the source. Only when that file is missing, or its `pages` is `NOT FETCHED` (the script then names the fallback itself), fall back to `data/page-map.json` (the migrated old pages, the same three keys) and say in your first line and in the output that the fallback was used and that `--bsuk` should be run. Never mix the two for coverage, never read `src/` or `dist/` yourself. **Coverage comes from indexable pages only:** the script drops every page-map entry flagged `stub-noindexed` (the migrated noindex stubs project 5 rebuilds) from coverage, in both modes, and reads data/page-map.json for those flags only when the profile is the source.
+2. **BSUK's side** — the BSUK profile, docs/research/competitors/bsuk.json (written by `bsuk-competitor-intel --bsuk` from the current build): its `pages` list (`url`, `title`, `h1`; indexable pages only) is the source. Only when that file is missing, or its `pages` is `NOT FETCHED` (the script then names the fallback itself), fall back to `data/page-map.json` (the migrated old pages, the same three keys) and say in your first line and in the output that the fallback was used and that `--bsuk` should be run. Never mix the two for coverage, never read `src/` or `dist/` yourself. **Coverage comes from indexable pages only.** With the page map as the source (the NOT FETCHED fallback included), the script drops every entry flagged `stub-noindexed` (the migrated noindex stubs project 5 rebuilds) from coverage. With the profile as the source, its `pages` are used as they are — intel writes indexable pages only, so a rebuilt page at a formerly stubbed URL counts as coverage; the page map is then read for one thing only, read-only: the `stub-noindexed` routes that are **not** among the profile's pages, to label a gap (below). It never adds coverage in that mode.
 3. **Competitors' side** — every docs/research/competitors/*.json except bsuk.json (or only `<id>.json`); an `<id>` with no report → stop and hand to `bsuk-competitor-intel`. data/competitors.json gives each competitor's tier; when it is missing, the tier is "unknown" — say so. An unknown tier is treated as tiers 1–4 (re-fetched when stale, not marked tier 5).
 4. The newest docs/research/gap-matrix-*.md, when there is one, holds the page-type and city counts: quote it, never recount. None → say so in the header.
 
@@ -95,10 +95,12 @@ noindex = [p for p in pmap if "stub-noindexed" in p.get("refresh_flags", []) + p
 shut = {route(p["url"]) for p in noindex}
 b = json.load(open(src))
 if "id" in b and b["pages"]["status"] != "ok":  # the profile holds no pages: fall back, and say so
-    src, bsuk = f"data/page-map.json (fallback: {src} pages NOT FETCHED)", pmap
-else:
-    bsuk = b["pages"]["values"] if "id" in b else b["pages"]
-bsuk = [x for x in bsuk if route(x["url"]) not in shut]  # coverage comes from indexable pages only
+    src, b = f"data/page-map.json (fallback: {src} pages NOT FETCHED)", {"pages": pmap}
+if "id" in b:  # the profile: indexable pages only (intel), used as they are
+    bsuk = b["pages"]["values"]
+    noindex = [p for p in noindex if route(p["url"]) not in {route(x["url"]) for x in bsuk}]  # label lookup only
+else:  # the page map: its noindex stubs never count as coverage
+    bsuk = [x for x in b["pages"] if route(x["url"]) not in shut]
 match = lambda pages, c: next((x["url"] for x in pages if c <= content(x["title"]) or c <= content(x["h1"])), None)
 reg = json.load(open("data/competitors.json"))["competitors"] if os.path.exists("data/competitors.json") else []
 tiers = {c["id"]: c.get("tier") for c in reg}
@@ -147,7 +149,7 @@ EOF
 
 - **Page type:** `bsuk-competitor-intel`'s page-type table on the URL path, first match wins — the block between the two `---` comments is intel's code line for line, and `tests/py/test_agent_snippets.py` fails if the two drift; change it in intel first, then copy it here.
 - **Topic:** the competitor page's H1 (its title before the first `|` when there is no H1), run through intel's keyword rule. Intel's name clause (cut the run before a business, kennel or person's name) is applied through `CUT`: the script cannot tell a name, so after the first run read the printed topics, and when one holds such a name re-run with `CUT="<name>[,<name>]"` (lowercase) — the text is cut before the name. The header lists any names cut. The topic is the longest maximal qualifying run (earliest on a tie); when that run is under 3 words, when there is none, or when the page is a `comparison`, the topic is the whole H1, lowercased with punctuation dropped.
-- **Covered:** a topic is covered when every one of its words — minus the small stop list in `STOP` (a, the, in, for, uk, sale, buy …), plurals folded to singular — is in one indexable BSUK page's title or in its H1. A topic whose only match is a `stub-noindexed` page is **not** covered: it is scored as a gap and the script gives that page as `noindex_page`. A passing mention in an H2 or body copy is not coverage. Pages with the same word set are one topic (their URLs listed together).
+- **Covered:** a topic is covered when every one of its words — minus the small stop list in `STOP` (a, the, in, for, uk, sale, buy …), plurals folded to singular — is in one indexable BSUK page's title or in its H1. A topic whose only match is a `stub-noindexed` page (in profile mode, one whose route is not among the profile's pages) is **not** covered: it is scored as a gap and the script gives that page as `noindex_page`. A passing mention in an H2 or body copy is not coverage. Pages with the same word set are one topic (their URLs listed together).
 - **Points**, only for uncovered topics:
 
 | Signal | Points | Decided by |
@@ -188,14 +190,14 @@ It must print 0; a hit is removed from the file, never the test changed. Its pat
 
 ## Handoff
 
-High gaps → `bsuk-content-architect` (one line each: topic, competitor URL, suggested page type) — but with the page-map fallback they are marked "provisional" and held until `--bsuk` has run and this agent has run again, because the old pages can miss what the current build covers. Medium gaps go to the content calendar through `bsuk-strategy-synthesizer`. The whole file → `bsuk-strategy-synthesizer`. A stale report → `bsuk-competitor-intel <id>`; a missing BSUK profile → `bsuk-competitor-intel --bsuk`.
+High gaps → `bsuk-content-architect` (one line each: topic, competitor URL, suggested page type) — but with the page-map fallback they are marked "provisional" and held until `--bsuk` has run and this agent has run again, because the old pages can miss what the current build covers. A gap with a `noindex_page` goes to `bsuk-content-architect` as "rebuild the stub <noindex_page>" (project 5), never as a new page. Medium gaps go to the content calendar through `bsuk-strategy-synthesizer`. The whole file → `bsuk-strategy-synthesizer`. A stale report → `bsuk-competitor-intel <id>`; a missing BSUK profile → `bsuk-competitor-intel --bsuk`.
 
 ## Red flags — stop
 
 - A topic, page type, coverage call, point or band decided by eye, or a table finished by hand after the script failed.
 - A score using a search volume, traffic, ranking or a "top pages" judgement; any paid call.
 - A gap with no competitor URL from a `pages` list or this run's re-fetch.
-- A topic reported as missing while the BSUK source has an indexable page whose title or H1 carries it, or a `stub-noindexed` page counted as coverage; the page map read while the BSUK profile exists, or the two mixed.
+- A topic reported as missing while the BSUK source has an indexable page whose title or H1 carries it, or a `stub-noindexed` page counted as coverage; the page map used for coverage while the BSUK profile exists, or the two mixed (the read-only `stub-noindexed` label lookup is the one allowed read).
 - A fetch for a fresh report; more than one competitor re-fetched before `fetch approved: --all`; a Firecrawl crawl, agent, extract, interact or search call; a tier-5 page fetched or suggested as a link.
 - An intel report, data/competitors.json or any site file (`src/`, `rules/`, `CLAUDE.md`, `public/`, `data/`) edited. This agent writes only its keyword-gap file.
 - A competitor sentence copied, or a phone number, email, street, postcode or seller's name anywhere in the output.
