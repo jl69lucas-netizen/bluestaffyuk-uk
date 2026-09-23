@@ -1,6 +1,6 @@
 ---
 name: bsuk-reddit-threads
-description: Use when a BSUK page needs the real questions UK Staffy buyers ask on Reddit and dog forums, or a genuine thread worth citing — derives the searches from the page, climbs a fetch ladder tuned per site, scores and opens every thread before using it, prefers threads from the last 24 months, and writes data/queries/raw/<slug>/threads.json with a threads audit list for bsuk-query-augmentation. Never invents a thread, a quote or a vote count.
+description: Use when a BSUK page needs the real questions UK Staffy buyers ask on Reddit or UK dog forums, when a page wants a genuine thread to cite, or when bsuk-query-augmentation needs data/queries/raw/<slug>/threads.json.
 ---
 
 # Reddit and forum threads for a BSUK page
@@ -46,14 +46,16 @@ r/puppy101, r/AskUK, r/unitedkingdom, and UK dog forums the search turns up.
 | It asks what our page answers | 0–3 |
 | Posted in the last 24 months | 0–2 (older = 0) |
 | Replies (10+ = 2, 3–9 = 1) | 0–2 |
-| UK signal (UK place, £, UK law, UK subreddit or forum) | 0–1 |
+| UK signal (UK place, £, UK law, UK subreddit or UK forum) | 0–1 |
 
 **Recency:** prefer threads posted in the last 24 months. The ONLY way an older thread
 enters is this exception: fewer than 5 recent threads clear the bar. Then older ones may fill
 the gap, each marked `"stale": true` in the `threads` list. No other reason — a better fit,
 more replies, a UK signal — lets an older thread in.
 
-**UK signal:** a thread with no UK signal scores 0 for UK, whether or not it is provably US.
+**UK signal:** a breed subreddit (e.g. r/StaffordBullTerriers) is not a UK subreddit; the UK
+point needs a UK place, £, UK law, or a UK subreddit (r/UK_Pets, r/AskUK, r/unitedkingdom).
+A thread with no UK signal scores 0 for UK, whether or not it is provably US.
 A question whose only source threads all score 0 for UK signal is dropped (not written to
 `questions`); it may stay only if a UK-scoring thread, or another source type, asks it too.
 
@@ -63,6 +65,11 @@ Load each kept thread. Confirm the title, the subreddit or forum, the posted mon
 count and that it is live. From the opening post and the top replies, write each buyer
 question as a plain question in your own words (a paraphrase, never a quote over 15 words).
 Record the permalink.
+
+Paraphrase the question, not the poster's premise. A question must not assume a price,
+health, prevalence or breeder-quality claim (e.g. not "Why are most blue litters from
+backyard breeders?" but "How do I tell a responsible blue Staffy breeder from a backyard
+breeder?"). Never reshape a question to fit a bank answer.
 
 ## Step E — write the file
 
@@ -84,7 +91,9 @@ Record the permalink.
 }
 ```
 
-- Every question's `detail` is `thread:<permalink>` of a thread in the `threads` list.
+- Every question's `detail` is `thread:<permalink>` of the thread the question actually came
+  from, and that thread is in the `threads` list. When a question is kept only because a
+  UK-scoring thread also asks it, `detail` is that UK-scoring thread.
 - Every thread you used is in `threads` with all seven keys; `subreddit` holds the forum name
   for a forum thread; `score` is the Step C total, not a vote count.
 - `status` is `ok`, `fallback` (only the lower rungs worked) or `NOT FETCHED` (write the file
@@ -111,6 +120,11 @@ fact taken from the thread.
 - Spending calls rediscovering the ladder — Step B's table already says which rung works.
 - Recording a question from a search snippet without opening the thread.
 - Quoting a poster at length instead of paraphrasing the question.
+- Carrying the poster's premise into the question ("Why are most blue litters from backyard
+  breeders?") — ask the neutral question, and never reshape it to fit a bank answer.
+- Giving a breed subreddit the UK point — only a UK place, £, UK law or a UK subreddit earns it.
+- Pointing `detail` at a thread the question did not come from, or at the 0-UK thread when a
+  UK-scoring thread is the reason it was kept.
 - Treating a thread's advice as a fact for the page.
 - Using a thread older than 24 months while 5 recent ones exist, or leaving an old one
   without `"stale": true`.
