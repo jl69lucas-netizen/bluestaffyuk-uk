@@ -10,6 +10,10 @@ scripts/query_coverage_check.py gates.
   query_augment.py --preflight SLUG --source SOURCE [--refresh]
       exit 0 proceed · 3 cached, make no call · 4 a budget would be exceeded
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
+  query_augment.py --extract-h2 FILE.html
+      prints the page's content H2s as a JSON list (advert cards and navigation dropped) —
+      how competitors.json "h2" is filled from a saved page, never by hand
+      exit 0 printed · 6 the file is missing or unreadable
   query_augment.py SLUG --page-type TYPE --keyword "..." --route /path/
       exit 0 written · 5 too few fact-backed questions to fill the FAQ blocks
       · 6 an input file is unparseable or the wrong shape (nothing written)
@@ -26,6 +30,7 @@ import math
 import os
 import re
 import sys
+from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +47,7 @@ FAQ_MIN = {"top": 5, "middle": 5, "bottom": 7}
 FAQ_MAX = {"top": 7, "middle": 7, "bottom": 10}
 FAQ_TOTAL_MAX = 20
 EXTRA_SECTIONS = 3
+SECTION_FLOOR = 9      # a location page never has fewer body sections than this
 OUTLIER_RATIO = 1.5
 
 # One spelling per thing, so "Staffie pups" and "staffy puppies" merge.
@@ -207,7 +213,7 @@ def score(types, topic, page_type):
 NON_CONTENT_EXACT = re.compile(
     r"(share|share this|follow us|subscribe|newsletter|sign up|contact us|get in touch|"
     r"comments?|categories|tags|archives|search|menu|footer|sidebar|you may also like|"
-    r"call now|call us now|enquire now|book now|apply now|reviews?|testimonials?)")
+    r"call now|call us now|enquire now|book now|apply now|reviews?|testimonials?|other pets)")
 NON_CONTENT_PREFIX = re.compile(
     r"(related|recent|popular|latest) (posts|articles|puppy)\b|leave a (reply|comment)\b|"
     r"faqs?\b|frequently asked questions\b")
@@ -218,6 +224,11 @@ NON_CONTENT_AROUND = re.compile(
     r"^(\w+ ){0,2}(reviews?|testimonials?|what (our )?(customers|owners|families) say|contact( us)?"
     r"|get in touch|call us|enquire|follow us|share( this)?|sign up|newsletter"
     r"|(latest|recent) (news|posts)|(useful|quick) links)( \w+){0,3}$")
+# Marketplace and directory furniture: search filters, result counts, grid headers.
+NON_CONTENT_LISTING = re.compile(
+    r"refine your results|you might also like|(latest )?featured ads|other pets"
+    r"|results from outside your search|recommended for you|nearest towns( and cities)?"
+    r"|(join|joining) our pack|pupp(y|ies) found$|\d+ .* for sale in")
 
 
 def clean_h2s(h2s):
@@ -225,7 +236,8 @@ def clean_h2s(h2s):
     for h in h2s:
         n = normalise(h)
         if (not n or n in seen or NON_CONTENT_EXACT.fullmatch(n) or NON_CONTENT_PREFIX.match(n)
-                or (NON_CONTENT_AROUND.search(n) and topic_of(h)[0] is None)):
+                or ((NON_CONTENT_AROUND.search(n) or NON_CONTENT_LISTING.search(n))
+                    and topic_of(h)[0] is None)):
             continue
         seen.add(n)
         out.append(h)
@@ -233,6 +245,67 @@ def clean_h2s(h2s):
 
 
 MIN_USABLE_H2 = 3
+
+# An H2 under one of these is an advert card, a grid header or navigation, never a section.
+CARD_ANCESTORS = {"a", "article", "li", "nav", "header", "footer", "aside", "form", "button",
+                  "template"}
+RAW_TAGS = {"script", "style", "template"}   # their text is never page text
+VOID_TAGS = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
+             "source", "track", "wbr"}
+
+
+class _H2s(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.stack, self.out = [], []
+        self._h2 = None   # {"depth", "keep", "parts", "bare"}: bare = text outside any link
+
+    def handle_starttag(self, tag, attrs):
+        if tag in VOID_TAGS:
+            return
+        if tag == "h2":
+            self._close_h2()
+            self._h2 = {"depth": len(self.stack), "parts": [], "bare": [],
+                        "keep": not any(t in CARD_ANCESTORS for t in self.stack)}
+        self.stack.append(tag)
+
+    def handle_endtag(self, tag):
+        if tag not in self.stack:
+            return          # a stray end tag closes nothing
+        del self.stack[len(self.stack) - 1 - self.stack[::-1].index(tag):]
+        if self._h2 is not None and len(self.stack) <= self._h2["depth"]:
+            self._close_h2()
+
+    def handle_data(self, data):
+        if self._h2 is None or any(t in RAW_TAGS for t in self.stack):
+            return
+        self._h2["parts"].append(data)
+        if "a" not in self.stack[self._h2["depth"] + 1:]:
+            self._h2["bare"].append(data)
+
+    def _close_h2(self):
+        h, self._h2 = self._h2, None
+        text = " ".join("".join(h["parts"]).split()) if h else ""
+        # A heading that is nothing but links is a card title, not a section.
+        if text and h["keep"] and "".join(h["bare"]).strip():
+            self.out.append(text)
+
+    def close(self):
+        super().close()
+        self._close_h2()
+
+
+def extract_h2s(html):
+    """The text of every content <h2> in `html`, in page order.
+
+    Dropped: an H2 with an ancestor in CARD_ANCESTORS (an advert card, a grid header, nav,
+    a form), and an H2 whose text is entirely inside links (a card title). Text inside
+    script/style/template is ignored; whitespace is collapsed; empty headings are dropped.
+    """
+    p = _H2s()
+    p.feed(html)
+    p.close()
+    return p.out
 
 
 def section_target(pages):
@@ -247,7 +320,8 @@ def section_target(pages):
              "outlier": False} for p in pages]
     usable = [r for r in rows if r["h2_clean"] >= MIN_USABLE_H2]
     if not usable:
-        return {"matched": 0, "set_by": None, "extra": EXTRA_SECTIONS, "total": EXTRA_SECTIONS}, rows
+        return {"matched": 0, "set_by": None, "extra": EXTRA_SECTIONS, "floor": SECTION_FLOOR,
+                "total": max(EXTRA_SECTIONS, SECTION_FLOOR)}, rows
     ranked = sorted(usable, key=lambda r: (-r["h2_clean"], r["google_pos"] or 99,
                                            r["bing_pos"] or 99, r["url"]))
     setter = ranked[0]
@@ -256,7 +330,7 @@ def section_target(pages):
         setter = ranked[1]
     matched = setter["h2_clean"]
     return {"matched": matched, "set_by": setter["url"], "extra": EXTRA_SECTIONS,
-            "total": matched + EXTRA_SECTIONS}, rows
+            "floor": SECTION_FLOOR, "total": max(matched + EXTRA_SECTIONS, SECTION_FLOOR)}, rows
 
 
 def covered_topics(pages):
@@ -641,11 +715,22 @@ def main(argv=None):
     ap.add_argument("--keyword")
     ap.add_argument("--route")
     ap.add_argument("--today")
+    ap.add_argument("--extract-h2", metavar="FILE")
     a = ap.parse_args(argv)
     root = Path(a.root)
-    modes = [m for m in (a.preflight, a.record, a.slug) if m is not None]
+    modes = [m for m in (a.preflight, a.record, a.slug, a.extract_h2) if m is not None]
     if len(modes) != 1:
-        ap.error("give exactly one of --preflight SLUG, --record SLUG or a build SLUG")
+        ap.error("give exactly one of --preflight SLUG, --record SLUG, --extract-h2 FILE "
+                 "or a build SLUG")
+    if a.extract_h2 is not None:
+        try:
+            html = Path(a.extract_h2).read_bytes().decode("utf-8", errors="replace")
+        except OSError as e:
+            print(f"query_augment.py: bad input: {a.extract_h2}: cannot read "
+                  f"({e.strerror or e})", file=sys.stderr)
+            return EXIT_BAD_INPUT
+        print(json.dumps(extract_h2s(html)))   # ASCII-escaped: safe on any stdout
+        return EXIT_OK
     slug = modes[0]
     if not SLUG_RE.fullmatch(slug):
         ap.error(f"slug must match ^[a-z0-9-]+$, got {slug!r}")

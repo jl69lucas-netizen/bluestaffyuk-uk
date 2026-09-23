@@ -14,18 +14,24 @@ with a new city name.
 
 ## Section count — competitors decide, never a fixed number
 
-1. Pool: the top-5 breeder or location pages for the page's primary keyword (the city row's
-   H1 keyword) on Google plus the top-5 on Bing, merged. Marketplaces and directories are
-   excluded. The skill's three query shapes (`staffy puppies for sale <city>`,
-   `blue staffy puppies <city>`, `staffordshire bull terrier breeder near <city>`) may be run
-   as an optional free gap scan: they supply topics, never the count.
+1. Pool: the top-5 results for the page's primary keyword (the city row's H1 keyword) on
+   Google plus the top-5 on Bing, merged, **marketplaces and directories included** — only
+   off-topic results are dropped. The skill's three query shapes
+   (`staffy puppies for sale <city>`, `blue staffy puppies <city>`,
+   `staffordshire bull terrier breeder near <city>`) may be run as an optional free gap scan:
+   they supply topics, never the count.
 2. Strip non-content H2s: sidebar, footer, related posts, repeated calls to action, reviews
-   and FAQ headings (ours are frame, so theirs are not counted either).
+   and FAQ headings (ours are frame, so theirs are not counted either). Advert-card titles and
+   navigation headings never count — `scripts/query_augment.py --extract-h2` reads the saved
+   page and drops any H2 inside a link, article, list item, nav, header, footer, aside or
+   form, and any H2 that is nothing but a link; search filters, result counts and grid
+   headers ("Refine your results", "30 Puppies found") are stripped as furniture.
 3. Match the highest cleaned H2 count in the pool. If it is more than 1.5× the next highest
    it is an outlier: record it and match the next highest.
 4. Add three sections: the strongest topics in the page's question file that no pooled page
    covers (`extra_sections` in `data/queries/<slug>.json`). Fewer than three uncovered topics:
-   the strongest covered topics fill the gap, marked `uncovered: false`.
+   the strongest covered topics fill the gap, marked `uncovered: false`. The floor: never
+   fewer than 9 body sections — the target is the matched count + 3, or 9 if that is higher.
 5. Only body H2s count, on both sides. The fixed frame below is never counted.
 6. Record every competitor's URL, its positions, its raw and cleaned H2 counts, and which set
    the number. Fewer than three usable pages is a finding, not a blocker: record it and derive

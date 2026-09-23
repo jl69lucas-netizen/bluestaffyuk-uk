@@ -14,7 +14,8 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
   3. FAQPage schema naming exactly the visible FAQ questions, compared as multisets, so a
      duplicated question is reported;
   4. every extra section's recorded heading as an H2 inside <main>;
-  5. on location pages, at least section_target.total body sections with an H2. A body
+  5. on location pages, at least section_target.total body sections with an H2 (the
+     competitors' count + 3, never below the floor of 9). A body
      section is a <section data-section-label> inside <main>, not nested in another labelled
      section, that holds an H2, is not #top, #key-takeaways or #newsletter and holds no frame
      part: no kit hero, counter, trust strip, page nav, review, FAQ block and no form
@@ -225,7 +226,7 @@ def check_page(q, html):
         t = q["section_target"]
         if len(body) < t["total"]:
             problems.append(f"body sections with an H2: {len(body)}, want at least {t['total']} "
-                            f"(competitors {t['matched']} + {t['extra']})")
+                            f"(competitors {t['matched']} + {t['extra']}, floor {t['floor']})")
     return problems
 
 

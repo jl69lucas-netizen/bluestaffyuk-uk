@@ -32,11 +32,12 @@
     },
     "section_target": {
       "type": "object", "additionalProperties": false,
-      "required": ["matched", "set_by", "extra", "total"],
+      "required": ["matched", "set_by", "extra", "floor", "total"],
       "properties": {
         "matched": {"type": "integer", "minimum": 0},
         "set_by": {"type": ["string", "null"]},
         "extra": {"type": "integer", "minimum": 0},
+        "floor": {"type": "integer", "minimum": 0},
         "total": {"type": "integer", "minimum": 0}
       }
     },

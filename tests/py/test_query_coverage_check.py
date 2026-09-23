@@ -56,7 +56,8 @@ def qfile(blocks=(5, 5, 7), total=6, extra_heading="Life in a Manchester Flat"):
                        "covered_by": {"where": "faq", "text": text}})
     return {"slug": "m", "page_type": "location", "primary_keyword": "k", "route": ROUTE,
             "fetched": "2026-09-23", "spend_usd": 0.0, "sources": {}, "competitors": [],
-            "section_target": {"matched": total - 3, "set_by": None, "extra": 3, "total": total},
+            "section_target": {"matched": total - 3, "set_by": None, "extra": 3, "floor": 9,
+                               "total": total},
             "extra_sections": [{"topic": "home", "uncovered": True, "question_ids": [],
                                 "heading": extra_heading}],
             "questions": qs}
@@ -247,3 +248,8 @@ def test_main_reports_a_question_file_that_is_not_json(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
     assert r.returncode == 1 and "invalid question file" in r.stdout and "Traceback" not in r.stderr
+
+
+def test_the_body_count_message_names_competitors_and_the_floor():
+    probs = G.check_page(qfile(total=7), page_html())
+    assert "body sections with an H2: 6, want at least 7 (competitors 4 + 3, floor 9)" in probs

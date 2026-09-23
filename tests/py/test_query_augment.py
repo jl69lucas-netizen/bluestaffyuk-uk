@@ -220,7 +220,7 @@ def page(url, n, g=None, b=None):
 
 def test_section_target_matches_the_highest_clean_count():
     target, rows = Q.section_target([page("a", 8, g=1), page("b", 11, b=2), page("c", 14, g=3)])
-    assert target == {"matched": 14, "set_by": "c", "extra": 3, "total": 17}
+    assert target == {"matched": 14, "set_by": "c", "extra": 3, "floor": 9, "total": 17}
     assert [r["h2_clean"] for r in rows] == [8, 11, 14]
     assert not any(r["outlier"] for r in rows)
 
@@ -231,9 +231,10 @@ def test_section_target_outlier_matches_the_next_highest():
     assert [r["outlier"] for r in rows] == [False, True]
 
 
-def test_section_target_with_no_pages_is_zero_plus_three():
+def test_section_target_with_no_pages_is_the_floor():
     target, rows = Q.section_target([])
-    assert target == {"matched": 0, "set_by": None, "extra": 3, "total": 3} and rows == []
+    assert target == {"matched": 0, "set_by": None, "extra": 3, "floor": 9, "total": 9}
+    assert rows == []
 
 
 def test_covered_topics_reads_competitor_headings():
@@ -341,7 +342,7 @@ def test_merge_real_order_keeps_serp_wording_and_takes_the_bank_fact(tmp_path):
 def test_section_target_ignores_unusable_competitors(counts, matched):
     pages = [page(f"u{i}", n, g=i + 1) for i, n in enumerate(counts)]
     target, rows = Q.section_target(pages)
-    assert target["matched"] == matched and target["total"] == matched + 3
+    assert target["matched"] == matched and target["total"] == max(matched + 3, 9)
     assert [r["h2_clean"] for r in rows] == counts          # every page still reported
     if matched == 0:
         assert target["set_by"] is None
@@ -612,7 +613,7 @@ def test_build_writes_a_schema_valid_file(tmp_path):
     assert data["sources"]["serp_bing"] == "NOT FETCHED"
     assert data["sources"]["bank"] == "ok"
     assert data["section_target"] == {"matched": 4, "set_by": "https://a.example",
-                                      "extra": 3, "total": 7}
+                                      "extra": 3, "floor": 9, "total": 9}
     faq = [x for x in data["questions"] if x["faq"]]
     assert 17 <= len(faq) <= 20
     assert all(x["must_answer"] for x in faq)
@@ -898,3 +899,99 @@ def test_a_bad_builder_fill_is_bad_input(tmp_path, where, value):
     lines = r.stderr.strip().splitlines()
     assert len(lines) == 1 and "bad input" in lines[0] and "m.json" in lines[0]
     assert f.read_text() == before
+
+
+# --- Task 7a: real competitor headings from saved pages, and the nine-section floor ----
+
+GUMTREE_LIKE = """<html><body><main><ul>
+<li><article class="standard-card"><a href="/p/1"><div><h2 data-q="tile-title">Staffy £450</h2>
+</div></a></article></li>
+<li><article class="standard-card"><a href="/p/2"><h2>Pablo</h2></a></article></li></ul>
+<section><h2 data-q="nearby-results-title">Results from outside your search</h2></section>
+</main></body></html>"""
+
+STAFFIE_OWNERS_LIKE = """<main><header class="grid-head"><h2>21 Staffie Puppies For Sale In
+  Manchester</h2></header>
+<ul class="adverts"><li><article><h2><a href="/classified/1">Kc red chunky staffy males</a></h2>
+</article></li><li><article><h2><a href="/classified/2">Staffy x</a></h2></article></li></ul>
+<section class="content"><h2>Buyer&#39;s   Advice</h2><p>...</p></section></main>"""
+
+FURNITURE_LIKE = """<body><nav><h2>Menu</h2></nav><aside><h2>Recommended</h2></aside>
+<form><h2>Search puppies</h2></form><button><h2>Load more</h2></button>
+<footer><h2>Useful links</h2></footer><template><h2>Hidden card</h2></template>
+<main><section><h2>Health Testing</h2></section>
+<section><h2>Why <a href="/blue">Blue Staffies</a> Are Rare</h2></section>
+<section><h2><a href="/card">Only A Link</a></h2></section>
+<section><h2> <a href="/x">Two</a> <a href="/y">Links</a> </h2></section>
+<section><h2>   </h2><h2>Tail<script>var h = "<h2>x</h2>";</script><style>h2{}</style> End</h2>
+</section></main></body>"""
+
+
+def test_extract_h2s_drops_advert_cards_inside_links_and_articles():
+    assert Q.extract_h2s(GUMTREE_LIKE) == ["Results from outside your search"]
+
+
+def test_extract_h2s_drops_list_item_cards_and_the_grid_header():
+    assert Q.extract_h2s(STAFFIE_OWNERS_LIKE) == ["Buyer's Advice"]
+
+
+def test_extract_h2s_keeps_content_and_drops_navigation_and_link_only_headings():
+    assert Q.extract_h2s(FURNITURE_LIKE) == ["Health Testing", "Why Blue Staffies Are Rare",
+                                             "Tail End"]
+
+
+def test_extract_h2s_survives_unclosed_and_stray_tags():
+    html = "<main><p>para<h2>Kept <br> Here</h2></a></li><li>item<h2>Dropped</h2></main>"
+    assert Q.extract_h2s(html) == ["Kept Here"]
+
+
+def test_cli_extract_h2_prints_the_json_list(tmp_path):
+    f = tmp_path / "page.html"
+    f.write_text(STAFFIE_OWNERS_LIKE, encoding="utf-8")
+    r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(f)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout) == ["Buyer's Advice"]
+
+
+def test_cli_extract_h2_missing_file_is_bad_input(tmp_path):
+    r = subprocess.run([sys.executable, str(SCRIPT), "--extract-h2", str(tmp_path / "nope.html")],
+                       capture_output=True, text=True)
+    assert r.returncode == Q.EXIT_BAD_INPUT
+    lines = r.stderr.strip().splitlines()
+    assert len(lines) == 1 and "bad input" in lines[0] and "nope.html" in lines[0]
+    assert r.stdout == ""
+
+
+def test_cli_extract_h2_is_its_own_mode(tmp_path):
+    f = tmp_path / "page.html"
+    f.write_text("<h2>x</h2>")
+    r = run(make_root(tmp_path / "repo"), "m", "--extract-h2", str(f))
+    assert r.returncode == 2
+
+
+MARKETPLACE_FURNITURE = ["Refine your results", "You might also like near Manchester",
+                         "Latest featured ads in Staffordshire Bull Terrier", "Other pets",
+                         "Results from outside your search", "Recommended for you",
+                         "Nearest towns and cities",
+                         "Fetch the latest puppy news by joining our pack", "30 Puppies found",
+                         "21 Staffie Puppies For Sale In Manchester"]
+
+
+def test_clean_h2s_strips_marketplace_furniture_and_keeps_content():
+    kept = ["Buyer's Advice", "Blue Staffy Puppies in Manchester UK", "Health Testing"]
+    assert Q.clean_h2s(MARKETPLACE_FURNITURE + kept) == kept
+
+
+@pytest.mark.parametrize("counts,total", [([4], 9), ([6], 9), ([7], 10), ([10], 13), ([], 9)])
+def test_section_target_never_falls_below_the_floor(counts, total):
+    target, _ = Q.section_target([page(f"u{i}", n, g=i + 1) for i, n in enumerate(counts)])
+    assert Q.SECTION_FLOOR == 9 and target["floor"] == 9 and target["total"] == total
+
+
+def test_the_schema_requires_the_floor(tmp_path):
+    root = make_root(tmp_path); seed(root)
+    data, _ = Q.build("m", "location", "k", ROUTE, root, "2026-09-23")
+    del data["section_target"]["floor"]
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(data, SCHEMA)
