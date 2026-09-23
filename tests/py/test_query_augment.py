@@ -1621,3 +1621,22 @@ def test_the_consent_fixture_still_drops_its_vendor_headings():
 ])
 def test_fleas_and_narrow_aftercare_route_precisely(text, topic):
     assert Q.topic_of(text)[0] == topic
+
+
+# --- Task 12: plain aftercare wording routes to trust, after delivery's collect/deliver words -----
+
+@pytest.mark.parametrize("text,topic", [
+    ("Do you offer support after the puppy goes home?", "trust"),
+    ("Is there aftercare support after purchase?", "trust"),
+    ("Can I get advice after my puppy comes home?", "trust"),
+    ("What aftercare do you provide?", "trust"),
+    ("Do you offer support after delivery?", "delivery"),
+    ("Can you help after we collect the puppy from Carlisle?", "trust"),
+    ("Is there support after collection?", "delivery"),
+    ("Can I get advice on feeding after it comes home?", "care"),
+    ("Can I get help after 5pm?", None),
+    ("Is there support after 5pm?", None),
+    ("Is there support after hours?", None),
+])
+def test_aftercare_routes_to_trust_unless_delivery_words_come_first(text, topic):
+    assert Q.topic_of(text)[0] == topic

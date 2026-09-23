@@ -78,6 +78,10 @@ TOPICS = (
     ("paperwork", "middle", r"\b(vaccin\w*|microchip\w*|worm\w*|fleas?)\b"),
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
+    # Plain aftercare wording, once delivery's collect/deliver words have had their turn:
+    # "support after the puppy goes home" is trust, "support after 5pm/hours" is not.
+    ("trust", "middle",
+     r"\bafter-?care\b|\b(support|advice|help) after (?!\d|(hours|work|school|dark|midnight|noon)\b)"),
     ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (need to |have to )?wait|is there a wait|book\w*|available|availability"
      r"|where (can|do|should) i (find|buy|get|start)|where should i start)\b"),
     ("age", "middle",
