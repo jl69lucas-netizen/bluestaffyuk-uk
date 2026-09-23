@@ -97,11 +97,15 @@ Before any work begins, verify these exist:
 | Puppy inventory | `data/puppies.json` | Ships with the repo — the six locked puppies |
 | Session brief | a dated brief under docs/superpowers/sessions/ | Run the `grill-me` skill |
 
-A competitor registry, a traffic baseline and a gap matrix were prerequisites in the
-source repo. None exists here: `@bsuk-competitor-registry`, `@bsuk-competitor-intel` and
-`@bsuk-gsc-analytics` are all deferred to project 6 (see `data/port-manifest.json`), and
-the files they wrote were not ported (not ported — source repo only). Competitor research
-is done by hand per page under seo-rules Rule 11 until then.
+The competitor registry, the intel reports and the gap matrix exist (competitor intelligence
+build, 2026-09-23): `@bsuk-competitor-registry` writes data/competitors.json after the user
+approves the list, `@bsuk-competitor-intel` writes docs/research/competitors/<id>.json and
+`.md` (plus the BSUK profile with `--bsuk`), and `python3 scripts/gap_matrix.py --write` builds
+docs/research/gap-matrix-<date>.md from them (`npm run check:gaps` keeps it honest). Run them in
+this order: registry → intel (+ `--bsuk`) → `gap_matrix.py --write` →
+`@bsuk-competitive-keyword-gap-agent` → `@bsuk-llm-keyword-intel` → `@bsuk-strategy-synthesizer`.
+The traffic baseline is still deferred to project 6 (`@bsuk-gsc-analytics`; GSC is NOT
+FETCHED until the domain is live).
 
 **Hard Gate:** No page enters Sprint 2 (Content Production) until `data/page-map.json`
 exists and `@bsuk-content-architect` has assigned a framework to the target page.
@@ -116,15 +120,16 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
 **Track A — Competitive Intelligence**
 ```
 @bsuk-competitor-registry
-  → Discover 30 competitors from 10 seed keywords
+  → Discover about 25 competitors (30 at most) from about ten seed keywords
   → Classify: direct breeders / classifieds / informational / marketplaces
   → USER GATE: approve competitor list
-  → Output: data/competitors.json (deferred to project 6, see data/port-manifest.json)
+  → Output: data/competitors.json (checked by npm run check:competitors)
 
 @bsuk-competitor-intel --all
-  → Analyze all 30 competitors across 10 metric categories
-  → Output: docs/research/competitor-[name]-[date].md (×30)
-  → Output: docs/research/gap-matrix-[date].md
+  → Analyse every registry competitor across 10 metric categories
+  → Output: docs/research/competitors/<id>.json + <id>.md, then scripts/gap_matrix.py --write
+  → Then @bsuk-competitor-intel --bsuk (BSUK profile) before the matrix is built
+  → Output: docs/research/gap-matrix-[date].md (checked by npm run check:gaps)
 ```
 
 **Track B — Traffic & LLM Intelligence**
@@ -133,11 +138,11 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
   → Analyze data/analytics/ GSC CSV exports
   → Output: docs/reports/top-pages.md (deferred to project 6) (clicks, impressions, positions)
 
-@bsuk-llm-keyword-intel
-  → Query ChatGPT + Perplexity + Gemini + Google AIO for top keywords
-  → Record LLM Visibility scores in the traffic baseline (deferred to project 6)
-  → Flag keywords where BSUK is not cited in top 3 AI responses
-  → Output: LLM Visibility column in the traffic baseline (deferred to project 6)
+@bsuk-llm-keyword-intel <slug>
+  → One engine per page (DataForSEO ChatGPT scraper through the spend guard; reuses a saved answer)
+  → Records who the answer cites (BSUK or registry competitors), missing entities, answer format
+  → Output: docs/research/llm-intel/<slug>-[date].json
+  → Runs after the keyword-gap list (Sprint 1 Step 2) when a gap-matrix row feeds its question
 ```
 
 **Note — Session Orientation moved to Sprint 0.5:**
@@ -163,7 +168,7 @@ SESSION CONTEXT:
 
 ### Sprint 0 Gate
 Before proceeding to Sprint 0.5:
-- [ ] Per-page competitor research done by hand under seo-rules Rule 11 — the registry, gap matrix and traffic baseline agents are all deferred to project 6 (see `data/port-manifest.json`)
+- [ ] Competitor research current: `npm run check:competitors` and `npm run check:gaps` pass on a dated gap matrix (per-page research under seo-rules Rule 11 still applies) — the registry and gap matrix exist; the traffic baseline is deferred to project 6 (see `data/port-manifest.json`)
 - [ ] `data/page-map.json` current (`python3 scripts/build_page_board.py`)
 
 ---
@@ -199,10 +204,12 @@ Before proceeding to Sprint 1:
 
 ```
 Step 0: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
-  → Reads existing research only (gap matrix, competitor-intel, GSC, LLM-intel) — does NOT re-run Sprint 0
+  → Reads existing research only (gap matrix, keyword-gap list, competitor reports, LLM intel; GSC is NOT FETCHED until project 6) — does NOT re-run Sprint 0
+  → Needs the keyword-gap list (Step 2) and LLM intel first: registry → intel (+ --bsuk) → gap_matrix.py --write → keyword-gap → llm-intel → strategy-synthesizer
   → Produces TWO reverse-engineered strategies, recommends ONE with a data-grounded WHY + named trade-off
   → Derives the concrete artifact for the cluster (e.g. the 9 blog topics + 1 hub)
-  → Output: a dated file under docs/superpowers/sessions/ → hands the chosen strategy to bsuk-content-architect
+  → Runs scripts/strategy_cite_check.py before handoff
+  → Output: docs/superpowers/sessions/<date>-<topic>-strategy.md → hands the chosen strategy to bsuk-content-architect (explicit path)
 
 Step 1: bsuk-structure-architect
   → Maps all 52 target pages into Silo or Reverse Silo structure
@@ -210,10 +217,9 @@ Step 1: bsuk-structure-architect
   → Output: data/page-map.json
 
 Step 2: bsuk-competitive-keyword-gap-agent
-  → Fetches competitor sitemaps + pages via Playwright
-  → Extracts H1/H2/title patterns from each
-  → Scores gaps 1–10 (LICENCE_CLAIM_PLACEHOLDER content gaps flagged high)
-  → Score ≥7 = build this page (enters content queue)
+  → Reuses the page lists in the competitor-intel reports and the BSUK profile (no new fetch)
+  → Scores gaps 1–10 with its script; every gap is proved by a competitor URL
+  → Score ≥7 = build this page (enters content queue); a gap whose BSUK page is a noindex stub routes as "rebuild the stub <url>" (project 5)
   → Output: docs/research/keyword-gap-[date].md
 
 Step 3: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
@@ -562,7 +568,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 ☐ First paragraph directly answers primary keyword question (Featured Snippet target)
 ☐ ReviewAggregateSchema present (bsuk-trust-signals-agent)
 ☐ BreadcrumbList schema present (bsuk-section-builder)
-☐ LLM Visibility score recorded in the traffic baseline (deferred to project 6) (bsuk-llm-keyword-intel)
+☐ LLM intel file written for the page (bsuk-llm-keyword-intel); the GSC traffic-baseline score is deferred to project 6
 ☐ LocalBusiness schema on all location pages
 ☐ VideoObject schema if YouTube video embedded (bsuk-video-seo-agent)
 ☐ No language implying wild-caught origin (LICENCE_CLAIM_PLACEHOLDER check)
@@ -575,11 +581,11 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 ### 4c — LLM Visibility Probe (run after page goes live)
 
 ```
-bsuk-llm-keyword-intel [for target keyword]
-  → Queries: ChatGPT + Perplexity + Gemini + Google AIO
-  → Checks: is BSUK cited in top 3 responses for this keyword?
+bsuk-llm-keyword-intel <slug>
+  → Queries one engine (ChatGPT, via DataForSEO through the spend guard) for the page's buyer question
+  → Checks: does the answer cite BSUK, and which registry competitors does it cite?
   → If NOT cited → route to bsuk-non-commodity-content-agent for entity strengthening
-  → Records score in docs/reports/top-pages.md (deferred to project 6)
+  → Output: docs/research/llm-intel/<slug>-[date].json (the GSC traffic-baseline column in docs/reports/top-pages.md is deferred to project 6)
 ```
 
 ---

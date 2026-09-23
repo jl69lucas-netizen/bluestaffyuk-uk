@@ -296,14 +296,14 @@
   {
     "src": ".claude/agents/cag-competitive-keyword-gap-agent.md",
     "dst": ".claude/agents/bsuk-competitive-keyword-gap-agent.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): reuses intel's page lists; every gap proved by a URL; noindex stubs route to project 5 rebuilds"
   },
   {
     "src": ".claude/agents/cag-competitor-intel.md",
     "dst": ".claude/agents/bsuk-competitor-intel.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): ten categories re-based to UK Staffies and the 28 cities; countable JSON reports + BSUK profile (--bsuk); matrix built by scripts/gap_matrix.py"
   },
   {
     "src": ".claude/agents/cag-conversion-tracker.md",
@@ -362,8 +362,8 @@
   {
     "src": ".claude/agents/cag-llm-keyword-intel.md",
     "dst": ".claude/agents/bsuk-llm-keyword-intel.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): DataForSEO ChatGPT scraper through the spend guard, one engine per page, reuses the saved answer; no vendor API keys"
   },
   {
     "src": ".claude/agents/cag-nap-citation-agent.md",
@@ -404,8 +404,8 @@
   {
     "src": ".claude/agents/cag-strategy-synthesizer.md",
     "dst": ".claude/agents/bsuk-strategy-synthesizer.md",
-    "mode": "deferred",
-    "notes": "spec §10 out of scope; project 6 at the earliest"
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): two strategies, one pick; figures checked by scripts/strategy_cite_check.py"
   },
   {
     "src": ".claude/agents/cag-video-seo-agent.md",
@@ -1136,7 +1136,7 @@
   {
     "src": ".claude/agents/cag-competitor-registry.md",
     "dst": ".claude/agents/bsuk-competitor-registry.md",
-    "mode": "deferred",
-    "notes": "a stored competitor list; BSUK records competitors per page in data/queries/<slug>.json instead — recorded 2026-09-23, not ported"
+    "mode": "rebase",
+    "notes": "competitor intelligence build (2026-09-23): national registry, 5 tiers, proposal in docs/research/ and user approval before writing data/competitors.json (checked by scripts/competitor_registry_check.py); per-page pools in data/queries/<slug>.json unchanged"
   }
 ]

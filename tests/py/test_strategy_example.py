@@ -87,5 +87,8 @@ def test_the_agent_carries_its_key_rules():
         "the profile wins",
         "Tier 5 is never a link",
         "compared within one `page_source.kind` only",
+        "the file's own date (older than 30 days → STALE)",  # keyword-gap freshness
+        "No row-number column",                          # row numbers ≥10 are checked figures
+        "never from old page copy in `data/locations.json` or `data/page-map.json`",  # business facts
     ):
         assert phrase in agent, phrase

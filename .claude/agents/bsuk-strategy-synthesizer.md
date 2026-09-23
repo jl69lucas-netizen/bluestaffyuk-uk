@@ -32,7 +32,7 @@ effort: max
 
 - competitor reports: `pages.fetched_on`, else `analysed_on`;
 - llm-intel: its `stale` list and `fetched.fetched_on` (`fetched` NOT FETCHED → MISSING for that page);
-- keyword-gap: the stale competitors its header lists;
+- keyword-gap: the file's own date (older than 30 days → STALE) and the stale competitors its header lists;
 - the matrix: its date only says when it was built; a row is as fresh as the reports behind it.
 
 ## Reading the research
@@ -59,6 +59,11 @@ effort: max
 - A year sits after a cue — "in 2027", "Q3 2027", "by 2027" — never "the 2027 plan".
 - A top-N (`top-3`, `top-10`) IS a checked figure: the source must print it too.
 - Single digits, the city count 28, dates (`2026-09-24`) and anything in backticks are not checked; do not hide a figure in backticks to dodge the check.
+- **No row-number column** in any table (no `#`, no "rank" count): row order is the order. A row number of 10 or more is a checked figure that no source prints, so the check fails; refer to a row by its topic, never "row 12".
+
+## Business facts
+
+Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other business fact come only from `CLAUDE.md`, `data/settings.json` or `data/puppies.json` — never from old page copy in `data/locations.json` or `data/page-map.json`, which predates the rebuild and can be wrong. A fact none of those three files holds is left out, never filled from a research file. These are not research figures: keep them out of the pick unless a listed source prints them too.
 
 ## Output — docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy.md
 

@@ -142,6 +142,15 @@ items are Known Issues 39–46. **Next: project 5 — location, comparison and b
 starts with brainstorming; the nested-route prerequisite (Known Issue 39) comes first, and each
 page begins with `/bsuk-query-augmentation`.
 
+## Competitor intelligence bridge build (2026-09-23) — IN PROGRESS
+
+A bridge build that closes Known Issue 42: a national competitor registry, per-competitor intel
+reports with a BSUK profile, a script-built gap matrix, a keyword-gap list, LLM citation intel
+and a two-strategy synthesis, every count built by a script and every paid call behind the spend guard.
+Branch `competitor-intel`; plan `docs/superpowers/plans/2026-09-23-competitor-intel.md`, spec
+`docs/superpowers/specs/2026-09-23-competitor-intel-design.md`. Agents and checks are in; the
+pilot run (paid calls, user-approved) and the close-out gate report are still to come.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -639,6 +648,13 @@ added 39–46.
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
     (2026-09-23): a separate build after this one, started separately (2026-09-23).
+    **Closed 2026-09-23 by the competitor intelligence build** (branch `competitor-intel`): five
+    agents — `.claude/agents/bsuk-competitor-registry.md`, `.claude/agents/bsuk-competitor-intel.md`,
+    `.claude/agents/bsuk-competitive-keyword-gap-agent.md`, `.claude/agents/bsuk-llm-keyword-intel.md`
+    and `.claude/agents/bsuk-strategy-synthesizer.md` — and three scripts —
+    `scripts/competitor_registry_check.py`, `scripts/gap_matrix.py` and
+    `scripts/strategy_cite_check.py` (`npm run check:competitors` and `npm run check:gaps` are in
+    `check:all`). The competitor pricing-alert agent stays deferred to project 6.
 
 43. **Reddit-modifier pages are a recorded option, not built.** Short pages aimed at
     `"<keyword> reddit"` searches (the source repo's playbook). Decide with search-volume data

@@ -88,17 +88,17 @@ A spends the first builds where competitor pages already exist, so the Mancheste
 
 ### City-page build order
 
-| # | topic or page | target keyword | matrix N/M (no keyword-gap file) | intent | link role | new or rebuild |
-|---|---|---|---|---|---|---|
-| 1 | Manchester `/uk-locations/blue-staffy-puppies-manchester-uk/` | blue staffy puppies manchester | 3/3 (high) | local transactional | spoke; links up to hub, across to buying guide and health | rebuild (project 5, stub) |
-| 2 | Birmingham `/uk-locations/blue-staffy-puppies-birmingham/` | blue staffy puppies birmingham | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
-| 3 | Leeds `/uk-locations/blue-staffy-puppies-for-sale-leeds/` | blue staffy puppies leeds | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
-| 4 | Liverpool `/uk-locations/staffy-puppies-for-sale-liverpool/` | blue staffy puppies liverpool | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
-| 5 | London `/uk-locations/blue-staffy-puppies-london/` | blue staffy puppies london | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
-| 6 | UK hub `/uk-locations/blue-staffy-puppies-uk/` | blue staffy puppies uk | no matrix row | local navigational | hub; add a link to each city above as it goes live | existing indexed page, link update only |
-| 7 | Uncontested stubs: Bristol, Leicester, Nottingham, Coventry, Wolverhampton, Cardiff, Glasgow, Cornwall, Essex, South Yorkshire, Newcastle-under-Lyme | the stub's own city keyword | no matrix row | local transactional | spokes | rebuild (project 5, stubs) — after rows 1–5 |
+| topic or page | target keyword | matrix N/M (no keyword-gap file) | intent | link role | new or rebuild |
+|---|---|---|---|---|---|
+| Manchester `/uk-locations/blue-staffy-puppies-manchester-uk/` | blue staffy puppies manchester | 3/3 (high) | local transactional | spoke; links up to hub, across to buying guide and health | rebuild (project 5, stub) |
+| Birmingham `/uk-locations/blue-staffy-puppies-birmingham/` | blue staffy puppies birmingham | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
+| Leeds `/uk-locations/blue-staffy-puppies-for-sale-leeds/` | blue staffy puppies leeds | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
+| Liverpool `/uk-locations/staffy-puppies-for-sale-liverpool/` | blue staffy puppies liverpool | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
+| London `/uk-locations/blue-staffy-puppies-london/` | blue staffy puppies london | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
+| UK hub `/uk-locations/blue-staffy-puppies-uk/` | blue staffy puppies uk | no matrix row | local navigational | hub; add a link to each city above as it goes live | existing indexed page, link update only |
+| Uncontested stubs: Bristol, Leicester, Nottingham, Coventry, Wolverhampton, Cardiff, Glasgow, Cornwall, Essex, South Yorkshire, Newcastle-under-Lyme | the stub's own city keyword | no matrix row | local transactional | spokes | rebuild (project 5, stubs) — after the contested cities above |
 
-Rows 2–5 are tied in the matrix; they follow its row order. York (the city the BSUK profile already has) and the other indexed city pages are not gaps and are not in this order.
+Birmingham, Leeds, Liverpool and London are tied in the matrix; they follow its row order, and the table's order is the build order. York (the city the BSUK profile already has) and the other indexed city pages are not gaps and are not in this order.
 
 ## Sources
 
