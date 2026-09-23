@@ -19,5 +19,75 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK (response carries no cost; conservative estimate)",
     "cost_usd": 0.1
+  },
+  {
+    "ts": "2026-09-23T19:33:33Z",
+    "slug": "registry-blue-staffy-puppies-for-sale",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:34:31Z",
+    "slug": "registry-staffordshire-bull-terrier-puppies-for-sale-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:35:04Z",
+    "slug": "registry-blue-staffy-breeder",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:35:45Z",
+    "slug": "registry-staffy-puppies-for-sale-london",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:36:18Z",
+    "slug": "registry-staffy-puppies-for-sale-birmingham",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:36:46Z",
+    "slug": "registry-staffy-puppies-for-sale-manchester",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:37:15Z",
+    "slug": "registry-staffy-puppies-for-sale-leeds",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:37:42Z",
+    "slug": "registry-staffy-puppies-for-sale-liverpool",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:38:06Z",
+    "slug": "registry-kc-registered-staffy-puppies",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
+  },
+  {
+    "ts": "2026-09-23T19:38:39Z",
+    "slug": "registry-staffy-puppy-price-uk",
+    "source": "serp_google",
+    "endpoint": "serp_organic_live_advanced google UK en depth10 (no cost in response; estimate)",
+    "cost_usd": 0.05
   }
 ]

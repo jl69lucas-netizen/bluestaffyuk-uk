@@ -1,0 +1,141 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'staffy puppy price uk', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: none present; a private seller's name cut from the Staffie Owners snippet; the AI overview condensed to its text and cited URLs.",
+ "id": "09231938-2496-0139-0000-9c4f9452ccc6",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "ai_overview",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "text": "UK Staffy puppy typically £750 to £2,500. Unregistered or crossbreed £300–£700; purebred without papers £700–£1,000; KC registered £1,400–£2,500; popular colours (solid blue or red) £1,800–£2,750+. KC registration, coat colour and breeder reputation (L-2-HGA and HC-HSF4 screening) drive price. PDSA: at least £80 a month to keep. Browse Pets4Homes or Staffie Owners, or breed rescues (adoption fees around £200–£300).",
+   "cited_urls": [
+    "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+    "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=breed",
+    "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/?keyword=blue",
+    "https://www.pets4homes.co.uk/dog-breeds/staffordshire-bull-terrier/",
+    "https://www.staffie-owners.co.uk/staffies-for-sale",
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier",
+    "https://manypets.com/uk/breeds/dogs/staffordshire-bull-terriers/",
+    "https://www.puppies.co.uk/breeds/staffordshire-bull-terrier",
+    "https://www.youtube.com/watch?v=qvpM6LKxVe0&t=233"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 2,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+   "website_name": "Pets4Homes",
+   "description": "The average cost of a purebred Staffordshire Bull Terrier puppy in the United Kingdom is approximately £782, though prices can vary based on factors such as ... Read more"
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 3,
+   "items": [
+    "Is a Staffy a good house dog?",
+    "Are Staffy dogs expensive?",
+    "What is the life expectancy of a staffie?",
+    "Is it better to get a male or female Staffy?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 4,
+   "domain": "www.rspca.org.uk",
+   "title": "Staffordshire Bull Terriers - Buying a Staffy Puppy",
+   "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeds/staffordshirebullterrier",
+   "website_name": "RSPCA",
+   "description": "Want to get a Staffy pup? Find out more about Staffordshire bull terriers and what to consider if you're thinking of buying one."
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 5,
+   "domain": "www.freeads.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies and Dogs for sale",
+   "url": "https://www.freeads.co.uk/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+   "website_name": "Freeads",
+   "description": "Find 241 Staffordshire Bull Terrier for sale on Freeads Pets in UK. New 15 £1,300 Red. Staffie puppies for sale New 7 £1,200 Staffie puppies for sale. New £150 ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 6,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffie Owners: Buy and sell Staffie puppies and dogs online",
+   "url": "https://www.staffie-owners.co.uk/",
+   "website_name": "Staffie Owners",
+   "description": "The UK&#39;s leading dedicated website for buying and selling Staffordshire Bull Terrier puppies and dogs. £550 [seller name dropped] Active Today"
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 7,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale in the UK",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Puppies ・ 37 Puppies for sale Filters ・ £1,200 Last active: 2 weeks ago ・ £1,800 Last active: 7 hours ago Showing 25 per ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 8,
+   "domain": "www.foreverpuppy.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs and Puppies",
+   "url": "https://www.foreverpuppy.co.uk/find-your-dog/staffordshire-bull-terrier",
+   "website_name": "Forever Puppy",
+   "description": "22 Staffordshire Bull Terrier puppies found. For Sale 36 £2,750 Stunning Quality Staffordshire Bull Terrier Puppies. Adorable puppy Staffordshire Bull Terrier ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 9,
+   "domain": "www.dogstrust.org.uk",
+   "title": "Staffordshire Bull Terrier | Rehoming Rescue Dog",
+   "url": "https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier",
+   "website_name": "Dogs Trust",
+   "description": "Can you give our Staffordshire Bull Terrier Rescue dog their forever home? Find out more, search available dogs and apply to rehome today."
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 10,
+   "domain": "www.gumtree.com",
+   "title": "54 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier",
+   "website_name": "Gumtree",
+   "description": "Staffordshire Bull Terrier 3 Age 3 weeks Sex Mixed Litter Ready to leave in 5 weeks £1,500 Nelson, Lancashire"
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 11,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffy Puppies for sale",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/?keyword=staffy",
+   "website_name": "Pets4Homes",
+   "description": "150 Puppies found ; Healthy Strong Staffys Pups Playful with kids · 8 weeks · £1,380 · Sherborne · Dorset ; Staffy X Vizla pups · 9 weeks · £400 · Lytham Saint Annes ... Read more"
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "Staffy puppies for sale 500",
+    "Staffy puppy price uk kennel club",
+    "Blue staffy puppy price uk",
+    "White staffy puppy price uk",
+    "Staffy puppy for sale",
+    "Staffy puppies for sale near me",
+    "Blue staffy puppy for sale UK",
+    "Staffy puppies free to a good home"
+   ]
+  }
+ ]
+}
