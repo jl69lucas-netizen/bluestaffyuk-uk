@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK competitor intel report",
+  "description": "docs/research/competitors/<id>.json, written by bsuk-competitor-intel; bsuk.json is BSUK's own profile in the same shape. Every field is either {status: ok, ...} or {status: NOT FETCHED, reason}. Spec 2026-09-23-competitor-intel §5–§6.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "root_domain", "analysed_on", "keywords", "page_types", "cities",
+               "schema_types", "pages", "trust", "content", "blog", "visual", "conversion",
+               "technical", "key_insight"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "root_domain": {"type": "string", "minLength": 3},
+    "analysed_on": {"$ref": "#/$defs/date"},
+    "keywords": {"$ref": "#/$defs/list"},
+    "page_types": {"$ref": "#/$defs/page_types"},
+    "cities": {"$ref": "#/$defs/list"},
+    "schema_types": {"$ref": "#/$defs/list"},
+    "pages": {"$ref": "#/$defs/pages"},
+    "trust": {"$ref": "#/$defs/facts"},
+    "content": {"$ref": "#/$defs/facts"},
+    "blog": {"$ref": "#/$defs/facts"},
+    "visual": {"$ref": "#/$defs/facts"},
+    "conversion": {"$ref": "#/$defs/facts"},
+    "technical": {"$ref": "#/$defs/facts"},
+    "key_insight": {"type": "string"}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "not_fetched": {
+      "type": "object", "additionalProperties": false, "required": ["status", "reason"],
+      "properties": {"status": {"const": "NOT FETCHED"}, "reason": {"type": "string", "minLength": 1}}
+    },
+    "list": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"},
+                      "values": {"type": "array", "uniqueItems": true,
+                                 "items": {"type": "string", "minLength": 1}}}}
+    ]},
+    "page_types": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"},
+                      "values": {"type": "object",
+                                 "propertyNames": {"enum": ["breed-guide", "care-guide", "health",
+                                   "price", "comparison", "city", "blog", "faq", "about",
+                                   "listing", "reviews", "contact"]},
+                                 "additionalProperties": {"type": "integer", "minimum": 0}}}}
+    ]},
+    "pages": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "fetched_on", "values"],
+       "properties": {"status": {"const": "ok"}, "fetched_on": {"$ref": "#/$defs/date"},
+                      "values": {"type": "array", "items": {
+                        "type": "object", "additionalProperties": false,
+                        "required": ["url", "title", "h1", "h2"],
+                        "properties": {"url": {"type": "string", "pattern": "^https?://"},
+                                       "title": {"type": "string"}, "h1": {"type": "string"},
+                                       "h2": {"type": "array", "items": {"type": "string"}}}}}}}
+    ]},
+    "facts": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "values"],
+       "properties": {"status": {"const": "ok"}, "values": {"type": "object"}}}
+    ]}
+  }
+}
