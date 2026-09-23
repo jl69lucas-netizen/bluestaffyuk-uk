@@ -13,7 +13,7 @@ Competitor reports: 3 · BSUK profile: present
 | blue staffy puppies birmingham | 1/3 | 0 | no | medium |
 | blue staffy puppies leeds | 1/3 | 0 | no | medium |
 | blue staffy puppies liverpool | 1/3 | 0 | no | medium |
-| blue staffy puppies london | 1/3 | 0 | yes | — |
+| blue staffy puppies london | 1/3 | 0 | no | medium |
 | blue staffy vs american bully | 1/3 | 0 | no | medium |
 | health tested staffy puppies | 1/3 | 0 | no | medium |
 | kc registered staffy puppies | 1/3 | 0 | no | medium |
@@ -37,7 +37,7 @@ Competitor reports: 3 · BSUK profile: present
 | Birmingham | 1/3 | 0 | no | medium |
 | Leeds | 1/3 | 0 | no | medium |
 | Liverpool | 1/3 | 0 | no | medium |
-| London | 1/3 | 0 | yes | — |
+| London | 1/3 | 0 | no | medium |
 
 ## Schema gaps
 
@@ -58,4 +58,4 @@ Competitor reports: 3 · BSUK profile: present
 7. keywords `blue staffy puppies birmingham` — 1/3 competitors; BSUK: no
 8. keywords `blue staffy puppies leeds` — 1/3 competitors; BSUK: no
 9. keywords `blue staffy puppies liverpool` — 1/3 competitors; BSUK: no
-10. keywords `blue staffy vs american bully` — 1/3 competitors; BSUK: no
+10. keywords `blue staffy puppies london` — 1/3 competitors; BSUK: no

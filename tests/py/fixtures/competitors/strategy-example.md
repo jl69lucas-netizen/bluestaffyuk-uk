@@ -1,93 +1,104 @@
-MISSING: docs/research/keyword-gap-<date>.md · MISSING: docs/research/llm-intel/blue-staffy-puppies-manchester-uk-<date>.json · MISSING: data/competitors.json — carrying on with what exists. fresh: `docs/research/gap-matrix-2026-09-24.md`, `docs/research/competitors/a.json`, `docs/research/competitors/b.json`, `docs/research/competitors/c.json`, `docs/research/competitors/bsuk.json`, `data/page-map.json`, `data/locations.json`.
+MISSING: docs/research/keyword-gap-<date>.md
+MISSING: docs/research/llm-intel/blue-staffy-puppies-manchester-uk-<date>.json
+MISSING: docs/research/llm-intel/<slug>-<date>.json for every other location page in scope
+MISSING: data/competitors.json
+fresh: docs/research/gap-matrix-2026-09-24.md (built 2026-09-24; its reports a, b, c and bsuk all fetched_on 2026-09-24), docs/research/competitors/a.json, docs/research/competitors/b.json, docs/research/competitors/c.json, docs/research/competitors/bsuk.json, data/page-map.json, data/locations.json — carrying on with what exists
 
 # Location pages strategy — 2026-09-24
 
-## What the research can and cannot carry
+### Read this first
 
-- **The Manchester AI answer is not usable yet.** A saved answer sits at `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json`, but a raw answer is not a source: its citations reach a strategy only through a `docs/research/llm-intel/` file, and none exists for Manchester. Nothing below leans on what that answer says or cites. Running `bsuk-llm-keyword-intel` on it is the first unblocking step in either strategy.
-- **No keyword-gap file**, so there are no gap scores, bands or "exists, not indexed" rows to quote. The stub status below comes from `data/locations.json` and `data/page-map.json` instead.
-- **No tiers** (`data/competitors.json` is missing). Competitors a, b and c are therefore used only as evidence of *coverage* (what they have pages for). None of them is proposed as a link target, a model to copy or a source of wording, because any of them could be tier 5.
-- **GSC and GA4 are NOT FETCHED until project 6.** No traffic, ranking, impression or search-volume claim appears anywhere here.
-- **The matrix's "BSUK has it: no" for Manchester is a stub, not an absence.** `data/locations.json` holds `/uk-locations/blue-staffy-puppies-manchester-uk/` as a five-word noindex page with the `stub` defect; the BSUK profile does not see it because it is not a real page. The same holds for Birmingham (`/uk-locations/blue-staffy-puppies-birmingham/`), Leeds (`/uk-locations/blue-staffy-puppies-for-sale-leeds/`), Liverpool (`/uk-locations/staffy-puppies-for-sale-liverpool/`) and London (`/uk-locations/blue-staffy-puppies-london/`, where the matrix says "yes" but the page is still a noindex stub with an empty H1). Every one of these is a **project 5 rebuild of that URL**, never a new page and never a second URL for the same city.
+- **No keyword-gap file.** The Concrete Artifact's score column is the matrix N/M, headed "matrix N/M (no keyword-gap file)". No keyword-gap score or band is quoted anywhere.
+- **No llm-intel file for Manchester (or any city).** The saved raw AI answer at `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.response.json` exists, but a raw answer is not a source: nothing from it reaches this strategy until `bsuk-llm-keyword-intel` turns it into `docs/research/llm-intel/blue-staffy-puppies-manchester-uk-<date>.json`. So this strategy makes **no AI-answer claim** — not who is cited, not whether BSUK is cited, not what format the answer takes.
+- **No data/competitors.json.** Competitors a, b and c still count toward every gap (tier unknown), but none of them is used as a link target, a page to copy, or a source of wording. Because tiers are unknown, no N/M count below can be said to be free of a tier-5 (suspect seller) report.
+- **GSC and GA4 are not fetched until project 6.** No traffic, impression, click, ranking or search-volume figure appears here, as a reason or as an expected outcome.
+- **Every gap city is a stub, so every gap city is a rebuild.** The BSUK profile says "no" for every matrix gap city, and the page map holds a noindexed stub at each: Manchester `/uk-locations/blue-staffy-puppies-manchester-uk/`, Birmingham `/uk-locations/blue-staffy-puppies-birmingham/`, Leeds `/uk-locations/blue-staffy-puppies-for-sale-leeds/`, Liverpool `/uk-locations/staffy-puppies-for-sale-liverpool/`, London `/uk-locations/blue-staffy-puppies-london/`. Each is a project 5 rebuild of that URL — never a new page, never a second URL for the same city.
 
-## Strategy A — Contested cities first: rebuild the stubs competitors cover
+## Strategy A — Contested cities first
 
-**Thesis.** The only location signal every competitor shares is Manchester (3/3 on both the keyword and the city rows of the matrix, top of the priority queue). Birmingham, Leeds and Liverpool are each covered by one competitor. BSUK has a URL for all four, but each is a noindex stub. Rebuild those stubs into full location pages, Manchester first, with FAQPage schema built in from day one, so the cities competitors actually contest stop being empty.
-
-**Target clusters.**
-- "blue staffy puppies <city>" for Manchester, Birmingham, Leeds, Liverpool, London.
-- The buyer questions a city page answers: delivery to that city, health testing of the parents, what the puppy leaves with, how to view.
-
-**Cluster → page map.**
-| Cluster | Page | New or rebuild |
-|---|---|---|
-| blue staffy puppies manchester | `/uk-locations/blue-staffy-puppies-manchester-uk/` | project 5 rebuild |
-| blue staffy puppies birmingham | `/uk-locations/blue-staffy-puppies-birmingham/` | project 5 rebuild |
-| blue staffy puppies leeds | `/uk-locations/blue-staffy-puppies-for-sale-leeds/` | project 5 rebuild |
-| blue staffy puppies liverpool | `/uk-locations/staffy-puppies-for-sale-liverpool/` | project 5 rebuild |
-| blue staffy puppies london | `/uk-locations/blue-staffy-puppies-london/` | project 5 rebuild |
-
-**Internal-link plan.** Each rebuilt city page links up to `/uk-locations/blue-staffy-puppies-uk/` (the indexed UK location hub) and across to the existing health guide `/blue-staffy-health-uk/` and buying guide `/uk-blue-staffy-puppy-buying-guide/`. The UK hub links down to every rebuilt city. Anchors are Link-First (`rules/links.md`) and every link goes on the page board before approval (working rule 12). No link to any competitor.
-
-**Schema plan.** FAQPage on every rebuilt city page (the matrix lists FAQPage as a high-priority schema gap). Organization stays as it is. Product is not added to location pages: a location page does not sell one specific puppy, and prices come only from the breeder's puppy data, never from old copy.
-
-**Build order and effort.** Manchester, then Birmingham, Leeds, Liverpool, London, then the remaining stubs (Bristol, Leicester, Coventry, Cardiff, Cornwall, Essex, Glasgow, Nottingham, Wolverhampton, South Yorkshire, Newcastle-under-Lyme). Each is a full page build through `bsuk-location-page-builder` with its own outline, board and FAQ; roughly one page per build session. Stubs have no verbatim set worth keeping beyond the city name, so the faithful-rewrite burden is light.
-
-**Expected outcome (no traffic figure).** BSUK stops showing an empty noindex page for the one city every competitor covers, and the four other contested cities get real pages on their existing URLs. The rebuilt pages become indexable, carry FAQPage, and give the llm-intel run a real page to check the Manchester answer against.
-
-**Risks.**
-- The already-indexed location pages (Aberdeen, Dundee, Edinburgh, Hull, Inverness, Middlesbrough, Oxford, Sunderland, York) keep their current thin, schema-less template for longer.
-- Without the llm-intel file, the Manchester page is written blind to what the AI answer rewards.
-- Five pages in the same cluster invite sibling prose copying; each must be written from its own outline (rules/copy.md).
-
-## Strategy B — Deepen what is already indexed: price and FAQ upgrade across the live template
-
-**Thesis.** The price topic is a wider gap than any single city after Manchester: "staffy puppy price" is 2/3 on the keyword row and "price" is 2/3 on the page-type row, while each of the non-Manchester cities is only 1/3. Every indexed location page already answers a price question in its FAQ but carries no schema at all. Instead of rebuilding stubs, upgrade the location template that is already indexed: add a proper price-and-what's-included section, a buyer-question FAQ with FAQPage schema, and a link to a price explainer, then roll it across every live location page. City stubs wait.
+**Thesis.** Rebuild the city stubs that competitors already rank pages for, starting with the city every competitor covers. The matrix says these are the places a searcher already finds a competitor's city page and finds nothing indexable from BSUK. Close those gaps first; the rest of the network follows.
 
 **Target clusters.**
-- "staffy puppy price" and the cost questions around it (what affects the price, deposits, delivery charges).
-- "health tested staffy puppies" and "kc registered staffy puppies" (each 1/3), answered in the upgraded FAQ.
+1. "blue staffy puppies manchester" — keyword row and city row both 3/3, priority high, top of the matrix's priority queue.
+2. "blue staffy puppies birmingham / leeds / liverpool / london" — each 1/3, priority medium.
+3. FAQPage schema on each rebuilt city page — schema row 1/2 with 1 report not fetched, priority high.
 
-**Cluster → page map.**
-| Cluster | Page | New or rebuild |
-|---|---|---|
-| staffy puppy price | price section + FAQ on each indexed location page; explainer on the existing `/buy-staffy-puppies-for-sale-uk/` | upgrade of existing pages |
-| health tested / KC registered | FAQ block on each indexed location page, linking to `/blue-staffy-health-uk/` | upgrade of existing pages |
-| blue staffy puppies manchester | left as the stub until the template is done | project 5 rebuild, deferred |
+**Cluster → page map.** Each cluster maps to the existing stub URL in `data/page-map.json` (listed above). No new URLs. Keyword targets are the matrix's own keyword values ("blue staffy puppies manchester", etc.); the stub URLs whose slug does not match the keyword (Manchester's `-uk` suffix, Leeds's `for-sale-`, Liverpool's `staffy-puppies-for-sale-`) keep their URL — a slug change is an architect decision, not a strategy one.
 
-**Internal-link plan.** Every indexed location page links to the price explainer and the health guide from its FAQ answers; the UK hub links to all indexed city pages. No competitor links.
+**Internal-link plan.**
+- Each rebuilt city page links up to the indexed UK hub `/uk-locations/blue-staffy-puppies-uk/`, and the hub links down to each city as it goes live (not before — no links to noindexed stubs).
+- Each city page links across to the indexed trust pages that already exist: `/uk-blue-staffy-puppy-buying-guide/` and `/blue-staffy-health-uk/`.
+- Contested cities link to each other only where geography makes it natural (Manchester ↔ Liverpool ↔ Leeds; Birmingham ↔ London via the hub).
+- No competitor URL is linked (no registry; tiers unknown).
 
-**Schema plan.** FAQPage across all indexed location pages. Product only on puppy pages, where a real puppy and a breeder-confirmed price exist; never on a location page.
+**Schema plan.** FAQPage on every rebuilt city page (the schema gap row that applies to a city page). Organization is already present (BSUK "yes"). Product (1/2) belongs to the listing page, not a city page — out of scope here.
 
-**Build order and effort.** One template change, then a content pass on each indexed location page (every FAQ answer written fresh per page), then the stubs. Lower effort per page than A, but it touches every live page at once, and price copy needs the breeder to confirm current prices first (rule 9: no invented prices; the prices in the old FAQ copy may be stale).
+**Build order and effort.** Manchester first (the only high city), then Birmingham, Leeds, Liverpool, London. The medium cities are tied in the matrix at 1/3 and nothing in the research separates them, so they follow the matrix's own row order. Each is a full rebuild from a near-empty stub — high effort per page, and the first one carries extra cost because it settles the city-page template the others reuse.
 
-**Expected outcome (no traffic figure).** Every indexed location page gains structured FAQ answers and a price answer, closing the FAQPage schema gap site-wide; the price topic gets coverage without adding a new URL.
+**Expected outcome (no traffic figure).** The matrix's only high city gap and every medium city gap close; each gap city turns from a noindexed stub into an indexable city page, and the matrix's city rows would read "BSUK has it: yes" on the next rebuild.
 
 **Risks.**
-- Manchester, the only city at 3/3, stays a five-word noindex stub for the whole of this strategy.
-- Blocked on the breeder confirming prices before any price copy ships.
-- A shared price/FAQ block across many location pages is exactly the sibling-copy pattern rules/copy.md forbids; each page's FAQ must be written separately, which erodes the effort saving.
+- These are the cities where competitor pages already exist; a page that does not beat them on substance adds little.
+- The medium cities each rest on 1/3; a tier-5 report among those would inflate a row, and with no registry that cannot be ruled out.
+- No AI-answer evidence at all (llm-intel missing): the build cannot be steered toward what AI answers cite until that file exists.
+
+## Strategy B — Uncontested network first
+
+**Thesis.** Do not fight where competitors already are. Rebuild first the noindexed city stubs that **no** competitor report covers — Bristol, Leicester, Nottingham, Coventry, Wolverhampton, Cardiff, Glasgow, Cornwall, Essex, South Yorkshire, Newcastle-under-Lyme — so BSUK is the only indexable city page in the research set for those places. The contested cities come after.
+
+**Target clusters.** One cluster per uncontested stub city from `data/locations.json` (e.g. "blue staffy puppies bristol"). None has a matrix row: the matrix lists only cities at least one competitor covers, so these carry no gap figure. The keyword for each comes from the stub's own title in `data/page-map.json`, not from any competitor.
+
+**Cluster → page map.** Each uncontested city → its existing stub URL (for example `/uk-locations/blue-staffy-puppies-bristol-uk/`, `/uk-locations/staffy-puppies-for-sale-nottingham/`), rebuilt in project 5. The `/uk-locations/uk-staffordshire-bull-terrier-breeder/` stub is not a city and stays out.
+
+**Internal-link plan.** Same hub-and-spoke through `/uk-locations/blue-staffy-puppies-uk/`, plus regional clusters among the new pages (Midlands: Birmingham-area stubs Coventry, Wolverhampton, Leicester, Nottingham; South West: Bristol, Cornwall). The contested stubs stay noindexed and unlinked until their turn.
+
+**Schema plan.** FAQPage on every rebuilt page, as in A.
+
+**Build order and effort.** The uncontested stubs first (many pages, each a full rebuild from nothing), then the contested cities. More pages before any matrix gap closes.
+
+**Expected outcome (no traffic figure).** A wider indexable network sooner; no matrix gap row changes until the contested phase begins.
+
+**Risks.**
+- Closes **no** matrix gap row in its first phase — the top of the priority queue (Manchester) waits behind many pages.
+- "No competitor covers it" rests only on the competitor reports in the matrix; the absence may be a research gap, not a market gap.
+- No evidence in the research that searchers or AI answers want these cities; the bet is on absence of competition, not presence of demand.
 
 ## Recommendation
 
-**Pick: Strategy A — contested cities first, Manchester first (Recommended).**
+**Pick: Strategy A — Contested cities first.** This is a clear win, so the tie-break is not needed (it would also pick A: A closes the highest matrix share first).
 
-### Why
+### WHY
 
-- Manchester is the only location covered by every competitor: `blue staffy puppies manchester` is 3/3 and the Manchester city row is 3/3, both marked high and at the top of the priority queue in the gap matrix. BSUK's own URL for it, `/uk-locations/blue-staffy-puppies-manchester-uk/`, exists but is a noindex stub, so the fix is a rebuild on a URL BSUK already owns.
-- Birmingham, Leeds and Liverpool are each 1/3 in the matrix and each has a BSUK stub URL too, so the same rebuild procedure closes all four contested city gaps without minting a single new URL.
-- FAQPage is a high-priority schema gap at 1/2 (with 1 competitor not fetched); building it into each rebuilt city page closes it on the pages that most need it, rather than retrofitting it onto pages that are already indexed.
-- The price gap (2/3 on both the keyword and page-type rows) is real but is a page-type gap, not a location gap: it belongs to the buy/price cluster, not to the location pages, and it is blocked on breeder-confirmed prices anyway.
+- Manchester is the only city gap every competitor covers: city row **3/3**, keyword row "blue staffy puppies manchester" **3/3**, both priority high and at the top of the matrix priority queue — and BSUK holds only a noindexed stub there.
+- Birmingham, Leeds, Liverpool and London are each **1/3**, priority medium, and each is also a stub — A closes every city gap row in the matrix; B closes none in its first phase.
+- The FAQPage schema row is **1/2** (1 report not fetched), priority high, and a city page is where BSUK can add it — A puts it on the pages the matrix ranks highest.
+- The other high row a location page touches, "staffy puppy price" at **2/3**, is a page-type gap, not a city gap: neither strategy closes it, so it does not separate them (it needs its own strategy).
 
 ### The pick's downside
 
-Strategy A leaves the already-indexed location pages thin and schema-less for longer, and it does nothing for "staffy puppy price" (2/3) inside this project — Strategy B would have put a price answer and FAQPage on every live location page first. A also asks for full page builds, one city at a time, where B's upgrade is a lighter pass per page. And until the Manchester llm-intel file exists, the first rebuild is written without evidence of what the AI answer cites.
+A spends the first builds where competitor pages already exist, so the Manchester page must beat every rival Manchester page in the research (3/3) to matter; and it leaves the uncontested noindexed stubs (Bristol, Nottingham, Cardiff and the rest) dark for longer — B would have them indexable first. The medium cities also rest on 1/3 each, with tiers unknown.
 
 ### First three build steps
 
-1. Run `bsuk-llm-keyword-intel` on the saved Manchester answer to produce `docs/research/llm-intel/blue-staffy-puppies-manchester-uk-<date>.json`, and run the keyword-gap script so the stub rows carry scores; neither is done by this agent.
-2. Hand Manchester to `bsuk-content-architect` as a project 5 rebuild of `/uk-locations/blue-staffy-puppies-manchester-uk/` (not a new page), with FAQPage in the schema plan and the UK hub, health guide and buying guide as its internal links; then `grill-me` on that page when it is built.
-3. Repeat the same rebuild for Birmingham, Leeds and Liverpool on their existing stub URLs, each written from its own outline.
+1. Run `bsuk-llm-keyword-intel` for `blue-staffy-puppies-manchester-uk` so the Manchester rebuild has an llm-intel file (the raw answer alone cannot be used), and run the keyword-gap agent so the scores in the table below are replaced by keyword-gap scores.
+2. Rebuild `/uk-locations/blue-staffy-puppies-manchester-uk/` (project 5) with FAQPage schema and hub, buying-guide and health links; `grill-me` before build. This page settles the city template.
+3. Rebuild Birmingham, then Leeds, Liverpool and London on that template (project 5), linking each from the hub as it goes live.
+
+## Concrete Artifact
+
+### City-page build order
+
+| # | topic or page | target keyword | matrix N/M (no keyword-gap file) | intent | link role | new or rebuild |
+|---|---|---|---|---|---|---|
+| 1 | Manchester `/uk-locations/blue-staffy-puppies-manchester-uk/` | blue staffy puppies manchester | 3/3 (high) | local transactional | spoke; links up to hub, across to buying guide and health | rebuild (project 5, stub) |
+| 2 | Birmingham `/uk-locations/blue-staffy-puppies-birmingham/` | blue staffy puppies birmingham | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
+| 3 | Leeds `/uk-locations/blue-staffy-puppies-for-sale-leeds/` | blue staffy puppies leeds | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
+| 4 | Liverpool `/uk-locations/staffy-puppies-for-sale-liverpool/` | blue staffy puppies liverpool | 1/3 (medium) | local transactional | spoke; links to Manchester | rebuild (project 5, stub) |
+| 5 | London `/uk-locations/blue-staffy-puppies-london/` | blue staffy puppies london | 1/3 (medium) | local transactional | spoke | rebuild (project 5, stub) |
+| 6 | UK hub `/uk-locations/blue-staffy-puppies-uk/` | blue staffy puppies uk | no matrix row | local navigational | hub; add a link to each city above as it goes live | existing indexed page, link update only |
+| 7 | Uncontested stubs: Bristol, Leicester, Nottingham, Coventry, Wolverhampton, Cardiff, Glasgow, Cornwall, Essex, South Yorkshire, Newcastle-under-Lyme | the stub's own city keyword | no matrix row | local transactional | spokes | rebuild (project 5, stubs) — after rows 1–5 |
+
+Rows 2–5 are tied in the matrix; they follow its row order. York (the city the BSUK profile already has) and the other indexed city pages are not gaps and are not in this order.
 
 ## Sources
 

@@ -1,11 +1,13 @@
-# tests/py/test_strategy_example.py — pins bsuk-strategy-synthesizer's output format.
+# tests/py/test_strategy_example.py — pins bsuk-strategy-synthesizer's output format and rules.
 #
-# tests/py/fixtures/competitors/strategy-example.md is the Task 9 GREEN run of the agent on
-# the fixture gap matrix (tests/py/fixtures/competitors/gap-matrix-fixture.md, itself built by
-# scripts/gap_matrix.py from fixture reports — fixture research, not real). Its ## Sources were
-# trimmed to the files its checked figures come from. The test lays those files out at their
-# research paths in a scratch root and runs scripts/strategy_cite_check.py on the example, so a
-# change to the checker that would reject the agent's format fails here, in CI.
+# tests/py/fixtures/competitors/strategy-example.md is the agent's GREEN run (Task 9 quality
+# round) on tests/py/fixtures/competitors/gap-matrix-fixture.md. That matrix was built by
+# scripts/gap_matrix.py from fixture reports a, b, c and a BSUK profile that covers York only —
+# fixture research, not real. The example's ## Sources were trimmed to the files its checked
+# figures come from, and one note about a fixture-only profile mismatch was removed. The test
+# lays those files out at their research paths in a scratch root and runs
+# scripts/strategy_cite_check.py on the example, so a checker change that would reject the
+# agent's format fails here, in CI. It also pins the key rule phrases of the agent text.
 import pathlib
 import re
 import shutil
@@ -69,3 +71,21 @@ def test_the_agent_names_the_check_and_the_output_sections():
     for s in ("scripts/strategy_cite_check.py", "## Strategy A", "## Strategy B",
               "## Recommendation", "## Concrete Artifact", "## Sources"):
         assert s in agent, s
+
+
+def test_the_agent_carries_its_key_rules():
+    agent = " ".join(AGENT.read_text(encoding="utf-8").split())
+    for phrase in (
+        "Exactly TWO strategies",                       # two strategies, never one or three
+        "names the pick's own downside",                # the downside
+        "never cite traffic",                           # GSC/GA4 not fetched until project 6
+        "is a rebuild of that URL (project 5), never a new page",  # stub rows
+        "A quantity from 1900 to 2099 takes a comma",   # the comma rule
+        "say it **without a number**",                  # self-made counts: words, not numbers
+        'never spelled out ("seventeen"',
+        "WHY below three sourced figures",              # thin research
+        "the profile wins",
+        "Tier 5 is never a link",
+        "compared within one `page_source.kind` only",
+    ):
+        assert phrase in agent, phrase
