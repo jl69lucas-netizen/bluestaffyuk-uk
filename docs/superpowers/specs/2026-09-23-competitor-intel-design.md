@@ -187,7 +187,7 @@ never bought), and two caps apply: `query_budget_usd` $0.50 per slug per day and
 `query_total_budget_usd` $1.00 over the whole log.
 
 This build reuses those two source names instead of adding new ones. Each registry seed keyword
-gets its own pseudo-slug, `_registry-<keyword-slug>`, so each is cached on its own and the
+gets its own pseudo-slug, `registry-<keyword-slug>` (the guard accepts only `[a-z0-9-]`), so each is cached alone and the
 per-slug cap never binds; LLM intel records under the page slug with source `ai_engines` (a page
 that already has an `ai_engines` response from query augmentation reuses it — exit 3 — rather
 than paying again).
