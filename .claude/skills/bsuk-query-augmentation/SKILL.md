@@ -23,7 +23,7 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 - Run everything **in the repo** (`/Users/apple/Downloads/BSUK`). Never copy the repo to try the
   script; no dry runs — a Short build (exit 5) writes nothing.
 - Browser artefacts (snapshots, screenshots, saved HTML, console logs) go only in the session
-  scratchpad, by absolute path. If a `.playwright-mcp/` folder appears in any repo, delete it.
+  scratchpad, by absolute path. If this run created a `.playwright-mcp/` folder, delete it.
 - **Money:** before each batch of paid calls, tell the user which calls, why, and the estimate
   (`query_typical_call_usd` in `data/settings.json` per call), and wait for a yes. Report the
   spend after. Never delete or edit `data/queries/spend.json`.
@@ -31,19 +31,26 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
   credits (the response shows `creditsUsed`). Add them up and put them in the spend report.
   The free rungs are the browser and `curl`.
 
-## Exit codes (every mode)
+## Exit codes
 
-0 ok · 1 internal error (a bug: stop, report) · 2 usage (bad slug, route, `--today` or cost) ·
-3 cached (make NO call) · 4 budget (stop, report `data/queries/spend.json`; never work around it) ·
-5 short (Step 5) · 6 bad input (fix the named raw file from its source; never hand-edit around it).
+| Exit | Mode | Meaning → what to do |
+|---|---|---|
+| 0 | every mode | ok |
+| 1 | every mode | internal error (a bug; nothing written) → stop, report |
+| 2 | every mode | usage: bad slug, route, `--today` or `--cost`; also `--record` refused (a bad cost or a damaged spend log) → see Step 2 |
+| 3 | `--preflight` only | cached → make NO call |
+| 4 | `--preflight` only | budget exceeded, or settings/spend log unreadable → no call made; stop, report `data/queries/spend.json`; never work around it |
+| 5 | build only | short → Step 5 |
+| 6 | build, `--extract-h2` | bad input. Build: a raw input file is unparseable or the wrong shape → fix the named file from its source, never hand-edit around it. `--extract-h2`: the saved HTML is missing or unreadable → capture it again |
 
 ## Step 1 — preflight before EVERY paid call
 
 ```bash
-python3 scripts/query_augment.py --preflight <slug> --source <serp_google|serp_bing|ai_engines>
+python3 scripts/query_augment.py --preflight <slug> --source <serp_google|ai_engines>
 ```
 
-One preflight per call. A saved `<source>.response.json`, or a `<source>.json` with
+One preflight per paid call. Bing is read free, so `serp_bing` is never preflighted (a free
+read needs no budget check). A saved `<source>.response.json`, or a `<source>.json` with
 `"status": "ok"`, counts as bought: exit 3, no call. A `fallback` or `NOT FETCHED` file does
 not block a later paid call — no `--refresh` needed for that. `--refresh` is only for
 re-buying a real response, and only when the user asked for fresh data.
@@ -58,7 +65,8 @@ re-buying a real response, and only when the user asked for fresh data.
 
 **Where Google People Also Ask comes from:** the paid Google call above, behind preflight and
 the user's yes. The free fallback (connector missing, out of credit, or the user declines) is
-the `bsuk-paa-agent` browser protocol (free), then Firecrawl search (spends Firecrawl
+the `@bsuk-paa-agent` agent's browser protocol (`.claude/agents/bsuk-paa-agent.md`; free),
+then Firecrawl search (spends Firecrawl
 credits — count them), with `"status": "fallback"`. If
 Google answers with a robot check or a challenge page, that source is **NOT FETCHED**: write no
 file (the script records it). Never solve, dodge or retry around a robot check.
@@ -77,12 +85,15 @@ file (the script records it). Never solve, dodge or retry around a robot check.
 4. Save the response untouched: `data/queries/raw/<slug>/<source>.response.json`.
 5. Write the normalised `data/queries/raw/<slug>/<source>.json`.
 
-`--record` refuses a cost (exit 2) or preflight/record errors on a damaged spend log: still save
-`<source>.response.json`, then stop and tell the user the cost the call ran up.
+If preflight fails on a damaged spend log it returns 4 and no call is made: stop and report.
+If `--record` is refused after the call (exit 2: a bad cost or a damaged spend log), still save
+`<source>.response.json`, then stop and tell the user the cost the call ran up. Never repair
+the log yourself.
 
 **Normalised file:** `{"source", "status": "ok|fallback", "fetched": "YYYY-MM-DD", "questions":
 [{"text", "detail", "fact_source"}]}`. For `serp_bing` also keep `"results": [{"bing_pos", "url"}]`
-(the top 10) and a `note` saying it was read free in the browser.
+(the top 10) and a `note` saying it was read free in the browser. A Google fallback (no paid
+response) likewise keeps `"results": [{"google_pos", "url"}]`, the top 10 as read.
 
 **`fact_source`** is set only when you can name what answers the question **as asked**:
 - a data key: `data/settings.json#delivery_min_gbp`, or
@@ -93,12 +104,14 @@ fact-backed wording. A question is never reworded to fit a bank answer.
 
 ## Step 3 — competitors (location pages; optional elsewhere)
 
-Pool: the first five organic results from Google (the `serp_google` response) and the first
+Pool: the first five organic results from Google (positions from the paid `serp_google`
+response if one was bought, else from the `results` in `raw/<slug>/serp_google.json`) and the first
 five from Bing (the `results` in `raw/<slug>/serp_bing.json`), merged. **Marketplaces and
 directories are in the pool** — only off-topic results are dropped.
 
 For each pool page, save its HTML to the scratchpad. Prefer the page's original HTML via
-`curl` (free, and cleanest). If that fails, use a browser capture (free, but a rendered capture
+`curl` (free, and cleanest). If curl fails or comes back blocked (a challenge page), use a
+browser capture (free, but a rendered capture
 can include consent dialogs; the extractor drops them). Firecrawl scrape raw HTML comes last
 because it spends credits. Then run:
 
@@ -155,9 +168,10 @@ The builder writes the page **from the file**, never from judgement:
 
 Rerun Step 5 (it keeps the fills), then `npm run build && npm run check:queries`.
 
-**The gate holds a page only once it is rebuilt:** after a city page is rebuilt, add
-`uk-locations/<slug>` (the nested key) to `data/facts/rebuilt.json`. Until then
-`check:queries` skips it as awaiting rebuild.
+**The gate holds a page only once it is rebuilt**, for every page type: after rebuilding a
+page, add its route without the slashes to `data/facts/rebuilt.json` — `uk-locations/<slug>`
+for a city page, `<slug>` for a top-level page. Until then `check:queries` skips it as
+awaiting rebuild.
 
 ## Worked example
 
@@ -181,7 +195,9 @@ read in the browser, marketplaces in the pool, one challenge page recorded as bl
 - Answering with a figure (a guarantee length, a date) the fact source does not give.
 - Setting `fact_source` to a bare file, or to a bank row on the same topic that does not answer it.
 - Rewording a question on the page and not updating `covered_by.text`.
-- Forgetting `uk-locations/<slug>` in `data/facts/rebuilt.json`, so the gate never checks the page.
+- Forgetting the page's key (`uk-locations/<slug>`, or `<slug>` for a top-level page) in
+  `data/facts/rebuilt.json`, so the gate never checks the page.
+- Preflighting `serp_bing` — it is a free read.
 - Copying the repo to a scratch folder to run the script, or writing browser files into the repo.
 - Deleting or editing `data/queries/spend.json`.
 - Calling Firecrawl free, or leaving its credits out of the spend report.
