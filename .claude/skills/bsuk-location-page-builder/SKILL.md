@@ -134,14 +134,14 @@ The props a city page passes, as `src/components/kit/*.astro` declares them:
 
 | Component | Props |
 |---|---|
-| `Hero` | `title`, `eyebrow`, `lede`, `image` (required — there is no default photo; `imageAlt` with it) and `as` (`h1` · `h2`; a location page's hero is the page's H1, so `as="h1"`) |
+| `Hero` | `title`, `eyebrow`, `lede`, `image` (required — there is no default photo; `imageAlt` with it) and `as` (`h1` · `h2`; a location page's hero is the page's H1, so `as="h1"`). When `image` is a `/images/…` path string, also pass `imageWidth`, `imageHeight` and `imageSrcset` — `img_dims` and `img-srcset-within-2x` are blocking |
 | `CounterStrip` | `stats` (required: `[{n, label, source?}]`), `tiles`, `label` |
 | `TrustStrip` | `items` (`[{t, d, i}]`) |
 | `PageNav` | `sections` (`[{id, label}]`, one per H2, each id real) |
-| `Faq` | `items` (`[{q, a}]`). **Always pass the block's picks**: without `items` it renders the WHOLE bank. `q` is the question as written on the page (the `covered_by.text`), `a` is the bank row's answer or the settings-key fact |
+| `Faq` | `items` (`[{id, q, a, source}]`, the `FaqRow` shape in `src/lib/faq.ts`). **Always pass the block's picks**: without `items` it renders the WHOLE bank. `q` is the question as written on the page (the `covered_by.text`), `a` is the bank row's answer or the settings-key fact, `source` what backs it |
 | `PuppyCard` | `slug` (a row of `data/puppies.json`) |
 | `Testimonial` | `mode` (`single` · `grid`, default `single`) and `reviews` — pass this page's rows from `data/reviews.json` so none is silently dropped |
-| `InfoCard` | `kind` (`fact` · `observed` · `recommendation`, the whole vocabulary in `src/lib/statement.ts`), `label` to override the default word; also `heading`, `body` |
+| `InfoCard` | `kind` (`fact` · `observed` · `recommendation`, the whole vocabulary in `src/lib/statement.ts`), `label` to override the default word, `heading` and `body`. Omitted, `heading` and `body` fall back to a health-test card — the newsletter card must pass both |
 | `SectionDivider` | `inverse` — set it when the divider sits on a dark band |
 | `Button` | `kind` (`primary` · `outline` · `inverse` · `submit` · `text`, default `primary`) and `label` |
 | `ContactFormKit` | `idPrefix` only when a page carries two forms |
@@ -203,6 +203,11 @@ question on the page and record where in `covered_by`. When the page is rebuilt,
 bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) to
 `data/facts/rebuilt.json` — the key the other gates use — and only then does
 `npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
+
+**STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
+the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
+(`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
+Issues). Until then do not add a city page to `data/facts/rebuilt.json`.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
@@ -343,6 +348,12 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
 3. Produce the outline — H1→H6 tree, the derived section list with its derivation, keyword
    distribution, review and newsletter positions, FAQ list, schema plan — and get it
    approved (`rules/headings.md` outline gate, `CLAUDE.md` rule 5).
-4. Approve the board, then build.
-5. Below 97% confidence: write what is not blocked, log the question to the brief's
+4. Before rewriting a page that already exists, extract what the rebuild must keep:
+   `python3 scripts/facts_preserved_check.py --extract <key>` (its facts into
+   `data/facts/<key>.json`) and, where rule 15 applies (the page is in
+   `data/verbatim/applies.json`), `python3 scripts/verbatim_set_check.py --extract <key>`
+   (its verbatim set into `data/verbatim/<key>.json`). Both read the built migrated page.
+5. Approve the board, then build. Add the page to `data/facts/rebuilt.json` only once the
+   nested-route STOP rule above is cleared.
+6. Below 97% confidence: write what is not blocked, log the question to the brief's
    `## Open Flags`, ask exactly one narrow question, keep going. Never dead-stop.

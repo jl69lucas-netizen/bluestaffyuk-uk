@@ -177,6 +177,11 @@ page, add its bare slug — the route's last segment, e.g. `blue-staffy-puppies-
 for a city page — to `data/facts/rebuilt.json`, the key the other gates use. Until then
 `check:queries` skips it as awaiting rebuild.
 
+**STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
+the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
+(`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
+Issues). Until then do not add a city page to `data/facts/rebuilt.json`.
+
 ## Worked example
 
 `data/queries/raw/blue-staffy-puppies-manchester-uk/` and
