@@ -59,12 +59,46 @@ def test_ten_seeds_then_one_llm_call_fit_the_total_cap(tmp_path):
                  now=f"{TODAY}T00:00:00Z")
     # typical ai_engines cost is the 0.2 already logged: 0.2 + 0.5 + 0.2 = 0.9 <= 1.0
     assert Q.preflight("blue-staffy-puppies-leeds", "ai_engines", root=root, today=TODAY) == Q.EXIT_OK
+    Q.record("blue-staffy-puppies-leeds", "ai_engines", "llm_response", 0.2, root=root,
+             now=f"{TODAY}T00:00:00Z")
+    # `typical` is the largest cost logged for that source, not one figure for all sources:
+    # a 12th ai_engines call would reach 0.9 + 0.2 = 1.1 > 1.0, a 12th serp_google call 0.95.
+    assert Q.preflight("blue-staffy-puppies-carlisle", "ai_engines", root=root,
+                       today=TODAY) == Q.EXIT_BUDGET
+    assert Q.preflight("registry-blue-staffy-puppies-carlisle", "serp_google", root=root,
+                       today=TODAY) == Q.EXIT_OK
 
 
-def test_the_total_cap_stops_an_eleventh_expensive_run(tmp_path):
-    root = make_root(tmp_path, spent=0.96)
+def test_total_cap_blocks_a_call_that_would_pass_1_usd(tmp_path, capsys):
+    # 0.95 + 0.05 lands exactly on the 1.0 cap, which is allowed.
+    root = make_root(tmp_path / "at", spent=0.95)
+    assert Q.preflight("registry-blue-staffy-breeder", "serp_google", root=root, today=TODAY) == Q.EXIT_OK
+    capsys.readouterr()
+    # 0.96 + 0.05 goes past it: a budget stop, not an unreadable log.
+    root = make_root(tmp_path / "over", spent=0.96)
     assert Q.preflight("registry-blue-staffy-breeder", "serp_google", root=root, today=TODAY) == Q.EXIT_BUDGET
+    err = capsys.readouterr().err
+    assert "total" in err and "cannot read" not in err
 
 
-def test_bing_is_still_never_bought():
+def test_page_cap_counts_only_todays_spend_on_that_slug(tmp_path):
+    # 0.35 already spent on the page today + typical ai_engines 0.2 = 0.55 > the 0.5 page cap.
+    root = make_root(tmp_path / "today")
+    Q.record("blue-staffy-puppies-leeds", "serp_google", "serp_organic_live_advanced", 0.35,
+             root=root, now=f"{TODAY}T09:00:00Z")
+    assert Q.preflight("blue-staffy-puppies-leeds", "ai_engines", root=root, today=TODAY) == Q.EXIT_BUDGET
+    # The same spend dated yesterday is a past run: it does not count against today's page cap.
+    root = make_root(tmp_path / "yesterday")
+    Q.record("blue-staffy-puppies-leeds", "serp_google", "serp_organic_live_advanced", 0.35,
+             root=root, now="2026-09-23T09:00:00Z")
+    assert Q.preflight("blue-staffy-puppies-leeds", "ai_engines", root=root, today=TODAY) == Q.EXIT_OK
+
+
+def test_bing_is_still_never_bought(tmp_path):
     assert "serp_bing" not in Q.PAID_SOURCES
+    root = make_root(tmp_path, spent=0.99)   # a paid source would be over the total cap here
+    assert Q.main(["--record", "x", "--source", "serp_bing", "--endpoint", "e", "--cost", "0",
+                   "--root", str(root)]) == Q.EXIT_USAGE
+    assert json.loads((root / "data/queries/spend.json").read_text())[-1]["source"] == "ai_engines"
+    # A Bing read is free: preflight never budget-checks it.
+    assert Q.preflight("registry-blue-staffy-breeder", "serp_bing", root=root, today=TODAY) == Q.EXIT_OK
