@@ -222,14 +222,15 @@ def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     assert "examined 0 pages (1 not built, 0 awaiting rebuild); 0 problems" in r.stdout
 
 
-def build(tmp_path, q, rebuilt=True):
+def build(tmp_path, q, rebuilt=True, keys=None):
     (tmp_path / "data/queries").mkdir(parents=True)
     (tmp_path / "data/queries/m.json").write_text(json.dumps(q))
     out = tmp_path / "dist" / ROUTE.strip("/")
     out.mkdir(parents=True)
     (out / "index.html").write_text(page_html())
     (tmp_path / "data/facts").mkdir(parents=True)
-    keys = ["index", ROUTE.strip("/")] if rebuilt else ["index"]
+    if keys is None:
+        keys = ["index", ROUTE.strip("/")] if rebuilt else ["index"]
     (tmp_path / "data/facts/rebuilt.json").write_text(json.dumps(keys))
 
 
@@ -291,3 +292,51 @@ def test_main_reports_a_question_file_that_is_not_json(tmp_path):
 def test_the_body_count_message_names_competitors_and_the_floor():
     probs = G.check_page(qfile(total=7), page_html())
     assert "body sections with an H2: 6, want at least 7 (competitors 4 + 3, floor 9)" in probs
+
+
+def test_a_page_listed_by_its_bare_slug_is_rebuilt(tmp_path):
+    # the other gates key a page by its last route segment; that is the convention
+    build(tmp_path, qfile(), keys=["index", "blue-staffy-puppies-manchester-uk"])
+    r = run(tmp_path)
+    assert r.returncode == 0 and "examined 1 pages (0 not built, 0 awaiting rebuild)" in r.stdout
+
+
+def test_a_page_listed_by_its_full_route_key_is_rebuilt(tmp_path):
+    build(tmp_path, qfile(), keys=["uk-locations/blue-staffy-puppies-manchester-uk"])
+    r = run(tmp_path)
+    assert r.returncode == 0 and "examined 1 pages (0 not built, 0 awaiting rebuild)" in r.stdout
+
+
+def test_a_page_listed_by_neither_key_awaits_rebuild(tmp_path):
+    build(tmp_path, qfile(total=9), keys=["index", "uk-locations", "manchester"])
+    r = run(tmp_path)
+    assert r.returncode == 0 and "examined 0 pages (0 not built, 1 awaiting rebuild)" in r.stdout
+
+
+def one_block_page(questions):
+    ld = json.dumps({"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
+        {"@type": "Question", "name": n, "acceptedAnswer": {"@type": "Answer", "text": "An answer."}}
+        for n in questions]})
+    return ('<html><head><script type="application/ld+json">' + ld + "</script></head><body><main>"
+            + faq_block(questions) + "</main></body></html>")
+
+
+def test_a_blog_page_with_one_faq_block_passes():
+    q = qfile(blocks=(2, 1, 0)); q["page_type"] = "blog"; q["extra_sections"] = []
+    html = one_block_page([i["question"] for i in q["questions"]])
+    assert G.check_page(q, html) == []
+
+
+def test_a_blog_page_still_needs_every_question_covered_and_the_schema_to_match():
+    q = qfile(blocks=(2, 1, 0)); q["page_type"] = "blog"; q["extra_sections"] = []
+    texts = [i["question"] for i in q["questions"]]
+    probs = G.check_page(q, one_block_page(texts[:-1]))
+    assert any("q-middle-0" in p and "not found" in p for p in probs), probs
+    html = one_block_page(texts).replace('"name": "top question number 0?", ', "", 1)
+    assert any("FAQPage schema" in p for p in G.check_page(q, html))
+
+
+def test_a_location_page_with_one_faq_block_fails():
+    q = qfile()
+    html = one_block_page([i["question"] for i in q["questions"]])
+    assert any("FAQ blocks: 1, want 3" in p for p in G.check_page(q, html))

@@ -2,13 +2,14 @@
 """Query coverage gate over dist/ (spec 2026-09-23 §10).
 
 For every data/queries/<slug>.json whose route is built in dist/, the page must carry:
-  1. three FAQ blocks (div.kit-faq). A block's name comes from its position in the document:
-     the 1st is top, the 2nd middle, the 3rd bottom. They hold 5–7, 5–7 and 7–10 questions,
-     15–20 in total; a question is a <details> that is a direct child of the block, and each
-     one's question is an H3;
+  1. FAQ blocks (div.kit-faq), where a question is a <details> that is a direct child of a
+     block and each one's question is an H3. On location pages there are exactly three, named
+     by position in the document — the 1st is top, the 2nd middle, the 3rd bottom — holding
+     5–7, 5–7 and 7–10 questions, 15–20 in total. Comparison, blog and puppy pages may put
+     their questions in one block or several, and their FAQ total is not range-checked;
   2. every must-answer question at its covered_by text, with an answer under it. A question
-     covered in the FAQ ("where": "faq") is looked up among FAQ H3s only, must sit in the
-     block its "faq" field names, and its answer is the text inside its own <details> after
+     covered in the FAQ ("where": "faq") is looked up among FAQ H3s only (on a location
+     page it must sit in the block its "faq" field names), and its answer is the text inside its own <details> after
      the summary — nothing past that </details> counts. A question covered by a heading is
      looked up among headings inside <main>; its answer runs to the next heading;
   3. FAQPage schema naming exactly the visible FAQ questions, compared as multisets, so a
@@ -23,9 +24,11 @@ For every data/queries/<slug>.json whose route is built in dist/, the page must 
      Competitors' sections are counted by H2, so ours are too.
 
 Text inside <script>, <style> and <template> is never page text. A question file is checked
-only when its page is built AND its page key is listed in data/facts/rebuilt.json (the list
-facts_preserved_check.py and final_page_audit.py read). The key is the route resolved through
-scripts/_slugs.py: "/uk-locations/<slug>/" -> "uk-locations/<slug>", "/" -> "index". A file
+only when its page is built AND the page is listed in data/facts/rebuilt.json (the list
+facts_preserved_check.py and final_page_audit.py read). The convention there is the bare slug,
+the route's last segment ("/uk-locations/<slug>/" -> "<slug>", "/" -> "index"), which is how
+migration_parity.py and facts_preserved_check.py key a page; the full route key resolved
+through scripts/_slugs.py ("uk-locations/<slug>") is accepted too. A file
 whose route is not built is skipped and counted as not built (an unbuilt page ships nothing);
 one whose page is built but not yet rebuilt — the old site's page is still in dist/ — is
 skipped and counted as awaiting rebuild. A question file that is
@@ -175,20 +178,24 @@ def check_page(q, html):
     p.close()
     problems = []
     blocks = p.faq_blocks
-    if len(blocks) != 3:
-        problems.append(f"FAQ blocks: {len(blocks)}, want 3 (top, middle, bottom)")
-    else:
-        for name, b in zip(BLOCKS, blocks):
-            n = len(b["h3"])
-            if b["details"] != n:
-                problems.append(f"FAQ {name}: {b['details']} questions but {n} H3s — "
-                                "every question must be an H3")
-            if not FAQ_MIN[name] <= n <= FAQ_MAX[name]:
-                problems.append(f"FAQ {name}: {n} questions, want {FAQ_MIN[name]}–{FAQ_MAX[name]}")
-    total = sum(len(b["h3"]) for b in blocks)
-    if not FAQ_TOTAL_MIN <= total <= FAQ_TOTAL_MAX:
-        problems.append(f"FAQ total: {total}, want {FAQ_TOTAL_MIN}–{FAQ_TOTAL_MAX}")
-    block_name = {i: BLOCKS[i] if i < len(BLOCKS) else f"block {i + 1}" for i in range(len(blocks))}
+    location = q["page_type"] == "location"
+    three = location and len(blocks) == 3
+    block_name = {i: BLOCKS[i] if three else f"block {i + 1}" for i in range(len(blocks))}
+    for i, b in enumerate(blocks):
+        if b["details"] != len(b["h3"]):
+            problems.append(f"FAQ {block_name[i]}: {b['details']} questions but {len(b['h3'])} H3s — "
+                            "every question must be an H3")
+    if location:
+        if len(blocks) != 3:
+            problems.append(f"FAQ blocks: {len(blocks)}, want 3 (top, middle, bottom)")
+        else:
+            for name, b in zip(BLOCKS, blocks):
+                n = len(b["h3"])
+                if not FAQ_MIN[name] <= n <= FAQ_MAX[name]:
+                    problems.append(f"FAQ {name}: {n} questions, want {FAQ_MIN[name]}–{FAQ_MAX[name]}")
+        total = sum(len(b["h3"]) for b in blocks)
+        if not FAQ_TOTAL_MIN <= total <= FAQ_TOTAL_MAX:
+            problems.append(f"FAQ total: {total}, want {FAQ_TOTAL_MIN}–{FAQ_TOTAL_MAX}")
     faq_heads, main_heads = {}, {}
     for h in p.headings:
         if h["faq"] is not None:
@@ -208,7 +215,7 @@ def check_page(q, html):
             where = "an FAQ H3" if in_faq else "a heading in <main>"
             problems.append(f"{item['id']}: '{cov['text']}' not found as {where}")
             continue
-        if in_faq and item.get("faq") and block_name[h["faq"]] != item["faq"]:
+        if three and in_faq and item.get("faq") and block_name[h["faq"]] != item["faq"]:
             problems.append(f"{item['id']}: '{cov['text']}' is in the {block_name[h['faq']]} "
                             f"FAQ block, want {item['faq']}")
         if not h["answer"].strip():
@@ -226,7 +233,7 @@ def check_page(q, html):
             problems.append(f"extra section '{e['topic']}': no heading recorded")
         elif normalise(e["heading"]) not in h2s:
             problems.append(f"extra section '{e['topic']}': '{e['heading']}' is not an H2 on the page")
-    if q["page_type"] == "location":
+    if location:
         body = [s for s in p.sections if s["main"] and not s["nested"] and s["h2"]
                 and s["id"] not in FRAME_IDS and not s["frame"]]
         t = q["section_target"]
@@ -239,6 +246,11 @@ def check_page(q, html):
 def page_key_for(route, dist=Path("dist")):
     """The data/facts/rebuilt.json key for a route, via the shared _slugs convention."""
     return page_key(dist_path(route.strip("/") or "index", dist), dist)
+
+
+def route_slug(route):
+    """A route's last segment — the bare slug the other gates key a page by."""
+    return route.strip("/").rsplit("/", 1)[-1] or "index"
 
 
 def rebuilt_keys(root):
@@ -272,7 +284,7 @@ def main(argv=None):
         if not page.is_file():
             unbuilt += 1
             continue
-        if page_key_for(q["route"]) not in rebuilt:
+        if not {page_key_for(q["route"]), route_slug(q["route"])} & rebuilt:
             awaiting += 1
             continue
         examined += 1
