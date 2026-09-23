@@ -1,5 +1,7 @@
 # Competitor registry proposal — 2026-09-23
 
+Approved 2026-09-23. Edits applied: drop wildbluestaffords; keep staffordshirebullterrierkennel (tier 5, `link_allowed: false`); move rspca to tier 3 (priority stays medium). Result: 21 rows, written to `data/competitors.json`. The proposal JSON beside this file carries the edits; the table below is the proposal as first written.
+
 Full discovery for BlueStaffyUK's national competitor registry (`data/competitors.json`). This is a proposal: nothing is written to the registry until the controller relays `approved: docs/research/competitor-registry-proposal-2026-09-23.md` (optionally with edits).
 
 - **Registry as read at the start:** no registry (`data/competitors.json` absent), so `_meta.last_discovery_run` was none.

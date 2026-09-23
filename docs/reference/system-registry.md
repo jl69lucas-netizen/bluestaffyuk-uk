@@ -209,11 +209,12 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/strategy_cite_check.py`
 - `scripts/verbatim_set_check.py`
 
-## Data files — 21
+## Data files — 22
 
 - `data/agent-registry.json`
 - `data/boards/`
 - `data/bsuk-ontology.json`
+- `data/competitors.json`
 - `data/component-ledger.json`
 - `data/design/`
 - `data/facts/`

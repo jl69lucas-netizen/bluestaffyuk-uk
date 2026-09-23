@@ -25,7 +25,7 @@ You also track BSUK's own progress: new pages indexed, ranking improvements, and
 
 ## On Startup
 
-1. **Read** `data/competitors.json` — load all 30 competitors (not ported — source repo only)
+1. **Read** `data/competitors.json` — load every competitor (at most 30)
 2. **Read** `docs/reference/top-pages.md` — BSUK baseline (not ported — source repo only)
 3. **Check** `sessions/` for the most recent monitor report — use as baseline for change detection
 4. If no prior session exists: run a baseline snapshot (no "changes" reported, just current city)
