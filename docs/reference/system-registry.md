@@ -61,7 +61,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-agent-system-qa.md` | Quality review agent for the BSUK agent system |
 | `.claude/agents/bsuk-batch-rebuilder.md` | Coordinates a batch page rebuild by dispatching one Agent-tool call per page to its specialist agent, all in one message, then tracks … |
 | `.claude/agents/bsuk-canonical-fixer.md` | Converts relative canonical URLs to absolute across BlueStaffyUK pages |
-| `.claude/agents/bsuk-competitor-registry.md` | Discovers the national list of BlueStaffyUK competitors — UK Staffy breeders, marketplaces and directories, breed-information sites … |
+| `.claude/agents/bsuk-competitor-registry.md` | Use to seed BlueStaffyUK's national competitor registry (data/competitors.json) for the first time, or when intel or a page build finds a … |
 | `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-footer-standardizer.md` | Audits the BlueStaffyUK footer across the built site and standardises it on src/components/SiteFooter.astro, which … |
