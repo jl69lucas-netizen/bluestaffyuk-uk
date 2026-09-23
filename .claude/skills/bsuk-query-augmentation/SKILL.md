@@ -180,7 +180,7 @@ for a city page — to `data/facts/rebuilt.json`, the key the other gates use. U
 **STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
 the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
 (`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
-Issues). Until then do not add a city page to `data/facts/rebuilt.json`.
+Issue 39). Until then do not add a city page to `data/facts/rebuilt.json`.
 
 ## Worked example
 

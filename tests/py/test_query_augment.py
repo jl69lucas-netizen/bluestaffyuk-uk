@@ -1630,6 +1630,8 @@ def test_fleas_and_narrow_aftercare_route_precisely(text, topic):
     ("Is there aftercare support after purchase?", "trust"),
     ("Can I get advice after my puppy comes home?", "trust"),
     ("What aftercare do you provide?", "trust"),
+    ("Is there after-care once the puppy is home?", "trust"),
+    ("What after care do you offer?", "trust"),
     ("Do you offer support after delivery?", "delivery"),
     ("Can you help after we collect the puppy from Carlisle?", "trust"),
     ("Is there support after collection?", "delivery"),
@@ -1640,3 +1642,17 @@ def test_fleas_and_narrow_aftercare_route_precisely(text, topic):
 ])
 def test_aftercare_routes_to_trust_unless_delivery_words_come_first(text, topic):
     assert Q.topic_of(text)[0] == topic
+
+
+@pytest.mark.parametrize("text", [
+    "Is there support after the weekend?",
+    "Can I get advice after tonight?",
+    "Is there help after six?",
+    "Can I get support after seven?",
+    "Is there advice after eight?",
+    "Is there support after surgery?",
+    "Can I get advice after the operation?",
+    "Can I get help after the vet?",
+])
+def test_support_after_a_time_or_a_procedure_is_not_aftercare(text):
+    assert Q.topic_of(text)[0] != "trust"

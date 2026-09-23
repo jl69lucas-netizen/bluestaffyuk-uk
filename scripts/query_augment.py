@@ -79,9 +79,12 @@ TOPICS = (
     ("delivery", "top",
      r"\b(deliver\w*|collect\w*|transport\w*|travel\w*|near me|distance|ship\w*|postage|post (a |the )?pupp\w*|courier)\b"),
     # Plain aftercare wording, once delivery's collect/deliver words have had their turn:
-    # "support after the puppy goes home" is trust, "support after 5pm/hours" is not.
+    # "support after the puppy goes home" is trust; "support after 5pm/hours/the weekend"
+    # is a time and "advice after surgery/the vet" is health, not aftercare. normalise()
+    # turns "after-care" into "after care", so the pattern takes the space form.
     ("trust", "middle",
-     r"\bafter-?care\b|\b(support|advice|help) after (?!\d|(hours|work|school|dark|midnight|noon)\b)"),
+     r"\bafter ?care\b|\b(support|advice|help) after (?!(the |a |an |my |your )?(\d"
+     r"|(hours|work|school|dark|midnight|noon|weekend|tonight|six|seven|eight|surgery|operation|vets?)\b))"),
     ("reserve", "top", r"\b(reserv\w*|waiting (list|time)|how long (do|will|would) i (need to |have to )?wait|is there a wait|book\w*|available|availability"
      r"|where (can|do|should) i (find|buy|get|start)|where should i start)\b"),
     ("age", "middle",

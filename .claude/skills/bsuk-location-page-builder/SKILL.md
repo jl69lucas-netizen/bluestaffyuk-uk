@@ -207,7 +207,7 @@ bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) t
 **STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
 the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
 (`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
-Issues). Until then do not add a city page to `data/facts/rebuilt.json`.
+Issue 39). Until then do not add a city page to `data/facts/rebuilt.json`.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
@@ -355,8 +355,9 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
    (its verbatim set into `data/verbatim/<key>.json`). Both read the built migrated page.
    `<key>` is the page's bare slug (the bare slug for a top-level page, e.g.
    `blue-staffy-health-uk`). For a city page (`uk-locations/<slug>`) this step is held by the
-   same STOP rule — `scripts/facts_preserved_check.py` and `scripts/verbatim_set_check.py` cannot yet read or
-   write nested routes. Once Project 5 fixes that, run these extracts FIRST, before any
+   same STOP rule — `scripts/facts_preserved_check.py` and `scripts/verbatim_set_check.py`
+   cannot yet read or write nested routes (see `docs/reference/session-log.md` Known Issue 39).
+   Once Project 5 fixes that, run these extracts FIRST, before any
    rewrite, while `dist/` still holds the migrated page: the extraction cannot be redone
    afterwards. Never start a city rewrite without them.
 5. Approve the board, then build. Add the page to `data/facts/rebuilt.json` only once the

@@ -521,18 +521,21 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
 39. **Project 5 prerequisite — nested routes (2026-09-23).** The STOP rules in
     `.claude/skills/bsuk-location-page-builder/SKILL.md` and
     `.claude/skills/bsuk-query-augmentation/SKILL.md` point here. Four tools build paths from a
-    flat slug and cannot read a city page at `uk-locations/<slug>`:
-    `scripts/facts_preserved_check.py` (`dist_html`, and the `--extract` write path, which
-    creates only `data/facts/` and no subfolder — lines 360–362 and 395);
-    `scripts/link_parity_check.py` lines 231–232 (the dist path and the board path);
-    `scripts/verbatim_set_check.py` (`dist_html` and `load_record`); and
-    `scripts/pageboard.py` `own_live_key` (line 927). Each must resolve `uk-locations/<slug>` to
-    `dist/uk-locations/<slug>/index.html` (and the matching board/live key) through
-    `data/page-map.json`, as `scripts/migration_parity.py` effectively does. **No city page goes
-    into `data/facts/rebuilt.json` until this is fixed and tested.** In the same change,
+    flat slug and cannot read or write a city page at `uk-locations/<slug>`:
+    - `scripts/facts_preserved_check.py`: `dist_html` (lines 360–362); the `--extract` path
+      creates only `data/facts/` and no subfolder (mkdir on 395, write on 396).
+    - `scripts/link_parity_check.py` lines 231–232 (the dist path and the board path).
+    - `scripts/verbatim_set_check.py`: `dist_html` and `load_record`, and `do_extract`
+      (lines 486–491), which creates only `data/verbatim/` and no subfolder.
+    - `scripts/pageboard.py` `own_live_key` (lines 920–927, the return on 927).
+
+    Each must resolve `uk-locations/<slug>` to `dist/uk-locations/<slug>/index.html` (and the
+    matching board, record and live key) through `data/page-map.json`, as
+    `scripts/migration_parity.py` effectively does. **No city page goes into
+    `data/facts/rebuilt.json` until this is fixed and tested.** In the same change,
     `scripts/query_coverage_check.py` should report a problem when a route's last segment is in
-    `data/facts/rebuilt.json` but its page is missing, print the awaiting-rebuild slugs, and turn a
-    malformed `data/facts/rebuilt.json` into a problem line rather than a crash.
+    `data/facts/rebuilt.json` but its page is missing, print the awaiting-rebuild slugs, and
+    turn a malformed `data/facts/rebuilt.json` into a problem line rather than a crash.
 
 40. **Project 5 builder checklist (2026-09-23).** Quality-review items on the builders deferred
     by the user's ruling during the query-augmentation build; clear each before or while the
@@ -544,8 +547,8 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
       (per-page hero and counter).
     - `src/components/kit/Hero.astro` takes layout props (`layout`, `align`, `media`, `ledge`)
       while the builder says "no variant prop" — reconcile the wording.
-    - The bottom review mode is ambiguous; reviews sit in their own sections, never inside a body
-      section.
+    - The bottom review mode is ambiguous; reviews sit in their own sections, never inside a
+      body section.
     - Health-test fact conflict: `data/faq.json` asserts "certified clear" while
       `rules/copy.md` records the certificate as NOT FETCHED.
     - Step 1's hand-recorded competitor table and the board "competitor block" (which does not
@@ -554,28 +557,32 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
       the builder must say so.
     - `.claude/skills/bsuk-blog-post/SKILL.md` leftovers: governs-in-conflict wording,
       Firecrawl-first, no link library, "airport" delivery, "since 2014", push to main.
-    - `.claude/skills/bsuk-comparison-page-builder/SKILL.md` leftovers: a US Google market setting, 22–25 fixed
-      sections, push to main, eggs/breeding pair, "12+ years", a NewsletterV2 variant.
-    - `.claude/skills/bsuk-seo-master-checklist/SKILL.md`'s external-link library is US-centric
-      (AVMA, AAHA, ASPCA, FTC, VEG, Pet Poison Helpline, Chewy; the petmd homepage mislabelled) —
-      replace with UK sources (PDSA, Blue Cross, BVA, gov.uk) via
+    - `.claude/skills/bsuk-comparison-page-builder/SKILL.md` leftovers: a US Google market
+      setting, 22–25 fixed sections, push to main, eggs/breeding pair, "12+ years", a
+      NewsletterV2 variant.
+    - `.claude/skills/bsuk-seo-master-checklist/SKILL.md`'s external-link library is
+      US-centric (AVMA, AAHA, ASPCA, FTC, VEG, Pet Poison Helpline, Chewy; the petmd homepage
+      mislabelled) — replace with UK sources (PDSA, Blue Cross, BVA, gov.uk) via
       `docs/reference/external-link-library.md`.
     - `.claude/skills/bsuk-google-map/SKILL.md`'s location template uses `CITY%2C%20STATE` and
       "For state/city location pages" (US wording).
     - Later gate work: count built `dist/uk-locations/*` pages with no question file and print
       it; an optional per-page-type "must have a file" switch once project 5 covers all 28;
-      check the visible FAQ questions come from the question file; an extra-section H2 must sit
-      in a body section, not the frame; a heading-covered answer should stop at its section end.
+      check the visible FAQ questions come from the question file; an extra-section H2 must
+      sit in a body section, not the frame; a heading-covered answer should stop at its
+      section end.
     - Minors: lifespan source; `rules/copy.md` as a source; sem-all-six-levels is page-level;
-      proximity/roads claims without a source; the former-city row (Known Issue 16) and the national rows compete; the blog
-      builder's raw caps note; the puppy ContactForm name; top-10 vs top-5.
+      proximity/roads claims without a source; the former-city row (Known Issue 16) and the
+      national rows compete; the blog builder's raw caps note; the puppy ContactForm name;
+      top-10 vs top-5.
 
-41. **Questions for Lisa Bright (2026-09-23).** Buyers ask these (Google, Bing, ChatGPT and
-    Reddit sources in the Manchester and Leeds question files) and BSUK has no recorded fact to
-    answer them, so the merge blocked them as "unverified fact". Each answer becomes a
-    `data/faq.json` row or a `data/settings.json` key; then both question files rebuild
+41. **Questions for Lisa Bright (2026-09-23).** Grouped and reworded from the files' blocked
+    buyer questions: the Manchester and Leeds question files hold buyer questions (from Google,
+    Bing, ChatGPT and Reddit) that the merge blocked as "unverified fact" because BSUK has no
+    recorded fact to answer them. Each answer becomes a `data/faq.json` row or a
+    `data/settings.json` key; then both question files rebuild
     (`python3 scripts/query_augment.py <slug> ...`, all sources cached, no calls).
-    - Are there blue Staffy puppies available now for buyers in Manchester and Leeds?
+    - Are there blue Staffy puppies available now for buyers in Manchester?
     - How much does a BSUK puppy cost?
     - Should I pay a deposit before I have seen the puppy — what is BSUK's deposit policy?
     - Is there a waiting list?
@@ -589,18 +596,31 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
     - How can I confirm the puppy has been examined by a vet (can I contact your vet)?
     - Has the puppy had its first vaccination before I collect it?
     - What socialisation has the puppy had?
-    - Can a blue puppy come from parents that are not both blue — what colours are your parents?
+    - Can a blue puppy come from parents that are not both blue — what colours are your
+      parents?
 
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
-    (2026-09-23): a separate build after this one. Another session has already started it — see
-    the competitor-intel build.
+    (2026-09-23): a separate build after this one, started separately (2026-09-23).
 
-43. **Reddit-modifier pages are a recorded option, not built.** Short pages aimed at "<keyword> reddit" searches (the source repo's playbook). Decide with search-volume data in project 5 or later; the thread half is `.claude/skills/bsuk-reddit-threads/SKILL.md`.
+43. **Reddit-modifier pages are a recorded option, not built.** Short pages aimed at
+    `"<keyword> reddit"` searches (the source repo's playbook). Decide with search-volume data
+    in project 5 or later; the thread half is `.claude/skills/bsuk-reddit-threads/SKILL.md`.
 
-44. **No page-communication audit.** The source repo's visual-intelligence skill (does the page communicate, what job is it doing, why do two pages feel the same) was filed with the design system in project 2 and never ported. The 28 city pages in project 5 are where it would pay.
+44. **No page-communication audit.** The source repo's visual-intelligence skill (does the page
+    communicate, what job is it doing, why do two pages feel the same) was deferred to project
+    3 in project 2's manifest; project 3 shipped without porting it. The 28 city pages in
+    project 5 are where it would pay.
 
 45. **DataForSEO costs are unknown (2026-09-23).** The connector returns no cost field, so
     `data/queries/spend.json` holds conservative estimates ($0.20 for Manchester). The user is
     to check the DataForSEO dashboard for the real spend; then set `query_typical_call_usd` in
     `data/settings.json` from the real per-call figure.
+
+46. **Needs a user ruling — the banned-breed line (2026-09-23).** The breed guide
+    (`src/pages/uk-staffordshire-bull-terrier-guide/index.astro`) states the Staffordshire Bull
+    Terrier is not a banned breed, backed by the gov.uk banned-dogs row in
+    `docs/reference/external-link-library.md`. The city-page template
+    (`docs/reference/location-page-template.md`) and the builders make every statute line
+    `LEGAL_CLAIM_PLACEHOLDER`. **Closes with the user's ruling**: city pages may state it with
+    that same gov.uk row, or the breed guide moves to the placeholder.
