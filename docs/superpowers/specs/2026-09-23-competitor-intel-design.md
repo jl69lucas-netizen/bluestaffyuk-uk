@@ -1,8 +1,8 @@
 # Competitor intelligence — registry, intel, keyword gap, LLM intel and strategy — design
 
 Status: approved in brainstorm 2026-09-23. Branch `competitor-intel`, cut from `foundation`
-at `db37ca1`; rebased onto `foundation` once `query-augmentation` merges, before any code task
-starts (this build reuses that build's spend guard). A bridge build before project 5: the gap
+at `db37ca1` and rebased onto `c9c981c` after `query-augmentation` merged (this build reuses
+that build's spend guard). Closes Known Issue 42. A bridge build before project 5: the gap
 matrix and the chosen strategy are what the 28 city pages, the comparison cluster and the two
 blog posts get planned from.
 
@@ -180,11 +180,23 @@ before handing off; a failed check means the strategy is not handed off.
 
 ## 10. Spend
 
-Paid calls go through `query_augment.preflight()` and `record()`. Two new source names:
-`registry_serp` (keyed to the pseudo-slug `_registry`) and `llm_intel` (keyed to the page slug).
-Estimates: registry discovery about $0.50 (ten searches), LLM intel about $0.10 per page. The
-DataForSEO balance was $0.90 on the dashboard (user, 2026-09-23, after the
-`query-augmentation` pilot — its logged $0.20 was a conservative over-estimate). The controller
+Paid calls go through the existing guard in `scripts/query_augment.py`: `--preflight SLUG
+--source SOURCE` before the call, `--record ...` straight after it. As merged, the guard caches
+one response per `(slug, source)` pair, only `serp_google` and `ai_engines` are payable (Bing is
+never bought), and two caps apply: `query_budget_usd` $0.50 per slug per day and
+`query_total_budget_usd` $1.00 over the whole log.
+
+This build reuses those two source names instead of adding new ones. Each registry seed keyword
+gets its own pseudo-slug, `_registry-<keyword-slug>`, so each is cached on its own and the
+per-slug cap never binds; LLM intel records under the page slug with source `ai_engines` (a page
+that already has an `ai_engines` response from query augmentation reuses it — exit 3 — rather
+than paying again).
+
+Estimates: ten registry searches about $0.50 at the logged $0.05 per call; LLM intel about $0.10
+per page. The log holds $0.20, so the total cap leaves $0.80 — enough for the pilot (§13 step
+12). The user's dashboard read $0.90 on 2026-09-23; if the starting balance was $1.00, the three
+pilot calls really cost about $0.10 together, and Known Issue 45 can set
+`query_typical_call_usd` from that once the user confirms the starting figure. The controller
 asks for the balance again before the first paid run. Firecrawl credits are separate and
 reported at the end of each intel run.
 
@@ -207,14 +219,17 @@ reported at the end of each intel run.
 - The external-link checks refuse any outbound link to a tier-5 `root_domain`.
 - The five agent files pass the existing name/frontmatter test, marker gate, fact lint,
   path guard and stale-marker checker (no parrot residue, locked £ only, no invented facts).
-- `data/port-manifest.json`: the five entries move from `deferred` to `rebase` with notes; the
-  registry and pricing-alert files get recorded (pricing alert as `deferred`).
+- `data/port-manifest.json`: the five entries move from `deferred` to `rebase` with notes. The
+  registry row's current note ("BSUK records competitors per page in `data/queries/<slug>.json`
+  instead — not ported") is replaced: the per-page pool stays as it is and feeds the page's
+  section count; the registry is the national list the gap matrix counts against. The
+  pricing-alert row stays `deferred`.
 - `WORKFLOW.md`: the "deferred to project 6" notes for the five agents are replaced with how
   to run them.
 
 ## 13. Build order
 
-1. Rebase onto `foundation` after `query-augmentation` merges.
+1. Rebase onto `foundation` after `query-augmentation` merges (done: `c9c981c`).
 2. Registry schema + test (TDD).
 3. `gap_matrix.py` + tests on fixture reports.
 4. `strategy_cite_check.py` + tests.
