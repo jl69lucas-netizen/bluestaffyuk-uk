@@ -17,6 +17,7 @@ effort: max
 2. Read data/competitors.json. Missing (and the mode is not `--bsuk`) → stop and hand to `bsuk-competitor-registry`. An `<id>` not in it → stop and say so; never analyse an unregistered site.
 3. Read `schemas/competitor-report.schema.json` — the contract your JSON must pass.
 4. Read `data/locations.json` — the only city names you may write.
+5. Age check: if an entry you analyse has a `last_analyzed` more than 30 days old, or the registry's `_meta.last_discovery_run` is, say so in the first line of your report and carry on.
 
 ## Credits stop (`--all`, `--tier`)
 
@@ -27,7 +28,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 1. Map the root domain → the URL list.
 2. Scrape the homepage with markdown **and** raw HTML in one call (the raw HTML is where JSON-LD and image tags are), then up to five key pages from the URL list, markdown only: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
-4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. Record prices as shown yes/no with no amounts, the `pages` entry with its URL and empty `title`, `h1`, `h2`, and quote at most the few words that justify the tier.
+4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. Record `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5), the `pages` entry with its URL and empty `title`, `h1`, `h2`, and quote at most the few words that justify the tier.
 
 Only what you were given counts. If the invocation hands you page content instead of letting you fetch (a test, a saved scrape), that is the whole fetch: no map, no raw HTML, no other pages.
 
@@ -45,7 +46,7 @@ Only what you were given counts. If the invocation hands you page content instea
 | 6 | `visual` | the homepage raw HTML or a snapshot (markdown alone never) | `homepage_images`, `video_present`, `alt_text` (descriptive, generic, missing) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
-| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (tiers 1–4; `[]` when none); `deposit_terms` (summarised, or null); `steps_to_enquire` (a count, or null when no form or button was fetched); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
+| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (a count, or null when no form or button was fetched); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
 | 10 | `technical` | a rendered page → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok`, `lighthouse_performance` |
 
 A price that is not printed is not a price: "please call us" about a deposit is `prices_shown: false` and `deposit_terms: null`. Prices stay inside the report, never in BSUK copy.
@@ -67,7 +68,7 @@ python3 scripts/gap_matrix.py --write
 npm run -s check:gaps && npm run -s check:competitors
 ```
 
-All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, a schema type in the wrong case, an empty value) — fix the report, never the schema or the script. Then report the files written and the fetch count.
+All must pass before you hand off. The contact scan names each hit — remove it from the report. A `--write` that exits 6 names the report and the problem (a city not in `data/locations.json`, an empty or blank value, a missing or mistyped field) — fix the report, never the schema or the script. Then report the files written and the fetch count.
 
 ## Handoff
 
@@ -85,3 +86,4 @@ All must pass before you hand off. The contact scan names each hit — remove it
 - An `--all` or `--tier` fetch before `fetch approved:`.
 - Any change to data/competitors.json beyond `last_analyzed`.
 - Prose only, with no JSON a script can count.
+- Any change to a site file — `src/`, `rules/`, `CLAUDE.md`, `public/`, or anything under `data/` other than `last_analyzed` in the registry. This agent is research only; `dist/` is read, never edited.
