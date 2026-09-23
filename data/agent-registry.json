@@ -46,6 +46,9 @@
     "bsuk-comparison-builder": {
       "tier": "tier_high"
     },
+    "bsuk-competitor-intel": {
+      "tier": "tier_max"
+    },
     "bsuk-competitor-registry": {
       "tier": "tier_medium"
     },

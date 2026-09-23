@@ -15,19 +15,20 @@ hand-written and is preserved across regenerations.
 
 <!-- generated:start -->
 
-## Agents — 37
+## Agents — 38
 
 Every agent carries `model: inherit`; effort is the only per-agent cost lever, and
 `data/agent-registry.json` is GENERATED from the agents' own frontmatter by
 `scripts/build_agent_registry.py`. To change an agent's effort, edit its frontmatter
 and regenerate — never the other way round.
 
-### `tier_max` — 11
+### `tier_max` — 12
 
 | Agent | Does |
 |---|---|
 | `.claude/agents/bsuk-angle-agent.md` | Generates content angles, hooks and unique points of view for any BlueStaffyUK page — 5–10 options before a word of body copy is written |
 | `.claude/agents/bsuk-blog-post-agent.md` | Writes commercial, transactional, review and comparison blog posts for BlueStaffyUK as markdown into src/content/blog/<slug>.md, rendered … |
+| `.claude/agents/bsuk-competitor-intel.md` | Use after the competitor registry (data/competitors.json) is approved, to analyse one competitor, one tier or all of them — or … |
 | `.claude/agents/bsuk-content-architect.md` | Orchestrates content creation for BlueStaffyUK |
 | `.claude/agents/bsuk-content-audit-agent.md` | Four-phase deep content audit of any BlueStaffyUK page — intent gaps, subtopics competitors cover and BSUK does not, meta … |
 | `.claude/agents/bsuk-framework-agent.md` | Deep-dives competitor pages for any BlueStaffyUK keyword (UK Staffy puppy, blue Staffy breeder, city queries) and extracts what they do … |
