@@ -320,3 +320,107 @@ def test_merge_bank_candidate_keeps_a_bare_path(tmp_path):
 ])
 def test_topic_of_task2_review_gaps(text, topic):
     assert Q.topic_of(text)[0] == topic
+
+
+# --- quality review: usable competitors, furniture headings, extras, ordering --------
+
+def test_merge_real_order_keeps_serp_wording_and_takes_the_bank_fact(tmp_path):
+    # build() loads the fetched candidates first and appends the bank last.
+    root = make_root(tmp_path)
+    m = Q.merge([("How much are Staffie pups?", "serp_google", "serp_google_paa", "data/settings.json"),
+                 ("How much are staffy puppies?", "bank", "bank:b0", "data/settings.json")], root)
+    (only,) = m.values()
+    assert only["question"] == "How much are Staffie pups?"
+    assert only["fact_source"] == "data/settings.json"
+    assert only["found_in"] == ["serp_google_paa", "bank:b0"]
+
+
+@pytest.mark.parametrize("counts,matched", [
+    ([12, 0], 12), ([12, 0, 0], 12), ([0, 0], 0), ([10, 30], 10), ([2, 9], 9),
+])
+def test_section_target_ignores_unusable_competitors(counts, matched):
+    pages = [page(f"u{i}", n, g=i + 1) for i, n in enumerate(counts)]
+    target, rows = Q.section_target(pages)
+    assert target["matched"] == matched and target["total"] == matched + 3
+    assert [r["h2_clean"] for r in rows] == counts          # every page still reported
+    if matched == 0:
+        assert target["set_by"] is None
+
+
+def test_section_target_outlier_only_against_a_usable_second_page():
+    target, rows = Q.section_target([page("a", 30, g=1), page("b", 2, g=2)])
+    assert target["matched"] == 30 and not any(r["outlier"] for r in rows)
+
+
+def test_section_target_tie_resolves_by_google_then_bing_then_url():
+    target, _ = Q.section_target([page("z", 10, g=4), page("y", 10, g=2), page("x", 10, b=1)])
+    assert target["set_by"] == "y"
+    target, _ = Q.section_target([page("z", 10, b=3), page("y", 10, b=2)])
+    assert target["set_by"] == "y"
+    target, _ = Q.section_target([page("z", 10), page("y", 10)])
+    assert target["set_by"] == "y"
+
+
+FURNITURE = ["Contact Us Today", "Customer Reviews", "Google Reviews", "Reviews From Happy Owners",
+             "What Our Customers Say", "Our Testimonials", "Get In Touch With Us", "Contact",
+             "Call Us", "Enquire Today", "Follow Us On Instagram", "Share This Post",
+             "Sign Up To Our Newsletter", "Latest News", "Useful Links", "Quick Links"]
+CONTENT = ["Why Choose Us", "Our Puppies For Sale", "About Us", "Health Testing",
+           "Delivery Across the North West"]
+
+
+def test_clean_h2s_strips_realistic_furniture_and_keeps_content():
+    assert Q.clean_h2s(FURNITURE + CONTENT) == CONTENT
+
+
+# Richer than bank_questions(): after the FAQ takes 20, several topics still have questions.
+EXTRA_BANK = ["What should I ask a blue Staffy breeder before I buy?",
+              "How can I avoid buying from a puppy farm?",
+              "Is a Staffy a pitbull?", "What two breeds make a Staffy?",
+              "What are Staffies prone to?", "Why do Staffies scratch so much?",
+              "What should I feed my new Staffy puppy for the best diet?",
+              "How long do Staffies sleep at night?", "Is a male or female Staffy better?",
+              "Do Staffies get attached to one person?", "What are the downsides of Staffies?",
+              "How long does a Staffordshire Bull Terrier live?"]
+
+
+def real_shaped_questions():
+    qs = bank_questions()
+    qs += [q(f"q-x{i:02d}", t, 4 - (i % 3)) for i, t in enumerate(EXTRA_BANK)]
+    return qs
+
+
+def test_pick_extra_weighs_only_questions_the_faq_left():
+    qs = real_shaped_questions()
+    Q.pick_faq(qs)
+    extras = Q.pick_extra(qs, covered=set())
+    assert len(extras) == 3
+    assert all(e["question_ids"] for e in extras)
+    left = {x["topic"] for x in qs if x["fact_source"] and x["topic"] and not x["faq"]}
+    assert {e["topic"] for e in extras} <= left
+
+
+def test_pick_extra_skips_a_topic_whose_questions_are_all_faq():
+    qs = [dict(q("a1", "Do you deliver to Leeds?", 50), faq="top"),
+          dict(q("a2", "Can I collect my puppy?", 50), faq="top"),
+          q("c1", "Do Staffies shed?", 1), q("t1", "Are Staffies easy to train?", 1),
+          q("h1", "Are the parents health tested?", 1)]
+    extras = Q.pick_extra(qs, covered={"health"})
+    assert [e["topic"] for e in extras] == ["coat", "training", "health"]
+    assert all(e["question_ids"] for e in extras)
+
+
+def test_pick_faq_crowded_block_stops_at_max_fill_by_score_then_id():
+    def mk(qid, block, sc):
+        return {"id": qid, "question": qid, "score": sc, "topic": "x", "block": block,
+                "fact_source": "data/settings.json", "faq": None}
+    qs = ([mk(f"t{i:02d}", "top", 9) for i in range(15)] +
+          [mk(f"m{i:02d}", "middle", 1) for i in range(6)] +
+          [mk(f"b{i:02d}", "bottom", 5) for i in range(10)])
+    assert len(qs) >= 30
+    Q.pick_faq(qs)
+    got = {b: sorted(x["id"] for x in qs if x["faq"] == b) for b in Q.BLOCKS}
+    assert got["top"] == [f"t{i:02d}" for i in range(7)]          # crowded: stops at max 7
+    assert got["middle"] == [f"m{i:02d}" for i in range(5)]
+    assert got["bottom"] == [f"b{i:02d}" for i in range(8)]       # next by score, then id
+    assert sum(len(v) for v in got.values()) == 20

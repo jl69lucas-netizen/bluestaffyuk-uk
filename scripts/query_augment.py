@@ -203,27 +203,44 @@ NON_CONTENT_EXACT = re.compile(
 NON_CONTENT_PREFIX = re.compile(
     r"(related|recent|popular|latest) (posts|articles|puppy)\b|leave a (reply|comment)\b|"
     r"faqs?\b|frequently asked questions\b")
+# Furniture wrapped in a few words ("Google Reviews", "Follow Us On Instagram"): at most two
+# words before the phrase and three after, so a long content heading is never caught.
+NON_CONTENT_AROUND = re.compile(
+    r"^(\w+ ){0,2}(reviews?|testimonials?|what (our )?(customers|owners|families) say|contact( us)?"
+    r"|get in touch|call us|enquire|follow us|share( this)?|sign up|newsletter"
+    r"|(latest|recent) (news|posts)|(useful|quick) links)( \w+){0,3}$")
 
 
 def clean_h2s(h2s):
     seen, out = set(), []
     for h in h2s:
         n = normalise(h)
-        if not n or n in seen or NON_CONTENT_EXACT.fullmatch(n) or NON_CONTENT_PREFIX.match(n):
+        if (not n or n in seen or NON_CONTENT_EXACT.fullmatch(n) or NON_CONTENT_PREFIX.match(n)
+                or NON_CONTENT_AROUND.search(n)):
             continue
         seen.add(n)
         out.append(h)
     return out
 
 
+MIN_USABLE_H2 = 3
+
+
 def section_target(pages):
-    """(target, rows): match the highest cleaned H2 count unless it is an outlier."""
+    """(target, rows): match the highest cleaned H2 count unless it is an outlier.
+
+    Only usable pages (at least MIN_USABLE_H2 clean headings) set the number or count as the
+    outlier's comparison; every page is still reported in rows. Ties on the top count go to
+    the better Google position, then Bing, then URL.
+    """
     rows = [{"url": p["url"], "google_pos": p.get("google_pos"), "bing_pos": p.get("bing_pos"),
              "h2_raw": len(p.get("h2", [])), "h2_clean": len(clean_h2s(p.get("h2", []))),
              "outlier": False} for p in pages]
-    if not rows:
+    usable = [r for r in rows if r["h2_clean"] >= MIN_USABLE_H2]
+    if not usable:
         return {"matched": 0, "set_by": None, "extra": EXTRA_SECTIONS, "total": EXTRA_SECTIONS}, rows
-    ranked = sorted(rows, key=lambda r: -r["h2_clean"])
+    ranked = sorted(usable, key=lambda r: (-r["h2_clean"], r["google_pos"] or 99,
+                                           r["bing_pos"] or 99, r["url"]))
     setter = ranked[0]
     if len(ranked) > 1 and ranked[0]["h2_clean"] > OUTLIER_RATIO * ranked[1]["h2_clean"]:
         ranked[0]["outlier"] = True
@@ -262,12 +279,20 @@ def pick_faq(questions):
 
 
 def pick_extra(questions, covered):
-    """The strongest fact-backed topics, uncovered ones first. heading is filled by the builder."""
-    weight = {}
+    """The strongest fact-backed topics the FAQ left questions for, uncovered ones first.
+
+    A topic weighs the scores of its fact-backed questions not picked for the FAQ; a topic
+    with none left sorts after every topic that has some. heading is filled by the builder.
+    """
+    weight, left = {}, {}
     for q in questions:
         if q["fact_source"] and q["topic"]:
-            weight[q["topic"]] = weight.get(q["topic"], 0) + q["score"]
-    order = sorted(weight, key=lambda t: (t in covered, -weight[t], t))
+            weight.setdefault(q["topic"], 0)
+            left.setdefault(q["topic"], 0)
+            if not q["faq"]:
+                weight[q["topic"]] += q["score"]
+                left[q["topic"]] += 1
+    order = sorted(weight, key=lambda t: (not left[t], t in covered, -weight[t], t))
     extras = []
     for t in order[:EXTRA_SECTIONS]:
         ids = [q["id"] for q in sorted(questions, key=_rank)
