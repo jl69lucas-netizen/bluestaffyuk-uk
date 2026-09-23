@@ -31,7 +31,7 @@ with a new city name.
    the number. Fewer than three usable pages is a finding, not a blocker: record it and derive
    from what exists.
 
-`scripts/query_augment.py` computes this; `scripts/query_coverage_check.py` (arrives in Task 6)
+`scripts/query_augment.py` computes this; `scripts/query_coverage_check.py`
 fails a built page that falls short.
 
 ## The fixed frame
