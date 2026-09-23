@@ -114,7 +114,7 @@ def test_too_few_body_sections_fails_and_frame_is_not_counted():
     # body 5 + 1 extra = 6 counted; hero (#top), the FAQ sections and the form are frame
     assert G.check_page(qfile(total=6), page_html()) == []
     probs = G.check_page(qfile(total=7), page_html())
-    assert any("body sections: 6, want at least 7" in p for p in probs)
+    assert any("body sections with an H2: 6, want at least 7" in p for p in probs)
 
 
 def test_review_and_counter_sections_are_frame_not_body():
@@ -123,14 +123,93 @@ def test_review_and_counter_sections_are_frame_not_body():
              '<section id="stats" data-section-label="At a glance" class="kit-counter"><h2>Stats</h2></section>')
     html = page_html().replace("</main>", extra + "</main>")
     assert G.check_page(qfile(total=6), html) == []
-    assert any("body sections: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
+    assert any("body sections with an H2: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
 
 
 def test_a_newsletter_section_without_a_form_is_frame_not_body():
     extra = '<section id="newsletter" data-section-label="Newsletter"><h2>Stay in Touch</h2><p>Text.</p></section>'
     html = page_html().replace("</main>", extra + "</main>")
     assert G.check_page(qfile(total=6), html) == []
-    assert any("body sections: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
+    assert any("body sections with an H2: 6, want at least 7" in p for p in G.check_page(qfile(total=7), html))
+
+
+def blank_last_answer(html):
+    head, _, tail = html.rpartition("<p>An answer.</p>")
+    return head + "<p></p>" + tail
+
+
+def test_an_answer_ends_at_its_details_and_trailing_text_is_not_an_answer():
+    html = blank_last_answer(page_html()).replace(
+        "</main>", '<p>Trailing text.</p><a href="/">A link</a></main>')
+    assert any("q-bottom-6" in p and "has no answer under it" in p
+               for p in G.check_page(qfile(), html))
+
+
+def test_script_text_is_never_an_answer():
+    html = blank_last_answer(page_html()).replace("</main>", "</main><script>console.log(1)</script>")
+    assert any("q-bottom-6" in p and "has no answer under it" in p
+               for p in G.check_page(qfile(), html))
+
+
+def test_a_question_in_the_wrong_block_fails_naming_both():
+    html = page_html()
+    a, b = "Top Question Number 0?", "Middle Question Number 0?"
+    html = html.replace(a, "@@").replace(b, a).replace("@@", b)
+    probs = G.check_page(qfile(), html)
+    assert any("q-top-0" in p and "middle" in p for p in probs), probs
+    assert any("q-middle-0" in p and "top" in p for p in probs), probs
+
+
+def test_an_faq_question_is_looked_up_among_faq_h3s_only():
+    # an H2 with the same text earlier on the page must not stand in for the FAQ H3
+    q = qfile(); q["questions"][0]["covered_by"]["text"] = "Life in a Manchester Flat"
+    assert any("q-top-0" in p and "not found as an FAQ H3" in p for p in G.check_page(q, page_html()))
+    # and an H2 carrying an FAQ question's text (nothing under it) does not shadow the H3
+    html = page_html().replace(
+        "</h1></section>",
+        '</h1></section><section id="dup" data-section-label="Dup"><h2>Top Question Number 0?</h2></section>', 1)
+    assert G.check_page(qfile(), html) == []
+
+
+def test_headings_outside_main_do_not_count():
+    q = qfile(extra_heading="Our Footer Links")
+    html = page_html().replace("</main>", "</main><footer><h2>Our Footer Links</h2></footer>")
+    assert any("not an H2 on the page" in p for p in G.check_page(q, html))
+
+
+def test_a_labelled_section_with_no_h2_is_not_body():
+    html = page_html().replace(
+        "</main>", '<section id="aside" data-section-label="Aside"><p>Text.</p></section></main>')
+    assert G.check_page(qfile(total=6), html) == []
+    assert any("body sections with an H2: 6, want at least 7" in p
+               for p in G.check_page(qfile(total=7), html))
+
+
+def test_a_nested_labelled_section_is_not_counted_separately():
+    html = page_html().replace(
+        "</main>", '<section id="outer" data-section-label="Outer"><h2>Outer</h2>'
+        '<section id="inner" data-section-label="Inner"><h2>Inner</h2><p>Text.</p></section>'
+        "</section></main>")
+    assert G.check_page(qfile(total=7), html) == []
+    assert any("body sections with an H2: 7, want at least 8" in p
+               for p in G.check_page(qfile(total=8), html))
+
+
+def test_a_duplicated_visible_question_is_reported():
+    html = page_html().replace("Top Question Number 1?", "Top Question Number 0?")
+    q = qfile(); q["questions"][1]["covered_by"]["text"] = "top question number 0?"
+    assert any("FAQPage schema" in p and "duplicate" in p for p in G.check_page(q, html))
+
+
+def test_main_entity_may_be_a_single_object():
+    ld = {"@type": "FAQPage", "mainEntity": {"@type": "Question", "name": "Only one?"}}
+    assert G.faq_schema_names([json.dumps(ld)]) == ["Only one?"]
+
+
+def test_only_direct_child_details_count_as_questions():
+    html = page_html().replace("<p>An answer.</p>",
+                               "<p>An answer.</p><div><details><summary>More</summary>x</details></div>", 1)
+    assert G.check_page(qfile(), html) == []
 
 def test_main_skips_unbuilt_pages_and_reports(tmp_path):
     (tmp_path / "data/queries").mkdir(parents=True)
@@ -160,3 +239,11 @@ def test_main_rejects_an_invalid_question_file(tmp_path):
     r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
                        capture_output=True, text=True)
     assert r.returncode == 1 and "invalid question file" in r.stdout
+
+
+def test_main_reports_a_question_file_that_is_not_json(tmp_path):
+    (tmp_path / "data/queries").mkdir(parents=True)
+    (tmp_path / "data/queries/m.json").write_text("{not json")
+    r = subprocess.run([sys.executable, str(SCRIPT), "--root", str(tmp_path)],
+                       capture_output=True, text=True)
+    assert r.returncode == 1 and "invalid question file" in r.stdout and "Traceback" not in r.stderr

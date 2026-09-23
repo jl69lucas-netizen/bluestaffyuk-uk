@@ -2,24 +2,36 @@
 """Query coverage gate over dist/ (spec 2026-09-23 §10).
 
 For every data/queries/<slug>.json whose route is built in dist/, the page must carry:
-  1. three FAQ blocks (kit-faq, in document order top/middle/bottom) of 5–7, 5–7 and 7–10
-     questions, 15–20 in total, every question an H3;
-  2. every must-answer question at its covered_by text, with an answer under it;
-  3. FAQPage schema naming exactly the visible FAQ questions;
-  4. every extra section's recorded heading as an H2;
-  5. on location pages, at least section_target.total body sections — a body section is a
-     <section data-section-label> that is not #top, #key-takeaways or #newsletter and holds no frame part:
-     no kit hero, counter, trust strip, page nav, review, FAQ block and no form
+  1. three FAQ blocks (div.kit-faq). A block's name comes from its position in the document:
+     the 1st is top, the 2nd middle, the 3rd bottom. They hold 5–7, 5–7 and 7–10 questions,
+     15–20 in total; a question is a <details> that is a direct child of the block, and each
+     one's question is an H3;
+  2. every must-answer question at its covered_by text, with an answer under it. A question
+     covered in the FAQ ("where": "faq") is looked up among FAQ H3s only, must sit in the
+     block its "faq" field names, and its answer is the text inside its own <details> after
+     the summary — nothing past that </details> counts. A question covered by a heading is
+     looked up among headings inside <main>; its answer runs to the next heading;
+  3. FAQPage schema naming exactly the visible FAQ questions, compared as multisets, so a
+     duplicated question is reported;
+  4. every extra section's recorded heading as an H2 inside <main>;
+  5. on location pages, at least section_target.total body sections with an H2. A body
+     section is a <section data-section-label> inside <main>, not nested in another labelled
+     section, that holds an H2, is not #top, #key-takeaways or #newsletter and holds no frame
+     part: no kit hero, counter, trust strip, page nav, review, FAQ block and no form
      (docs/reference/location-page-template.md, "The fixed frame" — frame is never counted).
+     Competitors' sections are counted by H2, so ours are too.
 
-A question file whose route is not built is skipped and counted: an unbuilt page ships
-nothing. Exit 1 on any problem, 0 otherwise.
+Text inside <script>, <style> and <template> is never page text. A question file whose route
+is not built is skipped and counted: an unbuilt page ships nothing. A question file that is
+not valid JSON, or not valid against schemas/queries.schema.json, is a problem. Exit 1 on
+any problem, 0 otherwise.
 
   python3 scripts/query_coverage_check.py
 """
 import argparse
 import json
 import sys
+from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path
 
@@ -33,6 +45,8 @@ FAQ_TOTAL_MIN = 15
 FRAME_IDS = {"top", "key-takeaways", "newsletter"}
 # The kit components that make up the fixed frame. A section holding one is frame, not body.
 FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
+HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+RAW = {"script", "style", "template"}   # their text is never page text
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 
@@ -40,64 +54,86 @@ VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "met
 class Page(HTMLParser):
     def __init__(self):
         super().__init__(convert_charrefs=True)
-        self.stack = []          # [tag, section_index|None, faq_index|None]
-        self.sections = []       # {"id", "frame"}
+        self.stack = []          # {"tag", "sec", "faq", "classes"}
+        self.sections = []       # {"id", "frame", "nested", "main", "h2"}
         self.faq_blocks = []     # {"h3": [text], "details": n}
-        self.headings = []       # {"level", "text", "answer", "faq"}
+        self.headings = []       # {"level", "text", "answer", "faq", "main"}
         self.ld = []
-        self._heading = None     # [level, [text], faq_index]
+        self._heading = None     # [level, [text], faq_index, main]
+        self._answer = None      # the heading whose answer text is being collected
+        self._answer_end = None  # the stack entry (a <details>) that ends an FAQ answer
         self._ld = None
 
-    def _open(self, kind):
-        return [e[kind] for e in self.stack if e[kind] is not None]
+    def _open(self, key):
+        return [e[key] for e in self.stack if e[key] is not None]
+
+    def _in(self, tags):
+        return any(e["tag"] in tags for e in self.stack)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if tag in VOID:
             return
-        sec = faq = None
         classes = set((a.get("class") or "").split())
-        if tag == "section" and "data-section-label" in a:
-            self.sections.append({"id": a.get("id") or "", "frame": False})
-            sec = len(self.sections) - 1
-        if tag == "form" or classes & FRAME_CLASSES:
-            for i in self._open(1) + ([sec] if sec is not None else []):
-                self.sections[i]["frame"] = True
-        if tag == "div" and "kit-faq" in classes:
-            self.faq_blocks.append({"h3": [], "details": 0})
-            faq = len(self.faq_blocks) - 1
-        if tag == "details" and self._open(2):
-            self.faq_blocks[self._open(2)[-1]]["details"] += 1
-        if tag in ("h1", "h2", "h3", "h4", "h5", "h6"):
-            inside = self._open(2)
-            self._heading = [int(tag[1]), [], inside[-1] if inside and tag == "h3" else None]
+        entry = {"tag": tag, "sec": None, "faq": None}
         if tag == "script" and a.get("type") == "application/ld+json":
             self._ld = []
-        self.stack.append([tag, sec, faq])
+        if not self._in(RAW) and tag not in RAW:
+            in_main = self._in({"main"})
+            if tag == "section" and "data-section-label" in a:
+                self.sections.append({"id": a.get("id") or "", "frame": False,
+                                      "nested": bool(self._open("sec")), "main": in_main,
+                                      "h2": False})
+                entry["sec"] = len(self.sections) - 1
+            if tag == "form" or classes & FRAME_CLASSES:
+                for i in self._open("sec") + ([entry["sec"]] if entry["sec"] is not None else []):
+                    self.sections[i]["frame"] = True
+            if tag == "details" and self.stack and self.stack[-1]["faq"] is not None \
+                    and self.stack[-1]["tag"] == "div":
+                self.faq_blocks[self.stack[-1]["faq"]]["details"] += 1
+            if tag == "div" and "kit-faq" in classes:
+                self.faq_blocks.append({"h3": [], "details": 0})
+                entry["faq"] = len(self.faq_blocks) - 1
+            if tag in HEADINGS:
+                inside = self._open("faq")
+                faq = inside[-1] if inside and tag == "h3" else None
+                self._heading = [int(tag[1]), [], faq, in_main]
+                if tag == "h2":
+                    for i in self._open("sec"):
+                        self.sections[i]["h2"] = True
+        self.stack.append(entry)
 
     def handle_endtag(self, tag):
-        if tag in ("h1", "h2", "h3", "h4", "h5", "h6") and self._heading:
-            level, parts, faq = self._heading
+        if tag in HEADINGS and self._heading:
+            level, parts, faq, in_main = self._heading
             text = " ".join("".join(parts).split())
-            self.headings.append({"level": level, "text": text, "answer": "", "faq": faq})
+            h = {"level": level, "text": text, "answer": "", "faq": faq, "main": in_main}
+            self.headings.append(h)
+            self._answer, self._answer_end = h, None
             if faq is not None:
                 self.faq_blocks[faq]["h3"].append(text)
+                details = [e for e in self.stack if e["tag"] == "details"]
+                self._answer_end = details[-1] if details else None
             self._heading = None
         if tag == "script" and self._ld is not None:
             self.ld.append("".join(self._ld))
             self._ld = None
         for i in range(len(self.stack) - 1, -1, -1):
-            if self.stack[i][0] == tag:
+            if self.stack[i]["tag"] == tag:
+                if self._answer_end is not None and any(e is self._answer_end for e in self.stack[i:]):
+                    self._answer = self._answer_end = None
                 del self.stack[i:]
                 break
 
     def handle_data(self, data):
         if self._ld is not None:
             self._ld.append(data)
+        elif self._in(RAW):
+            return
         elif self._heading is not None:
             self._heading[1].append(data)
-        elif self.headings and not any(e[0] == "summary" for e in self.stack):
-            self.headings[-1]["answer"] += data
+        elif self._answer is not None and not self._in({"summary"}):
+            self._answer["answer"] += data
 
 
 def faq_schema_names(blobs):
@@ -110,7 +146,8 @@ def faq_schema_names(blobs):
         elif isinstance(node, dict):
             t = node.get("@type")
             if t == "FAQPage" or (isinstance(t, list) and "FAQPage" in t):
-                for q in node.get("mainEntity", []):
+                entities = node.get("mainEntity", [])
+                for q in entities if isinstance(entities, list) else [entities]:
                     if isinstance(q, dict) and q.get("name"):
                         names.append(q["name"])
             for v in node.values():
@@ -144,10 +181,13 @@ def check_page(q, html):
     total = sum(len(b["h3"]) for b in blocks)
     if not FAQ_TOTAL_MIN <= total <= FAQ_TOTAL_MAX:
         problems.append(f"FAQ total: {total}, want {FAQ_TOTAL_MIN}–{FAQ_TOTAL_MAX}")
-    faq_h3 = {normalise(t) for b in blocks for t in b["h3"]}
-    heads = {}
+    block_name = {i: BLOCKS[i] if i < len(BLOCKS) else f"block {i + 1}" for i in range(len(blocks))}
+    faq_heads, main_heads = {}, {}
     for h in p.headings:
-        heads.setdefault(normalise(h["text"]), h)
+        if h["faq"] is not None:
+            faq_heads.setdefault(normalise(h["text"]), h)
+        if h["main"]:
+            main_heads.setdefault(normalise(h["text"]), h)
     for item in q["questions"]:
         if not item["must_answer"]:
             continue
@@ -155,28 +195,36 @@ def check_page(q, html):
         if not cov:
             problems.append(f"{item['id']}: must-answer question has no covered_by")
             continue
-        key = normalise(cov["text"])
-        h = heads.get(key) if (cov["where"] == "heading" or key in faq_h3) else None
+        in_faq = cov["where"] == "faq"
+        h = (faq_heads if in_faq else main_heads).get(normalise(cov["text"]))
         if h is None:
-            where = "an FAQ H3" if cov["where"] == "faq" else "a heading"
+            where = "an FAQ H3" if in_faq else "a heading in <main>"
             problems.append(f"{item['id']}: '{cov['text']}' not found as {where}")
-        elif not h["answer"].strip():
+            continue
+        if in_faq and item.get("faq") and block_name[h["faq"]] != item["faq"]:
+            problems.append(f"{item['id']}: '{cov['text']}' is in the {block_name[h['faq']]} "
+                            f"FAQ block, want {item['faq']}")
+        if not h["answer"].strip():
             problems.append(f"{item['id']}: '{cov['text']}' has no answer under it")
-    schema = {normalise(n) for n in faq_schema_names(p.ld)}
-    if schema != faq_h3:
-        problems.append(f"FAQPage schema: {len(faq_h3 - schema)} visible questions missing, "
-                        f"{len(schema - faq_h3)} not visible")
-    h2s = {normalise(h["text"]) for h in p.headings if h["level"] == 2}
+    visible = Counter(normalise(t) for b in blocks for t in b["h3"])
+    schema = Counter(normalise(n) for n in faq_schema_names(p.ld))
+    if schema != visible:
+        dupes = sorted(k for k, n in (visible + schema).items() if visible[k] > 1 or schema[k] > 1)
+        problems.append(f"FAQPage schema: {sum((visible - schema).values())} visible questions "
+                        f"missing, {sum((schema - visible).values())} not visible"
+                        + (f"; duplicate: {', '.join(dupes)}" if dupes else ""))
+    h2s = {normalise(h["text"]) for h in p.headings if h["level"] == 2 and h["main"]}
     for e in q.get("extra_sections", []):
         if not e.get("heading"):
             problems.append(f"extra section '{e['topic']}': no heading recorded")
         elif normalise(e["heading"]) not in h2s:
             problems.append(f"extra section '{e['topic']}': '{e['heading']}' is not an H2 on the page")
     if q["page_type"] == "location":
-        body = [s for s in p.sections if s["id"] not in FRAME_IDS and not s["frame"]]
+        body = [s for s in p.sections if s["main"] and not s["nested"] and s["h2"]
+                and s["id"] not in FRAME_IDS and not s["frame"]]
         t = q["section_target"]
         if len(body) < t["total"]:
-            problems.append(f"body sections: {len(body)}, want at least {t['total']} "
+            problems.append(f"body sections with an H2: {len(body)}, want at least {t['total']} "
                             f"(competitors {t['matched']} + {t['extra']})")
     return problems
 
@@ -192,7 +240,11 @@ def main(argv=None):
     for f in sorted((root / "data/queries").glob("*.json")):
         if f.name == "spend.json":
             continue
-        q = json.loads(f.read_text(encoding="utf-8"))
+        try:
+            q = json.loads(f.read_text(encoding="utf-8"))
+        except ValueError as e:
+            problems.append(f"{f.stem}: invalid question file — not JSON ({e})")
+            continue
         try:
             jsonschema.validate(q, schema)
         except jsonschema.ValidationError as e:
