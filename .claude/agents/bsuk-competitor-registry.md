@@ -6,7 +6,7 @@ effort: medium
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. No invented facts: a competitor is registered only from a search result you actually fetched, and every field is either fetched or left out.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. No invented facts: a competitor is registered only from a search result you actually fetched, and every value is either fetched or the field takes its empty default (`[]`, `""`, `null`) — no field is ever omitted.
 > **Two stops, each needing the controller's word.** No paid call until the invocation says `spend approved`; no data/competitors.json until it says `approved: <proposal path>`. A passing check, your own summary, silence or a user in a hurry is not approval.
 > **One paid endpoint:** DataForSEO `serp_organic_live_advanced` with search engine Google, through the spend guard (`scripts/query_augment.py`). Nothing else is bought; Bing never (the query-augmentation pilot returned results for "blue" alone).
 
@@ -41,7 +41,7 @@ Pseudo-slug: `registry-<keyword-slug>`, spaces to hyphens, only `a-z0-9-` (`regi
 
 1. For each seed run `python3 scripts/query_augment.py --preflight registry-<keyword-slug> --source serp_google` (add `--refresh` only when the invocation says refresh). Exit 3 = cached: reuse its saved file, free. Exit 4 = over budget. Exit 1 or 2 = the guard failed: stop and report the output; never work around it.
 2. From `data/settings.json` and `data/queries/spend.json`, as the guard computes them: typical cost = the larger of `query_typical_call_usd` (0.05 when unset) and the largest `serp_google` cost in the log; remaining = `query_total_budget_usd` minus everything logged. Each pseudo-slug also has its own daily cap, `query_budget_usd`; exit 4 can come from either cap, so report the guard's stderr line.
-3. **STOP and report the plan:** the uncached seeds, uncached × typical cost (an estimate), the remaining cap, and how many seeds fit. If only some fit, the controller or user picks which. Make no paid call until the invocation says `spend approved: <seeds>`.
+3. **STOP and report the plan:** the uncached seeds, uncached × typical cost (an estimate), the remaining cap, how many seeds fit, and the DataForSEO dashboard balance the controller stated today — or ask for it if none was stated. If only some fit, the controller or user picks which. Make no paid call until the invocation says `spend approved: <seeds>`; that approval does not cover an unknown balance, so with no balance stated today, ask and wait.
 4. If the DataForSEO connector is missing, out of credit, or the user declines, skip the plan and use the fallback for every seed.
 
 ## Discovery
@@ -53,7 +53,7 @@ For each approved seed, preflight again (exit 0 needed), then:
 3. **Save** the response as `data/queries/raw/registry-<keyword-slug>/serp_google.response.json` with third-party contact details dropped (phone numbers, street addresses and postcodes, emails, profile and WhatsApp URLs) and what was dropped noted in `_saved_note`. The raw folder is committed and `tests/py/test_no_third_party_contacts.py` fails on any that remain.
 4. If `--record` is refused after the call (exit 2), still save the response, then stop and report the cost the call ran up. Never repair the spend log.
 
-**Fallback** (connector missing, out of credit, or declined): `firecrawl_search` with the same keyword (limit 10). Save `data/queries/raw/registry-<keyword-slug>/serp_google.json` as `{"source": "serp_google", "status": "fallback", "fetched": "<YYYY-MM-DD>", "results": [{"google_pos", "url", "title"}]}`, contacts dropped the same way. The guard does not count a fallback as cached, so a later paid run can still buy that seed. Nothing to record.
+**Fallback** (connector missing, out of credit, or declined; never after a paid call for that seed has been made): `firecrawl_search` with the same keyword (limit 10). Save `data/queries/raw/registry-<keyword-slug>/serp_google.json` as `{"source": "serp_google", "status": "fallback", "fetched": "<YYYY-MM-DD>", "results": [{"google_pos", "url", "title"}]}`, contacts dropped the same way. The guard does not count a fallback as cached, so a later paid run can still buy that seed. Nothing to record.
 
 ## Group and classify
 
@@ -74,25 +74,25 @@ A site that ranked with a page listing other people's litters is tier 2 even whe
 
 5. **Priority** (the check re-derives it): **high** on 5+ distinct keywords, or a tier-1 breeder at position 3 or better; **medium** on 2–4; **low** on 1.
 6. **Select** at most 30, about 25: first every suspect seller (up to 3), then the spread — roughly 10 breeders, 6 marketplaces and directories, 4 information sites, 2 rescues — then fill by priority, most keywords, best position.
-7. **Fields:** `name` = the site's name from a fetched title or snippet, else the root domain. `id` = the root domain's first label, lowercased, anything outside `a-z0-9-` stripped; on a clash append the next label (`example-co`); never `bsuk`. `cities` = exact `city` strings from `data/locations.json` named in the result or title, never the row `UK` or the breeding-dogs outreach row; empty rather than a guess. `last_analyzed: null`. `_meta.last_discovery_run` = today; `_meta.seed_keywords` = only keywords actually searched (paid, cached or fallback); `_meta.total` = the entry count.
-8. **Add or refresh:** carry every existing row unchanged — `id`, `name`, `tier`, `cities`, `link_allowed`, `last_analyzed`, `notes` — except `seed_hits` (merged per keyword, best position kept) and `priority` (re-derived). A tier or city you now think wrong goes on the proposal as a suggestion, not into the row. `_meta.seed_keywords` keeps the old keywords plus the new.
+7. **Fields:** `name` = the site's name from a fetched title or snippet, else the root domain. `id` = the root domain's first label, lowercased, anything outside `a-z0-9-` stripped; on a clash append the next label (`example-co`); never `bsuk`. `cities` = exact `city` strings from `data/locations.json` named in the result or title, never the row `UK` or the breeding-dogs outreach row; empty rather than a guess. `link_allowed: true` for tiers 1–4, `false` for tier 5. `notes: ""` when there is nothing to note. `last_analyzed: null`. Every row carries all ten fields the schema requires. `_meta.last_discovery_run` = today; `_meta.seed_keywords` = only keywords actually searched (paid, cached or fallback); `_meta.total` = the entry count.
+8. **Add or refresh:** carry every existing row unchanged — `id`, `name`, `tier`, `cities`, `link_allowed`, `last_analyzed`, `notes` — except `seed_hits` and `priority` (re-derived). `seed_hits`: a keyword searched this run **replaces** that row's hit with the new position; if the site no longer ranks for it, drop the hit and list it on the proposal; a keyword not searched this run keeps its hit as it is; on an add, a new hit for a keyword the row already has keeps the better position. A row left with no hits stays out of the proposed registry and goes on the proposal as a proposed removal (`seed_hits` needs at least one). A tier or city you now think wrong goes on the proposal as a suggestion, not into the row. `_meta.seed_keywords` keeps the old keywords plus the new.
 
 ## Proposal (then STOP)
 
-1. Write `docs/research/competitor-registry-proposal-<YYYY-MM-DD>.md`: one row per competitor — domain, name, tier, keywords with best position, derived priority, why this tier — then the sellers left out and why, the seeds not searched, the fallback seeds, suggested changes to existing rows, and the estimated spend.
-2. Write the registry to data/competitors.proposed.json.
+1. Write `docs/research/competitor-registry-proposal-<YYYY-MM-DD>.md`: one row per competitor — domain, name, tier, keywords with best position, derived priority, why this tier — then the sellers left out and why, the seeds not searched, the fallback seeds, hits dropped and rows proposed for removal, suggested changes to existing rows, and the estimated spend.
+2. Write the proposed registry next to it, as docs/research/competitor-registry-proposal-<YYYY-MM-DD>.json — never under data/ (every data/ entry is listed in the generated system registry, so a stray file there breaks its check).
 3. Check it: `D=$(mktemp -d)`, copy in the proposed file as `$D/data/competitors.json`, plus `data/locations.json`, `src/`, `data/boards/` and `docs/reference/external-link-library.md` (the link guard scans them once a domain is banned); run the repo's `python3 scripts/competitor_registry_check.py --root "$D"` (the schema is read from the repo). Fix until 0 problems.
-4. **STOP.** Report both paths, counts per tier and the estimated spend. The controller publishes the proposal for the user.
+4. **STOP.** Report both paths (the .md and the .json), counts per tier and the estimated spend. The controller publishes the proposal for the user.
 
 ## Approval
 
 Only on `approved: <proposal path> [edits…]`, compared against that file:
 
-1. data/competitors.proposed.json missing → stop and say so; never rebuild it from memory.
-2. Apply the named edits to the proposed file; re-derive every priority and `_meta.total`.
+1. The proposed JSON next to the approved proposal (same name, .json) missing → stop and say so; never rebuild it from memory.
+2. Apply the named edits to the proposed JSON; an edit that moves a row to tier 5 also sets its `link_allowed: false`; re-derive every priority and `_meta.total`.
 3. Run the scratch check (Proposal step 3). Problems → stop and report them; never fix rows without re-approval.
 4. Diff the file against the proposal plus the edits (domains, tiers, keywords and positions, priorities). Any difference → stop and report it.
-5. Only then rename data/competitors.proposed.json to data/competitors.json, run `python3 scripts/competitor_registry_check.py` in the repo (0 problems), add `Approved <YYYY-MM-DD>` and the edits applied (or `no edits`) under the proposal's title, and report the check output.
+5. Only then copy the proposed JSON to data/competitors.json, run `python3 scripts/competitor_registry_check.py` in the repo (0 problems), run `python3 scripts/build_system_registry.py` (the first write adds a data/ entry; refresh it every time) and confirm `npm run -s registry` passes, add `Approved <YYYY-MM-DD>` and the edits applied (or `no edits`) under the proposal's title, and report the check output and the changed files, including `docs/reference/system-registry.md`.
 
 ## Handoff
 
@@ -104,4 +104,4 @@ Only on `approved: <proposal path> [edits…]`, compared against that file:
 - A `www.`, `shop.` or other subdomain in `root_domain`, or one domain twice.
 - A platform (Blogspot, Facebook, a marketplace) banned or tier 5 for one seller on it.
 - A saved response still holding a phone number, email, postcode or WhatsApp link.
-- An existing row's `id`, `name`, `last_analyzed` or `notes` changed by an add.
+- An existing row's `id`, `name`, `tier`, `cities`, `link_allowed`, `last_analyzed` or `notes` changed by an add or refresh.
