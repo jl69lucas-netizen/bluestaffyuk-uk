@@ -18,7 +18,7 @@ effort: high
 | `spend approved: <slug>; balance $<n>` | Buy, for exactly that slug. No `balance $<n>` → ask for it and make no call |
 | `spend declined` | NOT FETCHED output |
 
-1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`). The **query**, said in your first line: for a city page "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?" with the `city` exactly as `data/locations.json` writes it; for any other page, the question a buyer would ask for the `primary_keyword` in its `data/queries/<slug>.json`. When the page already has a saved answer, the query is the one that answer was bought for (its `keyword`, or its `_saved_note`).
+1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`). The **query**, said in your hand-back: for a city page "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?" with the `city` exactly as `data/locations.json` writes it; for any other page, the question a buyer would ask for the `primary_keyword` in its `data/queries/<slug>.json`; with no question file, for the page's primary keyword (its page-map title or H1) plus the matching rows of the newest dated gap matrix (docs/research/gap-matrix-<YYYY-MM-DD>.md) — pass their topics, as the matrix writes them, as `GAP_TOPICS="<topic>;<topic>"`. The script records which in `query_source` and stops on a topic the matrix does not hold. When the page already has a saved answer, the query is the one that answer was bought for (its `keyword`, or its `_saved_note`).
 2. data/competitors.json, if it exists, maps cited domains to registry ids and tiers (the script reads it). Missing → every `registry_id` and `tier` is null and there is no citation gap; say so.
 3. The page text the entities are checked against is the script's choice, never yours (see **The script**).
 
@@ -47,13 +47,14 @@ effort: high
 
 ## NOT FETCHED output
 
-The file and checks of **Output**, with `fetched` `{"status": "NOT FETCHED", "reason": "<connector unavailable | out of credit | spend declined>"}`; `raw`, `answer_text` and `bsuk_cited` null; `paid_this_run` false; every list empty; `format` NOT FETCHED with the same reason; `page_source` `{"kind": "none", "path": null, "provisional": true, "note": "no answer to check"}`; the rest as in the script.
+The file and checks of **Output**, with `fetched` `{"status": "NOT FETCHED", "reason": "<connector unavailable | out of credit | spend declined>"}`; `raw`, `answer_text` and `bsuk_cited` null; `paid_this_run` false; every list empty; `format` NOT FETCHED with the same reason; `page_source` `{"kind": "none", "path": null, "provisional": true, "note": "no answer to check"}`; `query_source` as On Startup chose it; `stale` `[]`; the rest as in the script.
 
 ## The script
 
 Three layers — citations, entities, format — in one script, from the repo root. Its inputs:
 
 - `QUERY` — the query; the script stops if the response's `keyword` differs.
+- `GAP_TOPICS` — only when the page has no question file (see On Startup).
 - `TODAY` — the run date; it names the file. `PAID=1` only when this run bought the answer. `FETCHED_ON` — the call's date, needed only when `data/queries/raw/<slug>/ai_engines.json` (which the script reads it from) does not exist yet.
 - `EXTRA` — your one judgement: the **other** entities the answer uses — organisations, services, places, practices, tests and paperwork not in the script's buying-safety list — as `name|variant|variant;name|…`, lowercase, the variants being the words the answer or a page would use for it (`kennel club;coefficient of inbreeding|inbreeding coefficient`). Read the whole answer and list every one; generic words ("puppy", "breeder", "blue") are not entities. Each name and variant is whole words: multi-word, or one word of 4+ characters (`coi` fails — write `coefficient of inbreeding`), and never holding a safety entity's words (`mother`, `health-test certificates`, `written contract`…) — the whole entry is dropped otherwise. An organisation the answer names counts even when it is also cited. The script drops any whose words the answer does not contain, or whose name holds a safety entity's words ("health-test certificates" is health tests), and names them on stderr — you cannot add what the answer does not say.
 - The response path: the saved ai_engines.response.json, or the file the invocation hands you as its stand-in (`raw` still names the saved path).
@@ -71,7 +72,7 @@ mkdir -p docs/research/llm-intel
 OUT=docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json
 QUERY="<query>" TODAY=<YYYY-MM-DD> EXTRA="<name|variant;...>" \
   python3 - <slug> data/queries/raw/<slug>/ai_engines.response.json > "$OUT" <<'EOF'; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"; echo "exit $rc"
-import datetime, html, json, os, re, sys
+import datetime, glob, html, json, os, re, sys
 from urllib.parse import urlparse
 sys.path.insert(0, "scripts")
 from competitor_registry_check import CC_SECOND_LEVELS  # the registry's root-domain rule
@@ -199,20 +200,38 @@ if how == "verbatim":
     fmt = {"status": "ok", "list": lst, "length": "short" if words < 100 else "medium" if words <= 300 else "long", "words": words, "opening": opening}
 else:
     fmt = {"status": "NOT FETCHED", "reason": "the saved response holds a summary of the answer, not its text"}
+# where the query came from: the city question, else the question file's primary keyword, else the page map's
+# title/H1 - and, with no question file, the matching rows (GAP_TOPICS) of the newest dated gap matrix
+city = next((x["city"] for x in json.load(open("data/locations.json")) if x.get("slug") == slug), None)
+if city and QUERY != f"Where can I buy a blue Staffy puppy near {city}, and what should I ask the breeder?":
+    sys.exit(f"{slug} is a city page: QUERY must be the city question for {city}")
+if not (city or q or pm):
+    sys.exit("no city row, question file or page-map entry for this slug: nothing to build the query from")
+matrix = None if q else ([None] + sorted(glob.glob("docs/research/gap-matrix-[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].md")))[-1]
+topics = [t.strip().lower() for t in os.environ.get("GAP_TOPICS", "").split(";") if t.strip()] if matrix else []
+lost = [t for t in topics if norm(t) not in norm(open(matrix, encoding="utf-8").read())]
+if lost:
+    sys.exit(f"GAP_TOPICS not in {matrix}: {lost}")
+qsrc = {"from": "city" if city else "question-file" if q else "page-map", "gap_matrix": matrix, "gap_topics": topics}
 norm_file = f"data/queries/raw/{slug}/ai_engines.json"
 fetched_on = json.load(open(norm_file)).get("fetched") if os.path.exists(norm_file) else os.environ.get("FETCHED_ON")
 today = os.environ.get("TODAY") or datetime.date.today().isoformat()
+age = lambda d: (datetime.date.fromisoformat(today) - datetime.date.fromisoformat(d)).days
+stale = [f"answer fetched {fetched_on or today}, {age(fetched_on or today)} days old"] if age(fetched_on or today) > 30 else []
+stale += [f"{matrix} is {age(matrix[-13:-3])} days old"] if matrix and age(matrix[-13:-3]) > 30 else []
+uniq = list({s["domain"]: s for s in everything}.values())  # a site both cited and listed counts once
 out = {"slug": slug, "date": today, "engine": "chatgpt", "endpoint": "ai_optimization_chat_gpt_scraper",
-       "location": "United Kingdom", "query": QUERY, "fetched": {"status": "ok", "fetched_on": fetched_on or today},
+       "location": "United Kingdom", "query": QUERY, "query_source": qsrc, "stale": stale, "fetched": {"status": "ok", "fetched_on": fetched_on or today},
        "raw": f"data/queries/raw/{slug}/ai_engines.response.json", "answer_text": how,
        "paid_this_run": os.environ.get("PAID") == "1", "bsuk_cited": bsuk, "citations": citations,
        "local_businesses": local_b,
-       "citation_gap": [] if bsuk else sorted({s["registry_id"] for s in everything if s["tier"] in (1, 2, 3, 4)}),
+       "citation_gap": [] if bsuk else sorted({s["registry_id"] for s in uniq if s["tier"] in (1, 2, 3, 4)}),
        "risks": [{"domain": s["domain"], "registry_id": s["registry_id"], "reason": "tier 5 (suspect seller) in data/competitors.json: a risk, never a model"}
-                 for s in everything if s["tier"] == 5],
+                 for s in uniq if s["tier"] == 5],
        "page_source": src, "entities": entities, "format": fmt,
        "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}
 print(json.dumps(out, indent=1, ensure_ascii=False))
+print(f"STALE (older than 30 days; carrying on): {'; '.join(stale)}" if stale else "fresh: answer and gap matrix within 30 days", file=sys.stderr)
 print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'}; EXTRA dropped (too short, not in the answer, or holding a safety entity): {rejected or 'none'}", file=sys.stderr)
 
 EOF
@@ -231,7 +250,7 @@ python3 tests/py/test_no_third_party_contacts.py docs/research/llm-intel/<slug>-
 
 The first prints `0 problem(s)`; a problem means a wrong input (`EXTRA`, the response path) — re-run the script, never edit the file or the test. The contact scan names each hit: remove it from the saved response and say so in `_saved_note`.
 
-Hand back: the file path; the query; spend (none — cached, or the recorded estimate); `bsuk_cited`; the citations and local businesses with their registry ids (or "no registry"); the citation gap and any risks; the high entities; the format; `page_source` and, when provisional, why; the `EXTRA` entities the script dropped.
+Hand back — first line: `STALE: …` with the script's reason when `stale` is not empty (the answer or the gap matrix is older than 30 days; carry on), else the file path. Then: the file path; `query_source`; the query; spend (none — cached, or the recorded estimate); `bsuk_cited`; the citations and local businesses with their registry ids (or "no registry"); the citation gap and any risks; the high entities; the format; `page_source` and, when provisional, why; the `EXTRA` entities the script dropped.
 
 ## Handoff
 

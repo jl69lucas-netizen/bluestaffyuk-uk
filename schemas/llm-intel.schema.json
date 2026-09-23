@@ -4,7 +4,7 @@
   "description": "docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json, written by bsuk-llm-keyword-intel from one AI engine's answer to the page's buyer question; read by bsuk-strategy-synthesizer and the page builders. Unfetched parts are {status: NOT FETCHED, reason}. Checked by tests/py/test_llm_intel.py (also runnable on a file: python3 tests/py/test_llm_intel.py <file>).",
   "type": "object",
   "additionalProperties": false,
-  "required": ["slug", "date", "engine", "endpoint", "location", "query", "fetched", "raw",
+  "required": ["slug", "date", "engine", "endpoint", "location", "query", "query_source", "stale", "fetched", "raw",
                "answer_text", "paid_this_run", "bsuk_cited", "citations", "local_businesses",
                "citation_gap", "risks", "page_source", "entities", "format", "llm_mentions"],
   "properties": {
@@ -14,6 +14,15 @@
     "endpoint": {"const": "ai_optimization_chat_gpt_scraper"},
     "location": {"const": "United Kingdom"},
     "query": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "query_source": {
+      "type": "object", "additionalProperties": false, "required": ["from", "gap_matrix", "gap_topics"],
+      "properties": {
+        "from": {"enum": ["city", "question-file", "page-map"]},
+        "gap_matrix": {"type": ["string", "null"], "pattern": "^docs/research/gap-matrix-\\d{4}-\\d{2}-\\d{2}\\.md$"},
+        "gap_topics": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "stale": {"type": "array", "items": {"type": "string", "minLength": 1}},
     "fetched": {"oneOf": [
       {"$ref": "#/$defs/not_fetched"},
       {"type": "object", "additionalProperties": false, "required": ["status", "fetched_on"],
