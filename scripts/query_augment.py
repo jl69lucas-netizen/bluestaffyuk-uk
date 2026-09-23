@@ -204,7 +204,8 @@ NON_CONTENT_PREFIX = re.compile(
     r"(related|recent|popular|latest) (posts|articles|puppy)\b|leave a (reply|comment)\b|"
     r"faqs?\b|frequently asked questions\b")
 # Furniture wrapped in a few words ("Google Reviews", "Follow Us On Instagram"): at most two
-# words before the phrase and three after, so a long content heading is never caught.
+# words before the phrase and three after, so a long content heading is never caught. A
+# heading that names a page topic ("When to Contact a Vet") is content and is kept.
 NON_CONTENT_AROUND = re.compile(
     r"^(\w+ ){0,2}(reviews?|testimonials?|what (our )?(customers|owners|families) say|contact( us)?"
     r"|get in touch|call us|enquire|follow us|share( this)?|sign up|newsletter"
@@ -216,7 +217,7 @@ def clean_h2s(h2s):
     for h in h2s:
         n = normalise(h)
         if (not n or n in seen or NON_CONTENT_EXACT.fullmatch(n) or NON_CONTENT_PREFIX.match(n)
-                or NON_CONTENT_AROUND.search(n)):
+                or (NON_CONTENT_AROUND.search(n) and topic_of(h)[0] is None)):
             continue
         seen.add(n)
         out.append(h)

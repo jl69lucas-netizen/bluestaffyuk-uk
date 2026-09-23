@@ -424,3 +424,10 @@ def test_pick_faq_crowded_block_stops_at_max_fill_by_score_then_id():
     assert got["middle"] == [f"m{i:02d}" for i in range(5)]
     assert got["bottom"] == [f"b{i:02d}" for i in range(8)]       # next by score, then id
     assert sum(len(v) for v in got.values()) == 20
+
+
+def test_clean_h2s_keeps_content_headings_that_contain_a_furniture_word():
+    content = ["When to Contact a Vet", "Contact Your Vet", "Contact With Other Dogs",
+               "Our Reviews and Health Guarantee", "Health Testing Reviews", "Reviews of Puppy Food"]
+    assert Q.clean_h2s(content) == content
+    assert Q.clean_h2s(FURNITURE + ["How to Enquire About a Puppy"]) == []
