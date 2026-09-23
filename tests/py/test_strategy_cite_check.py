@@ -177,7 +177,7 @@ def test_an_absolute_source_path_is_a_problem(tmp_path):
     root.mkdir()
     p = make(root, "Pick A: 8/12.", sources=(SOURCE, str(outside)))
     out = S.check(p, root)
-    assert any(str(outside) in o and "outside the root" in o for o in out)
+    assert any(str(outside) in o and "research sources only" in o for o in out)
     assert any("8/12" in o for o in out)  # its figures do not count
 
 
@@ -187,10 +187,208 @@ def test_a_source_that_escapes_the_root_is_a_problem(tmp_path):
     root.mkdir()
     p = make(root, "Pick A: 8/12.", sources=(SOURCE, "../outside.md"))
     out = S.check(p, root)
-    assert any("../outside.md" in o and "outside the root" in o for o in out)
+    assert any("../outside.md" in o and "research sources only" in o for o in out)
     assert any("8/12" in o for o in out)
 
 
 def test_a_dotdot_path_that_stays_inside_the_root_is_fine(tmp_path):
     p = make(tmp_path, "Pick A: 7/12.", sources=("docs/research/../research/gap-matrix-2026-09-24.md",))
     assert S.check(p, tmp_path) == []
+
+
+# --- fix round: token matching, wider extraction, headings, source scope, no tracebacks ---
+
+def doc(tmp_path, body, source_text, sources="- `docs/research/src.md`"):
+    """A strategy whose whole Recommendation body is `body`, and one research source."""
+    (tmp_path / "docs/research").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "docs/research/src.md").write_text(source_text)
+    p = tmp_path / "s.md"
+    p.write_text(f"# S\n\n## Recommendation\n\n{body}\n\n## Sources\n\n{sources}\n")
+    return p
+
+
+def fails(tmp_path, body, source_text, fig):
+    out = S.check(doc(tmp_path, body, source_text), tmp_path)
+    return any(f"figure {fig} " in o for o in out)
+
+
+def passes(tmp_path, body, source_text):
+    return S.check(doc(tmp_path, body, source_text), tmp_path) == []
+
+
+# C1: a figure matches a whole figure in the source, never part of one
+def test_c1_12_is_not_found_inside_2012(tmp_path):
+    assert fails(tmp_path, "Pick A: 12 competitors.", "Founded 2012.", "12")
+
+
+def test_c1_40_is_not_found_inside_1400(tmp_path):
+    assert fails(tmp_path, "Pick A: 40 pages.", "1,400 words", "40")
+
+
+def test_c1_7_12_is_not_found_inside_17_120(tmp_path):
+    assert fails(tmp_path, "Pick A: 7/12.", "17/120", "7/12")
+
+
+def test_c1_a_date_in_the_source_is_not_a_figure(tmp_path):
+    assert fails(tmp_path, "Pick A: 24 cities.", "# Gap matrix — 2026-09-24\n", "24")
+
+
+def test_c1_the_parts_of_a_source_count_may_be_cited(tmp_path):
+    assert passes(tmp_path, "Pick A: 12 competitors, 7 with city pages; 7/12.", "| city | 7/12 |")
+
+
+def test_c1_50pct_is_not_found_inside_150pct(tmp_path):
+    assert fails(tmp_path, "Pick A: 50% gain.", "150%", "50%")
+
+
+def test_c1_thousands_commas_do_not_matter(tmp_path):
+    assert passes(tmp_path, "Pick A: 1,500 words.", "1500 words")
+
+
+# C2: numbers glued to units or words are still figures
+def test_c2_glued_shapes_are_extracted():
+    got = S.figures("1,200-word 12-page 40k £12k 2.5x 3x 12th 40/mo -12 20-39% 7/12-competitor")
+    assert got == ["1200", "12", "40k", "12k", "2.5x", "3x", "12", "40", "12", "20", "39%", "7/12"]
+
+
+def test_c2_glued_shapes_are_checked(tmp_path):
+    body = "1,200-word pages, 12-page cluster, 40k searches, £12k, 2.5x, 3x, 12th, 40/mo, -12, 20-39%, 7/12-competitor"
+    out = S.check(doc(tmp_path, body, "nothing"), tmp_path)
+    assert len(out) == 12
+
+
+def test_c2_glued_shapes_pass_when_the_source_has_them(tmp_path):
+    body = "1,200-word pages, 12-page cluster, 40k searches, £12k, 2.5x, 3x, 12th, 40/mo, -12, 20-39%, 7/12-competitor"
+    src = "1200 words; 12 pages; 40k; 12k; 2.5x; 3x; 40; 20 to 39%; 7/12"
+    assert passes(tmp_path, body, src)
+
+
+def test_c2_a_k_or_x_figure_needs_its_suffix_in_the_source(tmp_path):
+    assert fails(tmp_path, "Pick A: 40k searches.", "40 searches", "40k")
+    assert fails(tmp_path, "Pick A: 3x faster.", "3 times", "3x")
+
+
+def test_c2_a_percentage_needs_its_percent_sign(tmp_path):
+    assert fails(tmp_path, "Pick A: 39% of them.", "39 of them", "39%")
+    assert passes(tmp_path, "Pick A: 40% share.", "share 40 %")
+
+
+def test_c2_units_are_not_compared(tmp_path):
+    assert passes(tmp_path, "Pick A: a 12-page cluster.", "12 pages")
+
+
+# I1: heading variants
+def test_i1_concrete_artefact_is_checked(tmp_path):
+    p = doc(tmp_path, "Pick A.\n\n## Concrete Artefact\n\n| cities | 11 |", "nothing")
+    assert any("figure 11 " in o and "Concrete Artefact" in o for o in S.check(p, tmp_path))
+
+
+def test_i1_heading_variants_are_recognised(tmp_path):
+    (tmp_path / "docs/research").mkdir(parents=True)
+    (tmp_path / "docs/research/src.md").write_text("x")
+    for heading in ("## recommendation", "##\tRecommendation", "## 5. Recommendation",
+                    "## Recommendation:", "## Recommendation (Strategy A)",
+                    "## CONCRETE ARTIFACT"):
+        p = tmp_path / "s.md"
+        p.write_text(f"{heading}\n\n99 pages\n\n## Sources\n\n- `docs/research/src.md`\n")
+        out = S.check(p, tmp_path)
+        assert any("figure 99 " in o for o in out), heading
+
+
+# I2: sources are research files
+def test_i2_a_source_outside_research_and_data_is_a_problem(tmp_path):
+    (tmp_path / "src").mkdir()
+    (tmp_path / "src/page.md").write_text("99")
+    p = doc(tmp_path, "Pick A: 99 pages.", "x", sources="- `docs/research/src.md`\n- `src/page.md`")
+    out = S.check(p, tmp_path)
+    assert any("src/page.md" in o and "research sources only" in o for o in out)
+    assert any("figure 99 " in o for o in out)
+
+
+def test_i2_a_data_source_is_fine(tmp_path):
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/competitors.json").write_text('{"n": 99}')
+    p = doc(tmp_path, "Pick A: 99 pages.", "x", sources="- `docs/research/src.md`\n- `data/competitors.json`")
+    assert S.check(p, tmp_path) == []
+
+
+def test_i2_the_strategy_cannot_cite_itself(tmp_path):
+    (tmp_path / "docs/research").mkdir(parents=True)
+    p = tmp_path / "docs/research/strategy.md"
+    p.write_text("## Recommendation\n\n99 pages\n\n## Sources\n\n- `docs/research/strategy.md`\n")
+    out = S.check(p, tmp_path)
+    assert any("docs/research/strategy.md" in o and "itself" in o for o in out)
+    assert any("figure 99 " in o for o in out)
+
+
+# I3: bad source paths are problems, not tracebacks
+def test_i3_a_nul_byte_in_a_source_path_is_a_problem(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12", sources="- `docs/research/src.md`\n- `docs/research/a\x00b.md`")
+    out = S.check(p, tmp_path)
+    assert len(out) == 1 and "cannot be read" in out[0]
+
+
+def test_i3_an_over_long_source_path_is_a_problem(tmp_path):
+    long = "docs/research/" + "a" * 5000
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12", sources=f"- `docs/research/src.md`\n- `{long}`")
+    out = S.check(p, tmp_path)
+    assert len(out) == 1 and "cannot be read" in out[0]
+    r = run(str(p), "--root", str(tmp_path))
+    assert r.returncode == 1 and "Traceback" not in r.stderr
+
+
+# I4: years and clock times are not figures
+def test_i4_years_and_times_are_not_figures(tmp_path):
+    assert passes(tmp_path, "Ship in Q3 2027, by 2027, at 10:30.", "nothing")
+
+
+# Minor: code fences, links, comments, BOM, Sources parsing
+def test_fenced_code_is_skipped_and_cannot_switch_sections(tmp_path):
+    body = "Pick A.\n\n```\n99 pages\n## Sources\n- `docs/research/src.md`\n```\n\n~~~\n98\n~~~"
+    p = tmp_path / "s.md"
+    (tmp_path / "docs/research").mkdir(parents=True)
+    (tmp_path / "docs/research/src.md").write_text("x")
+    p.write_text(f"## Recommendation\n\n{body}\n\n77 pages\n")
+    out = S.check(p, tmp_path)
+    assert any("figure 77 " in o for o in out)  # still in Recommendation after the fence
+    assert not any("99" in o or "98" in o for o in out)
+    assert any("no ## Sources" in o for o in out)
+
+
+def test_link_urls_and_html_comments_are_not_figures(tmp_path):
+    assert passes(tmp_path, "See [the matrix](https://x.test/p/99) <!-- 98 --> now.", "nothing")
+    assert fails(tmp_path, "See [99 pages](https://x.test/p/1).", "nothing", "99")
+
+
+def test_ordered_list_markers_are_not_figures(tmp_path):
+    assert passes(tmp_path, "10. Build the page.\n11) Link it.", "nothing")
+
+
+def test_a_bom_is_ignored(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12")
+    p.write_bytes(b"\xef\xbb\xbf" + p.read_bytes())
+    assert S.check(p, tmp_path) == []
+
+
+def test_sources_heading_and_bullet_variants(tmp_path):
+    (tmp_path / "docs/research").mkdir(parents=True)
+    for name in ("a.md", "b.md", "c.md", "d.md", "e.md"):
+        (tmp_path / "docs/research" / name).write_text(f"{name} 7/12")
+    lists = ["* `docs/research/a.md`", "+ `docs/research/a.md`", "1. `docs/research/a.md`",
+             "- Gap matrix: `docs/research/a.md`", "- [gap matrix](docs/research/a.md)",
+             "- [`docs/research/a.md`](docs/research/a.md)"]
+    for heading in ("## Sources", "## sources:", "## Sources (3)"):
+        for item in lists:
+            p = tmp_path / "s.md"
+            p.write_text(f"## Recommendation\n\n7/12\n\n{heading}\n\n{item}\n")
+            assert S.examine(p, tmp_path)[:2] == ([], 1), (heading, item)
+    p = tmp_path / "s.md"
+    p.write_text("## Recommendation\n\n99\n\n## Sources\n\n- `docs/research/a.md`, `docs/research/b.md`\n")
+    (tmp_path / "docs/research/b.md").write_text("99")
+    assert S.examine(p, tmp_path)[:2] == ([], 2)
+
+
+def test_a_sources_heading_with_no_paths_says_so(tmp_path):
+    p = tmp_path / "s.md"
+    p.write_text("## Recommendation\n\nPick A.\n\n## Sources\n\n- the gap matrix\n")
+    assert S.check(p, tmp_path) == ["## Sources lists no backticked or linked paths"]
