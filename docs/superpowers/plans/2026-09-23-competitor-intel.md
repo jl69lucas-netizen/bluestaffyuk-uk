@@ -2,6 +2,21 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
+> **Executed 2026-09-23** on `competitor-intel`: `a116055..638a6d4`, 49 commits from the spec to the pilot's strategy, then the close-out's fix commit `7ece4ff` and its docs commit. Every task ran with an implementer, a spec review and a quality review. Deviations from the task text below, per task — the detail is in the spec's §16 "Amendments during execution", and the evidence in `docs/reports/competitor-intel-gate-report.md`:
+>
+> - **Task 1** (`ad59e0a`, `ecca5b8`): registrable-domain rule instead of "any subdomain"; link guard hardened (every URL form, malformed JSON reported, files-scanned count).
+> - **Task 2** (`8811479`, `ac0cb50`): hardening beyond the plan's code — escaped cells, cities vs `data/locations.json` (exit 6), dated matrix names only, reports validated first and loaded once, schema `\S` and case-exact types, `--help` 0, diff lines on `--check`.
+> - **Task 3** (`0f7849e`, `5d6cfc9`, `8743ed5`): whole-token figure matching and wider extraction; years need a cue; sources allowlisted; top-N checked; pick-section guard.
+> - **Task 4** (`4f897a2`, `ef8839b`): as planned, plus per-source typical cost, the cap boundary, today's page cap and the Bing refusal pinned.
+> - **Task 5** (`a04a8a7`…`4a6e861`): two stop tokens (spend with balance, then approval of the proposal); the proposal lives in `docs/research/`, not `data/`; refresh replaces hits; platform sellers noted on the platform entry.
+> - **Task 6** (`0e7d6cc`…`503432c`): homepage gate, keyword and page-type rules by script, map-and-scrape only, sitemap-first `--bsuk` with indexable URLs only; the contacts test scans `docs/research/`.
+> - **Task 7** (`c95f9e0`…`7baa84c`): BSUK profile as the source (page map fallback); noindex is not coverage; stub rows route as "rebuild the stub"; the rubric rulings (spec §16.10); new `tests/py/test_keyword_gap_script.py`.
+> - **Task 8** (`2684811`…`330e3a0`): page-map + gap-matrix query fallback; high = a missing safety entity (one engine, one answer); the `ai_*` filter drops a question only when all its sources are AI; refresh token; exit 5 for connector errors.
+> - **Task 9** (`23b4ff0`…`0e43583`): figure-writing rules for the cite check; provisional picks not handed off; tie-break by keyword-gap band then matrix share.
+> - **Task 10** (`c98778b`, `6b9714e`): WORKFLOW order by dependency with the stop tokens.
+> - **Task 11** (`efdac63`…`638a6d4`): Step 0 set `query_typical_call_usd` to 0.05 (user ruling A); the registry ran in two rounds; LLM intel ran for Leeds (paid) as well as Manchester (cached); 21 sites approved; strategy pick A.
+> - **Task 12**: the fix commit folded close-out fixes in (licenced always-high, `brand_entities` local businesses, one session-brief path, WORKFLOW gates); publishing the Artifacts and the merge are done by the controller after review.
+
 **Goal:** Give BSUK the competitor research chain the source repo had — a national competitor registry, per-competitor intel, a gap matrix, a keyword-gap list, LLM citation intel and a two-strategy synthesis — with every count built by a script and every paid call behind the existing spend guard.
 
 **Architecture:** Five agents fetch and judge (`bsuk-competitor-registry`, `bsuk-competitor-intel`, `bsuk-competitive-keyword-gap-agent`, `bsuk-llm-keyword-intel`, `bsuk-strategy-synthesizer`). Three scripts guard and count: `competitor_registry_check.py` (registry schema, rules, suspect-seller link guard), `gap_matrix.py` (builds and re-checks the matrix from the intel reports) and `strategy_cite_check.py` (every figure a strategy quotes is in a listed source). Paid DataForSEO calls reuse `scripts/query_augment.py --preflight/--record` with the existing `serp_google` and `ai_engines` source names.

@@ -1,6 +1,6 @@
 # Competitor intelligence — registry, intel, keyword gap, LLM intel and strategy — design
 
-Status: approved in brainstorm 2026-09-23. Branch `competitor-intel`, cut from `foundation`
+Status: approved in brainstorm 2026-09-23; **executed** 2026-09-23 — §16 lists every amendment made during execution. Branch `competitor-intel`, cut from `foundation`
 at `db37ca1` and rebased onto `c9c981c` after `query-augmentation` merged (this build reuses
 that build's spend guard). Closes Known Issue 42. A bridge build before project 5: the gap
 matrix and the chosen strategy are what the 28 city pages, the comparison cluster and the two
@@ -138,8 +138,10 @@ second. No figure is estimated; competitor wording is summarised, never copied.
 
 ## 6. Gap matrix
 
-`scripts/gap_matrix.py` reads every `docs/research/competitors/*.json` plus `data/page-map.json`
-and writes `docs/research/gap-matrix-<date>.md`: keyword gaps, page-type gaps, city gaps, schema
+`scripts/gap_matrix.py` reads every competitor report under `docs/research/competitors/*.json`,
+takes BSUK's side from the BSUK profile `docs/research/competitors/bsuk.json` (written by
+`bsuk-competitor-intel --bsuk` in the same shape; amendment 5 — it does **not** read
+`data/page-map.json`), checks cities against `data/locations.json`, and writes `docs/research/gap-matrix-<date>.md`: keyword gaps, page-type gaps, city gaps, schema
 gaps, each row with `N/M` where M counts only competitors whose field was fetched, and a
 separate `not fetched` column. Priority: high at 40%+ of fetched competitors, medium 20–39%,
 low below. The matrix ends with a priority queue of the top ten rows. `--check` re-derives the
@@ -262,3 +264,126 @@ before any full run.
 Pricing alert, rank tracker, branded-search monitor and GSC analytics (project 6, once the
 domain is live); financial and social strategists; `bsuk-visual-intelligence`; Reddit-modifier
 pages; running intel on all 25 competitors (only on request after the pilot).
+
+## 16. Amendments during execution
+
+Each amendment is a plan refinement, a review finding or a user/controller ruling made while the
+plan ran. Where a section above and an amendment disagree, the amendment wins. Commits are on
+branch `competitor-intel`.
+
+1. **§4 root domains — the registrable-domain rule.** A root domain is two labels, or three when
+   the last is a two-letter ccTLD and the second-last is one of `co`, `org`, `me`, `ltd`, `plc`,
+   `ac`, `gov`, `net`, `sch`, `com` (`CC_SECOND_LEVELS` in `scripts/competitor_registry_check.py`),
+   plus an overlap check between entries. `bsuk-llm-keyword-intel` imports the same rule.
+   `ad59e0a`, `ecca5b8`, `2684811`.
+2. **§4 priority is derived, not typed.** `competitor_registry_check.py` re-derives priority from
+   `seed_hits` and `tier`; a typed priority that disagrees fails the check. `ad59e0a`.
+3. **§12 link guard.** `competitor_registry_check.py` scans `src/`, `data/boards/` and
+   `docs/reference/external-link-library.md` for any URL (every URL form, no tracebacks) whose host
+   is a `link_allowed: false` domain. It runs before a build, so it does not read `dist/`.
+   JSON-escaped links (`https:\/\/`) are not caught — none exist (Known Issue 47). `ad59e0a`,
+   `ecca5b8`.
+4. **§4 registry agent — the proposal and stop flow.** The discovery proposal is written to
+   `docs/research/competitor-registry-proposal-<date>.md` + `.json` (never under `data/`); the
+   agent stops twice: `spend approved: <seeds>; balance $<n>[; refresh]` before the searches, then
+   `approved: docs/research/competitor-registry-proposal-<date>.md` before writing
+   `data/competitors.json`; `refresh` replaces a seed's hits; the 30-entry cap keeps existing rows;
+   hosted-platform sellers (Blogspot, Facebook) are a note on the platform entry or left out — a
+   platform is never banned wholesale. After approval `scripts/build_system_registry.py` runs.
+   `a04a8a7`, `8c9e752`, `cf16876`, `4a6e861`; pilot `2bcdbf6`, `9f3277f`.
+5. **§6 BSUK's side of the matrix is the BSUK profile.** `docs/research/competitors/bsuk.json`,
+   written by `bsuk-competitor-intel --bsuk` against the local build (sitemap-first, indexable
+   URLs only), replaces `data/page-map.json`: the page map describes migrated pages, not page
+   types, so it cannot say what BSUK covers. §6's first sentence is corrected accordingly.
+   `8811479`, `0e7d6cc`, `dbaa627`, `503432c`.
+6. **§6 gap-matrix hardening beyond the plan's code.** Markdown cells escaped (`|` and
+   backslashes); cities checked against `data/locations.json` (exit 6); only dated matrix names
+   (`gap-matrix-YYYY-MM-DD.md`); every report validated against
+   `schemas/competitor-report.schema.json` before counting, loaded once; schema strings need a
+   non-space character and schema types are case-exact; `--help` exits 0; `--check` prints the
+   differing lines. `8811479`, `ac0cb50`.
+7. **§5 intel — countable reports.** Ten categories with `NOT FETCHED` over guesses; a homepage
+   gate (challenge and redirected pages are not the site); fixed keyword and page-type rules by
+   script (whole words, one table shared line for line with the keyword-gap agent); map-and-scrape
+   only; a research-only red flag; tier-5 prices recorded as `[]`; a 30-day age note; the
+   third-party-contact test scans `docs/research/`. `0e7d6cc`, `698d21e`, `0533746`, `dbaa627`,
+   `503432c`, `612f2a6`.
+8. **§7 keyword gap — source and coverage.** Competitor pages are compared against the BSUK
+   profile's pages (the page map only as a fallback, and then with its stubs filtered). A noindex
+   BSUK page is **not** coverage (controller ruling: 17 of the 28 city pages are noindex migrated
+   stubs, absent from `dist/location-sitemap.xml`); such a row says "BSUK page exists, not indexed
+   (project 5 rebuild)" and carries `noindex_page`. `612f2a6`, `273214c`.
+9. **§7 keyword gap — stub rows route as rebuilds.** A gap whose BSUK page is a noindex stub goes
+   to `bsuk-content-architect` as "rebuild the stub <url>" (project 5), never as a new page or a
+   second URL; the architect reads it that way. `273214c`, `c98778b`.
+10. **§7 keyword gap — the rubric as ruled.** "Dedicated +3" only when the topic holds a qualifying
+    keyword run of 3+ words, or is a comparison's "X vs Y" core (a whole-text topic scores 0 —
+    this restores the low band); about, contact, homepage and untyped pages with no keyword run are
+    skipped (licence and health-testing words excepted); always-high is judged on the whole H1
+    (else the cut title), not only the topic; bare "tested" is not a trust word; the always-high
+    words are licence, license, licensed, licenced, licensing, health test(ed/ing), L-2-HGA, HC —
+    "licenced" added at close-out to match llm-intel's licence entity; "blue" is not an intent
+    word; a city is buyer intent only on a city topic, and the city rule applies only to breed and
+    buyer words; city topics match by page type city and the same city set, one row per city set;
+    comparison beats city. `c95f9e0`, `f7c10a8`, `5be81dc`, `647f302`, `99a623a`, `7baa84c`,
+    `7ece4ff`.
+11. **§8 LLM intel — query, page text and citations.** The query comes from the city question, else
+    the question file, else the page map plus named gap-matrix rows (`GAP_TOPICS`, from a dated
+    matrix only); page-map headings are read as `[tag, text]` pairs; one risk per tier-5 domain;
+    30-day staleness on the answer and the matrix; a `; refresh` token for a re-buy; connector
+    errors exit 5 and are filed apart; the `NOT FETCHED` output comes from the script. The page text
+    is the indexable build, else the question file's FAQ picks and `must_answer`, else the page map
+    — both fallbacks `provisional`. **The `ai_*` filter:** a question is dropped from the page text
+    only when ALL its `found_in` sources are `ai_*` (controller ruling), so the answer is never
+    checked against itself. `llm_mentions` waits for the live domain (project 6). At close-out,
+    `brand_entities` items whose `category` is `local_business` (the connector's current shape, as
+    in the Leeds response) are read as local businesses; a name with no link is kept by `name`
+    with `domain: null`, mapped to a registry entry only by exact name (schema `named_site`); the
+    Leeds file was re-derived from its saved response with no call. `2684811`, `9ce10d4`,
+    `af15c2a`, `330e3a0`, `7ece4ff`.
+12. **§8 "3+ answers → high" is replaced.** One engine is asked once per page, so an entity is
+    **high** when it is a buying-safety entity missing from the page text; everything else is
+    medium. `2684811`.
+13. **§9 cite-check.** Figures are matched as whole tokens (units glued to numbers read, `%`, `k`,
+    `x` suffixes kept); years count only after a cue ("in 2027", "Q3 2027"), so a quantity 1900–2099
+    needs a comma; sources must be allowlisted research outputs in backticks
+    (`docs/research/gap-matrix-*.md`, `keyword-gap-*.md`, `competitors/*.json|md`,
+    `llm-intel/*.json`, `data/competitors.json`, `data/page-map.json`, `data/locations.json`,
+    `data/queries/<slug>.json`); a "top N" is checked; everything in the pick sits under
+    `## Recommendation` or `## Concrete Artifact`, and `## Sources` is last. `0f7849e`, `5d6cfc9`,
+    `8743ed5`.
+14. **§9 synthesizer rulings.** Figures quoted exactly as the source writes them; llm-intel bands
+    are never compared across `page_source` kinds; a missing registry means tier unknown (counts
+    for gaps, never a link or a model); tie-break = the highest keyword-gap band, then matrix
+    share; thin research or a page-map fallback makes the pick provisional (not handed off); a
+    same-day re-run ends `-strategy-2.md`. `23b4ff0`, `8170fe3`, `0e43583`, `7ece4ff`.
+15. **Tools lines.** The synthesizer declares its tools; the registry and LLM-intel agents do not
+    list connector tools, because connector tool names are session-specific (review item declined
+    by the controller). `8170fe3`.
+16. **§10 spend as merged and as run.** No new source names: registry seeds use the pseudo-slug
+    `registry-<keyword-slug>` under `serp_google`; LLM intel uses the page slug under `ai_engines`
+    (`4f897a2`, `ef8839b`). **Typical cost:** by user ruling A, `query_typical_call_usd` in
+    `data/settings.json` is **0.05** (was 0.10); the guard's typical per source is the larger of
+    that and the largest logged cost for the source, so `ai_engines` stays 0.10 (`efdac63`). **Real
+    balance:** the user's dashboard read **$0.99185** before the pilot, after the three
+    query-augmentation calls, so those calls cost about $0.008 in all against $0.20 logged; the
+    earlier "$0.90" reading in this section is superseded. The pilot logged ten seeds × $0.05 + one
+    Leeds answer × $0.10 = $0.60, taking the log to $0.80 of the $1.00 cap; every figure is an
+    estimate (Known Issue 45). Firecrawl: 20 credits for the pilot intel (776 left).
+17. **§12 WORKFLOW.** The Sprint 0 tracks run in dependency order (registry → intel `--all` →
+    intel `--bsuk` + matrix → keyword gap → LLM intel → synthesizer), with the stop tokens and tiers
+    named (`c98778b`, `6b9714e`); at close-out the "run all three simultaneously" heading was
+    replaced, `bsuk-seasonal-content-agent` marked not ported, the component gate pointed at
+    `src/components/kit/`, `data/design/components.json` and the board's three styles per section,
+    and the stale monitoring rows (pricing alert deferred, one LLM engine, 21 registry entries)
+    corrected (`7ece4ff`, this close-out's docs commit).
+18. **Session-brief path.** grill-me writes, and session-closer and `bsuk-content-architect` read,
+    `docs/superpowers/sessions/<YYYY-MM-DD>-session-brief[-<n>].md` (was `sessions/`, a directory
+    that does not exist); the architect takes a strategy file by explicit path,
+    `docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy[-<n>].md`. `7ece4ff`.
+19. **§13 step 12 pilot, as run.** Ten seeds (not "about ten, set in the plan": the five
+    largest `locations.json` cities are London, Birmingham, Manchester, Leeds, Liverpool); registry
+    approved at 21 sites (wildbluestaffords dropped, the tier-5 entry kept, RSPCA moved to tier 3);
+    intel on three competitors (trojanstaffuk, pets4homes, rspca) plus the BSUK profile; LLM intel
+    for Manchester (cached answer, condensed save) **and** Leeds (paid); one strategy for the 28
+    location pages (pick A). `2bcdbf6`, `9f3277f`, `1c5f1a2`, `0da8570`, `638a6d4`.

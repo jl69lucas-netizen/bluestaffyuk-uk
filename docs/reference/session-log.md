@@ -142,14 +142,35 @@ items are Known Issues 39–46. **Next: project 5 — location, comparison and b
 starts with brainstorming; the nested-route prerequisite (Known Issue 39) comes first, and each
 page begins with `/bsuk-query-augmentation`.
 
-## Competitor intelligence bridge build (2026-09-23) — IN PROGRESS
+## Competitor intelligence bridge build (2026-09-23) — COMPLETE
 
 A bridge build that closes Known Issue 42: a national competitor registry, per-competitor intel
 reports with a BSUK profile, a script-built gap matrix, a keyword-gap list, LLM citation intel
 and a two-strategy synthesis, every count built by a script and every paid call behind the spend guard.
-Branch `competitor-intel`; plan `docs/superpowers/plans/2026-09-23-competitor-intel.md`, spec
-`docs/superpowers/specs/2026-09-23-competitor-intel-design.md`. Agents and checks are in; the
-pilot run (paid calls, user-approved) and the close-out gate report are still to come.
+Five agents under `.claude/agents/` (bsuk-competitor-registry, bsuk-competitor-intel,
+bsuk-competitive-keyword-gap-agent, bsuk-llm-keyword-intel, bsuk-strategy-synthesizer) and three scripts (`scripts/competitor_registry_check.py`,
+`scripts/gap_matrix.py`, `scripts/strategy_cite_check.py`; `check:competitors` and `check:gaps`
+in `check:all`). Plan `docs/superpowers/plans/2026-09-23-competitor-intel.md`; spec
+`docs/superpowers/specs/2026-09-23-competitor-intel-design.md`, amended 19 times during
+execution (§16).
+
+Closed 2026-09-23 on branch `competitor-intel` (cut from `foundation` at `db37ca1`, rebased onto
+`c9c981c`): 49 commits `a116055..638a6d4`, then the close-out fix `7ece4ff` and its docs commit,
+every one with the Fable 5.1 trailer; no remote, nothing pushed. Merge hash: see the gate report,
+`docs/reports/competitor-intel-gate-report.md`. `python3 -m pytest tests/py -q` → 2375 passed, 27
+skipped, 1 xfailed; `npm run -s check:all` exit 0 (`competitors: 21 entries; 1 banned domain; 83
+files scanned; 0 problems`, `gaps: gap-matrix-2026-09-23.md matches 4 reports (3 competitors, BSUK
+profile present)`, `examined 41 agents; 0 problems`).
+
+Pilot (user-approved): ten registry seeds → 21 sites approved (tiers 1: 5 · 2: 12 · 3: 2 · 4: 1 ·
+5: 1); intel on trojanstaffuk, pets4homes and rspca plus the BSUK profile (20 Firecrawl credits);
+gap matrix — BSUK lacks care-guide (2/3, high), faq, price and reviews (1/3, medium); keyword gaps
+— 4 high; LLM intel for Manchester (cached, condensed save) and Leeds (paid) — BSUK cited by
+neither; strategy for the 28 location pages — pick A, contested stubs first (cite-check 12
+sources, 36 figures, 0 problems). Spend log $0.80 of the $1.00 cap, all estimates; the dashboard
+read $0.99185 before the pilot. User ruling A set `query_typical_call_usd` to 0.05. Open items:
+Known Issues 47–58. **Next: project 5** — starting with the strategy's first three stub
+rebuilds (Manchester, the licensed-breeder page, Leeds), after Known Issue 39.
 
 ## Known Issues
 
@@ -158,7 +179,7 @@ Items 1 and 2 are closed by project 2 and item 4 by project 3; 3 and 5–8 are c
 with their owning project; 9–14 are new from the system transfer, 15–16 were added after it,
 17–26 are new from the design system, and 27–38 are new from the page rebuilds. Project 4
 closed 8, 9, 11, 12, 20, 22, 25, 28 and 29. The query augmentation bridge build closed 17 and
-added 39–46.
+added 39–46. The competitor intelligence bridge build closed 42 and added 47–58.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -648,8 +669,9 @@ added 39–46.
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
     (2026-09-23): a separate build after this one, started separately (2026-09-23).
-    **Closed 2026-09-23 by the competitor intelligence build** (agents and checks in; pilot
-    pending — Task 11; branch `competitor-intel`): five
+    **CLOSED 2026-09-23 by the competitor intelligence build** (agents, checks and the
+    user-approved pilot all done; gate report `docs/reports/competitor-intel-gate-report.md`;
+    branch `competitor-intel`): five
     agents — `.claude/agents/bsuk-competitor-registry.md`, `.claude/agents/bsuk-competitor-intel.md`,
     `.claude/agents/bsuk-competitive-keyword-gap-agent.md`, `.claude/agents/bsuk-llm-keyword-intel.md`
     and `.claude/agents/bsuk-strategy-synthesizer.md` — and three scripts —
@@ -670,6 +692,12 @@ added 39–46.
     `data/queries/spend.json` holds conservative estimates ($0.20 for Manchester). The user is
     to check the DataForSEO dashboard for the real spend; then set `query_typical_call_usd` in
     `data/settings.json` from the real per-call figure.
+    **Update (competitor intelligence build, 2026-09-23):** the dashboard read $0.99185 after
+    the three calls above (about $0.008 real against $0.20 logged). By user ruling A,
+    `query_typical_call_usd` is now 0.05 (`efdac63`); `ai_engines` still budgets at its logged
+    0.10. The log stands at $0.80 of the $1.00 cap, all estimates, so the cap binds long before
+    the real balance does. Stays open until the log records real costs or the cap is re-set from
+    the dashboard.
 
 46. **Needs a user ruling — the banned-breed line (2026-09-23).** The breed guide
     (`src/pages/uk-staffordshire-bull-terrier-guide/index.astro`) states the Staffordshire Bull
@@ -678,3 +706,87 @@ added 39–46.
     (`docs/reference/location-page-template.md`) and the builders make every statute line
     `LEGAL_CLAIM_PLACEHOLDER`. **Closes with the user's ruling**: city pages may state it with
     that same gov.uk row, or the breed guide moves to the placeholder.
+
+47. **The link guard misses JSON-escaped URLs (2026-09-23).** `scripts/competitor_registry_check.py`
+    finds a tier-5 host in `src/`, `data/boards/` and the external-link library in every plain URL
+    form, but not written as `https:\/\/host` inside a JSON string. None exists today. Fix when a
+    JSON file under those roots first carries escaped links.
+
+48. **`scripts/gap_matrix.py` minors (2026-09-23).** `--write` to a path that is a directory ends
+    in an OSError traceback, not a message; a schema-type value differing only in case fails
+    without a "did you mean" hint; a backslash directly before a pipe in a cell is not
+    double-escaped by `_cell`. None affects today's matrix.
+
+49. **`scripts/strategy_cite_check.py` minors (2026-09-23).** a calendar year written with no cue
+    word ("the <year> plan") fails as an unsourced figure — the synthesizer is told to put a cue
+    before a year ("in <year>"); a `##` heading
+    after `## Sources` is not flagged; the message for a figure under `## Risks` could name the
+    rule more plainly; figures inside the Strategy A / Strategy B sections are not checked (only
+    the pick is).
+
+50. **Registry agent minors (2026-09-23).** The proposal-path pattern does not allow a same-day
+    `-2` suffix; the same-day "registry changed" check compares dates only; a tier-5 edit keeps the
+    old notes. `dbrg.uk` (cited in the Leeds answer, no registry id) is a candidate add for the next
+    registry refresh. `.claude/agents/bsuk-rank-tracker.md` says it updates `last_monitored` in
+    `data/competitors.json` — the schema has no such field (it has `last_analyzed`); fix when the
+    rank tracker is rebuilt in project 6.
+
+51. **Intel agent minors (2026-09-23).** Key-page tie-break when two pages tie; loosely defined
+    measures (`reviews_shown`, `homepage_images`, `alt_text`, `steps_to_enquire`); id wording;
+    substring page-type rows (`/careers/` reads as care-guide, `/preview/` as reviews); blog
+    pagination URLs counted as posts; the BSUK city count includes the UK hub and the outreach
+    page from `location-sitemap.xml`; an image name like `x@y.PNG` reads as an email; the
+    trojanstaffuk mobile check used a desktop browser; the RSPCA Staffy advice page was not in the
+    map sample; `--bsuk` cuts brand-name runs such as "blue staffy uk breeders" (accepted).
+
+52. **Keyword-gap minors (2026-09-23).** A report whose page URLs sit on a different domain from
+    its `root_domain`, and the same URL in two reports, are not flagged; places not in
+    `data/locations.json` (Scotland, Newcastle upon Tyne) drop out of topics; "Greater Manchester"
+    is not read as a city topic (region words), so the pets4homes Manchester row is not labelled
+    with the Manchester stub; a typed "-vs-" comparison is matched before intel's page-type table
+    (`/blog/staffy-vs-pitbull` differs between the two agents); a two-city page gets no stub label.
+
+53. **LLM-intel minors (2026-09-23).** The Manchester saved answer is a condensed save, so its
+    format is `NOT FETCHED` until the user's `; refresh` re-buy; every on-page check is provisional
+    until project 5 builds the pages; the output does not record the `EXTRA` string, so a re-run
+    cannot reproduce an entity's variants exactly (the close-out re-derivation of Leeds patched only
+    `local_businesses` for that reason); digits in a brand name read as a "statistic" opening; an
+    inline bold label is not skipped; table-first answers and short separators; the synthetic
+    fixture still holds an Instagram link; the own-domain logic differs between the script and
+    `tests/py/test_llm_intel.py`; dist build freshness is not checked; the noindex regex assumes an
+    attribute order; the homepage has no slug for llm-intel; `docs/reference/system-registry.md`
+    does not list `schemas/`.
+
+54. **Research notes for project 5 (2026-09-23).** The gap matrix's `cities` row counts a city
+    merely named on a BSUK page ("Cities We Serve") as covered although its page is a noindex stub;
+    the national phrase "staffordshire bull terrier puppies for sale" belongs on the listing page,
+    not a city page; BSUK says "council-licensed" but shows no licence number — the claim stays
+    `LICENCE_CLAIM_PLACEHOLDER` until the breeder confirms it; the Task 9 fixture BSUK profile marks
+    London covered where the page map has a noindex stub.
+
+55. **The former business street address is in `data/locations.json` (2026-09-23).** The migrated
+    body HTML of `/uk-locations/staffy-breeding-dogs-glasgow/` (line 385) carries a map embed and
+    title with the old street address and postcode — BSUK's own former address in the old city,
+    not a third party's. The Known Issue 16 relocation applies: it must not be carried into that
+    page's rebuild.
+
+56. **Session paths and WORKFLOW leftovers (2026-09-23).** grill-me, session-closer and
+    `bsuk-content-architect` now use `docs/superpowers/sessions/`, but 46 other agent and skill
+    files still name a bare `sessions/` directory, which does not exist; grill-me and
+    session-closer still say "Content root: `site/content/`". WORKFLOW still lists monitoring
+    agents that were never ported (branded search, litter manager, review collection and others)
+    without a marker, and its intel/keyword-gap handoff lines are looser than the agents' own.
+    `data/port-manifest.json` notes on the framework, content-audit and rank-tracker rows still
+    say `data/competitors.json` or competitor-intel is not ported / deferred, though both now exist.
+
+57. **Intel on the other 18 registry entries (next step).** Only trojanstaffuk, pets4homes and
+    rspca have reports; the gap matrix lists staffordshirebullterrierkennel, bullscaff,
+    ukstaffypups, vaderblustaf, exodusbulls, staffie-owners, puppies, gumtree, champdogs, freeads,
+    preloved, royalkennelclub, foreverpuppy, petsforlove, petify, ukpets, pdsa and dogstrust with no
+    report. Run `@bsuk-competitor-intel` on them (`fetch approved: --all`, Firecrawl credits) and
+    rebuild the matrix; the strategy's city ordering below its high rows may change.
+
+58. **LLM intel for the other 26 location pages (next step).** Only Manchester and Leeds have
+    `docs/research/llm-intel/` files. Each further page is one paid `ai_engines` call through the
+    spend guard (budgeted at $0.10); the log's $0.20 of headroom covers two, so the cap
+    (`query_total_budget_usd`) or the typical cost (Known Issue 45) must be re-set first.

@@ -155,7 +155,7 @@ out as parallel `Agent` calls in one message.
 **Stop tokens** (each agent stops until the controller sends its exact wording): registry `spend approved: <seeds>; balance $<n>[; refresh]`, then `approved: docs/research/competitor-registry-proposal-<date>.md`; intel `fetch approved: --all` or `fetch approved: --tier <n>` (keyword-gap re-fetches take `fetch approved: --all` too); llm-intel `spend approved: <slug>; balance $<n>[; refresh]`. `spend declined` / `fetch declined` run without the call.
 
 **Note — Session Orientation moved to Sprint 0.5:**
-grill-me runs AFTER Sprint 0 Gate passes (gap matrix + top-pages must exist). See Sprint 0.5 block below.
+grill-me runs AFTER Sprint 0 Gate passes (the gap matrix must exist; top-pages is deferred to project 6). See Sprint 0.5 block below.
 
 ### SESSION CONTEXT Block (output of grill-me)
 ```
@@ -730,10 +730,10 @@ lessons never reached the skill that enforces them.*
 
 | Agent | What it checks | Output |
 |-------|---------------|--------|
-| `@bsuk-rank-tracker` | All 30 competitors — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
+| `@bsuk-rank-tracker` | Every competitor in `data/competitors.json` (21 today) — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
 | `@bsuk-branded-search-monitor-agent` | GSC CSV exports for branded queries ("bluestaffyuk", "blue staffy breeder") | Alert if >20% WoW drop; trust query triggers trust-signals-agent |
-| `@bsuk-competitor-pricing-alert-agent` | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
-| `@bsuk-llm-keyword-intel` | ChatGPT + Perplexity + Gemini for top 10 keywords | LLM Visibility scores; flags uncited keywords |
+| `@bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
+| `@bsuk-llm-keyword-intel <slug>` | One engine per page — the ChatGPT scraper through the spend guard (a saved answer is reused) | docs/research/llm-intel/<slug>-[date].json: citations, citation gap, missing entities, answer format |
 
 ### Monthly
 
@@ -764,7 +764,7 @@ Events that trigger agent chains regardless of schedule:
 | **New puppy hatched** | `bsuk-litter-manager` (status: available) | → `bsuk-puppy-personality` → `bsuk-homepage-builder` (litter announcement) → `bsuk-email-newsletter-agent` |
 | **Puppy reserved** | `bsuk-litter-manager` (status: reserved) | → `bsuk-meta-description-agent` (update puppy count in meta) |
 | **Puppy sold** | `bsuk-litter-manager` (status: sold) | → `bsuk-review-collection-agent` (Day 7 trigger) → `bsuk-case-study-agent` (after review received) |
-| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` | → `bsuk-financial-strategist` (reprice check) → `bsuk-meta-description-agent` |
+| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | → `bsuk-financial-strategist` (reprice check) → `bsuk-meta-description-agent` |
 | **Branded search drops >20%** | `bsuk-branded-search-monitor-agent` | → `bsuk-trust-signals-agent` → `bsuk-non-commodity-content-agent` |
 | **New inquiry received** | Manual trigger | → `bsuk-email-lead-nurture-agent` (Day 0 template) |
 | **New YouTube video published** | `bsuk-video-seo-agent` | → `bsuk-external-link-agent` (embed links across relevant pages) |
@@ -805,7 +805,7 @@ START: What are you trying to do?
 │   └── bsuk-website-health skill → bsuk-performance-monitor-agent → bsuk-accessibility-fixer
 
 ├── "Weekly monitoring"
-│   └── [all in parallel] bsuk-rank-tracker + bsuk-branded-search-monitor-agent + bsuk-competitor-pricing-alert-agent + bsuk-llm-keyword-intel
+│   └── [all in parallel] bsuk-rank-tracker + bsuk-branded-search-monitor-agent + bsuk-competitor-pricing-alert-agent (deferred to project 6) + bsuk-llm-keyword-intel
 
 ├── "Deploy a page"
 │   └── bsuk-canonical-fixer → [Sprint 5 inactive until project 6] → bsuk-deploy-verifier → sitemap-agent
