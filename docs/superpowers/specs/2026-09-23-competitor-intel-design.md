@@ -183,8 +183,9 @@ before handing off; a failed check means the strategy is not handed off.
 Paid calls go through `query_augment.preflight()` and `record()`. Two new source names:
 `registry_serp` (keyed to the pseudo-slug `_registry`) and `llm_intel` (keyed to the page slug).
 Estimates: registry discovery about $0.50 (ten searches), LLM intel about $0.10 per page. The
-DataForSEO balance was about $0.80 after the `query-augmentation` pilot; before the first paid
-run the controller asks the user for the dashboard balance. Firecrawl credits are separate and
+DataForSEO balance was $0.90 on the dashboard (user, 2026-09-23, after the
+`query-augmentation` pilot — its logged $0.20 was a conservative over-estimate). The controller
+asks for the balance again before the first paid run. Firecrawl credits are separate and
 reported at the end of each intel run.
 
 ## 11. Failure handling
