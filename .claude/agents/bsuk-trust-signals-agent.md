@@ -44,7 +44,7 @@ You are the **Trust Signals Agent** for SITE_URL_PLACEHOLDER. You audit pages fo
 |---|---|---|---|
 | Counter Snippet Block | Quick stats ([X]+ families, LICENCE_CLAIM_PLACEHOLDER, etc.) | Hero section of every page | Critical |
 | ReviewAggregateSchema JSON-LD | Structured data for Google rich results | `<head>` of priority pages | Critical |
-| Trust Badge Row | Credibility icons (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, microchip, vet) | Hero section + footer | High |
+| Trust Badge Row | `<TrustStrip />` text claims (no badge images exist) | Hero section + footer | High |
 | Google Reviews Link | External social proof | Contact section, why-choose page | High |
 | Detailed Testimonials | Named buyer stories with puppy name + LICENCE_CLAIM_PLACEHOLDER reference | Testimonials section | High |
 | Customer Photo Section | UGC social proof placeholder | Testimonials page | Medium |
@@ -110,37 +110,25 @@ Add to `<head>` of homepage, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders
 
 ---
 
-## Trust Badge Row HTML
+## Trust Badge Row
 
-```html
-<!-- Trust Badges — Required in Hero and Footer -->
-<div class="trust-badges-row" aria-label="BSUK certifications and credentials">
-  <div class="trust-badge">
-    <img src="/images/trust-badge-breeder-standing.png"
-         alt="LICENCE_CLAIM_PLACEHOLDER Licensed Facility — SITE_URL_PLACEHOLDER inspected and licensed Blue Staffy breeder"
-         width="80" height="80" loading="lazy">
-    <span class="badge-label">LICENCE_CLAIM_PLACEHOLDER Licensed</span>
-  </div>
-  <div class="trust-badge">
-    <img src="/images/trust-badge-breeder-standing.png"
-         alt="LICENCE_CLAIM_PLACEHOLDER home-raised Documented — every Blue Staffy includes LEGAL_CLAIM_PLACEHOLDER home-raised permit"
-         width="80" height="80" loading="lazy">
-    <span class="badge-label">LICENCE_CLAIM_PLACEHOLDER Documented</span>
-  </div>
-  <div class="trust-badge">
-    <img src="/images/trust-badge-microchip.png"
-         alt="Microchipped — every puppy's microchip number is on the paperwork"
-         width="80" height="80" loading="lazy">
-    <span class="badge-label">Microchipped</span>
-  </div>
-  <div class="trust-badge">
-    <img src="/images/trust-badge-canine-vet.png"
-         alt="vet Health Certificate — every puppy cleared by licensed canine veterinarian before transfer"
-         width="80" height="80" loading="lazy">
-    <span class="badge-label">vet Certified</span>
-  </div>
-</div>
+There are no trust-badge image files in `public/images/` (checked 2026-09-23), so never write an
+`<img>` for a badge and never name a badge filename — a `/images/trust-badge-*.png` that does not
+exist ships a broken image with a credential in its alt text. Render the credentials as text with
+the kit component:
+
+```astro
+---
+import TrustStrip from '../components/kit/TrustStrip.astro';
+---
+<TrustStrip />
 ```
+
+`<TrustStrip />` with no props prints its three backed default claims. A page that needs different
+claims passes its own `items` (`{ t, d, i }` — title, sentence, 24×24 line-icon path; never emoji),
+and each one must be a claim that page's board record and data files carry; an unconfirmed
+licence stays LICENCE_CLAIM_PLACEHOLDER. If an image is ever wanted, use only a file that
+`ls public/images` shows exists.
 
 ---
 
@@ -310,7 +298,7 @@ grep -rL "AggregateRating" dist/ --include="*.html"
 grep -rL "counter-snippets-row\|counter-chip" dist/ --include="*.html"
 
 # Pages missing trust badge row
-grep -rL "trust-badges-row\|trust-badge" dist/ --include="*.html"
+grep -rL "kit-trust" dist/ --include="*.html"
 
 # Pages missing Google Reviews link
 grep -rL "g.page\|google.*review" dist/ --include="*.html"
@@ -351,7 +339,7 @@ Pages checked: [count]
 1. **Real numbers only** — all review counts, years, and family stats confirmed by [BREEDER_NAME]; never invent
 2. **ReviewAggregateSchema required** on homepage, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders/, /blue-staffy-uk-breeders/
 3. **Counter snippets on every hero** — 4 chips, under 4 words each, real numbers
-4. **Trust badges on hero + footer** — 4 badges: LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER home-raised, Microchipped, vet Certified
+4. **Trust strip on hero + footer** — `<TrustStrip />` text claims, never a badge image that is not in `public/images/`
 5. **LICENCE_CLAIM_PLACEHOLDER framing in all trust content** — every testimonials page and why-choose page must explicitly name the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
 6. **Never fabricate testimonials** — all testimonial content from `data/case-studies.json` or direct [BREEDER_NAME] input (not ported — source repo only)
 7. **Confidence Gate** — ≥97% confident before writing to any file in `dist/`

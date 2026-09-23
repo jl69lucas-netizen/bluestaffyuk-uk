@@ -59,25 +59,25 @@ Use this for any page:
 **Parameters:**
 | Parameter | Value |
 |---|---|
-| `ENCODED_ADDRESS` | URL-encode the address — e.g. `Oak%20Plaza%2C%20Omaha%2C%20NE%2068106` |
+| `ENCODED_ADDRESS` | URL-encode the address — e.g. `Carlisle%2C%20Cumbria` (town and region only — no street, no postcode) |
 | `ZOOM` | `12` = city-level, `13` = neighborhood, `14` = street-level, `15` = building |
-| `DESCRIPTIVE TITLE` | e.g. `MFS Location — [BREEDER_LOCATION]` |
+| `DESCRIPTIVE TITLE` | e.g. `BlueStaffyUK — [BREEDER_LOCATION]` |
 
 ---
 
-## MFS Standard Map (Omaha HQ)
+## BSUK Standard Map (Carlisle, Cumbria)
 
 ```html
 <div class="bsuk-map-wrap" style="max-width:800px;margin:32px auto 0;padding:0 16px;">
   <div style="border-radius:16px;overflow:hidden;box-shadow:0 6px 30px rgba(0,0,0,.12);">
     <iframe
-      src="https://maps.google.com/maps?q=Oak%20Plaza%2C%20Omaha%2C%20NE%2068106&z=13&hl=en&t=m&output=embed&iwloc=near"
+      src="https://maps.google.com/maps?q=Carlisle%2C%20Cumbria&z=12&hl=en&t=m&output=embed&iwloc=near"
       width="100%" height="340" style="border:0;display:block;" allowfullscreen=""
       loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-      title="MFS Location — Oak Plaza, Omaha, NE 68106">
+      title="BlueStaffyUK — Carlisle, Cumbria">
     </iframe>
   </div>
-  <p style="text-align:center;font-size:.85rem;color:#888;margin:10px 0 0;">📍 Oak Plaza, Omaha, NE 68106 — Serving families nationwide</p>
+  <p style="text-align:center;font-size:.85rem;color:#888;margin:10px 0 0;">📍 Carlisle, Cumbria — delivery £200–£350 by distance, by DEFRA-approved transport</p>
 </div>
 ```
 

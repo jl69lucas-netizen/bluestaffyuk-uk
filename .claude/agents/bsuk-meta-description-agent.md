@@ -38,7 +38,7 @@ You are the **Meta Description Agent** for SITE_URL_PLACEHOLDER. Title tags and 
 
 ## Two Meta Formats — CANONICAL (mirror of seo-rules.md Rules 21–23)
 
-> **⚠️ SOURCE OF TRUTH = `docs/reference/seo-rules.md` Rules 21–23.** If these ever disagree, seo-rules.md wins — then fix this file. The old "50–60 / up to 600 / 726" caps are RETIRED. NEVER ship a generic short title. NEVER put emoji inside a title or description (emoji tone markers 🔴🆚🛡️ are planning labels only, never rendered in the tag). Brand string is always **`BlueStaffyUK`** or **`BlueStaffyUK – Midland, TX`** — never "BSUK" or "SITE_URL_PLACEHOLDER".
+> **⚠️ SOURCE OF TRUTH = `docs/reference/seo-rules.md` Rules 21–23.** If these ever disagree, seo-rules.md wins — then fix this file. The old "50–60 / up to 600 / 726" caps are RETIRED. NEVER ship a generic short title. NEVER put emoji inside a title or description (emoji tone markers 🔴🆚🛡️ are planning labels only, never rendered in the tag). Brand string is always **`BlueStaffyUK`** or **`BlueStaffyUK – Carlisle, Cumbria`** — never "BSUK" or "SITE_URL_PLACEHOLDER".
 
 Every page uses Format 1. (Format 2 — the 4-part ≤205 pipe-stacked title — was retired 2026-09-09 by the evidence pass; it produced a 233-char homepage title. Do not reintroduce it.)
 

@@ -134,7 +134,7 @@ done
 
 | Page Type | Must-Have Entities | Target Mentions Each |
 |-----------|-------------------|---------------------|
-| Homepage | Blue Staffy puppy, DNA, guarantee, hypoallergenic, Omaha | 5–8 |
+| Homepage | Blue Staffy puppy, DNA, guarantee, Carlisle | 5–8 |
 | Location page | Blue Staffy puppy, [city], delivery driver, guarantee | 3–5 |
 | Variant guide | Blue Staffy, Blue-Brindle Staffy, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
 | Comparison page | Both breed entities + 3–5 differentiators | 4–6 |
