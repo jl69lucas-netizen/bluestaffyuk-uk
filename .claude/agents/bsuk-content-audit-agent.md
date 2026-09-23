@@ -117,13 +117,13 @@ Analyze the current page for 3 specific missing verifiable entities that must be
 
 | Page Type | What to Look For |
 |---|---|
-| Location page | LICENCE_CLAIM_PLACEHOLDER facility city, city canine import regulations, local vet references |
-| Breed guide | Specific disease names (L-2-HGA, hip dysplasia, Proventricular Dilatation Disease), named test protocols, LEGAL_CLAIM_PLACEHOLDER legal reference |
-| Pricing page | LICENCE_CLAIM_PLACEHOLDER permit costs, DNA sexing lab costs, vet exam costs, full cost-of-ownership breakdown |
-| Comparison page | Specific differentiating facts (Blue Staffy weight range vs blue and white Staffy, training onset age, personality differences) with sources |
+| Location page | LICENCE_CLAIM_PLACEHOLDER facility city, local vet references |
+| Breed guide | The hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4), stated only where the evidence ledger records the certificate; named test protocols, LEGAL_CLAIM_PLACEHOLDER legal reference |
+| Pricing page | LICENCE_CLAIM_PLACEHOLDER permit costs, vet exam costs, full cost-of-ownership breakdown |
+| Comparison page | Specific differentiating facts (Blue Staffy weight range vs blue and white Staffy, personality differences) with sources |
 | Puppy listing | Real puppy name, weight, age, health records, specific temperament observations |
-| Scam recovery | the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) number, LICENCE_CLAIM_PLACEHOLDER permit verification steps, DNA sexing lab name |
-| LICENCE_CLAIM_PLACEHOLDER education | Specific LEGAL_CLAIM_PLACEHOLDER citation, USFWS reference, legal ownership requirements by city |
+| Scam recovery | the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) number, LICENCE_CLAIM_PLACEHOLDER permit verification steps |
+| LICENCE_CLAIM_PLACEHOLDER education | Specific LEGAL_CLAIM_PLACEHOLDER citation, legal ownership requirements by city |
 
 ### Step 1.3 — Check Current Page City
 ```bash
@@ -226,7 +226,7 @@ Keywords Competitors Use That BSUK Doesn't:
 **Meta Title options** (50–60 chars, primary keyword + modifier):
 ```
 Option A: [primary keyword] | LICENCE_CLAIM_PLACEHOLDER home-raised | SITE_URL_PLACEHOLDER
-Option B: [primary keyword] — DNA Sexed, L-2-HGA Screened | BSUK
+Option B: [primary keyword] — Home-Raised in Carlisle | BSUK
 Option C: [question-form keyword] | SITE_URL_PLACEHOLDER
 ```
 

@@ -63,6 +63,15 @@ BANNED = (
     # it teaches every agent the wrong home base, and the geography an agent believes ends
     # up in copy, in schema and in a meta template. The breeder is in Carlisle, Cumbria.
     "Glasgow",
+    # Parrot residue from the source repo's species (found 2026-09-23 in the comparison
+    # builder, the SEO checklist and the content-audit agent). A dog page that promises a
+    # leg band or warns about psittacosis tells the reader nobody checked it.
+    "Psittac", "psittac", "leg band", "powder-down", "cloacal", "proventricular",
+    "Amazon Puppy", "Amazon puppy", "amazons =", "Google US", "UKge",
+    # Three more that the list above misses because the lint is case-sensitive, and that no
+    # dog page can ever use: "Proventricular Dilatation Disease" in the content-audit agent,
+    # "Keyword Ukge" in the SEO checklist, and "aviculture" (bird-keeping) in the same file.
+    "Proventricular", "Ukge", "vicultur",
 ) + CAG_GEO
 
 # `Glasgow` has exactly two honest uses left in the instruction tree, and a line carrying

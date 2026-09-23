@@ -100,14 +100,13 @@ Before writing ANY content, perform comprehensive competitor research.
 - Top 3 Google organic results for primary keyword
 - Top 3 Bing organic results for primary keyword
 - 2–3 specialized kennel/breeder sites
-- the RSPCA (https://www.puppies.org/) — authority benchmark
-- the RVC Association of Canine Veterinarians (https://www.aav.org/) — authority benchmark
-- 1–2 informational authority sites (beauty-of-puppies, lafeber, petmd)
+- the RSPCA (https://www.rspca.org.uk/) — authority benchmark
+- 1–2 informational authority sites (e.g. petmd)
 
 **For each competitor, document:**
 1. **Word Count** — total page length
 2. **Sections Included** — all major topics covered (H2 list)
-3. **Keyword Ukge** — primary, LSI, long-tail variations used
+3. **Keyword Usage** — primary, LSI, long-tail variations used
 4. **Entity Density** — canine medical terms, locations, brands, people, statistics
 5. **Linking Strategy** — internal links (count + anchor patterns), external authority links, anchor text
 6. **Unique Selling Points** — health guarantees, pricing, delivery safety, certifications
@@ -176,12 +175,10 @@ Develop 100+ keyword variations across these categories:
 - `where can I buy a home-reared blue staffy with health guarantee`
 - `best blue staffy breeders near me with LICENCE_CLAIM_PLACEHOLDER documentation`
 - `how much does a home-reared blue staffy puppy cost`
-- `blue staffies that talk and bond well`
 
 **3. Voice Search Optimized:**
 - `Are Blue Staffy puppies good for apartments?`
 - `How big do Blue Staffy puppies get?`
-- `Do Blue Staffy puppies talk a lot?`
 - `Can I get an Blue Staffy puppy as a first puppy?`
 
 **4. Problem-Solution:**
@@ -192,9 +189,7 @@ Develop 100+ keyword variations across these categories:
 
 **5. Comparison:**
 - `Blue vs Blue-brindle staffy puppies`
-- `Blue Staffy vs Amazon puppy`
 - `Blue Staffy vs English Bull Terrier`
-- `home-bred vs wild-caught blue staffy`
 - `home-reared vs parent-raised blue staffy`
 
 **6. Geographic/Local:**
@@ -205,14 +200,13 @@ Develop 100+ keyword variations across these categories:
 
 **7. LSI (Latent Semantic Indexing):**
 - Blue Staffy temperament, training, health
-- silver-staffy coat, bright red tail, temperament
-- companion puppy, kennel puppy, psittacine
+- blue coat, blue-brindle coat, temperament
+- companion puppy, kennel puppy
 
 **8. NLP (Natural Language Processing):**
 - blue staffy care requirements
 - best food for blue staffies
 - blue staffy socialization tips
-- blue staffy subspecies characteristics
 
 **9. Branded:**
 - `BlueStaffyUK blue staffies`
@@ -239,12 +233,6 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 **1. People Entities (10+ required):**
 - Lisa Bright (breeder, BlueStaffyUK, Carlisle, Cumbria)
 - (no second person has been confirmed — NOT FETCHED)
-- Dr. Irene Pepperberg (famous canine researcher, Alex studies creator)
-- Alex (Dr. Pepperberg's famous Blue Staffy research subject)
-- Sally Blanchard (canine behavioral authority, Companion Puppy Quarterly)
-- Dr. Sarah Walsh, DVM (canine veterinarian)
-- Barbara Heidenreich (Good Puppy Inc — puppy training authority)
-- Dr. SUKn Friedman (Applied Behavior Analysis, BehaviorWorks)
 
 **2. Location Entities (80+ required):**
 - **Primary:** Carlisle · Cumbria (town and region only — no street, no postcode, Known Issue 16)
@@ -254,55 +242,35 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - **DEFRA-approved transport coverage:** Cross-reference with `data/locations.json`
 
 **3. Medical/Health Entities (40+ required):**
-- Canine Biotech DNA Testing (gender + disease panel)
-- the RVC (Association of Canine Veterinarians)
-- Closed Leg Band (lifetime identification)
-- L-2-HGA — Psittacine Muzzle and Coat Disease
-- HC-HSF4 — Canine Polyomavirus
-- Psittacosis (Chlamydia psittaci)
-- Bornavirus / PDD (Proventricular Dilatation Disease)
-- Hypocalcemia (calcium deficiency — Blue Staffy-specific)
-- Coat Destructive Behavior / coat plucking
-- Aspergillosis (respiratory fungal infection)
-- Vitamin A deficiency
+- L-2-HGA and HC-HSF4 — the hereditary conditions the breed is DNA-tested for, stated only where the evidence ledger records the certificate
+- any other health entity needs an evidence-ledger entry before it is named
 - LICENCE_CLAIM_PLACEHOLDER Form 7001 (Interstate Travel Health Certificate)
 - Canine First Aid protocol
-- DNA Sexing (endoscopic vs DNA method)
 
 **4. Brand/Product Entities (20+ required):**
-- Harrison's Puppy Foods (High Potency Coarse)
-- ZuPreem FruitBlend / CanineMaintenance
-- Roudybush Daily Maintenance pellets
-- Tops Outstanding Puppy Food
 - Puppy Culture (socialization and weaning protocol)
 - Early Neonatal Handling (ENH)
-- THE KENNEL CLUB (American Federation of Aviculture)
+- The Kennel Club (the UK breed registry)
 - LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER (Animal and Plant Health Inspection Service)
 
 **5. Statistical Entities (20+ required):**
 - 500+ puppies placed (since 2014)
 - 12–14 years average lifespan
-- 400–500 grams typical adult weight
-- 12–14 inches typical adult length
 - £1,500–£1,700 Blue Staffy price range
 - £1,500–£1,700 Blue-Brindle Staffy price range
-- 95%+ vocabulary trainability success rate in properly socialized puppies
 
 **6. Credential/Certification Entities (15+ required):**
-- LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER (Convention on International Trade in Endangered Species)
 - LICENCE_CLAIM_PLACEHOLDER Licence (Animal Welfare Act)
 - THE KENNEL CLUB Registered Kennel
 - DEFRA-approved transport Live Animals Regulations (delivery compliance)
-- the RVC Member Canine Veterinarian
-- Canine Biotech Certified Disease-Free Bloodlines
 
 **Entity density target:** 8–12 entities per 100 words (naturally integrated — never listed robotically or force-inserted)
 
 **Good entity integration example:**
-> "Every BlueStaffyUK Blue Staffy pup receives comprehensive health screening: [Canine Biotech DNA testing](https://www.caninebiotech.com/) for gender confirmation and viral panels (L-2-HGA, Polyomavirus, Psittacosis, and Bornavirus), identity tracking via a [Closed Leg Band](https://www.The Kennel Clubpuppies.org/), primary nourishment with [Harrison's High Potency pellets](https://www.harrisonspuppyfoods.com/), and a comprehensive wellness check by a registered member of the [Association of Canine Veterinarians (the RVC)](https://www.aav.org/)."
+> "Every BlueStaffyUK Blue Staffy pup goes home from Carlisle, Cumbria with a vet health check, a microchip and — only where the evidence ledger records the certificate — the parents' results for the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4)."
 
 **Bad entity integration (avoid):**
-> "Our Blue Staffies receive Canine Biotech DNA testing and the RVC checks and Harrison's puppy foods and closed leg bands and..."
+> "Our Blue Staffies get DNA tests and vet checks and microchips and paperwork and..."
 
 ---
 
@@ -329,7 +297,6 @@ Generate 15–20 more in full question format
 **Category 3: Problem-Solution Keywords**
 Examples:
 - `home-bred blue staffy with LICENCE_CLAIM_PLACEHOLDER documentation`
-- `non-screaming blue staffy`
 - `apartment-friendly temperament puppy`
 - `blue staffy for first-time puppy owner`
 Generate 15–20 more
@@ -338,7 +305,6 @@ Generate 15–20 more
 Examples:
 - `Blue vs Blue-brindle staffy breeders`
 - `Blue Staffy vs American Bully for beginners`
-- `home-bred vs wild-caught blue staffy`
 - `home-reared vs parent-raised blue staffy temperament`
 Generate 15–20 more
 
@@ -346,7 +312,6 @@ Generate 15–20 more
 Examples:
 - `blue staffy delivery service to [city]`
 - `blue staffy delivery by DEFRA-approved transport [city]`
-- `blue staffy delivery driver [airport code]`
 - `safe blue staffy delivery nationwide`
 Generate 15–20 more
 
@@ -386,14 +351,12 @@ Examples:
 - `BlueStaffyUK blue staffy reviews`
 - `best blue staffy breeder testimonials`
 - `SITE_URL_PLACEHOLDER ratings`
-- `mark benjamin blue staffy kennel reviews`
+- `lisa bright blue staffy reviews`
 Generate 15–20 more
 
 **Category 11: Variant-Specific Keywords**
 Examples:
-- `Blue staffy subspecies characteristics`
 - `Blue-brindle staffy personality vs Blue`
-- `BSUK vs TAG size comparison`
 - `male vs female blue staffy differences`
 Generate 15–20 more
 
@@ -410,7 +373,6 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - Top 10 cities in target region (population 50,000+)
 - Most puppy-friendly neighborhoods/communities in key cities
 - Top 5 canine vet clinics in key metro areas
-- Major regional airports with DEFRA-approved transport Live Animal programs
 - State wildlife/puppy regulations relevant to Blue Staffy ownership
 
 **Authority Entities Required:**
@@ -421,9 +383,7 @@ For pages with a delivery/delivery section, use web search to gather these entit
 - Local puppy/canine societies and clubs
 
 **Logistics Entities Required:**
-- Airport codes for all major delivery hubs
 - DEFRA-approved pet transport companies serving target states
-- Delta Cargo, United PetSafe programs for delivery driver coordination
 - Ground transit time estimates from Carlisle to target cities
 
 ---
@@ -450,7 +410,6 @@ Each header should pull double SEO duty: **[secondary/conversational keyword] + 
 - ✅ "Why Choose BlueStaffyUK For Your **Home-Reared** Blue Staffies?" (secondary KW + LSI "home-reared")
 - ✅ "How Much Does a **Blue** Blue Staffy Cost — and What's the **First-Year Total**?" (variant entity + long-form concurrent KW)
 - ✅ "How Does BlueStaffyUK **Ship** an Blue Staffy **to Your State**?" (transactional KW + geographic NLP)
-- ✅ "What Is a **Blue-Brindle** Blue Staffy — the **Calmer, Earlier-Temperament** Subspecies?" (entity + LSI cluster)
 - ❌ "Why Choose Us?" (no keyword) · ❌ "Delivery" (single bare term)
 Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword + one related term per header — never three+ stacked. Applies across H2–H4 especially.
 
@@ -475,7 +434,7 @@ Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword 
 | 15 | Meet the Parent Puppies / Breeding Pairs | 300–400 | `#meet-parents` |
 | 16 | Customer Testimonials (3 strategically placed) | 400–500 total | `#testimonials` |
 | 17 | BlueStaffyUK Breeding Commitment & Ethics | 200–250 | `#breeding-commitment` |
-| 18 | Blue Staffy vs Other Puppy Subspecies Comparison | 500–600 | `#subspecies-comparison` |
+| 18 | Blue vs Blue-Brindle Staffy Comparison | 500–600 | `#colour-comparison` |
 | 19 | Real-World Customer Case Study | 400–500 | `#case-study` |
 | 20 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
 | 21 | Frequently Asked Questions (30+ questions) | 800–1,000 | `#faqs` |
@@ -656,11 +615,11 @@ TIER 5: QUALITY CONTROL
     ☐ 1–2 external authority links included
     ☐ 3–5 geographic entities mentioned
     ☐ Headers use question format where natural
-    ☐ Conversational, warm, expert avicultural tone
+    ☐ Conversational, warm, expert breeder tone
     ☐ Paragraphs 3–5 sentences max (50–80 words)
     ☐ No keyword stuffing
     ☐ No stop words used unnecessarily
-    ☐ Negative keywords addressed (scam / wild-caught / cheap)
+    ☐ Negative keywords addressed (scam / puppy farm / cheap)
     ☐ Trust signals included
     ☐ Local entities naturally integrated
     ☐ Clear CTA at section end (form link only)
@@ -697,68 +656,37 @@ Example: `"Learn more about [LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER d
 
 #### B. External Links (50+ Required Per Full Page)
 
-**Health & Veterinary (15 links):**
-1. [Canine Biotech Disease Testing](https://www.caninebiotech.com/)
-2. [IQ Puppy DNA Testing Laboratory](https://www.iqpuppytesting.com/)
-3. [the RVC — Association of Canine Veterinarians](https://www.aav.org/)
-4. [the RVC Public Canine Vet Database](https://www.aav.org/search/custom.asp?id=1803)
-5. [the PDSA Vet Canine Medicine Resource](https://lafeber.com/vet/)
-6. [AVMA — American Veterinary Medical Association](https://www.avma.org/)
-7. [AAHA — American Animal Hospital Association](https://www.aaha.org/)
-8. [PetMD — Blue Staffy Breed Information](https://www.petmd.com/)
-9. [ASPCA Pet Care and Safety](https://www.aspca.org/pet-care)
-10. [ASPCA Animal Poison Control Center](https://www.aspca.org/pet-care/animal-poison-control)
-11. [ASPCA Toxic Foods for Puppies](https://www.aspca.org/pet-care/animal-poison-control/people-foods-avoid-feeding-your-pets)
-12. [Puppy Vet Directory](https://www.exoticpetvet.com/)
-13. [University of Georgia Exotic Animal Pathology](https://vet.uga.edu/)
-14. [VEG — Veterinary Emergency Group Canine Info](https://veterinaryemergencygroup.com/)
-15. [Pet Poison Helpline](https://www.petpoisonhelpline.com/)
+The port left this library full of the source site's other-species sources (its labs, vets,
+behaviourists, foods and air-cargo programmes); they were deleted on 2026-09-23. What remains is
+a starting point, not the 50 — every link is verified live before it is used.
 
-**Breed Information & Standards (12 links):**
-1. [the RSPCA — Blue Staffy Profile](https://www.puppies.org/)
-2. [The Alex Foundation — Dr. Irene Pepperberg Research](https://alexfoundation.org/)
-3. [THE KENNEL CLUB — American Federation of Aviculture](https://www.The Kennel Clubpuppies.org/)
-4. [The Kennel Club Red List — Blue Staffy Status](https://www.the breed registryredlist.org/)
-5. [LICENCE_CLAIM_PLACEHOLDER Appendix Regulations](https://www.thekennelclub.org.uk/)
-6. [Beauty of Puppies — Blue Staffy Information](https://www.beautyofpuppies.com/)
-7. [Puppy Channel Avicultural Guides](https://www.puppychannel.com/)
-8. [Northern Puppies Species Data](https://www.northernpuppies.com/)
-9. [the PDSA Pet Puppies — Blue Staffy Care](https://lafeber.com/uk-staffordshire-bull-terrier-guide/)
-10. [Puppy Society of Australia](https://www.puppiesociety.org.au/)
+**Health & Veterinary:**
+1. [AVMA — American Veterinary Medical Association](https://www.avma.org/)
+2. [AAHA — American Animal Hospital Association](https://www.aaha.org/)
+3. [PetMD — Blue Staffy Breed Information](https://www.petmd.com/)
+4. [ASPCA Pet Care and Safety](https://www.aspca.org/pet-care)
+5. [ASPCA Animal Poison Control Center](https://www.aspca.org/pet-care/animal-poison-control)
+6. [ASPCA Toxic Foods for Puppies](https://www.aspca.org/pet-care/animal-poison-control/people-foods-avoid-feeding-your-pets)
+7. [VEG — Veterinary Emergency Group Canine Info](https://veterinaryemergencygroup.com/)
+8. [Pet Poison Helpline](https://www.petpoisonhelpline.com/)
 
-**Training & Behavior (10 links):**
-1. [BehaviorWorks — Dr. SUKn Friedman](https://www.behaviorworks.org/)
-2. [Good Puppy Inc — Barbara Heidenreich](https://www.goodpuppyinc.com/)
-3. [The Puppy Problem Solver — Sally Blanchard](https://www.companionpuppy.com/)
-4. [PuppyTricks Canine Training Academy](https://www.puppytricksstore.com/)
-5. [IAABC — Animal Behavior Consultants](https://iaabc.org/)
-6. [Puppy Enrichment Activity Guides](https://www.puppyenrichment.com/)
-7. [Clicker Training — Karen Pryor Academy](https://clickertraining.com/)
-8. [Canine Behavior International](https://caninebehaviorinternational.com/)
-9. [Pamela Clark Certified Puppy Behaviorist](https://pamelaclarkonline.com/)
+**Breed Information & Standards:**
+1. [The Kennel Club](https://www.thekennelclub.org.uk/)
+2. [the RSPCA](https://www.rspca.org.uk/)
 
-**Nutrition & Products (8 links):**
-1. [Harrison's Puppy Foods](https://www.harrisonspuppyfoods.com/)
-2. [ZuPreem Premium Puppy Diets](https://www.zupreem.com/)
-3. [Roudybush Canine Maintenance Pellets](https://www.roudybush.com/)
-4. [Tops Puppy Food — Organic Pellets](https://www.topspuppyfood.com/)
-5. [Chewy Canine Supplies](https://www.chewy.com/)
-6. [Puppy Toys UK — Safe Enrichment](https://www.puppytoysUK.com/)
+**Training & Behavior:**
+1. [IAABC — Animal Behavior Consultants](https://iaabc.org/)
+2. [Clicker Training — Karen Pryor Academy](https://clickertraining.com/)
 
-**Animal Welfare & Ethics (8 links):**
-1. [the RSPCA — Anti-Poaching](https://www.puppies.org/)
-2. [Canine Welfare Coalition](http://www.caninewelfare.org/)
-3. [Phoenix Landing Puppy Rescue](https://www.phoenixlanding.org/)
-4. [The Gabriel Foundation Canine Sanctuary](https://thegabrielfoundation.org/)
-5. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Animal Welfare Act](https://www.gov.uk/)
-6. [FWS — US Fish and Wildlife Service Puppy Laws](https://www.fws.gov/)
-7. [FTC Consumer Protection Against Puppy Scams](https://www.ftc.gov/)
+**Nutrition & Products:**
+1. [Chewy Canine Supplies](https://www.chewy.com/)
 
-**Geographic/Delivery Resources (5 links):**
+**Animal Welfare & Ethics:**
+1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Animal Welfare Act](https://www.gov.uk/)
+2. [FTC Consumer Protection Against Puppy Scams](https://www.ftc.gov/)
+
+**Geographic/Delivery Resources:**
 1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Interstate Travel Regulations for Puppies](https://www.gov.uk/)
-2. [Delta Cargo — Live Animal Delivery Guidelines](https://www.deltacargo.com/)
-3. [United PetSafe Canine Delivery Program](https://www.united.com/)
-4. [DEFRA-approved transport Live Animals Regulations](https://www.DEFRA-approved transport.org/en/programs/ops-infra/live-animals/)
 
 #### C. 3 Anchor Text Strategies (Rule 58)
 
@@ -791,9 +719,7 @@ Example: "BlueStaffyUK provides what most online listings never can..."
 Under 4 words each, start with a number or percentage:
 - `12–14 Year Lifespan Commitment`
 - `100% LICENCE_CLAIM_PLACEHOLDER Certified`
-- `DNA Sexed Guaranteed`
 - `LICENCE_CLAIM_PLACEHOLDER Licenced`
-- `Zero Wild-Caught Puppies`
 - `Canine Vet Certified`
 
 **Contact/Inquiry Forms (3 required — Rule 32):**
@@ -817,7 +743,7 @@ Leave clearly labeled placeholders for all images/videos:
 - `[INSERT PHOTO: puppy-name-profile.webp] Alt: "[≤190-char keyword-rich alt text]" Title: "[transactional-keyword phrase]"`
 - `[INSERT INFOGRAPHIC: feature-type-760px.html]`
 - `[INSERT VIDEO: puppy-culture-demonstration.mp4]`
-- `[INSERT MAP: google-maps-midland-tx-embed]`
+- `[INSERT MAP: google-maps-carlisle-embed]`
 
 ---
 
@@ -826,7 +752,7 @@ Leave clearly labeled placeholders for all images/videos:
 #### A. Voice & Tone
 
 **✅ DO:**
-- Natural, conversational language — write like a trusted avicultural expert
+- Natural, conversational language — write like a trusted dog breeder
 - Answer real questions people actually search
 - Include emotional connection and empathy (a 12–14 year commitment is life-changing)
 - Build trust through transparency (pricing, documentation, process)
@@ -851,7 +777,7 @@ Leave clearly labeled placeholders for all images/videos:
 **Good vs Bad Examples:**
 
 ❌ Bad: "Blue Staffy pups are available for sale. They are smart puppies. Contact us."
-✅ Good: "Looking for a brilliant canine companion who'll carry out actual conversations with you? Our Blue Staffy puppies (400-500g, 12–14 inches) are famous for being sensitive intellectuals who form unbreakable bonds with their families."
+✅ Good: "Looking for a family dog who wants to be wherever you are? Our Blue Staffy puppies are home-raised by Lisa Bright in Carlisle, Cumbria, and go home at £1,500 or £1,700."
 
 ❌ Bad: "Our puppies have health guarantees."
 ✅ Good: "What if your puppy develops an underlying congenital health issue later in life? BlueStaffyUK provides a written health guarantee (its length is NOT FETCHED) — backed by the parent health tests the ledger records and annual canine vet health certificates — covering our entire breeding bloodline."
@@ -861,13 +787,13 @@ Leave clearly labeled placeholders for all images/videos:
 Apply thoughtfully, not forced. Four humor modes:
 
 1. **"The Honesty Policy"** — relatable breeder honesty:
-   *"Our Blue Staffies are bred for intelligence, companionship, and the uncanny ability to learn your WiFi password before you do."*
+   *"Our Blue Staffies are bred for companionship, and for the uncanny ability to hear the fridge door open from two rooms away."*
 
 2. **"The Interviewer" Tone** — the puppy is vetting the owner:
-   *"Are you prepared to be outsmarted daily by a creature that weighs less than 500 grams? Apply to be [Puppy Name]'s forever person."*
+   *"Are you prepared to lose the best spot on the sofa for the next twelve to fourteen years? Apply to be [Puppy Name]'s forever person."*
 
-3. **Punny Wordplay** — lean into Blue Staffy vocabulary gifts:
-   *"50% Blue genetics, 50% Blue-Brindle, 100% opinion-having roommate who will outlive your mortgage."*
+3. **Punny Wordplay** — lean into the breed's character:
+   *"Blue coat, big grin, no interest whatsoever in personal space."*
 
 4. **Comparison Humor** — unexpected comparisons:
    *"Technically this is a puppy. Functionally, it is a family member on a twelve-to-fourteen-year contract."*
@@ -880,7 +806,7 @@ Every section opening (1–2 sentences) must contain all four:
 - **Benefit** — what it means for the buyer
 - **Purpose** — the deeper reason it matters (a 12–14 year bond, a family commitment)
 
-Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at BlueStaffyUK in Carlisle, weighing 380g (feature), socialized daily with our family so she bonds naturally and immediately with yours (benefit) — the foundation of a 12–14 year relationship that begins the moment she comes home (purpose)."*
+Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at BlueStaffyUK in Carlisle, priced at £1,500 (feature), socialized daily with our family so she bonds naturally and immediately with yours (benefit) — the foundation of a 12–14 year relationship that begins the moment she comes home (purpose)."*
 
 #### D. Conversational Header Format (Rules 38, 52)
 
@@ -889,7 +815,7 @@ Example: *"[Puppy Name] is a 12-week-old Blue Staffy (entity) home-raised at Blu
 H1 examples:
 1. "Where Can I Buy a Home-Reared Blue Staffy Puppy with LICENCE_CLAIM_PLACEHOLDER Documentation?"
 2. "Looking for an Intelligent Companion? Meet Our Home-Bred Blue Staffy Puppies"
-3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 50+ States from Carlisle"
+3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 28 UK Cities from Carlisle"
 4. "Why Are BlueStaffyUK Blue Staffies Chosen by 500+ Happy Families?"
 5. "Ready for a Lifelong Canine Companion? Our Blue Staffies Come with Lifetime Breeder Support"
 6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle"
@@ -898,18 +824,16 @@ H2 examples:
 - "What Makes the Blue Staffy the Ultimate Companion Puppy?"
 - "How Much Does a Home-Bred Blue Staffy Really Cost? (Full Price Breakdown)"
 - "Are Blue Staffies Good in Flats? Here's What Our Placements Taught Us"
-- "Blue vs Blue-Brindle Staffy: Which Subspecies is Right for Your Family?"
+- "Blue vs Blue-Brindle Staffy: Which Colour is Right for Your Family?"
 
 H3 examples:
-- "Do Blue Staffies Scream All Day? (And How to Teach Quiet Behavior)"
+- "Do Blue Staffies Bark a Lot? (And How to Teach Quiet Behaviour)"
 - "Can I Leave My Blue Staffy Alone During the Workday? (The Honest Answer)"
 - "What's Included with Every BlueStaffyUK Blue Staffy? (Full Documentation Breakdown)"
 
 H5 examples (technical authority — must be present):
 - "L-2-HGA Screening Protocol at BlueStaffyUK Kennel"
 - "LICENCE_CLAIM_PLACEHOLDER Licence Explained"
-- "DNA Sexing Methodology: Canine Biotech vs Endoscopy"
-- "Canine Biotech Disease Panel: 4 Core Tests"
 
 H6 examples (voice search — must be present):
 - "Is This Puppy Good With Kids?"
@@ -958,10 +882,10 @@ H6 examples (voice search — must be present):
 Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | BlueStaffyUK Trust Ending`
 
 **🔴 URGENCY TONE:**
-> Blue Staffy for Sale | Where Can I Buy a Home-Bred Staffy Near Me? | LICENCE_CLAIM_PLACEHOLDER Documented vs Wild-Caught | BlueStaffyUK — America's Trusted Blue Staffy Kennel Since 2014
+> Blue Staffy for Sale | Where Can I Buy a Home-Bred Staffy Near Me? | LICENCE_CLAIM_PLACEHOLDER Documented vs Unverified Listings | BlueStaffyUK — Carlisle's Blue Staffy Kennel Since 2014
 
 **🆚 COMPARISON TONE:**
-> Blue Staffy for Sale | How Much Does a Blue Staffy Cost? | BlueStaffyUK vs Other Breeders, BSUK vs Blue-Brindle Comparison | #1 Canine Biotech Tested Ethical Breeder — Full LICENCE_CLAIM_PLACEHOLDER Compliance
+> Blue Staffy for Sale | How Much Does a Blue Staffy Cost? | BlueStaffyUK vs Other Breeders, BSUK vs Blue-Brindle Comparison | Ethical Breeder — Full LICENCE_CLAIM_PLACEHOLDER Compliance
 
 **💰 TRANSACTIONAL TONE:**
 > Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Carlisle — Family-Owned Kennel Specialists
@@ -973,15 +897,15 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 - Standard: max 155 characters
 - Extended: up to 290 characters for high-competition pages
 - Must include: primary keyword + long-tail query + trust signal + CTA
-- Emphasize: LICENCE_CLAIM_PLACEHOLDER documentation, vet sex-checking, canine vet cert, BlueStaffyUK experience
+- Emphasize: LICENCE_CLAIM_PLACEHOLDER documentation, vet health check, BlueStaffyUK experience
 
 **BSUK Meta Description Examples:**
 
 Standard (155 chars):
-> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. DNA sexed pups from BlueStaffyUK - Carlisle. Nationwide DEFRA-approved transport delivery.
+> Home-reared Blue Staffy puppies for sale. LICENCE_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced. Vet-checked pups from BlueStaffyUK - Carlisle. Delivery by DEFRA-approved transport.
 
 Extended Urgency (290 chars):
-> Blue Staffy for sale — only 6 pups available this litter | Don't miss out — NOT FETCHED families chose BlueStaffyUK over other breeders | £200–£350 home-reared pups vs £200–£350+ at pet stores | Canine Biotech DNA tested, delivery by DEFRA-approved transport driver to 28 UK cities | Reserve yours before they're gone | Act now
+> Blue Staffy for sale — only 6 pups available this litter | Don't miss out — NOT FETCHED families chose BlueStaffyUK over other breeders | £1,500–£1,700 home-reared pups, vet checked | delivery by DEFRA-approved transport driver to 28 UK cities | Reserve yours before they're gone | Act now
 
 #### B. Schema Markup (Rule 5)
 
@@ -1012,7 +936,7 @@ Never remove or modify existing schema without user approval (Rule 5).
 
 **Voice Search Optimization Example:**
 Query: "How big do Blue Staffy puppies get?"
-Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh between 400–500 grams and reach an average length of 12–14 inches from muzzle to tail. BlueStaffyUK Blue Staffy pups are meticulously home-raised from robust bloodlines, ensuring they develop into large, healthy adults reflecting peak physical health."
+Optimized answer (first 50 words): lead with the adult height and weight from the Kennel Club breed standard once it has been fetched (NOT FETCHED) — never a figure from memory — then one line on how BlueStaffyUK raises its pups at home in Carlisle.
 
 #### D. Keyword Density Guidelines (Rule 18, 19)
 
@@ -1041,13 +965,13 @@ Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh be
 3. Priority: user instruction > image-specs.json > agent defaults
 
 **Every image is a ranking asset — the 5-Element Image-SEO rule is a MUST (none optional):**
-1. **FILENAME** — keyword-rich, lowercase-with-hyphens, `.webp`, no spaces (e.g. `home-reared-male-blue-blue-staffy-for-sale-midland-tx.webp`).
+1. **FILENAME** — keyword-rich, lowercase-with-hyphens, `.webp`, no spaces (e.g. `home-reared-male-blue-blue-staffy-for-sale-carlisle.webp`).
 2. **ALT TEXT** — descriptive, **≤190 characters** (AA / screen-reader cap + the `final_page_audit` alt-length check; an alt >190 is a FAIL). Lead with keyword + entity + context + location.
 3. **TITLE** — the `title=""` attribute: a short transactional-keyword phrase.
 4. **CAPTION** — a visible `<figcaption>` with a soft CTA where natural.
 5. **DESCRIPTION** — a 250+ word SEO-optimized description block (image-metadata pipeline, not the rendered DOM).
 
-**Transactional-keyword variation rule (MUST):** each image's filename / alt / title must use a *different* transactional keyword variation than the visible page copy — e.g. "buy home-reared male Blue Staffy," "tame DNA-tested baby Blue puppy for sale near me," "home-bred Blue Staffy for sale Manchester" — so one page ranks for many queries. Never repeat the H1 keyword verbatim across images.
+**Transactional-keyword variation rule (MUST):** each image's filename / alt / title must use a *different* transactional keyword variation than the visible page copy — e.g. "buy home-reared male Blue Staffy," "vet-checked Blue Staffy puppy for sale near me," "home-bred Blue Staffy for sale Manchester" — so one page ranks for many queries. Never repeat the H1 keyword verbatim across images.
 
 - **File size:** Highly compressed (<100KB for page-content images)
 - **Dimensions:** See image-specs.json for page-type-specific specs
@@ -1065,8 +989,8 @@ Optimized answer (first 50 words): "Adult Blue Staffy puppies typically weigh be
 **Alt text example (location-specific, 250+ chars):**
 ```
 Blue Staffy puppies for sale from BlueStaffyUK in Carlisle showing three healthy
-Canine Biotech DNA-tested Blue Staffy pups with silver coat and bright red tails
-available for nationwide delivery by DEFRA-approved transport to families in Manchester, Carlisle, and
+vet-checked Blue Staffy pups with blue coats
+available for delivery by DEFRA-approved transport to families in Manchester, Carlisle, and
 London seeking home-bred LICENCE_CLAIM_PLACEHOLDER-documented Blue Staffy puppies from ethical breeders
 ```
 
@@ -1170,7 +1094,7 @@ Before final submission, verify all items:
 - ☐ All required sections present with target word counts achieved
 - ☐ Total document 5,000–6,000+ words (or competitor count +1,000 minimum)
 - ☐ 6 alternative H1 title variations provided for A/B testing
-- ☐ 6 individual puppy profiles with: name, age, DNA gender, personality, parents, health status, price, availability, ideal buyer
+- ☐ 6 individual puppy profiles with: name, age, sex, personality, parents, health status, price, availability, ideal buyer
 - ☐ 3 customer testimonials positioned at top, middle, and bottom
 - ☐ 3 newsletter signups at top (diet/nutrition section), middle (delivery section), bottom (contact section)
 - ☐ 30+ FAQ questions distributed throughout (top, middle, bottom groupings)
@@ -1178,7 +1102,7 @@ Before final submission, verify all items:
 
 **Linking Quality:**
 - ☐ 50+ contextual internal links (Link-First: anchors at sentence start; varied anchor text, no repeats per target)
-- ☐ 50+ external authority links (.gov, .edu, .org, avicultural authorities)
+- ☐ 50+ external authority links (.gov, .edu, .org, canine and veterinary authorities)
 - ☐ All anchor targets verified to exist on the site
 - ☐ Table of Contents at top with all section jump links
 - ☐ Quick navigation at bottom
@@ -1195,11 +1119,11 @@ Before final submission, verify all items:
 - ☐ Voice search questions embedded in H2/H3 headers
 
 **User Conversion Metrics:**
-- ☐ Conversational, authentic avicultural tone maintained throughout
+- ☐ Conversational, authentic breeder tone maintained throughout
 - ☐ 15+ form CTA instances (NO phone numbers in body copy — Rule 61)
 - ☐ Mobile-optimized layout (short paragraphs, bullet breakdowns)
 - ☐ No technical jargon barriers or generic AI-sounding copy
-- ☐ Buyer fears addressed: scam/fraud, sick puppy, LICENCE_CLAIM_PLACEHOLDER gaps, wild-caught suspicion (Rule 47)
+- ☐ Buyer fears addressed: scam/fraud, sick puppy, LICENCE_CLAIM_PLACEHOLDER gaps, puppy-farm suspicion (Rule 47)
 - ☐ Empathy displayed toward common ownership challenges (a 12–14 year commitment, lifespan, care)
 
 **Technical Format:**
@@ -1218,7 +1142,7 @@ This is NOT a template-filling exercise. Every page must:
 
 1. **Actually perform competitor research** across premium canine domains using Firecrawl MCP or Playwright MCP
 2. **Analyze existing content gaps** to deliver fundamentally superior, more thorough page layouts
-3. **Write with genuine human voice** (conversational warmth, avicultural professional expertise)
+3. **Write with genuine human voice** (conversational warmth, professional breeding expertise)
 4. **Integrate proper nouns and medical entities seamlessly** (avoid forced keyword groupings)
 5. **Link with strategic accuracy** (50+ contextual internal links, 50+ validated external sources)
 6. **Optimize for natural language processing** (voice query compatibility, clear definition blocks)
@@ -1230,7 +1154,7 @@ This is NOT a template-filling exercise. Every page must:
 - Earns citations from AI search engines (Google AIO, Perplexity, Claude)
 - Converts curious browsers into qualified Blue Staffy inquiries via form submissions
 - Provides genuine education protecting puppy health and supporting long-term owner success
-- Underscores BlueStaffyUK ethical commitment to home-bred, LICENCE_CLAIM_PLACEHOLDER-compliant aviculture
+- Underscores BlueStaffyUK ethical commitment to home-bred, LICENCE_CLAIM_PLACEHOLDER-compliant dog breeding
 
 ---
 
@@ -1351,12 +1275,10 @@ Canonical BSUK URL list — verify in `src/pages/` before linking. All URLs use 
 <a name="temperament"></a>
 ## What is the Real Blue Staffy Temperament? Understanding the Intellectual Companion Puppy
 
-If you're wondering whether a [Blue Staffy](https://www.puppies.org/) matches your daily home life, 
+If you're wondering whether a [Blue Staffy](https://www.thekennelclub.org.uk/) matches your daily home life, 
 here's what a decade of placements has taught the team at [BlueStaffyUK kennel](#about-BSUK): Blue Staffies are 
 deeply empathetic, intuitive, highly observant companions who form extraordinary emotional bonds with their 
-chosen families. Unlike hyperactive puppy species, Blue Staffies display a **thoughtful, analytical 
-baseline behavior**, making them exceptional for [quiet indoor households](#care-environment), remote 
-professionals, and experienced canine enthusiasts.
+chosen families.
 
 ### What Makes the Blue Staffy Personality So Unique?
 
@@ -1367,34 +1289,21 @@ professionals, and experienced canine enthusiasts.
   watching your movements with deep focus.
 - **Playful Thinkers:** Beyond simple play, they require interactive, complex mental challenges like 
   puzzle boxes and enrichment games.
-- **Articulate Communicators:** Renowned for their uncanny ability to use training contextually, 
-  learning voice inflections rather than just mechanically repeating sounds.
 - **Adaptable Companions:** Excel in dedicated canine spaces, quiet home offices, or spacious urban 
   apartments when given steady daily interaction.
 
 ### Blue Staffy Cognitive Capacity: How Trainable Are They?
 
-Blue Staffies rank at the absolute **pinnacle of canine intelligence**, displaying 
-**a temperament claim that BSUK has not verified — NOT FETCHED**. According to 
-groundbreaking research by [Dr. Irene Pepperberg](https://alexfoundation.org/) with her famous 
-Blue Staffy research subject Alex, Blue Staffies don't simply learn a cue — they actively comprehend 
-concepts of color, shape, quantity, and abstract difference.
-
-**What this means for your daily training:**
-- ✅ **Basic Behaviors:** Most BlueStaffyUK pups master "step up", "recall", and target-bed training 
-  within 2 weeks using positive reinforcement and clicker techniques.
-- ✅ **Training Acquisition:** Vocabulary development accelerates after the first year. BlueStaffyUK puppies 
-  frequently begin temperament contextually, saying "Good morning" or asking for "Water" at appropriate moments.
-- ✅ **Behavioral Prevention:** Because their brains are highly active, consistent training prevents 
-  displacement screaming or territorial biting.
+How quickly a BlueStaffyUK pup learns is a trainability claim BSUK has not verified — NOT FETCHED
+until Lisa confirms it from her own litters.
 
 ##### L-2-HGA and Behavioral Stability
-Canine Biotech disease-screened bloodlines at BlueStaffyUK have documented zero L-2-HGA transmission across 
-Our placements (a count and a founding date are both NOT FETCHED) — physical health directly supports behavioural stability in Blue Staffies.
+L-2-HGA is one of the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); a parent's
+result is stated only where the evidence ledger records the certificate.
 
 ###### Can I Leave My Blue Staffy Alone During Work Hours?
-Yes, with parameters. A fully [weaned adult Blue Staffy](#how-to-buy) can entertain themselves for 
-6–8 hours in a properly enriched environment with enrichment crates and ambient enrichment.
+How long an adult Blue Staffy can be left is NOT FETCHED until Lisa gives her own answer — never a
+number of hours from memory. [See how to buy](#how-to-buy).
 
 ---
 
@@ -1404,11 +1313,10 @@ Yes, with parameters. A fully [weaned adult Blue Staffy](#how-to-buy) can entert
 - [Complete Blue Staffy Environmental & Crate Setup Guide](#care-environment)
 - [Advanced Training and Clicker Training Techniques](#training)
 - [Early Kennel Socialization — Puppy Culture at BlueStaffyUK](#socialization)
-- [Compare Blue vs Blue-Brindle Staffies](#subspecies-comparison)
+- [Compare Blue vs Blue-Brindle Staffies](#colour-comparison)
 
 **Authoritative External Resources:**
-- [the RSPCA — Blue Staffy Behavior Registry](https://www.puppies.org/)
-- [Alex Foundation Research Library](https://alexfoundation.org/)
+- [the RSPCA](https://www.rspca.org.uk/)
 ```
 
 ---
@@ -1427,28 +1335,21 @@ When migrating content from dog-breeder templates or MFS reference material, app
 | Puppy Culture | Puppy Culture |
 | Early Neurological Stimulation (ENS) | Early Neonatal Handling (ENH) |
 | THE KENNEL CLUB Registered | LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced |
-| Embark DNA Testing | Canine Biotech DNA Testing |
-| OFA Certified | the RVC certified / canine vet certified |
-| Dog food brands (Purina, Hill's, Royal Canin) | Puppy food brands (Harrison's, ZuPreem, Roudybush, Tops) |
-| Hypoallergenic | Home-bred / LICENCE_CLAIM_PLACEHOLDER-documented |
-| Dog parks / trails | Canine vet clinics / puppy-friendly environments |
+| Embark DNA Testing | L-2-HGA and HC-HSF4 DNA screening of the parents, where the evidence ledger records the certificate |
+| OFA Certified | vet health check |
+| Hypoallergenic | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
 | Maltese, Maltipoo, Blue Staffy | Blue Staffy, Blue-Brindle Staffy |
-| Breed | Subspecies / variant |
-| Grooming (nails, fur) | Coat care, muzzle maintenance, misting |
-| Hip dysplasia, luxating patella | L-2-HGA, Polyomavirus, Psittacosis, Bornavirus |
+| Grooming (nails, fur) | coat, nail and ear care, bathing |
+| Hip dysplasia, luxating patella | Staffordshire Bull Terrier: the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); any other health claim needs an evidence-ledger entry |
 | any price range | £1,500 (Roman, Byrd, Ince) · £1,700 (Vennie, Christa, Cheryl) — the litter spans £1,500–£1,700 |
 | a placeholder number | PHONE_PLACEHOLDER — FOOTER ONLY (Rule 61) |
 | 17 states served | the 28 UK cities in `data/locations.json` |
 | Delivery Driver | DEFRA-approved transport |
 | Ground transport | Climate-controlled canine ground transit |
 | Microchip | Microchip number on the paperwork |
-| Vaccination (DHPP, Nobivac) | DNA disease panel (L-2-HGA, HC-HSF4, Psittacosis) |
 | THE KENNEL CLUB, BBB, AAHA | LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, THE KENNEL CLUB, the RVC |
 | BBB A+ Rating | LICENCE_CLAIM_PLACEHOLDER Licence + THE KENNEL CLUB Registered Kennel |
 | 12-15 year lifespan | 12–14 year lifespan |
-| 4-7 lbs weight | 400–500g weight |
-| Non-shedding / hypoallergenic | Non-screaming / home-bred |
 | Virginia / state-specific entities | National entities (BSUK ships nationwide) |
-| Dog parks, local trails | Canine vet databases, the RVC vet finder |
 | Craigslist puppy scams | Online puppy scams (FTC canine fraud) |
 | Phone CTA in body copy | Form CTA — link to /contact-us/ ONLY (Rule 61) |

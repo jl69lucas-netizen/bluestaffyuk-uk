@@ -19,9 +19,9 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 | # | Slug | Role | Build order |
 |---|------|------|-------------|
 | 1 | `/uk-staffordshire-bull-terrier-guide/` | Variant comparison (flagship) | **FIRST — the standard-setter** |
-| 2 | `/uk-staffordshire-bull-terrier-guide/` | Species comparison | 2nd–4th batch |
-| 3 | `/uk-staffordshire-bull-terrier-guide/` | Species comparison | 2nd–4th batch |
-| 4 | `/uk-staffordshire-bull-terrier-guide/` | Species comparison (THIN — 135 lines) | 2nd–4th batch |
+| 2 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison | 2nd–4th batch |
+| 3 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison | 2nd–4th batch |
+| 4 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison (THIN — 135 lines) | 2nd–4th batch |
 | 5 | `/uk-staffordshire-bull-terrier-guide/` | Self-comparison / decision page | 5th–6th |
 | 6 | `/blue-staffy-uk-breeders/` | Breeder comparison (trust page) | 5th–6th |
 | 7 | `/buy-staffy-puppies-for-sale-uk/` | Gender comparison (FOR-SALE method) | **SECOND-TO-LAST** |
@@ -35,18 +35,17 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 | MFS term | BSUK term |
 |---|---|
 | Maltipoo (baseline breed) | Blue Staffy (*Canis lupus familiaris*) |
-| Maltese | Blue-Brindle Staffy (*Psittacus blue-brindle*) |
+| Maltese | Blue-Brindle Staffy |
 | Cavapoo | American Bully |
 | Cockapoo | English Bull Terrier |
-| Poodle | Amazon Puppy |
 | puppy / puppies / dog / litter | pup / pups / puppy / puppy / litter |
 | adoption | reservation / bringing your puppy home |
 | Lawrence & Cathy | Lisa Bright (Carlisle, since 2014) |
 | Virtual Adoption Consultant | **Virtual Litter Consultant** (the BlueStaffyUK decision-guide voice — still first-person we/us/our) |
-| "Genetic ROI" | **Health-Documentation ROI** — L-2-HGA and HC-HSF4 screening, vet sex-checking, canine-vet exam, whelp certificate, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER paperwork |
-| OFA / CHIC / Embark DNA | L-2-HGA PCR panel · HC-HSF4 PCR · vet sex-checking certificate · canine veterinarian wellness exam · closed leg band |
-| Mitral Valve Disease / PRA / White Shaker | Species-appropriate risks ONLY: staffies = hypocalcemia, coat-destructive behavior, L-2-HGA susceptibility; american bullys = coat plucking, extreme noise, cloacal papilloma; english bull terriers = proventricular dilatation awareness, bite-force/space needs; amazons = hormonal seasonal aggression, obesity/fatty liver |
-| shedding / hypoallergenic | powder-down dander (staffies & american bullys are powder-down puppies — allergy-relevant), coat dust management |
+| "Genetic ROI" | **Health-Documentation ROI** — L-2-HGA and HC-HSF4 screening, vet health check, microchip, whelp certificate, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER paperwork |
+| OFA / CHIC / Embark DNA | L-2-HGA and HC-HSF4 DNA screening of the parents, where the evidence ledger records the certificate · vet health check · microchip |
+| Mitral Valve Disease / PRA / White Shaker | Staffordshire Bull Terrier: the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); any other health claim needs an evidence-ledger entry |
+| shedding / hypoallergenic | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
 | Cheap-puppy trend debunk | **Unweaned-pup sales debunk** — a pup sold before it is weaned is a welfare failure; BlueStaffyUK places fully weaned pups only |
 | grooming | coat, nail and ear care, bathing, crate hygiene |
 | Kennel Club recognition | The Staffordshire Bull Terrier is a KC-recognised breed; any licence or statute wording stays LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER until confirmed |
@@ -67,9 +66,9 @@ Write the same six research deliverables for each page, saved under `docs/superp
 
 **12-part deliverable per page** (breeder-approved format, one page per session, clustered):
 
-1. **SERP Snapshot** — top 7 real Google US results (Firecrawl/Playwright; un-fetchable = `NOT FETCHED`, NEVER simulated — the MFS source used simulated data; we do not). Why each ranks: authority, backlinks, topical depth, schema, UX.
+1. **SERP Snapshot** — top 7 real Google UK results (Firecrawl/Playwright; un-fetchable = `NOT FETCHED`, NEVER simulated — the MFS source used simulated data; we do not). Why each ranks: authority, backlinks, topical depth, schema, UX.
 2. **Search Intent** — informational / commercial / transactional / comparison / local.
-3. **Competitor Reverse Engineering** (top 7) — title, meta, H1–H6, page voice, angle, frameworks, entity coverage + exploitable gaps, word count, media UKge, schema UKge.
+3. **Competitor Reverse Engineering** (top 7) — title, meta, H1–H6, page voice, angle, frameworks, entity coverage + exploitable gaps, word count, media usage, schema usage.
 4. **Keyword Universe** — primary, secondary, long-tail, long-form queries, compact keywords, PAA, Reddit-language queries, NLP/LSI terms, AI-Overview entities, branded/hybrid targets ("BlueStaffyUK vs …").
 5. **Why Competitors Rank** — grounded per-competitor reasons.
 6. **How BlueStaffyUK Wins** — our moat: real breeder data, health documentation, decision systems, first-person authority.
@@ -84,7 +83,7 @@ Research sweep sources per page: a fresh top-7 from Google, Bing, Reddit and Fac
 
 ## 4. The 22–25 Section Blueprint (converted 22-section MFS template)
 
-Pillar structure (adapt per page; hub compares staffy vs ALL species with 2–3 H3 comparison metrics per rival):
+Pillar structure (adapt per page; hub compares staffy vs ALL breeds with 2–3 H3 comparison metrics per rival):
 
 | # | Level | Section | Notes |
 |---|-------|---------|-------|
@@ -94,20 +93,20 @@ Pillar structure (adapt per page; hub compares staffy vs ALL species with 2–3 
 | 4 | H2 | Quick Answer / Decision Summary Block | a short AI-extractable definition (about fifty words) + "Choose [A] if… Choose [B] if…" |
 | 5 | H2 | Key Takeaways (8 takeaways) | `bsuk-key-takeaway` stat-forward grid |
 | 6 | H2 | Quick Comparison Table | 8–12 attributes immediately after intro H2 |
-| 7 | H2 | Why an Objective Comparison (not a popularity contest) | E-E-A-T; define both species |
-| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | PCR screening, vet sex-checking, LICENCE_CLAIM_PLACEHOLDER docs |
+| 7 | H2 | Why an Objective Comparison (not a popularity contest) | E-E-A-T; define both breeds |
+| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | L-2-HGA and HC-HSF4 DNA screening of the parents (only where the evidence ledger records the certificate), vet health check, LICENCE_CLAIM_PLACEHOLDER docs |
 | 9 | H2 | Deep Dive: [A] — temperament, temperament, size, bonding | comparison table after H2 |
 | 10 | H3 | Temperament & Home/Apartment Suitability | |
-| 11 | H3 | Health Risk Analysis (species-appropriate, ledger-bounded) | external authority links here |
-| 12 | H3 | Noise, Dander & Daily Care | powder-down discussion |
+| 11 | H3 | Health Risk Analysis (breed-appropriate, ledger-bounded) | external authority links here |
+| 12 | H3 | Coat, Shedding & Daily Care | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
 | 13 | H2 | Deep Dive: [B] — same structure | |
 | 14 | H2 | Decision Scorecard Matrix (0–10 traits) | temperament, temperament, noise, beginner fit, apartment fit, bonding speed |
 | 15 | H2 | Lifestyle Matching Flowchart | first puppy? apartment? full-time worker? noise-sensitive? |
-| 16 | H2 | Cost of Ownership Comparison (US) | from price-matrix + financial-entities; H4 first-year breakdown |
+| 16 | H2 | Cost of Ownership Comparison (UK) | from price-matrix + financial-entities; H4 first-year breakdown |
 | 17 | H2 | First 30-Day Adjustment Timeline | Lisa's first-30-days voice |
 | 18 | H2 | Myth vs Reality Cards | H5 supporting facts, H6 breeder notes/citations |
-| 19 | H2 | Health & Delivery section | canonical line: Ships nationwide · £200–£350 airport · £200–£350 home (read `delivery_options`) |
-| 20 | H2 | Available Puppies / Breeding Pair / Fertile Eggs cards | link-out, don't re-teach; sold ≠ InStock |
+| 19 | H2 | Health & Delivery section | canonical line: delivery £200–£350 by distance, by DEFRA-approved transport (read `delivery_options`) |
+| 20 | H2 | Available Puppies / Breeding Pair cards | link-out, don't re-teach; sold ≠ InStock |
 | 21 | H2 | Owner Story (BAB) + Reviews | REAL reviews only — never fabricate |
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
 | 23 | H2 | FAQ — every pick in `data/queries/<slug>.json` (one `Faq` block is fine; the three-block split is location-only), each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
@@ -195,8 +194,8 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
    the CTA its own link rule (`color: var(--color-cta-ink); text-decoration: none`) or the
    generic link rule silently overrides it.
 6. **Form = what we sell** — short inquiry form with: interest select (Blue / Blue-Brindle / breeding pair /
-   fertile eggs / not sure, prices visible), first + last name, cell + confirm, email + confirm,
-   delivery select (£200–£350 airport / £200–£350 home / Carlisle pickup), optional home note. Pass
+   not sure, prices visible), first + last name, mobile + confirm, email + confirm,
+   delivery select (delivery £200–£350 by distance / Carlisle pickup), optional home note. Pass
    `hideGlobalCta` and ship NO page-level newsletter band (the form is the single closer).
 7. **Testimonials = real reviews only**, pulled from the verified homepage `bottomReviews[]` set with
    real name + city; never the fabricated pair this page originally carried.
@@ -214,8 +213,8 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
 Every comparison page must clear these on its finishing pass, in addition to §11:
 
 1. **Counter snippet is page-specific, not the homepage set.** The homepage's `12+ / 100% LICENCE_CLAIM_PLACEHOLDER /
-   NOT FETCHED floor / 24h` is generic. A comparison page leads with its own premise: for variant/species
-   pages use **`2` Staffy species raised here · `12+` Years raising both** (the "we raise both" moat),
+   NOT FETCHED floor / 24h` is generic. A comparison page leads with its own premise: for variant/breed
+   pages use **`2` Staffy colours raised here · `12+` Years raising both** (the "we raise both" moat),
    keeping `100%` LICENCE_CLAIM_PLACEHOLDER + `24h` reply as the two trust anchors. Never ship the verbatim homepage four.
 2. **Responsive infographics (Lighthouse "improve image delivery").** Every 1408×768 `inf-img` ships a
    `-760.webp` sibling (Pillow LANCZOS, q82) + `srcset="/name-760.webp 760w, /name.webp 1408w"
@@ -272,9 +271,7 @@ now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patt
    0}` desktop, `9px 0` mobile.
 5. **Hero eyebrow (prefix) is UNIQUE per spoke, drawn from the page's own premise.** Never reuse the
    "Home-raised · LICENCE_CLAIM_PLACEHOLDER-documented · Carlisle" trust string across spokes — trust tokens live in
-   the hero-meta pills. Shipped set: CvM "11 english bull terrier species sized against one quiet genius" · CvC "The
-   cuddler and the family dog, weighed honestly" · CvT "Two Staffy subspecies, raised side by side since
-   2014" · MvF "Cock or hen · DNA-certain before you ever pay". A new spoke writes its own from the
+   the hero-meta pills. A new spoke writes its own from the
    comparison premise; duplicate eyebrows across siblings FAIL the pass.
 6. **Seam divider = brand medallion + brass fading rules.** `img
    src="/bsuk-header-logo-160.webp"` (the ONLY square logo asset — every `bsuk-footer-logo*` /
