@@ -254,12 +254,14 @@ def collapse_near_duplicates(merged):
     """Fold entries of the same topic whose content words overlap (Jaccard >= 0.5).
 
     Linked pairs join one group (transitively, so the result never depends on input order).
-    Each group keeps the phrasing of its first entry in the order: more source types, then
-    longer found_in, then normalised text; types and found_in are unioned in that order, and
-    its fact is the first entry's, or the first duplicate's that has one. Untopicked entries
-    never collapse.
+    Each group is led by its first entry in the order: fact-backed first, then more source
+    types, then longer found_in, then normalised text. The lead's phrasing and fact are the
+    group's, so a lead's visible question is always answerable by its own fact: an unbacked
+    phrasing leads only a group with no fact-backed member, and that group stays unbacked.
+    types and found_in are unioned in that order. Untopicked entries never collapse.
     """
-    order = sorted(merged, key=lambda k: (-len(merged[k]["types"]),
+    order = sorted(merged, key=lambda k: (merged[k]["fact_source"] is None,
+                                          -len(merged[k]["types"]),
                                           -len(merged[k]["found_in"]), k))
     info = {k: (topic_of(merged[k]["question"])[0], content_words(merged[k]["question"]))
             for k in order}
@@ -292,8 +294,6 @@ def collapse_near_duplicates(merged):
         g = out[head]
         g["types"] |= m["types"]
         g["found_in"] += [d for d in m["found_in"] if d not in g["found_in"]]
-        if g["fact_source"] is None:
-            g["fact_source"] = m["fact_source"]
     return out
 
 

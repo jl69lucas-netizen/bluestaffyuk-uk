@@ -1284,15 +1284,46 @@ def test_uk_delivery_and_safe_delivery_collapse_by_the_rule():
         "Do you deliver across the UK?"]
 
 
-def test_collapse_keeps_the_best_evidenced_phrasing_and_unions_sources():
+def test_collapse_is_led_by_a_fact_backed_question_and_unions_sources():
+    # Ruling: a lead's visible question must be answerable by its own fact.
     merged = {"a": entry("Are the parents health tested?", types=("bank",), found=["bank:x"]),
               "b": entry("Are both parents health tested?", types=("serp_google", "bank"),
                          found=["serp_google_paa", "bank:y"], fact=None)}
     (only,) = Q.collapse_near_duplicates(merged).values()
-    assert only["question"] == "Are both parents health tested?"
+    assert only["question"] == "Are the parents health tested?"
     assert only["types"] == {"serp_google", "bank"}
-    assert only["found_in"] == ["serp_google_paa", "bank:y", "bank:x"]
-    assert only["fact_source"] == "data/settings.json"      # taken from the duplicate
+    assert only["found_in"] == ["bank:x", "serp_google_paa", "bank:y"]
+    assert only["fact_source"] == "data/settings.json"
+
+
+def test_an_unbacked_phrasing_that_sorts_first_does_not_lead():
+    merged = {"a": entry("Any chance to see the parents\u2019 health-test certificates?",
+                         types=("ai_engines",), found=["ai_chatgpt"], fact=None),
+              "b": entry("Can I see the parents\u2019 health test certificates?",
+                         found=["bank:certs"], fact="src/pages/index.astro")}
+    (only,) = Q.collapse_near_duplicates(merged).values()
+    assert only["question"] == "Can I see the parents\u2019 health test certificates?"
+    assert only["fact_source"] == "src/pages/index.astro"
+
+
+def test_an_unbacked_entry_with_two_buyer_sources_does_not_lead_a_backed_bank_row():
+    merged = {"a": entry("Are both parents health tested?", types=("serp_google", "ai_engines"),
+                         found=["serp_google_paa", "ai_chatgpt"], fact=None),
+              "b": entry("Are the parents health tested?", found=["bank:x"])}
+    (only,) = Q.collapse_near_duplicates(merged).values()
+    assert only["question"] == "Are the parents health tested?"
+    assert only["fact_source"] == "data/settings.json"
+    assert only["types"] == {"bank", "serp_google", "ai_engines"}
+
+
+def test_a_group_with_no_fact_keeps_the_best_evidenced_phrasing_and_stays_unbacked():
+    merged = {"a": entry("Are the parents health tested?", types=("threads",),
+                         found=["thread:1"], fact=None),
+              "b": entry("Are both parents health tested?", types=("serp_google", "ai_engines"),
+                         found=["serp_google_paa", "ai_chatgpt"], fact=None)}
+    (only,) = Q.collapse_near_duplicates(merged).values()
+    assert only["question"] == "Are both parents health tested?"
+    assert only["fact_source"] is None
 
 
 def test_collapse_never_joins_different_topics():
