@@ -441,7 +441,7 @@
     "src": ".claude/skills/reddit-strategy/SKILL.md",
     "dst": ".claude/skills/reddit-strategy/SKILL.md",
     "mode": "deferred",
-    "notes": "spec §10 out of scope"
+    "notes": "thread-sourcing half rebuilt for BSUK as .claude/skills/bsuk-reddit-threads/SKILL.md (2026-09-23, not a port — written against a baseline test); the reddit-modifier page playbook stays deferred — open item in docs/reference/session-log.md"
   },
   {
     "src": ".claude/skills/social-content/SKILL.md",
@@ -1078,5 +1078,65 @@
     "dst": "docs/reference/session-log.md",
     "mode": "rebase",
     "notes": "system; body replaced with BSUK's two project entries and Known Issues seeded from the foundation gate report"
+  },
+  {
+    "src": ".claude/skills/cag-bird-listing-page/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-listing-page/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only (species listing page); no BSUK analogue — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/skills/cag-bird-page-build/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-page-build/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only page build; bsuk-puppy-page-builder covers the puppy pages — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/skills/cag-bird-page-excellence/SKILL.md",
+    "dst": ".claude/skills/bsuk-bird-page-excellence/SKILL.md",
+    "mode": "deferred",
+    "notes": "parrot-only page polish; bsuk-final-page-pass covers the gate — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-bird-personality.md",
+    "dst": ".claude/agents/bsuk-bird-personality.md",
+    "mode": "deferred",
+    "notes": "parrot-only temperament writer — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-clutch-manager.md",
+    "dst": ".claude/agents/bsuk-clutch-manager.md",
+    "mode": "deferred",
+    "notes": "parrot clutch records; BSUK litters live in data/puppies.json — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-timneh-specialist.md",
+    "dst": ".claude/agents/bsuk-timneh-specialist.md",
+    "mode": "deferred",
+    "notes": "parrot subspecies specialist; no BSUK analogue — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-species-guide-builder.md",
+    "dst": ".claude/agents/bsuk-species-guide-builder.md",
+    "mode": "deferred",
+    "notes": "parrot species guide; the BSUK breed guide is built — recorded 2026-09-23, never ported"
+  },
+  {
+    "src": ".claude/agents/cag-variant-specialist.md",
+    "dst": ".claude/agents/bsuk-variant-specialist.md",
+    "mode": "deferred",
+    "notes": "variant pages; a coat-colour version for Staffies is possible later — recorded 2026-09-23, not ported"
+  },
+  {
+    "src": ".claude/agents/cag-competitor-pricing-alert-agent.md",
+    "dst": ".claude/agents/bsuk-competitor-pricing-alert-agent.md",
+    "mode": "deferred",
+    "notes": "needs a live site and a competitor list; project 6 at the earliest — recorded 2026-09-23"
+  },
+  {
+    "src": ".claude/agents/cag-competitor-registry.md",
+    "dst": ".claude/agents/bsuk-competitor-registry.md",
+    "mode": "deferred",
+    "notes": "a stored competitor list; BSUK records competitors per page in data/queries/<slug>.json instead — recorded 2026-09-23, not ported"
   }
 ]

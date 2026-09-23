@@ -277,7 +277,8 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
     query-augmentation step — expand the primary keyword into the real questions before
     writing, mirror the strongest six into the FAQ — while recording that no skill performs it.
     Today it is done by hand or not at all. **Project 5** needs one before it builds 28 city
-    pages from that skill.
+    pages from that skill. **Closed 2026-09-23** by `.claude/skills/bsuk-query-augmentation/SKILL.md`,
+    `scripts/query_augment.py` and the gate `scripts/query_coverage_check.py` (in `npm run check:all`).
 18. **The hero lede is clamped to two lines, and the copy must fit it.** Design rule 10 clamps
     the lede and `scripts/measure_canvas_heights.mjs` records `lede_overflow`, which the test
     requires to be zero — so copy needing a third line fails the build rather than being
@@ -516,3 +517,90 @@ closed 8, 9, 11, 12, 20, 22, 25, 28 and 29.
     issue: Lighthouse Best Practices 96 on mobile and desktop, every other rebuilt page 100.
     The S3 facade — rule 14's default — fetches the player only on a press. **Closes with the
     breeder's choice**: keep S2 and accept the score, or pick S3.
+
+39. **Project 5 prerequisite — nested routes (2026-09-23).** The STOP rules in
+    `.claude/skills/bsuk-location-page-builder/SKILL.md` and
+    `.claude/skills/bsuk-query-augmentation/SKILL.md` point here. Four tools build paths from a
+    flat slug and cannot read a city page at `uk-locations/<slug>`:
+    `scripts/facts_preserved_check.py` (`dist_html`, and the `--extract` write path, which
+    creates only `data/facts/` and no subfolder — lines 360–362 and 395);
+    `scripts/link_parity_check.py` lines 231–232 (the dist path and the board path);
+    `scripts/verbatim_set_check.py` (`dist_html` and `load_record`); and
+    `scripts/pageboard.py` `own_live_key` (line 927). Each must resolve `uk-locations/<slug>` to
+    `dist/uk-locations/<slug>/index.html` (and the matching board/live key) through
+    `data/page-map.json`, as `scripts/migration_parity.py` effectively does. **No city page goes
+    into `data/facts/rebuilt.json` until this is fixed and tested.** In the same change,
+    `scripts/query_coverage_check.py` should report a problem when a route's last segment is in
+    `data/facts/rebuilt.json` but its page is missing, print the awaiting-rebuild slugs, and turn a
+    malformed `data/facts/rebuilt.json` into a problem line rather than a crash.
+
+40. **Project 5 builder checklist (2026-09-23).** Quality-review items on the builders deferred
+    by the user's ruling during the query-augmentation build; clear each before or while the
+    first city page is built.
+    - Rule 15 (faithful rewrite) against the migrated city FAQs: 11 indexed city pages carry
+      bodies, and the precedence table cites rules 1–10 only.
+    - 11 location rows have an empty `h1`, so the primary-keyword source is undefined for them.
+    - The worked example still carries variant letters and a shared counter, against rule 16
+      (per-page hero and counter).
+    - `src/components/kit/Hero.astro` takes layout props (`layout`, `align`, `media`, `ledge`)
+      while the builder says "no variant prop" — reconcile the wording.
+    - The bottom review mode is ambiguous; reviews sit in their own sections, never inside a body
+      section.
+    - Health-test fact conflict: `data/faq.json` asserts "certified clear" while
+      `rules/copy.md` records the certificate as NOT FETCHED.
+    - Step 1's hand-recorded competitor table and the board "competitor block" (which does not
+      exist) — use the question file's competitors and `why_source` URL instead.
+    - `scripts/query_coverage_check.py` needs body blocks as `<section data-section-label>`;
+      the builder must say so.
+    - `.claude/skills/bsuk-blog-post/SKILL.md` leftovers: governs-in-conflict wording,
+      Firecrawl-first, no link library, "airport" delivery, "since 2014", push to main.
+    - `.claude/skills/bsuk-comparison-page-builder/SKILL.md` leftovers: a US Google market setting, 22–25 fixed
+      sections, push to main, eggs/breeding pair, "12+ years", a NewsletterV2 variant.
+    - `.claude/skills/bsuk-seo-master-checklist/SKILL.md`'s external-link library is US-centric
+      (AVMA, AAHA, ASPCA, FTC, VEG, Pet Poison Helpline, Chewy; the petmd homepage mislabelled) —
+      replace with UK sources (PDSA, Blue Cross, BVA, gov.uk) via
+      `docs/reference/external-link-library.md`.
+    - `.claude/skills/bsuk-google-map/SKILL.md`'s location template uses `CITY%2C%20STATE` and
+      "For state/city location pages" (US wording).
+    - Later gate work: count built `dist/uk-locations/*` pages with no question file and print
+      it; an optional per-page-type "must have a file" switch once project 5 covers all 28;
+      check the visible FAQ questions come from the question file; an extra-section H2 must sit
+      in a body section, not the frame; a heading-covered answer should stop at its section end.
+    - Minors: lifespan source; `rules/copy.md` as a source; sem-all-six-levels is page-level;
+      proximity/roads claims without a source; the former-city row (Known Issue 16) and the national rows compete; the blog
+      builder's raw caps note; the puppy ContactForm name; top-10 vs top-5.
+
+41. **Questions for Lisa Bright (2026-09-23).** Buyers ask these (Google, Bing, ChatGPT and
+    Reddit sources in the Manchester and Leeds question files) and BSUK has no recorded fact to
+    answer them, so the merge blocked them as "unverified fact". Each answer becomes a
+    `data/faq.json` row or a `data/settings.json` key; then both question files rebuild
+    (`python3 scripts/query_augment.py <slug> ...`, all sources cached, no calls).
+    - Are there blue Staffy puppies available now for buyers in Manchester and Leeds?
+    - How much does a BSUK puppy cost?
+    - Should I pay a deposit before I have seen the puppy — what is BSUK's deposit policy?
+    - Is there a waiting list?
+    - Can I see the puppy with its mother where the litter was raised?
+    - Do you give a written contract and a return-to-breeder policy?
+    - Does the contract give me time to have my own vet check the puppy?
+    - Have both parents been tested for L-2-HGA and hereditary cataracts?
+    - Have the parents had eye examinations and elbow screening, as well as DNA tests?
+    - What are the parents' Kennel Club registered names, and what if the papers are delayed?
+    - What is the parents' coefficient of inbreeding?
+    - How can I confirm the puppy has been examined by a vet (can I contact your vet)?
+    - Has the puppy had its first vaccination before I collect it?
+    - What socialisation has the puppy had?
+    - Can a blue puppy come from parents that are not both blue — what colours are your parents?
+
+42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
+    competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
+    (2026-09-23): a separate build after this one. Another session has already started it — see
+    the competitor-intel build.
+
+43. **Reddit-modifier pages are a recorded option, not built.** Short pages aimed at "<keyword> reddit" searches (the source repo's playbook). Decide with search-volume data in project 5 or later; the thread half is `.claude/skills/bsuk-reddit-threads/SKILL.md`.
+
+44. **No page-communication audit.** The source repo's visual-intelligence skill (does the page communicate, what job is it doing, why do two pages feel the same) was filed with the design system in project 2 and never ported. The 28 city pages in project 5 are where it would pay.
+
+45. **DataForSEO costs are unknown (2026-09-23).** The connector returns no cost field, so
+    `data/queries/spend.json` holds conservative estimates ($0.20 for Manchester). The user is
+    to check the DataForSEO dashboard for the real spend; then set `query_typical_call_usd` in
+    `data/settings.json` from the real per-call figure.

@@ -251,11 +251,11 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 39 rows are `deferred`.
+deliberately did not. 49 rows are `deferred`.
 
 - **project 3** — 8 rows (deferred to project 3, see data/port-manifest.json)
-- **project 6** — 25 rows (deferred to project 6, see data/port-manifest.json)
-- **no project** — 6 rows the spec rules out of the transfer entirely; they stay
+- **project 6** — 26 rows (deferred to project 6, see data/port-manifest.json)
+- **no project** — 15 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)
 
 Deferred paths are not listed here by name: a name is a path, and a path this repo

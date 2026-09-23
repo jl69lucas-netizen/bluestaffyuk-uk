@@ -884,7 +884,7 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 > Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Carlisle — Family-Owned Kennel Specialists
 
 **🛡️ TRUST/HEALTH TONE:**
-> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | Parents DNA-Tested Where the Ledger Records It, LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — [count NOT FETCHED] Families Trust Our Home-Bred Guarantee
+> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | [DNA-Tested Parents — only if the ledger records it], LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — [count NOT FETCHED] Families Trust Our Home-Bred Guarantee
 
 **Meta Description (Rule 23):**
 - Standard: max 155 characters
