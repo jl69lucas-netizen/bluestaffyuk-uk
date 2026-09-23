@@ -225,3 +225,11 @@ def test_cut_names_and_tier_5(root):
     assert any(s["why"] == "name only" for s in d["skipped"])
     assert row(d["covered"], "blue staffy puppies")["tier5_urls"] == ["https://t5.com/from/"]  # cut, then covered
     assert [s["id"] for s in d["stale"]] == ["old"] and [s["id"] for s in d["stale_tier5"]] == ["old5"]
+
+
+def test_a_trust_word_anywhere_in_the_heading_makes_the_row_always_high(root):
+    h = ("Staffy Puppies for Sale UK Breeder Blue KC Registered Licensed Health Tested "
+         "Champion Bloodline Family Raised Pets")
+    d = run(root, profile(root), write(root, "j.json", report("jay", [page("https://probe.com/j/", h)])))
+    g = row(d["gaps"], "staffy puppies for sale uk breeder")    # the words sit outside the topic
+    assert g["always_high"] is True and g["band"] == "high"

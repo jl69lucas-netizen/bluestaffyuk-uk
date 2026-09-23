@@ -159,7 +159,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
         groups.setdefault(content(t), []).append({
             "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
             "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) else 0,
-            "always_high": any(has(words(t), h) for h in HIGH)})
+            "always_high": any(has(words(text(page)), h) for h in HIGH)})  # anywhere in the heading
 gaps, covered = [], []
 for c, ps in groups.items():
     types = sorted({q["type"] for q in ps if q["type"]})
@@ -195,7 +195,7 @@ What decides a row (to explain it, never to redo it):
 - **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
 - **Covered:** every topic word (stop words out, plurals folded) in one BSUK page's title or H1, naming the same cities; an about, contact or FAQ topic with no run is covered by a BSUK page of that type. Same words = one row.
-- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing or health test(ed/ing), tested, L-2-HGA, HC in the topic = **always high**.
+- **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered" or a city; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, licensed, licensing or health test(ed/ing), tested, L-2-HGA, HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
 
 ## Output
 
