@@ -1,0 +1,132 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'staffy puppies for sale liverpool', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: none present in the response; nothing dropped.",
+ "id": "09231937-2496-0139-0000-de7f064f14d3",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale in Liverpool ...",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/merseyside/liverpool/",
+   "website_name": "Pets4Homes",
+   "description": "Find 20 Staffordshire Bull Terrier Puppies for sale in Liverpool, Merseyside on Pets4Homes - UK's largest pet classifieds site to buy and sell puppies near ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies For Sale In Liverpool, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale/liverpool-merseyside",
+   "website_name": "Staffie Owners",
+   "description": "Find 8 Staffie puppies for sale in Liverpool, Merseyside, with prices currently ranging from £50 to £2,800. Compare listings from trusted local breeders and ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 3,
+   "domain": "www.freeads.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in ...",
+   "url": "https://www.freeads.co.uk/liverpool/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+   "website_name": "Freeads",
+   "description": "we have a litter of 7 puppies available. New 8 £500 4 year old staffy New 3 £500. New 5 £2,200 Kc"
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 4,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale near me in ...",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/liverpool",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in Liverpool, Merseyside near you. The UK's number 1 marketplace for the nation's favourite pet."
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 5,
+   "domain": "www.gumtree.com",
+   "title": "Terrier in Liverpool, Merseyside | Dogs & Puppies for Sale",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/uk/liverpool/srpsearch+terrier",
+   "website_name": "Gumtree",
+   "description": "Find a terrier in Liverpool, Merseyside on Gumtree, Puppies for Sale classifieds ads in the UK. Adorable Staffordshire Bull Terrier Puppies. Gorgeous blue  ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 6,
+   "domain": "www.champdogs.co.uk",
+   "title": "All Staffordshire Bull Terrier Breeders near Liverpool, ...",
+   "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders?start=all&pc=L1",
+   "website_name": "Champdogs",
+   "description": "Only the very best Staffordshire Bull Terrier Breeders near Liverpool, Merseyside are on Champdogs - The UK's leading pedigree dog breeder website for over ..."
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 7,
+   "items": [
+    "How much would a Staffy puppy cost?",
+    "Is it better to get a male or female Staffy?",
+    "What are the downsides of Staffies?",
+    "What is the life expectancy of a staffie?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 8,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs for stud in Liverpool, ...",
+   "url": "https://www.pets4homes.co.uk/stud/dogs/staffordshire-bull-terrier/united-kingdom/england/merseyside/liverpool/",
+   "website_name": "Pets4Homes",
+   "description": "Find 24 Staffordshire Bull Terrier Dogs for stud in Liverpool, Merseyside on Pets4Homes - UK's largest pet classifieds site to discover stud dogs near you."
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 9,
+   "domain": "www.petify.uk",
+   "title": "Staffordshire Bull Terrier puppies and dogs for sale in ...",
+   "url": "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/liverpool/147733",
+   "website_name": "Petify",
+   "description": "Staffordshire Bull Terrier puppies and dogs for sale in Liverpool. Age 4 months old Ready. We have both males and females available, A £300 refundable deposit ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 10,
+   "domain": "www.preloved.co.uk",
+   "title": "staffy - Dogs & Puppies, For Sale in Liverpool",
+   "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/liverpool/staffy",
+   "website_name": "Preloved",
+   "description": "Find local staffy in dogs and puppies for sale and rehoming in Liverpool. Rehome and Buy with ZERO fees, and give an animal a ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 10,
+   "rank_absolute": 11,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs And Puppies For Adoption, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-adoption/liverpool-merseyside",
+   "website_name": "Staffie Owners",
+   "description": "Find 15 Staffie dogs for adoption in Liverpool, including rescue and rehoming listings from shelters, breeders and private owners. Read more"
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "Staffy puppies for sale liverpool under 500",
+    "Staffy puppies for sale liverpool cheap",
+    "Miniature staffy puppies for sale liverpool",
+    "Staffy puppies for sale liverpool kennel club",
+    "Blue staffy puppies for sale liverpool",
+    "Staffy puppies for sale near st helens saint Helens"
+   ]
+  }
+ ]
+}

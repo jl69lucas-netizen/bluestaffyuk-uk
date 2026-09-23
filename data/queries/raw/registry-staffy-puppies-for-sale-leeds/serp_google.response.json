@@ -1,0 +1,132 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'staffy puppies for sale leeds', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: none present in the response; nothing dropped.",
+ "id": "09231936-2496-0139-0000-d2bfa19d27bb",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale in Leeds, West ...",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/west-yorkshire/leeds/",
+   "website_name": "Pets4Homes",
+   "description": "23 Puppies found · 6 beauitful pups looking for there 5 star homes · 10 beautifull blue staffy. Staffordshire Bull Terrier. 9 weeksAge. 63Sex. £1,000Price. Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "www.freeads.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in Leeds",
+   "url": "https://www.freeads.co.uk/leeds/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+   "website_name": "Freeads",
+   "description": "Find 244 Staffordshire Bull Terrier for sale on Freeads Pets in Leeds. Give a puppy a forever home or rehome a rescue. Create new dog alerts."
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 3,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies For Sale In Leeds, West ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale/leeds-west-yorkshire",
+   "website_name": "Staffie Owners",
+   "description": "Find 11 Staffie puppies for sale in Leeds, West Yorkshire, with prices currently ranging from £250 to £3,000. Compare listings from trusted local breeders and ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 4,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale near me in ...",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leeds-west-yorkshire",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in Leeds, West Yorkshire near you. The UK's number 1 marketplace for the nation's favourite pet."
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 5,
+   "domain": "www.champdogs.co.uk",
+   "title": "All Staffordshire Bull Terrier Breeders near Leeds, West ...",
+   "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders?start=all&pc=LS1",
+   "website_name": "Champdogs",
+   "description": "Only the very best Staffordshire Bull Terrier Breeders near Leeds, West Yorkshire are on Champdogs. Leeds, West Yorkshire (2 Miles)"
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 6,
+   "domain": "www.preloved.co.uk",
+   "title": "staffy - Dogs & Puppies, For Sale in Leeds-west-yorkshire",
+   "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/leeds-west-yorkshire/staffy",
+   "website_name": "Preloved",
+   "description": "Find local staffy in dogs and puppies for sale and rehoming in Leeds-west-yorkshire. Rehome and Buy with ZERO fees, Showing 7 listings"
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 7,
+   "domain": "www.gumtree.com",
+   "title": "54 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier",
+   "website_name": "Gumtree",
+   "description": "54 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale · 13 week Staffordshire bull terrier puppy · 5 year old staffy needs rehomed. Read more"
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 8,
+   "items": [
+    "How much would a Staffy puppy cost?",
+    "Is it better to get a male or female Staffy?",
+    "What are the downsides of Staffies?",
+    "What is the life expectancy of a Staffie?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 9,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs And Puppies For Adoption, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-adoption/leeds-west-yorkshire",
+   "website_name": "Staffie Owners",
+   "description": "Find 8 Staffie dogs for adoption in Leeds, including rescue and rehoming listings from shelters, breeders and private owners. Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 10,
+   "domain": "www.ukpets.com",
+   "title": "Staffordshire Bull Terrier Dogs and Puppies For Sale in ...",
+   "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/leeds/ipage-2",
+   "website_name": "UKPets",
+   "description": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Leeds · 4 beautiful staffy X pups for sale · 22 month old staff for sale · 2 boys 2 girls available · 2 ... Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 10,
+   "rank_absolute": 11,
+   "domain": "www.facebook.com",
+   "title": "Looking for a staffy puppy in leeds area",
+   "url": "https://www.facebook.com/groups/989061958564859/posts/2339602316844143/",
+   "website_name": "Facebook · Dogs and puppies rehoming and adoption in UK",
+   "description": "Are there any rescues near Leeds West yorkshire that have Staffies needing a home? All the rescues seem to be miles away from Leeds. Read more"
+  },
+  {
+   "type": "related_searches",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "Staffy puppies for sale leeds under 500",
+    "Blue staffy puppies for sale leeds",
+    "Staffy puppies for sale leeds kennel club",
+    "Staffy puppies for sale leeds cheap",
+    "Staffy puppies for sale West Yorkshire",
+    "Staffy puppies for sale west yorkshire under 500"
+   ]
+  }
+ ]
+}

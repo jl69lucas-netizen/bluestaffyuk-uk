@@ -101,7 +101,9 @@ def test_the_check_all_chain_is_the_documented_one():
     # `check:verbatim` closes that run (working rule 15, Task 18b): facts asks what a rebuilt
     # page LOST, links asks what it ADDED, verbatim asks whether it kept the old page's
     # WORDING — the one thing a page can lose with every fact still on it.
+    # check:competitors sits after check:queries: both guard research the page builders read.
+    # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
-                "check:redirects", "check:schema", "check:queries",
-                "check:sitemaps", "check:placeholders", "check:markers", "agents"]
+                "check:redirects", "check:schema", "check:queries", "check:competitors",
+                "check:gaps", "check:sitemaps", "check:placeholders", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

@@ -1,0 +1,156 @@
+{
+ "_saved_note": "DataForSEO serp_organic_live_advanced via the claude.ai connector, 2026-09-23 (registry discovery). Request: keyword 'staffy puppies for sale london', search_engine google, location United Kingdom, language en, depth 10. The connector's response carries no cost field (recorded as a 0.05 estimate). Saved condensed: every item's type, rank, domain, url, title, website_name and description kept, PAA questions and related searches kept; images, price objects, breadcrumbs, highlighted terms, link elements and PAA expanded_element stubs dropped. Third-party contact details: a local_pack WhatsApp link (url and domain removed; the listing named no website) and a local_pack phone number (staffordshirebullterrierkennel.com, noted only as 'a +1 US number'), street names in local_pack descriptions, and every local_pack cid.",
+ "id": "09231935-2496-0139-0000-27b5414f645b",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "organic",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale in London, ...",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-london/london/",
+   "website_name": "Pets4Homes",
+   "description": "Find 22 Staffordshire Bull Terrier Puppies for sale in London, Greater London on Pets4Homes - UK's largest pet classifieds site to buy and sell puppies near ..."
+  },
+  {
+   "type": "organic",
+   "rank_group": 2,
+   "rank_absolute": 2,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies For Sale In London",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-sale/london",
+   "website_name": "Staffie Owners",
+   "description": "12 Staffordshire Bull Terrier puppies for sale in London from trusted breeders and sellers - explore KC-registered litters and health-tested puppies"
+  },
+  {
+   "type": "organic",
+   "rank_group": 3,
+   "rank_absolute": 3,
+   "domain": "www.gumtree.com",
+   "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in London",
+   "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/london",
+   "website_name": "Gumtree",
+   "description": "Find adorable Staffordshire Bull Terrier Dogs &amp; Puppies for adoption in London on Gumtree. £500 Clapham, London (5 miles)"
+  },
+  {
+   "type": "find_results_on",
+   "rank_group": 1,
+   "rank_absolute": 4,
+   "items": [
+    {
+     "title": "3 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale in London",
+     "domain": "www.gumtree.com",
+     "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/london"
+    },
+    {
+     "title": "Staffordshire Bull Terrier Puppies & Dogs for sale in London",
+     "domain": "www.freeads.co.uk",
+     "url": "https://www.freeads.co.uk/london/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    },
+    {
+     "title": "staffy puppies - Dogs & Puppies, For Sale in London",
+     "domain": "www.preloved.co.uk",
+     "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/london/staffy+puppies"
+    }
+   ]
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 1,
+   "rank_absolute": 5,
+   "domain": "ukstaffypups.uk",
+   "title": "Elite Staffy Puppies",
+   "url": "https://ukstaffypups.uk/staffy-puppies-for-sale",
+   "description": "No reviews · Dog breeder · Open 24 hours · Provides: Pets for sale"
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 2,
+   "rank_absolute": 6,
+   "title": "Staffy Puppies For Sale UK",
+   "description": "No reviews · Pet Shop · Open 24 hours · [website was a WhatsApp link; dropped]"
+  },
+  {
+   "type": "local_pack",
+   "rank_group": 3,
+   "rank_absolute": 7,
+   "domain": "staffordshirebullterrierkennel.com",
+   "title": "Staffordshire Bull Terrier Puppies For Sale",
+   "url": "https://staffordshirebullterrierkennel.com/",
+   "description": "Open 24 hours · \"Easiest way to find a great puppy.\" · phone shown: yes (a +1 US number; dropped) · rating 3.8 from 22"
+  },
+  {
+   "type": "organic",
+   "rank_group": 4,
+   "rank_absolute": 8,
+   "domain": "www.freeads.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies and Dogs for sale in ...",
+   "url": "https://www.freeads.co.uk/london/buy-sell/pets/dogs/staffordshire-bull-terrier/",
+   "website_name": "Freeads",
+   "description": "Find 242 Staffordshire Bull Terrier for sale on Freeads Pets in London. Give a puppy a forever home or rehome a rescue. Create new dog alerts."
+  },
+  {
+   "type": "organic",
+   "rank_group": 5,
+   "rank_absolute": 9,
+   "domain": "www.puppies.co.uk",
+   "title": "Staffordshire Bull Terrier puppies for Sale near me in ...",
+   "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/london",
+   "website_name": "Puppies.co.uk",
+   "description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in London, Greater London near you. £1,200 Last active: 1 week ago Showing 25 per page"
+  },
+  {
+   "type": "organic",
+   "rank_group": 6,
+   "rank_absolute": 10,
+   "domain": "www.pets4homes.co.uk",
+   "title": "Staffordshire Bull Terrier Puppies for sale",
+   "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+   "website_name": "Pets4Homes",
+   "description": "Find 138 Staffordshire Bull Terrier Puppies for sale on Pets4Homes - UK's largest pet classifieds site to buy and sell puppies near you."
+  },
+  {
+   "type": "organic",
+   "rank_group": 7,
+   "rank_absolute": 11,
+   "domain": "www.preloved.co.uk",
+   "title": "staffy puppies - Dogs & Puppies, For Sale in London",
+   "url": "https://www.preloved.co.uk/classifieds/pets/dogs/for-sale/london/staffy+puppies",
+   "website_name": "Preloved",
+   "description": "Find local staffy puppies in dogs and puppies for sale and rehoming in London. Rehome and Buy with ZERO fees, and give an animal a forever home ..."
+  },
+  {
+   "type": "people_also_ask",
+   "rank_group": 1,
+   "rank_absolute": 12,
+   "items": [
+    "How much does a Staffy puppy cost in the UK?",
+    "Is it better to get a male or female Staffy?",
+    "What are the downsides of Staffies?",
+    "Can Staffies be left alone for 8 hours?"
+   ]
+  },
+  {
+   "type": "organic",
+   "rank_group": 8,
+   "rank_absolute": 13,
+   "domain": "www.staffie-owners.co.uk",
+   "title": "Staffordshire Bull Terrier Dogs And Puppies For Adoption, ...",
+   "url": "https://www.staffie-owners.co.uk/staffies-for-adoption/london",
+   "website_name": "Staffie Owners",
+   "description": "2 days ago — Find 94 Staffie dogs for adoption in London, including rescue and rehoming listings from shelters, breeders and private owners. Read more"
+  },
+  {
+   "type": "organic",
+   "rank_group": 9,
+   "rank_absolute": 14,
+   "domain": "www.champdogs.co.uk",
+   "title": "Staffordshire Bull Terrier Breeders near Peckham, London",
+   "url": "https://www.champdogs.co.uk/breeds/staffordshire-bull-terrier/breeders?pc=SE15",
+   "website_name": "Champdogs",
+   "description": "Only the very best Staffordshire Bull Terrier Breeders near Peckham, London are on Champdogs - The UK's leading pedigree dog breeder website for over 25 ..."
+  }
+ ]
+}

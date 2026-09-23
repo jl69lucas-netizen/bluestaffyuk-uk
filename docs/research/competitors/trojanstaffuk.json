@@ -1,0 +1,228 @@
+{
+ "id": "trojanstaffuk",
+ "root_domain": "trojanstaffuk.com",
+ "analysed_on": "2026-09-23",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffy puppies",
+   "staffordshire bull terrier breeders",
+   "breeders in the uk premium staffy",
+   "staffordshire bull terrier puppies",
+   "staffy breeders specialising in exceptional blue",
+   "breeders focus solely on blue staffies",
+   "staffy puppy",
+   "blue or black staffordshire bull terrier",
+   "staffordshire bull terrier puppies for sale",
+   "staffy puppies for sale",
+   "blue staffy puppies",
+   "staffy puppies and traditional black staffy",
+   "puppies and traditional black staffy",
+   "puppies and traditional black staffy puppies",
+   "staffy breeders",
+   "staffordshire bull terrier licenced breeders",
+   "blue staffy"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 4,
+   "blog": 1,
+   "breed-guide": 3,
+   "care-guide": 1,
+   "contact": 2,
+   "health": 1,
+   "listing": 6
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Birmingham"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "WebSite",
+   "LocalBusiness",
+   "PostalAddress",
+   "Article",
+   "WebPage",
+   "ImageObject",
+   "Person",
+   "Organization"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-23",
+  "values": [
+   {
+    "url": "https://www.trojanstaffuk.com/",
+    "title": "Trojanstaff UK | Staffordshire bull terrier Champion stud dogs",
+    "h1": "STAFFORDSHIRE BULL TERRIER STUD DOGS AND STAFFY PUPPIES. QUALITY BLUE AND BLACK CHAMPIONS",
+    "h2": [
+     "WITH SOME OF THE BEST STAFFORD LINES FROM AROUND THE WORLD",
+     "Breeder licence number 23/00598/AWAAL",
+     "Trusted Staffordshire Bull Terrier Breeders in the UK – Premium Staffy Champion Stud Dogs",
+     "Contact Us – Reserve Your Staffy Puppy Today",
+     "See what our clients have to say about us our reviews at the bottom of this page",
+     "Discover Premium Black and Blue Trojan Puppies for Sale",
+     "Meet the Newest Additions to Our Elite Line-Up",
+     "Unrivalled Studs Producing Elite Puppies",
+     "Meet Our Studs – Champions of Temperament and Quality",
+     "Comprehensive Stud Services – Tailored to Your Needs",
+     "Our Promise: Ethics, Care, and Quality",
+     "Hear from Our Puppy Owners!",
+     "DNA tests by clicking on the Image. Kennel Club approved DNA testing results.",
+     "Contact Us",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/staffy-puppies",
+    "title": "Trojanstaff UK exceptional  high quality Staffy puppies",
+    "h1": "Staffy puppies for sale",
+    "h2": [
+     "Staffordshire Bull Terrier Puppies – Champion Bloodlines & Kennel Club Registered",
+     "Subscribe to our Trojanbulls newsletter • Don’t miss out on the latest Litters!",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/how-we-roll",
+    "title": "Trojanstaff UK | How We Roll",
+    "h1": "Trojanstaff UK Staffordshire bull terrier  licenced breeders",
+    "h2": [
+     "How We Roll",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/about-the-staffordshire-bull-terrier",
+    "title": "Trojanstaff UK | The Staffordshire bull terrier",
+    "h1": "About the Staffordshire bull terrier",
+    "h2": [
+     "History",
+     "Above and below are some of the classic dogs of their time"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/contact",
+    "title": "Trojanstaff UK | Contact us",
+    "h1": "Stud enquiries, Puppy Waiting List or K9 Fertility Service",
+    "h2": [
+     "Contact Us",
+     "Let's Chat!"
+    ]
+   },
+   {
+    "url": "https://www.trojanstaffuk.com/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide",
+    "title": "Staffordshire Bull Terrier Health & Wellbeing: A Comprehensive Guide",
+    "h1": "",
+    "h2": [
+     "Diet and Nutrition for a Thriving Staffy",
+     "Exercise and Physical Activity: Building a Strong and Happy Staffy",
+     "Mental Enrichment and Stimulation: Keeping Your Staffy Engaged",
+     "Preventative Healthcare: Ensuring a Long and Healthy Life",
+     "Grooming and Skin Care: Maintaining a Healthy Coat",
+     "Conclusion"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": true,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L-2-HGA",
+    "HC-HSF4",
+    "PHPV/PPSC",
+    "Hip Dysplasia",
+    "BVA Eye Screening"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": "over a decade",
+   "town": "Basingstoke",
+   "phone_shown": true,
+   "email_shown": true,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1120,
+   "url_count": 41,
+   "h2_per_page": {
+    "https://www.trojanstaffuk.com/": 15,
+    "https://www.trojanstaffuk.com/staffy-puppies": 3,
+    "https://www.trojanstaffuk.com/how-we-roll": 2,
+    "https://www.trojanstaffuk.com/about-the-staffordshire-bull-terrier": 2,
+    "https://www.trojanstaffuk.com/contact": 2,
+    "https://www.trojanstaffuk.com/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide": 6
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 18,
+   "topics": [
+    "breed health and wellbeing: diet, exercise, enrichment, preventive care, grooming"
+   ],
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "post URLs carry no dates and only one post (one date) was fetched"
+   },
+   "sampled_word_counts": [
+    1147
+   ]
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 31,
+   "video_present": false,
+   "alt_text": "descriptive",
+   "alt_missing": 0
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "phone",
+    "email",
+    "form",
+    "visit",
+    "online-deposit"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": "Non-refundable deposit, paid online through a third-party pet marketplace once a puppy is picked at about four weeks; the balance is settled on collection at eight to nine weeks.",
+   "steps_to_enquire": 1,
+   "urgency_signals": [
+    "waiting-list"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": false,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run in this pilot"
+   }
+  }
+ },
+ "key_insight": "Trojanstaff wins on proof, not pages: a printed licence number, named DNA tests and champion bloodlines on the homepage, plus a written step-by-step buying journey; but it has no city pages, no prices and a homepage that overflows a 375px screen, so BSUK can match its proof and beat it on local pages and mobile."
+}

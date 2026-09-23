@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BSUK LLM citation intel",
+  "description": "docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json, written by bsuk-llm-keyword-intel from one AI engine's answer to the page's buyer question; read by bsuk-strategy-synthesizer and the page builders. Unfetched parts are {status: NOT FETCHED, reason}. Checked by tests/py/test_llm_intel.py (also runnable on a file: python3 tests/py/test_llm_intel.py <file>).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["slug", "date", "engine", "endpoint", "location", "query", "query_source", "stale", "fetched", "raw",
+               "answer_text", "paid_this_run", "bsuk_cited", "citations", "local_businesses",
+               "citation_gap", "risks", "page_source", "entities", "format", "llm_mentions"],
+  "properties": {
+    "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
+    "date": {"$ref": "#/$defs/date"},
+    "engine": {"const": "chatgpt"},
+    "endpoint": {"const": "ai_optimization_chat_gpt_scraper"},
+    "location": {"const": "United Kingdom"},
+    "query": {"type": "string", "minLength": 1, "pattern": "\\S"},
+    "query_source": {
+      "type": "object", "additionalProperties": false, "required": ["from", "gap_matrix", "gap_topics"],
+      "properties": {
+        "from": {"enum": ["city", "question-file", "page-map"]},
+        "gap_matrix": {"type": ["string", "null"], "pattern": "^docs/research/gap-matrix-\\d{4}-\\d{2}-\\d{2}\\.md$"},
+        "gap_topics": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "stale": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "fetched": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "fetched_on"],
+       "properties": {"status": {"const": "ok"}, "fetched_on": {"$ref": "#/$defs/date"}}}
+    ]},
+    "raw": {"type": ["string", "null"], "pattern": "^data/queries/raw/[a-z0-9-]+/ai_engines\\.response\\.json$"},
+    "answer_text": {"enum": ["verbatim", "summary", null]},
+    "paid_this_run": {"type": "boolean"},
+    "bsuk_cited": {"type": ["boolean", "null"]},
+    "citations": {"type": "array", "items": {"$ref": "#/$defs/site"}},
+    "local_businesses": {"type": "array", "items": {"oneOf": [{"$ref": "#/$defs/site"}, {"$ref": "#/$defs/named_site"}]}},
+    "citation_gap": {"type": "array", "uniqueItems": true, "items": {"$ref": "#/$defs/id"}},
+    "risks": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["domain", "registry_id", "reason"],
+      "properties": {"domain": {"$ref": "#/$defs/domain"}, "registry_id": {"$ref": "#/$defs/id"},
+                     "reason": {"type": "string", "minLength": 1}}}},
+    "page_source": {
+      "type": "object", "additionalProperties": false, "required": ["kind", "path", "provisional", "note"],
+      "properties": {
+        "kind": {"enum": ["dist", "question-file", "page-map", "none"]},
+        "path": {"type": ["string", "null"]},
+        "provisional": {"type": "boolean"},
+        "note": {"type": "string"}
+      }
+    },
+    "entities": {"type": "array", "items": {
+      "type": "object", "additionalProperties": false, "required": ["entity", "kind", "on_page", "band"],
+      "properties": {
+        "entity": {"type": "string", "minLength": 1, "pattern": "^[a-z0-9][a-z0-9 '&-]*$"},
+        "kind": {"enum": ["safety", "other"]},
+        "on_page": {"type": "boolean"},
+        "band": {"enum": ["high", "medium"]}
+      }}},
+    "format": {"oneOf": [
+      {"$ref": "#/$defs/not_fetched"},
+      {"type": "object", "additionalProperties": false, "required": ["status", "list", "length", "words", "opening"],
+       "properties": {
+         "status": {"const": "ok"},
+         "list": {"enum": ["numbered", "bulleted", "table", "paragraphs"]},
+         "length": {"enum": ["short", "medium", "long"]},
+         "words": {"type": "integer", "minimum": 0},
+         "opening": {"enum": ["recommendation", "definition", "question", "statistic", "statement"]}
+       }}
+    ]},
+    "llm_mentions": {"$ref": "#/$defs/not_fetched"}
+  },
+  "$defs": {
+    "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
+    "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+    "domain": {"type": "string", "pattern": "^([a-z0-9-]+(\\.[a-z0-9-]+)+|site_url_placeholder)$"},
+    "not_fetched": {
+      "type": "object", "additionalProperties": false, "required": ["status", "reason"],
+      "properties": {"status": {"const": "NOT FETCHED"}, "reason": {"type": "string", "minLength": 1}}
+    },
+    "site": {
+      "type": "object", "additionalProperties": false, "required": ["domain", "registry_id", "tier", "platform"],
+      "properties": {
+        "domain": {"$ref": "#/$defs/domain"},
+        "platform": {"type": "boolean", "description": "a hosted-platform seller (blogspot.com, wixsite.com ...): never a registry candidate"},
+        "registry_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "tier": {"enum": [1, 2, 3, 4, 5, null]}
+      }
+    },
+    "named_site": {
+      "description": "a local business the answer names with no link (a brand entity in the local_business category): mapped to a registry entry only by its exact name, which gives it that entry's domain",
+      "type": "object", "additionalProperties": false, "required": ["name", "domain", "registry_id", "tier", "platform"],
+      "properties": {
+        "name": {"type": "string", "minLength": 1, "pattern": "\\S"},
+        "domain": {"oneOf": [{"$ref": "#/$defs/domain"}, {"type": "null"}]},
+        "platform": {"const": false},
+        "registry_id": {"oneOf": [{"$ref": "#/$defs/id"}, {"type": "null"}]},
+        "tier": {"enum": [1, 2, 3, 4, 5, null]}
+      }
+    }
+  }
+}

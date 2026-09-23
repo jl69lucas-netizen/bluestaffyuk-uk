@@ -164,7 +164,7 @@ E-E-A-T Gaps:
 ## Phase 2 — Competitive Structure & Content Gaps
 
 ### Step 2.1 — Fetch Top 3 Competitor Pages
-Use Playwright CLI to fetch the top 3 ranking pages for TARGET_PRIMARY_KEYWORD. Reference `data/competitors.json` for known BSUK competitors: (not ported — source repo only)
+Use Playwright CLI to fetch the top 3 ranking pages for TARGET_PRIMARY_KEYWORD. Reference `data/competitors.json` for known BSUK competitors:
 
 ```bash
 # Fetch competitor page and extract headings

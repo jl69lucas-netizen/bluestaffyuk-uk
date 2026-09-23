@@ -1,0 +1,264 @@
+{
+ "id": "pets4homes",
+ "root_domain": "pets4homes.co.uk",
+ "analysed_on": "2026-09-23",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffordshire bull terrier for sale",
+   "staffordshire bull terrier puppies",
+   "staffy puppies",
+   "sbt puppy",
+   "blue staffordshire bull terrier",
+   "blue staffie",
+   "blue staffordshire bull terrier puppies",
+   "staffordshire bull terrier blue",
+   "blue blond staffie puppy for sale",
+   "blue blond staffie",
+   "kc registered staffordshire bull terrier",
+   "puppy for staffordshire bull terrier",
+   "price of a staffy puppy",
+   "price of a staffy",
+   "staffordshire bull terrier puppy",
+   "blue staffy",
+   "blue fawn staffy",
+   "staffy puppies for sale",
+   "staffordshire bull terrier mix for sale",
+   "staffordshire bull terrier in bristol",
+   "staffordshire bull terrier in coventry",
+   "staffordshire bull terrier in essex",
+   "staffordshire bull terrier in nottingham",
+   "staffordshire bull terrier in glasgow",
+   "staffordshire bull terrier puppies for sale",
+   "staffordshire bull terrier in leeds",
+   "blue and black staffy puppies",
+   "blue and black staffy",
+   "kc registered red brindle staffy puppies",
+   "kc registered red brindle staffy",
+   "sbt puppies",
+   "kc registered staffordshire bull terrier puppies",
+   "blue american staffies",
+   "staffy pups for sale",
+   "blue pied staffordshire bull terrier puppies"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "blog": 42,
+   "breed-guide": 6,
+   "city": 29,
+   "health": 5,
+   "listing": 290
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Aberdeen",
+   "Birmingham",
+   "Bristol",
+   "Cardiff",
+   "Coventry",
+   "Dundee",
+   "Edinburgh",
+   "Essex",
+   "Glasgow",
+   "Hull",
+   "Leeds",
+   "Leicester",
+   "Liverpool",
+   "London",
+   "Manchester",
+   "Nottingham",
+   "Oxford",
+   "Sunderland",
+   "York"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "Organization"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-23",
+  "values": [
+   {
+    "url": "https://www.pets4homes.co.uk/",
+    "title": "Pets4Homes | Puppies for sale,  Dogs for sale, Kittens for sale in UK",
+    "h1": "A safe start to a lifelong friendship",
+    "h2": [
+     "At Pets4Homes our top priority is the safety and welfare of all pets rehomed through our site",
+     "Latest Articles",
+     "Popular Cat Breeds",
+     "Popular Dog Breeds",
+     "Puppies for sale",
+     "Kittens and cats for sale",
+     "Horses for sale",
+     "Other pets for sale",
+     "Most popular dog breeds",
+     "Most popular cat breeds",
+     "Most popular cities",
+     "Article categories"
+    ]
+   },
+   {
+    "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/",
+    "title": "Staffordshire Bull Terrier Puppies for sale | Pets4Homes",
+    "h1": "Staffordshire Bull Terrier Puppies for sale in the UK",
+    "h2": [
+     "137 Puppies found"
+    ]
+   },
+   {
+    "url": "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/",
+    "title": "Staffordshire Bull Terrier Puppies for sale in Manchester, Greater Manchester | Pets4Homes",
+    "h1": "Staffordshire Bull Terrier Puppies for sale in Manchester, Greater Manchester",
+    "h2": [
+     "28 Puppies found"
+    ]
+   },
+   {
+    "url": "https://support.pets4homes.co.uk/en/support/solutions/articles/47001254375-advice-for-buying-and-advertising-pets",
+    "title": "Advice for buying and advertising pets : Pets4Homes",
+    "h1": "",
+    "h2": [
+     "Pet advice for buyers",
+     "Rehoming checklist for sellers",
+     "Are you looking to stud?"
+    ]
+   },
+   {
+    "url": "https://www.pets4homes.co.uk/pet-advice/homemade-dog-deterrents-that-are-safe-for-your-dog.html",
+    "title": "Dog Deterrent Spray: Safe Homemade Options | Pets4Homes",
+    "h1": "Dog Deterrent Spray: Safe Homemade Options",
+    "h2": [
+     "Before You Start Making Your Dog Deterrent",
+     "How to Make Safe Homemade Dog Deterrent Sprays: 4 Effective Recipes",
+     "Important Safety Tips and Considerations",
+     "What smells do dogs hate the most?",
+     "Natural homemade deterrent recipes",
+     "Deterring dogs from specific areas of your garden",
+     "Stopping dogs from fouling outside your home",
+     "Related articles",
+     "Summary: Safe Dog Deterrents You Can Make at Home"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L2-HGA",
+    "HC-HSF4"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0,
+   "id_verified_badges": true,
+   "licensed_breeder_badges": true,
+   "seller_star_ratings_shown": true
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1285,
+   "url_count": 491,
+   "h2_per_page": {
+    "https://www.pets4homes.co.uk/": 12,
+    "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/": 1,
+    "https://www.pets4homes.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/": 1,
+    "https://support.pets4homes.co.uk/en/support/solutions/articles/47001254375-advice-for-buying-and-advertising-pets": 3,
+    "https://www.pets4homes.co.uk/pet-advice/homemade-dog-deterrents-that-are-safe-for-your-dog.html": 9
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 3,
+   "topics": [
+    "dog behaviour at home: safe homemade deterrent sprays"
+   ],
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "post URLs carry no dates and only one post (one date) was fetched"
+   },
+   "sampled_word_counts": [
+    1342
+   ]
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 26,
+   "video_present": false,
+   "alt_text": "descriptive",
+   "alt_missing": 0
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "visit",
+    "online-deposit"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£75",
+    "£200",
+    "£250",
+    "£700",
+    "£782",
+    "£1,000",
+    "£1,200",
+    "£1,500",
+    "£1,600",
+    "£1,750",
+    "£1,800",
+    "£1,850",
+    "£2,000",
+    "£2,200",
+    "£2,250",
+    "£2,300",
+    "£2300",
+    "£2,500",
+    "£2,600",
+    "£2,700",
+    "£2,800",
+    "£3,000"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": [
+    "ready-date",
+    "few-left"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run in this pilot"
+   }
+  }
+ },
+ "key_insight": "Pets4Homes owns the SERP by scale: one templated breed-plus-place listing page per town, each with a live puppy count, a breed blurb, a price FAQ and a block of long-tail colour and town links. BSUK cannot match the volume, but it can beat the template on depth: real breeder proof, one litter's facts and a city page that answers the questions the classifieds page leaves blank."
+}

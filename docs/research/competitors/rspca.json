@@ -1,0 +1,206 @@
+{
+ "id": "rspca",
+ "root_domain": "rspca.org.uk",
+ "analysed_on": "2026-09-23",
+ "keywords": {
+  "status": "ok",
+  "values": []
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 2,
+   "blog": 2,
+   "care-guide": 20,
+   "contact": 9,
+   "faq": 2,
+   "health": 18,
+   "listing": 5,
+   "price": 6,
+   "reviews": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": []
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": []
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-23",
+  "values": [
+   {
+    "url": "https://www.rspca.org.uk/",
+    "title": "The Largest Animal Welfare Charity in the UK | RSPCA - RSPCA - rspca.org.uk",
+    "h1": "Animal welfare is everyone's welfare",
+    "h2": [
+     "Advice",
+     "Extreme conformations",
+     "Fashion victims: End the trend",
+     "appeal",
+     "Help transform animals' lives",
+     "Help transform animals' lives",
+     "Together for animals",
+     "Where your money goes",
+     "Make a donation",
+     "Useful Links",
+     "Help and Support",
+     "RSPCA Sites",
+     "Useful Links",
+     "Help and Support",
+     "RSPCA Sites"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy",
+    "title": "What to Consider When Buying a Puppy - RSPCA - rspca.org.uk",
+    "h1": "Buying a puppy",
+    "h2": [
+     "Pet cost calculator",
+     "Buying from a breeder",
+     "Which dog is right for your family?",
+     "Buying a puppy from a breeder",
+     "RSPCA Pet Insurance",
+     "Taking your new puppy home",
+     "Find out more"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/pedigreedogs/health",
+    "title": "Pedigree dogs health problems - RSPCA - rspca.org.uk",
+    "h1": "Pedigree dogs' health problems",
+    "h2": [
+     "Selective breeding",
+     "Exaggerated features that can cause dogs to suffer",
+     "Stopping health problems in pedigree and purebred dogs",
+     "What can we do to help?",
+     "When getting a dog",
+     "Looking beyond looks",
+     "Rescue is the best breed",
+     "Download factsheets",
+     "More advice on buying a puppy"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/getinvolved/campaign/puppytrade/facts",
+    "title": "404 - RSPCA - rspca.org.uk",
+    "h1": "Whoops! Looks like a dog may have run off with that page",
+    "h2": []
+   },
+   {
+    "url": "https://www.rspca.org.uk/findapet/adopt/dog",
+    "title": "How to Adopt a Rescue Dog or Puppy - RSPCA - rspca.org.uk",
+    "h1": "How to adopt a dog",
+    "h2": [
+     "Jump to:",
+     "Dog adoption process",
+     "Find a pet",
+     "Before you apply",
+     "What we need from you",
+     "Dog adoption fees",
+     "Understanding the cost of owning a dog",
+     "Frequently asked questions",
+     "Further resources",
+     "Is adopting or fostering a dog right for you?"
+    ]
+   },
+   {
+    "url": "https://www.rspca.org.uk/adviceandwelfare/costofliving/petcalculator",
+    "title": "Pet Cost Calculator - RSPCA - rspca.org.uk",
+    "h1": "How much will a pet cost?",
+    "h2": [
+     "Pet cost calculator",
+     "Choose your ideal pet"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0,
+   "registered_charity_number_shown": true
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1395,
+   "url_count": 477,
+   "h2_per_page": {
+    "https://www.rspca.org.uk/": 15,
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy": 7,
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/pedigreedogs/health": 9,
+    "https://www.rspca.org.uk/getinvolved/campaign/puppytrade/facts": 0,
+    "https://www.rspca.org.uk/findapet/adopt/dog": 10,
+    "https://www.rspca.org.uk/adviceandwelfare/costofliving/petcalculator": 2
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 2,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no blog post was fetched"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "post URLs carry no dates and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no blog post was fetched"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 24,
+   "video_present": true,
+   "alt_text": "missing",
+   "alt_missing": 17
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form",
+    "visit",
+    "phone"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run in this pilot"
+   }
+  }
+ },
+ "key_insight": "RSPCA's fetched pages are generic puppy-buying and anti-puppy-farm advice that never name the breed and carry no schema, yet the registry has it ranking for Staffy buying and price searches — so its pull is domain authority, not breed content. BSUK can beat it on intent with a Staffy-specific responsible-buying and price guide that answers the same welfare checks for this breed."
+}

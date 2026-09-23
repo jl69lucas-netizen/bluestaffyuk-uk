@@ -46,6 +46,15 @@
     "bsuk-comparison-builder": {
       "tier": "tier_high"
     },
+    "bsuk-competitive-keyword-gap-agent": {
+      "tier": "tier_high"
+    },
+    "bsuk-competitor-intel": {
+      "tier": "tier_max"
+    },
+    "bsuk-competitor-registry": {
+      "tier": "tier_medium"
+    },
     "bsuk-contact-form-updater": {
       "tier": "tier_medium"
     },
@@ -88,6 +97,9 @@
     "bsuk-keyword-verifier": {
       "tier": "tier_medium"
     },
+    "bsuk-llm-keyword-intel": {
+      "tier": "tier_high"
+    },
     "bsuk-location-builder": {
       "tier": "tier_max"
     },
@@ -123,6 +135,9 @@
     },
     "bsuk-site-hygiene-agent": {
       "tier": "tier_medium"
+    },
+    "bsuk-strategy-synthesizer": {
+      "tier": "tier_max"
     },
     "bsuk-structure-architect": {
       "tier": "tier_max"

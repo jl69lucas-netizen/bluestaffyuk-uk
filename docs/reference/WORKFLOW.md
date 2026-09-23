@@ -97,11 +97,15 @@ Before any work begins, verify these exist:
 | Puppy inventory | `data/puppies.json` | Ships with the repo — the six locked puppies |
 | Session brief | a dated brief under docs/superpowers/sessions/ | Run the `grill-me` skill |
 
-A competitor registry, a traffic baseline and a gap matrix were prerequisites in the
-source repo. None exists here: `@bsuk-competitor-registry`, `@bsuk-competitor-intel` and
-`@bsuk-gsc-analytics` are all deferred to project 6 (see `data/port-manifest.json`), and
-the files they wrote were not ported (not ported — source repo only). Competitor research
-is done by hand per page under seo-rules Rule 11 until then.
+The competitor registry, the intel reports and the gap matrix exist (competitor intelligence
+build, 2026-09-23): `@bsuk-competitor-registry` writes data/competitors.json after the user
+approves the list, `@bsuk-competitor-intel` writes docs/research/competitors/<id>.json and
+`.md` (plus the BSUK profile with `--bsuk`), and `python3 scripts/gap_matrix.py --write` builds
+docs/research/gap-matrix-<date>.md from them (`npm run check:gaps` keeps it honest). Run them in
+this order: registry → intel (+ `--bsuk`) → `gap_matrix.py --write` →
+`@bsuk-competitive-keyword-gap-agent` → `@bsuk-llm-keyword-intel` → `@bsuk-strategy-synthesizer`.
+The traffic baseline is still deferred to project 6 (`@bsuk-gsc-analytics`; GSC is NOT
+FETCHED until the domain is live).
 
 **Hard Gate:** No page enters Sprint 2 (Content Production) until `data/page-map.json`
 exists and `@bsuk-content-architect` has assigned a framework to the target page.
@@ -111,20 +115,28 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
 ## Sprint 0 — Intelligence Gathering
 *Run once per project, then quarterly. Takes ~1 session.*
 
-### Parallel Tracks (run all three simultaneously — three `Agent` calls in one message, results merged by the parent)
+### Tracks (run in dependency order — not all at once)
+
+Order: Track A's registry, then intel `--all`, then intel `--bsuk` and the gap-matrix rebuild;
+then the keyword-gap list (Sprint 1 Step 0a); then Track B's LLM intel per page (Step 0b); then
+the strategy synthesizer (Step 0c). `@bsuk-gsc-analytics` is deferred to project 6. Only
+independent runs of one step — intel on several competitors, LLM intel on several pages — go
+out as parallel `Agent` calls in one message.
 
 **Track A — Competitive Intelligence**
 ```
 @bsuk-competitor-registry
-  → Discover 30 competitors from 10 seed keywords
-  → Classify: direct breeders / classifieds / informational / marketplaces
-  → USER GATE: approve competitor list
-  → Output: data/competitors.json (deferred to project 6, see data/port-manifest.json)
+  → Discover about 25 competitors (30 at most) from about ten seed keywords
+  → Classify into five tiers: 1 breeder · 2 marketplace or directory · 3 breed information · 4 rescue or non-commercial · 5 suspect seller (never linked)
+  → USER GATE: approve competitor list (the proposal in docs/research/)
+  → Output: data/competitors.json (checked by npm run check:competitors)
 
 @bsuk-competitor-intel --all
-  → Analyze all 30 competitors across 10 metric categories
-  → Output: docs/research/competitor-[name]-[date].md (×30)
-  → Output: docs/research/gap-matrix-[date].md
+  → Analyse every registry competitor across 10 metric categories
+  → Output: docs/research/competitors/<id>.json + <id>.md, then scripts/gap_matrix.py --write
+  → Then @bsuk-competitor-intel --bsuk (BSUK profile) and scripts/gap_matrix.py --write again
+  → The matrix is rebuilt after every intel run; the rebuild after --bsuk is the one to read
+  → Output: docs/research/gap-matrix-[date].md (checked by npm run check:gaps)
 ```
 
 **Track B — Traffic & LLM Intelligence**
@@ -133,15 +145,17 @@ exists and `@bsuk-content-architect` has assigned a framework to the target page
   → Analyze data/analytics/ GSC CSV exports
   → Output: docs/reports/top-pages.md (deferred to project 6) (clicks, impressions, positions)
 
-@bsuk-llm-keyword-intel
-  → Query ChatGPT + Perplexity + Gemini + Google AIO for top keywords
-  → Record LLM Visibility scores in the traffic baseline (deferred to project 6)
-  → Flag keywords where BSUK is not cited in top 3 AI responses
-  → Output: LLM Visibility column in the traffic baseline (deferred to project 6)
+@bsuk-llm-keyword-intel <slug>
+  → One engine per page (DataForSEO ChatGPT scraper through the spend guard; reuses a saved answer)
+  → Records who the answer cites (BSUK or registry competitors), missing entities, answer format
+  → Output: docs/research/llm-intel/<slug>-[date].json
+  → Runs after the gap matrix (its rows feed the question as GAP_TOPICS) and the keyword-gap list (Sprint 1 Step 0a), and before the strategy synthesizer (Sprint 1 Step 0c)
 ```
 
+**Stop tokens** (each agent stops until the controller sends its exact wording): registry `spend approved: <seeds>; balance $<n>[; refresh]`, then `approved: docs/research/competitor-registry-proposal-<date>.md`; intel `fetch approved: --all` or `fetch approved: --tier <n>` (keyword-gap re-fetches take `fetch approved: --all` too); llm-intel `spend approved: <slug>; balance $<n>[; refresh]`. `spend declined` / `fetch declined` run without the call.
+
 **Note — Session Orientation moved to Sprint 0.5:**
-grill-me runs AFTER Sprint 0 Gate passes (gap matrix + top-pages must exist). See Sprint 0.5 block below.
+grill-me runs AFTER Sprint 0 Gate passes (the gap matrix must exist; top-pages is deferred to project 6). See Sprint 0.5 block below.
 
 ### SESSION CONTEXT Block (output of grill-me)
 ```
@@ -163,7 +177,7 @@ SESSION CONTEXT:
 
 ### Sprint 0 Gate
 Before proceeding to Sprint 0.5:
-- [ ] Per-page competitor research done by hand under seo-rules Rule 11 — the registry, gap matrix and traffic baseline agents are all deferred to project 6 (see `data/port-manifest.json`)
+- [ ] Competitor research current: `npm run check:competitors` and `npm run check:gaps` pass on a dated gap matrix (per-page research under seo-rules Rule 11 still applies) — the registry and gap matrix exist; the traffic baseline is deferred to project 6 (see `data/port-manifest.json`)
 - [ ] `data/page-map.json` current (`python3 scripts/build_page_board.py`)
 
 ---
@@ -198,25 +212,29 @@ Before proceeding to Sprint 1:
 ### Sequence (in order)
 
 ```
-Step 0: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
-  → Reads existing research only (gap matrix, competitor-intel, GSC, LLM-intel) — does NOT re-run Sprint 0
+Step 0a: bsuk-competitive-keyword-gap-agent
+  → Reuses the page lists in the competitor-intel reports and the BSUK profile (no new fetch unless a report is stale; more than one stale → `fetch approved: --all`)
+  → Scores gaps 1–10 with its script; every gap is proved by a competitor URL
+  → Score ≥7 = build this page (enters content queue); a gap whose BSUK page is a noindex stub routes as "rebuild the stub <url>" (project 5)
+  → Output: docs/research/keyword-gap-[date].md
+
+Step 0b: bsuk-llm-keyword-intel <slug> (one run per page in scope)
+  → Output: docs/research/llm-intel/<slug>-[date].json (see Sprint 0 Track B)
+
+Step 0c: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
+  → Reads existing research only (gap matrix, keyword-gap list, competitor reports, LLM intel; GSC is NOT FETCHED until project 6) — does NOT re-run Sprint 0
+  → Needs Steps 0a and 0b first: registry → intel (+ --bsuk) → gap_matrix.py --write → keyword-gap → llm-intel → strategy-synthesizer
   → Produces TWO reverse-engineered strategies, recommends ONE with a data-grounded WHY + named trade-off
   → Derives the concrete artifact for the cluster (e.g. the 9 blog topics + 1 hub)
-  → Output: a dated file under docs/superpowers/sessions/ → hands the chosen strategy to bsuk-content-architect
+  → Runs scripts/strategy_cite_check.py before handoff
+  → Output: docs/superpowers/sessions/<date>-<topic>-strategy.md → hands the chosen strategy to bsuk-content-architect (explicit path)
 
 Step 1: bsuk-structure-architect
   → Maps all 52 target pages into Silo or Reverse Silo structure
   → Ensures every page is ≤3 clicks from homepage
   → Output: data/page-map.json
 
-Step 2: bsuk-competitive-keyword-gap-agent
-  → Fetches competitor sitemaps + pages via Playwright
-  → Extracts H1/H2/title patterns from each
-  → Scores gaps 1–10 (LICENCE_CLAIM_PLACEHOLDER content gaps flagged high)
-  → Score ≥7 = build this page (enters content queue)
-  → Output: docs/research/keyword-gap-[date].md
-
-Step 3: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
+Step 2: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
   → Creates aggregator hub pages:
     - /blue-staffy-dog-for-sale/ (location hub)
     - /blue-staffy-comparison/ (comparison hub)
@@ -224,12 +242,12 @@ Step 3: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
     - /cites-documentation/ (trust hub)
   → Hub pages link to all their spoke pages
 
-Step 4: bsuk-seasonal-content-agent
+Step 3: bsuk-seasonal-content-agent (not ported — no agent file; skip this step)
   → Builds data/seasonal-calendar.json
   → Major peaks: Spring Puppy Season (Mar–May), Christmas, Valentine's Day, Mother's Day
   → Routes seasonal page briefs to content-architect
 
-Step 5: bsuk-content-architect
+Step 4: bsuk-content-architect
   → Reads: gap matrix + structure.json + the traffic baseline (deferred to project 6)
   → Assigns framework to each page in priority queue:
     | Page Type | Framework |
@@ -267,7 +285,11 @@ Step 5: bsuk-content-architect
 
 1.5. SECTION MAP + COMPONENT SELECTION GATE  ← MANDATORY BEFORE ANY WRITING
    → Based on audit output, list every section from Hero → final CTA
-   → For each section: assign component + variant from docs/reference/components.md
+   → For each section: assign a component from the kit — src/components/kit/ (listed in
+     data/design/components.json, demoed by src/components/kit/_registry.ts at /kit-preview/) —
+     and pick one of the THREE styles the page's board (data/boards/<slug>.json) renders for that
+     section (CLAUDE.md working rules 13, 14, 16; refresh delta per
+     .claude/skills/bsuk-component-refresh/SKILL.md and .claude/skills/bsuk-component-variations/SKILL.md)
    → Show user table: | Section | Content Purpose | Component | Variant |
    → USER APPROVES the full map — explicit approval required
    → LOCKED after approval — no component changes after this point
@@ -562,7 +584,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 ☐ First paragraph directly answers primary keyword question (Featured Snippet target)
 ☐ ReviewAggregateSchema present (bsuk-trust-signals-agent)
 ☐ BreadcrumbList schema present (bsuk-section-builder)
-☐ LLM Visibility score recorded in the traffic baseline (deferred to project 6) (bsuk-llm-keyword-intel)
+☐ LLM intel file written for the page (bsuk-llm-keyword-intel); the GSC traffic-baseline score is deferred to project 6
 ☐ LocalBusiness schema on all location pages
 ☐ VideoObject schema if YouTube video embedded (bsuk-video-seo-agent)
 ☐ No language implying wild-caught origin (LICENCE_CLAIM_PLACEHOLDER check)
@@ -575,11 +597,11 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 ### 4c — LLM Visibility Probe (run after page goes live)
 
 ```
-bsuk-llm-keyword-intel [for target keyword]
-  → Queries: ChatGPT + Perplexity + Gemini + Google AIO
-  → Checks: is BSUK cited in top 3 responses for this keyword?
+bsuk-llm-keyword-intel <slug>
+  → Queries one engine (ChatGPT, via DataForSEO through the spend guard) for the page's buyer question
+  → Checks: does the answer cite BSUK, and which registry competitors does it cite?
   → If NOT cited → route to bsuk-non-commodity-content-agent for entity strengthening
-  → Records score in docs/reports/top-pages.md (deferred to project 6)
+  → Output: docs/research/llm-intel/<slug>-[date].json (the GSC traffic-baseline column in docs/reports/top-pages.md is deferred to project 6)
 ```
 
 ---
@@ -708,10 +730,10 @@ lessons never reached the skill that enforces them.*
 
 | Agent | What it checks | Output |
 |-------|---------------|--------|
-| `@bsuk-rank-tracker` | All 30 competitors — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
+| `@bsuk-rank-tracker` | Every competitor in `data/competitors.json` (21 today) — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
 | `@bsuk-branded-search-monitor-agent` | GSC CSV exports for branded queries ("bluestaffyuk", "blue staffy breeder") | Alert if >20% WoW drop; trust query triggers trust-signals-agent |
-| `@bsuk-competitor-pricing-alert-agent` | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
-| `@bsuk-llm-keyword-intel` | ChatGPT + Perplexity + Gemini for top 10 keywords | LLM Visibility scores; flags uncited keywords |
+| `@bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
+| `@bsuk-llm-keyword-intel <slug>` | One engine per page — the ChatGPT scraper through the spend guard (a saved answer is reused) | docs/research/llm-intel/<slug>-[date].json: citations, citation gap, missing entities, answer format |
 
 ### Monthly
 
@@ -742,7 +764,7 @@ Events that trigger agent chains regardless of schedule:
 | **New puppy hatched** | `bsuk-litter-manager` (status: available) | → `bsuk-puppy-personality` → `bsuk-homepage-builder` (litter announcement) → `bsuk-email-newsletter-agent` |
 | **Puppy reserved** | `bsuk-litter-manager` (status: reserved) | → `bsuk-meta-description-agent` (update puppy count in meta) |
 | **Puppy sold** | `bsuk-litter-manager` (status: sold) | → `bsuk-review-collection-agent` (Day 7 trigger) → `bsuk-case-study-agent` (after review received) |
-| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` | → `bsuk-financial-strategist` (reprice check) → `bsuk-meta-description-agent` |
+| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | → `bsuk-financial-strategist` (reprice check) → `bsuk-meta-description-agent` |
 | **Branded search drops >20%** | `bsuk-branded-search-monitor-agent` | → `bsuk-trust-signals-agent` → `bsuk-non-commodity-content-agent` |
 | **New inquiry received** | Manual trigger | → `bsuk-email-lead-nurture-agent` (Day 0 template) |
 | **New YouTube video published** | `bsuk-video-seo-agent` | → `bsuk-external-link-agent` (embed links across relevant pages) |
@@ -783,7 +805,7 @@ START: What are you trying to do?
 │   └── bsuk-website-health skill → bsuk-performance-monitor-agent → bsuk-accessibility-fixer
 
 ├── "Weekly monitoring"
-│   └── [all in parallel] bsuk-rank-tracker + bsuk-branded-search-monitor-agent + bsuk-competitor-pricing-alert-agent + bsuk-llm-keyword-intel
+│   └── [all in parallel] bsuk-rank-tracker + bsuk-branded-search-monitor-agent + bsuk-competitor-pricing-alert-agent (deferred to project 6) + bsuk-llm-keyword-intel
 
 ├── "Deploy a page"
 │   └── bsuk-canonical-fixer → [Sprint 5 inactive until project 6] → bsuk-deploy-verifier → sitemap-agent

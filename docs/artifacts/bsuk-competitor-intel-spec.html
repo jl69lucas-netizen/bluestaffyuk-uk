@@ -1,0 +1,317 @@
+<title>BSUK Competitor Intel Spec</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Competitor intelligence design spec</h1></div>
+<div class="meta"><span class="pill">status: approved</span> <span class="pill">2026-09-23</span><br>docs/superpowers/specs/2026-09-23-competitor-intel-design.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
+Status: approved in brainstorm 2026-09-23. Branch `competitor-intel`, cut from `foundation`
+at `db37ca1` and rebased onto `c9c981c` after `query-augmentation` merged (this build reuses
+that build's spend guard). Closes Known Issue 42. A bridge build before project 5: the gap
+matrix and the chosen strategy are what the 28 city pages, the comparison cluster and the two
+blog posts get planned from.
+</script>
+<script type="text/markdown" data-title="1. Why these agents were not ported">
+Project 2 (system transfer) put "the marketing, email, social and competitor agents" out of
+scope (its spec §10). `data/port-manifest.json` records `competitor-intel`,
+`competitive-keyword-gap-agent`, `llm-keyword-intel` and `strategy-synthesizer` as `deferred`
+("project 6 at the earliest"); `competitor-registry` and `competitor-pricing-alert-agent` were
+never recorded at all (they are among the ten unrecorded files `query-augmentation` Task 12
+catches).
+
+The underlying reason: the chain is data-bound. Each agent reads what the one before it wrote
+(`data/competitors.json` → per-competitor reports → gap matrix → strategy), plus a GSC baseline.
+All of the source repo's data is US parrot data that BSUK's fact lint bans, and GSC is not
+fetchable while the domain is expired. Porting the prompts alone would have produced agents
+with nothing to read. Since then competitor research has been done by hand per page under
+seo-rules Rule 11, and `WORKFLOW.md` still names the missing agents.
+
+Faults found in the source versions, fixed here rather than copied:
+
+- The registry prompt says 30 competitors in 4 tiers; the source registry holds 60 in 6 tiers.
+- Competitor-intel category 3 and the keyword-gap agent produce the same gap list twice, each
+  with its own fetches.
+- Every count ("8/30 competitors") is typed by the model; nothing checks it.
+- The synthesizer's "never fabricate a number" is a sentence, not a check.
+- LLM intel calls four vendor APIs by key; BSUK has none of those keys.
+</script>
+<script type="text/markdown" data-title="2. Decisions">
+| # | Decision | Picked |
+|---|---|---|
+| 1 | Scope | Registry, competitor-intel, keyword-gap, strategy-synthesizer and LLM keyword intel. Pricing alert, rank tracker, branded search, GSC analytics stay deferred to project 6 |
+| 2 | LLM engine access | The DataForSEO connector (ChatGPT scraper, `llm_mentions`, `llm_response`) through the existing spend guard. No new keys |
+| 3 | Registry size | About 25, at most 30, in five tiers (§4) |
+| 4 | Approach | Agents fetch and judge; scripts count, build the matrix and check citations; schema + tests guard the data |
+| 5 | Names | The five agents keep the `bsuk-` names `WORKFLOW.md`, the manifest and existing handoffs already use |
+| 6 | Geography | The 28 cities of `data/locations.json` replace the source's 22 US states |
+| 7 | Marketplaces | Count as competitors (user ruling during `query-augmentation`) |
+</script>
+<script type="text/markdown" data-title="3. Data flow">
+```
+bsuk-competitor-registry ──► data/competitors.json      (after the user approves the list)
+        │
+        ▼
+bsuk-competitor-intel ──► docs/research/competitors/<id>.json + <id>.md
+        │
+        ▼
+scripts/gap_matrix.py ──► docs/research/gap-matrix-<date>.md
+        │
+bsuk-competitive-keyword-gap-agent ──► docs/research/keyword-gap-<date>.md
+        │
+bsuk-llm-keyword-intel ──► docs/research/llm-intel/<slug>-<date>.json
+        │
+        ▼
+bsuk-strategy-synthesizer ──► docs/superpowers/sessions/<date>-<topic>-strategy.md
+        │                     (checked by scripts/strategy_cite_check.py)
+        ▼
+bsuk-content-architect (framework + builder routing); grill-me and bsuk-framework-agent read
+the gap matrix per page
+```
+
+Each step reads files only; none re-runs an earlier step. A missing or stale input (older than
+30 days) is flagged in the output's first lines and the step carries on with what exists.
+</script>
+<script type="text/markdown" data-title="4. The registry">
+`data/competitors.json`, contract in `schemas/competitors.schema.json`:
+
+```json
+{
+  "_meta": { "last_discovery_run": "2026-09-24", "seed_keywords": ["..."], "total": 25 },
+  "competitors": [
+    {
+      "id": "pets4homes",
+      "name": "Pets4Homes",
+      "root_domain": "pets4homes.co.uk",
+      "tier": 2,
+      "seed_hits": [{ "keyword": "blue staffy puppies for sale", "position": 1 }],
+      "cities": ["Manchester"],
+      "priority": "high",
+      "link_allowed": true,
+      "last_analyzed": null,
+      "notes": ""
+    }
+  ]
+}
+```
+
+Tiers: 1 breeder · 2 marketplace or directory · 3 breed-information site · 4 rescue or
+non-commercial · 5 suspect seller (tracked for contrast, never linked).
+
+Priority: high when found on 5+ seed keywords, or a tier-1 breeder in the top 3; medium on 2–4;
+low on 1.
+
+Seed keywords (about ten, final list set in the plan): blue staffy puppies for sale ·
+staffordshire bull terrier puppies for sale uk · blue staffy breeder · staffy puppies for sale
+in the five largest `locations.json` cities · KC registered staffy puppies · staffy puppy price
+uk · blue staffordshire bull terrier.
+
+Discovery: Google organic through the DataForSEO connector first; Firecrawl search as the
+fallback. Bing through DataForSEO is not used (the `query-augmentation` pilot returned results
+for "blue" alone). Results are grouped by root domain and ranked by how often they appear. The
+proposed list goes to the user as a board; the file is written only after "approved".
+
+`tests/py/test_competitors_registry.py`: schema valid; 30 entries at most; root domains only
+(no path, no subdomain but `www` stripped); no duplicate domain; never the site's own domain;
+tier 5 always `link_allowed: false`; every city is in `data/locations.json`; `seed_hits`
+non-empty.
+</script>
+<script type="text/markdown" data-title="5. Competitor intel">
+Modes: `<id>`, `--tier <1-5>`, `--all`. Ten categories from the source, re-based:
+
+1. Trust signals — council breeding licence shown, KC registration, health tests named
+   (e.g. L-2-HGA, HC), vet checks, years breeding, address town, phone, reviews count.
+2. Content depth — homepage words, URL count from `firecrawl_map`, H2 blocks per key page.
+3. Keyword use — transactional, informational, city modifiers, comparison phrases.
+4. Page types — breed guide, care guides, comparison, city pages, blog, FAQ, about, listings,
+   reviews, contact; count of each.
+5. Blog — post count, topics, rough frequency, sample word counts.
+6. Visual assets — image counts, video, alt-text quality.
+7. Schema — JSON-LD types present.
+8. Geography — which of the 28 cities they have a page or a mention for.
+9. Conversion — CTA type, £ prices shown, deposit terms, steps to enquire, urgency.
+10. Technical — mobile, a Lighthouse run where reachable.
+
+Output per competitor: `docs/research/competitors/<id>.json` (every field a script counts;
+`"NOT FETCHED"` where a fetch failed) and `<id>.md` (readable report ending in one key
+insight). `last_analyzed` is updated in the registry. Fetching: Firecrawl first, Playwright
+second. No figure is estimated; competitor wording is summarised, never copied.
+</script>
+<script type="text/markdown" data-title="6. Gap matrix">
+`scripts/gap_matrix.py` reads every `docs/research/competitors/*.json` plus `data/page-map.json`
+and writes `docs/research/gap-matrix-<date>.md`: keyword gaps, page-type gaps, city gaps, schema
+gaps, each row with `N/M` where M counts only competitors whose field was fetched, and a
+separate `not fetched` column. Priority: high at 40%+ of fetched competitors, medium 20–39%,
+low below. The matrix ends with a priority queue of the top ten rows. `--check` re-derives the
+matrix and fails if the committed file differs (added to `check:all`).
+</script>
+<script type="text/markdown" data-title="7. Keyword gap">
+Reads the page lists in the intel `.json` files; fetches again only when a list is older than
+30 days. Compares competitor pages against `data/page-map.json`. Scoring from the source:
+dedicated page +3, in the competitor's top pages +2, BSUK has no page +3, buyer intent +2;
+7+ high (goes to `bsuk-content-architect`), 4–6 medium, below 4 low. Every gap names the
+competitor URL that proves it. Output `docs/research/keyword-gap-<date>.md`. Licence and
+health-testing content gaps are always high (trust content).
+</script>
+<script type="text/markdown" data-title="8. LLM keyword intel">
+Input: a slug; its queries come from the page's question file (`data/queries/<slug>.json`) or,
+failing that, its primary keyword and the matching gap-matrix rows. One engine per page (the
+`query-augmentation` rule), ChatGPT scraper by default with UK location; `llm_mentions` for
+domain-level citation counts. Three layers from the source: entities the answers use that the
+page lacks (3+ answers → high), citations (is BSUK cited; which registry competitors are;
+citation gap when a competitor is and BSUK is not), and answer format (the mirror template).
+Output `docs/research/llm-intel/<slug>-<date>.json`, with the raw response kept under
+`data/queries/raw/<slug>/`.
+</script>
+<script type="text/markdown" data-title="9. Strategy synthesizer">
+Kept from the source: exactly two materially different strategies; each with thesis, target
+clusters, cluster-to-page map, internal-link plan, schema plan, build order, expected outcome,
+risks; one recommendation with a WHY of 3+ data points and the pick's named downside; the first
+three build steps; a concrete artefact table when asked (topic · keyword · score · intent ·
+link role). Reads research only.
+
+`scripts/strategy_cite_check.py <strategy.md>`: every number and every `N/M` in the
+recommendation and artefact table must appear in a file the strategy lists under
+`## Sources`; each source must exist. Fails with the offending line. The synthesizer runs it
+before handing off; a failed check means the strategy is not handed off.
+</script>
+<script type="text/markdown" data-title="10. Spend">
+Paid calls go through the existing guard in `scripts/query_augment.py`: `--preflight SLUG
+--source SOURCE` before the call, `--record ...` straight after it. As merged, the guard caches
+one response per `(slug, source)` pair, only `serp_google` and `ai_engines` are payable (Bing is
+never bought), and two caps apply: `query_budget_usd` $0.50 per slug per day and
+`query_total_budget_usd` $1.00 over the whole log.
+
+This build reuses those two source names instead of adding new ones. Each registry seed keyword
+gets its own pseudo-slug, `registry-<keyword-slug>` (the guard accepts only `[a-z0-9-]`), so each is cached alone and the
+per-slug cap never binds; LLM intel records under the page slug with source `ai_engines` (a page
+that already has an `ai_engines` response from query augmentation reuses it — exit 3 — rather
+than paying again).
+
+Estimates: ten registry searches about $0.50 at the logged $0.05 per call; LLM intel about $0.10
+per page. The log holds $0.20, so the total cap leaves $0.80 — enough for the pilot (§13 step
+12). The user's dashboard read $0.90 on 2026-09-23; if the starting balance was $1.00, the three
+pilot calls really cost about $0.10 together, and Known Issue 45 can set
+`query_typical_call_usd` from that once the user confirms the starting figure. The controller
+asks for the balance again before the first paid run. Firecrawl credits are separate and
+reported at the end of each intel run.
+</script>
+<script type="text/markdown" data-title="11. Failure handling">
+| Failure | Behaviour |
+|---|---|
+| Over budget | Spend guard exit 4; the agent stops and asks. Never falls back to a guess |
+| Cached result | Exit 3; the cached response is reused |
+| Fetch fails (Firecrawl, then Playwright) | Field recorded `NOT FETCHED`; counted separately in the matrix |
+| Input missing or older than 30 days | Flagged at the top of the output; step continues |
+| Registry, matrix or citation check fails | `check:all` fails; nothing downstream reads the data |
+| Tier-5 competitor | May be analysed; never linked (link guard in §12) |
+</script>
+<script type="text/markdown" data-title="12. Guards">
+- `tests/py/test_competitors_registry.py` (§4).
+- `gap_matrix.py --check` and a registry schema check in `check:all`.
+- `strategy_cite_check.py` (§9) with its own tests.
+- The external-link checks refuse any outbound link to a tier-5 `root_domain`.
+- The five agent files pass the existing name/frontmatter test, marker gate, fact lint,
+  path guard and stale-marker checker (no parrot residue, locked £ only, no invented facts).
+- `data/port-manifest.json`: the five entries move from `deferred` to `rebase` with notes. The
+  registry row's current note ("BSUK records competitors per page in `data/queries/<slug>.json`
+  instead — not ported") is replaced: the per-page pool stays as it is and feeds the page's
+  section count; the registry is the national list the gap matrix counts against. The
+  pricing-alert row stays `deferred`.
+- `WORKFLOW.md`: the "deferred to project 6" notes for the five agents are replaced with how
+  to run them.
+</script>
+<script type="text/markdown" data-title="13. Build order">
+1. Rebase onto `foundation` after `query-augmentation` merges (done: `c9c981c`).
+2. Registry schema + test (TDD).
+3. `gap_matrix.py` + tests on fixture reports.
+4. `strategy_cite_check.py` + tests.
+5. Spend-guard source names + tests.
+6. Registry agent.
+7. Competitor-intel agent.
+8. Keyword-gap agent.
+9. LLM-intel agent.
+10. Strategy-synthesizer agent.
+11. Link guard, manifest, `WORKFLOW.md`, `check:all` wiring.
+12. Live pilot (user-approved): registry discovery → board → approval → intel on three
+    competitors → gap matrix → LLM intel for the Manchester page → one strategy.
+13. Close-out: full run on the approved registry only if the user asks; gate report.
+
+Agents written with `superpowers:writing-skills`; scripts by
+`superpowers:test-driven-development`; each task implemented by an Opus subagent with spec and
+quality review.
+</script>
+<script type="text/markdown" data-title="14. Testing">
+Python tests with fixtures and no paid calls: duplicate domains, subdomain stripping, an
+unknown city, tier-5 `link_allowed`, `NOT FETCHED` excluded from `M`, matrix `--check` drift,
+a strategy quoting a figure found in no source, a listed source that does not exist, spend
+guard refusing an unknown source name. Agent files through the existing instruction-tree
+tests. The live pilot (build step 12) is the end-to-end test; the user reviews its output
+before any full run.
+</script>
+<script type="text/markdown" data-title="15. Out of scope">
+Pricing alert, rank tracker, branded-search monitor and GSC analytics (project 6, once the
+domain is live); financial and social strategists; `bsuk-visual-intelligence`; Reddit-modifier
+pages; running intel on all 25 competitors (only on request after the pilot).
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK — Competitor intelligence build\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

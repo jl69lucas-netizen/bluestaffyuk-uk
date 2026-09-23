@@ -114,7 +114,7 @@ After gap matrix, output:
 
 ## BSUK Competitor Analysis Scope
 
-For any keyword, analyze top 5 competitors from `data/competitors.json`. (not ported — source repo only)
+For any keyword, analyze top 5 competitors from `data/competitors.json`.
 BSUK differentiator to always check: LICENCE_CLAIM_PLACEHOLDER/documentation trust signals (most competitors are silent on this — it is BSUK's primary gap opportunity).
 
 ---
