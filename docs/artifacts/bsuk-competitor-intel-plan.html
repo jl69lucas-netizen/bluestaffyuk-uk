@@ -39,13 +39,28 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 </style>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · Bridge build before project 5</p><h1 class="title">Competitor intelligence implementation plan</h1></div>
-<div class="meta"><span class="pill">status: ready</span> <span class="pill">2026-09-23</span><br>docs/superpowers/plans/2026-09-23-competitor-intel.md</div></header>
+<div class="meta"><span class="pill">status: executed</span> <span class="pill">2026-09-23</span><br>docs/superpowers/plans/2026-09-23-competitor-intel.md</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
 <div id="doc"></div>
 </div>
 <script type="text/markdown" data-title="Context">
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+> **Executed 2026-09-23** on `competitor-intel`: `a116055..638a6d4`, 49 commits from the spec to the pilot's strategy, then the close-out's fix commit `7ece4ff` and its docs commit. Every task ran with an implementer, a spec review and a quality review. Deviations from the task text below, per task — the detail is in the spec's §16 "Amendments during execution", and the evidence in `docs/reports/competitor-intel-gate-report.md`:
+>
+> - **Task 1** (`ad59e0a`, `ecca5b8`): registrable-domain rule instead of "any subdomain"; link guard hardened (every URL form, malformed JSON reported, files-scanned count).
+> - **Task 2** (`8811479`, `ac0cb50`): hardening beyond the plan's code — escaped cells, cities vs `data/locations.json` (exit 6), dated matrix names only, reports validated first and loaded once, schema `\S` and case-exact types, `--help` 0, diff lines on `--check`.
+> - **Task 3** (`0f7849e`, `5d6cfc9`, `8743ed5`): whole-token figure matching and wider extraction; years need a cue; sources allowlisted; top-N checked; pick-section guard.
+> - **Task 4** (`4f897a2`, `ef8839b`): as planned, plus per-source typical cost, the cap boundary, today's page cap and the Bing refusal pinned.
+> - **Task 5** (`a04a8a7`…`4a6e861`): two stop tokens (spend with balance, then approval of the proposal); the proposal lives in `docs/research/`, not `data/`; refresh replaces hits; platform sellers noted on the platform entry.
+> - **Task 6** (`0e7d6cc`…`503432c`): homepage gate, keyword and page-type rules by script, map-and-scrape only, sitemap-first `--bsuk` with indexable URLs only; the contacts test scans `docs/research/`.
+> - **Task 7** (`c95f9e0`…`7baa84c`): BSUK profile as the source (page map fallback); noindex is not coverage; stub rows route as "rebuild the stub"; the rubric rulings (spec §16.10); new `tests/py/test_keyword_gap_script.py`.
+> - **Task 8** (`2684811`…`330e3a0`): page-map + gap-matrix query fallback; high = a missing safety entity (one engine, one answer); the `ai_*` filter drops a question only when all its sources are AI; refresh token; exit 5 for connector errors.
+> - **Task 9** (`23b4ff0`…`0e43583`): figure-writing rules for the cite check; provisional picks not handed off; tie-break by keyword-gap band then matrix share.
+> - **Task 10** (`c98778b`, `6b9714e`): WORKFLOW order by dependency with the stop tokens.
+> - **Task 11** (`efdac63`…`638a6d4`): Step 0 set `query_typical_call_usd` to 0.05 (user ruling A); the registry ran in two rounds; LLM intel ran for Leeds (paid) as well as Manchester (cached); 21 sites approved; strategy pick A.
+> - **Task 12**: the fix commit folded close-out fixes in (licenced always-high, `brand_entities` local businesses, one session-brief path, WORKFLOW gates); publishing the Artifacts and the merge are done by the controller after review.
 
 **Goal:** Give BSUK the competitor research chain the source repo had — a national competitor registry, per-competitor intel, a gap matrix, a keyword-gap list, LLM citation intel and a two-strategy synthesis — with every count built by a script and every paid call behind the existing spend guard.
 
@@ -71,7 +86,7 @@ Subagents: use exactly this line and never substitute your own model name.
 </script>
 <script type="text/markdown" data-title="Execution notes (read before Task 1)">
 - **Plan refinements of the spec.**
-  1. §4 "root domains only (no subdomain but `www` stripped)": a script cannot tell `shop.example.com` from `example.co.uk` without a public-suffix list, so the check enforces lowercase, no scheme, no path, no port and no leading `www.`; choosing the registrable domain is the registry agent's job and its board shows it to the user.
+  1. §4 "root domains only (no subdomain but `www` stripped)": without a public-suffix list the check uses a registrable-domain rule — exactly 2 labels, or 3 when the last is a two-letter country code under `co`, `org`, `me`, `ltd`, `plc`, `ac`, `gov`, `net`, `sch` or `com` — plus an overlap check between entries. *(Amended in execution, Task 1 review, `ecca5b8`: the first version accepted any subdomain. The same round made the link guard catch `?`/`#`/userinfo/trailing-dot and `//host` after `href=`/`src=`, report malformed JSON instead of crashing, and print how many files it scanned, failing when a scan path is missing.)* A seller on a hosted platform (`x.blogspot.com`, a Facebook page) cannot be registered by its own domain; Task 5's agent text must say to record it in `notes` on the platform's entry or leave it out, never to ban a whole platform.
   2. §4 priority is **re-derived** by `competitor_registry_check.py` from `seed_hits` and `tier`; a typed priority that disagrees fails the check.
   3. §6 "reads `data/page-map.json`": BSUK's side of the matrix comes from a BSUK profile, `docs/research/competitors/bsuk.json`, written by the intel agent against the local build in the same shape as a competitor report. The page map describes migrated pages, not page types, so it cannot say what BSUK covers. The keyword-gap agent (§7) still reads the page map.
   4. §10 as merged: no new spend-guard source names; Task 4 only pins the conventions with tests.
