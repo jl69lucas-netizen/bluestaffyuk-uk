@@ -1674,7 +1674,10 @@ Ask the user for approval. Then call the SERP tool with keyword `blue staffy pup
 
 Repeat the preflight → call → record → save → normalise sequence for `serp_bing` and `ai_engines` (one engine). The AI-engine prompt is: `Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?` Its normalised questions are the questions the answer raises or implies, and each `detail` is `ai_<engine>`.
 - If Bing is not available through DataForSEO, get the Bing top 10 with `firecrawl_search` (query plus `bing`), or else with the browser. Write `serp_bing.json` with `"status": "fallback"`. If neither source works, write nothing, so the file stays `NOT FETCHED`.
-- **Competitors:** from the Google and Bing top 10, keep the first five breeder or location pages from each engine; drop marketplaces and directories. For each kept page, `firecrawl_scrape` the URL with the markdown format and list its `## ` headings. Write `competitors.json`.
+- **Competitors (user ruling 2026-09-23 — marketplaces and directories COUNT):** take the Google top 5 and the Bing top 5 for the primary keyword, merged; drop only off-topic results. For each page:
+  1. Save its raw HTML to `data/queries/cache/<slug>/<n>.html` (gitignored — third-party pages carry advertisers' contact details). Use `curl -sL -A "<desktop browser UA>" -H "Accept-Language: en-GB"`; if that returns a 403 or a challenge page, use Firecrawl `rawHtml` with `onlyMainContent: false` saved to the same path (never the markdown format — it loses the wrappers the extractor needs).
+  2. Run `python3 scripts/query_augment.py --extract-h2 data/queries/cache/<slug>/<n>.html` and copy its `h2`, `h2_all` and `blocked` values into that page's record in `competitors.json` — never write headings by hand.
+  3. A `blocked: true` page is recorded as a finding, not counted.
 - **Threads:** leave `threads.json` for Task 8, which pilots the thread skill on the same slug.
 
 - [ ] **Step 4: Build, then look at the output**
@@ -1704,6 +1707,34 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 Expected from `npm run check:queries`: `examined 0 pages (1 not built); 0 problems`.
 
 Record the pilot's findings as an execution note at the top of Task 9, for the skill to encode: the tool names, whether Bing came from DataForSEO, and the cost per source.
+
+---
+
+### Task 7a: Real competitor headings, and the section floor (pilot amendment, 2026-09-23)
+
+Found in the Manchester pilot. Every Google and Bing top-5 page is a marketplace or directory (Pets4Homes, Staffie Owners, Freeads, Gumtree, puppies.co.uk). User ruling: they COUNT in the pool. But their H2s are mostly advert-card titles ("Staffy £450", "Pablo") and navigation ("Refine your results", "Nearest towns and cities"), so counting H2s from markdown gives nonsense (Staffie Owners' 20-advert grid would set a target of 23). Second user ruling: body-section target = max(competitors' highest real count + 3, 9).
+
+Observed markup (fetched with curl, 2026-09-23):
+- Gumtree: advert H2s sit inside `<a>` inside `<article>` (`standard-card`).
+- Staffie Owners: advert H2s sit in `<ul><li><article>`; the "21 Staffie Puppies For Sale In Manchester" grid header sits in a `<header>`.
+- puppies.co.uk: "Recommended for you", "Nearest towns and cities", a newsletter H2 — furniture already stripped by `clean_h2s` or to be stripped.
+
+**Files:**
+- Modify: `scripts/query_augment.py`, `tests/py/test_query_augment.py`
+- Modify: `schemas/queries.schema.json` (`section_target.floor`)
+- Modify: `scripts/query_coverage_check.py` + its tests (body-count message names the floor)
+- Modify: `.gitignore` (`data/queries/cache/`)
+- Modify: `docs/reference/location-page-template.md` ("Section count" — marketplaces count; advert/nav headings never count; floor 9)
+
+**Steps (TDD for code):**
+
+1. `extract_h2s(html) -> list[str]` in `scripts/query_augment.py` (stdlib `html.parser`): returns the text of every `<h2>` whose ancestors include none of `a, article, li, nav, header, footer, aside, form, button, template`; text inside `script/style/template` ignored; whitespace collapsed; empty dropped. Tests with fixtures shaped like the three observed layouts above (Gumtree card, Staffie Owners li>article and header, a plain content H2 inside `<main><section>` that IS kept, an H2 whose text is itself a link `<h2><a>…</a></h2>` — kept? NO: a heading that is entirely one link is a card title → dropped; a heading containing a link among other text is kept).
+2. CLI: `query_augment.py --extract-h2 FILE.html` prints the JSON list to stdout (exit 6 BadInput if the file is missing/unreadable). The skill uses this to fill `competitors.json` `h2` from saved HTML, never by hand.
+3. `clean_h2s` furniture additions (search on normalised text, only when `topic_of` is None, as today): `refine your results|you might also like|(latest )?featured ads|other pets|results from outside your search|recommended for you|nearest towns( and cities)?|(join|joining) our pack|puppies? found$|\d+ .* for sale in` — plus a test on the observed list: stripped — "Refine your results", "You might also like near Manchester", "Latest featured ads in Staffordshire Bull Terrier", "Other pets", "Results from outside your search", "Recommended for you", "Nearest towns and cities", "Fetch the latest puppy news by joining our pack", "30 Puppies found", "21 Staffie Puppies For Sale In Manchester"; kept — "Buyer's Advice", "Blue Staffy Puppies in Manchester UK", "Health Testing".
+4. `SECTION_FLOOR = 9`. `section_target` returns `{"matched", "set_by", "extra", "floor", "total"}` with `total = max(matched + extra, SECTION_FLOOR)`. Schema: add required `floor` (integer ≥ 0) to `section_target`. Update every test/fixture that builds a section_target (augment tests AND gate tests' `qfile`). Gate body-count message: `body sections with an H2: N, want at least T (competitors M + 3, floor 9)`.
+5. `.gitignore`: add `data/queries/cache/` (raw competitor HTML lives there — third-party pages with advertisers' contact details; never committed).
+6. Template doc "Section count": replace step 1's pool sentence with the user ruling — the top-5 on Google plus top-5 on Bing for the primary keyword, merged, **marketplaces and directories included** (only off-topic results dropped); add "advert-card titles and navigation headings never count — `query_augment.py --extract-h2` reads the saved page and drops any H2 inside a link, article, list item, nav, header, footer, aside or form"; add the floor ("never fewer than 9 body sections"). Keep the path guard green.
+7. Full suite, registry, commit: "queries: real competitor headings from saved pages, and a nine-section floor" + Fable trailer.
 
 ---
 
@@ -1924,12 +1955,19 @@ Connector missing or out of credit: say so, then use the free fallback — the
 
 ## Step 3 — competitors (location pages; optional elsewhere)
 
-From the Google and Bing top 10, keep the first five breeder or location pages from each
-(never marketplaces or directories). Open each (Firecrawl scrape, markdown) and list its H2s:
+Take the Google top 5 and the Bing top 5 for the primary keyword, merged — marketplaces and
+directories included (Pets4Homes, Gumtree, Staffie Owners and the like are the real competition);
+drop only off-topic results. For each page: save its raw HTML to
+`data/queries/cache/<slug>/<n>.html` (gitignored; curl with a desktop browser user agent, or
+Firecrawl `rawHtml` with `onlyMainContent: false` when curl is blocked — never markdown), then run
+`python3 scripts/query_augment.py --extract-h2 <file>` and copy its `h2`, `h2_all` and `blocked`
+into the page's record:
 
-`data/queries/raw/<slug>/competitors.json` = `{"status", "pages": [{"url", "google_pos", "bing_pos", "h2": [...]}]}`.
+`data/queries/raw/<slug>/competitors.json` = `{"status", "pages": [{"url", "google_pos", "bing_pos", "h2": [...], "h2_all": N, "blocked": false}]}`.
 
-Do not clean or count them yourself — the script does, the same way every time.
+Never write or trim headings yourself — the extractor drops advert cards and navigation, and the
+script cleans and counts the same way every time. The target is competitors' highest real count
++ 3, never fewer than 9 body sections.
 
 ## Step 4 — threads
 
@@ -1965,6 +2003,7 @@ Re-running Step 5 keeps those fills. Then `npm run build && npm run check:querie
 - Recording the cost after saving files instead of straight after the call.
 - One preflight covering several engine calls, or asking a second AI engine for the same page.
 - Counting competitor sections by hand, or using a fixed section number.
+- Dropping marketplaces or directories from the pool, or copying headings from a markdown scrape.
 - One FAQ block, or fewer than the picked questions.
 - Setting `fact_source` to a file that does not answer the question.
 - Rewording a question on the page and not updating `covered_by.text`.
