@@ -36,6 +36,11 @@ HOST = os.environ.get("SITE_URL", "").replace("https://", "").replace("http://",
 ORIGIN = f"https://{HOST}"
 ENDPOINT = "https://api.indexnow.org/indexnow"
 PUBLIC = pathlib.Path("public")
+# The sitemaps are build output: scripts/generate_sitemaps.py writes one file per URL shard
+# into dist/ after every `npm run build` (the postbuild script). The video sitemap is left
+# out on purpose: its <loc> rows repeat page URLs the page sitemap already lists.
+SITEMAP_DIR = pathlib.Path("dist")
+SITEMAPS = ("page-sitemap.xml", "post-sitemap.xml", "location-sitemap.xml", "puppy-sitemap.xml")
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125 Safari/537.36"
 
 # Never submit these. `/.astro/` is a build artifact that the sitemap generator can emit
@@ -82,7 +87,7 @@ def verify_key_live(key: str) -> None:
 
 
 def urls_from_sitemaps():
-    """The three sitemap files BSUK's own generator writes, and only those: there is no
+    """The four URL sitemaps BSUK's own generator writes, and only those: there is no
     sitemap-index following, no .gz support and no namespace handling, by design — this
     reads one repo's output, not the open web.
 
@@ -91,8 +96,8 @@ def urls_from_sitemaps():
     `\s*` either side of the URL matters — a pretty-printed `<loc>` on its own indented
     line is valid, and a regex that missed it would report a clean 'nothing to submit'."""
     out = []
-    for name in ("page-sitemap.xml", "post-sitemap.xml", "local-sitemap.xml"):
-        p = PUBLIC / name
+    for name in SITEMAPS:
+        p = SITEMAP_DIR / name
         if not p.exists():
             continue
         try:

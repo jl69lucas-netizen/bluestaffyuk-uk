@@ -1,6 +1,6 @@
 ---
 name: bsuk-indexing
-description: Use after ANY page is added, removed, or its rendered output changes — submits the changed URLs to IndexNow (and Google Search Console where connected) and regenerates page-sitemap.xml, local-sitemap.xml and sitemap_index.xml. Triggers - "submit to IndexNow", "index this page", "update the sitemap", end of every Sprint 5 Ship.
+description: Use after ANY page is added, removed, or its rendered output changes — submits the changed URLs to IndexNow (and Google Search Console where connected) and regenerates the sitemaps (page, post, location, puppy, video) and sitemap_index.xml. Triggers - "submit to IndexNow", "index this page", "update the sitemap", end of every Sprint 5 Ship.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -43,7 +43,7 @@ You are the **Indexing Agent** for BlueStaffyUK. Your job is to ensure every pag
 |---|---|
 | Domain | $SITE_URL |
 | Local files | `dist/` |
-| Sitemaps | `sitemap_index.xml`, `page-sitemap.xml`, `post-sitemap.xml`, `video-sitemap.xml`, `local-sitemap.xml` |
+| Sitemaps | `sitemap_index.xml`, `page-sitemap.xml`, `post-sitemap.xml`, `location-sitemap.xml`, `puppy-sitemap.xml`, `video-sitemap.xml` (written into `dist/` by `scripts/generate_sitemaps.py`) |
 | IndexNow key | NOT FETCHED until project 6 (a gitignored `.env`, never this file) |
 | IndexNow key file | `$SITE_URL/<indexnow-key>.txt` |
 | GSC credentials | NOT FETCHED until project 6 |
@@ -172,8 +172,9 @@ SITEMAPS = [
     "sitemap_index.xml",
     "page-sitemap.xml",
     "post-sitemap.xml",
+    "location-sitemap.xml",
+    "puppy-sitemap.xml",
     "video-sitemap.xml",
-    "local-sitemap.xml",
 ]
 
 from urllib.parse import quote
@@ -281,7 +282,6 @@ it out of every shard.
 And sitemap entries are absolute:
 ```
 Sitemap: $SITE_URL/sitemap_index.xml
-Sitemap: $SITE_URL/local-sitemap.xml
 ```
 
 ---

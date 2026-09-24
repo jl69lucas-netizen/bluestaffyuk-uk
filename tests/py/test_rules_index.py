@@ -439,3 +439,32 @@ def test_the_bare_sessions_root_spares_the_real_folder():
     for ok in ("Save to `docs/superpowers/sessions/<YYYY-MM-DD>-x.md`",
                "ls docs/superpowers/sessions/", "**Sessions:** `docs/superpowers/sessions/`"):
         assert not bare.search(ok), ok
+
+
+# ── what a pack names (project-5 readiness, 2026-09-23) ─────────────────────
+# rules/copy.md named `@bsuk-entity-incorporation-agent` as "the active engine" of the entity
+# loop; no such agent was ever ported, so a builder following the pack called nothing. The
+# same pack had Lisa Bright "writing from Carlisle, Carlisle": a find-and-replace of the old
+# city (Known Issue 16) that doubled the town where the county belongs.
+PACK_AGENT = re.compile(r"@(bsuk-[a-z0-9-]*[a-z0-9])")
+TOWN_TWICE = re.compile(r"\bCarlisle,\s+Carlisle\b")
+
+
+@pytest.mark.parametrize("pack", sorted((ROOT / "rules").glob("*.md")), ids=lambda p: p.stem)
+def test_every_agent_a_pack_calls_exists(pack):
+    bad = [f"{pack.name}:{n}  @{a}"
+           for n, l in enumerate(pack.read_text(encoding="utf-8").splitlines(), 1)
+           if not any(m in l for m in MARKERS)
+           for a in PACK_AGENT.findall(l)
+           if not (AGENTS_DIR / f"{a}.md").exists() and not (SKILLS_DIR / a).is_dir()]
+    assert bad == [], "a pack calls an agent or skill that does not exist:\n  " + "\n  ".join(bad)
+
+
+def test_no_instruction_file_writes_the_town_twice():
+    files = [ROOT / "CLAUDE.md", *sorted((ROOT / "rules").glob("*.md")),
+             *sorted(REFERENCE_DIR.glob("*.md")), *ROOTS_FOR]
+    bad = [f"{f.relative_to(ROOT)}:{n}" for f in files
+           for n, l in enumerate(f.read_text(encoding="utf-8").splitlines(), 1)
+           if TOWN_TWICE.search(l)]
+    assert bad == [], ("the breeder is in Carlisle, Cumbria (Known Issue 16):\n  "
+                       + "\n  ".join(bad))

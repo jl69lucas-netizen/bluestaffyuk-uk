@@ -19,6 +19,7 @@ def _load(monkeypatch, tmp_path, **env):
     for k, v in env.items():
         monkeypatch.setenv(k, v)
     (tmp_path / "public").mkdir(exist_ok=True)
+    (tmp_path / "dist").mkdir(exist_ok=True)
     monkeypatch.chdir(tmp_path)
     sys.modules.pop("indexnow_submit", None)
     mod = importlib.import_module("indexnow_submit")
@@ -77,7 +78,7 @@ def test_dry_run_never_prints_the_key(monkeypatch, tmp_path, capsys):
 
 def test_malformed_sitemap_is_a_clean_refusal(monkeypatch, tmp_path, capsys):
     mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
-    (tmp_path / "public" / "page-sitemap.xml").write_text(
+    (tmp_path / "dist" / "page-sitemap.xml").write_text(
         "<urlset><url><loc>https://example.inv", encoding="utf-8")
     assert _run(mod, monkeypatch, ["--all"]) == 2
     err = capsys.readouterr().err
@@ -99,7 +100,7 @@ def test_a_pretty_printed_sitemap_still_yields_urls(monkeypatch, tmp_path, capsy
     A regex that demanded the URL abut its tags would report 'nothing to submit' on a
     perfectly good sitemap — a false negative that looks like a clean refusal."""
     mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
-    (tmp_path / "public" / "page-sitemap.xml").write_text(
+    (tmp_path / "dist" / "page-sitemap.xml").write_text(
         "<urlset>\n  <url>\n    <loc>\n      https://example.invalid/puppies/\n    </loc>\n"
         "  </url>\n  <url><loc>https://example.invalid/about/</loc></url>\n</urlset>\n",
         encoding="utf-8")
@@ -108,3 +109,29 @@ def test_a_pretty_printed_sitemap_still_yields_urls(monkeypatch, tmp_path, capsy
     out = capsys.readouterr().out
     assert "https://example.invalid/puppies/" in out
     assert "https://example.invalid/about/" in out
+
+
+# ── the sitemaps it reads are the ones the generator writes (2026-09-23) ──────
+# It read public/{page,post,local}-sitemap.xml, while scripts/generate_sitemaps.py writes
+# dist/{page,post,location,puppy,video}-sitemap.xml after every build: `--all` would have
+# submitted no city page, no puppy page — and, reading public/, nothing at all.
+def test_it_reads_every_url_sitemap_the_generator_writes(monkeypatch, tmp_path):
+    import generate_sitemaps
+    mod = _load(monkeypatch, tmp_path)
+    assert set(mod.SITEMAPS) == {"%s-sitemap.xml" % s for s in generate_sitemaps.SHARDS
+                                 if s != "video"}, "the video sitemap only repeats page URLs"
+    assert mod.SITEMAP_DIR.as_posix() == "dist"
+
+
+def test_all_submits_the_city_and_puppy_pages(monkeypatch, tmp_path, capsys):
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    for shard, path in (("page", "about"), ("location", "uk-locations/leeds"),
+                        ("puppy", "available-puppies/roman")):
+        (tmp_path / "dist" / f"{shard}-sitemap.xml").write_text(
+            f"<urlset><url><loc>https://example.invalid/{path}/</loc></url></urlset>",
+            encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["indexnow_submit.py", "--dry-run", "--all"])
+    assert mod.main() == 0
+    out = capsys.readouterr().out
+    for path in ("about", "uk-locations/leeds", "available-puppies/roman"):
+        assert f"https://example.invalid/{path}/" in out
