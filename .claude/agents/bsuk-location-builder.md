@@ -14,7 +14,7 @@ effort: max
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
-> **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
+> **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name — the one exception is the banned-breed line under "What you may NOT write into a city page" (Known Issue 46).
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
 > **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
@@ -101,7 +101,11 @@ from, and no page may narrow the range to a single number until the breeder give
 - A vet name, a clinic, a local kennel club branch, or any named business.
 - A council licence, a by-law or an Act. Every legal or licensing sentence is
   `LEGAL_CLAIM_PLACEHOLDER` / `LICENCE_CLAIM_PLACEHOLDER` until the breeder supplies the
-  evidence (`CLAUDE.md` rule 9).
+  evidence (`CLAUDE.md` rule 9) — with ONE exception, by the user's ruling on Known Issue 46
+  (2026-09-23): a city page may say the Staffordshire Bull Terrier is not a banned breed in
+  the UK (not one of the types the Dangerous Dogs Act 1991 bans), linked to the government's
+  list at https://www.gov.uk/control-dog-public/banned-dogs, the breed guide's row in
+  `docs/reference/external-link-library.md`.
 - A travel time in hours, a mileage, or a delivery date. None of those are fetched.
 - A local price. Every price is Roman/Byrd/Ince £1,500 or Vennie/Christa/Cheryl £1,700 from
   `data/puppies.json`, with the £500 refundable deposit.

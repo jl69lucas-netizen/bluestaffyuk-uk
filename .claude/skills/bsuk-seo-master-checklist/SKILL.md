@@ -684,7 +684,7 @@ it returns 200 and add the row before the board names it. Today's rows, by topic
 3. [The Kennel Club — breeding regulations](https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/)
 4. [GOV.UK — microchipping your dog](https://www.gov.uk/get-your-dog-cat-microchipped)
 5. [GOV.UK — welfare in transport guidance (PB10308)](https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf)
-6. [GOV.UK — banned dogs](https://www.gov.uk/control-dog-public/banned-dogs) — the breed guide's row; a city page waits for the user's ruling (Known Issue 46)
+6. [GOV.UK — banned dogs](https://www.gov.uk/control-dog-public/banned-dogs) — the breed guide's row, and the one statute line a city page may state: the Staffordshire Bull Terrier is not a banned breed (the user's ruling on Known Issue 46, 2026-09-23)
 
 #### C. 3 Anchor Text Strategies (Rule 58)
 

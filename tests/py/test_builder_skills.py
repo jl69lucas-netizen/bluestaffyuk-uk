@@ -432,3 +432,26 @@ def test_no_skill_says_a_page_audit_only_fails_with_fail_on_error():
     assert "npx astro build" not in manual
     sitemap = (ROOT / ".claude/skills/sitemap-agent/SKILL.md").read_text(encoding="utf-8")
     assert "BSUK_RELEASE=1 python3 scripts/placeholder_check.py" in sitemap
+
+
+#: Known Issue 46, the user's ruling R7 (2026-09-23): a city page MAY say the Staffordshire Bull
+#: Terrier is not a banned breed, citing the same gov.uk row the breed guide cites. It is the
+#: one statute line with a source on file; every other statute line stays the stand-in.
+BANNED_DOGS = "https://www.gov.uk/control-dog-public/banned-dogs"
+TEMPLATE = (ROOT / "docs/reference/location-page-template.md").read_text(encoding="utf-8")
+LOCATION_AGENT = (ROOT / ".claude/agents/bsuk-location-builder.md").read_text(encoding="utf-8")
+
+
+def test_the_banned_breed_line_is_the_one_statute_line_a_city_page_may_state():
+    assert pageboard.normalise_url(BANNED_DOGS) in pageboard.library_urls()
+    regulations = next(l for l in TEMPLATE.splitlines() if l.startswith("| Regulations |"))
+    facts = section(LOCATION, "## The facts a city page may state")
+    for where, text in (("template", regulations), ("builder skill", facts),
+                        ("location agent", LOCATION_AGENT)):
+        flat = norm(text)
+        assert BANNED_DOGS in flat, where
+        assert "not a banned breed" in flat, where
+        assert "Known Issue 46" in flat, where
+        # The ruling reaches ONE line: every other statute line keeps the stand-in.
+        assert "LEGAL_CLAIM_PLACEHOLDER" in flat, where
+    assert "waits for the user's ruling" not in CHECKLIST
