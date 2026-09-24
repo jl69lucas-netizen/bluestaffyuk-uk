@@ -103,8 +103,8 @@ where `we/our/us` outnumber named entities.
 
 One idea per sentence. Subject–verb–object. Extraction-ready.
 
-> Every puppy leaves us vet-checked, microchipped and vaccinated, with a written health
-> guarantee. The puppies are socialised with the family from the day they are born.
+> Every puppy leaves us vet-checked, microchipped, vaccinated and wormed, with a vet-signed
+> health card. The puppies are socialised with the family from the day they are born.
 
 The audit reports average sentence length and the count over 30 words. It does **not**
 judge truth — that is the evidence ledger's job. Anti-AI rhythm rules from
@@ -122,7 +122,7 @@ Answer engines prefer structure they can lift whole.
 - **Stat-bearing headers** — put the number *in the heading*:
   "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
   "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
-  from `data/*.json`; a guarantee length or a years-in-business figure is `NOT FETCHED` and
+  from `data/*.json`; a guarantee length (`guarantee_days`, null) or a years-in-business figure is `NOT FETCHED` and
   never goes in a heading.
 
 The audit counts tables, lists, and stat-bearing headers, and WARNs when a page has no

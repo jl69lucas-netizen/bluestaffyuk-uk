@@ -204,7 +204,7 @@ read in the browser, marketplaces in the pool, one challenge page recorded as bl
 - Calling a topic "covered" because a competitor's FAQ mentions it.
 - One FAQ block on a location page, or fewer than the picked questions, or hand-swapping a pick.
 - Inventing a city-named question, or localising one so its answer goes beyond its fact.
-- Answering with a figure (a guarantee length, a date) the fact source does not give.
+- Answering with a figure (a guarantee length while `guarantee_days` is null, a date) the fact source does not give.
 - Setting `fact_source` to a bare file, or to a bank row on the same topic that does not answer it.
 - Rewording a question on the page and not updating `covered_by.text`.
 - Forgetting the page's bare slug (the route's last segment) in `data/facts/rebuilt.json`,

@@ -240,7 +240,7 @@ python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without
 
 `--all` submits every sitemap URL. `--dry-run` prints the payload and sends nothing.
 
-What the script guarantees, and why each guard exists:
+What the script ensures, and why each guard exists:
 
 - **The key is read from `public/<key>.txt` on disk, never typed.** It also asserts the
   file body equals the filename stem (IndexNow's own requirement) and that the file

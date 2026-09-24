@@ -70,7 +70,7 @@ Column 3: Company
 
 Column 4: Legal
   - Privacy Policy → /privacy-policy-uk/
-  - (no terms, guarantee, delivery or refund page is built: never link one until it exists)
+  - (no terms, guarantee, delivery or refund page is built: never link one until it exists — a guarantee page also waits for `guarantee_days` in `data/settings.json`)
 
 Column 5: Contact
   - Phone: PHONE_PLACEHOLDER   (the real number is NOT FETCHED until project 6)

@@ -77,7 +77,7 @@ Purpose: Emphasize key points, hook viewers watching on mute, drive action
 
 | Type | When to Use | Example |
 |------|------------|---------|
-| Hook | First 3 seconds | "Lifetime Health Guarantee??" |
+| Hook | First 3 seconds | "What Comes With Every Puppy??" |
 | Key stat | When stating a number | "£1,500 starting price" |
 | Trust signal | When mentioning credentials | "KC registered + microchipped ✓" |
 | Transition | Between sections | "But here's the thing..." |

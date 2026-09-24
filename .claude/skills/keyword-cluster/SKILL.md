@@ -71,7 +71,7 @@ Questions Google surfaces in PAA box for this keyword. Goes in: FAQ section with
 - "licensed staffy breeder uk"
 - "kc registered blue staffy puppies"
 - "microchipped vaccinated staffy puppies"
-- "blue staffy puppy health guarantee"
+- "blue staffy puppy health check"
 
 ### Local Intent (buyer wants nearby)
 - "blue staffy puppies for sale [region]"

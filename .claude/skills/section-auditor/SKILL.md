@@ -99,7 +99,7 @@ For each section, score 1–5 on:
 ### CTA Section
 - Issue: form_id missing or wrong (`bsuk-enquiry-form` is canonical)
 - Issue: CTA text generic ("Submit" / "Contact Us")
-- Missing: reassurance below button ("We respond within 24 hours")
+- Missing: reassurance below button ("We reply within 24 to 48 business hours" — `data/faq.json` `home-after-support`, the only reply time on file)
 - Missing: what happens next (no expectation-setting)
 
 ### Comparison Table Section

@@ -65,7 +65,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 | **Organism** | Species (*Canis lupus familiaris*) · Breed (Staffordshire Bull Terrier) · Coat colour (each pup's `colour` in `data/puppies.json`) · Individual Puppy (Roman, Byrd, Ince, Vennie, Christa, Cheryl) · Parents (Maggie, the dam; Jones, the sire) |
 | **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Registry (The Royal Kennel Club) · Transport (DEFRA-approved transport) · Regulator (LICENCE_CLAIM_PLACEHOLDER) |
 | **Place** | Country (UK) · Region · City · Home (Carlisle, Cumbria) |
-| **Commerce** | Price · Offer · Guarantee · Delivery Option · Payment Term · Availability State |
+| **Commerce** | Price · Offer · Guarantee (`guarantee_days`, null today) · Delivery Option · Payment Term · Availability State |
 | **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA certificate (the parents' L-2-HGA and HC-HSF4 results, `NOT FETCHED`) · Health record · Whelp certificate · Vet record |
 | **Health** | Condition (L-2-HGA, HC-HSF4 hereditary cataract, skin allergies) · Screening (DNA test on both parents) · Vet health check · Vaccination · Diet |
 | **Behavior** | Temperament ability · Bonding · Bite inhibition · Socialization · Training method |
@@ -77,7 +77,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 
 Closed set: `IS_A · SUBSPECIES_OF · HAS · PART_OF · BELONGS_TO · LOCATED_IN · OWNED_BY ·
 RAISED_BY · BRED_FROM · CREATED_BY · PROVIDED_BY · SUPPORTED_BY · TRAINED_WITH ·
-PURCHASED_BY · SHIPS_TO · PRICED_AT · GUARANTEED_FOR · SCREENED_FOR · CERTIFIED_BY ·
+PURCHASED_BY · SHIPS_TO · PRICED_AT · GUARANTEED_FOR (`guarantee_days`) · SCREENED_FOR · CERTIFIED_BY ·
 DOCUMENTED_BY · RELATED_TO · SIMILAR_TO · DIFFERENT_FROM · BETTER_THAN · COMPARES_WITH ·
 SUITABLE_FOR · INCLUDES · EXCLUDES · CAUSES · PREVENTS · DEPENDS_ON · LEADS_TO ·
 DESCRIBES · EXPLAINS · MEASURES · UNCLASSIFIED`.
@@ -114,7 +114,7 @@ alt | link | data-file) · authorization · first_seen_section · owning_page`.
 /graphify <corpus-path> --directed          # preserves source→target
 /graphify <path> --mode deep                # richer inferred edges
 /graphify query "which page owns LICENCE_CLAIM_PLACEHOLDER documentation?"
-/graphify path "Blue Staffy" "72-hour health guarantee"
+/graphify path "Blue Staffy" "L-2-HGA"
 /graphify <path> --neo4j                    # cypher export
 ```
 
@@ -146,8 +146,8 @@ LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER or NOT FETCHED.
 | Predicate | Correct value | Wrong value seen in the wild |
 |---|---|---|
 | `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER **LEGAL_CLAIM_PLACEHOLDER** (CoP17, effective Jan 2017) | "LEGAL_CLAIM_PLACEHOLDERI" |
-| `PRICED_AT` (Blue) | **£1,500–£1,700** — the bonded pair sets the ceiling | a flat "NOT FETCHED" |
-| `GUARANTEED_FOR` | **72-hour** or **"3-day"** — both correct (plus the 24-hour window) | — |
+| `PRICED_AT` | **£1,500** a male · **£1,700** a female (`data/price-matrix.json`) | a flat "NOT FETCHED", or one price for the litter |
+| `GUARANTEED_FOR` | the length in `guarantee_days` (`data/settings.json`) — null today, so no length is written | "72-hour", "3-day" or a 24-hour window (the source repo's) |
 
 **3c. Blacklist — any hit is a hard FAIL on the page, not a low score:**
 `WILD_CAUGHT · IMPORTED_FROM · CAUGHT_IN · SMUGGLED · UNDOCUMENTED_SALE`, or any phrasing

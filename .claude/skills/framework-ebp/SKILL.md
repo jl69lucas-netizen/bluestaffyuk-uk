@@ -124,7 +124,7 @@ Profile:  The £1,500 (male) / £1,700 (female) price is the locked fact; vet co
 | "KC registered" | "Kennel Club registration — [KC_NUMBER], papers at collection" |
 | "Home-raised from birth" | "Socialisation log from day 1 — available on request" |
 | "We've been breeding for X years" | "LICENCE_CLAIM_PLACEHOLDER #[NUMBER], breeding since [YEAR]" |
-| "Health guaranteed" | "Health guarantee — full terms at [link]" |
+| "Health guaranteed" | "Health guarantee — [the `guarantee_days` length], full terms at [link]" — only once `guarantee_days` is set |
 
 ---
 
@@ -132,7 +132,7 @@ Profile:  The £1,500 (male) / £1,700 (female) price is the locked fact; vet co
 
 ```bash
 # Find pages with unverified claims
-grep -n "we guarantee\|health tested\|best\|top\|premier\|reputable\|home-raised" dist/[slug]/index.html | head -20
+grep -n "we guarantee\|health tested\|best\|top\|premier\|reputable\|home-raised" dist/[slug]/index.html | head -20  # a "we guarantee" hit is a claim while guarantee_days is null
 # For each match: is there a named evidence source within 2 sentences?
 ```
 

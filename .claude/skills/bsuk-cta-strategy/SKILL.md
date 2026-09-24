@@ -32,7 +32,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 1: Hero
 
 🛡️ **Trust & Security:**
-> "Don't settle for 'maybe' when it comes to your puppy's health." Join the families who chose the security of a BSUK-backed health guarantee. (A family count is NOT FETCHED — never write one.)
+> "Don't settle for 'maybe' when it comes to your puppy's health." Every puppy comes home with a full veterinary health check and a vet-signed health card.
 > **Button:** Browse Available Puppies
 
 ⚡ **Direct & Transactional:**
@@ -77,19 +77,21 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 4: Health Guarantee
+## Section 4: After You Take Your Puppy Home
+
+A health-guarantee CTA is written only once `guarantee_days` in `data/settings.json` is set (null today), and names its length from that setting. Until then this section is the support the breeder gives (`data/faq.json` `home-after-support`).
 
 🛡️ **Trust & Security:**
-> "We put our commitment in writing because we stand behind every puppy we breed." Lifetime breeder support. No fine print.
-> **Button:** Read the Full Guarantee
+> "Your puppy leaves with a puppy pack, its health records and its paperwork — and you can write to us before or after it comes home."
+> **Button:** How We Support You
 
 ⚡ **Direct & Transactional:**
-> "Lifetime breeder support vs. one-time transactional breeders. The relationship speaks for itself."
-> **Button:** See Guarantee Details
+> "A question asked after the handover is answered the same way as one asked before it — by us, not an agency."
+> **Button:** Ask Us Anything
 
 🌱 **Ethical & Quality:**
-> "Lifetime support isn't a sales tactic — it's the logical result of genuine care for the puppies we breed."
-> **Button:** How We Health-Test
+> "Support after the sale isn't a sales tactic — it's what a breeder who raised the puppy owes the family who takes it home."
+> **Button:** How We Health-Check
 
 ---
 
@@ -306,7 +308,7 @@ Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are
 ## Section 18: Waitlist / Future Litters
 
 🛡️ **Trust & Security:**
-> "Joining the waitlist costs nothing and guarantees your position for the next litter."
+> "Joining the waitlist costs nothing and holds your place in line for the next litter."
 > **Button:** Join the Waitlist
 
 ⚡ **Direct & Transactional:**
@@ -351,19 +353,9 @@ Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are
 
 ---
 
-## Section 21: Health Guarantee Detail
+## Section 21: Health Guarantee Detail (waits for `guarantee_days`)
 
-🛡️ **Trust & Security:**
-> "Print this page and compare it to any other breeder's guarantee. We'll wait."
-> **Button:** Download the Guarantee
-
-⚡ **Direct & Transactional:**
-> "Written health guarantee. No fine print. No exceptions."
-> **Button:** Read the Full Terms
-
-🌱 **Ethical & Quality:**
-> "We wrote this guarantee the way we'd want to receive one — completely, honestly."
-> **Button:** Our Promise to You
+Not written until `guarantee_days` in `data/settings.json` is set (null today). Then each CTA names the length from that setting and links the written terms — never "no fine print", "no exceptions" or a length typed by hand (`guarantee_days` is the only source).
 
 ---
 

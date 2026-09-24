@@ -135,11 +135,11 @@ done
 
 | Page Type | Must-Have Entities | Target Mentions Each |
 |-----------|-------------------|---------------------|
-| Homepage | Blue Staffy puppy, DNA, guarantee, Carlisle | 5–8 |
-| Location page | Blue Staffy puppy, [city], delivery driver, guarantee | 3–5 |
+| Homepage | Blue Staffy puppy, DNA, vet health check, Carlisle | 5–8 |
+| Location page | Blue Staffy puppy, [city], DEFRA-approved transport, vet health check | 3–5 |
 | Breed guide | Blue Staffy, Staffordshire Bull Terrier, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
 | Comparison page | Both breed entities + 3–5 differentiators | 4–6 |
-| Price page | Price entities, guarantee, DNA, all-inclusive | 5–8 |
+| Price page | Price entities, vet health check, DNA, all-inclusive | 5–8 |
 
 ---
 

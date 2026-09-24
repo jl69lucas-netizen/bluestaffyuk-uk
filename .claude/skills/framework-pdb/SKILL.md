@@ -71,7 +71,7 @@ tell which one is real.
 ```
 That uncertainty is rational. Puppy sale scams cost UK buyers millions annually — 
 and forged KC paperwork is a real phenomenon in the Staffordshire Bull Terrier market. A 
-"health guarantee" from an unlicensed seller is worth nothing when the seller has 
+"health guarantee" from an unlicensed seller is worth nothing when their listing has
 already disappeared. Your fear isn't paranoia — it's pattern recognition.
 ```
 

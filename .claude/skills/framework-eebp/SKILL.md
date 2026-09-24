@@ -81,7 +81,7 @@ Rules:
 |---|---|
 | Dropped the Evidence step (wrote Entity→Benefit→Purpose) | That's the entity-agent EBP, not EEBP. Add the named, verifiable proof. |
 | Evidence is a marketing adjective ("amazing health") | Evidence must be verifiable and specific ("vet exam before collection"). |
-| Benefit written from seller's side ("we guarantee…") | Rewrite as buyer outcome ("you get…"). |
+| Benefit written from seller's side ("we promise…") | Rewrite as buyer outcome ("you get…"). |
 | Purpose is a restated benefit | Purpose = the decision/action it enables, not the feeling. |
 | Entity buried mid-sentence | Lead with the entity (Link-First + entity-SEO). |
 | Unverifiable claim slipped into Evidence | Cut it or downgrade to Ledger-safe wording. |

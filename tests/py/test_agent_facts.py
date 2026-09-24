@@ -399,6 +399,8 @@ RESIDUE = (
                 r"\bBlue Brindle Staff(?:y|ies)\b")),
     ("a placement count — how many families BSUK has placed with is NOT FETCHED",
      re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)")),
+    ("a reply-time promise — the only reply time on file is data/faq.json `home-after-support`",
+     re.compile(r"(?i)\b(?:within|in under)\s+(?:24|48|12)\s+hours\b|\bresponds? within\b")),
 )
 # A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
 PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
@@ -472,6 +474,8 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "Specialising in home-raised blue and blue brindle Staffordshire Bull Terriers\n"
         "we've placed Blue Staffy puppies with hundreds of families\n"
         "Only a licenced breeder can sell you one.\n"
+        "Lisa Bright will reply within 24 hours.\n"
+        "<p class=\"bsuk-form-note\">We respond within a day.</p>\n"
         # silent: a line that forbids the push, a UK source, the licence stand-in named on
         # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
@@ -484,7 +488,44 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "- Keyword-rich but natural: \"Staffy vs American Bully comparison\"\n"
         "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
     bad = residue(p)
-    # every line up to 32 fires (a line may fire twice), nothing after it does, and every
+    # every line up to 34 fires (a line may fire twice), nothing after it does, and every
     # entry of RESIDUE fired at least once
-    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 33)), bad
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 35)), bad
     assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad
+
+
+# ── the guarantee is gated on its setting, in every skill (Task 12 final round) ─────
+# data/settings.json `guarantee_days` is null today, so no page may state a guarantee's
+# length, and a skill that tells a builder to write "guarantee" must name the setting that
+# gates it — the SEO checklist's rule (tests/py/test_builder_skills.py), in every skill and
+# command. A line about a competitor's guarantee ("their") or the source repo's is not ours.
+GUARANTEE = re.compile(r"(?i)guarantee")
+NOT_OURS = re.compile(r"(?i)\btheir\b|source repo")
+
+
+def ungated_guarantees(path: pathlib.Path):
+    return ["%s:%d  %s" % (path.name, n, line.strip()[:110])
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if GUARANTEE.search(line) and "guarantee_days" not in line and not NOT_OURS.search(line)]
+
+
+@pytest.mark.parametrize("path", residue_targets(),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_every_guarantee_line_names_guarantee_days(path):
+    bad = ungated_guarantees(path)
+    assert bad == [], (
+        "a guarantee with no `guarantee_days` on the line. data/settings.json has it null, so "
+        "name the setting that gates the line, or drop the guarantee:\n  " + "\n  ".join(bad))
+
+
+def test_the_guarantee_gate_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "Health guarantee + KC registration included.\n"
+        "## Section 21: Health Guarantee Detail\n"
+        "`GUARANTEED_FOR` | 72-hour\n"
+        # silent: gated on the setting, a competitor's, the source repo's
+        "A guarantee is named only when `guarantee_days` in data/settings.json is set.\n"
+        "Their \"lifetime guarantee\" has no terms.\n"
+        "The source repo's 72-hour guarantee.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in ungated_guarantees(p)] == ["SKILL.md:1", "SKILL.md:2", "SKILL.md:3"]
