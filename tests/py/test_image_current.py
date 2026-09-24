@@ -166,3 +166,22 @@ def test_the_real_label_map_names_every_style_the_rules_know():
     assert set(labels["og"]) == set(IR.OG_STYLES)
     assert set(labels["infographic"]) == set(IR.IG_STYLES)
     assert all(v["name"] and v["use"] for grp in labels.values() for v in grp.values())
+
+
+def test_a_real_size_suffixed_name_stays_itself_as_the_current_file(tmp_path):
+    """Task 9's review: canonical(src, root) keeps a real -NNN name when no shorter original
+    exists. current_file() and candidates() pass root, so the current candidate names the file
+    that is really there, not an invented `byrd-card.webp`."""
+    root, assets = _tree(tmp_path)
+    (root / "public" / "images" / "puppies" / "byrd-card-800.webp").write_bytes(b"x")
+    img = {"slot": "delivery-photo", "kind": "photo", "required": True,
+           "prompt": "our van on a delivery run", "source": "existing",
+           "file": "/images/puppies/byrd-card-800.webp"}
+    b = _board(images_by_section=[img])
+    assert IC.current_file(b, img, root) == "/images/puppies/byrd-card-800.webp"
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    assert _picks(photo)[0] == ("current", "file:/images/puppies/byrd-card-800.webp")
+    assert photo["suggested"]["pick"] == "file:/images/puppies/byrd-card-800.webp"
+    # A true size sibling still folds to its original when root is given.
+    assert IC.current_file(b, dict(img, file="/images/leeds-delivery-van-760.webp"), root) == \
+        "/images/leeds-delivery-van.webp"

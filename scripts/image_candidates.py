@@ -375,12 +375,13 @@ def _report_dir(assets_dir, root):
     return pathlib.Path(os.path.relpath(d, pathlib.Path(root).resolve())).as_posix()
 
 
-def current_file(board, img):
+def current_file(board, img, root=None):
     """The file a slot already names: its own `file`, else the `file` of the record's
-    `assets[]` row for the same slot, as a canonical /images/ path; None when neither."""
+    `assets[]` row for the same slot, as a canonical /images/ path; None when neither.
+    Given `root`, a real -NNN name with no shorter original keeps its name (canonical())."""
     f = img.get("file") or next((a.get("file") for a in board.get("assets", [])
                                  if a.get("slot") == img.get("slot") and a.get("file")), None)
-    return (canonical(f) or f) if f else None
+    return (canonical(f, root) or f) if f else None
 
 
 def candidates(board, root=None, assets_dir=None, per_pool=3):
@@ -398,7 +399,7 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
     for section, node, img in iter_slots(board):
         words = slot_words(section, node, img)
         cands = rank(words, pools, alts, used, route, per_pool)
-        cur = current_file(board, img)
+        cur = current_file(board, img, root)
         if cur:
             first = _candidate("current", {"file": cur}, words, alts, used, route)
             first["current"] = True
