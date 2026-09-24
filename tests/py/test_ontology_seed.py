@@ -34,7 +34,11 @@ ROWS = [("https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy", "rspca.org
         ("https://www.gov.uk/bring-pet-to-great-britain", "gov.uk", "pet travel", "thank-you-blue-staffy-puppies-journey"),
         ("https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf",
          "assets.publishing.service.gov.uk", "PB10308", "buy-blue-staffy-puppies-uk"),
-        ("https://crufts.org.uk/", "crufts.org.uk", "Crufts", "blue-staffy-uk-breeders")]
+        ("https://crufts.org.uk/", "crufts.org.uk", "Crufts", "blue-staffy-uk-breeders"),
+        ("https://www.legislation.gov.uk/uksi/2018/486/contents/made", "legislation.gov.uk",
+         "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018", "index"),
+        ("https://www.legislation.gov.uk/uksi/2015/108/contents/made", "legislation.gov.uk",
+         "The Microchipping of Dogs (England) Regulations 2015", "index")]
 EMPTY_LEDGER = {"_comment": "…", "claims": []}
 
 
@@ -283,3 +287,28 @@ def test_a_missing_input_file_is_a_board_error(monkeypatch, tmp_path, name):
     monkeypatch.setattr(OS, name, tmp_path / "absent.json")
     with pytest.raises(PB.BoardError, match="absent.json"):
         OS.main(["--check"])
+
+
+# --- Task 4's starter rows: the two legislation.gov.uk laws are Regulation entities ---------
+
+LICENSING_2018 = "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018"
+MICROCHIP_2015 = "Microchipping of Dogs (England) Regulations 2015"
+
+
+def test_the_two_legislation_rows_seed_regulations():
+    by = _by_id(_seed())
+    reg = by["ont:animal-licensing-regulations-2018"]
+    assert (reg["name"], reg["class"], reg["authorization"], reg["source"], reg["owner_page"]) == (
+        LICENSING_2018, "Regulation", "ASSERTED", "docs/reference/external-link-library.md", None)
+    assert MICROCHIP_2015 in by["ont:dog-microchipping-law"]["aliases"]   # folded, not a second law
+    assert "ont:microchipping-of-dogs-england-regulations-2015" not in by
+    assert by["ont:uk-government"]["class"] == "Organization"            # the host stays the government
+
+
+def test_the_committed_ontology_carries_both_laws():
+    by = {e["id"]: e for e in PB.load_ontology()["entities"]}
+    assert by["ont:animal-licensing-regulations-2018"]["name"] == LICENSING_2018
+    assert by["ont:animal-licensing-regulations-2018"]["source"] == "docs/reference/external-link-library.md"
+    assert MICROCHIP_2015 in by["ont:dog-microchipping-law"]["aliases"]
+    text = PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8")
+    assert LICENSING_2018 in text and MICROCHIP_2015 in text           # both named in the row's own words

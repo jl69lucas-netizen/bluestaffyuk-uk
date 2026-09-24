@@ -16,3 +16,13 @@ family: NAV
 ---
 
 - **Link-First anchors (ALWAYS) — applies to EVERY internal and external link, every agent, skill, and page** — The anchor sits at the **START of the sentence/paragraph** — inside the opening words (first clause). **Never mid-sentence, never at the end.** ✅ "Our [Staffordshire Bull Terrier guide] covers diet in depth…" · ❌ "…diet is covered in our [guide]." (Breeder rule 2026-07-11, superseding the old "beginning or middle, never end" rule everywhere.) Sole exception: branded ACTION anchors on CTAs per `.claude/skills/bsuk-branded-hybrid-keywords/SKILL.md` (deferred to project 6, see data/port-manifest.json). In the source repo this rule was injected into every agent's Golden Rules by an injector script; the injectors are not ported (spec §2). Here the pack is the only source.
+
+
+---
+id: external-links-six-diverse
+enforced: test
+family: NAV
+test: tests/py/test_link_diversity.py
+---
+
+- **Six diverse external links (location, comparison and blog pages built after 2026-09-24)** — A new location, comparison or blog page carries at least **6 external links, on 6 distinct domains, from at least 4 source types** (gov, registry, vet-charity, welfare, research, local). A link's source type is the `Source type` column of its row in `docs/reference/external-link-library.md`; every `gov.uk` path is one domain, while `legislation.gov.uk` and a council's own domain are domains of their own; `other` counts toward the six links and six domains, never toward the four types. One URL cited in several sections counts once. `scripts/link_diversity.py` checks the board: WARN on a draft, FAIL from `boarded` on. The twelve pages built before this rule are not asked (`scripts/family_rules.py`). (User ruling, 2026-09-24.)

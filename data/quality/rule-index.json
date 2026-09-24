@@ -459,6 +459,14 @@
    "enforced": "test",
    "pack": "rules/puppies.md",
    "test": "tests/render/checks/layout.ts::layout-hero-counter-separation + tests/render/checks/layout.ts::layout-h3-image-first"
+  },
+  {
+   "id": "external-links-six-diverse",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_link_diversity.py",
+   "severity": "blocking"
   }
  ]
 }

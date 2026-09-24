@@ -483,7 +483,8 @@
       "name": "Dog microchipping law",
       "aliases": [
         "microchipping law",
-        "compulsory microchipping"
+        "compulsory microchipping",
+        "Microchipping of Dogs (England) Regulations 2015"
       ],
       "class": "Regulation",
       "authorization": "ASSERTED",
@@ -518,6 +519,44 @@
       "aliases": [
         "PB10308",
         "welfare-in-transport guidance"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:cumberland-council",
+      "name": "Cumberland Council",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:dogs-trust",
+      "name": "Dogs Trust",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:paag",
+      "name": "Pet Advertising Advisory Group",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:animal-licensing-regulations-2018",
+      "name": "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018",
+      "aliases": [
+        "animal activity licensing"
       ],
       "class": "Regulation",
       "authorization": "ASSERTED",

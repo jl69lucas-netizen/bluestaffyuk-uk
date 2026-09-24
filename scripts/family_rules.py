@@ -89,3 +89,9 @@ def keyword_variants_filled(board, ont):
            "`python3 scripts/keyword_variants.py <query-slug>` (the cache folder under "
            f"data/queries/raw/, e.g. {board['meta']['slug'].split('/')[-1]}) for a proposal "
            "from the cached query data")
+
+
+# ── Tasks 4 and 5 (system-gaps): external-link diversity and anchor types ───────────────
+# Imported here; later tasks append after it. link_diversity registers its checks with
+# `register` above.
+import link_diversity  # noqa: E402,F401

@@ -12,39 +12,59 @@ written on the page: `pageboard.normalise_url()` lowercases the host, drops a le
 and no others. A different path is a different row — `/dog-breeding/…` and
 `/media-centre/…` on one host are two destinations, not one.
 
+**Source type.** The last column names what kind of publisher the row is, from one list:
+`gov` (a government department, regulator or the legislation site), `registry` (the pedigree
+registry), `vet-charity` (a veterinary body or veterinary charity), `welfare` (an animal-welfare
+charity or advisory group), `research` (a peer-reviewed study or a university research
+programme), `local` (a local council) and `other`. A location, comparison or blog page carries
+at least six external links on six distinct domains from at least four of the first six types
+(`rules/links.md`, `external-links-six-diverse`); `other` counts toward the six links and six
+domains but never toward the four types. `scripts/link_diversity.py` reads this column by its
+header name, so a row without a type is reported by `tests/py/test_link_diversity.py`.
+
 **Do not link** to a hosting provider, or to any page that names one (CLAUDE.md rule 2, and
 `scripts/marker_check.py` enforces it).
 
 ## Rows
 
-| URL | Host | What it is | First page using it | Verified |
-|---|---|---|---|---|
-| https://ico.org.uk/ | ico.org.uk | The Information Commissioner's Office, the UK's supervisory authority for data protection — where a reader complains if we mishandle their data | `/privacy-policy-uk/` | 2026-09-19 · 200 |
-| https://www.gov.uk/data-protection | gov.uk | The government's plain-English summary of UK data protection law and the rights it gives a person | `/privacy-policy-uk/` | 2026-09-19 · 200 |
-| https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/ | citizensadvice.org.uk | Citizens Advice, for independent help with a data-protection question we are not the right people to answer | `/privacy-policy-uk/` | 2026-09-19 · 200 |
-| https://policies.google.com/privacy | policies.google.com | Google's own privacy policy — what Google Analytics does with what it records on this site | `/privacy-policy-uk/` | 2026-09-19 · 200 |
-| https://www.thekennelclub.org.uk/ | thekennelclub.org.uk | The Kennel Club, the UK pedigree registry our litters are registered with | `/privacy-policy-uk/` | 2026-09-19 · 200 |
-| https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/ | thekennelclub.org.uk | The Kennel Club's guidance on the regulations a UK breeder works under | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 |
-| https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/ | thekennelclub.org.uk | The Kennel Club on its registrations structure and responsible breeding | `/uk-blue-staffy-breeders-contact/` | 2026-09-19 · 200 |
-| https://www.gov.uk/bring-pet-to-great-britain | gov.uk | The official rules for bringing a pet into Great Britain, for a buyer arranging transport | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 |
-| https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's own Staffordshire Bull Terrier breed page — the breed standard and what a registration covers, in the registry's words rather than ours | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
-| https://crufts.org.uk/ | crufts.org.uk | Crufts, the UK breed show the migrated about page names as where the breed is celebrated | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
-| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy | rspca.org.uk | The RSPCA's puppy advice — independent guidance for a first-time owner, which we are not the right people to give | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 |
-| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/ | royalkennelclub.com | The registry's own page for the L-2-HGA DNA test — what the test is and what a clear, carrier or affected result means | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
-| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/ | royalkennelclub.com | The registry's own page for the HC-HSF4 hereditary cataract DNA test, the second of the two the breed is screened for | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
-| https://www.bva.co.uk/canine-health-schemes/eye-scheme/ | bva.co.uk | The British Veterinary Association's eye scheme — the examination that looks for inherited eye disease the HC-HSF4 DNA test does not cover | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
-| https://www.gov.uk/get-your-dog-cat-microchipped | gov.uk | The government's guidance on the microchipping law every puppy leaving us has to satisfy | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
-| https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines | pdsa.org.uk | The PDSA's guide to dog vaccinations — independent detail on the second dose and the booster, which are the owner's own vet's | `/blue-staffy-health-uk/` | 2026-09-20 · 200 |
-| https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's breed standard for the Staffordshire Bull Terrier — the build, head, coat, tail and temperament our breed-facts table describes, in the standard's own words | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
-| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier | pdsa.org.uk | The PDSA's veterinary breed page for the Staffordshire Bull Terrier — independent care, exercise, feeding and grooming advice, which we are not the right people to give | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
-| https://www.gov.uk/control-dog-public/banned-dogs | gov.uk | The government's own list of dog types banned under the Dangerous Dogs Act 1991 — the page behind the statement that the Staffordshire Bull Terrier is not one of them | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 |
-| https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ | royalkennelclub.com | The registry's own list of questions to ask a breeder before and during a visit — the independent version of the fifteen-question checklist | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
-| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales | rspca.org.uk | The RSPCA on spotting a puppy dealer's advert and on finding a good breeder — the independent authority behind the red-flag table | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 |
-| https://www.bluecross.org.uk/advice/dog/socialising-your-puppy | bluecross.org.uk | The Blue Cross on socialising a puppy — independent advice on what a puppy should meet in its first weeks, which is what our home-raising section describes doing | `/buy-staffy-puppies-for-sale-uk/` | 2026-09-20 · 200 |
-| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare | rspca.org.uk | The RSPCA on caring for a new puppy — the independent version of "what to do in the first weeks", which a listing page should not be the only source of | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
-| https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf | assets.publishing.service.gov.uk | The government's welfare-in-transport guidance for dogs and cats (PB10308) — the rules the transport a puppy travels in has to satisfy | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 |
-| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need | pdsa.org.uk | The PDSA on how much exercise a dog of this size needs — the independent figure behind "an hour a day", which a homepage should not be the source of | `/` | 2026-09-20 · 200 |
-| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/ | royalkennelclub.com | The registry on canine genetics and what a DNA test result tells you — the page behind "DNA tested clear", in the registry's words rather than ours | `/` | 2026-09-20 · 200 |
+| URL | Host | What it is | First page using it | Verified | Source type |
+|---|---|---|---|---|---|
+| https://ico.org.uk/ | ico.org.uk | The Information Commissioner's Office, the UK's supervisory authority for data protection — where a reader complains if we mishandle their data | `/privacy-policy-uk/` | 2026-09-19 · 200 | gov |
+| https://www.gov.uk/data-protection | gov.uk | The government's plain-English summary of UK data protection law and the rights it gives a person | `/privacy-policy-uk/` | 2026-09-19 · 200 | gov |
+| https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/ | citizensadvice.org.uk | Citizens Advice, for independent help with a data-protection question we are not the right people to answer | `/privacy-policy-uk/` | 2026-09-19 · 200 | other |
+| https://policies.google.com/privacy | policies.google.com | Google's own privacy policy — what Google Analytics does with what it records on this site | `/privacy-policy-uk/` | 2026-09-19 · 200 | other |
+| https://www.thekennelclub.org.uk/ | thekennelclub.org.uk | The Kennel Club, the UK pedigree registry our litters are registered with | `/privacy-policy-uk/` | 2026-09-19 · 200 | registry |
+| https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/ | thekennelclub.org.uk | The Kennel Club's guidance on the regulations a UK breeder works under | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 | registry |
+| https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/ | thekennelclub.org.uk | The Kennel Club on its registrations structure and responsible breeding | `/uk-blue-staffy-breeders-contact/` | 2026-09-19 · 200 | registry |
+| https://www.gov.uk/bring-pet-to-great-britain | gov.uk | The official rules for bringing a pet into Great Britain, for a buyer arranging transport | `/thank-you-blue-staffy-puppies-journey/` | 2026-09-19 · 200 | gov |
+| https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's own Staffordshire Bull Terrier breed page — the breed standard and what a registration covers, in the registry's words rather than ours | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 | registry |
+| https://crufts.org.uk/ | crufts.org.uk | Crufts, the UK breed show the migrated about page names as where the breed is celebrated | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 | other |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy | rspca.org.uk | The RSPCA's puppy advice — independent guidance for a first-time owner, which we are not the right people to give | `/blue-staffy-uk-breeders/` | 2026-09-20 · 200 | welfare |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/ | royalkennelclub.com | The registry's own page for the L-2-HGA DNA test — what the test is and what a clear, carrier or affected result means | `/blue-staffy-health-uk/` | 2026-09-20 · 200 | registry |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/ | royalkennelclub.com | The registry's own page for the HC-HSF4 hereditary cataract DNA test, the second of the two the breed is screened for | `/blue-staffy-health-uk/` | 2026-09-20 · 200 | registry |
+| https://www.bva.co.uk/canine-health-schemes/eye-scheme/ | bva.co.uk | The British Veterinary Association's eye scheme — the examination that looks for inherited eye disease the HC-HSF4 DNA test does not cover | `/blue-staffy-health-uk/` | 2026-09-20 · 200 | vet-charity |
+| https://www.gov.uk/get-your-dog-cat-microchipped | gov.uk | The government's guidance on the microchipping law every puppy leaving us has to satisfy | `/blue-staffy-health-uk/` | 2026-09-20 · 200 | gov |
+| https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines | pdsa.org.uk | The PDSA's guide to dog vaccinations — independent detail on the second dose and the booster, which are the owner's own vet's | `/blue-staffy-health-uk/` | 2026-09-20 · 200 | vet-charity |
+| https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/ | royalkennelclub.com | The registry's breed standard for the Staffordshire Bull Terrier — the build, head, coat, tail and temperament our breed-facts table describes, in the standard's own words | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 | registry |
+| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier | pdsa.org.uk | The PDSA's veterinary breed page for the Staffordshire Bull Terrier — independent care, exercise, feeding and grooming advice, which we are not the right people to give | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 | vet-charity |
+| https://www.gov.uk/control-dog-public/banned-dogs | gov.uk | The government's own list of dog types banned under the Dangerous Dogs Act 1991 — the page behind the statement that the Staffordshire Bull Terrier is not one of them | `/uk-staffordshire-bull-terrier-guide/` | 2026-09-20 · 200 | gov |
+| https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/ | royalkennelclub.com | The registry's own list of questions to ask a breeder before and during a visit — the independent version of the fifteen-question checklist | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 | registry |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales | rspca.org.uk | The RSPCA on spotting a puppy dealer's advert and on finding a good breeder — the independent authority behind the red-flag table | `/uk-blue-staffy-puppy-buying-guide/` | 2026-09-20 · 200 | welfare |
+| https://www.bluecross.org.uk/advice/dog/socialising-your-puppy | bluecross.org.uk | The Blue Cross on socialising a puppy — independent advice on what a puppy should meet in its first weeks, which is what our home-raising section describes doing | `/buy-staffy-puppies-for-sale-uk/` | 2026-09-20 · 200 | welfare |
+| https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare | rspca.org.uk | The RSPCA on caring for a new puppy — the independent version of "what to do in the first weeks", which a listing page should not be the only source of | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 | welfare |
+| https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf | assets.publishing.service.gov.uk | The government's welfare-in-transport guidance for dogs and cats (PB10308) — the rules the transport a puppy travels in has to satisfy | `/buy-blue-staffy-puppies-uk/` | 2026-09-20 · 200 | gov |
+| https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need | pdsa.org.uk | The PDSA on how much exercise a dog of this size needs — the independent figure behind "an hour a day", which a homepage should not be the source of | `/` | 2026-09-20 · 200 | vet-charity |
+| https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/ | royalkennelclub.com | The registry on canine genetics and what a DNA test result tells you — the page behind "DNA tested clear", in the registry's words rather than ours | `/` | 2026-09-20 · 200 | registry |
+| https://www.legislation.gov.uk/uksi/2018/486/contents/made | legislation.gov.uk | The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018 as made — the regulations animal activity licensing in England, dog breeding included, is issued under | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |
+| https://www.legislation.gov.uk/uksi/2015/108/contents/made | legislation.gov.uk | The Microchipping of Dogs (England) Regulations 2015 as made — the text of the law the government's microchipping guidance summarises | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |
+| https://www.gov.uk/guidance/dog-breeding-licence-england | gov.uk | The government's guidance on the dog breeding licence in England — who needs one, and that the council inspects the premises before it grants one | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |
+| https://www.gov.uk/guidance/buying-a-cat-or-dog | gov.uk | The government's advice on buying a cat or dog — what a responsible seller does, including showing a council licence number a buyer can check | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |
+| https://www.gov.uk/find-local-council | gov.uk | The government's find-your-local-council tool — how a reader finds the council that licenses breeders where they live | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |
+| https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-activities-licensing | cumberland.gov.uk | Cumberland Council's page on animal activities licensing — dog breeding, boarding and selling animals as pets — the council for Carlisle | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | local |
+| https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-welfare-licence-register | cumberland.gov.uk | Cumberland Council's register of the businesses in its area that hold an animal welfare licence, with each one's star rating | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | local |
+| https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier | dogstrust.org.uk | Dogs Trust's Staffordshire Bull Terrier breed page — a rehoming charity's own account of the breed | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |
+| https://paag.org.uk/ | paag.org.uk | The Pet Advertising Advisory Group's how-to-buy-a-pet advice — independent guidance for a buyer answering an online pet advert | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |
+| https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/ | pmc.ncbi.nlm.nih.gov | Pegram, Wonham, Brodbelt, Church and others, "Staffordshire Bull Terriers in the UK: their disorder predispositions and protections" (Canine Medicine and Genetics, 2020) — a study of anonymised VetCompass veterinary records, open access on PubMed Central | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | research |
 
 ## Provenance
 
@@ -128,3 +148,14 @@ row: its remaining migrated outbound links are two more copies of the registry's
 (already a row above) and the RSPCA puppy-care page (already a row above), and everything else it
 carried was internal, a fragment, or the map embed of the former address, all logged in
 `data/boards/index.json`'s `dropped`.
+
+The ten added on 2026-09-24 are STARTER rows for the pages project 5 builds (system-gaps Task 4):
+no page links them yet, so "First page using it" says so, and the first board that cites one
+replaces that cell with its route. Each was checked with `curl -sIL` on 2026-09-24 and returned
+200 at the URL written, which is the URL a following-redirects request resolved to. They exist
+so a location, comparison or blog page can reach six domains and four source types without
+inventing a citation: the two legislation rows are the law the government guidance rows
+summarise; the Cumberland rows are the licensing authority for Carlisle; the study is a
+peer-reviewed UK source on the breed's disorders. A location page for another city adds
+that city's own council licensing page as a `local` row when its board is written, checked the
+same way.

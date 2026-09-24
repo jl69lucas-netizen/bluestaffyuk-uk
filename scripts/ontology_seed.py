@@ -66,10 +66,17 @@ HOST_ORG = {
     "bva.co.uk": ("ont:bva", "British Veterinary Association", ["BVA"]),
     "pdsa.org.uk": ("ont:pdsa", "PDSA", []),
     "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),
+    # Task 4 starter rows. legislation.gov.uk is the government's own legislation site, one
+    # publisher with gov.uk here as assets.publishing.service.gov.uk is.
+    "legislation.gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
+    "cumberland.gov.uk": ("ont:cumberland-council", "Cumberland Council", []),
+    "dogstrust.org.uk": ("ont:dogs-trust", "Dogs Trust", []),
+    "paag.org.uk": ("ont:paag", "Pet Advertising Advisory Group", []),
 }
 # Hosts that are in the library but are not an organisation a page is about.
 SKIP_HOSTS = {
     "crufts.org.uk": "a dog show (an event), not an organisation; its organiser is already The Kennel Club",
+    "pmc.ncbi.nlm.nih.gov": "PubMed Central, the archive that hosts a study; the study, not the archive, is the source",
 }
 
 # normalised URL -> (id, name, aliases). Only rows whose own text names a law or official rule.
@@ -77,7 +84,8 @@ REGULATION_ROWS = {
     "https://gov.uk/control-dog-public/banned-dogs":
         ("ont:dangerous-dogs-act-1991", "Dangerous Dogs Act 1991", ["banned dog types"]),
     "https://gov.uk/get-your-dog-cat-microchipped":
-        ("ont:dog-microchipping-law", "Dog microchipping law", ["microchipping law", "compulsory microchipping"]),
+        ("ont:dog-microchipping-law", "Dog microchipping law",
+         ["microchipping law", "compulsory microchipping", "Microchipping of Dogs (England) Regulations 2015"]),
     "https://gov.uk/data-protection":
         ("ont:uk-data-protection-law", "UK data protection law", ["data protection"]),
     "https://gov.uk/bring-pet-to-great-britain":
@@ -85,6 +93,14 @@ REGULATION_ROWS = {
     "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf":
         ("ont:welfare-in-transport-pb10308", "Welfare in transport guidance for dogs and cats (PB10308)",
          ["PB10308", "welfare-in-transport guidance"]),
+    # Task 4 starter rows on legislation.gov.uk: the text of two laws.
+    "https://legislation.gov.uk/uksi/2018/486/contents/made":
+        ("ont:animal-licensing-regulations-2018",
+         "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018",
+         ["animal activity licensing"]),
+    "https://legislation.gov.uk/uksi/2015/108/contents/made":
+        ("ont:dog-microchipping-law", "Dog microchipping law",
+         ["microchipping law", "compulsory microchipping", "Microchipping of Dogs (England) Regulations 2015"]),
 }
 
 # The tests the evidence ledger's own comment names. `match` is what a ledger claim's
@@ -99,7 +115,7 @@ HEALTH_TESTS = (
 
 HEALTH_IDS = {t[0] for t in HEALTH_TESTS}
 
-ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*$")
+ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|(?:[^|]*\|)*\s*$")
 
 
 def slug_id(text):
