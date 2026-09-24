@@ -179,7 +179,9 @@ Items 1 and 2 are closed by project 2 and item 4 by project 3; 3 and 5–8 are c
 with their owning project; 9–14 are new from the system transfer, 15–16 were added after it,
 17–26 are new from the design system, and 27–38 are new from the page rebuilds. Project 4
 closed 8, 9, 11, 12, 20, 22, 25, 28 and 29. The query augmentation bridge build closed 17 and
-added 39–46. The competitor intelligence bridge build closed 42 and added 47–58.
+added 39–46. The competitor intelligence bridge build closed 42 and added 47–58. The
+project 5 readiness pass closed 21, 32 and 37 and the first half of 31, corrected 23 and 24,
+and moved 16 on to its location-page remainder.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -395,16 +397,31 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     collection point the breeder has left (Known Issue 16). **Closed 2026-09-19** by project 4
     Task 6: the constant is `waiting-list`, the option the kit form builds, and the legacy
     form now emits the same set from the same data.
-23. **Page weight of the inline lockups.** The header inlines the horizontal lockup and the
-    footer the mono one, about 15 KB of SVG each, and the mark sprite adds about 3 KB per
-    document; the built homepage is roughly 163 KB, of which about 52 KB is inline SVG. It cost
-    no Lighthouse category on project 3's sweep, but it is paid on every page and shrinks with
-    nothing. If it needs to come back, the lockups can become `<use>` references into the sprite
-    the mark already emits, at the cost of one request. Recorded, not yet a defect.
-24. **The fonts are not vendored.** Fraunces and Source Sans 3 load from Google Fonts, which is
-    why the Design System artifact's font list is empty (spec §11 amendment 7c). That is a
-    third-party request on every page and a privacy consideration. **Project 6** should decide
-    whether to self-host before the site is public.
+23. **Page weight of the inline lockups — now only on the legacy shell (updated in the
+    project 5 readiness pass).** The kit chrome that `src/layouts/PageShell.astro` mounts draws
+    the mark from the sprite and inlines no lockup, so the twelve rebuilt pages, the hubs, the
+    puppy pages and the post carry 5–8 KB of inline SVG (the built homepage: 7,618 bytes of
+    182,646). The legacy shell (`src/components/SiteHeader.astro` and
+    `src/components/SiteFooter.astro`, mounted by `src/layouts/BaseLayout.astro`) still
+    inlines both lockups, 15,084 + 15,391 bytes, on 36 routes: the 28 location pages,
+    `/search/`, `/kit-preview/` and six board-preview routes. It closes for the location pages
+    when **build 5** moves them onto `PageShell`. Was: the header and footer inlined about 15 KB
+    of SVG each on every page (homepage 163 KB, 52 KB of it inline SVG); recorded, not yet a
+    defect.
+24. **The picked fonts are not loaded at all — corrected in the project 5 readiness pass.**
+    This entry said Fraunces and Source Sans 3 load from Google Fonts. They do not: nothing
+    under `src/` or `public/` requests a web font, and no page in `dist/` carries a font link or
+    an `@font-face` rule. `src/styles/tokens.css` names the two families first in
+    `--font-display` and `--font-body`, so the site renders in their fallbacks — Georgia for
+    headings, `system-ui` for body text — unless a visitor has them installed. Only the Artifact
+    and board builders link Google Fonts (`scripts/build_page_board.py`,
+    `scripts/_kit_sections.py`, `scripts/build_picks_board.py` and the spec, plan and report
+    builders), so every board and canvas the breeder approved showed the picked type and the
+    site does not. Every hero measure so far (Known Issues 18, 28 and 30) was taken in the
+    fallbacks, and loading the real fonts will reflow them. **Needs the user's decision before
+    project 5 builds pages**: self-host the two families, link Google Fonts, or keep the
+    fallbacks and record that in the design system. The Design System artifact's empty font
+    list (spec §11 amendment 7c) stands until then.
 25. **CLOSED 2026-09-22 (project 4 close-out audit) — `scripts/render_baseline.py`'s default
     report is project 4's.** `REPORT`, `tests/py/test_render_baseline.py`'s `REAL_REPORT`,
     `npm run baseline` and `scripts/health-sweep.sh` all name
@@ -598,7 +615,12 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     shared FAQ rows and review attributions as sitewide lines (as the quotes already are), and
     rewrite the rest when the location and post bodies are rewritten.
 
-37. **The commit trailer (2026-09-22).** Spec §7.7 names `Co-Authored-By: Claude Fable 5.1`.
+37. **CLOSED (project 5 readiness pass) — the trailer is Fable 5.1.** The user's standing
+    rule for this repo is `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`, and all
+    115 commits since the project 4 merge (`db37ca1..9927710`, both bridge builds) carry it.
+    The nine Opus 5.5 commits described below and the project 4 merge commit stay as history;
+    nothing rewrites them. Was: **The commit trailer (2026-09-22).** Spec §7.7 names
+    `Co-Authored-By: Claude Fable 5.1`.
     Every commit on `page-rebuilds` carries a `Co-Authored-By` trailer; 111 carry Fable 5.1 and
     the last nine (`2ce9e93` onward, including step 0 and the two close-out commits), plus the merge commit
     on `foundation`, carry `Claude Opus 5.5`, by the controller's instruction for those
@@ -691,6 +713,17 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     - What socialisation has the puppy had?
     - Can a blue puppy come from parents that are not both blue — what colours are your
       parents?
+    - (Added in the project 5 readiness pass, from project 4.) Is BSUK a member of the Kennel
+      Club Assured Breeder Scheme? The migrated why-us body claimed it five times and project 4
+      dropped every claim as unbacked (`data/boards/buy-staffy-puppies-for-sale-uk.json`
+      `dropped`); a yes, with the membership record, lets the claim back onto the pages.
+    - (Added in the project 5 readiness pass.) Do you give a written health guarantee? If so,
+      for how long and what does it cover? The answer sets `data/settings.json`
+      `guarantee_days` (null today); `data/faq.json` `home-health-guarantee` still promises a
+      written guarantee, carried over from the old site.
+    - (Added in the project 5 readiness pass.) Do you follow Puppy Culture or early
+      neurological stimulation (ENS) with your litters? One migrated location body in
+      `data/locations.json` says so; it is unconfirmed, and no page states it until she confirms it.
 
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
