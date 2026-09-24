@@ -39,8 +39,8 @@ BlueStaffyUK is a YMYL site (buying a living animal is a significant decision). 
 ## BSUK E-E-A-T Assets
 
 ### Experience Signals (first-hand, lived)
-- Lisa Bright: [X]+ years breeding Staffordshire Bull Terriers at home
-- [N]+ families served — named in testimonials
+- Lisa Bright breeds Staffordshire Bull Terriers at home in Carlisle (years in business are NOT FETCHED — never a figure)
+- Real reviews from families who took a puppy home — the rows of `data/reviews.json` (a family count is NOT FETCHED)
 - Specific litter stories, whelping observations, home-raising notes
 - Carlisle, Cumbria (specific, verifiable)
 - Coat care for the litter's own coats (blue, blue and white, white) from direct experience

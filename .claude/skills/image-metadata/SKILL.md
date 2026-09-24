@@ -103,7 +103,7 @@ Caption:   [Optional: adult weight estimate, price range]
 File name: blue-staffy-puppy-with-[family-type]-[location]-[nn].jpg
 Alt text:  [Family type] with blue Staffordshire Bull Terrier puppy in [setting] — BlueStaffyUK Carlisle Cumbria
 Title:     Blue Staffy puppy with [family type] | BSUK
-Caption:   [Optional: "Perfect for [lifestyle] — ask about our blue and blue and white Staffy puppies"]
+Caption:   [Optional: "Perfect for [lifestyle] — ask about our blue, blue and white, and white Staffy pups"]
 ```
 
 ### Size Reference

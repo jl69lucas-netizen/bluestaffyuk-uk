@@ -60,7 +60,8 @@ Rules:
 **Good BSUK Attention hook:**
 ```
 H1: "Male or female — which Blue Staffy puppy is the right companion for your family?"
-Subhead: "[X] years. [N]+ families. One Carlisle breeder who answers the phone after the sale — with KC registration and a vet health check on every puppy."
+Subhead: "One Carlisle breeder, raising every puppy in her own home — with KC registration and a vet health check on every puppy."
+(Years in business and a family count are NOT FETCHED — never write either, not even as a placeholder.)
 ```
 
 **Bad Attention hook:**

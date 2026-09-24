@@ -391,16 +391,23 @@ RESIDUE = (
     # blue brindle and white coats") and a "vs" topic stay allowed (see residue()).
     ("a brindle pup offered as ours — each pup's coat is its `colour` in data/puppies.json",
      re.compile(r"(?i:\b(?:our|we|us)\b[^|\n]{0,40}\bbrindle\b|"
-                r"\bbrindle staff(?:y|ies)?\s+(?:for sale|pups?|puppies)|"
+                r"\bbrindle staff(?:y|ies)?\s+(?:for sale|pups?|puppy|puppies)|"
+                r"\bbrindle staffordshire bull terriers?\s+(?:for sale|pups?|puppy|puppies)|"
                 r"\bbrindle (?:pups?|puppies)\b|"
                 r"\bspecialis\w+ in\b[^|\n]{0,40}\bbrindle\b|"
                 r"\bblue\s*(?:/|or)\s*blue brindle\b|"
                 r"\bcoat:\s[^|\n]*\bbrindle\b)|"
                 r"\bBlue Brindle Staff(?:y|ies)\b")),
-    ("a placement count — how many families BSUK has placed with is NOT FETCHED",
-     re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)")),
+    ("a placement count or years in business — both are NOT FETCHED, even as a [N] template",
+     re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)|"
+                r"\[N\]\+?\s*families|families for \[X\]\+?\s*years|"
+                r"\[X\]\+?\s*years\b(?![^|\n]{0,20}\b(?:old|lifespan|live))")),
     ("a reply-time promise — the only reply time on file is data/faq.json `home-after-support`",
-     re.compile(r"(?i)\b(?:within|in under)\s+(?:24|48|12)\s+hours\b|\bresponds? within\b")),
+     # fires only when WE are the ones replying; "within 24 to 48 business hours" (the backed
+     # figure) and vet advice ("book a vet visit within 48 hours") stay silent
+     re.compile(r"(?i)\b(?:we|I|us|Lisa(?: Bright)?|she|BlueStaffyUK|BSUK)\b[^.|\n]{0,30}?"
+                r"\b(?:repl(?:y|ies|ied)|respond(?:s|ed)?|answer(?:s|ed)?|get back)\b[^.|\n]{0,20}?"
+                r"\b(?:within|in under)\s+(?:\d+|a|an|one)\s*(?:hours?|days?|minutes?)\b")),
 )
 # A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
 PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
@@ -423,7 +430,12 @@ def residue(path: pathlib.Path):
             if why.startswith('"licensed breeder"') and "LICENCE_CLAIM_PLACEHOLDER" in line:
                 continue
             # a comparison topic names both coats without offering either
-            if why.startswith("a brindle pup") and re.search(r"(?i)\bvs\b|\bversus\b", line):
+            # a line that denies the coat is the point of saying it; a "vs" topic names both
+            # coats without offering either, unless we/our is on the line
+            if why.startswith("a brindle pup") and (
+                    re.search(r"(?i)\b(?:none|not|never|no)\b", line)
+                    or (re.search(r"(?i)\bvs\b|\bversus\b", line)
+                        and not re.search(r"(?i)\b(?:our|we)\b", line))):
                 continue
             out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:110]))
     return out
@@ -476,6 +488,10 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "Only a licenced breeder can sell you one.\n"
         "Lisa Bright will reply within 24 hours.\n"
         "<p class=\"bsuk-form-note\">We respond within a day.</p>\n"
+        "Subhead: \"[X] years. [N]+ families. One Carlisle breeder.\"\n"
+        "> \"We've placed Blue Staffies with [City] families for [X] years.\"\n"
+        "Compare our blue vs blue brindle pups side by side.\n"
+        "Subject: a blue brindle staffordshire bull terrier puppy on a sofa\n"
         # silent: a line that forbids the push, a UK source, the licence stand-in named on
         # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
@@ -486,11 +502,15 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "C. **Size & Coat** — blue, blue brindle and white coats, full-grown size\n"
         "H3: Blue vs Blue Brindle: Which Coat Colour Is Right for Your Household?\n"
         "- Keyword-rich but natural: \"Staffy vs American Bully comparison\"\n"
+        "We reply within 24 to 48 business hours, ourselves.\n"
+        "Book a vet visit within 48 hours of collection.\n"
+        "Each pup's coat is its own `colour`; none of the six is brindle.\n"
+        "Staffies live 12–14 years; [X] years old is a senior dog.\n"
         "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
     bad = residue(p)
-    # every line up to 34 fires (a line may fire twice), nothing after it does, and every
+    # every line up to 38 fires (a line may fire twice), nothing after it does, and every
     # entry of RESIDUE fired at least once
-    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 35)), bad
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 39)), bad
     assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad
 
 
@@ -500,7 +520,8 @@ def test_the_residue_lint_actually_fires(tmp_path):
 # gates it — the SEO checklist's rule (tests/py/test_builder_skills.py), in every skill and
 # command. A line about a competitor's guarantee ("their") or the source repo's is not ours.
 GUARANTEE = re.compile(r"(?i)guarantee")
-NOT_OURS = re.compile(r"(?i)\btheir\b|source repo")
+# "their" counts only when it owns the guarantee: within six words before it
+NOT_OURS = re.compile(r"(?i)\btheir\b(?:\W+\w+){0,6}?\W+guarantee|source repo")
 
 
 def ungated_guarantees(path: pathlib.Path):
@@ -527,5 +548,8 @@ def test_the_guarantee_gate_actually_fires(tmp_path):
         # silent: gated on the setting, a competitor's, the source repo's
         "A guarantee is named only when `guarantee_days` in data/settings.json is set.\n"
         "Their \"lifetime guarantee\" has no terms.\n"
-        "The source repo's 72-hour guarantee.\n", encoding="utf-8")
-    assert [b.split("  ")[0] for b in ungated_guarantees(p)] == ["SKILL.md:1", "SKILL.md:2", "SKILL.md:3"]
+        "The source repo's 72-hour guarantee.\n"
+        # fires: "their" that does not own the guarantee is no excuse
+        "Every puppy has a health guarantee, and their paperwork is in order.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in ungated_guarantees(p)] == [
+        "SKILL.md:1", "SKILL.md:2", "SKILL.md:3", "SKILL.md:7"]

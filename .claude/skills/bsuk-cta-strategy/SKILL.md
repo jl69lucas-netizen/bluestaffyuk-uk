@@ -268,8 +268,10 @@ Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are
 > **Button:** Reserve Your [City] Blue Staffy
 
 🌱 **Ethical & Quality:**
-> "We've placed healthy, happy Blue Staffies with [City] families for [X] years."
-> **Button:** [City] Family Stories
+> "Every puppy is raised in our home in Carlisle and delivered to [City] by DEFRA-approved transport."
+> **Button:** Read Our Reviews
+
+A family count and years in business are NOT FETCHED — never write one, not even as a placeholder to fill later.
 
 ---
 

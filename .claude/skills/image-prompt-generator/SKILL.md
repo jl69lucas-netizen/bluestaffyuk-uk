@@ -1,6 +1,6 @@
 ---
 name: image-prompt-generator
-description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue, blue and white and white Staffy puppies, Carlisle, Cumbria home setting). Writes each prompt fresh from rules/images.md; no prompt library exists in this repo yet.
+description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue, blue and white, and white Staffy puppies, Carlisle, Cumbria home setting). Writes each prompt fresh from rules/images.md; no prompt library exists in this repo yet.
 allowed-tools: [Read, Write, Bash]
 ---
 

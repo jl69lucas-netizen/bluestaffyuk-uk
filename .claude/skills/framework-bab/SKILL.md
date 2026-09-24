@@ -67,7 +67,7 @@ BRIDGE:
 Buying a Staffy from a breeder who shows you the paperwork isn't more expensive than buying from
 an online stranger — it's a different category of transaction entirely. One where the
 paperwork is real, the sale is legal, and there's a human being who answers the phone
-after the sale. Lisa Bright has done this for [N]+ families.
+after the sale. Every puppy Lisa Bright places is raised in her own home in Carlisle.
 [CTA: Start your inquiry →]
 ```
 

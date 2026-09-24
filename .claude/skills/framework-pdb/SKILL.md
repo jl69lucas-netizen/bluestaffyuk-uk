@@ -70,9 +70,9 @@ tell which one is real.
 ### Depth (2–4 sentences)
 ```
 That uncertainty is rational. Puppy sale scams cost UK buyers millions annually — 
-and forged KC paperwork is a real phenomenon in the Staffordshire Bull Terrier market. A 
-"health guarantee" from an unlicensed seller is worth nothing when their listing has
-already disappeared. Your fear isn't paranoia — it's pattern recognition.
+and forged KC paperwork is a real phenomenon in the Staffordshire Bull Terrier market. An
+unlicensed seller's promise, their "health guarantee" included, is worth nothing once the
+listing has already disappeared. Your fear isn't paranoia — it's pattern recognition.
 ```
 
 ### Brief (1 paragraph)
