@@ -32,6 +32,14 @@ SCRIPT_SUFFIXES = (".py", ".sh", ".mjs")
 # inside the generator, so it lives next to the lists it sits beside and a new gate is one
 # edit rather than two. Every left-hand path is checked against disk on every run.
 GATES = [
+    ("scripts/migration_parity.py", "words, headings, images and embeds of a migrated page against the extractor"),
+    ("scripts/facts_preserved_check.py", "a rebuilt page keeps every fact its migrated body carried"),
+    ("scripts/link_parity_check.py", "a rebuilt page links where its board record says, and nowhere else"),
+    ("scripts/verbatim_set_check.py", "a rebuilt page carries its migrated page's verbatim set (working rule 15)"),
+    ("scripts/query_coverage_check.py", "a built page with a query pool carries its FAQ blocks and questions"),
+    ("scripts/competitor_registry_check.py", "`data/competitors.json` is well formed; no unlinkable competitor is linked"),
+    ("scripts/gap_matrix.py", "the newest gap matrix matches the intel reports (`--check`)"),
+    ("scripts/workflow_ref_check.py", "WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist"),
     ("scripts/marker_check.py", "no source-repo marker survives anywhere in the scanned roots"),
     ("scripts/placeholder_check.py", "counts launch placeholders; fails only under `BSUK_RELEASE=1`"),
     ("scripts/final_page_audit.py", "headings, six levels, the H5/H6 minimums"),
@@ -71,6 +79,7 @@ def render(root=ROOT):
     scripts = sorted(p.name for p in (root / "scripts").glob("*")
                      if p.is_file() and p.suffix in SCRIPT_SUFFIXES)
     data = sorted((root / "data").glob("*"))
+    schemas = sorted(p.name for p in (root / "schemas").glob("*.json"))
 
     L = []
     L.append("## Agents — %d" % len(agents))
@@ -110,6 +119,13 @@ def render(root=ROOT):
     L.append("## Data files — %d" % len(data))
     L.append("")
     L += ["- `data/%s%s`" % (p.name, "/" if p.is_dir() else "") for p in data]
+    L.append("")
+
+    L.append("## Schemas — %d" % len(schemas))
+    L.append("")
+    L.append("Every JSON Schema in `schemas/` — the contract a data file or report is validated against.")
+    L.append("")
+    L += ["- `schemas/%s`" % s for s in schemas]
     L.append("")
 
     L.append("## Gates")
@@ -198,6 +214,12 @@ GUARDS = (
      "against the repo",
      "add an agent, a skill, a script or a `data/` file",
      "`npm run agents`, `npm run registry` (both `--check`)"),
+    ("workflow references",
+     "`docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent "
+     "or skill name, `scripts/...` path and `npm run` name, unless the line carries the "
+     "parenthesised not-ported marker",
+     "name it in either doc — coverage is the whole of both files",
+     "`tests/py/test_workflow_ref_check.py`, `npm run check:workflow`"),
     ("render baseline",
      "the generated table in `docs/reports/render-baseline-project2.md` against the "
      "scorecards",

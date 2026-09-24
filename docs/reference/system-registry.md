@@ -235,6 +235,19 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/settings.json`
 - `data/verbatim/`
 
+## Schemas — 8
+
+Every JSON Schema in `schemas/` — the contract a data file or report is validated against.
+
+- `schemas/board.schema.json`
+- `schemas/competitor-report.schema.json`
+- `schemas/competitors.schema.json`
+- `schemas/component-ledger.schema.json`
+- `schemas/llm-intel.schema.json`
+- `schemas/ontology.schema.json`
+- `schemas/port-manifest.schema.json`
+- `schemas/queries.schema.json`
+
 ## Gates
 
 `npm run check:all` runs the mechanical gates. Each prints `examined N …; 0 problems`
@@ -242,6 +255,14 @@ and exits non-zero on a problem.
 
 | Gate | Proves |
 |---|---|
+| `scripts/migration_parity.py` | words, headings, images and embeds of a migrated page against the extractor |
+| `scripts/facts_preserved_check.py` | a rebuilt page keeps every fact its migrated body carried |
+| `scripts/link_parity_check.py` | a rebuilt page links where its board record says, and nowhere else |
+| `scripts/verbatim_set_check.py` | a rebuilt page carries its migrated page's verbatim set (working rule 15) |
+| `scripts/query_coverage_check.py` | a built page with a query pool carries its FAQ blocks and questions |
+| `scripts/competitor_registry_check.py` | `data/competitors.json` is well formed; no unlinkable competitor is linked |
+| `scripts/gap_matrix.py` | the newest gap matrix matches the intel reports (`--check`) |
+| `scripts/workflow_ref_check.py` | WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist |
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
 | `scripts/final_page_audit.py` | headings, six levels, the H5/H6 minimums |
@@ -272,7 +293,7 @@ Deferred paths are not listed here by name: a name is a path, and a path this re
 does not have is exactly what the forward-reference guard exists to catch. Read the
 manifest for the list.
 
-## Mechanical guards — 10
+## Mechanical guards — 11
 
 Every rule in this repo that is actually enforced is enforced by one of these. A
 guard that is not in this table is not a guard; a rule with no row here is a
@@ -290,6 +311,7 @@ answer is usually "add the manifest row and it is covered".
 | harness vocabulary | `tests/render/` check ids, families and the deferred-check register | register a check in the harness | `tests/render/meta.spec.ts` via `npm run test:render:meta` |
 | credentials doc + secret scan | `docs/reference/credentials.md` key table; every `.env` value against all tracked files, the run log and `docs/artifacts/*.html`; credential SHAPES across `marker_check.scan_roots()` plus docs/reports, docs/artifacts, data/quality/scorecards, tests/py/fixtures | inherited from the marker gate; add a key to `.env` and `.env.example` | `tests/py/test_credentials_doc.py`, `tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py` |
 | agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
+| workflow references | `docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent or skill name, `scripts/...` path and `npm run` name, unless the line carries the parenthesised not-ported marker | name it in either doc — coverage is the whole of both files | `tests/py/test_workflow_ref_check.py`, `npm run check:workflow` |
 | render baseline | the generated table in `docs/reports/render-baseline-project2.md` against the scorecards | regenerate with `scripts/render_baseline.py --write` | `npm run baseline` |
 | parity / redirects / schema / sitemaps | the built `dist/` against the migration record, the redirect map, JSON-LD and the sitemap shards | build a page — coverage follows `dist/` | `npm run check:all` |
 
