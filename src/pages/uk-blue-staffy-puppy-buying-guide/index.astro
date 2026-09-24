@@ -447,9 +447,11 @@ const pageSchema = [
   {/* 01 top — hero, picked style H-GD3 (a text-led panel in a card: the photograph in a narrow
       column on the left, the copy beside it, the contents aside in a box of its own). The aside
       is a SLOT (amendment 8) and what goes in it is the record's own `hero.aside`, whose first
-      item is derived above. No CTA buttons and no trust-chip row: the record gives the hero
-      neither, and the arrangement's ledge is `aside` (amendment 6a). The recorded refresh delta
-      is the CONTAINER — a text-led card, where the breed guide opens on a photograph. */}
+      item is derived above. No CTA buttons: the record gives the hero none. The record's three
+      chips go to `Hero` as `chips`, which renders them as a row under the lede only on a
+      `chips` ledge — H-GD2's (amendment 6a); on an `aside` ledge (H-GD1, H-GD3) they print as
+      the aside's last line instead. The recorded refresh delta is the record's own
+      `top.refresh.note`, rewritten when the guides were re-boarded (Known Issue 35). */}
   <section slot="hero" id="top" data-section-label="The buying guide" class={box('top')}>
     <Hero
       as="h1"
@@ -479,16 +481,19 @@ const pageSchema = [
       imageWidth={stepsHero.w}
       imageHeight={stepsHero.h}
       imageSrcset={heroSrcset}
+      chips={heroChips}
       layout={heroStyle.layout.hero ?? 'panel'}
       align={heroStyle.layout.align ?? 'left'}
       media={heroStyle.layout.media ?? 'left'}
       ledge={heroStyle.layout.ledge ?? 'aside'}
     >
       {/* THE ASIDE IS THE PAGE'S MARKUP, and it carries the record's chips as well as its items.
-          `Hero` renders the chip row only for `ledge: 'chips'` — correctly, because a hero
-          showing two ledges is neither arrangement — so on H-GD3 the prop is handed over and
-          dropped. The three chips are rendered here as a single line rather than a wrapped row,
-          because a row costs the card two lines it does not have. */}
+          `Hero` renders the chip row only for `ledge: 'chips'` and this aside only for
+          `ledge: 'aside'` — correctly, because a hero showing two ledges is neither arrangement
+          — so on H-GD2 the chips are `Hero`'s row and this slot is dropped, and on H-GD1 or
+          H-GD3 the prop is handed over and dropped and the chips are rendered here as a single
+          line rather than a wrapped row, because a row costs the card two lines it does not
+          have. */}
       <div slot="aside">
         <p class="aside-title">{heroAside.title}</p>
         <ul class="aside-items">
