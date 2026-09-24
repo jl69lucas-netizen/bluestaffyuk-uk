@@ -265,3 +265,30 @@ query. Put each term in the section where it reads naturally; drop a term that r
 anywhere rather than force it. Exit 6 means nothing is cached for the slug yet: run
 bsuk-query-augmentation first. The board's block 4 shows every term as a chip grouped by
 type, with the sections that use it.
+
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every blog post this skill builds; the `/blue-staffy-blog-guides/` hub, built before this
+rule, is not examined.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open another post's page, board or built HTML for wording. The only text another
+   page may share is the whitelist in `scripts/dup_content_audit.py`.
+3. A heading the tree does not carry, including an info card's H3 or a special-element
+   component's heading, goes back to the board: add it to the tree and re-approve, then
+   build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this post and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   post and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   post to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.

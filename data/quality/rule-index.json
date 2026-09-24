@@ -194,6 +194,14 @@
    "why": "the OUTCOME is tested by dup_content_audit.py, but the rule is about method \u2014 a page written from a sibling and then reworded passes the outcome test and still violates the rule"
   },
   {
+   "id": "outline-provenance-gate",
+   "family": "DUP",
+   "enforced": "test",
+   "pack": "rules/copy.md",
+   "test": "tests/py/test_outline_provenance_check.py",
+   "severity": "blocking"
+  },
+  {
    "id": "no-fabricated-claims",
    "family": "COPY",
    "enforced": "judgment",
