@@ -9943,3 +9943,87 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"`. Then `npm run build && python3 -m pytest tests/py -q && npm run -s check:all` on `foundation`. Never push.
 - [ ] **Step 7: Artifacts.** `python3 scripts/build_spec_artifact.py docs/superpowers/plans/2026-09-24-system-gaps.md docs/artifacts/bsuk-system-gaps-plan.html "BSUK System Gaps Plan" "BlueStaffyUK rebuild · before project 5" "System gaps plan" "BlueStaffyUK Rebuild — System Gaps" "status: executed" 2026-09-24 docs/superpowers/plans/2026-09-24-system-gaps.md` and the same for the gate report into `docs/artifacts/bsuk-system-gaps-report.html`. Republish both Artifacts at their URLs. Commit.
 - [ ] **Step 8: Memory and the user.** Update the `bsuk-system-gaps-status` memory to COMPLETE with the merge sha and URLs. Then tell the user, with the full progress table, "ready for project 5", naming anything left open (for example Task 11b declined).
+
+---
+
+## Execution record (2026-09-24)
+
+Executed subagent-driven on `system-gaps`. Each task had an Opus implementer, a spec review and a code-quality review, re-reviewed until both passed, and its result was compared with the rehearsal (`wt-int`). The reviews asked for more than the rehearsed text in most tasks. Every change is listed below, and the tests pin each one. Two tasks were added during execution: **10d** (the rules shown on the board and answered before approval), found by the Task 6b review, and **12a** (fixes from the final whole-branch review). The final whole-branch re-review said **ready to merge: YES**.
+
+| Task | What | Commits | Spec · Quality |
+|---|---|---|---|
+| 0 | family_rules hook | `99c81e0` | controller |
+| 1 | Keyword types + keyword_variants.py | `fa9bd8a 4044dda ad8da9b` | ✅ ✅ |
+| 2 | Ontology classes + seeder (56 entities) | `7fa4f75 4653ed6` | ✅ ✅ |
+| 3 | Board entity + keyword view | `a20296d 26498d8` | ✅ ✅ |
+| 4 | External link diversity | `55387d2 b94a4fd b1a6186` | ✅ ✅ |
+| 5 | Anchor types + site-wide reuse | `286e57c 9804d63 6a28192` | ✅ ✅ |
+| 6 | Outline provenance gate | `34e7724 ce002fa 5b34eef` | ✅ ✅ |
+| 6b | Outline heading-repeat check | `8389b59 58fcd7f` | ✅ ✅ |
+| 7 | IMAGE-DESIGNS.md + label map | `0296f9f 7e1e999 747422c` | ✅ ✅ |
+| 8 | reframe_og, ingest_image, 3 image skills | `33d6fb5 fd233c1 f2e2149` | ✅ ✅ |
+| 9 | image_candidates | `27e5e2e 1b0b4b0 e5daff7` | ✅ ✅ |
+| 10 | Per-heading image rule + build gate | `21e3496 10f8387 5000a2b` | ✅ ✅ |
+| 10b | Board block 7 Images & styles | `07d29b0 0d08da2` | ✅ ✅ |
+| 10c | Current file first, style names | `5ebd997 919e37f da9bfd1 ff9c2e5 733caa9 ee5243b 4735dff` | ✅ ✅ |
+| 10d | Rules on the board (7b) + approval refusal (added in execution) | `3748ab4 22701b8 a276d27` | ✅ ✅ |
+| 11 | Wiring: CLAUDE.md 17, WORKFLOW 13, skills | `93e885b a72595e` | ✅ ✅ |
+| 11b | google-genai pinned; smoke image awaits the user's key | `c78ba09` | partial (KI 70) |
+| 12a | Whole-branch review fixes (added in execution) | `1a64165 f32e4b7 cd3cc32 376503a fd2746b dc4432e c78593b c391b48 7e44e4d` | ✅ (branch re-review YES) |
+
+Close-out: two identical runs (build 0; `2982 passed, 25 skipped, 1 xfailed`; `check:all` 0; registry 0 problems; agents 0 problems). Approval drift on the 12 built boards: none. The gate report is `docs/reports/system-gaps-gate-report.md`.
+
+### Amendments made by the reviews (the code, not the task text above, is authoritative)
+
+- Task 1 (quality review, 2026-09-24): keyword_variants.py bans whole hyphenated host labels only (was: every hyphen part, which dropped "owners"); tolerant of any cache shape (`_read` dict-only, `_text`); exit 6 when nothing examined; `df` meaning documented; family_rules check ignores blank terms; hint wording `<query-slug>`. Fix commit on top of fa9bd8a.
+- Task 1 follow-up: place-name host labels (e.g. manchester.gov.uk) never banned; joined-label test made non-vacuous.
+- Task 2 (quality review): ontology_seed raises when one ledger pattern matches >1 health test; the one allowed upgrade is PROPOSED/source-null Health → ASSERTED once the ledger proves it; duplicate/cross-class ids raise; fresh-seed Glasgow owner = the canonical row; NFKD slugging; missing inputs → BoardError. DEFERRED TO TASK 4: header-based table parsing (reviewer Minor 6) and HOST_ORG constants (Minor 10) — Task 4 implementer should do these after Step 5b.
+- Task 3 (quality review): board_entities badge class from known values only (attribute-injection fix); None-safe; phone caption flex; role=group; .kv-scoped classes; search collapses whitespace; matrix follows search; BLOCKED dark badge; more tests incl. headless filter check.
+- Task 4 (quality follow-up): new scripts/link_library.py strict table parser shared by ontology_seed + link_diversity (mtime cache); diversity messages name offending URLs; nhs/police second levels + gov.wales/gov.scot suffixes; empty hosts filtered.
+- Task 5 (quality review): anchor reuse only flags siblings at >= status rank (first owner keeps anchor); _route pinned to route_of by test; exact-match message names links; memoised site map; malformed board → BoardError with file; docstring.
+- Task 6 (quality review): hyphenated-city swap caught; each shared passage/sentence reported once with page list; outline-no-main; rules/copy.md note that fact lines are rewritten per page; order message index; real-repo test asserts exit only.
+- NEW Task 10d (controller, from Task 6b review): family_rules findings shown on the board (block 7b) and board_approve refuses approval while a non-build-gate FAIL stands; image build-gate ids exempt (image_rules.BUILD_CHECK_IDS).
+- Task 7 (spec review): IMAGE-DESIGNS.md gains a scope paragraph (new location/comparison/blog pages only), hub/puppy rows removed, breed lines limited to data/facts/uk-staffordshire-bull-terrier-guide.json wording.
+- Task 7 (quality review): image_designs fields = first §10 table only (6 keys); load() validates (missing section, empty table, dup id, short row → ValueError, exit 2); argparse; single-section capture.
+- Task 8 (quality review): size budget enforced (refuse over 95/55 KB; C/D/H height cap 1760); atomic publish via temp files + os.replace; alpha onto bone; slot/board pairing, mobcrop, corrupt/animated/bomb inputs, slug, symlink checks; REFUSED to stderr.
+- Task 9 (review): canonical() strips -NNN only when the shorter original exists (puppy card-800 files kept); GENERIC += sale/buy/breeder(s)/new/home/available/now/near/me; raw-or-folded stopwords; safer asset_stem; malformed verbatim warns; relative assets_dir in output.
+- Task 9 follow-up 2: ingest_image.default_stem delegates to image_candidates.asset_stem (one naming rule). NOTE FOR 10c: current_file(board, img, root=None) must call canonical(f, root) so -NNN real names survive; candidates() passes root.
+- Task 10 (quality review): pick paths contained under public/images, is_file, no ../ or symlink escape (schema file pattern too); fullmatch; BUILD_CHECK_IDS constant (used by 10d); kind re-checked at build; messages name section/H3; build_findings(root=).
+- NOTES FOR 10b: guard `src and thumb_uri(src)` when public_path returns None.
+- NOTES FOR 10c: add `import json` pair to the image_rules edit list (old "import hashlib\nimport pathlib\n" → new "import hashlib\nimport json\nimport pathlib\n"); current_file(board,img,root) passes root to canonical; validate_image_picks must check the DRAFT first when a draft exists (match board_images), else the served copy; ingest_image.PICK should reuse image_rules.PICK (no cycle) so its grammar has the containment/fullmatch rules.
+- Task 10b (review): _e collapses whitespace (blank line in a prompt broke the slot fieldset); thumbnail alts; thumb_uri draft-before-decode + bomb-safe; slot id pattern in schema; tap targets.
+- Task 10c (review): 44px style targets; wrong-shape label map falls back; draft-vs-served refusal message explains; missing current file labelled not ticked.
+- Task 10d (review): 7b evaluates at post-approval status (minus image-pick-missing) so board == approval; phone wrap; --reapprove also runs refuse_on_new_page_rules; one exempt constant; _site_map missing meta → BoardError; backticks → <code>.
+- NEW Task 12a (final whole-branch review, YES-WITH-FIXES): image-asset-row-missing at boarding (publish hand-off); keyword_variants accepts board slugs; own images resolve via page-map; one shared body-sections module; old image-coverage WARN skipped on family pages; assets-folder source_file offered on block 7; one STATUS_ORDER; brand-clash deny list.
+- MERGE GUIDE (from trial merge vs p5-readiness): 7 textual conflicts — package.json + test_package_scripts.py (keep check:outline AND check:workflow), system-registry.md (regenerate), comparison SKILL (p5r list + our appended blocks), WORKFLOW.md (p5r moved rules 10–12; rule 13 follows), the two image agents (p5r marks bsuk-infographic "not ported" — it is ported now). Post-merge test fixes: drop `"IMAGE-DESIGNS.md": "rules/images.md"` from p5r tests/py/test_agent_references.py:103 REPLACED; add check:outline row to p5r build_system_registry gate table (~:258); keep p5r's rules banner line in bsuk-image-pipeline.md.
+
+### Task 10d (added during execution) — as specified
+
+### Task 10d: The new-page rules are answered on the board and before approval, not first at the build gate
+
+**Gap:** "approval … before the builds". Added by the controller during execution, after the Task 6b review found that every `family_rules` check runs only in `pageboard.gate_findings`. That is `board_gate.py`, after approval. `board_approve.py` never runs them, and the board page shows none of them. The breeder could approve a board that the build then refuses, and fixing it would change the record hash and force a second approval.
+
+**Files:**
+- Modify: `scripts/board_approve.py` (`apply_approval`, just before its final `return {...}`)
+- Modify: `scripts/build_page_board.py` (a new part "7b. Rules for new pages", inserted just before the part titled "8. Approve")
+- Modify: `scripts/image_rules.py` (export the build-gate check ids as one constant, if not already exported)
+- Test: `tests/py/test_family_rules_on_board.py` (create)
+
+**Behaviour (exact):**
+1. `apply_approval(board, inbox, ont, ledger, canvas_dir)` computes the approved record `b` and ontology `o` as today. It then runs `PB.FR.findings(b, o)`, where `b["meta"]["status"]` is already the post-approval status. If any finding has severity `"FAIL"` and its check id is NOT in `APPROVAL_EXEMPT`, it raises `PB.BoardError`. The message starts `this record breaks the rules for new pages — fix the record and board it again:` and lists `  - <check id>: <message>` one per line. It does not write anything; it is still pure.
+2. `APPROVAL_EXEMPT` (in `board_approve.py`) is `frozenset(image_rules.BUILD_CHECK_IDS)`. These are the checks that, by the design of Tasks 9–10, can only pass after approval: a generated image that has not been drafted and approved by sha12, a folder file not yet ingested, and a generated file not yet published. Define `BUILD_CHECK_IDS` in `scripts/image_rules.py` as exactly the ids `build_findings()` can emit, and add a test there asserting that every id `build_findings` yields on a fixture is in it. Do not exempt `image-slot-missing`, `image-slot-fields`, `image-hero-photo`, `image-pick-missing` or `image-pick-invalid`: those are outline or approval facts.
+3. For a record where `family_rules.applies(board)` is false (the 12 built pages, `_demo`, any non-family type), `findings()` returns `[]`, so approval behaves exactly as before. A test proves this against every real record in `data/boards/`: none changes behaviour.
+4. `build_page_board.py`: when `PB.FR.applies(board)` is true, insert a part titled `7b. Rules for new pages` immediately before `8. Approve`. It lists every finding from `PB.FR.findings(board, ont)` as a row with a FAIL or WARN pill, the check id and the message, all HTML-escaped. Exempt build-gate ids are shown with the note "checked at build, after the image is approved". When there are no findings it shows `All new-page rules pass.` When any non-exempt FAIL stands, block 8's status text reads `Approval will be refused until the FAIL rows in 7b are fixed.` The approve button behaviour is otherwise unchanged. When `applies` is false, nothing is added, and the 12 built boards render byte-identically. Assert it: render every real record before and after, and compare.
+5. Update the sentence Task 6b added to `rules/copy.md` only if it still says "cannot be approved": it is now true. Add one sentence to the end of the `external-links-six-diverse` entry in `rules/links.md`: "Like every new-page rule, it is shown on the board (block 7b) and `scripts/board_approve.py` refuses the approval while it FAILs."
+
+**Tests to write first (in `tests/py/test_family_rules_on_board.py`; build the approval fixtures the way `tests/py/test_board_reapprove.py` and `tests/py/test_page_board.py` do):**
+- `test_approval_is_refused_while_a_new_page_rule_fails`: the `_demo` record re-slugged as a location page (the pattern in `tests/py/test_family_rules.py::_board`), with `FR.CHECKS` monkeypatched to one check yielding `("probe-rule", "FAIL", "probe")`. `apply_approval` raises `BoardError`, and the message contains `probe-rule: probe`.
+- `test_a_warn_never_blocks_approval`: the same, yielding `WARN`. No raise.
+- `test_build_gate_checks_do_not_block_approval`: yielding `("image-generated-unapproved", "FAIL", "x")`. No raise.
+- `test_every_build_gate_id_is_exempt`: `set(image_rules.BUILD_CHECK_IDS) <= board_approve.APPROVAL_EXEMPT`, and every id `image_rules.build_findings` yields on the Task 10 fixture is in `BUILD_CHECK_IDS`.
+- `test_built_pages_approve_exactly_as_before`: with a FAIL probe registered, `family_rules.applies` is false for every real record in `data/boards/` (except `index.json` if it is not a record), so the probe never runs for them.
+- `test_the_board_lists_the_rules_for_a_new_page`: render the location-slugged `_demo` with a FAIL probe. The HTML contains `7b. Rules for new pages`, `probe-rule`, a FAIL pill and the block-8 refusal line. A hostile message (`<img src=x onerror=1>`) renders escaped.
+- `test_built_boards_render_unchanged`: for each real approved record, the rendered HTML is identical with and without a FAIL probe registered.
+
+- [ ] **Step 1:** write the tests above. **Step 2:** run them, and they FAIL (no `APPROVAL_EXEMPT`, no block 7b, no refusal). **Step 3:** implement points 1–5. **Step 4:** run the new file plus `tests/py/test_page_board.py tests/py/test_board_reapprove.py tests/py/test_image_rules.py tests/py/test_family_rules.py`, which must PASS. Then run the full suite and `npm run -s check:all`, exit 0. **Step 5:** commit, message `approval: the rules for new pages are shown on the board and refuse approval while one FAILs` plus the Fable trailer.
+

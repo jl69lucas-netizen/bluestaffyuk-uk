@@ -172,6 +172,37 @@ read $0.99185 before the pilot. User ruling A set `query_typical_call_usd` to 0.
 Known Issues 47–58. **Next: project 5** — starting with the strategy's first three stub
 rebuilds (Manchester, the licensed-breeder page, Leeds), after Known Issue 39.
 
+## System gaps bridge build (2026-09-24) — COMPLETE
+
+Branch `system-gaps` (worktree `/Users/apple/Downloads/BSUK-gaps`), cut from `foundation` at `9927710`, merged `--no-ff` into `foundation` (the record commit on `foundation` names the merge sha). It ran beside `p5-readiness`, which another session was executing, and merged first. Plan: `docs/superpowers/plans/2026-09-24-system-gaps.md` (Artifact https://claude.ai/artifact/FS2ekGxx7jAM5T8poem95R). Gate report: `docs/reports/system-gaps-gate-report.md` (Artifact URL in the record commit).
+
+What it closed (the user's five gaps, new location/comparison/blog pages only; the twelve built pages are frozen out by name in `scripts/family_rules.py`):
+- **Board entity and keyword view.** One card per entity, grouped by class, with a sticky filter and search and a phone-stacking matrix; the graph is removed. Keyword chips are grouped by type (`scripts/board_entities.py`).
+- **Keyword variation, related, co-occurring and similar types**, plus `scripts/keyword_variants.py`, which proposes them free from cached data. The ontology is seeded from sourced data: 7 → 56 entities in 8 classes (`scripts/ontology_seed.py`).
+- **Outline provenance.** `scripts/outline_provenance_check.py` (`check:outline` in `check:all`) and `outline-heading-repeat`.
+- **External links:** ≥6 on 6 domains from 4 source types. **Anchor types:** varied, and never reused across boards (`scripts/link_diversity.py`, `scripts/link_library.py`).
+- **Images.** `IMAGE-DESIGNS.md` (OG styles A–H, IG-1..5, two-pass sha12 approval). `scripts/image_candidates.py` ranks the page's own images, then served images, then `Assets/Images`. `scripts/image_rules.py` requires a slot per body H2/H3 and the hero, and runs the build gate. `scripts/reframe_og.py` and `scripts/ingest_image.py`. Three image skills ported. Board block 7 "Images & styles".
+- **Rules answered before approval.** Board block 7b lists every rule as approval will see it, and `scripts/board_approve.py` refuses approval and re-approval while one FAILs (build-gate image checks excepted).
+- **Wiring.** CLAUDE.md working rule 17, WORKFLOW rule 13, the builder skills' "Project 5 page rules (system-gaps)" block. `GEMINI_API_KEY` is documented by name, and `google-genai==1.47.0` is pinned.
+
+Known Issues 59–69 are left for the numbers the `p5-readiness` plan already uses; this build's start at 70.
+
+### Merge guide for `p5-readiness` (whichever merges second)
+A trial merge showed 7 textual conflicts across 14 shared files:
+- `package.json` and `tests/py/test_package_scripts.py`: keep both `check:outline` and `check:workflow`.
+- `docs/reference/system-registry.md`: regenerate it.
+- `.claude/skills/bsuk-comparison-page-builder/SKILL.md`: keep p5-readiness's rewritten list, then this build's appended blocks.
+- `docs/reference/WORKFLOW.md`: p5-readiness moved rules 10–12, so rule 13 follows them.
+- `.claude/agents/bsuk-image-pipeline.md`: keep p5-readiness's rules banner.
+- `.claude/agents/bsuk-infographic-builder.md`: drop the "not ported" notes on `bsuk-infographic`, because that skill is ported now.
+
+After resolving, fix three tests on the merged tree:
+- Remove `"IMAGE-DESIGNS.md": "rules/images.md"` from the REPLACED map in `tests/py/test_agent_references.py` (arrives in the p5-readiness merge), since the file exists now.
+- Add a `check:outline` row to the gate table in `scripts/build_system_registry.py`.
+- Keep the rules banner line in `.claude/agents/bsuk-image-pipeline.md`.
+
+When p5-readiness Task 43 (F2a) adds `_slugs.resolve_page`, `scripts/page_sections.py` uses it automatically.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -790,3 +821,13 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     `docs/research/llm-intel/` files. Each further page is one paid `ai_engines` call through the
     spend guard (budgeted at $0.10); the log's $0.20 of headroom covers two, so the cap
     (`query_total_budget_usd`) or the typical cost (Known Issue 45) must be re-set first.
+70. **Generated images wait for the user's key (system gaps, 2026-09-24).** `google-genai==1.47.0` is installed and pinned, and the whole generate → approve → publish flow is tested on synthetic images. The one real smoke image (plan Task 11b Step 3) waits until the user sets `GEMINI_API_KEY` in `.env`. Until then, slots use an existing image or an infographic. The system Python is 3.9.6: google-auth warns that 3.9 is past end of life, and urllib3 warns that it was built with LibreSSL. Consider a newer Python before project 6.
+71. **Organisation and regulation entities have no owner page (system gaps).** The 12 organisations and 6 regulations in `data/bsuk-ontology.json` have `owner_page` unset. The first project 5 page that makes one of them its subject should claim it at boarding.
+72. **One research row in the link library (system gaps).** Only the PubMed Central copy of Pegram et al. 2020 could be verified with `curl`. The RVC VetCompass page blocks bots (403), so it needs a headless-browser check before it can be a row. The four-source-type rule does not need a research row.
+73. **Committed board HTML lags the renderer (system gaps).** `docs/artifacts/boards/*.html` for the 12 built pages still shows the old block 5 graph and the old "7. Asset slots" title. The boards render correctly from `scripts/build_page_board.py`; republish them the next time any of them is touched.
+74. **Small helper duplicates (system gaps).**
+    - `slug_file` exists in `pageboard`, `image_candidates` and `ingest_image`; only the first validates.
+    - `route_of` exists in `image_candidates` and `build_page_board`.
+    - `image_candidates.py --write` writes `data/boards/candidates/` (arrives in the first `--write` run), which nothing reads, because the board recomputes candidates itself.
+
+    Fold these together when one of them next changes.
