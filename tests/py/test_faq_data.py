@@ -385,7 +385,7 @@ CLEAR = re.compile(r"(?i)\bclear")
 
 def _unproven_patterns():
     return [re.compile(c["pattern"], re.I) for c in LEDGER["claims"]
-            if c.get("proof") == "NOT FETCHED"]
+            if (c.get("proof") or "NOT FETCHED") == "NOT FETCHED"]  # as the runtime reads it
 
 
 def test_a_clear_health_result_is_bound_to_an_unproven_ledger_claim():

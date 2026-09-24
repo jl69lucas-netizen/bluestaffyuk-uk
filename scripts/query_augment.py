@@ -230,8 +230,10 @@ def _unproven_claims(root):
             continue
         try:
             out.append(re.compile(c["pattern"], re.I))
-        except re.error:
-            continue
+        except re.error as e:
+            # Skipped, but never silently: a claim whose pattern cannot run withholds nothing.
+            print(f"query_augment.py: evidence-ledger claim {c.get('id')!r}: pattern does not "
+                  f"compile ({e}); skipped", file=sys.stderr)
     return out
 
 

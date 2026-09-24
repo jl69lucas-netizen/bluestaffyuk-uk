@@ -1735,6 +1735,25 @@ def test_the_same_row_backs_its_question_once_the_proof_is_on_file(tmp_path):
     assert cands == [("Are the parents health tested?", "bank", "bank:h1", "data/settings.json")]
 
 
+def test_a_row_making_no_claim_keeps_its_source_beside_an_unproven_one(tmp_path):
+    root = health_bank(tmp_path)
+    rows = json.loads((root / "data/faq.json").read_text())
+    rows.append({"id": "h2", "q": "Where are you?", "a": "We are in Kent.",
+                 "source": "data/settings.json"})
+    (root / "data/faq.json").write_text(json.dumps(rows))
+    unproven_ledger(root)
+    sources = Q._bank_sources(root)
+    assert sources == {"h1": None, "h2": "data/settings.json"}
+
+
+def test_an_uncompilable_ledger_pattern_is_skipped_with_a_warning(tmp_path, capsys):
+    root = health_bank(tmp_path)
+    unproven_ledger(root, pattern="certified (clear")
+    assert Q._unproven_claims(root) == []
+    err = capsys.readouterr().err
+    assert "parents-dna-clear" in err and "does not compile" in err, err
+
+
 def test_no_ledger_file_changes_nothing(tmp_path):
     root = health_bank(tmp_path)
     cands, _ = Q.bank_candidates(root)
