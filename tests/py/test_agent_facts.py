@@ -373,7 +373,7 @@ RESIDUE = (
     ("a Blue-Brindle variant — none of the six pups is brindle (data/puppies.json `colour`)",
      re.compile(r"(?i)\bblue-brindle\b")),
     ("\"licensed breeder\" asserted — a licence is LICENCE_CLAIM_PLACEHOLDER until confirmed",
-     re.compile(r"(?i)\blicensed breeders?\b")),
+     re.compile(r"(?i)\blicen[cs]ed breeders?\b")),
     ("the source repo's Latin variant naming (P. …)", re.compile(r"\(P\. [a-z]")),
     # Widened again (2026-09-24): the source repo bred birds. Its health vocabulary is not a
     # dog's. BSUK's health facts are the vet check (data/faq.json `puppy-package`,
@@ -385,6 +385,20 @@ RESIDUE = (
      "(data/faq.json `buying-best-age`)",
      re.compile(r"(?i)\bwean\w*\b[^|\n]{0,25}?\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b|"
                 r"\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b[^|\n]{0,15}\bwean")),
+    # And again (Task 12 final review): none of the six pups is brindle, so BSUK never offers
+    # one — "our … brindle", a brindle pup for sale, "blue or blue brindle" as a choice, a
+    # coat spec, a Blue Brindle Staffy named as a product. A breed-level coat list ("blue,
+    # blue brindle and white coats") and a "vs" topic stay allowed (see residue()).
+    ("a brindle pup offered as ours — each pup's coat is its `colour` in data/puppies.json",
+     re.compile(r"(?i:\b(?:our|we|us)\b[^|\n]{0,40}\bbrindle\b|"
+                r"\bbrindle staff(?:y|ies)?\s+(?:for sale|pups?|puppies)|"
+                r"\bbrindle (?:pups?|puppies)\b|"
+                r"\bspecialis\w+ in\b[^|\n]{0,40}\bbrindle\b|"
+                r"\bblue\s*(?:/|or)\s*blue brindle\b|"
+                r"\bcoat:\s[^|\n]*\bbrindle\b)|"
+                r"\bBlue Brindle Staff(?:y|ies)\b")),
+    ("a placement count — how many families BSUK has placed with is NOT FETCHED",
+     re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)")),
 )
 # A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
 PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
@@ -405,6 +419,9 @@ def residue(path: pathlib.Path):
                 continue
             # Naming the stand-in on the same line is the honest way to write it.
             if why.startswith('"licensed breeder"') and "LICENCE_CLAIM_PLACEHOLDER" in line:
+                continue
+            # a comparison topic names both coats without offering either
+            if why.startswith("a brindle pup") and re.search(r"(?i)\bvs\b|\bversus\b", line):
                 continue
             out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:110]))
     return out
@@ -447,6 +464,14 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "an avian vet on call\n"
         "Blue Staffy pups wean at **12–16 weeks**, never sooner.\n"
         "Weaned juvenile: 3-6 months\n"
+        "- Action-oriented: \"see our blue and blue brindle Staffy pups\"\n"
+        "- `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`\n"
+        "\"Meet [Name]: The Blue Brindle Staffy Perfect for Families.\"\n"
+        "Subject: [blue / blue brindle] Staffordshire Bull Terrier puppy\n"
+        "- Coat: solid blue-grey (blue), blue brindle striping, or black brindle\n"
+        "Specialising in home-raised blue and blue brindle Staffordshire Bull Terriers\n"
+        "we've placed Blue Staffy puppies with hundreds of families\n"
+        "Only a licenced breeder can sell you one.\n"
         # silent: a line that forbids the push, a UK source, the licence stand-in named on
         # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
@@ -454,9 +479,12 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "[PDSA](https://www.pdsa.org.uk/)\n"
         "| LICENCE_CLAIM_PLACEHOLDER-licensed breeder | Trust bar |\n"
         "Coat colours in the breed: blue, blue brindle, red, fawn.\n"
+        "C. **Size & Coat** — blue, blue brindle and white coats, full-grown size\n"
+        "H3: Blue vs Blue Brindle: Which Coat Colour Is Right for Your Household?\n"
+        "- Keyword-rich but natural: \"Staffy vs American Bully comparison\"\n"
         "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
     bad = residue(p)
-    # every line up to 24 fires (a line may fire twice), nothing after it does, and every
+    # every line up to 32 fires (a line may fire twice), nothing after it does, and every
     # entry of RESIDUE fired at least once
-    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 25)), bad
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 33)), bad
     assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad

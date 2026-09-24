@@ -38,7 +38,7 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 
 **Examples:**
 - `Blue Staffy Puppies for Sale UK | Home-Raised in Carlisle | BlueStaffyUK`
-- `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`
+- `Blue and White Staffy Puppy for Sale in [UK Region] | Home-Raised, KC Registered`
 - `Blue vs Blue Brindle Staffy: The Complete Buyer's Comparison`
 
 ---
@@ -52,7 +52,7 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 
 **3 H2 Patterns:**
 - *Location Focus:* "Searching for a Home-Raised Blue Staffy Puppy in [UK Region]? Meet [Name]."
-- *Coat-Colour Focus:* "Meet [Name]: The Blue Brindle Staffy Perfect for Families."
+- *Coat-Colour Focus:* "Meet [Name]: The [Coat, from `colour` in data/puppies.json] Staffy Perfect for Families."
 - *Benefit Focus:* "Why Every Puppy Includes KC Registration, a Microchip and a Vet Health Check."
 
 **5 Alternative Variations Rule:**

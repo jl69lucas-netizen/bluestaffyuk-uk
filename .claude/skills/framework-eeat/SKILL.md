@@ -43,7 +43,7 @@ BlueStaffyUK is a YMYL site (buying a living animal is a significant decision). 
 - [N]+ families served — named in testimonials
 - Specific litter stories, whelping observations, home-raising notes
 - Carlisle, Cumbria (specific, verifiable)
-- Blue vs blue brindle vs black brindle breeding distinctions from direct experience
+- Coat care for the litter's own coats (blue, blue and white, white) from direct experience
 
 ### Expertise Signals (knowledge, credentials)
 - LICENCE_CLAIM_PLACEHOLDER — include licence number where possible
@@ -79,7 +79,7 @@ Every content-heavy page should name the source of expertise:
 <div class="bsuk-author-block">
   <p class="bsuk-body">
     <strong>Written by Lisa Bright,</strong> Blue Staffy breeder (LICENCE_CLAIM_PLACEHOLDER) 
-    in Carlisle, Cumbria. Specialising in home-raised blue and blue brindle Staffordshire Bull 
+    in Carlisle, Cumbria. Home-raising blue, blue and white, and white Staffordshire Bull
     Terriers with full KC registration and health paperwork.
   </p>
 </div>
@@ -87,7 +87,7 @@ Every content-heavy page should name the source of expertise:
 
 ### Experience Signals in Body Copy
 Replace: "Staffordshire Bull Terriers are loyal dogs."
-With: "In our years of breeding, we've placed Blue Staffy puppies with hundreds of families — and the home-raising and socialisation protocol we've developed from birth consistently produces dogs that are confident, bonded, and ready for their new homes."
+With: "Every puppy we place is raised in our home in Carlisle — and the home-raising and socialisation protocol we've developed from birth consistently produces dogs that are confident, bonded, and ready for their new homes."
 
 ### Schema for E-E-A-T
 
@@ -152,7 +152,6 @@ For any page audit, score each dimension 1–5 (total range: 4–20):
 ### Experience (1–5)
 - [ ] First-person voice ("we've seen," "in our experience whelping")
 - [ ] Specific timeframes and numbers ("in [year], we changed our weaning routine because...")
-- [ ] Real observations ("blue brindle pups need more intensive handling in weeks 4–8")
 
 ### Expertise (1–5)
 - [ ] Credentials named (LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER, KC registration, vet practice)

@@ -93,14 +93,16 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 5: DNA Testing
+## Section 5: Health Checks
+
+Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are `NOT FETCHED` (`data/quality/evidence-ledger.json` `parents-dna-clear`) until the certificates are on file.
 
 🛡️ **Trust & Security:**
 > "A full veterinary health check for every puppy, and a vet-signed health card that goes home with it — because we care about your family."
 > **Button:** See Our Health Testing
 
 ⚡ **Direct & Transactional:**
-> "Every BSUK puppy: vet health-checked, vaccinated, microchipped, raised in our home."
+> "Every BSUK puppy: vet health-checked, vaccinated, microchipped, raised in our home. Both parents are DNA-tested for L-2-HGA and HC-HSF4 — ask to see the certificates."
 > **Button:** View Health Certificates
 
 🌱 **Ethical & Quality:**
@@ -280,7 +282,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** See the Comparison
 
 🌱 **Ethical & Quality:**
-> "The best species comparison comes from someone who has raised hundreds of Blue Staffies."
+> "The best breed comparison comes from someone who raises Staffies in her own home."
 > **Button:** Read the Comparison
 
 ---

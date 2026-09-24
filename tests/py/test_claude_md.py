@@ -94,7 +94,8 @@ def test_no_line_instructs_a_push_outside_the_inactive_section():
 # can open is not there yet — worse than no marker at all, because it is load-bearing
 # elsewhere: the guard above SUPPRESSES the missing-path check on any marked line, so a
 # stale marker silently disarms it for every other path on that line.
-ARRIVES = re.compile(r"\(arrives in Task \d+[a-z]?\)")
+# A Phase 3b task is named by its ruling (`Task R3`), so the marker reads that form too.
+ARRIVES = re.compile(r"\(arrives in Task (?:\d+[a-z]?|R\d+)\)")
 # `(not ported — source repo only)` expires the same way, and worse: it asserts the file
 # will NEVER exist here. Task 13 left one on a line citing `docs/reference/system-registry.md`
 # minutes after writing that file. Same rule, same report.
@@ -225,3 +226,16 @@ def test_working_rules_are_numbered_without_gaps():
     nums = [int(m.group(1)) for m in (WORKING_RULE.match(l) for l in lines()) if m]
     assert len(nums) >= 9, f"the numbered rule list stopped matching: {nums}"
     assert nums == list(range(1, len(nums) + 1)), f"working rules are not 1..N: {nums}"
+
+
+def test_an_r_task_marker_expires_too(tmp_path):
+    """`(arrives in Task R3)` is the Phase 3b form; ARRIVES must read it, or it never expires."""
+    assert ARRIVES.search("(arrives in Task R3)") and ARRIVES.search("(arrives in Task 12)")
+    assert ARRIVES.search("(arrives in Task 18b)")
+    skill = tmp_path / ".claude" / "skills" / "zz-fonts" / "SKILL.md"
+    skill.parent.mkdir(parents=True)
+    skill.write_text("fonts self-hosted from `public/fonts/` (arrives in Task R3)\n", encoding="utf-8")
+    assert stale_markers(tmp_path) == [], "the folder does not exist yet — not stale"
+    (tmp_path / "public" / "fonts").mkdir(parents=True)
+    fired = stale_markers(tmp_path)
+    assert fired and all("SKILL.md" in row for row in fired), fired

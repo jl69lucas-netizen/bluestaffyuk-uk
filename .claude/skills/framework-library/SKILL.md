@@ -71,7 +71,7 @@ Texture checklist for long-form body copy: verified facts, owned first-person op
 Sequential drops of true, specific details that accumulate into authority — e.g. a home-raising timeline told through five real moments. Each pearl must be a verifiable specific (ledger-bounded). Great for About/story sections and non-commodity rewrites.
 
 ### VAD — Verb, Application, Differentiator
-One-line positioning for cards, meta descriptions, comparison intros: what we DO (verb), for whom/what (application), why us (differentiator). "We home-raise (V) blue and blue brindle Staffordshire Bull Terriers for documented family placement (A) with KC registration and L-2-HGA DNA-verified parent screening no marketplace seller matches (D)."
+One-line positioning for cards, meta descriptions, comparison intros: what we DO (verb), for whom/what (application), why us (differentiator). "We home-raise (V) blue, blue and white, and white Staffordshire Bull Terriers for documented family placement (A) with KC registration and parents DNA-tested for L-2-HGA and HC-HSF4 (D)." — the test results are `NOT FETCHED` until the certificates are on file, so the line names the tests, never a result.
 
 ### Setup-Stat-Reframe
 Three-beat evidence cadence AI engines preferentially cite: name the problem → attributed statistic → reframe what it means for the reader. Every stat carries a named source (link at sentence START) or gets dropped — no orphan numbers. Use inside PAS-Agitate, health sections, and comparison myth-busting.

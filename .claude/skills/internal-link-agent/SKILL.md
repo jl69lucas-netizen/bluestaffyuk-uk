@@ -146,7 +146,7 @@ Score each missing link 1–3:
 **Good anchor text:**
 - Descriptive: "Blue Staffy puppy care guide"
 - Keyword-rich but natural: "Staffy vs American Bully comparison"
-- Action-oriented: "see our blue and blue brindle Staffy pups"
+- Action-oriented: "see our blue and blue and white Staffy pups"
 
 **Bad anchor text:**
 - Generic: "click here," "read more," "here," "this page"
@@ -198,14 +198,14 @@ grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c |
 
 ### Anchor / Jump-Link Cross-Reference Technique (in-content `#anchor` links) — confirmed 2026-06-03
 
-> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#compare-colours"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
+> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#available-blue-staffy-puppies"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
 
-**Worked example (homepage, the model to copy):** the FAQ "What's the difference between a blue and a blue brindle Staffy?" answer points readers **up** to the Compare Coat Colours section (`Is a Blue or a Blue Brindle Staffy Right for You?`) via `href="#compare-colours"`. The deep-dive table is the payoff; the FAQ is the teaser.
+**Worked example (homepage, the pattern to copy):** a line under the FAQ ("Your Questions About Blue Staffies, Answered") points readers **up** to the puppy grid (`Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes`, `id="available-blue-staffy-puppies"`) via `href="#available-blue-staffy-puppies"`. The grid is the payoff; the FAQ is the teaser.
 
 **How to apply it everywhere:**
 1. **Inventory section IDs first:** `grep -n 'id="' <page>` — every major section should have a stable `id` + `scroll-mt-20` (so the jump doesn't hide under a sticky header).
 2. **Link teaser → deep-dive in the same page.** FAQ answers, "still deciding?" lines, and pros/cons sections are prime spots to jump **up** to a comparison/spec table or **down** to the available-puppies grid / contact form.
-3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#compare-colours">Compare our blue and blue brindle pups side by side</a> in the table above to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
+3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#available-blue-staffy-puppies">Meet all six of our puppies</a> in the grid above — blue, blue and white, white, and blue with a white blaze — to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
 4. **Schema-safe caveat (critical):** if a section's text is rendered from a data array that also feeds JSON-LD (e.g. `faqItems` → `FAQPage` `acceptedAnswer.text`, rendered via `{item.a}` = HTML-escaped), you **cannot** put an `<a>` inside that string — it will show as literal text and pollute the schema. Instead add the jump-link in a **separate prose `<p>`** outside the array (the homepage adds a "Still weighing it up?" line under the FAQ accordion).
 5. Cap ~1–2 jump links per section; they supplement, not replace, contextual links to other pages.
 

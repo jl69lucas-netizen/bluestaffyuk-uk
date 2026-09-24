@@ -70,7 +70,7 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 - ✅ `blue-staffy-puppy-feeding-plan` · ❌ `the-feeding-plan-for-a-blue-staffy-puppy`
 - ✅ anchor "Blue Staffy puppy delivery costs" · ❌ anchor "more about the costs of delivery"
 - ✅ H3 "Blue vs Blue Brindle Coat Differences" · ❌ H3 "A Look at the Differences in the Coat Colours"
-- **Body prose is exempt** — sentences stay natural, grammatical, first-person. This rule targets naming/labeling surfaces, not paragraphs. A heading may keep a stop word when the conversational Quora-style question format needs it ("Is a Blue or a Blue Brindle Staffy Right for You?" is fine — question headers are a locked pattern).
+- **Body prose is exempt** — sentences stay natural, grammatical, first-person. This rule targets naming/labeling surfaces, not paragraphs. A heading may keep a stop word when the conversational Quora-style question format needs it ("Is a Male or a Female Blue Staffy Right for You?" is fine — question headers are a locked pattern).
 - **Every kept word must carry meaning** — if a word can be deleted from a slug/anchor/label without losing meaning, delete it.
 
 ## BSUK-Specific

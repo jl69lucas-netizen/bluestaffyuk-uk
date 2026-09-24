@@ -59,7 +59,7 @@ Rules:
 
 **Good BSUK Attention hook:**
 ```
-H1: "Blue or blue brindle — which Staffy puppy is the right companion for your family?"
+H1: "Male or female — which Blue Staffy puppy is the right companion for your family?"
 Subhead: "[X] years. [N]+ families. One Carlisle breeder who answers the phone after the sale — with KC registration and a vet health check on every puppy."
 ```
 
@@ -133,7 +133,7 @@ Rules:
 <p>Fill out our quick inquiry form. Lisa Bright will respond personally within 24 hours
    — not an automated email, a real reply with available puppies that match your family.</p>
 <p><strong>A £500 refundable deposit holds your puppy.</strong> Health guarantee + KC registration and vet health check included.</p>
-[Inquiry Form — 3 fields: name, email, coat colour preference (blue / blue brindle)]
+[Inquiry Form — 3 fields: name, email, the puppy you're interested in (any of the six in `data/puppies.json`, or "any pup")]
 <p class="bsuk-form-note">We respond within 24 hours. No spam, no pressure, no bait-and-switch.</p>
 ```
 
