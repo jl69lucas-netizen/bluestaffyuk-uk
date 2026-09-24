@@ -26,6 +26,7 @@ import json
 import pathlib
 import re
 import sys
+from urllib.parse import urlparse
 
 import jsonschema
 
@@ -75,6 +76,28 @@ def _registrable(d):
         return True
     return (len(labels) == 3 and len(labels[2]) == 2 and labels[2].isalpha()
             and labels[1] in CC_SECOND_LEVELS)
+
+
+PLACEHOLDER = "site_url_placeholder"  # the build's stand-in for BSUK's domain until project 6
+
+
+def root_domain(url):
+    """The registrable domain of a URL or bare host, by the rule above: two labels, or three under a
+    CC_SECOND_LEVELS second level and a two-letter country code. The build placeholder is its own
+    root; a bare label is None. One helper for the keyword-gap and llm-intel agents' scripts and
+    tests/py/test_llm_intel.py."""
+    h = (urlparse(url if "//" in url else "//" + url).hostname or "").lower().rstrip(".")
+    try:
+        h = h.encode("idna").decode()
+    except UnicodeError:
+        pass
+    if h == PLACEHOLDER:
+        return h
+    labels = h.split(".")
+    if len(labels) < 2 or not all(labels):
+        return None
+    keep = 3 if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-1].isalpha() and labels[-2] in CC_SECOND_LEVELS else 2
+    return ".".join(labels[-keep:])
 
 
 def problems(reg, root=ROOT):

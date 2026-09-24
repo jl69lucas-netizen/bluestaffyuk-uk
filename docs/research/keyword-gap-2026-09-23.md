@@ -8,6 +8,7 @@ Mode: all competitors. Gap matrix: docs/research/gap-matrix-2026-09-23.md.
 - **Names cut:** pets4homes (the first run's topic for the pets4homes support article ended in the business name).
 - **Skipped pages:** 9 (all "no keyword topic": the pets4homes and rspca homepages, a pets4homes pet-advice article, four rspca advice/adopt/campaign/pet-cost-calculator pages, and the trojanstaffuk about-the-breed and contact pages).
 - **Fetch count:** 0.
+- **Pages on another domain:** none. **Same URL in two reports:** none.
 - **Re-derived:** from the same reports and BSUK profile with the whole-word page-type table (Known Issue 51). The RSPCA pet cost calculator is no longer typed `price` (its path holds "costofliving", not the word "cost"), so its row left the gaps; no fetch.
 - **Declined requests:** none.
 - **Gap matrix counts (quoted, not recounted):** page types BSUK lacks — care-guide 2/3 (high), faq 1/3, price 1/3, reviews 1/3 (medium). City gaps: none; BSUK has every competitor city listed.

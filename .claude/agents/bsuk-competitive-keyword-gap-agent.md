@@ -35,6 +35,8 @@ B=docs/research/competitors/bsuk.json; [ -f "$B" ] || B=data/page-map.json
 python3 - "$B" > "${TMPDIR:-/tmp}/keyword-gap.json" <<'EOF'
 import datetime, glob, json, os, re, sys
 from urllib.parse import urlparse
+sys.path.insert(0, "scripts")
+from competitor_registry_check import root_domain  # the registry's root-domain rule
 src, reports = sys.argv[1], sys.argv[2:]
 today = datetime.date.fromisoformat(os.environ.get("TODAY") or datetime.date.today().isoformat())
 CUT = [c.split() for c in os.environ.get("CUT", "").lower().split(",") if c.strip()]  # names to cut before, whole words
@@ -150,8 +152,9 @@ else:  # the page map: its noindex stubs never count as coverage
 reg = json.load(open("data/competitors.json"))["competitors"] if os.path.exists("data/competitors.json") else []
 tiers = {c["id"]: c.get("tier") for c in reg}
 out = {"today": str(today), "bsuk_source": src, "bsuk_pages": len(bsuk), "registry": bool(reg),
-       "cut": [" ".join(c) for c in CUT], "used": [], "stale": [], "stale_tier5": [], "skipped": []}
-groups = {}
+       "cut": [" ".join(c) for c in CUT], "used": [], "stale": [], "stale_tier5": [], "skipped": [],
+       "foreign_urls": [], "duplicate_urls": []}
+groups, owners = {}, {}
 for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
     r = json.load(open(path))
     if r["id"] == "bsuk":
@@ -163,6 +166,10 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
         continue
     out["used"].append({"id": r["id"], "tier": tier, "fetched_on": p["fetched_on"]})
     for page in p["values"]:
+        if root_domain(page["url"]) != r["root_domain"]:  # not this competitor's page: flagged, never a gap
+            out["foreign_urls"].append({"id": r["id"], "url": page["url"], "root_domain": r["root_domain"]})
+            continue
+        owners.setdefault(page["url"], set()).add(r["id"])
         path_ = route(page["url"]).lower()
         t, how = topic(page, page_type(path_, None))
         ptype = page_type(path_, t)
@@ -199,6 +206,8 @@ for key, ps in groups.items():
 for k in ("used", "stale", "stale_tier5"):
     out[k].sort(key=lambda s: s["id"])
 out["skipped"].sort(key=lambda s: (s["url"], s["why"]))
+out["foreign_urls"].sort(key=lambda s: (s["id"], s["url"]))
+out["duplicate_urls"] = [{"url": u, "ids": sorted(ids)} for u, ids in sorted(owners.items()) if len(ids) > 1]
 out["gaps"] = sorted(gaps, key=lambda r: (-r["score"], r["topic"]))
 out["covered"] = sorted(covered, key=lambda r: r["topic"])
 print(json.dumps(out, indent=1))
@@ -208,6 +217,7 @@ EOF
 What decides a row (to explain it, never to redo it):
 
 - **Type:** intel's page-type table, whole words only and `comparison` first — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first). There is no second comparison rule here: a `-vs-` path is a comparison because it is the table's first row.
+- **Whose page:** a page whose URL's root domain (the registry's rule, `root_domain` in `scripts/competitor_registry_check.py`; subdomains count) differs from its report's `root_domain` is listed in `foreign_urls` and gives no topic; the same URL in two reports is listed in `duplicate_urls` and counted once in its row.
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
 - **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
 - **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered", or a city on a city topic only — never on a rescue, training, vet or other non-buyer topic; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, license, licensed, licenced, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
@@ -216,7 +226,7 @@ What decides a row (to explain it, never to redo it):
 
 docs/research/keyword-gap-<YYYY-MM-DD>.md:
 
-1. Header: mode; gap matrix or "none yet"; BSUK source and page count; competitors used (tier, `fetched_on`); stale ones and what happened; names cut; skipped count; fetch count; one line per forbidden request declined (a "top page" point, search volumes, skipping the script).
+1. Header: mode; gap matrix or "none yet"; BSUK source and page count; competitors used (tier, `fetched_on`); stale ones and what happened; names cut; skipped count; fetch count; the script's `foreign_urls` (each: id, URL, the report's root domain — "none" when empty) and `duplicate_urls` (each: URL and the ids sharing it — "none" when empty), both named again in the hand-back as a fix for `bsuk-competitor-intel <id>`; one line per forbidden request declined (a "top page" point, search volumes, skipping the script).
 2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none", or "exists, not indexed — project 5 rebuild: <noindex_page>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
 3. **Already covered** — Topic · Competitor URL · BSUK page.
 4. **High gaps** — one line each on why; "None" when none.

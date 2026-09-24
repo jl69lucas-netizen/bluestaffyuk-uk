@@ -11,6 +11,7 @@ import re
 import shutil
 import subprocess
 import sys
+from urllib.parse import urlparse
 
 import pytest
 
@@ -32,9 +33,12 @@ def page(url, title, h1=None):
     return {"url": url, "title": title, "h1": title if h1 is None else h1, "h2": []}
 
 
-def report(rid, pages, fetched_on="2026-09-24"):
+def report(rid, pages, fetched_on="2026-09-24", root_domain=None):
+    """A competitor report; its root domain is the first page's host (minus www.) unless given."""
     nf = {"status": "NOT FETCHED", "reason": "test"}
-    r = {"id": rid, "root_domain": f"{rid}.co.uk", "analysed_on": "2026-09-24",
+    host = urlparse(pages[0]["url"]).hostname if pages else f"{rid}.co.uk"
+    root_domain = root_domain or (host[4:] if host.startswith("www.") else host)
+    r = {"id": rid, "root_domain": root_domain, "analysed_on": "2026-09-24",
          "keywords": nf, "page_types": nf, "cities": nf, "schema_types": nf,
          "pages": {"status": "ok", "fetched_on": fetched_on, "values": pages},
          "trust": nf, "content": nf, "blog": nf, "visual": nf, "conversion": nf,
@@ -46,6 +50,8 @@ def report(rid, pages, fetched_on="2026-09-24"):
 def root(tmp_path):
     (tmp_path / "data").mkdir()
     shutil.copy(REPO / "data/locations.json", tmp_path / "data/locations.json")
+    (tmp_path / "scripts").mkdir()
+    shutil.copy(REPO / "scripts/competitor_registry_check.py", tmp_path / "scripts")
     pmap = {"pages": [
         {"url": STUB, "title": "Blue Staffy Puppies Manchester UK", "h1": "",
          "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
@@ -319,3 +325,27 @@ def test_a_path_word_inside_a_longer_word_does_not_type_the_page(root):
     d = run(root, profile(root), write(root, "rsp.json", r))
     assert d["skipped"] == [{"url": "https://rsp.org.uk/adviceandwelfare/costofliving/petcalculator",
                              "why": "no keyword topic"}]
+
+
+def test_a_page_on_another_domain_is_flagged_and_never_a_gap(root):
+    # Known Issue 52: a report's pages must sit on its own root domain (subdomains count)
+    r = report("own", [page("https://www.own.co.uk/staffy-care/", "Staffy Care Guide"),
+                       page("https://help.own.co.uk/staffy-grooming/", "Staffy Grooming Guide"),
+                       page("https://other-site.com/staffy-training/", "Staffy Training Guide")],
+               root_domain="own.co.uk")
+    d = run(root, profile(root), write(root, "own.json", r))
+    assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
+                                  "root_domain": "own.co.uk"}]
+    assert [g["topic"] for g in d["gaps"]] == ["staffy care guide", "staffy grooming guide"]
+
+
+def test_the_same_url_in_two_reports_is_flagged(root):
+    u = "https://shared.co.uk/staffy-care/"
+    a = write(root, "a.json", report("aaa", [page(u, "Staffy Care Guide")], root_domain="shared.co.uk"))
+    b = write(root, "b.json", report("bbb", [page(u, "Staffy Care Guide"),
+                                             page("https://shared.co.uk/care/", "Staffy Care Guide")],
+                                     root_domain="shared.co.uk"))
+    d = run(root, profile(root), a, b)
+    assert d["duplicate_urls"] == [{"url": u, "ids": ["aaa", "bbb"]}]
+    assert row(d["gaps"], "staffy care guide")["urls"] == ["https://shared.co.uk/care/", u]   # still one row
+    assert run(root, profile(root), b)["duplicate_urls"] == []     # twice in one report is not two reports

@@ -307,3 +307,19 @@ def test_json_escaped_allowed_links_and_escaped_non_links_are_fine(tmp_path):
         '{"a": "https:\\/\\/pets4homes.co.uk\\/x", "b": "https:\\/\\/notbad.co.uk\\/y", '
         '"c": "a path\\/\\/bad.co.uk with no scheme"}\n')
     assert C.suspect_links(registry(*BANNED), root)[0] == []
+
+
+@pytest.mark.parametrize("url,want", [
+    ("https://www.pets4homes.co.uk/sale/", "pets4homes.co.uk"),
+    ("support.pets4homes.co.uk", "pets4homes.co.uk"),
+    ("https://blog.example.com/x", "example.com"),
+    ("https://a.b.example.org.uk/", "example.org.uk"),
+    ("https://example.uk/", "example.uk"),
+    ("HTTPS://WWW.Example.COM.", "example.com"),
+    ("https://SITE_URL_PLACEHOLDER/page/", "site_url_placeholder"),
+    ("localhost", None),
+    ("", None),
+])
+def test_root_domain_is_the_registry_rule_for_any_url(url, want):
+    # one helper for the keyword-gap and llm-intel scripts and tests (Known Issues 52, 53)
+    assert C.root_domain(url) == want
