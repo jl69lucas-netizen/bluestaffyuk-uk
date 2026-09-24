@@ -95,3 +95,47 @@ def keyword_variants_filled(board, ont):
 # Imported here; later tasks append after it. link_diversity registers its checks with
 # `register` above.
 import link_diversity  # noqa: E402,F401
+
+
+# ── Task 6b (system-gaps): an approved outline never repeats a heading ─────────────────────
+# The board-time half of `outline-provenance-gate` (rules/copy.md). The built-page half is
+# scripts/outline_provenance_check.py, which reads dist/ and so cannot run at board time; a
+# heading the outline carries twice would be built twice, so it is refused here, before the
+# record can be approved. Cross-page collisions are already pageboard's `header-collision`.
+import re as _re
+
+_HEADING_TOKEN = _re.compile(r"[a-z0-9$']+")
+
+
+def _heading_key(text):
+    return " ".join(_HEADING_TOKEN.findall((text or "").replace("’", "'").lower()))
+
+
+@register
+def outline_heading_repeat(board, ont):
+    h1 = board.get("h1") or {}
+    variants = h1.get("variants") or []
+    pick = h1.get("pick") if h1.get("pick") is not None else h1.get("recommended")
+    heads = [("H1", variants[pick])] if isinstance(pick, int) and 0 <= pick < len(variants) else []
+
+    def walk(nodes):
+        for n in nodes or []:
+            heads.append((f"H{n.get('level')}", n.get("heading")))
+            walk(n.get("children"))
+    h1_key = _heading_key(heads[0][1]) if heads else ""
+    for s in board.get("sections", []):
+        # A hero whose heading IS the H1 renders the H1 alone (measured on dist/ 2026-09-24:
+        # the blog hub, contact and thank-you pages), so that pair is one heading, not two.
+        if not (s.get("shape") == "hero" and _heading_key(s.get("heading")) == h1_key):
+            heads.append(("H2", s.get("heading")))
+        if s.get("shape") != "faq":   # an FAQ tree holds data/faq.json row ids, not headings
+            walk(s.get("tree"))
+    seen = {}
+    for level, text in heads:
+        key = _heading_key(text)
+        if key:
+            seen.setdefault(key, []).append(f"{level} {text!r}")
+    for key, where in seen.items():
+        if len(where) > 1:
+            yield ("outline-heading-repeat", "FAIL",
+                   f"the outline carries one heading {len(where)} times: {', '.join(where)}")

@@ -382,3 +382,50 @@ def test_each_builder_skill_names_the_gate(skill):
     assert "scripts/outline_provenance_check.py" in block[1]
     assert "outline-provenance-gate" in block[1]
 
+
+# ── the board-time half (Task 6b): family_rules refuses an outline that repeats a heading ──
+import family_rules as FR  # noqa: E402
+
+
+def _demo_location():
+    b = json.loads((ROOT / "data" / "boards" / "_demo.json").read_text())
+    b["meta"]["slug"] = SLUG
+    b["meta"]["page_type"] = "location"
+    return b
+
+
+def _repeat(board):
+    return [f for f in FR.findings(board, {"entities": []}) if f[0] == "outline-heading-repeat"]
+
+
+def test_an_outline_without_a_repeated_heading_passes():
+    assert _repeat(_demo_location()) == []
+
+
+def test_an_outline_that_repeats_a_heading_fails():
+    b = _demo_location()
+    body = next(s for s in b["sections"] if s["tree"] and s["shape"] != "faq")
+    body["tree"].append({"level": 3, "heading": body["heading"].upper(), "intent": "", "children": []})
+    hits = _repeat(b)
+    assert len(hits) == 1 and hits[0][1] == "FAIL"
+
+
+def test_a_hero_heading_equal_to_the_h1_is_one_heading():
+    # The build renders such a hero's H1 alone (the blog hub, contact and thank-you pages).
+    b = _demo_location()
+    h1 = b["h1"]["variants"][b["h1"]["pick"] if b["h1"].get("pick") is not None else b["h1"]["recommended"]]
+    next(s for s in b["sections"] if s["shape"] == "hero")["heading"] = h1
+    assert _repeat(b) == []
+
+
+def test_the_faq_tree_is_row_ids_not_headings():
+    b = _demo_location()
+    faq = next(s for s in b["sections"] if s["shape"] == "faq")
+    faq["tree"].append(dict(faq["tree"][0]))
+    assert _repeat(b) == []
+
+
+def test_no_built_record_trips_the_board_check():
+    import glob
+    for f in glob.glob(str(ROOT / "data" / "boards" / "*.json")):
+        assert list(FR.outline_heading_repeat(json.loads(pathlib.Path(f).read_text()), None)) == [], f
