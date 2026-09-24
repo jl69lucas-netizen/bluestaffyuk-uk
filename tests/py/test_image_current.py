@@ -19,7 +19,7 @@ sys.path.insert(0, str(ROOT / "tests" / "py"))
 import image_candidates as IC   # noqa: E402
 import image_rules as IR        # noqa: E402
 from test_image_candidates import _board, _tree          # noqa: E402
-from test_image_board_block import _block, _html, repo   # noqa: E402,F401  (fixture)
+from test_image_board_block import _block, _html, _png, repo   # noqa: E402,F401  (fixture)
 from test_image_rules import _full                       # noqa: E402
 
 
@@ -235,3 +235,39 @@ def test_the_board_does_not_tick_a_missing_current_file(repo):
     first = tile.split('<label class="imgopt">', 2)[1]
     assert 'value="file:/images/blue-staffy-puppies-uk-litter1.webp">' in first
     assert "<b>current · missing</b>" in first and " checked>" not in tile
+
+
+def test_a_missing_current_file_never_carries_the_suggestion(tmp_path):
+    """The ⭐ falls to the best-ranked real candidate not already suggested for another slot."""
+    root, assets = _tree(tmp_path)
+    b = _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                   "prompt": "our van on a delivery run", "source": "existing",
+                                   "file": "/images/gone-from-disk.webp"}])
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    assert photo["candidates"][0]["missing"] is True
+    assert photo["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    # A later slot whose current file is missing skips what an earlier slot was suggested.
+    b = _board(node_images=[{"slot": "delivery-vacc", "kind": "photo", "required": True,
+                             "prompt": "our van on a delivery run", "source": "existing",
+                             "file": "/images/gone-from-disk.webp"}])
+    photo, vacc = IC.candidates(b, root, assets, per_pool=2)["slots"]
+    assert photo["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    assert vacc["candidates"][0]["missing"] is True
+    ranked = [c["pick"] for c in vacc["candidates"][1:]]
+    assert "file:/images/leeds-delivery-van.webp" in ranked
+    assert vacc["suggested"]["pick"] == next(p for p in ranked if p != "file:/images/leeds-delivery-van.webp")
+
+
+def test_the_board_stars_a_real_candidate_when_the_current_file_is_missing(repo):
+    root, folder = repo
+    b = _full()
+    (root / "public" / "images" / "blue-staffy-puppies-uk-litter1.webp").unlink()
+    tile = _block(_html(b, IR.board_images(b, root, folder))).split(
+        'id="img-opening-tile-2"', 1)[1].split("</fieldset>", 1)[0]
+    assert "<b>current · missing</b>" in tile and "⭐" not in tile     # nothing real to suggest
+    _png(folder / "Indoors-With-Us-Day-One.jpg", (90, 120, 150))     # a real candidate arrives
+    tile = _block(_html(b, IR.board_images(b, root, folder))).split(
+        'id="img-opening-tile-2"', 1)[1].split("</fieldset>", 1)[0]
+    first, rest = tile.split('<label class="imgopt">', 2)[1:]
+    assert "⭐" not in first and "<b>current · missing</b>" in first
+    assert "⭐ <b>assets</b>" in rest and "Indoors-With-Us-Day-One.jpg" in rest

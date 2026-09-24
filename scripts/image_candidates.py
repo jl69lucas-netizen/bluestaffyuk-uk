@@ -32,8 +32,9 @@ an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no sh
 
 CURRENT (Task 10c). A slot that already names a file — its own `file`, else its `assets[]`
 row's `file` — gets that file as its FIRST candidate, pool `current`, whatever it scores,
-and it is the slot's `suggested` pick. It is never listed again further down (size
-siblings fold to one file). Every candidate carries `current: true|false` and
+and it is the slot's `suggested` pick, unless it is missing: then the suggestion is the best
+ranked candidate not already suggested for another slot. It is never listed again further
+down (size siblings fold to one file). Every candidate carries `current: true|false` and
 `missing: true|false`; only a current file can be missing (not a regular file inside
 public/images under root), and the board then labels it and leaves it unticked.
 
@@ -419,9 +420,10 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
             first["current"] = True
             first["missing"] = not on_disk(cur, root)
             cands = [first] + [c for c in cands if c["pick"] != first["pick"]]
+        if cur and not first["missing"]:
             suggested = first                          # the record's own choice leads
-        else:
-            suggested = next((c for c in cands if c["pick"] not in taken), None)
+        else:                                          # a missing current file is never suggested
+            suggested = next((c for c in cands if not c["missing"] and c["pick"] not in taken), None)
         if suggested:
             taken.add(suggested["pick"])
         slots.append({"slot": img["slot"], "section": section["id"],
