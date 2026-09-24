@@ -55,7 +55,11 @@ def group_entities(board, ont):
             card = {k: e.get(k) for k in ("id", "name", "aliases", "class", "authorization", "source", "owner_page")}
             if card["class"] not in groups:
                 card["class"] = "Unknown"
-        card["aliases"] = list(card["aliases"] or [])
+        # A record is data, not trusted markup: a missing name falls back to the id, a missing
+        # or unrecognised authorization renders as UNKNOWN's badge (see _card), never raw.
+        card["name"] = str(card["name"] or card["id"])
+        card["authorization"] = str(card["authorization"] or "UNKNOWN")
+        card["aliases"] = [str(a) for a in (card["aliases"] or []) if a]
         card["sections"] = refs
         groups[card["class"]].append(card)
     out = []
@@ -118,19 +122,20 @@ def _bar(kind, label, facets, total, placeholder):
     for key, text, n, dot in facets:
         d = f'<i class="dot c-{esc(dot)}" aria-hidden="true"></i>' if dot else ""
         chips.append(f'<button type="button" class="kv-chip" data-f="{esc(key)}" aria-pressed="false">{d}{esc(text)} <b>{n}</b></button>')
-    return (f'<div class="kv-bar" role="toolbar" aria-label="{esc(label)}">'
+    return (f'<div class="kv-bar" role="group" aria-label="{esc(label)}">'
             f'<div class="kv-chips">{"".join(chips)}</div>'
             f'<input type="search" class="kv-q" placeholder="{esc(placeholder)}" aria-label="Search {esc(kind)}"></div>')
 
 
 def _card(c):
     auth = c["authorization"]
+    badge = auth.lower() if auth in AUTH_ORDER else "unknown"   # the class never carries record text
     alias = (f'<p class="ent-alias">also: {esc(", ".join(c["aliases"]))}</p>' if c["aliases"] else "")
     src = f'<code>{esc(c["source"])}</code>' if c["source"] else '<span class="none">none yet</span>'
     owner = (f'<code>/{esc(c["owner_page"])}/</code>' if c["owner_page"] else '<span class="none">unowned</span>')
-    q = " ".join([c["name"], *c["aliases"], c["class"], auth, c["source"] or "", c["owner_page"] or ""]).lower()
-    return (f'<article class="ent kv-item c-{_cls_key(c["class"])}" data-f="{esc(c["class"])}" data-q="{esc(q)}">'
-            f'<header><b class="ent-name">{esc(c["name"])}</b><span class="badge b-{auth.lower()}">{esc(auth)}</span></header>'
+    q = " ".join(" ".join([c["name"], *c["aliases"], c["class"], auth, c["source"] or "", c["owner_page"] or ""]).lower().split())
+    return (f'<article class="ent kv-item c-{_cls_key(c["class"])}" data-id="{esc(c["id"])}" data-f="{esc(c["class"])}" data-q="{esc(q)}">'
+            f'<header><b class="ent-name">{esc(c["name"])}</b><span class="kv-badge b-{badge}">{esc(auth)}</span></header>'
             f'{alias}'
             f'<dl><dt>Class</dt><dd>{esc(c["class"])}</dd><dt>Source</dt><dd>{src}</dd><dt>Owner page</dt><dd>{owner}</dd></dl>'
             f'<p class="ent-secs"><span>In section{"s" if len(c["sections"]) != 1 else ""}</span>{sec_chips(c["sections"])}</p>'
@@ -149,7 +154,7 @@ def _matrix(group):
              f'<span class="mx-dot" aria-hidden="true">●</span><span class="mx-n">{r["n"]:02d}</span></a></td>')
             if r["id"] in have else "<td></td>"
             for r in cols)
-        rows.append(f'<tr><th scope="row">{esc(c["name"])}</th>{cells}</tr>')
+        rows.append(f'<tr data-id="{esc(c["id"])}"><th scope="row">{esc(c["name"])}</th>{cells}</tr>')
     return (f'<div class="mx-wrap c-{_cls_key(group["class"])}" data-f="{esc(group["class"])}"><table class="mx">'
             f'<caption><i class="dot c-{_cls_key(group["class"])}" aria-hidden="true"></i>{esc(group["class"])}</caption>'
             f'<thead><tr><th scope="col">Entity</th>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
@@ -196,7 +201,7 @@ def keywords_html(groups, show_empty=()):
     body = "".join(
         f'<section class="kv-group" data-f="{esc(g["type"])}" aria-label="{esc(g["label"])}">'
         f'<h3 class="kv-h">{esc(g["label"])} <span>{len(g["terms"])}</span></h3><div class="kw-chips">'
-        + "".join(f'<span class="kw kv-item" data-f="{esc(g["type"])}" data-q="{esc(str(t["term"]).lower())}">'
+        + "".join(f'<span class="kw kv-item" data-f="{esc(g["type"])}" data-q="{esc(" ".join(str(t["term"]).lower().split()))}">'
                   f'<span class="kw-t">{esc(t["term"])}</span>{sec_chips(t["sections"])}</span>' for t in g["terms"])
         + '</div></section>'
         for g in live)
@@ -207,9 +212,9 @@ def keywords_html(groups, show_empty=()):
 # The class colours are the old graph palette, one pair per theme, each clearing 3:1 against
 # its own theme's --paper: they mark a card's edge and a dot, never text.
 CSS = """
-:root{--c-people:#8b1e5f;--c-place:#7a5c3e;--c-health:#c8472f;--c-organization:#1f5a8a;--c-regulation:#5b6b1f;--c-organism:#2D6A4F;--c-commerce:#8a6508;--c-logistics:#1f6f8b;--c-documentation:#6b4fa0;--c-method:#3d7a4a;--c-unknown:#6b736e}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d}}
-:root[data-theme="dark"]{--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d}
+:root{--c-people:#8b1e5f;--c-place:#7a5c3e;--c-health:#c8472f;--c-organization:#1f5a8a;--c-regulation:#5b6b1f;--c-organism:#2D6A4F;--c-commerce:#8a6508;--c-logistics:#1f6f8b;--c-documentation:#6b4fa0;--c-method:#3d7a4a;--c-unknown:#6b736e;--kv-blocked:#9A4A2A}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d;--kv-blocked:#FF9B8A}}
+:root[data-theme="dark"]{--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d;--kv-blocked:#FF9B8A}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 .oanchor{scroll-margin-top:24px;border-radius:3px}
@@ -225,9 +230,9 @@ section.sec:has(.kv){overflow:clip}
 .kv-chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--ground)}
 .kv-chip[aria-pressed="true"] b{color:var(--ground)}
 .kv-q{font:inherit;font-size:14px;flex:1 1 200px;min-width:0;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)}
-.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-unknown);flex:none}
-.c-people{--c:var(--c-people)}.c-place{--c:var(--c-place)}.c-health{--c:var(--c-health)}.c-organization{--c:var(--c-organization)}.c-regulation{--c:var(--c-regulation)}.c-organism{--c:var(--c-organism)}.c-commerce{--c:var(--c-commerce)}.c-logistics{--c:var(--c-logistics)}.c-documentation{--c:var(--c-documentation)}.c-method{--c:var(--c-method)}.c-unknown{--c:var(--c-unknown)}
-.dot[class*="c-"]{background:var(--c)}
+.kv .dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-unknown);flex:none}
+.kv .c-people{--c:var(--c-people)}.kv .c-place{--c:var(--c-place)}.kv .c-health{--c:var(--c-health)}.kv .c-organization{--c:var(--c-organization)}.kv .c-regulation{--c:var(--c-regulation)}.kv .c-organism{--c:var(--c-organism)}.kv .c-commerce{--c:var(--c-commerce)}.kv .c-logistics{--c:var(--c-logistics)}.kv .c-documentation{--c:var(--c-documentation)}.kv .c-method{--c:var(--c-method)}.kv .c-unknown{--c:var(--c-unknown)}
+.kv .dot[class*="c-"]{background:var(--c)}
 .kv-group{margin:14px 0 4px}
 .kv-h{font-family:"Fraunces",Georgia,serif;font-size:17px;font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:8px}
 .kv-h span{font-family:"Source Sans 3",system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--ink-3)}
@@ -239,14 +244,14 @@ section.sec:has(.kv){overflow:clip}
 .ent dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:13px}
 .ent dt{color:var(--ink-3)}.ent dd{margin:0;min-width:0;overflow-wrap:anywhere}
 .ent code{font:12px/1.4 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:0 4px;border-radius:3px}
-.ent .none{color:var(--ink-3);font-style:italic}
+.kv .none{color:var(--ink-3);font-style:italic}
 .ent-secs{margin:0;display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px;color:var(--ink-3)}
 .ent-secs>span{margin-right:4px}
-.badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 7px;border-radius:4px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
-.b-asserted{border-color:var(--green)}.b-asserted::before{content:"✓ "}
-.b-proposed{border-style:dashed;border-color:var(--clay-ink)}
-.b-blocked{border-color:var(--warn);color:var(--warn)}
-.b-unknown{border-style:dotted;border-color:var(--ink-3)}
+.kv .kv-badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 7px;border-radius:4px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.kv .b-asserted{border-color:var(--green)}.kv .b-asserted::before{content:"✓ "}
+.kv .b-proposed{border-style:dashed;border-color:var(--clay-ink)}
+.kv .b-blocked{border-color:var(--kv-blocked);color:var(--kv-blocked)}
+.kv .b-unknown{border-style:dotted;border-color:var(--ink-3)}
 .sec-chip{display:inline-block;font:600 11px/1.6 ui-monospace,Menlo,monospace;padding:0 6px;border-radius:4px;border:1px solid var(--line);background:var(--ground);color:var(--ink-2);text-decoration:none}
 .sec-chip:hover,.sec-chip:focus-visible{border-color:var(--clay);color:var(--ink)}
 .kw-chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -274,22 +279,28 @@ table.mx thead{display:none}
 table.mx tr{padding:6px 0;border-bottom:1px solid var(--line)}
 table.mx th[scope="row"],table.mx td{border:0;padding:0 4px 0 0;text-align:left;white-space:normal}
 table.mx td{display:inline-block}table.mx td:empty{display:none}
+table.mx caption{display:flex;align-items:center;gap:6px}table.mx caption .dot{margin-right:0}
 .mx-dot{display:none}.mx-n{display:inline-block;font:600 11px/1.6 ui-monospace,Menlo,monospace;padding:0 6px;border:1px solid var(--line);border-radius:4px;color:var(--ink-2)}
 }
 """
 
 # One filter per view: class/type chips and the search box both narrow the same items; a
-# group with nothing visible hides, and so does a matrix table for a class filtered out.
+# group with nothing visible hides. The matrix follows both: a row hides with its entity's
+# card, and a class table hides when its class is filtered out or no row of it is left.
 JS = """
 document.querySelectorAll('.kv').forEach(function(root){
   var chips=root.querySelectorAll('.kv-chip'),q=root.querySelector('.kv-q'),f='*';
   var items=root.querySelectorAll('.kv-item'),groups=root.querySelectorAll('.kv-group'),
       mx=root.querySelectorAll('.mx-wrap'),empty=root.querySelector('.kv-empty');
   function apply(){
-    var s=q?q.value.trim().toLowerCase():'',any=false;
-    items.forEach(function(it){var ok=(f==='*'||it.getAttribute('data-f')===f)&&(!s||it.getAttribute('data-q').indexOf(s)>=0);it.hidden=!ok;if(ok)any=true;});
+    var s=q?q.value.trim().toLowerCase().replace(/\\s+/g,' '):'',any=false,gone={};
+    items.forEach(function(it){var ok=(f==='*'||it.getAttribute('data-f')===f)&&(!s||it.getAttribute('data-q').indexOf(s)>=0);it.hidden=!ok;if(ok)any=true;else if(it.hasAttribute('data-id'))gone[it.getAttribute('data-id')]=1;});
     groups.forEach(function(g){g.hidden=!g.querySelector('.kv-item:not([hidden])');});
-    mx.forEach(function(m){m.hidden=!(f==='*'||m.getAttribute('data-f')===f);});
+    mx.forEach(function(m){
+      var rows=m.querySelectorAll('tbody tr'),left=0;
+      rows.forEach(function(r){r.hidden=!!gone[r.getAttribute('data-id')];if(!r.hidden)left++;});
+      m.hidden=!(f==='*'||m.getAttribute('data-f')===f)||!left;
+    });
     if(empty)empty.hidden=any;
   }
   chips.forEach(function(c){c.addEventListener('click',function(){
