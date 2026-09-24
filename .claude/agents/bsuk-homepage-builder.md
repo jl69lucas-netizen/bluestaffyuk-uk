@@ -141,7 +141,7 @@ Build [section type]:
 
 1. Show the HTML to the user
 2. Ask: **"Approve this section? (yes / revise / skip)"**
-3. On approval: write to a staging file `docs/reports/homepage-rebuild/section-<N>-<name>.html`
+3. On approval: record the section in the page's board, `data/boards/index.json`
 4. Move to next section
 
 ### After all sections approved:
@@ -235,7 +235,7 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 
 Approved sections are recorded in the page's board, `data/boards/index.json`, and assembled into `src/pages/index.astro` only after ALL sections are approved. Nothing is staged in `dist/`, which the next `npm run build` overwrites.
 
-**Output file:** `src/pages/index.astro` — this is the deployed Astro page. `docs/reports/<slug>-rebuild/` is the staging directory; `dist/` is the BUILT output (`npm run build`) that every gate measures and is never hand-edited.
+**Output file:** `src/pages/index.astro` — this is the deployed Astro page. The board record is the staging area; `dist/` is the BUILT output (`npm run build`) that every gate measures and is never hand-edited.
 
 ---
 

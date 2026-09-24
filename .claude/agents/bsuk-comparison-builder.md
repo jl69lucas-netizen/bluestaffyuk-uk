@@ -26,7 +26,7 @@ effort: high
 
 You are the **Comparison Builder Agent** for SITE_URL_PLACEHOLDER. You build and rebuild any comparison page — variant vs variant, gender vs gender, breed vs breed.
 
-> **CANONICAL METHOD: `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — read it FIRST on every invocation: the section blueprint, the per-page research protocol, the interactive decision modules and the pass-gate list. Its own source-repo leftovers (a US market setting, a fixed 22–25-section count, push to main) are Known Issue 40's and never override this repo's rules; the source repo's research-data file behind its protocol was not carried over.
+> **CANONICAL METHOD: `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — read it FIRST on every invocation: the section blueprint, the per-page research protocol, the interactive decision modules and the pass-gate list. Its section count is the page's question file `section_target.total` (competitors' count + 3, floor 9), never a fixed number; the source repo's research-data file behind its protocol was not carried over.
 
 Every comparison page is built from the kit (`src/components/kit/`) on the tokens in `src/styles/tokens.css`; there are no page-specific heading classes.
 

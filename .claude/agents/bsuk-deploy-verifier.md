@@ -77,9 +77,8 @@ done
 
 For content verification (confirm new deploy, not cached old version):
 ```bash
-# Playwright CLI — fetch page and check for a known new element
-playwright navigate "https://SITE_URL_PLACEHOLDER/"
-playwright snapshot
+# Fetch the live page and check for a known new element
+curl -s "$SITE_URL/" | grep -o '<title>[^<]*'
 # Look for: a headline or meta content that changed in this deploy
 ```
 
@@ -90,7 +89,7 @@ playwright snapshot
 Always verify these pages return 200 with valid `<title>` tags:
 
 ```bash
-for slug in "" "buy-blue-staffy-near-me/" "blue-blue-staffy/" "blue-staffy-breed-guide/" "available/"; do
+for slug in "" "available-puppies/" "buy-blue-staffy-puppies-uk/" "uk-staffordshire-bull-terrier-guide/" "uk-blue-staffy-breeders-contact/" "uk-locations/"; do
   url="https://SITE_URL_PLACEHOLDER/${slug}"
   status=$(curl -sI "$url" | head -1 | awk '{print $2}')
   title=$(curl -s "$url" | grep -o '<title>[^<]*' | head -1 | sed 's/<title>//')
@@ -134,40 +133,13 @@ Flag any of these conditions as failures:
 
 ## Step 4 — Submit to IndexNow
 
-After verifying all pages pass, submit changed URLs to IndexNow:
+After every page passes, submit the changed URLs through the repo's guarded script — never by hand:
 
-```python
-import urllib.request, json
-
-KEY = "[INDEX_NOW_KEY_TBD]"
-HOST = "SITE_URL_PLACEHOLDER"
-
-# Build URL list from changed pages
-changed_slugs = [
-    # Insert changed slugs here
-]
-urls = [f"https://{HOST}/{slug}/" for slug in changed_slugs if slug]
-urls.append(f"https://{HOST}/")  # Always include homepage
-
-payload = json.dumps({
-    "host": HOST,
-    "key": KEY,
-    "keyLocation": f"https://{HOST}/{KEY}.txt",
-    "urlList": urls
-}).encode()
-
-req = urllib.request.Request(
-    "https://api.indexnow.org/indexnow",
-    data=payload,
-    headers={"Content-Type": "application/json"}
-)
-resp = urllib.request.urlopen(req)
-print(f"IndexNow: HTTP {resp.status} — {len(urls)} URLs submitted")
-for url in urls:
-    print(f"  → {url}")
+```bash
+npm run indexnow:changed
 ```
 
-Expected response: `HTTP 202` = accepted. `HTTP 200` = already indexed. Any 4xx/5xx = alert user.
+It reads `INDEXNOW_KEY` and `SITE_URL` from the environment (`.env`, see `docs/reference/credentials.md`), never hardcoded, and refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL`. A `200` (submitted) or `202` (received, key validation pending) is success; any other status is reported to the user.
 
 ---
 
@@ -195,7 +167,7 @@ Pages changed: [X]
 [none / list any failures]
 
 ## Duration
-Deploy detected live: [X] min after push
+Deploy detected live: [X] min after the deploy started
 ```
 
 ---
@@ -206,9 +178,8 @@ If any critical page fails:
 
 1. **Alert immediately** — do not submit IndexNow for a broken deploy
 2. **Identify the failure** — 404? Wrong content? Missing title?
-3. **Check git log** — confirm push went through: `git log --oneline -3`
+3. **Check git log** — confirm which commit was deployed: `git log --oneline -3`
 4. **Check the host's dashboard** — NOT FETCHED until project 6; there is no dashboard to check yet. Check latest deploy status
-# no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 
 ---
 

@@ -8,7 +8,7 @@ effort: max
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Anti-AI Writing (ALWAYS):** Before shipping any prose, filter against `.claude/skills/anti-ai-writing/SKILL.md` — ban its blacklisted openers, transitions, inflated verbs, padding tricolons, and generic conclusions. This is phrasing/rhythm; it stacks with First-Person Voice (POV) and the Verified-Claim Ledger (substance).
+> **Anti-AI Writing (ALWAYS):** Before shipping any prose, filter against `.claude/skills/anti-ai-writing/SKILL.md` — ban its blacklisted openers, transitions, inflated verbs, padding tricolons, and generic conclusions. This is phrasing/rhythm; it stacks with First-Person Voice (POV) and the evidence ledger, `data/quality/evidence-ledger.json` (substance).
 
 ---
 
@@ -232,12 +232,8 @@ Scan the draft for these overused AI adjectives and delete or replace them:
 - **Delete:** revolutionary, seamless, vibrant, testament to, innovative, cutting-edge, holistic, synergy, transformative, exceptional
 - **Replace with:** specific facts, breeder observations, real documentation names, plain English
 
-**Counter Snippets (required in hero section of every page):**
-After the hero H1/subheadline, include 4 short counter snippets:
-- Under 4 words each
-- Start with a number or percentage
-- Pull real numbers from `data/price-matrix.json` and `docs/reference/project-context.md` (not ported — source repo only)
-- Examples: "[X]+ Happy Families" | "LICENCE_CLAIM_PLACEHOLDER Licensed" | "LICENCE_CLAIM_PLACEHOLDER Documented" | "Lifetime Support"
+**Counter strip (one per page, its own facts):**
+The counter under the hero is the kit's `CounterStrip`, and CLAUDE.md rule 16 makes it per page: every figure is that page's own locked fact — a price from `data/puppies.json`, the £500 refundable deposit or the £200–£350 delivery range from `data/settings.json` — with its `source`. A family count, a years-in-business figure and a review count are NOT FETCHED and never appear.
 
 ---
 
@@ -251,7 +247,7 @@ After the hero H1/subheadline, include 4 short counter snippets:
 6. **Variant accuracy** — the six puppies carry two prices — £1,500 and £1,700, both from `data/puppies.json`; never mix their prices or characteristics
 7. **Humor mode is opt-in** — default to professional/warm; only apply humor modes when explicitly requested; never use humor in licence, paperwork, pricing, or health sections
 8. **Generic-Slayer Filter mandatory** — run before every output delivery
-9. **Counter snippets required** — every page hero gets 4 counter snippets pulled from real data files
+9. **One counter strip per page** — `CounterStrip` with the page's own sourced facts (rule 16)
 10. **Outline before sections (Rule 51)** — never write section 1 without an approved Page Outline; the outline approval is a hard gate that cannot be skipped regardless of how the task was briefed
 11. **Header/footer off-limits (Rule 53)** — never write or modify `<header>` or `<footer>` elements in any page file; content always starts at the hero `<section>`; `src/layouts/BaseLayout.astro` handles header/footer injection automatically for all Astro pages
 

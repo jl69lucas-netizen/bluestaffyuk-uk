@@ -59,17 +59,18 @@ Compare the counts with `data/agent-registry.json` and `docs/reference/system-re
 
 ### Check 2 — Frontmatter Validation (agents only)
 
-Every `.claude/agents/*.md` file must have all three frontmatter fields:
+Every `.claude/agents/*.md` file must have `name`, `model` and `effort`; `tools` is optional:
 
 ```bash
 echo "=== MISSING: name ===" && grep -rL "^name:" .claude/agents/*.md
 echo "=== MISSING: model ===" && grep -rL "^model:" .claude/agents/*.md
-echo "=== MISSING: tools ===" && grep -rL "^tools:" .claude/agents/*.md
+echo "=== MISSING: effort ===" && grep -rL "^effort:" .claude/agents/*.md
+echo "=== NO tools (inherits the session's) ===" && grep -rL "^tools:" .claude/agents/*.md
 ```
 
 Expected values:
 - `model: inherit` (every agent follows the session model; `effort` — a native field, one of low/medium/high/xhigh/max — is the cost lever, see `data/agent-registry.json`)
-- `tools: [Read, Write, Bash]` (most agents; the three orchestrators add `Agent`; browser/scrape agents add `WebFetch`/`WebSearch`)
+- `tools: [Read, Write, Bash]` (most agents; the three orchestrators add `Agent`; browser/scrape agents add their MCP tools). The four research agents — `bsuk-competitor-registry`, `bsuk-competitor-intel`, `bsuk-competitive-keyword-gap-agent`, `bsuk-llm-keyword-intel` — omit `tools` on purpose so they inherit the session's connectors; that is not a failure
 - NO `dynamic_workflow:` key and NO `<!-- EFFORT:START -->` block — both were retired in the source repo and neither was ported
 
 Flag any agent with a missing or unexpected model value.
@@ -165,10 +166,11 @@ python3 scripts/build_agent_registry.py --check         # registry agrees with t
 
 ### Check 7 — Staging Directory Hygiene
 
-Before any batch deploy, verify no stale `-rebuild/` directories exist:
+Approved sections live in the page boards (`data/boards/<slug>.json`), so nothing is staged in a folder. Verify no source-repo staging directory has been recreated:
 
 ```bash
-echo "=== STALE STAGING DIRS ===" && find dist/ -type d -name "*-rebuild*" 2>/dev/null && echo "✅ None found" || echo "⚠️  Stale dirs above — clear before next batch"
+echo "=== STALE STAGING DIRS ===" && find docs/reports dist -maxdepth 1 -type d -name "*-rebuild*" 2>/dev/null
+# prints nothing when clean
 ```
 
 ---

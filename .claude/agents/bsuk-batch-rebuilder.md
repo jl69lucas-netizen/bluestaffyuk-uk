@@ -79,236 +79,88 @@ For batches of 3+ pages, dispatch every page in ONE message: one `Agent` call pe
 ## Batch Job Types
 
 ### Location Batch
-Rebuilds multiple city pages in parallel using location-builder agent.
+Rebuilds city pages in parallel with `bsuk-location-builder`, one child per city.
 
 ```bash
-# Identify all location pages needing rebuild
-ls dist/ | grep "blue-staffy-for-sale-"
-
-# Dispatch location-builder for each city
-# Each fork gets: city_slug, city_data from locations.json
+ls dist/uk-locations/                    # the 28 built city routes (after npm run build)
+python3 -c "import json; [print(r['slug'], '|', r['robots']) for r in json.load(open('data/locations.json'))]"
 ```
 
-**Batch size limits:**
-- Recommended: 5 pages per batch (context safety)
-- Maximum: 10 pages per batch
-- Above 10: split into sequential batches of 10
+Every row is a `/uk-locations/<slug>/` route. Seventeen are `noindex` stubs (Known Issue 6) — the project-5 rebuilds; the indexed rows are refreshes. Which cities run, and in what order, comes from the project-5 plan and the strategy file, never from this agent. Each child gets its row (`slug`, `city`, `h1`, `canonical`, `robots`), its question file `data/queries/<slug>.json`, and its board `data/boards/<slug>.json` once the competitor scan has written it.
+
+**Before the first city:** Known Issue 39 — four checkers build paths from a flat slug and cannot read `uk-locations/<slug>` yet. No city page goes into `data/facts/rebuilt.json` until that is fixed and tested.
+
+**Batch size limits:** 5 pages per round recommended, 10 at most; above 10, sequential rounds of 10.
 
 ### Comparison Batch
-Rebuilds all comparison pages in one batch using comparison-builder agent.
-
-Pages:
-- `dist/blue-staffy-for-sale-*/`
-- `dist/blue-staffy-uk-breeders/`
-- `dist/blue-staffy-vs-American Bully/`
-- `dist/blue-staffy-vs-French Bulldog/`
-- `dist/blue-staffy-uk-breeders/`
+The comparison pages the project-5 strategy names, one `bsuk-comparison-builder` child each. None is built yet.
 
 ### Footer/Contact Batch
-Standardizes footer or contact form across all pages.
-
-```bash
-# Find all pages needing update
-find dist/ -name "*.md" | head -50
-
-# Dispatch footer-standardizer or contact-form-updater for each
-```
+One audit over every built page — `bsuk-footer-standardizer` or `bsuk-contact-form-updater` runs once over `dist/`, not once per page; a fix lands in the shared component.
 
 ### Section Patch Batch
-Applies a single section change (e.g., updated CTA, new pricing) to multiple pages at once.
+One section change (an updated CTA, a new locked figure) across several pages — through the shared kit component or data file when one exists, never by pasting the same block into each page.
 
 ---
 
 ## Batch Protocol
 
 ### Step 1 — Inventory
-```bash
-# List pages to rebuild
-ls dist/ | grep [pattern]
-
-# Verify current city of each
-grep -rl "[outdated pattern]" dist/blue-staffy-for-sale-*/
-```
+List the pages in scope from `data/locations.json` or `data/page-map.json` and write them into the manifest (below) BEFORE dispatching.
 
 ### Step 2 — Pre-flight Check
-Before dispatching:
-- [ ] No uncommitted changes to dist/ (run `git status`)
-- [ ] Staging directories don't already exist (prevent collision)
-- [ ] data/ files are current (locations.json, price-matrix.json)
+- [ ] No uncommitted changes in `src/` or `data/` (`git status`; `dist/` is gitignored)
+- [ ] `data/locations.json`, `data/puppies.json` and `data/price-matrix.json` are current
+- [ ] Each page in scope has its question file and an approved board, or the manifest says it does not
 
 ### Step 3 — Dispatch
-Create a batch manifest:
+One `Agent` call per page in ONE message (rounds of 10 at most). Each child writes only its own page's files and its board record — never a file another child writes.
 
-```markdown
-## Batch Manifest — [job type] — [date]
-Total pages: [X]
-Agent: [agent name]
-Dispatch: [Agent fan-out | Workflow (breeder opted in)]
+### Step 4 — Collect
+Each child reports the files it wrote and its gate results. `git status --short` must list only those files; a child that reports nothing, or wrote outside its page, is FAILED in the manifest.
 
-| Page | Slug | Status | Staging Dir |
-|------|------|--------|-------------|
-| [city] | /uk-locations/<slug>/ | ⏳ | docs/reports/[slug]-rebuild/ |
-```
+### Step 5 — Build and gate
+After every child in the round has finished: `npm run build`, then `npm run check:all` and `python3 scripts/final_page_audit.py`. A page that fails its gates is FAILED in the manifest; the rest proceed.
 
-### Step 4 — Monitor
+### Step 6 — Grader
+`@bsuk-keyword-verifier <slug>` on each rebuilt page. A FAIL stops that page only and is surfaced to the breeder — never dropped silently.
+
+### Step 7 — Commit (deploy and IndexNow are inactive until project 6)
 ```bash
-# Check staging directories as they complete
-ls docs/reports/*-rebuild/ 2>/dev/null
-
-# Verify each staging file exists and has content
-wc -l docs/reports/*-rebuild/*.md 2>/dev/null
-```
-
-### Step 5 — Assemble
-After all children complete:
-```bash
-# Move each staging file to live location
-for dir in docs/reports/*-rebuild/; do
-  slug=${dir%-rebuild/}
-  cp "$dir/"*.md "$slug/"
-  echo "✅ $slug updated"
-done
-```
-
-### Step 6 — Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
-```bash
-git add src/pages/
+git add <the files the manifest lists>
 git commit -m "Batch rebuild: [job type] — [date]"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
-
-Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit all changed URLs to IndexNow.
-
----
-
-## Batch Manifest Output
-
-After every batch job, save a report:
-
-```markdown
-# Batch Rebuild Report — [job type]
-Date: [YYYY-MM-DD]
-Pages rebuilt: [X]
-Duration: [estimated time]
-
-## Results
-| Page | Status | Issues |
-|------|--------|--------|
-| /[slug]/ | ✅ Complete | none |
-| /[slug]/ | ❌ Failed | [reason] |
-
-## Deploy
-- Commit: [hash]
-- IndexNow: inactive until project 6
-- Deploy: inactive until project 6
-```
-
-Save to `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
+`npm run indexnow:changed` refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL`.
 
 ---
 
-## Failure Recovery Protocol
+## Manifest
 
-When a batch job completes but some pages are missing, use this protocol before deciding to rebuild or retry.
-
-### Step 1 — Detect which pages failed
-
-```bash
-# List all staging dirs that exist (these succeeded)
-ls -d docs/reports/*-rebuild/ 2>/dev/null
-
-# Count against expected total
-echo "Expected: [N pages]"
-echo "Completed: $(ls -d docs/reports/*-rebuild/ 2>/dev/null | wc -l)"
-
-# See the job manifest
-cat "docs/superpowers/sessions/$(ls -t docs/superpowers/sessions/ | grep "batch-" | head -1)"
-```
-
-### Step 2 — Read the job manifest
-
-Every batch run writes a manifest to `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`. The manifest lists every dispatched page and whether its staging dir exists.
-
-**If no manifest exists:** the batch job was interrupted. All staging dirs that exist can be used; pages with no staging dir must be rebuilt.
-
-### Step 3 — Retry only the failed pages
-
-Do NOT re-run the entire batch. Dispatch only the failed slugs to the relevant specialist agent.
-
-**For location pages:** Call `bsuk-location-builder` with the specific city slug:
-```
-@bsuk-location-builder blue-staffy-puppies-manchester-uk
-```
-
-**For general pages:** Call the appropriate BSUK page builder directly.
-
-### Step 4 — Verify before assembling
-
-After retry, verify the staging dir has real content:
-
-```bash
-for dir in docs/reports/*-rebuild/; do
-  lines=$(wc -l < "$dir/index.html" 2>/dev/null || echo 0)
-  if [ "$lines" -lt 100 ]; then
-    echo "SUSPECT: $dir has only $lines lines"
-  fi
-done
-```
-
-Pages with fewer than 100 lines are suspect — likely a stub or error output.
-
-### Step 5 — Grader Gate (keyword-verifier) — REQUIRED before assembly
-
-After all staging dirs pass the ≥100 lines size check, run the keyword-verifier grader on each staged page before assembly:
-
-```
-For each staged page at _staging/[slug]/index.html:
-  Run: @bsuk-keyword-verifier [staged-page-path]
-  If PASS  → page proceeds to assembly
-  If FAIL  → STOP assembly for that page only, report which keyword check failed, do NOT assemble that page
-             Surface the failure message to the user before continuing
-```
-
-**Grader outcomes:**
-- All PASS → proceed to Step 6 (assemble + commit)
-- Any FAIL → report failures, ask user whether to fix-and-retry or skip that page
-- Never silently drop a failing page — always surface the issue
-
-### Step 6 — Assemble only after 100% staging completion + grader PASS
-
-Never assemble a partial batch. All N pages must have staging dirs with ≥100 lines AND passed keyword-verifier before assembly.
-
-### Decision Tree
-
-```
-Batch finishes → Count staging dirs
-  ├── All N present → verify sizes → run grader → assemble → commit
-  ├── < N present, >50% done → retry missing pages only → loop back
-  └── < 50% present → re-read job manifest → check if batch was dispatched → restart
-```
-
-### Manifest Template
-
-Write this to `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md` at the START of every batch run:
+Write the manifest to `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md` at the START of every batch run and update it as children report:
 
 ```markdown
 # Batch Job: [job name] — YYYY-MM-DD
 
-**Dispatched:** N pages
-**Completed:** [update as staging dirs confirmed]
-**Status:** IN PROGRESS / DONE / PARTIAL — NEEDS RETRY
+**Dispatched:** N pages · **Done:** [n] · **Status:** IN PROGRESS / DONE / PARTIAL — NEEDS RETRY
 
-| Page Slug | Staging Dir | Status |
-|-----------|------------|--------|
-| [slug]    | docs/reports/[slug]-rebuild/ | ⏳ pending |
+| Page | Route | Question file | Board | Status | Gates |
+|------|-------|---------------|-------|--------|-------|
+| [city] | /uk-locations/<slug>/ | yes / no | approved / pending | ⏳ / ✅ / ❌ | [summary] |
 ```
+
+## Failure Recovery
+
+1. Read the newest manifest: `ls -t docs/superpowers/sessions/*-batch-*.md | head -1`.
+2. Retry only the FAILED pages — one `Agent` call per failed slug, for example `@bsuk-location-builder blue-staffy-puppies-manchester-uk`. Never re-run the whole batch.
+3. Never commit a partial round as if it were whole: the manifest says which pages the commit carries.
 
 ---
 
 ## Rules
 
 1. **Pre-flight check required** — never dispatch without verifying git status
-2. **Staging required** — every page goes to `-rebuild/` before live
+2. **Manifest first** — every page is in the manifest before it is dispatched
 3. **Batch size limit: 10 pages** — split larger batches
 4. **One commit at end** — never deploy; there is no deploy until project 6
 5. **Manifest required** — always document what ran and what succeeded

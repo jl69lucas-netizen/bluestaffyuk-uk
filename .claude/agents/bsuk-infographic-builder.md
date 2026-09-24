@@ -97,7 +97,7 @@ Read `rules/images.md` for the page type's image rules; the source repo's per-pa
 
 ```bash
 cat TARGET_PAGE           # understand current content and section structure
-cat .claude/skills/bsuk-infographic/SKILL.md   # load templates and height rules
+cat rules/images.md                            # the sizing rules (the template skill was not ported)
 ```
 
 ### Step 2: Select infographic type

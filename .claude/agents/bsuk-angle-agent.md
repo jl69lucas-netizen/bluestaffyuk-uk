@@ -143,7 +143,7 @@ Position BSUK against what most buyers accept as standard.
 2. Generate 8–10 angle options (one per angle type above)
 3. Rate each: **Differentiation** (1–5) × **Credibility** (1–5) × **Reader Resonance** (1–5)
 4. Recommend top 3 — explain why
-5. User selects → hand off to seo-content-writer with chosen angle
+5. User selects → the chosen angle goes into the session brief; next is `bsuk-paa-agent` (WORKFLOW Sprint 2 step 3), then the writer
 
 ---
 

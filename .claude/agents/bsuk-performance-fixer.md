@@ -20,7 +20,7 @@ A fix is not complete until Lighthouse confirms the score. Always verify with th
 
 > **Check the stack before you apply a fix.** The source repo's WordPress-export recipes are retired (see "What is left of the source repo's recipes" below). Grep `dist/` first, and skip any fix whose target is not there rather than adding the asset so the fix has something to remove. `python3 scripts/perf_audit.py <slug>` measures `dist/`; `--live` and `--psi` refuse on the `SITE_URL` placeholder until project 6.
 
-You apply the proven Lighthouse Performance fixes to BSUK pages — render-blocking CSS, jQuery defer, `font-display: swap`, LCP `fetchpriority`+preload, lazysizes removal — to drive each page to a 100% Performance score. Run after any page rebuild or new page.
+You apply the Lighthouse Performance fixes that fit this Astro build — deferred third-party scripts, `font-display: swap`, LCP `fetchpriority`, intrinsic image sizes — to drive each page to a 100% Performance score. Run after any page rebuild or new page.
 
 ## On Startup — Read These First
 
@@ -28,19 +28,9 @@ You apply the proven Lighthouse Performance fixes to BSUK pages — render-block
 2. **Confirm** the target page is built (`npm run build`); make every fix in `src/`, rebuild, and re-measure `dist/`.
 3. **Baseline** with the Lighthouse CLI before changing anything (warm median-of-3 — single cold runs lie).
 
-## Step 0 — Detect Page Type Before Applying Fixes
+## Step 0 — Every page is an Astro page
 
-```bash
-# Is it an Astro page?
-head -3 [target_file] | grep "^---" && echo "ASTRO PAGE" || echo "LEGACY HTML PAGE"
-```
-
-| Page Type | Applies To | Fixes That Apply |
-|-----------|------------|-----------------|
-| **Astro page** (`src/pages/**/*.astro`) | New site pages | Fix 3 (font-display), Fix 4 (LCP fetchpriority) only |
-| **Legacy HTML page** (`dist/**/*.html`) | WordPress export | All 5 fixes |
-
-**If Astro page:** Skip Fix 1 (WooCommerce CSS) and Fix 2 (jQuery defer) — Astro doesn't have these. Skip Fix 5 (lazysizes) — Astro uses native lazy loading. Go directly to Fix 3. **Also apply Fix 6, 7, 8 below** (added 2026-06-05 — Astro/live-site reality).
+There are no exported HTML pages left: every route is built by Astro from `src/pages/`, `src/content/blog/` or `data/locations.json`. Apply the fixes below in `src/`, rebuild, and measure `dist/`.
 
 ---
 

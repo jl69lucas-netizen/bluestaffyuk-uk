@@ -72,7 +72,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-image-pipeline.md` | Moves generated or supplied photographs into public/images/ under the BSUK SEO filename convention, updates every <img> reference in … |
 | `.claude/agents/bsuk-keyword-verifier.md` | Verifies keyword placement, density and on-page SEO hygiene for any BlueStaffyUK page — title, H1, meta description, first 100 words, H2 … |
 | `.claude/agents/bsuk-meta-description-agent.md` | Writes and audits every title tag and meta description on BlueStaffyUK — standard (50–60 char title, 140–160 char description) and … |
-| `.claude/agents/bsuk-paa-agent.md` | Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright CLI, formats the answers for … |
+| `.claude/agents/bsuk-paa-agent.md` | Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright MCP tools, formats the answers … |
 | `.claude/agents/bsuk-performance-fixer.md` | Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, font-display swap, LCP fetchpriority + preload … |
 | `.claude/agents/bsuk-redirect-manager.md` | Manages every 301/302 rule for BlueStaffyUK |
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |

@@ -10,7 +10,7 @@ effort: max
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Anti-AI Writing (ALWAYS):** Before shipping any prose, filter against `.claude/skills/anti-ai-writing/SKILL.md` — ban its blacklisted openers, transitions, inflated verbs, padding tricolons, and generic conclusions. This is phrasing/rhythm; it stacks with First-Person Voice (POV) and the Verified-Claim Ledger (substance).
+> **Anti-AI Writing (ALWAYS):** Before shipping any prose, filter against `.claude/skills/anti-ai-writing/SKILL.md` — ban its blacklisted openers, transitions, inflated verbs, padding tricolons, and generic conclusions. This is phrasing/rhythm; it stacks with First-Person Voice (POV) and the evidence ledger, `data/quality/evidence-ledger.json` (substance).
 
 ---
 
@@ -294,7 +294,7 @@ IndexNow is `npm run indexnow:changed`, and it refuses (exit 2) until project 6 
 6. **No embed tags** — if adding maps or video, use `<iframe>` only (CSP blocks embed)
 7. **Canonical** — the frontmatter `canonical` is `/[slug]/`; BaseLayout makes it absolute. Never `/blog/[slug]/`, which is not the post's route
 8. **BlogPosting schema required** — every post needs it for Google News / rich results eligibility
-9. **Authority citation required (E-E-A-T)** — 1–2 per post on the strongest technical terms, from `external-link-library.md §Authority Citations`, new-tab + `rel="noopener noreferrer"`, inside the Verified-Claim Ledger; mirrors seo-rules.md Rule 64
+9. **Authority citation required (E-E-A-T)** — 1–2 per post on the strongest technical terms, from `external-link-library.md §Authority Citations`, new-tab + `rel="noopener noreferrer"`, inside the evidence ledger; mirrors seo-rules.md Rule 64
 10. **Save to `src/content/blog/<slug>.md`** — blog posts are a markdown content collection (`src/content.config.ts`); the post is served at `/<slug>/`, its frontmatter `slug`
 11. **Sitemaps are generated** — `npm run build` writes them; `npm run check:sitemaps` proves the post is listed. Never hand-edit a sitemap
 

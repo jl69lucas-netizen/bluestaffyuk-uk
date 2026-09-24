@@ -1,6 +1,6 @@
 ---
 name: bsuk-paa-agent
-description: Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright CLI, formats the answers for featured-snippet and AI-overview capture, and hands the question set to bsuk-faq-agent for the page's FAQ section.
+description: Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright MCP tools, formats the answers for featured-snippet and AI-overview capture, and hands the question set to bsuk-faq-agent for the page's FAQ section.
 tools: [Read, Write, Bash, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_take_screenshot]
 model: inherit
 effort: medium
@@ -44,11 +44,12 @@ PAA questions are Google's own signal of what related questions buyers are askin
 
 ## PAA Extraction Protocol
 
-### Step 1 — Fetch Google PAA via Playwright CLI
+### Step 1 — Fetch Google PAA via the Playwright MCP
 ```bash
 # Navigate to Google search for target keyword
-# playwright navigate "https://www.google.com/search?q=[encoded-keyword]"
-# playwright snapshot
+# browser_navigate("https://www.google.com/search?q=[encoded-keyword]&gl=uk&hl=en")
+# browser_snapshot()
+# A consent page or bot check: stop and report it — never try to get past it
 # Extract all "People also ask" question text
 ```
 
@@ -62,13 +63,13 @@ Target keywords to run PAA extraction for (priority order):
 7. "Blue Staffy puppy size"
 8. "Blue Staffy puppy lifespan"
 9. "buy Blue Staffy puppy near me"
-10. "[city] Blue Staffy puppy for sale" (for each live location page)
+10. Not for location pages: a city page's questions come from its question file, `data/queries/<slug>.json` (the `bsuk-query-augmentation` skill) — do not scrape Google for them
 
 ### Step 2 — Expand PAA Tree
 Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright to click and expand:
 ```bash
-# playwright click on each PAA question to reveal nested questions
-# playwright snapshot after each click
+# browser_click on each PAA question to reveal nested questions
+# browser_snapshot() after each click
 # Extract nested PAA questions (often 8–15 total per keyword)
 ```
 
@@ -226,7 +227,7 @@ Run PAA extraction for a new keyword cluster every time:
 
 ## Rules
 
-1. **Playwright CLI for PAA extraction** — fetch directly from Google, no API
+1. **Playwright MCP for PAA extraction** — fetch directly from Google, no API; stop at a consent page or bot check
 2. **Expand the PAA tree** — click to reveal nested questions, not just the first 4
 3. **Classify before writing** — know which page each question targets
 4. **Snippet format matches question type** — paragraph, list, or table

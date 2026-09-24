@@ -144,7 +144,7 @@ Build [section type]:
 ### After each section:
 1. Show the HTML to the user
 2. Ask: **"Approve this section? (yes / revise / skip)"**
-3. On approval: write to `docs/reports/purchase-guide-rebuild/section-<N>-<name>.html`
+3. On approval: record the section in the page's board, `data/boards/buy-blue-staffy-puppies-uk.json`
 4. Move to next section
 
 ### After all sections approved:
