@@ -1128,7 +1128,7 @@
         "file": {
          "comment": "source `existing`: the served file reused at its own path (working rule 11).",
          "type": "string",
-         "pattern": "^/images/[A-Za-z0-9._/-]+$"
+         "pattern": "^(?!.*/\\.\\.?(?:/|$))/images/[A-Za-z0-9._/-]+$"
         },
         "source_file": {
          "comment": "source `assets-folder`: the filename in the breeder's Assets/Images folder; the build refuses it until it is ingested into public/images.",

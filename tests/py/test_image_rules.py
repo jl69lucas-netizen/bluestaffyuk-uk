@@ -78,8 +78,9 @@ def test_a_boarded_location_record_owes_a_slot_under_every_body_heading():
     assert not any("deposit" in m or "puppy-package" in m for c, sev, m in found)
     # Every existing slot names no source yet.
     assert sorted(m for c, sev, m in found if c == "image-slot-fields") == [
-        f"slot {s}: names no source (existing, assets-folder, generate or infographic)"
-        for s in ("opening-photo", "opening-tile-2", "opening-tile-3", "raise-photo")]
+        f"slot {s} (section {sid}): names no source (existing, assets-folder, generate or infographic)"
+        for s, sid in (("opening-photo", "opening"), ("opening-tile-2", "opening"),
+                       ("opening-tile-3", "opening"), ("raise-photo", "how-we-raise"))]
     assert all(sev == "FAIL" for c, sev, m in found)
 
 
@@ -275,3 +276,136 @@ def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo):
 def test_slots_needing_pick_are_the_generated_ones():
     assert IR.slots_needing_pick(_full()) == ["img:weeks-photo", "img:checks-graphic"]
     assert IR.slots_needing_pick(_demo()) == []
+
+
+# ── review fixes: no path escapes, an exact match, one list of build ids ─────────────────
+@pytest.mark.parametrize("value", [
+    "file:/images/../secret.webp", "file:/images/a/../../x.webp", "file:/images/./x.webp",
+    "file:/images/..", "file:/images/a//b.webp", "assets:..", "assets:.", "assets:a/b.jpg",
+    "assets:a\\b.jpg", "og:C\n", "file:/images/a.webp\n", "og:F", "ig:IG-6"])
+def test_a_pick_that_escapes_or_trails_is_refused(value):
+    assert IR.parse_pick(value) is None
+
+
+def test_the_style_grammar_is_built_from_the_style_lists():
+    assert [IR.parse_pick("og:" + st)["style"] for st in IR.OG_STYLES] == list(IR.OG_STYLES)
+    assert [IR.parse_pick("ig:" + st)["style"] for st in IR.IG_STYLES] == list(IR.IG_STYLES)
+    assert IR.parse_pick("assets:..hidden.jpg")["value"] == "..hidden.jpg"
+
+
+def test_public_path_stays_inside_public_images(repo, tmp_path):
+    assert IR.public_path("/images/a.webp", repo) == repo / "public" / "images" / "a.webp"
+    for bad in ("/images/../secret.webp", "/images/a/../../x.webp", "/og/x.webp", "/images/", None):
+        assert IR.public_path(bad, repo) is None, bad
+    outside = tmp_path / "outside.webp"
+    outside.write_bytes(b"x")
+    (repo / "public" / "images" / "link.webp").symlink_to(outside)
+    assert IR.public_path("/images/link.webp", repo) is None
+
+
+def test_a_symlink_out_or_a_directory_is_not_a_served_file(repo, tmp_path):
+    (tmp_path / "secret.webp").write_bytes(b"x")
+    (repo / "public" / "images" / "link.webp").symlink_to(tmp_path / "secret.webp")
+    (repo / "public" / "images" / "dir.webp").mkdir()
+    chosen = {"img:weeks-photo": "file:/images/link.webp", "img:checks-graphic": "file:/images/dir.webp"}
+    assert [c for c, sev, m in IR.build_findings(_approved(chosen))] == ["image-existing-missing"] * 2
+    assert IR.validate_image_picks(_full(), chosen) == [
+        "slot checks-graphic: /images/dir.webp is not in public/",
+        "slot weeks-photo: /images/link.webp is not in public/"]
+
+
+def test_a_record_file_that_climbs_out_is_missing(repo):
+    b = _approved({"img:weeks-photo": "file:/images/1blue-staffy-family-breeder.webp",
+                   "img:checks-graphic": "file:/images/1blue-staffy-family-breeder.webp"})
+    next(s for s in b["sections"] if s["id"] == "how-we-raise")["images"][0]["file"] = "/images/../../x.webp"
+    (repo / "x.webp").write_bytes(b"x")
+    assert [m.split(":")[0] for c, sev, m in IR.build_findings(b) if c == "image-existing-missing"] == [
+        "slot raise-photo"]
+
+
+def test_an_assets_row_cannot_point_a_generated_slot_out_of_public_images(repo, tmp_path):
+    (tmp_path / "elsewhere.webp").write_bytes(b"g")
+    b = _approved({"img:weeks-photo": "og:C:" + _sha(b"g"),
+                   "img:checks-graphic": "file:/images/1blue-staffy-family-breeder.webp"})
+    b["assets"].append({"slot": "weeks-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                        "status": "baked", "file": "/images/../../elsewhere.webp", "alt": "x"})
+    assert _ids(IR.build_findings(b)) == ["image-generated-not-ingested"]
+
+
+def test_a_draft_symlinked_out_of_the_tree_is_no_draft(repo, tmp_path):
+    (tmp_path / "planted.webp").write_bytes(b"p")
+    draft = repo / "data" / "boards" / "generated" / "uk-locations--blue-staffy-puppies-leeds"
+    draft.mkdir(parents=True)
+    (draft / "weeks-photo.webp").symlink_to(tmp_path / "planted.webp")
+    assert IR.draft_file(_full(), "weeks-photo") is None
+    assert IR.draft_file(_full(), "../weeks-photo") is None
+    assert IR.validate_image_picks(_full(), {"img:weeks-photo": "og:C:" + _sha(b"p")}) == [
+        "slot weeks-photo: approves a generated image, and none exists for this slot"]
+
+
+def test_assets_dot_picks_are_refused_at_approval(repo, tmp_path):
+    folder = tmp_path / "Assets"
+    folder.mkdir()
+    assert IR.validate_image_picks(_full(), {"img:weeks-photo": "assets:..", "img:raise-photo": "assets:."},
+                                   assets_dir=folder) == [
+        "slot raise-photo: pick 'assets:.' is not file:, assets:, og: or ig:",
+        "slot weeks-photo: pick 'assets:..' is not file:, assets:, og: or ig:"]
+    assert _ids(IR.build_findings(_approved({"img:weeks-photo": "og:C\n",
+                                             "img:checks-graphic": "ig:IG-2"}))) == [
+        "image-generated-unapproved", "image-pick-invalid"]
+
+
+def test_the_build_rechecks_a_pick_against_its_slot_kind(repo):
+    b = _approved({"img:weeks-photo": "ig:IG-2", "img:checks-graphic": "og:C"})
+    assert [(c, m) for c, sev, m in IR.build_findings(b)] == [
+        ("image-pick-invalid", "slot weeks-photo: an infographic style on a photo slot"),
+        ("image-pick-invalid", "slot checks-graphic: an OG style is a photo style and this slot is an infographic")]
+
+
+def test_a_generate_slot_with_no_style_is_left_to_the_slot_rule(repo):
+    b = _approved({"img:checks-graphic": "file:/images/1blue-staffy-family-breeder.webp"})
+    del next(s for s in b["sections"] if s["id"] == "how-we-raise")["tree"][0]["images"][0]["og_style"]
+    assert IR.build_findings(b) == []
+    assert "slot weeks-photo (section how-we-raise, H3 'The first eight weeks'): source generate names no og_style" \
+        in [m for c, sev, m in IR.slot_findings(b) if c == "image-slot-fields"]
+
+
+def test_build_findings_emits_exactly_the_build_check_ids(repo):
+    emitted = set()
+    for chosen, draft in (
+            ({"img:weeks-photo": "file:/images/nowhere.webp", "img:checks-graphic": "ig:IG-9"}, None),
+            ({"img:weeks-photo": "ig:IG-2", "img:checks-graphic": "og:C"}, None),
+            ({"img:weeks-photo": "assets:Nope.jpg", "img:checks-graphic": "ig:IG-2"}, None),
+            ({"img:weeks-photo": "og:C:" + "a" * 12, "img:checks-graphic": "ig:IG-2:" + "b" * 12}, None),
+            ({"img:weeks-photo": "og:C:" + "a" * 12, "img:checks-graphic": "ig:IG-2"}, b"served")):
+        b = _approved(chosen)
+        if draft:
+            (repo / "public" / "images" / "served.webp").write_bytes(draft)
+            b["assets"].append({"slot": "weeks-photo", "kind": "photo", "w": 1, "h": 1, "required": True,
+                                "status": "baked", "file": "/images/served.webp", "alt": "x"})
+        emitted |= {c for c, sev, m in IR.build_findings(b)}
+    assert emitted == IR.BUILD_CHECK_IDS == {
+        "image-pick-invalid", "image-existing-missing", "image-asset-not-ingested",
+        "image-generated-unapproved", "image-generated-not-ingested"}
+
+
+def test_build_findings_reads_the_root_it_is_given(tmp_path):
+    (tmp_path / "public" / "images").mkdir(parents=True)
+    b = _approved({"img:weeks-photo": "file:/images/here.webp", "img:checks-graphic": "file:/images/here.webp"})
+    assert "image-existing-missing" in _ids(IR.build_findings(b, root=tmp_path))
+    for a in b["assets"]:
+        (tmp_path / "public" / a["file"].replace("-760", "").lstrip("/")).write_bytes(b"x")
+    (tmp_path / "public" / "images" / "here.webp").write_bytes(b"x")
+    assert IR.build_findings(b, root=tmp_path) == []
+
+
+def test_the_schema_refuses_a_slot_file_that_climbs_out():
+    b = _full()
+    b["approval"] = None
+    img = next(s for s in b["sections"] if s["id"] == "how-we-raise")["images"][0]
+    for bad in ("/images/../secret.webp", "/images/a/./b.webp"):
+        img["file"] = bad
+        with pytest.raises(PB.BoardError):
+            PB.validate_board(b)
+    img["file"] = "/images/..x.webp"
+    PB.validate_board(b)
