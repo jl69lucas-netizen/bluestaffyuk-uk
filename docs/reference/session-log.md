@@ -385,8 +385,9 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     C-UT1's inline dot — 6 advisory rows on 3 pages; still open, build 5.)** **The separator dot
     misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
     on `/kit-preview/` at 768 and 1280: the middle-dot separator measures 4.49:1 where AA wants
-    4.50:1. Decorative, but a real row; the fix is one token step darker, with the pair added to
-    `data/design/contrast.json` so the token test guards it thereafter. **Project 4.**
+    4.50:1. Decorative, but a real row. The fix then proposed was one token step darker; not
+    taken — the user's ruling (D10: steel, 2026-09-23) gave the dot the strip's own
+    `--color-brand` instead.
 22. **The kit contact form reports one missing screening option.** `form-inquiry-contract`
     reports one advisory row at all three viewports on `/kit-preview/`: the puppy select is
     missing the collection option that `scripts/form_contract_audit.py`'s `PUPPY_OPTION`
