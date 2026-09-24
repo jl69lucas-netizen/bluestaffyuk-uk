@@ -50,7 +50,7 @@ You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all i
 
 ### 2. Alt Text (≤190 characters, entity-rich)
 - **Length:** up to **190 characters** — entity-rich, primary keyword + variant + location + a trust/health entity.
-- **Pattern:** [descriptive content] + [keyword where natural] + [coat colour: blue / blue brindle / black brindle] + [location if location page] + [trust entity: KC registered / vet-checked / licensed breeder].
+- **Pattern:** [descriptive content] + [keyword where natural] + [coat colour: the pup's own `colour` in `data/puppies.json`] + [location if location page] + [trust entity: KC registered / vet-checked / home-raised in Carlisle].
 - **Format:** Sentence-style, no keyword stuffing, describes what a screen-reader user needs.
 - **Never:** "image001," "photo," "picture of puppy," empty `alt=""`, generic 🐶.
 - **Accessibility caveat (honest):** screen readers often truncate alt around ~125 chars, so front-load the most important description in the first 125; the remaining length carries SEO entities.

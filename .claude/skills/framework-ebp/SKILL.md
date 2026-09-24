@@ -36,7 +36,7 @@ The pattern: Claim → Evidence → What it means for the buyer.
 ## Why BSUK Needs EBP
 
 BSUK operates in a trust-scarce market. Blue Staffy buyers have been burned by:
-- Sellers who say "licensed breeder" with an invented licence number
+- Sellers who claim a licence and quote an invented licence number
 - Facebook Marketplace listings with stock photos and bank-transfer deposit requests
 - Sites that say "home-raised" with no paperwork to show
 - "Cheap blue staffy" sites with no LICENCE_CLAIM_PLACEHOLDER, no vet check, no recourse
@@ -74,7 +74,7 @@ EBP converts vague claims into verifiable proof. "All our puppies are documented
 ### Full EBP Section (for health/trust pages)
 ```html
 <div class="bsuk-ebp-block">
-  <h3>Documentation — What "Licensed Breeder" Actually Means at BlueStaffyUK</h3>
+  <h3>Documentation — The Paperwork Behind Every BlueStaffyUK Puppy</h3>
 
   <div class="bsuk-ebp-item">
     <strong>LICENCE_CLAIM_PLACEHOLDER</strong>

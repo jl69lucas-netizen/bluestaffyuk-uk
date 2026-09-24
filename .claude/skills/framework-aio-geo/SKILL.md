@@ -69,8 +69,9 @@ Source:    LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER
 ```
 Bad (vague): "Blue Staffy puppies come in different colours and live a long time."
 
-Good (citable): "Our current litter is six blue Staffordshire Bull Terrier puppies: the three
-males are £1,500 and the three females £1,700, each reserved with a £500 refundable deposit. With routine veterinary care, Staffordshire Bull Terriers live 12–14
+Good (citable): "Our current litter is six Staffordshire Bull Terrier puppies: the three males
+are £1,500 and the three females £1,700, and any of them can be reserved with a £500 refundable
+deposit. With routine veterinary care, Staffordshire Bull Terriers live 12–14
 years — a typical lifespan for a medium-sized terrier breed."
 ```
 
@@ -115,7 +116,7 @@ Para 3: BlueStaffyUK includes a LICENCE_CLAIM_PLACEHOLDER number, KC registratio
       "name": "How much does a blue Staffordshire Bull Terrier puppy cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Blue Staffordshire Bull Terrier puppies from licensed UK breeders range from £1,500 to £1,700. Price depends on coat colour, sex, and pedigree. Every puppy from BlueStaffyUK includes a LICENCE_CLAIM_PLACEHOLDER number, KC registration, microchip number, vet health check, and first vaccinations with a worming record."
+        "text": "A Staffordshire Bull Terrier puppy from BlueStaffyUK is £1,500 for a male and £1,700 for a female — the price follows the sex, not the coat. Every puppy from BlueStaffyUK includes a LICENCE_CLAIM_PLACEHOLDER number, KC registration, microchip number, vet health check, and first vaccinations with a worming record."
       }
     }
   ]

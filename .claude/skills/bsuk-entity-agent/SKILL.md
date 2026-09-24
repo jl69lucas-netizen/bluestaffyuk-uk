@@ -30,7 +30,7 @@ For every entity mention on a BSUK page:
 |---------------|-----------|-------------|
 | Blue Staffy puppy | Blue Staffy, puppy, home-bred | H1, H2, opening paragraphs, CTAs |
 | Blue Staffy | Blue, BSUK | Variant sections, H2, breed guide |
-| Blue-Brindle Staffy | Blue-Brindle | Variant sections, H2, breed guide |
+| Coat colour | blue, blue and white, white, blue with white blaze — each pup's `colour` in `data/puppies.json` (none is brindle) | Puppy cards, puppy pages, alt text |
 | Canis lupus familiaris | Scientific name, canine nomenclature | Breed guide, scientific sections |
 | Home-bred | Domestically bred | Trust bar, credentials |
 | Home-raised | Home-reared, socialized, behavioral training | Care sections, about page |
@@ -64,8 +64,8 @@ For every entity mention on a BSUK page:
 | Primary Entity | Variations | Where to Use |
 |---------------|-----------|-------------|
 | Blue Staffy puppy price | Blue Staffy puppy cost, Blue Staffy price range | Price page, FAQ |
-| £1,500–£1,700 | fifteen hundred to thirty-five hundred | Price sections, Blue variant |
-| £1,500–£1,700 | twelve hundred to twenty-five hundred | Price sections, Blue-Brindle variant |
+| £1,500 | a male puppy (Roman, Byrd, Ince) — `data/price-matrix.json` `male_gbp` | Price sections, puppy cards |
+| £1,700 | a female puppy (Vennie, Christa, Cheryl) — `data/price-matrix.json` `female_gbp` | Price sections, puppy cards |
 | Transparent pricing | no hidden fees, all-inclusive cost | Trust, FAQ |
 
 ### Category 5 — Buyer/Family Entities
@@ -124,7 +124,7 @@ print(json.dumps(schema, indent=2))
 
 ```bash
 # Check entity presence on any page
-for entity in "Blue Staffy puppy" "Blue Staffy" "Blue-Brindle Staffy" "vet sex-checking" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
+for entity in "Blue Staffy puppy" "Blue Staffy" "Staffordshire Bull Terrier" "vet sex-checking" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
   count=$(grep -oi "$entity" dist/[slug]/index.html | wc -l)
   echo "$count × $entity"
 done
@@ -136,7 +136,7 @@ done
 |-----------|-------------------|---------------------|
 | Homepage | Blue Staffy puppy, DNA, guarantee, Carlisle | 5–8 |
 | Location page | Blue Staffy puppy, [city], delivery driver, guarantee | 3–5 |
-| Variant guide | Blue Staffy, Blue-Brindle Staffy, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
+| Breed guide | Blue Staffy, Staffordshire Bull Terrier, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
 | Comparison page | Both breed entities + 3–5 differentiators | 4–6 |
 | Price page | Price entities, guarantee, DNA, all-inclusive | 5–8 |
 

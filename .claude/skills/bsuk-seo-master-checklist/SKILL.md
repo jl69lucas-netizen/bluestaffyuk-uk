@@ -75,7 +75,7 @@ full H1–H6 band · the 4-Move entity loop + the evidence ledger (`data/quality
 
 **H1 recommendation (approved):**
 ```
-Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle
+Blue Staffy Breeder | BlueStaffyUK — Home-Raised Blue Staffy Puppies | Carlisle
 ```
 
 **Homepage CTA rule:** ALL CTAs use form links — NO phone number in body. Phone PHONE_PLACEHOLDER appears ONLY in the footer.
@@ -154,7 +154,7 @@ Before writing ANY content, perform comprehensive competitor research.
 The primary keyword is set by the page type:
 - **Homepage:** `blue staffy breeder`
 - **Blue variant page:** `blue staffy for sale`
-- **Blue-Brindle variant page:** `blue-brindle staffy for sale`
+- **A pup's own page** (`/available-puppies/<slug>/`): `blue staffy puppy for sale`, with the pup's name and its `colour` from `data/puppies.json`
 - **Breed guide:** `blue staffy guide` / `blue staffy care`
 - **Purchase guide:** `buy blue staffy near me`
 - **Scam page:** `blue staffy scam`
@@ -189,7 +189,7 @@ count +5 to +10 (Rule 56), across these categories:
 - `apartment-friendly temperament puppy`
 
 **5. Comparison:**
-- `Blue vs Blue-brindle staffy puppies`
+- `blue vs brindle staffy puppies`
 - `Blue Staffy vs English Bull Terrier`
 - `home-reared vs parent-raised blue staffy`
 
@@ -201,7 +201,7 @@ count +5 to +10 (Rule 56), across these categories:
 
 **7. LSI (Latent Semantic Indexing):**
 - Blue Staffy temperament, training, health
-- blue coat, blue-brindle coat, temperament
+- blue coat, blue and white coat, temperament
 - companion puppy, home-reared puppy
 
 **8. NLP (Natural Language Processing):**
@@ -254,7 +254,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - puppies placed — the count and the founding year are NOT FETCHED
 - 12–14 years average lifespan
 - £1,500–£1,700 Blue Staffy price range
-- £1,500–£1,700 Blue-Brindle Staffy price range
+- £1,500 a male · £1,700 a female (`data/price-matrix.json`) — the price follows the sex, not the coat
 - £500 refundable deposit · £200–£350 delivery, priced by distance
 
 **6. Credential/Certification Entities (placeholders until confirmed — Rule 57):**
@@ -302,7 +302,7 @@ Generate more
 
 **Category 4: Comparison Keywords**
 Examples:
-- `Blue vs Blue-brindle staffy breeders`
+- `blue vs brindle staffy breeders`
 - `Blue Staffy vs American Bully for beginners`
 - `home-reared vs parent-raised blue staffy temperament`
 Generate more
@@ -355,7 +355,7 @@ Generate more
 
 **Category 11: Variant-Specific Keywords**
 Examples:
-- `Blue-brindle staffy personality vs Blue`
+- `blue and white vs solid blue staffy personality`
 - `male vs female blue staffy differences`
 Generate more
 
@@ -433,7 +433,7 @@ table's length. Word ranges are planning guides, not quotas.
 | 15 | Meet the Parents | 300–400 | `#meet-parents` |
 | 16 | Reviews — top, middle and bottom: one row of `data/reviews.json` each, a `Testimonial mode="single"` block in its own section, never inside a body section | N/A | its own section |
 | 17 | BlueStaffyUK Breeding Commitment & Ethics | 200–250 | `#breeding-commitment` |
-| 18 | Blue vs Blue-Brindle Staffy Comparison | 500–600 | `#colour-comparison` |
+| 18 | Male or Female? Choosing From Our Litter | 500–600 | `#choosing-your-puppy` |
 | 19 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
 | 20 | Frequently Asked Questions — the question file's picks (`faq` in `data/queries/<slug>.json`) | 800–1,000 | `#faqs` |
 | 21 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
@@ -641,7 +641,7 @@ The source template's "50 or more" assumed a larger site (`docs/reference/locati
 - From Key Takeaways → Available Puppies, Health Testing, Pricing
 - From Available Puppies → Purchase Process, Delivery, Testimonials
 - From Health Testing → Socialisation, Meet Parent Puppies (a guarantee is named only when `guarantee_days` in `data/settings.json` is set)
-- From Comparison section → Blue/Blue-Brindle variant pages
+- From Choosing From Our Litter → each pup's own page under `/available-puppies/`
 - From FAQ → Relevant sections (Care, Diet, Delivery)
 - From How to Buy → Available Puppies, Contact, Delivery
 
@@ -818,13 +818,13 @@ H1 examples:
 3. "Blue Staffy Puppies for Sale: DEFRA-approved transport Safe Delivery to 28 UK Cities from Carlisle"
 4. "Why Are BlueStaffyUK Blue Staffies Chosen by [count NOT FETCHED] Happy Families?"
 5. "Ready for a Twelve-to-Fourteen-Year Companion? Meet Our Home-Reared Blue Staffy Puppies"
-6. "Blue Staffy Breeder | BlueStaffyUK — Home-Bred Blue & Blue-Brindle Staffies | Carlisle"
+6. "Blue Staffy Breeder | BlueStaffyUK — Home-Raised Blue Staffy Puppies | Carlisle"
 
 H2 examples:
 - "What Makes the Blue Staffy the Ultimate Companion Puppy?"
 - "How Much Does a Home-Bred Blue Staffy Really Cost? (Full Price Breakdown)"
 - "Are Blue Staffies Good in Flats? Here's What Our Placements Taught Us"
-- "Blue vs Blue-Brindle Staffy: Which Colour is Right for Your Family?"
+- "Male or Female Blue Staffy: Which Puppy Is Right for Your Family?"
 
 H3 examples:
 - "Do Blue Staffies Bark a Lot? (And How to Teach Quiet Behaviour)"
@@ -1091,7 +1091,7 @@ Before final submission, verify all items:
 - ☐ 3 meta title options + 3 meta descriptions delivered
 - ☐ All 6 heading levels (H1–H6) present and sequentially correct
 - ☐ Home-reared in Carlisle stated in the hero (Rule 31's counter)
-- ☐ Variant clearly identified at top (Blue / Blue-Brindle / both)
+- ☐ Coat colours named as the litter has them (each pup's `colour` in `data/puppies.json`; none is brindle)
 - ☐ The 12–14 year commitment referenced at least once (Rule 34)
 - ☐ Voice search questions embedded in H2/H3 headers
 
@@ -1243,7 +1243,7 @@ number of hours from memory. [See how to buy](#how-to-buy).
 - [Complete Blue Staffy Environmental & Crate Setup Guide](#care-environment)
 - [Advanced Training and Clicker Training Techniques](#training)
 - [How a Blue Staffy Puppy Is Socialised](#socialization)
-- [Compare Blue vs Blue-Brindle Staffies](#colour-comparison)
+- [Male or Female? Choosing From Our Litter](#choosing-your-puppy)
 
 **Authoritative External Resources:**
 - [RSPCA — caring for a new puppy](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare)

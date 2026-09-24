@@ -227,7 +227,6 @@ echo "cache headers: NOT FETCHED until project 6 — no host, so no header file"
 ## AGENT INTEGRATION
 This skill is the **Technical Health** layer. Related, narrower agents:
 - `bsuk-agent-system-qa` — audits the agent system itself
-
 - `bsuk-deploy-verifier` — post-deploy 200 checks + IndexNow
 - `bsuk-canonical-fixer` — static-export canonical conversion
 - `bsuk-site-hygiene-agent` — monthly technical SEO maintenance

@@ -366,9 +366,18 @@ RESIDUE = (
     ("a licence asserted as ours — it is LICENCE_CLAIM_PLACEHOLDER until confirmed",
      re.compile(r"—\s*licensed\b|licensed home-raised|Licensed Carlisle|\"Licensed Blue|"
                 r"Licensed family home")),
+    # Widened after the Task 12 review (2026-09-24): four more shapes the first list missed.
+    ("a price spelled out in words — prices are numerals from data/price-matrix.json",
+     re.compile(r"(?i)\b(?:twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|"
+                r"twenty|thirty)(?:[- ](?:one|two|three|four|five|six|seven|eight|nine))?[- ]hundred\b")),
+    ("a Blue-Brindle variant — none of the six pups is brindle (data/puppies.json `colour`)",
+     re.compile(r"(?i)\bblue-brindle\b")),
+    ("\"licensed breeder\" asserted — a licence is LICENCE_CLAIM_PLACEHOLDER until confirmed",
+     re.compile(r"(?i)\blicensed breeders?\b")),
+    ("the source repo's Latin variant naming (P. …)", re.compile(r"\(P\. [a-z]")),
 )
 # A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
-PUSH_FORBIDDEN = ("never `git push`", "no push", "not push", "nothing to push", "never push")
+PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
 
 
 def residue_targets():
@@ -383,6 +392,9 @@ def residue(path: pathlib.Path):
             if not rx.search(line):
                 continue
             if why.startswith("a deploy push") and any(f in line.lower() for f in PUSH_FORBIDDEN):
+                continue
+            # Naming the stand-in on the same line is the honest way to write it.
+            if why.startswith('"licensed breeder"') and "LICENCE_CLAIM_PLACEHOLDER" in line:
                 continue
             out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:110]))
     return out
@@ -413,8 +425,20 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "Middle newsletter is ALWAYS `NewsletterV2`\n"
         "Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700)\n"
         "> **Site:** BlueStaffyUK — licensed breeder, Carlisle\n"
-        # silent: a line that forbids the push, and a UK source
+        "Disclose any paid placement as the FTC requires.\n"
+        "| £1,500–£1,700 | fifteen hundred to thirty-five hundred |\n"
+        "- **Blue-Brindle variant page:** `blue-brindle staffy for sale`\n"
+        "<h3>What \"Licensed Breeder\" Actually Means at BlueStaffyUK</h3>\n"
+        "binomial          6 (P. erithacus) 1\n"
+        # silent: a line that forbids the push, a UK source, the licence stand-in named on
+        # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
-        "[PDSA](https://www.pdsa.org.uk/)\n", encoding="utf-8")
+        "Commit it; there is no `git push` until project 6.\n"
+        "[PDSA](https://www.pdsa.org.uk/)\n"
+        "| LICENCE_CLAIM_PLACEHOLDER-licensed breeder | Trust bar |\n"
+        "Coat colours in the breed: blue, blue brindle, red, fawn.\n", encoding="utf-8")
     bad = residue(p)
-    assert [b.split("  ")[0] for b in bad] == ["SKILL.md:%d" % n for n in range(1, 13)], bad
+    # every line up to 17 fires (a line may fire twice), nothing after it does, and every
+    # entry of RESIDUE fired at least once
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 18)), bad
+    assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad

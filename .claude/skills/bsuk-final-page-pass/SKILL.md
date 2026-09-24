@@ -155,7 +155,7 @@ SUBJECTIVE (read 3 sample pages: 1 transactional, 1 pillar, 1 trust)
 [ ] Flesch 60–70 (floor ~55 for entity-dense pages)
 [ ] ≥1 high-resolution breeder detail / ~500 words; no "both make exceptional companions" filler
 [ ] A named house method is used ONLY once the breeder confirms one — never invented (WARN until then)
-[ ] LSI/NLP keyword coverage: "blue Staffy", "blue-brindle Staffy", "home-raised",
+[ ] LSI/NLP keyword coverage: "blue Staffy", "blue and white Staffy", "home-raised",
     "Staffordshire Bull Terrier puppy", "UK home delivery by DEFRA-approved transport",
     "collection in Carlisle" present where natural — not forced, not stuffed
 

@@ -55,7 +55,9 @@ DEFRA-approved transport, or collection from Carlisle.
 ## Template — a UK city page
 
 The target is the city centre, read from the row's `city` in `data/locations.json`, never
-typed by hand:
+typed by hand. A hub or legacy row never carries a city map: the two rows whose `city` is
+"UK" (`blue-staffy-puppies-uk`, `uk-staffordshire-bull-terrier-breeder`) and the legacy
+breeding-dogs row (`staffy-breeding-dogs-glasgow`, Known Issue 55).
 
 ```python
 import json

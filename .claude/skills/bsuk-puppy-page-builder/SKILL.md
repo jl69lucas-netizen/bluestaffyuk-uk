@@ -69,7 +69,7 @@ real slugs from `data/locations.json`, never the same trio twice).
 | Long-tail (6+ words, conversational) | 15–20 | in headers + opening paragraphs |
 | Branded ("BlueStaffyUK", "Lisa Bright") | 10–15 | |
 | Conversational/voice queries | ~23 | headers + PAA answers |
-| Comparison ("blue vs blue-brindle", "male vs female") | 5–8 | link to the comparison cluster |
+| Comparison ("blue vs brindle", "male vs female") | 5–8 | link to the comparison cluster |
 | Solution ("health-tested", "KC-aware") | 5–10 | |
 | Transactional ("reserve", "deposit", "available now") | ~15 | honest only |
 

@@ -168,7 +168,7 @@ tall (WCAG 2.5.8), label ≥ 4.5:1.
 
 | Dial variant | Background | Numerals | Ratio |
 |---|---|---|---|
-| **Light card** (blue, blue-brindle) | white `#fff` | `#6b625a` | 5.9:1 ✓ |
+| **Light card** (blue, blue and white) | white `#fff` | `#6b625a` | 5.9:1 ✓ |
 | **Dark kennel** (home-raised) | `#234f3b` | `#9fc7b0` | 5.0:1 ✓ |
 | Mobile rail `.p` | `#234f3b` | `#c9f2db`, **no opacity** | 5.4:1 ✓ |
 

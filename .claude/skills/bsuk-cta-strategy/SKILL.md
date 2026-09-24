@@ -68,7 +68,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** Reserve a Puppy Now
 
 ⚡ **Direct & Transactional:**
-> "Only [X] puppies available this litter." Blue and Blue-Brindle variants. Prices from NOT FETCHED.
+> "Only [X] puppies available this litter." Blue, blue and white, white, and blue with a white blaze. £1,500 a male, £1,700 a female.
 > **Button:** View All Available Puppies
 
 🌱 **Ethical & Quality:**
@@ -109,19 +109,19 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 6: Variant Comparison
+## Section 6: Male or Female
 
 🛡️ **Trust & Security:**
-> "Don't guess which variant fits your lifestyle — ask the breeder who raises both."
-> **Button:** Compare Blue vs Blue-Brindle
+> "Don't guess which puppy fits your home — ask the breeder who raised all six."
+> **Button:** Compare Our Puppies
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: £1,500–£1,700 · Blue-Brindle Staffy: £1,500–£1,700. Both vet sex-checked & vet-certified. Which is yours?"
-> **Button:** See Both Variants
+> "Males £1,500 · females £1,700 — the price follows the sex, not the coat. Which is yours?"
+> **Button:** See All Available Puppies
 
 🌱 **Ethical & Quality:**
-> "Choosing between a Blue and a Blue-Brindle Staffy is one of the most personal decisions in puppy ownership."
-> **Button:** Variant Comparison Guide
+> "Choosing between a male and a female is one of the most personal decisions in puppy ownership."
+> **Button:** Male or Female? Our Guide
 
 ---
 
@@ -164,7 +164,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** See All Pricing
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: £1,500–£1,700. Blue-Brindle Staffy: £1,500–£1,700. All vet sex-checked, all vet-certified."
+> "£1,500 for a male, £1,700 for a female. A £500 refundable deposit reserves any of them."
 > **Button:** View Current Prices
 
 🌱 **Ethical & Quality:**
@@ -317,14 +317,14 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 19: Blue vs Blue-Brindle Coat
+## Section 19: Coat Colours in Our Litter
 
 🛡️ **Trust & Security:**
-> "Blue's silver-staffy coat and crimson tail, or Blue-Brindle's charcoal coat and maroon tail — both stunning, both healthy."
-> **Button:** See Both Variants
+> "Solid blue, blue and white, white, or blue with a white blaze — the coat is looks alone; the price follows the sex."
+> **Button:** See All Available Puppies
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: light staffy, red tail. Blue-Brindle: darker staffy, maroon tail. See current puppies."
+> "Each pup's coat is on its card (`colour` in `data/puppies.json`). See current puppies."
 > **Button:** View Available Puppies
 
 🌱 **Ethical & Quality:**

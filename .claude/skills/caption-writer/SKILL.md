@@ -49,7 +49,7 @@ Next caption block.
 - **Timing:** Match exactly to speech rhythm — don't rush or lag
 - **Punctuation:** Include commas and periods — they help readability
 - **Names:** Always capitalize Lisa, Bright, Staffordshire Bull Terrier, KC registration, BSUK
-- **Numbers:** Write as numerals (£1,500 not "fifteen hundred pounds")
+- **Numbers:** Write as numerals (£1,500), never an amount spelled out in words
 - **Never:** Add editorial commentary, descriptions of action, or text not spoken
 
 ### Working from a Transcript
@@ -102,7 +102,7 @@ Position: Center
 Duration: 3 seconds
 
 ## [0:04–0:06]
-"Licensed breeder vs car park handover"
+"Home-raised puppy vs car park handover"
 Position: Bottom
 Duration: 2 seconds
 ```

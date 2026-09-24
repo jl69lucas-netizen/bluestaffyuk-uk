@@ -93,22 +93,11 @@ brand to the topic.
 - `licensed` → **`LICENCE_CLAIM_PLACEHOLDER licenced`**, **`LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred`**
 - `tested` → **`PCR vet sex-checked`**, **`L-2-HGA and Polyomavirus screened`**
 
-**Measured on the 8 for-sale pages, 2026-07-30 — the gate exists because of this:**
-
-```
-                       binomial  breeder-name
-eggs                          6             2
-blue                         2             1
-blue-brindle                        6 (P. blue-brindle) 1
-home-raised                   0             0     <- no binomial, no breeder
-health-guarantee              1             0
-dna-tested                    9             0
-baby                          0             0     <- no binomial, no breeder
-adoption-cost                 0             0     <- no binomial, no breeder
-```
-
-**3 of 8 pages name no species at all, and 4 of 8 never name the breeder.** The audit
-WARNs on both, and on pronoun-heavy copy where `we/our/us` outnumber named entities.
+**The gate exists because of a measurement in the source repo** (its 8 for-sale pages,
+2026-07-30): 3 of 8 pages named no species at all, and 4 of 8 never named the breeder. Those
+are the source repo's pages, not BSUK's; BSUK's own counts come from
+`python3 scripts/aeo_audit.py <slug>`. The audit WARNs on both, and on pronoun-heavy copy
+where `we/our/us` outnumber named entities.
 
 ## Part 4 — Simple, Declarative Sentences
 
@@ -126,8 +115,9 @@ of identical short sentences fails the humour/voice gate.
 
 Answer engines prefer structure they can lift whole.
 
-- **Comparisons** — the Blue vs Blue-Brindle table answers "X vs Y" queries directly. The
-  comparison cluster already ships these; make sure the *money* pages link them.
+- **Comparisons** — a comparison table (male vs female in our litter, or a breed-vs-breed
+  page from `.claude/skills/bsuk-comparison-page-builder/SKILL.md`) answers "X vs Y" queries
+  directly; once a comparison page is built, make sure the *money* pages link it.
 - **Lists** — enumerate documents, stages, tiers.
 - **Stat-bearing headers** — put the number *in the heading*:
   "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·

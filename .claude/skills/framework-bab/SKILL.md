@@ -64,7 +64,7 @@ A vet health check naming the vet and practice. A microchip number registered to
 You can verify every document independently before sending a single pound.
 
 BRIDGE:
-Buying a Staffy from a licensed breeder isn't more expensive than buying from
+Buying a Staffy from a breeder who shows you the paperwork isn't more expensive than buying from
 an online stranger — it's a different category of transaction entirely. One where the
 paperwork is real, the sale is legal, and there's a human being who answers the phone
 after the sale. Lisa Bright has done this for [N]+ families.
