@@ -1652,7 +1652,7 @@
     }
   ],
   "tuple": {
-    "hero": "",
+    "hero": "hero-h-gd1",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -1798,7 +1798,61 @@
       "DEFRA — the migrated body names it twice and neither use survives. \"We follow strict health protocols in line with The Kennel Club (KC) and DEFRA standards\" and \"our DEFRA-approved breeder health checks\" are both compliance claims against a body that approves neither a breeder nor a health check; no file under data/ records an approval from DEFRA of anything but pet TRANSPORT (data/settings.json delivery_note), and this page carries no delivery section. LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER hold the wording until Lisa Bright confirms it (Known Issue 7). Both sentences are struck in `dropped.text` and recorded in `verbatim.changed`."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-24T22:18:34.443Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "conditions": "",
+      "diet": "",
+      "dna-tests": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4.",
+      "exercise": "",
+      "lifespan": "",
+      "navigation": "",
+      "paperwork-review": "MODE: the pick decides how the block is drawn, and on a `reviews` section that includes the COUNT: `mode` is one of the axes RENDERED_AXES.reviews lists, and S3 (src/lib/boardStyles.ts) is the grid beside the heading. WHICH review is this section's intent, inside record_hash: data/reviews.json entry 2, Mark J (London), the only one of the three who names the paperwork and the health testing. So the page renders that one review in S3's bed, with `mode` read off the StyleDef rather than hard-coded. An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured. (Amended 2026-09-21: this note previously read \"MODE: single — pick S1\", which was a second answer to a question the pick had already answered.)",
+      "questions": "Query augmentation for 'blue staffy health uk', ten questions, each mapped to a section or a row: q1 -> dna-tests and the health-dna-tests row; q2 and q3 -> dna-tests; q4, q5 and q6 -> vaccinations and the health-vaccinations row; q7 -> lifespan and the health-lifespan row; q8 -> conditions; q9 -> exercise; q10 -> diet. No row is added for a question this page's body does not answer.",
+      "registration": "A standard section: no shell.",
+      "screening": "",
+      "stats": "",
+      "takeaways": "Four cards, so the three-up grid of S2 wraps to 3+1 and the rail of S3 shows four; S1 stacks them. The board is where that is judged.",
+      "talk-to-us": "",
+      "top": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD1 is pre-selected (recommended); the three guides must end on three different heroes.",
+      "vaccinations": "",
+      "vet-checks": ""
+    },
+    "picks": {
+      "dna-tests": "S2",
+      "paperwork-review": "S3",
+      "questions": "S1",
+      "stats": "C-GD1",
+      "takeaways": "S2",
+      "top": "H-GD1"
+    },
+    "record_hash": "32ca2e7781560a0b954d96d43465e43bd023e6464aa53372944533d5884fb49b",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s1",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Health Note:"
+      ]
+    }
+  },
   "verbatim": {
     "changed": [
       {

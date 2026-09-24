@@ -64,13 +64,13 @@
 // other-pets question, the health page owns the lifespan — so four H3s here are the re-approved
 // wording rather than the migrated wording, and `heading()`/`node()` read the record either way.
 //
-// WORKING RULE 16. The hero is `H-GD3` — the text-led PANEL with the photo in a narrow column
-// on the left and an aside beside the copy, in a card — and the counter is `C-GD2`, ring tiles
-// beside the heading with the labels above them. /uk-staffordshire-bull-terrier-guide/ and
-// /blue-staffy-health-uk/ share the hero id and take `C-GD3` and `C-GD1`; `C-GD2` is the third
-// of the interior-guide trio and nobody else has it, which is exactly what the rule asks a
-// layout family's three arrangements to be for. The recorded refresh delta for the hero is the
-// CONTAINER: a text-led card, where the breed guide opens on a photograph.
+// WORKING RULE 16. The hero is `H-GD2` — the MAGAZINE arrangement: the photograph above the
+// copy in a card, the chips under the lede — and the counter is `C-GD2`, ring tiles beside the
+// heading with the labels above them. The three guides were re-boarded onto three different
+// heroes (Known Issues 30 and 35): the health guide takes H-GD1 and the breed guide H-GD3, and
+// the three counters were always different. On H-GD3 this page's band sat at exactly 450px
+// with 3px of its copy past the section box; on H-GD2, with its chip row, it is 411px at 1280
+// (measured).
 //
 // THE ASIDE IS THE RECORD'S OWN `hero.aside`, AND ONE OF ITS THREE ITEMS STATES A FIGURE. That
 // item carries a `source` (amendment 10.6) and is therefore DERIVED here and checked against
@@ -444,8 +444,10 @@ const pageSchema = [
   schema={pageSchema}
   sections={sections}
 >
-  {/* 01 top — hero, picked style H-GD3 (a text-led panel in a card: the photograph in a narrow
-      column on the left, the copy beside it, the contents aside in a box of its own). The aside
+  {/* 01 top — hero, picked style H-GD2 (the magazine arrangement: the photograph above the
+      copy in a card, the chips under the lede — Known Issue 35). The aside slot below is still
+      filled and its figure still derived, so a re-pick of H-GD1 or H-GD3 renders it; on H-GD2
+      `Hero` shows the chip row instead (ledge `chips`). The aside
       is a SLOT (amendment 8) and what goes in it is the record's own `hero.aside`, whose first
       item is derived above. No CTA buttons: the record gives the hero none. The record's three
       chips go to `Hero` as `chips`, which renders them as a row under the lede only on a

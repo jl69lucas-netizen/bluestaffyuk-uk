@@ -1803,7 +1803,7 @@
     }
   ],
   "tuple": {
-    "hero": "",
+    "hero": "hero-h-gd3",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -1986,7 +1986,64 @@
       "This is a cornerstone of Staffordshire Bull Terrier health tests . — CARRIED as a claim, dropped as a flourish. The migrated sentence says DNA testing is what a good breeder does, and `choosing-breeder`'s first test says it as something a reader can apply: both parents, both DNA tests, the certificates in your hand rather than a sentence on a website. The word 'cornerstone' itself was in an earlier draft of `health` only because this gate wanted it there, which is a page written for a checker rather than for a reader; the Task 12 build review struck it and the claim is accounted for here instead."
     ]
   },
-  "approval": null,
+  "approval": {
+    "approved_at": "2026-09-24T22:10:04.398Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "breed-facts": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4.",
+      "bully-comparison": "",
+      "choosing-breeder": "",
+      "daily-care": "",
+      "health": "",
+      "history": "",
+      "legal-status": "",
+      "navigation": "",
+      "owner-review": "S2, the review grid on a steel band, is the pick, and `mode: 'grid'` is read off the StyleDef rather than hard-coded (the correction 645a988 made). WHICH review is this record's own sentence: data/reviews.json entry 1, The Victoria Family of Manchester, the only one of the three that speaks to temperament and early socialisation, which is what the sections above claim. One review is passed, so the grid renders one and no unfilled slot is opened — nothing here counts a REVIEW_PLACEHOLDER. Corrected at the Task 12 build review: this note read 'MODE: single — pick S1' under an approval of S2, which is the same defect the health board's `paperwork-review` note carried; the pick stands and the note now says what it says.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "Query augmentation for 'uk staffordshire bull terrier guide', ten questions, each mapped to a section or a row: q1 -> temperament and the guide-first-time-owners row; q2 -> daily-care and the guide-exercise row; q3 -> legal-status and the guide-banned-breed row; q4 -> temperament and the guide-flat-living row; q5 and q6 -> breed-facts; q7 -> temperament; q8 -> bully-comparison; q9 -> legal-status; q10 -> health. No row is added for a question this page's body does not answer.",
+      "stats": "",
+      "takeaways": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them.",
+      "talk-to-us": "",
+      "temperament": "",
+      "top": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD3 is pre-selected (recommended); the three guides must end on three different heroes.",
+      "video-breed-guide": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button. RE-ASKED 2026-09-24 (Known Issue 38, user ruling R8): S2 loaded the player with the page and cost Lighthouse Best Practices 4 points; S3 is pre-selected."
+    },
+    "picks": {
+      "breed-facts": "S2",
+      "owner-review": "S2",
+      "puppies": "S1",
+      "questions": "S3",
+      "stats": "C-GD3",
+      "takeaways": "S1",
+      "top": "H-GD3",
+      "video-breed-guide": "S3"
+    },
+    "record_hash": "beac922a33d190f98ed97649128525bef71957a6d47e0d0f06ea79a24c13b2be",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s1"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Breed Note:"
+      ]
+    }
+  },
   "verbatim": {
     "changed": [
       {

@@ -39,10 +39,11 @@
 // so no `h1` row is owed and none is written. The slug's keyword phrase sits in the migrated
 // H2 this hero carries ("Blue Staffy Health UK : Our Commitment to Happy, Healthy Puppies").
 //
-// WORKING RULE 16. The hero is `H-GD3` — the text-led PANEL with the photo in a narrow column
-// on the left and an aside beside the copy, in a card — and the counter is `C-GD1`, ruled
-// columns beside the heading. Both are the interior-guide family's own arrangements, resolved
-// through `pickedStyle()`, and neither is one any other page took.
+// WORKING RULE 16. The hero is `H-GD1` — the editorial SPLIT: the copy on the left, the
+// photograph on the right, and the key-facts aside as a second row under the copy — and the
+// counter is `C-GD1`, ruled columns beside the heading. Both are the interior-guide family's
+// own arrangements, resolved through `pickedStyle()`, and neither is one any other page took:
+// the three guides were re-boarded onto three different heroes (Known Issues 30 and 35).
 //
 // THE ASIDE IS THE RECORD'S OWN `hero.aside`, AND EVERY ROW OF IT IS DERIVED (amendment 10.5,
 // 10.6). "L-2-HGA and HC-HSF4" is built from the table's own row labels, "Tested clear" from
@@ -288,10 +289,11 @@ const pageSchema = [
   schema={pageSchema}
   sections={sections}
 >
-  {/* 01 top — hero, picked style H-GD3 (a text-led panel in a card: the photograph in a narrow
-      column on the left, the copy beside it, the key-facts aside in a third column). The aside
+  {/* 01 top — hero, picked style H-GD1 (the editorial split: the copy left, the photograph
+      right, the key-facts aside as a second row under the copy — Known Issue 35). The aside
       is a SLOT (amendment 8) and what goes in it is the record's own `hero.aside`, every row of
-      it derived above, and its three chips are the credential line at the foot of that box. No
+      it derived above; on H-GD1 its three chips are left out of that box (the credential line
+      the band has no room for, below), and any other arrangement prints them at its foot. No
       CTA buttons: the record gives the hero none (amendment 6a), and no separate chip ROW,
       because the arrangement's ledge is `aside`. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy health" class={box('top')}>
