@@ -19,8 +19,8 @@ The last gate before a page batch ships. Two halves: a **mechanical auditor** (`
 
 ## Quick Start (mechanical half)
 ```bash
-npx astro build                       # MUST build first — auditor reads dist/, source greps lie
-python3 scripts/final_page_audit.py <slug> <slug>   # per-page findings; --fail-on-error to exit non-zero
+npm run build                         # MUST build first — auditor reads dist/, source greps lie
+python3 scripts/final_page_audit.py <slug> <slug>   # per-page findings; exits 1 on any FAIL
 python3 scripts/page_hardening_scan.py              # page-hardening checks over dist/
 python3 scripts/evidence_audit.py <slug>             # term budgets, claim binding, NOT FETCHED in prose
 ```

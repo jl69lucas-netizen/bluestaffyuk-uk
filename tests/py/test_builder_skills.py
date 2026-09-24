@@ -275,3 +275,46 @@ def test_the_checklist_full_sweep_no_unbacked_claims_and_every_cited_rule_exists
     step5 = CHECKLIST[CHECKLIST.index("**Header count targets"):CHECKLIST.index("**Two-Keyword Header")]
     for level in ("H2: 25–35", "H3: 40–50", "H4: 10–20", "H5: minimum 5", "H6: minimum 5"):
         assert level in step5, level
+
+
+# ── the board gate and the per-page audits (Task 11 review) ──────────────────
+GRILL_ME = (ROOT / ".claude/skills/grill-me/SKILL.md").read_text(encoding="utf-8")
+PAGE_AUDITS = ("final_page_audit.py", "evidence_audit.py", "aeo_audit.py")
+
+
+def test_grill_me_gate_one_is_the_approved_board_not_the_page_map():
+    # All 28 city pages are in data/page-map.json and none has a board, so a gate that asked
+    # "is the page in the map?" passed every city and never said "board first".
+    gate = norm(GRILL_ME[GRILL_ME.index("WORKFLOW GATE CHECK"):GRILL_ME.index("2. Has @bsuk-content-audit-agent")])
+    assert "1. Is this page in data/page-map.json" not in gate
+    for needle in ("board_gate.py <slug>", "data/boards/<slug>.json", "board_approve.py <slug>",
+                   "data/boards/inbox"):
+        assert needle in gate, needle
+    # build_page_board.py raises on a slug with no record: never the first step.
+    assert gate.index("data/boards/<slug>.json") < gate.index("build_page_board.py")
+    for block in ("**If there is no approved board", "> **If there is no approved board"):
+        assert block in GRILL_ME, block
+    assert "board_gate.py" in GRILL_ME[GRILL_ME.index("**If there is no approved board"):][:600]
+
+
+def test_the_location_builder_audits_the_city_page_it_builds():
+    # A bare final_page_audit.py audits 14 flat pages and never a city page; a bare
+    # evidence_audit.py matches 0 pages and exits 1; a bare aeo_audit.py exits 2.
+    step6 = section(LOCATION, "## Step 6 — gates")
+    for line in step6.splitlines():
+        for script in PAGE_AUDITS:
+            if script in line and line.strip().startswith("python3"):
+                assert line.split(script, 1)[1].strip(), f"bare page audit: {line.strip()}"
+    assert "python3 scripts/final_page_audit.py uk-locations/<slug> --type location" in step6
+    assert "python3 scripts/evidence_audit.py uk-locations/<slug> --type location" in step6
+    assert "report only by default" not in norm(step6)
+
+
+def test_no_skill_says_a_page_audit_only_fails_with_fail_on_error():
+    # final_page_audit exits 1 on any FAIL whatever the flag; --fail-on-error only adds WARNs
+    # (aeo, evidence) or changes nothing (final, dup).
+    manual = (ROOT / ".claude/skills/manual-auditor-check/SKILL.md").read_text(encoding="utf-8")
+    assert "--fail-on-error to exit non-zero" not in manual
+    assert "npx astro build" not in manual
+    sitemap = (ROOT / ".claude/skills/sitemap-agent/SKILL.md").read_text(encoding="utf-8")
+    assert "BSUK_RELEASE=1 python3 scripts/placeholder_check.py" in sitemap

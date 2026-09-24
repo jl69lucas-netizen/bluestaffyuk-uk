@@ -50,8 +50,11 @@ python3 scripts/sitemap_check.py    # also a step of npm run check:all
 `scripts/sitemap_check.py` fails on a shard missing from the index, a URL listed twice, a
 listed page that is `noindex` or not built, an indexable page in no shard, and a page carrying
 a YouTube embed that is missing from the video shard. `SITE_URL` is unset until project 6, so
-every `<loc>` carries `SITE_URL_PLACEHOLDER` today; that is expected, and the release guard
-(`scripts/release_guard.sh`) stops it shipping.
+every `<loc>` carries `SITE_URL_PLACEHOLDER` today; that is expected. What stops it shipping
+is `BSUK_RELEASE=1 python3 scripts/placeholder_check.py` (`npm run check:placeholders` with the
+release flag), which fails while any placeholder is left in `dist/`.
+`scripts/release_guard.sh` checks only that `BSUK_RELEASE=1` is set and `PUBLIC_FORMSPREE_ID`
+is present.
 
 ---
 

@@ -296,10 +296,10 @@ Build first (`npm run build` — the gates measure `dist/`), then, in order:
 ```bash
 npm run check:all
 python3 scripts/board_gate.py <slug>
-python3 scripts/final_page_audit.py
+python3 scripts/final_page_audit.py uk-locations/<slug> --type location
 python3 scripts/dup_content_audit.py
-python3 scripts/aeo_audit.py
-python3 scripts/evidence_audit.py
+python3 scripts/aeo_audit.py uk-locations/<slug>
+python3 scripts/evidence_audit.py uk-locations/<slug> --type location
 npm run test:render:meta
 npm run test:render:pages
 ```
@@ -307,9 +307,13 @@ npm run test:render:pages
 `test:render:meta` is the gate that checks the checkers — run it before trusting any page
 result. A gate's output is a hypothesis about the page: confirm a reported defect on the
 built page before editing anything, and read a PASS's examined count before believing it
-(`rules/gates.md`, `.claude/skills/bsuk-gate-integrity/SKILL.md`). The page audits report
-only by default; `--fail-on-error` makes them exit non-zero and `--json` writes the result
-under `docs/reports/`.
+(`rules/gates.md`, `.claude/skills/bsuk-gate-integrity/SKILL.md`). The page audits take
+the page's route as the slug (`uk-locations/<slug>`): with no slug,
+`scripts/final_page_audit.py` audits the flat pages and never a city page,
+`scripts/evidence_audit.py` matches 0 pages and exits 1, and `scripts/aeo_audit.py` refuses.
+`scripts/dup_content_audit.py` is site-wide by design. Every one exits 1 on a FAIL or ERROR;
+`--fail-on-error` also fails the AEO and evidence audits on a WARN, and `--json` writes the
+result under `docs/reports/`.
 
 ---
 

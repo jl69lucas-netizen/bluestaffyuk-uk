@@ -63,7 +63,7 @@ Before asking any questions:
 9. **Run** `ls data/keywords/ 2>/dev/null` via Bash — check if keyword fan-out data exists
 
 After steps 4–9, determine sprint readiness:
-- If the task names a page that is not in `data/page-map.json` → note that it is a new page and needs a board before anything else
+- If the page has no approved board (`python3 scripts/board_gate.py <slug>` does not pass) → note that the board comes before anything else; `data/page-map.json` only tells a migrated page (listed there) from a brand-new one
 - If `data/competitors.json` is empty or missing → note that Sprint 0 (Intelligence) hasn't run yet
 - If no `docs/research/gap-matrix-*.md` exists → **WARN the user:** "Competitor gap matrix not found. Grill-me answers will be less precise without it. Run `@bsuk-competitor-intel --all` first for best results."
 - If `docs/research/llm-intel/` has no file for the page's slug → note that `@bsuk-llm-keyword-intel` hasn't run for it (Known Issue 58)
@@ -167,8 +167,9 @@ After Q6, run the **Workflow Gate Check** before Q7:
 ```
 WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
 
-1. Is this page in data/page-map.json? (the `url` of an entry in `pages`)
-   - NO → it is a new page, not one the old site had: "This page has no board yet, and `python3 scripts/board_gate.py <slug>` refuses a build without an approved one. Before we build, the board is built (`python3 scripts/build_page_board.py <slug>`) and approved (`python3 scripts/board_approve.py <slug>`). Want me to start on that first?"
+1. Is there an approved board? `data/boards/<slug>.json` exists AND `python3 scripts/board_gate.py <slug>` passes (build first — it reads dist/; exit 2 means no readable record)
+   - NO → "This page has no approved board, and no page is built without one. The board comes first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`. Want me to start on that first?"
+     `data/page-map.json` only says which kind of page it is: listed there → a migrated page (its facts, and its verbatim set where `data/verbatim/applies.json` lists it, are extracted before any rewrite); not listed → a brand-new page
    - YES → continue
 
 2. Has @bsuk-content-audit-agent been run for this page?
@@ -318,8 +319,8 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 **If audit not done:**
 → `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]`
 
-**If the page is not in data/page-map.json (a new page):**
-→ the page's board: `python3 scripts/build_page_board.py <slug>`, then `python3 scripts/board_approve.py <slug>` (`python3 scripts/board_gate.py <slug>` refuses a build until it is approved)
+**If there is no approved board (`python3 scripts/board_gate.py <slug>` does not pass):**
+→ the board first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`
 
 **If audit done and ready to build:**
 → SECTION MAP + COMPONENT GATE (list every section → pick component → get approval)
@@ -376,8 +377,8 @@ After writing (or skipping) the CLAUDE.md patch, say:
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data
 >
-> **If the page is not in data/page-map.json (a new page):**
-> → Build the page's board (`python3 scripts/build_page_board.py <slug>`) and record its approval (`python3 scripts/board_approve.py <slug>`) — `python3 scripts/board_gate.py <slug>` refuses a build until then
+> **If there is no approved board (`python3 scripts/board_gate.py <slug>` does not pass):**
+> → The board first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`
 >
 > **If audit not run:**
 > → Run `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]` — 10 minutes, prevents wasted work
