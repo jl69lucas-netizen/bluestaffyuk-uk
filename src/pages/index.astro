@@ -158,19 +158,22 @@ const COUNTED: Record<string, string> = {
   'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)': String(dnaTests),
   'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp':
     `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`,
-  // The hero's three figure tiles (Known Issue 33, user ruling R11). The price band is the
-  // setting's own two numbers written the way the page prints money; the deposit tile says
-  // "refundable", so it prints nothing a non-refundable setting could back.
+  // The hero's two figure tiles (the price band and the refundable deposit; Known Issue 33,
+  // user ruling R11). The price band is the setting's own two numbers written the way the
+  // page prints money; the deposit tile says "refundable", so it prints nothing a
+  // non-refundable setting could back.
   'data/settings.json#price_range':
     SITE.price_range.replace(/£(\d)(\d{3})/g, '£$1,$2').replace(/\s*-\s*/, '–'),
   'data/settings.json#deposit_gbp|data/settings.json#deposit_refundable':
     SITE.deposit_refundable ? `£${SITE.deposit_gbp}` : 'a deposit that is not refundable',
+  // Held for a third figure tile ("3 films of our puppies") the user may ask for at the R11
+  // pause; no record row cites it today, so nothing prints it.
   'data/settings.json#len(youtube_embeds)': String(SITE.youtube_embeds.length),
 };
 const counted = countedFigures(COUNTED, 'index.astro');
 const counterStats = (counterSection.stats as StatRow[]).map(counted);
-// H-HM2's ledge is `stats`, and its entries are the RECORD's: three figures of the page's own
-// (the price band, the refundable deposit, the three films), none of them the counter's three
+// H-HM2's ledge is `stats`, and its entries are the RECORD's: two figure tiles of the page's
+// own (the price band and the refundable deposit), neither of them one of the counter's three
 // one section down, each derived above from the file its row cites.
 const heroStats = ((heroSection.stats ?? []) as StatRow[]).map(counted);
 // The mosaic's four tiles are the photographs the record's hero section names, at their
@@ -233,7 +236,7 @@ const pageSchema = [
       tiles as its ledge). No trust chips and no CTA buttons (amendment 6a): the trust strip is
       its own section two below. The H1 is the migrated H1, carried whole (rule 15), and the
       first tile is the migrated page's own primaryImageOfPage at its original path and alt.
-      Four tiles and three figures since Known Issue 33 closed (user ruling R11): the
+      Four tiles and two figures since Known Issue 33 closed (user ruling R11): the
       arrangement the breeder picked, no longer its single-photo fallback. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy puppies raised at home" class={box('top')}>
     <Hero

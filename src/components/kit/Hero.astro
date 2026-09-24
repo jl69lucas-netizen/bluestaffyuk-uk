@@ -229,8 +229,10 @@ const MOSAIC_SIZES = '(max-width: 900px) calc(50vw - 52px), '
 //            what STACKS a stacked, panel or bleed hero — each has its own one-column rule —
 //            but no rule stacks a mosaic, so a mosaic that degraded to its single photo paints
 //            the split hero's column. Reading `top` there promised 828px for a 408px box on
-//            `/` (H-HM2, whose record names one photograph), which is the `sizes` defect this
-//            block exists to prevent, one arrangement over.
+//            `/` while H-HM2's record named one photograph, which is the `sizes` defect this
+//            block exists to prevent, one arrangement over. (Since Known Issue 33 / user ruling
+//            R11 the homepage's record names four photographs and two figures, so `/` paints
+//            the full mosaic; the rule still holds for any mosaic that degrades.)
 const BELOW_900 = (px: number) => `(max-width: 900px) calc(100vw - ${px}px)`;
 const stacksOnTop = media === 'top' && layout !== 'mosaic';
 const MEASURED_PIC_SIZES = stacksOnTop

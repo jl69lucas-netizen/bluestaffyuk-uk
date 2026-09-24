@@ -230,7 +230,7 @@
           "slot": "home-on-the-lawn",
           "kind": "photo",
           "required": true,
-          "prompt": "the homepage's photograph of a blue Staffy puppy running across a lawn, reused at its original path (working rule 11); a mosaic tile, alt left empty because the same photograph is described where it sits in 'who-we-are'"
+          "prompt": "the homepage's photograph of an adult blue Staffy and a puppy lying on a lawn, reused at its original path (working rule 11); a mosaic tile, alt left empty because the same photograph is described where it sits in 'who-we-are'"
         },
         {
           "slot": "home-family-dog",
