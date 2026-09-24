@@ -194,6 +194,14 @@
    "why": "the OUTCOME is tested by dup_content_audit.py, but the rule is about method \u2014 a page written from a sibling and then reworded passes the outcome test and still violates the rule"
   },
   {
+   "id": "outline-provenance-gate",
+   "family": "DUP",
+   "enforced": "test",
+   "pack": "rules/copy.md",
+   "test": "tests/py/test_outline_provenance_check.py",
+   "severity": "blocking"
+  },
+  {
    "id": "no-fabricated-claims",
    "family": "COPY",
    "enforced": "judgment",
@@ -459,6 +467,30 @@
    "enforced": "test",
    "pack": "rules/puppies.md",
    "test": "tests/render/checks/layout.ts::layout-hero-counter-separation + tests/render/checks/layout.ts::layout-h3-image-first"
+  },
+  {
+   "id": "external-links-six-diverse",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_link_diversity.py",
+   "severity": "blocking"
+  },
+  {
+   "id": "anchor-type-variation",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_anchor_types.py",
+   "severity": "blocking"
+  },
+  {
+   "id": "image-every-body-heading",
+   "family": "IMG",
+   "enforced": "test",
+   "test": "tests/py/test_image_rules.py",
+   "pack": "rules/images.md",
+   "severity": "blocking"
   }
  ]
 }

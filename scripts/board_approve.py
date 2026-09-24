@@ -56,6 +56,10 @@ import tempfile
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
+import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
+
+# The build-gate checks approval never waits on (family_rules owns the one copy).
+APPROVAL_EXEMPT = PB.FR.APPROVAL_EXEMPT
 
 H2 = re.compile(r"<h2[^>]*>(.*?)</h2>", re.S)
 TAG = re.compile(r"<[^>]+>")
@@ -216,6 +220,20 @@ def ledger_entry(board):
 PAGE_NOTE_KEYS = frozenset({"navigation"})
 
 
+def refuse_on_new_page_rules(b, ont):
+    """The rules for new pages (scripts/family_rules.py) are answered at approval and at
+    re-approval, on the record as approved, not first at the build gate: a record the build
+    would refuse must never be approved, because fixing it afterwards moves the hash and forces
+    a second approval. Board block 7b shows the same findings. A no-op for every page
+    applies() leaves out, so the twelve built pages approve exactly as before."""
+    fails = [(c, m) for c, sev, m in PB.FR.findings(b, ont)
+             if sev == "FAIL" and c not in APPROVAL_EXEMPT]
+    if fails:
+        raise PB.BoardError(
+            "this record breaks the rules for new pages — fix the record and board it again:\n"
+            + "\n".join(f"  - {c}: {m}" for c, m in fails))
+
+
 def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
@@ -231,6 +249,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     by_id = {s["id"]: s for s in b["sections"]}
 
     for sid, pick in inbox.get("picks", {}).items():
+        if sid.startswith(IR.PICK_PREFIX):
+            continue                                  # an image pick, validated below
         if sid not in by_id:
             raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")
         # The pick has to come off the menu the board offered. It is matched on the BASE,
@@ -250,6 +270,11 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
                 f"section {sid}: pick {pick!r} is not one of its candidates "
                 f"({', '.join(by_id[sid]['options']['candidates']) or 'none offered'})")
         by_id[sid]["options"]["pick"] = pick
+    # Image picks name a slot, not a section, and live only in `approval.picks`. The one read
+    # this function makes outside its arguments is here: a picked file must exist on disk.
+    bad = IR.validate_image_picks(b, inbox.get("picks", {}))
+    if bad:
+        raise PB.BoardError("image picks refused: " + "; ".join(bad))
     for sid, note in inbox.get("notes", {}).items():
         # PAGE notes are not section notes. The board's "Navigation on this page" block
         # (spec §9 amendment 7) asks about furniture the SHELL mounts — the dial, the strip,
@@ -312,6 +337,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
             e["authorization"] = "ASSERTED"
     PB.validate_ontology(o)
     promoted = [e["id"] for e in o["entities"] if e["authorization"] != was[e["id"]]]
+
+    refuse_on_new_page_rules(b, o)
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 
@@ -477,8 +504,12 @@ def reapprove_refusals(old_board, new_board, paths):
     return bad
 
 
-def apply_reapproval(board, reason, old_board, now):
-    """The record after a controller's re-approval. Pure, like apply_approval().
+def apply_reapproval(board, reason, old_board, now, ont):
+    """The record after a controller's re-approval. Pure, like apply_approval(): it writes
+    nothing and raises before anything moves. `ont`, the ontology the new-page rules read, is
+    passed in rather than loaded; reapprove_main() passes the committed one, which a
+    re-approval never moves. (On a new-family page those rules may still read sibling boards
+    and image files, exactly as they do in apply_approval().)
 
     `old_board` is the record as of the commit whose hash the approval currently carries —
     the baseline the diff is taken against and the proof that this record WAS approved as it
@@ -526,6 +557,7 @@ def apply_reapproval(board, reason, old_board, now):
     # LAST, because `approval_previous` is inside the hash and the refresh above moved it.
     a["record_hash"] = PB.record_hash(b)
     PB.validate_board(b)
+    refuse_on_new_page_rules(b, ont)
     return {"board": b, "changed_paths": paths}
 
 
@@ -589,7 +621,7 @@ def reapprove_main(slug):
     a = parse_args()
     board = PB.load_board(slug)
     now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out = apply_reapproval(board, a.reason, baseline_board(slug), now)
+    out = apply_reapproval(board, a.reason, baseline_board(slug), now, PB.load_ontology())
     # The ledger records what the TUPLE and the H6 prefixes spend. Neither can move under a
     # wording fix — but a heading edit is how an H6 prefix WOULD move, so it is checked
     # rather than assumed: a re-approval that silently desynced the ledger would hand the

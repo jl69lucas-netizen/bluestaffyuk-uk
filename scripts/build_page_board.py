@@ -18,7 +18,10 @@ import html as H, json, pathlib, re, sys
 from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import link_diversity as LD
 import verbatim_set_check as VSC
+import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+import board_entities as BE
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -84,8 +87,6 @@ section.sec h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22
 .md code{font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
 .tree{font:13px/1.65 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
 .hit{color:var(--warn);font-weight:600}
-#entity-graph{height:440px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
-.legend{font-size:12px;color:var(--ink-3);margin:6px 0 0}
 .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:8px 0 6px}
 .opt{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);display:grid;gap:6px}
 .opt img,.opt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:5px;border:1px solid var(--line);background:var(--code-bg);display:grid;place-items:center;font-size:12px;color:var(--ink-3)}
@@ -247,7 +248,10 @@ def outline_block(board, hits):
     lines = [f"H1  {esc(h1)}" + vtag(board.get("h1", {}).get("verbatim_heading")) + flag(h1, hit_by)]
     for s in board["sections"]:
         cta = f" · CTA×{s['cta']}" if s.get("cta") else ""
-        lines.append(f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]" + flag(s["heading"], hit_by))
+        # The span is the target of every section chip in blocks 4 and 5 (board_entities).
+        lines.append(f'<span class="oanchor" id="{esc(BE.anchor_id(s["id"]))}">'
+                     f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]"
+                     + flag(s["heading"], hit_by) + "</span>")
 
         def walk(nodes, depth):
             for n in nodes:
@@ -261,20 +265,6 @@ def outline_block(board, hits):
         for l in s["links"]["external"]:
             lines.append(f"│   ↗ {esc(l['anchor'])} → {esc(l['href'])}   [{esc(l['library_row'])}]")
     return "\n".join(lines)
-
-
-def entity_graph_data(board, ont):
-    by_id = {e["id"]: e for e in ont["entities"]}
-    nodes, edges, seen = [], [], set()
-    for s in board["sections"]:
-        nodes.append({"data": {"id": "sec:" + s["id"], "label": f"{s['n']:02d} {s['heading'][:34]}", "kind": "section"}})
-        for eid in s["entities"]:
-            e = by_id.get(eid, {"name": eid, "class": "Unknown", "authorization": "PROPOSED"})
-            if eid not in seen:
-                seen.add(eid)
-                nodes.append({"data": {"id": eid, "label": e["name"], "kind": e["class"], "auth": e["authorization"]}})
-            edges.append({"data": {"source": "sec:" + s["id"], "target": eid, "auth": e["authorization"]}})
-    return {"nodes": nodes, "edges": edges}
 
 
 def option_cards(section, ledger, slug, thumbs):
@@ -685,7 +675,7 @@ def resolve_internal(href, routes):
     return ("no (dead)", "lk-bad")
 
 
-def link_rows(section, routes):
+def link_rows(section, routes, typed=False):
     """Every link row of one section, internal first, each as the four table cells.
 
     The record gives an internal row no purpose field of its own, so the purpose IS its
@@ -698,12 +688,12 @@ def link_rows(section, routes):
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]),
                      "nav link" if l.get("nav") else "in copy, sentence start",
                      f'<span class="lk {cls}">{esc(text)}</span>',
-                     md(l.get("why") or LINK_SOURCE_NEW)])
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
     for l in section["links"]["external"]:
         domain = urlsplit(l["href"]).netloc or "unknown host"
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]), md(l["library_row"]),
                      f'<span class="lk lk-ext">external · {esc(domain)}</span>',
-                     md(l.get("why") or LINK_SOURCE_NEW)])
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
     return rows
 
 
@@ -713,20 +703,26 @@ def links_block(board, routes):
     in four sections is one destination with four placements — and the sections column is what
     tells the breeder where each one is said."""
     out, seen, order = ["## Links — every link this page will carry"], {}, []
+    # System-gaps Task 5: the anchor-type column and the diversity line show on a new-family
+    # page, or on any record that already types its anchors — never on the twelve built boards.
+    typed = LD.shows_anchor_types(board)
+    headers = LINK_HEADERS + ["Anchor type"] if typed else LINK_HEADERS
     for s in board["sections"]:
         out.append(f"### {s['n']:02d} · {md(s['heading'])}")
-        rows = link_rows(s, routes)
-        out.append(md_table(LINK_HEADERS, rows) if rows
+        rows = link_rows(s, routes, typed)
+        out.append(md_table(headers, rows) if rows
                    else '<p class="lk-none">No links in this section.</p>')
         for l in s["links"]["internal"] + s["links"]["external"]:
             key = l["href"]
             if key not in seen:
                 seen[key] = {"row": l, "kind": "external" if "library_row" in l else "internal",
-                             "anchors": [], "sections": []}
+                             "anchors": [], "sections": [], "types": []}
                 order.append(key)
             e = seen[key]
             if l["anchor"] not in e["anchors"]:
                 e["anchors"].append(l["anchor"])
+            if (l.get("anchor_type") or "⚠ none") not in e["types"]:
+                e["types"].append(l.get("anchor_type") or "⚠ none")
             label = f"{s['n']:02d} {s['heading']}"
             if label not in e["sections"]:
                 e["sections"].append(label)
@@ -743,14 +739,17 @@ def links_block(board, routes):
             cell = f'<span class="lk lk-ext">external · {esc(urlsplit(l["href"]).netloc or "unknown host")}</span>'
         page_rows.append([f"`{md(key)}`", " / ".join(md(a) for a in e["anchors"]),
                           purpose, cell, md(l.get("why") or LINK_SOURCE_NEW),
-                          ", ".join(md(x) for x in e["sections"])])
+                          ", ".join(md(x) for x in e["sections"])]
+                         + ([" / ".join(md(t) for t in e["types"])] if typed else []))
     n_int = sum(1 for k in order if seen[k]["kind"] == "internal")
     n_ext = len(order) - n_int
     placements = sum(len(s["links"]["internal"]) + len(s["links"]["external"]) for s in board["sections"])
     out.append("### Every link on this page")
-    out.append(md_table(LINK_HEADERS + ["Sections"], page_rows) if page_rows
+    out.append(md_table(LINK_HEADERS + ["Sections"] + (["Anchor type"] if typed else []), page_rows) if page_rows
                else '<p class="lk-none">No links on this page.</p>')
     out.append(f'<p class="lk-tot">Totals: {n_int} internal · {n_ext} external</p>')
+    if typed:
+        out.append(f'<p class="lk-tot">{esc(LD.diversity_line(board))}</p>')
     out.append(f"Deduplicated by target: {len(order)} distinct target(s) across {placements} placement(s). "
                "An internal target that resolves to _no_ is either a page this cluster has not built yet or a "
                "dead route — either way the board cannot be built against it as written.")
@@ -769,7 +768,79 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
-def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None):
+REFUSAL_LINE = "Approval will be refused until the FAIL rows in 7b are fixed."
+# Scoped to block 7b, and emitted only with it: a rule in CSS would change every built board.
+RULES_CSS = ('<style>.rules{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin:4px 0 10px}'
+             '.rules .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px;min-width:0}'
+             '.rules .rule code{font-size:13px;overflow-wrap:anywhere}'
+             '.rules .rule .msg{flex:1 1 20ch;min-width:0;overflow-wrap:anywhere}'
+             '.rules .pill.fail{color:var(--warn);border-color:var(--warn);font-weight:700}'
+             '.rules .pill.warn{color:var(--ink-2)}.rules .later{font-size:12px;color:var(--ink-3)}'
+             '.rules-refused{color:var(--warn);font-weight:600;font-size:14px}</style>')
+
+
+BACKTICK = re.compile(r"`([^`]+)`")
+
+
+def rule_findings(board, ont):
+    """What approval will say. board_approve runs the rules on the record AS APPROVED, where a
+    rule that only WARNs on a draft FAILs, so 7b runs them the same way. `image-pick-missing`
+    is left out: the approve button collects those picks, and the record cannot carry them
+    before it does."""
+    b = json.loads(json.dumps(board))
+    b["meta"]["status"] = "approved"
+    return ([f for f in PB.FR.findings(b, ont) if f[0] != "image-pick-missing"]
+            + h1_variant_warnings(b, ont))
+
+
+def h1_variant_warnings(b, ont):
+    """The H1 is picked on the board, after 7b was rendered, so a variant that repeats a
+    heading would pass here and be refused at approval. One WARN row per such variant: a WARN,
+    because it refuses only IF picked, and the refusal line is kept for what WILL refuse given
+    the current pick (or the recommendation the button starts on). Only while the rule itself
+    runs, so a test that swaps FR.CHECKS sees exactly its own findings."""
+    if PB.FR.outline_heading_repeat not in PB.FR.CHECKS:
+        return []
+    h1 = b.get("h1") or {}
+    variants = h1.get("variants") or []
+    current = h1.get("pick") if h1.get("pick") is not None else h1.get("recommended")
+    base = {m for _, _, m in PB.FR.outline_heading_repeat(b, ont)}
+    out = []
+    for i, text in enumerate(variants):
+        if i == current:
+            continue
+        v = json.loads(json.dumps(b))
+        v["h1"]["pick"] = i
+        new = [m for _, sev, m in PB.FR.outline_heading_repeat(v, ont) if sev == "FAIL" and m not in base]
+        if new:
+            out.append(("outline-heading-repeat", "WARN",
+                        f"H1 variant {i + 1} {text!r}, if picked, is refused at approval: " + "; ".join(new)))
+    return out
+
+
+def code_spans(msg):
+    """Escape first, then turn `inline code` into <code>: a backtick is never escaped, and
+    nothing inside the span can open a tag once the text is escaped."""
+    return BACKTICK.sub(r"<code>\1</code>", esc(msg))
+
+
+def rules_block(findings):
+    """Block 7b: every family_rules finding as a row, and whether approval will be refused.
+    Build-gate ids (family_rules.APPROVAL_EXEMPT) can only pass after approval, so they are
+    shown with that note and never announce a refusal."""
+    if not findings:
+        return RULES_CSS + '<p class="rules-pass">All new-page rules pass.</p>', False
+    rows, refused = [], False
+    for check, sev, msg in findings:
+        exempt = check in PB.FR.APPROVAL_EXEMPT
+        refused = refused or (sev == "FAIL" and not exempt)
+        later = ' <span class="later">checked at build, after the image is approved</span>' if exempt else ""
+        rows.append(f'<div class="rule"><span class="pill {"fail" if sev == "FAIL" else "warn"}">{esc(sev)}</span>'
+                    f'<code>{esc(check)}</code><span class="msg">{code_spans(msg)}{later}</span></div>')
+    return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
+
+
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     nav = nav if nav is not None else {"css": "", "blocks": {}}
     routes = routes if routes is not None else load_routes()
@@ -833,26 +904,26 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
                     "photo prompts say what the photo has to show. Page-level files and alts are in block 7."))
 
-    rows = [[md(r["section"])] + [r[k] for k in PB.KEYWORD_TYPES] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
+    # The four optional types get a column only where they mean something: on a new-family
+    # page (where family_rules requires them) or on any board that already uses one.
+    kgroups = BE.group_keywords(board)
+    new_family = PB.FR.applies(board)
+    ktypes = [k for k in PB.ALL_KEYWORD_TYPES
+              if k in PB.KEYWORD_TYPES or new_family or d["totals"][k]]
+    rows = [[md(r["section"])] + [r[k] for k in ktypes] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
     t = d["totals"]
-    rows.append(["**totals**"] + [t[k] for k in PB.KEYWORD_TYPES] + [f"{t['words_min']}–{t['words_max']}"])
+    rows.append(["**totals**"] + [t[k] for k in ktypes] + [f"{t['words_min']}–{t['words_max']}"])
     c = d["h_counts"]
     why_rows = [[f"{s['n']:02d} {md(s['heading'])}", md(s["group"]), md(s["framework"]), md(s["why"]), md_with_urls(s["why_source"])]
                 for s in board["sections"]]
-    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in PB.KEYWORD_TYPES] + ["Words"], rows)
+    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in ktypes] + ["Words"], rows)
                   + f"\n\nHeadings: H1 {c['h1']} · H2 {c['h2']} · H3 {c['h3']} · H4 {c['h4']} · H5 {c['h5']} · H6 {c['h6']}. Counts are ceilings, not floors."
+                  + "\n\n**Every keyword, by type** — a section number jumps to that section in block 3.\n\n"
+                  + BE.keywords_html(kgroups, show_empty=PB.OPTIONAL_KEYWORD_TYPES if new_family else ())
                   + "\n\n**Why each section is here**\n\n"
                   + md_table(["Section", "Group", "Framework", "Why", "Source"], why_rows)))
 
-    by_id = {e["id"]: e for e in ont["entities"]}
-    ent_rows = []
-    all_ents = sorted({e for s in board["sections"] for e in s["entities"]})
-    for eid in all_ents:
-        e = by_id.get(eid)
-        cells = ["✓" if eid in s["entities"] else "" for s in board["sections"]]
-        ent_rows.append([f"{md(e['name'] if e else eid)} ({md(e['authorization']) if e else 'UNKNOWN'})"] + cells + [md((e or {}).get("owner_page")) or "—"])
-    ent_md = ('<div id="entity-graph"></div><p class="legend">colour = class · solid = ASSERTED · dashed = PROPOSED · red = BLOCKED (fails the board)</p>\n\n'
-              + md_table(["Entity"] + [f"{s['n']:02d}" for s in board["sections"]] + ["Owner"], ent_rows)
+    ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
     parts.append(("5. Entities", ent_md))
@@ -890,14 +961,25 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         f'<br><span class="st {esc(a["status"])}">{esc(a["status"])}</span>{(" · " + esc(a["file"])) if a["file"] else ""}'
         f'{("<br><span class=" + chr(34) + "why" + chr(34) + ">alt: " + esc(a["alt"]) + "</span>") if a.get("alt") else ""}</div>'
         for a in board["assets"])
-    parts.append(("7. Asset slots", f'<div class="slots">{slots}</div>'))
+    parts.append(("7. Images & styles", f'<div class="slots">{slots}</div>' + IR.board_block(board, images)))
 
+    # 7b only on the pages the new-page rules bind, so the twelve built boards render
+    # byte-for-byte as they did before these rules reached the board.
+    refused = False
+    if PB.FR.applies(board):
+        rules_html, refused = rules_block(rule_findings(board, ont))
+        parts.append(("7b. Rules for new pages", rules_html))
+
+    status = ("Approved as it stands." if approved else
+              REFUSAL_LINE if refused else "Connecting to the board database…")
     approve = (f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
-               f'<span class="status" id="approve-status">{"Approved as it stands." if approved else "Connecting to the board database…"}</span></div>')
-    parts.append(("8. Approve", approve + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
+               f'<span class="status" id="approve-status">{status}</span></div>')
+    # The status span is rewritten by the database script below, so a refusal is also said
+    # where no script touches it.
+    refusal_note = f'\n\n<p class="rules-refused">{REFUSAL_LINE}</p>' if refused and not approved else ""
+    parts.append(("8. Approve", approve + refusal_note + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
 
     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
-    graph = js(entity_graph_data(board, ont))
     record_hash = PB.record_hash(board)
     # The charset is declared: the board carries em dashes and pound signs from the record
     # and from src/lib/boardStyles.ts, and a document served without one is decoded as
@@ -905,7 +987,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     return f"""<meta charset="utf-8">
 <title>Page Board: {esc(slug)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
-<style>{CSS}</style>
+<style>{CSS}{BE.CSS}</style>
 <div class="wrap">
 <header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>
 <div class="meta"><span class="pill">status: {esc(m['status'])}</span> <span class="pill">research as of {esc(m['research_as_of'])}</span><br>record <code>{record_hash[:12]}</code></div></header>
@@ -914,7 +996,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
 </div>
 {blocks}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
 <script>
 (function(){{
   var doc=document.getElementById('doc');
@@ -925,38 +1006,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\\n+|\\s+$/g,'')):b.textContent;
     sec.appendChild(body);doc.appendChild(sec);
   }});
-  var G={graph};
-  var el=document.getElementById('entity-graph');
-  // Two palettes, not one: a graph drawn in ink-dark fills disappears on the dark ground
-  // and a graph drawn in light fills disappears on the light one. Every fill below clears
-  // 3:1 against its own theme's --ground, which is why the light section node is a mid
-  // clay-brown rather than the cream the page uses for card beds.
-  var PAL={{
-    light:{{Organism:'#2D6A4F',Documentation:'#6b4fa0',Health:'#c8472f',Commerce:'#8a6508',Logistics:'#1f6f8b',Place:'#7a5c3e',People:'#8b1e5f',Method:'#3d7a4a',Unknown:'#6b736e',section:'#8c7a5e',edge:'#6f7a74',blocked:'#c8472f',border:'#3A3227',ink:'#1E2A24'}},
-    dark:{{Organism:'#6FB48F',Documentation:'#b09ae0',Health:'#F08A78',Commerce:'#d9b44a',Logistics:'#7fc3dc',Place:'#c3a483',People:'#e08ab6',Method:'#8fd3a4',Unknown:'#9aa39d',section:'#7d8f84',edge:'#8d9a93',blocked:'#F08A78',border:'#D8DEDA',ink:'#ECEBE3'}}
-  }};
-  function darkMode(){{
-    var a=document.documentElement.getAttribute('data-theme');
-    if(a==='dark')return true;
-    if(a==='light')return false;
-    return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }}
-  function graphStyle(){{
-    var p=PAL[darkMode()?'dark':'light'];
-    return [{{selector:'node',style:{{'label':'data(label)','font-size':10,'width':18,'height':18,'background-color':function(n){{return p[n.data('kind')]||p.Unknown}},'color':p.ink,'text-wrap':'wrap','text-max-width':110}}}},
-            {{selector:'node[kind="section"]',style:{{'shape':'round-rectangle','width':60,'height':22,'font-weight':'bold','border-width':1,'border-color':p.border}}}},
-            {{selector:'edge',style:{{'width':1.5,'line-color':p.edge,'curve-style':'bezier'}}}},
-            {{selector:'edge[auth="PROPOSED"]',style:{{'line-style':'dashed'}}}},
-            {{selector:'edge[auth="BLOCKED"]',style:{{'line-color':p.blocked,'width':3}}}}];
-  }}
-  if(el&&window.cytoscape){{
-    var cy=cytoscape({{container:el,elements:G.nodes.concat(G.edges),layout:{{name:'cose',animate:false,padding:20}},style:graphStyle()}});
-    if(window.matchMedia){{
-      var mq=window.matchMedia('(prefers-color-scheme: dark)');
-      var repaint=function(){{cy.style(graphStyle());}};
-      if(mq.addEventListener)mq.addEventListener('change',repaint);else if(mq.addListener)mq.addListener(repaint);
-    }}
-  }}
+  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
+  {BE.JS}
   // The style frames are filled HERE rather than carrying a static srcdoc each: the page
   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
   // per styled section inside the committed file.
@@ -991,7 +1042,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
       +NAV_CSS+'</style>'+inner;
   }});
   var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug))};
+  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug) + IR.slots_needing_pick(board))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
@@ -1053,7 +1104,9 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / (PB.slug_file(slug) + ".html")
     routes = load_routes()
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav), encoding="utf-8")
+    # Candidates, thumbnails and generated previews only for the pages the image rule binds.
+    images = IR.board_images(board) if PB.FR.applies(board) else None
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images), encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
     n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
     unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]

@@ -28,6 +28,7 @@ import board_approve as BA  # noqa: E402
 from test_page_board import MIN_BOARD  # noqa: E402
 
 NOW = "2026-09-21T09:00:00Z"
+ONT = {"entities": []}   # re-approval takes the ontology it is given
 REASON = "post-approval wording fix from build review; picks unchanged"
 
 
@@ -64,14 +65,14 @@ def edited(fn):
 def test_a_heading_rewording_is_re_approved_and_the_hash_follows_the_record():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "A Heading The Review Moved"))
     assert not PB.approval_matches(new), "the premise: an edit inside the hash breaks the approval"
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     assert PB.approval_matches(out["board"]), "and the re-approval is what makes it whole again"
 
 
 def test_every_answer_the_breeder_gave_is_carried_through_untouched():
     """The whole safety argument: a re-approval may not become a way to change a pick."""
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     before, after = old["approval"], out["board"]["approval"]
     for field in ("approved_at", "h1", "picks", "notes", "canvas_version"):
         assert after[field] == before[field], field
@@ -79,7 +80,7 @@ def test_every_answer_the_breeder_gave_is_carried_through_untouched():
 
 def test_the_reapproval_row_records_the_reason_and_the_paths_that_moved():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     rows = out["board"]["approval"]["reapprovals"]
     assert len(rows) == 1
     assert rows[0]["at"] == NOW and rows[0]["reason"] == REASON
@@ -89,10 +90,10 @@ def test_the_reapproval_row_records_the_reason_and_the_paths_that_moved():
 
 def test_a_second_reapproval_appends_rather_than_replacing_the_first():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Once"))
-    first = BA.apply_reapproval(new, REASON, old, NOW)["board"]
+    first = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
     again = json.loads(json.dumps(first))
     again["sections"][0]["heading"] = "Twice"
-    rows = BA.apply_reapproval(again, "and again", first, "2026-09-22T09:00:00Z")["board"]["approval"]["reapprovals"]
+    rows = BA.apply_reapproval(again, "and again", first, "2026-09-22T09:00:00Z", ONT)["board"]["approval"]["reapprovals"]
     assert [r["reason"] for r in rows] == [REASON, "and again"]
 
 
@@ -105,7 +106,7 @@ def test_a_links_block_addition_is_wording_class():
              "anchor": "The RSPCA on caring for a puppy",
              "library_row": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare"})
     old, new = edited(add_link)
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     assert out["changed_paths"] == ["/sections/0/links/external/0"]
 
 
@@ -121,7 +122,7 @@ def test_removing_a_whole_stats_row_is_wording_and_is_not_read_as_editing_the_ot
     old["approval"]["record_hash"] = PB.record_hash(old)
     new = json.loads(json.dumps(old))
     new["sections"][0]["stats"] = new["sections"][0]["stats"][:1]
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     assert out["board"]["sections"][0]["stats"] == [
         {"n": "1", "label": "first row", "source": "data/x.json#a"}]
 
@@ -131,7 +132,7 @@ def test_removing_a_whole_stats_row_is_wording_and_is_not_read_as_editing_the_ot
 def test_a_changed_pick_is_refused_and_the_message_names_the_pointer():
     old, new = edited(lambda b: b["sections"][0]["options"].__setitem__("pick", "avail-b"))
     with pytest.raises(PB.BoardError) as e:
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
     assert "/sections/0/options/pick" in str(e.value)
     assert "re-board" in str(e.value)
 
@@ -139,7 +140,7 @@ def test_a_changed_pick_is_refused_and_the_message_names_the_pointer():
 def test_a_changed_styles_menu_is_refused():
     old, new = edited(lambda b: b["sections"][0].__setitem__("styles", ["S1", "S2"]))
     with pytest.raises(PB.BoardError, match="styles"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_an_edited_figure_is_refused_even_though_a_removed_one_is_allowed():
@@ -149,7 +150,7 @@ def test_an_edited_figure_is_refused_even_though_a_removed_one_is_allowed():
     new = json.loads(json.dumps(old))
     new["sections"][0]["stats"][0]["n"] = "7"
     with pytest.raises(PB.BoardError, match="added or edited"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_moved_figure_source_is_refused():
@@ -159,7 +160,7 @@ def test_a_moved_figure_source_is_refused():
     new = json.loads(json.dumps(old))
     new["sections"][0]["stats"][0]["source"] = "data/settings.json#n"
     with pytest.raises(PB.BoardError, match="added or edited"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_moved_ledge_source_is_refused():
@@ -171,7 +172,7 @@ def test_a_moved_ledge_source_is_refused():
     new = json.loads(json.dumps(old))
     new["sections"][0]["hero"]["ticks"][0]["source"] = "data/settings.json#m"
     with pytest.raises(PB.BoardError, match="/source"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_ledge_source_that_is_REMOVED_is_refused_like_one_that_moves():
@@ -182,7 +183,7 @@ def test_a_ledge_source_that_is_REMOVED_is_refused_like_one_that_moves():
     new = json.loads(json.dumps(old))
     del new["sections"][0]["hero"]["ticks"][0]["source"]
     with pytest.raises(PB.BoardError, match="/source"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_ledge_source_that_is_purely_ADDED_is_allowed():
@@ -199,7 +200,7 @@ def test_a_ledge_source_that_is_purely_ADDED_is_allowed():
     old["approval"]["record_hash"] = PB.record_hash(old)
     new = json.loads(json.dumps(old))
     new["sections"][0]["hero"]["aside"]["rows"][0]["source"] = "data/puppies.json#len"
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     row = out["board"]["sections"][0]["hero"]["aside"]["rows"][0]
     assert row["source"] == "data/puppies.json#len"
     assert any("/source" in p for p in out["board"]["approval"]["reapprovals"][-1]["changed_paths"])
@@ -210,32 +211,32 @@ def test_a_ledge_source_that_is_purely_ADDED_is_allowed():
 def test_a_removed_section_is_refused():
     old, new = edited(lambda b: b["sections"].pop())
     with pytest.raises(PB.BoardError, match="section list moved"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_renamed_section_id_is_refused():
     old, new = edited(lambda b: b["sections"][0].__setitem__("id", "renamed"))
     with pytest.raises(PB.BoardError, match="section list moved"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_no_reason_is_refused():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
     with pytest.raises(PB.BoardError, match="reason"):
-        BA.apply_reapproval(new, "   ", old, NOW)
+        BA.apply_reapproval(new, "   ", old, NOW, ONT)
 
 
 def test_an_unchanged_record_is_refused_rather_than_re_stamped():
     old = approved()
     with pytest.raises(PB.BoardError, match="needs no re-approval"):
-        BA.apply_reapproval(json.loads(json.dumps(old)), REASON, old, NOW)
+        BA.apply_reapproval(json.loads(json.dumps(old)), REASON, old, NOW, ONT)
 
 
 def test_a_draft_is_refused_because_a_draft_is_approved_the_ordinary_way():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
     new["meta"]["status"] = "boarded"
     with pytest.raises(PB.BoardError, match="already approved"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_baseline_that_never_matched_its_own_approval_is_refused():
@@ -245,7 +246,7 @@ def test_a_baseline_that_never_matched_its_own_approval_is_refused():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
     old["sections"][0]["intent"] = "moved after the hash was stamped"
     with pytest.raises(PB.BoardError, match="baseline"):
-        BA.apply_reapproval(new, REASON, old, NOW)
+        BA.apply_reapproval(new, REASON, old, NOW, ONT)
 
 
 def test_a_reworded_sections_fingerprint_is_refreshed_so_the_next_reboard_does_not_reask_it():
@@ -259,7 +260,7 @@ def test_a_reworded_sections_fingerprint_is_refreshed_so_the_next_reboard_does_n
     old["approval"]["record_hash"] = PB.record_hash(old)
     new = json.loads(json.dumps(old))
     new["sections"][0]["heading"] = "A Heading The Review Moved"
-    out = BA.apply_reapproval(new, REASON, old, NOW)["board"]
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
     sid = out["sections"][0]["id"]
     want = PB.section_fingerprint(out["sections"][0])
     assert out["approval"]["section_hashes"][sid] == want
@@ -269,7 +270,7 @@ def test_a_reworded_sections_fingerprint_is_refreshed_so_the_next_reboard_does_n
 
 def test_a_record_that_never_carried_fingerprints_does_not_grow_them():
     old, new = edited(lambda b: b["sections"][0].__setitem__("heading", "Reworded"))
-    out = BA.apply_reapproval(new, REASON, old, NOW)["board"]
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)["board"]
     assert "section_hashes" not in out["approval"]
 
 
@@ -285,7 +286,7 @@ def test_the_diff_is_taken_over_the_hashed_projection_only():
     new["dropped"] = {"text": ["a claim the rebuild did not restate"]}
     new["verbatim"] = {"changed": [{"kind": "h1", "old": "an old h1", "new": "a new h1",
                                           "reason": "a rank claim measured against nothing"}]}
-    out = BA.apply_reapproval(new, REASON, old, NOW)
+    out = BA.apply_reapproval(new, REASON, old, NOW, ONT)
     assert out["changed_paths"] == ["/sections/0/heading"]
 
 

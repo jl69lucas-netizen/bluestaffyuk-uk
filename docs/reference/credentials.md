@@ -23,6 +23,7 @@ list; `.env` is the values.
 | `GA4_CLIENT_ID` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 | `GA4_CLIENT_SECRET` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 | `GA4_REFRESH_TOKEN` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
+| `GEMINI_API_KEY` | `.claude/skills/bsuk-image-generation/SKILL.md` (through the `compound-engineering:ce-gemini-imagegen` skill) | no — the user sets it before the first generated image (system-gaps plan Task 11b) |
 
 A "Read by" cell names a file only when that file actually contains the key name today.
 `scripts/indexnow_submit.py` reads both `SITE_URL` and `INDEXNOW_KEY` from the environment
@@ -30,8 +31,9 @@ and neither is hardcoded, but it refuses to run at all until project 6 sets `BSU
 `tests/py/test_credentials_doc.py` holds this table to `.env.example` in both directions and
 greps every named file, so neither side can drift.
 
-Eleven keys. Nine of them are populated by Task 18; `SITE_URL` waits for the domain project 6
+Twelve keys. Nine of them are populated by Task 18; `SITE_URL` waits for the domain project 6
 registers, and `INDEXNOW_KEY` is generated against that domain in the same project.
+`GEMINI_API_KEY` is set by the user before the first generated image.
 
 ## The retired MCP server
 

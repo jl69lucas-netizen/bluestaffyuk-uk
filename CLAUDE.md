@@ -181,6 +181,17 @@ growing. Every other rule moved to a pack.
     deliberate refresh delta per page — layout, accent role or motif, never the palette —
     per `.claude/skills/bsuk-component-refresh/SKILL.md` and
     `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
+17. **Project 5 pages: outline only, six diverse links, an image on every heading.** Location,
+    comparison and blog-post pages built from 2026-09-24 on (never the twelve built before;
+    `scripts/family_rules.py` names them) are written from the approved outline alone, carry
+    at least six external links on six domains from four source types with a recorded anchor
+    type on every link, fill the four extra keyword types, and give every body H2 and body H3
+    (FAQ blocks excepted) and the hero an image. Images come first from the page's own, then
+    the site's served images, then the breeder's `Assets/Images/` folder (outside git;
+    `BSUK_ASSETS_DIR` overrides); a generated image follows `IMAGE-DESIGNS.md` and is
+    approved on the board before it is used. The rules and their gates are in
+    `rules/images.md`, `rules/links.md` and `rules/copy.md`. The board shows every one of
+    these rules (block 7b), and approval is refused while one fails. (Breeder, 2026-09-24.)
 
 ### Two standing rules that are not judgment exemptions
 
@@ -280,6 +291,8 @@ The design system is project 3. Until then there is no component kit and no lock
 
 ## Where everything else went
 
+- `IMAGE-DESIGNS.md` — how every image looks, is cropped, framed and approved: the named OG
+  framing styles, the named infographic styles and the image-slot fields a board carries
 - `docs/reference/system-registry.md` — every agent, skill, script and data file
 - `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
 - `docs/reference/session-log.md` — build history and **Known Issues**

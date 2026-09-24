@@ -20,6 +20,7 @@ HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page 
 # places is a record that is dropped over here and carried over there. So the splitter is
 # borrowed rather than copied, exactly as the header rules above are.
 import facts_preserved_check as FACTS
+import family_rules as FR
 _DROP_SPLIT = FACTS._DROP_SPLIT
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -982,16 +983,23 @@ def authorization_check(board, ont):
 
 KEYWORD_TYPES = ("primary", "lsi", "longtail", "brand", "geo",
                  "conversational", "comparison", "solution", "transactional")
+# System-gaps build (2026-09-24): four OPTIONAL types. The schema lists them as properties
+# but not as `required`, so the twelve records built before them validate unchanged and keep
+# their approval hash; every reader takes them with `.get(k, [])`. family_rules makes them
+# mandatory on the new families only (check `keyword-variants-missing`).
+OPTIONAL_KEYWORD_TYPES = ("variation", "related", "cooccurring", "similar")
+ALL_KEYWORD_TYPES = KEYWORD_TYPES + OPTIONAL_KEYWORD_TYPES
 KEYWORD_LABELS = {"primary": "Primary", "lsi": "LSI", "longtail": "Long-tail", "brand": "Brand", "geo": "Geo",
-                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact"}
+                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact",
+                  "variation": "Variations", "related": "Related", "cooccurring": "Co-occurring", "similar": "Similar"}
 
 
 def distribution(board):
-    rows, totals = [], {**{k: 0 for k in KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
+    rows, totals = [], {**{k: 0 for k in ALL_KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
     for s in board["sections"]:
         row = {"section": s["id"], "heading": s["heading"]}
-        for k in KEYWORD_TYPES:
-            row[k] = len(s["keywords"][k]); totals[k] += row[k]
+        for k in ALL_KEYWORD_TYPES:
+            row[k] = len(s["keywords"].get(k, [])); totals[k] += row[k]
         row["words_min"], row["words_max"] = s["words"]["min"], s["words"]["max"]
         totals["words_min"] += row["words_min"]; totals["words_max"] += row["words_max"]
         rows.append(row)
@@ -1760,7 +1768,8 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     for check, sev, msg in word_band_findings(board):
         add(check, sev, msg)
 
-    for sid in image_gaps(board):
+    # On a page family_rules binds, image_rules' `image-slot-missing` replaces this WARN.
+    for sid in ([] if FR.applies(board) else image_gaps(board)):
         add("image-coverage", "WARN", f"section {sid} plans no image slot — the brief puts one under every H2 (§15b)")
     for key, slots in duplicate_alts(board).items():
         add("asset-alt-duplicate", "FAIL",
@@ -1836,6 +1845,10 @@ def gate_findings(board, ont, ledger, live, stage="build"):
                     add("schema-planned-missing", "FAIL", f"{tname} is in the schema plan but not in the built page's JSON-LD")
             if unparsed:
                 add("schema-unparsed", "FAIL", f"{unparsed} JSON-LD block(s) on the built page do not parse")
+
+    # The rules that bind project 5's pages only (scripts/family_rules.py, system-gaps build).
+    for check, sev, msg in FR.findings(board, ont):
+        add(check, sev, msg)
     return f
 
 
