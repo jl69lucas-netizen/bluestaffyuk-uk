@@ -20,6 +20,7 @@ HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page 
 # places is a record that is dropped over here and carried over there. So the splitter is
 # borrowed rather than copied, exactly as the header rules above are.
 import facts_preserved_check as FACTS
+import family_rules as FR
 _DROP_SPLIT = FACTS._DROP_SPLIT
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
@@ -1836,6 +1837,10 @@ def gate_findings(board, ont, ledger, live, stage="build"):
                     add("schema-planned-missing", "FAIL", f"{tname} is in the schema plan but not in the built page's JSON-LD")
             if unparsed:
                 add("schema-unparsed", "FAIL", f"{unparsed} JSON-LD block(s) on the built page do not parse")
+
+    # The rules that bind project 5's pages only (scripts/family_rules.py, system-gaps build).
+    for check, sev, msg in FR.findings(board, ont):
+        add(check, sev, msg)
     return f
 
 

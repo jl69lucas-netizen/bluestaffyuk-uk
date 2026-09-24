@@ -141,7 +141,7 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/session-closer/SKILL.md`
 - `.claude/skills/sitemap-agent/SKILL.md`
 
-## Scripts — 62
+## Scripts — 63
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -179,6 +179,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/extract_wp.py`
 - `scripts/extract_writers.py`
 - `scripts/facts_preserved_check.py`
+- `scripts/family_rules.py`
 - `scripts/final_page_audit.py`
 - `scripts/form_contract_audit.py`
 - `scripts/gap_matrix.py`
