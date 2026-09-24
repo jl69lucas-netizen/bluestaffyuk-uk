@@ -50,7 +50,7 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 
 | # | Field | Needs | Record in `values` |
 |---|---|---|---|
-| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown`, `email_shown` and `contact_source` from **Homepage measures** (a number or address printed on the page or a `tel:` / `mailto:` link, not "call us"; `markdown-only` when no raw HTML was fetched — then they say only what the markdown prints), `reviews_shown` (the number of distinct customer reviews or testimonials whose words are shown on the pages fetched, each once however often a carousel repeats it; a star rating, a review count or a badge with no review words is 0 — say it in the readable report; a review widget whose reviews load by script and are not in the fetched content is 0) |
+| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown`, `email_shown` and `contact_source` from **Homepage measures** (a number or address printed on the page or a `tel:` / `mailto:` link, not "call us"; `markdown-only` when no raw HTML was fetched — then they say only what the markdown prints), `reviews_shown` (the number of distinct customer reviews or testimonials whose words are shown on the pages fetched, each once however often a carousel repeats it — which texts are reviews is the reader's call: list each once in a scratch file, one line apiece with a short label of your own (never its words, and never in the report), then count the lines by script with `grep -c . <list>`; a star rating, a review count or a badge with no review words is 0 — say it in the readable report; a review widget whose reviews load by script and are not in the fetched content is 0) |
 | 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
 | 3 | `keywords` | any page | see **Keyword rule** below |
 | 4 | `page_types` | the map | see **Page-type rule** below |
@@ -58,8 +58,8 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 | 6 | `visual` | the homepage raw HTML (markdown alone never) | `homepage_images`, `alt_text` (descriptive, generic, missing) and `alt_missing` from **Homepage measures**; `video_present` (a `<video>` tag or a YouTube or Vimeo embed in the raw HTML) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
-| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (the screens a buyer fills in to send an enquiry through the site's own form or message box, counted on a fetched form: a one-page form is 1, a multi-step form counts its steps; null when no form or message box was fetched — a phone number, email link or button alone is not a form, and `cta_types` already records it); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
-| 10 | `technical` | the homepage in an emulated phone → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok` (false when `document.documentElement.scrollWidth > window.innerWidth`, else true), `lighthouse_performance`. The phone is a 375 × 812 viewport **with** a mobile user agent and touch (a device-emulation call such as Chrome DevTools `emulate`, or a browser pane's mobile preset) — site builders serve phones a different layout, so a desktop browser merely resized is not the check. With no tool that emulates a phone, `mobile_layout_ok` is `NOT FETCHED` ("no phone emulation available") |
+| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (the screens a buyer fills in to send an enquiry through the site's own form or message box, counted on a fetched form: a one-page form is 1, a multi-step form counts its steps; null when no form or message box was fetched — a phone number, email link or button alone is not a form, and neither is a chat widget (a third-party live-chat or chatbot pop-up); `cta_types` already records them); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
+| 10 | `technical` | the homepage in an emulated phone → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok` from the **Mobile check** below, `lighthouse_performance`. The phone is a 375 × 812 viewport **with** a mobile user agent and touch (a device-emulation call such as Chrome DevTools `emulate`, or a browser pane's mobile preset) — site builders serve phones a different layout, so a desktop browser merely resized is not the check. With no tool that emulates a phone, `mobile_layout_ok` is `NOT FETCHED` ("no phone emulation available"); so it is when the check's own evidence shows no phone |
 
 A price that is not printed is not a price: "please call us" about a deposit is `prices_shown: false` and `deposit_terms: null`. Prices stay inside the report, never in BSUK copy.
 
@@ -67,7 +67,7 @@ A price that is not printed is not a price: "please call us" about a deposit is 
 
 ### Homepage measures
 
-`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
+`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). The file is read as raw HTML only when it holds `<!doctype html` or an `<html>` tag; anything else is markdown, whatever inline HTML it carries. It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
 
 ```bash
 python3 - "$RAW_HTML" <<'EOF'
@@ -75,15 +75,16 @@ import html, json, re, sys
 sys.path.insert(0, "tests/py")
 from test_no_third_party_contacts import PATTERNS  # the contact scan's phone and email formats
 raw = open(sys.argv[1], encoding="utf-8").read()
-is_html = bool(re.search(r"(?i)<(?:html|body|div|img)\b", raw))
-page = re.sub(r"(?is)<(noscript|template)\b.*?</\1>", " ", raw)
-text = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", page)))
+is_html = bool(re.search(r"(?i)<!doctype\s+html|<html[\s>]", raw))
+# comments, scripts (JSON-LD and HTML templates too), styles, <noscript> and <template> are not the page
+page = re.sub(r"(?is)<!--.*?-->|<(noscript|template|script|style)\b.*?</\1>", " ", raw)
+text = html.unescape(re.sub(r"<[^>]+>", " ", page))
 def attr(tag, name):
     m = re.search(r"""\s%s\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""" % re.escape(name), tag, re.I | re.S)
     return None if m is None else html.unescape(next(g for g in m.groups() if g is not None))
 out = {"contact_source": "raw-html" if is_html else "markdown-only",
-       "phone_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()tel:", raw) or PATTERNS["phone"].search(text)),
-       "email_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()mailto:", raw) or PATTERNS["email"].search(text))}
+       "phone_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()tel:", page) or PATTERNS["phone"].search(text)),
+       "email_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()mailto:", page) or PATTERNS["email"].search(text))}
 if is_html:
     imgs = {}  # one per distinct source, first alt kept: a logo in header and footer is one image
     for tag in re.findall(r"(?is)<img\b[^>]*>", page):
@@ -104,7 +105,7 @@ if is_html:
     classes = [alt_class(a) for a in imgs.values()]
     ORDER = ["missing", "generic", "descriptive"]  # a tie goes to the worse class
     out.update(homepage_images=len(imgs), alt_missing=classes.count("missing"),
-               alt_text=max(ORDER, key=lambda c: (classes.count(c), -ORDER.index(c))) if classes else "missing")
+               alt_text=max(ORDER, key=lambda c: (classes.count(c), -ORDER.index(c))) if classes else None)
 else:
     nf = {"status": "NOT FETCHED", "reason": "no raw HTML: markdown alone never gives visual measures"}
     out.update(homepage_images=nf, alt_missing=nf, alt_text=nf)
@@ -112,9 +113,30 @@ print(json.dumps(out, sort_keys=True))
 EOF
 ```
 
-- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`), outside `<noscript>` and `<template>`, never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
-- `alt_text`: each image's alt is `missing` (no alt, or blank), `generic` (a file name, a camera name such as `IMG_2034`, or only words like image, photo, logo, icon, banner, placeholder) or `descriptive`; the field is the class most images hold, a tie going to the worse (`missing`, then `generic`). `alt_missing` is the count of `missing`.
-- `phone_shown` / `email_shown`: a `tel:` / `mailto:` link, or a number or address in the contact scan's formats printed in the page text (scripts, styles and JSON-LD are not printed text).
+- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`), outside comments, `<script>`, `<style>`, `<noscript>` and `<template>` (a script's HTML template is not an image on the page), never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
+- `alt_text`: each image's alt is `missing` (no alt, or blank), `generic` (a file name, a camera name such as `IMG_2034`, or only words like image, photo, logo, icon, banner, placeholder) or `descriptive`; the field is the class most images hold, a tie going to the worse (`missing`, then `generic`). `alt_missing` is the count of `missing`. A homepage with no images has `alt_text: null` (and `homepage_images` and `alt_missing` 0).
+- `phone_shown` / `email_shown`: a `tel:` / `mailto:` link, or a number or address in the contact scan's formats printed in the page text — neither counts inside a comment, script, style, JSON-LD, `<noscript>` or `<template>`.
+
+### Mobile check
+
+`mobile_layout_ok` comes from this evaluate, run in the emulated phone once the homepage has loaded — never by eye, and never `scrollWidth > innerWidth`: a phone zooms out to fit a page wider than its screen, so `innerWidth` grows with the page and that test never fails.
+
+```js
+// the mobile check: evaluate in the emulated phone, after the page has loaded
+() => {
+  const d = document.documentElement;
+  const m = {innerWidth: window.innerWidth, clientWidth: d.clientWidth, scrollWidth: d.scrollWidth,
+             screenWidth: screen.width, maxTouchPoints: navigator.maxTouchPoints,
+             mobileUA: /Mobi|Android/.test(navigator.userAgent)};
+  const phone = m.screenWidth === 375 && m.maxTouchPoints > 0 && m.mobileUA;
+  m.mobile_layout_ok = phone ? !(m.clientWidth > m.screenWidth || m.scrollWidth > m.clientWidth) : null;
+  return m;
+}
+```
+
+- `mobile_layout_ok` is false when `clientWidth > screenWidth` (no device-width viewport: the phone lays the page out at desktop width and shrinks it) or `scrollWidth > clientWidth` (something wider than the screen), else true.
+- `null` means the browser was not a phone — `screenWidth` is not 375, `maxTouchPoints` is 0 or `mobileUA` is false (a desktop browser resized to 375 is not a phone): write `mobile_layout_ok` as `NOT FETCHED` ("no phone emulation: screen <screenWidth>, touch <maxTouchPoints>, mobile UA <mobileUA>").
+- The readable report's technical heading records the six numbers the evaluate returned (`innerWidth`, `clientWidth`, `scrollWidth`, `screenWidth`, `maxTouchPoints`, `mobileUA`); a `mobile_layout_ok` without them is not a result.
 
 ### Keyword rule
 
@@ -276,8 +298,8 @@ All must pass before you hand off. The contact scan names each hit — remove it
 
 ## Red flags — stop
 
-- A number (word count, URL count, post count, score) for a page or map you did not fetch; or counting, page-type classifying or phrase matching done by eye instead of by script.
-- `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` without the emulated-phone check (375 × 812, mobile user agent); a homepage measure or contact signal read by eye instead of by **Homepage measures**.
+- A number (word count, URL count, post count, score) for a page or map you did not fetch; or counting, page-type classifying or phrase matching done by eye instead of by script. Only two calls are the reader's: which texts are reviews (then counted by script) and where a keyword run meets a name.
+- `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` not from the **Mobile check** evaluate in an emulated phone (375 × 812, mobile user agent, touch), or without its six numbers in the readable report; a homepage measure or contact signal read by eye instead of by **Homepage measures**.
 - A price or deposit written that the page did not print.
 - A competitor sentence in the report word for word, or a quoted evidence table.
 - A phone number, email, street, postcode or seller's name anywhere in the output.

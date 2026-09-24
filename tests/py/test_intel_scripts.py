@@ -17,6 +17,7 @@ REPO = pathlib.Path(__file__).resolve().parents[2]
 AGENT = REPO / ".claude/agents/bsuk-competitor-intel.md"
 CLASSIFIER = re.compile(r'python3 - "\$MAP_LIST"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
 HOMEPAGE = re.compile(r'python3 - "\$RAW_HTML"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
+MOBILE = re.compile(r'```js\n// the mobile check[^\n]*\n(.*?)\n```\n', re.S)
 BLOCK = re.compile(r'^rows = json\.load\(open\("data/locations\.json"\)\)\n.*?^kind = lambda path: [^\n]*\n',
                    re.M | re.S)
 
@@ -204,3 +205,52 @@ def test_markdown_only_gives_contact_signals_but_no_visual_measures(tmp_path):
     assert d["contact_source"] == "markdown-only" and d["phone_shown"] is True and d["email_shown"] is False
     for k in ("homepage_images", "alt_text", "alt_missing"):
         assert d[k]["status"] == "NOT FETCHED"
+
+
+def test_scripts_and_comments_hold_no_homepage_images_or_contact_links(tmp_path):
+    page = ('<!DOCTYPE html><html><body><script type="text/html"><img src="{{x}}" alt=""></script>'
+            '<!-- <img src="/c.jpg"> <a href="tel:+447700900123">Ring</a> <a href="mailto:a@example.co.uk">x</a> -->'
+            '<img src="/d.jpg" alt="Two blue puppies asleep in the garden"></body></html>')
+    d = measure(tmp_path, page)
+    assert (d["homepage_images"], d["alt_missing"], d["alt_text"]) == (1, 0, "descriptive")
+    assert (d["phone_shown"], d["email_shown"]) == (False, False)
+
+
+def test_a_page_with_no_images_has_no_alt_class(tmp_path):
+    d = measure(tmp_path, "<!doctype html><html><body><p>Puppies soon.</p></body></html>")
+    assert (d["homepage_images"], d["alt_missing"], d["alt_text"]) == (0, 0, None)
+
+
+def test_markdown_with_inline_html_is_still_markdown(tmp_path):
+    d = measure(tmp_path, '# Home\n\n<div class="hero"><img src="/rex.jpg" alt="Rex"></div>\n', "home.md")
+    assert d["contact_source"] == "markdown-only" and d["homepage_images"]["status"] == "NOT FETCHED"
+
+
+PHONE = {"innerWidth": 375, "clientWidth": 375, "scrollWidth": 375, "screenWidth": 375, "maxTouchPoints": 5,
+         "ua": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 Mobile Safari/537.36"}
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+@pytest.mark.parametrize("change,ok", [
+    ({}, True),                                                    # fits the phone
+    ({"innerWidth": 908, "scrollWidth": 908}, False),              # a 900px box: the phone zooms out to show it
+    ({"innerWidth": 980, "clientWidth": 980, "scrollWidth": 980}, False),  # no device-width viewport
+    ({"screenWidth": 1440, "maxTouchPoints": 0,
+      "ua": "Mozilla/5.0 (Macintosh) Chrome/140"}, None),          # a desktop browser resized: NOT FETCHED
+    ({"ua": "Mozilla/5.0 (Macintosh) Chrome/140"}, None),          # a phone size without a phone's user agent
+    ({"maxTouchPoints": 0}, None),                                 # nor without touch
+])
+def test_the_mobile_check_measures_what_a_phone_sees_and_proves_emulation(change, ok):
+    found = MOBILE.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected one mobile-check block, found {len(found)}"
+    v = {**PHONE, **change}
+    stub = (f"const window = {{innerWidth: {v['innerWidth']}}};"
+            f"const document = {{documentElement: {{clientWidth: {v['clientWidth']}, scrollWidth: {v['scrollWidth']}}}}};"
+            f"const screen = {{width: {v['screenWidth']}}};"
+            f"const navigator = {{maxTouchPoints: {v['maxTouchPoints']}, userAgent: {json.dumps(v['ua'])}}};"
+            f"console.log(JSON.stringify(({found[0]})()));")
+    run = subprocess.run(["node", "-e", stub], capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    d = json.loads(run.stdout)
+    assert d["mobile_layout_ok"] is ok
+    assert {"innerWidth", "clientWidth", "scrollWidth", "screenWidth", "maxTouchPoints", "mobileUA"} <= set(d)
