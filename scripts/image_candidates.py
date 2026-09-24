@@ -35,6 +35,10 @@ reuse across pages is visible on the board rather than discovered after the buil
 
 Pure functions take `root` (the repo) and `assets_dir`, so the tests run on a tmp tree.
 Prints the JSON; `--write` also writes data/boards/candidates/<slug file>.json.
+
+READS only an <img>'s `src` (never srcset) in dist/ and the `src`/`alt` of data/verbatim/*.json
+`alts[]`; the served pool is `.webp`/`.png` files under public/images named by a manifest stem;
+the folder pool is `.webp`, `.png`, `.jpg` and `.jpeg` files, in any case.
 """
 import argparse
 import json
@@ -59,6 +63,7 @@ GENERIC = frozenset("""
 blue staffy staffie staffordshire bull terrier sbt uk bluestaffyuk puppy pup dog webp png
 jpg jpeg image photo picture file name our we us the a an and or of to in for on with at by
 is are be your you from it this that as how what why when do doe its their them into
+thus plus always sale buy breeder breeders new home available now near me
 alt text migrated reused original path working rule page
 """.split())
 METHOD = ("token overlap: slot words (section heading, section keywords, H3 heading, prompt) "
@@ -78,7 +83,7 @@ def route_of(slug):
 def _fold(tok):
     if len(tok) > 4 and tok.endswith("ies"):
         return tok[:-3] + "y"
-    if len(tok) > 3 and tok.endswith("s") and not tok.endswith("ss"):
+    if len(tok) > 3 and tok.endswith("s") and not tok.endswith(("ss", "us", "is")):
         return tok[:-1]
     return tok
 
@@ -90,19 +95,27 @@ def tokens(text):
         if raw.isdigit():
             continue
         t = _fold(raw)
-        if t not in GENERIC and len(t) > 1:
+        if raw not in GENERIC and t not in GENERIC and len(t) > 1:
             out.add(t)
     return out
 
 
-def canonical(src):
-    """An /images/ URL with its size sibling suffix dropped: `/images/x-760.webp` -> `/images/x.webp`."""
+def canonical(src, root=None):
+    """An /images/ URL with its size sibling suffix dropped: `/images/x-760.webp` -> `/images/x.webp`.
+    Given `root`, the suffix is dropped only when that original exists under root/public, so a
+    real file named like one (`/images/puppies/byrd-card-800.webp`) keeps its name. Without
+    `root` (the older call), the suffix is always dropped."""
     src = (src or "").split("?")[0].split("#")[0]
     if not src.startswith("/images/"):
         return None
     p = pathlib.PurePosixPath(src)
     stem = SIZE_SUFFIX.sub("", p.stem)
-    return str(p.with_name(stem + p.suffix))
+    if stem == p.stem:
+        return src
+    folded = str(p.with_name(stem + p.suffix))
+    if root is not None and not (pathlib.Path(root) / "public" / folded.lstrip("/")).exists():
+        return src
+    return folded
 
 
 # ── the record's slots ──────────────────────────────────────────────────────────────────
@@ -177,6 +190,22 @@ def dist_pages(root):
     return out
 
 
+def _verbatim_alts(path):
+    """The `alts[]` rows of one data/verbatim file; a file that does not parse, or is not
+    shaped {"alts": [{src, alt}]}, is skipped with a warning on stderr rather than a crash."""
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as e:
+        print(f"image-candidates: skipped {path.name}: {e}", file=sys.stderr)
+        return []
+    rows = data.get("alts") if isinstance(data, dict) else None
+    if not isinstance(rows, list):
+        if not isinstance(data, dict):
+            print(f"image-candidates: skipped {path.name}: not a JSON object", file=sys.stderr)
+        return []
+    return [r for r in rows if isinstance(r, dict)]
+
+
 def _verbatim_files(root):
     d = root / "data" / "verbatim"
     return sorted(p for p in d.glob("*.json") if p.name != "applies.json") if d.is_dir() else []
@@ -193,13 +222,13 @@ def usage_and_alts(root):
 
     for route, f in dist_pages(root).items():
         for src, alt in _page_imgs(f).all:
-            c = canonical(src)
+            c = canonical(src, root)
             if c:
                 used.setdefault(c, set()).add(route)
                 note_alt(c, alt)
     for vf in _verbatim_files(root):
-        for row in json.loads(vf.read_text(encoding="utf-8")).get("alts", []):
-            c = canonical(row.get("src"))
+        for row in _verbatim_alts(vf):
+            c = canonical(row.get("src"), root)
             if c:
                 note_alt(c, row.get("alt", ""))
     return {k: sorted(v) for k, v in used.items()}, alts
@@ -211,7 +240,7 @@ def own_images(board, root):
     seen, out = set(), []
 
     def add(src, alt):
-        c = canonical(src)
+        c = canonical(src, root)
         if c and c not in seen and (root / "public" / c.lstrip("/")).exists():
             seen.add(c)
             out.append({"file": c, "alt": alt or ""})
@@ -219,7 +248,7 @@ def own_images(board, root):
     for name in (slug, slug_file(slug)):
         vf = root / "data" / "verbatim" / f"{name}.json"
         if vf.exists():
-            for row in json.loads(vf.read_text(encoding="utf-8")).get("alts", []):
+            for row in _verbatim_alts(vf):
                 add(row.get("src"), row.get("alt"))
             break
     page = dist_pages(root).get(route_of(slug))
@@ -250,8 +279,10 @@ def served_images(root):
 def asset_stem(filename):
     """A folder filename -> the stem it would be ingested under: `File name- x .jpg` -> `x`."""
     stem = pathlib.Path(filename.strip()).stem.strip()
-    stem = re.sub(r"^file name-\s*", "", stem, flags=re.I)
-    stem = pathlib.Path(stem.strip()).stem          # `x .jpg .jpg` carries a second extension
+    stem = re.sub(r"^file name-\s*", "", stem, flags=re.I).strip()
+    inner = pathlib.PurePosixPath(stem)
+    if inner.suffix.lower() in IMAGE_EXTS:          # `x .jpg .jpg` carries a second extension
+        stem = inner.stem                           # (`x.v2.jpg` keeps its `.v2`)
     return re.sub(r"[^a-z0-9]+", "-", stem.lower()).strip("-")
 
 
@@ -264,7 +295,8 @@ def served_stems(root):
     d = root / "public" / "images"
     if not d.is_dir():
         return set()
-    return {SIZE_SUFFIX.sub("", p.stem) for p in d.rglob("*") if p.suffix.lower() in IMAGE_EXTS}
+    stems = {p.stem for p in d.rglob("*") if p.suffix.lower() in IMAGE_EXTS}
+    return stems | {SIZE_SUFFIX.sub("", x) for x in stems}      # a real `x-800` name counts too
 
 
 def already_served(filename, stems):
@@ -282,7 +314,7 @@ def asset_images(assets_dir, root):
     for p in sorted(d.iterdir()):
         if p.name.startswith(".") or not p.is_file():
             continue
-        if not p.name.strip().lower().endswith(IMAGE_EXTS):
+        if not p.name.strip().lower().endswith(IMAGE_EXTS) or not asset_stem(p.name):
             continue
         if already_served(p.name, stems):
             served.append(p.name)
@@ -326,6 +358,17 @@ def rank(words, pools, alts, used, own_route, per_pool=3):
     return out
 
 
+def _report_dir(assets_dir, root):
+    """The folder as the report names it: None for the default folder (an absolute path on
+    one machine), else relative to the repo so a written report carries no home directory."""
+    if not assets_dir:
+        return None
+    d = pathlib.Path(assets_dir).resolve()
+    if d == pathlib.Path(ASSETS_DIR).resolve():
+        return None
+    return pathlib.Path(os.path.relpath(d, pathlib.Path(root).resolve())).as_posix()
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
@@ -348,7 +391,7 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
                       "node": node["heading"] if node else None, "kind": img["kind"],
                       "source": img.get("source"), "context": sorted(words),
                       "candidates": cands, "suggested": suggested})
-    return {"slug": slug, "method": METHOD, "assets_dir": str(assets_dir) if assets_dir else None,
+    return {"slug": slug, "method": METHOD, "assets_dir": _report_dir(assets_dir, root),
             "pools": {"own": len(own), "served": len(served), "assets": len(fresh),
                       "assets_already_served": len(already)},
             "slots": slots}

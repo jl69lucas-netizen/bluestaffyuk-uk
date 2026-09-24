@@ -3,6 +3,7 @@
 manifest, a verbatim file and two built pages, and a breeder folder outside it."""
 import json
 import pathlib
+import shutil
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
@@ -168,4 +169,92 @@ def test_cli_prints_json_and_writes_only_when_asked(tmp_path, monkeypatch, capsy
     assert IC.main([SLUG, "--assets-dir", str(assets), "--write"]) == 0
     written = root / "data" / "boards" / "candidates" / "uk-locations--blue-staffy-puppies-leeds.json"
     assert json.loads(written.read_text())["slots"][0]["slot"] == "delivery-photo"
+    assert json.loads(written.read_text())["assets_dir"] == "../Assets/Images"
     assert IC.main(["uk-locations/nowhere", "--assets-dir", str(assets)]) == 2
+
+
+# ── review follow-ups (Task 9 review) ───────────────────────────────────────────────────
+def test_canonical_keeps_a_real_size_named_file_unless_its_original_exists(tmp_path):
+    root, _ = _tree(tmp_path)
+    (root / "public" / "images" / "puppies" / "byrd-card-800.webp").write_bytes(b"x")
+    assert IC.canonical("/images/puppies/byrd-card-800.webp", root) == "/images/puppies/byrd-card-800.webp"
+    assert IC.already_served("Byrd-Card-800.jpg", IC.served_stems(root))
+    assert IC.canonical("/images/leeds-delivery-van-760.webp", root) == "/images/leeds-delivery-van.webp"
+    # A page that shows the card keeps the card's real name in the own pool.
+    page = root / "dist" / "uk-locations" / "blue-staffy-puppies-leeds" / "index.html"
+    page.write_text(_page([("/images/puppies/byrd-card-800.webp", "Byrd, our blue boy")]))
+    assert [o["file"] for o in IC.own_images(_board(), root)] == ["/images/puppies/byrd-card-800.webp"]
+    assert IC.usage_and_alts(root)[0]["/images/puppies/byrd-card-800.webp"] == [
+        "/uk-locations/blue-staffy-puppies-leeds/"]
+
+
+def test_generic_sales_words_do_not_rank():
+    assert IC.tokens("Blue staffy puppies for sale near me: buy from a breeder now, new home available") == set()
+    assert IC.tokens("Breeders") == set()
+    words = IC.tokens("Puppies For Sale With Their Mother")
+    assert words == {"mother"}
+    pools = {"own": [], "assets": [],
+             "served": [{"file": "/images/puppies-for-sale-uk.webp"}, {"file": "/images/dam-resting.webp"}]}
+    alts = {"/images/dam-resting.webp": ["The litter's mother resting"]}
+    got = IC.rank(words, pools, alts, {}, "/x/", per_pool=3)
+    assert [c["file"] for c in got] == ["/images/dam-resting.webp"]
+
+
+def test_a_word_is_dropped_when_its_raw_or_folded_form_is_generic():
+    assert IC.tokens("this thus plus always") == set()
+    assert IC.tokens("status analysis kennels") == {"status", "analysis", "kennel"}
+
+
+def test_asset_stem_strips_only_an_image_second_extension_and_empty_stems_are_skipped(tmp_path):
+    assert IC.asset_stem("sbt-history.v2.jpg") == "sbt-history-v2"
+    assert IC.asset_stem("File name- vaccination-card-close-up .jpg .jpg") == "vaccination-card-close-up"
+    assert IC.asset_stem("File name- .jpg") == ""
+    root, assets = _tree(tmp_path)
+    (assets / "File name- .jpg").write_bytes(b"x")
+    fresh, already = IC.asset_images(assets, root)
+    assert "File name- .jpg" not in [f["asset"] for f in fresh] + already
+
+
+def test_an_upper_case_extension_is_an_image(tmp_path):
+    root, assets = _tree(tmp_path)
+    (assets / "Kennel-Visit.JPG").write_bytes(b"x")
+    fresh, _ = IC.asset_images(assets, root)
+    assert {"asset": "Kennel-Visit.JPG", "ingest_as": "/images/kennel-visit.webp"} in fresh
+
+
+def test_a_malformed_verbatim_file_is_skipped_with_a_warning(tmp_path, capsys):
+    root, _ = _tree(tmp_path)
+    (root / "data" / "verbatim" / "broken.json").write_text("{not json")
+    (root / "data" / "verbatim" / "listy.json").write_text("[1, 2]")
+    used, alts = IC.usage_and_alts(root)
+    assert alts["/images/puppy-vaccinations-uk.webp"] == ["Vaccinations", "A puppy at the vet after its vaccinations"]
+    b = _board()
+    b["meta"]["slug"] = "broken"
+    assert IC.own_images(b, root) == []
+    err = capsys.readouterr().err
+    assert "broken.json" in err and "listy.json" in err
+
+
+def test_the_report_names_the_folder_only_when_it_is_not_the_default(tmp_path, monkeypatch):
+    root, assets = _tree(tmp_path)
+    assert IC.candidates(_board(), root, assets)["assets_dir"] == "../Assets/Images"
+    monkeypatch.setattr(IC, "ASSETS_DIR", assets)
+    assert IC.candidates(_board(), root, assets)["assets_dir"] is None
+    assert IC.candidates(_board(), root, None)["assets_dir"] is None
+
+
+def test_without_dist_the_pools_still_work(tmp_path):
+    root, assets = _tree(tmp_path)
+    shutil.rmtree(root / "dist")
+    assert IC.dist_pages(root) == {}
+    assert IC.usage_and_alts(root)[0] == {}
+    r = IC.candidates(_board(), root, assets, per_pool=2)
+    assert r["pools"]["own"] == 0 and r["pools"]["served"] == 4
+    assert all(c["used_on"] == [] for s in r["slots"] for c in s["candidates"])
+
+
+def test_ties_within_a_pool_order_by_pick():
+    pools = {"own": [], "served": [{"file": "/images/van-b.webp"}, {"file": "/images/van-a.webp"}],
+             "assets": [{"asset": "van-c.jpg", "ingest_as": "/images/van-c.webp"}]}
+    got = IC.rank({"van"}, pools, {}, {}, "/x/", per_pool=3)
+    assert [c["pick"] for c in got] == ["file:/images/van-a.webp", "file:/images/van-b.webp", "assets:van-c.jpg"]
