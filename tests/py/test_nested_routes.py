@@ -226,6 +226,13 @@ def test_verbatim_migrated_body_of_a_city_page_is_its_frozen_locations_row():
     assert "Blue Staffy Puppies Manchester UK" in V.migrated_body("uk-locations/blue-staffy-puppies-manchester-uk")
 
 
+def test_verbatim_migrated_body_says_when_git_cannot_read_the_locations_file(monkeypatch):
+    # a failed `git show` is not a missing city: the message names the read, not the row
+    monkeypatch.setattr(V, "MIGRATED", "0" * 40)
+    with pytest.raises(SystemExit, match=r"cannot read data/locations\.json at 0{40} \(git show failed\)"):
+        V.migrated_body("blue-staffy-puppies-aberdeen")
+
+
 # --- pageboard.py ----------------------------------------------------------------------------
 
 def test_own_live_key_of_a_city_board_is_its_nested_route(tmp_path, monkeypatch):

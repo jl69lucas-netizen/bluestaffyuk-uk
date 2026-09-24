@@ -189,6 +189,8 @@ def migrated_body(slug):
     key, route = resolve_page(slug, ROOT)
     if route.startswith("uk-locations/"):
         rows = _show("data/locations.json")
+        if rows is None:   # the git read failed: say so, rather than blame the city
+            raise SystemExit(f"{slug}: cannot read data/locations.json at {MIGRATED} (git show failed)")
         row = next((r for r in json.loads(rows) if r.get("slug") == key), None) if rows else None
         if row is None:
             raise SystemExit(f"{slug}: no row in data/locations.json at {MIGRATED}")
