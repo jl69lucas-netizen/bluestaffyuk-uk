@@ -17,7 +17,7 @@ def make(tmp_path, recommendation, source_text="| city | 7/12 | 0 | no | high |\
     (tmp_path / "docs/research/competitors").mkdir(parents=True, exist_ok=True)
     (tmp_path / SOURCE).write_text(source_text)
     src = "\n".join(f"- `{s}`" for s in sources)
-    doc = (f"# Strategy\n\n## Strategy A — Cities\n\nAbout 99 pages.\n\n"
+    doc = (f"# Strategy\n\n## Strategy A — Cities\n\nMost of the pages.\n\n"
            f"## Recommendation\n\n{recommendation}\n\n{artifact}"
            f"## Sources\n\n{src}\n")
     p = tmp_path / "strategy.md"
@@ -46,8 +46,14 @@ def test_percentages_and_decimals_are_checked(tmp_path):
 
 
 def test_figures_outside_the_checked_sections_are_not_checked(tmp_path):
-    # "99" sits under "## Strategy A" — the options may speculate; the pick may not.
-    assert S.check(make(tmp_path, "Pick A: 7/12."), tmp_path) == []
+    # The preamble and a heading before the strategies are not checked (Known Issue 49 only
+    # adds Strategy A and B).
+    (tmp_path / "docs/research/competitors").mkdir(parents=True)
+    (tmp_path / SOURCE).write_text("7/12")
+    p = tmp_path / "s.md"
+    p.write_text("99 pages in the preamble.\n\n# S\n\n## How the research was read\n\n98 rows.\n\n"
+                 f"## Recommendation\n\n7/12\n\n## Sources\n\n- `{SOURCE}`\n")
+    assert S.check(p, tmp_path) == []
 
 
 def test_dates_code_single_digits_and_the_city_count_are_not_figures(tmp_path):
@@ -449,3 +455,87 @@ def test_r2_only_path_like_code_spans_are_sources(tmp_path):
     p.write_text("## Recommendation\n\n7/12\n\n## Sources\n\n"
                  "- `docs/research/competitors/a.md` — the `city` rows, `7/12` of them\n")
     assert S.examine(p, tmp_path)[:2] == ([], 1)
+
+
+# --- Known Issue 49 -------------------------------------------------------------------------
+
+def test_ki49_a_bare_year_says_to_put_a_cue_before_it(tmp_path):
+    out = S.check(doc(tmp_path, "Pick A: the 2027 plan.", "nothing"), tmp_path)
+    assert len(out) == 1 and "figure 2027 is in no listed source" in out[0], out
+    assert 'put a cue word before it ("in 2027"' in out[0], out
+    assert 'write it "2,027"' in out[0], out
+
+
+def test_ki49_the_year_hint_is_only_for_a_bare_19xx_or_20xx(tmp_path):
+    out = S.check(doc(tmp_path, "Pick A: 1500 words, 2,050 words, 2100 words.", "nothing"),
+                  tmp_path)
+    assert len(out) == 3 and not any("cue word" in o for o in out), out
+
+
+def test_ki49_a_heading_after_sources_is_a_problem(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12",
+            sources="- `docs/research/competitors/src.md`\n\n## Notes\n\nLater thoughts.")
+    out = S.check(p, tmp_path)
+    assert out == ["line 11: ## Notes comes after ## Sources — ## Sources must be the last "
+                   "section; move it above ## Recommendation"], out
+
+
+def test_ki49_a_pick_section_after_sources_is_flagged_and_still_checked(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12",
+            sources="- `docs/research/competitors/src.md`\n\n## Concrete Artifact\n\n| 11 |")
+    out = S.check(p, tmp_path)
+    assert any("## Concrete Artifact comes after ## Sources" in o for o in out), out
+    assert any("figure 11 " in o for o in out), out
+
+
+def test_ki49_bullets_under_a_heading_after_sources_are_not_sources(tmp_path):
+    (tmp_path / "docs/research/competitors").mkdir(parents=True)
+    (tmp_path / "docs/research/competitors/b.md").write_text("7/12")
+    p = doc(tmp_path, "Pick A: 7/12.", "nothing",
+            sources="- `docs/research/competitors/src.md`\n\n## More\n\n"
+                    "- `docs/research/competitors/b.md`")
+    out, n_sources, _ = S.examine(p, tmp_path)
+    assert n_sources == 1 and any("figure 7/12 " in o for o in out), out
+
+
+def test_ki49_a_risks_heading_inside_the_pick_names_the_rule(tmp_path):
+    out = S.check(doc(tmp_path, "Pick A: 7/12.\n\n## Risks\n\n99 pages.", "7/12"), tmp_path)
+    assert out == [
+        "line 7: unrecognised section inside the pick: ## Risks — only ## Concrete Artifact may "
+        "sit between ## Recommendation and ## Sources: make it a ### subheading, or move it "
+        "above ## Recommendation (a strategy's risks go under its ## Strategy heading)",
+        "line 9 (Risks): figure 99 is in no listed source — ## Risks is not a pick section, but "
+        "every figure between ## Recommendation and ## Sources is checked"], out
+
+
+def strategies(tmp_path, a_text, b_text, source_text="7/12"):
+    (tmp_path / "docs/research/competitors").mkdir(parents=True, exist_ok=True)
+    (tmp_path / SOURCE).write_text(source_text)
+    p = tmp_path / "s.md"
+    p.write_text(f"# S\n\n## Strategy A — Cities first\n\n{a_text}\n\n"
+                 f"## Strategy B: guides first\n\n### Risks\n\n{b_text}\n\n"
+                 f"## Recommendation\n\nPick A: 7/12.\n\n## Sources\n\n- `{SOURCE}`\n")
+    return p
+
+
+def test_ki49_figures_in_strategy_a_and_b_are_checked(tmp_path):
+    out = S.check(strategies(tmp_path, "About 99 pages.", "Around 58% of them."), tmp_path)
+    assert len(out) == 2, out
+    assert out[0].startswith("line 5 (Strategy A — Cities first): figure 99 "), out
+    assert out[1].startswith("line 11 (Strategy B: guides first): figure 58% "), out
+
+
+def test_ki49_sourced_figures_in_strategy_a_and_b_pass(tmp_path):
+    p = strategies(tmp_path, "7/12 have city pages.", "Of 12 competitors.")
+    assert S.examine(p, tmp_path) == ([], 1, 3)
+
+
+def test_ki49_a_strategy_heading_inside_the_pick_is_still_a_problem(tmp_path):
+    out = S.check(doc(tmp_path, "Pick A: 7/12.\n\n## Strategy A again\n\nMore.", "7/12"),
+                  tmp_path)
+    assert any("unrecognised section inside the pick: ## Strategy A again" in o for o in out)
+
+
+def test_ki49_the_committed_strategy_still_passes():
+    r = run(str(REPO / "docs/superpowers/sessions/2026-09-23-location-pages-strategy.md"))
+    assert r.returncode == 0, r.stdout

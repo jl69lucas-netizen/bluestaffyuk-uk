@@ -92,3 +92,13 @@ def test_the_agent_carries_its_key_rules():
         "never from old page copy in `data/locations.json` or `data/page-map.json`",  # business facts
     ):
         assert phrase in agent, phrase
+
+
+def test_the_agent_says_strategy_a_and_b_are_checked():
+    # Known Issue 49: the check now reads Strategy A and B, so the agent must not say it doesn't.
+    agent = " ".join(AGENT.read_text(encoding="utf-8").split())
+    assert "where the check does not look" not in agent
+    assert "the check reads them as well" in agent
+    assert ("checks every figure under `## Strategy A`, `## Strategy B`, `## Recommendation` "
+            "and `## Concrete Artifact`") in agent
+    assert "a figure in Strategy A or B, the Recommendation or the Concrete Artifact" in agent
