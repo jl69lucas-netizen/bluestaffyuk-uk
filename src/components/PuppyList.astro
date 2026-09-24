@@ -7,6 +7,9 @@ import { SITE, type PuppyRow } from '../lib/site';
 interface Props { heading?: 'h2' | 'none' }
 const { heading = 'h2' } = Astro.props;
 const avail = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
+// With no H2 of its own, the list sits straight under the page's H1, so each card opens at
+// H2; under the list's own H2 it opens at H3 (Known Issue 31: H1 -> H3 on /available-puppies/).
+const CardHeading = heading === 'none' ? 'h2' : 'h3';
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
 ---
 <section id="available-puppies" class="container" aria-label={heading === 'none' ? 'Available Blue Staffy puppies' : undefined} aria-labelledby={heading === 'h2' ? 'available-puppies-heading' : undefined}>
@@ -19,7 +22,7 @@ const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
           1x and 2x and stop there; the square crop the card had is now CSS. The first two
           tiles are above the fold on every viewport, so they load eager. */}
       <a href={`/available-puppies/${p.slug}/`}><Image src={puppyImage(p.card_photo)} alt={`${p.name}, ${p.colour.toLowerCase()} ${p.sex} Blue Staffy puppy for sale`} widths={[240, 280, 480, 560]} sizes="(max-width: 640px) 100vw, 280px" loading={i < 2 ? 'eager' : 'lazy'} decoding="async" style="display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:cover" /></a>
-      <div style="padding:12px 14px"><h3 style="margin:0 0 4px"><a href={`/available-puppies/${p.slug}/`}>{p.name}</a></h3>
+      <div style="padding:12px 14px"><CardHeading style="margin:0 0 4px"><a href={`/available-puppies/${p.slug}/`}>{p.name}</a></CardHeading>
         <p style="margin:0">{p.sex === 'male' ? 'Male' : 'Female'} · {p.colour} · <strong>{gbp(p.price_gbp)}</strong></p></div>
     </li>)}
   </ul>

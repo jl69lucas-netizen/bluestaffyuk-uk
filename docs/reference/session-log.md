@@ -508,7 +508,11 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     **Closes when the aspect is budgeted rather than fixed** — the photo box sized from the
     space the copy leaves, not the other way round.
 
-31. **Two blocking rows on the two data-driven routes (corrected 2026-09-22).**
+31. **Two blocking rows on the two data-driven routes (corrected 2026-09-22). First half
+    CLOSED (project 5 readiness pass):** `/available-puppies/` opens each card at H2 —
+    `src/components/PuppyList.astro` with `heading="none"` — so `sem-heading-order` is 3 rows
+    → 0 there, guarded by `tests/py/test_puppy_hub_headings.py`. The location route's anchor
+    row (the second bullet below) stays **build 5**'s.
     `test:render:pages` fails six rows on two pages project 4 did not rebuild, and the two are
     DIFFERENT failures — this entry first said both were SEM, and the close-out audit's run
     shows otherwise:
