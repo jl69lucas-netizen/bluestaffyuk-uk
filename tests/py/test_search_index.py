@@ -5,6 +5,7 @@ header at all, and no 404 or redirect check would ever notice. So the file is as
 against the three sources it is built from — data/page-map.json, data/puppies.json and the
 built pages themselves — rather than against a snapshot of itself.
 """
+import html
 import json
 import pathlib
 import sys
@@ -119,16 +120,44 @@ def test_noindex_routes_are_absent():
         assert url not in have, url
 
 
-def test_the_former_city_is_carried_verbatim_and_never_introduced():
-    """Known Issue 16. Three page-map titles still name the breeder's former city. They are
-    copied through rather than rewritten, because a result whose title does not match the
-    page it opens is its own defect — but the index must not be where a NEW one appears."""
-    from_map = {p["title"] for p in page_map() if "Glasgow" in p["title"]}
-    carried = [r for r in rows() if "Glasgow" in r["title"]]
-    assert all(r["title"] in from_map for r in carried), \
-        [r["url"] for r in carried if r["title"] not in from_map]
-    # the count is a record, not a target: it falls to zero when the page map is cleaned up
-    assert len(carried) <= len(from_map)
+def test_the_former_city_is_never_introduced_by_the_index():
+    """Known Issue 16. A row may name the breeder's former city only because the page it
+    opens prints that title itself — the index copies titles, it never writes one."""
+    if not DIST.exists():
+        pytest.skip("run npm run build first")
+    printed = {url: html.unescape(B._title(text)) for url, text in B._pages(DIST)}
+    introduced = [r["url"] for r in rows()
+                  if "Glasgow" in r["title"] and r["title"] != printed.get(r["url"])]
+    assert not introduced, introduced
+
+
+def test_a_row_carries_the_title_its_page_prints():
+    """Project 4 rebuilt eleven pages with new titles, and the index kept offering the
+    migrated page-map titles for them: `/blue-staffy-uk-breeders/` was found as "No.1 BEST
+    Glasgow Blue Staffy UK Breeders" and `/blue-staffy-blog-guides/` under the POST's title.
+    A result whose title does not match the page it opens is its own defect, so the built
+    page's <title> wins and the page map is only the fallback for a page that prints none."""
+    if not DIST.exists():
+        pytest.skip("run npm run build first")
+    printed = {url: html.unescape(B._title(text)) for url, text in B._pages(DIST)}
+    wrong = [(r["url"], r["title"], printed[r["url"]]) for r in rows()
+             if printed.get(r["url"]) and r["title"] != printed[r["url"]]]
+    assert not wrong, wrong
+
+
+def test_the_built_title_wins_over_the_page_map(tmp_path):
+    page = tmp_path / "about" / "index.html"
+    page.parent.mkdir()
+    page.write_text("<html><head><title>About Us &amp; Our Dogs</title></head><body></body></html>")
+    bare = tmp_path / "bare" / "index.html"
+    bare.parent.mkdir()
+    bare.write_text("<html><head></head><body></body></html>")
+    got = B.build(dist=tmp_path,
+                  page_map=[{"url": "/about/", "title": "Old Migrated Title", "kind": "rich"},
+                            {"url": "/bare/", "title": "Page Map Fallback", "kind": "rich"}],
+                  blog_slugs=set())
+    by_url = {r["url"]: r["title"] for r in got}
+    assert by_url == {"/about/": "About Us & Our Dogs", "/bare/": "Page Map Fallback"}
 
 
 def test_keywords_are_title_words_plus_slug_words():

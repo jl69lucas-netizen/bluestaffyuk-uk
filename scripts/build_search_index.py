@@ -11,11 +11,12 @@ Run after `astro build` (it is in the `postbuild` chain, after the sitemaps):
 
 WHAT GOES IN. One row per BUILT, INDEXABLE page — the same `noindex` rule the sitemaps use,
 read off the built HTML, so the design canvas, the search page itself and the thank-you page
-are excluded here for exactly the reason they are excluded there. Titles and kinds come from
-`data/page-map.json` for the pages it knows; the pages it does not know (the puppy pages
-from `data/puppies.json`, the blog posts from `src/content/blog/*.md`, and the three index
-routes) take the title the built page prints and a kind derived from the route, the same
-`shard_for` the sitemap generator uses.
+are excluded here for exactly the reason they are excluded there. Every row's TITLE is the
+`<title>` the built page prints (entities decoded); `data/page-map.json`'s title is only the
+fallback for a page that prints none. Kinds come from the page map for the pages it knows;
+the pages it does not know (the puppy pages from `data/puppies.json`, the blog posts from
+`src/content/blog/*.md`, and the three index routes) take a kind derived from the route, the
+same `shard_for` the sitemap generator uses.
 
 The UI groups results under Puppy, Guide, Location, Blog and Page. `Guide` is a group the
 header script supports and this index does not currently emit: `data/page-map.json` has
@@ -23,10 +24,12 @@ three kinds — `location`, `blog` and `rich` — and inventing a `Guide` class 
 slugs would put pages in a bucket no data file says they belong to. When the page map grows
 a guide kind, add it to KIND_LABEL and the group appears on its own.
 
-TITLES ARE COPIED, NOT WRITTEN. Three page-map titles still carry the breeder's former city
-(Known Issue 16). They are carried through verbatim rather than rewritten here, because a
-search result whose title does not match the page it opens is its own defect; the count is
-printed on every run and `tests/py/test_search_index.py` pins it to the page map's own.
+TITLES ARE COPIED, NOT WRITTEN. A search result whose title does not match the page it opens
+is its own defect, so the index copies the title the page prints and never writes one. Until
+2026-09-23 it copied the page map's MIGRATED titles, so the eleven pages project 4 rebuilt
+were offered under their old WordPress titles — one of them naming the breeder's former city
+(Known Issue 16). A row that still names that city does so because its page does; the count
+is printed on every run.
 
 Deterministic: rows are sorted by url, so the committed file only changes when the site does.
 """
@@ -34,6 +37,7 @@ import json
 import pathlib
 import re
 import sys
+from html import unescape
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -72,14 +76,14 @@ def build(dist=DIST, page_map=None, blog_slugs=None):
     by_url = {p["url"]: p for p in page_map}
     blog_slugs = blog_slugs if blog_slugs is not None else blog_slugs_from_content()
     rows = []
-    for url, html in _pages(dist):
-        if "noindex" in (_meta(html, "robots") or ""):
+    for url, text in _pages(dist):
+        if "noindex" in (_meta(text, "robots") or ""):
             continue
         shard = shard_for(url, blog_slugs)
         if shard is None:
             continue
         row = by_url.get(url)
-        title = (row or {}).get("title") or _title(html)
+        title = unescape(_title(text)) or (row or {}).get("title") or ""
         kind = KIND_LABEL.get((row or {}).get("kind"), SHARD_LABEL.get(shard, "Page"))
         if not title:
             continue
@@ -108,7 +112,7 @@ def main(argv=None):
     print(f"search index: {len(rows)} rows -> {OUT.relative_to(ROOT)} and dist/{OUT.name}")
     print("  " + ", ".join(f"{k} {v}" for k, v in sorted(kinds.items())))
     if carried:
-        print(f"  {carried} title(s) carry the former city verbatim from data/page-map.json "
+        print(f"  {carried} title(s) carry the former city because their built page prints it "
               "(Known Issue 16; not rewritten here)")
     return 0
 
