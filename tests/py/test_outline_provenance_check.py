@@ -149,11 +149,11 @@ def test_a_board_out_of_family_scope_is_never_examined(tmp_path, capsys):
     assert code == 0 and "examined 0 new-family pages" in out and "1 boards out of family scope" in out
 
 
-def test_the_real_repo_examines_zero_pages_and_passes(capsys):
+def test_the_real_repo_passes(capsys):
     code = OP.main([])
     out = capsys.readouterr().out
+    # Only the exit code: the count changes the day project 5 lists its first page.
     assert code == 0, out
-    assert "examined 0 new-family pages" in out
 
 
 def test_a_listed_page_that_does_not_resolve_fails_once_the_site_is_built(tmp_path, capsys):
@@ -212,6 +212,46 @@ def test_a_section_the_board_does_not_have_fails(tmp_path, capsys):
     assert code == 1 and "[outline-unknown-section]" in out and "#parks" in out
 
 
+def test_out_of_order_names_the_first_heading_that_differs(tmp_path, capsys):
+    code, out = run(site(tmp_path, page(HOMES + TRAVEL)), capsys)
+    line = next(l for l in out.splitlines() if "[outline-order]" in l)
+    assert "Terraced Streets and Small Gardens" in line
+    assert "The Road From Carlisle To Testtown" in line      # what the outline has there
+
+
+def test_out_of_order_past_the_shared_part_names_the_first_extra_item(tmp_path, capsys):
+    # The repeat of the last H3 makes the page's list longer; the shared part agrees, so the
+    # message points at the item just past it, not at the first heading on the page.
+    html = page(TRAVEL + HOMES.replace("</section>", "<h3>Fencing a Yard for a Terrier</h3></section>"))
+    code, out = run(site(tmp_path, html), capsys)
+    line = next(l for l in out.splitlines() if "[outline-order]" in l)
+    assert "Fencing a Yard for a Terrier" in line and "Road" not in line
+
+
+def test_a_page_with_no_labelled_sections_is_one_problem(tmp_path, capsys):
+    code, out = run(site(tmp_path, "<html><body><p>Coming soon.</p></body></html>"), capsys)
+    assert code == 1
+    assert out.count("[outline-no-main]") == 1 and "[outline-missing]" not in out
+    assert "no <main> with <section data-section-label> blocks found" in out
+
+
+def test_headings_with_inline_markup_and_entities_match_the_outline(tmp_path, capsys):
+    travel = (TRAVEL.replace("<h3>Setting Off Before Breakfast</h3>",
+                             "<h3>Setting Off <em>Before</em> Breakfast</h3>")
+              .replace("<h3>A Stop Above Shap Summit</h3>", "<h3>A Stop Above Shap&nbsp;Summit</h3>")
+              .replace("<h4>Water Bowl in the Footwell</h4>",
+                       "<h4>Water Bowl in the <strong>Footwell</strong></h4>"))
+    code, out = run(site(tmp_path, page(travel + HOMES)), capsys)
+    assert code == 0, out
+
+
+def test_a_crossover_heading_with_inline_markup_and_entities_fails(tmp_path, capsys):
+    html = page(TRAVEL + HOMES.replace(
+        "</section>", "<h4>Rain Gear <em>for</em> the School&nbsp;Run</h4></section>"))
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-heading-crossover]" in out
+
+
 # ── (d) duplicates within the page ─────────────────────────────────────────────────────────
 def test_a_heading_repeated_on_the_page_fails(tmp_path, capsys):
     html = page(TRAVEL + HOMES.replace("</section>", "<h4>Terraced Streets and Small Gardens</h4></section>"))
@@ -252,6 +292,59 @@ def test_a_sibling_sentence_with_the_city_swapped_fails(tmp_path, capsys):
     para = "<p>Families in Testtown often ask us about the long drive north.</p>"
     code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
     assert code == 1 and "[outline-sentence-crossover]" in out and "city swap" in out
+
+
+def _hyphen_site(tmp_path, sibling_h2):
+    """The test site with real city names: this page is Newcastle-under-Lyme's, the sibling
+    carries `sibling_h2`."""
+    board = copy.deepcopy(BOARD)
+    board["sections"][3]["heading"] = "Delivery To Newcastle-under-Lyme"
+    html = page(TRAVEL + HOMES.replace("Terraced Streets and Small Gardens",
+                                       "Delivery to Newcastle-under-Lyme"))
+    root = site(tmp_path, html, board=board)
+    (root / "data" / "locations.json").write_text(json.dumps([
+        {"slug": SLUG, "city": "Newcastle-under-Lyme"}, {"slug": SIBLING, "city": "Leeds"},
+        {"slug": "blue-staffy-puppies-hull", "city": "Hull"}]))
+    sib = root / "dist" / "uk-locations" / SIBLING / "index.html"
+    sib.write_text(SIBLING_HTML.replace("Delivery to Othertown", sibling_h2), encoding="utf-8")
+    return root
+
+
+def test_a_hyphenated_city_swapped_heading_fails(tmp_path, capsys):
+    code, out = run(_hyphen_site(tmp_path, "Delivery to Leeds"), capsys)
+    assert code == 1 and "[outline-heading-crossover]" in out and "template" in out
+
+
+def test_the_city_pattern_takes_either_separator_and_whole_words_only(tmp_path):
+    root = _hyphen_site(tmp_path, "Delivery to Leeds")
+    cities = OP.city_pattern(root)
+    assert OP.templated("delivery to newcastle-under-lyme", cities) == "delivery to {city}"
+    assert OP.templated("delivery to newcastle under lyme", cities) == "delivery to {city}"
+    assert OP.templated("delivery to hull", cities) == "delivery to {city}"
+    assert OP.templated("a hullabaloo in leedsway", cities) == "a hullabaloo in leedsway"
+
+
+def test_a_sentence_shared_with_five_pages_is_one_problem_line(tmp_path, capsys):
+    root = site(tmp_path)
+    para = "<p>We walk every puppy along the river path at dawn.</p>"
+    (root / "dist" / "uk-locations" / SLUG / "index.html").write_text(
+        page(TRAVEL + HOMES.replace("</section>", para + "</section>")), encoding="utf-8")
+    for i in range(4):
+        d = root / "dist" / f"extra-{i}"
+        d.mkdir(parents=True)
+        (d / "index.html").write_text(SIBLING_HTML, encoding="utf-8")
+    code, out = run(root, capsys)
+    lines = [l for l in out.splitlines() if "[outline-sentence-crossover]" in l]
+    assert code == 1 and len(lines) == 1, out
+    assert "(+3 more)" in lines[0]
+
+
+def test_a_sentence_inside_a_reported_passage_is_not_reported_again(tmp_path, capsys):
+    para = ("<p>Our breeding programme is small, careful and built around one family home in "
+            "the countryside where every puppy is handled daily.</p>")
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
+    assert out.count("[outline-copy-crossover]") == 1
+    assert "[outline-sentence-crossover]" not in out
 
 
 def test_a_whitelisted_line_shared_with_a_sibling_passes(tmp_path, capsys):

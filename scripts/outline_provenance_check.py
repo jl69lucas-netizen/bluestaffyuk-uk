@@ -11,6 +11,8 @@ leaves behind on a built page, for location, comparison and blog pages only
   outline-unapproved        the page is in data/facts/rebuilt.json but its board record is
                             not approved (meta.status approved, built or released)
   outline-no-board          a named slug has no board record
+  outline-no-main           the built page has no <main> holding <section data-section-label>
+                            blocks (one problem, in place of a missing-heading line each)
   outline-not-found         a named slug, or one data/facts/rebuilt.json lists while dist/ is
                             built, has no built page where its route resolves
   outline-extra             a body H2/H3 the approved outline does not carry
@@ -25,7 +27,10 @@ leaves behind on a built page, for location, comparison and blog pages only
   outline-copy-crossover    a body passage of 12+ words shared with another built page
                             (dup_content_audit.crossovers, its whitelist)
   outline-sentence-crossover a body sentence of 6+ words equal to a sentence on another built
-                            page, the city name swapped or not, outside the whitelist
+                            page, the city name swapped or not, outside the whitelist and
+                            outside every passage already reported as a copy crossover
+
+Each shared passage or sentence is ONE line, naming every page it is also on.
 
 BODY means the page's top-level `<section data-section-label>` blocks inside <main> whose id
 names a board section of a body shape. The frame is never body: a section whose board shape
@@ -133,7 +138,9 @@ def norm(text):
 
 def city_pattern(root):
     """One regex over every city in data/locations.json (as tokens), longest first. "UK" is
-    left out: it is the country, and swapping it would template half the site's headings."""
+    left out: it is the country, and swapping it would template half the site's headings.
+    The words of a name match across a space OR a hyphen: prose is tokenised (hyphens become
+    spaces) but a heading keeps them ("Delivery to Newcastle-under-Lyme"). Whole words only."""
     f = Path(root) / "data" / "locations.json"
     if not f.is_file():
         return None
@@ -144,7 +151,8 @@ def city_pattern(root):
             names.add(name)
     if not names:
         return None
-    alts = "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True))
+    alts = "|".join(r"[\s-]+".join(re.escape(w) for w in n.split())
+                    for n in sorted(names, key=len, reverse=True))
     return re.compile(rf"\b(?:{alts})\b")
 
 
@@ -334,6 +342,8 @@ def check_page(board, html, others, cities=None):
     """Every problem on one built page: [(check id, message)]. `others` is corpus()."""
     problems = []
     page = parse(html)
+    if not page.sections:
+        return [("outline-no-main", "no <main> with <section data-section-label> blocks found")]
     shapes = board_section_ids(board)
     body = []
     for s in page.sections:
@@ -369,10 +379,16 @@ def check_page(board, html, others, cities=None):
     common_got = [k for k in got if k in want]
     common_want = [k for k in want if k in got]
     if common_got != common_want:
-        first = next((i for i, (x, y) in enumerate(zip(common_got, common_want)) if x != y), 0)
-        at = common_got[first]
-        problems.append(("outline-order", f"headings are out of outline order from H{at[0]} "
-                                          f"\"{got_text.get(at) or shown.get(at)}\""))
+        # The first position where the two lists part; when the shared part agrees, the one
+        # just past it (a repeated heading makes one list longer).
+        first = next((i for i, (x, y) in enumerate(zip(common_got, common_want)) if x != y),
+                     min(len(common_got), len(common_want)))
+        at = common_got[first] if first < len(common_got) else common_want[first]
+        msg = f"headings are out of outline order from H{at[0]} \"{got_text.get(at) or shown.get(at)}\""
+        if first < len(common_got) and first < len(common_want):
+            exp = common_want[first]
+            msg += f" (the outline has H{exp[0]} \"{shown.get(exp)}\" there)"
+        problems.append(("outline-order", msg))
 
     # (d) duplicate headings within the page
     seen = {}
@@ -410,24 +426,43 @@ def check_page(board, html, others, cities=None):
     prose = "".join(p for s in body for p in s["text"]).lower()
     ws = TOKEN.findall(prose)
     sh = DUP.shingles(ws)
-    mine = sentences(prose)
+    mine = sorted(s for s in sentences(prose) if not _whitelisted_sentence(s))
+    runs = {}                                  # passage -> [pages], first-seen order
     for k, o in others.items():
         for seg in DUP.crossovers(ws, sh, o["shingles"]):
-            run = " ".join(seg)
-            problems.append(("outline-copy-crossover",
-                             f"{len(seg)} words shared with /{k}/: \"{run[:160]}\""))
-        theirs = {templated(x, cities): x for x in o["sentences"]}
-        for sent in sorted(mine):
-            if _whitelisted_sentence(sent):
-                continue
+            runs.setdefault(" ".join(seg), []).append(k)
+    for run, keys in runs.items():
+        problems.append(("outline-copy-crossover",
+                         f"{len(run.split())} words shared with {_pages(keys)}: \"{run[:160]}\""))
+    exact, swapped = {}, {}                    # sentence -> [pages]
+    # Each sentence's city template, kept only when a city was actually swapped out.
+    swaps = {x: t for x in mine if (t := templated(x, cities)) != x}
+    for k, o in others.items():
+        theirs = {templated(x, cities) for x in o["sentences"]} if swaps else set()
+        for sent in mine:
             if sent in o["sentences"]:
-                problems.append(("outline-sentence-crossover",
-                                 f"sentence also on /{k}/: \"{sent[:160]}\""))
-            elif templated(sent, cities) in theirs and cities is not None \
-                    and templated(sent, cities) != sent:
-                problems.append(("outline-sentence-crossover",
-                                 f"sentence is a city swap of one on /{k}/: \"{sent[:160]}\""))
+                exact.setdefault(sent, []).append(k)
+            elif sent in swaps and swaps[sent] in theirs:
+                swapped.setdefault(sent, []).append(k)
+    for sent in mine:
+        if sent not in exact and sent not in swapped:
+            continue
+        if any(f" {sent} " in f" {run} " for run in runs):
+            continue                           # already reported inside its passage
+        parts = []
+        if sent in exact:
+            parts.append(f"also on {_pages(exact[sent])}")
+        if sent in swapped:
+            parts.append(f"a city swap of one on {_pages(swapped[sent])}")
+        problems.append(("outline-sentence-crossover",
+                         f"sentence {'; '.join(parts)}: \"{sent[:160]}\""))
     return problems
+
+
+def _pages(keys, show=2):
+    """"/a/, /b/ (+3 more)": the pages a shared passage or sentence is also on."""
+    head = ", ".join(f"/{k}/" for k in keys[:show])
+    return head + (f" (+{len(keys) - show} more)" if len(keys) > show else "")
 
 
 # ── the run ───────────────────────────────────────────────────────────────────────────────
