@@ -456,7 +456,8 @@ first clause. Never mid-sentence, never at the end. The sole exception is a bran
 anchor on a CTA. The pack that holds this is `rules/links.md`.
 
 **Rule 59 — 5-Tier Section Creation Form**
-Every section of a 22+ section page completes the form BEFORE any copy:
+Every body section of a page — `section_target.total` of them (the competitors' highest real
+section count + 3, never fewer than 9) — completes the form BEFORE any copy:
 - **Tier 1:** number and title, word count min/max, 3–5 primary keywords with targets
 - **Tier 2:** content angle, conversational opening (75–100 words, framework-matched),
   H2–H6 structure
@@ -469,7 +470,8 @@ Full template: `.claude/skills/bsuk-seo-master-checklist/SKILL.md`.
 **Rule 60 — 4-Part Content Delivery Format**
 Every full page build delivers four documents: the competitor analysis report (8–12
 competitors, gap matrix, outranking strategy); the complete page content in markdown with
-anchors, all 22+ sections; the SEO metadata sheet (3 title options, 3 descriptions, the
+anchors, all `section_target.total` body sections (the competitors' highest real count + 3,
+never fewer than 9); the SEO metadata sheet (3 title options, 3 descriptions, the
 keyword list, schema recommendations); and the linking strategy map (internal
 source→target table plus the external authority catalogue).
 

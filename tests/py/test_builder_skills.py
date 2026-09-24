@@ -187,3 +187,16 @@ def test_the_checklist_has_no_source_site_quotas_or_us_sources():
     assert "Candidate topics" in step5 and "section_target.total" in step5
     assert 'Testimonial mode="single"' in step5
     assert 'label="Newsletter"' in CHECKLIST
+
+
+def test_the_checklist_invents_no_route_or_guarantee_and_seo_rules_derive_the_count():
+    """Rule 62: /testimonials/ is not a route. data/settings.json has guarantee_days null, so
+    every line that says "guarantee" names the setting that gates it. Rules 59 and 60 in
+    docs/reference/seo-rules.md took the source site's 22+ sections; the count is derived."""
+    assert "/testimonials/" not in CHECKLIST
+    ungated = [line for line in CHECKLIST.splitlines()
+               if "guarantee" in line.lower() and "guarantee_days" not in line]
+    assert ungated == [], ungated
+    seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
+    assert "22+" not in seo_rules
+    assert seo_rules.count("section_target.total") >= 2

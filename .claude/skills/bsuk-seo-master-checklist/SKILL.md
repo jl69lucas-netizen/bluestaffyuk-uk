@@ -109,7 +109,7 @@ Before writing ANY content, perform comprehensive competitor research.
 3. **Keyword Usage** — primary, LSI, long-tail variations used
 4. **Entity Density** — canine medical terms, locations, brands, people, statistics
 5. **Linking Strategy** — internal links (count + anchor patterns), external authority links, anchor text
-6. **Unique Selling Points** — health guarantees, pricing, delivery safety, certifications
+6. **Unique Selling Points** — health guarantees (theirs; BSUK names one only when `guarantee_days` in `data/settings.json` is set), pricing, delivery safety, certifications
 7. **Weaknesses/Gaps** — missing content, weak sections, thin coverage
 8. **Strengths** — what they do well that BSUK must match or exceed
 9. **User Experience** — navigation, CTA placement, testimonials, FAQ placement
@@ -172,7 +172,7 @@ Develop 100+ keyword variations across these categories:
 - `home-reared blue staffy for sale`
 
 **2. Long-Tail Conversational (6+ words):**
-- `where can I buy a home-reared blue staffy with health guarantee`
+- `where can I buy a home-reared blue staffy with health guarantee` — only once `guarantee_days` in `data/settings.json` is set
 - `best blue staffy breeders near me with LICENCE_CLAIM_PLACEHOLDER documentation`
 - `how much does a home-reared blue staffy puppy cost`
 
@@ -417,7 +417,7 @@ table's length. Word ranges are planning guides, not quotas.
 |---|---|---|---|
 | 1 | Hero — H1 + subheadline + key takeaways + counter snippets | 150–200 | `#top` |
 | 2 | Available Puppies & Current Litter | 400–600 | `#available-puppies` |
-| 3 | Health Guarantee & Testing | 800–1,200 | `#health-guarantee` |
+| 3 | Health Testing — the parents' tests as the evidence ledger records them, `NOT FETCHED` otherwise; a guarantee only when `guarantee_days` in `data/settings.json` is set (null today) | 800–1,200 | `#health-testing` |
 | 4 | What is a [Variant] Blue Staffy? | 200–250 | `#what-is-blue-staffy` |
 | 5 | Blue Staffy Breed History & Research | 300–400 | `#breed-history` |
 | 6 | Blue Staffy Temperament & Personality | 400–500 | `#temperament` |
@@ -642,7 +642,7 @@ The source template's "50 or more" assumed a larger site (`docs/reference/locati
 **2. Cross-Section Jump Links (examples):**
 - From Key Takeaways → Available Puppies, Health Testing, Pricing
 - From Available Puppies → Purchase Process, Delivery, Testimonials
-- From Health Guarantee → Puppy Culture, Meet Parent Puppies
+- From Health Testing → Puppy Culture, Meet Parent Puppies (a guarantee is named only when `guarantee_days` in `data/settings.json` is set)
 - From Comparison section → Blue/Blue-Brindle variant pages
 - From FAQ → Relevant sections (Care, Diet, Delivery)
 - From How to Buy → Available Puppies, Contact, Delivery
@@ -779,8 +779,8 @@ Leave clearly labeled placeholders for all images/videos:
 ❌ Bad: "Blue Staffy pups are available for sale. They are smart puppies. Contact us."
 ✅ Good: "Looking for a family dog who wants to be wherever you are? Our Blue Staffy puppies are home-raised by Lisa Bright in Carlisle, Cumbria, and go home at £1,500 or £1,700."
 
-❌ Bad: "Our puppies have health guarantees."
-✅ Good: "What if your puppy develops an underlying congenital health issue later in life? BlueStaffyUK provides a written health guarantee (its length is NOT FETCHED) — backed by the parent health tests the ledger records and annual canine vet health certificates — covering our entire breeding bloodline."
+❌ Bad: "Our puppies have health guarantees." (a bare claim — and BSUK names a guarantee only when `guarantee_days` in `data/settings.json` is set; it is null today)
+✅ Good: "What if your puppy develops an underlying congenital health issue later in life? Start with the parents: we show you the health tests the evidence ledger records for them, and we claim nothing it does not."
 
 #### B. Humor Rules (Apply to ALL Pages — Rule 36)
 
@@ -891,7 +891,7 @@ Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | Blu
 > Blue Staffy for Sale | What's the Best Blue Staffy Breeder in UK? | NOT FETCHED Home-Reared Pups Available Now | BlueStaffyUK - Carlisle — Family-Owned Kennel Specialists
 
 **🛡️ TRUST/HEALTH TONE:**
-> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | [DNA-Tested Parents — only if the ledger records it], LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — [count NOT FETCHED] Families Trust Our Home-Bred Guarantee
+> Blue Staffy for Sale | Are Blue Staffies LICENCE_CLAIM_PLACEHOLDER Documented? | [DNA-Tested Parents — only if the ledger records it], LICENCE_CLAIM_PLACEHOLDER Licenced vs Unverified Listings | BlueStaffyUK - Carlisle — [count NOT FETCHED] Families Trust Our Home-Bred Pups
 
 **Meta Description (Rule 23):**
 - Standard: max 155 characters
@@ -1166,7 +1166,6 @@ Canonical BSUK URL list — verify in `src/pages/` before linking. All URLs use 
 - `https://SITE_URL_PLACEHOLDER/`
 - `https://SITE_URL_PLACEHOLDER/contact-us/`
 - `https://SITE_URL_PLACEHOLDER/blog/`
-- `https://SITE_URL_PLACEHOLDER/testimonials/`
 - `https://SITE_URL_PLACEHOLDER/privacy-policy/`
 - `https://SITE_URL_PLACEHOLDER/sitemap.xml`
 - `https://SITE_URL_PLACEHOLDER/about/`
