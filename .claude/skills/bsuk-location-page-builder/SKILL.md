@@ -41,7 +41,7 @@ Everything here comes from a file, never from memory:
 | Reviews | `data/reviews.json` — three real reviews, no others exist |
 | home-raised: every puppy is raised in our home, not a kennel | `data/faq.json` → row `about-home-raised` |
 | FAQ base set | `data/faq.json` |
-| The Staffordshire Bull Terrier is not a banned breed in the UK — not one of the types the Dangerous Dogs Act 1991 bans | the government's list, https://www.gov.uk/control-dog-public/banned-dogs (a row of `docs/reference/external-link-library.md`), linked where the line is stated; the user's ruling on Known Issue 46 (2026-09-23) |
+| The Staffordshire Bull Terrier is not a banned breed in the UK — not one of the types the Dangerous Dogs Act 1991 bans | the government's list, https://www.gov.uk/control-dog-public/banned-dogs (a row of `docs/reference/external-link-library.md`), linked where the line is stated; the user's ruling on Known Issue 46 (2026-09-23). Keep to "not a banned breed" / "not on the government's list"; never say any Staffy-type dog is legal or cannot be seized — the list bans by what a dog looks like, not by breed name |
 
 Not established, and therefore never written as a fact: a licence, a registration or a
 council permission (`LICENCE_CLAIM_PLACEHOLDER`), a statute or by-law other than the

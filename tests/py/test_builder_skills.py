@@ -446,12 +446,23 @@ def test_the_banned_breed_line_is_the_one_statute_line_a_city_page_may_state():
     assert pageboard.normalise_url(BANNED_DOGS) in pageboard.library_urls()
     regulations = next(l for l in TEMPLATE.splitlines() if l.startswith("| Regulations |"))
     facts = section(LOCATION, "## The facts a city page may state")
+    # The agent's own bullet, not the whole file: the file has the stand-in ten times over.
+    may_not = LOCATION_AGENT.split("**What you may NOT write into a city page:**", 1)[1]
+    start = may_not.index("- A council licence, a by-law or an Act.")
+    end = may_not.find("\n- ", start + 1)
+    bullet = may_not[start:end if end != -1 else len(may_not)]
     for where, text in (("template", regulations), ("builder skill", facts),
-                        ("location agent", LOCATION_AGENT)):
+                        ("location agent", bullet)):
         flat = norm(text)
         assert BANNED_DOGS in flat, where
         assert "not a banned breed" in flat, where
         assert "Known Issue 46" in flat, where
         # The ruling reaches ONE line: every other statute line keeps the stand-in.
         assert "LEGAL_CLAIM_PLACEHOLDER" in flat, where
+    # Rule 8 of the agent's "Rules You Must Follow" is a blanket stand-in rule; it must name
+    # the exception, or it overrides the ruling.
+    rule_8 = next(l for l in LOCATION_AGENT.splitlines()
+                  if l.startswith("8. **Licence and legal claims stay placeholders**"))
+    assert "LEGAL_CLAIM_PLACEHOLDER" in rule_8
+    assert "banned-breed line" in rule_8 and "Known Issue 46" in rule_8, rule_8
     assert "waits for the user's ruling" not in CHECKLIST
