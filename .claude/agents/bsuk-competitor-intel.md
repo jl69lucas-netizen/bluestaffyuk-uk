@@ -27,7 +27,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 ## What to fetch per competitor
 
 1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
-2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page, each the one with the fewest path segments, then the shortest path, then the first URL in order; a slot that is `null` is not scraped. Six scrapes at most.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page, each the one with the fewest path segments, then the shortest path, then the URL in alphabetical order; a slot that is `null` is not scraped. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
@@ -102,7 +102,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | Order | Type | A whole word of the path |
 |---|---|---|
 | 1 | `comparison` | `vs`, `versus` |
-| 2 | `blog` | `blog`, `news`, `articles`, `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
+| 2 | `blog` | `blog`, `news`, `articles`, `post`, `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
 | 3 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
 | 4 | `price` | `price`, `pricing`, `cost`, `fee` |
 | 5 | `health` | `health`, `healthcare`, `dna`, `test`, `testing`, `tested` |
@@ -114,7 +114,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. A post is found by the `blog` row's own words and dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Record the folder as `blog.values.post_folder` and name it in the readable report. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -122,12 +122,13 @@ import html, json, pathlib, re, sys
 from urllib.parse import parse_qs, urlparse
 urls = json.load(open(sys.argv[1]))
 bsuk = "--bsuk" in sys.argv[2:]
+folders = [a.split("=", 1)[1].strip("/").lower() for a in sys.argv[2:] if a.startswith("--post-folder=")]
 rows = json.load(open("data/locations.json"))
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
     ("comparison", [w("vs|versus")]),
-    ("blog", [w("blog|news|articles|posts"), r"/(19|20)\d\d/"]),
+    ("blog", [w("blog|news|articles|post"), r"/(19|20)\d\d/"]),
     ("city", [w(re.escape(s)) for s in slugs]),
     ("price", [w("price|pricing|cost|fee")]),
     ("health", [w("health|healthcare|dna|test|testing|tested")]),
@@ -149,7 +150,7 @@ def title_slug(path):
     return "/" + re.sub(r"[^a-z0-9]+", "-", words.lower()).strip("-") + "/"
 def paged(u):  # one page of a paginated list: /<list>/page/2/, ?page=2, ?paged=2, ?pg=2
     p = urlparse(u)
-    return bool(re.search(r"/page/[0-9]+(/|$)", p.path.lower())) or any(
+    return bool(re.search(r"/page/\d+(/|$)", p.path.lower())) or any(
         k.lower() in ("page", "paged", "pg") and v[0].isdigit() for k, v in parse_qs(p.query).items())
 def typed(path):
     seg = path.strip("/").split("/")[-1]
@@ -171,14 +172,17 @@ for u in urls:
     if ((p.hostname or ""), path.rstrip("/")) in seen:  # the same page twice (a slash or a query apart)
         continue
     seen.add(((p.hostname or ""), path.rstrip("/")))
-    t = typed(path)
+    infolder = any(path.strip("/") == f or path.strip("/").startswith(f + "/") for f in folders)
+    t = "blog" if infolder else typed(path)
     if t:
         counts[t] = counts.get(t, 0) + 1
         typed_urls.append((t, u))
     segs = [x for x in path.split("/") if x]
-    if t == "blog" and segs and not re.fullmatch(r"(blog|news|articles|posts)s?|\d+", segs[-1]) \
-            and not {"category", "tag", "author"} & set(segs):
-        posts += 1  # a post: not the blog index, a category, tag or author page, or a month
+    blogish = infolder or any(re.search(pat, path) for pat in dict(TABLE)["blog"])  # the blog row, whatever the type
+    if blogish and segs and path.strip("/") not in folders \
+            and not re.fullmatch(r"(blog|news|articles|post)s?|\d+", segs[-1]) \
+            and not {"category", "tag", "author", "solutions", "help", "support"} & set(segs):
+        posts += 1  # a post: not the blog index, a category, tag, author or help-centre page, or a month
 depth = lambda u: (len([x for x in urlparse(u).path.split("/") if x]), len(urlparse(u).path), u)
 key_pages = {}
 for slot, types in SLOTS:  # the key pages to scrape: per slot, fewest path segments, then shortest path, then the URL

@@ -44,7 +44,7 @@ slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" 
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
     ("comparison", [w("vs|versus")]),
-    ("blog", [w("blog|news|articles|posts"), r"/(19|20)\d\d/"]),
+    ("blog", [w("blog|news|articles|post"), r"/(19|20)\d\d/"]),
     ("city", [w(re.escape(s)) for s in slugs]),
     ("price", [w("price|pricing|cost|fee")]),
     ("health", [w("health|healthcare|dna|test|testing|tested")]),

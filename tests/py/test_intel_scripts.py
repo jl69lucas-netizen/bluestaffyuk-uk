@@ -113,3 +113,28 @@ def test_bsuk_location_rows_count_as_cities_only_for_a_real_city(tmp_path):
             f"{b}/blue-staffy-puppies-uk/", f"{b}/staffy-breeding-dogs-glasgow/"]
     assert classify(tmp_path, urls, "--bsuk")["page_types"] == {"city": 2, "listing": 1}  # the UK hub is a listing
     assert classify(tmp_path, urls)["page_types"] == {"city": 3, "listing": 1}  # a competitor's paths: no row rule
+
+
+def test_a_comparison_post_is_still_a_post(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/blog/staffy-vs-pitbull/", f"{x}/2024/05/12/staffy-vs-bully/"])
+    assert d["page_types"] == {"comparison": 2}   # typed by the first row that matches ...
+    assert d["posts"] == 2                        # ... but a post by the blog row's own patterns
+
+
+def test_post_folders_count_and_help_centre_articles_do_not(tmp_path):
+    # URL shapes from docs/research/competitors/trojanstaffuk.json and pets4homes.json
+    trojan = "https://www.trojanstaffuk.com"
+    d = classify(tmp_path, [f"{trojan}/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide",
+                            f"{trojan}/post/", f"{trojan}/staffy-puppies"])
+    assert d["page_types"] == {"blog": 2, "listing": 1}
+    assert d["posts"] == 1                        # /post/ itself is the index
+    p4h = "https://www.pets4homes.co.uk"
+    urls = [f"{p4h}/pet-advice/homemade-dog-deterrents-that-are-safe-for-your-dog.html", f"{p4h}/pet-advice/",
+            f"{p4h}/sale/puppies/staffordshire-bull-terrier/",
+            "https://support.pets4homes.co.uk/en/support/solutions/articles/47001254375-advice-for-buying-and-advertising-pets"]
+    d = classify(tmp_path, urls)
+    assert d["posts"] == 0                        # the help-centre article is never a post; the folder is unseen
+    d = classify(tmp_path, urls, "--post-folder=pet-advice")
+    assert d["page_types"] == {"blog": 3, "listing": 1}  # the named folder is blog before the table
+    assert d["posts"] == 1                        # its index is not a post; the help-centre article still is not

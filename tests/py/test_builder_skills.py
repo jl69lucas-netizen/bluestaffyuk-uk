@@ -202,7 +202,7 @@ def test_the_checklist_invents_no_route_or_guarantee_and_seo_rules_derive_the_co
     assert seo_rules.count("section_target.total") >= 2
 
 
-SITE_ROUTE = re.compile(r"(?<![\w./~>…-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{])")
+SITE_ROUTE = re.compile(r"(?<![\w./~>…-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{\\])")
 
 #: Paths that are not pages and never will be, each for a stated reason. Every other
 #: site-root path a skill writes must be a page (see known_routes()).
@@ -312,7 +312,8 @@ def test_the_agent_route_guard_spares_competitor_paths_and_scratch_files():
     text = ("posts at %s/how-to-choose-a-puppy/\n" % domain
             + "cp x /tmp/img-staging/y\n"
             + "a dated segment (`/2025/09/`)\n"
-            + "CTA → /contact/\n")
+            + "CTA → /contact/\n"
+            + 'paged = re.search(r"/page/\\d+(/|$)", path)\n')  # a regex fragment is not a route
     assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4)]
 
 
