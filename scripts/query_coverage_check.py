@@ -60,6 +60,9 @@ FRAME_IDS = {"top", "key-takeaways", "newsletter"}
 FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 RAW = {"script", "style", "template"}   # their text is never page text
+# The spend guard's two ledgers (scripts/query_augment.py) share data/queries/ with the
+# question files; neither is one.
+LEDGERS = {"spend.json", "dashboard.json"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 
@@ -283,7 +286,7 @@ def main(argv=None):
     problems = [bad] if bad else []
     awaiting = []
     for f in sorted((root / "data/queries").glob("*.json")):
-        if f.name == "spend.json":
+        if f.name in LEDGERS:
             continue
         try:
             q = json.loads(f.read_text(encoding="utf-8"))

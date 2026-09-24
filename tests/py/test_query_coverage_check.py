@@ -396,3 +396,15 @@ def test_a_malformed_rebuilt_json_is_a_problem_not_a_crash(tmp_path, text):
     r = run(tmp_path)
     assert r.returncode == 1 and "Traceback" not in r.stderr
     assert "data/facts/rebuilt.json: unreadable" in r.stdout
+
+
+def test_main_ignores_the_spend_log_and_the_dashboard_readings(tmp_path):
+    # data/queries/ also holds the spend guard's two ledgers; neither is a question file
+    build(tmp_path, qfile())
+    (tmp_path / "data/queries/spend.json").write_text("[]")
+    (tmp_path / "data/queries/dashboard.json").write_text(json.dumps([{
+        "date": "2026-09-23", "balance_usd": 0.96785, "opening_balance_usd": 1.0,
+        "covers_log_entries": 0, "source": "DataForSEO dashboard balance stated by the user"}]))
+    r = run(tmp_path)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "examined 1 pages (0 not built, 0 awaiting rebuild); 0 problems" in r.stdout
