@@ -338,6 +338,16 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     `/uk-locations/` (`src/pages/uk-locations/index.astro`), `/search/` (two
     `data/page-map.json` titles), and the 28 location bodies. Spec §7.3's literal grep is
     therefore not yet 0; the gate report records it as the one partial FAIL.
+    **Update (project 5 readiness pass): the templates outside the 28 location bodies are
+    done.** `/available-puppies/`, its six puppy pages (meta description and delivery row), the
+    unused H2 branch of `src/components/PuppyList.astro` and `/uk-locations/` (meta description
+    and intro) print `SITE.address.city` from `data/settings.json`, and
+    `tests/py/test_former_city_templates.py` keeps the former city out of `src/` except in a
+    route that names it. `/search/` now shows each page's own built title
+    (`scripts/build_search_index.py` no longer copies the migrated titles in
+    `data/page-map.json`), so the one index row still naming the former city is the outreach
+    page, whose built title does. What remains is **build 5**'s: the 28 location bodies and
+    their `data/locations.json` rows (including the former street address, Known Issue 55).
 
 17. **There is no query-augmentation skill.** `.claude/skills/bsuk-location-page-builder/SKILL.md`
     was rebuilt in project 3 around a per-city competitor scan, and it names the
