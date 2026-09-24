@@ -43,7 +43,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## STEP 0: THE ONE-COMMAND SWEEP (do this first)
 
-For any "is the site/system healthy?" request, run the full sweep:
+For any "is the site healthy?" request, run the full sweep:
 
 ```bash
 bash scripts/health-sweep.sh            # full sweep (runs npm run build)

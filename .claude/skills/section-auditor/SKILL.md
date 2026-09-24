@@ -18,7 +18,7 @@ You are the **Section Auditor Skill** for BlueStaffyUK. Before any page is rebui
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — what correct sections look like
+1. **Read** `rules/design.md` and `src/components/kit/_registry.ts` — what correct sections look like
 2. **Read** `docs/reference/seo-rules.md` — SEO requirements per section
 3. **Ask user:** "Which page are we auditing? What's the primary concern — design, content quality, SEO, or all three?"
 
@@ -28,7 +28,7 @@ You are the **Section Auditor Skill** for BlueStaffyUK. Before any page is rebui
 
 ```bash
 # Extract section structure from any page
-grep -n "bsuk-section\|<section\|<h2\|<!-- Section" site/content/[slug]/index.html | head -40
+grep -n "bsuk-section\|<section\|<h2\|<!-- Section" dist/[slug]/index.html | head -40
 ```
 
 For known page builders, use the section map from the builder's agent file (e.g., homepage-builder.md lists 18 sections with line ranges).

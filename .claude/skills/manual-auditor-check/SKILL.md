@@ -7,7 +7,7 @@ allowed-tools: [Read, Write, Bash]
 # Manual Auditor Check — Final QA Gate
 
 ## Overview
-The last gate before a page batch ships. Two halves: a **mechanical auditor** (`scripts/interior_29_audit.py`) that scores the objective checks over rendered `dist/` HTML in <1s, and a **copy-paste manual checklist** for the ~6 subjective items a script can't judge (voice, humor, Flesch, non-commodity detail, tone, brand-protocol naming). Distilled from the 29-check final-QA pass (`sessions/2026-06-14-interior-29-check-audit.md`).
+The last gate before a page batch ships. Two halves: a **mechanical auditor** (`scripts/final_page_audit.py`, plus `scripts/page_hardening_scan.py` and `scripts/evidence_audit.py`) that scores the objective checks over rendered `dist/` HTML, and a **copy-paste manual checklist** for the ~6 subjective items a script can't judge (voice, humor, Flesch, non-commodity detail, tone, brand-protocol naming). Distilled from the source repo's 29-check final-QA pass, which was not ported.
 
 **Core principle:** *Never report a machine "fail" as a defect until you've checked it against real `dist/` output.* On its first run this auditor produced **31 false positives**; all 4 root causes are baked in below. Verify, then triage.
 
@@ -20,9 +20,11 @@ The last gate before a page batch ships. Two halves: a **mechanical auditor** (`
 ## Quick Start (mechanical half)
 ```bash
 npx astro build                       # MUST build first — auditor reads dist/, source greps lie
-python3 scripts/interior_29_audit.py  # per-page blocks + a "CHECK ROLL-UP" of who fails each check
+python3 scripts/final_page_audit.py <slug> <slug>   # per-page findings; --fail-on-error to exit non-zero
+python3 scripts/page_hardening_scan.py              # page-hardening checks over dist/
+python3 scripts/evidence_audit.py <slug>             # term budgets, claim binding, NOT FETCHED in prose
 ```
-Edit the `SLUGS` list at the top of the script to point at the pages you're auditing.
+Pass the slugs you are auditing (`index` is the homepage).
 
 ## The 4 False-Positive Traps (DO NOT fabricate these as defects)
 The auditor's heuristics were hardened against these — but if you ever hand-audit or extend it, they bite again:

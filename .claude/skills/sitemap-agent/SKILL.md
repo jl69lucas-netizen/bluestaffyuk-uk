@@ -1,6 +1,6 @@
 ---
 name: sitemap-agent
-description: Regenerates all BSUK sitemap XML via scripts/generate_sitemaps.py (the single source of truth — never hand-edit). Validates XML, checks for phantom/broken URLs, and submits to IndexNow + GSC. The generator writes BOTH public/ and site/content/ because deploy.yml copies site/content over public at build time.
+description: Regenerates BSUK's sitemaps with scripts/generate_sitemaps.py (never hand-edited) and validates them with scripts/sitemap_check.py — the page, post, location, puppy and video shards and sitemap_index.xml, written into dist/ after every build. Submitting them to IndexNow or Search Console is bsuk-indexing's job and inactive until project 6.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -12,157 +12,52 @@ allowed-tools: [Read, Write, Bash]
 
 ## Purpose
 
-You are the **Sitemap Agent Skill** for BlueStaffyUK. You keep all sitemap XML files accurate and up to date — adding new pages, updating `<lastmod>` dates, removing dead URLs, and submitting changed sitemaps to GSC.
-
-A stale sitemap means new pages don't get indexed. Run this skill after every page addition or rebuild.
-
----
-
-## On Startup — Read These First
-
-1. **Read** `docs/reference/seo-rules.md` — canonical URL format
-2. **Read** `docs/reference/site-overview.md` — domain, sitemap locations
-3. **Default action:** run the generator (below). Only ask the user if they want something other than a full regenerate (e.g. validation-only or audit).
+You are the **Sitemap Agent Skill** for BlueStaffyUK. Keep the sitemaps true to the build:
+every indexable page in exactly one shard, every `noindex` page in none. A stale sitemap means
+a new page is found late; a wrong one submits a page that asks not to be indexed.
 
 ---
 
-## ⚠️ Do NOT hand-edit sitemap XML
+## How the sitemaps are made
 
-`scripts/generate_sitemaps.py` is the **single source of truth**. It enumerates
-live pages from `src/pages/`, classifies them into shards, sets priorities +
-today's `lastmod`, and guarantees zero phantom/duplicate URLs. Hand-editing a
-shard will be silently overwritten the next time the generator runs.
+`scripts/generate_sitemaps.py` reads the BUILT site in `dist/` — never `src/` — and writes into
+`dist/`:
 
-**Critical deploy fact (the 2026-06-05 clobber bug):** `.github/workflows/deploy.yml`
-copies `site/content/*.xml` → `public/*.xml` *before* the Astro build. So the
-generator writes **both** `public/` and `site/content/` (via `write_both()`),
-keeping them byte-identical. If you ever write only one location, the deploy
-will revert your sitemap to the other (stale) copy — this is exactly what kept
-live stuck on a 3-week-old sitemap. After running the generator, always confirm:
-```bash
-for f in page-sitemap local-sitemap post-sitemap sitemap_index sitemap; do
-  cmp -s public/$f.xml site/content/$f.xml && echo "OK $f" || echo "DRIFT $f"
-done
-```
-(See memory `project_sitemap_clobber_bug`.)
+| File | Contents |
+|---|---|
+| `page-sitemap.xml` | the homepage and every indexable page that is not a post, a city page or a puppy page |
+| `post-sitemap.xml` | the blog posts (slugs from `src/content/blog/`) |
+| `location-sitemap.xml` | the indexable `/uk-locations/<slug>/` pages |
+| `puppy-sitemap.xml` | the `/available-puppies/<slug>/` pages |
+| `video-sitemap.xml` | every indexable page that carries a YouTube embed, with each video id |
+| `sitemap_index.xml` | the index of the shards above that have entries |
 
----
-
-## Sitemap Shard Map (generated, not hand-maintained)
-
-| File (written to BOTH public/ + site/content/) | Contents |
-|------|---------|
-| `page-sitemap.xml` | homepage + `/blog/` + all non-location, non-blog pages |
-| `local-sitemap.xml` | location/geo pages (`/uk-locations/<region>/` + GEO_BUY) |
-| `post-sitemap.xml` | blog posts (`src/pages/blog/*`) |
-| `video-sitemap.xml` | YouTube embeds — **only file still hand-maintained** (generator preserves it in the index, doesn't rewrite it) |
-| `sitemap_index.xml` | master index → the 4 shards above |
-| `sitemap.xml` | mirror of the index (some crawlers fetch `/sitemap.xml`) |
-
-Priority/changefreq tiers live in `generate_sitemaps.py` (`TIER_10/09/03`, `page_meta()`),
-not in this doc — edit the script if tiers change.
+A shard with no entries is not written, a `noindex` page is left out, and the thank-you page
+is never listed. `postbuild` runs the generator after `npm run build`; `npm run sitemaps` runs
+it on its own. `public/` holds no sitemap and nothing in `dist/` is committed. `lastmod` and
+the rest of the shape are the generator's (read its docstring) — change the script, never the
+XML.
 
 ---
 
-## URL Format Rules
+## Run and validate
 
-> ⚠️ **WordPress/Simply Static export bug:** The Rank Math sitemap plugin exports relative URLs (`/slug/`). ALWAYS convert to absolute before deploying. Batch fix: `sed -i '' 's|<loc>/|<loc>https://SITE_URL_PLACEHOLDER/|g' file.xml` (also run for `<image:loc>`).
-
-```xml
-<!-- Correct: absolute URL, https, trailing slash -->
-<url>
-  <loc>https://SITE_URL_PLACEHOLDER/[slug]/</loc>
-  <lastmod>YYYY-MM-DD</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
-```
-
-**Priority values:**
-- Homepage: `1.0`
-- Tier 1 pages (breed guide, buying guide, available puppies): `0.9`
-- Tier 2 pages (health pages, comparisons): `0.8`
-- Location pages: `0.8`
-- Supporting pages (about, contact, FAQ): `0.7`
-- Hub pages: `0.8`
-
-**Changefreq values:**
-- Homepage: `weekly`
-- Content pages (last edited rarely): `monthly`
-- Location pages: `monthly`
-- Pricing pages: `weekly` (prices change)
-
----
-
-## Operations
-
-### Add / remove a page, or update lastmod — all one command
-The generator reads `src/pages/` directly, so adding/removing a page dir is
-automatically reflected. There is no per-page edit step.
 ```bash
-python3 scripts/generate_sitemaps.py
-```
-Expected output ends with `phantom URLs (loc with no dir): NONE ✓`. If a slug
-needs a non-default priority/changefreq, edit the `TIER_*` sets or `page_meta()`
-in the script, then re-run.
-
-### Validation (after every run)
-```bash
-# 1. public/ and site/content/ must be byte-identical (clobber guard)
-for f in page-sitemap local-sitemap post-sitemap sitemap_index sitemap; do
-  cmp -s public/$f.xml site/content/$f.xml && echo "OK $f" || echo "DRIFT $f"
-done
-# 2. XML parses
-for f in page-sitemap local-sitemap post-sitemap sitemap_index sitemap; do
-  python3 -c "import xml.etree.ElementTree as ET; ET.parse('public/$f.xml')" && echo "valid $f"
-done
-# 3. no duplicate URLs
-grep -hoE "<loc>[^<]+" public/page-sitemap.xml public/local-sitemap.xml public/post-sitemap.xml | sort | uniq -d
+npm run build                       # postbuild regenerates the sitemaps
+python3 scripts/sitemap_check.py    # also a step of npm run check:all
 ```
 
----
-
-## After Any Sitemap Change
-
-1. Run the validation block above (identical + valid + no dupes).
-2. Commit + push (push = deploy):
-```bash
-git add scripts/generate_sitemaps.py public/*.xml site/content/*.xml
-git commit -m "fix(seo): regenerate sitemaps — <reason>"
-git push origin main
-```
-3. **Verify it reached production** — the deploy must serve today's `lastmod`,
-   not the old `site/content` bytes:
-```bash
-curl -s -A "Mozilla/5.0" "https://SITE_URL_PLACEHOLDER/sitemap_index.xml?cb=$RANDOM" | grep -m1 lastmod
-```
-4. **Submit to IndexNow** (covers Bing/Yandex/Seznam — NOT Google). Key file
-   `INDEXNOW_KEY_PLACEHOLDER.txt` is live at the domain root:
-```bash
-python3 - <<'PY'
-import json,urllib.request,re
-urls=sorted({u for f in ["public/page-sitemap.xml","public/local-sitemap.xml","public/post-sitemap.xml"]
-            for u in re.findall(r"<loc>(.*?)</loc>",open(f).read())})
-body=json.dumps({"host":"SITE_URL_PLACEHOLDER","key":"INDEXNOW_KEY_PLACEHOLDER",
-  "keyLocation":"https://SITE_URL_PLACEHOLDER/INDEXNOW_KEY_PLACEHOLDER.txt","urlList":urls}).encode()
-for ep in ("https://api.indexnow.org/indexnow","https://www.bing.com/indexnow"):
-    r=urllib.request.urlopen(urllib.request.Request(ep,data=body,
-      headers={"Content-Type":"application/json; charset=utf-8"},method="POST"),timeout=30)
-    print(ep,"->",r.status,f"({len(urls)} URLs)")
-PY
-```
-5. **For Google:** IndexNow does nothing — re-submit `sitemap_index.xml` in GSC
-   (Search Console → Sitemaps). A fresh, valid sitemap clears "temporary
-   processing error". "Crawled – currently not indexed" is Google's quality
-   call, not a sitemap bug — it resolves over weeks, not from a resubmit.
+`scripts/sitemap_check.py` fails on a shard missing from the index, a URL listed twice, a
+listed page that is `noindex` or not built, an indexable page in no shard, and a page carrying
+a YouTube embed that is missing from the video shard. `SITE_URL` is unset until project 6, so
+every `<loc>` carries `SITE_URL_PLACEHOLDER` today; that is expected, and the release guard
+(`scripts/release_guard.sh`) stops it shipping.
 
 ---
 
 ## Rules
 
-1. **Never hand-edit a shard** — run the generator; hand edits get overwritten.
-2. **Always write both `public/` + `site/content/`** — the generator does this; never bypass it (deploy clobbers otherwise).
-3. **Absolute URLs, trailing slash** — enforced by the generator.
-4. **Validate identical + parse + no-dupes after every run.**
-5. **Verify production serves today's lastmod** — local-correct ≠ live-correct.
-6. **IndexNow ≠ Google** — submit to IndexNow for Bing/Yandex; use GSC for Google.
+1. **Never hand-edit a shard** — the next build overwrites it.
+2. **Validate the build, not the source** — `python3 scripts/sitemap_check.py` after every build.
+3. **Indexability lives on the page** — a page that must not be indexed says so in its own robots meta, and the generator follows it.
+4. **Submission is not this skill's** — IndexNow and Search Console are `.claude/skills/bsuk-indexing/SKILL.md`, inactive until project 6. There is no push and no deploy before then.

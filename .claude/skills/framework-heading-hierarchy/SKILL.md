@@ -15,7 +15,7 @@ allowed-tools: [Read, Write, Bash]
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -264,14 +264,14 @@ Run this on every page before publishing or after any heading changes:
 **Audit commands:**
 ```bash
 # List all headings in order
-grep -n "<h[1-6]" site/content/[slug]/index.html | head -80
+grep -n "<h[1-6]" dist/[slug]/index.html | head -80
 
 # Count each level
-grep -c "<h5" site/content/[slug]/index.html   # must be ≥5
-grep -c "<h6" site/content/[slug]/index.html   # must be ≥5
+grep -c "<h5" dist/[slug]/index.html   # must be ≥5
+grep -c "<h6" dist/[slug]/index.html   # must be ≥5
 
 # Detect skipped levels (prints any H-jump greater than 1)
-grep -oP '(?<=<)[hH][1-6]' site/content/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && $1 > prev+1 {print "SKIP DETECTED: H"prev" → H"$1} {prev=$1}'
+grep -oP '(?<=<)[hH][1-6]' dist/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && $1 > prev+1 {print "SKIP DETECTED: H"prev" → H"$1} {prev=$1}'
 ```
 
 ---

@@ -63,7 +63,7 @@ Fold the four moves into first-person BlueStaffyUK voice, entity first, purpose 
 
 Rules:
 - **Entity leads the sentence** (also satisfies the Link-First anchor rule when the entity is a link).
-- **Evidence must be Ledger-verified** — only claims in the Verified-Claim Ledger (`bsuk-entity-incorporation-agent.md` + `sessions/2026-06-03-homepage-entity-map.md`). Never invent a test, cert, or count.
+- **Evidence must be ledger-verified** — only claims `data/quality/evidence-ledger.json` records with a proof on file, and facts in `data/*.json`. A row at proof `NOT FETCHED` (the parents' DNA results today) is not evidence. Never invent a test, cert, or count.
 - **Benefit is buyer-facing**, not seller-facing ("you bring home…" not "we offer…").
 - **Purpose names the decision** the buyer can now make (choose, verify, reserve, rule out, budget).
 - Licensing framing stays accurate: **LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliant, mum always seen with the litter at our home.**

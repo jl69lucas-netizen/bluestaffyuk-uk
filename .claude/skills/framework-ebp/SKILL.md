@@ -16,7 +16,7 @@ allowed-tools: [Read, Write, Bash]
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ## What EBP Is
@@ -132,7 +132,7 @@ Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price is the lock
 
 ```bash
 # Find pages with unverified claims
-grep -n "we guarantee\|health tested\|best\|top\|premier\|reputable\|home-raised" site/content/[slug]/*.md | head -20
+grep -n "we guarantee\|health tested\|best\|top\|premier\|reputable\|home-raised" dist/[slug]/index.html | head -20
 # For each match: is there a named evidence source within 2 sentences?
 ```
 

@@ -22,7 +22,7 @@ This skill is **broader** than `manual-auditor-check` and deliberately **covers 
 ## BSUK-Safety (guardrail — CLAUDE.md already enforces most of this)
 Subagents **inherit the project `CLAUDE.md`**, so an un-guided auditor is already BSUK-safe. This block is a **checklist to confirm, not a re-teach**:
 - **Palette comes from `rules/design.md`** — refer to the tokens, never hardcode a colour in a recommendation.
-- **No visible date** applies to the **site page** the audit recommends changes to — freshness lives in schema `dateModified` only. It does **not** apply to the audit report file itself (a normal dated `sessions/` doc).
+- **No visible date** applies to the **site page** the audit recommends changes to — freshness lives in schema `dateModified` only. It does **not** apply to the audit report file itself (a normal dated doc in `docs/superpowers/sessions/`).
 - **No fabrication** — every §3–4 competitor metric must be a **REAL fetch** (Firecrawl `mcp__firecrawl-mcp__firecrawl_scrape` / `firecrawl_search`; Playwright fallback). Never invent DA, backlinks, or traffic. All claims bounded by `data/quality/evidence-ledger.json`; a licence or statute claim is written LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER in prose until it is confirmed.
 - **Proposed copy** uses **first-person BlueStaffyUK voice** (we / us / our) and respects the `.claude/skills/anti-ai-writing/SKILL.md` blacklist.
 - **Confidence Gate ≥97%** before editing any site file — this skill **RECOMMENDS**; it does **not** auto-edit pages unless explicitly told to.
@@ -107,7 +107,7 @@ Assign exactly one tier with the precise reason:
 - **Weak** — multiple structural failures; underperforms its intent.
 - **Major-rebuild** — wrong structure/intent; rebuild rather than patch.
 
-## Output Contract (save to `sessions/YYYY-MM-DD-audit-<slug>.md`)
+## Output Contract (save to `docs/superpowers/sessions/<date>-audit-<slug>.md`)
 Reproduce all 17 sections in order (Page ID → Final Verdict), then close with:
 
 **FINAL SCORECARD**
@@ -125,7 +125,7 @@ Reproduce all 17 sections in order (Page ID → Final Verdict), then close with:
 | Competitive-Advantage | /10 |
 | **Verdict** | *(tier)* |
 
-**Prioritized Fix List** — ordered **highest business impact first**, each line stating the **WHY** (the ranking/conversion/citation value it unlocks), not just the what. (The report file is a dated `sessions/` doc; the no-visible-date rule applies to the *site page*, not this report.)
+**Prioritized Fix List** — ordered **highest business impact first**, each line stating the **WHY** (the ranking/conversion/citation value it unlocks), not just the what. (The report file is a dated doc in `docs/superpowers/sessions/`; the no-visible-date rule applies to the *site page*, not this report.)
 
 ## Batch / Site-Wide Mode
 Given a page list (or all of `src/pages/`), run the audit per page but emit **only the FINAL SCORECARD row per page** into one table, **sorted ascending by Competitive-Advantage score** — that table is the **audit backlog** (worst pages first). Feed it to `bsuk-strategy-synthesizer` for sequencing. To control cost, produce **full 17-section reports only for the worst N pages**; the rest stay as scorecard rows until promoted.

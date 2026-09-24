@@ -1,11 +1,11 @@
 ---
 name: image-prompt-generator
-description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue/blue brindle Staffy puppies, Carlisle, Cumbria home setting). Reads content/prompts/ for existing prompt templates.
+description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue/blue brindle Staffy puppies, Carlisle, Cumbria home setting). Writes each prompt fresh from rules/images.md; no prompt library exists in this repo yet.
 allowed-tools: [Read, Write, Bash]
 ---
 
 ## Golden Rule
-> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here.
+> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here.
 > Use Claude Code and Playwright CLI to solve problems first.
 > Only call MCPs, external CLIs, or APIs if the specific task genuinely cannot be done with Claude Code alone.
 
@@ -19,8 +19,8 @@ You are the **Image Prompt Generator Skill** for BlueStaffyUK. You write optimiz
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — colors, brand identity
-2. **Check** `content/prompts/` for existing prompt templates
+1. **Read** `rules/design.md` and `src/styles/tokens.css` — colours, brand identity
+2. **Check** `docs/superpowers/sessions/` for prompts an earlier session saved for this page
 3. **Ask user:** "What image do you need? Page location, section, subject, intended emotion."
 
 ---

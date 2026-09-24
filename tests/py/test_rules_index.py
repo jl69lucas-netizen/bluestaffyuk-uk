@@ -269,8 +269,21 @@ def test_there_are_agents_to_check():
 SKILLS_DIR = ROOT / ".claude/skills"
 
 
-@pytest.mark.parametrize("skill", sorted(SKILLS_DIR.glob("bsuk-*/SKILL.md")),
-                         ids=lambda p: p.parent.name)
+# Every skill, not only the `bsuk-*` set. The generic writing, framework and session skills
+# are loaded into a session exactly the way the system skills are, and project 5 runs them on
+# every city page — yet until 2026-09-23 this guard read only `bsuk-*`, and 14 of the other
+# 28 cited paths the source repo had (`docs/reference/top-pages.md`, `data/structure.json`,
+# `scripts/interior_29_audit.py`). The four `openspec-*` skills are the one exclusion, and it
+# is structural: they are vendored from upstream OpenSpec, their `proposal.md` / `tasks.md`
+# are relative to the `openspec/changes/<name>/` folder the CLI creates rather than repo
+# paths, and rewriting a vendored file breaks the next re-sync (the same scoping as
+# `tests/py/test_skills_frontmatter.py`'s key-set test).
+VENDORED_SKILLS = ("openspec-",)
+INSTRUCTION_SKILLS = sorted(p for p in SKILLS_DIR.glob("*/SKILL.md")
+                            if not p.parent.name.startswith(VENDORED_SKILLS))
+
+
+@pytest.mark.parametrize("skill", INSTRUCTION_SKILLS, ids=lambda p: p.parent.name)
 def test_every_repo_path_cited_in_a_skill_exists_or_is_marked(skill):
     bad = _unmarked_missing_paths(skill)
     assert bad == [], (
@@ -305,3 +318,54 @@ def test_there_are_skills_to_check():
     # The port wrote 25 system skills; a glob that stopped matching would make the
     # parametrised test above vacuous.
     assert len(list(SKILLS_DIR.glob("bsuk-*/SKILL.md"))) >= 25
+    assert len(INSTRUCTION_SKILLS) >= 50, "the widened glob must reach the generic skills too"
+
+
+# ── source-repo roots that do not exist here (Known Issue 56) ───────────────
+# `_path_like` only reads a token as a path when it has a source extension or starts at a
+# real top-level directory, so a root this repo never had is invisible to the guard above:
+# `sessions/`, `site/content/` and `content/social/` were the source repo's session folder,
+# page tree and social folder, and a skill that says "save to `sessions/…`" or "Content root:
+# `site/content/`" sends a builder to a directory nobody will create. Named here, because a
+# guard cannot infer which absent directory is a typo and which is a leftover. Session docs
+# live in `docs/superpowers/sessions/`; pages in `src/pages/` and, built, in `dist/`.
+# Scope: every non-vendored skill and every command. The agents carry the same debt (33
+# files); widen the parametrisation below to `.claude/agents/*.md` in the task that clears them.
+DEAD_ROOTS = (
+    ("bare `sessions/` (use `docs/superpowers/sessions/`)", re.compile(r"(?<![\w/.-])sessions/")),
+    ("`site/content` (pages are `src/pages/`, built `dist/`)", re.compile(r"\bsite/content\b")),
+    ("`site/system` (the source repo's system folder)", re.compile(r"\bsite/system\b")),
+    ("`content/…` (the source repo's content folder)",
+     re.compile(r"(?<![\w/.-])content/(?:social|prompts)/")),
+)
+COMMANDS_DIR = ROOT / ".claude/commands"
+
+
+def dead_root_hits(f: pathlib.Path):
+    out = []
+    for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+        for why, rx in DEAD_ROOTS:
+            if rx.search(line):
+                out.append(f"{f.name}:{lineno}  {why}  |  {line.strip()[:110]}")
+    return out
+
+
+@pytest.mark.parametrize("doc", INSTRUCTION_SKILLS + sorted(COMMANDS_DIR.rglob("*.md")),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_no_skill_or_command_names_a_source_repo_root(doc):
+    bad = dead_root_hits(doc)
+    assert bad == [], (
+        "a directory the source repo had and this repo does not — a builder told to write "
+        "there creates a stray folder or fails:\n  " + "\n  ".join(bad))
+
+
+def test_the_dead_root_guard_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text("Save to `sessions/2026-01-01-x.md`.\n"
+                 "> **Content root:** `site/content/`\n"
+                 "Captions live in `content/social/x.md`.\n"
+                 "Save to `docs/superpowers/sessions/2026-01-01-x.md`.\n"   # the real folder: silent
+                 "Build into `src/pages/` and read `dist/`.\n",            # silent
+                 encoding="utf-8")
+    assert [h.split("  ")[0] for h in dead_root_hits(p)] == [
+        "SKILL.md:1", "SKILL.md:2", "SKILL.md:3"], dead_root_hits(p)

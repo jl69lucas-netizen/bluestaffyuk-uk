@@ -16,7 +16,7 @@ allowed-tools: [Read, Write, Bash]
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ## What QAB Is
@@ -87,7 +87,7 @@ Good: "Expect to budget for an appropriate crate — a minimum 30" model suits a
 ```
 
 **Source the answer:**
-- Prices: from `docs/reference/domain-knowledge.md` — confirmed current
+- Prices: from `data/puppies.json` and `data/price-matrix.json` — never typed
 - Costs: from BSUK pricing data (Phase 2: `data/price-matrix.json`)
 - Health: per vet health check / worming and vaccination record
 - Breed facts: per Kennel Club breed standard and UK breeding regulations
@@ -203,6 +203,6 @@ B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing
 1. **Benefit is required** — a Q&A without a Benefit is incomplete QAB
 2. **Questions in buyer's language** — not marketing language
 3. **Answer leads with the fact** — Inverse Pyramid inside the A
-4. **Numbers from data files** — read `docs/reference/domain-knowledge.md` and Phase 2 `data/price-matrix.json`
+4. **Numbers from data files** — read `data/settings.json`, `data/puppies.json` and `data/price-matrix.json`
 5. **FAQPage JSON-LD required** — every QAB FAQ section needs schema
 6. **No generic benefits** — "this is why BlueStaffyUK is great" is not a benefit

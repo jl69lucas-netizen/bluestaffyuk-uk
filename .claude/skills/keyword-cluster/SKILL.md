@@ -19,7 +19,7 @@ You are the **Keyword Cluster Skill** for BlueStaffyUK. You organize keywords in
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/seo-rules.md`
-2. **Read** `docs/reference/top-pages.md` — existing rankings to avoid cannibalization
+2. **Existing rankings** — `NOT FETCHED` until project 6 wires search console (Known Issue 14); check `data/page-map.json` titles and H1s and `docs/research/keyword-gap-2026-09-23.md` to avoid cannibalization
 3. **Ask user:** "What topic/page are we clustering keywords for?"
 
 ---
@@ -137,4 +137,4 @@ Two BSUK pages should never target the same Tier 1 keyword. If conflict found:
 2. **Check top-pages.md first** — avoid targeting keywords already ranking well on another page
 3. **Cannibalization check required** on every cluster
 4. **Hand-off section required** — explicitly name which agent gets which tier
-5. **Save cluster** — write to `docs/research/keyword-cluster-[slug]-[date].md`
+5. **Save cluster** — write to `docs/research/keyword-cluster-<slug>-<date>.md`

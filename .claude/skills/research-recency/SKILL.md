@@ -21,7 +21,7 @@ BSUK research (competitor intel, PAA/SERP, reddit-strategy, keyword gaps) often 
 3. **Headless browser** — Playwright MCP (`browser_navigate`+`browser_snapshot`) or chrome-devtools MCP. Reddit/FB render here even when they block curl.
 4. **`/last30days [topic]`** — aggregates Reddit/X/YouTube/TikTok/HN/GitHub/web by real engagement, last-30-days scoped. Best for Reddit thread mining + "what's trending" + freshly-changed pages.
 
-Full doc: `docs/reference/research-blocked-sites.md`. Reddit ethics + cornerstoning: `.claude/skills/reddit-strategy/SKILL.md`.
+The source repo's blocked-sites doc was not ported — source repo only; this ladder is the whole method. Reddit thread sourcing: `.claude/skills/bsuk-reddit-threads/SKILL.md`.
 
 ## Installing `/last30days` (one-time, interactive session)
 It is a third-party Claude Code plugin, not installed by default. In an **interactive** `claude` session run:

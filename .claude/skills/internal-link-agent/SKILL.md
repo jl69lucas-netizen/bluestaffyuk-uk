@@ -19,7 +19,7 @@ You are the **Internal Link Agent Skill** for BlueStaffyUK. You map the internal
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/seo-rules.md`
-2. **Read** `docs/reference/top-pages.md` — high-value pages that most need inbound links
+2. **Priorities** — search-console data is `NOT FETCHED` until project 6 (Known Issue 14); until then rank pages by `data/page-map.json` and `docs/research/gap-matrix-2026-09-23.md`
 3. **Ask user:** "Full site audit, specific page audit, or fix known orphan pages?"
 
 ---
@@ -74,7 +74,7 @@ Use `/tmp/sitemap_pages.txt` as the master list for:
 - **Link-target validation** — never propose a link to a URL not in the sitemap (phantom-target guard)
 - **The site-wide Anchor Diversity Ledger** (below) — one ledger row per sitemap URL
 
-> Note: `src/pages/` is the deployed source of truth; `site/content/` greps below are the legacy/staging path. When both exist, run link extraction against `dist/` (built output) or `src/pages/` — per the Verify-Rendered-Not-Source rule.
+> Note: link extraction runs against `dist/` (the built output), per the Verify-Rendered-Not-Source rule. `src/pages/` is the source; the source repo's page tree does not exist here.
 
 ### Step 1 — Find All Internal Links
 
@@ -83,14 +83,14 @@ Use `/tmp/sitemap_pages.txt` as the master list for:
 **Gutenberg strip (required before analysis):** BSUK HTML may contain WordPress Gutenberg block comments that confuse link parsing. Strip them first:
 ```bash
 # Strip Gutenberg comments before analysis
-sed 's/<!-- wp:[^>]*-->//g' site/content/[slug]/index.html > /tmp/clean.html
+sed 's/<!-- wp:[^>]*-->//g' dist/[slug]/index.html > /tmp/clean.html
 # Use /tmp/clean.html for all subsequent grep/analysis
 ```
 
 ```bash
 # Extract all href="/..." links from all pages (after Gutenberg strip)
-for f in site/content/*/index.html; do
-  slug=$(dirname "$f" | sed 's|site/content/||')
+for f in $(find dist -name index.html); do
+  slug=$(dirname "$f" | sed 's|^dist/||')
   sed 's/<!-- wp:[^>]*-->//g' "$f" | grep -o 'href="/[^"]*"'
 done | sed 's/href="//;s/"//' | sort | uniq -c | sort -rn > /tmp/link_counts.txt
 
@@ -101,11 +101,11 @@ head -20 /tmp/link_counts.txt
 ### Step 2 — Find Orphan Pages
 ```bash
 # List all page slugs
-find site/content/ -name "index.html" | sed 's|site/content/||;s|/index.html||' | \
+find dist -name "index.html" | sed 's|^dist/||;s|/index.html||' | \
   grep -v "^$" | sort > /tmp/all_pages.txt
 
 # Compare against linked pages
-grep -roh 'href="/[^"]*"' site/content/*/index.html | \
+grep -roh --include=index.html 'href="/[^"]*"' dist | \
   sed 's/.*href="//;s/".*//' | sort -u > /tmp/linked_pages.txt
 
 # Pages not linked from anywhere
@@ -124,7 +124,7 @@ grep -l 'href="/uk-blue-staffy-puppy-buying-guide/"' dist/buy-blue-staffy-puppie
 ### Step 4 — Anchor Text Audit
 ```bash
 # Find "click here" / "read more" / generic anchor text
-grep -rn '>click here<\|>read more<\|>here<\|>learn more<' site/content/*/index.html | head -20
+grep -rn --include=index.html '>click here<\|>read more<\|>here<\|>learn more<' dist | head -20
 ```
 
 ---
@@ -231,7 +231,7 @@ status=$(curl -sI -A "Mozilla/5.0" --max-time 10 "$url" | head -1 | awk '{print 
 
 All internal link operations use Claude Code file reads and Bash grep for speed and accuracy. The Playwright CLI (`npx playwright@latest`) handles live-site verification. No external MCPs are used.
 
-- Link suggestion: grep + python against site/content/ HTML files
+- Link suggestion: grep + python against the built HTML in `dist/`
 - Broken anchor verification: `curl -sI` to confirm target returns 200
 - External links: curated library + curl verification before every insert
 - Bulk mode: `slugs: string[]` param in Step 1 above handles all pages in one pass
@@ -300,7 +300,7 @@ Date: [YYYY-MM-DD]
 3. **Orphan check on every full audit** — no page without inbound links
 4. **Hub/spoke architecture takes priority** — fix cluster links before cross-links
 5. **Max ~3 new links per edit session** per page — avoid over-optimization signals. **Intent clarified (2026-06-04):** the real risk is *clustered exact-match anchors* or *many links to the same target*, not a handful of distinct contextual links spread across a long page. On a large page (e.g. the 1000-line homepage), more than 3 is acceptable **if** each link has a different target, a descriptive non-duplicated anchor, sits at the sentence start (Link-First), and is distributed one-per-section — and the user has approved the set. State the trade-off when exceeding 3.
-6. **Save audit** — write to `docs/research/internal-link-audit-[date].md`
+6. **Save audit** — write to `docs/research/internal-link-audit-<date>.md`
 7. **Internal = same tab, external = new tab + ↗ cue** — never `target="_blank"` on an internal link (see Open-in-New-Tab Policy)
 8. **Use the jump-link technique** — cross-reference earlier in-depth sections from later teaser prose via `#id`; respect the schema-safe caveat (no `<a>` inside `{item.a}`/JSON-LD-bound strings)
 9. **Duplicate-slug check before redirecting** — confirm two similar slugs are truly the same *intent* before proposing a 301; hub vs guide, availability vs cost, etc. are distinct pages → link them, don't redirect (and use **301** for permanent consolidation, never 302)

@@ -16,7 +16,7 @@ allowed-tools: [Read, Write, Bash]
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment · Cost uncertainty
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ## What PDB Is
@@ -131,7 +131,7 @@ Strong Pain: "The seller had 47 five-star reviews, a licence certificate on thei
 | Licensing/legal | Unlicensed sellers cannot show LEGAL_CLAIM_PLACEHOLDER; paperwork is forged | Licence number checkable with the issuing authority before deposit |
 | Puppy farm | "Home-raised" is claimed freely, rarely proven | Mother seen with the litter at the home; KC registration + microchip number per puppy |
 | Sick puppy | HC and L-2-HGA can stay hidden for months | Vet health check, first vaccinations, worming record, parental DNA status |
-| Abandonment | Most puppy sellers have no post-sale support | `[BREEDER_NAME]` phone/email on every page (name: see `docs/reference/domain-knowledge.md`) |
+| Abandonment | Most puppy sellers have no post-sale support | Lisa Bright's email on every page (`data/settings.json` → `email`); the phone stays `PHONE_PLACEHOLDER` until project 6 |
 | Hidden costs | Vet costs, insurance, delivery £200–£350 add up | All-in cost guide published openly |
 
 ---

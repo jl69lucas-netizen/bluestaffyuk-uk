@@ -69,7 +69,7 @@ You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all i
 - Long-form, for the media-library field, `ImageObject` schema `description`, and/or on-page `<figcaption>`/figure copy.
 - Must weave: primary keyword + 2–3 GSC variations/LSI, coat colour (blue / blue brindle / black brindle), location (Carlisle, Cumbria), trust entities (KC registration, microchip number, vet health check, first vaccinations, LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliance), and a closing CTA to `/uk-blue-staffy-breeders-contact/`.
 - Entity-rich and conversational — written as if answering "what am I looking at and why does it matter?"
-- **Never** fabricate a puppy's age, sex, price, or health status — pull only from `data/litter-inventory.json` / `data/price-matrix.json` or confirmed breeder input.
+- **Never** fabricate a puppy's age, sex, price, or health status — pull only from `data/puppies.json` / `data/price-matrix.json` or confirmed breeder input.
 
 ---
 
@@ -77,13 +77,13 @@ You are the **Image Metadata Skill** for BlueStaffyUK. You write and audit all i
 
 ```bash
 # Find all images without alt text
-grep -n "<img" site/content/[slug]/index.html | grep -v 'alt="[^"]' | head -30
+grep -n "<img" dist/[slug]/index.html | grep -v 'alt="[^"]' | head -30
 
 # Find all images with empty alt text
-grep -n 'alt=""' site/content/[slug]/index.html
+grep -n 'alt=""' dist/[slug]/index.html
 
 # Find images with default/bad filenames
-grep -n 'src="[^"]*\(IMG_\|DSC\|photo\|image[0-9]\)' site/content/[slug]/index.html
+grep -n 'src="[^"]*\(IMG_\|DSC\|photo\|image[0-9]\)' dist/[slug]/index.html
 ```
 
 ---

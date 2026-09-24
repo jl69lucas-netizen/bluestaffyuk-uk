@@ -1,6 +1,6 @@
 ---
 name: caption-writer
-description: Writes captions for BSUK video content — YouTube auto-caption edits, TikTok/Reels overlay text, on-screen callouts, and natural language video captions. Adapts spoken word to readable on-screen text. Reads content/social/BSUK-Natural-Video-Captions.md for existing examples.
+description: Writes captions for BSUK video content — YouTube auto-caption edits, TikTok/Reels overlay text, on-screen callouts, and natural language video captions. Adapts spoken word to readable on-screen text. Takes each video's id and title from data/settings.json youtube_embeds; no caption library exists in this repo yet.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -23,7 +23,7 @@ These are different outputs. Always confirm which type before writing.
 
 ## On Startup — Read These First
 
-1. **Check** `content/social/BSUK-Natural-Video-Captions.md` if it exists
+1. **Check** `data/settings.json` `youtube_embeds` for the video's id (no caption library exists in this repo yet)
 2. **Ask user:** "Are we writing accessibility captions (SRT), on-screen overlays (TikTok/Reels), or both? What's the video?"
 
 ---

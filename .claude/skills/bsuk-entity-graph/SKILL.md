@@ -213,7 +213,7 @@ readiness (does each section survive being chunked alone?) · AI citation readin
 
 ## 6. Output contract
 
-Save to `sessions/YYYY-MM-DD-entity-graph-<slug>.md`, machine artifacts to
+Save to `docs/superpowers/sessions/<date>-entity-graph-<slug>.md`, machine artifacts to
 `data/graphs/<slug>.json` (or `graphify-out/`).
 
 Executive summary (verdict first) · Entity inventory · Entity classification table (type ·
