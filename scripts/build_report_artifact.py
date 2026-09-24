@@ -10,9 +10,21 @@ Input is the gate report first, then the migration report appended as a further 
 `## ` sections. Gate first because it answers "did Foundation pass"; migration second
 because it answers "what came across", which is the detail behind the answer.
 
-Usage: python3 scripts/build_report_artifact.py
+Usage:
+  python3 scripts/build_report_artifact.py
+      the Foundation report, exactly as it has always been built
+  python3 scripts/build_report_artifact.py SRC OUT TITLE EYEBROW HEADING COPY_HEAD STATUS DATE REL
+      any one markdown file, with the same nine positional arguments as
+      scripts/build_spec_artifact.py and scripts/build_plan_artifact.py
+
+WHY THE SECOND FORM EXISTS. Until the project 5 readiness pass this script took no
+arguments, and three later plans called it with a source, an output and seven labels that it
+silently ignored — it rebuilt the Foundation report each time, and the later gate reports
+were in fact built with build_spec_artifact.py. A partial argument list is refused (exit 2)
+rather than half-read.
 """
 import html
+import json
 import pathlib
 import re
 import sys
@@ -38,7 +50,8 @@ def esc(s):
     return s.replace('</script', '<\\/script')
 
 
-def build():
+def foundation_page():
+    """The Foundation report's page, as a string — gate report first, migration second."""
     gate_pre, gate_sections = split_sections(GATE.read_text(encoding='utf-8'))
     mig_pre, mig_sections = split_sections(MIGRATION.read_text(encoding='utf-8'))
 
@@ -58,7 +71,18 @@ def build():
         '<script type="text/markdown" data-title="%s">\n%s\n</script>'
         % (html.escape(t), esc(b)) for t, b in sections)
 
-    page = '''<title>BSUK Foundation Gate Report</title>
+    return page(
+        title='BSUK Foundation Gate Report',
+        mast='<p class="eyebrow">BlueStaffyUK rebuild &middot; Project 1 close-out</p><h1 class="title">Foundation gate report</h1>',
+        meta='<span class="pill">2026-09-16</span> <span class="pill">branch: foundation</span><br>docs/reports/foundation-gate-report.md<br>docs/reports/foundation-migration.md',
+        copy_label='Copy both reports as Markdown',
+        copy_head="'# BlueStaffyUK Rebuild \\u2014 Project 1 Foundation: close-out reports\\n\\n'",
+        context=context, blocks=blocks)
+
+
+def page(title, mast, meta, copy_label, copy_head, context, blocks):
+    """The report page. `copy_head` is a JavaScript string literal, written as it is to go in."""
+    return '''<title>''' + title + '''</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
 <style>
 :root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
@@ -99,9 +123,9 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 @media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
 </style>
 <div class="wrap">
-<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild &middot; Project 1 close-out</p><h1 class="title">Foundation gate report</h1></div>
-<div class="meta"><span class="pill">2026-09-16</span> <span class="pill">branch: foundation</span><br>docs/reports/foundation-gate-report.md<br>docs/reports/foundation-migration.md</div></header>
-<div class="toolbar"><button class="btn" id="copy-all">Copy both reports as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<header class="mast"><div>''' + mast + '''</div>
+<div class="meta">''' + meta + '''</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">''' + copy_label + '''</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
 <div id="doc"></div>
 </div>
@@ -128,13 +152,50 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
     sec.appendChild(body);doc.appendChild(sec);
     var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
   });
-  document.getElementById('copy-all').addEventListener('click',function(){copy('# BlueStaffyUK Rebuild \\u2014 Project 1 Foundation: close-out reports\\n\\n'+all.join('\\n\\n'),document.getElementById('all-status'));});
+  document.getElementById('copy-all').addEventListener('click',function(){copy(''' + copy_head + '''+all.join('\\n\\n'),document.getElementById('all-status'));});
 })();
 </script>
 '''
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(page, encoding='utf-8')
-    print('%s — %d bytes, %d sections' % (OUT, len(page), len(sections) + 1))
+
+
+def generic_page(src, title, eyebrow, heading, copy_head, status, date, rel):
+    """Any one markdown file: its `## ` sections, its preamble (less the `# ` line) first."""
+    pre, sections = split_sections(src)
+    context = pre.split('\n', 1)[1].strip() if pre.lstrip().startswith('#') else pre.strip()
+    blocks = '\n'.join(
+        '<script type="text/markdown" data-title="%s">\n%s\n</script>'
+        % (html.escape(t), esc(b)) for t, b in sections)
+    head = json.dumps('# %s\n\n' % copy_head).replace('</', '<\\/')
+    return page(
+        title=html.escape(title),
+        mast='<p class="eyebrow">%s</p><h1 class="title">%s</h1>' % (html.escape(eyebrow), html.escape(heading)),
+        meta='<span class="pill">%s</span> <span class="pill">%s</span><br>%s' % (
+            html.escape(date), html.escape(status), html.escape(rel)),
+        copy_label='Copy the whole document as Markdown',
+        copy_head=head, context=context, blocks=blocks), len(sections) + 1
+
+
+USAGE = ('usage: build_report_artifact.py [SRC OUT TITLE EYEBROW HEADING COPY_HEAD STATUS DATE REL]\n'
+         '  no arguments: the Foundation report; nine: any one markdown file')
+
+
+def build(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    if not argv:
+        text, out, n = foundation_page(), OUT, None
+    elif len(argv) == 9:
+        src, out_path, title, eyebrow, heading, copy_head, status, date, rel = argv
+        text, n = generic_page(pathlib.Path(src).read_text(encoding='utf-8'), title, eyebrow,
+                               heading, copy_head, status, date, rel)
+        out = pathlib.Path(out_path)
+    else:
+        print(USAGE, file=sys.stderr)
+        return 2
+    out.parent.mkdir(parents=True, exist_ok=True)
+    out.write_text(text, encoding='utf-8')
+    if n is None:
+        n = text.count('<script type="text/markdown"')
+    print('%s — %d bytes, %d sections' % (out, len(text), n))
     return 0
 
 
