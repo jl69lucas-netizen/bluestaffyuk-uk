@@ -238,7 +238,7 @@ def _site_map():
     """{(route, anchor key): [(slug, status rank), …]} over every page record in the boards
     directory, memoised on the directory and each file's (name, mtime_ns), so a board's
     checks (and its diversity line) do not re-read every sibling on every call, and an edited
-    or added sibling is seen at once. A record that is not JSON raises PB.BoardError naming it."""
+    or added sibling is seen at once. A record that is not JSON, or has no meta.slug, raises PB.BoardError naming it."""
     d = pathlib.Path(BOARDS_DIR or (PB.ROOT / "data" / "boards"))
     files = sorted(d.glob("*.json"))
     key = (str(d.resolve()), tuple((p.name, p.stat().st_mtime_ns) for p in files))
@@ -250,6 +250,8 @@ def _site_map():
             b = json.loads(p.read_text(encoding="utf-8"))
         except json.JSONDecodeError as e:
             raise PB.BoardError(f"{p}: not valid JSON ({e})") from e
+        if not isinstance(b, dict) or not isinstance(b.get("meta"), dict) or "slug" not in b["meta"]:
+            raise PB.BoardError(f"{p}: not a board record (no meta.slug)")
         slug = b["meta"]["slug"]
         if slug.startswith("_"):
             continue

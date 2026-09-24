@@ -770,27 +770,47 @@ def decisions_lines(brief):
 
 REFUSAL_LINE = "Approval will be refused until the FAIL rows in 7b are fixed."
 # Scoped to block 7b, and emitted only with it: a rule in CSS would change every built board.
-RULES_CSS = ('<style>.rules{display:grid;gap:6px;margin:4px 0 10px}'
-             '.rules .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px}'
-             '.rules .rule code{font-size:13px}.rules .rule .msg{flex:1 1 20ch;min-width:0}'
+RULES_CSS = ('<style>.rules{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin:4px 0 10px}'
+             '.rules .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px;min-width:0}'
+             '.rules .rule code{font-size:13px;overflow-wrap:anywhere}'
+             '.rules .rule .msg{flex:1 1 20ch;min-width:0;overflow-wrap:anywhere}'
              '.rules .pill.fail{color:var(--warn);border-color:var(--warn);font-weight:700}'
              '.rules .pill.warn{color:var(--ink-2)}.rules .later{font-size:12px;color:var(--ink-3)}'
              '.rules-refused{color:var(--warn);font-weight:600;font-size:14px}</style>')
 
 
+BACKTICK = re.compile(r"`([^`]+)`")
+
+
+def rule_findings(board, ont):
+    """What approval will say. board_approve runs the rules on the record AS APPROVED, where a
+    rule that only WARNs on a draft FAILs, so 7b runs them the same way. `image-pick-missing`
+    is left out: the approve button collects those picks, and the record cannot carry them
+    before it does."""
+    b = json.loads(json.dumps(board))
+    b["meta"]["status"] = "approved"
+    return [f for f in PB.FR.findings(b, ont) if f[0] != "image-pick-missing"]
+
+
+def code_spans(msg):
+    """Escape first, then turn `inline code` into <code>: a backtick is never escaped, and
+    nothing inside the span can open a tag once the text is escaped."""
+    return BACKTICK.sub(r"<code>\1</code>", esc(msg))
+
+
 def rules_block(findings):
     """Block 7b: every family_rules finding as a row, and whether approval will be refused.
-    Build-gate ids (board_approve.APPROVAL_EXEMPT) can only pass after approval, so they are
+    Build-gate ids (family_rules.APPROVAL_EXEMPT) can only pass after approval, so they are
     shown with that note and never announce a refusal."""
     if not findings:
         return RULES_CSS + '<p class="rules-pass">All new-page rules pass.</p>', False
     rows, refused = [], False
     for check, sev, msg in findings:
-        exempt = check in IR.BUILD_CHECK_IDS
+        exempt = check in PB.FR.APPROVAL_EXEMPT
         refused = refused or (sev == "FAIL" and not exempt)
         later = ' <span class="later">checked at build, after the image is approved</span>' if exempt else ""
         rows.append(f'<div class="rule"><span class="pill {"fail" if sev == "FAIL" else "warn"}">{esc(sev)}</span>'
-                    f'<code>{esc(check)}</code><span class="msg">{esc(msg)}{later}</span></div>')
+                    f'<code>{esc(check)}</code><span class="msg">{code_spans(msg)}{later}</span></div>')
     return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
 
 
@@ -921,7 +941,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     # byte-for-byte as they did before these rules reached the board.
     refused = False
     if PB.FR.applies(board):
-        rules_html, refused = rules_block(PB.FR.findings(board, ont))
+        rules_html, refused = rules_block(rule_findings(board, ont))
         parts.append(("7b. Rules for new pages", rules_html))
 
     status = ("Approved as it stands." if approved else

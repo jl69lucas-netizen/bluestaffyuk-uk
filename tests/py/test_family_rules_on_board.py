@@ -92,6 +92,10 @@ def test_build_gate_checks_do_not_block_approval(monkeypatch):
 
 def test_every_build_gate_id_is_exempt(tmp_path):
     assert set(IR.BUILD_CHECK_IDS) <= BA.APPROVAL_EXEMPT
+    # One constant: the board's 7b and the approval read the same set.
+    assert BA.APPROVAL_EXEMPT is FR.APPROVAL_EXEMPT
+    # image-pick-invalid is exempt: validate_image_picks refuses a bad img: pick first.
+    assert "image-pick-invalid" in BA.APPROVAL_EXEMPT
     # The outline and approval facts are never exempt.
     for cid in ("image-slot-missing", "image-slot-fields", "image-hero-photo", "image-pick-missing"):
         assert cid not in BA.APPROVAL_EXEMPT
@@ -162,3 +166,68 @@ def test_built_boards_render_unchanged(monkeypatch):
         probed = BPB.render(r, ont, ledger, live={}, thumbs={}, slug=slug, routes=routes)
         assert plain == probed, slug
         assert "7b. Rules for new pages" not in probed
+
+
+# ── review fixes: 7b says what approval will say; re-approval runs the rules too ─────────
+def test_a_draft_board_shows_what_approval_will_refuse():
+    b = _board()
+    assert b["meta"]["status"] == "draft"
+    for sec in b["sections"]:
+        for k in FR.KEYWORD_VARIANT_TYPES:
+            sec["keywords"][k] = []
+    html = BPB.render(b, ONT, LEDGER, live={}, thumbs={}, slug="x")
+    # On a draft the rule itself only WARNs; approval runs it as approved, so 7b does too.
+    assert '<span class="pill fail">FAIL</span><code>keyword-variants-missing</code>' in html
+    assert REFUSAL in html
+
+
+def test_a_missing_image_pick_is_left_to_the_button(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [_probe("image-pick-missing", "FAIL", "pick one")])
+    html = BPB.render(_board(), ONT, LEDGER, live={}, thumbs={}, slug="x")
+    assert "image-pick-missing" not in html.split('data-title="7b. Rules for new pages"')[1].split("</script>")[0]
+    assert "All new-page rules pass." in html
+    assert REFUSAL not in html
+
+
+def test_backticks_in_a_message_render_as_code_after_escaping(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [_probe("probe-rule", "WARN", "run `python3 x.py <slug>` now")])
+    html = BPB.render(_board(), ONT, LEDGER, live={}, thumbs={}, slug="x")
+    assert "run <code>python3 x.py &lt;slug&gt;</code> now" in html
+
+
+def test_7b_wraps_on_a_phone():
+    css = BPB.RULES_CSS
+    assert ".rules{display:grid;grid-template-columns:minmax(0,1fr)" in css
+    assert "overflow-wrap:anywhere" in css
+
+
+def _reapproval_pair(slug, page_type):
+    import test_board_reapprove as TR
+    old = TR.approved()
+    old["meta"]["slug"], old["meta"]["page_type"] = slug, page_type
+    old["approval"]["record_hash"] = PB.record_hash(old)
+    new = json.loads(json.dumps(old))
+    new["sections"][0]["heading"] = "A Heading The Review Moved"
+    return old, new
+
+
+def test_re_approval_is_refused_while_a_new_page_rule_fails(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [_probe("probe-rule", "FAIL", "probe")])
+    old, new = _reapproval_pair("uk-locations/blue-staffy-puppies-manchester", "location")
+    with pytest.raises(PB.BoardError, match="probe-rule: probe"):
+        BA.apply_reapproval(new, "wording fix", old, "2026-09-24T12:00:00Z", ONT)
+
+
+def test_a_built_pages_re_approval_is_unchanged(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [_probe("probe-rule", "FAIL", "probe")])
+    old, new = _reapproval_pair("x", "hub")
+    out = BA.apply_reapproval(new, "wording fix", old, "2026-09-24T12:00:00Z", ONT)
+    assert PB.approval_matches(out["board"])
+
+
+def test_a_sibling_board_without_meta_is_named(tmp_path, monkeypatch):
+    import link_diversity as LD
+    (tmp_path / "broken.json").write_text('{"sections": []}')
+    monkeypatch.setattr(LD, "BOARDS_DIR", tmp_path)
+    with pytest.raises(PB.BoardError, match="broken.json"):
+        LD._site_map()

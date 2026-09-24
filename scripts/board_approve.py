@@ -58,10 +58,8 @@ import pageboard as PB
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
 import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
 
-# The new-page rules that can only pass AFTER approval (an image drafted and approved by sha,
-# a folder file ingested, a generated file published): approval never waits on them, the
-# build gate does. Every other FAIL from family_rules refuses the approval.
-APPROVAL_EXEMPT = frozenset(IR.BUILD_CHECK_IDS)
+# The build-gate checks approval never waits on (family_rules owns the one copy).
+APPROVAL_EXEMPT = PB.FR.APPROVAL_EXEMPT
 
 H2 = re.compile(r"<h2[^>]*>(.*?)</h2>", re.S)
 TAG = re.compile(r"<[^>]+>")
@@ -222,6 +220,20 @@ def ledger_entry(board):
 PAGE_NOTE_KEYS = frozenset({"navigation"})
 
 
+def refuse_on_new_page_rules(b, ont):
+    """The rules for new pages (scripts/family_rules.py) are answered at approval and at
+    re-approval, on the record as approved, not first at the build gate: a record the build
+    would refuse must never be approved, because fixing it afterwards moves the hash and forces
+    a second approval. Board block 7b shows the same findings. A no-op for every page
+    applies() leaves out, so the twelve built pages approve exactly as before."""
+    fails = [(c, m) for c, sev, m in PB.FR.findings(b, ont)
+             if sev == "FAIL" and c not in APPROVAL_EXEMPT]
+    if fails:
+        raise PB.BoardError(
+            "this record breaks the rules for new pages — fix the record and board it again:\n"
+            + "\n".join(f"  - {c}: {m}" for c, m in fails))
+
+
 def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     """The board, ledger and ontology as they stand after this approval. Pure: it reads
     nothing but its arguments and writes nothing — raise here and the files on disk are
@@ -326,16 +338,7 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     PB.validate_ontology(o)
     promoted = [e["id"] for e in o["entities"] if e["authorization"] != was[e["id"]]]
 
-    # The rules for new pages (scripts/family_rules.py) are answered HERE, on the record as
-    # approved, not first at the build gate: a record the build would refuse must never be
-    # approved, because fixing it afterwards moves the hash and forces a second approval.
-    # Board block 7b shows the same findings. Empty for every page applies() leaves out.
-    fails = [(c, m) for c, sev, m in PB.FR.findings(b, o)
-             if sev == "FAIL" and c not in APPROVAL_EXEMPT]
-    if fails:
-        raise PB.BoardError(
-            "this record breaks the rules for new pages — fix the record and board it again:\n"
-            + "\n".join(f"  - {c}: {m}" for c, m in fails))
+    refuse_on_new_page_rules(b, o)
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 
@@ -501,7 +504,7 @@ def reapprove_refusals(old_board, new_board, paths):
     return bad
 
 
-def apply_reapproval(board, reason, old_board, now):
+def apply_reapproval(board, reason, old_board, now, ont=None):
     """The record after a controller's re-approval. Pure, like apply_approval().
 
     `old_board` is the record as of the commit whose hash the approval currently carries —
@@ -550,6 +553,8 @@ def apply_reapproval(board, reason, old_board, now):
     # LAST, because `approval_previous` is inside the hash and the refresh above moved it.
     a["record_hash"] = PB.record_hash(b)
     PB.validate_board(b)
+    # `ont` None reads the committed ontology: a re-approval never moves it.
+    refuse_on_new_page_rules(b, PB.load_ontology() if ont is None else ont)
     return {"board": b, "changed_paths": paths}
 
 
@@ -613,7 +618,7 @@ def reapprove_main(slug):
     a = parse_args()
     board = PB.load_board(slug)
     now = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    out = apply_reapproval(board, a.reason, baseline_board(slug), now)
+    out = apply_reapproval(board, a.reason, baseline_board(slug), now, PB.load_ontology())
     # The ledger records what the TUPLE and the H6 prefixes spend. Neither can move under a
     # wording fix — but a heading edit is how an H6 prefix WOULD move, so it is checked
     # rather than assumed: a re-approval that silently desynced the ledger would hand the

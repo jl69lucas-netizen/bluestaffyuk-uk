@@ -148,6 +148,13 @@ def outline_heading_repeat(board, ont):
 # never import this one half-built.
 import image_rules as IR  # noqa: E402
 
+# The new-page rules that can only pass AFTER approval (an image drafted and approved by sha,
+# a folder file ingested, a generated file published): approval never waits on them, the build
+# gate does. Read by scripts/board_approve.py (which refuses on every other FAIL) and by board
+# block 7b, so the two can never disagree. image-pick-invalid is among them, and that is safe:
+# board_approve's validate_image_picks refuses a malformed or wrong-kind img: pick first.
+APPROVAL_EXEMPT = frozenset(IR.BUILD_CHECK_IDS)
+
 
 @register
 def image_every_body_heading(board, ont):
