@@ -10,7 +10,10 @@ run that rewrites eleven pages is the one run with no content gate at all.
 Facts = prices (£ amounts), puppy names (from data/puppies.json), health-test names,
 credential phrases, image paths, YouTube embed ids. Extracted from the migrated page
 (`--extract <slug>` BEFORE the rewrite, into data/facts/<slug>.json) and checked against
-dist/<slug>/index.html after it. The extraction cannot be repeated once the page is rebuilt:
+the built page after it — dist/<slug>/index.html, or for a city page (a bare slug whose
+data/page-map.json route is uk-locations/<slug>) dist/uk-locations/<slug>/index.html; the
+fact set, the board record and the rebuilt.json entry keep the bare slug (scripts/_slugs.py).
+The extraction cannot be repeated once the page is rebuilt:
 the body it reads no longer exists then, which is why the JSON is committed the moment it is
 taken and why every change to the rules below has to be made while the migrated build is
 still the build — after that, a re-extraction reads the rebuilt page and the gate becomes a
@@ -47,6 +50,9 @@ import json
 import pathlib
 import re
 import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _slugs import built_page, resolve_page  # noqa: E402  (one route convention, shared)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 # `(?!\d)` is what stops the pattern settling for the head of a longer number: without it
@@ -358,8 +364,20 @@ def missing(facts, new_html, dropped=None):
 
 
 def dist_html(slug):
-    """dist/<slug>/index.html, with `index` meaning the site root."""
-    return ROOT / "dist" / ("" if slug == "index" else slug) / "index.html"
+    """The built page: dist/index.html for `index`, else dist/<route>/index.html, where a
+    bare slug in data/page-map.json takes its mapped route — a city page's
+    `blue-staffy-puppies-for-sale-leeds` is dist/uk-locations/blue-staffy-puppies-for-sale-leeds/."""
+    return built_page(slug, ROOT)
+
+
+def fact_file(slug):
+    """data/facts/<key>.json — the bare slug for a page-map row, the slug as given otherwise."""
+    return ROOT / "data" / "facts" / f"{resolve_page(slug, ROOT)[0]}.json"
+
+
+def record_file(slug):
+    """data/boards/<key>.json, keyed the same way as fact_file."""
+    return ROOT / "data" / "boards" / f"{resolve_page(slug, ROOT)[0]}.json"
 
 
 ARTICLE = re.compile(r"<article[^>]*>(.*?)</article>", re.S)
@@ -392,18 +410,18 @@ def main(argv=None):
     if a.extract:
         slug = a.extract
         facts = extract(migrated_body(dist_html(slug).read_text(encoding="utf-8")), names)
-        (ROOT / "data/facts").mkdir(parents=True, exist_ok=True)
-        (ROOT / f"data/facts/{slug}.json").write_text(json.dumps(facts, indent=1, ensure_ascii=False) + "\n",
-                                                      encoding="utf-8")
-        print(f"extracted facts for {slug}: "
+        out = fact_file(slug)
+        out.parent.mkdir(parents=True, exist_ok=True)   # data/facts/, and any nested key's folder
+        out.write_text(json.dumps(facts, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(f"extracted facts for {resolve_page(slug, ROOT)[0]}: "
               + ", ".join(f"{len(v)} {k}" for k, v in facts.items()))
         return 0
 
     rebuilt = rebuilt_slugs()
     problems = 0
     for slug in rebuilt:
-        facts = json.loads((ROOT / f"data/facts/{slug}.json").read_text(encoding="utf-8"))
-        record = ROOT / f"data/boards/{slug}.json"
+        facts = json.loads(fact_file(slug).read_text(encoding="utf-8"))
+        record = record_file(slug)
         dropped = json.loads(record.read_text(encoding="utf-8")).get("dropped", {}) if record.exists() else {}
         html = dist_html(slug).read_text(encoding="utf-8")
         for kind, vals in missing(facts, html, dropped).items():

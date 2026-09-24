@@ -21,6 +21,7 @@ HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page 
 # borrowed rather than copied, exactly as the header rules above are.
 import facts_preserved_check as FACTS
 _DROP_SPLIT = FACTS._DROP_SPLIT
+from _slugs import built_page as _built_page, resolve_page as _resolve_page  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -673,8 +674,7 @@ def dist_schema_types(slug, dist=None):
     """(types, unparsed) for the built page: every @type anywhere in its JSON-LD, nested
     offers and @graph members included, and the count of blocks that do not parse. None when
     the page is not built. DIST is read at call time, so a test can point it elsewhere."""
-    root = pathlib.Path(DIST if dist is None else dist)
-    page = root / "index.html" if slug == "index" else root / slug / "index.html"
+    page = built_page(slug, dist)
     if not page.exists():
         return None
     types, unparsed = set(), 0
@@ -863,11 +863,10 @@ def word_band_findings(board, dist=None):
     "not on the built page" — ten rows saying only that the page has not been written yet, on
     the board the author is still drafting. A rebuilt slug's page is the record's page, and
     that is the only page whose prose a band describes."""
-    root = pathlib.Path(DIST if dist is None else dist)
     slug = board["meta"]["slug"]
     if slug not in rebuilt_slugs():
         return []
-    page = root / "index.html" if slug == "index" else root / slug / "index.html"
+    page = built_page(slug, dist)
     if not page.exists():
         return []
     got, out = page_section_words(page), []
@@ -917,14 +916,23 @@ def live_headings(dist=DIST):
     return out
 
 
+def built_page(slug, dist=None):
+    """The built page of a board's slug: dist/index.html for `index`, dist/<route>/index.html
+    otherwise, a city page's bare slug taking its data/page-map.json route
+    (uk-locations/<slug>) — scripts/_slugs.py, Known Issue 39. ROOT and DIST are read at
+    call time, so a test can point them elsewhere."""
+    return _built_page(slug, ROOT, DIST if dist is None else dist)
+
+
 def own_live_key(board):
     """The key this board's own page holds in live_headings(). The homepage is "/", not
     "/index/" — excluding the wrong key would let the homepage collide with itself and
-    fail its own gate on every rebuild."""
+    fail its own gate on every rebuild. A city board's bare slug is its page-map route,
+    "/uk-locations/<slug>/", for the same reason."""
     meta = board["meta"]
     if meta["page_type"] == "home" or meta["slug"] == "index":
         return "/"
-    return "/" + meta["slug"] + "/"
+    return "/" + _resolve_page(meta["slug"], ROOT)[1] + "/"
 
 
 def header_precheck(proposed, live, exclude_page=None):
@@ -1446,7 +1454,7 @@ def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     if stage != "release":
         return []
     perf_dir = pathlib.Path(perf_dir) if perf_dir else PERF_DIR
-    dist_page = pathlib.Path(dist_page) if dist_page else (DIST / slug / "index.html" if slug else DIST / "index.html")
+    dist_page = pathlib.Path(dist_page) if dist_page else built_page(slug or "index")
     f = []
     add = lambda check, sev, msg: f.append({"check": check, "sev": sev, "msg": msg})
     read = lambda name: json.loads((perf_dir / f"{name}.json").read_text()) if (perf_dir / f"{name}.json").exists() else None
@@ -1722,7 +1730,7 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # the slug this repo gives "/", and a path built the ordinary way would never exist, so
     # the one page that is the site's front door would silently keep the record-tree reading
     # for ever. Same spelling as verbatim_set_check.dist_html and word_band_findings.
-    built = DIST / ("" if slug == "index" else slug) / "index.html"
+    built = built_page(slug)
     fresh = dist_page_is_fresh(built, slug=slug)
     if slug in rebuilt_slugs() and built.exists() and fresh:
         counts, source = page_h_counts(built), "built page"
