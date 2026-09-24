@@ -631,3 +631,45 @@ def test_a_real_site_url_counts_as_a_bsuk_domain(tmp_path, monkeypatch):
         shared(tmp_path, strict=True)
     monkeypatch.setenv("SITE_URL", "https://www.example.co.uk")
     assert shared(tmp_path, strict=True) == {"site_url_placeholder", "example.co.uk"}
+
+
+@pytest.mark.parametrize("meta", ['<meta content="noindex, follow" name="robots">',
+                                  "<meta name='robots' content='noindex'>",
+                                  '<meta data-x="1" content="NOINDEX" name="ROBOTS" />'])
+def test_a_noindex_build_is_found_in_any_attribute_order(tmp_path, meta):
+    html_ = f"<html><head>{meta}</head><body><main><p>We always microchip.</p></main></body></html>"
+    code, doc, err = _run(_root(tmp_path, dist=html_), _answer("Check the microchip."))
+    assert code == 0, err
+    assert doc["page_source"]["kind"] == "question-file" and "noindex" in doc["page_source"]["note"]
+
+
+def test_the_homepage_is_slug_index(tmp_path):
+    root = _root(tmp_path, qfile=False)
+    (root / "dist").mkdir(exist_ok=True)
+    (root / "dist/index.html").write_text('<html><head><meta name="robots" content="index, follow"></head>'
+                                          "<body><main><p>Every puppy is microchipped.</p></main></body></html>", encoding="utf-8")
+    q = "Where can I buy a blue Staffy puppy in the UK?"
+    code, doc, err = _run(root, _answer("Check the puppy is microchipped.", keyword=q), slug="index", QUERY=q,
+                          FETCHED_ON="2026-09-23")
+    assert code == 0, err
+    assert doc["page_source"] == {"kind": "dist", "path": "dist/index.html", "provisional": False, "note": "built, indexable page"}
+    assert doc["query_source"]["from"] == "page-map" and doc["raw"] == "data/queries/raw/index/ai_engines.response.json"
+    assert problems(doc, "index-2026-09-23.json") == []
+
+
+def test_a_build_older_than_its_sources_stops(tmp_path):
+    page = '<html><head><meta name="robots" content="index, follow"></head><body><main><p>Microchipped.</p></main></body></html>'
+    root = _root(tmp_path, dist=page)
+    built = root / f"dist/uk-locations/{MAN}/index.html"
+    (root / "src/pages").mkdir(parents=True)
+    newer = root / "src/pages/index.astro"
+    newer.write_text("---\n---\n", encoding="utf-8")
+    later = root / "data/queries/raw" / MAN / "later.json"
+    later.write_text("{}", encoding="utf-8")
+    os.utime(built, (4_000_000_000, 4_000_000_000))       # every copied file is older than the build ...
+    os.utime(newer, (5_000_000_000, 5_000_000_000))       # ... but this source file is newer
+    code, _, err = _run(root, _answer("Check the microchip."))
+    assert code != 0 and "older than src/pages/index.astro" in err and "npm run build" in err
+    os.utime(newer, (3_000_000_000, 3_000_000_000))       # the build is newer: it stands
+    os.utime(later, (4_500_000_000, 4_500_000_000))       # research files under data/queries/ never count
+    assert _run(root, _answer("Check the microchip."))[0] == 0

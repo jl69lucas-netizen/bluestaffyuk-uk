@@ -21,7 +21,7 @@ effort: high
 | `spend approved: <slug>; balance $<n>` (plus `; refresh` for a re-buy) | Buy, for exactly that slug. No `balance $<n>` → ask for it and make no call |
 | `spend declined` | NOT FETCHED output |
 
-1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`). The **query**, said in your hand-back:
+1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`); the homepage's slug is `index` (route `/`, built page `dist/index.html`). The **query**, said in your hand-back:
    - a city page: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?", the `city` exactly as `data/locations.json` writes it (the script stops on any other wording);
    - another page with a `data/queries/<slug>.json`: the question a buyer would ask for its `primary_keyword`;
    - no question file: the question a buyer would ask for the page's primary keyword (its page-map title or H1), plus any matching rows of the newest dated gap matrix (docs/research/gap-matrix-<YYYY-MM-DD>.md) — pass each row's topic, the first cell exactly as the matrix writes it, as `GAP_TOPICS="<topic>;<topic>"`. The script records which in `query_source` and stops on a topic that is not a row;
@@ -92,7 +92,7 @@ What the script decides (to explain it, never to redo it):
   - hosted-platform hosts (Blogspot, WordPress.com, Wix, Squarespace, Weebly …) are kept with `platform: true` — a seller on a platform, never a registry candidate;
   - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains — `own_domains()` in `scripts/competitor_registry_check.py`, the same helper `tests/py/test_llm_intel.py` checks with: the root domain of the business email in `data/settings.json`, of a site-domain key there if one is added, and the build placeholder;
   - `citation_gap` = registry tiers 1–4 among them while BSUK is not; a tier-5 site goes to `risks` once, never to the gap.
-- **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable (its `<main>`). A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
+- **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable — no robots `<meta>` holding `noindex`, whatever its attribute order or quotes (its `<main>`). A build older than any file under `src/` or `data/` (`data/queries/` and `data/competitors.json` aside — research files the build never reads) stops the script: run `npm run build`, then the script again. A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
 - **Entities:** the buying-safety list (health tests, L-2-HGA, HC-HSF4, meeting the mother, microchip, vaccinations, vet check, KC registration, licence, contract), each recorded only when the answer uses it, then your `EXTRA`. Matched on normalised whole words (a plural `s` counts) against the page text. **High** = a safety entity missing from the page; everything else medium.
 - **Format:** list type (a table needs a `|---|` separator row; only top-level `1.` or `-` items count), words, length band (short under 100, medium to 300, long above), and the opening move of the first sentence of the first content line — headings, bold labels (`**Short answer:**`) and rules skipped, "e.g." and "i.e." never a sentence end: question, recommendation (an instruction, "you can/should", "here is/are", "the best place"), statistic, definition, statement. This is the mirror template for the page's answer blocks.
 
@@ -136,7 +136,8 @@ OWN = own_domains(strict=True)  # the same helper tests/py/test_llm_intel.py che
 # the page and where the query came from: the city question, else the question file, else the page map (+ gap-matrix rows)
 qfile = f"data/queries/{slug}.json"
 q = json.load(open(qfile)) if os.path.exists(qfile) else None
-pm = next((p for p in json.load(open("data/page-map.json"))["pages"] if p["url"].rstrip("/").endswith("/" + slug)), None)
+pm = next((p for p in json.load(open("data/page-map.json"))["pages"]
+           if (p["url"] == "/" if slug == "index" else p["url"].rstrip("/").endswith("/" + slug))), None)  # index = the homepage
 city = next((x["city"] for x in json.load(open("data/locations.json")) if x.get("slug") == slug), None)
 if city and QUERY != f"Where can I buy a blue Staffy puppy near {city}, and what should I ask the breeder?":
     fail(f"{slug} is a city page: QUERY must be the city question for {city}")
@@ -221,11 +222,19 @@ bsuk = any(s["domain"] in OWN for s in everything)
 route = (q or {}).get("route") or (pm or {}).get("url")
 built = f"dist{route}index.html" if route else None
 page, src = None, None
+meta = lambda tag, name: (re.search(r"""\b%s\s*=\s*["']?([^"'>]*)""" % name, tag, re.I) or [None, ""])[1].lower()
+def newest_input():  # the newest file the build reads: src/ and data/, never data/queries/ or data/competitors.json
+    files = [p for d in ("src", "data") for p in glob.glob(f"{d}/**/*", recursive=True) if os.path.isfile(p)
+             and not p.startswith(os.path.join("data", "queries", "")) and p != os.path.join("data", "competitors.json")]
+    return max(files, key=os.path.getmtime, default=None)
 if built and os.path.exists(built):
     h = open(built, encoding="utf-8").read()
-    if re.search(r'<meta[^>]+name="robots"[^>]+noindex', h, re.I):
+    if any(meta(t, "name") == "robots" and "noindex" in meta(t, "content") for t in re.findall(r"<meta\b[^>]*>", h, re.I)):
         why = f"{built} is a noindex stub"
     else:
+        newer = newest_input()
+        if newer and os.path.getmtime(newer) > os.path.getmtime(built):
+            fail(f"{built} is older than {newer}: run npm run build, then run this script again")
         body = re.search(r"<main\b.*?</main>", h, re.S | re.I)
         body = re.sub(r"<(script|style)\b.*?</\1>", " ", body.group(0) if body else h, flags=re.S | re.I)
         page, src = norm(re.sub(r"<[^>]+>", " ", body)), {"kind": "dist", "path": built, "provisional": False, "note": "built, indexable page"}
@@ -307,7 +316,7 @@ print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'
 EOF
 ```
 
-`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row) and stop; never write the file by hand.
+`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row, a build older than its sources — then `npm run build` and run it again) and stop; never write the file by hand.
 
 ## Output
 
