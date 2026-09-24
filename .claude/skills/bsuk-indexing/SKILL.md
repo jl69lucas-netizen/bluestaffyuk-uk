@@ -94,7 +94,9 @@ for i in issues:
 ```python
 import re, glob
 
-SITE_ROOT = "public"
+# The sitemaps are build output: scripts/generate_sitemaps.py writes them into dist/
+# after every `npm run build` (the postbuild script). Nothing writes them into public/.
+SITE_ROOT = "dist"
 for fpath in glob.glob(f"{SITE_ROOT}/*.xml"):
     with open(fpath) as f:
         content = f.read()
@@ -112,9 +114,10 @@ for fpath in glob.glob(f"{SITE_ROOT}/*.xml"):
 ```python
 import re, glob, os
 
-# public/ is where BSUK's sitemaps live. This block WRITES — pointed at the old
-# source repo's path it would have rewritten a different project's sitemaps in place.
-SITE_ROOT = "public"
+# dist/ is where BSUK's sitemaps live: scripts/generate_sitemaps.py writes them there on
+# every build (postbuild). This block WRITES, and the next build overwrites what it writes,
+# so a relative <loc> is really a generator defect: fix scripts/generate_sitemaps.py too.
+SITE_ROOT = "dist"
 DOMAIN = "$SITE_URL"
 
 def fix_sitemap(content):
@@ -243,9 +246,13 @@ python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without
 
 What the script ensures, and why each guard exists:
 
-- **The key is read from `public/<key>.txt` on disk, never typed.** It also asserts the
-  file body equals the filename stem (IndexNow's own requirement) and that the file
-  returns HTTP 200 live before anything is sent.
+- **The key is read from `INDEXNOW_KEY` in the environment, never typed.** It comes from
+  the gitignored `.env` (`docs/reference/credentials.md`) and must be 32 lowercase hex
+  characters. Before anything is sent the script fetches the live key file,
+  `$SITE_URL/<key>.txt`, and refuses unless it returns HTTP 200 with a body equal to the
+  key (IndexNow's own requirement). That file ships from `public/<key>.txt`; the script
+  itself reads nothing in `public/` — it only checks the folder exists, to know it runs
+  from the repo root.
 - **Every URL must return 200 before submission.** Submitting 404s is a negative trust
   signal about the host, so a dead URL is reported and dropped, not sent.
 - **Build artifacts are filtered** — `/.astro/`, `/_preview/` and the rest of the `JUNK`
@@ -260,11 +267,11 @@ What the script ensures, and why each guard exists:
 > brand string substituted in — while the REAL key sat correct in the site-context table
 > 170 lines above); a sitemap regex of `https://blue staffiesforsale\.com/`, a
 > domain containing spaces, which matches nothing; and `SITE_ROOT` pointing at
-> `dist/`, **a path that exists**, so a run would have read a
+> the source repo's build folder, **a path that exists**, so a run would have read a
 > different site's sitemaps. Any execution would have POSTed an empty `urlList` under an
 > invalid key and printed a success line. That is why the close-out step never actually
-> ran on any page. The key now lives in exactly one place — the key file — so defect 1
-> cannot come back.
+> ran on any page. The key now lives in exactly one place — `INDEXNOW_KEY` in the gitignored
+> `.env` — and the live key file is checked against it, so defect 1 cannot come back.
 
 
 ## STEP 5: FIX ROBOTS.TXT
@@ -360,5 +367,5 @@ This is the **Indexing Agent** in the BSUK agent system:
 
 ### Credentials required:
 - GSC: `$BSUK_DASHBOARD/.env.local` (GSC_CLIENT_ID, GSC_CLIENT_SECRET, GSC_REFRESH_TOKEN)
-- IndexNow key: read it from `public/<key>.txt` — never typed inline. Currently NOT FETCHED until project 6 (a gitignored `.env`, never this file) (no auth needed).
+- IndexNow key: `INDEXNOW_KEY` in the environment (a gitignored `.env`, never this file), checked against the live key file `$SITE_URL/<key>.txt`, which ships from `public/<key>.txt` — never typed inline. Currently NOT FETCHED until project 6 (no auth needed).
 - Bing Webmaster API: Not yet configured (IndexNow covers Bing submissions)

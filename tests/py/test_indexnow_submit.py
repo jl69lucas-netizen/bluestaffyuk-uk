@@ -135,3 +135,26 @@ def test_all_submits_the_city_and_puppy_pages(monkeypatch, tmp_path, capsys):
     out = capsys.readouterr().out
     for path in ("about", "uk-locations/leeds", "available-puppies/roman"):
         assert f"https://example.invalid/{path}/" in out
+
+
+# ── the indexing skill says the same thing the script does (2026-09-24) ─────────
+# After the script moved to dist/, the skill's STEP 1 and STEP 2 still globbed
+# public/*.xml ("public/ is where BSUK's sitemaps live"), and it said the key was read
+# from public/<key>.txt on disk. The sitemaps are build output in dist/; the script reads
+# the key from INDEXNOW_KEY and checks the live key file at $SITE_URL/<key>.txt.
+import pathlib  # noqa: E402
+import re  # noqa: E402
+
+INDEXING_SKILL = pathlib.Path(__file__).resolve().parents[2] / ".claude/skills/bsuk-indexing/SKILL.md"
+PUBLIC_SITEMAP = re.compile(r"public/\*\.xml|public/[\w.-]*sitemap|public/`?\s+is where|"
+                            r"SITE_ROOT\s*=\s*[\"']public")
+KEY_ON_DISK = re.compile(r"key is read from `public/|read it from `public/")
+
+
+def test_the_indexing_skill_reads_sitemaps_from_dist_and_the_key_from_the_env():
+    lines = INDEXING_SKILL.read_text(encoding="utf-8").splitlines()
+    bad = [f"SKILL.md:{n}  {l.strip()}" for n, l in enumerate(lines, 1)
+           if PUBLIC_SITEMAP.search(l) or KEY_ON_DISK.search(l)]
+    assert bad == [], "the skill contradicts scripts/indexnow_submit.py:\n  " + "\n  ".join(bad)
+    roots = re.findall(r"(?m)^SITE_ROOT\s*=\s*\"([^\"]*)\"", "\n".join(lines))
+    assert roots and set(roots) == {"dist"}, roots
