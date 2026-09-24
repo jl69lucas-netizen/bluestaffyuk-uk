@@ -248,20 +248,20 @@
   {
     "src": ".claude/skills/cag-image-generation/SKILL.md",
     "dst": ".claude/skills/bsuk-image-generation/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
   },
   {
     "src": ".claude/skills/cag-photo-ingest/SKILL.md",
     "dst": ".claude/skills/bsuk-photo-ingest/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
   },
   {
     "src": ".claude/skills/cag-infographic/SKILL.md",
     "dst": ".claude/skills/bsuk-infographic/SKILL.md",
-    "mode": "deferred",
-    "notes": "project 3 brings the design system"
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
   },
   {
     "src": ".claude/skills/cag-logo-generator/SKILL.md",
@@ -1144,5 +1144,11 @@
     "dst": "IMAGE-DESIGNS.md",
     "mode": "rebase",
     "notes": "system gaps (2026-09-24): the picture's art direction rewritten for a blue Staffordshire Bull Terrier on the locked palette; adds named infographic styles, the board approval rule and the image-slot fields; scripts/image_designs.py reads its ids"
+  },
+  {
+    "src": "scripts/reframe_og.py",
+    "dst": "scripts/reframe_og.py",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the three baked OG framing styles (contain, blurfill, topcover) on the bone palette; tints and the unapproved extra styles dropped"
   }
 ]

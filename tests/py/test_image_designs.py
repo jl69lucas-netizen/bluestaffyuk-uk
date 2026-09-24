@@ -319,6 +319,9 @@ CONSUMERS = (
     ".claude/agents/bsuk-infographic-builder.md",
     ".claude/skills/image-prompt-generator/SKILL.md",
     ".claude/skills/image-metadata/SKILL.md",
+    ".claude/skills/bsuk-image-generation/SKILL.md",
+    ".claude/skills/bsuk-infographic/SKILL.md",
+    ".claude/skills/bsuk-photo-ingest/SKILL.md",
 )
 
 
@@ -335,3 +338,33 @@ def test_the_consumer_line_names_every_style_id():
         assert i in CONSUMER_LINE
     assert "IG-1 to IG-%d" % len(spec["infographic_styles"]) in CONSUMER_LINE
 
+
+# ── Task 8: the tools the document names exist, and the port is recorded ──────
+from test_rules_index import BACKTICKED, _path_like  # noqa: E402
+
+# The candidates script and the build gate arrive in Tasks 9 and 10 of the same build. Until
+# then the document may name them; once they exist they are checked like every other path.
+FORWARD = {"scripts/image_candidates.py", "scripts/image_rules.py"}
+
+
+def test_every_repo_path_the_image_doc_cites_exists():
+    missing = sorted({p for tok in BACKTICKED.findall(text())
+                      for p in [_path_like(tok)] if p and not (ROOT / p).exists()} - FORWARD)
+    assert missing == [], "IMAGE-DESIGNS.md cites paths that do not exist: %s" % missing
+
+
+PORTED = {".claude/skills/bsuk-image-generation/SKILL.md", ".claude/skills/bsuk-infographic/SKILL.md",
+          ".claude/skills/bsuk-photo-ingest/SKILL.md", "scripts/reframe_og.py", "IMAGE-DESIGNS.md"}
+
+
+def test_the_image_port_rows_are_rebased_not_deferred():
+    rows = {r["dst"]: r for r in json.loads(
+        (ROOT / "data/port-manifest.json").read_text(encoding="utf-8"))}
+    for dst in sorted(PORTED):
+        assert rows[dst]["mode"] == "rebase", dst
+        assert (ROOT / dst).exists(), dst
+
+
+@pytest.mark.parametrize("skill", sorted(p for p in PORTED if p.endswith("SKILL.md")))
+def test_the_ported_image_skills_carry_no_residue(skill):
+    assert residue(ROOT / skill) == []

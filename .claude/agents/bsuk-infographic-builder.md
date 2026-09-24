@@ -20,7 +20,7 @@ effort: high
 Before building any infographic:
 
 1. **Read** `data/image-specs.json` — confirm image source type, dimensions, and infographic width for the current page type (not ported — source repo only)
-2. **Read** `.claude/skills/bsuk-infographic/SKILL.md` — load all templates and height/width rules (deferred to project 3, see data/port-manifest.json)
+2. **Read** `.claude/skills/bsuk-infographic/SKILL.md` — load all templates and height/width rules
 3. **Confirm** the `TARGET_PAGE` path exists on disk before writing
 
 ## Rules
@@ -36,7 +36,7 @@ Before building any infographic:
 
 ## Purpose
 
-Build inline HTML/CSS infographics (400–450px tall) for SITE_URL_PLACEHOLDER pages. No AI image generation by default — pure HTML/CSS using BSUK brand colors. Reads `.claude/skills/bsuk-infographic/SKILL.md` for all templates. (deferred to project 3, see data/port-manifest.json)
+Build inline HTML/CSS infographics (400–450px tall) for SITE_URL_PLACEHOLDER pages. No AI image generation by default — pure HTML/CSS using BSUK brand colors. Reads `.claude/skills/bsuk-infographic/SKILL.md` for all templates.
 
 ## Invocation
 
@@ -62,12 +62,12 @@ Check caller input for `MODE` and `PROVIDER`:
 
 **If MODE=html:** proceed with Steps 1–9 below (HTML/CSS generation).
 
-**If MODE=ai (nanobanna or openai):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 4. Build the pro-grade prompt, run (deferred to project 3, see data/port-manifest.json)
+**If MODE=ai (nanobanna or openai):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 4. Build the pro-grade prompt, run
 `./scripts/generate_nb_image.sh` (nanobanna) or `./scripts/generate_image.sh` (openai), (not ported — source repo only)
 then insert the responsive `<img>` wrapper into the target page. Skip Steps 2–4
 (type/height selection — not applicable for AI image mode).
 
-**If MODE=ai (higgsfield):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 5. Read `data/image-manifest.json`. (deferred to project 3, see data/port-manifest.json)
+**If MODE=ai (higgsfield):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 5. Read `data/image-manifest.json`.
 Load `ToolSearch: select:mcp__dd46f66a-ceb9-4042-b533-7b3fc3409318__generate_image`. Check balance.
 Build LICENCE_CLAIM_PLACEHOLDER-compliant prompt using schema `prompt_safety` + `visual_style`. If user uploaded a photo,
 also load `media_upload` + `media_confirm` tools. Generate → insert `<img>` wrapper into target page.
@@ -143,7 +143,7 @@ Read `TARGET_PAGE` path to identify page type, then select the correct `max-widt
 
 ### Step 4: Generate complete infographic HTML
 
-Use the raw HTML template from `.claude/skills/bsuk-infographic/SKILL.md`. (deferred to project 3, see data/port-manifest.json)
+Use the raw HTML template from `.claude/skills/bsuk-infographic/SKILL.md`.
 - Fill in ALL `[PLACEHOLDER]` values — zero placeholders in output
 - Set `height`, `min-height`, `max-height` exactly
 - Match row count on both columns (Comparison type)
@@ -188,7 +188,7 @@ Insert raw HTML directly:
 
 ### Step 7: Run integration checklist
 
-Before saving the file, verify against `.claude/skills/bsuk-infographic/SKILL.md` Integration Checklist: (deferred to project 3, see data/port-manifest.json)
+Before saving the file, verify against `.claude/skills/bsuk-infographic/SKILL.md` Integration Checklist:
 - [ ] Width: wrapper is 760px (informational) or 1100px (homepage/location/hero) — not 900px
 - [ ] Height: 400–450px desktop; `height: auto` on mobile via media query
 - [ ] Responsive: stacks vertically at correct breakpoint (640px or 767px)
