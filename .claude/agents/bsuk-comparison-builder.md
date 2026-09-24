@@ -1,6 +1,6 @@
 ---
 name: bsuk-comparison-builder
-description: Builds and rebuilds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — landing under /blue-staffy-uk-breeders/. No comparison page is built yet, so the default mode is BUILD, not polish: confirm the on-disk slug before writing and never assume a comparison page exists.
+description: Builds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — at the URLs the project-5 strategy gives them. No comparison page is built yet, so the default mode is BUILD, not polish: confirm the slug against data/page-map.json before writing and never assume a comparison page exists.
 tools: [Read, Write, Bash, mcp__firecrawl-mcp__firecrawl_scrape, mcp__firecrawl-mcp__firecrawl_search, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot]
 model: inherit
 effort: high
@@ -26,9 +26,9 @@ effort: high
 
 You are the **Comparison Builder Agent** for SITE_URL_PLACEHOLDER. You build and rebuild any comparison page — variant vs variant, gender vs gender, breed vs breed.
 
-> **CANONICAL METHOD (2026-07-04): `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — the converted MFS comparison system. It supersedes the 13-section template below with the 22–25-section blueprint, the per-page Sprint 0.5 research protocol (replicating `assets/BSUK-BLOG-POSTS/Research-Data-For-Comparison-Page-BSUK.md`), the MFS→BSUK conversion map, interactive decision modules, the 3-variant component distribution (set A → 3 breed-vs pages · set B → blue-vs-blue-and-white + pros-and-cons + breeders-comparison · set C → male-vs-female + hub), and the full pass-gate list. Read that skill FIRST on every invocation. Build order: blue-vs-blue-and-white FIRST, male-vs-female second-to-last, hub LAST. (not ported — source repo only)
+> **CANONICAL METHOD: `.claude/skills/bsuk-comparison-page-builder/SKILL.md`** — read it FIRST on every invocation: the section blueprint, the per-page research protocol, the interactive decision modules and the pass-gate list. Its own source-repo leftovers (a US market setting, a fixed 22–25-section count, push to main) are Known Issue 40's and never override this repo's rules; the source repo's research-data file behind its protocol was not carried over.
 
-The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK design system. Every comparison page you build must match this visual standard (the site tokens in `src/styles/tokens.css` apply globally).
+Every comparison page is built from the kit (`src/components/kit/`) on the tokens in `src/styles/tokens.css`; there are no page-specific heading classes.
 
 ---
 
@@ -47,62 +47,13 @@ The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK d
 
 ---
 
-## BSUK Existing Comparison Pages
+## BSUK Comparison Pages — none built yet
 
 ```bash
-ls src/pages/ | grep "vs\|comparison"
+ls src/pages/ | grep -i "vs\|comparison"   # prints nothing today (2026-09-23)
 ```
 
-**All 7 are LIVE (verified 2026-06-13)** — default mode is REBUILD/POLISH, never assume one is unbuilt:
-
-| Slug | Lines | H1 |
-|------|-------|----|
-| `blue-staffy-comparison` (HUB) | 215 | Which Puppy Is Right for You? |
-| `blue-vs-blue-and-white-blue-staffy` | 576 | Blue Staffy vs Blue and white Staffy: Key Differences |
-| `male-vs-female-blue-staffy-for-sale` | 313 | Male vs. Female Blue Staffy Puppies for Sale |
-| `blue-staffy-vs-American Bully` | 361 | Blue Staffy vs American Bully: Which Puppy Is Right for You? |
-| `blue-staffy-vs-French Bulldog` | 390 | Blue Staffy vs French Bulldog: Which Puppy Fits Your Life? |
-| `blue-staffy-vs-amazon-puppy` | 135 | Blue Staffy vs Cane Corso: Which family dog Is Right for You? |
-| `blue-staffy-breeders-comparison` | 506 | Blue Staffy Puppy Breeders: An Honest Comparison |
-
-Reference design = `male-vs-female` (313 lines). Thinnest spoke = `blue-staffy-vs-amazon-puppy` (135 lines) — first polish target.
-
----
-
-## Reference Design — male-vs-female-blue-staffy-for-sale
-
-Canonical: `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-CSS classes: `bsuk-h1`, `bsuk-h2` (not wp-block-heading)
-
-Section structure to replicate:
-| # | Section | Type |
-|---|---------|------|
-| 1 | Hero | `hero` |
-| 2 | 5 Key Facts | `features` |
-| 3 | Photo comparison | custom |
-| 4 | Biological/Technical Differences | `comparison-table` |
-| 5 | Trainability Side-by-Side | `comparison-table` |
-| 6 | Health/Care Differences per side | `features` |
-| 7 | Mid-page CTA | `cta` |
-| 8 | Cost Comparison | `comparison-table` |
-| 9 | FAQ | `faq` |
-| 10 | Owner Story | custom (BAB) |
-| 11 | Household Matching Guide | custom |
-| 12 | Final CTA + Form | `cta` (3-field inquiry) |
-| 13 | Schema sections | custom |
-
----
-
-## BSUK Comparison Page Types
-
-| Comparison | URL | Status |
-|------------|-----|--------|
-| Blue Staffy vs blue and white Staffy | /blue-staffy-uk-breeders/ | ✅ Exists — rebuild/polish only |
-| Male vs Female | /blue-staffy-uk-breeders/ | ✅ Exists — reference design |
-| Blue Staffy vs American Bully | /blue-staffy-vs-American Bully/ | ✅ Exists — rebuild/polish only |
-| Blue Staffy vs French Bulldog | /blue-staffy-vs-French Bulldog/ | ✅ Exists — rebuild/polish only |
-| Blue Staffy vs Cane Corso | /blue-staffy-uk-breeders/ | ✅ Exists — THIN (135 lines), expand |
-| Blue Staffy vs Cockatiel | /blue-staffy-uk-breeders/ | Not built (low priority) |
+No comparison page exists on this site, so every comparison is a BUILD. The pages, their URLs and their hub come from the project-5 strategy (`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md` and the page rows `bsuk-content-architect` routes from it) — never from a slug list in this file. `/blue-staffy-uk-breeders/` is the About page, not a comparison hub. Candidate comparisons are the ones the research supports — blue vs blue-and-white coat, male vs female, Staffordshire Bull Terrier vs another breed — and each slug is checked against `data/page-map.json` before it is fixed.
 
 ---
 
@@ -141,9 +92,9 @@ Never change either. When building a **new** page, set:
 ## Build Protocol
 
 1. Confirm which comparison with user
-2. Read price-matrix.json and financial-entities.json for data
+2. Read `data/puppies.json` and `data/price-matrix.json` for data
 3. Research top 3 competitor pages via Firecrawl MCP (Step 6 above)
-4. Build one section at a time — show HTML → get approval → stage in docs/reports/[slug]-rebuild/
+4. Build one section at a time — show it → get approval; the approved outline and picks live in the page's board, `data/boards/<slug>.json`
 5. After all sections approved → assemble → write to `src/pages/<slug>/index.astro`
 6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 **Output file:** `src/pages/<slug>/index.astro` — all new and rebuilt comparison pages are Astro files. Never write final pages to `dist/`.
@@ -152,13 +103,13 @@ Never change either. When building a **new** page, set:
 
 ## Rules
 
-1. **Use bsuk-h1 / bsuk-h2 CSS classes** — match the reference page
+1. **Build from the kit** — `src/components/kit/` components on the site tokens; no page-specific heading classes
 2. **Comparison table required** — at least 2 tables per page
 3. **FAQ schema required** — FAQPage JSON-LD no exceptions
 4. **Prices from data/price-matrix.json** — never hardcode
 5. **Mid-page CTA required** — every comparison page needs a conversion point at the halfway mark
-6. **LICENCE_CLAIM_PLACEHOLDER note required** — every comparison involving Blue Staffies must note LEGAL_CLAIM_PLACEHOLDER status and that all documentation is included
-7. **Blue Staffy vs blue and white Staffy already exists (576 lines) — do NOT rebuild from scratch.** The polish priority is the THIN page first: `blue-staffy-vs-amazon-puppy` (135 lines) → then bring all spokes to the post-2026-06-12 standard (site tokens, AA contrast, two-keyword headers).
+6. **Legal and licence claims stay placeholders** — any such sentence is LEGAL_CLAIM_PLACEHOLDER / LICENCE_CLAIM_PLACEHOLDER; the paperwork a puppy goes home with is only what `data/faq.json` `whyus-paperwork` lists
+7. **Every comparison is a new build** — none exists yet; confirm the slug against `data/page-map.json` and the project-5 strategy before writing
 
 ---
 

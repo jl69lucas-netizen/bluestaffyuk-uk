@@ -126,7 +126,7 @@ Run these checks AFTER the standard keyword checklist above. Every item must pas
 - [ ] ≥1 declarative statement per H2 section (Entity-Tree format: "[Subject] is/are [fact].")
 - [ ] Blue Staffy puppy entity properties mentioned: lifespan (12–14 years), temperament with children (LICENCE_CLAIM_PLACEHOLDER until evidenced), LICENCE_CLAIM_PLACEHOLDER status, origin regions
 - [ ] Breeder entity properties mentioned: owner name, location (Carlisle, Cumbria), founding year (NOT FETCHED), the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER), the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
-- [ ] Variant entity properties mentioned if applicable: Blue Staffy (solid blue coat) vs blue and white Staffy (smaller, charcoal, red-tipped tail)
+- [ ] Coat entity properties mentioned if applicable: only what `data/puppies.json` records (`colour`, `sex`) — no size, weight or temperament difference between coats is established
 
 ### Schema Completeness
 - [ ] FAQPage JSON-LD present (required for AIO citation)
@@ -151,7 +151,7 @@ Run these checks AFTER the standard keyword checklist above. Every item must pas
 
 Run Rule 61 grep check:
 ```bash
-grep -n "402-696\|402.696\|(402)\|tel:" src/pages/[slug]/index.astro | grep -v "footer\|schema\|schema.org\|telephone"
+grep -n "PHONE_PLACEHOLDER\|tel:\|0[0-9]\{4\} \?[0-9]\{6\}" src/pages/<slug>/index.astro | grep -v "footer\|schema\|telephone"
 ```
 Expected: zero results (phone only in footer/schema).
 

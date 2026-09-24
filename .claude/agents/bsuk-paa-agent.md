@@ -80,7 +80,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 | Informational | "what is," "how long," "are they" | Breed guide, FAQ sections |
 | Comparison | "vs," "difference between," "better" | Comparison pages |
 | Health | "health problems," "lifespan," "tested" | Breed guide, trust sections |
-| Legal and breeder standing | "legal," "documentation," "LICENCE_CLAIM_PLACEHOLDER," "permit" | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages |
+| Legal and breeder standing | "legal," "documentation," "licence," "KC registered" | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages |
 | Local | "[city/city] Blue Staffy" | Location pages |
 
 ---
@@ -95,16 +95,16 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 - How do I avoid Blue Staffy puppy scams?
 
 ### Breeder Standing / Legal
-- Are Blue Staffy puppies legal to own in the US?
+- Are Staffordshire Bull Terriers legal to own in the UK?
 - What is LEGAL_CLAIM_PLACEHOLDER and why does it matter?
 - What documentation comes with a home-raised Blue Staffy?
-- Can CBP seize my Blue Staffy puppy?
+- What should a puppy contract include?
 - What does the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) mean for a puppy breeder?
 
 ### Breed / Care
 - What is the difference between Blue Staffy and Blue and white Staffies?
 - How long do Blue Staffy puppies live?
-- Do Blue Staffy puppies talk?
+- Are Blue Staffies good with children?
 - Are Blue Staffy puppies good for beginners?
 - What is L-2-HGA in Blue Staffy puppies?
 - How much space does an Blue Staffy puppy need?
@@ -128,13 +128,13 @@ Google pulls Featured Snippets from content that:
 
 ### Paragraph Snippet (most common for BSUK)
 ```
-Q: Do Blue Staffy puppies talk?
+Q: How long do Blue Staffies live?
 
 SNIPPET-OPTIMIZED ANSWER:
-Blue Staffy puppies are among the most capable training puppies in the world. Blue Staffy African 
-Greys are widely regarded as the best mimics, with documented vocabularies of 200–1,000+ 
-words. Blue and white Staffies begin training earlier and are considered more relaxed. Both 
-variants learn from consistent interaction starting from the hand-raising stage. (52 words)
+Staffordshire Bull Terriers, blue coats included, typically live 12–14 years. Coat colour does
+not change the breed's lifespan; diet, weight, exercise and regular vet care do. Ask any breeder
+which health tests the parents have had, and ask to see the results before you pay a deposit.
+(the first sentence is the snippet; the whole answer stays 40 to 60 words)
 ```
 
 ### List Snippet (for process questions)
@@ -143,7 +143,7 @@ Q: How do I find a reputable Blue Staffy puppy breeder?
 
 SNIPPET-OPTIMIZED ANSWER:
 To find a reputable Blue Staffy puppy breeder:
-1. Verify LICENCE_CLAIM_PLACEHOLDER licensing at LICENCE_CLAIM_PLACEHOLDER.gov
+1. Ask for the breeder's licence details (LICENCE_CLAIM_PLACEHOLDER until the breeder supplies them)
 2. Request the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) for each puppy
 3. Confirm microchip registration LICENCE_CLAIM_PLACEHOLDER and vet health certificate
 4. Ask for vet health check LICENCE_CLAIM_PLACEHOLDER and microchip number
@@ -152,16 +152,14 @@ To find a reputable Blue Staffy puppy breeder:
 
 ### Table Snippet (for comparison questions)
 ```
-Q: What's the difference between Blue Staffy and Blue and white Staffies?
+Q: What's the difference between a Blue Staffy and a blue-and-white Staffy?
 
 | | Blue Staffy | Blue and white Staffy |
 |--|--|--|
-| Size | Larger (400–650g) | Smaller (275–375g) |
-| Price | £1,500 (Roman, Byrd, Ince) | £1,700 (Vennie, Christa, Cheryl) |
-| Tail color | Bright red | Dark maroon |
-| training onset | Later | Earlier |
-| Best for | Experienced owners | First-time puppy owners |
+| Price | £1,500 male, £1,700 female — the price follows the sex, not the coat | the same: £1,500 male, £1,700 female |
+| Puppies (`data/puppies.json`) | Ince (male), Christa (female), Cheryl (female, white blaze) | Roman (male), Vennie (female) |
 ```
+(Byrd, the sixth pup, is white — in neither column. Read the coats and prices from `data/puppies.json` at build time.)
 
 ---
 

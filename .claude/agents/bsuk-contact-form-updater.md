@@ -117,4 +117,4 @@ python3 scripts/indexnow_submit.py <slug>             # every slug whose rendere
 4. **Submit button text is descriptive** — "Send My Inquiry" not "Submit"
 5. **Seven-field contract** on every inquiry form except `/`, `/uk-blue-staffy-breeders-contact/` and locations — all required, red `*` (skill table)
 6. **Verify after every change** — grep for class and label count
-7. **LICENCE_CLAIM_PLACEHOLDER note** — inquiry form should never collect or display payment info; deposit process happens after permit verification
+7. **No payment details in any form** — the deposit is arranged after we talk, never through a form

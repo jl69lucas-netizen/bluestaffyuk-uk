@@ -56,7 +56,7 @@ Note: This page uses a dual-H1 pattern. The decorative "About Us" is a styled di
 ## BSUK About Page Story Elements
 
 ### Hook (the problem)
-The Blue Staffy puppy scam market — Facebook Marketplace sellers claiming "LICENCE_CLAIM_PLACEHOLDER documented" with forged paperwork, disappearing after CashApp payment. US buyers lose thousands annually to wire fraud and CBP seizures.
+The UK puppy-scam market — online adverts and social-media sellers claiming paperwork they cannot show, taking a deposit by bank transfer and disappearing. Frame the problem; quote no loss figure, because none is sourced.
 
 ### Story (Lisa Bright's background)
 - Years breeding Blue Staffies: NOT FETCHED — never write a number the breeder has not given
@@ -85,9 +85,9 @@ Solution: the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) + 
 | 3 | Our Story | Story | custom | How BSUK started — background, timeline, puppies raised |
 | 4 | Meet Lisa Bright | Story | custom | Photo, personal bio, why they breed, personal connection to Blue Staffies |
 | 5 | Our Philosophy | Story | `features` | 3 core beliefs: documentation first, small-batch only, lifetime support |
-| 6 | What Makes Us Different | Solution | `features` | microchip registration LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER permits, vet certs, LICENCE_CLAIM_PLACEHOLDER licensed, home-raised |
+| 6 | What Makes Us Different | Solution | `features` | home-raised with the family, the £500 refundable deposit, collection in Carlisle or UK delivery £200–£350 by distance; every licence claim stays LICENCE_CLAIM_PLACEHOLDER, and a health claim only as `data/faq.json` words it |
 | 7 | Our Breeding Standards | Solution | custom | How parent puppies are selected, health testing, whelping process |
-| 8 | Documentation You Receive | Solution | custom | Every document listed — LICENCE_CLAIM_PLACEHOLDER permit #, microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert, vet health certificate LICENCE_CLAIM_PLACEHOLDER, microchip number |
+| 8 | Documentation You Receive | Solution | custom | The paperwork that goes home with a puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written puppy purchase contract (`data/faq.json` `whyus-paperwork`); both parents' registration numbers on request. A licence number stays LICENCE_CLAIM_PLACEHOLDER |
 | 9 | Testimonials | Solution | `testimonials` | 3 family stories — emphasize documentation transparency and post-sale support |
 | 10 | Our Commitment to You | Solution | custom | Lifetime support promise — "we answer the phone after the sale" |
 | 11 | FAQ — About BSUK | custom | `faq` | 6 questions about the breeder, LICENCE_CLAIM_PLACEHOLDER credentials, process. FAQPage schema |
@@ -107,7 +107,7 @@ Always read the current page content to extract real facts before writing:
 - Breeder name: Lisa Bright
 
 ```bash
-grep -i "founded\|LICENCE_CLAIM_PLACEHOLDER\|years\|puppies\|permit\|LICENCE_CLAIM_PLACEHOLDER" dist/blue-staffy-uk-breeders/index.html | head -20
+grep -i "founded\|LICENCE_CLAIM_PLACEHOLDER\|years\|puppies\|licen" dist/blue-staffy-uk-breeders/index.html | head -20
 ```
 
 ---
@@ -119,7 +119,7 @@ grep -i "founded\|LICENCE_CLAIM_PLACEHOLDER\|years\|puppies\|permit\|LICENCE_CLA
 3. **Vulnerability is strength** — "we made mistakes early on and learned from them" builds trust
 4. **No marketing clichés** — ban: "passion," "love what we do," "family-friendly," "top-notch"
 5. **One story beats ten facts** — a specific buyer's documentation experience belongs here
-6. **LICENCE_CLAIM_PLACEHOLDER transparency** — permit numbers available on request; federal verification process explained
+6. **Licence transparency** — a licence or registration number is printed only when the breeder supplies it; until then it is LICENCE_CLAIM_PLACEHOLDER, and no verification process is described
 
 ---
 
@@ -138,7 +138,7 @@ grep -i "founded\|LICENCE_CLAIM_PLACEHOLDER\|years\|puppies\|permit\|LICENCE_CLA
 3. **H-S-S order must be followed** — Hook sections before Story, Story before Solution
 4. **FAQ schema required**
 5. **No clichés** — enforce the tone rules above
-6. **LICENCE_CLAIM_PLACEHOLDER compliance** — every reference to documentation must be accurate; never claim permits you cannot verify
+6. **LICENCE_CLAIM_PLACEHOLDER compliance** — every reference to documentation must be accurate; never claim a document, licence or registration you cannot verify
 
 ---
 

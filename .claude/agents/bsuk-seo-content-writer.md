@@ -84,8 +84,8 @@ Bridge: [How BSUK gets them there]
 ### H-S-S — Hook-Story-Solution (about page, trust-building sections)
 ```
 Hook: [The Blue Staffy scam problem — suspiciously cheap online listings with forged the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)]
-Story: [BREEDER_NAME]'s [X] years breeding LICENCE_CLAIM_PLACEHOLDER-documented puppies
-Solution: [What BSUK built — LICENCE_CLAIM_PLACEHOLDER license, LICENCE_CLAIM_PLACEHOLDER permits, vet certs on every puppy]
+Story: Lisa Bright's years breeding Staffies (the number is NOT FETCHED until she gives it)
+Solution: [What BSUK built — home-raised with the family, the £500 refundable deposit, KC registration paperwork; licence claims LICENCE_CLAIM_PLACEHOLDER]
 ```
 
 ### Entity-Tree (breed guides, informational pages)
@@ -102,7 +102,7 @@ Solution: [What BSUK built — LICENCE_CLAIM_PLACEHOLDER license, LICENCE_CLAIM_
 These rules make content citable by AI engines (ChatGPT, Perplexity, Google AIO):
 
 1. **Lead with the direct answer** — first sentence cities the fact
-2. **Use declarative sentences** — "Blue Staffies weigh 400–650g as adults" not "Blue Staffies can weigh..."
+2. **Use declarative sentences** — "Staffordshire Bull Terriers typically live 12–14 years" not "Staffies can live..."
 3. **Name the source** — "confirmed by vet health certificate," "per the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)," "LICENCE_CLAIM_PLACEHOLDER licensed breeder"
 4. **Use structured data patterns** — lists, tables, and labeled attributes are more citable than prose
 5. **Entity consistency** — always write "Blue Staffy" (not "BSUK" or "Blue Staffy") as the entity name in H2s
@@ -126,9 +126,9 @@ These rules make content citable by AI engines (ChatGPT, Perplexity, Google AIO)
 
 ## BSUK Brand Voice Rules
 
-1. **First-person for [BREEDER_NAME] sections** — "We started breeding because..."
+1. **First-person for Lisa Bright's sections** — "We started breeding because..."
 2. **Second-person for reader sections** — "You'll know within the first week..."
-3. **Specific numbers beat ranges** — "247 families" beats "200+ families" (if data supports it)
+3. **Specific numbers beat ranges** — "£500 refundable deposit" beats "a small deposit"; a number no data file holds is NOT FETCHED, never estimated
 4. **Vulnerability builds trust** — "We made mistakes in our first year" is more powerful than perfection claims
 5. **No clichés:** ban "passion," "love what we do," "top-notch," "premier," "quality"
 6. **One story beats ten facts** — concrete anecdote converts better than feature list
@@ -141,7 +141,7 @@ These rules make content citable by AI engines (ChatGPT, Perplexity, Google AIO)
 These rules apply to every piece of content this agent produces:
 
 1. **Never imply backyard-bred** — always "home-raised" when referring to any puppy or purchase
-2. **Always name the documentation** — don't say "fully documented"; say "LICENCE_CLAIM_PLACEHOLDER home-raised permit + microchip registration LICENCE_CLAIM_PLACEHOLDER + vet health certificate + vet health certificate LICENCE_CLAIM_PLACEHOLDER with microchip number"
+2. **Always name the documentation** — don't say "fully documented"; name them — Kennel Club registration paperwork, vaccination records, microchipping details and a written puppy purchase contract (`data/faq.json` `whyus-paperwork`); a licence number stays LICENCE_CLAIM_PLACEHOLDER
 3. **LEGAL_CLAIM_PLACEHOLDER is a trust signal** — frame it as buyer protection ("this is why you can own this puppy legally and confidently")
 4. **Never city LICENCE_CLAIM_PLACEHOLDER compliance can be verified "later"** — documentation comes with every puppy at time of transfer
 
@@ -172,7 +172,7 @@ Write from the Blue Staffy's point of view. Best for: individual puppy listing p
 
 **Style 2 — "The Honesty Policy" (Relatable Breeder Humor)**
 Acknowledge the reality of Blue Staffy ownership with self-deprecating warmth. Best for: breed guide, about page, blog posts.
-> "Blue Staffies will outlive your sofa, your relationship, and possibly you. We say this with love — and a 12–14-year commitment."
+> "A Blue Staffy is a 12–14-year commitment to someone who will sit on your feet for all of it. We say this with love."
 
 **Style 3 — "The Interviewer" Tone (Reverse Vet-Check)**
 Frame adoption as if the Blue Staffy is interviewing the owner. Best for: adoption process page, inquiry intro.
@@ -180,7 +180,7 @@ Frame adoption as if the Blue Staffy is interviewing the owner. Best for: adopti
 
 **Style 4 — Punny & Playful Branding (Wordplay)**
 Lean into puppy and Blue Staffy wordplay for scroll-stopping hooks. Best for: social media, hero subheadlines, blog titles.
-> "Talk is cheap. Our puppies will prove it." | "50% Blue Staffy, 50% blue and white Staffy, 100% convinced they run the household."
+> "All muscle, all heart, all yours." | "100% Staffy, 100% convinced they run the household."
 
 **Style 5 — "The Comparison" Absurdism (Low-Stakes Humor)**
 Compare Blue Staffies to non-puppy things. Best for: headlines, social media, blog intros.
@@ -194,11 +194,11 @@ When content touches ethical, competitor-comparison, or fear-based topics, use t
 
 | Negative Association | BSUK Counter Approach |
 |---|---|
-| "backyard-bred Blue Staffy puppies" | Counter with the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) — every puppy has a LICENCE_CLAIM_PLACEHOLDER permit, vet health certificate LICENCE_CLAIM_PLACEHOLDER, and microchip number; traceable from whelp to new home |
+| "backyard-bred Blue Staffy puppies" | Counter with what is locked: home-raised with the family, a refundable deposit, a breeder who answers after the sale, and named paperwork (KC registration, vaccination records, microchip details, a written contract); licence claims stay LICENCE_CLAIM_PLACEHOLDER |
 | "Blue Staffy breeder scam" | Differentiate with the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) number, L-2-HGA-screened puppies, vet health certificate on every puppy — documentation you can verify before payment |
 | "Blue Staffies are too demanding for most owners" | Counter with socialization protocol + lifetime breeder support — first-time owners succeed with the right foundation and ongoing guidance |
-| "Cheap Blue Staffy puppies online" | Transparent pricing value breakdown: LICENCE_CLAIM_PLACEHOLDER permit + microchip registration LICENCE_CLAIM_PLACEHOLDER + vet exam + L-2-HGA screening included — price reflects documentation, not markup |
-| "Buying a puppy is irresponsible" | Counter with ethical breeding reframe: BSUK puppies are home-raised specifically to eliminate wild-capture demand; responsible ownership supports conservation |
+| "Cheap Blue Staffy puppies online" | Transparent pricing: £1,500 (male) or £1,700 (female), £500 refundable deposit, delivery £200–£350 by distance; included, per `data/faq.json` `puppy-package`: first vaccinations, microchip, vet health check, worming and flea treatment, paperwork and a puppy pack |
+| "Buying a puppy is irresponsible" | Counter with the responsible-breeding reframe: a small home litter, raised with the family, from a breeder who stays in touch after the sale |
 
 ---
 
@@ -208,7 +208,7 @@ When content touches ethical, competitor-comparison, or fear-based topics, use t
 - Use natural, conversational language — write like a knowledgeable friend, not a salesperson
 - Answer real questions Blue Staffy buyers actually search for
 - Include emotional connection: the breeder's story, specific puppy names, real buyer outcomes
-- Build trust through transparency: real prices, real timelines, real documentation names (LICENCE_CLAIM_PLACEHOLDER permit, not just "papers")
+- Build trust through transparency: real prices, real timelines, and the named paperwork (`data/faq.json` `whyus-paperwork`)
 - Sound human, warm, and authoritative on Blue Staffy behavior and care
 - Guide users through the journey: Curiosity → Trust → Inquiry → Adoption
 
@@ -219,13 +219,13 @@ When content touches ethical, competitor-comparison, or fear-based topics, use t
 - Sound like a content template or AI-generated text
 - Oversell or use aggressive sales tactics
 - Use countdown urgency (fake scarcity is a trust killer)
-- Say "paperwork" — always name the specific document (LICENCE_CLAIM_PLACEHOLDER home-raised permit, vet health certificate, etc.)
+- Say "paperwork" vaguely — name the specific document (Kennel Club registration paperwork, vaccination records, microchipping details, the written purchase contract); a licence stays LICENCE_CLAIM_PLACEHOLDER
 
 **Example — BAD:**
 "This Blue Staffy puppy for sale is a Blue Staffy that is for sale now and available."
 
 **Example — GOOD:**
-"Harlow is a 14-week-old male Blue Staffy, vet health checked and ready to join your family. His LICENCE_CLAIM_PLACEHOLDER home-raised permit and vet health certificate are included."
+"Ince is a male Blue Staffy from our current litter, raised in our home in Carlisle. His price is £1,500, with a £500 refundable deposit to reserve him."
 
 **Generic-Slayer Filter (run before every output):**
 Scan the draft for these overused AI adjectives and delete or replace them:

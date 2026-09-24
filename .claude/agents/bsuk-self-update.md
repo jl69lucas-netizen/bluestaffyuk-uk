@@ -167,7 +167,7 @@ After applying patches (or skipping):
 
 ## Scheduling Note
 
-`/schedule` is not a Claude Code command. Weekly runs come from a Routine: `create_trigger` with `cron_expression: "0 14 * * 0"` (Sunday 09:00 Central, expressed in UTC), `create_new_session_on_fire: true`, and this agent's invocation as the prompt. In a local terminal session, `CronCreate` is the equivalent. If you are reading this as a manual invocation you can still run the full sequence — it behaves identically.
+`/schedule` is not a Claude Code command. Weekly runs come from a Routine: `create_trigger` with `cron_expression: "0 14 * * 0"` (Sunday 14:00 UTC — 15:00 in Carlisle under British Summer Time), `create_new_session_on_fire: true`, and this agent's invocation as the prompt. In a local terminal session, `CronCreate` is the equivalent. If you are reading this as a manual invocation you can still run the full sequence — it behaves identically.
 
 After completing the run, if `list_triggers` shows no Routine for this agent, say so once and offer to create it. Never claim to be scheduled unless the trigger is listed.
 

@@ -87,7 +87,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 
 ### Breeder Standing & Documentation (high-authority, low competition)
 - "Blue Staffy LEGAL_CLAIM_PLACEHOLDER: a buyer's complete guide"
-- "How to verify a LICENCE_CLAIM_PLACEHOLDER home-raised permit before purchase"
+- "What paperwork to ask a UK breeder for before you buy"
 - "What happens if your Blue Staffy doesn't have proper documentation"
 
 ### Variant Comparisons (commercial intent)
@@ -107,11 +107,11 @@ Query: "how to buy an Blue Staffy puppy safely"
 
 ## Content Rules (BSUK Voice)
 
-1. **[BREEDER_NAME] speaks directly** — use first-person "we" for breeder voice sections
+1. **Lisa Bright speaks directly** — use first-person "we" for breeder voice sections
 2. **Never invent stats** — all numbers come from `data/price-matrix.json` or `data/financial-entities.json` (not ported — source repo only)
 3. **Blue Staffy prices** are always `£1,500` (Roman, Byrd, Ince) or `£1,700` (Vennie, Christa, Cheryl), read from `data/puppies.json` — never a range, never a figure of your own
 4. **Health guarantee is `[DURATION_TBD]`** — never specify a duration until confirmed
-5. **We are in [BREEDER_LOCATION]** — always accurate, never a different city
+5. **We are in Carlisle, Cumbria** — always accurate, never a different city (Known Issue 16)
 6. **LICENCE_CLAIM_PLACEHOLDER compliance is non-negotiable** — every post mentioning purchase must reference the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
 7. **No clickbait superlatives** — "best" must be backed by a reason ("best for apartments because...")
 8. **Every post ends with a CTA to /contact/ or /available/** — posts exist to drive inquiry
@@ -151,7 +151,7 @@ Query: "how to buy an Blue Staffy puppy safely"
   "description": "[META_DESCRIPTION]",
   "author": {
     "@type": "Person",
-    "name": "[BREEDER_NAME]",
+    "name": "Lisa Bright",
     "url": "https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/"
   },
   "publisher": {
@@ -200,7 +200,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 2. Step-by-step process (numbered, scannable)
 3. Red flags checklist (build trust by exposing bad actors)
 4. the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) walkthrough (what to request and verify)
-5. BSUK process walkthrough (specific to how [BREEDER_NAME] works)
+5. BSUK process walkthrough (specific to how Lisa Bright works)
 6. FAQ section
 7. CTA → /contact/ with form
 ```
@@ -238,7 +238,7 @@ Every post must link to at least 3 BSUK pages. Priority targets:
 | `/uk-staffordshire-bull-terrier-guide/` | "complete Blue Staffy breed guide", "everything about Blue Staffies" |
 | `/buy-blue-staffy-puppies-uk/` | "how to find a reputable breeder", "our buying process" |
 | `/blue-staffy-breeder-standing/` | "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)", "legal documentation guide" |
-| `/blue-staffy-uk-breeders/` | "[BREEDER_NAME]", "our breeding story" |
+| `/blue-staffy-uk-breeders/` | "Lisa Bright", "our breeding story" |
 
 **Anchor position rule (Link-First, 2026-07-11):** Link text must appear at the START of the sentence — inside the opening words. Never mid-sentence, never at the end. Bad: `"learn more [here](url)."` Good: `"Our [complete breed guide](url) covers everything from..."`)
 

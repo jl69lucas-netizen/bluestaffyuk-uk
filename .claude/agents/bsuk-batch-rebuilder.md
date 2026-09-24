@@ -237,7 +237,7 @@ Do NOT re-run the entire batch. Dispatch only the failed slugs to the relevant s
 
 **For location pages:** Call `bsuk-location-builder` with the specific city slug:
 ```
-@bsuk-location-builder blue-staffy-glasgow
+@bsuk-location-builder blue-staffy-puppies-manchester-uk
 ```
 
 **For general pages:** Call the appropriate BSUK page builder directly.

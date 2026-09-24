@@ -130,12 +130,12 @@ Save a lean snapshot after each run to enable next week's change detection:
 ```json
 // docs/superpowers/sessions/snapshots/<YYYY-MM-DD>-<competitor-id>.json
 {
-  "id": "birdsNow",
+  "id": "trojanstaffuk",
   "checked": "2026-04-28",
   "page_count": 142,
   "homepage_h1": "Blue Staffy Puppies For Sale",
   "blog_post_count": 34,
-  "states_found": ["CA", "TX", "FL"],
+  "cities_found": ["Manchester", "Leeds"],
   "schema_types": ["FAQPage", "Product"],
   "price_mentions": ["NOT FETCHED"]
 }

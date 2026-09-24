@@ -226,7 +226,7 @@ Use when migrating legacy WooCommerce product/category URLs to clean SEO locatio
 1. Always add BOTH slash variants (with and without trailing slash)
 2. Verify destination directory exists in `dist/` BEFORE adding the redirect
 3. If destination doesn't exist yet: create the destination page first (use bsuk-location-builder), then add the redirect
-4. Redirect to `/` only as last resort fallback (e.g., eggs page with no equivalent)
+4. Redirect to `/` only as a last-resort fallback (a page with no equivalent)
 5. Comment every redirect block with date and purpose
 6. Never redirect a /product/ URL to another /product/ URL
 

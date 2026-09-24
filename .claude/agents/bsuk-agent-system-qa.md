@@ -192,36 +192,12 @@ echo "=== SESSIONS ===" && ls -lt docs/superpowers/sessions/ 2>/dev/null | head 
 
 ---
 
-### Check 9 — 2026-05-27 New Rules Compliance
-
-Verify all agents comply with Rules 55-62 and IMAGE-01-04 added on 2026-05-27:
+### Check 9 — Content-Rule and Residue Guards
 
 ```bash
-# Check 1: Page builder agents must reference data/image-specs.json in startup
-echo "=== image-specs.json startup reads ==="
-for f in bsuk-location-builder bsuk-homepage-builder bsuk-blog-post-agent bsuk-breed-guide-builder bsuk-comparison-builder bsuk-image-pipeline bsuk-content-architect bsuk-seo-content-writer; do
-  grep -q "image-specs" .claude/agents/$f.md && echo "✅ $f" || echo "❌ MISSING image-specs: $f"
-done
-
-# Check 2: bsuk-content-architect and bsuk-seo-content-writer must reference seo-master-checklist
-echo "=== seo-master-checklist references ==="
-for f in bsuk-content-architect bsuk-seo-content-writer; do
-  grep -q "seo-master-checklist" .claude/agents/$f.md && echo "✅ $f" || echo "❌ MISSING seo-master-checklist: $f"
-done
-
-# Check 3: bsuk-keyword-verifier must have Rules 55-62 compliance block
-echo "=== Rules 55-62 in keyword-verifier ==="
-grep -q "Rules 55-62\|Rule 55" .claude/agents/bsuk-keyword-verifier.md && echo "✅ bsuk-keyword-verifier" || echo "❌ MISSING Rules 55-62 block: bsuk-keyword-verifier"
-
-# Check 4: No agent should reference old infographic height 300-350px.
-# NOTE: portrait puppy CSS dims legitimately display at 300–350px (1200×2133 native → ~350px),
-# so exclude lines mentioning "portrait" and this QA file's own grep pattern to avoid false positives.
-echo "=== Old infographic height references (should be zero) ==="
-grep -rn "300–350px\|300-350px" .claude/agents/ docs/reference/ 2>/dev/null | grep -v "bsuk-agent-system-qa.md" | grep -vi "portrait" && echo "❌ Old infographic height still present — update to 400px" || echo "✅ No stray infographic 300-350px references (portrait CSS dims exempt)"
-
-# Check 5: Rule 61 — no phone numbers in body copy of page agents
-echo "=== Rule 61 phone number policy ==="
-grep -q "Rule 61\|phone number\|402-696" .claude/agents/bsuk-keyword-verifier.md && echo "✅ bsuk-keyword-verifier has Rule 61 check" || echo "❌ MISSING Rule 61 check in bsuk-keyword-verifier"
+python3 -m pytest tests/py/test_agent_facts.py tests/py/test_agent_residue.py tests/py/test_agent_build_rules.py -q
+grep -q "seo-master-checklist" .claude/agents/bsuk-content-architect.md && echo "✅ content-architect routes through the master checklist" || echo "❌ bsuk-content-architect: no seo-master-checklist step"
+grep -q "Rule 61" .claude/agents/bsuk-keyword-verifier.md && echo "✅ keyword-verifier checks Rule 61" || echo "❌ bsuk-keyword-verifier: no Rule 61 check"
 ```
 
 ---

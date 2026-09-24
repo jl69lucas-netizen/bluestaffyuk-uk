@@ -9,7 +9,7 @@ effort: high
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 > **Interior-Page Standard (ALWAYS):** This page type follows the homepage design + method. Read `MANUAL INTERIOR-PAGE CHECKLIST.md` (Hero → CTA) and the master skill's *Interior-Page Profile* before building. Keep seam-logo dividers (`.bsuk-seam` + `/bsuk-footer-logo.png`), first-person BlueStaffyUK voice, two-keyword conversational headers, the 4-Move entity loop + Verified-Claim Ledger, Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, and the AA contrast + performance gates. Add `BreadcrumbList` schema.
-> Every trust signal must be verifiable. Never fabricate review counts, ratings, or buyer names. All data comes from [BREEDER_NAME] directly or from `data/case-studies.json`. Real numbers only — no placeholder stats. (not ported — source repo only)
+> Every trust signal must be verifiable. Never fabricate review counts, ratings, or buyer names. All data comes from Lisa Bright directly or from `data/case-studies.json`. Real numbers only — no placeholder stats. (not ported — source repo only)
 
 ---
 
@@ -114,17 +114,15 @@ Add only what the data backs: a `TrustStrip` if it is missing, a `Testimonial` b
 
 Google's AI matches user intent beyond exact keywords — specific review language builds local trust signals.
 
-**Template for [BREEDER_NAME] to send buyers post-transfer:**
+**Template for Lisa Bright to send buyers post-transfer:**
 
 > "If you're happy with [Puppy Name], would you mind leaving us a Google review? Mention [Puppy Name]'s name and one specific thing you loved — it helps other families find LICENCE_CLAIM_PLACEHOLDER-compliant Blue Staffy breeders!"
 
 **Review specificity signals to encourage:**
 - Puppy name mentioned
-- LICENCE_CLAIM_PLACEHOLDER permit reference ("the LICENCE_CLAIM_PLACEHOLDER home-raised permit was ready before we even asked")
-- microchip registration LICENCE_CLAIM_PLACEHOLDER reference ("we love knowing [Puppy Name] is a confirmed male Blue Staffy")
-- Breeder responsiveness ("[BREEDER_NAME] answered every question before transfer")
-- Post-transfer support ("[BREEDER_NAME] still answers our questions 6 months later")
-- Documentation completeness ("all six documents arrived in perfect order")
+- The puppy's name and one thing about its first week home
+- Breeder responsiveness ("Lisa Bright answered every question before transfer")
+- Post-transfer support ("Lisa Bright still answers our questions 6 months later")
 
 ---
 
@@ -178,11 +176,11 @@ Pages checked: [count]
 
 ## Rules
 
-1. **Real numbers only** — all review counts, years, and family stats confirmed by [BREEDER_NAME]; never invent
+1. **Real numbers only** — all review counts, years, and family stats confirmed by Lisa Bright; never invent
 2. **No AggregateRating until the breeder supplies a real rating and review count** — both are NOT FETCHED today
 3. **One counter strip per page, its own facts** — `CounterStrip` with a `source` on every figure (rule 16)
 4. **Trust strip on hero + footer** — `<TrustStrip />` text claims, never a badge image that is not in `public/images/`
 5. **LICENCE_CLAIM_PLACEHOLDER framing in all trust content** — every testimonials page and why-choose page must explicitly name the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
-6. **Never fabricate testimonials** — all testimonial content from `data/case-studies.json` or direct [BREEDER_NAME] input (not ported — source repo only)
+6. **Never fabricate testimonials** — all testimonial content from `data/case-studies.json` or direct Lisa Bright input (not ported — source repo only)
 7. **Confidence Gate** — ≥97% confident before writing to any file in `dist/`
-8. **Google Place ID** — confirm with [BREEDER_NAME] before inserting any Google Maps review link
+8. **Google Place ID** — confirm with Lisa Bright before inserting any Google Maps review link

@@ -58,16 +58,9 @@ ls data/analytics/
 
 ---
 
-## What's Worth Improving (BSUK GSC Baseline — 2026-04-28)
+## Baseline
 
-| Page | Clicks | Impressions | Position | Priority |
-|------|--------|-------------|----------|----------|
-| Homepage | 28 | 14,915 | 45.6 | Title/meta fix — massive impression gap |
-| /product/blue-staffy-for-sale-near-me/ | 53 | 713 | 41.8 | High intent, pos 41 = page 4 |
-| /product/blue-staffy-for-sale-glasgow/ | 42 | 1,446 | 21.8 | Page 2, just off page 1 |
-| /product/buy-intelligent-blue-staffy-for-sale-ca/ | 34 | 1,537 | 14.0 | Best ranking page — protect |
-| /buy-blue-staffy-puppies-uk/ | 18 | 763 | 15.4 | Shipping intent, near page 1 |
-| /blue-staffy-uk-breeders/ | 13 | 1,788 | 21.2 | High impression, low CTR |
+None. No Search Console data has been pulled for BlueStaffyUK (NOT FETCHED until project 6). The source repo pinned a dated baseline table here; its pages and numbers were another site's, and they are gone.
 
 ---
 
@@ -151,7 +144,7 @@ python3 - <<'EOF'
 import csv
 with open('data/analytics/[export-folder]/Queries.csv') as f:
     rows = list(csv.DictReader(f))
-cites_queries = [r for r in rows if any(term in r.get('Query','').lower() for term in ['LICENCE_CLAIM_PLACEHOLDER', 'documented', 'documentation', 'legal', 'permit'])]
+cites_queries = [r for r in rows if any(term in r.get('Query','').lower() for term in ['licence', 'licensed', 'documented', 'documentation', 'legal', 'kc registered'])]
 cites_queries.sort(key=lambda x: float(x.get('Impressions','0')), reverse=True)
 print("=== LICENCE_CLAIM_PLACEHOLDER Query Gap ===")
 for r in cites_queries[:15]:

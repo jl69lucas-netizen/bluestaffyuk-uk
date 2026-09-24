@@ -198,9 +198,9 @@ OG image: 1200×630px required
 ## Content Brief Example
 
 ```
-Page slug: blue-staffy-for-sale-glasgow
-Primary keyword: "Blue Staffy puppy for sale glasgow"
-Reader profile: Carlisle buyer, moderate income, first-time puppy owner
+Page slug: uk-locations/blue-staffy-puppies-manchester-uk
+Primary keyword: "blue staffy puppies manchester" (data/queries/blue-staffy-puppies-manchester-uk.json)
+Reader profile: Manchester buyer, first-time puppy owner, collecting from Carlisle or taking UK delivery
 Framework: AIDA (commercial page) + QAB (FAQ section)
 Priority fear: the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) legitimacy
 Trust signal to feature: the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) + the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)

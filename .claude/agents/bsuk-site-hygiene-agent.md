@@ -177,10 +177,9 @@ The breadcrumb must go as the **first child** inside the hero section's inner co
 | Location (city) | Home → Blue Staffies for Sale → Blue Staffy in [City] |
 | Location (city) | Home → Blue Staffies for Sale → [City] → [City] |
 
-### Known pages already having breadcrumbs (as of 2026-05-22)
+### Which pages carry breadcrumbs
 
-All city pages, all blog pages, `/available-puppies/`, and ~60 others. The 15 pages added in this sprint:
-`/available-puppies/`, `/available-puppies/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/blue-staffy-health-uk/`, `/available-puppies/`, `/buy-blue-staffy-puppies-uk/`, `/blue-staffy-breeder-standing/`, `/available-puppies/`, `/male-african-gray-for-sale/`, `/blue-staffy-uk-breeders/`, `/testimonials/`, `/blue-staffy-uk-breeders/`, `/buy-blue-staffy-puppies-uk/`
+`src/layouts/BaseLayout.astro` renders `src/components/Breadcrumb.astro` from the page's `crumbTitle` and route, and `src/components/kit/PageNav.astro` renders the trail on the rebuilt pages (`crumbs`). List the built pages without a trail with `grep -rL 'BreadcrumbList' dist --include=index.html`.
 
 ---
 
@@ -262,7 +261,7 @@ In `src/pages/uk-blue-staffy-breeders-contact/index.astro`, as last child inside
     if (typeof gtag !== 'undefined') {
       gtag('event', 'generate_lead', {
         event_category: 'inquiry_form',
-        event_label: 'bird_inquiry',
+        event_label: 'puppy_inquiry',
         page_location: window.location.href
       });
     }

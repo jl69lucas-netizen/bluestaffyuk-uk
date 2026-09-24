@@ -246,7 +246,7 @@ The outline must include:
 5. **Stage before write** — never touch the final Astro file until all sections are approved
 6. **Add to sitemap after every new page** — must be updated
 7. **Batch mode requires explicit user approval** before dispatching all cities at once
-8. **LICENCE_CLAIM_PLACEHOLDER compliance** — every page must include federal LICENCE_CLAIM_PLACEHOLDER requirements and note that all documentation is included
+8. **Licence and legal claims stay placeholders** — a licensing or legal sentence is LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER; the paperwork a puppy goes home with is only what `data/faq.json` `whyus-paperwork` lists
 9. **Outline first (Rule 51)** — produce and get approval of the Page Outline before writing any section; this applies in both single and batch mode; batch outline covers all cities at once
 10. **Header/Footer: NEVER TOUCH (Rule 53)** — location pages inherit header and footer from `src/layouts/BaseLayout.astro` automatically; never write `<header>` or `<footer>` HTML in page files; start all content at the hero `<section>`; this rule applies to every child agent in batch mode
 

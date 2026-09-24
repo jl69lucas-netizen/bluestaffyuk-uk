@@ -65,12 +65,12 @@ Only after reading all five do you begin any section work.
 The purchase guide walks buyers through:
 
 1. **Research phase** — Blue Staffy vs blue and white Staffy decision (link to comparison page)
-2. **Verification phase** — how to verify breeder credentials (LICENCE_CLAIM_PLACEHOLDER lookup at aphis.LICENCE_CLAIM_PLACEHOLDER.gov, LICENCE_CLAIM_PLACEHOLDER permit at usfws.gov)
+2. **Verification phase** — what to ask a breeder to show (licence details stay LICENCE_CLAIM_PLACEHOLDER until the breeder supplies them; no verification site is named)
 3. **Inquiry phase** — filling out the 3-field inquiry form
 4. **Documentation preview** — what you will receive before deposit is sent
 5. **Deposit phase** — how deposit works, what it holds, deposit amount
-6. **Documentation delivery** — LICENCE_CLAIM_PLACEHOLDER permit, microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert, vet health certificate LICENCE_CLAIM_PLACEHOLDER
-7. **Shipping phase** — delivery by DEFRA-approved transport (LEGAL_CLAIM_PLACEHOLDER for the rules themselves), temperature windows, transit time
+6. **Documentation delivery** — the paperwork that goes home with a puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written puppy purchase contract (`data/faq.json` `whyus-paperwork`); a licence number stays LICENCE_CLAIM_PLACEHOLDER
+7. **Delivery phase** — collection in Carlisle, or UK home delivery £200–£350 by distance (DEFRA-approved transport; LEGAL_CLAIM_PLACEHOLDER for the rules themselves); no transit time is promised
 8. **Arrival phase** — 72-hour vet visit, settling-in protocol
 9. **Post-purchase support** — Lisa Bright contact, ongoing questions welcome
 
@@ -117,8 +117,7 @@ Build one at a time. Confirm with user before moving to next.
 
 **What converts them:**
 - Transparent the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) package (not vague promises)
-- Verifiable the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) (lookup at aphis.LICENCE_CLAIM_PLACEHOLDER.gov)
-- Verifiable LICENCE_CLAIM_PLACEHOLDER permits (lookup at usfws.gov)
+- The breeder's legal standing, stated only as the breeder supplies it (LICENCE_CLAIM_PLACEHOLDER)
 - microchip registration LICENCE_CLAIM_PLACEHOLDER (proof of professional program)
 - Real breeder story (Lisa Bright — not a faceless operation)
 - Specific delivery to their city (from locations.json)
@@ -171,7 +170,6 @@ Build [section type]:
 - Format as a 3-column grid of city badges
 - Each city badge links to its `/uk-locations/<slug>/` page
 - Headline: "UK Home Delivery by DEFRA-approved transport, or Collection in Carlisle"
-- Note: LICENCE_CLAIM_PLACEHOLDER health certificate required for interstate transport — included
 
 ### Section 12 — FAQ
 - Use QAB format: Question → Answer (2–3 sentences) → Benefit + CTA

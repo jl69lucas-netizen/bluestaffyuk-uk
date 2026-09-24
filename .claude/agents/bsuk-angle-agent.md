@@ -57,7 +57,7 @@ Name the fear, then resolve it. Shows the reader you understand them.
 **Formula:** "If you're worried about [specific fear], you're right to be. Here's what to do about it."
 
 **BSUK examples:**
-- "You've heard about LICENCE_CLAIM_PLACEHOLDER permit fraud. Here's how to verify every document before sending a deposit."
+- "You've heard about fake paperwork in puppy adverts. Here's what to ask a breeder to show you before sending a deposit."
 - "Puppy scams are everywhere. Here are the 7 signs the 'breeder' you're training to isn't legitimate."
 
 ---
@@ -125,7 +125,7 @@ Position BSUK against what most buyers accept as standard.
 ### Documentation Angles
 - "The cheap Facebook advert vs the £1,500 puppy with paperwork (LICENCE_CLAIM_PLACEHOLDER) — what you're actually paying for"
 - "LEGAL_CLAIM_PLACEHOLDER explained in plain English — what it means for your puppy purchase"
-- "How to verify a LICENCE_CLAIM_PLACEHOLDER home-raised permit before sending any deposit"
+- "What to ask a breeder to show you before sending any deposit"
 
 ### Variant Angles
 - "Blue Staffy vs Blue and white Staffy: the choice most first-time buyers get wrong"

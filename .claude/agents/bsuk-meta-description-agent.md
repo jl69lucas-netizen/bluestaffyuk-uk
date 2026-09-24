@@ -50,13 +50,13 @@ Used on: most content pages, care guides, single-keyword pages.
 **Example:**
 ```
 Title (61): Blue Staffy Puppy Breeder in Carlisle, Cumbria – BlueStaffyUK
-Desc (159): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises vet-checked Blue and Blue-Brindle pups, delivered by DEFRA-approved transport. Reserve yours.
+Desc (154): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises blue, blue-and-white and white pups, collected or delivered by DEFRA-approved transport.
 ```
 
-> **BLOG POSTS = FORMAT 1, LOCKED (breeder rule, 2026-07-02).** Every `/blog/<slug>/` post uses Format 1 with this exact title order — no deviation:
+> **BLOG POSTS = FORMAT 1, LOCKED (breeder rule, 2026-07-02).** Every blog post (served at `/<slug>/`, from `src/content/blog/<slug>.md`) uses Format 1 with this exact title order — no deviation:
 > **`[What the post is, plainly] – BlueStaffyUK`** — one clause, ≤70 chars, no pipes (the pipe-stacked ≤205 blog pattern was retired 2026-09-09 with Format 2; retrofit on next touch).
 > **Description (≤160):** clear, conversational, benefit-driven; opens with the conversational hook, includes the **primary keyword** AND the **long-tail keyword** in one natural sentence.
-> Applied 2026-07-02 to the 5 built blog posts (best-place-to-buy, crate-setup, training, training-ability, price-what-you-get). Retrofit any new or legacy blog post to this pattern before deploy.
+> Retrofit any new or legacy blog post to this pattern before it ships.
 
 ---
 
@@ -64,13 +64,13 @@ Desc (159): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises ve
 
 | Trigger Type | Examples |
 |-------------|---------|
-| **Numbers** | "limited litter," "health guarantee (`[DURATION_TBD]`)," "NOT FETCHED" (family counts and years in business are unverified) |
-| **Scarcity** | "only 3 available," "sells within days," "limited availability" |
-| **Comparison** | "Blue Staffy vs blue and white Staffy," "BSUK vs TAG," "home-raised vs backyard-bred" |
+| **Numbers** | "six puppies," "£500 refundable deposit," "£200–£350 UK delivery" — the locked figures only (family counts, years in business and a guarantee length are NOT FETCHED) |
+| **Scarcity** | only what `data/puppies.json` says — how many puppies are still available, never "sells within days" |
+| **Comparison** | "Blue Staffy vs blue and white Staffy," "home-raised vs backyard-bred" |
 | **Proof** | "microchip registration LICENCE_CLAIM_PLACEHOLDER," "LICENCE_CLAIM_PLACEHOLDER documented," "LICENCE_CLAIM_PLACEHOLDER-licensed," "vet health certificate" |
-| **Geographic** | "[BREEDER_LOCATION]," "28 UK cities," "delivery by DEFRA-approved transport," specific city names |
+| **Geographic** | "Carlisle, Cumbria," "28 UK cities," "delivery by DEFRA-approved transport," specific city names |
 | **Emoji** | 🔴 🆚 🛡️ 🧬 are TONE-PLANNING LABELS ONLY — NEVER render emoji inside an actual title/description tag |
-| **Questions** | "Why do they sell out within days?" "Can you get an Blue Staffy if you have allergies?" |
+| **Questions** | "What does a Staffy puppy cost in the UK?" "Is the deposit refundable?" |
 | **CTA** | "Reserve yours," "View available puppies," "Act now," "Don't miss out" |
 
 ---
@@ -128,25 +128,23 @@ grep -n "<title>" dist/available-puppies/index.html
 
 ### Location Page
 ```
-Title: Blue Staffy Puppy [City] | Health Guarantee (`[DURATION_TBD]`) | BSUK
-Description: Find premium Blue Staffy puppy [City] from BSUK, LICENCE_CLAIM_PLACEHOLDER-licensed breeder with
-microchip registration LICENCE_CLAIM_PLACEHOLDER. Blue Staffy & blue and white Staffy variants. delivery by DEFRA-approved transport to [City1],
-[City2] & all [City] airports. Health guaranteed.
+Title: [the row's primary keyword, e.g. Blue Staffy Puppies Manchester] – BlueStaffyUK   (Format 1, ≤70)
+Description: [City] buyers: home-raised Blue Staffy pups from Carlisle, Cumbria. £1,500–£1,700, £500
+refundable deposit, UK delivery £200–£350 or collection.   (≤160)
 ```
 
 ### Comparison Page
 ```
-Title: Blue Staffy vs Blue and white Staffy: [Key Differentiator] | BSUK Honest Comparison
-Description: Blue Staffy vs Blue and white Staffy comparison from a breeder who raises both. [Key stat].
-[Key difference]. [Buyer fit]. Which is right for your lifestyle? BSUK — Carlisle,
-2,000+ families.
+Title: Blue vs Blue-and-White Staffy: [Key Difference] – BlueStaffyUK   (Format 1, ≤70)
+Description: Blue vs blue-and-white Staffy from a Carlisle breeder who raises both. [Key difference].
+[Buyer fit]. Which suits your home?   (≤160)
 ```
 
 ### Variant Page
 ```
-Title: [Variant] Blue Staffy Puppy | [Key trait] | $[price] | BSUK [BREEDER_LOCATION]
-Description: [Variant] Blue Staffies weigh [range] as adults. [Key trait]. microchip registration LICENCE_CLAIM_PLACEHOLDER,
-health guarantee (`[DURATION_TBD]`). £1,500 or £1,700. delivery by DEFRA-approved transport. [Availability CTA].
+Title: [Coat] Staffy Puppy in Carlisle, Cumbria – BlueStaffyUK   (Format 1, ≤70)
+Description: [Coat] Staffordshire Bull Terrier puppies, home-raised by Lisa Bright in Carlisle. £1,500 (male) or £1,700
+(female), £500 refundable deposit. [Availability CTA].   (≤160)
 ```
 
 ---
@@ -154,15 +152,14 @@ health guarantee (`[DURATION_TBD]`). £1,500 or £1,700. delivery by DEFRA-appro
 ## Batch Location Page Update
 
 ```bash
-# Get list of all location pages
-ls dist/usa-locations/ | grep "blue-staffy-"
+# The 28 location pages (after npm run build)
+ls dist/uk-locations/
 
-# For each city, extract current title and meta
-for dir in dist/usa-locations/blue-staffy-*/; do
-  slug=$(basename "$dir")
-  city=$(echo "$slug" | sed 's/available-puppies//' | sed 's/-/ /g' | awk '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1))substr($i,2)}1')
-  echo "--- $city ---"
+# For each city, extract current title and meta description
+for dir in dist/uk-locations/*/; do
+  echo "--- $(basename "$dir") ---"
   grep -o '<title>[^<]*' "$dir/index.html" | sed 's/<title>//'
+  grep -o 'name="description" content="[^"]*"' "$dir/index.html"
 done
 ```
 

@@ -77,11 +77,9 @@ Reverse links: Spokes → Hub (always link back up)
 Use for **local sales pages** — every location page pushes authority UP to the city hub.
 
 ```
-Sub-spoke: /available-puppies/dallas/  (future)
+Spoke: /uk-locations/<slug>/  (one per row in data/locations.json)
   ↑
-Spoke: /available-puppies/
-  ↑
-Hub: /available-puppies/ (all cities)
+Hub: /uk-locations/ (all cities)
   ↑
 Root: / (homepage)
 ```
@@ -105,8 +103,8 @@ Root: /
 ### Step 1 — Cluster Keywords
 Group the keyword set:
 - Hub keyword: highest volume, broadest intent (e.g., "Blue Staffy puppy Carlisle")
-- Spoke keywords: more specific (e.g., "Blue Staffy Miami", "Blue Staffy Orlando")
-- Sub-spoke keywords: most specific (e.g., "Blue Staffy Miami breeder")
+- Spoke keywords: more specific (e.g., "blue staffy puppies manchester", "blue staffy puppies for sale leeds")
+- Sub-spoke keywords: most specific (e.g., a city's question from its `data/queries/<slug>.json`)
 
 ### Step 2 — Choose Structure Type
 | Condition | Structure |
@@ -195,7 +193,7 @@ Structure type: [flat / silo / reverse-silo / mixed]
 - /breeds/blue-staffy/ (1-level silo = we can go deeper)
 
 ### Gap Report
-- They have no city-level pages → BSUK opportunity: /available-puppies/dallas/
+- They have no city-level pages → BSUK opportunity: the city's own row in `data/locations.json`
 - They have no health sub-pages → BSUK opportunity: /blue-staffy-health-uk/
 - They have no the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages → BSUK already wins here
 ```

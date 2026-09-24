@@ -102,7 +102,7 @@ Based on TARGET_PRIMARY_KEYWORD, categorize the primary user intent:
 - **Transactional** — "buy Blue Staffy [city]", "Blue Staffy puppy for sale [city]"
 - **Informational** — "how long do Blue Staffies live", "Blue Staffy care guide"
 - **Comparison** — "Blue Staffy vs Blue and white Staffy", "Blue Staffy vs Cane Corso"
-- **Navigational** — "SITE_URL_PLACEHOLDER", "[BREEDER_NAME] Blue Staffy breeder"
+- **Navigational** — "SITE_URL_PLACEHOLDER", "Lisa Bright Blue Staffy breeder"
 - **Scam Recovery** — "Blue Staffy breeder scam", "Is [site] legit?", "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) fraud"
 
 *Intent determines which framework to use:*
@@ -119,10 +119,10 @@ Analyze the current page for 3 specific missing verifiable entities that must be
 |---|---|
 | Location page | LICENCE_CLAIM_PLACEHOLDER facility city, local vet references |
 | Breed guide | The hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4), stated only where the evidence ledger records the certificate; hip dysplasia (only with a ledger-backed source); named test protocols, LEGAL_CLAIM_PLACEHOLDER legal reference |
-| Pricing page | LICENCE_CLAIM_PLACEHOLDER permit costs, vet exam costs, full cost-of-ownership breakdown |
+| Pricing page | the locked prices and deposit, delivery £200–£350 by distance, and every running cost the breeder has supplied (the rest NOT FETCHED) |
 | Comparison page | Specific differentiating facts (Blue Staffy weight range vs blue and white Staffy, training onset age, personality differences) with sources |
 | Puppy listing | Real puppy name, weight, age, health records, specific temperament observations |
-| Scam recovery | the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) number, LICENCE_CLAIM_PLACEHOLDER permit verification steps |
+| Scam recovery | what a buyer can check before paying (seeing the puppy with its mother, a written contract), with the breeder's legal standing as LICENCE_CLAIM_PLACEHOLDER |
 | LICENCE_CLAIM_PLACEHOLDER education | Specific LEGAL_CLAIM_PLACEHOLDER citation, legal ownership requirements by city |
 
 ### Step 1.3 — Check Current Page City
@@ -237,10 +237,7 @@ Option B: [buyer fear addressed] + [BSUK documentation solution] + [CTA]
 Option C: [social proof] + [what BSUK offers] + [CTA]
 ```
 
-**Extended Meta Title** (up to 275 chars, for GSC A/B testing):
-```
-🦜 [primary keyword] | [benefit with specific number] | LICENCE_CLAIM_PLACEHOLDER home-raised · LICENCE_CLAIM_PLACEHOLDER Licensed | SITE_URL_PLACEHOLDER
-```
+(There is no extended title: the ≤70-character one-clause title is the only format — `bsuk-meta-description-agent`, Format 1.)
 
 ### Step 3.2 — Draft the #1 Missing Section
 Select the single most critical gap from Phase 2. Write a complete 350-word content section:
