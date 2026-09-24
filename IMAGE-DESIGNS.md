@@ -11,6 +11,10 @@
 >
 > "OG photo" in this file means an **original photograph** (a real photo of our dogs, or one
 > from the breeder's folder), not the Open Graph share card. The share card is its own slot in §1.
+>
+> **Scope.** This file governs the images on location, comparison and blog-post pages built
+> from 2026-09-24 on. `scripts/family_rules.py` names the pages it never touches: the pages
+> built before keep their images and boards unchanged.
 
 ---
 
@@ -34,12 +38,13 @@
 - **Breed accuracy (non-negotiable: get the dog right).** Every dog is a **blue Staffordshire
   Bull Terrier**, drawn to the registry's breed standard: the royalkennelclub.com
   Staffordshire Bull Terrier breed-standard row in `docs/reference/external-link-library.md`.
-  - A **muscular, stocky, medium-sized** terrier: compact and balanced, never tall, leggy or
-    bulky.
-  - A **broad head** with **distinct cheek muscles** and a short foreface.
-  - A **short, smooth coat**, close to the skin; for our dogs, blue (blue-grey), or blue with
-    white where the puppy really is marked that way.
-  - **Rose or half-pricked ears**, natural and **never cropped**.
+  Every breed description below is worded as the repo's breed facts state it, in
+  `data/facts/uk-staffordshire-bull-terrier-guide.json`; describe nothing it does not.
+  - **Medium-sized** and **muscular**.
+  - Head **Broad and deep**, with **pronounced cheek muscles**.
+  - Coat **Short, smooth, and close-lying**; for our dogs, the **grey/blue** coat, or blue
+    with white where the puppy really is marked that way.
+  - Ears **Rose or half-pricked**, natural and **never cropped**.
   - Relaxed, friendly expression. A puppy is a puppy: soft, curious, close to the family.
   - **NEVER** a generic dog, another breed, a cartoon stand-in or a dog emoji (design rule 7).
 
@@ -51,7 +56,6 @@
 |---|---|---|---|
 | Hero | 16:9 | 1600×900 master | LCP image: `fetchpriority="high"`, WebP, never lazy. The page's own hero style decides the frame (CLAUDE.md rule 16) |
 | In-body section (H2 or H3) | 1408:768 | 1408×768 plus a 760×415 sibling | The uniform box of §1a. OG photo and infographic alike |
-| Puppy card | 1:1 | 800×800 | `public/images/puppies/<slug>-card-800.webp`, baked by `scripts/bake_images.py` |
 | Share card (Open Graph) | 1.91:1 | 1200×630 | One per page; same subject as the hero, recomposed, never the hero squashed |
 | Further-reading thumb | 1408:768 family | 320×175 and 760×416 | Always the TARGET page's own hero (`rules/images.md`) |
 | Social vertical | 9:16 | 1080×1920 | Reels and Shorts only; never placed on a page |
@@ -78,9 +82,9 @@ that keeps the whole dog, so the box's `object-fit:cover` then has nothing left 
 Prepend this string to every photoreal prompt, then add the scene from §5:
 
 > Editorial pet photography, soft natural daylight with a gentle warm cast, shallow depth of
-> field, a true-to-breed blue Staffordshire Bull Terrier: muscular, stocky and medium-sized,
-> broad head with distinct cheek muscles, short smooth blue-grey coat, natural rose or
-> half-pricked ears, calm friendly expression, relaxed family home in the north of England,
+> field, a true-to-breed blue Staffordshire Bull Terrier: medium-sized and muscular, broad
+> and deep head with pronounced cheek muscles, short, smooth, close-lying grey/blue coat,
+> natural rose or half-pricked ears, calm friendly expression, relaxed family home in the north of England,
 > steel-blue and bone palette with one small brass accent, photorealistic, crisp detail on
 > the eyes and coat.
 
@@ -122,7 +126,6 @@ Append this string to every prompt. It is non-negotiable:
 | Location | one blue puppy, direct gaze, soft local context of the city (a park path or terrace street well out of focus) | IG-5 route map for delivery or collection sections; family-life OG photos elsewhere | IG-2 steps for reserve and collection; size-reference or garden photos | landmark postcards, flags, maps baked into a photo, any claim of a local address |
 | Comparison | both subjects side by side, same light, same scale | IG-3 comparison split in at least one H2; OG photos framed with Style H for a pair | IG-1 stat panel for figures; IG-4 checklist for what to check | showing only one subject, a winner-and-loser mood |
 | Blog | topic-illustrative lifestyle or portrait | OG photo that shows the section's subject; an infographic when the section is data or steps | IG-2 or IG-4 for how-to and checklist H3s; detail photos otherwise | price overlays, sales mood on a care topic |
-| Hub | clean banner-style portrait | a grid of cluster thumbnails (each the target's own hero) | none unless the hub has H3s | text baked into the image |
 
 The migrated page's own images come first, always (CLAUDE.md rule 11). A slot is only
 generated when no existing image fits: not the migrated page's images, not `public/images/`,

@@ -110,19 +110,56 @@ def test_brand_facts_match_settings_and_tokens():
         assert hexcode in tokens, "%s is not a locked token" % hexcode
 
 
-BREED = ("blue Staffordshire Bull Terrier", "muscular, stocky, medium-sized", "broad head",
-         "cheek muscles", "short, smooth coat", "Rose or half-pricked ears", "never cropped")
+BREED_FACTS = ROOT / "data/facts/uk-staffordshire-bull-terrier-guide.json"
+
+# Every breed description is the repo's own sourced wording (BREED_FACTS), nothing invented.
+BREED = ("muscular", "Medium-sized", "Broad and deep", "pronounced cheek muscles",
+         "Short, smooth, and close-lying", "grey/blue", "Rose or half-pricked")
+
+# Instructions, not breed claims: the breed we draw, and a ban on cropped ears.
+BREED_INSTRUCTIONS = ("blue Staffordshire Bull Terrier", "never cropped")
+
+UNSOURCED = ("stocky", "compact and balanced", "leggy or bulky", "foreface", "blue-grey")
+
+
+@pytest.mark.parametrize("phrase", BREED + BREED_INSTRUCTIONS)
+def test_breed_accuracy_is_stated(phrase):
+    assert phrase in text(), phrase
 
 
 @pytest.mark.parametrize("phrase", BREED)
-def test_breed_accuracy_is_stated(phrase):
-    assert phrase in text(), phrase
+def test_every_breed_phrase_is_backed_by_the_breed_facts_file(phrase):
+    facts = BREED_FACTS.read_text(encoding="utf-8").lower()
+    assert phrase.lower() in facts, "%s is not in %s" % (phrase, BREED_FACTS.name)
+
+
+@pytest.mark.parametrize("phrase", UNSOURCED)
+def test_no_unsourced_breed_wording(phrase):
+    assert phrase not in text(), phrase
 
 
 def test_breed_accuracy_is_sourced_to_the_breed_standard_row():
     lib = (ROOT / "docs/reference/external-link-library.md").read_text(encoding="utf-8")
     assert "royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/" in lib
     assert "docs/reference/external-link-library.md" in text()
+    assert "data/facts/uk-staffordshire-bull-terrier-guide.json" in text()
+
+
+# ── scope ────────────────────────────────────────────────────────────────────
+SCOPE = ("This file governs the images on location, comparison and blog-post pages built "
+         "from 2026-09-24 on.")
+
+
+def test_the_scope_binds_the_new_pages_only():
+    flat = " ".join(l.lstrip("> ").strip() for l in text().splitlines())
+    assert SCOPE in flat
+    assert "scripts/family_rules.py" in flat
+    assert "keep their images and boards unchanged" in flat
+
+
+@pytest.mark.parametrize("row", ("| Hub |", "| Puppy card |"))
+def test_no_row_for_a_page_type_built_before(row):
+    assert row not in text(), row
 
 
 NEGATIVES = ("no text", "no watermarks", "no cropped ears", "no fighting or aggression imagery",
