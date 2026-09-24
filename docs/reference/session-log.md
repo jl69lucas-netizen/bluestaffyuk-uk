@@ -719,11 +719,13 @@ and moved 16 on to its location-page remainder.
       `dropped`); a yes, with the membership record, lets the claim back onto the pages.
     - (Added in the project 5 readiness pass.) Do you give a written health guarantee? If so,
       for how long and what does it cover? The answer sets `data/settings.json`
-      `guarantee_days` (null today); `data/faq.json` `home-health-guarantee` still promises a
-      written guarantee, carried over from the old site.
+      `guarantee_days` (null today). `data/faq.json` `home-health-guarantee` still promises a
+      *written* guarantee: that is project 4's wording of the old site's "puppy health
+      guarantee" claim (`data/facts/index.json`), so "written" is itself unconfirmed.
     - (Added in the project 5 readiness pass.) Do you follow Puppy Culture or early
       neurological stimulation (ENS) with your litters? One migrated location body in
-      `data/locations.json` says so; it is unconfirmed, and no page states it until she confirms it.
+      `data/locations.json` says so. It is unconfirmed; that location page still renders it,
+      and no rewritten page carries it until she confirms it (build 5 rewrites the body).
 
 42. **Competitor intelligence build (2026-09-23).** The source repo's competitor-registry,
     competitor-intel, strategy-synthesizer and keyword-gap agents were not ported. User ruling
