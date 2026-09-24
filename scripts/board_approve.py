@@ -504,8 +504,12 @@ def reapprove_refusals(old_board, new_board, paths):
     return bad
 
 
-def apply_reapproval(board, reason, old_board, now, ont=None):
-    """The record after a controller's re-approval. Pure, like apply_approval().
+def apply_reapproval(board, reason, old_board, now, ont):
+    """The record after a controller's re-approval. Pure, like apply_approval(): it writes
+    nothing and raises before anything moves. `ont`, the ontology the new-page rules read, is
+    passed in rather than loaded; reapprove_main() passes the committed one, which a
+    re-approval never moves. (On a new-family page those rules may still read sibling boards
+    and image files, exactly as they do in apply_approval().)
 
     `old_board` is the record as of the commit whose hash the approval currently carries —
     the baseline the diff is taken against and the proof that this record WAS approved as it
@@ -553,8 +557,7 @@ def apply_reapproval(board, reason, old_board, now, ont=None):
     # LAST, because `approval_previous` is inside the hash and the refresh above moved it.
     a["record_hash"] = PB.record_hash(b)
     PB.validate_board(b)
-    # `ont` None reads the committed ontology: a re-approval never moves it.
-    refuse_on_new_page_rules(b, PB.load_ontology() if ont is None else ont)
+    refuse_on_new_page_rules(b, ont)
     return {"board": b, "changed_paths": paths}
 
 

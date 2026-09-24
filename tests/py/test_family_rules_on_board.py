@@ -231,3 +231,40 @@ def test_a_sibling_board_without_meta_is_named(tmp_path, monkeypatch):
     monkeypatch.setattr(LD, "BOARDS_DIR", tmp_path)
     with pytest.raises(PB.BoardError, match="broken.json"):
         LD._site_map()
+
+
+# ── follow-up: an H1 variant that would repeat a heading if picked ────────────────────────
+def test_an_h1_variant_that_repeats_a_heading_is_warned_about(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [FR.outline_heading_repeat])
+    b = _board()
+    assert b["h1"]["recommended"] == 0 and b["h1"]["pick"] is None
+    b["h1"]["variants"][2] = "How our puppies are raised"          # = section how-we-raise's H2
+    html = BPB.render(b, ONT, LEDGER, live={}, thumbs={}, slug="x")
+    block = html.split('data-title="7b. Rules for new pages"')[1].split("</script>")[0]
+    assert '<span class="pill warn">WARN</span><code>outline-heading-repeat</code>' in block
+    assert "H1 variant 3 &#x27;How our puppies are raised&#x27;, if picked" in block
+    # Not picked, not recommended: approval as it stands would not refuse.
+    assert REFUSAL not in html
+    assert block.count("outline-heading-repeat") == 1
+
+
+def test_a_recommended_h1_that_repeats_a_heading_still_refuses(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [FR.outline_heading_repeat])
+    b = _board()
+    b["h1"]["variants"][0] = "How our puppies are raised"
+    html = BPB.render(b, ONT, LEDGER, live={}, thumbs={}, slug="x")
+    assert '<span class="pill fail">FAIL</span><code>outline-heading-repeat</code>' in html
+    assert REFUSAL in html
+    assert "if picked" not in html
+
+
+def test_clean_h1_variants_add_no_row(monkeypatch):
+    monkeypatch.setattr(FR, "CHECKS", [FR.outline_heading_repeat])
+    html = BPB.render(_board(), ONT, LEDGER, live={}, thumbs={}, slug="x")
+    assert "All new-page rules pass." in html
+
+
+def test_re_approval_takes_the_ontology_it_is_given():
+    import inspect
+    p = inspect.signature(BA.apply_reapproval).parameters["ont"]
+    assert p.default is inspect.Parameter.empty

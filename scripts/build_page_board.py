@@ -789,7 +789,33 @@ def rule_findings(board, ont):
     before it does."""
     b = json.loads(json.dumps(board))
     b["meta"]["status"] = "approved"
-    return [f for f in PB.FR.findings(b, ont) if f[0] != "image-pick-missing"]
+    return ([f for f in PB.FR.findings(b, ont) if f[0] != "image-pick-missing"]
+            + h1_variant_warnings(b, ont))
+
+
+def h1_variant_warnings(b, ont):
+    """The H1 is picked on the board, after 7b was rendered, so a variant that repeats a
+    heading would pass here and be refused at approval. One WARN row per such variant: a WARN,
+    because it refuses only IF picked, and the refusal line is kept for what WILL refuse given
+    the current pick (or the recommendation the button starts on). Only while the rule itself
+    runs, so a test that swaps FR.CHECKS sees exactly its own findings."""
+    if PB.FR.outline_heading_repeat not in PB.FR.CHECKS:
+        return []
+    h1 = b.get("h1") or {}
+    variants = h1.get("variants") or []
+    current = h1.get("pick") if h1.get("pick") is not None else h1.get("recommended")
+    base = {m for _, _, m in PB.FR.outline_heading_repeat(b, ont)}
+    out = []
+    for i, text in enumerate(variants):
+        if i == current:
+            continue
+        v = json.loads(json.dumps(b))
+        v["h1"]["pick"] = i
+        new = [m for _, sev, m in PB.FR.outline_heading_repeat(v, ont) if sev == "FAIL" and m not in base]
+        if new:
+            out.append(("outline-heading-repeat", "WARN",
+                        f"H1 variant {i + 1} {text!r}, if picked, is refused at approval: " + "; ".join(new)))
+    return out
 
 
 def code_spans(msg):
