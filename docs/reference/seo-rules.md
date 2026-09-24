@@ -181,12 +181,14 @@ these as targets, not as measured demand.
 ## Category F — Page Structure
 
 **Rule 26 — Section Count**
-Default **22–24 sections per page**, set by competitor research and breeder approval.
-Never fewer than 22 without explicit approval.
+No default. A page's body-section count is `section_target.total` in its question file
+(`data/queries/<slug>.json`): the competitors' highest real (cleaned) H2 count + 3, never fewer
+than 9 (`docs/reference/location-page-template.md`, "Section count").
 
 **Rule 27 — Word Count (Dynamic)**
-Top-ranking competitor's word count + 1,000 minimum. Target for a 22-section page:
-**5,000–6,000 words**. Never fix a word count before running competitor research.
+The competitors' median word count, from the competitor scan; `NOT FETCHED` until that scan
+exists. Never fix a word count before running competitor research, and never pick a number
+first and write to fill it.
 
 **Rule 28 — Header Count Targets**
 - H1: exactly **1** per page (hero only)
@@ -461,7 +463,8 @@ section count + 3, never fewer than 9) — completes the form BEFORE any copy:
 - **Tier 1:** number and title, word count min/max, 3–5 primary keywords with targets
 - **Tier 2:** content angle, conversational opening (75–100 words, framework-matched),
   H2–H6 structure
-- **Tier 3:** 5–8 internal links with varied anchors, 1–2 external authority links
+- **Tier 3:** internal links with varied anchors, only to routes that exist (Rule 62; no per-section
+  count), Link-First; 1–2 external authority links, each a row of `docs/reference/external-link-library.md`
 - **Tier 4:** 3–5 UK geographic entities, 1–2 authority entities, 2–3 trust signals
 - **Tier 5:** special elements, image requirements, CTA placement, 15-item QA checklist
 

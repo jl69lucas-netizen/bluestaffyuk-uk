@@ -100,7 +100,7 @@ Before writing ANY content, perform comprehensive competitor research.
 - Top 3 Google organic results for primary keyword
 - Top 3 Bing organic results for primary keyword
 - 2–3 specialized kennel/breeder sites
-- the RSPCA (https://www.rspca.org.uk/) — authority benchmark
+- the RSPCA (https://www.rspca.org.uk/) — a competitor-scan benchmark, not a link; a page links only the RSPCA's library rows (B. External Links)
 - 1–2 informational authority sites — rows of `docs/reference/external-link-library.md` only (the PDSA, Blue Cross, The Royal Kennel Club)
 
 **For each competitor, document:**
@@ -247,8 +247,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - Canine First Aid protocol
 
 **4. Brand/Product Entities (20+ required):**
-- Puppy Culture (socialization and weaning protocol)
-- Early Neonatal Handling (ENH)
+- a named socialisation or early-handling programme (Puppy Culture, ENH) — only if the breeder confirms it (Lisa's question sheet, the socialisation question); NOT FETCHED today, never stated as a BSUK practice
 - The Kennel Club (the UK breed registry)
 
 **5. Statistical Entities (20+ required):**
@@ -425,7 +424,7 @@ table's length. Word ranges are planning guides, not quotas.
 | 8 | Blue Staffy Nutrition & Diet | 500–600 | `#nutrition` |
 | 9 | Blue Staffy Training & Training Development | 400–500 | `#training` |
 | 10 | Blue Staffy Care & Environmental Needs | 400–500 | `#care-environment` |
-| 11 | Blue Staffy Socialization (Puppy Culture + ENH) | 300–400 | `#socialization` |
+| 11 | Blue Staffy Socialisation — a named programme (Puppy Culture, ENH) only if the breeder confirms it (Lisa's question sheet, the socialisation question); NOT FETCHED today, never stated as a BSUK practice | 300–400 | `#socialization` |
 | 12 | Why Choose BlueStaffyUK for Your Blue Staffy | 300–400 | `#why-choose-BSUK` |
 | 13 | About BlueStaffyUK & Meet Lisa Bright | 200–250 | `#about-BSUK` |
 | 14 | What Makes BlueStaffyUK the Best Blue Staffy Breeder | 250–300 | `#what-makes-best` |
@@ -434,12 +433,11 @@ table's length. Word ranges are planning guides, not quotas.
 | 17 | BlueStaffyUK Breeding Commitment & Ethics | 200–250 | `#breeding-commitment` |
 | 18 | Blue vs Blue-Brindle Staffy Comparison | 500–600 | `#colour-comparison` |
 | 19 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
-| 20 | Frequently Asked Questions (30+ questions) | 800–1,000 | `#faqs` |
+| 20 | Frequently Asked Questions — the question file's picks (`faq` in `data/queries/<slug>.json`) | 800–1,000 | `#faqs` |
 | 21 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
-| 22 | Puppy Culture & Early Neonatal Handling (Video) | 100–150 | `#puppy-culture` |
-| 23 | Contact Information & Next Steps | 150–200 | `#contact` |
-| 24 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
-| 25 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
+| 22 | Contact Information & Next Steps | 150–200 | `#contact` |
+| 23 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
+| 24 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
 
 ---
 
@@ -475,7 +473,7 @@ Every heading on the page with:
 Total row at bottom must hit 85–105× total keyword distribution target (Rule 18).
 
 **E. Special Elements Plan**
-- Newsletter signup: top / middle / bottom (minimum 1 required)
+- Newsletter: one block only, frame part 10 — `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"`; no offer, no subscriber count
 - Comparison table
 - Price card
 - Counter snippets (4 required after H1 — Rule 31)
@@ -551,12 +549,12 @@ TIER 2: CONTENT FOUNDATION
 
 TIER 3: LINKING STRATEGY
 —————————————————————————
-7. Internal Links (5–8 per section):
-   Position: BEGINNING or MIDDLE of sentences — never at end.
+7. Internal Links (no per-section count):
+   Position: START of the sentence (Link-First, `rules/links.md`).
    Use varied anchor text — no repetition.
    1. [Anchor Text] → [/<slug>/]  |  Context: [where it appears]
    2. [Anchor Text] → [/<slug>/]  |  Context: [where it appears]
-   [Continue for 5–8 total]
+   [Continue for as many as the section needs — each to a route that exists under `src/pages/` or comes from `data/locations.json`, `data/puppies.json` or the blog posts (Rule 62; Appendix A lists them)]
 
 8. External Authority Links (1–2 per section):
    Position: START of the sentence (Link-First, `rules/links.md`).
@@ -580,15 +578,12 @@ TIER 4: ENTITY & TRUST
     ☐ "12–14 year lifespan commitment..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER licenced kennel..."
-    ☐ Customer testimonial quote
     ☐ Specific success statistic
 
 TIER 5: QUALITY CONTROL
 —————————————————————————
 12. Special Elements for this Section:
-    ☐ Newsletter signup box (Top/Middle/Bottom position)
     ☐ FAQ module
-    ☐ Testimonial box
     ☐ Pricing table
     ☐ Comparison table
     ☐ Map embed
@@ -607,7 +602,7 @@ TIER 5: QUALITY CONTROL
 15. Final Section Checklist:
     ☐ Word count within target range
     ☐ Primary keyword used 2–3× naturally
-    ☐ 5–8 internal links included (Link-First: anchor at sentence start)
+    ☐ Internal links only to routes that exist (Appendix A) — Link-First: anchor at sentence start
     ☐ 1–2 external authority links included
     ☐ 3–5 geographic entities mentioned
     ☐ Headers use question format where natural
@@ -629,7 +624,8 @@ TIER 5: QUALITY CONTROL
 #### A. Internal Links (only routes that exist — no count)
 
 No rule sets a number of internal links. `rules/links.md` sets where the anchor sits (Link-First)
-and Rule 62 sets the targets: routes in `data/page-map.json`, `/<slug>/` with the trailing slash.
+and Rule 62 sets the targets: routes that exist under `src/pages/` or come from `data/locations.json`,
+`data/puppies.json` or the blog posts (Appendix A lists them), `/<slug>/` with the trailing slash.
 The source template's "50 or more" assumed a larger site (`docs/reference/location-page-template.md`).
 
 **Link categories:**
@@ -642,7 +638,7 @@ The source template's "50 or more" assumed a larger site (`docs/reference/locati
 **2. Cross-Section Jump Links (examples):**
 - From Key Takeaways → Available Puppies, Health Testing, Pricing
 - From Available Puppies → Purchase Process, Delivery, Testimonials
-- From Health Testing → Puppy Culture, Meet Parent Puppies (a guarantee is named only when `guarantee_days` in `data/settings.json` is set)
+- From Health Testing → Socialisation, Meet Parent Puppies (a guarantee is named only when `guarantee_days` in `data/settings.json` is set)
 - From Comparison section → Blue/Blue-Brindle variant pages
 - From FAQ → Relevant sections (Care, Diet, Delivery)
 - From How to Buy → Available Puppies, Contact, Delivery
@@ -651,7 +647,7 @@ The source template's "50 or more" assumed a larger site (`docs/reference/locati
 Use Appendix A URL Library at end of this skill for all valid URLs.
 
 **4. Contextual Links (Within Paragraphs):**
-Example: `"Our [Puppy Culture protocols](#puppy-culture) ensure emotionally resilient puppies."`
+Example: `"Our [Staffordshire Bull Terrier guide](/uk-staffordshire-bull-terrier-guide/) covers diet in depth."`
 Example: `"Learn more about [LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER documentation](/blue-staffy-uk-breeders/)"`
 
 #### B. External Links (rows of the library only)
@@ -695,7 +691,7 @@ it returns 200 and add the row before the board names it. Today's rows, by topic
 - Power: Highest SEO signal · Risk: Moderate if overused
 - Best for: Links from detail pages to category/hub pages
 
-Example: "Luna is a verified [Teacup Blue Staffy](#available-puppies) from champion bloodlines..."
+Example: "[Blue Staffy puppies for sale](/available-puppies/) are listed one pup to a page."
 
 **Strategy 2: Conversational/Descriptive Anchors (preferred — most links)**
 - Anchor text = longer phrase describing destination naturally within a sentence
@@ -729,20 +725,19 @@ Under 4 words each, start with a number or percentage:
 
 **CTAs — Form Only (Rule 61):**
 - ✅ `👉 [Submit an inquiry to reserve your Blue Staffy](/uk-blue-staffy-breeders-contact/)`
-- ✅ `📋 [Fill out our quick inquiry form — we respond within 24 hours](/uk-blue-staffy-breeders-contact/)`
+- ✅ `📋 [Fill out our quick inquiry form](/uk-blue-staffy-breeders-contact/)`
 - ✅ `<a href="/uk-blue-staffy-breeders-contact/" class="bsuk-btn-primary">Inquire About a Puppy</a>`
 - ❌ `📞 Call PHONE_PLACEHOLDER to reserve today!` — NEVER in body copy
 
-**Newsletter Signups (3 per full hub page):**
-- Position 1 (Top — after Diet/Nutrition section): "Get our FREE Blue Staffy Diet & Nutrition Guide!"
-- Position 2 (Middle — after Delivery section): "Calculate your DEFRA-approved transport delivery cost!"
-- Position 3 (Bottom — after Contact section): "Join [count NOT FETCHED] happy BlueStaffyUK families!"
+**Newsletter (one block, frame part 10):** `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"`. It says what a subscriber gets
+(`bsuk-location-page-builder`, Newsletter); no invented offer (a free guide, a calculator) and no
+subscriber count. There is never a second block.
 
 **Image Placeholders:**
 Leave clearly labeled placeholders for all images/videos:
 - `[INSERT PHOTO: puppy-name-profile.webp] Alt: "[≤190-char keyword-rich alt text]" Title: "[transactional-keyword phrase]"`
 - `[INSERT INFOGRAPHIC: feature-type-760px.html]`
-- `[INSERT VIDEO: puppy-culture-demonstration.mp4]`
+- `[INSERT VIDEO: filename.mp4]`
 - `[INSERT MAP: google-maps-carlisle-embed]`
 
 ---
@@ -914,7 +909,7 @@ Implement these schema types on every full page:
 2. **LocalBusiness Schema** — Carlisle location, hours, contact
 3. **Product Schema** — Individual puppy listings with price, availability
 4. **AggregateRating Schema** — Review aggregate on puppy listing/product pages
-5. **FAQPage Schema** — 30+ FAQ questions and answers
+5. **FAQPage Schema** — one per page, naming exactly the visible FAQ questions (`scripts/query_coverage_check.py`)
 6. **BreadcrumbList Schema** — `Home > [Section] > [Page]`
 7. **Person Schema** — Lisa Bright profiles (on About page)
 
@@ -1028,7 +1023,7 @@ Format requirements:
 - All internal links: `[Link Text](#anchor)` or `[Link Text](/<page-url>/)`
 - All external links: `[Link Text](https://example.com/)` with `target="_blank"`
 - Image placeholders: `[INSERT PHOTO: filename.webp]` with alt text
-- Newsletter placeholders: `[NEWSLETTER SIGNUP FORM PLACEHOLDER]`
+- Newsletter: the one frame-part-10 block (`id="newsletter"`), never one per section
 - Map placeholders: `[INSERT MAP: description]`
 - Video placeholders: `[INSERT VIDEO: filename.mp4]`
 
@@ -1096,12 +1091,12 @@ Before final submission, verify all items:
 - ☐ 6 alternative H1 title variations provided for A/B testing
 - ☐ 6 individual puppy profiles with: name, age, sex, personality, parents, health status, price, availability, ideal buyer
 - ☐ Reviews top, middle and bottom: the three rows of `data/reviews.json`, one per slot, each a `Testimonial mode="single"` block in its own section
-- ☐ Newsletter only where the page's template mounts one: at most one block, `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"` (the location template's frame part 10); it says what a subscriber gets, never a subscriber count
-- ☐ 30+ FAQ questions distributed throughout (top, middle, bottom groupings)
+- ☐ Newsletter: one block only, frame part 10 — `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"`; no offer, never a subscriber count
+- ☐ FAQ: "every picked question appears on the page, each an H3, in score order" (`bsuk-query-augmentation`) — the picks are `faq` in `data/queries/<slug>.json`, and questions come only from fetched sources and `data/faq.json`. A city page splits them into three blocks, 17–20 questions (the gate checks 15–20; `docs/reference/location-page-template.md`); other pages may render them in one `Faq` block, and the final pass requires a FAQPage (`bsuk-final-page-pass`, `faqpage_present`)
 - ☐ 95–105 distinct named entities, each once where load-bearing (Rule 57, 2026-09-09) — people, locations, medical, brands, stats, credentials
 
 **Linking Quality:**
-- ☐ Internal links only to routes in `data/page-map.json`, with the trailing slash (Rule 62) — Link-First: anchors at sentence start; varied anchor text, no repeats per target
+- ☐ Internal links only to a route that exists under `src/pages/` or comes from `data/locations.json`, `data/puppies.json` or the blog posts (Rule 62; Appendix A lists them), with the trailing slash — Link-First: anchors at sentence start; varied anchor text, no repeats per target
 - ☐ Every external link is a row of `docs/reference/external-link-library.md` — no per-page quota; a board naming any other URL is refused
 - ☐ All anchor targets verified to exist on the site
 - ☐ Table of Contents at top with all section jump links
@@ -1130,7 +1125,7 @@ Before final submission, verify all items:
 - ☐ All image placeholders with keyword-rich filenames, ≤190-char alt text + title + caption (5-element rule)
 - ☐ Video content placeholders present where needed
 - ☐ Map embedding placeholders present for delivery/location sections
-- ☐ Newsletter signup blocks present
+- ☐ The one newsletter block at frame part 10 (`id="newsletter"`)
 - ☐ Schema markup recommendations provided (FAQPage, Organization, Product, BreadcrumbList)
 - ☐ Canonical URL formatted correctly (absolute: `https://SITE_URL_PLACEHOLDER/<slug>/`)
 
@@ -1144,7 +1139,7 @@ This is NOT a template-filling exercise. Every page must:
 2. **Analyze existing content gaps** to deliver fundamentally superior, more thorough page layouts
 3. **Write with genuine human voice** (conversational warmth, professional breeding expertise)
 4. **Integrate proper nouns and medical entities seamlessly** (avoid forced keyword groupings)
-5. **Link with strategic accuracy** (internal links only to routes in `data/page-map.json`, external links only to rows of `docs/reference/external-link-library.md`)
+5. **Link with strategic accuracy** (internal links only to a route that exists under `src/pages/` or comes from `data/locations.json`, `data/puppies.json` or the blog posts (Rule 62; Appendix A lists them), external links only to rows of `docs/reference/external-link-library.md`)
 6. **Optimize for natural language processing** (voice query compatibility, clear definition blocks)
 7. **Maintain conversion-driven layouts** (form CTAs, real scarcity markers, absolute trust signals)
 8. **Uphold flawless E-E-A-T** (demonstrate actual canine science, real-world handling experience, authority)
@@ -1258,16 +1253,16 @@ number of hours from memory. [See how to buy](#how-to-buy).
 
 ---
 
-👉 [Submit an inquiry about our available pups](/uk-blue-staffy-breeders-contact/) — we respond within 24 hours.
+👉 [Submit an inquiry about our available pups](/uk-blue-staffy-breeders-contact/).
 
 **Continue Reading:**
 - [Complete Blue Staffy Environmental & Crate Setup Guide](#care-environment)
 - [Advanced Training and Clicker Training Techniques](#training)
-- [Early Kennel Socialization — Puppy Culture at BlueStaffyUK](#socialization)
+- [How a Blue Staffy Puppy Is Socialised](#socialization)
 - [Compare Blue vs Blue-Brindle Staffies](#colour-comparison)
 
 **Authoritative External Resources:**
-- [the RSPCA](https://www.rspca.org.uk/)
+- [RSPCA — caring for a new puppy](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare)
 ```
 
 ---

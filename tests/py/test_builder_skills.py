@@ -180,7 +180,7 @@ def test_the_checklist_has_no_source_site_quotas_or_us_sources():
     leftovers = ["petmd", ".edu", "Since 2014", "since 2014", "22+ sections", "50+ external",
                  "50+ validated", "50+ Required", "50+ contextual", "newsletter signups",
                  "5,000–6,000", "Customer Case Study", "Related Blue Staffy Varieties"]
-    assert [s for s in leftovers if s in CHECKLIST] == []
+    assert [s for s in leftovers if s.lower() in CHECKLIST.lower()] == []
     assert not re.search(r"(?<![\d,.])50\+", CHECKLIST), "a 50+ quota is left"
     start = CHECKLIST.index("### Step 5: Page Structure Planning")
     step5 = CHECKLIST[start:CHECKLIST.index("### Step 6", start)]
@@ -219,3 +219,30 @@ def test_every_route_the_checklist_names_is_built_or_redirected():
     offenders = sorted({(route, n) for n, line in enumerate(text.splitlines(), 1)
                         for route in SITE_ROUTE.findall(line) if route not in built | redirected})
     assert offenders == [], "routes that are neither built nor redirected: %s" % offenders
+
+
+def test_the_checklist_newsletter_links_reviews_and_claims_match_the_builders():
+    """One newsletter block (frame part 10), Link-First links with no per-section count, reviews
+    only in their own three sections, no claim a data file does not back (a reply time, a named
+    socialisation programme, a teacup or champion pup), FAQ counts from the question file, and
+    Rules 26/27 in docs/reference/seo-rules.md derived from the competitor scan."""
+    low = CHECKLIST.lower()
+    banned = ["3 per full hub page", "newsletter signup", "5–8 per section", "5–8 internal links",
+              "5–8 total", "beginning or middle", "testimonial quote", "testimonial box",
+              "24 hours", "30+ faq", "30+ questions", "teacup", "champion bloodline"]
+    assert [b for b in banned if b in low] == []
+    unconfirmed = [line for line in CHECKLIST.splitlines()
+                   if re.search(r"(?i:puppy.culture|neonatal|neurological)|\bEN[HS]\b", line)
+                   and "NOT FETCHED" not in line]
+    assert unconfirmed == [], unconfirmed
+    assert 'label="Newsletter"' in CHECKLIST and 'id="newsletter"' in CHECKLIST
+    start = CHECKLIST.index("## APPENDIX B")
+    appendix_b = CHECKLIST[start:CHECKLIST.index("## APPENDIX C", start)]
+    library = pageboard.library_urls()
+    assert [u for u in MD_LINK.findall(appendix_b) if pageboard.normalise_url(u) not in library] == []
+    seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
+    assert [s for s in ("22–24", "22-24", "5,000–6,000", "5–8 internal") if s in seo_rules] == []
+    rule_27 = seo_rules[seo_rules.index("**Rule 27"):seo_rules.index("**Rule 28")]
+    assert "median" in rule_27 and "NOT FETCHED" in rule_27
+    rule_26 = seo_rules[seo_rules.index("**Rule 26"):seo_rules.index("**Rule 27")]
+    assert "section_target.total" in rule_26
