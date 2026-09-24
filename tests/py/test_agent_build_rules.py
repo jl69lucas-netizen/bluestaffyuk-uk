@@ -90,3 +90,30 @@ def test_agent_templates_spell_no_hex_the_tokens_do_not_define(agent):
            for h in re.findall(r"(?<![\w&])#[0-9A-Fa-f]{3,6}\b", l) if h.lower() not in TOKENS]
     assert bad == [], ("a hex colour outside src/styles/tokens.css — name the token instead "
                        "(CLAUDE.md bans a hex anywhere in src/ but tokens.css):\n  " + "\n  ".join(bad))
+
+
+SECTION_BUILDER = ROOT / ".claude/agents/bsuk-section-builder.md"
+CONTACT_FORM_UPDATER = ROOT / ".claude/agents/bsuk-contact-form-updater.md"
+
+
+def test_the_section_builder_hero_row_passes_the_whole_arrangement():
+    # Rule 16: the board's hero pick is four axes Hero.astro reads as props, not `layout` alone.
+    row = next(l for l in SECTION_BUILDER.read_text(encoding="utf-8").splitlines()
+               if l.startswith("| `hero` |"))
+    missing = [p for p in ("`layout`", "`align`", "`media`", "`ledge`", "src/lib/boardStyles.ts")
+               if p not in row]
+    assert missing == [], "the hero row must pass the board's whole arrangement: missing %s" % missing
+
+
+def test_the_section_builder_hand_writes_no_class():
+    # Hero H1, FAQ H3, eyebrows and quotes are styled inside the kit components; a class string
+    # in the section builder is a template the kit has already replaced.
+    bad = [f"{n}  {l.strip()[:100]}" for n, l in numbered(SECTION_BUILDER) if 'class="' in l]
+    assert bad == [], "the section builder mounts kit components; no hand-written class:\n  " + "\n  ".join(bad)
+
+
+def test_the_legacy_contact_form_is_named_only_as_retired():
+    # No page imports src/components/ContactForm.astro; ContactFormKit replaced it in project 4.
+    bad = [f"{n}  {l.strip()[:100]}" for n, l in numbered(CONTACT_FORM_UPDATER)
+           if "src/components/ContactForm.astro" in l and "retired" not in l]
+    assert bad == [], "the legacy form is retired — name ContactFormKit:\n  " + "\n  ".join(bad)

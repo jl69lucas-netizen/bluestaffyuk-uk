@@ -35,7 +35,7 @@ You never write an entire page at once. You write one section at a time, clean a
 
 ## On Startup — Read These First
 
-Before producing any HTML:
+Before mounting any kit component:
 
 1. **Read** `src/styles/tokens.css` — the colour, type, radius and shadow tokens
 2. **Read** `src/components/kit/_registry.ts` — the kit conventions and every component's demo fixtures; `/kit-preview/` renders them all
@@ -77,53 +77,15 @@ grep -n "^  --color-\|^  --font-\|^  --btn-" src/styles/tokens.css
 
 ---
 
-## Typography Rules — MUST FOLLOW (confirmed live 2026-05-30)
+## Typography Rules
 
-The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@layer base`. Tailwind utility classes override this base layer, so incorrect utility classes on headings break mobile sizing.
+Headings take `--font-display` from the base layer in `src/styles/global.css`, and a section's H2 takes its size from the board box it sits in (`.bl-box h2` in `src/styles/board-styles.css`, `--text-2xl`).
 
-**H2 / H3 on section headings — DO NOT add font-size utilities:**
-```html
-<!-- ✅ CORRECT — let base clamp cascade -->
-<h2 class="font-display font-bold text-brand mb-4">Section Heading</h2>
+**H2 / H3 on section headings — DO NOT add font-size utilities.** Write the heading bare, with its `id` for the page nav: `<h2 id="price">…</h2>`. A size utility on it overrides the box's size at every width.
 
-<!-- ❌ WRONG — text-3xl overrides base on mobile (30px fixed, too large) -->
-<h2 class="font-display font-bold text-3xl text-brand md:text-4xl">Section Heading</h2>
-```
+**Hero H1, FAQ question H3s, eyebrows and testimonial quotes** come from the kit component that renders them (`Hero`, `Faq`, `Testimonial`); never hand-write their classes.
 
-**Exceptions** (explicit size classes ARE correct on these):
-- Hero H1: `text-3xl sm:text-4xl md:text-[3.25rem]` — intentional display override
-- FAQ accordion H3: `text-[16px]` — intentional compact size
-- Calculator output `<p>`: `text-3xl text-brand` — display number, not a heading
-
-**Confirmed scale (computed values):**
-| Element | Mobile 375px | Desktop 1280px |
-|---|---|---|
-| H2 | **20px** | **26–32px** |
-| H3 | **17px** | **24px** |
-| Body | **15px** | **17px** |
-
-**Eyebrow / prefix spans:**
-```html
-<!-- ✅ CORRECT -->
-<span class="font-body text-[10px] font-medium uppercase tracking-[0.12em] text-brand md:text-[11px]">EYEBROW</span>
-
-<!-- ❌ WRONG — semibold + wide tracking makes 11px look 14px -->
-<span class="font-body text-[11px] font-semibold uppercase tracking-[0.18em]">EYEBROW</span>
-```
-
-**Testimonial blockquotes:**
-```html
-<!-- ✅ CORRECT — mobile constrained -->
-<blockquote class="font-display text-lg md:text-3xl leading-tight">
-
-<!-- ❌ WRONG — 30px fixed on all viewports -->
-<blockquote class="font-display text-3xl leading-tight">
-```
-
-**Paragraph defaults (set in base layer — no class needed):**
-- `line-height: 1.65`
-- `margin-bottom: 1.25em`
-- `max-width: 65ch` (use inline `style="max-width:70ch"` to loosen if needed)
+**Paragraphs** need no class: the base layer caps `main p` and `main li` at `70ch`.
 
 ---
 
@@ -133,7 +95,7 @@ Every section type is a kit component in `src/components/kit/`. Mount it with th
 
 | Section type | Kit component | Props and rules |
 |---|---|---|
-| `hero` | `Hero` | `title` is the page H1, passed through unchanged; `lede`, `eyebrow`, `chips`, `ctas` (`{ label, href, kind }`); `image` + `imageAlt` reuse a file that already exists (rule 11); `layout` is the board's pick. The component renders the image with `fetchpriority="high"` |
+| `hero` | `Hero` | `title` is the page H1, passed through unchanged; `lede`, `eyebrow`, `chips`, `ctas` (`{ label, href, kind }`); `image` + `imageAlt` reuse a file that already exists (rule 11); `layout`, `align`, `media` and `ledge` are the board's hero arrangement (`src/lib/boardStyles.ts`), passed together — `layout={pick.layout.hero}`, the others by name; `chips`/`ticks`/`stats` carry the ledge's data; a hero with no photo passes `media="none"`. The component renders the image with `fetchpriority="high"` |
 | `counter_snippet` | `CounterStrip` | `stats: [{ n, label, source }]` — the page's OWN facts from `data/*.json` or its board record, `source` naming the file (rule 16); never a family count, a year or a percentage nobody supplied |
 | `trust-bar` | `TrustStrip` | no props prints its three backed default claims; pass `items` (`{ t, d, i }`) only with claims the page's board record carries |
 | `toc` / `jump_link` | `PageNav` | `sections` from the page's H2s; each H2 carries its own `id`, so there is no separate anchor element |

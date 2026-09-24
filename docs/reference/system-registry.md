@@ -66,7 +66,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-batch-rebuilder.md` | Coordinates a batch page rebuild by dispatching one Agent-tool call per page to its specialist agent, all in one message, then tracks … |
 | `.claude/agents/bsuk-canonical-fixer.md` | Verifies that every built BlueStaffyUK page carries an absolute canonical and og:url, and that every JSON-LD @id reference resolves on its … |
 | `.claude/agents/bsuk-competitor-registry.md` | Use to seed BlueStaffyUK's national competitor registry (data/competitors.json) for the first time, or when intel or a page build finds a … |
-| `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated … |
+| `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against the kit's … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
 | `.claude/agents/bsuk-footer-standardizer.md` | Verifies the BlueStaffyUK footer across the built site — every page carries exactly one footer, rendered by … |
 | `.claude/agents/bsuk-image-pipeline.md` | Moves generated or supplied photographs into public/images/ under the BSUK SEO filename convention, updates every <img> reference in … |

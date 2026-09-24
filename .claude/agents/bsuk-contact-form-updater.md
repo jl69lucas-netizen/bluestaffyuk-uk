@@ -1,6 +1,6 @@
 ---
 name: bsuk-contact-form-updater
-description: Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated markup, missing ARIA labels, accessibility violations. One endpoint for every form, PUBLIC_FORMSPREE_ID from a gitignored .env (unset today); the field contract lives in the bsuk-contact-form skill and is gated by scripts/form_contract_audit.py.
+description: Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against the kit's src/components/kit/ContactFormKit.astro — outdated markup, missing ARIA labels, accessibility violations. One endpoint for every form, PUBLIC_FORMSPREE_ID from a gitignored .env (unset today); the field contract lives in the bsuk-contact-form skill and is gated by scripts/form_contract_audit.py.
 tools: [Read, Write, Bash]
 model: inherit
 effort: medium
@@ -87,7 +87,7 @@ import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 <ContactFormKit />
 ```
 
-`ContactFormKit` carries the seven-field contract, the Formspree endpoint (`PUBLIC_FORMSPREE_ID`) and the `_gotcha` honeypot; `src/components/ContactForm.astro` emits the same set for pages still on `BaseLayout`. An existing page keeps its own family's markup (skill → Form families) and is edited in that vocabulary. The puppy choice is the set `ContactFormKit` builds — never a coat colour with a price beside it: a price belongs to a puppy, not to a colour (Roman is blue and white at £1,500; Christa is blue at £1,700 — `data/puppies.json`).
+`ContactFormKit` carries the seven-field contract, the Formspree endpoint (`PUBLIC_FORMSPREE_ID`) and the `_gotcha` honeypot; The legacy `src/components/ContactForm.astro` is retired — no page imports it; never mount it. An existing page keeps its own family's markup (skill → Form families) and is edited in that vocabulary. The puppy choice is the set `ContactFormKit` builds — never a coat colour with a price beside it: a price belongs to a puppy, not to a colour (Roman is blue and white at £1,500; Christa is blue at £1,700 — `data/puppies.json`).
 
 ---
 
