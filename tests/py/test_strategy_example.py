@@ -102,3 +102,11 @@ def test_the_agent_says_strategy_a_and_b_are_checked():
     assert ("checks every figure under `## Strategy A`, `## Strategy B`, `## Recommendation` "
             "and `## Concrete Artifact`") in agent
     assert "a figure in Strategy A or B, the Recommendation or the Concrete Artifact" in agent
+
+
+def test_the_agent_keeps_locked_facts_out_of_a_b_and_the_pick():
+    # Known Issue 49: Strategy A and B are checked, so a business fact no source prints fails there too.
+    agent = " ".join(AGENT.read_text(encoding="utf-8").split())
+    assert ("keep them out of Strategy A, Strategy B and the pick unless a listed source prints "
+            "them too") in agent
+    assert "keep them out of the pick unless" not in agent

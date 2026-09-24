@@ -77,7 +77,7 @@ ALWAYS_TRUE = {"28"}
 
 HEADING = re.compile(r"^##[ \t]+(?:\d+[.)]?[ \t]+)?(.*?)[ \t#]*$")
 CHECKED = re.compile(r"(?:recommendation|concrete artifact|concrete artefact)", re.I)
-STRATEGY = re.compile(r"strategy [ab]\b", re.I)
+STRATEGY = re.compile(r"strategy\s+[ab]\b", re.I)
 BARE_YEAR = re.compile(r"(?:19|20)\d\d")
 SOURCES = re.compile(r"sources\b", re.I)
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")

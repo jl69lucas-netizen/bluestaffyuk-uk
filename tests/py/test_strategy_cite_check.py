@@ -539,3 +539,15 @@ def test_ki49_a_strategy_heading_inside_the_pick_is_still_a_problem(tmp_path):
 def test_ki49_the_committed_strategy_still_passes():
     r = run(str(REPO / "docs/superpowers/sessions/2026-09-23-location-pages-strategy.md"))
     assert r.returncode == 0, r.stdout
+
+
+def test_ki49_any_spacing_of_strategy_a_is_checked(tmp_path):
+    (tmp_path / "docs/research/competitors").mkdir(parents=True)
+    (tmp_path / SOURCE).write_text("7/12")
+    p = tmp_path / "s.md"
+    p.write_text("# S\n\n## Strategy  A\n\nAbout 99 pages.\n\n## Strategy\tB\n\n58% of them.\n\n"
+                 f"## Recommendation\n\n7/12\n\n## Sources\n\n- `{SOURCE}`\n")
+    out = S.check(p, tmp_path)
+    assert len(out) == 2, out
+    assert out[0].startswith("line 5 (Strategy  A): figure 99 "), out
+    assert out[1].startswith("line 9 (Strategy\tB): figure 58% "), out

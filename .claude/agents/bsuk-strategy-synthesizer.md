@@ -63,7 +63,7 @@ effort: max
 
 ## Business facts
 
-Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other business fact come only from `CLAUDE.md`, `data/settings.json` or `data/puppies.json` — never from old page copy in `data/locations.json` or `data/page-map.json`, which predates the rebuild and can be wrong. A fact none of those three files holds is left out, never filled from a research file. These are not research figures: keep them out of the pick unless a listed source prints them too.
+Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other business fact come only from `CLAUDE.md`, `data/settings.json` or `data/puppies.json` — never from old page copy in `data/locations.json` or `data/page-map.json`, which predates the rebuild and can be wrong. A fact none of those three files holds is left out, never filled from a research file. These are not research figures: keep them out of Strategy A, Strategy B and the pick unless a listed source prints them too.
 
 ## Output — docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy.md
 
