@@ -141,6 +141,16 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/session-closer/SKILL.md`
 - `.claude/skills/sitemap-agent/SKILL.md`
 
+## Commands — 4
+
+Every `.md` under `.claude/commands/`, each a slash command. The `opsx/` set is
+vendored from upstream OpenSpec, like the four `openspec-*` skills.
+
+- `.claude/commands/opsx/apply.md`
+- `.claude/commands/opsx/archive.md`
+- `.claude/commands/opsx/explore.md`
+- `.claude/commands/opsx/propose.md`
+
 ## Scripts — 63
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
@@ -293,7 +303,7 @@ Deferred paths are not listed here by name: a name is a path, and a path this re
 does not have is exactly what the forward-reference guard exists to catch. Read the
 manifest for the list.
 
-## Mechanical guards — 11
+## Mechanical guards — 12
 
 Every rule in this repo that is actually enforced is enforced by one of these. A
 guard that is not in this table is not a guard; a rule with no row here is a
@@ -305,12 +315,13 @@ answer is usually "add the manifest row and it is covered".
 |---|---|---|---|
 | `scripts/marker_check.py` | every written manifest `dst` plus CLAUDE.md, rules/, docs/reference/, package.json, tests/render/, scripts/dup_content_audit.py | add a non-`deferred` row to `data/port-manifest.json`, or a path to `FIXED_ROOTS` | `tests/py/test_marker_check.py` |
 | `scripts/placeholder_check.py` | `dist/` plus the union of its literal floor (.claude/skills, .claude/agents, docs/reference) with `marker_check.scan_roots()` | inherited — anything the marker gate judges is scanned automatically | `tests/py/test_placeholder_check.py` |
-| fact lint | `.claude/agents` and `.claude/skills`: locked £ amounts, banned tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, lifespan 12–14 | drop a file into either tree | `tests/py/test_agent_facts.py` |
-| path guard + stale-marker | every repo path cited in a `docs/reference` doc, and every `(arrives in Task N)` marker whose path now exists | cite a path in a reference doc | `tests/py/test_rules_index.py`, `tests/py/test_claude_md.py` |
+| fact lint + residue lint + guarantee gate | `.claude/agents`, `.claude/skills` and `docs/reference`: locked £ amounts, banned tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, lifespan 12–14; skills and `.claude/commands` also against the source-repo residue list (`RESIDUE`: US sources, regulators and geography, air transport, the other brand and animals, deploy pushes, fixed section counts, spelled-out prices, and brindle, licence, placement-count, years-in-business, weaning-age and reply-time claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee names `guarantee_days`) | drop a file into any of those trees | `tests/py/test_agent_facts.py` |
+| path guard + dead-root + dead-file + stale-marker | every repo path cited in a `rules/` pack, a `docs/reference` doc, an agent or a non-vendored skill (the `openspec-*` skills are vendored); in non-vendored skills and every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, `site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, the structure manifest); every `(arrives in Task N)` marker whose path now exists | cite a path in a pack, a reference doc, an agent or a skill; add a skill or a command | `tests/py/test_rules_index.py`, `tests/py/test_claude_md.py` |
+| builder-skill contracts + route guard | the location, comparison and blog builders, the SEO checklist, grill-me's board gate and the audit commands in manual-auditor-check and sitemap-agent against the code they describe (Known Issue 40); the route guard (`route_offenders()`): every site-root route a skill or command names is built, in `data/page-map.json`, redirected, a `public/` folder or a stated non-page (rule 62; skipped without `dist/`) | add a test beside the claim a builder makes; a new skill or command is route-checked automatically | `tests/py/test_builder_skills.py` |
 | table lint + frontmatter | every skill's frontmatter and every markdown table in the skill tree | add a skill directory under `.claude/skills` | `tests/py/test_skills_frontmatter.py` |
 | harness vocabulary | `tests/render/` check ids, families and the deferred-check register | register a check in the harness | `tests/render/meta.spec.ts` via `npm run test:render:meta` |
 | credentials doc + secret scan | `docs/reference/credentials.md` key table; every `.env` value against all tracked files, the run log and `docs/artifacts/*.html`; credential SHAPES across `marker_check.scan_roots()` plus docs/reports, docs/artifacts, data/quality/scorecards, tests/py/fixtures | inherited from the marker gate; add a key to `.env` and `.env.example` | `tests/py/test_credentials_doc.py`, `tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py` |
-| agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
+| agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a command, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
 | workflow references | `docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent or skill name, `scripts/...` path and `npm run` name, unless the line carries the parenthesised not-ported marker | name it in either doc — coverage is the whole of both files | `tests/py/test_workflow_ref_check.py`, `npm run check:workflow` |
 | render baseline | the generated table in `docs/reports/render-baseline-project2.md` against the scorecards | regenerate with `scripts/render_baseline.py --write` | `npm run baseline` |
 | parity / redirects / schema / sitemaps | the built `dist/` against the migration record, the redirect map, JSON-LD and the sitemap shards | build a page — coverage follows `dist/` | `npm run check:all` |

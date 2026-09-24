@@ -76,6 +76,8 @@ def render(root=ROOT):
         by_tier.setdefault(agents[name]["tier"], []).append(name)
 
     skills = sorted(p.parent.name for p in (root / ".claude/skills").glob("*/SKILL.md"))
+    commands = sorted(p.relative_to(root).as_posix()
+                      for p in (root / ".claude/commands").rglob("*.md"))
     scripts = sorted(p.name for p in (root / "scripts").glob("*")
                      if p.is_file() and p.suffix in SCRIPT_SUFFIXES)
     data = sorted((root / "data").glob("*"))
@@ -106,6 +108,14 @@ def render(root=ROOT):
     L.append("system; the rest are the generic writing, research and framework skills.")
     L.append("")
     L += ["- `.claude/skills/%s/SKILL.md`" % s for s in skills]
+    L.append("")
+
+    L.append("## Commands — %d" % len(commands))
+    L.append("")
+    L.append("Every `.md` under `.claude/commands/`, each a slash command. The `opsx/` set is")
+    L.append("vendored from upstream OpenSpec, like the four `openspec-*` skills.")
+    L.append("")
+    L += ["- `%s`" % c for c in commands]
     L.append("")
 
     L.append("## Scripts — %d" % len(scripts))
@@ -184,16 +194,35 @@ GUARDS = (
      "docs/reference) with `marker_check.scan_roots()`",
      "inherited — anything the marker gate judges is scanned automatically",
      "`tests/py/test_placeholder_check.py`"),
-    ("fact lint",
-     "`.claude/agents` and `.claude/skills`: locked £ amounts, banned tokens, DEFRA only "
-     "beside transport, no stand-in inside a heading or path segment, lifespan 12–14",
-     "drop a file into either tree",
+    ("fact lint + residue lint + guarantee gate",
+     "`.claude/agents`, `.claude/skills` and `docs/reference`: locked £ amounts, banned "
+     "tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, "
+     "lifespan 12–14; skills and `.claude/commands` also against the source-repo residue "
+     "list (`RESIDUE`: US sources, regulators and geography, air transport, the other "
+     "brand and animals, deploy pushes, fixed section counts, spelled-out prices, and "
+     "brindle, licence, placement-count, years-in-business, weaning-age and reply-time "
+     "claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee "
+     "names `guarantee_days`)",
+     "drop a file into any of those trees",
      "`tests/py/test_agent_facts.py`"),
-    ("path guard + stale-marker",
-     "every repo path cited in a `docs/reference` doc, and every `(arrives in Task N)` "
-     "marker whose path now exists",
-     "cite a path in a reference doc",
+    ("path guard + dead-root + dead-file + stale-marker",
+     "every repo path cited in a `rules/` pack, a `docs/reference` doc, an agent or a "
+     "non-vendored skill (the `openspec-*` skills are vendored); in non-vendored skills and "
+     "every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, "
+     "`site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: "
+     "the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, "
+     "the structure manifest); every `(arrives in Task N)` marker whose path now exists",
+     "cite a path in a pack, a reference doc, an agent or a skill; add a skill or a command",
      "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`"),
+    ("builder-skill contracts + route guard",
+     "the location, comparison and blog builders, the SEO checklist, grill-me's board gate "
+     "and the audit commands in manual-auditor-check and sitemap-agent against the code "
+     "they describe (Known Issue 40); the route guard (`route_offenders()`): every "
+     "site-root route a skill or command names is built, in `data/page-map.json`, "
+     "redirected, a `public/` folder or a stated non-page (rule 62; skipped without `dist/`)",
+     "add a test beside the claim a builder makes; a new skill or command is route-checked "
+     "automatically",
+     "`tests/py/test_builder_skills.py`"),
     ("table lint + frontmatter",
      "every skill's frontmatter and every markdown table in the skill tree",
      "add a skill directory under `.claude/skills`",
@@ -212,7 +241,7 @@ GUARDS = (
     ("agent + system registries",
      "`.claude/agents` frontmatter against `data/agent-registry.json`; this document "
      "against the repo",
-     "add an agent, a skill, a script or a `data/` file",
+     "add an agent, a skill, a command, a script or a `data/` file",
      "`npm run agents`, `npm run registry` (both `--check`)"),
     ("workflow references",
      "`docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent "

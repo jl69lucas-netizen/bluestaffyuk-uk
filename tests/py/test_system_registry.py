@@ -154,3 +154,17 @@ def test_every_check_all_gate_is_in_the_gate_table():
            for p in re.findall(r"python3 (scripts/[\w./-]+\.py)", scripts[name])}
     missing = sorted(run - {path for path, _ in bsr.GATES})
     assert missing == [], f"check:all runs these, but GATES does not list them: {missing}"
+
+
+def test_it_lists_the_slash_commands_too(tmp_path):
+    """`.claude/commands/` is loaded exactly like a skill (a `/opsx:propose` is a prompt the
+    session runs), and until 2026-09-23 the registry did not list it at all — four commands
+    existed that no reader of this document could find."""
+    root = tree(tmp_path)
+    assert "## Commands — 0" in written(root), "an empty commands tree is stated, not omitted"
+    cmd = root / ".claude/commands/opsx/propose.md"
+    cmd.parent.mkdir(parents=True)
+    cmd.write_text("---\nname: x\n---\n", encoding="utf-8")
+    out = written(root)
+    assert "## Commands — 1" in out
+    assert "`.claude/commands/opsx/propose.md`" in out
