@@ -190,7 +190,7 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
         <p class="text-brand font-body text-xs font-semibold uppercase tracking-widest mb-2">This Week's Kennel</p>
         <h2 class="font-display font-bold text-3xl text-brand">Puppies Available Right Now</h2>
         <p class="text-stone-500 mt-2 max-w-md text-sm leading-relaxed">
-          Every puppy is home-reared, vet sex-checked, LICENCE_CLAIM_PLACEHOLDER-documented, and vet-certified before reservation.
+          Every puppy is home-reared, and has a full veterinary health check, first vaccinations and a microchip before it goes home.
         </p>
       </div>
       <a href="/blue-staffy-pup-sale-uk/" class="text-sm font-semibold text-brand hover:text-cta-hover border border-cta/40 hover:border-cta px-4 py-2 rounded-full transition-colors whitespace-nowrap">

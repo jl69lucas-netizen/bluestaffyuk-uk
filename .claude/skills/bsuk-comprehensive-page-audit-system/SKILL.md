@@ -85,7 +85,7 @@ Award **+1 for each item present (YES), 0 if absent (NO)**. Report every item YE
 10. Direct-question H2s ("What…", "How…", "Is…", "Can…")
 
 ### §7 — Entity-coverage /10
-Extract every entity on the page across these classes: **species, diseases, brands, foods, breeders, organisations, locations, products, scientific concepts.** Score `/10 = entities covered ÷ entities expected-for-this-page-type` (rounded). List the **Important Missing Entities** and, per entity, **why it matters for AI** (what query/citation it unlocks). **Never assert a Ledger-unverified credential** (no L-2-HGA/PCR/board-cert claim beyond what `data/quality/evidence-ledger.json` records as proven — the parents' DNA results are `NOT FETCHED` today).
+Extract every entity on the page across these classes: **species, diseases, brands, foods, breeders, organisations, locations, products, scientific concepts.** Score `/10 = entities covered ÷ entities expected-for-this-page-type` (rounded). List the **Important Missing Entities** and, per entity, **why it matters for AI** (what query/citation it unlocks). **Never assert a Ledger-unverified credential** (no L-2-HGA/HC-HSF4/board-cert claim beyond what `data/quality/evidence-ledger.json` records as proven — the parents' DNA results are `NOT FETCHED` today).
 
 ### §11 — Visual-need (per section — honest, NOT everywhere)
 For each section answer **YES (Mandatory) / YES (Recommended) / MAYBE / NO**. Answer YES **only** if a visual improves **comprehension, retention, shareability, backlinks, or conversion** — never decorative. Output a table:

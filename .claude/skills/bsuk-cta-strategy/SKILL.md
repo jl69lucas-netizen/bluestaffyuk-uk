@@ -36,7 +36,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** Browse Available Puppies
 
 ⚡ **Direct & Transactional:**
-> "Ready to meet your new best friend?" Browse current litters — vet sex-checked Blue Staffy puppies with canine vet health certificates. delivery by DEFRA-approved transport nationwide. Prices from £200–£350.
+> "Ready to meet your new best friend?" Browse the current litter — Blue Staffy puppies, each with a full veterinary health check, first vaccinations and a microchip. UK home delivery by DEFRA-approved transport, £200–£350 by distance.
 > **Button:** Check Availability ✅
 
 🌱 **Ethical & Quality:**
@@ -64,7 +64,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 3: Available Puppies
 
 🛡️ **Trust & Security:**
-> "These puppies are going fast — and for good reason." Every puppy: canine vet health certificate, vet sex-checking results, lifetime breeder support.
+> "These puppies are going fast — and for good reason." Every puppy: a full veterinary health check, first vaccinations, a microchip, worming and flea treatment.
 > **Button:** Reserve a Puppy Now
 
 ⚡ **Direct & Transactional:**
@@ -96,15 +96,15 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 5: DNA Testing
 
 🛡️ **Trust & Security:**
-> "vet sex-checking and canine vet partnerships ensure healthy, well-socialized puppies — because we care about your family."
+> "A full veterinary health check for every puppy, and a vet-signed health card that goes home with it — because we care about your family."
 > **Button:** See Our Health Testing
 
 ⚡ **Direct & Transactional:**
-> "Every BSUK puppy: vet sex-checked, canine vet health certified, behaviorally socialized."
+> "Every BSUK puppy: vet health-checked, vaccinated, microchipped, raised in our home."
 > **Button:** View Health Certificates
 
 🌱 **Ethical & Quality:**
-> "vet sex-checking and canine vet partnerships aren't optional at BSUK — they're the foundation of every breeding decision."
+> "A veterinary health check isn't optional at BSUK — every puppy has one before it goes home."
 > **Button:** Our Health Protocol
 
 ---
@@ -128,15 +128,15 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 7: Age at Placement
 
 🛡️ **Trust & Security:**
-> "Age of placement matters — younger puppies bond deeper with their new families."
-> **Button:** Choose Your Age
+> "Age at placement matters — a puppy comes home at eight weeks at the earliest."
+> **Button:** Why Eight Weeks
 
 ⚡ **Direct & Transactional:**
-> "Young newborn pup: recently whelped · Weaned juvenile: 3-6 months. Which suits your timeline?"
-> **Button:** Select Age Preference
+> "Eight weeks at the earliest, never sooner. Ask us when this litter is ready to come home."
+> **Button:** Ask When They're Ready
 
 🌱 **Ethical & Quality:**
-> "We ensure every puppy is properly weaned and socialized before placement — the only thing that changes is their age at handoff."
+> "Those last weeks with the mother and the litter are where a puppy learns bite inhibition and how to read another dog — we don't cut them short."
 > **Button:** Care Guide + Pricing
 
 ---

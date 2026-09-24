@@ -65,7 +65,7 @@ Write the same six research deliverables for each page, saved under `docs/superp
 7. **Content Gap** — what's missing from ALL competitors.
 8. **Recommended Page Structure** — full H1→H6, optimized for SEO + AEO + AI Overview + snippets.
 9. **Schema / Technical** — FAQPage, Article/WebPage, BreadcrumbList; Product/Offer ONLY on the for-sale page; ItemList on hub.
-10. **Internal Linking** — up to hub, sideways to sibling comparisons, down to `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/available/` puppies, contextual to care/health/price pages. Anchors at sentence START (Link-First rule), never mid-sentence or end.
+10. **Internal Linking** — up to hub, sideways to sibling comparisons, down to `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/available-puppies/`, contextual to care/health/price pages. Anchors at sentence START (Link-First rule), never mid-sentence or end.
 11. **Backlink Strategy** — canine blogs, breeders, rescue/education orgs, Reddit resources, pet journalists.
 12. **Page Sections & Outline** — mandatory sections + competitor-derived sections + our-moat sections, **A/B/C categorized** (A=mandatory core, B=competitor-match, C=moat). The count is `section_target.total` in `data/queries/<slug>.json`: the competitors' highest cleaned H2 count + 3, never fewer than 9 (`docs/reference/location-page-template.md`, "Section count").
 

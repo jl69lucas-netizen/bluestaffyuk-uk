@@ -13,12 +13,12 @@ allowed-tools: [Read, Write, Bash]
 ## Entity-Benefit-Purpose (EBP) Framework
 
 For every entity mention on a BSUK page:
-1. **Entity** — name the thing: "vet sex-checking certificate testing"
-2. **Benefit** — what it does: "screens 250+ genetic conditions before pairing"
-3. **Purpose** — why it matters to buyer: "so you know your Blue Staffy won't develop a preventable inherited condition"
+1. **Entity** — name the thing: "a full veterinary health check"
+2. **Benefit** — what it does: "every puppy is examined by a vet, given its first vaccination, microchipped, wormed and treated for fleas before it goes home" (`data/faq.json` `health-vaccinations`)
+3. **Purpose** — why it matters to buyer: "so your own vet starts from a vet-signed health card, not a promise"
 
-**Without EBP (weak):** "We use vet sex-checking."
-**With EBP (strong):** "vet sex-checking determines the puppy's biological sex with 100% accuracy — so you know what you're getting and can plan breeding responsibly if desired."
+**Without EBP (weak):** "We do health checks."
+**With EBP (strong):** "Every puppy has a full veterinary health check before it goes home, and it all goes on a vet-signed health card that travels with the puppy — so your own vet starts from a written record."
 
 ---
 
@@ -40,7 +40,8 @@ For every entity mention on a BSUK page:
 
 | Primary Entity | Variations | Where to Use |
 |---------------|-----------|-------------|
-| vet sex-checking | vet sex-checking test, canine genetic testing | Health sections, credentials, FAQ |
+| Veterinary health check | full vet health check, vet-signed health card, first vaccinations, microchip, worming and flea treatment (`data/faq.json` `puppy-package`) | Health sections, credentials, FAQ |
+| L-2-HGA and HC-HSF4 DNA tests | the parents' DNA tests (results `NOT FETCHED` — `data/quality/evidence-ledger.json` `parents-dna-clear`) | Health sections, FAQ |
 | Canine vet health certificate | Canine veterinarian certification, health exam | Health sections, trust bar |
 | LICENCE_CLAIM_PLACEHOLDER license | LICENCE_CLAIM_PLACEHOLDER-licensed breeder, LICENCE_CLAIM_PLACEHOLDER inspection | Trust bar, about page |
 | LICENCE_CLAIM_PLACEHOLDER documentation | LICENCE_CLAIM_PLACEHOLDER permit, home-bred certificate | Credentials, legal compliance |
@@ -124,7 +125,7 @@ print(json.dumps(schema, indent=2))
 
 ```bash
 # Check entity presence on any page
-for entity in "Blue Staffy puppy" "Blue Staffy" "Staffordshire Bull Terrier" "vet sex-checking" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
+for entity in "Blue Staffy puppy" "Blue Staffy" "Staffordshire Bull Terrier" "health check" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
   count=$(grep -oi "$entity" dist/[slug]/index.html | wc -l)
   echo "$count × $entity"
 done
@@ -149,5 +150,5 @@ done
 3. **Extract FAQ schema from `<details>/<summary>`** — not raw page HTML
 4. **Density cap** — no single entity above 2% of total word count
 5. **Location entities on all location pages** — the city, its region and its nearby cities from `data/locations.json` always present; never a mileage or a drive time
-6. **Credential entities in first 300 words** — vet sex-checking, canine vet, LICENCE_CLAIM_PLACEHOLDER appear early
+6. **Credential entities in first 300 words** — veterinary health check, the parents' L-2-HGA and HC-HSF4 DNA tests, LICENCE_CLAIM_PLACEHOLDER appear early
 7. **Cross-reference price-matrix.json** — all pricing entities match the data file

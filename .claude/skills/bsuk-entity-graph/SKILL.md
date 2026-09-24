@@ -66,9 +66,9 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 | **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Registry (The Royal Kennel Club) · Transport (DEFRA-approved transport) · Regulator (LICENCE_CLAIM_PLACEHOLDER) |
 | **Place** | Country (UK) · Region · City · Home (Carlisle, Cumbria) |
 | **Commerce** | Price · Offer · Guarantee · Delivery Option · Payment Term · Availability State |
-| **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA/PCR certificate · Health record · Whelp certificate · Vet record |
-| **Health** | Condition (L-2-HGA, Polyomavirus, hereditary cataract) · Screening (PCR) · Nutrient (UV-B/D3) · Diet · Pellet brand |
-| **Behavior** | Temperament ability · Bonding · Plucking · Socialization · Training method |
+| **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA certificate (the parents' L-2-HGA and HC-HSF4 results, `NOT FETCHED`) · Health record · Whelp certificate · Vet record |
+| **Health** | Condition (L-2-HGA, HC-HSF4 hereditary cataract, skin allergies) · Screening (DNA test on both parents) · Vet health check · Vaccination · Diet |
+| **Behavior** | Temperament ability · Bonding · Bite inhibition · Socialization · Training method |
 | **Method** | The NOT FETCHED — the breeder has not named a house method · The Carlisle Socialization Method |
 | **Concept** | Comparison topic · Educational concept · Buyer objection · Trust signal · Legal concept |
 | **Buyer** | Customer · Family archetype (CLEO/REX/NOVA/SAGE/IRIS) · Review |

@@ -50,7 +50,7 @@ Every footer must contain these 5 columns. Flag any footer missing 2+ columns as
 
 ```
 Column 1: Quick Links
-  - Available Puppies → /available/
+  - Available Puppies → /available-puppies/
   - Blue Staffy → /blue-staffy-pup-sale-uk/
   - Staffy Puppies For Sale → /buy-staffy-puppies-for-sale-uk/
   - Pricing → /blue-staffy-pup-sale-uk/
@@ -65,7 +65,7 @@ Column 2: Resources
 
 Column 3: Company
   - About Us → /about/
-  - Our Puppies → /available/
+  - Our Puppies → /available-puppies/
   - Testimonials → /testimonials/
   - Contact → /contact/
 

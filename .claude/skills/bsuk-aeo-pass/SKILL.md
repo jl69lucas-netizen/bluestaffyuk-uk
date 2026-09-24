@@ -78,7 +78,7 @@ subject, its actor, and its qualifier?**
 | ✗ Not atomic | ✓ Atomic |
 |---|---|
 | "It also includes full documentation." | "Lisa Bright's kennel is LICENCE_CLAIM_PLACEHOLDER licenced and supplies **LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER** home-bred documentation with every puppy." |
-| "They wean between those weeks." | "Blue Staffy pups wean at **12–16 weeks**, never sooner." |
+| "They go home when they're ready." | "A Staffy puppy comes home at **eight weeks** at the earliest, never sooner." |
 
 Not machine-checkable — this is the skill's **human** item. Read three random sections
 in isolation. If one needs its neighbour, rewrite its first sentence.
@@ -91,7 +91,7 @@ brand to the topic.
 - `our puppies` → **`Canis lupus familiaris`** / **`Blue Staffy`**
 - `we` → **`Lisa Bright's home kennel`** / **`BlueStaffyUK — Carlisle`**
 - `licensed` → **`LICENCE_CLAIM_PLACEHOLDER licenced`**, **`LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred`**
-- `tested` → **`PCR vet sex-checked`**, **`L-2-HGA and Polyomavirus screened`**
+- `tested` → **`vet health-checked`** (`data/faq.json` `puppy-package`), **`parents DNA-tested for L-2-HGA and HC-HSF4`** (results `NOT FETCHED` — `data/quality/evidence-ledger.json` `parents-dna-clear`)
 
 **The gate exists because of a measurement in the source repo** (its 8 for-sale pages,
 2026-07-30): 3 of 8 pages named no species at all, and 4 of 8 never named the breeder. Those
@@ -138,7 +138,7 @@ Unlabeled expertise gets absorbed as generic knowledge. **Approved by the breede
 
 | Label | Covers |
 |---|---|
-| **The NOT FETCHED — the breeder has not named a house method** | bottle-feeding, weaning schedule, the 12–16-week wean gate — the *raising* process |
+| **The NOT FETCHED — the breeder has not named a house method** | weaning schedule, the weeks with the mother and the litter, the eight-week earliest go-home age — the *raising* process |
 | **The Carlisle Socialization Method** | family handling, out-of-crate routine, noise/handling desensitisation — the *socialization* side |
 
 Use them as proper nouns, capitalised, at least once per relevant page, and define

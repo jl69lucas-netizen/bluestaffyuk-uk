@@ -375,6 +375,16 @@ RESIDUE = (
     ("\"licensed breeder\" asserted — a licence is LICENCE_CLAIM_PLACEHOLDER until confirmed",
      re.compile(r"(?i)\blicensed breeders?\b")),
     ("the source repo's Latin variant naming (P. …)", re.compile(r"\(P\. [a-z]")),
+    # Widened again (2026-09-24): the source repo bred birds. Its health vocabulary is not a
+    # dog's. BSUK's health facts are the vet check (data/faq.json `puppy-package`,
+    # `health-vaccinations`) and the parents' L-2-HGA / HC-HSF4 DNA tests, whose results are
+    # NOT FETCHED in data/quality/evidence-ledger.json (`parents-dna-clear`).
+    ("the source repo's bird-health vocabulary — BSUK's is the vet check and the parents' DNA tests",
+     re.compile(r"(?i)sex-check|\bPCR\b|polyomavirus|psittac|\bavian\b|\bplucking\b|\bUV-B\b")),
+    ("a weaning age no BSUK data states — a puppy goes home at eight weeks at the earliest "
+     "(data/faq.json `buying-best-age`)",
+     re.compile(r"(?i)\bwean\w*\b[^|\n]{0,25}?\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b|"
+                r"\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b[^|\n]{0,15}\bwean")),
 )
 # A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
 PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
@@ -430,15 +440,23 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "- **Blue-Brindle variant page:** `blue-brindle staffy for sale`\n"
         "<h3>What \"Licensed Breeder\" Actually Means at BlueStaffyUK</h3>\n"
         "binomial          6 (P. erithacus) 1\n"
+        "Every puppy is vet sex-checked before it leaves.\n"
+        "PCR screening on both parents.\n"
+        "L-2-HGA and Polyomavirus screened\n"
+        "certified free of psittacosis\n"
+        "an avian vet on call\n"
+        "Blue Staffy pups wean at **12–16 weeks**, never sooner.\n"
+        "Weaned juvenile: 3-6 months\n"
         # silent: a line that forbids the push, a UK source, the licence stand-in named on
         # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
         "Commit it; there is no `git push` until project 6.\n"
         "[PDSA](https://www.pdsa.org.uk/)\n"
         "| LICENCE_CLAIM_PLACEHOLDER-licensed breeder | Trust bar |\n"
-        "Coat colours in the breed: blue, blue brindle, red, fawn.\n", encoding="utf-8")
+        "Coat colours in the breed: blue, blue brindle, red, fawn.\n"
+        "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
     bad = residue(p)
-    # every line up to 17 fires (a line may fire twice), nothing after it does, and every
+    # every line up to 24 fires (a line may fire twice), nothing after it does, and every
     # entry of RESIDUE fired at least once
-    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 18)), bad
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 25)), bad
     assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad
