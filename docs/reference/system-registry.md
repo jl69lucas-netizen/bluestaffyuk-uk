@@ -64,7 +64,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-accessibility-fixer.md` | Audits built BlueStaffyUK pages in dist/ for WCAG 2.1 AA — skip links, ARIA labels, focus states, keyboard navigation, colour contrast … |
 | `.claude/agents/bsuk-agent-system-qa.md` | Quality review agent for the BSUK agent system |
 | `.claude/agents/bsuk-batch-rebuilder.md` | Coordinates a batch page rebuild by dispatching one Agent-tool call per page to its specialist agent, all in one message, then tracks … |
-| `.claude/agents/bsuk-canonical-fixer.md` | Verifies that every built BlueStaffyUK page carries an absolute canonical, og:url and JSON-LD url |
+| `.claude/agents/bsuk-canonical-fixer.md` | Verifies that every built BlueStaffyUK page carries an absolute canonical and og:url, and that every JSON-LD @id reference resolves on its … |
 | `.claude/agents/bsuk-competitor-registry.md` | Use to seed BlueStaffyUK's national competitor registry (data/competitors.json) for the first time, or when intel or a page build finds a … |
 | `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
@@ -73,7 +73,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-keyword-verifier.md` | Verifies keyword placement, density and on-page SEO hygiene for any BlueStaffyUK page — title, H1, meta description, first 100 words, H2 … |
 | `.claude/agents/bsuk-meta-description-agent.md` | Writes and audits every title tag and meta description on BlueStaffyUK — standard (50–60 char title, 140–160 char description) and … |
 | `.claude/agents/bsuk-paa-agent.md` | Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright CLI, formats the answers for … |
-| `.claude/agents/bsuk-performance-fixer.md` | Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, script defer, font-display swap, LCP … |
+| `.claude/agents/bsuk-performance-fixer.md` | Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, font-display swap, LCP fetchpriority + preload … |
 | `.claude/agents/bsuk-redirect-manager.md` | Manages every 301/302 rule for BlueStaffyUK |
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |

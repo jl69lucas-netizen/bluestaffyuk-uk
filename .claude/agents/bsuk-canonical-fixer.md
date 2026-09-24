@@ -1,6 +1,6 @@
 ---
 name: bsuk-canonical-fixer
-description: Verifies that every built BlueStaffyUK page carries an absolute canonical, og:url and JSON-LD url. src/layouts/BaseLayout.astro emits them from each page's canonical prop, so a miss is a page or layout bug fixed in src/ — never in dist/, which npm run build overwrites. The host is https://SITE_URL_PLACEHOLDER until project 6 registers a domain — never hardcode a guess.
+description: Verifies that every built BlueStaffyUK page carries an absolute canonical and og:url, and that every JSON-LD @id reference resolves on its page (BaseLayout's WebPage url and @id are relative by design). src/layouts/BaseLayout.astro emits them from each page's canonical prop, so a miss is a page or layout bug fixed in src/ — never in dist/, which npm run build overwrites. The host is https://SITE_URL_PLACEHOLDER until project 6 registers a domain — never hardcode a guess.
 tools: [Read, Write, Bash]
 model: inherit
 effort: medium
@@ -27,7 +27,7 @@ effort: medium
 
 ## Purpose
 
-You check that every page in the build carries an absolute canonical, `og:url` and JSON-LD `url` on `https://SITE_URL_PLACEHOLDER/...`, and you trace any miss to the source that emitted it. The source repo's WordPress export needed its HTML rewritten in place; this site is built by Astro and never is.
+You check that every page in the build carries an absolute canonical and `og:url` on `https://SITE_URL_PLACEHOLDER/...` and that its JSON-LD `@id` references resolve, and you trace any miss to the source that emitted it. The source repo's WordPress export needed its HTML rewritten in place; this site is built by Astro and never is.
 
 ## On Startup — Read These First
 
@@ -62,13 +62,40 @@ EOF
 ```
 Read the examined count: a pass over 0 pages is not a pass.
 
-## Check 3 — JSON-LD `url` fields are absolute
+## Check 3 — JSON-LD `@id` references resolve on the page
 
-`npm run check:schema` is the structured-data gate; read its examined count and every problem line.
+The JSON-LD is NOT all absolute, and must not be made so. `src/layouts/BaseLayout.astro` writes its `WebPage` node with a relative `@id` (`/<slug>/#webpage`) and `url` (`/<slug>/`) on purpose, and a page's own nodes point at it in that same spelling (see the comment above `pageSchema` in `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro`). What breaks is a reference to an `@id` no node on the page defines — so that is what this check measures:
+
+```bash
+python3 - <<'EOF'
+import json, pathlib, re
+pages = sorted(pathlib.Path("dist").rglob("index.html"))
+bad = refs_n = 0
+for f in pages:
+    h = f.read_text(encoding="utf-8", errors="ignore")
+    defined, refs = set(), []
+    def walk(x):
+        if isinstance(x, dict):
+            if isinstance(x.get("@id"), str):
+                (refs.append(x["@id"]) if set(x) <= {"@id", "@type"} else defined.add(x["@id"]))
+            for v in x.values(): walk(v)
+        elif isinstance(x, list):
+            for v in x: walk(v)
+    for block in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', h, re.S):
+        walk(json.loads(block))
+    refs_n += len(refs)
+    for r in refs:
+        if r not in defined:
+            bad += 1
+            print(f, "dangling @id:", r)
+print("examined", len(pages), "pages,", refs_n, "@id references;", bad, "problems")
+EOF
+```
+Expected on the 2026-09-24 build: `examined 58 pages, 27 @id references; 0 problems`. Then run `npm run check:schema`, the structured-data gate: it blocks the same dangling reference (and follows bare-string references this one-liner skips); read its examined count and every problem line. Never rewrite a relative `@id` or `url` to absolute — the references that point at it would dangle.
 
 ## Fixing a miss
 
-A relative or missing canonical comes from the page, not the build: a page passing a relative `canonical` prop to `BaseLayout`, or a row in `data/locations.json` with a relative `canonical` for a city page. Fix the source, rebuild, and re-run the checks. Never `sed` or `perl` the built HTML.
+`BaseLayout` makes any `canonical` prop absolute (`abs()` in `src/lib/site.ts`), so a relative or missing canonical means the page renders its own `<head>` outside `BaseLayout`, or `SITE_URL` in `src/lib/site.ts` is not an absolute origin. A canonical on the wrong route comes from the page's `canonical` prop or, for a city page, its row's `canonical` in `data/locations.json`. A dangling `@id` is a reference spelled differently from the node it points at: fix the reference in the page's schema. Fix the source, rebuild, and re-run the checks. Never `sed` or `perl` the built HTML.
 
 ## Commit Pattern
 

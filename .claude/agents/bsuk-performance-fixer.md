@@ -1,6 +1,6 @@
 ---
 name: bsuk-performance-fixer
-description: Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, script defer, font-display swap, LCP fetchpriority + preload, lazy-loading cleanup. Grep dist/ to confirm a fix's target actually exists before applying it. Run after any page rebuild or new page; scripts/perf_audit.py measures dist/ and refuses --live until project 6.
+description: Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, font-display swap, LCP fetchpriority + preload, intrinsic image sizes — in src/, then rebuilds. Grep dist/ to confirm a fix's target actually exists before applying it. Run after any page rebuild or new page; scripts/perf_audit.py measures dist/ and refuses --live until project 6.
 tools: [Read, Write, Bash, mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit, mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page, mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot]
 model: inherit
 effort: medium
@@ -18,14 +18,14 @@ A fix is not complete until Lighthouse confirms the score. Always verify with th
 
 ## Purpose
 
-> **Check the stack before you apply a fix.** These recipes came from a WordPress-exported static site. BSUK's built output today contains no WooCommerce CSS, no jQuery and no lazysizes — grep `dist/` first, and skip any fix whose target is not there rather than adding the asset so the fix has something to remove. `python3 scripts/perf_audit.py <slug>` measures `dist/`; `--live` and `--psi` refuse on the `SITE_URL` placeholder until project 6.
+> **Check the stack before you apply a fix.** The source repo's WordPress-export recipes are retired (see "What is left of the source repo's recipes" below). Grep `dist/` first, and skip any fix whose target is not there rather than adding the asset so the fix has something to remove. `python3 scripts/perf_audit.py <slug>` measures `dist/`; `--live` and `--psi` refuse on the `SITE_URL` placeholder until project 6.
 
 You apply the proven Lighthouse Performance fixes to BSUK pages — render-blocking CSS, jQuery defer, `font-display: swap`, LCP `fetchpriority`+preload, lazysizes removal — to drive each page to a 100% Performance score. Run after any page rebuild or new page.
 
 ## On Startup — Read These First
 
 1. **Read** `CLAUDE.md` → Known Issues + the page-width/perf notes.
-2. **Confirm** the target page is built — operate on `dist/` output, then mirror the fix into the `src/pages/` source so it survives the next build.
+2. **Confirm** the target page is built (`npm run build`); make every fix in `src/`, rebuild, and re-measure `dist/`.
 3. **Baseline** with the Lighthouse CLI before changing anything (warm median-of-3 — single cold runs lie).
 
 ## Step 0 — Detect Page Type Before Applying Fixes
@@ -48,31 +48,13 @@ head -3 [target_file] | grep "^---" && echo "ASTRO PAGE" || echo "LEGACY HTML PA
 
 > The live site is `src/pages/` + `src/components/`. Edit those, then `npm run build` and re-check `dist/`.
 
-### Fix 6: "Reduce unused JavaScript" — defer Google Analytics (gtag.js ~155 KiB)
-
-`async` is not enough — gtag.js still fetches with the initial page and Lighthouse counts ~108 KiB as unused. In `src/layouts/BaseLayout.astro`, REMOVE the `<script async src=".../gtag/js?id=...">` tag and instead inject it after first interaction OR a short idle fallback. Keep the inline `dataLayer`/`gtag('config', …)` calls — they queue and replay once the script loads:
-```js
-(function () {
-  var loaded = false;
-  function loadGA() { if (loaded) return; loaded = true;
-    var s = document.createElement('script'); s.async = true;
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=NOT FETCHED until project 6';
-    document.head.appendChild(s); }
-  ['scroll','mousemove','touchstart','keydown','pointerdown'].forEach(function(e){
-    window.addEventListener(e, loadGA, { once:true, passive:true }); });
-  if ('requestIdleCallback' in window) requestIdleCallback(loadGA, { timeout: 3500 });
-  else setTimeout(loadGA, 3000);
-})();
-```
-**Trade-off (city it):** GA fires on interaction or within ~3.5 s, so a sub-3.5 s no-interaction bounce is measured slightly later. Acceptable for this site; keeps GA off the critical path. Verify: `grep -c 'async src="https://www.googletagmanager.com/gtag/js' dist/index.html` → `0`.
-
 ### Fix 7: 1st-party "unused JS" you can't see in the repo = injected by the CDN or host
 
 A 1st-party bundle on a hashed path (e.g. `/70de/…`) that is NOT in `src/` or `dist/` is **injected by the host or CDN at the edge** (which host is NOT FETCHED until project 6) — Rocket Loader (look for `data-cf-settings`/`data-cf` and `host-static/…` on the live HTML) and/or email-obfuscation (`/cdn-cgi/scripts/.../email-decode.min.js`). **This is a the host dashboard fix, not a code fix:** Speed → Optimization → turn OFF **Rocket Loader** (it usually hurts modern Astro sites). Keep email obfuscation (small, anti-spam). Tell the user — do not hunt for it in the codebase.
 
 ### Fix 8: Images missing intrinsic `width`/`height` (CLS audit)
 
-Lighthouse flags `<img>` without both `width` AND `height`. The usual offenders are **component-rendered images** passed via props (`Testimonials` avatars, `SplitFeature` `imageSrc`) — one shared `<img>` tag, no dims. Add `width`/`height` to the component's `<img>` matching its CSS box ratio (it uses `object-cover` so attrs don't distort): `aspect-square`→`300×300`, `w-12 h-12`→`48×48`, `w-16 h-16`→`64×64`, `aspect-[5/4]`→`500×400`, `aspect-[4/5]`→`400×500`. Audit script:
+Lighthouse flags `<img>` without both `width` AND `height`. The usual offenders are **component-rendered images** passed via props — `src/components/BodyImage.astro`, `src/components/kit/PuppyCard.astro`, `src/components/kit/Hero.astro`, `src/components/PuppyList.astro` — one shared `<img>` tag per component. Add `width`/`height` to the component's `<img>` matching its CSS box ratio (it uses `object-cover` so attrs don't distort): `aspect-square`→`300×300`, `w-12 h-12`→`48×48`, `w-16 h-16`→`64×64`, `aspect-[5/4]`→`500×400`, `aspect-[4/5]`→`400×500`. Audit script:
 ```bash
 python3 -c "import re; h=open('dist/index.html').read(); print(len([t for t in re.findall(r'<img\b[^>]*>',h,re.I) if not(re.search(r'\bwidth=',t) and re.search(r'\bheight=',t))]))"
 ```
