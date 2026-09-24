@@ -21,13 +21,15 @@ Usage:
 survives both the desktop 16:9 box and a mobile 4:5 crop. The main file is quality-walked
 from 82 down until it is under --maxkb (rules/images.md); the -760 sibling (760x415) is
 walked until it is under 55 KB. A file that cannot meet its budget even at the quality
-floor is refused (exit 2) and not left behind.
+floor is refused (exit 2): both files are encoded to temps beside their targets and
+moved into place only when both fit, so a refused run never touches an existing file.
 
 A transparent master (RGBA, LA, or a palette with transparency) is flattened onto bone
 before framing, never onto black. An animated master is refused.
 """
 import argparse
 import io
+import os
 import pathlib
 import re
 import sys
@@ -193,23 +195,32 @@ def main(argv=None):
         print("REFUSED: %s cannot be read as an image: %s" % (a.src, e), file=sys.stderr)
         return 2
     out = render(master, a.style, a.w, a.h, a.blur, a.mobcrop, a.fgmaxw, a.fgup)
-    kb, q, ok = save_webp(out, a.out, a.maxkb)
-    if not ok:
-        pathlib.Path(a.out).unlink()
-        print("REFUSED: %s is %sKB at the q60 floor, over the %s KB budget"
-              % (a.out, kb, a.maxkb), file=sys.stderr)
-        return 2
-    print("  %s  %dx%d  %sKB q%d  [%s]" % (a.out, a.w, a.h, kb, q, a.style))
+    jobs = [(out, pathlib.Path(a.out), a.maxkb, "%dx%d" % (a.w, a.h), "  [%s]" % a.style)]
     if a.sib:
-        kb2, q2, ok2 = save_webp(sibling(out), a.sib, SIB_MAX_KB)
-        if not ok2:
-            pathlib.Path(a.sib).unlink()
-            print("REFUSED: %s is %sKB at the q60 floor, over the %s KB budget"
-                  % (a.sib, kb2, SIB_MAX_KB), file=sys.stderr)
+        jobs.append((sibling(out), pathlib.Path(a.sib), SIB_MAX_KB, "%dx%d" % (SIB_W, SIB_H), ""))
+    # Encode beside each target; move into place only when every file met its budget, so a
+    # refused run never deletes or half-replaces a file that was already there.
+    temps, done, over = [], [], []
+    try:
+        for img, target, maxkb, dims, tag in jobs:
+            tmp = target.with_name(".%s.tmp-%d" % (target.name, os.getpid()))
+            temps.append(tmp)
+            kb, q, ok = save_webp(img, tmp, maxkb)
+            if not ok:
+                over.append("%s is %sKB at the q60 floor, over the %s KB budget"
+                            % (target, kb, maxkb))
+            done.append((tmp, target, "  %s  %s  %sKB q%d%s" % (target, dims, kb, q, tag)))
+        if over:
+            print("REFUSED: %s; nothing written" % "; ".join(over), file=sys.stderr)
             return 2
-        print("  %s  %dx%d  %sKB q%d" % (a.sib, SIB_W, SIB_H, kb2, q2))
-    return 0
-
+        for tmp, target, line in done:
+            os.replace(tmp, target)
+            print(line)
+        return 0
+    finally:
+        for tmp in temps:
+            if tmp.exists():
+                tmp.unlink()
 
 if __name__ == "__main__":
     raise SystemExit(main())

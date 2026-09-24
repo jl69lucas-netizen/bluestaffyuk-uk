@@ -428,3 +428,37 @@ def test_publish_has_no_bare_assert_and_no_assets_constant():
     src = (ROOT / "scripts/ingest_image.py").read_text(encoding="utf-8")
     assert "\n    assert " not in src
     assert "ASSETS =" not in src
+
+
+# ── follow-up: dry run checks the budget; a part-way commit names the stem ───────────────
+def test_folder_dry_run_refuses_over_budget_exactly_as_a_real_run(repo, tmp_path):
+    before = snapshot(repo)
+    with pytest.raises(Refused, match=r"KB.*95 KB"):
+        folder(noisy_master(tmp_path), STEM, og_style="A", slug=SLUG, slot="garden-photo",
+               root=repo, dry_run=True)
+    assert snapshot(repo) == before
+
+
+def test_folder_dry_run_checks_the_sibling_budget_too(repo, master, monkeypatch):
+    monkeypatch.setattr(reframe_og, "SIB_MAX_KB", 0.1)
+    before = snapshot(repo)
+    with pytest.raises(Refused, match="-760"):
+        folder(master, STEM, og_style="B", slug=SLUG, slot="garden-photo", root=repo,
+               dry_run=True)
+    assert snapshot(repo) == before
+
+
+def test_a_commit_that_stops_part_way_names_the_stem(repo, master, monkeypatch):
+    real, calls = ingest_image.os.replace, []
+
+    def flaky(src, dst):
+        calls.append(dst)
+        if len(calls) == 2:
+            raise OSError("device went away")
+        return real(src, dst)
+    monkeypatch.setattr(ingest_image.os, "replace", flaky)
+    with pytest.raises(OSError, match=STEM) as e:
+        folder(master, STEM, og_style="B", slug=SLUG, slot="garden-photo", root=repo)
+    assert "%s.webp" % STEM in str(e.value) and "device went away" in str(e.value)
+    monkeypatch.undo()
+    assert not [q for q in repo.rglob(".*.tmp-*")], "the temps that were not moved are removed"

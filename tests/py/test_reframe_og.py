@@ -171,3 +171,24 @@ def test_mobcrop_with_another_style_warns(tmp_path):
     proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(tmp_path / "o.webp"),
                            "--style", "topcover", "--mobcrop", "4:5"], capture_output=True, text=True)
     assert proc.returncode == 0 and "warning" in proc.stderr.lower()
+
+
+# ── follow-up: the CLI never deletes an existing file ────────────────────────────────────
+def test_a_refused_run_leaves_a_pre_existing_output_untouched(tmp_path):
+    src, out = tmp_path / "noise.png", tmp_path / "out.webp"
+    noisy().save(src)
+    out.write_bytes(b"the file that was already here")
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(out), "--style", "contain"],
+                          capture_output=True, text=True)
+    assert proc.returncode == 2, proc.stderr
+    assert out.read_bytes() == b"the file that was already here"
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["noise.png", "out.webp"], "no temps"
+
+
+def test_no_partial_main_file_when_only_the_sibling_fails(tmp_path, monkeypatch, capsys):
+    src, out, sib = tmp_path / "m.png", tmp_path / "puppy.webp", tmp_path / "puppy-760.webp"
+    portrait().save(src)
+    monkeypatch.setattr(reframe_og, "SIB_MAX_KB", 0.1)
+    assert reframe_og.main([str(src), str(out), "--sib", str(sib)]) == 2
+    assert "-760" in capsys.readouterr().err
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["m.png"], "neither file, no temps"

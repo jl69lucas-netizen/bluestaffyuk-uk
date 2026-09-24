@@ -47,6 +47,7 @@ import pathlib
 import re
 import shutil
 import sys
+import tempfile
 
 from PIL import Image
 
@@ -256,7 +257,8 @@ class _Stage:
     """Temp files beside their targets; commit() moves them into place in the order they
     were staged; close() removes whatever was not committed."""
 
-    def __init__(self):
+    def __init__(self, label=""):
+        self.label = label                         # named in a part-way commit failure
         self.pending = []                          # [(temp, target)]
 
     def temp_for(self, target):
@@ -269,9 +271,16 @@ class _Stage:
         _write_json(self.temp_for(target), data, sort_keys)
 
     def commit(self):
+        moved = []
         while self.pending:
             tmp, target = self.pending[0]
-            os.replace(tmp, target)
+            try:
+                os.replace(tmp, target)
+            except OSError as e:
+                raise OSError("%s: commit stopped part-way (%s) — already moved: %s; not moved: %s"
+                              % (self.label, e, ", ".join(moved) or "nothing",
+                                 ", ".join(str(t) for _, t in self.pending))) from e
+            moved.append(str(target))
             self.pending.pop(0)
 
     def close(self):
@@ -291,6 +300,23 @@ def _encode_staged(stage, img, target, maxkb, what, over):
         over.append(_over(what, kb, maxkb))
 
 
+def _budget_problems(full, stem):
+    """The budget check a real run makes, encoded into a scratch directory that is removed."""
+    over = []
+    with tempfile.TemporaryDirectory() as d:
+        stage = _Stage("dry run %r" % stem)
+        try:
+            _encode_staged(stage, full, pathlib.Path(d) / ("%s.webp" % stem), reframe_og.MAX_KB,
+                           "/images/%s.webp" % stem, over)
+            sib = sibling_of(full)
+            if sib is not None:
+                _encode_staged(stage, sib, pathlib.Path(d) / ("%s-760.webp" % stem),
+                               reframe_og.SIB_MAX_KB, "/images/%s-760.webp" % stem, over)
+        finally:
+            stage.close()
+    return over
+
+
 def _publish_files(full_bytes_from, full_img, stem, row, root, slug=None, slot=None,
                    expect_sha=None):
     """Stage the full image (copied byte for byte when a path is given), its sibling, the
@@ -300,7 +326,7 @@ def _publish_files(full_bytes_from, full_img, stem, row, root, slug=None, slot=N
     images = root / IMAGES
     images.mkdir(parents=True, exist_ok=True)
     full_path = images / ("%s.webp" % stem)
-    stage, over = _Stage(), []
+    stage, over = _Stage("stem %r" % stem), []
     try:
         if full_bytes_from is not None:
             tmp = stage.temp_for(full_path)
@@ -369,6 +395,9 @@ def folder(master, stem=None, og_style=None, infographic=None, mobcrop="", slug=
     row = {"master": str(master), "source": "assets-folder", "og_style": og_style,
            "infographic_style": infographic, "ingested": _today(today)}
     if dry_run:
+        over = _budget_problems(full, stem)
+        if over:
+            raise Refused("; ".join(over) + " — a real run would write nothing")
         return dict(row, stem=stem, w=full.width, h=full.height)
     _publish_files(None, full, stem, row, root, slug, slot)
     return dict(row, stem=stem)
@@ -388,7 +417,7 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
     full = bake(master, og_style, infographic, mobcrop)
     out = draft_path(slug, slot, root)
     out.parent.mkdir(parents=True, exist_ok=True)
-    stage, over = _Stage(), []
+    stage, over = _Stage("draft %s" % out), []
     try:
         _encode_staged(stage, full, out, reframe_og.MAX_KB, "the draft", over)
         sib = sibling_of(full)
