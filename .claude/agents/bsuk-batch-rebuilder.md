@@ -52,7 +52,7 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 2. **Read** `data/locations.json` — for location batch jobs
 3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which batch mode — Location Batch (28 location rows), Comparison Batch, Footer/Contact Batch, or Section Patch Batch?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
-**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write target between children — each child writes only its own page's files (a rebuilt city page's output path is set by the project-5 plan, Known Issue 39). The parent tracks completion in the batch manifest, `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
+**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write target between children — each child writes only its own page's files (a rebuilt city page's output path is set by the project-5 plan). The parent tracks completion in the batch manifest, `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
 
 **4 batch modes** (the Batch Job Types below):
 - **Location Batch** — one subagent per city the project-5 plan names from `data/locations.json` (17 rows are `noindex` stubs, Known Issue 6); delegates to `@bsuk-location-builder`
@@ -88,7 +88,7 @@ python3 -c "import json; [print(r['slug'], '|', r['robots']) for r in json.load(
 
 Every row is a `/uk-locations/<slug>/` route. Seventeen are `noindex` stubs (Known Issue 6) — the project-5 rebuilds; the indexed rows are refreshes. Which cities run, and in what order, comes from the project-5 plan and the strategy file, never from this agent. Each child gets its row (`slug`, `city`, `h1`, `canonical`, `robots`), its question file `data/queries/<slug>.json`, and its board `data/boards/<slug>.json` once the competitor scan has written it.
 
-**Before the first city:** Known Issue 39 — four checkers build paths from a flat slug and cannot read `uk-locations/<slug>` yet. No city page goes into `data/facts/rebuilt.json` until that is fixed and tested.
+**Before the first city:** the gates key a city page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` (`scripts/_slugs.py`). Add a city's slug to `data/facts/rebuilt.json` only once its rebuilt page is built: a listed slug with no built page fails `check:queries`.
 
 **Batch size limits:** 5 pages per round recommended, 10 at most; above 10, sequential rounds of 10.
 

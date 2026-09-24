@@ -180,10 +180,10 @@ page, add its bare slug — the route's last segment, e.g. `blue-staffy-puppies-
 for a city page — to `data/facts/rebuilt.json`, the key the other gates use. Until then
 `check:queries` skips it as awaiting rebuild.
 
-**STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
-the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
-(`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
-Issue 39). Until then do not add a city page to `data/facts/rebuilt.json`.
+The facts, link-parity and verbatim gates and pageboard key a city page by the same bare slug
+and find it at `dist/uk-locations/<slug>/` (`scripts/_slugs.py`), so one entry covers every
+gate. A slug listed there whose page is not built is a `check:queries` problem, not a skip;
+the run also prints the slugs still awaiting rebuild.
 
 ## Worked example
 

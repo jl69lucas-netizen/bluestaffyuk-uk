@@ -651,6 +651,24 @@ and moved 16 on to its location-page remainder.
     `scripts/query_coverage_check.py` should report a problem when a route's last segment is in
     `data/facts/rebuilt.json` but its page is missing, print the awaiting-rebuild slugs, and
     turn a malformed `data/facts/rebuilt.json` into a problem line rather than a crash.
+    **CLOSED 2026-09-23 (project 5 readiness, Task F2).** One resolver,
+    `scripts/_slugs.py` (`resolve_page`, `built_page`), turns a slug into its key and route
+    through `data/page-map.json`. A city page keeps its bare slug as its key — the name of its
+    `data/facts/`, `data/verbatim/` and `data/boards/` files and its `data/facts/rebuilt.json`
+    entry, as `scripts/migration_parity.py` already keyed it — and is found at
+    `dist/uk-locations/<slug>/index.html`. `scripts/facts_preserved_check.py`,
+    `scripts/link_parity_check.py`, `scripts/verbatim_set_check.py` (its built page, record, set
+    file and page title, and for a city page the migrated body, read from the city's row of
+    `data/locations.json` at the frozen migration commit) and `scripts/pageboard.py`
+    (`own_live_key` and its four built-page readers) all use it. `--extract` takes the bare slug
+    or `uk-locations/<slug>` and creates any folder a nested key needs.
+    `scripts/query_coverage_check.py` now fails a page listed in `data/facts/rebuilt.json` that is
+    not built, prints the slugs awaiting rebuild, and reports a malformed
+    `data/facts/rebuilt.json` as a problem line. The STOP rules in the location-page-builder and
+    query-augmentation skills are removed. Tests: `tests/py/test_nested_routes.py` and the
+    additions to `tests/py/test_query_coverage_check.py`. Left as it is: pageboard's freshness
+    check still looks for a page's own sources under `src/pages/<slug>`; where a rebuilt city
+    page's source lives is a project 5 decision.
 
 40. **Project 5 builder checklist (2026-09-23).** Quality-review items on the builders deferred
     by the user's ruling during the query-augmentation build; clear each before or while the

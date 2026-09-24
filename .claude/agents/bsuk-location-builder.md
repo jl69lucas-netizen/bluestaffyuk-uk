@@ -217,7 +217,7 @@ The outline must include:
 1. Wrap all sections in `<BaseLayout>` — header and footer are injected automatically by `src/layouts/BaseLayout.astro`
 2. Set title, description, canonical props on BaseLayout
 3. Content starts at the hero `<section>` — never write `<header>` or `<footer>` HTML in the page file
-4. Write the page at the path the project-5 plan fixes for a rebuilt city (Known Issue 39). Never edit `src/pages/uk-locations/[slug].astro`: it renders every city that is not rebuilt yet from `data/locations.json`
+4. Write the page at the path the project-5 plan fixes for a rebuilt city; the gates find it built at `dist/uk-locations/<slug>/index.html` (`scripts/_slugs.py`). Never edit `src/pages/uk-locations/[slug].astro`: it renders every city that is not rebuilt yet from `data/locations.json`
 
 ---
 

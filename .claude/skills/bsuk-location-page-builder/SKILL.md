@@ -98,6 +98,11 @@ The scan lives in `data/queries/<slug>.json`; the board (`data/boards/<slug>.jso
 section by section and is approved
 (`python3 scripts/board_approve.py <slug>`) before a section is written — no page is built
 without an approved board, and `python3 scripts/board_gate.py <slug>` refuses otherwise.
+The board key is the bare slug: the record is `data/boards/<slug>.json` and
+`python3 scripts/board_gate.py <slug>` takes the bare slug (`own_live_key` in
+`scripts/pageboard.py` resolves the live route `uk-locations/<slug>` through
+`data/page-map.json`). Never key the board `uk-locations/<slug>`: `scripts/board_gate.py`
+would look for `data/boards/uk-locations--<slug>.json`.
 
 ---
 
@@ -226,10 +231,10 @@ bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) t
 `data/facts/rebuilt.json` — the key the other gates use — and only then does
 `npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
 
-**STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
-the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
-(`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
-Issue 39). Until then do not add a city page to `data/facts/rebuilt.json`.
+**One key per city page.** The facts, link-parity, verbatim and query gates and pageboard all
+key a city page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` through
+`data/page-map.json` (`scripts/_slugs.py`), so one `data/facts/rebuilt.json` entry covers every
+gate. A slug listed there whose page is not built fails `check:queries`.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal
@@ -380,15 +385,13 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
    `python3 scripts/facts_preserved_check.py --extract <key>` (its facts into
    `data/facts/<key>.json`) and, where rule 15 applies (the page is in
    `data/verbatim/applies.json`), `python3 scripts/verbatim_set_check.py --extract <key>`
-   (its verbatim set into `data/verbatim/<key>.json`). Both read the built migrated page.
-   `<key>` is the page's bare slug (the bare slug for a top-level page, e.g.
-   `blue-staffy-health-uk`). For a city page (`uk-locations/<slug>`) this step is held by the
-   same STOP rule — `scripts/facts_preserved_check.py` and `scripts/verbatim_set_check.py`
-   cannot yet read or write nested routes (see `docs/reference/session-log.md` Known Issue 39).
-   Once Project 5 fixes that, run these extracts FIRST, before any
-   rewrite, while `dist/` still holds the migrated page: the extraction cannot be redone
-   afterwards. Never start a city rewrite without them.
-5. Approve the board, then build. Add the page to `data/facts/rebuilt.json` only once the
-   nested-route STOP rule above is cleared.
+   (its verbatim set into `data/verbatim/<key>.json`). The facts extract reads the built
+   migrated page (`dist/uk-locations/<slug>/index.html`); the verbatim extract reads the city's
+   row of `data/locations.json` at the frozen migration commit. `<key>` is the page's bare slug,
+   a city page included (`blue-staffy-health-uk`, `blue-staffy-puppies-manchester-uk`). Run
+   these extracts FIRST, before any rewrite, while `dist/` still holds the migrated page: the
+   facts extraction cannot be redone afterwards. Never start a city rewrite without them.
+5. Approve the board, then build. Once the rebuilt page is built, add its bare slug to
+   `data/facts/rebuilt.json`.
 6. Below 97% confidence: write what is not blocked, log the question to the brief's
    `## Open Flags`, ask exactly one narrow question, keep going. Never dead-stop.
