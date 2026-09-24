@@ -169,3 +169,21 @@ def test_the_checklist_external_links_are_library_rows():
     assert library, "docs/reference/external-link-library.md is missing"
     missing = [u for u in urls if pageboard.normalise_url(u) not in library]
     assert missing == [], "not rows of the external-link library: %s" % missing
+
+
+def test_the_checklist_has_no_source_site_quotas_or_us_sources():
+    """Known Issue 40, the rest of it: the checklist still carried the source site's fixed
+    quotas (50+ internal and external links, a 22+-section page, a 5,000–6,000-word total, three
+    newsletter signups), a US source (petmd, .edu) and a founding year BSUK has not given. No BSUK
+    rule sets those numbers: rules/links.md sets placement, Rule 62 the targets, the page's
+    question file the section count, and the location template one newsletter block."""
+    leftovers = ["petmd", ".edu", "Since 2014", "since 2014", "22+ sections", "50+ external",
+                 "50+ validated", "50+ Required", "50+ contextual", "newsletter signups",
+                 "5,000–6,000", "Customer Case Study", "Related Blue Staffy Varieties"]
+    assert [s for s in leftovers if s in CHECKLIST] == []
+    assert not re.search(r"(?<![\d,.])50\+", CHECKLIST), "a 50+ quota is left"
+    start = CHECKLIST.index("### Step 5: Page Structure Planning")
+    step5 = CHECKLIST[start:CHECKLIST.index("### Step 6", start)]
+    assert "Candidate topics" in step5 and "section_target.total" in step5
+    assert 'Testimonial mode="single"' in step5
+    assert 'label="Newsletter"' in CHECKLIST

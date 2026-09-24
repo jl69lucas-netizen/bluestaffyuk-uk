@@ -101,7 +101,7 @@ Before writing ANY content, perform comprehensive competitor research.
 - Top 3 Bing organic results for primary keyword
 - 2–3 specialized kennel/breeder sites
 - the RSPCA (https://www.rspca.org.uk/) — authority benchmark
-- 1–2 informational authority sites (e.g. petmd)
+- 1–2 informational authority sites — rows of `docs/reference/external-link-library.md` only (the PDSA, Blue Cross, The Royal Kennel Club)
 
 **For each competitor, document:**
 1. **Word Count** — total page length
@@ -409,7 +409,9 @@ Each header should pull double SEO duty: **[secondary/conversational keyword] + 
 - ❌ "Why Choose Us?" (no keyword) · ❌ "Delivery" (single bare term)
 Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword + one related term per header — never three+ stacked. Applies across H2–H4 especially.
 
-**Full section menu (27 possible sections — final selection determined by competitor research):**
+**Candidate topics, not a section list.** Choose only the topics the competitor scan and BSUK's own
+data support; how many body sections the page has is `section_target.total` (above), never this
+table's length. Word ranges are planning guides, not quotas.
 
 | # | Section | Word Count | Anchor ID |
 |---|---|---|---|
@@ -428,18 +430,16 @@ Keep it natural and conversational (What/How/Is/Can/Who). One secondary keyword 
 | 13 | About BlueStaffyUK & Meet Lisa Bright | 200–250 | `#about-BSUK` |
 | 14 | What Makes BlueStaffyUK the Best Blue Staffy Breeder | 250–300 | `#what-makes-best` |
 | 15 | Meet the Parent Puppies / Breeding Pairs | 300–400 | `#meet-parents` |
-| 16 | Customer Testimonials (3 strategically placed) | 400–500 total | `#testimonials` |
+| 16 | Reviews — top, middle and bottom: one row of `data/reviews.json` each, a `Testimonial mode="single"` block in its own section, never inside a body section | N/A | its own section |
 | 17 | BlueStaffyUK Breeding Commitment & Ethics | 200–250 | `#breeding-commitment` |
 | 18 | Blue vs Blue-Brindle Staffy Comparison | 500–600 | `#colour-comparison` |
-| 19 | Real-World Customer Case Study | 400–500 | `#case-study` |
-| 20 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
-| 21 | Frequently Asked Questions (30+ questions) | 800–1,000 | `#faqs` |
-| 22 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
-| 23 | Puppy Culture & Early Neonatal Handling (Video) | 100–150 | `#puppy-culture` |
-| 24 | Contact Information & Next Steps | 150–200 | `#contact` |
-| 25 | Related Blue Staffy Varieties & Companion Puppies | 200–300 | `#related-breeds` |
-| 26 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
-| 27 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
+| 19 | DEFRA-approved transport Delivery & Coverage Areas | 700–900 | `#delivery` |
+| 20 | Frequently Asked Questions (30+ questions) | 800–1,000 | `#faqs` |
+| 21 | How to Buy Your Blue Staffy from BlueStaffyUK | 300–400 | `#how-to-buy` |
+| 22 | Puppy Culture & Early Neonatal Handling (Video) | 100–150 | `#puppy-culture` |
+| 23 | Contact Information & Next Steps | 150–200 | `#contact` |
+| 24 | Map & DEFRA-approved transport Delivery Coverage Area | 100–150 | `#map` |
+| 25 | Table of Contents (Required >1,500 words) | N/A | `#toc` |
 
 ---
 
@@ -559,10 +559,10 @@ TIER 3: LINKING STRATEGY
    [Continue for 5–8 total]
 
 8. External Authority Links (1–2 per section):
-   Position: BEGINNING or MIDDLE of sentences.
+   Position: START of the sentence (Link-First, `rules/links.md`).
    Use descriptive anchor text (not "click here").
-   1. [Anchor Text] → [https://authority-url.org]  |  Type: [.org/.gov/.edu]
-   2. [Anchor Text] → [https://authority-url.com]  |  Type: [authority type]
+   1. [Anchor Text] → [a row of docs/reference/external-link-library.md]  |  Source: [PDSA / RSPCA / Royal Kennel Club / GOV.UK …]
+   2. [Anchor Text] → [a row of docs/reference/external-link-library.md]  |  Source: [authority]
 
 TIER 4: ENTITY & TRUST
 —————————————————————————
@@ -626,7 +626,11 @@ TIER 5: QUALITY CONTROL
 
 ### Step 8: Linking Strategy
 
-#### A. Internal Links (50+ Required Per Full Page)
+#### A. Internal Links (only routes that exist — no count)
+
+No rule sets a number of internal links. `rules/links.md` sets where the anchor sits (Link-First)
+and Rule 62 sets the targets: routes in `data/page-map.json`, `/slug/` with the trailing slash.
+The source template's "50 or more" assumed a larger site (`docs/reference/location-page-template.md`).
 
 **Link categories:**
 
@@ -878,7 +882,7 @@ H6 examples (voice search — must be present):
 Format: `[Primary Keyword] | [Conversational Query] | [Comparison/LSI/NLP] | BlueStaffyUK Trust Ending`
 
 **🔴 URGENCY TONE:**
-> Blue Staffy for Sale | Where Can I Buy a Home-Bred Staffy Near Me? | LICENCE_CLAIM_PLACEHOLDER Documented vs Unverified Listings | BlueStaffyUK — Carlisle's Blue Staffy Kennel Since 2014
+> Blue Staffy for Sale | Where Can I Buy a Home-Bred Staffy Near Me? | LICENCE_CLAIM_PLACEHOLDER Documented vs Unverified Listings | BlueStaffyUK — Home-Bred Blue Staffies in Carlisle
 
 **🆚 COMPARISON TONE:**
 > Blue Staffy for Sale | How Much Does a Blue Staffy Cost? | BlueStaffyUK vs Other Breeders, BSUK vs Blue-Brindle Comparison | Ethical Breeder — Full LICENCE_CLAIM_PLACEHOLDER Compliance
@@ -1051,7 +1055,7 @@ Format requirements:
 
 ---
 
-[Continue for all 22+ sections through to contact/navigation]
+[Continue for every body section — `section_target.total` of them (Step 5) — through to contact/navigation]
 
 ---
 
@@ -1088,17 +1092,17 @@ Before final submission, verify all items:
 
 **Content Completeness:**
 - ☐ All required sections present with target word counts achieved
-- ☐ Total document 5,000–6,000+ words (or competitor count +1,000 minimum)
+- ☐ Word total from the competitor scan's median (Step 5) — `NOT FETCHED` until that scan exists, never a number picked first
 - ☐ 6 alternative H1 title variations provided for A/B testing
 - ☐ 6 individual puppy profiles with: name, age, sex, personality, parents, health status, price, availability, ideal buyer
-- ☐ 3 customer testimonials positioned at top, middle, and bottom
-- ☐ 3 newsletter signups at top (diet/nutrition section), middle (delivery section), bottom (contact section)
+- ☐ Reviews top, middle and bottom: the three rows of `data/reviews.json`, one per slot, each a `Testimonial mode="single"` block in its own section
+- ☐ Newsletter only where the page's template mounts one: at most one block, `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"` (the location template's frame part 10); it says what a subscriber gets, never a subscriber count
 - ☐ 30+ FAQ questions distributed throughout (top, middle, bottom groupings)
 - ☐ 95–105 distinct named entities, each once where load-bearing (Rule 57, 2026-09-09) — people, locations, medical, brands, stats, credentials
 
 **Linking Quality:**
-- ☐ 50+ contextual internal links (Link-First: anchors at sentence start; varied anchor text, no repeats per target)
-- ☐ 50+ external authority links (.gov, .edu, .org, canine and veterinary authorities)
+- ☐ Internal links only to routes in `data/page-map.json`, with the trailing slash (Rule 62) — Link-First: anchors at sentence start; varied anchor text, no repeats per target
+- ☐ Every external link is a row of `docs/reference/external-link-library.md` — no per-page quota; a board naming any other URL is refused
 - ☐ All anchor targets verified to exist on the site
 - ☐ Table of Contents at top with all section jump links
 - ☐ Quick navigation at bottom
@@ -1140,7 +1144,7 @@ This is NOT a template-filling exercise. Every page must:
 2. **Analyze existing content gaps** to deliver fundamentally superior, more thorough page layouts
 3. **Write with genuine human voice** (conversational warmth, professional breeding expertise)
 4. **Integrate proper nouns and medical entities seamlessly** (avoid forced keyword groupings)
-5. **Link with strategic accuracy** (50+ contextual internal links, 50+ validated external sources)
+5. **Link with strategic accuracy** (internal links only to routes in `data/page-map.json`, external links only to rows of `docs/reference/external-link-library.md`)
 6. **Optimize for natural language processing** (voice query compatibility, clear definition blocks)
 7. **Maintain conversion-driven layouts** (form CTAs, real scarcity markers, absolute trust signals)
 8. **Uphold flawless E-E-A-T** (demonstrate actual canine science, real-world handling experience, authority)
