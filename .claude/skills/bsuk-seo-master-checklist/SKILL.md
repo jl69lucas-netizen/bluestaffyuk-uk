@@ -554,8 +554,8 @@ TIER 3: LINKING STRATEGY
 7. Internal Links (5–8 per section):
    Position: BEGINNING or MIDDLE of sentences — never at end.
    Use varied anchor text — no repetition.
-   1. [Anchor Text] → [/slug/]  |  Context: [where it appears]
-   2. [Anchor Text] → [/slug/]  |  Context: [where it appears]
+   1. [Anchor Text] → [/<slug>/]  |  Context: [where it appears]
+   2. [Anchor Text] → [/<slug>/]  |  Context: [where it appears]
    [Continue for 5–8 total]
 
 8. External Authority Links (1–2 per section):
@@ -602,7 +602,7 @@ TIER 5: QUALITY CONTROL
 
 14. Call-To-Action (form-based — NO phone number):
     CTA Type: ☐ Inquire Now ☐ Submit Inquiry ☐ Reserve a Puppy ☐ See Available Puppies
-    CTA Text: "[Action statement with benefit, link to /contact-us/]"
+    CTA Text: "[Action statement with benefit, link to /uk-blue-staffy-breeders-contact/]"
 
 15. Final Section Checklist:
     ☐ Word count within target range
@@ -629,7 +629,7 @@ TIER 5: QUALITY CONTROL
 #### A. Internal Links (only routes that exist — no count)
 
 No rule sets a number of internal links. `rules/links.md` sets where the anchor sits (Link-First)
-and Rule 62 sets the targets: routes in `data/page-map.json`, `/slug/` with the trailing slash.
+and Rule 62 sets the targets: routes in `data/page-map.json`, `/<slug>/` with the trailing slash.
 The source template's "50 or more" assumed a larger site (`docs/reference/location-page-template.md`).
 
 **Link categories:**
@@ -728,9 +728,9 @@ Under 4 words each, start with a number or percentage:
 3. After FAQ section (bottom)
 
 **CTAs — Form Only (Rule 61):**
-- ✅ `👉 [Submit an inquiry to reserve your Blue Staffy](/contact-us/)`
-- ✅ `📋 [Fill out our quick inquiry form — we respond within 24 hours](/contact-us/)`
-- ✅ `<a href="/contact-us/" class="bsuk-btn-primary">Inquire About a Puppy</a>`
+- ✅ `👉 [Submit an inquiry to reserve your Blue Staffy](/uk-blue-staffy-breeders-contact/)`
+- ✅ `📋 [Fill out our quick inquiry form — we respond within 24 hours](/uk-blue-staffy-breeders-contact/)`
+- ✅ `<a href="/uk-blue-staffy-breeders-contact/" class="bsuk-btn-primary">Inquire About a Puppy</a>`
 - ❌ `📞 Call PHONE_PLACEHOLDER to reserve today!` — NEVER in body copy
 
 **Newsletter Signups (3 per full hub page):**
@@ -1025,7 +1025,7 @@ Format requirements:
 - Markdown (.md)
 - H1–H6 heading structure throughout
 - Every section anchor tag: `<a name="section-name"></a>` or `id="section-name"`
-- All internal links: `[Link Text](#anchor)` or `[Link Text](/page-url/)`
+- All internal links: `[Link Text](#anchor)` or `[Link Text](/<page-url>/)`
 - All external links: `[Link Text](https://example.com/)` with `target="_blank"`
 - Image placeholders: `[INSERT PHOTO: filename.webp]` with alt text
 - Newsletter placeholders: `[NEWSLETTER SIGNUP FORM PLACEHOLDER]`
@@ -1039,7 +1039,7 @@ Format requirements:
 
 [Opening paragraph: entities + kennel location + benefits + form CTA]
 
-👉 [Inquire about available Blue Staffy pups](/contact-us/)
+👉 [Inquire about available Blue Staffy pups](/uk-blue-staffy-breeders-contact/)
 
 ---
 
@@ -1132,7 +1132,7 @@ Before final submission, verify all items:
 - ☐ Map embedding placeholders present for delivery/location sections
 - ☐ Newsletter signup blocks present
 - ☐ Schema markup recommendations provided (FAQPage, Organization, Product, BreadcrumbList)
-- ☐ Canonical URL formatted correctly (absolute: `https://SITE_URL_PLACEHOLDER/slug/`)
+- ☐ Canonical URL formatted correctly (absolute: `https://SITE_URL_PLACEHOLDER/<slug>/`)
 
 ---
 
@@ -1160,110 +1160,62 @@ This is NOT a template-filling exercise. Every page must:
 
 ## APPENDIX A: Internal Linking Library
 
-Canonical BSUK URL list — verify in `src/pages/` before linking. All URLs use trailing slash.
+The routes a page may link to, each listed once. `data/page-map.json` is the canonical list
+(Rule 62) and wins over this appendix; every route here is a built page. All routes use the
+trailing slash; an absolute URL (a canonical tag) is `https://SITE_URL_PLACEHOLDER` + the route.
 
-**Core Pages:**
-- `https://SITE_URL_PLACEHOLDER/`
-- `https://SITE_URL_PLACEHOLDER/contact-us/`
-- `https://SITE_URL_PLACEHOLDER/blog/`
-- `https://SITE_URL_PLACEHOLDER/privacy-policy/`
-- `https://SITE_URL_PLACEHOLDER/sitemap.xml`
-- `https://SITE_URL_PLACEHOLDER/about/`
+**Core pages:**
+- `/` — the homepage
+- `/uk-blue-staffy-breeders-contact/` — contact and the enquiry form (every body CTA, Rule 61)
+- `/blue-staffy-uk-breeders/` — the breeder story (about)
+- `/privacy-policy-uk/` — the privacy policy
 
-**Puppy Listings & Availability:**
-- `https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-pup-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/buy-staffy-puppies-for-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-pup-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/`
-- `https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/`
-- `https://SITE_URL_PLACEHOLDER/available-puppies/`
-- `https://SITE_URL_PLACEHOLDER/available-puppies/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-health-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-- `https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/`
+**Puppies, prices and health:**
+- `/available-puppies/` — the litter; each pup has its own page, `/available-puppies/<name>/`
+- `/buy-blue-staffy-puppies-uk/`
+- `/blue-staffy-pup-sale-uk/`
+- `/buy-staffy-puppies-for-sale-uk/`
+- `/blue-staffy-health-uk/`
 
-**Pricing & Adoption:**
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-pup-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-pup-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-pup-sale-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-health-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-health-uk/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
+**Guides:**
+- `/uk-blue-staffy-puppy-buying-guide/`
+- `/uk-staffordshire-bull-terrier-guide/`
 
-**Care & Guides:**
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
+**Blog:**
+- `/blue-staffy-blog-guides/` — the blog hub
+- `/how-to-choose-the-right-blue-staffy-puppy-for-your-family/` — a post; posts sit at the site root (`src/pages/[...post].astro`)
+- `/blog/` is the legacy archive address — `noindex`, its canonical is the hub. Never link to it.
 
-**Comparison Pages:**
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/buy-staffy-puppies-for-sale-uk/`
-
-**Trust & LICENCE_CLAIM_PLACEHOLDER:**
-- `https://SITE_URL_PLACEHOLDER/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-- `https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/`
-
-**Blog Posts:**
-- `https://SITE_URL_PLACEHOLDER/blog/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/blog/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/blog/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/blog/uk-blue-staffy-puppy-buying-guide/`
-- `https://SITE_URL_PLACEHOLDER/blog/uk-staffordshire-bull-terrier-guide/`
-- `https://SITE_URL_PLACEHOLDER/blog/blue-staffy-health-uk/`
-
-**Location Pages (sample — full list in `data/locations.json`):**
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-essex/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-middlesbrough/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-london/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-breeding-dogs-glasgow/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-cardiff-wales/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-dundee/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-for-sale-leeds/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-edinburgh/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-nottingham/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-liverpool/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-sunderland/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-cornwall/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffies-newcastle-under-lyme/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-for-sale-in-leicester/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-for-sale-leeds/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-bristol-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-south-yorkshire/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-glasgow/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-london/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-aberdeen/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-inverness/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-wolverhampton/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/buy-blue-staffy-puppy-coventry-area/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-glasgow/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-hull/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-york/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/uk-staffordshire-bull-terrier-breeder/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-edinburgh/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-oxford/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-cardiff-wales/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/staffy-puppies-for-sale-liverpool/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-manchester-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-birmingham/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-manchester-uk/`
-- `https://SITE_URL_PLACEHOLDER/uk-locations/blue-staffy-puppies-birmingham/`
-
+**Location pages** (every slug is a row of `data/locations.json`):
+- `/uk-locations/` — the locations index
+- `/uk-locations/staffy-puppies-for-sale-essex/`
+- `/uk-locations/blue-staffy-puppies-middlesbrough/`
+- `/uk-locations/blue-staffy-puppies-london/`
+- `/uk-locations/staffy-breeding-dogs-glasgow/`
+- `/uk-locations/staffy-puppies-cardiff-wales/`
+- `/uk-locations/blue-staffy-puppies-dundee/`
+- `/uk-locations/blue-staffy-puppies-uk/`
+- `/uk-locations/blue-staffy-puppies-for-sale-leeds/`
+- `/uk-locations/blue-staffy-puppies-edinburgh/`
+- `/uk-locations/staffy-puppies-for-sale-nottingham/`
+- `/uk-locations/staffy-puppies-for-sale-liverpool/`
+- `/uk-locations/blue-staffy-puppies-sunderland/`
+- `/uk-locations/staffy-puppies-for-sale-cornwall/`
+- `/uk-locations/blue-staffies-newcastle-under-lyme/`
+- `/uk-locations/blue-staffy-puppies-for-sale-in-leicester/`
+- `/uk-locations/blue-staffy-puppies-bristol-uk/`
+- `/uk-locations/blue-staffy-puppies-south-yorkshire/`
+- `/uk-locations/staffy-puppies-for-sale-glasgow/`
+- `/uk-locations/blue-staffy-puppies-aberdeen/`
+- `/uk-locations/blue-staffy-puppies-inverness/`
+- `/uk-locations/staffy-puppies-wolverhampton/`
+- `/uk-locations/buy-blue-staffy-puppy-coventry-area/`
+- `/uk-locations/blue-staffy-puppies-hull/`
+- `/uk-locations/blue-staffy-puppies-york/`
+- `/uk-locations/uk-staffordshire-bull-terrier-breeder/`
+- `/uk-locations/blue-staffy-puppies-oxford/`
+- `/uk-locations/blue-staffy-puppies-manchester-uk/`
+- `/uk-locations/blue-staffy-puppies-birmingham/`
 ---
 
 ## APPENDIX B: Example Execution
@@ -1306,7 +1258,7 @@ number of hours from memory. [See how to buy](#how-to-buy).
 
 ---
 
-👉 [Submit an inquiry about our available pups](/contact-us/) — we respond within 24 hours.
+👉 [Submit an inquiry about our available pups](/uk-blue-staffy-breeders-contact/) — we respond within 24 hours.
 
 **Continue Reading:**
 - [Complete Blue Staffy Environmental & Crate Setup Guide](#care-environment)

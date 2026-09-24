@@ -200,3 +200,22 @@ def test_the_checklist_invents_no_route_or_guarantee_and_seo_rules_derive_the_co
     seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
     assert "22+" not in seo_rules
     assert seo_rules.count("section_target.total") >= 2
+
+
+SITE_ROUTE = re.compile(r"(?<![\w./~-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{])")
+
+
+@pytest.mark.skipif(not (ROOT / "dist/index.html").is_file(), reason="no dist/ — run the build first")
+def test_every_route_the_checklist_names_is_built_or_redirected():
+    """Rule 62: never invent an internal URL. Every site-root route the checklist writes (in
+    backticks, links or plain text) is a built page (dist/**/index.html or a data/page-map.json
+    route) or a source in data/redirects.json. External URLs are left out; a generic route is
+    written `/<slug>/`, which this pattern does not read."""
+    text = re.sub(r"https?://\S+", " ", CHECKLIST.replace("https://SITE_URL_PLACEHOLDER", ""))
+    dist = ROOT / "dist"
+    built = {"/%s/" % p.parent.relative_to(dist).as_posix() for p in dist.rglob("index.html")}
+    built |= {p["url"] for p in json.loads((ROOT / "data/page-map.json").read_text(encoding="utf-8"))["pages"]}
+    redirected = {r["from"] for r in json.loads((ROOT / "data/redirects.json").read_text(encoding="utf-8"))["redirects"]}
+    offenders = sorted({(route, n) for n, line in enumerate(text.splitlines(), 1)
+                        for route in SITE_ROUTE.findall(line) if route not in built | redirected})
+    assert offenders == [], "routes that are neither built nor redirected: %s" % offenders
