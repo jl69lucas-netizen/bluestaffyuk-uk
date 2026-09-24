@@ -25,8 +25,9 @@ redrafted.
                competitor H2s that share at least two content words with the primary.
 
 BRAND CLASHES are never proposed: a term matching BRAND_CLASH (cheap, under £N / under N,
-free … to a good home(s), rescue) is dropped from every bucket, since a health-tested breeder's
-page does not write it, however often the searchers do.
+free … to a good home(s), rescue, or a marketplace or directory named in data/competitors.json:
+gumtree, pets4homes, preloved, freeads, champdogs, puppies.co.uk …) is dropped from every
+bucket, since a health-tested breeder's page does not write it, however often the searchers do.
 
 The output is a PROPOSAL. The builder places each term in the section where it reads
 naturally; family_rules' `keyword-variants-missing` check only asks that each type has at
@@ -89,7 +90,14 @@ BRAND_CLASH = (
     re.compile(r"\bunder\s*£?\s*\d"),
     re.compile(r"\bfree\b.*\bto\s+(?:a\s+)?good\s+homes?\b"),
     re.compile(r"\brescue[sd]?\b"),
+    # The classified and directory sites of data/competitors.json (MARKETPLACE_IDS): a page
+    # never sends its reader to a marketplace by name. Whole words, joined, spaced or dotted.
+    re.compile(r"\b(?:gumtree|preloved|petify|pets\s*4\s*homes|free\s*ads|champ\s*dogs"
+               r"|pets\s*for\s*love|ukpets|puppies[\s.]+co[\s.]+uk)\b"),
 )
+#: The competitors.json ids the pattern above covers (a test checks each root domain).
+MARKETPLACE_IDS = frozenset({"gumtree", "pets4homes", "preloved", "freeads", "champdogs", "puppies",
+                             "petsforlove", "petify", "ukpets"})
 
 WORD = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 URL = re.compile(r"\(?https?://[^\s)]+\)?")

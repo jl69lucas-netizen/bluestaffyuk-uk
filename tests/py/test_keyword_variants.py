@@ -381,3 +381,30 @@ def test_no_bucket_proposes_a_brand_clash(tmp_path):
     terms = [t["term"] for k in OPTIONAL for t in out["buckets"][k]]
     assert terms and not [t for t in terms if KV.brand_clash(t)], terms
     assert not any("rescue" in t or "cheap" in t or "under" in t for t in terms), terms
+
+
+# --- a marketplace or directory name is never proposed ------------------------------------
+
+@pytest.mark.parametrize("term", [
+    "staffy puppies for sale manchester gumtree", "pets4homes blue staffy", "pets 4 homes staffy",
+    "preloved staffy puppies", "freeads staffy", "free ads staffy puppies", "champdogs staffordshire",
+    "puppies co uk staffy", "puppies.co.uk blue staffy", "petsforlove staffy", "petify staffy",
+    "ukpets blue staffy"])
+def test_a_marketplace_term_is_denied(term):
+    assert KV.brand_clash(term)
+
+
+@pytest.mark.parametrize("term", ["blue staffy puppies uk", "puppies for sale uk", "free puppy pack",
+                                  "health tested pets"])
+def test_ordinary_puppy_words_are_not_a_marketplace(term):
+    assert not KV.brand_clash(term)
+
+
+def test_the_marketplaces_in_the_competitor_registry_are_all_denied():
+    reg = json.loads((ROOT / "data" / "competitors.json").read_text(encoding="utf-8"))
+    ids = {c["id"] for c in reg["competitors"]}
+    for mid in ("gumtree", "pets4homes", "preloved", "freeads", "champdogs", "puppies"):
+        assert mid in ids, mid
+    for c in reg["competitors"]:
+        if c["id"] in KV.MARKETPLACE_IDS:
+            assert KV.brand_clash(c["root_domain"]), c["root_domain"]
