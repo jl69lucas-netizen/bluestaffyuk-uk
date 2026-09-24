@@ -1,6 +1,6 @@
 ---
 name: bsuk-hub-builder
-description: Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/), the breeder/comparison hub (/blue-staffy-uk-breeders/) and the care hub (/uk-staffordshire-bull-terrier-guide/). Use when a cluster of pages needs a navigation anchor, not when a single page needs building.
+description: Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/) with the national location page, the guides hub (/blue-staffy-blog-guides/) and the breed guide (/uk-staffordshire-bull-terrier-guide/); /blue-staffy-uk-breeders/ is the About page and no comparison hub exists yet. Use when a cluster of pages needs a navigation anchor, not when a single page needs building.
 tools: [Read, Write, Bash]
 model: inherit
 effort: high

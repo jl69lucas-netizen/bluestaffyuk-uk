@@ -49,7 +49,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |
-| `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/), the … |
+| `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/) with the … |
 | `.claude/agents/bsuk-infographic-builder.md` | Builds 400–450px (in-body) and 760px (guide) infographics for any BlueStaffyUK page section as kit components |
 | `.claude/agents/bsuk-interactive-component.md` | Builds interactive HTML components for BlueStaffyUK pages — first-year cost calculators in £, coat/temperament fit quizzes, paperwork … |
 | `.claude/agents/bsuk-llm-keyword-intel.md` | Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry … |
@@ -303,7 +303,7 @@ Deferred paths are not listed here by name: a name is a path, and a path this re
 does not have is exactly what the forward-reference guard exists to catch. Read the
 manifest for the list.
 
-## Mechanical guards — 12
+## Mechanical guards — 13
 
 Every rule in this repo that is actually enforced is enforced by one of these. A
 guard that is not in this table is not a guard; a rule with no row here is a
@@ -323,6 +323,7 @@ answer is usually "add the manifest row and it is covered".
 | credentials doc + secret scan | `docs/reference/credentials.md` key table; every `.env` value against all tracked files, the run log and `docs/artifacts/*.html`; credential SHAPES across `marker_check.scan_roots()` plus docs/reports, docs/artifacts, data/quality/scorecards, tests/py/fixtures | inherited from the marker gate; add a key to `.env` and `.env.example` | `tests/py/test_credentials_doc.py`, `tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py` |
 | agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a command, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
 | workflow references | `docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent or skill name, `scripts/...` path and `npm run` name, unless the line carries the parenthesised not-ported marker | name it in either doc — coverage is the whole of both files | `tests/py/test_workflow_ref_check.py`, `npm run check:workflow` |
+| page-map provenance | CLAUDE.md, README.md, `docs/reference`, `rules/`, every agent, skill and command: no line ties `data/page-map.json` to the board builder as its maker — the map is the WordPress extractor's record of the old site, and a new page's record is its board | add a file to any of those trees | `tests/py/test_page_map_claims.py` |
 | render baseline | the generated table in `docs/reports/render-baseline-project2.md` against the scorecards | regenerate with `scripts/render_baseline.py --write` | `npm run baseline` |
 | parity / redirects / schema / sitemaps | the built `dist/` against the migration record, the redirect map, JSON-LD and the sitemap shards | build a page — coverage follows `dist/` | `npm run check:all` |
 

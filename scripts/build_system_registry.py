@@ -256,6 +256,12 @@ GUARDS = (
      "parenthesised not-ported marker",
      "name it in either doc — coverage is the whole of both files",
      "`tests/py/test_workflow_ref_check.py`, `npm run check:workflow`"),
+    ("page-map provenance",
+     "CLAUDE.md, README.md, `docs/reference`, `rules/`, every agent, skill and command: no "
+     "line ties `data/page-map.json` to the board builder as its maker — the map is the "
+     "WordPress extractor's record of the old site, and a new page's record is its board",
+     "add a file to any of those trees",
+     "`tests/py/test_page_map_claims.py`"),
     ("render baseline",
      "the generated table in `docs/reports/render-baseline-project2.md` against the "
      "scorecards",
