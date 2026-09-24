@@ -958,7 +958,7 @@ def test_board_html_carries_every_block_and_the_theme_rules(tmp_path):
     ont, ledger = ONT_OK, LEDGER_EMPTY
     html = BPB.render(b, ont, ledger, live={}, thumbs={}, slug="x")
     for marker in ["data-title=\"1. Brief\"", "data-title=\"2. H1 and meta\"", "data-title=\"3. Outline\"", "data-title=\"4. Distribution\"",
-                   "id=\"entity-graph\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
+                   "data-title=\"5. Entities\"", "data-kv=\"entities\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
         assert marker in html, marker
     assert ":root{" in html and "prefers-color-scheme: dark" in html and ':root[data-theme="dark"]' in html
     assert "body{margin:0;background:var(--ground)" in html
@@ -987,7 +987,9 @@ def test_board_html_escapes_record_text_in_every_context():
     assert "&lt;/script&gt;&lt;b&gt;x&lt;/b&gt;" in html          # the goal, escaped
     assert "<b>x</b>" not in html
     assert "\\# a \\| b \\*c\\* \\_d\\_" in html                  # the heading, markdown-neutral
-    assert "<\\/script>" in html                                  # the graph label, JSON-escaped
+    # the heading again, HTML-escaped in a section chip's title (the entity graph that used to
+    # carry it as JSON is gone — scripts/board_entities.py)
+    assert 'title="01 · # a | b *c* _d_ &lt;/script&gt;"' in html
     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
     # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
     # kit strip).

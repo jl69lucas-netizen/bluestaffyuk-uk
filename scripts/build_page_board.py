@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 import verbatim_set_check as VSC
+import board_entities as BE
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
 OUT = PB.ROOT / "docs" / "artifacts" / "boards"
@@ -84,8 +85,6 @@ section.sec h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22
 .md code{font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
 .tree{font:13px/1.65 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
 .hit{color:var(--warn);font-weight:600}
-#entity-graph{height:440px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
-.legend{font-size:12px;color:var(--ink-3);margin:6px 0 0}
 .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:8px 0 6px}
 .opt{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);display:grid;gap:6px}
 .opt img,.opt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:5px;border:1px solid var(--line);background:var(--code-bg);display:grid;place-items:center;font-size:12px;color:var(--ink-3)}
@@ -247,7 +246,10 @@ def outline_block(board, hits):
     lines = [f"H1  {esc(h1)}" + vtag(board.get("h1", {}).get("verbatim_heading")) + flag(h1, hit_by)]
     for s in board["sections"]:
         cta = f" · CTA×{s['cta']}" if s.get("cta") else ""
-        lines.append(f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]" + flag(s["heading"], hit_by))
+        # The span is the target of every section chip in blocks 4 and 5 (board_entities).
+        lines.append(f'<span class="oanchor" id="{esc(BE.anchor_id(s["id"]))}">'
+                     f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]"
+                     + flag(s["heading"], hit_by) + "</span>")
 
         def walk(nodes, depth):
             for n in nodes:
@@ -261,20 +263,6 @@ def outline_block(board, hits):
         for l in s["links"]["external"]:
             lines.append(f"│   ↗ {esc(l['anchor'])} → {esc(l['href'])}   [{esc(l['library_row'])}]")
     return "\n".join(lines)
-
-
-def entity_graph_data(board, ont):
-    by_id = {e["id"]: e for e in ont["entities"]}
-    nodes, edges, seen = [], [], set()
-    for s in board["sections"]:
-        nodes.append({"data": {"id": "sec:" + s["id"], "label": f"{s['n']:02d} {s['heading'][:34]}", "kind": "section"}})
-        for eid in s["entities"]:
-            e = by_id.get(eid, {"name": eid, "class": "Unknown", "authorization": "PROPOSED"})
-            if eid not in seen:
-                seen.add(eid)
-                nodes.append({"data": {"id": eid, "label": e["name"], "kind": e["class"], "auth": e["authorization"]}})
-            edges.append({"data": {"source": "sec:" + s["id"], "target": eid, "auth": e["authorization"]}})
-    return {"nodes": nodes, "edges": edges}
 
 
 def option_cards(section, ledger, slug, thumbs):
@@ -833,26 +821,26 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
                     "photo prompts say what the photo has to show. Page-level files and alts are in block 7."))
 
-    rows = [[md(r["section"])] + [r[k] for k in PB.KEYWORD_TYPES] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
+    # The four optional types get a column only where they mean something: on a new-family
+    # page (where family_rules requires them) or on any board that already uses one.
+    kgroups = BE.group_keywords(board)
+    new_family = PB.FR.applies(board)
+    ktypes = [k for k in PB.ALL_KEYWORD_TYPES
+              if k in PB.KEYWORD_TYPES or new_family or d["totals"][k]]
+    rows = [[md(r["section"])] + [r[k] for k in ktypes] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
     t = d["totals"]
-    rows.append(["**totals**"] + [t[k] for k in PB.KEYWORD_TYPES] + [f"{t['words_min']}–{t['words_max']}"])
+    rows.append(["**totals**"] + [t[k] for k in ktypes] + [f"{t['words_min']}–{t['words_max']}"])
     c = d["h_counts"]
     why_rows = [[f"{s['n']:02d} {md(s['heading'])}", md(s["group"]), md(s["framework"]), md(s["why"]), md_with_urls(s["why_source"])]
                 for s in board["sections"]]
-    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in PB.KEYWORD_TYPES] + ["Words"], rows)
+    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in ktypes] + ["Words"], rows)
                   + f"\n\nHeadings: H1 {c['h1']} · H2 {c['h2']} · H3 {c['h3']} · H4 {c['h4']} · H5 {c['h5']} · H6 {c['h6']}. Counts are ceilings, not floors."
+                  + "\n\n**Every keyword, by type** — a section number jumps to that section in block 3.\n\n"
+                  + BE.keywords_html(kgroups, show_empty=PB.OPTIONAL_KEYWORD_TYPES if new_family else ())
                   + "\n\n**Why each section is here**\n\n"
                   + md_table(["Section", "Group", "Framework", "Why", "Source"], why_rows)))
 
-    by_id = {e["id"]: e for e in ont["entities"]}
-    ent_rows = []
-    all_ents = sorted({e for s in board["sections"] for e in s["entities"]})
-    for eid in all_ents:
-        e = by_id.get(eid)
-        cells = ["✓" if eid in s["entities"] else "" for s in board["sections"]]
-        ent_rows.append([f"{md(e['name'] if e else eid)} ({md(e['authorization']) if e else 'UNKNOWN'})"] + cells + [md((e or {}).get("owner_page")) or "—"])
-    ent_md = ('<div id="entity-graph"></div><p class="legend">colour = class · solid = ASSERTED · dashed = PROPOSED · red = BLOCKED (fails the board)</p>\n\n'
-              + md_table(["Entity"] + [f"{s['n']:02d}" for s in board["sections"]] + ["Owner"], ent_rows)
+    ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
     parts.append(("5. Entities", ent_md))
@@ -897,7 +885,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     parts.append(("8. Approve", approve + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
 
     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
-    graph = js(entity_graph_data(board, ont))
     record_hash = PB.record_hash(board)
     # The charset is declared: the board carries em dashes and pound signs from the record
     # and from src/lib/boardStyles.ts, and a document served without one is decoded as
@@ -905,7 +892,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     return f"""<meta charset="utf-8">
 <title>Page Board: {esc(slug)}</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
-<style>{CSS}</style>
+<style>{CSS}{BE.CSS}</style>
 <div class="wrap">
 <header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>
 <div class="meta"><span class="pill">status: {esc(m['status'])}</span> <span class="pill">research as of {esc(m['research_as_of'])}</span><br>record <code>{record_hash[:12]}</code></div></header>
@@ -914,7 +901,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
 </div>
 {blocks}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
 <script>
 (function(){{
   var doc=document.getElementById('doc');
@@ -925,38 +911,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
     body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\\n+|\\s+$/g,'')):b.textContent;
     sec.appendChild(body);doc.appendChild(sec);
   }});
-  var G={graph};
-  var el=document.getElementById('entity-graph');
-  // Two palettes, not one: a graph drawn in ink-dark fills disappears on the dark ground
-  // and a graph drawn in light fills disappears on the light one. Every fill below clears
-  // 3:1 against its own theme's --ground, which is why the light section node is a mid
-  // clay-brown rather than the cream the page uses for card beds.
-  var PAL={{
-    light:{{Organism:'#2D6A4F',Documentation:'#6b4fa0',Health:'#c8472f',Commerce:'#8a6508',Logistics:'#1f6f8b',Place:'#7a5c3e',People:'#8b1e5f',Method:'#3d7a4a',Unknown:'#6b736e',section:'#8c7a5e',edge:'#6f7a74',blocked:'#c8472f',border:'#3A3227',ink:'#1E2A24'}},
-    dark:{{Organism:'#6FB48F',Documentation:'#b09ae0',Health:'#F08A78',Commerce:'#d9b44a',Logistics:'#7fc3dc',Place:'#c3a483',People:'#e08ab6',Method:'#8fd3a4',Unknown:'#9aa39d',section:'#7d8f84',edge:'#8d9a93',blocked:'#F08A78',border:'#D8DEDA',ink:'#ECEBE3'}}
-  }};
-  function darkMode(){{
-    var a=document.documentElement.getAttribute('data-theme');
-    if(a==='dark')return true;
-    if(a==='light')return false;
-    return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
-  }}
-  function graphStyle(){{
-    var p=PAL[darkMode()?'dark':'light'];
-    return [{{selector:'node',style:{{'label':'data(label)','font-size':10,'width':18,'height':18,'background-color':function(n){{return p[n.data('kind')]||p.Unknown}},'color':p.ink,'text-wrap':'wrap','text-max-width':110}}}},
-            {{selector:'node[kind="section"]',style:{{'shape':'round-rectangle','width':60,'height':22,'font-weight':'bold','border-width':1,'border-color':p.border}}}},
-            {{selector:'edge',style:{{'width':1.5,'line-color':p.edge,'curve-style':'bezier'}}}},
-            {{selector:'edge[auth="PROPOSED"]',style:{{'line-style':'dashed'}}}},
-            {{selector:'edge[auth="BLOCKED"]',style:{{'line-color':p.blocked,'width':3}}}}];
-  }}
-  if(el&&window.cytoscape){{
-    var cy=cytoscape({{container:el,elements:G.nodes.concat(G.edges),layout:{{name:'cose',animate:false,padding:20}},style:graphStyle()}});
-    if(window.matchMedia){{
-      var mq=window.matchMedia('(prefers-color-scheme: dark)');
-      var repaint=function(){{cy.style(graphStyle());}};
-      if(mq.addEventListener)mq.addEventListener('change',repaint);else if(mq.addListener)mq.addListener(repaint);
-    }}
-  }}
+  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
+  {BE.JS}
   // The style frames are filled HERE rather than carrying a static srcdoc each: the page
   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
   // per styled section inside the committed file.
