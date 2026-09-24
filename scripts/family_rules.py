@@ -13,6 +13,8 @@ below are the pages built before this build (rebuilt.json at 9927710); the list 
 grows, so nobody has to remember to edit it.
 """
 
+import page_sections as PS   # the status order and the FAQ-block test, spelled once
+
 NEW_FAMILY_PAGE_TYPES = ("location", "comparison", "blog")
 
 BUILT_BEFORE_SYSTEM_GAPS = frozenset({
@@ -73,7 +75,8 @@ def findings(board, ont):
 # PB.OPTIONAL_KEYWORD_TYPES would be a circular import. tests/py/test_keyword_variants.py
 # pins the two to each other.
 KEYWORD_VARIANT_TYPES = ("variation", "related", "cooccurring", "similar")
-_BOARDED_OR_LATER = ("boarded", "approved", "built", "released")
+STATUS_ORDER = PS.STATUS_ORDER
+_BOARDED_OR_LATER = PS.statuses_from("boarded")
 
 
 @register
@@ -102,8 +105,6 @@ import link_diversity  # noqa: E402,F401
 # heading the outline carries twice would be built twice, so it is refused here, before the
 # record can be approved. Cross-page collisions are already pageboard's `header-collision`.
 import re as _re
-
-import page_sections as PS  # noqa: E402  (one FAQ-block test: shape faq, or `questions`)
 
 _HEADING_TOKEN = _re.compile(r"[\w£$']+")   # keeps £, accented letters and digits
 

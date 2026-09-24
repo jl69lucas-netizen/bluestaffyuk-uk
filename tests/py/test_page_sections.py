@@ -88,3 +88,16 @@ def test_the_heading_repeat_check_skips_every_faq_blocks_tree():
     assert [f for f in FR.outline_heading_repeat(board, {}) if f[0] == "outline-heading-repeat"] == []
     older.pop("questions")
     assert len(list(FR.outline_heading_repeat(board, {}))) == 1
+
+
+# ── Task 12a item 7: the status order is spelled once ────────────────────────────────────
+def test_the_status_order_is_spelled_once_and_every_reader_derives_from_it():
+    import link_diversity as LD
+    schema = json.loads((ROOT / "schemas" / "board.schema.json").read_text())
+    assert list(PS.STATUS_ORDER) == schema["properties"]["meta"]["properties"]["status"]["enum"]
+    assert PS.STATUS_ORDER == ("draft", "boarded", "approved", "built", "released")
+    assert PS.statuses_from("boarded") == ("boarded", "approved", "built", "released")
+    assert FR._BOARDED_OR_LATER == IR.SCOPE_STATUSES == PS.statuses_from("boarded")
+    assert IR.APPROVED_STATUSES == PS.statuses_from("approved") == ("approved", "built", "released")
+    assert LD.STATUS_RANK == {"draft": 0, "boarded": 1, "approved": 2, "built": 3, "released": 4}
+    assert LD.ALWAYS_OWNS == 5

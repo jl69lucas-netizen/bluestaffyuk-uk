@@ -56,8 +56,8 @@ OG_STYLES = ("A", "B", "C", "D", "E", "H")
 IG_STYLES = ("IG-1", "IG-2", "IG-3", "IG-4", "IG-5")
 PICK_PREFIX = "img:"
 OWN_MEDIA_SHAPES = PS.OWN_MEDIA_SHAPES
-SCOPE_STATUSES = ("boarded", "approved", "built", "released")
-APPROVED_STATUSES = ("approved", "built", "released")
+SCOPE_STATUSES = PS.statuses_from("boarded")
+APPROVED_STATUSES = PS.statuses_from("approved")
 SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
 # One path segment of a served file: a safe charset, and never `.` or `..` (no path escapes).
 _SEGMENT = r"(?!\.\.?(?:/|$))[A-Za-z0-9._-]+"

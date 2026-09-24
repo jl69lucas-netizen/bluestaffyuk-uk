@@ -29,6 +29,11 @@ sections are body copy-wise, but their media IS the video or the puppy cards, so
 never asked for an image slot. `puppies` is already frame; `video` is the one section the
 outline gate compares and the image rule does not ask for a picture.
 
+THE STATUS ORDER. `meta.status` in schema order, spelled once: STATUS_ORDER, and
+statuses_from(status) for "this status or later". family_rules (boarded or later),
+image_rules (its scope and its approved statuses) and link_diversity (STATUS_RANK) derive
+from it; a test pins it to schemas/board.schema.json.
+
 This module imports nothing from the board scripts, so any of them can import it.
 """
 import json
@@ -90,3 +95,12 @@ def is_frame(section):
 def body_sections(board):
     """Every section of the record that is not frame, in record order."""
     return [s for s in board.get("sections", []) if not is_frame(s)]
+
+
+# ── statuses ──────────────────────────────────────────────────────────────────────────────
+STATUS_ORDER = ("draft", "boarded", "approved", "built", "released")
+
+
+def statuses_from(status):
+    """`status` and every status after it, in order."""
+    return STATUS_ORDER[STATUS_ORDER.index(status):]

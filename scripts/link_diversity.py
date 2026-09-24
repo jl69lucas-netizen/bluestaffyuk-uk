@@ -31,6 +31,7 @@ import re
 from urllib.parse import urlsplit
 
 import family_rules as FR
+import page_sections as PS
 import link_library as LL
 import pageboard as PB
 
@@ -150,9 +151,9 @@ ANCHOR_TYPES = ("exact", "partial", "lsi", "natural", "branded", "naked-url")
 INTERNAL_TYPE_MIN, EXACT_MAX, EXTERNAL_TYPE_MIN = 3, 2, 3
 ANCHOR_CHECK = "anchor-type-variation"
 SITEWIDE_CHECK = "anchor-reuse-sitewide"
-# meta.status in schema order: a board is only refused an anchor by a sibling at its own
-# rank or later, so the first owner keeps it.
-STATUS_RANK = {s: i for i, s in enumerate(("draft", "boarded", "approved", "built", "released"))}
+# meta.status in schema order (page_sections.STATUS_ORDER): a board is only refused an anchor
+# by a sibling at its own rank or later, so the first owner keeps it.
+STATUS_RANK = {s: i for i, s in enumerate(PS.STATUS_ORDER)}
 # A page outside the new family (the twelve built before this build: `approved` in the record,
 # but live) outranks every status, so it always owns its anchors.
 ALWAYS_OWNS = len(STATUS_RANK)
