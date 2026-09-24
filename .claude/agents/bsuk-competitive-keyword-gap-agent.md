@@ -41,20 +41,20 @@ CUT = [c.split() for c in os.environ.get("CUT", "").lower().split(",") if c.stri
 # --- intel's page-type table, copied line for line (tests/py/test_agent_snippets.py keeps it so) ---
 rows = json.load(open("data/locations.json"))
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
-w = lambda t: r"(^|[-/])" + t + r"([-/]|$)"
+w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
-    ("blog", [w("blog"), w("news"), w("articles"), w("posts"), r"/(19|20)\d\d/"]),
-    ("city", [w(s) for s in slugs]),
-    ("comparison", [r"-vs-", r"versus"]),
-    ("price", [r"price", r"cost", r"fees"]),
-    ("health", [r"health", w("dna"), r"testing"]),
-    ("care-guide", [r"care", r"feeding", r"training", r"grooming"]),
-    ("contact", [r"contact", r"enquir"]),
-    ("about", [w("about"), r"our-story"]),
-    ("breed-guide", [w("breed"), w("guide"), r"breed-guide", r"breed-info", r"temperament"]),
-    ("faq", [r"faq", r"questions"]),
-    ("reviews", [r"review", r"testimonial"]),
-    ("listing", [r"puppies", r"puppy", w("pup"), r"litter", r"available", w("sale")]),
+    ("comparison", [w("vs|versus")]),
+    ("blog", [w("blog|news|articles|posts"), r"/(19|20)\d\d/"]),
+    ("city", [w(re.escape(s)) for s in slugs]),
+    ("price", [w("price|pricing|cost|fee")]),
+    ("health", [w("health|healthcare|dna|test|testing|tested")]),
+    ("care-guide", [w("care|aftercare|feeding|training|grooming")]),
+    ("contact", [w("contact|contactus|enquire|enquiry|enquiries")]),
+    ("about", [w("about|aboutus|our-story")]),
+    ("breed-guide", [w("breed|guide|temperament")]),
+    ("faq", [w("faq|question")]),
+    ("reviews", [w("review|testimonial")]),
+    ("listing", [w("puppies|puppy|pup|litter|available|sale")]),
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
 # --- end of intel's table ---
@@ -126,8 +126,8 @@ CITY_OK = STOP | {"staffy", "staffie", "staffies", "staffordshire", "bull", "ter
 def city_topic(t):  # ... when its other words are breed or buyer words only (not rescue, training, vs ...)
     cs = towns_in(t)
     return bool(cs) and set(words(t)) - {x for c in cs for x in c} <= CITY_OK
-def page_type(path, t):  # intel's table, comparison winning over city; no city type unless a city topic
-    ptype = "comparison" if re.search(r"-vs-|versus", path) else kind(path)
+def page_type(path, t):  # intel's table (comparison is its first row); no city type unless a city topic
+    ptype = kind(path)
     if ptype == "city" and t is not None and not city_topic(t):
         ptype = next((n for n, pats in TABLE if n != "city" and any(re.search(q, path) for q in pats)), None)
     return ptype
@@ -207,7 +207,7 @@ EOF
 
 What decides a row (to explain it, never to redo it):
 
-- **Type:** intel's page-type table — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first).
+- **Type:** intel's page-type table, whole words only and `comparison` first — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first). There is no second comparison rule here: a `-vs-` path is a comparison because it is the table's first row.
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
 - **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
 - **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered", or a city on a city topic only — never on a rescue, training, vet or other non-buyer topic; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, license, licensed, licenced, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.

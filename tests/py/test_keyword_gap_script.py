@@ -303,3 +303,19 @@ def test_every_licence_spelling_is_always_high_like_llm_intels_safety_list(root)
     d = run(root, profile(root), write(root, "l.json", report("lic", pages)))
     for w in ("licence", "license", "licensed", "licenced", "licensing"):
         assert row(d["gaps"], f"staffy {w} info")["always_high"] is True, w
+
+
+def test_a_vs_post_under_a_blog_base_is_a_comparison_as_in_intel(root):
+    # Known Issue 52: one table for both agents, comparison first
+    r = report("vsb", [page("https://vsb.co.uk/blog/staffy-vs-pitbull/", "Staffy vs Pitbull")])
+    d = run(root, profile(root), write(root, "vsb.json", r))
+    assert row(d["gaps"], "staffy vs pitbull")["type"] == "comparison"
+
+
+def test_a_path_word_inside_a_longer_word_does_not_type_the_page(root):
+    # Known Issue 51: "costofliving" holds "cost" but not as a word, so the calculator is untyped
+    r = report("rsp", [page("https://rsp.org.uk/adviceandwelfare/costofliving/petcalculator",
+                            "Pet Cost Calculator", "How much will a pet cost?")])
+    d = run(root, profile(root), write(root, "rsp.json", r))
+    assert d["skipped"] == [{"url": "https://rsp.org.uk/adviceandwelfare/costofliving/petcalculator",
+                             "why": "no keyword topic"}]

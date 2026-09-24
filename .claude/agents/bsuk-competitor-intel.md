@@ -97,22 +97,22 @@ EOF
 
 ### Page-type rule
 
-One type per URL: lowercase the path and take the **first** row that matches; a URL that matches none is not counted, and a type with a count of 0 is left out. A "word" is a whole slug word, between `-` or `/` (so `breed` never matches "breeders" or "breeding").
+One type per URL: lowercase the path and take the **first** row that matches; a URL that matches none is not counted, and a type with a count of 0 is left out. Every entry is a **whole word** of the path — between `-`, `_`, `/` or `.`, or at either end — and a plural `s` is allowed (`review` matches "reviews"). Never part of a word: `care` never matches "careers", `review` never "preview", `cost` never "costofliving", `breed` never "breeders". `bsuk-competitive-keyword-gap-agent` types pages with this same table, `comparison` first, so a `<competitor-domain>/blog/staffy-vs-pitbull/` post is a comparison for both agents.
 
-| Order | Type | Path contains |
+| Order | Type | A whole word of the path |
 |---|---|---|
-| 1 | `blog` | the word `blog`, `news`, `articles` or `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
-| 2 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
-| 3 | `comparison` | `-vs-`, `versus` |
-| 4 | `price` | `price`, `cost`, `fees` |
-| 5 | `health` | `health`, the word `dna`, `testing` |
-| 6 | `care-guide` | `care`, `feeding`, `training`, `grooming` |
-| 7 | `contact` | `contact`, `enquir` |
-| 8 | `about` | the word `about`, `our-story` |
-| 9 | `breed-guide` | the word `breed` or `guide`, `breed-guide`, `breed-info`, `temperament` |
-| 10 | `faq` | `faq`, `questions` |
+| 1 | `comparison` | `vs`, `versus` |
+| 2 | `blog` | `blog`, `news`, `articles`, `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
+| 3 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
+| 4 | `price` | `price`, `pricing`, `cost`, `fee` |
+| 5 | `health` | `health`, `healthcare`, `dna`, `test`, `testing`, `tested` |
+| 6 | `care-guide` | `care`, `aftercare`, `feeding`, `training`, `grooming` |
+| 7 | `contact` | `contact`, `contactus`, `enquire`, `enquiry`, `enquiries` |
+| 8 | `about` | `about`, `aboutus`, `our-story` |
+| 9 | `breed-guide` | `breed`, `guide`, `temperament` |
+| 10 | `faq` | `faq`, `question` |
 | 11 | `reviews` | `review`, `testimonial` |
-| 12 | `listing` | `puppies`, `puppy`, the word `pup` or `sale`, `litter`, `available` |
+| 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
 Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye; it prints the `page_types` values. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
@@ -124,20 +124,20 @@ urls = json.load(open(sys.argv[1]))
 bsuk = "--bsuk" in sys.argv[2:]
 rows = json.load(open("data/locations.json"))
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
-w = lambda t: r"(^|[-/])" + t + r"([-/]|$)"
+w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
-    ("blog", [w("blog"), w("news"), w("articles"), w("posts"), r"/(19|20)\d\d/"]),
-    ("city", [w(s) for s in slugs]),
-    ("comparison", [r"-vs-", r"versus"]),
-    ("price", [r"price", r"cost", r"fees"]),
-    ("health", [r"health", w("dna"), r"testing"]),
-    ("care-guide", [r"care", r"feeding", r"training", r"grooming"]),
-    ("contact", [r"contact", r"enquir"]),
-    ("about", [w("about"), r"our-story"]),
-    ("breed-guide", [w("breed"), w("guide"), r"breed-guide", r"breed-info", r"temperament"]),
-    ("faq", [r"faq", r"questions"]),
-    ("reviews", [r"review", r"testimonial"]),
-    ("listing", [r"puppies", r"puppy", w("pup"), r"litter", r"available", w("sale")]),
+    ("comparison", [w("vs|versus")]),
+    ("blog", [w("blog|news|articles|posts"), r"/(19|20)\d\d/"]),
+    ("city", [w(re.escape(s)) for s in slugs]),
+    ("price", [w("price|pricing|cost|fee")]),
+    ("health", [w("health|healthcare|dna|test|testing|tested")]),
+    ("care-guide", [w("care|aftercare|feeding|training|grooming")]),
+    ("contact", [w("contact|contactus|enquire|enquiry|enquiries")]),
+    ("about", [w("about|aboutus|our-story")]),
+    ("breed-guide", [w("breed|guide|temperament")]),
+    ("faq", [w("faq|question")]),
+    ("reviews", [w("review|testimonial")]),
+    ("listing", [w("puppies|puppy|pup|litter|available|sale")]),
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
 def title_slug(path):
