@@ -280,6 +280,8 @@ The design system is project 3. Until then there is no component kit and no lock
 
 ## Where everything else went
 
+- `IMAGE-DESIGNS.md` — how every image looks, is cropped, framed and approved: the named OG
+  framing styles, the named infographic styles and the image-slot fields a board carries
 - `docs/reference/system-registry.md` — every agent, skill, script and data file
 - `docs/reference/quick-start.md` — task → entry point, and the reference-doc index
 - `docs/reference/session-log.md` — build history and **Known Issues**

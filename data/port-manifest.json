@@ -1138,5 +1138,11 @@
     "dst": ".claude/agents/bsuk-competitor-registry.md",
     "mode": "rebase",
     "notes": "competitor intelligence build (2026-09-23): national registry, 5 tiers, proposal in docs/research/ and user approval before writing data/competitors.json (checked by scripts/competitor_registry_check.py); per-page pools in data/queries/<slug>.json unchanged"
+  },
+  {
+    "src": "IMAGE-DESIGNS.md",
+    "dst": "IMAGE-DESIGNS.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the picture's art direction rewritten for a blue Staffordshire Bull Terrier on the locked palette; adds named infographic styles, the board approval rule and the image-slot fields; scripts/image_designs.py reads its ids"
   }
 ]
