@@ -103,17 +103,17 @@ def test_page_map_mode_labels_the_noindex_stub_and_keeps_the_comparison(root):
     d = run(root, "data/page-map.json", str(FIXTURE))
     assert d["bsuk_source"] == "data/page-map.json"
     man = row(d["gaps"], "blue staffy puppies in manchester")
-    assert (man["score"], man["band"], man["noindex_page"]) == (10, "high", STUB)
+    assert (man["score"], man["band"], man["noindex_pages"]) == (10, "high", [STUB])
     vs = row(d["gaps"], "blue staffy vs american bully")
     assert vs["type"] == "comparison" and vs["urls"] == [
         "https://example-breeder.co.uk/blue-staffy-vs-american-bully/"]
-    assert row(d["gaps"], "staffy puppy prices")["noindex_page"] is None
+    assert row(d["gaps"], "staffy puppy prices")["noindex_pages"] == []
 
 
 def test_profile_mode_covers_price_and_labels_a_stub_absent_from_the_profile(root):
     d = run(root, profile(root), str(FIXTURE))
     assert row(d["covered"], "staffy puppy prices")["bsuk_page"] == f"{P}/blue-staffy-pup-sale-uk/"
-    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_pages"] == [STUB]
 
 
 def test_a_rebuilt_page_at_a_stub_route_is_coverage_in_profile_mode(root):
@@ -127,7 +127,7 @@ def test_a_profile_without_pages_falls_back_to_the_page_map_by_name(root):
     nf["pages"] = {"status": "NOT FETCHED", "reason": "test"}
     d = run(root, write(root, "bsuk.json", nf), str(FIXTURE))
     assert d["bsuk_source"].startswith("data/page-map.json (fallback:")
-    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_pages"] == [STUB]
 
 
 def test_pages_with_no_keyword_topic_or_no_content_words_are_skipped(root):
@@ -172,8 +172,8 @@ def test_a_city_stays_in_the_topic_and_only_the_same_city_covers_it(root):
     assert york["dedicated"] == 0
     leeds = row(d["gaps"], "blue staffy leeds")
     assert (leeds["intent"], leeds["score"], leeds["band"]) == (2, 8, "high")
-    assert leeds["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
-    assert ncl["noindex_page"] == "/uk-locations/blue-staffies-newcastle-under-lyme/"   # same city, not same words
+    assert leeds["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/"]
+    assert ncl["noindex_pages"] == ["/uk-locations/blue-staffies-newcastle-under-lyme/"]   # same city, not same words
 
 
 def test_a_whole_h1_topic_scores_no_dedicated_point_and_can_be_low(root):
@@ -262,7 +262,7 @@ def test_one_city_is_one_row_with_its_urls_merged(root):
     d = run(root, profile(root), write(root, "leeds.json", r))
     rows = [g for g in d["gaps"] if "leeds" in g["topic"]]
     assert len(rows) == 1 and len(rows[0]["urls"]) == 2
-    assert rows[0]["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
+    assert rows[0]["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/"]
 
 
 def test_a_comparison_core_is_a_dedicated_page(root):
@@ -291,7 +291,7 @@ def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
     d = run(root, profile(root), write(root, "york2.json", r))
     assert row(d["covered"], "staffy pups york")["urls"] == ["https://y.co.uk/staffy-pups-york/"]
     training = row(d["gaps"], "staffy training york")
-    assert training["type"] == "care-guide" and training["noindex_page"] is None
+    assert training["type"] == "care-guide" and training["noindex_pages"] == []
     rescue = row(d["gaps"], "staffy rescue york")                  # its own row, not the puppy row
     assert rescue["urls"] == ["https://y.co.uk/rescue/", "https://y.co.uk/staffy-rescue-york/"]
     assert rescue["type"] is None
@@ -361,3 +361,35 @@ def test_a_report_s_own_domain_is_normalised_before_the_foreign_check(root, reco
     assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
                                   "root_domain": recorded}]
     assert [g["topic"] for g in d["gaps"]] == ["staffy care guide"]
+
+
+GM = "https://p.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/"
+
+
+def test_greater_before_a_city_is_that_city(root):
+    # Known Issue 52: the pets4homes Manchester listing names "Manchester, Greater Manchester"
+    h = "Staffordshire Bull Terrier Puppies for sale in Manchester, Greater Manchester"
+    d = run(root, profile(root), write(root, "p.json", report("p", [page(GM, h)])))
+    g = row(d["gaps"], "staffordshire bull terrier puppies for sale in manchester greater manchester")
+    assert (g["type"], g["noindex_pages"], g["score"], g["band"]) == ("city", [STUB], 10, "high")
+
+
+def test_a_two_city_page_gets_each_citys_stub(root):
+    r = report("two", [page("https://two.co.uk/leeds-manchester/", "Blue Staffy Puppies Leeds and Manchester")])
+    d = run(root, profile(root), write(root, "two.json", r))
+    g = row(d["gaps"], "blue staffy puppies leeds and manchester")
+    assert g["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/", STUB]
+
+
+def test_a_place_outside_the_location_list_never_becomes_a_topic_or_a_stub_label(root):
+    # The decision (Known Issue 52): data/locations.json is the city list. A page for Scotland or
+    # Newcastle upon Tyne keeps only its breed and buyer words, so it joins the national row; it
+    # never names a new place and never borrows the Newcastle-under-Lyme stub.
+    r = report("off", [page("https://off.co.uk/staffy-puppies-newcastle-upon-tyne/",
+                            "Staffy Puppies for Sale in Newcastle upon Tyne"),
+                       page("https://off.co.uk/staffy-puppies-scotland/", "Staffy Puppies for Sale in Scotland")])
+    d = run(root, profile(root), write(root, "off.json", r))
+    assert [c["topic"] for c in d["covered"]] == ["staffy puppies for sale"]
+    assert d["covered"][0]["urls"] == ["https://off.co.uk/staffy-puppies-newcastle-upon-tyne/",
+                                       "https://off.co.uk/staffy-puppies-scotland/"]
+    assert d["gaps"] == []

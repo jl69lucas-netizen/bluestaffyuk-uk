@@ -126,8 +126,9 @@ CITYISH = {"city", "listing", None}  # a topic naming cities on these page types
 CITY_OK = STOP | {"staffy", "staffie", "staffies", "staffordshire", "bull", "terrier", "sbt", "puppy", "puppies",
                   "pup", "pups", "blue", "breeder", "breeders", "for", "sale", "price", "kc", "registered"}
 def city_topic(t):  # ... when its other words are breed or buyer words only (not rescue, training, vs ...)
-    cs = towns_in(t)
-    return bool(cs) and set(words(t)) - {x for c in cs for x in c} <= CITY_OK
+    cs, ws = towns_in(t), words(t)
+    ws = [x for i, x in enumerate(ws) if not (x == "greater" and any(tuple(ws[i + 1:i + 1 + len(c)]) == c for c in cs))]
+    return bool(cs) and set(ws) - {x for c in cs for x in c} <= CITY_OK  # "greater manchester" is manchester
 def page_type(path, t):  # intel's table (comparison is its first row); no city type unless a city topic
     ptype = kind(path)
     if ptype == "city" and t is not None and not city_topic(t):
@@ -139,6 +140,11 @@ def covering(pages, key, ptype):  # a city topic: a BSUK city page naming the sa
     else:
         hits = [x for x in pages if any(key[1] <= content(f) and towns_in(f) == key[2] for f in (x.get("title") or "", x.get("h1") or ""))]
     return min(hits, key=lambda x: (btype(x) != ptype, len(x.get("title") or ""), x["url"]))["url"] if hits else None
+def stubs(key, ptype):  # the noindex stubs a row belongs to: the same cities, else one per city of a city topic
+    one = covering(noindex, key, ptype)
+    if one or key[0] != "city":
+        return [one] if one else []
+    return sorted({u for c in key[1] for u in [covering(noindex, ("city", frozenset([c])), ptype)] if u})
 pmap = json.load(open("data/page-map.json"))["pages"]
 noindex = [p for p in pmap if "stub-noindexed" in p.get("refresh_flags", []) + p.get("defects", [])]
 b = json.load(open(src))
@@ -197,7 +203,7 @@ for key, ps in groups.items():
     if hit:
         covered.append(dict(row, bsuk_page=hit))
         continue
-    row.update(tier5_only=not row["urls"], bsuk_page=None, noindex_page=covering(noindex, key, ptype),
+    row.update(tier5_only=not row["urls"], bsuk_page=None, noindex_pages=stubs(key, ptype),
                dedicated=dedicated, key=max(q["key"] for q in ps), no_bsuk_page=3, intent=max(q["intent"] for q in ps),
                always_high=any(q["always_high"] for q in ps))
     row["score"] = row["dedicated"] + row["key"] + row["no_bsuk_page"] + row["intent"]
@@ -219,7 +225,7 @@ What decides a row (to explain it, never to redo it):
 - **Type:** intel's page-type table, whole words only and `comparison` first — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first). There is no second comparison rule here: a `-vs-` path is a comparison because it is the table's first row.
 - **Whose page:** a page whose URL's root domain (the registry's rule, `root_domain` in `scripts/competitor_registry_check.py`; subdomains count) differs from its report's `root_domain` is listed in `foreign_urls` and gives no topic; the same URL in two reports is listed in `duplicate_urls` and counted once in its row.
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
-- **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row, and the stub label is found the same way; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
+- **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row; "greater" before a named city is part of that city ("Manchester, Greater Manchester" is a Manchester topic). The stub label (`noindex_pages`) is the stub naming the same set of cities, else, for a topic naming two or more cities, each city's own stub. A place that is not a `data/locations.json` city (Scotland, Newcastle upon Tyne) is never a place word: the topic keeps only its breed and buyer words, so the page joins the national row and never borrows another city's stub — the city list is the 28 location pages project 5 rebuilds, and a row naming another place would send the architect to a page BSUK will not build. Its URL still shows in that row; any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row.
 - **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered", or a city on a city topic only — never on a rescue, training, vet or other non-buyer topic; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, license, licensed, licenced, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
 
 ## Output
@@ -227,7 +233,7 @@ What decides a row (to explain it, never to redo it):
 docs/research/keyword-gap-<YYYY-MM-DD>.md:
 
 1. Header: mode; gap matrix or "none yet"; BSUK source and page count; competitors used (tier, `fetched_on`); stale ones and what happened; names cut; skipped count; fetch count; the script's `foreign_urls` (each: id, URL, the report's root domain — "none" when empty) and `duplicate_urls` (each: URL and the ids sharing it — "none" when empty), both named again in the hand-back as a fix for `bsuk-competitor-intel <id>`; one line per forbidden request declined (a "top page" point, search volumes, skipping the script).
-2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none", or "exists, not indexed — project 5 rebuild: <noindex_page>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
+2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none", or "exists, not indexed — project 5 rebuild: <noindex_pages, comma-separated>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
 3. **Already covered** — Topic · Competitor URL · BSUK page.
 4. **High gaps** — one line each on why; "None" when none.
 5. **Handoff** lines.
@@ -236,7 +242,7 @@ URLs as their source gives them. With `--type`, only that type's rows. Then `pyt
 
 ## Handoff
 
-High gaps → `bsuk-content-architect` (topic, competitor URL, page type); a row with a `noindex_page` goes as "rebuild the stub <noindex_page>" (project 5), never a new page; a `tier5_only` row goes with no URL, marked "tier-5 only"; with the page-map fallback all are "provisional" until `--bsuk` and a re-run. The file → `bsuk-strategy-synthesizer` (medium gaps to the content calendar). Stale report → `bsuk-competitor-intel <id>`; no profile → `bsuk-competitor-intel --bsuk`.
+High gaps → `bsuk-content-architect` (topic, competitor URL, page type); a row with `noindex_pages` goes as "rebuild the stub <each of noindex_pages>" (project 5), never a new page; a `tier5_only` row goes with no URL, marked "tier-5 only"; with the page-map fallback all are "provisional" until `--bsuk` and a re-run. The file → `bsuk-strategy-synthesizer` (medium gaps to the content calendar). Stale report → `bsuk-competitor-intel <id>`; no profile → `bsuk-competitor-intel --bsuk`.
 
 ## Red flags — stop
 
