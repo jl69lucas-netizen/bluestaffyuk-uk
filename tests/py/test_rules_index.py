@@ -468,3 +468,55 @@ def test_no_instruction_file_writes_the_town_twice():
            if TOWN_TWICE.search(l)]
     assert bad == [], ("the breeder is in Carlisle, Cumbria (Known Issue 16):\n  "
                        + "\n  ".join(bad))
+
+
+# ── CLAUDE.md working rules 10–16 have ledger rows (user ruling R5, 2026-09-23) ────────────
+#: What each of the seven is held up by. The three with a mechanical backstop name the pytest
+#: file that exercises it — the same `test` form `design-system-nine` uses — and the other four
+#: are `untested`, which scripts/quality_report.py lists in §5 as deletion candidates. Rule 10
+#: governs how a decision is SHOWN, rule 11 what a page may do to a served file, rule 13's
+#: board half (three rendered styles) and rule 16's per-page uniqueness have no check today.
+CLAUDE_MD_RULES = {
+    10: ("untested", None),
+    11: ("untested", None),
+    12: ("test", "tests/py/test_link_parity.py"),
+    13: ("untested", None),
+    14: ("test", "tests/py/test_facts_preserved.py"),
+    15: ("test", "tests/py/test_verbatim_set.py"),
+    16: ("untested", None),
+}
+WORKING_RULE = re.compile(r"^(1[0-6])\. \*\*", re.M)
+
+
+def _claude_md_rows():
+    return {r["claude_md"]: r for r in index()["rules"] if "claude_md" in r}
+
+
+def test_claude_md_numbers_working_rules_10_to_16():
+    text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    assert sorted(int(n) for n in WORKING_RULE.findall(text)) == list(range(10, 17))
+
+
+def test_every_working_rule_10_to_16_has_one_ledger_row():
+    rows = _claude_md_rows()
+    assert sorted(rows) == list(range(10, 17)), sorted(rows)
+    for n, (enforced, test) in CLAUDE_MD_RULES.items():
+        r = rows[n]
+        assert r["enforced"] == enforced, (n, r)
+        assert r.get("test") == test, (n, r)
+        assert "pack" not in r, (n, "a CLAUDE.md rule is not written in a pack")
+        if test:
+            assert (ROOT / test).is_file(), (n, test)
+
+
+def test_quality_report_reads_the_seven_rows_as_ruled():
+    import sys
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import quality_report  # noqa: E402
+
+    rows = _claude_md_rows()
+    ids = {rows[n]["id"]: n for n in rows}
+    assert quality_report.broken_test_links(index(), quality_report.registry_check_ids()) == []
+    orphans = {ids[i] for i in quality_report.deletion_candidates(index()) if i in ids}
+    assert orphans == {n for n, (e, _) in CLAUDE_MD_RULES.items() if e == "untested"}, orphans
+    assert quality_report.judgment_overflow(index()) is None
