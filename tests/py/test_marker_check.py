@@ -159,3 +159,45 @@ def test_the_real_repo_is_clean():
     """The gate this project exists to satisfy. Green since Task 15 re-based tests/render/
     and scripts/dup_content_audit.py; targets.json (Task 16) carried no marker."""
     assert main() == 0
+
+
+# ── a marker the line scan could not see (project-5 readiness, 2026-09-23) ───
+# `bsuk-paa-agent.md` wrapped "African" / "Greys" across a line break and
+# `bsuk-site-hygiene-agent.md` spelled "african-gray"; both passed this gate, which read one
+# line at a time and only the UK spelling. Task A4 removed both from the agents; these hold
+# the gate to them from now on, in every root it scans.
+@pytest.mark.parametrize("text,marker", [
+    ("Why do owners call African\nGreys clever?\n", "african grey"),
+    ("an African-\nGrey in the house\n", "african-grey"),
+    ("> the African\n> Greys of the source site\n", "african grey"),
+    ("- owners of an African\n  Gray and a Staffy\n", "african grey"),
+])
+def test_a_marker_split_across_a_line_break_fires(tmp_path, text, marker):
+    repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
+    assert [(n, m) for n, m, _ in hits_in(repo / "CLAUDE.md")] == [(1, marker)]
+
+
+@pytest.mark.parametrize("line,marker", [
+    ("An African Gray needs space.", "african grey"),
+    ("See /african-gray-care/.", "african-grey"),
+    ("AFRICAN  GRAYS are loud", "african grey"),
+])
+def test_the_us_spelling_fires(tmp_path, line, marker):
+    repo = _repo(tmp_path, files=[("CLAUDE.md", line + "\n")])
+    assert hits_in(repo / "CLAUDE.md") == [(1, marker, line)]
+
+
+@pytest.mark.parametrize("text", [
+    "African\nsoil is red\n",
+    "a grey\nAfrican violet\n",
+    "the blue-grey coat of a Blue Staffy\n",
+    "a gray muzzle at twelve\n",
+])
+def test_the_wider_match_spares_ordinary_words(tmp_path, text):
+    repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
+    assert hits_in(repo / "CLAUDE.md") == []
+
+
+def test_a_split_marker_fails_the_gate(tmp_path):
+    repo = _repo(tmp_path, files=[("rules/x.md", "Blue Staffy owners and African\nGreys\n")])
+    assert main(repo) == 1

@@ -5,8 +5,9 @@ The port copies a parrot breeder's operating system into a dog breeder's repo. E
 file is either rewritten by hand or judged not to need it, and the only honest proof that
 the judgement was right is a scan that cannot be argued with.
 
-So: twelve markers, case-insensitive (`cag-` as a prefix — word-boundary on the left —
-and the other eleven as plain substrings), NO ALLOWLIST. A legitimate-looking hit is a design
+So: twelve markers, case-insensitive (`cag-` as a prefix — word-boundary on the left —,
+the two "african grey" markers as patterns that take either spelling and a line break, and
+the other nine as plain substrings), NO ALLOWLIST. A legitimate-looking hit is a design
 error to fix, not an exception to record — the moment this gate grows an allowlist it stops
 being evidence and becomes a list of the places nobody re-based.
 
@@ -42,8 +43,21 @@ MARKERS = (
 PREFIX_ONLY = {"cag-": re.compile(r"(?<![a-z0-9])cag-")}
 
 
+# The two "african grey" markers are patterns, not substrings: `bsuk-site-hygiene-agent.md`
+# spelled the bird "african-gray", and a run of spaces is still the same two words. The same
+# two words can also be split by a line wrap (`bsuk-paa-agent.md` had "African" / "Greys"),
+# which no line-scoped test can see — WRAPPED reads the whole file for that (hits_in).
+SPELLED = {
+    "african grey": re.compile(r"african[ \t]+gr[ae]y"),
+    "african-grey": re.compile(r"african-gr[ae]y"),
+}
+# "African" (or "African-") ending one line and "Grey"/"Gray" starting the next, after any
+# quote, list or table marker the wrap leaves at the start of the second line.
+WRAPPED = re.compile(r"african[ \t]*(-?)[ \t]*\r?\n[ \t>*#|+-]*gr[ae]y")
+
+
 def _present(marker, low):
-    rx = PREFIX_ONLY.get(marker)
+    rx = PREFIX_ONLY.get(marker) or SPELLED.get(marker)
     return bool(rx.search(low)) if rx else marker in low
 
 FIXED_ROOTS = (
@@ -78,7 +92,8 @@ def hits_in(path):
     # file a silent pass, and an OSError is a real fault that belongs in the traceback.
     text = pathlib.Path(path).read_text(encoding="utf-8", errors="replace")
     out = []
-    for n, line in enumerate(text.splitlines(), 1):
+    lines = text.splitlines()
+    for n, line in enumerate(lines, 1):
         low = line.lower()
         matched = [m for m in MARKERS if _present(m, low)]
         for m in matched:
@@ -87,7 +102,13 @@ def hits_in(path):
             if any(other != m and m in other for other in matched):
                 continue
             out.append((n, m, line.strip()))
-    return out
+    # A two-word marker split by a line break, reported on the line where it starts.
+    low = text.lower()
+    for w in WRAPPED.finditer(low):
+        n = low.count("\n", 0, w.start()) + 1
+        out.append((n, "african-grey" if w.group(1) else "african grey",
+                    " ".join(l.strip() for l in lines[n - 1:n + 1])))
+    return sorted(out, key=lambda h: h[0])
 
 
 def _walk(p):
