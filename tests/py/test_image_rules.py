@@ -122,6 +122,7 @@ def test_the_hero_needs_a_photo_slot():
     ({"source": "generate"}, "source generate names no og_style"),
     ({"source": "infographic"}, "source infographic names no infographic_style"),
     ({"source": "infographic", "infographic_style": "IG-3"}, "source infographic on a slot whose kind is not infographic"),
+    ({"source": "generate", "og_style": "A", "kind": "infographic"}, "source generate on a slot whose kind is not photo"),
     ({"slot": "Bad_Slot", "source": "existing", "file": "/images/x.webp"}, "slot id is not lowercase letters, digits and hyphens"),
 ])
 def test_each_source_names_what_it_needs(fields, why):

@@ -121,6 +121,8 @@ def slot_problems(image):
             p.append("source generate has no prompt")
         if not image.get("og_style"):
             p.append("source generate names no og_style")
+        if image["kind"] != "photo":
+            p.append("source generate on a slot whose kind is not photo")
     elif src == "infographic":
         if not image.get("infographic_style"):
             p.append("source infographic names no infographic_style")
@@ -349,8 +351,8 @@ def validate_image_picks(board, chosen, root=None, assets_dir=None):
         elif p["kind"] == "assets" and not ((assets_dir / p["value"]).is_file()
                                             or ingested(board, slot, p["value"], root)):
             errs.append(f"slot {slot}: {p['value']!r} is neither in {assets_dir} nor ingested")
-        elif kind_problem(img, p):
-            errs.append(f"slot {slot}: {kind_problem(img, p)}")
+        elif why := kind_problem(img, p):
+            errs.append(f"slot {slot}: {why}")
         elif p["kind"] in ("og", "ig") and p["sha"] is not None:
             f = generated_file(board, slot, root)
             if f is None:
