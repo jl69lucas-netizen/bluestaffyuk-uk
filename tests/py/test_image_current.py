@@ -271,3 +271,61 @@ def test_the_board_stars_a_real_candidate_when_the_current_file_is_missing(repo)
     first, rest = tile.split('<label class="imgopt">', 2)[1:]
     assert "⭐" not in first and "<b>current · missing</b>" in first
     assert "⭐ <b>assets</b>" in rest and "Indoors-With-Us-Day-One.jpg" in rest
+
+
+# ── Task 12a item 6: an assets-folder slot is offered its own source_file ────────────────
+def _folder_slot(source_file):
+    return _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                      "prompt": "our van on a delivery run", "source": "assets-folder",
+                                      "source_file": source_file}])
+
+
+def test_an_assets_folder_slot_offers_its_own_source_file_first_as_current(tmp_path):
+    root, assets = _tree(tmp_path)
+    # Byrd1.jpg is left out of the folder pool (its stem is served), and scores nothing here.
+    photo = _photo(IC.candidates(_folder_slot("Byrd1.jpg"), root, assets, per_pool=2))
+    first = photo["candidates"][0]
+    assert (first["pool"], first["pick"], first["current"], first["missing"]) == \
+        ("current", "assets:Byrd1.jpg", True, False)
+    assert first["asset"] == "Byrd1.jpg" and first["ingest_as"] == "/images/byrd1.webp"
+    assert photo["suggested"]["pick"] == "assets:Byrd1.jpg"
+    assert [c["pick"] for c in photo["candidates"]].count("assets:Byrd1.jpg") == 1
+
+
+def test_a_source_file_already_in_the_pool_is_listed_once(tmp_path):
+    root, assets = _tree(tmp_path)
+    photo = _photo(IC.candidates(_folder_slot("Leeds-Kennel-Club-Show.jpg"), root, assets, per_pool=2))
+    picks = [c["pick"] for c in photo["candidates"]]
+    assert picks[0] == "assets:Leeds-Kennel-Club-Show.jpg" and picks.count(picks[0]) == 1
+
+
+def test_a_source_file_not_in_the_folder_is_offered_missing_and_not_suggested(tmp_path):
+    root, assets = _tree(tmp_path)
+    photo = _photo(IC.candidates(_folder_slot("Gone.jpg"), root, assets, per_pool=2))
+    assert (photo["candidates"][0]["pick"], photo["candidates"][0]["missing"]) == ("assets:Gone.jpg", True)
+    assert photo["suggested"]["pick"] != "assets:Gone.jpg"
+
+
+def test_an_ingested_folder_slot_keeps_its_served_copy_current_and_offers_the_folder_file(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _folder_slot("Byrd1.jpg")
+    b["assets"] = [{"slot": "delivery-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                    "status": "baked", "file": "/images/family-garden-play.webp", "alt": "x"}]
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    assert [(c["pick"], c["current"]) for c in photo["candidates"][:2]] == [
+        ("file:/images/family-garden-play.webp", True), ("assets:Byrd1.jpg", False)]
+
+
+def test_block_7_ticks_the_folder_file_labelled_current_with_its_ingest_note(repo):
+    root, folder = repo
+    b = _full()
+    img = next(s for s in b["sections"] if s["id"] == "how-we-raise")["tree"][0]["images"][0]
+    img.update({"source": "assets-folder", "source_file": "Litter-At-Four-Weeks.jpg"})
+    img.pop("og_style")
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    first = weeks.split('<label class="imgopt">', 2)[1]
+    assert 'value="assets:Litter-At-Four-Weeks.jpg" checked>' in first
+    assert "<b>current</b> · the file this slot names now" in first
+    assert "needs ingest → /images/litter-at-four-weeks.webp" in first
+    assert weeks.count('value="assets:Litter-At-Four-Weeks.jpg"') == 1

@@ -34,7 +34,9 @@ CURRENT (Task 10c). A slot that already names a file — its own `file`, else it
 row's `file` — gets that file as its FIRST candidate, pool `current`, whatever it scores,
 and it is the slot's `suggested` pick, unless it is missing: then the suggestion is the best
 ranked candidate not already suggested for another slot. It is never listed again further
-down (size siblings fold to one file). Every candidate carries `current: true|false` and
+down (size siblings fold to one file). A slot of source `assets-folder` is offered its own
+`source_file` too (`assets:<name>`, Task 12a): FIRST and current when the slot names no file
+yet, else second, right after the served copy that is current. Every candidate carries `current: true|false` and
 `missing: true|false`; only a current file can be missing (not a regular file inside
 public/images under root), and the board then labels it and leaves it unticked.
 
@@ -410,6 +412,21 @@ def on_disk(file, root):
     return top in p.parents and p.is_file()
 
 
+def folder_choice(img, words, alts, used, route, assets_dir, root, current):
+    """An assets-folder slot's own `source_file` as a candidate (`assets:<name>`), or None for
+    any other slot. Labelled current (pool `current`) when it is the slot's own choice, i.e.
+    no file is named for the slot yet; missing when it is neither in the folder nor ingested."""
+    name = img.get("source_file")
+    if img.get("source") != "assets-folder" or not name:
+        return None
+    c = _candidate("assets", {"asset": name, "ingest_as": ingest_target(name)}, words, alts, used, route)
+    in_folder = assets_dir is not None and (pathlib.Path(assets_dir) / name).is_file()
+    c["missing"] = not (in_folder or on_disk(ingest_target(name), root))
+    if current:
+        c.update({"pool": "current", "current": True})
+    return c
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
@@ -426,12 +443,21 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
         words = slot_words(section, node, img)
         cands = rank(words, pools, alts, used, route, per_pool)
         cur = current_file(board, img, root)
+        first = None
         if cur:
             first = _candidate("current", {"file": cur}, words, alts, used, route)
             first["current"] = True
             first["missing"] = not on_disk(cur, root)
             cands = [first] + [c for c in cands if c["pick"] != first["pick"]]
-        if cur and not first["missing"]:
+        mine = folder_choice(img, words, alts, used, route, assets_dir, root, current=first is None)
+        if mine is not None:                           # Task 12a: the slot's own folder file
+            rest = [c for c in cands if c["pick"] != mine["pick"]]
+            if first is None:
+                first = mine
+                cands = [mine] + rest
+            else:
+                cands = rest[:1] + [mine] + rest[1:]
+        if first is not None and not first["missing"]:
             suggested = first                          # the record's own choice leads
         else:                                          # a missing current file is never suggested
             suggested = next((c for c in cands if not c["missing"] and c["pick"] not in taken), None)

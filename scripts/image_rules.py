@@ -511,7 +511,7 @@ def _slot_html(board, sec, node, img, row, images, current):
             uri = images["thumbs"].get(c["pick"])
             pic = f'<img src="{uri}" alt="{_e(c["alt"])}">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
             star = "⭐ " if c["pick"] == suggested.get("pick") else ""
-            note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["pool"] == "assets"
+            note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["asset"]
                     else f'<span class="why">{_e(c["file"])}'
                          + (f' · also on {_e(", ".join(c["used_on"]))}' if c["used_on"] else "") + "</span>")
             what = ("the file this slot names now" if c.get("current")
