@@ -112,3 +112,8 @@ def test_body_sections_are_labelled_sections():
 def test_a_health_test_result_is_not_a_city_page_fact():
     facts = section(LOCATION, "## The facts a city page may state")
     assert "parents-dna-clear" in facts and "NOT FETCHED" in facts
+
+
+def test_the_comparison_builder_derives_its_section_count():
+    assert not re.search(r"22[–-]25|\b22[- ]section", COMPARISON)
+    assert "section_target" in COMPARISON
