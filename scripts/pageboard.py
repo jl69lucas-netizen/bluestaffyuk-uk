@@ -1768,7 +1768,8 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     for check, sev, msg in word_band_findings(board):
         add(check, sev, msg)
 
-    for sid in image_gaps(board):
+    # On a page family_rules binds, image_rules' `image-slot-missing` replaces this WARN.
+    for sid in ([] if FR.applies(board) else image_gaps(board)):
         add("image-coverage", "WARN", f"section {sid} plans no image slot — the brief puts one under every H2 (§15b)")
     for key, slots in duplicate_alts(board).items():
         add("asset-alt-duplicate", "FAIL",

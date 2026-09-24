@@ -1948,6 +1948,19 @@ def test_image_plan_lists_every_slot_with_its_prompt_and_flags_a_bare_signature_
     assert "_no image slot_" in block
 
 
+def test_a_new_family_page_is_held_by_the_image_rule_not_the_old_coverage_warn():
+    """Task 12a item 5: image_rules' `image-slot-missing` replaces `image-coverage` on the pages
+    family_rules binds; the twelve built pages keep the WARN exactly as they had it."""
+    b = json.loads((PB.ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8"))
+    checks = lambda: {x["check"] for x in
+                      PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")}
+    assert "image-coverage" in checks()                      # _demo is out of family scope
+    b["meta"].update({"slug": "uk-locations/blue-staffy-puppies-leeds", "page_type": "location",
+                      "status": "boarded"})
+    assert "image-coverage" not in checks()
+    assert "image-slot-missing" in checks()
+
+
 def test_gate_warns_on_a_signature_section_with_no_image_and_fails_on_a_shared_alt():
     b = _approved(MIN_BOARD)
     checks = lambda: [(x["check"], x["sev"]) for x in
