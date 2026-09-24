@@ -96,7 +96,7 @@ For each broken link found, decide the fix:
 | Nested WP CPT path | `/available-puppies/` | Add redirect to flat slug |
 | WordPress remnant | `/comments/feed/`, `/tag/*/` | Redirect to `/` |
 | Missing hub page | `/UK-locations/` | Create `index.html` hub |
-| Completely missing page | `/some-deleted-page/` | Redirect to best match or homepage |
+| Completely missing page | `/healthy-habits-exercises-for-your-pets/` | Redirect to best match or homepage (that one is already in `data/redirects.json`) |
 
 ---
 
@@ -115,7 +115,7 @@ Append to `data/redirects.json`:
 ```
 
 **Rules for `_redirects`:**
-- Always add both `/path/` (trailing slash) and `/path` (no trailing slash) variants
+- Always add both `/<path>/` (trailing slash) and `/<path>` (no trailing slash) variants
 - Use `301` (permanent) for SEO — not `302`
 - Put more-specific rules ABOVE catch-all rules
 - The `!` suffix forces a redirect even if the edge host (chosen in project 6) finds a matching file
@@ -156,8 +156,8 @@ h1 { font-family: 'Fraunces', serif; color: #1F3A52; /* = --color-brand in src/s
   <h1>[Hub H1]</h1>
   <p>[Short intro — 1-2 sentences with target keyword]</p>
   <div class="grid">
-    <a class="card" href="/child-page-1/">Child Page Title 1</a>
-    <a class="card" href="/child-page-2/">Child Page Title 2</a>
+    <a class="card" href="/<hub>/<child-slug-1>/">Child Page Title 1</a>
+    <a class="card" href="/<hub>/<child-slug-2>/">Child Page Title 2</a>
   </div>
 </div>
 </body>
@@ -165,7 +165,7 @@ h1 { font-family: 'Fraunces', serif; color: #1F3A52; /* = --color-brand in src/s
 ```
 
 **Critical rules for hub pages:**
-- `canonical` must be absolute: `https://SITE_URL_PLACEHOLDER/slug/`
+- `canonical` must be absolute: `https://SITE_URL_PLACEHOLDER/<slug>/`
 - `og:url` must be absolute
 - No schema JSON-LD required for hub pages (optional)
 - H1 must contain the target keyword
@@ -251,5 +251,5 @@ FIXES APPLIED:
   ✅ Added 2 WordPress remnant redirects
 
 REMAINING (manual review needed):
-  ⚠️  /some-external-looking-path/ — appears in 3 pages
+  ⚠️  /<path>/ — appears in 3 pages
 ```

@@ -64,7 +64,7 @@ source says 2.26rem, and nothing in the file looks wrong.
 
 > **Real cost:** the home-raised hero was 524px instead of ~400px for its whole
 > first week live. Two rounds of "make the hero shorter" edits did nothing
-> because the rule was never applied. Same bug found on `/available/`.
+> because the rule was never applied. Same bug found on the source repo's `/available/`.
 
 **Fix:** `clamp(1.5rem, 1.02rem + 1.55vw, 1.98rem)`.
 **Verify:** `getComputedStyle(h1).fontSize` matches the clamp, not the global token.

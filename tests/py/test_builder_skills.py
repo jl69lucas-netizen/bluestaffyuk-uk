@@ -202,23 +202,83 @@ def test_the_checklist_invents_no_route_or_guarantee_and_seo_rules_derive_the_co
     assert seo_rules.count("section_target.total") >= 2
 
 
-SITE_ROUTE = re.compile(r"(?<![\w./~-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{])")
+SITE_ROUTE = re.compile(r"(?<![\w./~>…-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{])")
+
+#: Paths that are not pages and never will be, each for a stated reason. Every other
+#: site-root path a skill writes must be a page (see known_routes()).
+NOT_PAGES = (
+    "/70de/",        # the edge host's Google tag gateway script (bsuk-perf-gate, --live only)
+    "/cf-fonts/",    # the edge host's rewrite of a Google Fonts link (same)
+    "/wp-content/",  # the legacy WordPress site's upload folder: a migrated body may still link it
+    "/tag/",         # the legacy WordPress site's tag archive (same)
+)
+
+
+def known_routes():
+    """Every route a page may link: built (dist/**/index.html), mapped (data/page-map.json),
+    redirected (a source in data/redirects.json — `*` and `:param` sources are patterns), or a
+    path under a public/ folder (an asset, not a page) or in NOT_PAGES."""
+    dist = ROOT / "dist"
+    built = {"/%s/" % p.parent.relative_to(dist).as_posix() for p in dist.rglob("index.html")}
+    built |= {p["url"] for p in json.loads((ROOT / "data/page-map.json").read_text(encoding="utf-8"))["pages"]}
+    sources = [r["from"] for r in json.loads((ROOT / "data/redirects.json").read_text(encoding="utf-8"))["redirects"]]
+    patterns = [re.escape(s).replace(r"\*", ".*") for s in sources]
+    patterns = [re.sub(r":[a-z]+", "[^/]+", s) for s in patterns]
+    prefixes = tuple(NOT_PAGES) + tuple("/%s/" % d.name for d in (ROOT / "public").iterdir() if d.is_dir())
+    return built, re.compile("(?:%s)$" % "|".join(patterns)), prefixes
+
+
+def is_known(route, known):
+    built, redirected, prefixes = known
+    return route in built or bool(redirected.match(route)) or route.startswith(prefixes)
+
+
+def route_offenders(text, known):
+    """Rule 62: never invent an internal URL. Every site-root route the text writes (in
+    backticks, links or plain text) must be known. External URLs are left out; a generic route
+    is written `/<slug>/`, `/[slug]/` or `/{slug}/`, which SITE_ROUTE does not read. A line that
+    says it is the source repo's history ("source repo" on the line) is not an instruction."""
+    text = re.sub(r"https?://\S+", " ", text.replace("https://SITE_URL_PLACEHOLDER", ""))
+    return sorted({(route, n) for n, line in enumerate(text.splitlines(), 1)
+                   if "source repo" not in line
+                   for route in SITE_ROUTE.findall(line) if not is_known(route, known)})
 
 
 @pytest.mark.skipif(not (ROOT / "dist/index.html").is_file(), reason="no dist/ — run the build first")
 def test_every_route_the_checklist_names_is_built_or_redirected():
-    """Rule 62: never invent an internal URL. Every site-root route the checklist writes (in
-    backticks, links or plain text) is a built page (dist/**/index.html or a data/page-map.json
-    route) or a source in data/redirects.json. External URLs are left out; a generic route is
-    written `/<slug>/`, which this pattern does not read."""
-    text = re.sub(r"https?://\S+", " ", CHECKLIST.replace("https://SITE_URL_PLACEHOLDER", ""))
-    dist = ROOT / "dist"
-    built = {"/%s/" % p.parent.relative_to(dist).as_posix() for p in dist.rglob("index.html")}
-    built |= {p["url"] for p in json.loads((ROOT / "data/page-map.json").read_text(encoding="utf-8"))["pages"]}
-    redirected = {r["from"] for r in json.loads((ROOT / "data/redirects.json").read_text(encoding="utf-8"))["redirects"]}
-    offenders = sorted({(route, n) for n, line in enumerate(text.splitlines(), 1)
-                        for route in SITE_ROUTE.findall(line) if route not in built | redirected})
+    offenders = route_offenders(CHECKLIST, known_routes())
     assert offenders == [], "routes that are neither built nor redirected: %s" % offenders
+
+
+# The same guard over every skill and slash command (the residue lint's set in
+# tests/py/test_agent_facts.py). The agents are not in scope here: their tasks own them.
+ROUTE_TARGETS = (sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
+                 + sorted((ROOT / ".claude/commands").rglob("*.md")))
+
+
+@pytest.mark.skipif(not (ROOT / "dist/index.html").is_file(), reason="no dist/ — run the build first")
+@pytest.mark.parametrize("path", ROUTE_TARGETS,
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_every_route_a_skill_or_command_names_is_built_or_redirected(path):
+    offenders = route_offenders(path.read_text(encoding="utf-8"), known_routes())
+    assert offenders == [], "%s names routes that are neither built nor redirected: %s" % (
+        path.relative_to(ROOT), offenders)
+
+
+def test_the_route_guard_reads_links_and_skips_placeholders_and_source_repo_history():
+    known = ({"/available-puppies/", "/uk-locations/"}, re.compile(r"(?:/wp-admin/.*)$"),
+             ("/images/", "/70de/"))
+    text = ("- Our Puppies → /available/\n"
+            "[About](/about/) and `/contact/`\n"
+            "/uk-locations/<slug>/ and /available-puppies/[slug]/ and /{slug}/\n"
+            "https://SITE_URL_PLACEHOLDER/blog/ and https://example.com/testimonials/\n"
+            "Same bug found on `/available/` in the source repo.\n"
+            "`src/pages/search/index.astro` and dist/available/index.html\n"
+            "/wp-admin/ is redirected; `/images/…` and `/70de/` are not pages\n"
+            "`openspec/changes/<name>/specs/` and www.reddit.com/r/…/comments/…\n")
+    # a SITE_URL_PLACEHOLDER link is a site route (/blog/ is read); an outside URL is not
+    assert route_offenders(text, known) == [("/about/", 2), ("/available/", 1), ("/blog/", 4),
+                                            ("/contact/", 2)]
 
 
 def test_the_checklist_newsletter_links_reviews_and_claims_match_the_builders():

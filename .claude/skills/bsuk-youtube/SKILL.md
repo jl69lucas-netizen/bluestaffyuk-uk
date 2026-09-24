@@ -174,7 +174,7 @@ File location: `dist/video-sitemap.xml`
     <video:duration>SECONDS</video:duration>
     <video:tag><![CDATA[blue staffies for sale]]></video:tag>
     <video:family_friendly>yes</video:family_friendly>
-    <video:uploader info="https://SITE_URL_PLACEHOLDER/about/">BlueStaffyUK</video:uploader>
+    <video:uploader info="https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/">BlueStaffyUK</video:uploader>
   </video:video>
 </url>
 ```
@@ -189,7 +189,7 @@ File location: `dist/video-sitemap.xml`
     <video:content_loc>https://SITE_URL_PLACEHOLDER/content/uploads/YYYY/MM/video.mp4</video:content_loc>
     <video:thumbnail_loc>https://SITE_URL_PLACEHOLDER/content/uploads/thumbnail.jpg</video:thumbnail_loc>
     <video:family_friendly>yes</video:family_friendly>
-    <video:uploader info="https://SITE_URL_PLACEHOLDER/about/">BlueStaffyUK</video:uploader>
+    <video:uploader info="https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/">BlueStaffyUK</video:uploader>
   </video:video>
 </url>
 ```

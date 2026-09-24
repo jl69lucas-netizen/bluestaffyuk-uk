@@ -151,7 +151,7 @@ Score each missing link 1–3:
 **Bad anchor text:**
 - Generic: "click here," "read more," "here," "this page"
 - Over-optimized: exact match keyword repeated identically across 20 links
-- Empty: `<a href="/page/"></a>`
+- Empty: `<a href="/<slug>/"></a>`
 
 ### Anchor Diversity Ledger (site-wide — added 2026-07-11)
 
@@ -191,7 +191,7 @@ grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c |
 
 > Best practice — verified against SEO + WCAG. `target="_blank"` is **not** a ranking factor; forcing every link to a new tab gives **zero SEO value** and hurts UX (breaks the back button, tab clutter on mobile).
 
-- **Internal links → SAME tab, always.** Never add `target="_blank"` to an internal `/slug/` link. (Internal new-tab breaks navigation and is an anti-pattern.)
+- **Internal links → SAME tab, always.** Never add `target="_blank"` to an internal `/<slug>/` link. (Internal new-tab breaks navigation and is an anti-pattern.)
 - **External authority links → NEW tab** (`target="_blank" rel="noopener noreferrer"`) **+ a visual/a11y cue.** On a sales page this keeps the high-intent buyer on our page instead of shipping them to gov.uk/the Kennel Club with no easy return. Pattern used site-wide: a subtle CSS `::after { content:"↗" }` affordance scoped to `.home-d a[target="_blank"]` (see `src/pages/index.astro`).
 - Note: warning of a new window is WCAG **3.2.5 (Level AAA)**, not AA — so `target+rel` alone is AA-compliant; the ↗ cue is the courtesy affordance.
 - **Authority citations on technical terms:** cite important technical/clinical terms ONCE to a credible **government or veterinary-body** source (prefer `pmc.ncbi.nlm.nih.gov`) or the canonical industry authority, at the claim sentence. Reusable verified-source table: `docs/reference/external-link-library.md §Authority Citations` (HC and L-2-HGA DNA testing, hip dysplasia, canine parvovirus, DEFRA-approved animal transport rules, LEGAL_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER). Verify 200 first; link a term only once per page.

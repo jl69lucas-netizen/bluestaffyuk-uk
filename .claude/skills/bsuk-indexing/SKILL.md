@@ -247,8 +247,8 @@ What the script guarantees, and why each guard exists:
   returns HTTP 200 live before anything is sent.
 - **Every URL must return 200 before submission.** Submitting 404s is a negative trust
   signal about the host, so a dead URL is reported and dropped, not sent.
-- **Build artifacts are filtered** — `/.astro/`, `/_preview/`, `/admin/`, `/form/`,
-  `/tag/`, `/thank-you/`. A sitemap that emits `/.astro/` is a
+- **Build artifacts are filtered** — `/.astro/`, `/_preview/` and the rest of the `JUNK`
+  prefixes in `scripts/indexnow_submit.py`. A sitemap that emits `/.astro/` is a
   `scripts/generate_sitemaps.py` defect, not a page.
 - **Response codes are interpreted**: 200 OK · 202 accepted, key validation pending ·
   400 bad payload · 403 key invalid for host · 422 URLs not on this host · 429 throttled.
@@ -268,17 +268,15 @@ What the script guarantees, and why each guard exists:
 
 ## STEP 5: FIX ROBOTS.TXT
 
-Ensure these Disallow rules are present:
+`public/robots.txt` allows every crawler and names the sitemap index:
 ```
-Disallow: /admin/
-Disallow: /wp-admin/
-Disallow: /form/
-Disallow: /thank-you/
-Disallow: /tag/
-Disallow: /wp-content/uploads/wc-logs/
-Disallow: /wp-content/uploads/woocommerce_uploads/
-Disallow: /*?add-to-cart=
+User-agent: *
+Allow: /
 ```
+There is no admin, form or tag route to disallow (those Disallow rules were the source repo's
+WordPress site's). A page kept out of search carries `noindex` instead — the thank-you page,
+`/search/`, `/kit-preview/` and the board previews — and `scripts/generate_sitemaps.py` leaves
+it out of every shard.
 
 And sitemap entries are absolute:
 ```
@@ -325,10 +323,9 @@ print("llms.txt fixed")
 - [List any noindex, canonical, broken image issues found]
 
 ### Pages Flagged Noindex (intentional)
-- /admin/ — Decap CMS (correct)
-- /form/ — Contact form (correct)
-- /tag/ — Tag archive (correct)
-- /thank-you/ — Thank you page (correct)
+- /thank-you-blue-staffy-puppies-journey/ — the after-enquiry page (correct)
+- /search/ and /kit-preview/ — internal (correct)
+- [any other page reported noindex, and whether it should be]
 
 ### Next Recommended Actions
 1. Wait 3-7 days and check Google Search Console → Coverage for crawl errors
@@ -340,11 +337,13 @@ print("llms.txt fixed")
 
 ## KNOWN ISSUES LOG
 
+The source repo's log, kept as history: BSUK has never been deployed (no remote until project 6).
+
 | Date | Issue | Fix Applied | Status |
 |---|---|---|---|
 | 2026-04-21 | All 9 sitemap files had relative URLs (115 total) | Converted to absolute | ✅ Fixed & deployed |
 | 2026-04-21 | llms.txt had relative URLs + HTML entities | Fixed to absolute + decoded | ✅ Fixed & deployed |
-| 2026-04-21 | robots.txt missing /admin/, /form/, /tag/, /thank-you/ | Added Disallow rules | ✅ Fixed & deployed |
+| 2026-04-21 | source repo: robots.txt missing its admin, form, tag and thank-you Disallow rules | Added Disallow rules | ✅ Fixed & deployed |
 | 2026-04-21 | GSC refresh token expired | New auth URL generated — needs user reauth | ⚠️ Pending |
 | 2026-04-21 | 86 URLs submitted to IndexNow | 202 Accepted | ✅ Done |
 

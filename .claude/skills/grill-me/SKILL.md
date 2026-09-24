@@ -110,7 +110,7 @@ Announce that you've loaded the project context before Q1:
 For each answer:
 1. **Append** the verbatim Q&A to the `## Q&A Log (Verbatim)` section:
    ```markdown
-   **Q6 — Specific Target:** "/uk-locations/staffy-puppies-for-sale-manchester/"
+   **Q6 — Specific Target:** "/uk-locations/blue-staffy-puppies-manchester-uk/"
    ```
 2. **Update** `> **Next question:**` and `> **Last updated:**` in the header.
 3. If the answer settles a decision (framework, AIO approach, component style) → add a line to `## Decisions Log`.
@@ -160,7 +160,7 @@ Constraints are the highest-value answers to checkpoint — log every one to bot
 ### Task Layer (narrows to today's specific work — Q6 through Q14)
 
 **Q6 — Specific Target**
-> "What exact page or feature are we building or fixing today? Give me the slug (e.g., /uk-locations/manchester/)."
+> "What exact page or feature are we building or fixing today? Give me the slug (e.g., /uk-locations/blue-staffy-puppies-manchester-uk/)."
 
 After Q6, run the **Workflow Gate Check** before Q7:
 
@@ -184,7 +184,7 @@ WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
 
 4. What is the page's hub page?
    - The hub comes from the route, since data/page-map.json records each page's `kind`, not a parent: `/uk-locations/<slug>/` → `/uk-locations/`, `/available-puppies/<slug>/` → `/available-puppies/`, a blog post (an entry of `src/content/blog/`, served at `/<slug>/`) → `/blue-staffy-blog-guides/`; any other top-level page has no hub
-   - If the hub has no `src/pages/<hub>/index.astro` yet → flag: "The hub page [/url/] isn't built yet. Hubs should be built before spokes."
+   - If the hub has no `src/pages/<hub>/index.astro` yet → flag: "The hub page [/<hub>/] isn't built yet. Hubs should be built before spokes."
 ```
 
 Report the gate findings to the user in one message before asking Q7. **Log every gate flag to `## Open Flags`** — these are exactly the unresolved items a resuming session needs.
@@ -291,11 +291,11 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
 - LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
 - Structure.json Entry: [yes | no → run bsuk-structure-architect first]
-- Hub Page: [/url/ of parent hub | "needs to be built first"]
+- Hub Page: [/<hub>/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
 
 ## Today's Target
-- Page: /slug/
+- Page: /<slug>/
 - Goal: [Q7 — what done looks like]
 - Reader: [Q8 — who they are, what they fear]
 - Benchmark: [Q9 URL or "none given"]

@@ -39,7 +39,7 @@ through, not a command — it has no argv dispatch, so never try to run it with 
 |---|---|---|---|
 | CLS 0 | CLS 0.2+ on a hero element | a box that only reaches full size when its image arrives; locally the preloaded image lands before first paint | `layout-image-box-reserved` (render harness), or delay images in headless Chrome |
 | no `/70de/` | 79 KiB unused JS, forced reflow, missing source map on `/70de/` | **the edge host (chosen in project 6) Google tag gateway** injecting gtag.js at the edge; dist/ never contains it | `perf_audit.py --live` → `EDGE-INJECTED` |
-| fonts from `/fonts/` | `/cf-fonts/...woff2` rows | the edge host (chosen in project 6) Fonts rewriting a Google Fonts link | same `--live` list |
+| fonts self-hosted from `public/fonts/` (arrives in Task R3, the user's ruling on self-hosting) | `/cf-fonts/...woff2` rows | the edge host (chosen in project 6) Fonts rewriting a Google Fonts link | same `--live` list |
 | mobile Performance ~60 | 90s | this Mac's CPU benchmark (~490) under 4× throttle | judge mobile Performance only on `--psi` |
 
 **When CLS disagrees, delay one resource class at a time** (images, fonts, CSS, JS) and
