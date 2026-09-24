@@ -67,3 +67,19 @@ def test_the_image_key_is_documented_by_name_only():
     assert "| `GEMINI_API_KEY` |" in cred
     assert "(system-gaps plan Task 11b)" in cred
     assert "Twelve keys." in cred and "Eleven keys." not in cred
+
+
+ASSET_ROW_SENTENCE = ("Every image slot has its `assets[]` row (slot, kind, w, h, required) planned "
+                      "at boarding; ingest and publish only fill its `file` and `status`.")
+
+
+def test_the_assets_row_sentence_is_in_image_designs_and_every_builder_item_5():
+    """Task 12a item 1: the row publish fills is planned at boarding, and the docs say so."""
+    def flat(t):
+        return " ".join(t.split())
+    s9 = (ROOT / "IMAGE-DESIGNS.md").read_text().split("## 9. Approval Before the Build", 1)[1]
+    assert ASSET_ROW_SENTENCE in flat(s9.split("\n## 10.", 1)[0])
+    for p in SKILLS:
+        item5 = _block(p.read_text()).split("5. **Images.**", 1)[1].split("\n6. ", 1)[0]
+        assert ASSET_ROW_SENTENCE in flat(item5), p
+        assert "image-asset-row-missing" in item5, p

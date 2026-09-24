@@ -368,7 +368,9 @@ to the twelve pages built before.
    named in `IMAGE-DESIGNS.md`. The generated file is drafted with
    `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
    sha12 pick, and only then published with `python3 scripts/ingest_image.py publish`
-   (`image-generated-unapproved`).
+   (`image-generated-unapproved`). Every image slot has its `assets[]` row (slot, kind, w,
+   h, required) planned at boarding; ingest and publish only fill its `file` and `status`.
+   A slot without one fails `image-asset-row-missing`.
 6. **Board and approval.** The board's block 7b lists every rule above for this page,
    evaluated as approval will see it; `scripts/board_approve.py` refuses the approval, and
    any re-approval, while one of them FAILs. The build-gate image checks are listed but never

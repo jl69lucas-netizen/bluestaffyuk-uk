@@ -233,6 +233,11 @@ The breeder answers each slot with one radio pick, stored as `approval.picks["im
    `public/images/<seo-stem>.webp`, bakes the `-760` sibling beside it, records the manifest
    row, and sets the slot's `assets[]` row `file` and `status: "baked"` (both outside the hash).
 
+Every image slot has its `assets[]` row (slot, kind, w, h, required) planned at boarding;
+ingest and publish only fill its `file` and `status`. A slot with no row fails
+`image-asset-row-missing` from `boarded` on, so the board refuses it before approval, not the
+publish step after it.
+
 **The build refuses an unapproved generated image.** `scripts/image_rules.py` (registered in
 `scripts/family_rules.py`) fails the build with `image-generated-unapproved` when a slot's
 pick has no sha12 or the served bytes differ from it, `image-generated-not-ingested` when the

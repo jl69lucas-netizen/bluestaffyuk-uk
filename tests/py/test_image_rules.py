@@ -41,6 +41,16 @@ def _full(status="boarded"):
     return b
 
 
+def _planned(b):
+    """Task 12a: the assets[] rows a boarded record plans for the two generated slots (ingest
+    and publish fill `file` and `status` later). _full() leaves them out so the build-gate
+    tests can add each row as the ingest step would."""
+    for slot, kind in (("weeks-photo", "photo"), ("checks-graphic", "infographic")):
+        b["assets"].append({"slot": slot, "kind": kind, "w": 1408, "h": 768, "required": True,
+                            "status": "missing", "file": None, "alt": slot})
+    return b
+
+
 def _ids(found):
     return sorted({c for c, sev, msg in found})
 
@@ -85,11 +95,12 @@ def test_a_boarded_location_record_owes_a_slot_under_every_body_heading():
 
 
 def test_a_fully_sourced_record_passes_the_slot_rule():
-    assert IR.slot_findings(_full()) == []
+    assert IR.slot_findings(_planned(_full())) == []
+    assert _ids(IR.slot_findings(_full())) == ["image-asset-row-missing"]
 
 
 def test_a_body_section_with_no_slot_fails_and_a_draft_owes_nothing():
-    b = _full()
+    b = _planned(_full())
     next(s for s in b["sections"] if s["id"] == "how-we-raise")["images"] = []
     assert [c for c, sev, m in IR.slot_findings(b)] == ["image-slot-missing"]
     b["meta"]["status"] = "draft"
@@ -105,7 +116,7 @@ def test_the_rule_never_reaches_a_page_built_before_this_build():
 
 
 def test_the_hero_needs_a_photo_slot():
-    b = _full()
+    b = _planned(_full())
     hero = next(s for s in b["sections"] if s["shape"] == "hero")
     for img in hero["images"]:
         img["kind"] = "infographic"
@@ -290,7 +301,7 @@ def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo, monkeypatch)
     # Approval now runs the new-page rules (Task 10d). This fixture plans no keyword variants
     # or external links, so only the image checks are kept: this test is about the img: picks.
     monkeypatch.setattr(FR, "CHECKS", [FR.image_every_body_heading, FR.image_build_ready])
-    b = _full()
+    b = _planned(_full())
     picks = {"opening": "H-UT1", "at-a-glance": "C-UT1", "how-we-raise": "S1", "owners": "S1",
              "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"}
     inbox = {"approved_at": "2026-09-24T12:00:00Z", "h1": 0, "picks": picks, "notes": {},

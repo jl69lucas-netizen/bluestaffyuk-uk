@@ -31,6 +31,10 @@ every pick, so choosing an image never un-approves the outline. The value is one
   og:<style>:<sha12>         THIS generated photo is approved: sha256 of its bytes, 12 hex
   ig:IG-<1-5>[:<sha12>]      the same two for an infographic
 
+THE ROW. Every slot, hero, H2 and H3, has its `assets[]` row (slot, kind, w, h, required)
+from `boarded` on (`image-asset-row-missing`): ingest and publish only fill its `file` and
+`status`, which sit outside the hash, and adding the row later would un-approve the page.
+
 A generated image is approved only by the `:<sha12>` form, which names the exact bytes the
 breeder saw: regenerate the file and the pick no longer matches, and the build gate fails.
 
@@ -68,6 +72,9 @@ PICK = re.compile(rf"(?:file:(?P<file>{FILE_PATH})"
                   rf"|og:(?P<og>{'|'.join(map(re.escape, OG_STYLES))})(?::(?P<ogsha>[0-9a-f]{{12}}))?"
                   rf"|ig:(?P<ig>{'|'.join(map(re.escape, IG_STYLES))})(?::(?P<igsha>[0-9a-f]{{12}}))?)")
 DRAFT_EXTS = (".webp", ".png", ".jpg")
+
+# Not a build-gate id: approval and board block 7b show it and refuse it (Task 12a).
+ASSET_ROW_MISSING = "image-asset-row-missing"
 
 # The ids build_findings() can emit, and nothing else (a test drives every branch).
 PICK_INVALID = "image-pick-invalid"
@@ -162,6 +169,15 @@ def slot_findings(board):
         where = f"section {s['id']}" + (f", H3 {n['heading']!r}" if n is not None else "")
         for why in slot_problems(img):
             out.append(("image-slot-fields", "FAIL", f"slot {img['slot']} ({where}): {why}"))
+    # Task 12a: the row ingest and publish fill. Either adding it later would change the
+    # record hash and un-approve the page, so it is planned now, with the slot.
+    for s, n, img in IC.iter_slots(board):
+        if asset_row(board, img["slot"]) is None:
+            where = f"section {s['id']}" + (f", H3 {n['heading']!r}" if n is not None else "")
+            out.append((ASSET_ROW_MISSING, "FAIL",
+                        f"slot {img['slot']} ({where}): no assets[] row plans it — add "
+                        "{slot, kind, w, h, required} at boarding; ingest and publish only fill "
+                        "its file and status"))
     for slot, count in sorted(seen.items()):
         if count > 1:
             out.append(("image-slot-duplicate", "FAIL",
