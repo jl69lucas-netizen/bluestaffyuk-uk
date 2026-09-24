@@ -92,7 +92,7 @@ def hits_in(path):
     # file a silent pass, and an OSError is a real fault that belongs in the traceback.
     text = pathlib.Path(path).read_text(encoding="utf-8", errors="replace")
     out = []
-    lines = text.splitlines()
+    lines = text.split("\n")
     for n, line in enumerate(lines, 1):
         low = line.lower()
         matched = [m for m in MARKERS if _present(m, low)]

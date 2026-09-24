@@ -201,3 +201,22 @@ def test_the_wider_match_spares_ordinary_words(tmp_path, text):
 def test_a_split_marker_fails_the_gate(tmp_path):
     repo = _repo(tmp_path, files=[("rules/x.md", "Blue Staffy owners and African\nGreys\n")])
     assert main(repo) == 1
+
+
+# ── both passes number lines one way (review of fbef94f) ─────────────────────
+# The whole-file pass counts "\n"; the line pass must split on "\n" too, or a form feed or a
+# Unicode line separator earlier in the file shifts one pass's numbering and context.
+@pytest.mark.parametrize("text,line_no", [
+    ("intro\n\nsee the African\nGreys\n", 3),
+    ("a\x0cb c\nsee the African\nGreys\n", 2),
+])
+def test_a_split_marker_is_reported_on_the_line_where_it_starts(tmp_path, text, line_no):
+    repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
+    assert hits_in(repo / "CLAUDE.md") == [(line_no, "african grey", "see the African Greys")]
+
+
+def test_both_passes_number_lines_one_way(tmp_path):
+    text = "a\x0cb c\nAn African Gray\nsee the African\nGreys\n"
+    repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
+    assert [(n, m) for n, m, _ in hits_in(repo / "CLAUDE.md")] == [
+        (2, "african grey"), (3, "african grey")]
