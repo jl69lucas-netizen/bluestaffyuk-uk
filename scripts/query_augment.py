@@ -12,17 +12,21 @@ scripts/query_coverage_check.py gates.
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
       exit 0 recorded · 2 refused (a free source such as serp_bing, a bad cost, or a damaged
       spend log; nothing written)
-  query_augment.py --reconcile --balance USD [--opening USD] [--today YYYY-MM-DD]
+  query_augment.py --reconcile --balance USD [--opening USD] [--covers N] [--today YYYY-MM-DD]
       appends today's DataForSEO dashboard balance to data/queries/dashboard.json, covering
-      every call in the spend log so far; the guard then counts those calls at their real
-      cost (opening − balance) instead of their logged estimates. --opening (the balance
-      before the first paid call, plus any top-up) is needed on the first reading only.
-      exit 0 recorded · 2 refused (a bad amount, spend that would fall, the last reading's
-      balance repeated after new calls, or a damaged file; nothing written). Run by the
-      controller only, with a balance the user has just read — never by an agent.
+      every call in the spend log so far (or the first N, when calls were logged after the
+      user read the dashboard); the guard then counts those calls at their real cost
+      (opening − balance) instead of their logged estimates. --opening (the balance before
+      the first paid call, plus any top-up) is needed on the first reading only.
+      exit 0 recorded · 2 refused (a bad amount or N, a date before the last reading's,
+      spend that would fall, the last reading's balance repeated over new calls, or a
+      damaged file; nothing written). --balance, --opening and --covers go only with
+      --reconcile. Run by the controller only, with a balance the user has just read —
+      never by an agent.
   query_augment.py --budget SOURCE
       prints what the guard counts: the total against query_total_budget_usd, the typical
-      call for SOURCE, how many more such calls fit · exit 0 · 4 unreadable
+      call for SOURCE, how many more such calls fit; then how many entries the spend log
+      holds · exit 0 · 4 unreadable
   query_augment.py --extract-h2 FILE.html
       prints {"h2": [content H2s], "h2_all": N, "blocked": bool} (advert cards and
       navigation dropped; blocked = a bot challenge page) — how a competitors.json page's
@@ -857,12 +861,43 @@ DASHBOARD_SOURCE = "DataForSEO dashboard balance stated by the user"
 DAY_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 
+def _whole(n):
+    return isinstance(n, int) and not isinstance(n, bool)
+
+
+def _step_problem(last, cur):
+    """Why reading `cur` cannot follow reading `last`, or None. The same rules hold for a new
+    reading (reconcile) and for every pair in the file (load_dashboard), so a hand-edited
+    history fails closed exactly as a bad new reading is refused."""
+    if cur["date"] < last["date"]:
+        return (f"date {cur['date']} is earlier than the last reading's {last['date']}: "
+                "readings are appended in date order")
+    if cur["opening_balance_usd"] < last["opening_balance_usd"]:
+        return (f"opening {cur['opening_balance_usd']} is below the last reading's "
+                f"{last['opening_balance_usd']}: the opening only grows (add a top-up to it)")
+    was = round(last["opening_balance_usd"] - last["balance_usd"], 6)
+    now = round(cur["opening_balance_usd"] - cur["balance_usd"], 6)
+    if now < was:
+        return (f"real spend would fall from {was} to {now}: a balance cannot rise "
+                "without a top-up — add the top-up to --opening")
+    since = cur["covers_log_entries"] - last["covers_log_entries"]
+    if now == was and since:
+        # A balance already recorded is not a new reading: covering the calls made since
+        # it would count them at nothing. Only a fresh read of the dashboard may.
+        return (f"same balance as the last reading ({last['balance_usd']}, "
+                f"{last['date']}) but {since} calls logged since it — read the "
+                "dashboard again")
+    return None
+
+
 def load_dashboard(root, log_len):
     """The dashboard readings (data/queries/dashboard.json), checked; [] when there is none.
 
     Append-only, like the spend log: each reading is one balance the user read off the
     DataForSEO dashboard, and `covers_log_entries` is how many spend-log entries it already
-    includes. Anything malformed raises ValueError, which the guard turns into exit 4."""
+    includes. Every reading is checked on its own and against the one before it (the rules
+    reconcile applies). Anything malformed raises ValueError, which the guard turns into
+    exit 4."""
     path = Path(root) / "data/queries/dashboard.json"
     readings = _read_json(path, [])
     if not isinstance(readings, list):
@@ -876,13 +911,27 @@ def load_dashboard(root, log_len):
         if not (_finite(bal) and _finite(opening) and 0 <= bal <= opening):
             raise ValueError(f"{where}: balance_usd and opening_balance_usd must be finite, "
                              "with 0 <= balance <= opening")
-        if not (isinstance(n, int) and not isinstance(n, bool) and covered <= n <= log_len):
+        if not (_whole(n) and covered <= n <= log_len):
             raise ValueError(f"{where}: covers_log_entries must be a whole number from "
                              f"{covered} to {log_len} (the spend log's length)")
         if not (isinstance(r.get("date"), str) and DAY_RE.fullmatch(r["date"])):
             raise ValueError(f"{where}: date must be YYYY-MM-DD")
+        problem = _step_problem(readings[i - 1], r) if i else None
+        if problem:
+            raise ValueError(f"{where}: {problem}")
         covered = n
     return readings
+
+
+def _typical_setting(s):
+    """query_typical_call_usd: a finite amount above 0. Only a missing key falls back to
+    DEFAULT_TYPICAL_CALL_USD — an explicit 0 would let every call through at no cost."""
+    if "query_typical_call_usd" not in s:
+        return DEFAULT_TYPICAL_CALL_USD
+    v = s["query_typical_call_usd"]
+    if not (_finite(v) and v > 0):
+        raise ValueError(f"query_typical_call_usd must be a finite amount above 0, got {v!r}")
+    return v
 
 
 def spend_basis(source, root=ROOT):
@@ -892,8 +941,10 @@ def spend_basis(source, root=ROOT):
     query_typical_call_usd and every cost logged for `source` (the rule before Known Issue 45
     closed). With one: the calls the latest reading covers count at their REAL cost, opening
     minus balance, and only calls logged after it add their logged cost and set `typical`.
-    Raises on an unreadable file or a cost that is not a finite number."""
+    Raises on an unreadable file, a cost that is not a finite number, or a
+    query_typical_call_usd that is not a finite amount above 0."""
     s = load_settings(root)
+    configured = _typical_setting(s)
     log = load_spend(root)
     if not isinstance(log, list):
         raise TypeError("data/queries/spend.json is not a list")
@@ -909,17 +960,21 @@ def spend_basis(source, root=ROOT):
     else:
         later, basis = log, ""
         total = sum(e["cost_usd"] for e in log)
-    configured = s.get("query_typical_call_usd") or DEFAULT_TYPICAL_CALL_USD
     typical = max([e["cost_usd"] for e in later if e["source"] == source] + [configured])
     return round(total, 6), typical, basis
 
 
-def reconcile(balance, opening=None, root=ROOT, today=None):
-    """Append one dashboard reading that covers every spend-log entry so far. Refuses (with
-    ValueError, nothing written) a non-finite or negative amount, a balance above the opening,
-    a first reading with no opening, an opening below the last one, real spend that would fall,
-    real spend unchanged while calls were logged since the last reading (a balance repeated, not
-    read again), and a spend log or dashboard file it cannot read.
+def reconcile(balance, opening=None, root=ROOT, today=None, covers=None):
+    """Append one dashboard reading that covers the first `covers` spend-log entries (default:
+    every entry so far). Refuses (with ValueError, nothing written) a non-finite or negative
+    amount, a balance above the opening, a first reading with no opening, `covers` outside the
+    last reading's coverage .. the log's length, a date before the last reading's, an opening
+    below the last one, real spend that would fall, real spend unchanged while the reading
+    covers calls the last one did not (a balance repeated, not read again), and a spend log or
+    dashboard file it cannot read.
+
+    `covers` is how many logged calls the user's balance already includes: give it when calls
+    were logged after the user read the dashboard, so those keep their logged cost.
 
     Only the controller runs this, and only with a balance the user has just read off the
     dashboard; the agents never do."""
@@ -939,25 +994,17 @@ def reconcile(balance, opening=None, root=ROOT, today=None):
     if not (math.isfinite(balance) and math.isfinite(opening) and 0 <= balance <= opening):
         raise ValueError(f"need finite amounts with 0 <= balance <= opening, got balance "
                          f"{balance!r} and opening {opening!r}")
-    if readings:
-        last = readings[-1]
-        if opening < last["opening_balance_usd"]:
-            raise ValueError(f"opening {opening} is below the last reading's "
-                             f"{last['opening_balance_usd']}: the opening only grows (add a top-up to it)")
-        was, now = (round(last["opening_balance_usd"] - last["balance_usd"], 6),
-                    round(opening - balance, 6))
-        if now < was:
-            raise ValueError(f"real spend would fall from {was} to {now}: a balance cannot rise "
-                             "without a top-up — add the top-up to --opening")
-        since = len(log) - last["covers_log_entries"]
-        if now == was and since:
-            # A balance already recorded is not a new reading: covering the calls made since
-            # it would count them at nothing. Only a fresh read of the dashboard may.
-            raise ValueError(f"same balance as the last reading ({last['balance_usd']}, "
-                             f"{last['date']}) but {since} calls logged since it — read the "
-                             "dashboard again")
+    floor = readings[-1]["covers_log_entries"] if readings else 0
+    if covers is None:
+        covers = len(log)
+    if not (_whole(covers) and floor <= covers <= len(log)):
+        raise ValueError(f"covers must be a whole number from {floor} (the last reading's) to "
+                         f"{len(log)} (the spend log's length), got {covers!r}")
     reading = {"date": today, "balance_usd": balance, "opening_balance_usd": opening,
-               "covers_log_entries": len(log), "source": DASHBOARD_SOURCE}
+               "covers_log_entries": covers, "source": DASHBOARD_SOURCE}
+    problem = _step_problem(readings[-1], reading) if readings else None
+    if problem:
+        raise ValueError(problem)
     _write_json(Path(root) / "data/queries/dashboard.json", readings + [reading])
     return reading
 
@@ -983,7 +1030,8 @@ def _budget_check(slug, source, root, today):
 
 
 def budget_line(source, root=ROOT):
-    """The one line `--budget SOURCE` prints. Raises what spend_basis raises."""
+    """What `--budget SOURCE` prints: the guard's line, then the spend log's length (what a
+    reading made now would cover). Raises what spend_basis raises."""
     page_cap, total_cap = _caps(root)
     if page_cap is None:
         raise ValueError("query_budget_usd / query_total_budget_usd missing or not a number")
@@ -993,7 +1041,7 @@ def budget_line(source, root=ROOT):
     fit = max(0, math.floor(round((total_cap - total) / typical, 6)))
     return (f"budget {source}: total counted {total} of cap {total_cap}{basis}; typical call "
             f"{typical}; {fit} more calls of this source fit the total cap; page cap {page_cap} "
-            "per slug per day")
+            f"per slug per day\nspend log holds {len(load_spend(root))} entries")
 
 
 def preflight(slug, source, root=ROOT, refresh=False, today=None):
@@ -1271,6 +1319,7 @@ def main(argv=None):
     ap.add_argument("--reconcile", action="store_true")
     ap.add_argument("--balance", type=float)
     ap.add_argument("--opening", type=float)
+    ap.add_argument("--covers", type=int)
     ap.add_argument("--budget", metavar="SOURCE", choices=PAID_SOURCES)
     a = ap.parse_args(argv)
     root = Path(a.root)
@@ -1281,18 +1330,22 @@ def main(argv=None):
                  "--budget SOURCE, --extract-h2 FILE or a build SLUG")
     if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
         ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
+    if not a.reconcile and any(x is not None for x in (a.balance, a.opening, a.covers)):
+        ap.error("--balance, --opening and --covers go only with --reconcile")
     if a.reconcile:
         if a.balance is None:
             ap.error("--reconcile needs --balance USD (today's DataForSEO dashboard balance)")
         try:
-            r = reconcile(a.balance, a.opening, root, a.today)
+            r = reconcile(a.balance, a.opening, root, a.today, a.covers)
         except (ValueError, TypeError) as e:   # nothing written
             print(f"query_augment.py: --reconcile refused: {e}", file=sys.stderr)
             return EXIT_USAGE
         spent = round(r["opening_balance_usd"] - r["balance_usd"], 6)
+        later = len(load_spend(root)) - r["covers_log_entries"]
         print(f"recorded dashboard reading {r['date']}: balance {r['balance_usd']} of opening "
               f"{r['opening_balance_usd']} — real spend {spent} over the "
-              f"{r['covers_log_entries']} logged calls")
+              f"{r['covers_log_entries']} logged calls"
+              + (f"; {later} later calls count at their logged cost" if later else ""))
         return EXIT_OK
     if a.budget:
         try:

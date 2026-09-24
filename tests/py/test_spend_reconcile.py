@@ -320,13 +320,131 @@ def test_cli_budget_prints_what_the_guard_counts(tmp_path):
     Q.reconcile(0.96785, 1.0, root, today=DAY)
     r = run(root, "--budget", "ai_engines")
     assert r.returncode == 0, r.stderr
-    assert r.stdout.strip() == (
+    assert r.stdout.splitlines() == [
         "budget ai_engines: total counted 0.03215 of cap 1.0 (dashboard 2026-09-23 covers 14 of "
         "14 log entries); typical call 0.01; 96 more calls of this source fit the total cap; "
-        "page cap 0.5 per slug per day")
+        "page cap 0.5 per slug per day",
+        "spend log holds 14 entries"]
 
 
 def test_cli_budget_on_a_damaged_dashboard_exits_4(tmp_path):
     root = make_root(tmp_path, dashboard="{not json")
     r = run(root, "--budget", "ai_engines")
     assert r.returncode == Q.EXIT_BUDGET and "Traceback" not in r.stderr
+
+
+# --- review fixes: a positive typical cost, --covers, the whole file checked ----------------------
+
+@pytest.mark.parametrize("typical", [0, -0.01, None, "0.01", float("nan")])
+def test_a_typical_call_setting_that_is_not_positive_blocks_calls(tmp_path, capsys, typical):
+    # an explicit 0 (or worse) would let calls through at no cost; only a missing key falls back
+    root = make_root(tmp_path, settings={**SETTINGS, "query_typical_call_usd": typical})
+    assert Q.preflight("p", "ai_engines", root, today=TODAY) == Q.EXIT_BUDGET
+    assert "query_typical_call_usd" in capsys.readouterr().err
+    Q.reconcile(0.96785, 1.0, root, today=DAY)          # a reading does not unblock it
+    assert Q.preflight("p", "ai_engines", root, today=TODAY) == Q.EXIT_BUDGET
+    assert run(root, "--budget", "ai_engines").returncode == Q.EXIT_BUDGET
+
+
+def test_a_missing_typical_call_setting_falls_back_to_the_default(tmp_path):
+    settings = {k: v for k, v in SETTINGS.items() if k != "query_typical_call_usd"}
+    root = make_root(tmp_path, settings=settings)
+    Q.reconcile(0.96785, 1.0, root, today=DAY)
+    assert Q.spend_basis("ai_engines", root)[1] == Q.DEFAULT_TYPICAL_CALL_USD
+
+
+def test_covers_leaves_calls_the_user_did_not_see_at_their_logged_cost(tmp_path):
+    # the dashboard was read after 13 calls; the 14th (a 0.10 ChatGPT estimate) came later
+    root = make_root(tmp_path)
+    r = Q.reconcile(0.96785, 1.0, root, today=DAY, covers=13)
+    assert r["covers_log_entries"] == 13
+    total, typical, basis = Q.spend_basis("ai_engines", root)
+    assert (total, typical) == (round(0.03215 + 0.1, 6), 0.1)
+    assert "covers 13 of 14 log entries" in basis
+
+
+@pytest.mark.parametrize("covers", [15, -1, 2, True, 1.5])
+def test_covers_out_of_range_is_refused(tmp_path, covers):
+    root = make_root(tmp_path, log=real_shaped_log()[:3])
+    Q.reconcile(0.99185, 1.0, root, today=DAY)           # covers 3
+    (root / "data/queries/spend.json").write_text(json.dumps(real_shaped_log()))
+    before = (root / "data/queries/dashboard.json").read_text()
+    with pytest.raises(ValueError, match="covers"):
+        Q.reconcile(0.96785, None, root, today=DAY, covers=covers)
+    assert (root / "data/queries/dashboard.json").read_text() == before
+
+
+def test_the_same_balance_covering_no_new_calls_is_accepted(tmp_path):
+    # four calls since, but the reading does not claim them: they keep their logged cost
+    root = make_root(tmp_path)
+    Q.reconcile(0.96785, 1.0, root, today=DAY)
+    buy_all(root, CITIES[:4])
+    Q.reconcile(0.96785, None, root, today=TODAY, covers=14)
+    assert Q.spend_basis("ai_engines", root)[0] == round(0.03215 + 4 * 0.01, 6)
+
+
+def test_a_reading_dated_before_the_last_one_is_refused(tmp_path):
+    root = make_root(tmp_path)
+    Q.reconcile(0.96785, 1.0, root, today=TODAY)
+    before = (root / "data/queries/dashboard.json").read_text()
+    with pytest.raises(ValueError, match="earlier than the last reading"):
+        Q.reconcile(0.96785, None, root, today=DAY)
+    assert (root / "data/queries/dashboard.json").read_text() == before
+
+
+@pytest.mark.parametrize("second", [
+    {**GOOD, "opening_balance_usd": 0.9, "balance_usd": 0.5},      # the opening fell
+    {**GOOD, "balance_usd": 0.98},                                  # real spend fell
+    {**GOOD, "date": "2026-09-22"},                                 # dated before the first
+])
+def test_a_hand_edited_dashboard_history_fails_closed(tmp_path, capsys, second):
+    root = make_root(tmp_path, dashboard=[GOOD, second])
+    assert Q.preflight("p", "ai_engines", root, today=TODAY) == Q.EXIT_BUDGET
+    assert "cannot read" in capsys.readouterr().err
+    before = (root / "data/queries/dashboard.json").read_text()
+    with pytest.raises(ValueError):
+        Q.reconcile(0.9, None, root, today=TODAY)
+    assert (root / "data/queries/dashboard.json").read_text() == before
+
+
+def test_a_hand_edited_repeat_balance_covering_new_calls_fails_closed(tmp_path, capsys):
+    first = {**GOOD, "balance_usd": 0.99185, "covers_log_entries": 3}
+    root = make_root(tmp_path, dashboard=[first, {**first, "covers_log_entries": 14}])
+    assert Q.preflight("p", "ai_engines", root, today=TODAY) == Q.EXIT_BUDGET
+    assert "read the dashboard again" in capsys.readouterr().err
+
+
+def test_cli_reconcile_covers(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "--reconcile", "--balance", "0.96785", "--opening", "1.0", "--covers", "13",
+            "--today", DAY)
+    assert r.returncode == 0, r.stderr
+    assert "over the 13 logged calls" in r.stdout and "1 later calls" in r.stdout
+    assert readings(root)[0]["covers_log_entries"] == 13
+    r = run(root, "--reconcile", "--balance", "0.9", "--covers", "15", "--today", DAY)
+    assert r.returncode == Q.EXIT_USAGE and "Traceback" not in r.stderr
+    assert len(readings(root)) == 1
+
+
+@pytest.mark.parametrize("args", [
+    ("--budget", "ai_engines", "--balance", "0.9"),
+    ("--budget", "ai_engines", "--opening", "1.0"),
+    ("--budget", "ai_engines", "--covers", "3"),
+    ("--preflight", "p", "--source", "ai_engines", "--balance", "0.9"),
+])
+def test_cli_reading_flags_need_reconcile(tmp_path, args):
+    root = make_root(tmp_path)
+    r = run(root, *args)
+    assert r.returncode == Q.EXIT_USAGE and "only with --reconcile" in r.stderr
+    assert not (root / "data/queries/dashboard.json").exists()
+    assert json.loads((root / "data/queries/spend.json").read_text()) == real_shaped_log()
+
+
+def test_cli_budget_always_prints_the_log_length(tmp_path):
+    root = make_root(tmp_path)
+    r = run(root, "--budget", "ai_engines")
+    assert r.returncode == 0, r.stderr
+    assert r.stdout.splitlines() == [
+        "budget ai_engines: total counted 0.8 of cap 1.0; typical call 0.1; 2 more calls of this "
+        "source fit the total cap; page cap 0.5 per slug per day",
+        "spend log holds 14 entries"]
