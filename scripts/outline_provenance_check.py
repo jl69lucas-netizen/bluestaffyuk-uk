@@ -33,9 +33,10 @@ leaves behind on a built page, for location, comparison and blog pages only
 Each shared passage or sentence is ONE line, naming every page it is also on.
 
 BODY means the page's top-level `<section data-section-label>` blocks inside <main> whose id
-names a board section of a body shape. The frame is never body: a section whose board shape
-is in FRAME_SHAPES (hero, takeaways, stats, reviews, FAQ, form, trust strip, puppy grid,
-divider and the chrome shapes), a section whose id is in query_coverage_check.FRAME_IDS
+names a board section scripts/page_sections.py counts as body. The frame is never body: a
+section whose board shape is in page_sections.FRAME_SHAPES (hero, takeaways, stats, reviews,
+FAQ, form, trust strip, puppy grid, divider and the chrome shapes), an FAQ block (shape `faq`
+or a section carrying `questions`), a section whose id is in page_sections.FRAME_IDS
 (#top, #key-takeaways, #newsletter), and anything inside a frame component
 (query_coverage_check.FRAME_CLASSES), a <form>, a <details> or a <nav>. The outline compared
 is each body section's H2 and the level-3 nodes of its tree, in record order. H4-H6 are the
@@ -69,15 +70,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import dup_content_audit as DUP  # noqa: E402  (whitelists, crossovers, specimen routes)
 import family_rules as FR  # noqa: E402
 from _slugs import page_key  # noqa: E402
-from query_coverage_check import FRAME_CLASSES, FRAME_IDS  # noqa: E402
+from query_coverage_check import FRAME_CLASSES  # noqa: E402
 import page_sections as PS  # noqa: E402  (the route resolver image_candidates shares)
 
 ROOT = Path(__file__).resolve().parents[1]
 APPROVED = ("approved", "built", "released")
-# Board shapes that render the fixed frame (docs/reference/location-page-template.md, "The
-# fixed frame") or site chrome, never prose written from the outline.
-FRAME_SHAPES = frozenset({"hero", "takeaways", "stats", "trust", "reviews", "faq", "form",
-                          "puppies", "divider", "dial", "sheet", "strip", "nav"})
+# Board shapes and ids that render the fixed frame (docs/reference/location-page-template.md,
+# "The fixed frame") or site chrome, never prose written from the outline: one definition,
+# scripts/page_sections.py.
+FRAME_SHAPES, FRAME_IDS = PS.FRAME_SHAPES, PS.FRAME_IDS
 SKIP_TAGS = {"script", "style", "template", "noscript", "form", "details", "nav"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
@@ -142,16 +143,14 @@ def outline(board):
             if n.get("level") == 3:
                 out.append((sid, 3, norm(n["heading"]), n["heading"]))
             walk(sid, n.get("children"))
-    for s in board.get("sections", []):
-        if s.get("shape") in FRAME_SHAPES or s.get("id") in FRAME_IDS:
-            continue
+    for s in PS.body_sections(board):
         out.append((s["id"], 2, norm(s["heading"]), s["heading"]))
         walk(s["id"], s.get("tree"))
     return out
 
 
-def board_section_ids(board):
-    return {s.get("id"): s.get("shape") for s in board.get("sections", [])}
+def board_sections(board):
+    return {s.get("id"): s for s in board.get("sections", [])}
 
 
 # ── the built page ────────────────────────────────────────────────────────────────────────
@@ -315,16 +314,16 @@ def check_page(board, html, others, cities=None):
     page = parse(html)
     if not page.sections:
         return [("outline-no-main", "no <main> with <section data-section-label> blocks found")]
-    shapes = board_section_ids(board)
+    sections = board_sections(board)
     body = []
     for s in page.sections:
         if s["frame"]:
             continue
-        if s["id"] not in shapes:
+        if s["id"] not in sections:
             problems.append(("outline-unknown-section",
                              f"section #{s['id'] or '(no id)'} is not a section of the board record"))
             continue
-        if shapes[s["id"]] in FRAME_SHAPES or s["id"] in FRAME_IDS:
+        if PS.is_frame(sections[s["id"]]):
             continue
         body.append(s)
 

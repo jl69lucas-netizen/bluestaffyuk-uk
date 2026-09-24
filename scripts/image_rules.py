@@ -11,15 +11,12 @@ names where its image comes from (`source`):
   generate       a new OG photo per IMAGE-DESIGNS.md        needs `prompt` and `og_style`
   infographic    a new infographic per IMAGE-DESIGNS.md     needs `infographic_style`, kind infographic
 
-WHAT IS NOT BODY. The fixed frame of docs/reference/location-page-template.md, spelled as
-the record spells it: the hero (checked on its own), and every section whose shape is a
-frame part — stats (counter), trust, nav/dial/sheet/strip (contents), takeaways, reviews,
-faq, form, divider — or whose id is one scripts/query_coverage_check.py treats as frame
-(`top`, `key-takeaways`, `newsletter`). An FAQ BLOCK is a section of shape `faq`, or any
-section carrying `questions` (the older spelling: a standard section with id `faq`), and
-every H3 inside one is a question, so FAQ-block H3s are never asked for an image. `video`
-and `puppies` sections are exempt too: their media is the video or the puppy cards.
-Body H3s are the level-3 nodes of a body section's tree, at any depth.
+WHAT IS NOT BODY. scripts/page_sections.py defines it once for every board script: the frame
+shapes (the hero is checked on its own), the frame ids, and FAQ blocks (shape `faq`, or any
+section carrying `questions`), whose H3s are questions and never asked for an image. This
+rule also exempts page_sections.OWN_MEDIA_SHAPES, `video` and `puppies`: their media is the
+video or the puppy cards. Body H3s are the level-3 nodes of a body section's tree, at any
+depth.
 
 THE PICK. The board writes one radio group per slot, `pick-img:<slot>`, and the approve
 button stores the answer as `approval.picks["img:<slot>"]` — outside `record_hash`, like
@@ -51,16 +48,14 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import image_candidates as IC  # noqa: E402
+import page_sections as PS  # noqa: E402  (one definition of frame, FAQ block and body)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SOURCES = ("existing", "assets-folder", "generate", "infographic")
 OG_STYLES = ("A", "B", "C", "D", "E", "H")
 IG_STYLES = ("IG-1", "IG-2", "IG-3", "IG-4", "IG-5")
 PICK_PREFIX = "img:"
-FRAME_SHAPES = frozenset({"stats", "trust", "nav", "dial", "sheet", "strip", "takeaways",
-                          "reviews", "faq", "form", "divider"})
-OWN_MEDIA_SHAPES = frozenset({"video", "puppies"})
-FRAME_IDS = frozenset({"top", "key-takeaways", "newsletter"})
+OWN_MEDIA_SHAPES = PS.OWN_MEDIA_SHAPES
 SCOPE_STATUSES = ("boarded", "approved", "built", "released")
 APPROVED_STATUSES = ("approved", "built", "released")
 SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
@@ -87,15 +82,12 @@ BUILD_CHECK_IDS = frozenset({PICK_INVALID, EXISTING_MISSING, ASSET_NOT_INGESTED,
 
 
 # ── which headings are body ───────────────────────────────────────────────────────────
-def is_faq_block(section):
-    return section["shape"] == "faq" or bool(section.get("questions"))
+is_faq_block = PS.is_faq_block
 
 
 def body_sections(board):
-    return [s for s in board["sections"]
-            if s["shape"] != "hero" and s["shape"] not in FRAME_SHAPES
-            and s["shape"] not in OWN_MEDIA_SHAPES and s["id"] not in FRAME_IDS
-            and not is_faq_block(s)]
+    """The shared body (page_sections), less the sections whose media is their own."""
+    return [s for s in PS.body_sections(board) if s["shape"] not in OWN_MEDIA_SHAPES]
 
 
 def body_h3s(section):

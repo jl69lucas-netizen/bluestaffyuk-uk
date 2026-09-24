@@ -103,6 +103,8 @@ import link_diversity  # noqa: E402,F401
 # record can be approved. Cross-page collisions are already pageboard's `header-collision`.
 import re as _re
 
+import page_sections as PS  # noqa: E402  (one FAQ-block test: shape faq, or `questions`)
+
 _HEADING_TOKEN = _re.compile(r"[\w£$']+")   # keeps £, accented letters and digits
 
 
@@ -130,7 +132,7 @@ def outline_heading_repeat(board, ont):
         # the blog hub, contact and thank-you pages), so that pair is one heading, not two.
         if not (s.get("shape") == "hero" and _heading_key(s.get("heading")) == h1_key):
             heads.append((f"section {sid!r} H2", s.get("heading")))
-        if s.get("shape") != "faq":   # an FAQ tree holds data/faq.json row ids, not headings
+        if not PS.is_faq_block(s):   # an FAQ tree holds data/faq.json row ids, not headings
             walk(s.get("tree"), sid)
     seen = {}
     for place, text in heads:
