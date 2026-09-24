@@ -83,3 +83,17 @@ def test_the_assets_row_sentence_is_in_image_designs_and_every_builder_item_5():
         item5 = _block(p.read_text()).split("5. **Images.**", 1)[1].split("\n6. ", 1)[0]
         assert ASSET_ROW_SENTENCE in flat(item5), p
         assert "image-asset-row-missing" in item5, p
+
+
+KV_CALL = "`python3 scripts/keyword_variants.py <board slug or query-cache folder>`"
+
+
+def test_the_keyword_helper_is_documented_with_the_board_slug():
+    """Task 12a item 2: the script resolves a board slug, and every doc says it may be given one."""
+    for p in SKILLS:
+        item1 = _block(p.read_text()).split("1. **Keywords.**", 1)[1].split("\n2. ", 1)[0]
+        assert KV_CALL in item1, p
+        assert "keyword_variants.py <slug>" not in p.read_text(), p
+    rule = (ROOT / "docs/reference/WORKFLOW.md").read_text().split(
+        "13. **Project 5 page rules (system-gaps)**", 1)[1]
+    assert KV_CALL in rule

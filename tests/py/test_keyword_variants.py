@@ -270,10 +270,58 @@ def test_blank_terms_do_not_fill_a_type():
     assert len(f) == 1 and f[0][1] == "FAIL" and "similar" in f[0][2]
 
 
-def test_the_hint_names_a_query_slug_not_the_board_slug():
+def test_the_hint_takes_the_board_slug_or_the_cache_folder():
     msg = _kv(_demo(status="boarded"))[0][2]
-    assert "python3 scripts/keyword_variants.py <query-slug>" in msg
-    assert "blue-staffy-puppies-manchester-uk" in msg
+    assert "`python3 scripts/keyword_variants.py <board slug or query-cache folder>`" in msg
+    assert "uk-locations/blue-staffy-puppies-manchester-uk" in msg
+
+
+# --- Task 12a item 2: the board slug resolves to its query-cache folder ---------------------
+
+def _cli(root, *args):
+    return subprocess.run([sys.executable, str(SCRIPT), *args, "--root", str(root)],
+                          capture_output=True, text=True)
+
+
+def test_a_nested_board_slug_resolves_to_its_cache_folder(tmp_path):
+    root = _root(tmp_path)
+    assert KV.resolve_cache("uk-locations/blue-staffy-puppies-testtown", root) == "blue-staffy-puppies-testtown"
+    r = _cli(root, "uk-locations/blue-staffy-puppies-testtown")
+    assert r.returncode == 0, r.stderr
+    assert json.loads(r.stdout)["slug"] == "blue-staffy-puppies-testtown"
+
+
+def test_a_bare_board_slug_maps_to_its_uk_folder(tmp_path):
+    root = _root(tmp_path)
+    (root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown").rename(
+        root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown-uk")
+    (root / "data" / "queries" / "blue-staffy-puppies-testtown.json").unlink()
+    assert KV.resolve_cache("blue-staffy-puppies-testtown", root) == "blue-staffy-puppies-testtown-uk"
+    assert KV.resolve_cache("uk-locations/blue-staffy-puppies-testtown", root) == "blue-staffy-puppies-testtown-uk"
+    r = _cli(root, "uk-locations/blue-staffy-puppies-testtown")
+    assert r.returncode == 0, r.stderr
+
+
+def test_a_unique_prefix_resolves_and_an_existing_folder_is_taken_as_it_is(tmp_path):
+    root = _root(tmp_path)
+    assert KV.resolve_cache("blue-staffy-puppies-test", root) == "blue-staffy-puppies-testtown"
+    assert KV.resolve_cache("blue-staffy-puppies-testtown", root) == "blue-staffy-puppies-testtown"
+
+
+def test_an_ambiguous_or_unknown_slug_exits_6_naming_close_folders(tmp_path):
+    root = _root(tmp_path)
+    raw = root / "data" / "queries" / "raw"
+    for name in ("blue-staffy-puppies-testtown-north", "registry-staffy-puppies-testtown"):
+        (raw / name).mkdir()
+    with pytest.raises(KV.CacheNotFound) as e:
+        KV.resolve_cache("uk-locations/blue-staffy-puppies-test", root)
+    assert e.value.candidates == ["blue-staffy-puppies-testtown", "blue-staffy-puppies-testtown-north"]
+    r = _cli(root, "uk-locations/blue-staffy-puppies-test")
+    assert r.returncode == 6
+    assert "blue-staffy-puppies-testtown, blue-staffy-puppies-testtown-north" in r.stderr
+    r = _cli(root, "uk-locations/staffy-puppies-testtwn")
+    assert r.returncode == 6 and "registry-staffy-puppies-testtown" in r.stderr
+    assert len(KV.close_folders("x", [f"f{i}" for i in range(20)] + ["x1", "x2"])) <= 5
 
 
 def test_an_empty_or_unreadable_cache_folder_exits_6(tmp_path):

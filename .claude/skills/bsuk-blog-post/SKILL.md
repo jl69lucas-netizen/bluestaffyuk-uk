@@ -256,8 +256,9 @@ The `keyword-variants-missing` check in `scripts/family_rules.py` warns on a dra
 from `boarded` on. The twelve pages built before this rule are never asked.
 
 Where the terms come from: after the query augmentation has cached its files and before the
-outline is boarded, run `python3 scripts/keyword_variants.py <slug>`. It reads the cached
-files under `data/queries/` only (no paid call) and proposes each list with the source of
+outline is boarded, run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+(the board slug resolves to its cache folder, e.g. `uk-locations/blue-staffy-puppies-manchester`
+→ `blue-staffy-puppies-manchester-uk`). It reads the cached files under `data/queries/` only (no paid call) and proposes each list with the source of
 every term: variations are spellings of the head term the cached text actually uses, related
 terms are the search engine's related-searches box, co-occurring terms are phrases found in
 two or more cached documents, and similar terms are how the ranking pages word the same
@@ -299,10 +300,10 @@ These bind every location, comparison and blog-post page built from 2026-09-24 o
 board refuses the record until each holds (`scripts/family_rules.py`); none of them applies
 to the twelve pages built before.
 
-1. **Keywords.** Run `python3 scripts/keyword_variants.py <slug>` (add `--also <cache dir>`
-   when a registry folder holds the page's SERP) and write its proposals into the sections'
-   `keywords.variation`, `related`, `cooccurring` and `similar`, keeping only terms the
-   section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
+1. **Keywords.** Run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+   (add `--also <cache dir>` when a registry folder holds the page's SERP) and write its
+   proposals into the sections' `keywords.variation`, `related`, `cooccurring` and `similar`,
+   keeping only terms the section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
 2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
    is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
    evidence ledger holds it. The board shows them by class.

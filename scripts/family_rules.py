@@ -86,9 +86,8 @@ def keyword_variants_filled(board, ont):
     yield ("keyword-variants-missing", sev,
            f"no section carries a {', '.join(missing)} keyword — a new location, comparison or "
            "blog page names at least one term of each type; run "
-           "`python3 scripts/keyword_variants.py <query-slug>` (the cache folder under "
-           f"data/queries/raw/, e.g. {board['meta']['slug'].split('/')[-1]}) for a proposal "
-           "from the cached query data")
+           "`python3 scripts/keyword_variants.py <board slug or query-cache folder>` (e.g. "
+           f"{board['meta']['slug']}) for a proposal from the cached query data")
 
 
 # ── Tasks 4 and 5 (system-gaps): external-link diversity and anchor types ───────────────

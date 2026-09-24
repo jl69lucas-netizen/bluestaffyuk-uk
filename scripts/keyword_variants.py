@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """keyword_variants.py SLUG [--also DIR ...] [--root DIR]
 
+SLUG is the board slug or the query-cache folder: `uk-locations/blue-staffy-puppies-manchester`,
+`blue-staffy-puppies-manchester` and `blue-staffy-puppies-manchester-uk` all read
+data/queries/raw/blue-staffy-puppies-manchester-uk/. A slug with a `/`, or one with no cache of
+its own, is resolved by its last segment: the folder of that name, else `<segment>-uk`, else
+the one folder whose name starts with the segment (resolve_cache()).
+
 Proposes the four optional keyword types a new location, comparison or blog board carries
 (`variation`, `related`, `cooccurring`, `similar`) from the query files
 bsuk-query-augmentation has ALREADY cached under data/queries/. It reads files only: no
@@ -31,10 +37,12 @@ Prints JSON: {"slug", "primary", "buckets": {type: [{"term", "sources", "df"}]},
 surface form occurs across the cached texts; for `related` and `similar` it is how many
 times the same term was listed (duplicates across files merged into one entry); for
 `cooccurring` it is how many distinct cached documents contain the phrase (always >= 2).
-Exit 0 printed · 2 bad usage (a slug outside [a-z0-9-]) · 6 no cached query data for SLUG,
-or a cache folder with nothing readable in it (run bsuk-query-augmentation first).
+Exit 0 printed · 2 bad usage (a slug outside [a-z0-9-] and `/`) · 6 no cached query data for
+SLUG (the message lists up to five close folder names), or a cache folder with nothing readable
+in it (run bsuk-query-augmentation first).
 """
 import argparse
+import difflib
 import json
 import re
 import sys
@@ -48,6 +56,8 @@ from query_augment import SYNONYMS, normalise  # noqa: E402  one spelling per th
 
 EXIT_OK, EXIT_USAGE, EXIT_NO_CACHE = 0, 2, 6
 SLUG = re.compile(r"^[a-z0-9-]+$")
+BOARD_SLUG = re.compile(r"^[a-z0-9-]+(?:/[a-z0-9-]+)*$")
+CLOSE_MAX = 5
 BUCKET_CAP = {"variation": 8, "related": 10, "cooccurring": 12, "similar": 8}
 
 STOP = frozenset("""a an the and or of to in on for with is are be can do does did i you your my
@@ -327,6 +337,47 @@ def _cooccurring(corpus, geo):
     return [{"term": g, "sources": where[g], "df": keep[g]} for g in ranked][:BUCKET_CAP["cooccurring"]]
 
 
+class CacheNotFound(Exception):
+    """No single query-cache folder answers a slug; `candidates` are the closest names."""
+
+    def __init__(self, arg, candidates):
+        super().__init__(arg)
+        self.arg, self.candidates = arg, candidates
+
+
+def _cache_folders(root):
+    raw = Path(root) / "data" / "queries" / "raw"
+    return sorted(p.name for p in raw.iterdir() if p.is_dir()) if raw.is_dir() else []
+
+
+def _has_cache(name, root):
+    q = Path(root) / "data" / "queries"
+    return (q / "raw" / name).is_dir() or (q / f"{name}.json").is_file()
+
+
+def close_folders(seg, folders):
+    """Up to CLOSE_MAX folder names that look like `seg`, closest first."""
+    return difflib.get_close_matches(seg, folders, n=CLOSE_MAX, cutoff=0.5)
+
+
+def resolve_cache(arg, root=ROOT):
+    """The query-cache folder name for a board slug or a folder name. A name with a cache of
+    its own and no `/` is itself; otherwise the last segment is matched against the folders
+    under data/queries/raw/: exact, then `<segment>-uk`, then the one folder that starts with
+    the segment. Raises CacheNotFound (with up to five close names) when none or several fit."""
+    if "/" not in arg and _has_cache(arg, root):
+        return arg
+    seg = arg.strip("/").rsplit("/", 1)[-1]
+    folders = _cache_folders(root)
+    for name in (seg, seg + "-uk"):
+        if name in folders or _has_cache(name, root):
+            return name
+    starts = [f for f in folders if f.startswith(seg)]
+    if len(starts) == 1:
+        return starts[0]
+    raise CacheNotFound(arg, starts[:CLOSE_MAX] if starts else close_folders(seg, folders))
+
+
 def propose(slug, root=ROOT, also=()):
     corpus = load_corpus(slug, root)
     if corpus is None:
@@ -360,10 +411,21 @@ def main(argv=None):
     ap.add_argument("--also", action="append", default=[], metavar="DIR")
     ap.add_argument("--root", default=str(ROOT))
     args = ap.parse_args(argv)
-    bad = [s for s in [args.slug, *args.also] if not SLUG.match(s)]
+    bad = ([args.slug] if not BOARD_SLUG.match(args.slug) else []) + [s for s in args.also if not SLUG.match(s)]
     if bad:
         print(f"keyword_variants: not a slug: {bad[0]!r}", file=sys.stderr)
         return EXIT_USAGE
+    try:
+        folder = resolve_cache(args.slug, Path(args.root))
+    except CacheNotFound as e:
+        near = ", ".join(e.candidates) if e.candidates else "none"
+        print(f"keyword_variants: no single query-cache folder under data/queries/raw/ for {args.slug} "
+              f"(closest: {near}) — pass one of those, or run bsuk-query-augmentation first",
+              file=sys.stderr)
+        return EXIT_NO_CACHE
+    if folder != args.slug:
+        print(f"keyword_variants: {args.slug} → data/queries/raw/{folder}/", file=sys.stderr)
+    args.slug = folder
     out = propose(args.slug, Path(args.root), args.also)
     if out is None:
         print(f"keyword_variants: no cached query data for {' / '.join([args.slug, *args.also])} under data/queries/ — "
