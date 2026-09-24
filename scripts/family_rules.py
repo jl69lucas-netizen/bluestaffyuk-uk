@@ -54,3 +54,37 @@ def findings(board, ont):
     for fn in CHECKS:
         out.extend(fn(board, ont))
     return out
+
+
+# ── System-gaps Task 1: keyword variations, related, co-occurring and similar terms ──────────
+#
+# The four types are optional in the schema, so the twelve built records keep their hashes;
+# on a new-family page each must carry at least one term somewhere on the page. Page-wide,
+# not per section: a variation belongs where it reads naturally, and a per-section floor
+# would push four bolted-on terms into every FAQ and CTA block.
+#
+# FAIL from `boarded` on, WARN on a draft. A draft is written before the outline is placed,
+# so failing it would make the board unreachable; once the breeder is shown the board the
+# terms are part of what they approve, and a WARN there is a term nobody ever writes. The
+# FAIL costs nothing to clear: scripts/keyword_variants.py proposes all four from the query
+# files bsuk-query-augmentation already cached, with no paid call.
+#
+# The tuple is spelled here rather than imported: pageboard imports this module, so reading
+# PB.OPTIONAL_KEYWORD_TYPES would be a circular import. tests/py/test_keyword_variants.py
+# pins the two to each other.
+KEYWORD_VARIANT_TYPES = ("variation", "related", "cooccurring", "similar")
+_BOARDED_OR_LATER = ("boarded", "approved", "built", "released")
+
+
+@register
+def keyword_variants_filled(board, ont):
+    missing = [k for k in KEYWORD_VARIANT_TYPES
+               if not any(s["keywords"].get(k) for s in board["sections"])]
+    if not missing:
+        return
+    sev = "FAIL" if board["meta"]["status"] in _BOARDED_OR_LATER else "WARN"
+    yield ("keyword-variants-missing", sev,
+           f"no section carries a {', '.join(missing)} keyword — a new location, comparison or "
+           "blog page names at least one term of each type; run "
+           f"`python3 scripts/keyword_variants.py {board['meta']['slug'].split('/')[-1]}` for a "
+           "proposal from the cached query data")

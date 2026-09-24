@@ -983,16 +983,23 @@ def authorization_check(board, ont):
 
 KEYWORD_TYPES = ("primary", "lsi", "longtail", "brand", "geo",
                  "conversational", "comparison", "solution", "transactional")
+# System-gaps build (2026-09-24): four OPTIONAL types. The schema lists them as properties
+# but not as `required`, so the twelve records built before them validate unchanged and keep
+# their approval hash; every reader takes them with `.get(k, [])`. family_rules makes them
+# mandatory on the new families only (check `keyword-variants-missing`).
+OPTIONAL_KEYWORD_TYPES = ("variation", "related", "cooccurring", "similar")
+ALL_KEYWORD_TYPES = KEYWORD_TYPES + OPTIONAL_KEYWORD_TYPES
 KEYWORD_LABELS = {"primary": "Primary", "lsi": "LSI", "longtail": "Long-tail", "brand": "Brand", "geo": "Geo",
-                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact"}
+                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact",
+                  "variation": "Variations", "related": "Related", "cooccurring": "Co-occurring", "similar": "Similar"}
 
 
 def distribution(board):
-    rows, totals = [], {**{k: 0 for k in KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
+    rows, totals = [], {**{k: 0 for k in ALL_KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
     for s in board["sections"]:
         row = {"section": s["id"], "heading": s["heading"]}
-        for k in KEYWORD_TYPES:
-            row[k] = len(s["keywords"][k]); totals[k] += row[k]
+        for k in ALL_KEYWORD_TYPES:
+            row[k] = len(s["keywords"].get(k, [])); totals[k] += row[k]
         row["words_min"], row["words_max"] = s["words"]["min"], s["words"]["max"]
         totals["words_min"] += row["words_min"]; totals["words_max"] += row["words_max"]
         rows.append(row)

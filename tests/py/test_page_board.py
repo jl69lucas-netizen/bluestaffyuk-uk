@@ -410,6 +410,7 @@ def test_distribution_totals_add_across_two_sections():
     assert [r["section"] for r in d["rows"]] == ["puppies", "shipping"]
     assert d["totals"] == {"primary": 2, "lsi": 1, "longtail": 0, "brand": 1, "geo": 2,
                            "conversational": 0, "comparison": 0, "solution": 0, "transactional": 0,
+                           "variation": 0, "related": 0, "cooccurring": 0, "similar": 0,
                            "words_min": 650, "words_max": 900}
     assert d["h_counts"] == {"h1": 1, "h2": 2, "h3": 1, "h4": 1, "h5": 1, "h6": 1}
 
@@ -2039,10 +2040,10 @@ def test_keyword_types_tuple_labels_and_schema_name_the_same_arrays():
     (schema only) or raising KeyError in distribution() (tuple only)."""
     schema = json.loads((PB.SCHEMAS / "board.schema.json").read_text(encoding="utf-8"))
     kw = schema["properties"]["sections"]["items"]["properties"]["keywords"]
-    assert kw["required"] == list(PB.KEYWORD_TYPES)
-    assert set(kw["properties"]) == set(PB.KEYWORD_TYPES)
-    assert set(PB.KEYWORD_LABELS) == set(PB.KEYWORD_TYPES)
-    for typ in PB.KEYWORD_TYPES:
+    assert kw["required"] == list(PB.KEYWORD_TYPES)            # the four optional types are not required
+    assert set(kw["properties"]) == set(PB.ALL_KEYWORD_TYPES)
+    assert set(PB.KEYWORD_LABELS) == set(PB.ALL_KEYWORD_TYPES)
+    for typ in PB.ALL_KEYWORD_TYPES:
         b = json.loads(json.dumps(MIN_BOARD))
         b["sections"][0]["keywords"][typ] = ["one", "two"]
         assert PB.distribution(b)["totals"][typ] == 2

@@ -1034,6 +1034,30 @@
         "items": {
          "type": "string"
         }
+       },
+       "variation": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "related": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "cooccurring": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "similar": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
        }
       }
      },

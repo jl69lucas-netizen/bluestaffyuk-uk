@@ -1,0 +1,206 @@
+"""System-gaps Task 1: four optional keyword types (variation, related, co-occurring,
+similar), the new-family check that fills them, and the cached-data helper that proposes
+them. Nothing here calls a paid service: every fixture is written under tmp_path."""
+import copy
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import family_rules as FR      # noqa: E402
+import pageboard as PB         # noqa: E402
+import keyword_variants as KV  # noqa: E402
+
+SCRIPT = ROOT / "scripts" / "keyword_variants.py"
+OPTIONAL = ("variation", "related", "cooccurring", "similar")
+
+
+def _demo(slug="uk-locations/blue-staffy-puppies-manchester-uk", page_type="location", status="boarded"):
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8")))
+    b["meta"].update({"slug": slug, "page_type": page_type, "status": status})
+    return b
+
+
+# --- the four types are optional, labelled, and leave every built record alone --------------
+
+def test_the_four_types_are_optional_properties_of_the_schema():
+    schema = json.loads((PB.SCHEMAS / "board.schema.json").read_text(encoding="utf-8"))
+    kw = schema["properties"]["sections"]["items"]["properties"]["keywords"]
+    assert PB.OPTIONAL_KEYWORD_TYPES == OPTIONAL
+    assert PB.ALL_KEYWORD_TYPES == PB.KEYWORD_TYPES + OPTIONAL
+    assert kw["additionalProperties"] is False
+    assert kw["required"] == list(PB.KEYWORD_TYPES)             # none of the four is required
+    assert set(kw["properties"]) == set(PB.ALL_KEYWORD_TYPES)
+    assert {PB.KEYWORD_LABELS[k] for k in OPTIONAL} == {"Variations", "Related", "Co-occurring", "Similar"}
+
+
+def test_every_built_record_still_validates_and_keeps_its_approval():
+    """Adding optional properties to the schema must not move one byte of any record, so every
+    approved record's stamped hash still matches."""
+    seen = 0
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        board = json.loads(p.read_text(encoding="utf-8"))
+        PB.validate_board(board)
+        for s in board["sections"]:
+            assert not set(s["keywords"]) & set(OPTIONAL), (p.name, s["id"])
+        if board["meta"]["status"] == "approved":
+            assert PB.approval_matches(board), p.name
+            seen += 1
+    assert seen >= 12
+
+
+def test_distribution_reads_a_missing_optional_type_as_empty_and_counts_a_present_one():
+    b = _demo()
+    d = PB.distribution(b)
+    assert all(d["totals"][k] == 0 for k in OPTIONAL)
+    b["sections"][0]["keywords"]["related"] = ["blue staffy puppies manchester cheap", "staffy puppies near salford"]
+    PB.validate_board(b)
+    assert PB.distribution(b)["totals"]["related"] == 2
+
+
+def test_an_unknown_keyword_type_is_still_refused():
+    b = _demo()
+    b["sections"][0]["keywords"]["synonyms"] = ["x"]
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(b)
+
+
+# --- family rule: a new-family page fills all four page-wide ---------------------------------
+
+def _kv(board):
+    return [f for f in FR.findings(board, {"entities": []}) if f[0] == "keyword-variants-missing"]
+
+
+def test_family_rule_types_match_the_library():
+    assert FR.KEYWORD_VARIANT_TYPES == PB.OPTIONAL_KEYWORD_TYPES
+
+
+def test_a_boarded_new_family_page_with_no_variant_terms_fails():
+    f = _kv(_demo(status="boarded"))
+    assert len(f) == 1 and f[0][1] == "FAIL"
+    for k in OPTIONAL:
+        assert k in f[0][2]
+    assert "scripts/keyword_variants.py" in f[0][2]
+
+
+def test_a_draft_only_warns():
+    f = _kv(_demo(status="draft"))
+    assert len(f) == 1 and f[0][1] == "WARN"
+
+
+def test_one_term_of_each_type_anywhere_on_the_page_passes():
+    b = _demo(status="approved")
+    for i, k in enumerate(OPTIONAL):                       # spread across sections on purpose
+        b["sections"][i % len(b["sections"])]["keywords"][k] = [f"{k} term"]
+    assert _kv(b) == []
+
+
+def test_a_single_missing_type_is_named_alone():
+    b = _demo(status="approved")
+    for k in ("variation", "related", "cooccurring"):
+        b["sections"][0]["keywords"][k] = [f"{k} term"]
+    f = _kv(b)
+    assert len(f) == 1 and "similar" in f[0][2] and "related" not in f[0][2].split("—")[0]
+
+
+def test_built_pages_and_other_families_are_never_asked():
+    assert _kv(_demo("blue-staffy-health-uk", "interior", "approved")) == []
+    assert _kv(_demo("blue-staffy-blog-guides", "blog", "approved")) == []
+    assert _kv(_demo("_demo", "location", "approved")) == []
+
+
+# --- keyword_variants.py: proposes the four buckets from cached query files only -------------
+
+def _root(tmp_path):
+    raw = tmp_path / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    raw.mkdir(parents=True)
+    (tmp_path / "data" / "locations.json").write_text(json.dumps([{"city": "Testtown"}, {"city": "Otherby"}]))
+    (tmp_path / "data" / "queries" / "blue-staffy-puppies-testtown.json").write_text(json.dumps({
+        "primary_keyword": "blue staffy puppies testtown",
+        "questions": [{"question": "Are the parents health tested for L-2-HGA?"},
+                      {"question": "Do blue Staffies need a Kennel Club health test?"}]}))
+    (raw / "serp_google.json").write_text(json.dumps({"questions": [
+        {"text": "Blue staffy puppies testtown kennel club", "detail": "serp_google_related"},
+        {"text": "Staffy puppies for sale near Otherby", "detail": "serp_google_related"},
+        {"text": "How much is a blue Staffy?", "detail": "serp_google_paa"}]}))
+    (raw / "serp_google.response.json").write_text(json.dumps({"items": [
+        {"type": "organic", "url": "https://www.petmarket.example/testtown",
+         "title": "Blue Staffie Puppies for sale in Testtown - PetMarket",
+         "description": "Blue Staffordshire Bull Terrier puppies, health tested, Kennel Club registered."},
+        {"type": "organic", "url": "https://breeder.example/", "title": "12 Staffy Puppies For Sale In Testtown | Breeder",
+         "description": "Health tested parents and Kennel Club registered blue Staffy pups in Testtown."},
+        {"type": "related_searches", "items": ["Blue staffy puppies testtown kennel club", "Blue staffy testtown cheap"]}]}))
+    (raw / "ai_engines.response.json").write_text(json.dumps({"answer_points": [
+        "Ask to see health tested parents and the L-2-HGA certificate ([Kennel Club](https://example.org/?utm_source=chatgpt.com))."]}))
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://breeder.example/", "h2": ["Frequently Asked Questions", "Blue Staffy Puppies Near Testtown"]}]}))
+    return tmp_path
+
+
+def test_propose_fills_all_four_buckets_from_the_cache(tmp_path):
+    out = KV.propose("blue-staffy-puppies-testtown", root=_root(tmp_path))
+    terms = {k: [t["term"] for t in out["buckets"][k]] for k in OPTIONAL}
+    assert out["primary"] == "blue staffy puppies testtown"
+    # related: the engine's own related box, merged across the two files, deduplicated
+    assert terms["related"] == ["blue staffy puppies testtown kennel club",
+                                "staffy puppies for sale near otherby", "blue staffy testtown cheap"]
+    # variation: attested surface forms of the head term, never the primary itself
+    assert "blue staffie puppies" in terms["variation"]
+    assert "blue staffordshire bull terrier puppies" in terms["variation"]
+    assert "blue staffy puppies testtown" not in terms["variation"]
+    # similar: how the ranking pages word the same query; the FAQ heading is not one
+    assert "blue staffie puppies for sale in testtown" in terms["similar"]
+    assert "staffy puppies for sale in testtown" in terms["similar"]          # leading count stripped
+    assert "frequently asked questions" not in terms["similar"]
+    # co-occurring: phrases in two or more cached documents, marketplace names and URLs out
+    assert "health tested" in terms["cooccurring"] and "kennel club" in terms["cooccurring"]
+    assert not any("petmarket" in t or "utm" in t or "chatgpt" in t for t in terms["cooccurring"])
+    for k in OPTIONAL:
+        for t in out["buckets"][k]:
+            assert t["sources"], (k, t)
+
+
+def test_cli_prints_json_and_exits_6_with_no_cache(tmp_path):
+    root = _root(tmp_path)
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-testtown", "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert set(json.loads(r.stdout)["buckets"]) == set(OPTIONAL)
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-nowhere", "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 6 and "bsuk-query-augmentation" in r.stderr
+    r = subprocess.run([sys.executable, str(SCRIPT), "../etc"], capture_output=True, text=True)
+    assert r.returncode == 2
+
+
+@pytest.mark.parametrize("slug", ["blue-staffy-puppies-manchester-uk", "blue-staffy-puppies-for-sale-leeds"])
+def test_the_real_cached_cities_fill_every_bucket(slug):
+    if not (ROOT / "data" / "queries" / "raw" / slug).is_dir():
+        pytest.skip(f"no cached query data for {slug}")
+    out = KV.propose(slug)
+    for k in OPTIONAL:
+        assert out["buckets"][k], (slug, k)
+
+
+def test_also_folds_in_a_neighbouring_folder_and_refuses_a_missing_one(tmp_path):
+    root = _root(tmp_path)
+    near = root / "data" / "queries" / "raw" / "registry-staffy-puppies-testtown"
+    near.mkdir()
+    (near / "serp_google.response.json").write_text(json.dumps({"items": [
+        {"type": "organic", "url": "https://other.example/", "title": "Blue Staffy Puppies and Dogs in Testtown - Other"},
+        {"type": "people_also_ask", "items": ["How much is a blue Staffy puppy?"]},     # bare strings
+        {"type": "related_searches", "items": ["Staffy puppies testtown kennel club"]}]}))
+    base = KV.propose("blue-staffy-puppies-testtown", root=root)
+    out = KV.propose("blue-staffy-puppies-testtown", root=root, also=["registry-staffy-puppies-testtown"])
+    assert out["primary"] == base["primary"]                           # the primary stays the slug's
+    assert "blue staffy puppies and dogs in testtown" in [t["term"] for t in out["buckets"]["similar"]]
+    assert "staffy puppies testtown kennel club" in [t["term"] for t in out["buckets"]["related"]]
+    assert KV.propose("blue-staffy-puppies-testtown", root=root, also=["registry-nowhere"]) is None
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-testtown", "--also", "../x",
+                        "--root", str(root)], capture_output=True, text=True)
+    assert r.returncode == 2

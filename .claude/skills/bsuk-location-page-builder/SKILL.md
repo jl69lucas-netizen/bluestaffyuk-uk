@@ -364,3 +364,22 @@ Manchester-specific price, or a review from a Manchester buyer that is not alrea
    nested-route STOP rule above is cleared.
 6. Below 97% confidence: write what is not blocked, log the question to the brief's
    `## Open Flags`, ask exactly one narrow question, keep going. Never dead-stop.
+
+## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)
+
+A new location, comparison or blog board carries four keyword types beyond the nine the
+brief names: `variation`, `related`, `cooccurring` and `similar`, each a list in a section's
+`keywords`. The page needs at least one term of each type SOMEWHERE — not in every section.
+The `keyword-variants-missing` check in `scripts/family_rules.py` warns on a draft and fails
+from `boarded` on. The twelve pages built before this rule are never asked.
+
+Where the terms come from: after the query augmentation has cached its files and before the
+outline is boarded, run `python3 scripts/keyword_variants.py <slug>`. It reads the cached
+files under `data/queries/` only (no paid call) and proposes each list with the source of
+every term: variations are spellings of the head term the cached text actually uses, related
+terms are the search engine's related-searches box, co-occurring terms are phrases found in
+two or more cached documents, and similar terms are how the ranking pages word the same
+query. Put each term in the section where it reads naturally; drop a term that reads badly
+anywhere rather than force it. Exit 6 means nothing is cached for the slug yet: run
+bsuk-query-augmentation first. The board's block 4 shows every term as a chip grouped by
+type, with the sections that use it.
