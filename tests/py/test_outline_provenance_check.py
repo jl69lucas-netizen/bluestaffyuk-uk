@@ -429,3 +429,51 @@ def test_no_built_record_trips_the_board_check():
     import glob
     for f in glob.glob(str(ROOT / "data" / "boards" / "*.json")):
         assert list(FR.outline_heading_repeat(json.loads(pathlib.Path(f).read_text()), None)) == [], f
+
+
+def _section(board, sid):
+    return next(s for s in board["sections"] if s["id"] == sid)
+
+
+def test_an_h2_and_an_h3_differing_by_apostrophe_and_question_mark_fail_naming_both_sections():
+    b = _demo_location()
+    _section(b, "at-a-glance")["heading"] = "Why we don't rush the litter"
+    _section(b, "how-we-raise")["tree"][0]["heading"] = "Why We Don’t Rush the Litter?"
+    hits = _repeat(b)
+    assert len(hits) == 1 and hits[0][1] == "FAIL"
+    assert "section 'at-a-glance' H2" in hits[0][2] and "section 'how-we-raise' H3" in hits[0][2]
+
+
+def test_two_sections_with_the_same_h2_fail_naming_both():
+    b = _demo_location()
+    _section(b, "owners")["heading"] = _section(b, "at-a-glance")["heading"]
+    hits = _repeat(b)
+    assert len(hits) == 1 and hits[0][1] == "FAIL"
+    assert "section 'at-a-glance'" in hits[0][2] and "section 'owners'" in hits[0][2]
+
+
+def test_a_non_hero_h2_equal_to_the_h1_fails():
+    b = _demo_location()
+    _section(b, "owners")["heading"] = b["h1"]["variants"][b["h1"]["recommended"]]
+    hits = _repeat(b)
+    assert len(hits) == 1 and hits[0][1] == "FAIL"
+    assert "H1 " in hits[0][2] and "section 'owners' H2" in hits[0][2]
+
+
+def test_pound_signs_and_accents_are_part_of_the_heading():
+    b = _demo_location()
+    _section(b, "at-a-glance")["heading"] = "A £500 Deposit"
+    _section(b, "owners")["heading"] = "A 500 Deposit"
+    _section(b, "how-we-raise")["tree"][0]["heading"] = "The Café Visit"
+    _section(b, "how-we-raise")["tree"][1]["heading"] = "The Caf Visit"
+    assert _repeat(b) == []
+    assert FR._heading_key("Our Café Mornings") == "our café mornings"
+
+
+def test_a_node_with_no_level_prints_h_question_mark():
+    b = _demo_location()
+    node = _section(b, "how-we-raise")["tree"][0]
+    node.pop("level", None)
+    node["heading"] = _section(b, "at-a-glance")["heading"]
+    hits = _repeat(b)
+    assert len(hits) == 1 and "section 'how-we-raise' H? " in hits[0][2] and "HNone" not in hits[0][2]

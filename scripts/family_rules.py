@@ -104,7 +104,7 @@ import link_diversity  # noqa: E402,F401
 # record can be approved. Cross-page collisions are already pageboard's `header-collision`.
 import re as _re
 
-_HEADING_TOKEN = _re.compile(r"[a-z0-9$']+")
+_HEADING_TOKEN = _re.compile(r"[\w£$']+")   # keeps £, accented letters and digits
 
 
 def _heading_key(text):
@@ -116,25 +116,28 @@ def outline_heading_repeat(board, ont):
     h1 = board.get("h1") or {}
     variants = h1.get("variants") or []
     pick = h1.get("pick") if h1.get("pick") is not None else h1.get("recommended")
+    # Each heading is (place, text); the place names the section so the message says where.
     heads = [("H1", variants[pick])] if isinstance(pick, int) and 0 <= pick < len(variants) else []
 
-    def walk(nodes):
+    def walk(nodes, sid):
         for n in nodes or []:
-            heads.append((f"H{n.get('level')}", n.get("heading")))
-            walk(n.get("children"))
+            level = n.get("level")
+            heads.append((f"section {sid!r} H{level if level is not None else '?'}", n.get("heading")))
+            walk(n.get("children"), sid)
     h1_key = _heading_key(heads[0][1]) if heads else ""
     for s in board.get("sections", []):
+        sid = s.get("id")
         # A hero whose heading IS the H1 renders the H1 alone (measured on dist/ 2026-09-24:
         # the blog hub, contact and thank-you pages), so that pair is one heading, not two.
         if not (s.get("shape") == "hero" and _heading_key(s.get("heading")) == h1_key):
-            heads.append(("H2", s.get("heading")))
+            heads.append((f"section {sid!r} H2", s.get("heading")))
         if s.get("shape") != "faq":   # an FAQ tree holds data/faq.json row ids, not headings
-            walk(s.get("tree"))
+            walk(s.get("tree"), sid)
     seen = {}
-    for level, text in heads:
+    for place, text in heads:
         key = _heading_key(text)
         if key:
-            seen.setdefault(key, []).append(f"{level} {text!r}")
+            seen.setdefault(key, []).append(f"{place} {text!r}")
     for key, where in seen.items():
         if len(where) > 1:
             yield ("outline-heading-repeat", "FAIL",
