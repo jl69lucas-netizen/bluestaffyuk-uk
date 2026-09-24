@@ -211,7 +211,7 @@
    "family": "IMG",
    "enforced": "untested",
    "claude_md": 11,
-   "_note": "CLAUDE.md working rule 11. No check compares public/images/ against the files it has served; facts_preserved_check.py reports an image a rebuilt page drops, which is a page fact, not the file's URL."
+   "_note": "CLAUDE.md working rule 11. No check compares public/images/ against the files it has served; facts_preserved_check.py reports an image a rebuilt page drops, which is a page fact, not the file's URL; tests/py/test_images.py::test_legacy_logo_rasters_are_still_served guards the two legacy logo rasters only."
   },
   {
    "id": "every-link-on-the-board",
@@ -219,14 +219,14 @@
    "enforced": "test",
    "claude_md": 12,
    "test": "tests/py/test_link_parity.py",
-   "_note": "CLAUDE.md working rule 12. scripts/link_parity_check.py (npm run check:links, in check:all) fails a rebuilt page that links anywhere its approved board record does not."
+   "_note": "CLAUDE.md working rule 12. scripts/link_parity_check.py (npm run check:links, in check:all) fails a rebuilt page that links anywhere its approved board record does not; tests/py/test_board_links.py checks the board half — the board shows every internal and external link the page will carry."
   },
   {
    "id": "tables-three-styles-stacked-on-mobile",
    "family": "LAYOUT",
    "enforced": "untested",
    "claude_md": 13,
-   "_note": "CLAUDE.md working rule 13. The stacking half is measured by the render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile; the board half (three rendered styles at 1280 / 768 / 375) has no check, so the rule as a whole is untested."
+   "_note": "CLAUDE.md working rule 13. The stacking half is measured by the render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile; the board half has only a partial check: tests/py/test_board_previews.py proves the `table` shape offers three rendered styles on its `chrome` axis, but nothing requires a table-rendering section to use that shape, so the rule as a whole stays untested."
   },
   {
    "id": "every-video-reused-at-its-id",

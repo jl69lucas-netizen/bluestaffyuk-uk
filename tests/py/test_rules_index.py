@@ -330,7 +330,7 @@ def test_there_are_skills_to_check():
 # guard cannot infer which absent directory is a typo and which is a leftover. Session docs
 # live in `docs/superpowers/sessions/`; pages in `src/pages/` and, built, in `dist/`.
 # Scope: every non-vendored skill, every command and every agent: one guard for the three
-# trees a session loads as instructions. The agents joined on 2026-09-23 for the `sessions/`
+# trees a session loads as instructions. The agents joined on 2026-09-24 for the `sessions/`
 # root (Known Issue 56's agent half: 84 lines in 33 agents named it), and for every other
 # root once the WordPress-era recipes that named `site/content` were gone.
 DEAD_ROOTS = (
@@ -474,8 +474,10 @@ def test_no_instruction_file_writes_the_town_twice():
 #: What each of the seven is held up by. The three with a mechanical backstop name the pytest
 #: file that exercises it — the same `test` form `design-system-nine` uses — and the other four
 #: are `untested`, which scripts/quality_report.py lists in §5 as deletion candidates. Rule 10
-#: governs how a decision is SHOWN, rule 11 what a page may do to a served file, rule 13's
-#: board half (three rendered styles) and rule 16's per-page uniqueness have no check today.
+#: governs how a decision is SHOWN, rule 11 what a page may do to a served file (only the two
+#: legacy logo rasters are guarded, tests/py/test_images.py), rule 13's board half has only a
+#: partial check (tests/py/test_board_previews.py: the `table` shape's three styles — nothing
+#: requires a table section to use that shape) and rule 16's per-page uniqueness has none.
 CLAUDE_MD_RULES = {
     10: ("untested", None),
     11: ("untested", None),
