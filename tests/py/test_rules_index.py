@@ -329,8 +329,11 @@ def test_there_are_skills_to_check():
 # `site/content/`" sends a builder to a directory nobody will create. Named here, because a
 # guard cannot infer which absent directory is a typo and which is a leftover. Session docs
 # live in `docs/superpowers/sessions/`; pages in `src/pages/` and, built, in `dist/`.
-# Scope: every non-vendored skill and every command. The agents carry the same debt (33
-# files); widen the parametrisation below to `.claude/agents/*.md` in the task that clears them.
+# Scope: every non-vendored skill, every command and every agent: one guard for the three
+# trees a session loads as instructions. The agents joined on 2026-09-23 for the `sessions/`
+# root (Known Issue 56's agent half: 84 lines in 33 agents named it). `site/content` still
+# sits in three agents' WordPress-era recipes, so AGENT_ROOTS widens to every root in the
+# task that clears them.
 DEAD_ROOTS = (
     ("bare `sessions/` (use `docs/superpowers/sessions/`)", re.compile(r"(?<![\w/.-])sessions/")),
     ("`site/content` (pages are `src/pages/`, built `dist/`)", re.compile(r"\bsite/content\b")),
@@ -339,21 +342,24 @@ DEAD_ROOTS = (
      re.compile(r"(?<![\w/.-])content/(?:social|prompts)/")),
 )
 COMMANDS_DIR = ROOT / ".claude/commands"
+AGENT_ROOTS = DEAD_ROOTS[:1]
+ROOTS_FOR = {**{p: DEAD_ROOTS for p in INSTRUCTION_SKILLS + sorted(COMMANDS_DIR.rglob("*.md"))},
+             **{p: AGENT_ROOTS for p in sorted(AGENTS_DIR.glob("bsuk-*.md"))}}
 
 
-def dead_root_hits(f: pathlib.Path):
+def dead_root_hits(f: pathlib.Path, roots=DEAD_ROOTS):
     out = []
     for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-        for why, rx in DEAD_ROOTS:
+        for why, rx in roots:
             if rx.search(line):
                 out.append(f"{f.name}:{lineno}  {why}  |  {line.strip()[:110]}")
     return out
 
 
-@pytest.mark.parametrize("doc", INSTRUCTION_SKILLS + sorted(COMMANDS_DIR.rglob("*.md")),
+@pytest.mark.parametrize("doc", list(ROOTS_FOR),
                          ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
-def test_no_skill_or_command_names_a_source_repo_root(doc):
-    bad = dead_root_hits(doc)
+def test_no_skill_command_or_agent_names_a_source_repo_root(doc):
+    bad = dead_root_hits(doc, ROOTS_FOR[doc])
     assert bad == [], (
         "a directory the source repo had and this repo does not — a builder told to write "
         "there creates a stray folder or fails:\n  " + "\n  ".join(bad))
@@ -417,3 +423,20 @@ def test_the_dead_file_guard_actually_fires(tmp_path):
                  encoding="utf-8")
     assert [h.split("  ")[0] for h in dead_file_hits(p)] == [
         "SKILL.md:1", "SKILL.md:2", "SKILL.md:3"], dead_file_hits(p)
+
+
+def test_the_root_guard_reads_all_three_trees():
+    # A glob that silently stopped matching would make the parametrised guard vacuous.
+    trees = {p.relative_to(ROOT).parts[1] for p in ROOTS_FOR}
+    assert trees == {"skills", "commands", "agents"}, trees
+    assert sum(1 for p in ROOTS_FOR if p.parent == AGENTS_DIR) >= 41
+
+
+def test_the_bare_sessions_root_spares_the_real_folder():
+    bare = DEAD_ROOTS[0][1]
+    for hit in ("Save to `sessions/2026-09-23-x.md`", "ls sessions/ | head",
+                "tracks completion via sessions/batch-1.json", "**Sessions:** `sessions/`"):
+        assert bare.search(hit), hit
+    for ok in ("Save to `docs/superpowers/sessions/<YYYY-MM-DD>-x.md`",
+               "ls docs/superpowers/sessions/", "**Sessions:** `docs/superpowers/sessions/`"):
+        assert not bare.search(ok), ok

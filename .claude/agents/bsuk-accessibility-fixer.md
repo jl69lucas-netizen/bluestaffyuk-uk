@@ -21,7 +21,7 @@ effort: medium
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -36,7 +36,7 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 ## On Startup — Read These First
 
-1. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Are we (a) auditing the full site, (b) auditing a single page, or (c) fixing specific issues from a previous report?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+1. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Are we (a) auditing the full site, (b) auditing a single page, or (c) fixing specific issues from a previous report?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 2. **For single page:** Ask for the page slug. Read `dist/<slug>/index.html`.
 3. **For full site audit:** Use batch mode (see below).
 
@@ -290,7 +290,7 @@ grep -rn "<img" dist/ --include="*.html" | grep -v 'alt="' | wc -l
 grep -rL "<main" dist/ --include="*.html" | wc -l
 ```
 
-Save full batch report to: `sessions/YYYY-MM-DD-accessibility-audit.md` (deferred — `sessions/` is created on first write)
+Save full batch report to: `docs/superpowers/sessions/<YYYY-MM-DD>-accessibility-audit.md`
 
 Report structure:
 ```markdown
@@ -342,6 +342,6 @@ npx playwright@latest screenshot --browser chromium https://SITE_URL_PLACEHOLDER
 2. **Before/after HTML required** — every fix shows current + corrected markup
 3. **Confidence Gate applies** — ≥97% confident before modifying any file in `dist/`
 4. **Audit only by default** — report findings; user approves before changes are applied; explicit permission required to write files
-5. **Batch report saves to sessions/** — never overwrite previous reports
+5. **Batch report saves to docs/superpowers/sessions/** — never overwrite previous reports
 6. **WCAG 2.1 AA minimum** — AAA where achievable with BSUK design system colors
 7. **Lighthouse verification required** — every page fixed must be verified with Lighthouse before marking complete

@@ -211,8 +211,10 @@ GUARDS = (
      "every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, "
      "`site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: "
      "the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, "
-     "the structure manifest); every `(arrives in Task N)` marker whose path now exists",
-     "cite a path in a pack, a reference doc, an agent or a skill; add a skill or a command",
+     "the structure manifest); in every agent, the bare `sessions/` root (`AGENT_ROOTS`); "
+     "every `(arrives in Task N)` marker whose path now exists",
+     "cite a path in a pack, a reference doc, an agent or a skill; add a skill, a command or "
+     "an agent",
      "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`"),
     ("builder-skill contracts + route guard",
      "the location, comparison and blog builders, the SEO checklist, grill-me's board gate "

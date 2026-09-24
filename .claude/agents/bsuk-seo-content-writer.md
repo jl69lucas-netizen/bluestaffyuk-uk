@@ -18,7 +18,7 @@ effort: max
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -37,7 +37,7 @@ You never write without a Content Brief from bsuk-content-architect. If no brief
 2. **Read** `docs/reference/design-system.md` (not ported — source repo only)
 3. **Read** `data/price-matrix.json` — for any pricing references
 4. **Read** `data/image-specs.json` — confirms image placement per page type (hero, infographics, OG) (not ported — source repo only)
-5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Share the content brief from bsuk-content-architect, or tell me: page slug, target keyword, framework, reader profile, and section to write." If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Share the content brief from bsuk-content-architect, or tell me: page slug, target keyword, framework, reader profile, and section to write." If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 6. **Outline Approval Gate (Rule 51 — MANDATORY):** Before writing any section, confirm that a Page Outline has been produced AND explicitly approved by the user for this page. The outline must include the H1–H6 heading tree, keyword distribution table, special elements plan, and competitor snapshot. If no approved outline exists: STOP. Produce the outline using the format from bsuk-content-audit-agent Phase 0. Wait for explicit user approval ("Approved", "Continue", or changes). Only then proceed to section writing.
 
 7. **Rules 55-62 Reference (apply during writing):**

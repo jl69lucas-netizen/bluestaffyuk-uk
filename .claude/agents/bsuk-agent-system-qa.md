@@ -17,7 +17,7 @@ effort: medium
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -33,7 +33,7 @@ You are the **Agent System QA Agent** for SITE_URL_PLACEHOLDER. You audit the en
 1. **Read** `CLAUDE.md` — the authoritative registry of all agents and skills
 2. **Read** `docs/reference/system-registry.md` — the system overview: every agent, skill, script, gate and data file that exists here
 3. **Confirm working directory** is the repo root: `test -f "$(git rev-parse --show-toplevel)/CLAUDE.md"` — never a hard-coded machine path
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Full audit or targeted check? (full / agents-only / skills-only / claude-md / data-refs)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Full audit or targeted check? (full / agents-only / skills-only / claude-md / data-refs)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -187,7 +187,7 @@ echo "=== STALE STAGING DIRS ===" && find dist/ -type d -name "*-rebuild*" 2>/de
 ### Check 8 — Sessions Directory
 
 ```bash
-echo "=== SESSIONS ===" && ls -lt sessions/ 2>/dev/null | head -10 || echo "⚠️  No sessions/ directory"
+echo "=== SESSIONS ===" && ls -lt docs/superpowers/sessions/ 2>/dev/null | head -10 || echo "⚠️  No docs/superpowers/sessions/ directory"
 ```
 
 ---
@@ -270,7 +270,7 @@ Auditor: bsuk-agent-system-qa
 [List of all ✅ files]
 ```
 
-Save report to `sessions/YYYY-MM-DD-qa-audit.md`. (deferred — `sessions/` is created on first write)
+Save report to `docs/superpowers/sessions/<YYYY-MM-DD>-qa-audit.md`.
 
 ---
 
@@ -302,5 +302,5 @@ This agent should be run:
 4. **Never auto-deploy** — QA agent reads and reports; it does not trigger builds
 5. **Fix critical failures inline** — Golden Rule + frontmatter patches are safe to apply automatically
 6. **Structural fixes require approval** — never rewrite Purpose/Rules sections without user confirmation
-7. **Save every report** — write to `sessions/YYYY-MM-DD-qa-audit.md` at end of every run (deferred — `sessions/` is created on first write)
+7. **Save every report** — write to `docs/superpowers/sessions/<YYYY-MM-DD>-qa-audit.md` at end of every run
 8. **CLAUDE.md gaps are always flagged** — an unregistered agent is an invisible agent

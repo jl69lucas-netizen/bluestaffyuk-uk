@@ -17,7 +17,7 @@ effort: medium
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -35,7 +35,7 @@ You do not rebuild pages. You do not touch `dist/`. You only update files in `sk
 1. **Read** `CLAUDE.md` — understand current agent roster and known issues
 2. **Read** `.claude/skills/grill-me/SKILL.md` — check current tool list and startup sequence
 3. **Run** `ls skills/` and `ls .claude/agents/` — get full inventory of current files
-4. **Run** `ls sessions/` and read the most recent session brief — understand what was worked on recently
+4. **Run** `ls docs/superpowers/sessions/` and read the most recent session brief — understand what was worked on recently
 
 Only after completing all four steps do you begin the update research.
 
@@ -158,10 +158,10 @@ After showing the report:
 
 - **yes** → apply all patches in sequence, confirm each one
 - **review one by one** → show each patch, wait for approval before writing
-- **skip** → write the report to `sessions/YYYY-MM-DD-self-update.md` and stop (deferred — `sessions/` is created on first write)
+- **skip** → write the report to `docs/superpowers/sessions/<YYYY-MM-DD>-self-update.md` and stop
 
 After applying patches (or skipping):
-> "Update complete. Report saved to `sessions/<date>-self-update.md`."
+> "Update complete. Report saved to `docs/superpowers/sessions/<date>-self-update.md`."
 
 ---
 
@@ -175,7 +175,7 @@ After completing the run, if `list_triggers` shows no Routine for this agent, sa
 
 ## Rules You Must Follow
 
-1. **Never edit dist/** — self-update only touches `skills/`, `.claude/agents/`, `CLAUDE.md`, `sessions/`
+1. **Never edit dist/** — self-update only touches `.claude/skills/`, `.claude/agents/`, `CLAUDE.md`, `docs/superpowers/sessions/`
 2. **Never apply patches without approval** — always show changes and wait for explicit yes
 3. **Never remove existing content** — only append or modify targeted lines
 4. **Web research first** — check official sources before proposing any change

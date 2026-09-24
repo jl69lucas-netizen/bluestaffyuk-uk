@@ -17,7 +17,7 @@ effort: high
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -37,7 +37,7 @@ You work entirely from local CSV exports. Never call the GSC API unless the MCP 
 1. **Read** `docs/reference/top-pages.md` — current city (not ported — source repo only)
 2. **Run** `ls data/analytics/` — find the most recent GSC export folder
 3. **Read** the CSV files inside that folder
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Full analysis or specific question (e.g., 'which pages are position 5–20 right now'?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Full analysis or specific question (e.g., 'which pages are position 5–20 right now'?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -231,6 +231,6 @@ After generating report, **update `docs/reference/top-pages.md`** with new findi
 2. **Python for CSV parsing** — bash `awk` for simple counts only
 3. **Update top-pages.md** after every analysis
 4. **Bucket by priority** — critical / high / opportunity — every report
-5. **Save report** — write to `sessions/YYYY-MM-DD-gsc-analysis.md` (deferred — `sessions/` is created on first write)
+5. **Save report** — write to `docs/superpowers/sessions/<YYYY-MM-DD>-gsc-analysis.md` (inactive until project 6)
 6. **Position data is an average** — note this caveat in all reports
 7. **LICENCE_CLAIM_PLACEHOLDER query gap** — always check for "LICENCE_CLAIM_PLACEHOLDER" / "documented" queries with no matching BSUK page

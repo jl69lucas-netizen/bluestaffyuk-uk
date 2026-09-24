@@ -17,7 +17,7 @@ effort: high
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -39,7 +39,7 @@ The reference page uses custom CSS classes (`bsuk-h1`, `bsuk-h2`) and the BSUK d
 3. **Read** `data/price-matrix.json` — pricing for any variant/breed comparisons
 4. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "comparison_page") (not ported — source repo only)
 5. **Read** `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro` — reference design patterns (Astro component format; read lines 1–120 for structure)
-6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which comparison are we building? (e.g. Blue Staffy vs blue and white Staffy, Male vs Female, Blue Staffy vs American Bully)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which comparison are we building? (e.g. Blue Staffy vs blue and white Staffy, Male vs Female, Blue Staffy vs American Bully)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 6. **Research competitor comparison pages** using Firecrawl MCP:
    - Use `firecrawl_search` to find the top 3 ranking pages for the target comparison keyword (e.g. "blue vs Blue and white Staffy")
    - Note: heading structure, table columns, FAQ topics, word count, and what they miss

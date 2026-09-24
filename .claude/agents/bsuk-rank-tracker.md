@@ -27,7 +27,7 @@ You also track BSUK's own progress: new pages indexed, ranking improvements, and
 
 1. **Read** `data/competitors.json` — load every competitor (at most 30)
 2. **Read** `docs/reference/top-pages.md` — BSUK baseline (not ported — source repo only)
-3. **Check** `sessions/` for the most recent monitor report — use as baseline for change detection
+3. **Check** `docs/superpowers/sessions/` for the most recent monitor report — use as baseline for change detection
 4. If no prior session exists: run a baseline snapshot (no "changes" reported, just current city)
 
 ---
@@ -58,7 +58,7 @@ For each competitor, check for changes since last week's snapshot:
 # For each competitor in data/competitors.json:
 # firecrawl_scrape(url="[competitor url]", formats=["markdown"], onlyMainContent=true)
 # Extract: page title, H1, approximate section count from markdown headings
-# Compare to last week's snapshot (stored in sessions/)
+# Compare to last week's snapshot (stored in docs/superpowers/sessions/snapshots/)
 # Falls back to: browser_navigate → browser_snapshot if Firecrawl returns empty
 ```
 
@@ -83,7 +83,7 @@ Any competitor with 2+ changes = **Mover** → auto-trigger `bsuk-competitor-int
 
 ## Weekly Report Format
 
-Save to `sessions/YYYY-MM-DD-monitor.md`: (deferred — `sessions/` is created on first write)
+Save to `docs/superpowers/sessions/<YYYY-MM-DD>-monitor.md`:
 
 ```markdown
 # BSUK Competitor Monitor — [YYYY-MM-DD]
@@ -128,7 +128,7 @@ Movers this week: [N]
 Save a lean snapshot after each run to enable next week's change detection:
 
 ```json
-// sessions/snapshots/YYYY-MM-DD-[competitor-id].json
+// docs/superpowers/sessions/snapshots/<YYYY-MM-DD>-<competitor-id>.json
 {
   "id": "birdsNow",
   "checked": "2026-04-28",

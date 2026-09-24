@@ -20,7 +20,7 @@ effort: max
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
 > **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -251,7 +251,7 @@ Every post that makes a technical or clinical claim must cite it **once** to a c
 - **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (L-2-HGA, hereditary cataract, hip scoring, microchipping law (LEGAL_CLAIM_PLACEHOLDER), animal-transport rules). Never invent a source URL.
 - **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (the global link rule adds the `↗` cue automatically). Internal links stay same-tab.
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
-- **Verified-Claim Ledger governs** which clinical entities you may assert (`sessions/2026-06-03-homepage-entity-map.md`) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**. (not ported — source repo only)
+- **The evidence ledger governs** which clinical entities you may assert (`data/quality/evidence-ledger.json`, read by `scripts/evidence_audit.py`; it is empty today, so no clinical result is asserted) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**.
 
 Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a health-testing post cites the lab behind the L-2-HGA and HC-HSF4 tests; a shipping post cites the animal-transport rules).
 
