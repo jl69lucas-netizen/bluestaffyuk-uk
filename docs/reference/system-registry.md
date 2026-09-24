@@ -54,7 +54,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-interactive-component.md` | Builds interactive HTML components for BlueStaffyUK pages — first-year cost calculators in £, coat/temperament fit quizzes, paperwork … |
 | `.claude/agents/bsuk-llm-keyword-intel.md` | Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry … |
 | `.claude/agents/bsuk-rank-tracker.md` | Competitor and ranking monitoring — INACTIVE UNTIL PROJECT 6 |
-| `.claude/agents/bsuk-section-builder.md` | Builds one HTML section for a BlueStaffyUK page and returns a ready-to-paste block |
+| `.claude/agents/bsuk-section-builder.md` | Builds one section of a BlueStaffyUK page by mounting the kit component for it (src/components/kit/) and returns the Astro markup |
 | `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — review widgets, trust-badge sections, testimonial … |
 
 ### `tier_medium` — 16

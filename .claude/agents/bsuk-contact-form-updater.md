@@ -76,68 +76,18 @@ For each form:
 
 ---
 
-## Canonical Form Templates
+## Form Templates
 
-For an existing page, use its own family block (skill → Form families). The templates below are only
-for a brand-new page that has no form vocabulary yet — and even then prefer
-`src/components/ContactForm.astro`, which already carries the seven-field contract.
+There is no hand-written form template. A page that needs an inquiry form mounts the kit component:
 
-### Inquiry Form (main lead capture — add the seven contract fields from the skill)
-```html
-<form id="bsuk-inquiry-form" action="https://formspree.io/f/{PUBLIC_FORMSPREE_ID}" method="POST">
-  <input type="hidden" name="_subject" value="Blue Staffy Puppy Inquiry">
-  <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-
-  <div class="bsuk-field">
-    <label for="inq-name">Your Name <span aria-hidden="true">*</span></label>
-    <input type="text" id="inq-name" name="name" required aria-required="true" placeholder="First and last name">
-  </div>
-
-  <div class="bsuk-field">
-    <label for="inq-email">Email Address <span aria-hidden="true">*</span></label>
-    <input type="email" id="inq-email" name="email" required aria-required="true" placeholder="your@email.com">
-  </div>
-
-  <div class="bsuk-field">
-    <label for="inq-variant">Variant Preference <span aria-hidden="true">*</span></label>
-    <select id="inq-variant" name="variant" required aria-required="true">
-      <option value="">Select a variant</option>
-      <option value="blue">Blue Staffy (£1,500)</option>
-      <option value="blue-and-white">Blue and white Staffy (£1,700)</option>
-      <option value="unsure">Not sure yet</option>
-    </select>
-  </div>
-
-  <div class="bsuk-field">
-    <label for="inq-phone">Phone Number</label>
-    <input type="tel" id="inq-phone" name="phone" placeholder="PHONE_PLACEHOLDER">
-  </div>
-
-  <div class="bsuk-field">
-    <label for="inq-message">Your Question or Message</label>
-    <textarea id="inq-message" name="message" rows="4" maxlength="300" placeholder="Tell us about yourself and what you're looking for..."></textarea>
-  </div>
-
-  <button type="submit" class="bsuk-btn">Send My Inquiry →</button>
-
-  <p class="bsuk-form-note">We respond within 24 hours — personally, not automated. Your info is never shared.</p>
-</form>
+```astro
+---
+import ContactFormKit from '../../components/kit/ContactFormKit.astro';
+---
+<ContactFormKit />
 ```
 
-### Newsletter Form (inline)
-```html
-<form class="bsuk-nl-form" action="https://formspree.io/f/{PUBLIC_FORMSPREE_ID}" method="POST">
-  <input type="hidden" name="_subject" value="Newsletter Signup">
-  <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
-
-  <div class="bsuk-nl-row">
-    <label for="nl-email" class="visually-hidden">Email address</label>
-    <input type="email" id="nl-email" name="email" required aria-required="true"
-           placeholder="Enter your email address">
-    <button type="submit" class="bsuk-btn">Get Updates</button>
-  </div>
-</form>
-```
+`ContactFormKit` carries the seven-field contract, the Formspree endpoint (`PUBLIC_FORMSPREE_ID`) and the `_gotcha` honeypot; `src/components/ContactForm.astro` emits the same set for pages still on `BaseLayout`. An existing page keeps its own family's markup (skill → Form families) and is edited in that vocabulary. The puppy choice is the set `ContactFormKit` builds — never a coat colour with a price beside it: a price belongs to a puppy, not to a colour (Roman is blue and white at £1,500; Christa is blue at £1,700 — `data/puppies.json`).
 
 ---
 

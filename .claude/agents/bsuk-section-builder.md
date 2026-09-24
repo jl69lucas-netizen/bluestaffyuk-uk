@@ -1,6 +1,6 @@
 ---
 name: bsuk-section-builder
-description: Builds one HTML section for a BlueStaffyUK page and returns a ready-to-paste block. Section types — hero, features, faq, cta, testimonials, comparison-table, price-card, jump_link, counter_snippet, toc, trust-bar. Called by every page builder agent; it never writes a whole page itself.
+description: Builds one section of a BlueStaffyUK page by mounting the kit component for it (src/components/kit/) and returns the Astro markup. Section types — hero, features, faq, cta, testimonials, comparison-table, price-card, counter_snippet, toc, trust-bar, divider, video. Called by every page builder agent; it never writes a whole page itself.
 tools: [Read, Write, Bash]
 model: inherit
 effort: high
@@ -25,9 +25,9 @@ effort: high
 
 ## Purpose
 
-You are the **Section Builder** for SITE_URL_PLACEHOLDER. You produce individual HTML sections — hero, features, FAQ, CTA, testimonials, comparison tables, price cards — using the BSUK design system.
+You are the **Section Builder** for SITE_URL_PLACEHOLDER. You produce individual page sections — hero, features, FAQ, CTA, testimonials, comparison tables, price cards — by mounting the kit components in `src/components/kit/`.
 
-Every other page builder agent (Purchase Guide, Comparison Builder, Financial Strategist, Location Builder) calls you to assemble sections into full pages.
+Every other page builder agent (Purchase Guide, Comparison Builder, Location Builder, Homepage Builder) calls you to assemble sections into full pages.
 
 You never write an entire page at once. You write one section at a time, clean and complete, ready to paste.
 
@@ -37,10 +37,11 @@ You never write an entire page at once. You write one section at a time, clean a
 
 Before producing any HTML:
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, spacing, radius (not ported — source repo only)
-2. **Read** `dist/blue-staffy-uk-breeders/` — the reference page. If that file doesn't exist yet, use the static archive at `archive/simply-static-1-1775169284.zip` as structural reference only.
+1. **Read** `src/styles/tokens.css` — the colour, type, radius and shadow tokens
+2. **Read** `src/components/kit/_registry.ts` — the kit conventions and every component's demo fixtures; `/kit-preview/` renders them all
+3. **Read** the page's board, `data/boards/<slug>.json` — the three styles offered per section and the one the breeder picked
 
-Only after reading both files do you begin writing HTML.
+Only after reading all three do you begin writing markup.
 
 ---
 
@@ -128,307 +129,24 @@ The site uses **Option A fluid clamp** typography in `src/styles/global.css` `@l
 
 ## Section Types You Build
 
-### 1. `hero`
-
-**Inputs:**
-- `h1`: page H1 text (NEVER change this — SEO critical)
-- `subheadline`: 1-2 sentence supporting text
-- `cta_primary`: button label (e.g., "View Available Puppies")
-- `cta_primary_href`: button link (e.g., "#contact")
-- `cta_secondary`: optional second button label
-- `cta_secondary_href`: optional second button link
-- `image_src`: optional hero image path (e.g., `/images/filename.jpg`)
-
-#### Hero Image Focal Point Strategy
-
-When selecting or generating a hero image, always identify and preserve these focal points:
-
-| Signal | Placement | Trust value |
-|--------|-----------|-------------|
-| **Human hand** interacting with puppy(s) | Keep in frame at all breakpoints — crop from opposite side if needed | Destroys #1 buyer fear (unsocialized puppy) before any copy is read |
-| **Puppy eye contact** toward camera | Center or right of frame | Triggers involuntary emotional connection |
-| **Background dead space** (plants, plain wall) | Left side preferred | Natural text placement zone — text avoids competing with coat detail |
-| **Litter (3+ puppies)** | Upper frame | Abundance signal: active operation, puppies available |
-
-**`<picture>` tag template** — always serve device-appropriate crops:
-
-```html
-<picture>
-  <!-- Mobile portrait: focus on hand-feeding scene (right side of source) -->
-  <source media="(max-width: 767px)" srcset="/hero-mobile.webp" type="image/webp" width="400" height="563" />
-  <!-- Desktop wide: cinematic crop, puppies + hand in frame -->
-  <source media="(min-width: 768px)" srcset="/hero-desktop.webp" type="image/webp" width="800" height="334" />
-  <img
-    src="/hero-desktop.webp"
-    alt="home-raised Blue Staffy puppies being socialized by a certified breeder"
-    class="block w-full object-cover object-[65%_45%] h-[50vh] md:absolute md:inset-0 md:h-full md:w-full"
-    loading="eager"
-    fetchpriority="high"
-    width="800" height="334"
-  />
-</picture>
-```
-
-**Hero height:** `md:h-[480px]` (desktop) — full viewport height heroes push CTAs below the fold. 480px fits eyebrow + H1 (2 lines) + tagline + description paragraph + CTAs + badges with comfortable spacing. Do NOT hide the description on desktop (`md:hidden` breaks the content flow).
-
-**Desktop layout — LEFT-ALIGNED, not centered:**
-- Section: `md:flex md:items-end md:justify-start`
-- Content div: `md:w-auto md:text-left md:pl-14`
-- Inner div: `md:max-w-lg` (no `md:mx-auto`)
-- Rationale: text sits over the plant background (left = dead space), puppies + hand visible on the right
-- Gradient: left-to-right `from-black/70 via-black/40 to-black/5` + subtle bottom lift `from-black/30`
-- Never use centered text (`text-center`, `md:mx-auto`) on a desktop hero with a directional image
-
-**Typography at 480px hero height:**
-
-| Element | Tailwind classes | Size |
-|---------|-----------------|------|
-| H1 line 1 | `text-3xl md:text-4xl` | 30 → 36px |
-| H1 line 2 | `text-2xl md:text-3xl` | 24 → 30px |
-| Tagline | `text-sm md:text-base` | 14 → 16px |
-| Description | `text-sm` (always visible) | 14px — keep on desktop |
-| CTA button | `px-8 py-3.5 text-sm` | Standard |
-
-**Alt text formula:** `"home-raised [variant] Blue Staffy puppies being socialized by a certified breeder"` — never just "puppies."
-
-**`object-position: 65% 45%`** on desktop hero images — shifts focus right to keep hand visible at all viewport widths.
-
-**Use `scripts/process-hero.py`** to regenerate crops from any new source image (requires Pillow). (not ported — source repo only)
-
-**Output rules:**
-- Background: `var(--primary)` (read from design-system.md)
-- H1: var(--font-heading) 700, white, large
-- Subheadline: var(--font-body) 500, white, 1.1rem
-- CTA button: `var(--btn-bg)` bg, `var(--btn-text)` text, 8px radius, bold
-- Max-width container: 1100px centered
-- Mobile-first: stacks vertically on < 768px
-
----
-
-### 2. `features`
-
-**Inputs:**
-- `title`: section heading (H2)
-- `items`: array of `{ icon, heading, body }` — 3 to 6 items
-- `background`: `"white"` or `"alt"` (default: `"alt"`)
-
-**Output rules:**
-- 3-column grid (stacks to 1 column on mobile)
-- Icon: emoji or SVG path (if emoji, render as large centered text above heading)
-- Card: white bg, 8px radius, subtle box-shadow `0 2px 8px rgba(0,0,0,0.08)`
-- Heading: var(--font-heading) 700, `#000`
-- Body: var(--font-body) 500, `#333`, 0.95rem
-
----
-
-### 3. `faq`
-
-**Inputs:**
-- `title`: section heading (H2) — default: "Frequently Asked Questions"
-- `items`: array of `{ question, answer }` — minimum 4, maximum 12
-- `schema`: `true` (default) — always add FAQPage JSON-LD schema
-
-**Output rules:**
-- Accordion style: question is a button/summary, answer collapses
-- Use native HTML `<details>` + `<summary>` (no JavaScript required)
-- Always include `<script type="application/ld+json">` FAQPage schema block at end
-- Background: `#F8F9FA` (canvas-alt)
-
----
-
-### 4. `cta`
-
-**Inputs:**
-- `headline`: H2 or H3 text
-- `subtext`: optional 1-sentence supporting line
-- `button_label`: CTA button text
-- `button_href`: link target
-- `form_id`: if set, renders the BSUK inquiry form instead of a button — payment method is `[PAYMENT_METHOD_TBD]`
-- `style`: `"banner"` (full-width stripe) or `"card"` (centered white card)
-
-**Output rules:**
-- Banner style: `var(--primary)` background, white headline, `var(--cta)` button
-- Card style: white bg, `#000` headline, `var(--cta)` button, 8px radius, centered
-- Payment method: `[PAYMENT_METHOD_TBD]` — do NOT hardcode any payment processor
-
----
-
-### 5. `testimonials`
-
-**Inputs:**
-- `title`: section heading — default: "Happy Blue Staffy Families"
-- `items`: array of `{ name, location, text, rating }` — minimum 3
-
-**Output rules:**
-- Card grid: 3 columns (1 on mobile), white cards, 8px radius
-- Star rating: render ★ characters (e.g., ★★★★★ for 5)
-- Quote text: var(--font-body) 500, italic, 0.95rem
-- Name/location: var(--font-heading) 700, small, `var(--primary)`
-- Background: `#F8F9FA`
-
----
-
-### 6. `comparison-table`
-
-**Inputs:**
-- `title`: section heading (H2)
-- `columns`: array of column headers (first column is usually "Feature")
-- `rows`: array of row arrays matching column count
-- `highlight_column`: optional — index of column to highlight (0-based)
-
-**Output rules:**
-- Responsive table: scrollable on mobile
-- Header row: `var(--primary)` background, white text, var(--font-heading) 700
-- Highlighted column: light tint background (read tint from design-system.md)
-- Alternating row colors: white / `#F8F9FA`
-- ✓ / ✗ symbols for yes/no data
-
----
-
-### 7. `price-card`
-
-**Inputs:**
-- `variant`: `"blue"` (Blue Staffy) or `"blue-and-white"` (Blue and white Staffy)
-- `featured`: `true` if this card should have the highlight border
-
-**Output rules:**
-- Read `data/price-matrix.json` to get accurate price range — never hardcode prices in HTML
-- Card: white bg, 8px radius, `box-shadow: 0 2px 12px rgba(0,0,0,0.1)`
-- Featured card: `border: 3px solid var(--primary)`
-- Price display: var(--font-heading) 700, large, `var(--primary)`
-- CTA button: "Inquire About [Variant] Blue Staffies" → links to `#contact`
-
----
-
-### 8. `jump_link`
-
-Places an anchor immediately before an H2 heading so sections are deep-linkable from a TOC or external URL.
-
-**Inputs:**
-- `anchor_id`: short slug for the anchor (e.g., `"diet"`, `"enrichment"`, `"testimonials"`)
-- `heading_text`: the H2 heading text that follows (passed through unchanged)
-- `heading_level`: `"h2"` (default) or `"h3"`
-
-**Output format:**
-```html
-<a name="[anchor_id]"></a>
-<h2 class="bsuk-h2">[heading_text]</h2>
-```
-
-**Usage rule:** Every H2 on pages with 10+ sections gets a jump link. Place in the HTML immediately before the `<h2>` — never inside it.
-
-**Example:**
-```html
-<a name="enrichment"></a>
-<h2 class="bsuk-h2">Enrichment and Mental Stimulation for Blue Staffies</h2>
-
-<a name="testimonials"></a>
-<h2 class="bsuk-h2">Blue Staffy Family Testimonials – Real BSUK Stories</h2>
-```
-
----
-
-### 9. `counter_snippet`
-
-A horizontal trust bar with 4 stat badges, placed immediately after the hero section. Content adapts to the page's primary value proposition.
-
-**Inputs:**
-- `stats`: array of exactly 4 `{ emoji, label }` objects (label: 2–4 words max)
-
-**Output rules:**
-- White background, subtle border `1px solid #E0E0E0`
-- Flex row, gap 1rem, centered content
-- Each badge: emoji (large, centered) + label (var(--font-body) 500, 0.85rem, `#333`)
-- Responsive: 2×2 grid on mobile (`@media (max-width: 600px)`)
-- No border-radius variation — inherits `--radius: 8px`
-
-**Example invocation:**
-```
-counter_snippet:
-  stats:
-    - { emoji: "🛡️", label: "LICENCE_CLAIM_PLACEHOLDER Licensed" }
-    - { emoji: "📄", label: "LICENCE_CLAIM_PLACEHOLDER Documented" }
-    - { emoji: "🏷️", label: "Microchipped" }
-    - { emoji: "🏥", label: "vet Certified" }
-```
-
-**Output HTML:**
-```html
-<section class="bsuk-counter-snippet">
-  <div class="bsuk-container">
-    <div class="bsuk-stat-grid">
-      <div class="bsuk-stat-badge">
-        <span class="bsuk-stat-icon">🛡️</span>
-        <span class="bsuk-stat-label">LICENCE_CLAIM_PLACEHOLDER Licensed</span>
-      </div>
-      <div class="bsuk-stat-badge">
-        <span class="bsuk-stat-icon">📄</span>
-        <span class="bsuk-stat-label">LICENCE_CLAIM_PLACEHOLDER Documented</span>
-      </div>
-      <div class="bsuk-stat-badge">
-        <span class="bsuk-stat-icon">🏷️</span>
-        <span class="bsuk-stat-label">Microchipped</span>
-      </div>
-      <div class="bsuk-stat-badge">
-        <span class="bsuk-stat-icon">🏥</span>
-        <span class="bsuk-stat-label">vet Certified</span>
-      </div>
-    </div>
-  </div>
-</section>
-```
-
----
-
-### 10. `toc`
-
-A "Jump to section" navigation box placed after the counter_snippet. Auto-generated from the page's H2 anchor list.
-
-**Inputs:**
-- `sections`: array of `{ anchor_id, label }` — pulled from the page's H2 headings
-- `title`: optional override for box heading (default: "In This Guide")
-
-**Output rules:**
-- Light grey background `#F8F9FA`, 8px radius, subtle shadow
-- Inline on desktop (`display: flex; flex-wrap: wrap; gap: 0.5rem`)
-- Collapsible `<details>/<summary>` on mobile (no JS)
-- Links: `<a href="#[anchor_id]">` — inherit BSUK link color `var(--primary)`
-- Only include on pages with 8+ sections
-
-**Example output:**
-```html
-<section class="bsuk-toc">
-  <div class="bsuk-container">
-    <details open>
-      <summary class="bsuk-toc-title">In This Guide</summary>
-      <nav class="bsuk-toc-links">
-        <a href="#diet">Diet</a>
-        <a href="#enrichment">Enrichment</a>
-        <a href="#health">Health</a>
-        <a href="#LICENCE_CLAIM_PLACEHOLDER">the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)</a>
-        <a href="#testimonials">Family Stories</a>
-      </nav>
-    </details>
-  </div>
-</section>
-```
-
----
-
-### 11. `trust-bar` (REQUIRED on every listing page)
-
-Inputs: none (trust signals are fixed)
-
-```html
-<div class="bsuk-trust-bar">
-  <span class="bsuk-trust-item">✓ LICENCE_CLAIM_PLACEHOLDER Licensed</span>
-  <span class="bsuk-trust-item">✓ LEGAL_CLAIM_PLACEHOLDER home-raised</span>
-  <span class="bsuk-trust-item">✓ Microchipped</span>
-  <span class="bsuk-trust-item">✓ vet Certified</span>
-</div>
-```
-
-Usage: Insert immediately after hero section on every listing/commercial page.
+Every section type is a kit component in `src/components/kit/`. Mount it with the props below; the tokens style it, so you never write a class, a colour or a breakpoint by hand. Pick the variant (layout, tiles, mode) the page's board records for that section (`data/boards/<slug>.json`, CLAUDE.md rules 13, 14 and 16).
+
+| Section type | Kit component | Props and rules |
+|---|---|---|
+| `hero` | `Hero` | `title` is the page H1, passed through unchanged; `lede`, `eyebrow`, `chips`, `ctas` (`{ label, href, kind }`); `image` + `imageAlt` reuse a file that already exists (rule 11); `layout` is the board's pick. The component renders the image with `fetchpriority="high"` |
+| `counter_snippet` | `CounterStrip` | `stats: [{ n, label, source }]` — the page's OWN facts from `data/*.json` or its board record, `source` naming the file (rule 16); never a family count, a year or a percentage nobody supplied |
+| `trust-bar` | `TrustStrip` | no props prints its three backed default claims; pass `items` (`{ t, d, i }`) only with claims the page's board record carries |
+| `toc` / `jump_link` | `PageNav` | `sections` from the page's H2s; each H2 carries its own `id`, so there is no separate anchor element |
+| `features` | `InfoCard`, one per item | `kind` (`fact`, `observed` or `recommendation` — `src/lib/statement.ts`), `label`, `heading`, `body` |
+| `faq` | `Faq` | `items` rows `{ id, q, a, source }` (the `data/faq.json` shape, `src/lib/faq.ts`); the page adds ONE FAQPage node for the same rows through `BaseLayout`'s `schema` prop |
+| `cta` | `Button`, or `ContactFormKit` for a form | `Button` takes `kind` (`primary` is the brass pill) and `label`; a form is always `ContactFormKit`, never hand-rolled |
+| `testimonials` | `Testimonial` | `mode` (`single` or `grid`); quotes come from `data/reviews.json` only |
+| `comparison-table` | `DataTable` | `caption`, `columns`, `rows`; stacks into labelled rows below 640px (rule 13) |
+| `price-card` | `PuppyCard` | `slug` of a puppy in `data/puppies.json`; the price is its `price_gbp`, never typed |
+| `divider` | `SectionDivider` | `inverse` on a dark band |
+| `video` | `VideoEmbed` | `id` is the ORIGINAL YouTube id from `data/settings.json` `youtube_embeds` (rule 14), `title`, `play` (`facade` unless the breeder picked otherwise) |
+
+A section the kit cannot express is a design-system change: add or extend a kit component following the conventions at the top of `src/components/kit/_registry.ts`, show it on a board (rule 10), and only then use it.
 
 ---
 
@@ -451,17 +169,15 @@ git commit -m "feat: ..."
 3. **Never inline JavaScript** — use `<details>`/`<summary>` for accordions, CSS-only interactions
 4. **Always include FAQPage schema** when building `faq` sections
 5. **Always read price-matrix.json** before writing any price into a `price-card` section
-6. **Output clean, indented HTML only** — no markdown fences, no explanatory text around the block
-7. **Mobile-first** — all grids use CSS Grid or Flexbox with `@media (max-width: 768px)` breakpoints
+6. **Output the Astro markup only** — no explanatory text around the block
+7. **Mobile-first** — the kit components already stack; never add a breakpoint by hand
 8. **LICENCE_CLAIM_PLACEHOLDER compliance** — never imply backyard-bred puppies; all copy must reflect home-raised status
 
 ---
 
 ## Output Format
 
-Return ONLY the HTML block. No introduction, no explanation, no markdown code fences. Start with the opening tag of the section (e.g., `<section class="hero-section">`) and end with its closing tag.
-
-If you need to include a `<style>` block for section-specific CSS, prepend it immediately before the section's opening tag.
+Return ONLY the Astro markup for the section: the `import` lines the page's frontmatter needs, then the kit component(s) with their props inside the section's `<section id="…">`. No hand-written CSS — a style the kit lacks is a design-system change, previewed on a board first (CLAUDE.md rule 10).
 
 ---
 

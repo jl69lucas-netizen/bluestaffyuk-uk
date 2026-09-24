@@ -65,53 +65,24 @@ Feed target keyword to bsuk-paa-agent to get Google's People Also Ask questions 
 
 ---
 
-## QAB FAQ Item Template
+## FAQ Markup — the kit's `Faq` component
 
-```html
-<details class="bsuk-faq-item">
-  <summary class="bsuk-faq-question">
-    [Question — in buyer's exact language, 8–15 words, ends with ?]
-  </summary>
-  <div class="bsuk-faq-answer">
-    <p>[Direct answer — first sentence cities the fact. No "great question" preamble.]</p>
-    <p>[Supporting evidence — microchip registration LICENCE_CLAIM_PLACEHOLDER, price data, vet health certificate, BSUK experience. Specific numbers.]</p>
-    <p class="bsuk-benefit-line">[Benefit — why this answer matters to this specific reader.]</p>
-  </div>
-</details>
-```
+A page's FAQ is `src/components/kit/Faq.astro`: a `<details>`/`<summary>` accordion with the question as an `<h3>` (Title Case at render) and no JavaScript. It takes `items`, rows shaped like `data/faq.json` — `{ id, q, a, source }`, loaded by `src/lib/faq.ts` — and with no `items` it renders `data/faq.json` itself.
 
+```astro
 ---
-
-## Complete FAQ Section HTML
-
-```html
-<section class="bsuk-section-alt" id="faq">
-  <div class="bsuk-container">
-    <span class="bsuk-eyebrow">Common Questions</span>
-    <h2 class="bsuk-h2">[Page-specific FAQ heading — e.g., "Blue Staffy Puppy Cost Questions, Answered Honestly"]</h2>
-    
-    <div class="bsuk-faq-list" itemscope itemtype="https://schema.org/FAQPage">
-
-      <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-        <details class="bsuk-faq-item">
-          <summary class="bsuk-faq-question" itemprop="name">
-            [Question]?
-          </summary>
-          <div class="bsuk-faq-answer" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-            <div itemprop="text">
-              <p>[Answer — direct, specific, sourced]</p>
-              <p class="bsuk-benefit-line">[Benefit]</p>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <!-- Repeat for each question -->
-
-    </div>
-  </div>
+import Faq from '../../components/kit/Faq.astro';
+const items = [
+  // { id, q, a, source } — `a` is the QAB answer with its Benefit; `source` names the page or data file that backs it (rule 9)
+];
+---
+<section id="faq">
+  <h2>…page-specific FAQ heading…</h2>
+  <Faq items={items} />
 </section>
 ```
+
+Keep each row's `q` in natural sentence case: `Faq` title-cases the visible heading, and the FAQPage node reads the row as written. **Location pages:** the questions come from the page's question file, `data/queries/<slug>.json`, written by the `bsuk-query-augmentation` skill — not from a question bank.
 
 ---
 

@@ -59,3 +59,34 @@ def test_the_dist_detector_fires_on_writes_and_spares_reads():
                "make every fix in `src/`, rebuild, and re-measure `dist/`",
                "verify the rendered result in `dist/` after `npm run build`"):
         assert not WRITES_DIST.search(ok), ok
+
+
+# ── templates: the kit, not the source repo's design system ─────────────────
+SRC_TEXT = "\n".join(p.read_text(encoding="utf-8", errors="ignore")
+                     for p in (ROOT / "src").rglob("*")
+                     if p.is_file() and p.suffix in (".astro", ".css", ".ts", ".tsx", ".js"))
+DEFINED_VARS = set(re.findall(r"(--[a-z0-9-]+)\s*:", SRC_TEXT))
+TOKENS = (ROOT / "src/styles/tokens.css").read_text(encoding="utf-8").lower()
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_agent_templates_use_only_classes_and_variables_src_defines(agent):
+    bad = []
+    for n, l in numbered(agent):
+        for attr in re.findall(r'class="([^"]*)"', l):
+            bad += [f"{agent.name}:{n}  class {c}" for c in attr.split()
+                    if c.startswith("bsuk-") and c not in SRC_TEXT]
+        bad += [f"{agent.name}:{n}  var({v})" for v in re.findall(r"var\((--[a-z0-9-]+)", l)
+                if v not in DEFINED_VARS]
+    assert bad == [], ("the template names a class or variable src/ never defines — use the "
+                       "kit component (src/components/kit/) or a token from "
+                       "src/styles/tokens.css:\n  " + "\n  ".join(bad))
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_agent_templates_spell_no_hex_the_tokens_do_not_define(agent):
+    # A grep pattern that SEARCHES for bad hex values is detection, not a template.
+    bad = [f"{agent.name}:{n}  {h}" for n, l in numbered(agent) if "grep" not in l
+           for h in re.findall(r"(?<![\w&])#[0-9A-Fa-f]{3,6}\b", l) if h.lower() not in TOKENS]
+    assert bad == [], ("a hex colour outside src/styles/tokens.css — name the token instead "
+                       "(CLAUDE.md bans a hex anywhere in src/ but tokens.css):\n  " + "\n  ".join(bad))

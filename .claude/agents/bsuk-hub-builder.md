@@ -115,17 +115,7 @@ ls dist/blue-staffy-breeder-standing/ 2>/dev/null
 
 ## Spoke Card Format
 
-Each spoke page gets a card in section 3:
-
-```html
-<div class="bsuk-spoke-card">
-  <h3>[Spoke Page Title]</h3>
-  <p>[1-sentence description of what the page answers]</p>
-  <a href="/[slug]/" class="bsuk-spoke-link">Read the Full Guide →</a>
-</div>
-```
-
-Cards: 3-column grid (1 column on mobile), white bg, 8px radius, BSUK design system hover border.
+Each spoke is one `InfoCard` (`src/components/kit/InfoCard.astro`): `heading` is the spoke page's title, `body` the one question it answers, followed by `<Button kind="text" label="Read the guide" href="/<spoke-slug>/" />`. Cards sit in a grid that stacks to one column on mobile; the tokens style them, so no class or colour is written by hand.
 
 ---
 
