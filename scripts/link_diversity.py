@@ -7,15 +7,26 @@ docs/reference/external-link-library.md — the allowlist `pageboard.validate_bo
 holds every external href to — so the type is written once, next to the URL, and not retyped
 on every board.
 
+Task 5, `anchor-type-variation` (rules/links.md): every link on such a page records its
+`anchor_type` (exact, partial, lsi, natural, branded, naked-url); the in-copy internal anchors
+use at least three types with at most two exact-match, and the external anchors at least three
+types. Nav tiles are typed but do not count toward the mix. `anchor-reuse-sitewide`: an in-copy
+internal anchor another board in data/boards/ already uses for the same route is refused — but
+only when that board is at this board's status or later, so the first owner keeps its anchor
+and a later draft that copies it is the one told to change. Page-level repeats stay with
+pageboard's existing `links-anchor-duplicate`.
+
 The checks register on `family_rules`, so they bind the new pages only; the twelve pages built
-before this build are never asked. A draft is WARNed (a record is boarded before its links are
-complete); every status after draft FAILs.
+before this build are never asked (though their anchors still count as owned by them). A draft
+is WARNed (a record is boarded before its links are complete); every status after draft FAILs.
 
 `pageboard` imports `family_rules`, which imports this module at its foot, so `pageboard` may
 still be half-initialised while this file loads. Every `PB.` reference is therefore inside a
 function, never at module level.
 """
+import json
 import pathlib
+import re
 from urllib.parse import urlsplit
 
 import family_rules as FR
@@ -138,17 +149,30 @@ ANCHOR_TYPES = ("exact", "partial", "lsi", "natural", "branded", "naked-url")
 INTERNAL_TYPE_MIN, EXACT_MAX, EXTERNAL_TYPE_MIN = 3, 2, 3
 ANCHOR_CHECK = "anchor-type-variation"
 SITEWIDE_CHECK = "anchor-reuse-sitewide"
+# meta.status in schema order: a board is only refused an anchor by a sibling at its own
+# rank or later, so the first owner keeps it.
+STATUS_RANK = {s: i for i, s in enumerate(("draft", "boarded", "approved", "built", "released"))}
 # Resolved at call time, so a test can repoint it at a scratch directory.
 BOARDS_DIR = None
 
 
 def _route(href):
-    """An internal href → its route: query and fragment dropped, one trailing slash — the
-    same folding build_page_board.route_of() does, so `/x` and `/x/#faq` are one target."""
-    path = urlsplit(str(href or "")).path.strip() or "/"
+    """An internal href → the route it lands on, folded exactly as build_page_board.route_of()
+    folds it (query and fragment dropped, surrounding whitespace stripped, one leading and one
+    trailing slash, repeated slashes collapsed), so `/x`, `/x/?a=1` and `/x//#faq` are one
+    target. None for an href that names a host — a scheme or a protocol-relative `//host/x`,
+    which the schema's `^/` pattern lets through and route_of would fold to `/x/`, silently
+    dropping the host: that is no internal route, so the reuse check leaves it out."""
+    raw = str(href or "")
+    parts = urlsplit(raw.strip())
+    if parts.scheme or parts.netloc:
+        return None
+    path = urlsplit(raw).path.strip()
     if not path.startswith("/"):
         path = "/" + path
-    return path if path.endswith("/") else path + "/"
+    if not path.endswith("/"):
+        path += "/"
+    return re.sub(r"/{2,}", "/", path)
 
 
 def anchor_key(text):
@@ -192,45 +216,80 @@ def anchor_variation(board, ont):
                f"internal anchors use {len(s['internal'])} type(s) ({', '.join(sorted(s['internal'])) or 'none'}) "
                f"— at least {INTERNAL_TYPE_MIN} (Rule 58, the Anchor Diversity Ledger)")
     if s["internal"].get("exact", 0) > EXACT_MAX:
+        exact = [f"{sid}: {l['anchor']!r}" for sid, kind, l in _placements(board)
+                 if kind == "internal" and not l.get("nav") and l.get("anchor_type") == "exact"]
         yield (ANCHOR_CHECK, sev,
-               f"{s['internal']['exact']} exact-match internal anchor(s) — at most {EXACT_MAX} per page (Rule 58)")
+               f"{s['internal']['exact']} exact-match internal anchor(s) — at most {EXACT_MAX} per page "
+               f"(Rule 58); retype all but {EXACT_MAX} of: {'; '.join(exact)}")
     if len(s["external"]) < EXTERNAL_TYPE_MIN:
         yield (ANCHOR_CHECK, sev,
                f"external anchors use {len(s['external'])} type(s) ({', '.join(sorted(s['external'])) or 'none'}) "
                f"— at least {EXTERNAL_TYPE_MIN}")
 
 
-def sitewide_anchor_uses(exclude_slug=None):
-    """{(route, anchor key): [slug, …]} for the in-copy internal links of every OTHER board in
-    data/boards/ — the Anchor Diversity Ledger's "anchors in use" column, read from the
-    records rather than grepped from dist/, so a board sees its siblings before either is
-    built. `_`-prefixed records (the _demo fixture) are not pages and are skipped."""
-    import json
+_SITE_MAP = {}   # {(boards dir, ((name, mtime_ns), …)): {(route, key): [(slug, rank), …]}}
+
+
+def _site_map():
+    """{(route, anchor key): [(slug, status rank), …]} over every page record in the boards
+    directory, memoised on the directory and each file's (name, mtime_ns), so a board's
+    checks (and its diversity line) do not re-read every sibling on every call, and an edited
+    or added sibling is seen at once. A record that is not JSON raises PB.BoardError naming it."""
     d = pathlib.Path(BOARDS_DIR or (PB.ROOT / "data" / "boards"))
+    files = sorted(d.glob("*.json"))
+    key = (str(d.resolve()), tuple((p.name, p.stat().st_mtime_ns) for p in files))
+    if key in _SITE_MAP:
+        return _SITE_MAP[key]
     uses = {}
-    for p in sorted(d.glob("*.json")):
-        b = json.loads(p.read_text(encoding="utf-8"))
+    for p in files:
+        try:
+            b = json.loads(p.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            raise PB.BoardError(f"{p}: not valid JSON ({e})") from e
         slug = b["meta"]["slug"]
-        if slug == exclude_slug or slug.startswith("_"):
+        if slug.startswith("_"):
             continue
+        rank = STATUS_RANK.get(b["meta"].get("status"), 0)
         for _, kind, l in _placements(b):
             if kind != "internal" or l.get("nav"):
                 continue
-            key = anchor_key(l["anchor"])
-            if key:
-                uses.setdefault((_route(l["href"]), key), [])
-                if slug not in uses[(_route(l["href"]), key)]:
-                    uses[(_route(l["href"]), key)].append(slug)
+            route, akey = _route(l["href"]), anchor_key(l["anchor"])
+            if route and akey:
+                owners = uses.setdefault((route, akey), [])
+                if slug not in (o for o, _ in owners):
+                    owners.append((slug, rank))
+    _SITE_MAP.clear()
+    _SITE_MAP[key] = uses
     return uses
+
+
+def sitewide_anchor_uses(exclude_slug=None, min_status=None):
+    """{(route, anchor key): [slug, …]} for the in-copy internal links of every OTHER board in
+    data/boards/ — the Anchor Diversity Ledger's "anchors in use" column, read from the
+    records rather than grepped from dist/, so a board sees its siblings before either is
+    built. `_`-prefixed records (the _demo fixture) are not pages and are skipped. With
+    `min_status`, only boards at that status or later are listed."""
+    floor = STATUS_RANK.get(min_status, 0)
+    out = {}
+    for k, owners in _site_map().items():
+        slugs = [s for s, r in owners if s != exclude_slug and r >= floor]
+        if slugs:
+            out[k] = slugs
+    return out
 
 
 @FR.register
 def anchor_reuse_sitewide(board, ont):
-    sev, uses = status_severity(board), sitewide_anchor_uses(board["meta"]["slug"])
+    """The first owner keeps its anchor: a sibling counts only at this board's status or later,
+    so an approved page is never failed by a draft that copied it (the draft is told instead),
+    and two boards at the same status are both told."""
+    meta = board["meta"]
+    sev, uses = status_severity(board), sitewide_anchor_uses(meta["slug"], meta["status"])
     for sid, kind, l in _placements(board):
         if kind != "internal" or l.get("nav"):
             continue
-        slugs = uses.get((_route(l["href"]), anchor_key(l["anchor"])))
+        route = _route(l["href"])
+        slugs = route and uses.get((route, anchor_key(l["anchor"])))
         if slugs:
             yield (SITEWIDE_CHECK, sev,
                    f"section {sid}: anchor {l['anchor']!r} → {_route(l['href'])} is already used for that "
@@ -240,6 +299,9 @@ def anchor_reuse_sitewide(board, ont):
 def diversity_line(board):
     """One line for the board's links block: counts by type, domains, source types and the
     verdict of the three link checks above."""
+    # The verdict includes anchor-reuse-sitewide, which reads the SIBLING boards: a typed
+    # board's rendered links block therefore depends on other records, and its committed
+    # artifact goes stale when a sibling's anchors or status change, not only its own.
     a, e = anchor_summary(board), external_summary(board)
     fnd = (list(external_diversity(board, None)) + list(anchor_variation(board, None))
            + list(anchor_reuse_sitewide(board, None)))

@@ -148,6 +148,110 @@ def test_the_same_anchor_to_a_different_target_is_not_a_reuse(no_other_boards):
     assert _anchor_findings(_links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)) == []
 
 
+def _write(d, board):
+    p = d / (board["meta"]["slug"].replace("/", "--") + ".json")
+    p.write_text(json.dumps(board), encoding="utf-8")
+    return p
+
+
+def _reuse(board):
+    return [(s, m) for c, s, m in _anchor_findings(board) if c == LD.SITEWIDE_CHECK]
+
+
+LEEDS = "uk-locations/blue-staffy-puppies-leeds"
+
+
+def test_a_lower_status_sibling_never_fails_the_higher_board(no_other_boards):
+    """The first owner keeps its anchor: an approved board is not failed by a draft that
+    copied it, while the draft is told (WARN) to pick another."""
+    approved = _links(_board(status="approved"), GOOD_INTERNAL, GOOD_EXTERNAL)
+    draft = _links(_board(status="draft", slug=LEEDS), GOOD_INTERNAL, GOOD_EXTERNAL)
+    _write(no_other_boards, approved)
+    _write(no_other_boards, draft)
+    assert _reuse(approved) == []
+    hits = _reuse(draft)
+    assert hits and {s for s, _ in hits} == {"WARN"}, hits
+    assert all(SLUG in m for _, m in hits), hits
+
+
+def test_two_boards_at_the_same_status_are_both_flagged(no_other_boards):
+    a = _links(_board(status="boarded"), GOOD_INTERNAL, GOOD_EXTERNAL)
+    b = _links(_board(status="boarded", slug=LEEDS), GOOD_INTERNAL, GOOD_EXTERNAL)
+    _write(no_other_boards, a)
+    _write(no_other_boards, b)
+    assert any(LEEDS in m and s == "FAIL" for s, m in _reuse(a))
+    assert any(SLUG in m and s == "FAIL" for s, m in _reuse(b))
+
+
+def test_a_curly_apostrophe_is_the_same_anchor_as_a_straight_one(no_other_boards):
+    _write(no_other_boards, _links(_board(slug=LEEDS), [("/uk-blue-staffy-breeders-contact/", "Lisa’s  contact page", "natural")]))
+    internal = GOOD_INTERNAL + [("/uk-blue-staffy-breeders-contact/", "lisa's contact page", "partial")]
+    hits = _reuse(_links(_board(), internal, GOOD_EXTERNAL))
+    assert any("lisa's contact page" in m and LEEDS in m for _, m in hits), hits
+
+
+def test_a_query_or_fragment_on_the_siblings_href_is_the_same_target(no_other_boards):
+    _write(no_other_boards, _links(_board(slug=LEEDS), [("/blue-staffy-health-uk/?utm=x#faq", "Blue Staffy health", "exact")]))
+    hits = _reuse(_links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL))
+    assert any("/blue-staffy-health-uk/" in m and LEEDS in m for _, m in hits), hits
+
+
+def test_nav_tiles_are_left_out_of_the_reuse_check(no_other_boards):
+    other = _links(_board(slug=LEEDS), [("/uk-blue-staffy-breeders-contact/", "ask Lisa a question", "natural")])
+    other["sections"][1]["links"]["internal"].append(
+        {"href": "/blue-staffy-health-uk/", "anchor": "Blue Staffy health", "nav": True, "anchor_type": "exact"})
+    other["sections"][0]["links"]["internal"][0]["nav"] = True
+    _write(no_other_boards, other)
+    me = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
+    assert _reuse(me) == []
+    # and this board's own nav tile does not collide with a sibling's in-copy anchor
+    _write(no_other_boards, _links(_board(slug=LEEDS), [("/tile-0/", "Blue Staffy tile 0", "exact")]))
+    me["sections"][1]["links"]["internal"].append(
+        {"href": "/tile-0/", "anchor": "Blue Staffy tile 0", "nav": True, "anchor_type": "exact"})
+    assert _reuse(me) == []
+
+
+def test_the_board_map_is_cached_and_refreshed_when_a_board_changes(no_other_boards):
+    import os
+    p = _write(no_other_boards, _links(_board(slug=LEEDS), [("/blue-staffy-health-uk/", "Blue Staffy health", "exact")]))
+    me = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
+    assert _reuse(me)
+    assert LD.sitewide_anchor_uses(SLUG) == LD.sitewide_anchor_uses(SLUG)
+    st = p.stat()
+    _write(no_other_boards, _links(_board(slug=LEEDS), [("/blue-staffy-health-uk/", "health of blue Staffies", "lsi")]))
+    os.utime(p, ns=(st.st_atime_ns, st.st_mtime_ns + 1_000_000_000))
+    assert _reuse(me) == []
+
+
+def test_a_malformed_sibling_record_names_its_file(no_other_boards):
+    (no_other_boards / "broken-board.json").write_text("{not json", encoding="utf-8")
+    with pytest.raises(PB.BoardError, match="broken-board.json"):
+        LD.sitewide_anchor_uses(SLUG)
+
+
+def test_the_exact_match_message_names_the_links_to_retype():
+    internal = GOOD_INTERNAL + [("/a/", "Blue Staffy puppies", "exact"), ("/b/", "Staffy breeder UK", "exact")]
+    b = _links(_board(), internal, GOOD_EXTERNAL)
+    sid = b["sections"][0]["id"]
+    msg = next(m for _, _, m in _anchor_findings(b) if "exact-match" in m)
+    for anchor in ("Blue Staffy health", "Blue Staffy puppies", "Staffy breeder UK"):
+        assert f"{sid}: {anchor!r}" in msg, msg
+
+
+@pytest.mark.parametrize("href", ["/x", "/x/", "/x?q=1", "/x/?q", "/x#frag", "/x/#faq", "/a//b",
+                                  "//", "/a//b//", " /x ", "/x ?q", "\t/x/\n", "x", "", None])
+def test_the_route_rule_is_the_board_builders(href):
+    import build_page_board as B
+    assert LD._route(href) == B.route_of(href)
+
+
+@pytest.mark.parametrize("href", ["//evil.example/x", " //host/x", "https://example.com/x"])
+def test_an_href_with_a_host_is_not_an_internal_route(href):
+    """A protocol-relative `//host/x` passes the schema's `^/` pattern; route_of would fold it
+    to `/x/` and silently drop the host, so the reuse check treats it as no internal route."""
+    assert LD._route(href) is None
+
+
 def test_a_board_does_not_collide_with_its_own_record(no_other_boards):
     me = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
     (no_other_boards / "uk-locations--blue-staffy-puppies-manchester.json").write_text(json.dumps(me))
@@ -200,7 +304,7 @@ def test_a_typed_record_gets_an_anchor_type_column_and_a_diversity_line():
     assert "internal anchors: exact 1, partial 1, lsi 1, natural 1" in line
     assert "external anchors: natural 1, branded 1, naked-url 1" in line
     assert "3 link(s) on 3 domain(s)" in line
-    assert "FAIL" in line or "WARN" in line      # three external links is short of six
+    assert "WARN (" in line      # _demo is a draft; three external links is short of six
 
 
 def test_an_untyped_record_renders_exactly_as_before():
