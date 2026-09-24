@@ -673,3 +673,39 @@ def test_a_build_older_than_its_sources_stops(tmp_path):
     os.utime(newer, (3_000_000_000, 3_000_000_000))       # the build is newer: it stands
     os.utime(later, (4_500_000_000, 4_500_000_000))       # research files under data/queries/ never count
     assert _run(root, _answer("Check the microchip."))[0] == 0
+    registry = root / "data/competitors.json"             # nor the registry the intel agents write
+    registry.write_text(json.dumps(REGISTRY), encoding="utf-8")
+    os.utime(registry, (4_500_000_000, 4_500_000_000))
+    assert _run(root, _answer("Check the microchip."))[0] == 0
+
+
+@pytest.mark.parametrize("meta", ["<meta name=robots content=noindex>",
+                                  "<meta name=robots content=noindex/>",
+                                  '<meta name="robots" content="none">',
+                                  "<meta content=\"nofollow, NONE\" name='robots' />"])
+def test_a_noindex_build_is_found_unquoted_and_as_none(tmp_path, meta):
+    html_ = f"<html><head>{meta}</head><body><main><p>We always microchip.</p></main></body></html>"
+    code, doc, err = _run(_root(tmp_path, dist=html_), _answer("Check the microchip."))
+    assert code == 0, err
+    assert doc["page_source"]["kind"] == "question-file" and "noindex" in doc["page_source"]["note"]
+
+
+@pytest.mark.parametrize("meta", ['<meta data-name="robots" content="noindex">',
+                                  '<meta name="robots-extra" content="noindex">',
+                                  '<meta name="robots" content="index, follow, nonesuch">'])
+def test_a_meta_that_only_looks_like_robots_noindex_is_indexable(tmp_path, meta):
+    html_ = f"<html><head>{meta}</head><body><main><p>We always microchip.</p></main></body></html>"
+    code, doc, err = _run(_root(tmp_path, dist=html_), _answer("Check the microchip."))
+    assert code == 0, err
+    assert doc["page_source"]["kind"] == "dist"
+
+
+def test_a_paid_answer_is_filed_even_when_the_build_is_stale():
+    text = (ROOT / ".claude/agents/bsuk-llm-keyword-intel.md").read_text(encoding="utf-8")
+    step5 = re.search(r"^5\. \*\*File it by the script's exit:\*\*\n(.*?)^6\. ", text, re.S | re.M).group(1)
+    stale = next((l for l in step5.splitlines() if "older than" in l), "")
+    assert "npm run build" in stale and "`data/queries/raw/<slug>/ai_engines.response.json`" in stale
+    assert "exit 3" in stale and "no second call" in stale  # the re-run reads the filed answer, it never buys again
+    assert step5.index(stale) < step5.index("anything else")
+    exits = next(l for l in text.splitlines() if l.startswith("`exit 5` is a connector error"))
+    assert "a build older than its sources" in exits and "still filed" in exits

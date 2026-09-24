@@ -56,6 +56,7 @@ A re-buy of a cached answer happens only when the user asked for a fresh answer 
 5. **File it by the script's exit:**
    - 0 → move the scratch file to `data/queries/raw/<slug>/ai_engines.response.json`; the output stands.
    - 5 (connector error: a status other than 20000, or no answer text) → move it to `data/queries/raw/<slug>/ai_engines.error.json` — never ai_engines.response.json, which the guard would read as bought — and write the NOT FETCHED output with `NOT_FETCHED="connector error: <the script's message>" PAID=1`.
+   - a stale build (the script stops with "… is older than …: run npm run build …") → the answer is valid, only the page text is stale: still move the scratch file to `data/queries/raw/<slug>/ai_engines.response.json`, report, then `npm run build` and run the script again on the saved answer, with the same `PAID=1 FETCHED_ON=<call date>` — the next preflight is cached (exit 3), no second call.
    - anything else → stop and report; the scratch file stays unfiled.
 6. The normalised ai_engines.json and its questions belong to `bsuk-query-augmentation`: hand it the slug; do not write that file here.
 
@@ -222,14 +223,20 @@ bsuk = any(s["domain"] in OWN for s in everything)
 route = (q or {}).get("route") or (pm or {}).get("url")
 built = f"dist{route}index.html" if route else None
 page, src = None, None
-meta = lambda tag, name: (re.search(r"""\b%s\s*=\s*["']?([^"'>]*)""" % name, tag, re.I) or [None, ""])[1].lower()
+def meta(tag, name):  # an attribute's value, quoted either way or bare; data-name or name-x is not name
+    m = re.search(r"""(?<![\w-])%s\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""" % name, tag, re.I)
+    if not m:
+        return ""
+    q1, q2, bare = m.groups()
+    return (q1 if q1 is not None else q2 if q2 is not None else bare.rstrip("/")).lower()  # bare: "noindex/>" self-closes
 def newest_input():  # the newest file the build reads: src/ and data/, never data/queries/ or data/competitors.json
     files = [p for d in ("src", "data") for p in glob.glob(f"{d}/**/*", recursive=True) if os.path.isfile(p)
              and not p.startswith(os.path.join("data", "queries", "")) and p != os.path.join("data", "competitors.json")]
     return max(files, key=os.path.getmtime, default=None)
 if built and os.path.exists(built):
     h = open(built, encoding="utf-8").read()
-    if any(meta(t, "name") == "robots" and "noindex" in meta(t, "content") for t in re.findall(r"<meta\b[^>]*>", h, re.I)):
+    if any(meta(t, "name") == "robots" and {"noindex", "none"} & set(re.split(r"[\s,]+", meta(t, "content")))
+           for t in re.findall(r"<meta\b[^>]*>", h, re.I)):  # robots "none" = noindex, nofollow
         why = f"{built} is a noindex stub"
     else:
         newer = newest_input()
@@ -316,7 +323,7 @@ print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'
 EOF
 ```
 
-`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row, a build older than its sources — then `npm run build` and run it again) and stop; never write the file by hand.
+`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row, a build older than its sources — its paid answer is still filed (Buy step 5), then `npm run build` and run it again) and stop; never write the file by hand.
 
 ## Output
 
