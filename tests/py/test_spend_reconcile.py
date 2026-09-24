@@ -448,3 +448,15 @@ def test_cli_budget_always_prints_the_log_length(tmp_path):
         "budget ai_engines: total counted 0.8 of cap 1.0; typical call 0.1; 2 more calls of this "
         "source fit the total cap; page cap 0.5 per slug per day",
         "spend log holds 14 entries"]
+
+
+# --- the committed state -----------------------------------------------------------------------
+
+def test_the_committed_state_admits_the_26_remaining_city_calls(tmp_path):
+    """The repo's own settings, spend log and dashboard reading, copied: the 26 location pages
+    without an LLM-intel file each get their one ChatGPT call inside the $1 cap."""
+    for rel in ("data/settings.json", "data/queries/spend.json", "data/queries/dashboard.json"):
+        (tmp_path / rel).parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy(REPO / rel, tmp_path / rel)
+    s = json.loads((REPO / "data/settings.json").read_text())
+    assert buy_all(tmp_path, CITIES, cost=s["query_typical_call_usd"]) == 26
