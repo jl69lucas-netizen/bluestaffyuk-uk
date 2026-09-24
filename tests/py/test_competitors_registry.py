@@ -282,3 +282,28 @@ def test_cli_summary_on_a_clean_registry(tmp_path):
     r = run_cli(make_root(tmp_path, registry()))
     assert r.returncode == 0
     assert "1 entries; 0 banned domains; 0 files scanned; 0 problems" in r.stdout
+
+# --- Known Issue 47: JSON-escaped links -----------------------------------------------------
+
+@pytest.mark.parametrize("value", [
+    "https://bad.co.uk/pups",                         # json.dumps leaves / alone
+    "<a href=\"//bad.co.uk/x\">x</a>",                # scheme-less, quote escaped as \"
+    "<img src='//shop.bad.co.uk/x.jpg'>",
+])
+@pytest.mark.parametrize("escape", ["slash", "unicode"])
+def test_the_link_guard_catches_json_escaped_urls(tmp_path, value, escape):
+    root = make_root(tmp_path)
+    text = json.dumps({"html": value})
+    text = text.replace("/", "\\/") if escape == "slash" else text.replace("/", "\\u002f")
+    assert "//" not in text  # the file really holds only escaped slashes
+    (root / "data/boards/x.json").write_text(text + "\n")
+    out, _ = C.suspect_links(registry(*BANNED), root)
+    assert len(out) == 1 and "data/boards/x.json:1" in out[0] and "bad.co.uk" in out[0], out
+
+
+def test_json_escaped_allowed_links_and_escaped_non_links_are_fine(tmp_path):
+    root = make_root(tmp_path)
+    (root / "src/x.json").write_text(
+        '{"a": "https:\\/\\/pets4homes.co.uk\\/x", "b": "https:\\/\\/notbad.co.uk\\/y", '
+        '"c": "a path\\/\\/bad.co.uk with no scheme"}\n')
+    assert C.suspect_links(registry(*BANNED), root)[0] == []

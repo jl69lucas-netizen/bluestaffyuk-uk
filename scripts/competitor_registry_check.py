@@ -15,7 +15,8 @@ UK-style second level sits under a two-letter country code (`pets4homes.co.uk`).
 longer is a subdomain; non-ASCII names go in punycode (`xn--…`).
 
 The link guard bans every domain marked `link_allowed: false` — tier 5 always, and any other
-the user marks — across src/, data/boards/ and the external link library. It runs only once
+the user marks — across src/, data/boards/ and the external link library, including links
+JSON-escaped inside a string (`https:\\/\\/host`, `https:\\u002f\\u002fhost`). It runs only once
 the registry itself has no problems, and a scan path that has gone missing is a problem.
 
 Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §4, §12.
@@ -42,7 +43,11 @@ LINK_SCAN = ("src", "data/boards", "docs/reference/external-link-library.md")
 LINK_SUFFIXES = {".astro", ".md", ".mdx", ".json", ".ts", ".js", ".html"}
 # `https?://` anywhere; scheme-less `//host` only straight after href= or src=, so `//`
 # code comments are not read as links. Group 1 is the authority (userinfo@host:port).
-URL = re.compile(r"""(?:https?:|\b(?:href|src)\s*=\s*["']?)//([^/?#\s"'<>)\]\\]+)""", re.I)
+# Inside a JSON string a slash may be written `\/` or `\u002f` and a quote `\"`, so
+# `https:\/\/host` and `href=\"\/\/host` are links too (Known Issue 47).
+SLASH = r"(?:\\?/|\\u002[fF])"
+URL = re.compile(r"""(?:https?:|\b(?:href|src)\s*=\s*\\?["']?)""" + SLASH + SLASH
+                 + r"""([^/?#\s"'<>)\]\\]+)""", re.I)
 
 
 def derived_priority(c):
