@@ -205,5 +205,6 @@
  "llm_mentions": {
   "status": "NOT FETCHED",
   "reason": "llm_mentions only once BSUK's domain is live (project 6)"
- }
+ },
+ "extra": "royal kennel club|kennel club;rspca;dog breeding reform group;find a puppy;eye testing;elbow dysplasia;hip testing;socialisation;worming;insurance;deposit;taking a dog back"
 }

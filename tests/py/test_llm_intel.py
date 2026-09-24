@@ -99,6 +99,10 @@ def problems(doc, name=None, own=None):
             out.append("format is only read from a verbatim answer; a summary gives NOT FETCHED")
         elif f["length"] != _band(f["words"]):
             out.append(f"format length {f['length']} does not match {f['words']} words")
+    given = {re.sub(r"[^a-z0-9 '&-]+", " ", e.split("|")[0].strip().lower()).strip() for e in doc["extra"].split(";") if e.strip()}
+    for e in doc["entities"]:
+        if e["kind"] == "other" and e["entity"] not in given:
+            out.append(f"entity {e['entity']!r} is not in extra: a re-run with extra would not reproduce it")
     ps = doc["page_source"]
     if ps["kind"] != "dist" and not ps["provisional"]:
         out.append("entities checked against anything but the built, indexable page are provisional")
@@ -147,6 +151,7 @@ GOOD = {
                  {"entity": "pets4homes", "kind": "other", "on_page": False, "band": "medium"}],
     "format": {"status": "ok", "list": "numbered", "length": "short", "words": 58, "opening": "recommendation"},
     "llm_mentions": {"status": "NOT FETCHED", "reason": "no BSUK domain live until project 6"},
+    "extra": "pets4homes",
 }
 
 
@@ -757,3 +762,34 @@ def test_the_answer_format_edge_cases(tmp_path, markdown, want):
     code, doc, err = _run(_root(tmp_path), _answer(markdown))
     assert code == 0, err
     assert (doc["format"]["list"], doc["format"]["opening"]) == want
+
+
+def test_the_output_records_extra_so_a_rerun_reproduces_it(tmp_path):
+    # Known Issue 53: the EXTRA string is part of the output; re-running with it gives the same file
+    extra = "kennel club;coefficient of inbreeding|inbreeding coefficient;xl breed|xl"
+    root = _root(tmp_path, registry=REGISTRY)
+    code, doc, err = _run(root, FIX / "chatgpt-synthetic-full.json", EXTRA=extra)
+    assert code == 0, err
+    assert doc["extra"] == extra
+    assert _run(root, FIX / "chatgpt-synthetic-full.json", EXTRA=doc["extra"])[1] == doc
+    assert problems(doc, f"{MAN}-2026-09-23.json") == []
+
+
+def test_an_other_entity_missing_from_extra_breaks_the_contract():
+    doc = _bad(lambda d: d.update(extra="kennel club"))
+    assert any("not in extra" in p for p in problems(doc))
+    assert problems(_bad(lambda d: d.update(extra="pets4homes|pets 4 homes;kennel club"))) == []
+
+
+def test_the_synthetic_fixture_is_scrubbed_like_a_saved_response():
+    # a saved response never holds a social-profile, maps or WhatsApp link in its answer text
+    text = (FIX / "chatgpt-synthetic-full.json").read_text(encoding="utf-8")
+    md = [v for k, v in (json.loads(text)["tasks"][0]["result"][0].items()) if k == "markdown"]
+    for m in md + [i.get("markdown", "") for i in json.loads(text)["tasks"][0]["result"][0]["items"]]:
+        assert not re.search(r"instagram\.com|facebook\.com|tiktok\.com|wa\.me|maps\.google|goo\.gl/maps", m), m
+
+
+def test_a_profile_link_in_the_answer_is_never_a_citation(tmp_path):
+    code, doc, err = _run(_root(tmp_path), _answer("See https://www.instagram.com/example/ and https://www.thekennelclub.org.uk/."))
+    assert code == 0, err
+    assert [c["domain"] for c in doc["citations"]] == ["thekennelclub.org.uk"]

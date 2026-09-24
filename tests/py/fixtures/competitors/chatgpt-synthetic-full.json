@@ -1,5 +1,5 @@
 {
-  "_fixture_note": "Invented, in the DataForSEO ai_optimization_chat_gpt_scraper response shape: heading-first markdown with links in the text, a bold list, a table, local businesses (a tier-5 seller, a subdomain, a social profile, a hosted-platform seller), a look-alike BSUK domain and search_results. Contact details were dropped as a saved response drops them. For tests/py/test_llm_intel.py only.",
+  "_fixture_note": "Invented, in the DataForSEO ai_optimization_chat_gpt_scraper response shape: heading-first markdown with links in the text, a bold list, a table, local businesses (a tier-5 seller, a subdomain, a social profile, a hosted-platform seller), a look-alike BSUK domain and search_results. Contact details and profile links were dropped from the answer text as a saved response drops them (the local businesses keep title and domain, as the scrub step keeps them). For tests/py/test_llm_intel.py only.",
   "status_code": 20000,
   "status_message": "Ok.",
   "tasks": [
@@ -11,7 +11,7 @@
       "result": [
         {
           "keyword": "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?",
-          "markdown": "## Where to look\n\nThe best place to start is the Kennel Club's [Find a Puppy](https://www.thekennelclub.org.uk/search/find-a-puppy/) service. You can also try [Blue Staffy UK](https://www.bluestaffyuk.uk/uk-locations/) or Pets4Homes.\n\n- **Cheap Pups** — [Instagram](https://www.instagram.com/example-profile/) (phone, email, WhatsApp link and street address dropped).\n- **UK Staffy Pups** — https://ukstaffypups.uk/puppies\n\n### What to ask the breeder\n\n| Question | Why |\n|---|---|\n| Are the parents DNA tested for L2HGA? | Hereditary disease |\n| Can I see mum? | Welfare |\n\nAsk for a written contract and check the breeder's council licence. The dam's temperament matters. Ask about the coefficient of inbreeding (COI).",
+          "markdown": "## Where to look\n\nThe best place to start is the Kennel Club's [Find a Puppy](https://www.thekennelclub.org.uk/search/find-a-puppy/) service. You can also try [Blue Staffy UK](https://www.bluestaffyuk.uk/uk-locations/) or Pets4Homes.\n\n- **Cheap Pups** — (profile link, phone, email, WhatsApp link and street address dropped).\n- **UK Staffy Pups** — https://ukstaffypups.uk/puppies\n\n### What to ask the breeder\n\n| Question | Why |\n|---|---|\n| Are the parents DNA tested for L2HGA? | Hereditary disease |\n| Can I see mum? | Welfare |\n\nAsk for a written contract and check the breeder's council licence. The dam's temperament matters. Ask about the coefficient of inbreeding (COI).",
           "items": [
             {
               "type": "chat_gpt_text",

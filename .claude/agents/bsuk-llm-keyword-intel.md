@@ -80,6 +80,7 @@ Three layers — citations, entities, format — in one script, from the repo ro
   - Never one holding a safety entity's words (`health-test certificates`, `written contract`).
   - An organisation the answer names counts even when it is also cited.
   - The script drops a whole entry that breaks a rule or whose words the answer does not contain, and names it on stderr — you cannot add what the answer does not say.
+  - The output's `extra` records the string exactly as given, dropped entries included, so a re-run of the same answer passes `EXTRA="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["extra"])' <the llm-intel file>)"` and reproduces every entity and its variants.
 - The response path: the saved ai_engines.response.json, the scratch file of Buy step 4, or the file the invocation hands you as a stand-in (`raw` still names the saved path).
 
 What the script decides (to explain it, never to redo it):
@@ -110,7 +111,8 @@ slug, resp_path = sys.argv[1], (sys.argv[2:] or [None])[0]
 QUERY = os.environ["QUERY"]  # the buyer question asked
 NOT_FETCHED = os.environ.get("NOT_FETCHED", "").strip()  # a reason: no answer to read
 PAID = os.environ.get("PAID") == "1"
-EXTRA = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in os.environ.get("EXTRA", "").split(";") if e.strip()]
+EXTRA_GIVEN = os.environ.get("EXTRA", "").strip()  # recorded in the output as given, so a re-run reproduces it
+EXTRA = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in EXTRA_GIVEN.split(";") if e.strip()]
 def fail(msg, code=1):
     print(msg, file=sys.stderr)
     sys.exit(code)
@@ -167,7 +169,8 @@ if NOT_FETCHED:  # the NOT FETCHED output: no answer to read
                       "paid_this_run": PAID, "bsuk_cited": None, "citations": [], "local_businesses": [], "citation_gap": [],
                       "risks": [], "page_source": {"kind": "none", "path": None, "provisional": True, "note": "no answer to check"},
                       "entities": [], "format": {"status": "NOT FETCHED", "reason": NOT_FETCHED},
-                      "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}, indent=1))
+                      "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"},
+                      "extra": EXTRA_GIVEN}, indent=1))
     sys.exit(0)
 def walk(x, key=None):
     yield key, x
@@ -318,7 +321,8 @@ out = {"slug": slug, "date": today, "engine": "chatgpt", "endpoint": "ai_optimiz
        "risks": [{"domain": s["domain"], "registry_id": s["registry_id"], "reason": "tier 5 (suspect seller) in data/competitors.json: a risk, never a model"}
                  for s in uniq if s["tier"] == 5],
        "page_source": src, "entities": entities, "format": fmt,
-       "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}
+       "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"},
+       "extra": EXTRA_GIVEN}
 print(json.dumps(out, indent=1, ensure_ascii=False))
 print(f"STALE (older than 30 days; carrying on): {'; '.join(stale)}" if stale else "fresh: answer and gap matrix within 30 days", file=sys.stderr)
 print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'}; EXTRA dropped (too short, not in the answer, or holding a safety entity): {rejected or 'none'}", file=sys.stderr)

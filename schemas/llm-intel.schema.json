@@ -6,7 +6,7 @@
   "additionalProperties": false,
   "required": ["slug", "date", "engine", "endpoint", "location", "query", "query_source", "stale", "fetched", "raw",
                "answer_text", "paid_this_run", "bsuk_cited", "citations", "local_businesses",
-               "citation_gap", "risks", "page_source", "entities", "format", "llm_mentions"],
+               "citation_gap", "risks", "page_source", "entities", "format", "llm_mentions", "extra"],
   "properties": {
     "slug": {"type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"},
     "date": {"$ref": "#/$defs/date"},
@@ -67,7 +67,8 @@
          "opening": {"enum": ["recommendation", "definition", "question", "statistic", "statement"]}
        }}
     ]},
-    "llm_mentions": {"$ref": "#/$defs/not_fetched"}
+    "llm_mentions": {"$ref": "#/$defs/not_fetched"},
+    "extra": {"type": "string", "description": "the EXTRA string exactly as given (name|variant;name|...), so a re-run reproduces every other entity and its variants"}
   },
   "$defs": {
     "date": {"type": "string", "pattern": "^\\d{4}-\\d{2}-\\d{2}$"},
