@@ -204,3 +204,74 @@ def test_also_folds_in_a_neighbouring_folder_and_refuses_a_missing_one(tmp_path)
     r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-testtown", "--also", "../x",
                         "--root", str(root)], capture_output=True, text=True)
     assert r.returncode == 2
+
+
+# --- review fixes: whole-label domain ban, any cache shape, blank terms, empty cache ---------
+
+def test_a_hyphenated_host_bans_its_whole_label_not_every_word_in_it(tmp_path):
+    root = _root(tmp_path)
+    raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://staffy-owners.example/", "h2": ["Advice for responsible owners"]}]}))
+    (raw / "threads.json").write_text(json.dumps({"threads": [
+        {"title": "Responsible owners and staffy-owners forum"},
+        {"title": "What responsible owners ask on staffyowners forum"},
+        {"title": "Staffy-owners forum rules for responsible owners"}]}))
+    terms = [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
+    assert "responsible owners" in terms
+    assert not any("staffy-owners" in t or "staffyowners" in t for t in terms), terms
+
+
+def test_a_list_shaped_file_and_string_items_do_not_crash(tmp_path):
+    root = _root(tmp_path)
+    raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    (raw / "serp_bing.json").write_text(json.dumps(["not", "an", "object"]))
+    (raw / "ai_engines.json").write_text(json.dumps({"questions": ["Is a blue staffy kennel club registered?", 7]}))
+    (raw / "threads.json").write_text(json.dumps({"threads": ["Blue staffy kennel club advice", {"title": None}],
+                                                  "questions": "not a list"}))
+    (raw / "competitors.json").write_text(json.dumps({"pages": ["https://x.example/", {"url": 3, "h2": [None, "Health tested parents"]}]}))
+    resp = json.loads((raw / "serp_google.response.json").read_text())
+    resp["items"] += ["organic", {"type": "people_also_ask", "items": [{"title": "Do they shed?"}, None]}]
+    (raw / "serp_google.response.json").write_text(json.dumps(resp))
+    out = KV.propose("blue-staffy-puppies-testtown", root=root)
+    assert set(out["buckets"]) == set(OPTIONAL)
+    assert KV._read(raw / "serp_bing.json") is None
+
+
+def test_blank_terms_do_not_fill_a_type():
+    b = _demo(status="approved")
+    for k in OPTIONAL:
+        b["sections"][0]["keywords"][k] = ["term"]
+    b["sections"][0]["keywords"]["similar"] = ["", "   "]
+    f = _kv(b)
+    assert len(f) == 1 and f[0][1] == "FAIL" and "similar" in f[0][2]
+
+
+def test_the_hint_names_a_query_slug_not_the_board_slug():
+    msg = _kv(_demo(status="boarded"))[0][2]
+    assert "python3 scripts/keyword_variants.py <query-slug>" in msg
+    assert "blue-staffy-puppies-manchester-uk" in msg
+
+
+def test_an_empty_or_unreadable_cache_folder_exits_6(tmp_path):
+    root = tmp_path
+    raw = root / "data" / "queries" / "raw"
+    (raw / "blue-staffy-puppies-emptyville").mkdir(parents=True)
+    (raw / "blue-staffy-puppies-brokenville").mkdir()
+    (raw / "blue-staffy-puppies-brokenville" / "serp_google.json").write_text("{not json")
+    for slug in ("blue-staffy-puppies-emptyville", "blue-staffy-puppies-brokenville"):
+        r = subprocess.run([sys.executable, str(SCRIPT), slug, "--root", str(root)], capture_output=True, text=True)
+        assert r.returncode == 6, (slug, r.stdout)
+        assert "nothing readable" in r.stderr and "bsuk-query-augmentation" in r.stderr
+
+
+def test_a_host_named_after_a_primary_keyword_word_bans_nothing(tmp_path):
+    """puppies.co.uk ranks for Manchester: its label normalises to `puppy`, a word of the
+    primary, and banning it would drop every phrase that says puppy."""
+    root = _root(tmp_path)
+    raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://www.puppies.example/sale", "h2": ["Ask for the puppy contract"]}]}))
+    (raw / "threads.json").write_text(json.dumps({"threads": [{"title": "Is a puppy contract worth it?"}]}))
+    terms = [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
+    assert "puppy contract" in terms, terms

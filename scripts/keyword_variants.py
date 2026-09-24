@@ -27,8 +27,12 @@ keyword's cached SERP, e.g. registry-staffy-puppies-for-sale-leeds for Leeds, wh
 was saved as URLs only. Its texts join the corpus; the primary keyword stays SLUG's.
 
 Prints JSON: {"slug", "primary", "buckets": {type: [{"term", "sources", "df"}]}, "examined"}.
-Exit 0 printed · 2 bad usage (a slug outside [a-z0-9-]) · 6 no cached query data for SLUG
-(run bsuk-query-augmentation first).
+`df` is a count whose unit differs by bucket: for `variation` it is how many times the
+surface form occurs across the cached texts; for `related` and `similar` it is how many
+times the same term was listed (duplicates across files merged into one entry); for
+`cooccurring` it is how many distinct cached documents contain the phrase (always >= 2).
+Exit 0 printed · 2 bad usage (a slug outside [a-z0-9-]) · 6 no cached query data for SLUG,
+or a cache folder with nothing readable in it (run bsuk-query-augmentation first).
 """
 import argparse
 import json
@@ -67,11 +71,33 @@ WORD = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 URL = re.compile(r"\(?https?://[^\s)]+\)?")
 
 
-def _read(path):
+def _load(path):
     try:
         return json.loads(Path(path).read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return None
+
+
+def _read(path):
+    """A cached JSON object, or None: a missing, unreadable or non-object file reads as absent."""
+    data = _load(path)
+    return data if isinstance(data, dict) else None
+
+
+def _list(x, key):
+    """x[key] when x is an object and the value is a list, else []."""
+    v = x.get(key) if isinstance(x, dict) else None
+    return v if isinstance(v, list) else []
+
+
+def _text(x, key):
+    """An item's text whatever shape the cache saved it in: a bare string is itself, an
+    object gives x[key] (when that is a string), anything else is empty."""
+    if isinstance(x, str):
+        return x
+    if isinstance(x, dict) and isinstance(x.get(key), str):
+        return x[key]
+    return ""
 
 
 def _canon(text):
@@ -104,15 +130,21 @@ def _title_core(title):
 
 
 def _domains(urls):
-    """The registrable label of every ranking URL (`pets4homes`, `gumtree`) — a phrase that
-    names a marketplace is not a phrase a breeder's page should write."""
+    """The registrable label of every ranking URL (`pets4homes`, `gumtree`, `staffie-owners`)
+    — a phrase that names a marketplace is not a phrase a breeder's page should write. Only
+    the WHOLE label is banned, in its hyphenated and joined forms (`staffy-owners`,
+    `staffieowners`), normalised the way text tokens are; the words inside a hyphenated label
+    (`owners`) stay usable. Each form is one token, since tokens keep their hyphens."""
     out = set()
     for u in urls:
-        host = urlsplit(u or "").hostname or ""
+        try:
+            host = urlsplit(u if isinstance(u, str) else "").hostname or ""
+        except ValueError:
+            continue
         parts = [p for p in host.split(".") if p not in ("www", "co", "uk", "com", "org", "net")]
         if parts:
-            out.add(parts[0])
-            out.update(parts[0].split("-"))
+            for form in (parts[0], parts[0].replace("-", "")):
+                out.add(" ".join(_tokens(form)))
     return {d for d in out if len(d) > 2}
 
 
@@ -129,68 +161,72 @@ def load_corpus(slug, root=ROOT):
         if text and text.strip():
             docs.append((label, text))
 
+    # Every read goes through _list/_text: a cache file saved as a list, or an item saved as
+    # a bare string (the registry folders save People Also Ask that way), reads without a crash.
     g = _read(raw / "serp_google.json") or {}
-    for q in g.get("questions") or []:
-        if q.get("detail") == "serp_google_related":
-            related.append(("serp_google_related", q.get("text", "")))
+    for q in _list(g, "questions"):
+        detail = _text(q, "detail") if isinstance(q, dict) else ""
+        if detail == "serp_google_related":
+            related.append(("serp_google_related", _text(q, "text")))
         else:
-            doc(q.get("detail") or "serp_google", q.get("text", ""))
-    for r in g.get("results") or []:
-        urls.append(r.get("url"))
+            doc(detail or "serp_google", _text(q, "text"))
+    for r in _list(g, "results"):
+        urls.append(_text(r, "url"))
     resp = _read(raw / "serp_google.response.json") or {}
-    for it in resp.get("items") or []:
-        kind = it.get("type")
+    for it in _list(resp, "items"):
+        kind = it.get("type") if isinstance(it, dict) else None
         if kind == "organic":
-            urls.append(it.get("url"))
-            titles.append(("organic_title", it.get("title", "")))
-            doc("organic_title", it.get("title", ""))
-            doc("organic_snippet", it.get("description", ""))
+            urls.append(_text(it, "url"))
+            titles.append(("organic_title", _text(it, "title")))
+            doc("organic_title", _text(it, "title"))
+            doc("organic_snippet", _text(it, "description"))
         elif kind == "people_also_ask":
-            for e in it.get("items") or []:
-                doc("paa", e if isinstance(e, str) else e.get("title", ""))   # registry saves bare strings
+            for e in _list(it, "items"):
+                doc("paa", _text(e, "title"))
         elif kind == "related_searches":
-            for s in it.get("items") or []:
-                related.append(("serp_google_related", s))
+            for s in _list(it, "items"):
+                related.append(("serp_google_related", _text(s, "text")))
         elif kind == "ai_overview":
-            doc("ai_overview", it.get("text") or it.get("markdown") or "")
+            doc("ai_overview", _text(it, "text") or _text(it, "markdown"))
     b = _read(raw / "serp_bing.json") or {}
-    for q in b.get("questions") or []:
-        doc("serp_bing", q.get("text", ""))
-    for r in b.get("results") or []:
-        urls.append(r.get("url"))
+    for q in _list(b, "questions"):
+        doc("serp_bing", _text(q, "text"))
+    for r in _list(b, "results"):
+        urls.append(_text(r, "url"))
     a = _read(raw / "ai_engines.json") or {}
-    for q in a.get("questions") or []:
-        doc("ai_question", q.get("text", ""))
+    for q in _list(a, "questions"):
+        doc("ai_question", _text(q, "text"))
     ar = _read(raw / "ai_engines.response.json") or {}
-    for p in ar.get("answer_points") or []:
-        doc("ai_answer", p)
-    for it in ar.get("items") or []:
+    for p in _list(ar, "answer_points"):
+        doc("ai_answer", _text(p, "text"))
+    for it in _list(ar, "items"):
         # One long answer is one document to the df count, however many paragraphs it has —
         # split it by paragraph and a phrase repeated in one answer would read as consensus.
-        doc("ai_answer", it.get("markdown") or it.get("text") or "")
+        doc("ai_answer", _text(it, "markdown") or _text(it, "text"))
     t = _read(raw / "threads.json") or {}
-    for th in t.get("threads") or []:
-        doc("thread_title", th.get("title", ""))
-    for q in t.get("questions") or []:
-        doc("thread_question", q.get("text", ""))
+    for th in _list(t, "threads"):
+        doc("thread_title", _text(th, "title"))
+    for q in _list(t, "questions"):
+        doc("thread_question", _text(q, "text"))
     c = _read(raw / "competitors.json") or {}
-    for p in c.get("pages") or []:
-        urls.append(p.get("url"))
-        for h in p.get("h2") or []:
+    for p in _list(c, "pages"):
+        urls.append(_text(p, "url"))
+        for h in _list(p, "h2"):
+            h = _text(h, "text")
             titles.append(("competitor_h2", h))
             doc("competitor_h2", h)
-    for q in (qfile or {}).get("questions") or []:
-        doc("question_file", q.get("question", ""))
-    primary = (qfile or {}).get("primary_keyword") or slug.replace("-", " ")
+    for q in _list(qfile, "questions"):
+        doc("question_file", _text(q, "question"))
+    primary = _text(qfile, "primary_keyword") or slug.replace("-", " ")
     return {"primary": _canon(primary), "related": related, "titles": titles, "docs": docs,
             "domains": _domains(urls)}
 
 
 def _geo_words(root):
-    rows = _read(Path(root) / "data" / "locations.json") or []
+    rows = _load(Path(root) / "data" / "locations.json")       # a list of {"city": ...}
     words = {"uk", "england", "scotland", "wales"}
-    for r in rows:
-        words.update(WORD.findall(_canon(re.sub(r"\(.*?\)", "", r.get("city", "")))))
+    for r in rows if isinstance(rows, list) else []:
+        words.update(WORD.findall(_canon(re.sub(r"\(.*?\)", "", _text(r, "city")))))
     return words
 
 
@@ -250,7 +286,9 @@ def _similar(corpus, related):
 
 def _cooccurring(corpus, geo):
     pwords = set(normalise(corpus["primary"]).split())
-    banned = corpus["domains"]
+    # A label that normalises to a word of the primary (puppies.co.uk -> `puppy`) cannot be
+    # told apart from the word itself; banning it would drop every phrase that says puppy.
+    banned = {d for d in corpus["domains"] if d not in pwords}
     df, where = Counter(), {}
     for src, text in corpus["docs"]:
         toks = _tokens(text)
@@ -260,7 +298,11 @@ def _cooccurring(corpus, geo):
                 g = toks[i:i + n]
                 if g[0] in STOP or g[-1] in STOP:
                     continue
-                if any(t.isdigit() for t in g) or any(t in banned or t == "bluestaffyuk" for t in g):
+                if any(t.isdigit() for t in g) or any(t == "bluestaffyuk" for t in g):
+                    continue
+                # A marketplace's whole label, matched as a phrase: tokens keep their hyphens,
+                # so `staffy-owners` is one token and plain `owners` never matches it.
+                if any(f" {d} " in f" {' '.join(g)} " for d in banned):
                     continue
                 if all(t in pwords or t in geo or t in STOP or t in TRIVIAL for t in g):
                     continue
@@ -325,6 +367,10 @@ def main(argv=None):
     if out is None:
         print(f"keyword_variants: no cached query data for {' / '.join([args.slug, *args.also])} under data/queries/ — "
               "run bsuk-query-augmentation first", file=sys.stderr)
+        return EXIT_NO_CACHE
+    if not any(out["examined"].values()):
+        print(f"keyword_variants: the cache for {' / '.join([args.slug, *args.also])} under data/queries/ holds "
+              "nothing readable (empty or unparseable files) — re-run bsuk-query-augmentation", file=sys.stderr)
         return EXIT_NO_CACHE
     print(json.dumps(out, indent=2, ensure_ascii=False))
     return EXIT_OK

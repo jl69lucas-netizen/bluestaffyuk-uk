@@ -79,12 +79,13 @@ _BOARDED_OR_LATER = ("boarded", "approved", "built", "released")
 @register
 def keyword_variants_filled(board, ont):
     missing = [k for k in KEYWORD_VARIANT_TYPES
-               if not any(s["keywords"].get(k) for s in board["sections"])]
+               if not any(t.strip() for s in board["sections"] for t in s["keywords"].get(k, []))]
     if not missing:
         return
     sev = "FAIL" if board["meta"]["status"] in _BOARDED_OR_LATER else "WARN"
     yield ("keyword-variants-missing", sev,
            f"no section carries a {', '.join(missing)} keyword — a new location, comparison or "
            "blog page names at least one term of each type; run "
-           f"`python3 scripts/keyword_variants.py {board['meta']['slug'].split('/')[-1]}` for a "
-           "proposal from the cached query data")
+           "`python3 scripts/keyword_variants.py <query-slug>` (the cache folder under "
+           f"data/queries/raw/, e.g. {board['meta']['slug'].split('/')[-1]}) for a proposal "
+           "from the cached query data")
