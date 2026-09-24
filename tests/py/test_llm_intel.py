@@ -731,3 +731,23 @@ def test_national_and_annotated_location_rows_take_the_shared_question(tmp_path,
     if bad != query:
         code, _, err = _run(root, _answer("Meet the mother.", keyword=bad), slug=slug, QUERY=bad, FETCHED_ON="2026-09-23")
         assert code != 0 and "location page" in err
+
+
+@pytest.mark.parametrize("markdown,want", [
+    ("Pets4Homes is the UK's largest pet marketplace.", ("paragraphs", "statement")),       # a brand's digit
+    ("L-2-HGA testing is a DNA test for a brain disorder.", ("paragraphs", "statement")),   # a test's digit
+    ("Around 60% of buyers pay a deposit first.", ("paragraphs", "statistic")),
+    ("£1,500 is a typical price for a KC registered puppy.", ("paragraphs", "statistic")),
+    ("**Short answer:** Use a licensed breeder near you.", ("paragraphs", "recommendation")),  # inline label
+    ("**Short answer**: Use a licensed breeder near you.", ("paragraphs", "recommendation")),
+    ("**Buy from a licensed breeder.** Then ask for the tests.", ("paragraphs", "recommendation")),  # not a label
+    ("| Question | Why |\n|---|---|\n| Health tests? | Disease |\n\nAsk to see the mother.", ("table", "recommendation")),
+    ("| Question | Why |\n|---|---|\n| Health tests? | Disease |", ("table", "statement")),  # a table alone
+    ("| a | b |\n|-|-|\n| c | d |", ("table", "statement")),          # a one-dash separator is a table
+    ("| a | b |\n|:-|-:|\n| c | d |", ("table", "statement")),
+])
+def test_the_answer_format_edge_cases(tmp_path, markdown, want):
+    # Known Issue 53: digits inside a name, inline bold labels, table-first answers, short separators
+    code, doc, err = _run(_root(tmp_path), _answer(markdown))
+    assert code == 0, err
+    assert (doc["format"]["list"], doc["format"]["opening"]) == want

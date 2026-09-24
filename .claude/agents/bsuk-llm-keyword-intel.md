@@ -95,7 +95,7 @@ What the script decides (to explain it, never to redo it):
   - `citation_gap` = registry tiers 1–4 among them while BSUK is not; a tier-5 site goes to `risks` once, never to the gap.
 - **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable — no robots `<meta>` holding `noindex`, whatever its attribute order or quotes (its `<main>`). A build older than any file under `src/` or `data/` (`data/queries/` and `data/competitors.json` aside — research files the build never reads) stops the script: run `npm run build`, then the script again. A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
 - **Entities:** the buying-safety list (health tests, L-2-HGA, HC-HSF4, meeting the mother, microchip, vaccinations, vet check, KC registration, licence, contract), each recorded only when the answer uses it, then your `EXTRA`. Matched on normalised whole words (a plural `s` counts) against the page text. **High** = a safety entity missing from the page; everything else medium.
-- **Format:** list type (a table needs a `|---|` separator row; only top-level `1.` or `-` items count), words, length band (short under 100, medium to 300, long above), and the opening move of the first sentence of the first content line — headings, bold labels (`**Short answer:**`) and rules skipped, "e.g." and "i.e." never a sentence end: question, recommendation (an instruction, "you can/should", "here is/are", "the best place"), statistic, definition, statement. This is the mirror template for the page's answer blocks.
+- **Format:** list type (a table needs a separator row, `|-|` or longer; only top-level `1.` or `-` items count), words, length band (short under 100, medium to 300, long above), and the opening move of the first sentence of the first content line — headings, rules, table rows and bold labels skipped (`**Short answer:**` alone on its line, or before the text on the same line; a bold sentence with no colon is text), so a table-first answer opens with the first line after the table, and a table alone is a statement; "e.g." and "i.e." never a sentence end: question, recommendation (an instruction, "you can/should", "here is/are", "the best place"), statistic (a number among the first twelve words — never a digit inside a name such as Pets4Homes or L-2-HGA), definition, statement. This is the mirror template for the page's answer blocks.
 
 ```bash
 mkdir -p docs/research/llm-intel
@@ -276,14 +276,16 @@ for e in EXTRA:
 if how == "verbatim":
     lines = [l for l in answer.splitlines() if l.strip()]
     rule = lambda l: re.fullmatch(r"\s*(?:[-*_]\s*){3,}", l)
-    sep = lambda l: "|" in l and re.fullmatch(r"\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*", l)
+    sep = lambda l: "|" in l and re.fullmatch(r"\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*", l)  # one dash is enough
     num = sum(bool(re.match(r"\d+[.)]\s", l)) for l in lines)  # top-level items only: no indent
     bul = sum(bool(re.match(r"[-*•+]\s", l)) and not rule(l) for l in lines)
     lst = ("table" if any(sep(l) for l in lines) else "numbered" if num >= 2 and num >= bul
            else "bulleted" if bul >= 2 else "paragraphs")
     words = len(re.findall(r"[a-z0-9£%]+(?:'[a-z]+)?", re.sub(r"\]\([^)]*\)|https?://\S+", " ", answer.lower())))
     label = lambda l: re.fullmatch(r"\s*(?:\*\*|__)[^*_]+(?:\*\*|__)\s*:?\s*", l)
-    first = next((l for l in lines if not (re.match(r"\s*#", l) or rule(l) or label(l) or sep(l))), "")
+    first = next((l for l in lines if not (re.match(r"\s*#", l) or rule(l) or label(l) or sep(l)
+                                           or l.lstrip().startswith("|"))), "")  # a table row is never the opening
+    first = re.sub(r"^\s*(?:\*\*|__)[^*_]*?(?::(?:\*\*|__)|(?:\*\*|__)\s*:)\s*", "", first)  # an inline label: "**Short answer:** ..."
     first = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", first)
     first = re.sub(r"^\s*(?:\d+[.)]|[-*•+])\s*|\*\*|__", "", first).strip()
     first = re.sub(r"\b(e)\.g\.|\b(i)\.e\.", lambda m: (m.group(1) or m.group(2)) + "\0", first, flags=re.I)  # not a sentence end
@@ -294,7 +296,7 @@ if how == "verbatim":
                                                           "avoid", "start", "consider", "get", "see", "try", "search", "prioritise",
                                                           "prioritize", "verify", "only", "never", "always", "pick", "research"})
                or re.search(r"\brecommend|\byou (?:can|should|could|may|might)\b|\bhere(?:'s| is| are)\b|\bbest (?:place|way|option|bet)\b|\bi(?:'d)? suggest\b", low) else
-               "statistic" if re.search(r"\d", " ".join(fw[:12])) else
+               "statistic" if re.search(r"(?<![\w-])[£$€]?\d[\d,]*(?:\.\d+)?%?(?![\w-])", " ".join(first.split()[:12])) else  # a number, not a digit in a name (Pets4Homes, L-2-HGA)
                "definition" if re.match(r"^(?:a |an |the )?[a-z' -]{1,40}? (?:is|are|means|refers to) ", low) else "statement")
     fmt = {"status": "ok", "list": lst, "length": "short" if words < 100 else "medium" if words <= 300 else "long", "words": words, "opening": opening}
 else:
