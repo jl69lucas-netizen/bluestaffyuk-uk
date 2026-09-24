@@ -61,7 +61,7 @@ re-buying a real response, and only when the user asked for fresh data.
 |---|---|---|
 | `serp_google` | PAID. DataForSEO `serp_organic_live_advanced`, `search_engine` google, location United Kingdom, English, depth 10, People Also Ask click depth 1, the primary keyword | `serp_google_paa` (People Also Ask), `serp_google_related` (related searches) |
 | `serp_bing` | FREE. Read Bing in the browser: `https://www.bing.com/search?q=<kw>&cc=GB&setlang=en-GB`. Do not buy DataForSEO Bing — it returned off-topic results for this keyword in the Manchester pilot | `serp_bing` (its related questions, if any) |
-| `ai_engines` | PAID. DataForSEO `ai_optimization_chat_gpt_scraper`, location United Kingdom. **One engine, one call per page.** Location prompt: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?"; other pages: the page's core question | `ai_chatgpt` |
+| `ai_engines` | PAID. DataForSEO `ai_optimization_chat_gpt_scraper`, location United Kingdom. **One engine, one call per page.** Location prompt: `location_question(<city>)` in `scripts/query_augment.py` — "Where can I buy a blue Staffy puppy near <place>, and what should I ask the breeder?", the place without a bracketed note; a national row (`city` `UK`) asks "… in the UK, …"; other pages: the page's core question | `ai_chatgpt` |
 
 **Where Google People Also Ask comes from:** the paid Google call above, behind preflight and
 the user's yes. The free fallback (connector missing, out of credit, or the user declines) is

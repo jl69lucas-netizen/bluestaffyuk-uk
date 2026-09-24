@@ -55,6 +55,20 @@ FAQ_TOTAL_MAX = 20
 FAQ_TOPIC_CAP = 2      # questions per topic per FAQ block, unless the block cannot fill
 EXTRA_SECTIONS = 3
 SECTION_FLOOR = 9      # a location page never has fewer body sections than this
+# The ai_engines buyer question for a data/locations.json row (bsuk-query-augmentation asks it,
+# bsuk-llm-keyword-intel checks it): one rule for every row, never a per-slug list.
+LOCATION_QUESTION = "Where can I buy a blue Staffy puppy {where}, and what should I ask the breeder?"
+
+
+def place_name(city):
+    """A row's `city` as a place: a bracketed note on the page's kind dropped ("Glasgow (breeding dogs)" -> "Glasgow")."""
+    return re.sub(r"\s*\([^)]*\)", "", city).strip()
+
+
+def location_question(city):
+    """"near <place>" for a city; a national row (place UK: the UK hub, the licensed-breeder page) asks "in the UK"."""
+    place = place_name(city)
+    return LOCATION_QUESTION.format(where="in the UK" if place == "UK" else f"near {place}")
 OUTLIER_RATIO = 1.5
 
 # One spelling per thing, so "Staffie pups" and "staffy puppies" merge.

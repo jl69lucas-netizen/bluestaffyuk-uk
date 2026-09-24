@@ -221,7 +221,8 @@ def _agent_script():
 
 def test_the_agent_script_uses_the_page_map_and_gap_matrix_without_a_question_file(tmp_path):
     (tmp_path / "scripts").mkdir()
-    shutil.copy(ROOT / "scripts/competitor_registry_check.py", tmp_path / "scripts")
+    for name in ("competitor_registry_check.py", "query_augment.py"):
+        shutil.copy(ROOT / "scripts" / name, tmp_path / "scripts")
     (tmp_path / "data").mkdir()
     (tmp_path / "data/locations.json").write_text("[]", encoding="utf-8")
     (tmp_path / "data/page-map.json").write_text(json.dumps({"pages": [
@@ -270,7 +271,8 @@ def test_the_agent_script_reads_the_real_page_map_entry_with_no_build(tmp_path):
                  if p["url"] == f"/{slug}/")
     assert entry["headings"] and all(isinstance(h, list) for h in entry["headings"])
     (tmp_path / "scripts").mkdir()
-    shutil.copy(ROOT / "scripts/competitor_registry_check.py", tmp_path / "scripts")
+    for name in ("competitor_registry_check.py", "query_augment.py"):
+        shutil.copy(ROOT / "scripts" / name, tmp_path / "scripts")
     (tmp_path / "data").mkdir()
     shutil.copy(ROOT / "data/locations.json", tmp_path / "data")
     (tmp_path / "data/page-map.json").write_text(json.dumps({"pages": [entry]}), encoding="utf-8")
@@ -301,12 +303,16 @@ REGISTRY = {"competitors": [{"id": "pets4homes", "root_domain": "pets4homes.co.u
                             {"id": "kc", "root_domain": "thekennelclub.org.uk", "tier": 1}]}
 
 
+SCRIPTS = ("competitor_registry_check.py", "query_augment.py")  # the modules the agent's script imports
+
+
 def _root(tmp, registry=None, saved_on="2026-09-23", dist=None, qfile=True):
     """A scratch repo root the script can run in: the real locations, page map, settings and
     Manchester question file; a registry, the normalised ai_engines.json date and a dist page
     when asked."""
     (tmp / "scripts").mkdir(exist_ok=True)
-    shutil.copy(ROOT / "scripts/competitor_registry_check.py", tmp / "scripts")
+    for name in SCRIPTS:
+        shutil.copy(ROOT / "scripts" / name, tmp / "scripts")
     (tmp / "data/queries/raw" / MAN).mkdir(parents=True, exist_ok=True)
     for f in ("locations.json", "page-map.json", "settings.json"):
         shutil.copy(ROOT / "data" / f, tmp / "data")
@@ -419,7 +425,7 @@ def test_a_query_that_does_not_match_the_response_stops(tmp_path):
 def test_a_city_page_takes_only_the_city_question(tmp_path):
     q = "Staffy puppies in Manchester?"
     code, _, err = _run(_root(tmp_path), _answer("Meet the mother.", keyword=q), QUERY=q)
-    assert code != 0 and "city page" in err
+    assert code != 0 and "location page" in err
 
 
 def test_a_plural_on_the_page_matches_a_singular_in_the_answer(tmp_path):
@@ -709,3 +715,19 @@ def test_a_paid_answer_is_filed_even_when_the_build_is_stale():
     assert step5.index(stale) < step5.index("anything else")
     exits = next(l for l in text.splitlines() if l.startswith("`exit 5` is a connector error"))
     assert "a build older than its sources" in exits and "still filed" in exits
+
+
+@pytest.mark.parametrize("slug,query", [
+    ("blue-staffy-puppies-uk", "Where can I buy a blue Staffy puppy in the UK, and what should I ask the breeder?"),
+    ("uk-staffordshire-bull-terrier-breeder", "Where can I buy a blue Staffy puppy in the UK, and what should I ask the breeder?"),
+    ("staffy-breeding-dogs-glasgow", "Where can I buy a blue Staffy puppy near Glasgow, and what should I ask the breeder?"),
+])
+def test_national_and_annotated_location_rows_take_the_shared_question(tmp_path, slug, query):
+    root = _root(tmp_path, qfile=False)
+    code, doc, err = _run(root, _answer("Meet the mother.", keyword=query), slug=slug, QUERY=query, FETCHED_ON="2026-09-23")
+    assert code == 0, err
+    assert doc["query"] == query and doc["query_source"]["from"] == "city"
+    bad = query.replace("in the UK", "near UK").replace("near Glasgow", "near Glasgow (breeding dogs)")
+    if bad != query:
+        code, _, err = _run(root, _answer("Meet the mother.", keyword=bad), slug=slug, QUERY=bad, FETCHED_ON="2026-09-23")
+        assert code != 0 and "location page" in err

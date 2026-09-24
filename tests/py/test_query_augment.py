@@ -1739,3 +1739,21 @@ def test_no_ledger_file_changes_nothing(tmp_path):
     root = health_bank(tmp_path)
     cands, _ = Q.bank_candidates(root)
     assert cands[0][3] == "data/settings.json"
+
+
+@pytest.mark.parametrize("city,want", [
+    ("Manchester", "Where can I buy a blue Staffy puppy near Manchester, and what should I ask the breeder?"),
+    ("Newcastle-under-Lyme", "Where can I buy a blue Staffy puppy near Newcastle-under-Lyme, and what should I ask the breeder?"),
+    ("Glasgow (breeding dogs)", "Where can I buy a blue Staffy puppy near Glasgow, and what should I ask the breeder?"),
+    ("UK", "Where can I buy a blue Staffy puppy in the UK, and what should I ask the breeder?"),
+])
+def test_the_location_question_is_one_rule_for_every_row(city, want):
+    # Known Issue 53: never "near UK", never a bracketed page-kind note in the place
+    assert Q.location_question(city) == want
+
+
+def test_every_location_row_gets_a_clean_question():
+    rows = json.loads((pathlib.Path(Q.ROOT) / "data/locations.json").read_text(encoding="utf-8"))
+    for r in rows:
+        q = Q.location_question(r["city"])
+        assert "(" not in q and "near UK" not in q, (r["slug"], q)

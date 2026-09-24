@@ -22,7 +22,7 @@ effort: high
 | `spend declined` | NOT FETCHED output |
 
 1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`); the homepage's slug is `index` (route `/`, built page `dist/index.html`). The **query**, said in your hand-back:
-   - a city page: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?", the `city` exactly as `data/locations.json` writes it (the script stops on any other wording);
+   - a location page (a `data/locations.json` row): `location_question()` in `scripts/query_augment.py` — "Where can I buy a blue Staffy puppy near <place>, and what should I ask the breeder?", <place> the row's `city` without any bracketed note (the breeding-dogs outreach row's `(breeding dogs)` is dropped); a national row (`city` `UK`: the UK hub, the licensed-breeder page) asks "… in the UK, …", never "near UK". Print it with `python3 -c 'import sys; sys.path.insert(0, "scripts"); from query_augment import location_question as q; print(q(sys.argv[1]))' "<city>"`; the script stops on any other wording;
    - another page with a `data/queries/<slug>.json`: the question a buyer would ask for its `primary_keyword`;
    - no question file: the question a buyer would ask for the page's primary keyword (its page-map title or H1), plus any matching rows of the newest dated gap matrix (docs/research/gap-matrix-<YYYY-MM-DD>.md) — pass each row's topic, the first cell exactly as the matrix writes it, as `GAP_TOPICS="<topic>;<topic>"`. The script records which in `query_source` and stops on a topic that is not a row;
    - a page with a saved answer: the query that answer was bought for (its `keyword`, or its `_saved_note`).
@@ -105,6 +105,7 @@ QUERY="<query>" TODAY=<YYYY-MM-DD> EXTRA="<name|variant;...>" \
 import datetime, glob, html, json, os, re, sys
 sys.path.insert(0, "scripts")
 from competitor_registry_check import own_domains, root_domain as root  # the registry's root-domain rule; BSUK's own domains
+from query_augment import location_question  # the location question: one rule, shared with bsuk-query-augmentation
 slug, resp_path = sys.argv[1], (sys.argv[2:] or [None])[0]
 QUERY = os.environ["QUERY"]  # the buyer question asked
 NOT_FETCHED = os.environ.get("NOT_FETCHED", "").strip()  # a reason: no answer to read
@@ -140,8 +141,8 @@ q = json.load(open(qfile)) if os.path.exists(qfile) else None
 pm = next((p for p in json.load(open("data/page-map.json"))["pages"]
            if (p["url"] == "/" if slug == "index" else p["url"].rstrip("/").endswith("/" + slug))), None)  # index = the homepage
 city = next((x["city"] for x in json.load(open("data/locations.json")) if x.get("slug") == slug), None)
-if city and QUERY != f"Where can I buy a blue Staffy puppy near {city}, and what should I ask the breeder?":
-    fail(f"{slug} is a city page: QUERY must be the city question for {city}")
+if city and QUERY != location_question(city):
+    fail(f"{slug} is a location page: QUERY must be {location_question(city)!r}")
 if not (city or q or pm):
     fail("no city row, question file or page-map entry for this slug: nothing to build the query from")
 topics = [t.strip().lower() for t in os.environ.get("GAP_TOPICS", "").split(";") if t.strip()]
