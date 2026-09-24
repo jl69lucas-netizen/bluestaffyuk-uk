@@ -20,6 +20,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 import link_diversity as LD
 import verbatim_set_check as VSC
+import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
 import board_entities as BE
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
@@ -767,7 +768,7 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
-def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None):
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     nav = nav if nav is not None else {"css": "", "blocks": {}}
     routes = routes if routes is not None else load_routes()
@@ -888,7 +889,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         f'<br><span class="st {esc(a["status"])}">{esc(a["status"])}</span>{(" · " + esc(a["file"])) if a["file"] else ""}'
         f'{("<br><span class=" + chr(34) + "why" + chr(34) + ">alt: " + esc(a["alt"]) + "</span>") if a.get("alt") else ""}</div>'
         for a in board["assets"])
-    parts.append(("7. Asset slots", f'<div class="slots">{slots}</div>'))
+    parts.append(("7. Images & styles", f'<div class="slots">{slots}</div>' + IR.board_block(board, images)))
 
     approve = (f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
                f'<span class="status" id="approve-status">{"Approved as it stands." if approved else "Connecting to the board database…"}</span></div>')
@@ -957,7 +958,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
       +NAV_CSS+'</style>'+inner;
   }});
   var RECORD_HASH={js(record_hash)};var BOARD_DOC={js("boards/" + slug)};
-  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug))};
+  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug) + IR.slots_needing_pick(board))};
   var btn=document.getElementById('approve-btn'),st=document.getElementById('approve-status');
   if(!window.claude||!window.claude.use){{st.textContent='Open this board inside claude.ai to approve it.';return;}}
   window.claude.use("db").then(function(db){{
@@ -1019,7 +1020,9 @@ def main():
     OUT.mkdir(parents=True, exist_ok=True)
     out = OUT / (PB.slug_file(slug) + ".html")
     routes = load_routes()
-    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav), encoding="utf-8")
+    # Candidates, thumbnails and generated previews only for the pages the image rule binds.
+    images = IR.board_images(board) if PB.FR.applies(board) else None
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images), encoding="utf-8")
     n_int = sum(len(s["links"]["internal"]) for s in board["sections"])
     n_ext = sum(len(s["links"]["external"]) for s in board["sections"])
     unresolved = sorted({l["href"] for s in board["sections"] for l in s["links"]["internal"]

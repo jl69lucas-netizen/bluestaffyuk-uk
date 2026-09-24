@@ -366,3 +366,135 @@ def slots_needing_pick(board):
     """The `img:<slot>` radio groups the approve button refuses to leave empty."""
     return [PICK_PREFIX + img["slot"] for s, n, img in IC.iter_slots(board)
             if img.get("source") in ("generate", "infographic")]
+# ── Task 10b: the board's "7. Images & styles" block ──────────────────────────────────
+# Rendered by scripts/build_page_board.py for location, comparison and blog records only.
+# One radio group per slot, `pick-img:<slot>`: the board's approve script already collects
+# every `pick-*` radio into `approval.picks`, so the answer lands as picks["img:<slot>"]
+# with no change to the approve contract, and board_approve.py validates it.
+import base64  # noqa: E402
+import html as _html  # noqa: E402
+import io  # noqa: E402
+
+THUMB_W = 240
+PREVIEW_W = 480
+GENERATED = ("generate", "infographic")
+BLOCK_CSS = (
+    "<style>.imgpick{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;margin:10px 0;"
+    "background:var(--paper);min-width:0}.imgpick legend{font-size:13px;font-weight:600;color:var(--ink-2);padding:0 6px}"
+    ".imgc{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:6px 0}"
+    ".imgopt{display:grid;gap:4px;border:1px solid var(--line);border-radius:6px;padding:6px;font-size:12px;cursor:pointer}"
+    ".imgopt img,.imgopt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:4px;background:var(--code-bg)}"
+    ".imgopt .nothumb{display:grid;place-items:center;color:var(--ink-3)}"
+    ".imgopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}"
+    ".imgstyles{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;margin:6px 0}"
+    ".imggen img{max-width:min(100%,480px);border-radius:6px;display:block;margin:6px 0}"
+    ".imgwhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.imgwarn{color:var(--warn);font-weight:600}"
+    "@media (max-width:640px){.imgc{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>")
+
+
+def thumb_uri(path, width=THUMB_W):
+    """A small WebP data URI of an image file, or None when the file cannot be read. The
+    board is a standalone Artifact, so /images/ paths resolve to nothing inside it."""
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            im = im.convert("RGB")
+            im.thumbnail((width, width * 2))
+            buf = io.BytesIO()
+            im.save(buf, "WEBP", quality=70)
+    except (OSError, ValueError):
+        return None                                   # shown as a labelled box instead
+    return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def board_images(board, root=None, assets_dir=None, per_pool=3):
+    """Everything block 7 shows for one record: the candidate report, a thumbnail per
+    candidate, and a preview of each generated image that exists."""
+    root = root or ROOT
+    assets_dir = pathlib.Path(assets_dir) if assets_dir else IC.ASSETS_DIR
+    report = IC.candidates(board, root, assets_dir, per_pool)
+    thumbs = {}
+    for s in report["slots"]:
+        for c in s["candidates"]:
+            src = public_path(c["file"], root) if c["file"] else assets_dir / c["asset"]
+            if c["pick"] not in thumbs:
+                # public_path() is None for a path outside public/images: no thumbnail, no read.
+                thumbs[c["pick"]] = src and thumb_uri(src)
+    generated = {}
+    for s, n, img in IC.iter_slots(board):
+        f = draft_file(board, img["slot"], root) or \
+            (served_file(board, img["slot"], root) if img.get("source") in GENERATED else None)
+        if f is not None:
+            generated[img["slot"]] = {"sha": file_sha(f), "uri": thumb_uri(f, PREVIEW_W),
+                                      "path": f.relative_to(root).as_posix()}
+    return {"report": report, "thumbs": thumbs, "generated": generated}
+
+
+def _e(v):
+    return _html.escape("" if v is None else str(v), quote=True)
+
+
+def _radio(name, value, checked):
+    return f'<input type="radio" name="{_e(name)}" value="{_e(value)}"{" checked" if checked else ""}>'
+
+
+def _slot_html(board, sec, node, img, row, images, current):
+    slot = img["slot"]
+    name = "pick-" + PICK_PREFIX + slot
+    where = _e(sec["heading"]) + (" › " + _e(node["heading"]) if node else "")
+    rec = [f"source {img.get('source') or 'not named'}"]
+    for k in ("file", "source_file", "og_style", "infographic_style"):
+        if img.get(k):
+            rec.append(f"{k} {img[k]}")
+    parts = [f'<fieldset class="imgpick" id="img-{_e(slot)}"><legend>{_e(slot)} · {_e(img["kind"])} · {where}</legend>',
+             f'<p class="imgwhy">record: {_e(", ".join(rec))} · prompt: {_e(img.get("prompt"))}</p>']
+    cands = row["candidates"] if row else []
+    suggested = (row or {}).get("suggested") or {}
+    if cands:
+        cells = []
+        for c in cands:
+            uri = images["thumbs"].get(c["pick"])
+            pic = f'<img src="{uri}" alt="">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
+            star = "⭐ " if c["pick"] == suggested.get("pick") else ""
+            note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["pool"] == "assets"
+                    else f'<span class="why">{_e(c["file"])}'
+                         + (f' · also on {_e(", ".join(c["used_on"]))}' if c["used_on"] else "") + "</span>")
+            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], current == c["pick"])} '
+                         f'{star}<b>{_e(c["pool"])}</b> · score {c["score"]} · {_e(", ".join(c["matched"]))}</span>{note}</label>')
+        parts.append(f'<div class="imgc">{"".join(cells)}</div>')
+    else:
+        parts.append('<p class="imgwhy">No existing image shares a word with this slot — pick a style to generate one.</p>')
+    if img["kind"] == "infographic":
+        label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
+    else:
+        label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
+    opts = " ".join(f'<label>{_radio(name, prefix + st, current == prefix + st)} {"⭐ " if st == want else ""}{_e(st)}</label>'
+                    for st in styles)
+    parts.append(f'<div class="imgstyles"><span>{label} (IMAGE-DESIGNS.md):</span> {opts}</div>')
+    gen = images["generated"].get(slot)
+    if gen:
+        cur = parse_pick(current) if current else None
+        style = (cur["style"] if cur and cur["kind"] in ("og", "ig") else None) or want or styles[0]
+        value = f"{prefix}{style}:{gen['sha']}"
+        pic = f'<img src="{gen["uri"]}" alt="">' if gen["uri"] else ""
+        parts.append(f'<div class="imggen"><label>{_radio(name, value, current == value)} '
+                     f'<b>Approve this generated image</b> (style {_e(style)}, {_e(gen["path"])}, sha {gen["sha"]})</label>{pic}</div>')
+    parts.append("</fieldset>")
+    return "".join(parts)
+
+
+def board_block(board, images):
+    """Block 7's image pickers, or "" for a record the rule does not bind (images is None)."""
+    if images is None:
+        return ""
+    rows = {r["slot"]: r for r in images["report"]["slots"]}
+    chosen = picks(board)
+    pools = images["report"]["pools"]
+    head = (f"{BLOCK_CSS}\n\n**Pick one image for every slot.** The page's own images come first "
+            f"({pools['own']}), then the site's other served images ({pools['served']}), then your Assets "
+            f"folder ({pools['assets']} not yet on the site; those are copied in before the build). ⭐ marks the "
+            "suggestion. Or pick a style and a new image is generated for the slot; it is used only after "
+            "you approve the generated image itself here, on a later pass of this board.")
+    body = [_slot_html(board, s, n, img, rows.get(img["slot"]), images, chosen.get(PICK_PREFIX + img["slot"]))
+            for s, n, img in IC.iter_slots(board)]
+    return head + "\n\n" + "\n\n".join(body)
