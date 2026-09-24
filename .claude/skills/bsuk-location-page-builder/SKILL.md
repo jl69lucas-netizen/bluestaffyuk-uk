@@ -13,7 +13,7 @@ and nowhere else. This file says how the page is shaped; the packs say how it is
 
 | Source | It owns |
 |---|---|
-| `CLAUDE.md` rules 1–16 | voice, branch, commit, outline-first, confidence gate, no fabricated claims (1–10) · reuse every image and video (11, 14) · every link on the board (12) · tables stacked on mobile (13) · **faithful rewrite (15)**: a city page with a migrated body keeps its verbatim set ("Before you write anything", item 4) · **per-page hero and counter (16)** |
+| `CLAUDE.md` rules 1–16 | voice, branch, commit, outline-first, confidence gate, no fabricated claims (1–10) · reuse every image and video (11, 14) · every link on the board (12) · tables stacked on mobile (13) · **faithful rewrite (15)**: a city page with a migrated body keeps its verbatim set ("Before you write anything", item 4) · **per-page hero and counter, and a refresh delta on every section (16)** |
 | `rules/headings.md` | `heading-hierarchy-outline-gate` · `title-case-headings` · `header-style-declared` |
 | `rules/copy.md` | `write-from-outline-never-from-sibling` · `first-person-brand-voice` · `entity-4-move-loop` |
 | `rules/links.md` | `link-first-anchors` |
@@ -139,11 +139,16 @@ its `section_target.total`.
 letters in `data/design/picks.json` are a record of project 3's component picks, never a prop:
 project 3's prune (design-system spec §11 amendment 4) deleted every losing variant and every
 `variant` prop, and handing a letter to a component is a build error. What a component DOES
-take is its per-page arrangement — `Hero`'s `layout`, `align`, `media` and `ledge`,
-`CounterStrip`'s `tiles` and `label`, `Testimonial`'s `mode` — read from the page's approved
-board with `pickedStyle(record, '<section id>')` (`src/lib/pickedStyle.ts`), exactly as the
-rebuilt pages do (`src/pages/blue-staffy-health-uk/index.astro`). Rule 16 gives every page
-its own three hero and three counter styles on its board; never copy a sibling city's pick.
+take is its per-page arrangement, read from the page's approved board with
+`const pick = pickedStyle(record, '<section id>')` (`src/lib/pickedStyle.ts`), exactly as the
+rebuilt pages do (`src/pages/blue-staffy-health-uk/index.astro`): the hero's
+`layout={pick.layout.hero}` (the style's `hero` axis — there is no `pick.layout.layout`),
+`align={pick.layout.align}`, `media={pick.layout.media}` and `ledge={pick.layout.ledge}`; the
+counter's `tiles={pick.layout.tiles}` and `label={pick.layout.label}`. Rule 16 gives every
+page its own three hero and three counter styles on its board; never copy a sibling city's
+pick. Reviews are not board-picked: a city board's review sections carry `styles: []` (the
+board schema allows none or exactly three), and every city review slot is
+`Testimonial mode="single"` (see Reviews).
 
 The props a city page passes, as `src/components/kit/*.astro` declares them:
 

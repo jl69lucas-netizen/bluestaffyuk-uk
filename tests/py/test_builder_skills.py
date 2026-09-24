@@ -39,7 +39,8 @@ def test_the_precedence_table_cites_rules_15_and_16():
     table = section(LOCATION, "## What wins when this file and something else disagree")
     assert "judgment rules 1–10" not in table
     assert re.search(r"faithful rewrite \(15\)", table), table
-    assert re.search(r"per-page hero and counter \(16\)", table), table
+    assert re.search(r"per-page hero and counter, and a refresh delta on every section \(16\)",
+                     norm(table)), table
 
 
 def test_the_hero_wording_matches_hero_astro():
@@ -57,6 +58,22 @@ def test_the_worked_example_hands_no_letter_to_a_component():
     assert not letter.findall(example), letter.findall(example)
     assert "pups available · £500 refundable · £200–£350 delivery" not in example, (
         "a counter set written into the example is a counter every city page would share")
+
+
+def arrangement_paragraph():
+    """The paragraph that says which props come from the board pick."""
+    start = LOCATION.index("**No `variant` prop and no letter")
+    return norm(LOCATION[start:LOCATION.index("\n\n", start)])
+
+
+def test_the_board_pick_arranges_hero_and_counter_but_never_a_city_review():
+    para = arrangement_paragraph()
+    assert "Testimonial" not in para.replace('Testimonial mode="single"', ""), (
+        "a board-picked review style can be a grid; a city review is always single")
+    assert 'Testimonial mode="single"' in para and "`styles: []`" in para
+    assert "layout={pick.layout.hero}" in para, "the hero's layout is the style's `hero` axis"
+    for axis in ("align", "media", "ledge", "tiles", "label"):
+        assert "%s={pick.layout.%s}" % (axis, axis) in para, axis
 
 
 def test_every_review_slot_is_a_single_block():
