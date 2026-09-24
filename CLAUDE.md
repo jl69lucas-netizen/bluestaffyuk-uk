@@ -187,11 +187,11 @@ growing. Every other rule moved to a pack.
     at least six external links on six domains from four source types with a recorded anchor
     type on every link, fill the four extra keyword types, and give every body H2 and body H3
     (FAQ blocks excepted) and the hero an image. Images come first from the page's own, then
-    the site's served images, then `Assets/Images/`; a generated image follows
-    `IMAGE-DESIGNS.md` and is approved on the board before it is used. The rules and their
-    gates are in `rules/images.md`, `rules/links.md` and `rules/copy.md`. The board shows
-    every one of these rules (block 7b), and approval is refused while one fails.
-    (Breeder, 2026-09-24.)
+    the site's served images, then the breeder's `Assets/Images/` folder (outside git;
+    `BSUK_ASSETS_DIR` overrides); a generated image follows `IMAGE-DESIGNS.md` and is
+    approved on the board before it is used. The rules and their gates are in
+    `rules/images.md`, `rules/links.md` and `rules/copy.md`. The board shows every one of
+    these rules (block 7b), and approval is refused while one fails. (Breeder, 2026-09-24.)
 
 ### Two standing rules that are not judgment exemptions
 

@@ -423,18 +423,21 @@ to the twelve pages built before.
 2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
    is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
    evidence ledger holds it. The board shows them by class.
-3. **External links.** At least six on six domains from four source types, all rows of
-   `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
+3. **External links.** At least six on six domains from four source types (gov, registry,
+   vet-charity, welfare, research, local — `other` does not count toward the four), all rows
+   of `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
    adds its own council's dog or animal-licensing page as a `local` row, after
    `curl -sIL <url>` returns 200, dated in the Verified column.
 4. **Anchors.** Every internal and external link carries `anchor_type` (exact, partial, lsi,
    natural, branded, naked-url): three or more internal types with at most two exact, three
-   or more external types (`anchor-type-variation`), and never an anchor another board
-   already uses for the same target (`anchor-reuse-sitewide`).
+   or more external types (`anchor-type-variation`), and never an in-copy internal anchor
+   another board already uses for the same route (nav tiles excepted)
+   (`anchor-reuse-sitewide`).
 5. **Images.** Run `python3 scripts/image_candidates.py <slug> --write`. The hero and every
    body H2 and body H3 (FAQ blocks excepted) carry an image slot (`image-slot-missing`),
    filled in this order: the page's own migrated image, another served image, a file from
-   `Assets/Images/` ingested with `python3 scripts/ingest_image.py folder`. When none fits,
+   the breeder's `Assets/Images/` folder (outside git; `BSUK_ASSETS_DIR` overrides) ingested
+   with `python3 scripts/ingest_image.py folder`. When none fits,
    the slot is `source: generate` with an OG style, or `source: infographic` with an IG style,
    named in `IMAGE-DESIGNS.md`. The generated file is drafted with
    `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
@@ -444,7 +447,8 @@ to the twelve pages built before.
    evaluated as approval will see it; `scripts/board_approve.py` refuses the approval, and
    any re-approval, while one of them FAILs. The build-gate image checks are listed but never
    block approval: they can only pass after the image is approved and published.
-7. **Routes.** A blog post's route is in `data/page-map.json` before it is built, or the
-   outline gate cannot find it.
+7. **Routes.** A page whose route is not its bare slug (a city page under `/uk-locations/`,
+   a post under the blog hub) has its row in `data/page-map.json` before it is built; without
+   it `check:outline` looks for `dist/<slug>/` and reports `outline-not-found`.
 8. **After the build,** `npm run -s check:outline` (also in `check:all`) must report the page
    examined with 0 problems.

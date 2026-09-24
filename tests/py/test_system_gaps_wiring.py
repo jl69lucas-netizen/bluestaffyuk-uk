@@ -16,6 +16,8 @@ MUST_NAME = (
     "anchor_type", "check:outline", "keyword-variants-missing", "external-links-six-diverse",
     "anchor-type-variation", "anchor-reuse-sitewide", "image-slot-missing",
     "image-generated-unapproved", "data/page-map.json", "block 7b", "scripts/board_approve.py",
+    "BSUK_ASSETS_DIR", "outline-not-found", "`other` does not count toward the four",
+    "in-copy internal anchor", "nav tiles excepted",
 )
 
 
@@ -42,7 +44,7 @@ def test_claude_md_rule_17_points_at_the_packs_and_the_image_file():
     m = re.search(r"^17\. \*\*Project 5 pages.*?(?=^\S|\Z)", t, re.M | re.S)
     assert m, "CLAUDE.md has no working rule 17"
     for name in ("rules/images.md", "rules/links.md", "rules/copy.md", "IMAGE-DESIGNS.md",
-                 "scripts/family_rules.py"):
+                 "scripts/family_rules.py", "BSUK_ASSETS_DIR", "block 7b"):
         assert name in m.group(0), name
 
 
@@ -51,6 +53,11 @@ def test_workflow_names_the_gate_and_the_generated_ontology():
     assert "| `data/bsuk-ontology.json` | `scripts/ontology_seed.py` + manual |" in t
     assert "13. **Project 5 page rules (system-gaps)**" in t
     assert "npm run check:outline" in t
+    rule = t.split("13. **Project 5 page rules (system-gaps)**", 1)[1]
+    assert "refuses approval, and any re-approval, while one FAILs" in rule
+    for check in ("image-generated-unapproved", "image-generated-not-ingested",
+                  "image-asset-not-ingested", "image-existing-missing", "image-pick-invalid"):
+        assert f"`{check}`" in rule, check
 
 
 def test_the_image_key_is_documented_by_name_only():
@@ -58,3 +65,5 @@ def test_the_image_key_is_documented_by_name_only():
     assert "GEMINI_API_KEY=" in env
     cred = (ROOT / "docs/reference/credentials.md").read_text()
     assert "| `GEMINI_API_KEY` |" in cred
+    assert "(system-gaps plan Task 11b)" in cred
+    assert "Twelve keys." in cred and "Eleven keys." not in cred
