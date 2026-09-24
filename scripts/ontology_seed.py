@@ -53,22 +53,25 @@ LEDGER = PB.ROOT / "data" / "quality" / "evidence-ledger.json"
 CLASS_ORDER = ("People", "Place", "Health", "Organization", "Regulation", "Organism",
                "Commerce", "Logistics", "Documentation", "Method")
 
-# host -> (id, name, aliases). The name is the one the library's own row text uses.
+# host -> (id, name, aliases). The name is the one the library's own row text uses. A
+# publisher on several hosts is one named tuple, so its hosts cannot drift apart.
+UK_GOVERNMENT = ("ont:uk-government", "UK government", ["GOV.UK", "the government"])
+KENNEL_CLUB = ("ont:the-kennel-club", "The Kennel Club", ["Royal Kennel Club", "KC"])
 HOST_ORG = {
     "ico.org.uk": ("ont:ico", "Information Commissioner's Office", ["ICO"]),
-    "gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
-    "assets.publishing.service.gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
+    "gov.uk": UK_GOVERNMENT,
+    "assets.publishing.service.gov.uk": UK_GOVERNMENT,
     "citizensadvice.org.uk": ("ont:citizens-advice", "Citizens Advice", []),
     "policies.google.com": ("ont:google", "Google", ["Google Analytics"]),
-    "thekennelclub.org.uk": ("ont:the-kennel-club", "The Kennel Club", ["Royal Kennel Club", "KC"]),
-    "royalkennelclub.com": ("ont:the-kennel-club", "The Kennel Club", ["Royal Kennel Club", "KC"]),
+    "thekennelclub.org.uk": KENNEL_CLUB,
+    "royalkennelclub.com": KENNEL_CLUB,
     "rspca.org.uk": ("ont:rspca", "RSPCA", []),
     "bva.co.uk": ("ont:bva", "British Veterinary Association", ["BVA"]),
     "pdsa.org.uk": ("ont:pdsa", "PDSA", []),
     "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),
     # Task 4 starter rows. legislation.gov.uk is the government's own legislation site, one
     # publisher with gov.uk here as assets.publishing.service.gov.uk is.
-    "legislation.gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
+    "legislation.gov.uk": UK_GOVERNMENT,
     "cumberland.gov.uk": ("ont:cumberland-council", "Cumberland Council", []),
     "dogstrust.org.uk": ("ont:dogs-trust", "Dogs Trust", []),
     "paag.org.uk": ("ont:paag", "Pet Advertising Advisory Group", []),
@@ -115,7 +118,9 @@ HEALTH_TESTS = (
 
 HEALTH_IDS = {t[0] for t in HEALTH_TESTS}
 
-ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|(?:[^|]*\|)*\s*$")
+# The Rows-table columns the seed reads, by header name; any other column is ignored.
+LIBRARY_COLUMNS = ("URL", "Host", "What it is", "First page using it")
+URL_ROW = re.compile(r"^\|\s*https?://")
 
 
 def slug_id(text):
@@ -132,14 +137,43 @@ def page_slug(first_page):
     return p or "index"
 
 
+def _cells(line):
+    """The cells of a `| a | b |` table line, stripped; the outer pipes are not cells."""
+    body = line.strip()
+    body = body[1:-1] if body.endswith("|") else body[1:]
+    return [c.strip() for c in body.split("|")]
+
+
 def library_rows(path=None):
-    """(url, host, what, first_page) for every row of the Rows table, in file order."""
+    """(url, host, what, first_page) for every row of the Rows table, in file order.
+
+    Read by the header row's column NAMES (LIBRARY_COLUMNS), so a column added anywhere in
+    the table is ignored rather than shifting the read. A URL-led row whose cell count is not
+    the header's (a stray `|` in its prose, a missing cell) or that sits under no header stops
+    the run, as does a header without one of the needed columns. A header holds until the
+    first line that is not a table line."""
     p = Path(path or PB.EXTERNAL_LIBRARY)
-    out = []
-    for line in p.read_text(encoding="utf-8").splitlines():
-        m = ROW.match(line)
-        if m:
-            out.append((m.group(1), m.group(2).strip(), m.group(3).strip(), page_slug(m.group(4))))
+    out, header = [], None
+    for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.startswith("|"):
+            header = None
+            continue
+        cells = _cells(line)
+        if cells[0] == "URL":
+            lacking = [c for c in LIBRARY_COLUMNS if c not in cells]
+            if lacking:
+                raise PB.BoardError(f"{p}: line {n}: the Rows-table header has no {', '.join(lacking)} column")
+            header = cells
+            continue
+        if not URL_ROW.match(line):
+            continue
+        if header is None:
+            raise PB.BoardError(f"{p}: line {n} is a URL row with no header row above it")
+        if len(cells) != len(header):
+            raise PB.BoardError(f"{p}: line {n} has {len(cells)} cells but the header has {len(header)} "
+                                "— a stray or missing `|`")
+        row = dict(zip(header, cells))
+        out.append((row["URL"], row["Host"], row["What it is"], page_slug(row["First page using it"])))
     if not out:
         raise PB.BoardError(f"{p}: no Rows-table lines parsed — the table changed shape")
     return out

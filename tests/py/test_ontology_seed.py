@@ -312,3 +312,56 @@ def test_the_committed_ontology_carries_both_laws():
     assert MICROCHIP_2015 in by["ont:dog-microchipping-law"]["aliases"]
     text = PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8")
     assert LICENSING_2018 in text and MICROCHIP_2015 in text           # both named in the row's own words
+
+
+# --- library_rows reads the Rows table by its header row; HOST_ORG constants ----------------
+
+LIB_HEADER = ("| URL | Host | What it is | First page using it | Verified | Source type |\n"
+              "|---|---|---|---|---|---|\n")
+
+
+def test_a_mixed_width_library_table_stops_the_seed(tmp_path):
+    p = tmp_path / "lib.md"
+    p.write_text("# lib\n\n" + LIB_HEADER
+                 + "| https://www.rspca.org.uk/a | rspca.org.uk | RSPCA advice | `/` | 2026-09-24 · 200 | welfare |\n"
+                 + "| https://www.pdsa.org.uk/b | pdsa.org.uk | PDSA advice | `/` | 2026-09-24 · 200 |\n",
+                 encoding="utf-8")
+    with pytest.raises(PB.BoardError, match=r"line 6 has 5 cells.*header has 6"):
+        OS.library_rows(p)
+
+
+def test_an_extra_column_is_read_by_its_header_name(tmp_path):
+    p = tmp_path / "lib.md"
+    p.write_text("| URL | Notes | Host | What it is | First page using it | Verified | Source type |\n"
+                 "|---|---|---|---|---|---|---|\n"
+                 "| https://www.rspca.org.uk/a | a note | rspca.org.uk | RSPCA advice | `/blue-staffy-health-uk/` "
+                 "| 2026-09-24 · 200 | welfare |\n", encoding="utf-8")
+    assert OS.library_rows(p) == [
+        ("https://www.rspca.org.uk/a", "rspca.org.uk", "RSPCA advice", "blue-staffy-health-uk")]
+
+
+def test_a_header_without_a_needed_column_stops_the_seed(tmp_path):
+    p = tmp_path / "lib.md"
+    p.write_text("| URL | What it is | First page using it |\n|---|---|---|\n"
+                 "| https://www.rspca.org.uk/a | RSPCA advice | `/` |\n", encoding="utf-8")
+    with pytest.raises(PB.BoardError, match="Host"):
+        OS.library_rows(p)
+
+
+def test_a_url_row_outside_a_table_with_a_header_stops_the_seed(tmp_path):
+    p = tmp_path / "lib.md"
+    p.write_text("| https://www.rspca.org.uk/a | rspca.org.uk | RSPCA advice | `/` | x | welfare |\n",
+                 encoding="utf-8")
+    with pytest.raises(PB.BoardError, match="no header"):
+        OS.library_rows(p)
+
+
+def test_the_real_library_parses_one_row_per_url_line():
+    urls = [l for l in PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8").splitlines() if l.startswith("| http")]
+    assert [r[0] for r in OS.library_rows()] == [l.split("|")[1].strip() for l in urls]
+
+
+def test_shared_publishers_are_one_named_tuple():
+    h = OS.HOST_ORG
+    assert h["gov.uk"] is h["assets.publishing.service.gov.uk"] is h["legislation.gov.uk"] is OS.UK_GOVERNMENT
+    assert h["thekennelclub.org.uk"] is h["royalkennelclub.com"] is OS.KENNEL_CLUB
