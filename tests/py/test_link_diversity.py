@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import family_rules as FR      # noqa: E402
 import link_diversity as LD    # noqa: E402
+import link_library as LL      # noqa: E402
 import pageboard as PB         # noqa: E402
 
 LIBRARY = ROOT / "docs" / "reference" / "external-link-library.md"
@@ -96,17 +97,13 @@ def test_every_real_library_row_carries_a_known_source_type():
 
 
 def test_every_real_library_row_has_one_cell_per_column():
-    """The parser reads the type by column index, so a row with a stray `|` in its prose
-    would silently shift its type into the wrong cell."""
-    header, bad = None, []
-    for n, line in enumerate(LIBRARY.read_text(encoding="utf-8").splitlines(), 1):
-        if line.startswith("| URL |"):
-            header = len(line.strip().strip("|").split("|"))
-        elif header and line.startswith("| http"):
-            if len(line.strip().strip("|").split("|")) != header:
-                bad.append(n)
-    assert header == 6, "the library header should carry six columns, the sixth Source type"
-    assert bad == [], f"library lines whose cell count is not {header}: {bad}"
+    """scripts/link_library.py reads the type by its header NAME and raises on any row whose
+    cell count is not its header's (a stray `|` in the prose would otherwise move the type into
+    the wrong cell), so parsing the real library with Source type required is the check."""
+    rows = LL.library_table(LIBRARY, required=("URL", "Source type"))
+    assert [PB.normalise_url(r["URL"]) for r in rows] == [
+        PB.normalise_url(line.split("|")[1].strip())
+        for line in LIBRARY.read_text(encoding="utf-8").splitlines() if line.startswith("| http")]
 
 
 def test_every_typed_row_is_still_an_allowlisted_url():
@@ -126,6 +123,21 @@ def test_every_typed_row_is_still_an_allowlisted_url():
     ("https://policies.google.com/privacy", "google.com"),
     ("https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/", "nih.gov"),
     ("https://paag.org.uk/", "paag.org.uk"),
+    ("HTTPS://WWW.GOV.UK/Guidance", "gov.uk"),                              # case folded
+    ("https://www.rspca.org.uk:443/advice", "rspca.org.uk"),                # port dropped
+    ("https://m.facebook.com/page", "facebook.com"),                        # a mobile host
+    ("https://m.bbc.co.uk/news", "bbc.co.uk"),
+    ("https://www.ox.ac.uk/research", "ox.ac.uk"),
+    ("https://www.rvc.ac.uk/vetcompass", "rvc.ac.uk"),
+    ("", ""),                                                               # no host at all
+    ("/blue-staffy-health-uk/", ""),                                        # a relative URL
+    ("https://www.gov.wales/animal-welfare", "gov.wales"),
+    ("https://anglesey.gov.wales/en/licensing", "anglesey.gov.wales"),      # a council, not the government
+    ("https://www.gov.scot/policies/animal-welfare/", "gov.scot"),
+    ("https://www.cumbria.police.uk/", "cumbria.police.uk"),
+    ("https://www.police.uk/", "police.uk"),
+    ("https://www.nhs.uk/conditions/", "nhs.uk"),
+    ("https://www.england.nhs.uk/", "england.nhs.uk"),
 ])
 def test_registrable_domain(url, domain):
     assert LD.registrable_domain(url) == domain
@@ -189,3 +201,26 @@ def test_the_gate_carries_the_finding(library):
     from test_page_board import ONT_OK, LEDGER_EMPTY
     f = PB.gate_findings(_external(_board(), DIVERSE[:3]), ONT_OK, LEDGER_EMPTY, live={}, stage="build")
     assert any(x["check"] == "external-links-six-diverse" and x["sev"] == "FAIL" for x in f)
+
+
+# ── the messages name the fix ───────────────────────────────────────────────────────────
+def test_the_domain_message_names_the_links_that_share_a_domain(library):
+    urls = ["https://www.gov.uk/a", "https://www.gov.uk/b", "https://assets.publishing.service.gov.uk/k.pdf",
+            "https://www.royalkennelclub.com/d", "https://www.pdsa.org.uk/e", "https://www.rspca.org.uk/f"]
+    (m,) = [m for _, _, m in _ext_findings(_external(_board(), urls)) if "distinct domain(s)" in m]
+    assert "gov.uk: https://gov.uk/a, https://gov.uk/b, https://assets.publishing.service.gov.uk/k.pdf" in m
+    assert "rspca.org.uk:" not in m                                  # a domain of one link is not named
+
+
+def test_the_source_type_message_names_the_links_that_do_not_count(library):
+    urls = ["https://www.gov.uk/a", "https://www.legislation.gov.uk/c", "https://www.royalkennelclub.com/d",
+            "https://www.pdsa.org.uk/e", "https://crufts.org.uk/i", "https://example.org/not-a-row"]
+    (m,) = [m for _, _, m in _ext_findings(_external(_board(), urls)) if "source type(s)" in m]
+    assert "https://crufts.org.uk/i (other)" in m
+    assert "https://example.org/not-a-row (untyped)" in m
+    assert "https://gov.uk/a" not in m                               # a counted link is not named
+
+
+def test_an_empty_or_relative_href_is_not_a_domain(library):
+    s = LD.external_summary(_external(_board(), DIVERSE + ["/relative/"]))
+    assert "" not in s["domains"] and len(s["domains"]) == 6

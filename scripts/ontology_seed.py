@@ -45,6 +45,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import pageboard as PB  # noqa: E402
+import link_library as LL  # noqa: E402
 
 LOCATIONS = PB.ROOT / "data" / "locations.json"
 SETTINGS = PB.ROOT / "data" / "settings.json"
@@ -69,8 +70,10 @@ HOST_ORG = {
     "bva.co.uk": ("ont:bva", "British Veterinary Association", ["BVA"]),
     "pdsa.org.uk": ("ont:pdsa", "PDSA", []),
     "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),
-    # Task 4 starter rows. legislation.gov.uk is the government's own legislation site, one
-    # publisher with gov.uk here as assets.publishing.service.gov.uk is.
+    # Task 4 starter rows. legislation.gov.uk is the government's own legislation site, so the
+    # organisation behind it is the UK government, as for gov.uk. link_diversity still counts
+    # it as a domain of its own toward a page's six distinct domains; only the asset host
+    # (assets.publishing.service.gov.uk) folds into gov.uk there.
     "legislation.gov.uk": UK_GOVERNMENT,
     "cumberland.gov.uk": ("ont:cumberland-council", "Cumberland Council", []),
     "dogstrust.org.uk": ("ont:dogs-trust", "Dogs Trust", []),
@@ -120,7 +123,6 @@ HEALTH_IDS = {t[0] for t in HEALTH_TESTS}
 
 # The Rows-table columns the seed reads, by header name; any other column is ignored.
 LIBRARY_COLUMNS = ("URL", "Host", "What it is", "First page using it")
-URL_ROW = re.compile(r"^\|\s*https?://")
 
 
 def slug_id(text):
@@ -137,43 +139,18 @@ def page_slug(first_page):
     return p or "index"
 
 
-def _cells(line):
-    """The cells of a `| a | b |` table line, stripped; the outer pipes are not cells."""
-    body = line.strip()
-    body = body[1:-1] if body.endswith("|") else body[1:]
-    return [c.strip() for c in body.split("|")]
-
-
 def library_rows(path=None):
     """(url, host, what, first_page) for every row of the Rows table, in file order.
 
-    Read by the header row's column NAMES (LIBRARY_COLUMNS), so a column added anywhere in
-    the table is ignored rather than shifting the read. A URL-led row whose cell count is not
-    the header's (a stray `|` in its prose, a missing cell) or that sits under no header stops
-    the run, as does a header without one of the needed columns. A header holds until the
-    first line that is not a table line."""
+    Read through link_library.library_table, the one strict parser both readers of the table
+    share: by the header's column NAMES (LIBRARY_COLUMNS), so a column added anywhere is
+    ignored; a row whose cell count is not its header's, a URL row under no header, or a
+    header without one of the needed columns stops the run."""
     p = Path(path or PB.EXTERNAL_LIBRARY)
-    out, header = [], None
-    for n, line in enumerate(p.read_text(encoding="utf-8").splitlines(), 1):
-        if not line.startswith("|"):
-            header = None
-            continue
-        cells = _cells(line)
-        if cells[0] == "URL":
-            lacking = [c for c in LIBRARY_COLUMNS if c not in cells]
-            if lacking:
-                raise PB.BoardError(f"{p}: line {n}: the Rows-table header has no {', '.join(lacking)} column")
-            header = cells
-            continue
-        if not URL_ROW.match(line):
-            continue
-        if header is None:
-            raise PB.BoardError(f"{p}: line {n} is a URL row with no header row above it")
-        if len(cells) != len(header):
-            raise PB.BoardError(f"{p}: line {n} has {len(cells)} cells but the header has {len(header)} "
-                                "— a stray or missing `|`")
-        row = dict(zip(header, cells))
-        out.append((row["URL"], row["Host"], row["What it is"], page_slug(row["First page using it"])))
+    if not p.is_file():
+        raise PB.BoardError(f"ontology_seed input {p} does not exist")
+    out = [(r["URL"], r["Host"], r["What it is"], page_slug(r["First page using it"]))
+           for r in LL.library_table(p, required=LIBRARY_COLUMNS)]
     if not out:
         raise PB.BoardError(f"{p}: no Rows-table lines parsed — the table changed shape")
     return out

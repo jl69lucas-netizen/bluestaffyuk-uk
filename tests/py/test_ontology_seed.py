@@ -365,3 +365,8 @@ def test_shared_publishers_are_one_named_tuple():
     h = OS.HOST_ORG
     assert h["gov.uk"] is h["assets.publishing.service.gov.uk"] is h["legislation.gov.uk"] is OS.UK_GOVERNMENT
     assert h["thekennelclub.org.uk"] is h["royalkennelclub.com"] is OS.KENNEL_CLUB
+
+
+def test_a_missing_library_is_a_board_error(tmp_path):
+    with pytest.raises(PB.BoardError, match="absent.md does not exist"):
+        OS.library_rows(tmp_path / "absent.md")
