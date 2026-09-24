@@ -9,7 +9,7 @@ effort: max
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md` — its nine judgment rules and working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta) — and the packs in `rules/`. Every value in a report comes from a page you fetched in this run. A field or measure whose source you did not fetch is `{"status": "NOT FETCHED", "reason": "<what was not fetched>"}` — never an estimate, a typical figure, or a value from memory. "About 60 words" for a page you never saw is a guess; so is a schema type read from markdown.
 > **Summarise, never copy.** No sentence of a competitor page goes into a report whole, and no quoted evidence table. Headings live only in the JSON `pages` list; the readable report says what the page does in your own words.
 > **No seller's contact details, ever.** Contact signals are yes/no: phone shown, email shown, form shown, and the town only. Never a phone number, email, street address, postcode, WhatsApp link or a person's name — in the JSON, the readable report or your hand-back. `tests/py/test_no_third_party_contacts.py` catches most contact formats, not all: never rely on it — leave the detail out as you write.
-> **Fetch tools:** Firecrawl **map and scrape only**, standard proxy — never crawl, agent, extract, interact or search. Playwright (navigate, resize, snapshot, evaluate) for the JSON-LD read, the mobile check, and a page whose scrape came back empty. Tools are inherited, not pinned: the connector names differ per session. Firecrawl spends credits — report the number of fetches at the end of every run.
+> **Fetch tools:** Firecrawl **map and scrape only**, standard proxy — never crawl, agent, extract, interact or search. Playwright (navigate, snapshot, evaluate) for the JSON-LD read and a page whose scrape came back empty; a browser that emulates a phone (viewport, mobile user agent, touch) for the mobile check. Tools are inherited, not pinned: the connector names differ per session. Firecrawl spends credits — report the number of fetches at the end of every run.
 
 ## On Startup
 
@@ -50,20 +50,71 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 
 | # | Field | Needs | Record in `values` |
 |---|---|---|---|
-| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown` and `email_shown` (a number or address printed on the page or a `tel:` / `mailto:` link in the raw HTML, not "call us"), `contact_source` (`raw-html`, or `markdown-only` when no raw HTML was fetched — then `phone_shown` / `email_shown` say only what the markdown prints), `reviews_shown` (a count) |
+| 1 | `trust` | any page | `council_licence_shown`, `council` (as printed, or null), `kc_registration_mentioned`, `health_tests_named` (e.g. L-2-HGA, HC), `vet_checks_mentioned`, `breeding_since_as_worded`, `town` (the town name the page gives as its base, "near Leeds" included, written `Leeds`; null if none), `phone_shown`, `email_shown` and `contact_source` from **Homepage measures** (a number or address printed on the page or a `tel:` / `mailto:` link, not "call us"; `markdown-only` when no raw HTML was fetched — then they say only what the markdown prints), `reviews_shown` (the number of distinct customer reviews or testimonials whose words are shown on the pages fetched, each once however often a carousel repeats it; a star rating, a review count or a badge with no review words is 0 — say it in the readable report; a review widget whose reviews load by script and are not in the fetched content is 0) |
 | 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
 | 3 | `keywords` | any page | see **Keyword rule** below |
 | 4 | `page_types` | the map | see **Page-type rule** below |
-| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a category, tag or author page, or a month); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
-| 6 | `visual` | the homepage raw HTML or a snapshot (markdown alone never) | `homepage_images`, `video_present`, `alt_text` (descriptive, generic, missing) |
+| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month; every post under a `--post-folder` counts); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `post_folder` (the folder given with `--post-folder`, a list if more than one; `null` when none), `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
+| 6 | `visual` | the homepage raw HTML (markdown alone never) | `homepage_images`, `alt_text` (descriptive, generic, missing) and `alt_missing` from **Homepage measures**; `video_present` (a `<video>` tag or a YouTube or Vimeo embed in the raw HTML) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
-| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (a count, or null when no form or button was fetched); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
-| 10 | `technical` | Playwright on the homepage at 375px width → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok` (false when `document.documentElement.scrollWidth > window.innerWidth`, else true; `NOT FETCHED` without that check), `lighthouse_performance` |
+| 9 | `conversion` | any page | `cta_types` from `phone`, `email`, `form`, `whatsapp`, `visit`, `online-deposit`, `social-message` (the ways the page asks a buyer to act — "call us" is `phone` even with no number printed); `prices_shown`; `price_amounts_as_printed` (as printed for tiers 1–4, `[]` when none; always `[]` for tier 5); `deposit_terms` (summarised, or null); `steps_to_enquire` (the screens a buyer fills in to send an enquiry through the site's own form or message box, counted on a fetched form: a one-page form is 1, a multi-step form counts its steps; null when no form or message box was fetched — a phone number, email link or button alone is not a form, and `cta_types` already records it); `urgency_signals` from `ready-date` (a ready month or date is stated), `few-left` (the page itself says few remain or only one or two are left), `waiting-list`, `deadline` (book or pay by a date), `countdown`, `sold-badges` — a litter simply listed is not urgency |
+| 10 | `technical` | the homepage in an emulated phone → `mobile_layout_ok`; a Lighthouse run → `lighthouse_performance` | `mobile_layout_ok` (false when `document.documentElement.scrollWidth > window.innerWidth`, else true), `lighthouse_performance`. The phone is a 375 × 812 viewport **with** a mobile user agent and touch (a device-emulation call such as Chrome DevTools `emulate`, or a browser pane's mobile preset) — site builders serve phones a different layout, so a desktop browser merely resized is not the check. With no tool that emulates a phone, `mobile_layout_ok` is `NOT FETCHED` ("no phone emulation available") |
 
 A price that is not printed is not a price: "please call us" about a deposit is `prices_shown: false` and `deposit_terms: null`. Prices stay inside the report, never in BSUK copy.
 
 `pages` lists every page fetched — `url`, `title` (`""` when the scrape gave none), `h1`, `h2` — with `fetched_on`; the keyword-gap agent reuses it instead of fetching again. A business or site name is fine; a person's name is not.
+
+### Homepage measures
+
+`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
+
+```bash
+python3 - "$RAW_HTML" <<'EOF'
+import html, json, re, sys
+sys.path.insert(0, "tests/py")
+from test_no_third_party_contacts import PATTERNS  # the contact scan's phone and email formats
+raw = open(sys.argv[1], encoding="utf-8").read()
+is_html = bool(re.search(r"(?i)<(?:html|body|div|img)\b", raw))
+page = re.sub(r"(?is)<(noscript|template)\b.*?</\1>", " ", raw)
+text = html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<(script|style)\b.*?</\1>", " ", page)))
+def attr(tag, name):
+    m = re.search(r"""\s%s\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""" % re.escape(name), tag, re.I | re.S)
+    return None if m is None else html.unescape(next(g for g in m.groups() if g is not None))
+out = {"contact_source": "raw-html" if is_html else "markdown-only",
+       "phone_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()tel:", raw) or PATTERNS["phone"].search(text)),
+       "email_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()mailto:", raw) or PATTERNS["email"].search(text))}
+if is_html:
+    imgs = {}  # one per distinct source, first alt kept: a logo in header and footer is one image
+    for tag in re.findall(r"(?is)<img\b[^>]*>", page):
+        src = next((v for v in (attr(tag, "data-src"), attr(tag, "data-lazy-src"), attr(tag, "src")) if v and not v.startswith("data:")), None)
+        if src and not (attr(tag, "width") in ("0", "1") and attr(tag, "height") in ("0", "1")):  # never a tracking pixel
+            imgs.setdefault(src, attr(tag, "alt"))
+    GENERIC = {"image", "img", "photo", "photograph", "picture", "pic", "logo", "icon", "banner", "placeholder",
+               "untitled", "default", "graphic", "thumbnail"}
+    def alt_class(a):
+        t = (a or "").strip().lower()
+        ws = re.sub(r"[^a-z0-9]+", " ", t).split()
+        if not t:
+            return "missing"
+        if re.search(r"\.(png|jpe?g|gif|webp|svg|avif)$", t) or re.fullmatch(r"(img|dsc|image|photo|pxl)[-_ ]?\d+", t) \
+                or all(w in GENERIC or w.isdigit() for w in ws):
+            return "generic"
+        return "descriptive"
+    classes = [alt_class(a) for a in imgs.values()]
+    ORDER = ["missing", "generic", "descriptive"]  # a tie goes to the worse class
+    out.update(homepage_images=len(imgs), alt_missing=classes.count("missing"),
+               alt_text=max(ORDER, key=lambda c: (classes.count(c), -ORDER.index(c))) if classes else "missing")
+else:
+    nf = {"status": "NOT FETCHED", "reason": "no raw HTML: markdown alone never gives visual measures"}
+    out.update(homepage_images=nf, alt_missing=nf, alt_text=nf)
+print(json.dumps(out, sort_keys=True))
+EOF
+```
+
+- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`), outside `<noscript>` and `<template>`, never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
+- `alt_text`: each image's alt is `missing` (no alt, or blank), `generic` (a file name, a camera name such as `IMG_2034`, or only words like image, photo, logo, icon, banner, placeholder) or `descriptive`; the field is the class most images hold, a tie going to the worse (`missing`, then `generic`). `alt_missing` is the count of `missing`.
+- `phone_shown` / `email_shown`: a `tel:` / `mailto:` link, or a number or address in the contact scan's formats printed in the page text (scripts, styles and JSON-LD are not printed text).
 
 ### Keyword rule
 
@@ -192,7 +243,7 @@ print(json.dumps({"page_types": counts, "posts": posts, "pagination": pagination
 EOF
 ```
 
-**Posts without a blog base.** A competitor's posts often sit at the root (`<competitor-domain>/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
+**Posts without a blog base.** A competitor's posts often sit at the root (`<competitor-domain>/how-to-choose-a-puppy/`) or in a folder of their own, and the table cannot see them. First try `--post-folder` (above): when the posts share a folder, name it and the classifier counts them. If they sit at the root and the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by the `blog` row. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
 
 **`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog` (BSUK's `post_count` is that sitemap's count alone, not the classifier's `posts`), in `dist/puppy-sitemap.xml` is `listing`; `dist/location-sitemap.xml` and `dist/page-sitemap.xml` go through the classifier with `--bsuk` (the video sitemap is not a page list), minus any URL already counted from the other two, so no URL is counted twice. With `--bsuk` a location page whose slug is a `data/locations.json` row is `city` only when that row is a real city — the UK hub (`city` `UK`) and the breeding-dogs outreach row are typed by the table without its city row, so neither is ever counted as a city. The classifier also types a page URL the table leaves untyped by running the same table over the words of its `dist/` `<title>` (the part before the first `|`; never the homepage) — a title that matches nothing stays untyped. This one-liner prints every `<loc>` in the files before `--`, minus every `<loc>` in the files after it, as the JSON array the classifier reads; run it once per direct sitemap (`dist/post-sitemap.xml --`, `dist/puppy-sitemap.xml --`) and count the list for the two direct counts:
 
@@ -204,10 +255,10 @@ No sitemaps → every `index.html` under `dist/` through the table, skipping any
 
 ## Output
 
-1. `docs/research/competitors/<id>.json`: `id` (the file name without `.json`), `root_domain`, `analysed_on` (today), the ten fields, `pages`, `key_insight`.
+1. `docs/research/competitors/<id>.json`: `id` (the registry entry's `id` exactly — `bsuk` for `--bsuk` — which also names the file), `root_domain`, `analysed_on` (today), the ten fields, `pages`, `key_insight`.
 2. `docs/research/competitors/<id>.md`: a heading per category (anything NOT FETCHED says what was missing), then **Key insight** — one or two sentences on the single thing BSUK can learn from or beat. Your words throughout.
 3. data/competitors.json: set that entry's `last_analyzed` to today — no other key, entry, spacing or order changes — then run `python3 scripts/competitor_registry_check.py` (0 problems) and confirm `git diff data/competitors.json` shows only `last_analyzed` lines.
-4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The 375px check runs against `npm run preview` (it serves `dist/`), with Playwright at that local address. The profile's `pages` list holds **indexable pages only**: every `<loc>` URL in `dist/post-sitemap.xml`, `dist/location-sitemap.xml`, `dist/puppy-sitemap.xml` and `dist/page-sitemap.xml` (each once), with its `dist/` title, H1 and H2s — never a noindex page (the migrated stubs are noindex and out of the sitemaps until project 5 rebuilds them). Only when `dist/` has no sitemaps does it fall back to every `index.html`, skipping any page whose robots meta contains `noindex`. The gap matrix and `bsuk-competitive-keyword-gap-agent` read BSUK's side from this file.
+4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The emulated-phone check runs against `npm run preview` (it serves `dist/`) at that local address. The profile's `pages` list holds **indexable pages only**: every `<loc>` URL in `dist/post-sitemap.xml`, `dist/location-sitemap.xml`, `dist/puppy-sitemap.xml` and `dist/page-sitemap.xml` (each once), with its `dist/` title, H1 and H2s — never a noindex page (the migrated stubs are noindex and out of the sitemaps until project 5 rebuilds them). Only when `dist/` has no sitemaps does it fall back to every `index.html`, skipping any page whose robots meta contains `noindex`. The gap matrix and `bsuk-competitive-keyword-gap-agent` read BSUK's side from this file.
 
 ## After a run
 
@@ -226,7 +277,7 @@ All must pass before you hand off. The contact scan names each hit — remove it
 ## Red flags — stop
 
 - A number (word count, URL count, post count, score) for a page or map you did not fetch; or counting, page-type classifying or phrase matching done by eye instead of by script.
-- `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` without the 375px check.
+- `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` without the emulated-phone check (375 × 812, mobile user agent); a homepage measure or contact signal read by eye instead of by **Homepage measures**.
 - A price or deposit written that the page did not print.
 - A competitor sentence in the report word for word, or a quoted evidence table.
 - A phone number, email, street, postcode or seller's name anywhere in the output.

@@ -16,6 +16,7 @@ import pytest
 REPO = pathlib.Path(__file__).resolve().parents[2]
 AGENT = REPO / ".claude/agents/bsuk-competitor-intel.md"
 CLASSIFIER = re.compile(r'python3 - "\$MAP_LIST"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
+HOMEPAGE = re.compile(r'python3 - "\$RAW_HTML"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
 BLOCK = re.compile(r'^rows = json\.load\(open\("data/locations\.json"\)\)\n.*?^kind = lambda path: [^\n]*\n',
                    re.M | re.S)
 
@@ -144,3 +145,62 @@ def test_post_folders_count_and_help_centre_articles_do_not(tmp_path):
     d = classify(tmp_path, urls, "--post-folder=pet-advice")
     assert d["page_types"] == {"blog": 3, "listing": 1}  # the named folder is blog before the table
     assert d["posts"] == 1                        # its index is not a post; the help-centre article still is not
+
+
+def measure(tmp_path, page, name="home.html"):
+    """intel's homepage measures, run in a scratch root on `page` (raw HTML or markdown)."""
+    (tmp_path / "tests/py").mkdir(parents=True, exist_ok=True)
+    shutil.copy(REPO / "tests/py/test_no_third_party_contacts.py", tmp_path / "tests/py")
+    (tmp_path / name).write_text(page, encoding="utf-8")
+    found = HOMEPAGE.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected one homepage-measures block, found {len(found)}"
+    run = subprocess.run([sys.executable, "-", name], input=found[0], cwd=tmp_path, capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)
+
+
+HOME = """<html><head><script type="application/ld+json">{"email": "hidden@example.co.uk"}</script></head><body>
+<header><img src="/logo.png" alt="Logo"></header>
+<img src="data:image/gif;base64,R0lGOD" data-src="/rex.jpg" alt="Blue Staffy puppy Rex at eight weeks">
+<img src="/a.jpg"><img src="/b.jpg" alt=""><img src="/c.jpg" alt="IMG_2034.jpg">
+<img src="/d.jpg" alt="Two blue puppies asleep in the garden">
+<img src="/pixel.gif" width="1" height="1" alt="">
+<noscript><img src="/rex.jpg"></noscript>
+<picture><source srcset="/hero@2x.PNG 2x"><img src="/hero.jpg" srcset="/hero@2x.PNG 2x" alt="Photo"></picture>
+<p>Call us today. Logo file: x@y.PNG</p>
+<footer><img src="/logo.png" alt="Logo"></footer></body></html>"""
+
+
+def test_homepage_images_are_distinct_sources_and_alt_text_is_the_largest_class(tmp_path):
+    d = measure(tmp_path, HOME)
+    # logo, rex (its data-src), a, b, c, d, hero: the pixel, the noscript copy and the second logo are not counted
+    assert d["homepage_images"] == 7
+    assert d["alt_missing"] == 2                  # no alt, and an empty alt
+    assert d["alt_text"] == "generic"             # Logo, IMG_2034.jpg, Photo: 3 generic, 2 missing, 2 descriptive
+    assert d["contact_source"] == "raw-html"
+
+
+def test_a_tie_between_alt_classes_goes_to_the_worse_one(tmp_path):
+    page = '<html><body><img src="/a.jpg"><img src="/b.jpg" alt="A blue Staffy puppy on the sofa"></body></html>'
+    assert measure(tmp_path, page)["alt_text"] == "missing"
+
+
+def test_an_image_name_is_not_an_email_and_call_us_is_not_a_phone(tmp_path):
+    d = measure(tmp_path, HOME)
+    assert (d["email_shown"], d["phone_shown"]) == (False, False)   # JSON-LD is not printed on the page
+
+
+def test_links_and_printed_contacts_are_shown(tmp_path):
+    page = ('<html><body><a href="mailto:hello@example.co.uk">Email us</a>'
+            '<a href="tel:+447700900123">Ring</a></body></html>')
+    d = measure(tmp_path, page)
+    assert (d["email_shown"], d["phone_shown"]) == (True, True)
+    d = measure(tmp_path, "<html><body><p>Ring 01228 496 000 or write to hello@example.co.uk</p></body></html>")
+    assert (d["email_shown"], d["phone_shown"]) == (True, True)
+
+
+def test_markdown_only_gives_contact_signals_but_no_visual_measures(tmp_path):
+    d = measure(tmp_path, "# Home\n\n[Call us](tel:01228496000) or email.\n\n![Rex](/rex.jpg)", "home.md")
+    assert d["contact_source"] == "markdown-only" and d["phone_shown"] is True and d["email_shown"] is False
+    for k in ("homepage_images", "alt_text", "alt_missing"):
+        assert d[k]["status"] == "NOT FETCHED"
