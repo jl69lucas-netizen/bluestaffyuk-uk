@@ -2,7 +2,8 @@
 """gap_matrix.py — the competitive gap matrix, built from the intel reports, never typed.
 
   python3 scripts/gap_matrix.py --write [--date YYYY-MM-DD] [--root DIR]
-      writes docs/research/gap-matrix-<date>.md (date: today, UTC) · exit 0
+      writes docs/research/gap-matrix-<date>.md (date: today, UTC) · exit 0 · 1 the file
+      cannot be written (its path is a directory, or no permission)
   python3 scripts/gap_matrix.py --check [--root DIR]
       validates every report, then rebuilds the newest gap-matrix-YYYY-MM-DD.md and compares
       (older matrices and any other gap-matrix-* name are ignored) · exit 0 same, or nothing
@@ -15,7 +16,9 @@
 Reads docs/research/competitors/*.json (bsuk.json is BSUK's own profile) and, when present,
 data/competitors.json to name registry entries with no report. A row's N/M counts only the
 competitors whose field was fetched; the ones that were not are their own column. Keywords
-are compared case- and space-blind; cities and schema types are compared as written.
+are compared case- and space-blind; cities and schema types are compared as written. A
+schema type written in two cases (`localbusiness`, `LocalBusiness`) stays two rows, and the
+matrix header and the run's output carry a "did you mean" note naming the likely spelling.
 
 Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §6.
 """
@@ -68,8 +71,10 @@ def _oneline(v):
 
 
 def _cell(v):
-    """A value as one markdown table cell: one line, pipes escaped."""
-    return _oneline(v).replace("|", "\\|")
+    """A value as one markdown table cell: one line, pipes escaped. Backslashes directly
+    before a pipe are doubled first, so a value's own `\\|` cannot turn the escape into an
+    escaped backslash followed by a real pipe, which would end the cell early."""
+    return re.sub(r"(\\*)\|", lambda m: m.group(1) * 2 + "\\|", _oneline(v))
 
 
 def _code(v):
@@ -178,6 +183,31 @@ def queue(bsuk, comps):
     return sorted(gaps, key=lambda r: (-r.n / r.m, -r.n, order[r.dimension], r.value))[:QUEUE_LEN]
 
 
+def case_hints(bsuk, comps):
+    """A note per schema type spelt in another case than a spelling some report uses.
+    Schema types stay case-exact (spec §16.6), so the two are counted apart; the note names
+    the likely spelling: BSUK's, else the one most reports use, else the first in sort order."""
+    users = {}  # spelling -> the report ids that use it, BSUK first
+    for rid, report in ([("bsuk", bsuk)] if bsuk else []) + sorted(comps.items()):
+        for v in sorted(values(report, "schema_types") or ()):
+            users.setdefault(v, []).append(rid)
+    groups = {}
+    for v in users:
+        groups.setdefault(v.lower(), []).append(v)
+    out = []
+    for spellings in groups.values():
+        if len(spellings) < 2:
+            continue
+        best = min(spellings, key=lambda v: ("bsuk" not in users[v], -len(users[v]), v))
+        for v in sorted(spellings):
+            if v != best:
+                out.append(f"schema type {_oneline(v)!r} ({', '.join(users[v])}) differs only in "
+                           f"case from {_oneline(best)!r} ({', '.join(users[best])}) — did you "
+                           f"mean {_oneline(best)!r}? Schema types are compared as written, so "
+                           "the two are counted apart.")
+    return sorted(out)
+
+
 def _registry_ids(root):
     """Registry ids in order, deduped, without bsuk; None when there is no registry."""
     path = pathlib.Path(root) / "data/competitors.json"
@@ -218,6 +248,7 @@ def render(root, date, reports=None):
             lines.append(f"No report yet: {', '.join(missing)}")
         if extra:
             lines.append(f"Report with no registry entry: {', '.join(extra)}")
+    lines += [f"Note: {h}" for h in case_hints(bsuk, comps)]
     for dim, title in DIMENSIONS:
         lines += ["", f"## {title}", ""]
         found = rows(bsuk, comps, dim)
@@ -248,6 +279,11 @@ def _first_difference(expected, found):
     return body[:DIFF_LINES]
 
 
+def _print_hints(reports):
+    for h in case_hints(*reports):
+        print(f"gaps: note: {h}")
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     mode = ap.add_mutually_exclusive_group(required=True)
@@ -269,11 +305,18 @@ def main(argv=None):
             reports = load_reports(root)
             text = render(root, date, reports)
             out = root / OUT_DIR / f"gap-matrix-{date}.md"
-            out.parent.mkdir(parents=True, exist_ok=True)
-            out.write_text(text, encoding="utf-8")
-            print(f"gaps: wrote {out.relative_to(root).as_posix()} from {summary(*reports)}")
+            rel = out.relative_to(root).as_posix()
+            try:
+                out.parent.mkdir(parents=True, exist_ok=True)
+                out.write_text(text, encoding="utf-8")
+            except OSError as exc:
+                print(f"gaps: cannot write {rel}: {exc.strerror or exc}")
+                return EXIT_FAIL
+            _print_hints(reports)
+            print(f"gaps: wrote {rel} from {summary(*reports)}")
             return EXIT_OK
         reports = load_reports(root)
+        _print_hints(reports)
         latest = _latest(root)
         if latest is None:
             if reports[0] or reports[1]:
