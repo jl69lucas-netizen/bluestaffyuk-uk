@@ -8,8 +8,8 @@ Re-based in project 2, Task 13. Every row that pointed at a page cluster the sou
 had and this repo does not — the bird listing flow, the Reddit-modifier pages, the
 egg-page hybrid, the 22-page transactional cluster — was cut rather than translated, along
 with the source's `MANUAL …` and brand-context files at its repo root, which were not
-ported (not ported — source repo only). The design system is project 3, so there is no
-component library, palette or canvas row here yet.
+ported (not ported — source repo only). The design system (project 3) lives in
+`src/components/kit/`, listed in `data/design/components.json`.
 
 ## Quick Start Commands
 
@@ -43,8 +43,9 @@ from memory) → `rules/puppies.md` →
 per UK city (28 of them; the list in that file is the only list)
 
 ### "What should I build next?"
-→ `@bsuk-content-architect`. Competitive keyword-gap work is deferred to project 6 (see
-`data/port-manifest.json`) because it needs Search Console, which is unverified here.
+→ `@bsuk-competitive-keyword-gap-agent` (reads the competitor-intel reports and the BSUK
+profile; `docs/research/keyword-gap-*.md`) → `@bsuk-strategy-synthesizer` →
+`@bsuk-content-architect`. The Search Console traffic baseline is still deferred to project 6.
 
 ### "Is the site healthy?"
 → `.claude/skills/bsuk-website-health/SKILL.md` → `.claude/skills/bsuk-perf-gate/SKILL.md`
@@ -77,7 +78,7 @@ a placeholder when the time comes.
 
 ## Reference Docs
 
-These six are the whole set. The source repo's other reference docs were not ported
+These eight are the whole set. The source repo's other reference docs were not ported
 (not ported — source repo only) and nothing in this repo may cite them.
 
 - `docs/reference/WORKFLOW.md` — **MASTER WORKFLOW: read before starting any page, sprint
@@ -90,11 +91,15 @@ These six are the whole set. The source repo's other reference docs were not por
 - `docs/reference/credentials.md` — which env key exists and what reads it. Key names
   only; no value appears there or anywhere else in the repo
 - `docs/reference/quick-start.md` — this file
+- `docs/reference/location-page-template.md` — the city-page structure, FAQ format and tone
+  that `.claude/skills/bsuk-location-page-builder/SKILL.md` builds from
+- `docs/reference/external-link-library.md` — every outside URL a page may link to; the board
+  validator refuses any other
 
 ## The other sources of truth
 
-- `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the nine
-  judgment rules
+- `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the sixteen
+  working rules (1–9 are the nine judgment rules)
 - `rules/README.md` and the ten packs in `rules/` — the written rules
 - `data/quality/rule-index.json` — the machine-readable ledger: 66 rules, of which 9 are
   `enforced: judgment` and capped there. This is a different count from seo-rules.md's 57
