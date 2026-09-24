@@ -58,6 +58,9 @@ def test_style_names_are_unique_and_no_id_is_shared_between_the_two_tables():
 def test_slot_fields_carry_the_values_the_board_uses():
     spec = load()
     f = spec["fields"]
+    # Only the §10 field table; the pick-grammar table below it is not a field.
+    assert list(f) == ["source", "og_style", "infographic_style", "file", "source_file",
+                       "prompt"], list(f)
     assert f["source"] == ["existing", "assets-folder", "generate", "infographic"]
     assert f["og_style"] == spec["og_styles"]
     assert f["infographic_style"] == spec["infographic_styles"]
@@ -95,6 +98,90 @@ def test_the_build_gate_uses_the_same_ids():
     assert list(rules.OG_STYLES) == spec["og_styles"]
     assert list(rules.IG_STYLES) == spec["infographic_styles"]
     assert list(rules.SOURCES) == spec["fields"]["source"]
+
+
+# ── a broken document is an error, not a quiet empty list ───────────────────
+
+def broken(tmp_path, old, new):
+    """A copy of IMAGE-DESIGNS.md with one exact edit, as a path."""
+    t = text()
+    assert t.count(old) == 1, old
+    p = tmp_path / "IMAGE-DESIGNS.md"
+    p.write_text(t.replace(old, new), encoding="utf-8")
+    return p
+
+
+def test_a_missing_required_section_is_an_error(tmp_path):
+    p = broken(tmp_path, "\n## 4. Lighting & Focal Length (per scene)\n", "\n## 4. Lighting\n")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*## 4\. Lighting & Focal Length"):
+        load(p)
+
+
+def test_a_duplicate_og_style_id_is_an_error(tmp_path):
+    p = broken(tmp_path, "| `E` | Top-Anchored Cover |", "| `A` | Top-Anchored Cover |")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*duplicate.*`A`"):
+        load(p)
+
+
+def test_a_duplicate_infographic_style_id_is_an_error(tmp_path):
+    p = broken(tmp_path, "| `IG-5` | Route Map |", "| `IG-4` | Route Map |")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*duplicate.*`IG-4`"):
+        load(p)
+
+
+def test_a_short_og_row_is_an_error(tmp_path):
+    p = broken(tmp_path, "| two puppies or a pair, two portraits side by side | yes |",
+               "| two puppies or a pair, two portraits side by side |")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*§7.*`H`.*5 cells"):
+        load(p)
+
+
+def test_a_short_infographic_row_is_an_error(tmp_path):
+    p = broken(tmp_path, "| delivery, collection, travel, where | location |",
+               "| delivery, collection, travel, where |")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*§8.*`IG-5`.*6 cells"):
+        load(p)
+
+
+def test_an_empty_style_table_is_an_error(tmp_path):
+    t = text()
+    rows = [l for l in image_designs._section_lines(t, 8) if l.startswith("| `IG-")]
+    p = tmp_path / "IMAGE-DESIGNS.md"
+    p.write_text("\n".join(l for l in t.splitlines() if l not in rows) + "\n", encoding="utf-8")
+    with pytest.raises(ValueError, match=r"IMAGE-DESIGNS\.md.*§8.*no style rows"):
+        load(p)
+
+
+def test_section_lines_stop_after_the_first_matching_section():
+    doc = "## 7. Styles\none\n## 8. Next\ntwo\n## 7. Appendix\nthree\n"
+    assert image_designs._section_lines(doc, 7) == ["one"]
+
+
+# ── CLI ──────────────────────────────────────────────────────────────────────
+
+def test_check_reports_in_sync(capsys):
+    assert image_designs.main(["--check"]) == 0
+    assert "in sync" in capsys.readouterr().out
+
+
+def test_an_unknown_flag_exits_2():
+    with pytest.raises(SystemExit) as e:
+        image_designs.main(["--wirte"])
+    assert e.value.code == 2
+
+
+def test_write_and_check_are_mutually_exclusive():
+    with pytest.raises(SystemExit) as e:
+        image_designs.main(["--write", "--check"])
+    assert e.value.code == 2
+
+
+def test_a_broken_doc_exits_2_with_a_message(tmp_path, monkeypatch, capsys):
+    p = broken(tmp_path, "| `E` | Top-Anchored Cover |", "| `A` | Top-Anchored Cover |")
+    monkeypatch.setattr(image_designs, "DOC", p)
+    assert image_designs.main([]) == 2
+    err = capsys.readouterr().err
+    assert "duplicate" in err and "IMAGE-DESIGNS.md" in err
 
 
 # ── brand facts and breed accuracy ───────────────────────────────────────────
