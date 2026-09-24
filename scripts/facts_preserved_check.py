@@ -401,7 +401,8 @@ def rebuilt_slugs():
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--extract", metavar="SLUG",
-                    help="extract facts from dist/<slug>/ into data/facts/<slug>.json")
+                    help="extract facts from dist/<route>/ (a city page at dist/uk-locations/<slug>/) "
+                         "into data/facts/<slug>.json")
     ap.add_argument("--check", action="store_true",
                     help="check every slug in data/facts/rebuilt.json")
     a = ap.parse_args(argv)

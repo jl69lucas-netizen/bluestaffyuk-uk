@@ -27,8 +27,9 @@ Text inside <script>, <style> and <template> is never page text. A question file
 only when its page is built AND the page is listed in data/facts/rebuilt.json (the list
 facts_preserved_check.py and final_page_audit.py read). The convention there is the bare slug,
 the route's last segment ("/uk-locations/<slug>/" -> "<slug>", "/" -> "index"), which is how
-migration_parity.py and facts_preserved_check.py key a page; the full route key resolved
-through scripts/_slugs.py ("uk-locations/<slug>") is accepted too. A file
+migration_parity.py and facts_preserved_check.py key a page; the full route key
+("uk-locations/<slug>"), resolved with scripts/_slugs.py's dist_path/page_key, is accepted
+too. A file
 whose route is not built is skipped and counted as not built (an unbuilt page ships nothing)
 — unless the page is listed in data/facts/rebuilt.json, which is a problem: a rebuilt page
 the gate cannot find would otherwise pass unseen. One whose page is built but not yet

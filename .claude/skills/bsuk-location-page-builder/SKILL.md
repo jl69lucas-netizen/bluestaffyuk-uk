@@ -231,10 +231,14 @@ bare slug (the route's last segment, e.g. `blue-staffy-puppies-manchester-uk`) t
 `data/facts/rebuilt.json` — the key the other gates use — and only then does
 `npm run check:queries` hold the page; until then it is skipped as awaiting rebuild.
 
-**One key per city page.** The facts, link-parity, verbatim and query gates and pageboard all
-key a city page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` through
-`data/page-map.json` (`scripts/_slugs.py`), so one `data/facts/rebuilt.json` entry covers every
-gate. A slug listed there whose page is not built fails `check:queries`.
+**One key per city page.** The facts, link-parity and verbatim gates and pageboard key a city
+page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` through
+`data/page-map.json` (`scripts/_slugs.py`). The query gate finds the same page through the
+route in its question file, `data/queries/<slug>.json` (that route must end in `/<slug>/`), and
+accepts the bare slug in `data/facts/rebuilt.json`. So one `data/facts/rebuilt.json` entry
+covers every gate. Add a city's slug there only once its rebuilt page is built —
+`[slug].astro` builds all 28 routes, so a slug listed early is judged against the old migrated
+page.
 
 **Links.** Anchors start the sentence, never trail it (`link-first-anchors`). Vary anchor
 text across the page — exact, partial and descriptive — and never `click here`. Internal

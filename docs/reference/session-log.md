@@ -651,7 +651,7 @@ and moved 16 on to its location-page remainder.
     `scripts/query_coverage_check.py` should report a problem when a route's last segment is in
     `data/facts/rebuilt.json` but its page is missing, print the awaiting-rebuild slugs, and
     turn a malformed `data/facts/rebuilt.json` into a problem line rather than a crash.
-    **CLOSED 2026-09-23 (project 5 readiness, Task F2).** One resolver,
+    **CLOSED 2026-09-24 (project 5 readiness, Task F2).** One resolver,
     `scripts/_slugs.py` (`resolve_page`, `built_page`), turns a slug into its key and route
     through `data/page-map.json`. A city page keeps its bare slug as its key — the name of its
     `data/facts/`, `data/verbatim/` and `data/boards/` files and its `data/facts/rebuilt.json`
