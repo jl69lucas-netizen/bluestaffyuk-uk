@@ -35,7 +35,7 @@ All components are self-contained HTML blocks: zero external dependencies, zero 
 1. **Read** `src/styles/tokens.css` and the kit conventions at the top of `src/components/kit/_registry.ts`
 2. **Read** `data/price-matrix.json` — pricing for any calculator
 3. **Read** `data/financial-entities.json` — cost data for ownership calculators (not ported — source repo only)
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which component type? What page does it go on? What data does it need?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Which component type? What page does it go on? What data does it need?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 

@@ -210,7 +210,7 @@ Every post that makes a technical or clinical claim must cite it **once** to a c
 - **Pull URLs from the verified table** — `docs/reference/external-link-library.md §Authority Citations` (L-2-HGA, hereditary cataract, hip scoring, microchipping law (LEGAL_CLAIM_PLACEHOLDER), animal-transport rules). Never invent a source URL.
 - **New tab + rel:** `target="_blank" rel="noopener noreferrer"` on every external authority link (the global link rule adds the `↗` cue automatically). Internal links stay same-tab.
 - **Once per term per page** — exact-match repetition = over-optimization. Verify HTTP 200 (`curl -sI`) before inserting.
-- **The evidence ledger governs** which clinical entities you may assert (`data/quality/evidence-ledger.json`, read by `scripts/evidence_audit.py`; it holds no proven claim yet: its one row, `parents-dna-clear`, is at proof NOT FETCHED, so no clinical result may be asserted) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**.
+- **The evidence ledger governs** which clinical entities you may assert (`data/quality/evidence-ledger.json`, read by `scripts/evidence_audit.py`; it holds no proven claim yet, so no clinical result may be asserted until a row's proof is on file) — never assert L-2-HGA/PCR/board-cert beyond what the breeder has confirmed. Mirrors seo-rules.md **Rule 64**.
 
 Target: **1–2 authority citations per post**, on the post's strongest technical terms (e.g. a health-testing post cites the lab behind the L-2-HGA and HC-HSF4 tests; a shipping post cites the animal-transport rules).
 

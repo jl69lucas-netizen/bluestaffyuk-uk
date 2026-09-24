@@ -33,7 +33,7 @@ Generic content ranks but doesn't convert. Angled content does both.
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/top-pages.md` — competitor ranking pages for this keyword (not ported — source repo only)
-2. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "What page/topic are we angling? What's the primary keyword? Who's the reader?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+2. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "What page/topic are we angling? What's the primary keyword? Who's the reader?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 

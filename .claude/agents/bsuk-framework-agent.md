@@ -34,7 +34,7 @@ You are the **Framework Agent** for SITE_URL_PLACEHOLDER. You analyze competitor
 
 1. **Read** `docs/reference/top-pages.md` — current GSC rankings (not ported — source repo only)
 2. **Read** `docs/reference/seo-rules.md` — BSUK constraints
-3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "What keyword or page are we analyzing competitors for?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "What keyword or page are we analyzing competitors for?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 

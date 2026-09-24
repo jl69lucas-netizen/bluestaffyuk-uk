@@ -172,18 +172,18 @@ row, so the cap is untouched. Every other rule moved to a pack.
     the wording states a wrong fact (the former city, an old price, the byline) or collides
     with another page's heading, in which case the change is recorded in the board record's
     `verbatim.changed` with the reason. Everything else is written fresh from the outline.
-    `scripts/verbatim_set_check.py` (`npm run check:verbatim`) proves the set is on the built page. Applies from the
-    homepage onward; the three pages built before this rule (privacy, thank-you, contact)
-    stay as rewritten. (Breeder, 2026-09-20.)
+    `scripts/verbatim_set_check.py` (`npm run check:verbatim`) proves the set is on the built
+    page. Applies from the homepage onward; the three pages built before this rule (privacy,
+    thank-you, contact) stay as rewritten. (Breeder, 2026-09-20.)
 
 16. **Per-page hero and counter; a refresh delta on every section.** No two pages share the
     same hero layout or the same counter strip: the counter's figures are that page's own facts
     (from `data/*.json` and the page's record, never invented) and each board offers three hero
     styles and three counter styles designed for that page from the breeder's idea sheets
     (outside this repo, at `~/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same
-    tokens. Every other section carries a small,
-    deliberate refresh delta per page — layout, accent role or motif, never the palette —
-    per `.claude/skills/bsuk-component-refresh/SKILL.md` and
+    tokens. Every other section carries a small, deliberate refresh delta per page — layout,
+    accent role or motif, never the palette — per
+    `.claude/skills/bsuk-component-refresh/SKILL.md` and
     `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
 
 ### Two standing rules that are not judgment exemptions
@@ -223,9 +223,10 @@ npm run test:render:pages
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
 `check:redirects`, `check:schema`, `check:queries`, `check:competitors`, `check:gaps`,
 `check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and `agents`, in
-that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be green. `test:render:meta` is the gate that
-checks the checkers — run it **before** trusting any page result. `test:render:pages`
-measures the target pages at 375/768/1280 in a real browser.
+that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be
+green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
+any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
+browser.
 
 Also: `python3 scripts/board_gate.py <slug>` · `python3 scripts/final_page_audit.py` ·
 `python3 scripts/page_hardening_scan.py` · `python3 scripts/dup_content_audit.py [--headers]` ·
@@ -279,8 +280,9 @@ spec under `docs/superpowers/specs/`:
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` and guarded by
   `scripts/placeholder_check.py` until the breeder confirms them.
 
-The design system (project 3) is built: the component kit is `src/components/kit/`, listed in
-`data/design/components.json`, and rebuilt pages render through `src/layouts/PageShell.astro`
+The design system (project 3) is built: the component kit is `src/components/kit/`, its section
+components are listed in `data/design/components.json`, and rebuilt pages render through
+`src/layouts/PageShell.astro`
 (`rules/design.md` holds the locked visual rules).
 
 ## Where everything else went
@@ -290,9 +292,9 @@ The design system (project 3) is built: the component kit is `src/components/kit
 - `docs/reference/session-log.md` — build history and **Known Issues**
 - `docs/reference/WORKFLOW.md` — the sprint model
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 66 (of which 9 are
-  `enforced: judgment`, capped there): the ledger indexes the `rules/` packs and the
-  render-harness checks, seo-rules.md numbers its own categories. `docs/reference/quick-start.md` states
-  both, and all three files change together.
+  A–J. That is a different count from `data/quality/rule-index.json`'s 74 (of which 9 are
+  `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
+  render-harness checks and working rules 10–16; seo-rules.md numbers its own categories.
+  `docs/reference/quick-start.md` states both, and all three files change together.
 - `docs/reference/credentials.md` — which env key exists and what reads it
 - `docs/superpowers/specs/` and `docs/superpowers/plans/` — the six projects' specs and plans

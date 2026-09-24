@@ -217,13 +217,11 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 - Each card links to the puppy's own page, `/available-puppies/<slug>/` ("Ask about <name>"); the listing owns the Product/Offer nodes, so the homepage marks up no price
 
 ### Video (id="video")
-- Live section renders an inline `<video>` element (mp4 placeholder), not a YouTube iframe — real YouTube src pending breeder
-- If a future revision embeds YouTube instead, always use real `src="https://www.youtube.com/embed/VIDEO_ID"` — never `data-src`
-- Aspect ratio wrapper: `padding-bottom: 56.25%` (16:9)
+- The kit's `VideoEmbed` (`src/components/kit/VideoEmbed.astro`), one per video, each at its original YouTube id from `data/settings.json` `youtube_embeds` (working rule 14) — never an mp4 placeholder, never a hand-built iframe
+- The page's VideoObject node for each embed is built from the same record (see `src/pages/index.astro`)
 
 ### FAQ (id="faq" · FAQPage schema)
-- Always include `<script type="application/ld+json">` FAQPage schema
-- Use `<details>/<summary>` accordion — no JavaScript
+- The kit's `Faq` over rows from `data/faq.json` (`loadFaq()`, `src/lib/faq.ts`); the FAQPage node is built from the SAME rows and passed through `BaseLayout`'s `schema` prop — never an inline `<script type="application/ld+json">` block (banned above) and never a hand-built `<details>` accordion
 - Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only when `guarantee_days` in `data/settings.json` is set (null today, so none)
 
 ### The close (id="talk-to-us") — no form

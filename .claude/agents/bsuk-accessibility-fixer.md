@@ -36,7 +36,7 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 ## On Startup — Read These First
 
-1. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Are we (a) auditing the full site, (b) auditing a single page, or (c) fixing specific issues from a previous report?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+1. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Are we (a) auditing the full site, (b) auditing a single page, or (c) fixing specific issues from a previous report?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 2. **For single page:** Ask for the page slug. Read `dist/<slug>/index.html`.
 3. **For full site audit:** Use batch mode (see below).
 

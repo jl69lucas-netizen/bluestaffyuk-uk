@@ -52,7 +52,7 @@ You are the **BSUK Structure Architect**. You design the internal information ar
 1. **Read** `data/locations.json` — all 28 location rows
 2. **Read** `docs/reference/top-pages.md` — which pages generate the most traffic/value (not ported — source repo only)
 3. **Read** `data/page-map.json` — every route with its title, H1 and defects
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Are we (a) mapping a new keyword cluster, (b) auditing the existing structure, (c) scanning a competitor's URL structure, or (d) generating the full structure manifest?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Are we (a) mapping a new keyword cluster, (b) auditing the existing structure, (c) scanning a competitor's URL structure, or (d) generating the full structure manifest?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 

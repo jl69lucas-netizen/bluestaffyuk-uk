@@ -46,7 +46,7 @@ recorded in the page board. Read that skill before building.
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode)
 4. **Read** `data/locations.json` — the 28 rows: `slug`, `city`, `title`, `h1`, `description`, `canonical`, `robots`
 5. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
-6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Single page or batch build? If single — which city?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Single page or batch build? If single — which city?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 For single mode: also read the existing page if it already exists:
 ```bash

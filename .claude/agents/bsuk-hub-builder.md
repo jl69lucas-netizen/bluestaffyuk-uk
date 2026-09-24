@@ -39,7 +39,7 @@ Hubs are short relative to spoke pages — typically 800–1,500 words. They don
 1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md`
 3. **Read** `data/locations.json` — for location hub (all live cities)
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which hub — Location, Puppy, Guides or Breed guide?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Which hub — Location, Puppy, Guides or Breed guide?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 5. Check the hub pages after `npm run build`:
 ```bash
 ls dist/uk-locations/index.html dist/available-puppies/index.html dist/blue-staffy-blog-guides/index.html dist/uk-staffordshire-bull-terrier-guide/index.html

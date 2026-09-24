@@ -999,7 +999,7 @@
     "src": ".claude/skills/cag-entity-agent/SKILL.md",
     "dst": ".claude/skills/bsuk-entity-agent/SKILL.md",
     "mode": "rebase",
-    "notes": "system; entity agent re-based to BlueStaffyUK, Lisa Bright and Carlisle, Cumbria (Known Issue 16)"
+    "notes": "system; entity agent re-based to BlueStaffyUK, [BREEDER_NAME] and Carlisle (Known Issue 16)"
   },
   {
     "src": ".claude/skills/cag-entity-graph/SKILL.md",

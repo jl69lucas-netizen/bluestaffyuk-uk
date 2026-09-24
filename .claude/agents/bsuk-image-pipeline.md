@@ -36,7 +36,7 @@ You are the **Image Pipeline Agent** for SITE_URL_PLACEHOLDER. You bring NEW ima
 1. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
 2. **Read** `data/price-matrix.json` — variant names for filename conventions
 3. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Are we (a) bringing new images in, or (b) auditing public/images/ against the pages that use them?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Are we (a) bringing new images in, or (b) auditing public/images/ against the pages that use them?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
