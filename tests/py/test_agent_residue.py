@@ -25,6 +25,8 @@ import re
 
 import pytest
 
+from test_agent_facts import GLASGOW_ALLOWED  # noqa: E402 — one list of the city's honest uses
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 AGENTS = sorted((ROOT / ".claude/agents").glob("bsuk-*.md"))
 
@@ -47,7 +49,7 @@ RESIDUE = {
 FLAGS = {k: re.compile(v, re.I if k not in ("source people and brands",) else 0)
          for k, v in RESIDUE.items()}
 FORMER_CITY = re.compile(r"glasgow", re.I)
-CITY_OK = re.compile(r"staffy-breeding-dogs-glasgow|staffy-puppies-for-sale-glasgow|Known Issue 16")
+CITY_OK = GLASGOW_ALLOWED
 
 
 def residue(text):
@@ -146,6 +148,23 @@ PAPERWORK_AS_PLACEHOLDER = re.compile(
 def test_no_agent_writes_known_paperwork_as_a_licence_placeholder(agent):
     bad = [f"{agent.name}:{n}  {m.group(0)}"
            for n, l in enumerate(agent.read_text(encoding="utf-8").splitlines(), 1)
+           for m in PAPERWORK_AS_PLACEHOLDER.finditer(l)]
+    assert bad == [], ("the paperwork is named in data/faq.json whyus-paperwork — write the "
+                       "document; LICENCE_CLAIM_PLACEHOLDER is for a licence claim only:\n  "
+                       + "\n  ".join(bad))
+
+
+# The skills and slash commands teach the same builders, so the same guard reads them
+# (review minors, 2026-09-24: framework-ebp wrote "paperwork (LICENCE_CLAIM_PLACEHOLDER)").
+SKILLS_AND_COMMANDS = (sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
+                       + sorted((ROOT / ".claude/commands").rglob("*.md")))
+
+
+@pytest.mark.parametrize("path", SKILLS_AND_COMMANDS,
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_no_skill_or_command_writes_known_paperwork_as_a_licence_placeholder(path):
+    bad = [f"{path.relative_to(ROOT)}:{n}  {m.group(0)}"
+           for n, l in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
            for m in PAPERWORK_AS_PLACEHOLDER.finditer(l)]
     assert bad == [], ("the paperwork is named in data/faq.json whyus-paperwork — write the "
                        "document; LICENCE_CLAIM_PLACEHOLDER is for a licence claim only:\n  "

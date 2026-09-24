@@ -7,6 +7,8 @@ trust signal about the host. So every test here patches `urllib.request.urlopen`
 a test that passes because the network was down would prove nothing.
 """
 import importlib
+import pathlib
+import re
 import sys
 
 import pytest
@@ -142,9 +144,6 @@ def test_all_submits_the_city_and_puppy_pages(monkeypatch, tmp_path, capsys):
 # public/*.xml ("public/ is where BSUK's sitemaps live"), and it said the key was read
 # from public/<key>.txt on disk. The sitemaps are build output in dist/; the script reads
 # the key from INDEXNOW_KEY and checks the live key file at $SITE_URL/<key>.txt.
-import pathlib  # noqa: E402
-import re  # noqa: E402
-
 INDEXING_SKILL = pathlib.Path(__file__).resolve().parents[2] / ".claude/skills/bsuk-indexing/SKILL.md"
 PUBLIC_SITEMAP = re.compile(r"public/\*\.xml|public/[\w.-]*sitemap|public/`?\s+is where|"
                             r"SITE_ROOT\s*=\s*[\"']public")
@@ -164,3 +163,6 @@ def test_the_indexing_skill_reads_sitemaps_from_dist_and_the_key_from_the_env():
     prose = re.sub(r"(?m)^>\s?", "", "\n".join(lines))
     stale = [m.group(0) for m in NOT_PORTED.finditer(prose)]
     assert stale == [], "the submitter exists — scripts/indexnow_submit.py:\n  " + "\n  ".join(stale)
+    # The sitemaps generate_sitemaps.py writes: page, post, location, puppy, video and the
+    # index — the source repo's `local` shard is not one of them.
+    assert not re.search(r"\blocal\)", "\n".join(lines)), "the sitemap list names a `local` shard"

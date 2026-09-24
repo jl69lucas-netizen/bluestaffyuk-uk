@@ -86,7 +86,7 @@ support, drop the rest, and never pad to a number. Pillar structure (adapt per p
 | 5 | H2 | Key Takeaways | `InfoCard kind="fact"` |
 | 6 | H2 | Quick Comparison Table | 8–12 attributes immediately after intro H2 |
 | 7 | H2 | Why an Objective Comparison (not a popularity contest) | E-E-A-T; define both breeds |
-| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | L-2-HGA and HC-HSF4 DNA screening of the parents (only where the evidence ledger records the certificate), vet health check, LICENCE_CLAIM_PLACEHOLDER docs |
+| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | L-2-HGA and HC-HSF4 DNA screening of the parents (only where the evidence ledger records the certificate), vet health check, the paperwork that goes home (`data/faq.json` `whyus-paperwork`); a licence only as LICENCE_CLAIM_PLACEHOLDER |
 | 9 | H2 | Deep Dive: [A] — temperament, temperament, size, bonding | comparison table after H2 |
 | 10 | H3 | Temperament & Home/Apartment Suitability | |
 | 11 | H3 | Health Risk Analysis (breed-appropriate, ledger-bounded) | external authority links here |
@@ -103,11 +103,11 @@ support, drop the rest, and never pad to a number. Pillar structure (adapt per p
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
 | 23 | H2 | FAQ — every pick in `data/queries/<slug>.json` (one `Faq` block is fine; the three-block split is location-only), each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
 | 24 | H2 | Blog / further-reading cards | 3 relevant posts |
-| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; `idPrefix` if 2 forms |
+| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; one `ContactFormKit` — the page's only form and its closer (§11 item 6) |
 
 **Hard structural gates (non-negotiable):**
 - Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**.
-- **Every H2 and H3 carries an image** — OG photo, AI image, or HTML/CSS infographic (same rule as blog posts).
+- **Every H2 and H3 carries an image** — an OG photo or an AI image, never an HTML/CSS infographic (§11 item 2).
 - Word count: `NOT FETCHED` until the scan gives a competitor median — never pick a number first and write to fill it.
 - Headers conversational/Quora-style, hybrid question+entity, **unique per page** (dup H2s across spokes = dup content).
 - `SectionDivider` between major parts (`inverse` on a dark band), 4–8 per page.
@@ -157,7 +157,7 @@ with a Recommended pick + why + trade-off.
 
 ## 9. Imagery (Gemini / Nano Banana — no Higgsfield credit)
 
-After outline approval, mark every H2/H3 needing OG photo vs AI image vs HTML infographic. AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Infographic widths: 760px wrapper (comparison body), 1100px hub hero; 400px desktop height. Image SEO 5-element on every image.
+After outline approval, mark every H2/H3 needing an OG photo vs an AI image (no HTML/CSS infographics — §11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Infographic widths: 760px wrapper (comparison body), 1100px hub hero; 400px desktop height. Image SEO 5-element on every image.
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 
@@ -169,11 +169,12 @@ These are the floor for every comparison page. Reference implementation: `src/pa
 
 1. **Hero** — the kit `Hero`, in the arrangement the page's board picked through `pickedStyle()`
    (`layout`, `ledge`, `media`, `align`): a comparison page is the `interior-guide` layout, so its
-   board offers that type's three styles in `HERO_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`).
+   board offers that type's three styles in `HERO_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`);
+   pick one no sibling page already ships (rule 16).
    Its height is `rules/design.md` rule 10's — 390–450px on desktop (≥1024px), auto below — with
    the image first in the DOM; the component holds both. The eyebrow's words are the page's own
-   (§13 item 4); its colour and the H1's size (`--text-4xl`, stepping down to `--text-3xl` inside
-   the rule-10 band) are the kit's — never brass text, which is 2.1:1 on the light surface. Hero
+   (§13 item 4); its colour and the H1's size (`--text-3xl` at 1024px and up, inside the rule-10
+   band, and at 900px and below; `--text-4xl` only between 901 and 1023px) are the kit's — never brass text, which is 2.1:1 on the light surface. Hero
    images: `imageSrcset`, `imageWidth` and `imageHeight` for a `/images/…` path (`BaseLayout` has
    no preload prop).
 2. **No HTML/CSS infographics.** Every H2 + important H3 image slot is a real OG photo or a Gemini
@@ -186,7 +187,8 @@ These are the floor for every comparison page. Reference implementation: `src/pa
    by DEFRA-approved transport**, and **collection in Carlisle** — each with its own photo, plus
    a row of links to 3–5 city pages from `data/locations.json` with FRESH anchors (each comparison page uses a different set).
 4. **Sticky offsets are the kit's, never hard-coded.** The site header (`SiteHeaderKit`) is
-   `sticky` at `min-height: var(--hdr)` (`src/styles/global.css`), and BaseLayout's inline script
+   `sticky` at `min-height: var(--hdr)` (the rule is in `src/components/kit/SiteHeaderKit.astro`;
+   `--hdr` is set in `src/styles/global.css`), and BaseLayout's inline script
    writes the header's measured height to `--hdr-measured`. Every jump target lands through the
    global `[id] { scroll-margin-top }` rule built on those two, which `SectionStrip` extends by its
    own `--strip-h`; never set `scroll-behavior: smooth` (§13 item 1). The page navigation and its
@@ -202,8 +204,7 @@ These are the floor for every comparison page. Reference implementation: `src/pa
 7. **Testimonials = real reviews only** — rows of `data/reviews.json` through `Testimonial`, with the
    name and place as recorded; never a written review.
 8. **Blog cards** use each post's own `-card.webp` hub thumbnail, never a shared generic image.
-9. **Links at the START of sentences only (Link-First rule) — never mid-sentence, never the final words.** Section dividers are
-   `SectionDivider`.
+9. **Links at the START of sentences only (Link-First rule) — never mid-sentence, never the final words.**
 10. **Schema** — no page-level BreadcrumbList (the Breadcrumb component emits it; duplicates FAIL the
     gate). Title = 4-part ending in `BlueStaffyUK – <LSI keyword>` (never "BlueStaffyUK – Carlisle" again).
 11. **Gate** — `python3 scripts/final_page_audit.py --comparison` (profile added 2026-07-04) must
@@ -253,7 +254,8 @@ These hold on every comparison page, alongside §11 and §12.
 2. **The in-page nav is the kit's, never a hand-rolled rail.** `PageShell` mounts it from the
    page's `sections` (six or more): `SectionStrip` pinned under the header and `SectionSheet`
    behind the bottom bar below 1024px, `PageDial` at 1024px and above, and `PageNav`'s chip row
-   once, below the hero (not sticky). Never add `position` to a sticky kit element: a sticky
+   once, below the hero (not sticky) — below 1024px only: when the dial mounts, `PageShell`
+   hides the chip row, since the dial is the same list. Never add `position` to a sticky kit element: a sticky
    element is already a containing block for absolute children, and `position:relative` silently
    kills sticky.
 3. **The counter is `CounterStrip`, never a hand-built stat block.** The page hands it its own
@@ -261,7 +263,8 @@ These hold on every comparison page, alongside §11 and §12.
    styles `COUNTER_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`) gives a comparison page, which
    is the `interior-guide` layout. No icon chips, no uppercase or letter-spaced labels. Band
    padding goes on the section, never on a `container` (the `container` utility in
-   `src/styles/global.css` sets only `padding-inline`); colours and type are the tokens in
+   `src/styles/global.css` sets no block padding — only `max-width`, `margin-inline` and
+   `padding-inline`); colours and type are the tokens in
    `src/styles/tokens.css`, never a hex value.
 4. **The hero eyebrow is UNIQUE per page, drawn from the page's own premise.** Never reuse one
    trust string across comparison pages; trust tokens belong in the `Hero` `chips`. Duplicate

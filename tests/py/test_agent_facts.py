@@ -80,12 +80,13 @@ BANNED = (
     "DNA sex", "DNA-sex", "DNA Sex", "DNA-Sex",
 ) + CAG_GEO
 
-# `Glasgow` has exactly two honest uses left in the instruction tree, and a line carrying
-# one of them is allowed to name the city: the outreach page's slug, which is a URL that
-# still ranks and is never renamed, and the debt note itself, which cannot be written
-# without saying what the debt is. Nothing else — a trust pillar, a meta template, a
-# delivery table — may say it.
-GLASGOW_ALLOWED = re.compile(r"staffy-breeding-dogs-glasgow|Known Issue 16")
+# `Glasgow` has exactly three honest uses left in the instruction tree, and a line carrying
+# one of them is allowed to name the city: the outreach page's slug and the live city row's
+# slug (both in data/locations.json), which are URLs that still rank and are never renamed,
+# and the debt note itself, which cannot be written without saying what the debt is.
+# Nothing else — a trust pillar, a meta template, a delivery table — may say it. One list:
+# tests/py/test_agent_residue.py reads the agents against this same pattern.
+GLASGOW_ALLOWED = re.compile(r"staffy-breeding-dogs-glasgow|staffy-puppies-for-sale-glasgow|Known Issue 16")
 
 # DEFRA is real here in exactly one form: the transport that carries a puppy. "DEFRA-approved
 # breeder" / "DEFRA-compliant kennel" are claims nobody has verified.
@@ -402,6 +403,8 @@ RESIDUE = (
      re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)|"
                 r"\[N\]\+?\s*families|families for \[X\]\+?\s*years|"
                 r"\[X\]\+?\s*years\b(?![^|\n]{0,20}\b(?:old|lifespan|live))")),
+    ("the source repo's CITES paperwork — a UK puppy has no permit, appendix or CoP listing",
+     re.compile(r"\bCoP ?17\b|(?i:\bappendix[\s-]i\b)")),
     ("a reply-time promise — the only reply time on file is data/faq.json `home-after-support`",
      # fires only when WE are the ones replying; "within 24 to 48 business hours" (the backed
      # figure) and vet advice ("book a vet visit within 48 hours") stay silent
@@ -492,6 +495,7 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "> \"We've placed Blue Staffies with [City] families for [X] years.\"\n"
         "Compare our blue vs blue brindle pups side by side.\n"
         "Subject: a blue brindle staffordshire bull terrier puppy on a sofa\n"
+        "Appendix-I puppies are legal to own (CoP17, effective Jan 2017).\n"
         # silent: a line that forbids the push, a UK source, the licence stand-in named on
         # the line, and "blue brindle" as a plain coat word
         "There is no push and no deploy until project 6; never `git push`.\n"
@@ -508,9 +512,9 @@ def test_the_residue_lint_actually_fires(tmp_path):
         "Staffies live 12–14 years; [X] years old is a senior dog.\n"
         "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
     bad = residue(p)
-    # every line up to 38 fires (a line may fire twice), nothing after it does, and every
+    # every line up to 39 fires (a line may fire twice), nothing after it does, and every
     # entry of RESIDUE fired at least once
-    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 39)), bad
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 40)), bad
     assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad
 
 

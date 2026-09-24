@@ -113,7 +113,7 @@ The fixed frame, in the order `docs/reference/location-page-template.md` ("The f
 sets. Frame parts sit in their own sections and are never counted as body sections. The
 derived body sections from step 1 fill the three gaps, split roughly evenly.
 
-**Every section is a `<section data-section-label="…">` directly inside `<main>`** — one per
+**Every section is a `<section data-section-label="…">` inside `<main>`** — one per
 frame part and one per body section, never nested in another labelled section.
 `scripts/query_coverage_check.py` counts body sections by exactly that shape: a labelled
 section that holds an H2, is not `#top`, `#key-takeaways` or `#newsletter`, and holds no frame
@@ -150,7 +150,10 @@ take is its per-page arrangement, read from the page's approved board with
 rebuilt pages do (`src/pages/blue-staffy-health-uk/index.astro`): the hero's
 `layout={pick.layout.hero}` (the style's `hero` axis — there is no `pick.layout.layout`),
 `align={pick.layout.align}`, `media={pick.layout.media}` and `ledge={pick.layout.ledge}`; the
-counter's `tiles={pick.layout.tiles}` and `label={pick.layout.label}`. Rule 16 gives every
+counter's `tiles={pick.layout.tiles}` and `label={pick.layout.label}`. The figures themselves
+live in the record, not the pick: the counter's are the `stats` array of the board section whose
+`shape` is `stats` (`[{n, label, source}]`), and the hero ledge's chips or aside rows are the
+top section's `hero` object. Rule 16 gives every
 page its own three hero and three counter styles on its board; never copy a sibling city's
 pick. Reviews keep a board pick but never a grid: a review section is a kit shape, so the
 board schema makes it offer `S1`/`S2`/`S3` like every kit section, and `S2` and `S3` are
@@ -321,8 +324,9 @@ built page before editing anything, and read a PASS's examined count before beli
 the page's route as the slug (`uk-locations/<slug>`): with no slug,
 `scripts/final_page_audit.py` audits the flat pages and never a city page,
 `scripts/evidence_audit.py` matches 0 pages and exits 1, and `scripts/aeo_audit.py` refuses.
-`scripts/dup_content_audit.py` is site-wide by design. Every one exits 1 on a FAIL or ERROR;
-`--fail-on-error` also fails the AEO and evidence audits on a WARN, and `--json` writes the
+`scripts/dup_content_audit.py` is site-wide by design. Each exits 1 on a real FAIL or ERROR —
+the AEO audit leaves out a page whose only ERRORs are migration-baseline checks, and the dup
+audit exits 1 on any finding; `--fail-on-error` also fails the AEO and evidence audits on a WARN, and `--json` writes the
 result under `docs/reports/`.
 
 ---

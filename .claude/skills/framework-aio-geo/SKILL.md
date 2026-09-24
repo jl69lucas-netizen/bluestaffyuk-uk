@@ -166,7 +166,7 @@ grep -n "FAQPage\|@type.*Question" dist/[slug]/index.html | head -10
 - Avoid: thin content, vague claims, excessive internal repetition
 
 ### ChatGPT / Perplexity
-- Targets: cited sources (KC registration + vet health check, LICENCE_CLAIM_PLACEHOLDER), specific data points, comparisons
+- Targets: cited sources (KC registration and the vet health check — `data/faq.json` `whyus-paperwork`, `puppy-package`; a licence only as LICENCE_CLAIM_PLACEHOLDER), specific data points, comparisons
 - Note: These engines index from the web — pages must be crawlable
 
 ### Claude (Anthropic)

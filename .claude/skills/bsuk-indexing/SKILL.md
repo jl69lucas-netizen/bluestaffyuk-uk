@@ -246,7 +246,7 @@ python3 scripts/indexnow_submit.py --changed   # refuses (exit 2) without BSUK_R
 python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
-`--all` submits every sitemap URL. `--dry-run` prints the payload and sends nothing.
+`--all` submits every sitemap URL. `--dry-run` prints the URLs it would submit and sends nothing; the key is never read or printed.
 
 What the script ensures, and why each guard exists:
 
@@ -326,7 +326,7 @@ print("llms.txt fixed")
 ## BSUK Indexing Report — [DATE]
 
 ### Submissions
-- ✅ Google Search Console: [N] sitemaps submitted (sitemap_index, page, post, video, local)
+- ✅ Google Search Console: [N] sitemaps submitted (sitemap_index, page, post, location, puppy, video)
 - ✅ IndexNow (Bing/Yandex): [N] URLs submitted — 202 Accepted
 - ⚠️ Google Indexing API: Not configured (needs service account)
 

@@ -145,14 +145,14 @@ LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER or NOT FETCHED.
 
 | Predicate | Correct value | Wrong value seen in the wild |
 |---|---|---|
-| `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER **LEGAL_CLAIM_PLACEHOLDER** (CoP17, effective Jan 2017) | "LEGAL_CLAIM_PLACEHOLDERI" |
+| `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER — no licence or certification is on file until the breeder confirms it | a named licence, council permission or certificate written as fact |
 | `PRICED_AT` | **£1,500** a male · **£1,700** a female (`data/price-matrix.json`) | a flat "NOT FETCHED", or one price for the litter |
 | `GUARANTEED_FOR` | the length in `guarantee_days` (`data/settings.json`) — null today, so no length is written | "72-hour", "3-day" or a 24-hour window (the source repo's) |
 
 **3c. Blacklist — any hit is a hard FAIL on the page, not a low score:**
 `WILD_CAUGHT · IMPORTED_FROM · CAUGHT_IN · SMUGGLED · UNDOCUMENTED_SALE`, or any phrasing
-implying wild capture or illegal trade. Every puppy is home-bred in the UK; Appendix-I
-home-bred puppies are legal to own and transfer domestically with proper paperwork.
+implying wild capture or illegal trade. Every puppy is home-bred in the UK and goes home with
+its paperwork (`data/faq.json` `whyus-paperwork`).
 
 **3d. Brand-owned method nodes.** `The NOT FETCHED — the breeder has not named a house method` and `The Carlisle
 Socialization Method` are first-class entities and the only two approved labels. A page
