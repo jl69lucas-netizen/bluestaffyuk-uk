@@ -147,8 +147,9 @@ def test_propose_fills_all_four_buckets_from_the_cache(tmp_path):
     terms = {k: [t["term"] for t in out["buckets"][k]] for k in OPTIONAL}
     assert out["primary"] == "blue staffy puppies testtown"
     # related: the engine's own related box, merged across the two files, deduplicated
+    # ("blue staffy testtown cheap" is in the box too, and dropped: a brand clash, Task 12a)
     assert terms["related"] == ["blue staffy puppies testtown kennel club",
-                                "staffy puppies for sale near otherby", "blue staffy testtown cheap"]
+                                "staffy puppies for sale near otherby"]
     # variation: attested surface forms of the head term, never the primary itself
     assert "blue staffie puppies" in terms["variation"]
     assert "blue staffordshire bull terrier puppies" in terms["variation"]
@@ -346,3 +347,37 @@ def test_a_host_named_after_a_primary_keyword_word_bans_nothing(tmp_path):
     (raw / "threads.json").write_text(json.dumps({"threads": [{"title": "Is a puppy contract worth it?"}]}))
     terms = [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
     assert "puppy contract" in terms, terms
+
+
+# --- Task 12a item 8: proposals that clash with the brand are dropped -----------------------
+
+@pytest.mark.parametrize("term", [
+    "blue staffy testtown cheap", "cheapest staffy puppies", "staffy puppies under £500",
+    "blue staffy under 300", "staffy puppies under £ 400", "free staffy puppy to good home",
+    "free blue staffies to good homes", "staffy rescue testtown", "blue staffy rescues"])
+def test_a_brand_clash_is_denied(term):
+    assert KV.brand_clash(term)
+
+
+@pytest.mark.parametrize("term", [
+    "blue staffy puppies testtown kennel club", "health tested", "free puppy pack",
+    "a good home for a blue staffy", "under the table", "staffy puppy price"])
+def test_an_ordinary_term_is_not(term):
+    assert not KV.brand_clash(term)
+
+
+def test_no_bucket_proposes_a_brand_clash(tmp_path):
+    root = _root(tmp_path)
+    raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    (raw / "threads.json").write_text(json.dumps({"threads": [
+        {"title": "Cheap blue staffy puppies testtown under £300"},
+        {"title": "Cheap blue staffy puppies testtown, free to a good home"},
+        {"title": "Staffy rescue centre Testtown"}, {"title": "Staffy rescue centre Otherby"}]}))
+    (raw / "serp_google.json").write_text(json.dumps({"questions": [
+        {"text": "Blue staffy puppies testtown kennel club", "detail": "serp_google_related"},
+        {"text": "Staffy rescue Testtown", "detail": "serp_google_related"},
+        {"text": "Blue staffy puppies testtown under 500", "detail": "serp_google_related"}]}))
+    out = KV.propose("blue-staffy-puppies-testtown", root=root)
+    terms = [t["term"] for k in OPTIONAL for t in out["buckets"][k]]
+    assert terms and not [t for t in terms if KV.brand_clash(t)], terms
+    assert not any("rescue" in t or "cheap" in t or "under" in t for t in terms), terms

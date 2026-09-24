@@ -24,6 +24,10 @@ redrafted.
   similar      how the pages that rank for the same query word it: organic titles and
                competitor H2s that share at least two content words with the primary.
 
+BRAND CLASHES are never proposed: a term matching BRAND_CLASH (cheap, under £N / under N,
+free … to a good home(s), rescue) is dropped from every bucket, since a health-tested breeder's
+page does not write it, however often the searchers do.
+
 The output is a PROPOSAL. The builder places each term in the section where it reads
 naturally; family_rules' `keyword-variants-missing` check only asks that each type has at
 least one term somewhere on the page.
@@ -76,6 +80,16 @@ FURNITURE = frozenset("frequently asked questions faq faqs refine results result
 # own brand: a phrase made only of these (and stopwords, the primary's words and place names)
 # is not a co-occurring term.
 TRIVIAL = frozenset("sale buy buying bluestaffyuk".split())
+
+# Terms a BlueStaffyUK page never writes, whatever the cache says: bargain pricing, giveaways
+# and rescue wording clash with a health-tested breeder's brand (Task 12a). Matched on the
+# lowercased term, whole words.
+BRAND_CLASH = (
+    re.compile(r"\bcheap(?:er|est|ly)?\b"),
+    re.compile(r"\bunder\s*£?\s*\d"),
+    re.compile(r"\bfree\b.*\bto\s+(?:a\s+)?good\s+homes?\b"),
+    re.compile(r"\brescue[sd]?\b"),
+)
 
 WORD = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 URL = re.compile(r"\(?https?://[^\s)]+\)?")
@@ -240,12 +254,18 @@ def _geo_words(root):
     return words
 
 
+def brand_clash(term):
+    """True when a proposed term clashes with the brand (BRAND_CLASH) and is dropped."""
+    t = _canon(term)
+    return any(p.search(t) for p in BRAND_CLASH)
+
+
 def _bucket(items):
     """[(term, source)] -> [{"term", "sources", "df"}], first spelling wins, order kept."""
     out = OrderedDict()
     for term, src in items:
         key = normalise(term)
-        if not key:
+        if not key or brand_clash(term):
             continue
         if key not in out:
             out[key] = {"term": term, "sources": [], "df": 0}
@@ -273,7 +293,8 @@ def _variations(corpus, geo):
         for n in range(2, 7):
             for i in range(len(words) - n + 1):
                 surface = " ".join(words[i:i + n])
-                if normalise(surface) in targets and surface != corpus["primary"]:
+                if normalise(surface) in targets and surface != corpus["primary"] \
+                        and not brand_clash(surface):
                     seen[surface] += 1
                     first.setdefault(surface, src)
     ranked = sorted(seen, key=lambda s: (-seen[s], s))
@@ -320,6 +341,8 @@ def _cooccurring(corpus, geo):
                 # A lone word is a term only when it is a coined one (L-2-HGA, HC-HSF4);
                 # "health" or "parents" alone is vocabulary, not a keyword.
                 if n == 1 and "-" not in g[0]:
+                    continue
+                if brand_clash(" ".join(g)):
                     continue
                 grams.add(" ".join(g))
         for g in grams:
