@@ -108,8 +108,10 @@ this order: registry → intel (+ `--bsuk`) → `gap_matrix.py --write` →
 The traffic baseline is still deferred to project 6 (`@bsuk-gsc-analytics`; GSC is NOT
 FETCHED until the domain is live).
 
-**Hard Gate:** No page enters Sprint 2 (Content Production) until `data/page-map.json`
-exists and `@bsuk-content-architect` has assigned a framework to the target page.
+**Hard Gate:** No page enters Sprint 2 (Content Production) until its record exists — an
+existing page's row in `data/page-map.json`, or a new page's approved board
+(`data/boards/<slug>.json`; `python3 scripts/board_gate.py <slug>` passes) — and
+`@bsuk-content-architect` has assigned a framework to the target page.
 
 ---
 
