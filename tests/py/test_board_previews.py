@@ -1333,3 +1333,16 @@ def test_a_re_boarded_record_was_answered_only_on_its_hero_and_its_counter(slug)
     moved = [sid for sid, pick in rec["approval"]["picks"].items() if prev.get(sid) != pick]
     assert moved, (slug, "a rule-16 re-board answers at least the hero")
     assert all(shapes[sid] in PB.PER_PAGE_SHAPES for sid in moved), (slug, moved)
+
+
+def test_the_chrome_preview_grid_cannot_be_widened_by_the_strip():
+    """Known Issue 32: at 375 the contact board preview scrolled sideways by 606px. `.bp-chrome`
+    was a grid with no column template, so its one implicit track was `auto` and grew to the
+    STRIP specimen's min-content — its whole row of links, 933px. The base rule must give the
+    track a zero minimum so the strip keeps its own scroller; the 1024px rule adds the dial
+    column in front of the same `minmax(0, 1fr)`."""
+    src = (ROOT / "src/pages/board-preview/[slug].astro").read_text(encoding="utf-8")
+    base = re.search(r"\.bp-chrome\s*\{([^}]*)\}", src)
+    assert base, "the preview route no longer styles .bp-chrome"
+    assert re.search(r"grid-template-columns:\s*minmax\(0,\s*1fr\)", base.group(1)), (
+        "the base .bp-chrome rule needs grid-template-columns: minmax(0, 1fr)")

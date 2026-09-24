@@ -529,7 +529,11 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     closes them: the missing H2 (or cards opened at H2) on the first, the anchor target on the
     second.
 
-32. **606px of horizontal overflow at 375 on the contact board-preview route.** `NAV.kit-strip`
+32. **CLOSED (project 5 readiness pass).** `.bp-chrome` in
+    `src/pages/board-preview/[slug].astro` is a `minmax(0, 1fr)` grid track, so the strip
+    specimen keeps its own scroller: the route's document is 375px wide at 375 (was 981px) and
+    each strip 279px (was 933px). Was: **606px of horizontal overflow at 375 on the contact
+    board-preview route.** `NAV.kit-strip`
     inside `.bp-targets` on `/board-preview/uk-blue-staffy-breeders-contact/` is 933px wide in
     a 375px viewport, and the page scrolls sideways. It is the mobile section STRIP specimen
     rendered over its six stub targets — scaffolding the preview route builds so the breeder
