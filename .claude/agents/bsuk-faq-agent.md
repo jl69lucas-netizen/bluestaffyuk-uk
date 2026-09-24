@@ -57,7 +57,7 @@ Pre-built question sets by topic — pull the relevant category.
 
 Priority BSUK example questions to include where relevant:
 - "How much does a Blue Staffy puppy cost?"
-- "What the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) comes with each puppy?"
+- "What paperwork comes with each puppy?" (answered in `data/faq.json` `whyus-paperwork`)
 - "What is the difference between Blue Staffy and Blue and white Staffy?"
 
 ### Step 3 — PAA Box Questions
@@ -160,10 +160,10 @@ Beyond building standalone FAQ sections, FAQs can be distributed throughout page
 When discussing breed traits on the breed guide or puppy listing pages, weave in relevant FAQ answers naturally. Example: On the breed guide, when describing temperament, integrate the answer to "Are Blue Staffies good for first-time puppy owners?" naturally within that paragraph — don't repeat the Q+A block.
 
 **Strategy 2 — As Supporting Details in Puppy Listings**
-On individual puppy listing pages, incorporate FAQ snippets about the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) or variant differences. Example: "Reflecting what we explain in our FAQ, [Puppy Name]'s the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) is included — no additional documentation costs."
+On individual puppy listing pages, incorporate FAQ snippets about the paperwork or variant differences. Example: "Reflecting what we explain in our FAQ, [Puppy Name] goes home with the Kennel Club registration paperwork, the vaccination records, the microchipping details and a written purchase contract."
 
 **Strategy 3 — In CTA Context**
-Before a strong CTA, include 1 sentence from a relevant FAQ to address hesitation. Example: "Ready to bring home an Blue Staffy? As our FAQ explains, every puppy comes with full the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) and an vet health certificate."
+Before a strong CTA, include 1 sentence from a relevant FAQ to address hesitation. Example: "Ready to bring home a Blue Staffy? As our FAQ explains, every puppy goes home with its paperwork and a full veterinary health check."
 
 **Strategy 4 — As 'Good to Know' Callout Blocks**
 Visually distinct blocks that directly answer a single FAQ. Use `<aside>` or a styled callout box. Placement: puppy care section, breed guide, pricing page. Example: "Good to Know: every pup has a vet health check before it goes home."

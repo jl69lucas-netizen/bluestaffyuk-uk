@@ -101,7 +101,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 
 | Order | Type | Path contains |
 |---|---|---|
-| 1 | `blog` | the word `blog`, `news`, `articles` or `posts`, or a dated segment (`/2025/`, `/2025/09/`) |
+| 1 | `blog` | the word `blog`, `news`, `articles` or `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
 | 2 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
 | 3 | `comparison` | `-vs-`, `versus` |
 | 4 | `price` | `price`, `cost`, `fees` |
@@ -157,7 +157,7 @@ print(json.dumps(counts, sort_keys=True))
 EOF
 ```
 
-**Posts without a blog base.** A competitor's posts often sit at the root (`/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
+**Posts without a blog base.** A competitor's posts often sit at the root (`<competitor-domain>/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
 
 **`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog`, in `dist/location-sitemap.xml` is `city`, in `dist/puppy-sitemap.xml` is `listing`; only `dist/page-sitemap.xml` goes through the table (the video sitemap is not a page list), minus any URL already counted from the other three, so no URL is counted twice. With `--bsuk` the classifier also types a page URL the table leaves untyped by running the same table over the words of its `dist/` `<title>` (the part before the first `|`; never the homepage) — a title that matches nothing stays untyped. This one-liner prints the first sitemap's `<loc>` URLs, minus every later sitemap's, as the JSON array the classifier reads; run it once per sitemap (with no later files) for the three direct counts:
 

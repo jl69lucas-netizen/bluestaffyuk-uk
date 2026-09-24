@@ -44,7 +44,7 @@ For each competitor, check for changes since last week's snapshot:
 | **New comparison pages** | Check for new "vs" or "compare" slugs | Any |
 | **Pricing changes** | Check price mentions on key listing pages | Any change |
 | **New schema types** | Check for new JSON-LD types | Any |
-| **New trust signals** | New certifications, vet affiliations, guarantees | Any |
+| **New trust signals** | New certifications, vet affiliations, their guarantees | Any |
 | **New keywords (top 10)** | Check Google for target keyword, see if competitor moved | Entry into top 10 |
 | **New breed pages** | blue and white Staffy, Blue Staffy variant pages added | Any |
 | **Site redesign / major change** | Visual + structural change on homepage | Major structural shift |

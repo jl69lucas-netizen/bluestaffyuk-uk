@@ -95,9 +95,9 @@ Scan for "Safe/Boring" claims in the current content or competitor pages and fli
 |---|---|
 | "Staffies are great with everyone" | "A Staffy's people-love is real — and it is why the first months of socialisation matter more than any breed label. Here is what we do in those weeks." |
 | "Blue Staffies bond deeply with their owners" | "An Blue Staffy bond is not unconditional love — it is a permanent commitment they will test every single day. Here's what passing that test looks like." |
-| "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) ensures a legal puppy" | "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) is the floor, not the ceiling. Here's the paperwork stack we include (LICENCE_CLAIM_PLACEHOLDER) and why each one matters specifically." |
+| "Our paperwork ensures a legal puppy" | "The paperwork is the floor, not the ceiling. Here are the four documents that go home with every puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract — and why each one matters." |
 | "Blue Staffies make great companions" | "A Blue Staffy is a 12–14-year commitment. Here is what the second year looks like, not just the puppy weeks." |
-| "We health test all our puppies" | "L-2-HGA-screened before transfer has been our policy since [YEAR]. Here's the specific lab protocol and what a positive result would have meant for that puppy." |
+| "We health test all our puppies" | "Both parents are DNA-tested for L-2-HGA and HC-HSF4. Here is what each test looks for and why you should ask to see the certificates." (Name the tests only; a result stays NOT FETCHED until `data/quality/evidence-ledger.json` `parents-dna-clear` holds its proof.) |
 
 **Output from this phase:** 3–5 "contra-opinion" statements backed by real breeder knowledge from Phase 1.
 
@@ -122,7 +122,7 @@ Scan the draft for these AI adjectives and delete/replace them:
 | revolutionary | [specific improvement with metric] |
 | seamless | [specific process step, e.g., "LICENCE_CLAIM_PLACEHOLDER transfer in 3 business days"] |
 | vibrant | [specific visual detail from `data/puppies.json`, e.g., "Cheryl's blue coat with a white blaze"] |
-| testament to | [specific proof, e.g., "zero L-2-HGA positives across [X] litters"] |
+| testament to | [specific proof from a data file, e.g., "the Kennel Club registration paperwork, vaccination records and microchipping details go home with every puppy"] |
 | innovative | [specific technique, e.g., "daily socialization starting at week 3"] |
 | holistic | [delete — use the specific care element name] |
 | exceptional | [replace with the specific metric] |
@@ -144,7 +144,7 @@ Scan the draft for these AI adjectives and delete/replace them:
 **Mandate:** Every 500 words of output must contain at least one "High-Resolution Detail" — something only an expert Blue Staffy breeder would know.
 
 **Examples of High-Resolution Details:**
-- "The specific L-2-HGA PCR test protocol used and why it's run at 6 weeks, not 3"
+- "What the L-2-HGA and HC-HSF4 DNA tests look for, and why a buyer should ask to see the parents' certificates"
 - "Why Blue Staffy puppies show a 'fear period' between 10–14 weeks and what Lisa Bright does differently during this window"
 - "The exact weight range where we consider a Blue Staffy puppy ready for weaning (not just 'fully weaned at eight weeks')"
 - "Why we microchip every puppy before it leaves, not at transfer — and what it changes about the socialization approach"
@@ -162,9 +162,9 @@ Apply these 3 rules to every sentence:
 **Rule 2:** Every claim must be backed by a "Because." Example: "We start handling the litter early because a puppy that is used to being picked up is easier to vet-check and to settle in a new home."
 
 **Rule 3:** If the output mentions "Quality," "Care," or "Excellence," replace with a specific metric:
-- "Quality" → "L-2-HGA and hip dysplasia screened, results shared before deposit"
+- "Quality" → "both parents DNA-tested for L-2-HGA and HC-HSF4 — ask to see the certificates before the deposit"
 - "Care" → "daily socialization from week 3 with varied human handlers"
-- "Excellence" → "[X] litters raised with zero L-2-HGA positives on record"
+- "Excellence" → "every puppy vet-checked, wormed, flea-treated and vaccinated before it leaves home"
 
 ---
 

@@ -64,7 +64,7 @@ Desc (154): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises bl
 
 | Trigger Type | Examples |
 |-------------|---------|
-| **Numbers** | "six puppies," "£500 refundable deposit," "£200–£350 UK delivery" — the locked figures only (family counts, years in business and a guarantee length are NOT FETCHED) |
+| **Numbers** | "six puppies," "£500 refundable deposit," "£200–£350 UK delivery" — the locked figures only (family counts and years in business are NOT FETCHED; a guarantee length only when `guarantee_days` is set) |
 | **Scarcity** | only what `data/puppies.json` says — how many puppies are still available, never "sells within days" |
 | **Comparison** | "Blue Staffy vs blue and white Staffy," "home-raised vs backyard-bred" |
 | **Proof** | "KC registration paperwork," "vaccination records," "microchipped," "vet health check" (`data/faq.json` `whyus-paperwork`, `puppy-package`); a licence only as LICENCE_CLAIM_PLACEHOLDER |

@@ -69,7 +69,7 @@ What you know that the average buyer doesn't.
 
 **BSUK examples:**
 - "The one question to ask every breeder before you put down a deposit"
-- "Why the 30-day health guarantee is basically worthless (and what to demand instead)"
+- "What a written puppy contract should say before any money moves (and when to walk away)"
 
 ---
 
@@ -123,7 +123,7 @@ Position BSUK against what most buyers accept as standard.
 ## BSUK Angle Categories
 
 ### Documentation Angles
-- "The cheap Facebook advert vs the £1,500 puppy with paperwork (LICENCE_CLAIM_PLACEHOLDER) — what you're actually paying for"
+- "The cheap Facebook advert vs the £1,500 puppy with its paperwork in hand — what you're actually paying for"
 - "LEGAL_CLAIM_PLACEHOLDER explained in plain English — what it means for your puppy purchase"
 - "What to ask a breeder to show you before sending any deposit"
 

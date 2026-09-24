@@ -66,7 +66,7 @@ python3 -c "import json; [print(p['url'], '|', p['title'], '|', p['h1']) for p i
 ## Cluster N: [Name] — [PRIORITY] ([X] pages competing)
 | URL | Role | Recommended Action |
 |-----|------|--------------------|
-| /slug/ | Description | KEEP / DIFFERENTIATE / 301 to /target/ |
+| /<slug>/ | Description | KEEP / DIFFERENTIATE / 301 to /<target>/ |
 ```
 
 ---

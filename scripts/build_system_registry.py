@@ -202,28 +202,33 @@ GUARDS = (
      "brand and animals, deploy pushes, fixed section counts, spelled-out prices, and "
      "brindle, licence, placement-count, years-in-business, weaning-age and reply-time "
      "claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee "
-     "names `guarantee_days`)",
+     "names `guarantee_days`), which also runs over every agent; every agent against its "
+     "own residue list (the other brand and its animals, US residue, the former city, known facts left as "
+     "placeholders, faq.json health wording without the evidence ledger, and known paperwork "
+     "— \"paperwork (LICENCE_CLAIM_PLACEHOLDER)\" included — written as a licence placeholder)",
      "drop a file into any of those trees",
-     "`tests/py/test_agent_facts.py`"),
+     "`tests/py/test_agent_facts.py`, `tests/py/test_agent_residue.py`"),
     ("path guard + dead-root + dead-file + stale-marker",
      "every repo path cited in a `rules/` pack, a `docs/reference` doc, an agent or a "
      "non-vendored skill (the `openspec-*` skills are vendored); in non-vendored skills and "
      "every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, "
      "`site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: "
      "the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, "
-     "the structure manifest); in every agent, the bare `sessions/` root (`AGENT_ROOTS`); "
-     "every `(arrives in Task N)` marker whose path now exists",
+     "the structure manifest); in every agent, every one of those roots (`AGENT_ROOTS`), plus "
+     "any file, agent, skill, npm script, `data/locations.json` field or route an agent names, "
+     "and no file this repo replaced; every `(arrives in Task N)` marker whose path now exists",
      "cite a path in a pack, a reference doc, an agent or a skill; add a skill, a command or "
      "an agent",
-     "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`"),
+     "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`, `tests/py/test_agent_references.py`"),
     ("builder-skill contracts + route guard",
      "the location, comparison and blog builders, the SEO checklist, grill-me's board gate "
      "and the audit commands in manual-auditor-check and sitemap-agent against the code "
      "they describe (Known Issue 40); the route guard (`route_offenders()`): every "
-     "site-root route a skill or command names is built, in `data/page-map.json`, "
-     "redirected, a `public/` folder or a stated non-page (rule 62; skipped without `dist/`)",
-     "add a test beside the claim a builder makes; a new skill or command is route-checked "
-     "automatically",
+     "site-root route a skill, a command or an agent names is built, in `data/page-map.json`, "
+     "redirected, a `public/` folder or a stated non-page (rule 62; skipped without `dist/`); "
+     "in an agent, a line naming a competitor's domain and a `/tmp/` path are not routes",
+     "add a test beside the claim a builder makes; a new skill, command or agent is "
+     "route-checked automatically",
      "`tests/py/test_builder_skills.py`"),
     ("table lint + frontmatter",
      "every skill's frontmatter and every markdown table in the skill tree",

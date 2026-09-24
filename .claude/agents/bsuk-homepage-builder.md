@@ -209,7 +209,7 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 ### Counter Strip (pre-section)
 - 4 trust badges in a row: icons + labels
 - Background: white
-- Stats are NOT FETCHED. The only figures that may appear are the locked ones — `£1,500 from` (`data/puppies.json`), `£500 refundable deposit`, `£200–£350 UK delivery by distance`. Years in business, a documented percentage and a reply-time guarantee are all unverified: write them `NOT FETCHED` or leave the slot out (`CLAUDE.md` rule 9).
+- Stats are NOT FETCHED. The only figures that may appear are the locked ones — `£1,500 from` (`data/puppies.json`), `£500 refundable deposit`, `£200–£350 UK delivery by distance`. Years in business and a documented percentage are unverified: write them `NOT FETCHED` or leave the slot out, and state a reply time only as `data/faq.json` `home-after-support` has it (24 to 48 business hours) (`CLAUDE.md` rule 9).
 
 ### Available Puppies (id="available-blue-staffy-puppies" · the kit's `PuppyCard`)
 - Read `data/puppies.json` for the six puppies and their prices
@@ -224,7 +224,7 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 ### FAQ (id="faq" · FAQPage schema)
 - Always include `<script type="application/ld+json">` FAQPage schema
 - Use `<details>/<summary>` accordion — no JavaScript
-- Minimum 8 questions covering: price and deposit, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), coat colour, collection vs delivery, and the health guarantee (whose length is NOT FETCHED)
+- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only when `guarantee_days` in `data/settings.json` is set (null today, so none)
 
 ### The close (id="talk-to-us") — no form
 - The homepage carries NO enquiry form. `ContactFormKit` is mounted once on the contact page (`/uk-blue-staffy-breeders-contact/`) and on each sales page; the close links to the contact page

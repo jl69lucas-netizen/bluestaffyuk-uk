@@ -211,6 +211,7 @@ NOT_PAGES = (
     "/cf-fonts/",    # the edge host's rewrite of a Google Fonts link (same)
     "/wp-content/",  # the legacy WordPress site's upload folder: a migrated body may still link it
     "/tag/",         # the legacy WordPress site's tag archive (same)
+    "/cdn-cgi/",     # the edge host's own script path (email obfuscation; bsuk-performance-fixer)
 )
 
 
@@ -251,7 +252,7 @@ def test_every_route_the_checklist_names_is_built_or_redirected():
 
 
 # The same guard over every skill and slash command (the residue lint's set in
-# tests/py/test_agent_facts.py). The agents are not in scope here: their tasks own them.
+# tests/py/test_agent_facts.py). The agents follow below, with two exemptions of their own.
 ROUTE_TARGETS = (sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
                  + sorted((ROOT / ".claude/commands").rglob("*.md")))
 
@@ -263,6 +264,39 @@ def test_every_route_a_skill_or_command_names_is_built_or_redirected(path):
     offenders = route_offenders(path.read_text(encoding="utf-8"), known_routes())
     assert offenders == [], "%s names routes that are neither built nor redirected: %s" % (
         path.relative_to(ROOT), offenders)
+
+
+# The agents too (Task 18 follow-up, 2026-09-24). Two things an agent writes that are not
+# BSUK routes: another site's path on a line that names that site's domain (the intel agents
+# describe competitors' URL shapes), and a `/tmp/` scratch path. Everything else is a page.
+AGENT_ROUTE_TARGETS = sorted((ROOT / ".claude/agents").glob("bsuk-*.md"))
+COMPETITOR_DOMAINS = tuple(sorted({c["root_domain"] for c in json.loads(
+    (ROOT / "data/competitors.json").read_text(encoding="utf-8"))["competitors"]}))
+
+
+def agent_route_offenders(text, known):
+    kept = "\n".join("" if any(d in line for d in COMPETITOR_DOMAINS) else line
+                     for line in text.splitlines())
+    return [(route, n) for route, n in route_offenders(kept, known) if not route.startswith("/tmp/")]
+
+
+@pytest.mark.skipif(not (ROOT / "dist/index.html").is_file(), reason="no dist/ — run the build first")
+@pytest.mark.parametrize("path", AGENT_ROUTE_TARGETS, ids=lambda p: p.stem)
+def test_every_route_an_agent_names_is_built_or_redirected(path):
+    offenders = agent_route_offenders(path.read_text(encoding="utf-8"), known_routes())
+    assert offenders == [], ("%s names routes that are neither built nor redirected — a placeholder "
+                             "is written `/<slug>/`, a real page by its real route: %s" % (
+                                 path.relative_to(ROOT), offenders))
+
+
+def test_the_agent_route_guard_spares_competitor_paths_and_scratch_files():
+    known = ({"/available-puppies/"}, re.compile(r"(?:/wp-admin/.*)$"), ("/images/",))
+    domain = COMPETITOR_DOMAINS[0]
+    text = ("posts at %s/how-to-choose-a-puppy/\n" % domain
+            + "cp x /tmp/img-staging/y\n"
+            + "a dated segment (`/2025/09/`)\n"
+            + "CTA → /contact/\n")
+    assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4)]
 
 
 def test_the_route_guard_reads_links_and_skips_placeholders_and_source_repo_history():

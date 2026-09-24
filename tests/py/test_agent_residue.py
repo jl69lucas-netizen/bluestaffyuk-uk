@@ -138,8 +138,8 @@ def test_a_faq_pointer_for_health_or_guarantee_wording_names_the_evidence_ledger
 # for a licence claim only.
 PAPERWORK_AS_PLACEHOLDER = re.compile(
     r"(?:microchip(?:ping)?(?: registration| number| details)?|vet (?:health )?cert(?:ificate)?"
-    r"|vet health check|vaccination records?|KC registration|Kennel Club registration)"
-    r"\s*,?\s*LICENCE_CLAIM_PLACEHOLDER", re.I)
+    r"|vet health check|vaccination records?|KC registration|Kennel Club registration|paperwork)"
+    r"\s*[,(]?\s*LICENCE_CLAIM_PLACEHOLDER", re.I)
 
 
 @pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
@@ -161,3 +161,7 @@ def test_the_health_pointer_and_paperwork_guards_fire_and_spare():
     assert PAPERWORK_AS_PLACEHOLDER.search("microchip registration LICENCE_CLAIM_PLACEHOLDER")
     assert PAPERWORK_AS_PLACEHOLDER.search("vet health check LICENCE_CLAIM_PLACEHOLDER")
     assert not PAPERWORK_AS_PLACEHOLDER.search("a licence number stays LICENCE_CLAIM_PLACEHOLDER")
+    # "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)" hides the four named documents
+    assert PAPERWORK_AS_PLACEHOLDER.search("build trust around the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)")
+    assert not PAPERWORK_AS_PLACEHOLDER.search("the paperwork (data/faq.json whyus-paperwork); the "
+                                               "licence stays LICENCE_CLAIM_PLACEHOLDER")

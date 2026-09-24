@@ -202,8 +202,8 @@ Page slug: uk-locations/blue-staffy-puppies-manchester-uk
 Primary keyword: "blue staffy puppies manchester" (data/queries/blue-staffy-puppies-manchester-uk.json)
 Reader profile: Manchester buyer, first-time puppy owner, collecting from Carlisle or taking UK delivery
 Framework: AIDA (commercial page) + QAB (FAQ section)
-Priority fear: the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) legitimacy
-Trust signal to feature: the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) + the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
+Priority fear: whether the paperwork is real
+Trust signal to feature: the paperwork that goes home with a puppy (`data/faq.json` `whyus-paperwork`); the breeder's legal standing stays LICENCE_CLAIM_PLACEHOLDER
 ```
 
 ---

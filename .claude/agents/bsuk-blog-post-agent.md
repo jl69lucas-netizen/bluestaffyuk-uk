@@ -69,7 +69,7 @@ Query: "Blue Staffy vs Blue and white Staffy"
 Query: "how to buy an Blue Staffy puppy safely"
 → Transactional post. Framework: Inverse Pyramid. CTA: "Fill our inquiry form" → /uk-blue-staffy-breeders-contact/
 → Primary keyword: how to buy an Blue Staffy puppy
-→ Supporting keywords: buying Blue Staffy from breeder, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) checklist, red flags
+→ Supporting keywords: buying Blue Staffy from breeder, puppy paperwork checklist, red flags
 → Target reader: Ready to buy, scared of scams, wants a trusted process
 → Funnel stage: Bottom-funnel (decision)
 → Post length: 1,200–1,800 words
@@ -104,9 +104,9 @@ Query: "how to buy an Blue Staffy puppy safely"
 1. **Lisa Bright speaks directly** — use first-person "we" for breeder voice sections
 2. **Never invent stats** — all numbers come from `data/price-matrix.json` or `data/financial-entities.json` (not ported — source repo only)
 3. **Blue Staffy prices** are always `£1,500` (Roman, Byrd, Ince) or `£1,700` (Vennie, Christa, Cheryl), read from `data/puppies.json` — never a range, never a figure of your own
-4. **Health guarantee is `[DURATION_TBD]`** — never specify a duration until confirmed
+4. **No health guarantee is claimed** — `guarantee_days` in `data/settings.json` is null; never state a guarantee or a duration until it is set
 5. **We are in Carlisle, Cumbria** — always accurate, never a different city (Known Issue 16)
-6. **LICENCE_CLAIM_PLACEHOLDER compliance is non-negotiable** — every post mentioning purchase must reference the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
+6. **Name the paperwork** — every post mentioning purchase names the paperwork that goes home with a puppy (Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract — `data/faq.json` `whyus-paperwork`); a licence stays LICENCE_CLAIM_PLACEHOLDER until the breeder supplies it
 7. **No clickbait superlatives** — "best" must be backed by a reason ("best for apartments because...")
 8. **Every post ends with a CTA to /uk-blue-staffy-breeders-contact/ or /available-puppies/** — posts exist to drive inquiry
 
@@ -158,7 +158,7 @@ faqs:
 1. Hero — validates buyer fear ("yes, Blue Staffy scams are real, here's how to avoid them")
 2. Step-by-step process (numbered, scannable)
 3. Red flags checklist (build trust by exposing bad actors)
-4. the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) walkthrough (what to request and verify)
+4. The paperwork walkthrough — the documents that go home with a puppy (`whyus-paperwork`): what to request and verify
 5. BSUK process walkthrough (specific to how Lisa Bright works)
 6. FAQ section
 7. CTA → /uk-blue-staffy-breeders-contact/ with form

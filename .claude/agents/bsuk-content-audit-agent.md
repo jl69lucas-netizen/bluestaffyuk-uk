@@ -103,7 +103,7 @@ Based on TARGET_PRIMARY_KEYWORD, categorize the primary user intent:
 - **Informational** — "how long do Blue Staffies live", "Blue Staffy care guide"
 - **Comparison** — "Blue Staffy vs Blue and white Staffy", "Blue Staffy vs Cane Corso"
 - **Navigational** — "SITE_URL_PLACEHOLDER", "Lisa Bright Blue Staffy breeder"
-- **Scam Recovery** — "Blue Staffy breeder scam", "Is [site] legit?", "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) fraud"
+- **Scam Recovery** — "Blue Staffy breeder scam", "Is [site] legit?", "fake puppy paperwork"
 
 *Intent determines which framework to use:*
 - Transactional → AIDA or PDB
@@ -178,7 +178,7 @@ Take the top 3 competitors for TARGET_PRIMARY_KEYWORD from `data/competitors.jso
 | Internal link count | How many internal links |
 | External authority links | Which external sources they cite |
 | Trust signals | LICENCE_CLAIM_PLACEHOLDER mentions, LICENCE_CLAIM_PLACEHOLDER license, vet references |
-| LICENCE_CLAIM_PLACEHOLDER framing | How they handle (or avoid) the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) |
+| Paperwork framing | How they handle (or avoid) the paperwork that goes home with a puppy |
 | Unique angles | What they do that BSUK doesn't |
 | Weaknesses | What's missing, thin, or outdated |
 | Target audience | Who they're writing for (ICP) |
@@ -240,7 +240,7 @@ Select the single most critical gap from Phase 2. Write a complete 350-word cont
 - Integrates primary keyword + E-E-A-T entities from Phase 1
 - Follows the recommended framework from Phase 1
 - Includes at least one High-Resolution Detail (specific to Blue Staffy breeding)
-- Names the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) specifically (not just "documentation")
+- Names the paperwork document by document — Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract (not just "documentation")
 - Ends with internal link to a related BSUK page
 
 ---
@@ -253,7 +253,7 @@ Review the current page content and identify 3 locations where high-value intern
 ```
 Placement 1:
   Location: [section name / approximate paragraph]
-  Suggested link: [/page-slug/]
+  Suggested link: [/<page-slug>/]
   Anchor text: [conversational phrase]
   Reason: [why this helps the user journey]
 
@@ -265,7 +265,7 @@ Placement 3:
 ```
 
 **Anchor Text Strategy:**
-- 70% Conversational/Descriptive: "our the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) process" (NLP-safe)
+- 70% Conversational/Descriptive: "the paperwork our puppies go home with" (NLP-safe)
 - 20% Exact Match: "Blue Staffy for sale" (use sparingly, internal links only)
 - 10% Branded/Action: "SITE_URL_PLACEHOLDER" or "reserve your Blue Staffy today"
 - 0% Generic: Never use "click here" or "read more"
@@ -329,5 +329,5 @@ E-E-A-T gaps: [list]
 3. **350-word draft is real content** — not a placeholder or outline
 4. **Save every audit to docs/superpowers/sessions/** — never overwrite, always add new dated file
 5. **Anchor text strategy enforced** — no generic anchors in link placement recommendations
-6. **LICENCE_CLAIM_PLACEHOLDER framing required** — every audit must flag if the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) is missing from the page
+6. **Paperwork named** — every audit flags a page that sells a puppy without naming the paperwork that goes home with it (`data/faq.json` `whyus-paperwork`)
 7. **Confidence Gate** — ≥97% confident before any recommended edits go into `src/`

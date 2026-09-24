@@ -174,7 +174,7 @@ Structure type: [flat / silo / reverse-silo / mixed]
 ### Gap Report
 - They have no city-level pages → BSUK opportunity: the city's own row in `data/locations.json`
 - They have no health sub-pages → BSUK opportunity: /blue-staffy-health-uk/
-- They have no the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages → BSUK already wins here
+- They have no page that names the paperwork → BSUK already wins here
 ```
 
 ---

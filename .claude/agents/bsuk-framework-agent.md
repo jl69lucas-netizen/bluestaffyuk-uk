@@ -69,7 +69,7 @@ For each competitor URL, extract:
 | Word count | Estimate via DOM text length |
 | Section structure | How many H2s? What topics covered? |
 | FAQ section | Present? How many questions? Schema? |
-| Trust signals | Guarantees, certifications, reviews shown |
+| Trust signals | Their guarantees, certifications and reviews |
 | CTA | Type (form/phone/chat)? Placement? Urgency? |
 | Internal links | Hub/spoke structure present? |
 | Schema | What JSON-LD types? |
@@ -102,8 +102,8 @@ After gap matrix, output:
 - [item with better approach]
 
 ### BSUK Unfair Advantages (only BSUK can claim)
-- The £500 refundable deposit, stated plainly (a guarantee length is NOT FETCHED, so no guarantee is claimed)
-- the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) (most competitors do not surface this)
+- The £500 refundable deposit, stated plainly (no guarantee is claimed: `guarantee_days` in `data/settings.json` is null)
+- The paperwork that goes home with each puppy, named document by document (`data/faq.json` `whyus-paperwork`) — most competitors do not surface this
 - Kennel Club registration paperwork, vaccination records and microchipping details with every puppy (`data/faq.json` `whyus-paperwork`)
 - vet health certificate
 - LICENCE_CLAIM_PLACEHOLDER licensed breeder

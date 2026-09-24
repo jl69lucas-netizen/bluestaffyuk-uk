@@ -40,16 +40,16 @@ No form collects payment details — deposits happen after we talk, never throug
 
 ## Form Inventory and Field Contract
 
-Single source of truth: `.claude/skills/bsuk-contact-form/SKILL.md` — the one endpoint (`PUBLIC_FORMSPREE_ID` from a gitignored `.env`, unset today), the seven-field contract, the seven form families and their class vocabularies, the traps already sprung, and the three gates. Do not re-derive any of it here.
+Single source of truth: `.claude/skills/bsuk-contact-form/SKILL.md` — the one endpoint (`PUBLIC_FORMSPREE_ID` from a gitignored `.env`, unset today), the field contract (`REQUIRED` in `scripts/form_contract_audit.py`), the presentation layer, the traps already sprung, and the gates. Do not re-derive any of it here.
 
 Startup for any form task:
 1. `python3 scripts/form_contract_audit.py` — read `forms examined` and every FAIL row before touching a page.
-2. Edit in the page's own family vocabulary (table in the skill). Never swap a raw form for the shared component unless the brief says so.
-3. Re-run the audit, then the render harness (`npm run test:render:pages`) — the source repo's browser probe was not ported (not ported — source repo only). Open one 375px screenshot per family touched — an orphaned `*` passes every mechanical gate.
+2. Every inquiry form is the kit's `ContactFormKit` (the skill names no other form); change the component, never hand-written markup in a page.
+3. Re-run the audit, then the render harness (`npm run test:render:pages`) — the source repo's browser probe was not ported (not ported — source repo only). Open one 375px screenshot per form touched — an orphaned `*` passes every mechanical gate.
 
 Excluded from field additions (endpoint still enforced): `/`, `/uk-blue-staffy-breeders-contact/`, the location cluster.
 
-**Response time copy:** "We respond within 24 hours — personally, not automated."
+**Response time copy:** only as `data/faq.json` `home-after-support` has it — within 24 to 48 business hours, answered by us rather than by an agency.
 
 ---
 
@@ -87,7 +87,7 @@ import ContactFormKit from '../../components/kit/ContactFormKit.astro';
 <ContactFormKit />
 ```
 
-`ContactFormKit` carries the seven-field contract, the Formspree endpoint (`PUBLIC_FORMSPREE_ID`) and the `_gotcha` honeypot; The legacy `src/components/ContactForm.astro` is retired — no page imports it; never mount it. An existing page keeps its own family's markup (skill → Form families) and is edited in that vocabulary. The puppy choice is the set `ContactFormKit` builds — never a coat colour with a price beside it: a price belongs to a puppy, not to a colour (Roman is blue and white at £1,500; Christa is blue at £1,700 — `data/puppies.json`).
+`ContactFormKit` carries the seven-field contract, the Formspree endpoint (`PUBLIC_FORMSPREE_ID`) and the `_gotcha` honeypot; The legacy `src/components/ContactForm.astro` is retired — no page imports it; never mount it. The puppy choice is the set `ContactFormKit` builds — never a coat colour with a price beside it: a price belongs to a puppy, not to a colour (Roman is blue and white at £1,500; Christa is blue at £1,700 — `data/puppies.json`).
 
 ---
 
@@ -111,7 +111,7 @@ python3 scripts/indexnow_submit.py <slug>             # every slug whose rendere
 
 ## Rules
 
-1. **One endpoint** — every form posts to `https://formspree.io/f/{PUBLIC_FORMSPREE_ID}`; any other endpoint, `data-netlify`, `/thank-you/`, `/uk-blue-staffy-breeders-contact/` and `/api/newsletter` are wrong on sight
+1. **One endpoint** — every form posts to `https://formspree.io/f/{PUBLIC_FORMSPREE_ID}`; any other endpoint, `data-netlify`, an action pointing at a site page (the contact page `/uk-blue-staffy-breeders-contact/`, the thank-you page `/thank-you-blue-staffy-puppies-journey/`, which is only the `_next` redirect) and `/api/newsletter` are wrong on sight
 2. **Honeypot field required** — Formspree `_gotcha` on every form
 3. **Label-input pairing required** — every input gets a label; a red `*` inside a grid label is wrapped with its text in one `<span>`
 4. **Submit button text is descriptive** — "Send My Inquiry" not "Submit"

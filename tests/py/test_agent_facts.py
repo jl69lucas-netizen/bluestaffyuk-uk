@@ -539,6 +539,16 @@ def test_every_guarantee_line_names_guarantee_days(path):
         "name the setting that gates the line, or drop the guarantee:\n  " + "\n  ".join(bad))
 
 
+# The agents are gated the same way (Task 18 follow-up, 2026-09-24): an agent is loaded
+# into a session exactly as a skill is, and its guarantee lines reach the page first.
+@pytest.mark.parametrize("path", sorted((ROOT / ".claude/agents").glob("bsuk-*.md")), ids=lambda p: p.stem)
+def test_every_agent_guarantee_line_names_guarantee_days(path):
+    bad = ungated_guarantees(path)
+    assert bad == [], (
+        "a guarantee with no `guarantee_days` on the line. data/settings.json has it null, so "
+        "name the setting that gates the line, or drop the guarantee:\n  " + "\n  ".join(bad))
+
+
 def test_the_guarantee_gate_actually_fires(tmp_path):
     p = tmp_path / "SKILL.md"
     p.write_text(

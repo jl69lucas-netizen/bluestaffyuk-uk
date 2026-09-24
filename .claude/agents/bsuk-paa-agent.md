@@ -80,7 +80,7 @@ Google shows 4 initial PAA questions. Clicking each expands more. Use Playwright
 | Informational | "what is," "how long," "are they" | Breed guide, FAQ sections |
 | Comparison | "vs," "difference between," "better" | Comparison pages |
 | Health | "health problems," "lifespan," "tested" | Breed guide, trust sections |
-| Legal and breeder standing | "legal," "documentation," "licence," "KC registered" | the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) pages |
+| Legal and breeder standing | "legal," "documentation," "licence," "KC registered" | the pages that name the paperwork (`data/faq.json` `whyus-paperwork`); a licence stays LICENCE_CLAIM_PLACEHOLDER |
 | Local | "[city/city] Blue Staffy" | Location pages |
 
 ---

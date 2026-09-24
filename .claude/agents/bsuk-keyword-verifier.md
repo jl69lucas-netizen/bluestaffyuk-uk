@@ -105,9 +105,9 @@ For each page audit, check every item:
 - [ ] ReviewAggregateSchema present on commercial pages
 
 ### Trust & Compliance (BSUK-specific)
-- [ ] the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) info mentioned where relevant (replaces generic credential mentions)
+- [ ] the paperwork named where relevant — Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract (`data/faq.json` `whyus-paperwork`), not a generic credential mention
 - [ ] vet cert referenced on health-related pages
-- [ ] the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) mentioned on sales/availability pages
+- [ ] the paperwork that goes home with a puppy (`whyus-paperwork`) named on sales/availability pages
 - [ ] No language implying backyard-bred origin
 - [ ] Rule 61: No phone number in body copy — CTAs link to /uk-blue-staffy-breeders-contact/ form only (PHONE_PLACEHOLDER in footer/schema ONLY)
 
@@ -125,7 +125,7 @@ Run these checks AFTER the standard keyword checklist above. Every item must pas
 ### Entity Coverage (AIO/LLM Citability)
 - [ ] ≥1 declarative statement per H2 section (Entity-Tree format: "[Subject] is/are [fact].")
 - [ ] Blue Staffy puppy entity properties mentioned: lifespan (12–14 years), temperament with children (LICENCE_CLAIM_PLACEHOLDER until evidenced), LICENCE_CLAIM_PLACEHOLDER status, origin regions
-- [ ] Breeder entity properties mentioned: owner name, location (Carlisle, Cumbria), founding year (NOT FETCHED), the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER), the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
+- [ ] Breeder entity properties mentioned: owner name, location (Carlisle, Cumbria), founding year (NOT FETCHED), the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER), the paperwork each puppy goes home with (`data/faq.json` `whyus-paperwork`)
 - [ ] Coat entity properties mentioned if applicable: only what `data/puppies.json` records (`colour`, `sex`) — no size, weight or temperament difference between coats is established
 
 ### Schema Completeness
