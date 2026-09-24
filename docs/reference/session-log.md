@@ -777,6 +777,31 @@ and moved 16 on to its location-page remainder.
     0.10. The log stands at $0.80 of the $1.00 cap, all estimates, so the cap binds long before
     the real balance does. Stays open until the log records real costs or the cap is re-set from
     the dashboard.
+    **CLOSED 2026-09-23 (project 5 readiness, Task F1).** The spend guard now reads the dashboard.
+    `python3 scripts/query_augment.py --reconcile --balance <n> [--opening <n>] [--covers <n>]`
+    appends a reading to `data/queries/dashboard.json` (append-only: date, balance, opening
+    balance, and how many spend-log entries it covers — the whole log unless `--covers` says
+    fewer). The guard counts the covered calls at their real cost (opening minus balance) and only
+    later calls at their logged cost; the typical cost is the larger of `query_typical_call_usd`
+    and the costs logged after the reading. The first reading — $0.96785 left of a $1.00 opening,
+    covering all 14 logged calls — puts real spend at $0.03215 against $0.80 of estimates: about
+    $0.002 per Google SERP call and $0.004 per ChatGPT-scraper call.
+    By the user's second option (Known Issue 58), `query_typical_call_usd` is now 0.01 (2.5 times
+    the ChatGPT price, 5 times the SERP price); the $1.00 cap is unchanged.
+    `python3 scripts/query_augment.py --budget <source>` prints what the guard counts, then
+    "spend log holds N entries". Only the controller runs `--reconcile`, and only when the user
+    reads the dashboard again; the agents never do. The controller's reading procedure: run
+    `python3 scripts/query_augment.py --budget <source>` and note "spend log holds N entries";
+    ask the user for the dashboard balance B and whether they topped up since the last reading;
+    run `python3 scripts/query_augment.py --reconcile --balance B --opening O --covers N`, where O
+    is the opening with every top-up included; read O back to the user. Calls made after the
+    latest reading count at their logged cost ($0.01 each), and `--reconcile` refuses the latest
+    reading's balance repeated after new calls ("read the dashboard again"), which would count
+    those calls at nothing. It also refuses (exit 2, nothing written) a bad amount, a `--covers`
+    out of range (below the last reading's or above the log's length), a reading dated before the
+    last one, spend that would fall and a damaged file; `--balance`, `--opening` and `--covers`
+    given without `--reconcile` are refused too. `data/queries/spend.json` is untouched and still
+    holds the estimates as they were logged.
 
 46. **Needs a user ruling — the banned-breed line (2026-09-23).** The breed guide
     (`src/pages/uk-staffordshire-bull-terrier-guide/index.astro`) states the Staffordshire Bull
@@ -869,3 +894,9 @@ and moved 16 on to its location-page remainder.
     `docs/research/llm-intel/` files. Each further page is one paid `ai_engines` call through the
     spend guard (budgeted at $0.10); the log's $0.20 of headroom covers two, so the cap
     (`query_total_budget_usd`) or the typical cost (Known Issue 45) must be re-set first.
+    **Update (project 5 readiness, Task F1, 2026-09-23):** the user's second option is done — the
+    guard counts $0.03215 of real spend against the $1.00 cap and budgets an `ai_engines` call at
+    $0.01, so all 26 calls fit ($0.26; `python3 scripts/query_augment.py --budget ai_engines`
+    reports 96). The cap was not raised.
+    Still the next step: `@bsuk-llm-keyword-intel <slug>` for each page, each behind its own
+    `spend approved: <slug>; balance $<n>`.

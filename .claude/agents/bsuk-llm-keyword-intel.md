@@ -36,7 +36,7 @@ effort: high
 | Exit | Meaning → do |
 |---|---|
 | 3 | cached: the page already has a bought answer. Reuse `data/queries/raw/<slug>/ai_engines.response.json`; no call, no stop → **The script** |
-| 0 | not bought. **STOP** with one budget line: slug, query, the typical cost (the larger of `query_typical_call_usd` in `data/settings.json` and the largest `ai_engines` cost in `data/queries/spend.json` — an estimate), the total logged against `query_total_budget_usd`; ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined` |
+| 0 | not bought. **STOP** with one budget line: slug, query, and the line `python3 scripts/query_augment.py --budget ai_engines` prints — the typical cost (an estimate) and the total the guard counts against `query_total_budget_usd` (real spend up to the last dashboard reading in `data/queries/dashboard.json`, logged costs after it); ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined`. Never run `--reconcile`: recording a new dashboard reading is the controller's job alone |
 | 4 | over budget, or the log is unreadable → stop, report the guard's stderr line; never work around it |
 | 1, 2 | the guard failed → stop and report its output |
 
