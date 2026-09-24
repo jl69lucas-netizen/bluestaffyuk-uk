@@ -738,12 +738,18 @@ def test_national_and_annotated_location_rows_take_the_shared_question(tmp_path,
     ("L-2-HGA testing is a DNA test for a brain disorder.", ("paragraphs", "statement")),   # a test's digit
     ("Around 60% of buyers pay a deposit first.", ("paragraphs", "statistic")),
     ("£1,500 is a typical price for a KC registered puppy.", ("paragraphs", "statistic")),
+    ("8-week-old puppies are ready to leave their mother.", ("paragraphs", "statistic")),     # a hyphen-joined figure
+    ("A 5-year guarantee comes with every puppy.", ("paragraphs", "statistic")),
+    ("12-14 years is the usual lifespan of a Staffy.", ("paragraphs", "statistic")),
+    ("3D scans are not used on puppies.", ("paragraphs", "statement")),                     # a digit in a name
+    ("COVID-19 pushed puppy prices up sharply.", ("paragraphs", "statement")),
     ("**Short answer:** Use a licensed breeder near you.", ("paragraphs", "recommendation")),  # inline label
     ("**Short answer**: Use a licensed breeder near you.", ("paragraphs", "recommendation")),
     ("**Buy from a licensed breeder.** Then ask for the tests.", ("paragraphs", "recommendation")),  # not a label
     ("| Question | Why |\n|---|---|\n| Health tests? | Disease |\n\nAsk to see the mother.", ("table", "recommendation")),
     ("| Question | Why |\n|---|---|\n| Health tests? | Disease |", ("table", "statement")),  # a table alone
     ("| a | b |\n|-|-|\n| c | d |", ("table", "statement")),          # a one-dash separator is a table
+    ("Question | Why\n--- | ---\nHealth tests? | Disease\n\nAsk to see the mother.", ("table", "recommendation")),  # a pipe-less table
     ("| a | b |\n|:-|-:|\n| c | d |", ("table", "statement")),
 ])
 def test_the_answer_format_edge_cases(tmp_path, markdown, want):
