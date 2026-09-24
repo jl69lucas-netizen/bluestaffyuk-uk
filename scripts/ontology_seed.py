@@ -22,17 +22,25 @@ board can group them by class. Four inputs, and nothing else:
                 source null — null, not the ledger path, because board_approve.py promotes a
                 PROPOSED entity that has a source to ASSERTED the moment a board using it is
                 approved, and an unconfirmed result must never be promoted that way.
+                A claim's pattern may match one test only. When the ledger proves a test
+                that is already in the file as class Health, PROPOSED, source null, that
+                entity is upgraded to ASSERTED with the ledger as its source; this is the
+                only change a seed ever makes to an existing entity.
   People        data/settings.json `breeder_name`.
 
 Idempotent. An entity already in the file is never rewritten — its authorization, source
-and owner page may have been decided by an approval since — and new entities are appended
-in class order, then id order, so a re-run with unchanged inputs writes the same bytes.
+and owner page may have been decided by an approval since — except for the health upgrade
+described under Health above. New entities are appended in class order, then id order,
+so a re-run with unchanged inputs writes the same bytes. A generated id in two classes, a
+new id already in the file under another class, a ledger claim whose pattern matches more
+than one test (one certificate proves one test) and a missing input file each stop the run.
 
   --check   exit 1 when the file on disk is not what a seed run would write (nothing written).
 """
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -89,11 +97,17 @@ HEALTH_TESTS = (
     ("ont:bva-hip-elbow-scores", "BVA hip and elbow scores", ["hip score", "elbow score"], "BVA hip and elbow scores"),
 )
 
+HEALTH_IDS = {t[0] for t in HEALTH_TESTS}
+
 ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*$")
 
 
 def slug_id(text):
-    return "ont:" + re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    ascii_text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    slug = re.sub(r"[^a-z0-9]+", "-", ascii_text.lower()).strip("-")
+    if not slug:
+        raise PB.BoardError(f"cannot slug {text!r}")
+    return "ont:" + slug
 
 
 def page_slug(first_page):
@@ -116,16 +130,24 @@ def library_rows(path=None):
 
 
 def place_entities(locations, settings):
-    out = {}
+    out, plain = {}, set()
     for r in locations:
-        city = re.sub(r"\s*\(.*?\)\s*", "", r.get("city", "")).strip()
+        lacking = [k for k in ("slug", "city", "canonical") if not r.get(k)]
+        if lacking:
+            raise PB.BoardError(f"data/locations.json row {r!r} has no {', '.join(lacking)}")
+        city = re.sub(r"\s*\(.*?\)\s*", "", r["city"]).strip()
         if not city or city.upper() == "UK":
             continue
         eid = slug_id(city)
-        if eid not in out:
+        # The first row owns the place, except that a row naming the city plainly beats one
+        # with a parenthetical ("Glasgow (breeding dogs)"): the plain row is the city's page.
+        is_plain = "(" not in r["city"]
+        if eid not in out or (is_plain and eid not in plain):
             out[eid] = {"id": eid, "name": city, "aliases": [], "class": "Place",
                         "authorization": "ASSERTED", "source": "data/locations.json",
-                        "owner_page": "uk-locations/" + r["slug"]}
+                        "owner_page": r["canonical"].strip("/")}
+            if is_plain:
+                plain.add(eid)
     addr = settings.get("address") or {}
     for key in ("city", "region"):
         name = addr.get(key)
@@ -165,10 +187,17 @@ def library_entities(rows):
 
 
 def health_entities(ledger):
-    """PROPOSED with no source unless a ledger claim for the test has a proof and a date."""
+    """PROPOSED with no source unless a ledger claim for the test has a proof and a date.
+    One certificate proves one test: a claim whose pattern matches two tests stops the run."""
+    claims = ledger.get("claims") or []
+    for c in claims:
+        hits = [m for _e, _n, _a, m in HEALTH_TESTS if re.search(c.get("pattern") or r"(?!x)x", m, re.I)]
+        if len(hits) > 1:
+            raise PB.BoardError(f"evidence-ledger claim {c.get('id')!r} (pattern {c.get('pattern')!r}) "
+                                f"matches more than one health test: {', '.join(hits)} — narrow its pattern")
     out = []
     for eid, name, aliases, match in HEALTH_TESTS:
-        confirmed = [c for c in ledger.get("claims") or []
+        confirmed = [c for c in claims
                      if re.search(c.get("pattern") or r"(?!x)x", match, re.I)
                      and (c.get("proof") or "NOT FETCHED") != "NOT FETCHED" and c.get("confirmed")]
         out.append({"id": eid, "name": name, "aliases": list(aliases), "class": "Health",
@@ -186,16 +215,44 @@ def people_entities(settings):
              "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "blue-staffy-uk-breeders"}]
 
 
+def _upgrade(entity, generated):
+    """The one rewrite a seed makes: a seeded health test still PROPOSED with no source,
+    now proved by the ledger, becomes ASSERTED with the ledger as its source."""
+    g = generated.get(entity["id"])
+    if (g is not None and entity["id"] in HEALTH_IDS and entity["class"] == "Health"
+            and entity["authorization"] == "PROPOSED" and entity["source"] is None
+            and g["authorization"] == "ASSERTED"):
+        return dict(entity, authorization="ASSERTED", source=g["source"])
+    return entity
+
+
 def seeded(existing, locations, settings, ledger, rows):
-    """The ontology a seed run writes: every existing entity as it is, then new ones."""
-    have = {e["id"] for e in existing["entities"]}
+    """The ontology a seed run writes: every existing entity as it is (bar the one health
+    upgrade `_upgrade` allows), then new ones."""
+    have = {e["id"]: e for e in existing["entities"]}
     orgs, regs = library_entities(rows)
-    new = [e for e in (people_entities(settings) + place_entities(locations, settings) + health_entities(ledger)
-                       + orgs + regs) if e["id"] not in have]
+    generated = {}
+    for e in (people_entities(settings) + place_entities(locations, settings) + health_entities(ledger)
+              + orgs + regs):
+        if e["id"] in generated:
+            raise PB.BoardError(f"{e['id']} is generated twice, as {generated[e['id']]['class']} "
+                                f"and as {e['class']}")
+        if e["id"] in have and have[e["id"]]["class"] != e["class"]:
+            raise PB.BoardError(f"{e['id']} is already in the ontology as {have[e['id']]['class']}; "
+                                f"the seed would make it {e['class']}")
+        generated[e["id"]] = e
+    new = [e for e in generated.values() if e["id"] not in have]
     new.sort(key=lambda e: (CLASS_ORDER.index(e["class"]), e["id"]))
-    ont = {"entities": list(existing["entities"]) + new}
+    ont = {"entities": [_upgrade(e, generated) for e in existing["entities"]] + new}
     PB.validate_ontology(ont)
     return ont
+
+
+def _load(path):
+    """An input file, or a BoardError naming the one that is missing."""
+    if not Path(path).is_file():
+        raise PB.BoardError(f"ontology_seed input {path} does not exist")
+    return PB._read_json(path)
 
 
 def _text(ont):
@@ -204,8 +261,7 @@ def _text(ont):
 
 def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
-    ont = seeded(PB._read_json(PB.ONTOLOGY), PB._read_json(LOCATIONS), PB._read_json(SETTINGS),
-                 PB._read_json(LEDGER), library_rows())
+    ont = seeded(_load(PB.ONTOLOGY), _load(LOCATIONS), _load(SETTINGS), _load(LEDGER), library_rows())
     text = _text(ont)
     if "--check" in argv:
         if PB.ONTOLOGY.read_text(encoding="utf-8") != text:

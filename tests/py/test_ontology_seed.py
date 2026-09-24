@@ -21,10 +21,11 @@ EXISTING = {"entities": [
     {"id": "ont:glasgow", "name": "Glasgow", "aliases": [], "class": "Place",
      "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "custom-owner"},
 ]}
-LOCATIONS = [{"slug": "blue-staffy-puppies-leeds", "city": "Leeds"},
-             {"slug": "staffy-breeding-dogs-glasgow", "city": "Glasgow (breeding dogs)"},
-             {"slug": "blue-staffy-puppies-uk", "city": "UK"},
-             {"slug": "blue-staffy-puppies-for-sale-leeds", "city": "Leeds"}]
+LOCATIONS = [{"slug": s, "city": c, "canonical": f"/uk-locations/{s}/"} for s, c in (
+             ("blue-staffy-puppies-leeds", "Leeds"),
+             ("staffy-breeding-dogs-glasgow", "Glasgow (breeding dogs)"),
+             ("blue-staffy-puppies-uk", "UK"),
+             ("blue-staffy-puppies-for-sale-leeds", "Leeds"))]
 SETTINGS = {"breeder_name": "Lisa Bright", "address": {"city": "Carlisle", "region": "Cumbria", "country": "GB"}}
 ROWS = [("https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy", "rspca.org.uk", "RSPCA advice", "blue-staffy-uk-breeders"),
         ("https://www.gov.uk/control-dog-public/banned-dogs", "gov.uk", "banned dogs", "uk-staffordshire-bull-terrier-guide"),
@@ -143,9 +144,10 @@ def test_the_committed_ontology_counts_by_class():
     counts = {c: sum(e["class"] == c for e in ont["entities"]) for c in OS.CLASS_ORDER}
     assert counts["People"] >= 1 and counts["Place"] >= 25
     assert counts["Organization"] >= 9 and counts["Regulation"] >= 5 and counts["Health"] >= 6
-    assert not [e["id"] for e in ont["entities"]
-                if e["class"] == "Health" and e["authorization"] == "ASSERTED"
-                and not PB._read_json(OS.LEDGER)["claims"]]
+    ledger = PB._read_json(OS.LEDGER)
+    health = [e for e in ont["entities"] if e["class"] == "Health"]
+    if not ledger["claims"]:
+        assert all(e["authorization"] != "ASSERTED" for e in health)
 
 
 # --- no street address, and every source names what it sources (system-gaps, Glasgow fix) ---
@@ -185,3 +187,99 @@ def test_glasgow_is_sourced_to_its_location_row_and_owned_by_a_real_route():
     assert g["source"] == "data/locations.json" and any(r["city"] == "Glasgow" for r in rows)
     assert g["aliases"] == []
     assert any(r["canonical"] == f"/{g['owner_page']}/" for r in rows)
+
+
+# --- review fixes: one certificate proves one test, proved tests upgrade, no duplicate ids ---
+
+PROVED = {"proof": "/docs/cert.pdf", "anchor": "dna-tests", "confirmed": "2026-09-24"}
+
+
+def test_a_claim_whose_pattern_matches_two_tests_stops_the_seed():
+    ledger = {"claims": [{"id": "dna", "pattern": "DNA test", **PROVED}]}
+    with pytest.raises(PB.BoardError, match=r"'dna'.*L-2-HGA DNA test.*HC-HSF4 DNA test"):
+        _seed(ledger=ledger)
+
+
+def test_a_specific_claim_asserts_its_own_test_and_no_other():
+    ledger = {"claims": [{"id": "phpv", "pattern": r"\bPHPV\b", **PROVED}]}
+    health = [e for e in _seed(ledger=ledger)["entities"] if e["class"] == "Health"]
+    assert [e["id"] for e in health if e["authorization"] == "ASSERTED"] == ["ont:phpv-test"]
+
+
+def test_a_committed_proposed_health_test_upgrades_once_the_ledger_proves_it():
+    committed = _seed()                                        # the test is already in the file, PROPOSED
+    ids = [e["id"] for e in committed["entities"]]
+    ledger = {"claims": [{"id": "l2hga", "pattern": r"L-?2-?HGA", **PROVED}]}
+    after = _seed(existing=committed, ledger=ledger)
+    assert [e["id"] for e in after["entities"]] == ids         # upgraded in place, nothing appended
+    t = _by_id(after)["ont:l-2-hga-dna-test"]
+    assert (t["authorization"], t["source"]) == ("ASSERTED", "data/quality/evidence-ledger.json")
+    before = _by_id(committed)
+    changed = [e["id"] for e in after["entities"] if e != before[e["id"]]]
+    assert changed == ["ont:l-2-hga-dna-test"]
+
+
+def test_nothing_but_a_proposed_sourceless_seeded_health_test_is_ever_rewritten():
+    committed = _seed()
+    by = _by_id(committed)
+    by["ont:l-2-hga-dna-test"]["source"] = "data/some-other.json"      # has a source: left alone
+    by["ont:hc-hsf4-dna-test"]["authorization"] = "BLOCKED"            # not PROPOSED: left alone
+    committed["entities"].append({"id": "ont:health-guarantee", "name": "Health guarantee", "aliases": [],
+                                  "class": "Health", "authorization": "PROPOSED", "source": None,
+                                  "owner_page": None})                 # not a HEALTH_TESTS id
+    ledger = {"claims": [{"id": "l2hga", "pattern": r"L-?2-?HGA", **PROVED},
+                         {"id": "hc", "pattern": r"HC-HSF4", **PROVED},
+                         {"id": "hg", "pattern": r"^Health guarantee$", **PROVED}]}
+    assert _seed(existing=committed, ledger=ledger) == committed
+
+
+def test_a_generated_id_in_two_classes_stops_the_seed():
+    settings = dict(SETTINGS, breeder_name="Leeds")          # a People and a Place both ont:leeds
+    with pytest.raises(PB.BoardError, match=r"ont:leeds.*(People.*Place|Place.*People)"):
+        OS.seeded(copy.deepcopy(EXISTING), LOCATIONS, settings, EMPTY_LEDGER, ROWS)
+
+
+def test_a_new_id_already_in_the_file_under_another_class_stops_the_seed():
+    existing = copy.deepcopy(EXISTING)
+    existing["entities"].append({"id": "ont:leeds", "name": "Leeds", "aliases": [], "class": "Organism",
+                                 "authorization": "ASSERTED", "source": None, "owner_page": None})
+    with pytest.raises(PB.BoardError, match=r"ont:leeds.*(Organism.*Place|Place.*Organism)"):
+        _seed(existing=existing)
+
+
+def test_a_fresh_seed_owns_glasgow_where_the_committed_file_does():
+    locations = PB._read_json(OS.LOCATIONS)
+    fresh = _by_id(OS.seeded({"entities": []}, locations, SETTINGS, EMPTY_LEDGER, ROWS))
+    committed = {e["id"]: e for e in PB.load_ontology()["entities"]}
+    assert fresh["ont:glasgow"]["owner_page"] == committed["ont:glasgow"]["owner_page"]
+    for e in fresh.values():                                  # every place owner is its row's canonical
+        if e["source"] == "data/locations.json":
+            assert any(r["canonical"].strip("/") == e["owner_page"] for r in locations), e["id"]
+
+
+def test_a_parenthetical_row_yields_to_a_plain_one_for_the_owner():
+    rows = [{"slug": "a", "city": "Glasgow (breeding dogs)", "canonical": "/uk-locations/a/"},
+            {"slug": "b", "city": "Glasgow", "canonical": "/uk-locations/b/"}]
+    fresh = _by_id(OS.seeded({"entities": []}, rows, SETTINGS, EMPTY_LEDGER, ROWS))
+    assert fresh["ont:glasgow"]["owner_page"] == "uk-locations/b"
+
+
+@pytest.mark.parametrize("missing", ["slug", "canonical", "city"])
+def test_a_location_row_missing_a_field_stops_the_seed(missing):
+    row = {"slug": "blue-staffy-puppies-hull", "city": "Hull", "canonical": "/uk-locations/blue-staffy-puppies-hull/"}
+    del row[missing]
+    with pytest.raises(PB.BoardError, match=missing):
+        OS.seeded({"entities": []}, [row], SETTINGS, EMPTY_LEDGER, ROWS)
+
+
+def test_slug_id_folds_accents_and_refuses_an_empty_slug():
+    assert OS.slug_id("Bôrth-y-Gêst") == "ont:borth-y-gest"
+    with pytest.raises(PB.BoardError, match="cannot slug"):
+        OS.slug_id("——")
+
+
+@pytest.mark.parametrize("name", ["LOCATIONS", "SETTINGS", "LEDGER"])
+def test_a_missing_input_file_is_a_board_error(monkeypatch, tmp_path, name):
+    monkeypatch.setattr(OS, name, tmp_path / "absent.json")
+    with pytest.raises(PB.BoardError, match="absent.json"):
+        OS.main(["--check"])
