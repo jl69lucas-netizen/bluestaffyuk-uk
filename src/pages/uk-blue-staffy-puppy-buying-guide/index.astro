@@ -136,7 +136,7 @@ import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
 import BodyImage from '../../components/BodyImage.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic } from '../../lib/assets';
 import { recordText, countedFigures, numberWord, sourceKey, ledgeText,
   sentenceAnchor as S, type LedgeEntry, type StatRow } from '../../lib/recordText';
@@ -159,10 +159,14 @@ const SLUG = 'uk-blue-staffy-puppy-buying-guide';
 // promise to the type checker and nothing at all to the build, so an unapproved record would
 // have rendered `undefined` into the `<title>`, the meta description and the H1 and shipped
 // it. `board_gate.py` would have caught the record; nothing would have caught the page.
-const approval = record.approval;
-if (!approval || !approval.meta) {
-  throw new Error(`${SLUG}: the record carries no approval, so there is no picked title, `
-    + 'description or H1 to render — run scripts/board_approve.py before building the page');
+// The approval IN FORCE (spec §9 amendment 11a): the record went back to the board for its
+// hero (Known Issues 30 and 35) with its approval carried under `approval_previous`, and what
+// the page is called was never the question. `approvalInForce()` still throws for a record
+// that has never been approved.
+const approval = approvalInForce(record);
+if (!approval.meta) {
+  throw new Error(`${SLUG}: the approval in force names no title or description index — `
+    + 'run scripts/board_approve.py before building the page');
 }
 const title = record.meta_set.titles[approval.meta.title];
 const description = record.meta_set.descriptions[approval.meta.description];

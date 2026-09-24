@@ -1269,7 +1269,14 @@ def test_every_record_pick_is_one_of_that_sections_own_styles():
 # on the hero and the counter — or on neither, when the question was the hero's content rather
 # than its arrangement.
 RE_BOARDED = ("index", "privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
-              "uk-blue-staffy-breeders-contact")
+              "uk-blue-staffy-breeders-contact",
+              # The three guides, for their hero (Known Issues 30 and 35, user ruling R13).
+              "blue-staffy-health-uk", "uk-staffordshire-bull-terrier-guide",
+              "uk-blue-staffy-puppy-buying-guide")
+#: A section a re-board asks again although it is not per-page, with the ruling that sent it
+#: back. The breed guide's video moved from S2 to the facade by the user's ruling R8 (Known
+#: Issue 38), on the same board as its hero.
+REASKED = {"uk-staffordshire-bull-terrier-guide": {"video-breed-guide"}}
 
 
 def _built(slug):
@@ -1278,7 +1285,10 @@ def _built(slug):
 
 
 def _per_page(rec):
-    return {s["id"] for s in rec["sections"] if s["shape"] in PB.PER_PAGE_SHAPES}
+    """The sections a re-board of this record may ask: the hero, the counter, and any section
+    named in REASKED for it."""
+    return ({s["id"] for s in rec["sections"] if s["shape"] in PB.PER_PAGE_SHAPES}
+            | REASKED.get(rec["meta"]["slug"], set()))
 
 
 @pytest.mark.parametrize("slug", RE_BOARDED)

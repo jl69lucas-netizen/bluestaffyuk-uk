@@ -93,7 +93,7 @@ import InfoCard from '../../components/kit/InfoCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
   sentenceAnchor, type LedgeEntry } from '../../lib/recordText';
@@ -108,10 +108,14 @@ import guideRecord from '../../../data/boards/uk-staffordshire-bull-terrier-guid
 import record from '../../../data/boards/blue-staffy-health-uk.json';
 
 const path = '/blue-staffy-health-uk/';
-// The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// The picked meta variants and H1, BY INDEX from the approval IN FORCE — never retyped here.
+// `approvalInForce()`, not `record.approval`: the record went back to the board for its hero
+// (Known Issue 35) with its approval carried under `approval_previous`, and what the page is
+// called was never the question (spec §9 amendment 11a).
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The eight migrated photographs, by slot, at their ORIGINAL public paths with the alt text
 // the record baked (working rule 11; all eight alts are elements of the verbatim set). A
@@ -320,7 +324,11 @@ const pageSchema = [
         <dl class="aside-rows">
           {asideRows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
         </dl>
-        <p class="aside-chips">{heroChips.join(' · ')}</p>
+        {/* On H-GD1, the editorial split, the aside is a second row under the copy and the
+            credential line is the one line the 450px band has no room for (measured at 1280:
+            30px over with it, 0 without; Known Issue 35). The chips are still passed to `Hero`
+            above, so any other arrangement prints the line again. */}
+        {heroStyle.layout.hero !== 'split' && <p class="aside-chips">{heroChips.join(' · ')}</p>}
       </div>
     </Hero>
     <h2>{T(heading('top'))}</h2>
