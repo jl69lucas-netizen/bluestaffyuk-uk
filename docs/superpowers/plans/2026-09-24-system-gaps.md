@@ -1,0 +1,9945 @@
+# System Gaps Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Close the five system gaps the user named before project 5. Make the page board's entities and keywords readable one by one. Record keyword variations, related, co-occurring and similar terms, and group entities by class. Hold project 5's pages to their approved outline. Give every such page at least six diverse external links and varied anchors. Put an image on every body heading, drawn first from images the site already has. Add a BSUK `IMAGE-DESIGNS.md` whose OG and infographic styles are approved on the board before any build.
+
+**Architecture:** every new rule binds only the pages project 5 builds (location, comparison and blog-post pages). They plug into one hook, `scripts/family_rules.py` (Task 0, done), which `pageboard.gate_findings` calls once, and they never touch the twelve pages already built. New logic lives in new files: `scripts/board_entities.py`, `scripts/keyword_variants.py`, the ontology seeder, `scripts/outline_provenance_check.py`, `scripts/reframe_og.py`, `scripts/image_candidates.py`, `IMAGE-DESIGNS.md` and three ported image skills. Shared files get small hooks or appended blocks, so this branch and `p5-readiness` stay mergeable.
+
+**Tech Stack:** Python 3 + pytest, Pillow, npm scripts, Astro 6 static build, Playwright (board screenshots), Claude Code skills and agents (markdown).
+
+**Requirements (the user, 2026-09-24):** "BOARD UPDATE — ENTITY SECTION — it's hard to read or zoom on individual entities; the current display shows titles/headers not each entity; make it clean, fluid scrolling." · "All keyword variations, related, concurrent, similar, and all entity types grouped by people, place, health, etc." · "Build from outline; never from crossovers, siblings, or duplicates; 6 diversity external links per page; anchor type/variations for better SEO." · "You must use images where needed, like heroes and other components; when choosing components, always analyse the existing page structure for images to use or the image folder under assets." · "The IMAGE.md: OG image styles and infographic styles, approval, etc. before the builds; all H2 and H3 headers only on the location, compare, blogs, etc., not on the already built pages." · "Done is when all tasks are done, verified, and you said you are ready for project 5."
+
+**Branch:** `system-gaps`, worktree `/Users/apple/Downloads/BSUK-gaps`, cut from `foundation` at `9927710`. Task 0 is committed at `99c81e0`. Never push; there is no remote.
+
+**Every commit ends with:**
+```
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
+```
+Subagents: use exactly this line and never substitute your own model name.
+
+---
+
+## User rulings (2026-09-24) — do not re-ask
+
+| # | Question | Ruling | Where it lands |
+|---|---|---|---|
+| G1 | Which headings carry an image on new pages | **Every body H2 and every body H3.** FAQ-block H3s are left out. The hero carries one. The twelve built pages are untouched | Task 10 |
+| G2 | No existing image fits a slot | **Generate one per `IMAGE-DESIGNS.md`**, approved on the board before the build uses it | Tasks 7, 8, 10 |
+| G3 | "Six diverse external links" | **At least 6 links per page, on 6 distinct domains, from at least 4 source types** (gov, registry, vet/charity, welfare, research, local) | Task 4 |
+| G4 | Which pages the new rules bind | **Location, comparison and blog-post pages built from now on.** The 12 pages built before this build are frozen out by name (`BUILT_BEFORE_SYSTEM_GAPS`) | Task 0 |
+
+## Running beside `p5-readiness` (read before Task 1)
+
+Another session is executing `docs/superpowers/plans/2026-09-24-p5-readiness.md` on branch `p5-readiness` (worktree `/Users/apple/Downloads/BSUK-p5r`). **Never touch that worktree.** The two plans edit some of the same files: `scripts/pageboard.py`, `scripts/build_page_board.py`, the three builder skills, `rules/images.md`, `rules/links.md`, `docs/reference/external-link-library.md`, `CLAUDE.md`, `docs/reference/WORKFLOW.md`, `data/quality/rule-index.json` and `docs/reference/session-log.md`. This plan keeps its edits to those files small (a hook line, an appended block, a new column), so the second branch to merge resolves a short, predictable list. Close-out (Task 12) sets the merge order and the conflict procedure. Known Issue numbers are taken at close-out from whatever `foundation` holds then, never guessed in advance.
+
+## Execution notes
+
+- **Subagent-driven.** Each task gets an Opus implementer, a spec review and a quality review, re-reviewed until both pass. **One writer in the worktree at a time.** Run every command from `/Users/apple/Downloads/BSUK-gaps`.
+- **No background waits.** Implementers never start background agents and end their turn "waiting". They run RED/GREEN in the foreground and reply only when the task is committed. When any notification reaches the controller, the controller nudges the implementer at once. Every status reply to the user shows the full progress table.
+- **Never `git stash`** (worktrees share the main repo's stash list).
+- **Old→new edits:** if an edit's old text does not match exactly, stop and report. Never improvise a different edit.
+- **Registries:** any task that adds a script, skill, agent or data file runs `python3 scripts/build_system_registry.py` (plus `python3 scripts/build_agent_registry.py` for agents) and `npm run -s registry` (expect `0 problems`) before committing.
+- **No paid calls.** This plan makes no DataForSEO or Firecrawl calls. External URLs are checked with `curl -sI` (free) before a library row is added.
+- **One visual pause.** After Task 3, and again after Task 10, the controller renders a real board and shows it in the browser (standing visual-companion consent). The user may redirect; nothing waits on an answer unless they give one.
+- **Definition of done:** every task committed with both reviews passed. `python3 -m pytest tests/py -q`, `npm run -s check:all`, `npm run -s registry` and `npm run -s agents` pass twice with identical counts. The gate report records each task's evidence. The plan and gate report are published as Artifacts. The controller tells the user "ready for project 5" only after all of that.
+
+**Baseline** (`BSUK-gaps` after `npm run build`, 2026-09-24): `python3 -m pytest tests/py -q` → `2377 passed, 25 skipped, 1 xfailed`; `npm run -s check:all` → exit 0. After Task 0: plus 3 tests.
+
+## Task 0 (DONE, `99c81e0`): `family_rules` — one hook for the rules that bind project 5's pages only
+
+**Gap:** all five: the scope rule "only on the location, compare, blogs, etc., not on the already built pages".
+**Files:** Create `scripts/family_rules.py`, `tests/py/test_family_rules.py`. Modify `scripts/pageboard.py` (import line, plus three lines before `gate_findings`' final `return f`). Regenerated `docs/reference/system-registry.md`.
+
+Executed by the controller while planning, so the drafting agents could build on one interface. `NEW_FAMILY_PAGE_TYPES = ("location", "comparison", "blog")`. `BUILT_BEFORE_SYSTEM_GAPS` is `data/facts/rebuilt.json` at `9927710`, frozen at 12 slugs. `applies(board)` is true for a new-family page type whose slug is neither frozen nor underscore-led. `register(fn)` takes checks with the signature `fn(board, ont) -> iterable of (check_id, "FAIL"|"WARN", message)`, and `findings(board, ont)` runs them all. `pageboard.gate_findings` ends with:
+```python
+    # The rules that bind project 5's pages only (scripts/family_rules.py, system-gaps build).
+    for check, sev, msg in FR.findings(board, ont):
+        add(check, sev, msg)
+    return f
+```
+Verified: `tests/py/test_family_rules.py` 3 passed (RED first on the hook), board suites 320 passed, `npm run -s registry` 0 problems.
+
+
+## Task order at a glance
+
+| Part | Tasks | What it closes | Stops for the user |
+|---|---|---|---|
+| — | 0 (done, `99c81e0`) | scope hook: new pages only | none |
+| A | 1, 2, 3 | keyword variations/related/co-occurring/similar; entities by class (56 sourced entities); readable board entity + keyword view | none (board shown after Task 3) |
+| B | 4, 5 | ≥6 external links / 6 domains / 4 source types; anchor types and site-wide anchor reuse | none |
+| C | 6, 6b | build from the approved outline; no sibling, crossover or duplicate headings or passages | none |
+| D | 7, 8 | `IMAGE-DESIGNS.md` (OG styles A–H, infographic styles IG-1–5, approval); `reframe_og.py`, `ingest_image.py`, three image skills | none |
+| E | 9, 10, 10b, 10c | image candidates from the page, the site and `Assets/Images`; an image slot on every body H2/H3 + hero; board block 7 "Images & styles" | none (board shown after Task 10c) |
+| F | 11, 11b, 12 | wiring into CLAUDE.md rule 17, WORKFLOW rule 13, builder skills; image-generation key; close-out and merge | **11b:** you set `GEMINI_API_KEY` and approve `pip install google-genai` |
+
+**Rehearsed:** every task below was executed in plan order on a scratch worktree (`wt-int`, 16 commits on `99c81e0`, HEAD `a27aa6a`), and the plan text is what ran. Full suite after Task 11: `2664 passed, 25 skipped, 1 xfailed`, identical on two runs; `npm run -s check:all` exit 0; `npm run -s registry` and `npm run -s agents` 0 problems; all 12 approved board records still match their approval hash. Expected counts inside the tasks are for plan order with `.env` present (without `.env`, 2 more skip).
+
+
+---
+
+## Part A — Keywords, entities and the board view (Tasks 1–3)
+
+Section drafted by wt-a for the system-gaps plan (2026-09-24). Three tasks, numbered 1–3 here;
+the controller renumbers them when it merges the drafts. Every task was executed in a detached
+worktree cut from `system-gaps` at 99c81e0 (final commits cad3c26, bef5cc4, 4e97758 there), so each
+patch below applies cleanly in order with `git apply` and every expected output is one that was
+actually observed.
+
+Shared-file discipline (CONTEXT.md): new logic lives in NEW files — `scripts/keyword_variants.py`,
+`scripts/ontology_seed.py`, `scripts/board_entities.py`. The shared files take small, exact
+patches: `scripts/pageboard.py` (+11/−4), `scripts/family_rules.py` (one appended block),
+`scripts/build_page_board.py` (imports and calls `board_entities`; the graph code is removed),
+`schemas/board.schema.json` and `schemas/ontology.schema.json` (additive), the three builder
+skills (one block APPENDED at the end of each), and four assertions in
+`tests/py/test_page_board.py` that pinned the old text.
+
+**No record's hash moves.** The four new keyword types are optional schema properties (not in
+`required`), no board record is edited, and every reader takes them with `.get(k, [])`. Task 1's
+test `test_every_built_record_still_validates_and_keeps_its_approval` proves every approved
+record under `data/boards/` still matches its stamped hash after the change. The ontology is not
+part of any record hash, so seeding it (Task 2) un-approves nothing.
+
+### Task 1: Four optional keyword types, the new-family check that fills them, and a free proposal helper
+
+**Gap:** keyword variations, related, co-occurring ("concurrent") and similar terms on the new
+location, comparison and blog pages.
+
+**Findings that shaped it.**
+- `schemas/board.schema.json` — the `keywords` object is `additionalProperties: false` with all
+  nine types in `required`. Adding the four as properties but NOT to `required` lets new records
+  carry them while the twelve built records validate unchanged. An unknown key is still refused.
+- `pageboard.distribution()` read `s["keywords"][k]` for the nine types; it now iterates
+  `ALL_KEYWORD_TYPES` with `.get(k, [])`, so a record without the new keys counts zero.
+- The board's block 4 table iterates the type tuple and `KEYWORD_LABELS` (Task 3 decides which
+  columns show). `scripts/board_approve.py` never enumerates keyword keys (grep: no hit), so it
+  needs no change; it hashes whatever the record holds.
+- Cached free sources exist. `data/queries/raw/<slug>/` holds, for Manchester: Google related
+  searches (6, in `serp_google.json` and `serp_google.response.json`), People Also Ask (6), ten
+  organic titles and snippets, the ChatGPT answer points (`ai_engines.response.json`), 16 AI
+  fan-out questions, Reddit thread titles and questions, and competitor H2s; for Leeds: related
+  searches (6), the ChatGPT answer markdown, Bing questions, threads and competitor H2s (no
+  organic titles — the Leeds SERP was read in a browser and saved as URLs). Nothing needs a paid
+  call. `scripts/query_augment.py` itself never calls a service; its `SYNONYMS` and `normalise()`
+  are reused so "Staffie pups" and "staffy puppies" are one spelling.
+
+**`--also DIR` (open question from the first draft, built: 20 lines incl. one robustness fix).**
+The Leeds SERP was saved as URLs, so Leeds gets only 3 `similar` terms. `--also
+registry-staffy-puppies-for-sale-leeds` folds a neighbouring keyword's cached folder into the
+corpus (the primary stays the slug's) and lifts Leeds to 8 similar and 10 related. Building it
+exposed that the `registry-*` folders save People Also Ask as bare strings, not objects;
+`load_corpus` now accepts both. Every one of the ten registry folders loads with `--also`.
+
+**Where the terms come from in the builder flow.** Query augmentation (which already runs before
+the outline) caches the files → `python3 scripts/keyword_variants.py <slug>` proposes the four
+lists with the source of every term → the builder places each term in the section where it reads
+naturally, in that section's `keywords.<type>` → block 4 of the board shows every term as a chip
+with its sections → `keyword-variants-missing` holds the page to at least one of each.
+
+**Check `keyword-variants-missing`: WARN on a draft, FAIL from `boarded` on.** A draft is written
+before the outline is placed, so failing it would make the board unreachable. Once the breeder is
+shown the board the terms are part of what they approve; a WARN at that point is a term nobody
+ever writes (the same reasoning as `refresh-missing` in `pageboard.gate_findings`). The FAIL costs
+nothing to clear because the helper proposes all four from cached data. Page-wide, not
+per-section: a per-section floor would bolt four terms onto every FAQ and CTA block.
+
+**Files:**
+- Create: `scripts/keyword_variants.py`
+- Create: `tests/py/test_keyword_variants.py`
+- Modify: `scripts/pageboard.py:984-995` (keyword constants, `distribution()`)
+- Modify: `schemas/board.schema.json:1032-1038` (four optional properties)
+- Modify: `scripts/family_rules.py` (append one block at the end, after line 56)
+- Modify: `tests/py/test_page_board.py:410-414` and `:2040-2046` (two assertions that pinned the nine-type set)
+- Modify (append at end): `.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md`, `.claude/skills/bsuk-blog-post/SKILL.md`
+- Regenerated: `docs/reference/system-registry.md`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_keyword_variants.py`:
+
+```python
+"""System-gaps Task 1: four optional keyword types (variation, related, co-occurring,
+similar), the new-family check that fills them, and the cached-data helper that proposes
+them. Nothing here calls a paid service: every fixture is written under tmp_path."""
+import copy
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import family_rules as FR      # noqa: E402
+import pageboard as PB         # noqa: E402
+import keyword_variants as KV  # noqa: E402
+
+SCRIPT = ROOT / "scripts" / "keyword_variants.py"
+OPTIONAL = ("variation", "related", "cooccurring", "similar")
+
+
+def _demo(slug="uk-locations/blue-staffy-puppies-manchester-uk", page_type="location", status="boarded"):
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8")))
+    b["meta"].update({"slug": slug, "page_type": page_type, "status": status})
+    return b
+
+
+# --- the four types are optional, labelled, and leave every built record alone --------------
+
+def test_the_four_types_are_optional_properties_of_the_schema():
+    schema = json.loads((PB.SCHEMAS / "board.schema.json").read_text(encoding="utf-8"))
+    kw = schema["properties"]["sections"]["items"]["properties"]["keywords"]
+    assert PB.OPTIONAL_KEYWORD_TYPES == OPTIONAL
+    assert PB.ALL_KEYWORD_TYPES == PB.KEYWORD_TYPES + OPTIONAL
+    assert kw["additionalProperties"] is False
+    assert kw["required"] == list(PB.KEYWORD_TYPES)             # none of the four is required
+    assert set(kw["properties"]) == set(PB.ALL_KEYWORD_TYPES)
+    assert {PB.KEYWORD_LABELS[k] for k in OPTIONAL} == {"Variations", "Related", "Co-occurring", "Similar"}
+
+
+def test_every_built_record_still_validates_and_keeps_its_approval():
+    """Adding optional properties to the schema must not move one byte of any record, so every
+    approved record's stamped hash still matches."""
+    seen = 0
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        board = json.loads(p.read_text(encoding="utf-8"))
+        PB.validate_board(board)
+        for s in board["sections"]:
+            assert not set(s["keywords"]) & set(OPTIONAL), (p.name, s["id"])
+        if board["meta"]["status"] == "approved":
+            assert PB.approval_matches(board), p.name
+            seen += 1
+    assert seen >= 12
+
+
+def test_distribution_reads_a_missing_optional_type_as_empty_and_counts_a_present_one():
+    b = _demo()
+    d = PB.distribution(b)
+    assert all(d["totals"][k] == 0 for k in OPTIONAL)
+    b["sections"][0]["keywords"]["related"] = ["blue staffy puppies manchester cheap", "staffy puppies near salford"]
+    PB.validate_board(b)
+    assert PB.distribution(b)["totals"]["related"] == 2
+
+
+def test_an_unknown_keyword_type_is_still_refused():
+    b = _demo()
+    b["sections"][0]["keywords"]["synonyms"] = ["x"]
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(b)
+
+
+# --- family rule: a new-family page fills all four page-wide ---------------------------------
+
+def _kv(board):
+    return [f for f in FR.findings(board, {"entities": []}) if f[0] == "keyword-variants-missing"]
+
+
+def test_family_rule_types_match_the_library():
+    assert FR.KEYWORD_VARIANT_TYPES == PB.OPTIONAL_KEYWORD_TYPES
+
+
+def test_a_boarded_new_family_page_with_no_variant_terms_fails():
+    f = _kv(_demo(status="boarded"))
+    assert len(f) == 1 and f[0][1] == "FAIL"
+    for k in OPTIONAL:
+        assert k in f[0][2]
+    assert "scripts/keyword_variants.py" in f[0][2]
+
+
+def test_a_draft_only_warns():
+    f = _kv(_demo(status="draft"))
+    assert len(f) == 1 and f[0][1] == "WARN"
+
+
+def test_one_term_of_each_type_anywhere_on_the_page_passes():
+    b = _demo(status="approved")
+    for i, k in enumerate(OPTIONAL):                       # spread across sections on purpose
+        b["sections"][i % len(b["sections"])]["keywords"][k] = [f"{k} term"]
+    assert _kv(b) == []
+
+
+def test_a_single_missing_type_is_named_alone():
+    b = _demo(status="approved")
+    for k in ("variation", "related", "cooccurring"):
+        b["sections"][0]["keywords"][k] = [f"{k} term"]
+    f = _kv(b)
+    assert len(f) == 1 and "similar" in f[0][2] and "related" not in f[0][2].split("—")[0]
+
+
+def test_built_pages_and_other_families_are_never_asked():
+    assert _kv(_demo("blue-staffy-health-uk", "interior", "approved")) == []
+    assert _kv(_demo("blue-staffy-blog-guides", "blog", "approved")) == []
+    assert _kv(_demo("_demo", "location", "approved")) == []
+
+
+# --- keyword_variants.py: proposes the four buckets from cached query files only -------------
+
+def _root(tmp_path):
+    raw = tmp_path / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    raw.mkdir(parents=True)
+    (tmp_path / "data" / "locations.json").write_text(json.dumps([{"city": "Testtown"}, {"city": "Otherby"}]))
+    (tmp_path / "data" / "queries" / "blue-staffy-puppies-testtown.json").write_text(json.dumps({
+        "primary_keyword": "blue staffy puppies testtown",
+        "questions": [{"question": "Are the parents health tested for L-2-HGA?"},
+                      {"question": "Do blue Staffies need a Kennel Club health test?"}]}))
+    (raw / "serp_google.json").write_text(json.dumps({"questions": [
+        {"text": "Blue staffy puppies testtown kennel club", "detail": "serp_google_related"},
+        {"text": "Staffy puppies for sale near Otherby", "detail": "serp_google_related"},
+        {"text": "How much is a blue Staffy?", "detail": "serp_google_paa"}]}))
+    (raw / "serp_google.response.json").write_text(json.dumps({"items": [
+        {"type": "organic", "url": "https://www.petmarket.example/testtown",
+         "title": "Blue Staffie Puppies for sale in Testtown - PetMarket",
+         "description": "Blue Staffordshire Bull Terrier puppies, health tested, Kennel Club registered."},
+        {"type": "organic", "url": "https://breeder.example/", "title": "12 Staffy Puppies For Sale In Testtown | Breeder",
+         "description": "Health tested parents and Kennel Club registered blue Staffy pups in Testtown."},
+        {"type": "related_searches", "items": ["Blue staffy puppies testtown kennel club", "Blue staffy testtown cheap"]}]}))
+    (raw / "ai_engines.response.json").write_text(json.dumps({"answer_points": [
+        "Ask to see health tested parents and the L-2-HGA certificate ([Kennel Club](https://example.org/?utm_source=chatgpt.com))."]}))
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://breeder.example/", "h2": ["Frequently Asked Questions", "Blue Staffy Puppies Near Testtown"]}]}))
+    return tmp_path
+
+
+def test_propose_fills_all_four_buckets_from_the_cache(tmp_path):
+    out = KV.propose("blue-staffy-puppies-testtown", root=_root(tmp_path))
+    terms = {k: [t["term"] for t in out["buckets"][k]] for k in OPTIONAL}
+    assert out["primary"] == "blue staffy puppies testtown"
+    # related: the engine's own related box, merged across the two files, deduplicated
+    assert terms["related"] == ["blue staffy puppies testtown kennel club",
+                                "staffy puppies for sale near otherby", "blue staffy testtown cheap"]
+    # variation: attested surface forms of the head term, never the primary itself
+    assert "blue staffie puppies" in terms["variation"]
+    assert "blue staffordshire bull terrier puppies" in terms["variation"]
+    assert "blue staffy puppies testtown" not in terms["variation"]
+    # similar: how the ranking pages word the same query; the FAQ heading is not one
+    assert "blue staffie puppies for sale in testtown" in terms["similar"]
+    assert "staffy puppies for sale in testtown" in terms["similar"]          # leading count stripped
+    assert "frequently asked questions" not in terms["similar"]
+    # co-occurring: phrases in two or more cached documents, marketplace names and URLs out
+    assert "health tested" in terms["cooccurring"] and "kennel club" in terms["cooccurring"]
+    assert not any("petmarket" in t or "utm" in t or "chatgpt" in t for t in terms["cooccurring"])
+    for k in OPTIONAL:
+        for t in out["buckets"][k]:
+            assert t["sources"], (k, t)
+
+
+def test_cli_prints_json_and_exits_6_with_no_cache(tmp_path):
+    root = _root(tmp_path)
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-testtown", "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert set(json.loads(r.stdout)["buckets"]) == set(OPTIONAL)
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-nowhere", "--root", str(root)],
+                       capture_output=True, text=True)
+    assert r.returncode == 6 and "bsuk-query-augmentation" in r.stderr
+    r = subprocess.run([sys.executable, str(SCRIPT), "../etc"], capture_output=True, text=True)
+    assert r.returncode == 2
+
+
+@pytest.mark.parametrize("slug", ["blue-staffy-puppies-manchester-uk", "blue-staffy-puppies-for-sale-leeds"])
+def test_the_real_cached_cities_fill_every_bucket(slug):
+    if not (ROOT / "data" / "queries" / "raw" / slug).is_dir():
+        pytest.skip(f"no cached query data for {slug}")
+    out = KV.propose(slug)
+    for k in OPTIONAL:
+        assert out["buckets"][k], (slug, k)
+
+
+def test_also_folds_in_a_neighbouring_folder_and_refuses_a_missing_one(tmp_path):
+    root = _root(tmp_path)
+    near = root / "data" / "queries" / "raw" / "registry-staffy-puppies-testtown"
+    near.mkdir()
+    (near / "serp_google.response.json").write_text(json.dumps({"items": [
+        {"type": "organic", "url": "https://other.example/", "title": "Blue Staffy Puppies and Dogs in Testtown - Other"},
+        {"type": "people_also_ask", "items": ["How much is a blue Staffy puppy?"]},     # bare strings
+        {"type": "related_searches", "items": ["Staffy puppies testtown kennel club"]}]}))
+    base = KV.propose("blue-staffy-puppies-testtown", root=root)
+    out = KV.propose("blue-staffy-puppies-testtown", root=root, also=["registry-staffy-puppies-testtown"])
+    assert out["primary"] == base["primary"]                           # the primary stays the slug's
+    assert "blue staffy puppies and dogs in testtown" in [t["term"] for t in out["buckets"]["similar"]]
+    assert "staffy puppies testtown kennel club" in [t["term"] for t in out["buckets"]["related"]]
+    assert KV.propose("blue-staffy-puppies-testtown", root=root, also=["registry-nowhere"]) is None
+    r = subprocess.run([sys.executable, str(SCRIPT), "blue-staffy-puppies-testtown", "--also", "../x",
+                        "--root", str(root)], capture_output=True, text=True)
+    assert r.returncode == 2
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_keyword_variants.py -q`
+Expected: FAIL — collection error, `ModuleNotFoundError: No module named 'keyword_variants'`
+(and, once that exists, `AttributeError: module 'pageboard' has no attribute 'OPTIONAL_KEYWORD_TYPES'`;
+a helper without `--also` fails `test_also_folds_in_…` with `TypeError: propose() got an unexpected keyword argument 'also'`).
+
+- [ ] **Step 3: Implement**
+
+3a. Apply the library, schema, family-rule and pinned-test patch (exact old→new; run from the worktree root):
+
+```bash
+git apply <<'PATCH'
+diff --git a/schemas/board.schema.json b/schemas/board.schema.json
+index 3cd2e80..67af614 100644
+--- a/schemas/board.schema.json
++++ b/schemas/board.schema.json
+@@ -1034,6 +1034,30 @@
+         "items": {
+          "type": "string"
+         }
++       },
++       "variation": {
++        "type": "array",
++        "items": {
++         "type": "string"
++        }
++       },
++       "related": {
++        "type": "array",
++        "items": {
++         "type": "string"
++        }
++       },
++       "cooccurring": {
++        "type": "array",
++        "items": {
++         "type": "string"
++        }
++       },
++       "similar": {
++        "type": "array",
++        "items": {
++         "type": "string"
++        }
+        }
+       }
+      },
+diff --git a/scripts/family_rules.py b/scripts/family_rules.py
+index 32cfe35..e4215e0 100644
+--- a/scripts/family_rules.py
++++ b/scripts/family_rules.py
+@@ -54,3 +54,37 @@ def findings(board, ont):
+     for fn in CHECKS:
+         out.extend(fn(board, ont))
+     return out
++
++
++# ── System-gaps Task 1: keyword variations, related, co-occurring and similar terms ──────────
++#
++# The four types are optional in the schema, so the twelve built records keep their hashes;
++# on a new-family page each must carry at least one term somewhere on the page. Page-wide,
++# not per section: a variation belongs where it reads naturally, and a per-section floor
++# would push four bolted-on terms into every FAQ and CTA block.
++#
++# FAIL from `boarded` on, WARN on a draft. A draft is written before the outline is placed,
++# so failing it would make the board unreachable; once the breeder is shown the board the
++# terms are part of what they approve, and a WARN there is a term nobody ever writes. The
++# FAIL costs nothing to clear: scripts/keyword_variants.py proposes all four from the query
++# files bsuk-query-augmentation already cached, with no paid call.
++#
++# The tuple is spelled here rather than imported: pageboard imports this module, so reading
++# PB.OPTIONAL_KEYWORD_TYPES would be a circular import. tests/py/test_keyword_variants.py
++# pins the two to each other.
++KEYWORD_VARIANT_TYPES = ("variation", "related", "cooccurring", "similar")
++_BOARDED_OR_LATER = ("boarded", "approved", "built", "released")
++
++
++@register
++def keyword_variants_filled(board, ont):
++    missing = [k for k in KEYWORD_VARIANT_TYPES
++               if not any(s["keywords"].get(k) for s in board["sections"])]
++    if not missing:
++        return
++    sev = "FAIL" if board["meta"]["status"] in _BOARDED_OR_LATER else "WARN"
++    yield ("keyword-variants-missing", sev,
++           f"no section carries a {', '.join(missing)} keyword — a new location, comparison or "
++           "blog page names at least one term of each type; run "
++           f"`python3 scripts/keyword_variants.py {board['meta']['slug'].split('/')[-1]}` for a "
++           "proposal from the cached query data")
+diff --git a/scripts/pageboard.py b/scripts/pageboard.py
+index e3e1b6c..8cf4209 100644
+--- a/scripts/pageboard.py
++++ b/scripts/pageboard.py
+@@ -983,16 +983,23 @@ def authorization_check(board, ont):
+ 
+ KEYWORD_TYPES = ("primary", "lsi", "longtail", "brand", "geo",
+                  "conversational", "comparison", "solution", "transactional")
++# System-gaps build (2026-09-24): four OPTIONAL types. The schema lists them as properties
++# but not as `required`, so the twelve records built before them validate unchanged and keep
++# their approval hash; every reader takes them with `.get(k, [])`. family_rules makes them
++# mandatory on the new families only (check `keyword-variants-missing`).
++OPTIONAL_KEYWORD_TYPES = ("variation", "related", "cooccurring", "similar")
++ALL_KEYWORD_TYPES = KEYWORD_TYPES + OPTIONAL_KEYWORD_TYPES
+ KEYWORD_LABELS = {"primary": "Primary", "lsi": "LSI", "longtail": "Long-tail", "brand": "Brand", "geo": "Geo",
+-                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact"}
++                  "conversational": "Voice", "comparison": "Compare", "solution": "Solution", "transactional": "Transact",
++                  "variation": "Variations", "related": "Related", "cooccurring": "Co-occurring", "similar": "Similar"}
+ 
+ 
+ def distribution(board):
+-    rows, totals = [], {**{k: 0 for k in KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
++    rows, totals = [], {**{k: 0 for k in ALL_KEYWORD_TYPES}, "words_min": 0, "words_max": 0}
+     for s in board["sections"]:
+         row = {"section": s["id"], "heading": s["heading"]}
+-        for k in KEYWORD_TYPES:
+-            row[k] = len(s["keywords"][k]); totals[k] += row[k]
++        for k in ALL_KEYWORD_TYPES:
++            row[k] = len(s["keywords"].get(k, [])); totals[k] += row[k]
+         row["words_min"], row["words_max"] = s["words"]["min"], s["words"]["max"]
+         totals["words_min"] += row["words_min"]; totals["words_max"] += row["words_max"]
+         rows.append(row)
+diff --git a/tests/py/test_page_board.py b/tests/py/test_page_board.py
+index d93cdb3..c792cdd 100644
+--- a/tests/py/test_page_board.py
++++ b/tests/py/test_page_board.py
+@@ -410,6 +410,7 @@ def test_distribution_totals_add_across_two_sections():
+     assert [r["section"] for r in d["rows"]] == ["puppies", "shipping"]
+     assert d["totals"] == {"primary": 2, "lsi": 1, "longtail": 0, "brand": 1, "geo": 2,
+                            "conversational": 0, "comparison": 0, "solution": 0, "transactional": 0,
++                           "variation": 0, "related": 0, "cooccurring": 0, "similar": 0,
+                            "words_min": 650, "words_max": 900}
+     assert d["h_counts"] == {"h1": 1, "h2": 2, "h3": 1, "h4": 1, "h5": 1, "h6": 1}
+ 
+@@ -2039,10 +2040,10 @@ def test_keyword_types_tuple_labels_and_schema_name_the_same_arrays():
+     (schema only) or raising KeyError in distribution() (tuple only)."""
+     schema = json.loads((PB.SCHEMAS / "board.schema.json").read_text(encoding="utf-8"))
+     kw = schema["properties"]["sections"]["items"]["properties"]["keywords"]
+-    assert kw["required"] == list(PB.KEYWORD_TYPES)
+-    assert set(kw["properties"]) == set(PB.KEYWORD_TYPES)
+-    assert set(PB.KEYWORD_LABELS) == set(PB.KEYWORD_TYPES)
+-    for typ in PB.KEYWORD_TYPES:
++    assert kw["required"] == list(PB.KEYWORD_TYPES)            # the four optional types are not required
++    assert set(kw["properties"]) == set(PB.ALL_KEYWORD_TYPES)
++    assert set(PB.KEYWORD_LABELS) == set(PB.ALL_KEYWORD_TYPES)
++    for typ in PB.ALL_KEYWORD_TYPES:
+         b = json.loads(json.dumps(MIN_BOARD))
+         b["sections"][0]["keywords"][typ] = ["one", "two"]
+         assert PB.distribution(b)["totals"][typ] == 2
+PATCH
+```
+
+The two `tests/py/test_page_board.py` hunks are the assertions that pinned the old behaviour:
+`test_distribution_totals_add_across_two_sections` (the totals dict gains four zero keys) and
+`test_keyword_types_tuple_labels_and_schema_name_the_same_arrays` (`required` stays the nine;
+`properties` and `KEYWORD_LABELS` are now all thirteen).
+
+3b. Create `scripts/keyword_variants.py`:
+
+```python
+#!/usr/bin/env python3
+"""keyword_variants.py SLUG [--also DIR ...] [--root DIR]
+
+Proposes the four optional keyword types a new location, comparison or blog board carries
+(`variation`, `related`, `cooccurring`, `similar`) from the query files
+bsuk-query-augmentation has ALREADY cached under data/queries/. It reads files only: no
+network, no DataForSEO, no Firecrawl, so it costs nothing to run as often as a board is
+redrafted.
+
+  variation    surface forms of the page's head term that the cached text actually uses
+               ("blue staffie puppies", "blue Staffordshire Bull Terrier puppies"), never
+               the primary keyword itself. Attested, not generated: a spelling nobody
+               searched or wrote is not a variation worth a sentence.
+  related      the search engine's own related-searches box, verbatim, deduplicated.
+  cooccurring  phrases of one to three words that appear in two or more cached documents
+               (ranking titles and snippets, People Also Ask, the AI answer, competitor H2s,
+               thread titles, the question file). Marketplace names and URLs are dropped.
+  similar      how the pages that rank for the same query word it: organic titles and
+               competitor H2s that share at least two content words with the primary.
+
+The output is a PROPOSAL. The builder places each term in the section where it reads
+naturally; family_rules' `keyword-variants-missing` check only asks that each type has at
+least one term somewhere on the page.
+
+--also DIR folds in one more folder under data/queries/raw/ (repeatable) — a neighbouring
+keyword's cached SERP, e.g. registry-staffy-puppies-for-sale-leeds for Leeds, whose own SERP
+was saved as URLs only. Its texts join the corpus; the primary keyword stays SLUG's.
+
+Prints JSON: {"slug", "primary", "buckets": {type: [{"term", "sources", "df"}]}, "examined"}.
+Exit 0 printed · 2 bad usage (a slug outside [a-z0-9-]) · 6 no cached query data for SLUG
+(run bsuk-query-augmentation first).
+"""
+import argparse
+import json
+import re
+import sys
+from collections import Counter, OrderedDict
+from pathlib import Path
+from urllib.parse import urlsplit
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from query_augment import SYNONYMS, normalise  # noqa: E402  one spelling per thing, shared
+
+EXIT_OK, EXIT_USAGE, EXIT_NO_CACHE = 0, 2, 6
+SLUG = re.compile(r"^[a-z0-9-]+$")
+BUCKET_CAP = {"variation": 8, "related": 10, "cooccurring": 12, "similar": 8}
+
+STOP = frozenset("""a an the and or of to in on for with is are be can do does did i you your my
+it its at by from as that this these those what how where when which who whom why if not no yes
+we our us they their them there here any all more most than about before after up out get got so
+just will would should could may might must s has have had was were been being into over under
+also very much many such only own same other some each per via vs versus please near find found
+see look looking one two three""".split())
+
+# Words that make a phrase a page-furniture heading rather than a query ("Frequently Asked
+# Questions", "Refine your results"). A title or H2 made only of these and stopwords is dropped.
+FURNITURE = frozenset("frequently asked questions faq faqs refine results result featured ads latest "
+                      "advice buyers buyer page menu contact home filter sort".split())
+
+# Words that say nothing a primary keyword does not already say on a for-sale page, plus our
+# own brand: a phrase made only of these (and stopwords, the primary's words and place names)
+# is not a co-occurring term.
+TRIVIAL = frozenset("sale buy buying bluestaffyuk".split())
+
+WORD = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+URL = re.compile(r"\(?https?://[^\s)]+\)?")
+
+
+def _read(path):
+    try:
+        return json.loads(Path(path).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
+def _canon(text):
+    """Lowercase, curly quotes and trailing ellipses gone, one space."""
+    t = (text or "").replace("’", "'").replace("…", " ").replace("...", " ")
+    return re.sub(r"\s+", " ", t).strip().lower()
+
+
+def _merge_spelling(tokens):
+    """Apply the shared synonym table token-wise, keeping hyphens (so L-2-HGA survives)."""
+    out = " ".join(tokens)
+    for pat, rep in SYNONYMS:
+        out = re.sub(pat, rep, out)
+    return out.split()
+
+
+def _tokens(text):
+    return _merge_spelling(WORD.findall(URL.sub(" ", _canon(text))))
+
+
+def _title_core(title):
+    """A ranking page's title or H2 as a query: the site name after ` - ` / ` | ` dropped, a
+    leading listing count ("12 Staffy Puppies…") dropped, trailing punctuation dropped."""
+    t = re.split(r"\s[-|–—]\s", _canon(title))[0]
+    t = re.sub(r"^\d+\s+", "", t).strip(" ,.:;!?&")
+    words = t.split()
+    while words and words[-1] in STOP:          # a title cut off at "...for sale in"
+        words.pop()
+    return " ".join(words)
+
+
+def _domains(urls):
+    """The registrable label of every ranking URL (`pets4homes`, `gumtree`) — a phrase that
+    names a marketplace is not a phrase a breeder's page should write."""
+    out = set()
+    for u in urls:
+        host = urlsplit(u or "").hostname or ""
+        parts = [p for p in host.split(".") if p not in ("www", "co", "uk", "com", "org", "net")]
+        if parts:
+            out.add(parts[0])
+            out.update(parts[0].split("-"))
+    return {d for d in out if len(d) > 2}
+
+
+def load_corpus(slug, root=ROOT):
+    """Every cached text for SLUG, labelled by where it came from. None when nothing is cached."""
+    root = Path(root)
+    raw = root / "data" / "queries" / "raw" / slug
+    qfile = _read(root / "data" / "queries" / f"{slug}.json")
+    if not raw.is_dir() and qfile is None:
+        return None
+    related, titles, docs, urls = [], [], [], []
+
+    def doc(label, text):
+        if text and text.strip():
+            docs.append((label, text))
+
+    g = _read(raw / "serp_google.json") or {}
+    for q in g.get("questions") or []:
+        if q.get("detail") == "serp_google_related":
+            related.append(("serp_google_related", q.get("text", "")))
+        else:
+            doc(q.get("detail") or "serp_google", q.get("text", ""))
+    for r in g.get("results") or []:
+        urls.append(r.get("url"))
+    resp = _read(raw / "serp_google.response.json") or {}
+    for it in resp.get("items") or []:
+        kind = it.get("type")
+        if kind == "organic":
+            urls.append(it.get("url"))
+            titles.append(("organic_title", it.get("title", "")))
+            doc("organic_title", it.get("title", ""))
+            doc("organic_snippet", it.get("description", ""))
+        elif kind == "people_also_ask":
+            for e in it.get("items") or []:
+                doc("paa", e if isinstance(e, str) else e.get("title", ""))   # registry saves bare strings
+        elif kind == "related_searches":
+            for s in it.get("items") or []:
+                related.append(("serp_google_related", s))
+        elif kind == "ai_overview":
+            doc("ai_overview", it.get("text") or it.get("markdown") or "")
+    b = _read(raw / "serp_bing.json") or {}
+    for q in b.get("questions") or []:
+        doc("serp_bing", q.get("text", ""))
+    for r in b.get("results") or []:
+        urls.append(r.get("url"))
+    a = _read(raw / "ai_engines.json") or {}
+    for q in a.get("questions") or []:
+        doc("ai_question", q.get("text", ""))
+    ar = _read(raw / "ai_engines.response.json") or {}
+    for p in ar.get("answer_points") or []:
+        doc("ai_answer", p)
+    for it in ar.get("items") or []:
+        # One long answer is one document to the df count, however many paragraphs it has —
+        # split it by paragraph and a phrase repeated in one answer would read as consensus.
+        doc("ai_answer", it.get("markdown") or it.get("text") or "")
+    t = _read(raw / "threads.json") or {}
+    for th in t.get("threads") or []:
+        doc("thread_title", th.get("title", ""))
+    for q in t.get("questions") or []:
+        doc("thread_question", q.get("text", ""))
+    c = _read(raw / "competitors.json") or {}
+    for p in c.get("pages") or []:
+        urls.append(p.get("url"))
+        for h in p.get("h2") or []:
+            titles.append(("competitor_h2", h))
+            doc("competitor_h2", h)
+    for q in (qfile or {}).get("questions") or []:
+        doc("question_file", q.get("question", ""))
+    primary = (qfile or {}).get("primary_keyword") or slug.replace("-", " ")
+    return {"primary": _canon(primary), "related": related, "titles": titles, "docs": docs,
+            "domains": _domains(urls)}
+
+
+def _geo_words(root):
+    rows = _read(Path(root) / "data" / "locations.json") or []
+    words = {"uk", "england", "scotland", "wales"}
+    for r in rows:
+        words.update(WORD.findall(_canon(re.sub(r"\(.*?\)", "", r.get("city", "")))))
+    return words
+
+
+def _bucket(items):
+    """[(term, source)] -> [{"term", "sources", "df"}], first spelling wins, order kept."""
+    out = OrderedDict()
+    for term, src in items:
+        key = normalise(term)
+        if not key:
+            continue
+        if key not in out:
+            out[key] = {"term": term, "sources": [], "df": 0}
+        out[key]["df"] += 1
+        if src not in out[key]["sources"]:
+            out[key]["sources"].append(src)
+    return list(out.values())
+
+
+def _related(corpus):
+    return _bucket([(_canon(t), src) for src, t in corpus["related"] if _canon(t)])
+
+
+def _variations(corpus, geo):
+    """Word windows (2-6 words) whose normalised form is the head term, the head term plus the
+    place, or the head minus `puppy` — and whose surface differs from the primary's."""
+    pnorm = normalise(corpus["primary"])
+    head = " ".join(w for w in pnorm.split() if w not in geo and w not in ("for", "sale"))
+    core = " ".join(w for w in head.split() if w != "puppy")
+    targets = {pnorm, head} | ({core} if len(core.split()) >= 2 else set())
+    seen = Counter()
+    first = {}
+    for src, text in corpus["docs"] + corpus["titles"]:
+        words = re.findall(r"[a-z0-9]+(?:['-][a-z0-9]+)*", URL.sub(" ", _canon(text)))
+        for n in range(2, 7):
+            for i in range(len(words) - n + 1):
+                surface = " ".join(words[i:i + n])
+                if normalise(surface) in targets and surface != corpus["primary"]:
+                    seen[surface] += 1
+                    first.setdefault(surface, src)
+    ranked = sorted(seen, key=lambda s: (-seen[s], s))
+    return [{"term": s, "sources": [first[s]], "df": seen[s]} for s in ranked][:BUCKET_CAP["variation"]]
+
+
+def _similar(corpus, related):
+    pwords = {w for w in normalise(corpus["primary"]).split() if w not in STOP}
+    taken = {normalise(r["term"]) for r in related} | {normalise(corpus["primary"])}
+    items = []
+    for src, title in corpus["titles"]:
+        core = _title_core(title)
+        words = set(normalise(core).split())
+        if not words or words <= (FURNITURE | STOP):
+            continue
+        if len(words & pwords) >= 2 and normalise(core) not in taken:
+            items.append((core, src))
+    return _bucket(items)[:BUCKET_CAP["similar"]]
+
+
+def _cooccurring(corpus, geo):
+    pwords = set(normalise(corpus["primary"]).split())
+    banned = corpus["domains"]
+    df, where = Counter(), {}
+    for src, text in corpus["docs"]:
+        toks = _tokens(text)
+        grams = set()
+        for n in (1, 2, 3):
+            for i in range(len(toks) - n + 1):
+                g = toks[i:i + n]
+                if g[0] in STOP or g[-1] in STOP:
+                    continue
+                if any(t.isdigit() for t in g) or any(t in banned or t == "bluestaffyuk" for t in g):
+                    continue
+                if all(t in pwords or t in geo or t in STOP or t in TRIVIAL for t in g):
+                    continue
+                # A lone word is a term only when it is a coined one (L-2-HGA, HC-HSF4);
+                # "health" or "parents" alone is vocabulary, not a keyword.
+                if n == 1 and "-" not in g[0]:
+                    continue
+                grams.add(" ".join(g))
+        for g in grams:
+            df[g] += 1
+            where.setdefault(g, [])
+            if src not in where[g]:
+                where[g].append(src)
+    keep = {g: c for g, c in df.items() if c >= 2}
+    # A shorter phrase that only ever appears inside a longer kept one says nothing the
+    # longer one does not ("kennel" inside "kennel club"): drop it.
+    for g in list(keep):
+        if any(g != h and f" {g} " in f" {h} " and keep[h] == keep[g] for h in keep):
+            del keep[g]
+    ranked = sorted(keep, key=lambda g: (-keep[g], -len(g.split()), g))
+    return [{"term": g, "sources": where[g], "df": keep[g]} for g in ranked][:BUCKET_CAP["cooccurring"]]
+
+
+def propose(slug, root=ROOT, also=()):
+    corpus = load_corpus(slug, root)
+    if corpus is None:
+        return None
+    for extra in also:
+        more = load_corpus(extra, root)
+        if more is None or not (Path(root) / "data" / "queries" / "raw" / extra).is_dir():
+            return None
+        for key in ("related", "titles", "docs"):
+            corpus[key] += more[key]
+        corpus["domains"] |= more["domains"]
+    geo = _geo_words(root)
+    related = _related(corpus)[:BUCKET_CAP["related"]]
+    return {
+        "slug": slug,
+        "primary": corpus["primary"],
+        "buckets": {
+            "variation": _variations(corpus, geo),
+            "related": related,
+            "cooccurring": _cooccurring(corpus, geo),
+            "similar": _similar(corpus, related),
+        },
+        "examined": {"documents": len(corpus["docs"]), "titles": len(corpus["titles"]),
+                     "related": len(corpus["related"])},
+    }
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("slug")
+    ap.add_argument("--also", action="append", default=[], metavar="DIR")
+    ap.add_argument("--root", default=str(ROOT))
+    args = ap.parse_args(argv)
+    bad = [s for s in [args.slug, *args.also] if not SLUG.match(s)]
+    if bad:
+        print(f"keyword_variants: not a slug: {bad[0]!r}", file=sys.stderr)
+        return EXIT_USAGE
+    out = propose(args.slug, Path(args.root), args.also)
+    if out is None:
+        print(f"keyword_variants: no cached query data for {' / '.join([args.slug, *args.also])} under data/queries/ — "
+              "run bsuk-query-augmentation first", file=sys.stderr)
+        return EXIT_NO_CACHE
+    print(json.dumps(out, indent=2, ensure_ascii=False))
+    return EXIT_OK
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+3c. Append the same block to the end of each of the three builder skills (each file already ends
+with a newline):
+
+```bash
+for f in bsuk-location-page-builder bsuk-comparison-page-builder bsuk-blog-post; do
+cat >> .claude/skills/$f/SKILL.md <<'EOF'
+
+## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)
+
+A new location, comparison or blog board carries four keyword types beyond the nine the
+brief names: `variation`, `related`, `cooccurring` and `similar`, each a list in a section's
+`keywords`. The page needs at least one term of each type SOMEWHERE — not in every section.
+The `keyword-variants-missing` check in `scripts/family_rules.py` warns on a draft and fails
+from `boarded` on. The twelve pages built before this rule are never asked.
+
+Where the terms come from: after the query augmentation has cached its files and before the
+outline is boarded, run `python3 scripts/keyword_variants.py <slug>`. It reads the cached
+files under `data/queries/` only (no paid call) and proposes each list with the source of
+every term: variations are spellings of the head term the cached text actually uses, related
+terms are the search engine's related-searches box, co-occurring terms are phrases found in
+two or more cached documents, and similar terms are how the ranking pages word the same
+query. Put each term in the section where it reads naturally; drop a term that reads badly
+anywhere rather than force it. Exit 6 means nothing is cached for the slug yet: run
+bsuk-query-augmentation first. The board's block 4 shows every term as a chip grouped by
+type, with the sections that use it.
+EOF
+done
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_keyword_variants.py tests/py/test_family_rules.py tests/py/test_page_board.py tests/py/test_skills_frontmatter.py -q`
+Expected: all pass (`test_keyword_variants.py` is 15 tests).
+
+Run: `python3 scripts/keyword_variants.py blue-staffy-puppies-manchester-uk | python3 -c "import json,sys; d=json.load(sys.stdin); print({k: len(v) for k, v in d['buckets'].items()})"`
+Expected: `{'variation': 8, 'related': 6, 'cooccurring': 12, 'similar': 8}`. Observed terms, for the
+record: variations `blue staffy`, `blue staffies`, `blue staffordshire bull terrier puppies`,
+`blue staffie puppies`…; related `blue staffy puppies manchester kennel club`, `staffy puppies for
+sale near salford`…; co-occurring `both parents`, `staffy breeder`, `l-2-hga`, `health-tested`,
+`kennel club`, `pay a deposit`, `kc registered`…; similar `staffordshire bull terrier puppies for
+sale in manchester`, `all staffordshire bull terrier breeders near manchester`….
+Leeds (`blue-staffy-puppies-for-sale-leeds`): `{'variation': 6, 'related': 6, 'cooccurring': 12, 'similar': 3}`;
+with `--also registry-staffy-puppies-for-sale-leeds`: `{'variation': 6, 'related': 10, 'cooccurring': 12, 'similar': 8}`.
+
+Then: `python3 scripts/build_system_registry.py && npm run -s registry`
+Expected: `wrote docs/reference/system-registry.md` then `examined docs/reference/system-registry.md; 0 problems`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/keyword_variants.py scripts/pageboard.py scripts/family_rules.py schemas/board.schema.json \
+  tests/py/test_keyword_variants.py tests/py/test_page_board.py .claude/skills/bsuk-location-page-builder/SKILL.md \
+  .claude/skills/bsuk-comparison-page-builder/SKILL.md .claude/skills/bsuk-blog-post/SKILL.md docs/reference/system-registry.md
+git commit -m "boards: four optional keyword types and the cached-data helper that proposes them
+
+variation, related, cooccurring and similar are optional in the schema, so the twelve built
+records validate unchanged and keep their approval hashes. family_rules asks a new location,
+comparison or blog page for one term of each type page-wide (WARN on a draft, FAIL from
+boarded on). scripts/keyword_variants.py proposes all four from data/queries/ with no paid call.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+### Task 2: Organization and Regulation classes, and an ontology seeded only from sourced repo data
+
+**Gap:** entities of every type, grouped by class ("people, place, health, etc.").
+
+**Findings that shaped it.**
+- `schemas/ontology.schema.json` pins `class` to an enum of eight (Organism, Documentation,
+  Health, Commerce, Logistics, Place, People, Method). `validate_ontology()` is schema-only, so
+  the enum is the one place to add **Organization** and **Regulation**.
+- `data/quality/evidence-ledger.json` has **no claims** (`"claims": []`). Its own comment names
+  the tests that will enter it: "BVA hip/elbow scores and the L2-HGA / HC / PHPV DNA tests". So
+  the Health entities are named from that comment and the library rows, and every one is
+  **PROPOSED with `source: null`**. Null, not the ledger path, because
+  `board_approve.apply_approval()` promotes any PROPOSED entity that HAS a source to ASSERTED the
+  moment a board using it is approved — which would assert an unconfirmed result. A test becomes
+  ASSERTED only when a ledger claim matching it carries a proof object (not `NOT FETCHED`) and a
+  `confirmed` date. This is the same shape as the existing `ont:health-guarantee`.
+- `docs/reference/external-link-library.md` has 26 rows over 12 hosts. Each host maps to one
+  organisation (a fixed table in the seeder); `crufts.org.uk` is deliberately skipped (an event,
+  not an organisation). An unmapped host STOPS the seed, so a new library row forces a decision.
+  Five rows name a law or official rule and become Regulation entities. They are ASSERTED as
+  things a page may NAME and link; a claim that BlueStaffyUK holds a licence or complies with a
+  statute is not an entity and stays `LEGAL_CLAIM_PLACEHOLDER` (CLAUDE.md rule 9).
+- `data/locations.json` has 28 rows: two are the country-wide `UK` pages (skipped) and Glasgow
+  appears twice (`staffy-puppies-for-sale-glasgow`, `staffy-breeding-dogs-glasgow`), so the
+  seeder does not add a second Glasgow.
+- **`ont:glasgow` is stale and is corrected (step 3d).** Its aliases were the former street and
+  postcode (`G22`, `Coltmuir Street`) and its source was `data/settings.json`, which now names
+  Carlisle. The business relocated; the old street address is Known Issue 55 territory. Nothing
+  in `data/boards/`, `scripts/`, `src/` or `tests/` references `ont:glasgow` (grep: the only hits
+  for the street are the migrated-HTML fixtures and a test asserting it is absent), and the
+  p5-readiness plan does not touch it. Glasgow IS a row in `data/locations.json`, so the entity is
+  kept: aliases emptied, `source` → `data/locations.json`. `owner_page`
+  `uk-locations/staffy-puppies-for-sale-glasgow` is kept — that route is the row's `canonical`
+  and is in `data/page-map.json`.
+- The new test that every entity's `source` file names the entity (name or alias, JSON read
+  decoded) also caught `ont:blue-coat`: `data/puppies.json` writes `"colour": "blue"` and never
+  "blue coat" or "blue staffy". The truthful fix is the alias the file uses, `blue` (added in the
+  same step), not a different source. It caught one seeded row too: the library says "the
+  microchipping law", so `ont:dog-microchipping-law` gets that alias in `REGULATION_ROWS`. The breeder's town and region
+  come from `data/settings.json` `address`.
+- `data/settings.json` names one person, `breeder_name` — already `ont:lisa-bright`. No other
+  person is sourced anywhere in data/, so People stays at 1 (customer names in
+  `data/reviews.json` are deliberately not harvested).
+- CAG's `seed_ontology.py` pattern kept: an idempotent merge that never rewrites an existing
+  entity (its authorization and owner may have been set by an approval since). Nothing else of it
+  is carried: no catalog parsing, no BLOCKED family, no CAG names. The file is named
+  `ontology_seed.py` so it cannot be mistaken for the unported CAG script that
+  `tests/py/test_page_board.py`'s docstring mentions.
+
+**Resulting counts (observed):** 52 entities — People 1, Place 27, Health 6, Organization 9,
+Regulation 5, Organism 2, Commerce 1, Logistics 1; 46 ASSERTED, 6 PROPOSED, 0 BLOCKED. The seven
+existing entities stay first; the seeder never rewrites them, and only step 3d's two corrections
+(`ont:glasgow`, `ont:blue-coat`) touch them.
+
+**Files:**
+- Create: `scripts/ontology_seed.py`
+- Create: `tests/py/test_ontology_seed.py`
+- Modify: `schemas/ontology.schema.json:14` (class enum)
+- Modify (generated by the script): `data/bsuk-ontology.json`
+- Regenerated: `docs/reference/system-registry.md`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_ontology_seed.py`:
+
+```python
+"""System-gaps Task 2: the ontology grows two classes (Organization, Regulation) and is
+seeded from the repo's own sourced data only — locations, the external link library, the
+evidence ledger and settings. Every health test stays PROPOSED until the ledger proves it."""
+import copy
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import ontology_seed as OS  # noqa: E402
+import pageboard as PB      # noqa: E402
+
+EXISTING = {"entities": [
+    {"id": "ont:lisa-bright", "name": "Lisa Bright", "aliases": ["the breeder"], "class": "People",
+     "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "blue-staffy-uk-breeders"},
+    {"id": "ont:glasgow", "name": "Glasgow", "aliases": [], "class": "Place",
+     "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "custom-owner"},
+]}
+LOCATIONS = [{"slug": "blue-staffy-puppies-leeds", "city": "Leeds"},
+             {"slug": "staffy-breeding-dogs-glasgow", "city": "Glasgow (breeding dogs)"},
+             {"slug": "blue-staffy-puppies-uk", "city": "UK"},
+             {"slug": "blue-staffy-puppies-for-sale-leeds", "city": "Leeds"}]
+SETTINGS = {"breeder_name": "Lisa Bright", "address": {"city": "Carlisle", "region": "Cumbria", "country": "GB"}}
+ROWS = [("https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy", "rspca.org.uk", "RSPCA advice", "blue-staffy-uk-breeders"),
+        ("https://www.gov.uk/control-dog-public/banned-dogs", "gov.uk", "banned dogs", "uk-staffordshire-bull-terrier-guide"),
+        ("https://www.gov.uk/get-your-dog-cat-microchipped", "gov.uk", "microchipping", "blue-staffy-health-uk"),
+        ("https://www.gov.uk/data-protection", "gov.uk", "data protection", "privacy-policy-uk"),
+        ("https://www.gov.uk/bring-pet-to-great-britain", "gov.uk", "pet travel", "thank-you-blue-staffy-puppies-journey"),
+        ("https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf",
+         "assets.publishing.service.gov.uk", "PB10308", "buy-blue-staffy-puppies-uk"),
+        ("https://crufts.org.uk/", "crufts.org.uk", "Crufts", "blue-staffy-uk-breeders")]
+EMPTY_LEDGER = {"_comment": "…", "claims": []}
+
+
+def _seed(existing=EXISTING, ledger=EMPTY_LEDGER, rows=ROWS):
+    return OS.seeded(copy.deepcopy(existing), LOCATIONS, SETTINGS, ledger, rows)
+
+
+def _by_id(ont):
+    return {e["id"]: e for e in ont["entities"]}
+
+
+def test_the_schema_knows_the_two_new_classes():
+    schema = json.loads((PB.SCHEMAS / "ontology.schema.json").read_text(encoding="utf-8"))
+    classes = schema["properties"]["entities"]["items"]["properties"]["class"]["enum"]
+    assert {"Organization", "Regulation"} <= set(classes)
+    assert set(OS.CLASS_ORDER) == set(classes)
+
+
+def test_existing_entities_are_kept_byte_for_byte_and_first():
+    ont = _seed()
+    assert ont["entities"][:2] == EXISTING["entities"]
+    assert _by_id(ont)["ont:glasgow"]["owner_page"] == "custom-owner"
+
+
+def test_places_come_from_locations_and_settings():
+    by = _by_id(_seed())
+    assert by["ont:leeds"]["owner_page"] == "uk-locations/blue-staffy-puppies-leeds"   # first row wins
+    assert by["ont:leeds"]["source"] == "data/locations.json"
+    assert "ont:uk" not in by                                                         # the country rows
+    assert by["ont:carlisle"]["source"] == "data/settings.json"
+    assert by["ont:cumbria"]["class"] == "Place"
+
+
+def test_organisations_and_regulations_come_from_library_rows():
+    by = _by_id(_seed())
+    assert by["ont:rspca"]["class"] == "Organization"
+    assert by["ont:uk-government"]["class"] == "Organization"         # gov.uk and its asset host: one
+    assert by["ont:dangerous-dogs-act-1991"]["class"] == "Regulation"
+    assert by["ont:welfare-in-transport-pb10308"]["class"] == "Regulation"
+    assert "ont:crufts" not in by                                     # an event, skipped on purpose
+    for e in by.values():
+        if e["class"] in ("Organization", "Regulation"):
+            assert e["source"] == "docs/reference/external-link-library.md" and e["owner_page"] is None
+
+
+def test_an_unmapped_library_host_stops_the_seed():
+    with pytest.raises(PB.BoardError, match="HOST_ORG"):
+        _seed(rows=ROWS + [("https://example.org/x", "example.org", "?", "index")])
+
+
+def test_health_tests_stay_proposed_with_no_source_while_the_ledger_is_empty():
+    by = _by_id(_seed())
+    tests = [e for e in by.values() if e["class"] == "Health"]
+    assert len(tests) == len(OS.HEALTH_TESTS)
+    for e in tests:
+        assert e["authorization"] == "PROPOSED" and e["source"] is None, e["id"]
+
+
+def test_a_not_fetched_ledger_row_does_not_assert_a_test():
+    ledger = {"claims": [{"id": "l2hga", "pattern": r"L-?2-?HGA", "proof": "NOT FETCHED",
+                          "anchor": "dna-tests", "confirmed": "2026-09-24"}]}
+    assert _by_id(_seed(ledger=ledger))["ont:l-2-hga-dna-test"]["authorization"] == "PROPOSED"
+    ledger["claims"][0].update({"proof": "/docs/l2hga-cert.pdf", "confirmed": None})
+    assert _by_id(_seed(ledger=ledger))["ont:l-2-hga-dna-test"]["authorization"] == "PROPOSED"
+
+
+def test_a_proved_and_confirmed_ledger_row_asserts_that_test_only():
+    ledger = {"claims": [{"id": "l2hga", "pattern": r"L-?2-?HGA", "proof": "/docs/l2hga-cert.pdf",
+                          "anchor": "dna-tests", "confirmed": "2026-09-24"}]}
+    by = _by_id(_seed(ledger=ledger))
+    assert by["ont:l-2-hga-dna-test"]["authorization"] == "ASSERTED"
+    assert by["ont:l-2-hga-dna-test"]["source"] == "data/quality/evidence-ledger.json"
+    assert by["ont:hc-hsf4-dna-test"]["authorization"] == "PROPOSED"
+
+
+def test_seeding_is_idempotent():
+    once = _seed()
+    assert _seed(existing=once) == once
+
+
+def test_every_health_test_is_named_by_the_ledger_or_the_library():
+    """No test is invented: each one's wording is in the ledger's own comment or a library row."""
+    text = (json.dumps(PB._read_json(OS.LEDGER)) + PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8")).lower()
+    named_by = {"ont:l-2-hga-dna-test": "l-2-hga", "ont:hc-hsf4-dna-test": "hc-hsf4", "ont:phpv-test": "phpv",
+                "ont:bva-kc-eye-scheme": "eye scheme", "ont:bva-hip-elbow-scores": "bva hip/elbow"}
+    assert set(named_by) == {t[0] for t in OS.HEALTH_TESTS}
+    for eid, words in named_by.items():
+        assert words in text, (eid, words)
+
+
+def test_every_organisation_name_or_alias_is_in_the_library_text():
+    text = PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8").lower()
+    for _host, (_eid, name, aliases) in OS.HOST_ORG.items():
+        assert any(f.lower() in text for f in [name] + aliases), name
+
+
+# --- the real file ----------------------------------------------------------------------
+
+def test_the_committed_ontology_is_exactly_what_a_seed_run_writes():
+    r = subprocess.run([sys.executable, str(ROOT / "scripts" / "ontology_seed.py"), "--check"],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+
+
+def test_the_committed_ontology_counts_by_class():
+    ont = PB.load_ontology()
+    counts = {c: sum(e["class"] == c for e in ont["entities"]) for c in OS.CLASS_ORDER}
+    assert counts["People"] >= 1 and counts["Place"] >= 25
+    assert counts["Organization"] >= 9 and counts["Regulation"] >= 5 and counts["Health"] >= 6
+    assert not [e["id"] for e in ont["entities"]
+                if e["class"] == "Health" and e["authorization"] == "ASSERTED"
+                and not PB._read_json(OS.LEDGER)["claims"]]
+
+
+# --- no street address, and every source names what it sources (system-gaps, Glasgow fix) ---
+
+# A UK postcode (full, or the outward half on its own) or a street-type word. Known Issue 55:
+# the former business street address must not survive anywhere as data a page can reach.
+_POSTCODE = r"^[A-Z]{1,2}\d[A-Z\d]?(\s*\d[A-Z]{2})?$"
+_STREET = r"\b(street|st|road|rd|lane|ln|avenue|ave|drive|dr|close|crescent|terrace|way|place|court)\b\.?$"
+
+
+def test_no_ontology_entity_carries_a_street_or_postcode_alias():
+    import re
+    bad = [(e["id"], a) for e in PB.load_ontology()["entities"] for a in [e["name"], *e["aliases"]]
+           if re.match(_POSTCODE, a.strip(), re.I) or re.search(_STREET, a.strip(), re.I)]
+    assert bad == []
+
+
+def test_every_sourced_entity_is_named_by_its_source_file():
+    """A `source` is the file that says the entity exists: its name or one of its aliases
+    appears in that file's text (JSON is read decoded, so an escaped character still matches)."""
+    texts, missing = {}, []
+    for e in PB.load_ontology()["entities"]:
+        src = e["source"]
+        if not src or not (ROOT / src).is_file():
+            continue
+        if src not in texts:
+            raw = (ROOT / src).read_text(encoding="utf-8")
+            texts[src] = (json.dumps(json.loads(raw), ensure_ascii=False) if src.endswith(".json") else raw).lower()
+        if not any(f.lower() in texts[src] for f in [e["name"], *e["aliases"]]):
+            missing.append((e["id"], src))
+    assert missing == []
+
+
+def test_glasgow_is_sourced_to_its_location_row_and_owned_by_a_real_route():
+    g = {e["id"]: e for e in PB.load_ontology()["entities"]}["ont:glasgow"]
+    rows = PB._read_json(OS.LOCATIONS)
+    assert g["source"] == "data/locations.json" and any(r["city"] == "Glasgow" for r in rows)
+    assert g["aliases"] == []
+    assert any(r["canonical"] == f"/{g['owner_page']}/" for r in rows)
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py -q`
+Expected: FAIL — collection error, `ModuleNotFoundError: No module named 'ontology_seed'`.
+
+- [ ] **Step 3: Implement**
+
+3a. Widen the class enum:
+
+```bash
+git apply <<'PATCH'
+diff --git a/schemas/ontology.schema.json b/schemas/ontology.schema.json
+index 3284544..de36625 100644
+--- a/schemas/ontology.schema.json
++++ b/schemas/ontology.schema.json
+@@ -11,7 +11,7 @@
+           "id": {"type": "string", "pattern": "^ont:[a-z0-9-]+$"},
+           "name": {"type": "string", "minLength": 1},
+           "aliases": {"type": "array", "items": {"type": "string"}},
+-          "class": {"enum": ["Organism", "Documentation", "Health", "Commerce", "Logistics", "Place", "People", "Method"]},
++          "class": {"enum": ["Organism", "Documentation", "Health", "Commerce", "Logistics", "Place", "People", "Method", "Organization", "Regulation"]},
+           "authorization": {"enum": ["ASSERTED", "PROPOSED", "BLOCKED"]},
+           "source": {"type": ["string", "null"]},
+           "owner_page": {"type": ["string", "null"]}
+PATCH
+```
+
+3b. Create `scripts/ontology_seed.py`:
+
+```python
+#!/usr/bin/env python3
+"""ontology_seed.py [--check]
+
+Grows data/bsuk-ontology.json from the repo's own sourced data, so a board can name the
+people, places, organisations, regulations and health tests a page talks about and the
+board can group them by class. Four inputs, and nothing else:
+
+  Place         data/locations.json — every city row (the country-wide `UK` rows are not a
+                place a page is about), plus the breeder's town and region from
+                data/settings.json. ASSERTED: the file is the source.
+  Organization  docs/reference/external-link-library.md — the organisation behind each host
+                in the Rows table. ASSERTED: every row was checked for a 200 before it was
+                added. A host with no entry in HOST_ORG and not in SKIP_HOSTS stops the run,
+                so a new library row forces a decision instead of vanishing.
+  Regulation    the same Rows table — a row whose "What it is" names a law or official rule.
+                ASSERTED as a thing a page may NAME and link. A claim that BlueStaffyUK holds
+                a licence or complies with a statute is not an entity and stays
+                LEGAL_CLAIM_PLACEHOLDER under CLAUDE.md rule 9.
+  Health        data/quality/evidence-ledger.json — the tests its own comment names. A test
+                is ASSERTED only when a ledger claim matching it has a proof object (not
+                NOT FETCHED) and a breeder confirmation date. Otherwise it is PROPOSED with
+                source null — null, not the ledger path, because board_approve.py promotes a
+                PROPOSED entity that has a source to ASSERTED the moment a board using it is
+                approved, and an unconfirmed result must never be promoted that way.
+  People        data/settings.json `breeder_name`.
+
+Idempotent. An entity already in the file is never rewritten — its authorization, source
+and owner page may have been decided by an approval since — and new entities are appended
+in class order, then id order, so a re-run with unchanged inputs writes the same bytes.
+
+  --check   exit 1 when the file on disk is not what a seed run would write (nothing written).
+"""
+import json
+import re
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pageboard as PB  # noqa: E402
+
+LOCATIONS = PB.ROOT / "data" / "locations.json"
+SETTINGS = PB.ROOT / "data" / "settings.json"
+LEDGER = PB.ROOT / "data" / "quality" / "evidence-ledger.json"
+
+CLASS_ORDER = ("People", "Place", "Health", "Organization", "Regulation", "Organism",
+               "Commerce", "Logistics", "Documentation", "Method")
+
+# host -> (id, name, aliases). The name is the one the library's own row text uses.
+HOST_ORG = {
+    "ico.org.uk": ("ont:ico", "Information Commissioner's Office", ["ICO"]),
+    "gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
+    "assets.publishing.service.gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),
+    "citizensadvice.org.uk": ("ont:citizens-advice", "Citizens Advice", []),
+    "policies.google.com": ("ont:google", "Google", ["Google Analytics"]),
+    "thekennelclub.org.uk": ("ont:the-kennel-club", "The Kennel Club", ["Royal Kennel Club", "KC"]),
+    "royalkennelclub.com": ("ont:the-kennel-club", "The Kennel Club", ["Royal Kennel Club", "KC"]),
+    "rspca.org.uk": ("ont:rspca", "RSPCA", []),
+    "bva.co.uk": ("ont:bva", "British Veterinary Association", ["BVA"]),
+    "pdsa.org.uk": ("ont:pdsa", "PDSA", []),
+    "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),
+}
+# Hosts that are in the library but are not an organisation a page is about.
+SKIP_HOSTS = {
+    "crufts.org.uk": "a dog show (an event), not an organisation; its organiser is already The Kennel Club",
+}
+
+# normalised URL -> (id, name, aliases). Only rows whose own text names a law or official rule.
+REGULATION_ROWS = {
+    "https://gov.uk/control-dog-public/banned-dogs":
+        ("ont:dangerous-dogs-act-1991", "Dangerous Dogs Act 1991", ["banned dog types"]),
+    "https://gov.uk/get-your-dog-cat-microchipped":
+        ("ont:dog-microchipping-law", "Dog microchipping law", ["microchipping law", "compulsory microchipping"]),
+    "https://gov.uk/data-protection":
+        ("ont:uk-data-protection-law", "UK data protection law", ["data protection"]),
+    "https://gov.uk/bring-pet-to-great-britain":
+        ("ont:pet-travel-rules-gb", "Rules for bringing a pet into Great Britain", ["pet travel rules"]),
+    "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf":
+        ("ont:welfare-in-transport-pb10308", "Welfare in transport guidance for dogs and cats (PB10308)",
+         ["PB10308", "welfare-in-transport guidance"]),
+}
+
+# The tests the evidence ledger's own comment names. `match` is what a ledger claim's
+# `pattern` must find in the name for the claim to count as this test's certificate.
+HEALTH_TESTS = (
+    ("ont:l-2-hga-dna-test", "L-2-HGA DNA test", ["L2-HGA", "L-2-HGA"], "L-2-HGA DNA test"),
+    ("ont:hc-hsf4-dna-test", "HC-HSF4 DNA test", ["HC-HSF4", "hereditary cataract DNA test"], "HC-HSF4 DNA test"),
+    ("ont:phpv-test", "PHPV test", ["PHPV"], "PHPV test"),
+    ("ont:bva-kc-eye-scheme", "BVA/KC eye scheme", ["BVA eye scheme", "eye screening"], "BVA/KC eye scheme"),
+    ("ont:bva-hip-elbow-scores", "BVA hip and elbow scores", ["hip score", "elbow score"], "BVA hip and elbow scores"),
+)
+
+ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*([^|]+?)\s*\|\s*$")
+
+
+def slug_id(text):
+    return "ont:" + re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+
+
+def page_slug(first_page):
+    """`/blue-staffy-health-uk/` (as the library writes it, in backticks) -> the board slug."""
+    p = first_page.strip().strip("`").strip("/")
+    return p or "index"
+
+
+def library_rows(path=None):
+    """(url, host, what, first_page) for every row of the Rows table, in file order."""
+    p = Path(path or PB.EXTERNAL_LIBRARY)
+    out = []
+    for line in p.read_text(encoding="utf-8").splitlines():
+        m = ROW.match(line)
+        if m:
+            out.append((m.group(1), m.group(2).strip(), m.group(3).strip(), page_slug(m.group(4))))
+    if not out:
+        raise PB.BoardError(f"{p}: no Rows-table lines parsed — the table changed shape")
+    return out
+
+
+def place_entities(locations, settings):
+    out = {}
+    for r in locations:
+        city = re.sub(r"\s*\(.*?\)\s*", "", r.get("city", "")).strip()
+        if not city or city.upper() == "UK":
+            continue
+        eid = slug_id(city)
+        if eid not in out:
+            out[eid] = {"id": eid, "name": city, "aliases": [], "class": "Place",
+                        "authorization": "ASSERTED", "source": "data/locations.json",
+                        "owner_page": "uk-locations/" + r["slug"]}
+    addr = settings.get("address") or {}
+    for key in ("city", "region"):
+        name = addr.get(key)
+        if name and slug_id(name) not in out:
+            out[slug_id(name)] = {"id": slug_id(name), "name": name, "aliases": [], "class": "Place",
+                                  "authorization": "ASSERTED", "source": "data/settings.json",
+                                  "owner_page": None}
+    return list(out.values())
+
+
+def library_entities(rows):
+    orgs, regs = {}, {}
+    # owner_page stays null: the first page to LINK an organisation or a law is not the page
+    # that OWNS it, and the ownership map is bsuk-entity-graph's §4b job, not a seed's guess.
+    for url, host, _what, _first in rows:
+        h = host.lower()
+        if h.startswith("www."):
+            h = h[4:]
+        if h in HOST_ORG:
+            eid, name, aliases = HOST_ORG[h]
+            orgs.setdefault(eid, {"id": eid, "name": name, "aliases": list(aliases), "class": "Organization",
+                                  "authorization": "ASSERTED",
+                                  "source": "docs/reference/external-link-library.md", "owner_page": None})
+        elif h not in SKIP_HOSTS:
+            raise PB.BoardError(f"external-link-library host {host!r} has no organisation in "
+                                "ontology_seed.HOST_ORG and is not in SKIP_HOSTS — decide which")
+        reg = REGULATION_ROWS.get(PB.normalise_url(url))
+        if reg:
+            eid, name, aliases = reg
+            regs.setdefault(eid, {"id": eid, "name": name, "aliases": list(aliases), "class": "Regulation",
+                                  "authorization": "ASSERTED",
+                                  "source": "docs/reference/external-link-library.md", "owner_page": None})
+    missing = sorted(set(u for u in REGULATION_ROWS) - {PB.normalise_url(r[0]) for r in rows})
+    if missing:
+        raise PB.BoardError(f"REGULATION_ROWS names URL(s) the library no longer carries: {', '.join(missing)}")
+    return list(orgs.values()), list(regs.values())
+
+
+def health_entities(ledger):
+    """PROPOSED with no source unless a ledger claim for the test has a proof and a date."""
+    out = []
+    for eid, name, aliases, match in HEALTH_TESTS:
+        confirmed = [c for c in ledger.get("claims") or []
+                     if re.search(c.get("pattern") or r"(?!x)x", match, re.I)
+                     and (c.get("proof") or "NOT FETCHED") != "NOT FETCHED" and c.get("confirmed")]
+        out.append({"id": eid, "name": name, "aliases": list(aliases), "class": "Health",
+                    "authorization": "ASSERTED" if confirmed else "PROPOSED",
+                    "source": "data/quality/evidence-ledger.json" if confirmed else None,
+                    "owner_page": "blue-staffy-health-uk"})
+    return out
+
+
+def people_entities(settings):
+    name = settings.get("breeder_name")
+    if not name:
+        return []
+    return [{"id": slug_id(name), "name": name, "aliases": ["the breeder"], "class": "People",
+             "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "blue-staffy-uk-breeders"}]
+
+
+def seeded(existing, locations, settings, ledger, rows):
+    """The ontology a seed run writes: every existing entity as it is, then new ones."""
+    have = {e["id"] for e in existing["entities"]}
+    orgs, regs = library_entities(rows)
+    new = [e for e in (people_entities(settings) + place_entities(locations, settings) + health_entities(ledger)
+                       + orgs + regs) if e["id"] not in have]
+    new.sort(key=lambda e: (CLASS_ORDER.index(e["class"]), e["id"]))
+    ont = {"entities": list(existing["entities"]) + new}
+    PB.validate_ontology(ont)
+    return ont
+
+
+def _text(ont):
+    return json.dumps(ont, indent=2, ensure_ascii=False) + "\n"
+
+
+def main(argv=None):
+    argv = sys.argv[1:] if argv is None else argv
+    ont = seeded(PB._read_json(PB.ONTOLOGY), PB._read_json(LOCATIONS), PB._read_json(SETTINGS),
+                 PB._read_json(LEDGER), library_rows())
+    text = _text(ont)
+    if "--check" in argv:
+        if PB.ONTOLOGY.read_text(encoding="utf-8") != text:
+            print("data/bsuk-ontology.json is not what ontology_seed.py writes — run it", file=sys.stderr)
+            return 1
+        print(f"examined {len(ont['entities'])} entities; ontology is seeded")
+        return 0
+    PB.ONTOLOGY.write_text(text, encoding="utf-8")
+    counts = {c: sum(e["class"] == c for e in ont["entities"]) for c in CLASS_ORDER}
+    print(f"wrote data/bsuk-ontology.json — {len(ont['entities'])} entities: "
+          + ", ".join(f"{c} {n}" for c, n in counts.items() if n)
+          + f" ({sum(e['authorization'] == 'ASSERTED' for e in ont['entities'])} asserted, "
+          f"{sum(e['authorization'] == 'PROPOSED' for e in ont['entities'])} proposed)")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py -q`
+Expected: 11 passed, 5 failed — the two committed-file tests (not seeded yet),
+`test_no_ontology_entity_carries_a_street_or_postcode_alias` (`('ont:glasgow', 'G22')`),
+`test_every_sourced_entity_is_named_by_its_source_file` (`ont:blue-coat`, `ont:glasgow`) and
+`test_glasgow_is_sourced_to_its_location_row_and_owned_by_a_real_route`.
+
+3c. Seed the file:
+
+Run: `python3 scripts/ontology_seed.py`
+Expected: `wrote data/bsuk-ontology.json — 52 entities: People 1, Place 27, Health 6, Organization 9, Regulation 5, Organism 2, Commerce 1, Logistics 1 (46 asserted, 6 proposed)`
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py -q`
+Expected: 13 passed, 3 failed — the street/postcode test, the source-names test and the Glasgow
+test (the two existing entities are not corrected yet).
+
+3d. Correct the two existing entities the seeder never rewrites. Save as a scratch file
+(e.g. `$TMPDIR/fix_existing.py`, not committed) and run it from the worktree root; its asserts
+refuse to run on anything but the entities as they stand at 99c81e0:
+
+```python
+# One-off correction of two entities the seeder never rewrites (system-gaps Task 2, step 3d).
+import json, pathlib
+p = pathlib.Path("data/bsuk-ontology.json")
+ont = json.loads(p.read_text(encoding="utf-8"))
+by = {e["id"]: e for e in ont["entities"]}
+g = by["ont:glasgow"]
+assert g["aliases"] == ["G22", "Coltmuir Street"] and g["source"] == "data/settings.json", g
+g["aliases"] = []                      # the former street and postcode (Known Issue 55)
+g["source"] = "data/locations.json"    # rows staffy-puppies-for-sale-glasgow and staffy-breeding-dogs-glasgow
+b = by["ont:blue-coat"]
+assert b["aliases"] == ["blue staffy", "blue Staffordshire Bull Terrier"], b
+b["aliases"] = ["blue", "blue staffy", "blue Staffordshire Bull Terrier"]   # puppies.json writes "colour": "blue"
+p.write_text(json.dumps(ont, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+print("corrected ont:glasgow and ont:blue-coat")
+```
+
+Run: `python3 "$TMPDIR/fix_existing.py" && python3 scripts/ontology_seed.py && python3 scripts/ontology_seed.py --check`
+Expected: `corrected ont:glasgow and ont:blue-coat`, the same `wrote … 52 entities` line, then
+`examined 52 entities; ontology is seeded`; `git diff --stat data/bsuk-ontology.json` shows
+`448 insertions(+), 5 deletions(-)` (the deletions are Glasgow's two aliases, its source line,
+and blue-coat's alias line re-wrapped).
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py tests/py/test_page_board.py tests/py/test_board_links.py tests/py/test_board_reapprove.py tests/py/test_marker_check.py tests/py/test_data_files.py -q`
+Expected: all pass (`test_ontology_seed.py` is 16 tests). `test_every_asserted_entity_names_a_source_that_exists`
+and `test_ontology_file_validates_and_marks_the_unconfirmed_guarantee_proposed` in
+test_page_board.py now also cover the 45 new rows.
+
+Run: `npm run -s check:facts && python3 scripts/marker_check.py`
+Expected: `examined 12 rebuilt pages; 0 problems` then `examined 265 files; 0 problems`.
+
+Run: `python3 scripts/build_system_registry.py && npm run -s registry`
+Expected: `… 0 problems`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/ontology_seed.py tests/py/test_ontology_seed.py schemas/ontology.schema.json \
+  data/bsuk-ontology.json docs/reference/system-registry.md
+git commit -m "ontology: Organization and Regulation classes, seeded from sourced repo data only
+
+scripts/ontology_seed.py adds places (data/locations.json, settings), organisations and
+regulations (the external link library's rows), health tests (the evidence ledger; PROPOSED
+with no source until a claim carries a proof and a confirmation date) and people (settings).
+Existing entities are never rewritten; --check pins the committed file to a seed run.
+ont:glasgow loses the former street and postcode aliases (Known Issue 55) and is re-sourced
+to its data/locations.json rows; ont:blue-coat gains the alias its source file writes.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+### Task 3: The board's entity and keyword view — cards by class, chips by type, no graph
+
+**Gap:** the page board's entity section is unreadable (a 440px cytoscape graph whose nodes are
+labelled with section headings, plus a wide ✓ table).
+
+**Decision: drop the cytoscape graph (not a toggle).** Everything the graph encoded — which
+entity, its class, its authorization, which sections name it — is now on a legible card and in
+the per-class matrix, at any width. What the graph added was layout, and a bipartite
+section-by-entity layout at 15 sections and 5–25 entities is a hairball whatever the zoom
+controls; a "Show map" toggle would keep a 400 KB CDN script, a second colour palette in JS and
+a canvas that cannot stack on a phone, for a view nobody needs to make the pick. The class
+colours survive as CSS tokens (both themes) on the card edge, the class dots and the matrix.
+
+**What the view does.**
+- Block 5: a summary line, a sticky filter bar (class chips with counts + a search box over name,
+  aliases, class, badge, source and owner), then one card per entity under its class heading
+  (People, Place, Health, Organization, Regulation, Organism, Commerce, Logistics, Documentation,
+  Method, Unknown — empty classes are omitted). A card shows name, aliases, class, an
+  ASSERTED/PROPOSED/BLOCKED/UNKNOWN badge, source, owner page, and the section numbers as small
+  chips that jump (smooth scroll, reduced-motion respected) to that section's H2 line in block 3,
+  which is highlighted by `:target`. BLOCKED and UNKNOWN cards sort first in their class. Then
+  "Where each entity is said": one small table per class (rows = entities, columns = only the
+  sections that name one of that class); below 640px each row stacks into the entity name and its
+  section-number chips. The class filter also hides other classes' tables.
+- Block 4: the distribution table keeps the nine columns (so the old header still reads the same
+  on the twelve built boards) and adds the four optional columns on a new-family board or on any
+  board that uses one. Below it, "Every keyword, by type": a chip per term grouped by type, each
+  carrying its section chips, behind the same filter bar; on a new-family board a line names the
+  optional types that have no term yet.
+- The sticky bar needed one fix: `section.sec` is `overflow:hidden`, which makes it a scroll
+  container and stops `position:sticky`. `section.sec:has(.kv){overflow:clip}` clips the same
+  way without creating one, and only on the two blocks that carry a view.
+- Every HTML string is emitted as one line: the board mounts each block through marked, which
+  ends a raw HTML block at the first blank line.
+
+**Files:**
+- Create: `scripts/board_entities.py` (`group_entities(board, ont)`, `group_keywords(board)`, the renderers, `CSS`, `JS`)
+- Create: `tests/py/test_board_entities.py`
+- Modify: `scripts/build_page_board.py:21` (import), `:87-88` (graph CSS removed), `:250` (outline anchor), `:266-279` (`entity_graph_data` removed), `:836-855` (blocks 4 and 5), `:900`, `:908`, `:917`, `:928-959` (graph script removed, filter JS added)
+- Modify: `tests/py/test_page_board.py:960` and `:990` (assertions that pinned the graph)
+- Regenerated: `docs/reference/system-registry.md`
+
+Assertions updated in `tests/py/test_page_board.py`:
+- `test_board_html_carries_every_block_and_the_theme_rules` pinned `id="entity-graph"`; it now
+  asserts `data-title="5. Entities"` and `data-kv="entities"`.
+- `test_board_html_escapes_record_text_in_every_context` pinned `<\/script>` (the heading
+  JSON-escaped inside the graph's data); with the graph gone it asserts the heading HTML-escaped in
+  a section chip's `title` instead. Its other checks (twelve blocks, no raw `</script` in any) are
+  unchanged and still pass.
+- `test_keywords_carry_the_briefs_eight_types_plus_geo` is NOT changed: its nine-column header
+  still renders on a non-new-family board.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_board_entities.py`:
+
+```python
+"""System-gaps Task 3: the board's keyword and entity views. The grouping is pure and tested
+here directly; the rendering is tested through build_page_board.render()."""
+import copy
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import board_entities as BE  # noqa: E402
+import pageboard as PB       # noqa: E402
+
+ONT = {"entities": [
+    {"id": "ont:lisa-bright", "name": "Lisa Bright", "aliases": ["the breeder"], "class": "People",
+     "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": "blue-staffy-uk-breeders"},
+    {"id": "ont:manchester", "name": "Manchester", "aliases": [], "class": "Place",
+     "authorization": "ASSERTED", "source": "data/locations.json", "owner_page": "uk-locations/x"},
+    {"id": "ont:l-2-hga-dna-test", "name": "L-2-HGA DNA test", "aliases": ["L2-HGA"], "class": "Health",
+     "authorization": "PROPOSED", "source": None, "owner_page": "blue-staffy-health-uk"},
+    {"id": "ont:rspca", "name": "RSPCA", "aliases": [], "class": "Organization",
+     "authorization": "ASSERTED", "source": "docs/reference/external-link-library.md", "owner_page": None},
+    {"id": "ont:wild", "name": "wild <b>caught</b>", "aliases": [], "class": "Commerce",
+     "authorization": "BLOCKED", "source": "CLAUDE.md", "owner_page": None},
+]}
+
+
+def _board():
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8")))
+    for s in b["sections"]:
+        s["entities"] = []
+    s1, s2, s3 = b["sections"][0], b["sections"][1], b["sections"][2]
+    s1["entities"] = ["ont:lisa-bright", "ont:manchester", "ont:mystery"]
+    s2["entities"] = ["ont:lisa-bright", "ont:l-2-hga-dna-test", "ont:lisa-bright"]   # a repeat in one section
+    s3["entities"] = ["ont:rspca", "ont:wild", "ont:manchester"]
+    s1["keywords"]["lsi"] = ["Kennel Club", "health tested"]
+    s2["keywords"]["lsi"] = ["kennel  club"]                                        # same term, other spelling
+    s2["keywords"]["related"] = ["blue staffy puppies manchester cheap"]
+    return b
+
+
+def test_group_entities_orders_classes_and_carries_sections():
+    groups = BE.group_entities(_board(), ONT)
+    assert [g["class"] for g in groups] == ["People", "Place", "Health", "Organization", "Commerce", "Unknown"]
+    by = {c["id"]: c for g in groups for c in g["entities"]}
+    b = _board()
+    s1, s2, s3 = (b["sections"][i]["id"] for i in range(3))
+    assert [r["id"] for r in by["ont:lisa-bright"]["sections"]] == [s1, s2]          # once per section
+    assert [r["id"] for r in by["ont:manchester"]["sections"]] == [s1, s3]
+    assert by["ont:mystery"]["class"] == "Unknown" and by["ont:mystery"]["authorization"] == "UNKNOWN"
+    assert by["ont:l-2-hga-dna-test"]["aliases"] == ["L2-HGA"]
+    place = next(g for g in groups if g["class"] == "Place")
+    assert [r["id"] for r in place["columns"]] == [s1, s3]                           # matrix columns
+
+
+def test_group_entities_puts_a_blocked_card_first_in_its_class():
+    ont = copy.deepcopy(ONT)
+    ont["entities"].append({"id": "ont:deposit", "name": "Deposit", "aliases": [], "class": "Commerce",
+                            "authorization": "ASSERTED", "source": "data/settings.json", "owner_page": None})
+    b = _board()
+    b["sections"][0]["entities"].append("ont:deposit")
+    b["sections"][1]["entities"].append("ont:deposit")
+    commerce = next(g for g in BE.group_entities(b, ont) if g["class"] == "Commerce")
+    assert [c["id"] for c in commerce["entities"]] == ["ont:wild", "ont:deposit"]
+
+
+def test_group_entities_on_a_board_with_none_is_empty():
+    b = _board()
+    for s in b["sections"]:
+        s["entities"] = []
+    assert BE.group_entities(b, ONT) == []
+
+
+def test_group_keywords_merges_spellings_and_keeps_every_type():
+    groups = BE.group_keywords(_board())
+    assert [g["type"] for g in groups] == list(PB.ALL_KEYWORD_TYPES)
+    lsi = next(g for g in groups if g["type"] == "lsi")
+    kc = next(t for t in lsi["terms"] if t["term"] == "Kennel Club")
+    assert len(kc["sections"]) == 2                                                  # "kennel  club" merged
+    related = next(g for g in groups if g["type"] == "related")
+    assert related["optional"] and related["label"] == "Related"
+    assert related["terms"][0]["term"] == "blue staffy puppies manchester cheap"
+
+
+def test_entity_html_is_one_line_escaped_and_links_every_section():
+    html = BE.entities_html(BE.group_entities(_board(), ONT))
+    assert "\n\n" not in html                                   # marked would end the HTML block
+    assert "<b>caught</b>" not in html and "wild &lt;b&gt;caught&lt;/b&gt;" in html
+    for badge in ("b-asserted", "b-proposed", "b-blocked", "b-unknown"):
+        assert badge in html
+    assert html.count('class="ent kv-item') == 6
+    b = _board()
+    assert f'href="#outline-{b["sections"][1]["id"]}"' in html
+    assert 'class="kv-bar"' in html and 'type="search"' in html
+    assert re.search(r'data-f="People" aria-pressed="false"><i class="dot c-people"[^>]*></i>People <b>1</b>', html)
+    assert html.count('<table class="mx">') == 6                # one matrix per class
+
+
+def test_keyword_html_lists_missing_optional_types_only_when_asked():
+    groups = BE.group_keywords(_board())
+    quiet = BE.keywords_html(groups)
+    assert "No term yet" not in quiet and "\n\n" not in quiet
+    loud = BE.keywords_html(groups, show_empty=PB.OPTIONAL_KEYWORD_TYPES)
+    assert "No term yet: Variations, Co-occurring, Similar." in loud
+
+
+def test_the_board_renders_cards_matrix_and_outline_anchors_and_no_graph():
+    import build_page_board as BPB
+    from test_page_board import LEDGER_EMPTY
+    b = _board()
+    html = BPB.render(b, ONT, LEDGER_EMPTY, live={}, thumbs={}, slug="_demo")
+    assert "cytoscape" not in html and "entity-graph" not in html
+    for s in b["sections"]:
+        assert f'id="outline-{s["id"]}"' in html                   # every chip has a target
+    assert 'data-kv="entities"' in html and 'data-kv="keywords"' in html
+    assert "html{scroll-behavior:smooth}" in html
+    assert ':root[data-theme="dark"]{--c-people' in html           # class colours in both themes
+    assert "section.sec:has(.kv){overflow:clip}" in html          # the sticky bar can stick
+
+
+def test_a_new_family_board_shows_the_four_optional_columns_and_names_the_empty_ones():
+    import build_page_board as BPB
+    from test_page_board import LEDGER_EMPTY
+    b = _board()
+    b["meta"].update({"slug": "uk-locations/blue-staffy-puppies-manchester-uk", "page_type": "location"})
+    html = BPB.render(b, ONT, LEDGER_EMPTY, live={}, thumbs={}, slug=b["meta"]["slug"])
+    assert "| Transact | Variations | Related | Co-occurring | Similar | Words |" in html
+    assert "No term yet: Variations, Co-occurring, Similar." in html
+    built = _board()                                                # _demo is not a new-family page
+    html = BPB.render(built, ONT, LEDGER_EMPTY, live={}, thumbs={}, slug="_demo")
+    assert "| Transact | Related | Words |" in html                  # only the optional type it uses
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_board_entities.py -q`
+Expected: FAIL — collection error, `ModuleNotFoundError: No module named 'board_entities'`.
+
+- [ ] **Step 3: Implement**
+
+3a. Create `scripts/board_entities.py`:
+
+```python
+#!/usr/bin/env python3
+"""board_entities — the page board's keyword and entity views (blocks 4 and 5).
+
+Two pure grouping functions and the HTML, CSS and JS that render them. It lives apart from
+build_page_board.py so the board builder only CALLS it: the grouping is testable without
+rendering a whole board, and a later change to the view is an edit here, not in the shared
+builder.
+
+  group_entities(board, ont) -> [{"class", "entities": [card], "columns": [section]}]
+      One card per entity the board names, grouped under CLASS_ORDER, each carrying the
+      sections it appears in. An id the ontology does not know is class "Unknown" with
+      authorization "UNKNOWN" — shown, never dropped, because the gate warns on it.
+  group_keywords(board) -> [{"type", "label", "optional", "terms": [{"term", "sections"}]}]
+      One group per keyword type in pageboard.ALL_KEYWORD_TYPES order; a term written in
+      two sections is one chip carrying both. Case and spacing do not make a new term.
+
+Why no graph. The cytoscape map this replaces labelled every node with a section heading
+and drew every section-to-entity edge; at fifteen sections that is a hairball, and the
+entity names were the smallest text on it. Everything it said — which entity, which class,
+which sections, which authorization — is on a card here, legibly, at any width, and the
+matrix answers "what does section 04 name" without a layout engine or a 400 KB CDN script.
+"""
+import html as H
+import sys
+from collections import OrderedDict
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import pageboard as PB  # noqa: E402
+
+CLASS_ORDER = ("People", "Place", "Health", "Organization", "Regulation", "Organism",
+               "Commerce", "Logistics", "Documentation", "Method", "Unknown")
+AUTH_ORDER = ("BLOCKED", "UNKNOWN", "PROPOSED", "ASSERTED")
+
+
+def _ref(s):
+    return {"id": s["id"], "n": s["n"], "heading": s["heading"]}
+
+
+def group_entities(board, ont):
+    by_id = {e["id"]: e for e in ont.get("entities", [])}
+    used = OrderedDict()
+    for s in board["sections"]:
+        for eid in s["entities"]:
+            refs = used.setdefault(eid, [])
+            if not any(r["id"] == s["id"] for r in refs):
+                refs.append(_ref(s))
+    groups = OrderedDict((c, []) for c in CLASS_ORDER)
+    for eid, refs in used.items():
+        e = by_id.get(eid)
+        if e is None:
+            card = {"id": eid, "name": eid.split(":", 1)[-1].replace("-", " "), "aliases": [],
+                    "class": "Unknown", "authorization": "UNKNOWN", "source": None, "owner_page": None}
+        else:
+            card = {k: e.get(k) for k in ("id", "name", "aliases", "class", "authorization", "source", "owner_page")}
+            if card["class"] not in groups:
+                card["class"] = "Unknown"
+        card["aliases"] = list(card["aliases"] or [])
+        card["sections"] = refs
+        groups[card["class"]].append(card)
+    out = []
+    for cls, cards in groups.items():
+        if not cards:
+            continue
+        # Most-used first, so the entity a page leans on is the first card in its class;
+        # a BLOCKED or UNKNOWN one jumps the queue because it is the one the board must fix.
+        cards.sort(key=lambda c: (AUTH_ORDER.index(c["authorization"]) if c["authorization"] in AUTH_ORDER[:2] else 9,
+                                  -len(c["sections"]), c["name"].lower()))
+        cols = {r["id"]: r for c in cards for r in c["sections"]}
+        out.append({"class": cls, "entities": cards, "columns": sorted(cols.values(), key=lambda r: r["n"])})
+    return out
+
+
+def group_keywords(board):
+    out = []
+    for k in PB.ALL_KEYWORD_TYPES:
+        terms = OrderedDict()
+        for s in board["sections"]:
+            for term in s["keywords"].get(k, []):
+                key = " ".join(str(term).lower().split())
+                if not key:
+                    continue
+                t = terms.setdefault(key, {"term": term, "sections": []})
+                if not any(r["id"] == s["id"] for r in t["sections"]):
+                    t["sections"].append(_ref(s))
+        out.append({"type": k, "label": PB.KEYWORD_LABELS[k], "optional": k in PB.OPTIONAL_KEYWORD_TYPES,
+                    "terms": list(terms.values())})
+    return out
+
+
+# ── rendering ────────────────────────────────────────────────────────────────────────────
+#
+# Every string below is HTML, emitted as ONE line with no blank line in it: the board mounts
+# each block through marked, and marked ends a raw HTML block at the first blank line — a
+# blank line inside a card would turn the rest of the view into escaped markdown.
+
+def esc(v):
+    return H.escape("" if v is None else str(v), quote=True)
+
+
+def anchor_id(section_id):
+    """The id block 3's outline puts on each H2 line; the section chips link to it."""
+    return f"outline-{section_id}"
+
+
+def _cls_key(cls):
+    return cls.lower()
+
+
+def sec_chips(refs):
+    return "".join(
+        f'<a class="sec-chip" href="#{esc(anchor_id(r["id"]))}" title="{r["n"]:02d} · {esc(r["heading"])}">{r["n"]:02d}</a>'
+        for r in refs)
+
+
+def _bar(kind, label, facets, total, placeholder):
+    chips = [f'<button type="button" class="kv-chip" data-f="*" aria-pressed="true">All <b>{total}</b></button>']
+    for key, text, n, dot in facets:
+        d = f'<i class="dot c-{esc(dot)}" aria-hidden="true"></i>' if dot else ""
+        chips.append(f'<button type="button" class="kv-chip" data-f="{esc(key)}" aria-pressed="false">{d}{esc(text)} <b>{n}</b></button>')
+    return (f'<div class="kv-bar" role="toolbar" aria-label="{esc(label)}">'
+            f'<div class="kv-chips">{"".join(chips)}</div>'
+            f'<input type="search" class="kv-q" placeholder="{esc(placeholder)}" aria-label="Search {esc(kind)}"></div>')
+
+
+def _card(c):
+    auth = c["authorization"]
+    alias = (f'<p class="ent-alias">also: {esc(", ".join(c["aliases"]))}</p>' if c["aliases"] else "")
+    src = f'<code>{esc(c["source"])}</code>' if c["source"] else '<span class="none">none yet</span>'
+    owner = (f'<code>/{esc(c["owner_page"])}/</code>' if c["owner_page"] else '<span class="none">unowned</span>')
+    q = " ".join([c["name"], *c["aliases"], c["class"], auth, c["source"] or "", c["owner_page"] or ""]).lower()
+    return (f'<article class="ent kv-item c-{_cls_key(c["class"])}" data-f="{esc(c["class"])}" data-q="{esc(q)}">'
+            f'<header><b class="ent-name">{esc(c["name"])}</b><span class="badge b-{auth.lower()}">{esc(auth)}</span></header>'
+            f'{alias}'
+            f'<dl><dt>Class</dt><dd>{esc(c["class"])}</dd><dt>Source</dt><dd>{src}</dd><dt>Owner page</dt><dd>{owner}</dd></dl>'
+            f'<p class="ent-secs"><span>In section{"s" if len(c["sections"]) != 1 else ""}</span>{sec_chips(c["sections"])}</p>'
+            f'</article>')
+
+
+def _matrix(group):
+    cols = group["columns"]
+    head = "".join(f'<th scope="col"><a href="#{esc(anchor_id(r["id"]))}" title="{esc(r["heading"])}">{r["n"]:02d}</a></th>'
+                   for r in cols)
+    rows = []
+    for c in group["entities"]:
+        have = {r["id"] for r in c["sections"]}
+        cells = "".join(
+            (f'<td><a class="mx-on" href="#{esc(anchor_id(r["id"]))}" title="{r["n"]:02d} · {esc(r["heading"])}">'
+             f'<span class="mx-dot" aria-hidden="true">●</span><span class="mx-n">{r["n"]:02d}</span></a></td>')
+            if r["id"] in have else "<td></td>"
+            for r in cols)
+        rows.append(f'<tr><th scope="row">{esc(c["name"])}</th>{cells}</tr>')
+    return (f'<div class="mx-wrap c-{_cls_key(group["class"])}" data-f="{esc(group["class"])}"><table class="mx">'
+            f'<caption><i class="dot c-{_cls_key(group["class"])}" aria-hidden="true"></i>{esc(group["class"])}</caption>'
+            f'<thead><tr><th scope="col">Entity</th>{head}</tr></thead><tbody>{"".join(rows)}</tbody></table></div>')
+
+
+def entities_html(groups):
+    """Block 5's body: filter bar, one card per entity under its class heading, then the
+    per-class entity-to-section matrix."""
+    if not groups:
+        return '<p class="kv-none">This board names no entities.</p>'
+    total = sum(len(g["entities"]) for g in groups)
+    tally = {a: sum(c["authorization"] == a for g in groups for c in g["entities"]) for a in AUTH_ORDER}
+    summary = (f'<p class="kv-sum"><b>{total}</b> entit{"y" if total == 1 else "ies"} in <b>{len(groups)}</b> '
+               f'class{"" if len(groups) == 1 else "es"} · {tally["ASSERTED"]} asserted · {tally["PROPOSED"]} proposed'
+               + (f' · <span class="warn">{tally["BLOCKED"]} blocked</span>' if tally["BLOCKED"] else "")
+               + (f' · {tally["UNKNOWN"]} not in the ontology' if tally["UNKNOWN"] else "")
+               + '. A section number jumps to that section in block 3.</p>')
+    bar = _bar("entities", "Filter entities by class", [(g["class"], g["class"], len(g["entities"]), _cls_key(g["class"]))
+                                                         for g in groups], total, "Search names, aliases, sources…")
+    body = "".join(
+        f'<section class="kv-group" data-f="{esc(g["class"])}" aria-label="{esc(g["class"])}">'
+        f'<h3 class="kv-h"><i class="dot c-{_cls_key(g["class"])}" aria-hidden="true"></i>{esc(g["class"])} <span>{len(g["entities"])}</span></h3>'
+        f'<div class="kv-cards">{"".join(_card(c) for c in g["entities"])}</div></section>'
+        for g in groups)
+    mx = ('<h3 class="kv-h mx-h">Where each entity is said</h3>'
+          '<p class="kv-sum">One table per class: a row per entity, a column per section that names one. '
+          'On a phone each row stacks into the entity and its section numbers.</p>'
+          + "".join(_matrix(g) for g in groups))
+    return (f'<div class="kv" data-kv="entities">{summary}{bar}{body}'
+            f'<p class="kv-empty" hidden>Nothing matches — clear the search or pick All.</p>{mx}</div>')
+
+
+def keywords_html(groups, show_empty=()):
+    """Block 4's keyword view: a chip per term, grouped by type, each chip carrying the
+    sections that use it. `show_empty` names the types to list as having no term yet."""
+    live = [g for g in groups if g["terms"]]
+    total = sum(len(g["terms"]) for g in live)
+    empty = [g["label"] for g in groups if not g["terms"] and g["type"] in show_empty]
+    note = (f'<p class="kv-sum">No term yet: {esc(", ".join(empty))}.</p>' if empty else "")
+    if not live:
+        return f'<div class="kv" data-kv="keywords"><p class="kv-none">This board names no keywords.</p>{note}</div>'
+    bar = _bar("keywords", "Filter keywords by type", [(g["type"], g["label"], len(g["terms"]), None) for g in live],
+               total, "Search keywords…")
+    body = "".join(
+        f'<section class="kv-group" data-f="{esc(g["type"])}" aria-label="{esc(g["label"])}">'
+        f'<h3 class="kv-h">{esc(g["label"])} <span>{len(g["terms"])}</span></h3><div class="kw-chips">'
+        + "".join(f'<span class="kw kv-item" data-f="{esc(g["type"])}" data-q="{esc(str(t["term"]).lower())}">'
+                  f'<span class="kw-t">{esc(t["term"])}</span>{sec_chips(t["sections"])}</span>' for t in g["terms"])
+        + '</div></section>'
+        for g in live)
+    return (f'<div class="kv" data-kv="keywords">{bar}{body}'
+            f'<p class="kv-empty" hidden>Nothing matches — clear the search or pick All.</p>{note}</div>')
+
+
+# The class colours are the old graph palette, one pair per theme, each clearing 3:1 against
+# its own theme's --paper: they mark a card's edge and a dot, never text.
+CSS = """
+:root{--c-people:#8b1e5f;--c-place:#7a5c3e;--c-health:#c8472f;--c-organization:#1f5a8a;--c-regulation:#5b6b1f;--c-organism:#2D6A4F;--c-commerce:#8a6508;--c-logistics:#1f6f8b;--c-documentation:#6b4fa0;--c-method:#3d7a4a;--c-unknown:#6b736e}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d}}
+:root[data-theme="dark"]{--c-people:#e08ab6;--c-place:#c3a483;--c-health:#F08A78;--c-organization:#8fbde6;--c-regulation:#c3d07a;--c-organism:#6FB48F;--c-commerce:#d9b44a;--c-logistics:#7fc3dc;--c-documentation:#b09ae0;--c-method:#8fd3a4;--c-unknown:#9aa39d}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+.oanchor{scroll-margin-top:24px;border-radius:3px}
+.oanchor:target{background:var(--clay-soft);outline:2px solid var(--clay);outline-offset:1px}
+section.sec:has(.kv){overflow:clip}
+.kv [hidden]{display:none!important}
+.kv-sum{font-size:13px;color:var(--ink-2);margin:4px 0 10px}.kv-sum .warn{color:var(--warn);font-weight:600}
+.kv-none{font-size:14px;color:var(--ink-3)}
+.kv-bar{position:sticky;top:0;z-index:3;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;padding:10px 0;margin:0 0 6px;background:var(--paper);border-bottom:1px solid var(--line)}
+.kv-chips{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.kv-chip{font:inherit;font-size:13px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:50px;border:1px solid var(--line);background:var(--ground);color:var(--ink);cursor:pointer;white-space:nowrap}
+.kv-chip b{font-weight:600;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.kv-chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:var(--ground)}
+.kv-chip[aria-pressed="true"] b{color:var(--ground)}
+.kv-q{font:inherit;font-size:14px;flex:1 1 200px;min-width:0;padding:6px 10px;border:1px solid var(--line);border-radius:6px;background:var(--ground);color:var(--ink)}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--c-unknown);flex:none}
+.c-people{--c:var(--c-people)}.c-place{--c:var(--c-place)}.c-health{--c:var(--c-health)}.c-organization{--c:var(--c-organization)}.c-regulation{--c:var(--c-regulation)}.c-organism{--c:var(--c-organism)}.c-commerce{--c:var(--c-commerce)}.c-logistics{--c:var(--c-logistics)}.c-documentation{--c:var(--c-documentation)}.c-method{--c:var(--c-method)}.c-unknown{--c:var(--c-unknown)}
+.dot[class*="c-"]{background:var(--c)}
+.kv-group{margin:14px 0 4px}
+.kv-h{font-family:"Fraunces",Georgia,serif;font-size:17px;font-weight:700;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+.kv-h span{font-family:"Source Sans 3",system-ui,sans-serif;font-size:13px;font-weight:600;color:var(--ink-3)}
+.kv-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.ent{border:1px solid var(--line);border-left:5px solid var(--c,var(--c-unknown));border-radius:8px;padding:10px 12px;background:var(--paper);display:grid;gap:6px;min-width:0}
+.ent header{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ent-name{font-size:16px;line-height:1.3;overflow-wrap:anywhere}
+.ent-alias{margin:0;font-size:13px;color:var(--ink-2);overflow-wrap:anywhere}
+.ent dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0;font-size:13px}
+.ent dt{color:var(--ink-3)}.ent dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.ent code{font:12px/1.4 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:0 4px;border-radius:3px}
+.ent .none{color:var(--ink-3);font-style:italic}
+.ent-secs{margin:0;display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12px;color:var(--ink-3)}
+.ent-secs>span{margin-right:4px}
+.badge{flex:none;font-size:11px;font-weight:700;letter-spacing:.05em;padding:1px 7px;border-radius:4px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.b-asserted{border-color:var(--green)}.b-asserted::before{content:"✓ "}
+.b-proposed{border-style:dashed;border-color:var(--clay-ink)}
+.b-blocked{border-color:var(--warn);color:var(--warn)}
+.b-unknown{border-style:dotted;border-color:var(--ink-3)}
+.sec-chip{display:inline-block;font:600 11px/1.6 ui-monospace,Menlo,monospace;padding:0 6px;border-radius:4px;border:1px solid var(--line);background:var(--ground);color:var(--ink-2);text-decoration:none}
+.sec-chip:hover,.sec-chip:focus-visible{border-color:var(--clay);color:var(--ink)}
+.kw-chips{display:flex;flex-wrap:wrap;gap:6px}
+.kw{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px;max-width:100%;padding:3px 4px 3px 10px;border:1px solid var(--line);border-radius:14px;background:var(--paper);font-size:14px}
+.kw-t{overflow-wrap:anywhere;margin-right:2px}
+.kv-empty{font-size:14px;color:var(--ink-3)}
+.mx-h{margin-top:22px}
+.mx-wrap{overflow-x:auto;margin:0 0 12px;max-width:100%}
+table.mx{border-collapse:collapse;font-size:13px;min-width:0}
+table.mx caption{caption-side:top;text-align:left;font-weight:600;padding:4px 0}
+table.mx caption .dot{margin-right:6px;vertical-align:-1px}
+table.mx th,table.mx td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:center}
+.md table.mx th{text-transform:none;letter-spacing:0;font-size:13px;color:var(--ink);border-bottom:1px solid var(--line)}
+table.mx th[scope="row"],table.mx thead th:first-child{text-align:left;font-weight:600;white-space:nowrap}
+table.mx thead a{color:var(--ink-2);font:600 11px ui-monospace,Menlo,monospace;text-decoration:none}
+.mx-on{text-decoration:none;color:var(--c,var(--green))}.mx-n{display:none}
+.md .kv table.mx{display:table;width:auto}
+@media (max-width:640px){
+.kv-chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;max-width:100%}
+.kv-q{flex-basis:100%}
+.kv-cards{grid-template-columns:1fr}
+table.mx,table.mx tbody,table.mx tr,table.mx th,table.mx td{display:block}
+.md .kv table.mx{display:block}
+table.mx thead{display:none}
+table.mx tr{padding:6px 0;border-bottom:1px solid var(--line)}
+table.mx th[scope="row"],table.mx td{border:0;padding:0 4px 0 0;text-align:left;white-space:normal}
+table.mx td{display:inline-block}table.mx td:empty{display:none}
+.mx-dot{display:none}.mx-n{display:inline-block;font:600 11px/1.6 ui-monospace,Menlo,monospace;padding:0 6px;border:1px solid var(--line);border-radius:4px;color:var(--ink-2)}
+}
+"""
+
+# One filter per view: class/type chips and the search box both narrow the same items; a
+# group with nothing visible hides, and so does a matrix table for a class filtered out.
+JS = """
+document.querySelectorAll('.kv').forEach(function(root){
+  var chips=root.querySelectorAll('.kv-chip'),q=root.querySelector('.kv-q'),f='*';
+  var items=root.querySelectorAll('.kv-item'),groups=root.querySelectorAll('.kv-group'),
+      mx=root.querySelectorAll('.mx-wrap'),empty=root.querySelector('.kv-empty');
+  function apply(){
+    var s=q?q.value.trim().toLowerCase():'',any=false;
+    items.forEach(function(it){var ok=(f==='*'||it.getAttribute('data-f')===f)&&(!s||it.getAttribute('data-q').indexOf(s)>=0);it.hidden=!ok;if(ok)any=true;});
+    groups.forEach(function(g){g.hidden=!g.querySelector('.kv-item:not([hidden])');});
+    mx.forEach(function(m){m.hidden=!(f==='*'||m.getAttribute('data-f')===f);});
+    if(empty)empty.hidden=any;
+  }
+  chips.forEach(function(c){c.addEventListener('click',function(){
+    f=c.getAttribute('data-f');chips.forEach(function(x){x.setAttribute('aria-pressed',x===c?'true':'false');});apply();
+  });});
+  if(q)q.addEventListener('input',apply);
+});
+"""
+```
+
+3b. Wire it into the board builder and update the two pinned assertions:
+
+```bash
+git apply <<'PATCH'
+diff --git a/scripts/build_page_board.py b/scripts/build_page_board.py
+index 5e68a3c..6dcc96d 100644
+--- a/scripts/build_page_board.py
++++ b/scripts/build_page_board.py
+@@ -19,6 +19,7 @@ from urllib.parse import urlsplit
+ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+ import pageboard as PB
+ import verbatim_set_check as VSC
++import board_entities as BE
+ from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
+ 
+ OUT = PB.ROOT / "docs" / "artifacts" / "boards"
+@@ -84,8 +85,6 @@ section.sec h2{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:22
+ .md code{font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+ .tree{font:13px/1.65 ui-monospace,Menlo,monospace;white-space:pre-wrap;margin:0;overflow-x:auto}
+ .hit{color:var(--warn);font-weight:600}
+-#entity-graph{height:440px;border:1px solid var(--line);border-radius:8px;background:var(--ground)}
+-.legend{font-size:12px;color:var(--ink-3);margin:6px 0 0}
+ .opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;margin:8px 0 6px}
+ .opt{border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--paper);display:grid;gap:6px}
+ .opt img,.opt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:5px;border:1px solid var(--line);background:var(--code-bg);display:grid;place-items:center;font-size:12px;color:var(--ink-3)}
+@@ -247,7 +246,10 @@ def outline_block(board, hits):
+     lines = [f"H1  {esc(h1)}" + vtag(board.get("h1", {}).get("verbatim_heading")) + flag(h1, hit_by)]
+     for s in board["sections"]:
+         cta = f" · CTA×{s['cta']}" if s.get("cta") else ""
+-        lines.append(f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]" + flag(s["heading"], hit_by))
++        # The span is the target of every section chip in blocks 4 and 5 (board_entities).
++        lines.append(f'<span class="oanchor" id="{esc(BE.anchor_id(s["id"]))}">'
++                     f"├─ H2 {s['n']:02d}  {esc(s['heading'])}{vtag(s.get('verbatim_heading'))}   [{s['category']} · {GROUP_SHORT[s['group']]} · {s['shape']} · {s['framework']} · {s['words']['min']}–{s['words']['max']}w{cta}]"
++                     + flag(s["heading"], hit_by) + "</span>")
+ 
+         def walk(nodes, depth):
+             for n in nodes:
+@@ -263,20 +265,6 @@ def outline_block(board, hits):
+     return "\n".join(lines)
+ 
+ 
+-def entity_graph_data(board, ont):
+-    by_id = {e["id"]: e for e in ont["entities"]}
+-    nodes, edges, seen = [], [], set()
+-    for s in board["sections"]:
+-        nodes.append({"data": {"id": "sec:" + s["id"], "label": f"{s['n']:02d} {s['heading'][:34]}", "kind": "section"}})
+-        for eid in s["entities"]:
+-            e = by_id.get(eid, {"name": eid, "class": "Unknown", "authorization": "PROPOSED"})
+-            if eid not in seen:
+-                seen.add(eid)
+-                nodes.append({"data": {"id": eid, "label": e["name"], "kind": e["class"], "auth": e["authorization"]}})
+-            edges.append({"data": {"source": "sec:" + s["id"], "target": eid, "auth": e["authorization"]}})
+-    return {"nodes": nodes, "edges": edges}
+-
+-
+ def option_cards(section, ledger, slug, thumbs):
+     """One card per candidate the pool offers, plus the pick when a rename has already
+     carried it out of the pool, plus a dimmed card per excluded shell.
+@@ -833,26 +821,26 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
+                   + "\n\nEvery image slot the outline plans. Infographic prompts are the generation pack; "
+                     "photo prompts say what the photo has to show. Page-level files and alts are in block 7."))
+ 
+-    rows = [[md(r["section"])] + [r[k] for k in PB.KEYWORD_TYPES] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
++    # The four optional types get a column only where they mean something: on a new-family
++    # page (where family_rules requires them) or on any board that already uses one.
++    kgroups = BE.group_keywords(board)
++    new_family = PB.FR.applies(board)
++    ktypes = [k for k in PB.ALL_KEYWORD_TYPES
++              if k in PB.KEYWORD_TYPES or new_family or d["totals"][k]]
++    rows = [[md(r["section"])] + [r[k] for k in ktypes] + [f"{r['words_min']}–{r['words_max']}"] for r in d["rows"]]
+     t = d["totals"]
+-    rows.append(["**totals**"] + [t[k] for k in PB.KEYWORD_TYPES] + [f"{t['words_min']}–{t['words_max']}"])
++    rows.append(["**totals**"] + [t[k] for k in ktypes] + [f"{t['words_min']}–{t['words_max']}"])
+     c = d["h_counts"]
+     why_rows = [[f"{s['n']:02d} {md(s['heading'])}", md(s["group"]), md(s["framework"]), md(s["why"]), md_with_urls(s["why_source"])]
+                 for s in board["sections"]]
+-    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in PB.KEYWORD_TYPES] + ["Words"], rows)
++    parts.append(("4. Distribution", md_table(["Section"] + [PB.KEYWORD_LABELS[k] for k in ktypes] + ["Words"], rows)
+                   + f"\n\nHeadings: H1 {c['h1']} · H2 {c['h2']} · H3 {c['h3']} · H4 {c['h4']} · H5 {c['h5']} · H6 {c['h6']}. Counts are ceilings, not floors."
++                  + "\n\n**Every keyword, by type** — a section number jumps to that section in block 3.\n\n"
++                  + BE.keywords_html(kgroups, show_empty=PB.OPTIONAL_KEYWORD_TYPES if new_family else ())
+                   + "\n\n**Why each section is here**\n\n"
+                   + md_table(["Section", "Group", "Framework", "Why", "Source"], why_rows)))
+ 
+-    by_id = {e["id"]: e for e in ont["entities"]}
+-    ent_rows = []
+-    all_ents = sorted({e for s in board["sections"] for e in s["entities"]})
+-    for eid in all_ents:
+-        e = by_id.get(eid)
+-        cells = ["✓" if eid in s["entities"] else "" for s in board["sections"]]
+-        ent_rows.append([f"{md(e['name'] if e else eid)} ({md(e['authorization']) if e else 'UNKNOWN'})"] + cells + [md((e or {}).get("owner_page")) or "—"])
+-    ent_md = ('<div id="entity-graph"></div><p class="legend">colour = class · solid = ASSERTED · dashed = PROPOSED · red = BLOCKED (fails the board)</p>\n\n'
+-              + md_table(["Entity"] + [f"{s['n']:02d}" for s in board["sections"]] + ["Owner"], ent_rows)
++    ent_md = (BE.entities_html(BE.group_entities(board, ont))
+               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
+               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))
+     parts.append(("5. Entities", ent_md))
+@@ -897,7 +885,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
+     parts.append(("8. Approve", approve + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
+ 
+     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
+-    graph = js(entity_graph_data(board, ont))
+     record_hash = PB.record_hash(board)
+     # The charset is declared: the board carries em dashes and pound signs from the record
+     # and from src/lib/boardStyles.ts, and a document served without one is decoded as
+@@ -905,7 +892,7 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
+     return f"""<meta charset="utf-8">
+ <title>Page Board: {esc(slug)}</title>
+ <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&display=swap">
+-<style>{CSS}</style>
++<style>{CSS}{BE.CSS}</style>
+ <div class="wrap">
+ <header class="masthead"><div><p class="eyebrow">BlueStaffyUK · Page Board</p><h1 class="title">/{esc(slug)}/</h1></div>
+ <div class="meta"><span class="pill">status: {esc(m['status'])}</span> <span class="pill">research as of {esc(m['research_as_of'])}</span><br>record <code>{record_hash[:12]}</code></div></header>
+@@ -914,7 +901,6 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
+ </div>
+ {blocks}
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+-<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+ <script>
+ (function(){{
+   var doc=document.getElementById('doc');
+@@ -925,38 +911,8 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
+     body.innerHTML=window.marked?marked.parse(b.textContent.replace(/^\\n+|\\s+$/g,'')):b.textContent;
+     sec.appendChild(body);doc.appendChild(sec);
+   }});
+-  var G={graph};
+-  var el=document.getElementById('entity-graph');
+-  // Two palettes, not one: a graph drawn in ink-dark fills disappears on the dark ground
+-  // and a graph drawn in light fills disappears on the light one. Every fill below clears
+-  // 3:1 against its own theme's --ground, which is why the light section node is a mid
+-  // clay-brown rather than the cream the page uses for card beds.
+-  var PAL={{
+-    light:{{Organism:'#2D6A4F',Documentation:'#6b4fa0',Health:'#c8472f',Commerce:'#8a6508',Logistics:'#1f6f8b',Place:'#7a5c3e',People:'#8b1e5f',Method:'#3d7a4a',Unknown:'#6b736e',section:'#8c7a5e',edge:'#6f7a74',blocked:'#c8472f',border:'#3A3227',ink:'#1E2A24'}},
+-    dark:{{Organism:'#6FB48F',Documentation:'#b09ae0',Health:'#F08A78',Commerce:'#d9b44a',Logistics:'#7fc3dc',Place:'#c3a483',People:'#e08ab6',Method:'#8fd3a4',Unknown:'#9aa39d',section:'#7d8f84',edge:'#8d9a93',blocked:'#F08A78',border:'#D8DEDA',ink:'#ECEBE3'}}
+-  }};
+-  function darkMode(){{
+-    var a=document.documentElement.getAttribute('data-theme');
+-    if(a==='dark')return true;
+-    if(a==='light')return false;
+-    return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);
+-  }}
+-  function graphStyle(){{
+-    var p=PAL[darkMode()?'dark':'light'];
+-    return [{{selector:'node',style:{{'label':'data(label)','font-size':10,'width':18,'height':18,'background-color':function(n){{return p[n.data('kind')]||p.Unknown}},'color':p.ink,'text-wrap':'wrap','text-max-width':110}}}},
+-            {{selector:'node[kind="section"]',style:{{'shape':'round-rectangle','width':60,'height':22,'font-weight':'bold','border-width':1,'border-color':p.border}}}},
+-            {{selector:'edge',style:{{'width':1.5,'line-color':p.edge,'curve-style':'bezier'}}}},
+-            {{selector:'edge[auth="PROPOSED"]',style:{{'line-style':'dashed'}}}},
+-            {{selector:'edge[auth="BLOCKED"]',style:{{'line-color':p.blocked,'width':3}}}}];
+-  }}
+-  if(el&&window.cytoscape){{
+-    var cy=cytoscape({{container:el,elements:G.nodes.concat(G.edges),layout:{{name:'cose',animate:false,padding:20}},style:graphStyle()}});
+-    if(window.matchMedia){{
+-      var mq=window.matchMedia('(prefers-color-scheme: dark)');
+-      var repaint=function(){{cy.style(graphStyle());}};
+-      if(mq.addEventListener)mq.addEventListener('change',repaint);else if(mq.addListener)mq.addListener(repaint);
+-    }}
+-  }}
++  // Blocks 4 and 5: the keyword and entity filters (scripts/board_entities.py).
++  {BE.JS}
+   // The style frames are filled HERE rather than carrying a static srcdoc each: the page
+   // stylesheet is inlined once and pasted into every frame at load, instead of nine copies
+   // per styled section inside the committed file.
+diff --git a/tests/py/test_page_board.py b/tests/py/test_page_board.py
+index c792cdd..5ea60c6 100644
+--- a/tests/py/test_page_board.py
++++ b/tests/py/test_page_board.py
+@@ -958,7 +958,7 @@ def test_board_html_carries_every_block_and_the_theme_rules(tmp_path):
+     ont, ledger = ONT_OK, LEDGER_EMPTY
+     html = BPB.render(b, ont, ledger, live={}, thumbs={}, slug="x")
+     for marker in ["data-title=\"1. Brief\"", "data-title=\"2. H1 and meta\"", "data-title=\"3. Outline\"", "data-title=\"4. Distribution\"",
+-                   "id=\"entity-graph\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
++                   "data-title=\"5. Entities\"", "data-kv=\"entities\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
+         assert marker in html, marker
+     assert ":root{" in html and "prefers-color-scheme: dark" in html and ':root[data-theme="dark"]' in html
+     assert "body{margin:0;background:var(--ground)" in html
+@@ -987,7 +987,9 @@ def test_board_html_escapes_record_text_in_every_context():
+     assert "&lt;/script&gt;&lt;b&gt;x&lt;/b&gt;" in html          # the goal, escaped
+     assert "<b>x</b>" not in html
+     assert "\\# a \\| b \\*c\\* \\_d\\_" in html                  # the heading, markdown-neutral
+-    assert "<\\/script>" in html                                  # the graph label, JSON-escaped
++    # the heading again, HTML-escaped in a section chip's title (the entity graph that used to
++    # carry it as JSON is gone — scripts/board_entities.py)
++    assert 'title="01 · # a | b *c* _d_ &lt;/script&gt;"' in html
+     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
+     # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
+     # kit strip).
+PATCH
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_board_entities.py tests/py/test_page_board.py tests/py/test_board_links.py tests/py/test_board_previews.py -q`
+Expected: all pass (observed: 8 + 327 passed).
+
+Render the real health board and a new-family demo into a scratch directory (NOT
+`docs/artifacts/boards/`, whose committed files are the published boards; they are rebuilt by
+their own publish step) and screenshot them:
+
+```bash
+SHOTS=$(mktemp -d)/board-shots; mkdir -p "$SHOTS"
+python3 - "$SHOTS" <<'EOF'
+import sys, pathlib, copy
+sys.path.insert(0, "scripts")
+import pageboard as PB, build_page_board as BPB, keyword_variants as KV
+out = pathlib.Path(sys.argv[1]); slug = "blue-staffy-health-uk"
+board = PB.load_board(slug); ont, ledger = PB.load_ontology(), PB.load_ledger()
+live = PB.live_headings() if PB.DIST.exists() else {}
+(out / f"{slug}.html").write_text(BPB.render(board, ont, ledger, live, {}, slug, BPB.load_previews(slug),
+                                              BPB.load_routes(), BPB.load_nav_previews()), encoding="utf-8")
+# The same record re-slugged as a location page, with seeded entities and proposed variants,
+# so every class and all thirteen keyword types show. Scratch only; never saved as a board.
+b = copy.deepcopy(board)
+b["meta"].update({"slug": "uk-locations/blue-staffy-puppies-manchester-uk", "page_type": "location", "status": "boarded"})
+extra = [["ont:manchester", "ont:rspca", "ont:the-kennel-club"], ["ont:l-2-hga-dna-test", "ont:hc-hsf4-dna-test"], [],
+         ["ont:l-2-hga-dna-test", "ont:hc-hsf4-dna-test", "ont:the-kennel-club"], ["ont:bva-kc-eye-scheme", "ont:bva"],
+         ["ont:dog-microchipping-law", "ont:pdsa"], ["ont:the-kennel-club"], [], [], ["ont:pdsa"], ["ont:hc-hsf4-dna-test"],
+         [], ["ont:london"], [], ["ont:carlisle", "ont:dangerous-dogs-act-1991", "ont:health-guarantee"]]
+for s, e in zip(b["sections"], extra):
+    s["entities"] = s["entities"] + e
+prop = KV.propose("blue-staffy-puppies-manchester-uk")
+for i, k in enumerate(("variation", "related", "cooccurring", "similar")):
+    for j, t in enumerate(prop["buckets"][k][:4]):
+        b["sections"][(i * 3 + j) % len(b["sections"])]["keywords"].setdefault(k, []).append(t["term"])
+PB.validate_board(b)
+(out / "demo-new-family-manchester.html").write_text(
+    BPB.render(b, ont, ledger, {}, {}, b["meta"]["slug"], None, BPB.load_routes(), None), encoding="utf-8")
+print("rendered into", out)
+EOF
+cat > "$SHOTS/shoot.mjs" <<'EOF'
+// Screenshots the rendered boards at 1280 and 375, light and dark, full page plus block 4/5 crops.
+import { createRequire } from 'node:module';
+const require = createRequire('/Users/apple/Downloads/BSUK/package.json');
+const { chromium } = require('@playwright/test');
+const dir = new URL('.', import.meta.url).pathname;
+const pages = process.argv.slice(2);
+const browser = await chromium.launch();
+const report = [];
+for (const name of pages) {
+  for (const width of [1280, 375]) {
+    for (const scheme of ['light', 'dark']) {
+      const ctx = await browser.newContext({ viewport: { width, height: width === 375 ? 812 : 900 }, colorScheme: scheme });
+      const page = await ctx.newPage();
+      await page.goto('file://' + dir + name + '.html', { waitUntil: 'networkidle' });
+      await page.waitForSelector('[data-kv="entities"], .kv-none');
+      const tag = `${name}-${width}-${scheme}`;
+      const scroll = await page.evaluate(() => document.documentElement.scrollWidth);
+      await page.screenshot({ path: `${dir}${tag}-full.png`, fullPage: true });
+      const ents = page.locator('section.sec', { has: page.locator('[data-kv="entities"]') });
+      await ents.screenshot({ path: `${dir}${tag}-entities.png` });
+      const kws = page.locator('section.sec', { has: page.locator('[data-kv="keywords"]') });
+      await kws.screenshot({ path: `${dir}${tag}-keywords.png` });
+      // interaction: filter to one class, search, then follow a section chip
+      const r = { tag, scrollWidth: scroll };
+      const chip = ents.locator('.kv-chip').nth(1);
+      r.firstClass = await chip.getAttribute('data-f');
+      await chip.click();
+      r.visibleCardsAfterClassFilter = await ents.locator('.ent:visible').count();
+      r.cardsTotal = await ents.locator('.ent').count();
+      await ents.locator('.kv-chip').first().click();
+      await ents.locator('.kv-q').fill('kennel');
+      r.visibleCardsAfterSearch = await ents.locator('.ent:visible').count();
+      await ents.locator('.kv-q').fill('');
+      // the sticky bar stays in view while the cards scroll under it
+      await ents.locator('.ent').last().scrollIntoViewIfNeeded();
+      await page.mouse.wheel(0, 200);
+      r.barTopWhileScrolling = await ents.locator('.kv-bar').evaluate(e => Math.round(e.getBoundingClientRect().top));
+      if (width === 375) await page.screenshot({ path: `${dir}${tag}-sticky.png` });
+      const sc = ents.locator('.sec-chip').first();
+      const href = await sc.getAttribute('href');
+      await sc.click();
+      await page.waitForTimeout(2500);
+      r.chipTarget = href;
+      r.targetInView = await page.evaluate(h => { const b = document.querySelector(h).getBoundingClientRect(); return b.top >= 0 && b.top < innerHeight; }, href);
+      r.hash = await page.evaluate(() => location.hash);
+      report.push(r);
+      await ctx.close();
+    }
+  }
+}
+await browser.close();
+console.log(JSON.stringify(report, null, 1));
+EOF
+node "$SHOTS/shoot.mjs" blue-staffy-health-uk demo-new-family-manchester | python3 -c "import json,sys; [print(r['tag'], r['scrollWidth'], r['visibleCardsAfterClassFilter'], r['cardsTotal'], r['barTopWhileScrolling'], r['targetInView']) for r in json.load(sys.stdin)]"
+```
+
+(`shoot.mjs` loads Playwright through `createRequire` on the main checkout's `package.json`, the
+node_modules every worktree symlinks. If the executor's checkout differs, change that one path.)
+
+Expected — eight lines, one per page × width × theme; `scrollWidth` equals the viewport (no
+horizontal page scroll at 375), a class chip leaves 1 card visible, the sticky bar sits at
+`top 0` while the cards scroll under it, and the section chip lands its target in view:
+
+```
+blue-staffy-health-uk-1280-light 1280 1 5 0 True
+blue-staffy-health-uk-1280-dark 1280 1 5 0 True
+blue-staffy-health-uk-375-light 375 1 5 0 True
+blue-staffy-health-uk-375-dark 375 1 5 0 True
+demo-new-family-manchester-1280-light 1280 1 18 0 True
+demo-new-family-manchester-1280-dark 1280 1 18 0 True
+demo-new-family-manchester-375-light 375 1 18 0 True
+demo-new-family-manchester-375-dark 375 1 18 0 True
+```
+
+Look at `*-entities.png`, `*-keywords.png` and `*-375-*-sticky.png` before committing (rule 10:
+the visual is shown, not asserted). The health board names only 5 entities today (its sections
+use five ids); the demo shows 18 across 8 classes.
+
+Run: `python3 scripts/build_system_registry.py && npm run -s registry`
+Expected: `… 0 problems`.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/board_entities.py scripts/build_page_board.py tests/py/test_board_entities.py \
+  tests/py/test_page_board.py docs/reference/system-registry.md
+git commit -m "board: entity cards by class, keyword chips by type, no graph
+
+scripts/board_entities.py groups the board's entities (one card each, under a class heading,
+with badge, source, owner page and section chips) and keywords (chips by type, with the
+sections using each), behind a sticky class/type filter and a search box, plus a per-class
+entity-to-section matrix that stacks on a phone. The cytoscape map is dropped.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 6: Full suite**
+
+Run: `python3 -m pytest tests/py -q`
+Expected: `2417 passed, 27 skipped, 1 xfailed` (the worktree's baseline before Task 1 was
+`2378 passed, 27 skipped, 1 xfailed`; +15 Task 1, +16 Task 2, +8 Task 3).
+
+Run: `npm run -s check:all; echo EXIT $?`
+Expected: ends `examined 41 agents; 0 problems` and `EXIT 0` (placeholders advisory line unchanged at 1732).
+
+#### Open questions (for the controller, not blockers)
+
+1. (Resolved in this draft) `ont:glasgow` — corrected in Task 2 step 3d.
+2. (Resolved in this draft) Leeds `similar` terms — `--also DIR` built in Task 1.
+3. Organisation and Regulation entities are seeded with `owner_page: null`; the first page that
+   links one is not the page that owns it. The ownership map is bsuk-entity-graph §4b's job.
+4. `docs/reference/WORKFLOW.md:839` still lists `data/bsuk-ontology.json` as "Manual". It is now
+   seeded by `scripts/ontology_seed.py` and grown by approvals; a one-cell edit, left to the
+   controller to avoid a shared-doc conflict.
+
+#### Interfaces this section exposes
+
+- `scripts/pageboard.py`: `OPTIONAL_KEYWORD_TYPES = ("variation", "related", "cooccurring", "similar")`,
+  `ALL_KEYWORD_TYPES`, `KEYWORD_LABELS[...]` = Variations / Related / Co-occurring / Similar;
+  `distribution()` totals now carry the four keys.
+- Record fields: `sections[].keywords.variation|related|cooccurring|similar` — optional string arrays.
+- `scripts/family_rules.py`: `KEYWORD_VARIANT_TYPES`, check function `keyword_variants_filled`,
+  check id **`keyword-variants-missing`** (WARN on `draft`, FAIL on `boarded|approved|built|released`;
+  new-family pages only).
+- `scripts/keyword_variants.py SLUG [--also DIR ...] [--root DIR]` → JSON `{slug, primary, buckets: {type: [{term, sources, df}]}, examined}`;
+  exit 0 / 2 bad slug / 6 no cache. Python: `propose(slug, root, also=())`, `load_corpus(slug, root)`.
+- `schemas/ontology.schema.json`: classes `Organization`, `Regulation`.
+- `scripts/ontology_seed.py [--check]`; Python: `seeded(existing, locations, settings, ledger, rows)`,
+  `library_rows()`, `HOST_ORG`, `SKIP_HOSTS`, `REGULATION_ROWS`, `HEALTH_TESTS`, `CLASS_ORDER`.
+- New ontology ids (45): `ont:carlisle`, `ont:cumbria`, 24 city ids (`ont:manchester`, `ont:leeds`, …),
+  `ont:l-2-hga-dna-test`, `ont:hc-hsf4-dna-test`, `ont:phpv-test`, `ont:bva-kc-eye-scheme`,
+  `ont:bva-hip-elbow-scores`, `ont:the-kennel-club`, `ont:rspca`, `ont:pdsa`, `ont:blue-cross`, `ont:bva`,
+  `ont:ico`, `ont:citizens-advice`, `ont:google`, `ont:uk-government`, `ont:dangerous-dogs-act-1991`,
+  `ont:dog-microchipping-law`, `ont:uk-data-protection-law`, `ont:pet-travel-rules-gb`,
+  `ont:welfare-in-transport-pb10308`.
+- `scripts/board_entities.py`: `group_entities(board, ont)`, `group_keywords(board)`,
+  `entities_html(groups)`, `keywords_html(groups, show_empty=())`, `anchor_id(section_id)` → `outline-<id>`,
+  `CLASS_ORDER`, `CSS`, `JS`.
+- Board HTML hooks: `id="outline-<section id>"` on every H2 line of block 3; `.kv[data-kv="entities"|"keywords"]`,
+  `.kv-bar`, `.kv-chip[data-f]`, `.kv-q`, `.ent`, `.sec-chip`, `table.mx`; CSS tokens `--c-<class>` in both themes.
+- Removed: `build_page_board.entity_graph_data`, `#entity-graph`, the cytoscape script tag.
+
+#### Verified
+
+Executed in a detached worktree from `system-gaps` 99c81e0 (Task 0), with `dist/` copied from
+BSUK-gaps and node_modules symlinked:
+- Baseline `python3 -m pytest tests/py -q`: 2378 passed, 27 skipped, 1 xfailed.
+- After Tasks 1–3, replayed in a fresh detached worktree of `system-gaps` with the Glasgow step
+  and `--also` folded in (commits cad3c26, bef5cc4, 4e97758): **2417 passed, 27 skipped, 1 xfailed**.
+- `npm run -s check:all`: exit 0 (`check:facts` 0 problems on 12 rebuilt pages, `marker_check` 0
+  problems on 265 files, agents 0 problems). `npm run -s registry`: 0 problems after each task.
+- Every approved record in `data/boards/` still matches its stamped hash (asserted in Task 1's tests).
+- `keyword_variants.py` on the cached Manchester and Leeds data: all four buckets non-empty (counts above);
+  `--also` loads every one of the ten `registry-*` folders.
+- Ontology: no entity carries a street or postcode alias; every sourced entity is named by its source file.
+- Ontology: 52 entities — People 1, Place 27, Health 6, Organization 9, Regulation 5, Organism 2,
+  Commerce 1, Logistics 1; 46 ASSERTED, 6 PROPOSED; `--check` idempotent.
+- Board render + Playwright: 8 page/width/theme combinations, no horizontal scroll at 375, filters,
+  sticky bar and section-chip jumps all working (table above).
+
+
+---
+
+## Part B — External-link diversity and anchor types (Tasks 4–5)
+
+Drafted in a detached worktree of `system-gaps` (99c81e0), executed there task by task as two
+commits (1153ce9, 12629f2), then the full suite and `check:all` were run. Everything below is
+the code that ran.
+
+**What was found before drafting (so the executor does not re-check it):**
+- `pageboard.library_urls()` does not parse the library table; it greps every `https?://` in
+  the file (`_LIB_URL`). An extra column is invisible to it. No test, and nothing in
+  `scripts/pageboard.py`, pins the column count; `tests/py/fixtures/external-link-library.md`
+  is a separate two-column fixture and is not touched.
+- `library_urls()` also greps the Provenance prose, which names old spellings that are
+  deliberately NOT rows (for example `gov.uk/take-pet-abroad`). So "every allowlisted URL has a
+  type" is the wrong test; the tests below compare against the TABLE rows only.
+- `meta.status` is one of `draft, boarded, approved, built, released` (schema). The checks
+  WARN on `draft` and FAIL on every other status, which covers "boarded/approved" and the two
+  after them.
+- The page-level "no anchor twice" rule already exists: `pageboard.gate_findings` emits
+  `links-anchor-duplicate` (FAIL) for any two non-nav anchors that tokenise the same
+  (`pageboard.tokens()` folds case, whitespace, punctuation and curly apostrophes), on every
+  page, internal and external together. It already covers "no anchor repeats on the page" and
+  "no two external links share an anchor". Task 5 REUSES it — a test proves it fires on a
+  new-family page — instead of registering a second check that would report the same fault
+  twice. The only existing "ledger code" is a grep recipe in
+  `.claude/skills/internal-link-agent/SKILL.md`; the site-wide check below is new and reads
+  `data/boards/*.json` rather than `dist/`, so siblings see each other before either is built.
+- Anchor vocabulary: Rule 58 (`docs/reference/seo-rules.md`) names exact, conversational and
+  branded; the Anchor Diversity Ledger names exact, partial, LSI, natural. One enum covers both:
+  `exact, partial, lsi, natural, branded, naked-url` (`natural` is Rule 58's
+  "conversational/descriptive" default).
+- Adding an OPTIONAL property to the schema does not change any record, so no `record_hash`
+  moves; a test asserts every approved record in `data/boards/` still matches its approval.
+- The board's links block gains the column and the line ONLY when
+  `family_rules.applies(board)` or a link already carries `anchor_type`. The twelve built boards
+  do neither, so their rendered blocks (and the committed `docs/artifacts/boards/*.html`) are
+  byte-identical, and every existing `tests/py/test_board_links.py` assertion still holds.
+- `data/competitors.json` bans one domain (`staffordshirebullterrierkennel.com`); none of the
+  new rows is on it, so `check:competitors` stays green.
+- The p5-readiness plan (other chat) does not edit `docs/reference/external-link-library.md`,
+  `schemas/board.schema.json`, `scripts/build_page_board.py` or `rules/links.md`; it adds
+  rule-index rows after `no-fabricated-claims` and edits rule 16's row. The two rows here are
+  appended at the END of the array, so the two edits do not touch the same lines.
+
+---
+
+### Task 4: External links — six links, six domains, four source types
+
+**Gap:** "6 diverse external links per page" — user ruling 2026-09-24: at least 6 external
+links, on 6 distinct domains, from at least 4 source types, on location, comparison and blog
+pages only.
+
+**Files:**
+- Create: `scripts/link_diversity.py`
+- Modify: `scripts/family_rules.py` (append 5 lines at the end)
+- Modify: `docs/reference/external-link-library.md` (new `Source type` column on every row, one
+  intro paragraph, ten starter rows, one provenance paragraph)
+- Modify: `rules/links.md` (append one rule entry)
+- Modify: `data/quality/rule-index.json` (one row at the end of `rules`)
+- Modify: `scripts/ontology_seed.py` (Task 2's seeder: tolerate the new column, map the new hosts, seed the two laws — Step 5b)
+- Modify: `tests/py/test_ontology_seed.py` (Task 2's fixture carries the two law rows; two tests appended — Step 5b)
+- Modify (generated by the script, plus one alias): `data/bsuk-ontology.json`
+- Regenerate: `docs/reference/system-registry.md`
+- Test: `tests/py/test_link_diversity.py`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_link_diversity.py`:
+```python
+"""scripts/link_diversity.py — the system-gaps rules on a new page's links.
+
+Task 4: at least six external links, on six distinct registrable domains, from at least four
+source types, where a link's source type is the `Source type` column of its row in
+docs/reference/external-link-library.md.
+
+Every check is exercised through `family_rules.findings()`, the hook `pageboard.gate_findings`
+calls, so a passing test is a statement about the gate rather than about a helper.
+"""
+import copy
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import family_rules as FR      # noqa: E402
+import link_diversity as LD    # noqa: E402
+import pageboard as PB         # noqa: E402
+
+LIBRARY = ROOT / "docs" / "reference" / "external-link-library.md"
+
+# Eleven typed rows on nine domains and seven source types. `other` is a real type that does
+# not count toward the four, so the fixture can prove that too.
+FIXTURE_ROWS = [
+    ("https://www.gov.uk/a", "gov"),
+    ("https://www.gov.uk/b", "gov"),
+    ("https://www.legislation.gov.uk/c", "gov"),
+    ("https://www.royalkennelclub.com/d", "registry"),
+    ("https://www.pdsa.org.uk/e", "vet-charity"),
+    ("https://www.rspca.org.uk/f", "welfare"),
+    ("https://pmc.ncbi.nlm.nih.gov/g", "research"),
+    ("https://www.cumberland.gov.uk/h", "local"),
+    ("https://crufts.org.uk/i", "other"),
+    ("https://policies.google.com/j", "other"),
+    ("https://assets.publishing.service.gov.uk/k.pdf", "gov"),
+]
+
+
+@pytest.fixture()
+def library(tmp_path, monkeypatch):
+    lines = ["# fixture", "", "| URL | Host | What it is | First page using it | Verified | Source type |",
+             "|---|---|---|---|---|---|"]
+    for url, t in FIXTURE_ROWS:
+        lines.append(f"| {url} | host | a fixture row | none | 2026-09-24 · 200 | {t} |")
+    p = tmp_path / "external-link-library.md"
+    p.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    monkeypatch.setattr(PB, "EXTERNAL_LIBRARY", p)
+    return p
+
+
+def _board(status="boarded", slug="uk-locations/blue-staffy-puppies-manchester", page_type="location"):
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8")))
+    b["meta"].update(slug=slug, page_type=page_type, status=status)
+    return b
+
+
+def _external(board, urls):
+    """Spread the urls over the sections, one anchor each, so no anchor repeats."""
+    secs = board["sections"]
+    for s in secs:
+        s["links"]["external"] = []
+    for i, u in enumerate(urls):
+        secs[i % len(secs)]["links"]["external"].append(
+            {"href": u, "anchor": f"source number {i}", "library_row": u})
+    return board
+
+
+def _ext_findings(board):
+    return [f for f in FR.findings(board, None) if f[0] == "external-links-six-diverse"]
+
+
+DIVERSE = ["https://www.gov.uk/a", "https://www.legislation.gov.uk/c", "https://www.royalkennelclub.com/d",
+           "https://www.pdsa.org.uk/e", "https://www.rspca.org.uk/f", "https://pmc.ncbi.nlm.nih.gov/g"]
+
+
+# ── the library ─────────────────────────────────────────────────────────────────────────
+def _table_urls():
+    """The URL of every table row. library_urls() also greps the provenance prose, which
+    names old spellings that are deliberately NOT rows, so it is the wrong set here."""
+    return {PB.normalise_url(line.split("|")[1].strip())
+            for line in LIBRARY.read_text(encoding="utf-8").splitlines() if line.startswith("| http")}
+
+
+def test_every_real_library_row_carries_a_known_source_type():
+    types = LD.library_source_types(LIBRARY)
+    urls = _table_urls()
+    assert types, "the library has no Source type column"
+    untyped = sorted(u for u in urls if u not in types)
+    assert untyped == [], f"library rows with no source type: {untyped}"
+    bad = sorted((u, t) for u, t in types.items() if t not in LD.SOURCE_TYPES)
+    assert bad == [], f"unknown source type(s) — the enum is {LD.SOURCE_TYPES}: {bad}"
+
+
+def test_every_real_library_row_has_one_cell_per_column():
+    """The parser reads the type by column index, so a row with a stray `|` in its prose
+    would silently shift its type into the wrong cell."""
+    header, bad = None, []
+    for n, line in enumerate(LIBRARY.read_text(encoding="utf-8").splitlines(), 1):
+        if line.startswith("| URL |"):
+            header = len(line.strip().strip("|").split("|"))
+        elif header and line.startswith("| http"):
+            if len(line.strip().strip("|").split("|")) != header:
+                bad.append(n)
+    assert header == 6, "the library header should carry six columns, the sixth Source type"
+    assert bad == [], f"library lines whose cell count is not {header}: {bad}"
+
+
+def test_every_typed_row_is_still_an_allowlisted_url():
+    # library_urls() greps rather than parses; the new column must not hide a row from it.
+    assert set(LD.library_source_types(LIBRARY)) <= PB.library_urls(LIBRARY)
+
+
+# ── registrable domains ─────────────────────────────────────────────────────────────────
+@pytest.mark.parametrize("url,domain", [
+    ("https://www.gov.uk/data-protection", "gov.uk"),
+    ("https://www.gov.uk/guidance/dog-breeding-licence-england", "gov.uk"),
+    ("https://assets.publishing.service.gov.uk/media/x.pdf", "gov.uk"),
+    ("https://www.legislation.gov.uk/uksi/2018/486/contents/made", "legislation.gov.uk"),
+    ("https://www.cumberland.gov.uk/business-and-licensing/licensing", "cumberland.gov.uk"),
+    ("https://www.royalkennelclub.com/breed-standards/", "royalkennelclub.com"),
+    ("https://www.thekennelclub.org.uk/", "thekennelclub.org.uk"),
+    ("https://policies.google.com/privacy", "google.com"),
+    ("https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/", "nih.gov"),
+    ("https://paag.org.uk/", "paag.org.uk"),
+])
+def test_registrable_domain(url, domain):
+    assert LD.registrable_domain(url) == domain
+
+
+# ── the check ───────────────────────────────────────────────────────────────────────────
+def test_six_links_six_domains_six_types_passes(library):
+    assert _ext_findings(_external(_board(), DIVERSE)) == []
+
+
+def test_five_links_fail_on_a_boarded_record(library):
+    f = _ext_findings(_external(_board(), DIVERSE[:5]))
+    assert ("external-links-six-diverse", "FAIL") in {(c, s) for c, s, _ in f}
+    assert any("5 distinct external link(s)" in m for _, _, m in f)
+
+
+def test_a_draft_only_warns(library):
+    f = _ext_findings(_external(_board(status="draft"), DIVERSE[:5]))
+    assert f and {s for _, s, _ in f} == {"WARN"}
+
+
+@pytest.mark.parametrize("status", ["boarded", "approved", "built", "released"])
+def test_every_status_past_draft_fails(library, status):
+    f = _ext_findings(_external(_board(status=status), DIVERSE[:2]))
+    assert f and {s for _, s, _ in f} == {"FAIL"}
+
+
+def test_the_same_url_twice_counts_once(library):
+    f = _ext_findings(_external(_board(), DIVERSE[:5] + ["https://gov.uk/a/"]))
+    assert any("5 distinct external link(s)" in m for _, _, m in f)
+
+
+def test_two_gov_uk_paths_are_one_domain(library):
+    urls = ["https://www.gov.uk/a", "https://www.gov.uk/b", "https://assets.publishing.service.gov.uk/k.pdf",
+            "https://www.royalkennelclub.com/d", "https://www.pdsa.org.uk/e", "https://www.rspca.org.uk/f"]
+    f = _ext_findings(_external(_board(), urls))
+    assert any("4 distinct domain(s)" in m for _, _, m in f), f
+
+
+def test_other_does_not_count_toward_the_four_source_types(library):
+    urls = ["https://www.gov.uk/a", "https://www.legislation.gov.uk/c", "https://www.royalkennelclub.com/d",
+            "https://www.pdsa.org.uk/e", "https://crufts.org.uk/i", "https://policies.google.com/j"]
+    f = _ext_findings(_external(_board(), urls))
+    assert any("3 source type(s)" in m for _, _, m in f), f
+
+
+def test_the_built_pages_are_not_asked(library):
+    b = _external(_board(slug="blue-staffy-blog-guides", page_type="blog"), [])
+    assert _ext_findings(b) == []
+
+
+def test_the_summary_names_domains_and_types(library):
+    s = LD.external_summary(_external(_board(), DIVERSE))
+    assert s["links"] == 6
+    assert s["domains"] == sorted(["gov.uk", "legislation.gov.uk", "royalkennelclub.com",
+                                   "pdsa.org.uk", "rspca.org.uk", "nih.gov"])
+    assert s["source_types"] == ["gov", "registry", "research", "vet-charity", "welfare"]
+
+
+def test_the_gate_carries_the_finding(library):
+    from test_page_board import ONT_OK, LEDGER_EMPTY
+    f = PB.gate_findings(_external(_board(), DIVERSE[:3]), ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+    assert any(x["check"] == "external-links-six-diverse" and x["sev"] == "FAIL" for x in f)
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_link_diversity.py -q`
+Expected: ERROR at collection — `ModuleNotFoundError: No module named 'link_diversity'`.
+
+- [ ] **Step 3: Implement the checks**
+
+Create `scripts/link_diversity.py`:
+```python
+"""link_diversity — the system-gaps rules on a new page's links (Tasks 4 and 5).
+
+Task 4, `external-links-six-diverse` (rules/links.md): a location, comparison or blog page
+carries at least six external links, on at least six distinct registrable domains, drawn from
+at least four source types. A link's source type is the `Source type` column of its row in
+docs/reference/external-link-library.md — the allowlist `pageboard.validate_board` already
+holds every external href to — so the type is written once, next to the URL, and not retyped
+on every board.
+
+The checks register on `family_rules`, so they bind the new pages only; the twelve pages built
+before this build are never asked. A draft is WARNed (a record is boarded before its links are
+complete); every status after draft FAILs.
+
+`pageboard` imports `family_rules`, which imports this module at its foot, so `pageboard` may
+still be half-initialised while this file loads. Every `PB.` reference is therefore inside a
+function, never at module level.
+"""
+import pathlib
+import re
+from urllib.parse import urlsplit
+
+import family_rules as FR
+import pageboard as PB
+
+# ── Task 4: external-link diversity ──────────────────────────────────────────────────────
+SOURCE_TYPES = ("gov", "registry", "vet-charity", "welfare", "research", "local", "other")
+# `other` is a legal type (a privacy regulator's policy page, a show) that counts toward the
+# six links and the six domains but not toward the four source types.
+DIVERSE_TYPES = frozenset(SOURCE_TYPES) - {"other"}
+EXTERNAL_MIN, DOMAIN_MIN, SOURCE_TYPE_MIN = 6, 6, 4
+EXTERNAL_CHECK = "external-links-six-diverse"
+
+# Second levels under a two-letter country code that make a three-label registrable domain —
+# the same set scripts/competitor_registry_check.py uses for root domains.
+CC_SECOND_LEVELS = {"co", "org", "me", "ltd", "plc", "ac", "gov", "net", "sch", "com"}
+# gov.uk is itself a public suffix, so `service.gov.uk` reads as a registrable domain of its
+# own. It is GOV.UK's asset host, not a second publisher: a PDF there and a guidance page on
+# www.gov.uk are one source. legislation.gov.uk (The National Archives) and a council's own
+# domain are real second publishers and are NOT aliased.
+DOMAIN_ALIASES = {"service.gov.uk": "gov.uk"}
+_ROW = re.compile(r"^\|\s*(https?://[^\s|]+)\s*\|")
+
+
+def status_severity(board):
+    return "WARN" if board["meta"]["status"] == "draft" else "FAIL"
+
+
+def registrable_domain(url):
+    """The domain a link counts toward: `www.` dropped, a UK-style `x.org.uk` kept whole."""
+    host = (urlsplit(url).hostname or "").lower().rstrip(".")
+    if host.startswith("www."):
+        host = host[4:]
+    labels = host.split(".")
+    if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-2] in CC_SECOND_LEVELS:
+        dom = ".".join(labels[-3:])
+    else:
+        dom = ".".join(labels[-2:])
+    return DOMAIN_ALIASES.get(dom, dom)
+
+
+def library_source_types(path=None):
+    """{normalised URL: source type} for every row of the library table that names one.
+
+    Parsed by column NAME, not position, so a later column added to the table does not
+    shift the read. A row the header gives no `Source type` cell to is simply absent, and
+    the library test reports it."""
+    p = pathlib.Path(PB.EXTERNAL_LIBRARY if path is None else path)
+    if not p.exists():
+        return {}
+    out, col = {}, None
+    for line in p.read_text(encoding="utf-8").splitlines():
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip().strip("|").split("|")]
+        if cells[0] == "URL":
+            col = cells.index("Source type") if "Source type" in cells else None
+            continue
+        m = _ROW.match(line)
+        if m and col is not None and col < len(cells) and cells[col]:
+            out[PB.normalise_url(m.group(1))] = cells[col]
+    return out
+
+
+def external_links(board):
+    """{normalised URL: first link record} across the page, so one URL cited in three
+    sections counts once."""
+    seen = {}
+    for s in board["sections"]:
+        for l in s["links"]["external"]:
+            seen.setdefault(PB.normalise_url(l["href"]), l)
+    return seen
+
+
+def external_summary(board, types=None):
+    types = library_source_types() if types is None else types
+    links = external_links(board)
+    by_url = {u: types.get(u, "untyped") for u in links}
+    return {
+        "links": len(links),
+        "domains": sorted({registrable_domain(u) for u in links}),
+        "source_types": sorted({t for t in by_url.values() if t in DIVERSE_TYPES}),
+        "by_url": by_url,
+    }
+
+
+@FR.register
+def external_diversity(board, ont):
+    sev, s = status_severity(board), external_summary(board)
+    if s["links"] < EXTERNAL_MIN:
+        yield (EXTERNAL_CHECK, sev,
+               f"{s['links']} distinct external link(s) — a {board['meta']['page_type']} page carries at "
+               f"least {EXTERNAL_MIN} (rules/links.md external-links-six-diverse)")
+    if len(s["domains"]) < DOMAIN_MIN:
+        yield (EXTERNAL_CHECK, sev,
+               f"{len(s['domains'])} distinct domain(s) ({', '.join(s['domains']) or 'none'}) — at least "
+               f"{DOMAIN_MIN}; every gov.uk path is one domain")
+    if len(s["source_types"]) < SOURCE_TYPE_MIN:
+        yield (EXTERNAL_CHECK, sev,
+               f"{len(s['source_types'])} source type(s) ({', '.join(s['source_types']) or 'none'}) — at "
+               f"least {SOURCE_TYPE_MIN} of {', '.join(sorted(DIVERSE_TYPES))}, read from the library's "
+               "Source type column")
+```
+
+Append to the end of `scripts/family_rules.py`:
+```python
+
+
+# ── Tasks 4 and 5 (system-gaps): external-link diversity and anchor types ───────────────
+# Imported here; later tasks append after it. link_diversity registers its checks with
+# `register` above.
+import link_diversity  # noqa: E402,F401
+```
+
+- [ ] **Step 4: Verify the ten starter URLs return 200 (verify at execution)**
+
+Every starter row must return 200 before it is added: `curl -sI` must return 200. Run:
+```bash
+for u in \
+  https://www.legislation.gov.uk/uksi/2018/486/contents/made \
+  https://www.legislation.gov.uk/uksi/2015/108/contents/made \
+  https://www.gov.uk/guidance/dog-breeding-licence-england \
+  https://www.gov.uk/guidance/buying-a-cat-or-dog \
+  https://www.gov.uk/find-local-council \
+  https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-activities-licensing \
+  https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-welfare-licence-register \
+  https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier \
+  https://paag.org.uk/ \
+  https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/ \
+  ; do printf '%s  %s\n' "$(curl -sIL -o /dev/null -w '%{http_code}' --max-time 20 "$u")" "$u"; done
+```
+Expected: ten lines, each starting `200`. (Drafting run, 2026-09-24: all ten returned 200.)
+If any line is not `200`, delete that row from `ROWS` in Step 5 before running it and say so in
+the commit message; do not add a row that failed. Do NOT add
+`https://www.rvc.ac.uk/vetcompass` — it answers `curl` with 403/000 (a bot filter) and was
+left out for that reason; see Open questions.
+
+- [ ] **Step 5: Type every library row and add the starter rows**
+
+Classification of the 26 existing rows (the `TYPES` map in the script): `gov` — ico.org.uk,
+every gov.uk row and the gov.uk-hosted PDF; `registry` — every thekennelclub.org.uk and
+royalkennelclub.com row; `vet-charity` — BVA and PDSA; `welfare` — RSPCA and Blue Cross;
+`other` — Citizens Advice's privacy policy, Google's privacy policy and Crufts (the registry's
+own show; typed `other` so a page cannot reach four types through two registry-owned
+domains). The new rows add `local` (Cumberland Council, the council for Carlisle) and
+`research` (a peer-reviewed VetCompass study on the breed); their "What it is" text says only
+what each page itself says (checked on 2026-09-24).
+
+Run from the repo root (it asserts every existing row is typed exactly once):
+```bash
+python3 - <<'EOF'
+import pathlib
+LIB = pathlib.Path("docs/reference/external-link-library.md")
+s = LIB.read_text(encoding="utf-8")
+TYPES = {
+    "https://ico.org.uk/": "gov",
+    "https://www.gov.uk/data-protection": "gov",
+    "https://www.citizensadvice.org.uk/about-us/information/citizens-advice-privacy-policy/": "other",
+    "https://policies.google.com/privacy": "other",
+    "https://www.thekennelclub.org.uk/": "registry",
+    "https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/": "registry",
+    "https://www.thekennelclub.org.uk/media-centre/2025/january/responsible-breeding-bolstered-by-new-registrations-structure/": "registry",
+    "https://www.gov.uk/bring-pet-to-great-britain": "gov",
+    "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/": "registry",
+    "https://crufts.org.uk/": "other",
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy": "welfare",
+    "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/": "registry",
+    "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/": "registry",
+    "https://www.bva.co.uk/canine-health-schemes/eye-scheme/": "vet-charity",
+    "https://www.gov.uk/get-your-dog-cat-microchipped": "gov",
+    "https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines": "vet-charity",
+    "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/": "registry",
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier": "vet-charity",
+    "https://www.gov.uk/control-dog-public/banned-dogs": "gov",
+    "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/": "registry",
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales": "welfare",
+    "https://www.bluecross.org.uk/advice/dog/socialising-your-puppy": "welfare",
+    "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare": "welfare",
+    "https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf": "gov",
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need": "vet-charity",
+    "https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/": "registry",
+}
+
+# 1. the Source type column, on the header, the rule line and every existing row
+out, done = [], set()
+for line in s.splitlines():
+    if line == "| URL | Host | What it is | First page using it | Verified |":
+        line += " Source type |"
+    elif line == "|---|---|---|---|---|":
+        line += "---|"
+    elif line.startswith("| http"):
+        url = line.split("|")[1].strip()
+        line += f" {TYPES[url]} |"
+        done.add(url)
+    out.append(line)
+assert done == set(TYPES), set(TYPES) ^ done
+s = "\n".join(out) + "\n"
+# 2. the paragraph that says what the column means
+INTRO = '**Source type.** The last column names what kind of publisher the row is, from one list:\n`gov` (a government department, regulator or the legislation site), `registry` (the pedigree\nregistry), `vet-charity` (a veterinary body or veterinary charity), `welfare` (an animal-welfare\ncharity or advisory group), `research` (a peer-reviewed study or a university research\nprogramme), `local` (a local council) and `other`. A location, comparison or blog page carries\nat least six external links on six distinct domains from at least four of the first six types\n(`rules/links.md`, `external-links-six-diverse`); `other` counts toward the six links and six\ndomains but never toward the four types. `scripts/link_diversity.py` reads this column by its\nheader name, so a row without a type is reported by `tests/py/test_link_diversity.py`.\n\n'
+assert s.count("**Do not link**") == 1
+s = s.replace("**Do not link**", INTRO + "**Do not link**", 1)
+# 3. the ten starter rows, after the last existing row
+ROWS = '| https://www.legislation.gov.uk/uksi/2018/486/contents/made | legislation.gov.uk | The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018 as made — the regulations animal activity licensing in England, dog breeding included, is issued under | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |\n| https://www.legislation.gov.uk/uksi/2015/108/contents/made | legislation.gov.uk | The Microchipping of Dogs (England) Regulations 2015 as made — the text of the law the government\'s microchipping guidance summarises | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |\n| https://www.gov.uk/guidance/dog-breeding-licence-england | gov.uk | The government\'s guidance on the dog breeding licence in England — who needs one, and that the council inspects the premises before it grants one | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |\n| https://www.gov.uk/guidance/buying-a-cat-or-dog | gov.uk | The government\'s advice on buying a cat or dog — what a responsible seller does, including showing a council licence number a buyer can check | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |\n| https://www.gov.uk/find-local-council | gov.uk | The government\'s find-your-local-council tool — how a reader finds the council that licenses breeders where they live | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | gov |\n| https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-activities-licensing | cumberland.gov.uk | Cumberland Council\'s page on animal activities licensing — dog breeding, boarding and selling animals as pets — the council for Carlisle | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | local |\n| https://www.cumberland.gov.uk/business-and-licensing/licensing/animal-establishment/animal-welfare-licence-register | cumberland.gov.uk | Cumberland Council\'s register of the businesses in its area that hold an animal welfare licence, with each one\'s star rating | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | local |\n| https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier | dogstrust.org.uk | Dogs Trust\'s Staffordshire Bull Terrier breed page — a rehoming charity\'s own account of the breed | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |\n| https://paag.org.uk/ | paag.org.uk | The Pet Advertising Advisory Group\'s how-to-buy-a-pet advice — independent guidance for a buyer answering an online pet advert | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | welfare |\n| https://pmc.ncbi.nlm.nih.gov/articles/PMC7510130/ | pmc.ncbi.nlm.nih.gov | Pegram, Wonham, Brodbelt, Church and others, "Staffordshire Bull Terriers in the UK: their disorder predispositions and protections" (Canine Medicine and Genetics, 2020) — a study of anonymised VetCompass veterinary records, open access on PubMed Central | none yet — starter row (system-gaps Task 4) | 2026-09-24 · 200 | research |\n'
+last = "| `/` | 2026-09-20 · 200 | registry |\n"
+assert s.count(last) == 1
+s = s.replace(last, last + ROWS, 1)
+# 4. their provenance, at the end of the file
+PROV = 'The ten added on 2026-09-24 are STARTER rows for the pages project 5 builds (system-gaps Task 4):\nno page links them yet, so "First page using it" says so, and the first board that cites one\nreplaces that cell with its route. Each was checked with `curl -sIL` on 2026-09-24 and returned\n200 at the URL written, which is the URL a following-redirects request resolved to. They exist\nso a location, comparison or blog page can reach six domains and four source types without\ninventing a citation: the two legislation rows are the law the government guidance rows\nsummarise; the Cumberland rows are the licensing authority for Carlisle; the study is a\npeer-reviewed UK source on the breed\'s disorders. A location page for another city adds\nthat city\'s own council licensing page as a `local` row when its board is written, checked the\nsame way.\n'
+s = s.rstrip("\n") + "\n\n" + PROV
+LIB.write_text(s, encoding="utf-8")
+print(f"typed {len(done)} existing rows; added {ROWS.count(chr(10))} starter rows")
+EOF
+```
+Expected: `typed 26 existing rows; added 10 starter rows`
+
+- [ ] **Step 5b: Keep Task 2's ontology seeder reading the library** (added at integration)
+
+Task 2's `scripts/ontology_seed.py` parses the same table. Its `ROW` regex matches exactly five
+cells, so after Step 5 `library_rows()` raises `no Rows-table lines parsed — the table changed
+shape`, and once that is fixed the five new hosts stop the seed by design ("has no organisation
+in ontology_seed.HOST_ORG and is not in SKIP_HOSTS — decide which"). Confirm the break first:
+
+Run: `python3 scripts/ontology_seed.py --check`
+Expected: exit 1, `pageboard.BoardError: …external-link-library.md: no Rows-table lines parsed — the table changed shape`.
+
+The two `legislation.gov.uk` rows name laws, and Task 2's rule makes such a row a Regulation
+entity (user decision, 2026-09-24): the Animal Welfare (Licensing of Activities Involving
+Animals) (England) Regulations 2018 become `ont:animal-licensing-regulations-2018`; the
+Microchipping of Dogs (England) Regulations 2015 are the law `ont:dog-microchipping-law` already
+stands for, so they fold into it as an alias in the row's own words. Write the tests first:
+append to the end of `tests/py/test_ontology_seed.py` (the block opens with two blank lines):
+```python
+
+
+# --- Task 4's starter rows: the two legislation.gov.uk laws are Regulation entities ---------
+
+LICENSING_2018 = "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018"
+MICROCHIP_2015 = "Microchipping of Dogs (England) Regulations 2015"
+
+
+def test_the_two_legislation_rows_seed_regulations():
+    by = _by_id(_seed())
+    reg = by["ont:animal-licensing-regulations-2018"]
+    assert (reg["name"], reg["class"], reg["authorization"], reg["source"], reg["owner_page"]) == (
+        LICENSING_2018, "Regulation", "ASSERTED", "docs/reference/external-link-library.md", None)
+    assert MICROCHIP_2015 in by["ont:dog-microchipping-law"]["aliases"]   # folded, not a second law
+    assert "ont:microchipping-of-dogs-england-regulations-2015" not in by
+    assert by["ont:uk-government"]["class"] == "Organization"            # the host stays the government
+
+
+def test_the_committed_ontology_carries_both_laws():
+    by = {e["id"]: e for e in PB.load_ontology()["entities"]}
+    assert by["ont:animal-licensing-regulations-2018"]["name"] == LICENSING_2018
+    assert by["ont:animal-licensing-regulations-2018"]["source"] == "docs/reference/external-link-library.md"
+    assert MICROCHIP_2015 in by["ont:dog-microchipping-law"]["aliases"]
+    text = PB.EXTERNAL_LIBRARY.read_text(encoding="utf-8")
+    assert LICENSING_2018 in text and MICROCHIP_2015 in text           # both named in the row's own words
+```
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py -q`
+Expected: `3 failed, 15 passed` — the two new tests (no `ont:animal-licensing-regulations-2018` yet)
+and `test_the_committed_ontology_is_exactly_what_a_seed_run_writes` (the table break above).
+
+Then make the four exact edits for the column and the hosts (run from the worktree root; each old string must occur once):
+```bash
+python3 - <<'EOF'
+import pathlib
+p = pathlib.Path("scripts/ontology_seed.py")
+s = p.read_text(encoding="utf-8")
+EDITS = [
+    # 1. the Rows table gained a sixth column (`Source type`, Task 4); read the first five and
+    #    tolerate any later column, so a column added to the right never stops the seed.
+    ('ROW = re.compile(r"^\\|\\s*(https?://[^\\s|]+)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*$")',
+     'ROW = re.compile(r"^\\|\\s*(https?://[^\\s|]+)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|\\s*([^|]+?)\\s*\\|(?:[^|]*\\|)*\\s*$")'),
+    # 2. the four publishers Task 4's starter rows add
+    ('    "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),\n}',
+     '    "bluecross.org.uk": ("ont:blue-cross", "Blue Cross", ["The Blue Cross"]),\n'
+     '    # Task 4 starter rows. legislation.gov.uk is the government\'s own legislation site, one\n'
+     '    # publisher with gov.uk here as assets.publishing.service.gov.uk is.\n'
+     '    "legislation.gov.uk": ("ont:uk-government", "UK government", ["GOV.UK", "the government"]),\n'
+     '    "cumberland.gov.uk": ("ont:cumberland-council", "Cumberland Council", []),\n'
+     '    "dogstrust.org.uk": ("ont:dogs-trust", "Dogs Trust", []),\n'
+     '    "paag.org.uk": ("ont:paag", "Pet Advertising Advisory Group", []),\n}'),
+    ('    "crufts.org.uk": "a dog show (an event), not an organisation; its organiser is already The Kennel Club",\n}',
+     '    "crufts.org.uk": "a dog show (an event), not an organisation; its organiser is already The Kennel Club",\n'
+     '    "pmc.ncbi.nlm.nih.gov": "PubMed Central, the archive that hosts a study; the study, not the archive, is the source",\n}'),
+]
+for old, new in EDITS:
+    assert s.count(old) == 1, old[:60]
+    s = s.replace(old, new, 1)
+p.write_text(s, encoding="utf-8")
+print("ontology_seed.py: 4 hosts mapped, 1 skipped, sixth column tolerated")
+EOF
+```
+Expected: `ontology_seed.py: 4 hosts mapped, 1 skipped, sixth column tolerated`.
+`legislation.gov.uk` is the government's own legislation site, so it is one publisher with
+`gov.uk` (as the asset host already is); Cumberland Council, Dogs Trust and the Pet Advertising
+Advisory Group are named exactly as their rows' "What it is" text names them (Task 2's
+`test_every_organisation_name_or_alias_is_in_the_library_text` holds that); PubMed Central hosts
+the study and is skipped like Crufts.
+
+Then seed the two laws, widen Task 2's fixture (its `ROWS` must carry every `REGULATION_ROWS`
+URL, or the seeder's `missing` guard refuses it) and add the alias to the committed microchipping
+entity (the seeder never rewrites an existing entity, so that one edit is made here; its assert
+refuses anything but the entity Task 2 wrote):
+```bash
+python3 - <<'EOF'
+import json, pathlib
+# 1. the seeder: the two legislation.gov.uk rows name laws (Task 2's rule makes such a row a
+#    Regulation). The 2018 licensing regulations are a new entity; the 2015 microchipping
+#    regulations are the law ont:dog-microchipping-law already stands for, so they fold into
+#    it with the row's own wording as an alias (on both of its rows, so whichever row a seed
+#    reads first carries it).
+p = pathlib.Path("scripts/ontology_seed.py")
+s = p.read_text(encoding="utf-8")
+OLD_CHIP = ('        ("ont:dog-microchipping-law", "Dog microchipping law", ["microchipping law", "compulsory microchipping"]),\n')
+NEW_CHIP = ('        ("ont:dog-microchipping-law", "Dog microchipping law",\n'
+            '         ["microchipping law", "compulsory microchipping", "Microchipping of Dogs (England) Regulations 2015"]),\n')
+assert s.count(OLD_CHIP) == 1
+s = s.replace(OLD_CHIP, NEW_CHIP, 1)
+OLD_END = '         ["PB10308", "welfare-in-transport guidance"]),\n}'
+NEW_END = ('         ["PB10308", "welfare-in-transport guidance"]),\n'
+           '    # Task 4 starter rows on legislation.gov.uk: the text of two laws.\n'
+           '    "https://legislation.gov.uk/uksi/2018/486/contents/made":\n'
+           '        ("ont:animal-licensing-regulations-2018",\n'
+           '         "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018",\n'
+           '         ["animal activity licensing"]),\n'
+           '    "https://legislation.gov.uk/uksi/2015/108/contents/made":\n'
+           '        ("ont:dog-microchipping-law", "Dog microchipping law",\n'
+           '         ["microchipping law", "compulsory microchipping", "Microchipping of Dogs (England) Regulations 2015"]),\n}')
+assert s.count(OLD_END) == 1
+s = s.replace(OLD_END, NEW_END, 1)
+p.write_text(s, encoding="utf-8")
+
+# 2. Task 2's test fixture: its ROWS must carry every REGULATION_ROWS URL, or the seeder's
+#    `missing` guard refuses the fixture.
+t = pathlib.Path("tests/py/test_ontology_seed.py")
+s = t.read_text(encoding="utf-8")
+OLD_ROWS = '        ("https://crufts.org.uk/", "crufts.org.uk", "Crufts", "blue-staffy-uk-breeders")]\n'
+NEW_ROWS = ('        ("https://crufts.org.uk/", "crufts.org.uk", "Crufts", "blue-staffy-uk-breeders"),\n'
+            '        ("https://www.legislation.gov.uk/uksi/2018/486/contents/made", "legislation.gov.uk",\n'
+            '         "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018", "index"),\n'
+            '        ("https://www.legislation.gov.uk/uksi/2015/108/contents/made", "legislation.gov.uk",\n'
+            '         "The Microchipping of Dogs (England) Regulations 2015", "index")]\n')
+assert s.count(OLD_ROWS) == 1
+t.write_text(s.replace(OLD_ROWS, NEW_ROWS, 1), encoding="utf-8")
+
+# 3. the committed entity: the seeder never rewrites an existing entity, so the alias is added
+#    to ont:dog-microchipping-law once, here (its asserts refuse anything but the Task 2 entity).
+o = pathlib.Path("data/bsuk-ontology.json")
+ont = json.loads(o.read_text(encoding="utf-8"))
+chip = {e["id"]: e for e in ont["entities"]}["ont:dog-microchipping-law"]
+assert chip["aliases"] == ["microchipping law", "compulsory microchipping"], chip
+chip["aliases"].append("Microchipping of Dogs (England) Regulations 2015")
+o.write_text(json.dumps(ont, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+print("ontology_seed.py: 2 law rows; fixture widened; ont:dog-microchipping-law alias added")
+EOF
+```
+Expected: `ontology_seed.py: 2 law rows; fixture widened; ont:dog-microchipping-law alias added`.
+
+Run: `python3 scripts/ontology_seed.py && python3 scripts/ontology_seed.py --check`
+Expected: `wrote data/bsuk-ontology.json — 56 entities: People 1, Place 27, Health 6, Organization 12, Regulation 6, Organism 2, Commerce 1, Logistics 1 (50 asserted, 6 proposed)`, then `examined 56 entities; ontology is seeded`.
+
+Run: `python3 -m pytest tests/py/test_ontology_seed.py tests/py/test_page_board.py tests/py/test_board_entities.py -q`
+Expected: all pass (`test_ontology_seed.py` is now 18 tests).
+
+- [ ] **Step 6: Append the rule and its index row**
+
+Append to the end of `rules/links.md` (the file ends in a newline; leave one blank line, as
+between the existing entries):
+````markdown
+
+
+---
+id: external-links-six-diverse
+enforced: test
+family: NAV
+test: tests/py/test_link_diversity.py
+---
+
+- **Six diverse external links (location, comparison and blog pages built after 2026-09-24)** — A new location, comparison or blog page carries at least **6 external links, on 6 distinct domains, from at least 4 source types** (gov, registry, vet-charity, welfare, research, local). A link's source type is the `Source type` column of its row in `docs/reference/external-link-library.md`; every `gov.uk` path is one domain, while `legislation.gov.uk` and a council's own domain are domains of their own; `other` counts toward the six links and six domains, never toward the four types. One URL cited in several sections counts once. `scripts/link_diversity.py` checks the board: WARN on a draft, FAIL from `boarded` on. The twelve pages built before this rule are not asked (`scripts/family_rules.py`). (User ruling, 2026-09-24.)
+````
+
+In `data/quality/rule-index.json`, replace the end of the file — old:
+```json
+layout-h3-image-first"
+  }
+ ]
+}
+```
+new:
+```json
+layout-h3-image-first"
+  },
+  {
+   "id": "external-links-six-diverse",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_link_diversity.py",
+   "severity": "blocking"
+  }
+ ]
+}
+```
+
+- [ ] **Step 7: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_link_diversity.py tests/py/test_family_rules.py tests/py/test_rules_index.py tests/py/test_claude_md.py tests/py/test_competitors_registry.py tests/py/test_ontology_seed.py -q`
+Expected: all pass (26 new tests in `test_link_diversity.py`; integration run: 213 passed with the seeder tests). `tests/py/test_system_registry.py` fails until Step 8 regenerates the registry — that is expected here.
+
+- [ ] **Step 8: Regenerate the registries**
+
+Run: `python3 scripts/build_system_registry.py && python3 scripts/build_agent_registry.py && npm run -s registry`
+Expected: `wrote docs/reference/system-registry.md` (Scripts 66 → 67 in plan order after Tasks 1–3; 63 → 64 standalone, `scripts/link_diversity.py` listed), `wrote data/agent-registry.json — 41 agents` (unchanged), `examined docs/reference/system-registry.md; 0 problems`.
+
+- [ ] **Step 9: Commit**
+```bash
+git add scripts/link_diversity.py scripts/family_rules.py docs/reference/external-link-library.md \
+        docs/reference/system-registry.md rules/links.md data/quality/rule-index.json \
+        tests/py/test_link_diversity.py scripts/ontology_seed.py tests/py/test_ontology_seed.py data/bsuk-ontology.json
+git commit -m "links: six external links on six domains from four source types (new pages only)
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 5: Anchor types — record them, vary them, never reuse one site-wide
+
+**Gap:** "anchor type/variations for better SEO" — every link on a new location, comparison or
+blog page records an anchor type, the page mixes types, and no anchor is reused for the same
+target across boards; the board shows it.
+
+**Files:**
+- Modify: `schemas/board.schema.json` (optional `anchor_type` on internal and external link items)
+- Modify: `scripts/link_diversity.py` (append the Task 5 block)
+- Modify: `scripts/build_page_board.py` (import; `link_rows`; `links_block` — ten small edits)
+- Modify: `rules/links.md` (append one rule entry)
+- Modify: `data/quality/rule-index.json` (one row at the end of `rules`)
+- Test: `tests/py/test_anchor_types.py`
+
+Checks this task registers (both via `@FR.register`, so new-family pages only; WARN on draft,
+FAIL after):
+- `anchor-type-variation` — every link (nav included) carries `anchor_type`; in-copy internal
+  anchors use ≥3 types with ≤2 `exact`; external anchors use ≥3 types. Nav tiles are typed but
+  do not count toward the mix (a grid or breadcrumb names its targets by title by nature — the
+  same exemption `links-anchor-duplicate` already grants them).
+- `anchor-reuse-sitewide` — an in-copy internal anchor that any OTHER board in
+  `data/boards/*.json` (not `_`-prefixed, not this slug) already uses for the same route
+  (query/fragment dropped, trailing slash) with the same token key.
+- Page-level repeats stay with the existing `links-anchor-duplicate`; the last test below
+  proves it fires on these pages.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_anchor_types.py`:
+```python
+"""scripts/link_diversity.py, Task 5 — anchor-type variation on a new page's links.
+
+Every link on a location, comparison or blog page carries `anchor_type`; the page's in-copy
+internal anchors use at least three types with at most two exact-match; its external anchors
+use at least three types; and no internal anchor another board already uses for the same
+target is reused. The page-level "no anchor twice" rule is pageboard's existing
+`links-anchor-duplicate`, and the last test here proves it already holds on these pages.
+"""
+import copy
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import family_rules as FR      # noqa: E402
+import link_diversity as LD    # noqa: E402
+import pageboard as PB         # noqa: E402
+
+SLUG = "uk-locations/blue-staffy-puppies-manchester"
+
+
+def _board(status="boarded", slug=SLUG, page_type="location"):
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8")))
+    b["meta"].update(slug=slug, page_type=page_type, status=status)
+    return b
+
+
+def _links(board, internal=(), external=()):
+    """internal/external: (href, anchor, anchor_type or None). All go on the first section."""
+    def row(h, a, t, **extra):
+        d = {"href": h, "anchor": a, **extra}
+        if t:
+            d["anchor_type"] = t
+        return d
+    board["sections"][0]["links"] = {
+        "internal": [row(h, a, t, sentence_start=True) for h, a, t in internal],
+        "external": [row(h, a, t, library_row=h) for h, a, t in external],
+    }
+    return board
+
+
+GOOD_INTERNAL = [("/blue-staffy-health-uk/", "Blue Staffy health", "exact"),
+                 ("/uk-staffordshire-bull-terrier-guide/", "our Staffordshire Bull Terrier guide", "partial"),
+                 ("/buy-blue-staffy-puppies-uk/", "home-raised blue pups", "lsi"),
+                 ("/uk-blue-staffy-breeders-contact/", "ask Lisa a question", "natural")]
+GOOD_EXTERNAL = [("https://www.gov.uk/a", "the government's licence guidance", "natural"),
+                 ("https://www.royalkennelclub.com/d", "The Royal Kennel Club", "branded"),
+                 ("https://www.pdsa.org.uk/e", "https://www.pdsa.org.uk/e", "naked-url")]
+
+
+def _anchor_findings(board):
+    ids = {LD.ANCHOR_CHECK, LD.SITEWIDE_CHECK}
+    return [f for f in FR.findings(board, None) if f[0] in ids]
+
+
+@pytest.fixture(autouse=True)
+def no_other_boards(tmp_path, monkeypatch):
+    """The site-wide check reads data/boards/; point it at an empty directory unless a test
+    writes a board there itself."""
+    d = tmp_path / "boards"
+    d.mkdir()
+    monkeypatch.setattr(LD, "BOARDS_DIR", d)
+    return d
+
+
+def test_the_schema_accepts_anchor_type_and_keeps_it_optional():
+    schema = json.loads((ROOT / "schemas" / "board.schema.json").read_text(encoding="utf-8"))
+    links = schema["properties"]["sections"]["items"]["properties"]["links"]["properties"]
+    for kind in ("internal", "external"):
+        item = links[kind]["items"]
+        assert item["properties"]["anchor_type"]["enum"] == list(LD.ANCHOR_TYPES)
+        assert "anchor_type" not in item["required"]
+
+
+def test_the_built_records_still_validate_and_keep_their_hashes():
+    """Optional means the twelve approved records neither fail the schema nor change hash."""
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        b = json.loads(p.read_text(encoding="utf-8"))
+        PB._validate(b, "board.schema.json")
+        appr = b.get("approval") or {}
+        if appr.get("record_hash"):
+            assert PB.approval_matches(b), p.name
+
+
+def test_a_varied_page_passes():
+    b = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
+    assert _anchor_findings(b) == []
+
+
+def test_a_link_without_anchor_type_fails():
+    b = _links(_board(), GOOD_INTERNAL[:3] + [("/x/", "an untyped anchor", None)], GOOD_EXTERNAL)
+    f = _anchor_findings(b)
+    assert any(c == LD.ANCHOR_CHECK and s == "FAIL" and "an untyped anchor" in m for c, s, m in f), f
+
+
+def test_a_draft_only_warns():
+    b = _links(_board(status="draft"), GOOD_INTERNAL[:3] + [("/x/", "an untyped anchor", None)], GOOD_EXTERNAL)
+    f = _anchor_findings(b)
+    assert f and {s for _, s, _ in f} == {"WARN"}
+
+
+def test_two_internal_types_fail():
+    internal = [("/a/", "alpha words", "partial"), ("/b/", "beta words", "natural"),
+                ("/c/", "gamma words", "natural")]
+    f = _anchor_findings(_links(_board(), internal, GOOD_EXTERNAL))
+    assert any("internal anchors use 2 type(s)" in m for _, _, m in f), f
+
+
+def test_three_exact_internal_anchors_fail():
+    internal = GOOD_INTERNAL + [("/a/", "Blue Staffy puppies", "exact"), ("/b/", "Staffy breeder UK", "exact")]
+    f = _anchor_findings(_links(_board(), internal, GOOD_EXTERNAL))
+    assert any("3 exact-match internal anchor(s)" in m for _, _, m in f), f
+
+
+def test_nav_links_need_a_type_but_do_not_count_toward_the_mix():
+    b = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
+    for n in range(3):
+        b["sections"][1]["links"]["internal"].append(
+            {"href": f"/tile-{n}/", "anchor": f"Blue Staffy tile {n}", "nav": True, "anchor_type": "exact"})
+    assert _anchor_findings(b) == []
+
+
+def test_two_external_types_fail():
+    external = [("https://www.gov.uk/a", "the licence guidance", "natural"),
+                ("https://www.pdsa.org.uk/e", "the PDSA's breed advice", "natural"),
+                ("https://www.royalkennelclub.com/d", "The Royal Kennel Club", "branded")]
+    f = _anchor_findings(_links(_board(), GOOD_INTERNAL, external))
+    assert any("external anchors use 2 type(s)" in m for _, _, m in f), f
+
+
+def test_an_anchor_another_board_uses_for_the_same_target_fails(no_other_boards):
+    other = _links(_board(slug="uk-locations/blue-staffy-puppies-leeds"),
+                   [("/blue-staffy-health-uk", "blue  STAFFY health", "exact")])
+    (no_other_boards / "uk-locations--blue-staffy-puppies-leeds.json").write_text(json.dumps(other))
+    f = _anchor_findings(_links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL))
+    hits = [m for c, s, m in f if c == LD.SITEWIDE_CHECK]
+    assert hits and "uk-locations/blue-staffy-puppies-leeds" in hits[0], f
+
+
+def test_the_same_anchor_to_a_different_target_is_not_a_reuse(no_other_boards):
+    other = _links(_board(slug="uk-locations/blue-staffy-puppies-leeds"),
+                   [("/some-other-page/", "Blue Staffy health", "exact")])
+    (no_other_boards / "uk-locations--blue-staffy-puppies-leeds.json").write_text(json.dumps(other))
+    assert _anchor_findings(_links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)) == []
+
+
+def test_a_board_does_not_collide_with_its_own_record(no_other_boards):
+    me = _links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL)
+    (no_other_boards / "uk-locations--blue-staffy-puppies-manchester.json").write_text(json.dumps(me))
+    assert _anchor_findings(me) == []
+
+
+def test_the_built_pages_are_not_asked():
+    b = _links(_board(slug="blue-staffy-blog-guides", page_type="blog"), [("/x/", "untyped", None)])
+    assert _anchor_findings(b) == []
+
+
+def test_a_repeated_anchor_is_already_refused_by_the_page_gate():
+    """Page-level 'no anchor twice' (case, whitespace and punctuation folded) is pageboard's
+    links-anchor-duplicate, which runs on every page; Task 5 reuses it rather than adding a
+    second check that would report the same fault twice."""
+    from test_page_board import ONT_OK, LEDGER_EMPTY
+    external = GOOD_EXTERNAL + [("https://www.rspca.org.uk/f", "the Government's  licence guidance", "partial")]
+    b = _links(_board(), GOOD_INTERNAL, external)
+    f = PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")
+    assert any(x["check"] == "links-anchor-duplicate" and x["sev"] == "FAIL" for x in f)
+
+
+def test_the_anchor_summary_counts_by_type():
+    s = LD.anchor_summary(_links(_board(), GOOD_INTERNAL, GOOD_EXTERNAL))
+    assert s["internal"] == {"exact": 1, "partial": 1, "lsi": 1, "natural": 1}
+    assert s["external"] == {"natural": 1, "branded": 1, "naked-url": 1}
+    assert s["untyped"] == []
+
+
+# ── the board shows it ──────────────────────────────────────────────────────────────────
+ROUTES = {"built": None, "mapped": {"/blue-staffy-health-uk/"}}
+
+
+def _rendered_links(record):
+    import re
+    import build_page_board as B
+    html = B.render(record, PB.load_ontology(), PB.load_ledger(), {}, {}, "_demo",
+                    B.load_previews("_demo"), ROUTES)
+    m = re.search(r'<script type="text/markdown" data-title="3\. Outline">(.*?)</script>', html, re.S)
+    return m.group(1).split("## Links — every link this page will carry", 1)[1]
+
+
+def test_a_typed_record_gets_an_anchor_type_column_and_a_diversity_line():
+    rec = _links(PB.load_board("_demo"), GOOD_INTERNAL, GOOD_EXTERNAL)
+    block = _rendered_links(rec)
+    assert "| Target | Anchor | Purpose | Resolves | Source | Anchor type |" in block
+    row = next(l for l in block.splitlines() if "/buy-blue-staffy-puppies-uk/" in l)
+    assert row.rstrip().endswith("| lsi |")
+    line = next(l for l in block.splitlines() if "Link diversity" in l)
+    assert "internal anchors: exact 1, partial 1, lsi 1, natural 1" in line
+    assert "external anchors: natural 1, branded 1, naked-url 1" in line
+    assert "3 link(s) on 3 domain(s)" in line
+    assert "FAIL" in line or "WARN" in line      # three external links is short of six
+
+
+def test_an_untyped_record_renders_exactly_as_before():
+    """The twelve built boards carry no anchor_type and are not new-family pages; their
+    links block must not gain a column or a line (their committed artifacts stay current)."""
+    block = _rendered_links(PB.load_board("_demo"))
+    assert "Anchor type" not in block
+    assert "Link diversity" not in block
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_anchor_types.py -q`
+Expected: 17 errors — the autouse fixture fails with `AttributeError: <module 'link_diversity'> has no attribute 'BOARDS_DIR'`.
+
+- [ ] **Step 3: Add `anchor_type` to the schema**
+
+Run from the repo root:
+```bash
+python3 - <<'EOF'
+import json, pathlib
+p = pathlib.Path("schemas/board.schema.json"); s = p.read_text(encoding="utf-8")
+at = """          "anchor_type": {
+           "enum": ["exact", "partial", "lsi", "natural", "branded", "naked-url"],
+           "description": "the anchor's type for Anchor Diversity (docs/reference/seo-rules.md Rule 58, rules/links.md anchor-type-variation). Optional so the records built before it keep their hashes; scripts/link_diversity.py requires it on location, comparison and blog pages"
+          }
+"""
+old1 = """          "sentence_start": {
+           "const": true
+          }
+         },"""
+assert s.count(old1) == 1
+s = s.replace(old1, """          "sentence_start": {
+           "const": true
+          },
+""" + at + """         },""")
+old2 = """          "library_row": {
+           "type": "string",
+           "minLength": 1
+          }
+         }"""
+assert s.count(old2) == 1
+s = s.replace(old2, """          "library_row": {
+           "type": "string",
+           "minLength": 1
+          },
+""" + at + """         }""")
+json.loads(s)
+p.write_text(s, encoding="utf-8")
+print("schema: anchor_type added to internal and external link items")
+EOF
+```
+Expected: `schema: anchor_type added to internal and external link items`
+
+- [ ] **Step 4: Append the checks to `scripts/link_diversity.py`**
+
+Append to the end of `scripts/link_diversity.py` (after `external_diversity`, one blank line
+between):
+```python
+
+
+# ── Task 5: anchor-type variation ────────────────────────────────────────────────────────
+# One vocabulary for the three places that name anchor types: Rule 58's three strategies
+# (exact, conversational, branded — `natural` is the conversational default) and the
+# internal-link agent's Anchor Diversity Ledger rotation (exact → partial → LSI → natural),
+# plus a bare URL shown as its own anchor.
+ANCHOR_TYPES = ("exact", "partial", "lsi", "natural", "branded", "naked-url")
+INTERNAL_TYPE_MIN, EXACT_MAX, EXTERNAL_TYPE_MIN = 3, 2, 3
+ANCHOR_CHECK = "anchor-type-variation"
+SITEWIDE_CHECK = "anchor-reuse-sitewide"
+# Resolved at call time, so a test can repoint it at a scratch directory.
+BOARDS_DIR = None
+
+
+def _route(href):
+    """An internal href → its route: query and fragment dropped, one trailing slash — the
+    same folding build_page_board.route_of() does, so `/x` and `/x/#faq` are one target."""
+    path = urlsplit(str(href or "")).path.strip() or "/"
+    if not path.startswith("/"):
+        path = "/" + path
+    return path if path.endswith("/") else path + "/"
+
+
+def anchor_key(text):
+    """Case, whitespace, punctuation and curly apostrophes folded — pageboard.tokens(), the
+    tokeniser its own `links-anchor-duplicate` check compares on."""
+    return " ".join(PB.tokens(text))
+
+
+def _placements(board):
+    for s in board["sections"]:
+        for kind in ("internal", "external"):
+            for l in s["links"][kind]:
+                yield s["id"], kind, l
+
+
+def anchor_summary(board):
+    """Counts by anchor type for the in-copy internal links (nav tiles excluded — a grid or a
+    breadcrumb names its targets by title by nature) and for every external link, plus every
+    link of either kind that carries no type."""
+    out = {"internal": {}, "external": {}, "untyped": []}
+    for sid, kind, l in _placements(board):
+        t = l.get("anchor_type")
+        if not t:
+            out["untyped"].append((sid, kind, l["anchor"]))
+            continue
+        if kind == "internal" and l.get("nav"):
+            continue
+        out[kind][t] = out[kind].get(t, 0) + 1
+    return out
+
+
+@FR.register
+def anchor_variation(board, ont):
+    sev, s = status_severity(board), anchor_summary(board)
+    for sid, kind, anchor in s["untyped"]:
+        yield (ANCHOR_CHECK, sev,
+               f"section {sid}: {kind} anchor {anchor!r} carries no anchor_type "
+               f"({', '.join(ANCHOR_TYPES)})")
+    if len(s["internal"]) < INTERNAL_TYPE_MIN:
+        yield (ANCHOR_CHECK, sev,
+               f"internal anchors use {len(s['internal'])} type(s) ({', '.join(sorted(s['internal'])) or 'none'}) "
+               f"— at least {INTERNAL_TYPE_MIN} (Rule 58, the Anchor Diversity Ledger)")
+    if s["internal"].get("exact", 0) > EXACT_MAX:
+        yield (ANCHOR_CHECK, sev,
+               f"{s['internal']['exact']} exact-match internal anchor(s) — at most {EXACT_MAX} per page (Rule 58)")
+    if len(s["external"]) < EXTERNAL_TYPE_MIN:
+        yield (ANCHOR_CHECK, sev,
+               f"external anchors use {len(s['external'])} type(s) ({', '.join(sorted(s['external'])) or 'none'}) "
+               f"— at least {EXTERNAL_TYPE_MIN}")
+
+
+def sitewide_anchor_uses(exclude_slug=None):
+    """{(route, anchor key): [slug, …]} for the in-copy internal links of every OTHER board in
+    data/boards/ — the Anchor Diversity Ledger's "anchors in use" column, read from the
+    records rather than grepped from dist/, so a board sees its siblings before either is
+    built. `_`-prefixed records (the _demo fixture) are not pages and are skipped."""
+    import json
+    d = pathlib.Path(BOARDS_DIR or (PB.ROOT / "data" / "boards"))
+    uses = {}
+    for p in sorted(d.glob("*.json")):
+        b = json.loads(p.read_text(encoding="utf-8"))
+        slug = b["meta"]["slug"]
+        if slug == exclude_slug or slug.startswith("_"):
+            continue
+        for _, kind, l in _placements(b):
+            if kind != "internal" or l.get("nav"):
+                continue
+            key = anchor_key(l["anchor"])
+            if key:
+                uses.setdefault((_route(l["href"]), key), [])
+                if slug not in uses[(_route(l["href"]), key)]:
+                    uses[(_route(l["href"]), key)].append(slug)
+    return uses
+
+
+@FR.register
+def anchor_reuse_sitewide(board, ont):
+    sev, uses = status_severity(board), sitewide_anchor_uses(board["meta"]["slug"])
+    for sid, kind, l in _placements(board):
+        if kind != "internal" or l.get("nav"):
+            continue
+        slugs = uses.get((_route(l["href"]), anchor_key(l["anchor"])))
+        if slugs:
+            yield (SITEWIDE_CHECK, sev,
+                   f"section {sid}: anchor {l['anchor']!r} → {_route(l['href'])} is already used for that "
+                   f"target by {', '.join(slugs)} — pick an unused variation (Anchor Diversity Ledger)")
+
+
+def diversity_line(board):
+    """One line for the board's links block: counts by type, domains, source types and the
+    verdict of the three link checks above."""
+    a, e = anchor_summary(board), external_summary(board)
+    fnd = (list(external_diversity(board, None)) + list(anchor_variation(board, None))
+           + list(anchor_reuse_sitewide(board, None)))
+    if not fnd:
+        verdict = "PASS"
+    else:
+        verdict = f"{'FAIL' if any(f[1] == 'FAIL' for f in fnd) else 'WARN'} ({len(fnd)})"
+
+    def fmt(counts):
+        return ", ".join(f"{t} {counts[t]}" for t in ANCHOR_TYPES if t in counts) or "none"
+    untyped = f" · untyped {len(a['untyped'])}" if a["untyped"] else ""
+    return (f"Link diversity — internal anchors: {fmt(a['internal'])} · external anchors: "
+            f"{fmt(a['external'])}{untyped} · external: {e['links']} link(s) on {len(e['domains'])} "
+            f"domain(s) from {len(e['source_types'])} source type(s) "
+            f"({', '.join(e['source_types']) or 'none'}) · {verdict}")
+
+
+def shows_anchor_types(board):
+    """Whether the board's links block carries the anchor-type column and the diversity line:
+    on a page these rules bind, or on any record that already types an anchor."""
+    return FR.applies(board) or any(l.get("anchor_type") for _, _, l in _placements(board))
+```
+
+- [ ] **Step 5: Show the type and the summary on the board**
+
+Apply these edits to `scripts/build_page_board.py` (each old string occurs exactly once):
+
+Edit 1 — old:
+```python
+import pageboard as PB
+
+```
+new:
+```python
+import pageboard as PB
+import link_diversity as LD
+
+```
+
+Edit 2 — old:
+```python
+def link_rows(section, routes):
+```
+new:
+```python
+def link_rows(section, routes, typed=False):
+```
+
+Edit 3 — old:
+```python
+                     md(l.get("why") or LINK_SOURCE_NEW)])
+    for l in section["links"]["external"]:
+```
+new:
+```python
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
+    for l in section["links"]["external"]:
+```
+
+Edit 4 — old:
+```python
+                     md(l.get("why") or LINK_SOURCE_NEW)])
+    return rows
+```
+new:
+```python
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
+    return rows
+```
+
+Edit 5 — old:
+```python
+    out, seen, order = ["## Links — every link this page will carry"], {}, []
+    for s in board["sections"]:
+        out.append(f"### {s['n']:02d} · {md(s['heading'])}")
+        rows = link_rows(s, routes)
+        out.append(md_table(LINK_HEADERS, rows) if rows
+```
+new:
+```python
+    out, seen, order = ["## Links — every link this page will carry"], {}, []
+    # System-gaps Task 5: the anchor-type column and the diversity line show on a new-family
+    # page, or on any record that already types its anchors — never on the twelve built boards.
+    typed = LD.shows_anchor_types(board)
+    headers = LINK_HEADERS + ["Anchor type"] if typed else LINK_HEADERS
+    for s in board["sections"]:
+        out.append(f"### {s['n']:02d} · {md(s['heading'])}")
+        rows = link_rows(s, routes, typed)
+        out.append(md_table(headers, rows) if rows
+```
+
+Edit 6 — old:
+```python
+                seen[key] = {"row": l, "kind": "external" if "library_row" in l else "internal",
+                             "anchors": [], "sections": []}
+```
+new:
+```python
+                seen[key] = {"row": l, "kind": "external" if "library_row" in l else "internal",
+                             "anchors": [], "sections": [], "types": []}
+```
+
+Edit 7 — old:
+```python
+            if l["anchor"] not in e["anchors"]:
+                e["anchors"].append(l["anchor"])
+```
+new:
+```python
+            if l["anchor"] not in e["anchors"]:
+                e["anchors"].append(l["anchor"])
+            if (l.get("anchor_type") or "⚠ none") not in e["types"]:
+                e["types"].append(l.get("anchor_type") or "⚠ none")
+```
+
+Edit 8 — old:
+```python
+                          purpose, cell, md(l.get("why") or LINK_SOURCE_NEW),
+                          ", ".join(md(x) for x in e["sections"])])
+```
+new:
+```python
+                          purpose, cell, md(l.get("why") or LINK_SOURCE_NEW),
+                          ", ".join(md(x) for x in e["sections"])]
+                         + ([" / ".join(md(t) for t in e["types"])] if typed else []))
+```
+
+Edit 9 — old:
+```python
+    out.append(md_table(LINK_HEADERS + ["Sections"], page_rows) if page_rows
+```
+new:
+```python
+    out.append(md_table(LINK_HEADERS + ["Sections"] + (["Anchor type"] if typed else []), page_rows) if page_rows
+```
+
+Edit 10 — old:
+```python
+    out.append(f'<p class="lk-tot">Totals: {n_int} internal · {n_ext} external</p>')
+```
+new:
+```python
+    out.append(f'<p class="lk-tot">Totals: {n_int} internal · {n_ext} external</p>')
+    if typed:
+        out.append(f'<p class="lk-tot">{esc(LD.diversity_line(board))}</p>')
+```
+
+- [ ] **Step 6: Append the rule and its index row**
+
+Append to the end of `rules/links.md`:
+````markdown
+
+
+---
+id: anchor-type-variation
+enforced: test
+family: NAV
+test: tests/py/test_anchor_types.py
+---
+
+- **Anchor-type variation (location, comparison and blog pages built after 2026-09-24)** — Every internal and external link on a new location, comparison or blog page records its `anchor_type` on the board: `exact`, `partial`, `lsi`, `natural`, `branded` or `naked-url` (Rule 58's three strategies and the Anchor Diversity Ledger's rotation, one vocabulary). The page's in-copy internal anchors use **at least 3 types, at most 2 of them exact-match**; its external anchors use **at least 3 types**; no anchor repeats on the page (pageboard's `links-anchor-duplicate`, case and punctuation folded); and no internal anchor that another board in `data/boards/` already uses for the same target is used again. Nav tiles carry a type but do not count toward the mix. `scripts/link_diversity.py` checks the board (WARN on a draft, FAIL from `boarded` on), and the board's links block shows each link's type and a one-line diversity summary. (User ruling, 2026-09-24.)
+````
+
+In `data/quality/rule-index.json` — old:
+```json
+   "test": "tests/py/test_link_diversity.py",
+   "severity": "blocking"
+  }
+ ]
+}
+```
+new:
+```json
+   "test": "tests/py/test_link_diversity.py",
+   "severity": "blocking"
+  },
+  {
+   "id": "anchor-type-variation",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_anchor_types.py",
+   "severity": "blocking"
+  }
+ ]
+}
+```
+
+- [ ] **Step 7: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_anchor_types.py tests/py/test_board_links.py tests/py/test_rules_index.py tests/py/test_link_diversity.py -q`
+Expected: all pass (drafting run: 148 passed; 17 new in `test_anchor_types.py`).
+
+- [ ] **Step 8: Registries**
+
+No new script, skill or agent file in this task. Run `npm run -s registry` and confirm
+`examined docs/reference/system-registry.md; 0 problems`.
+
+- [ ] **Step 9: Full suite and gates**
+
+Run: `python3 -m pytest tests/py -q` → in plan order after Tasks 1–5 (integration run, `.env` present): `2464 passed, 25 skipped, 1 xfailed`. Standalone it was `2421 passed, 27 skipped, 1 xfailed` in the
+drafting worktree (baseline 2377 passed + 26 + 18 new; the worktree skipped 27 before these
+tasks as well, versus 25 in BSUK-gaps — environmental, not from these tasks).
+Run: `npm run -s check:all` → exit 0 (`examined 265 files; 0 problems`, `examined 41 agents; 0 problems`).
+
+- [ ] **Step 10: Commit**
+```bash
+git add schemas/board.schema.json scripts/link_diversity.py scripts/build_page_board.py \
+        rules/links.md data/quality/rule-index.json tests/py/test_anchor_types.py
+git commit -m "links: anchor_type on board links, type-mix and site-wide reuse checks, board column
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+#### Open questions
+
+1. **Research depth.** Only one `research` row could be verified by `curl` (the PubMed Central
+   copy of Pegram et al. 2020). The RVC VetCompass programme page
+   (`https://www.rvc.ac.uk/vetcompass`) sits behind a bot filter (403/000 to `curl`); the Blue
+   Cross row in the library was verified through a headless browser for the same reason. Add it
+   that way at execution, or leave research at one row until a page needs a second?
+2. **Local rows for other cities.** Only Cumberland (Carlisle) is seeded. Each location page for
+   another city adds its own council's animal-licensing page as a `local` row when its board is
+   written; the library's provenance paragraph says so. Confirm that is the intended workflow
+   rather than seeding all 28 cities now.
+3. **Crufts typed `other`.** It is the registry's own show; typing it `registry` would let two
+   registry-owned domains stand for one publisher. Flip if the user reads it differently.
+4. **Builder skills.** Neither the location builder nor the blog agent is told to write
+   `anchor_type` yet; the gate reports it. An appended one-paragraph block in
+   `.claude/skills/bsuk-location-page-builder/SKILL.md` and `.claude/agents/bsuk-blog-post-agent.md`
+   would stop the first board failing — left out to keep this section's shared-file footprint to
+   the files named in the brief.
+
+#### Interfaces this section exposes
+
+- `scripts/link_diversity.py`
+  - constants: `SOURCE_TYPES`, `DIVERSE_TYPES`, `EXTERNAL_MIN=6`, `DOMAIN_MIN=6`,
+    `SOURCE_TYPE_MIN=4`, `ANCHOR_TYPES`, `INTERNAL_TYPE_MIN=3`, `EXACT_MAX=2`,
+    `EXTERNAL_TYPE_MIN=3`, `DOMAIN_ALIASES`, `BOARDS_DIR` (None → `data/boards`)
+  - `status_severity(board)` → "WARN" on draft else "FAIL"
+  - `registrable_domain(url)`, `library_source_types(path=None)` → {normalised url: type}
+  - `external_links(board)`, `external_summary(board, types=None)` →
+    {links, domains, source_types, by_url}
+  - `anchor_key(text)`, `anchor_summary(board)` → {internal: {type: n}, external: {…}, untyped: [(sid, kind, anchor)]}
+  - `sitewide_anchor_uses(exclude_slug=None)` → {(route, anchor key): [slug]}
+  - `diversity_line(board)` → the board summary string; `shows_anchor_types(board)`
+  - registered checks: `external_diversity`, `anchor_variation`, `anchor_reuse_sitewide`
+- Check ids: `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`
+  (reused, not added: `links-anchor-duplicate`)
+- Record field: `sections[].links.internal[].anchor_type`, `sections[].links.external[].anchor_type`
+  — optional enum `exact | partial | lsi | natural | branded | naked-url`
+- Library column: `Source type` in `docs/reference/external-link-library.md` — enum
+  `gov | registry | vet-charity | welfare | research | local | other`
+- Rule ids: `external-links-six-diverse`, `anchor-type-variation` (`rules/links.md`,
+  `data/quality/rule-index.json`, `enforced: test`)
+- Board: links block gains an `Anchor type` column and a `Link diversity — …` line when
+  `shows_anchor_types(board)`
+- Tests: `tests/py/test_link_diversity.py` (26), `tests/py/test_anchor_types.py` (17)
+
+#### Verified
+
+- Worktree `scratchpad/wt-b`, detached from `system-gaps` at 99c81e0; Task 4 committed as
+  1153ce9 and Task 5 as 12629f2, in that order, each with its own failing-then-passing run.
+- Task 4 Step 2: collection error, `No module named 'link_diversity'`. Task 5 Step 2: 17 errors
+  (`BOARDS_DIR` missing).
+- The library-edit and schema-edit scripts in this draft were re-run against the pristine
+  99c81e0 files and reproduce the committed files byte for byte.
+- `curl -sIL` on 2026-09-24: all ten starter URLs 200. Library rows typed: 26 existing + 10 new
+  = 36; registrable domains in the library: 11 before, 16 after (the gov.uk asset host counted as gov.uk).
+- `python3 -m pytest tests/py -q`: 2421 passed, 27 skipped, 1 xfailed (371 s).
+- `npm run -s check:all`: exit 0. `npm run -s registry`: 0 problems. `build_agent_registry`: 41 agents, unchanged.
+
+
+---
+
+## Part C — Build from the approved outline (Tasks 6–6b)
+
+Drafted 2026-09-24 in a detached worktree of `system-gaps` at 99c81e0. Every code block below
+is the exact file content that was run there; the counts in "Verified" are from that run.
+
+## What is enforced today, and the holes (measured, not assumed)
+
+| What | Where | What it actually does | Hole for project 5 |
+|---|---|---|---|
+| `write-from-outline-never-from-sibling` | `rules/copy.md`, `enforced: judgment`; CLAUDE.md working rule 8 | Prose only. Its `why` in `data/quality/rule-index.json` says the OUTCOME is tested by `dup_content_audit.py` | Nothing compares a built page with its approved outline at all |
+| `dup-no-sibling-crossover` | `tests/render/checks/dup.ts`, severity **advisory** | Reports shared runs; its `why_advisory` keeps it advisory because the migrated bodies share copy by design | Never fails a build |
+| `scripts/dup_content_audit.py` (body, `--headers`) | `npm run audit:dup` only; **not in `check:all`** | Exits 1 on any 12-word shared run / shared heading. Today: `FAIL — 131 duplicated passages`, `FAIL — 17 crossover headers across 51 pages` (the migrated baseline) | Cannot be wired into `check:all` as-is (it fails on the migrated pages); blind to sentences under 12 words; no city-swap template (only breed words) |
+| pageboard `header-collision` | `scripts/pageboard.py` `header_precheck`, board time | Exact / breed-template / 5-token shingle against live headings | Board time only — never sees what was BUILT; no city-swap template; for a bare-key city board `own_live_key` is `/<slug>/`, not `/uk-locations/<slug>/` (p5-readiness Task 44 F2b fixes that) |
+| `query_coverage_check.py` | `check:all` | Counts body sections with an H2 (frame excluded) | Counts them; never compares them with the approved tree |
+| Builder skills | `.claude/skills/*/SKILL.md` | Location skill (line ~195) restates rule 8 and lists `dup_content_audit.py` in its gate run; comparison (line ~117) and blog (line ~104) only require outline APPROVAL before code | None tells the writer that each section's H2/H3 and copy come from the board record's `heading`/`tree`/`intent`/`words`, or that a component's H3 must be in the tree |
+
+Measured on the 12 built pages with the new gate's `check_page` (it will never run on them —
+`family_rules` excludes them — this was calibration): the outline comparison found 0 missing,
+0 out of order, and 10 extra H3s, every one rendered by a component outside the approved tree
+(info-card headings such as "A Badge Read as A Test" on `/blue-staffy-health-uk/`, "Reading the
+Table" on `/`). It also found 3 heading crossovers (e.g. the H4/H5 "Screened Before the Mating,
+Not After It" on both the health and breeders pages), 2 shared 12-word passages and 17 shared
+sentences of 6+ words (e.g. "come and meet the litter before you decide anything" on `/` and
+`/blue-staffy-pup-sale-uk/`). Those are real crossovers on built pages, so the checks fire on
+the failure the user named and nothing else was seen firing. The board-time check (6b) was
+measured on all 13 records: 0 hits once a hero heading equal to the H1 is read as one heading
+(the build renders only the H1 then — checked on the blog hub, contact and thank-you pages).
+
+**Routes.** A board key is the bare slug and a city page is built at
+`dist/uk-locations/<slug>/index.html`. The p5-readiness plan's Task 43 (F2a) adds
+`_slugs.resolve_page(slug, root)`; the gate imports it when present and otherwise runs the
+same rule locally from `data/page-map.json`. A page that `data/facts/rebuilt.json` lists but
+whose route does not resolve (a post under `/blog/` with a bare key, say) FAILs as
+`outline-not-found` once `dist/` is built, so the resolver can never silently skip a page.
+
+**Merge note for the integrator.** Task 6 edits the `check:all` line in `package.json` and the
+`expected` list in `tests/py/test_package_scripts.py`; the p5-readiness plan edits both lines
+too (it inserts `check:workflow` before `check:markers`). They are different positions in the
+same line: resolve by keeping both insertions. The skill blocks are appended at end of file;
+if p5-readiness B2–B4 also append at the end, keep both blocks, this one last.
+
+---
+
+### Task 6: Outline provenance gate for new-family pages
+
+**Gap:** "Build from outline; never from crossovers, siblings, or duplicates."
+**Files:**
+- Create: `scripts/outline_provenance_check.py`
+- Create: `tests/py/test_outline_provenance_check.py`
+- Modify: `package.json:58-59` (add `check:outline`; chain it after `check:verbatim`)
+- Modify: `tests/py/test_package_scripts.py:101-108` (the documented chain)
+- Modify: `rules/copy.md` (append a rule entry at end of file)
+- Modify: `data/quality/rule-index.json:190-195` (one row after `write-from-outline-never-from-sibling`)
+- Modify: `.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md`, `.claude/skills/bsuk-blog-post/SKILL.md` (append one block each)
+- Regenerate: `docs/reference/system-registry.md`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_outline_provenance_check.py`:
+
+```python
+"""The outline provenance gate (system-gaps Task 6): a new-family page is built from its own
+approved outline and from nothing else.
+
+Every case builds a throwaway site under tmp_path — a board record for a fake location page,
+data/page-map.json, data/locations.json, data/facts/rebuilt.json and a dist/ holding the
+page and one sibling — and runs the gate's main() against it with --root. The clean page
+passes; each defect is added to it one at a time and must fire its own check id.
+"""
+import copy
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import outline_provenance_check as OP  # noqa: E402
+
+SLUG = "blue-staffy-puppies-testtown"
+SIBLING = "blue-staffy-puppies-othertown"
+
+BOARD = {
+    "meta": {"slug": SLUG, "page_type": "location", "status": "approved"},
+    "sections": [
+        {"id": "top", "shape": "hero", "heading": "Blue Staffy Puppies In Testtown", "tree": []},
+        {"id": "takeaways", "shape": "takeaways", "heading": "The Short Version",
+         "tree": [{"level": 3, "heading": "Four Points", "children": []}]},
+        {"id": "travel", "shape": "standard", "heading": "The Road From Carlisle To Testtown",
+         "tree": [{"level": 3, "heading": "Setting Off Before Breakfast", "children": []},
+                  {"level": 3, "heading": "A Stop Above Shap Summit", "children": [
+                      {"level": 4, "heading": "Water Bowl In The Footwell", "children": []}]}]},
+        {"id": "homes", "shape": "standard", "heading": "Terraced Streets And Small Gardens",
+         "tree": [{"level": 3, "heading": "Fencing A Yard For A Terrier", "children": []}]},
+        {"id": "questions", "shape": "faq", "heading": "Questions From Testtown Families",
+         "tree": [{"level": 3, "heading": "deposit", "children": []}]},
+    ],
+}
+
+TRAVEL = ("<section id='travel' data-section-label='Travel'>"
+          "<h2>The Road from Carlisle to Testtown</h2>"
+          "<p>Most handovers here start with a kettle on at five and a crate in the back seat.</p>"
+          "<h3>Setting Off Before Breakfast</h3>"
+          "<p>Leaving early keeps the motorway quiet and the puppy asleep for the first hour.</p>"
+          "<h3>A Stop Above Shap Summit</h3>"
+          "<h4>Water Bowl in the Footwell</h4>"
+          "<p>A shallow bowl wedged under the seat stops spills on the steep bends.</p>"
+          "</section>")
+HOMES = ("<section id='homes' data-section-label='Homes'>"
+         "<h2>Terraced Streets and Small Gardens</h2>"
+         "<p>Plenty of owners in town have a yard rather than a lawn, and that works well.</p>"
+         "<h3>Fencing a Yard for a Terrier</h3>"
+         "<p>Check the gap under the gate first; a curious pup finds it within a morning.</p>"
+         "</section>")
+# The frame: FAQ answers and takeaway headings repeat on the sibling and are not outline.
+FRAME = ("<section id='takeaways' data-section-label='Takeaways'><h2>The Short Version</h2>"
+         "<h3>Four Points</h3><h3>Delivery Across the North</h3></section>"
+         "<section id='questions' data-section-label='FAQ'><h2>Questions From Testtown Families</h2>"
+         "<div class='kit-faq'><details><summary><h3>How Much Is the Deposit?</h3></summary>"
+         "<p>The deposit is a fixed sum that holds your puppy until collection day arrives.</p>"
+         "</details></div></section>")
+
+
+def page(body=None, stray="", h1="Blue Staffy Puppies in Testtown"):
+    body = TRAVEL + HOMES if body is None else body
+    return ("<html><body><header><nav>Home</nav></header><main>"
+            f"<section id='top' data-section-label='Hero'><section class='kit-hero'><h1>{h1}</h1>"
+            "</section></section>" + FRAME + stray + body + "</main>"
+            "<footer>Blue Staffy UK</footer></body></html>")
+
+
+SIBLING_HTML = ("<html><body><main><section id='top' data-section-label='Hero'><h1>Blue Staffy "
+                "Puppies in Othertown</h1></section>"
+                "<section id='about' data-section-label='About'><h2>Delivery to Othertown</h2>"
+                "<p>Families in Othertown often ask us about the long drive north.</p>"
+                "<p>We walk every puppy along the river path at dawn.</p>"
+                "<p>Our breeding programme is small, careful and built around one family home "
+                "in the countryside where every puppy is handled daily.</p>"
+                "<h3>Rain Gear For The School Run</h3>"
+                "<p>UK home delivery by DEFRA approved transport, priced by distance: £200 to "
+                "£350.</p></section>"
+                "<section id='questions' data-section-label='FAQ'><h2>Questions From Othertown "
+                "Families</h2><div class='kit-faq'><details><summary><h3>How Much Is the "
+                "Deposit?</h3></summary><p>The deposit is a fixed sum that holds your puppy "
+                "until collection day arrives.</p></details></div></section>"
+                "</main></body></html>")
+
+
+def site(tmp_path, html=None, board=None, rebuilt=(SLUG,)):
+    root = tmp_path
+    (root / "data" / "boards").mkdir(parents=True)
+    (root / "data" / "facts").mkdir(parents=True)
+    (root / "data" / "boards" / f"{SLUG}.json").write_text(json.dumps(board or BOARD))
+    (root / "data" / "facts" / "rebuilt.json").write_text(json.dumps(list(rebuilt)))
+    (root / "data" / "page-map.json").write_text(json.dumps({"pages": [
+        {"url": f"/uk-locations/{SLUG}/"}, {"url": f"/uk-locations/{SIBLING}/"}]}))
+    (root / "data" / "locations.json").write_text(json.dumps([
+        {"slug": SLUG, "city": "Testtown"}, {"slug": SIBLING, "city": "Othertown"},
+        {"slug": "uk", "city": "UK"}]))
+    for slug, text in ((SLUG, page() if html is None else html), (SIBLING, SIBLING_HTML)):
+        d = root / "dist" / "uk-locations" / slug
+        d.mkdir(parents=True)
+        (d / "index.html").write_text(text, encoding="utf-8")
+    return root
+
+
+def run(root, capsys, *args):
+    code = OP.main([*args, "--root", str(root)])
+    return code, capsys.readouterr().out
+
+
+# ── the clean page, and which pages are examined ───────────────────────────────────────────
+def test_a_page_built_from_its_outline_passes(tmp_path, capsys):
+    code, out = run(site(tmp_path), capsys)
+    assert code == 0, out
+    assert f"examined 1 new-family pages: /uk-locations/{SLUG}/" in out
+    assert "0 problems" in out
+
+
+def test_the_frame_is_never_compared_with_the_outline_or_the_siblings(tmp_path, capsys):
+    # FRAME carries an H3 the takeaways tree lacks and an FAQ answer the sibling repeats.
+    code, out = run(site(tmp_path), capsys)
+    assert "Delivery Across the North" not in out and "deposit is a fixed sum" not in out
+
+
+def test_a_page_not_yet_in_rebuilt_json_is_awaiting_rebuild(tmp_path, capsys):
+    code, out = run(site(tmp_path, rebuilt=()), capsys)
+    assert code == 0 and "examined 0 new-family pages" in out and "1 awaiting rebuild" in out
+
+
+def test_a_named_slug_is_examined_before_it_is_listed(tmp_path, capsys):
+    code, out = run(site(tmp_path, rebuilt=()), capsys, SLUG)
+    assert code == 0 and "examined 1 new-family pages" in out
+
+
+def test_a_slug_may_be_named_by_its_route_and_an_unknown_one_fails(tmp_path, capsys):
+    root = site(tmp_path, rebuilt=())
+    code, out = run(root, capsys, f"uk-locations/{SLUG}")
+    assert code == 0 and "examined 1 new-family pages" in out
+    code, out = run(root, capsys, "blue-staffy-puppies-nowhere")
+    assert code == 1 and "[outline-no-board]" in out
+
+
+def test_a_board_out_of_family_scope_is_never_examined(tmp_path, capsys):
+    board = copy.deepcopy(BOARD)
+    board["meta"]["page_type"] = "interior"
+    code, out = run(site(tmp_path, board=board), capsys)
+    assert code == 0 and "examined 0 new-family pages" in out and "1 boards out of family scope" in out
+
+
+def test_the_real_repo_examines_zero_pages_and_passes(capsys):
+    code = OP.main([])
+    out = capsys.readouterr().out
+    assert code == 0, out
+    assert "examined 0 new-family pages" in out
+
+
+def test_a_listed_page_that_does_not_resolve_fails_once_the_site_is_built(tmp_path, capsys):
+    root = site(tmp_path)
+    (root / "dist" / "uk-locations" / SLUG / "index.html").unlink()
+    code, out = run(root, capsys)
+    assert code == 0 and "1 not built" in out            # no dist/index.html: not built yet
+    (root / "dist" / "index.html").write_text("<html><main><h1>Home</h1></main></html>")
+    code, out = run(root, capsys)
+    assert code == 1 and "[outline-not-found]" in out
+
+
+def test_a_bare_key_resolves_to_its_nested_route(tmp_path):
+    root = site(tmp_path)
+    assert OP.resolve_page(SLUG, root) == (SLUG, f"uk-locations/{SLUG}")
+    assert OP.resolve_page(f"uk-locations/{SLUG}", root) == (SLUG, f"uk-locations/{SLUG}")
+    assert OP.built_path(SLUG, root) == root / "dist" / "uk-locations" / SLUG / "index.html"
+
+
+# ── (a) approval ───────────────────────────────────────────────────────────────────────────
+def test_an_unapproved_board_fails(tmp_path, capsys):
+    board = copy.deepcopy(BOARD)
+    board["meta"]["status"] = "boarded"
+    code, out = run(site(tmp_path, board=board), capsys)
+    assert code == 1 and "[outline-unapproved]" in out
+
+
+# ── (b) the outline tree ───────────────────────────────────────────────────────────────────
+def test_an_extra_heading_fails(tmp_path, capsys):
+    html = page(TRAVEL + HOMES.replace("</section>", "<h3>Parks Within A Short Walk</h3></section>"))
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-extra]" in out and "Parks Within A Short Walk" in out
+
+
+def test_a_heading_outside_every_board_section_fails(tmp_path, capsys):
+    html = page(stray="<div><h2>Why Families Pick Us</h2></div>")
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-extra]" in out and "outside every board section" in out
+
+
+def test_a_missing_heading_fails(tmp_path, capsys):
+    html = page(TRAVEL + HOMES.replace("<h3>Fencing a Yard for a Terrier</h3>", ""))
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-missing]" in out and "Fencing A Yard For A Terrier" in out
+
+
+def test_a_reordered_outline_fails(tmp_path, capsys):
+    code, out = run(site(tmp_path, page(HOMES + TRAVEL)), capsys)
+    assert code == 1 and "[outline-order]" in out
+    assert "[outline-extra]" not in out and "[outline-missing]" not in out
+
+
+def test_a_section_the_board_does_not_have_fails(tmp_path, capsys):
+    extra = "<section id='parks' data-section-label='Parks'><p>Green space.</p></section>"
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES + extra)), capsys)
+    assert code == 1 and "[outline-unknown-section]" in out and "#parks" in out
+
+
+# ── (d) duplicates within the page ─────────────────────────────────────────────────────────
+def test_a_heading_repeated_on_the_page_fails(tmp_path, capsys):
+    html = page(TRAVEL + HOMES.replace("</section>", "<h4>Terraced Streets and Small Gardens</h4></section>"))
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-duplicate-heading]" in out
+
+
+# ── (c)/(d) crossovers with another built page ─────────────────────────────────────────────
+def test_a_heading_shared_with_a_sibling_fails(tmp_path, capsys):
+    html = page(TRAVEL + HOMES.replace("</section>", "<h4>Rain Gear for the School Run</h4></section>"))
+    code, out = run(site(tmp_path, html), capsys)
+    assert code == 1 and "[outline-heading-crossover]" in out and SIBLING in out
+
+
+def test_an_h2_that_is_a_sibling_h2_with_the_city_swapped_fails(tmp_path, capsys):
+    board = copy.deepcopy(BOARD)
+    board["sections"][3]["heading"] = "Delivery To Testtown"
+    html = page(TRAVEL + HOMES.replace("Terraced Streets and Small Gardens", "Delivery to Testtown"))
+    code, out = run(site(tmp_path, html, board=board), capsys)
+    assert code == 1 and "[outline-heading-crossover]" in out and "template" in out
+
+
+def test_a_passage_shared_with_a_sibling_fails(tmp_path, capsys):
+    para = ("<p>Our breeding programme is small, careful and built around one family home in "
+            "the countryside where every puppy is handled daily.</p>")
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
+    assert code == 1 and "[outline-copy-crossover]" in out
+
+
+def test_a_sentence_shared_with_a_sibling_fails(tmp_path, capsys):
+    para = "<p>We walk every puppy along the river path at dawn.</p>"
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
+    assert code == 1 and "[outline-sentence-crossover]" in out
+    assert "[outline-copy-crossover]" not in out   # ten words: below the shingle floor
+
+
+def test_a_sibling_sentence_with_the_city_swapped_fails(tmp_path, capsys):
+    para = "<p>Families in Testtown often ask us about the long drive north.</p>"
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
+    assert code == 1 and "[outline-sentence-crossover]" in out and "city swap" in out
+
+
+def test_a_whitelisted_line_shared_with_a_sibling_passes(tmp_path, capsys):
+    para = "<p>UK home delivery by DEFRA approved transport, priced by distance: £200 to £350.</p>"
+    code, out = run(site(tmp_path, page(TRAVEL + HOMES.replace("</section>", para + "</section>"))), capsys)
+    assert code == 0, out
+
+
+# ── wiring ─────────────────────────────────────────────────────────────────────────────────
+def test_check_all_runs_the_gate():
+    scripts = json.loads((ROOT / "package.json").read_text())["scripts"]
+    assert scripts["check:outline"] == "python3 scripts/outline_provenance_check.py"
+    chain = scripts["check:all"]
+    assert "npm run check:verbatim && npm run check:outline && " in chain
+
+
+def test_the_rule_is_written_and_indexed():
+    text = (ROOT / "rules" / "copy.md").read_text(encoding="utf-8")
+    assert "id: outline-provenance-gate\nenforced: test\n" in text
+    rows = {r["id"]: r for r in json.loads(
+        (ROOT / "data" / "quality" / "rule-index.json").read_text())["rules"]}
+    row = rows["outline-provenance-gate"]
+    assert row["enforced"] == "test" and row["pack"] == "rules/copy.md"
+    assert (ROOT / row["test"]).is_file()
+    # The method rule stays judgment: the gate checks what the method leaves behind.
+    assert rows["write-from-outline-never-from-sibling"]["enforced"] == "judgment"
+
+
+@pytest.mark.parametrize("skill", ["bsuk-location-page-builder", "bsuk-comparison-page-builder",
+                                   "bsuk-blog-post"])
+def test_each_builder_skill_names_the_gate(skill):
+    text = (ROOT / ".claude" / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+    block = text.split("## Build from the approved outline (system-gaps)", 1)
+    assert len(block) == 2, f"{skill}: the system-gaps block is missing"
+    assert "scripts/outline_provenance_check.py" in block[1]
+    assert "outline-provenance-gate" in block[1]
+
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_outline_provenance_check.py -q`
+Expected: FAIL — collection error, `ModuleNotFoundError: No module named 'outline_provenance_check'`.
+
+- [ ] **Step 3: Implement the gate**
+
+Create `scripts/outline_provenance_check.py`:
+
+```python
+#!/usr/bin/env python3
+"""Outline provenance gate — a new-family page is built from its approved outline, and from
+nothing else (system-gaps build, 2026-09-24).
+
+The user's ruling: "Build from outline; never from crossovers, siblings, or duplicates."
+`rules/copy.md` `write-from-outline-never-from-sibling` states the method and stays a
+judgment rule — nobody can see HOW a page was written. This gate checks what the method
+leaves behind on a built page, for location, comparison and blog pages only
+(`scripts/family_rules.py`; the twelve pages built before this build are never examined):
+
+  outline-unapproved        the page is in data/facts/rebuilt.json but its board record is
+                            not approved (meta.status approved, built or released)
+  outline-no-board          a named slug has no board record
+  outline-not-found         a named slug, or one data/facts/rebuilt.json lists while dist/ is
+                            built, has no built page where its route resolves
+  outline-extra             a body H2/H3 the approved outline does not carry
+  outline-missing           an outline H2/H3 the built page does not carry
+  outline-order             the shared headings are in a different order from the outline
+  outline-unknown-section   a <section data-section-label> in <main> whose id is not a
+                            section of the board record
+  outline-duplicate-heading the same heading twice on the page (H1 and body H2-H6)
+  outline-heading-crossover a body heading equal to a heading on another built page —
+                            exactly, with the breed words swapped (dup_content_audit's
+                            template), or with a city name swapped (data/locations.json)
+  outline-copy-crossover    a body passage of 12+ words shared with another built page
+                            (dup_content_audit.crossovers, its whitelist)
+  outline-sentence-crossover a body sentence of 6+ words equal to a sentence on another built
+                            page, the city name swapped or not, outside the whitelist
+
+BODY means the page's top-level `<section data-section-label>` blocks inside <main> whose id
+names a board section of a body shape. The frame is never body: a section whose board shape
+is in FRAME_SHAPES (hero, takeaways, stats, reviews, FAQ, form, trust strip, puppy grid,
+divider and the chrome shapes), a section whose id is in query_coverage_check.FRAME_IDS
+(#top, #key-takeaways, #newsletter), and anything inside a frame component
+(query_coverage_check.FRAME_CLASSES), a <form>, a <details> or a <nav>. The outline compared
+is each body section's H2 and the level-3 nodes of its tree, in record order. H4-H6 are the
+ladder written at P5 and are not in an approved tree, so they are compared for duplicates and
+crossovers only.
+
+WHICH PAGES. With no slug, every board record `family_rules.applies()` accepts whose page is
+built AND listed in data/facts/rebuilt.json (bare key or full route, the convention
+query_coverage_check.py uses). A new-family page whose migrated original is still in dist/ is
+awaiting rebuild and is not examined. Named slugs are examined whenever they are built, listed
+or not — the builder runs this on its own page before adding it to rebuilt.json. A named slug
+out of family scope is reported and skipped, never failed.
+
+Routes: a board key is the bare slug; a city page is built at dist/uk-locations/<slug>/.
+`_slugs.resolve_page` resolves that when it exists (p5-readiness Task 43, F2a); until then
+the same resolution runs locally from data/page-map.json.
+
+  python3 scripts/outline_provenance_check.py [slug ...] [--root DIR]
+
+Exit 1 on any problem, 0 otherwise. Prints every page it examined.
+"""
+import argparse
+import html as _h
+import json
+import re
+import sys
+from html.parser import HTMLParser
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import dup_content_audit as DUP  # noqa: E402  (whitelists, crossovers, specimen routes)
+import family_rules as FR  # noqa: E402
+from _slugs import page_key  # noqa: E402
+from query_coverage_check import FRAME_CLASSES, FRAME_IDS  # noqa: E402
+
+try:  # p5-readiness Task 43 (F2a) adds the shared resolver; the local one below mirrors it.
+    from _slugs import resolve_page as _shared_resolve_page  # noqa: E402
+except ImportError:  # pragma: no cover — depends on merge order
+    _shared_resolve_page = None
+
+ROOT = Path(__file__).resolve().parents[1]
+APPROVED = ("approved", "built", "released")
+# Board shapes that render the fixed frame (docs/reference/location-page-template.md, "The
+# fixed frame") or site chrome, never prose written from the outline.
+FRAME_SHAPES = frozenset({"hero", "takeaways", "stats", "trust", "reviews", "faq", "form",
+                          "puppies", "divider", "dial", "sheet", "strip", "nav"})
+SKIP_TAGS = {"script", "style", "template", "noscript", "form", "details", "nav"}
+VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
+        "source", "track", "wbr"}
+HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
+BLOCK = {"p", "li", "dt", "dd", "td", "th", "div", "section", "article", "aside", "figure",
+         "figcaption", "blockquote", "summary", "ul", "ol", "table", "tr", "main",
+         "header", "footer", "br"} | set(HEADINGS)
+SENTENCE_MIN_WORDS = 6
+TOKEN = re.compile(r"[a-z0-9$']+")   # dup_content_audit's tokeniser
+SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+
+
+# ── routes ────────────────────────────────────────────────────────────────────────────────
+def _page_map_routes(root):
+    path = Path(root) / "data" / "page-map.json"
+    if not path.is_file():
+        return {}
+    routes = {}
+    for row in json.loads(path.read_text(encoding="utf-8"))["pages"]:
+        route = row["url"].strip("/")
+        if route:
+            routes.setdefault(route.rsplit("/", 1)[-1], route)
+    return routes
+
+
+def resolve_page(slug, root):
+    """(key, route): the shared resolver when it exists, else the same rule locally — a bare
+    slug or full route of a data/page-map.json row is (its last segment, its route); anything
+    else is (slug, slug); the root is ("index", "")."""
+    if _shared_resolve_page is not None:
+        return _shared_resolve_page(slug, root)
+    s = str(slug).strip("/")
+    if s in ("", "index"):
+        return "index", ""
+    last = s.rsplit("/", 1)[-1]
+    route = _page_map_routes(root).get(last)
+    if route is not None and s in (last, route):
+        return last, route
+    return s, s
+
+
+def built_path(slug, root):
+    _, route = resolve_page(slug, root)
+    base = Path(root) / "dist"
+    return base / route / "index.html" if route else base / "index.html"
+
+
+# ── normalisation ─────────────────────────────────────────────────────────────────────────
+def norm(text):
+    """Lowercase token string: curly apostrophes folded, entities and case ignored, so a
+    heading the build title-cases still matches the record it came from."""
+    return " ".join(TOKEN.findall(_h.unescape(text).replace("’", "'").lower()))
+
+
+def city_pattern(root):
+    """One regex over every city in data/locations.json (as tokens), longest first. "UK" is
+    left out: it is the country, and swapping it would template half the site's headings."""
+    f = Path(root) / "data" / "locations.json"
+    if not f.is_file():
+        return None
+    names = set()
+    for row in json.loads(f.read_text(encoding="utf-8")):
+        name = norm(re.sub(r"\(.*?\)", "", row.get("city") or ""))
+        if name and name != "uk":
+            names.add(name)
+    if not names:
+        return None
+    alts = "|".join(re.escape(n) for n in sorted(names, key=len, reverse=True))
+    return re.compile(rf"\b(?:{alts})\b")
+
+
+def templated(text, cities):
+    return cities.sub("{city}", text) if cities is not None else text
+
+
+# ── the board side ────────────────────────────────────────────────────────────────────────
+def outline(board):
+    """[(section id, level, normalised heading, heading)] for the body sections, in record
+    order: each section's H2, then the level-3 nodes of its tree, depth-first."""
+    out = []
+
+    def walk(sid, nodes):
+        for n in nodes or []:
+            if n.get("level") == 3:
+                out.append((sid, 3, norm(n["heading"]), n["heading"]))
+            walk(sid, n.get("children"))
+    for s in board.get("sections", []):
+        if s.get("shape") in FRAME_SHAPES or s.get("id") in FRAME_IDS:
+            continue
+        out.append((s["id"], 2, norm(s["heading"]), s["heading"]))
+        walk(s["id"], s.get("tree"))
+    return out
+
+
+def board_section_ids(board):
+    return {s.get("id"): s.get("shape") for s in board.get("sections", [])}
+
+
+# ── the built page ────────────────────────────────────────────────────────────────────────
+class BuiltPage(HTMLParser):
+    """Top-level labelled sections inside <main>, with their headings and prose; the H1; and
+    any H2/H3 in <main> outside every labelled section (`stray`)."""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.stack = []        # {"tag", "sec", "skip"}
+        self.sections = []     # {"id", "frame", "headings": [(level, text)], "text": [str]}
+        self.h1 = []
+        self.stray = []
+        self._heading = None   # [level, [parts], section index or None]
+
+    def _sec(self):
+        for e in reversed(self.stack):
+            if e["sec"] is not None:
+                return e["sec"]
+        return None
+
+    def _skipping(self):
+        return any(e["skip"] for e in self.stack)
+
+    def _in_main(self):
+        return any(e["tag"] == "main" for e in self.stack)
+
+    def handle_starttag(self, tag, attrs):
+        if tag in VOID:
+            if tag == "br":
+                self._text("\n")
+            return
+        a = dict(attrs)
+        classes = set((a.get("class") or "").split())
+        entry = {"tag": tag, "sec": None, "skip": tag in SKIP_TAGS or bool(classes & FRAME_CLASSES)}
+        if (tag == "section" and "data-section-label" in a and self._in_main()
+                and self._sec() is None):
+            self.sections.append({"id": a.get("id") or "",
+                                  "frame": (a.get("id") in FRAME_IDS) or bool(classes & FRAME_CLASSES),
+                                  "headings": [], "text": []})
+            entry["sec"] = len(self.sections) - 1
+            entry["skip"] = False   # a frame section is dropped whole, below
+        if tag in BLOCK:
+            self._text("\n")
+        self.stack.append(entry)
+        if tag in HEADINGS and (tag == "h1" or not self._skipping()):
+            self._heading = [int(tag[1]), [], self._sec()]   # the H1 sits in the hero frame
+
+    def handle_endtag(self, tag):
+        if tag in HEADINGS and self._heading is not None:
+            level, parts, sec = self._heading
+            text = " ".join("".join(parts).split())
+            self._heading = None
+            if level == 1:
+                self.h1.append(text)
+            elif sec is not None:
+                self.sections[sec]["headings"].append((level, text))
+            elif self._in_main() and level in (2, 3):
+                self.stray.append((level, text))
+        if tag in BLOCK:
+            self._text("\n")
+        for i in range(len(self.stack) - 1, -1, -1):
+            if self.stack[i]["tag"] == tag:
+                del self.stack[i:]
+                break
+
+    def _text(self, data):
+        sec = self._sec()
+        if sec is not None and not self._skipping():
+            self.sections[sec]["text"].append(data)
+
+    def handle_data(self, data):
+        if self._heading is not None and (self._heading[0] == 1 or not self._skipping()):
+            self._heading[1].append(data)
+        elif not self._skipping():
+            self._text(data)
+
+
+def parse(html):
+    p = BuiltPage()
+    p.feed(html)
+    p.close()
+    return p
+
+
+def sentences(text):
+    """{normalised sentence} of SENTENCE_MIN_WORDS+ words, split on block boundaries and
+    sentence ends."""
+    out = set()
+    for line in text.split("\n"):
+        for piece in SENTENCE_END.split(line):
+            toks = TOKEN.findall(piece.lower())
+            if len(toks) >= SENTENCE_MIN_WORDS:
+                out.add(" ".join(toks))
+    return out
+
+
+class _BlockText(DUP.Text):
+    """dup_content_audit's visible-text walker, with a line break at every block edge so a
+    heading and the paragraph under it are two sentences, not one."""
+
+    def handle_starttag(self, t, attrs):
+        if t in BLOCK:
+            self.parts.append("\n")
+        super().handle_starttag(t, attrs)
+
+    def handle_endtag(self, t):
+        if t in BLOCK:
+            self.parts.append("\n")
+        super().handle_endtag(t)
+
+
+HEADING_RE = re.compile(r"<h([1-6])[^>]*>(.*?)</h\1>", re.S | re.I)
+TAG_RE = re.compile(r"<[^>]+>")
+
+
+def corpus_page(path):
+    """What another built page contributes: its dup shingles, its sentences and its headings
+    (normalised)."""
+    html = Path(path).read_text(encoding="utf-8", errors="ignore")
+    ws = DUP.words(Path(path))
+    t = _BlockText()
+    t.feed(html)
+    heads = {DUP._norm_heading(_h.unescape(TAG_RE.sub("", raw))).replace("’", "'")
+             for _, raw in HEADING_RE.findall(html)}
+    return {"shingles": DUP.shingles(ws),
+            "sentences": sentences("".join(t.parts).lower()), "headings": heads - {""}}
+
+
+def corpus(dist):
+    """{page key: corpus_page} for every built page except the specimen routes. Read once per
+    run; each examined page is compared with every entry but its own."""
+    dist = Path(dist)
+    out = {}
+    for p in sorted(dist.rglob("index.html")):
+        k = page_key(p, dist)
+        if not DUP.is_specimen(k):
+            out[k] = corpus_page(p)
+    return out
+
+
+# ── the checks ────────────────────────────────────────────────────────────────────────────
+def _whitelisted_heading(text):
+    return text in DUP.HEADER_WHITELIST or text in DUP.PUPPY_CARD_HEADINGS
+
+
+def _whitelisted_sentence(s):
+    """A head term; a sentence that is a stretch of one whitelisted stem (the delivery band
+    split before its prices); or one with no stretch of SENTENCE_MIN_WORDS+ words that the
+    whitelist leaves uncovered."""
+    if s in DUP.HEAD_TERMS:
+        return True
+    if any(f" {s} " in f" {' '.join(stem)} " for stem in DUP.WHITELIST_STEMS):
+        return True
+    return all(len(seg) < SENTENCE_MIN_WORDS for seg in DUP.unwhitelisted_segments(s.split()))
+
+
+def check_page(board, html, others, cities=None):
+    """Every problem on one built page: [(check id, message)]. `others` is corpus()."""
+    problems = []
+    page = parse(html)
+    shapes = board_section_ids(board)
+    body = []
+    for s in page.sections:
+        if s["frame"]:
+            continue
+        if s["id"] not in shapes:
+            problems.append(("outline-unknown-section",
+                             f"section #{s['id'] or '(no id)'} is not a section of the board record"))
+            continue
+        if shapes[s["id"]] in FRAME_SHAPES or s["id"] in FRAME_IDS:
+            continue
+        body.append(s)
+
+    # (b) the outline, heading for heading
+    want = [(lvl, key) for _, lvl, key, _ in outline(board)]
+    shown = {(lvl, key): text for _, lvl, key, text in outline(board)}
+    got, got_text = [], {}
+    for s in body:
+        for lvl, text in s["headings"]:
+            if lvl in (2, 3):
+                got.append((lvl, norm(text)))
+                got_text[(lvl, norm(text))] = text
+    for lvl, text in page.stray:
+        problems.append(("outline-extra", f"H{lvl} \"{text}\" sits in <main> outside every "
+                                          "board section"))
+    for k in got:
+        if k not in want:
+            problems.append(("outline-extra", f"H{k[0]} \"{got_text[k]}\" is not in the approved outline"))
+    for k in want:
+        if k not in got:
+            problems.append(("outline-missing", f"H{k[0]} \"{shown[k]}\" from the approved outline "
+                                                "is not on the page"))
+    common_got = [k for k in got if k in want]
+    common_want = [k for k in want if k in got]
+    if common_got != common_want:
+        first = next((i for i, (x, y) in enumerate(zip(common_got, common_want)) if x != y), 0)
+        at = common_got[first]
+        problems.append(("outline-order", f"headings are out of outline order from H{at[0]} "
+                                          f"\"{got_text.get(at) or shown.get(at)}\""))
+
+    # (d) duplicate headings within the page
+    seen = {}
+    for text in page.h1 + [t for s in body for _, t in s["headings"]]:
+        seen.setdefault(norm(text), []).append(text)
+    for key, texts in seen.items():
+        if key and len(texts) > 1:
+            problems.append(("outline-duplicate-heading",
+                             f"\"{texts[0]}\" is a heading {len(texts)} times on this page"))
+
+    # (c)/(d) headings shared with another built page
+    other_exact, other_templ = {}, {}
+    for k, o in others.items():
+        for t in o["headings"]:
+            if _whitelisted_heading(t):
+                continue
+            other_exact.setdefault(t, k)
+            other_templ.setdefault(templated(DUP.SPECIES_TOKENS.sub("{breed}", t), cities), k)
+    for s in body:
+        for lvl, text in s["headings"]:
+            t = DUP._norm_heading(_h.unescape(text)).replace("’", "'")
+            if not t or _whitelisted_heading(t):
+                continue
+            if t in other_exact:
+                problems.append(("outline-heading-crossover",
+                                 f"H{lvl} \"{text}\" is also a heading on /{other_exact[t]}/"))
+                continue
+            tt = templated(DUP.SPECIES_TOKENS.sub("{breed}", t), cities)
+            if tt in other_templ:
+                problems.append(("outline-heading-crossover",
+                                 f"H{lvl} \"{text}\" is a template of a heading on "
+                                 f"/{other_templ[tt]}/ (\"{tt}\")"))
+
+    # (c) body prose shared with another built page
+    prose = "".join(p for s in body for p in s["text"]).lower()
+    ws = TOKEN.findall(prose)
+    sh = DUP.shingles(ws)
+    mine = sentences(prose)
+    for k, o in others.items():
+        for seg in DUP.crossovers(ws, sh, o["shingles"]):
+            run = " ".join(seg)
+            problems.append(("outline-copy-crossover",
+                             f"{len(seg)} words shared with /{k}/: \"{run[:160]}\""))
+        theirs = {templated(x, cities): x for x in o["sentences"]}
+        for sent in sorted(mine):
+            if _whitelisted_sentence(sent):
+                continue
+            if sent in o["sentences"]:
+                problems.append(("outline-sentence-crossover",
+                                 f"sentence also on /{k}/: \"{sent[:160]}\""))
+            elif templated(sent, cities) in theirs and cities is not None \
+                    and templated(sent, cities) != sent:
+                problems.append(("outline-sentence-crossover",
+                                 f"sentence is a city swap of one on /{k}/: \"{sent[:160]}\""))
+    return problems
+
+
+# ── the run ───────────────────────────────────────────────────────────────────────────────
+def boards(root):
+    for f in sorted((Path(root) / "data" / "boards").glob("*.json")):
+        if f.name.startswith("_"):
+            continue
+        yield json.loads(f.read_text(encoding="utf-8"))
+
+
+def rebuilt(root):
+    f = Path(root) / "data" / "facts" / "rebuilt.json"
+    return set(json.loads(f.read_text(encoding="utf-8"))) if f.is_file() else set()
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("slugs", nargs="*", help="board keys to examine (default: every "
+                    "new-family page listed in data/facts/rebuilt.json)")
+    ap.add_argument("--root", default=str(ROOT))
+    a = ap.parse_args(argv)
+    root = Path(a.root)
+    listed = rebuilt(root)
+    # A slug may be named as its board key or as its route (uk-locations/<slug>).
+    named = set(a.slugs) | {resolve_page(s, root)[0] for s in a.slugs}
+    by_key = {}
+    for b in boards(root):
+        by_key[b["meta"]["slug"]] = b
+    problems, examined = [], []
+    out_of_scope = not_built = awaiting = 0
+    for slug in sorted(a.slugs):
+        if not {slug, resolve_page(slug, root)[0]} & set(by_key):
+            problems.append(f"{slug}: [outline-no-board] no board record for this slug in data/boards/")
+    cities = city_pattern(root)
+    built = None   # the corpus, read on the first page examined; never read when none is
+    for slug, board in sorted(by_key.items()):
+        if named and slug not in named:
+            continue
+        if not FR.applies(board):
+            out_of_scope += 1
+            if slug in named:
+                print(f"{slug}: not a new-family page (family_rules.applies) — skipped")
+            continue
+        key, route = resolve_page(slug, root)
+        page = built_path(slug, root)
+        if not page.is_file():
+            # A page the builder names, or one rebuilt.json lists while the site IS built,
+            # must resolve: a silent skip here is how a route the resolver cannot find
+            # (a post under /blog/, say) would never be examined at all.
+            if slug in named or ({key, route, slug} & listed
+                                 and (root / "dist" / "index.html").is_file()):
+                problems.append(f"{slug}: [outline-not-found] no built page at "
+                                f"{page.relative_to(root).as_posix()}")
+            else:
+                not_built += 1
+            continue
+        if not named and not ({key, route, slug} & listed):
+            awaiting += 1
+            continue
+        examined.append(f"/{route}/")
+        if board["meta"].get("status") not in APPROVED:
+            problems.append(f"{slug}: [outline-unapproved] board status is "
+                            f"'{board['meta'].get('status')}', not approved — no approved "
+                            "outline to have built from")
+        if built is None:
+            built = corpus(root / "dist")
+        own = page_key(page, root / "dist")
+        others = {k: v for k, v in built.items() if k != own}
+        for cid, msg in check_page(board, page.read_text(encoding="utf-8"), others, cities):
+            problems.append(f"{slug}: [{cid}] {msg}")
+    for p in problems:
+        print(p)
+    print(f"examined {len(examined)} new-family pages{': ' + ', '.join(examined) if examined else ''} "
+          f"({out_of_scope} boards out of family scope, {not_built} not built, "
+          f"{awaiting} awaiting rebuild); {len(problems)} problems")
+    return 1 if problems else 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+Run: `python3 -m pytest tests/py/test_outline_provenance_check.py -q`
+Expected: `5 failed, 22 passed` — the behaviour tests pass; `test_check_all_runs_the_gate`,
+`test_the_rule_is_written_and_indexed` and the three `test_each_builder_skill_names_the_gate`
+cases fail until Steps 4–6 wire the gate in.
+
+- [ ] **Step 4: Wire it into `check:all`**
+
+In `package.json`, replace
+
+```
+    "check:markers": "python3 scripts/marker_check.py",
+    "check:all": "npm run check:parity && npm run check:facts && npm run check:links && npm run check:verbatim && npm run check:redirects && npm run check:schema && npm run check:queries && npm run check:competitors && npm run check:gaps && npm run check:sitemaps && npm run check:placeholders && npm run check:markers && npm run agents",
+```
+
+with
+
+```
+    "check:markers": "python3 scripts/marker_check.py",
+    "check:outline": "python3 scripts/outline_provenance_check.py",
+    "check:all": "npm run check:parity && npm run check:facts && npm run check:links && npm run check:verbatim && npm run check:outline && npm run check:redirects && npm run check:schema && npm run check:queries && npm run check:competitors && npm run check:gaps && npm run check:sitemaps && npm run check:placeholders && npm run check:markers && npm run agents",
+```
+
+In `tests/py/test_package_scripts.py`, replace
+
+```
+    # check:competitors sits after check:queries: both guard research the page builders read.
+    # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:redirects", "check:schema", "check:queries", "check:competitors",
+```
+
+with
+
+```
+    # `check:outline` follows it (system-gaps Task 6): the fourth question about a rebuilt
+    # new-family page — was it written from its own approved outline, or from a sibling.
+    # check:competitors sits after check:queries: both guard research the page builders read.
+    # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
+    expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
+                "check:outline", "check:redirects", "check:schema", "check:queries", "check:competitors",
+```
+
+Run: `python3 scripts/outline_provenance_check.py`
+Expected: `examined 0 new-family pages (12 boards out of family scope, 0 not built, 0 awaiting rebuild); 0 problems`, exit 0.
+
+- [ ] **Step 5: Write the rule and index it**
+
+Append to the end of `rules/copy.md` (its last line is the `no-unsourced-superlatives` bullet, ending "in the same sentence." and one newline), exactly — the block opens with one blank line:
+
+```markdown
+
+---
+id: outline-provenance-gate
+enforced: test
+family: DUP
+test: tests/py/test_outline_provenance_check.py
+---
+
+- **Outline provenance — a location, comparison or blog page is built from its approved outline and from nothing else (system-gaps, 2026-09-24)** — The mechanical half of `write-from-outline-never-from-sibling`, binding the new-family pages only (`scripts/family_rules.py`; the twelve pages built before this build are never examined). `scripts/outline_provenance_check.py <slug>` reads the page's approved board record and its built page and FAILs when: the record is not approved; a body H2 or H3 is not in the outline, an outline H2 or H3 is not on the page, or the two are in a different order; a labelled section is not a section of the record; a heading repeats on the page; a body heading equals a heading on another built page, exactly or with the breed or the city swapped; or body prose shares a 12-word run, or a sentence of six or more words (city swapped or not), with another built page outside the `scripts/dup_content_audit.py` whitelist. The frame (hero, takeaways, counter, trust strip, TOC, reviews, FAQ blocks, newsletter, form) is never compared. An H3 a component renders, such as an info card's heading, is an outline node: put it in the record's tree at board time or leave it out of the page. `npm run check:all` runs it over every new-family page listed in `data/facts/rebuilt.json`; the builder runs it on its own slug before listing the page.
+```
+
+In `data/quality/rule-index.json`, replace
+
+```
+   "why": "the OUTCOME is tested by dup_content_audit.py, but the rule is about method \u2014 a page written from a sibling and then reworded passes the outcome test and still violates the rule"
+  },
+```
+
+with
+
+```
+   "why": "the OUTCOME is tested by dup_content_audit.py, but the rule is about method \u2014 a page written from a sibling and then reworded passes the outcome test and still violates the rule"
+  },
+  {
+   "id": "outline-provenance-gate",
+   "family": "DUP",
+   "enforced": "test",
+   "pack": "rules/copy.md",
+   "test": "tests/py/test_outline_provenance_check.py",
+   "severity": "blocking"
+  },
+```
+
+`write-from-outline-never-from-sibling` stays `judgment` (the judgment class stays at 9): the
+gate checks what the method leaves behind, not the method.
+
+- [ ] **Step 6: Append the builder-skill blocks**
+
+Read each skill's last 20 lines first. In plan order all three skills now end with Task 1's
+appended block, `## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)`,
+whose last words are "with the sections that use it." and one newline. For each skill append ONE
+blank line and then its block below, so this block sits last, after Task 1's.
+`.claude/skills/bsuk-location-page-builder/SKILL.md` — append one blank line and then:
+
+```markdown
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every city page this skill builds.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open another city's page, board or built HTML for wording. The only text a sibling
+   may share is the whitelist in `scripts/dup_content_audit.py`; a sentence that differs from
+   a sibling's only by the city name is a copy, and the gate fails it.
+3. A heading the tree does not carry, including an info card's H3, goes back to the board:
+   add it to the tree and re-approve, then build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this page and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   city page and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   city page to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+```
+
+`.claude/skills/bsuk-comparison-page-builder/SKILL.md` (ends with Task 1's block, as above) —
+append one blank line and then:
+
+```markdown
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every comparison page this skill builds.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open a sibling comparison's page, board or built HTML for wording. The only text a
+   sibling may share is the whitelist in `scripts/dup_content_audit.py`; a heading that
+   differs from a sibling's only by the breed word is a template copy, and the gate fails it.
+3. A heading the tree does not carry, including an info card's H3, goes back to the board:
+   add it to the tree and re-approve, then build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this page and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   comparison page and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   comparison page to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+```
+
+`.claude/skills/bsuk-blog-post/SKILL.md` (ends with Task 1's block and one newline, like the
+other two; the blank line it ended with at 99c81e0 is now above Task 1's block) — append one
+blank line and then:
+
+```markdown
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every blog post this skill builds; the `/blue-staffy-blog-guides/` hub, built before this
+rule, is not examined.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open another post's page, board or built HTML for wording. The only text another
+   page may share is the whitelist in `scripts/dup_content_audit.py`.
+3. A heading the tree does not carry, including an info card's H3 or a special-element
+   component's heading, goes back to the board: add it to the tree and re-approve, then
+   build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this post and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   post and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   post to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+```
+
+- [ ] **Step 7: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_outline_provenance_check.py tests/py/test_package_scripts.py tests/py/test_rules_index.py -q`
+Expected: all pass (27 in the new file).
+
+Run: `python3 scripts/build_system_registry.py && npm run -s registry`
+Expected: `wrote docs/reference/system-registry.md`, then `examined docs/reference/system-registry.md; 0 problems` (Scripts 67 → 68 in plan order after Tasks 1–5; 63 → 64 standalone).
+
+Run: `npm run -s check:all`
+Expected: exit 0, with the line `examined 0 new-family pages (12 boards out of family scope, 0 not built, 0 awaiting rebuild); 0 problems`.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add scripts/outline_provenance_check.py tests/py/test_outline_provenance_check.py package.json tests/py/test_package_scripts.py rules/copy.md data/quality/rule-index.json .claude/skills/bsuk-location-page-builder/SKILL.md .claude/skills/bsuk-comparison-page-builder/SKILL.md .claude/skills/bsuk-blog-post/SKILL.md docs/reference/system-registry.md
+git commit -m "gate: outline provenance — a new-family page is built from its approved outline only
+
+scripts/outline_provenance_check.py compares a built location, comparison or blog page with
+its approved board record (body H2/H3 extra, missing, reordered; unknown sections), refuses
+duplicate headings on the page, and fails any body heading, 12-word passage or 6-word
+sentence shared with another built page, breed- or city-swapped, outside the dup whitelist.
+In check:all after check:verbatim; examines 0 pages until project 5 lists one.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 6b: The board refuses an outline that repeats a heading
+
+**Gap:** "…never from … duplicates" — at board time, before a record can be approved.
+**Files:**
+- Modify: `scripts/family_rules.py` (append one block at end of file)
+- Modify: `rules/copy.md` (one sentence in the `outline-provenance-gate` entry)
+- Test: `tests/py/test_outline_provenance_check.py` (append)
+
+- [ ] **Step 1: Write the failing test**
+
+Append to the end of `tests/py/test_outline_provenance_check.py`, two blank lines below its last line:
+
+```python
+# ── the board-time half (Task 6b): family_rules refuses an outline that repeats a heading ──
+import family_rules as FR  # noqa: E402
+
+
+def _demo_location():
+    b = json.loads((ROOT / "data" / "boards" / "_demo.json").read_text())
+    b["meta"]["slug"] = SLUG
+    b["meta"]["page_type"] = "location"
+    return b
+
+
+def _repeat(board):
+    return [f for f in FR.findings(board, {"entities": []}) if f[0] == "outline-heading-repeat"]
+
+
+def test_an_outline_without_a_repeated_heading_passes():
+    assert _repeat(_demo_location()) == []
+
+
+def test_an_outline_that_repeats_a_heading_fails():
+    b = _demo_location()
+    body = next(s for s in b["sections"] if s["tree"] and s["shape"] != "faq")
+    body["tree"].append({"level": 3, "heading": body["heading"].upper(), "intent": "", "children": []})
+    hits = _repeat(b)
+    assert len(hits) == 1 and hits[0][1] == "FAIL"
+
+
+def test_a_hero_heading_equal_to_the_h1_is_one_heading():
+    # The build renders such a hero's H1 alone (the blog hub, contact and thank-you pages).
+    b = _demo_location()
+    h1 = b["h1"]["variants"][b["h1"]["pick"] if b["h1"].get("pick") is not None else b["h1"]["recommended"]]
+    next(s for s in b["sections"] if s["shape"] == "hero")["heading"] = h1
+    assert _repeat(b) == []
+
+
+def test_the_faq_tree_is_row_ids_not_headings():
+    b = _demo_location()
+    faq = next(s for s in b["sections"] if s["shape"] == "faq")
+    faq["tree"].append(dict(faq["tree"][0]))
+    assert _repeat(b) == []
+
+
+def test_no_built_record_trips_the_board_check():
+    import glob
+    for f in glob.glob(str(ROOT / "data" / "boards" / "*.json")):
+        assert list(FR.outline_heading_repeat(json.loads(pathlib.Path(f).read_text()), None)) == [], f
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_outline_provenance_check.py -q`
+Expected: FAIL — `test_an_outline_that_repeats_a_heading_fails` (no finding) and
+`test_no_built_record_trips_the_board_check` (`AttributeError: module 'family_rules' has no attribute 'outline_heading_repeat'`).
+
+- [ ] **Step 3: Implement**
+
+Append to the end of `scripts/family_rules.py`, two blank lines below its last line. In plan
+order that is no longer `    return out`: Task 1 appended its keyword block after `findings()`,
+and Task 4 appended the foot import `import link_diversity  # noqa: E402,F401`, which is now the
+last line. Put this block after that import (`register` is defined at the top of the file, so
+the order is safe, and no test asserts the order of `CHECKS`):
+
+```python
+# ── Task 6b (system-gaps): an approved outline never repeats a heading ─────────────────────
+# The board-time half of `outline-provenance-gate` (rules/copy.md). The built-page half is
+# scripts/outline_provenance_check.py, which reads dist/ and so cannot run at board time; a
+# heading the outline carries twice would be built twice, so it is refused here, before the
+# record can be approved. Cross-page collisions are already pageboard's `header-collision`.
+import re as _re
+
+_HEADING_TOKEN = _re.compile(r"[a-z0-9$']+")
+
+
+def _heading_key(text):
+    return " ".join(_HEADING_TOKEN.findall((text or "").replace("’", "'").lower()))
+
+
+@register
+def outline_heading_repeat(board, ont):
+    h1 = board.get("h1") or {}
+    variants = h1.get("variants") or []
+    pick = h1.get("pick") if h1.get("pick") is not None else h1.get("recommended")
+    heads = [("H1", variants[pick])] if isinstance(pick, int) and 0 <= pick < len(variants) else []
+
+    def walk(nodes):
+        for n in nodes or []:
+            heads.append((f"H{n.get('level')}", n.get("heading")))
+            walk(n.get("children"))
+    h1_key = _heading_key(heads[0][1]) if heads else ""
+    for s in board.get("sections", []):
+        # A hero whose heading IS the H1 renders the H1 alone (measured on dist/ 2026-09-24:
+        # the blog hub, contact and thank-you pages), so that pair is one heading, not two.
+        if not (s.get("shape") == "hero" and _heading_key(s.get("heading")) == h1_key):
+            heads.append(("H2", s.get("heading")))
+        if s.get("shape") != "faq":   # an FAQ tree holds data/faq.json row ids, not headings
+            walk(s.get("tree"))
+    seen = {}
+    for level, text in heads:
+        key = _heading_key(text)
+        if key:
+            seen.setdefault(key, []).append(f"{level} {text!r}")
+    for key, where in seen.items():
+        if len(where) > 1:
+            yield ("outline-heading-repeat", "FAIL",
+                   f"the outline carries one heading {len(where)} times: {', '.join(where)}")
+```
+
+In `rules/copy.md`, replace
+
+```
+`npm run check:all` runs it over every new-family page listed in `data/facts/rebuilt.json`; the builder runs it on its own slug before listing the page.
+```
+
+with
+
+```
+`npm run check:all` runs it over every new-family page listed in `data/facts/rebuilt.json`; the builder runs it on its own slug before listing the page. At board time, `scripts/family_rules.py` check `outline-heading-repeat` refuses an outline that carries one heading twice, so the record cannot be approved with a duplicate the build would copy.
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_outline_provenance_check.py tests/py/test_family_rules.py tests/py/test_page_board.py tests/py/test_link_diversity.py tests/py/test_anchor_types.py tests/py/test_keyword_variants.py -q`
+Expected: all pass (32 in the new file; integration run: 290 passed with Tasks 1, 4 and 5's family-rule tests).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/family_rules.py rules/copy.md tests/py/test_outline_provenance_check.py
+git commit -m "gate: family_rules refuses an outline that carries one heading twice
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+#### Open questions
+
+1. **Component H3s are outline nodes.** The gate FAILs a body H3 the tree lacks, and on the 12
+   built pages every such H3 (10) came from an info card. The drafted skill blocks tell the
+   builder to add those headings to the tree at board time. If the breeder would rather let
+   an info card title float free, the fix is to skip headings inside `kit-info` in
+   `BuiltPage` — say so before execution.
+2. **City-swap templating is FAIL, not WARN.** A new city page whose H2 or 6+-word sentence
+   differs from a MIGRATED sibling's only by the city name fails. The migrated location pages
+   are templated among themselves, so the first rewrites will meet this often; that is the
+   rule working, but it is stricter than `dup_content_audit.py`.
+3. **Blog-post keys.** If new posts are served under `/blog/<slug>/`, their board key must be
+   the route (`blog/<slug>`) or the page map must carry the row; otherwise the gate FAILs
+   `outline-not-found` (by design — it never silently skips).
+4. **Sentence floor of 6 words** is a choice, not a measurement of a threshold; 17 shared
+   6+-word sentences exist on the 12 built pages, all real repeats.
+
+#### Interfaces this section exposes
+
+- `scripts/outline_provenance_check.py` — CLI `[slug ...] [--root DIR]`; `npm run check:outline`; in `check:all` after `check:verbatim`.
+  Functions: `resolve_page(slug, root) -> (key, route)` (defers to `_slugs.resolve_page` when present), `built_path(slug, root)`, `outline(board)`, `parse(html) -> BuiltPage`, `corpus(dist)`, `check_page(board, html, others, cities=None) -> [(check_id, message)]`, `city_pattern(root)`, `main(argv)`.
+  Constants: `FRAME_SHAPES`, `APPROVED`, `SENTENCE_MIN_WORDS = 6`; reuses `query_coverage_check.FRAME_IDS/FRAME_CLASSES` and `dup_content_audit` (`crossovers`, `shingles`, `words`, `Text`, `unwhitelisted_segments`, `WHITELIST_STEMS`, `HEADER_WHITELIST`, `PUPPY_CARD_HEADINGS`, `HEAD_TERMS`, `SPECIES_TOKENS`, `is_specimen`, `_norm_heading`).
+- Check ids (built page): `outline-unapproved`, `outline-no-board`, `outline-not-found`, `outline-extra`, `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`, `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`.
+- Check id (board time, `scripts/family_rules.py`): `outline-heading-repeat` (FAIL) via `outline_heading_repeat(board, ont)`.
+- Record fields read (all with `.get()`, none required): `meta.slug`, `meta.page_type`, `meta.status`, `h1.variants/pick/recommended`, `sections[].id/shape/heading/tree[].level/heading/children`. Inputs: `data/facts/rebuilt.json`, `data/page-map.json`, `data/locations.json` (`city`), `dist/`.
+- Rule id: `outline-provenance-gate` (`rules/copy.md`, `enforced: test`, family DUP, test `tests/py/test_outline_provenance_check.py`, severity blocking).
+- Skill section heading: `## Build from the approved outline (system-gaps)` in the three builder skills.
+
+#### Verified
+
+In the detached worktree (`system-gaps` 99c81e0 + these two tasks, committed there to test order):
+- `python3 -m pytest tests/py/test_outline_provenance_check.py -q` → 32 passed (27 after Task 6, 5 added by 6b). Before the gate existed: collection error (module missing); with the script but before wiring: 5 failed, 22 passed as Step 3 states.
+- Full suite `python3 -m pytest tests/py -q` → **2410 passed, 27 skipped, 1 xfailed** (CONTEXT baseline 2377 / 25 / 1; +32 are this section's tests; the extra skips are `run npm run ds:build first` / `run npm run canvas:build first`, artifacts the scratch worktree lacks).
+- `npm run -s check:all` → exit 0; prints `examined 0 new-family pages (12 boards out of family scope, 0 not built, 0 awaiting rebuild); 0 problems`.
+- `python3 scripts/build_system_registry.py` + `npm run -s registry` → `0 problems` (Scripts 64).
+- Calibration on the 12 built pages (gate forced on, not part of any test): 10 extra, 0 missing, 0 order, 3 heading crossovers, 2 passage crossovers, 17 sentence crossovers; board check 0 hits on all 13 records.
+- `python3 scripts/dup_content_audit.py` today: 131 passages / `--headers` 17 headers — why that script cannot itself be the `check:all` gate.
+
+
+---
+
+## Part D — IMAGE-DESIGNS.md, the framing engine and the image skills (Tasks 7–8)
+
+**Gap (user's words):** "THE IMAGE.MD — what OG IMAGE STYLES AND INFOGRAPHICS styles, APPROVAL, ETC BEFORE THE BUILDS".
+BSUK had no image-design file: the source repo's one was never ported, the three image skills
+were `deferred` in `data/port-manifest.json`, and two agents cited `IMAGE-DESIGNS.md` with a
+"(not ported — source repo only)" marker.
+
+**What these two tasks deliver**
+- **Task 7:** `IMAGE-DESIGNS.md` at the repo root, beside `CLAUDE.md` and `README.md` (the only
+  root docs; there is no `DESIGN.md` — the page's design lives in `rules/design.md` and
+  `src/styles/tokens.css`, which the new file names as its companion; `CLAUDE.md` gains one
+  pointer bullet under "Where everything else went"). Contents: brand facts, breed accuracy
+  for a blue Staffordshire Bull Terrier sourced to the breed-standard row, the slot/crop
+  table, a pointer (not a restatement) to `uniform-inbody-image-sizing` in `rules/images.md`,
+  the style wrapper, the dog-specific negative list, lighting, scene routing for location /
+  comparison / blog / hub, the output handoff, OG framing styles A/B/C/D/E/H, **five named
+  infographic styles IG-1..IG-5**, the two-pass approval, and the slot fields and picks that
+  Task 10's gate reads. `scripts/image_designs.py` parses the ids from the document and writes
+  the board's label map `data/design/image-styles.json`.
+- **Task 8:** `scripts/reframe_og.py` (contain / blurfill / topcover, `--mobcrop 4:5`, `-760`
+  sibling under 55 KB), `scripts/ingest_image.py` with three commands — `folder` (Assets
+  folder → `public/images/` under an SEO stem), `draft` (generated master →
+  `data/boards/generated/<slug file>/<slot>.webp`, prints the approving pick with its sha12),
+  `publish` (copies the approved bytes UNCHANGED into `public/images/`) — a 5-line carry-over
+  in `scripts/bake_images.py` so `npm run bake` never drops an ingested manifest row, and the
+  three skills `bsuk-image-generation`, `bsuk-infographic`, `bsuk-photo-ingest`, flipped from
+  `deferred` to `rebase` (the manifest's ported mode for every hand-re-based skill).
+
+**Aligned with Task 10 (draft E), as the coordinator specified:** style ids are exactly
+`OG_STYLES = A,B,C,D,E,H` and `IG_STYLES = IG-1..IG-5`; slot fields are
+`sections[].images[].{source, file, source_file, og_style, infographic_style, prompt}` (no
+`status` field — approval is the pick); picks are `approval.picks["img:<slot>"]` =
+`file:/images/…` | `assets:<filename>` | `og:<A..H>[:<sha12>]` | `ig:IG-<1-5>[:<sha12>]`; a
+generated image is approved only by the sha12 of its exact bytes (a second pass of the same
+board); drafts live in `data/boards/generated/<slug file>/<slot>.<ext>`; after approval the
+bytes are copied unchanged into `public/images/` and the slot's `assets[]` row `file` is set;
+a folder file's default target is `/images/<asset_stem>.webp`, and any other name is written
+into `assets[<slot>].file`. `scripts/ingest_image.py` never ADDS an `assets[]` row (that would
+change the record hash); it only sets `file` and `status` on a row the board already plans.
+Parity tests (`pytest.importorskip`) pin `image_rules.OG_STYLES / IG_STYLES / SOURCES /
+parse_pick` and `image_candidates.asset_stem / slug_file` to this section's code; they skip
+until Tasks 9–10 land and then bind. I ran them against the code extracted from draft-E.md:
+4 passed.
+
+**Image generation in this environment (checked 2026-09-24):** the
+`compound-engineering:ce-gemini-imagegen` skill is installed and is the route the new skill
+names. It needs `GEMINI_API_KEY` in the shell (not set; BSUK's `.env` has no image key — only
+the source repo holds a `.google-key` file) and the `google-genai` package (not installed, not
+in `requirements.txt`). The Higgsfield connector in this session exposes website and preset
+tools only, no `generate_image`, so it is written up as a fallback only. Pillow 10.4.0 is pinned
+in `requirements.txt` and WebP works (`PIL.features.check('webp')` → True).
+
+**Execution order note.** Tasks 7–8 run before 9–10, so `IMAGE-DESIGNS.md` names
+`scripts/image_candidates.py` and `scripts/image_rules.py` before they exist. The Task 8 path
+test exempts exactly those two (`FORWARD`) until they exist; the skills name them only as
+modules (`image_rules`, `image_candidates`) so the skill path guard stays green at every
+commit. `ingest_image.py publish` needs an `img:` pick, which the board schema accepts only
+after Task 10 widens the `picks` key pattern; its tests use a synthetic board and pass in any order.
+
+**CROSS-BRANCH CONFLICT — must be resolved by whoever merges second.** The p5-readiness plan
+(`/Users/apple/Downloads/BSUK-p5r/docs/superpowers/plans/2026-09-24-p5-readiness.md`, Task 18)
+was written while `IMAGE-DESIGNS.md` did not exist. It (a) adds
+`"IMAGE-DESIGNS.md": "rules/images.md"` to a `REPLACED` map in its new
+`tests/py/test_agent_references.py`, which fails any agent that names `IMAGE-DESIGNS.md`;
+(b) rewrites line 13 of `bsuk-image-pipeline.md` and `bsuk-infographic-builder.md` to cite
+`rules/images.md` (the same two lines Task 7 edits); and (c) turns the six
+"(deferred to project 3, see data/port-manifest.json)" markers in `bsuk-infographic-builder.md`
+into "(not ported — project 3 closed without it; source repo only)", which the stale-marker
+guard (`tests/py/test_claude_md.py::test_no_arrives_in_task_marker_is_stale`) will then fail,
+because Task 8 creates `.claude/skills/bsuk-infographic/SKILL.md`. Resolution at merge: drop the
+`IMAGE-DESIGNS.md` row from p5r's `REPLACED`; keep this branch's line-13 wording (or p5r's
+wording plus the appended `> **Image designs:**` line — both tests accept that); and delete the
+six markers instead of rewording them. p5r had not executed Task 18 when this was drafted (its
+branch head was `a6c8022`).
+
+---
+### Task 7: IMAGE-DESIGNS.md — named OG and infographic styles, board approval, slot fields
+
+**Gap:** the image design file — OG image styles, infographic styles, approval before the builds.
+**Files:**
+- Create: `IMAGE-DESIGNS.md`
+- Create: `scripts/image_designs.py`
+- Create: `data/design/image-styles.json` (written by the script)
+- Test: `tests/py/test_image_designs.py`
+- Modify: `.claude/agents/bsuk-image-pipeline.md:13` and an end-of-file append
+- Modify: `.claude/agents/bsuk-infographic-builder.md:13` and an end-of-file append
+- Modify: `.claude/skills/image-prompt-generator/SKILL.md` (end-of-file append)
+- Modify: `.claude/skills/image-metadata/SKILL.md` (end-of-file append)
+- Modify: `data/port-manifest.json` (one `rebase` row appended, so `scripts/marker_check.py` scans the new file)
+- Modify: `CLAUDE.md` ("Where everything else went", one bullet)
+- Modify (regenerated): `docs/reference/system-registry.md`
+
+- [ ] **Step 1: Write the failing test** — create `tests/py/test_image_designs.py`:
+```python
+"""IMAGE-DESIGNS.md is the art-direction source every image agent and skill reads.
+
+It pins: the twelve sections in order, the brand facts against `data/settings.json` and
+`src/styles/tokens.css`, breed accuracy for a blue Staffordshire Bull Terrier, the dog-
+specific negative list, unique style ids, the slot fields and picks the build gate reads,
+the two-pass approval, the board's label map, no source-repo residue, and that every image
+consumer cites the file.
+"""
+import json
+import pathlib
+import re
+
+import pytest
+
+import image_designs
+from image_designs import REQUIRED_SECTIONS, labels, load, render_labels
+from marker_check import hits_in
+from test_agent_facts import violations
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+DOC = ROOT / "IMAGE-DESIGNS.md"
+
+
+def text():
+    return DOC.read_text(encoding="utf-8")
+
+
+# ── structure ────────────────────────────────────────────────────────────────
+
+def test_every_required_section_is_present_in_order():
+    t = text()
+    positions = [t.find("\n" + h + "\n") for h in REQUIRED_SECTIONS]
+    missing = [h for h, p in zip(REQUIRED_SECTIONS, positions) if p < 0]
+    assert missing == [], "IMAGE-DESIGNS.md lost sections: %s" % missing
+    assert positions == sorted(positions), "sections are out of order"
+
+
+def test_og_style_ids_are_exactly_the_named_six_and_unique():
+    ids = load()["og_styles"]
+    assert ids == ["A", "B", "C", "D", "E", "H"], ids
+    assert len(set(ids)) == len(ids)
+
+
+def test_infographic_style_ids_are_unique_contiguous_and_three_to_five():
+    ids = load()["infographic_styles"]
+    assert 3 <= len(ids) <= 5, ids
+    assert len(set(ids)) == len(ids), "duplicate infographic style id: %s" % ids
+    assert ids == ["IG-%d" % n for n in range(1, len(ids) + 1)], ids
+
+
+def test_style_names_are_unique_and_no_id_is_shared_between_the_two_tables():
+    spec = load()
+    names = list(spec["og_names"].values()) + list(spec["infographic_names"].values())
+    assert len(set(names)) == len(names), names
+    assert not set(spec["og_styles"]) & set(spec["infographic_styles"])
+
+
+def test_slot_fields_carry_the_values_the_board_uses():
+    spec = load()
+    f = spec["fields"]
+    assert f["source"] == ["existing", "assets-folder", "generate", "infographic"]
+    assert f["og_style"] == spec["og_styles"]
+    assert f["infographic_style"] == spec["infographic_styles"]
+    assert {"file", "source_file", "prompt"} <= set(f)
+    assert "status" not in f, "approval is the img: pick, not a slot field (§9)"
+
+
+PICKS = ("`file:/images/<path>`", "`assets:<filename>`", "`og:<style>`", "`og:<style>:<sha12>`",
+         "`ig:IG-<n>`", "`ig:IG-<n>:<sha12>`")
+
+
+@pytest.mark.parametrize("pick", PICKS)
+def test_every_pick_form_is_documented(pick):
+    assert pick in "\n".join(image_designs._section_lines(text(), 10)), pick
+
+
+def test_the_label_map_is_written_from_the_document():
+    path = ROOT / "data/design/image-styles.json"
+    on_disk = json.loads(path.read_text(encoding="utf-8"))
+    assert path.read_text(encoding="utf-8") == render_labels(), (
+        "data/design/image-styles.json is stale — run python3 scripts/image_designs.py --write")
+    spec = load()
+    assert list(on_disk["og"]) == spec["og_styles"]
+    assert list(on_disk["infographic"]) == spec["infographic_styles"]
+    for group in on_disk.values():
+        for i, row in group.items():
+            assert row["name"].strip() and row["use"].strip(), i
+
+
+def test_the_build_gate_uses_the_same_ids():
+    """scripts/image_rules.py (the build gate) spells the ids as constants; they must be
+    exactly the ids this document names. Skips until that module exists."""
+    rules = pytest.importorskip("image_rules")
+    spec = load()
+    assert list(rules.OG_STYLES) == spec["og_styles"]
+    assert list(rules.IG_STYLES) == spec["infographic_styles"]
+    assert list(rules.SOURCES) == spec["fields"]["source"]
+
+
+# ── brand facts and breed accuracy ───────────────────────────────────────────
+
+def test_brand_facts_match_settings_and_tokens():
+    s = json.loads((ROOT / "data/settings.json").read_text(encoding="utf-8"))
+    tokens = (ROOT / "src/styles/tokens.css").read_text(encoding="utf-8")
+    t = text()
+    for fact in (s["breeder_name"], s["address"]["city"], s["address"]["region"]):
+        assert fact in t, fact
+    for hexcode in ("#1F3A52", "#5B7C99", "#C9A227", "#F4F1EA"):
+        assert hexcode in t, hexcode
+        assert hexcode in tokens, "%s is not a locked token" % hexcode
+
+
+BREED = ("blue Staffordshire Bull Terrier", "muscular, stocky, medium-sized", "broad head",
+         "cheek muscles", "short, smooth coat", "Rose or half-pricked ears", "never cropped")
+
+
+@pytest.mark.parametrize("phrase", BREED)
+def test_breed_accuracy_is_stated(phrase):
+    assert phrase in text(), phrase
+
+
+def test_breed_accuracy_is_sourced_to_the_breed_standard_row():
+    lib = (ROOT / "docs/reference/external-link-library.md").read_text(encoding="utf-8")
+    assert "royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/" in lib
+    assert "docs/reference/external-link-library.md" in text()
+
+
+NEGATIVES = ("no text", "no watermarks", "no cropped ears", "no fighting or aggression imagery",
+             "no spiked collar", "no chain collar", "no XL Bully build",
+             "no pit-bull-type build", "nothing that could imply a banned type",
+             "no clinical or studio lighting")
+
+
+@pytest.mark.parametrize("ban", NEGATIVES)
+def test_negative_list_carries_the_dog_specific_bans(ban):
+    # The list is one wrapped blockquote: rejoin it so a ban split across lines still counts.
+    neg = " ".join(l.lstrip("> ").strip() for l in image_designs._section_lines(text(), 3))
+    assert ban in neg, ban
+
+
+def test_uniform_sizing_defers_to_the_rule_pack_and_does_not_restate_it_differently():
+    rules = (ROOT / "rules/images.md").read_text(encoding="utf-8")
+    assert "id: uniform-inbody-image-sizing" in rules
+    sec = "\n".join(image_designs._section_lines(text(), 1))
+    assert "uniform-inbody-image-sizing" in sec and "rules/images.md" in sec
+    for value in ("max-width:760px", "aspect-ratio:1408/768", "95 KB", "-760.webp"):
+        assert value in sec and value.replace(" KB", "") in rules.replace(" KB", ""), value
+
+
+APPROVAL = ("approval.picks[\"img:<slot>\"]", "data/boards/generated/<slug file>/<slot>.webp",
+            "sha12", "UNCHANGED", "The build refuses an unapproved generated image",
+            "scripts/image_candidates.py", "scripts/image_rules.py", "image-generated-unapproved",
+            "image_candidates.ingest_target", "`assets[]`")
+
+
+@pytest.mark.parametrize("phrase", APPROVAL)
+def test_approval_section_describes_the_two_pass_flow(phrase):
+    assert phrase in "\n".join(image_designs._section_lines(text(), 9)), phrase
+
+
+# ── residue ──────────────────────────────────────────────────────────────────
+RESIDUE = re.compile(r"(?i)\b(parrots?|midland|benjamin|cites|forest[- ]green|clay|"
+                     r"aviary|timneh|congo)\b|#2D6A4F|#e8604c|#faf7f4")
+
+
+def residue(path):
+    return [(n, l.strip()) for n, l in
+            enumerate(pathlib.Path(path).read_text(encoding="utf-8").splitlines(), 1)
+            if RESIDUE.search(l)]
+
+
+def test_no_source_repo_residue():
+    assert residue(DOC) == []
+    assert hits_in(DOC) == []
+    assert violations(DOC) == []
+
+
+def test_the_residue_detector_fires(tmp_path):
+    p = tmp_path / "x.md"
+    p.write_text("fine line\nTeri's Midland aviary, forest green and clay\n", encoding="utf-8")
+    assert [n for n, _ in residue(p)] == [2]
+
+
+# ── consumers ────────────────────────────────────────────────────────────────
+CONSUMER_LINE = (
+    "> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles "
+    "(§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule "
+    "(§9: nothing generated is built until the board approves its exact bytes) and the "
+    "image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, "
+    "`infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, "
+    "framing or placing an image; on conflict it wins.")
+
+CONSUMERS = (
+    ".claude/agents/bsuk-image-pipeline.md",
+    ".claude/agents/bsuk-infographic-builder.md",
+    ".claude/skills/image-prompt-generator/SKILL.md",
+    ".claude/skills/image-metadata/SKILL.md",
+)
+
+
+@pytest.mark.parametrize("consumer", CONSUMERS)
+def test_every_image_consumer_cites_image_designs(consumer):
+    lines = (ROOT / consumer).read_text(encoding="utf-8").splitlines()
+    assert CONSUMER_LINE in lines, (
+        "%s does not carry the IMAGE-DESIGNS.md citation line — append it verbatim" % consumer)
+
+
+def test_the_consumer_line_names_every_style_id():
+    spec = load()
+    for i in spec["og_styles"]:
+        assert i in CONSUMER_LINE
+    assert "IG-1 to IG-%d" % len(spec["infographic_styles"]) in CONSUMER_LINE
+
+```
+- [ ] **Step 2: Run it and confirm it fails**
+Run: `python3 -m pytest tests/py/test_image_designs.py -q`
+Expected: FAIL — `ERROR tests/py/test_image_designs.py` with `ModuleNotFoundError: No module named 'image_designs'` (1 error during collection).
+
+- [ ] **Step 3a: Implement — create `IMAGE-DESIGNS.md`** (repo root):
+````markdown
+# Image Designs
+
+> **Read this before you choose, generate, frame or place any image on BlueStaffyUK.**
+> `rules/design.md` and `src/styles/tokens.css` govern *the page*. **This file governs *the
+> picture*:** how a photograph or infographic must look, how it is cropped and lit, which
+> named style frames it, and how it is approved before a build may use it.
+>
+> **This file wins.** If an image agent or skill carries an older value (a stale colour, a
+> wrong town, a crop recipe that cuts the dog's head off), the value here is canonical: fix
+> the consumer to match this file, never the reverse.
+>
+> "OG photo" in this file means an **original photograph** (a real photo of our dogs, or one
+> from the breeder's folder), not the Open Graph share card. The share card is its own slot in §1.
+
+---
+
+## 0. Brand Facts
+
+- **Breeder:** Lisa Bright, BlueStaffyUK, **Carlisle, Cumbria** (town and region only; there
+  is no street and no postcode, Known Issue 16). Source of truth: `data/settings.json`.
+  Copy speaks as *we / us / our*; an image carries mood, never words.
+- **In-image palette** (echo the site, never fight it; the hexes are the locked tokens in
+  `src/styles/tokens.css`):
+  - **Steel `#1F3A52`**: framing, deep background tone, infographic title bars.
+  - **Slate `#5B7C99`**: cool mid-tone for secondary surfaces. A blue coat sits close to
+    slate, so a slate background must be lit or blurred apart from the dog, never behind it
+    at the same value.
+  - **Brass `#C9A227`**: a small warm accent only (a collar tag, a lead clip, a lamp, a
+    figure on an infographic). Never the dominant cast. Brass on bone fails contrast, so
+    brass text sits on steel only.
+  - **Bone `#F4F1EA`**: surfaces, walls, blankets, infographic beds.
+  - **Grade:** neutral to gently warm daylight. Never a cold blue cast, never a grey
+    clinical look, never a studio flash.
+- **Breed accuracy (non-negotiable: get the dog right).** Every dog is a **blue Staffordshire
+  Bull Terrier**, drawn to the registry's breed standard: the royalkennelclub.com
+  Staffordshire Bull Terrier breed-standard row in `docs/reference/external-link-library.md`.
+  - A **muscular, stocky, medium-sized** terrier: compact and balanced, never tall, leggy or
+    bulky.
+  - A **broad head** with **distinct cheek muscles** and a short foreface.
+  - A **short, smooth coat**, close to the skin; for our dogs, blue (blue-grey), or blue with
+    white where the puppy really is marked that way.
+  - **Rose or half-pricked ears**, natural and **never cropped**.
+  - Relaxed, friendly expression. A puppy is a puppy: soft, curious, close to the family.
+  - **NEVER** a generic dog, another breed, a cartoon stand-in or a dog emoji (design rule 7).
+
+---
+
+## 1. Crop & Aspect Ratios (per slot)
+
+| Slot | Ratio | Pixels | Notes |
+|---|---|---|---|
+| Hero | 16:9 | 1600×900 master | LCP image: `fetchpriority="high"`, WebP, never lazy. The page's own hero style decides the frame (CLAUDE.md rule 16) |
+| In-body section (H2 or H3) | 1408:768 | 1408×768 plus a 760×415 sibling | The uniform box of §1a. OG photo and infographic alike |
+| Puppy card | 1:1 | 800×800 | `public/images/puppies/<slug>-card-800.webp`, baked by `scripts/bake_images.py` |
+| Share card (Open Graph) | 1.91:1 | 1200×630 | One per page; same subject as the hero, recomposed, never the hero squashed |
+| Further-reading thumb | 1408:768 family | 320×175 and 760×416 | Always the TARGET page's own hero (`rules/images.md`) |
+| Social vertical | 9:16 | 1080×1920 | Reels and Shorts only; never placed on a page |
+| HTML infographic | per page width | 760px (guide, blog, care) or 1100px (home, location) wide, 400px tall desktop, auto on mobile | Design rule 9 in `rules/design.md` |
+
+### 1a. Uniform In-Body Image Sizing
+
+The rule is `uniform-inbody-image-sizing` in `rules/images.md`, and this file does not restate
+it differently: every in-body section image, OG photo and infographic alike, renders in the
+same `.sec-img.inf-img` box (`max-width:760px; aspect-ratio:1408/768; object-fit:cover`),
+identical at every width, shipped as a WebP under 95 KB plus a `-760.webp` sibling with
+`srcset`/`sizes`.
+
+What this file adds is **how a master becomes that 1408×768 file without losing the dog.**
+A landscape master already close to 16:9 may be cover-fitted with a per-image focal point
+(`data/image-centering.json`). A portrait or near-square master must NOT be: it is baked
+with a named framing style from §7 by `scripts/reframe_og.py`, which returns a 1408×768 file
+that keeps the whole dog, so the box's `object-fit:cover` then has nothing left to cut.
+
+---
+
+## 2. Reusable Style Wrapper
+
+Prepend this string to every photoreal prompt, then add the scene from §5:
+
+> Editorial pet photography, soft natural daylight with a gentle warm cast, shallow depth of
+> field, a true-to-breed blue Staffordshire Bull Terrier: muscular, stocky and medium-sized,
+> broad head with distinct cheek muscles, short smooth blue-grey coat, natural rose or
+> half-pricked ears, calm friendly expression, relaxed family home in the north of England,
+> steel-blue and bone palette with one small brass accent, photorealistic, crisp detail on
+> the eyes and coat.
+
+---
+
+## 3. Negative List
+
+Append this string to every prompt. It is non-negotiable:
+
+> no text, no watermarks, no logos, no captions, no UI chrome, no cropped ears, no fighting or
+> aggression imagery, no bared teeth or snarling, no dog pulling toward another dog, no
+> spiked collar, no chain collar, no XL Bully build, no pit-bull-type build, no oversized
+> head or exaggerated bulk, no tall leggy frame, nothing that could imply a banned type, no
+> other breed, no generic dog, no merle or bright-blue coat, no cartoon, 3D or illustration
+> style for a photo slot, no cold blue cast, no clinical or studio lighting, no kennel rows
+> or cages, no distorted anatomy, no extra legs or merged paws, no sharp identifiable human
+> faces unless it is a real buyer photo, no cluttered background.
+
+---
+
+## 4. Lighting & Focal Length (per scene)
+
+| Scene | Lighting | Focal length / aperture |
+|---|---|---|
+| Hero portrait | soft window light or late-afternoon daylight | 85mm f/1.8 |
+| Family lifestyle | ambient room light, candid | 35–50mm f/2.8 |
+| Size reference (puppy in two hands) | even, bright, full coat detail | 50mm f/4 |
+| Health and coat detail | diffused, no flash | 100mm macro f/5.6 |
+| Garden and exercise | open shade or soft overcast | 70–200mm f/2.8 |
+| Travel and collection | clean interior daylight | 35mm f/4 |
+| Infographic | flat design | N/A |
+
+---
+
+## 5. Scene Types by Page Type (routing table)
+
+| Page type | Hero scene | Body H2 slots | Body H3 slots | Avoid |
+|---|---|---|---|---|
+| Location | one blue puppy, direct gaze, soft local context of the city (a park path or terrace street well out of focus) | IG-5 route map for delivery or collection sections; family-life OG photos elsewhere | IG-2 steps for reserve and collection; size-reference or garden photos | landmark postcards, flags, maps baked into a photo, any claim of a local address |
+| Comparison | both subjects side by side, same light, same scale | IG-3 comparison split in at least one H2; OG photos framed with Style H for a pair | IG-1 stat panel for figures; IG-4 checklist for what to check | showing only one subject, a winner-and-loser mood |
+| Blog | topic-illustrative lifestyle or portrait | OG photo that shows the section's subject; an infographic when the section is data or steps | IG-2 or IG-4 for how-to and checklist H3s; detail photos otherwise | price overlays, sales mood on a care topic |
+| Hub | clean banner-style portrait | a grid of cluster thumbnails (each the target's own hero) | none unless the hub has H3s | text baked into the image |
+
+The migrated page's own images come first, always (CLAUDE.md rule 11). A slot is only
+generated when no existing image fits: not the migrated page's images, not `public/images/`,
+and not the breeder's folder `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/`.
+
+---
+
+## 6. Output Handoff
+
+Every image, found or generated, reaches the site the same way:
+
+1. **A folder photo** (`source: assets-folder`): the **`bsuk-photo-ingest`** skill runs
+   `python3 scripts/ingest_image.py folder …`, which bakes it into `public/images/` under an
+   SEO filename, records the manifest row and, when the name differs from the default,
+   writes it into the slot's `assets[]` row `file`.
+2. **A generated photo or infographic** (`source: generate` or `infographic`): the
+   **`bsuk-image-generation`** or **`bsuk-infographic`** skill produces a master,
+   `python3 scripts/ingest_image.py draft …` bakes it into the board's draft folder, and only
+   after the board approves those exact bytes does `python3 scripts/ingest_image.py publish …`
+   copy them, unchanged, into `public/images/` (§9).
+3. **`image-metadata`** skill: filename, alt (190 characters at most), title, caption.
+4. **Keyword distribution** (`image-keyword-distribution` in `rules/images.md`): the primary
+   keyword goes in the primary image's alt only; every other image rotates a different
+   keyword type, and no two images on a page share an alt.
+
+A file already served is never renamed, moved, re-encoded or deleted (CLAUDE.md rule 11).
+
+---
+
+## 7. Named OG Framing Styles
+
+**The head-cutoff rule:** never cover-crop a portrait or near-square master into the wide box
+with a focal point. On a tall master that slices off the head. Pick a named style and bake it
+with `scripts/reframe_og.py <master> <out.webp> --style <style> --sib <out-760.webp>`, which
+writes a 1408×768 file that keeps the whole dog plus a `-760` sibling under 55 KB. Every
+baked style centres the dog full-height, so a later mobile cover crop only trims padding.
+
+| Id | Name | Engine | When to use | Whole dog? |
+|---|---|---|---|---|
+| `A` | Contain on Bone | `--style contain` | wide shots, scenes, or when a blur behind the dog reads busy | yes |
+| `B` | Blur-Fill | `--style blurfill` | the default for any single-dog portrait OG photo | yes |
+| `C` | Editorial Split | CSS component, master baked native | a "meet the puppy" moment: photo beside a steel caption panel | yes |
+| `D` | Portrait Frame | CSS component, master baked native | a matted 3:4 portrait inside the 16:9 box | yes |
+| `E` | Top-Anchored Cover | `--style topcover` | a photo that should fill the box; the head is never cut, paws may crop | head-safe |
+| `H` | Duo Strip | CSS component, two masters baked native | two puppies or a pair, two portraits side by side | yes |
+
+**Mobile counterparts** (full-bleed, taller): **mA** 4:5 top-cover · **mB** 4:5 contain ·
+**mC** 4:5 blur-fill (matches B) · **mG** stacked two-up (matches H) · **mH** 3:4 top-cover.
+
+**Standing default:** a single-dog or pair portrait is baked with
+`--style blurfill --mobcrop 4:5`, which keeps the sharp dog inside both the desktop 16:9 box
+and a mobile 4:5 crop, so it is never clipped at either width. A wide scene or an infographic
+keeps the standard 16:9 box and is never forced into 4:5.
+
+---
+
+## 8. Named Infographic Styles
+
+An infographic is either an HTML/CSS component built on the tokens (the default: editable, no
+cost) or a baked raster of the same design. Every figure on it is a locked fact from
+`data/*.json` or a cited source (CLAUDE.md rule 9); an infographic never carries a number the
+page cannot back. Text contrast uses only the pairs in `data/design/contrast.json`.
+
+| Id | Name | Layout | Palette | Heading intents | Page types |
+|---|---|---|---|---|---|
+| `IG-1` | Stat Panel | two to four large figures, one line of context each | steel bed, brass figures (large text only), bone labels | cost, price, how much, how many | location, comparison, blog |
+| `IG-2` | Process Steps | three to five numbered steps joined by a line | bone bed, steel numbered circles, slate connector | how to, steps, what happens, timeline | location, blog |
+| `IG-3` | Comparison Split | two columns with a shared row per attribute and a verdict bar | steel-100 and bone-50 columns, steel headers, steel verdict bar with bone text | versus, difference, which is better | comparison, blog |
+| `IG-4` | Checklist Grid | six to twelve cells, a line icon and a short line each | steel bed, bone text, brass tick glyph | checklist, what to check, what to bring, signs of | blog, comparison, location |
+| `IG-5` | Route Map | a schematic line from Carlisle to the destination city, never map tiles | bone bed, steel route, brass Carlisle dot, slate destination dot | delivery, collection, travel, where | location |
+
+**When to use which.** Choose by the heading's intent, not by the page's mood: a figures
+heading gets IG-1, a sequence gets IG-2, two named subjects get IG-3, a list of checks gets
+IG-4, a journey gets IG-5. IG-5 states only the locked delivery band (£200–£350 by distance,
+by DEFRA-approved transport) and the collection alternative in Carlisle; it never prints a
+mileage or a drive time nobody measured. Icons are line SVGs, never emoji (design rule 7).
+A baked infographic is framed with Style `A` so no baked text is ever cropped.
+
+---
+
+## 9. Approval Before the Build
+
+**Every choice is shown on the page board and approved before a build uses it:** each slot's
+image, each OG style pick, each infographic style pick, and each generated image. The board
+renders a candidate in the slot's own box, never a description in words (CLAUDE.md rule 10).
+The breeder answers each slot with one radio pick, stored as `approval.picks["img:<slot>"]`
+(outside the record hash, so a pick never un-approves the outline).
+
+**Two passes for a generated image.**
+
+1. **Pass one: the plan.** `scripts/image_candidates.py <slug>` offers each slot the page's
+   own images first, then served ones, then the breeder's folder; the board shows them with
+   the style ids. The breeder picks `file:/images/…`, `assets:<filename>`, `og:<style>` or
+   `ig:IG-<n>`. A bare `og:`/`ig:` pick approves the STYLE, not an image: nothing exists yet.
+2. **Generate.** The image is generated per §2–§5 and baked with
+   `python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style <X>`
+   (or `--infographic IG-<n>`), which writes the final bytes to
+   `data/boards/generated/<slug file>/<slot>.webp` (never under `public/`, which ships whole)
+   and prints their sha12: the first 12 hex digits of the sha256 of the file.
+3. **Pass two: the image.** The board is rebuilt and shows the draft. Approving it stores
+   `og:<style>:<sha12>` (or `ig:IG-<n>:<sha12>`), naming the exact bytes the breeder saw.
+   Regenerate the file and the pick no longer matches.
+4. **Publish.** `python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>`
+   refuses unless the pick carries the draft's sha12, then copies the bytes UNCHANGED into
+   `public/images/<seo-stem>.webp`, bakes the `-760` sibling beside it, records the manifest
+   row, and sets the slot's `assets[]` row `file` and `status: "baked"` (both outside the hash).
+
+**The build refuses an unapproved generated image.** `scripts/image_rules.py` (registered in
+`scripts/family_rules.py`) fails the build with `image-generated-unapproved` when a slot's
+pick has no sha12 or the served bytes differ from it, `image-generated-not-ingested` when the
+approved image is not yet published, and `image-asset-not-ingested` when a picked folder file
+was never ingested. A folder file lands at `/images/<asset stem>.webp` by default
+(`image_candidates.ingest_target`); any other name must be written into the slot's `assets[]`
+row `file`, which `scripts/ingest_image.py folder --board <slug> --slot <slot>` does.
+
+---
+
+## 10. Image-Slot Fields
+
+Each image slot on a board (the hero, every body H2 and every body H3; FAQ-block H3s are
+excluded) is an item of `sections[].images[]`, or of a tree node's `images[]` for an H3. The
+fields are optional in the schema, so the pages built before this file keep their approvals.
+`scripts/image_designs.py` reads the ids from this section.
+
+| Field | Values | Meaning |
+|---|---|---|
+| `source` | `existing` · `assets-folder` · `generate` · `infographic` | a served image; a file in the breeder's folder; a new generated photo; an infographic |
+| `og_style` | `A` · `B` · `C` · `D` · `E` · `H` | the §7 framing style; required when `source` is `generate` |
+| `infographic_style` | `IG-1` · `IG-2` · `IG-3` · `IG-4` · `IG-5` | the §8 style; required when `source` is `infographic` |
+| `file` | a served path, `/images/…` | required when `source` is `existing` |
+| `source_file` | a filename in the breeder's folder | required when `source` is `assets-folder` |
+| `prompt` | one sentence | the slot's subject, from its own outline; required when `source` is `generate` |
+
+The pick for a slot, `approval.picks["img:<slot>"]`:
+
+| Pick | Means |
+|---|---|
+| `file:/images/<path>` | use this served file |
+| `assets:<filename>` | use this folder file, ingested first |
+| `og:<style>` | generate an OG photo in this style; not yet an approved image |
+| `og:<style>:<sha12>` | this generated photo is approved |
+| `ig:IG-<n>` | build an infographic in this style; not yet an approved image |
+| `ig:IG-<n>:<sha12>` | this generated infographic is approved |
+
+`data/design/image-styles.json` carries the style names and uses for the board's labels; it
+is written from §7 and §8 by `python3 scripts/image_designs.py --write`.
+
+*Consumed by:* `.claude/agents/bsuk-image-pipeline.md`, `.claude/agents/bsuk-infographic-builder.md`,
+`.claude/skills/image-prompt-generator/SKILL.md`, `.claude/skills/image-metadata/SKILL.md`,
+`.claude/skills/bsuk-image-generation/SKILL.md`, `.claude/skills/bsuk-infographic/SKILL.md`,
+`.claude/skills/bsuk-photo-ingest/SKILL.md`. On conflict, this file wins.
+````
+
+- [ ] **Step 3b: Implement — create `scripts/image_designs.py`:**
+```python
+#!/usr/bin/env python3
+"""Read the named image styles and the image-slot fields out of IMAGE-DESIGNS.md.
+
+IMAGE-DESIGNS.md is the one place the OG framing styles (§7), the infographic styles (§8)
+and the slot field values (§10) are written for a reader. A second, hand-typed copy of those
+ids would drift from the document the breeder reads, so this module parses them from it:
+
+    load()     -> {"og_styles", "og_names", "og_uses", "infographic_styles",
+                   "infographic_names", "infographic_uses", "fields"}
+    labels()   -> the board's label map, the shape of data/design/image-styles.json
+
+The build gate's own constants (`OG_STYLES`, `IG_STYLES` in scripts/image_rules.py) are
+pinned to these ids by tests/py/test_image_designs.py.
+
+Usage:
+  python3 scripts/image_designs.py            # print what it read
+  python3 scripts/image_designs.py --write    # rewrite data/design/image-styles.json
+  python3 scripts/image_designs.py --check    # exit 1 when that file is stale
+"""
+import json
+import pathlib
+import re
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+DOC = ROOT / "IMAGE-DESIGNS.md"
+LABELS = ROOT / "data/design/image-styles.json"
+
+REQUIRED_SECTIONS = (
+    "## 0. Brand Facts",
+    "## 1. Crop & Aspect Ratios (per slot)",
+    "### 1a. Uniform In-Body Image Sizing",
+    "## 2. Reusable Style Wrapper",
+    "## 3. Negative List",
+    "## 4. Lighting & Focal Length (per scene)",
+    "## 5. Scene Types by Page Type (routing table)",
+    "## 6. Output Handoff",
+    "## 7. Named OG Framing Styles",
+    "## 8. Named Infographic Styles",
+    "## 9. Approval Before the Build",
+    "## 10. Image-Slot Fields",
+)
+
+SECTION = re.compile(r"^##\s+(\d+)\.")
+ID_CELL = re.compile(r"^\|\s*`([^`]+)`\s*\|")
+TICKED = re.compile(r"`([^`]+)`")
+
+
+def _section_lines(text, number):
+    """Lines of `## <number>.` up to the next `## ` heading (### subsections included)."""
+    out, inside = [], False
+    for line in text.splitlines():
+        m = SECTION.match(line)
+        if m:
+            inside = m.group(1) == str(number)
+            continue
+        if inside and line.startswith("## "):
+            break
+        if inside:
+            out.append(line)
+    return out
+
+
+def _id_rows(lines):
+    """[(id, [cells...])] for every table row whose first cell is a backticked id."""
+    rows = []
+    for line in lines:
+        m = ID_CELL.match(line)
+        if m:
+            rows.append((m.group(1), [c.strip() for c in line.strip().strip("|").split("|")]))
+    return rows
+
+
+def load(path=DOC):
+    text = pathlib.Path(path).read_text(encoding="utf-8")
+    og = _id_rows(_section_lines(text, 7))           # Id | Name | Engine | When to use | Whole dog?
+    ig = _id_rows(_section_lines(text, 8))           # Id | Name | Layout | Palette | Heading intents | Page types
+    fields = {i: TICKED.findall(c[1]) for i, c in _id_rows(_section_lines(text, 10))}
+    return {
+        "og_styles": [i for i, _ in og],
+        "og_names": {i: c[1] for i, c in og},
+        "og_uses": {i: c[3] for i, c in og},
+        "infographic_styles": [i for i, _ in ig],
+        "infographic_names": {i: c[1] for i, c in ig},
+        "infographic_uses": {i: "%s (%s)" % (c[4], c[5]) for i, c in ig},
+        "fields": fields,
+    }
+
+
+def labels(spec=None):
+    """{"og": {id: {"name", "use"}}, "infographic": {id: {"name", "use"}}} for the board."""
+    spec = spec or load()
+    return {
+        "og": {i: {"name": spec["og_names"][i], "use": spec["og_uses"][i]}
+               for i in spec["og_styles"]},
+        "infographic": {i: {"name": spec["infographic_names"][i],
+                            "use": spec["infographic_uses"][i]}
+                        for i in spec["infographic_styles"]},
+    }
+
+
+def render_labels(spec=None):
+    return json.dumps(labels(spec), indent=2, ensure_ascii=False) + "\n"
+
+
+def main(argv):
+    if "--write" in argv:
+        LABELS.write_text(render_labels(), encoding="utf-8")
+        print("wrote %s" % LABELS.relative_to(ROOT))
+        return 0
+    if "--check" in argv:
+        stale = not LABELS.exists() or LABELS.read_text(encoding="utf-8") != render_labels()
+        print("%s: %s" % (LABELS.relative_to(ROOT), "STALE — run --write" if stale else "in sync"))
+        return 1 if stale else 0
+    json.dump(load(), sys.stdout, indent=2, ensure_ascii=False)
+    print()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))
+```
+
+- [ ] **Step 3c: Write the label map:**
+Run: `python3 scripts/image_designs.py --write`
+Expected: `wrote data/design/image-styles.json`. The file it writes is:
+```json
+{
+  "og": {
+    "A": {
+      "name": "Contain on Bone",
+      "use": "wide shots, scenes, or when a blur behind the dog reads busy"
+    },
+    "B": {
+      "name": "Blur-Fill",
+      "use": "the default for any single-dog portrait OG photo"
+    },
+    "C": {
+      "name": "Editorial Split",
+      "use": "a \"meet the puppy\" moment: photo beside a steel caption panel"
+    },
+    "D": {
+      "name": "Portrait Frame",
+      "use": "a matted 3:4 portrait inside the 16:9 box"
+    },
+    "E": {
+      "name": "Top-Anchored Cover",
+      "use": "a photo that should fill the box; the head is never cut, paws may crop"
+    },
+    "H": {
+      "name": "Duo Strip",
+      "use": "two puppies or a pair, two portraits side by side"
+    }
+  },
+  "infographic": {
+    "IG-1": {
+      "name": "Stat Panel",
+      "use": "cost, price, how much, how many (location, comparison, blog)"
+    },
+    "IG-2": {
+      "name": "Process Steps",
+      "use": "how to, steps, what happens, timeline (location, blog)"
+    },
+    "IG-3": {
+      "name": "Comparison Split",
+      "use": "versus, difference, which is better (comparison, blog)"
+    },
+    "IG-4": {
+      "name": "Checklist Grid",
+      "use": "checklist, what to check, what to bring, signs of (blog, comparison, location)"
+    },
+    "IG-5": {
+      "name": "Route Map",
+      "use": "delivery, collection, travel, where (location)"
+    }
+  }
+}
+```
+
+- [ ] **Step 3d: Remove the two expired markers.** Once `IMAGE-DESIGNS.md` exists, the stale-marker
+guard fails on these lines. In BOTH `.claude/agents/bsuk-image-pipeline.md` (line 13) and
+`.claude/agents/bsuk-infographic-builder.md` (line 13) replace exactly:
+
+old:
+```text
+> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here. (not ported — source repo only)
+```
+new:
+```text
+> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here.
+```
+
+- [ ] **Step 3e: Append the citation line to each consumer.** At the END of each of
+`.claude/agents/bsuk-image-pipeline.md`, `.claude/agents/bsuk-infographic-builder.md`,
+`.claude/skills/image-prompt-generator/SKILL.md` and `.claude/skills/image-metadata/SKILL.md`,
+append one blank line and then this exact line (the file ends with a newline after it):
+```text
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.
+```
+Do it mechanically, from the test's own constant, so the four copies are byte-identical:
+```bash
+python3 - <<'EOF'
+import pathlib
+src = pathlib.Path("tests/py/test_image_designs.py").read_text()
+LINE = eval("(" + src.split("CONSUMER_LINE = (")[1].split(")\n\n")[0] + ")")
+for f in (".claude/agents/bsuk-image-pipeline.md", ".claude/agents/bsuk-infographic-builder.md",
+          ".claude/skills/image-prompt-generator/SKILL.md", ".claude/skills/image-metadata/SKILL.md"):
+    p = pathlib.Path(f)
+    p.write_text(p.read_text().rstrip("\n") + "\n\n" + LINE + "\n")
+EOF
+```
+
+- [ ] **Step 3f: Record the file in the port manifest** so `npm run check:markers` scans it. In
+`data/port-manifest.json` replace the end of the file:
+
+old:
+```text
+    "notes": "competitor intelligence build (2026-09-23): national registry, 5 tiers, proposal in docs/research/ and user approval before writing data/competitors.json (checked by scripts/competitor_registry_check.py); per-page pools in data/queries/<slug>.json unchanged"
+  }
+]
+```
+new:
+```text
+    "notes": "competitor intelligence build (2026-09-23): national registry, 5 tiers, proposal in docs/research/ and user approval before writing data/competitors.json (checked by scripts/competitor_registry_check.py); per-page pools in data/queries/<slug>.json unchanged"
+  },
+  {
+    "src": "IMAGE-DESIGNS.md",
+    "dst": "IMAGE-DESIGNS.md",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the picture's art direction rewritten for a blue Staffordshire Bull Terrier on the locked palette; adds named infographic styles, the board approval rule and the image-slot fields; scripts/image_designs.py reads its ids"
+  }
+]
+```
+(If another system-gaps task appended rows first, anchor on whatever row is last; the new row goes at the end.)
+
+- [ ] **Step 3g: Point `CLAUDE.md` at it.** Under `## Where everything else went`, replace:
+
+old:
+```text
+- `docs/reference/system-registry.md` — every agent, skill, script and data file
+```
+new:
+```text
+- `IMAGE-DESIGNS.md` — how every image looks, is cropped, framed and approved: the named OG
+  framing styles, the named infographic styles and the image-slot fields a board carries
+- `docs/reference/system-registry.md` — every agent, skill, script and data file
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+Run: `python3 -m pytest tests/py/test_image_designs.py -q`
+Expected: `49 passed, 1 skipped` (the skip is `test_the_build_gate_uses_the_same_ids`, which binds once Task 10's `scripts/image_rules.py` exists).
+Run: `python3 -m pytest tests/py/test_claude_md.py tests/py/test_rules_index.py tests/py/test_agent_facts.py tests/py/test_skills_frontmatter.py tests/py/test_system_registry.py tests/py/test_marker_check.py tests/py/test_port_manifest.py -q`
+Expected: `583 passed` (after the registry step below).
+Run: `python3 scripts/marker_check.py`
+Expected: `examined 266 files; 0 problems` (one more file than before: `IMAGE-DESIGNS.md`).
+Run: `python3 scripts/image_designs.py --check`
+Expected: `data/design/image-styles.json: in sync`.
+
+- [ ] **Step 5: Registries and commit**
+```bash
+python3 scripts/build_system_registry.py
+npm run -s registry          # expect: examined docs/reference/system-registry.md; 0 problems
+git add IMAGE-DESIGNS.md scripts/image_designs.py data/design/image-styles.json \
+  tests/py/test_image_designs.py .claude/agents/bsuk-image-pipeline.md \
+  .claude/agents/bsuk-infographic-builder.md .claude/skills/image-prompt-generator/SKILL.md \
+  .claude/skills/image-metadata/SKILL.md data/port-manifest.json CLAUDE.md \
+  docs/reference/system-registry.md
+git commit -m "images: IMAGE-DESIGNS.md — named OG and infographic styles, board approval, slot fields
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+### Task 8: The framing engine, photo ingest with the two-pass publish, and the three image skills
+
+**Gap:** the image design file, in practice — how the styles are baked, how a breeder photo or an approved generated image reaches `public/images/`, and how an image is generated here.
+**Files:**
+- Create: `scripts/reframe_og.py`
+- Create: `scripts/ingest_image.py`
+- Create: `data/image-ingest.json`
+- Create: `.claude/skills/bsuk-image-generation/SKILL.md`
+- Create: `.claude/skills/bsuk-infographic/SKILL.md`
+- Create: `.claude/skills/bsuk-photo-ingest/SKILL.md`
+- Modify: `scripts/bake_images.py:233` (carry ingested rows over — 5 lines)
+- Modify: `data/port-manifest.json` (3 rows `deferred` → `rebase`; 1 row appended)
+- Modify: `.claude/agents/bsuk-infographic-builder.md` lines 23, 39, 65, 70, 146, 191 (delete the expired "(deferred to project 3 …)" marker)
+- Test: `tests/py/test_reframe_og.py`, `tests/py/test_ingest_image.py`, `tests/py/test_image_designs.py` (extended)
+- Modify (regenerated): `docs/reference/system-registry.md`
+
+**The ported mode (`tests/py/test_port_manifest.py`):** the manifest knows four modes; every
+hand-re-based skill in it is `rebase` (copied once, never overwritten: `scripts/port_from_cag.py`
+reports `skipped-existing` because the hand-written file is already there). A non-deferred row is
+also scanned by `scripts/marker_check.py`, so the flip puts the three skills under the residue
+gate. `test_real_manifest_validates` still passes (no duplicate `dst`, every path relative).
+
+- [ ] **Step 1: Write the failing tests**
+
+Create `tests/py/test_reframe_og.py`:
+```python
+"""scripts/reframe_og.py keeps the whole dog in the 1408x768 box (IMAGE-DESIGNS.md §7).
+
+Every test runs on a synthetic master: a slate body with a brass band across its top
+standing in for the dog's head, so "was the head kept?" is one pixel read.
+"""
+import pathlib
+import subprocess
+import sys
+
+from PIL import Image, ImageOps
+
+import reframe_og
+from reframe_og import BONE_50, blurfill, contain, render, save_webp, subject_box, topcover
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SCRIPT = ROOT / "scripts/reframe_og.py"
+SLATE = (91, 124, 153)
+BRASS = (201, 162, 39)
+
+
+def near(px, rgb, tol=40):
+    return all(abs(a - b) <= tol for a, b in zip(px, rgb))
+
+
+def portrait(w=400, h=800, head=40):
+    im = Image.new("RGB", (w, h), SLATE)
+    im.paste(BRASS, (0, 0, w, head))
+    return im
+
+
+def test_a_centre_cover_crop_loses_the_head_which_is_why_the_styles_exist():
+    naive = ImageOps.fit(portrait(), (1408, 768), Image.LANCZOS, centering=(0.5, 0.5))
+    assert not near(naive.getpixel((704, 5)), BRASS)
+
+
+def test_style_a_contain_keeps_the_whole_dog_on_a_bone_bed():
+    out = contain(portrait())
+    assert out.size == (1408, 768)
+    assert near(out.getpixel((10, 5)), BONE_50, tol=4), "the bed is the bone gradient"
+    top = (768 - int(768 * 0.90)) // 2
+    assert near(out.getpixel((704, top + 5)), BRASS), "the head is in frame"
+    assert near(out.getpixel((704, 700)), SLATE), "and so is the body"
+
+
+def test_style_b_blurfill_keeps_the_whole_dog_full_height():
+    out = blurfill(portrait())
+    assert out.size == (1408, 768)
+    assert near(out.getpixel((704, 5)), BRASS), "head at the top of the frame"
+    assert near(out.getpixel((704, 760)), SLATE), "body to the bottom of the frame"
+
+
+def test_style_e_topcover_fills_the_box_and_never_cuts_the_head():
+    out = topcover(portrait())
+    assert out.size == (1408, 768)
+    assert near(out.getpixel((704, 10)), BRASS)
+    assert near(out.getpixel((0, 400)), SLATE) and near(out.getpixel((1407, 400)), SLATE)
+
+
+def test_mobcrop_4_5_keeps_the_sharp_dog_inside_the_central_mobile_strip():
+    assert subject_box(1408, 768, "4:5") == (614, 768)
+    wide = Image.new("RGB", (1600, 800), SLATE)
+    wide.paste(BRASS, (0, 0, 20, 800))                # a marker on the master's left edge
+    out = render(wide, "blurfill", mobcrop="4:5")
+    left = (1408 - 614) // 2
+    assert near(out.getpixel((left + 3, 384)), BRASS), "sharp left edge starts the 4:5 strip"
+    assert not near(out.getpixel((left - 10, 384)), BRASS), "nothing sharp outside it"
+    full = render(wide, "blurfill")
+    assert near(full.getpixel((3, 384)), BRASS), "without --mobcrop it spans the box"
+
+
+def test_the_quality_walk_stops_at_the_first_quality_under_budget(tmp_path):
+    kb, q = save_webp(portrait(), tmp_path / "flat.webp", 95)
+    assert q == 82 and kb < 95
+    noise = Image.frombytes("RGB", (1408, 768), bytes(range(256)) * (1408 * 768 * 3 // 256))
+    kb, q = save_webp(noise, tmp_path / "busy.webp", 1)
+    assert q == 60, "the walk has a floor and still writes the file"
+    assert (tmp_path / "busy.webp").exists()
+
+
+def test_cli_writes_1408x768_and_a_760_sibling_under_55_kb(tmp_path):
+    src = tmp_path / "master.png"
+    portrait(591, 640, 60).save(src)
+    out, sib = tmp_path / "puppy.webp", tmp_path / "puppy-760.webp"
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(out), "--style",
+                           "blurfill", "--mobcrop", "4:5", "--sib", str(sib)],
+                          capture_output=True, text=True)
+    assert proc.returncode == 0, proc.stderr
+    assert Image.open(out).size == (1408, 768)
+    assert out.stat().st_size < 95 * 1024
+    assert Image.open(sib).size == (760, 415)
+    assert sib.stat().st_size < 55 * 1024
+
+
+def test_cli_refuses_an_unknown_style(tmp_path):
+    src = tmp_path / "m.png"
+    portrait().save(src)
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(tmp_path / "o.webp"),
+                           "--style", "framed"], capture_output=True, text=True)
+    assert proc.returncode == 2 and "invalid choice" in proc.stderr
+
+
+def test_the_engine_names_exactly_the_baked_styles_of_image_designs():
+    from image_designs import load
+    doc = (ROOT / "IMAGE-DESIGNS.md").read_text(encoding="utf-8")
+    for style in reframe_og.STYLES:
+        assert "`--style %s`" % style in doc, style
+    assert set(load()["og_styles"]) >= {"A", "B", "E"}
+```
+
+Create `tests/py/test_ingest_image.py`:
+```python
+"""scripts/ingest_image.py: folder photos in, generated drafts approved by their exact bytes,
+and never a served image replaced (IMAGE-DESIGNS.md §6 and §9, CLAUDE.md rule 11)."""
+import datetime
+import json
+import pathlib
+import subprocess
+import sys
+
+import pytest
+from PIL import Image
+
+from ingest_image import (PICK, Refused, default_stem, draft, file_sha, folder,
+                          ingested_manifest_rows, publish, slug_file, stem_problems)
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+DAY = datetime.date(2026, 9, 24)
+SLUG = "uk-locations/blue-staffy-leeds"
+STEM = "blue-staffy-puppy-garden-carlisle"
+
+
+@pytest.fixture
+def repo(tmp_path):
+    (tmp_path / "public/images").mkdir(parents=True)
+    (tmp_path / "data/boards").mkdir(parents=True)
+    (tmp_path / "data/image-manifest.json").write_text(
+        json.dumps({"blue-staffy-family-dog-uk": {"w": 1408, "h": 768, "sib_w": 760}}),
+        encoding="utf-8")
+    (tmp_path / "public/images/blue-staffy-family-dog-uk.webp").write_bytes(b"served")
+    board = {"meta": {"slug": SLUG, "status": "approved"},
+             "assets": [{"slot": "garden-photo", "kind": "photo", "w": 1408, "h": 768,
+                         "required": True, "status": "missing", "file": None,
+                         "alt": "A blue Staffy puppy in a Carlisle garden"}],
+             "approval": {"approved_at": "2026-09-24", "picks": {}}}
+    (tmp_path / "data/boards" / (slug_file(SLUG) + ".json")).write_text(
+        json.dumps(board, indent=2), encoding="utf-8")
+    return tmp_path
+
+
+def board(repo):
+    return json.loads((repo / "data/boards" / (slug_file(SLUG) + ".json")).read_text())
+
+
+def approve(repo, pick):
+    p = repo / "data/boards" / (slug_file(SLUG) + ".json")
+    b = json.loads(p.read_text())
+    b["approval"]["picks"]["img:garden-photo"] = pick
+    p.write_text(json.dumps(b, indent=2))
+
+
+@pytest.fixture
+def master(tmp_path):
+    p = tmp_path / "Assets" / "Roman1.jpg"
+    p.parent.mkdir()
+    Image.new("RGB", (900, 1200), (91, 124, 153)).save(p)
+    return p
+
+
+# ── folder ───────────────────────────────────────────────────────────────────────────────
+
+def test_folder_bakes_records_names_it_on_the_board_and_leaves_the_master(repo, master):
+    before = master.read_bytes()
+    folder(master, STEM, og_style="B", mobcrop="4:5", slug=SLUG, slot="garden-photo",
+           root=repo, today=DAY)
+    assert master.read_bytes() == before, "the master is read, never moved or edited"
+    full = repo / "public/images" / (STEM + ".webp")
+    sib = repo / "public/images" / (STEM + "-760.webp")
+    assert Image.open(full).size == (1408, 768) and full.stat().st_size < 95 * 1024
+    assert Image.open(sib).size == (760, 415) and sib.stat().st_size < 55 * 1024
+    manifest = json.loads((repo / "data/image-manifest.json").read_text())
+    assert manifest[STEM] == {"w": 1408, "h": 768, "sib_w": 760}
+    assert "blue-staffy-family-dog-uk" in manifest, "existing rows are kept"
+    ledger = json.loads((repo / "data/image-ingest.json").read_text())
+    assert ledger[STEM]["og_style"] == "B" and ledger[STEM]["source"] == "assets-folder"
+    row = board(repo)["assets"][0]
+    assert (row["file"], row["status"]) == ("/images/%s.webp" % STEM, "baked")
+
+
+def test_a_renamed_folder_file_must_be_named_on_the_board(repo, master):
+    with pytest.raises(Refused, match="pass --board and --slot"):
+        folder(master, STEM, og_style="B", root=repo)
+
+
+def test_the_default_name_needs_no_board_but_must_still_be_an_seo_name(repo, tmp_path):
+    good = tmp_path / "Assets" / "blue-staffy-puppy-garden-carlisle.jpg"
+    good.parent.mkdir(exist_ok=True)
+    Image.new("RGB", (1600, 900), (91, 124, 153)).save(good)
+    r = folder(good, og_style="A", root=repo, today=DAY)
+    assert r["stem"] == "blue-staffy-puppy-garden-carlisle"
+    bad = tmp_path / "Assets" / "Roman2.jpg"
+    Image.new("RGB", (900, 1200), (91, 124, 153)).save(bad)
+    with pytest.raises(Refused, match="lowercase words"):
+        folder(bad, og_style="B", root=repo)
+
+
+def test_a_css_component_style_is_baked_at_native_ratio(repo, master):
+    folder(master, "blue-staffy-puppy-portrait-frame", og_style="D", slug=SLUG,
+           slot="garden-photo", root=repo, today=DAY)
+    rows = ingested_manifest_rows(repo)
+    assert rows["blue-staffy-puppy-portrait-frame"] == {"w": 900, "h": 1200, "sib_w": 760}
+
+
+def test_rule_11_a_served_stem_is_refused_and_nothing_is_written(repo, master):
+    with pytest.raises(Refused, match="already served"):
+        folder(master, "blue-staffy-family-dog-uk", og_style="B", slug=SLUG,
+               slot="garden-photo", root=repo)
+    assert (repo / "public/images/blue-staffy-family-dog-uk.webp").read_bytes() == b"served"
+    assert not (repo / "data/image-ingest.json").exists()
+
+
+def test_a_slot_without_a_planned_assets_row_is_refused(repo, master):
+    with pytest.raises(Refused, match="plans no assets"):
+        folder(master, STEM, og_style="B", slug=SLUG, slot="other-photo", root=repo)
+
+
+def test_dry_run_writes_nothing(repo, master):
+    folder(master, STEM, og_style="E", slug=SLUG, slot="garden-photo", root=repo, dry_run=True)
+    assert not (repo / "public/images" / (STEM + ".webp")).exists()
+    assert board(repo)["assets"][0]["file"] is None
+
+
+# ── draft → approve → publish ────────────────────────────────────────────────────────────
+
+def test_a_draft_lands_outside_public_and_names_its_approving_pick(repo, master):
+    r = draft(master, SLUG, "garden-photo", og_style="B", mobcrop="4:5", root=repo)
+    assert r["path"] == repo / "data/boards/generated" / slug_file(SLUG) / "garden-photo.webp"
+    assert Image.open(r["path"]).size == (1408, 768)
+    assert r["sha12"] == file_sha(r["path"]) and r["pick"] == "og:B:" + r["sha12"]
+    assert PICK.match(r["pick"])
+    assert not list((repo / "public/images").glob("blue-staffy-puppy*")), "nothing ships yet"
+
+
+def test_publish_refuses_until_the_board_approves_those_exact_bytes(repo, master):
+    r = draft(master, SLUG, "garden-photo", og_style="B", root=repo)
+    with pytest.raises(Refused, match="not approved as an image"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
+    approve(repo, "og:B")                                   # the style, not the image
+    with pytest.raises(Refused, match="not approved as an image"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
+    approve(repo, "og:B:" + "0" * 12)                       # some other bytes
+    with pytest.raises(Refused, match="not the image the breeder approved"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
+    assert not (repo / "public/images" / (STEM + ".webp")).exists()
+    approve(repo, r["pick"])
+    out = publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
+    served = repo / "public/images" / (STEM + ".webp")
+    assert served.read_bytes() == r["path"].read_bytes(), "copied UNCHANGED"
+    assert out["sha12"] == r["sha12"] and file_sha(served) == r["sha12"]
+    assert Image.open(repo / "public/images" / (STEM + "-760.webp")).size == (760, 415)
+    row = board(repo)["assets"][0]
+    assert (row["file"], row["status"]) == ("/images/%s.webp" % STEM, "baked")
+    ledger = json.loads((repo / "data/image-ingest.json").read_text())
+    assert ledger[STEM]["source"] == "generate" and ledger[STEM]["og_style"] == "B"
+
+
+def test_an_infographic_draft_is_approved_with_an_ig_pick(repo, master):
+    r = draft(master, SLUG, "garden-photo", infographic="IG-2", root=repo)
+    assert r["pick"] == "ig:IG-2:" + r["sha12"]
+    approve(repo, r["pick"])
+    assert publish(SLUG, "garden-photo", STEM, root=repo)["infographic_style"] == "IG-2"
+
+
+def test_bad_requests_are_refused(repo, master):
+    with pytest.raises(Refused, match="exactly one"):
+        draft(master, SLUG, "garden-photo", root=repo)
+    with pytest.raises(Refused, match="not named"):
+        draft(master, SLUG, "garden-photo", infographic="IG-9", root=repo)
+    with pytest.raises(Refused, match="does not exist"):
+        draft(master.parent / "gone.jpg", SLUG, "garden-photo", og_style="B", root=repo)
+    with pytest.raises(Refused, match="no draft"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
+
+
+# ── names ────────────────────────────────────────────────────────────────────────────────
+
+@pytest.mark.parametrize("stem", ["IMG_4823", "roman1", "blue-staffy-photo-final",
+                                  "Blue-Staffy-Garden", "blue--staffy-garden"])
+def test_a_non_seo_stem_is_refused(stem):
+    assert stem_problems(stem)
+
+
+def test_a_good_stem_passes():
+    assert stem_problems(STEM) == []
+
+
+NAMES = ["Roman1.jpg", "File name- defra-pet-transport-process.png .png",
+         "blue-staffy-for-sale-uk.png", "Christa.jpeg"]
+
+
+def test_default_stem_and_slug_file():
+    assert [default_stem(n) for n in NAMES] == ["roman1", "defra-pet-transport-process",
+                                                "blue-staffy-for-sale-uk", "christa"]
+    assert slug_file(SLUG) == "uk-locations--blue-staffy-leeds"
+
+
+def test_the_names_match_the_candidates_script():
+    """scripts/image_candidates.py decides where the build gate looks for a folder file.
+    Skips until that module exists; from then on the two must agree."""
+    ic = pytest.importorskip("image_candidates")
+    assert [default_stem(n) for n in NAMES] == [ic.asset_stem(n) for n in NAMES]
+    assert slug_file(SLUG) == ic.slug_file(SLUG)
+
+
+def test_the_pick_grammar_matches_the_build_gate():
+    rules = pytest.importorskip("image_rules")
+    for v in ("file:/images/a.webp", "assets:Roman1.jpg", "og:B", "og:B:0123456789ab",
+              "ig:IG-3", "ig:IG-3:0123456789ab", "og:F", "ig:IG-9", "og:B:xyz"):
+        assert bool(PICK.match(v)) == (rules.parse_pick(v) is not None), v
+
+
+# ── the re-bake and the real ledger ──────────────────────────────────────────────────────
+
+def test_ledger_rows_feed_the_rebake(repo, master):
+    folder(master, STEM, og_style="A", slug=SLUG, slot="garden-photo", root=repo, today=DAY)
+    assert ingested_manifest_rows(repo) == {STEM: {"w": 1408, "h": 768, "sib_w": 760}}
+    assert ingested_manifest_rows(repo / "nowhere") == {}
+
+
+def test_bake_images_carries_ingested_rows_over():
+    """`npm run bake` rewrites the manifest from the migrated pages; without this call an
+    ingested image would lose its row on the next bake and render without a srcset."""
+    assert "ingested_manifest_rows()" in (ROOT / "scripts/bake_images.py").read_text(encoding="utf-8")
+
+
+def test_the_real_ledger_is_valid_and_every_row_is_in_the_manifest():
+    ledger = json.loads((ROOT / "data/image-ingest.json").read_text(encoding="utf-8"))
+    manifest = json.loads((ROOT / "data/image-manifest.json").read_text(encoding="utf-8"))
+    for stem, row in ledger.items():
+        assert manifest.get(stem) == {"w": row["w"], "h": row["h"], "sib_w": row["sib_w"]}
+        assert (ROOT / "public/images" / (stem + ".webp")).exists(), stem
+
+
+def test_cli_exit_codes(master):
+    script = ROOT / "scripts/ingest_image.py"
+    proc = subprocess.run([sys.executable, str(script), "folder", str(master), "--stem", STEM,
+                           "--og-style", "B", "--dry-run"], capture_output=True, text=True)
+    assert proc.returncode == 2 and proc.stdout.startswith("REFUSED:"), proc.stdout
+    proc = subprocess.run([sys.executable, str(script), "publish", "--board", "no-such-page",
+                           "--slot", "x", "--stem", STEM], capture_output=True, text=True)
+    assert proc.returncode == 2 and "no board" in proc.stdout, proc.stdout
+```
+
+Extend `tests/py/test_image_designs.py`. Replace:
+
+old:
+```python
+    ".claude/skills/image-metadata/SKILL.md",
+)
+```
+new:
+```python
+    ".claude/skills/image-metadata/SKILL.md",
+    ".claude/skills/bsuk-image-generation/SKILL.md",
+    ".claude/skills/bsuk-infographic/SKILL.md",
+    ".claude/skills/bsuk-photo-ingest/SKILL.md",
+)
+```
+and append at the end of the file:
+```python
+
+# ── Task 8: the tools the document names exist, and the port is recorded ──────
+from test_rules_index import BACKTICKED, _path_like  # noqa: E402
+
+# The candidates script and the build gate arrive in Tasks 9 and 10 of the same build. Until
+# then the document may name them; once they exist they are checked like every other path.
+FORWARD = {"scripts/image_candidates.py", "scripts/image_rules.py"}
+
+
+def test_every_repo_path_the_image_doc_cites_exists():
+    missing = sorted({p for tok in BACKTICKED.findall(text())
+                      for p in [_path_like(tok)] if p and not (ROOT / p).exists()} - FORWARD)
+    assert missing == [], "IMAGE-DESIGNS.md cites paths that do not exist: %s" % missing
+
+
+PORTED = {".claude/skills/bsuk-image-generation/SKILL.md", ".claude/skills/bsuk-infographic/SKILL.md",
+          ".claude/skills/bsuk-photo-ingest/SKILL.md", "scripts/reframe_og.py", "IMAGE-DESIGNS.md"}
+
+
+def test_the_image_port_rows_are_rebased_not_deferred():
+    rows = {r["dst"]: r for r in json.loads(
+        (ROOT / "data/port-manifest.json").read_text(encoding="utf-8"))}
+    for dst in sorted(PORTED):
+        assert rows[dst]["mode"] == "rebase", dst
+        assert (ROOT / dst).exists(), dst
+
+
+@pytest.mark.parametrize("skill", sorted(p for p in PORTED if p.endswith("SKILL.md")))
+def test_the_ported_image_skills_carry_no_residue(skill):
+    assert residue(ROOT / skill) == []
+```
+
+- [ ] **Step 2: Run them and confirm they fail**
+Run: `python3 -m pytest tests/py/test_reframe_og.py tests/py/test_ingest_image.py tests/py/test_image_designs.py -q`
+Expected: FAIL — 2 collection errors (`No module named 'reframe_og'`, `No module named 'ingest_image'`).
+Run: `python3 -m pytest tests/py/test_image_designs.py -q`
+Expected: `8 failed, 49 passed, 1 skipped` — the three new consumer cases and the three residue
+cases (the skill files do not exist), `test_every_repo_path_the_image_doc_cites_exists` (names
+`scripts/ingest_image.py` and `scripts/reframe_og.py`), and
+`test_the_image_port_rows_are_rebased_not_deferred` (`'deferred' == 'rebase'`).
+
+- [ ] **Step 3a: Implement — create `scripts/reframe_og.py`:**
+```python
+#!/usr/bin/env python3
+"""Bake a named OG framing style (IMAGE-DESIGNS.md §7) into a 1408x768 in-body image.
+
+A portrait or near-square master cover-cropped into the 16:9 box loses the dog's head.
+These styles keep the whole dog instead, centred full-height, so the box's later
+`object-fit:cover` (or a mobile 4:5 crop) only ever trims padding:
+
+  contain   Style A — the sharp master contained over a bone gradient (#FAF8F3 -> #F4F1EA).
+  blurfill  Style B — the sharp master contained over a blurred cover copy of itself.
+            The default for a single-dog portrait.
+  topcover  Style E — cover fill anchored to the TOP: the head is never cut, paws may crop.
+
+Styles C, D and H are CSS components; their masters are baked at native ratio by
+scripts/ingest_image.py, not here.
+
+Usage:
+  python3 scripts/reframe_og.py <master> <out.webp> [--style blurfill] [--mobcrop 4:5]
+        [--sib <out-760.webp>] [--w 1408] [--h 768] [--blur 14] [--fgup] [--maxkb 95]
+
+`--mobcrop 4:5` keeps the sharp dog inside the central 4:5 strip of the box, so it
+survives both the desktop 16:9 box and a mobile 4:5 crop. The main file is quality-walked
+from 82 down until it is under --maxkb (rules/images.md); the -760 sibling (760x415) is
+walked until it is under 55 KB.
+"""
+import argparse
+import io
+import pathlib
+
+from PIL import Image, ImageEnhance, ImageFilter, ImageOps
+
+W, H = 1408, 768
+SIB_W, SIB_H = 760, 415
+SIB_MAX_KB = 55
+BONE_50 = (250, 248, 243)     # --color-bone-50  #FAF8F3
+BONE_100 = (244, 241, 234)    # --color-bone-100 #F4F1EA
+STYLES = ("contain", "blurfill", "topcover")
+
+
+def load(path):
+    return ImageOps.exif_transpose(Image.open(path)).convert("RGB")
+
+
+def subject_box(w=W, h=H, mobcrop="", fgmaxw=0):
+    """(width, height) the sharp subject must fit inside."""
+    if fgmaxw:
+        return fgmaxw, h
+    if mobcrop:
+        rw, rh = (int(x) for x in mobcrop.split(":"))
+        return int(h * rw / rh), h
+    return w, h
+
+
+def fit_subject(im, fgw, fgh, allow_upscale=False):
+    """Contain the master inside (fgw, fgh). Only upscales when asked: a small master
+    then fills the box rather than floating as a stamp (rules/images.md: uniform size
+    beats pixel-peeping)."""
+    if not allow_upscale:
+        fg = im.copy()
+        fg.thumbnail((fgw, fgh), Image.LANCZOS)
+        return fg
+    s = min(fgw / im.width, fgh / im.height)
+    return im.resize((max(1, round(im.width * s)), max(1, round(im.height * s))), Image.LANCZOS)
+
+
+def _paste_centred(canvas, fg):
+    canvas.paste(fg, ((canvas.width - fg.width) // 2, (canvas.height - fg.height) // 2))
+    return canvas
+
+
+def gradient(w=W, h=H):
+    g = Image.new("RGB", (w, h))
+    px = g.load()
+    for y in range(h):
+        t = y / max(1, h - 1)
+        row = tuple(int(BONE_50[i] + (BONE_100[i] - BONE_50[i]) * t) for i in range(3))
+        for x in range(w):
+            px[x, y] = row
+    return g
+
+
+def contain(im, w=W, h=H, pad=0.90):
+    fg = im.copy()
+    fg.thumbnail((int(w * pad), int(h * pad)), Image.LANCZOS)
+    return _paste_centred(gradient(w, h), fg)
+
+
+def blurfill(im, w=W, h=H, blur=14, fgw=None, fgh=None, fgup=False):
+    bed = ImageOps.fit(im, (w, h), Image.LANCZOS).filter(ImageFilter.GaussianBlur(blur))
+    bed = ImageEnhance.Brightness(bed).enhance(0.92)
+    fg = fit_subject(im, fgw or w, fgh or h, fgup)
+    return _paste_centred(bed, fg)
+
+
+def topcover(im, w=W, h=H):
+    return ImageOps.fit(im, (w, h), Image.LANCZOS, centering=(0.5, 0.0))
+
+
+def render(im, style, w=W, h=H, blur=14, mobcrop="", fgmaxw=0, fgup=False):
+    if style == "contain":
+        return contain(im, w, h)
+    if style == "blurfill":
+        fgw, fgh = subject_box(w, h, mobcrop, fgmaxw)
+        return blurfill(im, w, h, blur, fgw, fgh, fgup)
+    if style == "topcover":
+        return topcover(im, w, h)
+    raise ValueError("unknown style %r (one of %s)" % (style, ", ".join(STYLES)))
+
+
+def save_webp(img, path, maxkb):
+    """Quality-walk 82 -> 60 (steps of 3, floor 60) until the file fits; returns (kb, q)."""
+    q = 82
+    while True:
+        buf = io.BytesIO()
+        img.save(buf, "WEBP", quality=q, method=6)
+        if buf.tell() / 1024 <= maxkb or q <= 60:
+            pathlib.Path(path).write_bytes(buf.getvalue())
+            return round(buf.tell() / 1024, 1), q
+        q = max(60, q - 3)
+
+
+def sibling(img, w=SIB_W, h=SIB_H):
+    return ImageOps.fit(img, (w, h), Image.LANCZOS)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("src")
+    ap.add_argument("out")
+    ap.add_argument("--style", default="blurfill", choices=STYLES)
+    ap.add_argument("--w", type=int, default=W)
+    ap.add_argument("--h", type=int, default=H)
+    ap.add_argument("--blur", type=int, default=14)
+    ap.add_argument("--mobcrop", default="")
+    ap.add_argument("--fgmaxw", type=int, default=0)
+    ap.add_argument("--fgup", action="store_true")
+    ap.add_argument("--maxkb", type=int, default=95)
+    ap.add_argument("--sib", default="")
+    a = ap.parse_args(argv)
+    out = render(load(a.src), a.style, a.w, a.h, a.blur, a.mobcrop, a.fgmaxw, a.fgup)
+    kb, q = save_webp(out, a.out, a.maxkb)
+    print("  %s  %dx%d  %sKB q%d  [%s]" % (a.out, a.w, a.h, kb, q, a.style))
+    if a.sib:
+        kb2, q2 = save_webp(sibling(out), a.sib, SIB_MAX_KB)
+        print("  %s  %dx%d  %sKB q%d" % (a.sib, SIB_W, SIB_H, kb2, q2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
+```
+
+- [ ] **Step 3b: Implement — create `scripts/ingest_image.py`:**
+```python
+#!/usr/bin/env python3
+"""Bring a new image onto BlueStaffyUK: IMAGE-DESIGNS.md §6 and §9, as three commands.
+
+  folder   a photo from the breeder's folder -> public/images/<stem>.webp (+ -760 sibling)
+  draft    a generated master -> data/boards/generated/<slug file>/<slot>.webp, the exact
+           bytes the board shows for approval; prints their sha12 and the pick that approves
+  publish  after the board approved THOSE bytes (pick `og:<style>:<sha12>` or
+           `ig:IG-<n>:<sha12>`), copies them UNCHANGED into public/images/<stem>.webp
+
+Every command that writes to public/images/ also bakes the `-760` sibling, adds the measured
+row to data/image-manifest.json, records the image in data/image-ingest.json (the ledger this
+script owns, which `npm run bake` carries over through ingested_manifest_rows()), and, when
+given a board and slot, sets that slot's EXISTING `assets[]` row `file` and `status: "baked"`
+(both outside the record hash, so the approval stands). It never adds an `assets[]` row:
+that would change the hash and un-approve the page.
+
+CLAUDE.md rule 11: an image already served is never renamed, moved, re-encoded or deleted.
+A stem already in public/images/ or in the manifest is REFUSED (exit 2); the master is only
+ever read.
+
+Framing (IMAGE-DESIGNS.md §7): --og-style A|B|E is baked into the 1408x768 box by
+scripts/reframe_og.py (A contain, B blurfill with --mobcrop, E topcover); C|D|H are CSS
+components, baked at native ratio up to 1408 wide; --infographic IG-n is framed with A.
+
+Usage:
+  python3 scripts/ingest_image.py folder <master> [--stem <seo-stem>] --og-style B [--mobcrop 4:5]
+        [--board <slug> --slot <slot>] [--dry-run]
+  python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style B [--mobcrop 4:5]
+  python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --infographic IG-2
+  python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
+"""
+import argparse
+import datetime
+import hashlib
+import json
+import pathlib
+import re
+import shutil
+import sys
+
+from PIL import Image
+
+import image_designs
+import reframe_og
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+ASSETS = pathlib.Path("/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images")
+LEDGER = "data/image-ingest.json"
+MANIFEST = "data/image-manifest.json"
+IMAGES = "public/images"
+DRAFTS = "data/boards/generated"
+MASTER_SUFFIXES = (".jpg", ".jpeg", ".png", ".webp")
+DRAFT_EXTS = (".webp", ".png", ".jpg")
+
+# 3 to 10 lowercase words joined by single hyphens: what the pipeline's SEO filename
+# convention produces, and nothing a camera or a download names a file by default.
+SEO_STEM = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+){2,9}$")
+GENERIC = {"img", "image", "photo", "pic", "dsc", "screenshot", "untitled", "copy",
+           "final", "file", "name", "new", "edit"}
+SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
+BAKED = {"A": "contain", "B": "blurfill", "E": "topcover"}
+NATIVE = {"C", "D", "H"}
+# The approval pick, spelled exactly as the build gate (scripts/image_rules.py) parses it.
+PICK = re.compile(r"^(?:file:(?P<file>/images/[A-Za-z0-9._/-]+)"
+                  r"|assets:(?P<asset>[^/\\]+)"
+                  r"|og:(?P<og>[ABCDEH])(?::(?P<ogsha>[0-9a-f]{12}))?"
+                  r"|ig:(?P<ig>IG-[1-5])(?::(?P<igsha>[0-9a-f]{12}))?)$")
+
+
+class Refused(Exception):
+    """The request would break a rule; nothing was written."""
+
+
+# ── names ────────────────────────────────────────────────────────────────────────────────
+def slug_file(slug):
+    """`uk-locations/x` -> `uk-locations--x`, the spelling every per-slug file uses."""
+    return slug.replace("/", "--")
+
+
+def default_stem(filename):
+    """The stem a folder file lands under when nothing records another name:
+    `File name- x .jpg .jpg` -> `x`. Same rule as image_candidates.asset_stem."""
+    stem = pathlib.Path(filename.strip()).stem.strip()
+    stem = re.sub(r"^file name-\s*", "", stem, flags=re.I)
+    stem = pathlib.Path(stem.strip()).stem
+    return re.sub(r"[^a-z0-9]+", "-", stem.lower()).strip("-")
+
+
+def stem_problems(stem):
+    out = []
+    if not SEO_STEM.match(stem or ""):
+        out.append("stem %r is not 3-10 lowercase words joined by hyphens" % stem)
+    words = set((stem or "").split("-"))
+    if words & GENERIC:
+        out.append("stem %r carries a generic word: %s" % (stem, ", ".join(sorted(words & GENERIC))))
+    if len(stem or "") > 80:
+        out.append("stem %r is longer than 80 characters" % stem)
+    return out
+
+
+def file_sha(path):
+    """First 12 hex digits of the sha256 of a file's bytes: what an approval pick names."""
+    return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()[:12]
+
+
+# ── files ────────────────────────────────────────────────────────────────────────────────
+def _read_json(path, default):
+    try:
+        return json.loads(pathlib.Path(path).read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return default
+
+
+def _write_json(path, data, sort_keys=True):
+    pathlib.Path(path).write_text(
+        json.dumps(data, indent=2, sort_keys=sort_keys, ensure_ascii=False) + "\n",
+        encoding="utf-8")
+
+
+def board_path(slug, root=ROOT):
+    return pathlib.Path(root) / "data" / "boards" / (slug_file(slug) + ".json")
+
+
+def draft_path(slug, slot, root=ROOT):
+    return pathlib.Path(root) / DRAFTS / slug_file(slug) / (slot + ".webp")
+
+
+def served(stem, root=ROOT):
+    """True when the stem is already on the site (a file or a manifest row)."""
+    images = pathlib.Path(root) / IMAGES
+    return ((images / ("%s.webp" % stem)).exists()
+            or (images / ("%s-760.webp" % stem)).exists()
+            or stem in _read_json(pathlib.Path(root) / MANIFEST, {}))
+
+
+def ingested_manifest_rows(root=ROOT):
+    """{stem: {"w", "h", "sib_w"}} for every image this script has ingested."""
+    ledger = _read_json(pathlib.Path(root) / LEDGER, {})
+    return {s: {"w": r["w"], "h": r["h"], "sib_w": r["sib_w"]} for s, r in ledger.items()}
+
+
+# ── baking ───────────────────────────────────────────────────────────────────────────────
+def _style_problems(og_style, infographic):
+    if bool(og_style) == bool(infographic):
+        return ["give exactly one of --og-style or --infographic"]
+    if og_style and og_style not in image_designs.load()["og_styles"]:
+        return ["OG style %r is not named in IMAGE-DESIGNS.md §7" % og_style]
+    if infographic and infographic not in image_designs.load()["infographic_styles"]:
+        return ["infographic style %r is not named in IMAGE-DESIGNS.md §8" % infographic]
+    return []
+
+
+def bake(master, og_style=None, infographic=None, mobcrop=""):
+    """The framed full-size image for the requested style."""
+    im = reframe_og.load(master)
+    if infographic:
+        return reframe_og.render(im, "contain")
+    if og_style in BAKED:
+        return reframe_og.render(im, BAKED[og_style], mobcrop=mobcrop if og_style == "B" else "")
+    if im.width > reframe_og.W:
+        im = im.resize((reframe_og.W, round(im.height * reframe_og.W / im.width)), Image.LANCZOS)
+    return im
+
+
+def sibling_of(full):
+    """The -760 sibling: the box's own 760x415 for a boxed image, proportional otherwise;
+    None when the image is already 760 wide or narrower."""
+    if full.size == (reframe_og.W, reframe_og.H):
+        return reframe_og.sibling(full)
+    if full.width <= reframe_og.SIB_W:
+        return None
+    return full.resize((reframe_og.SIB_W, round(full.height * reframe_og.SIB_W / full.width)),
+                       Image.LANCZOS)
+
+
+def _check_master(master):
+    if not master.is_file():
+        return ["master %s does not exist" % master]
+    if master.suffix.lower() not in MASTER_SUFFIXES:
+        return ["master %s is not one of %s" % (master.name, " ".join(MASTER_SUFFIXES))]
+    return []
+
+
+def _refuse(problems):
+    if problems:
+        raise Refused("; ".join(problems))
+
+
+# ── the board's assets[] row ─────────────────────────────────────────────────────────────
+def _asset_row(board, slot):
+    return next((a for a in board.get("assets", []) if a.get("slot") == slot), None)
+
+
+def _board_problems(slug, slot, root):
+    if not SLOT_ID.match(slot or ""):
+        return ["slot %r is not a slot id" % slot]
+    p = board_path(slug, root)
+    if not p.exists():
+        return ["no board for %s: %s does not exist" % (slug, p)]
+    if _asset_row(_read_json(p, {}), slot) is None:
+        return ["the board plans no assets[] row for slot %r — plan it at boarding; adding "
+                "one now would change the record hash and un-approve the page" % slot]
+    return []
+
+
+def _name_on_board(slug, slot, stem, root):
+    """Set the slot's existing assets[] row `file` and `status` (both outside the hash)."""
+    p = board_path(slug, root)
+    board = _read_json(p, {})
+    row = _asset_row(board, slot)
+    row["file"] = "/images/%s.webp" % stem
+    row["status"] = "baked"
+    _write_json(p, board, sort_keys=False)
+
+
+# ── writing to public/images ─────────────────────────────────────────────────────────────
+def _publish_files(full_bytes_from, full_img, stem, row, root):
+    """Write the full image (copied byte for byte when a path is given), its sibling, the
+    manifest row and the ledger row."""
+    images = pathlib.Path(root) / IMAGES
+    images.mkdir(parents=True, exist_ok=True)
+    full_path = images / ("%s.webp" % stem)
+    if full_bytes_from is not None:
+        shutil.copyfile(full_bytes_from, full_path)
+    else:
+        reframe_og.save_webp(full_img, full_path, 95)
+    sib = sibling_of(full_img)
+    if sib is not None:
+        reframe_og.save_webp(sib, images / ("%s-760.webp" % stem), reframe_og.SIB_MAX_KB)
+    row.update({"w": full_img.width, "h": full_img.height,
+                "sib_w": sib.width if sib is not None else None})
+    ledger = _read_json(pathlib.Path(root) / LEDGER, {})
+    ledger[stem] = row
+    _write_json(pathlib.Path(root) / LEDGER, ledger)
+    manifest = _read_json(pathlib.Path(root) / MANIFEST, {})
+    manifest[stem] = {"w": row["w"], "h": row["h"], "sib_w": row["sib_w"]}
+    _write_json(pathlib.Path(root) / MANIFEST, manifest)
+    return full_path
+
+
+def _today(today):
+    return (today or datetime.date.today()).isoformat()
+
+
+# ── the three commands ───────────────────────────────────────────────────────────────────
+def folder(master, stem=None, og_style=None, infographic=None, mobcrop="", slug=None,
+           slot=None, root=ROOT, dry_run=False, today=None):
+    """A breeder's photo into public/images/. Without --stem it lands at the default name
+    (`/images/<default stem>.webp`, where the build gate looks); any other name must be
+    written into the slot's assets[] row, so --stem needs --board and --slot."""
+    master, root = pathlib.Path(master), pathlib.Path(root)
+    stem = stem or default_stem(master.name)
+    problems = _check_master(master) + stem_problems(stem) + _style_problems(og_style, infographic)
+    if stem != default_stem(master.name) and not (slug and slot):
+        problems.append("stem %r is not the default %r, so the build gate cannot find it unless "
+                        "the slot's assets[] row names it — pass --board and --slot"
+                        % (stem, default_stem(master.name)))
+    if slug or slot:
+        problems += _board_problems(slug, slot, root)
+    if not problems and served(stem, root):
+        problems.append("stem %r is already served — rule 11: never replace a served image; "
+                        "choose a new stem and add it beside the old one" % stem)
+    _refuse(problems)
+    full = bake(master, og_style, infographic, mobcrop)
+    row = {"master": str(master), "source": "assets-folder", "og_style": og_style,
+           "infographic_style": infographic, "ingested": _today(today)}
+    if dry_run:
+        return dict(row, stem=stem, w=full.width, h=full.height)
+    _publish_files(None, full, stem, row, root)
+    if slug:
+        _name_on_board(slug, slot, stem, root)
+    return dict(row, stem=stem)
+
+
+def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=ROOT):
+    """A generated master baked into the board's draft folder. Returns the path, the sha12
+    of the bytes written, and the pick that approves exactly those bytes."""
+    master, root = pathlib.Path(master), pathlib.Path(root)
+    problems = _check_master(master) + _style_problems(og_style, infographic)
+    if not SLOT_ID.match(slot or ""):
+        problems.append("slot %r is not a slot id" % slot)
+    if not board_path(slug, root).exists():
+        problems.append("no board for %s" % slug)
+    _refuse(problems)
+    out = draft_path(slug, slot, root)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    for ext in DRAFT_EXTS:                     # one draft per slot: the board shows this one
+        stale = out.with_suffix(ext)
+        if stale.exists() and stale != out:
+            stale.unlink()
+    reframe_og.save_webp(bake(master, og_style, infographic, mobcrop), out, 95)
+    sha = file_sha(out)
+    pick = ("og:%s:%s" % (og_style, sha)) if og_style else ("ig:%s:%s" % (infographic, sha))
+    return {"path": out, "sha12": sha, "pick": pick}
+
+
+def publish(slug, slot, stem, root=ROOT, today=None):
+    """Copy an APPROVED draft's bytes unchanged into public/images/ and name it on the board."""
+    root = pathlib.Path(root)
+    problems = stem_problems(stem) + _board_problems(slug, slot, root)
+    _refuse(problems)
+    src = draft_path(slug, slot, root)
+    if not src.exists():
+        _refuse(["no draft for slot %r at %s — run the draft command first" % (slot, src)])
+    board = _read_json(board_path(slug, root), {})
+    raw = ((board.get("approval") or {}).get("picks") or {}).get("img:" + slot)
+    m = PICK.match(raw or "")
+    sha = m and (m.group("ogsha") or m.group("igsha"))
+    if not sha:
+        _refuse(["slot %r is not approved as an image: its pick is %r — re-board and approve "
+                 "the draft (IMAGE-DESIGNS.md §9)" % (slot, raw)])
+    if sha != file_sha(src):
+        _refuse(["slot %r: the draft on disk (sha %s) is not the image the breeder approved "
+                 "(sha %s) — re-board and approve it again" % (slot, file_sha(src), sha)])
+    if served(stem, root):
+        _refuse(["stem %r is already served — rule 11: never replace a served image" % stem])
+    full = Image.open(src)
+    full.load()
+    row = {"master": src.relative_to(root).as_posix(), "source": "generate",
+           "og_style": m.group("og"), "infographic_style": m.group("ig"),
+           "ingested": _today(today)}
+    out = _publish_files(src, full, stem, row, root)
+    assert file_sha(out) == sha, "the published copy must be byte-identical to the approved draft"
+    _name_on_board(slug, slot, stem, root)
+    return dict(row, stem=stem, sha12=sha)
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    f = sub.add_parser("folder")
+    d = sub.add_parser("draft")
+    p = sub.add_parser("publish")
+    for s in (f, d):
+        s.add_argument("master")
+        s.add_argument("--og-style", choices=sorted(set(BAKED) | NATIVE))
+        s.add_argument("--infographic", metavar="IG-n")
+        s.add_argument("--mobcrop", default="")
+    f.add_argument("--stem")
+    f.add_argument("--board")
+    f.add_argument("--slot")
+    f.add_argument("--dry-run", action="store_true")
+    for s in (d, p):
+        s.add_argument("--board", required=True)
+        s.add_argument("--slot", required=True)
+    p.add_argument("--stem", required=True)
+    a = ap.parse_args(argv)
+    try:
+        if a.cmd == "folder":
+            r = folder(a.master, a.stem, a.og_style, a.infographic, a.mobcrop, a.board, a.slot,
+                       dry_run=a.dry_run)
+            print("%s /images/%s.webp  [%s]" % ("would ingest" if a.dry_run else "ingested",
+                                                r["stem"], a.og_style or a.infographic))
+        elif a.cmd == "draft":
+            r = draft(a.master, a.board, a.slot, a.og_style, a.infographic, a.mobcrop)
+            print("draft %s  sha12 %s\napprove on the board with pick: %s"
+                  % (r["path"].relative_to(ROOT), r["sha12"], r["pick"]))
+        else:
+            r = publish(a.board, a.slot, a.stem)
+            print("published /images/%s.webp (sha12 %s, byte-identical to the approved draft)"
+                  % (r["stem"], r["sha12"]))
+    except Refused as e:
+        print("REFUSED: %s" % e)
+        return 2
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 3c: Create the ledger** `data/image-ingest.json` with exactly:
+```json
+{}
+```
+
+- [ ] **Step 3d: Carry ingested rows through a re-bake.** `npm run bake` rewrites
+`data/image-manifest.json` from the migrated pages only. In `scripts/bake_images.py` replace:
+
+old:
+```python
+        manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
+    (ROOT / "data/image-manifest.json").write_text(
+```
+new:
+```python
+        manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
+    # Images added by scripts/ingest_image.py are not referenced by the source clone, so the
+    # scan above never measures them; carry their rows over or the next bake drops them.
+    from ingest_image import ingested_manifest_rows
+    for stem, dims in ingested_manifest_rows().items():
+        manifest.setdefault(stem, dims)
+    (ROOT / "data/image-manifest.json").write_text(
+```
+
+- [ ] **Step 3e: Create `.claude/skills/bsuk-image-generation/SKILL.md`:**
+````markdown
+---
+name: bsuk-image-generation
+description: Generates a new photoreal image for one BlueStaffyUK image slot when no existing image fits — builds the prompt from IMAGE-DESIGNS.md's style wrapper, scene routing and negative list, generates it through the compound-engineering:ce-gemini-imagegen skill (Gemini API), audits the dog against the breed standard, bakes it as a board draft with scripts/ingest_image.py, and publishes it only after the board approves its exact bytes (pick og:<style>:<sha12>). Use when a board slot's source is "generate".
+allowed-tools: [Read, Write, Bash]
+---
+
+# BSUK Image Generation
+
+**Announce at start:** "Using bsuk-image-generation for [page slug] — [slot heading]."
+
+> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) before you write a prompt. It
+> is the image source of truth and wins over anything here.
+
+## When to use
+
+Only for a slot whose `source` is `generate`, and only after the reuse check in
+IMAGE-DESIGNS.md §5 has come back empty: nothing on the migrated page fits, nothing in
+`public/images/` fits, and nothing in the breeder's folder
+`/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/` fits (CLAUDE.md rule 11: reuse first).
+An infographic is never generated here; it is built by the `bsuk-infographic` skill.
+
+## How an image is generated in this environment
+
+| Route | Status | What it needs |
+|---|---|---|
+| `compound-engineering:ce-gemini-imagegen` skill (Gemini API) | **the route to use** | `GEMINI_API_KEY` in the shell environment, and the `google-genai` Python package |
+| Higgsfield connector | fallback only | its image-generation tool must be listed in the session (find it with ToolSearch); today the connector exposes website tools only |
+| HTML/CSS | not a photo route | infographics only, through `bsuk-infographic` |
+
+Before the first generation in a session:
+
+1. Check the key is set without printing it: `test -n "$GEMINI_API_KEY" && echo set`.
+   BSUK's `.env` does not carry an image key today; if it is missing, stop and ask the breeder
+   to export one. Never echo, paste or commit a key.
+2. Check the package: `python3 -c "import google.genai"`. If it is missing, ask before
+   installing it; it is not in `requirements.txt`.
+3. Every generation is a paid API call. Say how many images the run will make and ask before
+   the first one. Regenerating a rejected image is a new call and is asked the same way.
+4. Use the model the `ce-gemini-imagegen` skill names as its default unless the breeder names
+   another; list the available models first, because model names change.
+
+## Step 1: Read the slot
+
+From the page's board record read the slot in `sections[].images[]` (or a tree node's
+`images[]` for an H3): its `prompt` (the subject, from the section's own outline), its
+`og_style`, and the section's heading and level. Check the pass-one pick
+`approval.picks["img:<slot>"]` is `og:<style>`: the breeder approved generating in that
+style. Generate nothing for a slot the board has not reached.
+
+## Step 2: Build the prompt
+
+The prompt is assembled, never improvised, in this order:
+
+1. **Wrapper:** IMAGE-DESIGNS.md §2, verbatim.
+2. **Scene:** the §5 row for the page type and heading level, with the §4 lighting and focal
+   length for that scene.
+3. **Subject:** the slot's `prompt`, one sentence from the section's own outline.
+4. **Negative list:** IMAGE-DESIGNS.md §3, verbatim, appended last.
+
+```text
+<§2 wrapper>. Scene: <§5 scene for this page type and slot>, <§4 lighting>, <§4 lens>.
+Subject: <one sentence from this section's outline>.
+Avoid: <§3 negative list, verbatim>
+```
+
+**Aspect ratio:** ask for 3:4 or 4:5 when the slot's style is `B` (a portrait master baked
+with Blur-Fill keeps the whole dog), 16:9 for `A` or `E` scenes, 16:9 at 1600×900 or larger
+for a hero.
+
+## Step 3: Generate
+
+Invoke the `compound-engineering:ce-gemini-imagegen` skill with the prompt and aspect ratio.
+Save the returned master as PNG in the breeder's folder, under
+`/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png`, so the
+master sits beside the breeder's own photographs and is never lost to a scratch directory.
+
+## Step 4: Audit before handoff
+
+Open the master and check every line. One failure means regenerate, never ship:
+
+- A blue Staffordshire Bull Terrier: muscular, stocky, medium-sized; broad head with distinct
+  cheek muscles; short smooth coat; rose or half-pricked ears, never cropped.
+- Nothing from the §3 negative list: no text, no watermark, no spiked or chain collar, no
+  aggression, no XL Bully or pit-bull-type build, no cold clinical light, no extra legs.
+- The palette reads as steel, slate, bone and one small brass accent.
+
+## Step 5: Draft, second board pass, publish
+
+1. **Bake the draft** (the final bytes, framed in the slot's style):
+
+   ```bash
+   python3 scripts/ingest_image.py draft "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/<slug file>-<slot>.png" --board <slug> --slot <slot> --og-style B --mobcrop 4:5
+   ```
+
+   It writes `data/boards/generated/<slug file>/<slot>.webp` (never under `public/`) and
+   prints the sha12 and the pick that approves exactly those bytes.
+2. **Second board pass.** Rebuild the board with `python3 scripts/build_page_board.py <slug>`;
+   it shows the draft in the slot's box. The breeder approves it, which stores
+   `og:<style>:<sha12>`. A rejected draft is regenerated and re-drafted; the new bytes carry a
+   new sha12, so an old approval can never cover them.
+3. **Publish** once approved:
+
+   ```bash
+   python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
+   ```
+
+   It refuses unless the pick names the draft's sha12, then copies the bytes UNCHANGED into
+   `public/images/<seo-stem>.webp`, bakes the `-760` sibling, records the manifest row and
+   sets the slot's `assets[]` row `file` and `status: "baked"`.
+
+Until then the build refuses the slot (`image-generated-unapproved`,
+`image-generated-not-ingested` from the build gate's `image_rules` checks; IMAGE-DESIGNS.md §9).
+Hand the published image to the `image-metadata` skill for its alt text, title and caption.
+
+## Rules
+
+1. Reuse first. Generate only for a `generate` slot.
+2. The prompt is §2 + §5 + subject + §3, in that order, every time.
+3. Ask before any paid call; never print or commit a key.
+4. Never overwrite, rename or re-encode a served image (CLAUDE.md rule 11).
+5. Nothing generated is built until the board approves its exact bytes.
+
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.
+````
+
+- [ ] **Step 3f: Create `.claude/skills/bsuk-infographic/SKILL.md`:**
+````markdown
+---
+name: bsuk-infographic
+description: Builds BlueStaffyUK infographics in the five named styles of IMAGE-DESIGNS.md §8 — IG-1 Stat Panel, IG-2 Process Steps, IG-3 Comparison Split, IG-4 Checklist Grid, IG-5 Route Map — as token-only HTML/CSS (the default) or as a baked raster framed with Style A. Picks the style from the heading's intent, uses only locked facts, and puts the style pick on the page board for approval. Use when a board slot's source is "infographic".
+allowed-tools: [Read, Write, Bash]
+---
+
+# BSUK Infographic
+
+**Announce at start:** "Using bsuk-infographic for [page slug] — [slot heading], style [IG-n]."
+
+> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) first. §8 defines the styles,
+> §9 the approval, §10 the slot fields. It wins over anything here.
+
+## When to use
+
+A board slot whose `source` is `infographic`: the section is figures, steps, a comparison, a
+checklist or a journey, and a picture of it says more than a photo would.
+
+## Pick the style from the heading's intent
+
+| Heading intent | Style | Typical heading |
+|---|---|---|
+| cost, price, how much, how many | IG-1 Stat Panel | "What a Blue Staffy Costs to Bring Home" |
+| how to, steps, what happens, timeline | IG-2 Process Steps | "How Collection Day Works" |
+| versus, difference, which is better | IG-3 Comparison Split | "Blue Staffy vs Brindle Staffy" |
+| checklist, what to check, what to bring, signs of | IG-4 Checklist Grid | "What to Check Before You Pay a Deposit" |
+| delivery, collection, travel, where | IG-5 Route Map | "Delivery From Carlisle to Leeds" |
+
+A comparison page carries IG-3 in at least one H2; a location page's delivery section is
+IG-5 (IMAGE-DESIGNS.md §5).
+
+## Facts on an infographic
+
+Every figure comes from `data/*.json` or a cited source (CLAUDE.md rule 9): prices from
+`data/price-matrix.json`, the deposit and delivery band from `data/settings.json`. IG-5 shows
+the locked band (£200–£350 by distance, by DEFRA-approved transport) and collection in
+Carlisle, never a mileage or drive time nobody measured. No figure, no infographic.
+
+## Size
+
+Width by page type, from design rule 9 in `rules/design.md`: a 760px wrapper for blog, guide
+and care pages; 1100px for home, location and hero sections. 400px tall on desktop (380 to
+450), `height:auto` on mobile, where every layout stacks. Stack at 640px for the 760 wrapper
+and 767px for the 1100 wrapper.
+
+## Mode
+
+- **HTML/CSS (default).** Token-only markup: every colour is a `var(--color-…)` from
+  `src/styles/tokens.css`, never a hex (design rule 1); no `font-family` (the global type
+  applies); line-icon SVGs, never emoji (design rule 7); no heading tags inside the graphic,
+  so the page's outline gate is untouched. Text colours use only the pairs in
+  `data/design/contrast.json`: brass text sits on steel and only at large size.
+- **Raster.** When the breeder wants a picture file, render the same design (Type 4 below):
+  it is a generated image, so it goes through the draft, second board pass and publish of
+  IMAGE-DESIGNS.md §9, framed with Style A so no baked text is cropped.
+
+## IG-1 Stat Panel
+
+```html
+<!-- BSUK Infographic: IG-1 Stat Panel | <slug> | height: 400px -->
+<div role="img" aria-label="[TITLE]" style="background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--radius-md);box-shadow:var(--shadow-card);min-height:380px;max-height:450px;display:flex;flex-direction:column;padding:var(--space-5)">
+  <p style="margin:0 0 var(--space-4);font-size:var(--text-lg)">[TITLE]</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:var(--space-4);flex:1;align-content:center">
+    <div><p style="margin:0;font-size:var(--text-4xl);color:var(--color-cta)">[FIGURE]</p><p style="margin:0;font-size:var(--text-sm)">[ONE LINE OF CONTEXT]</p></div>
+    <!-- two to four figures -->
+  </div>
+</div>
+```
+
+## IG-2 Process Steps
+
+```html
+<!-- BSUK Infographic: IG-2 Process Steps | <slug> | height: 400px -->
+<div role="img" aria-label="[TITLE]" style="background:var(--color-surface);border:var(--card-border);border-radius:var(--radius-md);box-shadow:var(--shadow-card);min-height:380px;max-height:450px;display:flex;flex-direction:column">
+  <p style="margin:0;background:var(--color-surface-inverse);color:var(--color-text-on-inverse);padding:var(--space-3) var(--space-4);text-align:center">[TITLE]</p>
+  <ol style="list-style:none;margin:0;padding:var(--space-4);display:flex;flex-wrap:wrap;gap:var(--space-3);flex:1">
+    <li style="flex:1 1 120px;text-align:center;border-top:2px solid var(--color-brand-mid);padding-top:var(--space-3)">
+      <span style="display:inline-flex;width:36px;height:36px;border-radius:50%;background:var(--color-brand);color:var(--color-text-on-inverse);align-items:center;justify-content:center">[N]</span>
+      <p style="margin:var(--space-2) 0 0;color:var(--color-text)">[STEP]</p>
+      <p style="margin:0;font-size:var(--text-sm);color:var(--color-text-muted)">[ONE LINE]</p>
+    </li>
+    <!-- three to five steps -->
+  </ol>
+</div>
+```
+
+## IG-3 Comparison Split
+
+```html
+<!-- BSUK Infographic: IG-3 Comparison Split | <slug> | height: 420px -->
+<div role="img" aria-label="[TITLE]" style="border-radius:var(--radius-md);overflow:hidden;box-shadow:var(--shadow-card);min-height:380px;max-height:450px;display:flex;flex-direction:column">
+  <div style="display:grid;grid-template-columns:1fr 1fr;flex:1">
+    <div style="background:var(--color-brand-soft);padding:var(--space-4)">
+      <p style="margin:0 0 var(--space-3);color:var(--color-brand)">[SUBJECT A]</p>
+      <p style="margin:0;color:var(--color-brand)">[ATTRIBUTE]: [VALUE]</p>
+    </div>
+    <div style="background:var(--counter-bed);padding:var(--space-4)">
+      <p style="margin:0 0 var(--space-3);color:var(--color-text)">[SUBJECT B]</p>
+      <p style="margin:0;color:var(--color-text)">[ATTRIBUTE]: [VALUE]</p>
+    </div>
+  </div>
+  <p style="margin:0;background:var(--color-surface-inverse);color:var(--color-text-on-inverse);padding:var(--space-3) var(--space-4);text-align:center">[VERDICT]</p>
+</div>
+```
+
+## IG-4 Checklist Grid
+
+```html
+<!-- BSUK Infographic: IG-4 Checklist Grid | <slug> | height: 420px -->
+<div role="img" aria-label="[TITLE]" style="background:var(--color-surface-inverse);color:var(--color-text-on-inverse);border-radius:var(--radius-md);box-shadow:var(--shadow-card);min-height:380px;max-height:450px;padding:var(--space-4);display:flex;flex-direction:column">
+  <p style="margin:0 0 var(--space-3);text-align:center">[TITLE]</p>
+  <ul style="list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:var(--space-2);flex:1">
+    <li style="display:flex;gap:var(--space-2);align-items:flex-start"><span aria-hidden="true" style="color:var(--color-cta);font-size:var(--text-xl)">✔</span><span>[CHECK]</span></li>
+    <!-- six to twelve cells -->
+  </ul>
+</div>
+```
+
+## IG-5 Route Map
+
+A schematic, never map tiles: a straight or gently curved line from Carlisle to the
+destination city, with the two names and the locked band.
+
+```html
+<!-- BSUK Infographic: IG-5 Route Map | <slug> | height: 400px -->
+<div role="img" aria-label="Delivery from Carlisle to [CITY]" style="background:var(--color-surface);border:var(--card-border);border-radius:var(--radius-md);box-shadow:var(--shadow-card);min-height:380px;max-height:450px;padding:var(--space-5);display:flex;flex-direction:column;justify-content:center">
+  <svg viewBox="0 0 600 160" width="100%" aria-hidden="true">
+    <path d="M60 110 C 220 20, 380 20, 540 110" fill="none" stroke="var(--color-brand)" stroke-width="4" stroke-dasharray="10 8"/>
+    <circle cx="60" cy="110" r="12" fill="var(--color-cta)"/>
+    <circle cx="540" cy="110" r="12" fill="var(--color-brand-mid)"/>
+  </svg>
+  <div style="display:flex;justify-content:space-between;color:var(--color-text)"><span>Carlisle</span><span>[CITY]</span></div>
+  <p style="margin:var(--space-3) 0 0;text-align:center;color:var(--color-text)">UK home delivery £200–£350 by distance, by DEFRA-approved transport, or collection in Carlisle</p>
+</div>
+```
+
+## Type 4: AI-Rendered Infographic
+
+The older "Type 1, 2, 3" names map onto the styles: Type 1 Comparison is IG-3, Type 2
+Feature Grid is IG-4, Type 3 Process Flow is IG-2. Type 4 is a raster rendering of any IG
+style: build the design as HTML first, then render it by the `bsuk-image-generation` route
+(or a screenshot of the approved HTML), check every figure against its source, and bake the
+draft:
+
+```bash
+python3 scripts/ingest_image.py draft "<master.png>" --board <slug> --slot <slot> --infographic IG-3
+```
+
+The board's second pass approves it as `ig:IG-3:<sha12>`; then
+`python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>` copies
+those bytes unchanged into `public/images/`. A bare `ig:IG-<n>` pick approves the style only.
+
+## Type 5: Higgsfield Reference
+
+Only when the Higgsfield connector lists an image-generation tool in the session (find it
+through ToolSearch; ask before any paid call). Same prompt rules as Type 4; same draft,
+approval and publish.
+
+## Integration Checklist
+
+- [ ] Style picked from the heading's intent, and the pick is on the board (IMAGE-DESIGNS.md §9).
+- [ ] Every figure traced to `data/*.json` or a cited source; no invented number.
+- [ ] Token colours only; no hex, no `font-family`, no emoji, no heading tags inside.
+- [ ] Brass text only on steel, only large.
+- [ ] Width 760 or 1100 by page type; 380 to 450px tall on desktop; stacks on mobile.
+- [ ] `role="img"` and an `aria-label` that states the graphic's point.
+- [ ] A raster version drafted with `--infographic IG-n`, approved by its sha12, then published.
+- [ ] The slot's `infographic_style` matches the style built.
+
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.
+````
+
+- [ ] **Step 3g: Create `.claude/skills/bsuk-photo-ingest/SKILL.md`:**
+````markdown
+---
+name: bsuk-photo-ingest
+description: Brings one chosen photograph from the breeder's folder (Assets/Images) into public/images/ under an SEO filename — WebP 1408x768 plus a -760 sibling, framed with a named IMAGE-DESIGNS.md style, recorded in data/image-ingest.json and data/image-manifest.json and named in the slot's assets[] row — without ever renaming, moving or re-encoding an image already served. Use when a board slot's source is "assets-folder" and its pick is assets:<filename>.
+allowed-tools: [Read, Write, Bash]
+---
+
+# BSUK Photo Ingest
+
+**Announce at start:** "Using bsuk-photo-ingest for [file] → [page slug], [slot heading]."
+
+> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) first: §7 names the framing
+> style, §1a the box, §9 the approval. It wins over anything here.
+
+## When to use
+
+A board slot whose `source` is `assets-folder` and whose pick is `assets:<filename>`: the
+breeder's own photograph in `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/` fits the
+section. A slot whose `source` is `existing` needs no ingest: the image is already in
+`public/images/` and is reused at its original path and alt (CLAUDE.md rule 11). A generated
+image goes through the draft and publish commands of the `bsuk-image-generation` skill.
+
+## Phase 1: Look at the photo
+
+1. Open it with Read (PNG, JPG and WebP all display). Filenames in the folder are not SEO
+   names (`Roman1.jpg`, `Cheryl1.jpeg`), and a few carry a stray `File name-` prefix and a
+   doubled extension; read the picture, not the name.
+2. Check the dog against IMAGE-DESIGNS.md §0: a blue Staffordshire Bull Terrier, natural
+   rose or half-pricked ears, nothing from the §3 negative list in frame (no spiked or chain
+   collar, no aggression, no clutter). A photo that fails is not placed.
+3. Note its shape. Portrait or near-square → Style `B` (Blur-Fill) with `--mobcrop 4:5`.
+   Wide scene → `A` or `E`. Pair of puppies in two photos → `H`. A baked infographic →
+   `--infographic IG-n`.
+
+## Phase 2: Choose the SEO stem
+
+Three to ten lowercase words joined by hyphens, naming what the photo shows and where, with
+no filler: `blue-staffy-puppy-garden-carlisle`, not `roman1` and not `blue-staffy-photo-final`.
+Follow the filename convention in `.claude/agents/bsuk-image-pipeline.md`. The stem must be
+new: `scripts/ingest_image.py` refuses a stem already in `public/images/` or in
+`data/image-manifest.json`, because a served image is never replaced.
+
+The build gate looks for a folder file at `/images/<default stem>.webp` (the filename
+lowercased and hyphenated, as the candidates script `image_candidates` spells it) unless the
+slot's `assets[]` row names another file. An SEO stem is almost always another name, so pass
+`--board` and `--slot` and the script writes it into that row.
+
+## Phase 3: Ingest
+
+```bash
+python3 scripts/ingest_image.py folder "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/Roman1.jpg" --stem blue-staffy-puppy-roman-garden-carlisle --og-style B --mobcrop 4:5 --board <slug> --slot <slot> --dry-run
+```
+
+Read the dry run, then run it again without `--dry-run`. It:
+
+1. **Reads** the master; the file in the breeder's folder is never moved or edited.
+2. **Converts** to WebP: `public/images/<stem>.webp` at 1408×768 under 95 KB and
+   `public/images/<stem>-760.webp` at 760×415 under 55 KB (Styles A, B, E and infographics),
+   or native ratio up to 1408 wide for the CSS-component styles C, D and H.
+3. **Records** the image in `data/image-ingest.json` (master path, source, style, size, date)
+   and adds its measured row to `data/image-manifest.json`, so the page's `srcset` is built
+   from real sizes. `npm run bake` carries every ingested row over when it rewrites the
+   manifest.
+4. **Names it on the board:** the slot's existing `assets[]` row gets `file` and
+   `status: "baked"`, both outside the record hash, so the approval stands. A slot with no
+   planned `assets[]` row is refused: adding a row would change the hash.
+
+Exit 2 with `REFUSED:` means nothing was written: fix the stem, the style, the slot or the path.
+
+## Phase 4: Show it on the board
+
+Rebuild the board with `python3 scripts/build_page_board.py <slug>` so the breeder sees the
+framed photo in its box. The slot's `og_style` is the style used; the breeder's pick stays
+`assets:<filename>`. On the page the image renders through `src/components/BodyImage.astro`
+in the `.sec-img.inf-img` box.
+
+Then hand off to the `image-metadata` skill for alt, title and caption, and follow the
+keyword distribution rule in `rules/images.md`.
+
+## Rules
+
+1. Reuse before ingest; ingest before generate.
+2. Never rename, move, re-encode or delete a served image (CLAUDE.md rule 11). A
+   replacement is a new stem beside the old one.
+3. Never hand-edit `data/image-manifest.json` or `public/images/`; `scripts/ingest_image.py`
+   writes both.
+4. The master stays in the breeder's folder.
+5. A photo the breed check fails is never placed.
+
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.
+````
+
+- [ ] **Step 3h: Flip the three skill rows and record the engine.** In `data/port-manifest.json`,
+for EACH of the three rows whose `dst` is `.claude/skills/bsuk-image-generation/SKILL.md`,
+`.claude/skills/bsuk-photo-ingest/SKILL.md` and `.claude/skills/bsuk-infographic/SKILL.md`, replace
+the two lines after that `dst` line:
+
+old:
+```text
+    "mode": "deferred",
+    "notes": "project 3 brings the design system"
+```
+new:
+```text
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): re-based onto IMAGE-DESIGNS.md, the BSUK palette and scripts/ingest_image.py"
+```
+(anchor each replacement on its own `"dst": ".claude/skills/bsuk-<name>/SKILL.md",` line — the
+old two lines also occur on other deferred rows). Then replace the end of the IMAGE-DESIGNS row:
+
+old:
+```text
+scripts/image_designs.py reads its ids"
+  }
+]
+```
+new:
+```text
+scripts/image_designs.py reads its ids"
+  },
+  {
+    "src": "scripts/reframe_og.py",
+    "dst": "scripts/reframe_og.py",
+    "mode": "rebase",
+    "notes": "system gaps (2026-09-24): the three baked OG framing styles (contain, blurfill, topcover) on the bone palette; tints and the unapproved extra styles dropped"
+  }
+]
+```
+
+- [ ] **Step 3i: Delete the expired markers in the infographic builder.** The skill it names now
+exists. In `.claude/agents/bsuk-infographic-builder.md` delete all six occurrences (lines 23, 39,
+65, 70, 146, 191) of ` (deferred to project 3, see data/port-manifest.json)`, leading space included:
+```bash
+python3 - <<'EOF'
+import pathlib
+p = pathlib.Path(".claude/agents/bsuk-infographic-builder.md")
+m = " (deferred to project 3, see data/port-manifest.json)"
+s = p.read_text()
+assert s.count(m) == 6, s.count(m)
+p.write_text(s.replace(m, ""))
+EOF
+```
+
+- [ ] **Step 4: Run them and confirm they pass**
+Run: `python3 -m pytest tests/py/test_reframe_og.py tests/py/test_ingest_image.py tests/py/test_image_designs.py -q`
+Expected: `88 passed, 3 skipped` (9 + 22 + 57; the 3 skips are the parity tests that bind once Tasks 9–10 add `image_candidates` and `image_rules`).
+Run: `python3 -m pytest tests/py/test_skills_frontmatter.py tests/py/test_agent_facts.py tests/py/test_rules_index.py tests/py/test_claude_md.py tests/py/test_port_manifest.py tests/py/test_marker_check.py tests/py/test_system_registry.py -q`
+Expected: `601 passed` (after the registry step below): the new skills meet the name, key-set, table, fact-lint and path guards.
+Run: `python3 scripts/marker_check.py`
+Expected: `examined 270 files; 0 problems` (+3 skills, +`scripts/reframe_og.py`).
+Run: `python3 scripts/port_from_cag.py --dry-run | tail -1`
+Expected: `examined 192 rows; applied 10, skipped-existing 141, deferred 41, missing 0, blocked 0` (the 10 are the `copy` rows, re-applied on every run by design; the five image rows are `skipped-existing`).
+
+- [ ] **Step 5: Registries and commit**
+```bash
+python3 scripts/build_system_registry.py
+npm run -s registry          # expect: examined docs/reference/system-registry.md; 0 problems
+git add scripts/reframe_og.py scripts/ingest_image.py scripts/bake_images.py data/image-ingest.json \
+  .claude/skills/bsuk-image-generation/SKILL.md .claude/skills/bsuk-infographic/SKILL.md \
+  .claude/skills/bsuk-photo-ingest/SKILL.md .claude/agents/bsuk-infographic-builder.md \
+  data/port-manifest.json tests/py/test_reframe_og.py tests/py/test_ingest_image.py \
+  tests/py/test_image_designs.py docs/reference/system-registry.md
+git commit -m "images: reframe_og engine, photo ingest, and the three image skills ported onto IMAGE-DESIGNS.md
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 6: Full suite and gates**
+```bash
+python3 -m pytest tests/py -q
+npm run -s check:all; echo EXIT $?
+```
+Expected: `2484 passed, 30 skipped, 1 xfailed` in a fresh worktree (baseline 2377 / 25 / 1; +107
+passed from these two tasks; +5 skips = the 3 parity tests waiting for Tasks 9–10, plus the two
+`test_no_env_value_committed.py` ".env absent" cases, which skip in any worktree without a `.env`),
+and `EXIT 0` with `check:markers` printing `examined 270 files; 0 problems`.
+
+---
+
+#### Interfaces this section exposes
+
+**Files**
+- `IMAGE-DESIGNS.md` — sections §0–§10, headings pinned by `scripts/image_designs.py::REQUIRED_SECTIONS`.
+- `scripts/image_designs.py` — `load(path=DOC)` → `{"og_styles", "og_names", "og_uses", "infographic_styles", "infographic_names", "infographic_uses", "fields"}` (fields: `source`, `og_style`, `infographic_style`, `file`, `source_file`, `prompt`);
+  `labels(spec=None)`, `render_labels(spec=None)`; CLI `--write` / `--check`; constants `DOC`, `LABELS`, `REQUIRED_SECTIONS`.
+- `data/design/image-styles.json` — `{"og": {"A": {"name", "use"}, …, "H": …}, "infographic": {"IG-1": {"name", "use"}, …, "IG-5": …}}`, written from §7/§8. For Task 10b's board labels (`_slot_html` can show `name`).
+- `scripts/reframe_og.py` — CLI `reframe_og.py <master> <out.webp> --style {contain,blurfill,topcover} [--mobcrop 4:5] [--sib <out-760.webp>] [--maxkb 95]`;
+  `render(im, style, …)`, `contain`, `blurfill`, `topcover`, `subject_box`, `sibling(img)`, `save_webp(img, path, maxkb) -> (kb, q)` (quality walk 82 → 60); constants `W, H = 1408, 768`, `SIB_W, SIB_H = 760, 415`, `SIB_MAX_KB = 55`, `STYLES`.
+- `scripts/ingest_image.py` — CLI subcommands `folder`, `draft`, `publish` (exit 2 + `REFUSED:` on any rule break);
+  `folder(master, stem=None, og_style=None, infographic=None, mobcrop="", slug=None, slot=None, root, dry_run, today)`,
+  `draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root)` → `{"path", "sha12", "pick"}`,
+  `publish(slug, slot, stem, root, today)`; helpers `default_stem(filename)` (= `image_candidates.asset_stem`), `slug_file(slug)`, `file_sha(path)` (sha256[:12]), `stem_problems(stem)`, `served(stem, root)`, `draft_path(slug, slot, root)`, `ingested_manifest_rows(root)`; regex `PICK` (= `image_rules` pick grammar); exception `Refused`.
+- `data/image-ingest.json` — ledger `{stem: {"master", "source", "og_style", "infographic_style", "w", "h", "sib_w", "ingested"}}`, written only by `scripts/ingest_image.py`; `scripts/bake_images.py` carries its rows into the manifest.
+- Skills: `.claude/skills/bsuk-image-generation/SKILL.md`, `.claude/skills/bsuk-infographic/SKILL.md`, `.claude/skills/bsuk-photo-ingest/SKILL.md`.
+
+**Record fields used (all defined by Task 10; nothing new required on any record)**
+- `sections[].images[].{source, file, source_file, og_style, infographic_style, prompt}` (and a tree node's `images[]`).
+- `approval.picks["img:<slot>"]` — `file:/images/…` | `assets:<filename>` | `og:<A|B|C|D|E|H>[:<sha12>]` | `ig:IG-<1-5>[:<sha12>]`.
+- `assets[<slot>].file` and `.status` (`"baked"`) — set by `ingest_image.py folder --board/--slot` and `publish`, only on an existing row (both outside `record_hash`).
+- Draft path `data/boards/generated/<slug file>/<slot>.webp`.
+
+**Style ids** — OG: `A` Contain on Bone, `B` Blur-Fill (default single dog), `C` Editorial Split, `D` Portrait Frame, `E` Top-Anchored Cover, `H` Duo Strip (mobile mA, mB, mC, mG, mH). Infographic: `IG-1` Stat Panel, `IG-2` Process Steps, `IG-3` Comparison Split, `IG-4` Checklist Grid, `IG-5` Route Map.
+
+**The consumer citation line** (exact; `tests/py/test_image_designs.py::CONSUMER_LINE`), on 7 files:
+```text
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.
+```
+
+**Tests:** `tests/py/test_image_designs.py`, `tests/py/test_reframe_og.py`, `tests/py/test_ingest_image.py`.
+
+#### Verified
+
+Drafting worktree `wt-d` (detached from `system-gaps` at `99c81e0`), both tasks committed in order
+(`8b46aad` Task 7, `0545323` Task 8). The code in this section is those files verbatim.
+- Task 7 alone: Step 2 failed as written (collection error, no `image_designs`); before the
+  appends, the consumer cases failed. After: `test_image_designs.py` 49 passed, 1 skipped; the
+  seven guard files 583 passed; `marker_check` 266 files, 0 problems; `npm run -s registry` 0 problems.
+- Task 8: Step 2 failed as written (2 collection errors; `test_image_designs.py` 8 failed, 49
+  passed, 1 skipped). After: the three image test files 88 passed, 3 skipped; the seven guard
+  files 601 passed; `marker_check` 270 files, 0 problems; registry 0 problems.
+- Parity with Task 10: with `image_rules.py` and `image_candidates.py` extracted from draft-E.md
+  and dropped into `scripts/` temporarily, the 4 parity tests passed (ids, sources, pick
+  grammar, `asset_stem`, `slug_file`); the files were then removed.
+- Full suite at the end: `python3 -m pytest tests/py -q` → **2484 passed, 30 skipped, 1 xfailed**.
+- `npm run -s check:all` → **exit 0**.
+- Residue: `IMAGE-DESIGNS.md` and the three skills carry no parrot / Midland / Benjamin / CITES /
+  forest green / clay / source-repo hexes (own regex + `marker_check.hits_in` + the agent fact lint).
+- Not run: no image was generated (no key, and it is a paid call); no `npm run bake` (it
+  rewrites every generated page from the source clone); the carry-over is pinned by a wiring test.
+
+#### Open questions
+1. **Image key:** generation needs `GEMINI_API_KEY` exported and `google-genai` installed. Should the
+   executor add `GEMINI_API_KEY=` to `.env.example` and a row to `docs/reference/credentials.md`
+   (held in step by `tests/py/test_credentials_doc.py`)? I left it out because no script in the
+   repo reads the key; the plugin skill does.
+2. **Where generated masters live:** the skill saves raw masters to
+   `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/generated/` (beside the breeder's photos,
+   outside the repo); the board draft is in `data/boards/generated/`. Confirm, or name another place.
+3. **p5r Task 18 conflict** (top of this file): tell the other chat, or plan a merge-fix step,
+   before both branches land.
+4. **Registry counts:** drafts A–C and E also add scripts and data files. Regenerate
+   `docs/reference/system-registry.md` once after all the tasks are assembled; do not hand-merge it.
+
+
+---
+
+## Part E — Images on every heading (Tasks 9–10b)
+
+### Task 9: `image_candidates.py` — every image slot offered the site's own images first
+
+**Gap:** "You must use images where needed, like heroes and other components. When choosing components, always analyse the said/existing page structure for images to use or the image folder under assets."
+**Files:**
+- Create: `scripts/image_candidates.py`
+- Test: `tests/py/test_image_candidates.py`
+- Regenerated: `docs/reference/system-registry.md`
+
+**What exists today, and why it needs a script.** A board record plans images in two places: `sections[].images[]` (`slot`, `kind`, `required`, `prompt`) and the page-level `assets[]` (`slot`, `kind`, `w`, `h`, `required`, `status`, `file`, `alt`). `record_hash` leaves out each asset's `status` and `file`, so baking an image never un-approves a page. Nothing ranks images for a slot. `data/image-manifest.json` holds only measured sizes (`w`, `h`, `sib_w`) for 98 stems. It has no `page` and no description field, so this script builds an image's words from its filename and from every alt it appears with in `dist/` and `data/verbatim/*.json`. A migrated page's own images are found in three places: its `data/verbatim/<slug>.json` `alts[]` (`src`, `alt`); the `<img>` tags inside `<main>` of its page in `dist/`, which is still the migrated page until it is rebuilt (location pages are built from `data/locations.json` `body_html`, so their dist pages carry those images); and the files its record's `assets[]` already names. The breeder's folder `/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images/` holds 39 files (37 images, `.DS_Store`, a zip). 36 of the images are already served: either under the same stem (`1blue-staffy-family-breeder.png` → `/images/1blue-staffy-family-breeder.webp`) or as a served stem ending in `-<stem>` (`Byrd1.jpg` → `/images/puppies/byrd-byrd1.webp`). So only a few are genuinely new. The script counts the rest as "already served" and does not offer them twice.
+
+**Ranking, in plain words.** Scoring is plain token overlap. The slot's words are its section heading, the section's keyword lists (for an H3 slot, the H3's heading instead), and its prompt. They are compared against the image's filename stem and alts. Words every image here shares (blue, staffy, uk, puppy, …) and prompt boilerplate (alt, text, migrated, reused, original, path, working, rule, page) are dropped. A trailing plural is folded. The score is the count of shared words. Each pool keeps its best `--per-pool` (score ≥ 1), and pools are listed own → served → assets. So a weaker match from the page's own images still comes ahead of a stronger one from elsewhere: reuse is the preference (working rule 11), and the score orders within a pool. `suggested` is the first candidate not already suggested for an earlier slot. This stops one photo being proposed twice on one page, which would share an alt (Rule 50b). Each served candidate carries `used_on`, the other built pages that already show it.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_image_candidates.py`:
+```python
+"""image_candidates.py — every image slot is offered the site's own images first
+(system-gaps build, Task 9). All tests run on a tmp tree: a repo with public/images, the
+manifest, a verbatim file and two built pages, and a breeder folder outside it."""
+import json
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import image_candidates as IC  # noqa: E402
+
+SLUG = "uk-locations/blue-staffy-puppies-leeds"
+
+
+def _page(imgs, main=True):
+    tags = "".join(f'<img src="{s}" alt="{a}">' for s, a in imgs)
+    body = f"<main>{tags}</main>" if main else tags
+    return f'<!doctype html><header><img src="/images/blue-staffy-uk-official-logo0.png" alt="logo"></header>{body}'
+
+
+def _tree(tmp_path):
+    root = tmp_path / "repo"
+    imgs = root / "public" / "images"
+    imgs.mkdir(parents=True)
+    for name in ("leeds-delivery-van.webp", "leeds-delivery-van-760.webp", "puppy-vaccinations-uk.webp",
+                 "kc-registered-staffy-puppies.webp", "family-garden-play.webp",
+                 "blue-staffy-uk-official-logo0.png"):
+        (imgs / name).write_bytes(b"x")
+    (imgs / "puppies").mkdir()
+    (imgs / "puppies" / "byrd-byrd1.webp").write_bytes(b"x")
+    (root / "data" / "verbatim").mkdir(parents=True)
+    (root / "data" / "image-manifest.json").write_text(json.dumps({
+        "leeds-delivery-van": {"w": 1, "h": 1, "sib_w": 760},
+        "puppy-vaccinations-uk": {"w": 1, "h": 1, "sib_w": None},
+        "kc-registered-staffy-puppies": {"w": 1, "h": 1, "sib_w": None},
+        "family-garden-play": {"w": 1, "h": 1, "sib_w": None},
+        "blue-staffy-uk-official-logo0": {"w": 1, "h": 1, "sib_w": None}}))
+    (root / "data" / "verbatim" / "blue-staffy-health-uk.json").write_text(json.dumps({
+        "alts": [{"src": "/images/puppy-vaccinations-uk.webp",
+                  "alt": "A puppy at the vet after its vaccinations"}]}))
+    dist = root / "dist"
+    (dist / "uk-locations" / "blue-staffy-puppies-leeds").mkdir(parents=True)
+    (dist / "uk-locations" / "blue-staffy-puppies-leeds" / "index.html").write_text(
+        _page([("/images/leeds-delivery-van-760.webp", "Our van delivering a puppy to Leeds")]))
+    (dist / "blue-staffy-health-uk").mkdir()
+    (dist / "blue-staffy-health-uk" / "index.html").write_text(
+        _page([("/images/puppy-vaccinations-uk.webp", "Vaccinations"),
+               ("/images/kc-registered-staffy-puppies.webp", "Kennel Club papers")]))
+    (dist / "board-preview" / "x").mkdir(parents=True)
+    (dist / "board-preview" / "x" / "index.html").write_text(
+        _page([("/images/family-garden-play.webp", "specimen")]))
+    assets = tmp_path / "Assets" / "Images"
+    assets.mkdir(parents=True)
+    for name in ("Leeds-Kennel-Club-Show.jpg", "Byrd1.jpg", "family-garden-play.png", ".DS_Store",
+                 "archive.zip", "File name- vaccination-card-close-up .jpg .jpg"):
+        (assets / name).write_bytes(b"x")
+    return root, assets
+
+
+def _board(images_by_section=None, node_images=None):
+    sec = {"id": "delivery", "heading": "Delivering Your Puppy To Leeds",
+           "keywords": {"primary": ["blue staffy puppies leeds"], "lsi": ["puppy delivery"]},
+           "tree": [{"level": 3, "heading": "Vaccinations Before The Journey", "intent": "",
+                     "children": [], "images": node_images if node_images is not None else [
+                         {"slot": "delivery-vacc", "kind": "photo", "required": True,
+                          "prompt": "a puppy being vaccinated"}]}],
+           "images": images_by_section if images_by_section is not None else [
+               {"slot": "delivery-photo", "kind": "photo", "required": True,
+                "prompt": "our van on a delivery run"}]}
+    return {"meta": {"slug": SLUG, "page_type": "location"}, "sections": [sec],
+            "assets": []}
+
+
+def test_tokens_fold_plurals_and_drop_the_words_every_image_shares():
+    assert IC.tokens("Blue Staffy Puppies: Vaccinations & Deliveries 2026") == {"vaccination", "delivery"}
+    assert IC.tokens("kennel-club-assured") == {"kennel", "club", "assured"}
+
+
+def test_canonical_drops_the_size_sibling_suffix():
+    assert IC.canonical("/images/leeds-delivery-van-760.webp?v=1") == "/images/leeds-delivery-van.webp"
+    assert IC.canonical("https://example.org/x.webp") is None
+
+
+def test_iter_slots_reads_section_and_node_slots_in_outline_order():
+    got = [(s["id"], n and n["heading"], i["slot"]) for s, n, i in IC.iter_slots(_board())]
+    assert got == [("delivery", None, "delivery-photo"),
+                   ("delivery", "Vaccinations Before The Journey", "delivery-vacc")]
+
+
+def test_own_images_come_from_the_migrated_page_in_dist(tmp_path):
+    root, _ = _tree(tmp_path)
+    own = IC.own_images(_board(), root)
+    # The size sibling on the page collapses to its stem file; the header logo is not <main>.
+    assert own == [{"file": "/images/leeds-delivery-van.webp", "alt": "Our van delivering a puppy to Leeds"}]
+
+
+def test_own_images_also_read_the_verbatim_file_and_the_record_assets(tmp_path):
+    root, _ = _tree(tmp_path)
+    b = _board()
+    b["meta"]["slug"] = "blue-staffy-health-uk"
+    b["assets"] = [{"slot": "x", "file": "/images/family-garden-play.webp", "alt": "Garden"}]
+    files = [o["file"] for o in IC.own_images(b, root)]
+    assert files == ["/images/puppy-vaccinations-uk.webp", "/images/kc-registered-staffy-puppies.webp",
+                     "/images/family-garden-play.webp"]
+
+
+def test_served_pool_is_the_manifest_without_the_logo(tmp_path):
+    root, _ = _tree(tmp_path)
+    assert [s["file"] for s in IC.served_images(root)] == [
+        "/images/family-garden-play.webp", "/images/kc-registered-staffy-puppies.webp",
+        "/images/leeds-delivery-van.webp", "/images/puppy-vaccinations-uk.webp"]
+
+
+def test_assets_pool_skips_non_images_and_files_already_served(tmp_path):
+    root, assets = _tree(tmp_path)
+    fresh, already = IC.asset_images(assets, root)
+    assert [f["asset"] for f in fresh] == ["File name- vaccination-card-close-up .jpg .jpg",
+                                           "Leeds-Kennel-Club-Show.jpg"]
+    assert fresh[0]["ingest_as"] == "/images/vaccination-card-close-up.webp"
+    # Byrd1.jpg was ingested as puppies/byrd-byrd1.webp; family-garden-play.png is served as .webp.
+    assert sorted(already) == ["Byrd1.jpg", "family-garden-play.png"]
+    assert IC.asset_images(tmp_path / "nowhere", root) == ([], [])
+
+
+def test_usage_index_ignores_previews_and_reads_every_page(tmp_path):
+    root, _ = _tree(tmp_path)
+    used, alts = IC.usage_and_alts(root)
+    assert used["/images/puppy-vaccinations-uk.webp"] == ["/blue-staffy-health-uk/"]
+    assert "/images/family-garden-play.webp" not in used          # only on a board preview
+    assert alts["/images/puppy-vaccinations-uk.webp"] == ["Vaccinations", "A puppy at the vet after its vaccinations"]
+
+
+def test_candidates_rank_own_then_served_then_assets_and_flag_reuse(tmp_path):
+    root, assets = _tree(tmp_path)
+    r = IC.candidates(_board(), root, assets, per_pool=2)
+    assert r["pools"] == {"own": 1, "served": 3, "assets": 2, "assets_already_served": 2}
+    photo, vacc = r["slots"]
+    # The page's own van photo leads; the folder's Leeds show photo follows on one word.
+    assert [(c["pool"], c["pick"]) for c in photo["candidates"]] == [
+        ("own", "file:/images/leeds-delivery-van.webp"), ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    assert photo["candidates"][0]["matched"] == ["delivering", "delivery", "leed", "van"]
+    assert photo["candidates"][1]["score"] == 1
+    # An H3 slot is scored on its section's heading too, so the page's own photo still leads;
+    # the served vaccination photo and the folder's vaccination card follow in pool order.
+    assert [(c["pool"], c["pick"]) for c in vacc["candidates"]] == [
+        ("own", "file:/images/leeds-delivery-van.webp"),
+        ("served", "file:/images/puppy-vaccinations-uk.webp"),
+        ("assets", "assets:File name- vaccination-card-close-up .jpg .jpg"),
+        ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    # Reuse is visible: the served vaccination photo is already on the health page.
+    assert vacc["candidates"][1]["used_on"] == ["/blue-staffy-health-uk/"]
+    assert vacc["candidates"][2]["ingest_as"] == "/images/vaccination-card-close-up.webp"
+    # The van is suggested once; the H3 slot is offered the next image instead.
+    assert photo["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    assert vacc["suggested"]["pick"] == "file:/images/puppy-vaccinations-uk.webp"
+
+
+def test_cli_prints_json_and_writes_only_when_asked(tmp_path, monkeypatch, capsys):
+    root, assets = _tree(tmp_path)
+    (root / "data" / "boards").mkdir(parents=True)
+    (root / "data" / "boards" / (IC.slug_file(SLUG) + ".json")).write_text(json.dumps(_board()))
+    monkeypatch.setattr(IC, "ROOT", root)
+    assert IC.main([SLUG, "--assets-dir", str(assets)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["slug"] == SLUG and len(out["slots"]) == 2
+    assert not (root / "data" / "boards" / "candidates").exists()
+    assert IC.main([SLUG, "--assets-dir", str(assets), "--write"]) == 0
+    written = root / "data" / "boards" / "candidates" / "uk-locations--blue-staffy-puppies-leeds.json"
+    assert json.loads(written.read_text())["slots"][0]["slot"] == "delivery-photo"
+    assert IC.main(["uk-locations/nowhere", "--assets-dir", str(assets)]) == 2
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_image_candidates.py -q`
+Expected: FAIL. Collection error `ModuleNotFoundError: No module named 'image_candidates'`.
+
+- [ ] **Step 3: Implement**
+
+Create `scripts/image_candidates.py`:
+```python
+#!/usr/bin/env python3
+"""image_candidates.py <slug> [--assets-dir DIR] [--per-pool N] [--write]
+
+Ranks candidate images for every image slot a board record plans, so a slot is filled from
+images the site already has before anything is generated (system-gaps build, 2026-09-24;
+working rule 11: reuse every existing image first).
+
+THREE POOLS, in this order of preference:
+
+  own     the images the migrated page itself served: its `data/verbatim/<slug>.json` alts,
+          the <img> tags inside <main> of its page in dist/ (the migrated page until it is
+          rebuilt), and any file its own record's `assets[]` already names
+  served  every other image the site serves, one per stem of `data/image-manifest.json`
+          (the manifest carries only measured sizes, no description, so an image's words are
+          its filename plus every alt it is shown with anywhere in dist/ or data/verbatim/)
+  assets  files in the breeder's folder (`ASSETS_DIR`, the Assets/Images folder of the
+          bluestaffyuk-cms directory, or `--assets-dir`). These
+          are NOT in the repo: picking one means ingesting it into public/images first. A
+          folder file whose stem is already served (the same stem, or a served stem ending
+          in `-<stem>`) is left out and counted as already served.
+
+SCORING is plain token overlap, deliberately: the slot's words (its section heading, the
+section's keyword lists, the H3's heading for an H3 slot, and the slot's prompt) against
+the image's words (filename stem and alts), lowercased, split on non-alphanumerics, a
+trailing plural folded, and the words every image on this site shares (blue, staffy, uk,
+puppy …) dropped, since they would match everything and rank nothing. The score is the
+number of distinct shared words. Each pool keeps its best `--per-pool` (score >= 1), and
+the pools are listed own → served → assets, so a weaker match from the page's own images
+is still offered ahead of a stronger one from elsewhere — reuse is the preference, and the
+score orders within a pool. `suggested` is the first candidate not already suggested for
+an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no shared alt).
+
+Every served candidate carries `used_on`: the other built pages that already show it, so
+reuse across pages is visible on the board rather than discovered after the build.
+
+Pure functions take `root` (the repo) and `assets_dir`, so the tests run on a tmp tree.
+Prints the JSON; `--write` also writes data/boards/candidates/<slug file>.json.
+"""
+import argparse
+import json
+import os
+import pathlib
+import re
+import sys
+from html.parser import HTMLParser
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+#: The breeder's image folder. It sits outside the repo, so it is named absolutely, the way
+#: scripts/bake_images.py names its source tree; BSUK_ASSETS_DIR overrides it.
+ASSETS_DIR = pathlib.Path(os.environ.get("BSUK_ASSETS_DIR",
+                                         "/Users/apple/Downloads/bluestaffyuk-cms/Assets/Images"))
+POOLS = ("own", "served", "assets")
+IMAGE_EXTS = (".webp", ".png", ".jpg", ".jpeg")
+SIZE_SUFFIX = re.compile(r"-(\d{2,4})$")
+#: Routes that are not pages: the board previews, the kit specimen, the 404 and search.
+NOT_PAGES = ("board-preview", "kit-preview", "search")
+#: Words every image on this site shares. They match everything, so they rank nothing.
+GENERIC = frozenset("""
+blue staffy staffie staffordshire bull terrier sbt uk bluestaffyuk puppy pup dog webp png
+jpg jpeg image photo picture file name our we us the a an and or of to in for on with at by
+is are be your you from it this that as how what why when do doe its their them into
+alt text migrated reused original path working rule page
+""".split())
+METHOD = ("token overlap: slot words (section heading, section keywords, H3 heading, prompt) "
+          "against image words (filename stem, alts); shared site-wide words dropped; score = "
+          "distinct shared words; pools own > served > assets, score orders within a pool")
+
+
+def slug_file(slug):
+    """`uk-locations/x` -> `uk-locations--x`, the spelling every per-slug file uses."""
+    return slug.replace("/", "--")
+
+
+def route_of(slug):
+    return "/" if slug == "index" else "/" + slug.strip("/") + "/"
+
+
+def _fold(tok):
+    if len(tok) > 4 and tok.endswith("ies"):
+        return tok[:-3] + "y"
+    if len(tok) > 3 and tok.endswith("s") and not tok.endswith("ss"):
+        return tok[:-1]
+    return tok
+
+
+def tokens(text):
+    """The scoring words of a string: lowercased, folded, generic and numeric words dropped."""
+    out = set()
+    for raw in re.findall(r"[a-z0-9]+", (text or "").lower()):
+        if raw.isdigit():
+            continue
+        t = _fold(raw)
+        if t not in GENERIC and len(t) > 1:
+            out.add(t)
+    return out
+
+
+def canonical(src):
+    """An /images/ URL with its size sibling suffix dropped: `/images/x-760.webp` -> `/images/x.webp`."""
+    src = (src or "").split("?")[0].split("#")[0]
+    if not src.startswith("/images/"):
+        return None
+    p = pathlib.PurePosixPath(src)
+    stem = SIZE_SUFFIX.sub("", p.stem)
+    return str(p.with_name(stem + p.suffix))
+
+
+# ── the record's slots ──────────────────────────────────────────────────────────────────
+def iter_slots(board):
+    """(section, node or None, image) for every image slot the record plans: a section's
+    `images[]`, then every node's `images[]` (H3–H6), in outline order."""
+    def walk(section, nodes):
+        for n in nodes:
+            for img in n.get("images") or []:
+                yield section, n, img
+            yield from walk(section, n.get("children") or [])
+    for s in board.get("sections", []):
+        for img in s.get("images") or []:
+            yield s, None, img
+        yield from walk(s, s.get("tree") or [])
+
+
+def slot_words(section, node, image):
+    """The words a slot is scored on."""
+    parts = [section.get("heading", ""), image.get("prompt", "")]
+    if node is not None:
+        parts.append(node.get("heading", ""))
+    else:
+        for words in (section.get("keywords") or {}).values():
+            parts.extend(words)
+    out = set()
+    for p in parts:
+        out |= tokens(p)
+    return out
+
+
+# ── the pools ───────────────────────────────────────────────────────────────────────────
+class _Imgs(HTMLParser):
+    """Every <img src alt> on a page, and which of them sit inside <main>."""
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.depth = 0
+        self.all, self.main = [], []
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "main":
+            self.depth += 1
+        elif tag == "img":
+            a = dict(attrs)
+            row = (a.get("src") or "", a.get("alt") or "")
+            self.all.append(row)
+            if self.depth:
+                self.main.append(row)
+
+    def handle_endtag(self, tag):
+        if tag == "main" and self.depth:
+            self.depth -= 1
+
+
+def _page_imgs(path):
+    p = _Imgs()
+    p.feed(path.read_text(encoding="utf-8", errors="replace"))
+    return p
+
+
+def dist_pages(root):
+    """{route: dist file} for every built page, previews and specimens left out."""
+    dist = root / "dist"
+    out = {}
+    if not dist.is_dir():
+        return out
+    for f in sorted(dist.rglob("index.html")):
+        rel = f.relative_to(dist).as_posix()
+        if rel.split("/")[0] in NOT_PAGES:
+            continue
+        out["/" if rel == "index.html" else "/" + rel[: -len("index.html")]] = f
+    return out
+
+
+def _verbatim_files(root):
+    d = root / "data" / "verbatim"
+    return sorted(p for p in d.glob("*.json") if p.name != "applies.json") if d.is_dir() else []
+
+
+def usage_and_alts(root):
+    """({canonical file: sorted routes that show it}, {canonical file: [alts]}) from dist/
+    and data/verbatim/."""
+    used, alts = {}, {}
+
+    def note_alt(src, alt):
+        if alt and alt not in alts.setdefault(src, []):
+            alts[src].append(alt)
+
+    for route, f in dist_pages(root).items():
+        for src, alt in _page_imgs(f).all:
+            c = canonical(src)
+            if c:
+                used.setdefault(c, set()).add(route)
+                note_alt(c, alt)
+    for vf in _verbatim_files(root):
+        for row in json.loads(vf.read_text(encoding="utf-8")).get("alts", []):
+            c = canonical(row.get("src"))
+            if c:
+                note_alt(c, row.get("alt", ""))
+    return {k: sorted(v) for k, v in used.items()}, alts
+
+
+def own_images(board, root):
+    """[{file, alt}] the migrated page itself served, plus the files its record names."""
+    slug = board["meta"]["slug"]
+    seen, out = set(), []
+
+    def add(src, alt):
+        c = canonical(src)
+        if c and c not in seen and (root / "public" / c.lstrip("/")).exists():
+            seen.add(c)
+            out.append({"file": c, "alt": alt or ""})
+
+    for name in (slug, slug_file(slug)):
+        vf = root / "data" / "verbatim" / f"{name}.json"
+        if vf.exists():
+            for row in json.loads(vf.read_text(encoding="utf-8")).get("alts", []):
+                add(row.get("src"), row.get("alt"))
+            break
+    page = dist_pages(root).get(route_of(slug))
+    if page is not None:
+        for src, alt in _page_imgs(page).main:
+            add(src, alt)
+    for a in board.get("assets", []):
+        if a.get("file"):
+            add(a["file"], a.get("alt"))
+    return out
+
+
+def served_images(root):
+    """[{file}] one per stem of data/image-manifest.json that exists under public/images."""
+    mf = root / "data" / "image-manifest.json"
+    manifest = json.loads(mf.read_text(encoding="utf-8")) if mf.exists() else {}
+    out = []
+    for stem in sorted(manifest):
+        if "logo" in stem:
+            continue
+        for ext in (".webp", ".png"):
+            if (root / "public" / "images" / (stem + ext)).exists():
+                out.append({"file": f"/images/{stem}{ext}"})
+                break
+    return out
+
+
+def asset_stem(filename):
+    """A folder filename -> the stem it would be ingested under: `File name- x .jpg` -> `x`."""
+    stem = pathlib.Path(filename.strip()).stem.strip()
+    stem = re.sub(r"^file name-\s*", "", stem, flags=re.I)
+    stem = pathlib.Path(stem.strip()).stem          # `x .jpg .jpg` carries a second extension
+    return re.sub(r"[^a-z0-9]+", "-", stem.lower()).strip("-")
+
+
+def ingest_target(filename):
+    """Where the ingest step puts a folder file unless it records another path."""
+    return f"/images/{asset_stem(filename)}.webp"
+
+
+def served_stems(root):
+    d = root / "public" / "images"
+    if not d.is_dir():
+        return set()
+    return {SIZE_SUFFIX.sub("", p.stem) for p in d.rglob("*") if p.suffix.lower() in IMAGE_EXTS}
+
+
+def already_served(filename, stems):
+    s = asset_stem(filename)
+    return s in stems or any(x.endswith("-" + s) for x in stems)
+
+
+def asset_images(assets_dir, root):
+    """([{asset, ingest_as}], [already-served filenames]) from the breeder's folder."""
+    d = pathlib.Path(assets_dir) if assets_dir else None
+    if d is None or not d.is_dir():
+        return [], []
+    stems = served_stems(root)
+    fresh, served = [], []
+    for p in sorted(d.iterdir()):
+        if p.name.startswith(".") or not p.is_file():
+            continue
+        if not p.name.strip().lower().endswith(IMAGE_EXTS):
+            continue
+        if already_served(p.name, stems):
+            served.append(p.name)
+        else:
+            fresh.append({"asset": p.name, "ingest_as": ingest_target(p.name)})
+    return fresh, served
+
+
+# ── ranking ─────────────────────────────────────────────────────────────────────────────
+def _candidate(pool, item, words, alts, used, own_route):
+    if pool == "assets":
+        img_words = tokens(item["asset"].replace("File name-", ""))
+        cand = {"pool": pool, "file": None, "asset": item["asset"], "ingest_as": item["ingest_as"],
+                "alt": "", "used_on": [], "pick": "assets:" + item["asset"]}
+    else:
+        f = item["file"]
+        known = alts.get(f, [])
+        alt = item.get("alt") or (known[0] if known else "")
+        img_words = tokens(pathlib.PurePosixPath(f).stem)
+        for a in [alt] + known:
+            img_words |= tokens(a)
+        cand = {"pool": pool, "file": f, "asset": None, "ingest_as": None, "alt": alt,
+                "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f}
+    matched = sorted(words & img_words)
+    cand["score"] = len(matched)
+    cand["matched"] = matched
+    return cand
+
+
+def rank(words, pools, alts, used, own_route, per_pool=3):
+    """The candidates for one slot: each pool's best `per_pool` with score >= 1, pools in
+    preference order, score descending then filename within a pool."""
+    out, seen = [], set()
+    for pool in POOLS:
+        scored = [_candidate(pool, it, words, alts, used, own_route) for it in pools[pool]]
+        scored = [c for c in scored if c["score"] >= 1 and c["pick"] not in seen]
+        scored.sort(key=lambda c: (-c["score"], c["pick"]))
+        for c in scored[:per_pool]:
+            seen.add(c["pick"])
+            out.append(c)
+    return out
+
+
+def candidates(board, root=None, assets_dir=None, per_pool=3):
+    """The whole candidate report for one record. Pure: reads files, writes nothing."""
+    root = pathlib.Path(root) if root is not None else ROOT
+    slug = board["meta"]["slug"]
+    own = own_images(board, root)
+    own_files = {o["file"] for o in own}
+    served = [s for s in served_images(root) if s["file"] not in own_files]
+    fresh, already = asset_images(assets_dir, root)
+    pools = {"own": own, "served": served, "assets": fresh}
+    used, alts = usage_and_alts(root)
+    route = route_of(slug)
+    slots, taken = [], set()
+    for section, node, img in iter_slots(board):
+        words = slot_words(section, node, img)
+        cands = rank(words, pools, alts, used, route, per_pool)
+        suggested = next((c for c in cands if c["pick"] not in taken), None)
+        if suggested:
+            taken.add(suggested["pick"])
+        slots.append({"slot": img["slot"], "section": section["id"],
+                      "node": node["heading"] if node else None, "kind": img["kind"],
+                      "source": img.get("source"), "context": sorted(words),
+                      "candidates": cands, "suggested": suggested})
+    return {"slug": slug, "method": METHOD, "assets_dir": str(assets_dir) if assets_dir else None,
+            "pools": {"own": len(own), "served": len(served), "assets": len(fresh),
+                      "assets_already_served": len(already)},
+            "slots": slots}
+
+
+def main(argv=None):
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("slug")
+    ap.add_argument("--assets-dir", default=str(ASSETS_DIR))
+    ap.add_argument("--per-pool", type=int, default=3)
+    ap.add_argument("--write", action="store_true",
+                    help="also write data/boards/candidates/<slug file>.json")
+    a = ap.parse_args(argv)
+    rec = ROOT / "data" / "boards" / (slug_file(a.slug) + ".json")
+    if not rec.exists():
+        print(f"image-candidates: no board record at {rec.relative_to(ROOT)}", file=sys.stderr)
+        return 2
+    board = json.loads(rec.read_text(encoding="utf-8"))
+    report = candidates(board, ROOT, pathlib.Path(a.assets_dir), a.per_pool)
+    text = json.dumps(report, indent=1, ensure_ascii=False) + "\n"
+    print(text, end="")
+    if a.write:
+        out = ROOT / "data" / "boards" / "candidates" / (slug_file(a.slug) + ".json")
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+        print(f"image-candidates: wrote {out.relative_to(ROOT)}", file=sys.stderr)
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_image_candidates.py -q`
+Expected: `10 passed`.
+
+Smoke-test it on a real record (read-only, prints JSON):
+Run: `python3 scripts/image_candidates.py blue-staffy-health-uk --per-pool 2 | python3 -c "import json,sys; r=json.load(sys.stdin); print(r['pools']); print([(s['slot'], (s['suggested'] or {}).get('pick')) for s in r['slots']][:3])"`
+Expected (with `dist/` built): `{'own': 8, 'served': 90, 'assets': 2, 'assets_already_served': 36}`, then the first three slots, each suggesting its own migrated file, e.g. `('health-litter', 'file:/images/blue-staffy-puppies-uk-litter1.webp')`. The served count follows the manifest and can move if another task adds images. Every health slot suggests its own page's image first, which is the point of the own pool.
+
+- [ ] **Step 5: Registries and commit**
+
+Run: `python3 scripts/build_system_registry.py` then `npm run -s registry`
+Expected: `examined docs/reference/system-registry.md; 0 problems`
+
+```bash
+git add scripts/image_candidates.py tests/py/test_image_candidates.py docs/reference/system-registry.md
+git commit -m "images: image_candidates.py ranks the page's own, served and folder images per slot
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 10: The per-heading image rule, the `img:` picks and the build gate
+
+**Gap:** the same, with user ruling G1 ("every BODY H2 section and every BODY H3 … carries an image slot … FAQ-block H3s are excluded. Hero carries an image too") and G2 ("the generated image is approved on the board before the build uses it").
+**Files:**
+- Create: `scripts/image_rules.py`
+- Modify: `scripts/family_rules.py` (append one block at the end)
+- Modify: `schemas/board.schema.json` (five optional slot fields, an optional `images` on `$defs.node`, the `picks` key pattern), by a script so the edit holds whatever else has moved in the file
+- Modify: `scripts/board_approve.py` (one import, two small hunks in `apply_approval`)
+- Modify: `rules/images.md` (append one rule block), `data/quality/rule-index.json` (append one row)
+- Test: `tests/py/test_image_rules.py`
+
+**The design, decided here.**
+
+*Which headings are body.* The location template's fixed frame (`docs/reference/location-page-template.md`, "The fixed frame") and `scripts/query_coverage_check.py` (`FRAME_IDS`, `FRAME_CLASSES`) are translated into record shapes. The hero is checked on its own and must carry a `kind: photo` slot. These are frame and never body: shapes `stats` (counter), `trust`, `nav`/`dial`/`sheet`/`strip` (contents), `takeaways`, `reviews`, `faq`, `form`, `divider`, and section ids `top`, `key-takeaways`, `newsletter`. An **FAQ block** is a section of shape `faq`, or any section carrying `questions` (the older spelling `pageboard.faq_questions` reads: a `standard` section with id `faq`). Every H3 inside an FAQ block is a question, so FAQ-block H3s are excluded by excluding the block. `video` and `puppies` sections are also exempt, because their media is the video or the puppy cards (see open question 1). **Body H3s** are the `level: 3` nodes of a body section's `tree`, at any depth.
+
+*Where an H3's slot lives.* `$defs.node` gains an optional `images` array, the same item shape as a section's (by `$ref`). `scripts/image_candidates.py` (Task 9) already walks it.
+
+*The slot fields* (all optional in the schema, so the 12 built records keep their hashes; the test proves every one still matches its approval). `source` ∈ {`existing`, `assets-folder`, `generate`, `infographic`}. `existing` needs `file` (`^/images/…`). `assets-folder` needs `source_file`. `generate` needs `prompt` and `og_style` ∈ {A,B,C,D,E,H}. `infographic` needs `infographic_style` ∈ {IG-1…IG-5} and `kind: infographic`.
+
+*The pick.* `approval.picks["img:<slot>"]`. The `picks` key pattern widens from `^[a-z][a-z0-9-]*$` to `^(img:)?[a-z][a-z0-9-]*$`. `approval` sits outside `record_hash`, so an image choice never un-approves an outline. Values: `file:/images/<path>`, `assets:<filename>`, `og:<style>`, `ig:IG-<n>`. A generated image is approved only as `og:<style>:<sha12>` / `ig:IG-<n>:<sha12>`, the first 12 hex digits of the sha256 of the exact bytes the board showed. If the file is regenerated, the pick no longer matches.
+
+*Where a generated file is.* A draft is `data/boards/generated/<slug file>/<slot>.<webp|png|jpg>`. It is not under `public/`, because everything under `public/` ships in `dist/` and a rejected draft would ship too. After approval, the approved file is copied into `public/images/` and named in the slot's `assets[]` row `file`, which is lifecycle and outside the hash. The build gate reads that served copy.
+
+*Why the build gate needs no `stage`.* `family_rules.register` checks take `(board, ont)`, and `gate_findings` does not pass `stage` to them. That is fine here. The build-readiness checks key on `meta.status` (`approved`/`built`/`released`), the state in which `board_gate.py` lets a build start. Both gate stages (`build` and `release`) must fail identically on an unapproved generated image. So the register interface stays exactly as Task 0 shipped it, and `scripts/pageboard.py` is not touched.
+
+Check ids (all FAIL): `image-hero-photo`, `image-slot-missing`, `image-slot-fields`, `image-slot-duplicate`, `image-pick-missing` (part a, from `boarded`; the pick check from `approved`). `image-pick-invalid`, `image-existing-missing`, `image-asset-not-ingested`, `image-generated-unapproved`, `image-generated-not-ingested` (part c, from `approved`).
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_image_rules.py`:
+```python
+"""An image under every body heading of a project 5 page (system-gaps build, Task 10):
+the slot rule, the build gate and the approval of `img:<slot>` picks."""
+import copy
+import hashlib
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import family_rules as FR   # noqa: E402
+import image_rules as IR    # noqa: E402
+import pageboard as PB      # noqa: E402
+
+SLUG = "uk-locations/blue-staffy-puppies-leeds"
+
+
+def _demo(status="boarded"):
+    b = copy.deepcopy(json.loads((ROOT / "data" / "boards" / "_demo.json").read_text()))
+    b["meta"].update({"slug": SLUG, "page_type": "location", "status": status})
+    return b
+
+
+def _full(status="boarded"):
+    """The demo record with every slot sourced and both body H3s carrying a slot."""
+    b = _demo(status)
+    files = {a["slot"]: a["file"] for a in b["assets"]}
+    for s in b["sections"]:
+        for img in s["images"]:
+            img.update({"source": "existing", "file": files[img["slot"]].replace("-760", "")})
+    raise_ = next(s for s in b["sections"] if s["id"] == "how-we-raise")
+    raise_["tree"][0]["images"] = [{"slot": "weeks-photo", "kind": "photo", "required": True,
+                                    "prompt": "a litter at four weeks on a clean vet bed",
+                                    "source": "generate", "og_style": "C"}]
+    raise_["tree"][1]["images"] = [{"slot": "checks-graphic", "kind": "infographic", "required": True,
+                                    "prompt": "the checks every puppy has before it leaves",
+                                    "source": "infographic", "infographic_style": "IG-2"}]
+    return b
+
+
+def _ids(found):
+    return sorted({c for c, sev, msg in found})
+
+
+def _sha(data):
+    return hashlib.sha256(data).hexdigest()[:12]
+
+
+# ── which headings are body ───────────────────────────────────────────────────────────
+def test_body_sections_leave_out_the_frame_the_faq_and_own_media_sections():
+    b = _demo()
+    assert [s["id"] for s in IR.body_sections(b)] == ["how-we-raise"]
+    extra = copy.deepcopy(next(s for s in b["sections"] if s["id"] == "how-we-raise"))
+    for sid, shape, more in (("faq", "standard", {"questions": ["q1"]}), ("newsletter", "standard", {}),
+                             ("film", "video", {}), ("litter", "puppies", {}), ("deliveries", "table", {})):
+        e = copy.deepcopy(extra)
+        e.update({"id": sid, "shape": shape, **more})
+        b["sections"].append(e)
+    assert [s["id"] for s in IR.body_sections(b)] == ["how-we-raise", "deliveries"]
+
+
+def test_body_h3s_are_level_three_nodes_at_any_depth():
+    s = {"tree": [{"level": 3, "heading": "A", "children": [
+        {"level": 4, "heading": "A1", "children": [{"level": 3, "heading": "B", "children": []}]}]}]}
+    assert [n["heading"] for n in IR.body_h3s(s)] == ["A", "B"]
+
+
+# ── part (a): the slot rule ───────────────────────────────────────────────────────────
+def test_a_boarded_location_record_owes_a_slot_under_every_body_heading():
+    found = FR.findings(_demo(), {})
+    msgs = [m for c, sev, m in found if c == "image-slot-missing"]
+    assert msgs == ["section how-we-raise: H3 'The first eight weeks' is a body H3 and plans no image slot",
+                    "section how-we-raise: H3 'Health checks' is a body H3 and plans no image slot"]
+    # The FAQ block's three H3s are questions and owe nothing.
+    assert not any("deposit" in m or "puppy-package" in m for c, sev, m in found)
+    # Every existing slot names no source yet.
+    assert sorted(m for c, sev, m in found if c == "image-slot-fields") == [
+        f"slot {s}: names no source (existing, assets-folder, generate or infographic)"
+        for s in ("opening-photo", "opening-tile-2", "opening-tile-3", "raise-photo")]
+    assert all(sev == "FAIL" for c, sev, m in found)
+
+
+def test_a_fully_sourced_record_passes_the_slot_rule():
+    assert IR.slot_findings(_full()) == []
+
+
+def test_a_body_section_with_no_slot_fails_and_a_draft_owes_nothing():
+    b = _full()
+    next(s for s in b["sections"] if s["id"] == "how-we-raise")["images"] = []
+    assert [c for c, sev, m in IR.slot_findings(b)] == ["image-slot-missing"]
+    b["meta"]["status"] = "draft"
+    assert IR.slot_findings(b) == []
+
+
+def test_the_rule_never_reaches_a_page_built_before_this_build():
+    b = _demo()
+    b["meta"].update({"slug": "blue-staffy-blog-guides", "page_type": "blog"})
+    assert FR.findings(b, {}) == []
+    b["meta"].update({"slug": "blue-staffy-health-uk", "page_type": "interior"})
+    assert FR.findings(b, {}) == []
+
+
+def test_the_hero_needs_a_photo_slot():
+    b = _full()
+    hero = next(s for s in b["sections"] if s["shape"] == "hero")
+    for img in hero["images"]:
+        img["kind"] = "infographic"
+        img.update({"source": "infographic", "infographic_style": "IG-1"})
+    assert _ids(IR.slot_findings(b)) == ["image-hero-photo"]
+    b["sections"].remove(hero)
+    assert "the record has no hero section" in IR.slot_findings(b)[0][2]
+
+
+@pytest.mark.parametrize("fields, why", [
+    ({"source": "existing"}, "source existing names no file"),
+    ({"source": "assets-folder"}, "source assets-folder names no source_file"),
+    ({"source": "generate", "og_style": "A", "prompt": " "}, "source generate has no prompt"),
+    ({"source": "generate"}, "source generate names no og_style"),
+    ({"source": "infographic"}, "source infographic names no infographic_style"),
+    ({"source": "infographic", "infographic_style": "IG-3"}, "source infographic on a slot whose kind is not infographic"),
+    ({"slot": "Bad_Slot", "source": "existing", "file": "/images/x.webp"}, "slot id is not lowercase letters, digits and hyphens"),
+])
+def test_each_source_names_what_it_needs(fields, why):
+    img = {"slot": "s", "kind": "photo", "required": True, "prompt": "p", **fields}
+    assert why in IR.slot_problems(img)
+
+
+def test_a_slot_id_is_planned_once():
+    b = _full()
+    raise_ = next(s for s in b["sections"] if s["id"] == "how-we-raise")
+    raise_["tree"][1]["images"][0]["slot"] = "weeks-photo"
+    assert "image-slot-duplicate" in _ids(IR.slot_findings(b))
+
+
+def test_an_approved_record_owes_a_pick_for_every_generated_slot():
+    b = _full("approved")
+    b["approval"] = {"picks": {"img:weeks-photo": "og:C"}}
+    assert [m for c, sev, m in IR.slot_findings(b) if c == "image-pick-missing"] == [
+        'slot checks-graphic (source infographic): the approval names no image or style for it '
+        '(picks["img:checks-graphic"])']
+
+
+def test_the_schema_takes_the_new_fields_and_the_img_pick_key():
+    b = _full()
+    b["approval"] = None
+    PB.validate_board(b)
+    b["sections"][2]["tree"][0]["images"][0]["og_style"] = "F"
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(b)
+    b = _full()
+    b["approval"] = {"approved_at": "t", "h1": 0, "picks": {"img:weeks-photo": "og:C", "opening": "H-UT1"},
+                     "notes": {}, "canvas_version": None, "record_hash": "0" * 64}
+    PB.validate_board(b)
+    b["approval"]["picks"] = {"img:Weeks": "og:C"}
+    with pytest.raises(PB.BoardError):
+        PB.validate_board(b)
+
+
+def test_every_record_built_before_this_build_keeps_its_approval():
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        b = json.loads(p.read_text(encoding="utf-8"))
+        PB.validate_board(b)
+        if b.get("approval"):
+            assert PB.approval_matches(b), p.name
+
+
+# ── part (c): the build gate ──────────────────────────────────────────────────────────
+@pytest.fixture
+def repo(tmp_path, monkeypatch):
+    """A tmp repo holding the demo's served files, so the build gate reads disk it owns."""
+    (tmp_path / "public" / "images").mkdir(parents=True)
+    for a in _full()["assets"]:
+        (tmp_path / "public" / a["file"].replace("-760", "").lstrip("/")).write_bytes(b"x")
+    monkeypatch.setattr(IR, "ROOT", tmp_path)
+    return tmp_path
+
+
+def _approved(picks):
+    b = _full("approved")
+    b["approval"] = {"picks": picks}
+    return b
+
+
+def test_a_style_with_no_approved_image_fails_the_build(repo):
+    b = _approved({"img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"})
+    found = IR.build_findings(b)
+    assert [(c, m.split(":")[0]) for c, sev, m in found] == [
+        ("image-generated-unapproved", "slot weeks-photo"), ("image-generated-unapproved", "slot checks-graphic")]
+
+
+def test_an_approved_generated_image_passes_only_as_the_bytes_approved(repo):
+    draft = repo / "data" / "boards" / "generated" / "uk-locations--blue-staffy-puppies-leeds"
+    draft.mkdir(parents=True)
+    (draft / "weeks-photo.webp").write_bytes(b"generated-v1")
+    b = _approved({"img:weeks-photo": "og:C:" + _sha(b"generated-v1"),
+                   "img:checks-graphic": "file:/images/1blue-staffy-family-breeder.webp"})
+    # Approved, but only the draft exists: not yet ingested and named in assets[].file.
+    assert _ids(IR.build_findings(b)) == ["image-generated-not-ingested"]
+    (repo / "public" / "images" / "four-week-litter.webp").write_bytes(b"generated-v1")
+    b["assets"].append({"slot": "weeks-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                        "status": "baked", "file": "/images/four-week-litter.webp", "alt": "A litter at four weeks"})
+    assert IR.build_findings(b) == []
+    (repo / "public" / "images" / "four-week-litter.webp").write_bytes(b"generated-v2")
+    assert _ids(IR.build_findings(b)) == ["image-generated-unapproved"]
+
+
+def test_a_folder_file_must_be_ingested_before_the_build(repo):
+    b = _approved({"img:weeks-photo": "assets:Leeds Show 2.JPG", "img:checks-graphic": "ig:IG-2:" + "a" * 12})
+    b["assets"].append({"slot": "checks-graphic", "kind": "infographic", "w": 1408, "h": 768, "required": True,
+                        "status": "baked", "file": "/images/checks.webp", "alt": "Checks"})
+    (repo / "public" / "images" / "checks.webp").write_bytes(b"ig")
+    b["approval"]["picks"]["img:checks-graphic"] = "ig:IG-2:" + _sha(b"ig")
+    assert _ids(IR.build_findings(b)) == ["image-asset-not-ingested"]
+    (repo / "public" / "images" / "leeds-show-2.webp").write_bytes(b"x")
+    assert IR.build_findings(b) == []
+
+
+def test_a_missing_existing_file_and_a_malformed_pick_fail(repo):
+    b = _approved({"img:weeks-photo": "file:/images/nowhere.webp", "img:checks-graphic": "ig:IG-9"})
+    assert _ids(IR.build_findings(b)) == ["image-existing-missing", "image-pick-invalid"]
+    b["meta"]["status"] = "boarded"
+    assert IR.build_findings(b) == []
+
+
+def test_the_build_gate_rides_in_gate_findings(repo):
+    b = _approved({"img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"})
+    checks = [x["check"] for x in PB.gate_findings(b, {"entities": []}, {"pages": {}}, live={}, stage="build")]
+    assert "image-generated-unapproved" in checks
+
+
+# ── the approval of img: picks ────────────────────────────────────────────────────────
+def test_validate_image_picks_names_every_bad_pick(repo, tmp_path):
+    folder = tmp_path / "Assets"
+    folder.mkdir()
+    (folder / "Byrd1.jpg").write_bytes(b"x")
+    b = _full()
+    ok = {"img:weeks-photo": "assets:Byrd1.jpg", "img:checks-graphic": "ig:IG-2",
+          "img:raise-photo": "file:/images/1blue-staffy-family-breeder.webp", "opening": "H-UT1"}
+    assert IR.validate_image_picks(b, ok, assets_dir=folder) == []
+    assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + "0" * 12}) == [
+        "slot weeks-photo: approves a generated image, and none exists for this slot"]
+    bad = {"img:ghost": "og:A", "img:weeks-photo": "ig:IG-1", "img:checks-graphic": "og:B",
+           "img:raise-photo": "file:/images/nowhere.webp", "img:opening-photo": "og:C:" + "0" * 12,
+           "img:opening-tile-2": "assets:Missing.jpg", "img:opening-tile-3": "http://x"}
+    errs = IR.validate_image_picks(b, bad, assets_dir=folder)
+    assert errs == [
+        "slot checks-graphic: an OG style is a photo style and this slot is an infographic",
+        "approval picks image slot 'ghost', which the record does not plan",
+        # opening-photo's assets[] row names a served file, and those bytes are not the approved ones.
+        "slot opening-photo: the generated image changed since the board showed it",
+        "slot opening-tile-2: 'Missing.jpg' is neither in %s nor ingested" % folder,
+        "slot opening-tile-3: pick 'http://x' is not file:, assets:, og: or ig:",
+        "slot raise-photo: /images/nowhere.webp is not in public/",
+        "slot weeks-photo: an infographic style on a photo slot"]
+
+
+def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo):
+    import board_approve as BA
+    b = _full()
+    picks = {"opening": "H-UT1", "at-a-glance": "C-UT1", "how-we-raise": "S1", "owners": "S1",
+             "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"}
+    inbox = {"approved_at": "2026-09-24T12:00:00Z", "h1": 0, "picks": picks, "notes": {},
+             "canvas_version": None, "record_hash": PB.record_hash(b)}
+    out = BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})
+    assert out["board"]["approval"]["picks"]["img:weeks-photo"] == "og:C"
+    assert PB.approval_matches(out["board"])
+    inbox["picks"] = dict(picks, **{"img:weeks-photo": "og:Z"})
+    with pytest.raises(PB.BoardError, match="image picks refused"):
+        BA.apply_approval(b, inbox, {"entities": []}, {"pools": {}, "pages": {}})
+
+
+def test_slots_needing_pick_are_the_generated_ones():
+    assert IR.slots_needing_pick(_full()) == ["img:weeks-photo", "img:checks-graphic"]
+    assert IR.slots_needing_pick(_demo()) == []
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_image_rules.py -q`
+Expected: FAIL. Collection error `ModuleNotFoundError: No module named 'image_rules'`.
+
+- [ ] **Step 3: Implement**
+
+3a. Create `scripts/image_rules.py`:
+```python
+"""image_rules — an image under every body heading of a project 5 page (system-gaps build,
+Task 10). The checks are registered in scripts/family_rules.py, so they bind location,
+comparison and blog pages only and never the twelve pages built before this build.
+
+THE RULE (user ruling G1, 2026-09-24). Every BODY H2 section and every BODY H3 carries at
+least one image slot, an OG photo or an infographic, and the hero carries a photo. A slot
+names where its image comes from (`source`):
+
+  existing       a file the site already serves            needs `file` (/images/...)
+  assets-folder  a file in the breeder's Assets/Images      needs `source_file`
+  generate       a new OG photo per IMAGE-DESIGNS.md        needs `prompt` and `og_style`
+  infographic    a new infographic per IMAGE-DESIGNS.md     needs `infographic_style`, kind infographic
+
+WHAT IS NOT BODY. The fixed frame of docs/reference/location-page-template.md, spelled as
+the record spells it: the hero (checked on its own), and every section whose shape is a
+frame part — stats (counter), trust, nav/dial/sheet/strip (contents), takeaways, reviews,
+faq, form, divider — or whose id is one scripts/query_coverage_check.py treats as frame
+(`top`, `key-takeaways`, `newsletter`). An FAQ BLOCK is a section of shape `faq`, or any
+section carrying `questions` (the older spelling: a standard section with id `faq`), and
+every H3 inside one is a question, so FAQ-block H3s are never asked for an image. `video`
+and `puppies` sections are exempt too: their media is the video or the puppy cards.
+Body H3s are the level-3 nodes of a body section's tree, at any depth.
+
+THE PICK. The board writes one radio group per slot, `pick-img:<slot>`, and the approve
+button stores the answer as `approval.picks["img:<slot>"]` — outside `record_hash`, like
+every pick, so choosing an image never un-approves the outline. The value is one of:
+
+  file:/images/<path>        use a served file
+  assets:<filename>          use a folder file (ingest it first)
+  og:<A|B|C|D|E|H>           generate an OG photo in this style (not yet approved)
+  og:<style>:<sha12>         THIS generated photo is approved: sha256 of its bytes, 12 hex
+  ig:IG-<1-5>[:<sha12>]      the same two for an infographic
+
+A generated image is approved only by the `:<sha12>` form, which names the exact bytes the
+breeder saw: regenerate the file and the pick no longer matches, and the build gate fails.
+
+WHERE A GENERATED FILE IS. A draft is written to
+`data/boards/generated/<slug file>/<slot>.<webp|png|jpg>` (not public/, which ships whole),
+and the approved file is copied into public/images and named in the slot's `assets[]` row
+`file` (lifecycle, outside the hash). The build gate reads the served copy.
+"""
+import hashlib
+import json
+import pathlib
+import re
+import sys
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import image_candidates as IC  # noqa: E402
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+SOURCES = ("existing", "assets-folder", "generate", "infographic")
+OG_STYLES = ("A", "B", "C", "D", "E", "H")
+IG_STYLES = ("IG-1", "IG-2", "IG-3", "IG-4", "IG-5")
+PICK_PREFIX = "img:"
+FRAME_SHAPES = frozenset({"stats", "trust", "nav", "dial", "sheet", "strip", "takeaways",
+                          "reviews", "faq", "form", "divider"})
+OWN_MEDIA_SHAPES = frozenset({"video", "puppies"})
+FRAME_IDS = frozenset({"top", "key-takeaways", "newsletter"})
+SCOPE_STATUSES = ("boarded", "approved", "built", "released")
+APPROVED_STATUSES = ("approved", "built", "released")
+SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
+PICK = re.compile(r"^(?:file:(?P<file>/images/[A-Za-z0-9._/-]+)"
+                  r"|assets:(?P<asset>[^/\\]+)"
+                  r"|og:(?P<og>[ABCDEH])(?::(?P<ogsha>[0-9a-f]{12}))?"
+                  r"|ig:(?P<ig>IG-[1-5])(?::(?P<igsha>[0-9a-f]{12}))?)$")
+DRAFT_EXTS = (".webp", ".png", ".jpg")
+
+
+# ── which headings are body ───────────────────────────────────────────────────────────
+def is_faq_block(section):
+    return section["shape"] == "faq" or bool(section.get("questions"))
+
+
+def body_sections(board):
+    return [s for s in board["sections"]
+            if s["shape"] != "hero" and s["shape"] not in FRAME_SHAPES
+            and s["shape"] not in OWN_MEDIA_SHAPES and s["id"] not in FRAME_IDS
+            and not is_faq_block(s)]
+
+
+def body_h3s(section):
+    """Every level-3 node of a body section's tree, at any depth, in outline order."""
+    out = []
+
+    def walk(nodes):
+        for n in nodes:
+            if n["level"] == 3:
+                out.append(n)
+            walk(n.get("children") or [])
+    walk(section.get("tree") or [])
+    return out
+
+
+# ── a slot's own fields ───────────────────────────────────────────────────────────────
+def slot_problems(image):
+    """Why this slot's fields do not say where its image comes from. Empty means they do."""
+    p = []
+    if not SLOT_ID.match(image["slot"]):
+        p.append("slot id is not lowercase letters, digits and hyphens")
+    src = image.get("source")
+    if src is None:
+        p.append("names no source (existing, assets-folder, generate or infographic)")
+    elif src == "existing" and not image.get("file"):
+        p.append("source existing names no file")
+    elif src == "assets-folder" and not image.get("source_file"):
+        p.append("source assets-folder names no source_file")
+    elif src == "generate":
+        if not (image.get("prompt") or "").strip():
+            p.append("source generate has no prompt")
+        if not image.get("og_style"):
+            p.append("source generate names no og_style")
+    elif src == "infographic":
+        if not image.get("infographic_style"):
+            p.append("source infographic names no infographic_style")
+        if image["kind"] != "infographic":
+            p.append("source infographic on a slot whose kind is not infographic")
+    return p
+
+
+def picks(board):
+    return (board.get("approval") or {}).get("picks") or {}
+
+
+def slot_findings(board):
+    """Part (a): the slots a boarded record owes, and what an approved one owes on top."""
+    status = board["meta"]["status"]
+    if status not in SCOPE_STATUSES:
+        return []
+    out = []
+    heroes = [s for s in board["sections"] if s["shape"] == "hero"]
+    if not heroes:
+        out.append(("image-hero-photo", "FAIL", "the record has no hero section, and the hero carries a photo"))
+    for h in heroes:
+        if not any(i["kind"] == "photo" for i in h.get("images") or []):
+            out.append(("image-hero-photo", "FAIL", f"hero {h['id']} plans no photo slot"))
+    for s in body_sections(board):
+        if not s.get("images"):
+            out.append(("image-slot-missing", "FAIL",
+                        f"section {s['id']} ({s['heading']!r}) is a body H2 and plans no image slot"))
+        for n in body_h3s(s):
+            if not n.get("images"):
+                out.append(("image-slot-missing", "FAIL",
+                            f"section {s['id']}: H3 {n['heading']!r} is a body H3 and plans no image slot"))
+    seen = {}
+    for s, n, img in IC.iter_slots(board):
+        seen[img["slot"]] = seen.get(img["slot"], 0) + 1
+        for why in slot_problems(img):
+            out.append(("image-slot-fields", "FAIL", f"slot {img['slot']}: {why}"))
+    for slot, count in sorted(seen.items()):
+        if count > 1:
+            out.append(("image-slot-duplicate", "FAIL",
+                        f"slot {slot} is planned {count} times — a pick is keyed by slot, so each is unique"))
+    if status in APPROVED_STATUSES:
+        chosen = picks(board)
+        for s, n, img in IC.iter_slots(board):
+            if img.get("source") in ("generate", "infographic") and PICK_PREFIX + img["slot"] not in chosen:
+                out.append(("image-pick-missing", "FAIL",
+                            f"slot {img['slot']} (source {img['source']}): the approval names no "
+                            f"image or style for it (picks[\"{PICK_PREFIX}{img['slot']}\"])"))
+    return out
+
+
+# ── what the build will use ───────────────────────────────────────────────────────────
+def parse_pick(value):
+    """{kind: file|assets|og|ig, value, style, sha} for a pick string, or None."""
+    m = PICK.match(value or "")
+    if not m:
+        return None
+    if m["file"]:
+        return {"kind": "file", "value": m["file"], "style": None, "sha": None}
+    if m["asset"]:
+        return {"kind": "assets", "value": m["asset"], "style": None, "sha": None}
+    if m["og"]:
+        return {"kind": "og", "value": None, "style": m["og"], "sha": m["ogsha"]}
+    return {"kind": "ig", "value": None, "style": m["ig"], "sha": m["igsha"]}
+
+
+def choice(image, pick):
+    """What the build uses for this slot: the breeder's pick, else the record's own source."""
+    if pick is not None:
+        return parse_pick(pick)
+    src = image.get("source")
+    if src == "existing" and image.get("file"):
+        return {"kind": "file", "value": image["file"], "style": None, "sha": None}
+    if src == "assets-folder" and image.get("source_file"):
+        return {"kind": "assets", "value": image["source_file"], "style": None, "sha": None}
+    if src == "generate":
+        return {"kind": "og", "value": None, "style": image.get("og_style"), "sha": None}
+    if src == "infographic":
+        return {"kind": "ig", "value": None, "style": image.get("infographic_style"), "sha": None}
+    return None
+
+
+def file_sha(path):
+    return hashlib.sha256(pathlib.Path(path).read_bytes()).hexdigest()[:12]
+
+
+def public_path(file, root=None):
+    return (root or ROOT) / "public" / file.lstrip("/")
+
+
+def asset_row(board, slot):
+    return next((a for a in board.get("assets", []) if a.get("slot") == slot), None)
+
+
+def served_file(board, slot, root=None):
+    """The public/ copy the slot's `assets[]` row names, or None when it names none on disk."""
+    row = asset_row(board, slot)
+    if row and row.get("file"):
+        p = public_path(row["file"], root)
+        if p.exists():
+            return p
+    return None
+
+
+def draft_file(board, slot, root=None):
+    d = (root or ROOT) / "data" / "boards" / "generated" / IC.slug_file(board["meta"]["slug"])
+    return next((d / (slot + e) for e in DRAFT_EXTS if (d / (slot + e)).exists()), None)
+
+
+def generated_file(board, slot, root=None):
+    """The generated image the board shows for a slot: the served copy, else the draft."""
+    return served_file(board, slot, root) or draft_file(board, slot, root)
+
+
+def ingested(board, slot, filename, root=None):
+    """True when a folder file is in public/images: at the path the slot's `assets[]` row
+    names, or at the ingest step's default name for it."""
+    return served_file(board, slot, root) is not None or \
+        public_path(IC.ingest_target(filename), root).exists()
+
+
+def build_findings(board):
+    """Part (c): on an approved record, every slot resolves to a file the build may use."""
+    if board["meta"]["status"] not in APPROVED_STATUSES:
+        return []
+    out = []
+    chosen = picks(board)
+    for s, n, img in IC.iter_slots(board):
+        slot = img["slot"]
+        raw = chosen.get(PICK_PREFIX + slot)
+        if raw is not None and parse_pick(raw) is None:
+            out.append(("image-pick-invalid", "FAIL", f"slot {slot}: pick {raw!r} is not a known image pick"))
+            continue
+        c = choice(img, raw)
+        if c is None:
+            continue                                   # slot_findings() already names it
+        if c["kind"] == "file" and not public_path(c["value"]).exists():
+            out.append(("image-existing-missing", "FAIL",
+                        f"slot {slot}: {c['value']} is not in public/ — a served file is reused, never invented"))
+        elif c["kind"] == "assets" and not ingested(board, slot, c["value"]):
+            out.append(("image-asset-not-ingested", "FAIL",
+                        f"slot {slot}: folder file {c['value']!r} was never ingested into public/images "
+                        f"(expected {IC.ingest_target(c['value'])} or the slot's assets[].file)"))
+        elif c["kind"] in ("og", "ig"):
+            if c["sha"] is None:
+                out.append(("image-generated-unapproved", "FAIL",
+                            f"slot {slot}: style {c['style']} is chosen, but no generated image has been "
+                            "approved on the board — generate it, re-board, and approve the image"))
+                continue
+            f = served_file(board, slot)
+            if f is None:
+                out.append(("image-generated-not-ingested", "FAIL",
+                            f"slot {slot}: the approved image is not in public/images and named in "
+                            "the slot's assets[].file yet"))
+            elif file_sha(f) != c["sha"]:
+                out.append(("image-generated-unapproved", "FAIL",
+                            f"slot {slot}: {f.relative_to(ROOT).as_posix()} is not the image the breeder approved "
+                            f"(sha {file_sha(f)} vs approved {c['sha']})"))
+    return out
+
+
+# ── the approval ───────────────────────────────────────────────────────────────────────
+def validate_image_picks(board, chosen, root=None, assets_dir=None):
+    """Every reason the `img:` picks of an approval cannot be accepted, as printable lines.
+    Read by scripts/board_approve.py, which refuses the whole approval on any."""
+    root = root or ROOT
+    assets_dir = pathlib.Path(assets_dir) if assets_dir else IC.ASSETS_DIR
+    slots = {img["slot"]: img for s, n, img in IC.iter_slots(board)}
+    errs = []
+    for key, value in sorted(chosen.items()):
+        if not key.startswith(PICK_PREFIX):
+            continue
+        slot = key[len(PICK_PREFIX):]
+        img = slots.get(slot)
+        if img is None:
+            errs.append(f"approval picks image slot {slot!r}, which the record does not plan")
+            continue
+        p = parse_pick(value)
+        if p is None:
+            errs.append(f"slot {slot}: pick {value!r} is not file:, assets:, og: or ig:")
+        elif p["kind"] == "file" and not public_path(p["value"], root).exists():
+            errs.append(f"slot {slot}: {p['value']} is not in public/")
+        elif p["kind"] == "assets" and not ((assets_dir / p["value"]).exists()
+                                            or ingested(board, slot, p["value"], root)):
+            errs.append(f"slot {slot}: {p['value']!r} is neither in {assets_dir} nor ingested")
+        elif p["kind"] == "og" and img["kind"] != "photo":
+            errs.append(f"slot {slot}: an OG style is a photo style and this slot is an {img['kind']}")
+        elif p["kind"] == "ig" and img["kind"] != "infographic":
+            errs.append(f"slot {slot}: an infographic style on a {img['kind']} slot")
+        elif p["kind"] in ("og", "ig") and p["sha"] is not None:
+            f = generated_file(board, slot, root)
+            if f is None:
+                errs.append(f"slot {slot}: approves a generated image, and none exists for this slot")
+            elif file_sha(f) != p["sha"]:
+                errs.append(f"slot {slot}: the generated image changed since the board showed it")
+    return errs
+
+
+def slots_needing_pick(board):
+    """The `img:<slot>` radio groups the approve button refuses to leave empty."""
+    return [PICK_PREFIX + img["slot"] for s, n, img in IC.iter_slots(board)
+            if img.get("source") in ("generate", "infographic")]
+```
+
+3b. Append to the END of `scripts/family_rules.py` (after `findings()`, and after any block an earlier task appended):
+```bash
+cat >> scripts/family_rules.py <<'EOF'
+
+# ── Task 10: an image under every body heading (user ruling G1) ─────────────────────────
+# The logic is in scripts/image_rules.py; imported here, at the bottom, so that module can
+# never import this one half-built.
+import image_rules as IR  # noqa: E402
+
+
+@register
+def image_every_body_heading(board, ont):
+    """Every body H2 and body H3 plans an image slot, the hero a photo, and each slot says
+    where its image comes from; an approved record names an image for every generated slot."""
+    return IR.slot_findings(board)
+
+
+@register
+def image_build_ready(board, ont):
+    """On an approved record every slot resolves to a file the build may use: a served file,
+    an ingested folder file, or the generated image whose bytes the breeder approved."""
+    return IR.build_findings(board)
+EOF
+```
+
+3c. Widen the schema. Run from the worktree root (a script rather than an old→new edit, so it holds whatever other tasks have added to the file; it asserts the three things it changes are as expected):
+```bash
+python3 - <<'EOF'
+import json
+p = 'schemas/board.schema.json'
+s = json.loads(open(p, encoding='utf-8').read())
+props = s["properties"]["sections"]["items"]["properties"]["images"]["items"]["properties"]
+assert "source" not in props
+props["source"] = {"comment": "Where this slot's image comes from (system-gaps build, scripts/image_rules.py). Optional so the records built before it keep their hashes; a location, comparison or blog record from `boarded` on must name it.", "enum": ["existing", "assets-folder", "generate", "infographic"]}
+props["file"] = {"comment": "source `existing`: the served file reused at its own path (working rule 11).", "type": "string", "pattern": "^/images/[A-Za-z0-9._/-]+$"}
+props["source_file"] = {"comment": "source `assets-folder`: the filename in the breeder's Assets/Images folder; the build refuses it until it is ingested into public/images.", "type": "string", "minLength": 1}
+props["og_style"] = {"comment": "source `generate`: the OG photo style of IMAGE-DESIGNS.md the image is generated in.", "enum": ["A", "B", "C", "D", "E", "H"]}
+props["infographic_style"] = {"comment": "source `infographic`: the infographic style of IMAGE-DESIGNS.md.", "enum": ["IG-1", "IG-2", "IG-3", "IG-4", "IG-5"]}
+node = s["$defs"]["node"]["properties"]
+assert "images" not in node
+node["images"] = {"comment": "An H3's own image slots, same shape as a section's (system-gaps build: every body H3 of a location, comparison or blog page carries one). Absent on every record built before it.", "$ref": "#/properties/sections/items/properties/images"}
+pk = s["properties"]["approval"]["properties"]["picks"]["propertyNames"]
+assert pk["pattern"] == "^[a-z][a-z0-9-]*$"
+pk["pattern"] = "^(img:)?[a-z][a-z0-9-]*$"
+open(p, 'w', encoding='utf-8').write(json.dumps(s, indent=1, ensure_ascii=False) + "\n")
+EOF
+```
+
+3d. `scripts/board_approve.py`, three exact edits.
+
+Old:
+```python
+import pageboard as PB
+from pageboard import file_token       # one `#` → `_` spelling for the whole board system
+```
+New:
+```python
+import pageboard as PB
+from pageboard import file_token       # one `#` → `_` spelling for the whole board system
+import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
+```
+
+Old:
+```python
+    for sid, pick in inbox.get("picks", {}).items():
+        if sid not in by_id:
+            raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")
+```
+New:
+```python
+    for sid, pick in inbox.get("picks", {}).items():
+        if sid.startswith(IR.PICK_PREFIX):
+            continue                                  # an image pick, validated below
+        if sid not in by_id:
+            raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")
+```
+
+Old:
+```python
+    for sid, note in inbox.get("notes", {}).items():
+        # PAGE notes are not section notes.
+```
+New:
+```python
+    # Image picks name a slot, not a section, and live only in `approval.picks`. The one read
+    # this function makes outside its arguments is here: a picked file must exist on disk.
+    bad = IR.validate_image_picks(b, inbox.get("picks", {}))
+    if bad:
+        raise PB.BoardError("image picks refused: " + "; ".join(bad))
+    for sid, note in inbox.get("notes", {}).items():
+        # PAGE notes are not section notes.
+```
+(`approval = dict(inbox)` further down already copies every pick, `img:` keys included, into `approval.picks`. Nothing else in the approval contract changes.)
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_image_rules.py tests/py/test_family_rules.py -q`
+Expected: `29 passed` (26 + Task 0's 3; more if other tasks have added family checks and tests).
+Run: `python3 -m pytest tests/py/test_page_board.py tests/py/test_board_reapprove.py -q`
+Expected: all pass (the widened key pattern still refuses `"Bad Id!"` in `test_bad_approval_pick_key_fails`).
+
+- [ ] **Step 5: Write the rule down and index it**
+
+Append to `rules/images.md`:
+```bash
+cat >> rules/images.md <<'EOF'
+
+---
+id: image-every-body-heading
+enforced: test
+family: IMG
+---
+
+- **An image under every body heading of a project 5 page (ALWAYS — user ruling G1, 2026-09-24)** — On a location, comparison or blog page built from the system-gaps build on (never the twelve pages built before it), the hero plans a photo slot and every BODY H2 section and every BODY H3 plans at least one image slot, an OG photo or an infographic. The fixed frame (counter, trust strip, contents, takeaways, reviews, newsletter, form) and every FAQ block, H3 questions included, are not body. Each slot names its `source`: `existing` (a served `file`, reused at its own path per working rule 11), `assets-folder` (a `source_file` from the breeder's Assets/Images folder, ingested into `public/images/` before the build), `generate` (a `prompt` and an `og_style` from IMAGE-DESIGNS.md) or `infographic` (an `infographic_style`). The board offers each slot the page's own images first, then the site's, then the folder's (`scripts/image_candidates.py`), and the breeder's answer is `approval.picks["img:<slot>"]`. A generated image is used only when the board approved its exact bytes (`og:<style>:<sha12>`). Held up by `scripts/image_rules.py` through `scripts/family_rules.py`, tested in `tests/py/test_image_rules.py`.
+EOF
+```
+Append the ledger row (a script, so it lands after any row another task appended):
+```bash
+python3 - <<'EOF'
+import json
+p = 'data/quality/rule-index.json'
+d = json.loads(open(p).read())
+assert "image-every-body-heading" not in {r["id"] for r in d["rules"]}
+d["rules"].append({"id": "image-every-body-heading", "family": "IMG", "enforced": "test",
+                   "test": "tests/py/test_image_rules.py", "pack": "rules/images.md", "severity": "blocking"})
+open(p, 'w').write(json.dumps(d, indent=1) + "\n")
+EOF
+```
+Run: `python3 -m pytest tests/py/test_rules_index.py tests/py/test_quality_report.py -q`
+Expected: all pass. The row's `test` is a file reference, which `quality_report.broken_test_links` accepts when the file exists.
+
+- [ ] **Step 6: Registries and commit**
+
+Run: `python3 scripts/build_system_registry.py` then `npm run -s registry`
+Expected: `0 problems`
+
+```bash
+git add scripts/image_rules.py scripts/family_rules.py scripts/board_approve.py schemas/board.schema.json \
+        rules/images.md data/quality/rule-index.json tests/py/test_image_rules.py docs/reference/system-registry.md
+git commit -m "images: an image slot under every body H2 and H3 of a project 5 page, img: picks, build gate
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 10b: Board block "7. Images & styles"
+
+**Gap:** the same. The breeder picks each slot's image, or the style it is generated in, on the board, and approves a generated image there before the build uses it.
+**Files:**
+- Modify: `scripts/image_rules.py` (append the board block)
+- Modify: `scripts/build_page_board.py` (one import, the `render` signature, the block-7 line, the `SIGNATURE_SECTIONS` line, two lines in `main`)
+- Modify: `tests/py/test_page_board.py:961` (the block title the existing test looks for; the line as Task 3 left it)
+- Test: `tests/py/test_image_board_block.py`
+
+**How the picks reach the database without touching the approve script.** The board's approve JS already does `document.querySelectorAll('input[name^="pick-"]:checked').forEach(function(i){picks[i.name.slice(5)]=i.value;})`. A radio group named `pick-img:<slot>` therefore lands as `picks["img:<slot>"]`, which Task 10 validates in `board_approve.py`. The JS refuses to save while any id in `SIGNATURE_SECTIONS` has no checked radio. Appending `IR.slots_needing_pick(board)` (the `img:<slot>` of every `generate`/`infographic` slot) to that list makes the button refuse an approval that leaves a generated slot unanswered. Its message lists them, e.g. `1 section(s) still need a pick: img:weeks-photo`. Radios are pre-checked only with the record's current approved pick, never with a suggestion, so an answer is always the breeder's.
+
+**What the block shows per slot.** The slot, its kind and where it sits (section › H3); the record's source fields and prompt. The top candidates from Task 9 as thumbnails (data-URI WebP, 240px), each a radio labelled with pool, score, matched words, `used_on`, and for a folder file "needs ingest → /images/…". ⭐ marks the suggestion. Then the OG styles A/B/C/D/E/H (photo slots) or IG-1…IG-5 (infographic slots) as radios, ⭐ on the record's own style. When a generated draft exists (or a generate slot's served copy does), a preview with an "Approve this generated image" radio whose value carries the file's sha12. The page-level asset grid that was block 7 stays, above the pickers. The pickers render only for records `family_rules.applies()` to. The 12 built boards get the renamed title and nothing else.
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_image_board_block.py`:
+```python
+"""Board block 7, "Images & styles" (system-gaps build, Task 10b): per slot, candidate
+thumbnails and style radios named `pick-img:<slot>`, which the approve script already
+writes to `approval.picks["img:<slot>"]`."""
+import hashlib
+import json
+import pathlib
+import sys
+
+import pytest
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests" / "py"))
+
+import build_page_board as BPB   # noqa: E402
+import image_rules as IR         # noqa: E402
+import pageboard as PB           # noqa: E402
+from test_image_rules import _full   # noqa: E402
+
+ONT = {"entities": []}
+LEDGER = {"pools": {}, "pages": {}}
+
+
+def _png(path, colour=(40, 80, 120)):
+    from PIL import Image
+    path.parent.mkdir(parents=True, exist_ok=True)
+    Image.new("RGB", (64, 40), colour).save(path)
+
+
+@pytest.fixture
+def repo(tmp_path):
+    """A tmp repo whose served files are real images (thumbnails are cut from them) and a
+    breeder folder with one new photo."""
+    root = tmp_path / "repo"
+    b = _full()
+    stems = {}
+    for a in b["assets"]:
+        f = a["file"].replace("-760", "")
+        _png(root / "public" / f.lstrip("/"))
+        stems[pathlib.PurePosixPath(f).stem] = {"w": 64, "h": 40, "sib_w": None}
+    (root / "data").mkdir(parents=True, exist_ok=True)
+    (root / "data" / "image-manifest.json").write_text(json.dumps(stems))
+    folder = tmp_path / "Assets"
+    _png(folder / "Litter-At-Four-Weeks.jpg", (200, 180, 90))
+    return root, folder
+
+
+def _html(board, images):
+    return BPB.render(board, ONT, LEDGER, live={}, thumbs={}, slug=board["meta"]["slug"], images=images)
+
+
+def _block(html):
+    return html.split('data-title="7. Images &amp; styles">', 1)[1].split("</script>", 1)[0]
+
+
+def test_every_slot_gets_a_radio_group_with_thumbnails_and_styles(repo):
+    root, folder = repo
+    b = _full()
+    images = IR.board_images(b, root, folder)
+    block = _block(_html(b, images))
+    for slot in ("opening-photo", "opening-tile-2", "opening-tile-3", "raise-photo", "weeks-photo", "checks-graphic"):
+        assert f'id="img-{slot}"' in block and f'name="pick-img:{slot}"' in block
+    # The folder photo is offered to the four-week H3, flagged for ingest, with a thumbnail.
+    assert 'value="assets:Litter-At-Four-Weeks.jpg"' in block
+    assert "needs ingest → /images/litter-at-four-weeks.webp" in block
+    assert block.count('src="data:image/webp;base64,') >= 2
+    # OG styles on a photo slot, IG styles on the infographic slot; the record's own style starred.
+    weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    assert [v for v in ("og:A", "og:B", "og:C", "og:D", "og:E", "og:H") if f'value="{v}"' in weeks] == \
+        ["og:A", "og:B", "og:C", "og:D", "og:E", "og:H"]
+    assert "⭐ C</label>" in weeks and 'value="ig:' not in weeks
+    graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
+    assert 'value="ig:IG-5"' in graphic and "⭐ IG-2</label>" in graphic and 'value="og:' not in graphic
+    # Nothing is pre-checked on a record with no image picks yet.
+    assert " checked>" not in block
+
+
+def test_a_generated_draft_is_previewed_with_its_approval_radio(repo):
+    root, folder = repo
+    b = _full()
+    draft = root / "data" / "boards" / "generated" / "uk-locations--blue-staffy-puppies-leeds" / "weeks-photo.png"
+    _png(draft, (10, 10, 10))
+    sha = hashlib.sha256(draft.read_bytes()).hexdigest()[:12]
+    b["approval"] = {"picks": {"img:weeks-photo": "og:E"}}
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    # The current pick is shown answered, and the preview approves THIS file in that style.
+    assert 'value="og:E" checked>' in weeks
+    assert f'value="og:E:{sha}">' in weeks and "Approve this generated image" in weeks
+    assert "data/boards/generated/uk-locations--blue-staffy-puppies-leeds/weeks-photo.png" in weeks
+
+
+def test_the_approve_button_refuses_while_a_generated_slot_is_unanswered(repo):
+    root, folder = repo
+    b = _full()
+    html = _html(b, IR.board_images(b, root, folder))
+    sig = html.split("var SIGNATURE_SECTIONS=", 1)[1].split(";", 1)[0]
+    assert '"img:weeks-photo"' in sig and '"img:checks-graphic"' in sig
+    # The approve contract is unchanged: every pick-* radio lands in picks under its name.
+    assert "picks[i.name.slice(5)]=i.value" in html
+
+
+def test_a_page_built_before_this_build_keeps_block_7_as_it_was():
+    b = json.loads((ROOT / "data" / "boards" / "blue-staffy-health-uk.json").read_text())
+    html = BPB.render(b, PB.load_ontology(), PB.load_ledger(), live={}, thumbs={}, slug=b["meta"]["slug"])
+    block = _block(html)
+    assert 'class="imgpick"' not in block and 'name="pick-img:' not in html
+    assert '<div class="slot"><b>health-litter</b>' in block
+    sig = html.split("var SIGNATURE_SECTIONS=", 1)[1].split(";", 1)[0]
+    assert "img:" not in sig
+
+
+def test_board_block_is_empty_without_images_and_says_so_when_nothing_matches(repo):
+    root, folder = repo
+    b = _full()
+    assert IR.board_block(b, None) == ""
+    raise_ = next(s for s in b["sections"] if s["id"] == "how-we-raise")
+    raise_["tree"][1]["images"][0]["prompt"] = "zzz"
+    raise_["tree"][1]["heading"] = "Qqq"
+    raise_["heading"] = "Xxx"
+    raise_["keywords"] = {}
+    block = IR.board_block(b, IR.board_images(b, root, folder))
+    graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
+    assert "No existing image shares a word with this slot" in graphic
+
+
+def test_thumb_uri_is_none_for_a_file_that_is_not_an_image(tmp_path):
+    bad = tmp_path / "x.webp"
+    bad.write_bytes(b"not an image")
+    assert IR.thumb_uri(bad) is None
+    assert IR.thumb_uri(tmp_path / "missing.webp") is None
+```
+
+In `tests/py/test_page_board.py`, `test_board_html_carries_every_block_and_the_theme_rules`
+(in plan order Task 3 has already replaced `"id=\"entity-graph\""` on this line with the
+entity-view hooks, so the old text is Task 3's line):
+
+Old:
+```python
+                   "data-title=\"5. Entities\"", "data-kv=\"entities\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
+```
+New:
+```python
+                   "data-title=\"5. Entities\"", "data-kv=\"entities\"", "data-title=\"6. Component options\"", "data-title=\"7. Images &amp; styles\"", "id=\"approve\""]:
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_image_board_block.py tests/py/test_page_board.py::test_board_html_carries_every_block_and_the_theme_rules -q`
+Expected: FAIL. `AttributeError: module 'image_rules' has no attribute 'board_images'` and the missing `data-title="7. Images &amp; styles"`.
+
+- [ ] **Step 3: Implement**
+
+3a. Append to the END of `scripts/image_rules.py`:
+```bash
+cat >> scripts/image_rules.py <<'EOF'
+# ── Task 10b: the board's "7. Images & styles" block ──────────────────────────────────
+# Rendered by scripts/build_page_board.py for location, comparison and blog records only.
+# One radio group per slot, `pick-img:<slot>`: the board's approve script already collects
+# every `pick-*` radio into `approval.picks`, so the answer lands as picks["img:<slot>"]
+# with no change to the approve contract, and board_approve.py validates it.
+import base64  # noqa: E402
+import html as _html  # noqa: E402
+import io  # noqa: E402
+
+THUMB_W = 240
+PREVIEW_W = 480
+GENERATED = ("generate", "infographic")
+BLOCK_CSS = (
+    "<style>.imgpick{border:1px solid var(--line);border-radius:8px;padding:10px 12px 12px;margin:10px 0;"
+    "background:var(--paper);min-width:0}.imgpick legend{font-size:13px;font-weight:600;color:var(--ink-2);padding:0 6px}"
+    ".imgc{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px;margin:6px 0}"
+    ".imgopt{display:grid;gap:4px;border:1px solid var(--line);border-radius:6px;padding:6px;font-size:12px;cursor:pointer}"
+    ".imgopt img,.imgopt .nothumb{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:4px;background:var(--code-bg)}"
+    ".imgopt .nothumb{display:grid;place-items:center;color:var(--ink-3)}"
+    ".imgopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}"
+    ".imgstyles{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;margin:6px 0}"
+    ".imggen img{max-width:min(100%,480px);border-radius:6px;display:block;margin:6px 0}"
+    ".imgwhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.imgwarn{color:var(--warn);font-weight:600}"
+    "@media (max-width:640px){.imgc{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>")
+
+
+def thumb_uri(path, width=THUMB_W):
+    """A small WebP data URI of an image file, or None when the file cannot be read. The
+    board is a standalone Artifact, so /images/ paths resolve to nothing inside it."""
+    try:
+        from PIL import Image
+        with Image.open(path) as im:
+            im = im.convert("RGB")
+            im.thumbnail((width, width * 2))
+            buf = io.BytesIO()
+            im.save(buf, "WEBP", quality=70)
+    except (OSError, ValueError):
+        return None                                   # shown as a labelled box instead
+    return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
+
+
+def board_images(board, root=None, assets_dir=None, per_pool=3):
+    """Everything block 7 shows for one record: the candidate report, a thumbnail per
+    candidate, and a preview of each generated image that exists."""
+    root = root or ROOT
+    assets_dir = pathlib.Path(assets_dir) if assets_dir else IC.ASSETS_DIR
+    report = IC.candidates(board, root, assets_dir, per_pool)
+    thumbs = {}
+    for s in report["slots"]:
+        for c in s["candidates"]:
+            src = public_path(c["file"], root) if c["file"] else assets_dir / c["asset"]
+            if c["pick"] not in thumbs:
+                thumbs[c["pick"]] = thumb_uri(src)
+    generated = {}
+    for s, n, img in IC.iter_slots(board):
+        f = draft_file(board, img["slot"], root) or \
+            (served_file(board, img["slot"], root) if img.get("source") in GENERATED else None)
+        if f is not None:
+            generated[img["slot"]] = {"sha": file_sha(f), "uri": thumb_uri(f, PREVIEW_W),
+                                      "path": f.relative_to(root).as_posix()}
+    return {"report": report, "thumbs": thumbs, "generated": generated}
+
+
+def _e(v):
+    return _html.escape("" if v is None else str(v), quote=True)
+
+
+def _radio(name, value, checked):
+    return f'<input type="radio" name="{_e(name)}" value="{_e(value)}"{" checked" if checked else ""}>'
+
+
+def _slot_html(board, sec, node, img, row, images, current):
+    slot = img["slot"]
+    name = "pick-" + PICK_PREFIX + slot
+    where = _e(sec["heading"]) + (" › " + _e(node["heading"]) if node else "")
+    rec = [f"source {img.get('source') or 'not named'}"]
+    for k in ("file", "source_file", "og_style", "infographic_style"):
+        if img.get(k):
+            rec.append(f"{k} {img[k]}")
+    parts = [f'<fieldset class="imgpick" id="img-{_e(slot)}"><legend>{_e(slot)} · {_e(img["kind"])} · {where}</legend>',
+             f'<p class="imgwhy">record: {_e(", ".join(rec))} · prompt: {_e(img.get("prompt"))}</p>']
+    cands = row["candidates"] if row else []
+    suggested = (row or {}).get("suggested") or {}
+    if cands:
+        cells = []
+        for c in cands:
+            uri = images["thumbs"].get(c["pick"])
+            pic = f'<img src="{uri}" alt="">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
+            star = "⭐ " if c["pick"] == suggested.get("pick") else ""
+            note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["pool"] == "assets"
+                    else f'<span class="why">{_e(c["file"])}'
+                         + (f' · also on {_e(", ".join(c["used_on"]))}' if c["used_on"] else "") + "</span>")
+            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], current == c["pick"])} '
+                         f'{star}<b>{_e(c["pool"])}</b> · score {c["score"]} · {_e(", ".join(c["matched"]))}</span>{note}</label>')
+        parts.append(f'<div class="imgc">{"".join(cells)}</div>')
+    else:
+        parts.append('<p class="imgwhy">No existing image shares a word with this slot — pick a style to generate one.</p>')
+    if img["kind"] == "infographic":
+        label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
+    else:
+        label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
+    opts = " ".join(f'<label>{_radio(name, prefix + st, current == prefix + st)} {"⭐ " if st == want else ""}{_e(st)}</label>'
+                    for st in styles)
+    parts.append(f'<div class="imgstyles"><span>{label} (IMAGE-DESIGNS.md):</span> {opts}</div>')
+    gen = images["generated"].get(slot)
+    if gen:
+        cur = parse_pick(current) if current else None
+        style = (cur["style"] if cur and cur["kind"] in ("og", "ig") else None) or want or styles[0]
+        value = f"{prefix}{style}:{gen['sha']}"
+        pic = f'<img src="{gen["uri"]}" alt="">' if gen["uri"] else ""
+        parts.append(f'<div class="imggen"><label>{_radio(name, value, current == value)} '
+                     f'<b>Approve this generated image</b> (style {_e(style)}, {_e(gen["path"])}, sha {gen["sha"]})</label>{pic}</div>')
+    parts.append("</fieldset>")
+    return "".join(parts)
+
+
+def board_block(board, images):
+    """Block 7's image pickers, or "" for a record the rule does not bind (images is None)."""
+    if images is None:
+        return ""
+    rows = {r["slot"]: r for r in images["report"]["slots"]}
+    chosen = picks(board)
+    pools = images["report"]["pools"]
+    head = (f"{BLOCK_CSS}\n\n**Pick one image for every slot.** The page's own images come first "
+            f"({pools['own']}), then the site's other served images ({pools['served']}), then your Assets "
+            f"folder ({pools['assets']} not yet on the site; those are copied in before the build). ⭐ marks the "
+            "suggestion. Or pick a style and a new image is generated for the slot; it is used only after "
+            "you approve the generated image itself here, on a later pass of this board.")
+    body = [_slot_html(board, s, n, img, rows.get(img["slot"]), images, chosen.get(PICK_PREFIX + img["slot"]))
+            for s, n, img in IC.iter_slots(board)]
+    return head + "\n\n" + "\n\n".join(body)
+EOF
+```
+
+3b. `scripts/build_page_board.py`, five exact edits.
+
+Old:
+```python
+import verbatim_set_check as VSC
+```
+New:
+```python
+import verbatim_set_check as VSC
+import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+```
+
+Old:
+```python
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None):
+```
+New:
+```python
+def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None):
+```
+
+Old:
+```python
+    parts.append(("7. Asset slots", f'<div class="slots">{slots}</div>'))
+```
+New:
+```python
+    parts.append(("7. Images & styles", f'<div class="slots">{slots}</div>' + IR.board_block(board, images)))
+```
+
+Old:
+```python
+  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug))};
+```
+New:
+```python
+  var SIGNATURE_SECTIONS={js(picked_sections(board, ledger, slug) + IR.slots_needing_pick(board))};
+```
+
+Old:
+```python
+    routes = load_routes()
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav), encoding="utf-8")
+```
+New:
+```python
+    routes = load_routes()
+    # Candidates, thumbnails and generated previews only for the pages the image rule binds.
+    images = IR.board_images(board) if PB.FR.applies(board) else None
+    out.write_text(render(board, ont, ledger, live, thumbs, slug, previews, routes, nav, images), encoding="utf-8")
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_image_board_block.py tests/py/test_page_board.py tests/py/test_image_rules.py -q`
+Expected: all pass (`test_image_board_block.py`: 6 passed).
+
+Render a real board and look at it. No location record exists yet, so render the demo record as a location page into scratch:
+```bash
+python3 - <<'EOF'
+import json, sys, pathlib
+sys.path.insert(0, "scripts"); sys.path.insert(0, "tests/py")
+import build_page_board as BPB, image_rules as IR, pageboard as PB
+from test_image_rules import _full
+b = _full()
+html = BPB.render(b, PB.load_ontology(), PB.load_ledger(), {}, {}, b["meta"]["slug"], images=IR.board_images(b))
+out = pathlib.Path("/tmp/board-images-demo.html"); out.write_text(html, encoding="utf-8")
+print(out, len(html), html.count('name="pick-img:'))
+EOF
+```
+Expected: the path, a size under 2 MB (integration run, after Tasks 1–10: 255,679 characters, 55 radios), and a radio count above 20 (candidates plus style radios across six slots). The controller opens it in the browser at the Task 10 visual pause, at 1280 and 375.
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/image_rules.py scripts/build_page_board.py tests/py/test_image_board_block.py tests/py/test_page_board.py
+git commit -m "board: block 7 becomes Images & styles — candidate thumbnails, OG/IG style radios, generated preview
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+---
+
+#### Interfaces this section exposes
+
+- `scripts/image_candidates.py <slug> [--assets-dir DIR] [--per-pool N] [--write]`. Prints the candidate report; `--write` → `data/boards/candidates/<slug file>.json`. Env `BSUK_ASSETS_DIR` overrides the folder.
+  - Pure functions: `tokens(text)`, `canonical(src)`, `iter_slots(board)` → `(section, node|None, image)`, `slot_words`, `own_images(board, root)`, `served_images(root)`, `asset_images(assets_dir, root)`, `usage_and_alts(root)`, `asset_stem(filename)`, `ingest_target(filename)` → `/images/<stem>.webp`, `rank(...)`, `candidates(board, root, assets_dir, per_pool)`. Constants `ASSETS_DIR`, `POOLS`, `GENERIC`.
+  - Report shape: `{slug, method, assets_dir, pools:{own,served,assets,assets_already_served}, slots:[{slot, section, node, kind, source, context, candidates:[{pool, file, asset, ingest_as, alt, score, matched, used_on, pick}], suggested}]}`. `pick` is the exact radio/pick value.
+- `scripts/image_rules.py`:
+  - `body_sections(board)`, `body_h3s(section)`, `is_faq_block(section)`, `slot_problems(image)`, `slot_findings(board)`, `build_findings(board)`, `parse_pick(value)`, `choice(image, pick)`, `file_sha(path)`, `draft_file` / `served_file` / `generated_file(board, slot, root)`, `ingested(board, slot, filename, root)`, `validate_image_picks(board, picks, root, assets_dir)`, `slots_needing_pick(board)`.
+  - Task 10b adds `board_images(board, root, assets_dir, per_pool)`, `board_block(board, images)`, `thumb_uri(path, width)`.
+  - Constants: `SOURCES`, `OG_STYLES = (A,B,C,D,E,H)`, `IG_STYLES = (IG-1..IG-5)`, `PICK_PREFIX = "img:"`, `FRAME_SHAPES`, `OWN_MEDIA_SHAPES`, `FRAME_IDS`.
+- `family_rules` checks: `image_every_body_heading`, `image_build_ready`. Check ids: `image-hero-photo`, `image-slot-missing`, `image-slot-fields`, `image-slot-duplicate`, `image-pick-missing`, `image-pick-invalid`, `image-existing-missing`, `image-asset-not-ingested`, `image-generated-unapproved`, `image-generated-not-ingested`.
+- Record fields (all optional): `sections[].images[].{source, file, source_file, og_style, infographic_style}`; `$defs.node.images[]` (same item shape); `approval.picks["img:<slot>"]` with values `file:/images/…` | `assets:<filename>` | `og:<A|B|C|D|E|H>[:<sha12>]` | `ig:IG-<1-5>[:<sha12>]`.
+- File conventions: generated draft `data/boards/generated/<slug file>/<slot>.<webp|png|jpg>`; approved copy in `public/images/`, named in `assets[<slot>].file`; folder ingest default `/images/<asset_stem>.webp`.
+- Rule id `image-every-body-heading` (`rules/images.md`, `enforced: test`, `tests/py/test_image_rules.py`).
+- Board: block 7 title `7. Images & styles`; radio groups `pick-img:<slot>`; `render(..., images=None)`.
+
+**For Task 7 (IMAGE-DESIGNS.md) and whoever ports the image-generation and photo-ingest skills:** use the style ids exactly as `OG_STYLES` / `IG_STYLES`. Write drafts to the draft path above. After approval, copy the approved bytes unchanged (the sha must hold) into `public/images/` and set the slot's `assets[]` `file`. If photo-ingest names a folder file differently from `ingest_target()`, it must set `assets[<slot>].file`, which the gate accepts in place of the default name.
+
+**Open questions**
+1. `video` and `puppies` sections are exempt from the per-heading rule because their media is the video or the puppy cards. If the breeder wants a photo there too, delete them from `OWN_MEDIA_SHAPES`.
+2. Style labels on the board are ids only (A…H, IG-1…IG-5), with a pointer to IMAGE-DESIGNS.md. If Task 7 ships a machine-readable label map, `_slot_html` can show names.
+3. Approving a generated image is a second pass of the same board, with the same record hash, because `assets[].file` and `status` are lifecycle. The breeder approves outline + style first, then the generated image once it exists.
+
+#### Verified
+
+Executed in a detached worktree of `system-gaps` at `99c81e0` (`scratchpad/wt-e`, `node_modules` linked, `dist/` copied from `BSUK-gaps`), one commit per task: `cd660dd` (Task 9), `7042531` (Task 10), `5aebe10` (Task 10b). The code in this section is those files verbatim.
+
+- RED before each implementation, from a missing module: `image_candidates`, then `image_rules`. For 10b, `board_images` was missing and so was the `7. Images &amp; styles` title.
+- `tests/py/test_image_candidates.py`: 10 passed. `tests/py/test_image_rules.py`: 26 passed; with `test_family_rules.py`, 29. `tests/py/test_image_board_block.py`: 6 passed. `test_page_board.py` + `test_board_previews.py`: 317 passed.
+- `test_every_record_built_before_this_build_keeps_its_approval`: all 13 records in `data/boards/` validate against the widened schema, and all 12 approved records still pass `approval_matches`, so no hash moved.
+- Smoke: `image_candidates.py blue-staffy-health-uk` gives `{'own': 8, 'served': 90, 'assets': 2, 'assets_already_served': 36}`, and every one of the eight health slots suggests its own migrated file. The demo record rendered as a location board is 249 KB with 55 `pick-img:` radios over six slots.
+- Full suite after Task 10: `2414 passed, 27 skipped, 1 xfailed`. After Task 10b: `2420 passed, 27 skipped, 1 xfailed`, which is Task 0's 2380 + 42 new − 2. The 2 are the `.env` tests in `test_no_env_value_committed.py`, which skip in a fresh worktree with no `.env` ("`.env` absent — nothing to prove"). They are environment skips, not caused by these tasks.
+- `npm run -s check:all`: exit 0. `npm run -s registry`: 0 problems. `scripts/marker_check.py`: 0 problems.
+- `scripts/pageboard.py` is not modified, and neither is the approve JS contract (`picks[i.name.slice(5)]`).
+- The board render was not screenshotted here: the Browser pane refuses page tools on a local file. That check is left to the controller's Task 10 visual pause.
+
+
+---
+
+### Task 10c: Board block 7 offers each slot's current file first and names the image styles
+
+**Gap:** the image pick on the board (user ruling G2) must start from what the record already
+says. Seen on the rendered demo board after Task 10b: (1) the style radios read bare ids
+(`A` … `H`, `IG-1` … `IG-5`), although Task 7 writes their names and uses to
+`data/design/image-styles.json`; (2) a slot's current file was never offered — `opening-tile-2`
+records `source: existing, file: /images/blue-staffy-puppies-uk-litter1.webp`, yet its candidates
+were two unrelated score-1 images and never that file.
+
+**The rule.** When a slot names a file — its own `file`, else the `file` of its `assets[]` row —
+that file is the slot's FIRST candidate, pool `current`, whatever it scores; it is the ⭐
+suggestion; it never appears twice (a `-760` size sibling folds to the same file); and on the
+board it is pre-checked unless an approval pick says otherwise. One exception, kept on purpose:
+a `generate`/`infographic` slot is never pre-checked. Its answer is the breeder's (the approve
+button refuses while it is empty, Task 10b), and a generated image is approved only by its sha,
+so a served copy named in its `assets[]` row is offered, labelled current, but left unticked.
+The fix lives in `scripts/image_candidates.py`, so the JSON report carries it too
+(`current: true|false` on every candidate).
+
+Style radios read the label map through `image_rules.style_labels(root)`, which returns `{}`
+when the file is missing or unreadable; each radio then shows `B · Blur-Fill` with the `use`
+line as its `title` tooltip, or the bare id without the map. `board_images()` carries the map
+as `images["styles"]`; an images dict without the key renders bare ids.
+
+Built boards: the pickers render only for records `family_rules.applies()` to (Task 10b), so the
+12 built boards' block 7 does not change; no record changes, so every approval still matches.
+
+**Files:**
+- Modify: `scripts/image_candidates.py` (docstring paragraph; `current` on each candidate; new `current_file(board, img)`; `candidates()` puts it first)
+- Modify: `scripts/image_rules.py` (new `style_labels(root)`; `board_images()` returns `styles`; `_slot_html` pre-check, `current` label, named style radios; block intro sentence)
+- Modify: `tests/py/test_image_board_block.py` (the assertion that pinned "nothing pre-checked")
+- Test: `tests/py/test_image_current.py`
+
+- [ ] **Step 1: Write the failing test**
+
+Create `tests/py/test_image_current.py`:
+```python
+"""Task 10c (system-gaps build): a slot's CURRENT file is always offered first, and the style
+radios on board block 7 carry their names from IMAGE-DESIGNS.md's label map.
+
+Two defects seen on the rendered demo board: `opening-tile-2` records
+`source: existing, file: /images/blue-staffy-puppies-uk-litter1.webp` yet its candidate list
+offered two unrelated score-1 images and never that file; and the style radios read `A … H`,
+`IG-1 … IG-5` with no names."""
+import copy
+import json
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+sys.path.insert(0, str(ROOT / "tests" / "py"))
+
+import image_candidates as IC   # noqa: E402
+import image_rules as IR        # noqa: E402
+from test_image_candidates import _board, _tree          # noqa: E402
+from test_image_board_block import _block, _html, repo   # noqa: E402,F401  (fixture)
+from test_image_rules import _full                       # noqa: E402
+
+
+def _photo(r):
+    return next(s for s in r["slots"] if s["slot"] == "delivery-photo")
+
+
+def _picks(slot):
+    return [(c["pool"], c["pick"]) for c in slot["candidates"]]
+
+
+# ── image_candidates: the current file leads, once ──────────────────────────────────────
+def test_a_slot_file_is_the_first_candidate_labelled_current_and_suggested(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                   "prompt": "our van on a delivery run", "source": "existing",
+                                   "file": "/images/family-garden-play.webp"}])
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    # The record's own file leads even though it shares no word with the slot …
+    assert photo["candidates"][0]["pool"] == "current" and photo["candidates"][0]["current"] is True
+    assert photo["candidates"][0]["pick"] == "file:/images/family-garden-play.webp"
+    # … the ranked pools follow unchanged, and no other candidate is marked current …
+    assert _picks(photo)[1:] == [("own", "file:/images/leeds-delivery-van.webp"),
+                                 ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    assert [c["current"] for c in photo["candidates"]] == [True, False, False]
+    # … and it is the suggestion.
+    assert photo["suggested"]["pick"] == "file:/images/family-garden-play.webp"
+
+
+def test_the_current_file_is_never_listed_twice_even_as_a_size_sibling(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                   "prompt": "our van on a delivery run", "source": "existing",
+                                   "file": "/images/leeds-delivery-van-760.webp"}])
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    assert _picks(photo) == [("current", "file:/images/leeds-delivery-van.webp"),
+                             ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    assert photo["candidates"][0]["matched"] == ["delivering", "delivery", "leed", "van"]
+
+
+def test_an_assets_row_file_is_current_and_the_slot_file_wins_over_it(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _board()
+    b["assets"] = [{"slot": "delivery-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                    "status": "baked", "file": "/images/kc-registered-staffy-puppies.webp", "alt": "Papers"}]
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    assert _picks(photo)[0] == ("current", "file:/images/kc-registered-staffy-puppies.webp")
+    assert [p for p in _picks(photo) if p[1] == "file:/images/kc-registered-staffy-puppies.webp"] == \
+        [("current", "file:/images/kc-registered-staffy-puppies.webp")]
+    assert IC.current_file(b, b["sections"][0]["images"][0]) == "/images/kc-registered-staffy-puppies.webp"
+    b["sections"][0]["images"][0]["file"] = "/images/family-garden-play.webp"
+    assert IC.current_file(b, b["sections"][0]["images"][0]) == "/images/family-garden-play.webp"
+    assert IC.current_file(b, {"slot": "other", "kind": "photo"}) is None
+
+
+def test_a_current_file_is_suggested_even_when_an_earlier_slot_was_suggested_it(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _board(node_images=[{"slot": "delivery-vacc", "kind": "photo", "required": True,
+                             "prompt": "a puppy being vaccinated", "source": "existing",
+                             "file": "/images/leeds-delivery-van.webp"}])
+    r = IC.candidates(b, root, assets, per_pool=2)
+    photo, vacc = r["slots"]
+    assert photo["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    assert vacc["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    assert vacc["candidates"][0]["current"] is True
+
+
+def test_a_slot_with_no_file_has_no_current_candidate(tmp_path):
+    root, assets = _tree(tmp_path)
+    r = IC.candidates(_board(), root, assets, per_pool=2)
+    assert not any(c["current"] for s in r["slots"] for c in s["candidates"])
+
+
+# ── board block 7: current pre-checked, named style radios ──────────────────────────────
+def test_the_real_demo_slot_offers_its_own_file_first_and_pre_checks_it(repo):
+    root, folder = repo
+    b = _full()
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    tile = block.split('id="img-opening-tile-2"', 1)[1].split("</fieldset>", 1)[0]
+    first = tile.split('<label class="imgopt">', 2)[1]
+    assert 'value="file:/images/blue-staffy-puppies-uk-litter1.webp" checked>' in first
+    assert "⭐ <b>current</b>" in first
+    assert tile.count('value="file:/images/blue-staffy-puppies-uk-litter1.webp"') == 1
+
+
+def test_an_approval_pick_overrides_the_current_pre_check(repo):
+    root, folder = repo
+    b = _full()
+    b["approval"] = {"picks": {"img:opening-tile-2": "og:B"}}
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    tile = block.split('id="img-opening-tile-2"', 1)[1].split("</fieldset>", 1)[0]
+    assert 'value="og:B" checked>' in tile
+    assert 'value="file:/images/blue-staffy-puppies-uk-litter1.webp">' in tile
+    assert tile.count(" checked>") == 1
+
+
+def test_a_generated_slot_is_never_pre_checked(repo):
+    """A generate/infographic slot is answered by the breeder (the approve button refuses
+    while it is empty), so even a served copy named in its assets row is offered unchecked."""
+    root, folder = repo
+    b = _full()
+    b["assets"].append({"slot": "weeks-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                        "status": "baked", "file": "/images/blue-staffy-family-dog-uk.webp", "alt": "x"})
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    assert "<b>current</b>" in weeks and " checked>" not in weeks
+
+
+def test_style_radios_carry_the_label_map_names_and_uses(repo):
+    root, folder = repo
+    (root / "data" / "design").mkdir(parents=True)
+    (root / "data" / "design" / "image-styles.json").write_text(
+        (ROOT / "data" / "design" / "image-styles.json").read_text(encoding="utf-8"), encoding="utf-8")
+    labels = json.loads((ROOT / "data" / "design" / "image-styles.json").read_text(encoding="utf-8"))
+    b = _full()
+    images = IR.board_images(b, root, folder)
+    assert images["styles"] == labels
+    block = _block(_html(b, images))
+    weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    b_use = labels["og"]["B"]["use"]
+    assert f'title="{b_use}"' in weeks or f'title="{IR._e(b_use)}"' in weeks
+    assert "B · %s</label>" % IR._e(labels["og"]["B"]["name"]) in weeks
+    assert "⭐ C · %s</label>" % IR._e(labels["og"]["C"]["name"]) in weeks
+    graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
+    assert "⭐ IG-2 · %s</label>" % IR._e(labels["infographic"]["IG-2"]["name"]) in graphic
+
+
+def test_style_labels_fall_back_to_the_bare_id(tmp_path, repo):
+    root, folder = repo
+    assert IR.style_labels(tmp_path / "nowhere") == {}
+    bad = tmp_path / "bad"
+    (bad / "data" / "design").mkdir(parents=True)
+    (bad / "data" / "design" / "image-styles.json").write_text("{not json")
+    assert IR.style_labels(bad) == {}
+    b = _full()
+    images = IR.board_images(b, root, folder)            # the tmp repo has no label map
+    assert images["styles"] == {}
+    weeks = _block(_html(b, images)).split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    assert "⭐ C</label>" in weeks
+    images.pop("styles")                                   # an images dict built before 10c
+    assert "⭐ C</label>" in IR.board_block(b, images)
+
+
+def test_the_real_label_map_names_every_style_the_rules_know():
+    labels = IR.style_labels()
+    assert set(labels["og"]) == set(IR.OG_STYLES)
+    assert set(labels["infographic"]) == set(IR.IG_STYLES)
+    assert all(v["name"] and v["use"] for grp in labels.values() for v in grp.values())
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_image_current.py -q`
+Expected: FAIL — `11 failed`: the candidate tests fail their assertions (pool `own` where
+`current` is expected, the ranked suggestion instead of the slot's file, `KeyError: 'current'`);
+`AttributeError: module 'image_rules' has no attribute 'style_labels'` (2); `KeyError: 'styles'`;
+and the block tests find no pre-checked current file (`IndexError` / missing `checked`).
+
+- [ ] **Step 3: Implement**
+
+Run from the worktree root (exact old → new edits; each asserts its old string occurs once):
+```bash
+python3 - <<'EOF'
+"""Task 10c implementation: exact old -> new edits (each old string must occur once)."""
+import pathlib
+
+def edit(path, pairs):
+    p = pathlib.Path(path)
+    s = p.read_text(encoding="utf-8")
+    for old, new in pairs:
+        assert s.count(old) == 1, (path, old[:70])
+        s = s.replace(old, new, 1)
+    p.write_text(s, encoding="utf-8")
+
+edit("scripts/image_candidates.py", [
+    # docstring: say what `current` is
+    ("""score orders within a pool. `suggested` is the first candidate not already suggested for
+an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no shared alt).
+""",
+     """score orders within a pool. `suggested` is the first candidate not already suggested for
+an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no shared alt).
+
+CURRENT (Task 10c). A slot that already names a file — its own `file`, else its `assets[]`
+row's `file` — gets that file as its FIRST candidate, pool `current`, whatever it scores,
+and it is the slot's `suggested` pick. It is never listed again further down (size
+siblings fold to one file). Every candidate carries `current: true|false`.
+"""),
+    # every ranked candidate says it is not the current file
+    ("""        cand = {"pool": pool, "file": None, "asset": item["asset"], "ingest_as": item["ingest_as"],
+                "alt": "", "used_on": [], "pick": "assets:" + item["asset"]}""",
+     """        cand = {"pool": pool, "file": None, "asset": item["asset"], "ingest_as": item["ingest_as"],
+                "alt": "", "used_on": [], "pick": "assets:" + item["asset"], "current": False}"""),
+    ("""        cand = {"pool": pool, "file": f, "asset": None, "ingest_as": None, "alt": alt,
+                "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f}""",
+     """        cand = {"pool": pool, "file": f, "asset": None, "ingest_as": None, "alt": alt,
+                "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f,
+                "current": False}"""),
+    # current_file() before candidates()
+    ("""def candidates(board, root=None, assets_dir=None, per_pool=3):""",
+     """def current_file(board, img):
+    \"\"\"The file a slot already names: its own `file`, else the `file` of the record's
+    `assets[]` row for the same slot, as a canonical /images/ path; None when neither.\"\"\"
+    f = img.get("file") or next((a.get("file") for a in board.get("assets", [])
+                                 if a.get("slot") == img.get("slot") and a.get("file")), None)
+    return (canonical(f) or f) if f else None
+
+
+def candidates(board, root=None, assets_dir=None, per_pool=3):"""),
+    ("""        cands = rank(words, pools, alts, used, route, per_pool)
+        suggested = next((c for c in cands if c["pick"] not in taken), None)""",
+     """        cands = rank(words, pools, alts, used, route, per_pool)
+        cur = current_file(board, img)
+        if cur:
+            first = _candidate("current", {"file": cur}, words, alts, used, route)
+            first["current"] = True
+            cands = [first] + [c for c in cands if c["pick"] != first["pick"]]
+            suggested = first                          # the record's own choice leads
+        else:
+            suggested = next((c for c in cands if c["pick"] not in taken), None)"""),
+])
+
+edit("scripts/image_rules.py", [
+    # the label map, read once per board
+    ("""def board_images(board, root=None, assets_dir=None, per_pool=3):""",
+     """def style_labels(root=None):
+    \"\"\"IMAGE-DESIGNS.md's label map (data/design/image-styles.json, written by
+    scripts/image_designs.py): {"og": {id: {"name", "use"}}, "infographic": {…}}, or {} when the
+    file is missing or unreadable, and the board falls back to the bare ids.\"\"\"
+    p = pathlib.Path(root or ROOT) / "data" / "design" / "image-styles.json"
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
+def board_images(board, root=None, assets_dir=None, per_pool=3):"""),
+    ("""    return {"report": report, "thumbs": thumbs, "generated": generated}""",
+     """    return {"report": report, "thumbs": thumbs, "generated": generated, "styles": style_labels(root)}"""),
+    # candidates: the current file is pre-checked unless a pick says otherwise (never on a
+    # generated slot, which the breeder answers), and labelled `current`
+    ("""    cands = row["candidates"] if row else []
+    suggested = (row or {}).get("suggested") or {}
+    if cands:
+        cells = []
+        for c in cands:""",
+     """    cands = row["candidates"] if row else []
+    suggested = (row or {}).get("suggested") or {}
+    # Task 10c: the file the record already names is pre-checked until a pick says otherwise,
+    # except on a generated slot, whose answer is always the breeder's.
+    precheck = current is None and img.get("source") not in GENERATED
+    if cands:
+        cells = []
+        for c in cands:
+            checked = current == c["pick"] or (precheck and c.get("current", False))"""),
+    ("""            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], current == c["pick"])} '
+                         f'{star}<b>{_e(c["pool"])}</b> · score {c["score"]} · {_e(", ".join(c["matched"]))}</span>{note}</label>')""",
+     """            what = ("the file this slot names now" if c.get("current")
+                    else f'score {c["score"]} · {_e(", ".join(c["matched"]))}')
+            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], checked)} '
+                         f'{star}<b>{_e(c["pool"])}</b> · {what}</span>{note}</label>')"""),
+    # named style radios
+    ("""    opts = " ".join(f'<label>{_radio(name, prefix + st, current == prefix + st)} {"⭐ " if st == want else ""}{_e(st)}</label>'
+                    for st in styles)""",
+     """    named = (images.get("styles") or {}).get("infographic" if prefix == "ig:" else "og") or {}
+
+    def _style(st):
+        lab = named.get(st) or {}
+        title = f' title="{_e(lab["use"])}"' if lab.get("use") else ""
+        text = _e(st) + (f' · {_e(lab["name"])}' if lab.get("name") else "")
+        return (f'<label{title}>{_radio(name, prefix + st, current == prefix + st)} '
+                f'{"⭐ " if st == want else ""}{text}</label>')
+    opts = " ".join(_style(st) for st in styles)"""),
+    ("""folder ({pools['assets']} not yet on the site; those are copied in before the build). ⭐ marks the "
+            "suggestion.""",
+     """folder ({pools['assets']} not yet on the site; those are copied in before the build). ⭐ marks the "
+            "suggestion; **current** is the file the slot names now, offered first and ticked until you "
+            "pick another. Hover a style for when it is used (IMAGE-DESIGNS.md)."""),
+])
+
+# Task 10b's block test pinned "nothing pre-checked"; the record's current files now are.
+edit("tests/py/test_image_board_block.py", [
+    ("""    # Nothing is pre-checked on a record with no image picks yet.
+    assert " checked>" not in block""",
+     """    # With no image picks yet, only each existing slot's current file is pre-checked (Task 10c).
+    import re
+    assert re.findall(r'name="pick-img:([a-z0-9-]+)" value="([^"]+)" checked>', block) == [
+        (s, "file:" + f) for s, f in (
+            ("opening-photo", "/images/blue-staffy-puppy-for-sale-uk.webp"),
+            ("opening-tile-2", "/images/blue-staffy-puppies-uk-litter1.webp"),
+            ("opening-tile-3", "/images/blue-staffy-family-dog-uk.webp"),
+            ("raise-photo", "/images/1blue-staffy-family-breeder.webp"))]"""),
+])
+print("task 10c: image_candidates.py, image_rules.py and test_image_board_block.py edited")
+EOF
+```
+Expected: `task 10c: image_candidates.py, image_rules.py and test_image_board_block.py edited`.
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_image_current.py tests/py/test_image_board_block.py tests/py/test_image_candidates.py tests/py/test_image_rules.py tests/py/test_ingest_image.py tests/py/test_image_designs.py -q`
+Expected: `135 passed` (11 new).
+
+Render the demo board (Task 10b's Step 4 script) and look at block 7 at 1280 and 375:
+```bash
+python3 - <<'EOF'
+import sys, pathlib
+sys.path.insert(0, "scripts"); sys.path.insert(0, "tests/py")
+import build_page_board as BPB, image_rules as IR, pageboard as PB
+from test_image_rules import _full
+b = _full()
+html = BPB.render(b, PB.load_ontology(), PB.load_ledger(), {}, {}, b["meta"]["slug"], images=IR.board_images(b))
+out = pathlib.Path("/tmp/board-images-demo.html"); out.write_text(html, encoding="utf-8")
+print(out, len(html), html.count('name="pick-img:'))
+EOF
+```
+Expected: `… 294927 58` (integration run). In `opening-tile-2` the first radio is
+`value="file:/images/blue-staffy-puppies-uk-litter1.webp" checked`, labelled `⭐ current`; the
+style radios read `A · Contain on Bone` … `H · Duo Strip` and `IG-1 · Stat Panel` …
+`IG-5 · Route Map`; no horizontal scroll at 375.
+
+Run: `python3 scripts/build_system_registry.py && npm run -s registry`
+Expected: `examined docs/reference/system-registry.md; 0 problems` (no new file is registered).
+
+- [ ] **Step 5: Commit**
+
+```bash
+git add scripts/image_candidates.py scripts/image_rules.py tests/py/test_image_current.py \
+        tests/py/test_image_board_block.py docs/reference/system-registry.md
+git commit -m "board: block 7 offers each slot's current file first and names the image styles
+
+A slot that names a file (its own, or its assets[] row's) gets that file as its first
+candidate, pool current, suggested, never listed twice, and pre-checked on the board until an
+approval pick says otherwise (never on a generated slot). The OG and infographic style radios
+read IMAGE-DESIGNS.md's label map (data/design/image-styles.json): 'B · Blur-Fill', with the
+use line as the tooltip; the bare id when the map is missing.
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+- [ ] **Step 6: Full suite and gates**
+
+Run: `python3 -m pytest tests/py -q` → `2658 passed, 25 skipped, 1 xfailed` in plan order with
+`.env` present (Tasks 1–10b plus the Task 4 amendments: 2647; +11).
+Run: `npm run -s check:all; echo EXIT $?` → `EXIT 0`.
+
+#### Interfaces this task exposes
+- `scripts/image_candidates.py`: `current_file(board, img)` → canonical `/images/…` path or None;
+  every candidate carries `current` (bool); pool name `current` (not in `POOLS`, so `pools`
+  counts are unchanged); a slot with a current file has it as `candidates[0]` and `suggested`.
+- `scripts/image_rules.py`: `style_labels(root=None)` → the label map or `{}`;
+  `board_images()` → adds `"styles"`; block 7 radios `A · <name>` with `title="<use>"`.
+
+#### Verified
+Executed in `wt-int` on top of Task 10b and the Task 4 amendments (commit 479afc1): RED 11 failed;
+GREEN 135 passed; full suite twice `2658 passed, 25 skipped, 1 xfailed`; `check:all` exit 0;
+12 approved records, 12 `approval_matches`; the 12 built boards render byte-identical to before
+(pickers are new-family only); demo block 7 screenshotted at 1280 and 375, `scrollWidth` 1280 and 375.
+
+
+---
+
+## Part F — Wiring, the image key, close-out (Tasks 11–12)
+
+### Task 11: Wire the new rules into CLAUDE.md, WORKFLOW, the credentials doc and the three builder skills
+
+**Gap:** all five. A rule that no builder is told to follow waits for the first page to fail its board.
+**Files:**
+- Modify: `CLAUDE.md` (after working rule 16)
+- Modify: `docs/reference/WORKFLOW.md` (the data-file table's ontology row; append rule 13 at the end)
+- Modify: `.env.example`, `docs/reference/credentials.md` (one key)
+- Modify (append): `.claude/skills/bsuk-location-page-builder/SKILL.md`, `.claude/skills/bsuk-comparison-page-builder/SKILL.md`, `.claude/skills/bsuk-blog-post/SKILL.md`
+- Test: `tests/py/test_system_gaps_wiring.py`
+
+- [ ] **Step 1: Write the failing test**
+
+```python
+"""The system-gaps rules reach the people who build project 5's pages.
+
+Each builder skill carries the one block that names every script and check this build
+added, CLAUDE.md points at the packs and at IMAGE-DESIGNS.md, WORKFLOW names the gate and
+the generated ontology, and the image-generation key is documented by name only."""
+import pathlib
+import re
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+SKILLS = [ROOT / ".claude/skills" / d / "SKILL.md"
+          for d in ("bsuk-location-page-builder", "bsuk-comparison-page-builder", "bsuk-blog-post")]
+BLOCK = "## Project 5 page rules (system-gaps)"
+MUST_NAME = (
+    "scripts/keyword_variants.py", "scripts/ontology_seed.py", "scripts/image_candidates.py",
+    "scripts/ingest_image.py", "IMAGE-DESIGNS.md", "docs/reference/external-link-library.md",
+    "anchor_type", "check:outline", "keyword-variants-missing", "external-links-six-diverse",
+    "anchor-type-variation", "anchor-reuse-sitewide", "image-slot-missing",
+    "image-generated-unapproved", "data/page-map.json",
+)
+
+
+def _block(text):
+    assert text.count(BLOCK) == 1, f"expected exactly one {BLOCK!r}"
+    return text.split(BLOCK, 1)[1]
+
+
+def test_every_builder_skill_carries_the_block_and_it_names_everything():
+    for p in SKILLS:
+        body = _block(p.read_text())
+        missing = [m for m in MUST_NAME if m not in body]
+        assert not missing, f"{p.relative_to(ROOT)} block does not name {missing}"
+
+
+def test_the_block_comes_after_the_outline_block():
+    for p in SKILLS:
+        t = p.read_text()
+        assert t.index("## Build from the approved outline (system-gaps)") < t.index(BLOCK), p
+
+
+def test_claude_md_rule_17_points_at_the_packs_and_the_image_file():
+    t = (ROOT / "CLAUDE.md").read_text()
+    m = re.search(r"^17\. \*\*Project 5 pages.*?(?=^\S|\Z)", t, re.M | re.S)
+    assert m, "CLAUDE.md has no working rule 17"
+    for name in ("rules/images.md", "rules/links.md", "rules/copy.md", "IMAGE-DESIGNS.md",
+                 "scripts/family_rules.py"):
+        assert name in m.group(0), name
+
+
+def test_workflow_names_the_gate_and_the_generated_ontology():
+    t = (ROOT / "docs/reference/WORKFLOW.md").read_text()
+    assert "| `data/bsuk-ontology.json` | `scripts/ontology_seed.py` + manual |" in t
+    assert "13. **Project 5 page rules (system-gaps)**" in t
+    assert "npm run check:outline" in t
+
+
+def test_the_image_key_is_documented_by_name_only():
+    env = (ROOT / ".env.example").read_text().splitlines()
+    assert "GEMINI_API_KEY=" in env
+    cred = (ROOT / "docs/reference/credentials.md").read_text()
+    assert "| `GEMINI_API_KEY` |" in cred
+```
+
+- [ ] **Step 2: Run it and confirm it fails**
+
+Run: `python3 -m pytest tests/py/test_system_gaps_wiring.py -q`
+Expected: FAIL. 5 failed: no block in the skills, no rule 17, no WORKFLOW row or rule 13, no key.
+
+- [ ] **Step 3a: CLAUDE.md working rule 17.** Insert after rule 16's last line.
+
+Old text (exact):
+```text
+    per `.claude/skills/bsuk-component-refresh/SKILL.md` and
+    `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
+```
+New text:
+```text
+    per `.claude/skills/bsuk-component-refresh/SKILL.md` and
+    `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
+17. **Project 5 pages: outline only, six diverse links, an image on every heading.** Location,
+    comparison and blog-post pages built from 2026-09-24 on (never the twelve built before;
+    `scripts/family_rules.py` names them) are written from the approved outline alone, carry
+    at least six external links on six domains from four source types with a recorded anchor
+    type on every link, fill the four extra keyword types, and give every body H2 and body H3
+    (FAQ blocks excepted) and the hero an image. Images come first from the page's own, then
+    the site's served images, then `Assets/Images/`; a generated image follows
+    `IMAGE-DESIGNS.md` and is approved on the board before it is used. The rules and their
+    gates are in `rules/images.md`, `rules/links.md` and `rules/copy.md`. (Breeder, 2026-09-24.)
+```
+
+- [ ] **Step 3b: WORKFLOW — the ontology row.**
+
+Old text (exact):
+```text
+| `data/bsuk-ontology.json` | Manual | entity-agent, entity-graph | Entity work |
+```
+New text:
+```text
+| `data/bsuk-ontology.json` | `scripts/ontology_seed.py` + manual | entity-agent, entity-graph, the page boards | Entity work; re-seed after a new library or location row |
+```
+
+- [ ] **Step 3c: WORKFLOW — append rule 13** at the end of the file, after rule 12's line (`12. **Image Manifest Lookup Required** — … The design system itself is project 3.`):
+```text
+13. **Project 5 page rules (system-gaps)** — Every location, comparison and blog-post board runs, in Sprint 1 before it is boarded: `python3 scripts/keyword_variants.py <slug>` (the four extra keyword types), `python3 scripts/ontology_seed.py --check` (every entity the outline names is in the ontology with a source), and `python3 scripts/image_candidates.py <slug> --write` (images for the hero and every body H2/H3). The board then shows the entities by class, the link diversity line and block 7 "Images & styles", and the gates `keyword-variants-missing`, `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`, `outline-heading-repeat` and the `image-*` checks hold it (`scripts/family_rules.py`). A generated image is drafted with `scripts/ingest_image.py draft`, approved on a second pass of the same board, and published with `scripts/ingest_image.py publish`. After Sprint 2 builds the page, `npm run check:outline` (in `check:all`) proves it was written from its approved outline and shares no heading or passage with a sibling. `IMAGE-DESIGNS.md` governs every picture.
+```
+
+- [ ] **Step 3d: the image key, by name only.** In `.env.example`, after the line `GA4_REFRESH_TOKEN=`, add the line:
+```text
+GEMINI_API_KEY=
+```
+In `docs/reference/credentials.md`, after the row that starts `` | `GA4_REFRESH_TOKEN` | ``, add:
+```text
+| `GEMINI_API_KEY` | `.claude/skills/bsuk-image-generation/SKILL.md` (through the `compound-engineering:ce-gemini-imagegen` skill) | no — the user sets it before the first generated image (Task 11b) |
+```
+
+- [ ] **Step 3e: append the block to each builder skill.** Append exactly this, preceded by one blank line, to the END of each of the three skills. It goes after the `## Build from the approved outline (system-gaps)` block Task 6 appended.
+```markdown
+## Project 5 page rules (system-gaps)
+
+These bind every location, comparison and blog-post page built from 2026-09-24 on. The
+board refuses the record until each holds (`scripts/family_rules.py`); none of them applies
+to the twelve pages built before.
+
+1. **Keywords.** Run `python3 scripts/keyword_variants.py <slug>` (add `--also <cache dir>`
+   when a registry folder holds the page's SERP) and write its proposals into the sections'
+   `keywords.variation`, `related`, `cooccurring` and `similar`, keeping only terms the
+   section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
+2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
+   is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
+   evidence ledger holds it. The board shows them by class.
+3. **External links.** At least six on six domains from four source types, all rows of
+   `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
+   adds its own council's dog or animal-licensing page as a `local` row, after
+   `curl -sIL <url>` returns 200, dated in the Verified column.
+4. **Anchors.** Every internal and external link carries `anchor_type` (exact, partial, lsi,
+   natural, branded, naked-url): three or more internal types with at most two exact, three
+   or more external types (`anchor-type-variation`), and never an anchor another board
+   already uses for the same target (`anchor-reuse-sitewide`).
+5. **Images.** Run `python3 scripts/image_candidates.py <slug> --write`. The hero and every
+   body H2 and body H3 (FAQ blocks excepted) carry an image slot (`image-slot-missing`),
+   filled in this order: the page's own migrated image, another served image, a file from
+   `Assets/Images/` ingested with `python3 scripts/ingest_image.py folder`. When none fits,
+   the slot is `source: generate` with an OG style, or `source: infographic` with an IG style,
+   named in `IMAGE-DESIGNS.md`. The generated file is drafted with
+   `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
+   sha12 pick, and only then published with `python3 scripts/ingest_image.py publish`
+   (`image-generated-unapproved`).
+6. **Routes.** A blog post's route is in `data/page-map.json` before it is built, or the
+   outline gate cannot find it.
+7. **After the build,** `npm run -s check:outline` (also in `check:all`) must report the page
+   examined with 0 problems.
+```
+
+- [ ] **Step 4: Run it and confirm it passes**
+
+Run: `python3 -m pytest tests/py/test_system_gaps_wiring.py tests/py/test_claude_md.py tests/py/test_credentials_doc.py tests/py/test_rules_index.py tests/py/test_builder_skills.py -q`
+Expected: PASS. (`test_builder_skills.py` exists only once p5-readiness has merged. If pytest reports it missing, drop it from the command.)
+Then run the full suite: `python3 -m pytest tests/py -q` and `npm run -s check:all` (exit 0).
+
+- [ ] **Step 5: Commit**
+```bash
+python3 scripts/build_system_registry.py && npm run -s registry
+git add CLAUDE.md docs/reference/WORKFLOW.md .env.example docs/reference/credentials.md \
+  .claude/skills/bsuk-location-page-builder/SKILL.md .claude/skills/bsuk-comparison-page-builder/SKILL.md \
+  .claude/skills/bsuk-blog-post/SKILL.md tests/py/test_system_gaps_wiring.py docs/reference/system-registry.md
+git commit -m "wire: project 5 page rules reach CLAUDE.md, WORKFLOW and the three builders
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+
+### Task 11b: Image generation works end to end (USER STOP)
+
+**Gap:** "generate per IMAGE-DESIGNS.md" (ruling G2) needs a key and a package that do not exist today.
+**Files:** `requirements.txt` (one line), `.env` (the user's, never committed).
+
+- [ ] **Step 1: Ask the user (controller only).** Two things, in one message:
+  1. Set `GEMINI_API_KEY` in `/Users/apple/Downloads/BSUK-gaps/.env` and in `/Users/apple/Downloads/BSUK/.env` themselves. Claude never types a key.
+  2. Approve the package download: `python3 -m pip install google-genai` (from PyPI).
+
+  If the user declines either, record it in the gate report as "generation not yet available; slots fall back to an existing image or an infographic (IG style) until the key is set". Project 5 may still start. Skip to Step 5.
+- [ ] **Step 2: Install and pin.** After approval, run `python3 -m pip install google-genai`, then `python3 -m pip show google-genai | sed -n 2p` (prints `Version: X`). Add `google-genai==X` to `requirements.txt`, keeping its sort order.
+- [ ] **Step 3: One smoke image on the demo record.** Follow `.claude/skills/bsuk-image-generation/SKILL.md` for the `_demo` record's first `generate` slot. Draft it with `python3 scripts/ingest_image.py draft <master> --board _demo --slot <slot> --og-style B`. Expect a file under `data/boards/generated/_demo/` and a printed `og:B:<sha12>` pick. Confirm by eye that the image obeys the negative list (natural rose or half-pricked ears, no chains or spiked collars, no bully-XL build). Delete the draft afterwards: it is `_demo`'s, never published.
+- [ ] **Step 4: Run** `python3 -m pytest tests/py -q` (unchanged counts).
+- [ ] **Step 5: Commit**
+```bash
+git add requirements.txt
+git commit -m "deps: google-genai for board-approved generated images
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
+```
+(If Step 1 was declined, there is nothing to commit. The gate report carries the note.)
+
+### Task 12: Close-out — two clean runs, gate report, artifacts, merge beside p5-readiness
+
+**Files:** `docs/reports/system-gaps-gate-report.md` (create), `docs/reference/session-log.md`, `docs/artifacts/bsuk-system-gaps-plan.html`, `docs/artifacts/bsuk-system-gaps-report.html`, this plan (mark executed).
+
+- [ ] **Step 1: Two identical runs.** Run each of these twice from `/Users/apple/Downloads/BSUK-gaps`: `npm run build`, `python3 -m pytest tests/py -q`, `npm run -s check:all`, `npm run -s registry`, `npm run -s agents`. The counts must match between the runs. Paste both into the report.
+- [ ] **Step 2: Built pages untouched.** Run `python3 -c "import sys; sys.path.insert(0,'scripts'); import json,glob,pageboard as PB; bad=[p for p in glob.glob('data/boards/*.json') if not p.endswith(('index.json','_demo.json')) and not PB.approval_matches(json.load(open(p)))]; print('approval drift:', bad)"`. Expected: `approval drift: []`. Then check `git diff 9927710 -- src/pages dist` limited to the twelve built routes: no change in page source. `dist` is rebuilt and should match the pre-build HTML of those routes byte for byte. Report any difference.
+- [ ] **Step 3: The visual pause, shown (not blocking).** Render the boards for `blue-staffy-health-uk` and the new-family demo, and screenshot blocks 5 and 7 at 1280 and 375 in both themes. Show them to the user in the browser pane and in the report.
+- [ ] **Step 4: Gate report.** In `docs/reports/system-gaps-gate-report.md`, add one row per task: evidence (commit, the test file, counts) and PASS / PASS-WITH-DEVIATION / FAIL against the user's five gaps and rulings G1–G4. Add the Task 11b outcome. Add open items: organisation and regulation entities have no owner page yet; the RVC research row was not added (bot filter); each other city's council `local` row is added when its board is written.
+- [ ] **Step 5: Session log.** Read `docs/reference/session-log.md` on `foundation` *at this moment* and take the next free Known Issue numbers from there, never from this plan. Add the open items above as new Known Issues, then a dated entry for the build.
+- [ ] **Step 6: Merge order.** First, `git -C /Users/apple/Downloads/BSUK log --oneline -1 foundation`, and check whether `p5-readiness` has merged (`git -C /Users/apple/Downloads/BSUK branch --merged foundation | grep p5-readiness`).
+  - **If it has merged:** `git merge foundation` inside `BSUK-gaps` (a worktree of the same repo; nothing is fetched). Resolve the conflicts. Expected places: `package.json` `check:all` (keep both insertions: readiness's `check:workflow` and this build's `check:outline`); `tests/py/test_package_scripts.py` expected list (both); `data/quality/rule-index.json` (keep every row from both); `docs/reference/WORKFLOW.md` (keep readiness's rewrite, re-apply Task 11 Steps 3b–3c to it); `CLAUDE.md` (keep readiness's C5 edits, re-apply rule 17 after rule 16); the three builder skills (keep readiness's B2–B4 text, then this build's two appended blocks at the end); `rules/images.md` (both appends); the agents readiness Task 18 edited, where Task 7 appended the `IMAGE-DESIGNS.md` citation line. There, drop readiness's `IMAGE-DESIGNS.md → rules/images.md` REPLACED mapping, because the file now exists, and delete, rather than reword, the "(not ported — source repo only)" markers next to it. Re-run Step 1 (twice) after the merge.
+  - **If it has not merged yet:** merge `system-gaps` first. Write the list above into the session log as the readiness close-out's conflict guide, and tell the other session through the user. This build never edits `BSUK-p5r`.
+  - Then, from `/Users/apple/Downloads/BSUK` on `foundation`: `git merge --no-ff system-gaps -m "merge: system gaps — board entities/keywords, outline gate, link diversity, image rules and IMAGE-DESIGNS.md
+
+Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"`. Then `npm run build && python3 -m pytest tests/py -q && npm run -s check:all` on `foundation`. Never push.
+- [ ] **Step 7: Artifacts.** `python3 scripts/build_spec_artifact.py docs/superpowers/plans/2026-09-24-system-gaps.md docs/artifacts/bsuk-system-gaps-plan.html "BSUK System Gaps Plan" "BlueStaffyUK rebuild · before project 5" "System gaps plan" "BlueStaffyUK Rebuild — System Gaps" "status: executed" 2026-09-24 docs/superpowers/plans/2026-09-24-system-gaps.md` and the same for the gate report into `docs/artifacts/bsuk-system-gaps-report.html`. Republish both Artifacts at their URLs. Commit.
+- [ ] **Step 8: Memory and the user.** Update the `bsuk-system-gaps-status` memory to COMPLETE with the merge sha and URLs. Then tell the user, with the full progress table, "ready for project 5", naming anything left open (for example Task 11b declined).
