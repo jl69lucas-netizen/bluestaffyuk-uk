@@ -51,6 +51,7 @@ import tempfile
 
 from PIL import Image
 
+import image_candidates
 import image_designs
 import reframe_og
 
@@ -91,11 +92,10 @@ def slug_file(slug):
 
 def default_stem(filename):
     """The stem a folder file lands under when nothing records another name:
-    `File name- x .jpg .jpg` -> `x`. Same rule as image_candidates.asset_stem."""
-    stem = pathlib.Path(filename.strip()).stem.strip()
-    stem = re.sub(r"^file name-\s*", "", stem, flags=re.I)
-    stem = pathlib.Path(stem.strip()).stem
-    return re.sub(r"[^a-z0-9]+", "-", stem.lower()).strip("-")
+    `File name- x .jpg .jpg` -> `x`. It IS image_candidates.asset_stem, so the name ingest
+    writes and the name the candidates script and build gate look for cannot drift apart.
+    An empty result is refused by stem_problems()."""
+    return image_candidates.asset_stem(filename)
 
 
 def stem_problems(stem):

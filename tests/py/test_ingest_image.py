@@ -187,20 +187,29 @@ def test_a_good_stem_passes():
 
 
 NAMES = ["Roman1.jpg", "File name- defra-pet-transport-process.png .png",
-         "blue-staffy-for-sale-uk.png", "Christa.jpeg"]
+         "blue-staffy-for-sale-uk.png", "Christa.jpeg", "sbt-history.v2.jpg", "File name- .jpg"]
 
 
 def test_default_stem_and_slug_file():
     assert [default_stem(n) for n in NAMES] == ["roman1", "defra-pet-transport-process",
-                                                "blue-staffy-for-sale-uk", "christa"]
+                                                "blue-staffy-for-sale-uk", "christa",
+                                                "sbt-history-v2", ""]
     assert slug_file(SLUG) == "uk-locations--blue-staffy-leeds"
 
 
-def test_the_names_match_the_candidates_script():
+def test_the_names_match_the_candidates_script(tmp_path):
     """scripts/image_candidates.py decides where the build gate looks for a folder file.
     Skips until that module exists; from then on the two must agree."""
     ic = pytest.importorskip("image_candidates")
     assert [default_stem(n) for n in NAMES] == [ic.asset_stem(n) for n in NAMES]
+    # One rule, not two copies kept in step: default_stem delegates to asset_stem.
+    assert ingest_image.default_stem.__code__.co_names.count("asset_stem") == 1
+    # An empty stem is the same on both sides: the candidates script skips the file and
+    # ingest refuses the name.
+    assert default_stem("File name- .jpg") == ic.asset_stem("File name- .jpg") == ""
+    (tmp_path / "File name- .jpg").write_bytes(b"x")
+    assert ic.asset_images(tmp_path, ROOT) == ([], [])
+    assert stem_problems(default_stem("File name- .jpg"))
     assert slug_file(SLUG) == ic.slug_file(SLUG)
 
 
