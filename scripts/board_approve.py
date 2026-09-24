@@ -58,6 +58,11 @@ import pageboard as PB
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
 import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
 
+# The new-page rules that can only pass AFTER approval (an image drafted and approved by sha,
+# a folder file ingested, a generated file published): approval never waits on them, the
+# build gate does. Every other FAIL from family_rules refuses the approval.
+APPROVAL_EXEMPT = frozenset(IR.BUILD_CHECK_IDS)
+
 H2 = re.compile(r"<h2[^>]*>(.*?)</h2>", re.S)
 TAG = re.compile(r"<[^>]+>")
 
@@ -320,6 +325,17 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
             e["authorization"] = "ASSERTED"
     PB.validate_ontology(o)
     promoted = [e["id"] for e in o["entities"] if e["authorization"] != was[e["id"]]]
+
+    # The rules for new pages (scripts/family_rules.py) are answered HERE, on the record as
+    # approved, not first at the build gate: a record the build would refuse must never be
+    # approved, because fixing it afterwards moves the hash and forces a second approval.
+    # Board block 7b shows the same findings. Empty for every page applies() leaves out.
+    fails = [(c, m) for c, sev, m in PB.FR.findings(b, o)
+             if sev == "FAIL" and c not in APPROVAL_EXEMPT]
+    if fails:
+        raise PB.BoardError(
+            "this record breaks the rules for new pages — fix the record and board it again:\n"
+            + "\n".join(f"  - {c}: {m}" for c, m in fails))
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 

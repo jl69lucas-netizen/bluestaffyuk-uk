@@ -285,8 +285,11 @@ def test_an_approved_new_draft_is_accepted_over_an_older_served_copy(repo, tmp_p
     assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"served")}) == []
 
 
-def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo):
+def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo, monkeypatch):
     import board_approve as BA
+    # Approval now runs the new-page rules (Task 10d). This fixture plans no keyword variants
+    # or external links, so only the image checks are kept: this test is about the img: picks.
+    monkeypatch.setattr(FR, "CHECKS", [FR.image_every_body_heading, FR.image_build_ready])
     b = _full()
     picks = {"opening": "H-UT1", "at-a-glance": "C-UT1", "how-we-raise": "S1", "owners": "S1",
              "questions": "S1", "img:weeks-photo": "og:C", "img:checks-graphic": "ig:IG-2"}

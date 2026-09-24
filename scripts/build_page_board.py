@@ -768,6 +768,32 @@ def decisions_lines(brief):
             f"**Schema plan.** offer model {md(sch['offer_model'])}; types: {', '.join(md(t) for t in sch['types'])}."]
 
 
+REFUSAL_LINE = "Approval will be refused until the FAIL rows in 7b are fixed."
+# Scoped to block 7b, and emitted only with it: a rule in CSS would change every built board.
+RULES_CSS = ('<style>.rules{display:grid;gap:6px;margin:4px 0 10px}'
+             '.rules .rule{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;font-size:14px}'
+             '.rules .rule code{font-size:13px}.rules .rule .msg{flex:1 1 20ch;min-width:0}'
+             '.rules .pill.fail{color:var(--warn);border-color:var(--warn);font-weight:700}'
+             '.rules .pill.warn{color:var(--ink-2)}.rules .later{font-size:12px;color:var(--ink-3)}'
+             '.rules-refused{color:var(--warn);font-weight:600;font-size:14px}</style>')
+
+
+def rules_block(findings):
+    """Block 7b: every family_rules finding as a row, and whether approval will be refused.
+    Build-gate ids (board_approve.APPROVAL_EXEMPT) can only pass after approval, so they are
+    shown with that note and never announce a refusal."""
+    if not findings:
+        return RULES_CSS + '<p class="rules-pass">All new-page rules pass.</p>', False
+    rows, refused = [], False
+    for check, sev, msg in findings:
+        exempt = check in IR.BUILD_CHECK_IDS
+        refused = refused or (sev == "FAIL" and not exempt)
+        later = ' <span class="later">checked at build, after the image is approved</span>' if exempt else ""
+        rows.append(f'<div class="rule"><span class="pill {"fail" if sev == "FAIL" else "warn"}">{esc(sev)}</span>'
+                    f'<code>{esc(check)}</code><span class="msg">{esc(msg)}{later}</span></div>')
+    return RULES_CSS + f'<div class="rules">{"".join(rows)}</div>', refused
+
+
 def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, nav=None, images=None):
     previews = previews if previews is not None else {"css": "", "blocks": {}, "names": {}, "images": {}}
     nav = nav if nav is not None else {"css": "", "blocks": {}}
@@ -891,9 +917,21 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
         for a in board["assets"])
     parts.append(("7. Images & styles", f'<div class="slots">{slots}</div>' + IR.board_block(board, images)))
 
+    # 7b only on the pages the new-page rules bind, so the twelve built boards render
+    # byte-for-byte as they did before these rules reached the board.
+    refused = False
+    if PB.FR.applies(board):
+        rules_html, refused = rules_block(PB.FR.findings(board, ont))
+        parts.append(("7b. Rules for new pages", rules_html))
+
+    status = ("Approved as it stands." if approved else
+              REFUSAL_LINE if refused else "Connecting to the board database…")
     approve = (f'<div id="approve"><button class="btn" id="approve-btn" disabled>Approve this board</button>'
-               f'<span class="status" id="approve-status">{"Approved as it stands." if approved else "Connecting to the board database…"}</span></div>')
-    parts.append(("8. Approve", approve + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
+               f'<span class="status" id="approve-status">{status}</span></div>')
+    # The status span is rewritten by the database script below, so a refusal is also said
+    # where no script touches it.
+    refusal_note = f'\n\n<p class="rules-refused">{REFUSAL_LINE}</p>' if refused and not approved else ""
+    parts.append(("8. Approve", approve + refusal_note + "\n\nWrites your H1 choice, picks, notes and the record hash to the board database. Build refuses to start without it; any later edit to the record clears it."))
 
     blocks = "".join(f'<script type="text/markdown" data-title="{esc(t)}">\n{b}\n</script>\n' for t, b in parts)
     record_hash = PB.record_hash(board)
