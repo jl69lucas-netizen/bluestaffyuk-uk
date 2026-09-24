@@ -90,7 +90,7 @@ What the script decides (to explain it, never to redo it):
   - the answer's **local businesses** are kept apart the same way — `local_businesses` entries and `brand_entities` items whose `category` is `local_business`; a brand entity with a title and no link is kept by `name`, mapped to a registry entry only when its name is that entry's name exactly (then it takes the entry's domain), else `domain: null`;
   - WhatsApp, maps and social-profile hosts are dropped as contact or profile links — never recorded;
   - hosted-platform hosts (Blogspot, WordPress.com, Wix, Squarespace, Weebly …) are kept with `platform: true` — a seller on a platform, never a registry candidate;
-  - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains (the business email's domain in `data/settings.json`, a site-domain key there if one is added, and the build placeholder);
+  - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains — `own_domains()` in `scripts/competitor_registry_check.py`, the same helper `tests/py/test_llm_intel.py` checks with: the root domain of the business email in `data/settings.json`, of a site-domain key there if one is added, and the build placeholder;
   - `citation_gap` = registry tiers 1–4 among them while BSUK is not; a tier-5 site goes to `risks` once, never to the gap.
 - **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable (its `<main>`). A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
 - **Entities:** the buying-safety list (health tests, L-2-HGA, HC-HSF4, meeting the mother, microchip, vaccinations, vet check, KC registration, licence, contract), each recorded only when the answer uses it, then your `EXTRA`. Matched on normalised whole words (a plural `s` counts) against the page text. **High** = a safety entity missing from the page; everything else medium.
@@ -102,9 +102,8 @@ OUT=docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json
 QUERY="<query>" TODAY=<YYYY-MM-DD> EXTRA="<name|variant;...>" \
   python3 - <slug> data/queries/raw/<slug>/ai_engines.response.json > "$OUT" <<'EOF'; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"; echo "exit $rc"
 import datetime, glob, html, json, os, re, sys
-from urllib.parse import urlparse
 sys.path.insert(0, "scripts")
-from competitor_registry_check import CC_SECOND_LEVELS  # the registry's root-domain rule
+from competitor_registry_check import own_domains, root_domain as root  # the registry's root-domain rule; BSUK's own domains
 slug, resp_path = sys.argv[1], (sys.argv[2:] or [None])[0]
 QUERY = os.environ["QUERY"]  # the buyer question asked
 NOT_FETCHED = os.environ.get("NOT_FETCHED", "").strip()  # a reason: no answer to read
@@ -133,21 +132,7 @@ PROFILE_HOSTS = {"wa.me", "wa.link", "whatsapp.com", "instagram.com", "facebook.
                  "x.com", "twitter.com", "youtube.com", "linktr.ee", "snapchat.com", "google.com", "goo.gl"}  # contact, maps or profile links, never recorded
 PLATFORM_HOSTS = {"blogspot.com", "wordpress.com", "wixsite.com", "squarespace.com", "weebly.com", "webflow.io",
                   "carrd.co", "jimdosite.com", "godaddysites.com", "square.site", "business.site"}  # sellers on a host, never registry candidates
-PLACEHOLDER = "site_url_placeholder"
-def root(u):  # the registry's rule: two labels, or three under co/org/me/... + a 2-letter ccTLD
-    h = (urlparse(u if "//" in u else "//" + u).hostname or "").lower().rstrip(".")
-    try:
-        h = h.encode("idna").decode()
-    except UnicodeError:
-        pass
-    labels = h.split(".")
-    if h == PLACEHOLDER:
-        return h
-    keep = 3 if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-1].isalpha() and labels[-2] in CC_SECOND_LEVELS else 2
-    return ".".join(labels[-keep:]) if len(labels) >= 2 else None
-settings = json.load(open("data/settings.json")) if os.path.exists("data/settings.json") else {}
-OWN = {PLACEHOLDER} | {root(v) for v in [settings.get(k) for k in ("site_domain", "site_url", "domain")]
-                       + [str(settings.get("email", "")).rpartition("@")[2]] if isinstance(v, str) and "." in v}
+OWN = own_domains()  # the same helper tests/py/test_llm_intel.py checks with
 # the page and where the query came from: the city question, else the question file, else the page map (+ gap-matrix rows)
 qfile = f"data/queries/{slug}.json"
 q = json.load(open(qfile)) if os.path.exists(qfile) else None

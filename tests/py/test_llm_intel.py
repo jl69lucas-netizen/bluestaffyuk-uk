@@ -20,34 +20,19 @@ import pytest
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCHEMA = json.loads((ROOT / "schemas/llm-intel.schema.json").read_text(encoding="utf-8"))
 OUT_DIR = ROOT / "docs/research/llm-intel"
-PLACEHOLDER = "site_url_placeholder"
+sys.path.insert(0, str(ROOT / "scripts"))
+from competitor_registry_check import own_domains  # noqa: E402  the agent's script uses the same helper
 
-
-def own_domains(root=ROOT):
-    """BSUK's own domains, matched exactly: a site-domain key in data/settings.json when one exists,
-    the domain of its business email, and the build placeholder."""
-    try:
-        s = json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
-    except (OSError, ValueError):
-        s = {}
-    vals = [s.get(k) for k in ("site_domain", "site_url", "domain")] + [str(s.get("email", "")).rpartition("@")[2]]
-    out = {PLACEHOLDER}
-    for v in vals:
-        if isinstance(v, str) and "." in v:
-            host = re.sub(r"^[a-z]+://", "", v.strip().lower()).split("/")[0]
-            out.add(host[4:] if host.startswith("www.") else host)
-    return out
-
-
-OWN = own_domains()
+OWN = own_domains(ROOT)
 
 
 def _band(words):
     return "short" if words < 100 else "medium" if words <= 300 else "long"
 
 
-def problems(doc, name=None):
-    """Every way `doc` breaks the contract; [] when it keeps it."""
+def problems(doc, name=None, own=None):
+    """Every way `doc` breaks the contract; [] when it keeps it. `own`: BSUK's domains (default: this repo's)."""
+    own_set = OWN if own is None else own
     errs = sorted(jsonschema.Draft202012Validator(SCHEMA).iter_errors(doc), key=lambda e: list(e.path))
     if errs:
         return [f"schema: {'/'.join(map(str, e.path)) or '(root)'}: {e.message}" for e in errs]
@@ -68,13 +53,13 @@ def problems(doc, name=None):
             out.append("NOT FETCHED: format is NOT FETCHED")
         if doc["paid_this_run"] and not doc["fetched"]["reason"].startswith("connector error"):
             out.append("NOT FETCHED: paid_this_run only for a connector error after the call was billed")
-    own = any(s["domain"] in OWN for s in sites)
+    own = any(s["domain"] in own_set for s in sites)
     if ok and doc["bsuk_cited"] != own:
         out.append(f"bsuk_cited is {doc['bsuk_cited']} but a BSUK domain is {'' if own else 'not '}among the sites")
     for s in sites:
         if (s["registry_id"] is None) != (s["tier"] is None):
             out.append(f"{s['domain']}: registry_id and tier are both set or both null")
-        if s["domain"] in OWN and s["registry_id"] is not None:
+        if s["domain"] in own_set and s["registry_id"] is not None:
             out.append(f"{s['domain']}: BSUK's own domain has no registry id")
         if s["platform"] and s["registry_id"] is not None:
             out.append(f"{s['domain']}: a hosting platform is never a registry entry")
@@ -591,3 +576,19 @@ def test_brand_entities_in_the_local_business_category_are_local_businesses(tmp_
     assert [r["domain"] for r in doc["risks"]] == ["stormnoir.co.uk"]
     assert doc["bsuk_cited"] is False
     assert problems(doc, f"{MAN}-2026-09-23.json") == []
+
+
+def test_the_script_and_this_contract_share_one_own_domain_rule(tmp_path):
+    # Known Issue 53: one helper, scripts/competitor_registry_check.py own_domains(), in both places
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from competitor_registry_check import own_domains as shared
+    root = _root(tmp_path)
+    (root / "data/settings.json").write_text(json.dumps(
+        {"site_url": "https://www.shop.bluestaffyuk.co.uk/puppies/", "email": "hello@mail.bluestaffyuk.uk"}), encoding="utf-8")
+    own = shared(root)
+    assert own == {"site_url_placeholder", "bluestaffyuk.co.uk", "bluestaffyuk.uk"}
+    code, doc, err = _run(root, _answer("See https://blog.bluestaffyuk.co.uk/ for puppies."))
+    assert code == 0, err
+    assert doc["bsuk_cited"] is True and doc["citations"][0]["domain"] == "bluestaffyuk.co.uk"
+    assert problems(doc, f"{MAN}-2026-09-23.json", own=own) == []
+    assert "def root(" not in _agent_script() and "own_domains" in _agent_script()

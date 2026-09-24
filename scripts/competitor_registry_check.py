@@ -100,6 +100,19 @@ def root_domain(url):
     return ".".join(labels[-keep:])
 
 
+def own_domains(root=ROOT):
+    """BSUK's own domains, matched exactly: the root domain of a site-domain key in data/settings.json
+    (site_domain, site_url or domain) when one exists, of its business email, and the build
+    placeholder. One rule for bsuk-llm-keyword-intel's script and tests/py/test_llm_intel.py."""
+    try:
+        s = json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        s = {}
+    s = s if isinstance(s, dict) else {}
+    vals = [s.get(k) for k in ("site_domain", "site_url", "domain")] + [str(s.get("email", "")).rpartition("@")[2]]
+    return {PLACEHOLDER} | {d for d in (root_domain(v) for v in vals if isinstance(v, str) and "." in v) if d}
+
+
 def problems(reg, root=ROOT):
     schema = json.loads(SCHEMA.read_text(encoding="utf-8"))
     errors = sorted(jsonschema.Draft202012Validator(schema).iter_errors(reg), key=lambda e: list(e.path))
