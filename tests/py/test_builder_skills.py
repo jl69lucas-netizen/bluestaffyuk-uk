@@ -132,3 +132,9 @@ def test_the_comparison_layout_rules_name_no_fixed_header_or_toc_size():
     layout = section(COMPARISON, "## 11.")
     for fixed in ("96px", "200px"):
         assert fixed not in layout, fixed
+
+
+def test_the_blog_builder_uses_the_link_library_and_the_registry():
+    assert "docs/reference/external-link-library.md" in BLOG
+    assert "data/competitors.json" in BLOG
+    assert "This file governs in any conflict" not in BLOG
