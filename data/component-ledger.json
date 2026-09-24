@@ -131,6 +131,18 @@
       "faq": "faq-s3",
       "takeaway": [],
       "h6_prefixes": []
+    },
+    "index": {
+      "hero": "hero-h-hm2",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "h6_prefixes": []
     }
   }
 }
