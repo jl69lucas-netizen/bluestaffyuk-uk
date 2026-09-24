@@ -144,6 +144,9 @@ def test_publish_refuses_until_the_board_approves_those_exact_bytes(repo, master
     with pytest.raises(Refused, match="not the image the breeder approved"):
         publish(SLUG, "garden-photo", STEM, root=repo)
     assert not (repo / "public/images" / (STEM + ".webp")).exists()
+    approve(repo, r["pick"] + "\n")                        # the gate's grammar: whole string only
+    with pytest.raises(Refused, match="not approved as an image"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
     approve(repo, r["pick"])
     out = publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
     served = repo / "public/images" / (STEM + ".webp")
@@ -215,9 +218,13 @@ def test_the_names_match_the_candidates_script(tmp_path):
 
 def test_the_pick_grammar_matches_the_build_gate():
     rules = pytest.importorskip("image_rules")
+    # One grammar, not two copies kept in step: ingest reuses the build gate's PICK, with its
+    # containment (no `.`/`..` segments) and its whole-string match.
+    assert PICK is rules.PICK
     for v in ("file:/images/a.webp", "assets:Roman1.jpg", "og:B", "og:B:0123456789ab",
-              "ig:IG-3", "ig:IG-3:0123456789ab", "og:F", "ig:IG-9", "og:B:xyz"):
-        assert bool(PICK.match(v)) == (rules.parse_pick(v) is not None), v
+              "ig:IG-3", "ig:IG-3:0123456789ab", "og:F", "ig:IG-9", "og:B:xyz",
+              "og:B:0123456789ab\n", "file:/images/../x.webp", "assets:..", "assets:a/b.jpg"):
+        assert bool(PICK.fullmatch(v)) == (rules.parse_pick(v) is not None), v
 
 
 # ── the re-bake and the real ledger ──────────────────────────────────────────────────────

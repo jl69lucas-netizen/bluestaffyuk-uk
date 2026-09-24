@@ -53,6 +53,7 @@ from PIL import Image
 
 import image_candidates
 import image_designs
+import image_rules
 import reframe_og
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -73,11 +74,9 @@ SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
 SLUG = re.compile(r"^[a-z0-9-]+(/[a-z0-9-]+)*$")
 BAKED = {"A": "contain", "B": "blurfill", "E": "topcover"}
 NATIVE = {"C", "D", "H"}
-# The approval pick, spelled exactly as the build gate (scripts/image_rules.py) parses it.
-PICK = re.compile(r"^(?:file:(?P<file>/images/[A-Za-z0-9._/-]+)"
-                  r"|assets:(?P<asset>[^/\\]+)"
-                  r"|og:(?P<og>[ABCDEH])(?::(?P<ogsha>[0-9a-f]{12}))?"
-                  r"|ig:(?P<ig>IG-[1-5])(?::(?P<igsha>[0-9a-f]{12}))?)$")
+# The approval pick: the build gate's own grammar (scripts/image_rules.py), matched whole
+# with fullmatch, so ingest and the gate cannot drift apart. image_rules never imports this.
+PICK = image_rules.PICK
 
 
 class Refused(Exception):
@@ -452,7 +451,7 @@ def publish(slug, slot, stem, root=ROOT, today=None):
         _refuse(["no draft for slot %r at %s — run the draft command first" % (slot, src)])
     board = _read_json(board_path(slug, root), {})
     raw = ((board.get("approval") or {}).get("picks") or {}).get("img:" + slot)
-    m = PICK.match(raw or "")
+    m = PICK.fullmatch(raw) if isinstance(raw, str) else None
     sha = m and (m.group("ogsha") or m.group("igsha"))
     if not sha:
         _refuse(["slot %r is not approved as an image: its pick is %r — re-board and approve "
