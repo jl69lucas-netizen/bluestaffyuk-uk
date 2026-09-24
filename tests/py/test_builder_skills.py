@@ -138,3 +138,12 @@ def test_the_blog_builder_uses_the_link_library_and_the_registry():
     assert "docs/reference/external-link-library.md" in BLOG
     assert "data/competitors.json" in BLOG
     assert "This file governs in any conflict" not in BLOG
+
+
+def test_the_blog_builder_has_no_source_site_leftovers():
+    for leftover in ("best-place", "crate-setup", "Batch-2", "assets/BSUK-BLOG-POSTS",
+                     "quality=82", "1408×768", "media=print", "interaction-deferred",
+                     "/blog/uk-staffordshire", "FAQ / 3 zones", "all 9 posts",
+                     "the other 8 posts"):
+        assert leftover not in BLOG, leftover
+    assert "`/<slug>/`" in BLOG
