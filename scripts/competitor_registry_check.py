@@ -23,6 +23,7 @@ Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §4, §12.
 """
 import argparse
 import json
+import os
 import pathlib
 import re
 import sys
@@ -100,17 +101,25 @@ def root_domain(url):
     return ".".join(labels[-keep:])
 
 
-def own_domains(root=ROOT):
+def own_domains(root=ROOT, strict=False):
     """BSUK's own domains, matched exactly: the root domain of a site-domain key in data/settings.json
-    (site_domain, site_url or domain) when one exists, of its business email, and the build
-    placeholder. One rule for bsuk-llm-keyword-intel's script and tests/py/test_llm_intel.py."""
+    (site_domain, site_url or domain) when one exists, of its business email, of the SITE_URL
+    environment variable once it is a real domain (project 6), and the build placeholder. One rule
+    for bsuk-llm-keyword-intel's script and tests/py/test_llm_intel.py. `strict` (the paid script):
+    stop when nothing but the placeholder is known, rather than judge bsuk_cited against it."""
     try:
         s = json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         s = {}
     s = s if isinstance(s, dict) else {}
     vals = [s.get(k) for k in ("site_domain", "site_url", "domain")] + [str(s.get("email", "")).rpartition("@")[2]]
-    return {PLACEHOLDER} | {d for d in (root_domain(v) for v in vals if isinstance(v, str) and "." in v) if d}
+    own = {PLACEHOLDER} | {d for d in (root_domain(v) for v in vals if isinstance(v, str) and "." in v) if d}
+    site = os.environ.get("SITE_URL", "").strip()
+    if site and root_domain(site) not in (None, PLACEHOLDER):
+        own.add(root_domain(site))
+    if strict and own == {PLACEHOLDER}:
+        raise SystemExit("data/settings.json names no BSUK domain (email or site-domain key) — refusing to judge bsuk_cited")
+    return own
 
 
 def problems(reg, root=ROOT):

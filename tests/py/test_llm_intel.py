@@ -229,6 +229,7 @@ def test_the_agent_script_uses_the_page_map_and_gap_matrix_without_a_question_fi
          "headings": [["h2", "How much is a Staffy?"], ["h2", "Why health tested litters cost more"]]}]}), encoding="utf-8")
     (tmp_path / "data/competitors.json").write_text(json.dumps({"competitors": [
         {"id": "cheap-pups", "root_domain": "cheap-pups.com", "tier": 5}]}), encoding="utf-8")
+    shutil.copy(ROOT / "data/settings.json", tmp_path / "data")  # BSUK's domains: the script stops without one
     (tmp_path / "docs/research").mkdir(parents=True)
     (tmp_path / "docs/research/gap-matrix-2026-07-01.md").write_text("| staffy puppy price uk | 3 |\n", encoding="utf-8")
     (tmp_path / "docs/research/gap-matrix-2026-08-01.md").write_text("| staffy puppy price uk | 4 |\n", encoding="utf-8")
@@ -274,6 +275,7 @@ def test_the_agent_script_reads_the_real_page_map_entry_with_no_build(tmp_path):
     shutil.copy(ROOT / "data/locations.json", tmp_path / "data")
     (tmp_path / "data/page-map.json").write_text(json.dumps({"pages": [entry]}), encoding="utf-8")
     query = "How do I buy a blue Staffy puppy in the UK?"
+    shutil.copy(ROOT / "data/settings.json", tmp_path / "data")  # BSUK's domains: the script stops without one
     resp = tmp_path / "resp.json"
     resp.write_text(json.dumps({"tasks": [{"result": [{"keyword": query,
         "markdown": "Choose a breeder who shows the puppy with its mother and shares health test results.",
@@ -592,3 +594,40 @@ def test_the_script_and_this_contract_share_one_own_domain_rule(tmp_path):
     assert doc["bsuk_cited"] is True and doc["citations"][0]["domain"] == "bluestaffyuk.co.uk"
     assert problems(doc, f"{MAN}-2026-09-23.json", own=own) == []
     assert "def root(" not in _agent_script() and "own_domains" in _agent_script()
+
+
+def test_the_paid_script_refuses_to_judge_bsuk_cited_without_a_bsuk_domain(tmp_path, monkeypatch):
+    # settings.json with no email and no site-domain key: the lenient helper still gives the placeholder
+    # set, but the agent's script (own_domains(strict=True)) exits non-zero and its OUT file is removed
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from competitor_registry_check import own_domains as shared
+    monkeypatch.delenv("SITE_URL", raising=False)
+    root = _root(tmp_path)
+    (root / "data/settings.json").write_text(json.dumps({"phone": "PHONE_PLACEHOLDER"}), encoding="utf-8")
+    assert shared(root) == {"site_url_placeholder"}
+    with pytest.raises(SystemExit, match="names no BSUK domain"):
+        shared(root, strict=True)
+    assert "OWN = own_domains(strict=True)" in _agent_script()
+    (root / "resp.json").write_text(json.dumps(_answer("See https://www.thekennelclub.org.uk/.")), encoding="utf-8")
+    out = root / "out.json"
+    env = {k: v for k, v in os.environ.items() if k not in ("PAID", "FETCHED_ON", "NOT_FETCHED", "GAP_TOPICS", "EXTRA")}
+    env.update(QUERY=MAN_Q, TODAY="2026-09-23", OUT=str(out))
+    run = subprocess.run(  # the agent's own pattern: > "$OUT"; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"
+        ["bash", "-c", 'python3 - "$@" > "$OUT"; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"; exit $rc', "_", MAN, "resp.json"],
+        input=_agent_script(), cwd=root, env=env, capture_output=True, text=True)
+    assert run.returncode != 0 and "refusing to judge bsuk_cited" in run.stderr
+    assert not out.exists()
+
+
+def test_a_real_site_url_counts_as_a_bsuk_domain(tmp_path, monkeypatch):
+    # project 6 sets the live domain in SITE_URL; the build placeholder there adds nothing
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from competitor_registry_check import own_domains as shared
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data/settings.json").write_text(json.dumps({"phone": "PHONE_PLACEHOLDER"}), encoding="utf-8")
+    monkeypatch.setenv("SITE_URL", "https://SITE_URL_PLACEHOLDER")
+    assert shared(tmp_path) == {"site_url_placeholder"}
+    with pytest.raises(SystemExit):
+        shared(tmp_path, strict=True)
+    monkeypatch.setenv("SITE_URL", "https://www.example.co.uk")
+    assert shared(tmp_path, strict=True) == {"site_url_placeholder", "example.co.uk"}

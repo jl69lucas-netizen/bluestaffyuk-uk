@@ -132,7 +132,7 @@ PROFILE_HOSTS = {"wa.me", "wa.link", "whatsapp.com", "instagram.com", "facebook.
                  "x.com", "twitter.com", "youtube.com", "linktr.ee", "snapchat.com", "google.com", "goo.gl"}  # contact, maps or profile links, never recorded
 PLATFORM_HOSTS = {"blogspot.com", "wordpress.com", "wixsite.com", "squarespace.com", "weebly.com", "webflow.io",
                   "carrd.co", "jimdosite.com", "godaddysites.com", "square.site", "business.site"}  # sellers on a host, never registry candidates
-OWN = own_domains()  # the same helper tests/py/test_llm_intel.py checks with
+OWN = own_domains(strict=True)  # the same helper tests/py/test_llm_intel.py checks with; no BSUK domain known -> stop
 # the page and where the query came from: the city question, else the question file, else the page map (+ gap-matrix rows)
 qfile = f"data/queries/{slug}.json"
 q = json.load(open(qfile)) if os.path.exists(qfile) else None
