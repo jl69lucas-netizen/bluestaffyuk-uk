@@ -29,12 +29,14 @@ Every blog post follows this fixed skeleton (every post, and the hub). A post is
 8. **Breeder Note / E-E-A-T block** — SUGGESTED moat. First-person BlueStaffyUK insight (bsuk-blog-breeder-note component).
 9. **"What you get from a real breeder" trust band** — SUGGESTED moat.
 10. **FAQ accordion** — MANDATORY. Every pick in `data/queries/<slug>.json`, each question an H3; one block, as the post template renders it (the three-block split is location-only). Visible FAQPage JSON-LD carrying exactly the visible questions.
-11. **[SPECIAL-ELEMENT — BOTTOM] Bottom conversion module** — Available-puppy card + inquiry CTA. Delivery line: `UK home delivery £200–£350 by distance, by DEFRA-approved transport · or collect in Carlisle`, from `data/settings.json`.
+11. **[SPECIAL-ELEMENT — BOTTOM] Bottom conversion module** — Available-puppy card + inquiry CTA. Delivery line: `UK home delivery by DEFRA-approved transport, priced by distance, £200–£350 · or collect in Carlisle`, built from `data/settings.json` (`delivery_note`, `delivery_min_gbp`–`delivery_max_gbp`, `address.city`).
 12. **Related blog posts** — MANDATORY silo. bsuk-blog-related-posts component.
 13. **Newsletter block** — MANDATORY (lower placement; top strip does early capture).
-14. **One closing CTA** — MANDATORY. The post owns it (step 11's inquiry card, or a closing band when step 11 carries none). `BaseLayout` renders no site-wide CTA band and has no prop that hides one.
+14. **One closing CTA** — MANDATORY. A post renders through `PageShell`, whose `SiteFooterKit` puts the site's `.cta-band` ("Ready to meet the litter?") on every post: that footer band IS the page's closing CTA. In the post body this step is step 11's inquiry card — never a second band.
 
 Every page carries all three special-element slots (TOP/MIDDLE/BOTTOM). MIDDLE module is chosen per page.
+
+**What the post route can render today.** A post is a `.md` entry: `src/content.config.ts` globs only `**/*.md`, and its only image fields are `featured_image` (a path string) and `featured_image_alt`; `src/pages/[...post].astro` passes the kit `Hero` just those two (`image`, `imageAlt`). A post that needs hero dimensions or a `srcset`, a `src/assets/` hero, or any component in its body (every special-element block in §2) first needs `src/content.config.ts` extended (glob `**/*.{md,mdx}` plus the image fields) and `[...post].astro` taught to pass them — a project-5 change, decided on that post's board.
 
 ---
 
@@ -65,13 +67,13 @@ a location-page rule), and every `must_answer` question is answered with `covere
 `npm run check:queries` fails the page otherwise. The research below builds on that file; it
 does not replace it.
 
-**Depth:** a competitor scan to identify who owns each topic and where their gap is (the registry is `data/competitors.json`; a registry entry with no report under `docs/research/competitors/` is NOT FETCHED); deep audit of the top 5–6 rankable results in the question file's Google and Bing top-5 (`sources.serp_google`, `sources.serp_bing`). Non-leaders get a light pass.
+**Depth:** a competitor scan to identify who owns each topic and where their gap is (the registry is `data/competitors.json`; a registry entry with no report under `docs/research/competitors/` is NOT FETCHED); deep audit of the top 5–6 rankable results in the question file's top-level `competitors` array (the Google and Bing top-5, merged, each with `google_pos` and `bing_pos`). Non-leaders get a light pass.
 
 **Per-page strategy doc** → `docs/superpowers/sessions/YYYY-MM-DD-blog-strategy-<slug>.md`. 17 required fields:
 1. Page + primary KW + search-intent split (info/commercial/transactional %)
 2. Content-type verdict (competitor posture vs. recommended BlueStaffyUK posture)
-3. Top-3 Google competitors (from the question file's `sources.serp_google`)
-4. Bing top-3 (from the question file's `sources.serp_bing`)
+3. Top-3 Google competitors (from `data/queries/raw/<slug>/serp_google.json`)
+4. Bing top-3 (from `data/queries/raw/<slug>/serp_bing.json`)
 5. Registry signal — `data/competitors.json` and `docs/research/gap-matrix-2026-09-23.md` (who ranks/owns + gap)
 6. **Competitor on-page keyword audit table** — per competitor: KW in slug/title/meta/H1, on-page count, variations, entity types, content category
 7. Why they rank (reverse-engineered signals)
@@ -101,11 +103,11 @@ does not replace it.
 
 ### 5. Baked-in Gates (non-negotiable, every blog page)
 
-- **Heading Outline Gate** — present full H1→H6 outline (all six levels, sequential, ≥5 H5 AND ≥5 H6) + get explicit approval **BEFORE any page code**. No skipped levels. See `rules/headings.md` (`heading-hierarchy-outline-gate`); the rule moved out of CLAUDE.md on 2026-08-02.
+- **Heading Outline Gate** — present full H1→H6 outline (all six levels, sequential, ≥5 H5 AND ≥5 H6) + get explicit approval **BEFORE any page code**. No skipped levels. See `rules/headings.md` (`heading-hierarchy-outline-gate`); the rule moved out of CLAUDE.md on 2026-08-02. For a post, `scripts/final_page_audit.py` exempts the six-level outline, the ≥5 H5 / ≥5 H6 floor and the FAQPage check (`POST_EXEMPT_CHECKS`), so that floor is checked by hand at this gate.
 - **Line-icons not emoji** — Coat-style SVGs (`1em`, `currentColor`). Keep only ✔ ✗ ★ text glyphs. Never use 💡 ⚠ or any pictograph emoji.
-- **Delivery line on every card** — `UK home delivery £200–£350 by distance · or collect in Carlisle`. Pull from `data/settings.json` and `data/price-matrix.json`. No hardcoded figures.
+- **Delivery line on every card** — `UK home delivery by DEFRA-approved transport, priced by distance, £200–£350 · or collect in Carlisle`. Pull from `data/settings.json` (as §1 step 11) and `data/price-matrix.json`. No hardcoded figures.
 - **Schema visible + verified in `dist/`** — extend existing JSON-LD, never duplicate. Verify with grep on `dist/` output, not source files.
-- **One CTA per page** — the post's own closing CTA (§1 step 14); `BaseLayout` adds none.
+- **One CTA per page** — the footer's `.cta-band` (`SiteFooterKit`, through `PageShell`) is the closing CTA on every post; the body adds only step 11's inquiry card, never a second band (§1 step 14).
 - **NEVER a visible date** — freshness in schema only (`dateModified` / `datePublished`). No "Updated June 2026" visible text anywhere.
 - The licence line (LICENCE_CLAIM_PLACEHOLDER) and the statute line (LEGAL_CLAIM_PLACEHOLDER), in prose only, on every page that needs them — and only as recorded in `data/quality/evidence-ledger.json`.
 - **Type parity** — identical H1–H6 + body heights desktop/tablet/mobile enforced by Type Specimen + Mobile Type components.
@@ -125,9 +127,9 @@ CSS custom properties are **not auto-imported** in Astro components. In the blog
 Bake these into every blog build and rebuild.
 
 **A. Mobile performance.**
-- An unused-JavaScript or missing-source-map flag on a `/70de/` script is the Google tag gateway, not anything in `src/` — diagnose it with `.claude/skills/bsuk-perf-gate/SKILL.md` (its `--live` run names it). There is no host to configure until project 6.
-- **Images:** reuse every `/images/…` file at its original path (`CLAUDE.md` rule 11). The checks are `img_dims` and `img-srcset-within-2x` (blocking) and `img-sizes-matches-box`; a new master goes to `src/assets/` and through `astro:assets`, which builds the candidates. Encode with Pillow (`cwebp` is not installed); keep each delivered file under 100KB.
-- **The hero is the LCP image.** The kit `Hero` renders it eager with `fetchpriority="high"` and states its own `sizes`; for a `/images/…` path pass `imageSrcset`, `imageWidth` and `imageHeight`. `BaseLayout` has no hero-preload prop — never add a second `<link rel=preload>` by hand.
+- An unused-JavaScript or missing-source-map flag on a `/70de/` script is the Google tag gateway, not anything in `src/` — diagnose it with `.claude/skills/bsuk-perf-gate/SKILL.md` (from project 6, its `--live` run names it). There is no host to configure until project 6.
+- **Images:** reuse every `/images/…` file at its original path (`CLAUDE.md` rule 11). The checks are `img_dims`, `img-srcset-within-2x` and `img-sizes-matches-box` (all blocking; the last is hero-only); a new master goes to `src/assets/` and through `astro:assets`, which builds the candidates. Encode with Pillow (`cwebp` is not installed); keep each delivered file under 100KB.
+- **The hero is the LCP image.** The kit `Hero` renders it eager with `fetchpriority="high"` and states its own `sizes`. On a post the route passes it only `featured_image` and its alt (§1); `imageSrcset`, `imageWidth` and `imageHeight` reach it only after the route change §1 describes. `BaseLayout` has no hero-preload prop — never add a second `<link rel=preload>` by hand.
 - `BaseLayout` loads no analytics tag and no Google Fonts stylesheet today, and a post adds neither by hand. Fonts: see `rules/design.md`.
 - **Render-blocking CSS is solved globally:** `astro.config.mjs` sets `build.inlineStylesheets: 'always'`, so ALL CSS is inlined into each page's `<style>` — no external stylesheet, no critical chain. Do NOT re-add `<link rel="stylesheet">` for local CSS, and do NOT revert to 'auto'. Corollary: **anything in ANY component's CSS now appears in EVERY page's HTML** — a single `select-none` Tailwind utility or `user-select: none` rule anywhere in src/ makes `scripts/final_page_audit.py` hard-FAIL the whole site (`no_userselect_none`). Never introduce it.
 
@@ -136,7 +138,7 @@ Bake these into every blog build and rebuild.
 **C. Hero eyebrow parity (do not ship `text-sm uppercase`).** Blog hero eyebrow = the homepage style: `font-body text-xs font-medium tracking-wide`, **sentence/Title case (NOT uppercase)**, color **`--color-link-on-inverse`** on the steel `--color-brand` hero. `text-sm uppercase tracking-widest` renders oversized on mobile (no fluid shrink) — the breeder flagged it explicitly.
   - **AA contrast on the steel hero (computed from `data/design/contrast.json`, project 3):** the eyebrow token `--color-link-on-inverse` is 9.1:1 on `--color-surface-inverse` and `--color-text-on-inverse` is 10.4:1, so both clear AA at `text-xs`. `--color-cta` is 4.9:1 there — fine for a large accent, never for `text-xs`. The old "body text on the band needs ≥0.85 alpha" rule does **not** carry over: the steel band is dark enough that `--color-text-on-inverse` at 0.7 alpha still measures 6.0:1. Do not put `--color-cta` on `--color-surface` (2.1:1) at any size.
 
-**D. "Page already shows for a query but has no coverage" → FAQ-first.** From project 6, when search console shows the page ranking for a query the body doesn't answer, **verify existing coverage first**, then add the question to the data — a bank row in `data/faq.json` or a real sourced question in the page's raw files — rebuild the question file (`/bsuk-query-augmentation`), rebuild the page from its picks and fill `covered_by`. Never add an entry to the page's `faqs[]` directly. If it is a real subtopic, add one sequential H3 (never skip a level — re-run `scripts/final_page_audit.py` to confirm ≥5 H5 / ≥5 H6 still hold). Watch for intent splits the single-topic post misses: a query about a different situation from the one the post covers is a new H3 (or a new post), not a stretched answer. Always show the placement map for approval before writing.
+**D. "Page already shows for a query but has no coverage" → FAQ-first.** From project 6, when search console shows the page ranking for a query the body doesn't answer, **verify existing coverage first**, then add the question to the data — a bank row in `data/faq.json` or a real sourced question in the page's raw files — rebuild the question file (`/bsuk-query-augmentation`), rebuild the page from its picks and fill `covered_by`. Never add an entry to the page's `faqs[]` directly. If it is a real subtopic, add one sequential H3 (never skip a level — `scripts/final_page_audit.py --blog` checks that; for a post it does not check the ≥5 H5 / ≥5 H6 floor, so re-check that by hand against the approved outline, `rules/headings.md`). Watch for intent splits the single-topic post misses: a query about a different situation from the one the post covers is a new H3 (or a new post), not a stretched answer. Always show the placement map for approval before writing.
 
 ---
 
@@ -144,7 +146,7 @@ Bake these into every blog build and rebuild.
 
 The breeder's standing "change of plans": for every post, don't just name competitors — **expose their weakness, extract ALL their headers, and classify their keyword types.** This is field #6 of the 17-field research (§3) upgraded to a required, tool-driven pass. Run it BEFORE the outline gate.
 
-**Sources to pull (in order):** (1) the post's question file, `data/queries/<slug>.json` — the Google and Bing top-5 for the primary keyword, merged, from `/bsuk-query-augmentation`; (2) the competitor registry, `data/competitors.json`, and the intel report under `docs/research/competitors/` for any registry entry that ranks; (3) the gap matrix, `docs/research/gap-matrix-2026-09-23.md`.
+**Sources to pull (in order):** (1) the post's question file, `data/queries/<slug>.json` — its `competitors` array, the Google and Bing top-5 for the primary keyword, merged. Step 3 of `.claude/skills/bsuk-query-augmentation/SKILL.md` is "optional elsewhere" than location pages: run it for every post, or `competitors` stays empty; (2) the competitor registry, `data/competitors.json`, and the intel report under `docs/research/competitors/` for any registry entry that ranks; (3) the gap matrix, `docs/research/gap-matrix-2026-09-23.md`.
 
 **For each of the top 5–6 rankable results, fetch the page the cheapest way that works** — `curl` for the source HTML first, a headless browser if `curl` is blocked, Firecrawl last because every Firecrawl call spends the user's credits (`.claude/skills/bsuk-query-augmentation/SKILL.md`, Step 3) — and extract into a schema: `page_title, meta_description, h1, h2_headings[], h3_headings[], visible_keywords[], has_pricing, trust_or_scam_content_present, content_type`. Forums/FB/Reddit and video = note as UGC/video (not header-outrankable) but record that they rank — a SERP owned by forums is a **wide-open authoritative-guide lane**.
 
@@ -174,17 +176,17 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 **Asset categories & sizes** (art direction from `rules/images.md` + `rules/design.md`; palette steel blue `#1F3A52` (= `--color-brand`), brass `#C9A227` (= `--color-cta`), bone `#F4F1EA` (= `--color-surface`); type Fraunces headings, Source Sans 3 body; line icons, no emoji/logos/other species/visible price overlays):
 | Category | Per post | Source | On-page render |
 |---|---|---|---|
-| Hero (photoreal editorial) | 1 | an existing `/images/…` photo, or a new master in `src/assets/` | the kit `Hero` (§7 A) |
+| Hero (photoreal editorial) | 1 | an existing `/images/…` photo, as the post's `featured_image` (a `src/assets/` hero needs the §1 route change first) | the kit `Hero` (§7 A) |
 | Section images — photos and infographics | 3–5 | an existing `/images/…` file, or a new master in `src/assets/` | the uniform in-body box in `rules/images.md` |
-| Portrait infographic / checklist | as needed | a new master in `src/assets/` | a centred card whose `sizes` matches its box (`img-sizes-matches-box`) |
+| Portrait infographic / checklist | as needed | a new master in `src/assets/` | a centred card whose `sizes` states its rendered width |
 | Real OG / trust photo | 1–2 | an existing `/images/…` file | plain `<img>` in the long visual-less H2/H3; real brand shot for E-E-A-T |
 
-Box sizes, crop and encode quality: `rules/images.md`. The checks are `img_dims`, `img-srcset-within-2x` (blocking) and `img-sizes-matches-box`.
+Box sizes, crop and encode quality: `rules/images.md`. The checks are `img_dims`, `img-srcset-within-2x` and `img-sizes-matches-box` (all blocking; the last is hero-only).
 
 **The encode → wire → commit pipeline (copy this):**
 1. **Encode with Pillow** (`cwebp` NOT installed): flatten RGBA onto bone `#F4F1EA` (= `--color-surface`) for infographics / white for photos; crop, size and quality per `rules/images.md`. A new master goes to `src/assets/` and `astro:assets` builds its candidates; an existing `/images/…` file is never re-encoded, renamed or replaced (`CLAUDE.md` rule 11).
 2. **Fix CLS** — set each `<img width/height>` to the file's **native ratio** (don't trust the placeholder's guessed dims). Verify in preview that displayed ratio ≈ native ratio (no stretch).
-3. **The hero is the kit `Hero`** with `imageSrcset`, `imageWidth` and `imageHeight` passed for a `/images/…` path (§7 A).
+3. **The hero is the kit `Hero`**, fed the post's `featured_image` and `featured_image_alt`; hero dimensions, a `srcset` or a `src/assets/` hero need the §1 route change first (§7 A).
 4. **Add a visual to every long visual-less H2/H3** — the breeder's rule: tall/important sections must carry an image; weave real OG photos into them.
 5. **Rebuild** (`npx astro build`) → confirm every referenced `.webp` exists in `dist/` (grep the built HTML, fail on any missing) → **`python3 scripts/final_page_audit.py --blog`** must PASS → preview-verify images 200 + ratios → then commit.
 
@@ -205,7 +207,7 @@ Plus `bsuk-blog-related-posts` (bottom silo) and `bsuk-blog-sticky-cta` (mobile)
 
 - **Competitor intel:** the question file and its fetch order (`.claude/skills/bsuk-query-augmentation/SKILL.md`, Step 3: `curl`, then a browser, Firecrawl last because it spends credits), the registry `data/competitors.json`, and `@bsuk-competitor-intel` for a registry entry with no report. A 403 to `curl` (e.g. `thekennelclub.org.uk`) is a bot block, not a dead page.
 - **Images:** Pillow (`cwebp` is not installed), sizes and quality per `rules/images.md`; new masters in `src/assets/` through `astro:assets`, existing files reused at their URLs (`CLAUDE.md` rule 11). Image prompts: `.claude/skills/image-prompt-generator/SKILL.md`; alt text and filenames: `.claude/skills/image-metadata/SKILL.md`.
-- **Audit and commit:** `python3 scripts/final_page_audit.py --blog` (all six heading levels, ≥5 H5 AND ≥5 H6, no skips) → `python3 scripts/generate_sitemaps.py` (writes `dist/` only) → commit. No push and no deploy until project 6.
+- **Audit and commit:** `python3 scripts/final_page_audit.py --blog` (no skipped levels; for a post it exempts the six-level outline and the ≥5 H5 / ≥5 H6 floor — `POST_EXEMPT_CHECKS` — which stay manual Heading Outline Gate items, `rules/headings.md`) → `python3 scripts/generate_sitemaps.py` (writes `dist/` only) → commit. No push and no deploy until project 6.
 - **Data (never hardcode):** `data/settings.json` (the £200–£350 delivery band, the £500 deposit), `data/price-matrix.json` (£1,500 / £1,700), `data/puppies.json` (the available pups). The competitor registry is `data/competitors.json`. The external-link library is `docs/reference/external-link-library.md`: every outside link a post carries is a row there, verified 200 before it is added (a board naming any other URL is refused).
 - **No push, no deploy:** there is **no push and no deploy until project 6** — this repo has no remote. Never add one, and never write a credential anywhere. Build on the branch the plan names (`CLAUDE.md` rule 2), never on the trunk.
 - **Cannibalization guard:** blog posts LINK OUT to money/interior pages (for-sale hub, price, scam) — never re-teach or re-list what a money page owns.

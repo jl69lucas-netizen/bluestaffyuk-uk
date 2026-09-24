@@ -147,3 +147,11 @@ def test_the_blog_builder_has_no_source_site_leftovers():
                      "the other 8 posts"):
         assert leftover not in BLOG, leftover
     assert "`/<slug>/`" in BLOG
+    assert "sources.serp_google" not in BLOG
+    assert "data/queries/raw/<slug>/serp_google.json" in BLOG
+    for fact in ("src/content.config.ts", "SiteFooterKit", "POST_EXEMPT_CHECKS"):
+        assert fact in BLOG, fact
+    assert "confirm ≥5 H5 / ≥5 H6 still hold" not in BLOG
+    delivery = ("UK home delivery by DEFRA-approved transport, priced by distance, "
+                "£200–£350 · or collect in Carlisle")
+    assert BLOG.count(delivery) >= 2
