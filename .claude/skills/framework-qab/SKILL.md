@@ -11,8 +11,8 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Carlisle (Lisa Bright)
-> **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment
@@ -147,11 +147,11 @@ B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing
 
 ### Price & Cost
 - How much does a blue Staffy puppy cost?
-- How much does a blue brindle Staffy puppy cost?
+- Why do your male and female puppies cost different amounts?
 - What's the deposit to hold a puppy?
 - What's included in the purchase price?
 - What's the total first-year cost of owning a Staffy?
-- Is there a difference in price between blue and black brindle puppies?
+- Do blue and white puppies cost more than solid blue ones?
 
 ### Licensing & Legality
 - Are your puppies sold under a LICENCE_CLAIM_PLACEHOLDER?

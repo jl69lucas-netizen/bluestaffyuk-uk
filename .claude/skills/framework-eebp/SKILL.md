@@ -40,7 +40,7 @@ P — Purpose:   Close on the buyer's decision/outcome the statement enables
 | Entity | Evidence | Benefit | Purpose |
 |---|---|---|---|
 | Blue Brindle Staffy Puppy | Home-raised, KC registered, microchipped | Calm, loyal, adaptable family companion | Helps buyers confidently choose a fully papered Blue Staffy that matches their home and lifestyle. |
-| LICENCE_CLAIM_PLACEHOLDER | Licensed family home in Carlisle, Cumbria | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
+| LICENCE_CLAIM_PLACEHOLDER | Family home in Carlisle, Cumbria (a licence stays unstated until the breeder confirms it) | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
 | Vet Health Check | Veterinary examination before collection | Greater confidence in the puppy's condition | Helps buyers make an informed decision before bringing a Blue Staffy home. |
 
 ## Why EEBP Beats a Plain Feature List (the 5-point payoff)

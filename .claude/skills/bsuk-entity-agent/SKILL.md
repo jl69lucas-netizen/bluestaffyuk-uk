@@ -12,7 +12,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## Entity-Benefit-Purpose (EBP) Framework
 
-For every entity mention on an MFS page:
+For every entity mention on a BSUK page:
 1. **Entity** — name the thing: "vet sex-checking certificate testing"
 2. **Benefit** — what it does: "screens 250+ genetic conditions before pairing"
 3. **Purpose** — why it matters to buyer: "so you know your Blue Staffy won't develop a preventable inherited condition"
@@ -56,8 +56,8 @@ For every entity mention on an MFS page:
 | [BREEDER_LOCATION] | [LOCATION], [REGION] | About, location, schema |
 | BlueStaffyUK | BSUK, BSUK breeder, breeding program | Brand mentions, footer, schema |
 | [BREEDER_NAME] | Breeder, owner, founder | About, testimonials, Person schema |
-| delivery by DEFRA-approved transport | DEFRA-approved transport certified handler, air transport | Location pages, hero |
-| Nationwide delivery | Continental US delivery, interstate transport | Hero, location hub |
+| delivery by DEFRA-approved transport | DEFRA-approved transport, road delivery priced by distance (£200–£350) | Location pages, hero |
+| Nationwide delivery | UK home delivery to the 28 cities in `data/locations.json`, collection from Carlisle | Hero, location hub |
 
 ### Category 4 — Pricing Entities
 
@@ -148,6 +148,6 @@ done
 2. **Native schema management** — use grep/python approach directly (handles multiple schema blocks correctly)
 3. **Extract FAQ schema from `<details>/<summary>`** — not raw page HTML
 4. **Density cap** — no single entity above 2% of total word count
-5. **Location entities on all location pages** — state name, city names, airport codes always present
+5. **Location entities on all location pages** — the city, its region and its nearby cities from `data/locations.json` always present; never a mileage or a drive time
 6. **Credential entities in first 300 words** — vet sex-checking, canine vet, LICENCE_CLAIM_PLACEHOLDER appear early
 7. **Cross-reference price-matrix.json** — all pricing entities match the data file

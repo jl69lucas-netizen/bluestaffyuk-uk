@@ -58,7 +58,7 @@ Before submitting, always audit for issues that block indexing:
 ```python
 import re, glob
 
-# dist/, not dist/ and NOT the MFS project: gates measure the BUILT page.
+# dist/, and NOT a source-repo path: gates measure the BUILT page.
 SITE_ROOT = "dist"
 DOMAIN = "$SITE_URL"
 
@@ -113,7 +113,7 @@ for fpath in glob.glob(f"{SITE_ROOT}/*.xml"):
 import re, glob, os
 
 # public/ is where BSUK's sitemaps live. This block WRITES — pointed at the old
-# MFS path it would have rewritten a different project's sitemaps in place.
+# source repo's path it would have rewritten a different project's sitemaps in place.
 SITE_ROOT = "public"
 DOMAIN = "$SITE_URL"
 
@@ -254,7 +254,7 @@ What the script guarantees, and why each guard exists:
   400 bad payload · 403 key invalid for host · 422 URLs not on this host · 429 throttled.
 
 > **This STEP used to be broken and nobody could have noticed by reading it.** Until
-> 2026-08-08 it carried inline Python with three defects from the MFS→BSUK find/replace:
+> 2026-08-08 it carried inline Python with three defects from the source-repo→BSUK find/replace:
 > `INDEXNOW_KEY = "a1b2c3d4e5f6789012345678blue staffies"` (a placeholder with the
 > brand string substituted in — while the REAL key sat correct in the site-context table
 > 170 lines above); a sitemap regex of `https://blue staffiesforsale\.com/`, a
@@ -314,7 +314,7 @@ print("llms.txt fixed")
 ## STEP 7: REPORTING FORMAT
 
 ```
-## MFS Indexing Report — [DATE]
+## BSUK Indexing Report — [DATE]
 
 ### Submissions
 - ✅ Google Search Console: [N] sitemaps submitted (sitemap_index, page, post, video, local)
@@ -352,7 +352,7 @@ print("llms.txt fixed")
 
 ## AGENT INTEGRATION NOTES
 
-This is the **Indexing Agent** in the MFS multi-agent system:
+This is the **Indexing Agent** in the BSUK agent system:
 
 - Trigger **after every deploy** → submit new/changed URLs to IndexNow
 - Trigger **after new page creation** → submit single URL immediately

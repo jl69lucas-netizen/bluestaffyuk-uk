@@ -118,7 +118,7 @@ Append to `data/redirects.json`:
 - Always add both `/path/` (trailing slash) and `/path` (no trailing slash) variants
 - Use `301` (permanent) for SEO — not `302`
 - Put more-specific rules ABOVE catch-all rules
-- The `!` suffix forces a redirect even if the host (NOT FETCHED until project 6) finds a matching file
+- The `!` suffix forces a redirect even if the edge host (chosen in project 6) finds a matching file
 
 ---
 
@@ -132,7 +132,7 @@ When a directory like `/UK-locations/` has child pages but no `index.html`, crea
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[Hub Title] | MFS</title>
+<title>[Hub Title] | BlueStaffyUK</title>
 <meta name="description" content="[Hub description]">
 <meta name="robots" content="follow, index, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://SITE_URL_PLACEHOLDER/[hub-slug]/">

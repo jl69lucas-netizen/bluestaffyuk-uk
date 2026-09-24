@@ -323,3 +323,98 @@ def test_the_lint_bans_the_old_city_but_spares_the_slug_and_the_debt_note(tmp_pa
     bad = [v for v in violations(p) if "'Glasgow'" in v]
     assert len(bad) == 1, bad
     assert "Collection in Glasgow" in bad[0], bad
+
+
+# ── source-repo residue in the skills (project 5 readiness, 2026-09-23) ─────
+# The bans above read agents, skills and reference docs for claims. This list reads the
+# SKILLS (and the slash commands) for residue that is not a claim BSUK could ever make true:
+# another business's regulators, geography, animals, brand and deploy model. Every entry was
+# found in a skill on 2026-09-23 — the SEO checklist cited the AVMA and the FTC, the map skill
+# served "CITY, STATE" and Arizona, the entity graph listed parrot names and US airlines, the
+# blog and comparison builders promised "since 2014" and "12+ years", and five skills told a
+# builder to `git push origin main`. The agents are not in scope here yet: widen
+# `residue_targets()` to `.claude/agents/*.md` in the task that clears them.
+RESIDUE = (
+    ("a US animal-health or retail source (UK sources: docs/reference/external-link-library.md)",
+     re.compile(r"\b(?:AVMA|AAHA|ASPCA|Chewy|PetMD|IAABC|Craigslist)\b|Pet Poison Helpline|"
+                r"Veterinary Emergency Group|avma\.org|aaha\.org|aspca\.org|chewy\.com|petmd\.com|"
+                r"petpoisonhelpline|veterinaryemergencygroup|iaabc\.org|clickertraining\.com")),
+    ("a US regulator", re.compile(r"\bFTC\b|ftc\.gov")),
+    ("US geography — BSUK serves the 28 UK cities in data/locations.json",
+     re.compile(r"\b(?:Arizona|Virginia|Illinois|Pennsylvania|Ohio|Michigan|Colorado|Tennessee|"
+                r"North Carolina|Phoenix|STATENAME)\b|CITY%2C%20STATE|CITY, STATE|state/city|"
+                r"Continental US|\binterstate\b")),
+    ("air transport — delivery is by road, by DEFRA-approved transport",
+     re.compile(r"(?i)\bairports?\b|\bairlines?\b|\bair transport\b|air-cargo|\bin cargo\b|"
+                r"Delta, United")),
+    ("the other source repo's brand (MFS / Maltipoos For Sale)",
+     re.compile(r"\bMFS\b|Maltipoo|Lawrence (?:&|and) Cathy")),
+    ("the source repo's animals",
+     re.compile(r"\b(?:Roys|Amie|Elad|Jins|Jeni|Maxy|Rily)\b|\bP\. e\.|Canine Biotech")),
+    ("the source repo's rule name — BSUK's is data/quality/evidence-ledger.json",
+     re.compile(r"Verified-Claim Ledger")),
+    ("an unbacked years-in-business claim", re.compile(r"since 2014|`?12\+`?\s*[Yy]ears")),
+    ("a deploy push — there is no remote until project 6",
+     re.compile(r"git push|push origin|[Cc]ommit \+ push|commit and push|push = deploy|"
+                r"Deploy \+ push|push to GitHub|main auto-deploys|unpushed commits")),
+    ("a fixed section-count template — the rule is competitors' count + 3, floor 9",
+     re.compile(r"22[–-]2[45]|\b22[- ]section|\b22 sections|fewer than 22")),
+    ("a component, prop or word this repo does not have",
+     re.compile(r"NewsletterV2|hideGlobalCta|reUKble|the host \(NOT FETCHED")),
+    ("a coat line priced as a product line — price is by sex (data/puppies.json)",
+     re.compile(r"(?i)brindle[^|\n]{0,40}\((?:Roman|Vennie)")),
+    ("a licence asserted as ours — it is LICENCE_CLAIM_PLACEHOLDER until confirmed",
+     re.compile(r"—\s*licensed\b|licensed home-raised|Licensed Carlisle|\"Licensed Blue|"
+                r"Licensed family home")),
+)
+# A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
+PUSH_FORBIDDEN = ("never `git push`", "no push", "not push", "nothing to push", "never push")
+
+
+def residue_targets():
+    return (sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
+            + sorted((ROOT / ".claude/commands").rglob("*.md")))
+
+
+def residue(path: pathlib.Path):
+    out = []
+    for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        for why, rx in RESIDUE:
+            if not rx.search(line):
+                continue
+            if why.startswith("a deploy push") and any(f in line.lower() for f in PUSH_FORBIDDEN):
+                continue
+            out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:110]))
+    return out
+
+
+@pytest.mark.parametrize("path", residue_targets(),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_skill_carries_no_source_repo_residue(path):
+    bad = residue(path)
+    assert bad == [], (
+        "source-repo residue in a skill a project-5 builder loads. Re-base the line onto BSUK's "
+        "own sources (data/*.json, docs/reference/external-link-library.md) or delete it:\n  "
+        + "\n  ".join(bad))
+
+
+def test_the_residue_lint_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "1. [AVMA](https://www.avma.org/)\n"
+        "src=\"https://maps.google.com/maps?q=CITY%2C%20STATE\"\n"
+        "BlueStaffyUK ships to [City] airports.\n"
+        "## MFS Indexing Report\n"
+        "Individual Puppy (Roys, Amie)\n"
+        "bounded by the Verified-Claim Ledger\n"
+        "Lisa Bright (Carlisle, since 2014)\n"
+        "git push origin main\n"
+        "## The 22–25 Section Blueprint\n"
+        "Middle newsletter is ALWAYS `NewsletterV2`\n"
+        "Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700)\n"
+        "> **Site:** BlueStaffyUK — licensed breeder, Carlisle\n"
+        # silent: a line that forbids the push, and a UK source
+        "There is no push and no deploy until project 6; never `git push`.\n"
+        "[PDSA](https://www.pdsa.org.uk/)\n", encoding="utf-8")
+    bad = residue(p)
+    assert [b.split("  ")[0] for b in bad] == ["SKILL.md:%d" % n for n in range(1, 13)], bad

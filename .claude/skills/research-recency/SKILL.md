@@ -13,7 +13,7 @@ BSUK research (competitor intel, PAA/SERP, reddit-strategy, keyword gaps) often 
 - The question is recency-shaped: "what are owners saying now", trending blue Staffy / blue brindle queries, a competitor's just-changed page, fresh scam patterns.
 - Reddit thread mining for the comparison/for-sale clusters (r/StaffordshireBullTerrier ranks pos-1 on our decision queries).
 
-**Not for:** evergreen facts already in our data files, or anything the Verified-Claim Ledger governs (never source health/licensing claims from social).
+**Not for:** evergreen facts already in our data files, or anything the evidence ledger (`data/quality/evidence-ledger.json`) governs (never source health/licensing claims from social).
 
 ## Quick reference — fetch escalation ladder
 1. **Firecrawl MCP** (`firecrawl_search`/`firecrawl_scrape`) — default.
@@ -33,4 +33,4 @@ It is a third-party Claude Code plugin, not installed by default. In an **intera
 ## Common mistakes
 - Reporting "NOT FETCHED" after only step 1. Climb the whole ladder first.
 - Inventing quotes/metrics when a source stays blocked. Un-fetchable = mark `NOT FETCHED`, never invented.
-- Sourcing a health/licensing/pricing claim from social. Those come from data files + the Verified-Claim Ledger only.
+- Sourcing a health/licensing/pricing claim from social. Those come from data files + the evidence ledger only.

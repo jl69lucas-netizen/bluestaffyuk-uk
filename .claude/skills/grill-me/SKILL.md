@@ -15,8 +15,8 @@ This rule applies to you and every agent you hand off to.
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
@@ -345,7 +345,7 @@ Read `CLAUDE.md`. Based on the session answers, identify if any of these section
 |---------|------------------|
 | New constraint discovered | Add/update `## Session Constraints` |
 | New priority page identified | Update priority order in `## Reference Docs` |
-| Something broken flagged | Add to `## Known Issues` (create if absent) |
+| Something broken flagged | Add to `## Known Issues` in `docs/reference/session-log.md` |
 | New "what's next" identified | Update the next-step lines in `docs/reference/session-log.md` |
 
 Show the user exactly what lines you propose to add or change — plain text, not git diff format. Example:

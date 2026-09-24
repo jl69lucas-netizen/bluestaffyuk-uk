@@ -56,7 +56,7 @@ Run each section in order. "Run / dispatch" names the specialist that owns the w
 | 4 | Why BSUK wins / loses | self, from §3 | **Competitive-Advantage score /10** |
 | 5 | Technical SEO | `bsuk-keyword-verifier` + `rules/` (the nine packs) | per-element /10 |
 | 6 | Semantic SEO | `bsuk-content-audit-agent` + `.claude/skills/framework-aio-geo/SKILL.md` | missing-topics list |
-| 7 | Entity audit | `bsuk-entity-incorporation-agent` (+ `.claude/skills/bsuk-entity-agent/SKILL.md` vocab, Ledger) | **Entity-coverage /10** |
+| 7 | Entity audit | `bsuk-seo-content-writer` working the `entity-4-move-loop` in `rules/copy.md` (+ `.claude/skills/bsuk-entity-agent/SKILL.md` vocab, the evidence ledger) | **Entity-coverage /10** |
 | 8 | NLP / LSI | `.claude/skills/keyword-cluster/SKILL.md` + `bsuk-keyword-verifier` | must-add terms (no stuffing) |
 | 9 | AEO | `.claude/skills/framework-aio-geo/SKILL.md` | **AEO /10 rubric** |
 | 10 | Content architecture | `.claude/skills/framework-heading-hierarchy/SKILL.md` + `.claude/skills/section-auditor/SKILL.md` | improved H-tree |
@@ -64,8 +64,8 @@ Run each section in order. "Run / dispatch" names the specialist that owns the w
 | 12 | Image prompts | `.claude/skills/image-prompt-generator/SKILL.md` (`rules/images.md` + negatives + palette) | prompts for §11 **YES** only |
 | 13 | Special content blocks | `bsuk-interactive-component` / `bsuk-infographic-builder` | relevant-only list |
 | 14 | Internal links | `.claude/skills/internal-link-agent/SKILL.md` | source → dest → anchor |
-| 15 | Backlink opportunity | `bsuk-backlink-outreach-agent` | **Backlink-magnet /10** |
-| 16 | CRO | `bsuk-conversion-tracker` | **CRO /10** |
+| 15 | Backlink opportunity | self (the source repo's backlink agent was not ported — source repo only) | **Backlink-magnet /10** |
+| 16 | CRO | self (the source repo's conversion tracker was not ported — source repo only) | **CRO /10** |
 | 17 | Final scoring + verdict | self | **Scorecard + verdict tier** |
 
 ## The 5 Owned Scorers
@@ -85,7 +85,7 @@ Award **+1 for each item present (YES), 0 if absent (NO)**. Report every item YE
 10. Direct-question H2s ("What…", "How…", "Is…", "Can…")
 
 ### §7 — Entity-coverage /10
-Extract every entity on the page across these classes: **species, diseases, brands, foods, breeders, organisations, locations, products, scientific concepts.** Score `/10 = entities covered ÷ entities expected-for-this-page-type` (rounded). List the **Important Missing Entities** and, per entity, **why it matters for AI** (what query/citation it unlocks). **Never assert a Ledger-unverified credential** (no L-2-HGA/PCR/board-cert claims beyond the Verified-Claim Ledger).
+Extract every entity on the page across these classes: **species, diseases, brands, foods, breeders, organisations, locations, products, scientific concepts.** Score `/10 = entities covered ÷ entities expected-for-this-page-type` (rounded). List the **Important Missing Entities** and, per entity, **why it matters for AI** (what query/citation it unlocks). **Never assert a Ledger-unverified credential** (no L-2-HGA/PCR/board-cert claim beyond what `data/quality/evidence-ledger.json` records as proven — the parents' DNA results are `NOT FETCHED` today).
 
 ### §11 — Visual-need (per section — honest, NOT everywhere)
 For each section answer **YES (Mandatory) / YES (Recommended) / MAYBE / NO**. Answer YES **only** if a visual improves **comprehension, retention, shareability, backlinks, or conversion** — never decorative. Output a table:

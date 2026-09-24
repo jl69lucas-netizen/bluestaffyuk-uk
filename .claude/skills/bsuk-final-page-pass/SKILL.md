@@ -48,7 +48,7 @@ script.
 
 | Check ID | What fails | Rationale |
 |---|---|---|
-| `no_aggregateoffer` | `AggregateOffer` present anywhere in schema | Puppy page must be a **single `Product`+`Offer`**; `AggregateOffer` is the variant page (`bsuk-puppy-listing-page`). |
+| `no_aggregateoffer` | `AggregateOffer` present anywhere in schema | Puppy page must be a **single `Product`+`Offer`**; `AggregateOffer` belongs to the `/available-puppies/` listing. |
 | health-test claim | A parent health-test claim (L-2-HGA, HC-HSF4) asserted without a certificate in `data/quality/evidence-ledger.json` | **Not a mechanical gate** — read it by eye. An unrecorded health claim is NOT FETCHED and must not appear. |
 | `shipping_line` | The `£200–£350` delivery band missing from the visible body | Delivery-on-every-card is non-negotiable (`rules/puppies.md` `delivery-band-on-every-card`). Canonical line: `UK home delivery £200–£350 by distance · or collect in Carlisle`. |
 | `sold_not_instock` | Sold/reserved STATUS signal present AND schema still shows `InStock` | Sell-and-retire lifecycle: sold → 301, never `InStock`. Note: commerce phrases like "sold together" do NOT trigger; only explicit status signals ("now sold", "has been sold", "status: sold", "is reserved", etc.). |
@@ -66,7 +66,7 @@ script.
 | `wordcount_in_band` | **700–1,000 words** (script checks 600–1,200 with buffer for chrome); not the pillar "+1,000" floor |
 | `newsletter_present` | **NA** — puppy pages are exempt from newsletter requirement (footer newsletter only, per 2026-06-18 decision) |
 | `all_h1_h4` | WARN — H1×1 + H2/H3 required; H4 where structure exists on a lean puppy page; H5/H6 only on genuine depth |
-| `house_method` | **WARN** — flag until breeder confirms a term; Verified-Claim Ledger forbids inventing a house-method name |
+| `house_method` | **WARN** — flag until breeder confirms a term; `CLAUDE.md` rule 9 forbids inventing a house-method name |
 | `lifespan_12_14` | WARN — at least one "12–14 year" breed-lifespan reference (not hard-FAIL on a lean puppy page) |
 | `real_hero_image` | WARN — hero must not be a placeholder/logo; flags if first content image src contains "placeholder", "coming-soon", or "default" |
 
@@ -191,7 +191,7 @@ FIRST-PERSON VOICE (puppy page)
 
 These are recommendations surfaced for the breeder — the gate never auto-resolves them:
 
-- **House-method name** (WARN on all pages until confirmed) — upgrade check from WARN to enforced only after the breeder supplies a confirmed term for inclusion in the Verified-Claim Ledger.
+- **House-method name** (WARN on all pages until confirmed) — upgrade check from WARN to enforced only after the breeder supplies a confirmed term for inclusion in `data/quality/evidence-ledger.json`.
 - **Extra authority-link targets** — beyond the standard library (The Kennel Club, the RSPCA, a veterinary school, a government animal-welfare page), the gate may suggest further credible `.org/.ac.uk/.gov.uk` targets for link variety. Verify 200 before inserting; the external-link library is deferred to project 6.
 - **Delivery and local-authority entities** — the gate flags *whether a given page type warrants* logistics entities (DEFRA-approved transport, the delivery band, collection in Carlisle) or local-authority signals. Puppy listing pages generally inherit these from the price/delivery cluster rather than carrying them inline; the flag is informational only.
 

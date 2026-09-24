@@ -10,7 +10,7 @@ scored connectivity. Never keyword analysis — `keyword-cluster` and `@bsuk-key
 own that, and they answer a different question.
 
 **Where this sits.** `.claude/skills/bsuk-entity-agent/SKILL.md` is the passive **catalog** (vocabulary).
-`@bsuk-entity-incorporation-agent` is the **writer** (injects entities into prose). This
+`@bsuk-seo-content-writer` is the **writer** (injects entities into prose, `entity-4-move-loop`). This
 skill is the **analyzer** — it builds and scores the graph, finds what is missing, and
 hands both of the others a work list they can act on.
 
@@ -28,7 +28,7 @@ identical confidence. Each edge carries a state:
 
 | State | Meaning |
 |---|---|
-| `ASSERTED` | Backed by the Verified-Claim Ledger or a `data/*.json` file |
+| `ASSERTED` | Backed by a proven row of `data/quality/evidence-ledger.json` or a `data/*.json` file |
 | `PROPOSED` | Extracted from prose, not yet ledger-backed → a **finding**, never a fact |
 | `BLOCKED` | Hits the §3c blacklist → hard FAIL on the page |
 
@@ -45,7 +45,7 @@ pages, nodes, edges — and refuse to report a run that examined zero. Read
 `.claude/skills/bsuk-gate-integrity/SKILL.md` before acting on any number this skill produces.
 
 **0d. Never fabricate a competitor's graph.** Un-fetched is `NOT FETCHED`, never inferred.
-The fetch ladder is Firecrawl → WebFetch with UA retry → Playwright → `research-recency`.
+The fetch order is `curl` → WebFetch with a browser UA → a headless browser → Firecrawl last, because it spends the user's credits (`.claude/skills/bsuk-query-augmentation/SKILL.md`, Step 3).
 
 **0e. Terminate deterministically.** The source spec says "continue until complete."
 Use the closed type and predicate taxonomies below; genuinely new items go to
@@ -62,9 +62,9 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 
 | Class | Types |
 |---|---|
-| **Organism** | Species (*Canis lupus familiaris*, *P. e. blue-brindle*) · Variant (Blue, Blue-Brindle) · Individual Puppy (Roys, Amie, Elad, Evie, Jins, Jeni, Maxy) · Parent Pair (James×Lois, Levi×Rily) |
-| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Lab (Canine Biotech) · Carrier (Delta, United, American) · Regulator (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, DEFRA-approved transport) |
-| **Place** | Country · State · City · Kennel (Carlisle) · Airport |
+| **Organism** | Species (*Canis lupus familiaris*) · Breed (Staffordshire Bull Terrier) · Coat colour (each pup's `colour` in `data/puppies.json`) · Individual Puppy (Roman, Byrd, Ince, Vennie, Christa, Cheryl) · Parents (Maggie, the dam; Jones, the sire) |
+| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Registry (The Royal Kennel Club) · Transport (DEFRA-approved transport) · Regulator (LICENCE_CLAIM_PLACEHOLDER) |
+| **Place** | Country (UK) · Region · City · Home (Carlisle, Cumbria) |
 | **Commerce** | Price · Offer · Guarantee · Delivery Option · Payment Term · Availability State |
 | **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA/PCR certificate · Health record · Whelp certificate · Vet record |
 | **Health** | Condition (L-2-HGA, Polyomavirus, hereditary cataract) · Screening (PCR) · Nutrient (UV-B/D3) · Diet · Pellet brand |
@@ -102,11 +102,11 @@ alt | link | data-file) · authorization · first_seen_section · owning_page`.
 3. **Tables** — the densest relationship source on comparison and pricing pages; each row
    is usually one predicate applied across two entities.
 4. **Body prose** — subject–predicate–object triples.
-5. **Image alts + captions** — often carry entities the prose omits (§3 of
-   `bsuk-visual-intelligence` verbalizes these).
+5. **Image alts + captions** — often carry entities the prose omits (the source repo's
+   visual-intelligence skill verbalized these; not ported — source repo only, Known Issue 44).
 6. **Internal links** — realized `RELATED_TO` edges; anchor text names the relationship.
-7. **`data/*.json`** — `price-matrix`, `financial-entities`, `litter-inventory`,
-   `locations`, `competitors`, `case-studies` — the authorization source.
+7. **`data/*.json`** — `price-matrix`, `puppies`, `settings`, `faq`, `reviews`,
+   `locations`, `competitors` — the authorization source.
 
 ### 2b. Hand the graph to graphify
 
@@ -229,13 +229,13 @@ FAIL. Ontology fit < 90% = the extractor is broken, not the page.
 
 | Finding | Route to |
 |---|---|
-| Missing entities in copy | `@bsuk-entity-incorporation-agent` (4-Move Loop) |
+| Missing entities in copy | `@bsuk-seo-content-writer` (4-Move Loop) |
 | Vocabulary/catalog additions | `.claude/skills/bsuk-entity-agent/SKILL.md` |
 | Missing/incorrect schema | `bsuk-aeo-pass`, page builder for the type |
 | Missing internal links | `internal-link-agent` (Link-First + Anchor Diversity Ledger) |
 | Cannibalization | `@bsuk-site-hygiene-agent` |
 | Competitor entity gaps | `@bsuk-competitive-keyword-gap-agent` → `@bsuk-content-architect` |
-| Un-verbalized image entities | `bsuk-visual-intelligence` §3 |
+| Un-verbalized image entities | `.claude/skills/image-metadata/SKILL.md` (alt text and captions) |
 | Thin/unnameable community | `section-auditor` |
 
 ---

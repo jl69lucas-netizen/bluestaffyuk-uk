@@ -12,11 +12,11 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700)
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Health claims:** bounded by the Verified-Claim Ledger — never invent symptoms, cures, or statistics.
+> **Health claims:** bounded by the evidence ledger (`data/quality/evidence-ledger.json`) — never invent symptoms, cures, or statistics.
 
 ---
 
@@ -42,7 +42,7 @@ S — Solution: Our documented answer — specific, first-person, with the next 
 ## BSUK Worked Example (skin allergy section)
 
 - **P:** "Is your Staffy chewing its paws raw — and the vet found no mites or fleas?"
-- **A:** "Untreated atopic itching becomes a scratch-infect-scratch cycle within months; skin that's been broken open long enough thickens and darkens permanently. Staffordshire Bull Terriers are among the most allergy-prone breeds we work with." *(stays inside the Verified-Claim Ledger — breed allergy-proneness is documented; no invented percentages)*
+- **A:** "Untreated atopic itching becomes a scratch-infect-scratch cycle within months; skin that's been broken open long enough thickens and darkens permanently. Staffordshire Bull Terriers are among the most allergy-prone breeds we work with." *(stays inside the evidence ledger — breed allergy-proneness is documented; no invented percentages)*
 - **S:** "Our diet and bathing routine is the same one we use in our own kennel — a single-protein food from week eight, oatmeal rinse every third day. [Full routine + the starter pack we send with every puppy →]"
 
 **Agitate honestly:** every agitation line must be a true, sourced consequence. Fear without fabrication — the humor-honesty policy applies in reverse: never on legal/health, never invented.
@@ -54,7 +54,7 @@ S — Solution: Our documented answer — specific, first-person, with the next 
 - One CTA per page still applies — PAS sections funnel to the page's single CTA, not one CTA per section.
 
 ## Common Mistakes
-- **Inventing agitation** — fabricated statistics or horror stories violate the Verified-Claim Ledger and the honesty policy.
+- **Inventing agitation** — fabricated statistics or horror stories violate the evidence ledger and the honesty policy.
 - **Agitating on legal/health past the ledger** — hereditary cataracts / L-2-HGA / vet claims only as confirmed.
 - **Solution before problem** — leading with "we offer…" kills the framework; the reader's pain leads.
 - **Using PAS on unaware readers** — they don't feel the problem yet; that's AIDA's job.

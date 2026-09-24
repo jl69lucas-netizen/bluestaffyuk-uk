@@ -61,7 +61,7 @@ vite: {
 },
 ```
 
-### Step 4: Create the search page (deferred — this recipe writes `src/pages/search/index.astro`)
+### Step 4: The search page (already built — `src/pages/search/index.astro`; this recipe is the record of how)
 ```astro
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';

@@ -11,8 +11,8 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
@@ -50,9 +50,9 @@ AI engines parse content as entity → attribute → value. Structure content to
 
 ```
 Entity:    Staffordshire Bull Terrier
-Attribute: Coat colours
-Value:     Blue: 11–17 kg, solid grey-blue coat, £1,500 | Blue brindle / black brindle: 11–17 kg, striped coat, £1,700
-Source:    docs/reference/domain-knowledge.md + BSUK breeding data
+Attribute: Price of a BlueStaffyUK puppy
+Value:     £1,500 for a male (Roman, Byrd, Ince) · £1,700 for a female (Vennie, Christa, Cheryl)
+Source:    data/puppies.json, data/price-matrix.json
 
 Entity:    Staffordshire Bull Terrier
 Attribute: Lifespan
@@ -69,9 +69,8 @@ Source:    LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER
 ```
 Bad (vague): "Blue Staffy puppies come in different colours and live a long time."
 
-Good (citable): "Blue Staffordshire Bull Terriers are bred in two colour lines: the solid blue
-Staffy (11–17 kg, grey-blue coat, £1,500) and the blue or black brindle Staffy (11–17 kg,
-striped coat, £1,700). With routine veterinary care, Staffordshire Bull Terriers live 12–14
+Good (citable): "Our current litter is six blue Staffordshire Bull Terrier puppies: the three
+males are £1,500 and the three females £1,700, each reserved with a £500 refundable deposit. With routine veterinary care, Staffordshire Bull Terriers live 12–14
 years — a typical lifespan for a medium-sized terrier breed."
 ```
 
@@ -234,7 +233,7 @@ Table requirements: 3–6 columns, 3–8 rows, include numbers/data (not just te
   <tr><th>Feature</th><th>Blue</th><th>Blue / Black Brindle</th><th>Best For</th></tr>
   <tr><td>Adult Size</td><td>11–17 kg, ~36–41 cm</td><td>11–17 kg, ~36–41 cm</td><td>Identical build — choose on coat</td></tr>
   <tr><td>Coat</td><td>Solid grey-blue, shows dirt less</td><td>Striped, hides scuffs and mud</td><td>Show look → blue; low-fuss → brindle</td></tr>
-  <tr><td>Price</td><td>£1,500 (Roman, Byrd, Ince)</td><td>£1,700 (Vennie, Christa, Cheryl)</td><td>Both include full paperwork</td></tr>
+  <tr><td>Price at BlueStaffyUK</td><td colspan="2">£1,500 a male · £1,700 a female — the price follows the sex, not the coat</td><td>Choose on temperament, not price</td></tr>
   <tr><td>Skin Sensitivity</td><td>Dilute coat needs more skin care</td><td>Standard coat, fewer skin issues</td><td>First-time owner → brindle</td></tr>
 </table>
 ```

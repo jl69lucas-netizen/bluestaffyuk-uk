@@ -76,10 +76,10 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 ## BSUK-Specific
 
 - **Keep the first-person breeder voice** — stripping slop never means stripping "we / our / here at BlueStaffyUK." Humanizing without the POV is a different failure.
-- **Stay inside the Verified-Claim Ledger** — humanizing never means inventing. A vivid concrete detail still has to be true (a real enquiry call, a real puppy, a real price). No new credentials, no fabricated outcomes.
+- **Stay inside the evidence ledger** (`data/quality/evidence-ledger.json`) and the facts in `data/*.json` — humanizing never means inventing. A vivid concrete detail still has to be true (a real enquiry call, a real puppy, a real price). No new credentials, no fabricated outcomes.
 - **Licence-safe** — all rewrites stay accurate to LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance; never state either as fact before Lisa confirms it, and never imply a third-party or dealer sale.
 - **No visible dates** — freshness lives in schema only (see CLAUDE.md non-negotiables).
-- **Never the 🐶 emoji** — use `/emoji/bsuk-blue.png` / `bsuk-brindle.png` or `[BSUK]`/`[BLUE]` text markers.
+- **Never the 🐶 emoji** — use a line icon (`rules/design.md`) or a plain `[BSUK]`/`[BLUE]` text marker.
 
 ## Self-Check Before Shipping
 
@@ -92,4 +92,4 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 - **Stripped the slop but also stripped the voice** — the draft goes flat and ownerless. Keep we/our/here at BlueStaffyUK; the fix is phrasing, not personality.
 - **Swapped one cliché for another** — "delve into" → "dive into" is not a fix. Replace with a plain verb, not a fresher buzzword.
 - **Over-corrected into choppiness** — every sentence under 8 words reads like a robot too. Vary length; one short sentence per paragraph, not all of them.
-- **Invented a concrete detail to sound human** — a fake "buyer named Sarah rang us" violates the Verified-Claim Ledger. Use only real, true specifics.
+- **Invented a concrete detail to sound human** — a fake "buyer named Sarah rang us" is a fabricated claim (`CLAUDE.md` rule 9). Use only real, true specifics.

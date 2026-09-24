@@ -237,12 +237,12 @@ it was reported on — the breeder saw a sample, not the extent.
 | `form-control-ios-zoom` | ERROR | Form controls under 16px, **including via `font:inherit`** resolving to a smaller ancestor label. Under 16px iOS SThe Kennel Clubri auto-zooms on focus and the form's right edge leaves the viewport — this reads to users as "the form is broken / cut off" | **all 6** |
 | `form-control-overflow` | ERROR | A form grid whose children never set `min-width:0`. Grid children default to `min-width:auto` and refuse to shrink below their content | — |
 | `font-family-loaded-unused` | ERROR | A family requested in `BaseLayout` that no CSS rule ever resolves to | Lora + Sora, **site-wide** |
-| `analytics-double-load` | ERROR | The same GA4 container loading twice — direct `googletagmanager.com` **and** first-party via the host (NOT FETCHED until project 6)'s Google Tag Gateway | see caveat below |
+| `analytics-double-load` | ERROR | The same GA4 container loading twice — direct `googletagmanager.com` **and** first-party via the edge host (chosen in project 6)'s Google Tag Gateway | see caveat below |
 | `deflist-label-not-differentiated` | WARN | `<dt>` and `<dd>` sharing colour+weight, **or** a `--muted` label sitting quieter than its own `--ink` value, so the block reads as one staffy slab | health-guarantee receipt |
 | `icon-text-baseline-drift` | WARN | An icon+label flex/grid row with no `align-items` — when the label wraps, the glyph drifts off its text and the column reads as scattered | 4 of 6 |
 
 **`analytics-double-load` caveat — this one cannot fire on `dist/`.** The first-party
-`/70de/` script is injected by **the host (NOT FETCHED until project 6) at the edge**, not by our build, so it is
+`/70de/` script is injected by **the edge host (chosen in project 6) at the edge**, not by our build, so it is
 absent from local output. Run this check against the **live URL**, not `dist/`:
 
 ```bash

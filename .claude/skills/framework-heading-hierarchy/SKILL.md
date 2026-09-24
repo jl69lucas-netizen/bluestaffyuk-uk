@@ -11,7 +11,7 @@ allowed-tools: [Read, Write, Bash]
 
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
-> **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
@@ -37,7 +37,7 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 - Include the main commercial keyword in the first 3 words where possible
 
 **Examples:**
-- `Blue Staffy Puppies for Sale UK | Licensed Carlisle Breeder | BlueStaffyUK`
+- `Blue Staffy Puppies for Sale UK | Home-Raised in Carlisle | BlueStaffyUK`
 - `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`
 - `Blue vs Blue Brindle Staffy: The Complete Buyer's Comparison`
 

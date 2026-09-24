@@ -47,7 +47,7 @@ Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
 
 Every figure still comes from `data/price-matrix.json` and `data/settings.json` through
 a helper, never a typed literal, and every health/credential claim stays inside the
-**Verified-Claim Ledger**. AEO is not a licence to overclaim: a confidently-worded
+**evidence ledger** (`data/quality/evidence-ledger.json`). AEO is not a licence to overclaim: a confidently-worded
 false sentence is the worst possible outcome, because answer engines repeat it.
 
 ---
@@ -118,7 +118,7 @@ One idea per sentence. Subject–verb–object. Extraction-ready.
 > guarantee. The puppies are socialised with the family from the day they are born.
 
 The audit reports average sentence length and the count over 30 words. It does **not**
-judge truth — that is the Verified-Claim Ledger's job. Anti-AI rhythm rules from
+judge truth — that is the evidence ledger's job. Anti-AI rhythm rules from
 `.claude/skills/anti-ai-writing/SKILL.md` still apply: declarative does not mean robotic, and a page
 of identical short sentences fails the humour/voice gate.
 
@@ -130,8 +130,10 @@ Answer engines prefer structure they can lift whole.
   comparison cluster already ships these; make sure the *money* pages link them.
 - **Lists** — enumerate documents, stages, tiers.
 - **Stat-bearing headers** — put the number *in the heading*:
-  "**12 Years** of Breeding Experience" · "**1,000+ Word** Vocabulary Potential" ·
-  "**72-Hour** Health Guarantee" · "**£200–£350** Airport / **£200–£350** Home Delivery".
+  "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
+  "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
+  from `data/*.json`; a guarantee length or a years-in-business figure is `NOT FETCHED` and
+  never goes in a heading.
 
 The audit counts tables, lists, and stat-bearing headers, and WARNs when a page has no
 header carrying a figure. Headers still obey **Title Case** and the **declared header
@@ -212,7 +214,7 @@ lands.
 - **Adding a visible "Updated July 2026".** Banned. The signal is schema-only.
 - **Treating a build-time git date as freshness.** Depth-1 CI makes it a lie.
 - **Overclaiming to sound citable.** An engine repeats what it lifts. Stay inside the
-  Verified-Claim Ledger.
+  evidence ledger (`data/quality/evidence-ledger.json`).
 - **Turning declarative into robotic.** `anti-ai-writing` still applies.
 - **Trusting the BLUF proxy.** It flags long first sentences; some are fine. Read them.
 - **Inventing a third method name.** Two are approved. Adding more dilutes both.

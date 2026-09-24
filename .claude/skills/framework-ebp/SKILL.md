@@ -11,8 +11,8 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
@@ -109,7 +109,7 @@ Evidence: First-year vet costs are NOT FETCHED — quote a figure only when the 
           (routine care only). First-year vet costs for undocumented puppies
           are NOT FETCHED (illness + re-vaccination + paperwork issues).
           Source: BSUK owner survey data.
-Profile:  The £1,500 (blue) / £1,700 (blue or black brindle) price is the locked fact; vet costs are NOT FETCHED. A breeder who can show paperwork (LICENCE_CLAIM_PLACEHOLDER) is
+Profile:  The £1,500 (male) / £1,700 (female) price is the locked fact; vet costs are NOT FETCHED. A breeder who can show paperwork (LICENCE_CLAIM_PLACEHOLDER) is
           KC-registered puppy with full paperwork from day one. £500 deposit, refundable.
 ```
 

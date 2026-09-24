@@ -144,12 +144,12 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 8: DEFRA-approved transport Delivery / Delivery
 
 🛡️ **Trust & Security:**
-> "Your puppy flies with a certified DEFRA-approved transport handler — never in cargo, never alone."
+> "Your puppy travels to you by road with DEFRA-approved transport, priced by distance: £200–£350."
 > **Button:** How Delivery Works
 
 ⚡ **Direct & Transactional:**
 > "We ship nationwide via DEFRA-approved transport. Your puppy, your city."
-> **Button:** Check Your Airport
+> **Button:** Check Your Delivery Price
 
 🌱 **Ethical & Quality:**
 > "We chose DEFRA-approved transport delivery because we care about the puppy's welfare — comfort and safety are non-negotiable."
@@ -260,7 +260,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** Verify BlueStaffyUK
 
 ⚡ **Direct & Transactional:**
-> "BlueStaffyUK ships to [City] — [City1], [City2], [City3] airports. Prices from NOT FETCHED."
+> "BlueStaffyUK delivers to [City] by road, by DEFRA-approved transport, for £200–£350 by distance — or collect from Carlisle."
 > **Button:** Reserve Your [City] Blue Staffy
 
 🌱 **Ethical & Quality:**
@@ -387,6 +387,6 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 2. **Match voice to page intent** — high-value buyers get Trust, mobile searchers get Direct, informational pages get Ethical
 3. **One CTA voice per section** — don't mix all three in one section
 4. **CTA button text: 2–5 words** — never a full sentence
-5. **Availability numbers must be accurate** — check bsuk-litter-manager data before using "[X] available"
+5. **Availability numbers must be accurate** — check each pup's `status` in `data/puppies.json` before using "[X] available"
 6. **Update seasonally** — "2026" and "this month" references expire
 7. **No dog terms, no marketing emoji** — never puppy/litter/grooming/hypoallergenic; buttons use only canonical emoji (✅ ✈️ 📞)

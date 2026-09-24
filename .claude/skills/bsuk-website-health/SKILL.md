@@ -1,6 +1,6 @@
 ---
 name: bsuk-website-health
-description: Technical site audit and auto-fixer for BlueStaffyUK. Astro → the host (NOT FETCHED until project 6). Checks build, canonicals, images and built-output hygiene. The git-remote, deploy and live-site halves are INACTIVE UNTIL PROJECT 6 — BSUK has no remote, no host and no domain. Runs scripts/health-sweep.sh as the one-command sweep.
+description: Technical site audit and auto-fixer for BlueStaffyUK. Astro → the edge host (chosen in project 6). Checks build, canonicals, images and built-output hygiene. The git-remote, deploy and live-site halves are INACTIVE UNTIL PROJECT 6 — BSUK has no remote, no host and no domain. Runs scripts/health-sweep.sh as the one-command sweep.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -35,7 +35,7 @@ allowed-tools: [Read, Write, Bash]
 | Brand assets | `src/assets/puppies/` (astro:assets masters, project 3), `public/` |
 | Hero images | There is no hero asset directory and none is planned: the hero components import a puppy master from `src/assets/puppies/` until project 4 supplies a real hero photo |
 
-> ⚠️ v1 of this skill hardcoded an absolute path into the sibling MFS repo, the domain
+> ⚠️ v1 of this skill hardcoded an absolute path into a sibling source repo, the domain
 > "blue staffiesforsale.com", and Netlify. All three were wrong. Never
 > reintroduce them.
 
@@ -51,7 +51,7 @@ bash scripts/health-sweep.sh --no-build # faster, skips the build
 ```
 
 It checks, in order, and exits non-zero on any critical failure:
-1. **Git/deploy state** — token leak in remote URL, unpushed commits, uncommitted (undeployed) files
+1. **Git state** — a token in a remote URL, and uncommitted files. Its ahead-of-origin WARN means nothing until project 6 adds a remote — ignore it
 2. **Agent integrity** — every agent in `.claude/agents/` has `name`/`description`/`model` (`npm run agents`)
 3. **Astro build** — `npm run build` compiles; reports page count
 4. **Live site** — deferred to project 6; there is no live site to fetch
@@ -81,9 +81,9 @@ token into and nothing to push. When a remote is added in project 6:
 
 `docs/reference/credentials.md` says which script reads which key.
 
-### Uncommitted / unpushed work (not deployed)
-Per CLAUDE.md "Always commit + push after build", finished work must be committed and
-pushed (push = deploy). The sweep WARNs on a dirty tree or unpushed commits.
+### Uncommitted work
+`CLAUDE.md` rule 3: commit after every task and never push — there is no remote until
+project 6. The sweep WARNs on a dirty tree.
 Build artifacts (`dist/`, `.astro/`, `node_modules/`, `.build-extract/`) and key files
 (`.env`, `.*-key`) are gitignored — confirm with `git check-ignore <path>` before committing.
 
@@ -188,7 +188,7 @@ Re-run `bash scripts/health-sweep.sh` (or `--no-build`). It re-scans `dist/` and
 ### Critical
 - [token leak / build fail / live-site non-200 — each with the fix]
 ### Decisions needed
-- [uncommitted files, unpushed commits]
+- [uncommitted files]
 ### Clean
 - [agents, build, canonicals, live 200s — summarized]
 ### Next actions
@@ -200,8 +200,8 @@ Re-run `bash scripts/health-sweep.sh` (or `--no-build`). It re-scans `dist/` and
 ## STEP 6: CORE WEB VITALS / PAGE SPEED (deeper, run after rebuilds or quarterly)
 
 Targets: **LCP < 2.5s**, **CLS < 0.1**, **INP < 200ms**, FCP < 1.8s, TTFB < 800ms.
-Primary method = Playwright CLI; fall back to `npx lighthouse@latest`. (`bsuk-performance-monitor-agent`
-owns scheduled Lighthouse runs.)
+Primary method = Playwright CLI; fall back to `npx lighthouse@latest`. (Scheduled Lighthouse runs belonged to the source repo's performance-monitor agent, which
+was not ported — source repo only; run `npm run test:perf` by hand.)
 
 ```bash
 npx lighthouse@latest https://SITE_URL_PLACEHOLDER/ \
@@ -227,7 +227,7 @@ echo "cache headers: NOT FETCHED until project 6 — no host, so no header file"
 ## AGENT INTEGRATION
 This skill is the **Technical Health** layer. Related, narrower agents:
 - `bsuk-agent-system-qa` — audits the agent system itself
-- `bsuk-performance-monitor-agent` — scheduled Lighthouse / CWV
+
 - `bsuk-deploy-verifier` — post-deploy 200 checks + IndexNow
 - `bsuk-canonical-fixer` — static-export canonical conversion
 - `bsuk-site-hygiene-agent` — monthly technical SEO maintenance

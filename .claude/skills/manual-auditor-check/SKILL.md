@@ -12,7 +12,7 @@ The last gate before a page batch ships. Two halves: a **mechanical auditor** (`
 **Core principle:** *Never report a machine "fail" as a defect until you've checked it against real `dist/` output.* On its first run this auditor produced **31 false positives**; all 4 root causes are baked in below. Verify, then triage.
 
 ## When to Use
-- A new/rebuilt/polished interior or informational page (or batch) is finished and you're about to "give it a pass" or push.
+- A new/rebuilt/polished interior or informational page (or batch) is finished and you're about to "give it a pass" or commit it.
 - After any `@bsuk-batch-rebuilder`, polish rollout, or large content edit.
 - You want a **reproducible scorecard**, not a vibe check.
 - **NOT for:** comparison / location / "…for-sale" money pages / blog posts (own structure) — same exclusions as `MANUAL INTERIOR-PAGE CHECKLIST.md`.
