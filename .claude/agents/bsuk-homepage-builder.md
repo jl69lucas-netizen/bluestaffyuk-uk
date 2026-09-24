@@ -39,7 +39,7 @@ You preserve every SEO element: H1, canonical, schema JSON-LD, og:url, og:image.
 3. **Read** `data/price-matrix.json` — all pricing data (never hardcode prices)
 4. **Read** `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro` lines 1–120 — reference design patterns (Astro component format)
 5. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
-6. **Run** `grep -n "canonical\|ld+json" src/pages/index.astro | head -10 && grep -n "<h1" src/components/SiteHeader.astro` — extract current H1, canonical, schema locations
+6. **Run** `grep -n "as=\"h1\"\|canonical\|schema" src/pages/index.astro | head -10` — find the H1 (the kit `Hero`), the canonical and the schema the page passes
 7. **Read** `rules/headings.md`, `rules/images.md`, `rules/design.md` — the enforced packs (headings gate, image sizing, hero/counter separation)
 8. **Read** `data/design/components.json` and open `/kit-preview/` — the kit component registry and every component rendered
 
@@ -57,8 +57,8 @@ Only after reading all eight do you begin any section work.
 ❌ Any <script type="application/ld+json"> block
 ❌ Google Analytics / gtag snippet
 ❌ The <head> meta block
-❌ The site <header> — auto-injected by src/components/SiteHeader.astro via BaseLayout (Rule 53)
-❌ The site <footer> — auto-injected by src/components/SiteFooter.astro via BaseLayout (Rule 53)
+❌ The site <header> — the kit's SiteHeaderKit, filled in by src/layouts/PageShell.astro (Rule 53)
+❌ The site <footer> — the kit's SiteFooterKit, filled in by src/layouts/PageShell.astro (Rule 53)
 ```
 
 **Header/Footer Inheritance (Rule 53):** The homepage uses `src/layouts/PageShell.astro`, which fills `BaseLayout`'s header and footer slots with the kit's `SiteHeaderKit` and `SiteFooterKit`. Never write `<header>` or `<footer>` HTML in the homepage Astro file. All page content starts at the first `<section>` (hero). If rebuilding standalone HTML, do not touch header/footer markup — rebuild only from hero section down.
@@ -75,7 +75,7 @@ The outline must include:
 
 **C. Competitor Snapshot** — top 5 competitors for "Blue Staffy for sale" homepage: their H2 topics, word count, special elements, keywords BSUK is missing.
 
-**D. Special Elements Plan** — the live sections mapped to the kit: counter strip (`CounterStrip`, 1×), contact form (`ContactFormKit`, 1×), comparison table (`DataTable`), FAQ (`Faq`), table of contents (`PageNav`), trust strip (`TrustStrip`), newsletter (`InfoCard kind="recommendation"`).
+**D. Special Elements Plan** — the live sections mapped to the kit: counter strip (`CounterStrip`, 1×), no contact form (the close links to `/uk-blue-staffy-breeders-contact/`; the form, `ContactFormKit`, is mounted on the contact page and the sales pages, one per page), comparison table (`DataTable`), FAQ (`Faq`), table of contents (`PageNav`), trust strip (`TrustStrip`), newsletter (`InfoCard kind="recommendation"`).
 
 **E. Fan-Out Keywords** — homepage keyword variations: branded, transactional, informational, comparison, NLP, voice search.
 
@@ -102,12 +102,13 @@ grep -n 'canonical\|ld+json' src/pages/index.astro | head -10
 
 Write the result into the session brief as the section map you are working against, with the
 line numbers, and work down it in order. Components come from the kit, `src/components/kit/`
-(demoed at `/kit-preview/`; the contact form is the kit's `ContactFormKit`), plus `SiteHeader`,
-`SiteFooter`, `Breadcrumb`, `PuppyList` and `Schema` in `src/components/`. If a section needs
-a component the kit lacks, that is a design-system change: build it as a kit component and show it on the board first
+(demoed at `/kit-preview/`). The page sits in `src/layouts/PageShell.astro`, which fills the
+header and footer with the kit's `SiteHeaderKit` and `SiteFooterKit` and wraps `BaseLayout`
+(the head, the schema and the breadcrumb). If a section needs a component the kit lacks, that
+is a design-system change: build it as a kit component and show it on the board first
 (CLAUDE.md rule 10) rather than inventing markup in the page.
 
-The puppy cards are rendered by `src/components/PuppyList.astro` from `data/puppies.json`
+The puppy cards are the kit's `PuppyCard` (`src/components/kit/PuppyCard.astro`), one per available puppy in `data/puppies.json`
 (Roman, Byrd, Ince £1,500 · Vennie, Christa, Cheryl £1,700). Never hardcode a puppy, a price
 or an availability state into the page.
 
@@ -210,10 +211,10 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 - Background: white
 - Stats are NOT FETCHED. The only figures that may appear are the locked ones — `£1,500 from` (`data/puppies.json`), `£500 refundable deposit`, `£200–£350 UK delivery by distance`. Years in business, a documented percentage and a reply-time guarantee are all unverified: write them `NOT FETCHED` or leave the slot out (`CLAUDE.md` rule 9).
 
-### Available Puppies (id="available-puppies" · `src/components/PuppyList.astro`)
+### Available Puppies (id="available-blue-staffy-puppies" · the kit's `PuppyCard`)
 - Read `data/puppies.json` for the six puppies and their prices
 - Display as price cards straight from `data/puppies.json`: Roman, Byrd, Ince at £1,500; Vennie, Christa, Cheryl at £1,700. Never widen these into a range.
-- Each card has "Inquire" CTA → `#contact`
+- Each card links to the puppy's own page, `/available-puppies/<slug>/` ("Ask about <name>"); the listing owns the Product/Offer nodes, so the homepage marks up no price
 
 ### Video (id="video")
 - Live section renders an inline `<video>` element (mp4 placeholder), not a YouTube iframe — real YouTube src pending breeder
@@ -225,8 +226,8 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 - Use `<details>/<summary>` accordion — no JavaScript
 - Minimum 8 questions covering: price and deposit, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), coat colour, collection vs delivery, and the health guarantee (whose length is NOT FETCHED)
 
-### Contact Form (id="contact" · `src/components/kit/ContactFormKit.astro`)
-- Mount `<ContactFormKit />` once, with no props; it carries the field contract in `.claude/skills/bsuk-contact-form/SKILL.md`
+### The close (id="talk-to-us") — no form
+- The homepage carries NO enquiry form. `ContactFormKit` is mounted once on the contact page (`/uk-blue-staffy-breeders-contact/`) and on each sales page; the close links to the contact page
 - Payment method: `[PAYMENT_METHOD_TBD]`
 
 ---
