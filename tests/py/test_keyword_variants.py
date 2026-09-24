@@ -209,17 +209,40 @@ def test_also_folds_in_a_neighbouring_folder_and_refuses_a_missing_one(tmp_path)
 # --- review fixes: whole-label domain ban, any cache shape, blank terms, empty cache ---------
 
 def test_a_hyphenated_host_bans_its_whole_label_not_every_word_in_it(tmp_path):
+    """The label is banned in both forms — hyphenated (`staffy-owners`, after the shared
+    spelling merge) and joined (`staffieowners`, which the merge leaves alone) — and only
+    because of the host: with no such host the same two phrases survive."""
     root = _root(tmp_path)
     raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
-    (raw / "competitors.json").write_text(json.dumps({"pages": [
-        {"url": "https://staffy-owners.example/", "h2": ["Advice for responsible owners"]}]}))
     (raw / "threads.json").write_text(json.dumps({"threads": [
-        {"title": "Responsible owners and staffy-owners forum"},
-        {"title": "What responsible owners ask on staffyowners forum"},
-        {"title": "Staffy-owners forum rules for responsible owners"}]}))
-    terms = [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
+        {"title": "Responsible owners on the staffie-owners forum"},
+        {"title": "What responsible owners ask on the staffieowners forum"},
+        {"title": "Staffie-owners forum rules for responsible owners"},
+        {"title": "The staffieowners forum answers responsible owners"}]}))
+
+    def cooccurring():
+        return [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
+
+    control = cooccurring()                                   # no staffie-owners host yet
+    assert "staffy-owners forum" in control and "staffieowners forum" in control, control
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://staffie-owners.example/", "h2": ["Advice for responsible owners"]}]}))
+    terms = cooccurring()
     assert "responsible owners" in terms
-    assert not any("staffy-owners" in t or "staffyowners" in t for t in terms), terms
+    assert not any("staffy-owners" in t or "staffieowners" in t for t in terms), terms
+
+
+def test_a_host_named_after_a_place_bans_nothing(tmp_path):
+    """A council host (manchester.gov.uk) has a place name for a label; banning it would drop
+    every phrase that names the city."""
+    root = _root(tmp_path)
+    (root / "data" / "locations.json").write_text(json.dumps([{"city": "Testtown"}, {"city": "Manchester"}]))
+    raw = root / "data" / "queries" / "raw" / "blue-staffy-puppies-testtown"
+    (raw / "competitors.json").write_text(json.dumps({"pages": [
+        {"url": "https://www.manchester.gov.uk/dogs", "h2": ["Rehoming at Manchester Dogs Home"]}]}))
+    (raw / "threads.json").write_text(json.dumps({"threads": [{"title": "Adopting from Manchester Dogs Home"}]}))
+    terms = [t["term"] for t in KV.propose("blue-staffy-puppies-testtown", root=root)["buckets"]["cooccurring"]]
+    assert "manchester dogs home" in terms, terms
 
 
 def test_a_list_shaped_file_and_string_items_do_not_crash(tmp_path):

@@ -286,9 +286,10 @@ def _similar(corpus, related):
 
 def _cooccurring(corpus, geo):
     pwords = set(normalise(corpus["primary"]).split())
-    # A label that normalises to a word of the primary (puppies.co.uk -> `puppy`) cannot be
-    # told apart from the word itself; banning it would drop every phrase that says puppy.
-    banned = {d for d in corpus["domains"] if d not in pwords}
+    # A label that normalises to a word of the primary (puppies.co.uk -> `puppy`) or to a
+    # place name (manchester.gov.uk -> `manchester`) cannot be told apart from the word
+    # itself; banning it would drop every phrase that says puppy or names the city.
+    banned = {d for d in corpus["domains"] if d not in pwords and d not in geo}
     df, where = Counter(), {}
     for src, text in corpus["docs"]:
         toks = _tokens(text)
