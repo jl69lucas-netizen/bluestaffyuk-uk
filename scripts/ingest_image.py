@@ -70,7 +70,7 @@ NATIVE_MAX_H = 1760
 SEO_STEM = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+){2,9}$")
 GENERIC = {"img", "image", "photo", "pic", "dsc", "screenshot", "untitled", "copy",
            "final", "file", "name", "new", "edit"}
-SLOT_ID = re.compile(r"^[a-z][a-z0-9-]*$")
+SLOT_ID = image_rules.SLOT_ID                 # the gate's rule, matched whole
 SLUG = re.compile(r"^[a-z0-9-]+(/[a-z0-9-]+)*$")
 BAKED = {"A": "contain", "B": "blurfill", "E": "topcover"}
 NATIVE = {"C", "D", "H"}
@@ -230,7 +230,7 @@ def _slug_problems(slug):
 def _board_problems(slug, slot, root):
     if _slug_problems(slug):
         return _slug_problems(slug)
-    if not SLOT_ID.match(slot or ""):
+    if not (isinstance(slot, str) and SLOT_ID.fullmatch(slot)):
         return ["slot %r is not a slot id" % slot]
     p = board_path(slug, root)
     if not p.exists():
@@ -408,7 +408,7 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
     master, root = pathlib.Path(master), pathlib.Path(root)
     problems = (_check_master(master) + _style_problems(og_style, infographic, mobcrop)
                 + _slug_problems(slug))
-    if not SLOT_ID.match(slot or ""):
+    if not (isinstance(slot, str) and SLOT_ID.fullmatch(slot)):
         problems.append("slot %r is not a slot id" % slot)
     if not _slug_problems(slug) and not board_path(slug, root).exists():
         problems.append("no board for %s" % slug)

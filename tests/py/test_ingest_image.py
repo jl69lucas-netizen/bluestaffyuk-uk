@@ -221,6 +221,7 @@ def test_the_pick_grammar_matches_the_build_gate():
     # One grammar, not two copies kept in step: ingest reuses the build gate's PICK, with its
     # containment (no `.`/`..` segments) and its whole-string match.
     assert PICK is rules.PICK
+    assert ingest_image.SLOT_ID is rules.SLOT_ID
     for v in ("file:/images/a.webp", "assets:Roman1.jpg", "og:B", "og:B:0123456789ab",
               "ig:IG-3", "ig:IG-3:0123456789ab", "og:F", "ig:IG-9", "og:B:xyz",
               "og:B:0123456789ab\n", "file:/images/../x.webp", "assets:..", "assets:a/b.jpg"):
@@ -478,3 +479,13 @@ def test_a_commit_that_stops_part_way_names_the_stem(repo, master, monkeypatch):
     assert "%s.webp" % STEM in str(e.value) and "device went away" in str(e.value)
     monkeypatch.undo()
     assert not [q for q in repo.rglob(".*.tmp-*")], "the temps that were not moved are removed"
+
+
+def test_a_slot_id_must_match_whole(repo, master):
+    """ingest uses the gate's SLOT_ID with fullmatch: a trailing newline or a leading digit
+    is not a slot id."""
+    for bad in ("garden-photo\n", "1garden"):
+        with pytest.raises(Refused, match="is not a slot id"):
+            draft(master, SLUG, bad, og_style="B", root=repo)
+        with pytest.raises(Refused, match="is not a slot id"):
+            publish(SLUG, bad, STEM, root=repo)

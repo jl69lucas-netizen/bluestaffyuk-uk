@@ -390,7 +390,7 @@ BLOCK_CSS = (
     ".imgopt .nothumb{display:grid;place-items:center;color:var(--ink-3)}"
     ".imgopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}"
     ".imgstyles{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;margin:6px 0}"
-    ".imgstyles label{padding:6px 4px}"
+    ".imgstyles label{padding:10px 6px}"
     ".imggen img{max-width:min(100%,480px);border-radius:6px;display:block;margin:6px 0}"
     ".imgwhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.imgwarn{color:var(--warn);font-weight:600}"
     "@media (max-width:640px){.imgc{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>")

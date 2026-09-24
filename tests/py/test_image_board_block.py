@@ -240,7 +240,8 @@ def test_thumb_uri_downsizes_before_it_converts(tmp_path):
 
 
 def test_style_labels_have_room_to_tap():
-    assert ".imgstyles label{padding:6px 4px}" in IR.BLOCK_CSS
+    # 10px above and below a ~24px line: a 44px tap target on a phone.
+    assert ".imgstyles label{padding:10px 6px}" in IR.BLOCK_CSS
 
 
 def test_the_schema_refuses_a_slot_id_that_is_not_a_slug():
@@ -250,8 +251,10 @@ def test_the_schema_refuses_a_slot_id_that_is_not_a_slug():
                   schema["properties"]["assets"]["items"]):
         pat = where["properties"]["slot"]["pattern"]
         v = jsonschema.Draft202012Validator({"type": "string", "pattern": pat})
-        assert v.is_valid("weeks-photo") and v.is_valid("1blue-staffy")
+        assert v.is_valid("weeks-photo") and v.is_valid("tile-2")
         # (Python's `$` also matches before a final newline; image_rules.SLOT_ID.fullmatch
         # refuses "a\n" at the image gate.)
-        for bad in ('x"><script>', "Weeks", "-x", "a b", ""):
+        for bad in ('x"><script>', "Weeks", "-x", "a b", "", "1blue-staffy", "2-tile"):
             assert not v.is_valid(bad), bad
+        # One rule in three places: the schema, the image gate and the ingest step agree.
+        assert pat == IR.SLOT_ID.pattern

@@ -1103,7 +1103,7 @@
        "properties": {
         "slot": {
          "type": "string",
-         "pattern": "^[a-z0-9][a-z0-9-]*$"
+         "pattern": "^[a-z][a-z0-9-]*$"
         },
         "kind": {
          "enum": [
@@ -1539,7 +1539,7 @@
     "properties": {
      "slot": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
+      "pattern": "^[a-z][a-z0-9-]*$"
      },
      "kind": {
       "enum": [
