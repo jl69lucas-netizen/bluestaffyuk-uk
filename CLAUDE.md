@@ -89,12 +89,14 @@ The generic skills already ported live at `.claude/skills/` — `grill-me`,
 
 Full task→entry-point table: `docs/reference/quick-start.md`.
 
-## The nine judgment rules that stay here
+## The working rules that stay here
 
-These nine have **no mechanical decision procedure**, which is exactly why they cannot be
+Rules 1–9 have **no mechanical decision procedure**, which is exactly why they cannot be
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
-`data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops the list
-growing. Every other rule moved to a pack.
+`data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
+growing. Rules 10–16 are the breeder's standing working rules (2026-09-18 to 2026-09-20);
+they are not ledger rows, and where one has a mechanical backstop the rule names it. Every
+other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at
    BlueStaffyUK*. Our puppies, our kennel and our credentials are framed as ours, never
@@ -169,7 +171,7 @@ growing. Every other rule moved to a pack.
     the wording states a wrong fact (the former city, an old price, the byline) or collides
     with another page's heading, in which case the change is recorded in the board record's
     `verbatim.changed` with the reason. Everything else is written fresh from the outline.
-    `scripts/verbatim_set_check.py` (arrives in Task 18b) proves the set is on the built page. Applies from the
+    `scripts/verbatim_set_check.py` (`npm run check:verbatim`) proves the set is on the built page. Applies from the
     homepage onward; the three pages built before this rule (privacy, thank-you, contact)
     stay as rewritten. (Breeder, 2026-09-20.)
 
@@ -177,7 +179,8 @@ growing. Every other rule moved to a pack.
     same hero layout or the same counter strip: the counter's figures are that page's own facts
     (from `data/*.json` and the page's record, never invented) and each board offers three hero
     styles and three counter styles designed for that page from the breeder's idea sheets
-    (`Assets/Components-Ideas/`) on the same tokens. Every other section carries a small,
+    (outside this repo, at `~/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same
+    tokens. Every other section carries a small,
     deliberate refresh delta per page — layout, accent role or motif, never the palette —
     per `.claude/skills/bsuk-component-refresh/SKILL.md` and
     `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
@@ -190,7 +193,7 @@ work is done rather than how a page is built, so they are stated here.
 - **No source-repo vocabulary, ever.** This operating system was ported from a bird
   breeder's repo, and the twelve markers `scripts/marker_check.py` scans for are not a style
   preference: a hit is a re-base that did not happen. There is no allowlist, and
-  `npm run check:markers` is the last link in `npm run check:all`. The marker list lives in
+  `npm run check:markers` runs in `npm run check:all`. The marker list lives in
   the gate, deliberately, so that quoting it here cannot make this file fail its own rule.
 - **Every deliverable ships as an Artifact with copy buttons, plus `.md`.** Research docs,
   outlines, keyword tables, meta sets, gate reports, lessons docs — the deliverable is a
@@ -216,10 +219,10 @@ npm run test:render:meta
 npm run test:render:pages
 ```
 
-`check:all` chains `check:parity`, `check:redirects`, `check:schema`, `check:sitemaps`,
-`check:placeholders` and `check:markers`, in that order. Until Task 16 closes,
-`check:markers` reports the ported `tests/render/` fixtures as known debt; every other gate
-in the chain must be green. `test:render:meta` is the gate that
+`check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
+`check:redirects`, `check:schema`, `check:queries`, `check:competitors`, `check:gaps`,
+`check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and `agents`, in
+that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be green. `test:render:meta` is the gate that
 checks the checkers — run it **before** trusting any page result. `test:render:pages`
 measures the target pages at 375/768/1280 in a real browser.
 
@@ -275,8 +278,9 @@ spec under `docs/superpowers/specs/`:
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` and guarded by
   `scripts/placeholder_check.py` until the breeder confirms them.
 
-The design system is project 3. Until then there is no component kit and no locked palette;
-`src/layouts/BaseLayout.astro` and `src/styles/global.css` are the whole shell.
+The design system (project 3) is built: the component kit is `src/components/kit/`, listed in
+`data/design/components.json`, and rebuilt pages render through `src/layouts/PageShell.astro`
+(`rules/design.md` holds the locked visual rules).
 
 ## Where everything else went
 
