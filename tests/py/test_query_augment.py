@@ -1693,3 +1693,49 @@ def test_build_with_a_malformed_spend_log_is_bad_input(tmp_path, log):
     assert len(lines) == 1 and "bad input" in lines[0] and "spend.json" in lines[0]
     assert "Traceback" not in r.stderr
     assert not (root / "data/queries/m.json").exists()
+
+
+# --- an unproven ledger claim is not a fact source (Known Issue 40) ------------------------
+# data/faq.json says the parents are "certified clear"; rules/copy.md records the certificate
+# as NOT FETCHED, and data/quality/evidence-ledger.json carries that claim at proof NOT FETCHED.
+# A bank row whose ANSWER makes an unproven claim may still be asked, but it backs nothing: the
+# question is blocked as "unverified fact" like any other with no fact behind it.
+
+def unproven_ledger(root, pattern="certified clear", proof="NOT FETCHED"):
+    q = root / "data/quality"
+    q.mkdir(parents=True, exist_ok=True)
+    (q / "evidence-ledger.json").write_text(json.dumps({"claims": [
+        {"id": "parents-dna-clear", "pattern": pattern, "proof": proof,
+         "anchor": "dna-tests", "confirmed": None}]}))
+
+
+def health_bank(tmp_path):
+    root = make_root(tmp_path, bank=["Are the parents health tested?"])
+    (root / "data/faq.json").write_text(json.dumps([
+        {"id": "h1", "q": "Are the parents health tested?",
+         "a": "Yes. Both parents are certified clear of L-2-HGA.", "source": "data/settings.json"}]))
+    return root
+
+
+def test_a_bank_row_making_an_unproven_claim_backs_no_question(tmp_path):
+    root = health_bank(tmp_path)
+    unproven_ledger(root)
+    cands, status = Q.bank_candidates(root)
+    assert status == "ok"
+    assert cands == [("Are the parents health tested?", "bank", "bank:h1", None)]
+    m = Q.merge([("Are both parents DNA tested?", "serp_google", "serp_google_paa", "bank:h1")],
+                root)
+    assert [v["fact_source"] for v in m.values()] == [None]
+
+
+def test_the_same_row_backs_its_question_once_the_proof_is_on_file(tmp_path):
+    root = health_bank(tmp_path)
+    unproven_ledger(root, proof="/proof/dna-certificates.pdf")
+    cands, _ = Q.bank_candidates(root)
+    assert cands == [("Are the parents health tested?", "bank", "bank:h1", "data/settings.json")]
+
+
+def test_no_ledger_file_changes_nothing(tmp_path):
+    root = health_bank(tmp_path)
+    cands, _ = Q.bank_candidates(root)
+    assert cands[0][3] == "data/settings.json"

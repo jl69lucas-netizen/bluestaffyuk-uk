@@ -178,15 +178,54 @@ class Short(Exception):
         self.blocked = []   # (block, question) pairs, set by build()
 
 
+def _unproven_claims(root):
+    """Compiled patterns of the evidence-ledger claims still at proof "NOT FETCHED".
+
+    rules/copy.md keeps a health or credential claim NOT FETCHED until its certificate is on
+    file, and data/quality/evidence-ledger.json records each such claim with that proof. A
+    bank row whose ANSWER makes one of them is not a fact source: its question may still be
+    asked, but it is blocked as "unverified fact" rather than answered from the row (Known
+    Issue 40). A missing or unreadable ledger records nothing, so nothing is withheld.
+    """
+    try:
+        ledger = json.loads((Path(root) / "data/quality/evidence-ledger.json")
+                            .read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return []
+    claims = ledger.get("claims") if isinstance(ledger, dict) else None
+    out = []
+    for c in claims if isinstance(claims, list) else []:
+        if not (isinstance(c, dict) and isinstance(c.get("pattern"), str)):
+            continue
+        if (c.get("proof") or "NOT FETCHED") != "NOT FETCHED":
+            continue
+        try:
+            out.append(re.compile(c["pattern"], re.I))
+        except re.error:
+            continue
+    return out
+
+
+def _backing(row, unproven):
+    """A bank row's source, or None when its answer makes an unproven ledger claim."""
+    answer = row.get("a")
+    if isinstance(answer, str) and any(p.search(answer) for p in unproven):
+        return None
+    return row.get("source")
+
+
 def _bank_rows(root):
-    """{faq.json row id: (its question, its source)}; empty when the bank is missing or bad."""
+    """{faq.json row id: (its question, its source)}; empty when the bank is missing or bad.
+
+    The source is None for a row whose answer makes an unproven ledger claim (_backing)."""
     try:
         rows = json.loads((Path(root) / "data/faq.json").read_text(encoding="utf-8"))
     except (OSError, ValueError, UnicodeDecodeError):
         return {}
     if not isinstance(rows, list):
         return {}
-    return {r["id"]: (r.get("q") if isinstance(r.get("q"), str) else "", r.get("source"))
+    unproven = _unproven_claims(root)
+    return {r["id"]: (r.get("q") if isinstance(r.get("q"), str) else "", _backing(r, unproven))
             for r in rows if isinstance(r, dict) and "id" in r}
 
 
@@ -903,14 +942,14 @@ def bank_candidates(root=ROOT):
         return [], "NOT FETCHED"
     if not isinstance(rows, list):
         raise BadInput(path, "top level must be a list")
-    out = []
+    out, unproven = [], _unproven_claims(root)
     for i, r in enumerate(rows):
         if not (isinstance(r, dict) and isinstance(r.get("q"), str)
                 and isinstance(r.get("id"), str)):
             raise BadInput(path, f"row {i} must be an object with string q and id")
         if not _opt_str(r.get("source")):
             raise BadInput(path, f"row {i}: source must be a string or null")
-        out.append((r["q"], "bank", f"bank:{r['id']}", r.get("source")))
+        out.append((r["q"], "bank", f"bank:{r['id']}", _backing(r, unproven)))
     return out, "ok"
 
 

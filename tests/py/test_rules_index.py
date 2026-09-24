@@ -87,10 +87,21 @@ def test_rework_ledger_is_empty_and_readable_by_quality_report():
     assert r["windows"] == []
 
 
-def test_evidence_ledger_is_empty_and_readable_by_evidence_audit():
+def test_evidence_ledger_rows_are_well_formed_and_readable_by_evidence_audit():
     e = _load("evidence-ledger.json")
-    # scripts/evidence_audit.py claim_binding() iterates ledger["claims"].
-    assert e["claims"] == []
+    # scripts/evidence_audit.py claim_binding() iterates ledger["claims"]. Empty at the system
+    # transfer; Known Issue 40 added the first row, the parents' clear DNA results, at proof
+    # NOT FETCHED — recorded as unproven, never as proven.
+    ids = [c["id"] for c in e["claims"]]
+    assert len(ids) == len(set(ids)), ids
+    for c in e["claims"]:
+        assert set(c) >= {"id", "pattern", "proof", "anchor", "confirmed"}, c
+        re.compile(c["pattern"])
+        # A proof is a site path to the redacted document, or the literal NOT FETCHED; a row
+        # at NOT FETCHED has, by definition, no breeder confirmation date.
+        assert c["proof"] == "NOT FETCHED" or c["proof"].startswith("/"), c
+        if c["proof"] == "NOT FETCHED":
+            assert c["confirmed"] is None, c
 
 
 def test_the_gates_actually_load_all_three():
