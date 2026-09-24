@@ -50,8 +50,8 @@ or not — the builder runs this on its own page before adding it to rebuilt.jso
 out of family scope is reported and skipped, never failed.
 
 Routes: a board key is the bare slug; a city page is built at dist/uk-locations/<slug>/.
-`_slugs.resolve_page` resolves that when it exists (p5-readiness Task 43, F2a); until then
-the same resolution runs locally from data/page-map.json.
+scripts/page_sections.resolve_page resolves that from data/page-map.json (and defers to
+`_slugs.resolve_page` once p5-readiness Task 43, F2a, adds it).
 
   python3 scripts/outline_provenance_check.py [slug ...] [--root DIR]
 
@@ -70,11 +70,7 @@ import dup_content_audit as DUP  # noqa: E402  (whitelists, crossovers, specimen
 import family_rules as FR  # noqa: E402
 from _slugs import page_key  # noqa: E402
 from query_coverage_check import FRAME_CLASSES, FRAME_IDS  # noqa: E402
-
-try:  # p5-readiness Task 43 (F2a) adds the shared resolver; the local one below mirrors it.
-    from _slugs import resolve_page as _shared_resolve_page  # noqa: E402
-except ImportError:  # pragma: no cover — depends on merge order
-    _shared_resolve_page = None
+import page_sections as PS  # noqa: E402  (the route resolver image_candidates shares)
 
 ROOT = Path(__file__).resolve().parents[1]
 APPROVED = ("approved", "built", "released")
@@ -95,32 +91,7 @@ SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
 
 # ── routes ────────────────────────────────────────────────────────────────────────────────
-def _page_map_routes(root):
-    path = Path(root) / "data" / "page-map.json"
-    if not path.is_file():
-        return {}
-    routes = {}
-    for row in json.loads(path.read_text(encoding="utf-8"))["pages"]:
-        route = row["url"].strip("/")
-        if route:
-            routes.setdefault(route.rsplit("/", 1)[-1], route)
-    return routes
-
-
-def resolve_page(slug, root):
-    """(key, route): the shared resolver when it exists, else the same rule locally — a bare
-    slug or full route of a data/page-map.json row is (its last segment, its route); anything
-    else is (slug, slug); the root is ("index", "")."""
-    if _shared_resolve_page is not None:
-        return _shared_resolve_page(slug, root)
-    s = str(slug).strip("/")
-    if s in ("", "index"):
-        return "index", ""
-    last = s.rsplit("/", 1)[-1]
-    route = _page_map_routes(root).get(last)
-    if route is not None and s in (last, route):
-        return last, route
-    return s, s
+resolve_page = PS.resolve_page
 
 
 def built_path(slug, root):

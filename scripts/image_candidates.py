@@ -56,6 +56,9 @@ import re
 import sys
 from html.parser import HTMLParser
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import page_sections as PS  # noqa: E402  (board slug -> built route, shared)
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 #: The breeder's image folder. It sits outside the repo, so it is named absolutely, the way
 #: scripts/bake_images.py names its source tree; BSUK_ASSETS_DIR overrides it.
@@ -86,6 +89,13 @@ def slug_file(slug):
 
 def route_of(slug):
     return "/" if slug == "index" else "/" + slug.strip("/") + "/"
+
+
+def page_route(slug, root):
+    """The built route of a board slug, bare or nested: `staffy-breeding-dogs-glasgow` ->
+    `/uk-locations/staffy-breeding-dogs-glasgow/` through data/page-map.json (the resolver
+    scripts/outline_provenance_check.py uses too)."""
+    return route_of(PS.resolve_page(slug, root)[1] or "index")
 
 
 def _fold(tok):
@@ -253,13 +263,14 @@ def own_images(board, root):
             seen.add(c)
             out.append({"file": c, "alt": alt or ""})
 
-    for name in (slug, slug_file(slug)):
+    key, route = PS.resolve_page(slug, root)
+    for name in dict.fromkeys((slug, slug_file(slug), key, slug_file(route or "index"))):
         vf = root / "data" / "verbatim" / f"{name}.json"
         if vf.exists():
             for row in _verbatim_alts(vf):
                 add(row.get("src"), row.get("alt"))
             break
-    page = dist_pages(root).get(route_of(slug))
+    page = dist_pages(root).get(page_route(slug, root))
     if page is not None:
         for src, alt in _page_imgs(page).main:
             add(src, alt)
@@ -409,7 +420,7 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
     fresh, already = asset_images(assets_dir, root)
     pools = {"own": own, "served": served, "assets": fresh}
     used, alts = usage_and_alts(root)
-    route = route_of(slug)
+    route = page_route(slug, root)
     slots, taken = [], set()
     for section, node, img in iter_slots(board):
         words = slot_words(section, node, img)

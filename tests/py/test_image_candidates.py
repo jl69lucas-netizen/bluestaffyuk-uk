@@ -258,3 +258,49 @@ def test_ties_within_a_pool_order_by_pick():
              "assets": [{"asset": "van-c.jpg", "ingest_as": "/images/van-c.webp"}]}
     got = IC.rank({"van"}, pools, {}, {}, "/x/", per_pool=3)
     assert [c["pick"] for c in got] == ["file:/images/van-a.webp", "file:/images/van-b.webp", "assets:van-c.jpg"]
+
+
+# ── Task 12a item 3: a location board's bare slug finds its built route ─────────────────
+def _glasgow(tmp_path):
+    root, _ = _tree(tmp_path)
+    (root / "data" / "page-map.json").write_text(json.dumps({"pages": [
+        {"url": "/uk-locations/staffy-breeding-dogs-glasgow/"}, {"url": "/blue-staffy-health-uk/"}]}))
+    page = root / "dist" / "uk-locations" / "staffy-breeding-dogs-glasgow"
+    page.mkdir(parents=True)
+    (page / "index.html").write_text(_page([("/images/family-garden-play.webp", "A Glasgow garden")]))
+    return root
+
+
+def test_a_bare_location_slug_finds_the_same_own_images_as_its_nested_route(tmp_path):
+    root = _glasgow(tmp_path)
+    bare, nested = _board(), _board()
+    bare["meta"]["slug"] = "staffy-breeding-dogs-glasgow"
+    nested["meta"]["slug"] = "uk-locations/staffy-breeding-dogs-glasgow"
+    want = [{"file": "/images/family-garden-play.webp", "alt": "A Glasgow garden"}]
+    assert IC.own_images(nested, root) == want
+    assert IC.own_images(bare, root) == want
+    assert IC.page_route("staffy-breeding-dogs-glasgow", root) == "/uk-locations/staffy-breeding-dogs-glasgow/"
+    assert IC.page_route("index", root) == "/"
+
+
+def test_the_bare_slug_is_its_own_page_when_counting_reuse(tmp_path):
+    """`used_on` leaves out the page itself, found by its route, not by the bare slug."""
+    root = _glasgow(tmp_path)
+    b = _board(images_by_section=[{"slot": "garden-photo", "kind": "photo", "required": True,
+                                   "prompt": "a garden in glasgow"}], node_images=[])
+    b["meta"]["slug"] = "staffy-breeding-dogs-glasgow"
+    row = IC.candidates(b, root, tmp_path / "Assets" / "Images", per_pool=3)["slots"][0]
+    own = [c for c in row["candidates"] if c["pool"] == "own"]
+    assert own and own[0]["file"] == "/images/family-garden-play.webp"
+    assert "/uk-locations/staffy-breeding-dogs-glasgow/" not in own[0]["used_on"]
+
+
+def test_the_real_glasgow_board_slug_resolves_like_its_route():
+    if not (ROOT / "dist" / "uk-locations" / "staffy-breeding-dogs-glasgow" / "index.html").is_file():
+        import pytest
+        pytest.skip("dist/ not built")
+    b = _board()
+    b["meta"]["slug"] = "staffy-breeding-dogs-glasgow"
+    bare = IC.own_images(b, ROOT)
+    b["meta"]["slug"] = "uk-locations/staffy-breeding-dogs-glasgow"
+    assert bare and bare == IC.own_images(b, ROOT)
