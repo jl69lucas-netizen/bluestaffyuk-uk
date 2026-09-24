@@ -5,7 +5,6 @@ header at all, and no 404 or redirect check would ever notice. So the file is as
 against the three sources it is built from — data/page-map.json, data/puppies.json and the
 built pages themselves — rather than against a snapshot of itself.
 """
-import html
 import json
 import pathlib
 import sys
@@ -40,8 +39,8 @@ def built_urls():
 def indexable_built_urls():
     """Built pages the robots meta lets in — the same rule the sitemaps use."""
     out = set()
-    for url, html in B._pages(DIST):
-        if "noindex" not in (B._meta(html, "robots") or ""):
+    for url, text in B._pages(DIST):
+        if "noindex" not in (B._meta(text, "robots") or ""):
             out.add(url)
     return out
 
@@ -125,7 +124,7 @@ def test_the_former_city_is_never_introduced_by_the_index():
     opens prints that title itself — the index copies titles, it never writes one."""
     if not DIST.exists():
         pytest.skip("run npm run build first")
-    printed = {url: html.unescape(B._title(text)) for url, text in B._pages(DIST)}
+    printed = {url: B._title(text) for url, text in B._pages(DIST)}
     introduced = [r["url"] for r in rows()
                   if "Glasgow" in r["title"] and r["title"] != printed.get(r["url"])]
     assert not introduced, introduced
@@ -139,7 +138,7 @@ def test_a_row_carries_the_title_its_page_prints():
     page's <title> wins and the page map is only the fallback for a page that prints none."""
     if not DIST.exists():
         pytest.skip("run npm run build first")
-    printed = {url: html.unescape(B._title(text)) for url, text in B._pages(DIST)}
+    printed = {url: B._title(text) for url, text in B._pages(DIST)}
     wrong = [(r["url"], r["title"], printed[r["url"]]) for r in rows()
              if printed.get(r["url"]) and r["title"] != printed[r["url"]]]
     assert not wrong, wrong
@@ -158,6 +157,24 @@ def test_the_built_title_wins_over_the_page_map(tmp_path):
                   blog_slugs=set())
     by_url = {r["url"]: r["title"] for r in got}
     assert by_url == {"/about/": "About Us & Our Dogs", "/bare/": "Page Map Fallback"}
+
+
+def test_an_svg_title_in_the_body_is_not_the_page_title(tmp_path):
+    # an inline icon's <title> is its accessible name, not the document's
+    page = tmp_path / "icons" / "index.html"
+    page.parent.mkdir()
+    page.write_text("<html><head></head><body><svg><title>Paw icon</title></svg></body></html>")
+    got = B.build(dist=tmp_path, page_map=[{"url": "/icons/", "title": "Page Map Title",
+                                            "kind": "rich"}], blog_slugs=set())
+    assert [r["title"] for r in got] == ["Page Map Title"]
+
+
+def test_an_escaped_space_collapses_like_any_other(tmp_path):
+    page = tmp_path / "nbsp" / "index.html"
+    page.parent.mkdir()
+    page.write_text("<html><head><title>Blue&nbsp;&nbsp;Staffy \n Puppies</title></head></html>")
+    got = B.build(dist=tmp_path, page_map=[], blog_slugs=set())
+    assert [r["title"] for r in got] == ["Blue Staffy Puppies"]
 
 
 def test_keywords_are_title_words_plus_slug_words():

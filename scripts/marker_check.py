@@ -48,12 +48,13 @@ PREFIX_ONLY = {"cag-": re.compile(r"(?<![a-z0-9])cag-")}
 # two words can also be split by a line wrap (`bsuk-paa-agent.md` had "African" / "Greys"),
 # which no line-scoped test can see — WRAPPED reads the whole file for that (hits_in).
 SPELLED = {
-    "african grey": re.compile(r"african[ \t]+gr[ae]y"),
+    "african grey": re.compile(r"african[^\S\n]+gr[ae]y"),
     "african-grey": re.compile(r"african-gr[ae]y"),
 }
 # "African" (or "African-") ending one line and "Grey"/"Gray" starting the next, after any
-# quote, list or table marker the wrap leaves at the start of the second line.
-WRAPPED = re.compile(r"african[ \t]*(-?)[ \t]*\r?\n[ \t>*#|+-]*gr[ae]y")
+# quote, list, numbered-list or table marker the wrap leaves at the start of the second line.
+# `[^\S\n]` is any space but a line break, so a non-breaking space counts as a space too.
+WRAPPED = re.compile(r"african[^\S\n]*(-?)[^\S\n]*\n(?:[^\S\n]|[>*#|+-]|\d+[.)])*gr[ae]y")
 
 
 def _present(marker, low):
@@ -87,6 +88,9 @@ def hits_in(path):
     a substring of another matched marker on the same line only the longer one is reported.
     The only overlapping pair in MARKERS today is `congo` / `congoafricangreys`; re-check this
     rule when a marker is added.
+
+    A wrapped "African" / "Grey" is reported once more, on the line where it starts, even when
+    that line also carries a marker of its own: the two are different occurrences.
     """
     # errors="replace", like placeholder_check.py: a stray non-UTF-8 byte must not buy a
     # file a silent pass, and an OSError is a real fault that belongs in the traceback.

@@ -19,7 +19,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[2]
 SCRIPT = ROOT / "scripts/health-sweep.sh"
 
 
-def sweep(tmp_path, remote=False):
+def sweep(tmp_path, remote=False, name="origin"):
     repo = tmp_path / "repo"
     (repo / "scripts").mkdir(parents=True)
     shutil.copy(SCRIPT, repo / "scripts/health-sweep.sh")
@@ -33,7 +33,7 @@ def sweep(tmp_path, remote=False):
     if remote:
         bare = tmp_path / "origin.git"
         subprocess.run(["git", "init", "-q", "--bare", str(bare)], check=True)
-        git("remote", "add", "origin", str(bare))
+        git("remote", "add", name, str(bare))
     env = {k: v for k, v in os.environ.items() if k != "SITE_URL"}
     run = subprocess.run(["bash", "scripts/health-sweep.sh", "--no-build"], cwd=repo,
                          capture_output=True, text=True, env=env, timeout=120)
@@ -50,3 +50,11 @@ def test_a_remote_is_still_compared(tmp_path):
     out = sweep(tmp_path, remote=True)
     assert "no remote" not in out
     assert "NOT pushed" in out or "Up to date with origin" in out
+
+
+def test_a_remote_that_is_not_origin_is_not_compared(tmp_path):
+    # the block fetches and counts against origin/<branch>: with only another remote there is
+    # no origin to compare, and "? commit(s) … NOT pushed" would be the false alarm again
+    out = sweep(tmp_path, remote=True, name="upstream")
+    assert "no origin remote — nothing to push" in out
+    assert "NOT pushed" not in out

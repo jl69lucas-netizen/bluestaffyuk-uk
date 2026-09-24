@@ -171,6 +171,8 @@ def test_the_real_repo_is_clean():
     ("an African-\nGrey in the house\n", "african-grey"),
     ("> the African\n> Greys of the source site\n", "african grey"),
     ("- owners of an African\n  Gray and a Staffy\n", "african grey"),
+    ("1. the African\n2. Grey list item\n", "african grey"),
+    ("owners of an African\u00a0\n\u00a0Grey\n", "african grey"),
 ])
 def test_a_marker_split_across_a_line_break_fires(tmp_path, text, marker):
     repo = _repo(tmp_path, files=[("CLAUDE.md", text)])
@@ -181,6 +183,7 @@ def test_a_marker_split_across_a_line_break_fires(tmp_path, text, marker):
     ("An African Gray needs space.", "african grey"),
     ("See /african-gray-care/.", "african-grey"),
     ("AFRICAN  GRAYS are loud", "african grey"),
+    ("an African\u00a0Grey in a cage", "african grey"),
 ])
 def test_the_us_spelling_fires(tmp_path, line, marker):
     repo = _repo(tmp_path, files=[("CLAUDE.md", line + "\n")])

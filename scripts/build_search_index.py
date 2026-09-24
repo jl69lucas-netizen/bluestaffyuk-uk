@@ -52,12 +52,17 @@ KIND_LABEL = {"location": "Location", "blog": "Blog", "rich": "Page", "page": "P
 SHARD_LABEL = {"location": "Location", "post": "Blog", "puppy": "Puppy", "page": "Page"}
 
 TITLE_TAG = re.compile(r"<title[^>]*>(.*?)</title>", re.S | re.I)
+HEAD = re.compile(r"<head\b[^>]*>(.*?)</head>", re.S | re.I)
 WORD = re.compile(r"[a-z0-9]+")
 
 
 def _title(html):
-    m = TITLE_TAG.search(html)
-    return " ".join(m.group(1).split()) if m else ""
+    """The document's <title>, read inside <head> only (an inline SVG's <title> in the body is
+    an icon's name), entities decoded BEFORE the whitespace collapses, so an &nbsp; run
+    collapses like any other space."""
+    head = HEAD.search(html)
+    m = TITLE_TAG.search(head.group(1) if head else html)
+    return " ".join(unescape(m.group(1)).split()) if m else ""
 
 
 def keywords(title, url):
@@ -83,7 +88,7 @@ def build(dist=DIST, page_map=None, blog_slugs=None):
         if shard is None:
             continue
         row = by_url.get(url)
-        title = unescape(_title(text)) or (row or {}).get("title") or ""
+        title = _title(text) or (row or {}).get("title") or ""
         kind = KIND_LABEL.get((row or {}).get("kind"), SHARD_LABEL.get(shard, "Page"))
         if not title:
             continue
