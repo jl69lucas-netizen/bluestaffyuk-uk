@@ -23,8 +23,10 @@ what the plan's draft assumed, and each one changes the output:
     the page's stylesheet inlined, the document sprite pasted back in and the images pointed
     at this artifact's blob store. `libraries` is empty and the index declares no namespace
     bundle.
- 3. Fonts are Google-hosted, so `type.fonts` is `[]` and `type.families` names the stacks.
-    Nothing is embedded that the page would have to serve.
+ 3. The SITE self-hosts both families (public/fonts/, recorded in data/design/fonts.json);
+    this artifact's previews link Google Fonts, which serve the same two families, so
+    `type.fonts` is `[]` and `type.families` names the stacks. Nothing is embedded that the
+    page would have to serve.
 
 BLOBS. Images, the four lockups and the favicon live in the artifact's file store, which only
 the controller can write to. Their ids come from `data/design/design-system-assets.json`
@@ -268,8 +270,8 @@ def tokens_json(L=None):
         "version": 1,
         "color": {"themes": [{"id": "light", "name": "Light"}], "tokens": colours},
         "type": {
-            # Both families are served by Google Fonts and linked from every preview, so
-            # nothing is embedded and `fonts` stays empty.
+            # The previews link both families from Google Fonts (the site self-hosts the same
+            # two, data/design/fonts.json), so nothing is embedded and `fonts` stays empty.
             "fonts": [],
             "families": {"display": L["primitive"]["--font-display"].strip(),
                          "body": L["primitive"]["--font-body"].strip()},
@@ -882,8 +884,9 @@ spell a colour (design rule 1).
 
 ## Type
 
-Two families, both Google-hosted and linked rather than embedded — this system ships no font
-files, and `tokens.json` `type.fonts` is empty by design.
+Two families. The site self-hosts both from `public/fonts/` (each file, its package and its
+sha256 are in `data/design/fonts.json`); these previews link the same two from Google Fonts,
+so this system embeds no font files and `tokens.json` `type.fonts` is empty by design.
 
 - **Display — {tokens['type']['families']['display']}.** ALL headings, H1 to H6.
 - **Body — {tokens['type']['families']['body']}.** All body copy, labels and buttons.

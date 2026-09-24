@@ -343,7 +343,9 @@ const pageSchema = [
           ledge IS `ticks` — renders them the component's way with no page edit, and the
           build-time check that rebuilds the delivery tick from its two settings stays live. */}
       <div slot="aside">
-        <p class="aside-title">{heroAside.title}</p>
+        {/* No title since the self-hosted Fraunces landed (Known Issue 24): the quote wraps to
+            three lines at 1280 and the band had no room for the label as well (rule 10). */}
+        {heroAside.title && <p class="aside-title">{heroAside.title}</p>}
         <blockquote class="aside-quote">{heroAside.quote}</blockquote>
         <p class="aside-chips">{heroChips.join(' · ')}</p>
       </div>

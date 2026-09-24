@@ -24,7 +24,7 @@
 // to the flow at any width. That is the truth about it, not a measurement failure.)
 //
 // `networkidle` is not enough to settle a height. It waits for the network, not for the
-// two Google-hosted families to be APPLIED, so a section measured before the swap is sized
+// two self-hosted families (public/fonts/) to be APPLIED, so a section measured before the swap is sized
 // in the fallback face and a section measured after is not — which is how five committed
 // board heights drifted between two runs of this script with no source change. Every pass
 // therefore awaits `document.fonts.ready` and only then measures.
@@ -38,7 +38,7 @@ const PROJECT_3 = new Set(
     .filter((r) => r.project === 3)
     .map((r) => r.id),
 );
-const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml' };
+const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.png': 'image/png', '.webp': 'image/webp', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
 const srv = createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html';
   try { const b = readFileSync(join(dist, p)); res.writeHead(200, { 'content-type': types[extname(p)] ?? 'application/octet-stream' }); res.end(b); }
