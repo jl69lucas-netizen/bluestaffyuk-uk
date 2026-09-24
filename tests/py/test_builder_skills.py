@@ -362,7 +362,41 @@ def test_the_checklist_newsletter_links_reviews_and_claims_match_the_builders():
     assert "section_target.total" in rule_26
 
 
-RULE_CITE = re.compile(r"\bRules?\s+(\d{1,2}[a-z]?\b(?:\s*(?:,|and|–)\s*\d{1,2}[a-z]?\b(?![-\d]))*)")
+RULE_NO = r"(?:\d{1,3}[a-z]?|IMAGE-\d{2})"
+RULE_CITE = re.compile(r"\bRules?\s+(%s\b(?:\s*(?:,|and|to|–|/)\s*%s\b(?![-\d]))*)" % (RULE_NO, RULE_NO))
+
+
+def cited_rules(text):
+    """Every seo-rules.md rule a text cites: "Rule 31", "Rules 18/19", "Rules 18 and 19",
+    "Rules 44–46" and "Rules IMAGE-01 to IMAGE-04" (a range names every rule inside it)."""
+    out = set()
+    for group in RULE_CITE.findall(text):
+        toks = re.findall(r"%s|–|\bto\b" % RULE_NO, group)
+        for i, t in enumerate(toks):
+            if t in ("–", "to") and 0 < i < len(toks) - 1:
+                a, b = toks[i - 1], toks[i + 1]
+                pre = "IMAGE-" if a.startswith("IMAGE-") else ""
+                lo, hi = (re.match(r"\d+", x.replace("IMAGE-", "")).group(0) for x in (a, b))
+                out |= {("%s%02d" % (pre, n)) if pre else str(n) for n in range(int(lo), int(hi) + 1)}
+            elif t not in ("–", "to"):
+                out.add(t)
+    return out
+
+
+@pytest.mark.parametrize("text,want", [
+    ("see Rule 31 and Rule 55", {"31", "55"}),
+    ("Rules 18/19", {"18", "19"}),
+    ("Rules 18 and 19", {"18", "19"}),
+    ("Rules 44–46", {"44", "45", "46"}),
+    ("Rule 100", {"100"}),
+    ("Rule 28b", {"28b"}),
+    ("Rule IMAGE-01)", {"IMAGE-01"}),
+    ("(Rules IMAGE-01 to IMAGE-04, `rules/images.md`)", {"IMAGE-01", "IMAGE-02", "IMAGE-03", "IMAGE-04"}),
+    ("(Rule 18), 0.8–1.2%", {"18"}),
+    ("Rule 57: 8–12 entities", {"57"}),
+])
+def test_the_rule_citation_reader_reads_every_form(text, want):
+    assert cited_rules(text) == want
 
 
 def test_the_checklist_full_sweep_no_unbacked_claims_and_every_cited_rule_exists():
@@ -380,7 +414,8 @@ def test_the_checklist_full_sweep_no_unbacked_claims_and_every_cited_rule_exists
     assert [b for b in banned if b in low] == []
     seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
     exists = set(re.findall(r"^\*\*Rule (\d+[a-z]?) —", seo_rules, re.M))
-    cited = {n for group in RULE_CITE.findall(CHECKLIST) for n in re.findall(r"\d{1,2}[a-z]?\b", group)}
+    exists |= set(re.findall(r"^\*\*Rule \[(IMAGE-\d{2})\]:", seo_rules, re.M))
+    cited = cited_rules(CHECKLIST)
     assert cited and sorted(cited - exists) == [], sorted(cited - exists)
     counters = CHECKLIST[CHECKLIST.index("**Counter Snippets"):CHECKLIST.index("**Contact/Inquiry Forms")]
     for counter in ("£500 Refundable Deposit", "12–14 Year Lifespan", "28 UK Cities Covered",

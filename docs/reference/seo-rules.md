@@ -126,7 +126,7 @@ Primary keyword 0.8–1.2% per section. LSI distributed naturally, never force-i
 
 **Rule 20 — Negative Keyword Counter-Positioning**
 Every product or availability page addresses at least one:
-- `"blue staffy puppy scam"` → counter with what this kennel documents and shows
+- `"blue staffy puppy scam"` → counter with what we document and show: a litter raised in our family home, never in kennels (`data/faq.json` `about-home-raised`), and the paperwork that goes home with it (`whyus-paperwork`)
 - `"cheap blue staffy puppies"` → position on health screening and aftercare, not price
 - `"blue staffy puppy farm"` → counter with collection-in-Carlisle and seeing the litter
 
@@ -448,7 +448,7 @@ naturally integrated.
 All three types across internal links:
 1. **Exact match** — 1–2 per page, for hub and category pages
 2. **Conversational/descriptive** — the default, a natural phrase inside the sentence
-3. **Branded** — "BlueStaffyUK", "Lisa Bright's kennel"
+3. **Branded** — "BlueStaffyUK", "Lisa Bright's home-reared litters"
 
 Never repeat an anchor on a page, and never reuse the same anchor for the same target
 across the site — rotate exact / partial / LSI / natural variants; the anchor diversity
@@ -508,5 +508,5 @@ or the canonical industry body.
   Internal links stay same-tab (Rule 62).
 - Cite a term once per page; repetition reads as over-optimisation.
 - **Verify HTTP 200 before inserting** (`curl -sI`), and assert a clinical entity only if
-  it is in the evidence ledger (`data/quality/evidence-ledger.json`), which is empty at
-  the system transfer — an empty ledger means no clinical claim is assertable yet.
+  the evidence ledger (`data/quality/evidence-ledger.json`) holds its proof — it holds no
+  proven claim yet (`parents-dna-clear` is NOT FETCHED), so no clinical claim is assertable yet.

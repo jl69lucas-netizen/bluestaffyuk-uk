@@ -1,6 +1,6 @@
 ---
 name: bsuk-seo-master-checklist
-description: Use BEFORE starting any interior page build on BlueStaffyUK (homepage, breed/care guides, blog, variant, trust, scam, purchase, FAQ, about) — the 4-phase master SEO execution checklist v2.0 (Pre-Build Research → Planning/Outline Gate → 5-Tier Section Form → Optimization + QA), the 10-category keyword fan-out, 95–105-distinct-entity research (Rule 57, 2026-09-09), 3 anchor-text strategies and the Internal Linking Library (Appendix A). NOT for location or comparison pages (they have their own builders). Triggers - "run the SEO checklist", "master checklist", "Rule 51 outline gate", "keyword fan-out", "Appendix A links".
+description: Use BEFORE starting any interior page build on BlueStaffyUK (homepage, breed/care guides, blog, variant, trust, scam, purchase, FAQ, about) — the 4-phase master SEO execution checklist v2.0 (Pre-Build Research → Planning/Outline Gate → 5-Tier Section Form → Optimization + QA), the 12-category keyword fan-out, 95–105-distinct-entity research (Rule 57, 2026-09-09), 3 anchor-text strategies and the Internal Linking Library (Appendix A). NOT for location or comparison pages (they have their own builders). Triggers - "run the SEO checklist", "master checklist", "Rule 51 outline gate", "keyword fan-out", "Appendix A links".
 ---
 
 # SKILL: BSUK Master SEO Execution Checklist (v2.0)
@@ -94,12 +94,12 @@ Before writing ANY content, perform comprehensive competitor research.
 3. `buy [primary keyword]`
 4. `Blue Staffy breeders`
 5. `[Primary keyword] [city]` — the top 5 of the 28 UK cities in `data/locations.json`
-6. Search Console and GA4 queries are NOT FETCHED until project 6 (Rule 15) — never quote an impression figure
+6. Search Console queries (Rule 15) and GA4 figures are NOT FETCHED until project 6 — never quote an impression figure
 
 **Competitors to analyze (at least 8 — Rule 55):**
 - Top 3 Google organic results for primary keyword
 - Top 3 Bing organic results for primary keyword
-- 2–3 specialized kennel/breeder sites
+- 2 specialist UK breeder sites (Rule 55)
 - the RSPCA (https://www.rspca.org.uk/) — a competitor-scan benchmark, not a link; a page links only the RSPCA's library rows (B. External Links)
 - 1–2 informational authority sites — rows of `docs/reference/external-link-library.md` only (the PDSA, Blue Cross, The Royal Kennel Club)
 
@@ -478,7 +478,7 @@ Total row at bottom must hit 85–105× total keyword distribution target (Rule 
 - Newsletter: one block only, frame part 10 — `InfoCard kind="recommendation" label="Newsletter"` with `id="newsletter"`; no offer, no subscriber count
 - Comparison table
 - Price card
-- Counter snippets (4 required after H1 — Rule 31)
+- Counter snippets (4, immediately after the hero — Rule 31)
 - Trust badge bar
 - Contact/inquiry form (3 required per page — Rule 32)
 - Video embed placeholder
@@ -616,7 +616,7 @@ TIER 5: QUALITY CONTROL
     ☐ Trust signals included
     ☐ Local entities naturally integrated
     ☐ Clear CTA at section end (form link only)
-    ☐ Home-reared in Carlisle stated in the hero (Rule 31's counter)
+    ☐ Home-reared in Carlisle stated in the counters after the hero (Rule 31)
 ```
 
 ---
@@ -875,7 +875,7 @@ H6 examples (voice search — must be present):
 - End with `BlueStaffyUK` (or `BlueStaffyUK – Carlisle`)
 - One clause, no pipe separators, **≤ 70 characters**
 
-Example: `Home-Reared Blue Staffy Puppies for Sale in Carlisle – BlueStaffyUK`
+Example: `Blue Staffy Puppies for Sale, Home-Reared in Carlisle – BlueStaffyUK` (68 characters)
 
 **Tone labels (Rule 22 — retired):** 🔴 urgency / 🆚 comparison / 💰 transactional / 🛡️ trust survive as
 planning labels only — never rendered into a title or description.
@@ -919,7 +919,7 @@ Never remove or modify an existing schema JSON-LD block — preserve it verbatim
 
 **Voice Search Optimization Example:**
 Query: "How big do Blue Staffy puppies get?"
-Optimized answer (first 50 words): lead with the adult height and weight from the Kennel Club breed standard once it has been fetched (NOT FETCHED) — never a figure from memory — then one line on how BlueStaffyUK raises its pups at home in Carlisle.
+Optimized answer (a paragraph snippet of roughly fifty words, answer first — Rule 41): lead with the adult height and weight from the Kennel Club breed standard once it has been fetched (NOT FETCHED) — never a figure from memory — then one line on how BlueStaffyUK raises its pups at home in Carlisle.
 
 #### D. Keyword Density Guidelines (Rule 18, 19)
 
@@ -1090,7 +1090,7 @@ Before final submission, verify all items:
 - ☐ Keyword density 1–2% on the page (Rule 18), 0.8–1.2% per section (Rule 19) — natural, not stuffed
 - ☐ 3 meta title options + 3 meta descriptions delivered
 - ☐ All 6 heading levels (H1–H6) present and sequentially correct
-- ☐ Home-reared in Carlisle stated in the hero (Rule 31's counter)
+- ☐ Home-reared in Carlisle stated in the counters after the hero (Rule 31)
 - ☐ Coat colours named as the litter has them (each pup's `colour` in `data/puppies.json`; none is brindle)
 - ☐ The 12–14 year commitment referenced at least once (Rule 34)
 - ☐ Voice search questions embedded in H2/H3 headers
@@ -1205,7 +1205,7 @@ the trailing slash; an absolute URL (a canonical tag) is `https://SITE_URL_PLACE
 <a name="temperament"></a>
 ## What is the Real Blue Staffy Temperament? Understanding the Intellectual Companion Puppy
 
-[The Kennel Club's breed information](https://www.thekennelclub.org.uk/) is the best first stop if you're
+[The Royal Kennel Club's Staffordshire Bull Terrier breed page](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/) is the best first stop if you're
 wondering whether a Blue Staffy matches your daily home life. [BlueStaffyUK](#about-BSUK) raises every litter
 in our family home in Carlisle, and the breed's reputation holds up there: Staffies are affectionate,
 observant companions who bond closely with their chosen families.
