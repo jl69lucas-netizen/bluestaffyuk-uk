@@ -71,8 +71,14 @@ def test_every_slot_gets_a_radio_group_with_thumbnails_and_styles(repo):
     assert "⭐ C</label>" in weeks and 'value="ig:' not in weeks
     graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
     assert 'value="ig:IG-5"' in graphic and "⭐ IG-2</label>" in graphic and 'value="og:' not in graphic
-    # Nothing is pre-checked on a record with no image picks yet.
-    assert " checked>" not in block
+    # With no image picks yet, only each existing slot's current file is pre-checked (Task 10c).
+    import re
+    assert re.findall(r'name="pick-img:([a-z0-9-]+)" value="([^"]+)" checked>', block) == [
+        (s, "file:" + f) for s, f in (
+            ("opening-photo", "/images/blue-staffy-puppy-for-sale-uk.webp"),
+            ("opening-tile-2", "/images/blue-staffy-puppies-uk-litter1.webp"),
+            ("opening-tile-3", "/images/blue-staffy-family-dog-uk.webp"),
+            ("raise-photo", "/images/1blue-staffy-family-breeder.webp"))]
 
 
 def test_a_generated_draft_is_previewed_with_its_approval_radio(repo):

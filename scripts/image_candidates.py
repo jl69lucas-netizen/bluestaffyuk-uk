@@ -30,6 +30,11 @@ is still offered ahead of a stronger one from elsewhere — reuse is the prefere
 score orders within a pool. `suggested` is the first candidate not already suggested for
 an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no shared alt).
 
+CURRENT (Task 10c). A slot that already names a file — its own `file`, else its `assets[]`
+row's `file` — gets that file as its FIRST candidate, pool `current`, whatever it scores,
+and it is the slot's `suggested` pick. It is never listed again further down (size
+siblings fold to one file). Every candidate carries `current: true|false`.
+
 Every served candidate carries `used_on`: the other built pages that already show it, so
 reuse across pages is visible on the board rather than discovered after the build.
 
@@ -328,7 +333,7 @@ def _candidate(pool, item, words, alts, used, own_route):
     if pool == "assets":
         img_words = tokens(item["asset"].replace("File name-", ""))
         cand = {"pool": pool, "file": None, "asset": item["asset"], "ingest_as": item["ingest_as"],
-                "alt": "", "used_on": [], "pick": "assets:" + item["asset"]}
+                "alt": "", "used_on": [], "pick": "assets:" + item["asset"], "current": False}
     else:
         f = item["file"]
         known = alts.get(f, [])
@@ -337,7 +342,8 @@ def _candidate(pool, item, words, alts, used, own_route):
         for a in [alt] + known:
             img_words |= tokens(a)
         cand = {"pool": pool, "file": f, "asset": None, "ingest_as": None, "alt": alt,
-                "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f}
+                "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f,
+                "current": False}
     matched = sorted(words & img_words)
     cand["score"] = len(matched)
     cand["matched"] = matched
@@ -369,6 +375,14 @@ def _report_dir(assets_dir, root):
     return pathlib.Path(os.path.relpath(d, pathlib.Path(root).resolve())).as_posix()
 
 
+def current_file(board, img):
+    """The file a slot already names: its own `file`, else the `file` of the record's
+    `assets[]` row for the same slot, as a canonical /images/ path; None when neither."""
+    f = img.get("file") or next((a.get("file") for a in board.get("assets", [])
+                                 if a.get("slot") == img.get("slot") and a.get("file")), None)
+    return (canonical(f) or f) if f else None
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
@@ -384,7 +398,14 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
     for section, node, img in iter_slots(board):
         words = slot_words(section, node, img)
         cands = rank(words, pools, alts, used, route, per_pool)
-        suggested = next((c for c in cands if c["pick"] not in taken), None)
+        cur = current_file(board, img)
+        if cur:
+            first = _candidate("current", {"file": cur}, words, alts, used, route)
+            first["current"] = True
+            cands = [first] + [c for c in cands if c["pick"] != first["pick"]]
+            suggested = first                          # the record's own choice leads
+        else:
+            suggested = next((c for c in cands if c["pick"] not in taken), None)
         if suggested:
             taken.add(suggested["pick"])
         slots.append({"slot": img["slot"], "section": section["id"],

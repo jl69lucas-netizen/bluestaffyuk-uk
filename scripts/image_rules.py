@@ -40,6 +40,7 @@ and the approved file is copied into public/images and named in the slot's `asse
 `file` (lifecycle, outside the hash). The build gate reads the served copy.
 """
 import hashlib
+import json
 import pathlib
 import re
 import sys
@@ -409,6 +410,18 @@ def thumb_uri(path, width=THUMB_W):
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
 
 
+def style_labels(root=None):
+    """IMAGE-DESIGNS.md's label map (data/design/image-styles.json, written by
+    scripts/image_designs.py): {"og": {id: {"name", "use"}}, "infographic": {…}}, or {} when the
+    file is missing or unreadable, and the board falls back to the bare ids."""
+    p = pathlib.Path(root or ROOT) / "data" / "design" / "image-styles.json"
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return data if isinstance(data, dict) else {}
+
+
 def board_images(board, root=None, assets_dir=None, per_pool=3):
     """Everything block 7 shows for one record: the candidate report, a thumbnail per
     candidate, and a preview of each generated image that exists."""
@@ -429,7 +442,7 @@ def board_images(board, root=None, assets_dir=None, per_pool=3):
         if f is not None:
             generated[img["slot"]] = {"sha": file_sha(f), "uri": thumb_uri(f, PREVIEW_W),
                                       "path": f.relative_to(root).as_posix()}
-    return {"report": report, "thumbs": thumbs, "generated": generated}
+    return {"report": report, "thumbs": thumbs, "generated": generated, "styles": style_labels(root)}
 
 
 def _e(v):
@@ -456,17 +469,23 @@ def _slot_html(board, sec, node, img, row, images, current):
              f'<p class="imgwhy">record: {_e(", ".join(rec))} · prompt: {_e(img.get("prompt"))}</p>']
     cands = row["candidates"] if row else []
     suggested = (row or {}).get("suggested") or {}
+    # Task 10c: the file the record already names is pre-checked until a pick says otherwise,
+    # except on a generated slot, whose answer is always the breeder's.
+    precheck = current is None and img.get("source") not in GENERATED
     if cands:
         cells = []
         for c in cands:
+            checked = current == c["pick"] or (precheck and c.get("current", False))
             uri = images["thumbs"].get(c["pick"])
             pic = f'<img src="{uri}" alt="{_e(c["alt"])}">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
             star = "⭐ " if c["pick"] == suggested.get("pick") else ""
             note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["pool"] == "assets"
                     else f'<span class="why">{_e(c["file"])}'
                          + (f' · also on {_e(", ".join(c["used_on"]))}' if c["used_on"] else "") + "</span>")
-            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], current == c["pick"])} '
-                         f'{star}<b>{_e(c["pool"])}</b> · score {c["score"]} · {_e(", ".join(c["matched"]))}</span>{note}</label>')
+            what = ("the file this slot names now" if c.get("current")
+                    else f'score {c["score"]} · {_e(", ".join(c["matched"]))}')
+            cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], checked)} '
+                         f'{star}<b>{_e(c["pool"])}</b> · {what}</span>{note}</label>')
         parts.append(f'<div class="imgc">{"".join(cells)}</div>')
     else:
         parts.append('<p class="imgwhy">No existing image shares a word with this slot — pick a style to generate one.</p>')
@@ -474,8 +493,15 @@ def _slot_html(board, sec, node, img, row, images, current):
         label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
     else:
         label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
-    opts = " ".join(f'<label>{_radio(name, prefix + st, current == prefix + st)} {"⭐ " if st == want else ""}{_e(st)}</label>'
-                    for st in styles)
+    named = (images.get("styles") or {}).get("infographic" if prefix == "ig:" else "og") or {}
+
+    def _style(st):
+        lab = named.get(st) or {}
+        title = f' title="{_e(lab["use"])}"' if lab.get("use") else ""
+        text = _e(st) + (f' · {_e(lab["name"])}' if lab.get("name") else "")
+        return (f'<label{title}>{_radio(name, prefix + st, current == prefix + st)} '
+                f'{"⭐ " if st == want else ""}{text}</label>')
+    opts = " ".join(_style(st) for st in styles)
     parts.append(f'<div class="imgstyles"><span>{label} (IMAGE-DESIGNS.md):</span> {opts}</div>')
     gen = images["generated"].get(slot)
     if gen:
@@ -499,7 +525,8 @@ def board_block(board, images):
     head = (f"{BLOCK_CSS}\n\n**Pick one image for every slot.** The page's own images come first "
             f"({pools['own']}), then the site's other served images ({pools['served']}), then your Assets "
             f"folder ({pools['assets']} not yet on the site; those are copied in before the build). ⭐ marks the "
-            "suggestion. Or pick a style and a new image is generated for the slot; it is used only after "
+            "suggestion; **current** is the file the slot names now, offered first and ticked until you "
+            "pick another. Hover a style for when it is used (IMAGE-DESIGNS.md). Or pick a style and a new image is generated for the slot; it is used only after "
             "you approve the generated image itself here, on a later pass of this board.")
     body = [_slot_html(board, s, n, img, rows.get(img["slot"]), images, chosen.get(PICK_PREFIX + img["slot"]))
             for s, n, img in IC.iter_slots(board)]
