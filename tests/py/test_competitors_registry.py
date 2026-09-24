@@ -218,8 +218,10 @@ def test_a_subdomain_is_refused(tmp_path, domain):
     assert any("registrable domain" in p for p in out), out
 
 
-@pytest.mark.parametrize("domain", ["pets4homes.co.uk", "example.com", "kc.org.uk",
-                                    "xn--bcher-kva.de", "a-b.ltd.uk"])
+REGISTRABLE = ("pets4homes.co.uk", "example.com", "kc.org.uk", "xn--bcher-kva.de", "a-b.ltd.uk")
+
+
+@pytest.mark.parametrize("domain", REGISTRABLE)
 def test_a_registrable_domain_is_accepted(tmp_path, domain):
     assert C.problems(registry(entry(root_domain=domain)), make_root(tmp_path)) == []
 
@@ -323,3 +325,22 @@ def test_json_escaped_allowed_links_and_escaped_non_links_are_fine(tmp_path):
 def test_root_domain_is_the_registry_rule_for_any_url(url, want):
     # one helper for the keyword-gap and llm-intel scripts and tests (Known Issues 52, 53)
     assert C.root_domain(url) == want
+
+
+@pytest.mark.parametrize("domain", REGISTRABLE)
+def test_root_domain_keeps_every_domain_the_registry_accepts(domain):
+    # one rule: root_domain() never cuts a domain the registry accepts as registrable
+    assert C._registrable(domain) and C.root_domain(domain) == domain
+
+
+@pytest.mark.parametrize("url,want", [
+    ("https://x.com.au/", "x.com.au"),
+    ("shop.x.ltd.uk", "x.ltd.uk"),
+    ("https://shop.x.co.uk/pups", "x.co.uk"),
+    ("https://a.b.x.com.au/", "x.com.au"),
+    ("https://x.co.uk.example.com/", "example.com"),
+    ("shop.pets4homes.co.uk", "pets4homes.co.uk"),
+    ("a.b.example.org", "example.org"),
+])
+def test_root_domain_keeps_three_labels_only_where_the_registry_does(url, want):
+    assert C.root_domain(url) == want and C._registrable(want)

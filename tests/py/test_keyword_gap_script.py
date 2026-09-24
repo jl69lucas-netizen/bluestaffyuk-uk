@@ -349,3 +349,15 @@ def test_the_same_url_in_two_reports_is_flagged(root):
     assert d["duplicate_urls"] == [{"url": u, "ids": ["aaa", "bbb"]}]
     assert row(d["gaps"], "staffy care guide")["urls"] == ["https://shared.co.uk/care/", u]   # still one row
     assert run(root, profile(root), b)["duplicate_urls"] == []     # twice in one report is not two reports
+
+
+@pytest.mark.parametrize("recorded", ["www.own.co.uk", "Own.co.uk"])
+def test_a_report_s_own_domain_is_normalised_before_the_foreign_check(root, recorded):
+    # a report that records its domain with www. or capitals still owns its pages
+    r = report("own", [page("https://www.own.co.uk/staffy-care/", "Staffy Care Guide"),
+                       page("https://other-site.com/staffy-training/", "Staffy Training Guide")],
+               root_domain=recorded)
+    d = run(root, profile(root), write(root, "own.json", r))
+    assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
+                                  "root_domain": recorded}]
+    assert [g["topic"] for g in d["gaps"]] == ["staffy care guide"]

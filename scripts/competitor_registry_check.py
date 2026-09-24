@@ -96,7 +96,7 @@ def root_domain(url):
     labels = h.split(".")
     if len(labels) < 2 or not all(labels):
         return None
-    keep = 3 if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-1].isalpha() and labels[-2] in CC_SECOND_LEVELS else 2
+    keep = 3 if len(labels) >= 3 and _registrable(".".join(labels[-3:])) else 2
     return ".".join(labels[-keep:])
 
 

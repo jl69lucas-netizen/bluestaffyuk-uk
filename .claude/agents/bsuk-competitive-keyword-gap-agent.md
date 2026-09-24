@@ -166,7 +166,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
         continue
     out["used"].append({"id": r["id"], "tier": tier, "fetched_on": p["fetched_on"]})
     for page in p["values"]:
-        if root_domain(page["url"]) != r["root_domain"]:  # not this competitor's page: flagged, never a gap
+        if root_domain(page["url"]) != root_domain(r["root_domain"]):  # not this competitor's page: flagged, never a gap
             out["foreign_urls"].append({"id": r["id"], "url": page["url"], "root_domain": r["root_domain"]})
             continue
         owners.setdefault(page["url"], set()).add(r["id"])
