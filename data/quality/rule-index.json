@@ -467,6 +467,14 @@
    "pack": "rules/links.md",
    "test": "tests/py/test_link_diversity.py",
    "severity": "blocking"
+  },
+  {
+   "id": "anchor-type-variation",
+   "family": "NAV",
+   "enforced": "test",
+   "pack": "rules/links.md",
+   "test": "tests/py/test_anchor_types.py",
+   "severity": "blocking"
   }
  ]
 }

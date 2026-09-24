@@ -18,6 +18,7 @@ import html as H, json, pathlib, re, sys
 from urllib.parse import urlsplit
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
+import link_diversity as LD
 import verbatim_set_check as VSC
 import board_entities as BE
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
@@ -673,7 +674,7 @@ def resolve_internal(href, routes):
     return ("no (dead)", "lk-bad")
 
 
-def link_rows(section, routes):
+def link_rows(section, routes, typed=False):
     """Every link row of one section, internal first, each as the four table cells.
 
     The record gives an internal row no purpose field of its own, so the purpose IS its
@@ -686,12 +687,12 @@ def link_rows(section, routes):
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]),
                      "nav link" if l.get("nav") else "in copy, sentence start",
                      f'<span class="lk {cls}">{esc(text)}</span>',
-                     md(l.get("why") or LINK_SOURCE_NEW)])
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
     for l in section["links"]["external"]:
         domain = urlsplit(l["href"]).netloc or "unknown host"
         rows.append([f"`{md(l['href'])}`", md(l["anchor"]), md(l["library_row"]),
                      f'<span class="lk lk-ext">external · {esc(domain)}</span>',
-                     md(l.get("why") or LINK_SOURCE_NEW)])
+                     md(l.get("why") or LINK_SOURCE_NEW)] + ([md(l.get("anchor_type") or "⚠ none")] if typed else []))
     return rows
 
 
@@ -701,20 +702,26 @@ def links_block(board, routes):
     in four sections is one destination with four placements — and the sections column is what
     tells the breeder where each one is said."""
     out, seen, order = ["## Links — every link this page will carry"], {}, []
+    # System-gaps Task 5: the anchor-type column and the diversity line show on a new-family
+    # page, or on any record that already types its anchors — never on the twelve built boards.
+    typed = LD.shows_anchor_types(board)
+    headers = LINK_HEADERS + ["Anchor type"] if typed else LINK_HEADERS
     for s in board["sections"]:
         out.append(f"### {s['n']:02d} · {md(s['heading'])}")
-        rows = link_rows(s, routes)
-        out.append(md_table(LINK_HEADERS, rows) if rows
+        rows = link_rows(s, routes, typed)
+        out.append(md_table(headers, rows) if rows
                    else '<p class="lk-none">No links in this section.</p>')
         for l in s["links"]["internal"] + s["links"]["external"]:
             key = l["href"]
             if key not in seen:
                 seen[key] = {"row": l, "kind": "external" if "library_row" in l else "internal",
-                             "anchors": [], "sections": []}
+                             "anchors": [], "sections": [], "types": []}
                 order.append(key)
             e = seen[key]
             if l["anchor"] not in e["anchors"]:
                 e["anchors"].append(l["anchor"])
+            if (l.get("anchor_type") or "⚠ none") not in e["types"]:
+                e["types"].append(l.get("anchor_type") or "⚠ none")
             label = f"{s['n']:02d} {s['heading']}"
             if label not in e["sections"]:
                 e["sections"].append(label)
@@ -731,14 +738,17 @@ def links_block(board, routes):
             cell = f'<span class="lk lk-ext">external · {esc(urlsplit(l["href"]).netloc or "unknown host")}</span>'
         page_rows.append([f"`{md(key)}`", " / ".join(md(a) for a in e["anchors"]),
                           purpose, cell, md(l.get("why") or LINK_SOURCE_NEW),
-                          ", ".join(md(x) for x in e["sections"])])
+                          ", ".join(md(x) for x in e["sections"])]
+                         + ([" / ".join(md(t) for t in e["types"])] if typed else []))
     n_int = sum(1 for k in order if seen[k]["kind"] == "internal")
     n_ext = len(order) - n_int
     placements = sum(len(s["links"]["internal"]) + len(s["links"]["external"]) for s in board["sections"])
     out.append("### Every link on this page")
-    out.append(md_table(LINK_HEADERS + ["Sections"], page_rows) if page_rows
+    out.append(md_table(LINK_HEADERS + ["Sections"] + (["Anchor type"] if typed else []), page_rows) if page_rows
                else '<p class="lk-none">No links on this page.</p>')
     out.append(f'<p class="lk-tot">Totals: {n_int} internal · {n_ext} external</p>')
+    if typed:
+        out.append(f'<p class="lk-tot">{esc(LD.diversity_line(board))}</p>')
     out.append(f"Deduplicated by target: {len(order)} distinct target(s) across {placements} placement(s). "
                "An internal target that resolves to _no_ is either a page this cluster has not built yet or a "
                "dead route — either way the board cannot be built against it as written.")

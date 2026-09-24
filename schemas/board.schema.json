@@ -1151,6 +1151,10 @@
           },
           "sentence_start": {
            "const": true
+          },
+          "anchor_type": {
+           "enum": ["exact", "partial", "lsi", "natural", "branded", "naked-url"],
+           "description": "the anchor's type for Anchor Diversity (docs/reference/seo-rules.md Rule 58, rules/links.md anchor-type-variation). Optional so the records built before it keep their hashes; scripts/link_diversity.py requires it on location, comparison and blog pages"
           }
          },
          "if": {
@@ -1198,6 +1202,10 @@
           "library_row": {
            "type": "string",
            "minLength": 1
+          },
+          "anchor_type": {
+           "enum": ["exact", "partial", "lsi", "natural", "branded", "naked-url"],
+           "description": "the anchor's type for Anchor Diversity (docs/reference/seo-rules.md Rule 58, rules/links.md anchor-type-variation). Optional so the records built before it keep their hashes; scripts/link_diversity.py requires it on location, comparison and blog pages"
           }
          }
         }

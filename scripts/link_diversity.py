@@ -127,3 +127,137 @@ def external_diversity(board, ont):
                f"least {SOURCE_TYPE_MIN} of {', '.join(sorted(DIVERSE_TYPES))}, read from the library's "
                "Source type column"
                + (f". Links that count toward no type: {idle}" if idle else ""))
+
+
+# ── Task 5: anchor-type variation ────────────────────────────────────────────────────────
+# One vocabulary for the three places that name anchor types: Rule 58's three strategies
+# (exact, conversational, branded — `natural` is the conversational default) and the
+# internal-link agent's Anchor Diversity Ledger rotation (exact → partial → LSI → natural),
+# plus a bare URL shown as its own anchor.
+ANCHOR_TYPES = ("exact", "partial", "lsi", "natural", "branded", "naked-url")
+INTERNAL_TYPE_MIN, EXACT_MAX, EXTERNAL_TYPE_MIN = 3, 2, 3
+ANCHOR_CHECK = "anchor-type-variation"
+SITEWIDE_CHECK = "anchor-reuse-sitewide"
+# Resolved at call time, so a test can repoint it at a scratch directory.
+BOARDS_DIR = None
+
+
+def _route(href):
+    """An internal href → its route: query and fragment dropped, one trailing slash — the
+    same folding build_page_board.route_of() does, so `/x` and `/x/#faq` are one target."""
+    path = urlsplit(str(href or "")).path.strip() or "/"
+    if not path.startswith("/"):
+        path = "/" + path
+    return path if path.endswith("/") else path + "/"
+
+
+def anchor_key(text):
+    """Case, whitespace, punctuation and curly apostrophes folded — pageboard.tokens(), the
+    tokeniser its own `links-anchor-duplicate` check compares on."""
+    return " ".join(PB.tokens(text))
+
+
+def _placements(board):
+    for s in board["sections"]:
+        for kind in ("internal", "external"):
+            for l in s["links"][kind]:
+                yield s["id"], kind, l
+
+
+def anchor_summary(board):
+    """Counts by anchor type for the in-copy internal links (nav tiles excluded — a grid or a
+    breadcrumb names its targets by title by nature) and for every external link, plus every
+    link of either kind that carries no type."""
+    out = {"internal": {}, "external": {}, "untyped": []}
+    for sid, kind, l in _placements(board):
+        t = l.get("anchor_type")
+        if not t:
+            out["untyped"].append((sid, kind, l["anchor"]))
+            continue
+        if kind == "internal" and l.get("nav"):
+            continue
+        out[kind][t] = out[kind].get(t, 0) + 1
+    return out
+
+
+@FR.register
+def anchor_variation(board, ont):
+    sev, s = status_severity(board), anchor_summary(board)
+    for sid, kind, anchor in s["untyped"]:
+        yield (ANCHOR_CHECK, sev,
+               f"section {sid}: {kind} anchor {anchor!r} carries no anchor_type "
+               f"({', '.join(ANCHOR_TYPES)})")
+    if len(s["internal"]) < INTERNAL_TYPE_MIN:
+        yield (ANCHOR_CHECK, sev,
+               f"internal anchors use {len(s['internal'])} type(s) ({', '.join(sorted(s['internal'])) or 'none'}) "
+               f"— at least {INTERNAL_TYPE_MIN} (Rule 58, the Anchor Diversity Ledger)")
+    if s["internal"].get("exact", 0) > EXACT_MAX:
+        yield (ANCHOR_CHECK, sev,
+               f"{s['internal']['exact']} exact-match internal anchor(s) — at most {EXACT_MAX} per page (Rule 58)")
+    if len(s["external"]) < EXTERNAL_TYPE_MIN:
+        yield (ANCHOR_CHECK, sev,
+               f"external anchors use {len(s['external'])} type(s) ({', '.join(sorted(s['external'])) or 'none'}) "
+               f"— at least {EXTERNAL_TYPE_MIN}")
+
+
+def sitewide_anchor_uses(exclude_slug=None):
+    """{(route, anchor key): [slug, …]} for the in-copy internal links of every OTHER board in
+    data/boards/ — the Anchor Diversity Ledger's "anchors in use" column, read from the
+    records rather than grepped from dist/, so a board sees its siblings before either is
+    built. `_`-prefixed records (the _demo fixture) are not pages and are skipped."""
+    import json
+    d = pathlib.Path(BOARDS_DIR or (PB.ROOT / "data" / "boards"))
+    uses = {}
+    for p in sorted(d.glob("*.json")):
+        b = json.loads(p.read_text(encoding="utf-8"))
+        slug = b["meta"]["slug"]
+        if slug == exclude_slug or slug.startswith("_"):
+            continue
+        for _, kind, l in _placements(b):
+            if kind != "internal" or l.get("nav"):
+                continue
+            key = anchor_key(l["anchor"])
+            if key:
+                uses.setdefault((_route(l["href"]), key), [])
+                if slug not in uses[(_route(l["href"]), key)]:
+                    uses[(_route(l["href"]), key)].append(slug)
+    return uses
+
+
+@FR.register
+def anchor_reuse_sitewide(board, ont):
+    sev, uses = status_severity(board), sitewide_anchor_uses(board["meta"]["slug"])
+    for sid, kind, l in _placements(board):
+        if kind != "internal" or l.get("nav"):
+            continue
+        slugs = uses.get((_route(l["href"]), anchor_key(l["anchor"])))
+        if slugs:
+            yield (SITEWIDE_CHECK, sev,
+                   f"section {sid}: anchor {l['anchor']!r} → {_route(l['href'])} is already used for that "
+                   f"target by {', '.join(slugs)} — pick an unused variation (Anchor Diversity Ledger)")
+
+
+def diversity_line(board):
+    """One line for the board's links block: counts by type, domains, source types and the
+    verdict of the three link checks above."""
+    a, e = anchor_summary(board), external_summary(board)
+    fnd = (list(external_diversity(board, None)) + list(anchor_variation(board, None))
+           + list(anchor_reuse_sitewide(board, None)))
+    if not fnd:
+        verdict = "PASS"
+    else:
+        verdict = f"{'FAIL' if any(f[1] == 'FAIL' for f in fnd) else 'WARN'} ({len(fnd)})"
+
+    def fmt(counts):
+        return ", ".join(f"{t} {counts[t]}" for t in ANCHOR_TYPES if t in counts) or "none"
+    untyped = f" · untyped {len(a['untyped'])}" if a["untyped"] else ""
+    return (f"Link diversity — internal anchors: {fmt(a['internal'])} · external anchors: "
+            f"{fmt(a['external'])}{untyped} · external: {e['links']} link(s) on {len(e['domains'])} "
+            f"domain(s) from {len(e['source_types'])} source type(s) "
+            f"({', '.join(e['source_types']) or 'none'}) · {verdict}")
+
+
+def shows_anchor_types(board):
+    """Whether the board's links block carries the anchor-type column and the diversity line:
+    on a page these rules bind, or on any record that already types an anchor."""
+    return FR.applies(board) or any(l.get("anchor_type") for _, _, l in _placements(board))
