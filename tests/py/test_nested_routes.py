@@ -61,6 +61,8 @@ def write(root, rel, data):
     ("new-page", ("new-page", "new-page")),
     (f"other/{LEEDS}", (f"other/{LEEDS}", f"other/{LEEDS}")),   # another parent is not rewritten
     ("_demo", ("_demo", "_demo")),                              # pageboard's demo record
+    ("", ("index", "")),                                        # the empty slug is the root
+    ("uk-locations", ("uk-locations", "uk-locations")),         # the unmapped hub: as given
 ])
 def test_resolve_page(tmp_path, slug, want):
     assert S.resolve_page(slug, site(tmp_path)) == want
@@ -73,7 +75,7 @@ def test_built_page_is_the_nested_index_html(tmp_path):
     assert S.built_page(LEEDS, root, dist=tmp_path / "d") == tmp_path / "d" / NESTED / "index.html"
 
 
-@pytest.mark.parametrize("slug", ["../x", "a/../b", "A B", "a//b", "a/./b"])
+@pytest.mark.parametrize("slug", ["../x", "a/../b", "A B", "a//b", "a/./b", "-", "a/--/b", "_-"])
 def test_resolve_page_refuses_a_path_that_is_not_a_slug(tmp_path, slug):
     with pytest.raises(ValueError):
         S.resolve_page(slug, site(tmp_path))
@@ -86,6 +88,17 @@ def test_two_routes_with_one_last_segment_are_refused(tmp_path):
     (root / "data/page-map.json").write_text(json.dumps(pm))
     with pytest.raises(ValueError, match="two routes"):
         S.resolve_page(LEEDS, root)
+
+
+def test_a_new_city_with_no_page_map_row_resolves_under_uk_locations(tmp_path):
+    # data/locations.json is the city list; a city added there before the extractor's map
+    # knows it is still a /uk-locations/<slug>/ page, never a flat one
+    root = site(tmp_path)
+    (root / "data/locations.json").write_text(json.dumps([{"slug": "staffy-puppies-for-sale-york",
+                                                           "city": "York"}]))
+    york = "staffy-puppies-for-sale-york"
+    assert S.resolve_page(york, root) == (york, f"uk-locations/{york}")
+    assert S.resolve_page(f"uk-locations/{york}", root) == (york, f"uk-locations/{york}")
 
 
 def test_without_a_page_map_a_slug_keeps_its_own_path(tmp_path):

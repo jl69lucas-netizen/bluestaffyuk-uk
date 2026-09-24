@@ -54,25 +54,33 @@ def page_key(path, dist):
 
 import re as _re
 
-_SLUG = _re.compile(r"_?[a-z0-9-]+(/[a-z0-9-]+)*")   # pageboard.SLUG's shape
+# pageboard.SLUG's shape; a segment of dashes alone names nothing and is refused
+_SLUG = _re.compile(r"_?(?=[a-z0-9-]*[a-z0-9])[a-z0-9-]+(/(?=[a-z0-9-]*[a-z0-9])[a-z0-9-]+)*")
 
 
 def _page_map_routes(root):
-    """{last segment: route} for every data/page-map.json row but the root. {} with no map.
-    Two routes ending in the same segment would make a bare key ambiguous: refused."""
+    """{last segment: route} for every data/page-map.json row but the root, plus
+    `uk-locations/<slug>` for every data/locations.json row (a city added there before the
+    extractor's map knows it is still a city page). {} with neither file. Two routes ending
+    in the same segment would make a bare key ambiguous: refused."""
     import json
     import pathlib
     path = pathlib.Path(root) / "data" / "page-map.json"
-    if not path.is_file():
-        return {}
+    cities = pathlib.Path(root) / "data" / "locations.json"
+    urls = []
+    if path.is_file():
+        urls += [row["url"] for row in json.loads(path.read_text(encoding="utf-8"))["pages"]]
+    if cities.is_file():
+        urls += ["/uk-locations/%s/" % row["slug"]
+                 for row in json.loads(cities.read_text(encoding="utf-8"))]
     routes = {}
-    for row in json.loads(path.read_text(encoding="utf-8"))["pages"]:
-        route = row["url"].strip("/")
+    for url in urls:
+        route = url.strip("/")
         if not route:
             continue
         last = route.rsplit("/", 1)[-1]
         if routes.get(last, route) != route:
-            raise ValueError(f"data/page-map.json: two routes end in {last!r}: "
+            raise ValueError(f"data/page-map.json + data/locations.json: two routes end in {last!r}: "
                              f"{routes[last]} and {route}")
         routes[last] = route
     return routes
@@ -82,7 +90,7 @@ def resolve_page(slug, root):
     """(key, route) for a slug, a route or a route with its slashes.
 
     `index`, "" and "/" are the site root: ("index", ""). A bare slug, or the full route, of a
-    data/page-map.json row resolves to (its last segment, its route) — so
+    data/page-map.json row (or a data/locations.json city, under uk-locations/) resolves to (its last segment, its route) — so
     `blue-staffy-puppies-for-sale-leeds` and `uk-locations/blue-staffy-puppies-for-sale-leeds`
     are both (`blue-staffy-puppies-for-sale-leeds`, `uk-locations/blue-staffy-puppies-for-sale-leeds`).
     Anything else is a page built after the migration (`available/roys`): its key and route

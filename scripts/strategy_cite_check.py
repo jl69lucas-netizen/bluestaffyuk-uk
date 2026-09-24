@@ -76,6 +76,7 @@ YEAR_AFTER = re.compile(r"^\s+" + MONTH + r"\b", re.I)
 ALWAYS_TRUE = {"28"}
 
 HEADING = re.compile(r"^##[ \t]+(?:\d+[.)]?[ \t]+)?(.*?)[ \t#]*$")
+TOP_HEADING = re.compile(r"^#[ \t]+(.*?)[ \t#]*$")  # a document-level heading
 CHECKED = re.compile(r"(?:recommendation|concrete artifact|concrete artefact)", re.I)
 STRATEGY = re.compile(r"strategy\s+[ab]\b", re.I)
 BARE_YEAR = re.compile(r"(?:19|20)\d\d")
@@ -223,12 +224,22 @@ def examine(path, root=ROOT):
         if f:
             fence = f.group(1)
             continue
+        top = TOP_HEADING.match(line)
+        if top and has_sources:  # a document-level heading cannot follow Sources either
+            structure.append(f"line {i}: # {top.group(1).strip()} comes after ## Sources — "
+                             "## Sources must be the last section; move it above "
+                             "## Recommendation")
+            section, in_pick, stray = None, False, False
+            continue
         h = HEADING.match(line)
         if h:
             title, name, stray = h.group(1).strip("*_ \t"), h.group(1).strip(), False
             if has_sources:  # Sources is last; a pick section after it is still checked
+                advice = ("merge it into the first ## Sources" if SOURCES.match(title)
+                          else "move it above ## Sources" if CHECKED.match(title)
+                          else "move it above ## Recommendation")
                 structure.append(f"line {i}: ## {name} comes after ## Sources — ## Sources "
-                                 "must be the last section; move it above ## Recommendation")
+                                 f"must be the last section; {advice}")
             if SOURCES.match(title):
                 section, has_sources, in_pick = "Sources", True, False
             elif CHECKED.match(title):

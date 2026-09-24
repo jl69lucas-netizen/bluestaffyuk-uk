@@ -375,6 +375,15 @@ def test_a_rebuilt_page_that_is_not_built_is_a_problem(tmp_path):
     assert "examined 0 pages (0 not built, 0 awaiting rebuild); 1 problems" in r.stdout
 
 
+def test_a_rebuilt_page_listed_by_its_full_route_key_but_not_built_is_a_problem(tmp_path):
+    # the same debt when rebuilt.json names the full route rather than the bare slug
+    build(tmp_path, qfile(), keys=[ROUTE.strip("/")])
+    (tmp_path / "dist" / ROUTE.strip("/") / "index.html").unlink()
+    r = run(tmp_path)
+    assert r.returncode == 1, r.stdout
+    assert f"{SLUG}: listed in data/facts/rebuilt.json but not built" in r.stdout
+
+
 def test_an_unbuilt_page_that_is_not_rebuilt_is_still_only_counted(tmp_path):
     build(tmp_path, qfile(), keys=["index"])
     (tmp_path / "dist" / ROUTE.strip("/") / "index.html").unlink()

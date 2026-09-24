@@ -488,6 +488,31 @@ def test_ki49_a_pick_section_after_sources_is_flagged_and_still_checked(tmp_path
     assert any("figure 11 " in o for o in out), out
 
 
+def test_ki49_a_pick_section_after_sources_is_told_to_move_above_sources(tmp_path):
+    # the Concrete Artifact belongs to the pick: "above ## Recommendation" would take it out
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12",
+            sources="- `docs/research/competitors/src.md`\n\n## Concrete Artifact\n\n7/12")
+    out = S.check(p, tmp_path)
+    assert any("## Concrete Artifact comes after ## Sources" in o
+               and "move it above ## Sources" in o for o in out), out
+
+
+def test_ki49_a_second_sources_heading_is_told_to_merge(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12",
+            sources="- `docs/research/competitors/src.md`\n\n## Sources (cont.)\n\n"
+                    "- `docs/research/competitors/src.md`")
+    out = S.check(p, tmp_path)
+    assert any("## Sources (cont.) comes after ## Sources" in o
+               and "merge it into the first ## Sources" in o for o in out), out
+
+
+def test_ki49_a_top_level_heading_after_sources_is_a_problem_too(tmp_path):
+    p = doc(tmp_path, "Pick A: 7/12.", "7/12",
+            sources="- `docs/research/competitors/src.md`\n\n# Appendix\n\nMore.")
+    out = S.check(p, tmp_path)
+    assert any("# Appendix comes after ## Sources" in o for o in out), out
+
+
 def test_ki49_bullets_under_a_heading_after_sources_are_not_sources(tmp_path):
     (tmp_path / "docs/research/competitors").mkdir(parents=True)
     (tmp_path / "docs/research/competitors/b.md").write_text("7/12")
