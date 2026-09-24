@@ -200,3 +200,26 @@ def test_rule_index_marks_design_system_nine_tested():
 def test_settings_has_location_label_without_a_city_field_change():
     s = json.loads(SETTINGS.read_text())
     assert s["location_label"] == "Carlisle · Cumbria"
+
+
+#: Every rule in `CounterStrip` that paints text straight onto the strip's own steel-100 bed.
+#: Known Issue 21: the inline arrangement's separator dot was `--color-text-muted` on that bed
+#: and measured 4.49:1 (AA wants 4.50) on /kit-preview/, /thank-you-blue-staffy-puppies-journey/
+#: and /uk-blue-staffy-breeders-contact/ — and no pair in contrast.json named it, so the token
+#: test above could not see it. Each ink named here must be a pair with the bed in
+#: contrast.json, which is what makes `test_contrast_pairs_clear_aa` measure it.
+COUNTER_BED_INKS = (".kit-counter", ".lbl", ".dot")
+
+
+def test_counter_inks_are_guarded_pairs_on_the_counter_bed():
+    src = (KIT / "CounterStrip.astro").read_text(encoding="utf-8")
+    bed = re.search(r"\.kit-counter\s*\{[^}]*?background:\s*var\((--[a-z0-9-]+)\)", src)
+    assert bed, "CounterStrip no longer names its bed in `.kit-counter`"
+    pairs = {(p["fg"], p["bg"]) for p in json.loads(CONTRAST.read_text())}
+    missing = []
+    for selector in COUNTER_BED_INKS:
+        ink = re.search(re.escape(selector) + r"\s*\{[^}]*?[^-]color:\s*var\((--[a-z0-9-]+)\)", src)
+        assert ink, f"{selector} states no ink of its own"
+        if (ink.group(1), bed.group(1)) not in pairs:
+            missing.append((selector, ink.group(1), bed.group(1)))
+    assert not missing, f"add these fg/bg pairs to data/design/contrast.json: {missing}"

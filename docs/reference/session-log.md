@@ -374,9 +374,16 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
     `dateModified` rather than calling `new Date()`. The 18 `schema-date-modified-present` rows
     in Known Issue 8 are exactly the real pages that do not read it yet. **Project 4** wires it
     into the content pass and into sitemap `lastmod`.
-21. **(2026-09-22: now also on `/thank-you-blue-staffy-puppies-journey/` and
-    `/uk-blue-staffy-breeders-contact/`, through C-UT1's inline dot — 6 advisory rows on 3 pages;
-    still open, build 5.)** **The separator dot misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
+21. **CLOSED (project 5 readiness pass) — the separator dot takes the strip's steel ink.**
+    `.dot` in `src/components/kit/CounterStrip.astro` is `--color-brand` on the strip's
+    `--color-brand-soft` bed, a pair `data/design/contrast.json` already guards, and
+    `test_counter_inks_are_guarded_pairs_on_the_counter_bed` in `tests/py/test_design_tokens.py`
+    requires every ink the strip paints on its bed to be such a pair (the label's
+    `--color-text` pair was added with it). `a11y-text-contrast-aa`: 6 rows → 0 on
+    `/kit-preview/`, thank-you and contact. Was: **(2026-09-22: now also on
+    `/thank-you-blue-staffy-puppies-journey/` and `/uk-blue-staffy-breeders-contact/`, through
+    C-UT1's inline dot — 6 advisory rows on 3 pages; still open, build 5.)** **The separator dot
+    misses AA by one hundredth.** Two advisory `a11y-text-contrast-aa` rows
     on `/kit-preview/` at 768 and 1280: the middle-dot separator measures 4.49:1 where AA wants
     4.50:1. Decorative, but a real row; the fix is one token step darker, with the pair added to
     `data/design/contrast.json` so the token test guards it thereafter. **Project 4.**

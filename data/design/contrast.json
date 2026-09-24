@@ -11,6 +11,7 @@
   {"fg": "--color-link",            "bg": "--color-surface-raised",  "size": "normal"},
   {"fg": "--color-link-on-inverse", "bg": "--color-surface-inverse", "size": "normal"},
   {"fg": "--color-brand",           "bg": "--color-brand-soft",      "size": "normal"},
+  {"fg": "--color-text",            "bg": "--color-brand-soft",      "size": "normal"},
   {"fg": "--color-brand",           "bg": "--color-cta-soft",        "size": "normal"},
   {"fg": "--color-cta",             "bg": "--color-surface-inverse", "size": "large"},
   {"fg": "--color-cta",             "bg": "--color-surface-deep",    "size": "large"},
