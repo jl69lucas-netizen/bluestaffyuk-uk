@@ -62,7 +62,7 @@ EOF
 
 ```bash
 git add src/components/SiteFooter.astro src/components/kit/SiteFooterKit.astro src/pages/<slug>/index.astro
-git commit -m "fix(footer): <what changed>"
+git commit -m "fix(footer): <what changed>" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 

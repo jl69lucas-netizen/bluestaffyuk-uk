@@ -128,7 +128,7 @@ After every child in the round has finished: `npm run build`, then `npm run chec
 ### Step 7 — Commit (deploy and IndexNow are inactive until project 6)
 ```bash
 git add <the files the manifest lists>
-git commit -m "Batch rebuild: [job type] — [date]"
+git commit -m "Batch rebuild: [job type] — [date]" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 `npm run indexnow:changed` refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL`.

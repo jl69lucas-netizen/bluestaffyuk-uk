@@ -243,7 +243,7 @@ Approved sections are recorded in the page's board, `data/boards/index.json`, an
 
 1. Commit (no push — no remote until project 6):
 ```bash
-git add src/pages/index.astro && git commit -m "homepage: rebuild section by section"
+git add src/pages/index.astro && git commit -m "homepage: rebuild section by section" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 

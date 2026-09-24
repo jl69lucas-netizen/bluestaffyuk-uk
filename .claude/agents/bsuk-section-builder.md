@@ -118,7 +118,7 @@ A section the kit cannot express is a design-system change: add or extend a kit 
 
 ```bash
 git add <files>
-git commit -m "feat: ..."
+git commit -m "feat: ..." -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 

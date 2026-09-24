@@ -101,7 +101,7 @@ Expected on the 2026-09-24 build: `examined 58 pages, 27 @id references; 0 probl
 
 ```bash
 git add src/pages/<slug>/index.astro
-git commit -m "fix: absolute canonical on /<slug>/"
+git commit -m "fix: absolute canonical on /<slug>/" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 

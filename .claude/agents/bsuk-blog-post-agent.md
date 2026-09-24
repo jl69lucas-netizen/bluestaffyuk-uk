@@ -276,7 +276,7 @@ def seo_check(slug, primary_keyword):
 ```bash
 npm run build && npm run check:sitemaps
 git add src/content/blog/<slug>.md
-git commit -m "Add blog post: [title]"
+git commit -m "Add blog post: [title]" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 

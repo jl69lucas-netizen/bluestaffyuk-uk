@@ -242,6 +242,6 @@ import { price } from '../lib/money';   // renders £1,500 / £1,700 from data/p
 npm run build          # must exit 0, with the pagefind index
 npm run check:all      # the gates
 git add <files>
-git commit -m "..."
+git commit -m "..." -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no push, no deploy: this repo has no remote and no host until project 6
 ```

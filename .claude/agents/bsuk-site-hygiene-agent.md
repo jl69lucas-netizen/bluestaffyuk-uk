@@ -104,11 +104,11 @@ grep -c "googletagmanager.com/gtag/js" dist/index.html   # 0 today
 ```bash
 # Task 1 — the report (redirects are bsuk-redirect-manager's commit)
 git add docs/research/cannibalization-audit-<YYYY-MM-DD>.md
-git commit -m "docs: cannibalisation audit for [cluster]"
+git commit -m "docs: cannibalisation audit for [cluster]" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 # Task 2 / 3 — the source that changed
 git add src/pages/<slug>/index.astro src/lib/site.ts data/locations.json
-git commit -m "fix: [breadcrumb | footer link] — [what changed]"
+git commit -m "fix: [breadcrumb | footer link] — [what changed]" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
