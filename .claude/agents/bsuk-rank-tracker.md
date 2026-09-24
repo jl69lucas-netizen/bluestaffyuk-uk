@@ -156,5 +156,5 @@ This agent is designed to run every Sunday. `/schedule` is not a Claude Code com
 3. **Mover threshold = 2+ changes** — single change is noise, two or more is signal
 4. **Always trigger bsuk-competitor-intel for movers** — don't just log, act
 5. **Save snapshot after every run** — future runs depend on it
-6. **Update last_monitored in competitors.json** after each run
+6. **Leave data/competitors.json unchanged** — the registry has no monitoring field; the run's date is the snapshot file's name, and `last_analyzed` is written only by `bsuk-competitor-intel` (rule 4 hands it the movers)
 7. **15-minute maximum per competitor** — if a site is unreachable after Firecrawl + Playwright MCP attempts, log as `unreachable` and move on
