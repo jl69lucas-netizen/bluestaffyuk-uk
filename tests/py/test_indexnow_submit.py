@@ -149,6 +149,7 @@ INDEXING_SKILL = pathlib.Path(__file__).resolve().parents[2] / ".claude/skills/b
 PUBLIC_SITEMAP = re.compile(r"public/\*\.xml|public/[\w.-]*sitemap|public/`?\s+is where|"
                             r"SITE_ROOT\s*=\s*[\"']public")
 KEY_ON_DISK = re.compile(r"key is read from `public/|read it from `public/")
+NOT_PORTED = re.compile(r"submitter[^.]*?\b(?:deferred|not\s+ported)\b|\bwas\s+not\s+ported\b")
 
 
 def test_the_indexing_skill_reads_sitemaps_from_dist_and_the_key_from_the_env():
@@ -158,3 +159,8 @@ def test_the_indexing_skill_reads_sitemaps_from_dist_and_the_key_from_the_env():
     assert bad == [], "the skill contradicts scripts/indexnow_submit.py:\n  " + "\n  ".join(bad)
     roots = re.findall(r"(?m)^SITE_ROOT\s*=\s*\"([^\"]*)\"", "\n".join(lines))
     assert roots and set(roots) == {"dist"}, roots
+    # It also called the submitter "deferred to project 6 … not ported" while the script sat
+    # in scripts/ (`npm run indexnow`), refusing until project 6 by its own guards.
+    prose = re.sub(r"(?m)^>\s?", "", "\n".join(lines))
+    stale = [m.group(0) for m in NOT_PORTED.finditer(prose)]
+    assert stale == [], "the submitter exists — scripts/indexnow_submit.py:\n  " + "\n  ".join(stale)

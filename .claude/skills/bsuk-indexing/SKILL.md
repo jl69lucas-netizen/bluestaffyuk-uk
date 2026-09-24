@@ -17,8 +17,11 @@ allowed-tools: [Read, Write, Bash]
 > **INACTIVE UNTIL PROJECT 6.** BlueStaffyUK has no host, no domain, no remote and no
 > verified search-console property. Every submission below — IndexNow, Search Console, a
 > live key file, a live URL check — is **release-guarded**: it refuses without
-> `BSUK_RELEASE=1` and a real `SITE_URL`, and the submitter script itself is **deferred to
-> project 6** (`data/port-manifest.json`). What runs today is the sitemap half:
+> `BSUK_RELEASE=1` and a real `SITE_URL`. The submitter, `scripts/indexnow_submit.py`
+> (`npm run indexnow`, `npm run indexnow:changed`), is ported and committed
+> (`data/port-manifest.json`) and refuses with exit 2 until project 6 sets both: first
+> unless `BSUK_RELEASE=1`, then unless `SITE_URL` is a real origin, not the placeholder —
+> each before the key is read or a socket opened. What runs today is the sitemap half:
 > `python3 scripts/generate_sitemaps.py` and `python3 scripts/sitemap_check.py` over
 > `dist/`. Do not remove this notice — the day it goes is the day someone submits
 > `SITE_URL_PLACEHOLDER` to IndexNow.
@@ -225,10 +228,11 @@ curl -X POST https://oauth2.googleapis.com/token \
 
 IndexNow covers Bing, Yandex, and (via `api.indexnow.org`) partially Google.
 
-**The submitter script is deferred to project 6** (`data/port-manifest.json`) — it was not
-ported, because there is nothing to submit until BSUK has a host and a domain. When it
-arrives, use the committed script and never paste inline Python for this. The shapes it
-will take:
+**The submitter is `scripts/indexnow_submit.py`** (`npm run indexnow`,
+`npm run indexnow:changed`; ported and release-guarded, `data/port-manifest.json`). It
+refuses with exit 2 until project 6, because there is nothing to submit until BSUK has a
+host and a domain: first unless `BSUK_RELEASE=1`, then unless `SITE_URL` is a real origin.
+Use the committed script and never paste inline Python for this. Its forms:
 
 ```bash
 python3 scripts/indexnow_submit.py <slug> [<slug> ...]   # refuses (exit 2) without BSUK_RELEASE=1
