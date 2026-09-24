@@ -79,7 +79,7 @@ def test_the_agent_carries_its_key_rules():
         "Exactly TWO strategies",                       # two strategies, never one or three
         "names the pick's own downside",                # the downside
         "never cite traffic",                           # GSC/GA4 not fetched until project 6
-        "is a rebuild of that URL (project 5), never a new page",  # stub rows
+        "is a rebuild of each URL it lists (project 5) — one rebuild row per URL — never a new page",  # stub rows
         "A quantity from 1900 to 2099 takes a comma",   # the comma rule
         "say it **without a number**",                  # self-made counts: words, not numbers
         'never spelled out ("seventeen"',

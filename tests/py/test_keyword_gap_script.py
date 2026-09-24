@@ -393,3 +393,25 @@ def test_a_place_outside_the_location_list_never_becomes_a_topic_or_a_stub_label
     assert d["covered"][0]["urls"] == ["https://off.co.uk/staffy-puppies-newcastle-upon-tyne/",
                                        "https://off.co.uk/staffy-puppies-scotland/"]
     assert d["gaps"] == []
+
+
+def test_greater_before_no_city_is_just_a_word(root):
+    # "greater" joins a city only when a data/locations.json city follows it; elsewhere it is an
+    # ordinary word, so the page is no city topic and borrows no stub. (The H1 has no 3-word run, so
+    # the whole H1 is the topic and "greater" stays in it; "Greater Staffy Puppies Leeds" would give
+    # the run "staffy puppies leeds" and drop the word.)
+    r = report("gs", [page("https://gs.co.uk/greater-staffy-puppies-leeds/", "Greater Staffy Leeds")])
+    d = run(root, profile(root), write(root, "gs.json", r))
+    g = row(d["gaps"], "greater staffy leeds")
+    assert (g["type"], g["noindex_pages"]) == ("listing", [])
+
+
+def test_no_location_city_sits_inside_another_as_whole_words():
+    # stubs() looks each city of a multi-city topic up on its own; a city whose words sit inside
+    # another city's words ("york" in "north york") would match both and borrow the wrong stub.
+    words = lambda t: re.findall(r"[a-z0-9]+", t.lower())
+    towns = {tuple(words(r["city"])) for r in json.loads((REPO / "data/locations.json").read_text(encoding="utf-8"))
+             if "(" not in r["city"]} - {("uk",)}
+    inside = [(a, b) for a in towns for b in towns if a != b
+              and any(b[i:i + len(a)] == a for i in range(len(b) - len(a) + 1))]
+    assert inside == []

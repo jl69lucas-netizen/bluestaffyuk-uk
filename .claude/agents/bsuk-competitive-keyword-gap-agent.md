@@ -233,7 +233,7 @@ What decides a row (to explain it, never to redo it):
 docs/research/keyword-gap-<YYYY-MM-DD>.md:
 
 1. Header: mode; gap matrix or "none yet"; BSUK source and page count; competitors used (tier, `fetched_on`); stale ones and what happened; names cut; skipped count; fetch count; the script's `foreign_urls` (each: id, URL, the report's root domain — "none" when empty) and `duplicate_urls` (each: URL and the ids sharing it — "none" when empty), both named again in the hand-back as a fix for `bsuk-competitor-intel <id>`; one line per forbidden request declined (a "top page" point, search volumes, skipping the script).
-2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none", or "exists, not indexed — project 5 rebuild: <noindex_pages, comma-separated>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
+2. **Gaps**, in the script's order — Topic · Score with parts (`10 (3+2+3+2)`) · Band ("always high" when that set it) · Competitor URLs · BSUK page · Suggested page type (`type`, else `untyped`). BSUK page is "none" when noindex_pages is empty, or "exists, not indexed — project 5 rebuild: <noindex_pages, comma-separated>". Tier-5 URLs are plain text marked "(tier 5 — never link)".
 3. **Already covered** — Topic · Competitor URL · BSUK page.
 4. **High gaps** — one line each on why; "None" when none.
 5. **Handoff** lines.
@@ -242,7 +242,7 @@ URLs as their source gives them. With `--type`, only that type's rows. Then `pyt
 
 ## Handoff
 
-High gaps → `bsuk-content-architect` (topic, competitor URL, page type); a row with `noindex_pages` goes as "rebuild the stub <each of noindex_pages>" (project 5), never a new page; a `tier5_only` row goes with no URL, marked "tier-5 only"; with the page-map fallback all are "provisional" until `--bsuk` and a re-run. The file → `bsuk-strategy-synthesizer` (medium gaps to the content calendar). Stale report → `bsuk-competitor-intel <id>`; no profile → `bsuk-competitor-intel --bsuk`.
+High gaps → `bsuk-content-architect` (topic, competitor URL, page type); a row whose `noindex_pages` is not empty goes as one "rebuild the stub <url>" line for each URL in it (project 5), never a new page; a `tier5_only` row goes with no URL, marked "tier-5 only"; with the page-map fallback all are "provisional" until `--bsuk` and a re-run. The file → `bsuk-strategy-synthesizer` (medium gaps to the content calendar). Stale report → `bsuk-competitor-intel <id>`; no profile → `bsuk-competitor-intel --bsuk`.
 
 ## Red flags — stop
 

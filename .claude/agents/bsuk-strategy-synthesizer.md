@@ -37,7 +37,7 @@ effort: max
 
 ## Reading the research
 
-- **Stub rows are rebuilds.** A keyword-gap row marked "exists, not indexed — project 5 rebuild: <url>" is a rebuild of that URL (project 5), never a new page, and never a second URL for the same topic.
+- **Stub rows are rebuilds.** A keyword-gap row marked "exists, not indexed — project 5 rebuild: <url>[, <url>…]" is a rebuild of each URL it lists (project 5) — one rebuild row per URL — never a new page, and never a second URL for the same topic.
 - **Profile says yes, page map says stub → the page was rebuilt; the profile wins.** The BSUK profile lists indexable pages only; never re-score or re-mark a row from the page map. Profile says no and the page map holds a stub at that city or topic → a project 5 rebuild of that URL, not a new page.
 - **Page-map fallback:** a keyword-gap file whose header names `data/page-map.json` as the BSUK source has every score provisional — and so is any pick that rests on them.
 - **Tier 5 is never a link.** A tier-5 (suspect seller) competitor or a "tier-5 only" row is never suggested as a link target, a model to copy, or a source of wording; it may appear only as a risk. When a matrix N/M count includes a tier-5 report, say so beside it.
