@@ -240,8 +240,9 @@ def test_thumb_uri_downsizes_before_it_converts(tmp_path):
 
 
 def test_style_labels_have_room_to_tap():
-    # 10px above and below a ~24px line: a 44px tap target on a phone.
-    assert ".imgstyles label{padding:10px 6px}" in IR.BLOCK_CSS
+    # A 44px tap target on a phone: the height is pinned, not left to the line height.
+    assert (".imgstyles label{padding:10px 6px;min-height:44px;box-sizing:border-box;"
+            "display:inline-flex;align-items:center}") in IR.BLOCK_CSS
 
 
 def test_the_schema_refuses_a_slot_id_that_is_not_a_slug():

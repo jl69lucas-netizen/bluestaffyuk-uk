@@ -252,7 +252,8 @@ def test_validate_image_picks_names_every_bad_pick(repo, tmp_path):
         "slot checks-graphic: an OG style is a photo style and this slot is an infographic",
         "approval picks image slot 'ghost', which the record does not plan",
         # opening-photo's assets[] row names a served file, and those bytes are not the approved ones.
-        "slot opening-photo: the generated image changed since the board showed it",
+        "slot opening-photo: the pick approves sha %s, but the board shows "
+        "public/images/blue-staffy-puppy-for-sale-uk.webp (sha %s)" % ("0" * 12, _sha(b"x")),
         "slot opening-tile-2: 'Missing.jpg' is neither in %s nor ingested" % folder,
         "slot opening-tile-3: pick 'http://x' is not file:, assets:, og: or ig:",
         "slot raise-photo: /images/nowhere.webp is not in public/",
@@ -275,10 +276,14 @@ def test_an_approved_new_draft_is_accepted_over_an_older_served_copy(repo, tmp_p
     assert IR.board_images(b, repo, folder)["generated"]["weeks-photo"]["sha"] == _sha(b"draft")
     assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"draft")}) == []
     assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"served")}) == [
-        "slot weeks-photo: the generated image changed since the board showed it"]
+        "slot weeks-photo: the pick approves sha %s, but the board shows "
+        "data/boards/generated/uk-locations--blue-staffy-puppies-leeds/weeks-photo.webp (sha %s); "
+        "a newer draft replaces the served copy; approve the draft, or remove it to keep the "
+        "served image" % (_sha(b"served"), _sha(b"draft"))]
     # With no draft, the served copy is the one checked, as before.
     (draft / "weeks-photo.webp").unlink()
     assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"served")}) == []
+
 
 def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo):
     import board_approve as BA

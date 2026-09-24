@@ -10,6 +10,8 @@ import json
 import pathlib
 import sys
 
+import pytest
+
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "tests" / "py"))
@@ -138,7 +140,7 @@ def test_style_radios_carry_the_label_map_names_and_uses(repo):
     block = _block(_html(b, images))
     weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
     b_use = labels["og"]["B"]["use"]
-    assert f'title="{b_use}"' in weeks or f'title="{IR._e(b_use)}"' in weeks
+    assert f'title="{IR._e(b_use)}"' in weeks
     assert "B · %s</label>" % IR._e(labels["og"]["B"]["name"]) in weeks
     assert "⭐ C · %s</label>" % IR._e(labels["og"]["C"]["name"]) in weeks
     graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
@@ -185,3 +187,51 @@ def test_a_real_size_suffixed_name_stays_itself_as_the_current_file(tmp_path):
     # A true size sibling still folds to its original when root is given.
     assert IC.current_file(b, dict(img, file="/images/leeds-delivery-van-760.webp"), root) == \
         "/images/leeds-delivery-van.webp"
+
+
+# ── Task 10c review fixes ────────────────────────────────────────────────────────────────
+@pytest.mark.parametrize("bad", [{"og": ["A"]}, {"og": {"C": "Contain"}}, ["A"], {"og": {"C": {"name": 3}}}])
+def test_a_wrong_shape_label_map_falls_back_to_bare_ids(tmp_path, repo, bad):
+    root, folder = repo
+    where = tmp_path / "shaped"
+    (where / "data" / "design").mkdir(parents=True)
+    (where / "data" / "design" / "image-styles.json").write_text(json.dumps(bad))
+    assert IR.style_labels(where) == {}
+    b = _full()
+    images = IR.board_images(b, root, folder)
+    images["styles"] = bad                            # a map handed in unchecked renders too
+    weeks = _block(_html(b, images)).split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    assert "⭐ C</label>" in weeks and "title=" not in weeks
+
+
+def test_a_well_shaped_group_survives_beside_a_bad_one(tmp_path):
+    (tmp_path / "data" / "design").mkdir(parents=True)
+    (tmp_path / "data" / "design" / "image-styles.json").write_text(json.dumps(
+        {"og": {"B": {"name": "Blur-Fill", "use": "x"}, "C": "Contain"}, "infographic": ["IG-1"]}))
+    assert IR.style_labels(tmp_path) == {"og": {"B": {"name": "Blur-Fill", "use": "x"}}}
+
+
+def test_a_current_file_that_is_not_on_disk_is_labelled_missing_and_not_ticked(tmp_path):
+    root, assets = _tree(tmp_path)
+    b = _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                   "prompt": "our van on a delivery run", "source": "existing",
+                                   "file": "/images/gone-from-disk.webp"}])
+    photo = _photo(IC.candidates(b, root, assets, per_pool=2))
+    first = photo["candidates"][0]
+    assert (first["pool"], first["current"], first["missing"]) == ("current", True, True)
+    assert all(c["missing"] is False for c in photo["candidates"][1:])
+    b2 = _board(images_by_section=[{"slot": "delivery-photo", "kind": "photo", "required": True,
+                                    "prompt": "x", "source": "existing",
+                                    "file": "/images/family-garden-play.webp"}])
+    assert _photo(IC.candidates(b2, root, assets, per_pool=2))["candidates"][0]["missing"] is False
+
+
+def test_the_board_does_not_tick_a_missing_current_file(repo):
+    root, folder = repo
+    b = _full()
+    (root / "public" / "images" / "blue-staffy-puppies-uk-litter1.webp").unlink()
+    block = _block(_html(b, IR.board_images(b, root, folder)))
+    tile = block.split('id="img-opening-tile-2"', 1)[1].split("</fieldset>", 1)[0]
+    first = tile.split('<label class="imgopt">', 2)[1]
+    assert 'value="file:/images/blue-staffy-puppies-uk-litter1.webp">' in first
+    assert "<b>current · missing</b>" in first and " checked>" not in tile

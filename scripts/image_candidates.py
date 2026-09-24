@@ -33,7 +33,9 @@ an earlier slot, so one photo is not proposed twice on one page (Rule 50b: no sh
 CURRENT (Task 10c). A slot that already names a file — its own `file`, else its `assets[]`
 row's `file` — gets that file as its FIRST candidate, pool `current`, whatever it scores,
 and it is the slot's `suggested` pick. It is never listed again further down (size
-siblings fold to one file). Every candidate carries `current: true|false`.
+siblings fold to one file). Every candidate carries `current: true|false` and
+`missing: true|false`; only a current file can be missing (not a regular file inside
+public/images under root), and the board then labels it and leaves it unticked.
 
 Every served candidate carries `used_on`: the other built pages that already show it, so
 reuse across pages is visible on the board rather than discovered after the build.
@@ -333,7 +335,8 @@ def _candidate(pool, item, words, alts, used, own_route):
     if pool == "assets":
         img_words = tokens(item["asset"].replace("File name-", ""))
         cand = {"pool": pool, "file": None, "asset": item["asset"], "ingest_as": item["ingest_as"],
-                "alt": "", "used_on": [], "pick": "assets:" + item["asset"], "current": False}
+                "alt": "", "used_on": [], "pick": "assets:" + item["asset"], "current": False,
+                "missing": False}
     else:
         f = item["file"]
         known = alts.get(f, [])
@@ -343,7 +346,7 @@ def _candidate(pool, item, words, alts, used, own_route):
             img_words |= tokens(a)
         cand = {"pool": pool, "file": f, "asset": None, "ingest_as": None, "alt": alt,
                 "used_on": [r for r in used.get(f, []) if r != own_route], "pick": "file:" + f,
-                "current": False}
+                "current": False, "missing": False}
     matched = sorted(words & img_words)
     cand["score"] = len(matched)
     cand["matched"] = matched
@@ -384,6 +387,17 @@ def current_file(board, img, root=None):
     return (canonical(f, root) or f) if f else None
 
 
+def on_disk(file, root):
+    """True when an /images/ URL names a regular file inside root/public/images, symlinks
+    followed (the same containment image_rules.public_file() applies)."""
+    top = (pathlib.Path(root) / "public" / "images").resolve()
+    try:
+        p = (pathlib.Path(root) / "public" / file.lstrip("/")).resolve()
+    except (OSError, RuntimeError):
+        return False
+    return top in p.parents and p.is_file()
+
+
 def candidates(board, root=None, assets_dir=None, per_pool=3):
     """The whole candidate report for one record. Pure: reads files, writes nothing."""
     root = pathlib.Path(root) if root is not None else ROOT
@@ -403,6 +417,7 @@ def candidates(board, root=None, assets_dir=None, per_pool=3):
         if cur:
             first = _candidate("current", {"file": cur}, words, alts, used, route)
             first["current"] = True
+            first["missing"] = not on_disk(cur, root)
             cands = [first] + [c for c in cands if c["pick"] != first["pick"]]
             suggested = first                          # the record's own choice leads
         else:

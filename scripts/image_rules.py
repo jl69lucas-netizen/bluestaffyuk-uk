@@ -360,8 +360,14 @@ def validate_image_picks(board, chosen, root=None, assets_dir=None):
             f = generated_file(board, slot, root)
             if f is None:
                 errs.append(f"slot {slot}: approves a generated image, and none exists for this slot")
-            elif file_sha(f) != p["sha"]:
-                errs.append(f"slot {slot}: the generated image changed since the board showed it")
+            elif (sha := file_sha(f)) != p["sha"]:
+                msg = (f"slot {slot}: the pick approves sha {p['sha']}, but the board shows "
+                       f"{f.relative_to(pathlib.Path(root)).as_posix()} (sha {sha})")
+                served = served_file(board, slot, root)
+                if served is not None and served != f:
+                    msg += ("; a newer draft replaces the served copy; approve the draft, or remove "
+                            "it to keep the served image")
+                errs.append(msg)
     return errs
 
 
@@ -390,7 +396,7 @@ BLOCK_CSS = (
     ".imgopt .nothumb{display:grid;place-items:center;color:var(--ink-3)}"
     ".imgopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}"
     ".imgstyles{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;margin:6px 0}"
-    ".imgstyles label{padding:10px 6px}"
+    ".imgstyles label{padding:10px 6px;min-height:44px;box-sizing:border-box;display:inline-flex;align-items:center}"
     ".imggen img{max-width:min(100%,480px);border-radius:6px;display:block;margin:6px 0}"
     ".imgwhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.imgwarn{color:var(--warn);font-weight:600}"
     "@media (max-width:640px){.imgc{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>")
@@ -421,7 +427,22 @@ def style_labels(root=None):
         data = json.loads(p.read_text(encoding="utf-8"))
     except (OSError, ValueError):
         return {}
-    return data if isinstance(data, dict) else {}
+    return _label_map(data)
+
+
+def _label_map(data):
+    """Only the well-shaped part of a label map: {group: {id: {"name": str, "use": str}}}.
+    Anything else (a list, a bare string, a non-string name) is dropped, so a wrong-shape
+    file falls back to the bare ids instead of breaking the board."""
+    out = {}
+    for grp, entries in (data.items() if isinstance(data, dict) else ()):
+        if not isinstance(entries, dict):
+            continue
+        good = {k: v for k, v in entries.items()
+                if isinstance(v, dict) and isinstance(v.get("name"), str) and isinstance(v.get("use"), str)}
+        if good:
+            out[grp] = good
+    return out
 
 
 def board_images(board, root=None, assets_dir=None, per_pool=3):
@@ -477,7 +498,8 @@ def _slot_html(board, sec, node, img, row, images, current):
     if cands:
         cells = []
         for c in cands:
-            checked = current == c["pick"] or (precheck and c.get("current", False))
+            # A current file that is not on disk is offered, labelled, and never ticked.
+            checked = current == c["pick"] or (precheck and c.get("current", False) and not c.get("missing"))
             uri = images["thumbs"].get(c["pick"])
             pic = f'<img src="{uri}" alt="{_e(c["alt"])}">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
             star = "⭐ " if c["pick"] == suggested.get("pick") else ""
@@ -487,7 +509,7 @@ def _slot_html(board, sec, node, img, row, images, current):
             what = ("the file this slot names now" if c.get("current")
                     else f'score {c["score"]} · {_e(", ".join(c["matched"]))}')
             cells.append(f'<label class="imgopt">{pic}<span>{_radio(name, c["pick"], checked)} '
-                         f'{star}<b>{_e(c["pool"])}</b> · {what}</span>{note}</label>')
+                         f'{star}<b>{_e(c["pool"])}{" · missing" if c.get("missing") else ""}</b> · {what}</span>{note}</label>')
         parts.append(f'<div class="imgc">{"".join(cells)}</div>')
     else:
         parts.append('<p class="imgwhy">No existing image shares a word with this slot — pick a style to generate one.</p>')
@@ -495,7 +517,7 @@ def _slot_html(board, sec, node, img, row, images, current):
         label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
     else:
         label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
-    named = (images.get("styles") or {}).get("infographic" if prefix == "ig:" else "og") or {}
+    named = _label_map(images.get("styles")).get("infographic" if prefix == "ig:" else "og", {})
 
     def _style(st):
         lab = named.get(st) or {}
