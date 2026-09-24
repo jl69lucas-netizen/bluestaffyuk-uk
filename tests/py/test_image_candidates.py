@@ -1,0 +1,171 @@
+"""image_candidates.py — every image slot is offered the site's own images first
+(system-gaps build, Task 9). All tests run on a tmp tree: a repo with public/images, the
+manifest, a verbatim file and two built pages, and a breeder folder outside it."""
+import json
+import pathlib
+import sys
+
+ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+
+import image_candidates as IC  # noqa: E402
+
+SLUG = "uk-locations/blue-staffy-puppies-leeds"
+
+
+def _page(imgs, main=True):
+    tags = "".join(f'<img src="{s}" alt="{a}">' for s, a in imgs)
+    body = f"<main>{tags}</main>" if main else tags
+    return f'<!doctype html><header><img src="/images/blue-staffy-uk-official-logo0.png" alt="logo"></header>{body}'
+
+
+def _tree(tmp_path):
+    root = tmp_path / "repo"
+    imgs = root / "public" / "images"
+    imgs.mkdir(parents=True)
+    for name in ("leeds-delivery-van.webp", "leeds-delivery-van-760.webp", "puppy-vaccinations-uk.webp",
+                 "kc-registered-staffy-puppies.webp", "family-garden-play.webp",
+                 "blue-staffy-uk-official-logo0.png"):
+        (imgs / name).write_bytes(b"x")
+    (imgs / "puppies").mkdir()
+    (imgs / "puppies" / "byrd-byrd1.webp").write_bytes(b"x")
+    (root / "data" / "verbatim").mkdir(parents=True)
+    (root / "data" / "image-manifest.json").write_text(json.dumps({
+        "leeds-delivery-van": {"w": 1, "h": 1, "sib_w": 760},
+        "puppy-vaccinations-uk": {"w": 1, "h": 1, "sib_w": None},
+        "kc-registered-staffy-puppies": {"w": 1, "h": 1, "sib_w": None},
+        "family-garden-play": {"w": 1, "h": 1, "sib_w": None},
+        "blue-staffy-uk-official-logo0": {"w": 1, "h": 1, "sib_w": None}}))
+    (root / "data" / "verbatim" / "blue-staffy-health-uk.json").write_text(json.dumps({
+        "alts": [{"src": "/images/puppy-vaccinations-uk.webp",
+                  "alt": "A puppy at the vet after its vaccinations"}]}))
+    dist = root / "dist"
+    (dist / "uk-locations" / "blue-staffy-puppies-leeds").mkdir(parents=True)
+    (dist / "uk-locations" / "blue-staffy-puppies-leeds" / "index.html").write_text(
+        _page([("/images/leeds-delivery-van-760.webp", "Our van delivering a puppy to Leeds")]))
+    (dist / "blue-staffy-health-uk").mkdir()
+    (dist / "blue-staffy-health-uk" / "index.html").write_text(
+        _page([("/images/puppy-vaccinations-uk.webp", "Vaccinations"),
+               ("/images/kc-registered-staffy-puppies.webp", "Kennel Club papers")]))
+    (dist / "board-preview" / "x").mkdir(parents=True)
+    (dist / "board-preview" / "x" / "index.html").write_text(
+        _page([("/images/family-garden-play.webp", "specimen")]))
+    assets = tmp_path / "Assets" / "Images"
+    assets.mkdir(parents=True)
+    for name in ("Leeds-Kennel-Club-Show.jpg", "Byrd1.jpg", "family-garden-play.png", ".DS_Store",
+                 "archive.zip", "File name- vaccination-card-close-up .jpg .jpg"):
+        (assets / name).write_bytes(b"x")
+    return root, assets
+
+
+def _board(images_by_section=None, node_images=None):
+    sec = {"id": "delivery", "heading": "Delivering Your Puppy To Leeds",
+           "keywords": {"primary": ["blue staffy puppies leeds"], "lsi": ["puppy delivery"]},
+           "tree": [{"level": 3, "heading": "Vaccinations Before The Journey", "intent": "",
+                     "children": [], "images": node_images if node_images is not None else [
+                         {"slot": "delivery-vacc", "kind": "photo", "required": True,
+                          "prompt": "a puppy being vaccinated"}]}],
+           "images": images_by_section if images_by_section is not None else [
+               {"slot": "delivery-photo", "kind": "photo", "required": True,
+                "prompt": "our van on a delivery run"}]}
+    return {"meta": {"slug": SLUG, "page_type": "location"}, "sections": [sec],
+            "assets": []}
+
+
+def test_tokens_fold_plurals_and_drop_the_words_every_image_shares():
+    assert IC.tokens("Blue Staffy Puppies: Vaccinations & Deliveries 2026") == {"vaccination", "delivery"}
+    assert IC.tokens("kennel-club-assured") == {"kennel", "club", "assured"}
+
+
+def test_canonical_drops_the_size_sibling_suffix():
+    assert IC.canonical("/images/leeds-delivery-van-760.webp?v=1") == "/images/leeds-delivery-van.webp"
+    assert IC.canonical("https://example.org/x.webp") is None
+
+
+def test_iter_slots_reads_section_and_node_slots_in_outline_order():
+    got = [(s["id"], n and n["heading"], i["slot"]) for s, n, i in IC.iter_slots(_board())]
+    assert got == [("delivery", None, "delivery-photo"),
+                   ("delivery", "Vaccinations Before The Journey", "delivery-vacc")]
+
+
+def test_own_images_come_from_the_migrated_page_in_dist(tmp_path):
+    root, _ = _tree(tmp_path)
+    own = IC.own_images(_board(), root)
+    # The size sibling on the page collapses to its stem file; the header logo is not <main>.
+    assert own == [{"file": "/images/leeds-delivery-van.webp", "alt": "Our van delivering a puppy to Leeds"}]
+
+
+def test_own_images_also_read_the_verbatim_file_and_the_record_assets(tmp_path):
+    root, _ = _tree(tmp_path)
+    b = _board()
+    b["meta"]["slug"] = "blue-staffy-health-uk"
+    b["assets"] = [{"slot": "x", "file": "/images/family-garden-play.webp", "alt": "Garden"}]
+    files = [o["file"] for o in IC.own_images(b, root)]
+    assert files == ["/images/puppy-vaccinations-uk.webp", "/images/kc-registered-staffy-puppies.webp",
+                     "/images/family-garden-play.webp"]
+
+
+def test_served_pool_is_the_manifest_without_the_logo(tmp_path):
+    root, _ = _tree(tmp_path)
+    assert [s["file"] for s in IC.served_images(root)] == [
+        "/images/family-garden-play.webp", "/images/kc-registered-staffy-puppies.webp",
+        "/images/leeds-delivery-van.webp", "/images/puppy-vaccinations-uk.webp"]
+
+
+def test_assets_pool_skips_non_images_and_files_already_served(tmp_path):
+    root, assets = _tree(tmp_path)
+    fresh, already = IC.asset_images(assets, root)
+    assert [f["asset"] for f in fresh] == ["File name- vaccination-card-close-up .jpg .jpg",
+                                           "Leeds-Kennel-Club-Show.jpg"]
+    assert fresh[0]["ingest_as"] == "/images/vaccination-card-close-up.webp"
+    # Byrd1.jpg was ingested as puppies/byrd-byrd1.webp; family-garden-play.png is served as .webp.
+    assert sorted(already) == ["Byrd1.jpg", "family-garden-play.png"]
+    assert IC.asset_images(tmp_path / "nowhere", root) == ([], [])
+
+
+def test_usage_index_ignores_previews_and_reads_every_page(tmp_path):
+    root, _ = _tree(tmp_path)
+    used, alts = IC.usage_and_alts(root)
+    assert used["/images/puppy-vaccinations-uk.webp"] == ["/blue-staffy-health-uk/"]
+    assert "/images/family-garden-play.webp" not in used          # only on a board preview
+    assert alts["/images/puppy-vaccinations-uk.webp"] == ["Vaccinations", "A puppy at the vet after its vaccinations"]
+
+
+def test_candidates_rank_own_then_served_then_assets_and_flag_reuse(tmp_path):
+    root, assets = _tree(tmp_path)
+    r = IC.candidates(_board(), root, assets, per_pool=2)
+    assert r["pools"] == {"own": 1, "served": 3, "assets": 2, "assets_already_served": 2}
+    photo, vacc = r["slots"]
+    # The page's own van photo leads; the folder's Leeds show photo follows on one word.
+    assert [(c["pool"], c["pick"]) for c in photo["candidates"]] == [
+        ("own", "file:/images/leeds-delivery-van.webp"), ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    assert photo["candidates"][0]["matched"] == ["delivering", "delivery", "leed", "van"]
+    assert photo["candidates"][1]["score"] == 1
+    # An H3 slot is scored on its section's heading too, so the page's own photo still leads;
+    # the served vaccination photo and the folder's vaccination card follow in pool order.
+    assert [(c["pool"], c["pick"]) for c in vacc["candidates"]] == [
+        ("own", "file:/images/leeds-delivery-van.webp"),
+        ("served", "file:/images/puppy-vaccinations-uk.webp"),
+        ("assets", "assets:File name- vaccination-card-close-up .jpg .jpg"),
+        ("assets", "assets:Leeds-Kennel-Club-Show.jpg")]
+    # Reuse is visible: the served vaccination photo is already on the health page.
+    assert vacc["candidates"][1]["used_on"] == ["/blue-staffy-health-uk/"]
+    assert vacc["candidates"][2]["ingest_as"] == "/images/vaccination-card-close-up.webp"
+    # The van is suggested once; the H3 slot is offered the next image instead.
+    assert photo["suggested"]["pick"] == "file:/images/leeds-delivery-van.webp"
+    assert vacc["suggested"]["pick"] == "file:/images/puppy-vaccinations-uk.webp"
+
+
+def test_cli_prints_json_and_writes_only_when_asked(tmp_path, monkeypatch, capsys):
+    root, assets = _tree(tmp_path)
+    (root / "data" / "boards").mkdir(parents=True)
+    (root / "data" / "boards" / (IC.slug_file(SLUG) + ".json")).write_text(json.dumps(_board()))
+    monkeypatch.setattr(IC, "ROOT", root)
+    assert IC.main([SLUG, "--assets-dir", str(assets)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["slug"] == SLUG and len(out["slots"]) == 2
+    assert not (root / "data" / "boards" / "candidates").exists()
+    assert IC.main([SLUG, "--assets-dir", str(assets), "--write"]) == 0
+    written = root / "data" / "boards" / "candidates" / "uk-locations--blue-staffy-puppies-leeds.json"
+    assert json.loads(written.read_text())["slots"][0]["slot"] == "delivery-photo"
+    assert IC.main(["uk-locations/nowhere", "--assets-dir", str(assets)]) == 2
