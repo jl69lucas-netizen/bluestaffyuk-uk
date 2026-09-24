@@ -117,3 +117,12 @@ def test_a_health_test_result_is_not_a_city_page_fact():
 def test_the_comparison_builder_derives_its_section_count():
     assert not re.search(r"22[–-]25|\b22[- ]section", COMPARISON)
     assert "section_target" in COMPARISON
+
+
+def test_the_comparison_builder_has_no_source_site_polish_leftovers():
+    for leftover in ("cvt-", "CvT", "CvM", "CvC", "MvF", "blue-brindle", "Blue-Brindle",
+                     "vs-french", "map-pin"):
+        assert leftover not in COMPARISON, leftover
+    polish = section(COMPARISON, "## 12.") + section(COMPARISON, "## 13.")
+    for route in ("/blue-staffy-uk-breeders/", "/buy-blue-staffy-puppies-uk/"):
+        assert route not in polish, route

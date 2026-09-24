@@ -139,7 +139,7 @@ Snippet Box (📌 Quick Answer) opens every section — 1–2 sentence AI-extrac
 
 A. **Temperament** — affectionate, one-person bonding, calm vs demanding, apartment puppy, separation anxiety, trainability
 B. **Noise, Barking & Shedding** — barking, noise level, a quiet dog, shedding, allergies
-C. **Size & Coat** — blue vs blue-brindle vs white, full-grown size, coat and markings
+C. **Size & Coat** — blue, blue brindle and white coats, full-grown size, coat and markings
 D. **Price, Lifespan & Health** — price comparison, the 12–14 year breed lifespan, vet costs, L-2-HGA, HC-HSF4
 E. **Lifestyle Match** — best for seniors / families / apartments / first-time owners / busy professionals
 F. **Commercial bridge** — for sale UK, breeder, home-raised, health-tested (link down to the money pages)
@@ -163,10 +163,9 @@ After outline approval, mark every H2/H3 needing OG photo vs AI image vs HTML in
 
 `npx astro build` → verify in `dist/` → `python3 scripts/final_page_audit.py` → then the full breeder gate list: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
 
-## 11. Breeder-Review Component Standard (2026-07-04 — BINDING for all 8 pages)
+## 11. Breeder-Review Component Standard (BINDING for every comparison page)
 
-The blue-vs-blue-brindle rebuild was rejected once and redone; these fixes are now the floor for every
-comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terrier-guide/index.astro`.
+These are the floor for every comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terrier-guide/index.astro`.
 
 1. **Hero** — full-bleed band (background spans viewport, content in `.container`), homepage height
    (~380–480px desktop), copy LEFT / two staggered OG puppy portraits CENTER-RIGHT with a small `vs`
@@ -205,81 +204,71 @@ comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terr
     return PASS/PASS-WITH-WARNINGS; the old `no_userselect_none` site-wide FAIL was a Tailwind
     `.select-none` false positive, fixed in the auditor.
 
-## 12. Final Polish-Pass Fixes (2026-07-05 — BINDING, from the blue-vs-blue-brindle finishing pass)
+## 12. Polish rules every comparison page keeps
 
-Every comparison page must clear these on its finishing pass, in addition to §11:
+Every comparison page clears these on its finishing pass, in addition to §11:
 
 1. **The counter strip is this page's own (working rule 16).** Its figures are facts from
    `data/*.json` and the page's record — the six pups and their two prices in `data/puppies.json`,
    the deposit and the delivery band in `data/settings.json` — chosen on the page's board, and never
    a set another page shows. No years-in-business figure and no licence figure: neither is on file.
-2. **Responsive infographics (Lighthouse "improve image delivery").** Every 1408×768 `inf-img` ships a
-   `-760.webp` sibling (Pillow LANCZOS, q82) + `srcset="/name-760.webp 760w, /name.webp 1408w"
-   sizes="(max-width:900px) 92vw, 760px"`. Cuts ~40–55% off each (the blue-vs-blue-brindle set went
-   583→327 KiB). The 1408 stays as the retina/desktop candidate; the table stays in the DOM.
-3. **Square OG portraits get a `.portrait` modifier** (`aspect-ratio:1/1;max-width:420px;margin:auto`).
-   Bare `.sec-img` forces 760/400 cover and decapitates square close-ups — always check intrinsic
-   dims; if the file is square/portrait, add `.portrait` and fix the `width`/`height` attrs to match.
-4. **Non-primary data tables stack into cards on phones.** The mobile tab-toggle is ONLY for the main
-   side-by-side table. The 6-trait scorecard (and any other `<table>`) needs `data-label` on each `td`
-   + a `@media(max-width:640px)` block: `thead` offscreen, `tr`→bordered card, `td`→flex row with
-   `::before{content:attr(data-label)}`. Note td stacks column-wise for long text.
-5. **Internal links to the three money/authority hubs, anchored at sentence start (Link-First), from their own sections:**
-   Reviews → `/blue-staffy-uk-breeders/` (Owner Stories), FAQ → `/uk-blue-staffy-puppy-buying-guide/` (FAQ intro),
-   Delivery → `/buy-blue-staffy-puppies-uk/` (delivery body copy).
-6. **Route pills carry a map-pin SVG + bone tint (`#F4F1EA`, = `--color-surface`), `inline-flex`; 2-col centered on
-   mobile** (`.pin` stays `flex:none`). There is no delivery page: the delivery facts are stated on the page itself.
-7. **Reversed head-term + American spelling coverage.** Weave "Blue-Brindle vs Blue" AND "Blue Staffy"
-   (with an *a*) once, naturally, in the Quick-Answer close; add **"What is the difference between…"**
-   and **"How can you tell … apart"** FAQ objects (they feed both FAQPage schema and the open-3
-   featured block). Dedupe against existing copy first — ignore keywords already on the page.
-8. **Do NOT add Partytown for GA.** Diagnose Lighthouse's `unused JavaScript` (`/70de/`), `forced
+2. **Responsive section images (Lighthouse "improve image delivery").** Every in-body section
+   image, OG photo and infographic alike, renders in the one uniform box and ships as a WebP under
+   100 KB with a `-760.webp` sibling and `srcset`/`sizes`, by the pipeline in `rules/images.md`
+   ("Uniform in-body image sizing"). An image never replaces a table: the real table stays in the DOM.
+3. **Every table is `DataTable`, and it stacks on phones (working rule 13).** Below 640px each row
+   becomes a card and each cell prints its column name from `data-label` (`.stack-table` in
+   `src/styles/global.css`); the component writes the labels and the stacking cannot be switched
+   off. Its three board styles are the `chrome` layout axis (`ruled` / `zebra` / `brass`), never a prop.
+4. **Internal links follow the "Links" list in `docs/reference/location-page-template.md`**,
+   anchored at sentence start (Link-First), each from the section it serves. There is no delivery
+   page and no pricing page: the delivery and price facts are stated on the page itself.
+5. **Reversed head-term coverage.** Weave the reversed head term (`<rival> vs blue Staffy` as well
+   as `blue Staffy vs <rival>`) once, naturally, in the Quick-Answer close, and carry the
+   **"What is the difference between…"** and **"How can you tell … apart"** phrasings as FAQ H3s
+   where the question file's pool has them. Dedupe against existing copy first — ignore keywords
+   already on the page.
+6. **Do NOT add Partytown for GA.** Diagnose Lighthouse's `unused JavaScript` (`/70de/`), `forced
    reflow` and `missing source maps` flags with `.claude/skills/bsuk-perf-gate/SKILL.md`: `/70de/` is
    the Google tag gateway, not a file in `src/`. There is no host to configure until project 6;
    note the flag in the page's fix log.
 
-## §13 Component Polish Contract (2026-07-12 breeder pass — binding on every spoke, new or rebuilt)
+## 13. Kit rules every comparison page keeps
 
-Every fix below came from a breeder complaint on the live cluster (CvM screenshot session). They are
-now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patterns, never the older ones.
+These hold on every comparison page, alongside §11 and §12.
 
-1. **NEVER `scroll-behavior:smooth` on `html`.** On 60k-px comparison pages Chrome cancels the smooth
-   fragment scroll at frame zero (lazy-image layout shifts), so every jump-rail tap looks dead: hash
-   updates, page never moves. `scrollIntoView`/`scrollTo` still work, which misdirects debugging.
-   Homepage baseline is `auto`; `scroll-margin-top` on targets does the offset work. Diagnostic: set
-   `document.documentElement.style.scrollBehavior='auto'` and re-tap — if it jumps, that was the bug.
-2. **Jump rail must be sticky — never re-`position` it.** `.cvt-rail{position:sticky;top:var(--hdr)}`
-   is the contract. Adding `position:relative` later (e.g. "for the ::after fade gradient") silently
-   kills sticky — a sticky element is already a containing block for absolute children. CvM shipped
-   broken this way while its 3 siblings worked.
-3. **Counter snippet = slim inline credential STRIP, not the hero-metric template.** The old design
-   (40px circle icon chips + 2.1–2.2rem serif numbers + uppercase tracked labels + 4 stacked columns)
-   is the exact "big number, small label" cliché DESIGN.md bans, and it rendered ~330px tall on
-   phones. The shipped pattern: no icon chips at all; number and sentence-case label inline on one
-   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` in the display face
-   (Fraunces via `--font-display`, the project-3 token — not a hard-coded family) on desktop /
-   `1.2rem` tablet / `1.1rem` phone; labels `.8rem`→`.74rem` `font-weight:500`, NO uppercase, NO
-   letter-spacing games; desktop one flex row with `1px rgba(255,255,255,.18)` hairline dividers (~54px
-   band), ≤900px a 2×2 grid (~115–140px). Content stays page-specific per §12-1.
-4. **`.container` eats vertical padding — pad the SECTION.** `.cvt .container` sets
-   `padding:0 clamp(16px,4vw,48px)` at higher specificity, so `padding-top/bottom` on any
-   `.container counter-row`-style element computes to 0 (the old counter never had its intended
-   padding — that was the "rushed" look). Put band padding on the section: `.cvt-counter{padding:14px
-   0}` desktop, `9px 0` mobile.
-5. **Hero eyebrow (prefix) is UNIQUE per spoke, drawn from the page's own premise.** Never reuse the
-   "Home-raised · LICENCE_CLAIM_PLACEHOLDER-documented · Carlisle" trust string across spokes — trust tokens live in
-   the hero-meta pills. A new spoke writes its own from the
-   comparison premise; duplicate eyebrows across siblings FAIL the pass.
-6. **Section dividers are `SectionDivider`** (`inverse` on a dark band) — the kit's own mark, never
+1. **NEVER `scroll-behavior:smooth` on `html`.** `src/styles/global.css` sets
+   `html { scroll-behavior: auto }`; never override it. On a long page Chrome cancels a smooth
+   fragment scroll at frame zero (lazy-image layout shifts), so every jump link looks dead: the hash
+   updates and the page never moves, while `scrollIntoView`/`scrollTo` still work, which misdirects
+   debugging. The landing offset is the global `[id] { scroll-margin-top }` rule; nothing re-states
+   it. Diagnostic: set `document.documentElement.style.scrollBehavior='auto'` and re-tap — if it
+   jumps, that was the bug.
+2. **The in-page nav is the kit's, never a hand-rolled rail.** `PageShell` mounts it from the
+   page's `sections` (six or more): `SectionStrip` pinned under the header and `SectionSheet`
+   behind the bottom bar below 1024px, `PageDial` at 1024px and above, and `PageNav`'s chip row
+   once, below the hero (not sticky). Never add `position` to a sticky kit element: a sticky
+   element is already a containing block for absolute children, and `position:relative` silently
+   kills sticky.
+3. **The counter is `CounterStrip`, never a hand-built stat block.** The page hands it its own
+   `stats` (§12 item 1); the board picks how they are drawn (`tiles`, `label`) from the three
+   styles `COUNTER_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`) gives a comparison page, which
+   is the `interior-guide` layout. No icon chips, no uppercase or letter-spaced labels. Band
+   padding goes on the section, never on a `container` (the `container` utility in
+   `src/styles/global.css` sets only `padding-inline`); colours and type are the tokens in
+   `src/styles/tokens.css`, never a hex value.
+4. **The hero eyebrow is UNIQUE per page, drawn from the page's own premise.** Never reuse one
+   trust string across comparison pages; trust tokens belong in the `Hero` `chips`. Duplicate
+   eyebrows across comparison pages FAIL the pass.
+5. **Section dividers are `SectionDivider`** (`inverse` on a dark band) — the kit's own mark, never
    a logo file cropped into a circle.
-7. **One newsletter, as on the location pages:** `InfoCard kind="recommendation" label="Newsletter"`
+6. **One newsletter, as on the location pages:** `InfoCard kind="recommendation" label="Newsletter"`
    with `id="newsletter"`; there is no newsletter component with variants. Its heading stays below
-   the page H1 at every width (item 8).
-8. **H1 must outrank every H2 at EVERY width, including one-off hero H1 classes.** The
-   breeders-comparison `bc-h1` clamp `(1.8rem, 3.5vw, 2.75rem)` sat on its floor through the whole
-   375–860px band underneath a static 36px CTA H2. Fixed form: `clamp(1.9rem, 0.5rem + 4.5vw,
-   2.75rem)`. Sweep rule: resolve the clamp at 375/640/768/860/1280 and compare against the largest
-   H2 (usually the CTA/newsletter component) before delivery.
-9. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walk quality
-   78→54 until <95KB (LICENCE_CLAIM_PLACEHOLDER-flatlay 101→94KB q66, vs-french bulldog-hero 122→89KB q66 — certificate text
-   still crisp). Masters for comparison imagery live under `src/assets/` when created (project 5); puppy masters are `src/assets/puppies/`.
+   the page H1 at every width (item 7).
+7. **H1 must outrank every H2 at EVERY width.** Sweep rule: resolve the H1's `clamp()` at
+   375/640/768/860/1280 and compare it against the largest H2 (usually the CTA or newsletter
+   heading) before delivery. No render check measures this, so the sweep is the gate.
+8. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walking
+   quality down until the file is under 95 KB (the `rules/images.md` pipeline), and check that any
+   certificate text stays crisp. Masters for comparison imagery live under `src/assets/` when
+   created (project 5); puppy masters are `src/assets/puppies/`.
