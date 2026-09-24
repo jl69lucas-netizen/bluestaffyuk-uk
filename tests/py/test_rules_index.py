@@ -331,9 +331,8 @@ def test_there_are_skills_to_check():
 # live in `docs/superpowers/sessions/`; pages in `src/pages/` and, built, in `dist/`.
 # Scope: every non-vendored skill, every command and every agent: one guard for the three
 # trees a session loads as instructions. The agents joined on 2026-09-23 for the `sessions/`
-# root (Known Issue 56's agent half: 84 lines in 33 agents named it). `site/content` still
-# sits in three agents' WordPress-era recipes, so AGENT_ROOTS widens to every root in the
-# task that clears them.
+# root (Known Issue 56's agent half: 84 lines in 33 agents named it), and for every other
+# root once the WordPress-era recipes that named `site/content` were gone.
 DEAD_ROOTS = (
     ("bare `sessions/` (use `docs/superpowers/sessions/`)", re.compile(r"(?<![\w/.-])sessions/")),
     ("`site/content` (pages are `src/pages/`, built `dist/`)", re.compile(r"\bsite/content\b")),
@@ -342,7 +341,7 @@ DEAD_ROOTS = (
      re.compile(r"(?<![\w/.-])content/(?:social|prompts)/")),
 )
 COMMANDS_DIR = ROOT / ".claude/commands"
-AGENT_ROOTS = DEAD_ROOTS[:1]
+AGENT_ROOTS = DEAD_ROOTS
 ROOTS_FOR = {**{p: DEAD_ROOTS for p in INSTRUCTION_SKILLS + sorted(COMMANDS_DIR.rglob("*.md"))},
              **{p: AGENT_ROOTS for p in sorted(AGENTS_DIR.glob("bsuk-*.md"))}}
 

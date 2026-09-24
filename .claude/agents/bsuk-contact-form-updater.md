@@ -33,7 +33,7 @@ No form collects payment details — deposits happen after we talk, never throug
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/credentials.md` — payment method and form endpoint (when finalized)
-2. **Read** `docs/reference/design-system.md` — form styling tokens (not ported — source repo only)
+2. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Single page audit, full-site form audit, or add new form to a page?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---

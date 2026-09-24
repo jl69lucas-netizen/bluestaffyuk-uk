@@ -36,16 +36,13 @@ Hubs are short relative to spoke pages — typically 800–1,500 words. They don
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` (not ported — source repo only)
+1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md`
 3. **Read** `data/locations.json` — for location hub (all live cities)
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which hub — Comparison, Breed, Location, Documentation, or new?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
-5. Check existing hub pages:
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which hub — Location, Puppy, Guides or Breed guide?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+5. Check the hub pages after `npm run build`:
 ```bash
-ls dist/blue-staffy-uk-breeders/ 2>/dev/null
-ls dist/available-puppies/ 2>/dev/null
-ls dist/uk-staffordshire-bull-terrier-guide/ 2>/dev/null
-ls dist/blue-staffy-breeder-standing/ 2>/dev/null
+ls dist/uk-locations/index.html dist/available-puppies/index.html dist/blue-staffy-blog-guides/index.html dist/uk-staffordshire-bull-terrier-guide/index.html
 ```
 
 ---
@@ -54,49 +51,13 @@ ls dist/blue-staffy-breeder-standing/ 2>/dev/null
 
 | Hub | URL | Spokes |
 |-----|-----|--------|
-| Location Hub | `/available-puppies/` | 22 city pages (from data/locations.json) |
-| Comparison Hub | `/blue-staffy-uk-breeders/` | Blue Staffy vs blue and white Staffy, vs American Bully, vs French Bulldog, etc. |
-| Breed Hub | `/uk-staffordshire-bull-terrier-guide/` | care, health, training, training spokes |
-| Documentation Hub | `/blue-staffy-breeder-standing/` | LICENCE_CLAIM_PLACEHOLDER guide, LICENCE_CLAIM_PLACEHOLDER, vet health check spokes |
+| Location hub | `/uk-locations/` (`src/pages/uk-locations/index.astro`) | the 28 rows of `data/locations.json` |
+| National location page | `/uk-locations/blue-staffy-puppies-uk/` | every city page (the project-5 strategy's hub row) |
+| Puppy hub | `/available-puppies/` | the six puppy pages from `data/puppies.json` |
+| Guides hub | `/blue-staffy-blog-guides/` | the guide pages and posts; the strategy routes new guides here |
+| Breed guide | `/uk-staffordshire-bull-terrier-guide/` | `/blue-staffy-health-uk/`, `/uk-blue-staffy-puppy-buying-guide/`, `/blue-staffy-pup-sale-uk/` |
 
----
-
-## Hub Pages to Manage
-
-### 1. Location Hub — `/available-puppies/`
-**Purpose:** Index of all city location pages
-**Spokes:** All 22 live cities from `data/locations.json` where `"live": true`
-
-### 2. Comparison Hub — `/blue-staffy-uk-breeders/`
-**Purpose:** Index of all puppy comparison pages
-**Spokes:**
-- `/blue-staffy-uk-breeders/`
-- `/blue-staffy-vs-American Bully/`
-- `/blue-staffy-vs-French Bulldog/`
-- `/blue-staffy-uk-breeders/`
-- `/blue-staffy-uk-breeders/`
-- `/blue-staffy-uk-breeders/`
-
-### 3. Breed Hub — `/uk-staffordshire-bull-terrier-guide/`
-**Purpose:** Index of all care, health, and training pages
-**Spokes:**
-- `/blue-staffy-health-uk/`
-- `/uk-staffordshire-bull-terrier-guide/`
-- `/available-puppies/`
-- `/uk-staffordshire-bull-terrier-guide/`
-- `/blue-staffy-health-uk/`
-- `/blue-staffy-health-uk/`
-
-### 4. Documentation Hub — `/blue-staffy-breeder-standing/` (route name PROPOSED)
-**Purpose:** Index of all LICENCE_CLAIM_PLACEHOLDER, legal, and certification content
-**Spokes:**
-- `/home-raised-blue-staffy/`
-- `/blue-staffy-breeder-standing/`
-- `/available-puppies/`
-- `/blue-staffy-health-uk/`
-
-### 5. New Hub (on demand)
-**Ask user for:** hub topic, list of spoke pages, H1, slug
+There is no comparison hub yet: the comparison pages and their hub are project 5's, at the URLs its strategy gives them. `/blue-staffy-uk-breeders/` is the About page, not a hub. A new hub is built only when the strategy names it.
 
 ---
 
@@ -136,7 +97,7 @@ When a new spoke page is built (e.g., new comparison page or new city), update t
 1. Read the hub's content file
 2. Add a new spoke card to section 3
 3. Add the new URL to the jump nav in section 2
-4. Update the sitemap entry for the hub (`<lastmod>` date)
+4. `npm run build` regenerates the sitemaps and the page dates; never hand-edit either
 5. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
 ---
 
@@ -144,7 +105,7 @@ When a new spoke page is built (e.g., new comparison page or new city), update t
 
 1. Confirm which hub with user
 2. Read existing hub page (if rebuilding)
-3. Pull spoke list from data/locations.json (for location hub) or dist/ directory (for comparison hub)
+3. Pull the spoke list from `data/locations.json` (location hub) or `data/page-map.json` (any other hub)
 4. Build one section at a time — show → approve → stage
 5. After all approved → assemble → write to hub content file
 6. Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
@@ -157,7 +118,7 @@ When a new spoke page is built (e.g., new comparison page or new city), update t
 3. **FAQ schema required** — even on hub pages
 4. **Update hubs when spokes are added** — hub is stale if it doesn't list all live spokes
 5. **H1 and canonical are sacred** on existing hub pages
-6. **Location hub reads data/locations.json** — only list cities where `"live": true`
+6. **Location hub reads data/locations.json** — every row is linked, the noindex stubs included (Known Issue 6)
 
 ---
 

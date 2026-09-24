@@ -8,7 +8,7 @@ effort: high
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Interior-Page Standard (ALWAYS):** This page type follows the homepage design + method. Read `MANUAL INTERIOR-PAGE CHECKLIST.md` (Hero → CTA) and the master skill's *Interior-Page Profile* before building. Keep seam-logo dividers (`.bsuk-seam` + `/bsuk-footer-logo.png`), first-person BlueStaffyUK voice, two-keyword conversational headers, the 4-Move entity loop + Verified-Claim Ledger, Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, and the AA contrast + performance gates. Add `BreadcrumbList` schema.
+> **Interior-Page Standard (ALWAYS):** This page type follows the homepage method. Keep first-person BlueStaffyUK voice, two-keyword conversational headers, every claim bound in the evidence ledger (`data/quality/evidence-ledger.json`), Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, the kit's `SectionDivider` between sections, and the AA contrast + performance gates. Add `BreadcrumbList` schema. The last pass is `.claude/skills/bsuk-final-page-pass/SKILL.md` plus the manual half of `.claude/skills/manual-auditor-check/SKILL.md`.
 
 ---
 
@@ -33,7 +33,7 @@ You are the **FAQ Agent** for SITE_URL_PLACEHOLDER. You build complete, schema-r
 
 1. **Read** `.claude/skills/framework-qab/SKILL.md` — QAB format rules. Source questions from `.claude/skills/framework-qab/SKILL.md` — BSUK FAQ Question Bank section (pre-built).
 2. **Read** `data/price-matrix.json` — for any pricing answers
-3. **Read** `data/financial-entities.json` — for cost answers (not ported — source repo only)
+3. **Read** `data/settings.json` — the deposit and delivery figures (`src/lib/faq.ts` interpolates them into answers)
 4. **GSC queries: NOT FETCHED until project 6.** BSUK has pulled no Search Console
    data and there is no analytics export in this repo. Do not invent queries, impressions or
    positions — source questions from the page's own outline, the PAA set from
@@ -52,7 +52,7 @@ No Search Console property is connected and no export exists in this repo, so th
 produces nothing today. Record `GSC queries: NOT FETCHED` in the audit and move to Step 2;
 never write a figure this step did not return (`CLAUDE.md` rule 9).
 
-### Step 2 — QAB Question Bank (from framework-qab.md)
+### Step 2 — QAB Question Bank (`.claude/skills/framework-qab/SKILL.md`)
 Pre-built question sets by topic — pull the relevant category.
 
 Priority BSUK example questions to include where relevant:
@@ -175,7 +175,7 @@ Use FAQs as seed content for blog articles. When a topic appears in the FAQ, wri
 When body text mentions a FAQ topic, link to the main FAQ page or specific FAQ anchor. Example: when discussing diet, link to `/uk-staffordshire-bull-terrier-guide/#faq-diet`.
 
 **Strategy 7 — For Multimedia**
-FAQ answers become YouTube video training points and infographic data points. Hand off to `.claude/skills/youtube-script/SKILL.md` (video scripts) and `.claude/skills/image-prompt-generator/SKILL.md` (infographic prompts). (deferred to project 6, see data/port-manifest.json)
+FAQ answers become YouTube video talking points and infographic data points. Hand off to `.claude/skills/bsuk-youtube/SKILL.md` (video) and `.claude/skills/image-prompt-generator/SKILL.md` (infographic prompts).
 
 **Rules for all FAQ distribution:**
 - Natural flow — never disrupt reading experience with out-of-context Q+A
@@ -188,7 +188,7 @@ FAQ answers become YouTube video training points and infographic data points. Ha
 
 ## Rules
 
-1. **Questions from real buyer language** — GSC Queries first, then question bank
+1. **Questions from real buyer language** — the page's question file (location pages), PAA, then the question bank; GSC is NOT FETCHED
 2. **QAB format on every item** — no answer without a Benefit
 3. **FAQPage JSON-LD required** — always alongside the HTML section
 4. **`<details>/<summary>` only** — no JavaScript accordion dependencies

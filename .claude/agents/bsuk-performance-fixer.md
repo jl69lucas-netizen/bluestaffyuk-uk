@@ -24,7 +24,7 @@ You apply the proven Lighthouse Performance fixes to BSUK pages — render-block
 
 ## On Startup — Read These First
 
-1. **Read** `CLAUDE.md` → Known Issues + the page-width/perf notes.
+1. **Read** the Known Issues in `docs/reference/session-log.md` (23, 24, 30 and 38 are the page-weight, font, hero and video ones) and `rules/design.md`.
 2. **Confirm** the target page is built (`npm run build`); make every fix in `src/`, rebuild, and re-measure `dist/`.
 3. **Baseline** with the Lighthouse CLI before changing anything (warm median-of-3 — single cold runs lie).
 

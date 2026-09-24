@@ -34,9 +34,9 @@ You never write without a Content Brief from bsuk-content-architect. If no brief
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/seo-rules.md` — especially Rules 55-62
-2. **Read** `docs/reference/design-system.md` (not ported — source repo only)
+2. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 3. **Read** `data/price-matrix.json` — for any pricing references
-4. **Read** `data/image-specs.json` — confirms image placement per page type (hero, infographics, OG) (not ported — source repo only)
+4. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
 5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Share the content brief from bsuk-content-architect, or tell me: page slug, target keyword, framework, reader profile, and section to write." If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 6. **Outline Approval Gate (Rule 51 — MANDATORY):** Before writing any section, confirm that a Page Outline has been produced AND explicitly approved by the user for this page. The outline must include the H1–H6 heading tree, keyword distribution table, special elements plan, and competitor snapshot. If no approved outline exists: STOP. Produce the outline using the format from bsuk-content-audit-agent Phase 0. Wait for explicit user approval ("Approved", "Continue", or changes). Only then proceed to section writing.
 

@@ -23,7 +23,7 @@ Always city the routing decision first: "Routing to [tier] because [signal]."
 
 **How to dispatch (2026-09-07):** delegation is the `Agent` tool — one call per page / city / audit dimension, all independent calls in a single message so they run in parallel. The tier names the `effort` the child should run at; the model is always the session's (`model: inherit`). There is no `CLAUDE_CODE_FORK_SUBAGENT` environment variable and never was. For 10+ jobs, ask the breeder ONCE whether to run them as a Workflow (opt-in only; they must say "use a workflow"); otherwise fan out with `Agent` in batches of ≤10.
 
-Tier definitions live in `data/agent-registry.json` (`tier_max` / `tier_high` / `tier_medium`); `python3 scripts/route.py "<task>"` prints the tier for any task string.
+Tier definitions live in `data/agent-registry.json` (`tier_max` / `tier_high` / `tier_medium`); the source repo's routing script was not carried over, so classify each task by hand against that file.
 
 ---
 
@@ -50,13 +50,13 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 1. **Read** `docs/reference/site-overview.md` — deploy flow and page inventory (not ported — source repo only)
 2. **Read** `data/locations.json` — for location batch jobs
-3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which batch mode — Location Batch (22 cities), Site Rebuild Batch (all pages), Image Metadata Batch, or Section Build Batch (one page, parallel tracks)?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which batch mode — Location Batch (28 location rows), Site Rebuild Batch (all pages), Image Metadata Batch, or Section Build Batch (one page, parallel tracks)?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
-**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write city between children — each child writes to its own `src/pages/<slug>/` directory. The parent tracks completion in the batch manifest, `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
+**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write target between children — each child writes only its own page's files (a rebuilt city page's output path is set by the project-5 plan, Known Issue 39). The parent tracks completion in the batch manifest, `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
 
 **4 batch modes:**
-- **Location Batch** — one subagent per city in `data/locations.json` where `"live": false`; delegates to `@bsuk-location-builder`
-- **Site Rebuild Batch** — one subagent per page in `docs/reference/page-inventory.md`; delegates to page specialist (not ported — source repo only)
+- **Location Batch** — one subagent per city the project-5 plan names from `data/locations.json` (17 rows are `noindex` stubs, Known Issue 6); delegates to `@bsuk-location-builder`
+- **Site Rebuild Batch** — one subagent per page in `data/page-map.json`; delegates to the page specialist
 - **Image Metadata Batch** — one subagent per image directory; delegates to `@bsuk-image-pipeline`
 - **Section Build Batch** — parallel section agents for one page; delegates to `@bsuk-section-builder`
 
@@ -66,12 +66,12 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 For batches of 3+ pages, dispatch every page in ONE message: one `Agent` call per page, each with its specialist as `subagent_type`. Independent calls in the same message run concurrently. Batches over 10 are split into sequential rounds of 10.
 
-**Workflow tool (opt-in only):** for the 22-city location batch or a 30-competitor sweep, a deterministic Workflow script is the better shape, but it may only run when the breeder asks for it in their own words ("use a workflow"). Ask once; if they decline, fan out with `Agent`.
+**Workflow tool (opt-in only):** for the 28-row location batch or a sweep of every entry in `data/competitors.json`, a deterministic Workflow script is the better shape, but it may only run when the breeder asks for it in their own words ("use a workflow"). Ask once; if they decline, fan out with `Agent`.
 
 **When to dispatch in parallel:**
 - 3+ location pages simultaneously
 - Full comparison cluster (all comparison pages at once)
-- Documentation cluster (all LICENCE_CLAIM_PLACEHOLDER/certification pages in one batch)
+- Guides cluster (the guide pages the strategy names)
 - Full site audit (footer + contact form across all pages)
 
 ---

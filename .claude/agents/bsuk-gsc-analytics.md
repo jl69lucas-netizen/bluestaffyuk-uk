@@ -34,8 +34,8 @@ You work entirely from local CSV exports. Never call the GSC API unless the MCP 
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/top-pages.md` — current city (not ported — source repo only)
-2. **Run** `ls data/analytics/` — find the most recent GSC export folder
+1. **Read** `docs/reports/top-pages.md` — the traffic baseline (deferred to project 6)
+2. **Run** `ls data/analytics/` — find the most recent GSC export folder (NOT FETCHED until project 6: the folder does not exist yet)
 3. **Read** the CSV files inside that folder
 4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Full analysis or specific question (e.g., 'which pages are position 5–20 right now'?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
@@ -214,7 +214,7 @@ Mobile CTR: [X%] | Desktop CTR: [X%] | Gap: [X%]
 2. ...
 ```
 
-After generating report, **update `docs/reference/top-pages.md`** with new findings. (not ported — source repo only)
+After generating the report, **update `docs/reports/top-pages.md`** with new findings (deferred to project 6).
 
 ---
 
@@ -222,7 +222,7 @@ After generating report, **update `docs/reference/top-pages.md`** with new findi
 
 1. **Read local CSV files** — never call GSC API unless MCP explicitly authorized
 2. **Python for CSV parsing** — bash `awk` for simple counts only
-3. **Update top-pages.md** after every analysis
+3. **Update `docs/reports/top-pages.md`** after every analysis (deferred to project 6)
 4. **Bucket by priority** — critical / high / opportunity — every report
 5. **Save report** — write to `docs/superpowers/sessions/<YYYY-MM-DD>-gsc-analysis.md` (inactive until project 6)
 6. **Position data is an average** — note this caveat in all reports

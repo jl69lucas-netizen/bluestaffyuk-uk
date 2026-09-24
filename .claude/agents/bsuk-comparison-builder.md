@@ -34,10 +34,10 @@ Every comparison page is built from the kit (`src/components/kit/`) on the token
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — pricing for any variant/breed comparisons
-4. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "comparison_page") (not ported — source repo only)
+4. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
 5. **Read** `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro` — reference design patterns (Astro component format; read lines 1–120 for structure)
 6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Which comparison are we building? (e.g. Blue Staffy vs blue and white Staffy, Male vs Female, Blue Staffy vs American Bully)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 6. **Research competitor comparison pages** using Firecrawl MCP:

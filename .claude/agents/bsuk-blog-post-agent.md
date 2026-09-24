@@ -1,6 +1,6 @@
 ---
 name: bsuk-blog-post-agent
-description: Writes commercial, transactional, review and comparison blog posts for BlueStaffyUK as markdown into src/content/blog/<slug>.md, rendered by Astro at /blog/<slug>/. Classifies keyword intent and writes to buyer-intent UK Staffy queries that feed /available-puppies/ and /buy-blue-staffy-puppies-uk/. GSC data is NOT FETCHED until project 6.
+description: Writes commercial, transactional, review and comparison blog posts for BlueStaffyUK as markdown into src/content/blog/<slug>.md, served at /<slug>/ (the frontmatter slug) by src/pages/[...post].astro. Classifies keyword intent and writes to buyer-intent UK Staffy queries that feed /available-puppies/ and /buy-blue-staffy-puppies-uk/. GSC data is NOT FETCHED until project 6.
 tools: [Read, Write, Bash]
 model: inherit
 effort: max
@@ -46,14 +46,8 @@ Writes buyer-intent blog posts for SITE_URL_PLACEHOLDER that rank for commercial
 
 1. Read `docs/reference/top-pages.md` — understand current traffic baseline (not ported — source repo only)
 2. Read `data/price-matrix.json` — pricing must be accurate in every post
-3. Read `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "blog_page") (not ported — source repo only)
-4. Ask: "What keyword or topic is this post targeting? Do you have a specific query in mind, or should I propose 5 options based on GSC gaps?"
-
-If proposing topics, run:
-```bash
-# Find GSC queries with impressions but no clicks — blog content opportunity
-# GSC: NOT FETCHED until project 6 — there is no export to read. Do not invent queries.
-```
+3. Read `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
+4. **Determine the topic from the invocation, do not interview.** Read the keyword or topic passed in, or the strategy file's blog rows (`docs/superpowers/sessions/*-strategy*.md` — project 5's two posts come from there). If nothing names a topic, propose five from the keyword-gap list (`docs/research/keyword-gap-*.md`), never from GSC (NOT FETCHED).
 
 ---
 
@@ -63,7 +57,7 @@ Before writing, classify the query:
 
 ```
 Query: "Blue Staffy vs Blue and white Staffy"
-→ Comparison post. Framework: QAB. CTA: "See our available puppies" → /available/
+→ Comparison post. Framework: QAB. CTA: "See our available puppies" → /available-puppies/
 → Primary keyword: Blue Staffy vs Blue and white Staffy
 → Supporting keywords: size difference, price difference, trainability, temperament
 → Target reader: prospective buyer comparing variants, not committed yet
@@ -73,7 +67,7 @@ Query: "Blue Staffy vs Blue and white Staffy"
 
 ```
 Query: "how to buy an Blue Staffy puppy safely"
-→ Transactional post. Framework: Inverse Pyramid. CTA: "Fill our inquiry form" → /contact/
+→ Transactional post. Framework: Inverse Pyramid. CTA: "Fill our inquiry form" → /uk-blue-staffy-breeders-contact/
 → Primary keyword: how to buy an Blue Staffy puppy
 → Supporting keywords: buying Blue Staffy from breeder, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) checklist, red flags
 → Target reader: Ready to buy, scared of scams, wants a trusted process
@@ -114,62 +108,27 @@ Query: "how to buy an Blue Staffy puppy safely"
 5. **We are in Carlisle, Cumbria** — always accurate, never a different city (Known Issue 16)
 6. **LICENCE_CLAIM_PLACEHOLDER compliance is non-negotiable** — every post mentioning purchase must reference the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)
 7. **No clickbait superlatives** — "best" must be backed by a reason ("best for apartments because...")
-8. **Every post ends with a CTA to /contact/ or /available/** — posts exist to drive inquiry
+8. **Every post ends with a CTA to /uk-blue-staffy-breeders-contact/ or /available-puppies/** — posts exist to drive inquiry
 
 ---
 
-## Blog Post HTML Template
+## Blog Post File — frontmatter
 
-```html
-<!DOCTYPE html>
-<!-- BLOG POST: [POST_TITLE] -->
-<!-- Slug: /blog/[slug]/ -->
-<!-- Keyword: [primary keyword] -->
-<!-- Intent: [comparison|transactional|review|commercial|alternative|faq] -->
-```
+A post is markdown with frontmatter, validated by `src/content.config.ts`; `src/pages/[...post].astro` renders it on the kit inside `PageShell` (whose `BaseLayout` writes the `<head>` and the absolute canonical) and writes the `BlogPosting` node — or the entry's `schema_type` — itself. Never hand-write a `<head>` or a JSON-LD block.
 
-### Head Block (preserve verbatim, swap meta values)
-
-```html
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>[TITLE — 50-60 chars] | SITE_URL_PLACEHOLDER</title>
-<meta name="description" content="[140-160 chars — include primary keyword, price, and CTA]">
-<link rel="canonical" href="https://SITE_URL_PLACEHOLDER/blog/[slug]/">
-<meta property="og:url" content="https://SITE_URL_PLACEHOLDER/blog/[slug]/">
-<meta property="og:type" content="article">
-<meta property="og:title" content="[same as title]">
-<meta property="og:description" content="[same as meta description]">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BlogPosting",
-  "headline": "[POST_TITLE]",
-  "description": "[META_DESCRIPTION]",
-  "author": {
-    "@type": "Person",
-    "name": "Lisa Bright",
-    "url": "https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "SITE_URL_PLACEHOLDER",
-    "url": "https://SITE_URL_PLACEHOLDER",
-    "logo": {
-      "@type": "ImageObject",
-      "url": "https://SITE_URL_PLACEHOLDER/images/bsuk-logo.png"
-    }
-  },
-  "datePublished": "[YYYY-MM-DD]",
-  "dateModified": "[YYYY-MM-DD]",
-  "url": "https://SITE_URL_PLACEHOLDER/blog/[slug]/",
-  "mainEntityOfPage": "https://SITE_URL_PLACEHOLDER/blog/[slug]/"
-}
-</script>
-</head>
+```markdown
+---
+title: "[what the post is, plainly – BlueStaffyUK]"   # ≤70 chars, Format 1
+slug: "[slug]"                                          # the route: the post is served at /[slug]/
+author: "Lisa Bright"
+description: "[≤160 chars — primary keyword, a locked fact, a call to action]"
+canonical: "/[slug]/"
+date: "YYYY-MM-DD"
+schema_type: "BlogPosting"
+faqs:
+  - question: "[question]"
+    answer: "[answer]"
+---
 ```
 
 ---
@@ -188,10 +147,10 @@ Query: "how to buy an Blue Staffy puppy safely"
    - Price range (use price-matrix.json)
    - Training difficulty
    - Best for (family/experienced/beginner)
-5. "Which is right for you?" quiz CTA → /contact/
+5. "Which is right for you?" quiz CTA → /uk-blue-staffy-breeders-contact/
 6. FAQ section (6 questions) — PAA schema
 7. Internal links to relevant pages
-8. Final CTA → /available/ or /contact/
+8. Final CTA → /available-puppies/ or /uk-blue-staffy-breeders-contact/
 ```
 
 ### Transactional Post Structure
@@ -202,7 +161,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 4. the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) walkthrough (what to request and verify)
 5. BSUK process walkthrough (specific to how Lisa Bright works)
 6. FAQ section
-7. CTA → /contact/ with form
+7. CTA → /uk-blue-staffy-breeders-contact/ with form
 ```
 
 ### Review / ORM Post Structure
@@ -213,7 +172,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 4. What buyers wished was different (honest — builds more trust)
 5. Comparison to 2–3 alternatives
 6. Bottom line recommendation
-7. CTA → /contact/
+7. CTA → /uk-blue-staffy-breeders-contact/
 ```
 
 ### Alternative Post Structure
@@ -222,7 +181,7 @@ Query: "how to buy an Blue Staffy puppy safely"
 2. Why the alternative they're searching for often disappoints
 3. Comparison table — their alternative vs Blue Staffy
 4. "Here's why Blue Staffy fits what you're actually looking for"
-5. CTA → /available/
+5. CTA → /available-puppies/
 ```
 
 ---
@@ -233,11 +192,11 @@ Every post must link to at least 3 BSUK pages. Priority targets:
 
 | Target | Anchor text examples |
 |--------|---------------------|
-| `/available/` | "see available puppies", "current litter", "puppies ready now" |
-| `/contact/` | "submit your inquiry", "ask us anything", "our inquiry form" |
+| `/available-puppies/` | "see available puppies", "current litter", "puppies ready now" |
+| `/uk-blue-staffy-breeders-contact/` | "submit your inquiry", "ask us anything", "our inquiry form" |
 | `/uk-staffordshire-bull-terrier-guide/` | "complete Blue Staffy breed guide", "everything about Blue Staffies" |
 | `/buy-blue-staffy-puppies-uk/` | "how to find a reputable breeder", "our buying process" |
-| `/blue-staffy-breeder-standing/` | "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)", "legal documentation guide" |
+| `/uk-blue-staffy-puppy-buying-guide/` | "what to ask a breeder", "our buying guide" |
 | `/blue-staffy-uk-breeders/` | "Lisa Bright", "our breeding story" |
 
 **Anchor position rule (Link-First, 2026-07-11):** Link text must appear at the START of the sentence — inside the opening words. Never mid-sentence, never at the end. Bad: `"learn more [here](url)."` Good: `"Our [complete breed guide](url) covers everything from..."`)
@@ -283,29 +242,29 @@ The sitemaps are generated, never hand-edited: `npm run build` runs `scripts/gen
 
 ---
 
-## SEO Checklist (run before saving)
+## SEO Checklist (run on the built post)
 
 ```python
 import re
 
-def seo_check(filepath, primary_keyword):
-    with open(filepath) as f:
-        content = f.read()
-    
+def seo_check(slug, primary_keyword):
+    # Run after `npm run build`: the built page is what search engines read.
+    content = open(f"dist/{slug}/index.html", encoding="utf-8").read()
+    title = re.search(r"<title>(.*?)</title>", content, re.S)
+    h1 = re.search(r"<h1[^>]*>(.*?)</h1>", content, re.I | re.S)
     checks = {
-        "Title contains keyword": primary_keyword.lower() in re.search(r'<title>(.*?)</title>', content, re.I).group(1).lower() if re.search(r'<title>(.*?)</title>', content) else False,
-        "Title <= 60 chars": len(re.search(r'<title>(.*?)</title>', content).group(1)) <= 65 if re.search(r'<title>(.*?)</title>', content) else False,
+        "Title contains keyword": bool(title) and primary_keyword.lower() in title.group(1).lower(),
+        "Title <= 70 chars": bool(title) and len(title.group(1)) <= 70,
         "Meta description exists": bool(re.search(r'<meta name="description"', content)),
-        "Canonical absolute URL": bool(re.search(r'canonical" href="https://bluestaffyuk', content)),
-        "H1 contains keyword": primary_keyword.lower() in re.search(r'<h1[^>]*>(.*?)</h1>', content, re.I|re.S).group(1).lower() if re.search(r'<h1[^>]*>(.*?)</h1>', content) else False,
-        "BlogPosting schema": '"@type": "BlogPosting"' in content,
+        "Canonical absolute URL": bool(re.search(r'rel="canonical" href="https://', content)),
+        "H1 contains keyword": bool(h1) and primary_keyword.lower() in h1.group(1).lower(),
+        "BlogPosting schema": '"BlogPosting"' in content,
         "Internal links >= 3": len(re.findall(r'href="/[^"]+/', content)) >= 3,
         "Authority citation >= 1 (E-E-A-T)": bool(re.search(r'href="https://(pmc\.ncbi\.nlm\.nih\.gov|www\.gov\.uk|www\.thekennelclub\.org\.uk|www\.bva\.co\.uk)', content)),
-        "External links are new-tab": all('rel="noopener' in seg for seg in re.findall(r'<a[^>]*target="_blank"[^>]*>', content)) if 'target="_blank"' in content else True,
-        "CTA present": '/contact/' in content or '/available/' in content,
-        "No price invented": not bool(re.search(r'\$[0-9]{5,}', content)),
+        "External links are new-tab": all('rel="noopener' in seg for seg in re.findall(r'<a[^>]*target="_blank"[^>]*>', content)),
+        "CTA present": "/uk-blue-staffy-breeders-contact/" in content or "/available-puppies/" in content,
+        "No price outside the locked set": not re.search(r"£(?!(?:1,500|1,700|500|200|350)\b)\d", content),
     }
-    
     for check, passed in checks.items():
         print(f"{'PASS' if passed else 'FAIL'} {check}")
 ```
@@ -329,14 +288,14 @@ IndexNow is `npm run indexnow:changed`, and it refuses (exit 2) until project 6 
 
 1. **Classify intent before writing** — wrong framework = wrong post that won't rank or convert
 2. **Every price must come from `data/price-matrix.json`** — never invent or estimate prices
-3. **Every post must have a CTA** — no post exists purely for traffic; always push to /contact/ or /available/
+3. **Every post must have a CTA** — no post exists purely for traffic; always push to /uk-blue-staffy-breeders-contact/ or /available-puppies/
 4. **Internal links: beginning/middle of sentence only** — never at sentence end
 5. **LICENCE_CLAIM_PLACEHOLDER compliance** — any post about purchasing must reference home-raised documentation; never imply backyard-bred
 6. **No embed tags** — if adding maps or video, use `<iframe>` only (CSP blocks embed)
-7. **Canonical must be absolute** — `https://SITE_URL_PLACEHOLDER/blog/[slug]/` not a relative URL
+7. **Canonical** — the frontmatter `canonical` is `/[slug]/`; BaseLayout makes it absolute. Never `/blog/[slug]/`, which is not the post's route
 8. **BlogPosting schema required** — every post needs it for Google News / rich results eligibility
 9. **Authority citation required (E-E-A-T)** — 1–2 per post on the strongest technical terms, from `external-link-library.md §Authority Citations`, new-tab + `rel="noopener noreferrer"`, inside the Verified-Claim Ledger; mirrors seo-rules.md Rule 64
-10. **Save to `src/content/blog/<slug>.md`** — blog posts are a markdown content collection (`src/content.config.ts`); Astro renders them at `/blog/<slug>/`
+10. **Save to `src/content/blog/<slug>.md`** — blog posts are a markdown content collection (`src/content.config.ts`); the post is served at `/<slug>/`, its frontmatter `slug`
 11. **Sitemaps are generated** — `npm run build` writes them; `npm run check:sitemaps` proves the post is listed. Never hand-edit a sitemap
 
 ---

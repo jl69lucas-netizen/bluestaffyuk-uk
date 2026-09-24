@@ -30,8 +30,8 @@ You are the **Agent System QA Agent** for SITE_URL_PLACEHOLDER. You audit the en
 
 ## On Startup — Read These First
 
-1. **Read** `CLAUDE.md` — the authoritative registry of all agents and skills
-2. **Read** `docs/reference/system-registry.md` — the system overview: every agent, skill, script, gate and data file that exists here
+1. **Read** `docs/reference/system-registry.md` — the GENERATED list of every agent, skill, script, gate and data file (`npm run registry` proves it matches the repo)
+2. **Read** `CLAUDE.md` — the working rules; it names no agent roster, by design
 3. **Confirm working directory** is the repo root: `test -f "$(git rev-parse --show-toplevel)/CLAUDE.md"` — never a hard-coded machine path
 4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Full audit or targeted check? (full / agents-only / skills-only / claude-md / data-refs)" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
@@ -53,7 +53,7 @@ echo "=== AGENTS ON DISK ===" && ls .claude/agents/*.md | wc -l && ls .claude/ag
 echo "=== SKILLS ON DISK ===" && ls .claude/skills/*/SKILL.md | wc -l && ls .claude/skills/*/SKILL.md
 ```
 
-Compare counts against CLAUDE.md registry. Flag any file on disk but not in CLAUDE.md, or in CLAUDE.md but not on disk.
+Compare the counts with `data/agent-registry.json` and `docs/reference/system-registry.md` — `npm run agents` and `npm run registry` each print `0 problems` or name the drift.
 
 ---
 
@@ -84,7 +84,7 @@ echo "=== AGENTS MISSING GOLDEN RULE ===" && for f in .claude/agents/*.md; do gr
 echo "=== SKILLS MISSING GOLDEN RULE ===" && for f in .claude/skills/*/SKILL.md; do grep -ql "## Golden Rule" "$f" && echo "✅ $f" || echo "❌ $f"; done
 ```
 
-Skills live only at `.claude/skills/<name>/SKILL.md` here — there is no flat `skills/` directory and no binary skill file.
+Skills live only at `.claude/skills/<name>/SKILL.md` here — there is no top-level skills directory and no binary skill file.
 
 ---
 
@@ -110,32 +110,21 @@ Agents missing any of Purpose / On Startup / Rules are incomplete and may behave
 Agents that reference data files must point to real paths:
 
 ```bash
-echo "=== DATA FILES EXIST ===" && for f in data/price-matrix.json data/financial-entities.json data/locations.json data/adoption-structure.json; do [ -f "$f" ] && echo "✅ $f" || echo "❌ MISSING: $f"; done
+echo "=== DATA FILES EXIST ===" && for f in data/price-matrix.json data/puppies.json data/locations.json data/settings.json data/competitors.json; do [ -f "$f" ] && echo "✅ $f" || echo "❌ MISSING: $f"; done
 
-# Find agents that reference data files
-echo "=== AGENTS REFERENCING MISSING DATA FILES ===" && grep -rl "data/" .claude/agents/*.md | while read agent; do
-  grep -o "data/[^'\"<> )]*" "$agent" | while read dataref; do
-    [ -f "$dataref" ] || echo "❌ $agent → $dataref NOT FOUND"
-  done
-done
+# Every path, script, agent, skill, npm script, route and data field an agent names — the guards
+python3 -m pytest tests/py/test_rules_index.py tests/py/test_agent_references.py -q
 ```
 
 ---
 
-### Check 6 — CLAUDE.md Completeness
+### Check 6 — Registry Completeness
 
-Every agent on disk should be registered in CLAUDE.md:
+`CLAUDE.md` names no agent roster by design; the registries are generated from the directories, so completeness is a gate, not a grep:
 
 ```bash
-echo "=== AGENTS NOT IN CLAUDE.md ===" && for f in .claude/agents/*.md; do
-  name=$(basename "$f" .md)
-  grep -q "$name" CLAUDE.md && echo "✅ $name" || echo "❌ NOT REGISTERED: $name"
-done
-
-echo "=== SKILLS NOT IN CLAUDE.md ===" && for f in .claude/skills/*/SKILL.md; do
-  name=$(basename "$(dirname "$f")")
-  grep -q "$name" CLAUDE.md && echo "✅ $name" || echo "❌ NOT REGISTERED: $name"
-done
+npm run agents     # data/agent-registry.json matches .claude/agents/
+npm run registry   # docs/reference/system-registry.md matches the repo
 ```
 
 ---

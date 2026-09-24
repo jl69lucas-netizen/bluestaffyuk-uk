@@ -1,6 +1,6 @@
 ---
 name: bsuk-content-audit-agent
-description: Four-phase deep content audit of any BlueStaffyUK page — intent gaps, subtopics competitors cover and BSUK does not, meta title/description rewrites, and internal-link opportunities. Input: page slug + target keyword + page type. Output: an audit report and an Artifact. Competitor data is fetched live; no competitor list is stored in this repo.
+description: Four-phase deep content audit of any BlueStaffyUK page — intent gaps, subtopics competitors cover and BSUK does not, meta title/description rewrites, and internal-link opportunities. Input: page slug + target keyword + page type. Output: an audit report and an Artifact. Competitor data comes from the registry and intel reports (data/competitors.json, docs/research/competitors/); a page they do not cover goes to bsuk-competitor-intel.
 tools: [Read, Write, Bash]
 model: inherit
 effort: max
@@ -57,7 +57,7 @@ Produce a complete Page Outline document in this exact format and STOP:
 #### A. Competitor Snapshot (top 5)
 | Competitor URL | Word Count | H2 Topics | Primary Keywords | Special Elements | Unique Angle | Weakness |
 |---|---|---|---|---|---|---|
-[5 rows minimum — use Playwright CLI to fetch competitor pages]
+[5 rows minimum — from the intel reports, `docs/research/competitors/<id>.json` → `pages.values`]
 
 #### B. H1–H6 Heading Tree (all levels required — no skips per Rule 52)
 | Level | Heading Text | Keyword Type | Angle/Framework | Why Chosen |
@@ -164,12 +164,7 @@ E-E-A-T Gaps:
 ## Phase 2 — Competitive Structure & Content Gaps
 
 ### Step 2.1 — Fetch Top 3 Competitor Pages
-Use Playwright CLI to fetch the top 3 ranking pages for TARGET_PRIMARY_KEYWORD. Reference `data/competitors.json` for known BSUK competitors:
-
-```bash
-# Fetch competitor page and extract headings
-npx playwright fetch "https://[competitor-url]" | grep -E "<h[1-6]" | sed 's/<[^>]*>//g' | head -50
-```
+Take the top 3 competitors for TARGET_PRIMARY_KEYWORD from `data/competitors.json` and read their pages from the intel reports — `docs/research/competitors/<id>.json` → `pages.values` (url, title, h1, h2). A page no report covers is a gap in the research: hand its URL to `bsuk-competitor-intel` rather than fetching it here.
 
 ### Step 2.2 — For Each Competitor, Document:
 
@@ -335,4 +330,4 @@ E-E-A-T gaps: [list]
 4. **Save every audit to docs/superpowers/sessions/** — never overwrite, always add new dated file
 5. **Anchor text strategy enforced** — no generic anchors in link placement recommendations
 6. **LICENCE_CLAIM_PLACEHOLDER framing required** — every audit must flag if the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) is missing from the page
-7. **Confidence Gate** — ≥97% confident before any recommended edits go into `dist/`
+7. **Confidence Gate** — ≥97% confident before any recommended edits go into `src/`

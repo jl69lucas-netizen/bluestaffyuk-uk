@@ -40,11 +40,11 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 2. **For single page:** Ask for the page slug. Read `dist/<slug>/index.html`.
 3. **For full site audit:** Use batch mode (see below).
 
-> **⚠️ SCOPE — the LIVE site is `src/pages/` + `src/components/` (Astro), NOT `dist/`.** (Confirmed 2026-06-05.) The grep/sed audit commands below were written for the legacy `dist/*.html` export. For real fixes you almost always edit **`src/pages/<slug>/index.astro`** and the **shared components in `src/components/`** (Header, Footer, MobileTabBar, `bsuk-library/JumpRail|Testimonials|SplitFeature|PuppyList`, etc.). One component fix propagates to every page that uses it — verify the rendered result in `dist/` after `npm run build`, never trust source greps for scoped CSS/schema (Astro hashes class selectors + extracts CSS to `dist/_astro/*.css`).
+> **⚠️ SCOPE — the LIVE site is `src/pages/` + `src/components/` (Astro), NOT `dist/`.** (Confirmed 2026-06-05.) The grep/sed audit commands below were written for the legacy `dist/*.html` export. For real fixes you almost always edit **`src/pages/<slug>/index.astro`** and the **shared components in `src/components/`** (`SiteHeader`, `SiteFooter`, `PuppyList`, and the kit in `src/components/kit/`). One component fix propagates to every page that uses it — verify the rendered result in `dist/` after `npm run build`, never trust source greps for scoped CSS/schema (Astro hashes class selectors + extracts CSS to `dist/_astro/*.css`).
 
 ## BSUK-Specific Antipatterns (found in real audits — check these every time)
 
-**A11y-1: SVG inside CSS `content:` (BROKEN icon + run-together text).** `content` only renders plain text — it CANNOT render `<svg>` markup. A rule like `.badge::before { content: '<svg ...></svg> '; }` dumps the raw SVG string (or drops it as invalid) AND, when the separator space lives only in that pseudo-element, adjacent badges run together (e.g. "home-raised from Week 212–16 Week Socialization"). **Fix:** put a real inline `<svg>` in the markup (site convention — see `bsuk-hero-3split.astro`), `stroke="currentColor"` so it inherits the text color (white on dark bands, `--color-brand` on light). Spacing comes from the flex `gap` on the wrapper. Detect: `grep -rn "content: '<svg\|content:\"<svg" src/`. (Fixed on home-raised / home-raised / dna-tested pages, 2026-06-05.)
+**A11y-1: SVG inside CSS `content:` (BROKEN icon + run-together text).** `content` only renders plain text — it CANNOT render `<svg>` markup. A rule like `.badge::before { content: '<svg ...></svg> '; }` dumps the raw SVG string (or drops it as invalid) AND, when the separator space lives only in that pseudo-element, adjacent badges run together (e.g. "home-raised from Week 212–16 Week Socialization"). **Fix:** put a real inline `<svg>` in the markup (site convention — see `src/components/kit/Hero.astro`), `stroke="currentColor"` so it inherits the text color (white on dark bands, `--color-brand` on light). Spacing comes from the flex `gap` on the wrapper. Detect: `grep -rn "content: '<svg\|content:\"<svg" src/`. (Fixed on home-raised / home-raised / dna-tested pages, 2026-06-05.)
 
 **A11y-2: brass as text on a light surface = contrast fail.** `--color-cta` is a fill, not a text colour on light: **2.1:1** on `--color-surface`, **2.4:1** on `--color-surface-raised` — failing at every size, with no darker small-text variant to fall back to. Small readable text on light is `--color-text` (13.9:1) or `--color-brand` (10.4:1). Brass is correct as a fill labelled `--color-cta-ink` (6.8:1) and as an accent on the dark bands (4.9:1 on `--color-surface-inverse`, 6.8:1 on `--color-surface-deep`). Nav links on the steel header → `--color-text-on-inverse` (10.4:1), distinguishing the active one with `underline underline-offset-4 font-semibold`. Any tint (`/15`) dilutes the background — re-measure the pair rather than assuming the token's own ratio still holds.
 
@@ -56,7 +56,7 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 
 **A11y-6: component-rendered `<img>` missing `width`/`height` (CLS audit).** Images passed as props (`src/components/BodyImage.astro`, `src/components/kit/PuppyCard.astro`, `src/components/kit/Hero.astro`, `src/components/PuppyList.astro`) render one shared `<img>` per component; a missing dimension is fixed there, once. Add `width`/`height` matching the CSS box ratio (`object-cover` + `aspect-*`/`w-12 h-12` means attrs won't distort) — e.g. `aspect-square`→`300×300`, `w-12 h-12`→`48×48`, `aspect-[5/4]`→`500×400`.
 
-**A11y-7: a lead-paragraph rule forcing the ink colour onto dark-section paragraphs (DARK-ON-DARK fail).** (Found 2026-06-05; full writeup in MEMORY `reference_contrast_lead_paragraph_trap`.) When `color-contrast` reports a failing `<p>` whose foreground is the body ink (`--color-text`) on a *dark* bg (1.2–1.4:1), it is a lead-line rule `h1+p, h2+p { color: var(--color-text) }` overriding light-text lead paragraphs (newsletter card, dark CTA band). **Such a rule out-specifies Tailwind opacity utilities even without `!important`, so fix every copy of it** — any page-scoped `h2+p{…!important}` as well as the global one. Fix = split size/line-height from colour, and scope the colour with `:not([style*="color"]):not([class*="text-white"])`. The right foreground inside a dark band is `--color-text-on-inverse` (10.4:1 on `--color-surface-inverse`, 14.6:1 on `--color-surface-deep`). Same day: **`MobileTabBar.astro`** (`nav.md:hidden`, 10px labels — a separate component a homepage sweep misses) — its active label must not be brass on light (2.1:1); use `--color-brand` (10.4:1), and lift an inactive `text-stone-400` (2.58:1) to `text-stone-600`.
+**A11y-7: a lead-paragraph rule forcing the ink colour onto dark-section paragraphs (DARK-ON-DARK fail).** (Found in the source repo, 2026-06-05.) When `color-contrast` reports a failing `<p>` whose foreground is the body ink (`--color-text`) on a *dark* bg (1.2–1.4:1), it is a lead-line rule `h1+p, h2+p { color: var(--color-text) }` overriding light-text lead paragraphs (newsletter card, dark CTA band). **Such a rule out-specifies Tailwind opacity utilities even without `!important`, so fix every copy of it** — any page-scoped `h2+p{…!important}` as well as the global one. Fix = split size/line-height from colour, and scope the colour with `:not([style*="color"]):not([class*="text-white"])`. The right foreground inside a dark band is `--color-text-on-inverse` (10.4:1 on `--color-surface-inverse`, 14.6:1 on `--color-surface-deep`). Same day: **the mobile tab bar** (a separate component a homepage sweep misses; here it is `.kit-tabbar` in `src/components/kit/SectionSheet.astro`) — its active label must not be brass on light (2.1:1); use `--color-brand` (10.4:1), and lift an inactive `text-stone-400` (2.58:1) to `text-stone-600`.
 
 ---
 
@@ -92,14 +92,14 @@ Every link must describe its destination.
 For identical links with the same href and visible text, add unique `aria-label`:
 ```html
 <!-- Before -->
-<a href="/contact/">Inquire</a>
+<a href="/uk-blue-staffy-breeders-contact/">Inquire</a>
 ...
-<a href="/contact/">Inquire</a>
+<a href="/uk-blue-staffy-breeders-contact/">Inquire</a>
 
 <!-- After -->
-<a href="/contact/" aria-label="Inquire about this puppy — top of page">Inquire</a>
+<a href="/uk-blue-staffy-breeders-contact/" aria-label="Inquire about this puppy — top of page">Inquire</a>
 ...
-<a href="/contact/" aria-label="Inquire about this puppy — bottom of page">Inquire</a>
+<a href="/uk-blue-staffy-breeders-contact/" aria-label="Inquire about this puppy — bottom of page">Inquire</a>
 ```
 Check: `grep -in "click here\|read more" dist/<slug>/index.html`
 Check duplicates: `grep 'href="[^"]*"' dist/<slug>/index.html | sort | uniq -d | head -5`
@@ -284,22 +284,13 @@ Pages checked: [count]
 
 ## Verification
 
-Run Lighthouse via CLI after applying fixes:
+Run the Lighthouse gate against the build after applying fixes (`npm run build` first):
 ```bash
-npx lighthouse@latest https://SITE_URL_PLACEHOLDER/[slug]/ \
-  --output json \
-  --quiet \
-  --only-categories=accessibility \
-  --chrome-flags="--headless --no-sandbox" \
-  | python3 -c "import json,sys; d=json.load(sys.stdin); score=round(d['categories']['accessibility']['score']*100); print(f'Accessibility: {score}/100'); exit(0 if score>=95 else 1)"
+python3 scripts/perf_audit.py <slug>            # desktop; Accessibility is one of its five categories
+python3 scripts/perf_audit.py <slug> --mobile
 ```
 
-Target: Accessibility 100/100. Minimum acceptable: 95/100.
-
-If npx lighthouse is unavailable, run Playwright screenshot for visual spot-check:
-```bash
-npx playwright@latest screenshot --browser chromium https://SITE_URL_PLACEHOLDER/[slug]/ /tmp/bsuk-a11y-check.png
-```
+Target: Accessibility 100/100. Minimum acceptable: 95/100. The site has no live URL until project 6, so never point Lighthouse at `SITE_URL_PLACEHOLDER`.
 
 ---
 

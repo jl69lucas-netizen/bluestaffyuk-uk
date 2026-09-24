@@ -8,7 +8,7 @@ effort: max
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Interior-Page Standard (ALWAYS):** This page type follows the homepage design + method. Read `MANUAL INTERIOR-PAGE CHECKLIST.md` (Hero → CTA) and the master skill's *Interior-Page Profile* before building. Keep seam-logo dividers (`.bsuk-seam` + `/bsuk-footer-logo.png`), first-person BlueStaffyUK voice, two-keyword conversational headers, the 4-Move entity loop + Verified-Claim Ledger, Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, and the AA contrast + performance gates. Add `BreadcrumbList` schema.
+> **Interior-Page Standard (ALWAYS):** This page type follows the homepage method. Keep first-person BlueStaffyUK voice, two-keyword conversational headers, every claim bound in the evidence ledger (`data/quality/evidence-ledger.json`), Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, the kit's `SectionDivider` between sections, and the AA contrast + performance gates. Add `BreadcrumbList` schema. The last pass is `.claude/skills/bsuk-final-page-pass/SKILL.md` plus the manual half of `.claude/skills/manual-auditor-check/SKILL.md`.
 
 ---
 
@@ -35,7 +35,7 @@ You work section-by-section. You never rewrite the full page at once. Each secti
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode prices)
 4. **Read** `data/locations.json` — cities served (for delivery section)
@@ -162,11 +162,11 @@ Build [section type]:
 - Always read `data/price-matrix.json` for BSUK prices
 - Competitor column uses rounded market averages (not specific seller names)
 - Highlight BSUK column in design system primary color
-- Include row: "Health Guarantee" — BSUK: `[DURATION_TBD]` vs Market: varies
+- No guarantee row: the guarantee length is NOT FETCHED (`data/settings.json` `guarantee_days: null`)
 - Include row: "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)" — BSUK: Full package vs Market: varies
 
 ### Section 11 — Delivery Coverage
-- Pull city list from `data/locations.json` — only list cities where `"live": true`
+- Pull the city list from `data/locations.json` — every real city row (the two national "UK" rows and the breeding-dogs page are not cities)
 - Format as a 3-column grid of city badges
 - Each city badge links to its `/uk-locations/<slug>/` page
 - Headline: "UK Home Delivery by DEFRA-approved transport, or Collection in Carlisle"
@@ -176,7 +176,7 @@ Build [section type]:
 - Minimum 8 questions drawn from current page content
 - Always include FAQPage JSON-LD schema block
 - Use `<details>/<summary>` accordion — no JavaScript
-- Required questions: LICENCE_CLAIM_PLACEHOLDER legality, documentation included, Blue Staffy vs blue and white Staffy, deposit process, shipping protocol, health guarantee terms
+- Required questions: the paperwork that goes home with a puppy (`data/faq.json` `whyus-paperwork`), the breeder's licence (LICENCE_CLAIM_PLACEHOLDER until the breeder confirms it), Blue Staffy vs blue and white Staffy, the deposit, collection and delivery
 
 ### Section 14 — Testimonials
 - Use BAB (Before-After-Bridge) format for each story
@@ -207,7 +207,7 @@ git add src/pages/buy-blue-staffy-puppies-uk/ && git commit -m "buy page: rebuil
 urls = ["https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"]
 ```
 
-3. Tell user: "Page live. Check GSC in 72 hours for impression changes."
+3. Tell the user: "Page rebuilt and committed; there is no deploy until project 6."
 
 ---
 

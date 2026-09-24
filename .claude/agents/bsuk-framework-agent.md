@@ -1,6 +1,6 @@
 ---
 name: bsuk-framework-agent
-description: Deep-dives competitor pages for any BlueStaffyUK keyword (UK Staffy puppy, blue Staffy breeder, city queries) and extracts what they do well, what they miss and what BSUK can do better. Reads competitor pages via Firecrawl MCP with a Playwright fallback. Outputs a gap analysis and a differentiation blueprint — no competitor list is stored in this repo.
+description: Deep-dives competitor pages for any BlueStaffyUK keyword (UK Staffy puppy, blue Staffy breeder, city queries) and extracts what they do well, what they miss and what BSUK can do better. Reads competitor pages via Firecrawl MCP with a Playwright fallback. Outputs a gap analysis and a differentiation blueprint. The registry (data/competitors.json) and the intel reports (docs/research/competitors/) are read first; this agent fetches only what they do not cover.
 tools: [Read, Write, Bash, mcp__firecrawl-mcp__firecrawl_scrape, mcp__firecrawl-mcp__firecrawl_crawl, mcp__firecrawl-mcp__firecrawl_map, mcp__firecrawl-mcp__firecrawl_search, mcp__firecrawl-mcp__firecrawl_extract, mcp__plugin_playwright_playwright__browser_navigate, mcp__plugin_playwright_playwright__browser_snapshot, mcp__plugin_playwright_playwright__browser_click, mcp__plugin_playwright_playwright__browser_evaluate, mcp__plugin_playwright_playwright__browser_take_screenshot]
 model: inherit
 effort: max
@@ -102,7 +102,7 @@ After gap matrix, output:
 - [item with better approach]
 
 ### BSUK Unfair Advantages (only BSUK can claim)
-- Health guarantee ([DURATION_TBD]) (competitors often silent on guarantee length)
+- The £500 refundable deposit, stated plainly (a guarantee length is NOT FETCHED, so no guarantee is claimed)
 - the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) (most competitors do not surface this)
 - Kennel Club registration paperwork, vaccination records and microchipping details with every puppy (`data/faq.json` `whyus-paperwork`)
 - vet health certificate
