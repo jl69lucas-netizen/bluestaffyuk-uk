@@ -368,7 +368,7 @@ bsuk-batch-rebuilder
   → Reads data/locations.json
   → One `Agent` call per UK city to bsuk-location-builder, all in one message (parallel)
   → Structure: docs/reference/location-page-template.md via .claude/skills/bsuk-location-page-builder/SKILL.md — the section count comes from the competitors, never a fixed number
-  → Each page gets UK city-specific: the city's own geography and delivery band, the Carlisle map (bsuk-google-map skill)
+  → Each page gets the city's own geography and delivery band, plus the standard Carlisle map (bsuk-google-map skill)
   → Merges results → commit on the project branch (deploy and IndexNow are inactive until project 6)
 ```
 
@@ -800,7 +800,7 @@ START: What are you trying to do?
 │   └── bsuk-website-health skill → bsuk-perf-gate skill → bsuk-accessibility-fixer (the monitoring agent waits for project 6)
 
 ├── "Weekly monitoring"
-│   └── bsuk-llm-keyword-intel per page; bsuk-rank-tracker is inactive until project 6, and the branded-search and pricing monitors wait for it too (not ported — deferred to project 6)
+│   └── bsuk-llm-keyword-intel per page; bsuk-rank-tracker is inactive until project 6, and the branded-search and pricing monitors also wait for project 6 (not ported — deferred to project 6)
 
 ├── "Deploy a page"
 │   └── bsuk-canonical-fixer → [Sprint 5 inactive until project 6] → bsuk-deploy-verifier → sitemap-agent

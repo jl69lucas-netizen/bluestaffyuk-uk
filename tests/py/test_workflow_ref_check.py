@@ -109,6 +109,26 @@ def test_main_exits_1_on_a_problem_and_0_when_clean(tmp_path, capsys):
     assert "examined 1 references in 2 files; 0 problems" in capsys.readouterr().out
 
 
+def test_a_name_with_an_underscore_is_read_whole(tmp_path):
+    # `bsuk-x_y` is a misspelt name, not `bsuk-x` followed by prose: the gate must see it.
+    root = tree(tmp_path, "Call `@bsuk-real_agent` next.\n")
+    problems, _ = wrc.check(root)
+    assert refs(problems) == ["bsuk-real_agent"]
+
+
+def test_npm_run_with_the_long_silent_flag_is_read(tmp_path):
+    root = tree(tmp_path, "then `npm run --silent check:ghost` and `npm run -s check:real`\n")
+    problems, examined = wrc.check(root)
+    assert refs(problems) == ["npm run check:ghost"] and examined == 2
+
+
+def test_a_skill_counts_only_when_its_skill_md_exists(tmp_path):
+    root = tree(tmp_path, "bsuk-empty-skill\n")
+    (root / ".claude/skills/bsuk-empty-skill").mkdir()
+    problems, _ = wrc.check(root)
+    assert refs(problems) == ["bsuk-empty-skill"]
+
+
 def test_the_real_workflow_docs_name_only_what_exists():
     # The gate itself, run against this repo — `npm run check:workflow` exits 0.
     problems, examined = wrc.check(ROOT)

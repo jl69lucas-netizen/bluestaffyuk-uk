@@ -24,15 +24,15 @@ import sys
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DOCS = ("docs/reference/WORKFLOW.md", "docs/reference/quick-start.md")
 MARKER = re.compile(r"\([^()]*\bnot ported\b[^()]*\)")
-AGENT = re.compile(r"(?<![\w./-])@?(bsuk-[a-z0-9-]*[a-z0-9])(?![\w-])(?!\.\w|/)")
+AGENT = re.compile(r"(?<![\w./-])@?(bsuk-[a-z0-9_-]*[a-z0-9])(?![\w-])(?!\.\w|/)")
 SCRIPT = re.compile(r"(?<![\w./-])(scripts/[\w./-]+)")
-NPM = re.compile(r"\bnpm run (?:-s )?([\w:-]+)")
+NPM = re.compile(r"\bnpm run (?:(?:-s|--silent) )?([\w:-]+)")
 
 
 def known(root):
     """(agent and skill names, npm script names) as they exist under `root`."""
     names = {p.stem for p in (root / ".claude/agents").glob("*.md")}
-    names |= {p.name for p in (root / ".claude/skills").iterdir() if p.is_dir()}
+    names |= {p.name for p in (root / ".claude/skills").iterdir() if (p / "SKILL.md").is_file()}
     scripts = json.loads((root / "package.json").read_text(encoding="utf-8"))["scripts"]
     return names, set(scripts)
 
@@ -47,7 +47,7 @@ def check(root=ROOT):
             marked = bool(MARKER.search(line))
             found = [(n, n in names) for n in AGENT.findall(line)]
             found += [(p, (root / p).exists())
-                      for p in (s.rstrip(".,;:)") for s in SCRIPT.findall(line))]
+                      for p in (s.rstrip(".,;:") for s in SCRIPT.findall(line))]
             found += [("npm run " + n, n in npm) for n in NPM.findall(line)]
             examined += len(found)
             problems += [f"{doc.name}:{lineno}  {ref}" for ref, ok in found
