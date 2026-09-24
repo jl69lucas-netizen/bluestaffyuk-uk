@@ -292,3 +292,42 @@ rule, is not examined.
    `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
    `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
    `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+
+## Project 5 page rules (system-gaps)
+
+These bind every location, comparison and blog-post page built from 2026-09-24 on. The
+board refuses the record until each holds (`scripts/family_rules.py`); none of them applies
+to the twelve pages built before.
+
+1. **Keywords.** Run `python3 scripts/keyword_variants.py <slug>` (add `--also <cache dir>`
+   when a registry folder holds the page's SERP) and write its proposals into the sections'
+   `keywords.variation`, `related`, `cooccurring` and `similar`, keeping only terms the
+   section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
+2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
+   is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
+   evidence ledger holds it. The board shows them by class.
+3. **External links.** At least six on six domains from four source types, all rows of
+   `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
+   adds its own council's dog or animal-licensing page as a `local` row, after
+   `curl -sIL <url>` returns 200, dated in the Verified column.
+4. **Anchors.** Every internal and external link carries `anchor_type` (exact, partial, lsi,
+   natural, branded, naked-url): three or more internal types with at most two exact, three
+   or more external types (`anchor-type-variation`), and never an anchor another board
+   already uses for the same target (`anchor-reuse-sitewide`).
+5. **Images.** Run `python3 scripts/image_candidates.py <slug> --write`. The hero and every
+   body H2 and body H3 (FAQ blocks excepted) carry an image slot (`image-slot-missing`),
+   filled in this order: the page's own migrated image, another served image, a file from
+   `Assets/Images/` ingested with `python3 scripts/ingest_image.py folder`. When none fits,
+   the slot is `source: generate` with an OG style, or `source: infographic` with an IG style,
+   named in `IMAGE-DESIGNS.md`. The generated file is drafted with
+   `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
+   sha12 pick, and only then published with `python3 scripts/ingest_image.py publish`
+   (`image-generated-unapproved`).
+6. **Board and approval.** The board's block 7b lists every rule above for this page,
+   evaluated as approval will see it; `scripts/board_approve.py` refuses the approval, and
+   any re-approval, while one of them FAILs. The build-gate image checks are listed but never
+   block approval: they can only pass after the image is approved and published.
+7. **Routes.** A blog post's route is in `data/page-map.json` before it is built, or the
+   outline gate cannot find it.
+8. **After the build,** `npm run -s check:outline` (also in `check:all`) must report the page
+   examined with 0 problems.

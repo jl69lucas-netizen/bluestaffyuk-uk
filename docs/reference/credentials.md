@@ -23,6 +23,7 @@ list; `.env` is the values.
 | `GA4_CLIENT_ID` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 | `GA4_CLIENT_SECRET` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
 | `GA4_REFRESH_TOKEN` | nothing yet — project 6 wires the GSC/GA4 pulls | no — project 6 |
+| `GEMINI_API_KEY` | `.claude/skills/bsuk-image-generation/SKILL.md` (through the `compound-engineering:ce-gemini-imagegen` skill) | no — the user sets it before the first generated image (Task 11b) |
 
 A "Read by" cell names a file only when that file actually contains the key name today.
 `scripts/indexnow_submit.py` reads both `SITE_URL` and `INDEXNOW_KEY` from the environment
