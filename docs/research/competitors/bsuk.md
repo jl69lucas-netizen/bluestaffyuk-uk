@@ -13,7 +13,7 @@ Homepage visible text: 5,611 words by script (counted from the built HTML, not f
 170 phrases: BSUK's own runs by the rule (178, less nine runs that sit on the brand name and were cut) plus the 15 competitor phrases the phrase script found in `dist/`. BSUK holds all five phrases two of the three competitors share (blue staffy, staffy puppies, staffy puppies for sale, staffordshire bull terrier puppies, … for sale), plus one breed-plus-city phrase per location page.
 
 ## Page types
-By sitemap first, then the table over the page sitemap: listing 11 (6 puppy pages + 5 pages), city 11, blog 2 (1 post + the guides hub), breed-guide 2, about 1, contact 1, health 1. No care-guide, faq, price or reviews page type.
+By sitemap first, then the classifier over the location and page sitemaps: listing 12 (6 puppy pages + 6 pages, the UK location hub among them), city 9 (the location sitemap without the UK hub and the Glasgow breeding-dogs page, which stays untyped), blog 2 (1 post + the guides hub), breed-guide 2, about 1, contact 1, health 1. No care-guide, faq, price or reviews page type. Re-derived from `dist/` after the whole-word table and the location-row rule (Known Issue 51); no fetch.
 
 ## Blog
 One post in the post sitemap; its main content is 162 words (choosing the right blue Staffy puppy for a family). Posting frequency: NOT FETCHED — one post, one date.

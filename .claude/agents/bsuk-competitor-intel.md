@@ -27,7 +27,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 ## What to fetch per competitor
 
 1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
-2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages from the URL list, markdown only: a listing or puppies page, a price or FAQ page, a care or breed guide, a city page, the about page. Six scrapes at most.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page, each the one with the fewest path segments, then the shortest path, then the first URL in order; a slot that is `null` is not scraped. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
@@ -54,7 +54,7 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 | 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
 | 3 | `keywords` | any page | see **Keyword rule** below |
 | 4 | `page_types` | the map | see **Page-type rule** below |
-| 5 | `blog` | the map → `post_count`; dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
+| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a category, tag or author page, or a month); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
 | 6 | `visual` | the homepage raw HTML or a snapshot (markdown alone never) | `homepage_images`, `video_present`, `alt_text` (descriptive, generic, missing) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
@@ -114,12 +114,12 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye; it prints the `page_types` values. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
 import html, json, pathlib, re, sys
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 urls = json.load(open(sys.argv[1]))
 bsuk = "--bsuk" in sys.argv[2:]
 rows = json.load(open("data/locations.json"))
@@ -140,29 +140,60 @@ TABLE = [
     ("listing", [w("puppies|puppy|pup|litter|available|sale")]),
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
+nocity = lambda path: next((name for name, pats in TABLE if name != "city" and any(re.search(p, path) for p in pats)), None)
+loc = {r["slug"]: r["city"] for r in rows}
 def title_slug(path):
     f = pathlib.Path("dist") / path.strip("/") / "index.html"
     m = re.search(r"(?is)<head\b.*?<title>(.*?)</title>", f.read_text(encoding="utf-8")) if f.is_file() else None
     words = html.unescape(m.group(1)).split("|")[0] if m else ""
     return "/" + re.sub(r"[^a-z0-9]+", "-", words.lower()).strip("-") + "/"
-counts = {}
-for u in urls:
-    path = urlparse(u).path.lower()
+def paged(u):  # one page of a paginated list: /<list>/page/2/, ?page=2, ?paged=2, ?pg=2
+    p = urlparse(u)
+    return bool(re.search(r"/page/[0-9]+(/|$)", p.path.lower())) or any(
+        k.lower() in ("page", "paged", "pg") and v[0].isdigit() for k, v in parse_qs(p.query).items())
+def typed(path):
+    seg = path.strip("/").split("/")[-1]
+    if bsuk and seg in loc:  # a BSUK location row: a city only for a real city, never the UK hub or the outreach row
+        if loc[seg] != "UK" and "(" not in loc[seg]:
+            return "city"
+        return nocity(path) or (nocity(title_slug(path)) if path != "/" else None)
     t = kind(path)
-    if t is None and bsuk and path != "/":
-        t = kind(title_slug(path))
+    return kind(title_slug(path)) if t is None and bsuk and path != "/" else t
+SLOTS = [("listing", ["listing"]), ("price-or-faq", ["price", "faq"]), ("guide", ["care-guide", "breed-guide"]),
+         ("city", ["city"]), ("about", ["about"])]
+seen, counts, typed_urls, posts, pagination = set(), {}, [], 0, 0
+for u in urls:
+    p = urlparse(u)
+    path = p.path.lower()
+    if paged(u):
+        pagination += 1
+        continue
+    if ((p.hostname or ""), path.rstrip("/")) in seen:  # the same page twice (a slash or a query apart)
+        continue
+    seen.add(((p.hostname or ""), path.rstrip("/")))
+    t = typed(path)
     if t:
         counts[t] = counts.get(t, 0) + 1
-print(json.dumps(counts, sort_keys=True))
+        typed_urls.append((t, u))
+    segs = [x for x in path.split("/") if x]
+    if t == "blog" and segs and not re.fullmatch(r"(blog|news|articles|posts)s?|\d+", segs[-1]) \
+            and not {"category", "tag", "author"} & set(segs):
+        posts += 1  # a post: not the blog index, a category, tag or author page, or a month
+depth = lambda u: (len([x for x in urlparse(u).path.split("/") if x]), len(urlparse(u).path), u)
+key_pages = {}
+for slot, types in SLOTS:  # the key pages to scrape: per slot, fewest path segments, then shortest path, then the URL
+    picks = [sorted((u for x, u in typed_urls if x == t and urlparse(u).path.strip("/")), key=depth) for t in types]
+    key_pages[slot] = next((c[0] for c in picks if c), None)
+print(json.dumps({"page_types": counts, "posts": posts, "pagination": pagination, "key_pages": key_pages}, sort_keys=True))
 EOF
 ```
 
 **Posts without a blog base.** A competitor's posts often sit at the root (`<competitor-domain>/how-to-choose-a-puppy/`) and the table cannot see them. If the URL list holds a post sitemap (`post-sitemap.xml`) you may spend one of the six scrapes on it and count its URLs as `blog`, then remove those URLs from the list the table reads, so no URL is counted twice; dated WordPress paths are caught by row 1. Otherwise say in the readable report that posts without a blog base or date are missed and were counted by the table.
 
-**`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog`, in `dist/location-sitemap.xml` is `city`, in `dist/puppy-sitemap.xml` is `listing`; only `dist/page-sitemap.xml` goes through the table (the video sitemap is not a page list), minus any URL already counted from the other three, so no URL is counted twice. With `--bsuk` the classifier also types a page URL the table leaves untyped by running the same table over the words of its `dist/` `<title>` (the part before the first `|`; never the homepage) — a title that matches nothing stays untyped. This one-liner prints the first sitemap's `<loc>` URLs, minus every later sitemap's, as the JSON array the classifier reads; run it once per sitemap (with no later files) for the three direct counts:
+**`--bsuk` types by sitemap first:** every `<loc>` in `dist/post-sitemap.xml` is `blog` (BSUK's `post_count` is that sitemap's count alone, not the classifier's `posts`), in `dist/puppy-sitemap.xml` is `listing`; `dist/location-sitemap.xml` and `dist/page-sitemap.xml` go through the classifier with `--bsuk` (the video sitemap is not a page list), minus any URL already counted from the other two, so no URL is counted twice. With `--bsuk` a location page whose slug is a `data/locations.json` row is `city` only when that row is a real city — the UK hub (`city` `UK`) and the breeding-dogs outreach row are typed by the table without its city row, so neither is ever counted as a city. The classifier also types a page URL the table leaves untyped by running the same table over the words of its `dist/` `<title>` (the part before the first `|`; never the homepage) — a title that matches nothing stays untyped. This one-liner prints every `<loc>` in the files before `--`, minus every `<loc>` in the files after it, as the JSON array the classifier reads; run it once per direct sitemap (`dist/post-sitemap.xml --`, `dist/puppy-sitemap.xml --`) and count the list for the two direct counts:
 
 ```bash
-python3 -c 'import json,re,sys; L=lambda f: re.findall(r"<loc>([^<]+)</loc>", open(f).read()); seen={u for f in sys.argv[2:] for u in L(f)}; print(json.dumps([u for u in L(sys.argv[1]) if u not in seen]))' dist/page-sitemap.xml dist/post-sitemap.xml dist/location-sitemap.xml dist/puppy-sitemap.xml > "$MAP_LIST"
+python3 -c 'import json,re,sys; i=sys.argv.index("--"); L=lambda fs: [u for f in fs for u in re.findall(r"<loc>([^<]+)</loc>", open(f).read())]; seen=set(L(sys.argv[i+1:])); print(json.dumps(list(dict.fromkeys(u for u in L(sys.argv[1:i]) if u not in seen))))' dist/location-sitemap.xml dist/page-sitemap.xml -- dist/post-sitemap.xml dist/puppy-sitemap.xml > "$MAP_LIST"
 ```
 
 No sitemaps → every `index.html` under `dist/` through the table, skipping any page whose robots meta contains `noindex`.

@@ -7,11 +7,15 @@
 import json
 import pathlib
 import re
+import shutil
+import subprocess
+import sys
 
 import pytest
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 AGENT = REPO / ".claude/agents/bsuk-competitor-intel.md"
+CLASSIFIER = re.compile(r'python3 - "\$MAP_LIST"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
 BLOCK = re.compile(r'^rows = json\.load\(open\("data/locations\.json"\)\)\n.*?^kind = lambda path: [^\n]*\n',
                    re.M | re.S)
 
@@ -64,3 +68,48 @@ def test_a_comparison_path_is_a_comparison_before_any_other_row(kind, path):
 def test_the_keyword_gap_agent_has_no_comparison_override_of_its_own():
     gap = (REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md").read_text(encoding="utf-8")
     assert 're.search(r"-vs-|versus", path)' not in gap
+
+
+def classify(tmp_path, urls, *flags):
+    """intel's map classifier, run in a scratch root on `urls`: its printed JSON."""
+    (tmp_path / "data").mkdir(exist_ok=True)
+    shutil.copy(REPO / "data/locations.json", tmp_path / "data/locations.json")
+    (tmp_path / "map.json").write_text(json.dumps(urls), encoding="utf-8")
+    found = CLASSIFIER.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected one classifier block, found {len(found)}"
+    run = subprocess.run([sys.executable, "-", "map.json", *flags], input=found[0], cwd=tmp_path,
+                         capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)
+
+
+def test_pagination_is_never_a_page_or_a_post_and_each_url_counts_once(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/blog/", f"{x}/blog/page/2/", f"{x}/blog/page/3", f"{x}/blog?page=4",
+                            f"{x}/blog/my-first-post/", f"{x}/blog/my-first-post", f"{x}/blog/category/health/",
+                            f"{x}/2025/09/", f"{x}/2025/09/litter-news/", f"{x}/puppies/page/2/", f"{x}/puppies/"])
+    assert d["page_types"] == {"blog": 5, "listing": 1}
+    assert d["posts"] == 2          # my-first-post and litter-news: not the index, a category or a month
+    assert d["pagination"] == 4
+
+
+def test_key_pages_are_picked_by_script_with_a_fixed_tie_break(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/", f"{x}/puppies/rex/", f"{x}/available/", f"{x}/puppies/",
+                            f"{x}/faq/", f"{x}/prices/staffy/", f"{x}/breed-guide/",
+                            f"{x}/staffy-york/", f"{x}/staffy-hull/", f"{x}/staffy-leeds/", f"{x}/puppies/page/2/"])
+    assert d["key_pages"] == {
+        "listing": f"{x}/puppies/",               # fewest segments, then the shortest path
+        "price-or-faq": f"{x}/prices/staffy/",    # a price page before an FAQ page
+        "guide": f"{x}/breed-guide/",             # care guide first, else breed guide
+        "city": f"{x}/staffy-hull/",              # same depth and length as York: the URL's order
+        "about": None,
+    }
+
+
+def test_bsuk_location_rows_count_as_cities_only_for_a_real_city(tmp_path):
+    b = "https://SITE_URL_PLACEHOLDER/uk-locations"
+    urls = [f"{b}/blue-staffy-puppies-aberdeen/", f"{b}/staffy-puppies-for-sale-glasgow/",
+            f"{b}/blue-staffy-puppies-uk/", f"{b}/staffy-breeding-dogs-glasgow/"]
+    assert classify(tmp_path, urls, "--bsuk")["page_types"] == {"city": 2, "listing": 1}  # the UK hub is a listing
+    assert classify(tmp_path, urls)["page_types"] == {"city": 3, "listing": 1}  # a competitor's paths: no row rule
