@@ -200,7 +200,7 @@ GUARDS = (
      "lifespan 12–14; skills and `.claude/commands` also against the source-repo residue "
      "list (`RESIDUE`, among others: US sources, regulators and geography, air transport, "
      "the other brand and animals, the source repo's rule and component names, its Latin "
-     "variant naming and bird-health words, CITES paperwork, deploy pushes, fixed section "
+     "variant naming and bird-health words, permit paperwork, deploy pushes, fixed section "
      "counts, spelled-out prices, and brindle, licence, placement-count, years-in-business, "
      "weaning-age and reply-time claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee "
      "names `guarantee_days`), which also runs over every agent; every agent against its "
@@ -218,8 +218,8 @@ GUARDS = (
      "the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, "
      "the structure manifest); in every agent, every one of those roots (`AGENT_ROOTS`), plus "
      "any file, agent, skill, npm script, `data/locations.json` field or route an agent names, "
-     "and no file this repo replaced; every `(arrives in Task N)` or `(not ported …)` marker "
-     "whose paths now all exist",
+     "and no file this repo replaced; every arrives-in-Task-N or not-ported marker whose "
+     "paths now all exist",
      "cite a path in a pack, a reference doc, an agent or a skill; add a skill, a command or "
      "an agent",
      "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`, `tests/py/test_agent_references.py`"),
