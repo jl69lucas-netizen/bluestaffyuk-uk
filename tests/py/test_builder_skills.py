@@ -202,7 +202,7 @@ def test_the_checklist_invents_no_route_or_guarantee_and_seo_rules_derive_the_co
     assert seo_rules.count("section_target.total") >= 2
 
 
-SITE_ROUTE = re.compile(r"(?<![\w./~>…-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{\\])")
+SITE_ROUTE = re.compile(r"(?<![\w./~>…-])/[a-z0-9-]+(?:/[a-z0-9-]+)*/(?![\w<\[{]|\\[dwsDWS])")
 
 #: Paths that are not pages and never will be, each for a stated reason. Every other
 #: site-root path a skill writes must be a page (see known_routes()).
@@ -237,7 +237,8 @@ def is_known(route, known):
 def route_offenders(text, known):
     """Rule 62: never invent an internal URL. Every site-root route the text writes (in
     backticks, links or plain text) must be known. External URLs are left out; a generic route
-    is written `/<slug>/`, `/[slug]/` or `/{slug}/`, which SITE_ROUTE does not read. A line that
+    is written `/<slug>/`, `/[slug]/` or `/{slug}/`, which SITE_ROUTE does not read, and nor is a
+    regex fragment (`/page/\\d`: a route followed by a regex class escape). A line that
     says it is the source repo's history ("source repo" on the line) is not an instruction."""
     text = re.sub(r"https?://\S+", " ", text.replace("https://SITE_URL_PLACEHOLDER", ""))
     return sorted({(route, n) for n, line in enumerate(text.splitlines(), 1)
@@ -313,8 +314,9 @@ def test_the_agent_route_guard_spares_competitor_paths_and_scratch_files():
             + "cp x /tmp/img-staging/y\n"
             + "a dated segment (`/2025/09/`)\n"
             + "CTA → /contact/\n"
-            + 'paged = re.search(r"/page/\\d+(/|$)", path)\n')  # a regex fragment is not a route
-    assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4)]
+            + 'paged = re.search(r"/page/\\d+(/|$)", path)\n'  # a regex fragment is not a route
+            + "a route in a string /contact/\\n\n")               # but a route before an escape still is
+    assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4), ("/contact/", 6)]
 
 
 def test_the_route_guard_reads_links_and_skips_placeholders_and_source_repo_history():

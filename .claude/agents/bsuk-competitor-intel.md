@@ -102,7 +102,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | Order | Type | A whole word of the path |
 |---|---|---|
 | 1 | `comparison` | `vs`, `versus` |
-| 2 | `blog` | `blog`, `news`, `articles`, `post`, `posts`, or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
+| 2 | `blog` | `blog`, `news`, `articles`, `posts`, a `post` folder (`<competitor-domain>/post/<slug>`), or a dated segment (`<competitor-domain>/2025/`, `<competitor-domain>/2025/09/`) |
 | 3 | `city` | a `data/locations.json` city as a slug word (lowercase, spaces to hyphens), except `UK` and the outreach row |
 | 4 | `price` | `price`, `pricing`, `cost`, `fee` |
 | 5 | `health` | `health`, `healthcare`, `dna`, `test`, `testing`, `tested` |
@@ -114,7 +114,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. A post is found by the `blog` row's own words and dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Record the folder as `blog.values.post_folder` and name it in the readable report. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. A post is found by the `blog` row's own words and dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -128,7 +128,7 @@ slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" 
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
     ("comparison", [w("vs|versus")]),
-    ("blog", [w("blog|news|articles|post"), r"/(19|20)\d\d/"]),
+    ("blog", [w("blog|news|articles|posts"), r"/post(/|$)", r"/(19|20)\d\d/"]),
     ("city", [w(re.escape(s)) for s in slugs]),
     ("price", [w("price|pricing|cost|fee")]),
     ("health", [w("health|healthcare|dna|test|testing|tested")]),

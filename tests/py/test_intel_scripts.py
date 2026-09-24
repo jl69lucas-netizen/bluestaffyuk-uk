@@ -51,6 +51,12 @@ def kind(monkeypatch):
     ("/litters/", "listing"),
     ("/pups/", "listing"),
     ("/2025/09/our-news/", "blog"),
+    ("/post/staffy-health-guide", "blog"),                 # a post folder ...
+    ("/post/", "blog"),
+    ("/posts/", "blog"),
+    ("/post-a-puppy/", "listing"),                         # ... but never a 'post-' page: hyphens split words
+    ("/post-an-advert/", None),
+    ("/post-op-care/", "care-guide"),
     ("/uk-locations/blue-staffy-puppies-leeds/", "city"),
     ("/uk-locations/blue-staffies-newcastle-under-lyme/", "city"),
 ])
@@ -126,8 +132,8 @@ def test_post_folders_count_and_help_centre_articles_do_not(tmp_path):
     # URL shapes from docs/research/competitors/trojanstaffuk.json and pets4homes.json
     trojan = "https://www.trojanstaffuk.com"
     d = classify(tmp_path, [f"{trojan}/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide",
-                            f"{trojan}/post/", f"{trojan}/staffy-puppies"])
-    assert d["page_types"] == {"blog": 2, "listing": 1}
+                            f"{trojan}/post/", f"{trojan}/staffy-puppies", f"{trojan}/post-a-puppy/"])
+    assert d["page_types"] == {"blog": 2, "listing": 2}  # /post-a-puppy/ is a listing, not a post folder
     assert d["posts"] == 1                        # /post/ itself is the index
     p4h = "https://www.pets4homes.co.uk"
     urls = [f"{p4h}/pet-advice/homemade-dog-deterrents-that-are-safe-for-your-dog.html", f"{p4h}/pet-advice/",
