@@ -259,6 +259,27 @@ def test_validate_image_picks_names_every_bad_pick(repo, tmp_path):
         "slot weeks-photo: an infographic style on a photo slot"]
 
 
+def test_an_approved_new_draft_is_accepted_over_an_older_served_copy(repo, tmp_path):
+    """The board previews a slot's DRAFT when one exists, else its served copy; the approval
+    checks the same file first, so a new draft the breeder approved is never refused as
+    "changed since the board showed it" because an older served copy exists."""
+    b = _full()
+    b["assets"].append({"slot": "weeks-photo", "kind": "photo", "w": 1408, "h": 768, "required": True,
+                        "status": "baked", "file": "/images/weeks-served.webp", "alt": "x"})
+    (repo / "public" / "images" / "weeks-served.webp").write_bytes(b"served")
+    draft = repo / "data" / "boards" / "generated" / "uk-locations--blue-staffy-puppies-leeds"
+    draft.mkdir(parents=True)
+    (draft / "weeks-photo.webp").write_bytes(b"draft")
+    folder = tmp_path / "Assets"
+    folder.mkdir()
+    assert IR.board_images(b, repo, folder)["generated"]["weeks-photo"]["sha"] == _sha(b"draft")
+    assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"draft")}) == []
+    assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"served")}) == [
+        "slot weeks-photo: the generated image changed since the board showed it"]
+    # With no draft, the served copy is the one checked, as before.
+    (draft / "weeks-photo.webp").unlink()
+    assert IR.validate_image_picks(b, {"img:weeks-photo": "og:C:" + _sha(b"served")}) == []
+
 def test_board_approve_stores_img_picks_and_refuses_a_bad_one(repo):
     import board_approve as BA
     b = _full()

@@ -271,8 +271,10 @@ def draft_file(board, slot, root=None):
 
 
 def generated_file(board, slot, root=None):
-    """The generated image the board shows for a slot: the served copy, else the draft."""
-    return served_file(board, slot, root) or draft_file(board, slot, root)
+    """The generated image the board shows for a slot: the draft, else the served copy (the
+    order board_images() previews them in), so an approved new draft is checked against
+    itself and never against an older served copy."""
+    return draft_file(board, slot, root) or served_file(board, slot, root)
 
 
 def ingested(board, slot, filename, root=None):
