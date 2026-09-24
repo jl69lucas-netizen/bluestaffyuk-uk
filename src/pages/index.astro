@@ -46,7 +46,7 @@ import VideoEmbed from '../components/kit/VideoEmbed.astro';
 import Faq from '../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../lib/sections';
 import { pickedStyle, approvalInForce } from '../lib/pickedStyle';
-import { bakedAssets } from '../lib/assets';
+import { bakedAssets, bakedSrcset, inPublic } from '../lib/assets';
 import { countedFigures, type StatRow } from '../lib/recordText';
 import { boxClass } from '../lib/boardStyles';
 import { titleCase as T } from '../lib/headings';
@@ -158,19 +158,40 @@ const COUNTED: Record<string, string> = {
   'data/boards/blue-staffy-health-uk.json#len(sections[dna-tests].table.rows)': String(dnaTests),
   'data/settings.json#delivery_min_gbp|data/settings.json#delivery_max_gbp':
     `£${SITE.delivery_min_gbp}–£${SITE.delivery_max_gbp}`,
+  // The hero's three figure tiles (Known Issue 33, user ruling R11). The price band is the
+  // setting's own two numbers written the way the page prints money; the deposit tile says
+  // "refundable", so it prints nothing a non-refundable setting could back.
+  'data/settings.json#price_range':
+    SITE.price_range.replace(/£(\d)(\d{3})/g, '£$1,$2').replace(/\s*-\s*/, '–'),
+  'data/settings.json#deposit_gbp|data/settings.json#deposit_refundable':
+    SITE.deposit_refundable ? `£${SITE.deposit_gbp}` : 'a deposit that is not refundable',
+  'data/settings.json#len(youtube_embeds)': String(SITE.youtube_embeds.length),
 };
 const counted = countedFigures(COUNTED, 'index.astro');
 const counterStats = (counterSection.stats as StatRow[]).map(counted);
-// H-HM2's ledge is `stats`, and its entries are the RECORD's: the hero section carries none, so
-// the ledge renders nothing — exactly what the board rendered — and the figures stay in the
-// counter one section down, where rule 16 and the hero/counter separation put them.
+// H-HM2's ledge is `stats`, and its entries are the RECORD's: three figures of the page's own
+// (the price band, the refundable deposit, the three films), none of them the counter's three
+// one section down, each derived above from the file its row cites.
 const heroStats = ((heroSection.stats ?? []) as StatRow[]).map(counted);
-// The mosaic's tiles are the photographs the record's hero section names, at their original
-// paths and alts (working rule 11). The record names one, so the arrangement degrades to the
-// single photo exactly as the board preview drew it: Hero never invents a tile.
-const heroTiles = heroSection.images.map((i) => {
+// The mosaic's four tiles are the photographs the record's hero section names, at their
+// original paths (working rule 11; Known Issue 33, user ruling R11). The FIRST is the migrated
+// page's own primary image, keeps its alt and is the LCP image. The other three are
+// photographs this page already shows and describes lower down, so their tile alt is EMPTY: a
+// repeated image described twice is a duplicate alt (`img-alt-present-and-unique`, blocking)
+// and a screen reader would hear the same sentence twice. Each tile offers the smaller
+// siblings baked beside its master, because a tile paints at 140-182px on a desktop.
+const TILE_WIDTHS: Record<string, number[]> = {
+  'home-hero': [440],
+  'home-on-the-lawn': [240, 400, 760],
+  'home-family-dog': [240, 400],
+  'home-delivery-transport': [240, 400, 760],
+  'home-dam-with-pups': [400, 760],
+  'home-vet-check': [400, 760],
+};
+const heroTiles = heroSection.images.map((i, n) => {
   const a = asset(i.slot);
-  return { src: a.file, alt: a.alt, w: a.w, h: a.h, caption: a.caption };
+  return { src: a.file, alt: n === 0 ? a.alt : '', w: a.w, h: a.h, caption: a.caption,
+           srcset: bakedSrcset(a, TILE_WIDTHS[i.slot] ?? [], inPublic) };
 });
 
 // "Mo-Su 09:00-23:00" as a sentence, from the setting rather than typed as prose.
@@ -211,9 +232,9 @@ const pageSchema = [
   {/* 01 top — hero, picked style H-HM2 (the home family's mosaic above centred copy, figure
       tiles as its ledge). No trust chips and no CTA buttons (amendment 6a): the trust strip is
       its own section two below. The H1 is the migrated H1, carried whole (rule 15), and the
-      photograph is the migrated page's own primaryImageOfPage at its original path and alt.
-      The record names one photograph and no ledge figures, so the arrangement renders as the
-      board drew it: the single photo beside the centred copy, and no ledge. */}
+      first tile is the migrated page's own primaryImageOfPage at its original path and alt.
+      Four tiles and three figures since Known Issue 33 closed (user ruling R11): the
+      arrangement the breeder picked, no longer its single-photo fallback. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy puppies raised at home" class={box('top')}>
     <Hero
       as="h1"
