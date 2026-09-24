@@ -230,7 +230,7 @@ GUARDS = (
      "site-root route a skill, a command or an agent names is built, in `data/page-map.json`, "
      "redirected, a `public/` folder or a stated non-page (seo-rules.md Rule 62; skipped "
      "without `dist/`); "
-     "in an agent, a line naming a competitor's domain and a `/tmp/` path are not routes",
+     "in an agent, a competitor's own URL (its domain and the path after it) and a `/tmp/` path are not routes",
      "add a test beside the claim a builder makes; a new skill, command or agent is "
      "route-checked automatically",
      "`tests/py/test_builder_skills.py`"),

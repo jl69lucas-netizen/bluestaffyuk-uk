@@ -18,9 +18,8 @@ import re
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
-FORMER_CITY = "Glasgow"
 SUFFIXES = {".astro", ".ts", ".tsx", ".js", ".mjs", ".md", ".mdx", ".css"}
-CITY_ROUTE = re.compile(r"glasgow", re.I)
+CITY_ROUTE = re.compile(r"glasgow", re.I)  # the former city, in any case, on a path or a line
 SLUG_ON_LINE = re.compile(r"staffy-breeding-dogs-glasgow|staffy-puppies-for-sale-glasgow")
 COMMENT = ("//", "*", "/*", "{/*", "<!--")
 
@@ -35,7 +34,7 @@ def hits(root=SRC):
             continue
         for n, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
             stripped = line.strip()
-            if stripped.startswith(COMMENT) or FORMER_CITY not in line or SLUG_ON_LINE.search(line):
+            if stripped.startswith(COMMENT) or not CITY_ROUTE.search(line) or SLUG_ON_LINE.search(line):
                 continue
             out.append(f"{rel}:{n}: {stripped[:120]}")
     return out
@@ -57,3 +56,11 @@ def test_the_guard_fires_and_spares_what_it_should(tmp_path):
         "<h1>Blue Staffy Puppies for Sale in Glasgow</h1>\n", encoding="utf-8")
     found = hits(src)
     assert found == ["src/pages/hub.astro:3: <p>or collect in Glasgow after a deposit</p>"], found
+
+
+def test_the_guard_reads_the_city_in_any_case(tmp_path):
+    src = tmp_path / "src"
+    (src / "pages").mkdir(parents=True)
+    (src / "pages" / "hub.astro").write_text("<p class=\"caps\">COLLECT IN GLASGOW</p>\n",
+                                            encoding="utf-8")
+    assert hits(src) == ['src/pages/hub.astro:1: <p class="caps">COLLECT IN GLASGOW</p>']

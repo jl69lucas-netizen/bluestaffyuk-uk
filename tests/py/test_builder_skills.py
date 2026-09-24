@@ -10,6 +10,7 @@ reads the skill for the sentence that was wrong and for the one that replaced it
 cannot quietly revert. The comparison builder gets the same treatment for its section count.
 """
 import copy
+import functools
 import json
 import pathlib
 import re
@@ -215,6 +216,7 @@ NOT_PAGES = (
 )
 
 
+@functools.lru_cache(maxsize=None)
 def known_routes():
     """Every route a page may link: built (dist/**/index.html), mapped (data/page-map.json),
     redirected (a source in data/redirects.json — `*` and `:param` sources are patterns), or a
@@ -226,7 +228,8 @@ def known_routes():
     patterns = [re.escape(s).replace(r"\*", ".*") for s in sources]
     patterns = [re.sub(r":[a-z]+", "[^/]+", s) for s in patterns]
     prefixes = tuple(NOT_PAGES) + tuple("/%s/" % d.name for d in (ROOT / "public").iterdir() if d.is_dir())
-    return built, re.compile("(?:%s)$" % "|".join(patterns)), prefixes
+    # frozen and cached: one walk of dist/ for every parametrised case, which cannot mutate it
+    return frozenset(built), re.compile("(?:%s)$" % "|".join(patterns)), prefixes
 
 
 def is_known(route, known):
@@ -284,7 +287,8 @@ def test_the_location_builder_agent_runs_exactly_the_skills_step_6_gates():
     assert _fenced_commands(agent, "## After Each Page Built") == gates
 
 
-# The agents too (Task 18 follow-up, 2026-09-24). Two things an agent writes that are not
+# The agents too (Task 18 follow-up, 2026-09-24). The src-based twin that runs without a
+# build is test_every_route_an_agent_links_is_served in tests/py/test_agent_references.py. Two things an agent writes that are not
 # BSUK routes: another site's path on a line that names that site's domain (the intel agents
 # describe competitors' URL shapes), and a `/tmp/` scratch path. Everything else is a page.
 AGENT_ROUTE_TARGETS = sorted((ROOT / ".claude/agents").glob("bsuk-*.md"))
@@ -292,9 +296,13 @@ COMPETITOR_DOMAINS = tuple(sorted({c["root_domain"] for c in json.loads(
     (ROOT / "data/competitors.json").read_text(encoding="utf-8"))["competitors"]}))
 
 
+COMPETITOR_URL = re.compile(r"(?:%s)[^\s`)\]\"']*" % "|".join(map(re.escape, COMPETITOR_DOMAINS)))
+
+
 def agent_route_offenders(text, known):
-    kept = "\n".join("" if any(d in line for d in COMPETITOR_DOMAINS) else line
-                     for line in text.splitlines())
+    """A competitor's own URL (its domain and the path after it) is not a BSUK route and is
+    blanked; the rest of that line is still read, so a BSUK route beside it is checked."""
+    kept = COMPETITOR_URL.sub(" ", text)
     return [(route, n) for route, n in route_offenders(kept, known) if not route.startswith("/tmp/")]
 
 
@@ -315,8 +323,10 @@ def test_the_agent_route_guard_spares_competitor_paths_and_scratch_files():
             + "a dated segment (`/2025/09/`)\n"
             + "CTA → /contact/\n"
             + 'paged = re.search(r"/page/\\d+(/|$)", path)\n'  # a regex fragment is not a route
-            + "a route in a string /contact/\\n\n")               # but a route before an escape still is
-    assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4), ("/contact/", 6)]
+            + "a route in a string /contact/\\n\n"                # but a route before an escape still is
+            + "compare %s/puppies/ with our /contact/\n" % domain)  # beside a competitor URL, still read
+    assert agent_route_offenders(text, known) == [("/2025/09/", 3), ("/contact/", 4), ("/contact/", 6),
+                                                  ("/contact/", 7)]
 
 
 def test_the_route_guard_reads_links_and_skips_placeholders_and_source_repo_history():
@@ -496,8 +506,9 @@ def test_the_banned_breed_line_is_the_one_statute_line_a_city_page_may_state():
         assert "LEGAL_CLAIM_PLACEHOLDER" in flat, where
     # Rule 8 of the agent's "Rules You Must Follow" is a blanket stand-in rule; it must name
     # the exception, or it overrides the ruling.
-    rule_8 = next(l for l in LOCATION_AGENT.splitlines()
-                  if l.startswith("8. **Licence and legal claims stay placeholders**"))
+    rule_8 = next((l for l in LOCATION_AGENT.splitlines()
+                   if l.startswith("8. **Licence and legal claims stay placeholders**")), None)
+    assert rule_8 is not None, "the agent's rule 8 is gone or renamed — find it and re-point this test"
     assert "LEGAL_CLAIM_PLACEHOLDER" in rule_8
     assert "banned-breed line" in rule_8 and "Known Issue 46" in rule_8, rule_8
     assert "waits for the user's ruling" not in CHECKLIST

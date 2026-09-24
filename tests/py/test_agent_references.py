@@ -201,6 +201,9 @@ def test_no_agent_reads_a_locations_field_that_does_not_exist(agent):
 
 
 # ── routes ───────────────────────────────────────────────────────────────────
+# One of two route guards over the agents. This one reads the routes off src/ and the data
+# files, so it runs without a build; its dist-based twin, route_offenders() in
+# tests/py/test_builder_skills.py, also reads every skill and command and skips without dist/.
 def served_routes():
     routes = {"/"}
     pages = ROOT / "src/pages"
@@ -221,7 +224,6 @@ def served_routes():
 
 
 ROUTE = re.compile(r"(?:href=\"|`|\(|\s|→\s?)(/[a-z0-9][a-z0-9-]*(?:/[a-z0-9-]+)*/)(?=[\"`)\s,.;#]|$)")
-PLACEHOLDER_ROUTES = {"/slug/", "/old-slug/", "/new-slug/", "/target/", "/a/", "/b/", "/c/"}
 # The two intel agents describe COMPETITORS' URL shapes (`/2025/09/`, `/how-to-choose-a-puppy/`).
 COMPETITOR_SHAPES = {"bsuk-competitor-intel", "bsuk-competitive-keyword-gap-agent"}
 
@@ -232,7 +234,7 @@ def test_every_route_an_agent_links_is_served(agent):
     routes = served_routes()
     bad = [f"{agent.name}:{n}  {r}" for n, l in lines(agent)
            if not marked(l) and "wrong on sight" not in l
-           for r in ROUTE.findall(l) if r not in routes and r not in PLACEHOLDER_ROUTES
+           for r in ROUTE.findall(l) if r not in routes
            and not r.startswith(("/images/", "/videos/", "/tmp/"))]
     assert bad == [], ("no page serves these routes — use the real one "
                        "(/uk-blue-staffy-breeders-contact/, /available-puppies/, "

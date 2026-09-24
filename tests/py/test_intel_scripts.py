@@ -13,13 +13,13 @@ import sys
 
 import pytest
 
+from test_agent_snippets import page_type_block  # noqa: E402 — the one block extractor
+
 REPO = pathlib.Path(__file__).resolve().parents[2]
 AGENT = REPO / ".claude/agents/bsuk-competitor-intel.md"
 CLASSIFIER = re.compile(r'python3 - "\$MAP_LIST"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
 HOMEPAGE = re.compile(r'python3 - "\$RAW_HTML"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
 MOBILE = re.compile(r'```js\n// the mobile check[^\n]*\n(.*?)\n```\n', re.S)
-BLOCK = re.compile(r'^rows = json\.load\(open\("data/locations\.json"\)\)\n.*?^kind = lambda path: [^\n]*\n',
-                   re.M | re.S)
 
 
 @pytest.fixture
@@ -27,7 +27,7 @@ def kind(monkeypatch):
     """intel's `kind(path)`: the shared page-type table, run against the real data/locations.json."""
     monkeypatch.chdir(REPO)
     ns = {"json": json, "re": re}
-    exec(BLOCK.findall(AGENT.read_text(encoding="utf-8"))[0], ns)
+    exec(page_type_block(AGENT.name), ns)
     return ns["kind"]
 
 

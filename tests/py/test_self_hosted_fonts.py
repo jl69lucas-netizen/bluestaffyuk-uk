@@ -141,3 +141,18 @@ def test_the_artifact_builders_leave_the_self_hosted_faces_out():
     assert ".a{color:red}" in css and "@layer x{.b{margin:0}}" in css
     for board in sorted((ROOT / "docs" / "artifacts" / "boards").glob("*.html")):
         assert "url(/fonts/" not in board.read_text(encoding="utf-8"), board.name
+
+
+def test_the_fonts_are_served_with_a_year_long_immutable_cache():
+    """public/_headers gives /fonts/* its own block: the files are versioned by name (a new
+    face is a new file), so a browser may keep one for a year without asking again. The rule
+    must sit in its own `/fonts/*` block, not under `/*`, or every page would be immutable."""
+    blocks, path = {}, None
+    for line in (ROOT / "public" / "_headers").read_text(encoding="utf-8").splitlines():
+        if line and not line[0].isspace():
+            path = line.strip()
+            blocks[path] = []
+        elif line.strip() and path:
+            blocks[path].append(line.strip())
+    assert "Cache-Control: public, max-age=31536000, immutable" in blocks.get("/fonts/*", []), blocks
+    assert not any("immutable" in h for h in blocks.get("/*", [])), blocks["/*"]

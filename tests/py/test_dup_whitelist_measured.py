@@ -36,6 +36,10 @@ MIN_PAGES = 3
 REVIEW_STEMS = [" ".join(re.findall(r"[a-z0-9$']+", r["quote"].lower()))
                 for r in json.loads((REPO / "data/reviews.json").read_text(encoding="utf-8"))]
 CHROME_STEMS = [s for s in d.WHITELIST_SNIPPETS if s not in set(REVIEW_STEMS)]
+# A stem already at the minimum shingle length has nothing to trim, so the greed test is
+# given only the stems that can be trimmed — filtered here, not skipped inside the case.
+TRIMMABLE_STEMS = [s for s in CHROME_STEMS
+                   if len(d.re.findall(r"[a-z0-9$']+", s.lower())) > d.MIN_WORDS]
 
 pytestmark = pytest.mark.skipif(not DIST.is_dir(), reason="no dist/ — run the build first")
 
@@ -58,7 +62,7 @@ def test_every_whitelist_stem_is_really_repeated_chrome(pages, stem):
         f"chrome threshold — re-measure with scripts/measure_chrome.py: {stem!r}")
 
 
-@pytest.mark.parametrize("stem", CHROME_STEMS)
+@pytest.mark.parametrize("stem", TRIMMABLE_STEMS)
 def test_no_whitelist_stem_is_greedier_than_its_invariant_core(pages, stem):
     """Trimming a word off either end must not reach MORE pages than the stem itself.
 
@@ -66,8 +70,6 @@ def test_no_whitelist_stem_is_greedier_than_its_invariant_core(pages, stem):
     to exempt, and the remainder gets reported on every page carrying the shorter variant.
     """
     toks = d.re.findall(r"[a-z0-9$']+", stem.lower())
-    if len(toks) <= d.MIN_WORDS:
-        pytest.skip("already at the minimum shingle length; nothing to trim")
     here = len(_carrying(pages, stem))
     for shorter in (toks[1:], toks[:-1]):
         reach = sum(1 for ws in pages.values() if _contains(ws, shorter))
