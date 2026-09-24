@@ -1,6 +1,6 @@
 ---
 name: bsuk-canonical-fixer
-description: Converts relative canonical URLs to absolute across BlueStaffyUK pages. The WordPress export this site was built from emits href="/slug/", which Google reads as "canonicalised /" and does not index. Also fixes og:url and JSON-LD url fields. The absolute host is https://SITE_URL_PLACEHOLDER until project 6 registers a domain — never hardcode a guess.
+description: Verifies that every built BlueStaffyUK page carries an absolute canonical, og:url and JSON-LD url. src/layouts/BaseLayout.astro emits them from each page's canonical prop, so a miss is a page or layout bug fixed in src/ — never in dist/, which npm run build overwrites. The host is https://SITE_URL_PLACEHOLDER until project 6 registers a domain — never hardcode a guess.
 tools: [Read, Write, Bash]
 model: inherit
 effort: medium
@@ -8,8 +8,9 @@ effort: medium
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> Relative canonical URLs = zero indexing. This is the single most critical SEO fix on the site.
-> Every fresh WordPress static export WILL have relative canonicals. Always run this before deploying.
+> Relative canonical URLs = zero indexing. `src/layouts/BaseLayout.astro` makes every canonical
+> absolute from the page's `canonical` prop, so this agent VERIFIES the build and fixes the
+> source. It never edits `dist/`, which `npm run build` overwrites.
 
 ---
 
@@ -26,154 +27,59 @@ effort: medium
 
 ## Purpose
 
-You convert relative canonical URLs (and `og:url` + JSON-LD `url` fields) to absolute `https://SITE_URL_PLACEHOLDER/...` URLs across every static-export HTML page, so Google stops collapsing the whole site into "Canonicalised /" and actually indexes each page. Run on every fresh export before deploy.
+You check that every page in the build carries an absolute canonical, `og:url` and JSON-LD `url` on `https://SITE_URL_PLACEHOLDER/...`, and you trace any miss to the source that emitted it. The source repo's WordPress export needed its HTML rewritten in place; this site is built by Astro and never is.
 
 ## On Startup — Read These First
 
-1. **Confirm** the build output exists — `ls dist/` (or the active export dir). You operate on built HTML, not source.
-2. **Read** `CLAUDE.md` → canonical/deploy notes and the live domain.
-3. **Grep** the export for relative canonicals before fixing: `grep -rl 'rel="canonical" href="/' dist/`.
+1. **Build** — `npm run build`. Every check below reads `dist/`, and a stale `dist/` proves nothing.
+2. **Read** `src/layouts/BaseLayout.astro` — it builds the canonical and `og:url` from the page's `canonical` prop (default: the route) and the site origin.
+3. **Read** `CLAUDE.md` → the deploy model: the origin stays `SITE_URL_PLACEHOLDER` until project 6.
 
-## Why This Happens
-
-The WordPress Simply Static export uses the WordPress `home_url()` function which can return an empty string or just `/` when the site is exported to a static file. This causes:
-
-```html
-<!-- Bad — what Simply Static exports -->
-<link rel="canonical" href="/">                    ← homepage (wrong, should be absolute)
-<link rel="canonical" href="/buy-blue-staffy-puppies-uk/">  ← all other pages (wrong)
-
-<!-- Also bad in og:url -->
-<meta property="og:url" content="/">
-
-<!-- Also bad in JSON-LD -->
-{"@type":"WebSite","url":""}
-```
-
-Google sees `href="/"` as the canonical for EVERY page → treats all as duplicates of the homepage → none indexed.
-
----
-
-## Fix 1: Canonical Tags (Critical — do first)
-
-**Check:**
-```bash
-grep -r 'rel="canonical"' /path/to/site --include="*.html" | grep -v 'https://SITE_URL_PLACEHOLDER' | wc -l
-# Expected after fix: 0
-```
-
-**Bulk fix:**
-```bash
-SITE=/path/to/html/files  # e.g. /tmp/bsuk-repo
-
-find $SITE -name "*.html" -exec \
-  perl -i -pe 's|(<link rel="canonical" href=")(/[^"]*)(")|\1https://SITE_URL_PLACEHOLDER\2\3|g' {} \;
-```
-
-**Verify:**
-```bash
-grep -r 'rel="canonical"' $SITE --include="*.html" | grep -v 'https://' | wc -l
-# Must be 0
-grep -r 'rel="canonical"' $SITE --include="*.html" | head -5
-# Should show: href="https://SITE_URL_PLACEHOLDER/slug/"
-```
-
----
-
-## Fix 2: og:url Tags
-
-**Check:**
-```bash
-grep -r 'og:url' /path/to/site --include="*.html" | grep -v 'https://SITE_URL_PLACEHOLDER' | wc -l
-```
-
-**Bulk fix:**
-```bash
-find $SITE -name "*.html" -exec \
-  perl -i -pe 's|(property="og:url" content=")(/[^"]*)(")|\1https://SITE_URL_PLACEHOLDER\2\3|g' {} \;
-```
-
----
-
-## Fix 3: JSON-LD url fields
-
-**Check:**
-```bash
-grep -r '"url":""' /path/to/site --include="*.html" | wc -l
-```
-
-**Fix:**
-```bash
-find $SITE -name "*.html" -exec \
-  sed -i '' 's|"url":""|"url":"https://SITE_URL_PLACEHOLDER"|g' {} \;
-```
-
----
-
-## Bulk Apply (All 3 Fixes)
+## Check 1 — Canonicals are absolute
 
 ```bash
-SITE=/tmp/bsuk-repo  # adjust to your path
-
-# Fix 1: Canonical tags
-find $SITE -name "*.html" -exec \
-  perl -i -pe 's|(<link rel="canonical" href=")(/[^"]*)(")|\1https://SITE_URL_PLACEHOLDER\2\3|g' {} \;
-
-# Fix 2: og:url
-find $SITE -name "*.html" -exec \
-  perl -i -pe 's|(property="og:url" content=")(/[^"]*)(")|\1https://SITE_URL_PLACEHOLDER\2\3|g' {} \;
-
-# Fix 3: JSON-LD empty url
-find $SITE -name "*.html" -exec \
-  sed -i '' 's|"url":""|"url":"https://SITE_URL_PLACEHOLDER"|g' {} \;
-
-echo "Done. Verifying..."
-grep -r 'rel="canonical"' $SITE --include="*.html" | grep -v 'https://' | wc -l
-# Must output: 0
+grep -rL 'rel="canonical" href="https://' dist --include=index.html
+grep -rho 'rel="canonical" href="[^"]*"' dist --include=index.html | grep -v 'href="https://' | sort | uniq -c
 ```
+Expected: both print nothing.
 
----
-
-## Verification Checklist
-
-After applying fixes:
+## Check 2 — `og:url` is absolute and equals the canonical
 
 ```bash
-# 1. No remaining relative canonicals
-grep -r 'rel="canonical"' $SITE --include="*.html" | grep -v 'https://' | wc -l
-# Expected: 0
-
-# 2. Sample spot check
-grep 'rel="canonical"' $SITE/index.html
-# Expected: href="https://SITE_URL_PLACEHOLDER/"
-grep 'rel="canonical"' $SITE/buy-blue-staffy-puppies-uk/index.html
-# Expected: href="https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"
-
-# 3. No relative og:url
-grep -r 'og:url' $SITE --include="*.html" | grep -v 'https://' | wc -l
-# Expected: 0
+python3 - <<'EOF'
+import pathlib, re
+pages = sorted(pathlib.Path("dist").rglob("index.html"))
+bad = 0
+for f in pages:
+    h = f.read_text(encoding="utf-8", errors="ignore")
+    c = re.search(r'rel="canonical" href="([^"]+)"', h)
+    o = re.search(r'property="og:url" content="([^"]+)"', h)
+    if not c or not o or c.group(1) != o.group(1) or not c.group(1).startswith("https://"):
+        bad += 1
+        print(f, c and c.group(1), o and o.group(1))
+print("examined", len(pages), "pages;", bad, "problems")
+EOF
 ```
+Read the examined count: a pass over 0 pages is not a pass.
 
-After deploying, verify live via Google Search Console:
-- Coverage report should shift from "Canonicalised" → "Valid"
-- Allow 2–7 days for Googlebot to recrawl
+## Check 3 — JSON-LD `url` fields are absolute
 
----
+`npm run check:schema` is the structured-data gate; read its examined count and every problem line.
+
+## Fixing a miss
+
+A relative or missing canonical comes from the page, not the build: a page passing a relative `canonical` prop to `BaseLayout`, or a row in `data/locations.json` with a relative `canonical` for a city page. Fix the source, rebuild, and re-run the checks. Never `sed` or `perl` the built HTML.
 
 ## Commit Pattern
 
 ```bash
-cd /tmp/bsuk-repo
-git add -A
-git commit -m "fix: absolute canonical URLs, og:url, JSON-LD — fixes GSC canonicalisation issue"
+git add src/pages/<slug>/index.astro
+git commit -m "fix: absolute canonical on /<slug>/"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
----
-
 ## When to Run
 
-- After EVERY new Simply Static export from WordPress
-- After any batch page rebuild that regenerates HTML
+- After any page build or rebuild, before Sprint 4's final pass
 - Before every deploy (the host is NOT FETCHED until project 6)
-- When GSC reports pages as "Canonicalised /" or "Duplicate without user-selected canonical"
+- When Search Console reports "Canonicalised /" (Search Console is NOT FETCHED until project 6)

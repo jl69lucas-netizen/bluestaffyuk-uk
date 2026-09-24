@@ -279,14 +279,7 @@ the failure the guard exists for. Project 4 Task 14 is why: a post's slug was
 `blue-staffy-blog-guides`, so the guides hub's own URL served that one post's body, and the
 hub could not be written until the post moved to a slug of its own.
 
-After creating the file, add to sitemap:
-```bash
-# Add to page-sitemap.xml
-SLUG="blue-vs-blue-and-white-blue-staffy"
-DATE=$(date +%Y-%m-%d)
-# Append before </urlset>
-sed -i '' "s|</urlset>|  <url>\n    <loc>https://SITE_URL_PLACEHOLDER/blog/${SLUG}/</loc>\n    <lastmod>${DATE}</lastmod>\n    <changefreq>monthly</changefreq>\n    <priority>0.6</priority>\n  </url>\n</urlset>|" dist/page-sitemap.xml
-```
+The sitemaps are generated, never hand-edited: `npm run build` runs `scripts/generate_sitemaps.py` after the build (the `postbuild` script), and the post appears in `dist/post-sitemap.xml` on its own. Check it with `npm run check:sitemaps`.
 
 ---
 
@@ -319,25 +312,16 @@ def seo_check(filepath, primary_keyword):
 
 ---
 
-## Deploy + IndexNow
+## Commit (IndexNow is inactive until project 6)
 
 ```bash
-cd site/content
-git add blog/[slug]/index.html page-sitemap.xml
+npm run build && npm run check:sitemaps
+git add src/content/blog/<slug>.md
 git commit -m "Add blog post: [title]"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
-```python
-import json, urllib.request
-key = "[INDEXNOW_KEY_TBD]"
-urls = ["https://SITE_URL_PLACEHOLDER/blog/[slug]/"]
-payload = json.dumps({"host":"SITE_URL_PLACEHOLDER","key":key,
-    "keyLocation":f"https://SITE_URL_PLACEHOLDER/{key}.txt","urlList":urls}).encode()
-req = urllib.request.Request("https://api.indexnow.org/indexnow",data=payload,
-    headers={"Content-Type":"application/json; charset=utf-8"},method="POST")
-r = urllib.request.urlopen(req); print(f"IndexNow: {r.status}")
-```
+IndexNow is `npm run indexnow:changed`, and it refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL` (`docs/reference/credentials.md`). Never post to IndexNow by hand.
 
 ---
 
@@ -353,7 +337,7 @@ r = urllib.request.urlopen(req); print(f"IndexNow: {r.status}")
 8. **BlogPosting schema required** — every post needs it for Google News / rich results eligibility
 9. **Authority citation required (E-E-A-T)** — 1–2 per post on the strongest technical terms, from `external-link-library.md §Authority Citations`, new-tab + `rel="noopener noreferrer"`, inside the Verified-Claim Ledger; mirrors seo-rules.md Rule 64
 10. **Save to `src/content/blog/<slug>.md`** — blog posts are a markdown content collection (`src/content.config.ts`); Astro renders them at `/blog/<slug>/`
-11. **Add to `page-sitemap.xml`** — never leave a new page out of the sitemap
+11. **Sitemaps are generated** — `npm run build` writes them; `npm run check:sitemaps` proves the post is listed. Never hand-edit a sitemap
 
 ---
 

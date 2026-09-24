@@ -65,44 +65,11 @@ A fix is not complete until Lighthouse confirms ≥95 Accessibility score (targe
 ### Critical Priority — Fix Immediately
 
 **1. Skip to Content Link**
-Every page must have a skip link as the first focusable element:
-```html
-<!-- Add inside <body>, before navigation -->
-<a href="#main-content" class="skip-link">Skip to main content</a>
-```
-Required CSS (add to page `<style>` block):
-```css
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: auto;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-}
-.skip-link:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 8px 16px;
-  background: var(--color-brand);
-  color: var(--color-white);
-  font-weight: bold;
-  z-index: 9999;
-}
-```
-Check: `grep -n "skip-link\|skip to" dist/<slug>/index.html`
+`src/layouts/BaseLayout.astro` renders `<a href="#main" class="skip-link">Skip to content</a>` as the first focusable element, and `src/styles/global.css` styles it. Never add a second one to a page.
+Check: `grep -c 'class="skip-link"' dist/<slug>/index.html` → `1`
 
 **2. ARIA Landmarks**
-Main content: `<main id="main-content">` wrapping the page body
-Navigation: `<nav aria-label="Main navigation">`
-Footer: `<footer>`
-
-In WordPress exports, the content area is typically `<div id="primary" class="content-area">`. Wrap with `<main>`:
-```bash
-sed -i '' 's|<div id="primary" class="content-area">|<main id="main-content"><div id="primary" class="content-area">|' dist/[slug]/index.html
-sed -i '' 's|<footer |</main><footer |' dist/[slug]/index.html
-```
+BaseLayout wraps every page in `<main id="main">`; the header and footer components carry `<nav>` and `<footer>`. A page missing a landmark is a layout or component bug: fix it in `src/layouts/` or `src/components/`, rebuild, and re-check. Never patch the built HTML.
 Check: `grep -n "<main\|<nav\|<footer" dist/<slug>/index.html`
 
 **3. Form Labels**
@@ -340,7 +307,7 @@ npx playwright@latest screenshot --browser chromium https://SITE_URL_PLACEHOLDER
 
 1. **Exact line numbers required** — not "somewhere in the file"
 2. **Before/after HTML required** — every fix shows current + corrected markup
-3. **Confidence Gate applies** — ≥97% confident before modifying any file in `dist/`
+3. **Confidence Gate applies** — ≥97% confident before modifying any file in `src/`; `dist/` is rebuilt, never edited
 4. **Audit only by default** — report findings; user approves before changes are applied; explicit permission required to write files
 5. **Batch report saves to docs/superpowers/sessions/** — never overwrite previous reports
 6. **WCAG 2.1 AA minimum** — AAA where achievable with BSUK design system colors

@@ -230,16 +230,9 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 
 ---
 
-## Staging Directory
+## Staging
 
-Create sections here before final assembly:
-```bash
-mkdir -p dist/homepage-rebuild
-```
-
-Files: `section-01-hero.html`, `section-02-trust-bar.html`, etc.
-
-Only assemble into `src/pages/index.astro` after ALL sections are approved.
+Approved sections are recorded in the page's board, `data/boards/index.json`, and assembled into `src/pages/index.astro` only after ALL sections are approved. Nothing is staged in `dist/`, which the next `npm run build` overwrites.
 
 **Output file:** `src/pages/index.astro` — this is the deployed Astro page. `docs/reports/<slug>-rebuild/` is the staging directory; `dist/` is the BUILT output (`npm run build`) that every gate measures and is never hand-edited.
 

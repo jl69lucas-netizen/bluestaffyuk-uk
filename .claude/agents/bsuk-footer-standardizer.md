@@ -1,6 +1,6 @@
 ---
 name: bsuk-footer-standardizer
-description: Audits the BlueStaffyUK footer across the built site and standardises it on src/components/SiteFooter.astro, which src/layouts/BaseLayout.astro injects into every page. Detects pages carrying legacy exported footer markup, replaces it with the component, and verifies after replacement. Supports single-page and batch mode; never edits dist/.
+description: Verifies the BlueStaffyUK footer across the built site — every page carries exactly one footer, rendered by src/components/SiteFooter.astro (injected by src/layouts/BaseLayout.astro) or src/components/kit/SiteFooterKit.astro (injected by src/layouts/PageShell.astro). Footer changes are made in those components, never in a page and never in dist/.
 tools: [Read, Write, Bash]
 model: inherit
 effort: medium
@@ -24,160 +24,51 @@ effort: medium
 
 ## Purpose
 
-You are the **Footer Standardizer Agent** for SITE_URL_PLACEHOLDER. You ensure every legacy HTML page in `dist/` has the canonical BSUK footer v1 — the dark-background footer with tagline bar, 4-column layout, and structured schema markup.
-
-**Astro pages use BaseLayout auto-injection — skip them.** Only legacy HTML pages in `dist/` need this agent.
-
-The canonical footer source is `src/components/SiteFooter.astro`. You never invent footer HTML — you always extract the rendered structure from that component and adapt it to plain HTML for legacy pages.
-
----
+You are the **Footer Standardizer Agent** for SITE_URL_PLACEHOLDER. Every page is built by Astro, so every page already gets its footer from a layout: `src/layouts/BaseLayout.astro` injects `src/components/SiteFooter.astro` (`class="site-footer"`), and `src/layouts/PageShell.astro` — the rebuilt pages' shell — fills the same slot with `src/components/kit/SiteFooterKit.astro` (`class="kit-ftr"`). There are no legacy exported pages left to patch. Your job is to prove every built page carries exactly one of those footers, and to route any footer change to the component.
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — footer design tokens (not ported — source repo only)
-2. **Read** `src/components/SiteFooter.astro` — extract the canonical footer HTML structure (ignore Astro-specific syntax like `{` expressions; render static HTML equivalent)
-3. **Check if target page uses BaseLayout:**
-```bash
-grep -l "BaseLayout" src/pages/**/*.astro 2>/dev/null
-```
-If the page uses BaseLayout, the footer is auto-injected — skip it. Only proceed for legacy `dist/*.html` pages.
-3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `docs/superpowers/sessions/*-session-brief*.md` SESSION CONTEXT). Options were: "Single page, specific batch, or full-site audit?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+1. **Build** — `npm run build`; the audit reads `dist/`.
+2. **Read** `src/components/SiteFooter.astro` and `src/components/kit/SiteFooterKit.astro` — the only two footers.
+3. **Determine the mode from the invocation, do not interview.** Single page, a list of slugs, or the full site (default).
 
----
-
-## Footer Identification
-
-### Canonical Footer Signature (bsuk-footer-v1)
-```bash
-grep -l "bsuk-footer-v1" dist/*/index.html | wc -l
-```
-Pages with `class="bsuk-footer-v1"` are up to date.
-
-### Outdated Footer Patterns (needs replacement)
-```bash
-# WordPress/Astra footer
-grep -rl "astra-footer\|ast-footer\|footer-widget-area\|wp-block-group" dist/*/index.html
-
-# Old BSUK footer v0 (no bsuk-footer-v1 class)
-grep -rL "bsuk-footer-v1" dist/*/index.html | grep "index.html"
-```
-
----
-
-## Audit Protocol
+## Audit
 
 ```bash
-# Full site audit
-TOTAL=$(find dist/ -name "index.html" | wc -l)
-UP_TO_DATE=$(grep -rl "bsuk-footer-v1" dist/*/index.html 2>/dev/null | wc -l)
-NEEDS_UPDATE=$((TOTAL - UP_TO_DATE))
-
-echo "Total pages: $TOTAL"
-echo "Up to date: $UP_TO_DATE"
-echo "Needs footer update: $NEEDS_UPDATE"
+python3 - <<'EOF'
+import pathlib, re
+pages = [p for p in sorted(pathlib.Path("dist").rglob("index.html")) if "kit-preview" not in p.parts]
+bad = 0
+for f in pages:
+    h = f.read_text(encoding="utf-8", errors="ignore")
+    n = h.count("<footer")
+    ok = re.search(r'<footer[^>]*class="(?:site-footer|kit-ftr)', h)
+    if n != 1 or not ok:
+        bad += 1
+        print(f, "footers:", n, "component:", bool(ok))
+print("examined", len(pages), "pages;", bad, "problems")
+EOF
 ```
 
-Produce an audit table:
+`/kit-preview/` is excluded on purpose: it demos the kit footer beside the page's own.
 
-```markdown
-## Footer Audit — [date]
-| Page | Footer Version | Status |
-|------|---------------|--------|
-| /blue-staffy-uk-breeders/ | bsuk-footer-v1 | ✅ |
-| /buy-blue-staffy-puppies-uk/ | astra-footer | ❌ Needs update |
-```
+## Fixing a problem
 
----
+- **Two footers** — the page writes its own `<footer>`. Delete it from `src/pages/<slug>/index.astro`; the layout supplies one.
+- **No footer, or an unknown one** — the page does not use `BaseLayout` or `PageShell`. Move it onto one of them.
+- **A link, column or label is wrong** — edit the component (`SiteFooter.astro` or `SiteFooterKit.astro`) once; every page picks it up on the next build. A new link must point at a page that is served (`ls src/pages/<slug>/` or a row in `data/locations.json`).
 
-## Replacement Protocol
-
-### Single Page
-```bash
-# Step 1: Read canonical footer structure from SiteFooter.astro
-# Step 2: Identify footer block in target page
-grep -n "<footer\|</footer>" dist/[slug]/index.html
-
-# Step 3: Extract the footer section (note start/end line numbers)
-# Step 4: Build the canonical footer HTML from SiteFooter.astro structure
-# Step 5: Use Python to replace the footer block (more reliable than sed for multi-line)
-python3 -c "
-import re
-with open('dist/[slug]/index.html', 'r') as f:
-    content = f.read()
-new_footer = '''[PASTE FOOTER HTML FROM SiteFooter.astro HERE]'''
-content = re.sub(r'<footer.*?</footer>', new_footer, content, flags=re.DOTALL)
-with open('dist/[slug]/index.html', 'w') as f:
-    f.write(content)
-print('Done')
-"
-```
-
-### Batch Mode
-For batch updates, process each page in `dist/` that has an outdated footer. Run the single-page protocol for each page in the audit list. Never batch-write footer HTML without reading SiteFooter.astro first for the current canonical structure.
-
----
-
-## Verification After Replacement
+## Commit
 
 ```bash
-# Verify canonical class is present
-grep -c "bsuk-footer-v1" dist/[slug]/index.html
-
-# Verify no duplicate footers
-grep -c "<footer" dist/[slug]/index.html
-# Should output: 1
-
-# Verify schema markup intact
-grep -c "WPFooter\|LocalBusiness" dist/[slug]/index.html
-
-# Verify links work (spot check)
-grep -o 'href="/[^"]*"' dist/[slug]/index.html | grep "footer" | head -10
-```
-
----
-
-## Footer Content Requirements
-
-Every canonical footer must have:
-- [ ] Tagline bar with BSUK value proposition (color: `var(--primary)` — BSUK design system TBD)
-- [ ] 4-column dark body: About | Pages | Contact | Legal
-- [ ] Phone, email, address ([BREEDER_LOCATION])
-- [ ] Social links: Facebook, Instagram, YouTube
-- [ ] Copyright line with current year
-- [ ] LocalBusiness JSON-LD schema (or confirm it's on the page already)
-- [ ] `class="bsuk-footer-v1"` on the `<footer>` element
-
-### LocalBusiness Schema Example
-```json
-{
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "name": "SITE_URL_PLACEHOLDER",
-  "description": "home-raised Blue Staffy puppy breeder",
-  "url": "https://SITE_URL_PLACEHOLDER"
-}
-```
-
----
-
-## Deploy
-
-After any footer updates:
-```bash
-git add dist/
-git commit -m "Footer standardization: [page list or 'full site'] — bsuk-footer-v1"
+git add src/components/SiteFooter.astro src/components/kit/SiteFooterKit.astro src/pages/<slug>/index.astro
+git commit -m "fix(footer): <what changed>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
-Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit changed URLs to IndexNow.
-
----
-
 ## Rules
 
-1. **The canonical footer is `src/components/SiteFooter.astro`**, injected by `src/layouts/BaseLayout.astro` — never handwrite footer HTML into a page and never edit the footer in `dist/`, which is rebuilt on every `npm run build`
-2. **Run the Python script** for batch — don't manually edit multiple files
-3. **Verify after replacement** — always check for duplicates and missing class
-4. **One footer per page** — grep for `<footer` count and fail if > 1
-5. **Never edit footer content here** — content changes go through design-system.md first
-6. **Stage single-page changes** — test on one page before batch
+1. **The footer lives in two components** — `src/components/SiteFooter.astro` and `src/components/kit/SiteFooterKit.astro`; never handwrite footer HTML into a page and never edit the footer in `dist/`
+2. **One footer per page** — the audit fails any page with a count other than 1
+3. **Read the examined count** — an audit over 0 pages is not a pass
+4. **Contact details stay placeholders** — the phone is `PHONE_PLACEHOLDER` and the address is Carlisle, Cumbria, town-level only (Known Issue 16)

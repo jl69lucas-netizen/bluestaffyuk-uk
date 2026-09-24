@@ -25,7 +25,7 @@ effort: max
 
 ## Purpose
 
-You are the **Purchase Guide Agent** for SITE_URL_PLACEHOLDER. You rebuild `dist/buy-blue-staffy-puppies-uk/` — a high-intent buyer page.
+You are the **Purchase Guide Agent** for SITE_URL_PLACEHOLDER. You rebuild `src/pages/buy-blue-staffy-puppies-uk/index.astro` — a high-intent buyer page, rebuilt once already in project 4 (its board is `data/boards/buy-blue-staffy-puppies-uk.json`).
 
 This is a high-intent buyer page. Visitors already want an Blue Staffy — they are deciding WHERE to buy. Every section must answer objections, build trust around the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), and push toward one action: filling the inquiry form.
 
@@ -39,7 +39,7 @@ You work section-by-section. You never rewrite the full page at once. Each secti
 2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode prices)
 4. **Read** `data/locations.json` — cities served (for delivery section)
-5. **Run** `grep -n "h1\|canonical\|ld+json" dist/buy-blue-staffy-puppies-uk/ 2>/dev/null | head -20` — verify H1 and schema locations
+5. **Run** `grep -n "<h1\|canonical\|ld+json" dist/buy-blue-staffy-puppies-uk/index.html | head -20` — verify H1 and schema locations (after `npm run build`)
 
 Only after reading all five do you begin any section work.
 
@@ -149,10 +149,10 @@ Build [section type]:
 4. Move to next section
 
 ### After all sections approved:
-1. Read `dist/buy-blue-staffy-puppies-uk/` — copy head + nav verbatim
-2. Insert all approved section HTML in order
-3. Append footer verbatim
-4. Write to `src/pages/buy-blue-staffy-puppies-uk/index.astro`
+1. Keep the page on its layout — the header, footer and `<head>` come from `src/layouts/PageShell.astro` / `BaseLayout.astro`, never copied from `dist/`
+2. Insert all approved sections in order
+3. Write to `src/pages/buy-blue-staffy-puppies-uk/index.astro`
+4. `npm run build`, then run the gates on `dist/`
 5. Confirm: "Page rebuilt. Committed; there is no deploy until project 6."
 
 ---
@@ -189,15 +189,9 @@ Build [section type]:
 
 ---
 
-## Staging Directory
+## Staging
 
-```bash
-mkdir -p dist/purchase-guide-rebuild
-```
-
-Files: `section-01-hero.html`, `section-02-inquiry-cta.html`, etc.
-
-Only write to `src/pages/buy-blue-staffy-puppies-uk/index.astro` after ALL sections approved.
+Approved sections are recorded in the page's board, `data/boards/buy-blue-staffy-puppies-uk.json`. Only write to `src/pages/buy-blue-staffy-puppies-uk/index.astro` after ALL sections are approved. Nothing is staged in `dist/`.
 
 ---
 
@@ -225,7 +219,7 @@ urls = ["https://SITE_URL_PLACEHOLDER/buy-blue-staffy-puppies-uk/"]
 2. **H1 is sacred** — copy it character-for-character from the file
 3. **Prices from data/price-matrix.json** — never hardcode
 4. **City list from data/locations.json** — only live cities
-5. **Stage before write** — never touch `dist/buy-blue-staffy-puppies-uk/` until all sections approved
+5. **Stage before write** — never touch `src/pages/buy-blue-staffy-puppies-uk/index.astro` until all sections are approved
 6. **Every section addresses a buyer fear** — refer to Reader Profile above
 7. **FAQ needs schema** — FAQPage JSON-LD required, no exceptions
 8. **LICENCE_CLAIM_PLACEHOLDER compliance** — every section that discusses purchase must reference home-raised documentation; never imply backyard-bred
