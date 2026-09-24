@@ -1,6 +1,6 @@
 # System Gaps — Gate Report
 
-**Build:** the system-gaps bridge between projects 4 and 5, 2026-09-24. **Branch:** `system-gaps` (worktree `/Users/apple/Downloads/BSUK-gaps`), cut from `foundation` at `9927710`. **Plan:** `docs/superpowers/plans/2026-09-24-system-gaps.md` (Artifact https://claude.ai/artifact/FS2ekGxx7jAM5T8poem95R). **Execution:** subagent-driven. Every task had an Opus implementer, a spec-compliance review and a code-quality review, re-reviewed until both passed. Each task was also checked against a full rehearsal of the plan (`wt-int`, run in plan order before execution).
+**Build:** the system-gaps bridge between projects 4 and 5, 2026-09-24. **Branch:** `system-gaps` (worktree `/Users/apple/Downloads/BSUK-gaps`), cut from `foundation` at `9927710`. **Plan:** `docs/superpowers/plans/2026-09-24-system-gaps.md` (Artifact https://claude.ai/artifact/FS2ekGxx7jAM5T8poem95R). **Merged:** `--no-ff` into `foundation` at `06dee26`; `foundation` after the merge: build 0, 2993 passed, 14 skipped, 1 xfailed, `check:all` 0. **This report:** https://claude.ai/artifact/VFCVy6avEXQ7gGKVcD2mae. **Execution:** subagent-driven. Every task had an Opus implementer, a spec-compliance review and a code-quality review, re-reviewed until both passed. Each task was also checked against a full rehearsal of the plan (`wt-int`, run in plan order before execution).
 
 ## Verdict
 
