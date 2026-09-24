@@ -142,3 +142,22 @@ def outline_heading_repeat(board, ont):
         if len(where) > 1:
             yield ("outline-heading-repeat", "FAIL",
                    f"the outline carries one heading {len(where)} times: {', '.join(where)}")
+
+# ── Task 10: an image under every body heading (user ruling G1) ─────────────────────────
+# The logic is in scripts/image_rules.py; imported here, at the bottom, so that module can
+# never import this one half-built.
+import image_rules as IR  # noqa: E402
+
+
+@register
+def image_every_body_heading(board, ont):
+    """Every body H2 and body H3 plans an image slot, the hero a photo, and each slot says
+    where its image comes from; an approved record names an image for every generated slot."""
+    return IR.slot_findings(board)
+
+
+@register
+def image_build_ready(board, ont):
+    """On an approved record every slot resolves to a file the build may use: a served file,
+    an ingested folder file, or the generated image whose bytes the breeder approved."""
+    return IR.build_findings(board)

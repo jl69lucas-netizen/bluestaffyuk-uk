@@ -50,6 +50,10 @@
      "type": "string",
      "minLength": 1,
      "description": "working rule 15: the migrated page's first paragraph under this heading, which the build pastes as the section's (or node's) FIRST paragraph before any fresh prose. Where the old paragraph stated a wrong fact this holds the CORRECTED text and `verbatim.changed` carries the row that says so."
+    },
+    "images": {
+     "comment": "An H3's own image slots, same shape as a section's (system-gaps build: every body H3 of a location, comparison or blog page carries one). Absent on every record built before it.",
+     "$ref": "#/properties/sections/items/properties/images"
     }
    },
    "comment": "An H3–H6 of the outline. It carries the two rule-15 fields for the same reason a section does: eleven of the homepage's twenty-three keyword headings are H3s, and nine of the seventeen opening paragraphs belong to one. Without them the rule would be satisfiable only for H2s, and the set would lose the half of itself that sits a level down."
@@ -1111,6 +1115,46 @@
         },
         "prompt": {
          "type": "string"
+        },
+        "source": {
+         "comment": "Where this slot's image comes from (system-gaps build, scripts/image_rules.py). Optional so the records built before it keep their hashes; a location, comparison or blog record from `boarded` on must name it.",
+         "enum": [
+          "existing",
+          "assets-folder",
+          "generate",
+          "infographic"
+         ]
+        },
+        "file": {
+         "comment": "source `existing`: the served file reused at its own path (working rule 11).",
+         "type": "string",
+         "pattern": "^/images/[A-Za-z0-9._/-]+$"
+        },
+        "source_file": {
+         "comment": "source `assets-folder`: the filename in the breeder's Assets/Images folder; the build refuses it until it is ingested into public/images.",
+         "type": "string",
+         "minLength": 1
+        },
+        "og_style": {
+         "comment": "source `generate`: the OG photo style of IMAGE-DESIGNS.md the image is generated in.",
+         "enum": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "H"
+         ]
+        },
+        "infographic_style": {
+         "comment": "source `infographic`: the infographic style of IMAGE-DESIGNS.md.",
+         "enum": [
+          "IG-1",
+          "IG-2",
+          "IG-3",
+          "IG-4",
+          "IG-5"
+         ]
         }
        }
       }
@@ -1153,7 +1197,14 @@
            "const": true
           },
           "anchor_type": {
-           "enum": ["exact", "partial", "lsi", "natural", "branded", "naked-url"],
+           "enum": [
+            "exact",
+            "partial",
+            "lsi",
+            "natural",
+            "branded",
+            "naked-url"
+           ],
            "description": "the anchor's type for Anchor Diversity (docs/reference/seo-rules.md Rule 58, rules/links.md anchor-type-variation). Optional so the records built before it keep their hashes; scripts/link_diversity.py requires it on location, comparison and blog pages"
           }
          },
@@ -1204,7 +1255,14 @@
            "minLength": 1
           },
           "anchor_type": {
-           "enum": ["exact", "partial", "lsi", "natural", "branded", "naked-url"],
+           "enum": [
+            "exact",
+            "partial",
+            "lsi",
+            "natural",
+            "branded",
+            "naked-url"
+           ],
            "description": "the anchor's type for Anchor Diversity (docs/reference/seo-rules.md Rule 58, rules/links.md anchor-type-variation). Optional so the records built before it keep their hashes; scripts/link_diversity.py requires it on location, comparison and blog pages"
           }
          }
@@ -1640,7 +1698,7 @@
     "picks": {
      "type": "object",
      "propertyNames": {
-      "pattern": "^[a-z][a-z0-9-]*$"
+      "pattern": "^(img:)?[a-z][a-z0-9-]*$"
      },
      "additionalProperties": {
       "type": "string"

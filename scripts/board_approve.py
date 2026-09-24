@@ -56,6 +56,7 @@ import tempfile
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import pageboard as PB
 from pageboard import file_token       # one `#` → `_` spelling for the whole board system
+import image_rules as IR               # the `img:<slot>` picks (system-gaps build, Task 10)
 
 H2 = re.compile(r"<h2[^>]*>(.*?)</h2>", re.S)
 TAG = re.compile(r"<[^>]+>")
@@ -231,6 +232,8 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     by_id = {s["id"]: s for s in b["sections"]}
 
     for sid, pick in inbox.get("picks", {}).items():
+        if sid.startswith(IR.PICK_PREFIX):
+            continue                                  # an image pick, validated below
         if sid not in by_id:
             raise PB.BoardError(f"approval picks section {sid!r}, which is not in the record")
         # The pick has to come off the menu the board offered. It is matched on the BASE,
@@ -250,6 +253,11 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
                 f"section {sid}: pick {pick!r} is not one of its candidates "
                 f"({', '.join(by_id[sid]['options']['candidates']) or 'none offered'})")
         by_id[sid]["options"]["pick"] = pick
+    # Image picks name a slot, not a section, and live only in `approval.picks`. The one read
+    # this function makes outside its arguments is here: a picked file must exist on disk.
+    bad = IR.validate_image_picks(b, inbox.get("picks", {}))
+    if bad:
+        raise PB.BoardError("image picks refused: " + "; ".join(bad))
     for sid, note in inbox.get("notes", {}).items():
         # PAGE notes are not section notes. The board's "Navigation on this page" block
         # (spec §9 amendment 7) asks about furniture the SHELL mounts — the dial, the strip,
