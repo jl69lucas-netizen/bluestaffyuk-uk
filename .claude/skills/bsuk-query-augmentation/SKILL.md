@@ -25,7 +25,7 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 - Browser artefacts (snapshots, screenshots, saved HTML, console logs) go only in the session
   scratchpad, by absolute path. If this run created a `.playwright-mcp/` folder, delete it.
 - **Money:** before each batch of paid calls, tell the user which calls, why, and the estimate
-  (the line `python3 scripts/query_augment.py --budget <source>` prints: the typical cost per
+  (the first line `python3 scripts/query_augment.py --budget <source>` prints: the typical cost per
   call and the total the guard counts against the cap), ask for today's DataForSEO dashboard
   balance, and wait for a yes. Report the spend after. Never delete or edit
   `data/queries/spend.json` or `data/queries/dashboard.json`, and never run `--reconcile`: only
@@ -38,7 +38,8 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
   last reading; run `python3 scripts/query_augment.py --reconcile --balance B --opening O
   --covers N`, where O is the opening balance with every top-up included (the last reading's
   `opening_balance_usd` in `data/queries/dashboard.json`, plus any new top-up); then read the
-  opening O back to the user.
+  opening O back to the user. Never reuse a balance the user gave before calls that N
+  includes: for such a balance, `--covers` is the count the log held when it was read, not N.
 - **Firecrawl is not free:** every Firecrawl search or scrape spends the user's Firecrawl
   credits (the response shows `creditsUsed`). Add them up and put them in the spend report.
   The free rungs are the browser and `curl`.
@@ -49,9 +50,9 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 |---|---|---|
 | 0 | every mode | ok |
 | 1 | every mode | internal error (a bug; nothing written) → stop, report |
-| 2 | every mode | usage: bad slug, route, `--today` or `--cost`; also `--record` refused (a bad cost or a damaged spend log) → see Step 2; `--reconcile` refused (controller only: a bad balance, a `--covers` out of range, a reading dated before the last one, spend that would fall, the last balance repeated after new calls, or a damaged file; also `--balance`, `--opening` or `--covers` given without `--reconcile`) → check the command against the reading procedure (Working rules, Money); for a balance refusal, ask the user to read the dashboard again |
+| 2 | every mode | usage: bad slug, route, `--today` or `--cost`; also `--record` refused (a bad cost or a damaged spend log) → see Step 2; `--reconcile` refused (controller only: a bad balance, no `--balance`, a first reading without `--opening`, an opening below the last reading's, a `--covers` out of range, a reading dated before the last one, spend that would fall, the last balance repeated after new calls, or a damaged file; also `--balance`, `--opening` or `--covers` given without `--reconcile`) → check the command against the reading procedure (Working rules, Money); for a balance refusal, ask the user to read the dashboard again |
 | 3 | `--preflight` only | cached → make NO call |
-| 4 | `--preflight`, `--budget` | budget exceeded, or settings, spend log or dashboard readings unreadable → no call made; stop, report the guard's stderr line; never work around it |
+| 4 | `--preflight`, `--budget` | `--preflight`: budget exceeded; both modes: settings, spend log or dashboard readings unreadable (`--budget` never exits 4 for the budget itself) → no call made; stop, report the guard's stderr line; never work around it |
 | 5 | build only | short → Step 5 |
 | 6 | build, `--extract-h2` | bad input. Build: a raw input file is unparseable or the wrong shape → fix the named file from its source, never hand-edit around it. `--extract-h2`: the saved HTML is missing or unreadable → capture it again |
 
@@ -92,8 +93,9 @@ file (the script records it). Never solve, dodge or retry around a robot check.
    python3 scripts/query_augment.py --record <slug> --source <source> \
      --endpoint "<tool> <params> (response carries no cost; conservative estimate)" --cost <usd>
    ```
-   Connector responses carry no cost field: record `query_typical_call_usd` and say so in
-   `--endpoint`, as above. If the response does show a cost, record that.
+   Connector responses carry no cost field: record the typical cost the first line of
+   `python3 scripts/query_augment.py --budget <source>` prints (`typical call …` — never below
+   `query_typical_call_usd`) and say so in `--endpoint`, as above. If the response does show a cost, record that.
 4. Save the response as `data/queries/raw/<slug>/<source>.response.json`, dropping third-party
    contact details (phone numbers, street addresses, emails, profile/WhatsApp URLs) and noting
    what was dropped in `_saved_note`. `tests/py/test_no_third_party_contacts.py` fails on any

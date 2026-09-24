@@ -36,7 +36,7 @@ effort: high
 | Exit | Meaning → do |
 |---|---|
 | 3 | cached: the page already has a bought answer. Reuse `data/queries/raw/<slug>/ai_engines.response.json`; no call, no stop → **The script** |
-| 0 | not bought. **STOP** with one budget line: slug, query, and the line `python3 scripts/query_augment.py --budget ai_engines` prints — the typical cost (an estimate) and the total the guard counts against `query_total_budget_usd` (real spend up to the last dashboard reading in `data/queries/dashboard.json`, logged costs after it); ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined`. Never run `--reconcile`: recording a new dashboard reading is the controller's job alone |
+| 0 | not bought. **STOP** with one budget line: slug, query, and the first line `python3 scripts/query_augment.py --budget ai_engines` prints — the typical cost (an estimate) and the total the guard counts against `query_total_budget_usd` (real spend up to the last dashboard reading in `data/queries/dashboard.json`, logged costs after it); ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined`. Never run `--reconcile`: recording a new dashboard reading is the controller's job alone |
 | 4 | over budget, or the log is unreadable → stop, report the guard's stderr line; never work around it |
 | 1, 2 | the guard failed → stop and report its output |
 
@@ -137,7 +137,7 @@ PROFILE_HOSTS = {"wa.me", "wa.link", "whatsapp.com", "instagram.com", "facebook.
 PLATFORM_HOSTS = {"blogspot.com", "wordpress.com", "wixsite.com", "squarespace.com", "weebly.com", "webflow.io",
                   "carrd.co", "jimdosite.com", "godaddysites.com", "square.site", "business.site"}  # sellers on a host, never registry candidates
 OWN = own_domains(strict=True)  # the same helper tests/py/test_llm_intel.py checks with; no BSUK domain known -> stop
-# the page and where the query came from: the city question, else the question file, else the page map (+ gap-matrix rows)
+# the page and where the query came from: the location question, else the question file, else the page map (+ gap-matrix rows)
 qfile = f"data/queries/{slug}.json"
 q = json.load(open(qfile)) if os.path.exists(qfile) else None
 pm = next((p for p in json.load(open("data/page-map.json"))["pages"]
