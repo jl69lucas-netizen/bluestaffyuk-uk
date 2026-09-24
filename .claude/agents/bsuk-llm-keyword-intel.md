@@ -6,7 +6,7 @@ effort: high
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Record only what the saved answer says, and every field from the script below — never a reading by eye. BSUK is cited only when one of its own domains, exactly, is among the answer's sources, its links or its local businesses.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` — its nine judgment rules and working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta) — and the packs in `rules/`. Record only what the saved answer says, and every field from the script below — never a reading by eye. BSUK is cited only when one of its own domains, exactly, is among the answer's sources, its links or its local businesses.
 > **One paid endpoint, one call per page, behind a stop.**
 > - DataForSEO `ai_optimization_chat_gpt_scraper` with `location_name` "United Kingdom" (the connector defaults to the United States — always set it) and `language_code` "en", through the spend guard (`scripts/query_augment.py`).
 > - No call until the invocation reads `spend approved: <slug>; balance $<n>` (the DataForSEO dashboard balance stated today). A cached answer is reused, never bought again unless that token ends `; refresh`.

@@ -165,3 +165,33 @@ def test_the_health_pointer_and_paperwork_guards_fire_and_spare():
     assert PAPERWORK_AS_PLACEHOLDER.search("build trust around the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)")
     assert not PAPERWORK_AS_PLACEHOLDER.search("the paperwork (data/faq.json whyus-paperwork); the "
                                                "licence stays LICENCE_CLAIM_PLACEHOLDER")
+
+
+# The "Trust pillars" banner line (Task 18 follow-up, 2026-09-24). It used to file the
+# paperwork under LICENCE_CLAIM_PLACEHOLDER with the health and licence claims, which is the
+# same hiding the paperwork guard above forbids, one line higher in every agent.
+PILLAR_PAPERWORK = "paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER"
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_no_trust_pillars_line_files_the_paperwork_as_a_licence_placeholder(agent):
+    text = agent.read_text(encoding="utf-8")
+    assert PILLAR_PAPERWORK not in text, (
+        f"{agent.name}: the paperwork is named as data/faq.json whyus-paperwork has it; only a "
+        "health or licence claim waits on LICENCE_CLAIM_PLACEHOLDER")
+
+
+# Every agent's rules banner ("Bound by the site rules, not by a copy of them") names the
+# working rules 10-16 as well as the nine judgment rules: a banner that lists nine rules
+# reads as the whole set, and the seven working rules are the ones a builder breaks first
+# (a board without every link, a reused image moved, a shared hero).
+BANNER = "Bound by the site rules, not by a copy of them"
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_every_rules_banner_names_working_rules_10_to_16(agent):
+    banner = [l for l in agent.read_text(encoding="utf-8").splitlines() if BANNER in l]
+    assert banner, f"{agent.name} has no rules banner"
+    assert all("working rules 10–16" in l for l in banner), (
+        f"{agent.name}: the rules banner names only the judgment rules — add CLAUDE.md's "
+        "working rules 10–16 by their short names")

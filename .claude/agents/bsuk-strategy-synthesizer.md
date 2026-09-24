@@ -7,7 +7,7 @@ effort: max
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` (Recommend + Why; no invented facts) and the packs in `rules/`. You read research and write one strategy file. You never build a page, fetch, buy, or re-run a research agent — and you never read `src/` or `dist/`: what BSUK has comes from the research files, not from your own inspection.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` (Recommend + Why; no invented facts; working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta)) and the packs in `rules/`. You read research and write one strategy file. You never build a page, fetch, buy, or re-run a research agent — and you never read `src/` or `dist/`: what BSUK has comes from the research files, not from your own inspection.
 > **A figure you quote is copied exactly as a listed source writes it** — `7/12`, not "about 60%" — or it is not quoted. A number you worked out yourself (a count of stubs, a word count, a share) is not a figure: say it **without a number** ("most of the stubs", "the contested cities") or leave it out — never spelled out ("seventeen", "all four"), which dodges the check. This holds in Strategy A and B too, where the check does not look: check those yourself.
 
 ## The rule that makes this agent

@@ -266,6 +266,23 @@ def test_every_route_a_skill_or_command_names_is_built_or_redirected(path):
         path.relative_to(ROOT), offenders)
 
 
+# The location builder agent's gate list is the skill's Step 6, command for command and in
+# order (Task 18 follow-up, 2026-09-24): the agent once listed five of the eight, and a
+# builder that stops at the agent's list never runs the render harness.
+def _fenced_commands(text, heading):
+    block = text[text.index(heading):]
+    start = block.index("```bash\n") + len("```bash\n")
+    return [l.strip() for l in block[start:block.index("```", start)].splitlines() if l.strip()]
+
+
+def test_the_location_builder_agent_runs_exactly_the_skills_step_6_gates():
+    skill = (ROOT / ".claude/skills/bsuk-location-page-builder/SKILL.md").read_text(encoding="utf-8")
+    agent = (ROOT / ".claude/agents/bsuk-location-builder.md").read_text(encoding="utf-8")
+    gates = _fenced_commands(skill, "## Step 6 — gates")
+    assert len(gates) == 8, gates
+    assert _fenced_commands(agent, "## After Each Page Built") == gates
+
+
 # The agents too (Task 18 follow-up, 2026-09-24). Two things an agent writes that are not
 # BSUK routes: another site's path on a line that names that site's domain (the intel agents
 # describe competitors' URL shapes), and a `/tmp/` scratch path. Everything else is a page.
