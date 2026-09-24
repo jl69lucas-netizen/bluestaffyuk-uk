@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""Builds docs/artifacts/bsuk-foundation-gate-report.html from the two close-out reports.
+"""Builds a report page from markdown: the Foundation gate report, or any one file it is given.
 
 Same shape as scripts/build_spec_artifact.py: the markdown is shipped verbatim inside
 `<script type="text/markdown">` blocks and rendered client-side, so every "Copy section"
 button hands back the exact source rather than HTML scraped out of the DOM — which is the
 whole point of publishing a report somebody will paste into the next project's plan.
 
-Input is the gate report first, then the migration report appended as a further set of
-`## ` sections. Gate first because it answers "did Foundation pass"; migration second
+With no arguments, input is the gate report first, then the migration report appended as a
+further set of `## ` sections. Gate first because it answers "did Foundation pass"; migration second
 because it answers "what came across", which is the detail behind the answer.
 
 Usage:
@@ -46,8 +46,9 @@ def split_sections(src):
 
 
 def esc(s):
-    """Safe inside <script type=text/markdown>: only the closing tag can break out."""
-    return s.replace('</script', '<\\/script')
+    """Safe inside <script type=text/markdown>: only the closing tag can break out, and HTML
+    reads that tag in any case, so `</SCRIPT` is neutralised as well as `</script`."""
+    return re.sub(r'</(script)', r'<\\/\1', s, flags=re.I)
 
 
 def foundation_page():
@@ -80,10 +81,12 @@ def foundation_page():
         context=context, blocks=blocks)
 
 
-def page(title, mast, meta, copy_label, copy_head, context, blocks):
-    """The report page. `copy_head` is a JavaScript string literal, written as it is to go in."""
+def page(title, mast, meta, copy_label, copy_head, context, blocks, extra_head=''):
+    """The report page. `copy_head` is a JavaScript string literal, written as it is to go in.
+    `extra_head` is markup after the title; the Foundation page passes none, so it stays byte
+    for byte what it has always been."""
     return '''<title>''' + title + '''</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+''' + extra_head + '''<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
 <style>
 :root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
@@ -172,8 +175,10 @@ def generic_page(src, title, eyebrow, heading, copy_head, status, date, rel):
         meta='<span class="pill">%s</span> <span class="pill">%s</span><br>%s' % (
             html.escape(date), html.escape(status), html.escape(rel)),
         copy_label='Copy the whole document as Markdown',
-        copy_head=head, context=context, blocks=blocks), len(sections) + 1
+        copy_head=head, context=context, blocks=blocks, extra_head=VIEWPORT), len(sections) + 1
 
+
+VIEWPORT = '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
 
 USAGE = ('usage: build_report_artifact.py [SRC OUT TITLE EYEBROW HEADING COPY_HEAD STATUS DATE REL]\n'
          '  no arguments: the Foundation report; nine: any one markdown file')

@@ -17,6 +17,18 @@ import placeholder_check  # noqa: E402
 SHEET = ROOT / "docs" / "reference" / "questions-for-lisa.md"
 QUESTION = re.compile(r"^(\d+)\. \*\*(.+?)\*\*(.*?)(?=^\d+\. \*\*|^## |\Z)", re.M | re.S)
 GOES = "**Where it goes:**"
+LEDGER = ROOT / "data" / "quality" / "evidence-ledger.json"
+# An existing faq row is named either alone — "the `a` row in `data/faq.json`" — or in a list,
+# "the `a`, `b` and `c` rows in `data/faq.json`"; every id in the list is checked.
+OLD_ONE = r"the `([\w-]+)` row in `data/faq\.json`"
+OLD_LIST = r"the (`[\w-]+`(?:, `[\w-]+`)* and `[\w-]+`) rows in `data/faq\.json`"
+
+
+def existing_rows(text):
+    ids = re.findall(OLD_ONE, text)
+    for group in re.findall(OLD_LIST, text):
+        ids += re.findall(r"`([\w-]+)`", group)
+    return ids
 
 
 def questions():
@@ -42,10 +54,23 @@ def test_faq_rows_called_existing_exist_and_new_ones_do_not():
     ids = {r["id"] for r in json.loads((ROOT / "data/faq.json").read_text(encoding="utf-8"))}
     text = " ".join(SHEET.read_text(encoding="utf-8").split())
     new = re.findall(r"a new row `([\w-]+)` in `data/faq\.json`", text)
-    old = re.findall(r"the `([\w-]+)` row in `data/faq\.json`", text)
+    old = existing_rows(text)
     assert new and old
     assert [i for i in new if i in ids] == [], "a row the sheet calls new already exists"
     assert [i for i in old if i not in ids] == [], "a row the sheet calls existing is missing"
+
+
+def test_q8_names_every_faq_row_the_dna_clear_ledger_row_matches():
+    # The ledger's own pattern for the unproven "parents are DNA clear" claim, applied the way
+    # scripts/evidence_audit.py applies it (re.I), to each faq row's question and answer.
+    pattern = next(c["pattern"] for c in json.loads(LEDGER.read_text(encoding="utf-8"))["claims"]
+                   if c["id"] == "parents-dna-clear")
+    rows = json.loads((ROOT / "data/faq.json").read_text(encoding="utf-8"))
+    claiming = {r["id"] for r in rows if re.search(pattern, r["q"] + " " + r["a"], re.I)}
+    assert claiming, "the ledger pattern matches no faq row"
+    q8 = next(body for n, _, body in questions() if n == 8)
+    named = set(existing_rows(q8.split(GOES, 1)[1]))
+    assert sorted(claiming - named) == [], "Q8 misses a row that claims the parents are clear"
 
 
 def test_settings_keys_called_existing_exist_and_new_ones_do_not():

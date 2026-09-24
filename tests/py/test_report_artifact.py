@@ -49,13 +49,20 @@ def test_arguments_build_the_named_markdown_into_the_named_file(tmp_path):
     for s in ('data-title="Summary"', 'data-title="First questions"',
               'data-title="Second questions"', "Why this exists, in one paragraph.",
               "Eyebrow line", "The heading", "status: ready to send", "2026-09-24",
-              "docs/reference/sheet.md", "Copy the whole document as Markdown"):
+              "docs/reference/sheet.md", "Copy the whole document as Markdown",
+              '<meta name="viewport" content="width=device-width, initial-scale=1">'):
         assert s in page, s
     assert "says <\\/script> in the middle" in page
     assert '"# Copy head \\u2014 sheet\\n\\n"' in page
     assert "Foundation" not in page
     assert "3 sections" in r.stdout
     assert FOUNDATION.read_bytes() == before, "an argument run must not touch the Foundation report"
+
+
+def test_a_closing_script_tag_is_escaped_in_any_case():
+    # HTML ends a <script> block at </script whatever its case, so every case is neutralised.
+    assert R.esc("a </SCRIPT> b </Script c </script") == "a <\\/SCRIPT> b <\\/Script c <\\/script"
+    assert "</script" not in R.esc("x </sCrIpT> y").lower()
 
 
 def test_a_partial_argument_list_is_refused():

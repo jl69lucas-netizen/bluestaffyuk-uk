@@ -42,14 +42,15 @@ changes. (From Known Issues 41, 7 and 54 in `docs/reference/session-log.md`.)
 ## The parents' health
 
 8. **Have both parents been tested for L-2-HGA and for hereditary cataracts (HC-HSF4)?** What
-   were the results? A photo of each certificate is the best answer. Five answers on the site
-   already say the parents are "certified clear" or "DNA tested clear", and until we have seen
-   the certificates we cannot show that this is true. **Where it goes:** the
+   were the results? A photo of each certificate is the best answer. Several answers on the
+   site already say the parents are "certified clear" or "DNA tested clear", and until we have
+   seen the certificates we cannot show that this is true. **Where it goes:** the
    `parents-dna-clear` row in `data/quality/evidence-ledger.json` (today it records the
-   results as not yet seen), the `health-dna-tests` row in `data/faq.json`, the
-   `about-health-tests` row in `data/faq.json`, the `home-parents-health-tested` row in
-   `data/faq.json`, the `about-health-tested` row in `data/faq.json` and the
-   `health-genetic-tested` row in `data/faq.json`.
+   results as not yet seen), and the `about-health-tested`, `about-health-tests`,
+   `blog-what-we-cover`, `health-dna-tests`, `health-genetic-tested`, `health-l2hga-meaning`,
+   `home-ethical-breeder`, `home-health-tests`, `home-parents-health-tested`,
+   `listing-health-clearances`, `sale-kc-health-checked` and `whyus-prone-to` rows in
+   `data/faq.json`.
 9. **Have the parents had eye examinations and elbow screening, as well as the DNA tests?**
    **Where it goes:** a new row `health-eye-elbow-screening` in `data/faq.json`.
 10. **What are the parents' Kennel Club registered names, and what happens if a puppy's
@@ -73,9 +74,9 @@ changes. (From Known Issues 41, 7 and 54 in `docs/reference/session-log.md`.)
     children, other dogs, household noises, car journeys. **Where it goes:** a new row
     `puppy-socialisation` in `data/faq.json`.
 16. **Do you follow Puppy Culture or early neurological stimulation (ENS) with your litters?**
-    One of the old website's city pages said you do, but nothing we hold confirms it, so the
-    new pages leave it out until you tell us. **Where it goes:** a new row
-    `puppy-early-stimulation` in `data/faq.json`.
+    One of the website's city pages, carried over from the old site, says you do, but nothing
+    we hold confirms it, so no rewritten page will say it until you tell us. **Where it goes:**
+    a new row `puppy-early-stimulation` in `data/faq.json`.
 
 ## Colour
 
