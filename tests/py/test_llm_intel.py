@@ -99,7 +99,8 @@ def problems(doc, name=None, own=None):
             out.append("format is only read from a verbatim answer; a summary gives NOT FETCHED")
         elif f["length"] != _band(f["words"]):
             out.append(f"format length {f['length']} does not match {f['words']} words")
-    given = {re.sub(r"[^a-z0-9 '&-]+", " ", e.split("|")[0].strip().lower()).strip() for e in doc["extra"].split(";") if e.strip()}
+    parts = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in doc["extra"].split(";") if e.strip()]
+    given = {re.sub(r"[^a-z0-9 '&-]+", " ", p[0]).strip() for p in parts if p}  # the script's name: the first non-empty |-part
     for e in doc["entities"]:
         if e["kind"] == "other" and e["entity"] not in given:
             out.append(f"entity {e['entity']!r} is not in extra: a re-run with extra would not reproduce it")
@@ -793,3 +794,19 @@ def test_a_profile_link_in_the_answer_is_never_a_citation(tmp_path):
     code, doc, err = _run(_root(tmp_path), _answer("See https://www.instagram.com/example/ and https://www.thekennelclub.org.uk/."))
     assert code == 0, err
     assert [c["domain"] for c in doc["citations"]] == ["thekennelclub.org.uk"]
+
+
+def test_the_contract_reads_extra_exactly_as_the_script_does(tmp_path):
+    # the entity's name is the first NON-EMPTY |-part, in the script and in problems() alike
+    code, doc, err = _run(_root(tmp_path), _answer("Try Pets4Homes for listings."), EXTRA="|pets4homes")
+    assert code == 0, err
+    assert [e["entity"] for e in doc["entities"] if e["kind"] == "other"] == ["pets4homes"]
+    assert problems(doc, f"{MAN}-2026-09-23.json") == []
+
+
+def test_an_empty_extra_entry_is_skipped(tmp_path):
+    code, doc, err = _run(_root(tmp_path), _answer("Try Pets4Homes for listings."), EXTRA="pets4homes;|")
+    assert code == 0, err
+    assert doc["extra"] == "pets4homes;|"
+    assert [e["entity"] for e in doc["entities"] if e["kind"] == "other"] == ["pets4homes"]
+    assert problems(doc, f"{MAN}-2026-09-23.json") == []

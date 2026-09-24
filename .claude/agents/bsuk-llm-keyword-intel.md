@@ -112,7 +112,7 @@ QUERY = os.environ["QUERY"]  # the buyer question asked
 NOT_FETCHED = os.environ.get("NOT_FETCHED", "").strip()  # a reason: no answer to read
 PAID = os.environ.get("PAID") == "1"
 EXTRA_GIVEN = os.environ.get("EXTRA", "").strip()  # recorded in the output as given, so a re-run reproduces it
-EXTRA = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in EXTRA_GIVEN.split(";") if e.strip()]
+EXTRA = [p for p in ([v.strip().lower() for v in e.split("|") if v.strip()] for e in EXTRA_GIVEN.split(";")) if p]  # an empty entry ("|") is skipped
 def fail(msg, code=1):
     print(msg, file=sys.stderr)
     sys.exit(code)
