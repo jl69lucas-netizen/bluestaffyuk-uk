@@ -387,6 +387,7 @@ BLOCK_CSS = (
     ".imgopt .nothumb{display:grid;place-items:center;color:var(--ink-3)}"
     ".imgopt:has(input:checked){outline:3px solid var(--clay);outline-offset:1px}"
     ".imgstyles{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;font-size:13px;margin:6px 0}"
+    ".imgstyles label{padding:6px 4px}"
     ".imggen img{max-width:min(100%,480px);border-radius:6px;display:block;margin:6px 0}"
     ".imgwhy{font-size:12px;color:var(--ink-3);margin:2px 0 4px}.imgwarn{color:var(--warn);font-weight:600}"
     "@media (max-width:640px){.imgc{grid-template-columns:repeat(2,minmax(0,1fr))}}</style>")
@@ -398,11 +399,12 @@ def thumb_uri(path, width=THUMB_W):
     try:
         from PIL import Image
         with Image.open(path) as im:
+            im.draft("RGB", (width, width * 2))        # a JPEG decodes at a reduced scale
+            im.thumbnail((width, width * 2))          # shrink first, then the RGB copy
             im = im.convert("RGB")
-            im.thumbnail((width, width * 2))
             buf = io.BytesIO()
             im.save(buf, "WEBP", quality=70)
-    except (OSError, ValueError):
+    except (OSError, ValueError, Image.DecompressionBombError):
         return None                                   # shown as a labelled box instead
     return "data:image/webp;base64," + base64.b64encode(buf.getvalue()).decode("ascii")
 
@@ -431,11 +433,15 @@ def board_images(board, root=None, assets_dir=None, per_pool=3):
 
 
 def _e(v):
-    return _html.escape("" if v is None else str(v), quote=True)
+    """Record text for the board, escaped and on one line: block 7 sits in Markdown, where a
+    blank line inside the HTML ends the HTML block and breaks the slot's fieldset."""
+    return _html.escape(" ".join(("" if v is None else str(v)).split()), quote=True)
 
 
 def _radio(name, value, checked):
-    return f'<input type="radio" name="{_e(name)}" value="{_e(value)}"{" checked" if checked else ""}>'
+    # The value is escaped but NOT collapsed: it is the exact pick the approval stores.
+    v = _html.escape(value, quote=True)
+    return f'<input type="radio" name="{_e(name)}" value="{v}"{" checked" if checked else ""}>'
 
 
 def _slot_html(board, sec, node, img, row, images, current):
@@ -454,7 +460,7 @@ def _slot_html(board, sec, node, img, row, images, current):
         cells = []
         for c in cands:
             uri = images["thumbs"].get(c["pick"])
-            pic = f'<img src="{uri}" alt="">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
+            pic = f'<img src="{uri}" alt="{_e(c["alt"])}">' if uri else f'<span class="nothumb">{_e(c["file"] or c["asset"])}</span>'
             star = "⭐ " if c["pick"] == suggested.get("pick") else ""
             note = (f'<span class="imgwarn">needs ingest → {_e(c["ingest_as"])}</span>' if c["pool"] == "assets"
                     else f'<span class="why">{_e(c["file"])}'
@@ -476,7 +482,7 @@ def _slot_html(board, sec, node, img, row, images, current):
         cur = parse_pick(current) if current else None
         style = (cur["style"] if cur and cur["kind"] in ("og", "ig") else None) or want or styles[0]
         value = f"{prefix}{style}:{gen['sha']}"
-        pic = f'<img src="{gen["uri"]}" alt="">' if gen["uri"] else ""
+        pic = f'<img src="{gen["uri"]}" alt="Generated draft for {_e(slot)}">' if gen["uri"] else ""
         parts.append(f'<div class="imggen"><label>{_radio(name, value, current == value)} '
                      f'<b>Approve this generated image</b> (style {_e(style)}, {_e(gen["path"])}, sha {gen["sha"]})</label>{pic}</div>')
     parts.append("</fieldset>")

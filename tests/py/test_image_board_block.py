@@ -154,3 +154,98 @@ def test_a_candidate_whose_path_public_path_refuses_renders_a_card_without_a_thu
     weeks = IR.board_block(b, images).split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
     assert '<span class="nothumb">/images/../outside.png</span>' in weeks
     assert 'value="file:/images/../outside.png"' in weeks
+
+
+# ── Task 10b review fixes ───────────────────────────────────────────────────────────────
+def _slot(block, slot):
+    return block.split(f'id="img-{slot}"', 1)[1].split("</fieldset>", 1)[0]
+
+
+def test_record_text_with_blank_lines_cannot_break_a_slot(repo):
+    """Block 7 sits in Markdown: a blank line inside the HTML would end the HTML block and
+    turn the rest of the fieldset into text. Record text is collapsed to one line."""
+    root, folder = repo
+    b = _full()
+    before = _slot(IR.board_block(b, IR.board_images(b, root, folder)), "weeks-photo")
+    node = next(s for s in b["sections"] if s["id"] == "how-we-raise")["tree"][0]
+    img = next(i for i in node["images"] if i["slot"] == "weeks-photo")
+    img["prompt"] = "a litter at four weeks\n\n    on a clean vet bed"
+    block = IR.board_block(b, IR.board_images(b, root, folder))
+    weeks = _slot(block, "weeks-photo")
+    assert weeks.count('name="pick-img:weeks-photo"') == before.count('name="pick-img:weeks-photo"')
+    assert "\n" not in weeks and "<fieldset" not in weeks
+    assert "prompt: a litter at four weeks on a clean vet bed</p>" in weeks
+    assert block.count('<fieldset class="imgpick"') == block.count("</fieldset>") == 6
+
+
+def test_record_text_and_filenames_are_escaped(repo):
+    root, folder = repo
+    _png(folder / 'Litter-Four-Weeks-<b>"&.jpg', (90, 90, 90))
+    b = _full()
+    node = next(s for s in b["sections"] if s["id"] == "how-we-raise")["tree"][0]
+    img = next(i for i in node["images"] if i["slot"] == "weeks-photo")
+    img["prompt"] = 'four weeks <script>"x" & y'
+    weeks = _slot(IR.board_block(b, IR.board_images(b, root, folder)), "weeks-photo")
+    assert "prompt: four weeks &lt;script&gt;&quot;x&quot; &amp; y</p>" in weeks
+    assert 'value="assets:Litter-Four-Weeks-&lt;b&gt;&quot;&amp;.jpg"' in weeks
+    assert "<script>" not in weeks and '<b>"&' not in weeks
+
+
+def test_thumbnails_carry_the_candidate_alt_and_the_preview_names_its_slot(repo):
+    root, folder = repo
+    b = _full()
+    _png(root / "data" / "boards" / "generated" / "uk-locations--blue-staffy-puppies-leeds" / "weeks-photo.png")
+    images = IR.board_images(b, root, folder)
+    block = IR.board_block(b, images)
+    alts = {c["pick"]: c["alt"] for r in images["report"]["slots"] for c in r["candidates"]}
+    shown = [(p, a) for p, a in alts.items() if a and images["thumbs"].get(p)]
+    assert shown
+    for pick, alt in shown:
+        assert f'<img src="{images["thumbs"][pick]}" alt="{IR._e(alt)}">' in block
+    assert 'alt="Generated draft for weeks-photo"' in _slot(block, "weeks-photo")
+
+
+def test_thumb_uri_shows_the_labelled_box_for_a_decompression_bomb(tmp_path, monkeypatch):
+    from PIL import Image
+    ok = tmp_path / "ok.png"
+    _png(ok)
+    assert IR.thumb_uri(ok).startswith("data:image/webp;base64,")
+
+    def bomb(*a, **k):
+        raise Image.DecompressionBombError("too many pixels")
+
+    monkeypatch.setattr(Image, "open", bomb)
+    assert IR.thumb_uri(ok) is None
+
+
+def test_thumb_uri_downsizes_before_it_converts(tmp_path):
+    """A large JPEG is decoded at a reduced scale (draft) and shrunk before the RGB copy."""
+    from PIL import Image
+    big = tmp_path / "big.jpg"
+    Image.new("RGB", (4000, 3000), (10, 20, 30)).save(big, quality=60)
+    uri = IR.thumb_uri(big)
+    import base64
+    import io
+    with Image.open(io.BytesIO(base64.b64decode(uri.split(",", 1)[1]))) as im:
+        assert im.size == (240, 180)
+    cmyk = tmp_path / "cmyk.jpg"
+    Image.new("CMYK", (600, 400)).save(cmyk)
+    assert IR.thumb_uri(cmyk).startswith("data:image/webp;base64,")
+
+
+def test_style_labels_have_room_to_tap():
+    assert ".imgstyles label{padding:6px 4px}" in IR.BLOCK_CSS
+
+
+def test_the_schema_refuses_a_slot_id_that_is_not_a_slug():
+    import jsonschema
+    schema = json.loads((ROOT / "schemas" / "board.schema.json").read_text())
+    for where in (schema["properties"]["sections"]["items"]["properties"]["images"]["items"],
+                  schema["properties"]["assets"]["items"]):
+        pat = where["properties"]["slot"]["pattern"]
+        v = jsonschema.Draft202012Validator({"type": "string", "pattern": pat})
+        assert v.is_valid("weeks-photo") and v.is_valid("1blue-staffy")
+        # (Python's `$` also matches before a final newline; image_rules.SLOT_ID.fullmatch
+        # refuses "a\n" at the image gate.)
+        for bad in ('x"><script>', "Weeks", "-x", "a b", ""):
+            assert not v.is_valid(bad), bad

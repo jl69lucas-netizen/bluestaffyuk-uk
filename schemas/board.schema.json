@@ -1102,7 +1102,8 @@
        "additionalProperties": false,
        "properties": {
         "slot": {
-         "type": "string"
+         "type": "string",
+         "pattern": "^[a-z0-9][a-z0-9-]*$"
         },
         "kind": {
          "enum": [
@@ -1537,7 +1538,8 @@
     "additionalProperties": false,
     "properties": {
      "slot": {
-      "type": "string"
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
      },
      "kind": {
       "enum": [
