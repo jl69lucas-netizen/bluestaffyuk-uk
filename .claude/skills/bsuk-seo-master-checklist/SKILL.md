@@ -46,7 +46,7 @@ These informational/secondary pages use the **homepage design + method**. The hu
 verify-each-step build guide is **`MANUAL INTERIOR-PAGE CHECKLIST.md`** (repo root, Hero → CTA).
 
 **Same as the homepage:** first-person BlueStaffyUK voice · two-keyword conversational headers (Rule 28b) ·
-full H1–H6 band · the 4-Move entity loop + Verified-Claim Ledger · Link-First anchors (links at sentence START) ·
+full H1–H6 band · the 4-Move entity loop + the evidence ledger (`data/quality/evidence-ledger.json`) · Link-First anchors (links at sentence START) ·
 "Honesty Policy" humor · GEO/AEO declarative ≤320-char answer blocks · seam-logo dividers
 (`.bsuk-seam` + `/bsuk-footer-logo.png`) · AA contrast + Lighthouse perf gates · 5-element image SEO.
 
@@ -237,7 +237,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 **2. Location Entities (80+ required):**
 - **Primary:** Carlisle · Cumbria (town and region only — no street, no postcode, Known Issue 16)
 - **Target cities:** From `data/locations.json` — include all 28 UK cities
-- **Delivery routes:** the road legs from Carlisle to the 28 cities — never an airport code; delivery here is by road
+- **Delivery routes:** the road legs from Carlisle to the 28 cities — delivery here is by road, by DEFRA-approved transport
 - **Regions:** Cumbria, the Borders, the North West, the North East, Yorkshire, Scotland, the Midlands, Wales, the South West, Greater London
 - **DEFRA-approved transport coverage:** Cross-reference with `data/locations.json`
 
@@ -252,7 +252,7 @@ Every full-length page carries 95–105 **distinct** named entities, each said O
 - The Kennel Club (the UK breed registry)
 
 **5. Statistical Entities (20+ required):**
-- puppies placed since 2014 — the count is NOT FETCHED
+- puppies placed — the count and the founding year are NOT FETCHED
 - 12–14 years average lifespan
 - £1,500–£1,700 Blue Staffy price range
 - £1,500–£1,700 Blue-Brindle Staffy price range
@@ -388,9 +388,9 @@ For pages with a delivery/delivery section, use web search to gather these entit
 
 ### Step 5: Page Structure Planning
 
-**Section count:** Default 22–24 sections. Exact count = match or exceed top competitor's section count. Never fewer than 22 without explicit user approval (Rule 26).
+**Section count:** no default. The count is `section_target.total` in the page's question file (`data/queries/<slug>.json`, from `/bsuk-query-augmentation`): the competitors' highest cleaned H2 count + 3, never fewer than 9 (`docs/reference/location-page-template.md`, "Section count").
 
-**Word count:** Top-ranking competitor's word count + 1,000 words minimum. Target: 5,000–6,000 words for 22-section pages. Never set without running competitor research first (Rule 27).
+**Word count:** `NOT FETCHED` until the competitor scan gives a median — never pick a number first and write to fill it (Rule 27).
 
 **Header count targets (Rule 28):**
 - H1: exactly 1 (hero section only)
@@ -576,7 +576,7 @@ TIER 4: ENTITY & TRUST
     ☐ [Specific vet clinic / certifying body]
 
 11. Trust Signals (2–3 per section):
-    ☐ "[count NOT FETCHED] puppies placed since 2014..."
+    ☐ "[count NOT FETCHED] puppies placed..."
     ☐ "12–14 year lifespan commitment..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred..."
     ☐ "LICENCE_CLAIM_PLACEHOLDER licenced kennel..."
@@ -650,36 +650,39 @@ Use Appendix A URL Library at end of this skill for all valid URLs.
 Example: `"Our [Puppy Culture protocols](#puppy-culture) ensure emotionally resilient puppies."`
 Example: `"Learn more about [LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER documentation](/blue-staffy-uk-breeders/)"`
 
-#### B. External Links (50+ Required Per Full Page)
+#### B. External Links (rows of the library only)
 
-The port left this library full of the source site's non-dog sources (its labs, vets,
-behaviourists, foods and air-cargo programmes); they were deleted on 2026-09-23. What remains is
-a starting point, not the 50 — every link is verified live before it is used.
+Every outside link goes to a URL recorded in `docs/reference/external-link-library.md`; a board
+naming any other URL is refused (`scripts/pageboard.py`). There is no per-page quota: link where
+an independent UK source says it better than we can, anchor first. To cite something new, check
+it returns 200 and add the row before the board names it. Today's rows, by topic:
 
 **Health & Veterinary:**
-1. [AVMA — American Veterinary Medical Association](https://www.avma.org/)
-2. [AAHA — American Animal Hospital Association](https://www.aaha.org/)
-3. [PetMD — Blue Staffy Breed Information](https://www.petmd.com/)
-4. [ASPCA Pet Care and Safety](https://www.aspca.org/pet-care)
-5. [ASPCA Animal Poison Control Center](https://www.aspca.org/pet-care/animal-poison-control)
-6. [ASPCA Toxic Foods for Puppies](https://www.aspca.org/pet-care/animal-poison-control/people-foods-avoid-feeding-your-pets)
-7. [VEG — Veterinary Emergency Group Canine Info](https://veterinaryemergencygroup.com/)
-8. [Pet Poison Helpline](https://www.petpoisonhelpline.com/)
+1. [PDSA — Staffordshire Bull Terrier breed advice](https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier)
+2. [PDSA — dog vaccinations](https://www.pdsa.org.uk/pet-help-and-advice/pet-health-hub/other-veterinary-advice/dog-vaccines)
+3. [PDSA — how much exercise a dog needs](https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/how-much-exercise-does-your-dog-need)
+4. [BVA — eye scheme](https://www.bva.co.uk/canine-health-schemes/eye-scheme/)
+5. [The Royal Kennel Club — the L-2-HGA DNA test](https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-l-2hga/)
+6. [The Royal Kennel Club — the HC-HSF4 DNA test](https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/dna-testing/dna-test-hc-hsf4/)
+7. [The Royal Kennel Club — understanding canine genetics](https://www.royalkennelclub.com/health-and-dog-care/health-dog-care/health/getting-started-with-health-testing-and-screening/understanding-canine-genetics/)
+8. [RSPCA — caring for a new puppy](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/health/puppycare)
 
 **Breed Information & Standards:**
-1. [The Kennel Club](https://www.thekennelclub.org.uk/)
-2. [the RSPCA](https://www.rspca.org.uk/)
+1. [The Royal Kennel Club — the Staffordshire Bull Terrier breed standard](https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/)
+2. [The Royal Kennel Club — the Staffordshire Bull Terrier breed page](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/)
+3. [The Kennel Club](https://www.thekennelclub.org.uk/)
 
-**Training & Behavior:**
-1. [IAABC — Animal Behavior Consultants](https://iaabc.org/)
-2. [Clicker Training — Karen Pryor Academy](https://clickertraining.com/)
+**Training & Behaviour:**
+1. [Blue Cross — socialising your puppy](https://www.bluecross.org.uk/advice/dog/socialising-your-puppy)
+2. [RSPCA — puppy advice](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy)
 
-**Nutrition & Products:**
-1. [Chewy Canine Supplies](https://www.chewy.com/)
-
-**Animal Welfare & Ethics:**
-1. [LICENCE_CLAIM_PLACEHOLDER LICENCE_CLAIM_PLACEHOLDER Animal Welfare Act](https://www.gov.uk/)
-2. [FTC Consumer Protection Against Puppy Scams](https://www.ftc.gov/)
+**Buying Safely & the Law** (a statute line stays `LEGAL_CLAIM_PLACEHOLDER` until confirmed):
+1. [RSPCA — spotting a puppy dealer](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/sales)
+2. [The Royal Kennel Club — questions to ask the breeder](https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder/)
+3. [The Kennel Club — breeding regulations](https://www.thekennelclub.org.uk/dog-breeding/dog-breeding-regulations/)
+4. [GOV.UK — microchipping your dog](https://www.gov.uk/get-your-dog-cat-microchipped)
+5. [GOV.UK — welfare in transport guidance (PB10308)](https://assets.publishing.service.gov.uk/media/5a819d3bed915d74e623335d/pb10308-dogs-cats-welfare-060215.pdf)
+6. [GOV.UK — banned dogs](https://www.gov.uk/control-dog-public/banned-dogs) — the breed guide's row; a city page waits for the user's ruling (Known Issue 46)
 
 #### C. 3 Anchor Text Strategies (Rule 58)
 
@@ -1314,35 +1317,9 @@ number of hours from memory. [See how to buy](#how-to-buy).
 
 ---
 
-## APPENDIX C: Term Conversion Table (Reference)
+## APPENDIX C: Term Conversion Table — retired
 
-When migrating content from dog-breeder templates or MFS reference material, apply these conversions:
-
-| Old Term | BSUK Term |
-|---|---|
-| MFS / Maltipoos For Sale | BlueStaffyUK / BlueStaffyUK |
-| Lawrence & Cathy Magee | Lisa Bright |
-| Omaha, Nebraska | Carlisle |
-| Puppy / Puppies | Pup / Pups |
-| Litter | Litter |
-| Puppy Culture | Puppy Culture |
-| Early Neurological Stimulation (ENS) | Early Neonatal Handling (ENH) |
-| THE KENNEL CLUB Registered | LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER documented, LICENCE_CLAIM_PLACEHOLDER licenced |
-| Embark DNA Testing | L-2-HGA and HC-HSF4 DNA screening of the parents, where the evidence ledger records the certificate |
-| OFA Certified | vet health check |
-| Hypoallergenic | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
-| Maltese, Maltipoo, Blue Staffy | Blue Staffy, Blue-Brindle Staffy |
-| Grooming (nails, fur) | coat, nail and ear care, bathing |
-| Hip dysplasia, luxating patella | Staffordshire Bull Terrier: the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); any other health claim needs an evidence-ledger entry |
-| any price range | £1,500 (Roman, Byrd, Ince) · £1,700 (Vennie, Christa, Cheryl) — the litter spans £1,500–£1,700 |
-| a placeholder number | PHONE_PLACEHOLDER — FOOTER ONLY (Rule 61) |
-| 17 states served | the 28 UK cities in `data/locations.json` |
-| Delivery Driver | DEFRA-approved transport |
-| Ground transport | Climate-controlled canine ground transit |
-| Microchip | Microchip number on the paperwork |
-| Vaccination (DHPP, Nobivac) | the first vaccinations (puppy package, data/faq.json) |
-| BBB A+ Rating | LICENCE_CLAIM_PLACEHOLDER Licence + THE KENNEL CLUB Registered Kennel |
-| 12-15 year lifespan | 12–14 year lifespan |
-| Virginia / state-specific entities | UK-wide entities (delivery by DEFRA-approved transport to the 28 cities in `data/locations.json`) |
-| Craigslist puppy scams | Online puppy scams (FTC canine fraud) |
-| Phone CTA in body copy | Form CTA — link to /contact-us/ ONLY (Rule 61) |
+The source repo's term-conversion table mapped another breeder's names, places, programmes
+and US regulators onto BlueStaffyUK. Nothing is converted from that material any more: every
+BSUK fact comes from `data/*.json`, and an outside source is a row of
+`docs/reference/external-link-library.md`.

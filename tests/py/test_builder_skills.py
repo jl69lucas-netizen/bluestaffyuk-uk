@@ -155,3 +155,17 @@ def test_the_blog_builder_has_no_source_site_leftovers():
     delivery = ("UK home delivery by DEFRA-approved transport, priced by distance, "
                 "£200–£350 · or collect in Carlisle")
     assert BLOG.count(delivery) >= 2
+
+
+def test_the_checklist_external_links_are_library_rows():
+    """Known Issue 40: the checklist's external-link list was the source site's US set (AVMA,
+    AAHA, ASPCA, the FTC, Chewy). Every URL it lists now must be a row of
+    docs/reference/external-link-library.md, the list scripts/pageboard.py enforces on boards."""
+    start = CHECKLIST.index("#### B. External Links")
+    block = CHECKLIST[start:CHECKLIST.index("#### C.", start)]
+    urls = MD_LINK.findall(block)
+    assert len(urls) >= 10, urls
+    library = pageboard.library_urls()
+    assert library, "docs/reference/external-link-library.md is missing"
+    missing = [u for u in urls if pageboard.normalise_url(u) not in library]
+    assert missing == [], "not rows of the external-link library: %s" % missing

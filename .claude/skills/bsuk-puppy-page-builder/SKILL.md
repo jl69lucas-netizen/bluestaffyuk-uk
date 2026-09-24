@@ -120,8 +120,8 @@ exempt). Internal anchors from the Anchor Diversity Ledger
 (`.claude/skills/internal-link-agent/SKILL.md` — no repeated anchors site-wide). External:
 credible UK authorities (The Kennel Club, the RSPCA, the PDSA, a veterinary school, a
 `gov.uk` welfare page) — cite the specific resource page; a curl 403 is a bot-block, not a
-dead link, so retry with a UA. Internal same-tab, external new-tab + ↗. The external-link
-library is deferred to project 6.
+dead link, so retry with a UA. Internal same-tab, external new-tab + ↗. Every external link is
+a row of `docs/reference/external-link-library.md` (a board naming any other URL is refused).
 
 ## 3. Transactional layer (what makes these NOT comparison pages)
 
