@@ -394,7 +394,7 @@ def test_no_case_hint_when_every_spelling_agrees_or_the_field_was_not_fetched(tm
 
 
 def gfm_cells(line):
-    """A table row split the way GitHub's parser splits it: a backslash escapes the next
+    """A table row split by micromark's rule (the GFM table extension): a backslash escapes the next
     character, so two backslashes then a pipe are an escaped backslash and a real pipe.
     Each cell's backslash and pipe escapes are then undone, as the page would show it."""
     s, cells, cur, i = line.strip(), [], "", 0
