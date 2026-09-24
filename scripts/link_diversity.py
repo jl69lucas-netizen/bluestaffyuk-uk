@@ -13,7 +13,8 @@ use at least three types with at most two exact-match, and the external anchors 
 types. Nav tiles are typed but do not count toward the mix. `anchor-reuse-sitewide`: an in-copy
 internal anchor another board in data/boards/ already uses for the same route is refused — but
 only when that board is at this board's status or later, so the first owner keeps its anchor
-and a later draft that copies it is the one told to change. Page-level repeats stay with
+and a later draft that copies it is the one told to change; a page built before this build
+always owns its anchors. Page-level repeats stay with
 pageboard's existing `links-anchor-duplicate`.
 
 The checks register on `family_rules`, so they bind the new pages only; the twelve pages built
@@ -152,6 +153,9 @@ SITEWIDE_CHECK = "anchor-reuse-sitewide"
 # meta.status in schema order: a board is only refused an anchor by a sibling at its own
 # rank or later, so the first owner keeps it.
 STATUS_RANK = {s: i for i, s in enumerate(("draft", "boarded", "approved", "built", "released"))}
+# A page outside the new family (the twelve built before this build: `approved` in the record,
+# but live) outranks every status, so it always owns its anchors.
+ALWAYS_OWNS = len(STATUS_RANK)
 # Resolved at call time, so a test can repoint it at a scratch directory.
 BOARDS_DIR = None
 
@@ -249,7 +253,7 @@ def _site_map():
         slug = b["meta"]["slug"]
         if slug.startswith("_"):
             continue
-        rank = STATUS_RANK.get(b["meta"].get("status"), 0)
+        rank = STATUS_RANK.get(b["meta"].get("status"), 0) if FR.applies(b) else ALWAYS_OWNS
         for _, kind, l in _placements(b):
             if kind != "internal" or l.get("nav"):
                 continue
@@ -280,9 +284,10 @@ def sitewide_anchor_uses(exclude_slug=None, min_status=None):
 
 @FR.register
 def anchor_reuse_sitewide(board, ont):
-    """The first owner keeps its anchor: a sibling counts only at this board's status or later,
-    so an approved page is never failed by a draft that copied it (the draft is told instead),
-    and two boards at the same status are both told."""
+    """The first owner keeps its anchor. Between new-family boards a sibling counts only at this
+    board's status or later, so an approved page is never failed by a draft that copied it (the
+    draft is told instead) and two boards at the same status are both told. A page outside the
+    family (the twelve built before this build) always counts, whatever this board's status."""
     meta = board["meta"]
     sev, uses = status_severity(board), sitewide_anchor_uses(meta["slug"], meta["status"])
     for sid, kind, l in _placements(board):

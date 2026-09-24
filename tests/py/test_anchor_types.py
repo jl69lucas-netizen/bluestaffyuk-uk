@@ -174,6 +174,17 @@ def test_a_lower_status_sibling_never_fails_the_higher_board(no_other_boards):
     assert all(SLUG in m for _, m in hits), hits
 
 
+def test_a_page_built_before_this_build_always_owns_its_anchor(no_other_boards):
+    """The twelve built pages sit at `approved` but are live: a new board at any status,
+    `built` included, is refused an anchor one of them already uses for the same target."""
+    frozen = "buy-blue-staffy-puppies-uk"
+    assert frozen in FR.BUILT_BEFORE_SYSTEM_GAPS
+    _write(no_other_boards, _links(_board(status="approved", slug=frozen),
+                                   [("/blue-staffy-health-uk/", "Blue Staffy health", "exact")]))
+    hits = _reuse(_links(_board(status="built"), GOOD_INTERNAL, GOOD_EXTERNAL))
+    assert any(s == "FAIL" and frozen in m for s, m in hits), hits
+
+
 def test_two_boards_at_the_same_status_are_both_flagged(no_other_boards):
     a = _links(_board(status="boarded"), GOOD_INTERNAL, GOOD_EXTERNAL)
     b = _links(_board(status="boarded", slug=LEEDS), GOOD_INTERNAL, GOOD_EXTERNAL)
