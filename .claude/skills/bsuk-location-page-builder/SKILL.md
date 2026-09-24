@@ -146,9 +146,10 @@ rebuilt pages do (`src/pages/blue-staffy-health-uk/index.astro`): the hero's
 `align={pick.layout.align}`, `media={pick.layout.media}` and `ledge={pick.layout.ledge}`; the
 counter's `tiles={pick.layout.tiles}` and `label={pick.layout.label}`. Rule 16 gives every
 page its own three hero and three counter styles on its board; never copy a sibling city's
-pick. Reviews are not board-picked: a city board's review sections carry `styles: []` (the
-board schema allows none or exactly three), and every city review slot is
-`Testimonial mode="single"` (see Reviews).
+pick. Reviews keep a board pick but never a grid: a review section is a kit shape, so the
+board schema makes it offer `S1`/`S2`/`S3` like every kit section, and `S2` and `S3` are
+grids. A city board picks `S1` ("One review given room") for every review section, and every
+city review slot is `Testimonial mode="single"` (see Reviews), never `mode={pick.layout.mode}`.
 
 The props a city page passes, as `src/components/kit/*.astro` declares them:
 

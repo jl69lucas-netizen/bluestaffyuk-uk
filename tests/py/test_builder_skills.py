@@ -9,9 +9,13 @@ hand-record a competitor table in a board block the schema does not have. Each t
 reads the skill for the sentence that was wrong and for the one that replaced it, so the fix
 cannot quietly revert. The comparison builder gets the same treatment for its section count.
 """
+import copy
+import json
 import pathlib
 import re
 import sys
+
+import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -70,10 +74,23 @@ def test_the_board_pick_arranges_hero_and_counter_but_never_a_city_review():
     para = arrangement_paragraph()
     assert "Testimonial" not in para.replace('Testimonial mode="single"', ""), (
         "a board-picked review style can be a grid; a city review is always single")
-    assert 'Testimonial mode="single"' in para and "`styles: []`" in para
+    assert 'Testimonial mode="single"' in para and "`S1`" in para and "styles: []" not in para
     assert "layout={pick.layout.hero}" in para, "the hero's layout is the style's `hero` axis"
     for axis in ("align", "media", "ledge", "tiles", "label"):
         assert "%s={pick.layout.%s}" % (axis, axis) in para, axis
+
+
+def test_a_review_section_cannot_offer_no_styles():
+    """Why the skill says S1 and not `styles: []`: the board schema makes every kit shape,
+    reviews included, offer three styles, so an empty list is not a way out of the grid."""
+    jsonschema = pytest.importorskip("jsonschema")
+    schema = json.loads((ROOT / "schemas/board.schema.json").read_text(encoding="utf-8"))
+    board = json.loads((ROOT / "data/boards/blue-staffy-health-uk.json").read_text(encoding="utf-8"))
+    jsonschema.validate(copy.deepcopy(board), schema)
+    review = next(s for s in board["sections"] if s["shape"] == "reviews")
+    review["styles"] = []
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.validate(board, schema)
 
 
 def test_every_review_slot_is_a_single_block():
