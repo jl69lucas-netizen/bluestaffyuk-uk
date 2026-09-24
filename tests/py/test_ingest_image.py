@@ -2,12 +2,16 @@
 and never a served image replaced (IMAGE-DESIGNS.md §6 and §9, CLAUDE.md rule 11)."""
 import datetime
 import json
+import random
 import pathlib
 import subprocess
 import sys
 
 import pytest
 from PIL import Image
+
+import ingest_image
+import reframe_og
 
 from ingest_image import (PICK, Refused, default_stem, draft, file_sha, folder,
                           ingested_manifest_rows, publish, slug_file, stem_problems)
@@ -233,7 +237,194 @@ def test_cli_exit_codes(master):
     script = ROOT / "scripts/ingest_image.py"
     proc = subprocess.run([sys.executable, str(script), "folder", str(master), "--stem", STEM,
                            "--og-style", "B", "--dry-run"], capture_output=True, text=True)
-    assert proc.returncode == 2 and proc.stdout.startswith("REFUSED:"), proc.stdout
+    assert proc.returncode == 2 and proc.stderr.startswith("REFUSED:"), proc.stderr
+    assert proc.stdout == ""
     proc = subprocess.run([sys.executable, str(script), "publish", "--board", "no-such-page",
                            "--slot", "x", "--stem", STEM], capture_output=True, text=True)
-    assert proc.returncode == 2 and "no board" in proc.stdout, proc.stdout
+    assert proc.returncode == 2 and "no board" in proc.stderr, proc.stderr
+
+
+# ── review fixes ─────────────────────────────────────────────────────────────────────────
+def noisy_master(tmp_path, name="noise.png", w=1600, h=900):
+    p = tmp_path / "Assets" / name
+    p.parent.mkdir(exist_ok=True)
+    Image.frombytes("RGB", (w, h), random.Random(0).randbytes(w * h * 3)).save(p)
+    return p
+
+
+def snapshot(repo):
+    """Every file under the tmp repo with its bytes, to prove a refusal wrote nothing."""
+    return {q.relative_to(repo).as_posix(): q.read_bytes()
+            for q in sorted(repo.rglob("*")) if q.is_file() and "Assets" not in q.parts}
+
+
+def test_folder_refuses_an_image_that_misses_the_size_budget(repo, tmp_path):
+    before = snapshot(repo)
+    with pytest.raises(Refused, match=r"KB.*95 KB"):
+        folder(noisy_master(tmp_path), STEM, og_style="A", slug=SLUG, slot="garden-photo",
+               root=repo, today=DAY)
+    assert snapshot(repo) == before, "nothing written, not even a temp file"
+
+
+def test_folder_refuses_when_only_the_sibling_misses_its_budget(repo, master, monkeypatch):
+    monkeypatch.setattr(reframe_og, "SIB_MAX_KB", 0.1)
+    before = snapshot(repo)
+    with pytest.raises(Refused, match=r"-760.*KB"):
+        folder(master, STEM, og_style="B", slug=SLUG, slot="garden-photo", root=repo)
+    assert snapshot(repo) == before
+
+
+def test_draft_refuses_an_image_that_misses_the_size_budget(repo, tmp_path):
+    with pytest.raises(Refused, match="KB"):
+        draft(noisy_master(tmp_path), SLUG, "garden-photo", og_style="A", root=repo)
+    assert not (repo / "data/boards/generated").exists() or not list(
+        (repo / "data/boards/generated").rglob("*.*"))
+
+
+def test_publish_refuses_an_approved_draft_over_the_budget(repo, tmp_path):
+    big = ingest_image.draft_path(SLUG, "garden-photo", repo)
+    big.parent.mkdir(parents=True)
+    Image.frombytes("RGB", (1408, 768), random.Random(1).randbytes(1408 * 768 * 3)).save(
+        big, "WEBP", quality=95)
+    approve(repo, "og:B:" + file_sha(big))
+    before = snapshot(repo)
+    with pytest.raises(Refused, match="KB"):
+        publish(SLUG, "garden-photo", STEM, root=repo)
+    assert snapshot(repo) == before
+
+
+def test_native_ratio_styles_are_capped_at_1760_tall(repo, tmp_path):
+    tall = tmp_path / "Assets" / "tall.png"
+    tall.parent.mkdir(exist_ok=True)
+    Image.new("RGB", (1000, 4000), (91, 124, 153)).save(tall)
+    folder(tall, "blue-staffy-puppy-tall-portrait", og_style="D", slug=SLUG,
+           slot="garden-photo", root=repo, today=DAY)
+    row = ingested_manifest_rows(repo)["blue-staffy-puppy-tall-portrait"]
+    assert row["h"] == 1760 and row["w"] == 440
+
+
+def fail_the_sibling(monkeypatch):
+    real = reframe_og.save_webp
+
+    def boom(img, path, maxkb):
+        if "-760" in str(path):
+            raise OSError("disk full")
+        return real(img, path, maxkb)
+    monkeypatch.setattr(reframe_og, "save_webp", boom)
+
+
+def test_a_failed_publish_leaves_nothing_and_a_retry_succeeds(repo, master, monkeypatch):
+    r = draft(master, SLUG, "garden-photo", og_style="B", root=repo)
+    approve(repo, r["pick"])
+    before = snapshot(repo)
+    fail_the_sibling(monkeypatch)
+    with pytest.raises(OSError, match="disk full"):
+        publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
+    assert sorted(q.name for q in (repo / "public/images").iterdir()) == [
+        "blue-staffy-family-dog-uk.webp"], "no image and no temp file in public/images"
+    assert snapshot(repo) == before, "ledger, manifest and board untouched"
+    monkeypatch.undo()
+    publish(SLUG, "garden-photo", STEM, root=repo, today=DAY)
+    assert (repo / "public/images" / (STEM + "-760.webp")).exists()
+    assert board(repo)["assets"][0]["status"] == "baked"
+
+
+def test_a_failed_folder_ingest_leaves_nothing(repo, master, monkeypatch):
+    before = snapshot(repo)
+    fail_the_sibling(monkeypatch)
+    with pytest.raises(OSError):
+        folder(master, STEM, og_style="B", slug=SLUG, slot="garden-photo", root=repo)
+    assert snapshot(repo) == before
+
+
+def test_a_transparent_master_is_baked_on_bone(repo, tmp_path):
+    p = tmp_path / "Assets" / "cutout.png"
+    p.parent.mkdir(exist_ok=True)
+    im = Image.new("RGBA", (1408, 768), (91, 124, 153, 255))
+    im.paste((0, 0, 0, 0), (0, 0, 100, 100))
+    im.save(p)
+    r = draft(p, SLUG, "garden-photo", og_style="E", root=repo)
+    with Image.open(r["path"]) as out:
+        px = out.convert("RGB").getpixel((10, 10))
+    assert all(abs(a - b) <= 6 for a, b in zip(px, reframe_og.BONE_50)), px
+
+
+@pytest.mark.parametrize("kw", [{"slug": SLUG}, {"slot": "garden-photo"}])
+def test_board_and_slot_come_together(repo, master, kw):
+    with pytest.raises(Refused, match="together"):
+        folder(master, og_style="B", root=repo, **kw)
+
+
+def test_cli_board_without_slot_exits_2(master):
+    script = ROOT / "scripts/ingest_image.py"
+    proc = subprocess.run([sys.executable, str(script), "folder", str(master), "--og-style", "B",
+                           "--board", SLUG, "--dry-run"], capture_output=True, text=True)
+    assert proc.returncode == 2 and proc.stderr.startswith("REFUSED:") and "together" in proc.stderr
+
+
+@pytest.mark.parametrize("bad", ["4:0", "4x5", "0:5", "4:5:1"])
+def test_a_malformed_mobcrop_is_refused(repo, master, bad):
+    with pytest.raises(Refused, match="mobcrop"):
+        folder(master, STEM, og_style="B", mobcrop=bad, slug=SLUG, slot="garden-photo", root=repo)
+    with pytest.raises(Refused, match="mobcrop"):
+        draft(master, SLUG, "garden-photo", og_style="B", mobcrop=bad, root=repo)
+
+
+def test_mobcrop_with_a_non_b_style_warns(repo, master, capsys):
+    folder(master, STEM, og_style="A", mobcrop="4:5", slug=SLUG, slot="garden-photo", root=repo,
+           dry_run=True)
+    assert "warning" in capsys.readouterr().err.lower()
+
+
+def test_a_corrupt_master_is_refused(repo, tmp_path):
+    p = tmp_path / "Assets" / "broken.jpg"
+    p.parent.mkdir(exist_ok=True)
+    p.write_bytes(b"\xff\xd8\xff not really a jpeg")
+    with pytest.raises(Refused, match="cannot be read"):
+        draft(p, SLUG, "garden-photo", og_style="B", root=repo)
+
+
+def test_a_decompression_bomb_is_refused(repo, master, monkeypatch):
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 1000)
+    with pytest.raises(Refused, match="cannot be read"):
+        draft(master, SLUG, "garden-photo", og_style="B", root=repo)
+
+
+def test_a_bomb_warning_is_refused_too(repo, master, monkeypatch):
+    monkeypatch.setattr(Image, "MAX_IMAGE_PIXELS", 900 * 1200 - 1)   # warns, does not raise
+    with pytest.raises(Refused, match="cannot be read"):
+        draft(master, SLUG, "garden-photo", og_style="B", root=repo)
+
+
+def test_an_animated_master_is_refused(repo, tmp_path):
+    p = tmp_path / "Assets" / "anim.png"
+    p.parent.mkdir(exist_ok=True)
+    a, b = Image.new("RGB", (40, 40), (91, 124, 153)), Image.new("RGB", (40, 40), (0, 0, 0))
+    a.save(p, save_all=True, append_images=[b])
+    with pytest.raises(Refused, match="animated"):
+        draft(p, SLUG, "garden-photo", og_style="B", root=repo)
+
+
+@pytest.mark.parametrize("bad", ["../etc", "UK-Locations/x", "a//b", "/abs", "a/b/", "a b"])
+def test_a_malformed_slug_is_refused(repo, master, bad):
+    with pytest.raises(Refused, match="slug"):
+        draft(master, bad, "garden-photo", og_style="B", root=repo)
+    with pytest.raises(Refused, match="slug"):
+        publish(bad, "garden-photo", STEM, root=repo)
+
+
+@pytest.mark.parametrize("dangling", [True, False])
+def test_a_symlinked_stem_is_already_taken(repo, master, tmp_path, dangling):
+    target = tmp_path / ("gone.webp" if dangling else "real.webp")
+    if not dangling:
+        target.write_bytes(b"x")
+    (repo / "public/images" / (STEM + ".webp")).symlink_to(target)
+    assert ingest_image.served(STEM, repo)
+    with pytest.raises(Refused, match="already served"):
+        folder(master, STEM, og_style="B", slug=SLUG, slot="garden-photo", root=repo)
+
+
+def test_publish_has_no_bare_assert_and_no_assets_constant():
+    src = (ROOT / "scripts/ingest_image.py").read_text(encoding="utf-8")
+    assert "\n    assert " not in src
+    assert "ASSETS =" not in src

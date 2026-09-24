@@ -20,11 +20,18 @@ Usage:
 `--mobcrop 4:5` keeps the sharp dog inside the central 4:5 strip of the box, so it
 survives both the desktop 16:9 box and a mobile 4:5 crop. The main file is quality-walked
 from 82 down until it is under --maxkb (rules/images.md); the -760 sibling (760x415) is
-walked until it is under 55 KB.
+walked until it is under 55 KB. A file that cannot meet its budget even at the quality
+floor is refused (exit 2) and not left behind.
+
+A transparent master (RGBA, LA, or a palette with transparency) is flattened onto bone
+before framing, never onto black. An animated master is refused.
 """
 import argparse
 import io
 import pathlib
+import re
+import sys
+import warnings
 
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
@@ -33,17 +40,47 @@ SIB_W, SIB_H = 760, 415
 SIB_MAX_KB = 55
 BONE_50 = (250, 248, 243)     # --color-bone-50  #FAF8F3
 BONE_100 = (244, 241, 234)    # --color-bone-100 #F4F1EA
+MAX_KB = 95
 STYLES = ("contain", "blurfill", "topcover")
+MOBCROP = re.compile(r"^[1-9]\d*:[1-9]\d*$")
+
+
+def mobcrop_problem(mobcrop):
+    """None when `mobcrop` is empty or a ratio like 4:5; otherwise the reason it is refused."""
+    if mobcrop and not MOBCROP.match(mobcrop):
+        return "mobcrop %r is not a ratio like 4:5 (two positive whole numbers)" % mobcrop
+    return None
+
+
+def flatten(im):
+    """RGB, with any transparency composited onto BONE_50 rather than dropped to black."""
+    if im.mode in ("RGBA", "LA", "PA") or (im.mode == "P" and "transparency" in im.info):
+        rgba = im.convert("RGBA")
+        bed = Image.new("RGB", rgba.size, BONE_50)
+        bed.paste(rgba, mask=rgba.getchannel("A"))
+        return bed
+    return im.convert("RGB")
 
 
 def load(path):
-    return ImageOps.exif_transpose(Image.open(path)).convert("RGB")
+    """The master as an upright RGB image. Raises ValueError for an animated file; a
+    decompression-bomb warning is raised as an error, never shrugged off."""
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", Image.DecompressionBombWarning)
+        with Image.open(path) as im:
+            if getattr(im, "n_frames", 1) > 1:
+                raise ValueError("%s is animated (%d frames); give a still image"
+                                 % (pathlib.Path(path).name, im.n_frames))
+            return flatten(ImageOps.exif_transpose(im))
 
 
 def subject_box(w=W, h=H, mobcrop="", fgmaxw=0):
     """(width, height) the sharp subject must fit inside."""
     if fgmaxw:
         return fgmaxw, h
+    problem = mobcrop_problem(mobcrop)
+    if problem:
+        raise ValueError(problem)
     if mobcrop:
         rw, rh = (int(x) for x in mobcrop.split(":"))
         return int(h * rw / rh), h
@@ -107,19 +144,29 @@ def render(im, style, w=W, h=H, blur=14, mobcrop="", fgmaxw=0, fgup=False):
 
 
 def save_webp(img, path, maxkb):
-    """Quality-walk 82 -> 60 (steps of 3, floor 60) until the file fits; returns (kb, q)."""
+    """Quality-walk 82 -> 60 (steps of 3, floor 60) until the file fits. Writes the file
+    either way and returns (kb, q, ok): ok is False when even q60 is over `maxkb`, and the
+    caller must then refuse the image."""
     q = 82
     while True:
         buf = io.BytesIO()
         img.save(buf, "WEBP", quality=q, method=6)
-        if buf.tell() / 1024 <= maxkb or q <= 60:
+        size = buf.tell() / 1024
+        if size <= maxkb or q <= 60:
             pathlib.Path(path).write_bytes(buf.getvalue())
-            return round(buf.tell() / 1024, 1), q
+            return round(size, 1), q, size <= maxkb
         q = max(60, q - 3)
 
 
 def sibling(img, w=SIB_W, h=SIB_H):
     return ImageOps.fit(img, (w, h), Image.LANCZOS)
+
+
+def _mobcrop_arg(value):
+    problem = mobcrop_problem(value)
+    if problem:
+        raise argparse.ArgumentTypeError(problem)
+    return value
 
 
 def main(argv=None):
@@ -130,17 +177,36 @@ def main(argv=None):
     ap.add_argument("--w", type=int, default=W)
     ap.add_argument("--h", type=int, default=H)
     ap.add_argument("--blur", type=int, default=14)
-    ap.add_argument("--mobcrop", default="")
+    ap.add_argument("--mobcrop", default="", type=_mobcrop_arg)
     ap.add_argument("--fgmaxw", type=int, default=0)
     ap.add_argument("--fgup", action="store_true")
-    ap.add_argument("--maxkb", type=int, default=95)
+    ap.add_argument("--maxkb", type=int, default=MAX_KB)
     ap.add_argument("--sib", default="")
     a = ap.parse_args(argv)
-    out = render(load(a.src), a.style, a.w, a.h, a.blur, a.mobcrop, a.fgmaxw, a.fgup)
-    kb, q = save_webp(out, a.out, a.maxkb)
+    if a.mobcrop and a.style != "blurfill":
+        print("warning: --mobcrop only applies to --style blurfill; ignored for %s" % a.style,
+              file=sys.stderr)
+    try:
+        master = load(a.src)
+    except (OSError, ValueError, SyntaxError, Image.DecompressionBombError,
+            Image.DecompressionBombWarning) as e:
+        print("REFUSED: %s cannot be read as an image: %s" % (a.src, e), file=sys.stderr)
+        return 2
+    out = render(master, a.style, a.w, a.h, a.blur, a.mobcrop, a.fgmaxw, a.fgup)
+    kb, q, ok = save_webp(out, a.out, a.maxkb)
+    if not ok:
+        pathlib.Path(a.out).unlink()
+        print("REFUSED: %s is %sKB at the q60 floor, over the %s KB budget"
+              % (a.out, kb, a.maxkb), file=sys.stderr)
+        return 2
     print("  %s  %dx%d  %sKB q%d  [%s]" % (a.out, a.w, a.h, kb, q, a.style))
     if a.sib:
-        kb2, q2 = save_webp(sibling(out), a.sib, SIB_MAX_KB)
+        kb2, q2, ok2 = save_webp(sibling(out), a.sib, SIB_MAX_KB)
+        if not ok2:
+            pathlib.Path(a.sib).unlink()
+            print("REFUSED: %s is %sKB at the q60 floor, over the %s KB budget"
+                  % (a.sib, kb2, SIB_MAX_KB), file=sys.stderr)
+            return 2
         print("  %s  %dx%d  %sKB q%d" % (a.sib, SIB_W, SIB_H, kb2, q2))
     return 0
 

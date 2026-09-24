@@ -7,6 +7,7 @@ import pathlib
 import subprocess
 import sys
 
+import pytest
 from PIL import Image, ImageOps
 
 import reframe_og
@@ -69,11 +70,12 @@ def test_mobcrop_4_5_keeps_the_sharp_dog_inside_the_central_mobile_strip():
 
 
 def test_the_quality_walk_stops_at_the_first_quality_under_budget(tmp_path):
-    kb, q = save_webp(portrait(), tmp_path / "flat.webp", 95)
-    assert q == 82 and kb < 95
+    kb, q, ok = save_webp(portrait(), tmp_path / "flat.webp", 95)
+    assert q == 82 and kb < 95 and ok
     noise = Image.frombytes("RGB", (1408, 768), bytes(range(256)) * (1408 * 768 * 3 // 256))
-    kb, q = save_webp(noise, tmp_path / "busy.webp", 1)
+    kb, q, ok = save_webp(noise, tmp_path / "busy.webp", 1)
     assert q == 60, "the walk has a floor and still writes the file"
+    assert not ok, "and says the budget was missed"
     assert (tmp_path / "busy.webp").exists()
 
 
@@ -105,3 +107,67 @@ def test_the_engine_names_exactly_the_baked_styles_of_image_designs():
     for style in reframe_og.STYLES:
         assert "`--style %s`" % style in doc, style
     assert set(load()["og_styles"]) >= {"A", "B", "E"}
+
+
+# ── review fixes: budget, alpha, mobcrop, odd inputs ─────────────────────────────────────
+def noisy(w=1600, h=900, seed=0):
+    import random
+    return Image.frombytes("RGB", (w, h), random.Random(seed).randbytes(w * h * 3))
+
+
+def test_cli_refuses_a_master_that_cannot_meet_the_budget(tmp_path):
+    src, out = tmp_path / "noise.png", tmp_path / "noise.webp"
+    noisy().save(src)
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(out), "--style", "contain"],
+                          capture_output=True, text=True)
+    assert proc.returncode == 2, proc.stderr
+    assert "KB" in proc.stderr and "95" in proc.stderr
+    assert not out.exists(), "an over-budget file is not left behind"
+
+
+def test_a_transparent_corner_comes_out_bone_not_black(tmp_path):
+    im = Image.new("RGBA", (400, 800), SLATE + (255,))
+    im.paste((0, 0, 0, 0), (0, 0, 60, 60))
+    p = tmp_path / "alpha.png"
+    im.save(p)
+    loaded = reframe_og.load(p)
+    assert loaded.mode == "RGB"
+    assert near(loaded.getpixel((5, 5)), BONE_50, tol=2)
+    assert near(loaded.getpixel((200, 400)), SLATE, tol=2)
+
+
+def test_a_palette_image_with_transparency_is_flattened_on_bone(tmp_path):
+    im = Image.new("P", (40, 40), 1)
+    im.putpalette([0, 0, 0] + list(SLATE) + [0] * (254 * 3))
+    im.paste(0, (0, 0, 10, 10))
+    im.info["transparency"] = 0
+    p = tmp_path / "pal.png"
+    im.save(p, transparency=0)
+    assert near(reframe_og.load(p).getpixel((2, 2)), BONE_50, tol=2)
+
+
+def test_an_animated_master_is_refused(tmp_path):
+    p = tmp_path / "anim.png"
+    a, b = Image.new("RGB", (40, 40), SLATE), Image.new("RGB", (40, 40), BRASS)
+    a.save(p, save_all=True, append_images=[b])
+    with pytest.raises(ValueError, match="animated"):
+        reframe_og.load(p)
+
+
+@pytest.mark.parametrize("bad", ["4:0", "0:5", "4x5", "4:5:1", "-4:5", "a:b"])
+def test_a_malformed_mobcrop_is_refused(tmp_path, bad):
+    with pytest.raises(ValueError, match="mobcrop"):
+        subject_box(1408, 768, bad)
+    src = tmp_path / "m.png"
+    portrait().save(src)
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(tmp_path / "o.webp"),
+                           "--mobcrop", bad], capture_output=True, text=True)
+    assert proc.returncode == 2 and "mobcrop" in proc.stderr
+
+
+def test_mobcrop_with_another_style_warns(tmp_path):
+    src = tmp_path / "m.png"
+    portrait().save(src)
+    proc = subprocess.run([sys.executable, str(SCRIPT), str(src), str(tmp_path / "o.webp"),
+                           "--style", "topcover", "--mobcrop", "4:5"], capture_output=True, text=True)
+    assert proc.returncode == 0 and "warning" in proc.stderr.lower()
