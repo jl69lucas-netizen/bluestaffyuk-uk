@@ -142,7 +142,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
   document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
-    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\\n+|\\s+$/g,'');
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\\n+|\\s+$/g,'').replace(/<\\\\\\/(script)/gi,'</$1');
     all.push('## '+title+'\\n\\n'+md);
     var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
     var sh=document.createElement('div');sh.className='sh';
@@ -200,7 +200,7 @@ def build(argv=None):
     out.write_text(text, encoding='utf-8')
     if n is None:
         n = text.count('<script type="text/markdown"')
-    print('%s — %d bytes, %d sections' % (out, len(text), n))
+    print('%s — %d bytes, %d sections' % (out, len(text.encode('utf-8')), n))
     return 0
 
 

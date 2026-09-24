@@ -59,6 +59,23 @@ def test_arguments_build_the_named_markdown_into_the_named_file(tmp_path):
     assert FOUNDATION.read_bytes() == before, "an argument run must not touch the Foundation report"
 
 
+def test_the_size_printed_is_the_files_size_in_bytes(tmp_path):
+    # the sheet has an em dash: characters and bytes differ, and the line says bytes
+    src, out = tmp_path / "sheet.md", tmp_path / "sheet.html"
+    src.write_text(MD + "\nOne more — with a dash.\n", encoding="utf-8")
+    r = subprocess.run([sys.executable, str(SCRIPT), str(src), str(out), *ARGS],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "— %d bytes," % out.stat().st_size in r.stdout, r.stdout
+
+
+def test_the_page_undoes_the_script_escape_before_it_renders_or_copies():
+    # esc() writes <\/script so the block cannot close early; the reader and the copy button
+    # must see the author's </script again, in any case.
+    html = R.page("t", "m", "meta", "copy", "head", "ctx", "")
+    assert r".replace(/<\\\/(script)/gi,'</$1')" in html, "no un-escape in the page script"
+
+
 def test_a_closing_script_tag_is_escaped_in_any_case():
     # HTML ends a <script> block at </script whatever its case, so every case is neutralised.
     assert R.esc("a </SCRIPT> b </Script c </script") == "a <\\/SCRIPT> b <\\/Script c <\\/script"

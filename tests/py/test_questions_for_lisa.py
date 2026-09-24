@@ -21,7 +21,7 @@ LEDGER = ROOT / "data" / "quality" / "evidence-ledger.json"
 # An existing faq row is named either alone — "the `a` row in `data/faq.json`" — or in a list,
 # "the `a`, `b` and `c` rows in `data/faq.json`"; every id in the list is checked.
 OLD_ONE = r"the `([\w-]+)` row in `data/faq\.json`"
-OLD_LIST = r"the (`[\w-]+`(?:, `[\w-]+`)* and `[\w-]+`) rows in `data/faq\.json`"
+OLD_LIST = r"the (`[\w-]+`(?:, `[\w-]+`)*,? and `[\w-]+`) rows in `data/faq\.json`"  # Oxford comma or not
 
 
 def existing_rows(text):
@@ -29,6 +29,12 @@ def existing_rows(text):
     for group in re.findall(OLD_LIST, text):
         ids += re.findall(r"`([\w-]+)`", group)
     return ids
+
+
+def test_the_row_list_reader_takes_an_oxford_comma():
+    for text in ("the `a`, `b` and `c` rows in `data/faq.json`",
+                 "the `a`, `b`, and `c` rows in `data/faq.json`"):
+        assert existing_rows(text) == ["a", "b", "c"], text
 
 
 def questions():
