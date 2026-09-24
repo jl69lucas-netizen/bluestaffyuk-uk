@@ -72,8 +72,8 @@ does not replace it.
 **Per-page strategy doc** → `docs/superpowers/sessions/YYYY-MM-DD-blog-strategy-<slug>.md`. 17 required fields:
 1. Page + primary KW + search-intent split (info/commercial/transactional %)
 2. Content-type verdict (competitor posture vs. recommended BlueStaffyUK posture)
-3. Top-3 Google competitors (from `data/queries/raw/<slug>/serp_google.json`)
-4. Bing top-3 (from `data/queries/raw/<slug>/serp_bing.json`)
+3. Top-3 Google competitors — the `competitors` entries with `google_pos` 1–3 (raw: the paid `data/queries/raw/<slug>/serp_google.response.json` if one was bought, else `results` in `data/queries/raw/<slug>/serp_google.json`)
+4. Bing top-3 — the `competitors` entries with `bing_pos` 1–3 (raw: `results` in `data/queries/raw/<slug>/serp_bing.json`)
 5. Registry signal — `data/competitors.json` and `docs/research/gap-matrix-2026-09-23.md` (who ranks/owns + gap)
 6. **Competitor on-page keyword audit table** — per competitor: KW in slug/title/meta/H1, on-page count, variations, entity types, content category
 7. Why they rank (reverse-engineered signals)
@@ -128,7 +128,7 @@ Bake these into every blog build and rebuild.
 
 **A. Mobile performance.**
 - An unused-JavaScript or missing-source-map flag on a `/70de/` script is the Google tag gateway, not anything in `src/` — diagnose it with `.claude/skills/bsuk-perf-gate/SKILL.md` (from project 6, its `--live` run names it). There is no host to configure until project 6.
-- **Images:** reuse every `/images/…` file at its original path (`CLAUDE.md` rule 11). The checks are `img_dims`, `img-srcset-within-2x` and `img-sizes-matches-box` (all blocking; the last is hero-only); a new master goes to `src/assets/` and through `astro:assets`, which builds the candidates. Encode with Pillow (`cwebp` is not installed); keep each delivered file under 100KB.
+- **Images:** reuse every `/images/…` file at its original path (`CLAUDE.md` rule 11). `img-srcset-within-2x` and `img-sizes-matches-box` are blocking render checks (the last is hero-only); `img_dims` is NA under `--blog`, so pipeline step 2 (§10) is how a post gets its width/height. A new master goes to `src/assets/` and through `astro:assets`, which builds the candidates. Encode with Pillow (`cwebp` is not installed); keep each delivered file under 100KB.
 - **The hero is the LCP image.** The kit `Hero` renders it eager with `fetchpriority="high"` and states its own `sizes`. On a post the route passes it only `featured_image` and its alt (§1); `imageSrcset`, `imageWidth` and `imageHeight` reach it only after the route change §1 describes. `BaseLayout` has no hero-preload prop — never add a second `<link rel=preload>` by hand.
 - `BaseLayout` loads no analytics tag and no Google Fonts stylesheet today, and a post adds neither by hand. Fonts: see `rules/design.md`.
 - **Render-blocking CSS is solved globally:** `astro.config.mjs` sets `build.inlineStylesheets: 'always'`, so ALL CSS is inlined into each page's `<style>` — no external stylesheet, no critical chain. Do NOT re-add `<link rel="stylesheet">` for local CSS, and do NOT revert to 'auto'. Corollary: **anything in ANY component's CSS now appears in EVERY page's HTML** — a single `select-none` Tailwind utility or `user-select: none` rule anywhere in src/ makes `scripts/final_page_audit.py` hard-FAIL the whole site (`no_userselect_none`). Never introduce it.
@@ -146,7 +146,7 @@ Bake these into every blog build and rebuild.
 
 The breeder's standing "change of plans": for every post, don't just name competitors — **expose their weakness, extract ALL their headers, and classify their keyword types.** This is field #6 of the 17-field research (§3) upgraded to a required, tool-driven pass. Run it BEFORE the outline gate.
 
-**Sources to pull (in order):** (1) the post's question file, `data/queries/<slug>.json` — its `competitors` array, the Google and Bing top-5 for the primary keyword, merged. Step 3 of `.claude/skills/bsuk-query-augmentation/SKILL.md` is "optional elsewhere" than location pages: run it for every post, or `competitors` stays empty; (2) the competitor registry, `data/competitors.json`, and the intel report under `docs/research/competitors/` for any registry entry that ranks; (3) the gap matrix, `docs/research/gap-matrix-2026-09-23.md`.
+**Sources to pull (in order):** (1) the post's question file, `data/queries/<slug>.json` — its `competitors` array, the Google and Bing top-5 for the primary keyword, merged. Step 3 of `.claude/skills/bsuk-query-augmentation/SKILL.md` is optional for pages other than location pages; run it for every post, or `competitors` stays empty; (2) the competitor registry, `data/competitors.json`, and the intel report under `docs/research/competitors/` for any registry entry that ranks; (3) the gap matrix, `docs/research/gap-matrix-2026-09-23.md`.
 
 **For each of the top 5–6 rankable results, fetch the page the cheapest way that works** — `curl` for the source HTML first, a headless browser if `curl` is blocked, Firecrawl last because every Firecrawl call spends the user's credits (`.claude/skills/bsuk-query-augmentation/SKILL.md`, Step 3) — and extract into a schema: `page_title, meta_description, h1, h2_headings[], h3_headings[], visible_keywords[], has_pricing, trust_or_scam_content_present, content_type`. Forums/FB/Reddit and video = note as UGC/video (not header-outrankable) but record that they rank — a SERP owned by forums is a **wide-open authoritative-guide lane**.
 
@@ -181,7 +181,7 @@ Layer these onto the 14-step architecture — they are how we beat commodity + A
 | Portrait infographic / checklist | as needed | a new master in `src/assets/` | a centred card whose `sizes` states its rendered width |
 | Real OG / trust photo | 1–2 | an existing `/images/…` file | plain `<img>` in the long visual-less H2/H3; real brand shot for E-E-A-T |
 
-Box sizes, crop and encode quality: `rules/images.md`. The checks are `img_dims`, `img-srcset-within-2x` and `img-sizes-matches-box` (all blocking; the last is hero-only).
+Box sizes, crop and encode quality: `rules/images.md`. `img-srcset-within-2x` and `img-sizes-matches-box` are blocking render checks (the last is hero-only); `img_dims` is NA under `--blog`, so pipeline step 2 is how a post gets its width/height.
 
 **The encode → wire → commit pipeline (copy this):**
 1. **Encode with Pillow** (`cwebp` NOT installed): flatten RGBA onto bone `#F4F1EA` (= `--color-surface`) for infographics / white for photos; crop, size and quality per `rules/images.md`. A new master goes to `src/assets/` and `astro:assets` builds its candidates; an existing `/images/…` file is never re-encoded, renamed or replaced (`CLAUDE.md` rule 11).
