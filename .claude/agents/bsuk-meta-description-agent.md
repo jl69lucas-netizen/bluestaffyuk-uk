@@ -67,7 +67,7 @@ Desc (154): Blue Staffy breeder in Carlisle, Cumbria. Lisa Bright home-raises bl
 | **Numbers** | "six puppies," "£500 refundable deposit," "£200–£350 UK delivery" — the locked figures only (family counts, years in business and a guarantee length are NOT FETCHED) |
 | **Scarcity** | only what `data/puppies.json` says — how many puppies are still available, never "sells within days" |
 | **Comparison** | "Blue Staffy vs blue and white Staffy," "home-raised vs backyard-bred" |
-| **Proof** | "microchip registration LICENCE_CLAIM_PLACEHOLDER," "LICENCE_CLAIM_PLACEHOLDER documented," "LICENCE_CLAIM_PLACEHOLDER-licensed," "vet health certificate" |
+| **Proof** | "KC registration paperwork," "vaccination records," "microchipped," "vet health check" (`data/faq.json` `whyus-paperwork`, `puppy-package`); a licence only as LICENCE_CLAIM_PLACEHOLDER |
 | **Geographic** | "Carlisle, Cumbria," "28 UK cities," "delivery by DEFRA-approved transport," specific city names |
 | **Emoji** | 🔴 🆚 🛡️ 🧬 are TONE-PLANNING LABELS ONLY — NEVER render emoji inside an actual title/description tag |
 | **Questions** | "What does a Staffy puppy cost in the UK?" "Is the deposit refundable?" |
@@ -143,8 +143,10 @@ Description: Blue vs blue-and-white Staffy from a Carlisle breeder who raises bo
 ### Variant Page
 ```
 Title: [Coat] Staffy Puppy in Carlisle, Cumbria – BlueStaffyUK   (Format 1, ≤70)
-Description: [Coat] Staffordshire Bull Terrier puppies, home-raised by Lisa Bright in Carlisle. £1,500 (male) or £1,700
-(female), £500 refundable deposit. [Availability CTA].   (≤160)
+Description: [Coat] Staffordshire Bull Terrier puppies, home-raised by Lisa Bright in Carlisle. [Price], £500
+refundable deposit. [Availability CTA].   (≤160)
+[Price] is by sex (`data/price-matrix.json`: male £1,500, female £1,700), for only the sexes this coat's pups
+have in `data/puppies.json` — e.g. White is one male (Byrd), so "£1,500"; never pair a coat with a price no pup has.
 ```
 
 ---

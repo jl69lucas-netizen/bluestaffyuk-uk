@@ -139,7 +139,7 @@ Internal link rule: Hub links to all spokes. Each spoke links back to hub + 2 si
 3. **No clichés** — ban: "passion," "love what we do," "top-notch," "family-friendly"
 4. **Transparency builds trust** — disclose costs, risks, limitations honestly
 5. **One story beats ten stats** — concrete narrative converts better than feature lists
-6. **Every claim needs a source** — microchip registration LICENCE_CLAIM_PLACEHOLDER, vet health certificate, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), or BSUK internal data
+6. **Every claim needs a source** — a `data/` file (the paperwork in `data/faq.json` `whyus-paperwork`, prices in `data/price-matrix.json`), the evidence ledger (`data/quality/evidence-ledger.json`) for any health result, or Lisa Bright directly; a licence stays LICENCE_CLAIM_PLACEHOLDER
 
 ---
 

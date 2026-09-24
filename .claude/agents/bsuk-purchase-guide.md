@@ -92,7 +92,7 @@ Build one at a time. Confirm with user before moving to next.
 | 4 | **the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) Promise** | `features` | "Every Puppy Comes with Full the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)" — 6 trust pillars |
 | 5 | **Key Takeaways** | `features` | TL;DR summary — 3-column grid of top reasons to buy |
 | 6 | **Why BSUK — 10 Reasons** | `features` | 10 differentiators vs competitors / unverified sellers |
-| 7 | **Health Guarantee** | `features` | Documentation package — LICENCE_CLAIM_PLACEHOLDER, microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert, vet health certificate LICENCE_CLAIM_PLACEHOLDER |
+| 7 | **Health Checks and Paperwork** | `features` | What goes home with a puppy: the `data/faq.json` `puppy-package` items (first vaccinations, microchip, vet health check, worming and flea treatment, a puppy pack) and the `whyus-paperwork` documents (Kennel Club registration paperwork, vaccination records, microchipping details, a written purchase contract). No guarantee while `data/settings.json` `guarantee_days` is null; a DNA-test result only where `data/quality/evidence-ledger.json` holds its proof (none today) |
 | 8 | **9-Step Purchase Process** | custom | Numbered steps with icons — the full purchase journey |
 | 9 | **Puppy Info** | custom | What makes Blue Staffies exceptional companions |
 | 10 | **Pricing & Comparison** | `comparison-table` | BSUK vs market pricing, Blue Staffy vs blue and white Staffy |
@@ -118,7 +118,7 @@ Build one at a time. Confirm with user before moving to next.
 **What converts them:**
 - Transparent the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) package (not vague promises)
 - The breeder's legal standing, stated only as the breeder supplies it (LICENCE_CLAIM_PLACEHOLDER)
-- microchip registration LICENCE_CLAIM_PLACEHOLDER (proof of professional program)
+- Named paperwork: Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract (`data/faq.json` `whyus-paperwork`)
 - Real breeder story (Lisa Bright — not a faceless operation)
 - Specific delivery to their city (from locations.json)
 

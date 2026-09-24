@@ -39,7 +39,9 @@ RESIDUE = {
           r"|\bfederal\b|\binterstate\b|usa-locations|\bin the US\b|\"US\"|BREEDER_STATE"
           r"|states_found|\bDallas\b|\bMiami\b|\bOrlando\b|402[-.)]\s?696|\(402\)"
           r"|\b\d\d:\d\d Central\b|\$\[price\]|(?<!nih)(?<!nih\\)\.gov\b(?!\\?\.uk)",
-    "CITES paperwork": r"\bpermits?\b|appendix i\b|bsukcitesstep|cites-",
+    # the noun only: "a/the/home-raised permit", "permit number" — never the verb ("the rule permits one H1")
+    "CITES paperwork": r"\b(?:an?|the|home-raised|CITES|LICENCE_CLAIM_PLACEHOLDER|export|import)\s+permits?\b"
+                       r"|\bpermits?\s+(?:numbers?|#|verification|lookup)|appendix i\b|bsukcitesstep|cites-",
     "fabricated figures": r"\b\d[\d,]*\+? (?:happy )?families\b|blue-brindle|health guaranteed",
 }
 FLAGS = {k: re.compile(v, re.I if k not in ("source people and brands",) else 0)
@@ -99,5 +101,63 @@ def test_the_scan_fires_on_each_kind_and_spares_bsuk_facts():
     for text in ("£1,500 (Roman, Byrd, Ince)", "collection in Carlisle, Cumbria",
                  "DEFRA-approved transport", "L-2-HGA and HC-HSF4", "https://www.gov.uk/x",
                  r"pmc\.ncbi\.nlm\.nih\.gov", "pmc.ncbi.nlm.nih.gov", r"www\.gov\.uk",
-                 "the breed's 12–14 years", "Title Case on every heading"):
+                 "the breed's 12–14 years", "Title Case on every heading", "the rule permits one H1"):
         assert residue(text) == [], text
+
+
+# Health and guarantee wording has ONE authority: the evidence ledger. data/faq.json repeats
+# the migrated site's "certified clear of L-2-HGA and HC-HSF4" and a "written health guarantee",
+# but `data/quality/evidence-ledger.json` holds `parents-dna-clear` at NOT FETCHED and
+# `data/settings.json` `guarantee_days` is null. So an agent line that sends a builder to
+# data/faq.json for health or guarantee wording must also name the evidence ledger, or the
+# builder copies an unproven claim word for word. (Naming the puppy-package items — a vet
+# health check, a microchip — is not health-result wording and passes.)
+FAQ = re.compile(r"faq\.json")
+HEALTH_WORDING = re.compile(r"\bhealth (?:claims?|wording|tests?|testing|results?|clearances?)\b"
+                            r"|\bguarantee|\bDNA\b|\bclear of\b|\bwords it\b", re.I)
+LEDGER = re.compile(r"evidence[- ]ledger")
+
+
+def faq_health_pointers(text):
+    return [n for n, l in enumerate(text.splitlines(), 1)
+            if FAQ.search(l) and HEALTH_WORDING.search(l) and not LEDGER.search(l)]
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_a_faq_pointer_for_health_or_guarantee_wording_names_the_evidence_ledger(agent):
+    bad = faq_health_pointers(agent.read_text(encoding="utf-8"))
+    assert bad == [], (f"{agent.name} lines {bad} send a builder to data/faq.json for health or "
+                       "guarantee wording without data/quality/evidence-ledger.json — faq.json "
+                       "repeats unproven clearances and a guarantee; name the ledger's rule")
+
+
+# The paperwork that goes home with a puppy is KNOWN (data/faq.json `whyus-paperwork`: Kennel
+# Club registration paperwork, vaccination records, microchipping details, a written purchase
+# contract; `puppy-package`: vaccinations, microchip, vet health check). Writing one of those
+# as LICENCE_CLAIM_PLACEHOLDER teaches a builder to hide a fact BSUK has; the placeholder is
+# for a licence claim only.
+PAPERWORK_AS_PLACEHOLDER = re.compile(
+    r"(?:microchip(?:ping)?(?: registration| number| details)?|vet (?:health )?cert(?:ificate)?"
+    r"|vet health check|vaccination records?|KC registration|Kennel Club registration)"
+    r"\s*,?\s*LICENCE_CLAIM_PLACEHOLDER", re.I)
+
+
+@pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
+def test_no_agent_writes_known_paperwork_as_a_licence_placeholder(agent):
+    bad = [f"{agent.name}:{n}  {m.group(0)}"
+           for n, l in enumerate(agent.read_text(encoding="utf-8").splitlines(), 1)
+           for m in PAPERWORK_AS_PLACEHOLDER.finditer(l)]
+    assert bad == [], ("the paperwork is named in data/faq.json whyus-paperwork — write the "
+                       "document; LICENCE_CLAIM_PLACEHOLDER is for a licence claim only:\n  "
+                       + "\n  ".join(bad))
+
+
+def test_the_health_pointer_and_paperwork_guards_fire_and_spare():
+    assert faq_health_pointers("a health claim only as `data/faq.json` words it")
+    assert faq_health_pointers("the guarantee from data/faq.json")
+    assert not faq_health_pointers("a health claim only where data/quality/evidence-ledger.json "
+                                   "holds its proof; the data/faq.json puppy-package items")
+    assert not faq_health_pointers("included, per data/faq.json puppy-package: vet health check")
+    assert PAPERWORK_AS_PLACEHOLDER.search("microchip registration LICENCE_CLAIM_PLACEHOLDER")
+    assert PAPERWORK_AS_PLACEHOLDER.search("vet health check LICENCE_CLAIM_PLACEHOLDER")
+    assert not PAPERWORK_AS_PLACEHOLDER.search("a licence number stays LICENCE_CLAIM_PLACEHOLDER")

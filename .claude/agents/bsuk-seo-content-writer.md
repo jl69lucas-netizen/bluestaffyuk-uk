@@ -56,15 +56,15 @@ You never write without a Content Brief from bsuk-content-architect. If no brief
 ### Inverse Pyramid (all informational content)
 ```
 Paragraph 1: Direct answer to the question — 1–2 sentences
-Paragraph 2: Supporting evidence — specific data, microchip registration LICENCE_CLAIM_PLACEHOLDER, vet health certificate
+Paragraph 2: Supporting evidence — specific data and the named paperwork (Kennel Club registration paperwork, vaccination records, microchipping details — `data/faq.json` `whyus-paperwork`)
 Paragraph 3: BSUK application — "this is why we do X"
 ```
 
 Example:
 ```
-Paragraph 1: Direct answer — "Blue Staffies cost £1,500 or £1,700, and the breeder can show the paperwork (LICENCE_CLAIM_PLACEHOLDER)."
-Paragraph 2: Evidence — "the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), microchip registration LICENCE_CLAIM_PLACEHOLDER, vet cert included."
-Paragraph 3: BSUK application — "At SITE_URL_PLACEHOLDER, every puppy ships with [list docs]."
+Paragraph 1: Direct answer — "Our puppies are £1,500 for a male and £1,700 for a female (`data/price-matrix.json`), and each goes home with its Kennel Club registration paperwork."
+Paragraph 2: Evidence — "Each puppy goes home with its Kennel Club registration paperwork, vaccination records, microchipping details and a written purchase contract."
+Paragraph 3: BSUK application — "At SITE_URL_PLACEHOLDER, every puppy goes home with [the `whyus-paperwork` documents]."
 ```
 
 ### QAB — Question-Answer-Benefit (FAQ, price, comparison sections)
@@ -103,7 +103,7 @@ These rules make content citable by AI engines (ChatGPT, Perplexity, Google AIO)
 
 1. **Lead with the direct answer** — first sentence cities the fact
 2. **Use declarative sentences** — "Staffordshire Bull Terriers typically live 12–14 years" not "Staffies can live..."
-3. **Name the source** — "confirmed by vet health certificate," "per the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER)," "LICENCE_CLAIM_PLACEHOLDER licensed breeder"
+3. **Name the source** — "recorded on the puppy's vet-signed health card," "per the Kennel Club registration paperwork"; a licence only as LICENCE_CLAIM_PLACEHOLDER
 4. **Use structured data patterns** — lists, tables, and labeled attributes are more citable than prose
 5. **Entity consistency** — always write "Blue Staffy" (not "BSUK" or "Blue Staffy") as the entity name in H2s
 

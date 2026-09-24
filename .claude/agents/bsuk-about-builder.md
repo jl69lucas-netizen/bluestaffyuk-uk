@@ -85,8 +85,8 @@ Solution: the breeder's verifiable legal standing (LICENCE_CLAIM_PLACEHOLDER) + 
 | 3 | Our Story | Story | custom | How BSUK started — background, timeline, puppies raised |
 | 4 | Meet Lisa Bright | Story | custom | Photo, personal bio, why they breed, personal connection to Blue Staffies |
 | 5 | Our Philosophy | Story | `features` | 3 core beliefs: documentation first, small-batch only, lifetime support |
-| 6 | What Makes Us Different | Solution | `features` | home-raised with the family, the £500 refundable deposit, collection in Carlisle or UK delivery £200–£350 by distance; every licence claim stays LICENCE_CLAIM_PLACEHOLDER, and a health claim only as `data/faq.json` words it |
-| 7 | Our Breeding Standards | Solution | custom | How parent puppies are selected, health testing, whelping process |
+| 6 | What Makes Us Different | Solution | `features` | home-raised with the family, the £500 refundable deposit, collection in Carlisle or UK delivery £200–£350 by distance; every licence claim stays LICENCE_CLAIM_PLACEHOLDER; a health claim only where `data/quality/evidence-ledger.json` holds its proof (none today — `parents-dna-clear` is NOT FETCHED: name the tests, never a result); no guarantee while `data/settings.json` `guarantee_days` is null; the puppy-package items (`data/faq.json` `puppy-package`) may be named |
+| 7 | Our Breeding Standards | Solution | custom | How the parents are chosen, which health tests they have (name the tests, never a result — the evidence ledger holds no proof yet), whelping process |
 | 8 | Documentation You Receive | Solution | custom | The paperwork that goes home with a puppy — Kennel Club registration paperwork, vaccination records, microchipping details and a written puppy purchase contract (`data/faq.json` `whyus-paperwork`); both parents' registration numbers on request. A licence number stays LICENCE_CLAIM_PLACEHOLDER |
 | 9 | Testimonials | Solution | `testimonials` | 3 family stories — emphasize documentation transparency and post-sale support |
 | 10 | Our Commitment to You | Solution | custom | Lifetime support promise — "we answer the phone after the sale" |

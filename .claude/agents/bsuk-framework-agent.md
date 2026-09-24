@@ -104,7 +104,7 @@ After gap matrix, output:
 ### BSUK Unfair Advantages (only BSUK can claim)
 - Health guarantee ([DURATION_TBD]) (competitors often silent on guarantee length)
 - the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) (most competitors do not surface this)
-- microchip registration LICENCE_CLAIM_PLACEHOLDER on every puppy
+- Kennel Club registration paperwork, vaccination records and microchipping details with every puppy (`data/faq.json` `whyus-paperwork`)
 - vet health certificate
 - LICENCE_CLAIM_PLACEHOLDER licensed breeder
 - Lisa Bright's hands-on home-raising story

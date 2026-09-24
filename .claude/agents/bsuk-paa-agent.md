@@ -144,9 +144,9 @@ Q: How do I find a reputable Blue Staffy puppy breeder?
 SNIPPET-OPTIMIZED ANSWER:
 To find a reputable Blue Staffy puppy breeder:
 1. Ask for the breeder's licence details (LICENCE_CLAIM_PLACEHOLDER until the breeder supplies them)
-2. Request the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) for each puppy
-3. Confirm microchip registration LICENCE_CLAIM_PLACEHOLDER and vet health certificate
-4. Ask for vet health check LICENCE_CLAIM_PLACEHOLDER and microchip number
+2. Ask for the Kennel Club registration paperwork and vaccination records for each puppy
+3. Confirm the microchip details and the vet health check
+4. Ask for a written puppy purchase contract before paying a deposit
 5. Check that the breeder answers questions before and after the sale
 ```
 
@@ -156,10 +156,10 @@ Q: What's the difference between a Blue Staffy and a blue-and-white Staffy?
 
 | | Blue Staffy | Blue and white Staffy |
 |--|--|--|
-| Price | £1,500 male, £1,700 female — the price follows the sex, not the coat | the same: £1,500 male, £1,700 female |
+| Price | this litter: £1,500 male, £1,700 female (`data/price-matrix.json`) | this litter: £1,500 male, £1,700 female (`data/price-matrix.json`) |
 | Puppies (`data/puppies.json`) | Ince (male), Christa (female), Cheryl (female, white blaze) | Roman (male), Vennie (female) |
 ```
-(Byrd, the sixth pup, is white — in neither column. Read the coats and prices from `data/puppies.json` at build time.)
+(Byrd, the sixth pup, is white — in neither column. Read the coats from `data/puppies.json` and the prices from `data/price-matrix.json` at build time.)
 
 ---
 
