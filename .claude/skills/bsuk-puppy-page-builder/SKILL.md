@@ -145,10 +145,13 @@ a row of `docs/reference/external-link-library.md` (a board naming any other URL
 5. **Honest scarcity only** — real counts from the data file ("three males still
    available"). No fabricated urgency, testimonials or review counts; a review BSUK has not
    received is NOT FETCHED.
-6. **Enquiry form on every page in the cluster** — `src/components/ContactForm.astro`. Its
-   `puppy` select lists each ACTUAL pup with its price, sourced from `data/puppies.json` and
-   `data/price-matrix.json`, never hardcoded; the delivery question offers exactly the two
-   real options (UK home delivery £200–£350 by distance, or collection in Carlisle).
+6. **Enquiry form on every page in the cluster** — `<ContactFormKit />`
+   (`src/components/kit/ContactFormKit.astro`), mounted once with no props (`idPrefix` exists
+   only for a board preview that renders the form more than once). Its `puppy` select lists
+   every puppy whose `status` is `Available` in `data/puppies.json`, with its sex and
+   `price_gbp`, plus a waiting-list choice — never hardcoded. The form asks no delivery
+   question; where the page states delivery, it is UK home delivery £200–£350 by distance, or
+   collection in Carlisle.
    Contract: `.claude/skills/bsuk-contact-form/SKILL.md`.
 
 ## 4. Build phases

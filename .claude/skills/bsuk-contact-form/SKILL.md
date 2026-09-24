@@ -21,7 +21,7 @@ gate below is BSUK's own.
 |---|---|
 | Every form on the site (enquiry AND newsletter) | `action="https://formspree.io/f/${PUBLIC_FORMSPREE_ID}" method="POST"` |
 | Where the id comes from | the `PUBLIC_FORMSPREE_ID` environment variable, read at call time — `scripts/form_contract_audit.py` refuses to run when it is unset, and Task 18 sets it. **Never** a committed file, never a report, never stdout |
-| Pre-launch action | `#contact` — `src/components/ContactForm.astro` falls back to the build-time sentinel when `PUBLIC_FORMSPREE_ID` is unset, and renders the live endpoint only when it is set. A build without it must not POST anywhere |
+| Pre-launch action | `#contact` — `src/components/kit/ContactFormKit.astro` renders `action="#contact"` (and `data-live="false"`) when `PUBLIC_FORMSPREE_ID` is unset, and the live endpoint only when it is set. A build without it must not POST anywhere |
 | Honeypot | `<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true">`, hidden off-screen |
 | Success redirect | `<input type="hidden" name="_next" value="https://SITE_URL_PLACEHOLDER/thank-you-blue-staffy-puppies-journey/">` |
 | Subject | `<input type="hidden" name="_subject" value="New Blue Staffy enquiry">` |
@@ -36,7 +36,7 @@ gate below is BSUK's own.
 ## The field contract
 
 `REQUIRED` in `scripts/form_contract_audit.py` is the contract; the component is
-`src/components/ContactForm.astro`.
+`src/components/kit/ContactFormKit.astro`.
 
 | # | Label | name | control |
 |---|---|---|---|
@@ -80,7 +80,7 @@ wherever the band is stated (`rules/puppies.md` `delivery-band-on-every-card`).
 4. **Radio/card inputs inherit the family's text-input rule** (width, padding, border). End
    every form's CSS with a reset: `width:auto;padding:0;border:0;background:none;box-shadow:none`.
 5. **An input without an explicit width uses its `size` default** and overflows a narrow
-   column. `ContactForm.astro` sets `width:100%` with `box-sizing:border-box` for exactly this.
+   column. `ContactFormKit.astro` sets `width:100%` with `box-sizing:border-box` for exactly this.
 
 ## Gates — run them in this order
 

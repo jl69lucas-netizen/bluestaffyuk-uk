@@ -224,8 +224,8 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 - Use `<details>/<summary>` accordion — no JavaScript
 - Minimum 8 questions covering: price and deposit, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), coat colour, collection vs delivery, and the health guarantee (whose length is NOT FETCHED)
 
-### Contact Form (id="contact" · `src/components/ContactForm.astro`)
-- 3-field inquiry form: Name, Email, Message
+### Contact Form (id="contact" · `src/components/kit/ContactFormKit.astro`)
+- Mount `<ContactFormKit />` once, with no props; it carries the field contract in `.claude/skills/bsuk-contact-form/SKILL.md`
 - Payment method: `[PAYMENT_METHOD_TBD]`
 
 ---

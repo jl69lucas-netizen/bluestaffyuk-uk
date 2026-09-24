@@ -50,7 +50,7 @@ Only after reading all three do you begin writing markup.
 **Step 0 — Always read design tokens before building any section:**
 
 ```bash
-grep "^--" src/styles/global.css | head -40
+grep -n "^  --" src/styles/tokens.css | head -40
 ```
 
 **BSUK design tokens (project 3 — defined in `src/styles/tokens.css`, imported by `src/styles/global.css`):**
@@ -130,7 +130,7 @@ git commit -m "feat: ..."
 2. **Always use real image src** — `/images/filename.jpg` format, never `data:image/gif`
 3. **Never inline JavaScript** — use `<details>`/`<summary>` for accordions, CSS-only interactions
 4. **Always include FAQPage schema** when building `faq` sections
-5. **Always read price-matrix.json** before writing any price into a `price-card` section
+5. **Never type a price into a `price-card` section** — `PuppyCard` reads the puppy's `price_gbp` from `data/puppies.json` itself
 6. **Output the Astro markup only** — no explanatory text around the block
 7. **Mobile-first** — the kit components already stack; never add a breakpoint by hand
 8. **LICENCE_CLAIM_PLACEHOLDER compliance** — never imply backyard-bred puppies; all copy must reflect home-raised status

@@ -93,7 +93,6 @@ def test_agent_templates_spell_no_hex_the_tokens_do_not_define(agent):
 
 
 SECTION_BUILDER = ROOT / ".claude/agents/bsuk-section-builder.md"
-CONTACT_FORM_UPDATER = ROOT / ".claude/agents/bsuk-contact-form-updater.md"
 
 
 def test_the_section_builder_hero_row_passes_the_whole_arrangement():
@@ -112,8 +111,15 @@ def test_the_section_builder_hand_writes_no_class():
     assert bad == [], "the section builder mounts kit components; no hand-written class:\n  " + "\n  ".join(bad)
 
 
-def test_the_legacy_contact_form_is_named_only_as_retired():
+INSTRUCTIONS = sorted([*AGENTS, *(ROOT / ".claude/skills").glob("*/SKILL.md"),
+                       *(ROOT / ".claude/commands").glob("*.md")])
+
+
+@pytest.mark.parametrize("doc", INSTRUCTIONS, ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_the_legacy_contact_form_is_named_only_as_retired(doc):
     # No page imports src/components/ContactForm.astro; ContactFormKit replaced it in project 4.
-    bad = [f"{n}  {l.strip()[:100]}" for n, l in numbered(CONTACT_FORM_UPDATER)
-           if "src/components/ContactForm.astro" in l and "retired" not in l]
+    # `ContactForm.astro` catches the full path and the bare file name; ContactFormKit.astro
+    # does not contain it.
+    bad = [f"{doc.relative_to(ROOT)}:{n}  {l.strip()[:100]}" for n, l in numbered(doc)
+           if "ContactForm.astro" in l and "retired" not in l]
     assert bad == [], "the legacy form is retired — name ContactFormKit:\n  " + "\n  ".join(bad)
