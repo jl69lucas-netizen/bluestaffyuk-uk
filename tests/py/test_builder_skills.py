@@ -246,3 +246,32 @@ def test_the_checklist_newsletter_links_reviews_and_claims_match_the_builders():
     assert "median" in rule_27 and "NOT FETCHED" in rule_27
     rule_26 = seo_rules[seo_rules.index("**Rule 26"):seo_rules.index("**Rule 27")]
     assert "section_target.total" in rule_26
+
+
+RULE_CITE = re.compile(r"\bRules?\s+(\d{1,2}[a-z]?\b(?:\s*(?:,|and|–)\s*\d{1,2}[a-z]?\b(?![-\d]))*)")
+
+
+def test_the_checklist_full_sweep_no_unbacked_claims_and_every_cited_rule_exists():
+    """The sweep: no credential, award, founding length, promise or kennel description BSUK's
+    data does not back; no quota the rule packs do not set; and every "Rule NN" the checklist
+    cites is a heading of docs/reference/seo-rules.md (Rules 44–50b were the source site's
+    wildlife regime, deleted in the port, and 28b never existed)."""
+    low = CHECKLIST.lower()
+    banned = ["decade", "lifetime", "canine vet certified", "registered kennel", "+ 1,000",
+              "(20+", "(15+", "(10+", "250+", "15+ form", "(80+", "100+ required",
+              "first 300 words", "aggregaterating schema", "image-specs.json",
+              "bluestaffyuk kennel", "visit the kennel", "kennel specialists", "licenced kennel",
+              "kennel location", "blue staffy kennel", "kennel puppy", "ultimate choice for [",
+              "learn more about [", "read more about [", "max 275", "extended 290"]
+    assert [b for b in banned if b in low] == []
+    seo_rules = (ROOT / "docs/reference/seo-rules.md").read_text(encoding="utf-8")
+    exists = set(re.findall(r"^\*\*Rule (\d+[a-z]?) —", seo_rules, re.M))
+    cited = {n for group in RULE_CITE.findall(CHECKLIST) for n in re.findall(r"\d{1,2}[a-z]?\b", group)}
+    assert cited and sorted(cited - exists) == [], sorted(cited - exists)
+    counters = CHECKLIST[CHECKLIST.index("**Counter Snippets"):CHECKLIST.index("**Contact/Inquiry Forms")]
+    for counter in ("£500 Refundable Deposit", "12–14 Year Lifespan", "28 UK Cities Covered",
+                    "Home-Reared in Carlisle"):
+        assert counter in counters, counter
+    step5 = CHECKLIST[CHECKLIST.index("**Header count targets"):CHECKLIST.index("**Two-Keyword Header")]
+    for level in ("H2: 25–35", "H3: 40–50", "H4: 10–20", "H5: minimum 5", "H6: minimum 5"):
+        assert level in step5, level
