@@ -134,7 +134,7 @@ Two BSUK pages should never target the same Tier 1 keyword. If conflict found:
 ## Rules
 
 1. **One Tier 1 keyword per page** — never split focus
-2. **Check top-pages.md first** — avoid targeting keywords already ranking well on another page
+2. **Check existing pages first** — rankings are NOT FETCHED until project 6 (Known Issue 14), so check `data/page-map.json` titles and H1s and `docs/research/keyword-gap-2026-09-23.md`; never target a keyword another page already owns
 3. **Cannibalization check required** on every cluster
 4. **Hand-off section required** — explicitly name which agent gets which tier
 5. **Save cluster** — write to `docs/research/keyword-cluster-<slug>-<date>.md`

@@ -56,7 +56,7 @@ A script can't judge these — read them:
 
 ```text
 MANUAL AUDITOR CHECK — <page slug>            Updated: <Month Year>
-RUN FIRST: npx astro build  →  python3 scripts/interior_29_audit.py
+RUN FIRST: npm run build  →  python3 scripts/final_page_audit.py <slug>
 
 STRUCTURE
 [ ] H1 ×1 exactly; H1–H4 all present; no level skips (utility pages may lack H4 — ACCEPTED)

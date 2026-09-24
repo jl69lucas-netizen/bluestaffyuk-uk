@@ -369,3 +369,51 @@ def test_the_dead_root_guard_actually_fires(tmp_path):
                  encoding="utf-8")
     assert [h.split("  ")[0] for h in dead_root_hits(p)] == [
         "SKILL.md:1", "SKILL.md:2", "SKILL.md:3"], dead_root_hits(p)
+
+
+# ── source-repo files named in prose (follow-up to Known Issue 56) ──────────
+# `_path_like` reads backticked paths; these three were named bare in prose and so slipped past
+# it. `scripts/interior_29_audit.py` (the source repo's 29-check auditor), `docs/reference/
+# top-pages.md` (its search-console export) and `data/structure.json` (its architecture
+# manifest) were never ported. The auditors here are `scripts/final_page_audit.py`,
+# `scripts/page_hardening_scan.py` and `scripts/evidence_audit.py`; the route list is
+# `data/page-map.json`; search-console data is NOT FETCHED until project 6 (Known Issue 14),
+# so a line may still name top-pages only to say it is not fetched.
+DEAD_FILES = (
+    ("`interior_29_audit.py` (use `scripts/final_page_audit.py`)",
+     re.compile(r"interior_29_audit"), None),
+    ("`top-pages.md` (search-console data is NOT FETCHED until project 6)",
+     re.compile(r"top-pages(?:\.md)?\b"), re.compile(r"NOT FETCHED|project 6")),
+    ("`structure.json` (the route list is `data/page-map.json`)",
+     re.compile(r"\bstructure\.json\b"), None),
+)
+
+
+def dead_file_hits(f: pathlib.Path):
+    out = []
+    for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+        for why, rx, excuse in DEAD_FILES:
+            if rx.search(line) and not (excuse and excuse.search(line)):
+                out.append(f"{f.name}:{lineno}  {why}  |  {line.strip()[:110]}")
+    return out
+
+
+@pytest.mark.parametrize("doc", INSTRUCTION_SKILLS + sorted(COMMANDS_DIR.rglob("*.md")),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_no_skill_or_command_names_a_source_repo_file(doc):
+    bad = dead_file_hits(doc)
+    assert bad == [], (
+        "a file the source repo had and this repo does not — a builder told to read or run "
+        "it stops or guesses:\n  " + "\n  ".join(bad))
+
+
+def test_the_dead_file_guard_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text("RUN FIRST: python3 scripts/interior_29_audit.py\n"
+                 "Check top-pages.md first.\n"
+                 "1. Is this page in data/structure.json?\n"
+                 "top-pages.md is NOT FETCHED until project 6.\n"       # excused: silent
+                 "Read data/page-map.json and run scripts/final_page_audit.py.\n",  # silent
+                 encoding="utf-8")
+    assert [h.split("  ")[0] for h in dead_file_hits(p)] == [
+        "SKILL.md:1", "SKILL.md:2", "SKILL.md:3"], dead_file_hits(p)

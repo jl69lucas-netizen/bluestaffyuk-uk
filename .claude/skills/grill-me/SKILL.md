@@ -167,8 +167,8 @@ After Q6, run the **Workflow Gate Check** before Q7:
 ```
 WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
 
-1. Is this page in data/structure.json?
-   - NO → "Before we build, I need to run @bsuk-structure-architect to assign this page a place in the site architecture. Want me to do that first?"
+1. Is this page in data/page-map.json? (the `url` of an entry in `pages`)
+   - NO → it is a new page, not one the old site had: "This page has no board yet, and `python3 scripts/board_gate.py <slug>` refuses a build without an approved one. Before we build, the board is built (`python3 scripts/build_page_board.py <slug>`) and approved (`python3 scripts/board_approve.py <slug>`). Want me to start on that first?"
    - YES → continue
 
 2. Has @bsuk-content-audit-agent been run for this page?
@@ -177,13 +177,13 @@ WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
    - YES → continue
 
 3. What is the LLM Visibility score for this keyword?
-   - Check docs/reference/top-pages.md for LLM Visibility column
-   - NOT MEASURED → note: "LLM Visibility hasn't been measured for this keyword. We should run @bsuk-llm-keyword-intel before publishing."
-   - MEASURED → report the score (e.g., "LLM Visibility: 3/10 — BSUK is cited in 1 of 5 AI engines")
+   - Check docs/research/llm-intel/ for a `<slug>-<date>.json` file, and data/queries/<slug>.json for the question file it read (search-console data is NOT FETCHED until project 6, Known Issue 14)
+   - NO FILE → note: "LLM Visibility hasn't been measured for this keyword. We should run @bsuk-llm-keyword-intel before publishing."
+   - FILE → report the score (e.g., "LLM Visibility: 3/10 — BSUK is cited in 1 of 5 AI engines")
 
 4. What is the page's hub page?
-   - Check data/structure.json for parent hub
-   - If hub page doesn't exist yet → flag: "The hub page [/url/] isn't built yet. Hubs should be built before spokes."
+   - The hub comes from the route, since data/page-map.json records each page's `kind`, not a parent: `/uk-locations/<slug>/` → `/uk-locations/`, `/available-puppies/<slug>/` → `/available-puppies/`, a blog post (an entry of `src/content/blog/`, served at `/<slug>/`) → `/blue-staffy-blog-guides/`; any other top-level page has no hub
+   - If the hub has no `src/pages/<hub>/index.astro` yet → flag: "The hub page [/url/] isn't built yet. Hubs should be built before spokes."
 ```
 
 Report the gate findings to the user in one message before asking Q7. **Log every gate flag to `## Open Flags`** — these are exactly the unresolved items a resuming session needs.
@@ -318,8 +318,8 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 **If audit not done:**
 → `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]`
 
-**If structure.json missing:**
-→ `@bsuk-structure-architect`
+**If the page is not in data/page-map.json (a new page):**
+→ the page's board: `python3 scripts/build_page_board.py <slug>`, then `python3 scripts/board_approve.py <slug>` (`python3 scripts/board_gate.py <slug>` refuses a build until it is approved)
 
 **If audit done and ready to build:**
 → SECTION MAP + COMPONENT GATE (list every section → pick component → get approval)
@@ -376,8 +376,8 @@ After writing (or skipping) the CLAUDE.md patch, say:
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data
 >
-> **If structure.json missing:**
-> → Run `@bsuk-structure-architect` — maps the full site architecture before building
+> **If the page is not in data/page-map.json (a new page):**
+> → Build the page's board (`python3 scripts/build_page_board.py <slug>`) and record its approval (`python3 scripts/board_approve.py <slug>`) — `python3 scripts/board_gate.py <slug>` refuses a build until then
 >
 > **If audit not run:**
 > → Run `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]` — 10 minutes, prevents wasted work
@@ -402,5 +402,5 @@ Remind the build agent that picks this up: the live brief is the same file it sh
 6. **Never write site files without approval** — show the CLAUDE.md patch and wait for explicit `yes` (the live brief in `docs/superpowers/sessions/` is a working file, not a site file — checkpointing it needs no approval)
 7. **Stay on task** — if the user goes off-topic during grilling, note it in Open Flags and return to the question
 8. **Golden Rule** — you use only Read, Write, and Bash. No MCPs. No external APIs.
-9. **Dynamic questions** — Q2 and Q3 must reference actual data from top-pages.md, not generic placeholders
+9. **Dynamic questions** — Q2 and Q3 must reference actual data, not generic placeholders: search-console data is NOT FETCHED until project 6 (Known Issue 14), so until then cite the latest session brief, `docs/research/gap-matrix-2026-09-23.md` and `data/page-map.json`
 10. **Match depth to scope** — full interview for a page build; `--quick` (3 questions) for a small fix. Don't over-interrogate a one-line change.
