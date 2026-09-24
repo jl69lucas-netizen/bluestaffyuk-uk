@@ -126,3 +126,9 @@ def test_the_comparison_builder_has_no_source_site_polish_leftovers():
     polish = section(COMPARISON, "## 12.") + section(COMPARISON, "## 13.")
     for route in ("/blue-staffy-uk-breeders/", "/buy-blue-staffy-puppies-uk/"):
         assert route not in polish, route
+
+
+def test_the_comparison_layout_rules_name_no_fixed_header_or_toc_size():
+    layout = section(COMPARISON, "## 11.")
+    for fixed in ("96px", "200px"):
+        assert fixed not in layout, fixed

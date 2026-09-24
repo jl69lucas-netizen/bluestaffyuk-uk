@@ -167,12 +167,15 @@ After outline approval, mark every H2/H3 needing OG photo vs AI image vs HTML in
 
 These are the floor for every comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terrier-guide/index.astro`.
 
-1. **Hero** — full-bleed band (background spans viewport, content in `.container`), homepage height
-   (~380–480px desktop), copy LEFT / two staggered OG puppy portraits CENTER-RIGHT with a small `vs`
-   roundel at the overlap; mobile stacks **images first**. Eyebrow is **sentence case** (never
-   uppercase), `--color-brand` on a light hero or `--color-link-on-inverse` on a steel one —
-   never brass, which is 2.1:1 on the light surface. H1 `clamp(1.75rem, 3vw, 2.25rem)`. Hero images: the kit `Hero` with `imageSrcset`,
-   `imageWidth` and `imageHeight` for a `/images/…` path (`BaseLayout` has no preload prop).
+1. **Hero** — the kit `Hero`, in the arrangement the page's board picked through `pickedStyle()`
+   (`layout`, `ledge`, `media`, `align`): a comparison page is the `interior-guide` layout, so its
+   board offers that type's three styles in `HERO_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`).
+   Its height is `rules/design.md` rule 10's — 390–450px on desktop (≥1024px), auto below — with
+   the image first in the DOM; the component holds both. The eyebrow's words are the page's own
+   (§13 item 4); its colour and the H1's size (`--text-4xl`, stepping down to `--text-3xl` inside
+   the rule-10 band) are the kit's — never brass text, which is 2.1:1 on the light surface. Hero
+   images: `imageSrcset`, `imageWidth` and `imageHeight` for a `/images/…` path (`BaseLayout` has
+   no preload prop).
 2. **No HTML/CSS infographics.** Every H2 + important H3 image slot is a real OG photo or a Gemini
    image (distinct design style per section, the `rules/design.md` palette, 16:9 1600×900 → 760×400 slot).
    The source repo's prompt pack was not ported — source repo only; write the page's own.
@@ -182,9 +185,12 @@ These are the floor for every comparison page. Reference implementation: `src/pa
    renders as two cards — **UK home delivery £200–£350 by distance,
    by DEFRA-approved transport**, and **collection in Carlisle** — each with its own photo, plus
    a row of links to 3–5 city pages from `data/locations.json` with FRESH anchors (each comparison page uses a different set).
-4. **Sticky offsets** — site header is `sticky` and **96px** tall: jump rail `top:96px`, desktop TOC
-   `top:calc(96px + 24px)`, every section `scroll-margin-top:calc(96px + 18px)`, `:global(html){scroll-behavior:smooth}`
-   (+ reduced-motion opt-out). TOC column 200px / gap 34px (not 230/40) to widen the article column.
+4. **Sticky offsets are the kit's, never hard-coded.** The site header (`SiteHeaderKit`) is
+   `sticky` at `min-height: var(--hdr)` (`src/styles/global.css`), and BaseLayout's inline script
+   writes the header's measured height to `--hdr-measured`. Every jump target lands through the
+   global `[id] { scroll-margin-top }` rule built on those two, which `SectionStrip` extends by its
+   own `--strip-h`; never set `scroll-behavior: smooth` (§13 item 1). The page navigation and its
+   column are the `PageShell` set — see §13 item 2.
 5. **Contrast floors** — buttons and solid chips fill `--color-cta` with a `--color-cta-ink`
    label (6.8:1); table verdict cells `--color-brand` bold (10.4:1 on the surface); never brass
    on brass, and never brass as text on a light surface (2.1:1). Inside the article column give
@@ -265,7 +271,7 @@ These hold on every comparison page, alongside §11 and §12.
 6. **One newsletter, as on the location pages:** `InfoCard kind="recommendation" label="Newsletter"`
    with `id="newsletter"`; there is no newsletter component with variants. Its heading stays below
    the page H1 at every width (item 7).
-7. **H1 must outrank every H2 at EVERY width.** Sweep rule: resolve the H1's `clamp()` at
+7. **H1 must outrank every H2 at EVERY width.** Sweep rule: measure the H1's computed size at
    375/640/768/860/1280 and compare it against the largest H2 (usually the CTA or newsletter
    heading) before delivery. No render check measures this, so the sweep is the gate.
 8. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walking
