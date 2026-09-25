@@ -135,7 +135,7 @@ out as parallel `Agent` calls in one message.
   → Output: data/competitors.json (checked by npm run check:competitors)
 
 @bsuk-competitor-intel --all
-  → STOPS before any fetch with the ids, tiers and ceiling (7 × N); resumes only on `fetch approved: --all` (or `fetch approved: --tier <n>`)
+  → STOPS before any fetch with the ids, tiers and ceiling (8 × N: a map, one search map when the first misses the breed, six scrapes); resumes only on `fetch approved: --all` (or `fetch approved: --tier <n>`)
   → Analyse every registry competitor across 10 metric categories
   → Output: docs/research/competitors/<id>.json + <id>.md; before hand-off the contact scan, scripts/gap_matrix.py --write, npm run check:gaps and npm run check:competitors must all pass
   → Any new or changed report makes the BSUK profile stale: re-run @bsuk-competitor-intel --bsuk (same after-run checks) before the gap matrix is read
@@ -219,7 +219,7 @@ Before proceeding to Sprint 1:
 ```
 Step 0a: bsuk-competitive-keyword-gap-agent
   → Reads the `pages` lists in the competitor-intel reports, and BSUK's side from the BSUK profile (docs/research/competitors/bsuk.json); no profile → the page-map fallback, and every gap is "provisional" until `--bsuk` and a re-run
-  → Stale reports (`pages` NOT FETCHED or older than 30 days): one → the agent re-fetches it (1 map + up to 6 scrapes); more than one → STOP until `fetch approved: --all` or `fetch declined`; tier 5 is never re-fetched
+  → Stale reports (`pages` NOT FETCHED or older than 30 days): one → the agent re-fetches it (1 map, one search map when intel's Map list asks, up to 6 scrapes); more than one → STOP until `fetch approved: --all` or `fetch declined`; tier 5 is never re-fetched
   → Scores every gap with its script, never by eye: 7+ (or a licence / health-test topic) = high, 4–6 = medium, under 4 = low; every gap is proved by a competitor URL
   → High gaps → bsuk-content-architect; a gap whose BSUK page is a noindex stub goes as "rebuild the stub <url>" (project 5), never a new page; medium gaps → bsuk-strategy-synthesizer's content calendar
   → Output: docs/research/keyword-gap-[date].md

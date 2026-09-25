@@ -528,3 +528,93 @@ def test_the_mobile_check_measures_what_a_phone_sees_and_proves_emulation(change
     d = json.loads(run.stdout)
     assert d["mobile_layout_ok"] is ok
     assert {"innerWidth", "clientWidth", "scrollWidth", "screenWidth", "maxTouchPoints", "mobileUA"} <= set(d)
+
+
+# --- the map list: one search map when the first map misses the breed; the homepage's own breed links ---
+MAPLIST = re.compile(r'python3 - "\$MAP_RAW"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
+DT = "https://www.dogstrust.org.uk"
+
+
+def map_list(tmp_path, first, root="dogstrust.org.uk", search=None, home=None):
+    """intel's map-list script on a first map (and a search map, and a homepage): its JSON, and the list it wrote."""
+    found = MAPLIST.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected one map-list block, found {len(found)}"
+    (tmp_path / "first.json").write_text(json.dumps(first), encoding="utf-8")
+    args = [str(tmp_path / "first.json"), root]
+    if home is not None:
+        (tmp_path / "home.html").write_text(home, encoding="utf-8")
+        args += ["--home", str(tmp_path / "home.html"), DT + "/"]
+    if search is not None:
+        (tmp_path / "search.json").write_text(json.dumps(search), encoding="utf-8")
+        args += ["--search", str(tmp_path / "search.json")]
+    args += ["--out", str(tmp_path / "list.json")]
+    run = subprocess.run([sys.executable, "-", *args], input=found[0], cwd=REPO, capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout), json.loads((tmp_path / "list.json").read_text(encoding="utf-8"))
+
+
+@pytest.mark.parametrize("first,want", [
+    ([f"{DT}/page-{i}/" for i in range(500)], True),                                     # at the cap
+    ([f"{DT}/page-{i}/" for i in range(499)] + [f"{DT}/dog-breeds/staffordshire-bull-terrier/"], True),  # at the cap
+    ([f"{DT}/page-{i}/" for i in range(40)] + [f"{DT}/staffy-rescue/"], False),         # under it, with a breed page
+    ([f"{DT}/page-{i}/" for i in range(40)], True),                                      # under it, no breed page
+    ([f"{DT}/page-{i}/" for i in range(40)] + [f"{DT}/dogs/stafford/"], True),           # the town is not the breed
+])
+def test_a_map_at_the_cap_or_without_the_breed_asks_for_one_search_map(tmp_path, first, want):
+    d, _ = map_list(tmp_path, first)
+    assert d["search_map"] is want and d["url_count"] == len(first)
+    assert d["search_term"] == ("staffordshire" if want else None)
+
+
+def test_the_search_map_is_merged_once_per_page_and_only_from_the_site(tmp_path):
+    first = [f"{DT}/", f"{DT}/rehoming/dogs/", f"{DT}/about-us/"]
+    search = [f"https://dogstrust.org.uk/rehoming/dogs", f"{DT}/about-us/?utm_source=x",   # already there
+              f"{DT}/dog-breeds/staffordshire-bull-terrier/", f"{DT}/dog-breeds/staffordshire-bull-terrier",
+              "https://shop.dogstrust.org.uk/staffy-toys/",                                  # a subdomain: the same site
+              "https://www.example-breeder.co.uk/staffy-puppies/"]                          # another site: never
+    d, merged = map_list(tmp_path, first, search=search)
+    assert merged == first + [f"{DT}/dog-breeds/staffordshire-bull-terrier/", "https://shop.dogstrust.org.uk/staffy-toys/"]
+    assert (d["search_added"], d["search_breed_urls"], d["map_list"]) == (2, 2, 5)
+
+
+DT_HOME = f"""<html><body><nav>
+<a href="/dog-breeds/staffordshire-bull-terrier">Staffies</a>
+<a href='/rehoming/dogs'>Rehome a dog</a>
+<a href="{DT}/dog-breeds/staffordshire-bull-terrier/#care">Staffy care</a>
+<a href="{DT}/contact-us/staffy-enquiry">Ask about a Staffy</a>
+<a href="https://www.example-breeder.co.uk/staffy-puppies/">A breeder</a>
+<a href="mailto:staffy@dogstrust.org.uk">Email</a><a href="tel:+440000000000">Call</a>
+<a href="">Empty</a>
+</nav><script>var t = '<a href="/staffy-in-a-script/">';</script><!-- <a href="/staffy-in-a-comment/"> -->
+<p>Staffordshire Bull Terriers need homes.</p></body></html>"""
+
+
+def test_the_homepages_own_breed_links_join_the_list_at_no_cost(tmp_path):
+    # Dogs Trust: the Staffy breed page is in the homepage menu but not in the map
+    first = [f"{DT}/", f"{DT}/rehoming/dogs/"]
+    d, merged = map_list(tmp_path, first, home=DT_HOME)
+    assert merged == first + [f"{DT}/dog-breeds/staffordshire-bull-terrier"]  # same site, a breed path, once
+    assert d["home_added"] == 1                     # never another site, a contact page, mailto/tel, a script or a comment
+    d, merged = map_list(tmp_path, first + [f"{DT}/dog-breeds/staffordshire-bull-terrier/"], home=DT_HOME)
+    assert d["home_added"] == 0 and len(merged) == 3  # already in the map: one page however written
+
+
+def test_the_search_term_is_the_sites_own_word_for_the_breed(tmp_path):
+    first = [f"{DT}/page-{i}/" for i in range(5)]
+    assert map_list(tmp_path, first, home=DT_HOME)[0]["search_term"] == "staffordshire"
+    staffy_only = "<html><body><h1>Blue Staffy puppies</h1><a href='/puppies/'>Puppies</a></body></html>"
+    assert map_list(tmp_path, first, home=staffy_only)[0]["search_term"] == "staffy"
+
+
+def test_the_map_list_uses_the_classifiers_breed_test_line_for_line():
+    text = AGENT.read_text(encoding="utf-8")
+    lines = lambda block: [ln for ln in block.splitlines() if ln.startswith(("S, J = ", "BREED = "))]
+    ours, theirs = lines(MAPLIST.findall(text)[0]), lines(CLASSIFIER.findall(text)[0])
+    assert len(theirs) == 2 and ours == theirs, "the breed test differs: change it in the classifier, then copy it"
+
+
+def test_the_ceiling_is_two_maps_and_six_scrapes():
+    text = AGENT.read_text(encoding="utf-8")
+    assert "(8 × N)" in text and "7 × N" not in text
+    gap = (REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md").read_text(encoding="utf-8")
+    assert "8 × N" in gap and "7 × N" not in gap and "Ceiling 7" not in gap
