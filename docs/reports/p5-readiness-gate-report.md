@@ -53,8 +53,14 @@ Selected `check:all` lines (run 2): `competitors: 21 entries; 1 banned domain; 1
 banner); on that tree both runs read `5168 passed, 1 skipped, 1 xfailed, 152 warnings`, and
 `npm run -s check:all` exited 0 on both runs, with `registry`, `agents` and `baseline` at 0 problems.
 
-On `foundation` after the merge, Task Z Step 10 re-runs the same commands in the main repo (`.env`
-and the gitignored research caches present); its record commit follows the merge.
+On `foundation` after the merge (`b76595e`), Task Z Step 10 re-ran the same commands in the main
+repo (`.env` and the gitignored research caches present), twice: `npm run build` exit 0;
+`5169 passed, 1 skipped, 1 xfailed` both runs; `check:all` exit 0 both runs, output identical;
+`registry`, `agents` and `baseline` 0 problems. Before those runs one test failed,
+`test_design_system_build.py::test_every_component_folder_plus_the_cover_each_carries_a_ds_card_line`,
+because the main repo's gitignored Design System build (`docs/artifacts/design-system/`) predated the
+self-hosted fonts' re-measured canvas heights (Task R3 rebuilt it only in the worktree); `npm run -s
+ds:build` regenerated it. No tracked file changed.
 
 ## The audit, in one table
 
