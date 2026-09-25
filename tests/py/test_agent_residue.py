@@ -43,7 +43,8 @@ RESIDUE = {
           r"|\b\d\d:\d\d Central\b|\$\[price\]|(?<!nih)(?<!nih\\)\.gov\b(?!\\?\.uk)",
     # the noun only: "a/the/home-raised permit", "permit number" — never the verb ("the rule permits one H1")
     "CITES paperwork": r"\b(?:an?|the|home-raised|CITES|LICENCE_CLAIM_PLACEHOLDER|export|import)\s+permits?\b"
-                       r"|\bpermits?\s+(?:numbers?|#|verification|lookup)|appendix i\b|bsukcitesstep|cites-",
+                       r"|\bpermits?\s+(?:numbers?|#|verification|lookup)|\bappendix[\s-]i\b|\bCoP ?17\b"
+                       r"|bsukcitesstep|cites-",
     "fabricated figures": r"\b\d[\d,]*\+? (?:happy )?families\b|blue-brindle|health guaranteed",
 }
 FLAGS = {k: re.compile(v, re.I if k not in ("source people and brands",) else 0)
@@ -94,6 +95,13 @@ def test_no_agent_leaves_a_known_fact_as_a_placeholder(agent):
 def test_the_scan_sees_a_marker_split_across_lines():
     assert residue("Blue Staffy African \nGreys are the best mimics")[:1] == [
         ("parrot", "African Greys")]
+
+
+@pytest.mark.parametrize("text", ["legal to own (CoP17, effective Jan 2017)", "under CoP 17", "Appendix-I puppies",
+                                  "an appendix I species"])
+def test_the_scan_catches_the_cites_listing_in_every_spelling(text):
+    # the skills' CITES guard (tests/py/test_agent_facts.py) reads CoP17 and Appendix-I; so does this one
+    assert [k for k, _ in residue(text)] == ["CITES paperwork"], text
 
 
 def test_the_scan_fires_on_each_kind_and_spares_bsuk_facts():

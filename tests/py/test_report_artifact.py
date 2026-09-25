@@ -7,9 +7,14 @@ build_spec_artifact.py). It now takes the same nine positional arguments as
 build_spec_artifact.py and build_plan_artifact.py, and with none it still builds the
 Foundation report exactly as it always has.
 """
+import json
 import pathlib
+import re
+import shutil
 import subprocess
 import sys
+
+import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -74,6 +79,19 @@ def test_the_page_undoes_the_script_escape_before_it_renders_or_copies():
     # must see the author's </script again, in any case.
     html = R.page("t", "m", "meta", "copy", "head", "ctx", "")
     assert r".replace(/<\\\/(script)/gi,'</$1')" in html, "no un-escape in the page script"
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_the_page_s_un_escape_really_undoes_esc_in_a_browser_engine():
+    # run the page's own .replace() in node: what esc() wrote comes back as the author wrote it
+    html = R.page("t", "m", "meta", "copy", "head", "ctx", "")
+    m = re.search(r"\.replace\((/<[^,]*/gi),'</\$1'\)", html)
+    assert m, "no un-escape in the page script"
+    text = "a </script> b </SCRIPT> c </Script d"
+    js = "process.stdout.write(%s.replace(%s,'</$1'))" % (json.dumps(R.esc(text)), m.group(1))
+    run = subprocess.run(["node", "-e", js], capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+    assert run.stdout == text
 
 
 def test_a_closing_script_tag_is_escaped_in_any_case():

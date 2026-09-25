@@ -119,7 +119,7 @@ Link-First anchors (sentence START, never mid or end; branded ACTION anchors on 
 exempt). Internal anchors from the Anchor Diversity Ledger
 (`.claude/skills/internal-link-agent/SKILL.md` — no repeated anchors site-wide). External:
 credible UK authorities (The Kennel Club, the RSPCA, the PDSA, the British Veterinary
-Association's eye scheme, a `gov.uk` welfare page — each a row of the library below) — cite the specific resource page; a curl 403 is a bot-block, not a
+Association's eye scheme, a `gov.uk` welfare page — each a row of `docs/reference/external-link-library.md`) — cite the specific resource page; a curl 403 is a bot-block, not a
 dead link, so retry with a UA. Internal same-tab, external new-tab + ↗. Every external link is
 a row of `docs/reference/external-link-library.md` (a board naming any other URL is refused).
 

@@ -61,18 +61,21 @@ _SLUG = _re.compile(r"_?(?=[a-z0-9-]*[a-z0-9])[a-z0-9-]+(/(?=[a-z0-9-]*[a-z0-9])
 def _page_map_routes(root):
     """{last segment: route} for every data/page-map.json row but the root, plus
     `uk-locations/<slug>` for every data/locations.json row (a city added there before the
-    extractor's map knows it is still a city page). {} with neither file. Two routes ending
-    in the same segment would make a bare key ambiguous: refused."""
+    extractor's map knows it is still a city page). {} with neither file; a row without its
+    url or slug names no route and is skipped. Two routes ending in the same segment would make
+    a bare key ambiguous: refused."""
     import json
     import pathlib
     path = pathlib.Path(root) / "data" / "page-map.json"
     cities = pathlib.Path(root) / "data" / "locations.json"
     urls = []
     if path.is_file():
-        urls += [row["url"] for row in json.loads(path.read_text(encoding="utf-8"))["pages"]]
+        urls += [row["url"] for row in json.loads(path.read_text(encoding="utf-8"))["pages"]
+                 if isinstance(row, dict) and row.get("url")]
     if cities.is_file():
         urls += ["/uk-locations/%s/" % row["slug"]
-                 for row in json.loads(cities.read_text(encoding="utf-8"))]
+                 for row in json.loads(cities.read_text(encoding="utf-8"))
+                 if isinstance(row, dict) and row.get("slug")]
     routes = {}
     for url in urls:
         route = url.strip("/")

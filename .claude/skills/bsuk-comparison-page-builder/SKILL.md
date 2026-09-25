@@ -157,7 +157,7 @@ with a Recommended pick + why + trade-off.
 
 ## 9. Imagery (Gemini / Nano Banana — no Higgsfield credit)
 
-After outline approval, mark every H2/H3 needing an OG photo vs an AI image (no HTML/CSS infographics — §11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Infographic widths: 760px wrapper (comparison body), 1100px hub hero; 400px desktop height. Image SEO 5-element on every image.
+After outline approval, mark every H2/H3 needing an OG photo vs an AI image (no HTML/CSS infographics — §11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Image SEO 5-element on every image.
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 

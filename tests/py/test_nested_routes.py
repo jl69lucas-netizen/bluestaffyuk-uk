@@ -101,6 +101,19 @@ def test_a_new_city_with_no_page_map_row_resolves_under_uk_locations(tmp_path):
     assert S.resolve_page(f"uk-locations/{york}", root) == (york, f"uk-locations/{york}")
 
 
+def test_a_malformed_row_is_skipped_not_a_crash(tmp_path):
+    # a locations row without a slug (or a page-map row without a url) names no route
+    root = site(tmp_path)
+    york = "staffy-puppies-for-sale-york"
+    (root / "data/locations.json").write_text(json.dumps([{"city": "Nowhere"}, {"slug": "", "city": "Blank"},
+                                                          {"slug": york, "city": "York"}]))
+    pmap = json.loads((root / "data/page-map.json").read_text())
+    pmap["pages"].append({"kind": "rich", "title": "No URL"})
+    (root / "data/page-map.json").write_text(json.dumps(pmap))
+    assert S.resolve_page(york, root) == (york, f"uk-locations/{york}")
+    assert S.resolve_page(LEEDS, root) == (LEEDS, NESTED)
+
+
 def test_without_a_page_map_a_slug_keeps_its_own_path(tmp_path):
     assert S.resolve_page(LEEDS, tmp_path) == (LEEDS, LEEDS)
 

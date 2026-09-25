@@ -296,7 +296,14 @@ COMPETITOR_DOMAINS = tuple(sorted({c["root_domain"] for c in json.loads(
     (ROOT / "data/competitors.json").read_text(encoding="utf-8"))["competitors"]}))
 
 
-COMPETITOR_URL = re.compile(r"(?:%s)[^\s`)\]\"']*" % "|".join(map(re.escape, COMPETITOR_DOMAINS)))
+# an empty registry must blank nothing: "(?:)" would match the empty string everywhere
+COMPETITOR_URL = (re.compile(r"(?:%s)[^\s`)\]\"']*" % "|".join(map(re.escape, COMPETITOR_DOMAINS)))
+                  if COMPETITOR_DOMAINS else re.compile(r"(?!)"))
+
+
+def test_the_competitor_url_pattern_needs_a_domain():
+    assert COMPETITOR_DOMAINS and all(COMPETITOR_DOMAINS), "data/competitors.json lists no competitor domain"
+    assert COMPETITOR_URL.search("a /tmp/x line") is None
 
 
 def agent_route_offenders(text, known):

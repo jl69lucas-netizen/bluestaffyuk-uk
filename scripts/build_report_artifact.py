@@ -47,7 +47,9 @@ def split_sections(src):
 
 def esc(s):
     """Safe inside <script type=text/markdown>: only the closing tag can break out, and HTML
-    reads that tag in any case, so `</SCRIPT` is neutralised as well as `</script`."""
+    reads that tag in any case, so `</SCRIPT` is neutralised as well as `</script`. The page's
+    script turns every `<\\/script` back into `</script` before it renders or copies, so this is
+    not reversible for an author's own literal `<\\/script`: that text comes back as `</script`."""
     return re.sub(r'</(script)', r'<\\/\1', s, flags=re.I)
 
 
