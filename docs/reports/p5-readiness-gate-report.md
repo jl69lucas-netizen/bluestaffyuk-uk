@@ -28,10 +28,12 @@ mosaic, three guide heroes and rule 16's gate. Then the research the user made m
 all 21 registry entries, the BSUK profile and gap matrix, the keyword gap, AI-answer intel on all 28
 location pages and a re-synthesised strategy.
 
-**Commit range.** `845e4c0..707f319` — 171 commits on `p5-readiness`, then this close-out's docs
-commit, every one with `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` (171 of 171
-counted with `git log --format=%B 9927710..p5-readiness | grep -c 'Claude Fable 5.1'` before the
-close-out commit).
+**Commit range.** `845e4c0..707f319` — 171 commits on `p5-readiness`, then the close-out's docs
+commits (`e7c7aaf`, `1305cec`), then the merge of `foundation` (below) and its three follow-ups: 177
+commits of the branch's own, plus the system gaps build's 59 brought in by the merge, every one with
+`Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>` (176 of 176 counted with
+`git log --format=%B foundation..p5-readiness | grep -c 'Claude Fable 5.1'`, and 59 of 59 over
+`9927710..foundation`, before the last docs commit).
 
 ## Run twice — identical
 
@@ -45,6 +47,11 @@ close-out commit).
 | `npm run -s baseline` | `examined render-baseline-project4.md; 0 problems` | `examined render-baseline-project4.md; 0 problems` |
 
 Selected `check:all` lines (run 2): `competitors: 21 entries; 1 banned domain; 116 files scanned; 0 problems`, `gaps: gap-matrix-2026-09-25.md matches 22 reports (21 competitors, BSUK profile present)`, `examined 61 built pages, 5 shards, 36 sitemap urls; 0 problems`, `examined 61 pages; 0 blocking, 0 advisory`, `examined 12 rebuilt pages; 0 problems`, `examined 0 pages (0 not built, 2 awaiting rebuild); 0 problems` (`awaiting rebuild: blue-staffy-puppies-for-sale-leeds, blue-staffy-puppies-manchester-uk`), `placeholders: 1434 (advisory — set BSUK_RELEASE=1 to make this blocking)` (1432 before this close-out: the new Known Issues quote two placeholder tokens), `workflow-ref-check: examined 224 references in 2 files; 0 problems`, `examined 266 files; 0 problems` (markers), `examined 41 agents; 0 problems`. The two runs' filtered `check:all` lines are identical (`diff` empty).
+
+`foundation` (the system gaps build) was merged into `p5-readiness` at `c7c41be`, followed by
+`dd34099` (Known Issues 70–75 renumbered 75–80) and `7f9235b` (working rule 17's ledger row and
+banner); on that tree both runs read `5168 passed, 1 skipped, 1 xfailed, 152 warnings`, and
+`npm run -s check:all` exited 0 on both runs, with `registry`, `agents` and `baseline` at 0 problems.
 
 On `foundation` after the merge, Task Z Step 10 re-runs the same commands in the main repo (`.env`
 and the gitignored research caches present); its record commit follows the merge.

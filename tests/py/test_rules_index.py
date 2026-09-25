@@ -503,6 +503,19 @@ def test_claude_md_numbers_working_rules_10_to_17():
     assert sorted(int(n) for n in WORKING_RULE.findall(text)) == list(range(10, 18))
 
 
+def test_claude_md_ledger_paragraph_names_the_same_range():
+    """CLAUDE.md's ledger paragraph ("Rules 10–N are the breeder's standing working rules")
+    names the range WORKING_RULE reads, and lists every `enforced: test` rule of it."""
+    text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    m = re.search(r"Rules 10–(\d+) are the breeder's standing working rules", text)
+    assert m, "CLAUDE.md lost its ledger paragraph"
+    numbers = sorted(int(n) for n in WORKING_RULE.findall(text))
+    assert int(m.group(1)) == numbers[-1], (m.group(1), numbers)
+    tested = [n for n, (e, _) in sorted(CLAUDE_MD_RULES.items()) if e == "test"]
+    listed = ", ".join(str(n) for n in tested[:-1]) + " and %d are `enforced: test`" % tested[-1]
+    assert listed in " ".join(text.split()), listed
+
+
 def test_every_working_rule_10_to_17_has_one_ledger_row():
     rows = _claude_md_rows()
     assert sorted(rows) == list(range(10, 18)), sorted(rows)

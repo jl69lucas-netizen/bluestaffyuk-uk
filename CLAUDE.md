@@ -94,8 +94,8 @@ Full task→entry-point table: `docs/reference/quick-start.md`.
 Rules 1–9 have **no mechanical decision procedure**, which is exactly why they cannot be
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
 `data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
-growing. Rules 10–16 are the breeder's standing working rules (2026-09-18 to 2026-09-20).
-Each has a row in the same file, keyed `claude_md`: 12, 14, 15 and 16 are `enforced: test`
+growing. Rules 10–17 are the breeder's standing working rules (2026-09-18 to 2026-09-24).
+Each has a row in the same file, keyed `claude_md`: 12, 14, 15, 16 and 17 are `enforced: test`
 and name the test behind their gate, 10, 11 and 13 are `untested`, and none is a judgment
 row, so the cap is untouched. Every other rule moved to a pack.
 

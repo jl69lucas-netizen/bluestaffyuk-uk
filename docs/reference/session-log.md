@@ -226,8 +226,12 @@ commit, with an Executed note added at close-out); gate report
 `docs/reference/questions-for-lisa.md`.
 
 Closed on branch `p5-readiness`, cut from `foundation` at `9927710`: 171 commits
-`845e4c0..707f319`, then this close-out's docs commit, every one with the Fable 5.1 trailer (171 of
-171 counted before the close-out); no remote, nothing pushed. Merged `--no-ff` into
+`845e4c0..707f319`, then the close-out's docs commits (`e7c7aaf`, `1305cec`); then `foundation` (the
+system gaps build's 59 commits) was merged into the branch at `c7c41be`, followed by `dd34099`,
+`7f9235b` and the docs commit that records it — 177 commits of the branch's own and the 59 brought
+in, every one with the Fable 5.1 trailer (176 of 176 own and 59 of 59 counted before that docs
+commit); no remote, nothing pushed. After that merge the suite read `5168 passed, 1 skipped,
+1 xfailed` and `npm run -s check:all` exited 0, on both runs. Merged `--no-ff` into
 `foundation` at `«merge commit, short hash — Task Z Step 10»`. Run twice with identical counts:
 `python3 -m pytest tests/py -q` → `4539 passed, 1 skipped, 1 xfailed, 152 warnings`;
 `npm run -s check:all` exit 0; `npm run -s registry`, `npm run -s agents` and

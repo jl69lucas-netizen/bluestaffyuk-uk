@@ -13,7 +13,7 @@ and nowhere else. This file says how the page is shaped; the packs say how it is
 
 | Source | It owns |
 |---|---|
-| `CLAUDE.md` rules 1–16 | voice, branch, commit, outline-first, confidence gate, no fabricated claims (1–10) · reuse every image and video (11, 14) · every link on the board (12) · tables stacked on mobile (13) · **faithful rewrite (15)**: a city page with a migrated body keeps its verbatim set ("Before you write anything", item 4) · **per-page hero and counter, and a refresh delta on every section (16)** |
+| `CLAUDE.md` rules 1–17 | voice, branch, commit, outline-first, confidence gate, no fabricated claims (1–10) · reuse every image and video (11, 14) · every link on the board (12) · tables stacked on mobile (13) · **faithful rewrite (15)**: a city page with a migrated body keeps its verbatim set ("Before you write anything", item 4) · **per-page hero and counter, and a refresh delta on every section (16)** · **project 5 pages: outline only, six diverse links, an image on every heading (17)** — this skill's "Project 5 page rules (system-gaps)" block |
 | `rules/headings.md` | `heading-hierarchy-outline-gate` · `title-case-headings` · `header-style-declared` |
 | `rules/copy.md` | `write-from-outline-never-from-sibling` · `first-person-brand-voice` · `entity-4-move-loop` |
 | `rules/links.md` | `link-first-anchors` |

@@ -107,7 +107,7 @@ support, drop the rest, and never pad to a number. Pillar structure (adapt per p
 
 **Hard structural gates (non-negotiable):**
 - Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**.
-- **Every H2 and H3 carries an image** — an OG photo or an AI image, never an HTML/CSS infographic (§11 item 2).
+- **An image under every body heading** (`rules/images.md`, user ruling G1): the hero and every body H2 and body H3 (FAQ blocks excepted) carry an image slot — an OG photo, a generated image or an IG-style infographic, per `IMAGE-DESIGNS.md` §7–§9 (§11 item 2).
 - Word count: `NOT FETCHED` until the scan gives a competitor median — never pick a number first and write to fill it.
 - Headers conversational/Quora-style, hybrid question+entity, **unique per page** (dup H2s across spokes = dup content).
 - `SectionDivider` between major parts (`inverse` on a dark band), 4–8 per page.
@@ -157,7 +157,7 @@ with a Recommended pick + why + trade-off.
 
 ## 9. Imagery (Gemini / Nano Banana — no Higgsfield credit)
 
-After outline approval, mark every H2/H3 needing an OG photo vs an AI image (no HTML/CSS infographics — §11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Image SEO 5-element on every image.
+After outline approval, give the hero and every body H2 and body H3 its image slot — an OG photo, a generated image or an IG-style infographic (IG-3 Comparison Split is made for these pages), by `rules/images.md` "An image under every body heading" and `IMAGE-DESIGNS.md` §7–§9 (§11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. A generated image goes through `.claude/skills/bsuk-image-generation/SKILL.md`, which needs `GEMINI_API_KEY` in `.env` (named in `docs/reference/credentials.md`, never committed); until the user sets it, a slot takes an existing image or an infographic (Known Issue 70). Image SEO 5-element on every image.
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 
@@ -177,10 +177,12 @@ These are the floor for every comparison page. Reference implementation: `src/pa
    band, and at 900px and below; `--text-4xl` only between 901 and 1023px) are the kit's — never brass text, which is 2.1:1 on the light surface. Hero
    images: `imageSrcset`, `imageWidth` and `imageHeight` for a `/images/…` path (`BaseLayout` has
    no preload prop).
-2. **No HTML/CSS infographics.** Every H2 + important H3 image slot is a real OG photo or a Gemini
-   image (distinct design style per section, the `rules/design.md` palette, 16:9 1600×900 → 760×400 slot).
-   The source repo's prompt pack was not ported — source repo only; write the page's own.
-   The real `<table>` stays in the DOM for AIO — an image never replaces it.
+2. **An image under every body heading** (`rules/images.md`, user ruling G1, 2026-09-24). The hero
+   and every body H2 and body H3 (FAQ blocks excepted) carry an image slot, filled with an OG photo,
+   a generated image (a named OG style, approved on the board by its exact bytes) or an IG-style
+   infographic (IG-3 Comparison Split for the head-to-head), as `IMAGE-DESIGNS.md` §7–§9 set out;
+   on conflict IMAGE-DESIGNS wins. The real `<table>` stays in the DOM for AIO — an image never
+   replaces it.
 3. **Photo-first cards everywhere.** A puppy card is that pup's real photo (800×800 crop) +
    a colour badge + the price from `data/price-matrix.json` + the delivery line. Delivery
    renders as two cards — **UK home delivery £200–£350 by distance,

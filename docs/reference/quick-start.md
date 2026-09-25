@@ -98,7 +98,7 @@ These eight are the whole set. The source repo's other reference docs were not p
 
 ## The other sources of truth
 
-- `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the sixteen
+- `CLAUDE.md` — the session file: the locked facts, the rule-pack router, the seventeen
   working rules (1–9 are the nine judgment rules)
 - `rules/README.md` and the ten packs in `rules/` — the written rules
 - `data/quality/rule-index.json` — the machine-readable ledger: 79 rules, of which 9 are
