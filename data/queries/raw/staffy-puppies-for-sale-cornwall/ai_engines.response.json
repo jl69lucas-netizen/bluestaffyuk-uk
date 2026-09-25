@@ -1,0 +1,99 @@
+{
+ "id": "09250756-2496-0629-0000-2f25ea01b4f9",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "chat_gpt_local_businesses",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "markdown": "- **Gouldlife Borders**\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs**\n- **Earlsgrave Bull Terriers**\n- **Ravenscroft Staffordshire Bull Terries Puppies**\n- **IronPaw Staffies**\n- **Staffordshire Bull Terrier Puppy Breeder**\n- **Stormefex**\n",
+   "items": [
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Gouldlife Borders",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+     "description": "Dog breeder",
+     "reviews_count": 17,
+     "domain": "www.trojanstaffuk.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Earlsgrave Bull Terriers",
+     "description": "Dog breeder",
+     "reviews_count": 49,
+     "domain": "www.earlsgravebullterriers.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Ravenscroft Staffordshire Bull Terries Puppies",
+     "description": "Dog breeder",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "IronPaw Staffies",
+     "description": "Dog breeder",
+     "reviews_count": 3,
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppy Breeder",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Stormefex",
+     "description": "Dog breeder",
+     "domain": "stormefexboxers.com"
+    }
+   ]
+  },
+  {
+   "type": "chat_gpt_text",
+   "rank_group": 1,
+   "rank_absolute": 2,
+   "markdown": "If you’re looking for a **blue Staffordshire Bull Terrier (“blue Staffy”) near Cornwall**, start by contacting breeders rather than choosing purely from adverts. Blue colouring is popular, so it’s worth being especially careful about health testing and breeding quality.\n\nSome places to look:\n\n- Current Cornwall listings have included blue Staffy litters around **Liskeard** and other parts of Cornwall. For example, adverts have described blue litters with claims of KC registration, microchipping and health checks — but you should verify all paperwork directly with the breeder rather than relying on an advert alone. [Pets4Homes](https://www.pets4homes.co.uk/classifieds/tb0m1jv-m-staffy-pups-blue-liskeard/?utm_source=chatgpt.com) [Pets4Homes](https://www.pets4homes.co.uk/classifieds/ewnt3i1rt-blue-staffy-pups-valglo-blood-line-liskeard/?utm_source=chatgpt.com)\n- Puppy listing sites can help you find leads, including Cornwall-specific Staffie listings, but treat them as a starting point and carry out your own checks. [Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cornwall?utm_source=chatgpt.com)\n- A Cornwall-based breeder directory result includes Gouldlife Borders in Lostwithiel, Cornwall, although you should contact any breeder to confirm whether they currently breed Staffordshire Bull Terriers and have suitable litters.\n\n## Questions to ask the breeder\n\n### Health and genetics\n\nAsk for **proof**, not just verbal assurances:\n\n- “Have both parents been DNA tested for:\n\n - **L-2-HGA** (a neurological condition seen in Staffies)?\n- **HC-HSF4 hereditary cataracts**?”\n- “Can I see the certificates for both parents?”\n- “Have the parents had any other health checks, such as eye testing or hip assessments?”\n- “Is either parent a carrier of any known condition?”\n\n### About the parents\n\n- “Can I meet the puppy’s mum (dam) in person?”\n- “Can I see the dad, or at least verified photos and health paperwork if he belongs to someone else?”\n- “What are their temperaments like around strangers, children and other dogs?”\n- “Why did you choose this mating?”\n\n### About the puppies\n\n- “Where have the puppies been raised?”\n- “What socialisation have they had?”\n\n - household noises\n- visitors\n- children\n- car travel\n- handling and grooming\n- “Have they been vet checked?”\n- “Which vaccinations, worming and flea treatments have they had?”\n- “Will they be microchipped before leaving?”\n- “What food are they currently eating?”\n\n### Registration and paperwork\n\n- “Are they Kennel Club registered?”\n- “Can I see the paperwork before paying a deposit?”\n- “Will I get a contract and a receipt?”\n- “What happens if I can no longer keep the dog?”\n\n### Questions that help spot poor breeders\n\nBe cautious if they:\n\n- won’t let you see the puppy with its mother\n- want to meet in a car park or public place\n- have many different breeds or frequent litters\n- focus heavily on colour (“rare blue”, “XL”, “champion look”) but avoid health questions\n- won’t show test certificates\n\n## A few blue Staffy-specific points\n\n- “Blue” is a colour dilution of black pigment; it is **not a separate breed or temperament type**.\n- Be wary of breeders charging a large premium purely because a puppy is blue.\n- Prioritise temperament, health testing and early socialisation over colour.\n\nIf you tell me roughly **which part of Cornwall you’re in (e.g., Truro, Plymouth side, west Cornwall, north coast)** and whether you want **KC registered only**, I can help narrow the search area and suggest what to check for each breeder.\n\n",
+   "sources": [
+    {
+     "type": "chat_gpt_source",
+     "title": "Staffy pups blue for sale in Liskeard | Pets4Homes",
+     "domain": "www.pets4homes.co.uk",
+     "url": "https://www.pets4homes.co.uk/classifieds/tb0m1jv-m-staffy-pups-blue-liskeard/?utm_source=chatgpt.com",
+     "source_name": "Pets4Homes",
+     "markdown": "[Pets4Homes](https://www.pets4homes.co.uk/classifieds/tb0m1jv-m-staffy-pups-blue-liskeard/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Blue Staffy pups valglo blood line for sale in Liskeard | Pets4Homes",
+     "domain": "www.pets4homes.co.uk",
+     "url": "https://www.pets4homes.co.uk/classifieds/ewnt3i1rt-blue-staffy-pups-valglo-blood-line-liskeard/?utm_source=chatgpt.com",
+     "source_name": "Pets4Homes",
+     "markdown": "[Pets4Homes](https://www.pets4homes.co.uk/classifieds/ewnt3i1rt-blue-staffy-pups-valglo-blood-line-liskeard/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "Staffordshire Bull Terrier Puppies For Sale In Cornwall | Staffie Owners",
+     "domain": "www.staffie-owners.co.uk",
+     "url": "https://www.staffie-owners.co.uk/staffies-for-sale/cornwall?utm_source=chatgpt.com",
+     "source_name": "Staffie-Owners.co.uk",
+     "markdown": "[Staffie-Owners.co.uk](https://www.staffie-owners.co.uk/staffies-for-sale/cornwall?utm_source=chatgpt.com)"
+    }
+   ],
+   "brand_entities": [
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "Gouldlife Borders",
+     "category": "local_business",
+     "markdown": "Gouldlife Borders"
+    }
+   ]
+  }
+ ],
+ "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25. Request: keyword 'Where can I buy a blue Staffy puppy near Cornwall, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved as returned (answer text and sources whole), minus third-party contact details: from the local-businesses block, each business's street address and postcode (in its markdown list and its element), phone, rating and url (a profile/site link) were dropped; each business keeps its title, description, reviews count and domain. The answer text (chat_gpt_text markdown) and its sources held no phone, email, street address, postcode, WhatsApp, maps or social-profile link and are kept whole."
+}

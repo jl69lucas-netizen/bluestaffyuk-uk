@@ -145,5 +145,54 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:47:00Z",
+    "slug": "blue-staffies-newcastle-under-lyme",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:49:35Z",
+    "slug": "blue-staffy-puppies-south-yorkshire",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:51:48Z",
+    "slug": "buy-blue-staffy-puppy-coventry-area",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:54:15Z",
+    "slug": "staffy-puppies-cardiff-wales",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:56:20Z",
+    "slug": "staffy-puppies-for-sale-cornwall",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T07:58:36Z",
+    "slug": "staffy-puppies-for-sale-essex",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:01:27Z",
+    "slug": "staffy-puppies-wolverhampton",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
   }
 ]
