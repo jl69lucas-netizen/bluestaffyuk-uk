@@ -928,3 +928,41 @@ def test_an_inline_link_stays_in_its_sentence(tmp_path):
     assert "staffy puppies leeds" not in keywords(tmp_path, "- [Staffy puppies](/a)\n- [Leeds](/b)")
     two_lines = "[Blue staffy\nStaffordshire Bull Terrier](https://www.puppies.co.uk/uk/breeds/staffordshire-bull-terrier/41906036)"
     assert not [k for k in keywords(tmp_path, two_lines) if "breeds" in k or "41906036" in k]  # a link's URL is never text
+
+
+# --- an all-digit id prefix is an advert; a numbered town hub is a hub; a sale hub beats a stud board ---
+UK, FP, PF = "https://www.ukpets.com", "https://www.foreverpuppy.co.uk", "https://www.petify.uk"
+
+
+@pytest.mark.parametrize("advert,hub", [
+    (f"{UK}/for-sale/dogs/295539-white-staffordshire-bull-terrier-dundee",
+     f"{UK}/dogs-for-sale/staffordshire-bull-terrier/local/dundee"),
+    (f"{FP}/for-sale/staffordshire-bull-terrier/leeds/409417856913_1-beautiful-long-legged-staffie-pups-left",
+     f"{FP}/find-your-dog/staffordshire-bull-terrier/near/leeds-west-yorkshire"),
+])
+def test_an_all_digit_id_prefix_is_an_advert(tmp_path, advert, hub):
+    assert classify(tmp_path, [advert])["key_pages"]["city"] is None      # an advert is never the city pick
+    assert classify(tmp_path, [advert, hub])["key_pages"]["city"] == hub
+
+
+@pytest.mark.parametrize("path", ["/2024-guide/", "/1234-staffy-care-tips/", "/staffy2-care-guide/"])
+def test_a_short_number_or_a_word_with_digits_is_not_an_id_prefix(tmp_path, path):
+    x = "https://x.co.uk"
+    assert classify(tmp_path, [f"{x}{path}"])["key_pages"]["guide"] == f"{x}{path}"
+
+
+def test_a_numbered_town_hub_is_a_hub_and_a_numbered_advert_stays_an_advert(tmp_path):
+    hub = f"{PF}/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/manchester/147701"
+    advert = f"{PF}/for-sale/staffordshire-bull-terrier-dogs/manchester/30227"   # a price and an advert image on the page
+    assert classify(tmp_path, [hub, advert])["key_pages"]["city"] == hub
+    assert classify(tmp_path, [advert])["key_pages"]["city"] is None
+    x = "https://www.x.co.uk"
+    assert classify(tmp_path, [f"{x}/adverts/staffy-puppies/leeds/1234567"])["key_pages"]["city"] is None  # no in/near/local
+
+
+def test_a_sale_hub_beats_a_stud_board_or_an_adoption_hub(tmp_path):
+    d = classify(tmp_path, [f"{PF}/dogs-for-stud/staffordshire-bull-terrier", f"{PF}/dogs-for-adoption/staffordshire-bull-terrier",
+                            f"{PF}/puppies-and-dogs-for-sale/staffordshire-bull-terrier"])
+    assert d["key_pages"]["listing"] == f"{PF}/puppies-and-dogs-for-sale/staffordshire-bull-terrier"
+    d = classify(tmp_path, [f"{PF}/dogs-for-stud/staffordshire-bull-terrier"])
+    assert d["key_pages"]["listing"] == f"{PF}/dogs-for-stud/staffordshire-bull-terrier"   # alone, the stud board is still a pick
