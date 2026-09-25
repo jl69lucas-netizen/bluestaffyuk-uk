@@ -219,7 +219,7 @@
    "enforced": "test",
    "claude_md": 12,
    "test": "tests/py/test_link_parity.py",
-   "_note": "CLAUDE.md working rule 12. scripts/link_parity_check.py (npm run check:links, in check:all) fails a rebuilt page that links anywhere its approved board record does not; tests/py/test_board_links.py checks the board half — the board shows every internal and external link the page will carry."
+   "_note": "CLAUDE.md working rule 12. scripts/link_parity_check.py (npm run check:links, in check:all) fails a rebuilt page that links anywhere its approved board record does not; tests/py/test_board_links.py checks the board half \u2014 the board shows every internal and external link the page will carry."
   },
   {
    "id": "tables-three-styles-stacked-on-mobile",
@@ -247,9 +247,10 @@
   {
    "id": "per-page-hero-and-counter",
    "family": "LAYOUT",
-   "enforced": "untested",
+   "enforced": "test",
    "claude_md": 16,
-   "_note": "CLAUDE.md working rule 16. No gate fails two pages that share a hero or a counter arrangement (Known Issues 33 and 35)."
+   "_note": "CLAUDE.md working rule 16. tests/py/test_rule16_gate.py fails any hero or counter arrangement two pages share, except among the three utility pages the user exempted by name (RULE16_EXEMPT in scripts/pageboard.py). The refresh-delta half is held by tests/py/test_board_previews.py.",
+   "test": "tests/py/test_rule16_gate.py"
   },
   {
    "id": "entity-4-move-loop",

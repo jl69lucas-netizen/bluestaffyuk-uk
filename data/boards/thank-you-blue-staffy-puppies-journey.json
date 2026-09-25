@@ -221,7 +221,7 @@
       "cta": 0,
       "refresh": {
         "axis": "layout",
-        "note": "the interior-utility hero with the photograph full-bleed above the copy, unlike /privacy-policy-uk/'s title panel and /uk-blue-staffy-breeders-contact/'s photo beside the copy."
+        "note": "the interior-utility hero H-UT1, a small photo mosaic right of the copy in a card, shared with /privacy-policy-uk/ and /uk-blue-staffy-breeders-contact/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's mosaic it carries no figure tiles."
       }
     },
     {
@@ -266,7 +266,7 @@
       ],
       "refresh": {
         "axis": "layout",
-        "note": "the counter as ring tiles in a card, against the homepage's flush line and the contact page's figure cards on a band."
+        "note": "the counter C-UT1, one flush line in a card beside the heading with the labels above, shared with /uk-blue-staffy-breeders-contact/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's flush line it sits in a card."
       },
       "keywords": {
         "primary": [],
@@ -820,7 +820,7 @@
       "stats": "C-UT1",
       "welcome": "H-UT1"
     },
-    "record_hash": "10b767d9c6fb5d3acb95cd37b6609496a1382580c2beb17a1eb984201ff5b9a0",
+    "record_hash": "30ab8cd381a3b9fa9ecac24a3f70c007e03aeb8b6718bb930d101a35ac5ba1a6",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -839,7 +839,18 @@
       "h6_prefixes": [
         "Next step:"
       ]
-    }
+    },
+    "reapproved_at": "2026-09-25T00:54:50Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-25T00:54:50Z",
+        "reason": "Known Issue 33 (project 5 readiness, R12): the hero and counter refresh notes described the arrangements the rule-16 re-board offered and the breeder did not pick; they now name the picked H-UT1 / C-UT1 and the user's exemption of the three utility pages from rule 16 (2026-09-23). Wording only: no pick, figure, source, menu or section moved.",
+        "changed_paths": [
+          "/sections/0/refresh/note",
+          "/sections/1/refresh/note"
+        ]
+      }
+    ]
   },
   "approval_previous": {
     "approved_at": "2026-09-19T21:29:09.335Z",

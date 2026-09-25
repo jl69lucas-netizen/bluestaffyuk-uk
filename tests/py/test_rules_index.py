@@ -471,13 +471,14 @@ def test_no_instruction_file_writes_the_town_twice():
 
 
 # ── CLAUDE.md working rules 10–16 have ledger rows (user ruling R5, 2026-09-23) ────────────
-#: What each of the seven is held up by. The three with a mechanical backstop name the pytest
-#: file that exercises it — the same `test` form `design-system-nine` uses — and the other four
+#: What each of the seven is held up by. The ones with a mechanical backstop name the pytest
+#: file that exercises it — the same `test` form `design-system-nine` uses — and the others
 #: are `untested`, which scripts/quality_report.py lists in §5 as deletion candidates. Rule 10
 #: governs how a decision is SHOWN, rule 11 what a page may do to a served file (only the two
-#: legacy logo rasters are guarded, tests/py/test_images.py), rule 13's board half has only a
-#: partial check (tests/py/test_board_previews.py: the `table` shape's three styles — nothing
-#: requires a table section to use that shape) and rule 16's per-page uniqueness has none.
+#: legacy logo rasters are guarded, tests/py/test_images.py), and rule 13's board half has only
+#: a partial check (tests/py/test_board_previews.py: the `table` shape's three styles — nothing
+#: requires a table section to use that shape). Rule 16 gained its gate with the user's
+#: ruling R12 (tests/py/test_rule16_gate.py).
 CLAUDE_MD_RULES = {
     10: ("untested", None),
     11: ("untested", None),
@@ -485,7 +486,7 @@ CLAUDE_MD_RULES = {
     13: ("untested", None),
     14: ("test", "tests/py/test_facts_preserved.py"),
     15: ("test", "tests/py/test_verbatim_set.py"),
-    16: ("untested", None),
+    16: ("test", "tests/py/test_rule16_gate.py"),
 }
 WORKING_RULE = re.compile(r"^(1[0-6])\. \*\*", re.M)
 

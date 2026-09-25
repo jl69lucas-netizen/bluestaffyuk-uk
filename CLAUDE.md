@@ -95,8 +95,8 @@ Rules 1–9 have **no mechanical decision procedure**, which is exactly why they
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
 `data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
 growing. Rules 10–16 are the breeder's standing working rules (2026-09-18 to 2026-09-20).
-Each has a row in the same file, keyed `claude_md`: 12, 14 and 15 are `enforced: test` and
-name the test behind their gate, 10, 11, 13 and 16 are `untested`, and none is a judgment
+Each has a row in the same file, keyed `claude_md`: 12, 14, 15 and 16 are `enforced: test`
+and name the test behind their gate, 10, 11 and 13 are `untested`, and none is a judgment
 row, so the cap is untouched. Every other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at
@@ -177,7 +177,11 @@ row, so the cap is untouched. Every other rule moved to a pack.
     thank-you, contact) stay as rewritten. (Breeder, 2026-09-20.)
 
 16. **Per-page hero and counter; a refresh delta on every section.** No two pages share the
-    same hero layout or the same counter strip: the counter's figures are that page's own facts
+    same hero layout or the same counter strip — except the three utility pages,
+    `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
+    `/uk-blue-staffy-breeders-contact/`, which the user exempted by name (2026-09-23): they may
+    share with each other, never with any other page (`RULE16_EXEMPT` in
+    `scripts/pageboard.py`, gated by `tests/py/test_rule16_gate.py`). The counter's figures are that page's own facts
     (from `data/*.json` and the page's record, never invented) and each board offers three hero
     styles and three counter styles designed for that page from the breeder's idea sheets
     (outside this repo, at `~/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same

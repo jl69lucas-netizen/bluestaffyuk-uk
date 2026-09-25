@@ -1380,6 +1380,52 @@ def locked_picks(board):
     return out
 
 
+# ── working rule 16: no two pages share a hero or a counter ────────────────────────────────
+#
+# The rule's uniqueness half had no check: the three guides all took H-GD3 and the three
+# utility pages H-UT1 (Known Issues 33 and 35) and nothing failed, because `ledger-tuple-owned`
+# signs hero + faq + table + takeaway together and those pages differed elsewhere. This reads
+# each record's hero and counter pick IN FORCE — the one the built page renders — across every
+# record, and tests/py/test_rule16_gate.py fails on any arrangement two pages share.
+#
+#: The pages the user exempted BY NAME (user ruling R12, 2026-09-23): a privacy policy, a
+#: thank-you page and a contact page sell nothing, so they may share the quiet family's
+#: arrangements with each other — never with any other page.
+RULE16_EXEMPT = ("privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
+                 "uk-blue-staffy-breeders-contact")
+
+
+def pick_in_force(board, sid):
+    """The pick the built page renders for a section, in `pickedStyle()`'s order: the live
+    approval, then the section's own `options.pick`, then the carried approval."""
+    live = (board.get("approval") or {}).get("picks") or {}
+    sec = next((s for s in board.get("sections", []) if s.get("id") == sid), None)
+    own = ((sec or {}).get("options") or {}).get("pick")
+    prev = (board.get("approval_previous") or {}).get("picks") or {}
+    return live.get(sid) or own or prev.get(sid)
+
+
+def shared_per_page_picks(boards):
+    """[(shape, style id, [slugs])] for every hero or counter arrangement two pages share.
+
+    `boards` is {slug: record}. A draft and a record not yet under the rule (no
+    `meta.layout_type`) are not judged. Two pages in RULE16_EXEMPT may share with each other;
+    an exempt page sharing with any other page is reported like any pair."""
+    seen = {}
+    for slug, board in sorted(boards.items()):
+        meta = board.get("meta") or {}
+        if not meta.get("layout_type") or meta.get("status") == "draft":
+            continue
+        for sec in board.get("sections", []):
+            if sec.get("shape") not in PER_PAGE_SHAPES:
+                continue
+            pick = pick_in_force(board, sec["id"])
+            if pick:
+                seen.setdefault((sec["shape"], pick), []).append(slug)
+    return [(shape, pick, slugs) for (shape, pick), slugs in sorted(seen.items())
+            if len(slugs) > 1 and any(s not in RULE16_EXEMPT for s in slugs)]
+
+
 GATE_STAGES = ("build", "release")
 _WHITELIST_TOKENS = [t for t in (tokens(w) for w in HEADER_WHITELIST) if t]
 _CARD_TOKENS = {tuple(t) for t in (tokens(w) for w in PUPPY_CARD_HEADINGS) if t}
