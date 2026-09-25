@@ -10,7 +10,7 @@
   "status": "ok",
   "values": {
    "about": 3,
-   "breed-guide": 7,
+   "breed-guide": 8,
    "care-guide": 10,
    "city": 3,
    "contact": 2,
@@ -81,47 +81,34 @@
     ]
    },
    {
-    "url": "https://www.dogstrust.org.uk/dog-advice/training/basics",
-    "title": "Dog Training Basics | Dog Advice | Dogs Trust",
+    "url": "https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier | Rehoming Rescue Dog | Dogs Trust",
     "h1": "",
     "h2": [
-     "How to teach your dog their name",
-     "How to train your dog to sit",
-     "How to toilet or house train your dog",
-     "How to train your dog to stay",
-     "Puppy Training 101: What to do, when and why",
-     "How to train your dog to leave it",
-     "How to get your dog's focus and attention",
-     "How to train your dog to lie down",
-     "How to train your dog to come back when called",
-     "How to train your dog to be calm, relax and settle",
-     "Finding behaviour and training support",
+     "On this page...",
+     "Why dog insurance is important",
+     "Puppy checklist: preparing for your new dog",
+     "How to have a happy vet visit",
+     "How to perform a health check on your dog",
+     "Enrichment activities to keep your dog entertained",
+     "How to find a good dog walker",
+     "Playpen and crate training a puppy",
+     "How to understand your dog's body language",
+     "Introducing your puppy to the world around them",
+     "Introducing your new dog or puppy to your current dog",
+     "Top 10 dog training tips",
      "Positive reinforcement – training with rewards",
-     "How to introduce a marker to your dog training",
-     "Teach your dog to walk nicely on a lead",
-     "Dog Ownership Guide",
-     "Training techniques",
-     "Training at home",
-     "Out and about",
-     "Stop unwanted behaviours",
-     "Extra training and tricks",
-     "Keep up with our pupdates!"
-    ]
-   },
-   {
-    "url": "https://www.dogstrust.org.uk/rehoming/our-centres/essex",
-    "title": "Dog Rehoming, Rescue & Adoption Basildon, Essex | Dogs Trust",
-    "h1": "",
-    "h2": [
-     "Key information",
-     "About the Basildon (Essex) centre",
-     "Want to treat us?",
-     "Pre-loved items",
-     "Need help?",
-     "Pets at Home are giving us Lifelines!",
+     "Getting a dog when you have children",
+     "Dogs and children: living happily together",
+     "Beagle",
+     "Boxer",
+     "Jack Russell Terrier",
+     "Bull Terrier",
+     "Labrador",
+     "Border Terrier",
+     "Buying a dog or puppy safely",
      "Should I get a dog? 10 questions to ask yourself",
-     "Top 10 benefits of adopting from us",
-     "Volunteering at Basildon (Essex)"
+     "Top 10 benefits of adopting from us"
     ]
    },
    {
@@ -168,8 +155,7 @@
    "h2_per_page": {
     "https://www.dogstrust.org.uk/": 18,
     "https://www.dogstrust.org.uk/dog-advice/puppy/new-home": 8,
-    "https://www.dogstrust.org.uk/dog-advice/training/basics": 21,
-    "https://www.dogstrust.org.uk/rehoming/our-centres/essex": 9,
+    "https://www.dogstrust.org.uk/dog-advice/getting-dog/breeds/staffordshire-bull-terrier": 24,
     "https://www.dogstrust.org.uk/about-us": 10
    }
   }
@@ -206,10 +192,7 @@
   "status": "ok",
   "values": {
    "cta_types": [
-    "form",
-    "visit",
-    "phone",
-    "email"
+    "form"
    ],
    "prices_shown": false,
    "price_amounts_as_printed": [],
@@ -230,5 +213,5 @@
    }
   }
  },
- "key_insight": "Dogs Trust ranks for Staffy buying and price searches on charity authority, not on a Staffy sales page: its 107-URL map holds Staffordshire Bull Terrier adoption adverts and a sponsor page but no Staffy breed guide, and its fetched pages price no dog and carry only an NGO schema. BSUK can meet those searches with a Staffy-specific guide that answers the welfare and costs questions an adopter-minded buyer brings from Dogs Trust, backed by breed schema and real litter prices."
+ "key_insight": "Dogs Trust ranks for Staffy buying and price searches on charity authority and a Staffy breed guide that sells adoption, not puppies: the guide answers care questions (health, food, exercise, grooming, crate, temperament, training, children) in short expandable blocks under a carousel of Staffies to rehome, but names no health test, prices no dog and leaves the costs to the buyer's vet. BSUK can meet the same searches with a Staffy guide that answers those same questions and adds what Dogs Trust leaves out: the breed's named health tests, real litter prices and what owning one costs."
 }

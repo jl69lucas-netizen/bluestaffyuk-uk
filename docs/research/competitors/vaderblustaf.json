@@ -59,6 +59,14 @@
         "h2": [
           "About Us."
         ]
+      },
+      {
+        "url": "https://www.vaderblustaf.com/litters",
+        "title": "Litters — VaderBluStaf",
+        "h1": "",
+        "h2": [
+          "Litters"
+        ]
       }
     ]
   },
@@ -89,7 +97,8 @@
       "url_count": 35,
       "h2_per_page": {
         "https://www.vaderblustaf.com/": 4,
-        "https://www.vaderblustaf.com/about-us": 1
+        "https://www.vaderblustaf.com/about-us": 1,
+        "https://www.vaderblustaf.com/litters": 1
       }
     }
   },
@@ -134,6 +143,7 @@
       "deposit_terms": null,
       "steps_to_enquire": 1,
       "urgency_signals": [
+        "ready-date",
         "waiting-list"
       ]
     }
@@ -148,5 +158,5 @@
       }
     }
   },
-  "key_insight": "VaderBluStaf sells on long standing and proof: a licence reference, named DNA clears, Kennel Club registration and ten written customer reviews on its homepage, yet it has no city pages, no puppy prices, no guides and almost no buying keywords, so BSUK can match that proof and win the searches it never targets."
+  "key_insight": "VaderBluStaf sells on long standing and proof: a licence reference, named DNA clears, Kennel Club registration and ten written customer reviews on its homepage, and its litters page gives ready months, yet it has no city pages, no puppy prices, no guides and almost no buying keywords, so BSUK can match that proof and win the searches it never targets."
 }

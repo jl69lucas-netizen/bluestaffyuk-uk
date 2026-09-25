@@ -7,13 +7,14 @@
     "values": [
       "blue staffies",
       "blue staffordshire bull terrier",
-      "blue staffy",
-      "kc registered blue staffie",
-      "kc registered staffordshire bull terrier",
+      "blue staffordshire bull terrier puppies",
       "staffie for sale",
-      "staffordshire bull terrier blue",
       "staffordshire bull terrier dogs and puppies",
-      "staffordshire bull terrier pups for sale"
+      "staffordshire bull terrier for sale",
+      "staffordshire bull terrier pups for sale",
+      "staffordshire bull terriers in dundee",
+      "staffy pups for sale",
+      "staffy x pups for sale"
     ]
   },
   "page_types": {
@@ -41,6 +42,7 @@
       "Liverpool",
       "London",
       "Manchester",
+      "Middlesbrough",
       "Nottingham",
       "Oxford",
       "Sunderland",
@@ -69,15 +71,15 @@
         "h2": []
       },
       {
-        "url": "https://www.ukpets.com/dogs-for-stud/staffordshire-bull-terrier",
-        "title": "Staffordshire Bull Terrier Dogs and Puppies For Stud in the UK",
-        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Stud in the UK",
+        "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/bath",
+        "title": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Bath",
+        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Bath",
         "h2": []
       },
       {
-        "url": "https://www.ukpets.com/for-sale/dogs/295539-white-staffordshire-bull-terrier-dundee",
-        "title": "White Staffordshire bull terrier | UKPets",
-        "h1": "White Staffordshire bull terrier",
+        "url": "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/dundee",
+        "title": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Dundee",
+        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Sale in Dundee",
         "h2": []
       }
     ]
@@ -88,10 +90,7 @@
       "council_licence_shown": false,
       "council": null,
       "kc_registration_mentioned": true,
-      "health_tests_named": [
-        "L-2HGA",
-        "HC-HSF4"
-      ],
+      "health_tests_named": [],
       "vet_checks_mentioned": true,
       "breeding_since_as_worded": null,
       "town": null,
@@ -111,8 +110,8 @@
       },
       "h2_per_page": {
         "https://www.ukpets.com/": 0,
-        "https://www.ukpets.com/dogs-for-stud/staffordshire-bull-terrier": 0,
-        "https://www.ukpets.com/for-sale/dogs/295539-white-staffordshire-bull-terrier-dundee": 0
+        "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/bath": 0,
+        "https://www.ukpets.com/dogs-for-sale/staffordshire-bull-terrier/local/dundee": 0
       }
     }
   },
@@ -148,31 +147,30 @@
     "status": "ok",
     "values": {
       "cta_types": [
-        "phone",
-        "email",
         "visit"
       ],
       "prices_shown": true,
       "price_amounts_as_printed": [
-        "£100",
+        "£50",
         "£150",
         "£200",
-        "£220",
         "£250",
-        "£260",
-        "£300",
-        "£350",
-        "£450",
         "£500",
         "£600",
         "£650",
         "£700",
+        "£750",
         "£800",
-        "£1,200"
+        "£900",
+        "£1,200",
+        "£1,800"
       ],
-      "deposit_terms": "the site itself takes no deposit and warns buyers never to pay one online before viewing; one stud advert asks for a £250 deposit at mating when a pick of the litter is the fee, returned when the puppy is collected",
+      "deposit_terms": "the site states no deposit terms on the pages fetched; several sellers' cards ask a deposit of £100 to £200 to secure a puppy, and one offers a payment plan",
       "steps_to_enquire": null,
-      "urgency_signals": []
+      "urgency_signals": [
+        "ready-date",
+        "few-left"
+      ]
     }
   },
   "technical": {
@@ -185,5 +183,5 @@
       }
     }
   },
-  "key_insight": "UKPets ranks with free classified adverts, not breeder pages: its Dundee pick is a private rehoming advert for an adult Staffy first posted in 2023 and still live, its Staffy listing in the Map list is a stud board, and the site itself says it does not verify its advertisers. BSUK can beat it with a breeder's own page that shows current litters, named health results, a clear price and a direct enquiry."
+  "key_insight": "UKPets's town pages are one national Staffy feed with the town name swapped into the title and H1: the Bath and Dundee pages list the same twelve adverts, none of them in either town. BSUK can beat it with location pages that carry real local detail, a breeder's own current litters, named health results and a clear price."
 }

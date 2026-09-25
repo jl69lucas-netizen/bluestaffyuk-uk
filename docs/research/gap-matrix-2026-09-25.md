@@ -9,29 +9,28 @@ Registry entries: 21
 
 | Value | Competitors | Not fetched | BSUK has it | Priority |
 |---|---|---|---|---|
-| staffordshire bull terrier puppies | 10/19 | 2 | yes | — |
-| blue staffy | 8/19 | 2 | yes | — |
+| staffordshire bull terrier puppies | 11/19 | 2 | yes | — |
+| blue staffy | 7/19 | 2 | yes | — |
+| staffordshire bull terrier puppy | 7/19 | 2 | yes | — |
 | blue staffordshire bull terrier | 6/19 | 2 | yes | — |
 | staffordshire bull terrier puppies for sale | 6/19 | 2 | yes | — |
-| staffordshire bull terrier puppy | 6/19 | 2 | yes | — |
 | staffy puppy | 5/19 | 2 | yes | — |
 | blue staffies | 4/19 | 2 | yes | — |
+| blue staffordshire bull terrier puppies | 4/19 | 2 | yes | — |
 | blue staffy puppies | 4/19 | 2 | yes | — |
 | staffy puppies | 4/19 | 2 | yes | — |
-| blue staffordshire bull terrier puppies | 3/19 | 2 | yes | — |
 | kc registered staffordshire bull terrier puppies | 3/19 | 2 | no | low |
 | staffordshire bull terrier breeders | 3/19 | 2 | yes | — |
+| staffordshire bull terrier for sale | 3/19 | 2 | yes | — |
 | staffy puppies for sale | 3/19 | 2 | yes | — |
 | blue and black staffy | 2/19 | 2 | no | low |
-| kc registered staffordshire bull terrier | 2/19 | 2 | no | low |
 | puppy staffordshire bull terrier | 2/19 | 2 | no | low |
 | staffie puppies for sale | 2/19 | 2 | no | low |
-| staffordshire bull terrier blue | 2/19 | 2 | yes | — |
 | staffordshire bull terrier breeder | 2/19 | 2 | yes | — |
 | staffordshire bull terrier dogs and puppies | 2/19 | 2 | yes | — |
-| staffordshire bull terrier for sale | 2/19 | 2 | yes | — |
 | staffordshire bull terrier in the uk | 2/19 | 2 | no | low |
 | staffordshire bull terrier pups for sale | 2/19 | 2 | no | low |
+| staffy pups for sale | 2/19 | 2 | yes | — |
 | staffy x puppies | 2/19 | 2 | no | low |
 | blue american staffies | 1/19 | 2 | no | low |
 | blue and black staffordshire bull terriers | 1/19 | 2 | no | low |
@@ -63,7 +62,6 @@ Registry entries: 21
 | breeders focus solely on blue staffies | 1/19 | 2 | no | low |
 | breeders in the uk premium staffy | 1/19 | 2 | no | low |
 | breeders offering legitimate blue staffy puppies | 1/19 | 2 | no | low |
-| kc registered blue staffie | 1/19 | 2 | no | low |
 | kc registered red brindle black staffy | 1/19 | 2 | no | low |
 | kc registered red brindle staffy | 1/19 | 2 | no | low |
 | kc registered red brindle staffy puppies | 1/19 | 2 | no | low |
@@ -71,6 +69,7 @@ Registry entries: 21
 | kc registered staffie puppies | 1/19 | 2 | no | low |
 | kc registered staffie puppies for sale | 1/19 | 2 | no | low |
 | kc registered staffie puppies in essex | 1/19 | 2 | no | low |
+| kc registered staffordshire bull terrier | 1/19 | 2 | no | low |
 | kc registered staffy | 1/19 | 2 | yes | — |
 | price of a staffy | 1/19 | 2 | no | low |
 | price of a staffy puppy | 1/19 | 2 | no | low |
@@ -112,6 +111,7 @@ Registry entries: 21
 | staffies puppies for sale | 1/19 | 2 | no | low |
 | staffies puppies from trusted breeders | 1/19 | 2 | no | low |
 | staffordshire bull terrier american staffy puppies | 1/19 | 2 | no | low |
+| staffordshire bull terrier blue | 1/19 | 2 | yes | — |
 | staffordshire bull terrier dogs puppies | 1/19 | 2 | no | low |
 | staffordshire bull terrier in bristol | 1/19 | 2 | no | low |
 | staffordshire bull terrier in coventry | 1/19 | 2 | no | low |
@@ -124,6 +124,7 @@ Registry entries: 21
 | staffordshire bull terrier staffie breeder | 1/19 | 2 | no | low |
 | staffordshire bull terrier x collie puppies | 1/19 | 2 | no | low |
 | staffordshire bull terriers for sale | 1/19 | 2 | no | low |
+| staffordshire bull terriers in dundee | 1/19 | 2 | no | low |
 | staffordshire bull terriers puppies | 1/19 | 2 | no | low |
 | staffy boxer f1 cockapoo puppies | 1/19 | 2 | no | low |
 | staffy breeders | 1/19 | 2 | yes | — |
@@ -138,10 +139,10 @@ Registry entries: 21
 | staffy puppies and traditional black staffy | 1/19 | 2 | no | low |
 | staffy puppies in the uk | 1/19 | 2 | no | low |
 | staffy puppy's for sale | 1/19 | 2 | no | low |
-| staffy pups for sale | 1/19 | 2 | yes | — |
 | staffy stud owner in the uk | 1/19 | 2 | no | low |
 | staffy x american bulldog puppies | 1/19 | 2 | no | low |
 | staffy x frenchie puppies | 1/19 | 2 | no | low |
+| staffy x pups for sale | 1/19 | 2 | no | low |
 | staffy x shar pei puppies | 1/19 | 2 | no | low |
 | uk premium staffy | 1/19 | 2 | no | low |
 
@@ -150,9 +151,9 @@ Registry entries: 21
 | Value | Competitors | Not fetched | BSUK has it | Priority |
 |---|---|---|---|---|
 | listing | 19/19 | 2 | yes | — |
+| city | 12/19 | 2 | yes | — |
 | blog | 11/19 | 2 | yes | — |
-| city | 11/19 | 2 | yes | — |
-| breed-guide | 10/19 | 2 | yes | — |
+| breed-guide | 11/19 | 2 | yes | — |
 | health | 10/19 | 2 | yes | — |
 | about | 9/19 | 2 | yes | — |
 | contact | 6/19 | 2 | yes | — |
@@ -167,28 +168,28 @@ Registry entries: 21
 |---|---|---|---|---|
 | London | 12/20 | 1 | yes | — |
 | Manchester | 11/20 | 1 | yes | — |
-| Birmingham | 8/20 | 1 | yes | — |
+| Birmingham | 9/20 | 1 | yes | — |
 | Bristol | 8/20 | 1 | yes | — |
 | Cardiff | 8/20 | 1 | yes | — |
+| Coventry | 8/20 | 1 | yes | — |
 | Essex | 8/20 | 1 | yes | — |
 | Glasgow | 8/20 | 1 | yes | — |
 | Leeds | 8/20 | 1 | yes | — |
 | Liverpool | 8/20 | 1 | yes | — |
-| Coventry | 7/20 | 1 | yes | — |
+| Wolverhampton | 8/20 | 1 | yes | — |
 | Dundee | 7/20 | 1 | yes | — |
 | Nottingham | 7/20 | 1 | yes | — |
 | Oxford | 7/20 | 1 | yes | — |
 | Sunderland | 7/20 | 1 | yes | — |
-| Wolverhampton | 7/20 | 1 | yes | — |
 | Edinburgh | 6/20 | 1 | yes | — |
 | Hull | 6/20 | 1 | yes | — |
 | Leicester | 6/20 | 1 | yes | — |
 | York | 6/20 | 1 | yes | — |
 | Aberdeen | 5/20 | 1 | yes | — |
 | South Yorkshire | 5/20 | 1 | yes | — |
-| Cornwall | 3/20 | 1 | yes | — |
+| Cornwall | 4/20 | 1 | yes | — |
+| Middlesbrough | 4/20 | 1 | yes | — |
 | Inverness | 3/20 | 1 | yes | — |
-| Middlesbrough | 3/20 | 1 | yes | — |
 | Newcastle-under-Lyme | 2/20 | 1 | yes | — |
 
 ## Schema gaps
@@ -229,5 +230,5 @@ Registry entries: 21
 6. page_types `reviews` — 4/19 competitors; BSUK: no
 7. keywords `kc registered staffordshire bull terrier puppies` — 3/19 competitors; BSUK: no
 8. keywords `blue and black staffy` — 2/19 competitors; BSUK: no
-9. keywords `kc registered staffordshire bull terrier` — 2/19 competitors; BSUK: no
-10. keywords `puppy staffordshire bull terrier` — 2/19 competitors; BSUK: no
+9. keywords `puppy staffordshire bull terrier` — 2/19 competitors; BSUK: no
+10. keywords `staffie puppies for sale` — 2/19 competitors; BSUK: no

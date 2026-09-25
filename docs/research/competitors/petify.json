@@ -4,7 +4,9 @@
  "analysed_on": "2026-09-25",
  "keywords": {
   "status": "ok",
-  "values": []
+  "values": [
+   "staffordshire bull terrier puppies"
+  ]
  },
  "page_types": {
   "status": "ok",
@@ -74,8 +76,14 @@
     ]
    },
    {
-    "url": "https://www.petify.uk/dogs-for-stud/staffordshire-bull-terrier",
-    "title": "Staffordshire Bull Terrier dogs for stud | Petify",
+    "url": "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier puppies and dogs for sale | Petify",
+    "h1": "",
+    "h2": []
+   },
+   {
+    "url": "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/london/147724",
+    "title": "Staffordshire Bull Terrier puppies and dogs for sale in London | Petify",
     "h1": "",
     "h2": []
    }
@@ -86,9 +94,9 @@
   "values": {
    "council_licence_shown": false,
    "council": null,
-   "kc_registration_mentioned": false,
+   "kc_registration_mentioned": true,
    "health_tests_named": [],
-   "vet_checks_mentioned": false,
+   "vet_checks_mentioned": true,
    "breeding_since_as_worded": null,
    "town": null,
    "phone_shown": false,
@@ -104,7 +112,8 @@
    "url_count": 164,
    "h2_per_page": {
     "https://www.petify.uk/": 9,
-    "https://www.petify.uk/dogs-for-stud/staffordshire-bull-terrier": 0
+    "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier": 0,
+    "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/london/147724": 0
    }
   }
  },
@@ -142,12 +151,18 @@
    "cta_types": [],
    "prices_shown": true,
    "price_amounts_as_printed": [
+    "£300",
     "£400",
+    "£599",
+    "£750",
+    "£800",
     "£1,350"
    ],
-   "deposit_terms": null,
+   "deposit_terms": "set by each seller in their own advert; the site states none. One Staffy advert card, shown on both the sale hub and the London hub, asks a £300 deposit, refundable, to hold a chosen puppy until it is collected or handed over",
    "steps_to_enquire": null,
-   "urgency_signals": []
+   "urgency_signals": [
+    "ready-date"
+   ]
   }
  },
  "technical": {
@@ -160,5 +175,5 @@
    }
   }
  },
- "key_insight": "Petify is an all-pet advert board whose Staffy hubs are thin search shells: its Staffy stud page listed no adverts and carried no breed text, and the site's own pages show no licence, health-test or review proof. BSUK can beat it on the Liverpool search it ranks for with a real Liverpool page backed by one breeder's visible proof and a direct way to enquire."
+ "key_insight": "Petify is an all-pet advert board whose Staffy sale and London hubs are bare search results: four advert cards, two of them for mixed-breed dogs in another town, with no breed text of the site's own and no licence, health-test or review proof. BSUK can beat it on the Liverpool search it ranks for with a real Liverpool page that carries one breeder's visible proof and a direct way to enquire."
 }

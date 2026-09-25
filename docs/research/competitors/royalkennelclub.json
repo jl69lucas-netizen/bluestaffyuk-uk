@@ -4,20 +4,22 @@
  "analysed_on": "2026-09-25",
  "keywords": {
   "status": "ok",
-  "values": []
+  "values": [
+   "staffordshire bull terrier puppy"
+  ]
  },
  "page_types": {
   "status": "ok",
   "values": {
    "about": 1,
-   "blog": 1,
-   "breed-guide": 39,
+   "blog": 13,
+   "breed-guide": 46,
    "care-guide": 80,
    "city": 1,
    "contact": 2,
    "faq": 1,
-   "health": 38,
-   "listing": 51,
+   "health": 42,
+   "listing": 53,
    "price": 2,
    "reviews": 7
   }
@@ -25,7 +27,8 @@
  "cities": {
   "status": "ok",
   "values": [
-   "London"
+   "London",
+   "Birmingham"
   ]
  },
  "schema_types": {
@@ -57,14 +60,6 @@
     ]
    },
    {
-    "url": "https://www.royalkennelclub.com/late-addition/puppies",
-    "title": "The Royal Kennel Club",
-    "h1": "We can't sign you in",
-    "h2": [
-     "OR"
-    ]
-   },
-   {
     "url": "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder",
     "title": "Questions to ask the breeder | The Royal Kennel Club",
     "h1": "",
@@ -76,8 +71,16 @@
     ]
    },
    {
-    "url": "https://www.royalkennelclub.com/your-dog/dog-training",
-    "title": "Dog Training Classes, Tips & Advice | The Royal Kennel Club",
+    "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/",
+    "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+    "h1": "",
+    "h2": [
+     "Breed characteristics"
+    ]
+   },
+   {
+    "url": "https://www.royalkennelclub.com/search/find-a-puppy/",
+    "title": "Find a puppy | The Royal Kennel Club",
     "h1": "",
     "h2": []
    }
@@ -89,7 +92,12 @@
    "council_licence_shown": false,
    "council": null,
    "kc_registration_mentioned": true,
-   "health_tests_named": [],
+   "health_tests_named": [
+    "HC-HSF4",
+    "L-2-HGA",
+    "BVA/KC elbow dysplasia scheme",
+    "BVA/KC/ISDS eye scheme"
+   ],
    "vet_checks_mentioned": false,
    "breeding_since_as_worded": null,
    "town": null,
@@ -107,25 +115,22 @@
    "url_count": 495,
    "h2_per_page": {
     "https://www.royalkennelclub.com/": 6,
-    "https://www.royalkennelclub.com/late-addition/puppies": 1,
     "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder": 4,
-    "https://www.royalkennelclub.com/your-dog/dog-training": 0
+    "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/": 1,
+    "https://www.royalkennelclub.com/search/find-a-puppy/": 0
    }
   }
  },
  "blog": {
   "status": "ok",
   "values": {
-   "post_count": 1,
+   "post_count": 13,
    "post_folder": null,
    "topics": {
     "status": "NOT FETCHED",
     "reason": "no post fetched: none of the classifier's key pages is a post"
    },
-   "posting_frequency": {
-    "status": "NOT FETCHED",
-    "reason": "the map holds one dated post URL and no post was fetched: no rate from a single date"
-   },
+   "posting_frequency": 0.11,
    "sampled_word_counts": {
     "status": "NOT FETCHED",
     "reason": "no post fetched: none of the classifier's key pages is a post"
@@ -164,5 +169,5 @@
    }
   }
  },
- "key_insight": "The Royal Kennel Club wins 'kc registered staffy puppies' and the UK for-sale search on registry authority, yet its puppy listing sits behind a sign-in wall, its 495-URL map has no Staffordshire Bull Terrier page, and its buyer advice (questions to ask a breeder) is written for every breed. BSUK can meet the same buyer with a Staffy-specific version of that checklist, answered on the page with its own health tests, registration papers and visible litters, no login needed."
+ "key_insight": "The Royal Kennel Club ranks on registry authority and does have a Staffordshire Bull Terrier breed page, but that page is a registry profile (traits, standard colours, recommended health tests, registration rules) that hands the buyer to a generic all-breed puppy search. BSUK can beat it for the buyer by pairing the same health-test list (HC-HSF4, L-2-HGA, elbow and eye schemes) with its own dogs' results, visible litters and a Staffy-specific buyer checklist on one open page."
 }
