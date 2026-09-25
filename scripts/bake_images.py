@@ -231,6 +231,11 @@ def main(src_site):
         slug = p["slug"]
         bake_puppy_card(masters / p["card_photo"], out / "puppies", slug, portrait=False)
         manifest["puppies/%s-card-800" % slug] = {"w": 800, "h": 800, "sib_w": None}
+    # Images added by scripts/ingest_image.py are not referenced by the source clone, so the
+    # scan above never measures them; carry their rows over or the next bake drops them.
+    from ingest_image import ingested_manifest_rows
+    for stem, dims in ingested_manifest_rows().items():
+        manifest.setdefault(stem, dims)
     (ROOT / "data/image-manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print("wrote data/image-manifest.json (%d entries)" % len(manifest))

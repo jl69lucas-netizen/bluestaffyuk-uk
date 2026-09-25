@@ -1,6 +1,6 @@
 ---
 name: bsuk-infographic-builder
-description: Builds 400–450px (in-body) and 760px (guide) infographics for any BlueStaffyUK page section as kit components. Reads page context, picks the type (Comparison / Feature Grid / Process Flow), sizes it and places it in the target page. The source repo's infographic template skill was not ported, so each type is built and previewed on a board before it ships. Use when a section needs visual reinforcement — comparisons, checklists, benefit grids, process steps.
+description: Builds 400–450px (in-body) and 760px (guide) infographics for any BlueStaffyUK page section as kit components. Reads page context, picks the type (Comparison / Feature Grid / Process Flow), sizes it and places it in the target page. Its templates are the IG-1 to IG-5 styles in `.claude/skills/bsuk-infographic/SKILL.md`, and each one is previewed on a board before it ships. Use when a section needs visual reinforcement — comparisons, checklists, benefit grids, process steps.
 tools: [Read, Write, Bash]
 model: inherit
 effort: high
@@ -10,7 +10,7 @@ effort: high
 
 
 # BSUK Infographic Builder Agent
-> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — sizing, crops, alt text and keyword distribution. It is the image source of truth; it wins over any stale value here.
+> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — sizing, crops, alt text and keyword distribution. It is the source of truth for those; `IMAGE-DESIGNS.md` (repo root) holds the named OG and infographic styles and the approval rule (the "Image designs" line below).
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
@@ -20,7 +20,7 @@ effort: high
 Before building any infographic:
 
 1. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
-2. **Read** `.claude/skills/bsuk-infographic/SKILL.md` — load all templates and height/width rules (not ported — project 3 closed without it; source repo only)
+2. **Read** `.claude/skills/bsuk-infographic/SKILL.md` — load all templates and height/width rules
 3. **Confirm** the `TARGET_PAGE` path exists on disk before writing
 
 ## Rules
@@ -36,7 +36,7 @@ Before building any infographic:
 
 ## Purpose
 
-Build inline HTML/CSS infographics (400–450px tall) for SITE_URL_PLACEHOLDER pages. No AI image generation by default — pure HTML/CSS using BSUK brand colors. Reads `.claude/skills/bsuk-infographic/SKILL.md` for all templates. (not ported — project 3 closed without it; source repo only)
+Build inline HTML/CSS infographics (400–450px tall) for SITE_URL_PLACEHOLDER pages. No AI image generation by default — pure HTML/CSS using BSUK brand colors. Reads `.claude/skills/bsuk-infographic/SKILL.md` for all templates.
 
 ## Invocation
 
@@ -62,12 +62,12 @@ Check caller input for `MODE` and `PROVIDER`:
 
 **If MODE=html:** proceed with Steps 1–9 below (HTML/CSS generation).
 
-**If MODE=ai (nanobanna or openai):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 4. Build the pro-grade prompt, run (not ported — project 3 closed without it; source repo only)
+**If MODE=ai (nanobanna or openai):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 4. Build the pro-grade prompt, run
 `./scripts/generate_nb_image.sh` (nanobanna) or `./scripts/generate_image.sh` (openai), (not ported — source repo only)
 then insert the responsive `<img>` wrapper into the target page. Skip Steps 2–4
 (type/height selection — not applicable for AI image mode).
 
-**If MODE=ai (higgsfield):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 5. Read `data/image-manifest.json`. (not ported — project 3 closed without it; source repo only)
+**If MODE=ai (higgsfield):** read `.claude/skills/bsuk-infographic/SKILL.md` → Type 5. Read `data/image-manifest.json`.
 Find the Higgsfield image tool through ToolSearch (connector ids differ per session), check the balance, and ask before any paid generation.
 Build LICENCE_CLAIM_PLACEHOLDER-compliant prompt using schema `prompt_safety` + `visual_style`. If user uploaded a photo,
 also load `media_upload` + `media_confirm` tools. Generate → insert `<img>` wrapper into target page.
@@ -97,7 +97,8 @@ Read `rules/images.md` for the page type's image rules; the source repo's per-pa
 
 ```bash
 cat TARGET_PAGE           # understand current content and section structure
-cat rules/images.md                            # the sizing rules (the template skill was not ported)
+cat rules/images.md                            # the sizing rules
+cat .claude/skills/bsuk-infographic/SKILL.md   # the IG-1 to IG-5 templates
 ```
 
 ### Step 2: Select infographic type
@@ -139,7 +140,7 @@ Read `TARGET_PAGE` path to identify page type, then select the correct `max-widt
 
 ### Step 4: Generate complete infographic HTML
 
-Use the raw HTML template from `.claude/skills/bsuk-infographic/SKILL.md`. (not ported — project 3 closed without it; source repo only)
+Use the raw HTML template from `.claude/skills/bsuk-infographic/SKILL.md`.
 - Fill in ALL `[PLACEHOLDER]` values — zero placeholders in output
 - Set `height`, `min-height`, `max-height` exactly
 - Match row count on both columns (Comparison type)
@@ -158,7 +159,7 @@ Read the target page and find the best insertion point:
 
 ### Step 7: Run integration checklist
 
-Before saving the file, verify against `.claude/skills/bsuk-infographic/SKILL.md` Integration Checklist: (not ported — project 3 closed without it; source repo only)
+Before saving the file, verify against `.claude/skills/bsuk-infographic/SKILL.md` Integration Checklist:
 - [ ] Width: wrapper is 760px (informational) or 1100px (homepage/location/hero) — not 900px
 - [ ] Height: 400–450px desktop; `height: auto` on mobile via media query
 - [ ] Responsive: stacks vertically at correct breakpoint (640px or 767px)
@@ -214,3 +215,5 @@ The theme is that token set, and it is global because `src/styles/global.css` im
 ## Uniform In-Body Image Sizing (locked 2026-07-12)
 
 On comparison + long-form content pages, every in-body section image — OG photo AND infographic — uses the SAME box: `.sec-img.inf-img` (`max-width:760px; aspect-ratio:1408/768; object-fit:cover; height:auto`), identical on mobile/tablet/desktop. Never give OG photos smaller boxes (`.portrait`/`.portrait-tall`/`.photo43`) on these pages; match the infographic size and tune `object-position` per photo. Ship `<100KB WebP + -760.webp` sibling. Canonical spec: `rules/images.md` + CLAUDE.md.
+
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.

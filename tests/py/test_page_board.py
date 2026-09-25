@@ -410,6 +410,7 @@ def test_distribution_totals_add_across_two_sections():
     assert [r["section"] for r in d["rows"]] == ["puppies", "shipping"]
     assert d["totals"] == {"primary": 2, "lsi": 1, "longtail": 0, "brand": 1, "geo": 2,
                            "conversational": 0, "comparison": 0, "solution": 0, "transactional": 0,
+                           "variation": 0, "related": 0, "cooccurring": 0, "similar": 0,
                            "words_min": 650, "words_max": 900}
     assert d["h_counts"] == {"h1": 1, "h2": 2, "h3": 1, "h4": 1, "h5": 1, "h6": 1}
 
@@ -957,7 +958,7 @@ def test_board_html_carries_every_block_and_the_theme_rules(tmp_path):
     ont, ledger = ONT_OK, LEDGER_EMPTY
     html = BPB.render(b, ont, ledger, live={}, thumbs={}, slug="x")
     for marker in ["data-title=\"1. Brief\"", "data-title=\"2. H1 and meta\"", "data-title=\"3. Outline\"", "data-title=\"4. Distribution\"",
-                   "id=\"entity-graph\"", "data-title=\"6. Component options\"", "data-title=\"7. Asset slots\"", "id=\"approve\""]:
+                   "data-title=\"5. Entities\"", "data-kv=\"entities\"", "data-title=\"6. Component options\"", "data-title=\"7. Images &amp; styles\"", "id=\"approve\""]:
         assert marker in html, marker
     assert ":root{" in html and "prefers-color-scheme: dark" in html and ':root[data-theme="dark"]' in html
     assert "body{margin:0;background:var(--ground)" in html
@@ -986,7 +987,9 @@ def test_board_html_escapes_record_text_in_every_context():
     assert "&lt;/script&gt;&lt;b&gt;x&lt;/b&gt;" in html          # the goal, escaped
     assert "<b>x</b>" not in html
     assert "\\# a \\| b \\*c\\* \\_d\\_" in html                  # the heading, markdown-neutral
-    assert "<\\/script>" in html                                  # the graph label, JSON-escaped
+    # the heading again, HTML-escaped in a section chip's title (the entity graph that used to
+    # carry it as JSON is gone — scripts/board_entities.py)
+    assert 'title="01 · # a | b *c* _d_ &lt;/script&gt;"' in html
     blocks = re.findall(r'<script type="text/markdown"[^>]*>(.*?)\n</script>', html, re.S)
     # Eight numbered blocks plus 3b (the image plan), 3c (the navigation block) and 5b (the
     # kit strip).
@@ -1945,6 +1948,19 @@ def test_image_plan_lists_every_slot_with_its_prompt_and_flags_a_bare_signature_
     assert "_no image slot_" in block
 
 
+def test_a_new_family_page_is_held_by_the_image_rule_not_the_old_coverage_warn():
+    """Task 12a item 5: image_rules' `image-slot-missing` replaces `image-coverage` on the pages
+    family_rules binds; the twelve built pages keep the WARN exactly as they had it."""
+    b = json.loads((PB.ROOT / "data" / "boards" / "_demo.json").read_text(encoding="utf-8"))
+    checks = lambda: {x["check"] for x in
+                      PB.gate_findings(b, ONT_OK, LEDGER_EMPTY, live={}, stage="build")}
+    assert "image-coverage" in checks()                      # _demo is out of family scope
+    b["meta"].update({"slug": "uk-locations/blue-staffy-puppies-leeds", "page_type": "location",
+                      "status": "boarded"})
+    assert "image-coverage" not in checks()
+    assert "image-slot-missing" in checks()
+
+
 def test_gate_warns_on_a_signature_section_with_no_image_and_fails_on_a_shared_alt():
     b = _approved(MIN_BOARD)
     checks = lambda: [(x["check"], x["sev"]) for x in
@@ -2039,10 +2055,10 @@ def test_keyword_types_tuple_labels_and_schema_name_the_same_arrays():
     (schema only) or raising KeyError in distribution() (tuple only)."""
     schema = json.loads((PB.SCHEMAS / "board.schema.json").read_text(encoding="utf-8"))
     kw = schema["properties"]["sections"]["items"]["properties"]["keywords"]
-    assert kw["required"] == list(PB.KEYWORD_TYPES)
-    assert set(kw["properties"]) == set(PB.KEYWORD_TYPES)
-    assert set(PB.KEYWORD_LABELS) == set(PB.KEYWORD_TYPES)
-    for typ in PB.KEYWORD_TYPES:
+    assert kw["required"] == list(PB.KEYWORD_TYPES)            # the four optional types are not required
+    assert set(kw["properties"]) == set(PB.ALL_KEYWORD_TYPES)
+    assert set(PB.KEYWORD_LABELS) == set(PB.ALL_KEYWORD_TYPES)
+    for typ in PB.ALL_KEYWORD_TYPES:
         b = json.loads(json.dumps(MIN_BOARD))
         b["sections"][0]["keywords"][typ] = ["one", "two"]
         assert PB.distribution(b)["totals"][typ] == 2

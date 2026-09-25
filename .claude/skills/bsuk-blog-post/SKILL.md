@@ -244,3 +244,95 @@ the output beside that page's plan under `docs/superpowers/`. Until a sweep is a
 run for a BSUK page, its competitor set, its SERP signals and its keyword universe are
 `NOT FETCHED` — never inferred, never averaged, never borrowed from a sibling.
 
+
+## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)
+
+A new location, comparison or blog board carries four keyword types beyond the nine the
+brief names: `variation`, `related`, `cooccurring` and `similar`, each a list in a section's
+`keywords`. The page needs at least one term of each type SOMEWHERE — not in every section.
+The `keyword-variants-missing` check in `scripts/family_rules.py` warns on a draft and fails
+from `boarded` on. The twelve pages built before this rule are never asked.
+
+Where the terms come from: after the query augmentation has cached its files and before the
+outline is boarded, run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+(the board slug resolves to its cache folder, e.g. `uk-locations/blue-staffy-puppies-manchester`
+→ `blue-staffy-puppies-manchester-uk`). It reads the cached files under `data/queries/` only (no paid call) and proposes each list with the source of
+every term: variations are spellings of the head term the cached text actually uses, related
+terms are the search engine's related-searches box, co-occurring terms are phrases found in
+two or more cached documents, and similar terms are how the ranking pages word the same
+query. Put each term in the section where it reads naturally; drop a term that reads badly
+anywhere rather than force it. Exit 6 means nothing is cached for the slug yet: run
+bsuk-query-augmentation first. The board's block 4 shows every term as a chip grouped by
+type, with the sections that use it.
+
+## Build from the approved outline (system-gaps)
+
+The user's ruling of 2026-09-24: build from the outline, never from crossovers, siblings or
+duplicates. `rules/copy.md` `write-from-outline-never-from-sibling` is the method and
+`outline-provenance-gate` is the gate that checks what the method leaves behind. Both bind
+every blog post this skill builds; the `/blue-staffy-blog-guides/` hub, built before this
+rule, is not examined.
+
+1. Write each body section from the approved board record, `data/boards/<slug>.json`, and
+   from nothing else. The section's H2 is its `heading`; its H3s are its `tree` nodes, in
+   record order, word for word (the build may title-case them). The copy answers the
+   section's `intent` inside its `words` band.
+2. Never open another post's page, board or built HTML for wording. The only text another
+   page may share is the whitelist in `scripts/dup_content_audit.py`.
+3. A heading the tree does not carry, including an info card's H3 or a special-element
+   component's heading, goes back to the board: add it to the tree and re-approve, then
+   build. Never add one at build time.
+4. The H4-H6 ladder is written at build time. Each ladder heading is new to this post and to
+   the site.
+5. After `npm run build`, run `python3 scripts/outline_provenance_check.py <slug>` on this
+   post and fix every FAIL in the copy, never by widening the whitelist. Only then add the
+   post to `data/facts/rebuilt.json`; from that point `npm run check:all` re-runs the gate on
+   it with every other listed new-family page. The check ids it prints (`outline-extra`,
+   `outline-missing`, `outline-order`, `outline-unknown-section`, `outline-duplicate-heading`,
+   `outline-heading-crossover`, `outline-copy-crossover`, `outline-sentence-crossover`,
+   `outline-unapproved`, `outline-not-found`) are listed in the script's docstring.
+
+## Project 5 page rules (system-gaps)
+
+These bind every location, comparison and blog-post page built from 2026-09-24 on. The
+board refuses the record until each holds (`scripts/family_rules.py`); none of them applies
+to the twelve pages built before.
+
+1. **Keywords.** Run `python3 scripts/keyword_variants.py <board slug or query-cache folder>`
+   (add `--also <cache dir>` when a registry folder holds the page's SERP) and write its
+   proposals into the sections' `keywords.variation`, `related`, `cooccurring` and `similar`,
+   keeping only terms the section really uses. An empty type fails `keyword-variants-missing` from `boarded` on.
+2. **Entities.** Run `python3 scripts/ontology_seed.py --check`. Every entity a section names
+   is in `data/bsuk-ontology.json` with a source; a health result stays PROPOSED until the
+   evidence ledger holds it. The board shows them by class.
+3. **External links.** At least six on six domains from four source types (gov, registry,
+   vet-charity, welfare, research, local — `other` does not count toward the four), all rows
+   of `docs/reference/external-link-library.md` (`external-links-six-diverse`). A location page
+   adds its own council's dog or animal-licensing page as a `local` row, after
+   `curl -sIL <url>` returns 200, dated in the Verified column.
+4. **Anchors.** Every internal and external link carries `anchor_type` (exact, partial, lsi,
+   natural, branded, naked-url): three or more internal types with at most two exact, three
+   or more external types (`anchor-type-variation`), and never an in-copy internal anchor
+   another board already uses for the same route (nav tiles excepted)
+   (`anchor-reuse-sitewide`).
+5. **Images.** Run `python3 scripts/image_candidates.py <slug> --write`. The hero and every
+   body H2 and body H3 (FAQ blocks excepted) carry an image slot (`image-slot-missing`),
+   filled in this order: the page's own migrated image, another served image, a file from
+   the breeder's `Assets/Images/` folder (outside git; `BSUK_ASSETS_DIR` overrides) ingested
+   with `python3 scripts/ingest_image.py folder`. When none fits,
+   the slot is `source: generate` with an OG style, or `source: infographic` with an IG style,
+   named in `IMAGE-DESIGNS.md`. The generated file is drafted with
+   `python3 scripts/ingest_image.py draft`, approved on a second pass of the board by its
+   sha12 pick, and only then published with `python3 scripts/ingest_image.py publish`
+   (`image-generated-unapproved`). Every image slot has its `assets[]` row (slot, kind, w,
+   h, required) planned at boarding; ingest and publish only fill its `file` and `status`.
+   A slot without one fails `image-asset-row-missing`.
+6. **Board and approval.** The board's block 7b lists every rule above for this page,
+   evaluated as approval will see it; `scripts/board_approve.py` refuses the approval, and
+   any re-approval, while one of them FAILs. The build-gate image checks are listed but never
+   block approval: they can only pass after the image is approved and published.
+7. **Routes.** A page whose route is not its bare slug (a city page under `/uk-locations/`,
+   a post under the blog hub) has its row in `data/page-map.json` before it is built; without
+   it `check:outline` looks for `dist/<slug>/` and reports `outline-not-found`.
+8. **After the build,** `npm run -s check:outline` (also in `check:all`) must report the page
+   examined with 0 problems.

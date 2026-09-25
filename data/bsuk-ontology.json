@@ -18,6 +18,7 @@
       "id": "ont:blue-coat",
       "name": "Blue coat",
       "aliases": [
+        "blue",
         "blue staffy",
         "blue Staffordshire Bull Terrier"
       ],
@@ -40,13 +41,10 @@
     {
       "id": "ont:glasgow",
       "name": "Glasgow",
-      "aliases": [
-        "G22",
-        "Coltmuir Street"
-      ],
+      "aliases": [],
       "class": "Place",
       "authorization": "ASSERTED",
-      "source": "data/settings.json",
+      "source": "data/locations.json",
       "owner_page": "uk-locations/staffy-puppies-for-sale-glasgow"
     },
     {
@@ -79,6 +77,490 @@
       "class": "Health",
       "authorization": "PROPOSED",
       "source": null,
+      "owner_page": null
+    },
+    {
+      "id": "ont:aberdeen",
+      "name": "Aberdeen",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-aberdeen"
+    },
+    {
+      "id": "ont:birmingham",
+      "name": "Birmingham",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-birmingham"
+    },
+    {
+      "id": "ont:bristol",
+      "name": "Bristol",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-bristol-uk"
+    },
+    {
+      "id": "ont:cardiff",
+      "name": "Cardiff",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-cardiff-wales"
+    },
+    {
+      "id": "ont:carlisle",
+      "name": "Carlisle",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/settings.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:cornwall",
+      "name": "Cornwall",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-for-sale-cornwall"
+    },
+    {
+      "id": "ont:coventry",
+      "name": "Coventry",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/buy-blue-staffy-puppy-coventry-area"
+    },
+    {
+      "id": "ont:cumbria",
+      "name": "Cumbria",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/settings.json",
+      "owner_page": null
+    },
+    {
+      "id": "ont:dundee",
+      "name": "Dundee",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-dundee"
+    },
+    {
+      "id": "ont:edinburgh",
+      "name": "Edinburgh",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-edinburgh"
+    },
+    {
+      "id": "ont:essex",
+      "name": "Essex",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-for-sale-essex"
+    },
+    {
+      "id": "ont:hull",
+      "name": "Hull",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-hull"
+    },
+    {
+      "id": "ont:inverness",
+      "name": "Inverness",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-inverness"
+    },
+    {
+      "id": "ont:leeds",
+      "name": "Leeds",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-for-sale-leeds"
+    },
+    {
+      "id": "ont:leicester",
+      "name": "Leicester",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-for-sale-in-leicester"
+    },
+    {
+      "id": "ont:liverpool",
+      "name": "Liverpool",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-for-sale-liverpool"
+    },
+    {
+      "id": "ont:london",
+      "name": "London",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-london"
+    },
+    {
+      "id": "ont:manchester",
+      "name": "Manchester",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-manchester-uk"
+    },
+    {
+      "id": "ont:middlesbrough",
+      "name": "Middlesbrough",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-middlesbrough"
+    },
+    {
+      "id": "ont:newcastle-under-lyme",
+      "name": "Newcastle-under-Lyme",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffies-newcastle-under-lyme"
+    },
+    {
+      "id": "ont:nottingham",
+      "name": "Nottingham",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-for-sale-nottingham"
+    },
+    {
+      "id": "ont:oxford",
+      "name": "Oxford",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-oxford"
+    },
+    {
+      "id": "ont:south-yorkshire",
+      "name": "South Yorkshire",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-south-yorkshire"
+    },
+    {
+      "id": "ont:sunderland",
+      "name": "Sunderland",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-sunderland"
+    },
+    {
+      "id": "ont:wolverhampton",
+      "name": "Wolverhampton",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/staffy-puppies-wolverhampton"
+    },
+    {
+      "id": "ont:york",
+      "name": "York",
+      "aliases": [],
+      "class": "Place",
+      "authorization": "ASSERTED",
+      "source": "data/locations.json",
+      "owner_page": "uk-locations/blue-staffy-puppies-york"
+    },
+    {
+      "id": "ont:bva-hip-elbow-scores",
+      "name": "BVA hip and elbow scores",
+      "aliases": [
+        "hip score",
+        "elbow score"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:bva-kc-eye-scheme",
+      "name": "BVA/KC eye scheme",
+      "aliases": [
+        "BVA eye scheme",
+        "eye screening"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:hc-hsf4-dna-test",
+      "name": "HC-HSF4 DNA test",
+      "aliases": [
+        "HC-HSF4",
+        "hereditary cataract DNA test"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:l-2-hga-dna-test",
+      "name": "L-2-HGA DNA test",
+      "aliases": [
+        "L2-HGA",
+        "L-2-HGA"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:phpv-test",
+      "name": "PHPV test",
+      "aliases": [
+        "PHPV"
+      ],
+      "class": "Health",
+      "authorization": "PROPOSED",
+      "source": null,
+      "owner_page": "blue-staffy-health-uk"
+    },
+    {
+      "id": "ont:blue-cross",
+      "name": "Blue Cross",
+      "aliases": [
+        "The Blue Cross"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:bva",
+      "name": "British Veterinary Association",
+      "aliases": [
+        "BVA"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:citizens-advice",
+      "name": "Citizens Advice",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:google",
+      "name": "Google",
+      "aliases": [
+        "Google Analytics"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:ico",
+      "name": "Information Commissioner's Office",
+      "aliases": [
+        "ICO"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:pdsa",
+      "name": "PDSA",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:rspca",
+      "name": "RSPCA",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:the-kennel-club",
+      "name": "The Kennel Club",
+      "aliases": [
+        "Royal Kennel Club",
+        "KC"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:uk-government",
+      "name": "UK government",
+      "aliases": [
+        "GOV.UK",
+        "the government"
+      ],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:dangerous-dogs-act-1991",
+      "name": "Dangerous Dogs Act 1991",
+      "aliases": [
+        "banned dog types"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:dog-microchipping-law",
+      "name": "Dog microchipping law",
+      "aliases": [
+        "microchipping law",
+        "compulsory microchipping",
+        "Microchipping of Dogs (England) Regulations 2015"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:pet-travel-rules-gb",
+      "name": "Rules for bringing a pet into Great Britain",
+      "aliases": [
+        "pet travel rules"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:uk-data-protection-law",
+      "name": "UK data protection law",
+      "aliases": [
+        "data protection"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:welfare-in-transport-pb10308",
+      "name": "Welfare in transport guidance for dogs and cats (PB10308)",
+      "aliases": [
+        "PB10308",
+        "welfare-in-transport guidance"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:cumberland-council",
+      "name": "Cumberland Council",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:dogs-trust",
+      "name": "Dogs Trust",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:paag",
+      "name": "Pet Advertising Advisory Group",
+      "aliases": [],
+      "class": "Organization",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
+      "owner_page": null
+    },
+    {
+      "id": "ont:animal-licensing-regulations-2018",
+      "name": "The Animal Welfare (Licensing of Activities Involving Animals) (England) Regulations 2018",
+      "aliases": [
+        "animal activity licensing"
+      ],
+      "class": "Regulation",
+      "authorization": "ASSERTED",
+      "source": "docs/reference/external-link-library.md",
       "owner_page": null
     }
   ]

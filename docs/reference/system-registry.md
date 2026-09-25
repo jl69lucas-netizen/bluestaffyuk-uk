@@ -78,7 +78,7 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
 
-## Skills — 57
+## Skills — 60
 
 One SKILL.md per directory under `.claude/skills/`. The `bsuk-*` set is the ported
 system; the rest are the generic writing, research and framework skills.
@@ -101,11 +101,14 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/bsuk-footer-agent/SKILL.md`
 - `.claude/skills/bsuk-gate-integrity/SKILL.md`
 - `.claude/skills/bsuk-google-map/SKILL.md`
+- `.claude/skills/bsuk-image-generation/SKILL.md`
 - `.claude/skills/bsuk-indexing/SKILL.md`
+- `.claude/skills/bsuk-infographic/SKILL.md`
 - `.claude/skills/bsuk-learning-loop/SKILL.md`
 - `.claude/skills/bsuk-location-page-builder/SKILL.md`
 - `.claude/skills/bsuk-page-hardening/SKILL.md`
 - `.claude/skills/bsuk-perf-gate/SKILL.md`
+- `.claude/skills/bsuk-photo-ingest/SKILL.md`
 - `.claude/skills/bsuk-puppy-page-builder/SKILL.md`
 - `.claude/skills/bsuk-query-augmentation/SKILL.md`
 - `.claude/skills/bsuk-reddit-threads/SKILL.md`
@@ -151,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 63
+## Scripts — 76
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -162,6 +165,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/aeo_audit.py`
 - `scripts/bake_images.py`
 - `scripts/board_approve.py`
+- `scripts/board_entities.py`
 - `scripts/board_gate.py`
 - `scripts/build_agent_registry.py`
 - `scripts/build_board_previews.py`
@@ -189,19 +193,30 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/extract_wp.py`
 - `scripts/extract_writers.py`
 - `scripts/facts_preserved_check.py`
+- `scripts/family_rules.py`
 - `scripts/final_page_audit.py`
 - `scripts/form_contract_audit.py`
 - `scripts/gap_matrix.py`
 - `scripts/generate_page_dates.py`
 - `scripts/generate_sitemaps.py`
 - `scripts/health-sweep.sh`
+- `scripts/image_candidates.py`
+- `scripts/image_designs.py`
+- `scripts/image_rules.py`
 - `scripts/indexnow_submit.py`
+- `scripts/ingest_image.py`
+- `scripts/keyword_variants.py`
+- `scripts/link_diversity.py`
+- `scripts/link_library.py`
 - `scripts/link_parity_check.py`
 - `scripts/marker_check.py`
 - `scripts/measure_canvas_heights.mjs`
 - `scripts/measure_chrome.py`
 - `scripts/migration_parity.py`
+- `scripts/ontology_seed.py`
+- `scripts/outline_provenance_check.py`
 - `scripts/page_hardening_scan.py`
+- `scripts/page_sections.py`
 - `scripts/pageboard.py`
 - `scripts/perf_audit.py`
 - `scripts/placeholder_check.py`
@@ -212,6 +227,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/query_augment.py`
 - `scripts/query_coverage_check.py`
 - `scripts/redirect_check.py`
+- `scripts/reframe_og.py`
 - `scripts/release_guard.sh`
 - `scripts/render_baseline.py`
 - `scripts/schema_check.py`
@@ -220,7 +236,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/verbatim_set_check.py`
 - `scripts/workflow_ref_check.py`
 
-## Data files — 22
+## Data files — 23
 
 - `data/agent-registry.json`
 - `data/boards/`
@@ -231,6 +247,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/facts/`
 - `data/faq.json`
 - `data/image-centering.json`
+- `data/image-ingest.json`
 - `data/image-manifest.json`
 - `data/locations.json`
 - `data/page-dates.json`
@@ -269,6 +286,7 @@ and exits non-zero on a problem.
 | `scripts/facts_preserved_check.py` | a rebuilt page keeps every fact its migrated body carried |
 | `scripts/link_parity_check.py` | a rebuilt page links where its board record says, and nowhere else |
 | `scripts/verbatim_set_check.py` | a rebuilt page carries its migrated page's verbatim set (working rule 15) |
+| `scripts/outline_provenance_check.py` | a new location, comparison or blog page is built from its approved outline and shares no heading or passage with a sibling (working rule 17) |
 | `scripts/query_coverage_check.py` | a built page with a query pool carries its FAQ blocks and questions |
 | `scripts/competitor_registry_check.py` | `data/competitors.json` is well formed; no unlinkable competitor is linked |
 | `scripts/gap_matrix.py` | the newest gap matrix matches the intel reports (`--check`) |
@@ -292,9 +310,9 @@ and exits non-zero on a problem.
 ## Deferred — recorded, not written
 
 `data/port-manifest.json` records every file that crossed and every file that
-deliberately did not. 44 rows are `deferred`.
+deliberately did not. 41 rows are `deferred`.
 
-- **project 3** — 8 rows (deferred to project 3, see data/port-manifest.json)
+- **project 3** — 5 rows (deferred to project 3, see data/port-manifest.json)
 - **project 6** — 22 rows (deferred to project 6, see data/port-manifest.json)
 - **no project** — 14 rows the spec rules out of the transfer entirely; they stay
   in the source repo (not ported — source repo only)

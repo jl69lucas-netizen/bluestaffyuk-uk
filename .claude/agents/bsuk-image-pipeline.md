@@ -10,7 +10,7 @@ effort: medium
 
 ## Golden Rule
 > **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–16 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — sizing, crops, alt text and keyword distribution. It is the image source of truth; it wins over any stale value here.
+> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — sizing, crops, alt text and keyword distribution. It is the source of truth for those; `IMAGE-DESIGNS.md` (repo root) holds the named OG and infographic styles and the approval rule (the "Image designs" line below).
 
 ---
 
@@ -194,3 +194,5 @@ New images only. A photo imported from `src/assets/` through `astro:assets` gets
 ## Uniform In-Body Image Sizing (locked 2026-07-12)
 
 On comparison + long-form content pages, every in-body section image — OG photo AND infographic — uses the SAME box: `.sec-img.inf-img` (`max-width:760px; aspect-ratio:1408/768; object-fit:cover; height:auto`), identical on mobile/tablet/desktop. Never give OG photos smaller boxes (`.portrait`/`.portrait-tall`/`.photo43`) on these pages; match the infographic size and tune `object-position` per photo. Ship `<100KB WebP + -760.webp` sibling. Canonical spec: `rules/images.md` + CLAUDE.md.
+
+> **Image designs:** `IMAGE-DESIGNS.md` (repo root) names the OG framing styles (§7: A, B, C, D, E, H), the infographic styles (§8: IG-1 to IG-5), the approval rule (§9: nothing generated is built until the board approves its exact bytes) and the image-slot fields and picks (§10: `source`, `file`, `source_file`, `og_style`, `infographic_style`, `prompt`, `img:<slot>`). Read it before choosing, generating, framing or placing an image; on conflict it wins.

@@ -172,6 +172,37 @@ read $0.99185 before the pilot. User ruling A set `query_typical_call_usd` to 0.
 Known Issues 47–58. **Next: project 5** — starting with the strategy's first three stub
 rebuilds (Manchester, the licensed-breeder page, Leeds), after Known Issue 39.
 
+## System gaps bridge build (2026-09-24) — COMPLETE
+
+Branch `system-gaps` (worktree `/Users/apple/Downloads/BSUK-gaps`), cut from `foundation` at `9927710`, merged `--no-ff` into `foundation` at `06dee26`. It ran beside `p5-readiness`, which another session was executing, and merged first. Plan: `docs/superpowers/plans/2026-09-24-system-gaps.md` (Artifact https://claude.ai/artifact/FS2ekGxx7jAM5T8poem95R). Gate report: `docs/reports/system-gaps-gate-report.md` (Artifact https://claude.ai/artifact/VFCVy6avEXQ7gGKVcD2mae).
+
+What it closed (the user's five gaps, new location/comparison/blog pages only; the twelve built pages are frozen out by name in `scripts/family_rules.py`):
+- **Board entity and keyword view.** One card per entity, grouped by class, with a sticky filter and search and a phone-stacking matrix; the graph is removed. Keyword chips are grouped by type (`scripts/board_entities.py`).
+- **Keyword variation, related, co-occurring and similar types**, plus `scripts/keyword_variants.py`, which proposes them free from cached data. The ontology is seeded from sourced data: 7 → 56 entities in 8 classes (`scripts/ontology_seed.py`).
+- **Outline provenance.** `scripts/outline_provenance_check.py` (`check:outline` in `check:all`) and `outline-heading-repeat`.
+- **External links:** ≥6 on 6 domains from 4 source types. **Anchor types:** varied, and never reused across boards (`scripts/link_diversity.py`, `scripts/link_library.py`).
+- **Images.** `IMAGE-DESIGNS.md` (OG styles A–H, IG-1..5, two-pass sha12 approval). `scripts/image_candidates.py` ranks the page's own images, then served images, then `Assets/Images`. `scripts/image_rules.py` requires a slot per body H2/H3 and the hero, and runs the build gate. `scripts/reframe_og.py` and `scripts/ingest_image.py`. Three image skills ported. Board block 7 "Images & styles".
+- **Rules answered before approval.** Board block 7b lists every rule as approval will see it, and `scripts/board_approve.py` refuses approval and re-approval while one FAILs (build-gate image checks excepted).
+- **Wiring.** CLAUDE.md working rule 17, WORKFLOW rule 13, the builder skills' "Project 5 page rules (system-gaps)" block. `GEMINI_API_KEY` is documented by name, and `google-genai==1.47.0` is pinned.
+
+Known Issues 59–69 are left for the numbers the `p5-readiness` plan already uses; this build's start at 70.
+
+### Merge guide for `p5-readiness` (whichever merges second)
+A trial merge showed 7 textual conflicts across 14 shared files:
+- `package.json` and `tests/py/test_package_scripts.py`: keep both `check:outline` and `check:workflow`.
+- `docs/reference/system-registry.md`: regenerate it.
+- `.claude/skills/bsuk-comparison-page-builder/SKILL.md`: keep p5-readiness's rewritten list, then this build's appended blocks.
+- `docs/reference/WORKFLOW.md`: p5-readiness moved rules 10–12, so rule 13 follows them.
+- `.claude/agents/bsuk-image-pipeline.md`: keep p5-readiness's rules banner.
+- `.claude/agents/bsuk-infographic-builder.md`: drop the "not ported" notes on `bsuk-infographic`, because that skill is ported now.
+
+After resolving, fix three tests on the merged tree:
+- Remove `"IMAGE-DESIGNS.md": "rules/images.md"` from the REPLACED map in `tests/py/test_agent_references.py` (arrives in the p5-readiness merge), since the file exists now.
+- Add a `check:outline` row to the gate table in `scripts/build_system_registry.py`.
+- Keep the rules banner line in `.claude/agents/bsuk-image-pipeline.md`.
+
+When p5-readiness Task 43 (F2a) adds `_slugs.resolve_page`, `scripts/page_sections.py` uses it automatically.
+
 ## Project 5 readiness build (2026-09-23/2026-09-25) — COMPLETE
 
 A readiness pass between the competitor intelligence build and project 5, run because the user asked
@@ -252,7 +283,7 @@ some of the plan's expected counts were stale (Task R13 Step 13's "342 passed" i
 added tests; Task R11 Step 10's "20 WARN" is 18 on a fresh build). The plan stayed at its committed
 path rather than the new dated copy the close-out task names.
 
-Open items: Known Issues 59–75 (new), and still open 3, 5, 6, 7, 10, 13–16, 18, 23, 26, 27
+Open items: Known Issues 59–69 and 75–80 (new; 70–74 are the system gaps build's), and still open 3, 5, 6, 7, 10, 13–16, 18, 23, 26, 27
 (project 6), 30 (the breed guide's zero headroom), 31 (second half), 33 (the utility mosaics), 34,
 36, 41, 43, 44, 53 (two items), 54, 55. Known Issue 15 — rotate the Google Cloud OAuth client and
 scrub the source repo — is still the user's to do. **Flag for the user now:** Known Issue 65, the
@@ -271,7 +302,11 @@ added 39–46. The competitor intelligence bridge build closed 42 and added 47�
 project 5 readiness pass closed 19, 21, 24, 32, 35, 37, 38, 39, 45–52, 56, 57 and 58, the
 first half of 31, the buying-guide half of 30, the homepage and sharing halves of 33, all but two
 items of 53 and the instruction items of 40; corrected 23; moved 27 to project 6 and 16 on to its
-location-page remainder; and added 59–75.
+location-page remainder; and added 59–69 and 75–80. The system gaps bridge build added 70–74.
+Renumbered at the merge of `foundation` into `p5-readiness` (2026-09-25): the readiness pass first
+numbered its items 59–75, and its 70–75 became 75–80 so the system gaps build keeps 70–74 (70 → 75,
+71 → 76, 72 → 77, 73 → 78, 74 → 79, 75 → 80). Commit messages from before that merge cite the old
+numbers.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -1227,7 +1262,18 @@ location-page remainder; and added 59–75.
       alone, with none of intel's hub or breeds-folder overrides. Copy the overrides or document the
       difference.
 
-70. **Keyword-gap, LLM-intel, strategy and spend-guard minors (found in the readiness pass).**
+70. **Generated images wait for the user's key (system gaps, 2026-09-24).** `google-genai==1.47.0` is installed and pinned, and the whole generate → approve → publish flow is tested on synthetic images. The one real smoke image (plan Task 11b Step 3) waits until the user sets `GEMINI_API_KEY` in `.env`. Until then, slots use an existing image or an infographic. The system Python is 3.9.6: google-auth warns that 3.9 is past end of life, and urllib3 warns that it was built with LibreSSL. Consider a newer Python before project 6.
+71. **Organisation and regulation entities have no owner page (system gaps).** The 12 organisations and 6 regulations in `data/bsuk-ontology.json` have `owner_page` unset. The first project 5 page that makes one of them its subject should claim it at boarding.
+72. **One research row in the link library (system gaps).** Only the PubMed Central copy of Pegram et al. 2020 could be verified with `curl`. The RVC VetCompass page blocks bots (403), so it needs a headless-browser check before it can be a row. The four-source-type rule does not need a research row.
+73. **Committed board HTML lags the renderer (system gaps).** `docs/artifacts/boards/*.html` for the 12 built pages still shows the old block 5 graph and the old "7. Asset slots" title. The boards render correctly from `scripts/build_page_board.py`; republish them the next time any of them is touched.
+74. **Small helper duplicates (system gaps).**
+    - `slug_file` exists in `pageboard`, `image_candidates` and `ingest_image`; only the first validates.
+    - `route_of` exists in `image_candidates` and `build_page_board`.
+    - `image_candidates.py --write` writes `data/boards/candidates/` (arrives in the first `--write` run), which nothing reads, because the board recomputes candidates itself.
+
+    Fold these together when one of them next changes.
+
+75. **Keyword-gap, LLM-intel, strategy and spend-guard minors (found in the readiness pass).**
     - Keyword gap: `CITYISH` misses a heading with "near me", a county name (Merseyside), "0 ads"
       or "dogs", and the source's run-together "salein" breaks the Manchester match, so the London,
       Liverpool, Manchester and Dundee rows scored as word topics (the keyword-gap file says so).
@@ -1248,14 +1294,14 @@ location-page remainder; and added 59–75.
       more calls fit) and will fail once fewer than 26 calls of headroom are left. Re-scope it to
       assert the committed state still obeys the guard's rules, not a fixed 26.
 
-71. **Registry fix: petsforlove is down (found in G1, 2026-09-25).** petsforlove.co.uk did not
+76. **Registry fix: petsforlove is down (found in G1, 2026-09-25).** petsforlove.co.uk did not
     answer (DNS resolves; ports 80 and 443 closed), so its report is homepage-gated with every
     field NOT FETCHED, it is left out of the keyword gap, and it counts as "not fetched" in every
     matrix row. `bsuk-competitor-registry` should re-check the site at its next refresh and retire
     the entry if it is still down. The 27 answer-named domains in
     `docs/research/competitor-registry-candidates.md` wait for the same refresh.
 
-72. **Instruction lines and code comments the readiness pass left stale.** Each is a one-line or
+77. **Instruction lines and code comments the readiness pass left stale.** Each is a one-line or
     one-paragraph fix; none is load-bearing today.
     - `docs/reference/seo-rules.md` Rule 31 fixes four site-wide counters (one reads "Home-Reared in
       Carlisle") against working rule 16's per-page counters; Rule 32 still says "3× per page" and
@@ -1283,7 +1329,7 @@ location-page remainder; and added 59–75.
       built with a fence-aware copy of the script kept outside the repo; the fix belongs in the
       script, with a test.
 
-73. **Blog posts: template limits and two rulings (project 5, before the two new posts).**
+78. **Blog posts: template limits and two rulings (project 5, before the two new posts).**
     - `src/content.config.ts` globs only `**/*.md`, and `featured_image` is a bare string with no
       width, height or srcset; `[...post].astro` passes `Hero` only an image and its alt. A post
       cannot pass hero dimensions (the `img_dims` check blocks a string hero), use a `src/assets/`
@@ -1296,7 +1342,7 @@ location-page remainder; and added 59–75.
       Organization with `d.author`, and the only post's author is "Blue Staffy UK Team". Decide and
       align.
 
-74. **Seven stub cities give the verbatim gate nothing to examine (project 5).** bristol-uk,
+79. **Seven stub cities give the verbatim gate nothing to examine (project 5).** bristol-uk,
     for-sale-leeds, south-yorkshire, coventry-area, cornwall, essex and
     uk-staffordshire-bull-terrier-breeder have an empty migrated body at the frozen migration
     commit, so `verbatim --extract` finds 0 elements and `--check` passes having examined nothing.
@@ -1304,7 +1350,7 @@ location-page remainder; and added 59–75.
     the gate must print "stub — no verbatim set" rather than "0 problems". Also: `facts --extract`
     on an unbuilt city ends in a raw FileNotFoundError.
 
-75. **DONE 2026-09-25 (close-out, the controller's) — the Artifact pages carry the builder's
+80. **DONE 2026-09-25 (close-out, the controller's) — the Artifact pages carry the builder's
     current script line.** The review-minors task changed `scripts/build_report_artifact.py`'s copy
     script (it now un-escapes `<\/script` before rendering or copying, `fce3070`), and that commit
     regenerated the Foundation gate report's HTML (`docs/artifacts/bsuk-foundation-gate-report.html`,

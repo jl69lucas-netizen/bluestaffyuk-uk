@@ -36,6 +36,7 @@ GATES = [
     ("scripts/facts_preserved_check.py", "a rebuilt page keeps every fact its migrated body carried"),
     ("scripts/link_parity_check.py", "a rebuilt page links where its board record says, and nowhere else"),
     ("scripts/verbatim_set_check.py", "a rebuilt page carries its migrated page's verbatim set (working rule 15)"),
+    ("scripts/outline_provenance_check.py", "a new location, comparison or blog page is built from its approved outline and shares no heading or passage with a sibling (working rule 17)"),
     ("scripts/query_coverage_check.py", "a built page with a query pool carries its FAQ blocks and questions"),
     ("scripts/competitor_registry_check.py", "`data/competitors.json` is well formed; no unlinkable competitor is linked"),
     ("scripts/gap_matrix.py", "the newest gap matrix matches the intel reports (`--check`)"),

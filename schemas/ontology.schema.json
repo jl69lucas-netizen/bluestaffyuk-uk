@@ -11,7 +11,7 @@
           "id": {"type": "string", "pattern": "^ont:[a-z0-9-]+$"},
           "name": {"type": "string", "minLength": 1},
           "aliases": {"type": "array", "items": {"type": "string"}},
-          "class": {"enum": ["Organism", "Documentation", "Health", "Commerce", "Logistics", "Place", "People", "Method"]},
+          "class": {"enum": ["Organism", "Documentation", "Health", "Commerce", "Logistics", "Place", "People", "Method", "Organization", "Regulation"]},
           "authorization": {"enum": ["ASSERTED", "PROPOSED", "BLOCKED"]},
           "source": {"type": ["string", "null"]},
           "owner_page": {"type": ["string", "null"]}

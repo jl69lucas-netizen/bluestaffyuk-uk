@@ -100,7 +100,6 @@ def test_the_file_detector_reads_commands_and_prose():
 REPLACED = {
     "docs/reference/design-system.md": "src/styles/tokens.css and src/components/kit/",
     "data/image-specs.json": "rules/images.md and data/image-manifest.json",
-    "IMAGE-DESIGNS.md": "rules/images.md",
     "data/case-studies.json": "data/reviews.json",
     "data/structure.json": "data/page-map.json (inventory) and a dated structure map in docs/superpowers/sessions/",
     "MANUAL INTERIOR-PAGE CHECKLIST.md": ".claude/skills/manual-auditor-check/SKILL.md",
