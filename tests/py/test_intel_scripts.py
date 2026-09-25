@@ -74,6 +74,11 @@ def kind(monkeypatch):
     ("/classifieds/ragdoll-breed-kittens/", "listing"),
     ("/classifieds/staffy-breed-info-1234567/", "listing"),  # a trailing numeric id: an advert
     ("/kittens/", "listing"),
+    ("/dog-breeds/manchester-terrier/", "breed-guide"),    # a city word before -terrier is a breed (pdsa), not a city
+    ("/manchester-terriers/", None),
+    ("/aberdeen-terrier/", None),                          # the Scottish Terrier's old name
+    ("/staffy-puppies-manchester/", "city"),               # the city itself still is one
+    ("/manchester-terrier-rescue-manchester/", "city"),
 ])
 def test_page_types_match_whole_words(kind, path, want):
     assert kind(path) == want
@@ -280,6 +285,12 @@ def test_an_advert_with_an_id_prefix_or_in_an_advert_folder_is_an_advert(tmp_pat
     ("/classifieds/staffordshire-bull-terrier-puppies/", "listing", "/sale/puppies/staffordshire-bull-terrier/"),  # a breed hub
     ("/classifieds/leeds/", "city", "/sale/puppies/leeds/"),                  # a city hub, before a deeper city page
     ("/support/solutions/q7zz1-puppy-faq", "price-or-faq", None),     # help-centre pages are never adverts
+    ("/classifieds/staffy-puppies-uk", "listing", "/sale/puppies/staffordshire-bull-terrier/"),  # uk, in and near are
+    ("/classifieds/dogs-for-sale-in-leeds", "city", "/sale/puppies/leeds/"),                      # hub words
+    ("/classifieds/puppies-near-york", "city", "/sale/puppies/york/"),
+    ("/covid19-puppy-buying-guide/", "guide", None),                  # an id prefix interleaves letters and digits:
+    ("/staffy2-care-guide/", "guide", None),                          # a word with a number on the end is not one,
+    ("/202425-staffy-prices/", "price-or-faq", None),                 # nor digits alone
 ])
 def test_ordinary_pages_and_hubs_are_not_adverts(tmp_path, path, slot, other):
     x = "https://x.co.uk"
@@ -335,8 +346,12 @@ def test_the_about_pick_is_an_about_segment_not_a_slug_that_mentions_about(tmp_p
     assert d["page_types"] == {"about": 1} and d["key_pages"]["about"] is None  # typed about as before; never the pick
     d = classify(tmp_path, [notice, f"{x}/who-we-are/about/"])
     assert d["key_pages"]["about"] == f"{x}/who-we-are/about/"   # a whole about segment, however deep
-    for page in ("/aboutus/", "/our-story/", "/about-us/team/", "/about-our-charity"):
+    for page in ("/aboutus/", "/our-story/", "/about-us/", "/about-us.html", "/about-our-charity", "/about-1"):
         assert classify(tmp_path, [notice, f"{x}{page}"])["key_pages"]["about"] == f"{x}{page}"
+    # the about word must be the last segment (or start it): rspca's pages under an aboutus folder are not its about page
+    d = classify(tmp_path, [f"{x}/utilities/aboutus/stayinformed", f"{x}/local/aboutus/-/rspca/solent-branch-cio",
+                            f"{x}/about-us/team/"])
+    assert d["page_types"] == {"about": 3} and d["key_pages"]["about"] is None
 
 
 def test_bsuk_location_rows_count_as_cities_only_for_a_real_city(tmp_path):

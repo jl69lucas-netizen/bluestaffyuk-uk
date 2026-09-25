@@ -49,7 +49,7 @@ advert = r"for-sale|" + w("kitten") + r"|[-_]\d{5,}/?$"  # a sale advert: 'for-s
 TABLE = [
     ("comparison", [w("vs|versus")]),
     ("blog", [w("blog|news|articles|posts"), r"/post(/|$)", r"/(19|20)\d\d/"]),
-    ("city", [w(re.escape(s)) for s in slugs]),
+    ("city", [w(re.escape(s)) + r"(?!terriers?([-/_.]|$))" for s in slugs]),  # never a breed: manchester-terrier
     ("price", [w("price|pricing|cost|fee")]),
     ("health", [w("health|healthcare|dna|test|testing|tested")]),
     ("care-guide", [w("care|aftercare|feeding|training|grooming")]),
