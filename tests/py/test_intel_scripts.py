@@ -300,8 +300,8 @@ def test_ordinary_pages_and_hubs_are_not_adverts(tmp_path, path, slot, other):
 
 def test_a_multi_species_site_falls_back_to_a_dog_page_first(tmp_path):
     x = P4H
-    d = classify(tmp_path, [f"{x}/ragdoll-care/", f"{x}/advice/dog-care/", f"{x}/sale/kittens/"])
-    assert d["key_pages"]["guide"] == f"{x}/advice/dog-care/"  # not the shallower Ragdoll page
+    d = classify(tmp_path, [f"{x}/ragdoll-prices/", f"{x}/advice/dog-prices/", f"{x}/sale/kittens/"])
+    assert d["key_pages"]["price-or-faq"] == f"{x}/advice/dog-prices/"  # not the shallower Ragdoll page
     d = classify(tmp_path, [f"{x}/classifieds/gz4krku3k-bombay-london", f"{x}/sale/puppies/cocker-spaniel/leeds/",
                             f"{x}/sale/kittens/"])
     assert d["key_pages"]["city"] is None  # a marketplace's city pick is the breed's or none: never the Bombay advert
@@ -745,3 +745,50 @@ def test_plural_and_singular_breed_terms_count_in_the_keyword_rule(line, want):
     found = [" ".join(ws[a:b]) for a, b in g["runs"](ws)]
     assert any(want in f for f in found), found
     assert "staffordshire bull terriers" in (pathlib.Path(AGENT).read_text(encoding="utf-8"))
+
+
+# --- on a marketplace or directory the guide must be the breed's too ---
+CD = "https://www.champdogs.co.uk"
+
+
+def test_a_directory_is_two_breeds_guide_or_breed_paths_one_of_them_the_staffy(tmp_path):
+    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/staffordshire-bull-terrier/puppies"])
+    assert d["marketplace"] is True
+    assert d["key_pages"]["guide"] == f"{CD}/breeds/staffordshire-bull-terrier/puppies"  # never /guide/shih-tzu
+    assert classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/puppies"])["marketplace"] is False  # no Staffy
+
+
+def test_a_breeds_folder_with_two_other_breeds_is_a_directory_even_without_the_staffy(tmp_path):
+    # champdogs' first map: no Staffy path yet, but /breeds/ holds other breeds: never the Shih Tzu guide
+    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/puppies", f"{CD}/breeds/papillon/puppies"])
+    assert d["marketplace"] is True and d["key_pages"]["guide"] is None
+
+
+def test_a_directorys_guide_pick_is_the_breeds_or_none(tmp_path):
+    # the Staffy's only breed path is an advert, so it is never the guide: the slot stays empty, never the Shih Tzu
+    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/staffordshire-bull-terrier/litter-12345678"])
+    assert d["marketplace"] is True and d["key_pages"]["guide"] is None
+
+
+def test_a_marketplaces_guide_pick_is_the_breeds_or_none(tmp_path):
+    x = P4H
+    d = classify(tmp_path, [f"{x}/sale/kittens/", f"{x}/pet-advice/labrador-care-guide/", f"{x}/sale/puppies/"])
+    assert d["marketplace"] is True and d["key_pages"]["guide"] is None
+    d = classify(tmp_path, [f"{x}/sale/kittens/", f"{x}/pet-advice/labrador-care-guide/",
+                            f"{x}/dog-breeds/staffordshire-bull-terrier/"])
+    assert d["key_pages"]["guide"] == f"{x}/dog-breeds/staffordshire-bull-terrier/"
+
+
+def test_a_multi_species_charitys_generic_dog_guide_stays(tmp_path):
+    # rspca, pdsa, the Royal Kennel Club: another species in the map, but a dog-care guide is not another breed's guide
+    x = "https://www.rspca.org.uk"
+    d = classify(tmp_path, [f"{x}/adviceandwelfare/pets/cats/cat-care", f"{x}/adviceandwelfare/pets/dogs/training",
+                            f"{x}/pet-advice/labrador-care-guide/"])
+    assert d["marketplace"] is True and d["key_pages"]["guide"] == f"{x}/adviceandwelfare/pets/dogs/training"
+
+
+def test_a_breeders_guide_pick_is_unchanged(tmp_path):
+    x = "https://www.example-kennels.co.uk"
+    d = classify(tmp_path, [f"{x}/staffy-puppies/", f"{x}/aftercare/", f"{x}/guides/feeding/", f"{x}/leeds/"])
+    assert d["marketplace"] is False
+    assert (d["key_pages"]["guide"], d["key_pages"]["city"]) == (f"{x}/aftercare/", f"{x}/leeds/")
