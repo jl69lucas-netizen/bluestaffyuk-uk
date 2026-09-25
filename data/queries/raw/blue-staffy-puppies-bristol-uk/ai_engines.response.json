@@ -1,0 +1,101 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper, location_name United Kingdom, language_code en, called 2026-09-25 for the query: Where can I buy a blue Staffy puppy near Bristol, and what should I ask the breeder? The response carried no keyword field, so the query is held here. Saved as returned, answer text and sources whole, minus third-party contact details: the local business's street address and postcode (in the local-businesses markdown and its element's address field), its rating, reviews_count and url were removed (title and domain kept); the street name the answer text placed the listing at was replaced with [street removed]. Nothing else was changed.",
+  "id": "09250738-2496-0629-0000-9e523452ff15",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_local_businesses",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "- **IronPaw Staffies** - [address removed]\n",
+      "items": [
+        {
+          "type": "chat_gpt_local_businesses_element",
+          "title": "IronPaw Staffies",
+          "description": "Dog breeder",
+          "domain": "ukstaffypups.uk"
+        }
+      ]
+    },
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 2,
+      "markdown": "If you’re looking for a **blue Staffordshire Bull Terrier (“Staffy”) puppy near Bristol**, I’d be cautious about choosing purely by colour. Blue is a coat colour, whereas the breeder’s health testing, temperament and breeding practices matter much more.\n\nOne local listing I found is [IronPaw Staffies](https://ukstaffypups.uk/staffy-puppies-for-sale) around [street removed], Bristol. I’d treat that as a **lead to investigate, not an endorsement**—the listing alone doesn’t establish that the breeder is responsible.\n\n### What to ask the breeder\n\nBefore paying a deposit, ask:\n\n- **Can I see the puppy with its mother, where they were raised?** A responsible breeder should be happy for you to visit and should not arrange to meet in a car park or deliver the puppy elsewhere. [RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com)\n- **Can I see the mother's and father's health-test certificates?** For Staffies, the Royal Kennel Club's current health standard includes DNA testing for **hereditary cataracts (HC-HSF4-2)** and **L-2-HGA**, plus eye and elbow screening; ask for the actual results rather than simply being told “health tested.” [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)\n- **What are the parents like temperamentally?** Ask about nervousness, aggression, anxiety and how they behave around people and other dogs.\n- **Why did you choose these two dogs to breed?** A good answer should focus on health, temperament and genetic diversity—not simply producing blue puppies.\n- **Have either parent, or close relatives, had significant health problems or surgery?**\n- **How many litters has the mother had, and how old is she?**\n- **How are the puppies being socialised?** Ask what people, household noises, other dogs and environments they've experienced.\n- **What veterinary care has each puppy received?** Ask for vaccination, worming, microchip and health records.\n- **How old will the puppy be when it leaves?** In England, puppies shouldn't be sold before eight weeks, and they must be microchipped before sale. [RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com)\n- **Will you take the dog back if I can no longer keep it?** A responsible breeder should remain interested in the dog's welfare after the sale.\n- **Will you provide a Puppy Contract?** The RSPCA recommends using one. [RSPCA](https://www.rspca.org.uk/en/adviceandwelfare/pets/dogs/puppy/healthy?utm_source=chatgpt.com)\n\n### Particularly important with a “blue” Staffy\n\nI'd ask directly:\n\n>  “Are you breeding specifically for blue colour, and what health or temperament considerations influenced this mating?”\nIf the breeder is heavily marketing *rare*, *exclusive*, *XXL*, *micro*, or unusually coloured Staffies and seems much more interested in the colour than the parents' health and temperament, that's a reason to walk away. The RSPCA recommends prioritising health, welfare and temperament over appearance. [RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/pedigreedogs/health?utm_source=chatgpt.com) [RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com) \n\nAlso, don't let **“Kennel Club registered”** by itself reassure you. Registration documents establish ancestry but aren't a guarantee that the individual breeder has bred responsibly or that the puppy is healthy. [RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com) \n\nIf you want, I can also **search for currently advertised Staffy litters within, say, 50 miles of Bristol and separate the breeders worth contacting from obvious red flags**.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "How to Find a Good Puppy Breeder - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "publication_date": "2025-10-18 13:51:32 +00:00",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "How to Find a Good Puppy Breeder - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/breeder?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "How to Choose a Healthy Puppy - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/en/adviceandwelfare/pets/dogs/puppy/healthy?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/en/adviceandwelfare/pets/dogs/puppy/healthy?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Pedigree dogs health problems - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/pedigreedogs/health?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/dogs/puppy/pedigreedogs/health?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Genetic Health Issues in Dogs & Puppies - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Genetic Health Issues in Dogs & Puppies - RSPCA - rspca.org.uk",
+          "domain": "www.rspca.org.uk",
+          "url": "https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com",
+          "source_name": "RSPCA",
+          "markdown": "[RSPCA](https://www.rspca.org.uk/adviceandwelfare/pets/genetics/dogs?utm_source=chatgpt.com)"
+        }
+      ],
+      "brand_entities": [
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "IronPaw Staffies",
+          "category": "local_business",
+          "markdown": "[IronPaw Staffies](https://ukstaffypups.uk/staffy-puppies-for-sale)",
+          "urls": [
+            {
+              "url": "https://ukstaffypups.uk/staffy-puppies-for-sale",
+              "domain": "ukstaffypups.uk"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
