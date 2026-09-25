@@ -173,8 +173,8 @@ MARKETPLACE = [  # a multi-species marketplace in pets4homes' URL shapes (the G1
 def test_a_marketplaces_key_pages_are_the_breeds_pages(tmp_path):
     d = classify(tmp_path, MARKETPLACE)
     assert d["key_pages"] == {
-        "listing": f"{P4H}/classifieds/k2x9q-blue-staffy-puppies-for-sale-12345678/",  # a Staffy page, never /sale/kittens/;
-        # among the breed's pages the old tie-break decides: the advert has two segments, the Staffy listing three
+        "listing": f"{P4H}/sale/puppies/staffordshire-bull-terrier/",  # the breed hub: never /sale/kittens/, and
+        # never the shallower Staffy advert, which is the listing's last resort
         "price-or-faq": f"{P4H}/faq/",       # the only price page names cats: nothing for price, so the FAQ
         "guide": f"{P4H}/dog-breeds/staffordshire-bull-terrier/",  # the breed's own guide before a generic care guide
         "city": f"{P4H}/sale/puppies/staffordshire-bull-terrier/manchester/",  # not the London kittens page
@@ -199,11 +199,72 @@ def test_without_the_breeds_pages_another_species_is_never_a_key_page(tmp_path):
     assert d["key_pages"]["listing"] is None and d["key_pages"]["city"] is None
 
 
-@pytest.mark.parametrize("path", ["/staffies-for-sale/", "/sbt-puppies/", "/blue-staffords-for-sale/", "/staffordshire-puppies/",
-                                  "/sale/puppies/staffordshire-bull-terrier/", "/staffys-available/"])
+@pytest.mark.parametrize("path", ["/staffies-for-sale/", "/sbt-puppies/", "/blue-staffords-for-sale/",
+                                  "/staffordshire-bull-terrier-puppies/", "/sale/puppies/staffordshire-bull-terrier/",
+                                  "/staffys-available/", "/puppies/staffordshire_bull_terrier/",
+                                  "/puppies/blue+staffy/", "/puppies/blue%20staffy/"])  # + and %20 split breed words
 def test_a_breed_path_is_picked_before_a_shorter_page(tmp_path, path):
     x = "https://x.co.uk"
     assert classify(tmp_path, [f"{x}/puppies/", f"{x}{path}"])["key_pages"]["listing"] == f"{x}{path}"
+
+
+@pytest.mark.parametrize("path", ["/dogs-for-sale/staffordshire/",                  # the county
+                                  "/american-staffordshire-terrier-puppies/",        # an AmStaff
+                                  "/american-staffordshire-bull-terrier-puppies/",
+                                  "/english-bull-terrier-puppies/", "/miniature-bull-terrier-puppies/",
+                                  "/american-pit-bull-terrier-puppies/", "/bull-terrier-puppies/"])
+def test_the_county_and_the_breeds_cousins_are_not_the_breed(tmp_path, path):
+    x = "https://x.co.uk"
+    assert classify(tmp_path, [f"{x}/puppies/", f"{x}{path}"])["key_pages"]["listing"] == f"{x}/puppies/"
+
+
+def test_the_staffy_hub_beats_a_cousins_hub_at_the_same_depth(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/dogs/bull-terrier/for-sale/", f"{x}/dogs/staffordshire-bull-terrier/for-sale/"])
+    assert d["key_pages"]["listing"] == f"{x}/dogs/staffordshire-bull-terrier/for-sale/"
+    d = classify(tmp_path, [f"{x}/american-pit-bull-terrier-puppies/", f"{x}/staffordshire-bull-terrier-puppies/"])
+    assert d["key_pages"]["listing"] == f"{x}/staffordshire-bull-terrier-puppies/"
+
+
+def test_an_advert_is_never_a_key_page_but_the_listings_last_resort(tmp_path):
+    x = "https://x.co.uk"
+    # gumtree: an id segment; typed breed guide by 'breed' (page_types unchanged), never the guide pick
+    d = classify(tmp_path, [f"{x}/p/dogs/staffy-breed/1498765433", f"{x}/dog-breeds/"])
+    assert d["page_types"] == {"breed-guide": 2} and d["key_pages"]["guide"] == f"{x}/dog-breeds/"
+    assert classify(tmp_path, [f"{x}/p/dogs/staffy-breed/1498765433"])["key_pages"]["guide"] is None
+    # preloved: an id segment mid-path, .html; the breed hub is the listing however deep
+    hub = f"{x}/classifieds/pets/dogs/staffordshire-bull-terrier/for-sale/uk"
+    d = classify(tmp_path, [f"{x}/adverts/show/123456789/blue-staffy-puppies.html", hub])
+    assert d["key_pages"]["listing"] == hub
+    # freeads: an id joined to the slug before .html; alone, the advert is the listing's last resort
+    ad = f"{x}/dogs/staffy-puppies-for-sale-12345678.html"
+    assert classify(tmp_path, [ad, f"{x}/dogs/staffordshire-bull-terrier/for-sale/"])["key_pages"]["listing"] \
+        == f"{x}/dogs/staffordshire-bull-terrier/for-sale/"
+    assert classify(tmp_path, [ad])["key_pages"]["listing"] == ad
+    # an advert ending in a town is a city page by type, never the city pick
+    leeds = f"{x}/dogs/staffordshire-bull-terrier/uk/england/leeds/"
+    d = classify(tmp_path, [f"{x}/ad/blue-staffy-pups-leeds-1234567", leeds])
+    assert d["page_types"] == {"city": 2} and d["key_pages"]["city"] == leeds
+    assert classify(tmp_path, [f"{x}/ad/blue-staffy-pups-leeds-1234567"])["key_pages"]["city"] is None
+    # 'temperament' in an advert: typed breed guide, never the guide pick
+    d = classify(tmp_path, [f"{x}/ad/staffy-pups-lovely-temperament-1234567"])
+    assert d["page_types"] == {"breed-guide": 1} and d["key_pages"]["guide"] is None
+    # 'price' in an advert: typed price, never the price pick
+    d = classify(tmp_path, [f"{x}/ad/reduced-price-staffy-pups-7654321", f"{x}/prices/"])
+    assert d["page_types"] == {"price": 2} and d["key_pages"]["price-or-faq"] == f"{x}/prices/"
+    # a help-centre page with a numeric id is not an advert
+    assert classify(tmp_path, [f"{x}/help/puppy-faq-1234567"])["key_pages"]["price-or-faq"] == f"{x}/help/puppy-faq-1234567"
+
+
+def test_a_multi_species_site_falls_back_to_a_dog_page_first(tmp_path):
+    x = P4H
+    d = classify(tmp_path, [f"{x}/classifieds/gz4krku3k-bombay-london", f"{x}/sale/puppies/cocker-spaniel/leeds/",
+                            f"{x}/sale/kittens/"])
+    assert d["key_pages"]["city"] == f"{x}/sale/puppies/cocker-spaniel/leeds/"  # not the shallower Bombay advert
+    # a site naming no other species keeps today's order: the shortest page, dog word or not
+    y = "https://www.example-kennels.co.uk"
+    d = classify(tmp_path, [f"{y}/litters/", f"{y}/puppies/available/", f"{y}/leeds/", f"{y}/puppies/leeds/"])
+    assert (d["key_pages"]["listing"], d["key_pages"]["city"]) == (f"{y}/litters/", f"{y}/leeds/")
 
 
 def test_stafford_the_town_is_not_the_breed(tmp_path):
