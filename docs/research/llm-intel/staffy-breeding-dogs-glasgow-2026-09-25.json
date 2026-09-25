@@ -1,0 +1,273 @@
+{
+ "slug": "staffy-breeding-dogs-glasgow",
+ "date": "2026-09-25",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near Glasgow, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-25"
+ },
+ "raw": "data/queries/raw/staffy-breeding-dogs-glasgow/ai_engines.response.json",
+ "answer_text": "verbatim",
+ "paid_this_run": true,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "royalkennelclub.com",
+   "registry_id": "royalkennelclub",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "pets4homes.co.uk",
+   "registry_id": "pets4homes",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "scsbts.com",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "pdsa.org.uk",
+   "registry_id": "pdsa",
+   "tier": 3,
+   "platform": false
+  }
+ ],
+ "local_businesses": [],
+ "citation_gap": [
+  "pdsa",
+  "pets4homes",
+  "royalkennelclub"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "dist",
+  "path": "dist/uk-locations/staffy-breeding-dogs-glasgow/index.html",
+  "provisional": false,
+  "note": "built, indexable page"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "vet check",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "contract",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "royal kennel club",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "pets4homes",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "sc staffordshire bull terrier society",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "pdsa",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "breed standard",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "glasgow",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "largs",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "kilmarnock",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "scotland",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "pedigree",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "paperwork",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "certificates",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "meet the father",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rest of the litter",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "how many litters",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rehome",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "inherited condition",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "breeding practices",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "health record",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rare blue",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "champion bloodline",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "merle",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "car park",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "ok",
+  "list": "bulleted",
+  "length": "long",
+  "words": 638,
+  "opening": "statement"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "royal kennel club|kennel club;pets4homes;sc staffordshire bull terrier society;pdsa;breed standard;glasgow;largs;kilmarnock;scotland;pedigree|pedigrees;socialisation|socialised;worming;deposit;paperwork;certificates|certificate;meet the father|see the father;rest of the litter;how many litters;rehome|take the dog back;inherited condition;breeding practices;health record;rare blue;champion bloodline;merle;car park|neutral location"
+}

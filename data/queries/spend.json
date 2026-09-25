@@ -236,5 +236,47 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:20:23Z",
+    "slug": "blue-staffy-puppies-oxford",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:23:11Z",
+    "slug": "blue-staffy-puppies-sunderland",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:25:32Z",
+    "slug": "blue-staffy-puppies-york",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:28:17Z",
+    "slug": "blue-staffy-puppies-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:31:31Z",
+    "slug": "uk-staffordshire-bull-terrier-breeder",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:34:28Z",
+    "slug": "staffy-breeding-dogs-glasgow",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
   }
 ]
