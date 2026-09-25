@@ -159,7 +159,7 @@ page keeps saying nothing about it until the document arrives.
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
   function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
   document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
-    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'').replace(/<\\\/(script)/gi,'</$1');
     all.push('## '+title+'\n\n'+md);
     var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
     var sh=document.createElement('div');sh.className='sh';

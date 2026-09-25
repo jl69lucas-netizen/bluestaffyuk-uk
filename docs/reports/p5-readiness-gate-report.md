@@ -211,9 +211,10 @@ reads 95, so the faces cost about 3 points. The breed guide's Best Practices wen
 
 | What | URL |
 |---|---|
-| This report | «URL, Task Z Step 5» |
-| The plan (executed) | https://claude.ai/artifact/CtP3B6yHda1NUBvgiUCcdg (republished from the executed plan) |
-| The breeder's questions | https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH |
+| This report | https://claude.ai/artifact/YHsi2sEDq1uUpgYsQTjUdU (republished by the controller after the commit that recorded it, 2026-09-25) |
+| The plan (executed) | https://claude.ai/artifact/CtP3B6yHda1NUBvgiUCcdg (version 2, republished from the executed plan) |
+| The breeder's questions | https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH (page rebuilt with the builder's `fce3070` script line and republished by the controller, 2026-09-25 — Known Issue 75) |
+| The Foundation gate report | no Artifact URL recorded in the repo; `docs/artifacts/bsuk-foundation-gate-report.html` is current (rebuilt at close-out, unchanged) |
 | The strategy | https://claude.ai/artifact/PpjywspMRJXayQtkfiTki1 (version 2) |
 | Boards republished at the pause | index, health, breed guide, buying guide (URLs in `data/design/artifacts.json` `boards`) |
 
@@ -245,7 +246,7 @@ instruction items of 40. Moved: 27 to project 6. New, in `docs/reference/session
 72. **Instruction lines and code comments left stale** — seo-rules Rules 31/32, the fan-out counts, skill residue.
 73. **Blog posts: template limits and two rulings.**
 74. **Seven stub cities give the verbatim gate nothing to examine.**
-75. **Two published Artifacts are one script line behind** — the controller republishes them.
+75. **The Artifact pages carry the builder's current script line** — DONE 2026-09-25: the breeder's sheet rebuilt and republished with the gate report; no Foundation report URL is recorded.
 
 Still open from earlier builds: 3, 5, 6, 7, 10, 13–16, 18, 23, 26, 30 (the breed guide's headroom), 31
 (second half), 33 (the utility mosaics), 34, 36, 41 (the breeder's answers), 43, 44, 53 (two), 54, 55.

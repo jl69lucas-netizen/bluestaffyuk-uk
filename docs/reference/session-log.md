@@ -1304,11 +1304,15 @@ location-page remainder; and added 59–75.
     the gate must print "stub — no verbatim set" rather than "0 problems". Also: `facts --extract`
     on an unbuilt city ends in a raw FileNotFoundError.
 
-75. **Two published Artifacts are one script line behind (close-out, the controller's).** The
-    review-minors task changed `scripts/build_report_artifact.py`'s copy script (it now un-escapes
-    `<\/script` before rendering or copying, `fce3070`). That commit regenerated the Foundation gate
-    report's HTML (`docs/artifacts/bsuk-foundation-gate-report.html`, one line), but the published
-    Foundation report still carries the old line. The breeder's question sheet
-    (`docs/artifacts/bsuk-questions-for-lisa.html`, https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH)
-    was not regenerated: it is rebuilt with the same builder, committed, and republished. **Open**
-    until the controller republishes both at their own URLs.
+75. **DONE 2026-09-25 (close-out, the controller's) — the Artifact pages carry the builder's
+    current script line.** The review-minors task changed `scripts/build_report_artifact.py`'s copy
+    script (it now un-escapes `<\/script` before rendering or copying, `fce3070`), and that commit
+    regenerated the Foundation gate report's HTML (`docs/artifacts/bsuk-foundation-gate-report.html`,
+    one line); rebuilt again at close-out, it is unchanged. The breeder's question sheet
+    (`docs/artifacts/bsuk-questions-for-lisa.html`) had not been regenerated; the close-out rebuilt
+    it with Task R6's command (one line changed) in the commit that recorded the close-out's
+    Artifact URLs, and the controller republished it at
+    https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH right after that commit, together with the
+    gate report (https://claude.ai/artifact/YHsi2sEDq1uUpgYsQTjUdU). No Artifact URL for the
+    Foundation report is recorded in the repo, so it had nothing to republish; a published copy,
+    if one exists, is republished from the committed HTML.
