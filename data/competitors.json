@@ -528,7 +528,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -545,7 +545,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Judged from the URL only (a petslist/dog/… listing page); the result carried no title or snippet."
     },
     {
@@ -564,7 +564,7 @@
       ],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -583,7 +583,7 @@
       ],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {

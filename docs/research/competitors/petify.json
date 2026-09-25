@@ -1,0 +1,164 @@
+{
+ "id": "petify",
+ "root_domain": "petify.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": []
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "city": 80,
+   "listing": 118
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Aberdeen",
+   "Birmingham",
+   "Bristol",
+   "Cardiff",
+   "Cornwall",
+   "Coventry",
+   "Dundee",
+   "Edinburgh",
+   "Essex",
+   "Glasgow",
+   "Hull",
+   "Inverness",
+   "Leeds",
+   "Leicester",
+   "Liverpool",
+   "London",
+   "Manchester",
+   "Middlesbrough",
+   "Nottingham",
+   "Oxford",
+   "South Yorkshire",
+   "Sunderland",
+   "Wolverhampton",
+   "York"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "WebSite",
+   "ItemList",
+   "SiteNavigationElement",
+   "Organization",
+   "ImageObject",
+   "ContactPoint"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.petify.uk/",
+    "title": "Petify | Puppies for sale, Dogs for sale, Kittens for sale in the UK",
+    "h1": "Dogs and cats for sale, adoption and studs",
+    "h2": [
+     "Read our latest dog & cat articles, guides & resources",
+     "Cat leash training",
+     "Puppy training",
+     "How to tell if your puppy is unwell?",
+     "How to safely introduce your new dog to your resident dog",
+     "Cat treats",
+     "Dog treats",
+     "Puppy farming and how to avoid supporting them",
+     "Heatstroke in cats"
+    ]
+   },
+   {
+    "url": "https://www.petify.uk/dogs-for-stud/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier dogs for stud | Petify",
+    "h1": "",
+    "h2": []
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": false,
+   "health_tests_named": [],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1035,
+   "url_count": 164,
+   "h2_per_page": {
+    "https://www.petify.uk/": 9,
+    "https://www.petify.uk/dogs-for-stud/staffordshire-bull-terrier": 0
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the Map list holds no article URL, so no post was a key page"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "no post URLs in the Map list and no post fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the Map list holds no article URL, so no post was a key page"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 14,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£400",
+    "£1,350"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Petify is an all-pet advert board whose Staffy hubs are thin search shells: its Staffy stud page listed no adverts and carried no breed text, and the site's own pages show no licence, health-test or review proof. BSUK can beat it on the Liverpool search it ranks for with a real Liverpool page backed by one breeder's visible proof and a direct way to enquire."
+}

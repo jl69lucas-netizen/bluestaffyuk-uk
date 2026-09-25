@@ -1,0 +1,189 @@
+{
+  "id": "ukpets",
+  "root_domain": "ukpets.com",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "blue staffies",
+      "blue staffordshire bull terrier",
+      "blue staffy",
+      "kc registered blue staffie",
+      "kc registered staffordshire bull terrier",
+      "staffie for sale",
+      "staffordshire bull terrier blue",
+      "staffordshire bull terrier dogs and puppies",
+      "staffordshire bull terrier pups for sale"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "blog": 26,
+      "breed-guide": 8,
+      "city": 150,
+      "listing": 378
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": [
+      "Birmingham",
+      "Bristol",
+      "Cardiff",
+      "Coventry",
+      "Dundee",
+      "Edinburgh",
+      "Glasgow",
+      "Hull",
+      "Leeds",
+      "Leicester",
+      "Liverpool",
+      "London",
+      "Manchester",
+      "Nottingham",
+      "Oxford",
+      "Sunderland",
+      "Wolverhampton",
+      "York"
+    ]
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "Organization",
+      "Article",
+      "WebPage",
+      "ImageObject",
+      "Person"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.ukpets.com/",
+        "title": "Buy Puppies & Kittens from Trusted UK Breeders | UKPets",
+        "h1": "It's a Pet's life!",
+        "h2": []
+      },
+      {
+        "url": "https://www.ukpets.com/dogs-for-stud/staffordshire-bull-terrier",
+        "title": "Staffordshire Bull Terrier Dogs and Puppies For Stud in the UK",
+        "h1": "Staffordshire Bull Terrier Dogs and Puppies For Stud in the UK",
+        "h2": []
+      },
+      {
+        "url": "https://www.ukpets.com/for-sale/dogs/295539-white-staffordshire-bull-terrier-dundee",
+        "title": "White Staffordshire bull terrier | UKPets",
+        "h1": "White Staffordshire bull terrier",
+        "h2": []
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": true,
+      "health_tests_named": [
+        "L-2HGA",
+        "HC-HSF4"
+      ],
+      "vet_checks_mentioned": true,
+      "breeding_since_as_worded": null,
+      "town": null,
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 0
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 431,
+      "url_count": {
+        "status": "NOT FETCHED",
+        "reason": "map truncated at 500"
+      },
+      "h2_per_page": {
+        "https://www.ukpets.com/": 0,
+        "https://www.ukpets.com/dogs-for-stud/staffordshire-bull-terrier": 0,
+        "https://www.ukpets.com/for-sale/dogs/295539-white-staffordshire-bull-terrier-dundee": 0
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 25,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "no dated post URL in the Map list and no post fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 14,
+      "alt_text": "descriptive",
+      "alt_missing": 0,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [
+        "phone",
+        "email",
+        "visit"
+      ],
+      "prices_shown": true,
+      "price_amounts_as_printed": [
+        "£100",
+        "£150",
+        "£200",
+        "£220",
+        "£250",
+        "£260",
+        "£300",
+        "£350",
+        "£450",
+        "£500",
+        "£600",
+        "£650",
+        "£700",
+        "£800",
+        "£1,200"
+      ],
+      "deposit_terms": "the site itself takes no deposit and warns buyers never to pay one online before viewing; one stud advert asks for a £250 deposit at mating when a pick of the litter is the fee, returned when the puppy is collected",
+      "steps_to_enquire": null,
+      "urgency_signals": []
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "UKPets ranks with free classified adverts, not breeder pages: its Dundee pick is a private rehoming advert for an adult Staffy first posted in 2023 and still live, its Staffy listing in the Map list is a stud board, and the site itself says it does not verify its advertisers. BSUK can beat it with a breeder's own page that shows current litters, named health results, a clear price and a direct enquiry."
+}
