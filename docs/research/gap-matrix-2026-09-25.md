@@ -28,7 +28,7 @@ Registry entries: 21
 | staffie puppies for sale | 2/19 | 2 | no | low |
 | staffordshire bull terrier breeder | 2/19 | 2 | yes | — |
 | staffordshire bull terrier dogs and puppies | 2/19 | 2 | yes | — |
-| staffordshire bull terrier in the uk | 2/19 | 2 | no | low |
+| staffordshire bull terrier in the uk | 2/19 | 2 | yes | — |
 | staffordshire bull terrier pups for sale | 2/19 | 2 | no | low |
 | staffy pups for sale | 2/19 | 2 | yes | — |
 | staffy x puppies | 2/19 | 2 | no | low |
@@ -54,7 +54,7 @@ Registry entries: 21
 | blue staffie puppies in essex | 1/19 | 2 | no | low |
 | blue staffie puppy | 1/19 | 2 | no | low |
 | blue staffordshire bull terrier breeders | 1/19 | 2 | yes | — |
-| blue staffordshire bull terriers | 1/19 | 2 | no | low |
+| blue staffordshire bull terriers | 1/19 | 2 | yes | — |
 | blue staffy puppies for sale | 1/19 | 2 | yes | — |
 | blue staffy puppy | 1/19 | 2 | yes | — |
 | blue staffy x shar pei puppies | 1/19 | 2 | no | low |
@@ -137,7 +137,7 @@ Registry entries: 21
 | staffy ownership in the uk | 1/19 | 2 | no | low |
 | staffy pup for sale | 1/19 | 2 | yes | — |
 | staffy puppies and traditional black staffy | 1/19 | 2 | no | low |
-| staffy puppies in the uk | 1/19 | 2 | no | low |
+| staffy puppies in the uk | 1/19 | 2 | yes | — |
 | staffy puppy's for sale | 1/19 | 2 | no | low |
 | staffy stud owner in the uk | 1/19 | 2 | no | low |
 | staffy x american bulldog puppies | 1/19 | 2 | no | low |
