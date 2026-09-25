@@ -278,5 +278,12 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:37:19Z",
+    "slug": "blue-staffy-puppies-manchester-uk",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
   }
 ]
