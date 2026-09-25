@@ -241,7 +241,7 @@
       "cta": 0,
       "refresh": {
         "axis": "layout",
-        "note": "the interior-utility hero with a small photo mosaic beside the copy in a card, a delta from /privacy-policy-uk/'s title panel and /thank-you-blue-staffy-puppies-journey/'s full-bleed photo."
+        "note": "the interior-utility hero H-UT1, a small photo mosaic right of the copy in a card, shared with /privacy-policy-uk/ and /thank-you-blue-staffy-puppies-journey/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's mosaic it carries no figure tiles."
       }
     },
     {
@@ -278,7 +278,7 @@
       ],
       "refresh": {
         "axis": "container",
-        "note": "the counter C-UT1, one flush line in a card beside the heading with the labels above, shared with /thank-you-blue-staffy-puppies-journey/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's flush line it sits in a card."
+        "note": "the counter C-UT1, one flush line in a card beside the heading with the labels above, shared with /thank-you-blue-staffy-puppies-journey/ by the user's exemption (working rule 16, 2026-09-23); unlike the homepage's ruled columns it is one flush line, and it sits in a card."
       },
       "keywords": {
         "primary": [],
@@ -1029,7 +1029,7 @@
       "top": "H-UT1",
       "why-write": "S1"
     },
-    "record_hash": "9fb9f2f8870d5806b7297600f1e368cf90c06cdf74889ece0b4ab55f9e4c5358",
+    "record_hash": "d4cde210c216cd0a1c4571818a1e58b2c92da92eb0fedf70f24773cb332c1416",
     "tuple_before": {
       "hero": "",
       "dial": "dial-s2",
@@ -1047,12 +1047,20 @@
         "What to send:"
       ]
     },
-    "reapproved_at": "2026-09-25T00:54:51Z",
+    "reapproved_at": "2026-09-25T01:12:13Z",
     "reapprovals": [
       {
         "at": "2026-09-25T00:54:51Z",
         "reason": "Known Issue 33 (project 5 readiness, R12): the hero and counter refresh notes described the arrangements the rule-16 re-board offered and the breeder did not pick; they now name the picked H-UT1 / C-UT1 and the user's exemption of the three utility pages from rule 16 (2026-09-23). Wording only: no pick, figure, source, menu or section moved.",
         "changed_paths": [
+          "/sections/1/refresh/note"
+        ]
+      },
+      {
+        "at": "2026-09-25T01:12:13Z",
+        "reason": "Known Issue 33 (project 5 readiness, R12 review): the refresh notes still contrasted the utility hero with the privacy and thank-you heroes the breeder did not pick, and the C-UT1 counter with a homepage flush line the homepage no longer uses (its counter is C-HM2, ruled columns); they now name the picked H-UT1 / C-UT1, the user's exemption of the three utility pages from rule 16 (2026-09-23) and the homepage's ruled columns. Wording only: no pick, figure, source, menu or section moved.",
+        "changed_paths": [
+          "/sections/0/refresh/note",
           "/sections/1/refresh/note"
         ]
       }
