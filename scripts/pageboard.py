@@ -1410,6 +1410,22 @@ def pick_in_force(board, sid):
     return None
 
 
+def _rule16_judges(board):
+    """A draft and a record not yet under rule 16 (no `meta.layout_type`) are not judged."""
+    meta = board.get("meta") or {}
+    return bool(meta.get("layout_type")) and meta.get("status") != "draft"
+
+
+def rule16_judged(boards, board=None):
+    """The slugs rule 16 judges in `boards` — with `board`, if given, standing in for its own
+    file, as the gate judges it. The gate prints this count: a gate that judged no record
+    has examined nothing, and 0 FAIL beside it is not a pass."""
+    corpus = dict(boards)
+    if board is not None:
+        corpus[board["meta"]["slug"]] = board
+    return [slug for slug, b in sorted(corpus.items()) if _rule16_judges(b)]
+
+
 def shared_per_page_picks(boards):
     """[(shape, style id, [slugs])] for every hero or counter arrangement two pages share.
 
@@ -1418,8 +1434,7 @@ def shared_per_page_picks(boards):
     an exempt page sharing with any other page is reported like any pair."""
     seen = {}
     for slug, board in sorted(boards.items()):
-        meta = board.get("meta") or {}
-        if not meta.get("layout_type") or meta.get("status") == "draft":
+        if not _rule16_judges(board):
             continue
         for sec in board.get("sections", []):
             if sec.get("shape") not in PER_PAGE_SHAPES:

@@ -319,8 +319,13 @@ def rule16_refusals(old_board, new_board, boards):
     """Working rule 16 at the moment a pick becomes the approval: one message for each hero or
     counter arrangement the approved record would share that the record did not already share.
     A share that was already there is left to board_gate.py to FAIL — refusing it here would
-    make re-running an approval impossible for a reason the new pick did not cause."""
-    before = {(shape, pick) for shape, pick, _ in PB.rule16_shares(old_board, boards)}
+    make re-running an approval impossible for a reason the new pick did not cause.
+
+    "Already there" means under a LIVE approval. A re-boarded record has `approval: null` and
+    carries its old picks in `approval_previous`; its carried share is the one the re-board
+    exists to end, so re-picking it is a new share and is refused."""
+    before = (set() if old_board.get("approval") is None
+              else {(shape, pick) for shape, pick, _ in PB.rule16_shares(old_board, boards)})
     return [PB.rule16_message(shape, pick, others)
             for shape, pick, others in PB.rule16_shares(new_board, boards)
             if (shape, pick) not in before]

@@ -146,7 +146,39 @@ def test_board_gate_cli_prints_the_rule16_fail_and_exits_1(monkeypatch, capsys):
     out = capsys.readouterr().out
     assert e.value.code == 1, out
     assert "FAIL rule16-shared" in out and "hero H-GD3 is already worn by a" in out, out
+    assert "rule 16: 2 records judged" in out.splitlines(), out
     assert out.rstrip().endswith("1 FAIL · 0 WARN"), out
+
+
+def test_board_gate_cli_says_when_rule16_judged_nothing(monkeypatch, capsys):
+    """A gate that examines nothing is not a pass (bsuk-gate-integrity): with every record a
+    draft, the rule-16 line says so instead of printing a bare zero beside 0 FAIL."""
+    import pytest
+    import board_gate as BG
+    boards = {"a": named("a", "H-GD3", status="draft"), "b": named("b", "H-GD3", status="draft")}
+    board = dict(boards["b"], assets=[])
+    monkeypatch.setattr(PB, "load_board", lambda slug: board)
+    monkeypatch.setattr(PB, "load_all_boards", lambda: boards)
+    monkeypatch.setattr(PB, "load_ontology", lambda: {})
+    monkeypatch.setattr(PB, "load_ledger", lambda: {"pages": {}})
+    monkeypatch.setattr(PB, "live_headings", lambda: {})
+    monkeypatch.setattr(PB, "gate_findings", lambda *a, **k: [])
+    monkeypatch.setattr(PB, "all_headings", lambda b: [])
+    monkeypatch.setattr(sys, "argv", ["board_gate.py", "b"])
+    for s in board["sections"]:
+        s.setdefault("entities", [])
+    with pytest.raises(SystemExit) as e:
+        BG.main()
+    out = capsys.readouterr().out
+    assert e.value.code == 0, out
+    assert "rule 16: 0 records judged — examined nothing, not a pass" in out.splitlines(), out
+
+
+def test_rule16_judged_counts_what_the_gate_judges():
+    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD1", status="draft"),
+              "c": named("c", "H-GD2", layout=None)}
+    assert PB.rule16_judged(boards) == ["a"]
+    assert PB.rule16_judged(boards, named("b", "H-GD1")) == ["a", "b"]
 
 
 def test_every_real_record_passes_the_rule16_gate():
@@ -171,8 +203,20 @@ def test_approval_does_not_refuse_a_share_that_was_already_there():
     # A share the record already had is the gate's to fail, not a new pick's to refuse:
     # re-running an approval must not become impossible because of an older finding.
     import board_approve as BA
-    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD3")}
-    assert BA.rule16_refusals(boards["b"], named("b", "H-GD3"), boards) == []
+    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD3", live={"top": "H-GD3"})}
+    assert BA.rule16_refusals(boards["b"], named("b", "H-GD3", live={"top": "H-GD3"}), boards) == []
+
+
+def test_a_reboarded_page_may_not_repick_the_arrangement_it_was_reboarded_to_leave():
+    # A re-board clears the live approval and carries the old picks in `approval_previous`;
+    # the carried H-GD3 is the share the re-board exists to END, not one the page may keep.
+    import board_approve as BA
+    boards = {"a": named("a", "H-GD3"),
+              "b": named("b", None, prev={"top": "H-GD3"}, status="boarded")}
+    assert PB.pick_in_force(boards["b"], "top") == "H-GD3"
+    assert BA.rule16_refusals(boards["b"], named("b", "H-GD3", live={"top": "H-GD3"}), boards) == [
+        "hero H-GD3 is already worn by a; re-board one of them (working rule 16)"]
+    assert BA.rule16_refusals(boards["b"], named("b", "H-GD1", live={"top": "H-GD1"}), boards) == []
 
 
 def test_approval_lets_the_utility_pages_share_with_each_other():

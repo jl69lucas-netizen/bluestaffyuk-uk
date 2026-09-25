@@ -31,7 +31,9 @@ def main():
         f = PB.gate_findings(board, ont, ledger, live, stage=stage)
         # Working rule 16's uniqueness half needs every other record, which gate_findings()
         # (pure over one record) never reads.
-        f += PB.rule16_findings(board, PB.load_all_boards())
+        boards = PB.load_all_boards()
+        f += PB.rule16_findings(board, boards)
+        judged = PB.rule16_judged(boards, board)
     except PB.BoardError as e:
         print(f"board-gate ERROR {e}")
         sys.exit(2)
@@ -46,6 +48,9 @@ def main():
     # compare against. Said out loud so an empty ledger cannot be read as a clean gate.
     if not ledger.get("pages"):
         print("ledger: empty — ledger-* families examined 0, not a pass")
+    # Rule 16 is judged across records, so its count is records, not this record's sections.
+    print(f"rule 16: {len(judged)} records judged" if judged
+          else "rule 16: 0 records judged — examined nothing, not a pass")
     for x in f:
         print(f"  {x['sev']:4s} {x['check']:24s} {x['msg']}")
     fails = [x for x in f if x["sev"] == "FAIL"]
