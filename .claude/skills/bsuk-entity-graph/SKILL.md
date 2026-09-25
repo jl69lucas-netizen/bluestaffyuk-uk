@@ -10,7 +10,7 @@ scored connectivity. Never keyword analysis — `keyword-cluster` and `@bsuk-key
 own that, and they answer a different question.
 
 **Where this sits.** `.claude/skills/bsuk-entity-agent/SKILL.md` is the passive **catalog** (vocabulary).
-`@bsuk-entity-incorporation-agent` is the **writer** (injects entities into prose). This
+`@bsuk-seo-content-writer` is the **writer** (injects entities into prose, `entity-4-move-loop`). This
 skill is the **analyzer** — it builds and scores the graph, finds what is missing, and
 hands both of the others a work list they can act on.
 
@@ -28,7 +28,7 @@ identical confidence. Each edge carries a state:
 
 | State | Meaning |
 |---|---|
-| `ASSERTED` | Backed by the Verified-Claim Ledger or a `data/*.json` file |
+| `ASSERTED` | Backed by a proven row of `data/quality/evidence-ledger.json` or a `data/*.json` file |
 | `PROPOSED` | Extracted from prose, not yet ledger-backed → a **finding**, never a fact |
 | `BLOCKED` | Hits the §3c blacklist → hard FAIL on the page |
 
@@ -45,7 +45,7 @@ pages, nodes, edges — and refuse to report a run that examined zero. Read
 `.claude/skills/bsuk-gate-integrity/SKILL.md` before acting on any number this skill produces.
 
 **0d. Never fabricate a competitor's graph.** Un-fetched is `NOT FETCHED`, never inferred.
-The fetch ladder is Firecrawl → WebFetch with UA retry → Playwright → `research-recency`.
+The fetch order is `curl` → WebFetch with a browser UA → a headless browser → Firecrawl last, because it spends the user's credits (`.claude/skills/bsuk-query-augmentation/SKILL.md`, Step 3).
 
 **0e. Terminate deterministically.** The source spec says "continue until complete."
 Use the closed type and predicate taxonomies below; genuinely new items go to
@@ -62,13 +62,13 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 
 | Class | Types |
 |---|---|
-| **Organism** | Species (*Canis lupus familiaris*, *P. e. blue-brindle*) · Variant (Blue, Blue-Brindle) · Individual Puppy (Roys, Amie, Elad, Evie, Jins, Jeni, Maxy) · Parent Pair (James×Lois, Levi×Rily) |
-| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Lab (Canine Biotech) · Carrier (Delta, United, American) · Regulator (LICENCE_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER, DEFRA-approved transport) |
-| **Place** | Country · State · City · Kennel (Carlisle) · Airport |
-| **Commerce** | Price · Offer · Guarantee · Delivery Option · Payment Term · Availability State |
-| **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA/PCR certificate · Health record · Whelp certificate · Vet record |
-| **Health** | Condition (L-2-HGA, Polyomavirus, hereditary cataract) · Screening (PCR) · Nutrient (UV-B/D3) · Diet · Pellet brand |
-| **Behavior** | Temperament ability · Bonding · Plucking · Socialization · Training method |
+| **Organism** | Species (*Canis lupus familiaris*) · Breed (Staffordshire Bull Terrier) · Coat colour (each pup's `colour` in `data/puppies.json`) · Individual Puppy (Roman, Byrd, Ince, Vennie, Christa, Cheryl) · Parents (Maggie, the dam; Jones, the sire) |
+| **Organization** | Brand (BlueStaffyUK) · Breeder Person (Lisa Bright) · Registry (The Royal Kennel Club) · Transport (DEFRA-approved transport) · Regulator (LICENCE_CLAIM_PLACEHOLDER) |
+| **Place** | Country (UK) · Region · City · Home (Carlisle, Cumbria) |
+| **Commerce** | Price · Offer · Guarantee (`guarantee_days`, null today) · Delivery Option · Payment Term · Availability State |
+| **Documentation** | LICENCE_CLAIM_PLACEHOLDER paperwork · DNA certificate (the parents' L-2-HGA and HC-HSF4 results, `NOT FETCHED`) · Health record · Whelp certificate · Vet record |
+| **Health** | Condition (L-2-HGA, HC-HSF4 hereditary cataract, skin allergies) · Screening (DNA test on both parents) · Vet health check · Vaccination · Diet |
+| **Behavior** | Temperament ability · Bonding · Bite inhibition · Socialization · Training method |
 | **Method** | The NOT FETCHED — the breeder has not named a house method · The Carlisle Socialization Method |
 | **Concept** | Comparison topic · Educational concept · Buyer objection · Trust signal · Legal concept |
 | **Buyer** | Customer · Family archetype (CLEO/REX/NOVA/SAGE/IRIS) · Review |
@@ -77,7 +77,7 @@ Promote the catalog in `.claude/skills/bsuk-entity-agent/SKILL.md` into a typed 
 
 Closed set: `IS_A · SUBSPECIES_OF · HAS · PART_OF · BELONGS_TO · LOCATED_IN · OWNED_BY ·
 RAISED_BY · BRED_FROM · CREATED_BY · PROVIDED_BY · SUPPORTED_BY · TRAINED_WITH ·
-PURCHASED_BY · SHIPS_TO · PRICED_AT · GUARANTEED_FOR · SCREENED_FOR · CERTIFIED_BY ·
+PURCHASED_BY · SHIPS_TO · PRICED_AT · GUARANTEED_FOR (`guarantee_days`) · SCREENED_FOR · CERTIFIED_BY ·
 DOCUMENTED_BY · RELATED_TO · SIMILAR_TO · DIFFERENT_FROM · BETTER_THAN · COMPARES_WITH ·
 SUITABLE_FOR · INCLUDES · EXCLUDES · CAUSES · PREVENTS · DEPENDS_ON · LEADS_TO ·
 DESCRIBES · EXPLAINS · MEASURES · UNCLASSIFIED`.
@@ -102,11 +102,11 @@ alt | link | data-file) · authorization · first_seen_section · owning_page`.
 3. **Tables** — the densest relationship source on comparison and pricing pages; each row
    is usually one predicate applied across two entities.
 4. **Body prose** — subject–predicate–object triples.
-5. **Image alts + captions** — often carry entities the prose omits (§3 of
-   `bsuk-visual-intelligence` verbalizes these).
+5. **Image alts + captions** — often carry entities the prose omits (the source repo's
+   visual-intelligence skill verbalized these; not ported — source repo only, Known Issue 44).
 6. **Internal links** — realized `RELATED_TO` edges; anchor text names the relationship.
-7. **`data/*.json`** — `price-matrix`, `financial-entities`, `litter-inventory`,
-   `locations`, `competitors`, `case-studies` — the authorization source.
+7. **`data/*.json`** — `price-matrix`, `puppies`, `settings`, `faq`, `reviews`,
+   `locations`, `competitors` — the authorization source.
 
 ### 2b. Hand the graph to graphify
 
@@ -114,7 +114,7 @@ alt | link | data-file) · authorization · first_seen_section · owning_page`.
 /graphify <corpus-path> --directed          # preserves source→target
 /graphify <path> --mode deep                # richer inferred edges
 /graphify query "which page owns LICENCE_CLAIM_PLACEHOLDER documentation?"
-/graphify path "Blue Staffy" "72-hour health guarantee"
+/graphify path "Blue Staffy" "L-2-HGA"
 /graphify <path> --neo4j                    # cypher export
 ```
 
@@ -145,14 +145,14 @@ LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER or NOT FETCHED.
 
 | Predicate | Correct value | Wrong value seen in the wild |
 |---|---|---|
-| `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER **LEGAL_CLAIM_PLACEHOLDER** (CoP17, effective Jan 2017) | "LEGAL_CLAIM_PLACEHOLDERI" |
-| `PRICED_AT` (Blue) | **£1,500–£1,700** — the bonded pair sets the ceiling | a flat "NOT FETCHED" |
-| `GUARANTEED_FOR` | **72-hour** or **"3-day"** — both correct (plus the 24-hour window) | — |
+| `CERTIFIED_BY` | LICENCE_CLAIM_PLACEHOLDER — no licence or certification is on file until the breeder confirms it | a named licence, council permission or certificate written as fact |
+| `PRICED_AT` | **£1,500** a male · **£1,700** a female (`data/price-matrix.json`) | a flat "NOT FETCHED", or one price for the litter |
+| `GUARANTEED_FOR` | the length in `guarantee_days` (`data/settings.json`) — null today, so no length is written | "72-hour", "3-day" or a 24-hour window (the source repo's) |
 
 **3c. Blacklist — any hit is a hard FAIL on the page, not a low score:**
 `WILD_CAUGHT · IMPORTED_FROM · CAUGHT_IN · SMUGGLED · UNDOCUMENTED_SALE`, or any phrasing
-implying wild capture or illegal trade. Every puppy is home-bred in the UK; Appendix-I
-home-bred puppies are legal to own and transfer domestically with proper paperwork.
+implying wild capture or illegal trade. Every puppy is home-bred in the UK and goes home with
+its paperwork (`data/faq.json` `whyus-paperwork`).
 
 **3d. Brand-owned method nodes.** `The NOT FETCHED — the breeder has not named a house method` and `The Carlisle
 Socialization Method` are first-class entities and the only two approved labels. A page
@@ -213,7 +213,7 @@ readiness (does each section survive being chunked alone?) · AI citation readin
 
 ## 6. Output contract
 
-Save to `sessions/YYYY-MM-DD-entity-graph-<slug>.md`, machine artifacts to
+Save to `docs/superpowers/sessions/<date>-entity-graph-<slug>.md`, machine artifacts to
 `data/graphs/<slug>.json` (or `graphify-out/`).
 
 Executive summary (verdict first) · Entity inventory · Entity classification table (type ·
@@ -229,13 +229,13 @@ FAIL. Ontology fit < 90% = the extractor is broken, not the page.
 
 | Finding | Route to |
 |---|---|
-| Missing entities in copy | `@bsuk-entity-incorporation-agent` (4-Move Loop) |
+| Missing entities in copy | `@bsuk-seo-content-writer` (4-Move Loop) |
 | Vocabulary/catalog additions | `.claude/skills/bsuk-entity-agent/SKILL.md` |
 | Missing/incorrect schema | `bsuk-aeo-pass`, page builder for the type |
 | Missing internal links | `internal-link-agent` (Link-First + Anchor Diversity Ledger) |
 | Cannibalization | `@bsuk-site-hygiene-agent` |
 | Competitor entity gaps | `@bsuk-competitive-keyword-gap-agent` → `@bsuk-content-architect` |
-| Un-verbalized image entities | `bsuk-visual-intelligence` §3 |
+| Un-verbalized image entities | `.claude/skills/image-metadata/SKILL.md` (alt text and captions) |
 | Thin/unnameable community | `section-auditor` |
 
 ---

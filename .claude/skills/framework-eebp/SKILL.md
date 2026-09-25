@@ -39,8 +39,8 @@ P — Purpose:   Close on the buyer's decision/outcome the statement enables
 
 | Entity | Evidence | Benefit | Purpose |
 |---|---|---|---|
-| Blue Brindle Staffy Puppy | Home-raised, KC registered, microchipped | Calm, loyal, adaptable family companion | Helps buyers confidently choose a fully papered Blue Staffy that matches their home and lifestyle. |
-| LICENCE_CLAIM_PLACEHOLDER | Licensed family home in Carlisle, Cumbria | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
+| Blue and White Staffy Puppy | Home-raised, KC registered, microchipped | Calm, loyal, adaptable family companion | Helps buyers confidently choose a fully papered Blue Staffy that matches their home and lifestyle. |
+| LICENCE_CLAIM_PLACEHOLDER | Family home in Carlisle, Cumbria (a licence stays unstated until the breeder confirms it) | Demonstrates breeder transparency | Reduces buyer uncertainty and supports trust during the purchase decision. |
 | Vet Health Check | Veterinary examination before collection | Greater confidence in the puppy's condition | Helps buyers make an informed decision before bringing a Blue Staffy home. |
 
 ## Why EEBP Beats a Plain Feature List (the 5-point payoff)
@@ -63,7 +63,7 @@ Fold the four moves into first-person BlueStaffyUK voice, entity first, purpose 
 
 Rules:
 - **Entity leads the sentence** (also satisfies the Link-First anchor rule when the entity is a link).
-- **Evidence must be Ledger-verified** — only claims in the Verified-Claim Ledger (`bsuk-entity-incorporation-agent.md` + `sessions/2026-06-03-homepage-entity-map.md`). Never invent a test, cert, or count.
+- **Evidence must be ledger-verified** — only claims `data/quality/evidence-ledger.json` records with a proof on file, and facts in `data/*.json`. A row at proof `NOT FETCHED` (the parents' DNA results today) is not evidence. Never invent a test, cert, or count.
 - **Benefit is buyer-facing**, not seller-facing ("you bring home…" not "we offer…").
 - **Purpose names the decision** the buyer can now make (choose, verify, reserve, rule out, budget).
 - Licensing framing stays accurate: **LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER compliant, mum always seen with the litter at our home.**
@@ -81,7 +81,7 @@ Rules:
 |---|---|
 | Dropped the Evidence step (wrote Entity→Benefit→Purpose) | That's the entity-agent EBP, not EEBP. Add the named, verifiable proof. |
 | Evidence is a marketing adjective ("amazing health") | Evidence must be verifiable and specific ("vet exam before collection"). |
-| Benefit written from seller's side ("we guarantee…") | Rewrite as buyer outcome ("you get…"). |
+| Benefit written from seller's side ("we promise…") | Rewrite as buyer outcome ("you get…"). |
 | Purpose is a restated benefit | Purpose = the decision/action it enables, not the feeling. |
 | Entity buried mid-sentence | Lead with the entity (Link-First + entity-SEO). |
 | Unverifiable claim slipped into Evidence | Cut it or downgrade to Ledger-safe wording. |

@@ -342,6 +342,22 @@ def apply_approval(board, inbox, ont, ledger, canvas_dir=None):
     return {"board": b, "ledger": led, "ontology": o, "changed": changed, "promoted": promoted}
 
 
+def rule16_refusals(old_board, new_board, boards):
+    """Working rule 16 at the moment a pick becomes the approval: one message for each hero or
+    counter arrangement the approved record would share that the record did not already share.
+    A share that was already there is left to board_gate.py to FAIL — refusing it here would
+    make re-running an approval impossible for a reason the new pick did not cause.
+
+    "Already there" means under a LIVE approval. A re-boarded record has `approval: null` and
+    carries its old picks in `approval_previous`; its carried share is the one the re-board
+    exists to end, so re-picking it is a new share and is refused."""
+    before = (set() if old_board.get("approval") is None
+              else {(shape, pick) for shape, pick, _ in PB.rule16_shares(old_board, boards)})
+    return [PB.rule16_message(shape, pick, others)
+            for shape, pick, others in PB.rule16_shares(new_board, boards)
+            if (shape, pick) not in before]
+
+
 # ── re-approval (a controller's post-approval wording fix) ─────────────────────────────────
 #
 # The hashed projection is what a re-approval reports on, because it is what a re-approval
@@ -670,7 +686,12 @@ def main():
     try:
         inbox = json.loads(inbox_path.read_text(encoding="utf-8"))
         inbox = inbox.get("data", inbox) if isinstance(inbox, dict) else inbox   # read_db may wrap it
-        out = apply_approval(PB.load_board(slug), inbox, PB.load_ontology(), PB.load_ledger(), canvas_dir)
+        before = PB.load_board(slug)
+        out = apply_approval(before, inbox, PB.load_ontology(), PB.load_ledger(), canvas_dir)
+        shares = rule16_refusals(before, out["board"], PB.load_all_boards())
+        if shares:
+            raise PB.BoardError("this approval would give two pages one arrangement:\n  - "
+                                + "\n  - ".join(shares))
         # PB.save_board() guards this, but the board's write has to be ordered with the
         # other two, so the guard is restated here and the write is done below.
         if out["board"]["meta"]["slug"] != slug:

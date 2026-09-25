@@ -741,7 +741,7 @@
     "src": ".claude/agents/cag-framework-agent.md",
     "dst": ".claude/agents/bsuk-framework-agent.md",
     "mode": "rebase",
-    "notes": "page builder; competitor deep-dive re-based to UK Staffy keywords; data/competitors.json not ported"
+    "notes": "page builder; competitor deep-dive re-based to UK Staffy keywords; reads data/competitors.json (competitor intelligence build, 2026-09-23)"
   },
   {
     "src": ".claude/agents/cag-interactive-component.md",
@@ -759,7 +759,7 @@
     "src": ".claude/agents/cag-about-builder.md",
     "dst": ".claude/agents/bsuk-about-builder.md",
     "mode": "rebase",
-    "notes": "page builder; breeder story = Lisa Bright, Glasgow; USDA/CITES -> LICENCE_CLAIM_PLACEHOLDER"
+    "notes": "page builder; breeder story = Lisa Bright, Carlisle, Cumbria (Known Issue 16); USDA/CITES -> LICENCE_CLAIM_PLACEHOLDER"
   },
   {
     "src": ".claude/agents/cag-seo-content-writer.md",
@@ -789,7 +789,7 @@
     "src": ".claude/agents/cag-content-audit-agent.md",
     "dst": ".claude/agents/bsuk-content-audit-agent.md",
     "mode": "rebase",
-    "notes": "content; audit phases kept; competitor-intel handoff marked deferred to project 6"
+    "notes": "content; audit phases kept; competitor list from data/competitors.json and the intel reports (competitor intelligence build, 2026-09-23)"
   },
   {
     "src": ".claude/agents/cag-image-pipeline.md",
@@ -873,7 +873,7 @@
     "src": ".claude/agents/cag-trust-signals-agent.md",
     "dst": ".claude/agents/bsuk-trust-signals-agent.md",
     "mode": "rebase",
-    "notes": "ops/QA; review widgets kept but every credential claim is LICENCE_CLAIM_PLACEHOLDER; data/reviews.json not ported"
+    "notes": "ops/QA; review widgets kept but every credential claim is LICENCE_CLAIM_PLACEHOLDER; the site's reviews live in data/reviews.json (project 3 kit), which this agent does not read yet"
   },
   {
     "src": ".claude/agents/cag-footer-standardizer.md",
@@ -897,7 +897,7 @@
     "src": ".claude/agents/cag-rank-tracker.md",
     "dst": ".claude/agents/bsuk-rank-tracker.md",
     "mode": "rebase",
-    "notes": "analytics; data-guarded and competitor list not ported; inactive until project 6"
+    "notes": "analytics; data-guarded; reads data/competitors.json (competitor intelligence build, 2026-09-23); inactive until project 6"
   },
   {
     "src": ".claude/skills/cag-gate-integrity/SKILL.md",
@@ -999,7 +999,7 @@
     "src": ".claude/skills/cag-entity-agent/SKILL.md",
     "dst": ".claude/skills/bsuk-entity-agent/SKILL.md",
     "mode": "rebase",
-    "notes": "system; entity agent re-based to BlueStaffyUK, Lisa Bright and Glasgow"
+    "notes": "system; entity agent re-based to BlueStaffyUK, [BREEDER_NAME] and Carlisle (Known Issue 16)"
   },
   {
     "src": ".claude/skills/cag-entity-graph/SKILL.md",
@@ -1017,7 +1017,7 @@
     "src": ".claude/skills/cag-google-map/SKILL.md",
     "dst": ".claude/skills/bsuk-google-map/SKILL.md",
     "mode": "rebase",
-    "notes": "system; map embed re-based to 40 Coltmuir Street, Glasgow G22 6LU"
+    "notes": "system; map embed re-based to Carlisle, Cumbria, town-level only (Known Issue 16)"
   },
   {
     "src": ".claude/skills/cag-blog-post/SKILL.md",

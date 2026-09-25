@@ -79,6 +79,7 @@ import sys
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _html import text_of, unescape  # noqa: E402
+from _slugs import built_page, resolve_page  # noqa: E402  (one route convention, shared)
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 
@@ -180,7 +181,20 @@ def migrated_body(slug):
     Two shapes, because the old site had two. A WordPress page is an .astro file whose
     `const body` holds the exported markup as a JSON string. The blog archive
     (blue-staffy-blog-guides) was never a page: it is a markdown entry in the content
-    collection, rendered by the post route, so its body is built from the markdown."""
+    collection, rendered by the post route, so its body is built from the markdown.
+
+    A city page (route uk-locations/<slug>) was never a page file either: one route,
+    src/pages/uk-locations/[slug].astro, rendered each row of data/locations.json, so its
+    body is that row's `body_html` in the same frozen commit."""
+    key, route = resolve_page(slug, ROOT)
+    if route.startswith("uk-locations/"):
+        rows = _show("data/locations.json")
+        if rows is None:   # the git read failed: say so, rather than blame the city
+            raise SystemExit(f"{slug}: cannot read data/locations.json at {MIGRATED} (git show failed)")
+        row = next((r for r in json.loads(rows) if r.get("slug") == key), None) if rows else None
+        if row is None:
+            raise SystemExit(f"{slug}: no row in data/locations.json at {MIGRATED}")
+        return row.get("body_html", "")
     page = "src/pages/index.astro" if slug == "index" else f"src/pages/{slug}/index.astro"
     src = _show(page)
     if src is not None:
@@ -198,7 +212,8 @@ def migrated_body(slug):
 
 def page_title(slug):
     """The page-map row's title for this slug, or "" when the map has no row."""
-    url = "/" if slug == "index" else f"/{slug}/"
+    route = resolve_page(slug, ROOT)[1]
+    url = f"/{route}/" if route else "/"
     pages = json.loads((ROOT / "data/page-map.json").read_text(encoding="utf-8"))["pages"]
     for p in pages:
         if p.get("url") == url:
@@ -475,21 +490,26 @@ def applicable_slugs():
 
 
 def dist_html(slug):
-    return ROOT / "dist" / ("" if slug == "index" else slug) / "index.html"
+    """dist/<route>/index.html — a city page's bare slug is built under uk-locations/."""
+    return built_page(slug, ROOT)
+
+
+def verbatim_file(slug):
+    """data/verbatim/<key>.json — the bare slug for a page-map row (scripts/_slugs.py)."""
+    return ROOT / "data" / "verbatim" / f"{resolve_page(slug, ROOT)[0]}.json"
 
 
 def load_record(slug):
-    p = ROOT / f"data/boards/{slug}.json"
+    p = ROOT / "data" / "boards" / f"{resolve_page(slug, ROOT)[0]}.json"
     return json.loads(p.read_text(encoding="utf-8")) if p.exists() else {}
 
 
 def do_extract(slug):
     vset = extract(migrated_body(slug), target_keywords(slug))
-    out = ROOT / "data/verbatim"
-    out.mkdir(parents=True, exist_ok=True)
-    (out / f"{slug}.json").write_text(
-        json.dumps(vset, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
-    print(f"extracted verbatim set for {slug}: "
+    out = verbatim_file(slug)
+    out.parent.mkdir(parents=True, exist_ok=True)   # data/verbatim/, and any nested key's folder
+    out.write_text(json.dumps(vset, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"extracted verbatim set for {resolve_page(slug, ROOT)[0]}: "
           f"h1 {'1' if vset['h1'] else '0'}, {len(vset['headings'])} headings, "
           f"{len(vset['openings'])} openings, {len(vset['faq_questions'])} faq questions, "
           f"{len(vset['alts'])} alts")
@@ -500,7 +520,7 @@ def do_check():
     slugs = applicable_slugs()
     problems = 0
     for slug in slugs:
-        vset = json.loads((ROOT / f"data/verbatim/{slug}.json").read_text(encoding="utf-8"))
+        vset = json.loads(verbatim_file(slug).read_text(encoding="utf-8"))
         html = dist_html(slug).read_text(encoding="utf-8")
         examined, changed, misses = judge(vset, html, load_record(slug))
         for m in misses:

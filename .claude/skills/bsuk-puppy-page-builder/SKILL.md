@@ -69,7 +69,7 @@ real slugs from `data/locations.json`, never the same trio twice).
 | Long-tail (6+ words, conversational) | 15–20 | in headers + opening paragraphs |
 | Branded ("BlueStaffyUK", "Lisa Bright") | 10–15 | |
 | Conversational/voice queries | ~23 | headers + PAA answers |
-| Comparison ("blue vs blue-brindle", "male vs female") | 5–8 | link to the comparison cluster |
+| Comparison ("blue vs brindle", "male vs female") | 5–8 | link to the comparison cluster |
 | Solution ("health-tested", "KC-aware") | 5–10 | |
 | Transactional ("reserve", "deposit", "available now") | ~15 | honest only |
 
@@ -118,10 +118,10 @@ Benefit-Solution / Transactional-Urgency), one marked (Recommended) with why and
 Link-First anchors (sentence START, never mid or end; branded ACTION anchors on CTAs are
 exempt). Internal anchors from the Anchor Diversity Ledger
 (`.claude/skills/internal-link-agent/SKILL.md` — no repeated anchors site-wide). External:
-credible UK authorities (The Kennel Club, the RSPCA, the PDSA, a veterinary school, a
-`gov.uk` welfare page) — cite the specific resource page; a curl 403 is a bot-block, not a
-dead link, so retry with a UA. Internal same-tab, external new-tab + ↗. The external-link
-library is deferred to project 6.
+credible UK authorities (The Kennel Club, the RSPCA, the PDSA, the British Veterinary
+Association's eye scheme, a `gov.uk` welfare page — each a row of `docs/reference/external-link-library.md`) — cite the specific resource page; a curl 403 is a bot-block, not a
+dead link, so retry with a UA. Internal same-tab, external new-tab + ↗. Every external link is
+a row of `docs/reference/external-link-library.md` (a board naming any other URL is refused).
 
 ## 3. Transactional layer (what makes these NOT comparison pages)
 
@@ -145,10 +145,13 @@ library is deferred to project 6.
 5. **Honest scarcity only** — real counts from the data file ("three males still
    available"). No fabricated urgency, testimonials or review counts; a review BSUK has not
    received is NOT FETCHED.
-6. **Enquiry form on every page in the cluster** — `src/components/ContactForm.astro`. Its
-   `puppy` select lists each ACTUAL pup with its price, sourced from `data/puppies.json` and
-   `data/price-matrix.json`, never hardcoded; the delivery question offers exactly the two
-   real options (UK home delivery £200–£350 by distance, or collection in Carlisle).
+6. **Enquiry form on every page in the cluster** — `<ContactFormKit />`
+   (`src/components/kit/ContactFormKit.astro`), mounted once with no props (`idPrefix` exists
+   only for a board preview that renders the form more than once). Its `puppy` select lists
+   every puppy whose `status` is `Available` in `data/puppies.json`, with its sex and
+   `price_gbp`, plus a waiting-list choice — never hardcoded. The form asks no delivery
+   question; where the page states delivery, it is UK home delivery £200–£350 by distance, or
+   collection in Carlisle.
    Contract: `.claude/skills/bsuk-contact-form/SKILL.md`.
 
 ## 4. Build phases

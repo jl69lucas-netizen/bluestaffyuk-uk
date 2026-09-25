@@ -15,12 +15,12 @@ This rule applies to you and every agent you hand off to.
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `docs/superpowers/sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file (see the site-wide **Clarification Checkpoint** rule in `CLAUDE.md` — below gate you ask ONE question, log it to the live brief, and continue; you do not dead-stop)
 
 ---
@@ -54,25 +54,25 @@ Before asking any questions:
 
 1. **Read** `docs/reference/WORKFLOW.md` — understand sprint sequence and current workflow state
 2. **Read** `CLAUDE.md` — understand current project state, known issues, what's next
-3. **Read** `docs/reference/top-pages.md` — get current traffic data (clicks, impressions, positions, LLM Visibility scores)
-4. **Read** `data/structure.json` — check if topical authority map exists
-5. **Read** `docs/reference/site-overview.md` — site facts, stack, deploy flow
+3. **Traffic data** — search-console and analytics pulls are `NOT FETCHED` until project 6 wires them (Known Issue 14); say so rather than guess a click or a position
+4. **Read** `data/page-map.json` — every route, its kind and its headings (the site map a topic belongs to)
+5. **Read** `docs/reference/quick-start.md` — site facts, stack and the task-to-file router
 6. **Run** `ls docs/superpowers/sessions/` via Bash — find the most recent session brief file (if any)
 7. **Read** the most recent session brief — extract the "What's Next" or "Urgency" notes to pre-fill Q13
 8. **Run** `ls docs/research/gap-matrix-*.md 2>/dev/null` via Bash — check if competitor gap matrix exists
 9. **Run** `ls data/keywords/ 2>/dev/null` via Bash — check if keyword fan-out data exists
 
 After steps 4–9, determine sprint readiness:
-- If `data/structure.json` does NOT exist → note that Sprint 1 (Architecture) hasn't run yet
+- If the page has no approved board (`python3 scripts/board_gate.py <slug>` does not pass) → note that the board comes before anything else; `data/page-map.json` only tells a migrated page (listed there) from a brand-new one
 - If `data/competitors.json` is empty or missing → note that Sprint 0 (Intelligence) hasn't run yet
 - If no `docs/research/gap-matrix-*.md` exists → **WARN the user:** "Competitor gap matrix not found. Grill-me answers will be less precise without it. Run `@bsuk-competitor-intel --all` first for best results."
-- If `docs/reference/top-pages.md` has no LLM Visibility column → note that `@bsuk-llm-keyword-intel` hasn't run yet
+- If `docs/research/llm-intel/` has no file for the page's slug → note that `@bsuk-llm-keyword-intel` hasn't run for it (Known Issue 58)
 
 ### Step 10 — Create the live brief NOW (before Q1)
 
 **This is the fix for the #1 failure mode: an interrupted interview must lose nothing.**
 
-Before asking Q1, write the live brief stub to `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md` (today's actual date; if a file for today already exists, append `-2`, `-3`, etc. before `.md`: `YYYY-MM-DD-session-brief-2.md` — the name `bsuk-content-architect` looks for). Write it with the **Status: IN PROGRESS** marker and empty logs:
+Before asking Q1, write the live brief stub to `docs/superpowers/sessions/<date>-session-brief.md` (today's actual date; if a file for today already exists, append `-2`, `-3`, etc. before `.md`: `<date>-session-brief-2.md` — the name `bsuk-content-architect` looks for). Write it with the **Status: IN PROGRESS** marker and empty logs:
 
 ```markdown
 # Session Brief — YYYY-MM-DD
@@ -94,7 +94,7 @@ _(Unresolved items, things to verify, answers that need another data source. Car
 <!-- Synthesized fields below are filled in at finalization, from the Q&A Log above. -->
 ```
 
-Confirm: *"Live brief created at `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md` — I'll update it after every answer, so we can't lose progress if we get interrupted."*
+Confirm: *"Live brief created at `docs/superpowers/sessions/<date>-session-brief.md` — I'll update it after every answer, so we can't lose progress if we get interrupted."*
 
 Only after the file exists do you begin asking questions.
 
@@ -110,7 +110,7 @@ Announce that you've loaded the project context before Q1:
 For each answer:
 1. **Append** the verbatim Q&A to the `## Q&A Log (Verbatim)` section:
    ```markdown
-   **Q6 — Specific Target:** "/uk-locations/staffy-puppies-for-sale-manchester/"
+   **Q6 — Specific Target:** "/uk-locations/blue-staffy-puppies-manchester-uk/"
    ```
 2. **Update** `> **Next question:**` and `> **Last updated:**` in the header.
 3. If the answer settles a decision (framework, AIO approach, component style) → add a line to `## Decisions Log`.
@@ -124,8 +124,8 @@ Use the Write tool to rewrite the file each time (read-modify-write), or append 
 
 Before asking any question, check whether the answer is already on disk. If it is, **read it, state it, and confirm** instead of asking cold:
 - ✅ "Your last brief says the next target is the Manchester location page — picking that up?" (read from `docs/superpowers/sessions/`)
-- ✅ "`structure.json` already has this page under the `/available-puppies/` hub — confirmed?"
-- ❌ "What hub does this page belong to?" (when `structure.json` already says)
+- ✅ "`data/page-map.json` lists this page as a `location` page under `/uk-locations/` — confirmed?"
+- ❌ "What kind of page is this?" (when `data/page-map.json` already says)
 
 Ask the user only for things the repo genuinely cannot tell you: intent, priorities, constraints, today's goal, judgment calls. This keeps the interview short and respectful of what you already loaded in the startup sequence.
 
@@ -138,8 +138,8 @@ Ask the user only for things the repo genuinely cannot tell you: intent, priorit
 **Q1 — Outcome**
 > "What's the single most important business result we need from today's session? Be specific: a page live, a ranking moved, a conversion fixed."
 
-**Q2 — Traffic Reality** *(generate dynamically from top-pages.md)*
-Look at `docs/reference/top-pages.md` and identify the highest-impression page that has a weak position (above 20) OR the page that has clicks but hasn't been redesigned yet. Then ask specifically about it. Example:
+**Q2 — Traffic Reality** *(from search-console data once project 6 wires it; until then from the latest brief and `docs/research/gap-matrix-2026-09-23.md`)*
+Until search-console data exists (Known Issue 14), take the page from the latest session brief or the gap matrix. Once it does, identify the highest-impression page that has a weak position (above 20) OR the page that has clicks but hasn't been redesigned yet. Then ask specifically about it. Example:
 > "Your 'blue staffy puppies for sale' query gets 46 clicks at position 16.2 — is today's goal to push that ranking, redesign the page, or something else?"
 
 If all top pages are healthy, ask about the page with the biggest gap between impressions and clicks (high impressions, low CTR).
@@ -160,15 +160,17 @@ Constraints are the highest-value answers to checkpoint — log every one to bot
 ### Task Layer (narrows to today's specific work — Q6 through Q14)
 
 **Q6 — Specific Target**
-> "What exact page or feature are we building or fixing today? Give me the slug (e.g., /uk-locations/manchester/)."
+> "What exact page or feature are we building or fixing today? Give me the slug (e.g., /uk-locations/blue-staffy-puppies-manchester-uk/)."
 
 After Q6, run the **Workflow Gate Check** before Q7:
 
 ```
 WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
 
-1. Is this page in data/structure.json?
-   - NO → "Before we build, I need to run @bsuk-structure-architect to assign this page a place in the site architecture. Want me to do that first?"
+1. Is there an approved board? `data/boards/<slug>.json` exists AND `python3 scripts/board_gate.py <slug>` passes (build first — it reads dist/; exit 2 means no readable record)
+   - `<slug>` is the bare slug, a city page included: for `/uk-locations/blue-staffy-puppies-manchester-uk/` it is `blue-staffy-puppies-manchester-uk` — the record is `data/boards/<slug>.json` and the gate runs as `python3 scripts/board_gate.py blue-staffy-puppies-manchester-uk` (`own_live_key` in `scripts/pageboard.py` resolves the live route `uk-locations/<slug>` through `data/page-map.json`). Never use `uk-locations/<slug>` as the board key: `scripts/board_gate.py` would look for `data/boards/uk-locations--<slug>.json`
+   - NO → "This page has no approved board, and no page is built without one. The board comes first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`. Want me to start on that first?"
+     `data/page-map.json` only says which kind of page it is: listed there → a migrated page (its facts, and its verbatim set where `data/verbatim/applies.json` lists it, are extracted before any rewrite); not listed → a brand-new page
    - YES → continue
 
 2. Has @bsuk-content-audit-agent been run for this page?
@@ -177,13 +179,13 @@ WORKFLOW GATE CHECK (run silently after Q6, report findings before Q7):
    - YES → continue
 
 3. What is the LLM Visibility score for this keyword?
-   - Check docs/reference/top-pages.md for LLM Visibility column
-   - NOT MEASURED → note: "LLM Visibility hasn't been measured for this keyword. We should run @bsuk-llm-keyword-intel before publishing."
-   - MEASURED → report the score (e.g., "LLM Visibility: 3/10 — BSUK is cited in 1 of 5 AI engines")
+   - Check docs/research/llm-intel/ for a `<slug>-<date>.json` file, and data/queries/<slug>.json for the question file it read (search-console data is NOT FETCHED until project 6, Known Issue 14)
+   - NO FILE → note: "LLM Visibility hasn't been measured for this keyword. We should run @bsuk-llm-keyword-intel before publishing."
+   - FILE → report the score (e.g., "LLM Visibility: 3/10 — BSUK is cited in 1 of 5 AI engines")
 
 4. What is the page's hub page?
-   - Check data/structure.json for parent hub
-   - If hub page doesn't exist yet → flag: "The hub page [/url/] isn't built yet. Hubs should be built before spokes."
+   - The hub comes from the route, since data/page-map.json records each page's `kind`, not a parent: `/uk-locations/<slug>/` → `/uk-locations/`, `/available-puppies/<slug>/` → `/available-puppies/`, a blog post (an entry of `src/content/blog/`, served at `/<slug>/`) → `/blue-staffy-blog-guides/`; any other top-level page has no hub
+   - If the hub has no `src/pages/<hub>/index.astro` yet → flag: "The hub page [/<hub>/] isn't built yet. Hubs should be built before spokes."
 ```
 
 Report the gate findings to the user in one message before asking Q7. **Log every gate flag to `## Open Flags`** — these are exactly the unresolved items a resuming session needs.
@@ -290,11 +292,11 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
 - LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
 - Structure.json Entry: [yes | no → run bsuk-structure-architect first]
-- Hub Page: [/url/ of parent hub | "needs to be built first"]
+- Hub Page: [/<hub>/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
 
 ## Today's Target
-- Page: /slug/
+- Page: /<slug>/
 - Goal: [Q7 — what done looks like]
 - Reader: [Q8 — who they are, what they fear]
 - Benchmark: [Q9 URL or "none given"]
@@ -318,8 +320,8 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 **If audit not done:**
 → `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]`
 
-**If structure.json missing:**
-→ `@bsuk-structure-architect`
+**If there is no approved board (`python3 scripts/board_gate.py <slug>` does not pass):**
+→ the board first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`
 
 **If audit done and ready to build:**
 → SECTION MAP + COMPONENT GATE (list every section → pick component → get approval)
@@ -332,7 +334,7 @@ Below the `<!-- Synthesized fields -->` marker, fill in:
 
 Then flip the header: `> **Status:** READY — interview complete.` and remove the `Next question:` line.
 
-Confirm to user: "Session brief finalized at `docs/superpowers/sessions/YYYY-MM-DD-session-brief.md`."
+Confirm to user: "Session brief finalized at `docs/superpowers/sessions/<date>-session-brief.md`."
 
 ---
 
@@ -344,8 +346,8 @@ Read `CLAUDE.md`. Based on the session answers, identify if any of these section
 |---------|------------------|
 | New constraint discovered | Add/update `## Session Constraints` |
 | New priority page identified | Update priority order in `## Reference Docs` |
-| Something broken flagged | Add to `## Known Issues` (create if absent) |
-| New "what's next" identified | Update `## What's Next` (in `site/content/` CLAUDE.md) |
+| Something broken flagged | Add to `## Known Issues` in `docs/reference/session-log.md` |
+| New "what's next" identified | Update the next-step lines in `docs/reference/session-log.md` |
 
 Show the user exactly what lines you propose to add or change — plain text, not git diff format. Example:
 
@@ -376,15 +378,15 @@ After writing (or skipping) the CLAUDE.md patch, say:
 > **If Sprint 0 not done (no gap matrix):**
 > → Run `@bsuk-competitor-registry` → `@bsuk-competitor-intel --all` → `@bsuk-gsc-analytics` → then re-run grill-me with full data
 >
-> **If structure.json missing:**
-> → Run `@bsuk-structure-architect` — maps the full site architecture before building
+> **If there is no approved board (`python3 scripts/board_gate.py <slug>` does not pass):**
+> → The board first: write the record `data/boards/<slug>.json` (`schemas/board.schema.json`; the page-type builder — for a city page `.claude/skills/bsuk-location-page-builder/SKILL.md` — says what goes in it), `npm run build`, `python3 scripts/build_board_previews.py <slug>`, `python3 scripts/build_page_board.py <slug>`, publish `docs/artifacts/boards/<slug>.html` as an Artifact with the `db` capability, the breeder picks, `Artifact read_db collection="boards" doc_id="<slug>" out_dir="data/boards/inbox"`, then `python3 scripts/board_approve.py <slug>`
 >
 > **If audit not run:**
 > → Run `@bsuk-content-audit-agent /[slug]/ "[keyword]" [PAGE_TYPE]` — 10 minutes, prevents wasted work
 >
 > **If audit done and ready to build:**
 > → SECTION MAP + COMPONENT GATE (mandatory before any writing):
->    List every section Hero → final CTA, assign component + variant per section from `docs/reference/components.md`, get approval — THEN run `@bsuk-angle-agent`
+>    List every section Hero → final CTA, assign a kit component per section from `src/components/kit/_registry.ts` (no variants — the arrangement is the page's board pick, working rule 16), get approval — THEN run `@bsuk-angle-agent`
 >
 > See `docs/reference/WORKFLOW.md` for the full sprint sequence."
 
@@ -402,5 +404,5 @@ Remind the build agent that picks this up: the live brief is the same file it sh
 6. **Never write site files without approval** — show the CLAUDE.md patch and wait for explicit `yes` (the live brief in `docs/superpowers/sessions/` is a working file, not a site file — checkpointing it needs no approval)
 7. **Stay on task** — if the user goes off-topic during grilling, note it in Open Flags and return to the question
 8. **Golden Rule** — you use only Read, Write, and Bash. No MCPs. No external APIs.
-9. **Dynamic questions** — Q2 and Q3 must reference actual data from top-pages.md, not generic placeholders
+9. **Dynamic questions** — Q2 and Q3 must reference actual data, not generic placeholders: search-console data is NOT FETCHED until project 6 (Known Issue 14), so until then cite the latest session brief, `docs/research/gap-matrix-2026-09-23.md` and `data/page-map.json`
 10. **Match depth to scope** — full interview for a page build; `--quick` (3 questions) for a small fix. Don't over-interrogate a one-line change.

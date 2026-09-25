@@ -1,13 +1,14 @@
 {
  "id": "trojanstaffuk",
  "root_domain": "trojanstaffuk.com",
- "analysed_on": "2026-09-23",
+ "analysed_on": "2026-09-25",
  "keywords": {
   "status": "ok",
   "values": [
    "staffy puppies",
    "staffordshire bull terrier breeders",
    "breeders in the uk premium staffy",
+   "uk premium staffy",
    "staffordshire bull terrier puppies",
    "staffy breeders specialising in exceptional blue",
    "breeders focus solely on blue staffies",
@@ -15,31 +16,27 @@
    "blue or black staffordshire bull terrier",
    "staffordshire bull terrier puppies for sale",
    "staffy puppies for sale",
+   "staffy puppies in the uk",
    "blue staffy puppies",
    "staffy puppies and traditional black staffy",
    "puppies and traditional black staffy",
    "puppies and traditional black staffy puppies",
-   "staffy breeders",
-   "staffordshire bull terrier licenced breeders",
-   "blue staffy"
+   "staffy breeders"
   ]
  },
  "page_types": {
   "status": "ok",
   "values": {
-   "about": 4,
-   "blog": 1,
-   "breed-guide": 3,
-   "care-guide": 1,
-   "contact": 2,
-   "health": 1,
-   "listing": 6
+   "about": 3,
+   "blog": 19,
+   "contact": 1,
+   "listing": 1
   }
  },
  "cities": {
   "status": "ok",
   "values": [
-   "Birmingham"
+   "Manchester"
   ]
  },
  "schema_types": {
@@ -57,7 +54,7 @@
  },
  "pages": {
   "status": "ok",
-  "fetched_on": "2026-09-23",
+  "fetched_on": "2026-09-25",
   "values": [
    {
     "url": "https://www.trojanstaffuk.com/",
@@ -92,43 +89,12 @@
     ]
    },
    {
-    "url": "https://www.trojanstaffuk.com/how-we-roll",
-    "title": "Trojanstaff UK | How We Roll",
-    "h1": "Trojanstaff UK Staffordshire bull terrier  licenced breeders",
-    "h2": [
-     "How We Roll",
-     "Let's Chat!"
-    ]
-   },
-   {
-    "url": "https://www.trojanstaffuk.com/about-the-staffordshire-bull-terrier",
-    "title": "Trojanstaff UK | The Staffordshire bull terrier",
-    "h1": "About the Staffordshire bull terrier",
-    "h2": [
-     "History",
-     "Above and below are some of the classic dogs of their time"
-    ]
-   },
-   {
-    "url": "https://www.trojanstaffuk.com/contact",
-    "title": "Trojanstaff UK | Contact us",
-    "h1": "Stud enquiries, Puppy Waiting List or K9 Fertility Service",
-    "h2": [
-     "Contact Us",
-     "Let's Chat!"
-    ]
-   },
-   {
-    "url": "https://www.trojanstaffuk.com/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide",
-    "title": "Staffordshire Bull Terrier Health & Wellbeing: A Comprehensive Guide",
+    "url": "https://www.trojanstaffuk.com/about-1",
+    "title": "Ch Gun MM Power at Trojanbulls | Trojanstaff UK",
     "h1": "",
     "h2": [
-     "Diet and Nutrition for a Thriving Staffy",
-     "Exercise and Physical Activity: Building a Strong and Happy Staffy",
-     "Mental Enrichment and Stimulation: Keeping Your Staffy Engaged",
-     "Preventative Healthcare: Ensuring a Long and Healthy Life",
-     "Grooming and Skin Care: Maintaining a Healthy Coat",
-     "Conclusion"
+     "BIH CH GUN MM POWER AT TROJANBULLS.ie (IMP BIH) -AKA - GUN First ever black Blue Gene International Grand champion in Manchester",
+     "Let's Chat!"
     ]
    }
   ]
@@ -144,7 +110,7 @@
     "HC-HSF4",
     "PHPV/PPSC",
     "Hip Dysplasia",
-    "BVA Eye Screening"
+    "BVA eye screening"
    ],
    "vet_checks_mentioned": true,
    "breeding_since_as_worded": "over a decade",
@@ -159,14 +125,11 @@
   "status": "ok",
   "values": {
    "homepage_words": 1120,
-   "url_count": 41,
+   "url_count": 39,
    "h2_per_page": {
     "https://www.trojanstaffuk.com/": 15,
     "https://www.trojanstaffuk.com/staffy-puppies": 3,
-    "https://www.trojanstaffuk.com/how-we-roll": 2,
-    "https://www.trojanstaffuk.com/about-the-staffordshire-bull-terrier": 2,
-    "https://www.trojanstaffuk.com/contact": 2,
-    "https://www.trojanstaffuk.com/post/staffordshire-bull-terrier-health-wellbeing-a-comprehensive-guide": 6
+    "https://www.trojanstaffuk.com/about-1": 2
    }
   }
  },
@@ -174,25 +137,28 @@
   "status": "ok",
   "values": {
    "post_count": 18,
-   "topics": [
-    "breed health and wellbeing: diet, exercise, enrichment, preventive care, grooming"
-   ],
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
    "posting_frequency": {
     "status": "NOT FETCHED",
-    "reason": "post URLs carry no dates and only one post (one date) was fetched"
+    "reason": "post URLs carry no dates and no post was fetched"
    },
-   "sampled_word_counts": [
-    1147
-   ]
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
   }
  },
  "visual": {
   "status": "ok",
   "values": {
-   "homepage_images": 31,
-   "video_present": false,
+   "homepage_images": 29,
    "alt_text": "descriptive",
-   "alt_missing": 0
+   "alt_missing": 0,
+   "video_present": false
   }
  },
  "conversion": {
@@ -201,28 +167,26 @@
    "cta_types": [
     "phone",
     "email",
-    "form",
-    "visit",
-    "online-deposit"
+    "whatsapp"
    ],
-   "prices_shown": false,
-   "price_amounts_as_printed": [],
-   "deposit_terms": "Non-refundable deposit, paid online through a third-party pet marketplace once a puppy is picked at about four weeks; the balance is settled on collection at eight to nine weeks.",
-   "steps_to_enquire": 1,
-   "urgency_signals": [
-    "waiting-list"
-   ]
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£600"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
   }
  },
  "technical": {
   "status": "ok",
   "values": {
-   "mobile_layout_ok": false,
+   "mobile_layout_ok": true,
    "lighthouse_performance": {
     "status": "NOT FETCHED",
-    "reason": "no Lighthouse run in this pilot"
+    "reason": "no Lighthouse run"
    }
   }
  },
- "key_insight": "Trojanstaff wins on proof, not pages: a printed licence number, named DNA tests and champion bloodlines on the homepage, plus a written step-by-step buying journey; but it has no city pages, no prices and a homepage that overflows a 375px screen, so BSUK can match its proof and beat it on local pages and mobile."
+ "key_insight": "Trojanstaff wins on proof rather than pages: a printed licence number, named DNA tests, Kennel Club registration and champion bloodlines lead its homepage, but it has no city pages, no puppy prices, no review text and no dates on its 18 posts, so BSUK can match its proof and beat it on local pages, visible reviews and fresh dated guides."
 }

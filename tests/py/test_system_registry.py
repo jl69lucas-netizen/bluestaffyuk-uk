@@ -128,3 +128,43 @@ def test_a_gate_table_row_naming_a_missing_script_is_an_error(tmp_path):
 def test_the_real_doc_is_in_sync():
     # The gate itself, run against this repo — `--check` exits 0.
     assert bsr.main(["--check"]) == 0
+
+
+def test_it_lists_every_schema(tmp_path):
+    # Known Issue 53: the registry listed agents, skills, scripts and data files but not
+    # `schemas/`, so a reader looking for the contract a report must pass found nothing.
+    root = tree(tmp_path)
+    (root / "schemas").mkdir()
+    for name in ("board.schema.json", "queries.schema.json"):
+        (root / "schemas" / name).write_text("{}\n", encoding="utf-8")
+    (root / "schemas/README.txt").write_text("not a schema\n", encoding="utf-8")
+    out = written(root)
+    assert "## Schemas — 2" in out
+    assert "- `schemas/board.schema.json`" in out and "- `schemas/queries.schema.json`" in out
+    assert "README.txt" not in out, "only *.json files are schemas"
+
+
+def test_every_check_all_gate_is_in_the_gate_table():
+    # The gate table is hand-maintained; `check:all` is the list that actually gates. A gate
+    # added to the chain without a row here is a gate the registry says does not exist.
+    import re
+    scripts = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))["scripts"]
+    chained = re.findall(r"npm run ([\w:-]+)", scripts["check:all"])
+    run = {p for name in chained
+           for p in re.findall(r"python3 (scripts/[\w./-]+\.py)", scripts[name])}
+    missing = sorted(run - {path for path, _ in bsr.GATES})
+    assert missing == [], f"check:all runs these, but GATES does not list them: {missing}"
+
+
+def test_it_lists_the_slash_commands_too(tmp_path):
+    """`.claude/commands/` is loaded exactly like a skill (a `/opsx:propose` is a prompt the
+    session runs), and until 2026-09-23 the registry did not list it at all — four commands
+    existed that no reader of this document could find."""
+    root = tree(tmp_path)
+    assert "## Commands — 0" in written(root), "an empty commands tree is stated, not omitted"
+    cmd = root / ".claude/commands/opsx/propose.md"
+    cmd.parent.mkdir(parents=True)
+    cmd.write_text("---\nname: x\n---\n", encoding="utf-8")
+    out = written(root)
+    assert "## Commands — 1" in out
+    assert "`.claude/commands/opsx/propose.md`" in out

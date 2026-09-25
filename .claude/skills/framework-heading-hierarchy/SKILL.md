@@ -11,11 +11,11 @@ allowed-tools: [Read, Write, Bash]
 
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
-> **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -37,8 +37,8 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 - Include the main commercial keyword in the first 3 words where possible
 
 **Examples:**
-- `Blue Staffy Puppies for Sale UK | Licensed Carlisle Breeder | BlueStaffyUK`
-- `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`
+- `Blue Staffy Puppies for Sale UK | Home-Raised in Carlisle | BlueStaffyUK`
+- `Blue and White Staffy Puppy for Sale in [UK Region] | Home-Raised, KC Registered`
 - `Blue vs Blue Brindle Staffy: The Complete Buyer's Comparison`
 
 ---
@@ -52,7 +52,7 @@ You are the **Heading Hierarchy Framework** for BlueStaffyUK. Use this before wr
 
 **3 H2 Patterns:**
 - *Location Focus:* "Searching for a Home-Raised Blue Staffy Puppy in [UK Region]? Meet [Name]."
-- *Coat-Colour Focus:* "Meet [Name]: The Blue Brindle Staffy Perfect for Families."
+- *Coat-Colour Focus:* "Meet [Name]: The [Coat, from `colour` in data/puppies.json] Staffy Perfect for Families."
 - *Benefit Focus:* "Why Every Puppy Includes KC Registration, a Microchip and a Vet Health Check."
 
 **5 Alternative Variations Rule:**
@@ -264,14 +264,14 @@ Run this on every page before publishing or after any heading changes:
 **Audit commands:**
 ```bash
 # List all headings in order
-grep -n "<h[1-6]" site/content/[slug]/index.html | head -80
+grep -n "<h[1-6]" dist/[slug]/index.html | head -80
 
 # Count each level
-grep -c "<h5" site/content/[slug]/index.html   # must be ≥5
-grep -c "<h6" site/content/[slug]/index.html   # must be ≥5
+grep -c "<h5" dist/[slug]/index.html   # must be ≥5
+grep -c "<h6" dist/[slug]/index.html   # must be ≥5
 
 # Detect skipped levels (prints any H-jump greater than 1)
-grep -oP '(?<=<)[hH][1-6]' site/content/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && $1 > prev+1 {print "SKIP DETECTED: H"prev" → H"$1} {prev=$1}'
+grep -oP '(?<=<)[hH][1-6]' dist/[slug]/index.html | grep -oP '[1-6]' | awk 'NR>1 && $1 > prev+1 {print "SKIP DETECTED: H"prev" → H"$1} {prev=$1}'
 ```
 
 ---

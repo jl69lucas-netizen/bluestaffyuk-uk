@@ -12,8 +12,9 @@ page_hardening_scan.py but changes nothing here: FAIL is always fatal.
 The three heading-outline checks (all_six_levels, min_h5_5, min_h6_5) fail on every
 page Foundation migrated. A page failing ONLY those is tagged [migration baseline]
 and counted on its own line, so a real regression is visible against the noise.
-Profiles: interior (default), puppy (--puppies), blog (--blog, auto-discovers the
-/blog/ hub + every dist/blog/<slug>/ post; also included in the default run), or any profile by name via
+Profiles: interior (default), puppy (--puppies), blog (--blog, auto-discovers the legacy
+/blog/ archive, the boarded guides hub and every `blog` collection post, which is built at
+/<slug>/; also included in the default run), or any profile by name via
 `<slug>... --type home|location|...` (slug `index` = dist/index.html)."""
 import re, json, sys, argparse
 from pathlib import Path
@@ -149,7 +150,7 @@ PROFILES = {
         "single_canonical": "FAIL",
         "no_emoji": "FAIL",
     },
-    "blog": {                            # /blog/ hub + dist/blog/<slug>/ posts (spec 2026-06-27)
+    "blog": {                            # the blog cluster: /blog/, the guides hub, posts at /<slug>/ (blog_targets())
         # Blog gate = ONLY the checks the cluster spec defines; everything else is
         # NA so a post is judged on what the program actually requires. The FAIL
         # gates below mirror the Heading Outline Gate + blog-cluster requirements.

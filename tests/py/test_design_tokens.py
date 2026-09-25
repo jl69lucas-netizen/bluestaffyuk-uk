@@ -200,3 +200,38 @@ def test_rule_index_marks_design_system_nine_tested():
 def test_settings_has_location_label_without_a_city_field_change():
     s = json.loads(SETTINGS.read_text())
     assert s["location_label"] == "Carlisle · Cumbria"
+
+
+#: Every rule in `CounterStrip` that paints text straight onto a bed, keyed by the rule that
+#: paints that bed. Known Issue 21: the inline arrangement's separator dot was
+#: `--color-text-muted` on the strip's steel-100 bed and measured 4.49:1 (AA wants 4.50) on
+#: /kit-preview/, /thank-you-blue-staffy-puppies-journey/ and /uk-blue-staffy-breeders-contact/
+#: — and no pair in contrast.json named it, so the token test above could not see it. The
+#: card arrangement repaints each tile, so its figures (the strip's own ink) and labels sit on
+#: that tile's surface, not on the steel; the dot is the inline line's alone and never renders
+#: on a card. Each ink named here must be a pair with its bed in contrast.json, which is what
+#: makes `test_contrast_pairs_clear_aa` measure it.
+COUNTER_BED_INKS = {
+    ".kit-counter": (".kit-counter", ".lbl", ".dot"),
+    '[data-tiles="card"] li': (".kit-counter", ".lbl"),
+}
+
+
+def test_counter_inks_are_guarded_pairs_on_the_counter_bed():
+    src = (KIT / "CounterStrip.astro").read_text(encoding="utf-8")
+    pairs = {(p["fg"], p["bg"]) for p in json.loads(CONTRAST.read_text())}
+    missing = []
+    for bed_rule, inks in COUNTER_BED_INKS.items():
+        bed = re.search(re.escape(bed_rule) + r"\s*\{[^}]*?background:\s*var\((--[a-z0-9-]+)\)", src)
+        assert bed, f"CounterStrip no longer names a bed in `{bed_rule}`"
+        selectors = list(inks)
+        if bed_rule.startswith("[data-tiles="):
+            # An arrangement rule that states its own ink paints on that arrangement's bed too.
+            prefix = bed_rule.split("]")[0] + "]"
+            selectors += re.findall(r"(" + re.escape(prefix) + r"[^{}]*?)\s*\{[^}]*?[^-]color:\s*var\(", src)
+        for selector in selectors:
+            ink = re.search(re.escape(selector) + r"\s*\{[^}]*?[^-]color:\s*var\((--[a-z0-9-]+)\)", src)
+            assert ink, f"{selector} states no ink of its own"
+            if (ink.group(1), bed.group(1)) not in pairs:
+                missing.append((selector, ink.group(1), bed.group(1)))
+    assert not missing, f"add these fg/bg pairs to data/design/contrast.json: {missing}"

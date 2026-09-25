@@ -1,0 +1,216 @@
+{
+  "id": "gumtree",
+  "root_domain": "gumtree.com",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "puppy staffy",
+      "staffordshire bull terrier dogs puppies",
+      "staffordshire bull terrier puppies",
+      "staffy x puppies"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "about": 1,
+      "blog": 1,
+      "breed-guide": 6,
+      "city": 46,
+      "faq": 4,
+      "health": 1,
+      "listing": 53,
+      "price": 2,
+      "reviews": 55
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": [
+      "Aberdeen",
+      "Birmingham",
+      "Bristol",
+      "Cardiff",
+      "Cornwall",
+      "Coventry",
+      "Dundee",
+      "Edinburgh",
+      "Essex",
+      "Glasgow",
+      "Inverness",
+      "Leeds",
+      "Leicester",
+      "Liverpool",
+      "London",
+      "Manchester",
+      "Nottingham",
+      "Oxford",
+      "Wolverhampton"
+    ]
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "Organization",
+      "ImageObject",
+      "PostalAddress",
+      "WebSite",
+      "SearchAction",
+      "WebPage"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.gumtree.com/",
+        "title": "Gumtree UK | Buy, Sell & Find Local Classified Ads",
+        "h1": "",
+        "h2": [
+          "Discover popular categories",
+          "In your area",
+          "Top Locations"
+        ]
+      },
+      {
+        "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/nelson",
+        "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in Nelson, Lancashire - Gumtree",
+        "h1": "1 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale in Nelson, Lancashire",
+        "h2": [
+          "Results from outside your search"
+        ]
+      },
+      {
+        "url": "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/liverpool",
+        "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in Liverpool, Merseyside - Gumtree",
+        "h1": "0 ads for Staffordshire Bull Terrier Dogs & Puppies for Sale in Liverpool, Merseyside",
+        "h2": [
+          "Results from outside your search"
+        ]
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": false,
+      "health_tests_named": [],
+      "vet_checks_mentioned": false,
+      "breeding_since_as_worded": null,
+      "town": "London",
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 0
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 1216,
+      "url_count": 375,
+      "h2_per_page": {
+        "https://www.gumtree.com/": 3,
+        "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/nelson": 1,
+        "https://www.gumtree.com/pets/pets-for-sale/dogs/staffordshire-bull-terrier/uk/liverpool": 1
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 1,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the one post the classifier counts is a car review, and the scrapes went to the homepage and the breed's key pages"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "the one post URL's dated segment is a car's model year (2008), not a posting date, and no post was fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 54,
+      "alt_text": "descriptive",
+      "alt_missing": 1,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [],
+      "prices_shown": true,
+      "price_amounts_as_printed": [
+        "£3",
+        "£5",
+        "£20",
+        "£25",
+        "£39.99",
+        "£40",
+        "£50",
+        "£60",
+        "£80",
+        "£85",
+        "£100",
+        "£150",
+        "£184",
+        "£185",
+        "£200",
+        "£250",
+        "£350",
+        "£450",
+        "£610",
+        "£700",
+        "£790",
+        "£900",
+        "£995",
+        "£1,000",
+        "£1,200",
+        "£1,300",
+        "£1,500",
+        "£1,850",
+        "£3,500",
+        "£3,795",
+        "£4,495",
+        "£5,500",
+        "£6,000",
+        "£6,600",
+        "£7,999",
+        "£8,200",
+        "£8,495",
+        "£10,995",
+        "£13,550",
+        "£20,000"
+      ],
+      "deposit_terms": null,
+      "steps_to_enquire": null,
+      "urgency_signals": [
+        "ready-date"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "Gumtree ranks for Staffy searches on the strength of a general classifieds domain, not breed content: its Staffy town pages are thin, noindexed feeds of a handful of private adverts (the Liverpool one holds none of its own), with no guide, price advice, health or licence information. BSUK can beat it with indexable, breeder-owned blue Staffy pages per city that carry what a feed cannot: named health results, a stated price, the parents and a direct enquiry."
+}

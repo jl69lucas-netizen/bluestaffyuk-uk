@@ -218,8 +218,10 @@ def test_a_subdomain_is_refused(tmp_path, domain):
     assert any("registrable domain" in p for p in out), out
 
 
-@pytest.mark.parametrize("domain", ["pets4homes.co.uk", "example.com", "kc.org.uk",
-                                    "xn--bcher-kva.de", "a-b.ltd.uk"])
+REGISTRABLE = ("pets4homes.co.uk", "example.com", "kc.org.uk", "xn--bcher-kva.de", "a-b.ltd.uk")
+
+
+@pytest.mark.parametrize("domain", REGISTRABLE)
 def test_a_registrable_domain_is_accepted(tmp_path, domain):
     assert C.problems(registry(entry(root_domain=domain)), make_root(tmp_path)) == []
 
@@ -282,3 +284,87 @@ def test_cli_summary_on_a_clean_registry(tmp_path):
     r = run_cli(make_root(tmp_path, registry()))
     assert r.returncode == 0
     assert "1 entries; 0 banned domains; 0 files scanned; 0 problems" in r.stdout
+
+# --- Known Issue 47: JSON-escaped links -----------------------------------------------------
+
+@pytest.mark.parametrize("value", [
+    "https://bad.co.uk/pups",                         # json.dumps leaves / alone
+    "<a href=\"//bad.co.uk/x\">x</a>",                # scheme-less, quote escaped as \"
+    "<img src='//shop.bad.co.uk/x.jpg'>",
+])
+@pytest.mark.parametrize("escape", ["slash", "unicode"])
+def test_the_link_guard_catches_json_escaped_urls(tmp_path, value, escape):
+    root = make_root(tmp_path)
+    text = json.dumps({"html": value})
+    text = text.replace("/", "\\/") if escape == "slash" else text.replace("/", "\\u002f")
+    assert "//" not in text  # the file really holds only escaped slashes
+    (root / "data/boards/x.json").write_text(text + "\n")
+    out, _ = C.suspect_links(registry(*BANNED), root)
+    assert len(out) == 1 and "data/boards/x.json:1" in out[0] and "bad.co.uk" in out[0], out
+
+
+def test_json_escaped_allowed_links_and_escaped_non_links_are_fine(tmp_path):
+    root = make_root(tmp_path)
+    (root / "src/x.json").write_text(
+        '{"a": "https:\\/\\/pets4homes.co.uk\\/x", "b": "https:\\/\\/notbad.co.uk\\/y", '
+        '"c": "a path\\/\\/bad.co.uk with no scheme"}\n')
+    assert C.suspect_links(registry(*BANNED), root)[0] == []
+
+
+@pytest.mark.parametrize("url,want", [
+    ("https://www.pets4homes.co.uk/sale/", "pets4homes.co.uk"),
+    ("support.pets4homes.co.uk", "pets4homes.co.uk"),
+    ("https://blog.example.com/x", "example.com"),
+    ("https://a.b.example.org.uk/", "example.org.uk"),
+    ("https://example.uk/", "example.uk"),
+    ("HTTPS://WWW.Example.COM.", "example.com"),
+    ("https://SITE_URL_PLACEHOLDER/page/", "site_url_placeholder"),
+    ("localhost", None),
+    ("", None),
+    ("http://192.0.2.10/puppies/", "192.0.2.10"),       # an IP host is its own root, never "2.10"
+    ("198.51.100.7", "198.51.100.7"),
+    ("http://[2001:db8::1]/", "2001:db8::1"),
+])
+def test_root_domain_is_the_registry_rule_for_any_url(url, want):
+    # one helper for the keyword-gap and llm-intel scripts and tests (Known Issues 52, 53)
+    assert C.root_domain(url) == want
+
+
+@pytest.mark.parametrize("domain", REGISTRABLE)
+def test_root_domain_keeps_every_domain_the_registry_accepts(domain):
+    # one rule: root_domain() never cuts a domain the registry accepts as registrable
+    assert C._registrable(domain) and C.root_domain(domain) == domain
+
+
+@pytest.mark.parametrize("url,want", [
+    ("https://x.com.au/", "x.com.au"),
+    ("shop.x.ltd.uk", "x.ltd.uk"),
+    ("https://shop.x.co.uk/pups", "x.co.uk"),
+    ("https://a.b.x.com.au/", "x.com.au"),
+    ("https://x.co.uk.example.com/", "example.com"),
+    ("shop.pets4homes.co.uk", "pets4homes.co.uk"),
+    ("a.b.example.org", "example.org"),
+])
+def test_root_domain_keeps_three_labels_only_where_the_registry_does(url, want):
+    assert C.root_domain(url) == want and C._registrable(want)
+
+
+@pytest.mark.parametrize("a,b", [
+    ("https://x.co.uk/staffy-care/", "https://x.co.uk/staffy-care"),                  # the trailing slash
+    ("https://www.x.co.uk/staffy-care/", "http://x.co.uk/staffy-care/"),              # www. and the scheme
+    ("https://X.co.uk/staffy-care/?utm_source=fb&utm_medium=cpc", "https://x.co.uk/staffy-care/"),
+    ("https://x.co.uk/?b=2&a=1&utm_campaign=z", "https://x.co.uk?a=1&b=2"),          # the rest of the query, sorted
+    ("https://x.co.uk/a#top", "https://x.co.uk/a"),
+])
+def test_page_key_is_one_page_however_its_url_is_written(a, b):
+    assert C.page_key(a) == C.page_key(b)
+
+
+@pytest.mark.parametrize("a,b", [
+    ("https://x.co.uk/a/", "https://x.co.uk/b/"),
+    ("https://x.co.uk/a/", "https://shop.x.co.uk/a/"),                                # a subdomain is another host
+    ("https://x.co.uk/a?page=2", "https://x.co.uk/a?page=3"),                         # a query that is not utm_ stays
+    ("https://x.co.uk/Staffy/", "https://x.co.uk/staffy/"),                           # paths are case-sensitive
+])
+def test_page_key_keeps_different_pages_apart(a, b):
+    assert C.page_key(a) != C.page_key(b)

@@ -70,7 +70,8 @@
         "path": "https://www.bva.co.uk/news-and-blog/blog-article/thinking-of-buying-a-puppy-here-are-some-top-questions-to-ask-breeders-to-avoid-heartache/",
         "fetched": "2026-09-20 — ~870 words; 2 H2s (What is The Puppy Contract?; Top questions to ask a breeder); 6 questions; schema BlogPosting, no FAQPage; the only scanned page that mentions the period after collection, and the only one that leads on a written contract; no costs and no breed-specific content."
       }
-    ]
+    ],
+    "preview": true
   },
   "meta_set": {
     "titles": [
@@ -201,7 +202,7 @@
       ],
       "refresh": {
         "axis": "container",
-        "note": "a text-led hero in a card with a contents aside, where the breed guide leads with a photo"
+        "note": "Stacks its photograph above the copy in a card, where the health guide splits its copy from a photograph on the right with the key facts under the copy and the breed guide leads with a text panel and a narrow photograph"
       },
       "hero": {
         "chips": [
@@ -276,8 +277,8 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "H-GD3",
-        "note": "Image first: S2 puts the photograph above the copy on a band, S3 puts it left in a card. No CTA buttons and no trust chips on the hero."
+        "pick": "H-GD2",
+        "note": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD2 is pre-selected (recommended); the three guides must end on three different heroes."
       },
       "verbatim_heading": true,
       "verbatim_opening": "Embarking on the journey to welcome a Blue Staffordshire Bull Terrier puppy into your UK home is an exciting and rewarding experience. The key to a smooth and responsible process lies in thorough preparation, whether you’re considering a Staffordshire Bull Terrier for rehoming or selecting a companion from professional Staffy dog breeders ."
@@ -2240,7 +2241,7 @@
     }
   ],
   "tuple": {
-    "hero": "hero-h-gd3",
+    "hero": "hero-h-gd2",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -2491,7 +2492,7 @@
     ]
   },
   "approval": {
-    "approved_at": "2026-09-20T22:20:43.110Z",
+    "approved_at": "2026-09-24T23:07:26.120Z",
     "canvas_version": null,
     "h1": 0,
     "meta": {
@@ -2518,7 +2519,7 @@
       "takeaways": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them.",
       "talk-to-us": "",
       "temperament-fit": "",
-      "top": "Image first: S2 puts the photograph above the copy on a band, S3 puts it left in a card. No CTA buttons and no trust chips on the hero.",
+      "top": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD2 is pre-selected (recommended); the three guides must end on three different heroes.",
       "video-what-to-expect": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
     },
     "picks": {
@@ -2530,18 +2531,20 @@
       "red-flags": "S3",
       "stats": "C-GD2",
       "takeaways": "S2",
-      "top": "H-GD3",
+      "top": "H-GD2",
       "video-what-to-expect": "S1"
     },
-    "record_hash": "b487aeab06baa9a58d45a4956b21b629688c850ee7da08de932bcea6e6616646",
+    "record_hash": "baf9873814c640858bde1caef9fc468079b2ff027e905934b2e11cf5c603cf03",
     "tuple_before": {
       "hero": "",
       "dial": "",
       "rail": "",
       "toc": "pagenav-c",
-      "takeaway": [],
-      "table": "",
-      "faq": "",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "table": "table-s1",
+      "faq": "faq-s2",
       "stepper": "",
       "newsletter": {
         "after": "",
@@ -2550,65 +2553,7 @@
       "h6_prefixes": [
         "Buyer Note:"
       ]
-    },
-    "reapproved_at": "2026-09-22T19:39:58Z",
-    "reapprovals": [
-      {
-        "at": "2026-09-21T03:23:15Z",
-        "reason": "header-collision: this H3 was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board (working rule 15 protects neither — the phrase is in no page's verbatim set). The node's intent is the two DNA results we hand a buyer, so the wording that names them is what it takes; no pick, figure, source or section id moves.",
-        "changed_paths": [
-          "/sections/8/tree/3/heading"
-        ]
-      },
-      {
-        "at": "2026-09-21T05:54:52Z",
-        "reason": "header collision with /blue-staffy-health-uk/, built after this board was approved: the health page renders data/faq.json row health-average-lifespan, whose question shares a five-word shingle with this record's health-checks H3. The health page owns the lifespan fact, so the wording moves here; no pick, figure, source or section id is touched and the deviation is recorded in verbatim.changed.",
-        "changed_paths": [
-          "/sections/8/tree/4/heading"
-        ]
-      },
-      {
-        "at": "2026-09-21T07:07:43Z",
-        "reason": "Two H3 headings collide with /uk-staffordshire-bull-terrier-guide/, built after this board was approved: it renders data/faq.json's guide-exercise-daily and guide-children-pets rows, both elements of its own verbatim set under working rule 15, and board_gate fails the five-word shingles 'how much exercise does a' and 'get along with children and' against them. The breed guide owns the daily exercise figure and the children-and-other-pets question; this page owns buying, so the wording moves here. Every subject word is kept and only the shared tail goes. Recorded in this record's verbatim.changed.",
-        "changed_paths": [
-          "/sections/7/tree/1/heading",
-          "/sections/7/tree/2/heading"
-        ]
-      },
-      {
-        "at": "2026-09-21T12:24:19Z",
-        "reason": "Rule 9 beats rule 15 for a claim no file holds (2026-09-21 build review). Five phrases are struck from four carried openings and each deviation is recorded in verbatim.changed beside the reason: 'guaranteed' in adoption-vs-buying, because data/settings.json holds guarantee_days: null and a DNA screen returns a result rather than a warranty; 'we stand by our commitment to excellence.' and 'and see why families trust us' in talk-to-us tree[0], a self-awarded standard with no document behind it and an invitation to a body of testimony that does not exist (data/reviews.json holds three rows, one of them on this page); 'professional care' in delivery tree[1], a quality claim about a transport partner no file on disk identifies, where settings.json records only the method and the band; and 'As a trustworthy puppy breeder,' in breeder-questions tree[0], a credential this business awards itself in the opening of the section that tells a reader to trust no breeder who cannot produce paperwork. Every other word of all four openings is carried. Separately, the hero aside's third item promised 'What the puppy and the first year cost', and the first-year budget is struck by dropped.prices in full, so the aside advertised a figure the page will not print; it now reads 'What the puppy costs, and what this page will not guess.' — it states no figure, carries no source and is checked at build for having started to. No pick, no styles menu, no figure n or source, no ledge source and no section id is touched, and no section is added or removed.",
-        "changed_paths": [
-          "/sections/0/hero/aside/items/2",
-          "/sections/4/tree/0/verbatim_opening",
-          "/sections/13/tree/1/verbatim_opening",
-          "/sections/14/verbatim_opening",
-          "/sections/18/tree/0/verbatim_opening"
-        ]
-      },
-      {
-        "at": "2026-09-21T13:36:56Z",
-        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Four bands are structurally unreachable because the section's body is a rendered table or the live puppy grid rather than prose. (1) 'breeder-questions' at 230-280 against a measured 506: the fifteen-question table's caption, headers and both columns of cells are counted as section prose and are about 400 words of it. Widened to 455-557. (2) 'red-flags' at 165-205 against 251: the eight-row three-column ethical-breeder-against-puppy-farm table is about 180 counted words. Widened to 226-276. (3) 'costs' at 170-210 against 261: the price table rendered from data/price-matrix.json and data/settings.json carries its own caption, headers and cells. Widened to 235-287. (4) 'puppies' at 45-60 against 61: the six live puppy cards' chips and links. Widened to 55-67. Every new band is the measurement plus or minus 10 per cent.",
-        "changed_paths": [
-          "/sections/4/words/max",
-          "/sections/4/words/min",
-          "/sections/5/words/max",
-          "/sections/5/words/min",
-          "/sections/6/words/max",
-          "/sections/6/words/min",
-          "/sections/16/words/max",
-          "/sections/16/words/min"
-        ]
-      },
-      {
-        "at": "2026-09-22T19:39:58Z",
-        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
-        "changed_paths": [
-          "/sections/6/table/caption",
-          "/sections/19/video/caption"
-        ]
-      }
-    ]
+    }
   },
   "verbatim": {
     "changed": [
@@ -2874,5 +2819,147 @@
         "reason": "recorded after the fact, for the first of this record's three re-approvals (2026-09-21T03:23:15Z), which moved this H3 and wrote no row. The old wording was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board, and board_gate.py failed the shingle. THIS HEADING IS NOT AN ELEMENT OF THE VERBATIM SET — data/verbatim/uk-blue-staffy-puppy-buying-guide.json does not carry it, because the migrated body never had it and the outline wrote it — so working rule 15 protects neither spelling and no rule required a row. It is written here anyway so that every heading this record moved after approval can be read in one place beside the re-approval that moved it."
       }
     ]
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-20T22:20:43.110Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "adoption-vs-buying": "",
+      "breeder-questions": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page. Two columns rather than three: the migrated body gives a question and one follow-up sentence per row, so a third 'why it matters' column would have to be written from nothing.",
+      "buying-steps": "",
+      "costs": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page.",
+      "delivery": "",
+      "eight-weeks": "",
+      "first-30-days": "",
+      "health-checks": "",
+      "home-prep": "",
+      "navigation": "",
+      "owner-review": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 3, Rachel L. (London); entry 1 is on the breed guide and entry 2 on the health page, so no page repeats a review. An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count. The one embed the migrated page carried (YouTube WuA0yo6HZKE) is kept here at its original id; the record does not describe what is in it, because no file on disk says. facts_preserved_check.py gates the id.",
+      "questions": "Query augmentation for 'uk blue staffy puppy buying guide', ten questions, each mapped to a section or a row: q1 -> breeder-questions and the buying-what-to-ask row; q2 -> eight-weeks and the buying-best-age row; q3 -> red-flags and the buying-puppy-farm row; q4 -> costs and the deposit row; q5 -> costs; q6 -> health-checks; q7 -> red-flags; q8 -> delivery; q9 -> home-prep; q10 -> first-30-days. No row is added for a question this page's body does not answer.",
+      "red-flags": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the one pick, which applies to all three tables on this page.",
+      "socialisation": "",
+      "stats": "",
+      "takeaways": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them.",
+      "talk-to-us": "",
+      "temperament-fit": "",
+      "top": "Image first: S2 puts the photograph above the copy on a band, S3 puts it left in a card. No CTA buttons and no trust chips on the hero.",
+      "video-what-to-expect": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+    },
+    "picks": {
+      "breeder-questions": "S2",
+      "costs": "S1",
+      "owner-review": "S1",
+      "puppies": "S2",
+      "questions": "S2",
+      "red-flags": "S3",
+      "stats": "C-GD2",
+      "takeaways": "S2",
+      "top": "H-GD3",
+      "video-what-to-expect": "S1"
+    },
+    "record_hash": "b487aeab06baa9a58d45a4956b21b629688c850ee7da08de932bcea6e6616646",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Buyer Note:"
+      ]
+    },
+    "reapproved_at": "2026-09-22T19:39:58Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T03:23:15Z",
+        "reason": "header-collision: this H3 was an exact match for the /blue-staffy-uk-breeders/ counter heading, which shipped first from its own approved board (working rule 15 protects neither — the phrase is in no page's verbatim set). The node's intent is the two DNA results we hand a buyer, so the wording that names them is what it takes; no pick, figure, source or section id moves.",
+        "changed_paths": [
+          "/sections/8/tree/3/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T05:54:52Z",
+        "reason": "header collision with /blue-staffy-health-uk/, built after this board was approved: the health page renders data/faq.json row health-average-lifespan, whose question shares a five-word shingle with this record's health-checks H3. The health page owns the lifespan fact, so the wording moves here; no pick, figure, source or section id is touched and the deviation is recorded in verbatim.changed.",
+        "changed_paths": [
+          "/sections/8/tree/4/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T07:07:43Z",
+        "reason": "Two H3 headings collide with /uk-staffordshire-bull-terrier-guide/, built after this board was approved: it renders data/faq.json's guide-exercise-daily and guide-children-pets rows, both elements of its own verbatim set under working rule 15, and board_gate fails the five-word shingles 'how much exercise does a' and 'get along with children and' against them. The breed guide owns the daily exercise figure and the children-and-other-pets question; this page owns buying, so the wording moves here. Every subject word is kept and only the shared tail goes. Recorded in this record's verbatim.changed.",
+        "changed_paths": [
+          "/sections/7/tree/1/heading",
+          "/sections/7/tree/2/heading"
+        ]
+      },
+      {
+        "at": "2026-09-21T12:24:19Z",
+        "reason": "Rule 9 beats rule 15 for a claim no file holds (2026-09-21 build review). Five phrases are struck from four carried openings and each deviation is recorded in verbatim.changed beside the reason: 'guaranteed' in adoption-vs-buying, because data/settings.json holds guarantee_days: null and a DNA screen returns a result rather than a warranty; 'we stand by our commitment to excellence.' and 'and see why families trust us' in talk-to-us tree[0], a self-awarded standard with no document behind it and an invitation to a body of testimony that does not exist (data/reviews.json holds three rows, one of them on this page); 'professional care' in delivery tree[1], a quality claim about a transport partner no file on disk identifies, where settings.json records only the method and the band; and 'As a trustworthy puppy breeder,' in breeder-questions tree[0], a credential this business awards itself in the opening of the section that tells a reader to trust no breeder who cannot produce paperwork. Every other word of all four openings is carried. Separately, the hero aside's third item promised 'What the puppy and the first year cost', and the first-year budget is struck by dropped.prices in full, so the aside advertised a figure the page will not print; it now reads 'What the puppy costs, and what this page will not guess.' — it states no figure, carries no source and is checked at build for having started to. No pick, no styles menu, no figure n or source, no ledge source and no section id is touched, and no section is added or removed.",
+        "changed_paths": [
+          "/sections/0/hero/aside/items/2",
+          "/sections/4/tree/0/verbatim_opening",
+          "/sections/13/tree/1/verbatim_opening",
+          "/sections/14/verbatim_opening",
+          "/sections/18/tree/0/verbatim_opening"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:56Z",
+        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Four bands are structurally unreachable because the section's body is a rendered table or the live puppy grid rather than prose. (1) 'breeder-questions' at 230-280 against a measured 506: the fifteen-question table's caption, headers and both columns of cells are counted as section prose and are about 400 words of it. Widened to 455-557. (2) 'red-flags' at 165-205 against 251: the eight-row three-column ethical-breeder-against-puppy-farm table is about 180 counted words. Widened to 226-276. (3) 'costs' at 170-210 against 261: the price table rendered from data/price-matrix.json and data/settings.json carries its own caption, headers and cells. Widened to 235-287. (4) 'puppies' at 45-60 against 61: the six live puppy cards' chips and links. Widened to 55-67. Every new band is the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/4/words/max",
+          "/sections/4/words/min",
+          "/sections/5/words/max",
+          "/sections/5/words/min",
+          "/sections/6/words/max",
+          "/sections/6/words/min",
+          "/sections/16/words/max",
+          "/sections/16/words/min"
+        ]
+      },
+      {
+        "at": "2026-09-22T19:39:58Z",
+        "reason": "Close-out audit 2026-09-22: build notes printed as reader copy. Video and table captions reworded as reader copy: table captions no longer name the data files they are read from, and video captions no longer say a film is kept 'at its original id' but say what the film shows (puppies — checked against the player). Wording only: no pick, figure, source, menu, video id or section touched.",
+        "changed_paths": [
+          "/sections/6/table/caption",
+          "/sections/19/video/caption"
+        ]
+      }
+    ],
+    "section_hashes": {
+      "top": "05af33e46e36b02d9cedf7f549c89dde7915ef66209c9ed61db31feaa4939892",
+      "takeaways": "1c7b608a15fe5006d20daf5b9d87f6ffb6e03e240bbc09c222988ab898dcc941",
+      "stats": "4769d106472540f5c92bc3dd14a2c17f48bb461b128360a401eea55eb96dcf65",
+      "buying-steps": "665d6e35c958aa9e24c44fef2e56d546a0df8514bd5f99e62b1daa091d09ddfb",
+      "breeder-questions": "2cc0a9e6e0f7d6c0e8cb1027991c223b1a7fd343ef8052ae08651d93c0ca72e2",
+      "red-flags": "1ede4d0eb204fc2694cdcccd1d726cc892ba623bfdc1333ba52f28f16fe2670b",
+      "costs": "6717e4ab7574e6a3077cd48700191c3e944c83a75eaf3b752eabb794fadab809",
+      "temperament-fit": "af58270b8d815b2b282f9e83f802fd41faf479d15d80edcf333bd12e36ad4071",
+      "health-checks": "69c96d9113fa20663d1123e0b0ff945413e3b29123459f90d8c6aee4e90501d4",
+      "eight-weeks": "c18421ff07caa318d77ae9d6f48a318b934feaf881c6142890c930fd4dac3d95",
+      "home-prep": "0e9f2f3995ac5519e026ae7ecebd0383f7956de9483d51f9814b2e5058c1aa1d",
+      "socialisation": "bee4bbb0e6b1637973ad78fc7878d9ceeb3610fa58485a37f6d18d12f420263f",
+      "first-30-days": "1becc6c9083b22c4f7dfc3b9e947a459bb6b140a38fa66948752cc868e6ec69e",
+      "delivery": "169be9558d63be36a0e218685f8a25d6a5ae8af4470dae33b371af96d68c3f0c",
+      "adoption-vs-buying": "ac84caf66638b27cd2872259760079b7d67c2ea6e5886ebcd6b63d9b9e787e39",
+      "owner-review": "7ea1e80851331fc05ce40de6da9f72508884107ded2a5dd10d81163e53107ca8",
+      "puppies": "c6f94f16f3b2cd8cfd74ca8438ebf6dda6137b9cdeb754c9613390185cca33dd",
+      "questions": "13c02d03387f74d35d47977e0b94e1c3b494ed192b74afda46f10350eaa8c83e",
+      "talk-to-us": "68f9d5f17b483452a04a9d5c4c4e275aa74fddd4490ef312da28868189a36684",
+      "video-what-to-expect": "c18274a4bbd31c2d05997e9faa65d71b9911dda59d95194b22f94bf2f5077939"
+    }
   }
 }

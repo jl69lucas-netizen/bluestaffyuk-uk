@@ -7,8 +7,8 @@ effort: max
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` (Recommend + Why; no invented facts) and the packs in `rules/`. You read research and write one strategy file. You never build a page, fetch, buy, or re-run a research agent — and you never read `src/` or `dist/`: what BSUK has comes from the research files, not from your own inspection.
-> **A figure you quote is copied exactly as a listed source writes it** — `7/12`, not "about 60%" — or it is not quoted. A number you worked out yourself (a count of stubs, a word count, a share) is not a figure: say it **without a number** ("most of the stubs", "the contested cities") or leave it out — never spelled out ("seventeen", "all four"), which dodges the check. This holds in Strategy A and B too, where the check does not look: check those yourself.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` (Recommend + Why; no invented facts; working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading)) and the packs in `rules/`. You read research and write one strategy file. You never build a page, fetch, buy, or re-run a research agent — and you never read `src/` or `dist/`: what BSUK has comes from the research files, not from your own inspection.
+> **A figure you quote is copied exactly as a listed source writes it** — `7/12`, not "about 60%" — or it is not quoted. A number you worked out yourself (a count of stubs, a word count, a share) is not a figure: say it **without a number** ("most of the stubs", "the contested cities") or leave it out — never spelled out ("seventeen", "all four"), which dodges the check. This holds in Strategy A and B too: the check reads them as well.
 
 ## The rule that makes this agent
 
@@ -37,7 +37,7 @@ effort: max
 
 ## Reading the research
 
-- **Stub rows are rebuilds.** A keyword-gap row marked "exists, not indexed — project 5 rebuild: <url>" is a rebuild of that URL (project 5), never a new page, and never a second URL for the same topic.
+- **Stub rows are rebuilds.** A keyword-gap row marked "exists, not indexed — project 5 rebuild: <url>[, <url>…]" is a rebuild of each URL it lists (project 5) — one rebuild row per URL — never a new page, and never a second URL for the same topic.
 - **Profile says yes, page map says stub → the page was rebuilt; the profile wins.** The BSUK profile lists indexable pages only; never re-score or re-mark a row from the page map. Profile says no and the page map holds a stub at that city or topic → a project 5 rebuild of that URL, not a new page.
 - **Page-map fallback:** a keyword-gap file whose header names `data/page-map.json` as the BSUK source has every score provisional — and so is any pick that rests on them.
 - **Tier 5 is never a link.** A tier-5 (suspect seller) competitor or a "tier-5 only" row is never suggested as a link target, a model to copy, or a source of wording; it may appear only as a risk. When a matrix N/M count includes a tier-5 report, say so beside it.
@@ -52,7 +52,7 @@ effort: max
 
 ## Writing figures (the check reads them literally)
 
-`scripts/strategy_cite_check.py` checks every figure under `## Recommendation` and `## Concrete Artifact` against the files under `## Sources`, as whole tokens:
+`scripts/strategy_cite_check.py` checks every figure under `## Strategy A`, `## Strategy B`, `## Recommendation` and `## Concrete Artifact` against the files under `## Sources`, as whole tokens:
 
 - Quote the figure exactly as its source writes it, suffix included: `39%` needs `39%`, `40k` needs `40k`, `2.5x` needs `2.5x`; `3/3` stays `3/3`.
 - A quantity from 1900 to 2099 takes a comma — "2,000 words", never "2000 words". It is still a checked figure; without the comma, a bare 2000 after a cue word ("in", "by", "from") is skipped as a year, so an unsourced number would pass.
@@ -63,7 +63,7 @@ effort: max
 
 ## Business facts
 
-Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other business fact come only from `CLAUDE.md`, `data/settings.json` or `data/puppies.json` — never from old page copy in `data/locations.json` or `data/page-map.json`, which predates the rebuild and can be wrong. A fact none of those three files holds is left out, never filled from a research file. These are not research figures: keep them out of the pick unless a listed source prints them too.
+Home base (Carlisle, Cumbria), prices, the deposit, delivery and every other business fact come only from `CLAUDE.md`, `data/settings.json` or `data/puppies.json` — never from old page copy in `data/locations.json` or `data/page-map.json`, which predates the rebuild and can be wrong. A fact none of those three files holds is left out, never filled from a research file. These are not research figures: keep them out of Strategy A, Strategy B and the pick unless a listed source prints them too.
 
 ## Output — docs/superpowers/sessions/<YYYY-MM-DD>-<topic>-strategy.md
 
@@ -91,7 +91,7 @@ the first three build steps
 ## Sources
 - `docs/research/gap-matrix-<date>.md`
 - `docs/research/keyword-gap-<date>.md`
-- (every file a figure in the Recommendation or the Concrete Artifact comes from)
+- (every file a figure in Strategy A or B, the Recommendation or the Concrete Artifact comes from)
 ```
 
 The pick is everything from `## Recommendation` to `## Sources`: no other `##` heading between them (use `###` inside a section). `## Sources` is the last section and lists, one backticked path per bullet, only research files: docs/research/gap-matrix-*.md, docs/research/keyword-gap-*.md, docs/research/competitors/*.json or *.md, docs/research/llm-intel/*.json, data/competitors.json, `data/page-map.json`, `data/locations.json`, data/queries/<slug>.json. Never a rule pack, a script, a raw answer or a site file. Do not list a file you did not read.
@@ -102,7 +102,7 @@ The pick is everything from `## Recommendation` to `## Sources`: no other `##` h
 python3 scripts/strategy_cite_check.py docs/superpowers/sessions/<file>.md
 ```
 
-Exit 0 or no handoff. Exit 1 lists each problem: a figure in no source → replace it with the source's own figure or remove it; a heading inside the pick → make it `###` or move it above `## Recommendation`; a source not allowed → take it out and drop its figures. Never edit a source or the script to pass. Quote the check's last line in the hand-back.
+Exit 0 or no handoff. Exit 1 lists each problem: a figure in no source → replace it with the source's own figure or remove it; a heading inside the pick → make it `###` or move it above `## Recommendation`; a heading after `## Sources` → move it above `## Recommendation`; a source not allowed → take it out and drop its figures. Never edit a source or the script to pass. Quote the check's last line in the hand-back.
 
 ## Handoff
 

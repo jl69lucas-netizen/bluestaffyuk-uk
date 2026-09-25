@@ -144,7 +144,7 @@ sections are split roughly evenly across the three gaps.
 | Climate | Qualitative only: the city's weather and what it means for a short-coated dog. Any figure is `NOT FETCHED` on the board unless sourced and recorded; an unfetched figure is left out of the prose |
 | Pricing and payment | Locked prices from `data/price-matrix.json` and the deposit from `data/settings.json` only |
 | Testimonials | The three real reviews in `data/reviews.json`, rotated; `REVIEW_PLACEHOLDER` slots otherwise |
-| Regulations | Topics may be named (the Dangerous Dogs Act, microchipping) but never asserted. Every statute line is `LEGAL_CLAIM_PLACEHOLDER` until confirmed (`CLAUDE.md` rule 9, `rules/copy.md`); any licence line is `LICENCE_CLAIM_PLACEHOLDER` |
+| Regulations | One statute line may be stated: the Staffordshire Bull Terrier is not a banned breed in the UK (it is not one of the types the Dangerous Dogs Act 1991 bans), linked to the government's list, https://www.gov.uk/control-dog-public/banned-dogs — the breed guide's row in `docs/reference/external-link-library.md`, allowed on city pages by the user's ruling on Known Issue 46 (2026-09-23). Keep to "not a banned breed" / "not on the government's list"; never say any Staffy-type dog is legal or cannot be seized — the list bans by what a dog looks like, not by breed name. Every other statute line is `LEGAL_CLAIM_PLACEHOLDER` until confirmed (`CLAUDE.md` rule 9, `rules/copy.md`); any licence line is `LICENCE_CLAIM_PLACEHOLDER`. Other topics may be named (microchipping) but never asserted |
 | Preparing your home | Puppy-proofing and the first week |
 | Newsletter | The site's real newsletter form; no subscriber count |
 | Final call to action | Enquiry form, email, `PHONE_PLACEHOLDER` until launch |

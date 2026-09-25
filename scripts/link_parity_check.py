@@ -58,6 +58,9 @@ import pathlib
 import re
 import sys
 
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+from _slugs import built_page, resolve_page  # noqa: E402  (one route convention, shared)
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
 BOARDS = ROOT / "data" / "boards"
@@ -229,8 +232,10 @@ def post_hrefs(record):
 
 def check(slug):
     """(problems, examined) for one rebuilt slug. `problems` are printable strings."""
-    page = DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
-    rec_path = BOARDS / f"{slug}.json"
+    # A city page's bare slug is built at dist/uk-locations/<slug>/ and its record is
+    # data/boards/<slug>.json (scripts/_slugs.py, Known Issue 39).
+    page = built_page(slug, ROOT, DIST)
+    rec_path = BOARDS / f"{resolve_page(slug, ROOT)[0]}.json"
     if not page.exists():
         return [f"{slug}: no built page at dist/{page.relative_to(DIST)} — run the build"], 0
     if not rec_path.exists():
@@ -293,7 +298,7 @@ def main(argv=None):
             print(f"  {p}")
         total += len(problems)
         if ns.list:
-            page = DIST / ("index.html" if slug == "index" else f"{slug}/index.html")
+            page = built_page(slug, ROOT, DIST)
             if page.exists():
                 for h in sorted(set(page_links(page.read_text(encoding="utf-8", errors="ignore")))):
                     print(f"    {slug}  {h}")

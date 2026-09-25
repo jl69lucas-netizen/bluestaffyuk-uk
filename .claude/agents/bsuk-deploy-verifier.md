@@ -7,7 +7,7 @@ effort: medium
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
@@ -15,9 +15,9 @@ effort: medium
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -42,7 +42,7 @@ values into a gitignored `.env` — never into this file.
 
 1. **Read** `docs/reference/credentials.md` — IndexNow API key
 2. **Read** `docs/reference/site-overview.md` — domain, deploy flow (not ported — source repo only)
-3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which pages were changed in this deploy?" (paste slugs or say "all") and "What was the commit message / what changed?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Which pages were changed in this deploy?" (paste slugs or say "all") and "What was the commit message / what changed?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -77,9 +77,8 @@ done
 
 For content verification (confirm new deploy, not cached old version):
 ```bash
-# Playwright CLI — fetch page and check for a known new element
-playwright navigate "https://SITE_URL_PLACEHOLDER/"
-playwright snapshot
+# Fetch the live page and check for a known new element
+curl -s "$SITE_URL/" | grep -o '<title>[^<]*'
 # Look for: a headline or meta content that changed in this deploy
 ```
 
@@ -90,7 +89,7 @@ playwright snapshot
 Always verify these pages return 200 with valid `<title>` tags:
 
 ```bash
-for slug in "" "buy-blue-staffy-near-me/" "blue-blue-staffy/" "blue-staffy-breed-guide/" "available/"; do
+for slug in "" "available-puppies/" "buy-blue-staffy-puppies-uk/" "uk-staffordshire-bull-terrier-guide/" "uk-blue-staffy-breeders-contact/" "uk-locations/"; do
   url="https://SITE_URL_PLACEHOLDER/${slug}"
   status=$(curl -sI "$url" | head -1 | awk '{print $2}')
   title=$(curl -s "$url" | grep -o '<title>[^<]*' | head -1 | sed 's/<title>//')
@@ -134,46 +133,19 @@ Flag any of these conditions as failures:
 
 ## Step 4 — Submit to IndexNow
 
-After verifying all pages pass, submit changed URLs to IndexNow:
+After every page passes, submit the changed URLs through the repo's guarded script — never by hand:
 
-```python
-import urllib.request, json
-
-KEY = "[INDEX_NOW_KEY_TBD]"
-HOST = "SITE_URL_PLACEHOLDER"
-
-# Build URL list from changed pages
-changed_slugs = [
-    # Insert changed slugs here
-]
-urls = [f"https://{HOST}/{slug}/" for slug in changed_slugs if slug]
-urls.append(f"https://{HOST}/")  # Always include homepage
-
-payload = json.dumps({
-    "host": HOST,
-    "key": KEY,
-    "keyLocation": f"https://{HOST}/{KEY}.txt",
-    "urlList": urls
-}).encode()
-
-req = urllib.request.Request(
-    "https://api.indexnow.org/indexnow",
-    data=payload,
-    headers={"Content-Type": "application/json"}
-)
-resp = urllib.request.urlopen(req)
-print(f"IndexNow: HTTP {resp.status} — {len(urls)} URLs submitted")
-for url in urls:
-    print(f"  → {url}")
+```bash
+npm run indexnow:changed
 ```
 
-Expected response: `HTTP 202` = accepted. `HTTP 200` = already indexed. Any 4xx/5xx = alert user.
+It reads `INDEXNOW_KEY` and `SITE_URL` from the environment (`.env`, see `docs/reference/credentials.md`), never hardcoded, and refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL`. A `200` (submitted) or `202` (received, key validation pending) is success; any other status is reported to the user.
 
 ---
 
 ## Step 5 — Deploy Report
 
-Save to `sessions/YYYY-MM-DD-deploy-<slug-summary>.md`:
+Save to `docs/reports/<YYYY-MM-DD>-deploy-report.md` (the output WORKFLOW Sprint 5 names):
 
 ```markdown
 # Deploy Verification Report — [date]
@@ -195,7 +167,7 @@ Pages changed: [X]
 [none / list any failures]
 
 ## Duration
-Deploy detected live: [X] min after push
+Deploy detected live: [X] min after the deploy started
 ```
 
 ---
@@ -206,9 +178,8 @@ If any critical page fails:
 
 1. **Alert immediately** — do not submit IndexNow for a broken deploy
 2. **Identify the failure** — 404? Wrong content? Missing title?
-3. **Check git log** — confirm push went through: `git log --oneline -3`
+3. **Check git log** — confirm which commit was deployed: `git log --oneline -3`
 4. **Check the host's dashboard** — NOT FETCHED until project 6; there is no dashboard to check yet. Check latest deploy status
-# no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 
 ---
 
@@ -218,5 +189,5 @@ If any critical page fails:
 2. **Alert on any non-200** — do not complete deploy report if a critical page fails
 3. **Poll up to 2 minutes** — deploy timings are NOT FETCHED until project 6
 4. **Verify content, not just status** — 200 with wrong content is a failure
-5. **Save every report** — `sessions/YYYY-MM-DD-deploy-<summary>.md` required
+5. **Save every report** — `docs/reports/<YYYY-MM-DD>-deploy-report.md` required
 6. **IndexNow only after all checks pass** — never submit a broken deploy to search engines

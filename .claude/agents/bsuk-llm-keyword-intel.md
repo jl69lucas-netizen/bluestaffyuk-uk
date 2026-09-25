@@ -6,7 +6,7 @@ effort: high
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` and the packs in `rules/`. Record only what the saved answer says, and every field from the script below — never a reading by eye. BSUK is cited only when one of its own domains, exactly, is among the answer's sources, its links or its local businesses.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md` — its nine judgment rules and working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading) — and the packs in `rules/`. Record only what the saved answer says, and every field from the script below — never a reading by eye. BSUK is cited only when one of its own domains, exactly, is among the answer's sources, its links or its local businesses.
 > **One paid endpoint, one call per page, behind a stop.**
 > - DataForSEO `ai_optimization_chat_gpt_scraper` with `location_name` "United Kingdom" (the connector defaults to the United States — always set it) and `language_code` "en", through the spend guard (`scripts/query_augment.py`).
 > - No call until the invocation reads `spend approved: <slug>; balance $<n>` (the DataForSEO dashboard balance stated today). A cached answer is reused, never bought again unless that token ends `; refresh`.
@@ -21,8 +21,8 @@ effort: high
 | `spend approved: <slug>; balance $<n>` (plus `; refresh` for a re-buy) | Buy, for exactly that slug. No `balance $<n>` → ask for it and make no call |
 | `spend declined` | NOT FETCHED output |
 
-1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`). The **query**, said in your hand-back:
-   - a city page: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?", the `city` exactly as `data/locations.json` writes it (the script stops on any other wording);
+1. The slug is a page's bare slug (`blue-staffy-puppies-manchester-uk`); the homepage's slug is `index` (route `/`, built page `dist/index.html`). The **query**, said in your hand-back:
+   - a location page (a `data/locations.json` row): `location_question()` in `scripts/query_augment.py` — "Where can I buy a blue Staffy puppy near <place>, and what should I ask the breeder?", <place> the row's `city` without any bracketed note (the breeding-dogs outreach row's `(breeding dogs)` is dropped); a national row (`city` `UK`: the UK hub, the licensed-breeder page) asks "… in the UK, …", never "near UK". Print it with `python3 -c 'import sys; sys.path.insert(0, "scripts"); from query_augment import location_question as q; print(q(sys.argv[1]))' "<city>"`; the script stops on any other wording;
    - another page with a `data/queries/<slug>.json`: the question a buyer would ask for its `primary_keyword`;
    - no question file: the question a buyer would ask for the page's primary keyword (its page-map title or H1), plus any matching rows of the newest dated gap matrix (docs/research/gap-matrix-<YYYY-MM-DD>.md) — pass each row's topic, the first cell exactly as the matrix writes it, as `GAP_TOPICS="<topic>;<topic>"`. The script records which in `query_source` and stops on a topic that is not a row;
    - a page with a saved answer: the query that answer was bought for (its `keyword`, or its `_saved_note`).
@@ -36,7 +36,7 @@ effort: high
 | Exit | Meaning → do |
 |---|---|
 | 3 | cached: the page already has a bought answer. Reuse `data/queries/raw/<slug>/ai_engines.response.json`; no call, no stop → **The script** |
-| 0 | not bought. **STOP** with one budget line: slug, query, the typical cost (the larger of `query_typical_call_usd` in `data/settings.json` and the largest `ai_engines` cost in `data/queries/spend.json` — an estimate), the total logged against `query_total_budget_usd`; ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined` |
+| 0 | not bought. **STOP** with one budget line: slug, query, and the first line `python3 scripts/query_augment.py --budget ai_engines` prints — the typical cost (an estimate) and the total the guard counts against `query_total_budget_usd` (real spend up to the last dashboard reading in `data/queries/dashboard.json`, logged costs after it); ask for today's dashboard balance. Wait for `spend approved: <slug>; balance $<n>` or `spend declined`. Never run `--reconcile`: recording a new dashboard reading is the controller's job alone |
 | 4 | over budget, or the log is unreadable → stop, report the guard's stderr line; never work around it |
 | 1, 2 | the guard failed → stop and report its output |
 
@@ -56,6 +56,7 @@ A re-buy of a cached answer happens only when the user asked for a fresh answer 
 5. **File it by the script's exit:**
    - 0 → move the scratch file to `data/queries/raw/<slug>/ai_engines.response.json`; the output stands.
    - 5 (connector error: a status other than 20000, or no answer text) → move it to `data/queries/raw/<slug>/ai_engines.error.json` — never ai_engines.response.json, which the guard would read as bought — and write the NOT FETCHED output with `NOT_FETCHED="connector error: <the script's message>" PAID=1`.
+   - a stale build (the script stops with "… is older than …: run npm run build …") → the answer is valid, only the page text is stale: still move the scratch file to `data/queries/raw/<slug>/ai_engines.response.json`, report, then `npm run build` and run the script again on the saved answer, with the same `PAID=1 FETCHED_ON=<call date>` — the next preflight is cached (exit 3), no second call.
    - anything else → stop and report; the scratch file stays unfiled.
 6. The normalised ai_engines.json and its questions belong to `bsuk-query-augmentation`: hand it the slug; do not write that file here.
 
@@ -79,6 +80,7 @@ Three layers — citations, entities, format — in one script, from the repo ro
   - Never one holding a safety entity's words (`health-test certificates`, `written contract`).
   - An organisation the answer names counts even when it is also cited.
   - The script drops a whole entry that breaks a rule or whose words the answer does not contain, and names it on stderr — you cannot add what the answer does not say.
+  - The output's `extra` records the string exactly as given, dropped entries included, so a re-run of the same answer passes `EXTRA="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["extra"])' <the llm-intel file>)"` and reproduces every entity and its variants.
 - The response path: the saved ai_engines.response.json, the scratch file of Buy step 4, or the file the invocation hands you as a stand-in (`raw` still names the saved path).
 
 What the script decides (to explain it, never to redo it):
@@ -90,11 +92,11 @@ What the script decides (to explain it, never to redo it):
   - the answer's **local businesses** are kept apart the same way — `local_businesses` entries and `brand_entities` items whose `category` is `local_business`; a brand entity with a title and no link is kept by `name`, mapped to a registry entry only when its name is that entry's name exactly (then it takes the entry's domain), else `domain: null`;
   - WhatsApp, maps and social-profile hosts are dropped as contact or profile links — never recorded;
   - hosted-platform hosts (Blogspot, WordPress.com, Wix, Squarespace, Weebly …) are kept with `platform: true` — a seller on a platform, never a registry candidate;
-  - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains (the business email's domain in `data/settings.json`, a site-domain key there if one is added, and the build placeholder);
+  - each site maps to a registry `id` and `tier`, or null. BSUK = an exact match with its own domains — `own_domains()` in `scripts/competitor_registry_check.py`, the same helper `tests/py/test_llm_intel.py` checks with: the root domain of the business email in `data/settings.json`, of a site-domain key there if one is added, and the build placeholder;
   - `citation_gap` = registry tiers 1–4 among them while BSUK is not; a tier-5 site goes to `risks` once, never to the gap.
-- **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable (its `<main>`). A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
+- **Page text:** the built page, `dist/<route>index.html`, when it exists and is indexable — no robots `<meta>` holding `noindex`, whatever its attribute order or quotes (its `<main>`). A build older than any file under `src/` or `data/` (`data/queries/` and `data/competitors.json` aside — research files the build never reads) stops the script: run `npm run build`, then the script again. A noindex stub or no build → the questions the page must carry from `data/queries/<slug>.json` (FAQ picks and `must_answer`), minus every question an AI engine suggested (`found_in` holding an `ai_` source — the answer is never checked against itself); else the page map's title, H1 and headings. Both are `provisional: true`, with the reason in `page_source.note`.
 - **Entities:** the buying-safety list (health tests, L-2-HGA, HC-HSF4, meeting the mother, microchip, vaccinations, vet check, KC registration, licence, contract), each recorded only when the answer uses it, then your `EXTRA`. Matched on normalised whole words (a plural `s` counts) against the page text. **High** = a safety entity missing from the page; everything else medium.
-- **Format:** list type (a table needs a `|---|` separator row; only top-level `1.` or `-` items count), words, length band (short under 100, medium to 300, long above), and the opening move of the first sentence of the first content line — headings, bold labels (`**Short answer:**`) and rules skipped, "e.g." and "i.e." never a sentence end: question, recommendation (an instruction, "you can/should", "here is/are", "the best place"), statistic, definition, statement. This is the mirror template for the page's answer blocks.
+- **Format:** list type (a table needs a separator row, `|-|` or longer; only top-level `1.` or `-` items count), words, length band (short under 100, medium to 300, long above), and the opening move of the first sentence of the first content line — headings, rules, table rows (any line holding `|` once the answer is a table) and bold labels skipped (`**Short answer:**` alone on its line, or before the text on the same line; a bold sentence with no colon is text), so a table-first answer opens with the first line after the table, and a table alone is a statement; "e.g." and "i.e." never a sentence end: question, recommendation (an instruction, "you can/should", "here is/are", "the best place"), statistic (a number among the first twelve words, a hyphen-joined one such as 8-week-old included — never a digit inside a name such as Pets4Homes, L-2-HGA or 3D), definition, statement. This is the mirror template for the page's answer blocks.
 
 ```bash
 mkdir -p docs/research/llm-intel
@@ -102,14 +104,15 @@ OUT=docs/research/llm-intel/<slug>-<YYYY-MM-DD>.json
 QUERY="<query>" TODAY=<YYYY-MM-DD> EXTRA="<name|variant;...>" \
   python3 - <slug> data/queries/raw/<slug>/ai_engines.response.json > "$OUT" <<'EOF'; rc=$?; [ $rc -eq 0 ] || rm -f "$OUT"; echo "exit $rc"
 import datetime, glob, html, json, os, re, sys
-from urllib.parse import urlparse
 sys.path.insert(0, "scripts")
-from competitor_registry_check import CC_SECOND_LEVELS  # the registry's root-domain rule
+from competitor_registry_check import own_domains, root_domain as root  # the registry's root-domain rule; BSUK's own domains
+from query_augment import location_question  # the location question: one rule, shared with bsuk-query-augmentation
 slug, resp_path = sys.argv[1], (sys.argv[2:] or [None])[0]
 QUERY = os.environ["QUERY"]  # the buyer question asked
 NOT_FETCHED = os.environ.get("NOT_FETCHED", "").strip()  # a reason: no answer to read
 PAID = os.environ.get("PAID") == "1"
-EXTRA = [[v.strip().lower() for v in e.split("|") if v.strip()] for e in os.environ.get("EXTRA", "").split(";") if e.strip()]
+EXTRA_GIVEN = os.environ.get("EXTRA", "").strip()  # recorded in the output as given, so a re-run reproduces it
+EXTRA = [p for p in ([v.strip().lower() for v in e.split("|") if v.strip()] for e in EXTRA_GIVEN.split(";")) if p]  # an empty entry ("|") is skipped
 def fail(msg, code=1):
     print(msg, file=sys.stderr)
     sys.exit(code)
@@ -133,28 +136,15 @@ PROFILE_HOSTS = {"wa.me", "wa.link", "whatsapp.com", "instagram.com", "facebook.
                  "x.com", "twitter.com", "youtube.com", "linktr.ee", "snapchat.com", "google.com", "goo.gl"}  # contact, maps or profile links, never recorded
 PLATFORM_HOSTS = {"blogspot.com", "wordpress.com", "wixsite.com", "squarespace.com", "weebly.com", "webflow.io",
                   "carrd.co", "jimdosite.com", "godaddysites.com", "square.site", "business.site"}  # sellers on a host, never registry candidates
-PLACEHOLDER = "site_url_placeholder"
-def root(u):  # the registry's rule: two labels, or three under co/org/me/... + a 2-letter ccTLD
-    h = (urlparse(u if "//" in u else "//" + u).hostname or "").lower().rstrip(".")
-    try:
-        h = h.encode("idna").decode()
-    except UnicodeError:
-        pass
-    labels = h.split(".")
-    if h == PLACEHOLDER:
-        return h
-    keep = 3 if len(labels) >= 3 and len(labels[-1]) == 2 and labels[-1].isalpha() and labels[-2] in CC_SECOND_LEVELS else 2
-    return ".".join(labels[-keep:]) if len(labels) >= 2 else None
-settings = json.load(open("data/settings.json")) if os.path.exists("data/settings.json") else {}
-OWN = {PLACEHOLDER} | {root(v) for v in [settings.get(k) for k in ("site_domain", "site_url", "domain")]
-                       + [str(settings.get("email", "")).rpartition("@")[2]] if isinstance(v, str) and "." in v}
-# the page and where the query came from: the city question, else the question file, else the page map (+ gap-matrix rows)
+OWN = own_domains(strict=True)  # the same helper tests/py/test_llm_intel.py checks with; no BSUK domain known -> stop
+# the page and where the query came from: the location question, else the question file, else the page map (+ gap-matrix rows)
 qfile = f"data/queries/{slug}.json"
 q = json.load(open(qfile)) if os.path.exists(qfile) else None
-pm = next((p for p in json.load(open("data/page-map.json"))["pages"] if p["url"].rstrip("/").endswith("/" + slug)), None)
+pm = next((p for p in json.load(open("data/page-map.json"))["pages"]
+           if (p["url"] == "/" if slug == "index" else p["url"].rstrip("/").endswith("/" + slug))), None)  # index = the homepage
 city = next((x["city"] for x in json.load(open("data/locations.json")) if x.get("slug") == slug), None)
-if city and QUERY != f"Where can I buy a blue Staffy puppy near {city}, and what should I ask the breeder?":
-    fail(f"{slug} is a city page: QUERY must be the city question for {city}")
+if city and QUERY != location_question(city):
+    fail(f"{slug} is a location page: QUERY must be {location_question(city)!r}")
 if not (city or q or pm):
     fail("no city row, question file or page-map entry for this slug: nothing to build the query from")
 topics = [t.strip().lower() for t in os.environ.get("GAP_TOPICS", "").split(";") if t.strip()]
@@ -179,7 +169,8 @@ if NOT_FETCHED:  # the NOT FETCHED output: no answer to read
                       "paid_this_run": PAID, "bsuk_cited": None, "citations": [], "local_businesses": [], "citation_gap": [],
                       "risks": [], "page_source": {"kind": "none", "path": None, "provisional": True, "note": "no answer to check"},
                       "entities": [], "format": {"status": "NOT FETCHED", "reason": NOT_FETCHED},
-                      "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}, indent=1))
+                      "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"},
+                      "extra": EXTRA_GIVEN}, indent=1))
     sys.exit(0)
 def walk(x, key=None):
     yield key, x
@@ -236,11 +227,25 @@ bsuk = any(s["domain"] in OWN for s in everything)
 route = (q or {}).get("route") or (pm or {}).get("url")
 built = f"dist{route}index.html" if route else None
 page, src = None, None
+def meta(tag, name):  # an attribute's value, quoted either way or bare; data-name or name-x is not name
+    m = re.search(r"""(?<![\w-])%s\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""" % name, tag, re.I)
+    if not m:
+        return ""
+    q1, q2, bare = m.groups()
+    return (q1 if q1 is not None else q2 if q2 is not None else bare.rstrip("/")).lower()  # bare: "noindex/>" self-closes
+def newest_input():  # the newest file the build reads: src/ and data/, never data/queries/ or data/competitors.json
+    files = [p for d in ("src", "data") for p in glob.glob(f"{d}/**/*", recursive=True) if os.path.isfile(p)
+             and not p.startswith(os.path.join("data", "queries", "")) and p != os.path.join("data", "competitors.json")]
+    return max(files, key=os.path.getmtime, default=None)
 if built and os.path.exists(built):
     h = open(built, encoding="utf-8").read()
-    if re.search(r'<meta[^>]+name="robots"[^>]+noindex', h, re.I):
+    if any(meta(t, "name") == "robots" and {"noindex", "none"} & set(re.split(r"[\s,]+", meta(t, "content")))
+           for t in re.findall(r"<meta\b[^>]*>", h, re.I)):  # robots "none" = noindex, nofollow
         why = f"{built} is a noindex stub"
     else:
+        newer = newest_input()
+        if newer and os.path.getmtime(newer) > os.path.getmtime(built):
+            fail(f"{built} is older than {newer}: run npm run build, then run this script again")
         body = re.search(r"<main\b.*?</main>", h, re.S | re.I)
         body = re.sub(r"<(script|style)\b.*?</\1>", " ", body.group(0) if body else h, flags=re.S | re.I)
         page, src = norm(re.sub(r"<[^>]+>", " ", body)), {"kind": "dist", "path": built, "provisional": False, "note": "built, indexable page"}
@@ -274,14 +279,16 @@ for e in EXTRA:
 if how == "verbatim":
     lines = [l for l in answer.splitlines() if l.strip()]
     rule = lambda l: re.fullmatch(r"\s*(?:[-*_]\s*){3,}", l)
-    sep = lambda l: "|" in l and re.fullmatch(r"\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)*\|?\s*", l)
+    sep = lambda l: "|" in l and re.fullmatch(r"\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)*\|?\s*", l)  # one dash is enough
     num = sum(bool(re.match(r"\d+[.)]\s", l)) for l in lines)  # top-level items only: no indent
     bul = sum(bool(re.match(r"[-*•+]\s", l)) and not rule(l) for l in lines)
     lst = ("table" if any(sep(l) for l in lines) else "numbered" if num >= 2 and num >= bul
            else "bulleted" if bul >= 2 else "paragraphs")
     words = len(re.findall(r"[a-z0-9£%]+(?:'[a-z]+)?", re.sub(r"\]\([^)]*\)|https?://\S+", " ", answer.lower())))
     label = lambda l: re.fullmatch(r"\s*(?:\*\*|__)[^*_]+(?:\*\*|__)\s*:?\s*", l)
-    first = next((l for l in lines if not (re.match(r"\s*#", l) or rule(l) or label(l) or sep(l))), "")
+    first = next((l for l in lines if not (re.match(r"\s*#", l) or rule(l) or label(l) or sep(l)
+                                           or l.lstrip().startswith("|") or (lst == "table" and "|" in l))), "")  # a table row is never the opening
+    first = re.sub(r"^\s*(?:\*\*|__)[^*_]*?(?::(?:\*\*|__)|(?:\*\*|__)\s*:)\s*", "", first)  # an inline label: "**Short answer:** ..."
     first = re.sub(r"\[([^\]]*)\]\([^)]*\)", r"\1", first)
     first = re.sub(r"^\s*(?:\d+[.)]|[-*•+])\s*|\*\*|__", "", first).strip()
     first = re.sub(r"\b(e)\.g\.|\b(i)\.e\.", lambda m: (m.group(1) or m.group(2)) + "\0", first, flags=re.I)  # not a sentence end
@@ -292,7 +299,7 @@ if how == "verbatim":
                                                           "avoid", "start", "consider", "get", "see", "try", "search", "prioritise",
                                                           "prioritize", "verify", "only", "never", "always", "pick", "research"})
                or re.search(r"\brecommend|\byou (?:can|should|could|may|might)\b|\bhere(?:'s| is| are)\b|\bbest (?:place|way|option|bet)\b|\bi(?:'d)? suggest\b", low) else
-               "statistic" if re.search(r"\d", " ".join(fw[:12])) else
+               "statistic" if re.search(r"(?<![\w-])[£$€]?\d[\d,]*(?:\.\d+)?%?(?!\w)", " ".join(first.split()[:12])) else  # a number, even hyphen-joined (8-week-old); never a digit in a name (Pets4Homes, L-2-HGA, 3D)
                "definition" if re.match(r"^(?:a |an |the )?[a-z' -]{1,40}? (?:is|are|means|refers to) ", low) else "statement")
     fmt = {"status": "ok", "list": lst, "length": "short" if words < 100 else "medium" if words <= 300 else "long", "words": words, "opening": opening}
 else:
@@ -314,7 +321,8 @@ out = {"slug": slug, "date": today, "engine": "chatgpt", "endpoint": "ai_optimiz
        "risks": [{"domain": s["domain"], "registry_id": s["registry_id"], "reason": "tier 5 (suspect seller) in data/competitors.json: a risk, never a model"}
                  for s in uniq if s["tier"] == 5],
        "page_source": src, "entities": entities, "format": fmt,
-       "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"}}
+       "llm_mentions": {"status": "NOT FETCHED", "reason": "llm_mentions only once BSUK's domain is live (project 6)"},
+       "extra": EXTRA_GIVEN}
 print(json.dumps(out, indent=1, ensure_ascii=False))
 print(f"STALE (older than 30 days; carrying on): {'; '.join(stale)}" if stale else "fresh: answer and gap matrix within 30 days", file=sys.stderr)
 print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'}; EXTRA dropped (too short, not in the answer, or holding a safety entity): {rejected or 'none'}", file=sys.stderr)
@@ -322,7 +330,7 @@ print(f"registry: {'data/competitors.json' if reg else 'none (registry_id null)'
 EOF
 ```
 
-`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row) and stop; never write the file by hand.
+`exit 5` is a connector error (Buy step 5). Any other exit but 0 leaves no file: report its message (a query that does not match the response, no date for the answer, a gap topic that is not a row, a build older than its sources — its paid answer is still filed (Buy step 5), then `npm run build` and run it again) and stop; never write the file by hand.
 
 ## Output
 

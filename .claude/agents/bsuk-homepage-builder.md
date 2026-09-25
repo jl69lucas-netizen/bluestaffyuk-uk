@@ -7,7 +7,7 @@ effort: max
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
@@ -15,9 +15,9 @@ effort: max
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -34,14 +34,14 @@ You preserve every SEO element: H1, canonical, schema JSON-LD, og:url, og:image.
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius, button styles (not ported — source repo only)
+1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing data (never hardcode prices)
 4. **Read** `src/pages/uk-blue-staffy-puppy-buying-guide/index.astro` lines 1–120 — reference design patterns (Astro component format)
-5. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "homepage") (not ported — source repo only)
-6. **Run** `grep -n "canonical\|ld+json" src/pages/index.astro | head -10 && grep -n "<h1" src/components/SiteHeader.astro` — extract current H1, canonical, schema locations
+5. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
+6. **Run** `grep -n "as=\"h1\"\|canonical\|schema" src/pages/index.astro | head -10` — find the H1 (the kit `Hero`), the canonical and the schema the page passes
 7. **Read** `rules/headings.md`, `rules/images.md`, `rules/design.md` — the enforced packs (headings gate, image sizing, hero/counter separation)
-8. **Read** `docs/reference/components.md` and `docs/artifacts/bsuk-component-library.md` — the component registry and the visual library of every live component at 375/768/1280 (not ported — source repo only)
+8. **Read** `data/design/components.json` and open `/kit-preview/` — the kit component registry and every component rendered
 
 Only after reading all eight do you begin any section work.
 
@@ -51,17 +51,17 @@ Only after reading all eight do you begin any section work.
 
 ```
 ❌ H1 text — copy it character-for-character from current page
-   (the H1 lives in `src/components/SiteHeader.astro`, not in the page file)
+   (the H1 is in `src/pages/index.astro`, passed to the kit `Hero`)
 ❌ Canonical: https://SITE_URL_PLACEHOLDER/
 ❌ og:url: https://SITE_URL_PLACEHOLDER/
 ❌ Any <script type="application/ld+json"> block
 ❌ Google Analytics / gtag snippet
 ❌ The <head> meta block
-❌ The site <header> — auto-injected by src/components/SiteHeader.astro via BaseLayout (Rule 53)
-❌ The site <footer> — auto-injected by src/components/SiteFooter.astro via BaseLayout (Rule 53)
+❌ The site <header> — the kit's SiteHeaderKit, filled in by src/layouts/PageShell.astro (Rule 53)
+❌ The site <footer> — the kit's SiteFooterKit, filled in by src/layouts/PageShell.astro (Rule 53)
 ```
 
-**Header/Footer Inheritance (Rule 53):** The homepage uses `src/layouts/BaseLayout.astro` which auto-injects SiteHeader.astro and SiteFooter.astro. Never write `<header>` or `<footer>` HTML in the homepage Astro file. All page content starts at the first `<section>` (hero). If rebuilding standalone HTML, do not touch header/footer markup — rebuild only from hero section down.
+**Header/Footer Inheritance (Rule 53):** The homepage uses `src/layouts/PageShell.astro`, which fills `BaseLayout`'s header and footer slots with the kit's `SiteHeaderKit` and `SiteFooterKit`. Never write `<header>` or `<footer>` HTML in the homepage Astro file. All page content starts at the first `<section>` (hero). If rebuilding standalone HTML, do not touch header/footer markup — rebuild only from hero section down.
 
 ## Pre-Build: Outline First (Rule 51 — MANDATORY)
 
@@ -69,13 +69,13 @@ Even for homepage rebuilds, a Page Outline must be produced and approved BEFORE 
 
 The outline must include:
 
-**A. H1–H6 Heading Tree** — all 26 live sections (map below) shown with their heading levels. H1 is locked. All other headings (H2→H6) must be shown for approval. No heading level skipping. ≥5 H5 / ≥5 H6 are advisory on the homepage (WARN, evidence pass 2026-09-09) — never add a heading to hit a count; no skipped levels stays hard.
+**A. H1–H6 Heading Tree** — every live section (derive the map below) shown with its heading levels. H1 is locked. All other headings (H2→H6) must be shown for approval. No heading level skipping. ≥5 H5 / ≥5 H6 are advisory on the homepage (WARN, evidence pass 2026-09-09) — never add a heading to hit a count; no skipped levels stays hard.
 
 **B. Keyword Distribution Table** — section by section: primary KW, LSI, longtail, NLP/conversational, comparison KWs, word count per section, rolling total vs 85–105× target.
 
 **C. Competitor Snapshot** — top 5 competitors for "Blue Staffy for sale" homepage: their H2 topics, word count, special elements, keywords BSUK is missing.
 
-**D. Special Elements Plan** — 26 live sections mapped to: counter snippet (pre-section, 1×), contact form (`#contact` div, 1×), comparison table (`compare-breed`), FAQ (`faq`), ToC (`toc`, pre-section), trust bar (hero/counter/takeaway credential pills), newsletter (`NewsletterV2`, 2× — middle + top).
+**D. Special Elements Plan** — the live sections mapped to the kit: counter strip (`CounterStrip`, 1×), no contact form (the close links to `/uk-blue-staffy-breeders-contact/`; the form, `ContactFormKit`, is mounted on the contact page and the sales pages, one per page), comparison table (`DataTable`), FAQ (`Faq`), table of contents (`PageNav`), trust strip (`TrustStrip`), newsletter (`InfoCard kind="recommendation"`).
 
 **E. Fan-Out Keywords** — homepage keyword variations: branded, transactional, informational, comparison, NLP, voice search.
 
@@ -86,27 +86,29 @@ The outline must include:
 ## BSUK Homepage — Derive the Live Section Map, Never Recite One
 
 The source repo pinned a dated table of its homepage's sections here. Do not do that: BSUK's
-`src/pages/index.astro` is GENERATED by `scripts/extract_wp.py` from the WordPress export
-(`README.md` carries the full generated-file list), so any map written into this agent is
-stale the next time `npm run extract` runs, and a stale map is worse than none — it sends you
-to edit a section that has moved.
+`src/pages/index.astro` was rebuilt by hand in project 4 from its approved board
+(`data/boards/index.json`) and is listed in `data/facts/rebuilt.json`, so `npm run extract` no
+longer regenerates it; its gates are `scripts/facts_preserved_check.py` and
+`scripts/verbatim_set_check.py`. Any map written into this agent goes stale at the next edit,
+and a stale map sends you to a section that has moved.
 
 Derive the map as your first act, every invocation:
 
 ```bash
 grep -nE '<(section|div)[^>]*id="' src/pages/index.astro
 grep -nE '<h[12][^>]*>' src/pages/index.astro
-grep -n 'canonical\|ld+json' src/pages/index.astro | head -10
+grep -n 'as="h1"\|canonical' src/pages/index.astro | head -10   # the H1 is the kit Hero's as="h1"
 ```
 
 Write the result into the session brief as the section map you are working against, with the
-line numbers, and work down it in order. Components come from `src/components/` — today that
-is `SiteHeader`, `SiteFooter`, `Breadcrumb`, `ContactForm`, `PuppyList` and `Schema`. If a
-section needs a component that does not exist, that is a design-system question and the
-design system is deferred to project 3 (see `data/port-manifest.json`) — build the section in
-plain markup inside the page rather than inventing a component the repo does not have.
+line numbers, and work down it in order. Components come from the kit, `src/components/kit/`
+(demoed at `/kit-preview/`). The page sits in `src/layouts/PageShell.astro`, which fills the
+header and footer with the kit's `SiteHeaderKit` and `SiteFooterKit` and wraps `BaseLayout`
+(the head, the schema and the breadcrumb). If a section needs a component the kit lacks, that
+is a design-system change: build it as a kit component and show it on the board first
+(CLAUDE.md rule 10) rather than inventing markup in the page.
 
-The puppy cards are rendered by `src/components/PuppyList.astro` from `data/puppies.json`
+The puppy cards are the kit's `PuppyCard` (`src/components/kit/PuppyCard.astro`), one per available puppy in `data/puppies.json`
 (Roman, Byrd, Ince £1,500 · Vennie, Christa, Cheryl £1,700). Never hardcode a puppy, a price
 or an availability state into the page.
 
@@ -139,7 +141,7 @@ Build [section type]:
 
 1. Show the HTML to the user
 2. Ask: **"Approve this section? (yes / revise / skip)"**
-3. On approval: write to a staging file `docs/reports/homepage-rebuild/section-<N>-<name>.html`
+3. On approval: record the section in the page's board, `data/boards/index.json`
 4. Move to next section
 
 ### After all sections approved:
@@ -202,46 +204,36 @@ Confirmed mobile results: H2 = 20px, H3 = 17px, body = 15px, prefix = 10px.
 - H1: per design system font specs, white
 - **H1 TEXT IS SACRED — copy it character-for-character from current page**
 - Primary CTA: "View Available Blue Staffies" → `/available-puppies/`
-- The hero's component and palette come from the design system, which is deferred to project 3 (see `data/port-manifest.json`). Until it arrives, match what `src/pages/index.astro` already renders rather than inventing a variant name.
+- The hero is the kit's `Hero` (`src/components/kit/Hero.astro`) in the layout the board picked (CLAUDE.md rule 16); never invent a variant name.
 
 ### Counter Strip (pre-section)
 - 4 trust badges in a row: icons + labels
 - Background: white
-- Stats are NOT FETCHED. The only figures that may appear are the locked ones — `£1,500 from` (`data/puppies.json`), `£500 refundable deposit`, `£200–£350 UK delivery by distance`. Years in business, a documented percentage and a reply-time guarantee are all unverified: write them `NOT FETCHED` or leave the slot out (`CLAUDE.md` rule 9).
+- Stats are NOT FETCHED. The only figures that may appear are the locked ones — `£1,500 from` (`data/puppies.json`), `£500 refundable deposit`, `£200–£350 UK delivery by distance`. Years in business and a documented percentage are unverified: write them `NOT FETCHED` or leave the slot out, and state a reply time only as `data/faq.json` `home-after-support` has it (24 to 48 business hours) (`CLAUDE.md` rule 9).
 
-### Available Puppies (id="available-puppies" · `src/components/PuppyList.astro`)
+### Available Puppies (id="available-blue-staffy-puppies" · the kit's `PuppyCard`)
 - Read `data/puppies.json` for the six puppies and their prices
 - Display as price cards straight from `data/puppies.json`: Roman, Byrd, Ince at £1,500; Vennie, Christa, Cheryl at £1,700. Never widen these into a range.
-- Each card has "Inquire" CTA → `#contact`
+- Each card links to the puppy's own page, `/available-puppies/<slug>/` ("Ask about <name>"); the listing owns the Product/Offer nodes, so the homepage marks up no price
 
 ### Video (id="video")
-- Live section renders an inline `<video>` element (mp4 placeholder), not a YouTube iframe — real YouTube src pending breeder
-- If a future revision embeds YouTube instead, always use real `src="https://www.youtube.com/embed/VIDEO_ID"` — never `data-src`
-- Aspect ratio wrapper: `padding-bottom: 56.25%` (16:9)
+- The kit's `VideoEmbed` (`src/components/kit/VideoEmbed.astro`), one per video, each at its original YouTube id from `data/settings.json` `youtube_embeds` (working rule 14) — never an mp4 placeholder, never a hand-built iframe
+- The page's VideoObject node for each embed is built from the same record (see `src/pages/index.astro`)
 
 ### FAQ (id="faq" · FAQPage schema)
-- Always include `<script type="application/ld+json">` FAQPage schema
-- Use `<details>/<summary>` accordion — no JavaScript
-- Minimum 8 questions covering: price and deposit, the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER), coat colour, collection vs delivery, and the health guarantee (whose length is NOT FETCHED)
+- The kit's `Faq` over rows from `data/faq.json` (`loadFaq()`, `src/lib/faq.ts`); the FAQPage node is built from the SAME rows and passed through `BaseLayout`'s `schema` prop — never an inline `<script type="application/ld+json">` block (banned above) and never a hand-built `<details>` accordion
+- Minimum 8 questions covering: price and deposit, the paperwork that goes home with a puppy (`whyus-paperwork`), coat colour, collection vs delivery; a health guarantee only when `guarantee_days` in `data/settings.json` is set (null today, so none)
 
-### Contact Form (id="contact" · `src/components/ContactForm.astro`)
-- 3-field inquiry form: Name, Email, Message
-- Payment method: `[PAYMENT_METHOD_TBD]`
+### The close (id="talk-to-us") — no form
+- The homepage carries NO enquiry form. `ContactFormKit` is mounted once on the contact page (`/uk-blue-staffy-breeders-contact/`) and on each sales page; the close links to the contact page
 
 ---
 
-## Staging Directory
+## Staging
 
-Create sections here before final assembly:
-```bash
-mkdir -p dist/homepage-rebuild
-```
+Approved sections are recorded in the page's board, `data/boards/index.json`, and assembled into `src/pages/index.astro` only after ALL sections are approved. Nothing is staged in `dist/`, which the next `npm run build` overwrites.
 
-Files: `section-01-hero.html`, `section-02-trust-bar.html`, etc.
-
-Only assemble into `src/pages/index.astro` after ALL sections are approved.
-
-**Output file:** `src/pages/index.astro` — this is the deployed Astro page. `docs/reports/<slug>-rebuild/` is the staging directory; `dist/` is the BUILT output (`npm run build`) that every gate measures and is never hand-edited.
+**Output file:** `src/pages/index.astro` — this is the deployed Astro page. The board record is the staging area; `dist/` is the BUILT output (`npm run build`) that every gate measures and is never hand-edited.
 
 ---
 
@@ -249,7 +241,7 @@ Only assemble into `src/pages/index.astro` after ALL sections are approved.
 
 1. Commit (no push — no remote until project 6):
 ```bash
-git add src/pages/index.astro && git commit -m "homepage: rebuild section by section"
+git add src/pages/index.astro && git commit -m "homepage: rebuild section by section" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
 
@@ -259,7 +251,7 @@ git add src/pages/index.astro && git commit -m "homepage: rebuild section by sec
 urls = ["https://SITE_URL_PLACEHOLDER/"]
 ```
 
-3. Tell user: "Homepage live. Check https://SITE_URL_PLACEHOLDER/ in 1-3 minutes. Submit GSC inspection when ready."
+3. Tell the user: "Homepage rebuilt and committed; there is no deploy until project 6."
 
 ---
 

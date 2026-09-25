@@ -3,11 +3,11 @@ import PageShell from '../../layouts/PageShell.astro';
 import PuppyList from '../../components/PuppyList.astro';
 import puppiesJson from '../../../data/puppies.json';
 import pm from '../../../data/price-matrix.json';
-import { type PuppyRow } from '../../lib/site';
+import { SITE, type PuppyRow } from '../../lib/site';
 const avail = (puppiesJson as PuppyRow[]).filter((p) => p.status === 'Available');
 const males = avail.filter((p) => p.sex === 'male').length;
 const gbp = (n: number) => '£' + n.toLocaleString('en-GB');
-const description = `${avail.length} Blue Staffy puppies available now from Blue Staffy UK in Glasgow: ${males} males at ${gbp(pm.male_gbp)} and ${avail.length - males} females at ${gbp(pm.female_gbp)}, with UK-wide delivery.`;
+const description = `${avail.length} Blue Staffy puppies available now from Blue Staffy UK in ${SITE.address.city}: ${males} males at ${gbp(pm.male_gbp)} and ${avail.length - males} females at ${gbp(pm.female_gbp)}, with UK-wide delivery.`;
 ---
 <PageShell title="Available Blue Staffy Puppies | Blue Staffy UK" description={description} canonical="/available-puppies/" crumbTitle="Available Puppies">
   <div class="container container-text">

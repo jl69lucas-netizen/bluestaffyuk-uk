@@ -27,13 +27,16 @@ Text inside <script>, <style> and <template> is never page text. A question file
 only when its page is built AND the page is listed in data/facts/rebuilt.json (the list
 facts_preserved_check.py and final_page_audit.py read). The convention there is the bare slug,
 the route's last segment ("/uk-locations/<slug>/" -> "<slug>", "/" -> "index"), which is how
-migration_parity.py and facts_preserved_check.py key a page; the full route key resolved
-through scripts/_slugs.py ("uk-locations/<slug>") is accepted too. A file
-whose route is not built is skipped and counted as not built (an unbuilt page ships nothing);
-one whose page is built but not yet rebuilt — the old site's page is still in dist/ — is
-skipped and counted as awaiting rebuild. A question file that is
-not valid JSON, or not valid against schemas/queries.schema.json, is a problem. Exit 1 on
-any problem, 0 otherwise.
+migration_parity.py and facts_preserved_check.py key a page; the full route key
+("uk-locations/<slug>"), resolved with scripts/_slugs.py's dist_path/page_key, is accepted
+too. A file
+whose route is not built is skipped and counted as not built (an unbuilt page ships nothing)
+— unless the page is listed in data/facts/rebuilt.json, which is a problem: a rebuilt page
+the gate cannot find would otherwise pass unseen. One whose page is built but not yet
+rebuilt — the old site's page is still in dist/ — is skipped, counted and named on an
+"awaiting rebuild:" line. A question file that is not valid JSON, or not valid against
+schemas/queries.schema.json, is a problem, and so is a data/facts/rebuilt.json that is not a
+JSON list of slugs. Exit 1 on any problem, 0 otherwise.
 
   python3 scripts/query_coverage_check.py
 """
@@ -57,6 +60,9 @@ FRAME_IDS = {"top", "key-takeaways", "newsletter"}
 FRAME_CLASSES = {"kit-hero", "kit-counter", "kit-trust", "kit-nav", "kit-quote", "kit-faq"}
 HEADINGS = ("h1", "h2", "h3", "h4", "h5", "h6")
 RAW = {"script", "style", "template"}   # their text is never page text
+# The spend guard's two ledgers (scripts/query_augment.py) share data/queries/ with the
+# question files; neither is one.
+LEDGERS = {"spend.json", "dashboard.json"}
 VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta",
         "source", "track", "wbr"}
 
@@ -254,8 +260,19 @@ def route_slug(route):
 
 
 def rebuilt_keys(root):
+    """(keys, problem). A missing file is no keys. A file that is not a JSON list of strings
+    is a problem line, not a crash — and no keys, so nothing is judged against a list the gate
+    cannot read (the problem alone fails the run)."""
     f = root / "data/facts/rebuilt.json"
-    return set(json.loads(f.read_text(encoding="utf-8"))) if f.is_file() else set()
+    if not f.is_file():
+        return set(), None
+    try:
+        keys = json.loads(f.read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError) as e:
+        return set(), f"data/facts/rebuilt.json: unreadable — not JSON ({e})"
+    if not isinstance(keys, list) or not all(isinstance(k, str) for k in keys):
+        return set(), "data/facts/rebuilt.json: unreadable — must be a JSON list of slugs"
+    return set(keys), None
 
 
 def main(argv=None):
@@ -264,11 +281,12 @@ def main(argv=None):
     a = ap.parse_args(argv)
     root = Path(a.root)
     schema = json.loads((ROOT / "schemas/queries.schema.json").read_text(encoding="utf-8"))
-    rebuilt = rebuilt_keys(root)
-    examined = unbuilt = awaiting = 0
-    problems = []
+    rebuilt, bad = rebuilt_keys(root)
+    examined = unbuilt = 0
+    problems = [bad] if bad else []
+    awaiting = []
     for f in sorted((root / "data/queries").glob("*.json")):
-        if f.name == "spend.json":
+        if f.name in LEDGERS:
             continue
         try:
             q = json.loads(f.read_text(encoding="utf-8"))
@@ -289,17 +307,25 @@ def main(argv=None):
                             f"end in /{q['slug']}/")
             continue
         page = dist_path(q["route"].strip("/") or "index", root / "dist")
+        listed = bool({page_key_for(q["route"]), route_slug(q["route"])} & rebuilt)
         if not page.is_file():
-            unbuilt += 1
+            if listed:   # rebuilt.json owes this gate a page; skipping it would pass it
+                problems.append(f"{q['slug']}: listed in data/facts/rebuilt.json but not built — "
+                                f"no {page.relative_to(root).as_posix()}; run the build")
+            else:
+                unbuilt += 1
             continue
-        if not {page_key_for(q["route"]), route_slug(q["route"])} & rebuilt:
-            awaiting += 1
+        if not listed:
+            awaiting.append(q["slug"])
             continue
         examined += 1
         problems += [f"{q['slug']}: {p}" for p in check_page(q, page.read_text(encoding="utf-8"))]
     for p in problems:
         print(p)
-    print(f"examined {examined} pages ({unbuilt} not built, {awaiting} awaiting rebuild); {len(problems)} problems")
+    if awaiting:
+        print(f"awaiting rebuild: {', '.join(awaiting)}")
+    print(f"examined {examined} pages ({unbuilt} not built, {len(awaiting)} awaiting rebuild); "
+          f"{len(problems)} problems")
     return 1 if problems else 0
 
 

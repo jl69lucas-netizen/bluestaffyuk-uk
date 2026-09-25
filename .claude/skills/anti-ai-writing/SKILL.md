@@ -70,16 +70,16 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 - ✅ `blue-staffy-puppy-feeding-plan` · ❌ `the-feeding-plan-for-a-blue-staffy-puppy`
 - ✅ anchor "Blue Staffy puppy delivery costs" · ❌ anchor "more about the costs of delivery"
 - ✅ H3 "Blue vs Blue Brindle Coat Differences" · ❌ H3 "A Look at the Differences in the Coat Colours"
-- **Body prose is exempt** — sentences stay natural, grammatical, first-person. This rule targets naming/labeling surfaces, not paragraphs. A heading may keep a stop word when the conversational Quora-style question format needs it ("Is a Blue or a Blue Brindle Staffy Right for You?" is fine — question headers are a locked pattern).
+- **Body prose is exempt** — sentences stay natural, grammatical, first-person. This rule targets naming/labeling surfaces, not paragraphs. A heading may keep a stop word when the conversational Quora-style question format needs it ("Is a Male or a Female Blue Staffy Right for You?" is fine — question headers are a locked pattern).
 - **Every kept word must carry meaning** — if a word can be deleted from a slug/anchor/label without losing meaning, delete it.
 
 ## BSUK-Specific
 
 - **Keep the first-person breeder voice** — stripping slop never means stripping "we / our / here at BlueStaffyUK." Humanizing without the POV is a different failure.
-- **Stay inside the Verified-Claim Ledger** — humanizing never means inventing. A vivid concrete detail still has to be true (a real enquiry call, a real puppy, a real price). No new credentials, no fabricated outcomes.
+- **Stay inside the evidence ledger** (`data/quality/evidence-ledger.json`) and the facts in `data/*.json` — humanizing never means inventing. A vivid concrete detail still has to be true (a real enquiry call, a real puppy, a real price). No new credentials, no fabricated outcomes.
 - **Licence-safe** — all rewrites stay accurate to LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance; never state either as fact before Lisa confirms it, and never imply a third-party or dealer sale.
 - **No visible dates** — freshness lives in schema only (see CLAUDE.md non-negotiables).
-- **Never the 🐶 emoji** — use `/emoji/bsuk-blue.png` / `bsuk-brindle.png` or `[BSUK]`/`[BLUE]` text markers.
+- **Never the 🐶 emoji** — use a line icon (`rules/design.md`) or a plain `[BSUK]`/`[BLUE]` text marker.
 
 ## Self-Check Before Shipping
 
@@ -92,4 +92,4 @@ Applies to every NAMING surface when working on, rebuilding, creating, or editin
 - **Stripped the slop but also stripped the voice** — the draft goes flat and ownerless. Keep we/our/here at BlueStaffyUK; the fix is phrasing, not personality.
 - **Swapped one cliché for another** — "delve into" → "dive into" is not a fix. Replace with a plain verb, not a fresher buzzword.
 - **Over-corrected into choppiness** — every sentence under 8 words reads like a robot too. Vary length; one short sentence per paragraph, not all of them.
-- **Invented a concrete detail to sound human** — a fake "buyer named Sarah rang us" violates the Verified-Claim Ledger. Use only real, true specifics.
+- **Invented a concrete detail to sound human** — a fake "buyer named Sarah rang us" is a fabricated claim (`CLAUDE.md` rule 9). Use only real, true specifics.

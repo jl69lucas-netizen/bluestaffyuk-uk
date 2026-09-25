@@ -229,8 +229,10 @@ const MOSAIC_SIZES = '(max-width: 900px) calc(50vw - 52px), '
 //            what STACKS a stacked, panel or bleed hero — each has its own one-column rule —
 //            but no rule stacks a mosaic, so a mosaic that degraded to its single photo paints
 //            the split hero's column. Reading `top` there promised 828px for a 408px box on
-//            `/` (H-HM2, whose record names one photograph), which is the `sizes` defect this
-//            block exists to prevent, one arrangement over.
+//            `/` while H-HM2's record named one photograph, which is the `sizes` defect this
+//            block exists to prevent, one arrangement over. (Since Known Issue 33 / user ruling
+//            R11 the homepage's record names four photographs and two figures, so `/` paints
+//            the full mosaic; the rule still holds for any mosaic that degrades.)
 const BELOW_900 = (px: number) => `(max-width: 900px) calc(100vw - ${px}px)`;
 const stacksOnTop = media === 'top' && layout !== 'mosaic';
 const MEASURED_PIC_SIZES = stacksOnTop
@@ -700,6 +702,42 @@ if (showPhoto && !(layout === 'mosaic' && mosaic.length >= 2)) {
       .kit-hero[data-hero-layout="stacked"][data-hero-ledge="aside"] .hero-aside {
         grid-area: aside; align-self: start;
       }
+    }
+
+    /* A SPLIT HERO WITH AN ASIDE is the same problem a third time. H-GD1, the interior-guide
+       family's editorial split, is the one style with this pair, and no page had rendered it
+       until the three guides were re-boarded (Known Issues 30 and 35, project 5 readiness).
+       `ledge: 'aside'` sets three tracks above 1024, which left the copy 276px at 1280:
+       measured, the breed guide's verbatim H1 took eight lines in it and the buying guide's
+       ten. So the aside becomes a SECOND ROW beneath the copy and the photo keeps its side at
+       the full height of both rows — the arrangement the style names, with the key facts in
+       their own box. Even so it holds only a short H1: with the faces loaded it fits the health
+       guide at 1280 (it grows to 528 at 1024 and 470 at 1100, which amendment 4a allows), whose
+       page leaves its credential line out of this arrangement, and runs the breed guide's hero
+       131px past 450. */
+    @media (min-width: 1024px) {
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .inner {
+        grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+        grid-template-areas: "copy pic" "aside pic";
+        align-items: start; row-gap: var(--space-3);
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"][data-hero-media="left"] .inner {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+        grid-template-areas: "pic copy" "pic aside";
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .pic { grid-area: pic; }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .copy { grid-area: copy; }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .hero-aside {
+        grid-area: aside; align-self: start; padding: var(--space-3);
+      }
+      /* Two rows in one column is the mosaic's budget, so it takes the mosaic's type step:
+         the title one notch down and the lede's margin tightened (measured on
+         /blue-staffy-health-uk/). */
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .title {
+        font-size: var(--text-2xl); line-height: var(--text-2xl--line-height);
+        margin-bottom: var(--space-2);
+      }
+      .kit-hero[data-hero-layout="split"][data-hero-ledge="aside"] .lede { margin-bottom: var(--space-3); }
     }
 
     /* A PANEL WITH AN ASIDE IS THE MOSAIC'S PROBLEM AGAIN, and it takes the mosaic's answer.

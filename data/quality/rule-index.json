@@ -208,6 +208,67 @@
    "why": "requires knowing what is true off-page; a test can only check a claim against a ledger it is given, which is the next rule"
   },
   {
+   "id": "visual-companion-always",
+   "family": "GATE",
+   "enforced": "untested",
+   "claude_md": 10,
+   "_note": "CLAUDE.md working rule 10. Governs how a visual decision is SHOWN to the breeder (the browser, never words alone); nothing a test can read records that it was shown."
+  },
+  {
+   "id": "reuse-every-image-and-video",
+   "family": "IMG",
+   "enforced": "untested",
+   "claude_md": 11,
+   "_note": "CLAUDE.md working rule 11. No check compares public/images/ against the files it has served; facts_preserved_check.py reports an image a rebuilt page drops, which is a page fact, not the file's URL; tests/py/test_images.py::test_legacy_logo_rasters_are_still_served guards the two legacy logo rasters only."
+  },
+  {
+   "id": "every-link-on-the-board",
+   "family": "NAV",
+   "enforced": "test",
+   "claude_md": 12,
+   "test": "tests/py/test_link_parity.py",
+   "_note": "CLAUDE.md working rule 12. scripts/link_parity_check.py (npm run check:links, in check:all) fails a rebuilt page that links anywhere its approved board record does not; tests/py/test_board_links.py checks the board half \u2014 the board shows every internal and external link the page will carry."
+  },
+  {
+   "id": "tables-three-styles-stacked-on-mobile",
+   "family": "LAYOUT",
+   "enforced": "untested",
+   "claude_md": 13,
+   "_note": "CLAUDE.md working rule 13. The stacking half is measured by the render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile; the board half has only a partial check: tests/py/test_board_previews.py proves the `table` shape offers three rendered styles on its `chrome` axis, but nothing requires a table-rendering section to use that shape, so the rule as a whole stays untested."
+  },
+  {
+   "id": "every-video-reused-at-its-id",
+   "family": "IMG",
+   "enforced": "test",
+   "claude_md": 14,
+   "test": "tests/py/test_facts_preserved.py",
+   "_note": "CLAUDE.md working rule 14. scripts/facts_preserved_check.py (npm run check:facts, in check:all) reports by name any YouTube id a rebuilt page drops."
+  },
+  {
+   "id": "faithful-rewrite-verbatim-set",
+   "family": "COPY",
+   "enforced": "test",
+   "claude_md": 15,
+   "test": "tests/py/test_verbatim_set.py",
+   "_note": "CLAUDE.md working rule 15. scripts/verbatim_set_check.py (npm run check:verbatim, in check:all) proves the migrated page's verbatim set is on the built page."
+  },
+  {
+   "id": "per-page-hero-and-counter",
+   "family": "LAYOUT",
+   "enforced": "test",
+   "claude_md": 16,
+   "_note": "CLAUDE.md working rule 16. tests/py/test_rule16_gate.py fails any hero or counter arrangement two pages share, except among the three utility pages the user exempted by name (RULE16_EXEMPT in scripts/pageboard.py). The refresh-delta half is held by tests/py/test_board_previews.py.",
+   "test": "tests/py/test_rule16_gate.py"
+  },
+  {
+   "id": "project5-pages-outline-links-images",
+   "family": "GATE",
+   "enforced": "test",
+   "claude_md": 17,
+   "test": "tests/py/test_family_rules_on_board.py",
+   "_note": "CLAUDE.md working rule 17. scripts/family_rules.py holds a new location, comparison or blog-post board (never the twelve pages built before, BUILT_BEFORE_SYSTEM_GAPS) to the rule's keyword, link, anchor and image checks; scripts/board_approve.py refuses approval and re-approval while one FAILs (build-gate image checks excepted), which tests/py/test_family_rules_on_board.py proves; board block 7b shows the same findings. The outline-only half is scripts/outline_provenance_check.py (npm run check:outline, in check:all; tests/py/test_outline_provenance_check.py)."
+  },
+  {
    "id": "entity-4-move-loop",
    "family": "COPY",
    "enforced": "untested",

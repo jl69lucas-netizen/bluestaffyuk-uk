@@ -61,13 +61,23 @@ def find_sections(html):
     return out
 
 
+#: The site's own `@font-face` rules (src/styles/fonts.css, Known Issue 24).
+FONT_FACE = re.compile(r"@font-face\s*\{[^}]*\}")
+
+
 def page_css(html):
     """Every inlined <style> block of the built page, in document order (@layer order matters).
 
     Astro inlines the built CSS, so there is no `dist/_astro/*.css` to link: the stylesheet
     for a rendering is the page's own style blocks pasted in the order they appear, which is
-    the order the `@layer` cascade was written for."""
-    return "\n".join(m.group(1).strip() for m in STYLE.finditer(html))
+    the order the `@layer` cascade was written for.
+
+    LESS THE SITE'S `@font-face` RULES. Every caller builds an Artifact (a board, the design
+    canvas, the Design System) whose page links the same two families from Google Fonts
+    (`FONTS_LINK`), and the site's `/fonts/…` URLs do not resolve there — a board's preview
+    frames are sandboxed and have no origin at all — so a face that fails to load would stand in
+    front of the linked one."""
+    return "\n".join(FONT_FACE.sub("", m.group(1)).strip() for m in STYLE.finditer(html))
 
 
 def page_sprite(html):

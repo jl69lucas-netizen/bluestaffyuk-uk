@@ -54,9 +54,8 @@
 // WORKING RULE 16. The hero is `H-GD3` — the text-led PANEL with the photo in a narrow column
 // on the left and an aside beside the copy, in a card — and the counter is `C-GD3`, figure
 // cards inside a card. Both are the interior-guide family's own arrangements, resolved through
-// `pickedStyle()`. /blue-staffy-health-uk/ shares the hero id and takes `C-GD1`, so the pair
-// that separates the two pages is the counter, which is exactly what the rule asks a layout
-// family's three arrangements to be for.
+// `pickedStyle()`. Since the three guides were re-boarded (Known Issues 30 and 35) no other
+// page takes H-GD3: the health guide is on H-GD1 and the buying guide on H-GD2.
 //
 // THE ASIDE IS THE RECORD'S OWN `hero.aside`, AND NOT ONE ITEM OF IT STATES A FIGURE. It is a
 // three-line contents list — the arrangement's own name is "text-led card with a contents
@@ -103,7 +102,7 @@ import PuppyCard from '../../components/kit/PuppyCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, sourceKey, ledgeText, breedFactsCell,
   sentenceAnchor as S, type LedgeEntry } from '../../lib/recordText';
@@ -120,10 +119,14 @@ import prices from '../../../data/price-matrix.json';
 import record from '../../../data/boards/uk-staffordshire-bull-terrier-guide.json';
 
 const path = '/uk-staffordshire-bull-terrier-guide/';
-// The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// The picked meta variants and H1, BY INDEX from the approval IN FORCE — never retyped here.
+// `approvalInForce()`, not `record.approval`: the record went back to the board for its hero
+// and its video (Known Issues 35 and 38) with its approval carried under `approval_previous`,
+// and what the page is called was never the question (spec §9 amendment 11a).
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The ten migrated photographs, by slot, at their ORIGINAL public paths with the alt text the
 // record baked (working rule 11; all ten alts are elements of the verbatim set). The
@@ -369,10 +372,11 @@ const pageSchema = [
     </p>
   </section>
 
-  {/* 02 video-breed-guide — video, picked style S2 (the player full width on a steel band). The
-      section's own note calls S3, the click-to-play facade, the lightest arrangement and the one
-      a rebuilt page takes UNLESS the board picks otherwise; `approval.picks` picks S2, and the
-      PICK beats the note — the lesson 8c71fcd wrote down about the health page's review block.
+  {/* 02 video-breed-guide — video, picked style S3 (the click-to-play facade: a thumbnail and a
+      play button, the player injected on the first press). It was S2, the player full width on
+      a steel band, until the user's ruling R8 (Known Issue 38): S2 loaded the player with the
+      page and cost Lighthouse Best Practices 4 points, and S3 is what working rule 14 makes the
+      default. `VideoEmbed` takes `play` from the pick, so the markup did not change.
       Working rule 14: the id is `g9iV9RVr_Sk`, the one id data/facts records for this page,
       carried unchanged and in the place the migrated body had it, directly below the opening and
       ahead of the breed table. The recorded refresh delta is the motif. */}

@@ -19,7 +19,7 @@ Audit, fix, and optimize all YouTube video embeds and the video sitemap on BlueS
 - After WordPress-to-static export (YouTube iframes stop loading)
 - When GSC reports video sitemap errors (invalid URLs, missing thumbnails)
 - When adding new YouTube videos to any page
-- After uploading new YouTube videos for MFS (update sitemap + embeds)
+- After a new BSUK video is added to `data/settings.json` `youtube_embeds` (the build updates the video sitemap)
 
 ---
 
@@ -98,7 +98,7 @@ def fix_youtube_iframes(content):
         vid_id = vid_match.group(1)
         # Extract title if present
         title_match = re.search(r'title=["\']([^"\']+)["\']', full_tag)
-        title = title_match.group(1) if title_match else "MFS Blue Staffy puppy Video"
+        title = title_match.group(1) if title_match else "BlueStaffyUK Blue Staffy puppy video"
         # Extract dimensions
         w_match = re.search(r'width=["\'](\d+)["\']', full_tag)
         h_match = re.search(r'height=["\'](\d+)["\']', full_tag)
@@ -174,7 +174,7 @@ File location: `dist/video-sitemap.xml`
     <video:duration>SECONDS</video:duration>
     <video:tag><![CDATA[blue staffies for sale]]></video:tag>
     <video:family_friendly>yes</video:family_friendly>
-    <video:uploader info="https://SITE_URL_PLACEHOLDER/about/">BlueStaffyUK</video:uploader>
+    <video:uploader info="https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/">BlueStaffyUK</video:uploader>
   </video:video>
 </url>
 ```
@@ -189,7 +189,7 @@ File location: `dist/video-sitemap.xml`
     <video:content_loc>https://SITE_URL_PLACEHOLDER/content/uploads/YYYY/MM/video.mp4</video:content_loc>
     <video:thumbnail_loc>https://SITE_URL_PLACEHOLDER/content/uploads/thumbnail.jpg</video:thumbnail_loc>
     <video:family_friendly>yes</video:family_friendly>
-    <video:uploader info="https://SITE_URL_PLACEHOLDER/about/">BlueStaffyUK</video:uploader>
+    <video:uploader info="https://SITE_URL_PLACEHOLDER/blue-staffy-uk-breeders/">BlueStaffyUK</video:uploader>
   </video:video>
 </url>
 ```
@@ -233,61 +233,29 @@ print(f"\nTotal video entries: {len(video_blocks)}")
 
 ---
 
-## Step 6 — Deploy and Submit
+## Step 6 — Commit (submission waits for project 6)
 
-```bash
-cd dist/
-git add video-sitemap.xml [any .html files fixed]
-git commit -m "Fix YouTube iframes and video sitemap"
-git push origin main
-# the host (NOT FETCHED until project 6) auto-deploys in 1-3 min
-```
-
-Then submit changed video pages to IndexNow:
-
-```python
-import json, urllib.request
-
-key = "a1b2c3d4e5f6789012345678blue staffies"
-urls = [
-    "https://SITE_URL_PLACEHOLDER/",
-    # Add any other pages with fixed YouTube embeds
-]
-payload = json.dumps({
-    "host": "SITE_URL_PLACEHOLDER",
-    "key": key,
-    "keyLocation": f"https://SITE_URL_PLACEHOLDER/{key}.txt",
-    "urlList": urls
-}).encode()
-req = urllib.request.Request(
-    "https://api.indexnow.org/indexnow",
-    data=payload,
-    headers={"Content-Type": "application/json; charset=utf-8"},
-    method="POST"
-)
-resp = urllib.request.urlopen(req)
-print(f"IndexNow: {resp.status}")  # 202 = success
-```
-
-After deploy, resubmit `video-sitemap.xml` in Google Search Console:
-> GSC → Sitemaps → video-sitemap.xml → Resubmit
+Commit after the build and the gates pass. There is no push, no deploy and no IndexNow
+submission until project 6; then `.claude/skills/bsuk-indexing/SKILL.md` submits the changed
+pages with `python3 scripts/indexnow_submit.py --changed` (release-guarded) and the video
+sitemap is resubmitted in Search Console. `scripts/generate_sitemaps.py` rebuilds
+`video-sitemap.xml` from the embeds on every build — never hand-edit it.
 
 ---
 
-## MFS YouTube Channel / Video Inventory
+## BSUK Video Inventory
 
-| Video ID | Title | Used On Pages |
-|---|---|---|
-| `MTHXZlZtIk0` | THE BEST 2026 Blue Staffy puppies For Sale (main promo) | Homepage |
-| `ZP7tjkzFgbs` | How Much Does a Blue Staffy puppy ACTUALLY Cost? | Homepage |
+The site's videos are the ids in `data/settings.json` `youtube_embeds`, plus any a page carries
+of its own. Working rule 14: every one is reused at its original id; never mint a new id and
+never re-upload the footage.
 
-### Adding New Videos Checklist:
-1. Upload video to YouTube / get Video ID
-2. Add embed to relevant page(s) using responsive wrapper template
-3. Add entry to `video-sitemap.xml` with thumbnail_loc
-4. Deploy + push to GitHub
-5. Submit pages to IndexNow
-6. Resubmit video-sitemap.xml in GSC
+### Adding a New Video Checklist:
+1. The breeder uploads it and supplies the Video ID
+2. Add the id to `data/settings.json` `youtube_embeds` and to the board of each page that shows it (`video` shape, three styles)
+3. Build — `scripts/generate_sitemaps.py` adds each page carrying it to `video-sitemap.xml`
+4. Commit (no push until project 6)
+5. Project 6: submit the pages through `.claude/skills/bsuk-indexing/SKILL.md`
+6. Project 6: resubmit video-sitemap.xml in GSC
 
 ---
 

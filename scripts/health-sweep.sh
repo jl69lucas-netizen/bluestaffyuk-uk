@@ -55,12 +55,21 @@ else
   pass ".claude/settings.local.json is not tracked"
 fi
 
-git fetch -q origin "$BRANCH" 2>/dev/null
-AHEAD=$(git rev-list --count origin/"$BRANCH"..HEAD 2>/dev/null || echo "?")
-BEHIND=$(git rev-list --count HEAD..origin/"$BRANCH" 2>/dev/null || echo "?")
-if [ "$AHEAD" = "0" ]; then pass "Up to date with origin (0 unpushed commits)"
-else warn "$AHEAD commit(s) committed but NOT pushed/deployed"; fi
-[ "$BEHIND" != "0" ] && [ "$BEHIND" != "?" ] && warn "$BEHIND commit(s) on origin not pulled"
+# No remote until project 6 (CLAUDE.md working rule 3): with no origin there is nothing to
+# fetch and nothing to push, and an ahead count against a missing origin is a false alarm.
+# The test is for origin itself — the block below only ever compares against origin.
+if [ -z "$(git remote)" ]; then
+  pass "no remote — nothing to push (none until project 6)"
+elif ! git remote get-url origin >/dev/null 2>&1; then
+  pass "no origin remote — nothing to push (none until project 6)"
+else
+  git fetch -q origin "$BRANCH" 2>/dev/null
+  AHEAD=$(git rev-list --count origin/"$BRANCH"..HEAD 2>/dev/null || echo "?")
+  BEHIND=$(git rev-list --count HEAD..origin/"$BRANCH" 2>/dev/null || echo "?")
+  if [ "$AHEAD" = "0" ]; then pass "Up to date with origin (0 unpushed commits)"
+  else warn "$AHEAD commit(s) committed but NOT pushed/deployed"; fi
+  [ "$BEHIND" != "0" ] && [ "$BEHIND" != "?" ] && warn "$BEHIND commit(s) on origin not pulled"
+fi
 
 DIRTY=$(git status --short | wc -l | tr -d ' ')
 if [ "$DIRTY" = "0" ]; then pass "Working tree clean"

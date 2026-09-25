@@ -66,7 +66,8 @@
         "path": "https://ukstaffypups.uk/staffy-puppies-for-sale/",
         "fetched": "2026-09-20 — ~3,000 words; 13 H2s including Crucial Genetic Health Screenings to Look For, Diet Nutrition and Weight Management, Daily Exercise and Mental Stimulation, Grooming and Skin Care; 0 FAQ rows; no FAQPage; one cost TABLE; names L-2-HGA and HC-HSF4 as non-negotiable but states no result for its own parents, and its health content sits inside a for-sale page rather than on a health page."
       }
-    ]
+    ],
+    "preview": true
   },
   "meta_set": {
     "titles": [
@@ -194,7 +195,7 @@
       ],
       "refresh": {
         "axis": "layout",
-        "note": "an editorial two-column hero with a key-facts aside, where the breed guide leads with its image"
+        "note": "Splits its copy from a photograph on the right with the key facts under the copy, where the breed guide leads with a text panel and a narrow photograph and the buying guide stacks its photograph above the copy in a card"
       },
       "hero": {
         "chips": [
@@ -276,8 +277,8 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "H-GD3",
-        "note": "Image first: the hero styles that put the photograph above or before the copy are S2 (photo above, on a band) and S3 (photo left). The kit Hero's trust chips and CTA buttons default to NONE (spec §9 amendment 6a) and this record gives it neither."
+        "pick": "H-GD1",
+        "note": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD1 is pre-selected (recommended); the three guides must end on three different heroes."
       },
       "verbatim_heading": true,
       "verbatim_opening": "Welcome to BlueStaffyUK , where the health and well-being of our blue Staffordshire Bull Terrier puppies are at the very heart of everything we do. For us, health is not just a phrase; it’s a foundational principle that guides every aspect of our breeding program. We understand that when you’re looking for where to buy a blue staffy puppy in the UK, you want assurance of their health and longevity."
@@ -1651,7 +1652,7 @@
     }
   ],
   "tuple": {
-    "hero": "hero-h-gd3",
+    "hero": "hero-h-gd1",
     "dial": "",
     "rail": "",
     "toc": "pagenav-c",
@@ -1798,7 +1799,7 @@
     ]
   },
   "approval": {
-    "approved_at": "2026-09-20T22:13:18.393Z",
+    "approved_at": "2026-09-24T22:18:34.443Z",
     "canvas_version": null,
     "h1": 0,
     "meta": {
@@ -1812,14 +1813,14 @@
       "exercise": "",
       "lifespan": "",
       "navigation": "",
-      "paperwork-review": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 2, Mark J (London). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured.",
+      "paperwork-review": "MODE: the pick decides how the block is drawn, and on a `reviews` section that includes the COUNT: `mode` is one of the axes RENDERED_AXES.reviews lists, and S3 (src/lib/boardStyles.ts) is the grid beside the heading. WHICH review is this section's intent, inside record_hash: data/reviews.json entry 2, Mark J (London), the only one of the three who names the paperwork and the health testing. So the page renders that one review in S3's bed, with `mode` read off the StyleDef rather than hard-coded. An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured. (Amended 2026-09-21: this note previously read \"MODE: single — pick S1\", which was a second answer to a question the pick had already answered.)",
       "questions": "Query augmentation for 'blue staffy health uk', ten questions, each mapped to a section or a row: q1 -> dna-tests and the health-dna-tests row; q2 and q3 -> dna-tests; q4, q5 and q6 -> vaccinations and the health-vaccinations row; q7 -> lifespan and the health-lifespan row; q8 -> conditions; q9 -> exercise; q10 -> diet. No row is added for a question this page's body does not answer.",
       "registration": "A standard section: no shell.",
       "screening": "",
       "stats": "",
       "takeaways": "Four cards, so the three-up grid of S2 wraps to 3+1 and the rail of S3 shows four; S1 stacks them. The board is where that is judged.",
       "talk-to-us": "",
-      "top": "Image first: the hero styles that put the photograph above or before the copy are S2 (photo above, on a band) and S3 (photo left). The kit Hero's trust chips and CTA buttons default to NONE (spec §9 amendment 6a) and this record gives it neither.",
+      "top": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD1 is pre-selected (recommended); the three guides must end on three different heroes.",
       "vaccinations": "",
       "vet-checks": ""
     },
@@ -1829,17 +1830,19 @@
       "questions": "S1",
       "stats": "C-GD1",
       "takeaways": "S2",
-      "top": "H-GD3"
+      "top": "H-GD1"
     },
-    "record_hash": "85d067868fa34afbc1e664a73937b5fd57fc006a4e51bc182309c724cc6b8dc6",
+    "record_hash": "32ca2e7781560a0b954d96d43465e43bd023e6464aa53372944533d5884fb49b",
     "tuple_before": {
       "hero": "",
       "dial": "",
       "rail": "",
       "toc": "pagenav-c",
-      "takeaway": [],
-      "table": "",
-      "faq": "",
+      "takeaway": [
+        "takeaways-s2"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s1",
       "stepper": "",
       "newsletter": {
         "after": "",
@@ -1848,29 +1851,7 @@
       "h6_prefixes": [
         "Health Note:"
       ]
-    },
-    "reapproved_at": "2026-09-21T13:36:54Z",
-    "reapprovals": [
-      {
-        "at": "2026-09-21T07:55:51Z",
-        "reason": "aside rows declared their sources: sections[top].hero.aside rows 0 and 1 state the two test names and both parents' status and cited nothing, though the page has always derived both from the dna-tests table — the paths are now on the record so the source gate can read them. Same re-approval amends the paperwork-review note, which read 'MODE: single — pick S1' against an approval of S3: the pick stands and the note now says what it says. No pick, figure, stats source, section id or section list moved.",
-        "changed_paths": [
-          "/sections/0/hero/aside/rows/0/source",
-          "/sections/0/hero/aside/rows/1/source",
-          "/sections/12/options/note"
-        ]
-      },
-      {
-        "at": "2026-09-21T13:36:54Z",
-        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Two bands are structurally unreachable because the section's body is a rendered table or a rendered review rather than prose. (1) 'dna-tests' at 110-145 against a measured 171: the three-column L-2-HGA / HC-HSF4 table's caption, headers and cells are counted as section prose and are about 60 words of it. Widened to 154-188. (2) 'paperwork-review' at 35-50 against a measured 114: the section is one review figure — Mark J's quote is about 75 words — framed by two sentences of our own. Widened to 103-125. Both new bands are the measurement plus or minus 10 per cent.",
-        "changed_paths": [
-          "/sections/3/words/max",
-          "/sections/3/words/min",
-          "/sections/12/words/max",
-          "/sections/12/words/min"
-        ]
-      }
-    ]
+    }
   },
   "verbatim": {
     "changed": [
@@ -2001,5 +1982,97 @@
         "reason": "collides with another page's heading: the run 'a healthy blue staffy puppy' is shared with the live /uk-blue-staffy-puppy-buying-guide/ heading 'What to Look for in a Healthy Blue Staffy Puppy?', and board_gate.py fails it. The invitation is carried whole and only the last noun goes; 'Ready to Welcome a Healthy Blue Staffy?' was checked against every live page and against the other four records being reconciled in this task, and collides with none."
       }
     ]
+  },
+  "approval_previous": {
+    "approved_at": "2026-09-20T22:13:18.393Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "conditions": "",
+      "diet": "",
+      "dna-tests": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4.",
+      "exercise": "",
+      "lifespan": "",
+      "navigation": "",
+      "paperwork-review": "MODE: single — pick S1, the only reviews style that renders one review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). Slot filled with data/reviews.json entry 2, Mark J (London). An unfilled slot renders REVIEW_PLACEHOLDER, so the number of reviews the site still needs stays measured.",
+      "questions": "Query augmentation for 'blue staffy health uk', ten questions, each mapped to a section or a row: q1 -> dna-tests and the health-dna-tests row; q2 and q3 -> dna-tests; q4, q5 and q6 -> vaccinations and the health-vaccinations row; q7 -> lifespan and the health-lifespan row; q8 -> conditions; q9 -> exercise; q10 -> diet. No row is added for a question this page's body does not answer.",
+      "registration": "A standard section: no shell.",
+      "screening": "",
+      "stats": "",
+      "takeaways": "Four cards, so the three-up grid of S2 wraps to 3+1 and the rail of S3 shows four; S1 stacks them. The board is where that is judged.",
+      "talk-to-us": "",
+      "top": "Image first: the hero styles that put the photograph above or before the copy are S2 (photo above, on a band) and S3 (photo left). The kit Hero's trust chips and CTA buttons default to NONE (spec §9 amendment 6a) and this record gives it neither.",
+      "vaccinations": "",
+      "vet-checks": ""
+    },
+    "picks": {
+      "dna-tests": "S2",
+      "paperwork-review": "S3",
+      "questions": "S1",
+      "stats": "C-GD1",
+      "takeaways": "S2",
+      "top": "H-GD3"
+    },
+    "record_hash": "85d067868fa34afbc1e664a73937b5fd57fc006a4e51bc182309c724cc6b8dc6",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [],
+      "table": "",
+      "faq": "",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Health Note:"
+      ]
+    },
+    "reapproved_at": "2026-09-21T13:36:54Z",
+    "reapprovals": [
+      {
+        "at": "2026-09-21T07:55:51Z",
+        "reason": "aside rows declared their sources: sections[top].hero.aside rows 0 and 1 state the two test names and both parents' status and cited nothing, though the page has always derived both from the dna-tests table — the paths are now on the record so the source gate can read them. Same re-approval amends the paperwork-review note, which read 'MODE: single — pick S1' against an approval of S3: the pick stands and the note now says what it says. No pick, figure, stats source, section id or section list moved.",
+        "changed_paths": [
+          "/sections/0/hero/aside/rows/0/source",
+          "/sections/0/hero/aside/rows/1/source",
+          "/sections/12/options/note"
+        ]
+      },
+      {
+        "at": "2026-09-21T13:36:54Z",
+        "reason": "Word bands only; no pick, figure, source, menu or section id touched. Two bands are structurally unreachable because the section's body is a rendered table or a rendered review rather than prose. (1) 'dna-tests' at 110-145 against a measured 171: the three-column L-2-HGA / HC-HSF4 table's caption, headers and cells are counted as section prose and are about 60 words of it. Widened to 154-188. (2) 'paperwork-review' at 35-50 against a measured 114: the section is one review figure — Mark J's quote is about 75 words — framed by two sentences of our own. Widened to 103-125. Both new bands are the measurement plus or minus 10 per cent.",
+        "changed_paths": [
+          "/sections/3/words/max",
+          "/sections/3/words/min",
+          "/sections/12/words/max",
+          "/sections/12/words/min"
+        ]
+      }
+    ],
+    "section_hashes": {
+      "top": "447370a036841817489fa9a82ee862bd8f2f9c407b5f373c5a4d29c11b6d9c78",
+      "takeaways": "719375371f556237fe0c095ef706d2c1f81397d31d40f70b49d19b1247f2f023",
+      "stats": "e6333335e8748fa1bd7a83b42221d34caaabe017513842d295d03fb1f17cf7c9",
+      "dna-tests": "d08fbd89f5651aa7e0b0859c64a60587a14d48e1c4b34162fb105fbf03364ce2",
+      "screening": "97dc31d2d4ce72434ed0b60ffb859a01ac1a429e3a487c9107b84d0835ef1ba9",
+      "vaccinations": "60858d0e694b239851e6599317da634feb289fba3b4da988e07392a3d65b1f0b",
+      "registration": "6c2ef65fc63b20f2935dc8ebe32f6e7c61cecda96697aacd4997f45ec8a1268b",
+      "vet-checks": "8bdd2ea7816a35e226bc88a61be3fefb36f61563a2cb1b6929b7095a9893ddc5",
+      "diet": "8619452589e692f0746bb9f8a304cda2e87fdde4dbb7573b391e5bee5b44310d",
+      "exercise": "38a8877c099d6b4403f93fe22d1022417bb4008b408ae949d7a45c3f64b92dd4",
+      "conditions": "018342983d60f312ad0812bf599b09d1964b6f9f49121db266783719cb8eee24",
+      "lifespan": "29821845da3a2c40ed5417c5509bafcd8109371948a9d6000445b99d9b00881b",
+      "paperwork-review": "d11bd9e344b7a640669c085c20220ee7b2b81e8a62b215a2ab1b69065b8e6e34",
+      "questions": "e58fabbd35c8a2941268646c36d9ee6c379597c7d2876d9d816030c03c4edaae",
+      "talk-to-us": "f60af60ec244e4e55973292b9090af773eebcfd0db21e3f25faf36ceba58ad94"
+    }
   }
 }

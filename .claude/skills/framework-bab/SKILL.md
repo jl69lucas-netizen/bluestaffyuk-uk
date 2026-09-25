@@ -11,12 +11,12 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -39,7 +39,7 @@ B — Bridge:  BSUK as the path from Before to After.
 |----------------|----------------|
 | Scam-prevention sections | Before: bank-transfer seller risk → After: licensed, documented purchase |
 | Licensing safety sections | Before: unlicensed puppy-farm risk → After: full LEGAL_CLAIM_PLACEHOLDER-compliant paperwork |
-| Health guarantee section | Before: sick puppy fear → After: vet health check + health guarantee |
+| Health section | Before: sick puppy fear → After: vet health check, first vaccinations, a vet-signed health card (a guarantee only once `guarantee_days` is set) |
 | First-time owner sections | Before: overwhelmed by complexity → After: guided and supported |
 | `/uk-blue-staffy-puppy-buying-guide/` | Before: online scam → After: verified breeder checklist |
 
@@ -64,10 +64,10 @@ A vet health check naming the vet and practice. A microchip number registered to
 You can verify every document independently before sending a single pound.
 
 BRIDGE:
-Buying a Staffy from a licensed breeder isn't more expensive than buying from
+Buying a Staffy from a breeder who shows you the paperwork isn't more expensive than buying from
 an online stranger — it's a different category of transaction entirely. One where the
 paperwork is real, the sale is legal, and there's a human being who answers the phone
-after the sale. Lisa Bright has done this for [N]+ families.
+after the sale. Every puppy Lisa Bright places is raised in her own home in Carlisle.
 [CTA: Start your inquiry →]
 ```
 

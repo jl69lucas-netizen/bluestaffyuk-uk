@@ -105,7 +105,12 @@ def test_the_check_all_chain_is_the_documented_one():
     # new-family page — was it written from its own approved outline, or from a sibling.
     # check:competitors sits after check:queries: both guard research the page builders read.
     # check:gaps follows check:competitors: the matrix is rebuilt from the registry's reports.
+    # check:workflow sits just before check:markers: both judge the instruction tree rather
+    # than the site — markers asks whether a source-repo word survived, workflow asks whether
+    # WORKFLOW.md / quick-start.md name an agent, script or npm script that is not there
+    # (Known Issue 56).
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
-                "check:outline", "check:redirects", "check:schema", "check:queries", "check:competitors",
-                "check:gaps", "check:sitemaps", "check:placeholders", "check:markers", "agents"]
+                "check:outline", "check:redirects", "check:schema", "check:queries",
+                "check:competitors", "check:gaps", "check:sitemaps", "check:placeholders",
+                "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

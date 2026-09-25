@@ -7,7 +7,7 @@ effort: max
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
@@ -15,9 +15,9 @@ effort: max
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -33,7 +33,7 @@ Generic content ranks but doesn't convert. Angled content does both.
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/top-pages.md` — competitor ranking pages for this keyword (not ported — source repo only)
-2. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "What page/topic are we angling? What's the primary keyword? Who's the reader?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+2. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "What page/topic are we angling? What's the primary keyword? Who's the reader?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -57,7 +57,7 @@ Name the fear, then resolve it. Shows the reader you understand them.
 **Formula:** "If you're worried about [specific fear], you're right to be. Here's what to do about it."
 
 **BSUK examples:**
-- "You've heard about LICENCE_CLAIM_PLACEHOLDER permit fraud. Here's how to verify every document before sending a deposit."
+- "You've heard about fake paperwork in puppy adverts. Here's what to ask a breeder to show you before sending a deposit."
 - "Puppy scams are everywhere. Here are the 7 signs the 'breeder' you're training to isn't legitimate."
 
 ---
@@ -69,7 +69,7 @@ What you know that the average buyer doesn't.
 
 **BSUK examples:**
 - "The one question to ask every breeder before you put down a deposit"
-- "Why the 30-day health guarantee is basically worthless (and what to demand instead)"
+- "What a written puppy contract should say before any money moves (and when to walk away)"
 
 ---
 
@@ -123,9 +123,9 @@ Position BSUK against what most buyers accept as standard.
 ## BSUK Angle Categories
 
 ### Documentation Angles
-- "The cheap Facebook advert vs the £1,500 puppy with paperwork (LICENCE_CLAIM_PLACEHOLDER) — what you're actually paying for"
+- "The cheap Facebook advert vs the £1,500 puppy with its paperwork in hand — what you're actually paying for"
 - "LEGAL_CLAIM_PLACEHOLDER explained in plain English — what it means for your puppy purchase"
-- "How to verify a LICENCE_CLAIM_PLACEHOLDER home-raised permit before sending any deposit"
+- "What to ask a breeder to show you before sending any deposit"
 
 ### Variant Angles
 - "Blue Staffy vs Blue and white Staffy: the choice most first-time buyers get wrong"
@@ -143,7 +143,7 @@ Position BSUK against what most buyers accept as standard.
 2. Generate 8–10 angle options (one per angle type above)
 3. Rate each: **Differentiation** (1–5) × **Credibility** (1–5) × **Reader Resonance** (1–5)
 4. Recommend top 3 — explain why
-5. User selects → hand off to seo-content-writer with chosen angle
+5. User selects → the chosen angle goes into the session brief; next is `bsuk-paa-agent` (WORKFLOW Sprint 2 step 3), then the writer
 
 ---
 

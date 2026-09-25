@@ -50,31 +50,27 @@ Every footer must contain these 5 columns. Flag any footer missing 2+ columns as
 
 ```
 Column 1: Quick Links
-  - Available Puppies → /available/
+  - Available Puppies → /available-puppies/
   - Blue Staffy → /blue-staffy-pup-sale-uk/
-  - Blue-Brindle Staffy → /buy-staffy-puppies-for-sale-uk/
+  - Staffy Puppies For Sale → /buy-staffy-puppies-for-sale-uk/
   - Pricing → /blue-staffy-pup-sale-uk/
-  - Contact → /contact/
+  - Contact → /uk-blue-staffy-breeders-contact/
 
 Column 2: Resources
   - Species Guide → /uk-staffordshire-bull-terrier-guide/
   - Care Guide → /uk-blue-staffy-puppy-buying-guide/
   - LICENCE_CLAIM_PLACEHOLDER Info → /blue-staffy-uk-breeders/
   - FAQ → /uk-staffordshire-bull-terrier-guide/#faq
-  - Blog → /blog/
+  - Blog → /blue-staffy-blog-guides/
 
 Column 3: Company
-  - About Us → /about/
-  - Our Puppies → /available/
-  - Testimonials → /testimonials/
-  - Contact → /contact/
+  - About Us → /blue-staffy-uk-breeders/
+  - Our Puppies → /available-puppies/
+  - Contact → /uk-blue-staffy-breeders-contact/
 
 Column 4: Legal
-  - Privacy Policy → /privacy-policy/
-  - Terms of Service → /terms/
-  - Health Guarantee Terms → /health-guarantee/
-  - Delivery Policy → /delivery-delivery/
-  - Refund Policy → /refund-policy/
+  - Privacy Policy → /privacy-policy-uk/
+  - (no terms, guarantee, delivery or refund page is built: never link one until it exists — a guarantee page also waits for `guarantee_days` in `data/settings.json`)
 
 Column 5: Contact
   - Phone: PHONE_PLACEHOLDER   (the real number is NOT FETCHED until project 6)

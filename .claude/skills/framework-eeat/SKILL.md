@@ -12,11 +12,11 @@ allowed-tools: [Read, Write, Bash]
 
 ## BSUK Project Context
 > **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
-> **Coat colours:** blue and blue brindle (Roman, Byrd, Ince — £1,500) · black brindle and rarer blue lines (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -39,11 +39,11 @@ BlueStaffyUK is a YMYL site (buying a living animal is a significant decision). 
 ## BSUK E-E-A-T Assets
 
 ### Experience Signals (first-hand, lived)
-- Lisa Bright: [X]+ years breeding Staffordshire Bull Terriers at home
-- [N]+ families served — named in testimonials
+- Lisa Bright breeds Staffordshire Bull Terriers at home in Carlisle (years in business are NOT FETCHED — never a figure)
+- Real reviews from families who took a puppy home — the rows of `data/reviews.json` (a family count is NOT FETCHED)
 - Specific litter stories, whelping observations, home-raising notes
 - Carlisle, Cumbria (specific, verifiable)
-- Blue vs blue brindle vs black brindle breeding distinctions from direct experience
+- Coat care for the litter's own coats (blue, blue and white, white) from direct experience
 
 ### Expertise Signals (knowledge, credentials)
 - LICENCE_CLAIM_PLACEHOLDER — include licence number where possible
@@ -79,7 +79,7 @@ Every content-heavy page should name the source of expertise:
 <div class="bsuk-author-block">
   <p class="bsuk-body">
     <strong>Written by Lisa Bright,</strong> Blue Staffy breeder (LICENCE_CLAIM_PLACEHOLDER) 
-    in Carlisle, Cumbria. Specialising in home-raised blue and blue brindle Staffordshire Bull 
+    in Carlisle, Cumbria. Home-raising blue, blue and white, and white Staffordshire Bull
     Terriers with full KC registration and health paperwork.
   </p>
 </div>
@@ -87,7 +87,7 @@ Every content-heavy page should name the source of expertise:
 
 ### Experience Signals in Body Copy
 Replace: "Staffordshire Bull Terriers are loyal dogs."
-With: "In our years of breeding, we've placed Blue Staffy puppies with hundreds of families — and the home-raising and socialisation protocol we've developed from birth consistently produces dogs that are confident, bonded, and ready for their new homes."
+With: "Every puppy we place is raised in our home in Carlisle — and the home-raising and socialisation protocol we've developed from birth consistently produces dogs that are confident, bonded, and ready for their new homes."
 
 ### Schema for E-E-A-T
 
@@ -97,7 +97,7 @@ With: "In our years of breeding, we've placed Blue Staffy puppies with hundreds 
 {
   "@type": "Person",
   "name": "Lisa Bright",
-  "jobTitle": "Licensed Blue Staffordshire Bull Terrier Breeder",
+  "jobTitle": "Blue Staffordshire Bull Terrier Breeder",
   "worksFor": { "@type": "Organization", "name": "BlueStaffyUK" },
   "address": { "@type": "PostalAddress", "addressLocality": "Carlisle" }
 }
@@ -152,7 +152,6 @@ For any page audit, score each dimension 1–5 (total range: 4–20):
 ### Experience (1–5)
 - [ ] First-person voice ("we've seen," "in our experience whelping")
 - [ ] Specific timeframes and numbers ("in [year], we changed our weaning routine because...")
-- [ ] Real observations ("blue brindle pups need more intensive handling in weeks 4–8")
 
 ### Expertise (1–5)
 - [ ] Credentials named (LICENCE_CLAIM_PLACEHOLDER, LEGAL_CLAIM_PLACEHOLDER, KC registration, vet practice)

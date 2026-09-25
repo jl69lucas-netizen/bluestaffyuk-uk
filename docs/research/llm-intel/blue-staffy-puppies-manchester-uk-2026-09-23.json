@@ -57,6 +57,41 @@
    "registry_id": null,
    "tier": null,
    "platform": false
+  },
+  {
+   "name": "Best Blue Staffy Puppies For Adoption",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "The Staffordshire Bull Terrier Club",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Starcinco Bull Terriers",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Society UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffordshire Bull Terrier Puppy Breeder",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
   }
  ],
  "citation_gap": [
@@ -199,5 +234,6 @@
  "llm_mentions": {
   "status": "NOT FETCHED",
   "reason": "llm_mentions only once BSUK's domain is live (project 6)"
- }
+ },
+ "extra": "the kennel club|kennel club;kennel club health standard;elbow dysplasia;elbow screening;eye conditions;genetic diversity;worming;flea treatment;socialisation;return to breeder policy;deposit"
 }

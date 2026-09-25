@@ -19,7 +19,7 @@
   "delivery_note": "UK home delivery by DEFRA-approved transport, priced by distance",
   "query_budget_usd": 0.5,
   "query_total_budget_usd": 1.0,
-  "query_typical_call_usd": 0.05,
+  "query_typical_call_usd": 0.01,
   "guarantee_days": null,
   "socials": {
     "x": "https://x.com/bluestaffyuk",

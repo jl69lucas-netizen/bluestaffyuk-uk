@@ -6,12 +6,13 @@
       missing, not a file, unreadable or not UTF-8. (Unlike gap_matrix.py, which keeps 2 for
       usage and 6 for bad input, this check has one input, so 2 covers both.)
 
-Checked sections: `## Recommendation…` and `## Concrete Artifact…` / `## Concrete Artefact…`
-(case-blind, `##` then a space or tab, an optional `5.` number, any trailing text such as
-`:` or `(Strategy A)`). `###` subheadings stay inside their section. Between
-`## Recommendation` and `## Sources`, any other `##` heading is a problem (and its figures
-are still checked), so checking cannot be ended silently; headings before the pick, such as
-`## Strategy A`, are not checked.
+Checked sections: `## Strategy A…` and `## Strategy B…`, `## Recommendation…` and
+`## Concrete Artifact…` / `## Concrete Artefact…` (case-blind, `##` then a space or tab, an
+optional `5.` number, any trailing text such as `:`, `— <name>` or `(Strategy A)`). `###`
+subheadings stay inside their section. Between `## Recommendation` and `## Sources`, any
+other `##` heading is a problem (and its figures are still checked), so checking cannot be
+ended silently; any `##` heading after `## Sources` is a problem too (`## Sources` is last).
+The preamble and other headings before the pick are not checked.
 
 A figure is a whole number in one of these shapes, read the same way in the strategy and in
 every source: an N/M count (`7/12`, `7/12-competitor`), a percentage (`58%`, `40 %`), a
@@ -27,7 +28,8 @@ M on their own, so "of 12 competitors" may cite `7/12`; digits are never split o
 Not figures: single digits without %/k/x, 28 (the locked city count), a 19xx/20xx year
 beside a year cue (in/by/since/until/from/before/after/during, Q1–Q4, H1/H2 or a month
 name, with early/mid/late allowed between; or a month name right after) — a bare
-`2000 searches` is still a figure — dates (`2026-09-24`, `24/09/2026`), clock times (`10:30`), ordered-list markers (`10.`),
+`2000 searches` is still a figure, and when no source has it the message says to add a cue
+("in 2000") or a comma ("2,000") — dates (`2026-09-24`, `24/09/2026`), clock times (`10:30`), ordered-list markers (`10.`),
 anything in backticks or a fenced code block, link URLs (the link text is still checked)
 and HTML comments. Dates, times and URLs are ignored on the source side too.
 
@@ -74,7 +76,10 @@ YEAR_AFTER = re.compile(r"^\s+" + MONTH + r"\b", re.I)
 ALWAYS_TRUE = {"28"}
 
 HEADING = re.compile(r"^##[ \t]+(?:\d+[.)]?[ \t]+)?(.*?)[ \t#]*$")
+TOP_HEADING = re.compile(r"^#[ \t]+(.*?)[ \t#]*$")  # a document-level heading
 CHECKED = re.compile(r"(?:recommendation|concrete artifact|concrete artefact)", re.I)
+STRATEGY = re.compile(r"strategy\s+[ab]\b", re.I)
+BARE_YEAR = re.compile(r"(?:19|20)\d\d")
 SOURCES = re.compile(r"sources\b", re.I)
 FENCE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 COMMENT = re.compile(r"<!--.*?-->", re.S)
@@ -208,7 +213,7 @@ def examine(path, root=ROOT):
     text = pathlib.Path(path).read_text(encoding="utf-8-sig")
     text = COMMENT.sub(lambda m: "\n" * m.group(0).count("\n"), text)
     section, sources, found = None, [], []
-    has_sources = has_recommendation = in_pick = False
+    has_sources = has_recommendation = in_pick = stray = False
     fence, structure = None, []
     for i, line in enumerate(text.splitlines(), 1):
         f = FENCE.match(line)
@@ -219,19 +224,37 @@ def examine(path, root=ROOT):
         if f:
             fence = f.group(1)
             continue
+        top = TOP_HEADING.match(line)
+        if top and has_sources:  # a document-level heading cannot follow Sources either
+            structure.append(f"line {i}: # {top.group(1).strip()} comes after ## Sources — "
+                             "## Sources must be the last section; move it above "
+                             "## Recommendation")
+            section, in_pick, stray = None, False, False
+            continue
         h = HEADING.match(line)
         if h:
-            title = h.group(1).strip("*_ \t")
+            title, name, stray = h.group(1).strip("*_ \t"), h.group(1).strip(), False
+            if has_sources:  # Sources is last; a pick section after it is still checked
+                advice = ("merge it into the first ## Sources" if SOURCES.match(title)
+                          else "move it above ## Sources" if CHECKED.match(title)
+                          else "move it above ## Recommendation")
+                structure.append(f"line {i}: ## {name} comes after ## Sources — ## Sources "
+                                 f"must be the last section; {advice}")
             if SOURCES.match(title):
                 section, has_sources, in_pick = "Sources", True, False
             elif CHECKED.match(title):
-                section = h.group(1).strip()
+                section = name
                 if title.lower().startswith("recommendation"):
                     has_recommendation = in_pick = True
             elif in_pick:  # checking must not end silently: flag it and keep checking
-                section = h.group(1).strip()
-                structure.append(f"line {i}: unrecognised section inside the pick: ## {section}"
-                                 " — keep the WHY under ## Recommendation")
+                section, stray = name, True
+                structure.append(
+                    f"line {i}: unrecognised section inside the pick: ## {name} — only "
+                    "## Concrete Artifact may sit between ## Recommendation and ## Sources: "
+                    "make it a ### subheading, or move it above ## Recommendation (a "
+                    "strategy's risks go under its ## Strategy heading)")
+            elif STRATEGY.match(title):
+                section = name
             else:
                 section = None
             continue
@@ -241,7 +264,7 @@ def examine(path, root=ROOT):
                     sources.append(x)
         elif section:
             clean = LIST_MARKER.sub(r"\1", CODE.sub(" ", line))
-            found += [(i, section, fig, raw) for fig, raw in _figures_written(clean)]
+            found += [(i, section, stray, fig, raw) for fig, raw in _figures_written(clean)]
     out = []
     if not has_sources:
         out.append("no ## Sources section listing backticked or linked paths")
@@ -257,10 +280,23 @@ def examine(path, root=ROOT):
             out.append(problem)
         else:
             corpus |= source_tokens(src)
-    for i, section, fig, raw in found:
+    for i, section, stray, fig, raw in found:
         if fig not in corpus:
-            out.append(f"line {i} ({section}): figure {raw} is in no listed source")
+            out.append(f"line {i} ({section}): figure {raw} is in no listed source"
+                       + _hint(section, stray, raw))
     return out, len(sources), len(found)
+
+
+def _hint(section, stray, raw):
+    """Why an unsourced figure failed, when the plain message would not say."""
+    if BARE_YEAR.fullmatch(raw):  # a year the check could not see as one (no cue word)
+        return (f' — if it is a year, put a cue word before it ("in {raw}", "by {raw}", '
+                f'"Q3 {raw}"); if it is a quantity, write it "{raw[0]},{raw[1:]}" as a source '
+                "prints it")
+    if stray:
+        return (f" — ## {section} is not a pick section, but every figure between "
+                "## Recommendation and ## Sources is checked")
+    return ""
 
 
 def check(path, root=ROOT):

@@ -79,7 +79,7 @@ def test_the_agent_carries_its_key_rules():
         "Exactly TWO strategies",                       # two strategies, never one or three
         "names the pick's own downside",                # the downside
         "never cite traffic",                           # GSC/GA4 not fetched until project 6
-        "is a rebuild of that URL (project 5), never a new page",  # stub rows
+        "is a rebuild of each URL it lists (project 5) — one rebuild row per URL — never a new page",  # stub rows
         "A quantity from 1900 to 2099 takes a comma",   # the comma rule
         "say it **without a number**",                  # self-made counts: words, not numbers
         'never spelled out ("seventeen"',
@@ -92,3 +92,21 @@ def test_the_agent_carries_its_key_rules():
         "never from old page copy in `data/locations.json` or `data/page-map.json`",  # business facts
     ):
         assert phrase in agent, phrase
+
+
+def test_the_agent_says_strategy_a_and_b_are_checked():
+    # Known Issue 49: the check now reads Strategy A and B, so the agent must not say it doesn't.
+    agent = " ".join(AGENT.read_text(encoding="utf-8").split())
+    assert "where the check does not look" not in agent
+    assert "the check reads them as well" in agent
+    assert ("checks every figure under `## Strategy A`, `## Strategy B`, `## Recommendation` "
+            "and `## Concrete Artifact`") in agent
+    assert "a figure in Strategy A or B, the Recommendation or the Concrete Artifact" in agent
+
+
+def test_the_agent_keeps_locked_facts_out_of_a_b_and_the_pick():
+    # Known Issue 49: Strategy A and B are checked, so a business fact no source prints fails there too.
+    agent = " ".join(AGENT.read_text(encoding="utf-8").split())
+    assert ("keep them out of Strategy A, Strategy B and the pick unless a listed source prints "
+            "them too") in agent
+    assert "keep them out of the pick unless" not in agent

@@ -38,8 +38,8 @@ through, not a command — it has no argv dispatch, so never try to run it with 
 | Local says | PSI says | Real cause | How to see it |
 |---|---|---|---|
 | CLS 0 | CLS 0.2+ on a hero element | a box that only reaches full size when its image arrives; locally the preloaded image lands before first paint | `layout-image-box-reserved` (render harness), or delay images in headless Chrome |
-| no `/70de/` | 79 KiB unused JS, forced reflow, missing source map on `/70de/` | **the host (NOT FETCHED until project 6) Google tag gateway** injecting gtag.js at the edge; dist/ never contains it | `perf_audit.py --live` → `EDGE-INJECTED` |
-| fonts from `/fonts/` | `/cf-fonts/...woff2` rows | the host (NOT FETCHED until project 6) Fonts rewriting a Google Fonts link | same `--live` list |
+| no `/70de/` | 79 KiB unused JS, forced reflow, missing source map on `/70de/` | **the edge host (chosen in project 6) Google tag gateway** injecting gtag.js at the edge; dist/ never contains it | `perf_audit.py --live` → `EDGE-INJECTED` |
+| fonts self-hosted from `public/fonts/` | `/cf-fonts/...woff2` rows | the edge host (chosen in project 6) Fonts rewriting a Google Fonts link | same `--live` list |
 | mobile Performance ~60 | 90s | this Mac's CPU benchmark (~490) under 4× throttle | judge mobile Performance only on `--psi` |
 
 **When CLS disagrees, delay one resource class at a time** (images, fonts, CSS, JS) and
@@ -49,7 +49,7 @@ swap, not the cause: on 2026-09-13 fonts measured 0.02, images reproduced 0.156 
 ## Edge features are not code
 
 `/70de/` is gtag.js, not Rocket Loader. The Google tag gateway is a zone switch that
-overrides the page's own tag, and Configuration Rules cannot disable it. Fix: the host (NOT FETCHED until project 6) →
+overrides the page's own tag, and Configuration Rules cannot disable it. Fix: the edge host (chosen in project 6) →
 Tag Management → Google Tag Gateway → off, then Caching → Purge Everything. GA keeps
 working through BaseLayout's interaction-deferred loader. Never "leave it": an injected
 script FAILs `--live`. Changing the dashboard is the breeder's action — ask, don't assume.

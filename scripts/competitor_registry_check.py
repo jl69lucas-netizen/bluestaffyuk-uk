@@ -15,16 +15,20 @@ UK-style second level sits under a two-letter country code (`pets4homes.co.uk`).
 longer is a subdomain; non-ASCII names go in punycode (`xn--…`).
 
 The link guard bans every domain marked `link_allowed: false` — tier 5 always, and any other
-the user marks — across src/, data/boards/ and the external link library. It runs only once
+the user marks — across src/, data/boards/ and the external link library, including links
+JSON-escaped inside a string (`https:\\/\\/host`, `https:\\u002f\\u002fhost`). It runs only once
 the registry itself has no problems, and a scan path that has gone missing is a problem.
 
 Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §4, §12.
 """
 import argparse
+import ipaddress
 import json
+import os
 import pathlib
 import re
 import sys
+from urllib.parse import parse_qsl, urlencode, urlparse
 
 import jsonschema
 
@@ -42,7 +46,11 @@ LINK_SCAN = ("src", "data/boards", "docs/reference/external-link-library.md")
 LINK_SUFFIXES = {".astro", ".md", ".mdx", ".json", ".ts", ".js", ".html"}
 # `https?://` anywhere; scheme-less `//host` only straight after href= or src=, so `//`
 # code comments are not read as links. Group 1 is the authority (userinfo@host:port).
-URL = re.compile(r"""(?:https?:|\b(?:href|src)\s*=\s*["']?)//([^/?#\s"'<>)\]\\]+)""", re.I)
+# Inside a JSON string a slash may be written `\/` or `\u002f` and a quote `\"`, so
+# `https:\/\/host` and `href=\"\/\/host` are links too (Known Issue 47).
+SLASH = r"(?:\\?/|\\u002[fF])"
+URL = re.compile(r"""(?:https?:|\b(?:href|src)\s*=\s*\\?["']?)""" + SLASH + SLASH
+                 + r"""([^/?#\s"'<>)\]\\]+)""", re.I)
 
 
 def derived_priority(c):
@@ -70,6 +78,65 @@ def _registrable(d):
         return True
     return (len(labels) == 3 and len(labels[2]) == 2 and labels[2].isalpha()
             and labels[1] in CC_SECOND_LEVELS)
+
+
+PLACEHOLDER = "site_url_placeholder"  # the build's stand-in for BSUK's domain until project 6
+
+
+def root_domain(url):
+    """The registrable domain of a URL or bare host, by the rule above: two labels, or three under a
+    CC_SECOND_LEVELS second level and a two-letter country code. The build placeholder is its own
+    root, and so is an IP address (it has no registrable part); a bare label is None. One helper for
+    the keyword-gap and llm-intel agents' scripts and tests/py/test_llm_intel.py."""
+    h = (urlparse(url if "//" in url else "//" + url).hostname or "").lower().rstrip(".")
+    try:
+        return str(ipaddress.ip_address(h))
+    except ValueError:
+        pass
+    try:
+        h = h.encode("idna").decode()
+    except UnicodeError:
+        pass
+    if h == PLACEHOLDER:
+        return h
+    labels = h.split(".")
+    if len(labels) < 2 or not all(labels):
+        return None
+    keep = 3 if len(labels) >= 3 and _registrable(".".join(labels[-3:])) else 2
+    return ".".join(labels[-keep:])
+
+
+def page_key(url):
+    """One page however its URL is written: no scheme or fragment, the host lowercased and without
+    `www.`, the path without its trailing slash, the query without `utm_*` parameters (the rest
+    sorted). The keyword-gap script's duplicate check: the same page in two reports is one page."""
+    p = urlparse(url if "//" in url else "//" + url)
+    host = (p.hostname or "").rstrip(".")
+    host = host[4:] if host.startswith("www.") else host
+    query = urlencode(sorted((k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
+                             if not k.lower().startswith("utm_")))
+    return host + p.path.rstrip("/") + ("?" + query if query else "")
+
+
+def own_domains(root=ROOT, strict=False):
+    """BSUK's own domains, matched exactly: the root domain of a site-domain key in data/settings.json
+    (site_domain, site_url or domain) when one exists, of its business email, of the SITE_URL
+    environment variable once it is a real domain (project 6), and the build placeholder. One rule
+    for bsuk-llm-keyword-intel's script and tests/py/test_llm_intel.py. `strict` (the paid script):
+    stop when nothing but the placeholder is known, rather than judge bsuk_cited against it."""
+    try:
+        s = json.loads((pathlib.Path(root) / "data/settings.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        s = {}
+    s = s if isinstance(s, dict) else {}
+    vals = [s.get(k) for k in ("site_domain", "site_url", "domain")] + [str(s.get("email", "")).rpartition("@")[2]]
+    own = {PLACEHOLDER} | {d for d in (root_domain(v) for v in vals if isinstance(v, str) and "." in v) if d}
+    site = os.environ.get("SITE_URL", "").strip()
+    if site and root_domain(site) not in (None, PLACEHOLDER):
+        own.add(root_domain(site))
+    if strict and own == {PLACEHOLDER}:
+        raise SystemExit("data/settings.json names no BSUK domain (email or site-domain key) — refusing to judge bsuk_cited")
+    return own
 
 
 def problems(reg, root=ROOT):

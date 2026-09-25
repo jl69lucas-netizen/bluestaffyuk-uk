@@ -218,7 +218,6 @@
           }
         ],
         "aside": {
-          "title": "Who we are",
           "quote": "We are committed to upholding the highest standards for responsible breeding throughout the UK."
         }
       },
@@ -1498,7 +1497,7 @@
       "top": "H-AB1",
       "video-our-home": "S1"
     },
-    "record_hash": "7d448a5a0ca303877426caea20de2bb7458dd18933a8ac6d69b08dfd57c517ab",
+    "record_hash": "78e45199c26a83505af8ac96c610908ae1838b27c93971e8c33b46664dbf05cf",
     "tuple_before": {
       "hero": "",
       "dial": "",
@@ -1516,7 +1515,7 @@
         "Breeder Note:"
       ]
     },
-    "reapproved_at": "2026-09-22T20:01:46Z",
+    "reapproved_at": "2026-09-24T19:18:23Z",
     "reapprovals": [
       {
         "at": "2026-09-21T04:50:51Z",
@@ -1551,6 +1550,13 @@
         "changed_paths": [
           "/sections/12/heading",
           "/sections/12/refresh/note"
+        ]
+      },
+      {
+        "at": "2026-09-24T19:18:23Z",
+        "reason": "Known Issue 24 (project 5 readiness, R3): with the self-hosted Fraunces loaded, the H-AB1 aside quote wraps to three lines at 1280 and the hero's .inner ran 24px past the 450px band (rule 10). The quote is a sentence of the verbatim opening and cannot be cut, so the aside's 'Who we are' label is removed. Wording only: no pick, figure, source, menu or section moved.",
+        "changed_paths": [
+          "/sections/0/hero/aside/title"
         ]
       }
     ]
@@ -1587,7 +1593,7 @@
       "video-our-home": "S1"
     },
     "section_hashes": {
-      "top": "c75dfd2d9dd5a632f9b3228039ebf32a3020b2e6cf819dd370ce80dfca7d7ae9",
+      "top": "39bc1a4e0cffa7582a187422f7b257ad062bdd9251134a3afce30256f4345197",
       "our-story": "51729879ba54305c15dafaa8d4fe1dca2da0eee98b7a1ca5e3b7de41a7f78be3",
       "health-testing": "ed95caa96691b9e80138dd672e167a34242d2c8db560f48b43d8ac734aa2fd36",
       "paperwork-proof": "729757a70dfea8a62529d3801fd35bbb1e022deaf8a97e69a1775242464118e4",

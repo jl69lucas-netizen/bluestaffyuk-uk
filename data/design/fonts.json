@@ -1,0 +1,17 @@
+{
+  "_why": "Known Issue 24, user ruling R3 (2026-09-23): the two families the design system picked are self-hosted. Each file below is copied unchanged from the npm package named beside it and is served from public/fonts/ at a path that never changes (a new version is a new file name). Subsetting: the packages' own latin and latin-ext unicode-range subsets, no custom cut; latin is preloaded on every page, latin-ext is fetched only by a page that uses a character in its range. Fraunces is the 'standard' file (weight and optical-size axes, the two the boards requested from Google Fonts); Source Sans 3 is the weight axis. Upright only: no page sets italic, so the browser's slanted fallback serves an <em>. tests/py/test_self_hosted_fonts.py checks every size and sha256 below.",
+  "packages": [
+    {"name": "@fontsource-variable/fraunces", "version": "5.3.0", "license": "OFL-1.1",
+     "integrity": "sha512-9BYGySn4AHEJdgp9Z28tQ3X+laJMEOITXkQarZXeloWQZDq5oOvXJ3kDA8c7MGIfpogIaZfjrQBqmda8POOCKA=="},
+    {"name": "@fontsource-variable/source-sans-3", "version": "5.3.0", "license": "OFL-1.1",
+     "integrity": "sha512-dpi0GZk7EQe2tYpg6Q0Fx0OmUgnuGu+0rHPgtXqtKhglYmJuP7jZ12Mu1uN+NfRaJRY1Emn8AQJEWzmoZ4wa9g=="}
+  ],
+  "files": [
+    {"path": "public/fonts/fraunces-latin-standard-normal.woff2", "from": "@fontsource-variable/fraunces@5.3.0/files/fraunces-latin-standard-normal.woff2", "family": "Fraunces", "subset": "latin", "preload": true, "bytes": 67304, "sha256": "7234ed860a9cc83045413c4faee63c960a8f2d1917adcf728119307d56e0d783"},
+    {"path": "public/fonts/fraunces-latin-ext-standard-normal.woff2", "from": "@fontsource-variable/fraunces@5.3.0/files/fraunces-latin-ext-standard-normal.woff2", "family": "Fraunces", "subset": "latin-ext", "preload": false, "bytes": 59388, "sha256": "a2930b27d13a228bd9ab6a49269b5f800237892ad560cb9dd7fab01b1620f88e"},
+    {"path": "public/fonts/source-sans-3-latin-wght-normal.woff2", "from": "@fontsource-variable/source-sans-3@5.3.0/files/source-sans-3-latin-wght-normal.woff2", "family": "Source Sans 3", "subset": "latin", "preload": true, "bytes": 28740, "sha256": "7a19a7027e125257d310c6dbd78ae3a30b5ea1e3794d60b12bb28227a003bfda"},
+    {"path": "public/fonts/source-sans-3-latin-ext-wght-normal.woff2", "from": "@fontsource-variable/source-sans-3@5.3.0/files/source-sans-3-latin-ext-wght-normal.woff2", "family": "Source Sans 3", "subset": "latin-ext", "preload": false, "bytes": 60088, "sha256": "a85a7459bdb3cdc1136751e151a506bae653fc29ada3ca86237477df6f1b59e6"},
+    {"path": "public/fonts/fraunces-OFL.txt", "from": "@fontsource-variable/fraunces@5.3.0/LICENSE", "bytes": 4504, "sha256": "cd3384cafac6f2bddc3955273958a2e029f97027c8037ac539ef5744a77b579e"},
+    {"path": "public/fonts/source-sans-3-OFL.txt", "from": "@fontsource-variable/source-sans-3@5.3.0/LICENSE", "bytes": 4314, "sha256": "18aabf190848725e2576eefb5c29ba06aac1029d02132252a7f312eac2e50cf3"}
+  ]
+}

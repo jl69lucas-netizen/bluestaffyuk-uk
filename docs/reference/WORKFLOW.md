@@ -32,9 +32,9 @@ Sprint 0.5.
 There is no `CLAUDE_CODE_FORK_SUBAGENT` variable and never was. A Workflow script (deterministic
 fan-out) may run only when the breeder asks for one in their own words.
 
-**Where the work lands:** on `main` in a local session (push = deploy). In a remote / web session
-the harness assigns a branch and cannot push to `main`: commit there, open a **draft PR**, and the
-breeder's merge is the deploy. IndexNow runs after the merge is live, never after the branch push.
+**Where the work lands:** on the project branch the plan names, committed after every task and
+never pushed (`CLAUDE.md` working rules 2–3, `rules/deploy.md`). There is no remote, no host and
+no deploy until project 6; IndexNow and every live step wait for it (Sprint 5).
 
 ## The 7-Sprint Page Pipeline (rewritten 2026-07-29)
 
@@ -53,7 +53,7 @@ Sprint 3    Harden     page_hardening_scan + seam_parity + runtime probes
 Sprint 4    Final      bsuk-final-page-pass + AEO/GEO + keyword-verifier
                        + anti-ai-writing + technical batch
                        + bsuk-evidence-pass
-Sprint 5    Ship       generate_sitemaps + push + deploy-verify + live 200
+Sprint 5    Ship       project 6 only: generate_sitemaps + deploy-verify + live 200
 Sprint 6    Bank       session-closer + memory + BACK-PROPAGATE to the
                        skill/scanner that enforces each lesson + sweep siblings
 ```
@@ -77,7 +77,8 @@ PASS having examined zero pages.
 ## Where the rules live (changed 2026-08-02)
 
 `CLAUDE.md` no longer carries the rules. It keeps identity, paths, the deploy model and
-the twelve `judgment` rules; everything else moved **verbatim** into `rules/*.md`, indexed
+the nine `judgment` rules (working rules 1–9) plus the breeder's working rules 10–17;
+everything else moved **verbatim** into `rules/*.md`, indexed
 by `data/quality/rule-index.json` where every rule is `test`, `judgment` or `untested`.
 **`untested` means deletion candidate** and `scripts/quality_report.py` §5 prints the list every
 run. Page-type → rule-pack routing is the table in `CLAUDE.md`.
@@ -92,7 +93,7 @@ Before any work begins, verify these exist:
 
 | Artifact | Location | How to create |
 |----------|----------|---------------|
-| Page map | `data/page-map.json` | Run `python3 scripts/build_page_board.py` |
+| Page map | `data/page-map.json` | Nothing to create: the WordPress extractor's record of the old site (`scripts/extract_writers.py`, `npm run extract`); no build step regenerates it. A new page has no entry — its record is its board, `data/boards/<slug>.json` |
 | Locations | `data/locations.json` | Ships with the repo — the 28 UK cities, and the only list |
 | Puppy inventory | `data/puppies.json` | Ships with the repo — the six locked puppies |
 | Session brief | a dated brief under docs/superpowers/sessions/ | Run the `grill-me` skill |
@@ -107,8 +108,10 @@ this order: registry → intel (+ `--bsuk`) → `gap_matrix.py --write` →
 The traffic baseline is still deferred to project 6 (`@bsuk-gsc-analytics`; GSC is NOT
 FETCHED until the domain is live).
 
-**Hard Gate:** No page enters Sprint 2 (Content Production) until `data/page-map.json`
-exists and `@bsuk-content-architect` has assigned a framework to the target page.
+**Hard Gate:** No page enters Sprint 2 (Content Production) until its record exists — an
+existing page's row in `data/page-map.json`, or a new page's approved board
+(`data/boards/<slug>.json`; `python3 scripts/board_gate.py <slug>` passes) — and
+`@bsuk-content-architect` has assigned a framework to the target page.
 
 ---
 
@@ -132,11 +135,13 @@ out as parallel `Agent` calls in one message.
   → Output: data/competitors.json (checked by npm run check:competitors)
 
 @bsuk-competitor-intel --all
+  → STOPS before any fetch with the ids, tiers and ceiling (8 × N: a map, one search map when the first misses the breed, six scrapes); resumes only on `fetch approved: --all` (or `fetch approved: --tier <n>`)
   → Analyse every registry competitor across 10 metric categories
-  → Output: docs/research/competitors/<id>.json + <id>.md, then scripts/gap_matrix.py --write
-  → Then @bsuk-competitor-intel --bsuk (BSUK profile) and scripts/gap_matrix.py --write again
-  → The matrix is rebuilt after every intel run; the rebuild after --bsuk is the one to read
+  → Output: docs/research/competitors/<id>.json + <id>.md; before hand-off the contact scan, scripts/gap_matrix.py --write, npm run check:gaps and npm run check:competitors must all pass
+  → Any new or changed report makes the BSUK profile stale: re-run @bsuk-competitor-intel --bsuk (same after-run checks) before the gap matrix is read
+  → A registry fix (a moved, sold or parked site) goes to @bsuk-competitor-registry first
   → Output: docs/research/gap-matrix-[date].md (checked by npm run check:gaps)
+  → Hand-off: @bsuk-competitive-keyword-gap-agent, then @bsuk-strategy-synthesizer
 ```
 
 **Track B — Traffic & LLM Intelligence**
@@ -170,7 +175,7 @@ SESSION CONTEXT:
 - Visual Plan: [section → type mapping, or "decide during build"]
 - Audit Status: [complete | pending → run bsuk-content-audit-agent first]
 - LLM Visibility: [0–10 score | "not measured" → run bsuk-llm-keyword-intel]
-- Structure.json Entry: [yes | no → run bsuk-structure-architect first]
+- Page Record: [existing page — its row in data/page-map.json, the extractor's record of the old site | new page — no page-map row; its board data/boards/<slug>.json, written first]
 - Hub Page: [/url/ of parent hub | "needs to be built first"]
 - Internal Links Needed: [from workflow gate check, or "TBD after audit"]
 ```
@@ -178,7 +183,7 @@ SESSION CONTEXT:
 ### Sprint 0 Gate
 Before proceeding to Sprint 0.5:
 - [ ] Competitor research current: `npm run check:competitors` and `npm run check:gaps` pass on a dated gap matrix (per-page research under seo-rules Rule 11 still applies) — the registry and gap matrix exist; the traffic baseline is deferred to project 6 (see `data/port-manifest.json`)
-- [ ] `data/page-map.json` current (`python3 scripts/build_page_board.py`)
+- [ ] The page's record exists: its `data/page-map.json` row (an existing page) or its board `data/boards/<slug>.json` (a new page — a comparison page, a hub, a blog post)
 
 ---
 
@@ -213,9 +218,10 @@ Before proceeding to Sprint 1:
 
 ```
 Step 0a: bsuk-competitive-keyword-gap-agent
-  → Reuses the page lists in the competitor-intel reports and the BSUK profile (no new fetch unless a report is stale; more than one stale → `fetch approved: --all`)
-  → Scores gaps 1–10 with its script; every gap is proved by a competitor URL
-  → Score ≥7 = build this page (enters content queue); a gap whose BSUK page is a noindex stub routes as "rebuild the stub <url>" (project 5)
+  → Reads the `pages` lists in the competitor-intel reports, and BSUK's side from the BSUK profile (docs/research/competitors/bsuk.json); no profile → the page-map fallback, and every gap is "provisional" until `--bsuk` and a re-run
+  → Stale reports (`pages` NOT FETCHED or older than 30 days): one → the agent re-fetches it (1 map, one search map when intel's Map list asks, up to 6 scrapes); more than one → STOP until `fetch approved: --all` or `fetch declined`; tier 5 is never re-fetched
+  → Scores every gap with its script, never by eye: 7+ (or a licence / health-test topic) = high, 4–6 = medium, under 4 = low; every gap is proved by a competitor URL
+  → High gaps → bsuk-content-architect; a gap whose BSUK page is a noindex stub goes as "rebuild the stub <url>" (project 5), never a new page; medium gaps → bsuk-strategy-synthesizer's content calendar
   → Output: docs/research/keyword-gap-[date].md
 
 Step 0b: bsuk-llm-keyword-intel <slug> (one run per page in scope)
@@ -232,14 +238,16 @@ Step 0c: bsuk-strategy-synthesizer  ← STRATEGY BEFORE STRUCTURE
 Step 1: bsuk-structure-architect
   → Maps all 52 target pages into Silo or Reverse Silo structure
   → Ensures every page is ≤3 clicks from homepage
-  → Output: data/page-map.json
+  → Output: docs/superpowers/sessions/<YYYY-MM-DD>-structure.md (data/page-map.json is the extractor's record of the old site and is never hand-edited; a new page's record is its board)
 
 Step 2: bsuk-hub-builder  ← BUILD HUBS BEFORE SPOKES
-  → Creates aggregator hub pages:
-    - /blue-staffy-dog-for-sale/ (location hub)
-    - /blue-staffy-comparison/ (comparison hub)
-    - /blue-staffy-dog-guide/ (breed hub)
-    - /cites-documentation/ (trust hub)
+  → The hubs that exist (the agent's own table):
+    - /uk-locations/ (location hub — the 28 rows of data/locations.json)
+    - /uk-locations/blue-staffy-puppies-uk/ (national location page — every city page)
+    - /available-puppies/ (puppy hub)
+    - /blue-staffy-blog-guides/ (guides hub)
+    - /uk-staffordshire-bull-terrier-guide/ (breed guide)
+  → No comparison hub exists yet: project 5's strategy file gives its URL; a new hub is built only when the strategy names it
   → Hub pages link to all their spoke pages
 
 Step 3: bsuk-seasonal-content-agent (not ported — no agent file; skip this step)
@@ -248,7 +256,7 @@ Step 3: bsuk-seasonal-content-agent (not ported — no agent file; skip this ste
   → Routes seasonal page briefs to content-architect
 
 Step 4: bsuk-content-architect
-  → Reads: gap matrix + structure.json + the traffic baseline (deferred to project 6)
+  → Reads: the strategy file by explicit path (docs/superpowers/sessions/<date>-<topic>-strategy.md) + the gap matrix + data/page-map.json; the traffic baseline is deferred to project 6
   → Assigns framework to each page in priority queue:
     | Page Type | Framework |
     |-----------|-----------|
@@ -263,7 +271,7 @@ Step 4: bsuk-content-architect
 ```
 
 ### Sprint 1 Gate
-- [ ] `data/page-map.json` written
+- [ ] Structure map written (docs/superpowers/sessions/<YYYY-MM-DD>-structure.md)
 - [ ] Priority page queue defined (sorted by opportunity score ≥7)
 - [ ] Hub pages built before spoke pages
 - [ ] Framework assigned to each page type by content-architect
@@ -314,7 +322,7 @@ Step 4: bsuk-content-architect
    → Phase 3: 5-Tier Section Creation Form for each section (Rule 59)
    → Phase 4: 4-Part Delivery Format output (Rule 60)
    → Also defines: 3 anchor text strategies (Rule 58), Internal Linking Library (Rule 62 + Appendix A)
-   → Reads: data/image-manifest.json for image/infographic placement per page type
+   → Reads: rules/images.md for image/infographic sizing and placement per page type (data/image-manifest.json only indexes the images that exist)
 
 4A. bsuk-seo-content-writer [for standard optimization]
     → Writes SEO-optimized body copy
@@ -325,21 +333,22 @@ Step 4: bsuk-content-architect
 4B. bsuk-non-commodity-content-agent [for breeder-authentic content]
     → Use when: page needs original insights competitors can't copy
     → Triad model: Archaeologist (mines real facts) → Provocateur (flips generic advice) → Stylist (BSUK voice)
-    → Requires: real breeder input from project-context.md
+    → Requires: real breeder input from Lisa Bright, or a BSUK data file (the source repo's project-context file was never ported)
 
 5. bsuk-faq-agent
    → QAB framework: Question → Answer → Benefit
    → Generates 6–12 questions per page
-   → Sources: PAA output + GSC Queries.csv + BSUK question bank
+   → Sources: a location page's question file (data/queries/<slug>.json) first; otherwise PAA output + the BSUK question bank (data/faq.json). GSC is NOT FETCHED until project 6
    → Output: FAQPage JSON-LD + <details>/<summary> accordion HTML
 
 6. bsuk-section-builder [for custom page sections]
    → Section types: hero, features, faq, cta, testimonials, comparison-table,
-                    price-card, jump_link, counter_snippet, toc, cites-trust-bar
+                    price-card, counter_snippet, toc, trust-bar, divider, video
+   → Each is a kit component in src/components/kit/ (the agent's table)
    → Called by all page builder agents
 
 7. bsuk-infographic-builder [if visual reinforcement needed]
-   → Reads data/image-manifest.json FIRST — confirms image type, width, and source for this page type
+   → Reads rules/images.md FIRST — image sizes, crops and alt rules for this page type; data/image-manifest.json indexes the images that exist
    → HTML/CSS infographics: 400px height fixed (desktop), auto (mobile)
    → Width: 760px for guides/blogs/care pages · 1100px for homepage/location/hero sections
    → Types: Comparison / Feature Grid / Process Flow / AI-Generated (Type 4) / Higgsfield MCP (Type 5)
@@ -348,7 +357,7 @@ Step 4: bsuk-content-architect
    → Pure HTML/CSS + minimal vanilla JS
    → Types: cost calculator, variant fit quiz, documentation checklist,
             shipping timeline estimator, LICENCE_CLAIM_PLACEHOLDER verification guide
-   → Reads: data/financial-entities.json + data/price-matrix.json
+   → Reads: data/price-matrix.json + data/puppies.json (the source repo's cost-entities file was never ported)
 ```
 
 ### Specialty Flows (Run in Parallel with Main Queue)
@@ -358,47 +367,35 @@ Step 4: bsuk-content-architect
 bsuk-batch-rebuilder
   → Reads data/locations.json
   → One `Agent` call per UK city to bsuk-location-builder, all in one message (parallel)
-  → Reference template: the strongest existing UK city page (22 sections, 4,500+ words)
-  → Each page gets UK city-specific: Google Maps embed, local regulations note, population data
-  → Merges results → deploy → IndexNow
+  → Structure: docs/reference/location-page-template.md via .claude/skills/bsuk-location-page-builder/SKILL.md — the section count comes from the competitors, never a fixed number
+  → Each page gets the city's own geography and delivery band, plus the standard Carlisle map (bsuk-google-map skill)
+  → Merges results → commit on the project branch (deploy and IndexNow are inactive until project 6)
 ```
 
-**Variant Pages:**
+**Variant Pages — not runnable:**
 ```
-bsuk-variant-specialist
-  → /blue-staffy-blue-staffy-for-sale/
-  → /black-staffy-blue-staffy-for-sale/
-  → Shared comparison table cross-linking both
-
-bsuk-black-staffy-specialist
-  → Deep blue vs black Staffy coat distinctions
-  → Pricing comes from data/puppies.json and data/price-matrix.json — never typed
-  → Cross-sell logic between the puppy pages
+bsuk-variant-specialist (not ported — a coat-colour version for Staffies is possible later; see data/port-manifest.json)
+bsuk-black-staffy-specialist (not ported — the source repo's subspecies specialist has no BSUK analogue)
+  → Until one exists, coat-colour content is built by the page-type builder; pricing comes from data/puppies.json and data/price-matrix.json — never typed
 ```
 
 **Comparison Pages:**
 ```
 bsuk-comparison-builder
-  → All 6 spokes + hub are LIVE (see agent file for the verified slug list). Default = REBUILD/POLISH, not net-new.
-  → Polish priority: blue-staffy-vs-amazon-dog (thinnest, 135 lines) → then bring every spoke to the post-2026-06-12 interior-polish standard.
-  → Comparison pages are EXCLUDED from seo-master-checklist + Interior-Page Standard — they own their structure.
-  → Reference: /male-vs-female-blue-staffy-dogs-for-sale/
+  → No comparison page exists yet: the pages and their hub are project 5's net-new builds, at the URLs the strategy file gives them
+  → Comparison pages are EXCLUDED from seo-master-checklist + Interior-Page Standard — they own their structure (.claude/skills/bsuk-comparison-page-builder/SKILL.md)
 ```
 
-**Pricing + Finance Pages:**
+**Pricing + Finance Pages — not runnable:**
 ```
-bsuk-financial-strategist
-  → Reads data/financial-entities.json as source of truth
-  → Covers: purchase price, setup costs, IATA shipping, annual costs, lifetime estimate
-  → QAB framework for all FAQ sections
+bsuk-financial-strategist (not ported — deferred to project 6; its data file was never ported either)
+  → Until then prices come from data/puppies.json and data/price-matrix.json only — never typed
 ```
 
 **Breed Guide:**
 ```
-bsuk-breed-guide-builder
-  → Entity-Tree framework (optimized for AI/AIO citation)
-  → Reads data/price-matrix.json + data/financial-entities.json
-  → /blue-staffy-dog-guide/ hub + variant-specific guides
+bsuk-breed-guide-builder (not ported — the breed guide /uk-staffordshire-bull-terrier-guide/ is already built)
+  → A breed-guide refresh goes through bsuk-site-patterns and the page's own board (data/boards/<slug>.json)
 ```
 
 **Blog Posts:**
@@ -411,21 +408,16 @@ bsuk-blog-post-agent
 
 **Scam / Trust Content:**
 ```
-bsuk-scam-specialist
-  → /how-to-avoid-blue-staffy-dog-scams/ and scam cluster
-  → Converts scam-fearful visitors → documented-purchase inquiries
+bsuk-scam-specialist (not ported — deferred to project 6)
+  → A scam / trust page is built by the page-type builder from its board until then
 ```
 
 **Puppy Listings:**
 ```
-bsuk-litter-manager [when new puppy available]
-  → Updates data/litter-inventory.json
-  → Triggers bsuk-puppy-personality
-
-bsuk-puppy-personality
-  → CLEO/REX/NOVA/SAGE/IRIS buyer archetype profiles
-  → Matches puppy traits to buyer archetype
-  → Includes: Puppy Vitals Card HTML template + documentation block
+update data/puppies.json (breeder-confirmed only) → npm run build
+  → .claude/skills/bsuk-puppy-page-builder/SKILL.md builds or refreshes /available-puppies/<slug>/
+  → a reserved or sold puppy: data/redirects.json + python3 scripts/redirect_check.py
+  → bsuk-litter-manager and bsuk-puppy-personality (not ported — BSUK litters live in data/puppies.json)
 ```
 
 ---
@@ -522,7 +514,7 @@ including the puppy `/available/` and for-sale pages the old interior gate exclu
 ```
 1. npx astro build
 2. python3 scripts/final_page_audit.py [--puppies]
-   → page-type-aware, nested-slug aware. SUPERSEDES scripts/interior_29_audit.py.
+   → page-type-aware, nested-slug aware. SUPERSEDES the source repo's interior audit, which was never ported.
    → headings: all six levels, no skipped levels, Title Case; ≥5 H5/H6 advisory on homepage + location pages (2026-09-09)
    → schema · meta · image SEO · a11y traps · links · phone · compliance copy
    → one PASS / PASS-WITH-WARNINGS / FAIL verdict; triage every ✗
@@ -549,7 +541,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
    → Extended: long-form metadata for high-competition pages
    → Audits: no duplicates, no missing tags
 
-3. bsuk-external-link-agent
+3. bsuk-external-link-agent (not ported — deferred to project 6; insert the links by hand meanwhile)
    → Inserts authority links from docs/reference/external-link-library.md
    → Link-First rule: the anchor sits at the START of the sentence — never
      mid-sentence, never at the end (supersedes the old 'beginning or middle')
@@ -560,7 +552,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
    → Adds: Trust Badge row (LICENCE_CLAIM_PLACEHOLDER / LICENCE_CLAIM_PLACEHOLDER / Microchipped / Veterinary Vet)
    → Adds: ReviewAggregateSchema
    → Adds: Counter Snippet blocks
-   → Works with: bsuk-case-study-agent for testimonial content
+   → Testimonial case studies: bsuk-case-study-agent (not ported — deferred to project 6)
 
 5. bsuk-infographic-builder [if section needs visual reinforcement]
    → Comparisons, flag lists, benefit grids, process steps
@@ -586,7 +578,7 @@ AEO/GEO GATE — RUN IN THIS ORDER:
 ☐ BreadcrumbList schema present (bsuk-section-builder)
 ☐ LLM intel file written for the page (bsuk-llm-keyword-intel); the GSC traffic-baseline score is deferred to project 6
 ☐ LocalBusiness schema on all location pages
-☐ VideoObject schema if YouTube video embedded (bsuk-video-seo-agent)
+☐ VideoObject schema if YouTube video embedded (.claude/skills/bsuk-youtube/SKILL.md)
 ☐ No language implying wild-caught origin (LICENCE_CLAIM_PLACEHOLDER check)
 ☐ IMAGE-01: Every image alt describes THAT image, ≤125 characters, one keyword type per image (rules/images.md); no two alts match
 ☐ IMAGE-02: retired 2026-09-09 — no image-description blocks in body copy
@@ -619,32 +611,35 @@ bsuk-llm-keyword-intel <slug>
    → Lighthouse verification after fixes
 
 2. bsuk-performance-fixer
-   → Applies: font-display swap, LCP fetchpriority+preload,
-              WooCommerce CSS, jQuery defer, lazysizes removal
-   → Target: Perf Score ≥90
+   → Fixes what fits the Astro build (font-display, LCP fetchpriority, deferred third-party
+              scripts, intrinsic image sizes) in src/, never dist/
+   → Measures with python3 scripts/perf_audit.py <slug>, then again with --mobile: Lighthouse on
+              dist/, five categories (Performance, Accessibility, Best Practices, SEO, Agentic Browsing)
+   → Target: every category's median score over the runs ≥0.995 (the 100 PageSpeed Insights shows);
+              --psi is the record that counts, and it refuses until project 6 sets a real SITE_URL
 
 3. bsuk-canonical-fixer  ← CRITICAL — NEVER SKIP
-   → Converts relative canonicals to absolute URLs
-   → Fixes og:url and JSON-LD url fields
+   → Verifies every built canonical is absolute (src/layouts/BaseLayout.astro emits it)
+   → Checks og:url and JSON-LD url fields; a miss is fixed in src/, never dist/
    → Relative canonicals = all pages indexed as "/" = zero rankings
 
 4. bsuk-footer-standardizer
-   → Audits all new pages for bsuk-footer-v1 compliance
-   → Replaces outdated WordPress/Astra footer markup
+   → Audits that every new page renders the kit footer, src/components/kit/SiteFooterKit.astro, through src/layouts/PageShell.astro
+   → A page without it is fixed in its src/ page or layout, never in dist/
 
 5. bsuk-contact-form-updater
    → Audits inquiry forms for canonical BSUK form markup
    → Checks: ARIA labels, accessibility violations, outdated markup
 
-6. bsuk-google-map-agent [location pages only]
-   → Adds UK city-level map embed
+6. bsuk-google-map skill [location pages only] (the source repo's map agent: not ported — deferred to project 6)
+   → Adds the Carlisle, Cumbria map embed (town-level, Known Issue 16)
    → Fixes CSP object-src blocker (embed → iframe)
 
 7. bsuk-final-page-pass skill  ← THE FINAL GATE for every page type
    → python3 scripts/final_page_audit.py [--puppies]  (mechanical, over dist/)
    → TRIAGE every ✗: REAL / ACCEPTED / FALSE POSITIVE / NET-NEW (never report blind)
    → manual-auditor-check remains valid ONLY as the subjective companion checklist
-     for interior pages; scripts/interior_29_audit.py is SUPERSEDED — do not run it
+     for interior pages; the source repo's interior audit is SUPERSEDED and was never ported
 ```
 
 ### Sprint 4 Gate
@@ -655,7 +650,7 @@ bsuk-llm-keyword-intel <slug>
 - [ ] **Header style declared + justified** at the outline gate (framework-heading-hierarchy §Header Style Selection)
 - [ ] Lighthouse Performance ≥90 · Accessibility ≥90 — **judged on the DISTRIBUTION of ≥5 runs**, never one; CLS is bimodal on this site and one run already caused a confident wrong attribution
 - [ ] All canonicals are absolute URLs
-- [ ] Footer is bsuk-footer-v1 on all new pages
+- [ ] Every new page renders the kit footer (`src/components/kit/SiteFooterKit.astro`)
 - [ ] Inquiry form passes ARIA check
 - [ ] Zero non-whitelist duplicate crossovers, body AND headers, vs every sibling
 
@@ -710,8 +705,8 @@ lessons never reached the skill that enforces them.*
                              injector scripts were not ported — source repo only)
      a component decision → a dated file under docs/superpowers/sessions/ ledger
      an anchor spent      → the Anchor Diversity Ledger
-     a Reddit thread cited→ data/reddit-thread-ledger.json
-     a live defect not fixed → docs/reference/technical-seo-fixes-backlog.md
+     a Reddit thread cited→ data/queries/raw/<slug>/threads.json (bsuk-reddit-threads skill)
+     a live defect not fixed → a numbered Known Issue in docs/reference/session-log.md
 4. SWEEP SIBLINGS for the same defect class
    (the infographic-crop bug was found on 4 OTHER live pages in one pass)
 5. Memory: write/update the relevant memory file + its MEMORY.md pointer
@@ -730,28 +725,28 @@ lessons never reached the skill that enforces them.*
 
 | Agent | What it checks | Output |
 |-------|---------------|--------|
-| `@bsuk-rank-tracker` | Every competitor in `data/competitors.json` (21 today) — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
-| `@bsuk-branded-search-monitor-agent` | GSC CSV exports for branded queries ("bluestaffyuk", "blue staffy breeder") | Alert if >20% WoW drop; trust query triggers trust-signals-agent |
-| `@bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
+| `@bsuk-rank-tracker` (inactive until project 6 — the agent's own notice) | Every competitor in `data/competitors.json` — new pages, pricing shifts, location pages, blog posts, keyword movement | Change report; auto-triggers competitor-intel for movers |
+| `@bsuk-branded-search-monitor-agent` (not ported — deferred to project 6; needs GSC) | GSC CSV exports for branded queries ("bluestaffyuk", "blue staffy breeder") | Alert if >20% WoW drop; trust query triggers trust-signals-agent |
+| `@bsuk-competitor-pricing-alert-agent` (not ported — deferred to project 6) | Top 5 competitors' puppy pricing via Playwright | Alert if any price changes >£200 |
 | `@bsuk-llm-keyword-intel <slug>` | One engine per page — the ChatGPT scraper through the spend guard (a saved answer is reused) | docs/research/llm-intel/<slug>-[date].json: citations, citation gap, missing entities, answer format |
 
 ### Monthly
 
 | Agent | What it checks | Output |
 |-------|---------------|--------|
-| `@bsuk-performance-monitor-agent` | Lighthouse: homepage + 5 top pages | a dated session report under docs/superpowers/sessions/ |
+| `@bsuk-performance-monitor-agent` (not ported — deferred to project 6) | Lighthouse: homepage + 5 top pages | a dated session report under docs/superpowers/sessions/ |
 | `@bsuk-gsc-analytics` | GSC CSV exports for CTR gaps, ranking opportunities | Updated docs/reports/top-pages.md (deferred to project 6) |
-| `@bsuk-email-newsletter-agent` | Manual trigger | content/newsletters/YYYY-MM-newsletter.html |
+| `@bsuk-email-newsletter-agent` (not ported — deferred to project 6) | Manual trigger | a newsletter file (project 6) |
 
 ### Quarterly
 
 | Agent | What it checks | Output |
 |-------|---------------|--------|
 | `@bsuk-competitive-keyword-gap-agent` | Competitor sitemaps + H1/H2/titles | docs/research/keyword-gap-[date].md |
-| `@bsuk-directory-submission-agent` | New puppy breeder directories | data/directories.json |
-| `@bsuk-nap-citation-agent` | Name/Address/Phone across all directory listings | a dated session report under docs/superpowers/sessions/ |
-| `@bsuk-funnel-analysis-agent` | Full buyer funnel (Discovery → Conversion) | a dated session report under docs/superpowers/sessions/ |
-| `@bsuk-backlink-outreach-agent` | Resource pages + guest post opportunities + vet referrals | data/backlink-tracker.json |
+| `@bsuk-directory-submission-agent` (not ported — deferred to project 6) | New puppy breeder directories | a directory list (project 6) |
+| `@bsuk-nap-citation-agent` (not ported — deferred to project 6) | Name/Address/Phone across all directory listings | a dated session report under docs/superpowers/sessions/ |
+| `@bsuk-funnel-analysis-agent` (not ported — deferred to project 6) | Full buyer funnel (Discovery → Conversion) | a dated session report under docs/superpowers/sessions/ |
+| `@bsuk-backlink-outreach-agent` (not ported — deferred to project 6) | Resource pages + guest post opportunities + vet referrals | a backlink tracker (project 6) |
 
 ---
 
@@ -761,14 +756,14 @@ Events that trigger agent chains regardless of schedule:
 
 | Event | First Agent | Downstream Chain |
 |-------|------------|-----------------|
-| **New puppy hatched** | `bsuk-litter-manager` (status: available) | → `bsuk-puppy-personality` → `bsuk-homepage-builder` (litter announcement) → `bsuk-email-newsletter-agent` |
-| **Puppy reserved** | `bsuk-litter-manager` (status: reserved) | → `bsuk-meta-description-agent` (update puppy count in meta) |
-| **Puppy sold** | `bsuk-litter-manager` (status: sold) | → `bsuk-review-collection-agent` (Day 7 trigger) → `bsuk-case-study-agent` (after review received) |
-| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` (deferred to project 6 — not ported) | → `bsuk-financial-strategist` (reprice check) → `bsuk-meta-description-agent` |
-| **Branded search drops >20%** | `bsuk-branded-search-monitor-agent` | → `bsuk-trust-signals-agent` → `bsuk-non-commodity-content-agent` |
-| **New inquiry received** | Manual trigger | → `bsuk-email-lead-nurture-agent` (Day 0 template) |
-| **New YouTube video published** | `bsuk-video-seo-agent` | → `bsuk-external-link-agent` (embed links across relevant pages) |
-| **New A/B test needed** | `bsuk-conversion-tracker` identifies CTA issue | → `bsuk-heatmap-analyst-agent` (if data available) → `bsuk-ab-test-agent` |
+| **New puppy available** | update `data/puppies.json` (breeder-confirmed only) | → rebuild → `bsuk-puppy-page-builder` skill (the puppy's page) → `bsuk-homepage-builder` (litter announcement) |
+| **Puppy reserved** | update `data/puppies.json` | → rebuild → `bsuk-meta-description-agent` (update puppy count in meta) |
+| **Puppy sold** | update `data/puppies.json` | → rebuild → retire or redirect the route via `data/redirects.json` and `python3 scripts/redirect_check.py` |
+| **Competitor price change >£200** | `bsuk-competitor-pricing-alert-agent` (not ported — deferred to project 6) | → `bsuk-financial-strategist` (not ported — deferred to project 6) → `bsuk-meta-description-agent` |
+| **Branded search drops >20%** | `bsuk-branded-search-monitor-agent` (not ported — deferred to project 6) | → `bsuk-trust-signals-agent` → `bsuk-non-commodity-content-agent` |
+| **New inquiry received** | Manual trigger | → `bsuk-email-lead-nurture-agent` (not ported — deferred to project 6) (Day 0 template) |
+| **New YouTube video published** | `bsuk-video-seo-agent` (not ported — deferred to project 6) | → `bsuk-external-link-agent` (not ported — deferred to project 6) |
+| **New A/B test needed** | `bsuk-conversion-tracker` identifies CTA issue (not ported — deferred to project 6) | → `bsuk-heatmap-analyst-agent` → `bsuk-ab-test-agent` (both not ported — deferred to project 6) |
 
 ---
 
@@ -778,7 +773,7 @@ Events that trigger agent chains regardless of schedule:
 START: What are you trying to do?
 
 ├── "Start a new session / new page"
-│   ├── Sprint 0 done? NO → @bsuk-competitor-intel --all + @bsuk-gsc-analytics first
+│   ├── Sprint 0 done? NO → @bsuk-competitor-registry → @bsuk-competitor-intel --all → --bsuk → scripts/gap_matrix.py --write first (@bsuk-gsc-analytics waits for project 6)
 │   └── Sprint 0 done? YES → grill-me skill (with gap matrix loaded)
 │       → SESSION CONTEXT → bsuk-content-audit-agent
 │       → SECTION MAP + COMPONENT GATE → approved → build
@@ -802,19 +797,19 @@ START: What are you trying to do?
 │   └── bsuk-keyword-verifier → bsuk-meta-description-agent → bsuk-trust-signals-agent
 
 ├── "Check site health"
-│   └── bsuk-website-health skill → bsuk-performance-monitor-agent → bsuk-accessibility-fixer
+│   └── bsuk-website-health skill → bsuk-perf-gate skill → bsuk-accessibility-fixer (the monitoring agent waits for project 6)
 
 ├── "Weekly monitoring"
-│   └── [all in parallel] bsuk-rank-tracker + bsuk-branded-search-monitor-agent + bsuk-competitor-pricing-alert-agent (deferred to project 6) + bsuk-llm-keyword-intel
+│   └── bsuk-llm-keyword-intel per page; bsuk-rank-tracker is inactive until project 6, and the branded-search and pricing monitors also wait for project 6 (not ported — deferred to project 6)
 
 ├── "Deploy a page"
 │   └── bsuk-canonical-fixer → [Sprint 5 inactive until project 6] → bsuk-deploy-verifier → sitemap-agent
 
 ├── "A puppy was sold"
-│   └── bsuk-litter-manager (status: sold) → Day 7: bsuk-review-collection-agent
+│   └── update data/puppies.json → rebuild → data/redirects.json + scripts/redirect_check.py (review collection: not ported — deferred to project 6)
 
 └── "Something's wrong with conversions"
-    └── bsuk-conversion-tracker → bsuk-heatmap-analyst-agent → bsuk-ab-test-agent
+    └── bsuk-conversion-tracker → bsuk-heatmap-analyst-agent → bsuk-ab-test-agent (all three not ported — deferred to project 6)
 ```
 
 ---
@@ -828,12 +823,12 @@ full `ls data/`.
 
 | Data File | Writers | Key Readers | Update Cadence |
 |-----------|---------|-------------|----------------|
-| `data/locations.json` | Manual | location-builder, batch-rebuilder | New UK city |
+| `data/locations.json` | `scripts/extract_writers.py` (`npm run extract`; generated, never hand-edited) | location-builder, batch-rebuilder | Re-extraction only |
 | `data/puppies.json` | Manual (breeder-confirmed only) | puppy-page-builder, meta-description, trust-signals | When a puppy's status changes |
 | `data/price-matrix.json` | Manual (breeder-confirmed only) | puppy-page-builder, interactive-component, meta-description | Price changes — locked today |
-| `data/page-map.json` | `scripts/build_page_board.py` | content-architect, internal-link-agent, redirect-manager | Every build |
+| `data/page-map.json` | `scripts/extract_writers.py` (`npm run extract`) — the old site's record | content-architect, internal-link-agent, redirect-manager, `scripts/build_page_board.py` | Never regenerated by a build; a new page's record is its board |
 | `data/redirects.json` | redirect-manager | `scripts/redirect_check.py` | Slug changes |
-| `data/image-manifest.json` | Manual | image-pipeline, the page builders | Image work |
+| `data/image-manifest.json` | `scripts/bake_images.py` (`npm run bake`) | image-pipeline, the page builders | Image work |
 | `data/image-centering.json` | Manual | image-pipeline | Image work |
 | `data/component-ledger.json` | Manual | section-builder, the page builders | Component work (project 3) |
 | `data/bsuk-ontology.json` | `scripts/ontology_seed.py` + manual | entity-agent, entity-graph, the page boards | Entity work; re-seed after a new library or location row |
@@ -844,7 +839,7 @@ full `ls data/`.
 | `data/quality/evidence-budgets.json` | Manual | `scripts/evidence_audit.py` | Budget changes |
 | `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — empty today |
 | `data/quality/rework-ledger.json` | learning-loop | `scripts/quality_report.py` | Per rework window — empty today |
-| `data/boards/` | `scripts/build_page_board.py`, `scripts/board_approve.py` | `scripts/board_gate.py` | Per page board |
+| `data/boards/` | the page-type builder (the record, `schemas/board.schema.json`), `scripts/board_approve.py` (the approval) | `scripts/build_page_board.py` (renders the board Artifact), `scripts/board_gate.py` | Per page board |
 
 ---
 
@@ -852,11 +847,13 @@ full `ls data/`.
 
 Every agent carries `model: inherit` — the session's model drives all of them, so a model release never requires editing the agent files again. The per-agent cost lever is `effort`, a **native** Claude Code frontmatter field (`low | medium | high | xhigh | max`). The single source of truth is `data/agent-registry.json`, which is GENERATED from the agents' own frontmatter by `python3 scripts/build_agent_registry.py` — the source repo's `apply_model_tiers.py` and `verify_model_tiers.sh` were not ported (not ported — source repo only), so the flow runs the other way here: edit the agent's frontmatter, then regenerate the registry.
 
-| Tier | Model | Effort | Use For | Count |
-|---|---|---|---|---|
-| `tier_max` | inherit | max | Orchestrators, deep creative, competitor intelligence, high-traffic builds | 16 |
-| `tier_high` | inherit | high | Specialist page builders, narrative/schema content, SEO monitoring, analytics, conversion audits | 26 |
-| `tier_medium` | inherit | medium | Technical audits + pure-mechanical utilities + data monitoring | 26 |
+| Tier | Model | Effort | Use For |
+|---|---|---|---|
+| `tier_max` | inherit | max | Orchestrators, deep creative, competitor intelligence, high-traffic builds |
+| `tier_high` | inherit | high | Specialist page builders, narrative/schema content, SEO monitoring, analytics, conversion audits |
+| `tier_medium` | inherit | medium | Technical audits + pure-mechanical utilities + data monitoring |
+
+The count per tier is in `docs/reference/system-registry.md` (generated), never here.
 
 Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the native field replaced it), the `dynamic_workflow:` frontmatter key (not a recognized field — the flag lives in the registry only), and the `opus48_*` / `opus47_*` / `haiku_medium` tier names. `xhigh` is available and untested here; try it on the orchestrators and the audit chain and measure rework rate before adopting it.
 
@@ -877,6 +874,10 @@ Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the nati
 7. **Hub Before Spoke** — Always build hub pages before their spoke pages. Link equity flows correctly.
 8. **Audit Before Build** — `bsuk-content-audit-agent` must run before any page rebuild.
 9. **Canonical Before Deploy** — `bsuk-canonical-fixer` must run before every deploy. Relative canonicals = zero indexing.
+10. **Data Files Are Truth** — Never fabricate data. All claims come from data files, real page fetches, or direct breeder input. GSC and GA4 are NOT FETCHED, so nothing may be sourced from them.
+11. **Phone Number Policy (Rule 61)** — Phone number PHONE_PLACEHOLDER appears ONLY in the footer and schema markup. All body copy CTAs must link to `/contact-us/` form — never display or link a phone number in page body content.
+12. **Image Rules Lookup Required** — Before any image generation or infographic work, read `rules/images.md` for the sizing and placement rules of the current page type, and `data/image-manifest.json` for the dimensions of the images that exist.
+13. **Project 5 page rules (system-gaps)** — Every location, comparison and blog-post board runs, in Sprint 1 before it is boarded: `python3 scripts/keyword_variants.py <board slug or query-cache folder>` (the four extra keyword types), `python3 scripts/ontology_seed.py --check` (every entity the outline names is in the ontology with a source), and `python3 scripts/image_candidates.py <slug> --write` (images for the hero and every body H2/H3). The board then shows the entities by class, the link diversity line and block 7 "Images & styles", and the gates `keyword-variants-missing`, `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`, `outline-heading-repeat` and the `image-*` checks hold it (`scripts/family_rules.py`). Block 7b lists them as approval will see them, and `scripts/board_approve.py` refuses approval, and any re-approval, while one FAILs — except the build-gate image checks (`image-generated-unapproved`, `image-generated-not-ingested`, `image-asset-not-ingested`, `image-existing-missing`, `image-pick-invalid`), which can only pass after the image is approved and published. A generated image is drafted with `scripts/ingest_image.py draft`, approved on a second pass of the same board, and published with `scripts/ingest_image.py publish`. After Sprint 2 builds the page, `npm run check:outline` (in `check:all`) proves it was written from its approved outline and shares no heading or passage with a sibling. `IMAGE-DESIGNS.md` governs every picture.
 
 ---
 
@@ -888,23 +889,25 @@ Retired on 2026-09-07: the `<!-- EFFORT:START/END -->` prose directive (the nati
 
 ### 1. Check new/modified pages return 200
 ```bash
-curl -sI "https://$SITE_URL/[new-slug]/" | grep "HTTP"
+curl -sI "$SITE_URL/[new-slug]/" | grep "HTTP"
 ```
 Expected: `HTTP/2 200`
 
 ### 2. Verify canonical is correct
 ```bash
-curl -s "https://$SITE_URL/[new-slug]/" | grep -i "canonical"
+curl -s "$SITE_URL/[new-slug]/" | grep -i "canonical"
 ```
 Expected: an absolute URL matching the slug
 
 ### 3. Update the page board
-`python3 scripts/build_page_board.py` regenerates `data/page-map.json` and the boards in
-`data/boards/`; `python3 scripts/board_gate.py` is the gate. The source repo's
+`python3 scripts/build_page_board.py <slug>` renders the page's board record, `data/boards/<slug>.json`,
+as its board Artifact; `python3 scripts/board_gate.py <slug>` is the gate. `data/page-map.json`
+is the extractor's record of the old site and is left alone. The source repo's
 `page-inventory.md` was not ported (not ported — source repo only) — the board replaces it.
 
-### 4. Update data/locations.json for UK city pages
-Change `"status": "planned"` → `"status": "live"` for any new UK city page.
+### 4. UK city pages
+`data/locations.json` is generated and has no status field: a city page is live when its row
+builds, and `npm run sitemaps` (the build's postbuild) lists it.
 
 ### If any URL returns 404 after deploy:
 1. Check the page's own `index.astro` under `src/pages/` exists
@@ -917,7 +920,3 @@ Before building any new page, check `data/page-map.json` to confirm:
 - The planned slug matches what will be linked to in navigation
 - No existing page already covers this topic at a different URL
 - If URLs will differ from what's linked, add a redirect BEFORE building the page
-10. **Data Files Are Truth** — Never fabricate data. All claims come from data files, real page fetches, or direct breeder input. GSC and GA4 are NOT FETCHED, so nothing may be sourced from them.
-11. **Phone Number Policy (Rule 61)** — Phone number PHONE_PLACEHOLDER appears ONLY in the footer and schema markup. All body copy CTAs must link to `/contact-us/` form — never display or link a phone number in page body content.
-12. **Image Manifest Lookup Required** — Before any image generation or infographic work, read `data/image-manifest.json` to confirm the source type, dimensions and placement for the current page type. The design system itself is project 3.
-13. **Project 5 page rules (system-gaps)** — Every location, comparison and blog-post board runs, in Sprint 1 before it is boarded: `python3 scripts/keyword_variants.py <board slug or query-cache folder>` (the four extra keyword types), `python3 scripts/ontology_seed.py --check` (every entity the outline names is in the ontology with a source), and `python3 scripts/image_candidates.py <slug> --write` (images for the hero and every body H2/H3). The board then shows the entities by class, the link diversity line and block 7 "Images & styles", and the gates `keyword-variants-missing`, `external-links-six-diverse`, `anchor-type-variation`, `anchor-reuse-sitewide`, `outline-heading-repeat` and the `image-*` checks hold it (`scripts/family_rules.py`). Block 7b lists them as approval will see them, and `scripts/board_approve.py` refuses approval, and any re-approval, while one FAILs — except the build-gate image checks (`image-generated-unapproved`, `image-generated-not-ingested`, `image-asset-not-ingested`, `image-existing-missing`, `image-pick-invalid`), which can only pass after the image is approved and published. A generated image is drafted with `scripts/ingest_image.py draft`, approved on a second pass of the same board, and published with `scripts/ingest_image.py publish`. After Sprint 2 builds the page, `npm run check:outline` (in `check:all`) proves it was written from its approved outline and shares no heading or passage with a sibling. `IMAGE-DESIGNS.md` governs every picture.

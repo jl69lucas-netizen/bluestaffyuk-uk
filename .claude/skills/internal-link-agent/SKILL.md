@@ -19,7 +19,7 @@ You are the **Internal Link Agent Skill** for BlueStaffyUK. You map the internal
 ## On Startup — Read These First
 
 1. **Read** `docs/reference/seo-rules.md`
-2. **Read** `docs/reference/top-pages.md` — high-value pages that most need inbound links
+2. **Priorities** — search-console data is `NOT FETCHED` until project 6 (Known Issue 14); until then rank pages by `data/page-map.json` and `docs/research/gap-matrix-2026-09-23.md`
 3. **Ask user:** "Full site audit, specific page audit, or fix known orphan pages?"
 
 ---
@@ -74,7 +74,7 @@ Use `/tmp/sitemap_pages.txt` as the master list for:
 - **Link-target validation** — never propose a link to a URL not in the sitemap (phantom-target guard)
 - **The site-wide Anchor Diversity Ledger** (below) — one ledger row per sitemap URL
 
-> Note: `src/pages/` is the deployed source of truth; `site/content/` greps below are the legacy/staging path. When both exist, run link extraction against `dist/` (built output) or `src/pages/` — per the Verify-Rendered-Not-Source rule.
+> Note: link extraction runs against `dist/` (the built output), per the Verify-Rendered-Not-Source rule. `src/pages/` is the source; the source repo's page tree does not exist here.
 
 ### Step 1 — Find All Internal Links
 
@@ -83,14 +83,14 @@ Use `/tmp/sitemap_pages.txt` as the master list for:
 **Gutenberg strip (required before analysis):** BSUK HTML may contain WordPress Gutenberg block comments that confuse link parsing. Strip them first:
 ```bash
 # Strip Gutenberg comments before analysis
-sed 's/<!-- wp:[^>]*-->//g' site/content/[slug]/index.html > /tmp/clean.html
+sed 's/<!-- wp:[^>]*-->//g' dist/[slug]/index.html > /tmp/clean.html
 # Use /tmp/clean.html for all subsequent grep/analysis
 ```
 
 ```bash
 # Extract all href="/..." links from all pages (after Gutenberg strip)
-for f in site/content/*/index.html; do
-  slug=$(dirname "$f" | sed 's|site/content/||')
+for f in $(find dist -name index.html); do
+  slug=$(dirname "$f" | sed 's|^dist/||')
   sed 's/<!-- wp:[^>]*-->//g' "$f" | grep -o 'href="/[^"]*"'
 done | sed 's/href="//;s/"//' | sort | uniq -c | sort -rn > /tmp/link_counts.txt
 
@@ -101,11 +101,11 @@ head -20 /tmp/link_counts.txt
 ### Step 2 — Find Orphan Pages
 ```bash
 # List all page slugs
-find site/content/ -name "index.html" | sed 's|site/content/||;s|/index.html||' | \
+find dist -name "index.html" | sed 's|^dist/||;s|/index.html||' | \
   grep -v "^$" | sort > /tmp/all_pages.txt
 
 # Compare against linked pages
-grep -roh 'href="/[^"]*"' site/content/*/index.html | \
+grep -roh --include=index.html 'href="/[^"]*"' dist | \
   sed 's/.*href="//;s/".*//' | sort -u > /tmp/linked_pages.txt
 
 # Pages not linked from anywhere
@@ -124,7 +124,7 @@ grep -l 'href="/uk-blue-staffy-puppy-buying-guide/"' dist/buy-blue-staffy-puppie
 ### Step 4 — Anchor Text Audit
 ```bash
 # Find "click here" / "read more" / generic anchor text
-grep -rn '>click here<\|>read more<\|>here<\|>learn more<' site/content/*/index.html | head -20
+grep -rn --include=index.html '>click here<\|>read more<\|>here<\|>learn more<' dist | head -20
 ```
 
 ---
@@ -146,12 +146,12 @@ Score each missing link 1–3:
 **Good anchor text:**
 - Descriptive: "Blue Staffy puppy care guide"
 - Keyword-rich but natural: "Staffy vs American Bully comparison"
-- Action-oriented: "see our blue and blue brindle Staffy pups"
+- Action-oriented: "see our blue, blue and white, and white Staffy pups"
 
 **Bad anchor text:**
 - Generic: "click here," "read more," "here," "this page"
 - Over-optimized: exact match keyword repeated identically across 20 links
-- Empty: `<a href="/page/"></a>`
+- Empty: `<a href="/<slug>/"></a>`
 
 ### Anchor Diversity Ledger (site-wide — added 2026-07-11)
 
@@ -191,22 +191,22 @@ grep -roh "href=\"$target\"[^>]*>[^<]*" dist/ | sed 's/.*>//' | sort | uniq -c |
 
 > Best practice — verified against SEO + WCAG. `target="_blank"` is **not** a ranking factor; forcing every link to a new tab gives **zero SEO value** and hurts UX (breaks the back button, tab clutter on mobile).
 
-- **Internal links → SAME tab, always.** Never add `target="_blank"` to an internal `/slug/` link. (Internal new-tab breaks navigation and is an anti-pattern.)
+- **Internal links → SAME tab, always.** Never add `target="_blank"` to an internal `/<slug>/` link. (Internal new-tab breaks navigation and is an anti-pattern.)
 - **External authority links → NEW tab** (`target="_blank" rel="noopener noreferrer"`) **+ a visual/a11y cue.** On a sales page this keeps the high-intent buyer on our page instead of shipping them to gov.uk/the Kennel Club with no easy return. Pattern used site-wide: a subtle CSS `::after { content:"↗" }` affordance scoped to `.home-d a[target="_blank"]` (see `src/pages/index.astro`).
 - Note: warning of a new window is WCAG **3.2.5 (Level AAA)**, not AA — so `target+rel` alone is AA-compliant; the ↗ cue is the courtesy affordance.
 - **Authority citations on technical terms:** cite important technical/clinical terms ONCE to a credible **government or veterinary-body** source (prefer `pmc.ncbi.nlm.nih.gov`) or the canonical industry authority, at the claim sentence. Reusable verified-source table: `docs/reference/external-link-library.md §Authority Citations` (HC and L-2-HGA DNA testing, hip dysplasia, canine parvovirus, DEFRA-approved animal transport rules, LEGAL_CLAIM_PLACEHOLDER, LICENCE_CLAIM_PLACEHOLDER). Verify 200 first; link a term only once per page.
 
 ### Anchor / Jump-Link Cross-Reference Technique (in-content `#anchor` links) — confirmed 2026-06-03
 
-> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#compare-colours"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
+> When a later paragraph references a topic that an **earlier on-page section already answers in depth**, link the prose to that section via its `#id` (e.g. `href="#available-blue-staffy-puppies"`). This is a high-value, low-effort technique that improves dwell time, scannability, and on-page topical signals — and it costs nothing because every section already carries an `id` + `scroll-mt-20`.
 
-**Worked example (homepage, the model to copy):** the FAQ "What's the difference between a blue and a blue brindle Staffy?" answer points readers **up** to the Compare Coat Colours section (`Is a Blue or a Blue Brindle Staffy Right for You?`) via `href="#compare-colours"`. The deep-dive table is the payoff; the FAQ is the teaser.
+**Worked example (homepage, the pattern to copy):** a line under the FAQ ("Your Questions About Blue Staffies, Answered") would point readers **up** to the puppy grid (`Meet Our Affordable Blue Staffy Puppies Ready for Their Forever Homes`, `id="available-blue-staffy-puppies"`) via `href="#available-blue-staffy-puppies"`. The grid is the payoff; the FAQ is the teaser.
 
 **How to apply it everywhere:**
 1. **Inventory section IDs first:** `grep -n 'id="' <page>` — every major section should have a stable `id` + `scroll-mt-20` (so the jump doesn't hide under a sticky header).
 2. **Link teaser → deep-dive in the same page.** FAQ answers, "still deciding?" lines, and pros/cons sections are prime spots to jump **up** to a comparison/spec table or **down** to the available-puppies grid / contact form.
-3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#compare-colours">Compare our blue and blue brindle pups side by side</a> in the table above to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
-4. **Schema-safe caveat (critical):** if a section's text is rendered from a data array that also feeds JSON-LD (e.g. `faqItems` → `FAQPage` `acceptedAnswer.text`, rendered via `{item.a}` = HTML-escaped), you **cannot** put an `<a>` inside that string — it will show as literal text and pollute the schema. Instead add the jump-link in a **separate prose `<p>`** outside the array (the homepage adds a "Still weighing it up?" line under the FAQ accordion).
+3. **First-person + descriptive anchor at the sentence start** — e.g. `<a href="#available-blue-staffy-puppies">Meet all six of our puppies</a> in the grid above — blue, blue and white, white, and blue with a white blaze — to see which fits your home.` Never a bare "click here," never mid-sentence, never parked at the end.
+4. **Schema-safe caveat (critical):** if a section's text is rendered from a data array that also feeds JSON-LD (e.g. `faqItems` → `FAQPage` `acceptedAnswer.text`, rendered via `{item.a}` = HTML-escaped), you **cannot** put an `<a>` inside that string — it will show as literal text and pollute the schema. Instead add the jump-link in a **separate prose `<p>`** outside the array (for example, a "Still weighing it up?" line under the homepage FAQ accordion — a pattern to build, not a line the homepage has today).
 5. Cap ~1–2 jump links per section; they supplement, not replace, contextual links to other pages.
 
 **Well vs. badly done (save for every future build):**
@@ -231,7 +231,7 @@ status=$(curl -sI -A "Mozilla/5.0" --max-time 10 "$url" | head -1 | awk '{print 
 
 All internal link operations use Claude Code file reads and Bash grep for speed and accuracy. The Playwright CLI (`npx playwright@latest`) handles live-site verification. No external MCPs are used.
 
-- Link suggestion: grep + python against site/content/ HTML files
+- Link suggestion: grep + python against the built HTML in `dist/`
 - Broken anchor verification: `curl -sI` to confirm target returns 200
 - External links: curated library + curl verification before every insert
 - Bulk mode: `slugs: string[]` param in Step 1 above handles all pages in one pass
@@ -300,7 +300,7 @@ Date: [YYYY-MM-DD]
 3. **Orphan check on every full audit** — no page without inbound links
 4. **Hub/spoke architecture takes priority** — fix cluster links before cross-links
 5. **Max ~3 new links per edit session** per page — avoid over-optimization signals. **Intent clarified (2026-06-04):** the real risk is *clustered exact-match anchors* or *many links to the same target*, not a handful of distinct contextual links spread across a long page. On a large page (e.g. the 1000-line homepage), more than 3 is acceptable **if** each link has a different target, a descriptive non-duplicated anchor, sits at the sentence start (Link-First), and is distributed one-per-section — and the user has approved the set. State the trade-off when exceeding 3.
-6. **Save audit** — write to `docs/research/internal-link-audit-[date].md`
+6. **Save audit** — write to `docs/research/internal-link-audit-<date>.md`
 7. **Internal = same tab, external = new tab + ↗ cue** — never `target="_blank"` on an internal link (see Open-in-New-Tab Policy)
 8. **Use the jump-link technique** — cross-reference earlier in-depth sections from later teaser prose via `#id`; respect the schema-safe caveat (no `<a>` inside `{item.a}`/JSON-LD-bound strings)
 9. **Duplicate-slug check before redirecting** — confirm two similar slugs are truly the same *intent* before proposing a 301; hub vs guide, availability vs cost, etc. are distinct pages → link them, don't redirect (and use **301** for permanent consolidation, never 302)

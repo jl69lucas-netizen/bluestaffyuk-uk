@@ -41,3 +41,81 @@ def page_key(path, dist):
     if rel == "index.html":
         return "index"
     return rel[: -len("/index.html")]
+
+
+# ── routes through data/page-map.json (Known Issue 39) ───────────────────────────────────────
+#
+# A page has a KEY and a ROUTE. The key names its per-page files (data/facts/<key>.json,
+# data/boards/<key>.json, data/verbatim/<key>.json) and its data/facts/rebuilt.json entry;
+# the route is where it is built (dist/<route>/index.html). For a top-level page the two are
+# the same. For a city page the key is the bare slug and the route is uk-locations/<slug> —
+# the same bare key scripts/migration_parity.py (slug_of) and query_coverage_check.py
+# (route_slug) already use, so one rebuilt.json entry means one page to every gate.
+
+import re as _re
+
+# pageboard.SLUG's shape; a segment of dashes alone names nothing and is refused
+_SLUG = _re.compile(r"_?(?=[a-z0-9-]*[a-z0-9])[a-z0-9-]+(/(?=[a-z0-9-]*[a-z0-9])[a-z0-9-]+)*")
+
+
+def _page_map_routes(root):
+    """{last segment: route} for every data/page-map.json row but the root, plus
+    `uk-locations/<slug>` for every data/locations.json row (a city added there before the
+    extractor's map knows it is still a city page). {} with neither file; a row without its
+    url or slug names no route and is skipped. Two routes ending in the same segment would make
+    a bare key ambiguous: refused."""
+    import json
+    import pathlib
+    path = pathlib.Path(root) / "data" / "page-map.json"
+    cities = pathlib.Path(root) / "data" / "locations.json"
+    urls = []
+    if path.is_file():
+        urls += [row["url"] for row in json.loads(path.read_text(encoding="utf-8"))["pages"]
+                 if isinstance(row, dict) and row.get("url")]
+    if cities.is_file():
+        urls += ["/uk-locations/%s/" % row["slug"]
+                 for row in json.loads(cities.read_text(encoding="utf-8"))
+                 if isinstance(row, dict) and row.get("slug")]
+    routes = {}
+    for url in urls:
+        route = url.strip("/")
+        if not route:
+            continue
+        last = route.rsplit("/", 1)[-1]
+        if routes.get(last, route) != route:
+            raise ValueError(f"data/page-map.json + data/locations.json: two routes end in {last!r}: "
+                             f"{routes[last]} and {route}")
+        routes[last] = route
+    return routes
+
+
+def resolve_page(slug, root):
+    """(key, route) for a slug, a route or a route with its slashes.
+
+    `index`, "" and "/" are the site root: ("index", ""). A bare slug, or the full route, of a
+    data/page-map.json row (or a data/locations.json city, under uk-locations/) resolves to (its last segment, its route) — so
+    `blue-staffy-puppies-for-sale-leeds` and `uk-locations/blue-staffy-puppies-for-sale-leeds`
+    are both (`blue-staffy-puppies-for-sale-leeds`, `uk-locations/blue-staffy-puppies-for-sale-leeds`).
+    Anything else is a page built after the migration (`available/roys`): its key and route
+    are the slug as given. A slug that is not [a-z0-9-] segments joined by '/' (an optional
+    leading '_' for pageboard's demo record) raises ValueError: a key names a file, and
+    `../x` would name one outside the tree."""
+    s = str(slug).strip("/")
+    if s in ("", "index"):
+        return "index", ""
+    if not _SLUG.fullmatch(s):
+        raise ValueError(f"not a slug: {slug!r} — expected [a-z0-9-] segments joined by '/'")
+    last = s.rsplit("/", 1)[-1]
+    route = _page_map_routes(root).get(last)
+    if route is not None and s in (last, route):
+        return last, route
+    return s, s
+
+
+def built_page(slug, root, dist=None):
+    """The built index.html for a slug: <dist>/<route>/index.html, <dist>/index.html for the
+    root. `dist` defaults to <root>/dist; the result is a pathlib.Path."""
+    import pathlib
+    _, route = resolve_page(slug, root)
+    base = pathlib.Path(root) / "dist" if dist is None else pathlib.Path(dist)
+    return base / route / "index.html" if route else base / "index.html"

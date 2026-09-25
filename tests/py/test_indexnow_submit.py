@@ -7,6 +7,8 @@ trust signal about the host. So every test here patches `urllib.request.urlopen`
 a test that passes because the network was down would prove nothing.
 """
 import importlib
+import pathlib
+import re
 import sys
 
 import pytest
@@ -19,6 +21,7 @@ def _load(monkeypatch, tmp_path, **env):
     for k, v in env.items():
         monkeypatch.setenv(k, v)
     (tmp_path / "public").mkdir(exist_ok=True)
+    (tmp_path / "dist").mkdir(exist_ok=True)
     monkeypatch.chdir(tmp_path)
     sys.modules.pop("indexnow_submit", None)
     mod = importlib.import_module("indexnow_submit")
@@ -77,7 +80,7 @@ def test_dry_run_never_prints_the_key(monkeypatch, tmp_path, capsys):
 
 def test_malformed_sitemap_is_a_clean_refusal(monkeypatch, tmp_path, capsys):
     mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
-    (tmp_path / "public" / "page-sitemap.xml").write_text(
+    (tmp_path / "dist" / "page-sitemap.xml").write_text(
         "<urlset><url><loc>https://example.inv", encoding="utf-8")
     assert _run(mod, monkeypatch, ["--all"]) == 2
     err = capsys.readouterr().err
@@ -99,7 +102,7 @@ def test_a_pretty_printed_sitemap_still_yields_urls(monkeypatch, tmp_path, capsy
     A regex that demanded the URL abut its tags would report 'nothing to submit' on a
     perfectly good sitemap — a false negative that looks like a clean refusal."""
     mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
-    (tmp_path / "public" / "page-sitemap.xml").write_text(
+    (tmp_path / "dist" / "page-sitemap.xml").write_text(
         "<urlset>\n  <url>\n    <loc>\n      https://example.invalid/puppies/\n    </loc>\n"
         "  </url>\n  <url><loc>https://example.invalid/about/</loc></url>\n</urlset>\n",
         encoding="utf-8")
@@ -108,3 +111,58 @@ def test_a_pretty_printed_sitemap_still_yields_urls(monkeypatch, tmp_path, capsy
     out = capsys.readouterr().out
     assert "https://example.invalid/puppies/" in out
     assert "https://example.invalid/about/" in out
+
+
+# ── the sitemaps it reads are the ones the generator writes (2026-09-23) ──────
+# It read public/{page,post,local}-sitemap.xml, while scripts/generate_sitemaps.py writes
+# dist/{page,post,location,puppy,video}-sitemap.xml after every build: `--all` would have
+# submitted no city page, no puppy page — and, reading public/, nothing at all.
+def test_it_reads_every_url_sitemap_the_generator_writes(monkeypatch, tmp_path):
+    import generate_sitemaps
+    mod = _load(monkeypatch, tmp_path)
+    assert set(mod.SITEMAPS) == {"%s-sitemap.xml" % s for s in generate_sitemaps.SHARDS
+                                 if s != "video"}, "the video sitemap only repeats page URLs"
+    assert mod.SITEMAP_DIR.as_posix() == "dist"
+
+
+def test_all_submits_the_city_and_puppy_pages(monkeypatch, tmp_path, capsys):
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    for shard, path in (("page", "about"), ("location", "uk-locations/leeds"),
+                        ("puppy", "available-puppies/roman")):
+        (tmp_path / "dist" / f"{shard}-sitemap.xml").write_text(
+            f"<urlset><url><loc>https://example.invalid/{path}/</loc></url></urlset>",
+            encoding="utf-8")
+    monkeypatch.setattr(sys, "argv", ["indexnow_submit.py", "--dry-run", "--all"])
+    assert mod.main() == 0
+    out = capsys.readouterr().out
+    for path in ("about", "uk-locations/leeds", "available-puppies/roman"):
+        assert f"https://example.invalid/{path}/" in out
+
+
+# ── the indexing skill says the same thing the script does (2026-09-24) ─────────
+# After the script moved to dist/, the skill's STEP 1 and STEP 2 still globbed
+# public/*.xml ("public/ is where BSUK's sitemaps live"), and it said the key was read
+# from public/<key>.txt on disk. The sitemaps are build output in dist/; the script reads
+# the key from INDEXNOW_KEY and checks the live key file at $SITE_URL/<key>.txt.
+INDEXING_SKILL = pathlib.Path(__file__).resolve().parents[2] / ".claude/skills/bsuk-indexing/SKILL.md"
+PUBLIC_SITEMAP = re.compile(r"public/\*\.xml|public/[\w.-]*sitemap|public/`?\s+is where|"
+                            r"SITE_ROOT\s*=\s*[\"']public")
+KEY_ON_DISK = re.compile(r"key is read from `public/|read it from `public/")
+NOT_PORTED = re.compile(r"submitter[^.]*?\b(?:deferred|not\s+ported)\b|\bwas\s+not\s+ported\b")
+
+
+def test_the_indexing_skill_reads_sitemaps_from_dist_and_the_key_from_the_env():
+    lines = INDEXING_SKILL.read_text(encoding="utf-8").splitlines()
+    bad = [f"SKILL.md:{n}  {l.strip()}" for n, l in enumerate(lines, 1)
+           if PUBLIC_SITEMAP.search(l) or KEY_ON_DISK.search(l)]
+    assert bad == [], "the skill contradicts scripts/indexnow_submit.py:\n  " + "\n  ".join(bad)
+    roots = re.findall(r"(?m)^SITE_ROOT\s*=\s*\"([^\"]*)\"", "\n".join(lines))
+    assert roots and set(roots) == {"dist"}, roots
+    # It also called the submitter "deferred to project 6 … not ported" while the script sat
+    # in scripts/ (`npm run indexnow`), refusing until project 6 by its own guards.
+    prose = re.sub(r"(?m)^>\s?", "", "\n".join(lines))
+    stale = [m.group(0) for m in NOT_PORTED.finditer(prose)]
+    assert stale == [], "the submitter exists — scripts/indexnow_submit.py:\n  " + "\n  ".join(stale)
+    # The sitemaps generate_sitemaps.py writes: page, post, location, puppy, video and the
+    # index — the source repo's `local` shard is not one of them.
+    assert not re.search(r"\blocal\)", "\n".join(lines)), "the sitemap list names a `local` shard"

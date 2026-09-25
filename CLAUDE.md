@@ -89,12 +89,15 @@ The generic skills already ported live at `.claude/skills/` — `grill-me`,
 
 Full task→entry-point table: `docs/reference/quick-start.md`.
 
-## The nine judgment rules that stay here
+## The working rules that stay here
 
-These nine have **no mechanical decision procedure**, which is exactly why they cannot be
+Rules 1–9 have **no mechanical decision procedure**, which is exactly why they cannot be
 delegated to a test and must stay in context. They are the nine `enforced: judgment` rows in
-`data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops the list
-growing. Every other rule moved to a pack.
+`data/quality/rule-index.json`, and that file's `judgment_cap: 9` is what stops that list
+growing. Rules 10–17 are the breeder's standing working rules (2026-09-18 to 2026-09-24).
+Each has a row in the same file, keyed `claude_md`: 12, 14, 15, 16 and 17 are `enforced: test`
+and name the test behind their gate, 10, 11 and 13 are `untested`, and none is a judgment
+row, so the cap is untouched. Every other rule moved to a pack.
 
 1. **First-person brand voice.** Write as Lisa Bright: *we / us / our / here at
    BlueStaffyUK*. Our puppies, our kennel and our credentials are framed as ours, never
@@ -169,17 +172,22 @@ growing. Every other rule moved to a pack.
     the wording states a wrong fact (the former city, an old price, the byline) or collides
     with another page's heading, in which case the change is recorded in the board record's
     `verbatim.changed` with the reason. Everything else is written fresh from the outline.
-    `scripts/verbatim_set_check.py` (arrives in Task 18b) proves the set is on the built page. Applies from the
-    homepage onward; the three pages built before this rule (privacy, thank-you, contact)
-    stay as rewritten. (Breeder, 2026-09-20.)
+    `scripts/verbatim_set_check.py` (`npm run check:verbatim`) proves the set is on the built
+    page. Applies from the homepage onward; the three pages built before this rule (privacy,
+    thank-you, contact) stay as rewritten. (Breeder, 2026-09-20.)
 
 16. **Per-page hero and counter; a refresh delta on every section.** No two pages share the
-    same hero layout or the same counter strip: the counter's figures are that page's own facts
+    same hero layout or the same counter strip — except the three utility pages,
+    `/privacy-policy-uk/`, `/thank-you-blue-staffy-puppies-journey/` and
+    `/uk-blue-staffy-breeders-contact/`, which the user exempted by name (2026-09-23): they may
+    share with each other, never with any other page (`RULE16_EXEMPT` in
+    `scripts/pageboard.py`, gated by `tests/py/test_rule16_gate.py`). The counter's figures are that page's own facts
     (from `data/*.json` and the page's record, never invented) and each board offers three hero
     styles and three counter styles designed for that page from the breeder's idea sheets
-    (`Assets/Components-Ideas/`) on the same tokens. Every other section carries a small,
-    deliberate refresh delta per page — layout, accent role or motif, never the palette —
-    per `.claude/skills/bsuk-component-refresh/SKILL.md` and
+    (outside this repo, at `~/Downloads/bluestaffyuk-cms/Assets/Components-Ideas/`) on the same
+    tokens. Every other section carries a small, deliberate refresh delta per page — layout,
+    accent role or motif, never the palette — per
+    `.claude/skills/bsuk-component-refresh/SKILL.md` and
     `.claude/skills/bsuk-component-variations/SKILL.md`. (Breeder, 2026-09-20.)
 17. **Project 5 pages: outline only, six diverse links, an image on every heading.** Location,
     comparison and blog-post pages built from 2026-09-24 on (never the twelve built before;
@@ -201,7 +209,7 @@ work is done rather than how a page is built, so they are stated here.
 - **No source-repo vocabulary, ever.** This operating system was ported from a bird
   breeder's repo, and the twelve markers `scripts/marker_check.py` scans for are not a style
   preference: a hit is a re-base that did not happen. There is no allowlist, and
-  `npm run check:markers` is the last link in `npm run check:all`. The marker list lives in
+  `npm run check:markers` runs in `npm run check:all`. The marker list lives in
   the gate, deliberately, so that quoting it here cannot make this file fail its own rule.
 - **Every deliverable ships as an Artifact with copy buttons, plus `.md`.** Research docs,
   outlines, keyword tables, meta sets, gate reports, lessons docs — the deliverable is a
@@ -227,12 +235,13 @@ npm run test:render:meta
 npm run test:render:pages
 ```
 
-`check:all` chains `check:parity`, `check:redirects`, `check:schema`, `check:sitemaps`,
-`check:placeholders` and `check:markers`, in that order. Until Task 16 closes,
-`check:markers` reports the ported `tests/render/` fixtures as known debt; every other gate
-in the chain must be green. `test:render:meta` is the gate that
-checks the checkers — run it **before** trusting any page result. `test:render:pages`
-measures the target pages at 375/768/1280 in a real browser.
+`check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
+`check:redirects`, `check:schema`, `check:queries`, `check:competitors`, `check:gaps`,
+`check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and `agents`, in
+that order (`tests/py/test_package_scripts.py` pins it). Every gate in the chain must be
+green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
+any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
+browser.
 
 Also: `python3 scripts/board_gate.py <slug>` · `python3 scripts/final_page_audit.py` ·
 `python3 scripts/page_hardening_scan.py` · `python3 scripts/dup_content_audit.py [--headers]` ·
@@ -286,8 +295,10 @@ spec under `docs/superpowers/specs/`:
   `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` and guarded by
   `scripts/placeholder_check.py` until the breeder confirms them.
 
-The design system is project 3. Until then there is no component kit and no locked palette;
-`src/layouts/BaseLayout.astro` and `src/styles/global.css` are the whole shell.
+The design system (project 3) is built: the component kit is `src/components/kit/`, its section
+components are listed in `data/design/components.json`, and rebuilt pages render through
+`src/layouts/PageShell.astro`
+(`rules/design.md` holds the locked visual rules).
 
 ## Where everything else went
 
@@ -298,9 +309,9 @@ The design system is project 3. Until then there is no component kit and no lock
 - `docs/reference/session-log.md` — build history and **Known Issues**
 - `docs/reference/WORKFLOW.md` — the sprint model
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 66 (of which 9 are
-  `enforced: judgment`, capped there): the ledger indexes the `rules/` packs and the
-  render-harness checks, seo-rules.md numbers its own categories. `docs/reference/quick-start.md` states
-  both, and all three files change together.
+  A–J. That is a different count from `data/quality/rule-index.json`'s 79 (of which 9 are
+  `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
+  render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
+  `docs/reference/quick-start.md` states both, and all three files change together.
 - `docs/reference/credentials.md` — which env key exists and what reads it
 - `docs/superpowers/specs/` and `docs/superpowers/plans/` — the six projects' specs and plans

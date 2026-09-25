@@ -1,0 +1,295 @@
+{
+ "slug": "staffy-puppies-for-sale-liverpool",
+ "date": "2026-09-25",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near Liverpool, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-25"
+ },
+ "raw": "data/queries/raw/staffy-puppies-for-sale-liverpool/ai_engines.response.json",
+ "answer_text": "verbatim",
+ "paid_this_run": true,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "staffie-owners.co.uk",
+   "registry_id": "staffie-owners",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "pets4homes.co.uk",
+   "registry_id": "pets4homes",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "royalkennelclub.com",
+   "registry_id": "royalkennelclub",
+   "tier": 2,
+   "platform": false
+  },
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  }
+ ],
+ "local_businesses": [
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "name": "Staffy Puppy Heaven",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Ravenscroft Staffordshire Bull Terries Puppies",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "citation_gap": [
+  "pets4homes",
+  "royalkennelclub",
+  "staffie-owners",
+  "ukstaffypups"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "page-map",
+  "path": "data/page-map.json",
+  "provisional": true,
+  "note": "dist/uk-locations/staffy-puppies-for-sale-liverpool/index.html is a noindex stub; no question file; checked against the page map's title, H1 and headings"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "l-2-hga",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "hc-hsf4",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vet check",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "royal kennel club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "puppy finder",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "pets4homes",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffie owners",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "puppy marketplaces",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "breeder directories",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "business listings",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "certificates",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "temperament",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "breathing",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "allergy",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "pairing",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "legally leave",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "where the puppies are raised",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "take the dog back",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "car park",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "delivery only",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "multiple breeds",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "high prices",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "merseyside",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "liverpool",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "ok",
+  "list": "bulleted",
+  "length": "long",
+  "words": 417,
+  "opening": "statement"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "royal kennel club|kennel club;puppy finder;pets4homes;staffie owners;staffordshire bull terrier;puppy marketplaces|puppy marketplace;breeder directories|breeder directory;business listings;certificates;worming|wormed;socialisation;temperament;breathing;allergy;pairing;legally leave;where the puppies are raised;take the dog back;deposit;car park;delivery only;multiple breeds;high prices;merseyside;liverpool"
+}

@@ -1,6 +1,6 @@
 ---
 name: bsuk-comparison-page-builder
-description: THE comparison-page builder skill for BlueStaffyUK — 22–25-section blueprint, per-page research protocol (SERP snapshot → keyword universe → entity map → visual asset blueprint), 3-variant component system (Hero A/B/C), interactive decision modules, and the full pass-gate list (SEO/AIO/GEO/AEO/entity/anti-AI/non-commodity/Lighthouse). Re-based for BlueStaffyUK 2026-09-16. Covers the comparison cluster (hub + spokes). Build order — blue-vs-blue-brindle first, male-vs-female second-to-last, hub LAST.
+description: The comparison-page builder for BlueStaffyUK — a section list derived from the competitors (their count + 3, floor 9, via bsuk-query-augmentation), a per-page research protocol (SERP snapshot → keyword universe → entity map → visual asset blueprint), per-page hero and counter styles (working rule 16), interactive decision modules, and the full pass-gate list (SEO/AIO/GEO/AEO/entity/anti-AI/non-commodity/Lighthouse). Covers the comparison pages project 5 builds, starting with the blue-or-black Staffy comparison.
 ---
 
 # SKILL: BSUK Comparison Page Builder (re-based for BlueStaffyUK, 2026-09-16)
@@ -14,42 +14,32 @@ This skill **supersedes the section template inside `.claude/agents/bsuk-compari
 
 ---
 
-## 1. Page Inventory & Build Order (verified live 2026-07-04, all 200)
+## 1. Page Inventory & Build Order
 
-| # | Slug | Role | Build order |
-|---|------|------|-------------|
-| 1 | `/uk-staffordshire-bull-terrier-guide/` | Variant comparison (flagship) | **FIRST — the standard-setter** |
-| 2 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison | 2nd–4th batch |
-| 3 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison | 2nd–4th batch |
-| 4 | `/uk-staffordshire-bull-terrier-guide/` | Breed comparison (THIN — 135 lines) | 2nd–4th batch |
-| 5 | `/uk-staffordshire-bull-terrier-guide/` | Self-comparison / decision page | 5th–6th |
-| 6 | `/blue-staffy-uk-breeders/` | Breeder comparison (trust page) | 5th–6th |
-| 7 | `/buy-staffy-puppies-for-sale-uk/` | Gender comparison (FOR-SALE method) | **SECOND-TO-LAST** |
-| 8 | `/uk-staffordshire-bull-terrier-guide/` | HUB | **LAST — consumes spoke data** |
+No comparison page exists yet. Project 5's research names the first — **Blue or black Staffy
+comparison** (`blue or black staffordshire bull terrier`) — in
+`docs/superpowers/sessions/2026-09-23-location-pages-strategy.md`; the project-5 plan fixes its
+slug and any others. Each is a NEW page: its slug is chosen once, on its board, and never changed
+after it ships.
 
-- `/blog/uk-staffordshire-bull-terrier-guide/` is a **blog post**, not part of this cluster — never merge it in.
-- All 8 exist on disk in `src/pages/` — default mode is REBUILD to this standard, never build from scratch, never change slug/canonical/H1 topic without approval.
+- The breed guide `/uk-staffordshire-bull-terrier-guide/` and the blog hub are not comparison pages — link to them, never merge them in.
 
-## 2. MFS → BSUK Conversion Map (apply to ALL converted content)
+## 2. BSUK Wording (apply to ALL comparison copy)
 
-| MFS term | BSUK term |
+| Topic | BSUK wording |
 |---|---|
-| Maltipoo (baseline breed) | Blue Staffy (*Canis lupus familiaris*) |
-| Maltese | Blue-Brindle Staffy |
-| Cavapoo | American Bully |
-| Cockapoo | English Bull Terrier |
-| puppy / puppies / dog / litter | pup / pups / puppy / puppy / litter |
-| adoption | reservation / bringing your puppy home |
-| Lawrence & Cathy | Lisa Bright (Carlisle, since 2014) |
-| Virtual Adoption Consultant | **Virtual Litter Consultant** (the BlueStaffyUK decision-guide voice — still first-person we/us/our) |
-| "Genetic ROI" | **Health-Documentation ROI** — L-2-HGA and HC-HSF4 screening, vet health check, microchip, whelp certificate, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER paperwork |
-| OFA / CHIC / Embark DNA | L-2-HGA and HC-HSF4 DNA screening of the parents, where the evidence ledger records the certificate · vet health check · microchip |
-| Mitral Valve Disease / PRA / White Shaker | Staffordshire Bull Terrier: the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); any other health claim needs an evidence-ledger entry |
-| shedding / hypoallergenic | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
-| Cheap-puppy trend debunk | **Unweaned-pup sales debunk** — a pup sold before it is weaned is a welfare failure; BlueStaffyUK places fully weaned pups only |
-| grooming | coat, nail and ear care, bathing, crate hygiene |
+| The breeder | Lisa Bright, BlueStaffyUK, Carlisle, Cumbria |
+| The comparison | Blue Staffy (*Canis lupus familiaris*) against the rival the page's keyword names — never a breed the page's research did not name |
+| reservation | reservation / bringing your puppy home |
+| Decision-guide voice | **Virtual Litter Consultant** (the BlueStaffyUK decision-guide voice — still first-person we/us/our) |
+| Health documentation | **Health-Documentation ROI** — L-2-HGA and HC-HSF4 screening, vet health check, microchip, whelp certificate, LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER paperwork |
+| DNA testing | L-2-HGA and HC-HSF4 DNA screening of the parents, where the evidence ledger records the certificate · vet health check · microchip |
+| Breed conditions | Staffordshire Bull Terrier: the hereditary conditions the breed is DNA-tested for (L-2-HGA, HC-HSF4); any other health claim needs an evidence-ledger entry |
+| Coat and shedding | short single coat, moderate shedding — no allergy or "hypoallergenic" claim |
+| Cheap-puppy debunk | **Unweaned-pup sales debunk** — a pup sold before it is weaned is a welfare failure; BlueStaffyUK places fully weaned pups only |
+| Grooming | coat, nail and ear care, bathing, crate hygiene |
 | Kennel Club recognition | The Staffordshire Bull Terrier is a KC-recognised breed; any licence or statute wording stays LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER until confirmed |
-| prices | READ `data/price-matrix.json` and `data/settings.json` — NEVER hardcode a figure |
+| Prices | READ `data/price-matrix.json` and `data/settings.json` — NEVER hardcode a figure |
 
 **Every claim stays inside the verified-claim ledger** (`data/quality/evidence-ledger.json`). A parent health-test claim (L-2-HGA, HC-HSF4) is assertable only where the ledger records the certificate.
 
@@ -66,7 +56,7 @@ Write the same six research deliverables for each page, saved under `docs/superp
 
 **12-part deliverable per page** (breeder-approved format, one page per session, clustered):
 
-1. **SERP Snapshot** — top 7 real Google UK results (Firecrawl/Playwright; un-fetchable = `NOT FETCHED`, NEVER simulated — the MFS source used simulated data; we do not). Why each ranks: authority, backlinks, topical depth, schema, UX.
+1. **SERP Snapshot** — top 7 real Google UK results (the question file's Google and Bing pool, fetched `curl` first, a browser next and Firecrawl last because it spends credits; un-fetchable = `NOT FETCHED`, NEVER simulated). Why each ranks: authority, backlinks, topical depth, schema, UX.
 2. **Search Intent** — informational / commercial / transactional / comparison / local.
 3. **Competitor Reverse Engineering** (top 7) — title, meta, H1–H6, page voice, angle, frameworks, entity coverage + exploitable gaps, word count, media usage, schema usage.
 4. **Keyword Universe** — primary, secondary, long-tail, long-form queries, compact keywords, PAA, Reddit-language queries, NLP/LSI terms, AI-Overview entities, branded/hybrid targets ("BlueStaffyUK vs …").
@@ -75,26 +65,28 @@ Write the same six research deliverables for each page, saved under `docs/superp
 7. **Content Gap** — what's missing from ALL competitors.
 8. **Recommended Page Structure** — full H1→H6, optimized for SEO + AEO + AI Overview + snippets.
 9. **Schema / Technical** — FAQPage, Article/WebPage, BreadcrumbList; Product/Offer ONLY on the for-sale page; ItemList on hub.
-10. **Internal Linking** — up to hub, sideways to sibling comparisons, down to `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/available/` puppies, contextual to care/health/price pages. Anchors at sentence START (Link-First rule), never mid-sentence or end.
+10. **Internal Linking** — up to hub, sideways to sibling comparisons, down to `/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`, `/available-puppies/`, contextual to care/health/price pages. Anchors at sentence START (Link-First rule), never mid-sentence or end.
 11. **Backlink Strategy** — canine blogs, breeders, rescue/education orgs, Reddit resources, pet journalists.
-12. **Page Sections & Outline** — mandatory sections + competitor-derived sections + our-moat sections, **A/B/C categorized** (A=mandatory core, B=competitor-match, C=moat), total **22–25 sections**.
+12. **Page Sections & Outline** — mandatory sections + competitor-derived sections + our-moat sections, **A/B/C categorized** (A=mandatory core, B=competitor-match, C=moat). The count is `section_target.total` in `data/queries/<slug>.json`: the competitors' highest cleaned H2 count + 3, never fewer than 9 (`docs/reference/location-page-template.md`, "Section count").
 
-Research sweep sources per page: a fresh top-7 from Google, Bing, Reddit and Facebook. No competitor registry was ported and none has been fetched for BSUK — an un-fetched competitor is `NOT FETCHED`, never inferred.
+Research sweep sources per page: a fresh top-7 from Google, Bing, Reddit and Facebook, plus the registry (`data/competitors.json`) and its intel reports (`docs/research/competitors/`). A registry entry with no report is `NOT FETCHED`, never inferred.
 
-## 4. The 22–25 Section Blueprint (converted 22-section MFS template)
+## 4. Candidate Sections (the count comes from the competitors)
 
-Pillar structure (adapt per page; hub compares staffy vs ALL breeds with 2–3 H3 comparison metrics per rival):
+The page carries at least `section_target.total` body sections. The table below is a menu of
+candidate sections, not a template: take the ones the competitor scan and the question file
+support, drop the rest, and never pad to a number. Pillar structure (adapt per page):
 
 | # | Level | Section | Notes |
 |---|-------|---------|-------|
 | 1 | H1 | Hero — "[A] vs [B]: Which Puppy Truly Fits Your Lifestyle, Home & Family?" | Split hero: left staffy, right rival; image FIRST on mobile (before H1) |
-| 2 | — | Counter Snippet strip | £1,500 from · £500 deposit · £200–£350 delivery · 24h reply |
+| 2 | — | Counter strip | this page's own figures, chosen on its board (rule 16) |
 | 3 | — | TOC (desktop sidebar / mobile sticky jump-rail) | |
 | 4 | H2 | Quick Answer / Decision Summary Block | a short AI-extractable definition (about fifty words) + "Choose [A] if… Choose [B] if…" |
-| 5 | H2 | Key Takeaways (8 takeaways) | `bsuk-key-takeaway` stat-forward grid |
+| 5 | H2 | Key Takeaways | `InfoCard kind="fact"` |
 | 6 | H2 | Quick Comparison Table | 8–12 attributes immediately after intro H2 |
 | 7 | H2 | Why an Objective Comparison (not a popularity contest) | E-E-A-T; define both breeds |
-| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | L-2-HGA and HC-HSF4 DNA screening of the parents (only where the evidence ledger records the certificate), vet health check, LICENCE_CLAIM_PLACEHOLDER docs |
+| 8 | H3 | The BlueStaffyUK Philosophy: Health-Documentation ROI | L-2-HGA and HC-HSF4 DNA screening of the parents (only where the evidence ledger records the certificate), vet health check, the paperwork that goes home (`data/faq.json` `whyus-paperwork`); a licence only as LICENCE_CLAIM_PLACEHOLDER |
 | 9 | H2 | Deep Dive: [A] — temperament, temperament, size, bonding | comparison table after H2 |
 | 10 | H3 | Temperament & Home/Apartment Suitability | |
 | 11 | H3 | Health Risk Analysis (breed-appropriate, ledger-bounded) | external authority links here |
@@ -106,24 +98,24 @@ Pillar structure (adapt per page; hub compares staffy vs ALL breeds with 2–3 H
 | 17 | H2 | First 30-Day Adjustment Timeline | Lisa's first-30-days voice |
 | 18 | H2 | Myth vs Reality Cards | H5 supporting facts, H6 breeder notes/citations |
 | 19 | H2 | Health & Delivery section | canonical line: delivery £200–£350 by distance, by DEFRA-approved transport (read `delivery_options`) |
-| 20 | H2 | Available Puppies / Breeding Pair cards | link-out, don't re-teach; sold ≠ InStock |
+| 20 | H2 | Available Puppies cards | `PuppyCard` rows of `data/puppies.json`; link-out, don't re-teach; sold ≠ InStock |
 | 21 | H2 | Owner Story (BAB) + Reviews | REAL reviews only — never fabricate |
 | 22 | H2 | Who Should Choose [A]? / Who Should Choose [B]? | H4 micro-intent answers per household type |
 | 23 | H2 | FAQ — every pick in `data/queries/<slug>.json` (one `Faq` block is fine; the three-block split is location-only), each question an H3, QAB answers | FAQPage JSON-LD carrying exactly the visible questions, visible accordion |
 | 24 | H2 | Blog / further-reading cards | 3 relevant posts |
-| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; `idPrefix` if 2 forms |
+| 25 | H2 | Final CTA + page-specific inquiry form + newsletter | brass pill; one `ContactFormKit` — the page's only form and its closer (§11 item 6) |
 
 **Hard structural gates (non-negotiable):**
 - Full **H1→H6 outline presented and approved BEFORE any code** — no skipped levels, all six levels, **≥5 H5 AND ≥5 H6**.
-- **Every H2 and H3 carries an image** — OG photo, AI image, or HTML/CSS infographic (same rule as blog posts).
-- Word counts: spokes **5,000–6,000**; hub **6,500–7,000**. 2–3 H3 comparison metrics per rival on the hub.
+- **An image under every body heading** (`rules/images.md`, user ruling G1): the hero and every body H2 and body H3 (FAQ blocks excepted) carry an image slot — an OG photo, a generated image or an IG-style infographic, per `IMAGE-DESIGNS.md` §7–§9 (§11 item 2).
+- Word count: `NOT FETCHED` until the scan gives a competitor median — never pick a number first and write to fill it.
 - Headers conversational/Quora-style, hybrid question+entity, **unique per page** (dup H2s across spokes = dup content).
-- Section seam dividers (`.bsuk-seam` + footer logo) between major parts, 4–8 per page.
+- `SectionDivider` between major parts (`inverse` on a dark band), 4–8 per page.
 - No visible dates anywhere — freshness in schema only.
 
 ## 5. Interactive Decision Modules (converted "calculators")
 
-Text/HTML-CSS modules (pure HTML/CSS/vanilla JS via `@bsuk-interactive-component`; NO ASCII boxes on the live page — those were the MFS draft format):
+Text/HTML-CSS modules (pure HTML/CSS/vanilla JS via `@bsuk-interactive-component`; NO ASCII boxes on the live page):
 - **Lifestyle Selector** — "Which Puppy Fits Me?" (flat → the calmer pup; active household → the busier pup; first-time owner → depends)
 - **Size & Weight Comparator** — adult weights are NOT FETCHED until the breeder confirms them; the module renders the breed standard's range and says where it came from
 - **Price Range Estimator** — BlueStaffyUK's own £1,500–£1,700 litter span from `data/price-matrix.json`; any market average is NOT FETCHED
@@ -147,149 +139,150 @@ Snippet Box (📌 Quick Answer) opens every section — 1–2 sentence AI-extrac
 
 A. **Temperament** — affectionate, one-person bonding, calm vs demanding, apartment puppy, separation anxiety, trainability
 B. **Noise, Barking & Shedding** — barking, noise level, a quiet dog, shedding, allergies
-C. **Size & Coat** — blue vs blue-brindle vs white, full-grown size, coat and markings
+C. **Size & Coat** — blue, blue brindle and white coats, full-grown size, coat and markings
 D. **Price, Lifespan & Health** — price comparison, the 12–14 year breed lifespan, vet costs, L-2-HGA, HC-HSF4
 E. **Lifestyle Match** — best for seniors / families / apartments / first-time owners / busy professionals
 F. **Commercial bridge** — for sale UK, breeder, home-raised, health-tested (link down to the money pages)
 G. **AI/LLM layer** — "compare X and Y in detail", "help me choose", "pros and cons" phrasing blocks
 
-## 8. Component System — 3 Variants (visual companion gate)
+## 8. Components — the kit, arranged per page (visual companion gate)
 
-Component variants are decided ONCE for the cluster via the **superpowers visual companion** (browser mockup screens, breeder click-selects), then distributed: **Hero/Component set A → the breed-vs pages · set B → blue-vs-blue-brindle + pros-and-cons + breeders-comparison · set C → male-vs-female + hub.** Full component list and the Claude Design master prompt live in the session brief. Per-section **distribution matrix approval BEFORE code**, always with a Recommended pick + why + trade-off.
+Every section is a kit component (`src/components/kit/`) with no `variant` prop. Working rule 16
+applies: each comparison page's board offers three hero and three counter styles designed for
+that page, and every other section carries a small per-page refresh delta
+(`.claude/skills/bsuk-component-refresh/SKILL.md`). The page reads its picks with
+`pickedStyle(record, '<section id>')` (`src/lib/pickedStyle.ts`). Picks are shown in the browser
+(`CLAUDE.md` rule 10), and the per-section **distribution matrix is approved BEFORE code**, always
+with a Recommended pick + why + trade-off.
 
 ## 9. Imagery (Gemini / Nano Banana — no Higgsfield credit)
 
-After outline approval, mark every H2/H3 needing OG photo vs AI image vs HTML infographic. AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. The source repo's image-generation script was **not ported — source repo only**; no API key belongs in this repo. Infographic widths: 760px wrapper (comparison body), 1100px hub hero; 400px desktop height. Image SEO 5-element on every image.
+After outline approval, give the hero and every body H2 and body H3 its image slot — an OG photo, a generated image or an IG-style infographic (IG-3 Comparison Split is made for these pages), by `rules/images.md` "An image under every body heading" and `IMAGE-DESIGNS.md` §7–§9 (§11 item 2). AI prompts follow `rules/images.md` (crop ratios; negative list: no logos, no watermarks, no other breed) and the `rules/design.md` palette. A generated image goes through `.claude/skills/bsuk-image-generation/SKILL.md`, which needs `GEMINI_API_KEY` in `.env` (named in `docs/reference/credentials.md`, never committed); until the user sets it, a slot takes an existing image or an infographic (Known Issue 70). Image SEO 5-element on every image.
 
 ## 10. Pass Gates (page is NOT done until ALL pass)
 
-`npx astro build` → verify in `dist/` → `python3 scripts/final_page_audit.py` → then the full breeder gate list: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit + push after every approved build (work on `main` only). Sitemaps regenerate after any page change.
+`npx astro build` → verify in `dist/` → `python3 scripts/final_page_audit.py` → then the full breeder gate list: **SEO · AIO · GEO · AEO · entity coverage · topical authority · anti-AI · non-commodity · humor policy · keyword variation · keyword-verifier · technical SEO · Lighthouse (warm median-of-3)**. Preview before apply. Commit after every approved build — never push (no remote until project 6) — on the branch the plan names, never the trunk. Sitemaps regenerate after any page change.
 
-## 11. Breeder-Review Component Standard (2026-07-04 — BINDING for all 8 pages)
+## 11. Breeder-Review Component Standard (BINDING for every comparison page)
 
-The blue-vs-blue-brindle rebuild was rejected once and redone; these fixes are now the floor for every
-comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terrier-guide/index.astro`.
+These are the floor for every comparison page. Reference implementation: `src/pages/uk-staffordshire-bull-terrier-guide/index.astro`.
 
-1. **Hero** — full-bleed band (background spans viewport, content in `.container`), homepage height
-   (~380–480px desktop), copy LEFT / two staggered OG puppy portraits CENTER-RIGHT with a small `vs`
-   roundel at the overlap; mobile stacks **images first**. Eyebrow is **sentence case** (never
-   uppercase), `--color-brand` on a light hero or `--color-link-on-inverse` on a steel one —
-   never brass, which is 2.1:1 on the light surface. H1 `clamp(1.75rem, 3vw, 2.25rem)`. Hero images get responsive
-   `srcset` (480w + 800w) + `heroPreload`/`heroPreloadSrcset` in BaseLayout.
-2. **No HTML/CSS infographics.** Every H2 + important H3 image slot is a real OG photo or a Gemini
-   image (distinct design style per section, the `rules/design.md` palette, 16:9 1600×900 → 760×400 slot).
-   The source repo's prompt pack was not ported — source repo only; write the page's own.
-   The real `<table>` stays in the DOM for AIO — an image never replaces it.
+1. **Hero** — the kit `Hero`, in the arrangement the page's board picked through `pickedStyle()`
+   (`layout`, `ledge`, `media`, `align`): a comparison page is the `interior-guide` layout, so its
+   board offers that type's three styles in `HERO_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`);
+   pick one no sibling page already ships (rule 16).
+   Its height is `rules/design.md` rule 10's — 390–450px on desktop (≥1024px), auto below — with
+   the image first in the DOM; the component holds both. The eyebrow's words are the page's own
+   (§13 item 4); its colour and the H1's size (`--text-3xl` at 1024px and up, inside the rule-10
+   band, and at 900px and below; `--text-4xl` only between 901 and 1023px) are the kit's — never brass text, which is 2.1:1 on the light surface. Hero
+   images: `imageSrcset`, `imageWidth` and `imageHeight` for a `/images/…` path (`BaseLayout` has
+   no preload prop).
+2. **An image under every body heading** (`rules/images.md`, user ruling G1, 2026-09-24). The hero
+   and every body H2 and body H3 (FAQ blocks excepted) carry an image slot, filled with an OG photo,
+   a generated image (a named OG style, approved on the board by its exact bytes) or an IG-style
+   infographic (IG-3 Comparison Split for the head-to-head), as `IMAGE-DESIGNS.md` §7–§9 set out;
+   on conflict IMAGE-DESIGNS wins. The real `<table>` stays in the DOM for AIO — an image never
+   replaces it.
 3. **Photo-first cards everywhere.** A puppy card is that pup's real photo (800×800 crop) +
    a colour badge + the price from `data/price-matrix.json` + the delivery line. Delivery
    renders as two cards — **UK home delivery £200–£350 by distance,
-   by DEFRA-approved transport**, and **collection in Carlisle** — each with its own photo and
-   + a 7-place state/city pill row with FRESH anchors (each comparison page uses a different angle set).
-4. **Sticky offsets** — site header is `sticky` and **96px** tall: jump rail `top:96px`, desktop TOC
-   `top:calc(96px + 24px)`, every section `scroll-margin-top:calc(96px + 18px)`, `:global(html){scroll-behavior:smooth}`
-   (+ reduced-motion opt-out). TOC column 200px / gap 34px (not 230/40) to widen the article column.
+   by DEFRA-approved transport**, and **collection in Carlisle** — each with its own photo, plus
+   a row of links to 3–5 city pages from `data/locations.json` with FRESH anchors (each comparison page uses a different set).
+4. **Sticky offsets are the kit's, never hard-coded.** The site header (`SiteHeaderKit`) is
+   `sticky` at `min-height: var(--hdr)` (the rule is in `src/components/kit/SiteHeaderKit.astro`;
+   `--hdr` is set in `src/styles/global.css`), and BaseLayout's inline script
+   writes the header's measured height to `--hdr-measured`. Every jump target lands through the
+   global `[id] { scroll-margin-top }` rule built on those two, which `SectionStrip` extends by its
+   own `--strip-h`; never set `scroll-behavior: smooth` (§13 item 1). The page navigation and its
+   column are the `PageShell` set — see §13 item 2.
 5. **Contrast floors** — buttons and solid chips fill `--color-cta` with a `--color-cta-ink`
    label (6.8:1); table verdict cells `--color-brand` bold (10.4:1 on the surface); never brass
    on brass, and never brass as text on a light surface (2.1:1). Inside the article column give
    the CTA its own link rule (`color: var(--color-cta-ink); text-decoration: none`) or the
    generic link rule silently overrides it.
-6. **Form = what we sell** — short inquiry form with: interest select (Blue / Blue-Brindle / breeding pair /
-   not sure, prices visible), first + last name, mobile + confirm, email + confirm,
-   delivery select (delivery £200–£350 by distance / Carlisle pickup), optional home note. Pass
-   `hideGlobalCta` and ship NO page-level newsletter band (the form is the single closer).
-7. **Testimonials = real reviews only**, pulled from the verified homepage `bottomReviews[]` set with
-   real name + city; never the fabricated pair this page originally carried.
+6. **Form = `ContactFormKit`** — never a hand-rolled form; its fields are the contract
+   `form-inquiry-contract` asserts (`scripts/form_contract_audit.py`). It is the page's single
+   closer: no second CTA band after it.
+7. **Testimonials = real reviews only** — rows of `data/reviews.json` through `Testimonial`, with the
+   name and place as recorded; never a written review.
 8. **Blog cards** use each post's own `-card.webp` hub thumbnail, never a shared generic image.
-9. **Links at the START of sentences only (Link-First rule) — never mid-sentence, never the final words.** Seam dividers use
-   `bsuk-footer-logo-80.webp` (the 200×66 original wastes ~7KiB per Lighthouse).
+9. **Links at the START of sentences only (Link-First rule) — never mid-sentence, never the final words.**
 10. **Schema** — no page-level BreadcrumbList (the Breadcrumb component emits it; duplicates FAIL the
     gate). Title = 4-part ending in `BlueStaffyUK – <LSI keyword>` (never "BlueStaffyUK – Carlisle" again).
 11. **Gate** — `python3 scripts/final_page_audit.py --comparison` (profile added 2026-07-04) must
     return PASS/PASS-WITH-WARNINGS; the old `no_userselect_none` site-wide FAIL was a Tailwind
     `.select-none` false positive, fixed in the auditor.
 
-## 12. Final Polish-Pass Fixes (2026-07-05 — BINDING, from the blue-vs-blue-brindle finishing pass)
+## 12. Polish rules every comparison page keeps
 
-Every comparison page must clear these on its finishing pass, in addition to §11:
+Every comparison page clears these on its finishing pass, in addition to §11:
 
-1. **Counter snippet is page-specific, not the homepage set.** The homepage's `12+ / 100% LICENCE_CLAIM_PLACEHOLDER /
-   NOT FETCHED floor / 24h` is generic. A comparison page leads with its own premise: for variant/breed
-   pages use **`2` Staffy colours raised here · `12+` Years raising both** (the "we raise both" moat),
-   keeping `100%` LICENCE_CLAIM_PLACEHOLDER + `24h` reply as the two trust anchors. Never ship the verbatim homepage four.
-2. **Responsive infographics (Lighthouse "improve image delivery").** Every 1408×768 `inf-img` ships a
-   `-760.webp` sibling (Pillow LANCZOS, q82) + `srcset="/name-760.webp 760w, /name.webp 1408w"
-   sizes="(max-width:900px) 92vw, 760px"`. Cuts ~40–55% off each (the blue-vs-blue-brindle set went
-   583→327 KiB). The 1408 stays as the retina/desktop candidate; the table stays in the DOM.
-3. **Square OG portraits get a `.portrait` modifier** (`aspect-ratio:1/1;max-width:420px;margin:auto`).
-   Bare `.sec-img` forces 760/400 cover and decapitates square close-ups — always check intrinsic
-   dims; if the file is square/portrait, add `.portrait` and fix the `width`/`height` attrs to match.
-4. **Non-primary data tables stack into cards on phones.** The mobile tab-toggle is ONLY for the main
-   side-by-side table. The 6-trait scorecard (and any other `<table>`) needs `data-label` on each `td`
-   + a `@media(max-width:640px)` block: `thead` offscreen, `tr`→bordered card, `td`→flex row with
-   `::before{content:attr(data-label)}`. Note td stacks column-wise for long text.
-5. **Internal links to the three money/authority hubs, anchored at sentence start (Link-First), from their own sections:**
-   Reviews → `/blue-staffy-uk-breeders/` (Owner Stories), FAQ → `/uk-blue-staffy-puppy-buying-guide/` (FAQ intro),
-   Delivery → `/buy-blue-staffy-puppies-uk/` (delivery body copy).
-6. **Route pills carry a map-pin SVG + bone tint (`#F4F1EA`, = `--color-surface`), `inline-flex`; 2-col centered on
-   mobile** (`.pin` stays `flex:none`). Body copy above the pills links the delivery page.
-7. **Reversed head-term + American spelling coverage.** Weave "Blue-Brindle vs Blue" AND "Blue Staffy"
-   (with an *a*) once, naturally, in the Quick-Answer close; add **"What is the difference between…"**
-   and **"How can you tell … apart"** FAQ objects (they feed both FAQPage schema and the open-3
-   featured block). Dedupe against existing copy first — ignore keywords already on the page.
-8. **Do NOT add Partytown for GA.** BaseLayout already interaction/idle-defers gtag.js off the critical
-   path. Lighthouse's `unused JavaScript` (~72 KiB `/70de/`), `forced reflow`, `render-blocking`,
-   `missing source maps`, and `cache TTL` flags are all **the host (NOT FETCHED until project 6) Rocket Loader** — a dashboard
-   toggle + cache purge, never a repo fix. Note this in the page's fix log; don't chase it in code.
+1. **The counter strip is this page's own (working rule 16).** Its figures are facts from
+   `data/*.json` and the page's record — the six pups and their two prices in `data/puppies.json`,
+   the deposit and the delivery band in `data/settings.json` — chosen on the page's board, and never
+   a set another page shows. No years-in-business figure and no licence figure: neither is on file.
+2. **Responsive section images (Lighthouse "improve image delivery").** Every in-body section
+   image, OG photo and infographic alike, renders in the one uniform box and ships as a WebP under
+   100 KB with a `-760.webp` sibling and `srcset`/`sizes`, by the pipeline in `rules/images.md`
+   ("Uniform in-body image sizing"). An image never replaces a table: the real table stays in the DOM.
+3. **Every table is `DataTable`, and it stacks on phones (working rule 13).** Below 640px each row
+   becomes a card and each cell prints its column name from `data-label` (`.stack-table` in
+   `src/styles/global.css`); the component writes the labels and the stacking cannot be switched
+   off. Its three board styles are the `chrome` layout axis (`ruled` / `zebra` / `brass`), never a prop.
+4. **Internal links follow the "Links" list in `docs/reference/location-page-template.md`**,
+   anchored at sentence start (Link-First), each from the section it serves. There is no delivery
+   page and no pricing page: the delivery and price facts are stated on the page itself.
+5. **Reversed head-term coverage.** Weave the reversed head term (`<rival> vs blue Staffy` as well
+   as `blue Staffy vs <rival>`) once, naturally, in the Quick-Answer close, and carry the
+   **"What is the difference between…"** and **"How can you tell … apart"** phrasings as FAQ H3s
+   where the question file's pool has them. Dedupe against existing copy first — ignore keywords
+   already on the page.
+6. **Do NOT add Partytown for GA.** Diagnose Lighthouse's `unused JavaScript` (`/70de/`), `forced
+   reflow` and `missing source maps` flags with `.claude/skills/bsuk-perf-gate/SKILL.md`: `/70de/` is
+   the Google tag gateway, not a file in `src/`. There is no host to configure until project 6;
+   note the flag in the page's fix log.
 
-## §13 Component Polish Contract (2026-07-12 breeder pass — binding on every spoke, new or rebuilt)
+## 13. Kit rules every comparison page keeps
 
-Every fix below came from a breeder complaint on the live cluster (CvM screenshot session). They are
-now the shipped baseline on CvT / CvM / CvC / MvF — new spokes copy these patterns, never the older ones.
+These hold on every comparison page, alongside §11 and §12.
 
-1. **NEVER `scroll-behavior:smooth` on `html`.** On 60k-px comparison pages Chrome cancels the smooth
-   fragment scroll at frame zero (lazy-image layout shifts), so every jump-rail tap looks dead: hash
-   updates, page never moves. `scrollIntoView`/`scrollTo` still work, which misdirects debugging.
-   Homepage baseline is `auto`; `scroll-margin-top` on targets does the offset work. Diagnostic: set
-   `document.documentElement.style.scrollBehavior='auto'` and re-tap — if it jumps, that was the bug.
-2. **Jump rail must be sticky — never re-`position` it.** `.cvt-rail{position:sticky;top:var(--hdr)}`
-   is the contract. Adding `position:relative` later (e.g. "for the ::after fade gradient") silently
-   kills sticky — a sticky element is already a containing block for absolute children. CvM shipped
-   broken this way while its 3 siblings worked.
-3. **Counter snippet = slim inline credential STRIP, not the hero-metric template.** The old design
-   (40px circle icon chips + 2.1–2.2rem serif numbers + uppercase tracked labels + 4 stacked columns)
-   is the exact "big number, small label" cliché DESIGN.md bans, and it rendered ~330px tall on
-   phones. The shipped pattern: no icon chips at all; number and sentence-case label inline on one
-   baseline (`display:flex;align-items:baseline;gap:9px`); numbers `1.4rem` in the display face
-   (Fraunces via `--font-display`, the project-3 token — not a hard-coded family) on desktop /
-   `1.2rem` tablet / `1.1rem` phone; labels `.8rem`→`.74rem` `font-weight:500`, NO uppercase, NO
-   letter-spacing games; desktop one flex row with `1px rgba(255,255,255,.18)` htransport partners (~54px
-   band), ≤900px a 2×2 grid (~115–140px). Content stays page-specific per §12-1.
-4. **`.container` eats vertical padding — pad the SECTION.** `.cvt .container` sets
-   `padding:0 clamp(16px,4vw,48px)` at higher specificity, so `padding-top/bottom` on any
-   `.container counter-row`-style element computes to 0 (the old counter never had its intended
-   padding — that was the "rushed" look). Put band padding on the section: `.cvt-counter{padding:14px
-   0}` desktop, `9px 0` mobile.
-5. **Hero eyebrow (prefix) is UNIQUE per spoke, drawn from the page's own premise.** Never reuse the
-   "Home-raised · LICENCE_CLAIM_PLACEHOLDER-documented · Carlisle" trust string across spokes — trust tokens live in
-   the hero-meta pills. A new spoke writes its own from the
-   comparison premise; duplicate eyebrows across siblings FAIL the pass.
-6. **Seam divider = brand medallion + brass fading rules.** `img
-   src="/bsuk-header-logo-160.webp"` (the ONLY square logo asset — every `bsuk-footer-logo*` /
-   `bsuk-seam-logo` / `bsuk-logo-badge*` file is a wide wordmark that letterboxes into a smudge inside
-   the circle), `width/height=54`, CSS `object-fit:cover;padding:2px;border:2px solid
-   rgba(201,162,39,.35);border-radius:50%`. Lines: `height:2px;border-radius:1px` fading gradients to
-   `--color-cta-soft` (`#EFE3B4`), replacing the old faint 1px `#cdbfae`.
-7. **Middle newsletter is ALWAYS `NewsletterV2 variant="middle" compact`.** The full-height variant's
-   36px H2 overtakes the page H1 in the 768–860px band (MvF shipped that inversion). `compact` is not
-   optional on comparison spokes. (CvT currently has no middle newsletter — decision pending.)
-8. **H1 must outrank every H2 at EVERY width, including one-off hero H1 classes.** The
-   breeders-comparison `bc-h1` clamp `(1.8rem, 3.5vw, 2.75rem)` sat on its floor through the whole
-   375–860px band underneath a static 36px CTA H2. Fixed form: `clamp(1.9rem, 0.5rem + 4.5vw,
-   2.75rem)`. Sweep rule: resolve the clamp at 375/640/768/860/1280 and compare against the largest
-   H2 (usually the CTA/newsletter component) before delivery.
-9. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walk quality
-   78→54 until <95KB (LICENCE_CLAIM_PLACEHOLDER-flatlay 101→94KB q66, vs-french bulldog-hero 122→89KB q66 — certificate text
-   still crisp). Masters for comparison imagery live under `src/assets/` when created (project 5); puppy masters are `src/assets/puppies/`.
+1. **NEVER `scroll-behavior:smooth` on `html`.** `src/styles/global.css` sets
+   `html { scroll-behavior: auto }`; never override it. On a long page Chrome cancels a smooth
+   fragment scroll at frame zero (lazy-image layout shifts), so every jump link looks dead: the hash
+   updates and the page never moves, while `scrollIntoView`/`scrollTo` still work, which misdirects
+   debugging. The landing offset is the global `[id] { scroll-margin-top }` rule; nothing re-states
+   it. Diagnostic: set `document.documentElement.style.scrollBehavior='auto'` and re-tap — if it
+   jumps, that was the bug.
+2. **The in-page nav is the kit's, never a hand-rolled rail.** `PageShell` mounts it from the
+   page's `sections` (six or more): `SectionStrip` pinned under the header and `SectionSheet`
+   behind the bottom bar below 1024px, `PageDial` at 1024px and above, and `PageNav`'s chip row
+   once, below the hero (not sticky) — below 1024px only: when the dial mounts, `PageShell`
+   hides the chip row, since the dial is the same list. Never add `position` to a sticky kit element: a sticky
+   element is already a containing block for absolute children, and `position:relative` silently
+   kills sticky.
+3. **The counter is `CounterStrip`, never a hand-built stat block.** The page hands it its own
+   `stats` (§12 item 1); the board picks how they are drawn (`tiles`, `label`) from the three
+   styles `COUNTER_STYLES_BY_PAGE_TYPE` (`src/lib/boardStyles.ts`) gives a comparison page, which
+   is the `interior-guide` layout. No icon chips, no uppercase or letter-spaced labels. Band
+   padding goes on the section, never on a `container` (the `container` utility in
+   `src/styles/global.css` sets no block padding — only `max-width`, `margin-inline` and
+   `padding-inline`); colours and type are the tokens in
+   `src/styles/tokens.css`, never a hex value.
+4. **The hero eyebrow is UNIQUE per page, drawn from the page's own premise.** Never reuse one
+   trust string across comparison pages; trust tokens belong in the `Hero` `chips`. Duplicate
+   eyebrows across comparison pages FAIL the pass.
+5. **Section dividers are `SectionDivider`** (`inverse` on a dark band) — the kit's own mark, never
+   a logo file cropped into a circle.
+6. **One newsletter, as on the location pages:** `InfoCard kind="recommendation" label="Newsletter"`
+   with `id="newsletter"`; there is no newsletter component with variants. Its heading stays below
+   the page H1 at every width (item 7).
+7. **H1 must outrank every H2 at EVERY width.** Sweep rule: measure the H1's computed size at
+   375/640/768/860/1280 and compare it against the largest H2 (usually the CTA or newsletter
+   heading) before delivery. No render check measures this, so the sweep is the gate.
+8. **Image budget <100KB per delivered file.** Recompress with Pillow WebP `method=6`, walking
+   quality down until the file is under 95 KB (the `rules/images.md` pipeline), and check that any
+   certificate text stays crisp. Masters for comparison imagery live under `src/assets/` when
+   created (project 5); puppy masters are `src/assets/puppies/`.
 
 ## Keyword variants — the four extra keyword types (system-gaps, 2026-09-24)
 

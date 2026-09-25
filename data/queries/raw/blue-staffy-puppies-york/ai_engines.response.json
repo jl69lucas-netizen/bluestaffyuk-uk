@@ -1,0 +1,125 @@
+{
+ "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper via the claude.ai connector, 2026-09-25. Request: keyword 'Where can I buy a blue Staffy puppy near York, and what should I ask the breeder?', language en, location United Kingdom. The connector's response carries no cost field and no keyword field. Saved as returned (answer text and sources whole), minus third-party contact details: every local business's street address and postcode (in the local-business markdown and each element's address), four phone numbers, five ratings and review counts, each element's url (four site links, two WhatsApp links, one Facebook group link); the WhatsApp and Facebook elements' domains dropped too. Titles and site domains kept.",
+ "id": "09250825-2496-0629-0000-f266927c2e23",
+ "status_code": 20000,
+ "status_message": "Ok.",
+ "items": [
+  {
+   "type": "chat_gpt_local_businesses",
+   "rank_group": 1,
+   "rank_absolute": 1,
+   "markdown": "- **English Blue Staffies For Rehoming**\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs**\n- **Staffy Puppies for Sale UK**\n- **IronPaw Staffies**\n- **Staffy puppies available for adoption Uk**\n- **First step strays**\n- **Staffy Society UK**\n- **Staffy Puppy Heaven**\n- **Staffordshire Bull Terrier Puppy Breeder**\n- **Staffordshire Bull Terrier Puppies for sale**\n- **Earlsgrave Bull Terriers**\n",
+   "items": [
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "English Blue Staffies For Rehoming",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs",
+     "description": "Dog breeder",
+     "domain": "www.trojanstaffuk.com"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Puppies for Sale UK",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "IronPaw Staffies",
+     "description": "Dog breeder",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy puppies available for adoption Uk",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "First step strays",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Society UK",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffy Puppy Heaven",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppy Breeder",
+     "description": "Dog breeder"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Staffordshire Bull Terrier Puppies for sale",
+     "description": "Pet store",
+     "domain": "ukstaffypups.uk"
+    },
+    {
+     "type": "chat_gpt_local_businesses_element",
+     "title": "Earlsgrave Bull Terriers",
+     "description": "Dog breeder",
+     "domain": "www.earlsgravebullterriers.com"
+    }
+   ]
+  },
+  {
+   "type": "chat_gpt_text",
+   "rank_group": 1,
+   "rank_absolute": 2,
+   "markdown": "If you’re looking around **York**, I’d be cautious about buying purely because a puppy is advertised as “blue.” Blue is a colour, not a health or temperament guarantee, and Staffies should be bred with health testing and good temperament in mind.\n\nI found several online listings, but I **wouldn’t treat the local listings as endorsements**—some have very little verifiable information. For example, English Blue Staffies For Rehoming is listed in Leeds, but I’d want substantial documentation before considering any puppy from an online advert.\n\nA better starting point is [thekennelclub.org.uk](https://www.thekennelclub.org.uk/search/find-a-puppy/?utm_source=chatgpt.com) and Staffordshire Bull Terrier breed-club contacts. The Kennel Club specifically recommends checking health testing and using responsible breeders. [The Kennel Club](https://www.thekennelclub.org.uk/media/3046/gcds-canine-code.pdf?utm_source=chatgpt.com) [The Kennel Club](https://www.thekennelclub.org.uk/media/tkzgx4zq/feb-25-kcj-final-online.pdf?utm_source=chatgpt.com) \n\n## What to ask the breeder\n\nBefore paying a deposit, ask:\n\n- **Can I see the puppy with its mother, where it was raised?** Ideally visit in person rather than having the puppy brought to you.\n- **What health tests have both parents had?** Ask to see the actual certificates/results, not just “vet checked.”\n- For Staffies, ask specifically about **L-2-HGA** and **hereditary cataracts (HC)** DNA testing, as well as **patella/knee testing**. The Kennel Club's current health information also identifies patellar testing as relevant to Staffordshire Bull Terriers. [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)\n- **What are the parents like temperamentally?** Ask about their behaviour around strangers, children and other dogs.\n- **Why did you choose these two dogs to breed?**\n- **How many litters has the mother had, and how old is she?**\n- **Are the puppies Kennel Club registered?** If so, ask to see the registration details and verify them yourself.\n- **What socialisation have the puppies had?** Ask about household noises, handling, visitors, children and other dogs.\n- **What will the puppy leave with?** You should expect appropriate microchipping, vaccination/worming information, feeding instructions and paperwork.\n- **Will you take the dog back or help rehome it if I can no longer keep it?** A responsible breeder should care about the puppy throughout its life.\n\n### Particularly important with a “blue” Staffy\n\nI'd ask: **“Why did you choose to breed specifically for blue, and what health/temperament considerations influenced the mating?”**\n\nBe wary if the breeder talks almost exclusively about *rare colour*, *blue*, *XXL*, *huge head*, or resale value while saying little about health, temperament and the parents. Don't let colour make you overlook a questionable breeder.\n\nIf you tell me **how far you're willing to travel from York (e.g. 30, 60 or 100 miles)**, I can search specifically for **currently advertised blue Staffy litters and breeders, then separate the ones with readily verifiable health-testing information from the ones I'd investigate further.**\n\n",
+   "sources": [
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club's puppy-finding service",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/search/find-a-puppy/?utm_source=chatgpt.com",
+     "source_name": "thekennelclub.org.uk",
+     "markdown": "[thekennelclub.org.uk](https://www.thekennelclub.org.uk/search/find-a-puppy/?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "www.gcds.org.uk",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/3046/gcds-canine-code.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "publication_date": "2025-11-08 03:57:31 +00:00",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/3046/gcds-canine-code.pdf?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/tkzgx4zq/feb-25-kcj-final-online.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/tkzgx4zq/feb-25-kcj-final-online.pdf?utm_source=chatgpt.com)"
+    },
+    {
+     "type": "chat_gpt_source",
+     "title": "The Kennel Club",
+     "domain": "www.thekennelclub.org.uk",
+     "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+     "source_name": "The Kennel Club",
+     "publication_date": "2025-10-18 13:51:32 +00:00",
+     "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+    }
+   ],
+   "brand_entities": [
+    {
+     "type": "chat_gpt_brand_entity",
+     "title": "English Blue Staffies For Rehoming",
+     "category": "local_business",
+     "markdown": "English Blue Staffies For Rehoming"
+    }
+   ]
+  }
+ ]
+}

@@ -360,3 +360,60 @@ def test_main_reports_a_question_file_whose_slug_or_route_disagrees(tmp_path, fi
                        capture_output=True, text=True)
     assert r.returncode == 1, r.stdout
     assert f"{SLUG}: invalid question file — {needle}" in r.stdout
+
+
+# --- Known Issue 39: a rebuilt page with no build, the awaiting list, a damaged rebuilt.json ---
+
+def test_a_rebuilt_page_that_is_not_built_is_a_problem(tmp_path):
+    # its last segment is in rebuilt.json, so the gate is owed a page — silence would pass it
+    build(tmp_path, qfile(), keys=[SLUG])
+    (tmp_path / "dist" / ROUTE.strip("/") / "index.html").unlink()
+    r = run(tmp_path)
+    assert r.returncode == 1, r.stdout
+    assert (f"{SLUG}: listed in data/facts/rebuilt.json but not built — no "
+            f"dist/{ROUTE.strip('/')}/index.html; run the build") in r.stdout
+    assert "examined 0 pages (0 not built, 0 awaiting rebuild); 1 problems" in r.stdout
+
+
+def test_a_rebuilt_page_listed_by_its_full_route_key_but_not_built_is_a_problem(tmp_path):
+    # the same debt when rebuilt.json names the full route rather than the bare slug
+    build(tmp_path, qfile(), keys=[ROUTE.strip("/")])
+    (tmp_path / "dist" / ROUTE.strip("/") / "index.html").unlink()
+    r = run(tmp_path)
+    assert r.returncode == 1, r.stdout
+    assert f"{SLUG}: listed in data/facts/rebuilt.json but not built" in r.stdout
+
+
+def test_an_unbuilt_page_that_is_not_rebuilt_is_still_only_counted(tmp_path):
+    build(tmp_path, qfile(), keys=["index"])
+    (tmp_path / "dist" / ROUTE.strip("/") / "index.html").unlink()
+    r = run(tmp_path)
+    assert r.returncode == 0 and "(1 not built, 0 awaiting rebuild); 0 problems" in r.stdout
+
+
+def test_main_prints_the_slugs_awaiting_rebuild(tmp_path):
+    build(tmp_path, qfile(), rebuilt=False)
+    r = run(tmp_path)
+    assert r.returncode == 0
+    assert f"awaiting rebuild: {SLUG}" in r.stdout
+
+
+@pytest.mark.parametrize("text", ["{not json", '{"a": 1}', "[1]", '["ok", null]'])
+def test_a_malformed_rebuilt_json_is_a_problem_not_a_crash(tmp_path, text):
+    build(tmp_path, qfile())
+    (tmp_path / "data/facts/rebuilt.json").write_text(text)
+    r = run(tmp_path)
+    assert r.returncode == 1 and "Traceback" not in r.stderr
+    assert "data/facts/rebuilt.json: unreadable" in r.stdout
+
+
+def test_main_ignores_the_spend_log_and_the_dashboard_readings(tmp_path):
+    # data/queries/ also holds the spend guard's two ledgers; neither is a question file
+    build(tmp_path, qfile())
+    (tmp_path / "data/queries/spend.json").write_text("[]")
+    (tmp_path / "data/queries/dashboard.json").write_text(json.dumps([{
+        "date": "2026-09-23", "balance_usd": 0.96785, "opening_balance_usd": 1.0,
+        "covers_log_entries": 0, "source": "DataForSEO dashboard balance stated by the user"}]))
+    r = run(tmp_path)
+    assert r.returncode == 0, r.stdout + r.stderr
+    assert "examined 1 pages (0 not built, 0 awaiting rebuild); 0 problems" in r.stdout

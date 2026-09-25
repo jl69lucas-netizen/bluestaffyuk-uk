@@ -7,17 +7,17 @@ effort: max
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
 ## BSUK Project Context
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
-> **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name — the one exception is the banned-breed line under "What you may NOT write into a city page" (Known Issue 46).
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -41,12 +41,12 @@ recorded in the page board. Read that skill before building.
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — color tokens, fonts, radius (not ported — source repo only)
+1. **Read** `src/styles/tokens.css` and `src/components/kit/_registry.ts` — the design tokens and the kit that replaced the source repo's design-system doc
 2. **Read** `docs/reference/seo-rules.md` — what you must never change
 3. **Read** `data/price-matrix.json` — all pricing (never hardcode)
-4. **Read** `data/locations.json` — live cities, slugs, variants per city
-5. **Read** `data/image-specs.json` — image source type, dimensions, and infographic widths for this page type (page type: "location_page") (not ported — source repo only)
-6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Single page or batch build? If single — which city?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Read** `data/locations.json` — the 28 rows: `slug`, `city`, `title`, `h1`, `description`, `canonical`, `robots`
+5. **Read** `rules/images.md` — image sizes, crops and alt rules for this page type; `data/image-manifest.json` indexes the images that exist
+6. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Single page or batch build? If single — which city?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 For single mode: also read the existing page if it already exists:
 ```bash
@@ -62,9 +62,9 @@ Every location page is built by substituting these variables into its derived se
 | Variable | Example (the Manchester page) | Source |
 |----------|------------------|--------|
 | `{CITY}` | Manchester | `data/locations.json` → `city` |
-| `{SLUG}` | staffy-puppies-for-sale-manchester | `data/locations.json` → `slug` |
-| `{H1}` | staffy puppies for sale Manchester | `data/locations.json` → `h1` (never rewrite it here) |
-| `{CANONICAL}` | /uk-locations/staffy-puppies-for-sale-manchester/ | `data/locations.json` → `canonical` |
+| `{SLUG}` | blue-staffy-puppies-manchester-uk | `data/locations.json` → `slug` |
+| `{H1}` | Blue Staffy Puppies Manchester UK | `data/locations.json` → `h1` (never rewrite it here) |
+| `{CANONICAL}` | /uk-locations/blue-staffy-puppies-manchester-uk/ | `data/locations.json` → `canonical` |
 | `{NEARBY_TOWNS}` | Liverpool, Leeds, York | the delivery-band table below |
 | `{CITY_VET_NOTE}` | we recommend a vet check within 72 hours of collection, with your own vet | fixed — never name a clinic |
 | `{CITY_TRAVEL_NOTE}` | collection in Carlisle, or UK home delivery £200–£350 by distance (DEFRA-approved transport) | `data/settings.json` |
@@ -86,8 +86,8 @@ as journey tone, never as a mileage or a near-ring claim, and never write a dist
 | Delivery band | Approximate journey from Carlisle | Cities in `data/locations.json` | Price |
 |---|---|---|---|
 | Collection | 0 miles — the buyer comes to Carlisle | the home base itself; `data/locations.json` has no row for it yet | free |
-| Band 1 | Cumbria, the Borders and Scotland | Edinburgh, Dundee, Aberdeen, Inverness | £200–£350 by distance |
-| Band 2 | Northern England | Newcastle, Sunderland, Middlesbrough, Hull, Leeds, York, Manchester, Liverpool, South Yorkshire | £200–£350 by distance |
+| Band 1 | Cumbria, the Borders and Scotland | Edinburgh, Dundee, Aberdeen, Inverness, and Glasgow (`staffy-puppies-for-sale-glasgow`; the outreach page `staffy-breeding-dogs-glasgow` is Known Issue 16's) | £200–£350 by distance |
+| Band 2 | Northern England | Sunderland, Middlesbrough, Hull, Leeds, York, Manchester, Liverpool, South Yorkshire | £200–£350 by distance |
 | Band 3 | Midlands and Wales | Birmingham, Wolverhampton, Coventry, Leicester, Nottingham, Newcastle-under-Lyme, Cardiff | £200–£350 by distance |
 | Band 4 | South and the far south-west | London, Oxford, Bristol, Essex, Cornwall | £200–£350 by distance |
 
@@ -101,7 +101,11 @@ from, and no page may narrow the range to a single number until the breeder give
 - A vet name, a clinic, a local kennel club branch, or any named business.
 - A council licence, a by-law or an Act. Every legal or licensing sentence is
   `LEGAL_CLAIM_PLACEHOLDER` / `LICENCE_CLAIM_PLACEHOLDER` until the breeder supplies the
-  evidence (`CLAUDE.md` rule 9).
+  evidence (`CLAUDE.md` rule 9) — with ONE exception, by the user's ruling on Known Issue 46
+  (2026-09-23): a city page may say the Staffordshire Bull Terrier is not a banned breed in
+  the UK (not one of the types the Dangerous Dogs Act 1991 bans), linked to the government's
+  list at https://www.gov.uk/control-dog-public/banned-dogs, the breed guide's row in
+  `docs/reference/external-link-library.md`.
 - A travel time in hours, a mileage, or a delivery date. None of those are fetched.
 - A local price. Every price is Roman/Byrd/Ince £1,500 or Vennie/Christa/Cheryl £1,700 from
   `data/puppies.json`, with the £500 refundable deposit.
@@ -137,11 +141,11 @@ competitor scan recorded in `data/boards/<slug>.json`.
 | 6 | Review — top | `Testimonial` b | `data/reviews.json` only; never invented |
 | 7…n | Derived body sections | `InfoCard` · `PuppyCard` c · `SectionDivider` a | count and topics from the competitor scan |
 | — | Review — middle | `Testimonial` b | `data/reviews.json` only |
-| — | Newsletter | `InfoCard` b, `kind="note"` | what a subscriber gets, no counts |
+| — | Newsletter | `InfoCard` b, `kind="recommendation"` `label="Newsletter"` | what a subscriber gets, no counts |
 | n+1 | Review — bottom | `Testimonial` b | `data/reviews.json` only |
 | n+2 | Contact form | `ContactFormKit` c | never a hand-rolled form |
 | n+3 | FAQ | `Faq` c | `data/faq.json` + page-backed Q&A, one FAQPage node |
-| n+4 | Footer | `SiteFooterKit` a | inherited from `BaseLayout`, never hand-written |
+| n+4 | Footer | `SiteFooterKit` a | inherited from `PageShell`, never hand-written |
 
 There are no city-unique bolt-on sections held in this file: what is unique to a city comes
 out of that city's competitor scan, and anything the scan did not supply is `NOT FETCHED`.
@@ -151,10 +155,10 @@ out of that city's competitor scan, and anything the scan did not supply is `NOT
 ## SEO Rules for Every Page
 
 ```
-H1 pattern:  "Blue Staffy Puppy for Sale in {CITY} | home-raised | SITE_URL_PLACEHOLDER"
-Canonical:   https://SITE_URL_PLACEHOLDER/blue-staffy-for-sale-{CITY_SLUG}/
-og:url:      https://SITE_URL_PLACEHOLDER/blue-staffy-for-sale-{CITY_SLUG}/
-Slug:        from data/locations.json → slug field
+H1:          data/locations.json → h1, never rewritten; an empty h1 (Known Issue 40) goes to Open Flags
+Canonical:   https://SITE_URL_PLACEHOLDER/uk-locations/{SLUG}/   (the row's canonical; BaseLayout makes it absolute)
+og:url:      the same as the canonical — BaseLayout emits both
+Slug:        data/locations.json → slug
 ```
 
 **Never change these once set.** If rebuilding an existing page, read the canonical from the file first and use it exactly.
@@ -165,13 +169,13 @@ Slug:        from data/locations.json → slug field
 
 When the breeder requests a batch build, hand off to `bsuk-batch-rebuilder`, which:
 
-1. Reads `data/locations.json` — all cities where `"live": true`
+1. Reads `data/locations.json` — the rows the project-5 plan names
 2. Issues one `Agent` call per city in ONE message (`subagent_type: bsuk-location-builder`), each carrying:
 ```
-- city name, abbr, slug, variants from locations.json
+- the row from data/locations.json (slug, city, h1, canonical, robots)
 - city data from the Built-In City Data section above
 - instruction: run the competitor scan, derive the section list, build the spine plus that body
-- staging path: src/pages/[slug]/ (staged in a -rebuild sibling until approved)
+- its question file, data/queries/<slug>.json, and its board, data/boards/<slug>.json
 ```
 3. The children run concurrently; there is no environment variable to set
 4. The parent collects results and reports which succeeded/failed
@@ -191,9 +195,9 @@ The outline must include:
 
 **B. Keyword Distribution Table** — section by section for the city: primary KW, LSI, longtail, NLP, comparison KWs, word count per section.
 
-**C. Special Elements Plan** — newsletter position, contact/inquiry form positions (3× required), comparison table, counter snippets (4× after H1), trust bar, FAQ sections.
+**C. Special Elements Plan** — the spine parts the skill fixes (one counter strip, one trust strip, one newsletter, one contact form, the FAQ) and where each derived section sits between them.
 
-**D. Competitor Snapshot** — top 3–5 competitors for `"Blue Staffy puppy for sale [city]"`: their H2 topics, word count, special elements, keywords.
+**D. Competitor Snapshot** — the competitors in the page's question file (`data/queries/<slug>.json` → `competitors`): their H2 topics, word count, special elements, keywords.
 
 **E. Fan-Out Keywords** — city-specific longtails, city name modifiers, NLP queries, PAA questions.
 
@@ -211,42 +215,45 @@ The outline must include:
 ### After each section:
 1. Show HTML to user
 2. Ask: **"Approve? (yes / revise / skip)"**
-3. Write to `docs/reports/<slug>-rebuild/section-<N>.html`
+3. Record the approved section in the page's board, `data/boards/<slug>.json`
 
 ### After every section is approved:
 1. Wrap all sections in `<BaseLayout>` — header and footer are injected automatically by `src/layouts/BaseLayout.astro`
 2. Set title, description, canonical props on BaseLayout
 3. Content starts at the hero `<section>` — never write `<header>` or `<footer>` HTML in the page file
-4. Write to `src/pages/uk-locations/[slug].astro`
+4. Write the page at the path the project-5 plan fixes for a rebuilt city; the gates find it built at `dist/uk-locations/<slug>/index.html` (`scripts/_slugs.py`). Never edit `src/pages/uk-locations/[slug].astro`: it renders every city that is not rebuilt yet from `data/locations.json`
 
 ---
 
 ## After Each Page Built
 
-1. Add to `data/locations.json` — update `gsc_clicks` if known
-2. Add to sitemap:
-```xml
-<url>
-  <loc>https://SITE_URL_PLACEHOLDER/uk-locations/<slug>/</loc>
-  <lastmod>YYYY-MM-DD</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.8</priority>
-</url>
+1. `npm run build`, then run every gate in the skill's Step 6 (`.claude/skills/bsuk-location-page-builder/SKILL.md`), in order:
+```bash
+npm run check:all
+python3 scripts/board_gate.py <slug>
+python3 scripts/final_page_audit.py uk-locations/<slug> --type location
+python3 scripts/dup_content_audit.py
+python3 scripts/aeo_audit.py uk-locations/<slug>
+python3 scripts/evidence_audit.py uk-locations/<slug> --type location
+npm run test:render:meta
+npm run test:render:pages
 ```
+   The page audits take the route (`uk-locations/<slug>`): with no slug the final audit never reaches a city page.
+2. The sitemaps are generated by the build (`scripts/generate_sitemaps.py`); `npm run check:sitemaps` proves the page is listed
 3. Deploy and IndexNow — **inactive until project 6.** BSUK has no host and no domain (`CLAUDE.md` rule 3)
 
 ---
 
 ## Rules You Must Follow
 
-1. **Read city data first** — never guess climate, cities, or laws
-2. **H1 pattern is fixed** — "Blue Staffy Puppy for Sale in {CITY} | home-raised | SITE_URL_PLACEHOLDER"
+1. **Read city data first** — never guess distances, venues, or laws
+2. **The H1 is the row's** — `data/locations.json` → `h1`, never a pattern of your own
 3. **Prices from data/price-matrix.json** — never hardcode
 4. **The FAQ needs one FAQPage node** carrying every visible Q&A and nothing else — no exceptions
 5. **Stage before write** — never touch the final Astro file until all sections are approved
-6. **Add to sitemap after every new page** — must be updated
+6. **Sitemaps are generated** — `npm run build` writes them; never hand-edit one
 7. **Batch mode requires explicit user approval** before dispatching all cities at once
-8. **LICENCE_CLAIM_PLACEHOLDER compliance** — every page must include federal LICENCE_CLAIM_PLACEHOLDER requirements and note that all documentation is included
+8. **Licence and legal claims stay placeholders** — a licensing or legal sentence is LICENCE_CLAIM_PLACEHOLDER / LEGAL_CLAIM_PLACEHOLDER, except the banned-breed line under "What you may NOT write into a city page" (Known Issue 46); the paperwork a puppy goes home with is only what `data/faq.json` `whyus-paperwork` lists
 9. **Outline first (Rule 51)** — produce and get approval of the Page Outline before writing any section; this applies in both single and batch mode; batch outline covers all cities at once
 10. **Header/Footer: NEVER TOUCH (Rule 53)** — location pages inherit header and footer from `src/layouts/BaseLayout.astro` automatically; never write `<header>` or `<footer>` HTML in page files; start all content at the hero `<section>`; this rule applies to every child agent in batch mode
 

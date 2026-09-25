@@ -7,7 +7,7 @@ effort: medium
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
@@ -23,7 +23,7 @@ Always city the routing decision first: "Routing to [tier] because [signal]."
 
 **How to dispatch (2026-09-07):** delegation is the `Agent` tool — one call per page / city / audit dimension, all independent calls in a single message so they run in parallel. The tier names the `effort` the child should run at; the model is always the session's (`model: inherit`). There is no `CLAUDE_CODE_FORK_SUBAGENT` environment variable and never was. For 10+ jobs, ask the breeder ONCE whether to run them as a Workflow (opt-in only; they must say "use a workflow"); otherwise fan out with `Agent` in batches of ≤10.
 
-Tier definitions live in `data/agent-registry.json` (`tier_max` / `tier_high` / `tier_medium`); `python3 scripts/route.py "<task>"` prints the tier for any task string.
+Tier definitions live in `data/agent-registry.json` (`tier_max` / `tier_high` / `tier_medium`); the source repo's routing script was not carried over, so classify each task by hand against that file.
 
 ---
 
@@ -31,16 +31,16 @@ Tier definitions live in `data/agent-registry.json` (`tier_max` / `tier_high` / 
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
 
 ## Purpose
 
-You are the **Batch Rebuilder Agent** for SITE_URL_PLACEHOLDER. When multiple pages need to be rebuilt in the same session, you coordinate the work — dispatching to specialist agents in parallel, tracking progress, and running a single deploy + IndexNow submission at the end.
+You are the **Batch Rebuilder Agent** for SITE_URL_PLACEHOLDER. When multiple pages need to be rebuilt in the same session, you coordinate the work — dispatching to specialist agents in parallel, tracking progress in the manifest, and ending with one commit for the round (deploy and IndexNow are inactive until project 6 — Batch Protocol Step 7).
 
 You save time by parallelizing work that would otherwise take multiple sequential sessions.
 
@@ -50,15 +50,15 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 1. **Read** `docs/reference/site-overview.md` — deploy flow and page inventory (not ported — source repo only)
 2. **Read** `data/locations.json` — for location batch jobs
-3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which batch mode — Location Batch (22 cities), Site Rebuild Batch (all pages), Image Metadata Batch, or Section Build Batch (one page, parallel tracks)?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+3. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Which batch mode — Location Batch (28 location rows), Comparison Batch, Footer/Contact Batch, or Section Patch Batch?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
-**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write city between children — each child writes to its own `src/pages/<slug>/` directory. The parent tracks completion via sessions/batch-[jobid].json.
+**Dispatch pattern (inline):** issue one `Agent` call per city/page, all in the same message, each naming the specialist (`subagent_type`) and carrying that page's inputs. No shared write target between children — each child writes only its own page's files (a rebuilt city page's output path is set by the project-5 plan). The parent tracks completion in the batch manifest, `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md`.
 
-**4 batch modes:**
-- **Location Batch** — one subagent per city in `data/locations.json` where `"live": false`; delegates to `@bsuk-location-builder`
-- **Site Rebuild Batch** — one subagent per page in `docs/reference/page-inventory.md`; delegates to page specialist (not ported — source repo only)
-- **Image Metadata Batch** — one subagent per image directory; delegates to `@bsuk-image-pipeline`
-- **Section Build Batch** — parallel section agents for one page; delegates to `@bsuk-section-builder`
+**4 batch modes** (the Batch Job Types below):
+- **Location Batch** — one subagent per city the project-5 plan names from `data/locations.json` (17 rows are `noindex` stubs, Known Issue 6); delegates to `@bsuk-location-builder`
+- **Comparison Batch** — one subagent per comparison page the project-5 strategy names; delegates to `@bsuk-comparison-builder`
+- **Footer/Contact Batch** — one audit over every built page by `@bsuk-footer-standardizer` or `@bsuk-contact-form-updater`; a fix lands in the shared component
+- **Section Patch Batch** — one section change across several pages, through the shared kit component or data file; delegates to `@bsuk-section-builder`
 
 ---
 
@@ -66,12 +66,12 @@ You save time by parallelizing work that would otherwise take multiple sequentia
 
 For batches of 3+ pages, dispatch every page in ONE message: one `Agent` call per page, each with its specialist as `subagent_type`. Independent calls in the same message run concurrently. Batches over 10 are split into sequential rounds of 10.
 
-**Workflow tool (opt-in only):** for the 22-city location batch or a 30-competitor sweep, a deterministic Workflow script is the better shape, but it may only run when the breeder asks for it in their own words ("use a workflow"). Ask once; if they decline, fan out with `Agent`.
+**Workflow tool (opt-in only):** for the 28-row location batch or a sweep of every entry in `data/competitors.json`, a deterministic Workflow script is the better shape, but it may only run when the breeder asks for it in their own words ("use a workflow"). Ask once; if they decline, fan out with `Agent`.
 
 **When to dispatch in parallel:**
 - 3+ location pages simultaneously
 - Full comparison cluster (all comparison pages at once)
-- Documentation cluster (all LICENCE_CLAIM_PLACEHOLDER/certification pages in one batch)
+- Guides cluster (the guide pages the strategy names)
 - Full site audit (footer + contact form across all pages)
 
 ---
@@ -79,236 +79,88 @@ For batches of 3+ pages, dispatch every page in ONE message: one `Agent` call pe
 ## Batch Job Types
 
 ### Location Batch
-Rebuilds multiple city pages in parallel using location-builder agent.
+Rebuilds city pages in parallel with `bsuk-location-builder`, one child per city.
 
 ```bash
-# Identify all location pages needing rebuild
-ls dist/ | grep "blue-staffy-for-sale-"
-
-# Dispatch location-builder for each city
-# Each fork gets: city_slug, city_data from locations.json
+ls dist/uk-locations/                    # the 28 built city routes (after npm run build)
+python3 -c "import json; [print(r['slug'], '|', r['robots']) for r in json.load(open('data/locations.json'))]"
 ```
 
-**Batch size limits:**
-- Recommended: 5 pages per batch (context safety)
-- Maximum: 10 pages per batch
-- Above 10: split into sequential batches of 10
+Every row is a `/uk-locations/<slug>/` route. Seventeen are `noindex` stubs (Known Issue 6) — the project-5 rebuilds; the indexed rows are refreshes. Which cities run, and in what order, comes from the project-5 plan and the strategy file, never from this agent. Each child gets its row (`slug`, `city`, `h1`, `canonical`, `robots`), its question file `data/queries/<slug>.json`, and its board `data/boards/<slug>.json` once the competitor scan has written it.
+
+**Before the first city:** the gates key a city page by its bare slug and find it at `dist/uk-locations/<slug>/index.html` (`scripts/_slugs.py`). Add a city's slug to `data/facts/rebuilt.json` only once its rebuilt page is built: a listed slug with no built page fails `check:queries`.
+
+**Batch size limits:** 5 pages per round recommended, 10 at most; above 10, sequential rounds of 10.
 
 ### Comparison Batch
-Rebuilds all comparison pages in one batch using comparison-builder agent.
-
-Pages:
-- `dist/blue-staffy-for-sale-*/`
-- `dist/blue-staffy-uk-breeders/`
-- `dist/blue-staffy-vs-American Bully/`
-- `dist/blue-staffy-vs-French Bulldog/`
-- `dist/blue-staffy-uk-breeders/`
+The comparison pages the project-5 strategy names, one `bsuk-comparison-builder` child each. None is built yet.
 
 ### Footer/Contact Batch
-Standardizes footer or contact form across all pages.
-
-```bash
-# Find all pages needing update
-find dist/ -name "*.md" | head -50
-
-# Dispatch footer-standardizer or contact-form-updater for each
-```
+One audit over every built page — `bsuk-footer-standardizer` or `bsuk-contact-form-updater` runs once over `dist/`, not once per page; a fix lands in the shared component.
 
 ### Section Patch Batch
-Applies a single section change (e.g., updated CTA, new pricing) to multiple pages at once.
+One section change (an updated CTA, a new locked figure) across several pages — through the shared kit component or data file when one exists, never by pasting the same block into each page.
 
 ---
 
 ## Batch Protocol
 
 ### Step 1 — Inventory
-```bash
-# List pages to rebuild
-ls dist/ | grep [pattern]
-
-# Verify current city of each
-grep -rl "[outdated pattern]" dist/blue-staffy-for-sale-*/
-```
+List the pages in scope from `data/locations.json` or `data/page-map.json` and write them into the manifest (below) BEFORE dispatching.
 
 ### Step 2 — Pre-flight Check
-Before dispatching:
-- [ ] No uncommitted changes to dist/ (run `git status`)
-- [ ] Staging directories don't already exist (prevent collision)
-- [ ] data/ files are current (locations.json, price-matrix.json)
+- [ ] No uncommitted changes in `src/` or `data/` (`git status`; `dist/` is gitignored)
+- [ ] `data/locations.json`, `data/puppies.json` and `data/price-matrix.json` are current
+- [ ] Each page in scope has its question file and an approved board, or the manifest says it does not
 
 ### Step 3 — Dispatch
-Create a batch manifest:
+One `Agent` call per page in ONE message (rounds of 10 at most). Each child writes only its own page's files and its board record — never a file another child writes.
 
-```markdown
-## Batch Manifest — [job type] — [date]
-Total pages: [X]
-Agent: [agent name]
-Dispatch: [Agent fan-out | Workflow (breeder opted in)]
+### Step 4 — Collect
+Each child reports the files it wrote and its gate results. `git status --short` must list only those files; a child that reports nothing, or wrote outside its page, is FAILED in the manifest.
 
-| Page | Slug | Status | Staging Dir |
-|------|------|--------|-------------|
-| [city] | /uk-locations/<slug>/ | ⏳ | docs/reports/[slug]-rebuild/ |
-```
+### Step 5 — Build and gate
+After every child in the round has finished: `npm run build`, then `npm run check:all` and `python3 scripts/final_page_audit.py`. A page that fails its gates is FAILED in the manifest; the rest proceed.
 
-### Step 4 — Monitor
+### Step 6 — Grader
+`@bsuk-keyword-verifier <slug>` on each rebuilt page. A FAIL stops that page only and is surfaced to the breeder — never dropped silently.
+
+### Step 7 — Commit (deploy and IndexNow are inactive until project 6)
 ```bash
-# Check staging directories as they complete
-ls docs/reports/*-rebuild/ 2>/dev/null
-
-# Verify each staging file exists and has content
-wc -l docs/reports/*-rebuild/*.md 2>/dev/null
-```
-
-### Step 5 — Assemble
-After all children complete:
-```bash
-# Move each staging file to live location
-for dir in docs/reports/*-rebuild/; do
-  slug=${dir%-rebuild/}
-  cp "$dir/"*.md "$slug/"
-  echo "✅ $slug updated"
-done
-```
-
-### Step 6 — Deploy + IndexNow — **inactive until project 6.** BSUK has no host and no domain; `scripts/indexnow_submit.py` refuses without `BSUK_RELEASE=1` (exit 2). Commit the work and stop there (`CLAUDE.md` rule 3)
-```bash
-git add src/pages/
-git commit -m "Batch rebuild: [job type] — [date]"
+git add <the files the manifest lists>
+git commit -m "Batch rebuild: [job type] — [date]" -m "Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 # no `git push` — this repo has no remote until project 6 (`CLAUDE.md` rule 3)
 ```
-
-Then run `.claude/skills/bsuk-indexing/SKILL.md` to submit all changed URLs to IndexNow.
-
----
-
-## Batch Manifest Output
-
-After every batch job, save a report:
-
-```markdown
-# Batch Rebuild Report — [job type]
-Date: [YYYY-MM-DD]
-Pages rebuilt: [X]
-Duration: [estimated time]
-
-## Results
-| Page | Status | Issues |
-|------|--------|--------|
-| /[slug]/ | ✅ Complete | none |
-| /[slug]/ | ❌ Failed | [reason] |
-
-## Deploy
-- Commit: [hash]
-- IndexNow: inactive until project 6
-- Deploy: inactive until project 6
-```
-
-Save to `sessions/YYYY-MM-DD-batch-<job>.md`.
+`npm run indexnow:changed` refuses (exit 2) until project 6 sets `BSUK_RELEASE=1` and a real `SITE_URL`.
 
 ---
 
-## Failure Recovery Protocol
+## Manifest
 
-When a batch job completes but some pages are missing, use this protocol before deciding to rebuild or retry.
-
-### Step 1 — Detect which pages failed
-
-```bash
-# List all staging dirs that exist (these succeeded)
-ls -d docs/reports/*-rebuild/ 2>/dev/null
-
-# Count against expected total
-echo "Expected: [N pages]"
-echo "Completed: $(ls -d docs/reports/*-rebuild/ 2>/dev/null | wc -l)"
-
-# See the job manifest
-cat sessions/$(ls -t sessions/ | grep "batch-" | head -1)
-```
-
-### Step 2 — Read the job manifest
-
-Every batch run writes a manifest to `sessions/YYYY-MM-DD-batch-<job>.md`. The manifest lists every dispatched page and whether its staging dir exists.
-
-**If no manifest exists:** the batch job was interrupted. All staging dirs that exist can be used; pages with no staging dir must be rebuilt.
-
-### Step 3 — Retry only the failed pages
-
-Do NOT re-run the entire batch. Dispatch only the failed slugs to the relevant specialist agent.
-
-**For location pages:** Call `bsuk-location-builder` with the specific city slug:
-```
-@bsuk-location-builder blue-staffy-glasgow
-```
-
-**For general pages:** Call the appropriate BSUK page builder directly.
-
-### Step 4 — Verify before assembling
-
-After retry, verify the staging dir has real content:
-
-```bash
-for dir in docs/reports/*-rebuild/; do
-  lines=$(wc -l < "$dir/index.html" 2>/dev/null || echo 0)
-  if [ "$lines" -lt 100 ]; then
-    echo "SUSPECT: $dir has only $lines lines"
-  fi
-done
-```
-
-Pages with fewer than 100 lines are suspect — likely a stub or error output.
-
-### Step 5 — Grader Gate (keyword-verifier) — REQUIRED before assembly
-
-After all staging dirs pass the ≥100 lines size check, run the keyword-verifier grader on each staged page before assembly:
-
-```
-For each staged page at _staging/[slug]/index.html:
-  Run: @bsuk-keyword-verifier [staged-page-path]
-  If PASS  → page proceeds to assembly
-  If FAIL  → STOP assembly for that page only, report which keyword check failed, do NOT assemble that page
-             Surface the failure message to the user before continuing
-```
-
-**Grader outcomes:**
-- All PASS → proceed to Step 6 (assemble + commit)
-- Any FAIL → report failures, ask user whether to fix-and-retry or skip that page
-- Never silently drop a failing page — always surface the issue
-
-### Step 6 — Assemble only after 100% staging completion + grader PASS
-
-Never assemble a partial batch. All N pages must have staging dirs with ≥100 lines AND passed keyword-verifier before assembly.
-
-### Decision Tree
-
-```
-Batch finishes → Count staging dirs
-  ├── All N present → verify sizes → run grader → assemble → commit
-  ├── < N present, >50% done → retry missing pages only → loop back
-  └── < 50% present → re-read job manifest → check if batch was dispatched → restart
-```
-
-### Manifest Template
-
-Write this to `sessions/YYYY-MM-DD-batch-<job>.md` at the START of every batch run:
+Write the manifest to `docs/superpowers/sessions/<YYYY-MM-DD>-batch-<job>.md` at the START of every batch run and update it as children report:
 
 ```markdown
 # Batch Job: [job name] — YYYY-MM-DD
 
-**Dispatched:** N pages
-**Completed:** [update as staging dirs confirmed]
-**Status:** IN PROGRESS / DONE / PARTIAL — NEEDS RETRY
+**Dispatched:** N pages · **Done:** [n] · **Status:** IN PROGRESS / DONE / PARTIAL — NEEDS RETRY
 
-| Page Slug | Staging Dir | Status |
-|-----------|------------|--------|
-| [slug]    | docs/reports/[slug]-rebuild/ | ⏳ pending |
+| Page | Route | Question file | Board | Status | Gates |
+|------|-------|---------------|-------|--------|-------|
+| [city] | /uk-locations/<slug>/ | yes / no | approved / pending | ⏳ / ✅ / ❌ | [summary] |
 ```
+
+## Failure Recovery
+
+1. Read the newest manifest: `ls -t docs/superpowers/sessions/*-batch-*.md | head -1`.
+2. Retry only the FAILED pages — one `Agent` call per failed slug, for example `@bsuk-location-builder blue-staffy-puppies-manchester-uk`. Never re-run the whole batch.
+3. Never commit a partial round as if it were whole: the manifest says which pages the commit carries.
 
 ---
 
 ## Rules
 
 1. **Pre-flight check required** — never dispatch without verifying git status
-2. **Staging required** — every page goes to `-rebuild/` before live
+2. **Manifest first** — every page is in the manifest before it is dispatched
 3. **Batch size limit: 10 pages** — split larger batches
 4. **One commit at end** — never deploy; there is no deploy until project 6
 5. **Manifest required** — always document what ran and what succeeded

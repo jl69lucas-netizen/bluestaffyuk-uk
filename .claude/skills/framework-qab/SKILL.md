@@ -11,12 +11,12 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed home-raised Blue Staffordshire Bull Terrier breeder, Carlisle (Lisa Bright)
-> **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Missing paperwork · Puppy-farm origin · Post-sale abandonment
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ## What QAB Is
@@ -44,7 +44,7 @@ QAB:
 Q: How much does a blue Staffy puppy cost from a reputable breeder?
 A: Blue Staffy puppies from BlueStaffyUK are priced at £1,500–£1,700. This includes 
    KC registration, microchip number, vet health check, first vaccinations, worming record, 
-   and a health guarantee. A £500 refundable deposit holds your puppy.
+   and a vet-signed health card. A £500 refundable deposit holds your puppy.
 B: Transparent pricing means no surprise paperwork fees after you've already bonded with 
    your puppy — and no "registration add-on" charges at handover.
 ```
@@ -87,7 +87,7 @@ Good: "Expect to budget for an appropriate crate — a minimum 30" model suits a
 ```
 
 **Source the answer:**
-- Prices: from `docs/reference/domain-knowledge.md` — confirmed current
+- Prices: from `data/puppies.json` and `data/price-matrix.json` — never typed
 - Costs: from BSUK pricing data (Phase 2: `data/price-matrix.json`)
 - Health: per vet health check / worming and vaccination record
 - Breed facts: per Kennel Club breed standard and UK breeding regulations
@@ -136,7 +136,7 @@ On cost pages, QAB structure is required for every line item:
 Q: What's included in the blue Staffy puppy price?
 A: Every BlueStaffyUK puppy includes: KC registration, microchip number, 
    vet health check, first vaccinations, worming record, 
-   starter pack (food, blanket, toy), and a health guarantee. Price: £1,500 / £1,700 by puppy.
+   and a puppy pack to help them settle in. Price: £1,500 / £1,700 by puppy.
 B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing 
    is all-inclusive — what you see is what you pay.
 ```
@@ -147,11 +147,11 @@ B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing
 
 ### Price & Cost
 - How much does a blue Staffy puppy cost?
-- How much does a blue brindle Staffy puppy cost?
+- Why do your male and female puppies cost different amounts?
 - What's the deposit to hold a puppy?
 - What's included in the purchase price?
 - What's the total first-year cost of owning a Staffy?
-- Is there a difference in price between blue and black brindle puppies?
+- Do blue and white puppies cost more than solid blue ones?
 
 ### Licensing & Legality
 - Are your puppies sold under a LICENCE_CLAIM_PLACEHOLDER?
@@ -203,6 +203,6 @@ B: Unlike dealers that add paperwork fees after purchase, BlueStaffyUK pricing
 1. **Benefit is required** — a Q&A without a Benefit is incomplete QAB
 2. **Questions in buyer's language** — not marketing language
 3. **Answer leads with the fact** — Inverse Pyramid inside the A
-4. **Numbers from data files** — read `docs/reference/domain-knowledge.md` and Phase 2 `data/price-matrix.json`
+4. **Numbers from data files** — read `data/settings.json`, `data/puppies.json` and `data/price-matrix.json`
 5. **FAQPage JSON-LD required** — every QAB FAQ section needs schema
 6. **No generic benefits** — "this is why BlueStaffyUK is great" is not a benefit

@@ -1,6 +1,7 @@
 import json
 import os
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -239,3 +240,32 @@ def test_cli_only_matches_on_path_boundaries(tmp_path):
     assert _last_line(proc).startswith("examined 1 rows; applied 1,")
     assert (tmp_path / "bsuk/rules/x.md").exists()
     assert not (tmp_path / "bsuk/rules-old/x.md").exists()
+
+
+# --- notes that contradict the repo (Known Issue 56) ---------------------------
+# A note is the record a later reader trusts over the agent file. "data/competitors.json not
+# ported" stayed on the framework-agent row after the competitor intelligence build wrote
+# that file, so the manifest told readers a file they can open does not exist.
+NOTE_NOT_PORTED = re.compile(r"((?:data|scripts|schemas|docs)/[\w./-]+?)[.,;]? (?:is )?not ported")
+ROOT = SCRIPT.parents[1]
+
+
+def stale_notes(rows, root):
+    return [f"{r['dst']}: {m.group(1)}" for r in rows
+            for m in NOTE_NOT_PORTED.finditer(r.get("notes", ""))
+            if (root / m.group(1)).exists()]
+
+
+def test_the_stale_note_check_fires(tmp_path):
+    (tmp_path / "data").mkdir()
+    rows = [_row("a.md", "a.md", "rebase", "reads data/here.json not ported")]
+    assert stale_notes(rows, tmp_path) == []
+    (tmp_path / "data/here.json").write_text("{}", encoding="utf-8")
+    assert stale_notes(rows, tmp_path) == ["a.md: data/here.json"]
+
+
+def test_no_manifest_note_calls_an_existing_file_not_ported():
+    rows = json.loads((ROOT / "data/port-manifest.json").read_text(encoding="utf-8"))
+    assert stale_notes(rows, ROOT) == [], (
+        "a data/port-manifest.json note says a file is not ported, but it exists — "
+        "rewrite the note to say what the row reads now")

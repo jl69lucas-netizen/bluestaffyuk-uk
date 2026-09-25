@@ -30,7 +30,7 @@ def test_the_keyword_gap_agent_carries_intels_page_type_table_line_for_line():
 
 def test_the_block_extractor_rejects_a_drifted_copy(tmp_path):
     text = (AGENTS / "bsuk-competitor-intel.md").read_text(encoding="utf-8")
-    drifted = text.replace('("faq", [r"faq", r"questions"])', '("faq", [r"faq"])')
+    drifted = text.replace('("faq", [w("faq|question")])', '("faq", [w("faq")])')
     assert drifted != text
     assert BLOCK.findall(drifted)[0] != page_type_block("bsuk-competitor-intel.md")
 

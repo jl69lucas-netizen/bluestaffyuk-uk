@@ -7,7 +7,7 @@ allowed-tools: [Read, Write, Bash]
 ## Golden Rule
 > **Link-First (ALWAYS):** anchors at the START of the sentence — never mid-sentence, never at the end.
 > **Confidence Gate:** ≥97% before writing any site file.
-> Every framework below is bounded by the Verified-Claim Ledger, first-person BlueStaffyUK voice, licensing safety, and the anti-ai-writing filter.
+> Every framework below is bounded by the evidence ledger (`data/quality/evidence-ledger.json`), first-person BlueStaffyUK voice, licensing safety, and the anti-ai-writing filter.
 
 ---
 
@@ -71,13 +71,13 @@ Texture checklist for long-form body copy: verified facts, owned first-person op
 Sequential drops of true, specific details that accumulate into authority — e.g. a home-raising timeline told through five real moments. Each pearl must be a verifiable specific (ledger-bounded). Great for About/story sections and non-commodity rewrites.
 
 ### VAD — Verb, Application, Differentiator
-One-line positioning for cards, meta descriptions, comparison intros: what we DO (verb), for whom/what (application), why us (differentiator). "We home-raise (V) blue and blue brindle Staffordshire Bull Terriers for documented family placement (A) with KC registration and L-2-HGA DNA-verified parent screening no marketplace seller matches (D)."
+One-line positioning for cards, meta descriptions, comparison intros: what we DO (verb), for whom/what (application), why us (differentiator). "We home-raise (V) blue, blue and white, and white Staffordshire Bull Terriers for documented family placement (A) with KC registration and parents DNA-tested for L-2-HGA and HC-HSF4 (D)." — the test results are `NOT FETCHED` until the certificates are on file, so the line names the tests, never a result.
 
 ### Setup-Stat-Reframe
 Three-beat evidence cadence AI engines preferentially cite: name the problem → attributed statistic → reframe what it means for the reader. Every stat carries a named source (link at sentence START) or gets dropped — no orphan numbers. Use inside PAS-Agitate, health sections, and comparison myth-busting.
 
 ### The 4 Ss (testimonial structure)
-Specific · Sizzling (switched from another seller? why us?) · Substantiated (real name/UK region per the review system) · Succinct. Only REAL reviews — fabricated testimonials were purged 2026-06; `@bsuk-review-collection-agent` owns sourcing.
+Specific · Sizzling (switched from another seller? why us?) · Substantiated (real name/UK region per the review system) · Succinct. Only REAL reviews — the rows of `data/reviews.json`; the source repo's review-collection agent was not ported, so a new review arrives only from the breeder.
 
 ### The 5 Basic Objections + Objection Block
 Every money page answers: no time · no money · won't work for me · don't believe you · don't need it. Sweep each money page against all five; the natural BSUK carriers are the FAQ, the price-transparency section, and the documentation stack. The **"But you might be wondering…"** objection block is a proven CTR lifter — place one before the final CTA, answering the page's #1 unresolved doubt (from PAA/GSC data, not guessed).
@@ -92,5 +92,5 @@ Every money page answers: no time · no money · won't work for me · don't beli
 ## Common Mistakes
 - **Framework stacking** — one primary framework per section; a page may vary frameworks BY section (that's the distribution matrix), but a single section running PAS+AIDA+4Ps reads as slop.
 - **Skeleton showing** — the reader should never see the beats ("Now here's the proof:"). Frameworks are load-bearing walls, not signage.
-- **Fabricated Proof/Scarcity/Warning beats** — every framework's persuasion slots stay inside the Verified-Claim Ledger and Rule 48.
+- **Fabricated Proof/Scarcity/Warning beats** — every framework's persuasion slots stay inside the evidence ledger and Rule 48.
 - **Ignoring awareness level** — QUEST on a problem-aware reader wastes their patience; PAS on an unaware reader has no pain to press.

@@ -22,6 +22,7 @@ HEAD_TERMS = DUP.HEAD_TERMS               # and the phrases every for-sale page 
 import facts_preserved_check as FACTS
 import family_rules as FR
 _DROP_SPLIT = FACTS._DROP_SPLIT
+from _slugs import built_page as _built_page, resolve_page as _resolve_page  # noqa: E402
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCHEMAS = ROOT / "schemas"
@@ -674,8 +675,7 @@ def dist_schema_types(slug, dist=None):
     """(types, unparsed) for the built page: every @type anywhere in its JSON-LD, nested
     offers and @graph members included, and the count of blocks that do not parse. None when
     the page is not built. DIST is read at call time, so a test can point it elsewhere."""
-    root = pathlib.Path(DIST if dist is None else dist)
-    page = root / "index.html" if slug == "index" else root / slug / "index.html"
+    page = built_page(slug, dist)
     if not page.exists():
         return None
     types, unparsed = set(), 0
@@ -864,11 +864,10 @@ def word_band_findings(board, dist=None):
     "not on the built page" — ten rows saying only that the page has not been written yet, on
     the board the author is still drafting. A rebuilt slug's page is the record's page, and
     that is the only page whose prose a band describes."""
-    root = pathlib.Path(DIST if dist is None else dist)
     slug = board["meta"]["slug"]
     if slug not in rebuilt_slugs():
         return []
-    page = root / "index.html" if slug == "index" else root / slug / "index.html"
+    page = built_page(slug, dist)
     if not page.exists():
         return []
     got, out = page_section_words(page), []
@@ -918,14 +917,23 @@ def live_headings(dist=DIST):
     return out
 
 
+def built_page(slug, dist=None):
+    """The built page of a board's slug: dist/index.html for `index`, dist/<route>/index.html
+    otherwise, a city page's bare slug taking its data/page-map.json route
+    (uk-locations/<slug>) — scripts/_slugs.py, Known Issue 39. ROOT and DIST are read at
+    call time, so a test can point them elsewhere."""
+    return _built_page(slug, ROOT, DIST if dist is None else dist)
+
+
 def own_live_key(board):
     """The key this board's own page holds in live_headings(). The homepage is "/", not
     "/index/" — excluding the wrong key would let the homepage collide with itself and
-    fail its own gate on every rebuild."""
+    fail its own gate on every rebuild. A city board's bare slug is its page-map route,
+    "/uk-locations/<slug>/", for the same reason."""
     meta = board["meta"]
     if meta["page_type"] == "home" or meta["slug"] == "index":
         return "/"
-    return "/" + meta["slug"] + "/"
+    return "/" + _resolve_page(meta["slug"], ROOT)[1] + "/"
 
 
 def header_precheck(proposed, live, exclude_page=None):
@@ -1380,6 +1388,111 @@ def locked_picks(board):
     return out
 
 
+# ── working rule 16: no two pages share a hero or a counter ────────────────────────────────
+#
+# The rule's uniqueness half had no check: the three guides all took H-GD3 and the three
+# utility pages H-UT1 (Known Issues 33 and 35) and nothing failed, because `ledger-tuple-owned`
+# signs hero + faq + table + takeaway together and those pages differed elsewhere. This reads
+# each record's hero and counter pick IN FORCE — the one the built page renders — across every
+# record, and tests/py/test_rule16_gate.py fails on any arrangement two pages share.
+#
+#: The pages the user exempted BY NAME (user ruling R12, 2026-09-23): a privacy policy, a
+#: thank-you page and a contact page sell nothing, so they may share the quiet family's
+#: arrangements with each other — never with any other page.
+RULE16_EXEMPT = ("privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
+                 "uk-blue-staffy-breeders-contact")
+
+
+def pick_in_force(board, sid):
+    """The pick the built page renders for a section, in `pickedStyle()`'s order: the live
+    approval, then the section's own `options.pick`, then the carried approval."""
+    live = (board.get("approval") or {}).get("picks") or {}
+    sec = next((s for s in board.get("sections", []) if s.get("id") == sid), None)
+    own = ((sec or {}).get("options") or {}).get("pick")
+    prev = (board.get("approval_previous") or {}).get("picks") or {}
+    # `is not None`, not `or`: pickedStyle.ts chains `??`, which only falls through on
+    # null/undefined, so the two readers agree on every value a record can hold.
+    for pick in (live.get(sid), own, prev.get(sid)):
+        if pick is not None:
+            return pick
+    return None
+
+
+def _rule16_judges(board):
+    """A draft and a record not yet under rule 16 (no `meta.layout_type`) are not judged."""
+    meta = board.get("meta") or {}
+    return bool(meta.get("layout_type")) and meta.get("status") != "draft"
+
+
+def rule16_judged(boards, board=None):
+    """The slugs rule 16 judges in `boards` — with `board`, if given, standing in for its own
+    file, as the gate judges it. The gate prints this count: a gate that judged no record
+    has examined nothing, and 0 FAIL beside it is not a pass."""
+    corpus = dict(boards)
+    if board is not None:
+        corpus[board["meta"]["slug"]] = board
+    return [slug for slug, b in sorted(corpus.items()) if _rule16_judges(b)]
+
+
+def shared_per_page_picks(boards):
+    """[(shape, style id, [slugs])] for every hero or counter arrangement two pages share.
+
+    `boards` is {slug: record}. A draft and a record not yet under the rule (no
+    `meta.layout_type`) are not judged. Two pages in RULE16_EXEMPT may share with each other;
+    an exempt page sharing with any other page is reported like any pair."""
+    seen = {}
+    for slug, board in sorted(boards.items()):
+        if not _rule16_judges(board):
+            continue
+        for sec in board.get("sections", []):
+            if sec.get("shape") not in PER_PAGE_SHAPES:
+                continue
+            pick = pick_in_force(board, sec["id"])
+            if pick:
+                seen.setdefault((sec["shape"], pick), []).append(slug)
+    return [(shape, pick, slugs) for (shape, pick), slugs in sorted(seen.items())
+            if len(slugs) > 1 and any(s not in RULE16_EXEMPT for s in slugs)]
+
+
+def load_all_boards():
+    """{meta.slug: record} for every board record in data/boards/ — the corpus rule 16's
+    uniqueness is judged across. Read raw, not validated: a record that fails its schema is
+    `load_board()`'s to refuse, and the fixture `_demo` is a draft, which is never judged."""
+    out = {}
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        b = _read_json(p)
+        if isinstance(b, dict) and "sections" in b and "meta" in b:
+            out[(b["meta"] or {}).get("slug") or p.stem] = b
+    return out
+
+
+RULE16_SHAPE_NAMES = {"hero": "hero", "stats": "counter"}
+
+
+def rule16_shares(board, boards):
+    """[(shape, pick, [other slugs])] for each hero or counter arrangement `board` shares with
+    another page. The record passed in stands in for its own file, so the gate judges the
+    record as it is being gated or approved, not the copy on disk."""
+    slug = board["meta"]["slug"]
+    corpus = dict(boards)
+    corpus[slug] = board
+    return [(shape, pick, [s for s in slugs if s != slug])
+            for shape, pick, slugs in shared_per_page_picks(corpus) if slug in slugs]
+
+
+def rule16_message(shape, pick, others):
+    return (f"{RULE16_SHAPE_NAMES.get(shape, shape)} {pick} is already worn by "
+            f"{', '.join(others)}; re-board one of them (working rule 16)")
+
+
+def rule16_findings(board, boards):
+    """Board-gate findings for working rule 16's uniqueness half: one FAIL per arrangement this
+    record shares outside the utility exemption (RULE16_EXEMPT). Kept out of gate_findings(),
+    which is pure over one record; board_gate.py adds these from `load_all_boards()`."""
+    return [{"check": "rule16-shared", "sev": "FAIL", "msg": rule16_message(shape, pick, others)}
+            for shape, pick, others in rule16_shares(board, boards)]
+
+
 GATE_STAGES = ("build", "release")
 _WHITELIST_TOKENS = [t for t in (tokens(w) for w in HEADER_WHITELIST) if t]
 _CARD_TOKENS = {tuple(t) for t in (tokens(w) for w in PUPPY_CARD_HEADINGS) if t}
@@ -1454,7 +1567,7 @@ def perf_findings(slug, stage, perf_dir=None, dist_page=None):
     if stage != "release":
         return []
     perf_dir = pathlib.Path(perf_dir) if perf_dir else PERF_DIR
-    dist_page = pathlib.Path(dist_page) if dist_page else (DIST / slug / "index.html" if slug else DIST / "index.html")
+    dist_page = pathlib.Path(dist_page) if dist_page else built_page(slug or "index")
     f = []
     add = lambda check, sev, msg: f.append({"check": check, "sev": sev, "msg": msg})
     read = lambda name: json.loads((perf_dir / f"{name}.json").read_text()) if (perf_dir / f"{name}.json").exists() else None
@@ -1730,7 +1843,7 @@ def gate_findings(board, ont, ledger, live, stage="build"):
     # the slug this repo gives "/", and a path built the ordinary way would never exist, so
     # the one page that is the site's front door would silently keep the record-tree reading
     # for ever. Same spelling as verbatim_set_check.dist_html and word_band_findings.
-    built = DIST / ("" if slug == "index" else slug) / "index.html"
+    built = built_page(slug)
     fresh = dist_page_is_fresh(built, slug=slug)
     if slug in rebuilt_slugs() and built.exists() and fresh:
         counts, source = page_h_counts(built), "built page"

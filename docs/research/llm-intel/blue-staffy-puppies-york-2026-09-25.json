@@ -1,0 +1,322 @@
+{
+ "slug": "blue-staffy-puppies-york",
+ "date": "2026-09-25",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near York, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-25"
+ },
+ "raw": "data/queries/raw/blue-staffy-puppies-york/ai_engines.response.json",
+ "answer_text": "verbatim",
+ "paid_this_run": true,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "thekennelclub.org.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "local_businesses": [
+  {
+   "domain": "trojanstaffuk.com",
+   "registry_id": "trojanstaffuk",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "domain": "earlsgravebullterriers.com",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "English Blue Staffies For Rehoming",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Puppies for Sale UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy puppies available for adoption Uk",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "First step strays",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Society UK",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffy Puppy Heaven",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "name": "Staffordshire Bull Terrier Puppy Breeder",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "citation_gap": [
+  "trojanstaffuk",
+  "ukstaffypups"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "dist",
+  "path": "dist/uk-locations/blue-staffy-puppies-york/index.html",
+  "provisional": false,
+  "note": "built, indexable page"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "l-2-hga",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "hc-hsf4",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "vet check",
+   "kind": "safety",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "the kennel club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "find a puppy",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier breed club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "english blue staffies for rehoming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "patellar testing",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "temperament",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "certificates",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "registration details",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "paperwork",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "feeding instructions",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "take the dog back",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "litters",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "visit in person",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "mating",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rare colour",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "huge head",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "resale value",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "online listings",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "local listings",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "leeds",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "york",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "ok",
+  "list": "bulleted",
+  "length": "long",
+  "words": 438,
+  "opening": "statement"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "the kennel club|kennel club;find a puppy;staffordshire bull terrier breed club|breed club;staffordshire bull terrier|staffordshire bull terriers;english blue staffies for rehoming;patellar testing|knee testing;temperament|temperamentally;socialisation;worming;deposit;certificates;registration details;paperwork;feeding instructions;take the dog back|rehome;litters;visit in person;mating;rare colour;xxl;huge head;resale value;online listings|online advert;local listings;leeds;york"
+}

@@ -1,11 +1,11 @@
 ---
 name: image-prompt-generator
-description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue/blue brindle Staffy puppies, Carlisle, Cumbria home setting). Reads content/prompts/ for existing prompt templates.
+description: Generates optimized AI image generation prompts for BSUK pages — hero images, puppy portraits, lifestyle shots, infographics. Follows BSUK visual brand (warm tones, blue, blue and white, and white Staffy puppies, Carlisle, Cumbria home setting). Writes each prompt fresh from rules/images.md; no prompt library exists in this repo yet.
 allowed-tools: [Read, Write, Bash]
 ---
 
 ## Golden Rule
-> **Image art-direction:** Read `IMAGE-DESIGNS.md` (repo root) BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here.
+> **Image art-direction:** Read `rules/images.md` BEFORE generating, editing, or placing any image — crop ratios, style wrapper, negative list, lighting, focal length, and scene-type-per-page. It is the image source of truth; it wins over any stale value here.
 > Use Claude Code and Playwright CLI to solve problems first.
 > Only call MCPs, external CLIs, or APIs if the specific task genuinely cannot be done with Claude Code alone.
 
@@ -19,8 +19,8 @@ You are the **Image Prompt Generator Skill** for BlueStaffyUK. You write optimiz
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/design-system.md` — colors, brand identity
-2. **Check** `content/prompts/` for existing prompt templates
+1. **Read** `rules/design.md` and `src/styles/tokens.css` — colours, brand identity
+2. **Check** `docs/superpowers/sessions/` for prompts an earlier session saved for this page
 3. **Ask user:** "What image do you need? Page location, section, subject, intended emotion."
 
 ---
@@ -28,7 +28,7 @@ You are the **Image Prompt Generator Skill** for BlueStaffyUK. You write optimiz
 ## BSUK Visual Brand
 
 ### Color Palette for Images
-- Cool, settled tones: blue-grey coat, silver brindle accent, brass #C9A227 accent + steel blue #1F3A52 framing
+- Cool, settled tones: blue-grey and white coats, brass #C9A227 accent + steel blue #1F3A52 framing
 - Backgrounds: white, bone #F4F1EA, warm wood, foliage (outdoor)
 - Avoid: cold blues, sterile/clinical backgrounds
 
@@ -41,7 +41,7 @@ You are the **Image Prompt Generator Skill** for BlueStaffyUK. You write optimiz
 - **Process images:** Puppy being held by Lisa Bright, whelping/living room area, enrichment toys
 
 ### BSUK Breed Standards for Image Accuracy
-- Coat: solid blue-grey (blue), blue brindle striping, or black brindle; short, smooth, glossy
+- Coat: the pup's own `colour` in `data/puppies.json` — blue, blue and white, white, and blue with a white blaze; short, smooth, glossy
 - Size: 8-week puppy approximately 3–5 kg — fits comfortably in two cupped adult hands
 - Head: broad skull, pronounced cheek muscles, short foreface, half-pricked rose ears
 - Eyes: round, dark, set to look straight ahead
@@ -65,7 +65,7 @@ Do NOT include: text, watermarks, other breeds, cold lighting, studio background
 ### Lifestyle Image
 ```
 [LIFESTYLE PROMPT TEMPLATE]
-Subject: [blue / blue brindle] Staffordshire Bull Terrier puppy with [family member type: senior woman / young couple / child age 8]
+Subject: [blue / blue and white / white] Staffordshire Bull Terrier puppy with [family member type: senior woman / young couple / child age 8]
 Setting: [cozy living room / back garden / puppy pen area] in [season], natural light
 Action: [puppy on lap / snoozing / chewing enrichment toy / sitting on cue]
 Mood: Warmth, connection, joy

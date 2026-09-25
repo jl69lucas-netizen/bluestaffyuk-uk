@@ -433,7 +433,11 @@ const stubTargets = (s: Section, styleId: string) =>
     /* The chrome shapes only: the nav on the left (where PageShell puts it) and the six
        stub targets beside it, so the dial has something to point at and the sheet's bar or
        button has a column of page to sit over. Preview chrome, not part of a style. */
-    .bp-chrome { display: grid; gap: var(--space-5); align-items: start; }
+    /* minmax(0, 1fr), not the implicit `auto` track: an auto track grows to its widest
+       item's min-content, and the STRIP specimen's min-content is its whole row of links —
+       933px at 375, which scrolled the page sideways by 606px (Known Issue 32). A zero
+       minimum lets the strip keep its own scroller instead of widening the page. */
+    .bp-chrome { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); align-items: start; }
     @media (min-width: 1024px) {
       .bp-chrome { grid-template-columns: 196px minmax(0, 1fr); }
     }

@@ -12,13 +12,13 @@ allowed-tools: [Read, Write, Bash]
 
 ## Entity-Benefit-Purpose (EBP) Framework
 
-For every entity mention on an MFS page:
-1. **Entity** — name the thing: "vet sex-checking certificate testing"
-2. **Benefit** — what it does: "screens 250+ genetic conditions before pairing"
-3. **Purpose** — why it matters to buyer: "so you know your Blue Staffy won't develop a preventable inherited condition"
+For every entity mention on a BSUK page:
+1. **Entity** — name the thing: "a full veterinary health check"
+2. **Benefit** — what it does: "every puppy is examined by a vet, given its first vaccination, microchipped, wormed and treated for fleas before it goes home" (`data/faq.json` `health-vaccinations`)
+3. **Purpose** — why it matters to buyer: "so your own vet starts from a vet-signed health card, not a promise"
 
-**Without EBP (weak):** "We use vet sex-checking."
-**With EBP (strong):** "vet sex-checking determines the puppy's biological sex with 100% accuracy — so you know what you're getting and can plan breeding responsibly if desired."
+**Without EBP (weak):** "We do health checks."
+**With EBP (strong):** "Every puppy has a full veterinary health check before it goes home, and it all goes on a vet-signed health card that travels with the puppy — so your own vet starts from a written record."
 
 ---
 
@@ -30,7 +30,7 @@ For every entity mention on an MFS page:
 |---------------|-----------|-------------|
 | Blue Staffy puppy | Blue Staffy, puppy, home-bred | H1, H2, opening paragraphs, CTAs |
 | Blue Staffy | Blue, BSUK | Variant sections, H2, breed guide |
-| Blue-Brindle Staffy | Blue-Brindle | Variant sections, H2, breed guide |
+| Coat colour | blue, blue and white, white, blue with white blaze — each pup's `colour` in `data/puppies.json` (none is brindle) | Puppy cards, puppy pages, alt text |
 | Canis lupus familiaris | Scientific name, canine nomenclature | Breed guide, scientific sections |
 | Home-bred | Domestically bred | Trust bar, credentials |
 | Home-raised | Home-reared, socialized, behavioral training | Care sections, about page |
@@ -40,7 +40,8 @@ For every entity mention on an MFS page:
 
 | Primary Entity | Variations | Where to Use |
 |---------------|-----------|-------------|
-| vet sex-checking | vet sex-checking test, canine genetic testing | Health sections, credentials, FAQ |
+| Veterinary health check | full vet health check, vet-signed health card, first vaccinations, microchip, worming and flea treatment (`data/faq.json` `puppy-package`) | Health sections, credentials, FAQ |
+| L-2-HGA and HC-HSF4 DNA tests | the parents' DNA tests (results `NOT FETCHED` — `data/quality/evidence-ledger.json` `parents-dna-clear`) | Health sections, FAQ |
 | Canine vet health certificate | Canine veterinarian certification, health exam | Health sections, trust bar |
 | LICENCE_CLAIM_PLACEHOLDER license | LICENCE_CLAIM_PLACEHOLDER-licensed breeder, LICENCE_CLAIM_PLACEHOLDER inspection | Trust bar, about page |
 | LICENCE_CLAIM_PLACEHOLDER documentation | LICENCE_CLAIM_PLACEHOLDER permit, home-bred certificate | Credentials, legal compliance |
@@ -56,16 +57,16 @@ For every entity mention on an MFS page:
 | [BREEDER_LOCATION] | [LOCATION], [REGION] | About, location, schema |
 | BlueStaffyUK | BSUK, BSUK breeder, breeding program | Brand mentions, footer, schema |
 | [BREEDER_NAME] | Breeder, owner, founder | About, testimonials, Person schema |
-| delivery by DEFRA-approved transport | DEFRA-approved transport certified handler, air transport | Location pages, hero |
-| Nationwide delivery | Continental US delivery, interstate transport | Hero, location hub |
+| delivery by DEFRA-approved transport | DEFRA-approved transport, road delivery priced by distance (£200–£350) | Location pages, hero |
+| Nationwide delivery | UK home delivery to the 28 cities in `data/locations.json`, collection from Carlisle | Hero, location hub |
 
 ### Category 4 — Pricing Entities
 
 | Primary Entity | Variations | Where to Use |
 |---------------|-----------|-------------|
 | Blue Staffy puppy price | Blue Staffy puppy cost, Blue Staffy price range | Price page, FAQ |
-| £1,500–£1,700 | fifteen hundred to thirty-five hundred | Price sections, Blue variant |
-| £1,500–£1,700 | twelve hundred to twenty-five hundred | Price sections, Blue-Brindle variant |
+| £1,500 | a male puppy (Roman, Byrd, Ince) — `data/price-matrix.json` `male_gbp` | Price sections, puppy cards |
+| £1,700 | a female puppy (Vennie, Christa, Cheryl) — `data/price-matrix.json` `female_gbp` | Price sections, puppy cards |
 | Transparent pricing | no hidden fees, all-inclusive cost | Trust, FAQ |
 
 ### Category 5 — Buyer/Family Entities
@@ -124,7 +125,7 @@ print(json.dumps(schema, indent=2))
 
 ```bash
 # Check entity presence on any page
-for entity in "Blue Staffy puppy" "Blue Staffy" "Blue-Brindle Staffy" "vet sex-checking" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
+for entity in "Blue Staffy puppy" "Blue Staffy" "Staffordshire Bull Terrier" "health check" "canine vet" "LICENCE_CLAIM_PLACEHOLDER" "lifetime support" "home-bred"; do
   count=$(grep -oi "$entity" dist/[slug]/index.html | wc -l)
   echo "$count × $entity"
 done
@@ -134,11 +135,11 @@ done
 
 | Page Type | Must-Have Entities | Target Mentions Each |
 |-----------|-------------------|---------------------|
-| Homepage | Blue Staffy puppy, DNA, guarantee, Carlisle | 5–8 |
-| Location page | Blue Staffy puppy, [city], delivery driver, guarantee | 3–5 |
-| Variant guide | Blue Staffy, Blue-Brindle Staffy, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
+| Homepage | Blue Staffy puppy, DNA, vet health check, Carlisle | 5–8 |
+| Location page | Blue Staffy puppy, [city], DEFRA-approved transport, vet health check | 3–5 |
+| Breed guide | Blue Staffy, Staffordshire Bull Terrier, DNA, LICENCE_CLAIM_PLACEHOLDER, canine vet | 6–10 |
 | Comparison page | Both breed entities + 3–5 differentiators | 4–6 |
-| Price page | Price entities, guarantee, DNA, all-inclusive | 5–8 |
+| Price page | Price entities, vet health check, DNA, all-inclusive | 5–8 |
 
 ---
 
@@ -148,6 +149,6 @@ done
 2. **Native schema management** — use grep/python approach directly (handles multiple schema blocks correctly)
 3. **Extract FAQ schema from `<details>/<summary>`** — not raw page HTML
 4. **Density cap** — no single entity above 2% of total word count
-5. **Location entities on all location pages** — state name, city names, airport codes always present
-6. **Credential entities in first 300 words** — vet sex-checking, canine vet, LICENCE_CLAIM_PLACEHOLDER appear early
+5. **Location entities on all location pages** — the city, its region and its nearby cities from `data/locations.json` always present; never a mileage or a drive time
+6. **Credential entities in first 300 words** — veterinary health check, the parents' L-2-HGA and HC-HSF4 DNA tests, LICENCE_CLAIM_PLACEHOLDER appear early
 7. **Cross-reference price-matrix.json** — all pricing entities match the data file

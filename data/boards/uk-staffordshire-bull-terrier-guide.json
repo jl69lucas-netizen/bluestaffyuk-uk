@@ -66,7 +66,8 @@
         "path": "https://www.lordsandlabradors.co.uk/blogs/journal/staffordshire-bull-terrier-guide",
         "fetched": "2026-09-20 — ~3,002 words; 14 H2s, nine of them product sections (beds, toys, chews, walking accessories, food); 6 FAQ rows; schema Article/DogBreed, no FAQPage; states no weight range and no lifespan, and carries no legal content, no breed comparison and no facts table — a retailer's guide with the buying advice pointed at its own shop."
       }
-    ]
+    ],
+    "preview": true
   },
   "meta_set": {
     "titles": [
@@ -196,7 +197,7 @@
       ],
       "refresh": {
         "axis": "layout",
-        "note": "a magazine hero with the image above the copy, where the health page splits its hero in two"
+        "note": "Leads with a text panel and a narrow photograph, where the health guide splits its copy from a photograph on the right with the key facts under the copy and the buying guide stacks its photograph above the copy in a card"
       },
       "hero": {
         "chips": [
@@ -260,7 +261,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "H-GD3",
-        "note": "H-GD3, the interior-guide family's text-led PANEL: the photograph in a narrow column on the left, the copy beside it and the record's own `hero.aside` — the contents list the arrangement is named for — in a box of its own. Not one aside item states a figure, so under spec §9 amendment 10.6 each is a plain string and none carries a source. The page's one embed is NOT in this band: it has its own section, `video-breed-guide`, directly below this one and where the migrated body had it, and facts_preserved_check.py gates the id g9iV9RVr_Sk there. Corrected at the Task 12 build review: this note described the shape-wide S2/S3 hero trio, which is not the menu a rule-16 record's hero is picked from, and put the embed in the hero."
+        "note": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD3 is pre-selected (recommended); the three guides must end on three different heroes."
       },
       "verbatim_heading": true,
       "verbatim_opening": "Bold. Loving. Loyal. The Staffordshire Bull Terrier is more than just a dog—it’s a devoted companion and a beloved member of many UK households. Known affectionately as “Staffies,” these remarkable dogs possess a unique blend of strength, courage, and unparalleled affection. If you’re considering welcoming a Staffordshire Bull Terrier into your life, our comprehensive Staffordshire Bull Terrier guide UK is your essential resource."
@@ -317,8 +318,8 @@
       "options": {
         "candidates": [],
         "excluded": [],
-        "pick": "S2",
-        "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button."
+        "pick": "S3",
+        "note": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button. RE-ASKED 2026-09-24 (Known Issue 38, user ruling R8): S2 loaded the player with the page and cost Lighthouse Best Practices 4 points; S3 is pre-selected."
       }
     },
     {
@@ -1986,6 +1987,123 @@
     ]
   },
   "approval": {
+    "approved_at": "2026-09-24T22:10:04.398Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "breed-facts": "A `table` section: three chrome arrangements from src/lib/boardStyles.ts (S1 ruled rows under a brand header band, S2 zebra rows in a card, S3 borderless with brass column rules), all three stacking into labelled rows below 640px (working rule 13). `tuple.table` records the pick at P4.",
+      "bully-comparison": "",
+      "choosing-breeder": "",
+      "daily-care": "",
+      "health": "",
+      "history": "",
+      "legal-status": "",
+      "navigation": "",
+      "owner-review": "S2, the review grid on a steel band, is the pick, and `mode: 'grid'` is read off the StyleDef rather than hard-coded (the correction 645a988 made). WHICH review is this record's own sentence: data/reviews.json entry 1, The Victoria Family of Manchester, the only one of the three that speaks to temperament and early socialisation, which is what the sections above claim. One review is passed, so the grid renders one and no unfilled slot is opened — nothing here counts a REVIEW_PLACEHOLDER. Corrected at the Task 12 build review: this note read 'MODE: single — pick S1' under an approval of S2, which is the same defect the health board's `paperwork-review` note carried; the pick stands and the note now says what it says.",
+      "puppies": "All six rows of data/puppies.json are status Available today; the grid filters on status rather than hard-coding a count.",
+      "questions": "Query augmentation for 'uk staffordshire bull terrier guide', ten questions, each mapped to a section or a row: q1 -> temperament and the guide-first-time-owners row; q2 -> daily-care and the guide-exercise row; q3 -> legal-status and the guide-banned-breed row; q4 -> temperament and the guide-flat-living row; q5 and q6 -> breed-facts; q7 -> temperament; q8 -> bully-comparison; q9 -> legal-status; q10 -> health. No row is added for a question this page's body does not answer.",
+      "stats": "",
+      "takeaways": "Four cards, so S2's three-up grid wraps to 3+1 and S3's rail shows four; S1 stacks them.",
+      "talk-to-us": "",
+      "temperament": "",
+      "top": "Re-boarded for Known Issues 30 and 35 (user ruling R13, 2026-09-24): all three guides had picked H-GD3, so two shared a hero (working rule 16). Measured at 1280 with the self-hosted faces: H-GD1 fits the health guide only, H-GD2 fits the breed guide and the buying guide, H-GD3 fits all three. H-GD3 is pre-selected (recommended); the three guides must end on three different heroes.",
+      "video-breed-guide": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button. RE-ASKED 2026-09-24 (Known Issue 38, user ruling R8): S2 loaded the player with the page and cost Lighthouse Best Practices 4 points; S3 is pre-selected."
+    },
+    "picks": {
+      "breed-facts": "S2",
+      "owner-review": "S2",
+      "puppies": "S1",
+      "questions": "S3",
+      "stats": "C-GD3",
+      "takeaways": "S1",
+      "top": "H-GD3",
+      "video-breed-guide": "S3"
+    },
+    "record_hash": "beac922a33d190f98ed97649128525bef71957a6d47e0d0f06ea79a24c13b2be",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s1"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Breed Note:"
+      ]
+    }
+  },
+  "verbatim": {
+    "changed": [
+      {
+        "kind": "heading",
+        "old": "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
+        "new": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
+        "reason": "'The #1 UK Staffordshire Bull Terrier Guide' is a ranking claim against every other breed guide in the country and nothing on disk measures it. dropped.text strikes the superlative by name under the titles rule in spec section 5, and it is the same '#1 AFFECTION' counter the migrated page ran across the top of the page. The glyph comes out and every other word of the heading is carried."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide",
+        "new": "",
+        "reason": "carried by NO page. The claim in it — a twelve-week-old litter — has no file behind it: data/puppies.json holds no age for any of the six dogs and no scarcity, so /blue-staffy-pup-sale-uk/ drops the heading in its own `verbatim.changed` for the same reason and carries only the paragraph's opening sentence. Corrected at the Task 12 build review, which found this reason claiming that record 'already carries it'; it does not. A breed guide is in any case not where a buyer is sold a puppy, and the `puppies` grid renders the live litter from data/puppies.json."
+      },
+      {
+        "kind": "opening",
+        "old": "Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.",
+        "new": "",
+        "reason": "its heading goes to /blue-staffy-pup-sale-uk/ and an opening paragraph has no page without the heading it opens. Both of its facts are struck in their own right: the 12-week age by dropped.text and the '£850–£1,200 Price Range' by dropped.prices, which is below the locked £1,500 and £1,700 of data/price-matrix.json (Known Issue 11)."
+      },
+      {
+        "kind": "heading",
+        "old": "Initial Costs (Estimated at £850 – £2,500+ in the UK)",
+        "new": "Initial Costs",
+        "reason": "'(Estimated at £850 – £2,500+ in the UK)' is a market estimate nobody on disk made, and dropped.prices strikes it by name: data/price-matrix.json holds £1,500 and £1,700 and those are the only purchase figures this site may print (Known Issue 11, working rule 9). The two words that name what the block is are carried and the parenthesis goes."
+      },
+      {
+        "kind": "opening",
+        "old": "Purchase Price: From an ethical Staffy breeder , a KC-registered Staffordshire puppy can range from £850 to £2,500+, depending on lineage, health testing, and breeder reputation. Initial Vet Visit: Post-adoption check-up, possibly second vaccinations if not already completed by the breeder. Essential Supplies: Collar, lead, harness, ID tag, bed, food and water bowls, initial high-quality puppy food, chew toys, training treats. Crate: A safe space for house training and comfort. Microchipping: Legally required in the UK (often done by the breeder). Puppy Classes: Group training sessions can cost £60-£150.",
+        "new": "",
+        "reason": "the whole paragraph is figures nobody on disk made: the £850–£2,500+ purchase band and £60-£150 puppy classes, both struck by name in dropped.prices, plus a post-adoption vet visit, a supplies list and a crate that are a shopping list rather than anything this business holds. The heading above it is carried and the section states the two locked prices, the £500 refundable deposit and the delivery band instead."
+      },
+      {
+        "kind": "heading-dropped",
+        "old": "🐾 Reserve Your Blue Staffy Puppy",
+        "new": "",
+        "reason": "a form widget's label on a page that plans no form. The migrated site printed '🐾 Reserve Your Blue Staffy Puppy' unchanged on five pages, so it identifies no page; the rebuilt homepage changed it to the name of the section its own form sits in. This outline carries no form — /uk-blue-staffy-breeders-contact/ owns the enquiry and `talk-to-us` links it — so there is nothing here for the label to head. It is also an emoji heading."
+      },
+      {
+        "kind": "opening",
+        "old": "Fill in your details below and we'll be in touch within 24 hours",
+        "new": "",
+        "reason": "its heading is dropped with the form, and an opening paragraph has no page without the heading it opens. The sentence also promises a reply 'within 24 hours', which contradicts the 24-48 business hours data/faq.json's enquiry rows and every rebuilt page state."
+      },
+      {
+        "kind": "faq",
+        "old": "What is the most common cause of death in Staffordshire Bull Terriers?",
+        "new": "",
+        "reason": "dropped.text strikes the question and its answer by name: 'cancer, old age-related issues, and heart problems' is a mortality claim about a breed with no source on disk and none this business could give. `health` names the conditions the breed is actually screened for and stops there, and `breed-facts` gives the 12-14 year figure with the club it comes from."
+      },
+      {
+        "kind": "alt",
+        "old": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states:",
+        "new": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
+        "src": "/images/sbt-uk-legal-status-public-perception.webp",
+        "reason": "the migrated alt is not a sentence: it ends on 'a professional sign or infographic that clearly states:' and then stops, so a screen reader is read a colon where the sign's words should be. An alt is page copy and there is no wording here to carry word for word — the half that matters was never written. Task 17 finished the clause with what the sign in the photograph actually says, which is the legal position `legal-status` states in prose; nothing else about the alt changed."
+      }
+    ]
+  },
+  "approval_previous": {
     "approved_at": "2026-09-20T22:16:23.219Z",
     "canvas_version": null,
     "h1": 0,
@@ -2019,8 +2137,7 @@
       "questions": "S3",
       "stats": "C-GD3",
       "takeaways": "S1",
-      "top": "H-GD3",
-      "video-breed-guide": "S2"
+      "top": "H-GD3"
     },
     "record_hash": "c0e5af51bcfc82e1555904d874506d3e1e33df9bba8fa406530767bd26a422a4",
     "tuple_before": {
@@ -2092,65 +2209,24 @@
           "/sections/1/video/title"
         ]
       }
-    ]
-  },
-  "verbatim": {
-    "changed": [
-      {
-        "kind": "heading",
-        "old": "Staffordshire Bull Terrier: The #1 UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
-        "new": "Staffordshire Bull Terrier: The UK Staffordshire Bull Terrier Guide for UK Dog Lovers",
-        "reason": "'The #1 UK Staffordshire Bull Terrier Guide' is a ranking claim against every other breed guide in the country and nothing on disk measures it. dropped.text strikes the superlative by name under the titles rule in spec section 5, and it is the same '#1 AFFECTION' counter the migrated page ran across the top of the page. The glyph comes out and every other word of the heading is carried."
-      },
-      {
-        "kind": "heading-dropped",
-        "old": "Current Litter: 12-Week-Old Blue Staffy Puppies for Sale UK-Wide",
-        "new": "",
-        "reason": "carried by NO page. The claim in it — a twelve-week-old litter — has no file behind it: data/puppies.json holds no age for any of the six dogs and no scarcity, so /blue-staffy-pup-sale-uk/ drops the heading in its own `verbatim.changed` for the same reason and carries only the paragraph's opening sentence. Corrected at the Task 12 build review, which found this reason claiming that record 'already carries it'; it does not. A breed guide is in any case not where a buyer is sold a puppy, and the `puppies` grid renders the live litter from data/puppies.json."
-      },
-      {
-        "kind": "opening",
-        "old": "Looking to purchase Staffordshire Bull Terriers in the UK? Our 12-week-old blue Staffy puppies are healthy, vaccinated, and ready to join your home. £850–£1,200 Price Range.",
-        "new": "",
-        "reason": "its heading goes to /blue-staffy-pup-sale-uk/ and an opening paragraph has no page without the heading it opens. Both of its facts are struck in their own right: the 12-week age by dropped.text and the '£850–£1,200 Price Range' by dropped.prices, which is below the locked £1,500 and £1,700 of data/price-matrix.json (Known Issue 11)."
-      },
-      {
-        "kind": "heading",
-        "old": "Initial Costs (Estimated at £850 – £2,500+ in the UK)",
-        "new": "Initial Costs",
-        "reason": "'(Estimated at £850 – £2,500+ in the UK)' is a market estimate nobody on disk made, and dropped.prices strikes it by name: data/price-matrix.json holds £1,500 and £1,700 and those are the only purchase figures this site may print (Known Issue 11, working rule 9). The two words that name what the block is are carried and the parenthesis goes."
-      },
-      {
-        "kind": "opening",
-        "old": "Purchase Price: From an ethical Staffy breeder , a KC-registered Staffordshire puppy can range from £850 to £2,500+, depending on lineage, health testing, and breeder reputation. Initial Vet Visit: Post-adoption check-up, possibly second vaccinations if not already completed by the breeder. Essential Supplies: Collar, lead, harness, ID tag, bed, food and water bowls, initial high-quality puppy food, chew toys, training treats. Crate: A safe space for house training and comfort. Microchipping: Legally required in the UK (often done by the breeder). Puppy Classes: Group training sessions can cost £60-£150.",
-        "new": "",
-        "reason": "the whole paragraph is figures nobody on disk made: the £850–£2,500+ purchase band and £60-£150 puppy classes, both struck by name in dropped.prices, plus a post-adoption vet visit, a supplies list and a crate that are a shopping list rather than anything this business holds. The heading above it is carried and the section states the two locked prices, the £500 refundable deposit and the delivery band instead."
-      },
-      {
-        "kind": "heading-dropped",
-        "old": "🐾 Reserve Your Blue Staffy Puppy",
-        "new": "",
-        "reason": "a form widget's label on a page that plans no form. The migrated site printed '🐾 Reserve Your Blue Staffy Puppy' unchanged on five pages, so it identifies no page; the rebuilt homepage changed it to the name of the section its own form sits in. This outline carries no form — /uk-blue-staffy-breeders-contact/ owns the enquiry and `talk-to-us` links it — so there is nothing here for the label to head. It is also an emoji heading."
-      },
-      {
-        "kind": "opening",
-        "old": "Fill in your details below and we'll be in touch within 24 hours",
-        "new": "",
-        "reason": "its heading is dropped with the form, and an opening paragraph has no page without the heading it opens. The sentence also promises a reply 'within 24 hours', which contradicts the 24-48 business hours data/faq.json's enquiry rows and every rebuilt page state."
-      },
-      {
-        "kind": "faq",
-        "old": "What is the most common cause of death in Staffordshire Bull Terriers?",
-        "new": "",
-        "reason": "dropped.text strikes the question and its answer by name: 'cancer, old age-related issues, and heart problems' is a mortality claim about a breed with no source on disk and none this business could give. `health` names the conditions the breed is actually screened for and stops there, and `breed-facts` gives the 12-14 year figure with the club it comes from."
-      },
-      {
-        "kind": "alt",
-        "old": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states:",
-        "new": "A friendly, smiling brindle Staffordshire Bull Terrier wearing a simple collar and lead, sitting calmly next to a professional sign or infographic that clearly states: \"Staffordshire Bull Terriers are NOT a banned breed under the Dangerous Dogs Act 1991.\"",
-        "src": "/images/sbt-uk-legal-status-public-perception.webp",
-        "reason": "the migrated alt is not a sentence: it ends on 'a professional sign or infographic that clearly states:' and then stops, so a screen reader is read a colon where the sign's words should be. An alt is page copy and there is no wording here to carry word for word — the half that matters was never written. Task 17 finished the clause with what the sign in the photograph actually says, which is the legal position `legal-status` states in prose; nothing else about the alt changed."
-      }
-    ]
+    ],
+    "section_hashes": {
+      "top": "11f4091a3d9f9ab9e70521a7fee697f338e6e932e4c969af7179d729f5999367",
+      "video-breed-guide": "bdf2df2b022cc76c2d1a5b853675cd19434aa1d20d5dcc35d2574532c205d111",
+      "takeaways": "cb69277edf98548dabca38d798a496238e3e7c1cce4a552c06f8dcbbfaf233df",
+      "stats": "36194cdd1af70dc2f84988a46938be47568e98a1400d33862a4b13bb05a4403e",
+      "breed-facts": "21d58cf651ae2b25fb0fc17354864c9887ec2a1096f5a18ab49d8d701fa54f59",
+      "history": "5151925ec22ed5d5c828fdb3959508afa26fe7ae4dcd26e0928b5387f2f849de",
+      "temperament": "0faefe583ae30b7e4127d400b0ad42c8fcb2d79eb345b60014fe4729d5b4a3af",
+      "daily-care": "e45d3d041a8b27900762703bc4ab2fdec5cc8096b278633e4152cf4f96987313",
+      "health": "eb8103f911c595135beca3e4615ae82a82c8e223718c9fd657e27122cf6e05e8",
+      "legal-status": "959d6b7eb85b4ef7c074726917c72060cfe2d539f4887e4fb9bbe258d6ab389e",
+      "bully-comparison": "9b12cffbde9dacfcfdbdc0ec945e3cd045aa9ad96cdaa04516ad2fcbf342ff47",
+      "choosing-breeder": "849659ba4eff37229cb50c671a14def7383591fb21038e4874d5da114fb8c759",
+      "owner-review": "9a07e0bb6513ba730d6f556635eb011bc97f17cfe210f672dbe52005cd237e05",
+      "puppies": "42a5f718a35d9590dbff90a37c4e681215d56acc99dd6c8fe6fe584b684d03f6",
+      "questions": "3e0096df1cdcd9372aeee604073da72fc0afb2c3dc1600a382a15ad1a956d929",
+      "talk-to-us": "68b11eb5c41c12c9e5b8f06ceb68439bc387f7b48890c4c68b22812d496ae57d"
+    }
   }
 }

@@ -25,10 +25,11 @@ PATTERNS = {
     "phone": re.compile(r"(?<![\w+./-])(?:(?:\+|00)44[\s-]?(?:\(0\)[\s-]?)?|\(?0)[1-9]"
                         r"(?:[\s()-]{0,2}\d){8,9}(?![\w/-]|\.\d)"
                         r"|(?<=phone=)(?:\+|00)?44[1-9]\d{8,9}(?!\d)"),
-    # An image name like logo@2x.png is not an address: the last label may not be an image type.
+    # An image name like logo@2x.png (or logo@2x.PNG) is not an address: the last label may not
+    # be an image type, in any case.
     "email": re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"
-                        r"(?![A-Za-z])(?<!\.png)(?<!\.jpg)(?<!\.jpeg)(?<!\.gif)(?<!\.webp)"
-                        r"(?<!\.svg)(?<!\.avif)"),
+                        r"(?![A-Za-z])(?<!\.(?i:png))(?<!\.(?i:jpg))(?<!\.(?i:jpeg))(?<!\.(?i:gif))"
+                        r"(?<!\.(?i:webp))(?<!\.(?i:svg))(?<!\.(?i:avif))"),
     "whatsapp": re.compile(r"wa\.me/\+?\d+|wa\.link/\w+"
                            r"|whatsapp(?:\.com/send/?|://send)\?phone=\+?\d+"),
     # Upper case strictly; lower case too, but only with its space (a slug like k3x9qz is
@@ -112,6 +113,17 @@ def test_the_detector_finds_each_kind(text, kind):
 ])
 def test_the_detector_ignores_ordinary_data(text):
     assert find_contacts(text) == []
+
+
+@pytest.mark.parametrize("text", ["x@y.PNG", "logo@2x.PNG", "hero@3x.Webp", "banner@2x.JPG", "photo@1x.JPEG",
+                                  "icon@2x.SVG", "pic@2x.GIF", "img@2x.AVIF"])
+def test_an_image_name_is_not_an_email_in_any_case(text):
+    # Known Issue 51: raw HTML carries srcset names like logo@2x.PNG; upper case read as an address
+    assert find_contacts(text) == []
+
+
+def test_an_address_whose_domain_merely_starts_with_an_image_type_is_still_an_email():
+    assert [k for _, k, _ in find_contacts("write to sales@pngs.co.uk")] == ["email"]
 
 
 def main(argv=None):

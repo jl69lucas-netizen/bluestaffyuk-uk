@@ -32,6 +32,15 @@ SCRIPT_SUFFIXES = (".py", ".sh", ".mjs")
 # inside the generator, so it lives next to the lists it sits beside and a new gate is one
 # edit rather than two. Every left-hand path is checked against disk on every run.
 GATES = [
+    ("scripts/migration_parity.py", "words, headings, images and embeds of a migrated page against the extractor"),
+    ("scripts/facts_preserved_check.py", "a rebuilt page keeps every fact its migrated body carried"),
+    ("scripts/link_parity_check.py", "a rebuilt page links where its board record says, and nowhere else"),
+    ("scripts/verbatim_set_check.py", "a rebuilt page carries its migrated page's verbatim set (working rule 15)"),
+    ("scripts/outline_provenance_check.py", "a new location, comparison or blog page is built from its approved outline and shares no heading or passage with a sibling (working rule 17)"),
+    ("scripts/query_coverage_check.py", "a built page with a query pool carries its FAQ blocks and questions"),
+    ("scripts/competitor_registry_check.py", "`data/competitors.json` is well formed; no unlinkable competitor is linked"),
+    ("scripts/gap_matrix.py", "the newest gap matrix matches the intel reports (`--check`)"),
+    ("scripts/workflow_ref_check.py", "WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist"),
     ("scripts/marker_check.py", "no source-repo marker survives anywhere in the scanned roots"),
     ("scripts/placeholder_check.py", "counts launch placeholders; fails only under `BSUK_RELEASE=1`"),
     ("scripts/final_page_audit.py", "headings, six levels, the H5/H6 minimums"),
@@ -68,9 +77,12 @@ def render(root=ROOT):
         by_tier.setdefault(agents[name]["tier"], []).append(name)
 
     skills = sorted(p.parent.name for p in (root / ".claude/skills").glob("*/SKILL.md"))
+    commands = sorted(p.relative_to(root).as_posix()
+                      for p in (root / ".claude/commands").rglob("*.md"))
     scripts = sorted(p.name for p in (root / "scripts").glob("*")
                      if p.is_file() and p.suffix in SCRIPT_SUFFIXES)
     data = sorted((root / "data").glob("*"))
+    schemas = sorted(p.name for p in (root / "schemas").glob("*.json"))
 
     L = []
     L.append("## Agents — %d" % len(agents))
@@ -99,6 +111,14 @@ def render(root=ROOT):
     L += ["- `.claude/skills/%s/SKILL.md`" % s for s in skills]
     L.append("")
 
+    L.append("## Commands — %d" % len(commands))
+    L.append("")
+    L.append("Every `.md` under `.claude/commands/`, each a slash command. The `opsx/` set is")
+    L.append("vendored from upstream OpenSpec, like the four `openspec-*` skills.")
+    L.append("")
+    L += ["- `%s`" % c for c in commands]
+    L.append("")
+
     L.append("## Scripts — %d" % len(scripts))
     L.append("")
     L.append("Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this")
@@ -110,6 +130,13 @@ def render(root=ROOT):
     L.append("## Data files — %d" % len(data))
     L.append("")
     L += ["- `data/%s%s`" % (p.name, "/" if p.is_dir() else "") for p in data]
+    L.append("")
+
+    L.append("## Schemas — %d" % len(schemas))
+    L.append("")
+    L.append("Every JSON Schema in `schemas/` — the contract a data file or report is validated against.")
+    L.append("")
+    L += ["- `schemas/%s`" % s for s in schemas]
     L.append("")
 
     L.append("## Gates")
@@ -168,16 +195,46 @@ GUARDS = (
      "docs/reference) with `marker_check.scan_roots()`",
      "inherited — anything the marker gate judges is scanned automatically",
      "`tests/py/test_placeholder_check.py`"),
-    ("fact lint",
-     "`.claude/agents` and `.claude/skills`: locked £ amounts, banned tokens, DEFRA only "
-     "beside transport, no stand-in inside a heading or path segment, lifespan 12–14",
-     "drop a file into either tree",
-     "`tests/py/test_agent_facts.py`"),
-    ("path guard + stale-marker",
-     "every repo path cited in a `docs/reference` doc, and every `(arrives in Task N)` "
-     "marker whose path now exists",
-     "cite a path in a reference doc",
-     "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`"),
+    ("fact lint + residue lint + guarantee gate",
+     "`.claude/agents`, `.claude/skills` and `docs/reference`: locked £ amounts, banned "
+     "tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, "
+     "lifespan 12–14; skills and `.claude/commands` also against the source-repo residue "
+     "list (`RESIDUE`, among others: US sources, regulators and geography, air transport, "
+     "the other brand and animals, the source repo's rule and component names, its Latin "
+     "variant naming and bird-health words, permit paperwork, deploy pushes, fixed section "
+     "counts, spelled-out prices, and brindle, licence, placement-count, years-in-business, "
+     "weaning-age and reply-time claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee "
+     "names `guarantee_days`), which also runs over every agent; every agent against its "
+     "own residue list (the other brand and its animals, US residue, the former city, known facts left as "
+     "placeholders, faq.json health wording without the evidence ledger, and known paperwork "
+     "— \"paperwork (LICENCE_CLAIM_PLACEHOLDER)\" included — written as a licence "
+     "placeholder, a guard that reads every skill and command too)",
+     "drop a file into any of those trees",
+     "`tests/py/test_agent_facts.py`, `tests/py/test_agent_residue.py`"),
+    ("path guard + dead-root + dead-file + stale-marker",
+     "every repo path cited in CLAUDE.md, a `rules/` pack, a `docs/reference` doc, an agent or a "
+     "non-vendored skill (the `openspec-*` skills are vendored); in non-vendored skills and "
+     "every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, "
+     "`site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: "
+     "the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, "
+     "the structure manifest); in every agent, every one of those roots (`AGENT_ROOTS`), plus "
+     "any file, agent, skill, npm script, `data/locations.json` field or route an agent names, "
+     "and no file this repo replaced; every arrives-in-Task-N or not-ported marker whose "
+     "paths now all exist",
+     "cite a path in a pack, a reference doc, an agent or a skill; add a skill, a command or "
+     "an agent",
+     "`tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`, `tests/py/test_agent_references.py`"),
+    ("builder-skill contracts + route guard",
+     "the location, comparison and blog builders, the SEO checklist, grill-me's board gate "
+     "and the audit commands in manual-auditor-check and sitemap-agent against the code "
+     "they describe (Known Issue 40); the route guard (`route_offenders()`): every "
+     "site-root route a skill, a command or an agent names is built, in `data/page-map.json`, "
+     "redirected, a `public/` folder or a stated non-page (seo-rules.md Rule 62; skipped "
+     "without `dist/`); "
+     "in an agent, a competitor's own URL (its domain and the path after it) and a `/tmp/` path are not routes",
+     "add a test beside the claim a builder makes; a new skill, command or agent is "
+     "route-checked automatically",
+     "`tests/py/test_builder_skills.py`"),
     ("table lint + frontmatter",
      "every skill's frontmatter and every markdown table in the skill tree",
      "add a skill directory under `.claude/skills`",
@@ -196,8 +253,20 @@ GUARDS = (
     ("agent + system registries",
      "`.claude/agents` frontmatter against `data/agent-registry.json`; this document "
      "against the repo",
-     "add an agent, a skill, a script or a `data/` file",
+     "add an agent, a skill, a command, a script or a `data/` file",
      "`npm run agents`, `npm run registry` (both `--check`)"),
+    ("workflow references",
+     "`docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent "
+     "or skill name, `scripts/...` path and `npm run` name, unless the line carries the "
+     "parenthesised not-ported marker",
+     "name it in either doc — coverage is the whole of both files",
+     "`tests/py/test_workflow_ref_check.py`, `npm run check:workflow`"),
+    ("page-map provenance",
+     "CLAUDE.md, README.md, `docs/reference`, `rules/`, every agent, skill and command: no "
+     "line ties `data/page-map.json` to the board builder as its maker — the map is the "
+     "WordPress extractor's record of the old site, and a new page's record is its board",
+     "add a file to any of those trees",
+     "`tests/py/test_page_map_claims.py`"),
     ("render baseline",
      "the generated table in `docs/reports/render-baseline-project2.md` against the "
      "scorecards",

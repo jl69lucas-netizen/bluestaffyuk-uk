@@ -1,0 +1,310 @@
+{
+ "slug": "blue-staffy-puppies-bristol-uk",
+ "date": "2026-09-25",
+ "engine": "chatgpt",
+ "endpoint": "ai_optimization_chat_gpt_scraper",
+ "location": "United Kingdom",
+ "query": "Where can I buy a blue Staffy puppy near Bristol, and what should I ask the breeder?",
+ "query_source": {
+  "from": "city",
+  "gap_matrix": null,
+  "gap_topics": []
+ },
+ "stale": [],
+ "fetched": {
+  "status": "ok",
+  "fetched_on": "2026-09-25"
+ },
+ "raw": "data/queries/raw/blue-staffy-puppies-bristol-uk/ai_engines.response.json",
+ "answer_text": "verbatim",
+ "paid_this_run": true,
+ "bsuk_cited": false,
+ "citations": [
+  {
+   "domain": "rspca.org.uk",
+   "registry_id": "rspca",
+   "tier": 3,
+   "platform": false
+  },
+  {
+   "domain": "thekennelclub.org.uk",
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  },
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  }
+ ],
+ "local_businesses": [
+  {
+   "domain": "ukstaffypups.uk",
+   "registry_id": "ukstaffypups",
+   "tier": 1,
+   "platform": false
+  },
+  {
+   "name": "IronPaw Staffies",
+   "domain": null,
+   "registry_id": null,
+   "tier": null,
+   "platform": false
+  }
+ ],
+ "citation_gap": [
+  "rspca",
+  "ukstaffypups"
+ ],
+ "risks": [],
+ "page_source": {
+  "kind": "page-map",
+  "path": "data/page-map.json",
+  "provisional": true,
+  "note": "dist/uk-locations/blue-staffy-puppies-bristol-uk/index.html is a noindex stub; no question file; checked against the page map's title, H1 and headings"
+ },
+ "entities": [
+  {
+   "entity": "health tests",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "l-2-hga",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "hc-hsf4",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "meet the mother",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "microchip",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "vaccinations",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "kc registration",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "contract",
+   "kind": "safety",
+   "on_page": false,
+   "band": "high"
+  },
+  {
+   "entity": "royal kennel club",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rspca",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "staffordshire bull terrier",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "health standard",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "eye screening",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "elbow screening",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "genetic diversity",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "temperament",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "nervousness",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "aggression",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "anxiety",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "socialisation",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "worming",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "veterinary care",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "health records",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "eight weeks",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "take the dog back",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "deposit",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "car park",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "registration documents",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "ancestry",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "litters",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "coat colour",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "rare",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "exclusive",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "micro",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "unusually coloured",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "red flags",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "england",
+   "kind": "other",
+   "on_page": false,
+   "band": "medium"
+  },
+  {
+   "entity": "bristol",
+   "kind": "other",
+   "on_page": true,
+   "band": "medium"
+  }
+ ],
+ "format": {
+  "status": "ok",
+  "list": "bulleted",
+  "length": "long",
+  "words": 472,
+  "opening": "statement"
+ },
+ "llm_mentions": {
+  "status": "NOT FETCHED",
+  "reason": "llm_mentions only once BSUK's domain is live (project 6)"
+ },
+ "extra": "royal kennel club|kennel club;rspca;staffordshire bull terrier;health standard|kennel club health standard;eye screening|eye and elbow screening;elbow screening;genetic diversity;temperament|temperamentally;nervousness;aggression;anxiety;socialisation|socialised;worming;veterinary care;health records;eight weeks;take the dog back;deposit;car park;registration documents;ancestry;litters;coat colour;rare;exclusive;micro;unusually coloured;red flags;england;bristol"
+}

@@ -23,12 +23,12 @@ const label = (l: LocationRow) => titleCase(l.h1 || clean(l.title));
 const sorted = [...locations].sort((a, b) =>
   a.city.localeCompare(b.city, 'en-GB') || a.slug.localeCompare(b.slug, 'en-GB'));
 
-const description = 'Blue Staffy puppies for sale across the UK from Blue Staffy UK in Glasgow: home delivery by DEFRA-approved transport priced by distance, or collection in Glasgow.';
+const description = `Blue Staffy puppies for sale across the UK from Blue Staffy UK in ${SITE.address.city}: home delivery by DEFRA-approved transport priced by distance, or collection in ${SITE.address.city}.`;
 ---
 <PageShell title="Blue Staffy Puppies by UK Location | Blue Staffy UK" description={description} canonical="/uk-locations/">
   <section class="container container-text">
     <h1>Blue Staffy Puppies by UK Location</h1>
-    <p>We are based in Glasgow. {SITE.delivery_note}, £{SITE.delivery_min_gbp} to £{SITE.delivery_max_gbp}, or collect from us in Glasgow after a refundable £{SITE.deposit_gbp} deposit. Choose your nearest area below.</p>
+    <p>We are based in {SITE.address.city}, {SITE.address.region}. {SITE.delivery_note}, £{SITE.delivery_min_gbp} to £{SITE.delivery_max_gbp}, or collect from us in {SITE.address.city} after a refundable £{SITE.deposit_gbp} deposit. Choose your nearest area below.</p>
     <ul style="display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:8px 24px;list-style:none;padding:0">
       {/* `.tap-24` (src/styles/kit.css) lifts each link's box to 24px
           (`layout-tap-target-size`, blocking; WCAG 2.5.8): a bare link here is a 20px target

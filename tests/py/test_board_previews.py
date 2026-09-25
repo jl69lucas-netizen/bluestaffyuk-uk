@@ -76,10 +76,10 @@ def test_the_demo_record_loads_and_offers_three_styles_on_every_styled_section()
     # Working rule 16: the fixture's hero and counter carry the interior-guide sets so that
     # the per-page path is BUILT and measured, not only unit-tested. Every other section keeps
     # the shape-wide trio, which is what the four pages built before that rule still name.
-    # The fixture carries the INTERIOR-UTILITY sets. It is the only record that can: the
-    # three utility pages (privacy, thank-you, contact) were built before working rule 16 and
-    # still name S1/S2/S3, so without the fixture those six arrangements would be six styles
-    # nothing ever builds, renders or measures.
+    # The fixture carries the INTERIOR-UTILITY sets. The three utility pages (privacy,
+    # thank-you, contact) offer the same sets and all name H-UT1 (thank-you and contact also
+    # C-UT1), which the user's rule-16 exemption lets them share; so their built pages render
+    # two of the six arrangements, and the fixture is what builds, renders and measures all six.
     assert rec["meta"]["layout_type"] == "interior-utility"
     offered = {s["id"]: s["styles"] for s in rec["sections"]}
     assert offered["opening"] == ["H-UT1", "H-UT2", "H-UT3"]
@@ -1261,11 +1261,22 @@ def test_every_record_pick_is_one_of_that_sections_own_styles():
 # carried approval says, index for index and pick for pick, so a regression in either helper
 # shows up as a page that has stopped matching the answers the breeder actually gave.
 #
-# THE RE-BOARD WAS ANSWERED on 2026-09-22 (`2ce9e93`), so the two tests below now hold the
-# ANSWER to the carried approval: the page renders the live one, and the live one differs from
-# the carried one only on the hero and the counter the re-board asked about.
+# THE RE-BOARD WAS ANSWERED on 2026-09-22 (`2ce9e93`), and a record can go BACK: the homepage
+# was re-boarded a second time for its mosaic and its figure tiles (Known Issue 33, user ruling
+# R11). So the two tests below hold either state. A record ON THE BOARD (`approval` null)
+# renders the carried approval and carries every answer the board is not asking again; an
+# ANSWERED record renders the live approval, and the live one differs from the carried one only
+# on the hero and the counter — or on neither, when the question was the hero's content rather
+# than its arrangement.
 RE_BOARDED = ("index", "privacy-policy-uk", "thank-you-blue-staffy-puppies-journey",
-              "uk-blue-staffy-breeders-contact")
+              "uk-blue-staffy-breeders-contact",
+              # The three guides, for their hero (Known Issues 30 and 35, user ruling R13).
+              "blue-staffy-health-uk", "uk-staffordshire-bull-terrier-guide",
+              "uk-blue-staffy-puppy-buying-guide")
+#: A section a re-board asks again although it is not per-page, with the ruling that sent it
+#: back. The breed guide's video moved from S2 to the facade by the user's ruling R8 (Known
+#: Issue 38), on the same board as its hero.
+REASKED = {"uk-staffordshire-bull-terrier-guide": {"video-breed-guide"}}
 
 
 def _built(slug):
@@ -1273,30 +1284,47 @@ def _built(slug):
     return ROOT / "dist" / ("index.html" if slug == "index" else f"{slug}/index.html")
 
 
+def _per_page(rec):
+    """The sections a re-board of this record may ask: the hero, the counter, and any section
+    named in REASKED for it."""
+    return ({s["id"] for s in rec["sections"] if s["shape"] in PB.PER_PAGE_SHAPES}
+            | REASKED.get(rec["meta"]["slug"], set()))
+
+
 @pytest.mark.parametrize("slug", RE_BOARDED)
-def test_a_re_boarded_record_renders_the_approval_it_came_back_with(slug):
-    """The re-board is ANSWERED (breeder, 2026-09-22), so the page renders the live approval —
-    and the live approval must still be the carried one everywhere the re-board did not ask.
-    While these four were on the board this test held the page to `approval_previous`; now it
-    holds the answer to the carried one, index for index, so the approval that closed the
-    re-board cannot have quietly moved what the page is called or re-picked a locked section."""
+def test_a_re_boarded_record_renders_the_approval_in_force(slug):
+    """The page renders the approval IN FORCE — the live one once the re-board is answered, the
+    carried one while it is on the board — index for index, and no answer the board did not ask
+    again has moved. Before the first re-board was answered this test held the page to
+    `approval_previous`; after it, to the live answer; a second re-board puts it back."""
     rec = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
     live, prev = rec["approval"], rec["approval_previous"]
-    assert live and live.get("picks"), (slug, "the re-board has been answered")
     assert prev and prev.get("picks"), "a re-board keeps the approval it replaced"
-
-    # The three INDICES were not the question, so they are carried unchanged.
-    for key in ("title", "description"):
-        assert live["meta"][key] == prev["meta"][key], (slug, key, "moved under a re-board")
-    assert live["h1"] == prev["h1"], (slug, "the H1 index moved under a re-board")
+    in_force = live or prev
+    if live:
+        # The three INDICES were not the question, so they are carried unchanged.
+        for key in ("title", "description"):
+            assert live["meta"][key] == prev["meta"][key], (slug, key, "moved under a re-board")
+        assert live["h1"] == prev["h1"], (slug, "the H1 index moved under a re-board")
+        for sid, pick in prev["picks"].items():
+            if sid in _per_page(rec):
+                continue
+            assert live["picks"].get(sid) == pick, (
+                slug, sid, "a carried answer changed when the re-board was approved")
+    else:
+        # ON THE BOARD: every answer it is not asking again is locked, exactly as carried.
+        locked = PB.locked_picks(rec)
+        want = {sid: pick for sid, pick in prev["picks"].items() if sid not in _per_page(rec)}
+        assert locked == want, (slug, "the board would re-ask an answered question",
+                                sorted(set(want) - set(locked)))
 
     page = _built(slug)
     if not page.exists():
         pytest.skip("run npm run build first")
     html = page.read_text(encoding="utf-8")
-    title = rec["meta_set"]["titles"][live["meta"]["title"]]
-    description = rec["meta_set"]["descriptions"][live["meta"]["description"]]
-    h1 = rec["h1"]["variants"][live["h1"]]
+    title = rec["meta_set"]["titles"][in_force["meta"]["title"]]
+    description = rec["meta_set"]["descriptions"][in_force["meta"]["description"]]
+    h1 = rec["h1"]["variants"][in_force["h1"]]
     # Compared on normalised TEXT: `rules/headings.md` applies Title Case at render and the
     # serializer escapes `&`, so an exact string match would be testing the renderer's
     # spelling rather than which variant the page chose.
@@ -1309,27 +1337,39 @@ def test_a_re_boarded_record_renders_the_approval_it_came_back_with(slug):
     got = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
     assert got and norm(got.group(1)) == norm(h1), (slug, "H1 index", got and norm(got.group(1)))
 
-    # EVERY CARRIED PICK SURVIVED THE ANSWER except the two the re-board was for.
-    per_page = {s["id"] for s in rec["sections"] if s["shape"] in PB.PER_PAGE_SHAPES}
-    for sid, pick in prev["picks"].items():
-        if sid in per_page:
-            continue
-        assert live["picks"].get(sid) == pick, (
-            slug, sid, "a carried answer changed when the re-board was approved")
-
 
 @pytest.mark.parametrize("slug", RE_BOARDED)
-def test_a_re_boarded_record_was_answered_only_on_its_hero_and_its_counter(slug):
-    """The hero and the counter are `PER_PAGE_SHAPES`, and they are the whole of what working
-    rule 16 sent these four records back to the board for (spec §9 amendment 10.10). Answered,
-    every styled section carries a pick, and the only picks that differ from the carried
-    approval are on those two shapes — or on a section the re-board added."""
+def test_a_re_boarded_record_asks_or_answered_only_its_hero_and_its_counter(slug):
+    """The hero and the counter are `PER_PAGE_SHAPES`, and they are the whole of what a rule-16
+    re-board sends a record back for (spec §9 amendment 10.10). On the board, those two are the
+    only unlocked styled sections. Answered, every styled section carries a pick, and the only
+    picks that differ from the carried approval are on those two shapes — and if none differs,
+    the per-page section itself changed, because a re-board that asked nothing is not one."""
     rec = json.loads((ROOT / "data/boards" / f"{slug}.json").read_text(encoding="utf-8"))
+    prev = rec["approval_previous"]
+    styled = {s["id"] for s in rec["sections"] if s.get("styles")}
+    if rec["approval"] is None:
+        asked = styled - set(PB.locked_picks(rec))
+        assert asked and asked <= _per_page(rec), (slug, sorted(asked))
+        return
     unpicked = [s["id"] for s in rec["sections"]
                 if s.get("styles") and not (s.get("options") or {}).get("pick")]
     assert unpicked == [], (slug, unpicked)
-    shapes = {s["id"]: s["shape"] for s in rec["sections"]}
-    prev = rec["approval_previous"]["picks"]
-    moved = [sid for sid, pick in rec["approval"]["picks"].items() if prev.get(sid) != pick]
-    assert moved, (slug, "a rule-16 re-board answers at least the hero")
-    assert all(shapes[sid] in PB.PER_PAGE_SHAPES for sid in moved), (slug, moved)
+    moved = [sid for sid, pick in rec["approval"]["picks"].items() if prev["picks"].get(sid) != pick]
+    assert all(sid in _per_page(rec) for sid in moved), (slug, moved)
+    changed = [s["id"] for s in rec["sections"] if s["id"] in _per_page(rec)
+               and (prev.get("section_hashes") or {}).get(s["id"]) != PB.section_fingerprint(s)]
+    assert moved or changed, (slug, "a rule-16 re-board answers or changes at least the hero")
+
+
+def test_the_chrome_preview_grid_cannot_be_widened_by_the_strip():
+    """Known Issue 32: at 375 the contact board preview scrolled sideways by 606px. `.bp-chrome`
+    was a grid with no column template, so its one implicit track was `auto` and grew to the
+    STRIP specimen's min-content — its whole row of links, 933px. The base rule must give the
+    track a zero minimum so the strip keeps its own scroller; the 1024px rule adds the dial
+    column in front of the same `minmax(0, 1fr)`."""
+    src = (ROOT / "src/pages/board-preview/[slug].astro").read_text(encoding="utf-8")
+    base = re.search(r"\.bp-chrome\s*\{([^}]*)\}", src)
+    assert base, "the preview route no longer styles .bp-chrome"
+    assert re.search(r"grid-template-columns:\s*minmax\(0,\s*1fr\)", base.group(1)), (
+        "the base .bp-chrome rule needs grid-template-columns: minmax(0, 1fr)")

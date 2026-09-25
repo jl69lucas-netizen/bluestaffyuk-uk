@@ -1,0 +1,109 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper, location_name United Kingdom, language_code en, called 2026-09-25 for the query: Where can I buy a blue Staffy puppy near Middlesbrough, and what should I ask the breeder? The response carries no keyword field, so the query is recorded here. Saved as returned: the answer text (chat_gpt_text markdown) and its sources whole, except as follows. Dropped as third-party contact details: from the local-businesses block's markdown, every business's street address and postcode (each line keeps only the business name); from each of the 13 local-business elements, its address, phone, rating, reviews_count and url (profile, WhatsApp and website links alike), keeping type, title, description and domain; the social-profile link (a Facebook group) on the first business named in the answer text is removed, leaving its name as plain text, and the same link is removed from that business's brand entity (its markdown keeps the name, its urls keep the domain only).",
+  "id": "09250817-2496-0629-0000-b701d24d7526",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_local_businesses",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "- **BowesK9s**\n- **S.A.R.A. The Ann Prosser Foundation**\n- **RSPCA Great Ayton Animal Centre**\n- **Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs**\n- **First step strays**\n- **Earlsgrave Bull Terriers**\n- **IDCBULLZ MANCHESTER**\n- **Staffordshire Bull Terrier Puppy Breeder**\n- **Staffy Society UK**\n- **Ravenscroft Staffordshire Bull Terries Puppies**\n- **Staffy puppies available for adoption Uk**\n- **Staffy Puppies for Sale UK**\n- **Staffy Puppy Heaven**\n",
+      "items": [
+        {"type": "chat_gpt_local_businesses_element", "title": "BowesK9s", "description": "Dog breeder", "domain": "m.facebook.com"},
+        {"type": "chat_gpt_local_businesses_element", "title": "S.A.R.A. The Ann Prosser Foundation", "description": "Animal rescue service", "domain": "www.s-a-r-a.org.uk"},
+        {"type": "chat_gpt_local_businesses_element", "title": "RSPCA Great Ayton Animal Centre", "description": "Animal rescue service", "domain": "www.rspca.org.uk"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Trojanbulls Staffordshire bull terrier licenced breeder and Champion stud dogs", "description": "Dog breeder", "domain": "www.trojanstaffuk.com"},
+        {"type": "chat_gpt_local_businesses_element", "title": "First step strays", "description": "Dog breeder"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Earlsgrave Bull Terriers", "description": "Dog breeder", "domain": "www.earlsgravebullterriers.com"},
+        {"type": "chat_gpt_local_businesses_element", "title": "IDCBULLZ MANCHESTER", "description": "Dog breeder", "domain": "www.instagram.com"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Staffordshire Bull Terrier Puppy Breeder", "description": "Dog breeder"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Staffy Society UK", "description": "Dog breeder"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Ravenscroft Staffordshire Bull Terries Puppies", "description": "Dog breeder", "domain": "ukstaffypups.uk"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Staffy puppies available for adoption Uk", "description": "Dog breeder", "domain": "www.facebook.com"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Staffy Puppies for Sale UK", "description": "Dog breeder", "domain": "wa.me"},
+        {"type": "chat_gpt_local_businesses_element", "title": "Staffy Puppy Heaven", "description": "Dog breeder", "domain": "wa.me"}
+      ]
+    },
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 2,
+      "markdown": "If you’re looking around **Middlesbrough**, I’d be cautious about choosing purely on “blue” colour. Blue is a recognised Staffordshire Bull Terrier colour under the current Kennel Club standard, but health and responsible breeding should come first. [The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com) \n\n### Places to start looking\n\n- BowesK9s in Guisborough is a nearby dog breeder worth contacting to ask specifically whether they currently have, or plan, Staffordshire Bull Terrier litters. **I haven’t verified that they currently have blue Staffy puppies available**, so ask before travelling.\n- [S.A.R.A. The Ann Prosser Foundation](https://www.s-a-r-a.org.uk/) in Redcar and [RSPCA Great Ayton Animal Centre](https://www.rspca.org.uk/local/aboutus/contactus/-/rspca/great-ayton-animal-centre) are also local options if you’re open to adopting a Staffy rather than buying a puppy.\n- I’d also use the **Kennel Club's breeder resources** and Staffordshire Bull Terrier breed-club networks rather than relying on adverts that prominently advertise “rare” or “exclusive” colours.\n\n### Questions I'd ask any breeder\n\nBefore paying a deposit, ask:\n\n1. **“Can I see the puppy with its mum, where the puppies are being raised?”**\n You should see the mother interacting normally with the litter. Be wary of anyone wanting to meet you in a car park or deliver the puppy without letting you see its home.\n2. **“What health testing have both parents had, and can I see the certificates?”**\n For Staffies, the Kennel Club's current health guidance includes DNA testing for **hereditary cataracts (HC-HSF4-2)** and **L-2-HGA**, plus eye testing; elbow testing is also recommended as part of best practice. The breed also has a breed-club health scheme including patella testing. [The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com) [The Kennel Club](https://www.thekennelclub.org.uk/media/qvffqvwg/kc_health_standard.pdf?utm_source=chatgpt.com)\n3. **“What are the parents' registered names and Kennel Club registration numbers?”**\n This lets you independently check their pedigree and recorded health information rather than taking screenshots or verbal claims at face value.\n4. **“Why did you choose these two dogs to breed?”**\n A responsible breeder should be able to explain temperament, health, conformation and genetic considerations—not just colour.\n5. **“Have either parent had any health problems?”**\n Ask specifically about skin problems, allergies, eyes, joints, breathing, seizures and temperament, and whether there are relevant problems in previous generations.\n6. **“What socialisation have the puppies had?”**\n Ask what they've experienced: household noises, handling, children, other dogs, grooming, car journeys, etc.\n7. **“What happens if I can't keep the dog?”**\n A good breeder should want the dog returned to them or otherwise help rehome it rather than simply saying it's your problem.\n8. **“Will the puppy be microchipped, vaccinated and vet-checked before collection, and what paperwork comes with it?”**\n\n### One important point about “blue”\n\nDon't let a breeder use **“blue,” “rare blue,” “blue-grey,” or “exclusive colour”** to justify a premium or distract from health testing. Blue itself is an accepted Staffy colour under the Kennel Club standard. [The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com) \n\nIf you tell me **how far you're willing to travel from Middlesbrough (e.g. 30, 60 or 100 miles)**, I can search for **currently advertised blue Staffy litters and breeders**, then separate the ones with credible health-testing information from the ones I'd approach cautiously.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "publication_date": "2025-11-08 03:49:15 +00:00",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "publication_date": "2025-10-18 13:51:32 +00:00",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/cvef530x/kc_health_standard_07-25-web.pdf?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/media/qvffqvwg/kc_health_standard.pdf?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/qvffqvwg/kc_health_standard.pdf?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "publication_date": "2025-11-08 03:49:15 +00:00",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/media/o4fhe5lf/nov-25-kcj-final-online-1.pdf?utm_source=chatgpt.com)"
+        }
+      ],
+      "brand_entities": [
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "BowesK9s",
+          "category": "local_business",
+          "markdown": "BowesK9s",
+          "urls": [
+            {
+              "domain": "m.facebook.com"
+            }
+          ]
+        },
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "S.A.R.A. The Ann Prosser Foundation",
+          "category": "local_business",
+          "markdown": "[S.A.R.A. The Ann Prosser Foundation](https://www.s-a-r-a.org.uk/)",
+          "urls": [
+            {
+              "url": "https://www.s-a-r-a.org.uk/",
+              "domain": "www.s-a-r-a.org.uk"
+            }
+          ]
+        },
+        {
+          "type": "chat_gpt_brand_entity",
+          "title": "RSPCA Great Ayton Animal Centre",
+          "category": "local_business",
+          "markdown": "[RSPCA Great Ayton Animal Centre](https://www.rspca.org.uk/local/aboutus/contactus/-/rspca/great-ayton-animal-centre)",
+          "urls": [
+            {
+              "url": "https://www.rspca.org.uk/local/aboutus/contactus/-/rspca/great-ayton-animal-centre",
+              "domain": "www.rspca.org.uk"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

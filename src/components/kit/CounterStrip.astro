@@ -106,10 +106,14 @@ const rows = stats;
        and the board preview, Known Issue 33). Positioned against the tile, it sits between
        the pairs whatever direction the tile runs, and `.list` clips the one a wrapped row
        leaves hanging at its end rather than letting it widen the page. */
+    /* Its ink is the strip's own steel, not the muted grey: `--color-text-muted` on the
+       steel-100 bed measured 4.49:1 against AA's 4.50 (Known Issue 21). Every ink this
+       component puts on the bed, and on the card tiles' surface, is a pair in
+       data/design/contrast.json. */
     [data-tiles="inline"] li { position: relative; }
     .dot { position: absolute; inset-inline-start: 100%; inset-block-start: 50%;
            translate: 0 -50%; inline-size: var(--space-6); text-align: center;
-           color: var(--color-text-muted); line-height: 1; }
+           color: var(--color-brand); line-height: 1; }
     [data-tiles="inline"] .list { overflow-x: clip; }
 
     /* ── the five arrangements (working rule 16) ─────────────────────────────────────────

@@ -12,11 +12,11 @@ allowed-tools: [Read, Write, Bash]
 
 ## BSUK Project Context
 > **Site:** https://SITE_URL_PLACEHOLDER — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria
-> **Coat colours:** Blue (Roman, Byrd, Ince — £1,500) · Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ## What AIDA Is
@@ -59,8 +59,9 @@ Rules:
 
 **Good BSUK Attention hook:**
 ```
-H1: "Blue or blue brindle — which Staffy puppy is the right companion for your family?"
-Subhead: "[X] years. [N]+ families. One Carlisle breeder who answers the phone after the sale — with KC registration and a vet health check on every puppy."
+H1: "Male or female — which Blue Staffy puppy is the right companion for your family?"
+Subhead: "One Carlisle breeder, raising every puppy in her own home — with KC registration and a vet health check on every puppy."
+(Years in business and a family count are NOT FETCHED — never write either, not even as a placeholder.)
 ```
 
 **Bad Attention hook:**
@@ -128,13 +129,14 @@ Rules:
 - Urgency must be honest (litter timing, waiting list)
 
 **BSUK Action template:**
+The reply time is `data/faq.json` `home-after-support` ("within 24 to 48 business hours") — never a shorter one.
 ```html
 <h2>Ready to Meet Your Blue Staffy Puppy?</h2>
-<p>Fill out our quick inquiry form. Lisa Bright will respond personally within 24 hours
+<p>Fill out our quick inquiry form. Lisa Bright replies personally within 24 to 48 business hours
    — not an automated email, a real reply with available puppies that match your family.</p>
-<p><strong>A £500 refundable deposit holds your puppy.</strong> Health guarantee + KC registration and vet health check included.</p>
-[Inquiry Form — 3 fields: name, email, coat colour preference (blue / blue brindle)]
-<p class="bsuk-form-note">We respond within 24 hours. No spam, no pressure, no bait-and-switch.</p>
+<p><strong>A £500 refundable deposit holds your puppy.</strong> KC registration, a vet health check, first vaccinations and a microchip come with every puppy.</p>
+[Inquiry Form — 3 fields: name, email, the puppy you're interested in (any of the six in `data/puppies.json`, or "any pup")]
+<p class="bsuk-form-note">We reply within 24 to 48 business hours, ourselves, not an agency. No spam, no pressure, no bait-and-switch.</p>
 ```
 
 ---

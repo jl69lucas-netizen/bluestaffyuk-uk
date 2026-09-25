@@ -1,0 +1,179 @@
+{
+ "id": "petify",
+ "root_domain": "petify.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "staffordshire bull terrier puppies"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "city": 80,
+   "listing": 118
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Aberdeen",
+   "Birmingham",
+   "Bristol",
+   "Cardiff",
+   "Cornwall",
+   "Coventry",
+   "Dundee",
+   "Edinburgh",
+   "Essex",
+   "Glasgow",
+   "Hull",
+   "Inverness",
+   "Leeds",
+   "Leicester",
+   "Liverpool",
+   "London",
+   "Manchester",
+   "Middlesbrough",
+   "Nottingham",
+   "Oxford",
+   "South Yorkshire",
+   "Sunderland",
+   "Wolverhampton",
+   "York"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "WebSite",
+   "ItemList",
+   "SiteNavigationElement",
+   "Organization",
+   "ImageObject",
+   "ContactPoint"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.petify.uk/",
+    "title": "Petify | Puppies for sale, Dogs for sale, Kittens for sale in the UK",
+    "h1": "Dogs and cats for sale, adoption and studs",
+    "h2": [
+     "Read our latest dog & cat articles, guides & resources",
+     "Cat leash training",
+     "Puppy training",
+     "How to tell if your puppy is unwell?",
+     "How to safely introduce your new dog to your resident dog",
+     "Cat treats",
+     "Dog treats",
+     "Puppy farming and how to avoid supporting them",
+     "Heatstroke in cats"
+    ]
+   },
+   {
+    "url": "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier",
+    "title": "Staffordshire Bull Terrier puppies and dogs for sale | Petify",
+    "h1": "",
+    "h2": []
+   },
+   {
+    "url": "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/london/147724",
+    "title": "Staffordshire Bull Terrier puppies and dogs for sale in London | Petify",
+    "h1": "",
+    "h2": []
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 1035,
+   "url_count": 164,
+   "h2_per_page": {
+    "https://www.petify.uk/": 9,
+    "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier": 0,
+    "https://www.petify.uk/puppies-and-dogs-for-sale/staffordshire-bull-terrier/in/london/147724": 0
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the Map list holds no article URL, so no post was a key page"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "no post URLs in the Map list and no post fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the Map list holds no article URL, so no post was a key page"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 14,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£300",
+    "£400",
+    "£599",
+    "£750",
+    "£800",
+    "£1,350"
+   ],
+   "deposit_terms": "set by each seller in their own advert; the site states none. One Staffy advert card, shown on both the sale hub and the London hub, asks a £300 deposit, refundable, to hold a chosen puppy until it is collected or handed over",
+   "steps_to_enquire": null,
+   "urgency_signals": [
+    "ready-date"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Petify is an all-pet advert board whose Staffy sale and London hubs are bare search results: four advert cards, two of them for mixed-breed dogs in another town, with no breed text of the site's own and no licence, health-test or review proof. BSUK can beat it on the Liverpool search it ranks for with a real Liverpool page that carries one breeder's visible proof and a direct way to enquire."
+}

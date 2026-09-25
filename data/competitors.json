@@ -30,7 +30,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": false,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Map-pack listing only, no organic rank: position 7 is its place on the results page (rank_absolute), not an organic position. Signals in what was fetched: listed as 'Staffordshire Bull Terrier Puppies For Sale' in a London search with no address or town shown, open 24 hours, and a US (+1) phone number (dropped). Judged from the listing only."
     },
     {
@@ -55,7 +55,7 @@
       "cities": [],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": "2026-09-23",
+      "last_analyzed": "2026-09-25",
       "notes": "Licensed breeder with champion stud dogs, blue and black (snippets); also first in the 'blue staffy breeder' map pack."
     },
     {
@@ -72,7 +72,7 @@
       "cities": [],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Blue champion stud-dog kennel (snippet); judged from title and snippet."
     },
     {
@@ -97,7 +97,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Says it is a UK breeder of KC-registered puppies (snippet). Also shown in the London map pack as 'Elite Staffy Puppies' (no reviews, open 24 hours). Worth a close look at the intel stage."
     },
     {
@@ -114,7 +114,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Family-run licensed breeder (snippet)."
     },
     {
@@ -131,7 +131,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Blue stud-dog kennel that also breeds (snippet)."
     },
     {
@@ -190,7 +190,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": "2026-09-23",
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -245,7 +245,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Breed-only classifieds: sale, adoption and breeder listings with a page per town."
     },
     {
@@ -300,7 +300,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -349,7 +349,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "General classifieds; individual sellers on it are not registered separately."
     },
     {
@@ -396,7 +396,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Pedigree breeder directory, ranking with a near-town breeder search per city."
     },
     {
@@ -439,7 +439,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -478,7 +478,7 @@
       ],
       "priority": "high",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -503,7 +503,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Authority, but it ranked with its Find a puppy search (other breeders' litters), so tier 2; also ranks with its breed page."
     },
     {
@@ -528,7 +528,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -545,7 +545,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Judged from the URL only (a petslist/dog/… listing page); the result carried no title or snippet."
     },
     {
@@ -564,7 +564,7 @@
       ],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -583,7 +583,7 @@
       ],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": ""
     },
     {
@@ -600,7 +600,7 @@
       "cities": [],
       "priority": "low",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Vet charity; ranked with a breed-care guide, no puppies for sale."
     },
     {
@@ -625,7 +625,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": null,
+      "last_analyzed": "2026-09-25",
       "notes": "Rehoming charity; ranked with its Staffy breed and rehoming page."
     },
     {
@@ -646,7 +646,7 @@
       "cities": [],
       "priority": "medium",
       "link_allowed": true,
-      "last_analyzed": "2026-09-23",
+      "last_analyzed": "2026-09-25",
       "notes": "Animal-welfare charity; ranked with a buying-a-Staffy advice page."
     }
   ]

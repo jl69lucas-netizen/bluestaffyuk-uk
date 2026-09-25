@@ -224,7 +224,25 @@
           "slot": "home-hero",
           "kind": "photo",
           "required": true,
-          "prompt": "the migrated page's own primary image — an adorable litter of blue Staffy puppies for sale in the UK — reused at its original path and alt text (working rule 11)"
+          "prompt": "the migrated page's own primary image — an adorable litter of blue Staffy puppies for sale in the UK — reused at its original path and alt text (working rule 11); the mosaic's first tile and the page's LCP image"
+        },
+        {
+          "slot": "home-on-the-lawn",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the homepage's photograph of an adult blue Staffy and a puppy lying on a lawn, reused at its original path (working rule 11); a mosaic tile, alt left empty because the same photograph is described where it sits in 'who-we-are'"
+        },
+        {
+          "slot": "home-family-dog",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the homepage's photograph of a blue Staffordshire Bull Terrier as a family dog, reused at its original path (working rule 11); a mosaic tile, alt left empty because the same photograph is described where it sits in 'meet-the-parents'"
+        },
+        {
+          "slot": "home-dam-with-pups",
+          "kind": "photo",
+          "required": true,
+          "prompt": "the homepage's photograph of Maggie, our blue Staffy dam, with her puppies, reused at its original path (working rule 11); a mosaic tile, alt left empty because the same photograph is described where it sits in 'meet-the-parents'"
         }
       ],
       "links": {
@@ -248,7 +266,7 @@
         "candidates": [],
         "excluded": [],
         "pick": "H-HM2",
-        "note": "Image left, right or above: the three hero arrangements from src/lib/boardStyles.ts. No trust chips and no CTA buttons on the hero (spec section 9 amendment 6a) — the trust strip is its own section two below."
+        "note": "Re-boarded for Known Issue 33 (user ruling R11, 2026-09-24): H-HM2 was approved as the four-photo mosaic with figure tiles, but the record named one photograph and no figures, so it rendered as a single photo with no ledge. Now four of the homepage's own photographs at their original paths (the first keeps its alt and is the LCP image; the other three are repeats of photographs described lower on the page, so their tile alt is empty) and two figures read from data/settings.json. H-HM2 is pre-selected; H-HM1 and H-HM3 render the same record their own way."
       },
       "tree": [],
       "entities": [
@@ -307,7 +325,22 @@
       "refresh": {
         "axis": "layout",
         "note": "the home family's own hero: copy and credential chips on a steel band with the photo beside them, where every interior page leads with a card or a panel. It is a delta from /buy-staffy-puppies-for-sale-uk/, the nearest page in intent."
-      }
+      },
+      "stats": [
+        {
+          "n": "£1,500–£1,700",
+          "label": "per puppy",
+          "source": "data/settings.json#price_range"
+        },
+        {
+          "n": "£500",
+          "label": "refundable deposit",
+          "source": [
+            "data/settings.json#deposit_gbp",
+            "data/settings.json#deposit_refundable"
+          ]
+        }
+      ]
     },
     {
       "images": [],
@@ -2429,6 +2462,82 @@
     ]
   },
   "approval": {
+    "approved_at": "2026-09-24T22:14:09.765Z",
+    "canvas_version": null,
+    "h1": 0,
+    "meta": {
+      "description": 0,
+      "title": 0
+    },
+    "notes": {
+      "at-a-glance": "The counter arrangement is one of the two questions this re-board asks. The menu is the home family’s own three (spec §9 amendment 10.2), the figures are this page’s own and every one carries the path it came from (amendment 10.5).",
+      "available-blue-staffy-puppies": "All six rows of data/puppies.json are status Available today. The prose names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs, and the migrated litter block's counts are logged in dropped.text.",
+      "delivery": "Prose, not a second table: the at-a-glance table above already carries the collection row and the band, and /blue-staffy-pup-sale-uk/ carries the workings.",
+      "first-steps": "Three cards, so S1's stack and S3's rail both read and S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure is stated once here and once in the table above, and nowhere else on the page.",
+      "guides": "No photograph: this is a signpost block, and the pages it points at carry the images. The breed prose the migrated homepage carried under ‘Understanding the Wonderful Blue Staffordshire Bull Terrier Breed’ is no longer logged away from this page: rule 15 restored it as the `the-breed` section, which now holds the breed guide link and the two external breed references this section used to carry.",
+      "health": "Two photographs. The health page owns the DNA table (data/boards/blue-staffy-health-uk.json, section dna-tests) and this section states the two names in prose rather than printing a second table — working rule 13 puts a table on the board, and two boards printing the same two rows is the duplication the dup gate is for.",
+      "meet-the-parents": "Restored under rule 15. Two photographs, so S2's split and S3's aside both read. The two H3s are the migrated page's own, carried at their old wording though neither is a keyword heading. The images move here from `health` and `first-steps`, which is where the old page had them.",
+      "navigation": "",
+      "our-happy-blue-staffy-owners-speak": "MODE: grid — S2 and S3 are the two reviews styles that render a grid (src/lib/boardStyles.ts). All three rows of data/reviews.json render here and the count of REVIEW_PLACEHOLDER on this page is zero.",
+      "owners-top": "MODE: single — S1 is the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). The quote itself is a row of data/reviews.json and is not retyped here.",
+      "talk-to-us": "NO FORM ON THIS PAGE, and the reason is recorded here: one enquiry form per money page. /uk-blue-staffy-breeders-contact/ carries the site's contact form and /buy-blue-staffy-puppies-uk/ carries the listing's; a third instance on the homepage would be a third field contract for scripts/form_contract_audit.py to hold identical, a second inbox route for the same message, and a second FAQ-to-form path for a reader to choose between. The CTA goes to the contact page instead.",
+      "the-breed": "Restored under rule 15. The two external links and the guide link move here from `guides`, which is where they had been parked when this block was cut; `guides` keeps the health, buying and blog links and drops to a 60–80 word band. One photograph, the old block's own, moved from `whats-included`.",
+      "top": "Re-boarded for Known Issue 33 (user ruling R11, 2026-09-24): H-HM2 was approved as the four-photo mosaic with figure tiles, but the record named one photograph and no figures, so it rendered as a single photo with no ledge. Now four of the homepage's own photographs at their original paths (the first keeps its alt and is the LCP image; the other three are repeats of photographs described lower on the page, so their tile alt is empty) and two figures read from data/settings.json. H-HM2 is pre-selected; H-HM1 and H-HM3 render the same record their own way.",
+      "trust": "TrustStrip is component 7 and carries four chips; the three styles change the band, the columns and where the heading sits. The health-guarantee PHOTOGRAPH is carried at its original path and alt text (working rule 11); the guarantee itself is not claimed — data/settings.json holds guarantee_days null and it is logged in dropped.creds.",
+      "uk-locations": "Eleven links, no photograph and no paragraph per city: the pages themselves carry the local copy and project 5 rewrites them. The seventeen noindex stubs are logged in dropped.links, and so are the five the migrated body linked.",
+      "video-breed": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
+      "video-litter": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
+      "video-our-home": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
+      "whats-included": "DataTable is component 17 and the three styles are its chrome: S1 ruled rows with a brand header band, S2 zebra card, S3 borderless with brass column rules. All three stack into data-label rows below 640px (working rule 13), which is what the Playwright 375 pass measures. tuple.table records the pick.",
+      "who-we-are": "Two photographs, so S2's two-column split and S3's aside both read; S1 stacks them. The 'Our Commitment to Excellence' four-card block the migrated page carried under this heading is not rebuilt here — /buy-staffy-puppies-for-sale-uk/ is the why-us page and owns the seven reasons.",
+      "why-choose": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the trust strip and the litter, and a third image there pushes the puppies below the fold. The four pillars are one sentence each — /buy-staffy-puppies-for-sale-uk/ is the page that argues them.",
+      "your-questions-about-blue-staffies-answered": "FOUR ROWS REUSED — puppy-package (already sourced to src/pages/index.astro), deposit and delivery (both sourced to data/settings.json and both interpolating it), and health-dna-tests (sourced to the health page). TWO ROWS NEW, both sourced to src/pages/index.astro: `home-ethical-breeder`, 'What makes you an ethical blue Staffy breeder?', answered from the migrated key-takeaway block's own answer, with tests/py/test_faq_data.py fact phrases 'not a kennel', 'L-2-HGA' and 'HC-HSF4'; and `home-family-children`, 'Are blue Staffies good family pets with children?', answered from the same block, with fact phrases 'excellent family companion' and 'well-socialised'. Both phrase sets are true of the migrated body today and are kept by `who-we-are` and `health` in this outline, so the row stays true after P5. QUERY AUGMENTATION for 'blue staffy puppies for sale uk', ten questions, each mapped to a section or a row: q1 -> top; q2 -> whats-included and the puppy-package row; q3 -> whats-included, first-steps and the deposit row; q4 -> delivery and the delivery row; q5 -> health and the health-dna-tests row; q6 -> trust, who-we-are and the new home-ethical-breeder row; q7 -> the new home-family-children row; q8 -> who-we-are and delivery; q9 -> whats-included; q10 -> first-steps. No row is added for a question this page's body does not answer: lifespan, exercise and breed behaviour go to /uk-staffordshire-bull-terrier-guide/ and /blue-staffy-health-uk/."
+    },
+    "picks": {
+      "at-a-glance": "C-HM2",
+      "available-blue-staffy-puppies": "S3",
+      "delivery": "S1",
+      "first-steps": "S3",
+      "guides": "S1",
+      "health": "S1",
+      "meet-the-parents": "S1",
+      "our-happy-blue-staffy-owners-speak": "S2",
+      "owners-top": "S2",
+      "talk-to-us": "S1",
+      "the-breed": "S1",
+      "top": "H-HM2",
+      "trust": "S2",
+      "uk-locations": "S1",
+      "video-breed": "S1",
+      "video-litter": "S1",
+      "video-our-home": "S3",
+      "whats-included": "S2",
+      "who-we-are": "S1",
+      "why-choose": "S2",
+      "your-questions-about-blue-staffies-answered": "S3"
+    },
+    "record_hash": "42c347664048865c541f39bf61e2a50bed191055b0ffb49172187587917ad705",
+    "tuple_before": {
+      "hero": "",
+      "dial": "",
+      "rail": "",
+      "toc": "pagenav-c",
+      "takeaway": [
+        "takeaways-s3"
+      ],
+      "table": "table-s2",
+      "faq": "faq-s3",
+      "stepper": "",
+      "newsletter": {
+        "after": "",
+        "variant": ""
+      },
+      "h6_prefixes": [
+        "Kennel Note:"
+      ]
+    }
+  },
+  "approval_previous": {
     "approved_at": "2026-09-22T17:55:37.379Z",
     "canvas_version": null,
     "h1": 0,
@@ -2530,63 +2639,7 @@
           "/sections/12/why"
         ]
       }
-    ]
-  },
-  "approval_previous": {
-    "approved_at": "2026-09-20T14:13:43.023Z",
-    "canvas_version": null,
-    "h1": 0,
-    "meta": {
-      "description": 0,
-      "title": 0
-    },
-    "notes": {
-      "at-a-glance": "CounterStrip is component 6 and owns its own three figures; the three styles move the bed it sits on and where the heading goes, not the numbers. No image: the strip IS the content.",
-      "available-blue-staffy-puppies": "All six rows of data/puppies.json are status Available today. The prose names no count, no age and no sex split: data/puppies.json holds no age for any of the six dogs, and the migrated litter block's counts are logged in dropped.text.",
-      "delivery": "Prose, not a second table: the at-a-glance table above already carries the collection row and the band, and /blue-staffy-pup-sale-uk/ carries the workings.",
-      "first-steps": "Three cards, so S1's stack and S3's rail both read and S2's three-up grid fits exactly. tuple.takeaway records the pick. The deposit figure is stated once here and once in the table above, and nowhere else on the page.",
-      "guides": "No photograph: this is a signpost block, and the pages it points at carry the images. The breed prose the migrated homepage carried under ‘Understanding the Wonderful Blue Staffordshire Bull Terrier Breed’ is no longer logged away from this page: rule 15 restored it as the `the-breed` section, which now holds the breed guide link and the two external breed references this section used to carry.",
-      "health": "Two photographs. The health page owns the DNA table (data/boards/blue-staffy-health-uk.json, section dna-tests) and this section states the two names in prose rather than printing a second table — working rule 13 puts a table on the board, and two boards printing the same two rows is the duplication the dup gate is for.",
-      "meet-the-parents": "Restored under rule 15. Two photographs, so S2's split and S3's aside both read. The two H3s are the migrated page's own, carried at their old wording though neither is a keyword heading. The images move here from `health` and `first-steps`, which is where the old page had them.",
-      "navigation": "",
-      "our-happy-blue-staffy-owners-speak": "MODE: grid — S2 and S3 are the two reviews styles that render a grid (src/lib/boardStyles.ts). All three rows of data/reviews.json render here and the count of REVIEW_PLACEHOLDER on this page is zero.",
-      "owners-top": "MODE: single — S1 is the one reviews style that renders a single review (src/lib/boardStyles.ts: S1 mode 'single', S2 and S3 mode 'grid'). The quote itself is a row of data/reviews.json and is not retyped here.",
-      "talk-to-us": "NO FORM ON THIS PAGE, and the reason is recorded here: one enquiry form per money page. /uk-blue-staffy-breeders-contact/ carries the site's contact form and /buy-blue-staffy-puppies-uk/ carries the listing's; a third instance on the homepage would be a third field contract for scripts/form_contract_audit.py to hold identical, a second inbox route for the same message, and a second FAQ-to-form path for a reader to choose between. The CTA goes to the contact page instead.",
-      "the-breed": "Restored under rule 15. The two external links and the guide link move here from `guides`, which is where they had been parked when this block was cut; `guides` keeps the health, buying and blog links and drops to a 60–80 word band. One photograph, the old block's own, moved from `whats-included`.",
-      "top": "Image left, right or above: the three hero arrangements from src/lib/boardStyles.ts. No trust chips and no CTA buttons on the hero (spec section 9 amendment 6a) — the trust strip is its own section two below.",
-      "trust": "TrustStrip is component 7 and carries four chips; the three styles change the band, the columns and where the heading sits. The health-guarantee PHOTOGRAPH is carried at its original path and alt text (working rule 11); the guarantee itself is not claimed — data/settings.json holds guarantee_days null and it is logged in dropped.creds.",
-      "uk-locations": "Eleven links, no photograph and no paragraph per city: the pages themselves carry the local copy and project 5 rewrites them. The seventeen noindex stubs are logged in dropped.links, and so are the five the migrated body linked.",
-      "video-breed": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
-      "video-litter": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
-      "video-our-home": "VideoEmbed is component 18 and the three styles are its frame and play axes: S1 the player in a card with the caption beneath it, S2 the player full width on a steel band, S3 the click-to-play facade. S3 is the lightest and is what the page takes unless the board picks otherwise; all three reserve the same 16:9 box (working rule 14). NOTE ON THE FRAMES: the board's preview iframes are fully sandboxed, so the YouTube player inside S1 and S2 stays blank — what those two frames show is the BED (a card, a steel band) and the reserved 16:9 box, which is what the two arrangements differ by. S3 renders in full, thumbnail and play button.",
-      "whats-included": "DataTable is component 17 and the three styles are its chrome: S1 ruled rows with a brand header band, S2 zebra card, S3 borderless with brass column rules. All three stack into data-label rows below 640px (working rule 13), which is what the Playwright 375 pass measures. tuple.table records the pick.",
-      "who-we-are": "Two photographs, so S2's two-column split and S3's aside both read; S1 stacks them. The 'Our Commitment to Excellence' four-card block the migrated page carried under this heading is not rebuilt here — /buy-staffy-puppies-for-sale-uk/ is the why-us page and owns the seven reasons.",
-      "why-choose": "Restored under rule 15 to carry the migrated H2 and its opening. No photograph: it sits between the trust strip and the litter, and a third image there pushes the puppies below the fold. The four pillars are one sentence each — /buy-staffy-puppies-for-sale-uk/ is the page that argues them.",
-      "your-questions-about-blue-staffies-answered": "FOUR ROWS REUSED — puppy-package (already sourced to src/pages/index.astro), deposit and delivery (both sourced to data/settings.json and both interpolating it), and health-dna-tests (sourced to the health page). TWO ROWS NEW, both sourced to src/pages/index.astro: `home-ethical-breeder`, 'What makes you an ethical blue Staffy breeder?', answered from the migrated key-takeaway block's own answer, with tests/py/test_faq_data.py fact phrases 'not a kennel', 'L-2-HGA' and 'HC-HSF4'; and `home-family-children`, 'Are blue Staffies good family pets with children?', answered from the same block, with fact phrases 'excellent family companion' and 'well-socialised'. Both phrase sets are true of the migrated body today and are kept by `who-we-are` and `health` in this outline, so the row stays true after P5. QUERY AUGMENTATION for 'blue staffy puppies for sale uk', ten questions, each mapped to a section or a row: q1 -> top; q2 -> whats-included and the puppy-package row; q3 -> whats-included, first-steps and the deposit row; q4 -> delivery and the delivery row; q5 -> health and the health-dna-tests row; q6 -> trust, who-we-are and the new home-ethical-breeder row; q7 -> the new home-family-children row; q8 -> who-we-are and delivery; q9 -> whats-included; q10 -> first-steps. No row is added for a question this page's body does not answer: lifespan, exercise and breed behaviour go to /uk-staffordshire-bull-terrier-guide/ and /blue-staffy-health-uk/."
-    },
-    "picks": {
-      "at-a-glance": "S2",
-      "available-blue-staffy-puppies": "S3",
-      "delivery": "S1",
-      "first-steps": "S3",
-      "guides": "S1",
-      "health": "S1",
-      "meet-the-parents": "S1",
-      "our-happy-blue-staffy-owners-speak": "S2",
-      "owners-top": "S2",
-      "talk-to-us": "S1",
-      "the-breed": "S1",
-      "top": "S3",
-      "trust": "S2",
-      "uk-locations": "S1",
-      "video-breed": "S1",
-      "video-litter": "S1",
-      "video-our-home": "S3",
-      "whats-included": "S2",
-      "who-we-are": "S1",
-      "why-choose": "S2",
-      "your-questions-about-blue-staffies-answered": "S3"
-    },
+    ],
     "section_hashes": {
       "top": "d5dfd6bff9dab2b83158873cf1d03b6e2c79c52507754ba940a1c562a48a6e9c",
       "at-a-glance": "e348745dcd9db979c084807762590cdc58b7d7ac55dcd8fa71e127e07bdeaaa1",
@@ -2609,26 +2662,6 @@
       "our-happy-blue-staffy-owners-speak": "71d45812ba9e8027481b4110c5ae923a361227d1a55e08585c4ad712e9e0a9d8",
       "your-questions-about-blue-staffies-answered": "bc6bd1810ea12f4cc590427a66ce28cc0e9ded8091bcd09d7af2f183a4f9cb1f",
       "talk-to-us": "3da8363274fdfe0558abf23c8ad02334d86e7612214629cc9c3eb59780a60857"
-    },
-    "record_hash": "4ed050935ae57a4afdbbdfd8fc4ae25440e228a55fef5e98e5c01cbe5d381635",
-    "tuple_before": {
-      "hero": "hero-s3",
-      "dial": "",
-      "rail": "",
-      "toc": "pagenav-c",
-      "takeaway": [
-        "takeaways-s3"
-      ],
-      "table": "table-s2",
-      "faq": "faq-s3",
-      "stepper": "",
-      "newsletter": {
-        "after": "",
-        "variant": ""
-      },
-      "h6_prefixes": [
-        "Kennel Note:"
-      ]
     }
   },
   "verbatim": {

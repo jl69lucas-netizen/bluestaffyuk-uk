@@ -1,0 +1,227 @@
+{
+  "id": "puppies",
+  "root_domain": "puppies.co.uk",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "staffordshire bull terrier puppies for sale",
+      "staffordshire bull terrier puppies",
+      "staffordshire bull terrier pups for sale",
+      "staffordshire bull terrier breeders",
+      "puppies affectionately known as staffies",
+      "staffordshire bull terrier puppy",
+      "puppy staffordshire bull terrier",
+      "staffy puppy"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "breed-guide": 3,
+      "city": 19,
+      "listing": 504
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": [
+      "Aberdeen",
+      "Birmingham",
+      "Bristol",
+      "Cardiff",
+      "Coventry",
+      "Dundee",
+      "Edinburgh",
+      "Glasgow",
+      "Hull",
+      "Leeds",
+      "Leicester",
+      "Liverpool",
+      "London",
+      "Manchester",
+      "Middlesbrough",
+      "Newcastle-under-Lyme",
+      "Nottingham",
+      "Oxford",
+      "Sunderland",
+      "Wolverhampton",
+      "York"
+    ]
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "OnlineStore",
+      "OnlineBusiness",
+      "PostalAddress"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.puppies.co.uk/",
+        "title": "Puppies & Dogs for Sale UK | Adoption | Stud | Wanted",
+        "h1": "Trusted breeders are hard to find.",
+        "h2": [
+          "At puppies.co.uk we ensure trusted and responsible breeders find serious buyers.",
+          "Puppy Spotlight",
+          "As Featured In",
+          "Community-Approved",
+          "Latest Puppies for Sale",
+          "Popular Dog Breeds",
+          "Puppies for Sale at Popular Locations",
+          "Breeders",
+          "Latest Articles",
+          "Fetch the latest puppy news by joining our pack"
+        ]
+      },
+      {
+        "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leek",
+        "title": "Staffordshire Bull Terrier puppies  for Sale near me in Leek, Staffordshire | Puppies.co.uk",
+        "h1": "Staffordshire Bull Terrier puppies for Sale near me in Leek, Staffordshire",
+        "h2": [
+          "Recommended for you",
+          "Nearest towns and cities",
+          "Fetch the latest puppy news by joining our pack"
+        ]
+      },
+      {
+        "url": "https://www.puppies.co.uk/breeds/staffordshire-bull-terrier",
+        "title": "Buying a Staffy Puppy - Staffordshire Bull Terriers Guide",
+        "h1": "Staffordshire Bull Terrier Breed Information and Buying advice",
+        "h2": [
+          "Are You Looking to Buy or Adopt a Staffordshire Bull Terrier?",
+          "Here you can learn about:",
+          "Quick Staffordshire Bull Terrier Facts",
+          "Recognized Breed Colour and/or Coat Markings",
+          "Why Staffordshire Bull Terrier Puppies are great",
+          "Things to consider when looking at Staffordshire Bull Terrier Puppies for Sale",
+          "History of Staffordshire Bull Terrier Puppies",
+          "Appearance",
+          "Temperament",
+          "Health",
+          "Care",
+          "Average costs",
+          "Specific Buying Guide",
+          "Other reading, Adopting Staffordshire Bull Terrier Puppies and Rescue Organisations",
+          "Latest Staffordshire Bull Terrier Puppies for Sale",
+          "Latest Articles"
+        ]
+      },
+      {
+        "url": "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/liverpool",
+        "title": "Staffordshire Bull Terrier puppies  for Sale near me in Liverpool, Merseyside | Puppies.co.uk",
+        "h1": "Staffordshire Bull Terrier puppies for Sale near me in Liverpool, Merseyside",
+        "h2": [
+          "Recommended for you",
+          "Nearest towns and cities",
+          "Fetch the latest puppy news by joining our pack"
+        ]
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": false,
+      "council": null,
+      "kc_registration_mentioned": true,
+      "health_tests_named": [],
+      "vet_checks_mentioned": false,
+      "breeding_since_as_worded": null,
+      "town": "Market Harborough",
+      "phone_shown": false,
+      "email_shown": false,
+      "contact_source": "raw-html",
+      "reviews_shown": 6
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 1495,
+      "url_count": {
+        "status": "NOT FETCHED",
+        "reason": "map truncated at 500"
+      },
+      "h2_per_page": {
+        "https://www.puppies.co.uk/": 10,
+        "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/leek": 3,
+        "https://www.puppies.co.uk/breeds/staffordshire-bull-terrier": 16,
+        "https://www.puppies.co.uk/sale/staffordshire-bull-terrier/liverpool": 3
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 0,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "no dated post URL in the map list and no post fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: the classifier counts no post, and none of its key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 74,
+      "alt_text": "descriptive",
+      "alt_missing": 25,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [
+        "online-deposit"
+      ],
+      "prices_shown": true,
+      "price_amounts_as_printed": [
+        "£40",
+        "£250",
+        "£300",
+        "£400",
+        "£500",
+        "£950",
+        "£1,200",
+        "£1,400",
+        "£1600",
+        "£1,800",
+        "£2,000",
+        "£2,300",
+        "£2,600",
+        "£2,850"
+      ],
+      "deposit_terms": "the platform offers a protected deposit scheme through a third-party payment service, and adverts that use it carry a safety-deposit badge; no deposit amount or terms are stated on the pages fetched",
+      "steps_to_enquire": null,
+      "urgency_signals": [
+        "ready-date"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "Puppies.co.uk sells trust at platform level (ID-verified breeders, a vetting team that turns half of them away, a five-week health guarantee and a protected deposit) and wins Staffy-plus-town searches with thin, templated town hubs that repeat one breed blurb over a short feed of the same few adverts, most from other towns. BSUK can beat those hubs with city pages built on one breeder's own blue Staffy litters, named health tests, real local detail and a stated price and deposit, while matching the platform's reassurance points in its own words."
+}

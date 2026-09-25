@@ -47,7 +47,7 @@ Verified safe to use: `Lisa Bright` · `Carlisle, Cumbria` ·
 
 Every figure still comes from `data/price-matrix.json` and `data/settings.json` through
 a helper, never a typed literal, and every health/credential claim stays inside the
-**Verified-Claim Ledger**. AEO is not a licence to overclaim: a confidently-worded
+**evidence ledger** (`data/quality/evidence-ledger.json`). AEO is not a licence to overclaim: a confidently-worded
 false sentence is the worst possible outcome, because answer engines repeat it.
 
 ---
@@ -78,7 +78,7 @@ subject, its actor, and its qualifier?**
 | ✗ Not atomic | ✓ Atomic |
 |---|---|
 | "It also includes full documentation." | "Lisa Bright's kennel is LICENCE_CLAIM_PLACEHOLDER licenced and supplies **LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER** home-bred documentation with every puppy." |
-| "They wean between those weeks." | "Blue Staffy pups wean at **12–16 weeks**, never sooner." |
+| "They go home when they're ready." | "A Staffy puppy comes home at **eight weeks** at the earliest, never sooner." |
 
 Not machine-checkable — this is the skill's **human** item. Read three random sections
 in isolation. If one needs its neighbour, rewrite its first sentence.
@@ -91,34 +91,23 @@ brand to the topic.
 - `our puppies` → **`Canis lupus familiaris`** / **`Blue Staffy`**
 - `we` → **`Lisa Bright's home kennel`** / **`BlueStaffyUK — Carlisle`**
 - `licensed` → **`LICENCE_CLAIM_PLACEHOLDER licenced`**, **`LICENCE_CLAIM_PLACEHOLDER LEGAL_CLAIM_PLACEHOLDER home-bred`**
-- `tested` → **`PCR vet sex-checked`**, **`L-2-HGA and Polyomavirus screened`**
+- `tested` → **`vet health-checked`** (`data/faq.json` `puppy-package`), **`parents DNA-tested for L-2-HGA and HC-HSF4`** (results `NOT FETCHED` — `data/quality/evidence-ledger.json` `parents-dna-clear`)
 
-**Measured on the 8 for-sale pages, 2026-07-30 — the gate exists because of this:**
-
-```
-                       binomial  breeder-name
-eggs                          6             2
-blue                         2             1
-blue-brindle                        6 (P. blue-brindle) 1
-home-raised                   0             0     <- no binomial, no breeder
-health-guarantee              1             0
-dna-tested                    9             0
-baby                          0             0     <- no binomial, no breeder
-adoption-cost                 0             0     <- no binomial, no breeder
-```
-
-**3 of 8 pages name no species at all, and 4 of 8 never name the breeder.** The audit
-WARNs on both, and on pronoun-heavy copy where `we/our/us` outnumber named entities.
+**The gate exists because of a measurement in the source repo** (its 8 for-sale pages,
+2026-07-30): 3 of 8 pages named no species at all, and 4 of 8 never named the breeder. Those
+are the source repo's pages, not BSUK's; BSUK's own counts come from
+`python3 scripts/aeo_audit.py <slug>`. The audit WARNs on both, and on pronoun-heavy copy
+where `we/our/us` outnumber named entities.
 
 ## Part 4 — Simple, Declarative Sentences
 
 One idea per sentence. Subject–verb–object. Extraction-ready.
 
-> Every puppy leaves us vet-checked, microchipped and vaccinated, with a written health
-> guarantee. The puppies are socialised with the family from the day they are born.
+> Every puppy leaves us vet-checked, microchipped, vaccinated and wormed, with a vet-signed
+> health card. The puppies are socialised with the family from the day they are born.
 
 The audit reports average sentence length and the count over 30 words. It does **not**
-judge truth — that is the Verified-Claim Ledger's job. Anti-AI rhythm rules from
+judge truth — that is the evidence ledger's job. Anti-AI rhythm rules from
 `.claude/skills/anti-ai-writing/SKILL.md` still apply: declarative does not mean robotic, and a page
 of identical short sentences fails the humour/voice gate.
 
@@ -126,12 +115,15 @@ of identical short sentences fails the humour/voice gate.
 
 Answer engines prefer structure they can lift whole.
 
-- **Comparisons** — the Blue vs Blue-Brindle table answers "X vs Y" queries directly. The
-  comparison cluster already ships these; make sure the *money* pages link them.
+- **Comparisons** — a comparison table (male vs female in our litter, or a breed-vs-breed
+  page from `.claude/skills/bsuk-comparison-page-builder/SKILL.md`) answers "X vs Y" queries
+  directly; once a comparison page is built, make sure the *money* pages link it.
 - **Lists** — enumerate documents, stages, tiers.
 - **Stat-bearing headers** — put the number *in the heading*:
-  "**12 Years** of Breeding Experience" · "**1,000+ Word** Vocabulary Potential" ·
-  "**72-Hour** Health Guarantee" · "**£200–£350** Airport / **£200–£350** Home Delivery".
+  "**£500** Refundable Deposit" · "**£1,500–£1,700** for a Puppy From Our Litter" ·
+  "**£200–£350** UK Home Delivery" · "**12–14 Years**: The Breed's Lifespan". Every figure comes
+  from `data/*.json`; a guarantee length (`guarantee_days`, null) or a years-in-business figure is `NOT FETCHED` and
+  never goes in a heading.
 
 The audit counts tables, lists, and stat-bearing headers, and WARNs when a page has no
 header carrying a figure. Headers still obey **Title Case** and the **declared header
@@ -146,7 +138,7 @@ Unlabeled expertise gets absorbed as generic knowledge. **Approved by the breede
 
 | Label | Covers |
 |---|---|
-| **The NOT FETCHED — the breeder has not named a house method** | bottle-feeding, weaning schedule, the 12–16-week wean gate — the *raising* process |
+| **The NOT FETCHED — the breeder has not named a house method** | weaning schedule, the weeks with the mother and the litter, the eight-week earliest go-home age — the *raising* process |
 | **The Carlisle Socialization Method** | family handling, out-of-crate routine, noise/handling desensitisation — the *socialization* side |
 
 Use them as proper nouns, capitalised, at least once per relevant page, and define
@@ -212,7 +204,7 @@ lands.
 - **Adding a visible "Updated July 2026".** Banned. The signal is schema-only.
 - **Treating a build-time git date as freshness.** Depth-1 CI makes it a lie.
 - **Overclaiming to sound citable.** An engine repeats what it lifts. Stay inside the
-  Verified-Claim Ledger.
+  evidence ledger (`data/quality/evidence-ledger.json`).
 - **Turning declarative into robotic.** `anti-ai-writing` still applies.
 - **Trusting the BLUF proxy.** It flags long first sentences; some are fine. Read them.
 - **Inventing a third method name.** Two are approved. Adding more dilutes both.

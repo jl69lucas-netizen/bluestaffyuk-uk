@@ -25,8 +25,21 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 - Browser artefacts (snapshots, screenshots, saved HTML, console logs) go only in the session
   scratchpad, by absolute path. If this run created a `.playwright-mcp/` folder, delete it.
 - **Money:** before each batch of paid calls, tell the user which calls, why, and the estimate
-  (`query_typical_call_usd` in `data/settings.json` per call), and wait for a yes. Report the
-  spend after. Never delete or edit `data/queries/spend.json`.
+  (the first line `python3 scripts/query_augment.py --budget <source>` prints: the typical cost per
+  call and the total the guard counts against the cap), ask for today's DataForSEO dashboard
+  balance, and wait for a yes. Report the spend after. Never delete or edit
+  `data/queries/spend.json` or `data/queries/dashboard.json`, and never run `--reconcile`: only
+  the controller records a dashboard reading, and only when the user has read the dashboard
+  again — a balance already recorded, repeated after new calls, would count those calls at
+  nothing (the script refuses it).
+  **The controller's reading procedure** (agents never run `--reconcile`): run
+  `python3 scripts/query_augment.py --budget <source>` and note its last line, "spend log holds
+  N entries"; ask the user for today's dashboard balance B and whether they topped up since the
+  last reading; run `python3 scripts/query_augment.py --reconcile --balance B --opening O
+  --covers N`, where O is the opening balance with every top-up included (the last reading's
+  `opening_balance_usd` in `data/queries/dashboard.json`, plus any new top-up); then read the
+  opening O back to the user. Never reuse a balance the user gave before calls that N
+  includes: for such a balance, `--covers` is the count the log held when it was read, not N.
 - **Firecrawl is not free:** every Firecrawl search or scrape spends the user's Firecrawl
   credits (the response shows `creditsUsed`). Add them up and put them in the spend report.
   The free rungs are the browser and `curl`.
@@ -37,9 +50,9 @@ the city row's H1 keyword in `data/locations.json`) · `<route>` (ends `/<slug>/
 |---|---|---|
 | 0 | every mode | ok |
 | 1 | every mode | internal error (a bug; nothing written) → stop, report |
-| 2 | every mode | usage: bad slug, route, `--today` or `--cost`; also `--record` refused (a bad cost or a damaged spend log) → see Step 2 |
+| 2 | every mode | usage: bad slug, route, `--today` or `--cost`; also `--record` refused (a bad cost or a damaged spend log) → see Step 2; `--reconcile` refused (controller only: a bad balance, no `--balance`, a first reading without `--opening`, an opening below the last reading's, a `--covers` out of range, a reading dated before the last one, spend that would fall, the last balance repeated after new calls, or a damaged file; also `--balance`, `--opening` or `--covers` given without `--reconcile`) → check the command against the reading procedure (Working rules, Money); for a balance refusal, ask the user to read the dashboard again |
 | 3 | `--preflight` only | cached → make NO call |
-| 4 | `--preflight` only | budget exceeded, or settings/spend log unreadable → no call made; stop, report `data/queries/spend.json`; never work around it |
+| 4 | `--preflight`, `--budget` | `--preflight`: budget exceeded; both modes: settings, spend log or dashboard readings unreadable (`--budget` never exits 4 for the budget itself) → no call made; stop, report the guard's stderr line; never work around it |
 | 5 | build only | short → Step 5 |
 | 6 | build, `--extract-h2` | bad input. Build: a raw input file is unparseable or the wrong shape → fix the named file from its source, never hand-edit around it. `--extract-h2`: the saved HTML is missing or unreadable → capture it again |
 
@@ -61,7 +74,7 @@ re-buying a real response, and only when the user asked for fresh data.
 |---|---|---|
 | `serp_google` | PAID. DataForSEO `serp_organic_live_advanced`, `search_engine` google, location United Kingdom, English, depth 10, People Also Ask click depth 1, the primary keyword | `serp_google_paa` (People Also Ask), `serp_google_related` (related searches) |
 | `serp_bing` | FREE. Read Bing in the browser: `https://www.bing.com/search?q=<kw>&cc=GB&setlang=en-GB`. Do not buy DataForSEO Bing — it returned off-topic results for this keyword in the Manchester pilot | `serp_bing` (its related questions, if any) |
-| `ai_engines` | PAID. DataForSEO `ai_optimization_chat_gpt_scraper`, location United Kingdom. **One engine, one call per page.** Location prompt: "Where can I buy a blue Staffy puppy near <city>, and what should I ask the breeder?"; other pages: the page's core question | `ai_chatgpt` |
+| `ai_engines` | PAID. DataForSEO `ai_optimization_chat_gpt_scraper`, location United Kingdom. **One engine, one call per page.** Location prompt: `location_question(<city>)` in `scripts/query_augment.py` — "Where can I buy a blue Staffy puppy near <place>, and what should I ask the breeder?", the place without a bracketed note; a national row (`city` `UK`) asks "… in the UK, …"; other pages: the page's core question | `ai_chatgpt` |
 
 **Where Google People Also Ask comes from:** the paid Google call above, behind preflight and
 the user's yes. The free fallback (connector missing, out of credit, or the user declines) is
@@ -80,8 +93,9 @@ file (the script records it). Never solve, dodge or retry around a robot check.
    python3 scripts/query_augment.py --record <slug> --source <source> \
      --endpoint "<tool> <params> (response carries no cost; conservative estimate)" --cost <usd>
    ```
-   Connector responses carry no cost field: record `query_typical_call_usd` and say so in
-   `--endpoint`, as above. If the response does show a cost, record that.
+   Connector responses carry no cost field: record the typical cost the first line of
+   `python3 scripts/query_augment.py --budget <source>` prints (`typical call …` — never below
+   `query_typical_call_usd`) and say so in `--endpoint`, as above. If the response does show a cost, record that.
 4. Save the response as `data/queries/raw/<slug>/<source>.response.json`, dropping third-party
    contact details (phone numbers, street addresses, emails, profile/WhatsApp URLs) and noting
    what was dropped in `_saved_note`. `tests/py/test_no_third_party_contacts.py` fails on any
@@ -180,10 +194,10 @@ page, add its bare slug — the route's last segment, e.g. `blue-staffy-puppies-
 for a city page — to `data/facts/rebuilt.json`, the key the other gates use. Until then
 `check:queries` skips it as awaiting rebuild.
 
-**STOP — nested routes first.** Before the first city page goes into `data/facts/rebuilt.json`,
-the facts, link-parity and verbatim gates and pageboard's live key must resolve nested routes
-(`uk-locations/<slug>`) — a Project 5 prerequisite (see `docs/reference/session-log.md` Known
-Issue 39). Until then do not add a city page to `data/facts/rebuilt.json`.
+The facts, link-parity and verbatim gates and pageboard key a city page by the same bare slug
+and find it at `dist/uk-locations/<slug>/` (`scripts/_slugs.py`), so one entry covers every
+gate. A slug listed there whose page is not built is a `check:queries` problem, not a skip;
+the run also prints the slugs still awaiting rebuild.
 
 ## Worked example
 
@@ -204,14 +218,15 @@ read in the browser, marketplaces in the pool, one challenge page recorded as bl
 - Calling a topic "covered" because a competitor's FAQ mentions it.
 - One FAQ block on a location page, or fewer than the picked questions, or hand-swapping a pick.
 - Inventing a city-named question, or localising one so its answer goes beyond its fact.
-- Answering with a figure (a guarantee length, a date) the fact source does not give.
+- Answering with a figure (a guarantee length while `guarantee_days` is null, a date) the fact source does not give.
 - Setting `fact_source` to a bare file, or to a bank row on the same topic that does not answer it.
 - Rewording a question on the page and not updating `covered_by.text`.
 - Forgetting the page's bare slug (the route's last segment) in `data/facts/rebuilt.json`,
   so the gate never checks the page.
 - Preflighting `serp_bing` — it is a free read.
 - Copying the repo to a scratch folder to run the script, or writing browser files into the repo.
-- Deleting or editing `data/queries/spend.json`.
+- Deleting or editing `data/queries/spend.json` or `data/queries/dashboard.json` (a dashboard
+  reading goes in only through the controller's `--reconcile`, never an agent's).
 - Calling Firecrawl free, or leaving its credits out of the spend report.
 - Using `--refresh` to get past a `fallback` or `NOT FETCHED` file (it no longer blocks).
 - Capturing a competitor page in the browser or with Firecrawl when `curl` gets the source HTML.

@@ -7,7 +7,7 @@ effort: high
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
 
 ---
 
@@ -15,9 +15,9 @@ effort: high
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -34,10 +34,10 @@ You work entirely from local CSV exports. Never call the GSC API unless the MCP 
 
 ## On Startup — Read These First
 
-1. **Read** `docs/reference/top-pages.md` — current city (not ported — source repo only)
-2. **Run** `ls data/analytics/` — find the most recent GSC export folder
+1. **Read** `docs/reports/top-pages.md` — the traffic baseline (deferred to project 6)
+2. **Run** `ls data/analytics/` — find the most recent GSC export folder (NOT FETCHED until project 6: the folder does not exist yet)
 3. **Read** the CSV files inside that folder
-4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Full analysis or specific question (e.g., 'which pages are position 5–20 right now'?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+4. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Full analysis or specific question (e.g., 'which pages are position 5–20 right now'?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -58,16 +58,9 @@ ls data/analytics/
 
 ---
 
-## What's Worth Improving (BSUK GSC Baseline — 2026-04-28)
+## Baseline
 
-| Page | Clicks | Impressions | Position | Priority |
-|------|--------|-------------|----------|----------|
-| Homepage | 28 | 14,915 | 45.6 | Title/meta fix — massive impression gap |
-| /product/blue-staffy-for-sale-near-me/ | 53 | 713 | 41.8 | High intent, pos 41 = page 4 |
-| /product/blue-staffy-for-sale-glasgow/ | 42 | 1,446 | 21.8 | Page 2, just off page 1 |
-| /product/buy-intelligent-blue-staffy-for-sale-ca/ | 34 | 1,537 | 14.0 | Best ranking page — protect |
-| /buy-blue-staffy-puppies-uk/ | 18 | 763 | 15.4 | Shipping intent, near page 1 |
-| /blue-staffy-uk-breeders/ | 13 | 1,788 | 21.2 | High impression, low CTR |
+None. No Search Console data has been pulled for BlueStaffyUK (NOT FETCHED until project 6). The source repo pinned a dated baseline table here; its pages and numbers were another site's, and they are gone.
 
 ---
 
@@ -151,7 +144,7 @@ python3 - <<'EOF'
 import csv
 with open('data/analytics/[export-folder]/Queries.csv') as f:
     rows = list(csv.DictReader(f))
-cites_queries = [r for r in rows if any(term in r.get('Query','').lower() for term in ['LICENCE_CLAIM_PLACEHOLDER', 'documented', 'documentation', 'legal', 'permit'])]
+cites_queries = [r for r in rows if any(term in r.get('Query','').lower() for term in ['licence', 'licensed', 'documented', 'documentation', 'legal', 'kc registered'])]
 cites_queries.sort(key=lambda x: float(x.get('Impressions','0')), reverse=True)
 print("=== LICENCE_CLAIM_PLACEHOLDER Query Gap ===")
 for r in cites_queries[:15]:
@@ -221,7 +214,7 @@ Mobile CTR: [X%] | Desktop CTR: [X%] | Gap: [X%]
 2. ...
 ```
 
-After generating report, **update `docs/reference/top-pages.md`** with new findings. (not ported — source repo only)
+After generating the report, **update `docs/reports/top-pages.md`** with new findings (deferred to project 6).
 
 ---
 
@@ -229,8 +222,8 @@ After generating report, **update `docs/reference/top-pages.md`** with new findi
 
 1. **Read local CSV files** — never call GSC API unless MCP explicitly authorized
 2. **Python for CSV parsing** — bash `awk` for simple counts only
-3. **Update top-pages.md** after every analysis
+3. **Update `docs/reports/top-pages.md`** after every analysis (deferred to project 6)
 4. **Bucket by priority** — critical / high / opportunity — every report
-5. **Save report** — write to `sessions/YYYY-MM-DD-gsc-analysis.md` (deferred — `sessions/` is created on first write)
+5. **Save report** — write to `docs/superpowers/sessions/<YYYY-MM-DD>-gsc-analysis.md` (inactive until project 6)
 6. **Position data is an average** — note this caveat in all reports
 7. **LICENCE_CLAIM_PLACEHOLDER query gap** — always check for "LICENCE_CLAIM_PLACEHOLDER" / "documented" queries with no matching BSUK page

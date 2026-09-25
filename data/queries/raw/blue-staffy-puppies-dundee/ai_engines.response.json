@@ -1,0 +1,72 @@
+{
+  "_saved_note": "DataForSEO ai_optimization_chat_gpt_scraper, location_name United Kingdom, language_code en, called 2026-09-25 for the query: Where can I buy a blue Staffy puppy near Dundee, and what should I ask the breeder? The response carries no keyword field, so the query is recorded here. Saved as returned: the answer text and sources whole; nothing dropped (no phone, email, street address, postcode, WhatsApp, maps or social-profile link, and no local businesses in the response).",
+  "id": "09250806-2496-0629-0000-d4d1a7dc2747",
+  "status_code": 20000,
+  "status_message": "Ok.",
+  "items": [
+    {
+      "type": "chat_gpt_text",
+      "rank_group": 1,
+      "rank_absolute": 1,
+      "markdown": "Yes. I’d start with **The Royal Kennel Club’s Find a Puppy service**, rather than relying on classified adverts. It lets you filter Staffordshire Bull Terriers by location and whether the parents have been health tested. [Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com) \n\nI also found a **Dundee-area listing for blue Staffy puppies**, but I’d treat classified listings as leads rather than endorsements and independently verify the breeder and health paperwork. [freedoglistings.co.uk](https://www.freedoglistings.co.uk/Puppies-For-Sale-Details?id=37599&t=StaffordshireBullTerrier-Dundee&utm_source=chatgpt.com) \n\n[royalkennelclub.com](https://www.royalkennelclub.com/search/find-a-puppy/?utm_source=chatgpt.com)\n\n### What to ask the breeder\n\nFor a Staffordshire Bull Terrier, I'd specifically ask:\n\n- **Have both parents had the recommended health tests?** Ask to see the actual certificates/results, not just “health checked.” The Royal Kennel Club recommends DNA testing for **HC-HSF4-2 (hereditary cataracts)** and **L-2-HGA**, plus **elbow testing** and **eye testing**. [The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)\n- **Has the whole litter had a clinical eye examination before leaving?** The Staffordshire Bull Terrier breed club guidance specifically says litter eye screening should be done before puppies leave. [scsbts.com](https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com)\n- **Can I see the mother with the puppies?** Ideally see the puppies in the breeder's home and observe the dam's behaviour and condition.\n- **Can I see the sire's details and health results?** If he isn't present, ask for his registered name/KC details so you can verify them.\n- **What is the parents' COI (coefficient of inbreeding)?** Ask for the actual figure and how it compares with the breed average.\n- **What socialisation have the puppies had?** Ask about household noises, people, handling, car journeys, other dogs, grooming, etc.\n- **What veterinary care has been done?** Ask about microchipping, vaccinations, worming, vet examination and what paperwork you'll receive.\n- **Are you licensed if required?** In Scotland, check the relevant local-authority licensing requirements if the breeder is producing enough litters to require a licence.\n- **Will you take the dog back if circumstances change?** A responsible breeder should remain interested in the puppy throughout its life.\n- **Can I have a written contract and pedigree/KC registration documentation?**\n\n### One important point about “blue”\n\nBlue is **a recognised Staffordshire Bull Terrier colour** under the current Royal Kennel Club breed standard, so the colour itself isn't a red flag. [Royal Kennel Club](https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com) \n\nHowever, I'd be wary of anyone charging a large premium specifically because a puppy is “rare blue,” or prioritising colour over health and temperament. The Kennel Club itself says colour should be secondary to health and temperament. [Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com) \n\n**Big red flags:** refusing to let you see the puppies with their mother, wanting to meet in a car park, pressure to pay a deposit immediately, multiple unrelated litters/breeds, missing original health-test results, or claims such as “KC registered = health tested.”\n\nIf you tell me **how far you're willing to travel from Dundee (e.g. 30, 60 or 100 miles)**, I can look for current blue Staffy litters and breeders in Dundee, Angus, Fife, Perthshire and the wider Scottish area and separate the listings worth investigating from the ones I'd approach cautiously.\n\n",
+      "sources": [
+        {
+          "type": "chat_gpt_source",
+          "title": "Find a puppy | The Royal Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/find-a-puppy/?ActiveCertifiedBreeder=False&Breeds=Staffordshire+Bull+Terrier&Distance=15&FemaleDogs=False&GeneralRescueClubs=False&HealthTested=False&MaleDogs=False&SearchRescueClubs=False&SortNearest=False&TotalResults=0&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Blue Staffordshire Bull Terrier puppies - Dundee",
+          "domain": "www.freedoglistings.co.uk",
+          "url": "https://www.freedoglistings.co.uk/Puppies-For-Sale-Details?id=37599&t=StaffordshireBullTerrier-Dundee&utm_source=chatgpt.com",
+          "source_name": "freedoglistings.co.uk",
+          "markdown": "[freedoglistings.co.uk](https://www.freedoglistings.co.uk/Puppies-For-Sale-Details?id=37599&t=StaffordshireBullTerrier-Dundee&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Royal Kennel Club — Find a Puppy",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/find-a-puppy/?utm_source=chatgpt.com",
+          "source_name": "royalkennelclub.com",
+          "markdown": "[royalkennelclub.com](https://www.royalkennelclub.com/search/find-a-puppy/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.thekennelclub.org.uk",
+          "url": "https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com",
+          "source_name": "The Kennel Club",
+          "markdown": "[The Kennel Club](https://www.thekennelclub.org.uk/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?gad=1&utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Buying a Puppy",
+          "domain": "www.scsbts.com",
+          "url": "https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com",
+          "source_name": "scsbts.com",
+          "markdown": "[scsbts.com](https://www.scsbts.com/sbt-welfare-and-rescue/buying-a-puppy/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breed Standards | Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/breed-standards/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)"
+        },
+        {
+          "type": "chat_gpt_source",
+          "title": "Staffordshire Bull Terrier | Breeds A to Z | The Kennel Club",
+          "domain": "www.royalkennelclub.com",
+          "url": "https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com",
+          "source_name": "Royal Kennel Club",
+          "markdown": "[Royal Kennel Club](https://www.royalkennelclub.com/search/breeds-a-to-z/breeds/terrier/staffordshire-bull-terrier/?utm_source=chatgpt.com)"
+        }
+      ]
+    }
+  ]
+}

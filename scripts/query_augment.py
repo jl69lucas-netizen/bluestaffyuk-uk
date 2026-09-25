@@ -12,6 +12,21 @@ scripts/query_coverage_check.py gates.
   query_augment.py --record SLUG --source SOURCE --endpoint NAME --cost USD
       exit 0 recorded · 2 refused (a free source such as serp_bing, a bad cost, or a damaged
       spend log; nothing written)
+  query_augment.py --reconcile --balance USD [--opening USD] [--covers N] [--today YYYY-MM-DD]
+      appends today's DataForSEO dashboard balance to data/queries/dashboard.json, covering
+      every call in the spend log so far (or the first N, when calls were logged after the
+      user read the dashboard); the guard then counts those calls at their real cost
+      (opening − balance) instead of their logged estimates. --opening (the balance before
+      the first paid call, plus any top-up) is needed on the first reading only.
+      exit 0 recorded · 2 refused (a bad amount or N, a date before the last reading's,
+      spend that would fall, the last reading's balance repeated over new calls, or a
+      damaged file; nothing written). --balance, --opening and --covers go only with
+      --reconcile. Run by the controller only, with a balance the user has just read —
+      never by an agent.
+  query_augment.py --budget SOURCE
+      prints what the guard counts: the total against query_total_budget_usd, the typical
+      call for SOURCE, how many more such calls fit; then how many entries the spend log
+      holds · exit 0 · 4 unreadable
   query_augment.py --extract-h2 FILE.html
       prints {"h2": [content H2s], "h2_all": N, "blocked": bool} (advert cards and
       navigation dropped; blocked = a bot challenge page) — how a competitors.json page's
@@ -55,6 +70,20 @@ FAQ_TOTAL_MAX = 20
 FAQ_TOPIC_CAP = 2      # questions per topic per FAQ block, unless the block cannot fill
 EXTRA_SECTIONS = 3
 SECTION_FLOOR = 9      # a location page never has fewer body sections than this
+# The ai_engines buyer question for a data/locations.json row (bsuk-query-augmentation asks it,
+# bsuk-llm-keyword-intel checks it): one rule for every row, never a per-slug list.
+LOCATION_QUESTION = "Where can I buy a blue Staffy puppy {where}, and what should I ask the breeder?"
+
+
+def place_name(city):
+    """A row's `city` as a place: a bracketed note on the page's kind dropped ("Glasgow (breeding dogs)" -> "Glasgow")."""
+    return re.sub(r"\s*\([^)]*\)", "", city).strip()
+
+
+def location_question(city):
+    """"near <place>" for a city; a national row (place UK: the UK hub, the licensed-breeder page) asks "in the UK"."""
+    place = place_name(city)
+    return LOCATION_QUESTION.format(where="in the UK" if place == "UK" else f"near {place}")
 OUTLIER_RATIO = 1.5
 
 # One spelling per thing, so "Staffie pups" and "staffy puppies" merge.
@@ -178,15 +207,56 @@ class Short(Exception):
         self.blocked = []   # (block, question) pairs, set by build()
 
 
+def _unproven_claims(root):
+    """Compiled patterns of the evidence-ledger claims still at proof "NOT FETCHED".
+
+    rules/copy.md keeps a health or credential claim NOT FETCHED until its certificate is on
+    file, and data/quality/evidence-ledger.json records each such claim with that proof. A
+    bank row whose ANSWER makes one of them is not a fact source: its question may still be
+    asked, but it is blocked as "unverified fact" rather than answered from the row (Known
+    Issue 40). A missing or unreadable ledger records nothing, so nothing is withheld.
+    """
+    try:
+        ledger = json.loads((Path(root) / "data/quality/evidence-ledger.json")
+                            .read_text(encoding="utf-8"))
+    except (OSError, ValueError, UnicodeDecodeError):
+        return []
+    claims = ledger.get("claims") if isinstance(ledger, dict) else None
+    out = []
+    for c in claims if isinstance(claims, list) else []:
+        if not (isinstance(c, dict) and isinstance(c.get("pattern"), str)):
+            continue
+        if (c.get("proof") or "NOT FETCHED") != "NOT FETCHED":
+            continue
+        try:
+            out.append(re.compile(c["pattern"], re.I))
+        except re.error as e:
+            # Skipped, but never silently: a claim whose pattern cannot run withholds nothing.
+            print(f"query_augment.py: evidence-ledger claim {c.get('id')!r}: pattern does not "
+                  f"compile ({e}); skipped", file=sys.stderr)
+    return out
+
+
+def _backing(row, unproven):
+    """A bank row's source, or None when its answer makes an unproven ledger claim."""
+    answer = row.get("a")
+    if isinstance(answer, str) and any(p.search(answer) for p in unproven):
+        return None
+    return row.get("source")
+
+
 def _bank_rows(root):
-    """{faq.json row id: (its question, its source)}; empty when the bank is missing or bad."""
+    """{faq.json row id: (its question, its source)}; empty when the bank is missing or bad.
+
+    The source is None for a row whose answer makes an unproven ledger claim (_backing)."""
     try:
         rows = json.loads((Path(root) / "data/faq.json").read_text(encoding="utf-8"))
     except (OSError, ValueError, UnicodeDecodeError):
         return {}
     if not isinstance(rows, list):
         return {}
-    return {r["id"]: (r.get("q") if isinstance(r.get("q"), str) else "", r.get("source"))
+    unproven = _unproven_claims(root)
+    return {r["id"]: (r.get("q") if isinstance(r.get("q"), str) else "", _backing(r, unproven))
             for r in rows if isinstance(r, dict) and "id" in r}
 
 
@@ -789,25 +859,191 @@ def _is_cached(slug, source, root):
     return not isinstance(data, dict) or data.get("status") not in ("fallback", "NOT FETCHED")
 
 
-def _budget_check(slug, source, root, today):
+DASHBOARD_SOURCE = "DataForSEO dashboard balance stated by the user"
+DAY_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+
+def _whole(n):
+    return isinstance(n, int) and not isinstance(n, bool)
+
+
+def _step_problem(last, cur):
+    """Why reading `cur` cannot follow reading `last`, or None. The same rules hold for a new
+    reading (reconcile) and for every pair in the file (load_dashboard), so a hand-edited
+    history fails closed exactly as a bad new reading is refused."""
+    if cur["date"] < last["date"]:
+        return (f"date {cur['date']} is earlier than the last reading's {last['date']}: "
+                "readings are appended in date order")
+    if cur["opening_balance_usd"] < last["opening_balance_usd"]:
+        return (f"opening {cur['opening_balance_usd']} is below the last reading's "
+                f"{last['opening_balance_usd']}: the opening only grows (add a top-up to it)")
+    was = round(last["opening_balance_usd"] - last["balance_usd"], 6)
+    now = round(cur["opening_balance_usd"] - cur["balance_usd"], 6)
+    if now < was:
+        return (f"real spend would fall from {was} to {now}: a balance cannot rise "
+                "without a top-up — add the top-up to --opening")
+    since = cur["covers_log_entries"] - last["covers_log_entries"]
+    if now == was and since:
+        # A balance already recorded is not a new reading: covering the calls made since
+        # it would count them at nothing. Only a fresh read of the dashboard may.
+        return (f"same balance as the last reading ({last['balance_usd']}, "
+                f"{last['date']}) but {since} calls logged since it — read the "
+                "dashboard again")
+    return None
+
+
+def load_dashboard(root, log_len):
+    """The dashboard readings (data/queries/dashboard.json), checked; [] when there is none.
+
+    Append-only, like the spend log: each reading is one balance the user read off the
+    DataForSEO dashboard, and `covers_log_entries` is how many spend-log entries it already
+    includes. Every reading is checked on its own and against the one before it (the rules
+    reconcile applies). Anything malformed raises ValueError, which the guard turns into
+    exit 4."""
+    path = Path(root) / "data/queries/dashboard.json"
+    readings = _read_json(path, [])
+    if not isinstance(readings, list):
+        raise ValueError("data/queries/dashboard.json is not a list")
+    covered = 0
+    for i, r in enumerate(readings):
+        where = f"data/queries/dashboard.json entry {i}"
+        if not isinstance(r, dict):
+            raise ValueError(f"{where} is not an object")
+        bal, opening, n = r.get("balance_usd"), r.get("opening_balance_usd"), r.get("covers_log_entries")
+        if not (_finite(bal) and _finite(opening) and 0 <= bal <= opening):
+            raise ValueError(f"{where}: balance_usd and opening_balance_usd must be finite, "
+                             "with 0 <= balance <= opening")
+        if not (_whole(n) and covered <= n <= log_len):
+            raise ValueError(f"{where}: covers_log_entries must be a whole number from "
+                             f"{covered} to {log_len} (the spend log's length)")
+        if not (isinstance(r.get("date"), str) and DAY_RE.fullmatch(r["date"])):
+            raise ValueError(f"{where}: date must be YYYY-MM-DD")
+        problem = _step_problem(readings[i - 1], r) if i else None
+        if problem:
+            raise ValueError(f"{where}: {problem}")
+        covered = n
+    return readings
+
+
+def _typical_setting(s):
+    """query_typical_call_usd: a finite amount above 0. Only a missing key falls back to
+    DEFAULT_TYPICAL_CALL_USD — an explicit 0 would let every call through at no cost."""
+    if "query_typical_call_usd" not in s:
+        return DEFAULT_TYPICAL_CALL_USD
+    v = s["query_typical_call_usd"]
+    if not (_finite(v) and v > 0):
+        raise ValueError(f"query_typical_call_usd must be a finite amount above 0, got {v!r}")
+    return v
+
+
+def spend_basis(source, root=ROOT):
+    """(total, typical, basis) as the guard counts them.
+
+    With no dashboard reading: total = every logged cost, typical = the larger of
+    query_typical_call_usd and every cost logged for `source` (the rule before Known Issue 45
+    closed). With one: the calls the latest reading covers count at their REAL cost, opening
+    minus balance, and only calls logged after it add their logged cost and set `typical`.
+    Raises on an unreadable file, a cost that is not a finite number, or a
+    query_typical_call_usd that is not a finite amount above 0."""
     s = load_settings(root)
-    page_cap, total_cap = s.get("query_budget_usd"), s.get("query_total_budget_usd")
-    if not (_finite(page_cap) and _finite(total_cap)):
-        return EXIT_BUDGET, "query_budget_usd / query_total_budget_usd missing or not a number"
+    configured = _typical_setting(s)
     log = load_spend(root)
     if not isinstance(log, list):
         raise TypeError("data/queries/spend.json is not a list")
-    configured = s.get("query_typical_call_usd") or DEFAULT_TYPICAL_CALL_USD
-    seen = [e["cost_usd"] for e in log if e["source"] == source]
-    typical = max(seen + [configured])
-    total = round(sum(e["cost_usd"] for e in log), 6)
+    if not all(_finite(e["cost_usd"]) for e in log):
+        raise ValueError("a cost in data/queries/spend.json is not a finite number")
+    readings = load_dashboard(root, len(log))
+    if readings:
+        last = readings[-1]
+        covered = last["covers_log_entries"]
+        later = log[covered:]
+        total = last["opening_balance_usd"] - last["balance_usd"] + sum(e["cost_usd"] for e in later)
+        basis = (f" (dashboard {last['date']} covers {covered} of {len(log)} log entries)")
+    else:
+        later, basis = log, ""
+        total = sum(e["cost_usd"] for e in log)
+    typical = max([e["cost_usd"] for e in later if e["source"] == source] + [configured])
+    return round(total, 6), typical, basis
+
+
+def reconcile(balance, opening=None, root=ROOT, today=None, covers=None):
+    """Append one dashboard reading that covers the first `covers` spend-log entries (default:
+    every entry so far). Refuses (with ValueError, nothing written) a non-finite or negative
+    amount, a balance above the opening, a first reading with no opening, `covers` outside the
+    last reading's coverage .. the log's length, a date before the last reading's, an opening
+    below the last one, real spend that would fall, real spend unchanged while the reading
+    covers calls the last one did not (a balance repeated, not read again), and a spend log or
+    dashboard file it cannot read.
+
+    `covers` is how many logged calls the user's balance already includes: give it when calls
+    were logged after the user read the dashboard, so those keep their logged cost.
+
+    Only the controller runs this, and only with a balance the user has just read off the
+    dashboard; the agents never do."""
+    today = today or _utc_today()
+    if not DAY_RE.fullmatch(str(today)):
+        raise ValueError(f"today must be a YYYY-MM-DD UTC date, got {today!r}")
+    log = load_spend(root)
+    if not isinstance(log, list):
+        raise ValueError("data/queries/spend.json is not a list")
+    readings = load_dashboard(root, len(log))
+    if opening is None:
+        if not readings:
+            raise ValueError("the first reading needs --opening (the balance before the first "
+                             "paid call)")
+        opening = readings[-1]["opening_balance_usd"]
+    balance, opening = float(balance), float(opening)
+    if not (math.isfinite(balance) and math.isfinite(opening) and 0 <= balance <= opening):
+        raise ValueError(f"need finite amounts with 0 <= balance <= opening, got balance "
+                         f"{balance!r} and opening {opening!r}")
+    floor = readings[-1]["covers_log_entries"] if readings else 0
+    if covers is None:
+        covers = len(log)
+    if not (_whole(covers) and floor <= covers <= len(log)):
+        raise ValueError(f"covers must be a whole number from {floor} (the last reading's) to "
+                         f"{len(log)} (the spend log's length), got {covers!r}")
+    reading = {"date": today, "balance_usd": balance, "opening_balance_usd": opening,
+               "covers_log_entries": covers, "source": DASHBOARD_SOURCE}
+    problem = _step_problem(readings[-1], reading) if readings else None
+    if problem:
+        raise ValueError(problem)
+    _write_json(Path(root) / "data/queries/dashboard.json", readings + [reading])
+    return reading
+
+
+def _caps(root):
+    s = load_settings(root)
+    page_cap, total_cap = s.get("query_budget_usd"), s.get("query_total_budget_usd")
+    return (page_cap, total_cap) if _finite(page_cap) and _finite(total_cap) else (None, None)
+
+
+def _budget_check(slug, source, root, today):
+    page_cap, total_cap = _caps(root)
+    if page_cap is None:
+        return EXIT_BUDGET, "query_budget_usd / query_total_budget_usd missing or not a number"
+    total, typical, basis = spend_basis(source, root)
     page = spend_for(slug, root, day=today)
     if not all(_finite(x) for x in (typical, total, page)):
         return EXIT_BUDGET, "a cost in the spend log or settings is not a finite number"
     if round(page + typical, 6) > page_cap or round(total + typical, 6) > total_cap:
         return EXIT_BUDGET, (f"budget: page {page} + {typical} vs {page_cap}, "
-                             f"total {total} + {typical} vs {total_cap}")
+                             f"total {total} + {typical} vs {total_cap}{basis}")
     return EXIT_OK, None
+
+
+def budget_line(source, root=ROOT):
+    """What `--budget SOURCE` prints: the guard's line, then the spend log's length (what a
+    reading made now would cover). Raises what spend_basis raises."""
+    page_cap, total_cap = _caps(root)
+    if page_cap is None:
+        raise ValueError("query_budget_usd / query_total_budget_usd missing or not a number")
+    total, typical, basis = spend_basis(source, root)
+    if not _finite(typical) or typical <= 0:
+        raise ValueError("query_typical_call_usd is not a positive number")
+    fit = max(0, math.floor(round((total_cap - total) / typical, 6)))
+    return (f"budget {source}: total counted {total} of cap {total_cap}{basis}; typical call "
+            f"{typical}; {fit} more calls of this source fit the total cap; page cap {page_cap} "
+            f"per slug per day\nspend log holds {len(load_spend(root))} entries")
 
 
 def preflight(slug, source, root=ROOT, refresh=False, today=None):
@@ -825,7 +1061,7 @@ def preflight(slug, source, root=ROOT, refresh=False, today=None):
     try:
         code, reason = _budget_check(slug, source, root, today)
     except (ValueError, KeyError, TypeError, AttributeError) as exc:
-        code, reason = EXIT_BUDGET, f"cannot read settings or spend log: {exc}"
+        code, reason = EXIT_BUDGET, f"cannot read settings, spend log or dashboard: {exc}"
     if reason:
         print(f"preflight {slug}/{source}: {reason}", file=sys.stderr)
     return code
@@ -903,14 +1139,14 @@ def bank_candidates(root=ROOT):
         return [], "NOT FETCHED"
     if not isinstance(rows, list):
         raise BadInput(path, "top level must be a list")
-    out = []
+    out, unproven = [], _unproven_claims(root)
     for i, r in enumerate(rows):
         if not (isinstance(r, dict) and isinstance(r.get("q"), str)
                 and isinstance(r.get("id"), str)):
             raise BadInput(path, f"row {i} must be an object with string q and id")
         if not _opt_str(r.get("source")):
             raise BadInput(path, f"row {i}: source must be a string or null")
-        out.append((r["q"], "bank", f"bank:{r['id']}", r.get("source")))
+        out.append((r["q"], "bank", f"bank:{r['id']}", _backing(r, unproven)))
     return out, "ok"
 
 
@@ -1082,12 +1318,45 @@ def main(argv=None):
     ap.add_argument("--route")
     ap.add_argument("--today")
     ap.add_argument("--extract-h2", metavar="FILE")
+    ap.add_argument("--reconcile", action="store_true")
+    ap.add_argument("--balance", type=float)
+    ap.add_argument("--opening", type=float)
+    ap.add_argument("--covers", type=int)
+    ap.add_argument("--budget", metavar="SOURCE", choices=PAID_SOURCES)
     a = ap.parse_args(argv)
     root = Path(a.root)
-    modes = [m for m in (a.preflight, a.record, a.slug, a.extract_h2) if m is not None]
+    modes = [m for m in (a.preflight, a.record, a.slug, a.extract_h2,
+                         a.reconcile or None, a.budget) if m is not None]
     if len(modes) != 1:
-        ap.error("give exactly one of --preflight SLUG, --record SLUG, --extract-h2 FILE "
-                 "or a build SLUG")
+        ap.error("give exactly one of --preflight SLUG, --record SLUG, --reconcile, "
+                 "--budget SOURCE, --extract-h2 FILE or a build SLUG")
+    if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
+        ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
+    if not a.reconcile and any(x is not None for x in (a.balance, a.opening, a.covers)):
+        ap.error("--balance, --opening and --covers go only with --reconcile")
+    if a.reconcile:
+        if a.balance is None:
+            ap.error("--reconcile needs --balance USD (today's DataForSEO dashboard balance)")
+        try:
+            r = reconcile(a.balance, a.opening, root, a.today, a.covers)
+        except (ValueError, TypeError) as e:   # nothing written
+            print(f"query_augment.py: --reconcile refused: {e}", file=sys.stderr)
+            return EXIT_USAGE
+        spent = round(r["opening_balance_usd"] - r["balance_usd"], 6)
+        later = len(load_spend(root)) - r["covers_log_entries"]
+        print(f"recorded dashboard reading {r['date']}: balance {r['balance_usd']} of opening "
+              f"{r['opening_balance_usd']} — real spend {spent} over the "
+              f"{r['covers_log_entries']} logged calls"
+              + (f"; {later} later calls count at their logged cost" if later else ""))
+        return EXIT_OK
+    if a.budget:
+        try:
+            print(budget_line(a.budget, root))
+        except (ValueError, KeyError, TypeError, AttributeError) as e:
+            print(f"query_augment.py: cannot read settings, spend log or dashboard: {e}",
+                  file=sys.stderr)
+            return EXIT_BUDGET
+        return EXIT_OK
     if a.extract_h2 is not None:
         try:
             html = decode_html(Path(a.extract_h2).read_bytes())
@@ -1105,8 +1374,6 @@ def main(argv=None):
     slug = modes[0]
     if not SLUG_RE.fullmatch(slug):
         ap.error(f"slug must match ^[a-z0-9-]+$, got {slug!r}")
-    if a.today is not None and not re.fullmatch(r"\d{4}-\d{2}-\d{2}", a.today):
-        ap.error(f"--today must be a YYYY-MM-DD UTC date, got {a.today!r}")
     if a.preflight:
         if a.source not in CANDIDATE_SOURCES:
             ap.error("--source must be one of " + ", ".join(CANDIDATE_SOURCES))

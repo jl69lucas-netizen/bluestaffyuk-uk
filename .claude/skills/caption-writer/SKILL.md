@@ -1,6 +1,6 @@
 ---
 name: caption-writer
-description: Writes captions for BSUK video content — YouTube auto-caption edits, TikTok/Reels overlay text, on-screen callouts, and natural language video captions. Adapts spoken word to readable on-screen text. Reads content/social/BSUK-Natural-Video-Captions.md for existing examples.
+description: Writes captions for BSUK video content — YouTube auto-caption edits, TikTok/Reels overlay text, on-screen callouts, and natural language video captions. Adapts spoken word to readable on-screen text. Takes each video's id and title from data/settings.json youtube_embeds; no caption library exists in this repo yet.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -23,7 +23,7 @@ These are different outputs. Always confirm which type before writing.
 
 ## On Startup — Read These First
 
-1. **Check** `content/social/BSUK-Natural-Video-Captions.md` if it exists
+1. **Check** `data/settings.json` `youtube_embeds` for the video's id (no caption library exists in this repo yet)
 2. **Ask user:** "Are we writing accessibility captions (SRT), on-screen overlays (TikTok/Reels), or both? What's the video?"
 
 ---
@@ -49,7 +49,7 @@ Next caption block.
 - **Timing:** Match exactly to speech rhythm — don't rush or lag
 - **Punctuation:** Include commas and periods — they help readability
 - **Names:** Always capitalize Lisa, Bright, Staffordshire Bull Terrier, KC registration, BSUK
-- **Numbers:** Write as numerals (£1,500 not "fifteen hundred pounds")
+- **Numbers:** Write as numerals (£1,500), never an amount spelled out in words
 - **Never:** Add editorial commentary, descriptions of action, or text not spoken
 
 ### Working from a Transcript
@@ -77,7 +77,7 @@ Purpose: Emphasize key points, hook viewers watching on mute, drive action
 
 | Type | When to Use | Example |
 |------|------------|---------|
-| Hook | First 3 seconds | "Lifetime Health Guarantee??" |
+| Hook | First 3 seconds | "What Comes With Every Puppy??" |
 | Key stat | When stating a number | "£1,500 starting price" |
 | Trust signal | When mentioning credentials | "KC registered + microchipped ✓" |
 | Transition | Between sections | "But here's the thing..." |
@@ -102,7 +102,7 @@ Position: Center
 Duration: 3 seconds
 
 ## [0:04–0:06]
-"Licensed breeder vs car park handover"
+"Home-raised puppy vs car park handover"
 Position: Bottom
 Duration: 2 seconds
 ```

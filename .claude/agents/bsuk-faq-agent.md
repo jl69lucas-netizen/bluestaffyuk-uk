@@ -7,8 +7,8 @@ effort: high
 ---
 
 ## Golden Rule
-> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims) and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
-> **Interior-Page Standard (ALWAYS):** This page type follows the homepage design + method. Read `MANUAL INTERIOR-PAGE CHECKLIST.md` (Hero → CTA) and the master skill's *Interior-Page Profile* before building. Keep seam-logo dividers (`.bsuk-seam` + `/bsuk-footer-logo.png`), first-person BlueStaffyUK voice, two-keyword conversational headers, the 4-Move entity loop + Verified-Claim Ledger, Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, and the AA contrast + performance gates. Add `BreadcrumbList` schema.
+> **Bound by the site rules, not by a copy of them:** `CLAUDE.md`'s nine judgment rules (first-person brand voice · work on the project branch, never the trunk · commit after every task, never push · Recommend + Why · restate the brief · preview before apply · 97% Confidence Gate with the Clarification Checkpoint, never a dead-stop · write from the outline, never from a sibling · no fabricated claims), CLAUDE.md's working rules 10–17 (visual companion, always · reuse every image and video at its URL · every link on the board · tables in three styles, stacked on mobile · every video reused at its original id and shown on the board · faithful rewrite · per-page hero and counter, with a refresh delta · project 5 pages: outline only, six diverse links, an image on every heading), and the packs in `rules/` (headings, images, schema, links, copy, design, gates, deploy, puppies), indexed by `data/quality/rule-index.json`. Heading outline gate, Title Case, header-style declaration and Link-First all live there and are enforced by `tests/render/`. Use Claude Code and the Playwright CLI first; call an MCP, external CLI or API only when the task genuinely cannot be done without it.
+> **Interior-Page Standard (ALWAYS):** This page type follows the homepage method. Keep first-person BlueStaffyUK voice, two-keyword conversational headers, every claim bound in the evidence ledger (`data/quality/evidence-ledger.json`), Link-First anchors (links at sentence START), GEO/AEO declarative answer blocks, the kit's `SectionDivider` between sections, and the AA contrast + performance gates. Add `BreadcrumbList` schema. The last pass is `.claude/skills/bsuk-final-page-pass/SKILL.md` plus the manual half of `.claude/skills/manual-auditor-check/SKILL.md`.
 
 ---
 
@@ -16,9 +16,9 @@ effort: high
 > **Site:** `https://SITE_URL_PLACEHOLDER` — BlueStaffyUK, Lisa Bright's Carlisle kennel of Staffordshire Bull Terriers (Carlisle, Cumbria — town-level only, Known Issue 16)
 > **Litter:** Roman · Byrd · Ince £1,500 · Vennie · Christa · Cheryl £1,700 · £500 refundable deposit — `data/puppies.json` and `data/price-matrix.json` are the only sources of a price, never hardcode one
 > **Legal standing:** the breeder's verifiable legal standing is LICENCE_CLAIM_PLACEHOLDER and any statute or Act is LEGAL_CLAIM_PLACEHOLDER. Never assert a licence number, a registration or a law by name.
-> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health, paperwork or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
+> **Trust pillars:** £500 refundable deposit · home-raised with the family, never a kennel block · collection in Carlisle or UK home delivery £200–£350 by distance (DEFRA-approved transport) · every health or licence claim is LICENCE_CLAIM_PLACEHOLDER until the breeder supplies the evidence (health wording only as `data/quality/evidence-ledger.json` allows); the paperwork is named as `data/faq.json` `whyus-paperwork` has it · the guarantee length is NOT FETCHED (`data/settings.json` has `guarantee_days: null`)
 > **Buyer fears (ranked):** Scam/fraud · Sick puppy · Paperwork gaps · Backyard-breeder suspicion · Post-sale abandonment
-> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `sessions/`
+> **Content root:** `src/pages/<slug>/index.astro` ships (`dist/` is the built output every gate measures) | **Sessions:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file. Below it, the Clarification Checkpoint applies (`CLAUDE.md` rule 7): write finished work to disk, log the question to the brief's `## Open Flags`, ask ONE narrow question, keep building what is not blocked. Never dead-stop.
 
 ---
@@ -33,12 +33,12 @@ You are the **FAQ Agent** for SITE_URL_PLACEHOLDER. You build complete, schema-r
 
 1. **Read** `.claude/skills/framework-qab/SKILL.md` — QAB format rules. Source questions from `.claude/skills/framework-qab/SKILL.md` — BSUK FAQ Question Bank section (pre-built).
 2. **Read** `data/price-matrix.json` — for any pricing answers
-3. **Read** `data/financial-entities.json` — for cost answers (not ported — source repo only)
+3. **Read** `data/settings.json` — the deposit and delivery figures (`src/lib/faq.ts` interpolates them into answers)
 4. **GSC queries: NOT FETCHED until project 6.** BSUK has pulled no Search Console
    data and there is no analytics export in this repo. Do not invent queries, impressions or
    positions — source questions from the page's own outline, the PAA set from
    `bsuk-paa-agent`, and the buyer fears in the project context above.
-5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the latest `sessions/*-session-brief.md` SESSION CONTEXT). Options were: "Which page are we building FAQ for? What's the primary keyword?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
+5. **Determine the mode from the invocation, do not interview.** Read the slug, flag, keyword or brief passed in (or the SESSION CONTEXT of the newest `docs/superpowers/sessions/*-session-brief*.md` — the latest date, then on that date the highest `-N` suffix; a plain name sort puts `-2` before the unsuffixed brief). Options were: "Which page are we building FAQ for? What's the primary keyword?" If nothing names the mode, default to the first option and say so in your first line. Ask only if two readings would produce materially different files, and then exactly ONE question (Clarification Checkpoint).
 
 ---
 
@@ -52,12 +52,12 @@ No Search Console property is connected and no export exists in this repo, so th
 produces nothing today. Record `GSC queries: NOT FETCHED` in the audit and move to Step 2;
 never write a figure this step did not return (`CLAUDE.md` rule 9).
 
-### Step 2 — QAB Question Bank (from framework-qab.md)
+### Step 2 — QAB Question Bank (`.claude/skills/framework-qab/SKILL.md`)
 Pre-built question sets by topic — pull the relevant category.
 
 Priority BSUK example questions to include where relevant:
 - "How much does a Blue Staffy puppy cost?"
-- "What the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) comes with each puppy?"
+- "What paperwork comes with each puppy?" (answered in `data/faq.json` `whyus-paperwork`)
 - "What is the difference between Blue Staffy and Blue and white Staffy?"
 
 ### Step 3 — PAA Box Questions
@@ -65,53 +65,24 @@ Feed target keyword to bsuk-paa-agent to get Google's People Also Ask questions 
 
 ---
 
-## QAB FAQ Item Template
+## FAQ Markup — the kit's `Faq` component
 
-```html
-<details class="bsuk-faq-item">
-  <summary class="bsuk-faq-question">
-    [Question — in buyer's exact language, 8–15 words, ends with ?]
-  </summary>
-  <div class="bsuk-faq-answer">
-    <p>[Direct answer — first sentence cities the fact. No "great question" preamble.]</p>
-    <p>[Supporting evidence — microchip registration LICENCE_CLAIM_PLACEHOLDER, price data, vet health certificate, BSUK experience. Specific numbers.]</p>
-    <p class="bsuk-benefit-line">[Benefit — why this answer matters to this specific reader.]</p>
-  </div>
-</details>
-```
+A page's FAQ is `src/components/kit/Faq.astro`: a `<details>`/`<summary>` accordion with the question as an `<h3>` (Title Case at render) and no JavaScript. It takes `items`, rows shaped like `data/faq.json` — `{ id, q, a, source }`, loaded by `src/lib/faq.ts` — and with no `items` it renders `data/faq.json` itself.
 
+```astro
 ---
-
-## Complete FAQ Section HTML
-
-```html
-<section class="bsuk-section-alt" id="faq">
-  <div class="bsuk-container">
-    <span class="bsuk-eyebrow">Common Questions</span>
-    <h2 class="bsuk-h2">[Page-specific FAQ heading — e.g., "Blue Staffy Puppy Cost Questions, Answered Honestly"]</h2>
-    
-    <div class="bsuk-faq-list" itemscope itemtype="https://schema.org/FAQPage">
-
-      <div itemprop="mainEntity" itemscope itemtype="https://schema.org/Question">
-        <details class="bsuk-faq-item">
-          <summary class="bsuk-faq-question" itemprop="name">
-            [Question]?
-          </summary>
-          <div class="bsuk-faq-answer" itemprop="acceptedAnswer" itemscope itemtype="https://schema.org/Answer">
-            <div itemprop="text">
-              <p>[Answer — direct, specific, sourced]</p>
-              <p class="bsuk-benefit-line">[Benefit]</p>
-            </div>
-          </div>
-        </details>
-      </div>
-
-      <!-- Repeat for each question -->
-
-    </div>
-  </div>
+import Faq from '../../components/kit/Faq.astro';
+const items = [
+  // { id, q, a, source } — `a` is the QAB answer with its Benefit; `source` names the page or data file that backs it (rule 9)
+];
+---
+<section id="faq">
+  <h2>…page-specific FAQ heading…</h2>
+  <Faq items={items} />
 </section>
 ```
+
+Keep each row's `q` in natural sentence case: `Faq` title-cases the visible heading, and the FAQPage node reads the row as written. **Location pages:** the questions come from the page's question file, `data/queries/<slug>.json`, written by the `bsuk-query-augmentation` skill — not from a question bank.
 
 ---
 
@@ -189,10 +160,10 @@ Beyond building standalone FAQ sections, FAQs can be distributed throughout page
 When discussing breed traits on the breed guide or puppy listing pages, weave in relevant FAQ answers naturally. Example: On the breed guide, when describing temperament, integrate the answer to "Are Blue Staffies good for first-time puppy owners?" naturally within that paragraph — don't repeat the Q+A block.
 
 **Strategy 2 — As Supporting Details in Puppy Listings**
-On individual puppy listing pages, incorporate FAQ snippets about the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) or variant differences. Example: "Reflecting what we explain in our FAQ, [Puppy Name]'s the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) is included — no additional documentation costs."
+On individual puppy listing pages, incorporate FAQ snippets about the paperwork or variant differences. Example: "Reflecting what we explain in our FAQ, [Puppy Name] goes home with the Kennel Club registration paperwork, the vaccination records, the microchipping details and a written purchase contract."
 
 **Strategy 3 — In CTA Context**
-Before a strong CTA, include 1 sentence from a relevant FAQ to address hesitation. Example: "Ready to bring home an Blue Staffy? As our FAQ explains, every puppy comes with full the breeder's paperwork (LICENCE_CLAIM_PLACEHOLDER) and an vet health certificate."
+Before a strong CTA, include 1 sentence from a relevant FAQ to address hesitation. Example: "Ready to bring home a Blue Staffy? As our FAQ explains, every puppy goes home with its paperwork and a full veterinary health check."
 
 **Strategy 4 — As 'Good to Know' Callout Blocks**
 Visually distinct blocks that directly answer a single FAQ. Use `<aside>` or a styled callout box. Placement: puppy care section, breed guide, pricing page. Example: "Good to Know: every pup has a vet health check before it goes home."
@@ -204,7 +175,7 @@ Use FAQs as seed content for blog articles. When a topic appears in the FAQ, wri
 When body text mentions a FAQ topic, link to the main FAQ page or specific FAQ anchor. Example: when discussing diet, link to `/uk-staffordshire-bull-terrier-guide/#faq-diet`.
 
 **Strategy 7 — For Multimedia**
-FAQ answers become YouTube video training points and infographic data points. Hand off to `.claude/skills/youtube-script/SKILL.md` (video scripts) and `.claude/skills/image-prompt-generator/SKILL.md` (infographic prompts). (deferred to project 6, see data/port-manifest.json)
+FAQ answers become YouTube video talking points and infographic data points. Hand off to `.claude/skills/bsuk-youtube/SKILL.md` (video) and `.claude/skills/image-prompt-generator/SKILL.md` (infographic prompts).
 
 **Rules for all FAQ distribution:**
 - Natural flow — never disrupt reading experience with out-of-context Q+A
@@ -217,7 +188,7 @@ FAQ answers become YouTube video training points and infographic data points. Ha
 
 ## Rules
 
-1. **Questions from real buyer language** — GSC Queries first, then question bank
+1. **Questions from real buyer language** — the page's question file (location pages), PAA, then the question bank; GSC is NOT FETCHED
 2. **QAB format on every item** — no answer without a Benefit
 3. **FAQPage JSON-LD required** — always alongside the HTML section
 4. **`<details>/<summary>` only** — no JavaScript accordion dependencies

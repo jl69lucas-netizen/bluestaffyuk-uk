@@ -1,4 +1,6 @@
 @import "./tokens.css";
+/* The two self-hosted faces (Known Issue 24). Every @import precedes every other rule. */
+@import "./fonts.css";
 @import "tailwindcss" source(none);
 /* After the Tailwind import so Tailwind establishes the layer order first; kit.css adds
    to @layer components, which a caller's utility class still beats. */

@@ -10,6 +10,8 @@ from html import unescape
 import pathlib
 import re
 
+import pytest
+
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 FAQ = json.loads((ROOT / "data/faq.json").read_text())
 SETTINGS = json.loads((ROOT / "data/settings.json").read_text())
@@ -366,3 +368,44 @@ def test_page_backed_answers_say_what_their_page_says():
             assert phrase.lower() in text, (r["id"], r["source"], phrase)
         checked += 1
     assert checked, "no page-backed row was verified — this test examined nothing"
+
+
+# ── a clear health-test result is a recorded, unproven claim (Known Issue 40) ──
+# Eleven rows say the parents are "certified clear" / "DNA tested clear" of L-2-HGA and
+# HC-HSF4, while rules/copy.md (`entity-4-move-loop`) keeps every health entity NOT FETCHED
+# until the certificate is on file — and none is. The fix may not invent the certificate, so
+# the claim is RECORDED as unproven: a data/quality/evidence-ledger.json row at proof
+# "NOT FETCHED", which scripts/evidence_audit.py warns on wherever a page repeats it and
+# scripts/query_augment.py refuses as a fact source for a new page. This test holds every row
+# that states a clear result to that record, so a new row cannot restate the result outside it.
+LEDGER = json.loads((ROOT / "data/quality/evidence-ledger.json").read_text())
+HEALTH_TEST = re.compile(r"(?i)L-?2-?HGA|HC-?HSF4|\bHC\b|cataract")
+CLEAR = re.compile(r"(?i)\bclear")
+
+
+def _unproven_patterns():
+    return [re.compile(c["pattern"], re.I) for c in LEDGER["claims"]
+            if (c.get("proof") or "NOT FETCHED") == "NOT FETCHED"]  # as the runtime reads it
+
+
+def test_a_clear_health_result_is_bound_to_an_unproven_ledger_claim():
+    unproven = _unproven_patterns()
+    assert unproven, ("the parents' clear DNA results must be a NOT FETCHED row in "
+                      "data/quality/evidence-ledger.json until the certificate is on file")
+    loose = [r["id"] for r in FAQ
+             if HEALTH_TEST.search(r["a"]) and CLEAR.search(r["a"])
+             and not any(p.search(r["a"]) for p in unproven)]
+    assert loose == [], (
+        "these rows state a clear health-test result that no NOT FETCHED ledger claim "
+        "records — widen the claim's pattern, never the certificate: %s" % loose)
+
+
+@pytest.mark.parametrize("answer", [
+    "Both parents are certified clear of L-2-HGA and HC-HSF4.",
+    "Both parents are DNA tested clear for L-2-HGA.",
+    "Maggie and Jones both carry clear DNA results for L-2-HGA.",
+    "the DNA tests our parent dogs are recorded clear of",
+    "A ‘clear’ result means your puppy will not develop it.",
+])
+def test_the_unproven_claim_catches_every_wording_the_bank_uses(answer):
+    assert any(p.search(answer) for p in _unproven_patterns()), answer

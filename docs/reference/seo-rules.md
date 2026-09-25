@@ -126,7 +126,7 @@ Primary keyword 0.8–1.2% per section. LSI distributed naturally, never force-i
 
 **Rule 20 — Negative Keyword Counter-Positioning**
 Every product or availability page addresses at least one:
-- `"blue staffy puppy scam"` → counter with what this kennel documents and shows
+- `"blue staffy puppy scam"` → counter with what we document and show: a litter raised in our family home, never in kennels (`data/faq.json` `about-home-raised`), and the paperwork that goes home with it (`whyus-paperwork`)
 - `"cheap blue staffy puppies"` → position on health screening and aftercare, not price
 - `"blue staffy puppy farm"` → counter with collection-in-Carlisle and seeing the litter
 
@@ -181,12 +181,14 @@ these as targets, not as measured demand.
 ## Category F — Page Structure
 
 **Rule 26 — Section Count**
-Default **22–24 sections per page**, set by competitor research and breeder approval.
-Never fewer than 22 without explicit approval.
+No default. A page's body-section count is `section_target.total` in its question file
+(`data/queries/<slug>.json`): the competitors' highest real (cleaned) H2 count + 3, never fewer
+than 9 (`docs/reference/location-page-template.md`, "Section count").
 
 **Rule 27 — Word Count (Dynamic)**
-Top-ranking competitor's word count + 1,000 minimum. Target for a 22-section page:
-**5,000–6,000 words**. Never fix a word count before running competitor research.
+The competitors' median word count, from the competitor scan; `NOT FETCHED` until that scan
+exists. Never fix a word count before running competitor research, and never pick a number
+first and write to fill it.
 
 **Rule 28 — Header Count Targets**
 - H1: exactly **1** per page (hero only)
@@ -446,7 +448,7 @@ naturally integrated.
 All three types across internal links:
 1. **Exact match** — 1–2 per page, for hub and category pages
 2. **Conversational/descriptive** — the default, a natural phrase inside the sentence
-3. **Branded** — "BlueStaffyUK", "Lisa Bright's kennel"
+3. **Branded** — "BlueStaffyUK", "Lisa Bright's home-reared litters"
 
 Never repeat an anchor on a page, and never reuse the same anchor for the same target
 across the site — rotate exact / partial / LSI / natural variants; the anchor diversity
@@ -456,11 +458,13 @@ first clause. Never mid-sentence, never at the end. The sole exception is a bran
 anchor on a CTA. The pack that holds this is `rules/links.md`.
 
 **Rule 59 — 5-Tier Section Creation Form**
-Every section of a 22+ section page completes the form BEFORE any copy:
+Every body section of a page — `section_target.total` of them (the competitors' highest real
+section count + 3, never fewer than 9) — completes the form BEFORE any copy:
 - **Tier 1:** number and title, word count min/max, 3–5 primary keywords with targets
 - **Tier 2:** content angle, conversational opening (75–100 words, framework-matched),
   H2–H6 structure
-- **Tier 3:** 5–8 internal links with varied anchors, 1–2 external authority links
+- **Tier 3:** internal links with varied anchors, only to routes that exist (Rule 62; no per-section
+  count), Link-First; 1–2 external authority links, each a row of `docs/reference/external-link-library.md`
 - **Tier 4:** 3–5 UK geographic entities, 1–2 authority entities, 2–3 trust signals
 - **Tier 5:** special elements, image requirements, CTA placement, 15-item QA checklist
 
@@ -469,7 +473,8 @@ Full template: `.claude/skills/bsuk-seo-master-checklist/SKILL.md`.
 **Rule 60 — 4-Part Content Delivery Format**
 Every full page build delivers four documents: the competitor analysis report (8–12
 competitors, gap matrix, outranking strategy); the complete page content in markdown with
-anchors, all 22+ sections; the SEO metadata sheet (3 title options, 3 descriptions, the
+anchors, all `section_target.total` body sections (the competitors' highest real count + 3,
+never fewer than 9); the SEO metadata sheet (3 title options, 3 descriptions, the
 keyword list, schema recommendations); and the linking strategy map (internal
 source→target table plus the external authority catalogue).
 
@@ -503,5 +508,5 @@ or the canonical industry body.
   Internal links stay same-tab (Rule 62).
 - Cite a term once per page; repetition reads as over-optimisation.
 - **Verify HTTP 200 before inserting** (`curl -sI`), and assert a clinical entity only if
-  it is in the evidence ledger (`data/quality/evidence-ledger.json`), which is empty at
-  the system transfer — an empty ledger means no clinical claim is assertable yet.
+  the evidence ledger (`data/quality/evidence-ledger.json`) holds its proof — it holds no
+  proven claim yet (`parents-dna-clear` is NOT FETCHED), so no clinical claim is assertable yet.

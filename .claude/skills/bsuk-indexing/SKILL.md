@@ -1,6 +1,6 @@
 ---
 name: bsuk-indexing
-description: Use after ANY page is added, removed, or its rendered output changes — submits the changed URLs to IndexNow (and Google Search Console where connected) and regenerates page-sitemap.xml, local-sitemap.xml and sitemap_index.xml. Triggers - "submit to IndexNow", "index this page", "update the sitemap", end of every Sprint 5 Ship.
+description: Use after ANY page is added, removed, or its rendered output changes — submits the changed URLs to IndexNow (and Google Search Console where connected) and regenerates the sitemaps (page, post, location, puppy, video) and sitemap_index.xml. Triggers - "submit to IndexNow", "index this page", "update the sitemap", end of every Sprint 5 Ship.
 allowed-tools: [Read, Write, Bash]
 ---
 
@@ -17,8 +17,11 @@ allowed-tools: [Read, Write, Bash]
 > **INACTIVE UNTIL PROJECT 6.** BlueStaffyUK has no host, no domain, no remote and no
 > verified search-console property. Every submission below — IndexNow, Search Console, a
 > live key file, a live URL check — is **release-guarded**: it refuses without
-> `BSUK_RELEASE=1` and a real `SITE_URL`, and the submitter script itself is **deferred to
-> project 6** (`data/port-manifest.json`). What runs today is the sitemap half:
+> `BSUK_RELEASE=1` and a real `SITE_URL`. The submitter, `scripts/indexnow_submit.py`
+> (`npm run indexnow`, `npm run indexnow:changed`), is ported and committed
+> (`data/port-manifest.json`) and refuses with exit 2 until project 6 sets both: first
+> unless `BSUK_RELEASE=1`, then unless `SITE_URL` is a real origin, not the placeholder —
+> each before the key is read or a socket opened. What runs today is the sitemap half:
 > `python3 scripts/generate_sitemaps.py` and `python3 scripts/sitemap_check.py` over
 > `dist/`. Do not remove this notice — the day it goes is the day someone submits
 > `SITE_URL_PLACEHOLDER` to IndexNow.
@@ -43,7 +46,7 @@ You are the **Indexing Agent** for BlueStaffyUK. Your job is to ensure every pag
 |---|---|
 | Domain | $SITE_URL |
 | Local files | `dist/` |
-| Sitemaps | `sitemap_index.xml`, `page-sitemap.xml`, `post-sitemap.xml`, `video-sitemap.xml`, `local-sitemap.xml` |
+| Sitemaps | `sitemap_index.xml`, `page-sitemap.xml`, `post-sitemap.xml`, `location-sitemap.xml`, `puppy-sitemap.xml`, `video-sitemap.xml` (written into `dist/` by `scripts/generate_sitemaps.py`) |
 | IndexNow key | NOT FETCHED until project 6 (a gitignored `.env`, never this file) |
 | IndexNow key file | `$SITE_URL/<indexnow-key>.txt` |
 | GSC credentials | NOT FETCHED until project 6 |
@@ -58,7 +61,7 @@ Before submitting, always audit for issues that block indexing:
 ```python
 import re, glob
 
-# dist/, not dist/ and NOT the MFS project: gates measure the BUILT page.
+# dist/, and NOT a source-repo path: gates measure the BUILT page.
 SITE_ROOT = "dist"
 DOMAIN = "$SITE_URL"
 
@@ -94,7 +97,9 @@ for i in issues:
 ```python
 import re, glob
 
-SITE_ROOT = "public"
+# The sitemaps are build output: scripts/generate_sitemaps.py writes them into dist/
+# after every `npm run build` (the postbuild script). Nothing writes them into public/.
+SITE_ROOT = "dist"
 for fpath in glob.glob(f"{SITE_ROOT}/*.xml"):
     with open(fpath) as f:
         content = f.read()
@@ -112,9 +117,10 @@ for fpath in glob.glob(f"{SITE_ROOT}/*.xml"):
 ```python
 import re, glob, os
 
-# public/ is where BSUK's sitemaps live. This block WRITES — pointed at the old
-# MFS path it would have rewritten a different project's sitemaps in place.
-SITE_ROOT = "public"
+# dist/ is where BSUK's sitemaps live: scripts/generate_sitemaps.py writes them there on
+# every build (postbuild). This block WRITES, and the next build overwrites what it writes,
+# so a relative <loc> is really a generator defect: fix scripts/generate_sitemaps.py too.
+SITE_ROOT = "dist"
 DOMAIN = "$SITE_URL"
 
 def fix_sitemap(content):
@@ -172,8 +178,9 @@ SITEMAPS = [
     "sitemap_index.xml",
     "page-sitemap.xml",
     "post-sitemap.xml",
+    "location-sitemap.xml",
+    "puppy-sitemap.xml",
     "video-sitemap.xml",
-    "local-sitemap.xml",
 ]
 
 from urllib.parse import quote
@@ -221,10 +228,11 @@ curl -X POST https://oauth2.googleapis.com/token \
 
 IndexNow covers Bing, Yandex, and (via `api.indexnow.org`) partially Google.
 
-**The submitter script is deferred to project 6** (`data/port-manifest.json`) — it was not
-ported, because there is nothing to submit until BSUK has a host and a domain. When it
-arrives, use the committed script and never paste inline Python for this. The shapes it
-will take:
+**The submitter is `scripts/indexnow_submit.py`** (`npm run indexnow`,
+`npm run indexnow:changed`; ported and release-guarded, `data/port-manifest.json`). It
+refuses with exit 2 until project 6, because there is nothing to submit until BSUK has a
+host and a domain: first unless `BSUK_RELEASE=1`, then unless `SITE_URL` is a real origin.
+Use the committed script and never paste inline Python for this. Its forms:
 
 ```bash
 python3 scripts/indexnow_submit.py <slug> [<slug> ...]   # refuses (exit 2) without BSUK_RELEASE=1
@@ -238,52 +246,53 @@ python3 scripts/indexnow_submit.py --changed   # refuses (exit 2) without BSUK_R
 python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without BSUK_RELEASE=1
 ```
 
-`--all` submits every sitemap URL. `--dry-run` prints the payload and sends nothing.
+`--all` submits every sitemap URL. `--dry-run` prints the URLs it would submit and sends nothing; the key is never read or printed.
 
-What the script guarantees, and why each guard exists:
+What the script ensures, and why each guard exists:
 
-- **The key is read from `public/<key>.txt` on disk, never typed.** It also asserts the
-  file body equals the filename stem (IndexNow's own requirement) and that the file
-  returns HTTP 200 live before anything is sent.
+- **The key is read from `INDEXNOW_KEY` in the environment, never typed.** It comes from
+  the gitignored `.env` (`docs/reference/credentials.md`) and must be 32 lowercase hex
+  characters. Before anything is sent the script fetches the live key file,
+  `$SITE_URL/<key>.txt`, and refuses unless it returns HTTP 200 with a body equal to the
+  key (IndexNow's own requirement). That file ships from `public/<key>.txt`; the script
+  itself reads nothing in `public/` — it only checks the folder exists, to know it runs
+  from the repo root.
 - **Every URL must return 200 before submission.** Submitting 404s is a negative trust
   signal about the host, so a dead URL is reported and dropped, not sent.
-- **Build artifacts are filtered** — `/.astro/`, `/_preview/`, `/admin/`, `/form/`,
-  `/tag/`, `/thank-you/`. A sitemap that emits `/.astro/` is a
+- **Build artifacts are filtered** — `/.astro/`, `/_preview/` and the rest of the `JUNK`
+  prefixes in `scripts/indexnow_submit.py`. A sitemap that emits `/.astro/` is a
   `scripts/generate_sitemaps.py` defect, not a page.
 - **Response codes are interpreted**: 200 OK · 202 accepted, key validation pending ·
   400 bad payload · 403 key invalid for host · 422 URLs not on this host · 429 throttled.
 
 > **This STEP used to be broken and nobody could have noticed by reading it.** Until
-> 2026-08-08 it carried inline Python with three defects from the MFS→BSUK find/replace:
+> 2026-08-08 it carried inline Python with three defects from the source-repo→BSUK find/replace:
 > `INDEXNOW_KEY = "a1b2c3d4e5f6789012345678blue staffies"` (a placeholder with the
 > brand string substituted in — while the REAL key sat correct in the site-context table
 > 170 lines above); a sitemap regex of `https://blue staffiesforsale\.com/`, a
 > domain containing spaces, which matches nothing; and `SITE_ROOT` pointing at
-> `dist/`, **a path that exists**, so a run would have read a
+> the source repo's build folder, **a path that exists**, so a run would have read a
 > different site's sitemaps. Any execution would have POSTed an empty `urlList` under an
 > invalid key and printed a success line. That is why the close-out step never actually
-> ran on any page. The key now lives in exactly one place — the key file — so defect 1
-> cannot come back.
+> ran on any page. The key now lives in exactly one place — `INDEXNOW_KEY` in the gitignored
+> `.env` — and the live key file is checked against it, so defect 1 cannot come back.
 
 
 ## STEP 5: FIX ROBOTS.TXT
 
-Ensure these Disallow rules are present:
+`public/robots.txt` allows every crawler and names the sitemap index:
 ```
-Disallow: /admin/
-Disallow: /wp-admin/
-Disallow: /form/
-Disallow: /thank-you/
-Disallow: /tag/
-Disallow: /wp-content/uploads/wc-logs/
-Disallow: /wp-content/uploads/woocommerce_uploads/
-Disallow: /*?add-to-cart=
+User-agent: *
+Allow: /
 ```
+There is no admin, form or tag route to disallow (those Disallow rules were the source repo's
+WordPress site's). A page kept out of search carries `noindex` instead — the thank-you page,
+`/search/`, `/kit-preview/` and the board previews — and `scripts/generate_sitemaps.py` leaves
+it out of every shard.
 
 And sitemap entries are absolute:
 ```
 Sitemap: $SITE_URL/sitemap_index.xml
-Sitemap: $SITE_URL/local-sitemap.xml
 ```
 
 ---
@@ -314,10 +323,10 @@ print("llms.txt fixed")
 ## STEP 7: REPORTING FORMAT
 
 ```
-## MFS Indexing Report — [DATE]
+## BSUK Indexing Report — [DATE]
 
 ### Submissions
-- ✅ Google Search Console: [N] sitemaps submitted (sitemap_index, page, post, video, local)
+- ✅ Google Search Console: [N] sitemaps submitted (sitemap_index, page, post, location, puppy, video)
 - ✅ IndexNow (Bing/Yandex): [N] URLs submitted — 202 Accepted
 - ⚠️ Google Indexing API: Not configured (needs service account)
 
@@ -325,10 +334,9 @@ print("llms.txt fixed")
 - [List any noindex, canonical, broken image issues found]
 
 ### Pages Flagged Noindex (intentional)
-- /admin/ — Decap CMS (correct)
-- /form/ — Contact form (correct)
-- /tag/ — Tag archive (correct)
-- /thank-you/ — Thank you page (correct)
+- /thank-you-blue-staffy-puppies-journey/ — the after-enquiry page (correct)
+- /search/ and /kit-preview/ — internal (correct)
+- [any other page reported noindex, and whether it should be]
 
 ### Next Recommended Actions
 1. Wait 3-7 days and check Google Search Console → Coverage for crawl errors
@@ -340,11 +348,13 @@ print("llms.txt fixed")
 
 ## KNOWN ISSUES LOG
 
+The source repo's log, kept as history: BSUK has never been deployed (no remote until project 6).
+
 | Date | Issue | Fix Applied | Status |
 |---|---|---|---|
 | 2026-04-21 | All 9 sitemap files had relative URLs (115 total) | Converted to absolute | ✅ Fixed & deployed |
 | 2026-04-21 | llms.txt had relative URLs + HTML entities | Fixed to absolute + decoded | ✅ Fixed & deployed |
-| 2026-04-21 | robots.txt missing /admin/, /form/, /tag/, /thank-you/ | Added Disallow rules | ✅ Fixed & deployed |
+| 2026-04-21 | source repo: robots.txt missing its admin, form, tag and thank-you Disallow rules | Added Disallow rules | ✅ Fixed & deployed |
 | 2026-04-21 | GSC refresh token expired | New auth URL generated — needs user reauth | ⚠️ Pending |
 | 2026-04-21 | 86 URLs submitted to IndexNow | 202 Accepted | ✅ Done |
 
@@ -352,7 +362,7 @@ print("llms.txt fixed")
 
 ## AGENT INTEGRATION NOTES
 
-This is the **Indexing Agent** in the MFS multi-agent system:
+This is the **Indexing Agent** in the BSUK agent system:
 
 - Trigger **after every deploy** → submit new/changed URLs to IndexNow
 - Trigger **after new page creation** → submit single URL immediately
@@ -361,5 +371,5 @@ This is the **Indexing Agent** in the MFS multi-agent system:
 
 ### Credentials required:
 - GSC: `$BSUK_DASHBOARD/.env.local` (GSC_CLIENT_ID, GSC_CLIENT_SECRET, GSC_REFRESH_TOKEN)
-- IndexNow key: read it from `public/<key>.txt` — never typed inline. Currently NOT FETCHED until project 6 (a gitignored `.env`, never this file) (no auth needed).
+- IndexNow key: `INDEXNOW_KEY` in the environment (a gitignored `.env`, never this file), checked against the live key file `$SITE_URL/<key>.txt`, which ships from `public/<key>.txt` — never typed inline. Currently NOT FETCHED until project 6 (no auth needed).
 - Bing Webmaster API: Not yet configured (IndexNow covers Bing submissions)

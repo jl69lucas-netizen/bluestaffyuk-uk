@@ -1,6 +1,7 @@
 # tests/py/test_gap_matrix.py — scripts/gap_matrix.py (spec 2026-09-23-competitor-intel §6).
 import json
 import pathlib
+import re
 import subprocess
 import sys
 
@@ -342,3 +343,76 @@ def test_the_agent_fixture_report_is_schema_valid(tmp_path):
     assert bsuk is None
     assert list(comps) == ["example-breeder"]
     assert comps["example-breeder"]["pages"]["status"] == "ok"
+
+# --- Known Issue 48 -------------------------------------------------------------------------
+
+def test_a_matrix_path_that_is_a_directory_is_a_message_not_a_traceback(tmp_path):
+    root = make_root(tmp_path, report("a", ["x"]))
+    (root / "docs/research/gap-matrix-2026-09-24.md").mkdir()
+    r = run("--write", "--date", "2026-09-24", "--root", str(root))
+    assert r.returncode == 1, (r.returncode, r.stdout, r.stderr)
+    assert "Traceback" not in r.stderr, r.stderr
+    assert "gaps: cannot write docs/research/gap-matrix-2026-09-24.md" in r.stdout, r.stdout
+
+
+def test_a_schema_type_differing_only_in_case_gets_a_did_you_mean_hint(tmp_path):
+    root = make_root(tmp_path, report("bsuk", schema_types=["LocalBusiness"]),
+                     report("a", schema_types=["localbusiness"]),
+                     report("b", schema_types=["LocalBusiness", "FAQPage"]))
+    bsuk, comps = G.load_reports(root)
+    assert G.case_hints(bsuk, comps) == [
+        "schema type 'localbusiness' (a) differs only in case from 'LocalBusiness' (bsuk, b)"
+        " — did you mean 'LocalBusiness'? Schema types are compared as written, so the two"
+        " are counted apart."]
+    text = G.render(root, "2026-09-24")
+    # still case-exact: two rows, and the hint sits under the header
+    assert "| LocalBusiness | 1/2 |" in text and "| localbusiness | 1/2 |" in text
+    assert "did you mean 'LocalBusiness'?" in text.split("## Keyword gaps")[0]
+    w = run("--write", "--date", "2026-09-24", "--root", str(root))
+    assert w.returncode == 0 and "gaps: note: schema type 'localbusiness' (a)" in w.stdout, w.stdout
+    c = run("--check", "--root", str(root))
+    assert c.returncode == 0 and "did you mean 'LocalBusiness'?" in c.stdout, c.stdout
+
+
+def test_the_case_hint_picks_the_spelling_most_reports_use_without_bsuk(tmp_path):
+    root = make_root(tmp_path, report("a", schema_types=["faqpage"]),
+                     report("b", schema_types=["FAQPage"]), report("c", schema_types=["FAQPage"]))
+    bsuk, comps = G.load_reports(root)
+    hints = G.case_hints(bsuk, comps)
+    assert len(hints) == 1 and hints[0].startswith("schema type 'faqpage' (a)")
+    assert "did you mean 'FAQPage'?" in hints[0]
+
+
+def test_no_case_hint_when_every_spelling_agrees_or_the_field_was_not_fetched(tmp_path):
+    blocked = report("c")
+    blocked["schema_types"] = NF
+    root = make_root(tmp_path, report("a", schema_types=["FAQPage"]),
+                     report("b", schema_types=["FAQPage", "Person"]), blocked)
+    bsuk, comps = G.load_reports(root)
+    assert G.case_hints(bsuk, comps) == []
+    assert "did you mean" not in G.render(root, "2026-09-24")
+
+
+def gfm_cells(line):
+    """A table row split by micromark's rule (the GFM table extension): a backslash escapes the next
+    character, so two backslashes then a pipe are an escaped backslash and a real pipe.
+    Each cell's backslash and pipe escapes are then undone, as the page would show it."""
+    s, cells, cur, i = line.strip(), [], "", 0
+    while i < len(s):
+        if s[i] == "\\" and i + 1 < len(s):
+            cur, i = cur + s[i:i + 2], i + 2
+        elif s[i] == "|":
+            cells, cur, i = cells + [cur], "", i + 1
+        else:
+            cur, i = cur + s[i], i + 1
+    cells.append(cur)
+    assert cells[0] == "" and cells[-1] == "", line
+    return [re.sub(r"\\([\\|])", r"\1", c.strip()) for c in cells[1:-1]]
+
+
+@pytest.mark.parametrize("value", ["a\\|b", "a\\\\|b", "a|b", "end\\"])
+def test_a_backslash_before_a_pipe_cannot_end_the_cell(tmp_path, value):
+    root = make_root(tmp_path, report("a", [value]))
+    rows_ = table_rows(G.render(root, "2026-09-24"))
+    assert len(rows_) == 1
+    assert gfm_cells(rows_[0]) == [value, "1/1", "0", "not fetched", "high"], rows_[0]

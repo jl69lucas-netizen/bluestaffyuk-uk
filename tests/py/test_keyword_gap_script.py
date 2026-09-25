@@ -15,6 +15,8 @@ import sys
 import pytest
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import competitor_registry_check as C  # noqa: E402 — the registry's root-domain rule
 AGENT = REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md"
 FIXTURE = REPO / "tests/py/fixtures/competitors/report-example-breeder.json"
 HEREDOC = re.compile(r"<<'EOF'\n(.*?)\nEOF\n", re.S)
@@ -32,9 +34,12 @@ def page(url, title, h1=None):
     return {"url": url, "title": title, "h1": title if h1 is None else h1, "h2": []}
 
 
-def report(rid, pages, fetched_on="2026-09-24"):
+def report(rid, pages, fetched_on="2026-09-24", root_domain=None):
+    """A competitor report; its root domain is the registrable domain of the first page's URL (the
+    registry's rule) unless given."""
     nf = {"status": "NOT FETCHED", "reason": "test"}
-    r = {"id": rid, "root_domain": f"{rid}.co.uk", "analysed_on": "2026-09-24",
+    root_domain = root_domain or (C.root_domain(pages[0]["url"]) if pages else f"{rid}.co.uk")
+    r = {"id": rid, "root_domain": root_domain, "analysed_on": "2026-09-24",
          "keywords": nf, "page_types": nf, "cities": nf, "schema_types": nf,
          "pages": {"status": "ok", "fetched_on": fetched_on, "values": pages},
          "trust": nf, "content": nf, "blog": nf, "visual": nf, "conversion": nf,
@@ -46,6 +51,8 @@ def report(rid, pages, fetched_on="2026-09-24"):
 def root(tmp_path):
     (tmp_path / "data").mkdir()
     shutil.copy(REPO / "data/locations.json", tmp_path / "data/locations.json")
+    (tmp_path / "scripts").mkdir()
+    shutil.copy(REPO / "scripts/competitor_registry_check.py", tmp_path / "scripts")
     pmap = {"pages": [
         {"url": STUB, "title": "Blue Staffy Puppies Manchester UK", "h1": "",
          "defects": ["stub"], "refresh_flags": ["stub-noindexed"]},
@@ -97,17 +104,17 @@ def test_page_map_mode_labels_the_noindex_stub_and_keeps_the_comparison(root):
     d = run(root, "data/page-map.json", str(FIXTURE))
     assert d["bsuk_source"] == "data/page-map.json"
     man = row(d["gaps"], "blue staffy puppies in manchester")
-    assert (man["score"], man["band"], man["noindex_page"]) == (10, "high", STUB)
+    assert (man["score"], man["band"], man["noindex_pages"]) == (10, "high", [STUB])
     vs = row(d["gaps"], "blue staffy vs american bully")
     assert vs["type"] == "comparison" and vs["urls"] == [
         "https://example-breeder.co.uk/blue-staffy-vs-american-bully/"]
-    assert row(d["gaps"], "staffy puppy prices")["noindex_page"] is None
+    assert row(d["gaps"], "staffy puppy prices")["noindex_pages"] == []
 
 
 def test_profile_mode_covers_price_and_labels_a_stub_absent_from_the_profile(root):
     d = run(root, profile(root), str(FIXTURE))
     assert row(d["covered"], "staffy puppy prices")["bsuk_page"] == f"{P}/blue-staffy-pup-sale-uk/"
-    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_pages"] == [STUB]
 
 
 def test_a_rebuilt_page_at_a_stub_route_is_coverage_in_profile_mode(root):
@@ -121,7 +128,7 @@ def test_a_profile_without_pages_falls_back_to_the_page_map_by_name(root):
     nf["pages"] = {"status": "NOT FETCHED", "reason": "test"}
     d = run(root, write(root, "bsuk.json", nf), str(FIXTURE))
     assert d["bsuk_source"].startswith("data/page-map.json (fallback:")
-    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_page"] == STUB
+    assert row(d["gaps"], "blue staffy puppies in manchester")["noindex_pages"] == [STUB]
 
 
 def test_pages_with_no_keyword_topic_or_no_content_words_are_skipped(root):
@@ -166,8 +173,8 @@ def test_a_city_stays_in_the_topic_and_only_the_same_city_covers_it(root):
     assert york["dedicated"] == 0
     leeds = row(d["gaps"], "blue staffy leeds")
     assert (leeds["intent"], leeds["score"], leeds["band"]) == (2, 8, "high")
-    assert leeds["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
-    assert ncl["noindex_page"] == "/uk-locations/blue-staffies-newcastle-under-lyme/"   # same city, not same words
+    assert leeds["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/"]
+    assert ncl["noindex_pages"] == ["/uk-locations/blue-staffies-newcastle-under-lyme/"]   # same city, not same words
 
 
 def test_a_whole_h1_topic_scores_no_dedicated_point_and_can_be_low(root):
@@ -256,7 +263,7 @@ def test_one_city_is_one_row_with_its_urls_merged(root):
     d = run(root, profile(root), write(root, "leeds.json", r))
     rows = [g for g in d["gaps"] if "leeds" in g["topic"]]
     assert len(rows) == 1 and len(rows[0]["urls"]) == 2
-    assert rows[0]["noindex_page"] == "/uk-locations/blue-staffy-puppies-for-sale-leeds/"
+    assert rows[0]["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/"]
 
 
 def test_a_comparison_core_is_a_dedicated_page(root):
@@ -285,7 +292,7 @@ def test_the_city_rule_is_only_for_breed_and_buyer_words(root):
     d = run(root, profile(root), write(root, "york2.json", r))
     assert row(d["covered"], "staffy pups york")["urls"] == ["https://y.co.uk/staffy-pups-york/"]
     training = row(d["gaps"], "staffy training york")
-    assert training["type"] == "care-guide" and training["noindex_page"] is None
+    assert training["type"] == "care-guide" and training["noindex_pages"] == []
     rescue = row(d["gaps"], "staffy rescue york")                  # its own row, not the puppy row
     assert rescue["urls"] == ["https://y.co.uk/rescue/", "https://y.co.uk/staffy-rescue-york/"]
     assert rescue["type"] is None
@@ -303,3 +310,125 @@ def test_every_licence_spelling_is_always_high_like_llm_intels_safety_list(root)
     d = run(root, profile(root), write(root, "l.json", report("lic", pages)))
     for w in ("licence", "license", "licensed", "licenced", "licensing"):
         assert row(d["gaps"], f"staffy {w} info")["always_high"] is True, w
+
+
+def test_a_vs_post_under_a_blog_base_is_a_comparison_as_in_intel(root):
+    # Known Issue 52: one table for both agents, comparison first
+    r = report("vsb", [page("https://vsb.co.uk/blog/staffy-vs-pitbull/", "Staffy vs Pitbull")])
+    d = run(root, profile(root), write(root, "vsb.json", r))
+    assert row(d["gaps"], "staffy vs pitbull")["type"] == "comparison"
+
+
+def test_a_path_word_inside_a_longer_word_does_not_type_the_page(root):
+    # Known Issue 51: "costofliving" holds "cost" but not as a word, so the calculator is untyped
+    r = report("rsp", [page("https://rsp.org.uk/adviceandwelfare/costofliving/petcalculator",
+                            "Pet Cost Calculator", "How much will a pet cost?")])
+    d = run(root, profile(root), write(root, "rsp.json", r))
+    assert d["skipped"] == [{"url": "https://rsp.org.uk/adviceandwelfare/costofliving/petcalculator",
+                             "why": "no keyword topic"}]
+
+
+def test_a_page_on_another_domain_is_flagged_and_never_a_gap(root):
+    # Known Issue 52: a report's pages must sit on its own root domain (subdomains count)
+    r = report("own", [page("https://www.own.co.uk/staffy-care/", "Staffy Care Guide"),
+                       page("https://help.own.co.uk/staffy-grooming/", "Staffy Grooming Guide"),
+                       page("https://other-site.com/staffy-training/", "Staffy Training Guide")],
+               root_domain="own.co.uk")
+    d = run(root, profile(root), write(root, "own.json", r))
+    assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
+                                  "root_domain": "own.co.uk"}]
+    assert [g["topic"] for g in d["gaps"]] == ["staffy care guide", "staffy grooming guide"]
+
+
+def test_the_report_helper_takes_the_first_page_s_registrable_domain():
+    assert report("x", [page("https://shop.x.co.uk/a/", "A")])["root_domain"] == "x.co.uk"
+    assert report("x", [page("https://www.x.co.uk/a/", "A")])["root_domain"] == "x.co.uk"
+    assert report("x", [])["root_domain"] == "x.co.uk"
+
+
+def test_the_same_page_written_two_ways_in_two_reports_is_one_duplicate(root):
+    # a trailing slash, www., the scheme and utm_ parameters never make a second page
+    a = write(root, "a.json", report("aaa", [page("https://www.shared.co.uk/staffy-care/", "Staffy Care Guide")]))
+    b = write(root, "b.json", report("bbb", [page("http://shared.co.uk/staffy-care?utm_source=fb", "Staffy Care Guide")]))
+    d = run(root, profile(root), a, b)
+    clean = "https://www.shared.co.uk/staffy-care/"                    # the shortest form is the one shown
+    assert d["duplicate_urls"] == [{"url": clean, "ids": ["aaa", "bbb"]}]
+    assert row(d["gaps"], "staffy care guide")["urls"] == [clean]      # counted once
+
+
+def test_the_same_url_in_two_reports_is_flagged(root):
+    u = "https://shared.co.uk/staffy-care/"
+    a = write(root, "a.json", report("aaa", [page(u, "Staffy Care Guide")], root_domain="shared.co.uk"))
+    b = write(root, "b.json", report("bbb", [page(u, "Staffy Care Guide"),
+                                             page("https://shared.co.uk/care/", "Staffy Care Guide")],
+                                     root_domain="shared.co.uk"))
+    d = run(root, profile(root), a, b)
+    assert d["duplicate_urls"] == [{"url": u, "ids": ["aaa", "bbb"]}]
+    assert row(d["gaps"], "staffy care guide")["urls"] == ["https://shared.co.uk/care/", u]   # still one row
+    assert run(root, profile(root), b)["duplicate_urls"] == []     # twice in one report is not two reports
+
+
+@pytest.mark.parametrize("recorded", ["www.own.co.uk", "Own.co.uk"])
+def test_a_report_s_own_domain_is_normalised_before_the_foreign_check(root, recorded):
+    # a report that records its domain with www. or capitals still owns its pages
+    r = report("own", [page("https://www.own.co.uk/staffy-care/", "Staffy Care Guide"),
+                       page("https://other-site.com/staffy-training/", "Staffy Training Guide")],
+               root_domain=recorded)
+    d = run(root, profile(root), write(root, "own.json", r))
+    assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
+                                  "root_domain": recorded}]
+    assert [g["topic"] for g in d["gaps"]] == ["staffy care guide"]
+
+
+GM = "https://p.co.uk/sale/puppies/staffordshire-bull-terrier/united-kingdom/england/greater-manchester/manchester/"
+
+
+def test_greater_before_a_city_is_that_city(root):
+    # Known Issue 52: the pets4homes Manchester listing names "Manchester, Greater Manchester"
+    h = "Staffordshire Bull Terrier Puppies for sale in Manchester, Greater Manchester"
+    d = run(root, profile(root), write(root, "p.json", report("p", [page(GM, h)])))
+    g = row(d["gaps"], "staffordshire bull terrier puppies for sale in manchester greater manchester")
+    assert (g["type"], g["noindex_pages"], g["score"], g["band"]) == ("city", [STUB], 10, "high")
+
+
+def test_a_two_city_page_gets_each_citys_stub(root):
+    r = report("two", [page("https://two.co.uk/leeds-manchester/", "Blue Staffy Puppies Leeds and Manchester")])
+    d = run(root, profile(root), write(root, "two.json", r))
+    g = row(d["gaps"], "blue staffy puppies leeds and manchester")
+    assert g["noindex_pages"] == ["/uk-locations/blue-staffy-puppies-for-sale-leeds/", STUB]
+
+
+def test_a_place_outside_the_location_list_never_becomes_a_topic_or_a_stub_label(root):
+    # The decision (Known Issue 52): data/locations.json is the city list. A page for Scotland or
+    # Newcastle upon Tyne keeps only its breed and buyer words, so it joins the national row; it
+    # never names a new place and never borrows the Newcastle-under-Lyme stub.
+    r = report("off", [page("https://off.co.uk/staffy-puppies-newcastle-upon-tyne/",
+                            "Staffy Puppies for Sale in Newcastle upon Tyne"),
+                       page("https://off.co.uk/staffy-puppies-scotland/", "Staffy Puppies for Sale in Scotland")])
+    d = run(root, profile(root), write(root, "off.json", r))
+    assert [c["topic"] for c in d["covered"]] == ["staffy puppies for sale"]
+    assert d["covered"][0]["urls"] == ["https://off.co.uk/staffy-puppies-newcastle-upon-tyne/",
+                                       "https://off.co.uk/staffy-puppies-scotland/"]
+    assert d["gaps"] == []
+
+
+def test_greater_before_no_city_is_just_a_word(root):
+    # "greater" joins a city only when a data/locations.json city follows it; elsewhere it is an
+    # ordinary word, so the page is no city topic and borrows no stub. (The H1 has no 3-word run, so
+    # the whole H1 is the topic and "greater" stays in it; "Greater Staffy Puppies Leeds" would give
+    # the run "staffy puppies leeds" and drop the word.)
+    r = report("gs", [page("https://gs.co.uk/greater-staffy-puppies-leeds/", "Greater Staffy Leeds")])
+    d = run(root, profile(root), write(root, "gs.json", r))
+    g = row(d["gaps"], "greater staffy leeds")
+    assert (g["type"], g["noindex_pages"]) == ("listing", [])
+
+
+def test_no_location_city_sits_inside_another_as_whole_words():
+    # stubs() looks each city of a multi-city topic up on its own; a city whose words sit inside
+    # another city's words ("york" in "north york") would match both and borrow the wrong stub.
+    words = lambda t: re.findall(r"[a-z0-9]+", t.lower())
+    towns = {tuple(words(r["city"])) for r in json.loads((REPO / "data/locations.json").read_text(encoding="utf-8"))
+             if "(" not in r["city"]} - {("uk",)}
+    inside = [(a, b) for a in towns for b in towns if a != b
+              and any(b[i:i + len(a)] == a for i in range(len(b) - len(a) + 1))]
+    assert inside == []

@@ -32,11 +32,11 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 1: Hero
 
 🛡️ **Trust & Security:**
-> "Don't settle for 'maybe' when it comes to your puppy's health." Join the families who chose the security of a BSUK-backed health guarantee. (A family count is NOT FETCHED — never write one.)
+> "Don't settle for 'maybe' when it comes to your puppy's health." Every puppy comes home with a full veterinary health check and a vet-signed health card.
 > **Button:** Browse Available Puppies
 
 ⚡ **Direct & Transactional:**
-> "Ready to meet your new best friend?" Browse current litters — vet sex-checked Blue Staffy puppies with canine vet health certificates. delivery by DEFRA-approved transport nationwide. Prices from £200–£350.
+> "Ready to meet your new best friend?" Browse the current litter — Blue Staffy puppies, each with a full veterinary health check, first vaccinations and a microchip. UK home delivery by DEFRA-approved transport, £200–£350 by distance.
 > **Button:** Check Availability ✅
 
 🌱 **Ethical & Quality:**
@@ -64,11 +64,11 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 3: Available Puppies
 
 🛡️ **Trust & Security:**
-> "These puppies are going fast — and for good reason." Every puppy: canine vet health certificate, vet sex-checking results, lifetime breeder support.
+> "These puppies are going fast — and for good reason." Every puppy: a full veterinary health check, first vaccinations, a microchip, worming and flea treatment.
 > **Button:** Reserve a Puppy Now
 
 ⚡ **Direct & Transactional:**
-> "Only [X] puppies available this litter." Blue and Blue-Brindle variants. Prices from NOT FETCHED.
+> "Only [X] puppies available this litter." Blue, blue and white, white, and blue with a white blaze. £1,500 a male, £1,700 a female.
 > **Button:** View All Available Puppies
 
 🌱 **Ethical & Quality:**
@@ -77,66 +77,70 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 4: Health Guarantee
+## Section 4: After You Take Your Puppy Home
+
+A health-guarantee CTA is written only once `guarantee_days` in `data/settings.json` is set (null today), and names its length from that setting. Until then this section is the support the breeder gives (`data/faq.json` `home-after-support`).
 
 🛡️ **Trust & Security:**
-> "We put our commitment in writing because we stand behind every puppy we breed." Lifetime breeder support. No fine print.
-> **Button:** Read the Full Guarantee
+> "Your puppy leaves with a puppy pack, its health records and its paperwork — and you can write to us before or after it comes home."
+> **Button:** How We Support You
 
 ⚡ **Direct & Transactional:**
-> "Lifetime breeder support vs. one-time transactional breeders. The relationship speaks for itself."
-> **Button:** See Guarantee Details
+> "A question asked after the handover is answered the same way as one asked before it — by us, not an agency."
+> **Button:** Ask Us Anything
 
 🌱 **Ethical & Quality:**
-> "Lifetime support isn't a sales tactic — it's the logical result of genuine care for the puppies we breed."
-> **Button:** How We Health-Test
+> "Support after the sale isn't a sales tactic — it's what a breeder who raised the puppy owes the family who takes it home."
+> **Button:** How We Health-Check
 
 ---
 
-## Section 5: DNA Testing
+## Section 5: Health Checks
+
+Name the parents' L-2-HGA and HC-HSF4 DNA tests, never a result: the results are `NOT FETCHED` (`data/quality/evidence-ledger.json` `parents-dna-clear`) until the certificates are on file.
 
 🛡️ **Trust & Security:**
-> "vet sex-checking and canine vet partnerships ensure healthy, well-socialized puppies — because we care about your family."
+> "A full veterinary health check for every puppy, and a vet-signed health card that goes home with it — because we care about your family."
 > **Button:** See Our Health Testing
 
 ⚡ **Direct & Transactional:**
-> "Every BSUK puppy: vet sex-checked, canine vet health certified, behaviorally socialized."
+> "Every BSUK puppy: vet health-checked, vaccinated, microchipped, raised in our home. Both parents are DNA-tested for L-2-HGA and HC-HSF4 — ask to see the certificates."
 > **Button:** View Health Certificates
 
 🌱 **Ethical & Quality:**
-> "vet sex-checking and canine vet partnerships aren't optional at BSUK — they're the foundation of every breeding decision."
+> "A veterinary health check isn't optional at BSUK — every puppy has one before it goes home."
 > **Button:** Our Health Protocol
 
 ---
 
-## Section 6: Variant Comparison
+## Section 6: Male or Female
 
 🛡️ **Trust & Security:**
-> "Don't guess which variant fits your lifestyle — ask the breeder who raises both."
-> **Button:** Compare Blue vs Blue-Brindle
+> "Don't guess which puppy fits your home — ask the breeder who raised all six."
+> **Button:** Compare Our Puppies
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: £1,500–£1,700 · Blue-Brindle Staffy: £1,500–£1,700. Both vet sex-checked & vet-certified. Which is yours?"
-> **Button:** See Both Variants
+> "Males £1,500 · females £1,700 — the price follows the sex, not the coat. Which is yours?"
+> **Button:** See All Available Puppies
 
 🌱 **Ethical & Quality:**
-> "Choosing between a Blue and a Blue-Brindle Staffy is one of the most personal decisions in puppy ownership."
-> **Button:** Variant Comparison Guide
+> "Choosing between a male and a female is one of the most personal decisions in puppy ownership."
+> **Button:** Male or Female? Our Guide
 
 ---
 
 ## Section 7: Age at Placement
 
 🛡️ **Trust & Security:**
-> "Age of placement matters — younger puppies bond deeper with their new families."
-> **Button:** Choose Your Age
+> "Age at placement matters — a puppy comes home at eight weeks at the earliest."
+> **Button:** Why Eight Weeks
 
 ⚡ **Direct & Transactional:**
-> "Young newborn pup: recently whelped · Weaned juvenile: 3-6 months. Which suits your timeline?"
-> **Button:** Select Age Preference
+> "Eight weeks at the earliest, never sooner. Ask us when this litter is ready to come home."
+> **Button:** Ask When They're Ready
 
 🌱 **Ethical & Quality:**
-> "We ensure every puppy is properly weaned and socialized before placement — the only thing that changes is their age at handoff."
+> "Those last weeks with the mother and the litter are where a puppy learns bite inhibition and how to read another dog — we don't cut them short."
 > **Button:** Care Guide + Pricing
 
 ---
@@ -144,12 +148,12 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 8: DEFRA-approved transport Delivery / Delivery
 
 🛡️ **Trust & Security:**
-> "Your puppy flies with a certified DEFRA-approved transport handler — never in cargo, never alone."
+> "Your puppy travels to you by road with DEFRA-approved transport, priced by distance: £200–£350."
 > **Button:** How Delivery Works
 
 ⚡ **Direct & Transactional:**
 > "We ship nationwide via DEFRA-approved transport. Your puppy, your city."
-> **Button:** Check Your Airport
+> **Button:** Check Your Delivery Price
 
 🌱 **Ethical & Quality:**
 > "We chose DEFRA-approved transport delivery because we care about the puppy's welfare — comfort and safety are non-negotiable."
@@ -164,7 +168,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** See All Pricing
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: £1,500–£1,700. Blue-Brindle Staffy: £1,500–£1,700. All vet sex-checked, all vet-certified."
+> "£1,500 for a male, £1,700 for a female. A £500 refundable deposit reserves any of them."
 > **Button:** View Current Prices
 
 🌱 **Ethical & Quality:**
@@ -260,12 +264,14 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** Verify BlueStaffyUK
 
 ⚡ **Direct & Transactional:**
-> "BlueStaffyUK ships to [City] — [City1], [City2], [City3] airports. Prices from NOT FETCHED."
+> "BlueStaffyUK delivers to [City] by road, by DEFRA-approved transport, for £200–£350 by distance — or collect from Carlisle."
 > **Button:** Reserve Your [City] Blue Staffy
 
 🌱 **Ethical & Quality:**
-> "We've placed healthy, happy Blue Staffies with [City] families for [X] years."
-> **Button:** [City] Family Stories
+> "Every puppy is raised in our home in Carlisle and delivered to [City] by DEFRA-approved transport."
+> **Button:** Read Our Reviews
+
+A family count and years in business are NOT FETCHED — never write one, not even as a placeholder to fill later.
 
 ---
 
@@ -280,7 +286,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 > **Button:** See the Comparison
 
 🌱 **Ethical & Quality:**
-> "The best species comparison comes from someone who has raised hundreds of Blue Staffies."
+> "The best breed comparison comes from someone who raises Staffies in her own home."
 > **Button:** Read the Comparison
 
 ---
@@ -304,7 +310,7 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 ## Section 18: Waitlist / Future Litters
 
 🛡️ **Trust & Security:**
-> "Joining the waitlist costs nothing and guarantees your position for the next litter."
+> "Joining the waitlist costs nothing and holds your place in line for the next litter."
 > **Button:** Join the Waitlist
 
 ⚡ **Direct & Transactional:**
@@ -317,14 +323,14 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 19: Blue vs Blue-Brindle Coat
+## Section 19: Coat Colours in Our Litter
 
 🛡️ **Trust & Security:**
-> "Blue's silver-staffy coat and crimson tail, or Blue-Brindle's charcoal coat and maroon tail — both stunning, both healthy."
-> **Button:** See Both Variants
+> "Solid blue, blue and white, white, or blue with a white blaze — the coat is looks alone; the price follows the sex."
+> **Button:** See All Available Puppies
 
 ⚡ **Direct & Transactional:**
-> "Blue Staffy: light staffy, red tail. Blue-Brindle: darker staffy, maroon tail. See current puppies."
+> "Each pup's coat is on its card (`colour` in `data/puppies.json`). See current puppies."
 > **Button:** View Available Puppies
 
 🌱 **Ethical & Quality:**
@@ -349,19 +355,9 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 
 ---
 
-## Section 21: Health Guarantee Detail
+## Section 21: Health Guarantee Detail (waits for `guarantee_days`)
 
-🛡️ **Trust & Security:**
-> "Print this page and compare it to any other breeder's guarantee. We'll wait."
-> **Button:** Download the Guarantee
-
-⚡ **Direct & Transactional:**
-> "Written health guarantee. No fine print. No exceptions."
-> **Button:** Read the Full Terms
-
-🌱 **Ethical & Quality:**
-> "We wrote this guarantee the way we'd want to receive one — completely, honestly."
-> **Button:** Our Promise to You
+Not written until `guarantee_days` in `data/settings.json` is set (null today). Then each CTA names the length from that setting and links the written terms — never "no fine print", "no exceptions" or a length typed by hand (`guarantee_days` is the only source).
 
 ---
 
@@ -387,6 +383,6 @@ Place the selected CTA as an H2 or lead paragraph directly above the button pair
 2. **Match voice to page intent** — high-value buyers get Trust, mobile searchers get Direct, informational pages get Ethical
 3. **One CTA voice per section** — don't mix all three in one section
 4. **CTA button text: 2–5 words** — never a full sentence
-5. **Availability numbers must be accurate** — check bsuk-litter-manager data before using "[X] available"
+5. **Availability numbers must be accurate** — check each pup's `status` in `data/puppies.json` before using "[X] available"
 6. **Update seasonally** — "2026" and "this month" references expire
 7. **No dog terms, no marketing emoji** — never puppy/litter/grooming/hypoallergenic; buttons use only canonical emoji (✅ ✈️ 📞)

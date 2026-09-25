@@ -64,7 +64,7 @@ source says 2.26rem, and nothing in the file looks wrong.
 
 > **Real cost:** the home-raised hero was 524px instead of ~400px for its whole
 > first week live. Two rounds of "make the hero shorter" edits did nothing
-> because the rule was never applied. Same bug found on `/available/`.
+> because the rule was never applied. Same bug found on the source repo's `/available/`.
 
 **Fix:** `clamp(1.5rem, 1.02rem + 1.55vw, 1.98rem)`.
 **Verify:** `getComputedStyle(h1).fontSize` matches the clamp, not the global token.
@@ -168,7 +168,7 @@ tall (WCAG 2.5.8), label ≥ 4.5:1.
 
 | Dial variant | Background | Numerals | Ratio |
 |---|---|---|---|
-| **Light card** (blue, blue-brindle) | white `#fff` | `#6b625a` | 5.9:1 ✓ |
+| **Light card** (blue, blue and white) | white `#fff` | `#6b625a` | 5.9:1 ✓ |
 | **Dark kennel** (home-raised) | `#234f3b` | `#9fc7b0` | 5.0:1 ✓ |
 | Mobile rail `.p` | `#234f3b` | `#c9f2db`, **no opacity** | 5.4:1 ✓ |
 
@@ -237,12 +237,12 @@ it was reported on — the breeder saw a sample, not the extent.
 | `form-control-ios-zoom` | ERROR | Form controls under 16px, **including via `font:inherit`** resolving to a smaller ancestor label. Under 16px iOS SThe Kennel Clubri auto-zooms on focus and the form's right edge leaves the viewport — this reads to users as "the form is broken / cut off" | **all 6** |
 | `form-control-overflow` | ERROR | A form grid whose children never set `min-width:0`. Grid children default to `min-width:auto` and refuse to shrink below their content | — |
 | `font-family-loaded-unused` | ERROR | A family requested in `BaseLayout` that no CSS rule ever resolves to | Lora + Sora, **site-wide** |
-| `analytics-double-load` | ERROR | The same GA4 container loading twice — direct `googletagmanager.com` **and** first-party via the host (NOT FETCHED until project 6)'s Google Tag Gateway | see caveat below |
-| `deflist-label-not-differentiated` | WARN | `<dt>` and `<dd>` sharing colour+weight, **or** a `--muted` label sitting quieter than its own `--ink` value, so the block reads as one staffy slab | health-guarantee receipt |
+| `analytics-double-load` | ERROR | The same GA4 container loading twice — direct `googletagmanager.com` **and** first-party via the edge host (chosen in project 6)'s Google Tag Gateway | see caveat below |
+| `deflist-label-not-differentiated` | WARN | `<dt>` and `<dd>` sharing colour+weight, **or** a `--muted` label sitting quieter than its own `--ink` value, so the block reads as one staffy slab | a what's-included receipt |
 | `icon-text-baseline-drift` | WARN | An icon+label flex/grid row with no `align-items` — when the label wraps, the glyph drifts off its text and the column reads as scattered | 4 of 6 |
 
 **`analytics-double-load` caveat — this one cannot fire on `dist/`.** The first-party
-`/70de/` script is injected by **the host (NOT FETCHED until project 6) at the edge**, not by our build, so it is
+`/70de/` script is injected by **the edge host (chosen in project 6) at the edge**, not by our build, so it is
 absent from local output. Run this check against the **live URL**, not `dist/`:
 
 ```bash

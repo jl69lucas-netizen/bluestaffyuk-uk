@@ -11,12 +11,12 @@ allowed-tools: [Read, Write, Bash]
 ---
 
 ## BSUK Project Context
-> **Site:** BlueStaffyUK — licensed Blue Staffordshire Bull Terrier breeder, Carlisle
-> **Coat lines:** Blue / blue brindle (Roman, Byrd, Ince — £1,500) · Black brindle / rare blue (Vennie, Christa, Cheryl — £1,700) — treat as distinct product lines
+> **Site:** BlueStaffyUK — home-raised Blue Staffordshire Bull Terrier breeder in Carlisle, Cumbria (Lisa Bright)
+> **The litter:** `data/puppies.json` — males Roman, Byrd, Ince at £1,500 · females Vennie, Christa, Cheryl at £1,700. The price follows the sex, not the coat; each pup's coat is its own row's `colour` (blue, blue and white, white, blue with white blaze), and none of the six is brindle
 > **Licensing:** LICENCE_CLAIM_PLACEHOLDER and LEGAL_CLAIM_PLACEHOLDER compliance — NOT YET CONFIRMED by Lisa Bright. Never state either as fact, and never imply a puppy-farm or third-party sale.
 > **Trust pillars:** LICENCE_CLAIM_PLACEHOLDER · LEGAL_CLAIM_PLACEHOLDER · KC registration · Microchip number · Vet health check · First vaccinations + worming record · Fully weaned + home-raised
 > **Buyer fears (ranked):** Scam/unlicensed seller · Sick puppy · Puppy-farm origin · Missing paperwork · No post-sale support
-> **Content root:** `site/content/` | **Sessions:** `docs/superpowers/sessions/`
+> **Pages:** `src/pages/` (built: `dist/`) | **Session docs:** `docs/superpowers/sessions/`
 > **Confidence Gate:** ≥97% before writing any site file
 
 ---
@@ -38,7 +38,7 @@ You never build pages or write HTML. You only write to session briefs and CLAUDE
 
 ## On Startup — Read These First
 
-1. **Run** `ls docs/superpowers/sessions/` — find today's session brief file (format: `YYYY-MM-DD-session-brief.md`)
+1. **Run** `ls docs/superpowers/sessions/` — find today's session brief file (format: `<date>-session-brief.md`)
 2. **Read** today's session brief — understand what was planned at the start
 3. **Read** `CLAUDE.md` — check current "What's Next" and "Known Issues"
 4. **Run** `git log --oneline -10` — see what was actually committed this session
@@ -63,7 +63,7 @@ Uncommitted: [anything in git status that wasn't pushed]
 ```
 
 If there are uncommitted changes, ask:
-> "There are uncommitted changes. Should I commit and push before closing, or leave them for next session?"
+> "There are uncommitted changes. Should I commit them before closing (there is no push until project 6), or leave them for next session?"
 
 Wait for the answer before continuing.
 
@@ -156,7 +156,7 @@ After writing (or skipping) the CLAUDE.md patch:
 2. **Never blank out existing content** — only append to session brief and CLAUDE.md
 3. **Read git log, not memory** — use actual commit history to summarize what was done
 4. **One question at a time** — if you need to ask about uncommitted changes AND about CLAUDE.md, ask sequentially
-5. **Never commit site/content/ files without preview gate approval** — always check before touching content files
+5. **Never commit a page under `src/pages/` without preview gate approval** — always check before touching page files
 6. **Golden Rule** — only Read, Write, and Bash (`git log`, `git status`, `ls docs/superpowers/sessions/`). No MCPs.
 
 ---
@@ -178,7 +178,7 @@ Run at the END of any session that involved debugging, a failed approach, or a n
    - Architectural discovery → `memory/project_*.md`
    - Agent/skill behavior quirk → `memory/feedback_*.md`
 3. **DISCARD:** Full transcripts, step-by-step debug logs, interim attempts. Keep only the conclusion.
-4. **UPDATE existing memory files** — don't create duplicates. If `feedback_check_before_asking.md` already exists, add a new rule there instead of creating `feedback_check_before_asking_2.md`.
+4. **UPDATE existing memory files** — don't create duplicates. If a memory file for that rule already exists (for example `feedback_check_before_asking`), add the new rule there instead of creating a second one with a `_2` suffix.
 
 **Distillation template:**
 

@@ -39,10 +39,11 @@
 // so no `h1` row is owed and none is written. The slug's keyword phrase sits in the migrated
 // H2 this hero carries ("Blue Staffy Health UK : Our Commitment to Happy, Healthy Puppies").
 //
-// WORKING RULE 16. The hero is `H-GD3` — the text-led PANEL with the photo in a narrow column
-// on the left and an aside beside the copy, in a card — and the counter is `C-GD1`, ruled
-// columns beside the heading. Both are the interior-guide family's own arrangements, resolved
-// through `pickedStyle()`, and neither is one any other page took.
+// WORKING RULE 16. The hero is `H-GD1` — the editorial SPLIT: the copy on the left, the
+// photograph on the right, and the key-facts aside as a second row under the copy — and the
+// counter is `C-GD1`, ruled columns beside the heading. Both are the interior-guide family's
+// own arrangements, resolved through `pickedStyle()`, and neither is one any other page took:
+// the three guides were re-boarded onto three different heroes (Known Issues 30 and 35).
 //
 // THE ASIDE IS THE RECORD'S OWN `hero.aside`, AND EVERY ROW OF IT IS DERIVED (amendment 10.5,
 // 10.6). "L-2-HGA and HC-HSF4" is built from the table's own row labels, "Tested clear" from
@@ -51,8 +52,9 @@
 // approved, so a fact that moves throws at build with both readings in the message rather than
 // printing one nobody has checked. Each row is found by the PATH IT CITES rather than by its
 // label, so a row renamed on the board cannot pick up another row's derivation. The three
-// approved CHIPS are rendered in the same box as a single credential line: `Hero` shows a chip
-// ROW only for `ledge: 'chips'`, so on H-GD3 the prop is handed over and dropped, and a claim
+// approved CHIPS are rendered in the same box as a single credential line, except on H-GD1,
+// where the band has no room for the line (see the aside below; Known Issue 35): `Hero` shows
+// a chip ROW only for `ledge: 'chips'`, so on H-GD3 the prop is handed over and dropped, and a claim
 // the breeder approved is not worth losing to an arrangement — the chips are on this page, in
 // the aside, and it is only the component's own chip row that H-GD3 does not render.
 //
@@ -93,7 +95,7 @@ import InfoCard from '../../components/kit/InfoCard.astro';
 import Testimonial from '../../components/kit/Testimonial.astro';
 import Faq from '../../components/kit/Faq.astro';
 import { sectionsFromRecord } from '../../lib/sections';
-import { pickedStyle } from '../../lib/pickedStyle';
+import { pickedStyle, approvalInForce } from '../../lib/pickedStyle';
 import { bakedAssets, bakedSrcset, inPublic, BODY_SIZES } from '../../lib/assets';
 import { recordText, countedFigures, ledgeText, sourceKey, breedFactsCell,
   sentenceAnchor, type LedgeEntry } from '../../lib/recordText';
@@ -108,10 +110,14 @@ import guideRecord from '../../../data/boards/uk-staffordshire-bull-terrier-guid
 import record from '../../../data/boards/blue-staffy-health-uk.json';
 
 const path = '/blue-staffy-health-uk/';
-// The picked meta variants and H1, BY INDEX from the approval — never retyped here.
-const title = record.meta_set.titles[record.approval!.meta!.title];
-const description = record.meta_set.descriptions[record.approval!.meta!.description];
-const h1 = record.h1.variants[record.approval!.h1];
+// The picked meta variants and H1, BY INDEX from the approval IN FORCE — never retyped here.
+// `approvalInForce()`, not `record.approval`: the record went back to the board for its hero
+// (Known Issue 35) with its approval carried under `approval_previous`, and what the page is
+// called was never the question (spec §9 amendment 11a).
+const approved = approvalInForce(record);
+const title = record.meta_set.titles[approved.meta!.title];
+const description = record.meta_set.descriptions[approved.meta!.description];
+const h1 = record.h1.variants[approved.h1];
 
 // The eight migrated photographs, by slot, at their ORIGINAL public paths with the alt text
 // the record baked (working rule 11; all eight alts are elements of the verbatim set). A
@@ -284,10 +290,11 @@ const pageSchema = [
   schema={pageSchema}
   sections={sections}
 >
-  {/* 01 top — hero, picked style H-GD3 (a text-led panel in a card: the photograph in a narrow
-      column on the left, the copy beside it, the key-facts aside in a third column). The aside
+  {/* 01 top — hero, picked style H-GD1 (the editorial split: the copy left, the photograph
+      right, the key-facts aside as a second row under the copy — Known Issue 35). The aside
       is a SLOT (amendment 8) and what goes in it is the record's own `hero.aside`, every row of
-      it derived above, and its three chips are the credential line at the foot of that box. No
+      it derived above; on H-GD1 its three chips are left out of that box (the credential line
+      the band has no room for, below), and any other arrangement prints them at its foot. No
       CTA buttons: the record gives the hero none (amendment 6a), and no separate chip ROW,
       because the arrangement's ledge is `aside`. */}
   <section slot="hero" id="top" data-section-label="Blue Staffy health" class={box('top')}>
@@ -320,7 +327,11 @@ const pageSchema = [
         <dl class="aside-rows">
           {asideRows.map((r) => (<><dt>{r.label}</dt><dd>{r.value}</dd></>))}
         </dl>
-        <p class="aside-chips">{heroChips.join(' · ')}</p>
+        {/* On H-GD1, the editorial split, the aside is a second row under the copy and the
+            credential line is the one line the 450px band has no room for (measured at 1280:
+            30px over with it, 0 without; Known Issue 35). The chips are still passed to `Hero`
+            above, so any other arrangement prints the line again. */}
+        {heroStyle.layout.hero !== 'split' && <p class="aside-chips">{heroChips.join(' · ')}</p>}
       </div>
     </Hero>
     <h2>{T(heading('top'))}</h2>

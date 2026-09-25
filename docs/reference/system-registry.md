@@ -27,7 +27,7 @@ and regenerate — never the other way round.
 | Agent | Does |
 |---|---|
 | `.claude/agents/bsuk-angle-agent.md` | Generates content angles, hooks and unique points of view for any BlueStaffyUK page — 5–10 options before a word of body copy is written |
-| `.claude/agents/bsuk-blog-post-agent.md` | Writes commercial, transactional, review and comparison blog posts for BlueStaffyUK as markdown into src/content/blog/<slug>.md, rendered … |
+| `.claude/agents/bsuk-blog-post-agent.md` | Writes commercial, transactional, review and comparison blog posts for BlueStaffyUK as markdown into src/content/blog/<slug>.md, served at … |
 | `.claude/agents/bsuk-competitor-intel.md` | Use after the competitor registry (data/competitors.json) is approved, to analyse one competitor, one tier or all of them — or … |
 | `.claude/agents/bsuk-content-architect.md` | Orchestrates content creation for BlueStaffyUK |
 | `.claude/agents/bsuk-content-audit-agent.md` | Four-phase deep content audit of any BlueStaffyUK page — intent gaps, subtopics competitors cover and BSUK does not, meta … |
@@ -45,17 +45,17 @@ and regenerate — never the other way round.
 | Agent | Does |
 |---|---|
 | `.claude/agents/bsuk-about-builder.md` | Rebuilds /blue-staffy-uk-breeders/ — Lisa Bright's breeder story page for BlueStaffyUK, Carlisle |
-| `.claude/agents/bsuk-comparison-builder.md` | Builds and rebuilds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — landing under … |
+| `.claude/agents/bsuk-comparison-builder.md` | Builds Staffy comparison pages — blue vs blue-and-white coat, male vs female, Blue Staffy vs another breed — at the URLs the project-5 … |
 | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | Use after bsuk-competitor-intel has written competitor reports and the BSUK profile, to find the topics BlueStaffyUK's competitors have a … |
 | `.claude/agents/bsuk-faq-agent.md` | Builds and audits FAQ sections for any BlueStaffyUK page using the QAB framework — 6–12 questions per page from real buyer language … |
 | `.claude/agents/bsuk-gsc-analytics.md` | Search Console analysis — INACTIVE UNTIL PROJECT 6 |
-| `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/), the … |
-| `.claude/agents/bsuk-infographic-builder.md` | Builds 400–450px (in-body) and 760px (guide) HTML/CSS infographics for any BlueStaffyUK page section |
+| `.claude/agents/bsuk-hub-builder.md` | Builds aggregator hub pages that link to their spokes — the puppy hub (/available-puppies/), the location hub (/uk-locations/) with the … |
+| `.claude/agents/bsuk-infographic-builder.md` | Builds 400–450px (in-body) and 760px (guide) infographics for any BlueStaffyUK page section as kit components |
 | `.claude/agents/bsuk-interactive-component.md` | Builds interactive HTML components for BlueStaffyUK pages — first-year cost calculators in £, coat/temperament fit quizzes, paperwork … |
 | `.claude/agents/bsuk-llm-keyword-intel.md` | Use when a BlueStaffyUK page needs to know what an AI engine answers to its buyer question — who the answer cites (BSUK or which registry … |
 | `.claude/agents/bsuk-rank-tracker.md` | Competitor and ranking monitoring — INACTIVE UNTIL PROJECT 6 |
-| `.claude/agents/bsuk-section-builder.md` | Builds one HTML section for a BlueStaffyUK page and returns a ready-to-paste block |
-| `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — review widgets, trust-badge sections, testimonial … |
+| `.claude/agents/bsuk-section-builder.md` | Builds one section of a BlueStaffyUK page by mounting the kit component for it (src/components/kit/) and returns the Astro markup |
+| `.claude/agents/bsuk-trust-signals-agent.md` | Audits BlueStaffyUK pages for missing social proof and trust elements and adds them — the counter strip, the trust strip and testimonial … |
 
 ### `tier_medium` — 16
 
@@ -64,16 +64,16 @@ and regenerate — never the other way round.
 | `.claude/agents/bsuk-accessibility-fixer.md` | Audits built BlueStaffyUK pages in dist/ for WCAG 2.1 AA — skip links, ARIA labels, focus states, keyboard navigation, colour contrast … |
 | `.claude/agents/bsuk-agent-system-qa.md` | Quality review agent for the BSUK agent system |
 | `.claude/agents/bsuk-batch-rebuilder.md` | Coordinates a batch page rebuild by dispatching one Agent-tool call per page to its specialist agent, all in one message, then tracks … |
-| `.claude/agents/bsuk-canonical-fixer.md` | Converts relative canonical URLs to absolute across BlueStaffyUK pages |
+| `.claude/agents/bsuk-canonical-fixer.md` | Verifies that every built BlueStaffyUK page carries an absolute canonical and og:url, and that every JSON-LD @id reference resolves on its … |
 | `.claude/agents/bsuk-competitor-registry.md` | Use to seed BlueStaffyUK's national competitor registry (data/competitors.json) for the first time, or when intel or a page build finds a … |
-| `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against src/components/ContactForm.astro — outdated … |
+| `.claude/agents/bsuk-contact-form-updater.md` | Audits and standardises every contact, enquiry and newsletter form across BlueStaffyUK against the kit's … |
 | `.claude/agents/bsuk-deploy-verifier.md` | Post-deploy verification and IndexNow submission — INACTIVE UNTIL PROJECT 6 |
-| `.claude/agents/bsuk-footer-standardizer.md` | Audits the BlueStaffyUK footer across the built site and standardises it on src/components/SiteFooter.astro, which … |
+| `.claude/agents/bsuk-footer-standardizer.md` | Verifies the BlueStaffyUK footer across the built site — every page carries exactly one footer, rendered by … |
 | `.claude/agents/bsuk-image-pipeline.md` | Moves generated or supplied photographs into public/images/ under the BSUK SEO filename convention, updates every <img> reference in … |
 | `.claude/agents/bsuk-keyword-verifier.md` | Verifies keyword placement, density and on-page SEO hygiene for any BlueStaffyUK page — title, H1, meta description, first 100 words, H2 … |
 | `.claude/agents/bsuk-meta-description-agent.md` | Writes and audits every title tag and meta description on BlueStaffyUK — standard (50–60 char title, 140–160 char description) and … |
-| `.claude/agents/bsuk-paa-agent.md` | Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright CLI, formats the answers for … |
-| `.claude/agents/bsuk-performance-fixer.md` | Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, script defer, font-display swap, LCP … |
+| `.claude/agents/bsuk-paa-agent.md` | Extracts real People Also Asked questions from Google for a UK Staffy target keyword using the Playwright MCP tools, formats the answers … |
+| `.claude/agents/bsuk-performance-fixer.md` | Applies proven Lighthouse Performance fixes to BlueStaffyUK pages — render-blocking CSS, font-display swap, LCP fetchpriority + preload … |
 | `.claude/agents/bsuk-redirect-manager.md` | Manages every 301/302 rule for BlueStaffyUK |
 | `.claude/agents/bsuk-self-update.md` | Keeps the BSUK agent and skill system current: reviews what a session learned, proposes edits to the agents, skills and rule packs that … |
 | `.claude/agents/bsuk-site-hygiene-agent.md` | Technical SEO hygiene for BlueStaffyUK: (1) page cannibalisation audit across the 28 location pages and the buy cluster, with 301 … |
@@ -144,7 +144,17 @@ system; the rest are the generic writing, research and framework skills.
 - `.claude/skills/session-closer/SKILL.md`
 - `.claude/skills/sitemap-agent/SKILL.md`
 
-## Scripts — 75
+## Commands — 4
+
+Every `.md` under `.claude/commands/`, each a slash command. The `opsx/` set is
+vendored from upstream OpenSpec, like the four `openspec-*` skills.
+
+- `.claude/commands/opsx/apply.md`
+- `.claude/commands/opsx/archive.md`
+- `.claude/commands/opsx/explore.md`
+- `.claude/commands/opsx/propose.md`
+
+## Scripts — 76
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -224,6 +234,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/sitemap_check.py`
 - `scripts/strategy_cite_check.py`
 - `scripts/verbatim_set_check.py`
+- `scripts/workflow_ref_check.py`
 
 ## Data files — 23
 
@@ -251,6 +262,19 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `data/settings.json`
 - `data/verbatim/`
 
+## Schemas — 8
+
+Every JSON Schema in `schemas/` — the contract a data file or report is validated against.
+
+- `schemas/board.schema.json`
+- `schemas/competitor-report.schema.json`
+- `schemas/competitors.schema.json`
+- `schemas/component-ledger.schema.json`
+- `schemas/llm-intel.schema.json`
+- `schemas/ontology.schema.json`
+- `schemas/port-manifest.schema.json`
+- `schemas/queries.schema.json`
+
 ## Gates
 
 `npm run check:all` runs the mechanical gates. Each prints `examined N …; 0 problems`
@@ -258,6 +282,15 @@ and exits non-zero on a problem.
 
 | Gate | Proves |
 |---|---|
+| `scripts/migration_parity.py` | words, headings, images and embeds of a migrated page against the extractor |
+| `scripts/facts_preserved_check.py` | a rebuilt page keeps every fact its migrated body carried |
+| `scripts/link_parity_check.py` | a rebuilt page links where its board record says, and nowhere else |
+| `scripts/verbatim_set_check.py` | a rebuilt page carries its migrated page's verbatim set (working rule 15) |
+| `scripts/outline_provenance_check.py` | a new location, comparison or blog page is built from its approved outline and shares no heading or passage with a sibling (working rule 17) |
+| `scripts/query_coverage_check.py` | a built page with a query pool carries its FAQ blocks and questions |
+| `scripts/competitor_registry_check.py` | `data/competitors.json` is well formed; no unlinkable competitor is linked |
+| `scripts/gap_matrix.py` | the newest gap matrix matches the intel reports (`--check`) |
+| `scripts/workflow_ref_check.py` | WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist |
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
 | `scripts/final_page_audit.py` | headings, six levels, the H5/H6 minimums |
@@ -288,7 +321,7 @@ Deferred paths are not listed here by name: a name is a path, and a path this re
 does not have is exactly what the forward-reference guard exists to catch. Read the
 manifest for the list.
 
-## Mechanical guards — 10
+## Mechanical guards — 13
 
 Every rule in this repo that is actually enforced is enforced by one of these. A
 guard that is not in this table is not a guard; a rule with no row here is a
@@ -300,12 +333,15 @@ answer is usually "add the manifest row and it is covered".
 |---|---|---|---|
 | `scripts/marker_check.py` | every written manifest `dst` plus CLAUDE.md, rules/, docs/reference/, package.json, tests/render/, scripts/dup_content_audit.py | add a non-`deferred` row to `data/port-manifest.json`, or a path to `FIXED_ROOTS` | `tests/py/test_marker_check.py` |
 | `scripts/placeholder_check.py` | `dist/` plus the union of its literal floor (.claude/skills, .claude/agents, docs/reference) with `marker_check.scan_roots()` | inherited — anything the marker gate judges is scanned automatically | `tests/py/test_placeholder_check.py` |
-| fact lint | `.claude/agents` and `.claude/skills`: locked £ amounts, banned tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, lifespan 12–14 | drop a file into either tree | `tests/py/test_agent_facts.py` |
-| path guard + stale-marker | every repo path cited in a `docs/reference` doc, and every `(arrives in Task N)` marker whose path now exists | cite a path in a reference doc | `tests/py/test_rules_index.py`, `tests/py/test_claude_md.py` |
+| fact lint + residue lint + guarantee gate | `.claude/agents`, `.claude/skills` and `docs/reference`: locked £ amounts, banned tokens, DEFRA only beside transport, no stand-in inside a heading or path segment, lifespan 12–14; skills and `.claude/commands` also against the source-repo residue list (`RESIDUE`, among others: US sources, regulators and geography, air transport, the other brand and animals, the source repo's rule and component names, its Latin variant naming and bird-health words, permit paperwork, deploy pushes, fixed section counts, spelled-out prices, and brindle, licence, placement-count, years-in-business, weaning-age and reply-time claims) and the guarantee gate (`ungated_guarantees()`: a line that says guarantee names `guarantee_days`), which also runs over every agent; every agent against its own residue list (the other brand and its animals, US residue, the former city, known facts left as placeholders, faq.json health wording without the evidence ledger, and known paperwork — "paperwork (LICENCE_CLAIM_PLACEHOLDER)" included — written as a licence placeholder, a guard that reads every skill and command too) | drop a file into any of those trees | `tests/py/test_agent_facts.py`, `tests/py/test_agent_residue.py` |
+| path guard + dead-root + dead-file + stale-marker | every repo path cited in CLAUDE.md, a `rules/` pack, a `docs/reference` doc, an agent or a non-vendored skill (the `openspec-*` skills are vendored); in non-vendored skills and every command, the source repo's roots (`DEAD_ROOTS`: `sessions/`, `site/content`, `site/system`, `content/social/`, `content/prompts/`) and its files (`DEAD_FILES`: the 29-check interior auditor, the top-pages export unless the line says NOT FETCHED, the structure manifest); in every agent, every one of those roots (`AGENT_ROOTS`), plus any file, agent, skill, npm script, `data/locations.json` field or route an agent names, and no file this repo replaced; every arrives-in-Task-N or not-ported marker whose paths now all exist | cite a path in a pack, a reference doc, an agent or a skill; add a skill, a command or an agent | `tests/py/test_rules_index.py`, `tests/py/test_claude_md.py`, `tests/py/test_agent_references.py` |
+| builder-skill contracts + route guard | the location, comparison and blog builders, the SEO checklist, grill-me's board gate and the audit commands in manual-auditor-check and sitemap-agent against the code they describe (Known Issue 40); the route guard (`route_offenders()`): every site-root route a skill, a command or an agent names is built, in `data/page-map.json`, redirected, a `public/` folder or a stated non-page (seo-rules.md Rule 62; skipped without `dist/`); in an agent, a competitor's own URL (its domain and the path after it) and a `/tmp/` path are not routes | add a test beside the claim a builder makes; a new skill, command or agent is route-checked automatically | `tests/py/test_builder_skills.py` |
 | table lint + frontmatter | every skill's frontmatter and every markdown table in the skill tree | add a skill directory under `.claude/skills` | `tests/py/test_skills_frontmatter.py` |
 | harness vocabulary | `tests/render/` check ids, families and the deferred-check register | register a check in the harness | `tests/render/meta.spec.ts` via `npm run test:render:meta` |
 | credentials doc + secret scan | `docs/reference/credentials.md` key table; every `.env` value against all tracked files, the run log and `docs/artifacts/*.html`; credential SHAPES across `marker_check.scan_roots()` plus docs/reports, docs/artifacts, data/quality/scorecards, tests/py/fixtures | inherited from the marker gate; add a key to `.env` and `.env.example` | `tests/py/test_credentials_doc.py`, `tests/py/test_no_env_value_committed.py`, `tests/py/test_secret_shapes.py` |
-| agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
+| agent + system registries | `.claude/agents` frontmatter against `data/agent-registry.json`; this document against the repo | add an agent, a skill, a command, a script or a `data/` file | `npm run agents`, `npm run registry` (both `--check`) |
+| workflow references | `docs/reference/WORKFLOW.md` and `docs/reference/quick-start.md`: every `bsuk-*` agent or skill name, `scripts/...` path and `npm run` name, unless the line carries the parenthesised not-ported marker | name it in either doc — coverage is the whole of both files | `tests/py/test_workflow_ref_check.py`, `npm run check:workflow` |
+| page-map provenance | CLAUDE.md, README.md, `docs/reference`, `rules/`, every agent, skill and command: no line ties `data/page-map.json` to the board builder as its maker — the map is the WordPress extractor's record of the old site, and a new page's record is its board | add a file to any of those trees | `tests/py/test_page_map_claims.py` |
 | render baseline | the generated table in `docs/reports/render-baseline-project2.md` against the scorecards | regenerate with `scripts/render_baseline.py --write` | `npm run baseline` |
 | parity / redirects / schema / sitemaps | the built `dist/` against the migration record, the redirect map, JSON-LD and the sitemap shards | build a page — coverage follows `dist/` | `npm run check:all` |
 

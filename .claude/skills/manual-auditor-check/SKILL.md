@@ -7,22 +7,24 @@ allowed-tools: [Read, Write, Bash]
 # Manual Auditor Check — Final QA Gate
 
 ## Overview
-The last gate before a page batch ships. Two halves: a **mechanical auditor** (`scripts/interior_29_audit.py`) that scores the objective checks over rendered `dist/` HTML in <1s, and a **copy-paste manual checklist** for the ~6 subjective items a script can't judge (voice, humor, Flesch, non-commodity detail, tone, brand-protocol naming). Distilled from the 29-check final-QA pass (`sessions/2026-06-14-interior-29-check-audit.md`).
+The last gate before a page batch ships. Two halves: a **mechanical auditor** (`scripts/final_page_audit.py`, plus `scripts/page_hardening_scan.py` and `scripts/evidence_audit.py`) that scores the objective checks over rendered `dist/` HTML, and a **copy-paste manual checklist** for the ~6 subjective items a script can't judge (voice, humor, Flesch, non-commodity detail, tone, brand-protocol naming). Distilled from the source repo's 29-check final-QA pass, which was not ported.
 
 **Core principle:** *Never report a machine "fail" as a defect until you've checked it against real `dist/` output.* On its first run this auditor produced **31 false positives**; all 4 root causes are baked in below. Verify, then triage.
 
 ## When to Use
-- A new/rebuilt/polished interior or informational page (or batch) is finished and you're about to "give it a pass" or push.
+- A new/rebuilt/polished interior or informational page (or batch) is finished and you're about to "give it a pass" or commit it.
 - After any `@bsuk-batch-rebuilder`, polish rollout, or large content edit.
 - You want a **reproducible scorecard**, not a vibe check.
 - **NOT for:** comparison / location / "…for-sale" money pages / blog posts (own structure) — same exclusions as `MANUAL INTERIOR-PAGE CHECKLIST.md`.
 
 ## Quick Start (mechanical half)
 ```bash
-npx astro build                       # MUST build first — auditor reads dist/, source greps lie
-python3 scripts/interior_29_audit.py  # per-page blocks + a "CHECK ROLL-UP" of who fails each check
+npm run build                         # MUST build first — auditor reads dist/, source greps lie
+python3 scripts/final_page_audit.py <slug> <slug>   # per-page findings; exits 1 on any FAIL
+python3 scripts/page_hardening_scan.py              # page-hardening checks over dist/
+python3 scripts/evidence_audit.py <slug>             # term budgets, claim binding, NOT FETCHED in prose
 ```
-Edit the `SLUGS` list at the top of the script to point at the pages you're auditing.
+Pass the slugs you are auditing (`index` is the homepage).
 
 ## The 4 False-Positive Traps (DO NOT fabricate these as defects)
 The auditor's heuristics were hardened against these — but if you ever hand-audit or extend it, they bite again:
@@ -54,7 +56,7 @@ A script can't judge these — read them:
 
 ```text
 MANUAL AUDITOR CHECK — <page slug>            Updated: <Month Year>
-RUN FIRST: npx astro build  →  python3 scripts/interior_29_audit.py
+RUN FIRST: npm run build  →  python3 scripts/final_page_audit.py <slug>
 
 STRUCTURE
 [ ] H1 ×1 exactly; H1–H4 all present; no level skips (utility pages may lack H4 — ACCEPTED)

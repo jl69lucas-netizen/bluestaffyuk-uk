@@ -80,12 +80,13 @@ BANNED = (
     "DNA sex", "DNA-sex", "DNA Sex", "DNA-Sex",
 ) + CAG_GEO
 
-# `Glasgow` has exactly two honest uses left in the instruction tree, and a line carrying
-# one of them is allowed to name the city: the outreach page's slug, which is a URL that
-# still ranks and is never renamed, and the debt note itself, which cannot be written
-# without saying what the debt is. Nothing else — a trust pillar, a meta template, a
-# delivery table — may say it.
-GLASGOW_ALLOWED = re.compile(r"staffy-breeding-dogs-glasgow|Known Issue 16")
+# `Glasgow` has exactly three honest uses left in the instruction tree, and a line carrying
+# one of them is allowed to name the city: the outreach page's slug and the live city row's
+# slug (both in data/locations.json), which are URLs that still rank and are never renamed,
+# and the debt note itself, which cannot be written without saying what the debt is.
+# Nothing else — a trust pillar, a meta template, a delivery table — may say it. One list:
+# tests/py/test_agent_residue.py reads the agents against this same pattern.
+GLASGOW_ALLOWED = re.compile(r"staffy-breeding-dogs-glasgow|staffy-puppies-for-sale-glasgow|Known Issue 16")
 
 # DEFRA is real here in exactly one form: the transport that carries a puppy. "DEFRA-approved
 # breeder" / "DEFRA-compliant kennel" are claims nobody has verified.
@@ -323,3 +324,246 @@ def test_the_lint_bans_the_old_city_but_spares_the_slug_and_the_debt_note(tmp_pa
     bad = [v for v in violations(p) if "'Glasgow'" in v]
     assert len(bad) == 1, bad
     assert "Collection in Glasgow" in bad[0], bad
+
+
+# ── source-repo residue in the skills (project 5 readiness, 2026-09-23) ─────
+# The bans above read agents, skills and reference docs for claims. This list reads the
+# SKILLS (and the slash commands) for residue that is not a claim BSUK could ever make true:
+# another business's regulators, geography, animals, brand and deploy model. Every entry was
+# found in a skill on 2026-09-23 — the SEO checklist cited the AVMA and the FTC, the map skill
+# served "CITY, STATE" and Arizona, the entity graph listed parrot names and US airlines, the
+# blog and comparison builders promised "since 2014" and "12+ years", and five skills told a
+# builder to `git push origin main`. The agents are not in scope here yet: widen
+# `residue_targets()` to `.claude/agents/*.md` in the task that clears them.
+RESIDUE = (
+    ("a US animal-health or retail source (UK sources: docs/reference/external-link-library.md)",
+     re.compile(r"\b(?:AVMA|AAHA|ASPCA|Chewy|PetMD|IAABC|Craigslist)\b|Pet Poison Helpline|"
+                r"Veterinary Emergency Group|avma\.org|aaha\.org|aspca\.org|chewy\.com|petmd\.com|"
+                r"petpoisonhelpline|veterinaryemergencygroup|iaabc\.org|clickertraining\.com")),
+    ("a US regulator", re.compile(r"\bFTC\b|ftc\.gov")),
+    ("US geography — BSUK serves the 28 UK cities in data/locations.json",
+     re.compile(r"\b(?:Arizona|Virginia|Illinois|Pennsylvania|Ohio|Michigan|Colorado|Tennessee|"
+                r"North Carolina|Phoenix|STATENAME)\b|CITY%2C%20STATE|CITY, STATE|state/city|"
+                r"Continental US|\binterstate\b")),
+    ("air transport — delivery is by road, by DEFRA-approved transport",
+     re.compile(r"(?i)\bairports?\b|\bairlines?\b|\bair transport\b|air-cargo|\bin cargo\b|"
+                r"Delta, United")),
+    ("the other source repo's brand (MFS / Maltipoos For Sale)",
+     re.compile(r"\bMFS\b|Maltipoo|Lawrence (?:&|and) Cathy")),
+    ("the source repo's animals",
+     re.compile(r"\b(?:Roys|Amie|Elad|Jins|Jeni|Maxy|Rily)\b|\bP\. e\.|Canine Biotech")),
+    ("the source repo's rule name — BSUK's is data/quality/evidence-ledger.json",
+     re.compile(r"Verified-Claim Ledger")),
+    ("an unbacked years-in-business claim", re.compile(r"since 2014|`?12\+`?\s*[Yy]ears")),
+    ("a deploy push — there is no remote until project 6",
+     re.compile(r"git push|push origin|[Cc]ommit \+ push|commit and push|push = deploy|"
+                r"Deploy \+ push|push to GitHub|main auto-deploys|unpushed commits")),
+    ("a fixed section-count template — the rule is competitors' count + 3, floor 9",
+     re.compile(r"22[–-]2[45]|\b22[- ]section|\b22 sections|fewer than 22")),
+    ("a component, prop or word this repo does not have",
+     re.compile(r"NewsletterV2|hideGlobalCta|reUKble|the host \(NOT FETCHED")),
+    ("a coat line priced as a product line — price is by sex (data/puppies.json)",
+     re.compile(r"(?i)brindle[^|\n]{0,40}\((?:Roman|Vennie)")),
+    ("a licence asserted as ours — it is LICENCE_CLAIM_PLACEHOLDER until confirmed",
+     re.compile(r"—\s*licensed\b|licensed home-raised|Licensed Carlisle|\"Licensed Blue|"
+                r"Licensed family home")),
+    # Widened after the Task 12 review (2026-09-24): four more shapes the first list missed.
+    ("a price spelled out in words — prices are numerals from data/price-matrix.json",
+     re.compile(r"(?i)\b(?:twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|"
+                r"twenty|thirty)(?:[- ](?:one|two|three|four|five|six|seven|eight|nine))?[- ]hundred\b")),
+    ("a Blue-Brindle variant — none of the six pups is brindle (data/puppies.json `colour`)",
+     re.compile(r"(?i)\bblue-brindle\b")),
+    ("\"licensed breeder\" asserted — a licence is LICENCE_CLAIM_PLACEHOLDER until confirmed",
+     re.compile(r"(?i)\blicen[cs]ed breeders?\b")),
+    ("the source repo's Latin variant naming (P. …)", re.compile(r"\(P\. [a-z]")),
+    # Widened again (2026-09-24): the source repo bred birds. Its health vocabulary is not a
+    # dog's. BSUK's health facts are the vet check (data/faq.json `puppy-package`,
+    # `health-vaccinations`) and the parents' L-2-HGA / HC-HSF4 DNA tests, whose results are
+    # NOT FETCHED in data/quality/evidence-ledger.json (`parents-dna-clear`).
+    ("the source repo's bird-health vocabulary — BSUK's is the vet check and the parents' DNA tests",
+     re.compile(r"(?i)sex-check|\bPCR\b|polyomavirus|psittac|\bavian\b|\bplucking\b|\bUV-B\b")),
+    ("a weaning age no BSUK data states — a puppy goes home at eight weeks at the earliest "
+     "(data/faq.json `buying-best-age`)",
+     re.compile(r"(?i)\bwean\w*\b[^|\n]{0,25}?\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b|"
+                r"\b\d+\s*[–-]\s*\d+[\s-]*(?:weeks?|months?)\b[^|\n]{0,15}\bwean")),
+    # And again (Task 12 final review): none of the six pups is brindle, so BSUK never offers
+    # one — "our … brindle", a brindle pup for sale, "blue or blue brindle" as a choice, a
+    # coat spec, a Blue Brindle Staffy named as a product. A breed-level coat list ("blue,
+    # blue brindle and white coats") and a "vs" topic stay allowed (see residue()).
+    ("a brindle pup offered as ours — each pup's coat is its `colour` in data/puppies.json",
+     re.compile(r"(?i:\b(?:our|we|us)\b[^|\n]{0,40}\bbrindle\b|"
+                r"\bbrindle staff(?:y|ies)?\s+(?:for sale|pups?|puppy|puppies)|"
+                r"\bbrindle staffordshire bull terriers?\s+(?:for sale|pups?|puppy|puppies)|"
+                r"\bbrindle (?:pups?|puppies)\b|"
+                r"\bspecialis\w+ in\b[^|\n]{0,40}\bbrindle\b|"
+                r"\bblue\s*(?:/|or)\s*blue brindle\b|"
+                r"\bcoat:\s[^|\n]*\bbrindle\b)|"
+                r"\bBlue Brindle Staff(?:y|ies)\b")),
+    ("a placement count or years in business — both are NOT FETCHED, even as a [N] template",
+     re.compile(r"(?i)\bhundreds of (?:families|blue staff|staff|puppies|placements)|"
+                r"\[N\]\+?\s*families|families for \[X\]\+?\s*years|"
+                r"\[X\]\+?\s*years\b(?![^|\n]{0,20}\b(?:old|lifespan|live))")),
+    ("the source repo's CITES paperwork — a UK puppy has no permit, appendix or CoP listing",
+     re.compile(r"\bCoP ?17\b|(?i:\bappendix[\s-]i\b)")),
+    ("a reply-time promise — the only reply time on file is data/faq.json `home-after-support`",
+     # fires only when WE are the ones replying; "within 24 to 48 business hours" (the backed
+     # figure) and vet advice ("book a vet visit within 48 hours") stay silent
+     re.compile(r"(?i)\b(?:we|I|us|Lisa(?: Bright)?|she|BlueStaffyUK|BSUK)\b[^.|\n]{0,30}?"
+                r"\b(?:repl(?:y|ies|ied)|respond(?:s|ed)?|answer(?:s|ed)?|get back)\b[^.|\n]{0,20}?"
+                r"\b(?:within|in under)\s+(?:\d+|a|an|one)\s*(?:hours?|days?|minutes?)\b")),
+)
+# A line that FORBIDS the push is the point of saying it, as in tests/py/test_claude_md.py.
+PUSH_FORBIDDEN = ("never `git push`", "no `git push`", "no push", "not push", "nothing to push", "never push")
+
+
+def residue_targets():
+    return (sorted((ROOT / ".claude/skills").glob("*/SKILL.md"))
+            + sorted((ROOT / ".claude/commands").rglob("*.md")))
+
+
+def residue(path: pathlib.Path):
+    out = []
+    for lineno, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+        for why, rx in RESIDUE:
+            if not rx.search(line):
+                continue
+            if why.startswith("a deploy push") and any(f in line.lower() for f in PUSH_FORBIDDEN):
+                continue
+            # Naming the stand-in on the same line is the honest way to write it.
+            if why.startswith('"licensed breeder"') and "LICENCE_CLAIM_PLACEHOLDER" in line:
+                continue
+            # a comparison topic names both coats without offering either
+            # a line that denies the coat is the point of saying it; a "vs" topic names both
+            # coats without offering either, unless we/our is on the line
+            if why.startswith("a brindle pup") and (
+                    re.search(r"(?i)\b(?:none|not|never|no)\b", line)
+                    or (re.search(r"(?i)\bvs\b|\bversus\b", line)
+                        and not re.search(r"(?i)\b(?:our|we)\b", line))):
+                continue
+            out.append("%s:%d  %s  |  %s" % (path.name, lineno, why, line.strip()[:110]))
+    return out
+
+
+@pytest.mark.parametrize("path", residue_targets(),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_skill_carries_no_source_repo_residue(path):
+    bad = residue(path)
+    assert bad == [], (
+        "source-repo residue in a skill a project-5 builder loads. Re-base the line onto BSUK's "
+        "own sources (data/*.json, docs/reference/external-link-library.md) or delete it:\n  "
+        + "\n  ".join(bad))
+
+
+def test_the_residue_lint_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "1. [AVMA](https://www.avma.org/)\n"
+        "src=\"https://maps.google.com/maps?q=CITY%2C%20STATE\"\n"
+        "BlueStaffyUK ships to [City] airports.\n"
+        "## MFS Indexing Report\n"
+        "Individual Puppy (Roys, Amie)\n"
+        "bounded by the Verified-Claim Ledger\n"
+        "Lisa Bright (Carlisle, since 2014)\n"
+        "git push origin main\n"
+        "## The 22–25 Section Blueprint\n"
+        "Middle newsletter is ALWAYS `NewsletterV2`\n"
+        "Blue brindle / black brindle (Vennie, Christa, Cheryl — £1,700)\n"
+        "> **Site:** BlueStaffyUK — licensed breeder, Carlisle\n"
+        "Disclose any paid placement as the FTC requires.\n"
+        "| £1,500–£1,700 | fifteen hundred to thirty-five hundred |\n"
+        "- **Blue-Brindle variant page:** `blue-brindle staffy for sale`\n"
+        "<h3>What \"Licensed Breeder\" Actually Means at BlueStaffyUK</h3>\n"
+        "binomial          6 (P. erithacus) 1\n"
+        "Every puppy is vet sex-checked before it leaves.\n"
+        "PCR screening on both parents.\n"
+        "L-2-HGA and Polyomavirus screened\n"
+        "certified free of psittacosis\n"
+        "an avian vet on call\n"
+        "Blue Staffy pups wean at **12–16 weeks**, never sooner.\n"
+        "Weaned juvenile: 3-6 months\n"
+        "- Action-oriented: \"see our blue and blue brindle Staffy pups\"\n"
+        "- `Blue Brindle Staffy for Sale in [UK Region] | Home-Raised, KC Registered`\n"
+        "\"Meet [Name]: The Blue Brindle Staffy Perfect for Families.\"\n"
+        "Subject: [blue / blue brindle] Staffordshire Bull Terrier puppy\n"
+        "- Coat: solid blue-grey (blue), blue brindle striping, or black brindle\n"
+        "Specialising in home-raised blue and blue brindle Staffordshire Bull Terriers\n"
+        "we've placed Blue Staffy puppies with hundreds of families\n"
+        "Only a licenced breeder can sell you one.\n"
+        "Lisa Bright will reply within 24 hours.\n"
+        "<p class=\"bsuk-form-note\">We respond within a day.</p>\n"
+        "Subhead: \"[X] years. [N]+ families. One Carlisle breeder.\"\n"
+        "> \"We've placed Blue Staffies with [City] families for [X] years.\"\n"
+        "Compare our blue vs blue brindle pups side by side.\n"
+        "Subject: a blue brindle staffordshire bull terrier puppy on a sofa\n"
+        "Appendix-I puppies are legal to own (CoP17, effective Jan 2017).\n"
+        # silent: a line that forbids the push, a UK source, the licence stand-in named on
+        # the line, and "blue brindle" as a plain coat word
+        "There is no push and no deploy until project 6; never `git push`.\n"
+        "Commit it; there is no `git push` until project 6.\n"
+        "[PDSA](https://www.pdsa.org.uk/)\n"
+        "| LICENCE_CLAIM_PLACEHOLDER-licensed breeder | Trust bar |\n"
+        "Coat colours in the breed: blue, blue brindle, red, fawn.\n"
+        "C. **Size & Coat** — blue, blue brindle and white coats, full-grown size\n"
+        "H3: Blue vs Blue Brindle: Which Coat Colour Is Right for Your Household?\n"
+        "- Keyword-rich but natural: \"Staffy vs American Bully comparison\"\n"
+        "We reply within 24 to 48 business hours, ourselves.\n"
+        "Book a vet visit within 48 hours of collection.\n"
+        "Each pup's coat is its own `colour`; none of the six is brindle.\n"
+        "Staffies live 12–14 years; [X] years old is a senior dog.\n"
+        "A puppy comes home at eight weeks at the earliest, fully weaned.\n", encoding="utf-8")
+    bad = residue(p)
+    # every line up to 39 fires (a line may fire twice), nothing after it does, and every
+    # entry of RESIDUE fired at least once
+    assert sorted({int(b.split("  ")[0].split(":")[1]) for b in bad}) == list(range(1, 40)), bad
+    assert {b.split("  ")[1] for b in bad} == {why for why, _ in RESIDUE}, bad
+
+
+# ── the guarantee is gated on its setting, in every skill (Task 12 final round) ─────
+# data/settings.json `guarantee_days` is null today, so no page may state a guarantee's
+# length, and a skill that tells a builder to write "guarantee" must name the setting that
+# gates it — the SEO checklist's rule (tests/py/test_builder_skills.py), in every skill and
+# command. A line about a competitor's guarantee ("their") or the source repo's is not ours.
+GUARANTEE = re.compile(r"(?i)guarantee")
+# "their" counts only when it owns the guarantee: within six words before it
+NOT_OURS = re.compile(r"(?i)\btheir\b(?:\W+\w+){0,6}?\W+guarantee|source repo")
+
+
+def ungated_guarantees(path: pathlib.Path):
+    return ["%s:%d  %s" % (path.name, n, line.strip()[:110])
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1)
+            if GUARANTEE.search(line) and "guarantee_days" not in line and not NOT_OURS.search(line)]
+
+
+@pytest.mark.parametrize("path", residue_targets(),
+                         ids=lambda p: p.parent.name if p.name == "SKILL.md" else p.stem)
+def test_every_guarantee_line_names_guarantee_days(path):
+    bad = ungated_guarantees(path)
+    assert bad == [], (
+        "a guarantee with no `guarantee_days` on the line. data/settings.json has it null, so "
+        "name the setting that gates the line, or drop the guarantee:\n  " + "\n  ".join(bad))
+
+
+# The agents are gated the same way (Task 18 follow-up, 2026-09-24): an agent is loaded
+# into a session exactly as a skill is, and its guarantee lines reach the page first.
+@pytest.mark.parametrize("path", sorted((ROOT / ".claude/agents").glob("bsuk-*.md")), ids=lambda p: p.stem)
+def test_every_agent_guarantee_line_names_guarantee_days(path):
+    bad = ungated_guarantees(path)
+    assert bad == [], (
+        "a guarantee with no `guarantee_days` on the line. data/settings.json has it null, so "
+        "name the setting that gates the line, or drop the guarantee:\n  " + "\n  ".join(bad))
+
+
+def test_the_guarantee_gate_actually_fires(tmp_path):
+    p = tmp_path / "SKILL.md"
+    p.write_text(
+        "Health guarantee + KC registration included.\n"
+        "## Section 21: Health Guarantee Detail\n"
+        "`GUARANTEED_FOR` | 72-hour\n"
+        # silent: gated on the setting, a competitor's, the source repo's
+        "A guarantee is named only when `guarantee_days` in data/settings.json is set.\n"
+        "Their \"lifetime guarantee\" has no terms.\n"
+        "The source repo's 72-hour guarantee.\n"
+        # fires: "their" that does not own the guarantee is no excuse
+        "Every puppy has a health guarantee, and their paperwork is in order.\n", encoding="utf-8")
+    assert [b.split("  ")[0] for b in ungated_guarantees(p)] == [
+        "SKILL.md:1", "SKILL.md:2", "SKILL.md:3", "SKILL.md:7"]
