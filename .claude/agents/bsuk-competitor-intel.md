@@ -27,7 +27,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 ## What to fetch per competitor
 
 1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye.
-2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page, each the one with the fewest path segments, then the shortest path, then the URL in alphabetical order; a slot that is `null` is not scraped. Six scrapes at most.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page. In each slot but about, the breed's own pages come first — a path with `staffy`, `staffie`, `staffies`, `staffordshire`, `sbt` or `bull-terrier` as a whole word, or starting a word with `blue-staff` (never `stafford`, the town); only a slot with none of them falls back to its other pages, and the fallback never takes a page whose path names another species (`cat`, `kitten`, `rabbit`, `bird`, `horse`, `reptile`, `fish`, `hamster`, `guinea-pig`, `ferret`) — another dog breed may stay. The about slot is the site's own about page, so it skips the breed step. Within that, the slot's type order (price before FAQ, care guide before breed guide), then the fewest path segments, then the shortest path, then the URL in alphabetical order; a slot with no page left is `null` and is not scraped. A breeder whose URLs never name the breed or another species gets exactly the picks it got before the breed step; a multi-species marketplace (pets4homes) gets its Staffy pages, never a kitten listing. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
@@ -191,12 +191,12 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 6 | `care-guide` | `care`, `aftercare`, `feeding`, `training`, `grooming` |
 | 7 | `contact` | `contact`, `contactus`, `enquire`, `enquiry`, `enquiries` |
 | 8 | `about` | `about`, `aboutus`, `our-story` |
-| 9 | `breed-guide` | `breed`, `guide`, `temperament` |
+| 9 | `breed-guide` | `breed`, `guide`, `temperament` — `breed` never inside a sale advert (below) and never as `pure-breed`, `full-breed`, `cross-breed` or `mixed-breed` (an advert's adjective, not a guide) |
 | 10 | `faq` | `faq`, `question` |
 | 11 | `reviews` | `review`, `testimonial` |
-| 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
+| 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale`, or a sale advert: `for-sale` anywhere in the path, `kitten` / `kittens` as a word, or a slug ending in a hyphen- or underscore-joined id of 5+ digits (`…-1234567`; a bare number segment such as a help-centre folder id is not one) |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape: the breed's own pages first, never another species — see step 2 of the run). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -209,6 +209,7 @@ rows = json.load(open("data/locations.json"))
 real_city = lambda city: city != "UK" and "(" not in city  # never the UK hub or the breeding-dogs outreach row
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if real_city(r["city"])}
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
+advert = r"for-sale|" + w("kitten") + r"|[-_]\d{5,}/?$"  # a sale advert: 'for-sale', kittens, or a slug ending in an id of 5+ digits
 TABLE = [
     ("comparison", [w("vs|versus")]),
     ("blog", [w("blog|news|articles|posts"), r"/post(/|$)", r"/(19|20)\d\d/"]),
@@ -218,10 +219,11 @@ TABLE = [
     ("care-guide", [w("care|aftercare|feeding|training|grooming")]),
     ("contact", [w("contact|contactus|enquire|enquiry|enquiries")]),
     ("about", [w("about|aboutus|our-story")]),
-    ("breed-guide", [w("breed|guide|temperament")]),
+    ("breed-guide", [r"^(?!.*(?:" + advert + r")).*(^|[-/_.])(?<!pure[-_])(?<!full[-_])(?<!cross[-_])(?<!mixed[-_])breeds?([-/_.]|$)",
+                     w("guide|temperament")]),  # 'breed' never in an advert, nor as pure-, full-, cross- or mixed-breed
     ("faq", [w("faq|question")]),
     ("reviews", [w("review|testimonial")]),
-    ("listing", [w("puppies|puppy|pup|litter|available|sale")]),
+    ("listing", [w("puppies|puppy|pup|litter|available|sale"), advert]),
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
 nocity = lambda path: next((name for name, pats in TABLE if name != "city" and any(re.search(p, path) for p in pats)), None)
@@ -271,10 +273,14 @@ for u in urls:
             and not {"category", "tag", "author", "solutions", "help", "support"} & set(segs):
         posts += 1  # a post: not the blog index, a category, tag, author or help-centre page, or a month
 depth = lambda u: (len([x for x in urlparse(u).path.split("/") if x]), len(urlparse(u).path), u)
+BREED = r"(^|[-/_.])(?:staff(?:y|ie|ies|ordshire)s?|sbt|bull-terriers?)([-/_.]|$)|(^|[-/_.])blue-staff"  # a path about the breed
+SPECIES = w("cat|kitten|rabbit|bird|horse|reptile|fish|hamster|guinea-pig|ferret")  # another species: never a key page
 key_pages = {}
-for slot, types in SLOTS:  # the key pages to scrape: per slot, fewest path segments, then shortest path, then the URL
-    picks = [sorted((u for x, u in typed_urls if x == t and urlparse(u).path.strip("/")), key=depth) for t in types]
-    key_pages[slot] = next((c[0] for c in picks if c), None)
+for slot, types in SLOTS:  # the key pages to scrape: per slot, the breed's own pages first (not for about: the site's own
+    cands = sorted((types.index(x),) + depth(u) for x, u in typed_urls if x in types and urlparse(u).path.strip("/"))
+    breed = [c for c in cands if slot != "about" and re.search(BREED, urlparse(c[-1]).path.lower())]  # page), else a page
+    rest = [c for c in cands if not re.search(SPECIES, urlparse(c[-1]).path.lower())]  # naming no other species; then the
+    key_pages[slot] = (breed or rest or [(None,)])[0][-1]  # slot's type order, fewest path segments, shortest path, the URL
 print(json.dumps({"page_types": counts, "posts": posts, "pagination": pagination, "key_pages": key_pages}, sort_keys=True))
 EOF
 ```

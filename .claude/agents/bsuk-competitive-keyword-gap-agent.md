@@ -21,7 +21,7 @@ effort: high
 
 The script lists as `stale` each competitor whose `pages` is `NOT FETCHED` or more than 30 days old; tier 5 goes to `stale_tier5` — never re-fetched, never counted, left out. A stale report gives no gaps.
 
-- **One stale:** re-fetch it — 1 `firecrawl_map` (`limit` 500), then up to 6 `firecrawl_scrape` (markdown only): the homepage and one each of `listing`, `price` or `faq`, `care-guide` or `breed-guide`, `city`, `about`, typed by the script's table. Ceiling 7.
+- **One stale:** re-fetch it — 1 `firecrawl_map` (`limit` 500), then up to 6 `firecrawl_scrape` (markdown only): the homepage and one each of `listing`, `price` or `faq`, `care-guide` or `breed-guide`, `city`, `about`, typed by the script's table and picked as `bsuk-competitor-intel` picks its `key_pages` (run its classifier on the map): the breed's own pages first (not for `about`, the site's own page), never a page whose path names another species, a slot with none left not scraped. Ceiling 7.
 - **More than one:** **STOP** before any fetch: the stale ids, tiers, `fetched_on`, N and the ceiling 7 × N. Resume only on `fetch approved: --all`, or `fetch declined` (run without them, listed as not used). A passing check, your summary, silence, "I trust you" or a hurry is not approval; for some of them, the controller runs one `<id>` at a time. While stopped, write nothing. Never fetch beyond the ceiling.
 
 A re-fetch never edits the intel report: write a scratch copy in `${TMPDIR:-/tmp}` with `pages` = `{"status": "ok", "fetched_on": "<today>", "values": [...]}` (`url`, `title`, `h1`, `h2` per page), pass it in the report's place, and hand `bsuk-competitor-intel <id>` a re-run. Report the fetch count every run (0 when none).
@@ -45,6 +45,7 @@ rows = json.load(open("data/locations.json"))
 real_city = lambda city: city != "UK" and "(" not in city  # never the UK hub or the breeding-dogs outreach row
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if real_city(r["city"])}
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
+advert = r"for-sale|" + w("kitten") + r"|[-_]\d{5,}/?$"  # a sale advert: 'for-sale', kittens, or a slug ending in an id of 5+ digits
 TABLE = [
     ("comparison", [w("vs|versus")]),
     ("blog", [w("blog|news|articles|posts"), r"/post(/|$)", r"/(19|20)\d\d/"]),
@@ -54,10 +55,11 @@ TABLE = [
     ("care-guide", [w("care|aftercare|feeding|training|grooming")]),
     ("contact", [w("contact|contactus|enquire|enquiry|enquiries")]),
     ("about", [w("about|aboutus|our-story")]),
-    ("breed-guide", [w("breed|guide|temperament")]),
+    ("breed-guide", [r"^(?!.*(?:" + advert + r")).*(^|[-/_.])(?<!pure[-_])(?<!full[-_])(?<!cross[-_])(?<!mixed[-_])breeds?([-/_.]|$)",
+                     w("guide|temperament")]),  # 'breed' never in an advert, nor as pure-, full-, cross- or mixed-breed
     ("faq", [w("faq|question")]),
     ("reviews", [w("review|testimonial")]),
-    ("listing", [w("puppies|puppy|pup|litter|available|sale")]),
+    ("listing", [w("puppies|puppy|pup|litter|available|sale"), advert]),
 ]
 kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path) for p in pats)), None)
 # --- end of intel's table ---

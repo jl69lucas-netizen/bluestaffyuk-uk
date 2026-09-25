@@ -61,6 +61,19 @@ def kind(monkeypatch):
     ("/post-op-care/", "care-guide"),
     ("/uk-locations/blue-staffy-puppies-leeds/", "city"),
     ("/uk-locations/blue-staffies-newcastle-under-lyme/", "city"),
+    ("/breeds/staffordshire-bull-terrier/", "breed-guide"),  # a breed word is still a breed guide ...
+    ("/dog-breeds/", "breed-guide"),
+    ("/staffy-breed-guide/", "breed-guide"),
+    ("/breed-standard-12/", "breed-guide"),                # a short number is not an advert id
+    ("/classifieds/4-trvdqjx-pure-breed-ragdoll-stafford", None),  # ... but never 'pure-breed' (pets4homes' Ragdoll advert)
+    ("/cross-breed-puppies/", "listing"),                  # nor 'cross-breed': an adjective, not a guide
+    ("/classifieds/nq4wdhrql-full-breed-blue-british-shorthair-erith", None),  # nor 'full-breed'
+    ("/sale/puppies/mixed-breed/fife", "listing"),         # nor 'mixed-breed'
+    ("/en/support/solutions/folders/47000447542", None),   # a bare id segment is not an advert
+    ("/staffy-breed-puppies-for-sale/", "listing"),        # a sale advert is a listing, not a guide
+    ("/classifieds/ragdoll-breed-kittens/", "listing"),
+    ("/classifieds/staffy-breed-info-1234567/", "listing"),  # a trailing numeric id: an advert
+    ("/kittens/", "listing"),
 ])
 def test_page_types_match_whole_words(kind, path, want):
     assert kind(path) == want
@@ -144,6 +157,82 @@ def test_key_pages_are_picked_by_script_with_a_fixed_tie_break(tmp_path):
         "city": f"{x}/staffy-hull/",              # same depth and length as York: the URL's order
         "about": None,
     }
+
+
+P4H = "https://www.pets4homes.co.uk"
+MARKETPLACE = [  # a multi-species marketplace in pets4homes' URL shapes (the G1 map picked every key page a cat page)
+    f"{P4H}/", f"{P4H}/sale/kittens/", f"{P4H}/sale/puppies/", f"{P4H}/sale/puppies/staffordshire-bull-terrier/",
+    f"{P4H}/classifieds/k2x9q-blue-staffy-puppies-for-sale-12345678/",  # a Staffy advert
+    f"{P4H}/classifieds/4-trvdqjx-pure-breed-ragdoll-stafford",         # a Ragdoll advert: 'pure-breed', no guide
+    f"{P4H}/dog-care/", f"{P4H}/cat-care/", f"{P4H}/dog-breeds/staffordshire-bull-terrier/",
+    f"{P4H}/sale/kittens/london/", f"{P4H}/sale/puppies/staffordshire-bull-terrier/manchester/",
+    f"{P4H}/pricing/cats/", f"{P4H}/faq/",
+]
+
+
+def test_a_marketplaces_key_pages_are_the_breeds_pages(tmp_path):
+    d = classify(tmp_path, MARKETPLACE)
+    assert d["key_pages"] == {
+        "listing": f"{P4H}/classifieds/k2x9q-blue-staffy-puppies-for-sale-12345678/",  # a Staffy page, never /sale/kittens/;
+        # among the breed's pages the old tie-break decides: the advert has two segments, the Staffy listing three
+        "price-or-faq": f"{P4H}/faq/",       # the only price page names cats: nothing for price, so the FAQ
+        "guide": f"{P4H}/dog-breeds/staffordshire-bull-terrier/",  # the breed's own guide before a generic care guide
+        "city": f"{P4H}/sale/puppies/staffordshire-bull-terrier/manchester/",  # not the London kittens page
+        "about": None,
+    }
+    assert d["page_types"]["breed-guide"] == 1  # the Ragdoll advert is not a breed guide
+
+
+def test_without_the_breeds_pages_another_species_is_never_a_key_page(tmp_path):
+    x = P4H
+    d = classify(tmp_path, [f"{x}/sale/kittens/", f"{x}/sale/puppies/", f"{x}/cat-care/", f"{x}/rabbit-care/",
+                            f"{x}/sale/kittens/london/", f"{x}/horses-for-sale/", f"{x}/guinea-pigs-for-sale/",
+                            f"{x}/fish-care-guide/", f"{x}/hamster-guide/", f"{x}/sale/puppies/cocker-spaniel/leeds/"])
+    assert d["key_pages"] == {
+        "listing": f"{x}/sale/puppies/",     # another dog page may stay in the fallback
+        "price-or-faq": None,
+        "guide": None,                       # every care and breed guide names another species: nothing
+        "city": f"{x}/sale/puppies/cocker-spaniel/leeds/",
+        "about": None,
+    }
+    d = classify(tmp_path, [f"{x}/sale/kittens/", f"{x}/cats/london/"])
+    assert d["key_pages"]["listing"] is None and d["key_pages"]["city"] is None
+
+
+@pytest.mark.parametrize("path", ["/staffies-for-sale/", "/sbt-puppies/", "/blue-staffords-for-sale/", "/staffordshire-puppies/",
+                                  "/sale/puppies/staffordshire-bull-terrier/", "/staffys-available/"])
+def test_a_breed_path_is_picked_before_a_shorter_page(tmp_path, path):
+    x = "https://x.co.uk"
+    assert classify(tmp_path, [f"{x}/puppies/", f"{x}{path}"])["key_pages"]["listing"] == f"{x}{path}"
+
+
+def test_stafford_the_town_is_not_the_breed(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/puppies/", f"{x}/puppies-stafford/", f"{x}/staff-puppies/"])
+    assert d["key_pages"]["listing"] == f"{x}/puppies/"
+
+
+def test_a_breeder_site_with_no_breed_words_picks_as_before(tmp_path):
+    # no breed word and no other species: the fallback is today's rule, unchanged
+    x = "https://www.example-kennels.co.uk"
+    d = classify(tmp_path, [f"{x}/", f"{x}/puppies/", f"{x}/available-litters/", f"{x}/puppies/rex/", f"{x}/prices/",
+                            f"{x}/faq/", f"{x}/aftercare/", f"{x}/breed-guide/", f"{x}/leeds/", f"{x}/york/",
+                            f"{x}/about-us/", f"{x}/about/", f"{x}/post/our-new-litter"])
+    assert d["key_pages"] == {
+        "listing": f"{x}/puppies/",
+        "price-or-faq": f"{x}/prices/",  # (today's picks, verified on the classifier before the breed rule)
+        "guide": f"{x}/aftercare/",
+        "city": f"{x}/york/",
+        "about": f"{x}/about/",
+    }
+
+
+def test_the_about_page_is_the_sites_own_not_a_breed_page(tmp_path):
+    # trojanstaffuk's map: its about page is /about-1, not the breed-information page typed about
+    t = "https://www.trojanstaffuk.com"
+    d = classify(tmp_path, [f"{t}/about-1", f"{t}/about-the-staffordshire-bull-terrier", f"{t}/staffy-puppies"])
+    assert d["key_pages"]["about"] == f"{t}/about-1"
+    assert d["key_pages"]["listing"] == f"{t}/staffy-puppies"
 
 
 def test_bsuk_location_rows_count_as_cities_only_for_a_real_city(tmp_path):
