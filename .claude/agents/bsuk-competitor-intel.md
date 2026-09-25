@@ -27,7 +27,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 ## What to fetch per competitor
 
 1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file (`MAP_RAW`) as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye. The list the classifier reads is not this map but the **Map list** (below), made once the homepage gate has passed.
-2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then, the homepage gate passed, complete the **Map list** — at most one search map, and the homepage's own breed links at no cost — and classify it. Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page. In each slot but about, the breed's own pages come first — a path with `staffy`, `staffie`, `staffies` or `sbt` as a whole word, `staffordshire-bull` (or joined by `_`, `+` or `%20`, never after `american-` or `american%20`), or a word starting `blue-staff`; words split at `-`, `/`, `_`, `.`, `+` or `%20`. Never the county alone (`<competitor-domain>/dogs-for-sale/staffordshire/`), an AmStaff, a bull terrier of another kind (English, miniature, American pit) or `stafford`, the town. Only a slot with none of them falls back to its other pages, and on a marketplace or directory — a map that names another species; a city page naming another breed where the breed's own name sits (`<competitor-domain>/sale/lancashire-heeler/bristol` beside `<competitor-domain>/sale/staffordshire-bull-terrier`); or guide or breed paths (under `guide(s)`, `breed(s)`, `dog-breeds`, `breed-guide(s)`) for the Staffy and another breed (`<competitor-domain>/guide/shih-tzu` beside `<competitor-domain>/breeds/staffordshire-bull-terrier/puppies`) — the city slot takes only the breed's pages, else it is `null` (never the Oxford pug hub), and so does the guide slot (never the Shih Tzu guide), and a `breed(s)`, `dog-breeds` or `breed-guide(s)` folder holding two other breeds before any Staffy path (`<competitor-domain>/breeds/beagle/…`, `<competitor-domain>/breeds/papillon/…`: a first map the search map has not yet completed) keeps any other breed's page out of the guide slot (never `<competitor-domain>/guide/shih-tzu`) while a generic guide may stay; and on a multi-species site with no second breed's paths a generic dog guide (`dog`, `dogs`, `puppy`, `puppies` or `pup` in its path: `<competitor-domain>/pets/dogs/training`) may still be the guide — another breed's guide names no dog word (`<competitor-domain>/pet-advice/labrador-care-guide/`); the classifier prints `marketplace`; the fallback never takes a page whose path names another species (`cat`, `kitten`, `rabbit`, `bird`, `horse`, `reptile`, `fish`, `hamster`, `guinea-pig`, `ferret`) — another dog breed may stay, and on a site whose map names another species a page with `dog`, `puppy`, `puppies` or `pup` in its path comes before the rest. **An advert is never a key page** — a path with an id of 5+ digits as its own segment (`<competitor-domain>/p/dogs/staffy-breed/1498765433`, `<competitor-domain>/adverts/show/123456789/blue-staffy-puppies.html`) or ending its slug (`…-12345678.html`, or a forum thread's `….12345/`); a last segment starting with a short id of 5–10 letters and digits where a letter follows a digit (`<competitor-domain>/classifieds/q7zz1-staffy-pups-leeds`, `k2x9qab-blue-staffy-puppies-wigan` — never `about-`, `staffy-`, a word with a number on the end such as `covid19-` or `staffy2-`, or digits alone such as `202425-`); or a single slug straight under a `classifieds`, `ad` or `adverts` folder that is not a breed or city hub (a hub is made only of the breed's name, `blue`, `dog`, `puppy`, `pup`, `for-sale`, `uk`, `in`, `near` and `data/locations.json` city slugs: `<competitor-domain>/classifieds/leeds/` and `<competitor-domain>/classifieds/dogs-for-sale-in-leeds` are hubs). Never under `solutions`, `help` or `support`. An advert is kept out of every slot except as the listing's last resort, after every listing page that is not an advert. The page types are counted as before; only the pick changes. The about slot is the site's own about page, so it skips the breed step, and takes only a path whose last segment is the about row's word (`about`, `about-us`, `aboutus`, `our-story`) or starts with it (`<competitor-domain>/about-1`, `<competitor-domain>/who-we-are/about/`) — never a slug that merely contains it (`<competitor-domain>/privacy-notice-about-your-data`) or a page under an about folder (`<competitor-domain>/utilities/aboutus/stayinformed`); both stay typed `about` in the counts but are never the pick. Order, then: the site's own host (the homepage's, `www.` aside) before any other — a subdomain's page (`forum.<competitor-domain>`, `blog.<competitor-domain>`) is counted but picked only when the site's own host has none for the slot; the breed's pages, non-adverts before adverts, (multi-species sites) dog pages, the slot's type order (price before FAQ, care guide before breed guide), the fewest path segments, the shortest path, the URL in alphabetical order; a slot with no page left is `null` and is not scraped. A breeder whose URLs never name the breed or another species gets exactly the picks it got before the breed step; a multi-species marketplace (pets4homes) gets its Staffy hubs, never a kitten listing or a single advert. Six scrapes at most.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then, the homepage gate passed, complete the **Map list** — at most one search map, and the homepage's own breed links at no cost — and classify it. Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page. In each slot but about, the breed's own pages come first — a path with `staffy`, `staffie`, `staffies` or `sbt` as a whole word, `staffordshire-bull` (or joined by `_`, `+` or `%20`, never after `american-` or `american%20`), or a word starting `blue-staff`; words split at `-`, `/`, `_`, `.`, `+` or `%20`. Never the county alone (`<competitor-domain>/dogs-for-sale/staffordshire/`), an AmStaff, a bull terrier of another kind (English, miniature, American pit) or `stafford`, the town. Only a slot with none of them falls back to its other pages, and on a marketplace or directory — a map with another species' section or sale (a whole segment such as `cats`, `kittens` or `birds`, or a listing or city page naming one — never a blog post or care guide that mentions one, such as `<competitor-domain>/blog/do-staffies-get-on-with-cats/`); a city page naming another breed where the breed's own name sits (`<competitor-domain>/sale/lancashire-heeler/bristol` beside `<competitor-domain>/sale/staffordshire-bull-terrier`); or guide or breed paths (under `guide(s)`, `breed(s)`, `dog-breeds`, `breed-guide(s)`) for the Staffy and two or more other breeds (`<competitor-domain>/guide/shih-tzu` and `<competitor-domain>/breeds/beagle/…` beside `<competitor-domain>/breeds/staffordshire-bull-terrier/…` — a breeder of two breeds is not a directory) — the city slot takes only the breed's pages, else it is `null` (never the Oxford pug hub), and so does the guide slot (never the Shih Tzu guide), and a `breed(s)`, `dog-breeds` or `breed-guide(s)` folder holding two other breeds before any Staffy path (`<competitor-domain>/breeds/beagle/…`, `<competitor-domain>/breeds/papillon/…`: a first map the search map has not yet completed) keeps any other breed's page (one in a guide or breeds folder's breed slot) out of every slot but about (never `<competitor-domain>/guide/shih-tzu` or `<competitor-domain>/breeds/beagle/puppies`) while a generic page may stay — on a directory too; and on a multi-species site with no second breed's paths a generic dog guide (`dog`, `dogs`, `puppy`, `puppies` or `pup` in its path: `<competitor-domain>/pets/dogs/training`) may still be the guide — another breed's guide names no dog word (`<competitor-domain>/pet-advice/labrador-care-guide/`); the classifier prints `marketplace`; the fallback never takes a page whose path names another species (`cat`, `kitten`, `rabbit`, `bird`, `horse`, `reptile`, `fish`, `hamster`, `guinea-pig`, `ferret`) — another dog breed may stay, and on a site whose map names another species a page with `dog`, `puppy`, `puppies` or `pup` in its path comes before the rest. **An advert is never a key page** — a path with an id of 5+ digits as its own segment (`<competitor-domain>/p/dogs/staffy-breed/1498765433`, `<competitor-domain>/adverts/show/123456789/blue-staffy-puppies.html`) or ending its slug (`…-12345678.html`, or a forum thread's `….12345/`); a last segment starting with a short id of 5–10 letters and digits where a letter follows a digit (`<competitor-domain>/classifieds/q7zz1-staffy-pups-leeds`, `k2x9qab-blue-staffy-puppies-wigan` — never `about-`, `staffy-`, a word with a number on the end such as `covid19-` or `staffy2-`, or digits alone such as `202425-`); or a single slug straight under a `classifieds`, `ad` or `adverts` folder that is not a breed or city hub (a hub is made only of the breed's name, `blue`, `dog`, `puppy`, `pup`, `for-sale`, `uk`, `in`, `near` and `data/locations.json` city slugs: `<competitor-domain>/classifieds/leeds/` and `<competitor-domain>/classifieds/dogs-for-sale-in-leeds` are hubs). Never under `solutions`, `help` or `support`. An advert is kept out of every slot except as the listing's last resort, after every listing page that is not an advert. The page types are counted as before; only the pick changes. The about slot is the site's own about page, so it skips the breed step, and takes only a path whose last segment is the about row's word (`about`, `about-us`, `aboutus`, `our-story`) or starts with it (`<competitor-domain>/about-1`, `<competitor-domain>/who-we-are/about/`) — never a slug that merely contains it (`<competitor-domain>/privacy-notice-about-your-data`) or a page under an about folder (`<competitor-domain>/utilities/aboutus/stayinformed`); both stay typed `about` in the counts but are never the pick. Order, then: the site's own host (the homepage's, `www.` aside) before any other — a subdomain's page (`forum.<competitor-domain>`, `blog.<competitor-domain>`) is counted but picked only when the site's own host has none for the slot; non-adverts before adverts (a breed advert never beats `<competitor-domain>/puppies/`); the breed's pages (on a directory the listing is the breed's whenever it has one, an advert or not); (multi-species sites) dog pages, the slot's type order (price before FAQ, care guide before breed guide), the fewest path segments, the shortest path, the URL in alphabetical order; a slot with no page left is `null` and is not scraped. A breeder whose URLs never name the breed or another species gets exactly the picks it got before the breed step; a multi-species marketplace (pets4homes) gets its Staffy hubs, never a kitten listing or a single advert. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
@@ -149,12 +149,64 @@ EOF
 
 ### Keyword rule
 
-**Pattern words:** a *breed term* — staffy, staffys, staffie, staffies, staffordshire bull terrier, staffordshire bull terriers, sbt — and *intent or place words* — puppies, puppy, for sale, breeder, breeders, price, kc registered, blue, and any `city` in `data/locations.json`. A multi-word pattern word ("staffordshire bull terrier", "for sale", "kc registered") is one unit for where a run starts and ends, but each of its words counts toward the length. A qualifying run is a run of 2–6 consecutive words inside one sentence, heading or list item that starts and ends on a pattern word, holds a breed term and at least one intent or place word, and contains no part of a business, kennel or person's name (cut the run before the name: "blue staffy puppies from Example Breeder" gives `blue staffy puppies`). No script can tell a name: the cut is the reader's call, here and in `bsuk-competitive-keyword-gap-agent`, which runs this rule by script on H1s and titles and applies the cut by re-running with the names it saw. Record, lowercased:
+**Pattern words:** a *breed term* — staffy, staffys, staffie, staffies, staffordshire bull terrier, staffordshire bull terriers, sbt — and *intent or place words* — puppies, puppy, for sale, breeder, breeders, price, kc registered, blue, and any `city` in `data/locations.json`. A multi-word pattern word ("staffordshire bull terrier", "for sale", "kc registered") is one unit for where a run starts and ends, but each of its words counts toward the length. A qualifying run is a run of 2–6 consecutive words inside one sentence, heading, list item or link text (each link's text alone) that starts and ends on a pattern word, holds a breed term and at least one intent or place word, and contains no part of a business, kennel or person's name (cut the run before the name: "blue staffy puppies from Example Breeder" gives `blue staffy puppies`). No script can tell a name: the cut is the reader's call, here and in `bsuk-competitive-keyword-gap-agent`, which runs this rule by script on H1s and titles and applies the cut by re-running with the names it saw. A link's text is its own run: words from two links never join into one phrase. Record, lowercased:
 
 1. every **maximal** qualifying run (not inside a longer qualifying run);
 2. for each, its **shortest** qualifying sub-run of 3 or more words (the earliest on a tie), when it differs.
 
 Headings count like any other text — the run rule decides, not the heading. Nothing else: no words joined from different places, each phrase once. Example, "Our blue staffy puppies for sale in Leeds": maximal runs `blue staffy puppies for sale` and `staffy puppies for sale in leeds`; shortest sub-runs `blue staffy puppies` and `staffy puppies for sale`.
+
+Run the rule with this script, never by eye, on each fetched page's markdown (`PAGE_MD`; several pages at once give one list). `CUT="<name>[,<name>]"` is the name clause: read the first run's phrases and, when one holds a business, kennel or person's name, re-run with it (whole words, lowercase); the text is cut before it. Each link's text is a run of its own — a menu of `[Staffy puppies]` and `[Leeds]` side by side never gives `staffy puppies leeds` — and so is each heading, list item, table cell and sentence. It prints the phrases as a JSON list:
+
+```bash
+CUT="" python3 - "$PAGE_MD" <<'EOF'
+import json, os, re, sys
+words = lambda t: re.findall(r"[a-z0-9]+", (t or "").lower())
+cities = {tuple(words(r["city"])) for r in json.load(open("data/locations.json")) if "(" not in r["city"]}  # never the outreach row
+# the keyword-gap agent's pattern words, copied line for line (tests/py/test_intel_scripts.py keeps them so)
+BREED = {("staffy",), ("staffys",), ("staffie",), ("staffies",), ("staffordshire", "bull", "terrier"),
+         ("staffordshire", "bull", "terriers"), ("sbt",)}
+PLACE = {("puppies",), ("puppy",), ("for", "sale"), ("breeder",), ("breeders",), ("price",), ("kc", "registered"), ("blue",)} | cities
+UNITS = sorted(BREED | PLACE, key=len, reverse=True)
+CUT = [c.split() for c in os.environ.get("CUT", "").lower().split(",") if c.strip()]
+def pieces(md):  # one run per sentence, heading, list item and table cell, and per link text: no phrase spans two links
+    md = re.sub(r"!\[[^\]]*\]\([^)]*\)", " ", md)  # an image is not text
+    md = re.sub(r"\[([^\]]*)\]\([^)]*\)", lambda m: "\n" + m.group(1) + "\n", md)  # a link's text on a line of its own
+    for seg in re.split(r"[\n.!?|:;•—–]+", md):
+        ws, cur, i = words(seg), [], 0
+        while i < len(ws):  # cut before a name: its words end the run
+            c = next((c for c in CUT if ws[i:i + len(c)] == c), None)
+            if c:
+                if cur:
+                    yield cur
+                cur, i = [], i + len(c)
+            else:
+                cur, i = cur + [ws[i]], i + 1
+        if cur:
+            yield cur
+def qualifying(ws):  # 2-6 words, pattern unit to pattern unit, a breed term and an intent or place word
+    units = []
+    for i in range(len(ws)):
+        u = next((u for u in UNITS if tuple(ws[i:i + len(u)]) == u), None)
+        if u:
+            units.append((i, i + len(u), u in BREED))
+    return {(a[0], b[1]) for a in units for b in units if b[1] > a[0] and 2 <= b[1] - a[0] <= 6
+            and any(u[2] for u in units if a[0] <= u[0] and u[1] <= b[1])
+            and any(not u[2] for u in units if a[0] <= u[0] and u[1] <= b[1])}
+phrases = set()
+for f in sys.argv[1:]:
+    for ws in pieces(open(f, encoding="utf-8").read()):
+        q = qualifying(ws)
+        for r in q:
+            if not any(o != r and o[0] <= r[0] and r[1] <= o[1] for o in q):  # a maximal run
+                phrases.add(" ".join(ws[r[0]:r[1]]))
+                sub = min((s for s in q if r[0] <= s[0] and s[1] <= r[1] and s[1] - s[0] >= 3),
+                          key=lambda s: (s[1] - s[0], s[0]), default=None)  # its shortest sub-run of 3+ words, the earliest
+                if sub:  # on a tie
+                    phrases.add(" ".join(ws[sub[0]:sub[1]]))
+print(json.dumps(sorted(phrases)))
+EOF
+```
 
 **`--bsuk` is like-for-like:** BSUK's keywords are its own phrases by the same rule **plus** every keyword in the existing competitor reports that appears in the visible text of `dist/` (lowercased, punctuation and spaces collapsed). So `--bsuk` runs after the competitor runs, and is re-run after any new competitor report. Match with this script, never by eye; it prints the competitor phrases found in `dist/`:
 
@@ -257,7 +309,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 9 | `breed-guide` | `breed`, `guide`, `temperament` — `breed` never inside a sale advert (below) and never as `pure-breed`, `full-breed`, `cross-breed` or `mixed-breed` (an advert's adjective, not a guide) |
 | 10 | `faq` | `faq`, `question` |
 | 11 | `reviews` | `review`, `testimonial` |
-| 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` (and, in the classifier, a competitor's breed path the table leaves untyped — a breed hub such as `<competitor-domain>/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/`; with a city word it is already `city`), or a sale advert: `for-sale` anywhere in the path, `kitten` / `kittens` as a word, or a slug ending in a hyphen- or underscore-joined id of 5+ digits (`…-1234567`; a bare number segment such as a help-centre folder id is not one here) — this is the page type only; the key-page advert test is broader (id segments, short id prefixes, advert folders) and is defined in step 2 of the run |
+| 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` (and, in the classifier only: a competitor's breed hub the table leaves untyped — a breed path whose last segment is made only of hub words (the breed's name, `blue`, `dog`, `puppy`, `pup`, `for-sale`, `uk`, `in`, `near`, a city slug), never under `help`, `support`, `solutions`, `forum(s)`, `threads` or `community`, such as `<competitor-domain>/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/` but never `<competitor-domain>/our-staffies/` or `<competitor-domain>/staffy-history/`; with a city word it is already `city`; and a page under a breeds folder whose last segment is `puppies`, `puppy`, `pup(s)`, `litter(s)`, `for-sale` or `available`, such as `<competitor-domain>/breeds/staffordshire-bull-terrier/puppies`, which the table types `breed-guide`), or a sale advert: `for-sale` anywhere in the path, `kitten` / `kittens` as a word, or a slug ending in a hyphen- or underscore-joined id of 5+ digits (`…-1234567`; a bare number segment such as a help-centre folder id is not one here) — this is the page type only; the key-page advert test is broader (id segments, short id prefixes, advert folders) and is defined in step 2 of the run |
 
 Classify with this script, `MAP_LIST` set to the path of the **Map list** (above) — the first map, merged with the search map and the homepage's breed links (it is the table above as code), never by eye. It prints one JSON object: `marketplace` (true for a marketplace or directory, see step 2), `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape: the breed's own pages first, never another species, an advert only as the listing's last resort — see step 2 of the run). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Pass `--home="$HOME_URL"` after `"$MAP_LIST"` (the homepage's host ranks first; without it, the map's most common host), and `--search="$SEARCH_RAW"` when the search map ran. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
@@ -293,6 +345,13 @@ kind = lambda path: next((name for name, pats in TABLE if any(re.search(p, path)
 nocity = lambda path: next((name for name, pats in TABLE if name != "city" and any(re.search(p, path) for p in pats)), None)
 S, J = r"([-/_.+]|%20)", r"([-_+]|%20)"  # a breed word ends at - / _ . + or an encoded space; J joins a name's words
 BREED = rf"(^|{S})(staff(y|ie|ies)s?|sbt)({S}|$)|(^|{S})(?<!american[-_+])(?<!american%20)staffordshire{J}bull|(^|{S})blue{J}staff"
+HUBWORD = rf"(staffordshire{J}bull{J}terriers?|staff(y|ie|ies)s?|sbt|blue|dogs?|puppies|puppy|pups?|for{J}sale|uk|in|near|" \
+          + "|".join(map(re.escape, sorted(slugs))) + ")"  # a breed or city hub is made of these words only
+def hub(path):  # a competitor's breed hub: a breed path whose last segment is hub words only (+ and %20 never split a word),
+    segs = [x for x in re.sub(r"%20|\+", "~", path).split("/") if x]  # never under a help centre, forum or community
+    return bool(segs) and not {"help", "support", "solutions", "forum", "forums", "threads", "community"} & set(segs) \
+        and bool(re.search(BREED, "/" + "/".join(segs) + "/")) and bool(re.fullmatch(rf"{HUBWORD}({J}{HUBWORD})*", re.sub(r"\.html?$", "", segs[-1])))
+BREEDS_FOLDER = r"(dog-)?breeds?|breed-guides?"
 loc = {r["slug"]: r["city"] for r in rows}
 def title_slug(path):
     f = pathlib.Path("dist") / path.strip("/") / "index.html"
@@ -315,7 +374,7 @@ def typed(path):
     return kind(title_slug(path)) if t is None and bsuk and path != "/" else t
 SLOTS = [("listing", ["listing"]), ("price-or-faq", ["price", "faq"]), ("guide", ["care-guide", "breed-guide"]),
          ("city", ["city"]), ("about", ["about"])]
-seen, counts, typed_urls, posts, pagination = set(), {}, [], 0, 0
+seen, counts, typed_urls, all_urls, posts, pagination = set(), {}, [], [], 0, 0
 for u in urls:
     p = urlparse(u)
     path = p.path.lower()
@@ -328,9 +387,13 @@ for u in urls:
         continue
     infolder = any(path.strip("/") == f or path.strip("/").startswith(f + "/") for f in folders)
     t = "blog" if infolder else typed(path)
-    if t is None and not bsuk and re.search(BREED, re.sub(r"%20|\+", "~", path)):  # a competitor's breed hub with no type word
-        # (as for the table, + and %20 never split a word here: a URL with a sentence stuck on is not a hub)
-        t = "listing"  # (/dogs/staffordshire-bull-terrier); with a city word it was a city already. BSUK is typed by its sitemaps
+    if t is None and not bsuk and hub(path):  # a breed hub with no type word (/dogs/staffordshire-bull-terrier) is a listing;
+        t = "listing"  # with a city word it was a city already. BSUK is typed by its sitemaps
+    segs = [x for x in path.split("/") if x]
+    if t == "breed-guide" and len(segs) > 1 and any(re.fullmatch(BREEDS_FOLDER, s) for s in segs[:-1]) \
+            and re.fullmatch(r"puppies|puppy|pups?|litters?|for-sale|available", segs[-1]):
+        t = "listing"  # a breeds folder's puppies page (/breeds/staffordshire-bull-terrier/puppies) is a listing, not a guide
+    all_urls.append((t, u))
     if t:
         counts[t] = counts.get(t, 0) + 1
         typed_urls.append((t, u))
@@ -345,8 +408,6 @@ depth = lambda u: (len([x for x in urlparse(u).path.split("/") if x]), len(urlpa
 SPECIES = w("cat|kitten|rabbit|bird|horse|reptile|fish|hamster|guinea-pig|ferret")  # another species: never a key page
 DOG = w("dog|puppies|puppy|pup")  # on a site naming another species, a dog page before any other in the fallback
 AD = r"(^|/)\d{5,}(/|\.html?$|$)|[-_.]\d{5,}(\.html?)?/?$"  # an id of 5+ digits as a segment or ending the slug (.12345/)
-HUBWORD = rf"(staffordshire{J}bull{J}terriers?|staff(y|ie|ies)s?|sbt|blue|dogs?|puppies|puppy|pups?|for{J}sale|uk|in|near|" \
-          + "|".join(map(re.escape, sorted(slugs))) + ")"  # a breed or city hub is made of these words only
 ABOUT = r"(^|/)(about|about-us|aboutus|our-story)s?/?$|(^|/)(about|aboutus|our-story)s?[-_.][^/]*/?$"  # the about row's words as
 # the last segment, or starting it (about-1, about-us.html): never mid-slug, never a folder above another page
 def is_ad(path):  # an advert, for the key-page pick only (the table's own advert words decide the page type)
@@ -359,11 +420,14 @@ def is_ad(path):  # an advert, for the key-page pick only (the table's own adver
                 # after a digit: q7zz1-, k2x9qab- (never covid19-, staffy2-, 202425-)
                 or (len(segs) > 1 and segs[-2] in ("classifieds", "ad", "adverts")
                     and not re.fullmatch(rf"{HUBWORD}({J}{HUBWORD})*", last)))  # one slug in an advert folder, not a hub
-multi = any(re.search(SPECIES, urlparse(u).path.lower()) for _, u in typed_urls)
 host = lambda u: re.sub(r"^www\.", "", (urlparse(u).hostname or "").lower())
 hosts = [host(u) for u in urls]  # the homepage's host (--home=<HOME_URL>), else the map's most common one
 home_host = host(given("--home")) if given("--home") else min(set(hosts), key=lambda h: (-hosts.count(h), len(h), h), default="")
 segs_of = lambda u: [x for x in urlparse(u).path.lower().split("/") if x]
+SPECIES_SEG = r"(cat|kitten|rabbit|bird|horse|reptile|fish|hamster|guinea-pig|ferret)s?"  # a species' own section: a cats folder
+multi = any((x in ("listing", "city") and re.search(SPECIES, urlparse(u).path.lower()))  # another species' sale or section,
+            or (x not in ("blog", "care-guide") and any(re.fullmatch(SPECIES_SEG, s) for s in segs_of(u)))
+            for x, u in all_urls)  # never a blog post or care guide that mentions one (do staffies get on with cats?)
 breed_seg = lambda s: bool(re.search(BREED, "/" + s + "/"))
 parents = {"/".join(segs_of(u)[:i]) for _, u in typed_urls for i, s in enumerate(segs_of(u)) if i and breed_seg(s)}
 other_breed = lambda u: any("/".join(segs_of(u)[:i]) in parents and not breed_seg(s) for i, s in enumerate(segs_of(u)) if i)
@@ -371,8 +435,8 @@ def slot_of(u, folders=r"(dog-)?breeds?|breed-guides?|guides?"):  # the segment 
     segs = segs_of(u)
     return next((segs[i + 1] for i, s in enumerate(segs[:-1]) if re.fullmatch(folders, s)), None)
 bslots = [slot_of(u) for _, u in typed_urls if slot_of(u)]
-directory = any(map(breed_seg, bslots)) and not all(map(breed_seg, bslots))  # guide or breed paths: the Staffy and another breed
-others = len({slot_of(u, r"(dog-)?breeds?|breed-guides?") for _, u in typed_urls} - {None}
+directory = any(map(breed_seg, bslots)) and len({s for s in bslots if not breed_seg(s)}) >= 2  # the Staffy and two other breeds
+others = len({slot_of(u, BREEDS_FOLDER) for _, u in typed_urls} - {None}
              - {s for s in bslots if breed_seg(s)}) >= 2  # a breeds folder of other breeds, the Staffy's not (yet) in the map
 other_breed_page = lambda u: bool(slot_of(u)) and not breed_seg(slot_of(u))  # /guide/shih-tzu, /breeds/beagle/puppies
 breedcity = any(other_breed(u) for x, u in typed_urls if x == "city")  # another breed's city page where the breed sits
@@ -386,12 +450,14 @@ for slot, types in SLOTS:  # the key pages to scrape, per slot; see step 2 of th
         if x not in types or not path.strip("/") or (not breed and re.search(SPECIES, path)) \
                 or (is_ad(path) and slot != "listing") or (slot == "about" and not re.search(ABOUT, path)) \
                 or (slot == "city" and market and not breed) \
-                or (slot == "guide" and not breed and (directory or breedcity or (multi and not re.search(DOG, path))
-                                                       or (others and other_breed_page(u)))):
+                or (slot == "guide" and not breed and (directory or breedcity or (multi and not re.search(DOG, path)))) \
+                or (slot != "about" and not breed and (directory or others) and other_breed_page(u)):  # never another breed's
             continue  # a marketplace's city and guide are the breed's, or none (a generic dog guide stays on a multi-species site);
             # another species never; an advert only as the listing's last resort; about only by its segment
-        ranked.append((host(u) != home_host, not breed, is_ad(path), multi and not breed and not re.search(DOG, path),
-                       types.index(x)) + depth(u))  # another host's page (a forum, a blog) after every page of the site's own
+        ranked.append((host(u) != home_host, is_ad(path), not breed, multi and not breed and not re.search(DOG, path),
+                       types.index(x)) + depth(u))  # another host's page after the site's own; an advert after every non-advert
+    if slot == "listing" and directory and any(not r[2] for r in ranked):
+        ranked = [r for r in ranked if not r[2]]  # a directory's listing is the breed's whenever it has one, an advert or not
     key_pages[slot] = min(ranked)[-1] if ranked else None
 out = {"page_types": counts, "posts": posts, "pagination": pagination, "key_pages": key_pages, "marketplace": market or others}
 if given("--search"):  # the search map's adverts, for the readable report's Fetch line

@@ -688,13 +688,14 @@ def test_a_breed_hub_with_no_type_word_is_the_breeds_listing(tmp_path):
     hub = f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/"
     advert = f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/41908003/staffy-x-pocket-bully-female/view"
     d = classify(tmp_path, [f"{FA}/", hub, advert, f"{FA}/uk/buy-sell/pets/dogs/whippet"])
-    assert d["page_types"] == {"listing": 2}          # the hub and its advert: the breed's, not untyped; the whippet stays untyped
+    assert d["page_types"] == {"listing": 1}          # the hub only: its advert ends 'view', the whippet names no breed
     assert d["key_pages"]["listing"] == hub            # never the advert
     d = classify(tmp_path, [f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/oxford"])
     assert d["page_types"] == {"city": 1}              # a city word makes it the breed's city page
     t = "https://www.trojanstaffuk.com"
-    d = classify(tmp_path, [f"{t}/staffordshire-bull-terrier-females", f"{t}/how-we-rollWe%20want%20a%20Staffy%20puppy"])
-    assert d["page_types"] == {"listing": 1}           # + and %20 never split a word for the type: the stuck-on sentence stays untyped
+    d = classify(tmp_path, [f"{t}/staffordshire-bull-terrier-females", f"{t}/how-we-rollWe%20want%20a%20Staffy%20puppy",
+                            f"{t}/dogs/staffordshire-bull-terrier"])
+    assert d["page_types"] == {"listing": 1}           # only the hub: 'females' is not a hub word, and %20 never splits a word
 
 
 def test_a_marketplaces_city_pick_must_be_the_breeds(tmp_path):
@@ -752,21 +753,30 @@ CD = "https://www.champdogs.co.uk"
 
 
 def test_a_directory_is_two_breeds_guide_or_breed_paths_one_of_them_the_staffy(tmp_path):
-    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/staffordshire-bull-terrier/puppies"])
+    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/breeders",
+                            f"{CD}/breeds/staffordshire-bull-terrier/breeders"])
     assert d["marketplace"] is True
-    assert d["key_pages"]["guide"] == f"{CD}/breeds/staffordshire-bull-terrier/puppies"  # never /guide/shih-tzu
-    assert classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/puppies"])["marketplace"] is False  # no Staffy
+    assert d["key_pages"]["guide"] == f"{CD}/breeds/staffordshire-bull-terrier/breeders"  # never /guide/shih-tzu
+    assert classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/breeders"])["marketplace"] is False  # no Staffy
+    # one other breed beside the Staffy is a breeder of two breeds, not a directory
+    x = "https://www.example-kennels.co.uk"
+    d = classify(tmp_path, [f"{x}/breeds/staffordshire-bull-terrier/", f"{x}/breeds/french-bulldog/", f"{x}/aftercare/"])
+    assert d["marketplace"] is False and d["key_pages"]["guide"] == f"{x}/breeds/staffordshire-bull-terrier/"
 
 
 def test_a_breeds_folder_with_two_other_breeds_is_a_directory_even_without_the_staffy(tmp_path):
     # champdogs' first map: no Staffy path yet, but /breeds/ holds other breeds: never the Shih Tzu guide
     d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/puppies", f"{CD}/breeds/papillon/puppies"])
     assert d["marketplace"] is True and d["key_pages"]["guide"] is None
+    assert d["key_pages"]["listing"] is None       # nor another breed's puppies page as the listing
+    d = classify(tmp_path, [f"{CD}/breeds/beagle/puppies", f"{CD}/breeds/papillon/puppies", f"{CD}/litter/15618"])
+    assert d["key_pages"]["listing"] == f"{CD}/litter/15618"  # the advert, the listing's last resort, before another breed's page
 
 
 def test_a_directorys_guide_pick_is_the_breeds_or_none(tmp_path):
     # the Staffy's only breed path is an advert, so it is never the guide: the slot stays empty, never the Shih Tzu
-    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/staffordshire-bull-terrier/litter-12345678"])
+    d = classify(tmp_path, [f"{CD}/guide/shih-tzu", f"{CD}/breeds/beagle/breeders",
+                            f"{CD}/breeds/staffordshire-bull-terrier/litter-12345678"])
     assert d["marketplace"] is True and d["key_pages"]["guide"] is None
 
 
@@ -782,7 +792,7 @@ def test_a_marketplaces_guide_pick_is_the_breeds_or_none(tmp_path):
 def test_a_multi_species_charitys_generic_dog_guide_stays(tmp_path):
     # rspca, pdsa, the Royal Kennel Club: another species in the map, but a dog-care guide is not another breed's guide
     x = "https://www.rspca.org.uk"
-    d = classify(tmp_path, [f"{x}/adviceandwelfare/pets/cats/cat-care", f"{x}/adviceandwelfare/pets/dogs/training",
+    d = classify(tmp_path, [f"{x}/adviceandwelfare/pets/cats/", f"{x}/adviceandwelfare/pets/dogs/training",
                             f"{x}/pet-advice/labrador-care-guide/"])
     assert d["marketplace"] is True and d["key_pages"]["guide"] == f"{x}/adviceandwelfare/pets/dogs/training"
 
@@ -792,3 +802,99 @@ def test_a_breeders_guide_pick_is_unchanged(tmp_path):
     d = classify(tmp_path, [f"{x}/staffy-puppies/", f"{x}/aftercare/", f"{x}/guides/feeding/", f"{x}/leeds/"])
     assert d["marketplace"] is False
     assert (d["key_pages"]["guide"], d["key_pages"]["city"]) == (f"{x}/aftercare/", f"{x}/leeds/")
+
+
+# --- a breeder's blog post is not a marketplace; only a hub-worded breed path is a listing; adverts last ---
+BR = "https://www.example-kennels.co.uk"
+
+
+def test_a_breeders_blog_post_or_care_guide_naming_a_species_is_not_a_marketplace(tmp_path):
+    d = classify(tmp_path, [f"{BR}/staffy-puppies/", f"{BR}/aftercare/", f"{BR}/leeds/",
+                            f"{BR}/blog/do-staffies-get-on-with-cats/", f"{BR}/feeding/fish-oil-for-dogs/"])
+    assert d["marketplace"] is False
+    assert (d["key_pages"]["city"], d["key_pages"]["guide"]) == (f"{BR}/leeds/", f"{BR}/aftercare/")
+
+
+@pytest.mark.parametrize("url", [f"{BR}/cats/", f"{BR}/sale/kittens/", f"{BR}/pets/birds/", f"{BR}/rabbits-for-sale/"])
+def test_a_species_section_or_listing_makes_a_marketplace(tmp_path, url):
+    assert classify(tmp_path, [f"{BR}/staffy-puppies/", f"{BR}/leeds/", url])["marketplace"] is True
+
+
+def test_only_a_hub_worded_breed_path_is_a_listing(tmp_path):
+    d = classify(tmp_path, [f"{BR}/our-staffies/", f"{BR}/staffy-history/", f"{BR}/help/staffy-insurance-claims",
+                            f"{BR}/community/staffy-owners-meetup", f"{BR}/community/staffies/", f"{BR}/forum/blue-staffy/",
+                            f"{BR}/threads/staffies/", f"{BR}/litters/", f"{BR}/dogs/staffordshire-bull-terrier"])
+    assert d["page_types"] == {"listing": 2}   # /litters/ by the table; the hub by the breed rule; nothing under a forum
+    assert d["key_pages"]["listing"] == f"{BR}/dogs/staffordshire-bull-terrier"   # the breed's hub, never /our-staffies/
+
+
+def test_a_non_advert_listing_beats_a_breed_advert(tmp_path):
+    d = classify(tmp_path, [f"{BR}/puppies/", f"{BR}/staffy-puppies-12345678/"])
+    assert d["key_pages"]["listing"] == f"{BR}/puppies/"   # the advert is the listing's last resort
+    assert classify(tmp_path, [f"{BR}/staffy-puppies-12345678/"])["key_pages"]["listing"] == f"{BR}/staffy-puppies-12345678/"
+
+
+def test_a_breeds_folder_puppies_page_is_the_directorys_listing(tmp_path):
+    urls = [f"{CD}/breeds/staffordshire-bull-terrier/puppies", f"{CD}/breeds/staffordshire-bull-terrier/breeders",
+            f"{CD}/breeds/beagle/puppies", f"{CD}/breeds/papillon/litters", f"{CD}/guide/shih-tzu", f"{CD}/puppies-for-sale/"]
+    d = classify(tmp_path, urls)
+    assert d["page_types"] == {"listing": 4, "breed-guide": 2}  # the puppies and litters pages are listings, not guides
+    assert d["key_pages"]["listing"] == f"{CD}/breeds/staffordshire-bull-terrier/puppies"  # the breed's, on a directory
+    assert d["key_pages"]["guide"] == f"{CD}/breeds/staffordshire-bull-terrier/breeders"
+    # on a directory the breed's listing wins even when it is an advert
+    d = classify(tmp_path, [f"{CD}/breeds/beagle/puppies", f"{CD}/breeds/papillon/puppies",
+                            f"{CD}/breeds/staffordshire-bull-terrier/breeders", f"{CD}/litter/staffy-litter-12345678",
+                            f"{CD}/puppies/"])
+    assert d["key_pages"]["listing"] == f"{CD}/litter/staffy-litter-12345678"
+
+
+# --- the keyword script: intel's keyword rule on a page's markdown; a link's text is its own run ---
+KEYWORDS = re.compile(r'python3 - "\$PAGE_MD"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S)
+
+
+def keywords(tmp_path, *pages, cut=""):
+    found = KEYWORDS.findall(AGENT.read_text(encoding="utf-8"))
+    assert len(found) == 1, f"expected one keyword block, found {len(found)}"
+    files = []
+    for i, md in enumerate(pages):
+        (tmp_path / f"page{i}.md").write_text(md, encoding="utf-8")
+        files.append(str(tmp_path / f"page{i}.md"))
+    import os
+    run = subprocess.run([sys.executable, "-", *files], input=found[0], cwd=REPO, capture_output=True, text=True,
+                         env={**os.environ, "CUT": cut})
+    assert run.returncode == 0, run.stderr
+    return json.loads(run.stdout)
+
+
+def test_the_keyword_rules_own_example(tmp_path):
+    assert keywords(tmp_path, "Our blue staffy puppies for sale in Leeds") == sorted([
+        "blue staffy puppies for sale", "staffy puppies for sale in leeds", "blue staffy puppies", "staffy puppies for sale"])
+
+
+def test_no_phrase_spans_two_links(tmp_path):
+    menu = "[Staffy puppies](https://x.co.uk/staffy-puppies/) [Leeds](https://x.co.uk/leeds/)"
+    assert "staffy puppies leeds" not in keywords(tmp_path, menu)
+    assert keywords(tmp_path, "[Staffy puppies Leeds](https://x.co.uk/a/)") == ["staffy puppies leeds"]  # one link says it
+    assert keywords(tmp_path, "* [Staffordshire Bull Terriers](/a/)\n* [for sale](/b/)") == []  # two list-item links
+    assert keywords(tmp_path, "## Staffy puppies\nLeeds") == ["staffy puppies"]  # a heading is its own run too
+
+
+def test_plural_breed_terms_and_a_cut_name(tmp_path):
+    assert "staffordshire bull terriers for sale" in keywords(tmp_path, "Staffordshire Bull Terriers for sale in Oxford")
+    assert keywords(tmp_path, "Blue staffy puppies from Example Kennels Leeds", cut="example kennels") == ["blue staffy puppies"]
+
+
+def test_the_keyword_script_carries_the_gap_agents_pattern_words_line_for_line():
+    import test_keyword_gap_script as G
+    block = lambda code: code[code.index("BREED = {"):code.index("\n", code.index("UNITS = "))]
+    ours = KEYWORDS.findall(AGENT.read_text(encoding="utf-8"))[0]
+    assert block(ours) == block(G.script()), "the pattern words differ: change them in the keyword-gap agent, then copy them"
+
+
+@pytest.mark.parametrize("line", ["Our blue staffy puppies for sale in Leeds", "Staffordshire Bull Terriers for sale near Leeds",
+                                  "KC registered staffy puppies price", "Staffys for sale"])
+def test_the_keyword_scripts_maximal_runs_are_the_gap_agents(tmp_path, line):
+    g = gap_keyword_rule()
+    ws = g["words"](line)
+    theirs = {" ".join(ws[a:b]) for a, b in g["runs"](ws)}
+    assert theirs <= set(keywords(tmp_path, line))
