@@ -1,0 +1,179 @@
+{
+ "id": "ukstaffypups",
+ "root_domain": "ukstaffypups.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "blue staffordshire bull terrier",
+   "blue staffy",
+   "blue staffy puppies",
+   "blue staffy puppies for sale",
+   "breeders offering legitimate blue staffy puppies",
+   "kc registered staffordshire bull terrier puppies",
+   "puppy you must fully staffy",
+   "staffies legal in the uk",
+   "staffordshire bull terrier breeder",
+   "staffordshire bull terrier in the uk",
+   "staffordshire bull terrier puppies",
+   "staffordshire bull terrier puppies for sale",
+   "staffordshire bull terrier puppies kc registered",
+   "staffy ownership in the uk",
+   "staffy puppies",
+   "staffy puppy"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "listing": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "Birmingham",
+   "London",
+   "Manchester"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "Organization",
+   "WebSite",
+   "SearchAction",
+   "ImageObject",
+   "WebPage",
+   "Person",
+   "Article"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://ukstaffypups.uk/",
+    "title": "Staffordshire Bull Terrier Puppies for Sale In UK",
+    "h1": "Premium Staffordshire Bull Terrier Puppies for Sale in the UK",
+    "h2": [
+     "Looking for Staffordshire Bull Terrier Puppies for Sale Near Me?",
+     "Your Trusted Source for Staffy Pups Near Me",
+     "Happy Families & Staffy Tales",
+     "Frequently Asked Questions"
+    ]
+   },
+   {
+    "url": "https://ukstaffypups.uk/staffy-puppies-for-sale/",
+    "title": "Blue Staffy Puppies for Sale | Healthy Puppies Available",
+    "h1": "",
+    "h2": [
+     "Are there blue staffy puppies for sale near me?",
+     "The Ultimate Guide to Owning a Blue Staffordshire Bull Terrier in the UK",
+     "Finding Reputable Blue Staffy Puppies for Sale in the UK",
+     "Understanding the Blue Coat: Genetics and Health Factors",
+     "Staffy Temperament: The Loving \"Nanny Dog\" Reality",
+     "Behavior, Socialisation, and Training Dynamics",
+     "The Essential Guide to Neutering and Spaying",
+     "Daily Exercise and Mental Stimulation Requirements",
+     "Crucial Genetic Health Screenings to Look For",
+     "Diet, Nutrition, and Weight Management",
+     "Grooming and Skin Care Specialisms for Blue Coats",
+     "Are Staffies Legal in the UK? Understanding the Law",
+     "Preparing Your Home and Life for a Staffy",
+     "Is a Blue Staffy Right for You?"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L-2-HGA",
+    "HC-HSF4",
+    "PHPV eye examination",
+    "hip scoring"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 3
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 771,
+   "url_count": 1,
+   "h2_per_page": {
+    "https://ukstaffypups.uk/": 4,
+    "https://ukstaffypups.uk/staffy-puppies-for-sale/": 14
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the map and search map list no posts and none of the key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "no dated post URLs in the map and no post fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the map and search map list no posts and none of the key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 1,
+   "alt_text": "descriptive",
+   "alt_missing": 0,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "visit"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£1,000"
+   ],
+   "deposit_terms": "a holding deposit secures a chosen puppy after a short vetting step; no amount or refund terms stated",
+   "steps_to_enquire": null,
+   "urgency_signals": [
+    "ready-date",
+    "waiting-list"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "UKStaffyPups is a young WordPress site that ranks on a thin build: one listing page with a flat printed price, a ready-now litter and a long blue-Staffy buyer guide, but no licence, no named town, no phone or email and only three unverified testimonials, so BSUK can beat it on shown proof (licence, council, test certificates, real reviews) and on depth of indexable pages."
+}

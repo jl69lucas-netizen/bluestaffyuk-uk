@@ -1,0 +1,152 @@
+{
+  "id": "vaderblustaf",
+  "root_domain": "vaderblustaf.com",
+  "analysed_on": "2026-09-25",
+  "keywords": {
+    "status": "ok",
+    "values": [
+      "blue staffy",
+      "sbt breeders",
+      "staffordshire bull terrier breeders"
+    ]
+  },
+  "page_types": {
+    "status": "ok",
+    "values": {
+      "about": 1,
+      "blog": 16,
+      "health": 2,
+      "listing": 1
+    }
+  },
+  "cities": {
+    "status": "ok",
+    "values": []
+  },
+  "schema_types": {
+    "status": "ok",
+    "values": [
+      "WebSite",
+      "Organization",
+      "LocalBusiness",
+      "Product",
+      "Brand",
+      "AggregateRating",
+      "Review",
+      "Person",
+      "Rating"
+    ]
+  },
+  "pages": {
+    "status": "ok",
+    "fetched_on": "2026-09-25",
+    "values": [
+      {
+        "url": "https://www.vaderblustaf.com/",
+        "title": "VaderBluStaf",
+        "h1": "",
+        "h2": [
+          "About Us",
+          "What people say about us",
+          "“Would highly recommend VaderBluStaf, beautiful dogs, stress free from start to finish, great communication and couldn’t be more pleased with our pup, would definitely use [name removed] again if we look for another pup.”",
+          "Contact"
+        ]
+      },
+      {
+        "url": "https://www.vaderblustaf.com/about-us",
+        "title": "About Us — VaderBluStaf",
+        "h1": "",
+        "h2": [
+          "About Us."
+        ]
+      }
+    ]
+  },
+  "trust": {
+    "status": "ok",
+    "values": {
+      "council_licence_shown": true,
+      "council": null,
+      "kc_registration_mentioned": true,
+      "health_tests_named": [
+        "L2-HGA",
+        "HC-HSF4",
+        "PHPV eye screening"
+      ],
+      "vet_checks_mentioned": true,
+      "breeding_since_as_worded": "since 2009",
+      "town": "Bedlington",
+      "phone_shown": true,
+      "email_shown": true,
+      "contact_source": "raw-html",
+      "reviews_shown": 10
+    }
+  },
+  "content": {
+    "status": "ok",
+    "values": {
+      "homepage_words": 1228,
+      "url_count": 35,
+      "h2_per_page": {
+        "https://www.vaderblustaf.com/": 4,
+        "https://www.vaderblustaf.com/about-us": 1
+      }
+    }
+  },
+  "blog": {
+    "status": "ok",
+    "values": {
+      "post_count": 13,
+      "post_folder": null,
+      "topics": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      },
+      "posting_frequency": {
+        "status": "NOT FETCHED",
+        "reason": "post URLs carry at most a year, never a month, and no post was fetched"
+      },
+      "sampled_word_counts": {
+        "status": "NOT FETCHED",
+        "reason": "no post fetched: none of the classifier's key pages is a post"
+      }
+    }
+  },
+  "visual": {
+    "status": "ok",
+    "values": {
+      "homepage_images": 14,
+      "alt_text": "descriptive",
+      "alt_missing": 4,
+      "video_present": false
+    }
+  },
+  "conversion": {
+    "status": "ok",
+    "values": {
+      "cta_types": [
+        "phone",
+        "email",
+        "form"
+      ],
+      "prices_shown": false,
+      "price_amounts_as_printed": [],
+      "deposit_terms": null,
+      "steps_to_enquire": 1,
+      "urgency_signals": [
+        "waiting-list"
+      ]
+    }
+  },
+  "technical": {
+    "status": "ok",
+    "values": {
+      "mobile_layout_ok": true,
+      "lighthouse_performance": {
+        "status": "NOT FETCHED",
+        "reason": "no Lighthouse run"
+      }
+    }
+  },
+  "key_insight": "VaderBluStaf sells on long standing and proof: a licence reference, named DNA clears, Kennel Club registration and ten written customer reviews on its homepage, yet it has no city pages, no puppy prices, no guides and almost no buying keywords, so BSUK can match that proof and win the searches it never targets."
+}

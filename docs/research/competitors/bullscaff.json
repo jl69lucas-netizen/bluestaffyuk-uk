@@ -1,0 +1,176 @@
+{
+ "id": "bullscaff",
+ "root_domain": "bullscaff.co.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "blue and black staffy",
+   "blue or black staffy",
+   "blue staffies",
+   "blue staffy",
+   "staffy stud owner in the uk"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 2,
+   "blog": 10,
+   "health": 1,
+   "listing": 1,
+   "reviews": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": []
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": []
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.bullscaff.co.uk/",
+    "title": "Bullscaff | Home Of Blue Champions",
+    "h1": "uk and europe's best stud dogs",
+    "h2": [
+     "Thank You",
+     "Bullscaff",
+     "Welcome to Bullscaff!",
+     "4-Star Licensed Breeder",
+     "OUR SERVICES",
+     "ABOUT US"
+    ]
+   },
+   {
+    "url": "https://www.bullscaff.co.uk/stud-dogs/staffy",
+    "title": "Champion Staffordshire Bull Terrier Studs | Bullscaff",
+    "h1": "Staffy Stud Dogs",
+    "h2": [
+     "Our Studs",
+     "PHARAON",
+     "BILL",
+     "Magnus",
+     "Start Your Stud Enquiry",
+     "How it works",
+     "WE HELP YOU WITH:",
+     "4-Star Licensed Breeder",
+     "Our Passion & Commitment",
+     "Our Reviews",
+     "FAQs",
+     "Ready to arrange your stud service?",
+     "Start Your Stud Enquiry"
+    ]
+   },
+   {
+    "url": "https://www.bullscaff.co.uk/about-our-blue-staffy-stud-dogs",
+    "title": "About Bullscaff | The Home Of Blue Champions | Stud Dogs and AI",
+    "h1": "Blue Staffy Stud Dogs",
+    "h2": [
+     "About Bullscaff: The Home Of Blue Champions",
+     "Our Passion for Staffordshire Bull Terriers",
+     "Our achievements",
+     "going forward",
+     "Ongoing Support"
+    ]
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": true,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L2HGA",
+    "HC",
+    "HSF4"
+   ],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": "over 20 years",
+   "town": "Shrewsbury",
+   "phone_shown": true,
+   "email_shown": true,
+   "contact_source": "raw-html",
+   "reviews_shown": 3
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 983,
+   "url_count": 39,
+   "h2_per_page": {
+    "https://www.bullscaff.co.uk/": 6,
+    "https://www.bullscaff.co.uk/stud-dogs/staffy": 13,
+    "https://www.bullscaff.co.uk/about-our-blue-staffy-stud-dogs": 5
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 8,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "post URLs carry no dates and no post was fetched"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 14,
+   "alt_text": "descriptive",
+   "alt_missing": 5,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "phone",
+    "email",
+    "form"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£200",
+    "£600",
+    "£2000–£3500"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": 1,
+   "urgency_signals": [
+    "waiting-list"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Bullscaff tops the blue staffy breeder search as a stud-dog service, not a puppy seller: champion studs, named health tests, Kennel Club registration, a 4-star licence claim and three written client reviews carry it, but it has no puppy listings, no city pages, no structured data and only eight undated posts, so BSUK can take buyer searches with real puppy and city pages backed by the same kind of proof."
+}

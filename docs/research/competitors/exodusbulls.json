@@ -1,0 +1,140 @@
+{
+ "id": "exodusbulls",
+ "root_domain": "exodusbulls.co.uk",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": [
+   "blue and black staffordshire bull terriers",
+   "blue bloodline staffordshire bull terrier",
+   "blue sbt",
+   "blue staffordshire bull terrier",
+   "blue staffordshire bull terrier breeders",
+   "blue staffordshire bull terriers",
+   "sbt in the uk",
+   "staffordshire bull terrier in the uk",
+   "staffordshire bull terrier puppy"
+  ]
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "contact": 1,
+   "listing": 1,
+   "reviews": 1
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": []
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": []
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.exodusbulls.co.uk/",
+    "title": "EXODUSBULLS the UK's Leading Blue Stud dog Kennel.",
+    "h1": "",
+    "h2": []
+   },
+   {
+    "url": "https://www.exodusbulls.co.uk/puppies",
+    "title": "Puppy Waiting List",
+    "h1": "",
+    "h2": []
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [
+    "L2-HGA",
+    "HC-HSF4"
+   ],
+   "vet_checks_mentioned": true,
+   "breeding_since_as_worded": "over 20 years",
+   "town": null,
+   "phone_shown": false,
+   "email_shown": true,
+   "contact_source": "raw-html",
+   "reviews_shown": 0
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 2326,
+   "url_count": 13,
+   "h2_per_page": {
+    "https://www.exodusbulls.co.uk/": 0,
+    "https://www.exodusbulls.co.uk/puppies": 0
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 0,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the map lists no posts"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "the map lists no posts, so there are no post dates"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: the map lists no posts"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 15,
+   "alt_text": "missing",
+   "alt_missing": 15,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "email",
+    "form"
+   ],
+   "prices_shown": true,
+   "price_amounts_as_printed": [
+    "£160"
+   ],
+   "deposit_terms": null,
+   "steps_to_enquire": 1,
+   "urgency_signals": [
+    "waiting-list"
+   ]
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "Exodusbulls ranks for blue staffy breeder as a champion stud-dog kennel, not a puppy seller: its one buyer page is a waiting-list form that passes enquiries to other breeders who used its studs, and its homepage and waiting-list page carry no H1 or H2 headings and no alt text, with no structured data, no posts and no city pages, so BSUK can outrank it on buyer searches with real puppy, price and city pages that carry the same health-test and Kennel Club proof in proper headings."
+}
