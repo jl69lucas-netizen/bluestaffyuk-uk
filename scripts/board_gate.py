@@ -29,6 +29,9 @@ def main():
         # with own_live_key(), and a caller-side pop mis-keyed the homepage (slug "").
         live = PB.live_headings() if PB.DIST.exists() else {}
         f = PB.gate_findings(board, ont, ledger, live, stage=stage)
+        # Working rule 16's uniqueness half needs every other record, which gate_findings()
+        # (pure over one record) never reads.
+        f += PB.rule16_findings(board, PB.load_all_boards())
     except PB.BoardError as e:
         print(f"board-gate ERROR {e}")
         sys.exit(2)

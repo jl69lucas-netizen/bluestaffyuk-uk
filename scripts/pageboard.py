@@ -1402,7 +1402,12 @@ def pick_in_force(board, sid):
     sec = next((s for s in board.get("sections", []) if s.get("id") == sid), None)
     own = ((sec or {}).get("options") or {}).get("pick")
     prev = (board.get("approval_previous") or {}).get("picks") or {}
-    return live.get(sid) or own or prev.get(sid)
+    # `is not None`, not `or`: pickedStyle.ts chains `??`, which only falls through on
+    # null/undefined, so the two readers agree on every value a record can hold.
+    for pick in (live.get(sid), own, prev.get(sid)):
+        if pick is not None:
+            return pick
+    return None
 
 
 def shared_per_page_picks(boards):
@@ -1424,6 +1429,45 @@ def shared_per_page_picks(boards):
                 seen.setdefault((sec["shape"], pick), []).append(slug)
     return [(shape, pick, slugs) for (shape, pick), slugs in sorted(seen.items())
             if len(slugs) > 1 and any(s not in RULE16_EXEMPT for s in slugs)]
+
+
+def load_all_boards():
+    """{meta.slug: record} for every board record in data/boards/ — the corpus rule 16's
+    uniqueness is judged across. Read raw, not validated: a record that fails its schema is
+    `load_board()`'s to refuse, and the fixture `_demo` is a draft, which is never judged."""
+    out = {}
+    for p in sorted((ROOT / "data" / "boards").glob("*.json")):
+        b = _read_json(p)
+        if isinstance(b, dict) and "sections" in b and "meta" in b:
+            out[(b["meta"] or {}).get("slug") or p.stem] = b
+    return out
+
+
+RULE16_SHAPE_NAMES = {"hero": "hero", "stats": "counter"}
+
+
+def rule16_shares(board, boards):
+    """[(shape, pick, [other slugs])] for each hero or counter arrangement `board` shares with
+    another page. The record passed in stands in for its own file, so the gate judges the
+    record as it is being gated or approved, not the copy on disk."""
+    slug = board["meta"]["slug"]
+    corpus = dict(boards)
+    corpus[slug] = board
+    return [(shape, pick, [s for s in slugs if s != slug])
+            for shape, pick, slugs in shared_per_page_picks(corpus) if slug in slugs]
+
+
+def rule16_message(shape, pick, others):
+    return (f"{RULE16_SHAPE_NAMES.get(shape, shape)} {pick} is already worn by "
+            f"{', '.join(others)}; re-board one of them (working rule 16)")
+
+
+def rule16_findings(board, boards):
+    """Board-gate findings for working rule 16's uniqueness half: one FAIL per arrangement this
+    record shares outside the utility exemption (RULE16_EXEMPT). Kept out of gate_findings(),
+    which is pure over one record; board_gate.py adds these from `load_all_boards()`."""
+    return [{"check": "rule16-shared", "sev": "FAIL", "msg": rule16_message(shape, pick, others)}
+            for shape, pick, others in rule16_shares(board, boards)]
 
 
 GATE_STAGES = ("build", "release")

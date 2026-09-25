@@ -76,10 +76,10 @@ def test_the_demo_record_loads_and_offers_three_styles_on_every_styled_section()
     # Working rule 16: the fixture's hero and counter carry the interior-guide sets so that
     # the per-page path is BUILT and measured, not only unit-tested. Every other section keeps
     # the shape-wide trio, which is what the four pages built before that rule still name.
-    # The fixture carries the INTERIOR-UTILITY sets. It is the only record that can: the
-    # three utility pages (privacy, thank-you, contact) were built before working rule 16 and
-    # still name S1/S2/S3, so without the fixture those six arrangements would be six styles
-    # nothing ever builds, renders or measures.
+    # The fixture carries the INTERIOR-UTILITY sets. The three utility pages (privacy,
+    # thank-you, contact) offer the same sets and all name H-UT1 (thank-you and contact also
+    # C-UT1), which the user's rule-16 exemption lets them share; so their built pages render
+    # two of the six arrangements, and the fixture is what builds, renders and measures all six.
     assert rec["meta"]["layout_type"] == "interior-utility"
     offered = {s["id"]: s["styles"] for s in rec["sections"]}
     assert offered["opening"] == ["H-UT1", "H-UT2", "H-UT3"]

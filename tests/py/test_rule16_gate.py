@@ -84,4 +84,100 @@ def test_no_two_real_pages_share_a_hero_or_a_counter():
     judged = [s for s, b in boards.items() if b["meta"].get("layout_type")
               and b["meta"].get("status") != "draft"]
     assert len(judged) >= 12, judged
-    assert PB.shared_per_page_picks(boards) == []
+    shared = PB.shared_per_page_picks(boards)
+    assert shared == [], ("working rule 16: these hero/counter arrangements are worn by more than "
+                          "one page outside the utility exemption — re-board one of each pair:\n  "
+                          + "\n  ".join(f"{shape} {pick}: {', '.join(slugs)}"
+                                         for shape, pick, slugs in shared))
+
+
+# ── the same rule at the board gate and at approval (R12 review) ────────────────────────────
+#
+# pytest alone catches a shared pick only when someone runs the suite; the board gate is what
+# a page is built behind, and board_approve.py is where a pick first becomes the approval.
+
+def named(slug, *a, **k):
+    r = rec(*a, **k)
+    r["meta"]["slug"] = slug
+    return r
+
+
+def test_the_board_gate_fails_a_record_that_wears_another_pages_hero():
+    boards = {"a": named("a", "H-GD3", "C-GD1"), "b": named("b", "H-GD3", "C-GD2")}
+    f = PB.rule16_findings(boards["b"], boards)
+    assert [(x["check"], x["sev"]) for x in f] == [("rule16-shared", "FAIL")]
+    assert f[0]["msg"] == "hero H-GD3 is already worn by a; re-board one of them (working rule 16)"
+
+
+def test_the_record_under_the_gate_stands_in_for_its_own_file():
+    # The file on disk says H-GD2; the record being gated says H-GD3, which `a` wears.
+    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD2")}
+    assert [x["msg"].split(" is")[0] for x in PB.rule16_findings(named("b", "H-GD3"), boards)] \
+        == ["hero H-GD3"]
+    assert PB.rule16_findings(named("b", "H-GD1"), boards) == []
+
+
+def test_the_board_gate_passes_an_exempt_page_and_fails_it_beside_any_other():
+    boards = {s: named(s, "H-UT1", "C-UT1", layout="interior-utility") for s in UTILITY}
+    assert PB.rule16_findings(boards[UTILITY[2]], boards) == []
+    boards["about"] = named("about", "H-UT1", layout="interior-about")
+    msgs = [x["msg"] for x in PB.rule16_findings(boards[UTILITY[2]], boards)]
+    assert msgs == [f"hero H-UT1 is already worn by about, {UTILITY[0]}, {UTILITY[1]}; "
+                    "re-board one of them (working rule 16)"]
+
+
+def test_board_gate_cli_prints_the_rule16_fail_and_exits_1(monkeypatch, capsys):
+    import pytest
+    import board_gate as BG
+    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD3")}
+    board = dict(boards["b"], assets=[])
+    monkeypatch.setattr(PB, "load_board", lambda slug: board)
+    monkeypatch.setattr(PB, "load_all_boards", lambda: boards)
+    monkeypatch.setattr(PB, "load_ontology", lambda: {})
+    monkeypatch.setattr(PB, "load_ledger", lambda: {"pages": {}})
+    monkeypatch.setattr(PB, "live_headings", lambda: {})
+    monkeypatch.setattr(PB, "gate_findings", lambda *a, **k: [])
+    monkeypatch.setattr(PB, "all_headings", lambda b: [])
+    monkeypatch.setattr(sys, "argv", ["board_gate.py", "b"])
+    for s in board["sections"]:
+        s.setdefault("entities", [])
+    with pytest.raises(SystemExit) as e:
+        BG.main()
+    out = capsys.readouterr().out
+    assert e.value.code == 1, out
+    assert "FAIL rule16-shared" in out and "hero H-GD3 is already worn by a" in out, out
+    assert out.rstrip().endswith("1 FAIL · 0 WARN"), out
+
+
+def test_every_real_record_passes_the_rule16_gate():
+    boards = PB.load_all_boards()
+    judged = {s: b for s, b in boards.items()
+              if b["meta"].get("layout_type") and b["meta"].get("status") != "draft"}
+    assert len(judged) >= 12, sorted(judged)
+    bad = {s: [x["msg"] for x in PB.rule16_findings(b, boards)] for s, b in judged.items()}
+    assert {s: m for s, m in bad.items() if m} == {}
+
+
+def test_approval_refuses_a_pick_that_creates_a_share():
+    import board_approve as BA
+    boards = {"a": named("a", "H-GD3", "C-GD1"), "b": named("b", None, None, status="draft")}
+    after = named("b", "H-GD3", "C-GD2")
+    assert BA.rule16_refusals(boards["b"], after, boards) == [
+        "hero H-GD3 is already worn by a; re-board one of them (working rule 16)"]
+    assert BA.rule16_refusals(boards["b"], named("b", "H-GD1", "C-GD2"), boards) == []
+
+
+def test_approval_does_not_refuse_a_share_that_was_already_there():
+    # A share the record already had is the gate's to fail, not a new pick's to refuse:
+    # re-running an approval must not become impossible because of an older finding.
+    import board_approve as BA
+    boards = {"a": named("a", "H-GD3"), "b": named("b", "H-GD3")}
+    assert BA.rule16_refusals(boards["b"], named("b", "H-GD3"), boards) == []
+
+
+def test_approval_lets_the_utility_pages_share_with_each_other():
+    import board_approve as BA
+    boards = {s: named(s, "H-UT1", "C-UT1", layout="interior-utility") for s in UTILITY[:2]}
+    boards[UTILITY[2]] = named(UTILITY[2], None, None, layout="interior-utility", status="draft")
+    after = named(UTILITY[2], "H-UT1", "C-UT1", layout="interior-utility")
+    assert BA.rule16_refusals(boards[UTILITY[2]], after, boards) == []
