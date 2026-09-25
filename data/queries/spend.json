@@ -194,5 +194,47 @@
     "source": "ai_engines",
     "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
     "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:04:12Z",
+    "slug": "blue-staffy-puppies-aberdeen",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:07:12Z",
+    "slug": "blue-staffy-puppies-dundee",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:09:44Z",
+    "slug": "blue-staffy-puppies-edinburgh",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:12:37Z",
+    "slug": "blue-staffy-puppies-hull",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:15:16Z",
+    "slug": "blue-staffy-puppies-inverness",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
+  },
+  {
+    "ts": "2026-09-25T08:17:22Z",
+    "slug": "blue-staffy-puppies-middlesbrough",
+    "source": "ai_engines",
+    "endpoint": "ai_optimization_chat_gpt_scraper UK en (response carries no cost; estimate)",
+    "cost_usd": 0.01
   }
 ]
