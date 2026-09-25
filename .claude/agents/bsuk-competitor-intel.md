@@ -27,7 +27,7 @@ Before any fetch for `--all` or `--tier <n>`: **STOP** and report the competitor
 ## What to fetch per competitor
 
 1. **Map** the root domain with `limit` 500 and save the URL list to a scratch file (`MAP_RAW`) as a JSON array of URL strings. Count it with `python3 -c "import json,sys; print(len(json.load(open(sys.argv[1]))))" <saved list>`, never by eye. The list the classifier reads is not this map but the **Map list** (below), made once the homepage gate has passed.
-2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then, the homepage gate passed, complete the **Map list** — at most one search map, and the homepage's own breed links at no cost — and classify it. Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page. In each slot but about, the breed's own pages come first — a path with `staffy`, `staffie`, `staffies` or `sbt` as a whole word, `staffordshire-bull` (or joined by `_`, `+` or `%20`, never after `american-` or `american%20`), or a word starting `blue-staff`; words split at `-`, `/`, `_`, `.`, `+` or `%20`. Never the county alone (`<competitor-domain>/dogs-for-sale/staffordshire/`), an AmStaff, a bull terrier of another kind (English, miniature, American pit) or `stafford`, the town. Only a slot with none of them falls back to its other pages, and the fallback never takes a page whose path names another species (`cat`, `kitten`, `rabbit`, `bird`, `horse`, `reptile`, `fish`, `hamster`, `guinea-pig`, `ferret`) — another dog breed may stay, and on a site whose map names another species a page with `dog`, `puppy`, `puppies` or `pup` in its path comes before the rest. **An advert is never a key page** — a path with an id of 5+ digits as its own segment (`<competitor-domain>/p/dogs/staffy-breed/1498765433`, `<competitor-domain>/adverts/show/123456789/blue-staffy-puppies.html`) or ending its slug (`…-12345678.html`); a last segment starting with a short id of 5–10 letters and digits where a letter follows a digit (`<competitor-domain>/classifieds/q7zz1-staffy-pups-leeds`, `k2x9qab-blue-staffy-puppies-wigan` — never `about-`, `staffy-`, a word with a number on the end such as `covid19-` or `staffy2-`, or digits alone such as `202425-`); or a single slug straight under a `classifieds`, `ad` or `adverts` folder that is not a breed or city hub (a hub is made only of the breed's name, `blue`, `dog`, `puppy`, `pup`, `for-sale`, `uk`, `in`, `near` and `data/locations.json` city slugs: `<competitor-domain>/classifieds/leeds/` and `<competitor-domain>/classifieds/dogs-for-sale-in-leeds` are hubs). Never under `solutions`, `help` or `support`. An advert is kept out of every slot except as the listing's last resort, after every listing page that is not an advert. The page types are counted as before; only the pick changes. The about slot is the site's own about page, so it skips the breed step, and takes only a path whose last segment is the about row's word (`about`, `about-us`, `aboutus`, `our-story`) or starts with it (`<competitor-domain>/about-1`, `<competitor-domain>/who-we-are/about/`) — never a slug that merely contains it (`<competitor-domain>/privacy-notice-about-your-data`) or a page under an about folder (`<competitor-domain>/utilities/aboutus/stayinformed`); both stay typed `about` in the counts but are never the pick. Order, then: the breed's pages, non-adverts before adverts, (multi-species sites) dog pages, the slot's type order (price before FAQ, care guide before breed guide), the fewest path segments, the shortest path, the URL in alphabetical order; a slot with no page left is `null` and is not scraped. A breeder whose URLs never name the breed or another species gets exactly the picks it got before the breed step; a multi-species marketplace (pets4homes) gets its Staffy hubs, never a kitten listing or a single advert. Six scrapes at most.
+2. **Scrape the homepage** once with `onlyMainContent` off and formats markdown **and** raw HTML (the raw HTML carries JSON-LD, image tags and `tel:` / `mailto:` links). Then, the homepage gate passed, complete the **Map list** — at most one search map, and the homepage's own breed links at no cost — and classify it. Then up to five key pages, markdown only — exactly the classifier's `key_pages` (see **Page-type rule**): a listing page, a price page (else an FAQ page), a care guide (else a breed guide), a city page, the about page. In each slot but about, the breed's own pages come first — a path with `staffy`, `staffie`, `staffies` or `sbt` as a whole word, `staffordshire-bull` (or joined by `_`, `+` or `%20`, never after `american-` or `american%20`), or a word starting `blue-staff`; words split at `-`, `/`, `_`, `.`, `+` or `%20`. Never the county alone (`<competitor-domain>/dogs-for-sale/staffordshire/`), an AmStaff, a bull terrier of another kind (English, miniature, American pit) or `stafford`, the town. Only a slot with none of them falls back to its other pages, and the fallback never takes a page whose path names another species (`cat`, `kitten`, `rabbit`, `bird`, `horse`, `reptile`, `fish`, `hamster`, `guinea-pig`, `ferret`) — another dog breed may stay, and on a site whose map names another species a page with `dog`, `puppy`, `puppies` or `pup` in its path comes before the rest. **An advert is never a key page** — a path with an id of 5+ digits as its own segment (`<competitor-domain>/p/dogs/staffy-breed/1498765433`, `<competitor-domain>/adverts/show/123456789/blue-staffy-puppies.html`) or ending its slug (`…-12345678.html`, or a forum thread's `….12345/`); a last segment starting with a short id of 5–10 letters and digits where a letter follows a digit (`<competitor-domain>/classifieds/q7zz1-staffy-pups-leeds`, `k2x9qab-blue-staffy-puppies-wigan` — never `about-`, `staffy-`, a word with a number on the end such as `covid19-` or `staffy2-`, or digits alone such as `202425-`); or a single slug straight under a `classifieds`, `ad` or `adverts` folder that is not a breed or city hub (a hub is made only of the breed's name, `blue`, `dog`, `puppy`, `pup`, `for-sale`, `uk`, `in`, `near` and `data/locations.json` city slugs: `<competitor-domain>/classifieds/leeds/` and `<competitor-domain>/classifieds/dogs-for-sale-in-leeds` are hubs). Never under `solutions`, `help` or `support`. An advert is kept out of every slot except as the listing's last resort, after every listing page that is not an advert. The page types are counted as before; only the pick changes. The about slot is the site's own about page, so it skips the breed step, and takes only a path whose last segment is the about row's word (`about`, `about-us`, `aboutus`, `our-story`) or starts with it (`<competitor-domain>/about-1`, `<competitor-domain>/who-we-are/about/`) — never a slug that merely contains it (`<competitor-domain>/privacy-notice-about-your-data`) or a page under an about folder (`<competitor-domain>/utilities/aboutus/stayinformed`); both stay typed `about` in the counts but are never the pick. Order, then: the site's own host (the homepage's, `www.` aside) before any other — a subdomain's page (`forum.<competitor-domain>`, `blog.<competitor-domain>`) is counted but picked only when the site's own host has none for the slot; the breed's pages, non-adverts before adverts, (multi-species sites) dog pages, the slot's type order (price before FAQ, care guide before breed guide), the fewest path segments, the shortest path, the URL in alphabetical order; a slot with no page left is `null` and is not scraped. A breeder whose URLs never name the breed or another species gets exactly the picks it got before the breed step; a multi-species marketplace (pets4homes) gets its Staffy hubs, never a kitten listing or a single advert. Six scrapes at most.
 3. JSON-LD through Playwright instead, if needed: evaluate `[...document.querySelectorAll('script[type="application/ld+json"]')].map(s => s.textContent)`.
 4. **Tier 5 (suspect seller):** the homepage scrape only — no map, no second page, never a link followed. `keywords` is `NOT FETCHED` ("tier 5 — not used as a model"); `prices_shown` yes/no and `price_amounts_as_printed: []` (amounts are never written for tier 5); the `pages` entry is its URL with empty `title`, `h1`, `h2`. What makes it tier 5 is summarised in the report in your words; any quotation lives only in the registry's `notes`, written by `bsuk-competitor-registry`.
 
@@ -181,12 +181,12 @@ EOF
 
 A single map of 500 URLs often misses the one page that matters: the breed's own page (RSPCA, Dogs Trust and the Royal Kennel Club all ranked a Staffy page their map did not return, and Dogs Trust links it from its homepage menu). So, after the homepage gate has passed (never on a gated homepage or tier 5, never for `--bsuk`), run this script on the first map, the entry's `root_domain` and the homepage's raw HTML (`RAW_HTML`, `HOME_URL` as for **Homepage measures**):
 
-- `search_map` true — the first map hit the cap (`url_count` ≥ 500) or holds no breed path by the classifier's breed test (copied here line for line) → run **one** more `firecrawl_map` of the same site with `search` set to the script's `search_term` and `limit` 100, saved as `SEARCH_RAW`, then run the script again with `--search "$SEARCH_RAW"`. The term is `staffordshire`, or `staffy` when the homepage says staffy / staffie / staffies and never staffordshire. One search map at most, whatever it returns: 1 credit. `search_map` false → no search map.
-- The homepage's own links to a breed path on the same root domain (subdomains count) join the list at no cost — never another site, a contact page, a `mailto:` or `tel:` link, or a link inside a script, template or comment.
-- The first map, then the search map's URLs on the same root domain, then the homepage's breed links are merged into `MAP_LIST`, one URL per page (`page_key`: scheme, `www.`, the trailing slash, `utm_*` and the fragment apart are one page).
+- `search_map` true — the first map hit the cap (`url_count` ≥ 500) or holds no breed path by the classifier's breed test (copied here line for line) → run **one** more `firecrawl_map` of the same site with `search` set to the script's `search_term` and `limit` 100, saved as `SEARCH_RAW`, then run the script again with `--search "$SEARCH_RAW"`. The term is `staffordshire bull terrier` (never `staffordshire` alone: on a classifieds site that returns the county's adverts), or `staffy` when the homepage says staffy / staffie / staffies and never staffordshire. One search map at most, whatever it returns: 1 credit. `search_map` false → no search map, and the script refuses (exits non-zero) a `--search` it did not ask for.
+- The homepage's own links to a breed path on the same root domain (subdomains count) join the list at no cost — never another site, a contact page, a `mailto:` or `tel:` link, a file (an image, PDF, stylesheet, script, video or feed: any extension but `.html`, `.htm`, `.php`, `.asp(x)`, `.jsp`, `.shtml`, `.cfm`), or a link inside a script, template or comment. Without `--home` (a homepage scraped as markdown only) no homepage links are added.
+- The first map, then the search map's URLs on the same root domain, then the homepage's breed links are merged into `MAP_LIST`, one URL per page (`page_key`: scheme, `www.`, the trailing slash, `utm_*`, the fragment and the path's case apart are one page).
 
 ```bash
-python3 - "$MAP_RAW" "<root_domain>" --home "$RAW_HTML" "$HOME_URL" [--search "$SEARCH_RAW"] --out "$MAP_LIST" <<'EOF'
+python3 - "$MAP_RAW" "<root_domain>" [--home "$RAW_HTML" "$HOME_URL"] [--search "$SEARCH_RAW"] --out "$MAP_LIST" <<'EOF'
 import html, json, re, sys
 from urllib.parse import urljoin, urlparse
 sys.path.insert(0, "scripts")
@@ -201,7 +201,8 @@ breedy = lambda u: bool(re.search(BREED, urlparse(u).path.lower()))
 ours = lambda u: urlparse(u).scheme in ("http", "https") and root_domain(u) == root  # the site, its subdomains too
 out = {"url_count": len(first), "breed_urls": sum(map(breedy, first))}
 out["search_map"] = out["url_count"] >= LIMIT or out["breed_urls"] == 0  # at the cap, or the breed's page missing
-term, home_links = "staffordshire", []
+term, home_links = "staffordshire bull terrier", []  # never "staffordshire" alone: a classifieds search returns the county
+FILE = r"\.(?!(html?|php|aspx?|jsp|shtml|cfm)$)[a-z][a-z0-9]{0,4}$"  # a file (image, pdf, css, js, video, feed), not a page
 if opt("--home", 2):
     raw_path, home = opt("--home", 2)
     page = re.sub(r"(?is)<!--.*?-->|<(noscript|template|script|style)\b.*?</\1>", " ", open(raw_path, encoding="utf-8").read())
@@ -211,19 +212,25 @@ if opt("--home", 2):
     CONTACT = r"(^|[-/_.])(contact|contactus|enquire|enquiry|enquiries)s?([-/_.]|$)"
     for href in re.findall(r"""(?is)<a\b[^>]*?\shref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""", page):
         u = urljoin(home, html.unescape(next((h for h in href if h), "")).strip()).split("#")[0]
-        if ours(u) and breedy(u) and not re.search(CONTACT, urlparse(u).path.lower()):
+        path = urlparse(u).path.lower()
+        if ours(u) and breedy(u) and not re.search(CONTACT, path) and not re.search(FILE, path.rstrip("/").split("/")[-1]):
             home_links.append(u)  # a breed page the homepage itself links: no credit
 out["search_term"] = term if out["search_map"] else None
+if opt("--search") and not out["search_map"]:
+    sys.exit("map list: a search map was given, but this first map did not ask for one (search_map false) — one search map, only when asked")
 search = json.load(open(opt("--search")[0])) if opt("--search") else []
+def key(u):  # one page however written (page_key), the path's case aside
+    k, _, q = page_key(u).partition("?")
+    return k.lower(), q
 merged, seen, added = [], set(), {"search": 0, "home": 0}
 for src, us in (("map", first), ("search", [u for u in search if ours(u)]), ("home", home_links)):
     for u in us:
-        if page_key(u) not in seen:
-            seen.add(page_key(u))
+        if key(u) not in seen:
+            seen.add(key(u))
             merged.append(u)
             if src != "map":
                 added[src] += 1
-out.update(search_added=added["search"], search_breed_urls=len({page_key(u) for u in search if ours(u) and breedy(u)}), home_added=added["home"],
+out.update(search_added=added["search"], search_breed_urls=len({key(u) for u in search if ours(u) and breedy(u)}), home_added=added["home"],
            map_list=len(merged), map_calls=1 + bool(opt("--search")))
 if opt("--out"):
     json.dump(merged, open(opt("--out")[0], "w", encoding="utf-8"))
@@ -231,7 +238,7 @@ print(json.dumps(out, sort_keys=True))
 EOF
 ```
 
-It prints `url_count`, `breed_urls`, `search_map`, `search_term`, `search_added`, `search_breed_urls`, `home_added`, `map_list` and `map_calls`; the readable report's **Fetch** line carries them. A search map that finds no breed page (`search_breed_urls` 0) is said so there — never followed by another.
+It prints `url_count`, `breed_urls`, `search_map`, `search_term`, `search_added`, `search_breed_urls`, `home_added`, `map_list` and `map_calls`; the classifier, given `--search="$SEARCH_RAW"`, adds `search_adverts` (the search map's URLs that are adverts by the key-page test); the readable report's **Fetch** line carries them all. A search map that finds no breed page (`search_breed_urls` 0) is said so there — never followed by another.
 
 ### Page-type rule
 
@@ -252,7 +259,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale`, or a sale advert: `for-sale` anywhere in the path, `kitten` / `kittens` as a word, or a slug ending in a hyphen- or underscore-joined id of 5+ digits (`…-1234567`; a bare number segment such as a help-centre folder id is not one here) — this is the page type only; the key-page advert test is broader (id segments, short id prefixes, advert folders) and is defined in step 2 of the run |
 
-Classify with this script, `MAP_LIST` set to the path of the **Map list** (above) — the first map, merged with the search map and the homepage's breed links (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape: the breed's own pages first, never another species, an advert only as the listing's last resort — see step 2 of the run). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the path of the **Map list** (above) — the first map, merged with the search map and the homepage's breed links (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape: the breed's own pages first, never another species, an advert only as the listing's last resort — see step 2 of the run). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Pass `--home="$HOME_URL"` after `"$MAP_LIST"` (the homepage's host ranks first; without it, the map's most common host), and `--search="$SEARCH_RAW"` when the search map ran. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -261,6 +268,7 @@ from urllib.parse import parse_qs, urlparse
 urls = json.load(open(sys.argv[1]))
 bsuk = "--bsuk" in sys.argv[2:]
 folders = [a.split("=", 1)[1].strip("/").lower() for a in sys.argv[2:] if a.startswith("--post-folder=")]
+given = lambda flag: next((a.split("=", 1)[1] for a in sys.argv[2:] if a.startswith(flag + "=")), None)
 rows = json.load(open("data/locations.json"))
 real_city = lambda city: city != "UK" and "(" not in city  # never the UK hub or the breeding-dogs outreach row
 slugs = {r["city"].lower().replace(" ", "-") for r in rows if real_city(r["city"])}
@@ -333,7 +341,7 @@ S, J = r"([-/_.+]|%20)", r"([-_+]|%20)"  # a breed word ends at - / _ . + or an 
 BREED = rf"(^|{S})(staff(y|ie|ies)s?|sbt)({S}|$)|(^|{S})(?<!american[-_+])(?<!american%20)staffordshire{J}bull|(^|{S})blue{J}staff"
 SPECIES = w("cat|kitten|rabbit|bird|horse|reptile|fish|hamster|guinea-pig|ferret")  # another species: never a key page
 DOG = w("dog|puppies|puppy|pup")  # on a site naming another species, a dog page before any other in the fallback
-AD = r"(^|/)\d{5,}(/|\.html?$|$)|[-_]\d{5,}(\.html?)?/?$"  # an id of 5+ digits as a segment or ending the slug
+AD = r"(^|/)\d{5,}(/|\.html?$|$)|[-_.]\d{5,}(\.html?)?/?$"  # an id of 5+ digits as a segment or ending the slug (.12345/)
 HUBWORD = rf"(staffordshire{J}bull{J}terriers?|staff(y|ie|ies)s?|sbt|blue|dogs?|puppies|puppy|pups?|for{J}sale|uk|in|near|" \
           + "|".join(map(re.escape, sorted(slugs))) + ")"  # a breed or city hub is made of these words only
 ABOUT = r"(^|/)(about|about-us|aboutus|our-story)s?/?$|(^|/)(about|aboutus|our-story)s?[-_.][^/]*/?$"  # the about row's words as
@@ -349,6 +357,9 @@ def is_ad(path):  # an advert, for the key-page pick only (the table's own adver
                 or (len(segs) > 1 and segs[-2] in ("classifieds", "ad", "adverts")
                     and not re.fullmatch(rf"{HUBWORD}({J}{HUBWORD})*", last)))  # one slug in an advert folder, not a hub
 multi = any(re.search(SPECIES, urlparse(u).path.lower()) for _, u in typed_urls)
+host = lambda u: re.sub(r"^www\.", "", (urlparse(u).hostname or "").lower())
+hosts = [host(u) for u in urls]  # the homepage's host (--home=<HOME_URL>), else the map's most common one
+home_host = host(given("--home")) if given("--home") else min(set(hosts), key=lambda h: (-hosts.count(h), len(h), h), default="")
 key_pages = {}
 for slot, types in SLOTS:  # the key pages to scrape, per slot; see step 2 of the run for the order
     ranked = []
@@ -358,9 +369,13 @@ for slot, types in SLOTS:  # the key pages to scrape, per slot; see step 2 of th
         if x not in types or not path.strip("/") or (not breed and re.search(SPECIES, path)) \
                 or (is_ad(path) and slot != "listing") or (slot == "about" and not re.search(ABOUT, path)):
             continue  # another species never; an advert only as the listing's last resort; about only by its segment
-        ranked.append((not breed, is_ad(path), multi and not breed and not re.search(DOG, path), types.index(x)) + depth(u))
+        ranked.append((host(u) != home_host, not breed, is_ad(path), multi and not breed and not re.search(DOG, path),
+                       types.index(x)) + depth(u))  # another host's page (a forum, a blog) after every page of the site's own
     key_pages[slot] = min(ranked)[-1] if ranked else None
-print(json.dumps({"page_types": counts, "posts": posts, "pagination": pagination, "key_pages": key_pages}, sort_keys=True))
+out = {"page_types": counts, "posts": posts, "pagination": pagination, "key_pages": key_pages}
+if given("--search"):  # the search map's adverts, for the readable report's Fetch line
+    out["search_adverts"] = sum(is_ad(urlparse(u).path.lower()) for u in dict.fromkeys(json.load(open(given("--search")))))
+print(json.dumps(out, sort_keys=True))
 EOF
 ```
 
@@ -377,7 +392,7 @@ No sitemaps → every `index.html` under `dist/` through the table, skipping any
 ## Output
 
 1. `docs/research/competitors/<id>.json`: `id` (the registry entry's `id` exactly — `bsuk` for `--bsuk` — which also names the file), `root_domain`, `analysed_on` (today), the ten fields, `pages`, `key_insight`.
-2. `docs/research/competitors/<id>.md`: a heading per category (anything NOT FETCHED says what was missing), then a **Fetch** line — `map_calls` (1, or 2 with the search map), whether the search map ran and why (`url_count` at the cap, or no breed URL), its term, what it added (`search_added`) and how many breed pages it returned on the site (`search_breed_urls`), the homepage breed links added (`home_added`), the scrapes and the credits spent (the report's JSON has no fetch field: this line is the record) — then **Key insight** — one or two sentences on the single thing BSUK can learn from or beat. Your words throughout.
+2. `docs/research/competitors/<id>.md`: a heading per category (anything NOT FETCHED says what was missing), then a **Fetch** line — `map_calls` (1, or 2 with the search map), whether the search map ran and why (`url_count` at the cap, or no breed URL), its term, what it added (`search_added`), how many breed pages it returned on the site (`search_breed_urls`) and how many of its URLs are adverts (`search_adverts`), the homepage breed links added (`home_added`), the scrapes and the credits spent (the report's JSON has no fetch field: this line is the record) — then **Key insight** — one or two sentences on the single thing BSUK can learn from or beat. Your words throughout.
 3. data/competitors.json: set that entry's `last_analyzed` to today — no other key, entry, spacing or order changes — then run `python3 scripts/competitor_registry_check.py` (0 problems) and confirm `git diff data/competitors.json` shows only `last_analyzed` lines.
 4. `--bsuk`: `npm run build`, then read `dist/` for the same ten categories. `id` is `bsuk`, `root_domain` is `SITE_URL_PLACEHOLDER` until project 6 sets the domain, page URLs are `https://SITE_URL_PLACEHOLDER/<route>`. No Firecrawl, no registry write, and no homepage gate (it is BSUK's own build). The emulated-phone check runs against `npm run preview` (it serves `dist/`) at that local address. The profile's `pages` list holds **indexable pages only**: every `<loc>` URL in `dist/post-sitemap.xml`, `dist/location-sitemap.xml`, `dist/puppy-sitemap.xml` and `dist/page-sitemap.xml` (each once), with its `dist/` title, H1 and H2s — never a noindex page (the migrated stubs are noindex and out of the sitemaps until project 5 rebuilds them). Only when `dist/` has no sitemaps does it fall back to every `index.html`, skipping any page whose robots meta contains `noindex`. The gap matrix and `bsuk-competitive-keyword-gap-agent` read BSUK's side from this file.
 

@@ -535,7 +535,7 @@ MAPLIST = re.compile(r'python3 - "\$MAP_RAW"[^\n]*<<\'EOF\'\n(.*?)\nEOF\n', re.S
 DT = "https://www.dogstrust.org.uk"
 
 
-def map_list(tmp_path, first, root="dogstrust.org.uk", search=None, home=None):
+def map_list(tmp_path, first, root="dogstrust.org.uk", search=None, home=None, refused=False):
     """intel's map-list script on a first map (and a search map, and a homepage): its JSON, and the list it wrote."""
     found = MAPLIST.findall(AGENT.read_text(encoding="utf-8"))
     assert len(found) == 1, f"expected one map-list block, found {len(found)}"
@@ -549,6 +549,8 @@ def map_list(tmp_path, first, root="dogstrust.org.uk", search=None, home=None):
         args += ["--search", str(tmp_path / "search.json")]
     args += ["--out", str(tmp_path / "list.json")]
     run = subprocess.run([sys.executable, "-", *args], input=found[0], cwd=REPO, capture_output=True, text=True)
+    if refused:
+        return run
     assert run.returncode == 0, run.stderr
     return json.loads(run.stdout), json.loads((tmp_path / "list.json").read_text(encoding="utf-8"))
 
@@ -563,7 +565,7 @@ def map_list(tmp_path, first, root="dogstrust.org.uk", search=None, home=None):
 def test_a_map_at_the_cap_or_without_the_breed_asks_for_one_search_map(tmp_path, first, want):
     d, _ = map_list(tmp_path, first)
     assert d["search_map"] is want and d["url_count"] == len(first)
-    assert d["search_term"] == ("staffordshire" if want else None)
+    assert d["search_term"] == ("staffordshire bull terrier" if want else None)  # never the county alone
 
 
 def test_the_search_map_is_merged_once_per_page_and_only_from_the_site(tmp_path):
@@ -601,7 +603,7 @@ def test_the_homepages_own_breed_links_join_the_list_at_no_cost(tmp_path):
 
 def test_the_search_term_is_the_sites_own_word_for_the_breed(tmp_path):
     first = [f"{DT}/page-{i}/" for i in range(5)]
-    assert map_list(tmp_path, first, home=DT_HOME)[0]["search_term"] == "staffordshire"
+    assert map_list(tmp_path, first, home=DT_HOME)[0]["search_term"] == "staffordshire bull terrier"
     staffy_only = "<html><body><h1>Blue Staffy puppies</h1><a href='/puppies/'>Puppies</a></body></html>"
     assert map_list(tmp_path, first, home=staffy_only)[0]["search_term"] == "staffy"
 
@@ -618,3 +620,59 @@ def test_the_ceiling_is_two_maps_and_six_scrapes():
     assert "(8 × N)" in text and "7 × N" not in text
     gap = (REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md").read_text(encoding="utf-8")
     assert "8 × N" in gap and "7 × N" not in gap and "Ceiling 7" not in gap
+    assert "without `--home`" in gap  # its homepage scrape is markdown only: no homepage links
+
+
+# --- another host never outranks the site's own; one search map, enforced; files are not pages ---
+GT = "https://www.gumtree.com"
+FORUM, BLOG = "https://forum.gumtree.com/threads/staffy-puppies.12345/", "https://blog.gumtree.com/staffy-puppy-price-guide/"
+
+
+@pytest.mark.parametrize("flags", [(), (f"--home={GT}/",)])
+def test_a_subdomains_page_counts_but_never_outranks_the_sites_own(tmp_path, flags):
+    urls = [f"{GT}/", f"{GT}/dogs-for-sale/staffordshire-bull-terrier", f"{GT}/pricing/", FORUM, BLOG]
+    d = classify(tmp_path, urls, *flags)
+    assert d["page_types"] == {"listing": 2, "price": 2}          # subdomains stay in the counts
+    assert d["key_pages"]["listing"] == f"{GT}/dogs-for-sale/staffordshire-bull-terrier"
+    assert d["key_pages"]["price-or-faq"] == f"{GT}/pricing/"    # the site's own page, breed or not
+    d = classify(tmp_path, [f"{GT}/", f"{GT}/cars/", BLOG], *flags)
+    assert d["key_pages"]["price-or-faq"] == BLOG                 # alone, another host's page is still a pick
+
+
+def test_a_forum_threads_dot_id_is_an_advert_id(tmp_path):
+    x = "https://www.x.co.uk"
+    d = classify(tmp_path, [f"{x}/threads/staffy-puppies.12345/", f"{x}/dogs/staffordshire-bull-terrier/for-sale/"])
+    assert d["key_pages"]["listing"] == f"{x}/dogs/staffordshire-bull-terrier/for-sale/"
+
+
+def test_the_classifier_counts_the_search_maps_adverts(tmp_path):
+    x = "https://www.x.co.uk"
+    (tmp_path / "search.json").write_text(json.dumps([
+        f"{x}/dogs/staffordshire-bull-terrier/for-sale/", f"{x}/ad/blue-staffy-pups-leeds-1234567",
+        f"{x}/classifieds/q7zz1-staffy-pups-leeds", f"{x}/threads/staffy-puppies.12345/"]), encoding="utf-8")
+    d = classify(tmp_path, [f"{x}/", f"{x}/puppies/"], "--search=search.json")
+    assert d["search_adverts"] == 3
+    assert "search_adverts" not in classify(tmp_path, [f"{x}/", f"{x}/puppies/"])
+
+
+def test_a_search_map_the_script_did_not_ask_for_is_refused(tmp_path):
+    first = [f"{DT}/page-{i}/" for i in range(40)] + [f"{DT}/staffy-rescue/"]   # under the cap, with a breed page
+    run = map_list(tmp_path, first, search=[f"{DT}/dog-breeds/staffordshire-bull-terrier/"], refused=True)
+    assert run.returncode != 0 and "search map" in run.stderr
+
+
+def test_homepage_links_to_files_are_not_pages(tmp_path):
+    home = """<html><body>
+<a href="/images/staffy-puppy.jpg">x</a><a href="/docs/staffy-care.pdf">x</a><a href="/css/staffy.css">x</a>
+<a href="/js/staffy.js">x</a><a href="/media/staffy-video.mp4">x</a><a href="/feeds/staffy.xml">x</a>
+<a href="/staffy-rescue.html">x</a><a href="/staffy-puppies.php">x</a><a href="/dog-breeds/staffordshire-bull-terrier">x</a>
+</body></html>"""
+    d, merged = map_list(tmp_path, [f"{DT}/"], home=home)
+    assert merged[1:] == [f"{DT}/staffy-rescue.html", f"{DT}/staffy-puppies.php", f"{DT}/dog-breeds/staffordshire-bull-terrier"]
+    assert d["home_added"] == 3
+
+
+def test_a_homepage_link_differing_only_in_case_is_the_same_page(tmp_path):
+    home = '<html><body><a href="/dog-breeds/staffordshire-bull-terrier">x</a></body></html>'
+    d, merged = map_list(tmp_path, [f"{DT}/", f"{DT}/Dog-Breeds/Staffordshire-Bull-Terrier/"], home=home)
+    assert (d["home_added"], d["map_list"]) == (0, 2)
