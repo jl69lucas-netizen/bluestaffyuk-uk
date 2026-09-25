@@ -128,7 +128,7 @@ added to the plan during execution.
 | X3 | every commit example in an agent or skill carries the trailer | controller self-review | `tests/py/test_commit_trailer_examples.py` | `e3f07aa`, `c2d888e` | PASS-WITH-DEVIATION — a task added during execution; one follow-up checks each example up to the next command and catches every commit form |
 | R11 | homepage mosaic and figure tiles | KI 33 first half (ruling R11) | `tests/py/test_homepage_hero.py`; board approved at the pause | `724d291`, `e615920`, `bd10772`, `221668d` | PASS-WITH-DEVIATION — two figure tiles, not three: a third wrapped the row and ran the band past 450 (measured); the plan's Step 10 "20 WARN" is 18 on a fresh build (two were stale-`dist/` artefacts) |
 | R13 | three guides, three heroes (+ R8's question) | KIs 35, 30 (buying guide) (ruling R13) | `tests/py/test_guide_heroes.py`; three boards approved at the pause | `e8792ac`, `46575d7`, `bf92307`, `0733332`, `e9ceb8d`, `3862485`, `a1abb35` | PASS-WITH-DEVIATION — the brief named the breed and buying guides; measured, H-GD1 holds only the health guide, so health H-GD1, buying H-GD2, breed H-GD3, as the user approved; `Hero` gained the split-with-aside second row; controller amendment: the buying guide's H-GD2 carries its chips (411 at 1280); two saves at the pause were wrong (the browser restored health H-GD3 and buying C-GD3) and were re-approved; the plan's Step 13 "342 passed" is 329 (334 with the added tests) |
-| Review minors | the deferred reviewer minors, triaged | carry list (76 fixed, 22 already done, 23 for Task Z, 17 skipped) | `review-minors` triage; suite 4366 passed, 1 skipped | `37e8ff3`, `b35a420`, `231e43e`, `349c9e5`, `df0cd17`, `9e9a9e5`, `fce3070`, `4cda7e9`, `5e2634d`, `abf0c1e`, `4395ae6`, `5fec7c3`, `7b153e5` | PASS-WITH-DEVIATION — a task added during execution (13 commits); its Task-Z rows are Known Issues 65–75 and the edits in this close-out |
+| Review minors | the deferred reviewer minors, triaged | carry list (76 fixed, 22 already done, 23 for Task Z, 17 skipped) | `review-minors` triage; suite 4366 passed, 1 skipped | `37e8ff3`, `b35a420`, `231e43e`, `349c9e5`, `df0cd17`, `9e9a9e5`, `fce3070`, `4cda7e9`, `5e2634d`, `abf0c1e`, `4395ae6`, `5fec7c3`, `7b153e5` | PASS-WITH-DEVIATION — a task added during execution (13 commits); its Task-Z rows are Known Issues 65–69 and 75–80 and the edits in this close-out |
 | Pre-G1 fixes | the review-minors review's intel measure items, fixed before the paid run | E3, E4.3, E5, E6.1 minors | `tests/py/test_intel_scripts.py`, `test_keyword_gap_script.py`, `test_agent_residue.py`, `test_report_artifact.py` | `a1aedcf`, `335f621`, `f1eb5d2` | PASS-WITH-DEVIATION — a task added during execution (controller ruling: fix before G1) |
 | R8 | breed guide video facade | KI 38 (ruling R8) | `tests/py/test_breed_guide_video.py`; Best Practices below | `501cd40` | PASS-WITH-DEVIATION — moved on the re-board, not by `--reapprove`, which refuses a pick by design (amendment 11) |
 | R12 | rule 16's gate; utility pages exempt | KI 33 second half, KI 35's condition (ruling R12) | `tests/py/test_rule16_gate.py`; `board_gate.py`; `board_approve.py` | `c3108b9`, `e29e213`, `876d65d`, `94ad7f3` | PASS-WITH-DEVIATION — two review follow-ups: the check runs at the board gate and at approval time (`board_approve.py` refuses a share it would create), and a re-boarded page may not re-pick the arrangement it was re-boarded to leave |
@@ -139,7 +139,7 @@ added to the plan during execution.
 | G4 | LLM intel for the other 26 location pages | KI 58 (and 53's Manchester line) | `docs/research/llm-intel/` × 29 files for 28 pages; spend log | `c13a807`, `237b9e6`, `0c0e5ee`, `7255193`, `c3c83bf`, `bc8eec1`, `2d75ff4` | PASS-WITH-DEVIATION — the run fell on a new day, so the user's dashboard reading was re-recorded for 2026-09-25 first (`c13a807`, still $0.96785, covering 14 calls); the 27 answer-named domains were written to the candidates list (`2d75ff4`) |
 | G5 | strategy re-synthesis | — | `strategy_cite_check.py`: 48 sources, 78 figures, 0 problems; Artifact version 2 | `528e597` | PASS |
 | G6 | KIs 57 and 58 recorded | KIs 57, 58 | session log | `707f319` | PASS |
-| Z | close-out: session log, this report, run twice, merge | the rest (session log) | this report | the close-out docs commit (after `707f319`) | PASS-WITH-DEVIATION — the plan stays at its committed path (`2026-09-24-p5-readiness.md`, the branch's first commit, `845e4c0`) with an Executed note, not a new `2026-09-23-project5-readiness.md`; Known Issues 65–75 added for the items the carry list and the review-minors triage marked for Task Z; the new Known Issues follow Known Issue 58 as Task G6 wrapped it; Known Issue 53's Manchester line records the re-buy; the plan page was built with a fence-aware copy of `scripts/build_plan_artifact.py` (the repo's splits sections inside code fences: 240 against 84 — Known Issue 72) |
+| Z | close-out: session log, this report, run twice, merge | the rest (session log) | this report | the close-out docs commit (after `707f319`) | PASS-WITH-DEVIATION — the plan stays at its committed path (`2026-09-24-p5-readiness.md`, the branch's first commit, `845e4c0`) with an Executed note, not a new `2026-09-23-project5-readiness.md`; Known Issues 65–69 and 75–80 added for the items the carry list and the review-minors triage marked for Task Z; the new Known Issues follow Known Issue 58 as Task G6 wrapped it; Known Issue 53's Manchester line records the re-buy; the plan page was built with a fence-aware copy of `scripts/build_plan_artifact.py` (the repo's splits sections inside code fences: 240 against 84 — Known Issue 77) |
 
 **Verdict count: 27 PASS · 41 PASS-WITH-DEVIATION · 0 FAIL.**
 
@@ -213,7 +213,7 @@ reads 95, so the faces cost about 3 points. The breed guide's Best Practices wen
 |---|---|
 | This report | https://claude.ai/artifact/YHsi2sEDq1uUpgYsQTjUdU (republished by the controller after the commit that recorded it, 2026-09-25) |
 | The plan (executed) | https://claude.ai/artifact/CtP3B6yHda1NUBvgiUCcdg (version 2, republished from the executed plan) |
-| The breeder's questions | https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH (page rebuilt with the builder's `fce3070` script line and republished by the controller, 2026-09-25 — Known Issue 75) |
+| The breeder's questions | https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH (page rebuilt with the builder's `fce3070` script line and republished by the controller, 2026-09-25 — Known Issue 80) |
 | The Foundation gate report | no Artifact URL recorded in the repo; `docs/artifacts/bsuk-foundation-gate-report.html` is current (rebuilt at close-out, unchanged) |
 | The strategy | https://claude.ai/artifact/PpjywspMRJXayQtkfiTki1 (version 2) |
 | Boards republished at the pause | index, health, breed guide, buying guide (URLs in `data/design/artifacts.json` `boards`) |
@@ -222,7 +222,9 @@ reads 95, so the faces cost about 3 points. The breed guide's Best Practices wen
 
 Closed by this build: Known Issues 19, 21, 24, 32, 35, 37, 38, 39, 45–52, 56, 57, 58; the first half of
 31, the buying-guide half of 30, the homepage and sharing halves of 33, all but two items of 53 and the
-instruction items of 40. Moved: 27 to project 6. New, in `docs/reference/session-log.md`:
+instruction items of 40. Moved: 27 to project 6. New, in `docs/reference/session-log.md` (numbered
+59–75 at close-out; when `foundation` was merged in on 2026-09-25, 70–75 became 75–80, because the
+system gaps build holds 70–74):
 
 59. **Project 5 builder checklist** — the rest of Known Issue 40, and the readiness audit's unfixed lines.
 60. **The 28 city pages have no hero pool of their own** — STOP before the first city board; the user decides.
@@ -241,12 +243,15 @@ instruction items of 40. Moved: 27 to project 6. New, in `docs/reference/session
 67. **Health-test spelling** — needs the user's ruling.
 68. **`data/faq.json` states two claims nothing proves** — waits for the breeder's answers.
 69. **Competitor-intel classifier and measure minors.**
-70. **Keyword-gap, LLM-intel, strategy and spend-guard minors.**
-71. **Registry fix: petsforlove is down.**
-72. **Instruction lines and code comments left stale** — seo-rules Rules 31/32, the fan-out counts, skill residue.
-73. **Blog posts: template limits and two rulings.**
-74. **Seven stub cities give the verbatim gate nothing to examine.**
-75. **The Artifact pages carry the builder's current script line** — DONE 2026-09-25: the breeder's sheet rebuilt and republished with the gate report; no Foundation report URL is recorded.
+
+Known Issues 70–74 are the system gaps build's (`docs/reports/system-gaps-gate-report.md`).
+
+75. **Keyword-gap, LLM-intel, strategy and spend-guard minors.**
+76. **Registry fix: petsforlove is down.**
+77. **Instruction lines and code comments left stale** — seo-rules Rules 31/32, the fan-out counts, skill residue.
+78. **Blog posts: template limits and two rulings.**
+79. **Seven stub cities give the verbatim gate nothing to examine.**
+80. **The Artifact pages carry the builder's current script line** — DONE 2026-09-25: the breeder's sheet rebuilt and republished with the gate report; no Foundation report URL is recorded.
 
 Still open from earlier builds: 3, 5, 6, 7, 10, 13–16, 18, 23, 26, 30 (the breed guide's headroom), 31
 (second half), 33 (the utility mosaics), 34, 36, 41 (the breeder's answers), 43, 44, 53 (two), 54, 55.
