@@ -5,5 +5,12 @@
     "opening_balance_usd": 1.0,
     "covers_log_entries": 14,
     "source": "DataForSEO dashboard balance stated by the user"
+  },
+  {
+    "date": "2026-09-25",
+    "balance_usd": 0.96785,
+    "opening_balance_usd": 1.0,
+    "covers_log_entries": 14,
+    "source": "DataForSEO dashboard balance stated by the user"
   }
 ]
