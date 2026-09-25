@@ -1,0 +1,168 @@
+{
+ "id": "royalkennelclub",
+ "root_domain": "royalkennelclub.com",
+ "analysed_on": "2026-09-25",
+ "keywords": {
+  "status": "ok",
+  "values": []
+ },
+ "page_types": {
+  "status": "ok",
+  "values": {
+   "about": 1,
+   "blog": 1,
+   "breed-guide": 39,
+   "care-guide": 80,
+   "city": 1,
+   "contact": 2,
+   "faq": 1,
+   "health": 38,
+   "listing": 51,
+   "price": 2,
+   "reviews": 7
+  }
+ },
+ "cities": {
+  "status": "ok",
+  "values": [
+   "London"
+  ]
+ },
+ "schema_types": {
+  "status": "ok",
+  "values": [
+   "Organization",
+   "ImageObject",
+   "PostalAddress",
+   "WebSite",
+   "SearchAction",
+   "EntryPoint"
+  ]
+ },
+ "pages": {
+  "status": "ok",
+  "fetched_on": "2026-09-25",
+  "values": [
+   {
+    "url": "https://www.royalkennelclub.com/",
+    "title": "The Royal Kennel Club | Dog Health, Welfare & Training",
+    "h1": "",
+    "h2": [
+     "Find a Breeder",
+     "IAF 2026",
+     "Annual Report 2025",
+     "Leaders of the Pack",
+     "Royal Kennel Club Pet Insurance",
+     "Sign up to our newsletters"
+    ]
+   },
+   {
+    "url": "https://www.royalkennelclub.com/late-addition/puppies",
+    "title": "The Royal Kennel Club",
+    "h1": "We can't sign you in",
+    "h2": [
+     "OR"
+    ]
+   },
+   {
+    "url": "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder",
+    "title": "Questions to ask the breeder | The Royal Kennel Club",
+    "h1": "",
+    "h2": [
+     "Don't be afraid to ask lots of questions",
+     "Questions to ask before you visit the puppy",
+     "Questions to ask during your visit",
+     "Next step – Research the parents' health"
+    ]
+   },
+   {
+    "url": "https://www.royalkennelclub.com/your-dog/dog-training",
+    "title": "Dog Training Classes, Tips & Advice | The Royal Kennel Club",
+    "h1": "",
+    "h2": []
+   }
+  ]
+ },
+ "trust": {
+  "status": "ok",
+  "values": {
+   "council_licence_shown": false,
+   "council": null,
+   "kc_registration_mentioned": true,
+   "health_tests_named": [],
+   "vet_checks_mentioned": false,
+   "breeding_since_as_worded": null,
+   "town": null,
+   "phone_shown": false,
+   "email_shown": false,
+   "contact_source": "raw-html",
+   "reviews_shown": 0,
+   "registered_charity_number_shown": false
+  }
+ },
+ "content": {
+  "status": "ok",
+  "values": {
+   "homepage_words": 2592,
+   "url_count": 495,
+   "h2_per_page": {
+    "https://www.royalkennelclub.com/": 6,
+    "https://www.royalkennelclub.com/late-addition/puppies": 1,
+    "https://www.royalkennelclub.com/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder": 4,
+    "https://www.royalkennelclub.com/your-dog/dog-training": 0
+   }
+  }
+ },
+ "blog": {
+  "status": "ok",
+  "values": {
+   "post_count": 1,
+   "post_folder": null,
+   "topics": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   },
+   "posting_frequency": {
+    "status": "NOT FETCHED",
+    "reason": "the map holds one dated post URL and no post was fetched: no rate from a single date"
+   },
+   "sampled_word_counts": {
+    "status": "NOT FETCHED",
+    "reason": "no post fetched: none of the classifier's key pages is a post"
+   }
+  }
+ },
+ "visual": {
+  "status": "ok",
+  "values": {
+   "homepage_images": 39,
+   "alt_text": "descriptive",
+   "alt_missing": 6,
+   "video_present": false
+  }
+ },
+ "conversion": {
+  "status": "ok",
+  "values": {
+   "cta_types": [
+    "form"
+   ],
+   "prices_shown": false,
+   "price_amounts_as_printed": [],
+   "deposit_terms": null,
+   "steps_to_enquire": null,
+   "urgency_signals": []
+  }
+ },
+ "technical": {
+  "status": "ok",
+  "values": {
+   "mobile_layout_ok": true,
+   "lighthouse_performance": {
+    "status": "NOT FETCHED",
+    "reason": "no Lighthouse run"
+   }
+  }
+ },
+ "key_insight": "The Royal Kennel Club wins 'kc registered staffy puppies' and the UK for-sale search on registry authority, yet its puppy listing sits behind a sign-in wall, its 495-URL map has no Staffordshire Bull Terrier page, and its buyer advice (questions to ask a breeder) is written for every breed. BSUK can meet the same buyer with a Staffy-specific version of that checklist, answered on the page with its own health tests, registration papers and visible litters, no login needed."
+}
