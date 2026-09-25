@@ -850,16 +850,18 @@ and moved 16 on to its location-page remainder.
     with the Manchester stub; a typed "-vs-" comparison is matched before intel's page-type table
     (`/blog/staffy-vs-pitbull` differs between the two agents); a two-city page gets no stub label.
 
-53. **LLM-intel minors (2026-09-23).** The Manchester saved answer is a condensed save, so its
-    format is `NOT FETCHED` until the user's `; refresh` re-buy; every on-page check is provisional
-    until project 5 builds the pages; the output does not record the `EXTRA` string, so a re-run
-    cannot reproduce an entity's variants exactly (the close-out re-derivation of Leeds patched only
-    `local_businesses` for that reason); digits in a brand name read as a "statistic" opening; an
-    inline bold label is not skipped; table-first answers and short separators; the synthetic
-    fixture still holds an Instagram link; the own-domain logic differs between the script and
-    `tests/py/test_llm_intel.py`; dist build freshness is not checked; the noindex regex assumes an
-    attribute order; the homepage has no slug for llm-intel; `docs/reference/system-registry.md`
-    does not list `schemas/`.
+53. **LLM-intel minors (2026-09-23).** The Manchester answer was re-bought verbatim at the user's
+    `; refresh` (project 5 readiness, bc8eec1), so its format is now measured; the normalised
+    `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.json` still holds the old save
+    and needs re-normalising by `bsuk-query-augmentation` at Manchester's project-5 build; every
+    on-page check is provisional until project 5 builds the pages; the output does not record the
+    `EXTRA` string, so a re-run cannot reproduce an entity's variants exactly (the close-out
+    re-derivation of Leeds patched only `local_businesses` for that reason); digits in a brand name
+    read as a "statistic" opening; an inline bold label is not skipped; table-first answers and
+    short separators; the synthetic fixture still holds an Instagram link; the own-domain logic
+    differs between the script and `tests/py/test_llm_intel.py`; dist build freshness is not
+    checked; the noindex regex assumes an attribute order; the homepage has no slug for llm-intel;
+    `docs/reference/system-registry.md` does not list `schemas/`.
 
 54. **Research notes for project 5 (2026-09-23).** The gap matrix's `cities` row counts a city
     merely named on a BSUK page ("Cities We Serve") as covered although its page is a noindex stub;
@@ -883,20 +885,36 @@ and moved 16 on to its location-page remainder.
     `data/port-manifest.json` notes on the framework, content-audit and rank-tracker rows still
     say `data/competitors.json` or competitor-intel is not ported / deferred, though both now exist.
 
-57. **Intel on the other 18 registry entries (next step).** Only trojanstaffuk, pets4homes and
-    rspca have reports; the gap matrix lists staffordshirebullterrierkennel, bullscaff,
-    ukstaffypups, vaderblustaf, exodusbulls, staffie-owners, puppies, gumtree, champdogs, freeads,
-    preloved, royalkennelclub, foreverpuppy, petsforlove, petify, ukpets, pdsa and dogstrust with no
-    report. Run `@bsuk-competitor-intel` on them (`fetch approved: --all`, Firecrawl credits) and
-    rebuild the matrix; the strategy's city ordering below its high rows may change.
+57. **Intel on all 21 registry entries — CLOSED (project 5 readiness).** Every registry entry has a
+    report in `docs/research/competitors/` dated 2026-09-25, run one id at a time in five batches
+    (0–4): the three pilots (trojanstaffuk, pets4homes, rspca) were re-run first, because the rules
+    changed after them (Known Issue 51), then the other 18. The key-page classifier was reworked
+    during the run (4e2fe7f to 9d7e7b9): the breed's own pages first, one search map when the first
+    map misses the breed, and rules for marketplaces, general classifieds and adverts. A consistency
+    pass followed: six reports re-typed for free (8670a98) and six topped up (ca0c730). Firecrawl
+    used 110 credits (776 to 666). The tier-5 entry (staffordshirebullterrierkennel) was fetched on
+    its homepage only and is never linked. petsforlove.co.uk did not answer (ports 80 and 443
+    closed), so its report is homepage-gated and every field is NOT FETCHED; the registry fix for
+    `bsuk-competitor-registry` is to re-check the site or retire it. RSPCA's Staffy advice page is
+    still unanalysed, because no fetch returned its URL. The BSUK profile was rebuilt with `--bsuk`
+    (bb9dfc2) and the gap matrix rebuilt on all 21: in every row, measured plus not fetched is 21
+    (136 keyword, 11 page-type, 25 city and 23 schema rows), and its `No report yet:` line is gone.
+    The keyword gap (2049d6d, 20 reports; petsforlove has nothing to read) finds 16 gaps, 10 of them
+    high. The strategy was re-synthesised (528e597, strategy Artifact version 2): the same bet,
+    contested city pages first, in a new order led by London, Manchester, Liverpool, Essex and
+    Dundee.
 
-58. **LLM intel for the other 26 location pages (next step).** Only Manchester and Leeds have
-    `docs/research/llm-intel/` files. Each further page is one paid `ai_engines` call through the
-    spend guard (budgeted at $0.10); the log's $0.20 of headroom covers two, so the cap
-    (`query_total_budget_usd`) or the typical cost (Known Issue 45) must be re-set first.
-    **Update (project 5 readiness, Task F1, 2026-09-23):** the user's second option is done — the
-    guard counts $0.03215 of real spend against the $1.00 cap and budgets an `ai_engines` call at
-    $0.01, so all 26 calls fit ($0.26; `python3 scripts/query_augment.py --budget ai_engines`
-    reports 96). The cap was not raised.
-    Still the next step: `@bsuk-llm-keyword-intel <slug>` for each page, each behind its own
-    `spend approved: <slug>; balance $<n>`.
+58. **LLM intel for the other 26 location pages — CLOSED (project 5 readiness).** Every location
+    page has a `docs/research/llm-intel/` file: 26 new pages plus a Manchester refresh, 27
+    ChatGPT-scraper calls through the spend guard in five batches (237b9e6, 0c0e5ee, 7255193,
+    c3c83bf, bc8eec1). The user's dashboard reading was first re-recorded for 2026-09-25 (c13a807:
+    still $0.96785, covering the 14 calls logged before). The guard now counts $0.30215 of the $1.00
+    cap; the log holds each new call at the $0.01 estimate (real cost is about $0.004 a call) until
+    the next reading (Known Issue 45). The question is `location_question()` in
+    `scripts/query_augment.py`: the two national pages share one ("in the UK"), and the pages
+    `staffy-breeding-dogs-glasgow` and `staffy-puppies-for-sale-glasgow` another ("near Glasgow"),
+    each keeping its own file. Of the 26, the 15 stub pages are checked against the page map
+    (provisional) and the 11 indexable pages against `dist/`; compare bands within one kind only.
+    `bsuk_cited` is false in every file. The 27 domains the answers name with no registry id are
+    listed in `docs/research/competitor-registry-candidates.md` (2d75ff4); they enter the registry
+    only through a seed search and an approved proposal.
