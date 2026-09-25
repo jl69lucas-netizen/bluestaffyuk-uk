@@ -54,7 +54,7 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 | 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
 | 3 | `keywords` | any page | see **Keyword rule** below |
 | 4 | `page_types` | the map | see **Page-type rule** below |
-| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month; every post under a `--post-folder` counts); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `post_folder` (the folder given with `--post-folder`, a list if more than one; `null` when none), `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
+| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a page outside a whole-word blog folder (`blog-guides/<slug>`: name that folder with `--post-folder`), a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month; every post under a `--post-folder` counts); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `post_folder` (the folder given with `--post-folder`, a list if more than one; `null` when none), `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
 | 6 | `visual` | the homepage raw HTML (markdown alone never) | `homepage_images`, `alt_text` (descriptive, generic, missing) and `alt_missing` from **Homepage measures**; `video_present` (a `<video>` tag or a YouTube or Vimeo embed in the raw HTML) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
@@ -67,14 +67,16 @@ A price that is not printed is not a price: "please call us" about a deposit is 
 
 ### Homepage measures
 
-`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). The file is read as raw HTML only when it holds `<!doctype html` or an `<html>` tag; anything else is markdown, whatever inline HTML it carries. It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
+`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path and `HOME_URL` to the homepage URL the scrape ended on (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). The file is read as raw HTML only when it holds `<!doctype html` or an `<html>` tag; anything else is markdown, whatever inline HTML it carries. It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
 
 ```bash
-python3 - "$RAW_HTML" <<'EOF'
+python3 - "$RAW_HTML" "$HOME_URL" <<'EOF'
 import html, json, re, sys
+from urllib.parse import urljoin, urlparse
 sys.path.insert(0, "tests/py")
 from test_no_third_party_contacts import PATTERNS  # the contact scan's phone and email formats
 raw = open(sys.argv[1], encoding="utf-8").read()
+home = sys.argv[2] if len(sys.argv) > 2 else ""  # the homepage's own URL: a relative source is on its host
 is_html = bool(re.search(r"(?i)<!doctype\s+html|<html[\s>]", raw))
 # comments, scripts (JSON-LD and HTML templates too), styles, <noscript> and <template> are not the page
 page = re.sub(r"(?is)<!--.*?-->|<(noscript|template|script|style)\b.*?</\1>", " ", raw)
@@ -87,10 +89,11 @@ out = {"contact_source": "raw-html" if is_html else "markdown-only",
        "email_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()mailto:", page) or PATTERNS["email"].search(text))}
 if is_html:
     imgs = {}  # one per distinct source, first alt kept: a logo in header and footer is one image
+    ident = lambda src: (lambda p: (p.hostname or "") + p.path)(urlparse(urljoin(home, src.strip())))  # host + path: no scheme, query or fragment
     for tag in re.findall(r"(?is)<img\b[^>]*>", page):
         src = next((v for v in (attr(tag, "data-src"), attr(tag, "data-lazy-src"), attr(tag, "src")) if v and not v.startswith("data:")), None)
         if src and not (attr(tag, "width") in ("0", "1") and attr(tag, "height") in ("0", "1")):  # never a tracking pixel
-            imgs.setdefault(src, attr(tag, "alt"))
+            imgs.setdefault(ident(src), attr(tag, "alt"))
     GENERIC = {"image", "img", "photo", "photograph", "picture", "pic", "logo", "icon", "banner", "placeholder",
                "untitled", "default", "graphic", "thumbnail"}
     def alt_class(a):
@@ -113,7 +116,7 @@ print(json.dumps(out, sort_keys=True))
 EOF
 ```
 
-- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`), outside comments, `<script>`, `<style>`, `<noscript>` and `<template>` (a script's HTML template is not an image on the page), never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
+- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`) — one per host and path, a relative source on `HOME_URL`'s host, so `/a.jpg`, `https://<competitor-domain>/a.jpg` and `/a.jpg?w=300` are one image — outside comments, `<script>`, `<style>`, `<noscript>` and `<template>` (a script's HTML template is not an image on the page), never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
 - `alt_text`: each image's alt is `missing` (no alt, or blank), `generic` (a file name, a camera name such as `IMG_2034`, or only words like image, photo, logo, icon, banner, placeholder) or `descriptive`; the field is the class most images hold, a tie going to the worse (`missing`, then `generic`). `alt_missing` is the count of `missing`. A homepage with no images has `alt_text: null` (and `homepage_images` and `alt_missing` 0).
 - `phone_shown` / `email_shown`: a `tel:` / `mailto:` link, or a number or address in the contact scan's formats printed in the page text — neither counts inside a comment, script, style, JSON-LD, `<noscript>` or `<template>`.
 
@@ -187,7 +190,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once. A post is found by the `blog` row's own words and dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) and its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -197,7 +200,8 @@ urls = json.load(open(sys.argv[1]))
 bsuk = "--bsuk" in sys.argv[2:]
 folders = [a.split("=", 1)[1].strip("/").lower() for a in sys.argv[2:] if a.startswith("--post-folder=")]
 rows = json.load(open("data/locations.json"))
-slugs = {r["city"].lower().replace(" ", "-") for r in rows if r["city"] != "UK" and "(" not in r["city"]}
+real_city = lambda city: city != "UK" and "(" not in city  # never the UK hub or the breeding-dogs outreach row
+slugs = {r["city"].lower().replace(" ", "-") for r in rows if real_city(r["city"])}
 w = lambda t: r"(^|[-/_.])(?:" + t + r")s?([-/_.]|$)"  # whole words only, a plural s allowed
 TABLE = [
     ("comparison", [w("vs|versus")]),
@@ -221,14 +225,16 @@ def title_slug(path):
     m = re.search(r"(?is)<head\b.*?<title>(.*?)</title>", f.read_text(encoding="utf-8")) if f.is_file() else None
     words = html.unescape(m.group(1)).split("|")[0] if m else ""
     return "/" + re.sub(r"[^a-z0-9]+", "-", words.lower()).strip("-") + "/"
-def paged(u):  # one page of a paginated list: /<list>/page/2/, ?page=2, ?paged=2, ?pg=2
+def paged(u):  # one page of a paginated list: /<list>/page/2/, ?page=2, ?paged=2, ?pg=2 -> its number, else ""
     p = urlparse(u)
-    return bool(re.search(r"/page/\d+(/|$)", p.path.lower())) or any(
-        k.lower() in ("page", "paged", "pg") and v[0].isdigit() for k, v in parse_qs(p.query).items())
+    m = re.search(r"/page/\d+(/|$)", p.path.lower())
+    if m:
+        return m.group(0).strip("/")[5:]
+    return next((v[0] for k, v in parse_qs(p.query).items() if k.lower() in ("page", "paged", "pg") and v[0].isdigit()), "")
 def typed(path):
     seg = path.strip("/").split("/")[-1]
     if bsuk and seg in loc:  # a BSUK location row: a city only for a real city, never the UK hub or the outreach row
-        if loc[seg] != "UK" and "(" not in loc[seg]:
+        if real_city(loc[seg]):
             return "city"
         return nocity(path) or (nocity(title_slug(path)) if path != "/" else None)
     t = kind(path)
@@ -239,21 +245,23 @@ seen, counts, typed_urls, posts, pagination = set(), {}, [], 0, 0
 for u in urls:
     p = urlparse(u)
     path = p.path.lower()
-    if paged(u):
+    key = ((p.hostname or ""), path.rstrip("/"), paged(u))  # normalised first: a slash or another query apart is one URL
+    if key in seen:
+        continue
+    seen.add(key)
+    if key[2]:
         pagination += 1
         continue
-    if ((p.hostname or ""), path.rstrip("/")) in seen:  # the same page twice (a slash or a query apart)
-        continue
-    seen.add(((p.hostname or ""), path.rstrip("/")))
     infolder = any(path.strip("/") == f or path.strip("/").startswith(f + "/") for f in folders)
     t = "blog" if infolder else typed(path)
     if t:
         counts[t] = counts.get(t, 0) + 1
         typed_urls.append((t, u))
     segs = [x for x in path.split("/") if x]
-    blogish = infolder or any(re.search(pat, path) for pat in dict(TABLE)["blog"])  # the blog row, whatever the type
+    blogword = lambda s: re.fullmatch(r"(blog|news|articles|post)s?", s)  # the blog row's words, a whole segment
+    blogish = infolder or any(blogword(x) for x in segs) or re.search(dict(TABLE)["blog"][-1], path)  # or its dated segment, whatever the type
     if blogish and segs and path.strip("/") not in folders \
-            and not re.fullmatch(r"(blog|news|articles|post)s?|\d+", segs[-1]) \
+            and not (blogword(segs[-1]) or segs[-1].isdigit()) \
             and not {"category", "tag", "author", "solutions", "help", "support"} & set(segs):
         posts += 1  # a post: not the blog index, a category, tag, author or help-centre page, or a month
 depth = lambda u: (len([x for x in urlparse(u).path.split("/") if x]), len(urlparse(u).path), u)

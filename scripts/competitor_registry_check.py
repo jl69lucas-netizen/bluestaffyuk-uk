@@ -22,12 +22,13 @@ the registry itself has no problems, and a scan path that has gone missing is a 
 Spec: docs/superpowers/specs/2026-09-23-competitor-intel-design.md §4, §12.
 """
 import argparse
+import ipaddress
 import json
 import os
 import pathlib
 import re
 import sys
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlencode, urlparse
 
 import jsonschema
 
@@ -85,9 +86,13 @@ PLACEHOLDER = "site_url_placeholder"  # the build's stand-in for BSUK's domain u
 def root_domain(url):
     """The registrable domain of a URL or bare host, by the rule above: two labels, or three under a
     CC_SECOND_LEVELS second level and a two-letter country code. The build placeholder is its own
-    root; a bare label is None. One helper for the keyword-gap and llm-intel agents' scripts and
-    tests/py/test_llm_intel.py."""
+    root, and so is an IP address (it has no registrable part); a bare label is None. One helper for
+    the keyword-gap and llm-intel agents' scripts and tests/py/test_llm_intel.py."""
     h = (urlparse(url if "//" in url else "//" + url).hostname or "").lower().rstrip(".")
+    try:
+        return str(ipaddress.ip_address(h))
+    except ValueError:
+        pass
     try:
         h = h.encode("idna").decode()
     except UnicodeError:
@@ -99,6 +104,18 @@ def root_domain(url):
         return None
     keep = 3 if len(labels) >= 3 and _registrable(".".join(labels[-3:])) else 2
     return ".".join(labels[-keep:])
+
+
+def page_key(url):
+    """One page however its URL is written: no scheme or fragment, the host lowercased and without
+    `www.`, the path without its trailing slash, the query without `utm_*` parameters (the rest
+    sorted). The keyword-gap script's duplicate check: the same page in two reports is one page."""
+    p = urlparse(url if "//" in url else "//" + url)
+    host = (p.hostname or "").rstrip(".")
+    host = host[4:] if host.startswith("www.") else host
+    query = urlencode(sorted((k, v) for k, v in parse_qsl(p.query, keep_blank_values=True)
+                             if not k.lower().startswith("utm_")))
+    return host + p.path.rstrip("/") + ("?" + query if query else "")
 
 
 def own_domains(root=ROOT, strict=False):

@@ -101,6 +101,31 @@ def test_pagination_is_never_a_page_or_a_post_and_each_url_counts_once(tmp_path)
     assert d["pagination"] == 4
 
 
+def test_a_paginated_url_listed_twice_is_one_page_of_the_list(tmp_path):
+    # the same page of a list, a slash apart, is one URL: normalised before it is counted
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/blog/page/2", f"{x}/blog/page/2/", f"{x}/blog?page=3", f"{x}/blog/?page=3",
+                            f"{x}/blog/?page=4", f"{x}/puppies/page/2/"])
+    assert d["pagination"] == 4               # blog 2, blog 3, blog 4 and puppies 2
+
+
+def test_the_blog_word_makes_a_post_only_as_a_whole_path_segment(tmp_path):
+    x = "https://x.co.uk"
+    d = classify(tmp_path, [f"{x}/blog-guides/", f"{x}/staffy-news/", f"{x}/news/litter-due/", f"{x}/articles/",
+                            f"{x}/blog-guides/staffy-care-tips/"])
+    assert d["page_types"] == {"blog": 5}     # the table still types every one as blog ...
+    assert d["posts"] == 1                    # ... but only /news/litter-due/ sits under a blog-word folder
+    d = classify(tmp_path, [f"{x}/blog-guides/", f"{x}/blog-guides/staffy-care-tips/"], "--post-folder=blog-guides")
+    assert d["posts"] == 1                    # a folder named with the blog word is named with --post-folder
+
+
+def test_the_real_city_rule_is_written_once(tmp_path):
+    # the UK hub and the breeding-dogs outreach row are never cities: one helper, used by both checks
+    block = CLASSIFIER.findall(AGENT.read_text(encoding="utf-8"))[0]
+    assert block.count('"(" not in') == 1 and block.count('!= "UK"') == 1, "the real-city test is repeated"
+    assert "real_city(" in page_type_block(AGENT.name)
+
+
 def test_key_pages_are_picked_by_script_with_a_fixed_tie_break(tmp_path):
     x = "https://x.co.uk"
     d = classify(tmp_path, [f"{x}/", f"{x}/puppies/rex/", f"{x}/available/", f"{x}/puppies/",
@@ -148,14 +173,16 @@ def test_post_folders_count_and_help_centre_articles_do_not(tmp_path):
     assert d["posts"] == 1                        # its index is not a post; the help-centre article still is not
 
 
-def measure(tmp_path, page, name="home.html"):
-    """intel's homepage measures, run in a scratch root on `page` (raw HTML or markdown)."""
+def measure(tmp_path, page, name="home.html", url=None):
+    """intel's homepage measures, run in a scratch root on `page` (raw HTML or markdown); `url` is
+    the homepage's own URL (HOME_URL), when given."""
     (tmp_path / "tests/py").mkdir(parents=True, exist_ok=True)
     shutil.copy(REPO / "tests/py/test_no_third_party_contacts.py", tmp_path / "tests/py")
     (tmp_path / name).write_text(page, encoding="utf-8")
     found = HOMEPAGE.findall(AGENT.read_text(encoding="utf-8"))
     assert len(found) == 1, f"expected one homepage-measures block, found {len(found)}"
-    run = subprocess.run([sys.executable, "-", name], input=found[0], cwd=tmp_path, capture_output=True, text=True)
+    run = subprocess.run([sys.executable, "-", name, *([url] if url else [])], input=found[0], cwd=tmp_path,
+                         capture_output=True, text=True)
     assert run.returncode == 0, run.stderr
     return json.loads(run.stdout)
 
@@ -179,6 +206,18 @@ def test_homepage_images_are_distinct_sources_and_alt_text_is_the_largest_class(
     assert d["alt_missing"] == 2                  # no alt, and an empty alt
     assert d["alt_text"] == "generic"             # Logo, IMG_2034.jpg, Photo: 3 generic, 2 missing, 2 descriptive
     assert d["contact_source"] == "raw-html"
+
+
+def test_one_image_however_its_source_is_written(tmp_path):
+    # scheme, the page's own host and the query are not part of an image's identity
+    page = ('<html><body><img src="/a.jpg" alt="Blue Staffy puppy Rex at eight weeks"><img src="https://site.co.uk/a.jpg">'
+            '<img src="/a.jpg?w=300"><img src="//site.co.uk/a.jpg#top"><img src="http://SITE.co.uk/a.jpg">'
+            '<img src="a.jpg"><img src="https://cdn.other.com/a.jpg"></body></html>')
+    d = measure(tmp_path, page, url="https://site.co.uk/")
+    assert d["homepage_images"] == 2          # site.co.uk/a.jpg (the first alt kept) and the CDN's own copy
+    assert (d["alt_missing"], d["alt_text"]) == (1, "missing")
+    d = measure(tmp_path, '<html><body><img src="/a.jpg"><img src="/a.jpg?w=300"><img src="/a.jpg?w=600"></body></html>')
+    assert d["homepage_images"] == 1          # no HOME_URL: a query still never makes a second image
 
 
 def test_a_tie_between_alt_classes_goes_to_the_worse_one(tmp_path):

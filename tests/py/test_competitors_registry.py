@@ -321,6 +321,9 @@ def test_json_escaped_allowed_links_and_escaped_non_links_are_fine(tmp_path):
     ("https://SITE_URL_PLACEHOLDER/page/", "site_url_placeholder"),
     ("localhost", None),
     ("", None),
+    ("http://192.0.2.10/puppies/", "192.0.2.10"),       # an IP host is its own root, never "2.10"
+    ("198.51.100.7", "198.51.100.7"),
+    ("http://[2001:db8::1]/", "2001:db8::1"),
 ])
 def test_root_domain_is_the_registry_rule_for_any_url(url, want):
     # one helper for the keyword-gap and llm-intel scripts and tests (Known Issues 52, 53)
@@ -344,3 +347,24 @@ def test_root_domain_keeps_every_domain_the_registry_accepts(domain):
 ])
 def test_root_domain_keeps_three_labels_only_where_the_registry_does(url, want):
     assert C.root_domain(url) == want and C._registrable(want)
+
+
+@pytest.mark.parametrize("a,b", [
+    ("https://x.co.uk/staffy-care/", "https://x.co.uk/staffy-care"),                  # the trailing slash
+    ("https://www.x.co.uk/staffy-care/", "http://x.co.uk/staffy-care/"),              # www. and the scheme
+    ("https://X.co.uk/staffy-care/?utm_source=fb&utm_medium=cpc", "https://x.co.uk/staffy-care/"),
+    ("https://x.co.uk/?b=2&a=1&utm_campaign=z", "https://x.co.uk?a=1&b=2"),          # the rest of the query, sorted
+    ("https://x.co.uk/a#top", "https://x.co.uk/a"),
+])
+def test_page_key_is_one_page_however_its_url_is_written(a, b):
+    assert C.page_key(a) == C.page_key(b)
+
+
+@pytest.mark.parametrize("a,b", [
+    ("https://x.co.uk/a/", "https://x.co.uk/b/"),
+    ("https://x.co.uk/a/", "https://shop.x.co.uk/a/"),                                # a subdomain is another host
+    ("https://x.co.uk/a?page=2", "https://x.co.uk/a?page=3"),                         # a query that is not utm_ stays
+    ("https://x.co.uk/Staffy/", "https://x.co.uk/staffy/"),                           # paths are case-sensitive
+])
+def test_page_key_keeps_different_pages_apart(a, b):
+    assert C.page_key(a) != C.page_key(b)

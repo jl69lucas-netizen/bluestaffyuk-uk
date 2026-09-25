@@ -11,11 +11,12 @@ import re
 import shutil
 import subprocess
 import sys
-from urllib.parse import urlparse
 
 import pytest
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO / "scripts"))
+import competitor_registry_check as C  # noqa: E402 — the registry's root-domain rule
 AGENT = REPO / ".claude/agents/bsuk-competitive-keyword-gap-agent.md"
 FIXTURE = REPO / "tests/py/fixtures/competitors/report-example-breeder.json"
 HEREDOC = re.compile(r"<<'EOF'\n(.*?)\nEOF\n", re.S)
@@ -34,10 +35,10 @@ def page(url, title, h1=None):
 
 
 def report(rid, pages, fetched_on="2026-09-24", root_domain=None):
-    """A competitor report; its root domain is the first page's host (minus www.) unless given."""
+    """A competitor report; its root domain is the registrable domain of the first page's URL (the
+    registry's rule) unless given."""
     nf = {"status": "NOT FETCHED", "reason": "test"}
-    host = urlparse(pages[0]["url"]).hostname if pages else f"{rid}.co.uk"
-    root_domain = root_domain or (host[4:] if host.startswith("www.") else host)
+    root_domain = root_domain or (C.root_domain(pages[0]["url"]) if pages else f"{rid}.co.uk")
     r = {"id": rid, "root_domain": root_domain, "analysed_on": "2026-09-24",
          "keywords": nf, "page_types": nf, "cities": nf, "schema_types": nf,
          "pages": {"status": "ok", "fetched_on": fetched_on, "values": pages},
@@ -337,6 +338,21 @@ def test_a_page_on_another_domain_is_flagged_and_never_a_gap(root):
     assert d["foreign_urls"] == [{"id": "own", "url": "https://other-site.com/staffy-training/",
                                   "root_domain": "own.co.uk"}]
     assert [g["topic"] for g in d["gaps"]] == ["staffy care guide", "staffy grooming guide"]
+
+
+def test_the_report_helper_takes_the_first_page_s_registrable_domain():
+    assert report("x", [page("https://shop.x.co.uk/a/", "A")])["root_domain"] == "x.co.uk"
+    assert report("x", [page("https://www.x.co.uk/a/", "A")])["root_domain"] == "x.co.uk"
+    assert report("x", [])["root_domain"] == "x.co.uk"
+
+
+def test_the_same_page_written_two_ways_in_two_reports_is_one_duplicate(root):
+    # a trailing slash, www., the scheme and utm_ parameters never make a second page
+    a = write(root, "a.json", report("aaa", [page("https://www.shared.co.uk/staffy-care/", "Staffy Care Guide")]))
+    b = write(root, "b.json", report("bbb", [page("http://shared.co.uk/staffy-care?utm_source=fb", "Staffy Care Guide")]))
+    d = run(root, profile(root), a, b)
+    assert d["duplicate_urls"] == [{"url": "http://shared.co.uk/staffy-care?utm_source=fb", "ids": ["aaa", "bbb"]}]
+    assert row(d["gaps"], "staffy care guide")["urls"] == ["http://shared.co.uk/staffy-care?utm_source=fb"]  # counted once
 
 
 def test_the_same_url_in_two_reports_is_flagged(root):
