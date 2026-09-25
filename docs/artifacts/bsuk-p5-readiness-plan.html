@@ -1,5 +1,50 @@
-# Project 5 Readiness Implementation Plan
-
+<title>BSUK Project 5 Readiness Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK rebuild · before project 5</p><h1 class="title">Project 5 readiness implementation plan</h1></div>
+<div class="meta"><span class="pill">status: executed</span> <span class="pill">2026-09-25</span><br>docs/superpowers/plans/2026-09-24-p5-readiness.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy whole spec as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Context">
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 > **Executed 2026-09-25** on `p5-readiness`: `845e4c0..707f319`, 171 commits from this plan to Task G6, then the close-out's docs commit. Every task ran with an implementer, a spec review and a quality review. This file stays at its committed path (`845e4c0`); the close-out task's "Create `docs/superpowers/plans/2026-09-23-project5-readiness.md`" was not followed, so Task Z's references to that name mean this file. Deviations from the task text below, per task — the evidence is in `docs/reports/p5-readiness-gate-report.md`, and the running notes the implementers worked from are summarised here:
@@ -59,9 +104,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>
 Subagents: use exactly this line and never substitute your own model name.
 
 ---
-
-## User rulings (2026-09-23) — do not re-ask
-
+</script>
+<script type="text/markdown" data-title="User rulings (2026-09-23) — do not re-ask">
 | # | Question | Ruling | Where it lands |
 |---|---|---|---|
 | R1 | DataForSEO: raise the cap or lower the per-call cost | **Lower the per-call cost** from the real price (the second option). Dashboard: $1.00 opening, $0.99185 after the first 3 calls, **$0.96785 after all 14** | F1a–F1c, G4 |
@@ -80,9 +124,8 @@ Subagents: use exactly this line and never substitute your own model name.
 | R14 | Video `uploadDate` (KI 27) | **Leave off**; move to project 6 | session log |
 
 User action outside the plan: **KI 15**, rotate the Google Cloud OAuth client and scrub the source repo. No agent can do this.
-
-## Execution notes (read before Task 1)
-
+</script>
+<script type="text/markdown" data-title="Execution notes (read before Task 1)">
 - **Subagent-driven.** Each task gets an Opus implementer, a spec review and a quality review, with re-review until both pass. **Only one writer works in the worktree at a time.** Run every command from `/Users/apple/Downloads/BSUK-p5r`.
 - **No background waits.** Implementers never start background agents and end their turn "waiting". Run RED/GREEN sub-runs in the foreground and reply only when the task is committed. When any notification reaches the controller, the controller nudges the implementer at once. Every status reply to the user shows the full progress table.
 - **Never `git stash`.** Worktrees share the main repo's stash list, and the user has a stash on `page-rebuilds`.
@@ -91,9 +134,8 @@ User action outside the plan: **KI 15**, rotate the Google Cloud OAuth client an
 - **Paid and credit calls happen only in Phase 4.** DataForSEO calls go only through the spend guard, with the per-slug token `spend approved: <slug>; balance $0.96785` (the balance the user stated; never a worked-out figure). **Only the controller runs `--reconcile`,** and only when the user gives a new dashboard reading. Firecrawl calls happen only with the intel agent's fetch token. On a later day the controller asks the user for that day's balance before any paid call.
 - **Stop points for the user:** (1) the font package download (R3); (2) one visual pause: the guide-hero picks on their boards (R13) and the completed homepage mosaic, with the four photo candidates shown (R11); (3) G5, if the re-synthesised strategy's pick is no longer "contested stubs first"; (4) any connector "out of credit" or billed-but-unusable response in Phase 4; (5) before Task 53 (G4), if it runs on a day after 2026-09-23, the user's DataForSEO dashboard balance for that day. The controller records it with `--reconcile` and every token then carries that figure instead of $0.96785.
 - **Definition of done** (the user's words: "read, verify and confirm"): every task committed with both reviews passed; after Phase 3 and again at close-out, `python3 -m pytest tests/py -q`, `npm run -s check:all`, `npm run -s registry` and `npm run -s agents` all pass twice with identical counts; the gate report records every task's evidence; the session log marks every Known Issue closed or moved; the plan, gate report, strategy and Lisa's sheet are published as Artifacts.
-
-## Task order at a glance
-
+</script>
+<script type="text/markdown" data-title="Task order at a glance">
 | Phase | Tasks | Stops for the user |
 |---|---|---|
 | 1 Instruction harness | 1–21 (C1–C5, B1–B8, A1–A6, X1, X2) | none |
@@ -102,9 +144,8 @@ User action outside the plan: **KI 15**, rotate the Google Cloud OAuth client an
 | 3b Your rulings | R5, R6, R7, R3, R11, R13, R8, R12, then X3 | the font download (R3 Step 1); **the one visual pause** (R13 Step 9: homepage mosaic, guide heroes, video) |
 | 4 Research | 50–55 (G1–G6) | Manchester re-buy already approved (R4); a changed strategy pick (G5) |
 | Close-out | Z | none. The merge is local, never pushed |
-
-## File map
-
+</script>
+<script type="text/markdown" data-title="File map">
 Every file each task creates (`+`) or modifies (`~`), from the integration replay. The new mechanical guards: `scripts/workflow_ref_check.py` (`check:workflow`), the one dead-root guard for agents/skills/commands (Tasks 11, 14, 18), the skills/commands residue lint (Task 12), the marker gate's wrapped-line pass (Task 20), the rule-16 uniqueness gate (Task R12), the self-hosted-font test (Task R3) and the commit-trailer guard (Task X3).
 
 - **Task 1 (C1):** ~`docs/reference/WORKFLOW.md`, ~`docs/reference/quick-start.md`, ~`docs/reference/system-registry.md`, +`scripts/workflow_ref_check.py`, +`tests/py/test_workflow_ref_check.py`
@@ -220,10 +261,8 @@ Every file each task creates (`+`) or modifies (`~`), from the integration repla
 - **Task Z:** ~`docs/reference/session-log.md`, +`docs/reports/p5-readiness-gate-report.md`, +`docs/artifacts/p5-readiness-gate-report.html`, the merge into `foundation`
 
 ---
-
-
-## How to run these tasks
-
+</script>
+<script type="text/markdown" data-title="How to run these tasks">
 - **Where.** From the worktree `/Users/apple/Downloads/BSUK-p5r` on branch `p5-readiness` (see the plan
   header), one task at a time, in the order below. Commit after every task with the message shown; every message ends with the
   trailer `Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>`. Never push: there is no remote until
@@ -250,17 +289,14 @@ Every file each task creates (`+`) or modifies (`~`), from the integration repla
   never changes. After every task `npm run -s registry` and `npm run -s agents` print `0 problems`.
 - **Phase 4 is not code.** Tasks 50–55 (G1–G6) spend Firecrawl credits and DataForSEO money through agents;
   they were not run while integrating, only checked against the final tree (their read-only commands were run).
-
-## Phase 1 — the instruction harness (Tasks 1–21)
-
+</script>
+<script type="text/markdown" data-title="Phase 1 — the instruction harness (Tasks 1–21)">
 Rules, WORKFLOW and the registries first (C), then the skills and commands (B), then the agents (A), then two
 gate fixes the drafts found in passing (X1, X2). One dead-root guard covers `.claude/agents/`,
 `.claude/skills/` and `.claude/commands/`: Task 11 (B6) writes it for the skills and commands, Task 14 (A1)
 widens it to the agents for `sessions/`, Task 18 (A5) to every root.
-
-
-### Task 1 (C1): `check:workflow` gate, with the WORKFLOW and quick-start fixes it demands
-
+</script>
+<script type="text/markdown" data-title="Task 1 (C1): `check:workflow` gate, with the WORKFLOW and quick-start fixes it demands">
 **Closes:** KI 56 (WORKFLOW half), audit A2/A3
 **Files:**
 - Create: `scripts/workflow_ref_check.py`
@@ -1091,9 +1127,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 2 (C2): wire `npm run check:workflow` into `check:all`
-
+</script>
+<script type="text/markdown" data-title="Task 2 (C2): wire `npm run check:workflow` into `check:all`">
 **Closes:** audit A6 registration
 **Files:**
 - Modify: `package.json:58-59` (after `check:markers`, and the `check:all` line)
@@ -1150,9 +1185,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 3 (C3): system registry lists `schemas/` and every `check:all` gate
-
+</script>
+<script type="text/markdown" data-title="Task 3 (C3): system registry lists `schemas/` and every `check:all` gate">
 **Closes:** KI 53 (the `schemas/` item), audit A7
 **Files:**
 - Modify: `scripts/build_system_registry.py:34-48` (GATES), `:73` (after `data = …`), `:115` (before `## Gates`), `:201` (GUARDS, before the render-baseline row)
@@ -1253,9 +1287,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 4 (C4): port-manifest notes that contradict the repo
-
+</script>
+<script type="text/markdown" data-title="Task 4 (C4): port-manifest notes that contradict the repo">
 **Closes:** KI 56 (manifest half), KI 16 leftovers in three notes
 **Files:**
 - Modify: `data/port-manifest.json` notes at lines 744, 762, 792, 876, 900, 1002 and 1020 (by script, text replace, formatting untouched)
@@ -1347,9 +1380,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 5 (C5): CLAUDE.md stale lines, and the stale-marker guard reads lettered tasks
-
+</script>
+<script type="text/markdown" data-title="Task 5 (C5): CLAUDE.md stale lines, and the stale-marker guard reads lettered tasks">
 **Closes:** audit R1–R6
 **Files:**
 - Modify: `CLAUDE.md:92-97`, `:172`, `:180`, `:193`, `:219-222`, `:278-279`
@@ -1510,9 +1542,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 6 (B1): Record the parents' clear DNA results as an unproven ledger claim
-
+</script>
+<script type="text/markdown" data-title="Task 6 (B1): Record the parents&#x27; clear DNA results as an unproven ledger claim">
 **Closes:** KI 40 — health-test fact conflict (`data/faq.json` "certified clear" vs `rules/copy.md` NOT FETCHED)
 
 **Files:**
@@ -1808,9 +1839,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 7 (B2): Location builder: rules 15 and 16, Hero props, reviews, competitor record, labelled sections
-
+</script>
+<script type="text/markdown" data-title="Task 7 (B2): Location builder: rules 15 and 16, Hero props, reviews, competitor record, labelled sections">
 **Closes:** KI 40 — rule 15 in the precedence table; Hero layout props vs "no variant prop"; worked example vs rule 16; bottom review mode; Step 1 hand-recorded competitor table; body blocks as `<section data-section-label>`; plus the city-page side of the health-test conflict
 
 **Files:**
@@ -2190,9 +2220,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 8 (B3): Comparison builder leftovers
-
+</script>
+<script type="text/markdown" data-title="Task 8 (B3): Comparison builder leftovers">
 **Closes:** KI 40 — comparison builder: 22–25 fixed sections, push to main, breeding pair, "12+ years", NewsletterV2 (the US Google market setting and "eggs" are already gone at `9927710`); plus MFS residue, "since 2014", a state/city pill row, `hideGlobalCta`, Rocket Loader, a garbled "htransport partners"
 
 **Files:**
@@ -2637,9 +2666,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 9 (B4): Blog builder leftovers
-
+</script>
+<script type="text/markdown" data-title="Task 9 (B4): Blog builder leftovers">
 **Closes:** KI 40 — blog builder: governs-in-conflict wording, Firecrawl-first, no link library, "airport" delivery, "since 2014", push to main; plus dead refs (the source spec path, commit `ba434ee`, `BaseLayout` props `hideGlobalCta` / `heroPreloadSrcset`, eight components said to be built), `sessions/`, `Roys`, `reUKble`, Rocket Loader
 
 **Files:**
@@ -2955,9 +2983,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 10 (B5): SEO checklist: UK external-link library and a derived section count
-
+</script>
+<script type="text/markdown" data-title="Task 10 (B5): SEO checklist: UK external-link library and a derived section count">
 **Closes:** KI 40 — `bsuk-seo-master-checklist` US external-link library (AVMA, AAHA, ASPCA, FTC, VEG, Pet Poison Helpline, Chewy, the mislabelled petmd homepage); plus its 22–24-section rule, "since 2014", the MFS term-conversion appendix
 
 **Files:**
@@ -3196,9 +3223,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 11 (B6): Path guard for every skill; source-repo roots out of the skills
-
+</script>
+<script type="text/markdown" data-title="Task 11 (B6): Path guard for every skill; source-repo roots out of the skills">
 **Closes:** KI 56 (the skills half: bare `sessions/`, "Content root: `site/content/`"); audit finding — 14 non-`bsuk-*` skills cite paths that do not exist and no guard read them
 
 **Files:**
@@ -4030,9 +4056,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 12 (B7): Residue lint for skills and commands; re-base the remaining residue
-
+</script>
+<script type="text/markdown" data-title="Task 12 (B7): Residue lint for skills and commands; re-base the remaining residue">
 **Closes:** KI 40 — `bsuk-google-map` US wording (`CITY%2C%20STATE`, "For state/city location pages"); audit findings — US authorities, US geography, air transport, the MFS brand, parrot names and a US airline list, the source repo's "Verified-Claim Ledger", "licensed" asserted as ours, the litter priced by a brindle coat line that none of the six pups has, and push-to-main in five skills
 
 **Files:**
@@ -5306,9 +5331,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 13 (B8): The registry lists the slash commands and the new guards
-
+</script>
+<script type="text/markdown" data-title="Task 13 (B8): The registry lists the slash commands and the new guards">
 **Closes:** audit finding — `.claude/commands/opsx/*.md` (4 commands) are in no registry
 
 **Files:**
@@ -5438,9 +5462,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 14 (A1): Point every agent at `docs/superpowers/sessions/` (Known Issue 56, agent half)
-
+</script>
+<script type="text/markdown" data-title="Task 14 (A1): Point every agent at `docs/superpowers/sessions/` (Known Issue 56, agent half)">
 **Closes:** Known Issue 56 (the 33 agents; the skills are the skills draft's) · audit finding A1
 
 **Files:**
@@ -5797,9 +5820,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 15 (A2): No agent edits `dist/`; retire the WordPress-export recipes
-
+</script>
+<script type="text/markdown" data-title="Task 15 (A2): No agent edits `dist/`; retire the WordPress-export recipes">
 **Closes:** audit finding A2 (dist writes, legacy export recipes)
 
 **Files:**
@@ -6237,9 +6259,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 16 (A3): Build sections from the kit, not the source repo's dead templates
-
+</script>
+<script type="text/markdown" data-title="Task 16 (A3): Build sections from the kit, not the source repo&#x27;s dead templates">
 **Closes:** audit finding A3 (dead design-system classes, variables and hex)
 
 **Files:**
@@ -6601,9 +6622,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 17 (A4): Remove source-repo residue and invented figures from the agents
-
+</script>
+<script type="text/markdown" data-title="Task 17 (A4): Remove source-repo residue and invented figures from the agents">
 **Closes:** audit finding A4 (species, country, paperwork, people, fabricated figures); Known Issue 16's agent examples
 
 **Files:**
@@ -7199,9 +7219,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 18 (A5): Every path, name, route and field an agent cites exists — or the line says why
-
+</script>
+<script type="text/markdown" data-title="Task 18 (A5): Every path, name, route and field an agent cites exists — or the line says why">
 **Closes:** audit finding A5 (dead references, replaced files, stale markers, dead fields and routes)
 
 **Files:**
@@ -8484,9 +8503,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 19 (A6): Align agent handoffs with WORKFLOW.md and retire the last source-repo behaviour
-
+</script>
+<script type="text/markdown" data-title="Task 19 (A6): Align agent handoffs with WORKFLOW.md and retire the last source-repo behaviour">
 **Closes:** audit finding A6 (handoffs, IndexNow, batch dispatch)
 
 **Files:**
@@ -9051,9 +9069,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 20 (X1): The marker gate sees a marker split across a line break, and the US spelling
-
+</script>
+<script type="text/markdown" data-title="Task 20 (X1): The marker gate sees a marker split across a line break, and the US spelling">
 **Closes:** audit finding (draft A, "found outside the agents"): `scripts/marker_check.py` read one line at a time and only the UK spelling, so `bsuk-paa-agent.md` 134–135 ("African" / "Greys" across a line break) and `bsuk-site-hygiene-agent.md` 183 (`/male-african-gray-for-sale/`) both passed it. Task 17 (A4) removed both from the agents; this makes the gate itself catch them in every root it scans.
 **Files:**
 - Modify: `scripts/marker_check.py` (docstring lines 8–9, `_present` at lines 44–47, `hits_in` at lines 79–90)
@@ -9222,9 +9239,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 21 (X2): Four strays — the copy pack's town and agent, IndexNow's sitemaps, the sweep's push warning
-
+</script>
+<script type="text/markdown" data-title="Task 21 (X2): Four strays — the copy pack&#x27;s town and agent, IndexNow&#x27;s sitemaps, the sweep&#x27;s push warning">
 **Closes:** draft B's "outside this draft's scope" findings: `rules/copy.md:26` "Carlisle, Carlisle"; `rules/copy.md:34` names `@bsuk-entity-incorporation-agent`, which does not exist; `scripts/indexnow_submit.py:94` reads `local-sitemap.xml` while `scripts/generate_sitemaps.py` writes `location-sitemap.xml`; `scripts/health-sweep.sh:61-62` warns about unpushed commits although there is no remote
 **Files:**
 - Modify: `rules/copy.md:26`, `:34`
@@ -9590,15 +9606,12 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-## Phase 2 — small site fixes (Tasks 22–27)
-
+</script>
+<script type="text/markdown" data-title="Phase 2 — small site fixes (Tasks 22–27)">
 The user answered decision D10: the counter's separator dot goes **steel** — so Task 24 (H3) runs in its
 place. Tasks 23–26 build the site; Task 23 (H2) also refreshes the page-date map its commit moves.
-
-
-### Task 22 (H1): Site search shows each page's own title
-
+</script>
+<script type="text/markdown" data-title="Task 22 (H1): Site search shows each page&#x27;s own title">
 **Closes:** new finding N1; the `/search/` strand of KI 16
 **Files:**
 - Modify: `scripts/build_search_index.py:12-30` (docstring), `:36` (import), `:75-82` (loop), `:111` (message)
@@ -9768,9 +9781,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 23 (H2): The puppy pages and the locations hub name Carlisle, from settings
-
+</script>
+<script type="text/markdown" data-title="Task 23 (H2): The puppy pages and the locations hub name Carlisle, from settings">
 **Closes:** KI 16 for every template outside the 28 location bodies (the rest stays with build 5)
 **Files:**
 - Create: `tests/py/test_former_city_templates.py`
@@ -9940,9 +9952,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 24 (H3): The counter's separator dot clears AA
-
+</script>
+<script type="text/markdown" data-title="Task 24 (H3): The counter&#x27;s separator dot clears AA">
 **Closes:** KI 21 — the user answered decision D10 (Q10): **A, steel**. The dot takes the strip's own `--color-brand` ink, a pair the contrast tests already guard.
 **Files:**
 - Modify: `tests/py/test_design_tokens.py` (append)
@@ -10065,9 +10076,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 25 (H4): The puppy hub skips no heading level
-
+</script>
+<script type="text/markdown" data-title="Task 25 (H4): The puppy hub skips no heading level">
 **Closes:** KI 31, first half (`/available-puppies/` H1→H3)
 **Files:**
 - Create: `tests/py/test_puppy_hub_headings.py`
@@ -10181,9 +10191,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 26 (H5): The contact board preview no longer scrolls sideways at 375
-
+</script>
+<script type="text/markdown" data-title="Task 26 (H5): The contact board preview no longer scrolls sideways at 375">
 **Closes:** KI 32
 **Files:**
 - Modify: `tests/py/test_board_previews.py` (append)
@@ -10288,9 +10297,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 27 (H6): Correct the stale Known Issue entries
-
+</script>
+<script type="text/markdown" data-title="Task 27 (H6): Correct the stale Known Issue entries">
 **Closes:** stale entries KI 23, 24, 37 and the missing Lisa question in 41 (S1–S4), plus the
 Known Issues intro line
 **Files:**
@@ -10426,18 +10434,15 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Controller, outside the repo (memory, not a commit):** `bsuk-project4-status.md`: delete "Spec §9 amendment 10 (rule 16) still to write." (amendment 10 is at line 408 of the page-rebuilds spec). `bsuk-rebuild-project.md`: the description and first line call BSUK a "Glasgow … breeder" and say "the repo still says Glasgow everywhere" — change both to "Carlisle, Cumbria breeder (relocated; Known Issue 16's remainder is the 28 location bodies, project 5)". `MEMORY.md` index, project 2 line: drop "tasks 18–19 need confirmation".
 
 ---
-
-## Phase 3 — the research tools (Tasks 28–49)
-
+</script>
+<script type="text/markdown" data-title="Phase 3 — the research tools (Tasks 28–49)">
 The intel, keyword-gap and LLM-intel minors (D, E), the nested-route gates (F2), then the spend guard that
 reads the dashboard (F1). The F2 tasks run before F1 here (draft F was written the other way round); Tasks 45
 (F2c) and 47 (F1a) carry the one resulting text change each. Task 48 (F1b) records the user's dashboard
 reading and lowers the per-call setting: it writes data only, no paid call. Task 49 (F1c) ends with the
 end-of-tools verification.
-
-
-### Task 28 (D1): The link guard catches JSON-escaped links
-
+</script>
+<script type="text/markdown" data-title="Task 28 (D1): The link guard catches JSON-escaped links">
 **Closes:** KI 47
 **Files:**
 - Modify: `scripts/competitor_registry_check.py:17-19` (docstring), `:43-45` (the `URL` pattern)
@@ -10528,9 +10533,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 29 (D2): gap_matrix.py — unwritable path, schema-type case hint, backslash before a pipe
-
+</script>
+<script type="text/markdown" data-title="Task 29 (D2): gap_matrix.py — unwritable path, schema-type case hint, backslash before a pipe">
 **Closes:** KI 48
 **Files:**
 - Modify: `scripts/gap_matrix.py:4-5` and `:17-18` (docstring), `:70-72` (`_cell`), insert before
@@ -10771,9 +10775,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 30 (D3): strategy_cite_check.py — year hint, heading after Sources, plainer stray-section message, Strategy A/B checked
-
+</script>
+<script type="text/markdown" data-title="Task 30 (D3): strategy_cite_check.py — year hint, heading after Sources, plainer stray-section message, Strategy A/B checked">
 **Closes:** KI 49
 **Files:**
 - Modify: `scripts/strategy_cite_check.py:9-14` and `:27-30` (docstring), after `:77` (two
@@ -11112,9 +11115,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 31 (D4): Registry agent — same-day path, hash check, tier-5 notes, the dbrg.uk candidate; rank-tracker field
-
+</script>
+<script type="text/markdown" data-title="Task 31 (D4): Registry agent — same-day path, hash check, tier-5 notes, the dbrg.uk candidate; rank-tracker field">
 **Closes:** KI 50
 **Files:**
 - Modify: `.claude/agents/bsuk-competitor-registry.md:21`, `:26`, after `:79`, `:85`, `:99`,
@@ -11318,9 +11320,8 @@ rank tracker no longer names last_monitored, a field the registry does not have.
 
 Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
-
-### After Tasks D1–D4: whole-repo proof
-
+</script>
+<script type="text/markdown" data-title="After Tasks D1–D4: whole-repo proof">
 Run: `python3 -m pytest tests/py -q`
 Expected in the repo: the baseline 2388 passed / 14 skipped / 1 xfailed plus 32 new tests —
 **2420 passed, 14 skipped, 1 xfailed** (verified in the worktree as 2407 passed, 27 skipped,
@@ -11337,9 +11338,8 @@ Issue 47)" becomes stale, and §9's "every number … in the recommendation and 
 also covers Strategy A and B — both want a new amendment line rather than an edit to history.
 
 ---
-
-### Task 32 (E1): The contact scan never reads an image name as an email, in any case
-
+</script>
+<script type="text/markdown" data-title="Task 32 (E1): The contact scan never reads an image name as an email, in any case">
 **Closes:** KI 51 (an image name like `x@y.PNG` reads as an email)
 **Files:**
 - Modify: `tests/py/test_no_third_party_contacts.py:28-31` (the `email` pattern)
@@ -11443,9 +11443,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 33 (E2): One whole-word page-type table, `comparison` first, for both agents
-
+</script>
+<script type="text/markdown" data-title="Task 33 (E2): One whole-word page-type table, `comparison` first, for both agents">
 **Closes:** KI 51 (substring page-type rows: `/careers/` read as care-guide, `/preview/` as reviews),
 KI 52 (the `-vs-` comparison rule differs between intel and keyword gap)
 **Files:**
@@ -11919,9 +11918,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 34 (E3): The intel classifier leaves out pagination, counts posts, picks the key pages, and types BSUK's location rows
-
+</script>
+<script type="text/markdown" data-title="Task 34 (E3): The intel classifier leaves out pagination, counts posts, picks the key pages, and types BSUK&#x27;s location rows">
 **Closes:** KI 51 (key-page tie-break; blog pagination counted as posts; the BSUK city count includes
 the UK hub and the outreach page)
 **Files:**
@@ -12312,9 +12310,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 35 (E4): Intel homepage measures by script, and exact definitions for the loose measures
-
+</script>
+<script type="text/markdown" data-title="Task 35 (E4): Intel homepage measures by script, and exact definitions for the loose measures">
 **Closes:** KI 51 (`reviews_shown`, `homepage_images`, `alt_text`, `steps_to_enquire` loosely defined;
 id wording; the mobile check used a desktop browser; image names read as emails in the raw HTML)
 **Files:**
@@ -12372,7 +12369,7 @@ def measure(tmp_path, page, name="home.html"):
     return json.loads(run.stdout)
 
 
-HOME = """<html><head><script type="application/ld+json">{"email": "hidden@example.co.uk"}</script></head><body>
+HOME = """<html><head><script type="application/ld+json">{"email": "hidden@example.co.uk"}<\/script></head><body>
 <header><img src="/logo.png" alt="Logo"></header>
 <img src="data:image/gif;base64,R0lGOD" data-src="/rex.jpg" alt="Blue Staffy puppy Rex at eight weeks">
 <img src="/a.jpg"><img src="/b.jpg" alt=""><img src="/c.jpg" alt="IMG_2034.jpg">
@@ -12662,9 +12659,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 36 (E5): The keyword gap flags pages on another domain and the same URL in two reports
-
+</script>
+<script type="text/markdown" data-title="Task 36 (E5): The keyword gap flags pages on another domain and the same URL in two reports">
 **Closes:** KI 52 (a report whose page URLs sit on a different domain from its `root_domain`, and the
 same URL in two reports, are not flagged)
 **Files:**
@@ -13085,9 +13081,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 37 (E6): "Greater Manchester" is Manchester, a two-city page gets each stub, and off-list places stay out
-
+</script>
+<script type="text/markdown" data-title="Task 37 (E6): &quot;Greater Manchester&quot; is Manchester, a two-city page gets each stub, and off-list places stay out">
 **Closes:** KI 52 ("Greater Manchester" not read as Manchester; a two-city page gets no stub label;
 places not in `data/locations.json` drop out of topics — decided)
 **Files:**
@@ -13580,9 +13575,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 38 (E7): One own-domain rule for the LLM-intel script and its contract test
-
+</script>
+<script type="text/markdown" data-title="Task 38 (E7): One own-domain rule for the LLM-intel script and its contract test">
 **Closes:** KI 53 (the own-domain logic differs between the script and `tests/py/test_llm_intel.py`)
 **Files:**
 - Modify: `scripts/competitor_registry_check.py` (new `own_domains()` after E5's `root_domain()`)
@@ -13867,9 +13861,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 39 (E8): LLM intel reads the homepage, finds noindex in any attribute order, and refuses a stale build
-
+</script>
+<script type="text/markdown" data-title="Task 39 (E8): LLM intel reads the homepage, finds noindex in any attribute order, and refuses a stale build">
 **Closes:** KI 53 (the homepage has no slug; the noindex regex assumes an attribute order; dist build
 freshness is not checked)
 **Files:**
@@ -14095,9 +14088,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 40 (E9): One location-question rule — national rows ask "in the UK", bracketed notes dropped
-
+</script>
+<script type="text/markdown" data-title="Task 40 (E9): One location-question rule — national rows ask &quot;in the UK&quot;, bracketed notes dropped">
 **Closes:** controller item (KI 53 group): `blue-staffy-puppies-uk` and
 `uk-staffordshire-bull-terrier-breeder` were forced to "near UK"; `staffy-breeding-dogs-glasgow` to
 "near Glasgow (breeding dogs)"
@@ -14440,9 +14432,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 41 (E10): The answer-format reader handles names with digits, inline labels, table-first answers and short separators
-
+</script>
+<script type="text/markdown" data-title="Task 41 (E10): The answer-format reader handles names with digits, inline labels, table-first answers and short separators">
 **Closes:** KI 53 (digits in a brand name read as a statistic opening; an inline bold label is not
 skipped; table-first answers and short separators)
 **Files:**
@@ -14595,9 +14586,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 42 (E11): The LLM-intel output records `extra`; the fixture drops its Instagram link; both files regenerated
-
+</script>
+<script type="text/markdown" data-title="Task 42 (E11): The LLM-intel output records `extra`; the fixture drops its Instagram link; both files regenerated">
 **Closes:** KI 53 (the output does not record the `EXTRA` string; the synthetic fixture still holds an
 Instagram link)
 **Files:**
@@ -15081,9 +15071,8 @@ Run: `python3 -m pytest tests/py -q`
 Expected: `3389 passed, 14 skipped, 1 xfailed` (a checkout without `.env`, such as a fresh worktree, shows `3387 passed, 16 skipped`)
 
 ---
-
-### Task 43 (F2a): One route resolver in `scripts/_slugs.py`
-
+</script>
+<script type="text/markdown" data-title="Task 43 (F2a): One route resolver in `scripts/_slugs.py`">
 **Closes:** part of KI 39 (the shared helper)
 **Files:**
 - Modify: `scripts/_slugs.py` (append after line 43)
@@ -15287,9 +15276,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 44 (F2b): The four gates read and write city pages
-
+</script>
+<script type="text/markdown" data-title="Task 44 (F2b): The four gates read and write city pages">
 **Closes:** KI 39 (facts, link parity, verbatim, pageboard)
 **Files:**
 - Modify: `scripts/facts_preserved_check.py:12-13` (docstring), `:45-51` (import), `:360-362` (`dist_html` + two new helpers), `:393-406` (`main`)
@@ -15455,7 +15443,7 @@ def test_the_own_live_key_matches_the_live_headings_key(tmp_path, monkeypatch):
 def test_dist_schema_types_reads_the_nested_city_page(tmp_path, monkeypatch):
     root = site(tmp_path)
     monkeypatch.setattr(PB, "ROOT", root)
-    put(root, NESTED, '<script type="application/ld+json">{"@type": "FAQPage"}</script>')
+    put(root, NESTED, '<script type="application/ld+json">{"@type": "FAQPage"}<\/script>')
     types, unparsed = PB.dist_schema_types(LEEDS, dist=root / "dist")
     assert types == {"FAQPage"} and unparsed == 0
 
@@ -16057,9 +16045,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 45 (F2c): `query_coverage_check.py` — a rebuilt page with no build, the awaiting list, a damaged `rebuilt.json`
-
+</script>
+<script type="text/markdown" data-title="Task 45 (F2c): `query_coverage_check.py` — a rebuilt page with no build, the awaiting list, a damaged `rebuilt.json`">
 **Closes:** KI 39 (the query-coverage half)
 **Files:**
 - Modify: `scripts/query_coverage_check.py:31-36` (docstring), `:259-261` (`rebuilt_keys`), `:264-306` (`main`) — line numbers as at `9927710` plus Tasks 43–44 (F2a, F2b); F1a comes after this task in this plan
@@ -16283,9 +16270,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 46 (F2d): Remove the STOP rules and close KI 39
-
+</script>
+<script type="text/markdown" data-title="Task 46 (F2d): Remove the STOP rules and close KI 39">
 **Closes:** KI 39
 **Files:**
 - Modify: `.claude/skills/bsuk-location-page-builder/SKILL.md:207-210`, `:355-364`
@@ -16461,9 +16447,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 47 (F1a): The spend guard counts real spend from a dashboard reading
-
+</script>
+<script type="text/markdown" data-title="Task 47 (F1a): The spend guard counts real spend from a dashboard reading">
 **Closes:** part of KI 45 (the mechanism)
 **Files:**
 - Modify: `scripts/query_augment.py:12-14` (usage), `:792-810` (`_budget_check`, replaced by `load_dashboard`, `spend_basis`, `reconcile`, `_caps`, `_budget_check`, `budget_line`), `:827-828` (preflight message), `:1084-1109` (CLI)
@@ -17223,9 +17208,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 48 (F1b): Record today's reading and lower the per-call setting
-
+</script>
+<script type="text/markdown" data-title="Task 48 (F1b): Record today&#x27;s reading and lower the per-call setting">
 **Closes:** KI 45 (with F1c); KI 58's blocker (the user's second option)
 **Files:**
 - Create: `data/queries/dashboard.json` (written by the CLI, never by hand)
@@ -17350,9 +17334,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ```
 
 ---
-
-### Task 49 (F1c): Instruction wording and the KI 45 / KI 58 notes
-
+</script>
+<script type="text/markdown" data-title="Task 49 (F1c): Instruction wording and the KI 45 / KI 58 notes">
 **Closes:** KI 45 (closing note); updates KI 58
 **Files:**
 - Modify: `.claude/agents/bsuk-llm-keyword-intel.md:39`
@@ -17534,10 +17517,8 @@ Expected: `examined docs/reference/system-registry.md; 0 problems`, `examined 41
 ---
 
 ---
-
-
-## Phase 3b — the user's rulings (Tasks R5, R6, R7, R3, R11, R13, R8, R12)
-
+</script>
+<script type="text/markdown" data-title="Phase 3b — the user&#x27;s rulings (Tasks R5, R6, R7, R3, R11, R13, R8, R12)">
 The user's rulings R3, R5–R8 and R11–R13 of 2026-09-23/24 (see "User rulings" in the plan
 header). They run after Phase 3's end-of-tools verification and before Phase 4, in this order:
 the three text rulings first (R5 rule-index rows, R6 Lisa's sheet, R7 the banned-breed line),
@@ -17574,9 +17555,8 @@ URLs `data/design/artifacts.json` `boards` already holds:
 
 The boards rebuilt after a wording re-approval (the about page in R3, the three utility pages in
 R12) are rebuilt as files and **not** republished — spec §9 amendment 11 (P4b).
-
-### Task R5: Rule-index rows for CLAUDE.md working rules 10–16
-
+</script>
+<script type="text/markdown" data-title="Task R5: Rule-index rows for CLAUDE.md working rules 10–16">
 **Closes:** user ruling R5 ("add all seven"). Rules 10–16 had no row in `data/quality/rule-index.json`,
 so `scripts/quality_report.py` §5 could not see them at all.
 **Files:**
@@ -17729,9 +17709,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| R5 — rule-index rows 10–16 | todo | — | |`
 
 ---
-
-### Task R6: Lisa's question sheet, and a report builder that builds what it is told
-
+</script>
+<script type="text/markdown" data-title="Task R6: Lisa&#x27;s question sheet, and a report builder that builds what it is told">
 **Closes:** user ruling R6 ("publish now" for the user to forward); feeds Known Issues 41, 7 and 54
 (their answers stay open until Lisa replies — Task Z adds a pointer to KI 41).
 **Files:**
@@ -17790,7 +17769,7 @@ Why this exists, in one paragraph.
 
 ## Second questions
 
-A body that says </script> in the middle.
+A body that says <\/script> in the middle.
 """
 ARGS = ["Sheet Title", "Eyebrow line", "The heading", "Copy head — sheet",
         "status: ready to send", "2026-09-24", "docs/reference/sheet.md"]
@@ -17953,7 +17932,7 @@ def split_sections(src):
 
 def esc(s):
     """Safe inside <script type=text/markdown>: only the closing tag can break out."""
-    return s.replace('</script', '<\\/script')
+    return s.replace('<\/script', '<\\/script')
 
 
 def foundation_page():
@@ -17974,7 +17953,7 @@ def foundation_page():
     context = gate_pre.split('\n', 1)[1].strip() if gate_pre.lstrip().startswith('#') else gate_pre.strip()
 
     blocks = '\n'.join(
-        '<script type="text/markdown" data-title="%s">\n%s\n</script>'
+        '<script type="text/markdown" data-title="%s">\n%s\n<\/script>'
         % (html.escape(t), esc(b)) for t, b in sections)
 
     return page(
@@ -18037,9 +18016,9 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 </div>
 <script type="text/markdown" data-title="Summary">
 ''' + esc(context) + '''
-</script>
+<\/script>
 ''' + blocks + '''
-<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"><\/script>
 <script>
 (function(){
   var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
@@ -18060,7 +18039,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
   });
   document.getElementById('copy-all').addEventListener('click',function(){copy(''' + copy_head + '''+all.join('\\n\\n'),document.getElementById('all-status'));});
 })();
-</script>
+<\/script>
 '''
 
 
@@ -18069,7 +18048,7 @@ def generic_page(src, title, eyebrow, heading, copy_head, status, date, rel):
     pre, sections = split_sections(src)
     context = pre.split('\n', 1)[1].strip() if pre.lstrip().startswith('#') else pre.strip()
     blocks = '\n'.join(
-        '<script type="text/markdown" data-title="%s">\n%s\n</script>'
+        '<script type="text/markdown" data-title="%s">\n%s\n<\/script>'
         % (html.escape(t), esc(b)) for t, b in sections)
     head = json.dumps('# %s\n\n' % copy_head).replace('</', '<\\/')
     return page(
@@ -18256,9 +18235,8 @@ Task Z's docs, not here: `data/design/artifacts.json` is read by no test and cha
 **Progress-table row:** `| R6 — Lisa's question sheet (+ report builder args) | todo | — | |`
 
 ---
-
-### Task R7: City pages may say the Staffordshire Bull Terrier is not a banned breed
-
+</script>
+<script type="text/markdown" data-title="Task R7: City pages may say the Staffordshire Bull Terrier is not a banned breed">
 **Closes:** Known Issue 46, by user ruling R7 ("city pages may state it with the gov.uk row"; Task Z records it).
 **Files:**
 - Modify: `tests/py/test_builder_skills.py` (append)
@@ -18397,9 +18375,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| R7 — banned-breed line on city pages (KI 46) | todo | — | |`
 
 ---
-
-### Task R3: Self-host Fraunces and Source Sans 3
-
+</script>
+<script type="text/markdown" data-title="Task R3: Self-host Fraunces and Source Sans 3">
 **Closes:** Known Issue 24 (user ruling R3: self-host; Task Z records it). Re-measures the heroes of
 Known Issues 18, 28 and 30 with the real faces.
 **Files:**
@@ -19119,9 +19096,8 @@ route), or `page-dates.json current — 53 routes` if Step 8 did not run.
 **Progress-table row:** `| R3 — self-hosted fonts (KI 24) — STOP: download | todo | — | |`
 
 ---
-
-### Task R11: The homepage hero becomes the mosaic the breeder picked
-
+</script>
+<script type="text/markdown" data-title="Task R11: The homepage hero becomes the mosaic the breeder picked">
 **Closes:** Known Issue 33, first half — user ruling R11 (user correction, 2026-09-24: complete the
 four-photo mosaic and the figure tiles). Task Z records it.
 **Files:**
@@ -19601,9 +19577,8 @@ and page dates as in Step 7.
 **Progress-table rows:** `| R11 — homepage mosaic (prep) | todo | — | |` · `| R11 — homepage mosaic (approved at the pause) | todo | — | |`
 
 ---
-
-### Task R13: Three guides, three heroes
-
+</script>
+<script type="text/markdown" data-title="Task R13: Three guides, three heroes">
 **Closes:** Known Issue 35 and the buying-guide half of Known Issue 30 — user ruling R13 (new picks for
 two of the three guides, from H-GD1 and H-GD2, on boards; one pause). Also carries R8's question: the
 breed guide's video goes back on the same board. Task Z records both.
@@ -20204,9 +20179,8 @@ and page dates as in Step 8.
 **Progress-table rows:** `| R13 — guide heroes re-boarded (prep) | todo | — | |` · `| PAUSE — R11 + R13 + R8 (+ R3 about) | todo | — | 4 boards |` · `| R13 — guide heroes approved | todo | — | |`
 
 ---
-
-### Task R8: The breed guide's film ships as the click-to-play facade
-
+</script>
+<script type="text/markdown" data-title="Task R8: The breed guide&#x27;s film ships as the click-to-play facade">
 **Closes:** Known Issue 38 — user ruling R8 (S3). Task Z records it.
 **Files:**
 - Create: `tests/py/test_breed_guide_video.py`
@@ -20326,9 +20300,8 @@ Page dates: `python3 scripts/generate_page_dates.py --check` — expected `page-
 **Progress-table row:** `| R8 — breed-guide video facade (KI 38) | todo | — | |`
 
 ---
-
-### Task R12: Rule 16's uniqueness gate, with the utility pages exempt by name
-
+</script>
+<script type="text/markdown" data-title="Task R12: Rule 16&#x27;s uniqueness gate, with the utility pages exempt by name">
 **Closes:** Known Issue 33 second half — user ruling R12 (exempt privacy, thank-you and contact from
 rule 16 by name); and Known Issue 35's closing condition (a gate that fails a shared per-page hero or
 counter outright). Task Z records both.
@@ -20663,9 +20636,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| R12 — rule-16 gate, utility pages exempt (KI 33) | todo | — | |`
 
 ---
-
-### End of Phase 3b — the full check
-
+</script>
+<script type="text/markdown" data-title="End of Phase 3b — the full check">
 - [ ] **Step 1: Everything, once**
 Run: `python3 scripts/generate_page_dates.py --check && python3 -m pytest tests/py -q | tail -1`
 Expected: `page-dates.json current — 53 routes`, then `3519 passed, 14 skipped, 1 xfailed` (drafting worktree, no `.env`: `3517 passed, 16 skipped, 1 xfailed`; 3534 collected, 43 more than Phase 3's 3491).
@@ -20675,9 +20647,8 @@ Run: `npm run -s registry && npm run -s agents && npm run -s baseline`
 Expected: `examined docs/reference/system-registry.md; 0 problems`, `examined 41 agents; 0 problems`, `examined render-baseline-project4.md; 0 problems`.
 
 ---
-
-### Task X3: Every commit example in the harness carries the trailer
-
+</script>
+<script type="text/markdown" data-title="Task X3: Every commit example in the harness carries the trailer">
 **Closes:** controller self-review finding (2026-09-24): ten agent/skill files tell a model to run `git commit -m "…"` with no trailer, so subagents copying them would commit without `Co-Authored-By: Claude Fable 5.1`.
 **Files:**
 - Create: `tests/py/test_commit_trailer_examples.py`
@@ -20787,9 +20758,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 
 
 ---
-
-## Phase 4 — the mandatory research before project 5 (Tasks 50–55, paid and credit-spending runs)
-
+</script>
+<script type="text/markdown" data-title="Phase 4 — the mandatory research before project 5 (Tasks 50–55, paid and credit-spending runs)">
 The user ruled: **"we must do full competitors analysis before any of the remaining pages are built"**.
 These tasks are agent runs, not code, so they follow the task format with agent dispatches in place of
 test-first steps. Their read-only commands were run against the tree Tasks 1–49 leave; nothing was fetched
@@ -20818,10 +20788,8 @@ draft held for a query-wording decision are no longer held: Task 40 (E9) fixed t
 reply only when your files are written and the checks below pass, or when your own rules make you
 stop." When any agent stops or a notification arrives, the controller answers it at once — never
 "waiting" to the user — and every status message to the user carries the full progress table.
-
-
-### Task 50 (G1): Competitor intel on all 21 registry entries — the 3 pilot reports re-run, then the 18 with none
-
+</script>
+<script type="text/markdown" data-title="Task 50 (G1): Competitor intel on all 21 registry entries — the 3 pilot reports re-run, then the 18 with none">
 **Closes:** Known Issue 57 (with Task G2)
 **Files (written by the agent, committed by the controller):**
 - Create: `docs/research/competitors/<id>.json` and `docs/research/competitors/<id>.md` for each of the 21 ids below (the three pilot reports are overwritten)
@@ -21214,9 +21182,8 @@ agent's call, later) and carry on.
 | G1 batch 4 — bullscaff, ukstaffypups, vaderblustaf, exodusbulls, staffordshirebullterrierkennel (t5) | todo | — | ≤29 credits; t5 homepage only |
 
 ---
-
-### Task 51 (G2): Refresh the BSUK profile and build the final gap matrix
-
+</script>
+<script type="text/markdown" data-title="Task 51 (G2): Refresh the BSUK profile and build the final gap matrix">
 **Closes:** Known Issue 57 (with Task G1)
 **Files:**
 - Modify: `docs/research/competitors/bsuk.json`, `docs/research/competitors/bsuk.md` (agent)
@@ -21313,9 +21280,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| G2 — BSUK profile + final gap matrix (21 reports) | todo | — | 0 credits |`
 
 ---
-
-### Task 52 (G3): Keyword-gap refresh over the full report set
-
+</script>
+<script type="text/markdown" data-title="Task 52 (G3): Keyword-gap refresh over the full report set">
 **Closes:** none (research input to G5)
 **Files:**
 - Create or overwrite: `docs/research/keyword-gap-<YYYY-MM-DD>.md` (the run date)
@@ -21406,9 +21372,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| G3 — keyword-gap refresh (21 reports) | todo | — | 0 paid; 0 credits expected |`
 
 ---
-
-### Task 53 (G4): LLM intel for the other 26 location pages
-
+</script>
+<script type="text/markdown" data-title="Task 53 (G4): LLM intel for the other 26 location pages">
 **Closes:** Known Issue 58 (and Known Issue 53's Manchester line: the refresh is approved, ruling R4)
 **Depends on:** Tasks 47–49 (F1a–F1c: the dashboard reading, `--budget`, `query_typical_call_usd` 0.01) and Task 40 (E9: one location-question rule) — landed and committed.
 **Files (per slug, written by the agent):**
@@ -21799,9 +21764,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 | G4 L5 — Manchester `; refresh` | todo | — | approved (R4); 1 call |
 
 ---
-
-### Task 54 (G5): Strategy re-synthesis on the full research
-
+</script>
+<script type="text/markdown" data-title="Task 54 (G5): Strategy re-synthesis on the full research">
 **Closes:** none (it replaces the pilot's strategy as project 5's build order)
 **Files:**
 - Create: `docs/superpowers/sessions/<YYYY-MM-DD>-location-pages-strategy.md`, or
@@ -21935,9 +21899,8 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 **Progress-table row:** `| G5 — strategy re-synthesis (-2), cite check, Artifact, order change | todo | — | pick flip = user decision |`
 
 ---
-
-### Task 55 (G6): Record Known Issues 57 and 58 as closed
-
+</script>
+<script type="text/markdown" data-title="Task 55 (G6): Record Known Issues 57 and 58 as closed">
 **Closes:** Known Issues 57, 58 (and 53's Manchester sentence once the refresh has run)
 **Files:**
 - Modify: `docs/reference/session-log.md:867-882` (Known Issues 57 and 58, as Tasks 27–49 left the file), `:834-835` (53)
@@ -22022,11 +21985,11 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 ---
 
 ---
+</script>
+<script type="text/markdown" data-title="Close-out">
 
-## Close-out
-
-### Task Z: Close-out — the Known Issues, the gate report, run twice, merge
-
+</script>
+<script type="text/markdown" data-title="Task Z: Close-out — the Known Issues, the gate report, run twice, merge">
 **Closes:** the build's record. In `docs/reference/session-log.md` it marks CLOSED, with evidence,
 Known Issues 19 (ruling R10), 24 (R3), 35 (R13 + R12), 38 (R8), 46 (R7), 47–52 (D1–D4, E1–E6), 56
 (A1, B6, C1, C4); partly closed 30 (the buying guide, R13), 33 (the homepage R11 and the sharing R12;
@@ -22838,13 +22801,11 @@ and that Known Issue 15 (rotate the Google Cloud OAuth client) is still theirs t
 **Progress-table row:** `| Z — close-out, run twice, merge | todo | — | |`
 
 ---
-
-## Appendix — audit tables
-
+</script>
+<script type="text/markdown" data-title="Appendix — audit tables">
 These are the eight drafting audits' tables (2026-09-23), taken against `foundation` at `9927710`. The tasks above fix every FIX row. Rows marked project 5, project 6 or user decision are carried in the session log.
-
-### Audit A. Agents (41)
-
+</script>
+<script type="text/markdown" data-title="Audit A. Agents (41)">
 #### (a) Audit table
 
 Registered = in `data/agent-registry.json` / in `docs/reference/system-registry.md`. "sessions"
@@ -22961,9 +22922,8 @@ Wrong on the WORKFLOW side — for the WORKFLOW draft, not changed here:
    says the path is fixed by the project-5 plan with Known Issue 39.
 2. **Comparison URLs and hub.** No comparison page exists; the builder now takes URLs from the
    strategy file. `/blue-staffy-uk-breeders/` is the About page and is not the hub.
-
-### Audit B. Skills (57) and commands
-
+</script>
+<script type="text/markdown" data-title="Audit B. Skills (57) and commands">
 #### (a) Audit table
 
 "Registered" = listed in `docs/reference/system-registry.md` with valid frontmatter. Dead refs and
@@ -23033,9 +22993,8 @@ the row; "PARTIAL" names what is left and why.
 | section-auditor | yes | 21 `docs/reference/design-system.md`; 31 `site/content` | — | FIXED → B6 |
 | session-closer | yes | 41 `YYYY-MM-DD-session-brief.md`; 181 `feedback_check_before_asking.md`; 181 `feedback_check_before_asking_2.md`; 19 `site/content`; 159 `site/content` | "licensed" asserted (14); brindle price line (15); push to main (66) | FIXED → B6, B7 |
 | sitemap-agent | yes | 24 `docs/reference/site-overview.md`; 62 `generate_sitemaps.py`; 3 `site/content`; 37 `site/content`; 38 `site/content`; 44 `site/content`; 53 `site/content`; 111 `site/content`; 113 `site/content`; 130 `site/content`; 135 `site/content`; 164 `site/content`; `site/content` ×10, `docs/reference/site-overview.md` (24), bare `generate_sitemaps.py` (62), `public/*-sitemap.xml` (120, 144), `deploy.yml` | push to main (128, 132) | FIXED → B6 (rewritten to what `scripts/generate_sitemaps.py` does) |
-
-### Audit C. Rules, CLAUDE.md, WORKFLOW sprints, boards, npm scripts
-
+</script>
+<script type="text/markdown" data-title="Audit C. Rules, CLAUDE.md, WORKFLOW sprints, boards, npm scripts">
 #### (a) Audit
 
 ##### A1. CLAUDE.md working rules and the rule packs
@@ -23690,9 +23649,8 @@ workflow-ref-check: examined 215 references in 2 files; 45 problems
 ```
 
 ---
-
-### Audit H. Every open flag since project 1 (triage)
-
+</script>
+<script type="text/markdown" data-title="Audit H. Every open flag since project 1 (triage)">
 #### (a) Triage table
 
 Buckets: **DO NOW** = drafted below as H1–H6 · **COVERED** = another drafting group already has
@@ -23811,3 +23769,26 @@ KIs 3–58. These extra lines appear only in the report prose:
 | CLOSED correctly | 13 KIs (1, 2, 4, 8, 9, 11, 12, 17, 20, 22, 25, 28, 42) + M4, M5 |
 
 ---
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy('# '+'BlueStaffyUK Rebuild — Project 5 readiness'+'\n\n'+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>

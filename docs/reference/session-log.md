@@ -172,6 +172,94 @@ read $0.99185 before the pilot. User ruling A set `query_typical_call_usd` to 0.
 Known Issues 47–58. **Next: project 5** — starting with the strategy's first three stub
 rebuilds (Manchester, the licensed-breeder page, Leeds), after Known Issue 39.
 
+## Project 5 readiness build (2026-09-23/2026-09-25) — COMPLETE
+
+A readiness pass between the competitor intelligence build and project 5, run because the user asked
+that everything built so far be checked as registered and working before a page is built ("check if
+everything was done well right up to the start of project 5, if all the agents, skills, rules,
+workflow, board, sprints etc are registered and are all working well"). Five phases on one branch:
+the instruction harness (CLAUDE.md, WORKFLOW's seven sprints, the quick-start, the system registry,
+the port manifest, 57 skills and 41 agents, with guards so none of it drifts again: `check:workflow`
+in `check:all`, one dead-root path guard across agents, skills and commands, a residue lint for
+skills and commands, a marker gate that reads a line break); small site fixes (search titles, the
+relocated city on the puppy pages, the counter dot's contrast, the puppy hub's headings, the contact
+board preview); the research tools (Known Issues 47–53), the nested city routes (39) and the spend
+guard's dashboard reconciliation (45); the user's rulings R3–R14 (self-hosted fonts, rule-index rows,
+the breeder's question sheet, the banned-breed line, the video facade, the homepage mosaic, three
+guide heroes, rule 16's gate with the utility pages exempt); and the research the user made
+mandatory before any page is built — competitor intel on all 21 registry entries, the BSUK profile
+and gap matrix, the keyword gap, AI-answer intel for the other 26 location pages and a re-synthesised
+strategy. Plan `docs/superpowers/plans/2026-09-24-p5-readiness.md` (committed as the branch's first
+commit, with an Executed note added at close-out); gate report
+`docs/reports/p5-readiness-gate-report.md`; the breeder's question sheet
+`docs/reference/questions-for-lisa.md`.
+
+Closed on branch `p5-readiness`, cut from `foundation` at `9927710`: 171 commits
+`845e4c0..707f319`, then this close-out's docs commit, every one with the Fable 5.1 trailer (171 of
+171 counted before the close-out); no remote, nothing pushed. Merged `--no-ff` into
+`foundation` at `«merge commit, short hash — Task Z Step 10»`. Run twice with identical counts:
+`python3 -m pytest tests/py -q` → `4539 passed, 1 skipped, 1 xfailed, 152 warnings`;
+`npm run -s check:all` exit 0; `npm run -s registry`, `npm run -s agents` and
+`npm run -s baseline` `0 problems`.
+
+Headline numbers: pytest 2388 → 4539 passed and 14 → 1 skipped (3811 after the instruction
+harness, 3819 after the site fixes, 4105 after the spend guard's first task, 4366 after the review
+minors, 4415 at the end of the rulings, 4539 after the intel classifier's rework in Phase 4; the 13
+skips that went are duplicate-whitelist cases now left out when the tests are collected);
+`check:workflow` `workflow-ref-check: examined 224 references in 2 files; 0 problems` (it read
+215 references and 45 problems before Task C1); marker gate 265 → 266 files; placeholders 1732 at
+the build's first `check:all` → 1434 (advisory; the count moves with the build; the last 2 are this
+close-out's new Known Issues quoting two placeholder tokens); every rebuilt hero measured with Fraunces and Source
+Sans 3 loaded. Research: 21 competitor reports and the BSUK profile; the gap matrix on all 21 has no
+high row, and its queue starts with Person and SearchAction schema (5/20 each) and the care-guide,
+faq, price and reviews page types (4/19 each), all six medium; the keyword gap finds 16 gaps, 10
+high and 6 medium, from 20 reports (petsforlove could not be read); AI-answer intel now covers all
+28 location pages (29 files — Manchester's re-buy sits beside its first answer), and none cites
+BSUK; the re-synthesised strategy keeps Strategy A, contested city pages first, and its first three
+steps rebuild the London, Manchester and Liverpool stubs (cite check: 48 sources, 78 figures, 0
+problems). Spend: 27 DataForSEO calls in this build (the 26 other location pages and the Manchester
+re-buy), logged at the $0.01 estimate each ($0.27; about $0.004 a call real); `python3
+scripts/query_augment.py --budget ai_engines` counts $0.30215 of the $1.00 cap, with 69 more calls
+fitting; the dashboard read $0.96785 before Phase 4, re-recorded for 2026-09-25 (`c13a807`);
+Firecrawl 110 credits, 776 → 666.
+
+User rulings (2026-09-23/24): lower the per-call estimate, not the cap (R1); competitor analysis
+before any page (R2); self-host the fonts (R3); re-buy Manchester's AI answer (R4); rule-index rows
+for rules 10–16 (R5); publish the breeder's question sheet (R6); city pages may state the
+banned-breed line (R7); the S3 facade (R8); the counter dot steel (R9); keep `Button.kind`'s five
+(R10); complete the homepage mosaic (R11); exempt the utility pages from rule 16 (R12); new guide
+heroes (R13 — answered health H-GD1, breed guide H-GD3 with the S3 video, buying guide H-GD2 with
+its counter C-GD2); `uploadDate` to project 6 (R14). At the one visual pause (2026-09-24) the user
+kept homepage photos 1–4, the beside/below layout and photo 1's alt text, and agreed that the about
+page's aside label goes. The Fraunces file question was not asked: mobile Performance stayed at 95
+or more with the optical-size file.
+
+Deviations from the plan, each recorded in the gate report as PASS-WITH-DEVIATION: the buying
+guide's H-GD2 hero carries its chips (a controller amendment to Task R13; measured 411 at 1280);
+two board saves at the pause were wrong — the browser restored an earlier form choice, so the health
+board first saved H-GD3 and the buying board C-GD3 — and both were re-approved (Known Issue 66);
+Task R12 gained two follow-ups, a rule-16 check at approval time (`876d65d`) and a refusal for a
+re-boarded page that re-picks the arrangement it left (`94ad7f3`); Task X3 gained one (`c2d888e`);
+a review-minors task (13 commits, `37e8ff3..7b153e5`) and a pre-G1 fix task (`a1aedcf`, `335f621`,
+`f1eb5d2`) ran between the rulings and the research; in G1 the key-page classifier was reworked
+mid-run (`4e2fe7f` to `9d7e7b9`), the per-entry credit ceiling went from 7 to 8 (a search map when the
+first map misses the breed) and G1's ceiling from 141 to 161, and 110 credits were spent; a
+consistency pass re-typed six reports for free (`8670a98`) and topped up six (`ca0c730`); the
+dashboard reading was re-recorded for 2026-09-25 before G4 (`c13a807`); the intel agent's mobile
+check uses the page's `clientWidth` against `screen.width`, with proof that a phone was emulated,
+in place of the plan's `scrollWidth` against `innerWidth` (a controller amendment at Task E4); and
+some of the plan's expected counts were stale (Task R13 Step 13's "342 passed" is 329, 334 with the
+added tests; Task R11 Step 10's "20 WARN" is 18 on a fresh build). The plan stayed at its committed
+path rather than the new dated copy the close-out task names.
+
+Open items: Known Issues 59–75 (new), and still open 3, 5, 6, 7, 10, 13–16, 18, 23, 26, 27
+(project 6), 30 (the breed guide's zero headroom), 31 (second half), 33 (the utility mosaics), 34,
+36, 41, 43, 44, 53 (two items), 54, 55. Known Issue 15 — rotate the Google Cloud OAuth client and
+scrub the source repo — is still the user's to do. **Flag for the user now:** Known Issue 65, the
+older indexable location pages still print retired terms. **Next: project 5** — the location
+pages, the comparison cluster and the two blog posts, in the order the re-synthesised strategy
+gives (London, Manchester and Liverpool stub rebuilds first), starting with Known Issues 60 and 61.
+
 ## Known Issues
 
 Seeded from the Foundation gate report's "Open items" 1–8 and extended by projects 2 and 3.
@@ -180,8 +268,10 @@ with their owning project; 9–14 are new from the system transfer, 15–16 were
 17–26 are new from the design system, and 27–38 are new from the page rebuilds. Project 4
 closed 8, 9, 11, 12, 20, 22, 25, 28 and 29. The query augmentation bridge build closed 17 and
 added 39–46. The competitor intelligence bridge build closed 42 and added 47–58. The
-project 5 readiness pass closed 21, 32 and 37 and the first half of 31, corrected 23 and 24,
-and moved 16 on to its location-page remainder.
+project 5 readiness pass closed 19, 21, 24, 32, 35, 37, 38, 39, 45–52, 56, 57 and 58, the
+first half of 31, the buying-guide half of 30, the homepage and sharing halves of 33, all but two
+items of 53 and the instruction items of 40; corrected 23; moved 27 to project 6 and 16 on to its
+location-page remainder; and added 59–75.
 
 1. **`FORM_ENDPOINT` contract — CLOSED by project 2.** The contact-page form contract was
    re-based onto this repo's own fields and endpoint env key. See
@@ -363,7 +453,10 @@ and moved 16 on to its location-page remainder.
     requires to be zero — so copy needing a third line fails the build rather than being
     silently truncated by the clamp. Measured at zero today at 1024, 1100 and 1280. It is a
     standing constraint on every hero **project 4** writes.
-19. **`Button.kind` keeps all five treatments — AWAITING THE USER'S CONFIRMATION.** The prune
+19. **CLOSED (project 5 readiness pass) — `Button.kind` keeps all five treatments, by the user's
+    ruling R10 (2026-09-23).** `test_built_buttons_show_all_five_kinds` in
+    `tests/py/test_design_components.py` holds the five. Was: **`Button.kind` keeps all five
+    treatments — AWAITING THE USER'S CONFIRMATION.** The prune
     deleted every other variant prop, but `Button` kept five treatments renamed as `kind`
     (primary, outline, inverse, submit, text) on the reasoning that a page needs more than one
     button and these are five jobs rather than five styles. That is a judgment made during
@@ -408,7 +501,21 @@ and moved 16 on to its location-page remainder.
     when **build 5** moves them onto `PageShell`. Was: the header and footer inlined about 15 KB
     of SVG each on every page (homepage 163 KB, 52 KB of it inline SVG); recorded, not yet a
     defect.
-24. **The picked fonts are not loaded at all — corrected in the project 5 readiness pass.**
+24. **CLOSED (project 5 readiness pass, Task R3) — Fraunces and Source Sans 3 are self-hosted.**
+    The four `.woff2` files are in `public/fonts/`, copied unchanged from
+    `@fontsource-variable/fraunces@5.3.0` and `@fontsource-variable/source-sans-3@5.3.0` (the user
+    approved the download), each recorded with its size and sha256 in `data/design/fonts.json`;
+    `src/styles/fonts.css` declares them (`font-display: swap`; latin preloaded by `BaseLayout`,
+    latin-ext on demand) and `tests/py/test_self_hosted_fonts.py` holds the files, the faces, the
+    preloads and the built pages to each other — and no built page asks Google Fonts for anything.
+    The Artifact builders keep linking Google Fonts and `page_css()` leaves the site's faces out of
+    them. Every rebuilt hero was re-measured with the faces loaded (Known Issues 18, 28, 30): the
+    about page's aside label went so its band holds at 1280 (re-approved as wording at the pause),
+    and the kit canvas heights were re-measured. Lighthouse medians are in the gate report (mobile
+    Performance 95 on `/`, 95 on the about page and the breed guide, 97 on the contact page;
+    desktop 100 on all four). The Design System artifact's font list stays empty by design: its
+    previews link the same two families. Was: **The picked fonts are not loaded at all —
+    corrected in the project 5 readiness pass.**
     This entry said Fraunces and Source Sans 3 load from Google Fonts. They do not: nothing
     under `src/` or `public/` requests a web font, and no page in `dist/` carries a font link or
     an `@font-face` rule. `src/styles/tokens.css` names the two families first in
@@ -441,7 +548,10 @@ and moved 16 on to its location-page remainder.
     lockups replaced them; both are restored at their original paths and stay served even
     though no template references them. **Standing constraint for projects 4–6.**
 
-27. **No `uploadDate` for any VideoObject — no file in this repo holds one.** Project 4 Task 12
+27. **MOVED TO PROJECT 6 (user ruling R14, 2026-09-23) — no `uploadDate` for any VideoObject.**
+    It stays off until the breeder reads the real dates from the channel, and project 6, which owns
+    the launch and the rich results, asks for them. Was: **No `uploadDate` for any VideoObject — no
+    file in this repo holds one.** Project 4 Task 12
     mints a `VideoObject` on each of the four rebuilt pages that carry a YouTube embed (the
     homepage's three ids, `/blue-staffy-uk-breeders/`, `/buy-staffy-puppies-for-sale-uk/` and
     `/uk-staffordshire-bull-terrier-guide/`), built from the record's own `video` block through
@@ -510,7 +620,13 @@ and moved 16 on to its location-page remainder.
     are exactly right there. `--blog` now reports 3 PASS, 0 problems. **Project 5 may retire
     the route** once its two new posts land and the archive carries nothing the hub does not.
 
-30. **The H-GD3 hero's photo column pins two pages at exactly 450px.** `.pic` in the
+30. **PARTLY CLOSED (project 5 readiness pass, Task R13) — the buying guide is off H-GD3; the
+    breed guide still sits at the ceiling.** Measured at 1280 with the self-hosted faces: the buying
+    guide on H-GD2, with its chip row, is 411px with nothing clipped (it was 450 with 3px of copy
+    past its box); the breed guide keeps H-GD3 at 450px with nothing clipped and no headroom. What
+    is left is the breed guide's zero headroom — one more line of its H1, eyebrow or aside puts it
+    over — and the closing condition below.
+    Was: **The H-GD3 hero's photo column pins two pages at exactly 450px.** `.pic` in the
     interior-guide panel arrangement carries `aspect-ratio: 3 / 4`, and at 1280 that makes the
     photo 299px tall, which with the panel's 32px padding puts
     `/uk-blue-staffy-puppy-buying-guide/` and `/uk-staffordshire-bull-terrier-guide/` at
@@ -559,7 +675,17 @@ and moved 16 on to its location-page remainder.
     hero rendering on that route. PREVIEW-ONLY, and it closes when the specimen's target row
     is given a scroller of its own rather than being allowed to set the page's width.
 
-33. **Two approved picks render as their DEGRADED arrangements, faithfully.** H-HM2 on `/` is
+33. **PARTLY CLOSED (project 5 readiness pass, Tasks R11 and R12) — what is left is H-UT1's one
+    photograph.** The homepage's H-HM2 renders the four-photo mosaic and its figure tiles: the
+    record names four of the homepage's own photographs at their original paths and two figures read
+    from `data/settings.json` (`tests/py/test_homepage_hero.py`), approved on its board at the
+    readiness pause (user ruling R11: photos 1–4 kept, the beside/below layout and photo 1's alt
+    text as they were). The three utility pages are exempt from rule 16 by name (user ruling R12):
+    `RULE16_EXEMPT` in `scripts/pageboard.py`, `tests/py/test_rule16_gate.py`, and CLAUDE.md rule
+    16 says so; their refresh notes now name H-UT1 and C-UT1. Still open: H-UT1 on the three
+    utility pages renders its single-photo fallback, because each record names one photograph —
+    the rulings covered the homepage and the sharing, not these mosaics. Was: **Two approved picks
+    render as their DEGRADED arrangements, faithfully.** H-HM2 on `/` is
     "four-photo mosaic above the copy, figure tiles beneath it", but the homepage record's
     `top` names ONE photograph and no ledge figures, so the hero renders — on the board the
     breeder approved and on the page — as the single photo beside centred copy with no ledge:
@@ -594,7 +720,17 @@ and moved 16 on to its location-page remainder.
     board-preview routes, none of them rebuilt pages. A calibration pass that measures the
     ceilings against cited pages should retire most of these entries.
 
-35. **The three guides share one hero arrangement (2026-09-22).** `/blue-staffy-health-uk/`,
+35. **CLOSED (project 5 readiness pass, Tasks R13 and R12) — three guides, three heroes, and a
+    gate.** Re-boarded and approved at the readiness pause (user ruling R13): the health guide on
+    H-GD1, the breed guide on H-GD3, the buying guide on H-GD2 (with its chips, and its counter
+    re-approved as C-GD2). H-GD1 had never been rendered; `Hero` now puts a split hero's aside on a
+    second row (three tracks left the copy 276px), and it fits the health guide only, which leaves
+    its credential line out of that arrangement. `tests/py/test_guide_heroes.py` holds the three
+    apart, and the board-gate row this entry asked for exists as `tests/py/test_rule16_gate.py`:
+    any hero or counter two pages share fails, the three utility pages excepted by name;
+    `scripts/board_gate.py` runs the same check per board and `scripts/board_approve.py` refuses an
+    approval that would create a share. Was: **The three guides share one hero arrangement
+    (2026-09-22).** `/blue-staffy-health-uk/`,
     `/uk-staffordshire-bull-terrier-guide/` and `/uk-blue-staffy-puppy-buying-guide/` all picked
     H-GD3, so working rule 16's "no two pages share the same hero layout" is not met between
     them — the same gap Known Issue 33 records for the three utility pages' H-UT1. Their
@@ -626,7 +762,12 @@ and moved 16 on to its location-page remainder.
     on `foundation`, carry `Claude Opus 5.5`, by the controller's instruction for those
     sessions. **Closes with the user's ruling** on which trailer project 5 uses.
 
-38. **The breed guide's video player loads with the page (2026-09-22).** The breeder picked S2
+38. **CLOSED (project 5 readiness pass, Task R8) — the breed guide ships the S3 facade.** The user
+    ruled S3 (R8); the pick moved on the breed guide's re-board (a re-approval cannot move a pick),
+    `VideoEmbed` takes `play` from it, and `tests/py/test_breed_guide_video.py` holds the pick and the
+    built page (no player until pressed) together. Lighthouse Best Practices 100 on desktop and 100
+    on mobile (medians of three; mobile Performance 95) (was 96 / 96). Was: **The breed guide's
+    video player loads with the page (2026-09-22).** The breeder picked S2
     (the player full width on a steel band) for `/uk-staffordshire-bull-terrier-guide/`, so
     `youtube-nocookie.com/embed/g9iV9RVr_Sk` loads on page load and Chrome raises a cookie
     issue: Lighthouse Best Practices 96 on mobile and desktop, every other rebuilt page 100.
@@ -670,9 +811,20 @@ and moved 16 on to its location-page remainder.
     check still looks for a page's own sources under `src/pages/<slug>`; where a rebuilt city
     page's source lives is a project 5 decision.
 
-40. **Project 5 builder checklist (2026-09-23).** Quality-review items on the builders deferred
-    by the user's ruling during the query-augmentation build; clear each before or while the
-    first city page is built.
+40. **CLOSED for its instruction items (project 5 readiness pass, Tasks B1–B5 and B7); the rest is
+    Known Issue 59.** Fixed: the parents' clear results are the unproven `parents-dna-clear` claim at
+    `NOT FETCHED`, so `data/faq.json` no longer asserts what `rules/copy.md` records as not fetched
+    without the ledger saying so (B1; the FAQ rows' own wording waits for the breeder — Known Issue
+    68); the location builder cites rules 15 and 16, names `Hero`'s arrangement props, gives no
+    component a variant letter and no city a shared counter, keeps reviews in their own sections,
+    reads competitors from the question file and labels body sections (B2); the comparison builder
+    derives its section count and lost push-to-main, the breeding pair, "12+ years" and NewsletterV2
+    (B3); the blog builder uses the link library and the registry (B4); the SEO checklist's external
+    links are UK library rows (B5); the map skill's US wording is gone (B7); the puppy ContactForm
+    name is gone too (`43dc994`: `ContactFormKit` everywhere). Moved to Known Issue 59: the
+    empty-`h1` rows, the later gate work and the minors. Was: **Project 5 builder checklist
+    (2026-09-23).** Quality-review items on the builders deferred by the user's ruling during the
+    query-augmentation build; clear each before or while the first city page is built.
     - Rule 15 (faithful rewrite) against the migrated city FAQs: 11 indexed city pages carry
       bodies, and the precedence table cites rules 1–10 only.
     - 11 location rows have an empty `h1`, so the primary-keyword source is undefined for them.
@@ -709,7 +861,10 @@ and moved 16 on to its location-page remainder.
       national rows compete; the blog builder's raw caps note; the puppy ContactForm name;
       top-10 vs top-5.
 
-41. **Questions for Lisa Bright (2026-09-23).** Grouped and reworded from the files' blocked
+41. **Questions for Lisa Bright (2026-09-23). Sent (project 5 readiness pass, Task R6):** the
+    questions below, with the Kennel Club, licence (Known Issue 54) and Lucy's Law (Known Issue 7)
+    questions, are `docs/reference/questions-for-lisa.md` (21 questions), published for the user to
+    forward (https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH). Open until she answers. Grouped and reworded from the files' blocked
     buyer questions: the Manchester and Leeds question files hold buyer questions (from Google,
     Bing, ChatGPT and Reddit) that the merge blocked as "unverified fact" because BSUK has no
     recorded fact to answer them. Each answer becomes a `data/faq.json` row or a
@@ -783,7 +938,7 @@ and moved 16 on to its location-page remainder.
     balance, and how many spend-log entries it covers — the whole log unless `--covers` says
     fewer). The guard counts the covered calls at their real cost (opening minus balance) and only
     later calls at their logged cost; the typical cost is the larger of `query_typical_call_usd`
-    and the costs logged after the reading. The first reading — $0.96785 left of a $1.00 opening,
+    and the costs logged for that source after the reading. The first reading — $0.96785 left of a $1.00 opening,
     covering all 14 logged calls — puts real spend at $0.03215 against $0.80 of estimates: about
     $0.002 per Google SERP call and $0.004 per ChatGPT-scraper call.
     By the user's second option (Known Issue 58), `query_typical_call_usd` is now 0.01 (2.5 times
@@ -803,7 +958,13 @@ and moved 16 on to its location-page remainder.
     given without `--reconcile` are refused too. `data/queries/spend.json` is untouched and still
     holds the estimates as they were logged.
 
-46. **Needs a user ruling — the banned-breed line (2026-09-23).** The breed guide
+46. **CLOSED (project 5 readiness pass, Task R7) — city pages may state it, with the gov.uk row
+    (user ruling R7).** The location template, the location builder skill and agent and the SEO
+    checklist allow the one line — the Staffordshire Bull Terrier is not a banned breed in the UK,
+    linked to https://www.gov.uk/control-dog-public/banned-dogs — and keep every other statute line
+    `LEGAL_CLAIM_PLACEHOLDER`; `test_the_banned_breed_line_is_the_one_statute_line_a_city_page_may_state`
+    in `tests/py/test_builder_skills.py` holds both halves. Was: **Needs a user ruling — the
+    banned-breed line (2026-09-23).** The breed guide
     (`src/pages/uk-staffordshire-bull-terrier-guide/index.astro`) states the Staffordshire Bull
     Terrier is not a banned breed, backed by the gov.uk banned-dogs row in
     `docs/reference/external-link-library.md`. The city-page template
@@ -811,31 +972,31 @@ and moved 16 on to its location-page remainder.
     `LEGAL_CLAIM_PLACEHOLDER`. **Closes with the user's ruling**: city pages may state it with
     that same gov.uk row, or the breed guide moves to the placeholder.
 
-47. **The link guard misses JSON-escaped URLs (2026-09-23).** `scripts/competitor_registry_check.py`
+47. **CLOSED (project 5 readiness pass, Task D1) — the link guard reads `https:\/\/host` in a JSON string too.** Was: **The link guard misses JSON-escaped URLs (2026-09-23).** `scripts/competitor_registry_check.py`
     finds a tier-5 host in `src/`, `data/boards/` and the external-link library in every plain URL
     form, but not written as `https:\/\/host` inside a JSON string. None exists today. Fix when a
     JSON file under those roots first carries escaped links.
 
-48. **`scripts/gap_matrix.py` minors (2026-09-23).** `--write` to a path that is a directory ends
+48. **CLOSED (project 5 readiness pass, Task D2) — an unwritable `--write` path is a message, a schema type that differs only in case gets a hint, and a backslash before a pipe is escaped.** Was: **`scripts/gap_matrix.py` minors (2026-09-23).** `--write` to a path that is a directory ends
     in an OSError traceback, not a message; a schema-type value differing only in case fails
     without a "did you mean" hint; a backslash directly before a pipe in a cell is not
     double-escaped by `_cell`. None affects today's matrix.
 
-49. **`scripts/strategy_cite_check.py` minors (2026-09-23).** a calendar year written with no cue
+49. **CLOSED (project 5 readiness pass, Task D3) — a heading after `## Sources` is flagged, the Risks message names the rule, the Strategy A/B sections are checked, and a calendar year with no cue word gets a hint.** Was: **`scripts/strategy_cite_check.py` minors (2026-09-23).** a calendar year written with no cue
     word ("the <year> plan") fails as an unsourced figure — the synthesizer is told to put a cue
     before a year ("in <year>"); a `##` heading
     after `## Sources` is not flagged; the message for a figure under `## Risks` could name the
     rule more plainly; figures inside the Strategy A / Strategy B sections are not checked (only
     the pick is).
 
-50. **Registry agent minors (2026-09-23).** The proposal-path pattern does not allow a same-day
+50. **CLOSED (project 5 readiness pass, Task D4) — the same-day `-2` proposal path, the hash-based change check, tier-5 notes, the `dbrg.uk` candidate (`docs/research/competitor-registry-candidates.md`) and the rank tracker's field.** Was: **Registry agent minors (2026-09-23).** The proposal-path pattern does not allow a same-day
     `-2` suffix; the same-day "registry changed" check compares dates only; a tier-5 edit keeps the
     old notes. `dbrg.uk` (cited in the Leeds answer, no registry id) is a candidate add for the next
     registry refresh. `.claude/agents/bsuk-rank-tracker.md` says it updates `last_monitored` in
     `data/competitors.json` — the schema has no such field (it has `last_analyzed`); fix when the
     rank tracker is rebuilt in project 6.
 
-51. **Intel agent minors (2026-09-23).** Key-page tie-break when two pages tie; loosely defined
+51. **CLOSED (project 5 readiness pass, Tasks E1–E4, and G1 for the two run-time items) — one whole-word page-type table, pagination left out, the key-page rule, the homepage measures by script, the image-name email fix, the BSUK location rows typed; trojanstaffuk's mobile check re-run as an emulated phone (the check now compares `clientWidth` with `screen.width` and needs proof of emulation — a controller amendment at Task E4) and RSPCA re-mapped in G1 (its Staffy advice page is still unanalysed: no fetch returned its URL — Known Issue 57). `--bsuk` cutting brand-name runs stays accepted.** Was: **Intel agent minors (2026-09-23).** Key-page tie-break when two pages tie; loosely defined
     measures (`reviews_shown`, `homepage_images`, `alt_text`, `steps_to_enquire`); id wording;
     substring page-type rows (`/careers/` reads as care-guide, `/preview/` as reviews); blog
     pagination URLs counted as posts; the BSUK city count includes the UK hub and the outreach
@@ -843,14 +1004,14 @@ and moved 16 on to its location-page remainder.
     trojanstaffuk mobile check used a desktop browser; the RSPCA Staffy advice page was not in the
     map sample; `--bsuk` cuts brand-name runs such as "blue staffy uk breeders" (accepted).
 
-52. **Keyword-gap minors (2026-09-23).** A report whose page URLs sit on a different domain from
+52. **CLOSED (project 5 readiness pass, Tasks E2, E5 and E6) — foreign-domain and duplicate URLs are flagged, "Greater Manchester" is Manchester, a two-city page gets each stub, off-list places stay out, and both agents read one page-type table with `comparison` first.** Was: **Keyword-gap minors (2026-09-23).** A report whose page URLs sit on a different domain from
     its `root_domain`, and the same URL in two reports, are not flagged; places not in
     `data/locations.json` (Scotland, Newcastle upon Tyne) drop out of topics; "Greater Manchester"
     is not read as a city topic (region words), so the pets4homes Manchester row is not labelled
     with the Manchester stub; a typed "-vs-" comparison is matched before intel's page-type table
     (`/blog/staffy-vs-pitbull` differs between the two agents); a two-city page gets no stub label.
 
-53. **LLM-intel minors (2026-09-23).** The Manchester answer was re-bought verbatim at the user's
+53. **LLM-intel minors (2026-09-23) — CLOSED except two (project 5 readiness pass, Tasks C3 and E7–E11).** Fixed: one own-domain rule (E7); the homepage read, noindex in any attribute order, a stale build refused (E8); one location-question rule (E9); names with digits, inline labels, table-first answers, short separators (E10); `extra` recorded and the fixture's Instagram link gone (E11); `schemas/` in the system registry (C3); the Manchester format, measured once the answer was re-bought (G4, `bc8eec1`). Still open: every on-page check is provisional until project 5 builds the pages, and Manchester's normalised `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.json` still holds the old save until its project-5 build re-normalises it. The entry as it stood: The Manchester answer was re-bought verbatim at the user's
     `; refresh` (project 5 readiness, bc8eec1), so its format is now measured; the normalised
     `data/queries/raw/blue-staffy-puppies-manchester-uk/ai_engines.json` still holds the old save
     and needs re-normalising by `bsuk-query-augmentation` at Manchester's project-5 build; every
@@ -876,7 +1037,7 @@ and moved 16 on to its location-page remainder.
     not a third party's. The Known Issue 16 relocation applies: it must not be carried into that
     page's rebuild.
 
-56. **Session paths and WORKFLOW leftovers (2026-09-23).** grill-me, session-closer and
+56. **CLOSED (project 5 readiness pass, Tasks A1, B6, C1 and C4) — every agent, skill and command names `docs/superpowers/sessions/`, one dead-root guard reads all three trees (`tests/py/test_rules_index.py`), WORKFLOW marks what was never ported and `check:workflow` holds its references, and the port-manifest notes match the repo.** Was: **Session paths and WORKFLOW leftovers (2026-09-23).** grill-me, session-closer and
     `bsuk-content-architect` now use `docs/superpowers/sessions/`, but 46 other agent and skill
     files still name a bare `sessions/` directory, which does not exist; grill-me and
     session-closer still say "Content root: `site/content/`". WORKFLOW still lists monitoring
@@ -918,3 +1079,236 @@ and moved 16 on to its location-page remainder.
     `bsuk_cited` is false in every file. The 27 domains the answers name with no registry id are
     listed in `docs/research/competitor-registry-candidates.md` (2d75ff4); they enter the registry
     only through a seed search and an approved proposal.
+
+59. **Project 5 builder checklist (carried from Known Issue 40, project 5 readiness pass).** Clear
+    each before or while the first city page is built:
+    - 9 location rows have an empty `h1` (`data/locations.json`), so their primary-keyword source is
+      undefined.
+    - Later gate work: count built `dist/uk-locations/*` pages with no question file and print it; an
+      optional per-page-type "must have a file" switch once project 5 covers all 28; check the visible
+      FAQ questions come from the question file; an extra-section H2 must sit in a body section, not
+      the frame; a heading-covered answer should stop at its section end.
+    - Minors: lifespan source; `rules/copy.md` as a source; sem-all-six-levels is page-level;
+      proximity and roads claims without a source; the former-city row (Known Issue 16) and the
+      national rows compete; the blog builder's raw caps note; top-10 vs top-5.
+    - Found by the readiness audit and not fixed there: WORKFLOW line 28 reads "latest session brief
+      and UK city their default", a garbled replacement; `scripts/page_hardening_scan.py` (lines
+      453–463) checks `heroPreload` props `BaseLayout.astro` does not have; IndexNow `--changed`
+      diffs against `origin/main`, which cannot exist before project 6. (Two lines the audit found
+      were fixed during the pass: `.claude/agents/bsuk-hub-builder.md` now says
+      `/blue-staffy-uk-breeders/` is the About page and no comparison hub exists, and every commit
+      example in an agent or skill carries the trailer — Task X3, guarded by
+      `tests/py/test_commit_trailer_examples.py`.)
+
+60. **The 28 city pages have no hero pool of their own (project 5 prerequisite). STOP before the
+    first city board: the user decides.** Working rule 16 says no two pages share a hero or a
+    counter, and `src/lib/boardStyles.ts` maps a `location` page to the `interior-guide` family —
+    three heroes (H-GD1–3), all three now taken by the guides (Known Issue 35). Twenty-eight city
+    pages cannot each have their own arrangement from three. `tests/py/test_rule16_gate.py` would
+    catch the first shared pick on a record that names its `meta.layout_type`, and misses one that
+    does not (the gate skips records with no layout family, a blind spot for exactly these
+    records). **Needs the user's decision before the first city board**: a `location` family whose
+    heroes vary per city by rule, an exemption for the location cluster by name as R12 gave the
+    utility pages, or a design pass that gives the cluster its own pool. The same STOP line belongs
+    in `.claude/skills/bsuk-location-page-builder/SKILL.md` (as Known Issue 39's STOP was); the
+    readiness pass left that skill untouched at close-out, so project 5 adds the line before its
+    first city board or the user's decision makes it moot.
+
+61. **Where a rebuilt city page's source lives (project 5 decision).** Every city page is built today
+    by `src/pages/uk-locations/[slug].astro` from its `data/locations.json` row (the migrated body).
+    A rebuilt page needs its own board-driven source: a per-city `.astro` file, a record-driven
+    branch of the dynamic route, or content files. Known Issue 39 left `scripts/pageboard.py`'s
+    freshness and own-source lookups keyed to `src/pages/<slug>` for this reason.
+
+62. **Comparison pages have no URLs and no hub yet (project 5).** `.claude/skills/bsuk-comparison-page-builder/SKILL.md`
+    §1 says no comparison page exists and the project-5 plan fixes each slug on its board;
+    `data/page-map.json` has none, and no hub page exists — `/blue-staffy-uk-breeders/` is the About
+    page. The strategy's first comparison is the blue or black Staffy page; its slug, and whether a
+    hub comes first, are the plan's.
+
+63. **Pageboard freshness does not see a city page's sources (project 5).** `freshness_inputs()` in
+    `scripts/pageboard.py` measures a page against `src/pages/<slug>/`, its record, the shared shell
+    and top-level `data/*.json`. A city page's markup comes from `src/pages/uk-locations/[slug].astro`,
+    which is not `src/pages/<slug>`, so an edit there does not make its built page read as stale
+    (`data/locations.json` is covered by the top-level data files). Settle it with Known Issue 61.
+
+64. **No gate measures rule 10 on a built page (found in the readiness pass).** `scripts/measure_canvas_heights.mjs`
+    measures the heroes on `/kit-preview/` only; the rebuilt pages' heroes were measured by a scratch
+    probe (readiness Tasks R3, R11, R13). It found two pages whose hero section box is shorter than its
+    content at 1280, before and after the fonts: `/buy-staffy-puppies-for-sale-uk/` by 12px and
+    `/buy-blue-staffy-puppies-uk/` by 5px — nothing runs into the next section, but the band is not
+    held the way rule 10 says. Every other rebuilt hero held (at 1024 / 1100 / 1280: `/` 476 / 476 /
+    450, the health guide 528 / 470 / 450, the breed guide 440 / 408 / 450, the buying guide 445 /
+    445 / 411 with its chips, the about page 407 / 390 / 445). Twenty-eight city heroes are about to
+    be built: the probe belongs in the render harness (or `scripts/measure_canvas_heights.mjs` given
+    the rebuilt pages) before the first one.
+
+65. **The older indexable location pages print retired terms — LIVE today; flag to the user
+    (found in the readiness research).** Checked in `dist/` at close-out; every page below is
+    `index, follow`. These are the migrated bodies in `data/locations.json`; every figure they
+    print is RETIRED and none is a locked fact (the amounts are quoted, marked retired, in the gate
+    report `docs/reports/p5-readiness-gate-report.md`; `docs/research/competitors/bsuk.md` found them):
+    - a flat delivery fee (retired) on nine city pages: Aberdeen, Dundee, Edinburgh, Hull,
+      Inverness, Middlesbrough, Oxford, Sunderland and York;
+    - a puppy price band (retired) on Aberdeen, Edinburgh, the UK hub
+      (`/uk-locations/blue-staffy-puppies-uk/`) and `staffy-breeding-dogs-glasgow`, and on Aberdeen
+      and Edinburgh a price for each of the puppies they list (retired; those puppies are gone);
+    - Hull calls the deposit "non-refundable" (retired wording);
+    - the UK hub prints a deposit amount (retired), collection from the former city (Known Issue 16)
+      and "council-licensed" (unconfirmed — Known Issue 54).
+    The rebuilt pages carry none of these. Project 5 rewrites each body; until then they are live,
+    indexable defects under the facts rules. **The user decides** whether to correct them now as a
+    fix (not a page build) or leave them to the rebuilds; the strategy ranks Oxford and Sunderland
+    mid-order, so waiting keeps them live for longer.
+
+66. **Board records and board forms (project 5 readiness pass).**
+    - **Refresh notes that describe another arrangement.** Many hero and counter `refresh` notes
+      describe an arrangement other than the pick's current definition in `src/lib/boardStyles.ts`
+      (`data/boards/index.json` lines 327 and 425, the health board's line 413, C-GD2, C-GD3,
+      C-FS2, H-FS1–3, H-BL3, C-BL2). The notes were written in `ebfba87` and the styles redefined
+      in `0062144` (2026-09-20, 21:15 UTC). Every approval on record is later than that commit (the
+      earliest, 22:03 UTC the same evening; the rest 2026-09-22 and 2026-09-24), so no approval
+      predates the redefinition by timestamp; whether each board shown then was built from the
+      redefined styles is not proven by the timestamps alone. Rewrite the notes from the current
+      definitions (re-approved as wording).
+    - **Board forms need `autocomplete="off"`.** At the readiness pause the browser restored an
+      earlier form choice and two saves were wrong: the health board first saved H-GD3 and the
+      buying board C-GD3. The user re-approved both (H-GD1, C-GD2). Nothing in the form stops it
+      happening again.
+    - **`scripts/build_page_board.py` line 1003** compares the database's pre-approval hash with the
+      page's `RECORD_HASH`; a board rebuilt after its approval, if republished, shows "an earlier
+      version was approved". Embed the approval-time hash too and accept either.
+    - `docs/reports/page-rebuilds-gate-report.md` line 124 says rule 16 is not fully met and has
+      no gate: historical, as project 4 left it. Rule 16's gate now exists
+      (`tests/py/test_rule16_gate.py`, `scripts/board_gate.py`, `scripts/board_approve.py`);
+      the report stays as written.
+
+67. **Health-test spelling needs the user's ruling (project 5 readiness pass).** The evidence
+    ledger, `data/faq.json` and the boards write L-2-HGA and HC-HSF4; `rules/copy.md` writes L2-HGA
+    and HC, and the location builder skill's test names were left as they are rather than split the
+    vocabulary. **The user picks one spelling**; then the ledger, the FAQ rows, the boards, the rule
+    pack and the skills move to it together.
+
+68. **`data/faq.json` states two claims nothing proves (waits for the breeder's answers).** About
+    ten rows say the parents are "certified clear" of L-2-HGA and HC-HSF4, and
+    `home-health-guarantee` promises a "written health guarantee". The evidence ledger holds the
+    DNA claim (`parents-dna-clear`) at `NOT FETCHED`, and `data/settings.json` `guarantee_days` is
+    null. The instructions route around both (Known Issue 40), but the FAQ bank itself still
+    states them, and the rows render on built pages. It closes with the breeder's answers to the
+    question sheet (Known Issue 41: the DNA and guarantee questions): record the proof and
+    `guarantee_days`, or reword the rows.
+
+69. **Competitor-intel classifier and measure minors (found in the readiness research, G1).** None
+    changes today's picks enough to re-run; each is for the next intel run.
+    - The blog word list is written twice in `.claude/agents/bsuk-competitor-intel.md` (lines
+      ~261–262 against the page-type table) and its dated pattern is picked by position: build it
+      from one list.
+    - A hyphenated blog folder (`/staffy-blog/<slug>/`) now counts 0 posts without `--post-folder`;
+      the script could print a hint when such a folder exists.
+    - Posts are undercounted where a site's article folders are missing from the map sample
+      (staffie-owners' info guides, puppies' advice pages).
+    - ukpets' post count includes sitemap `.xml` files and account and thank-you pages; the post
+      rule should leave them out.
+    - RSPCA's search map counted 11 PDF URLs as adverts (numeric ids in the file names): the advert
+      test should skip `.pdf`. Its Cornwall city came from one rescue-dog page on a subdomain.
+    - champdogs' `/litter/9716` (sold 2007) was a listing pick until the consistency pass: a 4-digit
+      trailing id under a litter or advert folder should read as an advert.
+    - The listing row matches "puppies" inside care-folder names (PDSA's `/puppies-dogs/`, which
+      typed its breed page a listing and its listing count 181). Decide whether folder words count.
+    - A `/tortoise-for-sale/` page can beat a dog page on a site that names no listed species;
+      "american-bull-staffy" counts as the breed because it contains "staffy". Some final picks are
+      narrow (preloved's search page, puppies' `/leek` page, gumtree's `/uk/nelson`), noted in
+      their reports.
+    - `council_licence_shown`: the consistency pass applied one rule — true only when a licence
+      number or a named council is shown (bullscaff, freeads, pets4homes and puppies flipped to
+      false) — but `.claude/agents/bsuk-competitor-intel.md` does not yet say so. Write the rule
+      into the agent's trust row.
+    - M2: `.claude/agents/bsuk-competitive-keyword-gap-agent.md` types pages by the page-type table
+      alone, with none of intel's hub or breeds-folder overrides. Copy the overrides or document the
+      difference.
+
+70. **Keyword-gap, LLM-intel, strategy and spend-guard minors (found in the readiness pass).**
+    - Keyword gap: `CITYISH` misses a heading with "near me", a county name (Merseyside), "0 ads"
+      or "dogs", and the source's run-together "salein" breaks the Manchester match, so the London,
+      Liverpool, Manchester and Dundee rows scored as word topics (the keyword-gap file says so).
+      Consider normalising those words before the city test.
+    - LLM intel: `ueniweb.com` (a hosted site builder) is missing from the platform list, so a
+      ueniweb seller reads as a registry candidate rather than a platform note; `local_businesses`
+      can hold breed clubs, rescues and adoption listings, and downstream must never count them as
+      competitors (the strategy counts registry entries only); an entry whose only link is
+      Instagram or wa.me is dropped whole, name and all — consider keeping the name with a null
+      domain; county and region rows (South Yorkshire, Cornwall, Essex) ask "near <place>", where
+      "in <place>" would read better (needs a county flag in `data/locations.json` and a ruling).
+    - Strategy: `scripts/strategy_cite_check.py` checks that each figure appears somewhere in the
+      sources, so it cannot catch a quote of a keyword-gap row that has since gone (the pilot
+      strategy quoted one; the re-synthesis left it out). Matching quoted row labels against the
+      source rows would catch it.
+    - Spend guard: `test_the_committed_state_admits_the_26_remaining_city_calls` in
+      `tests/py/test_spend_reconcile.py` reads the real spend log and dashboard; it passes today (69
+      more calls fit) and will fail once fewer than 26 calls of headroom are left. Re-scope it to
+      assert the committed state still obeys the guard's rules, not a fixed 26.
+
+71. **Registry fix: petsforlove is down (found in G1, 2026-09-25).** petsforlove.co.uk did not
+    answer (DNS resolves; ports 80 and 443 closed), so its report is homepage-gated with every
+    field NOT FETCHED, it is left out of the keyword gap, and it counts as "not fetched" in every
+    matrix row. `bsuk-competitor-registry` should re-check the site at its next refresh and retire
+    the entry if it is still down. The 27 answer-named domains in
+    `docs/research/competitor-registry-candidates.md` wait for the same refresh.
+
+72. **Instruction lines and code comments the readiness pass left stale.** Each is a one-line or
+    one-paragraph fix; none is load-bearing today.
+    - `docs/reference/seo-rules.md` Rule 31 fixes four site-wide counters (one reads "Home-Reared in
+      Carlisle") against working rule 16's per-page counters; Rule 32 still says "3× per page" and
+      names the retired `src/components/ContactForm.astro`; the SEO checklist's Special Elements
+      list still says "Contact/inquiry form (3 required per page — Rule 32)".
+    - The fan-out category counts disagree: the SEO checklist's Step B lists 11 categories, its
+      Step 3 twelve (one headed "Delivery/Delivery Keywords", a doubled word) and seo-rules Rule 56
+      says ten.
+    - The comparison skill's row 25 ("Final CTA + page-specific inquiry form + newsletter") against
+      its §11.6 ("no second CTA band after it") and §13.6's newsletter placement.
+    - Skill residue the agent residue list would catch: `framework-aida` recommends a milestone
+      figure ("2,000+ families have done this") and an invented family story ("the Robertson
+      family") as desire amplifiers; `bsuk-entity-agent`'s entity row "LICENCE_CLAIM_PLACEHOLDER
+      permit, home-bred certificate"; `bsuk-page-hardening` cites `.egg-rail`, a source-repo class.
+      The two residue lists (skills and agents) are still separate.
+    - Code comments: `src/pages/index.astro` says the contact page and listing carry "the site's
+      two" forms (four pages mount one each); `src/components/kit/Hero.astro` and
+      `src/components/kit/TrustStrip.astro` call brass "3.1:1 on bone" (it is 2.1:1;
+      `src/styles/tokens.css` is right).
+    - `data/design/fonts.json`'s `_why` should say that the licence files under `/fonts/*` are
+      cached as immutable with unversioned names, so a font update renames them too.
+    - `scripts/build_plan_artifact.py` splits a plan into sections at every `##` or `###` line,
+      inside code fences too, so a plan that quotes a report template splits mid-fence (240
+      sections for this build's plan, against 84 with a fence-aware split). The plan Artifact was
+      built with a fence-aware copy of the script kept outside the repo; the fix belongs in the
+      script, with a test.
+
+73. **Blog posts: template limits and two rulings (project 5, before the two new posts).**
+    - `src/content.config.ts` globs only `**/*.md`, and `featured_image` is a bare string with no
+      width, height or srcset; `[...post].astro` passes `Hero` only an image and its alt. A post
+      cannot pass hero dimensions (the `img_dims` check blocks a string hero), use a `src/assets/`
+      hero or mount kit components. Project 5 extends the collection (MDX and image fields) first.
+    - **Ruling needed:** `rules/headings.md` asks for all six heading levels, five or more H5s and
+      five or more H6s on every page, but `scripts/final_page_audit.py` `POST_EXEMPT_CHECKS`
+      exempts collection posts (and `faqpage_present`). Exempt posts in the rule pack, or enforce
+      it in the audit.
+    - **Ruling needed:** the blog skill names a Person author; `[...post].astro` emits an
+      Organization with `d.author`, and the only post's author is "Blue Staffy UK Team". Decide and
+      align.
+
+74. **Seven stub cities give the verbatim gate nothing to examine (project 5).** bristol-uk,
+    for-sale-leeds, south-yorkshire, coventry-area, cornwall, essex and
+    uk-staffordshire-bull-terrier-breeder have an empty migrated body at the frozen migration
+    commit, so `verbatim --extract` finds 0 elements and `--check` passes having examined nothing.
+    A stub city must stay out of the verbatim applies list (there is no verbatim set to keep), or
+    the gate must print "stub — no verbatim set" rather than "0 problems". Also: `facts --extract`
+    on an unbuilt city ends in a raw FileNotFoundError.
+
+75. **Two published Artifacts are one script line behind (close-out, the controller's).** The
+    review-minors task changed `scripts/build_report_artifact.py`'s copy script (it now un-escapes
+    `<\/script` before rendering or copying, `fce3070`). That commit regenerated the Foundation gate
+    report's HTML (`docs/artifacts/bsuk-foundation-gate-report.html`, one line), but the published
+    Foundation report still carries the old line. The breeder's question sheet
+    (`docs/artifacts/bsuk-questions-for-lisa.html`, https://claude.ai/artifact/CvLPpj438KFNfJcFd9gFTH)
+    was not regenerated: it is rebuilt with the same builder, committed, and republished. **Open**
+    until the controller republishes both at their own URLs.
