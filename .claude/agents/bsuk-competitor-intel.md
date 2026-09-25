@@ -54,7 +54,7 @@ Then every field — the ten categories and `pages` (even though the homepage wa
 | 2 | `content` | homepage → `homepage_words`, `h2_per_page`; the map → `url_count` | `homepage_words` (word tokens in the homepage markdown with heading and link markup stripped, counted by script), `url_count` (`NOT FETCHED`, "map truncated at 500", when the list holds exactly 500), `h2_per_page` (an object, fetched page URL → its H2 count) |
 | 3 | `keywords` | any page | see **Keyword rule** below |
 | 4 | `page_types` | the map | see **Page-type rule** below |
-| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a page outside a whole-word blog folder (`blog-guides/<slug>`: name that folder with `--post-folder`), a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month; every post under a `--post-folder` counts); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `post_folder` (the folder given with `--post-folder`, a list if more than one; `null` when none), `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
+| 5 | `blog` | the map → `post_count` (the classifier's `posts`: never a pagination URL, the blog index, a page outside a whole-word blog folder, a dated segment or a `--post-folder` (`blog-guides/<slug>` is outside all three until that folder is named with `--post-folder`), a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month; every post under a `--post-folder` counts); dates in post URLs or on fetched posts → `posting_frequency`; a fetched post → `topics`, `sampled_word_counts` (up to three) | `post_count`, `post_folder` (the folder given with `--post-folder`, a list if more than one; `null` when none), `topics`, `posting_frequency` (posts per month from those dates, else `NOT FETCHED`), `sampled_word_counts` |
 | 6 | `visual` | the homepage raw HTML (markdown alone never) | `homepage_images`, `alt_text` (descriptive, generic, missing) and `alt_missing` from **Homepage measures**; `video_present` (a `<video>` tag or a YouTube or Vimeo embed in the raw HTML) |
 | 7 | `schema_types` | raw HTML or a JSON-LD evaluate | the `@type` values found, exactly as written |
 | 8 | `cities` | any page | exact `city` strings from `data/locations.json` that a page names or has a page for — never the row `UK` or the breeding-dogs outreach row |
@@ -67,7 +67,7 @@ A price that is not printed is not a price: "please call us" about a deposit is 
 
 ### Homepage measures
 
-`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path and `HOME_URL` to the homepage URL the scrape ended on (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). The file is read as raw HTML only when it holds `<!doctype html` or an `<html>` tag; anything else is markdown, whatever inline HTML it carries. It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
+`homepage_images`, `alt_text`, `alt_missing`, `phone_shown`, `email_shown` and `contact_source` come from this script, never by eye. Save the homepage's raw HTML to a scratch file and set `RAW_HTML` to its path and `HOME_URL` to the homepage URL the scrape ended on — for `--bsuk`, `RAW_HTML` is `dist/index.html` and `HOME_URL` is `https://SITE_URL_PLACEHOLDER/`, the host its page URLs use (with no raw HTML, the homepage markdown: then only the contact signals are read, and the visual measures print `NOT FETCHED`). The file is read as raw HTML only when it holds `<!doctype html` or an `<html>` tag; anything else is markdown, whatever inline HTML it carries. It reads the contact scan's own phone and email formats, so an image name such as `logo@2x.PNG` is never an email:
 
 ```bash
 python3 - "$RAW_HTML" "$HOME_URL" <<'EOF'
@@ -84,12 +84,18 @@ text = html.unescape(re.sub(r"<[^>]+>", " ", page))
 def attr(tag, name):
     m = re.search(r"""\s%s\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+))""" % re.escape(name), tag, re.I | re.S)
     return None if m is None else html.unescape(next(g for g in m.groups() if g is not None))
-out = {"contact_source": "raw-html" if is_html else "markdown-only",
+if is_html and not home:
+    print("homepage measures: no HOME_URL given, so a relative image source is not put on the site's host", file=sys.stderr)
+out = {"contact_source": "raw-html" if is_html else "markdown-only", "home_url": home or None,
        "phone_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()tel:", page) or PATTERNS["phone"].search(text)),
        "email_shown": bool(re.search(r"(?i)(?:href\s*=\s*[\"']?|\]\()mailto:", page) or PATTERNS["email"].search(text))}
 if is_html:
     imgs = {}  # one per distinct source, first alt kept: a logo in header and footer is one image
-    ident = lambda src: (lambda p: (p.hostname or "") + p.path)(urlparse(urljoin(home, src.strip())))  # host + path: no scheme, query or fragment
+    IMG_FILE = re.compile(r"(?i)\.(?:jpe?g|png|gif|webp|avif|svg|bmp|ico|tiff?)$")  # an image file: its query is only a rendition
+    def ident(src):  # host (www. folded) + path, no scheme or fragment; the query only when the path is not an image file
+        p = urlparse(urljoin(home, src.strip()))
+        host = re.sub(r"^www\.", "", p.hostname or "")
+        return host + p.path + ("?" + p.query if p.query and not IMG_FILE.search(p.path) else "")
     for tag in re.findall(r"(?is)<img\b[^>]*>", page):
         src = next((v for v in (attr(tag, "data-src"), attr(tag, "data-lazy-src"), attr(tag, "src")) if v and not v.startswith("data:")), None)
         if src and not (attr(tag, "width") in ("0", "1") and attr(tag, "height") in ("0", "1")):  # never a tracking pixel
@@ -116,7 +122,7 @@ print(json.dumps(out, sort_keys=True))
 EOF
 ```
 
-- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`) — one per host and path, a relative source on `HOME_URL`'s host, so `/a.jpg`, `https://<competitor-domain>/a.jpg` and `/a.jpg?w=300` are one image — outside comments, `<script>`, `<style>`, `<noscript>` and `<template>` (a script's HTML template is not an image on the page), never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
+- `homepage_images`: the distinct image sources in the homepage's `<img>` tags (`data-src` or `data-lazy-src` before a `data:` placeholder `src`) — one per host (`www.` folded) and path, a relative source on `HOME_URL`'s host, so `/a.jpg`, `https://www.<competitor-domain>/a.jpg` and `/a.jpg?w=300` are one image; the query is dropped only when the path is an image file, so images served through a proxy (`/images?url=<image>&width=…`, Next.js `/_next/image?url=…`) stay apart. The output's `home_url` is the `HOME_URL` given (`null`, with a warning on stderr, when none was) — outside comments, `<script>`, `<style>`, `<noscript>` and `<template>` (a script's HTML template is not an image on the page), never a 1×1 or 0×0 tracking pixel. CSS backgrounds and inline SVG are not images here.
 - `alt_text`: each image's alt is `missing` (no alt, or blank), `generic` (a file name, a camera name such as `IMG_2034`, or only words like image, photo, logo, icon, banner, placeholder) or `descriptive`; the field is the class most images hold, a tie going to the worse (`missing`, then `generic`). `alt_missing` is the count of `missing`. A homepage with no images has `alt_text: null` (and `homepage_images` and `alt_missing` 0).
 - `phone_shown` / `email_shown`: a `tel:` / `mailto:` link, or a number or address in the contact scan's formats printed in the page text — neither counts inside a comment, script, style, JSON-LD, `<noscript>` or `<template>`.
 
@@ -190,7 +196,7 @@ One type per URL: lowercase the path and take the **first** row that matches; a 
 | 11 | `reviews` | `review`, `testimonial` |
 | 12 | `listing` | `puppies`, `puppy`, `pup`, `litter`, `available`, `sale` |
 
-Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) and its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
+Classify with this script, `MAP_LIST` set to the saved URL list's path (it is the table above as code), never by eye. It prints one JSON object: `page_types` (the field's values), `posts` (`post_count`), `pagination` (URLs left out as pages of a paginated list — `/<list>/page/2/`, `?page=2`, `?paged=2`, `?pg=2` — never a page or a post) and `key_pages` (the five key pages to scrape). A URL listed twice (`www.`, a trailing slash or a query apart) counts once, a page of a paginated list too. A post is found by the `blog` row's own words as a whole path segment (`<competitor-domain>/blog/<slug>`, never `<competitor-domain>/blog-guides/<slug>` — name such a folder with `--post-folder`) or its dated segment, whatever type the URL takes first (`<competitor-domain>/blog/staffy-vs-pitbull/` is a `comparison` page and a post), and is never the blog index, a category, tag or author page, a help-centre article (`solutions`, `help` or `support` in the path) or a month. **Post folder:** when the map or a post sitemap shows the competitor's posts in a folder the table cannot see (`<competitor-domain>/pet-advice/<slug>`), add `--post-folder=<folder>` (e.g. `--post-folder=pet-advice`) after `"$MAP_LIST"`: every URL under it is `blog` before the table and, except the folder's own index, a post. Pass the deepest folder that holds only posts: a sub-folder index under it would count as a post. It is the first thing to try for posts without a blog base (below). Record it as `blog.values.post_folder` — the folder given with `--post-folder`, a list if more than one, `null` when none — and name it in the readable report; `post_count` is the classifier's `posts`, help-centre articles left out. Add `--bsuk` after `"$MAP_LIST"` for BSUK's own build (see below):
 
 ```bash
 python3 - "$MAP_LIST" <<'EOF'
@@ -245,7 +251,7 @@ seen, counts, typed_urls, posts, pagination = set(), {}, [], 0, 0
 for u in urls:
     p = urlparse(u)
     path = p.path.lower()
-    key = ((p.hostname or ""), path.rstrip("/"), paged(u))  # normalised first: a slash or another query apart is one URL
+    key = (re.sub(r"^www\.", "", p.hostname or ""), path.rstrip("/"), paged(u))  # normalised first: www., a slash or another query apart is one URL
     if key in seen:
         continue
     seen.add(key)
@@ -307,6 +313,7 @@ All must pass before you hand off. The contact scan names each hit — remove it
 ## Red flags — stop
 
 - A number (word count, URL count, post count, score) for a page or map you did not fetch; or counting, page-type classifying or phrase matching done by eye instead of by script. Only two calls are the reader's: which texts are reviews (then counted by script) and where a keyword run meets a name.
+- Homepage measures run without `HOME_URL` (the output's `home_url` is `null`) on raw HTML: re-run them with it before any visual measure is written.
 - `schema_types`, `visual` or `technical` filled from markdown alone; `mobile_layout_ok` not from the **Mobile check** evaluate in an emulated phone (375 × 812, mobile user agent, touch), or without its six numbers in the readable report; a homepage measure or contact signal read by eye instead of by **Homepage measures**.
 - A price or deposit written that the page did not print.
 - A competitor sentence in the report word for word, or a quoted evidence table.

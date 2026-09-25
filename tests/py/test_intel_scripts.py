@@ -109,6 +109,12 @@ def test_a_paginated_url_listed_twice_is_one_page_of_the_list(tmp_path):
     assert d["pagination"] == 4               # blog 2, blog 3, blog 4 and puppies 2
 
 
+def test_www_and_the_bare_host_are_one_site_for_the_classifier(tmp_path):
+    d = classify(tmp_path, ["https://x.co.uk/blog/rex/", "https://www.x.co.uk/blog/rex", "https://www.x.co.uk/blog/page/2/",
+                            "https://x.co.uk/blog/page/2"])
+    assert (d["page_types"], d["posts"], d["pagination"]) == ({"blog": 1}, 1, 1)
+
+
 def test_the_blog_word_makes_a_post_only_as_a_whole_path_segment(tmp_path):
     x = "https://x.co.uk"
     d = classify(tmp_path, [f"{x}/blog-guides/", f"{x}/staffy-news/", f"{x}/news/litter-due/", f"{x}/articles/",
@@ -184,7 +190,11 @@ def measure(tmp_path, page, name="home.html", url=None):
     run = subprocess.run([sys.executable, "-", name, *([url] if url else [])], input=found[0], cwd=tmp_path,
                          capture_output=True, text=True)
     assert run.returncode == 0, run.stderr
+    LAST_STDERR[0] = run.stderr
     return json.loads(run.stdout)
+
+
+LAST_STDERR = [""]  # the homepage measures' last stderr
 
 
 HOME = """<html><head><script type="application/ld+json">{"email": "hidden@example.co.uk"}</script></head><body>
@@ -218,6 +228,23 @@ def test_one_image_however_its_source_is_written(tmp_path):
     assert (d["alt_missing"], d["alt_text"]) == (1, "missing")
     d = measure(tmp_path, '<html><body><img src="/a.jpg"><img src="/a.jpg?w=300"><img src="/a.jpg?w=600"></body></html>')
     assert d["homepage_images"] == 1          # no HOME_URL: a query still never makes a second image
+
+
+def test_an_image_behind_a_proxy_keeps_its_query(tmp_path):
+    # /images?url=… and Next.js /_next/image?url=… name the real image in the query: never one image
+    page = '<html><body><img src="/images?url=a.jpg&w=1"><img src="/_next/image?url=%2Fb.jpg&w=640"></body></html>'
+    assert measure(tmp_path, page.replace("</body>", '<img src="/images?url=b.jpg&w=1"></body>'),
+                   url="https://site.co.uk/")["homepage_images"] == 3
+    page = '<html><body><img src="/a.jpg?w=300"><img src="/a.jpg"><img src="https://www.site.co.uk/a.jpg"></body></html>'
+    d = measure(tmp_path, page, url="https://site.co.uk/")
+    assert d["homepage_images"] == 1          # an image file: the query dropped, www. folded
+    assert d["home_url"] == "https://site.co.uk/"
+
+
+def test_measures_without_home_url_say_so(tmp_path):
+    d = measure(tmp_path, '<html><body><img src="/a.jpg"></body></html>')
+    assert d["home_url"] is None              # a relative source could not be put on the site's host
+    assert "HOME_URL" in LAST_STDERR[0]
 
 
 def test_a_tie_between_alt_classes_goes_to_the_worse_one(tmp_path):

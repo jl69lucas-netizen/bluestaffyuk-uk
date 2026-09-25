@@ -351,8 +351,9 @@ def test_the_same_page_written_two_ways_in_two_reports_is_one_duplicate(root):
     a = write(root, "a.json", report("aaa", [page("https://www.shared.co.uk/staffy-care/", "Staffy Care Guide")]))
     b = write(root, "b.json", report("bbb", [page("http://shared.co.uk/staffy-care?utm_source=fb", "Staffy Care Guide")]))
     d = run(root, profile(root), a, b)
-    assert d["duplicate_urls"] == [{"url": "http://shared.co.uk/staffy-care?utm_source=fb", "ids": ["aaa", "bbb"]}]
-    assert row(d["gaps"], "staffy care guide")["urls"] == ["http://shared.co.uk/staffy-care?utm_source=fb"]  # counted once
+    clean = "https://www.shared.co.uk/staffy-care/"                    # the shortest form is the one shown
+    assert d["duplicate_urls"] == [{"url": clean, "ids": ["aaa", "bbb"]}]
+    assert row(d["gaps"], "staffy care guide")["urls"] == [clean]      # counted once
 
 
 def test_the_same_url_in_two_reports_is_flagged(root):

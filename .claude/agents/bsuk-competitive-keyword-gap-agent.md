@@ -162,6 +162,7 @@ out = {"today": str(today), "bsuk_source": src, "bsuk_pages": len(bsuk), "regist
        "cut": [" ".join(c) for c in CUT], "used": [], "stale": [], "stale_tier5": [], "skipped": [],
        "foreign_urls": [], "duplicate_urls": []}
 groups, owners = {}, {}
+shown = lambda u: (len(u), u)  # the URL shown for a page written several ways: its shortest form, then the first in order
 for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
     r = json.load(open(path))
     if r["id"] == "bsuk":
@@ -177,7 +178,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
             out["foreign_urls"].append({"id": r["id"], "url": page["url"], "root_domain": r["root_domain"]})
             continue
         seen_as = owners.setdefault(page_key(page["url"]), {})  # one page however its URL is written: {id: its URL}
-        seen_as[r["id"]] = min(page["url"], seen_as.get(r["id"], page["url"]))
+        seen_as[r["id"]] = min(page["url"], seen_as.get(r["id"], page["url"]), key=shown)
         path_ = route(page["url"]).lower()
         t, how = topic(page, page_type(path_, None))
         ptype = page_type(path_, t)
@@ -190,7 +191,7 @@ for path in reports or sorted(glob.glob("docs/research/competitors/*.json")):
             "topic": t, "type": ptype, "url": page["url"], "tier5": tier == 5, "dedicated": how,
             "key": 2 if ptype in KEY or path_ == "/" else 0, "intent": 2 if any(has(fw, i) for i in INTENT) or city_topic(t) else 0,
             "always_high": any(has(words(text(page)), h) for h in HIGH)})  # anywhere in the heading
-once = lambda us: sorted({page_key(u): u for u in sorted(us, reverse=True)}.values())  # one URL per page, the first in order
+once = lambda us: sorted({page_key(u): u for u in sorted(us, key=shown, reverse=True)}.values())  # one URL per page, its shortest form
 gaps, covered = [], []
 for key, ps in groups.items():
     types = sorted({q["type"] for q in ps if q["type"]})
@@ -216,7 +217,7 @@ for k in ("used", "stale", "stale_tier5"):
     out[k].sort(key=lambda s: s["id"])
 out["skipped"].sort(key=lambda s: (s["url"], s["why"]))
 out["foreign_urls"].sort(key=lambda s: (s["id"], s["url"]))
-out["duplicate_urls"] = sorted(({"url": min(ids.values()), "ids": sorted(ids)} for ids in owners.values() if len(ids) > 1),
+out["duplicate_urls"] = sorted(({"url": min(ids.values(), key=shown), "ids": sorted(ids)} for ids in owners.values() if len(ids) > 1),
                              key=lambda d: d["url"])
 out["gaps"] = sorted(gaps, key=lambda r: (-r["score"], r["topic"]))
 out["covered"] = sorted(covered, key=lambda r: r["topic"])
@@ -227,7 +228,7 @@ EOF
 What decides a row (to explain it, never to redo it):
 
 - **Type:** intel's page-type table, whole words only and `comparison` first — the block between the `---` comments is intel's code line for line (`tests/py/test_agent_snippets.py` fails on drift; change intel first). There is no second comparison rule here: a `-vs-` path is a comparison because it is the table's first row.
-- **Whose page:** a page whose URL's root domain (the registry's rule, `root_domain` in `scripts/competitor_registry_check.py`; subdomains count) differs from its report's `root_domain` is listed in `foreign_urls` and gives no topic; the same page in two reports is listed in `duplicate_urls` (under its first URL in sort order) and counted once in its row — one page however its URL is written: `page_key` in the same script drops the scheme, `www.`, the trailing slash, `utm_*` parameters and the fragment.
+- **Whose page:** a page whose URL's root domain (the registry's rule, `root_domain` in `scripts/competitor_registry_check.py`; subdomains count) differs from its report's `root_domain` is listed in `foreign_urls` and gives no topic; the same page in two reports is listed in `duplicate_urls` (under its shortest URL, then the first in sort order) and counted once in its row — one page however its URL is written: `page_key` in the same script drops the scheme, `www.`, the trailing slash, `utm_*` parameters and the fragment.
 - **Topic:** from the H1 (else the title cut at `|`, ` – `, ` - `) by intel's keyword rule: the longest qualifying run of 3+ words; the whole text when there is none or the run would cut a `data/locations.json` city; a comparison's "X vs Y" core. Skipped (header count): no title or H1, a name only, stop words only, or no keyword run on an untyped, about, contact or listing page (licence and health-testing words excepted).
 - **Covered:** a city topic (it names `data/locations.json` cities on a city, listing or untyped page, and its other words are only breed or buyer words — staffy, staffordshire bull terrier, sbt, puppy, pup, blue, breeder, for sale, price, kc registered — or stop words) by any BSUK `city` page naming the same set of cities — one city is one row; "greater" before a named city is part of that city ("Manchester, Greater Manchester" is a Manchester topic); any other topic ("staffy training york", "staffy rescue york" — typed by the table without its city row, and a `-vs-` path is always a comparison) when every word (stop words out, plurals folded) is in one BSUK page's title or H1 naming the same cities (none); an about, contact or FAQ topic with no run by a BSUK page of that type. Same words = one row. The stub label (`noindex_pages`) is the stub naming the same set of cities, else, for a topic naming two or more cities, each city's own stub. A place that is not a `data/locations.json` city (Scotland, Newcastle upon Tyne) is never read as a city: the topic keeps only its breed and buyer words, so the page joins the national row and never borrows another city's stub — the city list is the 28 location pages project 5 rebuilds, and a row naming another place would send the architect to a page BSUK will not build. Its URL still shows in that row.
 - **Points** (uncovered only): dedicated +3 (the topic holds a keyword run of 3+ words, or is a comparison's "X vs Y" core; a whole-text topic gets 0) · key page +2 (intel's key types or the homepage) · BSUK has no page +3 · buyer intent +2 (puppy, breeder, price, "for sale", "kc registered", or a city on a city topic only — never on a rescue, training, vet or other non-buyer topic; not "blue"). 7+ = **high**, 4–6 = medium, under 4 = low; licence, license, licensed, licenced, licensing, health test(ed/ing), L-2-HGA or HC anywhere in the H1 (else the cut title), not only the topic = **always high**.
