@@ -966,3 +966,17 @@ def test_a_sale_hub_beats_a_stud_board_or_an_adoption_hub(tmp_path):
     assert d["key_pages"]["listing"] == f"{PF}/puppies-and-dogs-for-sale/staffordshire-bull-terrier"
     d = classify(tmp_path, [f"{PF}/dogs-for-stud/staffordshire-bull-terrier"])
     assert d["key_pages"]["listing"] == f"{PF}/dogs-for-stud/staffordshire-bull-terrier"   # alone, the stud board is still a pick
+
+
+# --- a blog post is never an advert, so a breeder's blog cannot make it a classifieds site ---
+VB = "https://www.vaderblustaf.com"
+
+
+def test_a_blog_post_is_never_an_advert(tmp_path):
+    urls = [f"{VB}/", f"{VB}/litters", f"{VB}/about-us", f"{VB}/news/blog-ped-7champ/82stafxuk-vbs3l",
+            f"{VB}/news/blog-post-four-9jm7p-9ln9n"]
+    d = classify(tmp_path, urls)
+    assert d["key_pages"]["listing"] == f"{VB}/litters"     # the breeder's listing, not dropped as a classifieds site's
+    x = "https://www.x.co.uk"
+    d = classify(tmp_path, [f"{x}/litters", f"{x}/blog/q7zz1-staffy-news", f"{x}/2024/05/k2x9qab-litter-born"])
+    assert d["key_pages"]["listing"] == f"{x}/litters"      # a short id under a blog folder or a dated path is a post
