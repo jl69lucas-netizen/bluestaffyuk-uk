@@ -182,7 +182,7 @@ def test_a_marketplaces_key_pages_are_the_breeds_pages(tmp_path):
     assert d["key_pages"] == {
         "listing": f"{P4H}/sale/puppies/staffordshire-bull-terrier/",  # the breed hub: never /sale/kittens/, and
         # never the shallower Staffy advert, which is the listing's last resort
-        "price-or-faq": f"{P4H}/faq/",       # the only price page names cats: nothing for price, so the FAQ
+        "price-or-faq": None,                # the price page names cats; the FAQ names no dog: a marketplace's must
         "guide": f"{P4H}/dog-breeds/staffordshire-bull-terrier/",  # the breed's own guide before a generic care guide
         "city": f"{P4H}/sale/puppies/staffordshire-bull-terrier/manchester/",  # not the London kittens page
         "about": None,
@@ -980,3 +980,25 @@ def test_a_blog_post_is_never_an_advert(tmp_path):
     x = "https://www.x.co.uk"
     d = classify(tmp_path, [f"{x}/litters", f"{x}/blog/q7zz1-staffy-news", f"{x}/2024/05/k2x9qab-litter-born"])
     assert d["key_pages"]["listing"] == f"{x}/litters"      # a short id under a blog folder or a dated path is a post
+
+
+# --- a marketplace price page must be about dogs; one odd URL does not make a breeder a classifieds site ---
+def test_a_marketplace_or_classifieds_price_page_must_be_about_dogs(tmp_path):
+    car = f"{GT}/guides/g/what-it-cost-to-run-used-electric-car-in-uk.html"
+    ads = [f"{GT}/p/cars/ford-focus-for-sale/1498765433", f"{GT}/p/sofas/grey-sofa-for-sale/1498765434"]
+    assert classify(tmp_path, [car] + ads, f"--home={GT}/")["key_pages"]["price-or-faq"] is None  # never the car guide
+    puppy = f"{GT}/guides/g/how-much-does-a-puppy-cost.html"
+    assert classify(tmp_path, [car, puppy] + ads)["key_pages"]["price-or-faq"] == puppy
+    x = "https://www.rspca.org.uk"   # a multi-species charity: its legacy FAQ is not about dogs
+    d = classify(tmp_path, [f"{x}/adviceandwelfare/pets/cats/", f"{x}/getinvolved/donate/legacy/faqs"])
+    assert d["key_pages"]["price-or-faq"] is None
+    d = classify(tmp_path, [f"{x}/adviceandwelfare/pets/cats/", f"{x}/getinvolved/donate/legacy/faqs",
+                            f"{x}/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder"])
+    assert d["key_pages"]["price-or-faq"] == f"{x}/your-dog/getting-a-dog/buying-a-dog/questions-for-the-breeder"
+
+
+def test_one_odd_advert_shaped_url_does_not_make_a_breeder_a_classifieds_site(tmp_path):
+    d = classify(tmp_path, [f"{BR}/litters/", f"{BR}/gallery/available-12345678"])
+    assert d["key_pages"]["listing"] == f"{BR}/litters/"
+    d = classify(tmp_path, [f"{BR}/litters/", f"{BR}/gallery/available-12345678", f"{BR}/gallery/available-12345679"])
+    assert d["key_pages"]["listing"] is None       # two non-dog adverts: a general classifieds site
