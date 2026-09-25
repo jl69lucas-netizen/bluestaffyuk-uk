@@ -3,7 +3,7 @@
 BlueStaffyUK rebuild — the readiness pass between the competitor intelligence build and project 5.
 Written by hand from the close-out runs, the progress table, the research outputs, the spend log and
 the branch history. Date 2026-09-25. Branch `p5-readiness`, cut from `foundation` at `9927710`;
-no remote, nothing pushed. **Merge:** `--no-ff` into `foundation` at `«merge commit — Task Z Step 10»`.
+no remote, nothing pushed. **Merge:** `--no-ff` into `foundation` at `b76595e`.
 
 Plan: `docs/superpowers/plans/2026-09-24-p5-readiness.md` — Phases 1–3 (Tasks 1–49), Phase 3b (the
 user's rulings: R5, R6, R7, R3, R11, R13, R8, R12, plus Task X3), Phase 4 (G1–G6) and Task Z. The

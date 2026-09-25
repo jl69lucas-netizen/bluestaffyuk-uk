@@ -232,7 +232,7 @@ system gaps build's 59 commits) was merged into the branch at `c7c41be`, followe
 in, every one with the Fable 5.1 trailer (176 of 176 own and 59 of 59 counted before that docs
 commit); no remote, nothing pushed. After that merge the suite read `5168 passed, 1 skipped,
 1 xfailed` and `npm run -s check:all` exited 0, on both runs. Merged `--no-ff` into
-`foundation` at `«merge commit, short hash — Task Z Step 10»`. Run twice with identical counts:
+`foundation` at `b76595e`. Run twice with identical counts:
 `python3 -m pytest tests/py -q` → `4539 passed, 1 skipped, 1 xfailed, 152 warnings`;
 `npm run -s check:all` exit 0; `npm run -s registry`, `npm run -s agents` and
 `npm run -s baseline` `0 problems`.
