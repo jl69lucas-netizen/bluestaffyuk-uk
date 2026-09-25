@@ -71,7 +71,8 @@ def fold(x):  # singular, one spelling: puppies -> puppy, prices -> price, staff
 cities = {tuple(words(r["city"])) for r in rows if "(" not in r["city"]}
 towns = {c for c in cities if c != ("uk",)}
 # intel's keyword rule: breed terms, and intent or place words
-BREED = {("staffy",), ("staffie",), ("staffies",), ("staffordshire", "bull", "terrier"), ("sbt",)}
+BREED = {("staffy",), ("staffys",), ("staffie",), ("staffies",), ("staffordshire", "bull", "terrier"),
+         ("staffordshire", "bull", "terriers"), ("sbt",)}
 PLACE = {("puppies",), ("puppy",), ("for", "sale"), ("breeder",), ("breeders",), ("price",), ("kc", "registered"), ("blue",)} | cities
 UNITS = sorted(BREED | PLACE, key=len, reverse=True)
 INTENT = [tuple(fold(x) for x in i) for i in [("puppy",), ("breeder",), ("price",), ("for", "sale"), ("kc", "registered")]]  # + a city, on a city topic

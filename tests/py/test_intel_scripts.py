@@ -199,7 +199,7 @@ def test_without_the_breeds_pages_another_species_is_never_a_key_page(tmp_path):
         "listing": f"{x}/sale/puppies/",     # another dog page may stay in the fallback
         "price-or-faq": None,
         "guide": None,                       # every care and breed guide names another species: nothing
-        "city": f"{x}/sale/puppies/cocker-spaniel/leeds/",
+        "city": None,                        # a marketplace's city pick is the breed's: never another breed's city page
         "about": None,
     }
     d = classify(tmp_path, [f"{x}/sale/kittens/", f"{x}/cats/london/"])
@@ -300,9 +300,11 @@ def test_ordinary_pages_and_hubs_are_not_adverts(tmp_path, path, slot, other):
 
 def test_a_multi_species_site_falls_back_to_a_dog_page_first(tmp_path):
     x = P4H
+    d = classify(tmp_path, [f"{x}/ragdoll-care/", f"{x}/advice/dog-care/", f"{x}/sale/kittens/"])
+    assert d["key_pages"]["guide"] == f"{x}/advice/dog-care/"  # not the shallower Ragdoll page
     d = classify(tmp_path, [f"{x}/classifieds/gz4krku3k-bombay-london", f"{x}/sale/puppies/cocker-spaniel/leeds/",
                             f"{x}/sale/kittens/"])
-    assert d["key_pages"]["city"] == f"{x}/sale/puppies/cocker-spaniel/leeds/"  # not the shallower Bombay advert
+    assert d["key_pages"]["city"] is None  # a marketplace's city pick is the breed's or none: never the Bombay advert
     # a site naming no other species keeps today's order: the shortest page, dog word or not
     y = "https://www.example-kennels.co.uk"
     d = classify(tmp_path, [f"{y}/litters/", f"{y}/puppies/available/", f"{y}/leeds/", f"{y}/puppies/leeds/"])
@@ -676,3 +678,70 @@ def test_a_homepage_link_differing_only_in_case_is_the_same_page(tmp_path):
     home = '<html><body><a href="/dog-breeds/staffordshire-bull-terrier">x</a></body></html>'
     d, merged = map_list(tmp_path, [f"{DT}/", f"{DT}/Dog-Breeds/Staffordshire-Bull-Terrier/"], home=home)
     assert (d["home_added"], d["map_list"]) == (0, 2)
+
+
+# --- a breed hub with no type word is the breed's listing; a marketplace's city pick is the breed's ---
+FA, PU = "https://www.freeads.co.uk", "https://www.puppies.co.uk"
+
+
+def test_a_breed_hub_with_no_type_word_is_the_breeds_listing(tmp_path):
+    hub = f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/"
+    advert = f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/41908003/staffy-x-pocket-bully-female/view"
+    d = classify(tmp_path, [f"{FA}/", hub, advert, f"{FA}/uk/buy-sell/pets/dogs/whippet"])
+    assert d["page_types"] == {"listing": 2}          # the hub and its advert: the breed's, not untyped; the whippet stays untyped
+    assert d["key_pages"]["listing"] == hub            # never the advert
+    d = classify(tmp_path, [f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/oxford"])
+    assert d["page_types"] == {"city": 1}              # a city word makes it the breed's city page
+    t = "https://www.trojanstaffuk.com"
+    d = classify(tmp_path, [f"{t}/staffordshire-bull-terrier-females", f"{t}/how-we-rollWe%20want%20a%20Staffy%20puppy"])
+    assert d["page_types"] == {"listing": 1}           # + and %20 never split a word for the type: the stuck-on sentence stays untyped
+
+
+def test_a_marketplaces_city_pick_must_be_the_breeds(tmp_path):
+    # freeads: another species in the map; the Oxford pug hub is never the city pick
+    d = classify(tmp_path, [f"{FA}/oxford/buy-sell/pets/dogs/pug", f"{FA}/leeds/buy-sell/pets/cats/ragdoll",
+                            f"{FA}/uk/buy-sell/pets/dogs/staffordshire-bull-terrier/"], f"--home={FA}/")
+    assert d["key_pages"]["city"] is None
+    # puppies.co.uk: dogs only, but another breed's city pages sit where the breed's own name sits
+    urls = [f"{PU}/sale/staffordshire-bull-terrier", f"{PU}/sale/lancashire-heeler/bristol",
+            f"{PU}/sale/lancashire-heeler/coventry"]
+    assert classify(tmp_path, urls)["key_pages"]["city"] is None
+    d = classify(tmp_path, urls + [f"{PU}/sale/staffordshire-bull-terrier/leeds-west-yorkshire"])
+    assert d["key_pages"]["city"] == f"{PU}/sale/staffordshire-bull-terrier/leeds-west-yorkshire"
+
+
+def test_a_breeders_city_pages_need_no_breed_word(tmp_path):
+    x = "https://www.example-kennels.co.uk"
+    d = classify(tmp_path, [f"{x}/staffy-puppies/", f"{x}/puppies-leeds/", f"{x}/about-us/"])
+    assert d["key_pages"]["city"] == f"{x}/puppies-leeds/"   # one breeder, one breed: unchanged
+
+
+def gap_keyword_rule():
+    """the keyword-gap agent's keyword rule (intel's, run by script there): words() and runs()."""
+    import test_keyword_gap_script as G
+    code = G.script()
+    start, end = code.index('rows = json.load(open("data/locations.json"))'), code.index("long_run = lambda")
+    ns = {"json": json, "re": re}
+    cwd = pathlib.Path.cwd()
+    try:
+        import os
+        os.chdir(REPO)
+        exec(code[start:end], ns)
+    finally:
+        os.chdir(cwd)
+    return ns
+
+
+@pytest.mark.parametrize("line,want", [
+    ("Staffordshire Bull Terriers for sale in Oxford", "staffordshire bull terriers for sale"),
+    ("Staffys for sale", "staffys for sale"),
+    ("Staffies for sale near Leeds", "staffies for sale"),
+    ("Staffie puppies", "staffie puppies"),
+    ("Staffy male puppy", "staffy male puppy"),
+])
+def test_plural_and_singular_breed_terms_count_in_the_keyword_rule(line, want):
+    g = gap_keyword_rule()
+    ws = g["words"](line)
+    found = [" ".join(ws[a:b]) for a, b in g["runs"](ws)]
+    assert any(want in f for f in found), found
+    assert "staffordshire bull terriers" in (pathlib.Path(AGENT).read_text(encoding="utf-8"))
