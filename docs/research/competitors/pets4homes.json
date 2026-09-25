@@ -46,9 +46,9 @@
   "status": "ok",
   "values": {
    "blog": 47,
-   "city": 26,
+   "city": 25,
    "health": 9,
-   "listing": 331
+   "listing": 332
   }
  },
  "cities": {
@@ -125,7 +125,7 @@
  "trust": {
   "status": "ok",
   "values": {
-   "council_licence_shown": true,
+   "council_licence_shown": false,
    "council": null,
    "kc_registration_mentioned": true,
    "health_tests_named": [

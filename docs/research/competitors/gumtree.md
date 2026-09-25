@@ -1,10 +1,11 @@
 # Gumtree — competitor intel
 
 - Root domain: gumtree.com · tier 2 (the UK's big general classifieds site: cars, property, jobs, goods and services, with a pets section where private sellers post dog adverts, and a hub for each breed and town) · analysed 2026-09-25. This is the entry's first report.
+- **Re-typed in the G1 consistency pass (0 credits).** The saved Map list was run again through the final classifier (commit 9d7e7b9) **without any `--post-folder`**, by the controller's ruling: Gumtree's car and goods articles are not posts for this report. The page types, the post count and the price-or-FAQ note below follow from that run. The key picks are unchanged, and the listing and city pages are the same two hubs.
 - Homepage gate: passed. The status was 200, the final URL stayed on gumtree.com, and the page was the live homepage: no bot check, no captcha and no parked page. The emulated phone later loaded the same live homepage.
 - Key pages, as the classifier picked them from the Map list (it flags the site as a `marketplace`, and as a general classifieds site because the map holds adverts that name no dog). Before each scrape I checked that the page named the breed or a dog, as the controller asked:
-  - listing slot: the Staffordshire Bull Terrier hub for Nelson, Lancashire. The search map found it. Its path names the breed, so it was scraped;
-  - price-or-FAQ slot: none. With the two post folders named (see Blog), the only candidates left are car Q&A pages, and those count as adverts, so the classifier leaves the slot empty. Before the folders were named, it picked a guide to the running costs of a used electric car. That page names neither the breed nor a dog, so it would have been skipped anyway;
+  - listing slot: the Staffordshire Bull Terrier hub for Nelson, Lancashire. The search map found it. Its path names the breed, so it was scraped. **This is a single town's hub, not a national one:** it is the best listing page the Map list holds, since neither map returned Gumtree's UK-wide Staffy hub;
+  - price-or-FAQ slot: none. With no post folder named, the Map list holds two price-typed pages (a guide to the running costs of a used electric car and a best-sports-cars article) and four car and goods Q&A pages typed `faq`. On a marketplace or general classifieds site this slot takes only the breed's pages or a page naming a dog, `breeder` or `breeding`, and none of these does, so the final classifier leaves the slot empty;
   - guide slot: none. On a marketplace the guide must be the breed's own, and no Staffy guide URL is in the Map list. The search map did return the site's pet-guides hub (`/info/life/pets`), and its description mentions a Staffy guide. But the hub has no type word in its path, and the guide itself was not in any map;
   - city slot: the Staffordshire Bull Terrier hub for Liverpool. Its path names the breed, so it was scraped;
   - about slot: the classifier picked Gumtree's about-us page under `/info/life/`. **It was skipped and not scraped.** Its path names neither the breed nor a dog, and the controller's rule for this run is to skip any key page that names neither. So the platform's own trust story is not in this report. Re-running with the about page would cost 1 credit, and that is the controller's call.
@@ -39,28 +40,26 @@ The fetched pages show no breeder trust at all, and no platform safeguards eithe
 - The breed's commercial terms show up only through the hub titles and the sellers' own card titles. Gumtree writes no breed copy of its own.
 
 ## Page types
-By script over the 428-URL Map list, with `--home` set and two post folders named (`--post-folder=info/cars/best-cars`, `--post-folder=guides/g`): blog 142, reviews 55, listing 50, city 46, faq 4, about 1. The classifier prints `marketplace: true`.
-- **Blog (142):**
-  - 133 "best cars" articles (the folder index among them);
-  - 8 buying guides under `guides/g`, on used cars, bikes, phones, furniture scams and rentals;
-  - a Peugeot 2008 review, which the table reads as a dated segment.
+By script over the 428-URL Map list, with `--home` and `--search` set and no `--post-folder` (the controller's ruling): reviews 55, listing 53, city 46, breed-guide 6, faq 4, price 2, about 1, blog 1, health 1. The classifier prints `marketplace: true`.
+- **Blog (1):** a Peugeot 2008 car review. The table reads the model year `2008` as a dated segment, so by the rule it is a blog page and a post.
+- **Breed guide (6), health (1), price (2):** car, bike, phone, furniture and rental guides under `guides/g` and one best-cars article. The table types them by `guide`, `test`, `cost` and `price` in their paths. None is about dogs.
 - **Reviews (55):** car model reviews under `/info/cars/<make>/<model>/review`. These are editorial car reviews, not customer reviews.
-- **Listing (50):** the search-map pages make up most of the pet listings:
+- **Listing (53):** the search-map pages make up most of the pet listings:
   - the Staffy hubs for Nelson, Walsall, Livingston and Cheshire, plus the Scotland and Wales Staffy for-sale searches;
   - several bull terrier and "Staffordshire blue" searches;
   - dog hubs for 15 towns and counties;
-  - the rest are goods and search pages whose paths say for-sale or available.
+  - the rest are goods and search pages whose paths say for-sale or available, and three best-cars articles with `sale` or `available` in their paths.
 - **City (46):** every URL that names a `data/locations.json` place. They are mostly property, jobs and goods searches for London, Glasgow, Manchester and others. Among them are the Liverpool Staffy hub and the dog hubs for Coventry and Cornwall.
 - **FAQ (4):** car and goods Q&A pages. Their paths end in a long id, so the key-page test counts them as adverts.
 - **About (1):** the about-us page.
-- Untyped: the rest, which is car make hubs, adverts, property and the pet-guides hub.
+- Untyped: the rest, which is 129 other best-cars articles, car make hubs, adverts, property and the pet-guides hub.
 
 The counts describe the map sample more than the site. The site's real pet structure is one hub for each breed and place, with private adverts under them.
 
 ## Blog
-- `post_count` 141 (the classifier's `posts`), and `post_folder` is `info/cars/best-cars` and `guides/g`. These are the deepest folders in the map that hold only articles. The car-review folders under `/info/cars/<make>/` were not named, because their parent also holds hub and sitemap pages.
-- Every counted post is about cars, goods or renting. No dog post is in the map. The search map returned the pet-guides hub under `/info/life/`, but none of its posts.
-- `topics`, `posting_frequency` and `sampled_word_counts` are NOT FETCHED. No post was fetched, and the post URLs carry no dates.
+- `post_count` 1 (the classifier's `posts`), and `post_folder` is null. By the controller's ruling no post folder is named: Gumtree's car and goods articles are not posts for this report. The one post left is the Peugeot 2008 review, counted by the rule because its model year reads as a dated segment.
+- No dog post is in the map. The search map returned the pet-guides hub under `/info/life/`, but none of its posts.
+- `topics`, `posting_frequency` and `sampled_word_counts` are NOT FETCHED. No post was fetched, and the one post's `2008` is a model year, not a posting date. No topic, frequency or word count is taken from the car articles.
 
 ## Visual
 - From the homepage raw HTML, by script: 54 distinct images. Most are advert photos whose alt text is the advert's title, so the dominant alt class is descriptive. 1 image has no alt.
@@ -98,7 +97,7 @@ The homepage raw HTML holds one JSON-LD block. It has an Organization (with an I
   - The homepage, as markdown and raw HTML. Firecrawl served it from cache.
   - The Nelson Staffy hub, as markdown.
   - The Liverpool Staffy hub, as markdown.
-  The about page was picked but skipped, because it names neither the breed nor a dog. The price-or-FAQ and guide slots were empty.
+  The about page was picked but skipped, because it names neither the breed nor a dog; that still stands. The price-or-FAQ and guide slots were empty, and they are empty under the final classifier too.
 - Credits spent: 5 (2 maps + 3 scrapes at 1 credit each), against a ceiling of 8.
 
 ## Key insight

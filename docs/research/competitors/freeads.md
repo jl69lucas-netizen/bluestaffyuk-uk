@@ -2,6 +2,7 @@
 
 - Root domain: freeads.co.uk · tier 2 (a free classifieds site that now carries pets only, "Freeads Pets": sale, rescue, stud and wanted adverts for every species, with a hub per town, county and breed) · analysed 2026-09-25.
 - **This report replaces today's first freeads report.** That run's key pages were a Staffy-cross advert and the Oxford pug hub, because the page-type table gave the site's Staffy hubs no type. The classifier has since been fixed (commits 2af518b and 60a86b1): a breed hub with no type word now counts as the breed's listing, a marketplace's city and guide picks must be the breed's own, and plural breed terms count in keywords. This run re-typed today's saved map under those rules and re-fetched only the pages the new picks named.
+- **Re-typed in the G1 consistency pass (0 credits).** The saved Map list was run again through the final classifier (commit 9d7e7b9). One Staffy-cross advert is no longer typed, so listing drops from 5 to 4; the key picks are unchanged. The licence field was re-read under the controller's ruling that it is true only when a licence number or a named council is shown.
 - Homepage gate: passed. The status was 200, the final URL stayed on freeads.co.uk, and the page was the live homepage, not a bot check or a parked page.
 - Key pages, as the fixed classifier picked them from the Map list (it flags the site as a `marketplace`):
   - listing slot: the UK-wide Staffordshire Bull Terrier hub. The homepage links it, and the Map list step added it at no cost. It is now typed `listing` as the breed's own hub, and it ranks ahead of the three Staffy adverts in the list;
@@ -18,7 +19,7 @@ This is platform trust, not breeder trust. The site lists other people's pets an
 - hub cards mark ID-verified sellers. The homepage and the hub show a Trustpilot TrustScore badge, and the about page carries the Trustpilot logo.
 
 The fields:
-- `council_licence_shown`: true, but only as a seller's claim. One homepage advert card (a boxer litter) says its breeder holds a five-star licence. The platform itself shows no licence check, and no council is named, so `council` is null.
+- `council_licence_shown`: false. The only licence mention is a bare seller's claim: one homepage advert card (a boxer litter) calls itself KC registered with a "5 star licence". It prints no licence number and names no council, and the platform itself shows no licence check, so under the ruling it is not a licence shown. `council` is null.
 - `kc_registration_mentioned`: true. Many Staffy adverts on the hub say KC registered or KC papers, and the hub has a KC filter.
 - `health_tests_named`: hip and elbow scores (a homepage Labrador advert), and L-2-HGA and HC-HSF4 (one Staffy litter on the hub says the dam is clear of both). All are sellers' claims. Other Staffy adverts say only "health tested" or "DNA clear" without naming a test.
 - `vet_checks_mentioned`: true. Several hub adverts say the pups are vet checked or seen by a vet nurse, and one homepage card says the same.
@@ -58,20 +59,21 @@ Reviews: 15. The about page shows a Trustpilot slider with 15 short platform rev
 - No run held a business, kennel or person's name. Sellers' display names sit in their own links, apart from the card text, so nothing was cut.
 
 ## Page types
-By script over the 91-URL Map list, with `--home` set and no `--post-folder`: city 13, listing 5, breed-guide 2, about 1. The classifier prints `marketplace: true`.
+By script over the 91-URL Map list, with `--home` set and no `--post-folder`, under the final classifier: city 13, listing 4, breed-guide 2, about 1. The classifier prints `marketplace: true`.
 - **City (13):** hubs whose first path segment is a `data/locations.json` place. They cover every kind of pet, and none is for the Staffy:
   - Leeds and Birmingham all-pets hubs;
   - Birmingham dachshund, Cornwall whippet and Oxford pug dog hubs;
   - Birmingham Maine Coon and Aberdeen ragdoll cat hubs;
   - York canaries, London parrots, Leeds turtles and Liverpool rats hubs;
   - Cornwall livestock and Essex horses hubs.
-- **Listing (5):**
-  - the UK Staffy hub, newly typed as the breed's listing;
+- **Listing (4):**
+  - the UK Staffy hub, typed as the breed's listing;
   - the Northern Ireland puppy hub;
-  - three adverts with the breed in the path: a Staffy-cross litter, a blue Staffy litter and a Staffy-cross rehome.
+  - two adverts: a Staffy-cross litter and a blue Staffy litter, whose slugs carry listing words.
+  The Staffy-cross rehome advert counted before is no longer typed: a breed path is a listing only when its last segment is made of hub words, and that advert's is not.
 - **Breed guide (2):** two rabbit pages whose paths hold a breeds folder (one of them an advert). Neither is a guide.
 - **About (1):** the about-us page.
-- **Untyped (70):** mostly breed and species hubs for other breeds and places (`/<place>/buy-sell/pets/<species>/<breed>`), whose paths hold no word from the table. The homepage, a search page and a few adverts for other breeds are also untyped.
+- **Untyped (71):** mostly breed and species hubs for other breeds and places (`/<place>/buy-sell/pets/<species>/<breed>`), whose paths hold no word from the table. The homepage, a search page, a few adverts for other breeds and the Staffy-cross rehome advert are also untyped.
 
 The counts describe the map sample more than the site. The site's real shape is one hub for each place, species and breed, plus the adverts under them.
 

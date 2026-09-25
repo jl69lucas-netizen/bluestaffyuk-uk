@@ -64,11 +64,11 @@ Organization — the homepage's only JSON-LD block, read from the raw HTML.
 - `lighthouse_performance`: NOT FETCHED (no Lighthouse run).
 
 ## Fetch
-Fetch: `map_calls` 2 · search map ran: yes · term `staffordshire bull terrier` · `search_added` 46 · `search_breed_urls` 37 · `search_adverts` 0 · `home_added` 0 · `map_list` 546 · scrapes 3 · credits 5 of a ceiling of 8.
+Fetch: `map_calls` 2 · search map ran: yes · term `staffordshire bull terrier` · `search_added` 46 · `search_breed_urls` 37 · `search_adverts` 22 · `home_added` 0 · `map_list` 546 · scrapes 3 · credits 5 of a ceiling of 8.
 - The first map held 500 URLs (`url_count`), at the cap, and 0 breed URLs (`breed_urls`). The Map list script therefore asked for a search map (`search_map` true, `search_term` "staffordshire bull terrier"), and one ran with a limit of 100.
 - The search map returned 73 URLs; 27 were already in the first map, which left 46 new URLs (`search_added`).
 - Of those, 37 are breed pages on the site (`search_breed_urls`): the Staffy hub, Staffy "near" pages and Staffy adverts.
-- 0 of the search map's URLs are adverts by the key-page test (`search_adverts`): the site's advert ids start the slug and are followed by an underscore, which that test does not read. The page-type table still types them as listings (or, by a place word, as city pages).
+- 22 of the search map's URLs are adverts by the key-page test (`search_adverts`): the site's adverts start their slug with an all-digit id followed by an underscore, and the final key-page test reads that as an advert. This count comes from the G1 consistency pass (0 credits), which re-ran the saved maps through the final classifier (commit 9d7e7b9); the first run's test missed these ids and printed 0. The page types, the post count and the key pages are unchanged, and the page-type table still types these adverts as listings (or, by a place word, as city pages).
 - The homepage links no breed page, so `home_added` is 0.
 - Scrapes: 3, all live (not from cache).
   - the homepage, as markdown and raw HTML;

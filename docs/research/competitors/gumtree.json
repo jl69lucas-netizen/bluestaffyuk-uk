@@ -15,10 +15,13 @@
     "status": "ok",
     "values": {
       "about": 1,
-      "blog": 142,
+      "blog": 1,
+      "breed-guide": 6,
       "city": 46,
       "faq": 4,
-      "listing": 50,
+      "health": 1,
+      "listing": 53,
+      "price": 2,
       "reviews": 55
     }
   },
@@ -120,18 +123,15 @@
   "blog": {
     "status": "ok",
     "values": {
-      "post_count": 141,
-      "post_folder": [
-        "info/cars/best-cars",
-        "guides/g"
-      ],
+      "post_count": 1,
+      "post_folder": null,
       "topics": {
         "status": "NOT FETCHED",
-        "reason": "no post fetched: the six scrapes went to the homepage and the breed's key pages, and no post in the map is about dogs"
+        "reason": "no post fetched: the one post the classifier counts is a car review, and the scrapes went to the homepage and the breed's key pages"
       },
       "posting_frequency": {
         "status": "NOT FETCHED",
-        "reason": "no dates in post URLs and no post fetched"
+        "reason": "the one post URL's dated segment is a car's model year (2008), not a posting date, and no post was fetched"
       },
       "sampled_word_counts": {
         "status": "NOT FETCHED",

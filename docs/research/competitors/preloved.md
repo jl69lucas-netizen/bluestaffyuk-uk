@@ -3,7 +3,7 @@
 - Root domain: preloved.co.uk · tier 2 (a general UK classifieds site for second-hand goods of every kind, with an animals section where private owners sell or rehome pets) · analysed 2026-09-25. This is the first report for this entry.
 - Homepage gate: passed. The status was 200, the final URL stayed on preloved.co.uk, and the page was the live homepage, not a bot check or a parked page.
 - Key pages, as the classifier picked them from the Map list (it flags the site as a `marketplace`):
-  - listing slot: the UK-wide "pitbull or staffy" dog search page. It is one of three Staffy pages the search map found, and it wins on the shortest path;
+  - listing slot: the UK-wide "pitbull or staffy" dog search page. It is one of three Staffy pages the search map found, and it wins on the shortest path. **This is a narrow search-results page, not a national Staffy hub:** it is the best listing page the Map list holds;
   - price-or-FAQ slot: none. No URL in the Map list has a price or FAQ word in its path;
   - guide slot: none. The only `breed-guide` URLs are two book adverts. On a marketplace the guide must be the breed's own;
   - city slot: the Manchester Staffy dog search page;

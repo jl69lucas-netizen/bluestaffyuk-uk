@@ -17,9 +17,9 @@ Registry entries: 21
 | staffy puppy | 5/19 | 2 | yes | — |
 | blue staffies | 4/19 | 2 | yes | — |
 | blue staffy puppies | 4/19 | 2 | yes | — |
-| kc registered staffordshire bull terrier puppies | 4/19 | 2 | no | medium |
 | staffy puppies | 4/19 | 2 | yes | — |
 | blue staffordshire bull terrier puppies | 3/19 | 2 | yes | — |
+| kc registered staffordshire bull terrier puppies | 3/19 | 2 | no | low |
 | staffordshire bull terrier breeders | 3/19 | 2 | yes | — |
 | staffy puppies for sale | 3/19 | 2 | yes | — |
 | blue and black staffy | 2/19 | 2 | no | low |
@@ -150,16 +150,16 @@ Registry entries: 21
 | Value | Competitors | Not fetched | BSUK has it | Priority |
 |---|---|---|---|---|
 | listing | 19/19 | 2 | yes | — |
-| city | 12/19 | 2 | yes | — |
 | blog | 11/19 | 2 | yes | — |
+| city | 11/19 | 2 | yes | — |
+| breed-guide | 10/19 | 2 | yes | — |
+| health | 10/19 | 2 | yes | — |
 | about | 9/19 | 2 | yes | — |
-| breed-guide | 9/19 | 2 | yes | — |
-| health | 9/19 | 2 | yes | — |
 | contact | 6/19 | 2 | yes | — |
 | care-guide | 4/19 | 2 | no | medium |
 | faq | 4/19 | 2 | no | medium |
+| price | 4/19 | 2 | no | medium |
 | reviews | 4/19 | 2 | no | medium |
-| price | 3/19 | 2 | no | low |
 
 ## City gaps
 
@@ -223,11 +223,11 @@ Registry entries: 21
 
 1. schema_types `Person` — 5/20 competitors; BSUK: no
 2. schema_types `SearchAction` — 5/20 competitors; BSUK: no
-3. keywords `kc registered staffordshire bull terrier puppies` — 4/19 competitors; BSUK: no
-4. page_types `care-guide` — 4/19 competitors; BSUK: no
-5. page_types `faq` — 4/19 competitors; BSUK: no
+3. page_types `care-guide` — 4/19 competitors; BSUK: no
+4. page_types `faq` — 4/19 competitors; BSUK: no
+5. page_types `price` — 4/19 competitors; BSUK: no
 6. page_types `reviews` — 4/19 competitors; BSUK: no
-7. page_types `price` — 3/19 competitors; BSUK: no
+7. keywords `kc registered staffordshire bull terrier puppies` — 3/19 competitors; BSUK: no
 8. keywords `blue and black staffy` — 2/19 competitors; BSUK: no
 9. keywords `kc registered staffordshire bull terrier` — 2/19 competitors; BSUK: no
 10. keywords `puppy staffordshire bull terrier` — 2/19 competitors; BSUK: no

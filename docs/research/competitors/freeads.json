@@ -42,7 +42,7 @@
       "about": 1,
       "breed-guide": 2,
       "city": 13,
-      "listing": 5
+      "listing": 4
     }
   },
   "cities": {
@@ -139,7 +139,7 @@
   "trust": {
     "status": "ok",
     "values": {
-      "council_licence_shown": true,
+      "council_licence_shown": false,
       "council": null,
       "kc_registration_mentioned": true,
       "health_tests_named": [

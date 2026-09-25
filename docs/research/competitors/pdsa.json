@@ -17,11 +17,10 @@
    "blog": 3,
    "breed-guide": 5,
    "care-guide": 18,
-   "city": 1,
    "contact": 2,
    "faq": 4,
    "health": 150,
-   "listing": 181,
+   "listing": 182,
    "price": 3
   }
  },
@@ -91,20 +90,6 @@
      "Certified dog behaviourist",
      "Tasty treats"
     ]
-   },
-   {
-    "url": "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/manchester-terrier",
-    "title": "Manchester Terrier - PDSA",
-    "h1": "Manchester Terrier",
-    "h2": [
-     "Manchester Terrier breed information",
-     "Breed-related health problems:",
-     "Exercise requirements:",
-     "Estimated lifetime cost:",
-     "Insure your Manchester Terrier with PDSA:",
-     "Rehoming from a reputable source:",
-     "Not sure if the Manchester Terrier is the right pet for you?"
-    ]
    }
   ]
  },
@@ -138,8 +123,7 @@
     "https://www.pdsa.org.uk/": 4,
     "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/staffordshire-bull-terrier": 10,
     "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/the-cost-of-owning-a-dog": 4,
-    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/crate-training": 9,
-    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/medium-dogs/manchester-terrier": 7
+    "https://www.pdsa.org.uk/pet-help-and-advice/looking-after-your-pet/puppies-dogs/crate-training": 9
    }
   }
  },

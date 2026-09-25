@@ -3,7 +3,7 @@
 - Root domain: puppies.co.uk · tier 2 (an all-breed puppy marketplace for sale, stud, rescue and wanted adverts, with a breed directory and an advice section) · analysed 2026-09-25. This is the entry's first report. The run used the fetch and classifier steps as updated today (commits up to 2234777): the Map list step with its search map, `--home` for the classifier, and this Fetch line.
 - Homepage gate: passed. The status was 200, the final URL stayed on puppies.co.uk, and the page was the live homepage, not a bot check or a parked page.
 - Key pages, as the classifier picked them from the Map list:
-  - listing slot: the Staffordshire Bull Terrier for-sale hub for Leek, a small Staffordshire town. The Liverpool hub is typed `city`, and the site's UK-wide Staffy for-sale hub is not in the Map list, so the listing slot took the shortest remaining breed listing;
+  - listing slot: the Staffordshire Bull Terrier for-sale hub for Leek, a small Staffordshire town. The Liverpool hub is typed `city`, and the site's UK-wide Staffy for-sale hub is not in the Map list, so the listing slot took the shortest remaining breed listing. **This is a town page, not a national hub:** it is the best listing page the Map list holds;
   - price-or-FAQ slot: none. No URL in the Map list has a price or FAQ word in its path, so nothing was scraped;
   - guide slot: the Staffordshire Bull Terrier breed-information page (the homepage links it from its popular-breeds strip);
   - city slot: the Staffordshire Bull Terrier for-sale hub for Liverpool;
@@ -18,7 +18,7 @@ This is platform trust, not breeder trust. The site lists other people's litters
 - a Trustpilot widget showing a star score, and a claim to have homed over 220,000 puppies.
 
 The fields:
-- `council_licence_shown`: true. A homepage advert card carries a licensed-breeder badge, and the menus offer a search of licensed breeders. No council is named anywhere, so `council` is null.
+- `council_licence_shown`: false. A homepage advert card carries a "Licensed breeder" badge, one card title claims a 5-star licence, the menus offer a search of licensed breeders, and a tile calls them "council registered licensed breeders". Each is a bare claim: no licence number is printed and no council is named, so under the controller's ruling (true only when a licence number or a named council is shown) the field is false, and `council` is null.
 - `kc_registration_mentioned`: true. Advert cards carry a Kennel Club registered badge, and one Staffy advert title calls its pups KC registered.
 - `health_tests_named`: none. Cards carry a generic health-tested badge that names no test. The breed page lists conditions the breed can have (hip and elbow dysplasia, kneecap luxation, juvenile cataracts, L-2-HGA and others) but never recommends a test for them.
 - `vet_checks_mentioned`: false. The pages talk about vaccinations, microchipping and a health guarantee, but no fetched page says the puppies are vet checked.
