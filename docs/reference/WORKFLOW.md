@@ -77,7 +77,7 @@ PASS having examined zero pages.
 ## Where the rules live (changed 2026-08-02)
 
 `CLAUDE.md` no longer carries the rules. It keeps identity, paths, the deploy model and
-the nine `judgment` rules (working rules 1–9) plus the breeder's working rules 10–16;
+the nine `judgment` rules (working rules 1–9) plus the breeder's working rules 10–17;
 everything else moved **verbatim** into `rules/*.md`, indexed
 by `data/quality/rule-index.json` where every rule is `test`, `judgment` or `untested`.
 **`untested` means deletion candidate** and `scripts/quality_report.py` §5 prints the list every

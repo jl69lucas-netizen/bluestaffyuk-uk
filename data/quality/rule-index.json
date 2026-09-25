@@ -261,6 +261,14 @@
    "test": "tests/py/test_rule16_gate.py"
   },
   {
+   "id": "project5-pages-outline-links-images",
+   "family": "GATE",
+   "enforced": "test",
+   "claude_md": 17,
+   "test": "tests/py/test_family_rules_on_board.py",
+   "_note": "CLAUDE.md working rule 17. scripts/family_rules.py holds a new location, comparison or blog-post board (never the twelve pages built before, BUILT_BEFORE_SYSTEM_GAPS) to the rule's keyword, link, anchor and image checks; scripts/board_approve.py refuses approval and re-approval while one FAILs (build-gate image checks excepted), which tests/py/test_family_rules_on_board.py proves; board block 7b shows the same findings. The outline-only half is scripts/outline_provenance_check.py (npm run check:outline, in check:all; tests/py/test_outline_provenance_check.py)."
+  },
+  {
    "id": "entity-4-move-loop",
    "family": "COPY",
    "enforced": "untested",

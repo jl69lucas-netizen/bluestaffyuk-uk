@@ -309,9 +309,9 @@ components are listed in `data/design/components.json`, and rebuilt pages render
 - `docs/reference/session-log.md` — build history and **Known Issues**
 - `docs/reference/WORKFLOW.md` — the sprint model
 - `docs/reference/seo-rules.md` — the numbered SEO rules, **57** of them in categories
-  A–J. That is a different count from `data/quality/rule-index.json`'s 74 (of which 9 are
+  A–J. That is a different count from `data/quality/rule-index.json`'s 79 (of which 9 are
   `enforced: judgment`, capped there): the ledger indexes the `rules/` packs, the
-  render-harness checks and working rules 10–16; seo-rules.md numbers its own categories.
+  render-harness checks and working rules 10–17; seo-rules.md numbers its own categories.
   `docs/reference/quick-start.md` states both, and all three files change together.
 - `docs/reference/credentials.md` — which env key exists and what reads it
 - `docs/superpowers/specs/` and `docs/superpowers/plans/` — the six projects' specs and plans

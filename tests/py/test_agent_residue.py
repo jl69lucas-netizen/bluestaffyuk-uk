@@ -209,16 +209,17 @@ def test_no_trust_pillars_line_files_the_paperwork_as_a_licence_placeholder(agen
 
 
 # Every agent's rules banner ("Bound by the site rules, not by a copy of them") names the
-# working rules 10-16 as well as the nine judgment rules: a banner that lists nine rules
-# reads as the whole set, and the seven working rules are the ones a builder breaks first
-# (a board without every link, a reused image moved, a shared hero).
+# working rules 10-17 as well as the nine judgment rules: a banner that lists nine rules
+# reads as the whole set, and the eight working rules are the ones a builder breaks first
+# (a board without every link, a reused image moved, a shared hero, a page not written from
+# its outline). Rule 17 arrived with the system-gaps build.
 BANNER = "Bound by the site rules, not by a copy of them"
 
 
 @pytest.mark.parametrize("agent", AGENTS, ids=lambda p: p.stem)
-def test_every_rules_banner_names_working_rules_10_to_16(agent):
+def test_every_rules_banner_names_working_rules_10_to_17(agent):
     banner = [l for l in agent.read_text(encoding="utf-8").splitlines() if BANNER in l]
     assert banner, f"{agent.name} has no rules banner"
-    assert all("working rules 10–16" in l for l in banner), (
+    assert all("working rules 10–17" in l for l in banner), (
         f"{agent.name}: the rules banner names only the judgment rules — add CLAUDE.md's "
-        "working rules 10–16 by their short names")
+        "working rules 10–17 by their short names")
