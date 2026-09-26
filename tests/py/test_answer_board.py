@@ -87,6 +87,7 @@ def test_the_lisa_sheet_parses_to_21_text_questions():
     assert [q["key"] for q in qs] == [f"q{n:02d}" for n in range(1, 22)]
     assert {q["kind"] for q in qs} == {"text"}
     assert sheet["sections"][-1]["title"] == "What happens next"
+    assert len(sheet["sections"]) == 7
 
 
 import answer_board_batch  # noqa: E402
@@ -111,6 +112,10 @@ def test_make_batch_has_the_spec_shape():
         assert set(q) == Q_KEYS
     assert [q["section"] for q in batch["questions"]] == [0, 0, 1]
     assert batch["questions"][1]["kind"] == "choice"
+    assert batch["questions"][1]["options"] == [{"id": "a", "label": "Workspace rail"},
+                                                {"id": "b", "label": "Side by side"}]
+    assert batch["intro"].startswith("Answer briefly.")
+    assert batch["sections"][2]["lead"] == "We read the answers and save them."
 
 
 def test_the_cli_writes_the_lisa_batch_deterministically(tmp_path):
@@ -142,3 +147,92 @@ def test_the_cli_exits_non_zero_on_a_bad_sheet(tmp_path):
                           str(FIX / "gap.md"), "--project", "x", "--out-dir", str(tmp_path)],
                          capture_output=True, text=True, cwd=ROOT)
     assert run.returncode == 1 and "expected question 2, found 3" in run.stderr
+
+
+def _one(text):
+    return all_questions(answer_sheet.parse_sheet(text))[0]
+
+
+def test_option_ids_are_normalised_to_lowercase():
+    q = _one("# T\n\n## S\n\n1. **Q?** x\n   - (A) One\n   - (B) Two\n")
+    assert q["kind"] == "choice" and [o["id"] for o in q["options"]] == ["a", "b"]
+
+
+def test_option_ids_may_be_up_to_three_characters():
+    q = _one("# T\n\n## S\n\n1. **Q?** x\n   - (10) Ten\n")
+    assert q["options"] == [{"id": "10", "label": "Ten"}]
+
+
+@pytest.mark.parametrize("text", [
+    "# T\n\n## S\n\n1. **Q?** x\n- (a) Unindented\n",
+    "# T\n\n## S\n\n1. **Q?** x\n   - (a)\n",
+])
+def test_a_malformed_option_is_refused_with_the_line(text):
+    with pytest.raises(answer_sheet.SheetError) as err:
+        answer_sheet.parse_sheet(text)
+    assert str(err.value) == "line 6: malformed option; write it indented as '   - (a) Label'"
+
+
+def test_a_question_before_any_section_is_refused():
+    with pytest.raises(answer_sheet.SheetError) as err:
+        answer_sheet.parse_sheet("# T\n\n1. **Q?** x\n\n## S\n")
+    assert str(err.value) == "line 3: a question must sit under a '## Section'"
+
+
+def test_a_sheet_with_no_questions_is_refused():
+    with pytest.raises(answer_sheet.SheetError) as err:
+        answer_sheet.parse_sheet("# T\n\n## S\n\nJust prose.\n")
+    assert str(err.value) == "the sheet has no questions"
+
+
+def test_an_empty_section_title_is_refused():
+    with pytest.raises(answer_sheet.SheetError, match="line 3"):
+        answer_sheet.parse_sheet("# T\n\n## \n\n1. **Q?** x\n")
+
+
+def test_an_empty_bold_question_is_refused():
+    with pytest.raises(answer_sheet.SheetError, match="line 5"):
+        answer_sheet.parse_sheet("# T\n\n## S\n\n1. ** ** x\n")
+
+
+def test_a_tab_indented_continuation_joins_the_question():
+    q = _one("# T\n\n## S\n\n1. **Q?** first\n\tsecond\n")
+    assert q["context"] == "first second"
+
+
+def test_a_leading_bom_is_ignored():
+    sheet = answer_sheet.parse_sheet("\ufeff# T\n\n## S\n\n1. **Q?** x\n")
+    assert sheet["title"] == "T" and len(all_questions(sheet)) == 1
+
+
+def test_sections_carry_no_markdown_key():
+    assert all(set(s) == {"title", "lead", "questions"} for s in parse("mini.md")["sections"])
+
+
+def _cli(*args, cwd=ROOT):
+    return subprocess.run([sys.executable, str(ROOT / "scripts/answer_board_batch.py"), *args],
+                          capture_output=True, text=True, cwd=cwd)
+
+
+def test_the_cli_refuses_a_bad_date(tmp_path):
+    run = _cli(str(FIX / "mini.md"), "--project", "x", "--date", "2026-13-40", "--out-dir", str(tmp_path))
+    assert run.returncode == 2 and list(tmp_path.iterdir()) == []
+
+
+def test_the_cli_refuses_a_batch_id_that_is_not_a_slug(tmp_path):
+    out = tmp_path / "out"
+    run = _cli(str(FIX / "mini.md"), "--project", "x", "--batch-id", "../x", "--out-dir", str(out))
+    assert run.returncode == 2 and "batch id must be a lowercase slug" in run.stderr
+    assert list(tmp_path.rglob("*.json")) == []
+
+
+def test_the_cli_reports_a_missing_sheet_without_a_traceback(tmp_path):
+    run = _cli(str(tmp_path / "nope.md"), "--project", "x", "--out-dir", str(tmp_path))
+    assert run.returncode == 1 and "Traceback" not in run.stderr and "nope.md" in run.stderr
+
+
+def test_a_batch_over_the_size_cap_is_refused(tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(answer_board_batch, "MAX_BYTES", 10)
+    rc = answer_board_batch.main([str(FIX / "mini.md"), "--project", "x", "--out-dir", str(tmp_path)])
+    assert rc == 1 and list(tmp_path.iterdir()) == []
+    assert "over 256 KiB" in capsys.readouterr().err

@@ -10,7 +10,8 @@ run 1..N with no gaps or repeats.
 import re
 
 ITEM = re.compile(r"(\d+)\. (.*)")
-OPTION = re.compile(r"\s+- \(([a-z0-9])\) (.+)")
+OPTION = re.compile(r"\s+- \(([A-Za-z0-9]{1,3})\) (.+)")
+OPTION_LIKE = re.compile(r"\s*-\s*\(")
 BOLD = re.compile(r"\*\*(.+?)\*\*\s*(.*)", re.S)
 GOES = "**Where it goes:**"
 
@@ -22,7 +23,7 @@ class SheetError(ValueError):
 def _finish(item):
     joined = " ".join(" ".join(item["lines"]).split())
     m = BOLD.match(joined)
-    if not m:
+    if not m or not m.group(1).strip():
         raise SheetError(f"line {item['line']}: question {item['n']} has no **bold question**")
     context, _, where = m.group(2).partition(GOES)
     return {"n": item["n"], "key": f"q{item['n']:02d}", "question": m.group(1).strip(),
@@ -31,11 +32,13 @@ def _finish(item):
 
 
 def parse_sheet(text):
-    """Return {"title", "preamble", "sections": [{"title", "lead", "markdown", "questions"}]}.
+    """Return {"title", "preamble", "sections": [{"title", "lead", "questions"}]}.
 
-    Each question: {"n", "key", "question", "context", "where", "kind", "options"}.
+    A section's "lead" collects all of its unindented prose lines (before, between or after
+    its questions), joined with newlines. Each question:
+    {"n", "key", "question", "context", "where", "kind", "options"}.
     """
-    lines = text.splitlines()
+    lines = text.lstrip("\ufeff").splitlines()
     if not lines or not lines[0].startswith("# "):
         raise SheetError("line 1: a sheet starts with '# Title'")
     preamble, sections = [], []
@@ -51,20 +54,26 @@ def parse_sheet(text):
     for no, line in enumerate(lines[1:], start=2):
         if line.startswith("## "):
             close_item()
-            section = {"title": line[3:].strip(), "lead": [], "body": [], "questions": []}
+            if not line[3:].strip():
+                raise SheetError(f"line {no}: a section needs a title after '## '")
+            section = {"title": line[3:].strip(), "lead": [], "questions": []}
             sections.append(section)
             continue
         if section is None:
+            if ITEM.match(line):
+                raise SheetError(f"line {no}: a question must sit under a '## Section'")
             preamble.append(line)
             continue
-        section["body"].append(line)
         opt = OPTION.match(line)
+        if not opt and OPTION_LIKE.match(line):
+            raise SheetError(f"line {no}: malformed option; write it indented as '   - (a) Label'")
         if opt:
             if item is None:
                 raise SheetError(f"line {no}: an option must sit under a question")
-            if any(o["id"] == opt.group(1) for o in item["options"]):
-                raise SheetError(f"line {no}: option {opt.group(1)} is listed twice")
-            item["options"].append({"id": opt.group(1), "label": opt.group(2).strip()})
+            oid = opt.group(1).lower()
+            if any(o["id"] == oid for o in item["options"]):
+                raise SheetError(f"line {no}: option {oid} is listed twice")
+            item["options"].append({"id": oid, "label": opt.group(2).strip()})
             continue
         m = ITEM.match(line)
         if m:
@@ -77,14 +86,15 @@ def parse_sheet(text):
             seen[n] = no
             expected += 1
             item = {"n": n, "line": no, "lines": [m.group(2)], "options": []}
-        elif item is not None and (line.startswith(" ") or not line.strip()):
+        elif item is not None and (line[:1].isspace() or not line.strip()):
             item["lines"].append(line.strip())
         else:
             close_item()
             section["lead"].append(line)
     close_item()
+    if expected == 1:
+        raise SheetError("the sheet has no questions")
     for s in sections:
         s["lead"] = "\n".join(s["lead"]).strip()
-        s["markdown"] = "\n".join(s.pop("body")).strip()
     return {"title": lines[0][2:].strip(), "preamble": "\n".join(preamble).strip(),
             "sections": sections}

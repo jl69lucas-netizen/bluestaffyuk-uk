@@ -46,10 +46,15 @@ def main(argv=None):
     ap.add_argument("--batch-id")
     ap.add_argument("--out-dir", default=str(OUT_DIR))
     a = ap.parse_args(argv)
+    if a.date:
+        try:
+            datetime.date.fromisoformat(a.date)
+        except ValueError:
+            ap.error(f"--date must be YYYY-MM-DD, got {a.date!r}")
     path = pathlib.Path(a.sheet)
     try:
         sheet = parse_sheet(path.read_text(encoding="utf-8"))
-    except SheetError as e:
+    except (SheetError, OSError) as e:
         print(f"{path}: {e}", file=sys.stderr)
         return 1
     if a.date:
@@ -58,6 +63,8 @@ def main(argv=None):
         now = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0)
         date, asked_at = now.date().isoformat(), now.strftime("%Y-%m-%dT%H:%M:%SZ")
     batch_id = a.batch_id or f"{date}-{slug(sheet['title'])}"
+    if not re.fullmatch(r"[a-z0-9][a-z0-9-]*", batch_id):
+        ap.error("batch id must be a lowercase slug")
     batch = make_batch(sheet, batch_id, a.project, asked_at)
     body = json.dumps(batch, ensure_ascii=False, indent=2, sort_keys=True) + "\n"
     if len(body.encode("utf-8")) >= MAX_BYTES:
