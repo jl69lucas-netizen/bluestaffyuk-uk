@@ -236,7 +236,7 @@
    "severity": "blocking",
    "claude_md": 13,
    "test": "tests/render/checks/layout.ts::layout-table-stacks-on-mobile",
-   "_note": "CLAUDE.md working rule 13. The stacking half is the blocking render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile (every table stacks into labelled rows below 640px, caption included); the board half is proven on the `table` shape by tests/py/test_board_previews.py, which offers three rendered styles on its `chrome` axis. Re-classed from untested on 2026-09-26 (CAG parity audit 19d.8)."
+   "_note": "CLAUDE.md working rule 13. The stacking half is the blocking render check tests/render/checks/layout.ts::layout-table-stacks-on-mobile (every table stacks into labelled rows below 640px, caption included); the board half is proven on the `table` shape by tests/py/test_board_previews.py, which offers three rendered styles on its `chrome` axis, though no gate yet requires a table section to use that shape. Re-classed from untested on 2026-09-26 (CAG parity audit 19d.8)."
   },
   {
    "id": "every-video-reused-at-its-id",

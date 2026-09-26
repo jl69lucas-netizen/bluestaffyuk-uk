@@ -486,7 +486,8 @@ CLAUDE_MD_RULES = {
     11: ("untested", None),
     12: ("test", "tests/py/test_link_parity.py"),
     # the stacking half is a blocking render check; the board half's three styles are proven
-    # on the `table` shape by tests/py/test_board_previews.py (CAG parity audit 19d.8)
+    # on the `table` shape by tests/py/test_board_previews.py, though no gate yet requires a
+    # table section to use that shape (CAG parity audit 19d.8)
     13: ("test", "tests/render/checks/layout.ts::layout-table-stacks-on-mobile"),
     14: ("test", "tests/py/test_facts_preserved.py"),
     15: ("test", "tests/py/test_verbatim_set.py"),

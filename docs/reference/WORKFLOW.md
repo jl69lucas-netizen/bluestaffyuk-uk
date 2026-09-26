@@ -696,8 +696,8 @@ lessons never reached the skill that enforces them.*
 
 ```
 1. session-closer skill        → fill the brief's What's Next
-2. Write the lessons            → the project's gate report, docs/reports/<project>-gate-report.md,
-                                  under `## Open items` (a live defect also gets a Known Issue)
+2. Write the lessons           → the project's gate report, docs/reports/<project>-gate-report.md,
+                                 under `## Open items` (a live defect also gets a Known Issue)
 3. BACK-PROPAGATE every lesson into the artifact that ENFORCES it:
      a render defect      → a check in scripts/page_hardening_scan.py + a RED test
      a gate that lied     → .claude/skills/bsuk-gate-integrity/SKILL.md
@@ -838,7 +838,7 @@ full `ls data/`.
 | `data/settings.json` | Manual | the build | Rare |
 | `data/quality/rule-index.json` | Manual | `scripts/quality_report.py` | New or retired rule |
 | `data/quality/evidence-budgets.json` | Manual | `scripts/evidence_audit.py` | Budget changes |
-| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — one row today, `parents-dna-clear` at proof NOT FETCHED (Known Issue 40) |
+| `data/quality/evidence-ledger.json` | evidence-pass | `scripts/evidence_audit.py` | Per claim — one row today, `parents-dna-clear` at proof NOT FETCHED (Known Issue 68) |
 | `data/quality/rework-ledger.json` | learning-loop (appended by hand; the source repo's writer was not ported) | `scripts/quality_report.py` | Per rework window — empty today |
 | `data/boards/` | the page-type builder (the record, `schemas/board.schema.json`), `scripts/board_approve.py` (the approval) | `scripts/build_page_board.py` (renders the board Artifact), `scripts/board_gate.py` | Per page board |
 

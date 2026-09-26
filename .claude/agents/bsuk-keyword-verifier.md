@@ -132,7 +132,7 @@ Run these checks AFTER the standard keyword checklist above. Every item must pas
 - [ ] FAQPage JSON-LD present (required for AIO citation)
 - [ ] ReviewAggregateSchema present (builds E-E-A-T signals)
 - [ ] BreadcrumbList schema present
-- [ ] LLM Visibility score recorded in `docs/reference/top-pages.md` (not ported — source repo only)
+- [ ] LLM Visibility (cited / not cited) recorded in `docs/reference/top-pages.md` (not ported — source repo only)
 
 ### AEO Flags
 - [ ] NO passive voice in first 100 words (passive = harder for LLMs to extract)

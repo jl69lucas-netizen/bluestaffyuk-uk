@@ -28,11 +28,28 @@ SCRIPTS = json.loads((ROOT / "package.json").read_text(encoding="utf-8"))["scrip
 
 
 # 1 ─────────────────────────────────────────────────────────────────────────────────────
+CHAIN_SENTENCE = re.compile(r"`check:all`\s+chains\s+(.*?),\s+in\s+that\s+order", re.S)
+
+
 def test_claude_md_lists_the_check_all_chain_package_json_runs():
-    m = re.search(r"`check:all` chains (.*?), in\s+that\s+order", CLAUDE_MD, re.S)
+    m = CHAIN_SENTENCE.search(CLAUDE_MD)
     assert m, "CLAUDE.md lost its `check:all` chains … in that order sentence"
     documented = re.findall(r"`([\w:-]+)`", m.group(1))
-    assert documented == re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"])
+    # only the `npm run X` steps of check:all are read; a bare command in the chain is not listed
+    chain = re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"])
+    assert documented == chain, (
+        f"CLAUDE.md lists {documented}\n package.json check:all runs {chain}\n"
+        "Adding a check to check:all updates package.json, tests/py/test_package_scripts.py "
+        "(expected) and this CLAUDE.md sentence in the same commit.")
+
+
+def test_the_chain_sentence_survives_any_re_wrap():
+    for text in ("`check:all` chains `check:parity` and `agents`,\nin that order (pinned).",
+                 "`check:all`\nchains `check:parity` and `agents`, in that order (pinned).",
+                 "`check:all` chains `check:parity` and `agents`, in\nthat\norder (pinned)."):
+        m = CHAIN_SENTENCE.search(text)
+        assert m, text
+        assert re.findall(r"`([\w:-]+)`", m.group(1)) == ["check:parity", "agents"], text
 
 
 # 2 ─────────────────────────────────────────────────────────────────────────────────────
@@ -99,7 +116,8 @@ def test_sprint_6_writes_the_lessons_into_the_gate_report():
 @pytest.mark.parametrize("report", GATE_REPORTS, ids=lambda p: p.stem)
 def test_every_gate_report_keeps_its_lessons(report):
     assert LESSONS_H2.search(report.read_text(encoding="utf-8")), (
-        f"{report.name} has no `## Open items` section — Sprint 6 writes the lessons there")
+        f"{report.name} has neither a `## Open items` nor a `## Known Issues open` section — "
+        "Sprint 6 writes the lessons there")
 
 
 def test_there_are_gate_reports():
