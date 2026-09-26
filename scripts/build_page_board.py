@@ -21,6 +21,7 @@ import pageboard as PB
 import link_diversity as LD
 import verbatim_set_check as VSC
 import image_rules as IR          # block 7's image pickers (system-gaps build, Task 10b)
+import keyword_metrics as KM       # block 4b, the ours-vs-top-5 table (parity build Task 18)
 import board_entities as BE
 from _kit_sections import find_sections, page_css, page_sprite, uses_sprite
 
@@ -923,6 +924,17 @@ def render(board, ont, ledger, live, thumbs, slug, previews=None, routes=None, n
                   + "\n\n**Why each section is here**\n\n"
                   + md_table(["Section", "Group", "Framework", "Why", "Source"], why_rows)))
 
+    # parity build Task 18: CAG §7a's ours-vs-top-5 table, on a new-family page only, so the
+    # twelve built boards render byte-for-byte as before.
+    if new_family:
+        kt = KM.table(board)
+        parts.append(("4b. Keyword metrics",
+                      f"Primary keyword **{md(kt['primary_keyword'])}** against the first five "
+                      f"unblocked competitor pages, over the board's {kt['terms']} keyword terms. "
+                      "Title / H1 / H2 / Alt / Description count the primary keyword's exact "
+                      "matches; a dash is not measured. `python3 scripts/keyword_metrics.py "
+                      f"{md(slug)}` prints the same table.\n\n"
+                      + md_table(KM.COLUMNS, [[md(c) for c in KM.cells(r)] for r in kt["rows"]])))
     ent_md = (BE.entities_html(BE.group_entities(board, ont))
               + (f"\n\n**BLOCKED referenced: {', '.join(md(e) for e in auth['blocked'])}.** The board cannot be approved." if auth["blocked"] else "")
               + (f"\n\nPROPOSED (need a source): {', '.join(md(e) for e in auth['proposed'])}." if auth["proposed"] else ""))

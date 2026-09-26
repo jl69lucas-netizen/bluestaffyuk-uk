@@ -177,3 +177,17 @@ def image_build_ready(board, ont):
     """On an approved record every slot resolves to a file the build may use: a served file,
     an ingested folder file, or the generated image whose bytes the breeder approved."""
     return IR.build_findings(board)
+
+
+# ── parity build Task 18: the primary keyword's placement (CAG §7a.7, §7d.6) ─────────────────
+# The logic and the ours-vs-top-5 table are scripts/keyword_metrics.py; imported at the
+# bottom for the same reason image_rules is. keyword_metrics imports pageboard only inside
+# its functions, so this import can never see a half-built module.
+import keyword_metrics as KM  # noqa: E402
+
+
+@register
+def keyword_placement(board, ont):
+    """title-front-load (FAIL from `boarded`, WARN on a draft) and first-100-words (FAIL on a
+    rebuilt, built page)."""
+    return KM.findings(board)
