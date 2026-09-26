@@ -63,7 +63,7 @@
     "test:py": "python3 -m pytest tests/py -q",
     "test:render": "playwright test -c tests/render/playwright.config.ts",
     "test:render:meta": "playwright test -c tests/render/playwright.config.ts meta.spec.ts",
-    "test:render:pages": "playwright test -c tests/render/playwright.config.ts pages.spec.ts",
+    "test:render:pages": "node scripts/render_pages.mjs",
     "test:render:search": "playwright test -c tests/render/playwright.config.ts kit-search.spec.ts",
     "test:render:report": "playwright test -c tests/render/playwright.config.ts --reporter=html"
   },

@@ -117,3 +117,13 @@ def test_the_check_all_chain_is_the_documented_one():
                 "check:competitors", "check:gaps", "check:sitemaps", "check:placeholders",
                 "check:retired", "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected
+
+
+def test_the_page_run_ends_in_the_zero_examined_guard():
+    """`build_scorecard.mjs` holds Guard 1 (a page that wrote no partial) and Guard 2 (a
+    check that examined zero nodes across every page), and until parity plan Task 11 it ran
+    only when somebody remembered to type it. `scripts/render_pages.mjs` runs the page suite
+    and then the scorecard, whatever the page run's result (tests/py/test_render_pages_runner.py).
+    Not an npm `post` hook: npm skips that when the page run fails."""
+    assert SCRIPTS["test:render:pages"] == "node scripts/render_pages.mjs"
+    assert "posttest:render:pages" not in SCRIPTS

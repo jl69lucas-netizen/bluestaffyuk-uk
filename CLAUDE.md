@@ -259,7 +259,9 @@ npm run test:render:pages
 `tests/py/test_doc_drift.py` pins this sentence to it). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
 any page result. `test:render:pages` measures the target pages at 375/768/1280 in a real
-browser.
+browser and then, pass or fail, runs `node scripts/build_scorecard.mjs`
+(`scripts/render_pages.mjs`), which fails a run where a registered check examined zero nodes
+and writes the scorecards `test:render:meta` reads back.
 
 Also: `python3 scripts/board_gate.py <slug>` · `python3 scripts/final_page_audit.py` ·
 `python3 scripts/page_hardening_scan.py` · `python3 scripts/dup_content_audit.py [--headers]` ·

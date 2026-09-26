@@ -17,6 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { registry, MAX_DEFECT_ROWS, type Check, type Defect } from './lib/registry.js';
 import { runCheck } from './lib/runCheck.js';
 import { flattenSlug } from './lib/scorecard.js';
+import { latestCards, readScorecards, zeroExamined } from './lib/examined.js';
 import { fixtureUrl, FIXTURE_BASE } from './lib/servers.js';
 import { measureTopChrome, waitForScrollSettle } from './lib/probes.js';
 import { checkDistFreshness, builtRoutesWithoutSource } from './lib/freshness.js';
@@ -1796,5 +1797,69 @@ test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
     expect(r.defects.length, 'the pair differs by one declaration').toBe(1);
     expect(r.defects[0].message).toMatch(/aside-quote/);
     expect(r.defects[0].message).toMatch(/1\.0\d:1/);
+  });
+});
+
+/**
+ * Every check a page run registers must have examined something on a real page.
+ *
+ * build_scorecard.mjs Guard 2 is the corpus-level alarm for a check that ran and judged
+ * nothing, but it only fires when somebody runs it — and for most of this harness's life
+ * nobody did, because `test:render:pages` stopped at Playwright. It is now chained after the
+ * page run (package.json), and this is the other half: the scorecards on disk are the
+ * durable record of the last page run, so the meta gate reads them and refuses a registered,
+ * non-deferred check whose examined count is zero across the newest card of every target.
+ * A skip, never a pass, when no target has a card: no data must not read as verified.
+ */
+test.describe('zero-examined guard: every non-deferred check examined > 0 in the latest scorecards', () => {
+  const here = dirname(fileURLToPath(import.meta.url));
+  const root = resolve(here, '..', '..');
+  const targetsFile = JSON.parse(readFileSync(resolve(here, 'targets.json'), 'utf8')) as {
+    deferred_checks?: Record<string, string>;
+    pages: { slug: string }[];
+  };
+
+  test('latestCards keeps the newest card per slug and only the slugs asked for', () => {
+    const cards = [
+      { slug: 'a', date: '2026-09-16', examined_by_check: { x: 5 } },
+      { slug: 'a', date: '2026-09-22', examined_by_check: { x: 0 } },
+      { slug: 'b', date: '2026-09-19', examined_by_check: { x: 1 } },
+      { slug: 'gone', date: '2026-09-22', examined_by_check: { x: 9 } },
+    ];
+    const got = latestCards(cards, ['a', 'b']).map((c) => `${c.slug}@${c.date}`).sort();
+    expect(got).toEqual(['a@2026-09-22', 'b@2026-09-19']);
+  });
+
+  test('zeroExamined names a check that judged nothing, a check missing from every card, and never a deferred one', () => {
+    const cards = [
+      { slug: 'a', date: '2026-09-22', examined_by_check: { live: 3, dead: 0, parked: 0 } },
+      { slug: 'b', date: '2026-09-22', examined_by_check: { live: 1, dead: 0 } },
+    ];
+    expect(zeroExamined(['live', 'dead', 'parked', 'unwired'], { parked: 'reason' }, cards)).toEqual([
+      'dead',
+      'unwired',
+    ]);
+  });
+
+  test('the REAL latest scorecards examined every registered, non-deferred check', () => {
+    const cards = latestCards(
+      readScorecards(join(root, 'data', 'quality', 'scorecards')),
+      targetsFile.pages.map((p) => p.slug),
+    );
+    if (cards.length === 0) {
+      test.skip(true, 'no scorecard for any target — run `npm run test:render:pages` (it builds them)');
+      return;
+    }
+    const dead = zeroExamined(
+      registry.map((c) => c.id),
+      targetsFile.deferred_checks ?? {},
+      cards,
+    );
+    expect(
+      dead,
+      `examined zero nodes across the newest scorecard of ${cards.length} target page(s): ` +
+        `${dead.join(', ')} — a check that judged nothing is not a pass. Point it at markup the ` +
+        `pages really carry, or defer it in targets.json with a promotion condition.`,
+    ).toEqual([]);
   });
 });

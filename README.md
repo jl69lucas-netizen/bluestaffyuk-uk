@@ -13,7 +13,7 @@ npm run llms        # data/page-map.json -> public/llms.txt
 npm run build       # astro build -> dist/ (postbuild writes the sitemaps into dist/)
 npm run check:all   # parity, redirects, schema, sitemaps, placeholders gates (reports in docs/reports/)
 npm run test:py     # pytest
-npm run test:render:meta && npm run test:render:pages && node scripts/build_scorecard.mjs --run first
+npm run test:render:meta && npm run test:render:pages   # ends in build_scorecard.mjs, the zero-examined guard
 ```
 
 ## Generated vs hand-authored
