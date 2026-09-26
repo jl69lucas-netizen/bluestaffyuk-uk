@@ -139,3 +139,47 @@ def test_a_killed_page_run_reports_the_signal_and_builds_no_scorecard(tmp_path):
     assert log == ["pages "]
     assert r.returncode == 128 + 15
     assert "SIGTERM" in r.stderr
+
+
+def test_a_rewritten_older_manifest_is_fresh(tmp_path):
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    old = raw / "_manifest.json"
+    old.write_text("{}")
+    os.utime(old, (1_000_000_000, 1_000_000_000))
+    r, log = _run(tmp_path, 0, 0)
+    assert log == ["pages ", "scorecard --run first"]
+    assert r.returncode == 0
+
+
+def test_an_untouched_manifest_is_not_fresh_even_when_recent(tmp_path):
+    """Freshness is before/after, not wall clock: a manifest written a moment before this
+    invocation (by another run) and left untouched by this one is not this run's — even
+    with its mtime ahead of this machine's clock (skew, a network filesystem)."""
+    import time
+    raw = tmp_path / "raw"
+    raw.mkdir()
+    m = raw / "_manifest.json"
+    m.write_text("{}")
+    ahead = time.time() + 60
+    os.utime(m, (ahead, ahead))
+    r, log = _run(tmp_path, 0, 0, manifest=False)
+    assert log == ["pages "]
+    assert "the page run never started (no fresh manifest)" in r.stdout
+    assert r.returncode != 0
+
+
+@pytest.mark.parametrize("flag", [["-u"], ["-u", "all"], ["--update-snapshots"],
+                                  ["--update-snapshots", "missing"], ["--update-snapshots=changed"],
+                                  ["-u", "none", "--reporter=dot"]])
+def test_update_snapshots_with_or_without_a_value_is_a_full_run(tmp_path, flag):
+    r, log = _run(tmp_path, 0, 0, *flag)
+    assert log == [f"pages {' '.join(flag)}", "scorecard --run first"], flag
+    assert r.returncode == 0
+
+
+@pytest.mark.parametrize("flag", [["-u", "kit-preview"], ["--update-snapshots", "kit-preview"]])
+def test_update_snapshots_does_not_swallow_a_positional_filter(tmp_path, flag):
+    r, log = _run(tmp_path, 0, 0, *flag)
+    assert log == [f"pages {' '.join(flag)}"], flag
+    assert FILTERED in r.stdout

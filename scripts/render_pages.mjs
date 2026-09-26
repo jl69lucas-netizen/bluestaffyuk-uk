@@ -14,9 +14,11 @@
 //     the pages it was told not to run as crashed;
 //   - STOPPED EARLY (-x, --max-failures): same, for the pages after the stop;
 //   - NOT A PAGE RUN (--list, --help/-h, --ui);
-//   - NEVER STARTED: globalSetup writes data/quality/raw/_manifest.json at the start of every
-//     real run; no manifest written during THIS invocation means the raw directory holds the
+//   - NEVER STARTED: globalSetup rewrites data/quality/raw/_manifest.json at the start of every
+//     real run; a manifest this invocation did not rewrite means the raw directory holds the
 //     previous run's partials, which the scorecard would merge into a card dated today.
+//     "Rewrote" is judged before/after (absent before and present after, or a different
+//     mtime), never against the wall clock, which skew or a network filesystem can defeat.
 //   - KILLED by a signal, or the page command could not be spawned.
 //
 // --scorecard-run=<label> is ours, not Playwright's: stripped, and passed on as
@@ -32,9 +34,13 @@ import { resolve } from 'node:path';
 // Playwright options that take a value as the NEXT argument; that argument is not a filter.
 const VALUE_FLAGS = new Set([
   '-c', '--config', '--reporter', '-j', '--workers', '--retries', '--repeat-each', '--timeout',
-  '--global-timeout', '--output', '--trace', '--tsconfig', '--browser', '--update-snapshots',
+  '--global-timeout', '--output', '--trace', '--tsconfig', '--browser',
   '--grep', '-g', '--grep-invert', '--project', '--shard', '--max-failures',
 ]);
+// -u / --update-snapshots take an OPTIONAL value: the next argument is theirs only if it is
+// one of these modes; anything else after them is a filter like any other positional.
+const OPTIONAL_VALUE_FLAGS = new Set(['-u', '--update-snapshots']);
+const UPDATE_MODES = new Set(['all', 'changed', 'missing', 'none']);
 const FILTERS = ['--grep', '-g', '--grep-invert', '--project', '--shard', '--last-failed', '--only-changed'];
 const STOPS = ['-x', '--max-failures'];
 const NOT_A_RUN = ['--list', '--help', '-h', '--ui'];
@@ -54,6 +60,7 @@ function hasPositional(args) {
     const a = args[i];
     if (a.startsWith('-')) {
       if (VALUE_FLAGS.has(a)) i += 1;
+      else if (OPTIONAL_VALUE_FLAGS.has(a) && UPDATE_MODES.has(args[i + 1])) i += 1;
       continue;
     }
     return true;
@@ -81,7 +88,16 @@ const skip = (why, code) => {
   process.exit(code);
 };
 
-const t0 = Date.now();
+/** The manifest's mtime, or null when it does not exist. */
+const manifestMtime = () => {
+  try {
+    return statSync(manifest).mtimeMs;
+  } catch {
+    return null;
+  }
+};
+
+const before = manifestMtime();
 const pages = spawnSync(runner[0], [...runner.slice(1), ...args], { stdio: 'inherit' });
 if (pages.error) {
   console.error(`render_pages: could not run the page command ${runner[0]}: ${pages.error.message}`);
@@ -99,13 +115,8 @@ if (hasFlag(args, FILTERS) || hasPositional(args)) {
   skip('a filtered run measures some pages only; run the whole suite for the zero-examined guard', pagesStatus);
 }
 
-let fresh = false;
-try {
-  fresh = statSync(manifest).mtimeMs >= t0;
-} catch {
-  fresh = false;
-}
-if (!fresh) skip('the page run never started (no fresh manifest)', pagesStatus || 1);
+const after = manifestMtime();
+if (after === null || after === before) skip('the page run never started (no fresh manifest)', pagesStatus || 1);
 
 const card = spawnSync(process.execPath, [scorecard, '--run', label], { stdio: 'inherit' });
 if (card.error) {
