@@ -84,7 +84,8 @@ textarea:focus{border-color:var(--blue);background:var(--paper)}
 section.send{border:2px solid var(--blue)}
 .sendrow{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.sendrow>div{flex:1;min-width:240px}
 .sendstatus{font-size:14px;color:var(--ink-2);margin:10px 0 0}
-section.additional{margin-top:8px}.addhelp{margin:0 0 4px;color:var(--ink-2);font-size:15px}
+section.additional{margin-top:8px}section.additional h2.st{font:600 21px/1.25 Fraunces,Georgia,serif;margin:0 0 10px}
+.btn:disabled[aria-disabled="true"]{cursor:not-allowed}.addhelp{margin:0 0 4px;color:var(--ink-2);font-size:15px}
 #additional-text{min-height:140px;overflow:hidden}
 details#done{margin-top:40px}details#done>summary{cursor:pointer;font:600 20px Fraunces,Georgia,serif}
 .donerow{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin:10px 0}
@@ -123,11 +124,11 @@ def render_shell(demo):
 <p id="status-line" class="note" role="status">Connecting to the board…</p>
 <div id="batches"></div>
 <section class="sec additional" id="additional" aria-labelledby="additional-h" hidden>
-<h3 class="st" id="additional-h">Any additional questions</h3>
-<p class="addhelp">Extra questions or sub-tasks for Claude Code — type or paste them here, then send.</p>
+<h2 class="st" id="additional-h">Any additional questions</h2>
+<p class="addhelp" id="additional-help">Extra questions or sub-tasks for Claude Code — type or paste them here, then send.</p>
 <label class="lab" for="additional-text">Your questions</label>
-<textarea id="additional-text" rows="5" autocomplete="off"></textarea>
-<div class="sendrow"><button type="button" class="btn big" id="additional-send" disabled>Send to Claude Code →</button>
+<textarea id="additional-text" rows="5" autocomplete="off" aria-describedby="additional-help"></textarea>
+<div class="sendrow"><button type="button" class="btn big" id="additional-send" aria-describedby="additional-hint" disabled>Send to Claude Code →</button>
 <p class="muted" id="additional-hint"></p></div>
 <p class="sendstatus" role="status" id="additional-status"></p>
 <div class="row"><span>No Claude session watching?</span>

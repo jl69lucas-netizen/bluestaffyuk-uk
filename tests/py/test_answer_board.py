@@ -275,7 +275,9 @@ def test_the_additional_questions_section_sits_between_the_batches_and_done():
     assert page.index('id="batches"') < page.index('id="additional"') < page.index('id="done"')
     assert '<section class="sec additional" id="additional"' in page
     sec = page.split('id="additional"', 1)[1].split("</section>", 1)[0]
-    assert "Any additional questions" in sec
+    assert '<h2 class="st" id="additional-h">Any additional questions</h2>' in sec
+    assert 'id="additional-help"' in sec and 'aria-describedby="additional-help"' in sec
+    assert 'aria-describedby="additional-hint"' in sec
     assert "Extra questions or sub-tasks for Claude Code — type or paste them here, then send." in sec
     assert sec.count("<textarea") == 1 and 'autocomplete="off"' in sec and ">Your questions</label>" in sec
     assert 'id="additional-send"' in sec and "Send to Claude Code" in sec

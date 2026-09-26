@@ -441,7 +441,7 @@
     if ((force || document.activeElement !== e.ta) && e.ta.value !== add.text) { e.ta.value = add.text; grow(e.ta); }
     var empty = !add.text.trim();
     e.send.disabled = !db || empty;  // off in demo and with nothing to send
-    e.send.setAttribute("aria-disabled", String(addSending));  // busy while a Send runs
+    e.send.setAttribute("aria-disabled", String(addSending || e.send.disabled));  // off, or busy while a Send runs
     setText(e.hint, db && empty ? "Type something first" : "");
   }
   function showAdditional() {

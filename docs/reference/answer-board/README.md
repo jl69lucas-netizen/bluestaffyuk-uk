@@ -50,7 +50,8 @@ for the task in hand). On a note naming `additional/<sid>` (or when the user say
 additional questions"):
 
 1. ArtifactData `get`, collection `additional`, doc_id `<sid>` (with no note, `list`
-   `additional` and take the newest `s-…` not yet saved under `answers/`).
+   `additional` and take the newest `s-…` not yet saved under `answers/`). If the snapshot is missing, reply that
+   the save failed and ask the user to press Send again.
 2. Save the text as sent to
    `docs/reference/answer-board/answers/additional-<YYYY-MM-DD>-<sid>.md`, and commit.
 3. ArtifactComments `reply` in the Send's thread (what you took on, and the commit), then act
