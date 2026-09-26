@@ -1,0 +1,1027 @@
+<title>CAG Parity Audit</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+:root{--ground:#F3F1EC;--paper:#FFFFFF;--ink:#1B2430;--ink-2:#46566B;--ink-3:#7A8797;--line:#DAD6CC;--blue:#2C4A6B;--blue-soft:#E4EAF1;--steel:#8FA3B8;--code-bg:#ECE9E1;--ok:#2F6B4F;--warn:#9A4A2A;--mark:#FBF1C7}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}}
+:root[data-theme="dark"]{--ground:#141A21;--paper:#1B232D;--ink:#E9ECF0;--ink-2:#B4BFCC;--ink-3:#7F8C9B;--line:#2C3743;--blue:#8FB3D9;--blue-soft:#22303F;--steel:#5C7086;--code-bg:#111820;--ok:#7FC49F;--warn:#E39B7A;--mark:#4A3F16}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font:16px/1.6 "Source Sans 3",system-ui,-apple-system,sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 24px 96px}
+header.mast{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;padding-bottom:18px;border-bottom:3px solid var(--blue);margin-bottom:8px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);font-weight:600;margin:0 0 6px}
+h1.title{font-family:Fraunces,Georgia,serif;font-weight:700;font-size:clamp(28px,4vw,42px);line-height:1.08;margin:0;text-wrap:balance}
+.meta{font-size:13px;color:var(--ink-3);text-align:right;line-height:1.5}
+.pill{display:inline-block;border-radius:50px;padding:2px 10px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--line);background:var(--paper)}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 26px;font-size:13px;color:var(--ink-2)}
+button.btn{font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:6px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer}
+button.btn.ghost{background:transparent;color:var(--blue)}
+:root[data-theme="dark"] button.btn:not(.ghost),:root:not([data-theme="light"]) button.btn:not(.ghost){color:var(--ground)}
+button:focus-visible{outline:3px solid var(--steel);outline-offset:2px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:14px;margin:0 0 26px}
+nav.toc a{color:var(--blue);text-decoration:none;border-bottom:1px solid transparent}
+nav.toc a:hover{border-color:var(--blue)}
+section.sec{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:22px 28px 26px;margin:0 0 18px;scroll-margin-top:16px}
+section.sec .sh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:0 0 10px}
+section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px;margin:0;line-height:1.2}
+.md p,.md li{max-width:72ch}
+.md h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2);margin:20px 0 6px}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 14px;display:block;overflow-x:auto}
+.md th{text-align:left;font-weight:600;color:var(--ink-2);font-size:12px;text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--blue);padding:6px 10px;white-space:nowrap}
+.md td{padding:6px 10px;border-bottom:1px solid var(--line);vertical-align:top;font-variant-numeric:tabular-nums}
+.md code{font:13px/1.5 "JetBrains Mono",ui-monospace,Menlo,monospace;background:var(--code-bg);padding:1px 5px;border-radius:4px}
+.md pre{background:var(--code-bg);padding:14px 16px;border-radius:6px;overflow-x:auto;font:13px/1.55 "JetBrains Mono",ui-monospace,Menlo,monospace}
+.md pre code{background:none;padding:0}
+.md strong{color:var(--ink)}
+.md a{color:var(--blue)}
+.md blockquote{border-left:3px solid var(--blue);margin:10px 0;padding:2px 0 2px 14px;color:var(--ink-2)}
+.copied{color:var(--ok);font-size:12px}
+@media (max-width:640px){header.mast{grid-template-columns:1fr}.meta{text-align:left}section.sec{padding:16px 16px 20px}}
+@media (prefers-reduced-motion:no-preference){button.btn{transition:opacity .15s}button.btn:hover{opacity:.85}}
+</style>
+<div class="wrap">
+<header class="mast"><div><p class="eyebrow">BlueStaffyUK · before project 5</p><h1 class="title">Does BSUK carry the CAG page build brief?</h1></div>
+<div class="meta"><span class="pill">2026-09-26</span> <span class="pill">audit complete — 25 gaps, 3 decisions</span><br>docs/reports/cag-brief-parity-audit.md</div></header>
+<div class="toolbar"><button class="btn" id="copy-all">Copy the whole document as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
+<nav class="toc" id="toc"></nav>
+<div id="doc"></div>
+</div>
+<script type="text/markdown" data-title="Summary">
+**Question asked (2026-09-26):** BSUK's agents, skills and rules were built from CAG's. The CAG
+*Universal Page Build Brief* (v2.0, 26 sections) is the workflow CAG runs before building a page.
+Does BSUK carry every rule, sprint, workflow step and gate in it, and what must be added before
+project 5?
+
+**Source:** https://claude.ai/code/artifact/f63b8e4f-3bf0-43e7-af6e-7632255cdfe0 · **Repo:**
+`foundation` @ `0454a96` · **Branch for this work:** `cag-parity`
+</script>
+<script type="text/markdown" data-title="Verdict">
+**BSUK has most of the brief. What it lacks is the per-page run and the proof that its gates can
+see project 5's pages.**
+
+| | Items | Share |
+|---|---|---|
+| PRESENT | 217 | 51% |
+| PARTIAL | 121 | 29% |
+| MISSING | 39 | 9% |
+| N/A — CAG-only or a deliberate, recorded BSUK difference | 46 | 11% |
+| **Total** | **423** | |
+
+Three things stand out:
+
+1. **Every step of the brief exists somewhere in BSUK, but there is no single per-page run
+   sheet.** You described the brief as "a workflow before I build a page". BSUK has the parts: the
+   builder skill, the page board (one board approval covers CAG gates 2–5), `board_approve.py`,
+   the gates, and the session closer. What it lacks is one ordered run for each page: an intake
+   block, a `gate:page <slug>` runner that runs every gate twice, and a close-out that prints the
+   measurement numbers.
+2. **Several gates would pass project 5 pages without looking at them.** New pages are not added
+   to the render targets. The zero-examined guard only runs when someone remembers to run it. The
+   H3 image-first check matches a CSS class the real pages do not use. The hardening scan reads 2
+   files for a city page. And `board_gate` (the Asset Gate) is not part of `check:all`. CAG
+   learned this the hard way: its blocking contrast check examined zero nodes for a full day.
+3. **Six live defects or fabrication risks came up**, and I confirmed each one in the repo
+   myself. They are listed below.
+</script>
+<script type="text/markdown" data-title="How this was checked">
+Four Opus auditors each took one band of sections (§0–5, §6–12, §13–18, §19–26). Each checked
+every item, checkbox and metric in the brief against BSUK's `CLAUDE.md`, `rules/`, `WORKFLOW.md`,
+skills, agents, scripts, tests and `package.json`. Every item got a verdict with a file:line, and
+each PRESENT item is marked either *enforced* (a check fails when the rule is broken) or
+*text-only*. CAG facts were judged by their BSUK equivalent: £ prices instead of $ prices,
+Carlisle instead of Midland, steel/brass/bone instead of green/clay. The repo was only read. The
+controller re-checked the sharpest claims from each band in the repo before trusting them
+(marked ✔ below).
+
+The full item-by-item tables are Appendices A–D.
+</script>
+<script type="text/markdown" data-title="Scoreboard — all 26 sections">
+| § | Section | Present | Partial | Missing | N/A | Where BSUK stands |
+|---|---|---|---|---|---|---|
+| 0 | Target Block | 0 | 3 | 1 | 1 | No intake block; the board has no auto-filled page state |
+| 1 | Facts and brand constants | 12 | 8 | 0 | 5 | Fact lint covers docs, not `dist/` or `data/`; invented method label still in two skills |
+| 2 | Skill/agent routing | 43 | 3 | 7 | 3 | Nearly every CAG skill has a `bsuk-*` twin; visual-intelligence not ported (KI 44) |
+| 3 | Seven-sprint pipeline | 5 | 4 | 0 | 3 | Three stop points instead of seven (deliberate); Asset Gate not in `check:all` |
+| 4 | URL/canonical/redirect gate | 1 | 4 | 5 | 0 | Redirect checks enforced; no URL-family decision table for the city cluster |
+| 5 | Research data inventory | 1 | 2 | 3 | 2 | No inventory step; Search Console is marked NOT FETCHED for the whole site without checking |
+| 6 | Competitor research, fan-out | 5 | 11 | 2 | 4 | Competitor HTML is parsed, then thrown away (no word, image or schema counts) |
+| 7 | Keyword metrics | 8 | 19 | 4 | 3 | No ours-vs-top-5 numeric table; Rule 18 contradicts the keyword verifier |
+| 8 | Entities, co-occurrence | 1 | 5 | 1 | 1 | No entity count, pair table or predicate table; the city budget is hard-coded to Glasgow |
+| 9 | Competitor gaps, angles, voice | 3 | 3 | 3 | 0 | Trust and content gaps enforced; "why they rank", voice and depth gaps missing |
+| 10 | Strategy 2+1 | 3 | 1 | 0 | 1 | Two strategies (deliberate); CTA strategy present |
+| 11 | Section distribution matrix | 12 | 0 | 1 | 1 | Strongest area — the board schema enforces groups, framework and `why_source` |
+| 12 | H1–H6 outline gate | 10 | 3 | 2 | 3 | Header collisions are not refused at approval; Title Case and opening-paragraph checks are advisory only |
+| 13 | Components, hero refresh | 7 | 5 | 1 | 1 | City hero pool undecided (KI 60); H3 image-first check is blind |
+| 14 | Tool/special element | 4 | 1 | 1 | 0 | Decision exists; no board record of the evidence |
+| 15 | Images, Asset Gate | 9 | 8 | 1 | 0 | Bake under 95 KB enforced; the uniform in-body image box was never built |
+| 16 | Build rules | 10 | 8 | 0 | 0 | Global CTA flag ignored; puppy cards have no delivery line; Link-First untested |
+| 17 | Responsive | 9 | 1 | 2 | 3 | Strong; new pages are not added to render targets |
+| 18 | Harden pass | 4 | 4 | 1 | 0 | Hardening scan misses city pages and the kit |
+| 19 | Gates and pass checks | 25 | 8 | 1 | 3 | Wiring checked both ways; examined-count > 0 not wired; "run twice" is not a rule |
+| 20 | Measurement ledger M1–M18 | 9 | 6 | 2 | 2 | No close-out prints the numbers; `rework_ledger.py` never built |
+| 21 | LLM visibility | 5 | 1 | 1 | 2 | One engine per page (deliberate); the 0–10 score is promised but never computed |
+| 22 | Deploy and close | 7 | 2 | 0 | 2 | Push, live 200 and IndexNow deferred to project 6 (recorded) |
+| 23 | Deliverables index | 5 | 4 | 0 | 0 | Per-project gate reports exist; no per-page deliverable list |
+| 24 | Reference library, banked traps | 15 | 3 | 0 | 2 | Traps banked in `WORKFLOW.md` and Known Issues |
+| 25 | Open flags | 3 | 1 | 0 | 4 | Known Issues register exists; no "resolved — do not re-raise" state |
+| 26 | Brief → web tool | 1 | 3 | 0 | 0 | Boards are stage 2 (form); no run tracker or live ledger |
+</script>
+<script type="text/markdown" data-title="Your framing: the per-page workflow">
+CAG runs one brief per page, in order: Target Block, then seven sprints with their gates, then
+close. BSUK spreads the same run across files:
+
+| CAG step | BSUK today | Gap |
+|---|---|---|
+| §0 Target Block | Board header + `data/facts/rebuilt.json` | No auto-filled intake: page state, robots, verbatim count, empty `h1`, question file, retired-term hits |
+| §4 URL gate | `redirect_check.py` (enforced) | No decision table for each URL family |
+| §5 Data inventory | — | No step at all |
+| Sprints 0–1 | `bsuk-query-augmentation` → board (one approval) | Competitor metrics discarded; no keyword or entity numbers |
+| Asset Gate | `board_gate.py` + sha-bound image approvals | Not in `check:all` — easy to skip |
+| Sprints 2–3 | Builder skill + `page_hardening_scan.py` | Scan misses city pages and the kit |
+| Sprint 4 | Many gates, each run by hand | No `gate:page <slug>`; "run twice" not a rule |
+| Sprint 5 | `bsuk-llm-keyword-intel` | No score |
+| Sprint 6 | `session-closer` + gate report | No measurement ledger; IndexNow cannot see city pages |
+
+**Recommended:** add `docs/reference/page-run.md` as the single ordered per-page checklist, and
+back each row with a command. This means an intake block on the board, `npm run gate:page --
+<slug>` (every page gate, run twice, then diffed), and `scripts/measurement_ledger.py` at close.
+**Why:** project 5 runs this sequence 30+ times. A run that lives across 12 files is the one that
+gets skipped on page 14. **Trade-off:** one more document to keep current. The
+`check:workflow` guard already fails on dead references, so it cannot silently rot.
+</script>
+<script type="text/markdown" data-title="Live defects and fabrication risks (fix first)">
+| # | Finding | Evidence | Why it matters for project 5 |
+|---|---|---|---|
+| D1 ✔ | An invented brand method label is still required by two skills and WORKFLOW | `bsuk-aeo-pass/SKILL.md:142` "The Carlisle Socialization Method"; `bsuk-entity-graph/SKILL.md:72`; `WORKFLOW.md:503` | Lisa never named a house method. An agent following the AEO pass would print a made-up credential on 28 pages |
+| D2 ✔ | The city-term budget is hard-coded to Glasgow | `data/quality/evidence-budgets.json:20,56-63` | 27 of 28 city pages have no ceiling on their city term; the brand name has no ceiling at all |
+| D3 ✔ | Boards say `global_cta: "hidden"`, but the footer always renders its CTA band | 12 of 13 boards; `SiteFooterKit.astro` renders `.cta-band` with no condition | Approved boards do not match built pages; 30 more boards would repeat it |
+| D4 ✔ | Puppy cards carry no delivery line | `src/components/kit/PuppyCard.astro` — no delivery text | City pages mount this card; CAG never ships a card without its shipping line |
+| D5 | Retired facts sit on 11 indexable city pages and in `data/locations.json` | KI 65: retired £100 delivery, £850–£1,200 band, "non-refundable", "council-licensed" | The fact lint only scans docs and agents, never `dist/` or `data/` — CAG §1b "sweep both tenses" |
+| D6 ✔ | IndexNow `--changed` cannot see any city page | `scripts/indexnow_submit.py` matches only `src/pages/<x>/index.astro`; cities render from `uk-locations/[slug].astro` | Project 6 would submit none of project 5's 28 pages |
+</script>
+<script type="text/markdown" data-title="Gaps to close before project 5">
+Grouped into four waves, easiest first. Each item names the CAG section and the audit row.
+
+### Wave 1 — Fix and clean up (small, no decisions)
+
+| # | Change | CAG § | Why before project 5 |
+|---|---|---|---|
+| 1 | Delete the invented method label (D1); add it to the residue lint | 1e | Stops a fabricated claim from being built into 28 pages |
+| 2 | City term per slug from `data/locations.json` + a `bluestaffyuk` brand budget (D2) | 8 | Keeps each city page within its own term budget |
+| 3 | `PuppyCard` delivery line from `data/settings.json` + `dist/` test (D4) | 16d | Every city page shows prices |
+| 4 | Resolve the Rule 18 contradiction (`seo-rules.md:109-122` "hard target" vs `bsuk-keyword-verifier.md:250` "no floor") | 7b | Writers get two different instructions today |
+| 5 | `perf_audit.py` defaults to 5 runs and reports the warm median of runs 2–5 with the spread (the docstring already says 5; the code says 1) | 19b, M7 | CLS is bimodal; one run proves nothing |
+| 6 | Doc drift: `CLAUDE.md` `check:all` list is missing `check:outline`; `rules/design.md` points at emoji files that do not exist; `WORKFLOW.md:840` calls the evidence ledger empty; `quality_report.py` promises `rework_ledger.py`; the lessons-doc location is never used; rule-index marks table stacking `untested`; the LLM 0–10 score is promised but never computed | 19d, 20, 21, 22 | Stale instructions mislead the agents that will build project 5 |
+
+### Wave 2 — Make the gates see project 5 pages
+
+| # | Change | CAG § | Why |
+|---|---|---|---|
+| 7 | Retired-facts sweep over `data/`, `src/` and `dist/`: every £ figure in the locked set; "non-refundable", "council-licensed" and the former city outside its slugs are banned (D5) | 1b, M14 | Turns KI 65 into a failing check before 28 bodies are rewritten |
+| 8 | Every page in `data/facts/rebuilt.json` must be in `tests/render/targets.json` (pytest); add a `comparison` page type | 17, 19c | Otherwise every blocking render check examines none of the new pages |
+| 9 | Run the zero-examined guard (`build_scorecard.mjs`) after `test:render:pages`, plus a meta test: every non-deferred check examines > 0 | 19c, M1 | CAG's most expensive lesson |
+| 10 | Chain `board_gate.py` into `check:all` for every rebuilt page | 3, 15c | Makes the Asset Gate mandatory, not optional |
+| 11 | `board_approve.py` refuses `header-collision` on new pages | 12 | Today a colliding H2 is approved, then fails later and forces a re-approval |
+| 12 | Point `layout-h3-image-first` at the real image class; add a `promotions` record to `targets.json` + meta test; promote hero/counter separation, H3 image-first, opening paragraph and Title Case to blocking on new pages | 12, 13, 19c | Rule 17 adds an image under every H3; the check that guards it matches nothing |
+| 13 | Hardening scan reads the city template, its data and `src/components/kit/**`; replace CAG-only mandated classes | 18 | The harden step would otherwise pass without reading the page |
+| 14 | Record a list of slugs whose rendered `dist/` output changed (dist-hash diff) at every close (D6) | 22, M13 | Project 6 needs the real IndexNow list |
+
+### Wave 3 — Research and keyword numbers
+
+| # | Change | CAG § | Why |
+|---|---|---|---|
+| 15 | `query_augment.py --extract-h2` keeps title, meta, per-section word counts, H3s, image/video/table counts and schema `@type`s in `competitors.json` | 6, 9 | It already parses the HTML at no extra cost; Rule 27's word target is otherwise always NOT FETCHED |
+| 16 | `scripts/keyword_metrics.py`: an ours-vs-top-5 table (unique terms, variations, exact match per tag, first 100 words, title front-load) shown on the board | 7a | CAG's §7a table has no BSUK equivalent at all |
+| 17 | Geo-token check (≥1 body H2 + meta description) and a two-keyword-header board check | 7b, 12 | Cheap; CAG measured the geo token as the one that decides retrieval |
+| 18 | Claim ledger inverted: a health or credential claim not in the ledger fails | 1d | Today only repeated known claims are caught |
+| 19 | `NOT FETCHED — <barrier>` lint on new board, query and research files (only 40 of 192 research files name a barrier) | 1f, 5d | A bare NOT FETCHED cannot be compared against a later run |
+| 20 | A shared Reddit thread ledger across city pages | 6 | 28 pages would otherwise mine the same threads again |
+
+### Wave 4 — The per-page run
+
+| # | Change | CAG § | Why |
+|---|---|---|---|
+| 21 | `docs/reference/page-run.md` — the ordered per-page run; `check:workflow` guards its references | 3, 23 | Your framing: one workflow before each page |
+| 22 | Auto-filled intake block on each board (page state, robots, verbatim count, empty `h1`, question file, retired-term hits); close KI 63 | 0, 5 | CAG §0 — "mode is determined by looking" |
+| 23 | `npm run gate:page -- <slug>`: dup (body + `--headers`), final audit for the right profile, hardening, AEO and evidence audits, each with `--fail-on-error`, run twice and diffed; the "run twice" rule goes in `rules/gates.md` | 19a, 19b, M8 | One command per page instead of seven |
+| 24 | `scripts/measurement_ledger.py` — JSON + table of M1–M3, M6, M8–M10, M12, M13, M18 in every gate report | 20, 26 | CAG §20: each is a number reported at close, not a box ticked |
+| 25 | A URL-family decision table for the city cluster and comparison slugs (Glasgow pair, two national rows — KI 59, mixed slug patterns, KI 62) | 4 | One decision before the first city board, not 28 separate ones |
+</script>
+<script type="text/markdown" data-title="Decisions that need you">
+| Decision | Options | Recommended |
+|---|---|---|
+| **In-body image box** (CAG §15a) | (a) Adopt CAG's uniform 760px 16:9 box + portrait `og-tall` on mobile · (b) keep BSUK's `.bl-img` (full width, 420px cap, natural ratio) and only enforce `sizes` | **(a)** — rule 17 puts an image under every heading on 30+ pages; a fixed box removes CLS risk and makes the H3 image-first check matchable. Trade-off: the 12 built pages keep `.bl-img` until they are touched |
+| **Global CTA flag** | (a) Wire `global_cta` so `hidden` hides the footer band · (b) retire the field | **(a)** — the 12 approved boards chose "hidden"; honouring what was approved is the rule. Trade-off: the footer band disappears from 12 built pages |
+| **City hero pool (KI 60)** | Already on the answer board (batch `2026-09-26-project-5-decisions…`) | Answer there |
+</script>
+<script type="text/markdown" data-title="Adopt later, not before project 5">
+- Entity count, co-occurrence pair table and predicate triples (§8) — worth it once the first city
+  pages exist to measure against.
+- Voice/tone, "why they rank" and depth fields in competitor gaps (§9).
+- H2 A/B variants ×5 (§12 — BSUK does the H1 only).
+- Dial scroll-spy Playwright spec and Link-First anchor check (§13, §16c) — cheap, can ride along
+  with the first city page.
+- LLM visibility re-measure after deploy, the score, and Search Console baselines — project 6
+  (live domain).
+- Run tracker and live ledger dashboard (§26 stages 3–4).
+</script>
+<script type="text/markdown" data-title="Deliberate differences — do not adopt">
+Recorded in BSUK and still correct: work on a project branch and never push until project 6 (CAG:
+`main`, push is deploy) · three stop points instead of seven gates · exactly two strategies ·
+DataForSEO before Firecrawl · titles ≤70 and descriptions 140–160 (Rule 21) · four counters,
+not eight · section count = competitors' highest real H2 count + 3, never 22 · FAQ = three blocks
+of 15–20 H3s · locked px type scale, not fluid clamp · ringless rail dial · no seams · one LLM
+engine per page · CITES, parrot taxonomy and method labels dropped.
+</script>
+<script type="text/markdown" data-title="Appendix A — item table, CAG §0–5">
+Read-only audit. Every citation was opened or grepped; nothing in the repo was changed or run beyond read-only greps.
+"Enforced" names the check that fails when the item is violated. `check:all` = the package.json chain (parity, facts, links, verbatim, outline, redirects, schema, queries, competitors, gaps, sitemaps, placeholders, workflow, markers, agents). The rule ledger `data/quality/rule-index.json` currently holds 79 rows: 50 `test`, 20 `untested`, 9 `judgment`.
+
+---
+
+### §0 · Target Block
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 0.1 | Target Block fields: URL, page type, cluster position, MODE, on-disk size/mtime, live status, sitemap entry, primary keyword, GSC/Bing baselines, inbound links, asset folder, siblings | PARTIAL | ENFORCED only for the fields that exist (schema) | `schemas/board.schema.json` meta requires `slug, page_type, status, research_as_of, sources`; brief requires `primary_keyword` (validated by `scripts/pageboard.py:101` `validate_board`); `data/boards/*.json` `meta.sources` list the src/dist paths with fetch dates; `data/locations.json` rows carry `robots` and `defects` (e.g. `"defects": ["stub"]`, `.claude/skills/bsuk-location-page-builder/SKILL.md:336-338`) | **ADOPT-BEFORE-P5.** Missing: mode, live robots state, sitemap presence, baselines, inbound-link count, asset folder, siblings. Have `scripts/build_page_board.py` fill an **intake block** automatically. The 28 cities are in different starting states: 7 stubs with an empty verbatim set (KI 79), 11 indexable bodies that print retired figures (KI 65), and 9 rows with an empty `h1` (KI 59). A per-page intake line stops each builder working out its state again from nothing. |
+| 0.2 | Record the defects already found on disk before Sprint 0 opens | PARTIAL | Partly: `check:facts` / `check:verbatim` require every dropped or changed item to be listed | Defects are logged per cluster, not per page: KI 59, 65 and 79 (`docs/reference/session-log.md:1132, 1195, 1359`). Board `verbatim.changed` and `dropped` record each wrong-fact change with its reason (`CLAUDE.md:169-174`, `scripts/pageboard.py:539-541`) | **ADOPT-BEFORE-P5**, as part of the 0.1 intake block: per-city defect rows filled from the KI 65 scan (retired price band, flat delivery fee, "non-refundable", former city, "council-licensed"). |
+| 0.3 | Baselines are filled from the §5 inventory, never left blank; `NOT FETCHED` only after looking | MISSING | — | GSC/GA4 are declared NOT FETCHED across the whole site (`docs/reference/WORKFLOW.md:17-18`, `docs/reference/quick-start.md:48`). No inventory step exists (see §5) | **ADOPT-BEFORE-P5** (see 5.0 / 5a). |
+| 0.4 | Determine the mode by looking (`ls -la`, read the file); a 200 response is not the same as finished | PARTIAL | Partly: `tests/render/lib/freshness.ts:280-297` refuses a stale `dist/` | Board `meta.sources` cites both `src/pages/<slug>/index.astro` and `dist/<slug>/index.html`. The location builder reads the row's `robots`/`defects` (`bsuk-location-page-builder/SKILL.md:336`). There is no explicit "mode" field and no "a 200 is not finished" rule | **ADOPT-BEFORE-P5** inside the 0.1 intake block. Derive the mode (`stub` / `migrated-indexable` / `new`) from `locations.json` `defects` + `robots` + `data/facts/rebuilt.json`, so it is computed rather than asserted. |
+| 0.5 | `APPROVAL GATE 0`: the breeder confirms the Target Block before Sprint 0 | N/A (deliberate) | — | BSUK allows exactly three stop points (the Sprint 0.5 brief, the Sprint 1 outline, the Asset Gate), because sessions run with the breeder away (`docs/reference/WORKFLOW.md:22-26`) | **SKIP** a separate human gate. The intake block goes onto the board, which is already approved at Sprint 1. |
+
+### §1 · Non-Negotiable Facts and Brand Constants
+
+### 1a · Wrong in circulation / only looks wrong
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 1a.1 | CITES Appendix II is WRONG (correct on sight) | N/A — BSUK equivalent **former city (Glasgow)** is PRESENT | ENFORCED: `tests/py/test_former_city_templates.py:1-40` (src/), `tests/py/test_data_files.py::test_site_settings_do_not_say_glasgow` (:44), `tests/py/test_agent_facts.py:316` (instruction tree) | CITES was dropped: `docs/superpowers/specs/2026-09-16-system-transfer-design.md:200`. Relocation is KI 16 (`session-log.md:420-432`) | None for src/agents. The built-page half is 1a.2. |
+| 1a.2 | A single flat price is WRONG; the locked range is the fact | PARTIAL (BSUK equivalent: locked £1,500 / £1,700, £500 refundable deposit, £200–£350 delivery) | ENFORCED in the instruction tree (`tests/py/test_agent_facts.py:39-41` `ALLOWED_MONEY`, scope `:162-164` agents/skills/docs) and data (`test_data_files.py:15` price matrix = puppies). **Not enforced on built pages** | KI 65 (`session-log.md:1195-1211`): 11 indexable city pages in `dist/` print retired price bands, a flat delivery fee, a "non-refundable" deposit, collection from the former city and "council-licensed". This was found by hand, and no gate fails on it | **ADOPT-BEFORE-P5 (top gap).** Add a `check:` lint over `dist/**` **and** `data/locations.json`/`src/`: every £ amount must be in the locked set or listed in the board's `dropped`, with banned terms `non-refundable`, the former city outside its two slugs, and `council-licensed`. This is exactly the text P5 rewrites. The lint turns KI 65 into a failing check and stops the rewrite regressing. |
+| 1a.3 | Timneh taxonomy is WRONG | N/A | — | Parrot-only. The BSUK breed-fact equivalent (Staffy is "not a banned breed", KI 46) sits in the fact table, `bsuk-location-page-builder/SKILL.md:38-45` | None. |
+| 1a.4 | "72-hour vs 3-day" — BOTH correct; do not flag (the "only looks wrong" register) | PARTIAL | Partly: individual exemptions are tested (`RULE16_EXEMPT` → `tests/py/test_rule16_gate.py`; the Glasgow slugs are allowed at `test_former_city_templates.py:10-14`) | Exemptions are scattered: render baseline "not a defect list" (`CLAUDE.md:289-292`), utility-page hero exemption (`CLAUDE.md:179-184`), manual-auditor triage "FALSE POSITIVE" (`.claude/skills/manual-auditor-check/SKILL.md:12, 42`). There is no single "resolved — do not re-raise" list | **ADOPT-BEFORE-P5** (cheap): a short "Not defects" block at the top of Known Issues. Candidates: the Glasgow outreach page keeps its URL; two Glasgow slugs are intentional; the seven stub cities have an empty verbatim set by design (KI 79). Parallel city builders would otherwise re-raise these. |
+| 1a.5 | IUCN status / captive-bred with documentation; never imply wild-caught or illegal trade | PRESENT (BSUK equivalent: licence/statute claims unestablished; home-raised) | ENFORCED: `scripts/placeholder_check.py` (`check:placeholders` in `check:all`) holds `LICENCE_CLAIM_PLACEHOLDER` / `LEGAL_CLAIM_PLACEHOLDER` | `CLAUDE.md:128-132, 311-313`; home-raised from `data/faq.json` row `about-home-raised` (`bsuk-location-page-builder/SKILL.md:36`) | None. |
+
+### 1b · Two tenses
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 1b.1 | `dist/` = past, `data/` + generation layer = future; **every correctness fix sweeps both** | PARTIAL | Partly: stale `dist/` is refused by the render harness (`tests/render/lib/freshness.ts:280-297`); the instruction tree is swept by `test_agent_facts.py` and `check:markers` | `rules/deploy.md:21-25` (`src-pages-is-deployed`, **untested**) says `dist/` is regenerated; `CLAUDE.md:19-21` lists generated files that are never hand-edited. There is no "sweep both" rule. BSUK has a third tense: the migrated bodies in generated `data/locations.json`, which is where the KI 65 live defects come from | **ADOPT-BEFORE-P5** as a check, not prose: run the 1a.2 lint over `dist/` + `data/locations.json` + `src/` together, so one check covers every tense. Also close KI 63: pageboard freshness does not see a city page's sources (`session-log.md:1178-1183`), so a fix to the dynamic route can read as "fresh" when it is not. |
+
+### 1c–1g
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 1c | First-person breeder voice; neutral only for species facts and cited research | PRESENT | TEXT-ONLY (`judgment` row `first-person-brand-voice`, capped; `aeo_audit.py:59,194` only WARNs the opposite way, "pronoun-heavy") | `CLAUDE.md:102-105`; `rules/copy.md:26` | **SKIP.** This is a judgment rule by design (cap 9, each with a stated why). |
+| 1d.1 | Every health/credential claim is bounded by the Verified-Claim Ledger | PARTIAL | ENFORCED partly: `scripts/evidence_audit.py:168-186` `claim-bound-to-proof` fails only when a **ledgered** claim appears 2+ times without its proof | `data/quality/evidence-ledger.json` (one claim, `parents-dna-clear`, proof NOT FETCHED); `rules/copy.md:34, 55`. The spec dropped CAG rule 11 as a judgment rule (`specs/2026-09-16-system-transfer-design.md:200`) | **ADOPT-BEFORE-P5.** Invert the check: health/credential vocabulary (BVA hip/elbow, DNA/"clear", KC-registered, licensed, vet-checked) found in `<main>` must match a ledger row or a placeholder. As things stand, an **un-ledgered** health claim passes. The blue-vs-black comparison and the city FAQ health rows are where these get written, and KI 68 records `data/faq.json` already stating two unproven claims. |
+| 1d.2 | Anything not in the ledger is not assertable | PARTIAL | As 1d.1 | `rules/copy.md:34` states it; nothing detects an un-ledgered claim | Merged into 1d.1. |
+| 1d.3 | The subject-specific DNA nuance is recorded as resolved, do not re-raise | PARTIAL | — | BSUK equivalent: parents' L-2-HGA/HC results are `NOT FETCHED` (`bsuk-location-page-builder/SKILL.md:52-58`); questions are open with the breeder (KI 41, 67, 68 — `session-log.md:913, 1235, 1241`) | **ADOPT-BEFORE-P5** (a question, not code): put KI 41/67/68 in an answer-board batch before the first health-bearing comparison or blog board, so the ruling is recorded once. |
+| 1e | Brand-owned method labels: exactly two, never a third | N/A (deliberately dropped) — **but residue contradicts it** | The drop is ENFORCED in code (`scripts/aeo_audit.py:48-51` `LABELED_METHODS = []`; `tests/py/test_final_page_audit.py:10-12`); the residue is not linted | Dropped at `specs/2026-09-16-system-transfer-design.md:200`, `tests/py/test_rules_index.py:44`. **Residue:** `.claude/skills/bsuk-aeo-pass/SKILL.md:134-142, 197, 210` still requires "one of the two approved method names" and lists **"The Carlisle Socialization Method"**, "approved by the breeder 2026-07-30" (a source-repo date; BSUK's history starts 2026-09-15); `.claude/skills/bsuk-entity-graph/SKILL.md:72`; `docs/reference/WORKFLOW.md:503` gate checkbox "One of the two approved method labels present and defined" | **ADOPT-BEFORE-P5 (fix):** delete the three residue sites and add "Socialization Method" / "method label" to the residue lint (`tests/py/test_agent_facts.py` residue list). An agent following WORKFLOW 3b on a city page would **invent** a brand method, which breaks §1f. |
+| 1f.1 | Never invent credentials, prices, reviews, ratings, review counts, test results, competitor metrics, buyer stories | PRESENT | Rule is `judgment`; the pieces are ENFORCED: `check:placeholders`; `evidence_audit.py` `review-attribution-unique`; `data/reviews.json` holds verbatim quotes only (`rules/copy.md:52, 57`); `scripts/strategy_cite_check.py` (competitor figures, `tests/py/test_strategy_cite_check.py`); `test_agent_facts.py`; `schema-sold-not-instock` | `CLAUDE.md:128-132`; `docs/reference/WORKFLOW.md:877` | None, beyond the 1d.1 inversion. |
+| 1f.2 | Un-fetched data is written `NOT FETCHED` **with the barrier named**, never inferred | PARTIAL | ENFORCED only on pages: `no-not-fetched-in-prose` (`rules/copy.md:60`). Nothing requires a barrier | `CLAUDE.md:129-130` gives the bare form. In `docs/research/`, 192 `NOT FETCHED` occurrences, of which 40 are followed by a separator/reason | **ADOPT-BEFORE-P5:** a lint for **new or changed** files in `data/boards/`, `data/queries/`, `docs/research/`: the token must be followed by `— <barrier>`. The location builder writes `NOT FETCHED` for scan gaps (`bsuk-location-page-builder/SKILL.md` step 1.5), and a named barrier tells the next city run what to fetch. Same item as 5d. |
+| 1f.3 | No fabricated scarcity or urgency | PRESENT | TEXT-ONLY (availability truth is ENFORCED indirectly by `schema-sold-not-instock` and `data/puppies.json`) | `.claude/skills/framework-aida/SKILL.md:129, 162`; `.claude/agents/bsuk-meta-description-agent.md:68, 197`; `.claude/skills/framework-library/SKILL.md:53, 95`; `.claude/agents/bsuk-seo-content-writer.md:221` | **SKIP.** Low risk: stock comes from `puppies.json`. |
+| 1g.1 | Locked palette; reconcile any incoming kit/draft on intake | PRESENT (BSUK equivalent: steel/brass/bone/ink) | ENFORCED: `tests/py/test_design_tokens.py:73` (hex only in primitives), `:138` (kit has no hex), `:161` (no hex anywhere in src except tokens) — a stale palette cannot land | `src/styles/tokens.css:6-19`; `rules/design.md:20`; `rules/gates.md:18` (`design-context-read-first`, untested) | None. |
+| 1g.2 | AA variants for small accent-on-light / accent-on-dark | PRESENT | ENFORCED: `test_design_tokens.py:94` (pairs from `data/design/contrast.json`); render `a11y-text-contrast-aa` | `rules/design.md:20` | None. |
+| 1g.3 | Subject markers use custom images, never the generic emoji | PRESENT (stale reference) | ENFORCED: `scripts/final_page_audit.py:137, 151, 167` `no_emoji`; `tests/py/test_design_components.py:410` | `rules/design.md:26-31` bans 🐕/🐶 but points at `/emoji/bsuk-blue.png` / `bsuk-brindle.png`, **which do not exist** (no `public/emoji/`) | **SKIP** (doc cleanup only): line icons are the live system. Correct `rules/design.md:28-31` when that pack is next touched. |
+
+### 1h · Working rules
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 1h.1 | Work on `main`; only main deploys | N/A (deliberate) | `judgment` (`work-on-foundation-not-main`) | `CLAUDE.md:106-108`; `rules/deploy.md:33-41` (no remote, never add one) | None. |
+| 1h.2 | Commit **and push** after every build; push is deploy | N/A for push (deleted, not deferred); PRESENT for commit | Commit is `judgment`; the trailer is ENFORCED (`tests/py/test_commit_trailer_examples.py`); the no-remote state is reported by `scripts/health-sweep.sh:61`; release steps are guarded by `BSUK_RELEASE=1` (`CLAUDE.md:36-47`) | `CLAUDE.md:109-111`; `rules/deploy.md:49-55, 63-73` | None. |
+| 1h.3 | `src/pages/<slug>/index.astro` ships; every gate measures `dist/` | PARTIAL | ENFORCED for the render harness (freshness); `src-pages-is-deployed` is **untested** | `CLAUDE.md:11-15`; `rules/deploy.md:21-25`. City pages render from `src/pages/uk-locations/[slug].astro` + `data/locations.json`, and pageboard freshness cannot see those sources (KI 63, `session-log.md:1178`) | **ADOPT-BEFORE-P5:** close KI 63 before the first city board. Otherwise a board check can pass against a stale city build. |
+| 1h.4 | Confidence gate 97%: write to disk, log `## Open Flags`, ask exactly ONE narrow question, keep building | PRESENT | TEXT-ONLY (`judgment` `confidence-gate-97`) | `CLAUDE.md:120-122`; `rules/gates.md:50`; `.claude/skills/grill-me/SKILL.md:90, 117`. BSUK adds the answer-board rule (`CLAUDE.md:223-238`) | None (judgment by design). |
+| 1h.5 | Restate the brief: goal · scope · gates · definition of done · out of scope | PRESENT | ENFORCED for page builds: `schemas/board.schema.json` `brief` requires `goal, scope, gates, done, out_of_scope`, validated by `scripts/pageboard.py:101`; judgment in chat | `CLAUDE.md:115-117`; `rules/gates.md:66` | None. |
+| 1h.6 | Preview before apply; a redesign is visual-only | PRESENT | ENFORCED for pages: `scripts/board_gate.py` / `board_approve.py` (`page-board-gate` → `tests/py/test_page_board.py`); `same-content-on-redesign` and working rule 10 (visual companion) are **untested** | `CLAUDE.md:118-119, 133-137, 272-276`; `rules/gates.md:26, 34, 42` | None for P5 (these are new builds, not redesigns). |
+| 1h.7 | Recommend + Why: exactly one (Recommended), justified from real data, trade-off named | PRESENT | `judgment` in general; ENFORCED for strategies: `scripts/strategy_cite_check.py` + `.claude/agents/bsuk-strategy-synthesizer.md:15-19` (≥3 distinct sourced figures + downside) | `CLAUDE.md:112-114`; `rules/gates.md:58` | None. |
+| 1h.8 | No test, no rule; an escaped defect is charged to the harness (known-broken fixture → meta gate fails → fix check → no new rule) | PRESENT | ENFORCED: `scripts/quality_report.py` §5 + `tests/py/test_quality_report.py`; `tests/render/fixtures/known_broken/` (47 fixtures); `npm run test:render:meta` | `rules/gates.md:83`; `CLAUDE.md:278-287`; `.claude/skills/bsuk-learning-loop/SKILL.md` | Watch: 20 rows are still `untested` deletion candidates, including working rules 10, 11 and 13 (rule 13's stacking half is measured by `layout.ts:502` `layout-table-stacks-on-mobile`; its board half is not). **ADOPT-LATER (P5 close):** decide test-or-delete for the P5-relevant untested rows (`link-first-anchors`, `header-style-declared`, `uniform-inbody-image-sizing`). |
+
+### §2 · Skill and Agent Routing by Sprint
+
+"Invoke, do not paraphrase" as a rule: BSUK marks **REQUIRED SKILL** lines in `docs/reference/WORKFLOW.md:429, 489, 511`. This is TEXT-ONLY; nothing checks that a skill was invoked.
+
+| # | CAG skill / agent | Verdict | Enforced? | BSUK counterpart (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| S.1 | `grill-me` (session open) | PRESENT | TEXT-ONLY | `.claude/skills/grill-me/SKILL.md`; `WORKFLOW.md:44, 194` | — |
+| S.2 | `superpowers:writing-plans` | PARTIAL | — | Used in practice (`docs/superpowers/plans/`), but not named in `CLAUDE.md`, `WORKFLOW.md` or `quick-start.md` (0 grep hits) | **SKIP.** Plans are produced per project by the controller already. |
+| S.3 | page-type builder skill | PRESENT | TEXT-ONLY | `CLAUDE.md:75-84`; `docs/reference/quick-start.md:16-43` | — |
+| S.4 | Firecrawl **Search** first | N/A (deliberate) | ENFORCED by the spend guard tests (`tests/py/test_competitor_spend.py`) | The DataForSEO SERP comes first; `firecrawl_search` is the fallback (`.claude/agents/bsuk-competitor-registry.md:57`); Google+Bing top-5 via `/bsuk-query-augmentation` (`bsuk-location-page-builder/SKILL.md` step 1) | — |
+| S.5 | `keyword-cluster` | PRESENT | TEXT-ONLY | `.claude/skills/keyword-cluster/SKILL.md` | — |
+| S.6 | `cag-branded-hybrid-keywords` | MISSING (deferred) | — | `data/port-manifest.json` ("spec §10 out of scope"). Nearest equivalent: `scripts/keyword_variants.py` + family rule `keyword-variants-missing` (`WORKFLOW.md:880`) | **SKIP.** Rule 17's four extra keyword types already cover P5, and a pre-launch brand has no branded volume. |
+| S.7 | `cag-branded-search-skill` | MISSING (deferred) | — | `data/port-manifest.json` (deferred) | **SKIP** (P6: needs a live brand/domain). |
+| S.8 | `cag-entity-agent` | PRESENT | `ontology_seed.py --check` | `.claude/skills/bsuk-entity-agent/SKILL.md` | — |
+| S.9 | `cag-entity-graph` | PRESENT (carries 1e residue at :72) | — | `.claude/skills/bsuk-entity-graph/SKILL.md` | Fix line 72 under 1e. |
+| S.10 | `research-recency` | PRESENT | — | `.claude/skills/research-recency/SKILL.md` | — |
+| S.11 | `reddit-strategy` | PARTIAL | — | `.claude/skills/bsuk-reddit-threads/SKILL.md` (thread sourcing only); the modifier-page playbook is deferred (`data/port-manifest.json`; KI 43, `session-log.md:965`) | **SKIP.** Reddit-modifier pages are not in P5 scope. |
+| S.12 | agent `cag-competitor-intel` | PRESENT | ENFORCED: `check:competitors`, `check:gaps` | `.claude/agents/bsuk-competitor-intel.md` | — |
+| S.13 | agent `cag-competitive-keyword-gap-agent` | PRESENT | `tests/py/test_keyword_gap_script.py` | `.claude/agents/bsuk-competitive-keyword-gap-agent.md` | — |
+| S.14 | agent `cag-framework-agent` | PRESENT | — | `.claude/agents/bsuk-framework-agent.md` | — |
+| S.15 | agent `cag-paa-agent` | PRESENT | — | `.claude/agents/bsuk-paa-agent.md` | — |
+| S.16 | agent `cag-strategy-synthesizer` | PRESENT | ENFORCED: `scripts/strategy_cite_check.py` | `.claude/agents/bsuk-strategy-synthesizer.md` | — |
+| S.17 | `cag-cta-strategy` | PRESENT | — | `.claude/skills/bsuk-cta-strategy/SKILL.md` | — |
+| S.18 | `framework-heading-hierarchy` | PRESENT | ENFORCED: `sem-heading-order`, `sem-all-six-levels` | `.claude/skills/framework-heading-hierarchy/SKILL.md` | — |
+| S.19 | `framework-eebp` | PRESENT | — | `.claude/skills/framework-eebp/SKILL.md` | — |
+| S.20 | `cag-component-refresh` | PRESENT | ENFORCED: `tests/py/test_rule16_gate.py` | `.claude/skills/bsuk-component-refresh/SKILL.md` (+ `bsuk-component-variations`) | KI 60: the city hero pool decision is still the user's (`session-log.md:1152`). |
+| S.21 | `cag-seo-master-checklist` | PRESENT | — | `.claude/skills/bsuk-seo-master-checklist/SKILL.md` | — |
+| S.22 | `cag-visual-intelligence` | MISSING (deferred) | — | `data/port-manifest.json` (deferred to project 3, never ported); KI 44 (`session-log.md:969-972`): "the 28 city pages in project 5 are where it would pay" | **ADOPT-BEFORE-P5** (lightweight port). It is the only tool asking "why do two pages feel the same" above the mechanical dup and rule-16 gates, and 28 near-identical city pages are exactly that risk. |
+| S.23 | `cag-image-generation` | PRESENT | family `image-*` checks | `.claude/skills/bsuk-image-generation/SKILL.md` | — |
+| S.24 | `cag-infographic` | PRESENT | — | `.claude/skills/bsuk-infographic/SKILL.md` | — |
+| S.25 | `image-prompt-generator` | PRESENT | — | `.claude/skills/image-prompt-generator/SKILL.md` | — |
+| S.26 | `image-metadata` | PRESENT | — | `.claude/skills/image-metadata/SKILL.md` | — |
+| S.27 | `cag-asset-proofing` | PRESENT (replaced, different name) | ENFORCED at board approval/build: `image-generated-unapproved`, `image-generated-not-ingested`, `image-asset-not-ingested`, … (`scripts/family_rules.py`, `tests/py/test_image_rules.py`) | No skill of this name (0 hits, and not in the manifest). Its equivalent is `IMAGE-DESIGNS.md:209-238` (two-pass board approval) + `.claude/skills/bsuk-photo-ingest/SKILL.md` + `scripts/ingest_image.py draft/publish` | See 3.5 (these checks are not in `check:all`). |
+| S.28 | `anti-ai-writing` | PRESENT | — | `.claude/skills/anti-ai-writing/SKILL.md` | — |
+| S.29 | `cag-duplicate-content-gate` | PRESENT | ENFORCED: `check:outline` (`scripts/outline_provenance_check.py`), render `dup-no-sibling-crossover` | `.claude/skills/bsuk-duplicate-content-gate/SKILL.md` | — |
+| S.30 | `internal-link-agent` | PRESENT | ENFORCED: `check:links`, working rule 12 (`tests/py/test_link_parity.py`) | `.claude/skills/internal-link-agent/SKILL.md` | — |
+| S.31 | agent `cag-non-commodity-content-agent` | PRESENT | — | `.claude/agents/bsuk-non-commodity-content-agent.md` | — |
+| S.32 | agent `cag-entity-incorporation-agent` | MISSING (deferred) | — | `data/port-manifest.json` ("project 6 at the earliest"). Partial equivalent: `scripts/ontology_seed.py --check` + board entities by class (`WORKFLOW.md:880`) | **SKIP.** The outline side is already gated at board time. |
+| S.33 | `cag-page-hardening` | PRESENT | `scripts/page_hardening_scan.py` (report-only unless `--fail-on-error`), `tests/py/test_page_hardening.py` | `.claude/skills/bsuk-page-hardening/SKILL.md` | — |
+| S.34 | `impeccable` | MISSING (not routed) | — | 0 hits in BSUK routing; the design system is locked (`rules/design.md`) | **SKIP.** P5 uses the locked kit; polish is measured by the render harness. |
+| S.35 | `frontend-design` | MISSING (not routed) | — | 0 hits | **SKIP** (same reason). |
+| S.36 | `cag-gate-integrity` **first** | PRESENT | ENFORCED by `test:render:meta` (checks the checkers) | `.claude/skills/bsuk-gate-integrity/SKILL.md`; "REQUIRED FIRST" `WORKFLOW.md:71, 429` | — |
+| S.37 | `cag-perf-gate` | PRESENT | `scripts/perf_audit.py` (dist; `--live` refused pre-P6) | `.claude/skills/bsuk-perf-gate/SKILL.md` | — |
+| S.38 | `cag-final-page-pass` | PRESENT | `scripts/final_page_audit.py` (`--fail-on-error`) | `.claude/skills/bsuk-final-page-pass/SKILL.md` | — |
+| S.39 | `cags-comprehensive-page-audit-system` | PRESENT | — | `.claude/skills/bsuk-comprehensive-page-audit-system/SKILL.md` | — |
+| S.40 | `cag-aeo-pass` | PRESENT (carries 1e residue) | `scripts/aeo_audit.py` | `.claude/skills/bsuk-aeo-pass/SKILL.md` | Fix §6a under 1e. |
+| S.41 | `section-auditor` | PRESENT | — | `.claude/skills/section-auditor/SKILL.md` | — |
+| S.42 | `manual-auditor-check` | PRESENT | — | `.claude/skills/manual-auditor-check/SKILL.md` | — |
+| S.43 | agent `cag-llm-keyword-intel` (Sprint 5) | PRESENT but moved pre-build | spend guard tests (`tests/py/test_llm_intel.py`) | `.claude/agents/bsuk-llm-keyword-intel.md`; runs as Step 0b (`WORKFLOW.md:153-157, 227-228`) | Post-build re-measurement is **N/A until P6** (the pages are not live). |
+| S.44 | `framework-aio-geo` | PRESENT | — | `.claude/skills/framework-aio-geo/SKILL.md` | — |
+| S.45 | `sitemap-agent` | PRESENT | ENFORCED: `check:sitemaps` | `.claude/skills/sitemap-agent/SKILL.md` | — |
+| S.46 | `cag-indexing` | PRESENT (inactive) | ENFORCED guard: `indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` (`tests/py/test_indexnow_submit.py`) | `.claude/skills/bsuk-indexing/SKILL.md`; `CLAUDE.md:39-43` | — |
+| S.47 | `session-closer` | PRESENT | — | `.claude/skills/session-closer/SKILL.md` | — |
+| S.48 | `cag-learning-loop` | PRESENT | `quality_report.py` | `.claude/skills/bsuk-learning-loop/SKILL.md` | — |
+| S.49 | `superpowers:verification-before-completion` | MISSING (not routed) | — | 0 hits | **SKIP.** `check:all` + `board_gate` are the verification. |
+| S.50 | builder: for-sale/buy → `cag-for-sale-page-builder` | PRESENT | — | `.claude/skills/bsuk-puppy-page-builder/SKILL.md` (manifest rebase) | — |
+| S.51 | builder: bird listing → `cag-bird-listing-page` + `cag-bird-page-excellence` | N/A | — | `data/port-manifest.json` ("parrot-only … never ported"); puppy pages use the builder in S.50 | — |
+| S.52 | builder: comparison → `cag-comparison-page-builder` | PRESENT | builder-skill tests (`tests/py/test_builder_skills.py`) | `.claude/skills/bsuk-comparison-page-builder/SKILL.md`; agent `bsuk-comparison-builder.md`. KI 62: no URLs or hub yet (`session-log.md:1172`) | See §4 (the slug decision). |
+| S.53 | builder: interior → manual interior checklist | PARTIAL | — | The source's `MANUAL …` files were not ported (`quick-start.md:10-11`); `bsuk-site-patterns` + `manual-auditor-check` stand in | **SKIP** for P5 (no interior pages). |
+| S.54 | builder: location → `cag-location-page-builder` | PRESENT | ENFORCED: `check:queries`, `check:outline`, family rules | `.claude/skills/bsuk-location-page-builder/SKILL.md` | — |
+| S.55 | builder: blog → `cag-blog-post` | PRESENT | family rules | `.claude/skills/bsuk-blog-post/SKILL.md`; KI 78 open (`session-log.md:1346`) | — |
+| S.56 | Reddit modifier → `reddit-strategy` | N/A for P5 | — | KI 43 (`session-log.md:965`) | — |
+
+### §3 · The Seven-Sprint Pipeline
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 3.1 | Seven sprints (0, 0.5, 1, Asset Gate, 2, 3, 4, 5, 6) | PRESENT (renumbered) | TEXT-ONLY (`check:workflow` only validates references) | `docs/reference/WORKFLOW.md:39-59`: BSUK 4 = Final, 5 = Ship (inactive), 6 = Bank; CAG 4 = Gates, 5 = Visibility, 6 = Deploy/Close | None. |
+| 3.2 | Sprint 0 Research → research doc, keyword universe, entity map, gap matrix, PAA set | PRESENT | ENFORCED: `check:competitors`, `check:gaps`, `check:queries` (question files), `ontology_seed.py --check` | `WORKFLOW.md:118-186`; `docs/research/gap-matrix-2026-09-25.md`, `keyword-gap-2026-09-25.md`, `llm-intel/` | Only 2 of 28 cities have a question file (`data/queries/`: Leeds, Manchester). See 5a. |
+| 3.3 | Sprint 0.5 Strategy → two strategies + one blended, ONE recommended, breeder picks | PARTIAL (deliberately different) | ENFORCED: `strategy_cite_check.py` | Exactly two, "never three" (`.claude/agents/bsuk-strategy-synthesizer.md:15`); recommend one with ≥3 figures + downside (`:17`). There is no blended third. The P5 strategy is already picked (`docs/superpowers/sessions/2026-09-25-location-pages-strategy.md`) | **SKIP.** This is a deliberate BSUK design, and the cluster strategy is settled. |
+| 3.4 | Sprint 1 Plan → distribution matrix, H1–H6 outline, component tuple, meta sets | PRESENT | ENFORCED: the board schema requires `h1, meta_set, sections, tuple` (`schemas/board.schema.json`); A/B/C categories validated (`scripts/pageboard.py:103-110`); `board_approve.py` refuses while a family rule FAILs (`tests/py/test_family_rules_on_board.py`) | `WORKFLOW.md:294-305, 880` | None. |
+| 3.5 | Asset Gate HARD STOP — the breeder drops OG photos + infographics and says "start" | PARTIAL | ENFORCED **only when run**: the image build-gate checks live in `scripts/board_gate.py` (stage `build`), which is **not in `check:all`** (`package.json` `check:all`) | `IMAGE-DESIGNS.md:209-238` (two-pass approval); `WORKFLOW.md:49, 880` | **ADOPT-BEFORE-P5:** chain a board gate over every new-family page in `data/facts/rebuilt.json` into `check:all`, e.g. `outline_provenance_check` calling `gate_findings(stage="build")`. Rule 17 puts an image on every body H2/H3 of 28+ pages, and today the gate that holds those images is optional. |
+| 3.6 | Sprint 2 Build → section-by-section, on main, verified in `dist/` | PRESENT (branch, not main — deliberate) | ENFORCED: `check:outline` (built from the approved outline, no sibling crossover), `check:verbatim`, `check:facts` | `WORKFLOW.md:281-361`; `rules/copy.md:70` | None. |
+| 3.7 | Sprint 3 Harden → hardening scan + impeccable/frontend polish, mobile-first | PRESENT (without impeccable/frontend-design) | Partly: `test:render:pages` at 375/768/1280 blocks; `page_hardening_scan.py` is report-only unless `--fail-on-error` | `WORKFLOW.md:61-69, 425-485` | See S.34/S.35 (SKIP). |
+| 3.8 | Sprint 4 Gates → meta gate FIRST · dup · final audit · seam parity · a11y · perf | PARTIAL | ENFORCED: `test:render:meta` first (`CLAUDE.md:259-260`), dup (`check:outline`, `audit:dup`), `final_page_audit.py`, `a11y-text-contrast-aa`, `perf_audit.py` | **Seam parity missing:** `scripts/seam_parity.py` not ported (`WORKFLOW.md:439-441`); only `layout-hero-counter-separation` is tested | **ADOPT-LATER (P5 mid-point):** port the seam check if the first city pages show seam drift. The hero-counter check already covers the most visible seam. |
+| 3.9 | Sprint 5 Visibility → LLM visibility measurement + AEO/GEO pass | N/A until P6 (AEO part PRESENT) | AEO: `scripts/aeo_audit.py` (ERROR exits 1) | AEO is Sprint 3b/4 (`WORKFLOW.md:487-506, 526`); LLM intel is pre-build (Step 0b); pages are not live | None for P5. |
+| 3.10 | Sprint 6 Deploy/Close → sitemaps, push, live 200, IndexNow, lessons doc, memory | N/A (deploy half) / PRESENT (close half) | Sitemaps ENFORCED (`check:sitemaps`); push/IndexNow/pagefind guarded (`CLAUDE.md:29-48`) | Sprint 5 Ship inactive (`WORKFLOW.md:659-690`); Sprint 6 Bank: lessons, back-propagate, sweep siblings, memory (`WORKFLOW.md:693-715`) | None. |
+| 3.11 | An `▣ APPROVAL GATE` at the end of every sprint | N/A (deliberate) | — | Exactly three `[APPROVE]` stops + `[REVIEW]` at Sprint 0 (`WORKFLOW.md:22-26, 41-58`) | None. |
+| 3.12 | Nothing from a later sprint starts early: no HTML before the Asset Gate, no images baked before the outline is approved | PARTIAL | ENFORCED: `board_gate.py` refuses an unapproved record; `check:outline` `outline-unapproved` (rebuilt pages only); `ingest_image.py` draft → approve → publish | `CLAUDE.md:272-276`; `WORKFLOW.md:880` | Same fix as 3.5 (the gate is not chained). |
+
+### §4 · URL, Canonical and Redirect Decision Gate
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 4.0 | Resolve the URL family **before any research**; deliverable is one table, one recommendation | MISSING (as a gate) | — | Only the text-only "Slug Registry Rule" (`WORKFLOW.md:916-922`: check `page-map.json`, add a redirect before building). The location builder takes the slug and canonical from the row and "never rewrites" them (`bsuk-location-page-builder/SKILL.md:336-338`) | **ADOPT-BEFORE-P5 (one-time table, not a new gate).** `data/locations.json` has two Glasgow slugs (`staffy-breeding-dogs-glasgow` indexed, now an outreach page per KI 16; `staffy-puppies-for-sale-glasgow` noindex). The "national rows compete" (KI 59, `session-log.md:1141`): `blue-staffy-puppies-uk` vs `uk-staffordshire-bull-terrier-breeder`. Slug patterns are mixed (`-for-sale-`, `-uk`, `-area`, `blue-staffies-`). Comparison slugs are unset (KI 62). Decide once, on a board/answer-board batch, before the first city board. |
+| 4.1 | Enumerate every URL in the family (legacy paths, near-me variants, singular/plural, `buy-` prefix, spelling split) | MISSING | — | Raw material exists: `data/page-map.json` (the old WP site), `data/redirects.json`, the `staffy`/`staffie` fold (`.claude/agents/bsuk-competitive-keyword-gap-agent.md:68`), a near-me router page (`tests/py/test_page_hardening.py:730`) | Part of 4.0. |
+| 4.2 | Per URL, clicks · impressions · CTR · avg position from **Google and Bing**; absent = `NOT PRESENT`, never zero | MISSING | — | GSC is declared NOT FETCHED (`WORKFLOW.md:17-18`); the keys exist but are unwired (`docs/reference/credentials.md:18-25`, KI 14 `session-log.md:399`); no Bing Webmaster source | **ADOPT-BEFORE-P5 (verify first):** `GSC_SITE_URL` exists and a `gscServer` MCP was kept (`session-log.md:36`). If the old property reads, 11 already-indexed city URLs have measurable equity that should rank the P5 order and settle the Glasgow pair. If not, record the real barrier (see 5.0). KI 15 (OAuth rotation) must be respected. |
+| 4.3 | Pull query-level rows for the stem; query-level is decisive | MISSING | — | Only competitor SERP positions (`data/queries/<slug>.json` `competitors[].google_pos/bing_pos`), not BSUK's own query rows | With 4.2. |
+| 4.4 | Read live `_redirects`; map chains; flag length ≥ 2; flag targets not on disk | PRESENT | ENFORCED: `scripts/redirect_check.py:1-27` (one hop, targets exist under `dist/`, shadowing, WP leftovers) in `check:all`; `tests/py/test_redirect_check.py`, `test_redirects_build.py` | `data/redirects.json` → generated `public/_redirects` (`scripts/build_redirects.py`); `.claude/agents/bsuk-redirect-manager.md:3, 55-62` | None. |
+| 4.5 | Count inbound internal links to each candidate | PARTIAL | TEXT-ONLY | `.claude/skills/internal-link-agent/SKILL.md:90-99` (a `uniq -c` recipe over `dist` hrefs); no script, no gate | Part of the 4.0 table (one column). **SKIP** a gate. |
+| 4a.1 | Consolidate toward the clean, cluster-native slug; legacy paths never a target | PARTIAL | — | Implicit "keep the row's slug" (`bsuk-location-page-builder/SKILL.md:336-338`); the Glasgow outreach page keeps its URL (`session-log.md:428`); rule 11 keeps media URLs | Decide in the 4.0 table. |
+| 4a.2 | Low clicks on a redirect target ≠ weak URL; diagnose the page first; reverse a settled 301 only if off-intent | MISSING | — | No data to apply it to | **SKIP** until GSC is wired (P6), unless 4.2 lands pre-P5. |
+| 4a.3 | Distinct intents get distinct pages; verify against query rows before merging | PARTIAL | — | `scripts/query_augment.py` `location_question()` gives the two Glasgow pages one shared question and the two national pages another (`session-log.md:1123-1126`). The tooling treats them as one intent, while KI 16 made one Glasgow page an outreach page | Resolve in the 4.0 table (intent per slug). |
+| 4a.4 | `APPROVAL GATE 1` — the breeder approves canonical URL, redirect map, changes | PARTIAL | Partly: the slug is schema-validated on the board (`scripts/pageboard.py:206`) and approved with it; redirects are gated mechanically, not approved | `CLAUDE.md:272-276` | Record the 4.0 decision as one answer-board batch. No new gate. |
+
+### §5 · Research Data on Hand — Inventory Before You Fetch
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 5.0 | `NOT FETCHED` is a verdict, not a default; written only after the inventory | MISSING | — | NOT FETCHED is the site-wide default for GSC/GA4: "Every step … that reads GSC … is inert today" (`WORKFLOW.md:17-18`; `quick-start.md:48`). The stated barrier, "until the domain is live / project 6", is unverified: `GSC_SITE_URL` exists (`credentials.md:18`) and `gscServer` was retained (`session-log.md:36`) | **ADOPT-BEFORE-P5:** one probe of the old GSC property. Then either bank the export under `data/analytics/` or rewrite the line as `NOT FETCHED — <exact barrier>`. This is §5's own origin story: CAG reversed a build decision once it read exports it already had. |
+| 5a | Run the inventory command before Sprint 0 | MISSING | — | No inventory step or script. `data/analytics/` does not exist; no CSV/GSC/Bing export in the repo or in `~/Downloads/bluestaffyuk-cms` (checked) | **ADOPT-BEFORE-P5:** `scripts/research_inventory.py <slug>` printing what is banked per page (question file, llm-intel file, competitor rows, verbatim set, facts file, board, analytics). The intake block (0.1) embeds its output. Only 2 of 28 cities have a question file, and spend is capped (KI 45), so each run must know what to reuse and what to fetch. |
+| 5b.1 | Known-locations table: what each research location actually contains | PARTIAL | `tests/py/test_system_registry.py` keeps the generated registry in sync | `WORKFLOW.md:823-842` data-file table omits `data/queries/`, `docs/research/*`, `data/verbatim/`, `data/facts/`, and says `evidence-ledger.json` is "empty today" (`:840`; it holds `parents-dna-clear`); `docs/reference/system-registry.md` is the full generated list | **ADOPT-BEFORE-P5** (fold into the 5a script output; correct `WORKFLOW.md:840`). |
+| 5b.2 | Do not re-mine banked research | PRESENT | ENFORCED: spend guard + reuse tests (`tests/py/test_competitor_spend.py`, `test_spend_reconcile.py`, `test_llm_intel.py`, `test_query_augment.py`) | Intel re-fetch only when stale >30 days (`WORKFLOW.md:222`); llm-intel reuses a saved answer (`:154`); query augmentation runs from cache (`session-log.md:921`); the strategy reads existing research only (`WORKFLOW.md:231`) | None. |
+| 5c.1 | Two exports of different windows disagree: never average or merge; name the export per figure | PARTIAL (no exports; the discipline exists for research figures) | ENFORCED: `strategy_cite_check.py` (each figure copied exactly from a listed source) | Google and Bing positions kept separate (`google_pos`, `bing_pos`); "compare bands within one kind only" (stub vs indexable, `session-log.md:1126-1127`) | **ADOPT-LATER (P6, `bsuk-gsc-analytics`)**, or with 4.2 if GSC is read pre-P5. |
+| 5c.2 | A Bing file is not automatically query data — check the header row | N/A (no Bing Webmaster exports) | — | Only Bing SERP caches (`data/queries/raw/*/serp_bing.json`) | **ADOPT-LATER (P6).** |
+| 5c.3 | Page-level vs query-level disagree; the query row wins | N/A (no GSC data) | — | — | **ADOPT-LATER (P6)**, or with 4.2. |
+| 5d | Only now: record `NOT FETCHED — <barrier>`, never bare; name the denominator's gaps | MISSING | Only `no-not-fetched-in-prose` (keeps it off pages) | `CLAUDE.md:129-130` bare form; 40 of 192 `docs/research/` occurrences carry a separator | **ADOPT-BEFORE-P5:** lint new or changed research/board/query files (same check as 1f.2). |
+
+---
+
+### Top gaps for project 5 (ranked)
+
+1. **Retired-fact lint on built pages and their generated source (1a.2 / 1b.1).** Every £ amount must be in the locked set or `dropped`, with `non-refundable`, the former city (outside its two slugs) and `council-licensed` banned. Scan `dist/` + `data/locations.json` + `src/`. This turns KI 65 (11 live city pages with retired figures) into a failing check and guards the P5 rewrites.
+2. **Chain the board/asset gate into `check:all` (3.5 / 3.12).** Today the image build-gate checks and the build-stage refusal run only if someone runs `board_gate.py`. With rule 17's image on every heading across 28+ pages, the Asset Gate has to be mandatory.
+3. **One URL-family decision for the location cluster and the comparison slugs (§4).** This covers the Glasgow pair (outreach vs city), the two national rows, mixed slug patterns, redirects in/out and inbound links. Decide once, before the first city board.
+4. **§5 inventory + GSC barrier check (5.0 / 5a / 4.2).** Add a per-slug research inventory (only 2 of 28 cities have question files), and probe the old GSC property: bank a baseline, or write the real barrier instead of a blanket "project 6".
+5. **Remove the method-label residue (1e).** `bsuk-aeo-pass` §6a, `bsuk-entity-graph:72` and the `WORKFLOW.md:503` checkbox tell agents to use an invented "Carlisle Socialization Method". This is a live instruction to fabricate; add the term to the residue lint.
+6. **Invert the claim ledger (1d.1).** An un-ledgered health/credential claim on a page should fail. Today only repeated ledgered claims are checked. Send KI 41/67/68 to the breeder as one answer-board batch.
+7. **`NOT FETCHED — <barrier>` lint (1f.2 / 5d)** for new or changed board, query and research files.
+8. **Auto-filled intake block on each board (0.1 / 0.2 / 0.4).** Mode (stub / migrated-indexable / new), robots, verbatim count (KI 79), empty `h1` (KI 59), question file present, retired-term hits. Also close KI 63 (city-page freshness) so the intake reads a current build.
+
+Side findings (outside the ranked list): `CLAUDE.md:255-258` lists the `check:all` chain without `check:outline`, although `package.json` and `tests/py/test_package_scripts.py:113` include it. `rules/design.md:28-31` points at `/emoji/bsuk-*.png`, which does not exist. `WORKFLOW.md:840` calls the evidence ledger empty. KI 44 (visual-intelligence, S.22) is worth a light port before the city pages.
+
+### Verdict counts (§0–§5, 116 rows; first-listed verdict counted)
+
+| Verdict | Count |
+|---|---|
+| PRESENT | 62 |
+| PARTIAL | 24 |
+| MISSING | 16 |
+| N/A | 14 |
+</script>
+<script type="text/markdown" data-title="Appendix B — item table, CAG §6–12">
+Scope: CAG brief §6 (6a, 6b), §7 (7a–7e), §8, §9, §10, §11, §12. Repo: `/Users/apple/Downloads/BSUK`, branch `foundation`. Read-only audit: every citation below was opened or grepped. Nothing was assumed.
+
+Verdict key: **PRESENT** (with ENFORCED = a named script/test/npm check fails on violation, or TEXT-ONLY) · **PARTIAL** · **MISSING** · **N/A** (CAG-only, or a deliberate BSUK difference that is recorded where cited).
+Recommendation key: **ADOPT-BEFORE-P5** · **ADOPT-LATER** · **SKIP**. P5 = project 5: 28 location pages, the comparison cluster and 2 blog posts.
+
+Four facts shape most of the verdicts:
+- **The board is the approval surface.** `data/boards/<slug>.json` plus `scripts/board_approve.py` and `scripts/board_gate.py` hold one approval covering meta, H1, the matrix, the outline, links and images (CLAUDE.md:272-276). CAG gates 2–5 collapse into it.
+- **Per-page competitor research for location pages is `scripts/query_augment.py`.** Its competitor record keeps only `url, google_pos, bing_pos, h2_raw, h2_clean, outlier, blocked` (Manchester's `data/queries/blue-staffy-puppies-manchester-uk.json` shows this). The saved competitor HTML sits in the session scratchpad and is thrown away, so every other per-competitor metric is lost.
+- **Keyword counts are ceilings, never floors.** The floor was retired on 2026-09-09 (`.claude/agents/bsuk-keyword-verifier.md:250`; `scripts/build_page_board.py:920` "Counts are ceilings, not floors"). But `docs/reference/seo-rules.md:109-122` (Rule 18) still calls ≈85–105 a "Hard target per page". The repo contradicts itself here.
+- **Firecrawl comes last, deliberately,** because it costs credits. The SERP is DataForSEO Google (paid, preflighted) plus Bing read free in a browser, and a page is fetched with curl, then the browser, then Firecrawl (`.claude/skills/bsuk-query-augmentation/SKILL.md:43-45, 75-77, 129-133, 232`).
+
+---
+
+### §6 Competitor Research and Query Fan-Out (6a, 6b)
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 6.1 | No research skipped; an un-fetchable source is `NOT FETCHED` with the barrier named | PRESENT | ENFORCED for intel (competitor-report schema requires `reason`; `check:gaps` / `check:competitors`); the query file records only a status | CLAUDE.md:128-130 (rule 9); bsuk-query-augmentation/SKILL.md:12-14; bsuk-competitor-intel.md:9; schemas/competitor-report.schema.json:30-31; query file `sources` holds status only | Keep. Optional: record the barrier text in the query file's `sources`, not just `ok`. |
+| 6.2 | Firecrawl **Search** is the first move (one call = SERP + content) | N/A | — | Deliberate: DataForSEO Google (preflight + spend log) + free Bing browser read; Firecrawl last because it spends credits — bsuk-query-augmentation/SKILL.md:43-45, 75-77, 129-133, 232 | Keep the BSUK order. It is cost-grounded and recorded. |
+| 6.3 | Sequence Search → Map (relevant competitors) → Scrape (thin) → Extract (typed schema) | N/A | — | Site-level intel is map + ≤6 scrapes with a credit ceiling and a stop token (WORKFLOW.md:138); the keyword-gap agent is "map and scrape only … never … extract … search" (bsuk-competitive-keyword-gap-agent.md:11) | Keep. It is deliberate and budgeted. |
+| 6.4 | Ladder when blocked: UA retry → scrape → Playwright; a curl 403 is not a dead link; record what was tried | PRESENT | TEXT-ONLY | research-recency/SKILL.md:18-20 ("curl 403 ≠ dead"); bsuk-query-augmentation/SKILL.md:129-133; bsuk-reddit-threads/SKILL.md Step B table (:28-32) | Keep. |
+| 6.5 | SERP snapshot on Google **and** Bing, top 10 | PRESENT | Produced by script (`query_augment.py`, exit 6 on bad raw input) | bsuk-query-augmentation/SKILL.md:75-77 (Google depth 10; Bing read free), :110-113 (top-10 `results` kept); the pool is the top 5 of each (location-page-template.md:17-22) | Keep. |
+| 6.6 | …for the primary **+ top 5 variations** | PARTIAL | — | Primary only. The three query shapes are an "optional free gap scan: they supply topics, never the count" (bsuk-location-page-builder/SKILL.md:67-71) | SKIP for P5. Five paid SERPs × 28 cities goes against the spend guard, and `keyword_variants.py` already mines variations from the cache. |
+| 6.7 | Snapshot fields per result: URL, title, meta, word count, H2 count, image count, video, schema types, page type | PARTIAL | — | Kept: url, positions, h2_raw / h2_clean (Manchester query file `competitors[]`). Not kept: title, meta, word count, images, video, schema, page type. The HTML is saved only to the scratchpad (bsuk-query-augmentation/SKILL.md:129-142) | **ADOPT-BEFORE-P5.** Extend `query_augment.py --extract-h2` to emit these from the HTML it already reads, at no extra fetch cost. Without word counts, Rule 27's word target stays `NOT FETCHED` for ever (seo-rules.md:188-191; bsuk-location-page-builder/SKILL.md:373-374). |
+| 6.8 | Fan-out: GSC queries (all rows with the stem) | N/A | — | GSC is NOT FETCHED until project 6 (seo-rules.md:96-101; bsuk-strategy-synthesizer.md:28) | Revisit in project 6. |
+| 6.9 | Fan-out: Bing query data | PRESENT | Script-normalised | `serp_bing` related questions (bsuk-query-augmentation/SKILL.md:76) | Keep. |
+| 6.10 | Fan-out: Google PAA expanded **three levels** | PARTIAL | — | Paid SERP uses "People Also Ask click depth 1" (bsuk-query-augmentation/SKILL.md:75); the free PAA agent expands nested questions with no depth set (bsuk-paa-agent.md:68-72) | ADOPT-LATER. FAQ picks are bounded by bank facts, so deeper PAA adds questions P5 cannot answer. Revisit for the blog posts. |
+| 6.11 | Fan-out: autosuggest A–Z | MISSING | — | No autosuggest source in query_augment or its skill | ADOPT-LATER. It is a free long-tail source, but it will not change P5's bank-bounded FAQ. |
+| 6.12 | Fan-out: Related searches | PRESENT | ENFORCED on new pages: `keyword-variants-missing` needs ≥1 `related` term (family_rules.py:82-93) | `serp_google_related` (bsuk-query-augmentation/SKILL.md:75); keyword_variants.py:20 | Keep. |
+| 6.13 | Fan-out: Reddit / Quora / Facebook thread titles | PARTIAL | — | Reddit + UK forums via bsuk-reddit-threads; Facebook `NOT FETCHED` by design (bsuk-reddit-threads/SKILL.md:32); no Quora | ADOPT-LATER (Quora). Reddit is the proven UK source. |
+| 6.14 | Fan-out: YouTube titles | MISSING | — | bsuk-youtube only embeds videos; it is not a query source | ADOPT-LATER. Most relevant to the comparison cluster. |
+| 6.15 | Fan-out: competitor H2/H3 text | PARTIAL | Script (`--extract-h2`) | H2s only (bsuk-query-augmentation/SKILL.md:136-142); no H3 | **ADOPT-BEFORE-P5.** Fold it into 6.7: capture H3s in the same pass. |
+| 6.16 | Every 6+-word conversational query captured (AEO/voice) | PARTIAL | TEXT-ONLY | Template category "Long-Tail Conversational (6+ words)" (bsuk-seo-master-checklist/SKILL.md:163-176); no capture rule in query_augment | ADOPT-LATER. It can become a WARN once 6.11 exists. |
+| 6.17 | Section inventory per competitor: every H2/H3 in order **with word counts** | PARTIAL | Script (H2s only) | `h2` / `h2_all` in order in raw/<slug>/competitors.json (bsuk-query-augmentation/SKILL.md:139-142); no H3, no words | **ADOPT-BEFORE-P5** via 6.7. Depth gaps (§9) and the word target both need it. |
+| 6.18 | Visual inventory per competitor: images by type, video count/length, tools, comparison tables | PARTIAL | Schema-validated, **site-level homepage only** | intel `visual` = homepage_images, alt class, video_present (bsuk-competitor-intel.md:58); nothing per SERP page | **ADOPT-BEFORE-P5** via 6.7 (image, video and table counts). Image-type classification: ADOPT-LATER. |
+| 6.19 | Recency sweep (last 30 days) via `research-recency` | PARTIAL | TEXT-ONLY | Listed in Sprint 0 (WORKFLOW.md:43); not wired into the per-page flow (query-augmentation / location-builder never call it) | ADOPT-LATER. Location facts are data-bound; it matters for the blog posts. |
+| 6.20 | Reddit/forum mining logged in a **Thread Ledger** so it is not re-mined | PARTIAL | — | Per-slug `raw/<slug>/threads.json` only (bsuk-query-augmentation/SKILL.md:145-147); no cross-page ledger; the searches include city-agnostic ones (bsuk-reddit-threads/SKILL.md:19) | **ADOPT-BEFORE-P5.** 28 city pages re-run the same generic threads. A shared ledger (url → questions, fetched date) avoids 28× re-fetching. |
+| 6.21 | 6b: one dated research doc, in order: SERP · fan-out · section inventory · visual inventory · gap matrix · keyword universe · entity map · PAA · recency · NOT FETCHED list | PARTIAL | — | Split across data/queries/<slug>.json + raw/, docs/research/gap-matrix-<date>.md and keyword-gap-<date>.md (site-level), and board blocks 4–5 (build_page_board.py:911-930). No visual inventory or recency notes. The board has **no competitor block** by design (bsuk-location-page-builder/SKILL.md:75-81) | ADOPT-LATER: a read-only "Research" block on the board rendering the question file (pool, positions, H2 counts, `set_by`, extra_sections, source statuses). That puts the research in front of the approver as well. |
+| 6.22 | APPROVAL GATE 2: breeder reviews research before strategy | N/A | — | Deliberate single approval on the board (CLAUDE.md:272-276); site-level user gate on the competitor registry (WORKFLOW.md:134) | Covered by 6.21's board block, if adopted. |
+
+### §7 Keyword Deliverables and Metrics (7a–7e)
+
+### 7a Required metric table: ours vs each top-5 competitor
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 7a.1 | A numeric metric table, **ours vs each top-5 competitor** | MISSING | — | No script computes keyword metrics on `dist/` or on competitor HTML (a grep of final_page_audit, aeo_audit, evidence_audit and page_hardening_scan found no keyword metric). The board shows planned term counts, ours only (build_page_board.py:911-925) | **ADOPT-BEFORE-P5.** Add `scripts/keyword_metrics.py`, measuring the built page and (after 6.7) the saved competitor HTML, shown on the board. "No test, no rule": today every row below is prose. |
+| 7a.2 | Unique keyword count: 85–105 mentions across 40+ distinct terms | PARTIAL | TEXT-ONLY (and contradictory) | Rule 18 "≈85–105× Hard target per page" (seo-rules.md:109-122) vs "There is **no floor**… >110 = OVER-STUFFED" (bsuk-keyword-verifier.md:250-251) and "Counts are ceilings" (build_page_board.py:920) | **ADOPT-BEFORE-P5.** Resolve the contradiction (make Rule 18 a ceiling band) and report the number via 7a.1. |
+| 7a.3 | Variation count ≥ 12 | PARTIAL | ENFORCED at ≥1 on new pages (`keyword-variants-missing`, family_rules.py:82-93) | keyword_variants.py:16-19 proposes only *attested* variations | ADOPT-LATER: report the count; do not force 12. BSUK deliberately bars invented spellings. |
+| 7a.4 | Variation density over the first 30 KB of HTML, 1–2% | MISSING | — | Rule 19 (per-section primary 0.8–1.2%) and verifier 0.5–1.5% are text only (seo-rules.md:124-126; bsuk-keyword-verifier.md:76) | ADOPT-LATER: report-only line in keyword_metrics.py. |
+| 7a.5 | Exact matches in tags: Title 1 · H1 1 · H2s 2–4 · alt 1 | PARTIAL | TEXT-ONLY | bsuk-keyword-verifier.md:46-84 (title/H1/H2/alt checklist, no 2–4 H2 target) | **ADOPT-BEFORE-P5** in keyword_metrics.py: 28 near-identical city pages need provable, not eyeballed, placement. |
+| 7a.6 | Clean keyword density in tags, flag > 3% | PARTIAL | A different guard is ENFORCED: `term-budget-per-page` (blocking count ceilings inside `<main>`) | rules/copy.md:54; data/quality/evidence-budgets.json:2 ("PROPOSALS… not measured", `calibrated: null`) | ADOPT-LATER: report tag-only density beside the ceilings. |
+| 7a.7 | First-100-words placement: required | PRESENT | TEXT-ONLY | bsuk-keyword-verifier.md:65-68 | **ADOPT-BEFORE-P5:** a one-line check in keyword_metrics.py (FAIL on new pages). Cheap and mechanical. |
+| 7a.8 | Header keyword spread: ≥ 80% of H2/H3 carry a distinct keyword type, no two headers on the same type | MISSING | — | Sections carry typed `keywords` (board.schema.json:973-1060) but no check reads headers against them | **ADOPT-BEFORE-P5:** a board check (see 12.6). |
+
+### 7b Keyword type distribution (~85–105 total)
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 7b.1 | Primary 30–35, front-loaded in title / H1 / first 100 words | PARTIAL | Type ENFORCED as a required board field (schema); count TEXT-ONLY | board.schema.json:973-985 (`primary` required); seo-rules.md:113; floors retired (bsuk-keyword-verifier.md:250) | SKIP the count as a floor (deliberately retired: floors manufactured repetition). Report it via 7a.1. |
+| 7b.2 | LSI 20–25 | PARTIAL | Type ENFORCED (schema); count TEXT-ONLY | board.schema.json:973-985 (`lsi`); seo-rules.md:114 | SKIP the count floor, as 7b.1 (retired 2026-09-09); reported via 7a.1. |
+| 7b.3 | Long-tail 6+ words, conversational, 15–20 | PARTIAL | Type ENFORCED; "6+ words" not checked | `longtail` (board.schema.json:973-985); seo-rules.md:115 | ADOPT-LATER: WARN when a `longtail` term has fewer than 6 words. |
+| 7b.4 | Branded 10–15 (brand, people, reviews/pricing) | PARTIAL | Type ENFORCED; count TEXT-ONLY | `brand`; seo-rules.md:116 (BlueStaffyUK, Lisa Bright, Carlisle) | SKIP the count floor, as 7b.1 (retired 2026-09-09); reported via 7a.1. |
+| 7b.5 | Conversational / voice ~23 | PARTIAL | Type ENFORCED; count TEXT-ONLY | `conversational`; seo-rules.md:117 | SKIP the count floor, as 7b.1 (retired 2026-09-09); reported via 7a.1. |
+| 7b.6 | Comparison 5–8, **linked to the comparison cluster** | PARTIAL | Type ENFORCED | `comparison`; seo-rules.md:118. The location internal-link list names no comparison pages (location-page-template.md:107-119) | ADOPT-LATER: add the comparison routes to the location link list once P5's comparison cluster exists. |
+| 7b.7 | Solution 5–10 | PARTIAL | Type ENFORCED; count TEXT-ONLY | `solution`; seo-rules.md:119 | SKIP the count floor, as 7b.1 (retired 2026-09-09); reported via 7a.1. |
+| 7b.8 | Transactional ~15, honest only | PARTIAL | Type ENFORCED; honesty ENFORCED by `claim-bound-to-proof` (blocking) | `transactional`; seo-rules.md:121; rules/copy.md:55 | SKIP the count floor, as 7b.1 (retired 2026-09-09); reported via 7a.1. |
+| 7b.9 | Geo token rule: a geo token in ≥1 H2 **and** in the meta description | PARTIAL | — | A `geo` type exists (pageboard.py:992); the location H1/title carry the city and UK from `data/locations.json` (bsuk-location-page-builder/SKILL.md:212-214; seo-rules Rule 14). Nothing requires geo in an H2 or the picked description; the geo style note exists (framework-heading-hierarchy/SKILL.md:172) | **ADOPT-BEFORE-P5:** a family_rules check that ≥1 body H2 and the picked meta description carry a `geo` term (city or "UK"). 28 geo pages depend on it, and it is a one-function check. |
+
+BSUK adds, deliberately: a `geo` type plus four optional types (`variation`, `related`, `cooccurring`, `similar`), ENFORCED on new pages (family_rules.py:77-93; bsuk-location-page-builder/SKILL.md:408-426).
+
+### 7c Competitor keyword deliverables
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 7c.1 | Keywords each top-5 competitor **has** that we lack, with placement (title/H1/H2/body/alt) | PARTIAL | Site-level ENFORCED (keyword-gap scored by script) | bsuk-competitive-keyword-gap-agent.md:235-237 (page topics from titles/H1s, site-level); no per-page have/lack, no body/alt placement | ADOPT-LATER: add a have/lack column to keyword_metrics.py once 6.7 keeps the HTML. |
+| 7c.2 | Keywords **nobody** in the top 10 covers, ranked by impression potential | PARTIAL | ENFORCED: `query_coverage_check` requires one H2 per extra section | `extra_sections` with `uncovered: true` (location-page-template.md:36-39; bsuk-query-augmentation/SKILL.md:183-185). Impression ranking needs GSC (NOT FETCHED until project 6) | ADOPT-LATER: impression ranking needs GSC (project 6); the topic half is already gated. |
+| 7c.3 | Their header text verbatim, so ours is provably different | PARTIAL | Stored; not compared | Competitor H2s stored verbatim in raw/<slug>/competitors.json (bsuk-query-augmentation/SKILL.md:139-142). `header-collision` compares only against BSUK's own live pages (pageboard.py:1825-1829) | ADOPT-LATER: add competitor H2s to the header pre-check corpus. It is cheap and closes "provably different". |
+| 7c.4 | Their image alt text and filenames | PARTIAL | Site-level homepage only | intel alt class (descriptive/generic/missing) counts (bsuk-competitor-intel.md:58, 126); no filenames | ADOPT-LATER via 6.7. |
+| 7c.5 | Their video presence and what it covers | PARTIAL | Site-level homepage only | intel `video_present` (bsuk-competitor-intel.md:58) | ADOPT-LATER via 6.7. |
+
+### 7d Meta
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 7d.1 | Three meta sets per page | PRESENT | ENFORCED (schema 3/3 titles/descriptions; `meta-no-pick` FAIL at release) | board.schema.json:374-404; pageboard.py:1866-1871 | Keep. |
+| 7d.2 | Sets typed Educational / Benefit-Solution / Transactional-Urgency | MISSING | — | Variants are unlabelled; tone markers survive only as planning labels (seo-rules.md:157-160, Rule 22 retired) | ADOPT-LATER: an optional `angle` label per variant, so the pick is a choice between strategies, not between wordings. |
+| 7d.3 | One (Recommended), with why and trade-off | PARTIAL | `recommended` index ENFORCED (schema); why/trade-off TEXT-ONLY | board.schema.json:374-404 (index only); CLAUDE.md:112-114 (rule 4) | ADOPT-LATER: add `why` and `trade_off` strings to `meta_set.recommended`. |
+| 7d.4 | Title ≤ 205 chars, four-part pipe formula | N/A | ENFORCED the BSUK way (`meta-length` FAIL; `title-length-max` blocking) | Deliberate: Rule 21 is one clause, ≤ 70 chars, no pipes; Format 2 is retired (seo-rules.md:139-160); evidence-budgets `title_max_chars: 70`; pageboard.py:1872-1877 | Keep. It is recorded and gated. |
+| 7d.5 | Description F1 ≤ 185 / F2 ≤ 300: Benefit, Benefit, Trust + CTA | N/A | ENFORCED band 140–160 (schema + `meta-length`) | board.schema.json:394-404; Rule 23 content (keyword + variation + trust + CTA) is text (seo-rules.md:162-172) | Keep the band. The content elements could be checked in keyword_metrics.py later. |
+| 7d.6 | Front-load the primary keyword | PRESENT | TEXT-ONLY | seo-rules.md:146-147 (Rule 21 step 1) | **ADOPT-BEFORE-P5:** fold into keyword_metrics.py (title starts with the primary). |
+| 7d.7 | Real price floor, real credentials | PRESENT | ENFORCED (prices from data files; `claim-bound-to-proof` blocking; `check:placeholders`) | CLAUDE.md:296-313; rules/copy.md:55; seo-rules.md:166-172 | Keep. |
+| 7d.8 | Never short-form | PRESENT | TEXT-ONLY | seo-rules.md:141 ("NEVER ship a generic short title") | ADOPT-LATER: reconcile the stale "Title length 50–60" in bsuk-keyword-verifier.md:48 and the content-audit agent with Rule 21's ≤ 70. |
+
+### 7e Counter snippets
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 7e.1 | 8 counters per page | N/A | ENFORCED the BSUK way (stats `maxItems: 6`) | Deliberate: Rule 31 sets four (seo-rules.md:210-215); board `stats` 1–6 rows, "fewer rows — never an invented one" (board.schema.json:632) | Keep. Eight would push invented figures. |
+| 7e.2 | < 4 words each | PRESENT | TEXT-ONLY | seo-rules.md:211; bsuk-seo-master-checklist/SKILL.md:716-724 | ADOPT-LATER: a WARN on `n + label` word count in pageboard (a trivial check). |
+| 7e.3 | Number-led | PRESENT | Partly structural (each row requires `n`, rendered before the label) | board.schema.json:632 (`n`, `label`, `source` required) | Keep. |
+| 7e.4 | Ledger-verified only; never a fabricated count | PRESENT | ENFORCED (`stat-source-unresolved` FAIL; test_board_previews.py resolves every source) | pageboard.py:1706, 1073-1100 (source grammar); CLAUDE.md:184-186 (rule 16) | Keep. |
+
+### §8 Entity Relationships and Co-Occurrence
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 8.1 | 85–112 distinct entities per page | PARTIAL | TEXT-ONLY | Location pages, deliberately: "as many real local entities as the city supports, none invented" (location-page-template.md:158-159). Full-length pages: Rule 57 "95–105 distinct, each once" (seo-rules.md:436-445). No count check; board block 5 groups entities without counting (build_page_board.py:926-930) | ADOPT-LATER: print the distinct `ont:` count on board block 5 (WARN band for comparison/blog only). The location difference is recorded and stays. |
+| 8.2 | Natural mention counts; anti-pattern = the business name in every sentence | PARTIAL | `term-budget-per-page` ENFORCED (blocking) — **but the brand is not a budgeted term** | rules/copy.md:54; evidence-budgets.json:15-21 (terms: blue staffy, staffy puppies, SBT, puppies for sale, glasgow, uk) | **ADOPT-BEFORE-P5:** add a `bluestaffyuk` brand term with a per-type ceiling (see 8.4). |
+| 8.3 | Entity classes (CAG's birds / geo / CITES / USDA / DNA labs / PCR / cargo / IATA / pellets / avian-vet / method labels) | PRESENT | ENFORCED (ontology schema; `ontology_seed.py --check`; `entity-blocked` FAIL, unknown/proposed WARN; test_ontology_seed.py) | board_entities.py:30-31 (People, Place, Health, Organization, Regulation, Organism, Commerce, Logistics, Documentation, Method); ontology_seed.py:1-40; pageboard.py:1730-1736 | Keep. BSUK equivalents: DEFRA transport = Logistics, the Dangerous Dogs Act row = Regulation, L-2-HGA/HC = Health (PROPOSED until ledgered). |
+| 8.4 | Frequency targets: brand 5–10× · full location 1–2× + city 5–8× · each subject named in its card + 1–2 body mentions | PARTIAL | Ceilings ENFORCED (blocking); floors deliberately none | **Defect:** the location city term is hard-coded to `glasgow` (evidence-budgets.json:20, and the `location` budget :56-63), so 27 of 28 city pages have no city ceiling at all; no brand term | **ADOPT-BEFORE-P5:** derive the city term per slug from `data/locations.json` and add the brand term, before 28 city pages are judged against Glasgow. |
+| 8.5 | Co-occurrence map: entity pairs top pages mention together, as a pair-frequency table | MISSING | — | Closest: keyword_variants `cooccurring` = 1–3-word phrases in ≥2 cached documents (keyword_variants.py:21-23), which is not entity pairs | ADOPT-LATER. It needs the competitor body text 6.7 would keep. |
+| 8.6 | Predicate extraction: competitor S→P→O triples; ours assert more, each traced to the Ledger/data | PARTIAL | TEXT-ONLY | bsuk-entity-graph/SKILL.md:76-104 (closed predicate taxonomy, legal type-pairs, prose triples), :144-150, :248 (un-ledgered = PROPOSED); runs via graphify; not per-competitor, no ours-vs-theirs count | ADOPT-LATER. Heavy for P5's data-bound city pages. |
+| 8.7 | Schema drift: top-10 schema types vs ours; extend, never duplicate; verified in `dist/` | PARTIAL | Ours ENFORCED (`schema-planned-missing`, `schema-unparsed` FAIL; `check:schema`); competitors site-level only | pageboard.py:1951-1960; schema_check.py:36, 66 (duplicate nodes, advisory); rules/copy.md:34; competitor `schema_types` from the homepage (bsuk-competitor-intel.md:59) into the gap matrix | ADOPT-LATER via 6.7 (JSON-LD `@type` from the saved SERP HTML): a per-page drift line on the board. |
+| 8.8 | EEBP under every header (Entity → Evidence → Benefit → Purpose), distinct from framework-ebp | N/A | Framework per section ENFORCED (board enum) | Deliberate: EEBP is the framework for for-sale/buy pages (framework-eebp/SKILL.md:3, 19); location pages take AIDA + Entity-Tree, comparison pages QAB + BAB (WORKFLOW.md:263-265); board.schema.json:517 | Keep. The EEBP/EBP distinction is preserved. |
+
+### §9 Competitor Gaps, Angles and Voice Tones
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 9.1 | Why they rank: the mechanism named (authority, exact slug, depth, freshness, schema, backlinks) | MISSING | — | Not a field in intel, the query file or content-audit | ADOPT-LATER. The P5 pools are mostly marketplaces, where the mechanism is plainly domain authority; naming it will not change the build. |
+| 9.2 | Content gaps (sections/questions they do not answer) | PRESENT | ENFORCED (`query_coverage_check`: one H2 per `extra_sections` topic; keyword-gap scored by script) | location-page-template.md:36-39; bsuk-query-augmentation/SKILL.md:183-185; bsuk-content-audit-agent.md:186-205 | Keep. |
+| 9.3 | Depth gaps: sections they answer thinly, by word count | MISSING | — | No per-section word counts captured (see 6.17) | **ADOPT-BEFORE-P5** via 6.7. It is the only mechanical way to justify a COMPETITOR-BASED section's `words` band. |
+| 9.4 | Trust gaps: credentials, documentation, real photos, named people | PRESENT | ENFORCED site-level (intel `trust` schema-validated → gap matrix, `check:gaps`) | bsuk-competitor-intel.md:53; bsuk-content-audit-agent.md:176-181 | Keep. |
+| 9.5 | Voice / tone register (ours distinguishable at one paragraph) | MISSING | — | Register is declared only for BSUK's own headers (rules/headings.md:36) | ADOPT-LATER. |
+| 9.6 | Angle: the single frame their page is built on | PARTIAL | TEXT-ONLY | bsuk-seo-master-checklist/SKILL.md:106-120 (item 10 "Angles Used"); bsuk-content-audit-agent.md:180 ("Unique angles") | ADOPT-LATER. |
+| 9.7 | Visual gaps (infographics, tables, video, tools) | PARTIAL | Site-level homepage only | bsuk-competitor-intel.md:58 | ADOPT-LATER via 6.7. |
+| 9.8 | Weaknesses (stale dates, broken elements, thin schema, no author, no location) | PARTIAL | TEXT-ONLY (intel `technical` is schema-validated site-level) | bsuk-seo-master-checklist/SKILL.md:106-120 (item 7); seo-rules.md:419-424 (Rule 55) | ADOPT-LATER. |
+| 9.9 | Synthesis: how we beat them, a defensible mechanism | PRESENT | Figures ENFORCED (`strategy_cite_check.py`); prose TEXT-ONLY | bsuk-competitor-intel.md:505 (`key_insight`); bsuk-seo-master-checklist/SKILL.md:136 (FINAL OUTRANKING STRATEGY); seo-rules.md:419-424 | Keep. |
+
+### §10 Strategy: Two Plus One Blended
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 10.1 | Two complete transactional strategies + one blended | N/A | ENFORCED the BSUK way | Deliberate: "Exactly TWO strategies — never one, never three" (bsuk-strategy-synthesizer.md:15). Per page, 2–3 `angles` + one chosen `strategy`, and every untaken angle needs `why_not` (board.schema.json:184-232; pageboard.py:150-158) | Keep. It is recorded and gated. |
+| 10.2 | Each with angle, target query set, H2-level section architecture, conversion path, risk | PARTIAL | Cluster: figures checked by `strategy_cite_check.py` | Cluster parts: thesis, clusters, page map, link plan, schema plan, build order, outcome, risks (bsuk-strategy-synthesizer.md:78-79); no conversion path or H2 architecture; page angles are name/hook/why_not only | SKIP for P5. Location H2 architecture is derived from competitors (location-page-template.md:15-47), so an H2 architecture per strategy is moot there. |
+| 10.3 | Exactly one (Recommended), from real data, trade-off named | PRESENT | ENFORCED (`strategy_cite_check.py` ≥3 sourced figures; board `strategy.why` + `trade_off` required and must be one of the angles) | bsuk-strategy-synthesizer.md:17; board.schema.json:214-232; pageboard.py:153; CLAUDE.md:112-114 | Keep. |
+| 10.4 | CTA strategy: cadence, anchor text, destination, one-global-CTA rule | PRESENT | ENFORCED (schema; no-CTA refused; cadence/gap WARN) | board.schema.json:234 (`cadence`, `destination` `#id`, unique `anchors`, `global_cta`); pageboard.py:162, 648-655; .claude/skills/bsuk-cta-strategy | Keep. |
+| 10.5 | APPROVAL GATE 3: breeder picks the strategy | PRESENT | ENFORCED via the board approval hash | WORKFLOW.md:230-236 (cluster pick before the architect); per-page pick on the board (board_approve.py) | Keep. |
+
+### §11 Section Distribution Matrix
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 11.1 | Matrix mandatory before any outline | PRESENT | ENFORCED (sections' required fields; build refused without an approved board) | board.schema.json:469-487; CLAUDE.md:272-276; the matrix (block 4) and outline (block 3) are approved together (build_page_board.py:884-925) | Keep. |
+| 11.2 | Column: # | PRESENT | ENFORCED (`n`) | board.schema.json:469-487 | Keep. |
+| 11.3 | Column: Section | PRESENT | ENFORCED (`heading`) | same | Keep. |
+| 11.4 | Column: Group, with required labels MANDATORY / COMPETITOR-BASED / SUGGESTED-RECOMMENDED | PRESENT | ENFORCED (enum; category C ⇒ SUGGESTED-RECOMMENDED) | board.schema.json:500; pageboard.py:106-110 | Keep. |
+| 11.5 | Column: Angle (per section) | MISSING | — | Sections carry `intent`, not an angle; Rule 51C asks for a "section angle" in prose (seo-rules.md:333-335) | ADOPT-LATER: an optional `angle` per section, shown in block 4's "Why" table. |
+| 11.6 | Column: Framework | PRESENT | ENFORCED (enum EEBP/FAB/QAB/PAS/BAB/PDB/AIDA/EBD/HSS) | board.schema.json:517 | Keep. |
+| 11.7 | Column: Entities | PRESENT | ENFORCED (`ont:` ids; `entity-blocked` FAIL) | board.schema.json:1068; pageboard.py:1730-1736 | Keep. |
+| 11.8 | Column: Keyword types | PRESENT | ENFORCED (9 required + 4 optional types; per-type counts on block 4) | board.schema.json:973-1060; build_page_board.py:911-925 | Keep. |
+| 11.9 | Column: Image type (OG / infographic / table) | PRESENT | ENFORCED (`images[].kind` photo/infographic + `source`; `image-slot-missing` on new pages) | board.schema.json:1092; family_rules.py:161-165 | Keep. |
+| 11.10 | Column: Words | PRESENT | ENFORCED (`words` min/max; `words-out-of-band` WARN) | board.schema.json (words); pageboard.py:879 | Keep. |
+| 11.11 | Column: Why, grounded in Sprint 0 with the source named | PRESENT | ENFORCED (`why` 20–400 chars, `why_source` required) | board.schema.json:500-516 | Keep. |
+| 11.12 | COMPETITOR-BASED cites which competitor | PRESENT | ENFORCED (refused without a URL) | pageboard.py:111-113 | Keep. |
+| 11.13 | Target 22+ sections for a full transactional page | N/A | ENFORCED the BSUK way (`check:queries` fails a page below `section_target.total`) | Deliberate: competitors' highest real H2 count + 3, floor 9 (location-page-template.md:15-47, 158; seo-rules.md:183-187) | Keep. |
+| 11.14 | APPROVAL GATE 4: breeder approves the matrix | PRESENT | ENFORCED (the single board approval) | CLAUDE.md:272-276; board_approve.py | Keep. |
+
+### §12 Heading Outline Gate: H1 to H6
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 12.1 | The full H1→H6 outline is approved before any page code | PARTIAL | ENFORCED to H3/H4 (`board_gate` refuses an unapproved board; `check:outline` post-build) | rules/headings.md:19; CLAUDE.md:272-276; rules/copy.md:64-70. **Deliberate:** the board tree stops at the approved H3/H4 and the H4–H6 ladder is written at build (pageboard.py:1834-1841; bsuk-location-page-builder/SKILL.md:444-445) | SKIP. It is recorded; approving 10+ H5/H6 per city × 28 is approval noise. |
+| 12.2 | All six levels present; no skipped level | PRESENT | ENFORCED (`sem-heading-order` blocking; `final_page_audit` `all_six_levels` FAIL) | tests/render/checks/sem.ts:23-29; final_page_audit.py:160, 438; blog collection posts exempt by name (final_page_audit.py:316-341) | Keep. The post exemption is recorded. |
+| 12.3 | ≥ 5 H5 and ≥ 5 H6 | PRESENT | ENFORCED FAIL for comparison (`min-h5-h6`); WARN on home/location; posts exempt | pageboard.py:1860-1866 (`ADVISORY_MIN_H5H6`, :1020); rules/headings.md:19 (2026-09-09 exception) | Keep. The location WARN is a recorded decision. |
+| 12.4 | Title Case on every H1–H6; FAQ `summary` exempt | PRESENT | Advisory render check (`sem-title-case-headings`); `page_hardening_scan` ERROR only with `--fail-on-error`, and the location builder's Step 6 does not run it | sem.ts:118-121 (advisory); rules/headings.md:28 (FAQ exemption **deliberately reversed**: questions are H3s, Title Case); Faq.astro:39 applies `titleCase()` | **ADOPT-BEFORE-P5:** promote to blocking for new pages (see 12.10). Today a sentence-case body H3 on a city page fails nothing. |
+| 12.5 | Conversational Q&A headers (What/How/Is/Can/Where/Why) | PRESENT | TEXT-ONLY | rules/headings.md:31-36 (`header-style-declared`, untested); location-page-template.md:95-97 | ADOPT-LATER. |
+| 12.6 | Two-Keyword Headers: each major header carries two distinct keyword types | PRESENT | TEXT-ONLY | bsuk-seo-master-checklist/SKILL.md:405-411 | **ADOPT-BEFORE-P5:** a family_rules check that each body H2 section carries ≥2 non-empty keyword types and its heading contains a term from at least one. It also covers 7a.8. |
+| 12.7 | Semantic map: H1 topic · H2 intents · H3 subtopics · H4 PAA · H5 facts/warnings · H6 notes/citations | PRESENT | TEXT-ONLY (judgment) | rules/headings.md:19 (item 4); seo-rules.md:362-365 | SKIP a test: there is no mechanical decision procedure. |
+| 12.8 | Inline H6 must follow an H5 | PRESENT | ENFORCED (`sem-heading-order` flags H4→H6; H6 prefixes: `ledger-spent-prefix` FAIL) | sem.ts:23-29; board.schema.json `tuple.h6_prefixes`; pageboard.py:1810 | Keep. |
+| 12.9 | Header dup-gate runs **before approval**: zero exact or template crossover with any sibling | PRESENT | Shown on the board pre-approval; `header-collision` FAIL at `board_gate` (pre-build); `outline-heading-repeat` refused at approval (in-page only); `outline-heading-crossover` post-build | build_page_board.py:884-888; pageboard.py:1825-1829; family_rules.py:116-146; rules/copy.md:70 | **ADOPT-BEFORE-P5:** make `board_approve.py` refuse `header-collision` on new pages too. Otherwise a colliding city H2 is approved, fails at `board_gate`, and forces a re-approval (the hash moves), across 28 siblings. |
+| 12.10 | Five A/B variants for the H1 | PRESENT | ENFORCED (exactly 5, `recommended`, `pick`) | board.schema.json:337-360 | Keep. |
+| 12.11 | Five A/B variants for each major H2 | MISSING | — | No H2 variants field | SKIP. Rule 15 carries keyword H2s verbatim; 5 × ~12 H2s × 28 pages is approval noise; the H1 pick is final. |
+| 12.12 | Conversational opening paragraph under every header; never a list, table or image first | PARTIAL | Advisory render check, heading→heading only | sem.ts:195-280 (`sem-section-opening-paragraph`, advisory, deliberately narrow); location-page-template.md:91-92 (1–2 sentences under every H1–H6); **deliberate:** image-first under H3 (rules/design.md:44-49) and rule 17 puts an image on every body H2/H3 | **ADOPT-BEFORE-P5:** blocking for new pages, and flag heading→list/table (keeping the H3 image-first exemption). Location pages are where thin templating shows first. |
+| 12.13 | Declare which registered header style the page uses | PARTIAL | TEXT-ONLY (`enforced: untested`, a deletion candidate) | rules/headings.md:31-36; location default Style 2 (location-page-template.md:95-96); no board field | ADOPT-LATER: a `brief.header_style` enum on the board, required on new pages, or delete the rule (No test, no rule). |
+| 12.14 | H2s carry the clay rule treatment | N/A | — | CAG palette; BSUK visual rules are its own (rules/design.md) | — |
+| 12.15 | Heading hierarchy band: H3 renders at 40–50px equivalent | N/A | — | Deliberate: the locked design system uses fixed tokens 13–44px (src/styles/tokens.css:27-34); InfoCard H3 = `--text-xl` 24px (src/components/kit/InfoCard.astro:70); design system locked in project 3 (CLAUDE.md:315-318) | Keep. |
+| 12.16 | Fix H4–H6 gaps by adding depth, not by shrinking | N/A | — | As 12.15 | — |
+| 12.17 | Verify **computed** heading sizes at 375 / 768 / 1280 (clamp-inversion trap) | MISSING | — | No render check asserts descending computed sizes; `css-math-spacing` catches invalid clamp syntax only (bsuk-page-hardening/SKILL.md:59-70); `layout-min-font-size` is a floor (layout.ts:60) | ADOPT-LATER. The tokens are fixed px with no `vw` term, so the trap is mostly moot. A monotonic H1≥H2≥…≥H6 check in `tests/render` is cheap insurance. |
+| 12.18 | APPROVAL GATE 5: hard gate before any code | PRESENT | ENFORCED (`board_gate.py` exit 1) | CLAUDE.md:272-276; scripts/board_gate.py:56-58 | Keep. |
+
+---
+
+### Verdict counts (110 items, counted by script from the tables above)
+
+| Verdict | Count |
+|---|---|
+| PRESENT | 42 (31 with an enforcing check or schema, 11 text-only or advisory) |
+| PARTIAL | 42 |
+| MISSING | 13 |
+| N/A | 13 |
+
+Recommendations on the 55 PARTIAL/MISSING items: ADOPT-BEFORE-P5 14 · ADOPT-LATER 31 · SKIP 10. Several ADOPT-BEFORE-P5 rows share one fix, as the top-gaps list shows. A further 5 ADOPT-BEFORE-P5 marks sit on PRESENT rows (7a.7, 7d.6, 12.4, 12.6, 12.9) where the rule exists but nothing fails when it is broken.
+
+### Top gaps for project 5 (ranked)
+
+1. **Keep competitor page metrics at extraction time (6.7, 6.15, 6.17, 6.18, 9.3; feeds 7c, 8.7).** `query_augment.py --extract-h2` already parses every pool page's HTML and then throws it away. Emit title, meta, word count (per H2 section), H3s, image/video/table counts and JSON-LD `@type`s into `raw/<slug>/competitors.json`. There is no extra fetch cost. It unblocks Rule 27's word target, which is otherwise permanently `NOT FETCHED` for all 28 city pages.
+2. **`scripts/keyword_metrics.py`: an ours-vs-top-5 numeric table (7a.1, 7a.2, 7a.5, 7a.7, 7d.6).** It measures unique terms, variation count, exact matches per tag, first-100-words placement and front-loaded title on `dist/` and on the saved competitor HTML, shown on the board, with FAIL for first-100 and title front-load on new pages. It also resolves the Rule 18 "hard target 85–105" vs "no floor" contradiction (seo-rules.md:109-122 vs bsuk-keyword-verifier.md:250).
+3. **Fix the evidence budgets for city pages (8.2, 8.4).** The `location` city ceiling is hard-coded to `glasgow` (evidence-budgets.json:20, 56-63), so 27 of 28 city pages have no city-term limit, and the brand name is not budgeted at all. Derive the city term per slug from `data/locations.json` and add `bluestaffyuk`.
+4. **Geo token check (7b.9).** Add a family_rules check that ≥1 body H2 and the picked meta description carry a `geo` term (city or "UK"). One function, 28 pages, and CAG measured this token as what decided retrieval.
+5. **Refuse header collisions at approval (12.9).** `board_approve.py` refuses only family_rules FAILs. A city H2 that collides with a sibling is approved, then fails at `board_gate`, forcing a re-approval. Refuse `header-collision` on new pages at approval time.
+6. **Two-keyword headers / header keyword spread as a board check (12.6, 7a.8).** Each body H2 section should carry ≥2 keyword types, with the heading containing one of them. Today this is prose only in bsuk-seo-master-checklist/SKILL.md:405-411.
+7. **Promote the two advisory SEM checks to blocking on new pages (12.4, 12.12).** These are `sem-title-case-headings` and `sem-section-opening-paragraph`, the latter extended to heading→list/table with the H3 image-first exemption kept. Today neither fails a location page, and `page_hardening_scan` is not in the location builder's gate list.
+8. **A shared thread ledger (6.20).** 28 city pages run the same city-agnostic Reddit searches. A cross-page `url → questions, fetched` ledger stops each page re-mining them.
+</script>
+<script type="text/markdown" data-title="Appendix C — item table, CAG §13–18">
+Repo: `/Users/apple/Downloads/BSUK`, branch `foundation`, working tree clean (read-only audit; the only thing run was an in-memory call to `page_hardening_scan.src_files()` with bytecode writes disabled). All paths are relative to the repo root.
+
+How to read the Enforced column:
+- **ENFORCED**: a named check fails when the rule is broken. **blocking** means a render check that fails `npm run test:render:pages`. A check marked **advisory** is registered and runs, but it never fails the run (`tests/render/pages.spec.ts:162-170` filters on `severity === 'blocking'`).
+- **report-only**: a script that exits 0 unless it is given `--fail-on-error` (the `audit:*` and hardening scans).
+- **TEXT-ONLY**: prose in a rule, skill or workflow file, with nothing that fails.
+
+---
+
+### §13 · Component Selection and Hero Refresh
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 13.1 | Every page ships a distinct component tuple, recorded in the component-map ledger (hero · dial · rail · stepper · takeaway · TOC · table · FAQ · newsletter) | PRESENT | ENFORCED: `board_gate.py` ledger-* checks and `rule16-shared`; `tests/py/test_rule16_gate.py` | `data/component-ledger.json` (pools + pages); `scripts/pageboard.py:185-203` (`TUPLE_ID_KEYS` hero/dial/rail/toc/table/faq + takeaway); newsletter lives on the board tuple (`pageboard.py:137-142`); counter is covered by rule 16 (`CLAUDE.md:179-191`). There is no stepper, because the kit has no stepper component. | None. The stepper axis does not apply because the kit has no stepper. Dial, rail and TOC are chrome that is identical on every page by decision (`bsuk-component-refresh/SKILL.md:47-51`), so in practice only hero, counter, table, FAQ and takeaway vary. |
+| 13.2 | When the hero pool is exhausted, do not invent a sixth and do not silently reuse. Run refresh and ship a delta spec against the reuse. | PARTIAL | Mechanism ENFORCED; the location case is undecided | `pageboard.py:193-203` refuses an unnamed `base#refresh` in the ledger; `pageboard.py:393-440` has refresh pools; but `data/component-ledger.json` `refresh_pools: []`. Rule 16 forbids reuse outright (`CLAUDE.md:179-191`). **Known Issue 60** (`docs/reference/session-log.md:1152-1164`): the 28 city pages map to `interior-guide`, whose three heroes are all taken. It is an open STOP that waits on the user's decision. The rule 16 gate skips any record with no `meta.layout_type` (`pageboard.py:1421-1424`), which is the blind spot for exactly these records. | **ADOPT-BEFORE-P5.** 28 city boards cannot each get a unique hero from 3 styles. The user has to pick one of three: a location family with a per-city rule, a named exemption, or a pool plus a CAG-style delta. Also make the rule 16 gate refuse a new-family record that has no `layout_type`. |
+| 13.3 | Allowed deltas are layout, accent, motif, image grid, eyebrow, ribbon/chips, stat strip, crop, motion | PRESENT | ENFORCED: `refresh-missing` FAIL from `boarded` on (`pageboard.py:1711-1726`); `axis` enum in `schemas/board.schema.json` | `bsuk-component-refresh/SKILL.md:15-16, 64-76` has five axes: layout / accent / motif / container / density. They are a BSUK re-cut of CAG's list. | None. |
+| 13.4 | The palette is never a delta | PRESENT | ENFORCED: `tests/py/test_design_tokens.py:73,138,161` (hex only in the primitive layer, or anywhere in `src/`) | `bsuk-component-refresh/SKILL.md:16, 29-33`; `rules/design.md:20` | None. |
+| 13.5 | Deliver the reuse recommendation with its delta spec at Sprint 1, as one (Recommended) pick with the trade-off | PRESENT | TEXT-ONLY (judgment rule 4) | `CLAUDE.md:112-114`; `bsuk-component-refresh/SKILL.md:146-148` (refresh matrix, rendered on `/board-preview/`) | None. It is a judgment rule and sits under the judgment cap. |
+| 13.6 | Hero and counter strip are separate elements (no shared background, padding or border). Enforced by `layout-hero-counter-separation`. | PARTIAL | Check exists but is **advisory**, so it never fails the run | `rules/design.md:36-41`; `tests/render/checks/layout.ts:265-330` (`severity: 'advisory'` at :267); fixture `known_broken/layout-hero-counter-separation.html`; `CounterStrip.astro:23,54-55` emits the hooks. Built pages carry `[data-counters]` (checked in `dist/`). | **ADOPT-BEFORE-P5: promote it to blocking.** The promotion condition in `tests/render/targets.json` (`_comment`) is met: it has examined real counters since project 4, with no rows in `docs/reports/render-baseline-project4.md:50`. Project 5 adds 28 or more new counters, and an advisory check lets a flush one ship. |
+| 13.7 | H3 sections are image-first. Enforced by `layout-h3-image-first`. | PARTIAL | Check exists, is **advisory**, and **examines 0 units on every real page** | `layout.ts:339-400` counts only `img.sec-img`. The rebuilt pages render body photos through `src/components/BodyImage.astro:43-53` as `class="bl-img"`, and `dist/` has 0 `.sec-img` on the buying and health guides (16 and 8 `.bl-img` respectively). `.sec-img` appears only on `/kit-preview/` (`src/pages/kit-preview/index.astro:148`). | **ADOPT-BEFORE-P5.** Rule 17 puts an image under every body H3 of every project 5 page. As written, the check can never see those images. Match `.bl-img` (or unify the class under 15a.1), add a real-page fixture, and promote it to blocking. |
+| 13.8 | Component fidelity: the cluster's own kit only, never another cluster's hero, counter, newsletter or seam | PRESENT | ENFORCED: `npm run check:markers` (in `check:all`, `package.json:61`); `tests/py/test_design_system_build.py` holds the kit to `data/design/components.json` | `CLAUDE.md:209-213` (no source-repo vocabulary); `src/components/kit/_registry.ts` | None. |
+| 13.9 | The dial TOC must actually work: an IO scroll-spy drives the ring, highlights the active row and updates `x of N`. Avoid the last-intersecting-wins and rAF-latch traps. Verify in Playwright. | PARTIAL | Hooks ENFORCED statically (`tests/py/test_design_components.py:802-924` counts `data-spy` and bans `aria-current=""`); **behaviour is untested** | `src/components/kit/PageDial.astro:73-118`: the IntersectionObserver picks the entry nearest the top (sort at :101-103, so the last-intersecting trap is avoided), there is no rAF, the last row is forced at page bottom (:96-98), and the hash seeds the start (:116-117). The ring and `x of N` are gone by decision (`:9-12`). | **ADOPT-BEFORE-P5.** Add one Playwright spec (scroll to section k, assert row k has `aria-current="location"`, check the last row at the bottom) on a rebuilt page at 1280. Every project 5 page with 6 or more sections mounts the dial (`src/layouts/PageShell.astro:46,68`), and a silently dead spy would ship 28 or more times. |
+| 13.10 | Dial compact spec: 196px column in `grid 196px minmax(0,1fr)`, card, 64px ring, sticky `calc(--hdr + 16px)`, max-height, thin scrollbar | N/A | n/a | The breeder picked S2, a ringless hairline rail with no card (`PageDial.astro:9-12`, contact board 2026-09-19). What carries over is present: the 196px grid (`PageShell.astro:106`), sticky top and max-height (`PageDial.astro:136-141`), and rows of at least 28px (`:166`). | None. This is a recorded deliberate difference. |
+| 13.10b | 18-stop cap: beyond 18 stops the dial must be grouped | MISSING | none | Nothing in `PageDial.astro` or `PageShell.astro:46` caps `sections.length`. | **ADOPT-LATER.** Location pages are sized at the competitors' section count plus 3 (memory rule "Location page structure"), which is well under 18. Add a build-time `console.warn`/test when a blog post first nears the cap. |
+| 13.11 | Seam dividers: 4 to 8 per page, one before every section, decorative `alt=""`, lazy, explicit CLS dimensions | PARTIAL | TEXT-ONLY | `src/components/kit/SectionDivider.astro:22-26` is an inline-SVG mark with `title=""` and a fixed size of 40. It is decorative and has no CLS risk by construction. The 4 to 8 count exists only in `bsuk-comparison-page-builder/SKILL.md:113` and `bsuk-puppy-page-builder/SKILL.md:199`. The location skill names the component with no count (`bsuk-location-page-builder/SKILL.md:133,175`). **Built rebuilt pages carry 0 dividers**: `role="separator"` counts 0 on `/`, the health guide and the buying guide. | **ADOPT-LATER.** Dividers are decoration and do nothing for ranking. The approved project 4 pages ship none. Decide per location board and, if kept, add a count to `family_rules.py`. |
+| 13.12 | `scroll-behavior: auto` on jump-link pages; set `--hdr` and matching `scroll-margin-top` on every target | PRESENT | Landing ENFORCED: `nav-jump-target-lands` blocking (`tests/render/checks/nav.ts:117-119`). `smooth` is caught only by the hardening WARN `smooth-scroll-breaks-anchors` (`scripts/page_hardening_scan.py:883-905`), which is report-only. | `src/styles/global.css:13,29,35` (`html { scroll-behavior: auto; overflow-x: clip; }`), `:52` (`[id] { scroll-margin-top: calc(var(--hdr-measured, var(--hdr)) + 16px) }`); `BaseLayout.astro:95-124` measures the header | None needed. Note that `nav.ts` forces instant scrolling while it measures, so it would not catch a `smooth` regression. The comment at `nav.ts:185` ("every page ... declares smooth") is stale CAG residue. |
+| 13.13 | No page-level sidebar; sticky mobile CTA bar for persistent CTA | PRESENT | Structural: only `PageShell.astro:67-75` lays out a column, and only the dial. `nav-bottom-chrome-clear` is blocking (`nav.ts:355-357`). | `SectionSheet.astro:3` has a bottom bar (Home · Puppies · Contact); `SectionStrip.astro:5-14` | None. |
+
+### §14 · Tool / Special Element Decision
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 14.0 | A tool or special element is required unless the page type genuinely cannot support one | PRESENT | ENFORCED: `brief.tool` is required by the schema (`schemas/board.schema.json:154, 284-306`) | Every one of the 13 boards records a pick. All pick `none`, each with written evidence (checked in `data/boards/*.json`). | None. |
+| 14.1 | Decide from the SERP (top-10 tools), query intent (fan-out words) and PAA | PARTIAL | Schema only requires `evidence` to be at least 20 characters of free text | `schemas/board.schema.json:295-298`; `docs/reference/seo-rules.md:346,371` ("type and placement from competitor research") | **ADOPT-LATER.** Have `family_rules` check that `brief.tool.evidence` cites a competitor report or query file path, the way `strategy_cite_check.py` does for the strategy. This is cheap, but the 12 existing picks are all `none`, so the risk is low. |
+| 14.2 | Candidates: cost calculator · fit quiz · docs checklist · shipping-timeline estimator · verification guide · comparison table · decision tree | PRESENT | TEXT-ONLY | `docs/reference/WORKFLOW.md:356-360`; `.claude/agents/bsuk-interactive-component.md:3,47-56` (the delivery-band estimator is the BSUK shipping equivalent); `bsuk-comparison-page-builder/SKILL.md:116-126` | None. |
+| 14.3 | Constraints: pure HTML/CSS plus minimal vanilla JS, no frameworks, dependencies or CDNs; live data from data files | PRESENT | TEXT-ONLY | `.claude/agents/bsuk-interactive-component.md:3,29,36,47,56` (prices from `data/puppies.json` / `price-matrix.json`, delivery from `settings.json`) | **SKIP** a check for now. No board has picked a tool yet, so write the check the day one does. |
+| 14.4 | Deliver the chosen element with evidence and one (Recommended) with its trade-off; a "no tool" answer names its evidence | PRESENT | ENFORCED: `pageboard.py:163-165` refuses a real tool with no `trade_off`; schema requires `pick`/`evidence` | Every board's `brief.tool` | None. |
+| 14.5 | GEO fact tables are near-always warranted | MISSING | none | `src/components/kit/DataTable.astro` exists; no rule or skill asks for a fact table. `bsuk-location-page-builder/SKILL.md:25,93` uses "fact table" to mean its own data source, not a page element. | **ADOPT-LATER.** Put a "delivery / price / collection" fact table to the user as a location-board default. Every table costs three rendered styles on the board (rule 13), so it is a board choice, not a blanket rule. |
+
+### §15 · OG Images, Infographics and the Asset Gate
+
+### 15a · Sizing
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 15a.1 | Every in-body image, OG photo and infographic alike, renders in one box: `.sec-img.inf-img {max-width:760px; aspect-ratio:1408/768; object-fit:cover; height:auto}`, the same at every width | PARTIAL | `rules/images.md:21-26` says **`enforced: untested`** | The rule text exists (`rules/images.md:26`; `IMAGE-DESIGNS.md:58,64-70`), but **no CSS in `src/` defines `.sec-img`, `.inf-img` or a 1408/768 box**. Real pages use `.bl-img` (`src/styles/board-styles.css:106-121`): `width:100%`, **capped at 420px at 900px and up** for media-left/right, no aspect-ratio, painted at intrinsic `width`/`height` (`BodyImage.astro:43-53`). This directly contradicts the rule. | **ADOPT-BEFORE-P5.** Rule 17 adds roughly 10 to 20 body images per page across 30 or more pages. Decide the box now: either the uniform 760 by 16:9 box, or record the 420px media-side layout as a deliberate difference. Then implement it once in `BodyImage`, update `BODY_SIZES` (`src/lib/assets.ts:127-135`), and add a render check (every `main img.bl-img` has computed aspect-ratio 1408/768 and max-width 760). Retrofitting 30 pages later costs far more. |
+| 15a.2 | Tune `object-position` per photo; the box never changes | PARTIAL | none | Bake-time focal points: `data/image-centering.json` → `ImageOps.fit(..., centering=)` (`scripts/bake_images.py:61-68`). No per-image `object-position` exists, because no fixed box exists (see 15a.1). | **ADOPT-BEFORE-P5**, together with 15a.1. |
+| 15a.3 | Bake: `ImageOps.fit(1408×768, LANCZOS, centering)`, then WebP method 6, quality walk from 82 down to under 95 KB, then a `-760.webp` sibling with `srcset`; ceiling 100 KB | PRESENT | ENFORCED: `tests/py/test_images.py:139-183`, `tests/py/test_reframe_og.py:73-124`, `tests/py/test_ingest_image.py:71,280,453` (ingest **refuses** over 95 KB) | `scripts/bake_images.py:15-27,58-84`; `scripts/reframe_og.py:40-46,148-160`. 0 of 141 served WebPs are over 95 KB (`find public/images -size +95k`). **One deviation:** `bake_images.py:66-67` never upscales, while `rules/images.md:26` says a low-res master "is upscaled to the box on purpose". | **ADOPT-LATER** (a one-line fix). Reconcile the rule with the code: either `reframe_og --fgup` covers the upscale or the rule text changes. |
+| 15a.4 | Portrait framing: `--style blurfill --mobcrop 4:5` from the original master; never focal-crop a portrait; `.og-tall` full-bleed 4:5 mobile rule | PARTIAL | The tool is ENFORCED (`tests/py/test_reframe_og.py`); nothing forces portraits through it (`no-head-cropped-portraits` is untested, `rules/puppies.md:48-53`) | `scripts/reframe_og.py:9,17-23,126-145,178-189`; `IMAGE-DESIGNS.md:158-181` ("Standing default ... blurfill --mobcrop 4:5"). There is **no `.og-tall` / `.og-photo` CSS anywhere in `src/`**. | **ADOPT-BEFORE-P5**, folded into the 15a.1 box decision (the mobile full-bleed rule only makes sense once the box exists). The blurfill default itself is already in place. |
+| 15a.5 | Breakpoint is 900px, not 640; page root `overflow-x: clip` | PRESENT | ENFORCED: `layout-no-horizontal-overflow` blocking (`layout.ts:5-57`) | `board-styles.css:66,117` (900px); `global.css:35` (`overflow-x: clip`) | None. |
+| 15a.6 | `sizes` is measured, not guessed; `naturalWidth` is density-corrected | PRESENT | ENFORCED: `img-sizes-matches-box` blocking, **hero only** (`tests/render/checks/img.ts:236-246`); `img-srcset-within-2x` blocking for all images (`img.ts:5-8`) | `src/lib/assets.ts:127-135` (`BODY_SIZES` measured against the `.bl-img` cap); `tests/py/test_images.py:205-235` | None now. `BODY_SIZES` must change if 15a.1 changes the box. |
+
+### 15b · Coverage and alt text
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 15b.1 | Every H2, every H3 and every key H4 gets an image | PRESENT | ENFORCED at board level: `image-slot-missing` / `image-hero-photo` FAIL (`scripts/image_rules.py:138-186`) through `family_rules.py:18,151` → `board_gate.py` / `board_approve.py`; `tests/py/test_image_rules.py` | `CLAUDE.md:192-202` (rule 17); `rules/images.md:37-42`. H4 is out of scope by user ruling G1 (FAQ blocks excepted). | None for coverage. Note that no built-page check proves the image renders under its heading (see 13.7). |
+| 15b.2 | Alt rotation: primary keyword only in the primary image's alt; every other image rotates a keyword type; no two images share an alt | PARTIAL | The unique-alt half is ENFORCED by `img-alt-present-and-unique` blocking (`img.ts:140-160`). The primary-keyword half is **untested** (`rules/images.md:13-18`). | `IMAGE-DESIGNS.md:151-153` | **ADOPT-LATER.** Rule 15 carries migrated alts word for word, so a "primary keyword only once" check would fire on inherited alts. Scope it to new (generated or folder) slots when it is written. |
+| 15b.3 | Image SEO, five required elements: filename · alt · title · caption · description | PARTIAL | TEXT-ONLY | `.claude/skills/image-metadata/SKILL.md:28-35,68-69` lists all five. `IMAGE-DESIGNS.md:149` lists **four** (no description). `BodyImage.astro:43-53` renders **no `title` and no `<figcaption>`**, and the slot fields (`IMAGE-DESIGNS.md:251-265`) carry neither. | **ADOPT-LATER.** Fix the 4-versus-5 wording now as text. Wiring `title`/`caption` into slots and `BodyImage` is a design change and should be decided with 15a.1. |
+| 15b.4 | Further-reading thumbnails are the target page's own hero | PARTIAL | `enforced: untested` (`rules/images.md:29-34`); the baker and its audit were never ported | `rules/images.md:34`; `rules/puppies.md:62(4)`. The kit has no read-card component. | **ADOPT-LATER.** Adopt it the first time a project 5 board plans a further-reading block (most likely the blog posts). At that point, port the thumb cutter plus a check that a thumb's source equals the target's `fetchpriority="high"` image. |
+| 15b.5 | Lazy-load below the fold; the LCP image gets `fetchpriority="high"` plus a preload and is never lazy | PARTIAL | Only `tests/py/test_images.py:221` (Roman's page). No check covers rebuilt or new pages. | `src/components/kit/Hero.astro:304-305,321-322,332-333` (eager + high); `BodyImage.astro:51` (lazy). **No image preload**: `BaseLayout.astro:64-65` preloads fonts only. The hardening `hero-preload-srcset-drift` checks props BaseLayout does not have (Known Issue 59, `session-log.md:1132-1150`). | **ADOPT-LATER** (project 6 perf pass). The Hero component already guarantees eager + high, so the gap is only the preload. |
+| 15b.6 | Infographics need a reserved box (explicit dimensions) or they cause CLS | PARTIAL | `layout-image-box-reserved` is **advisory** and above-the-fold only (`layout.ts:390-406`) | Design rule 9 fixes the height at 400px on desktop (`rules/design.md:33`); `BodyImage` writes width/height | **ADOPT-LATER.** Promote it once IG components land on a real page. |
+| 15b.7 | Check generated infographics for duplicate labels before assignment | MISSING | none | Nothing in `bsuk-infographic`, `bsuk-image-generation`, `ingest_image.py` or `image_rules.py` | **ADOPT-LATER.** No generated infographic can exist until `GEMINI_API_KEY` is set (Known Issue 70, `session-log.md:1279`), and IG-1 to IG-5 default to HTML/CSS (`IMAGE-DESIGNS.md:185-207`). Add a "labels unique" line to the board's pass-two approval of a raster IG. |
+
+### 15c · The Asset Gate
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 15c.1 | List the asset folder and open every file; check `assets/brand/` before declaring an image missing | PRESENT | ENFORCED as board content: `scripts/image_candidates.py` offers page-own, then site, then `Assets/Images` for every slot | `CLAUDE.md:197-199`; `IMAGE-DESIGNS.md:217-219`. "Open every file" is still a judgment step. | None. |
+| 15c.2 | Analyze each OG image, then assign it to a section, after research and the approved outline, never before | PRESENT | Board sequence: picks sit outside the record hash (`IMAGE-DESIGNS.md:214-215`) | `IMAGE-DESIGNS.md:209-249` | None. |
+| 15c.3 | Infographic prompt pack: one prompt per section, type (Comparison / Feature Grid / Process Flow), 300 to 350px height | PRESENT | ENFORCED: `image-slot-fields` requires `infographic_style` (and `prompt` for `generate`) per slot (`image_rules.py:107-133,160-163`) | `IMAGE-DESIGNS.md:185-207` (IG-1 to IG-5). The height is **400px** by BSUK design rule 9 (`rules/design.md:33`), a deliberate difference. | None. |
+| 15c.4 | HARD STOP: no page HTML until every generated infographic is dropped and the breeder says "start" | PRESENT | ENFORCED: `board_gate.py` refuses an unapproved record (`CLAUDE.md:272-276`); `image_rules.build_findings` fails `image-generated-unapproved` / `image-generated-not-ingested` / `image-asset-not-ingested` (`IMAGE-DESIGNS.md:240-249`) | `scripts/board_gate.py:20-60`; `scripts/board_approve.py` | None. |
+| 15c.5 | Approval gate 6 | PRESENT | ENFORCED: `board_approve.py` (sha12-bound picks) | `IMAGE-DESIGNS.md:221-237` | None. |
+
+### §16 · Build Rules: Write From Outline
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 16a.1 | Write from the outline, never from a sibling | PRESENT | ENFORCED for new-family pages: `npm run check:outline` in `check:all` (`package.json:59,61`); `tests/py/test_outline_provenance_check.py` | `CLAUDE.md:123-127` (judgment rule 8); `rules/copy.md:13-18,63-70` | None. |
+| 16a.2 | Copied-then-reworded passes the dup check and still breaks the rule (the rule is about method) | PRESENT | Judgment (`enforced: judgment`, `rules/copy.md:14`) | `CLAUDE.md:125-127` | None. There is no mechanical procedure, which is correct under the judgment cap. |
+| 16b.1 | Run the dup gate on your own draft, body and `--headers`, pairwise against every sibling, comparison page and variant; zero non-whitelist crossover | PRESENT | ENFORCED: `outline_provenance_check.py` (12-word runs, 6-word sentences, city-swapped headings, against every built page); `dup-no-sibling-crossover` (advisory render); `dup_content_audit.py --headers` (report-only) | `rules/copy.md:18(4),70`; `WORKFLOW.md:472-475` | None. The 28 city pages will be built in parallel (`WORKFLOW.md:363-368`), so two drafts are only compared once both are built. `check:all` then catches the pair. |
+| 16b.2 | Whitelist limited to the shipping line, badge lists, counter strip, notice, CTA labels, real reviews and page-name link labels | PRESENT | ENFORCED: `tests/py/test_dup_whitelist_measured.py`, `tests/py/test_dup_content_audit.py` | `scripts/dup_content_audit.py:42-251`; `rules/copy.md:18(3)` (delivery-band line, doc badges, counter strip, deposit notice, CTA labels, real reviews, page-name labels) | None. |
+| 16c.1 | First-person breeder voice | PRESENT | Judgment | `CLAUDE.md:102-105`; `rules/copy.md:21-26` | None. |
+| 16c.2 | `anti-ai-writing` pass | PRESENT | TEXT-ONLY | `.claude/skills/anti-ai-writing/SKILL.md` | None. |
+| 16c.3 | Non-commodity check | PRESENT | TEXT-ONLY | `.claude/agents/bsuk-non-commodity-content-agent.md` | None. |
+| 16c.4 | Humour: Style-2 dry, at most 1 beat per section, never on legal or health content | PARTIAL | TEXT-ONLY, and only in two skills | `bsuk-blog-post/SKILL.md:95-98,226`; `bsuk-comparison-page-builder/SKILL.md:135`. It is absent from `bsuk-location-page-builder/SKILL.md` and `rules/copy.md`. | **ADOPT-LATER** (text). Humour cannot be tested. City pages are delivery and price copy, where the gate matters most, so add the one-line gate to the location skill when it next changes. |
+| 16c.5 | Link-First anchors at sentence start (branded CTA anchors exempt) | PARTIAL | **`enforced: untested`** (`rules/links.md:12-18`) | `rules/links.md:18`. Built pages comply by eye (for example `dist/uk-blue-staffy-puppy-buying-guide/` external anchors open their sentences). | **ADOPT-BEFORE-P5.** This is mechanical: the anchor starts within the first N words of its sentence. Project 5 adds at least 6 external links plus internal links on 30 or more pages, and it is the one untested link rule. Add it to `link_diversity.py` (board prose) or a render check. |
+| 16c.6 | Internal links same-tab; external links new-tab with ↗; anchors from the Anchor Diversity Ledger | PARTIAL | Ledger ENFORCED: `anchor_type` mix plus cross-board reuse (`scripts/link_diversity.py`; `tests/py/test_anchor_types.py`; `rules/links.md:31-38`). New-tab is untested. | In `dist/`, the health guide has 7 of 7 external links with `target="_blank"` and 0 of 12 internal; the buying guide has 9 of 9 and 0 of 31. **No ↗ marker** on any external link. | **ADOPT-LATER.** Add the ↗ as a CSS `a[target=_blank]::after` in `global.css`, as one decision. |
+| 16c.7 | External links: 6 to 7 diverse authorities, citing the specific resource page, not the homepage | PARTIAL | ENFORCED: 6 links, 6 domains, 4 types (`scripts/link_diversity.py`, `tests/py/test_link_diversity.py`, FAIL from `boarded`); library row plus verified 200 required (`pageboard.py:173-178`) | `rules/links.md:21-28`. **Homepages are not refused**: the library carries `https://ico.org.uk/` (`docs/reference/external-link-library.md`). | **ADOPT-LATER.** Add "path is not `/`" to `link_diversity.py`. It is a one-liner, and the current city research uses deep URLs. |
+| 16c.8 | Every claim traces to the Ledger or a data file; write `NOT FETCHED` where it does not | PRESENT | ENFORCED: `evidence_audit.py` `claim-bound-to-proof` / `no-not-fetched-in-prose` (report-only unless `--fail-on-error`); `placeholder_check.py` in `check:all`; `strategy_cite_check.py` | `CLAUDE.md:128-132`; `rules/copy.md:50-61` | None. |
+| 16d.1 | Real cards near the fold from live inventory and the price matrix; **every card carries the delivery line** | PARTIAL | `delivery-band-on-every-card` is **untested** (`rules/puppies.md:21-27`) | `src/components/kit/PuppyCard.astro:20-47` is data-driven (name, sex, colour, price and status from `data/puppies.json`) but **renders no delivery line**. The location skill mounts `PuppyCard` (`bsuk-location-page-builder/SKILL.md:133`). | **ADOPT-BEFORE-P5.** Add the canonical line (`UK home delivery £200–£350 by distance · or collect in Carlisle`, read from `data/settings.json`) once in `PuppyCard`, plus a `dist/` test that every `.kit-pup` contains it. Otherwise 28 city pages ship cards without it. |
+| 16d.2 | One `Product` + `Offer` per real pup; `AggregateOffer` only on group or hub pages; a sold pup is never `InStock`; extend the JSON-LD and verify in `dist/` | PRESENT | ENFORCED: `schema-sold-not-instock` blocking (`tests/render/checks/schema.ts:150-160`); `schema-single-product-offer` **advisory** (`schema.ts:79-81`); `brief.schema.offer_model` validated (`pageboard.py:166-172`) | `rules/puppies.md:29-45` | **ADOPT-LATER:** promote `schema-single-product-offer` once a full cluster is clean. |
+| 16d.3 | Reserve/inquire CTA every 500 to 700 words, pill, branded anchor to the anchor target; one CTA per page via `hideGlobalCta` | PARTIAL, **with a live defect** | Cadence: board WARN `cta-cadence` / `cta-gap` (`pageboard.py:637-650`; `tests/py/test_page_board.py:2127-2172`); pill: design rule 3 (`rules/design.md:22`) | `brief.cta` has `cadence`, `destination`, `anchors` and `global_cta` (`schemas/board.schema.json`, brief.cta). **12 of 13 boards record `global_cta: "hidden"`, but `src/components/kit/SiteFooterKit.astro:75-79` always renders the `cta-band` ("See available puppies") and takes no prop to hide it.** Verified in `dist/`: the buy, contact and health pages all ship it. The board prints "hidden on this page" (`scripts/build_page_board.py:765`). | **ADOPT-BEFORE-P5.** Either wire `global_cta` through `PageShell` to `SiteFooterKit` and test it on `dist/`, or record that the footer band is not "the global CTA" and drop the field. As it stands, every approved board states something the built page contradicts, and project 5 would repeat that 30 or more times. |
+| 16d.4 | Honest scarcity only: real counts, real waitlist | PRESENT | Judgment rule 9 plus `evidence_audit.py` | `CLAUDE.md:128-132`; `bsuk-cta-strategy/SKILL.md:310-314` | None. |
+| 16d.5 | Contact form lists every actual available pup with its real price as select options, plus the local-pickup option | PARTIAL | `form-inquiry-contract` **advisory** (`tests/render/checks/form.ts:108-110`); `form_contract_audit.py` (needs `PUBLIC_FORMSPREE_ID`) | `src/components/kit/ContactFormKit.astro:20-27,86-90`: the Available rows come from `data/puppies.json` with name, sex and price, plus `waiting-list`. **There is no "collect in Carlisle" option.** The old constant named the former city and was replaced (`scripts/form_contract_audit.py:86-93`, Known Issue 16/22). | **ADOPT-LATER.** Collection is the BSUK counterpart of CAG's pickup line. Add it as an option or a delivery/collection radio when the form next changes. |
+| 16d.6 | Negative-keyword counter-positioning (wild-caught, scam, "cheap") with green-flag framing, linking to the scam cluster | PARTIAL | TEXT-ONLY | `bsuk-comparison-page-builder/SKILL.md:136` (puppy farms, scams, cheap unweaned pups); `bsuk-seo-master-checklist`. There is no scam cluster on BSUK and no line in the location skill. | **ADOPT-LATER.** Useful copy, but it needs a target page and cannot be tested. |
+
+### §17 · Responsive Typography, Spacing and Scroll
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 17.0 | Verified at 375 / 768 / 1280 in a real browser on the built page | PARTIAL | ENFORCED for pages listed in `tests/render/targets.json` (`npm run test:render:pages`) | `targets.json` `pages` lists 2 location pages and no comparison page type. **Nothing adds a new project 5 page to the targets.** `tests/py/test_targets_coverage.py` only checks page-type ↔ family coverage. | **ADOPT-BEFORE-P5.** Add a test that every new-family page in `data/facts/rebuilt.json` is a render target, and add a `comparison` page type. Otherwise every blocking check in §17 and §15 examines none of the new pages. |
+| 17.1 | Fluid clamp scale for all headings; verify computed sizes (the vw term can invert the hierarchy) | N/A | n/a | Deliberate fixed px scale: `docs/superpowers/specs/2026-09-18-design-system-design.md:60`; `src/styles/tokens.css:27-34` (13 to 44px). The hero title steps down by media query (`Hero.astro:385,404,435`). A fixed scale cannot invert. | None. |
+| 17.2 | No oversized headers; nothing overflows its container | PRESENT | ENFORCED: `layout-no-horizontal-overflow` blocking; `hero-aside-no-clip` blocking (`layout.ts:582-584`) | as cited | None. |
+| 17.3 | Even paragraph rhythm; no orphan lines from `text-wrap: balance` on short strings | PRESENT | TEXT-ONLY / structural | `global.css:47` (`main p, main li { max-width: 70ch }`); `balance` is used only on the hero H1 (`Hero.astro:385`) | None. |
+| 17.4 | Measure a real `ch` when checking line length | PRESENT | TEXT-ONLY | `docs/reference/WORKFLOW.md:466-470` (runtime probe "real-ch line length"); `bsuk-page-hardening/SKILL.md:345-359` | None. |
+| 17.5 | Tables stack at 640px and below, one card per row, `data-label` on every `td`, never `::before` on `tr` | PRESENT | ENFORCED: `layout-table-stacks-on-mobile` blocking (`layout.ts:495-560`) | `global.css:60-65` (the `::before` sits on `td[data-label]` only); `DataTable.astro:6-11,60`; `CLAUDE.md:151-155` | Housekeeping: `data/quality/rule-index.json:233` still marks `tables-three-styles-stacked-on-mobile` untested although the stacking half has a blocking check. Split the row. |
+| 17.6 | When a table converts to blocks the selector list must include `caption`; drop the caption's uppercase label style on mobile | PRESENT | TEXT-ONLY (CSS present; the table check does not measure caption width) | `global.css:61` lists `.stack-table caption`; `DataTable.astro:77-83,105` (no uppercase or tracking on the caption) | **ADOPT-LATER:** add "caption width ≥ 90% of table" to `layout-table-stacks-on-mobile`. |
+| 17.7 | Cards go horizontal below 640px where the playbook specifies | N/A | n/a | The kit pick is a 4:5 photo card (`PuppyCard.astro:2-4`, picked 2026-09-18). CAG-playbook specific. | None. |
+| 17.8 | Seam gutters −40% on mobile | N/A | n/a | BSUK ships no seam element (`layout.ts:292-297` measured absent); `SectionDivider` is the only divider and is unused on built pages | None, unless 13.11 brings dividers back. |
+| 17.9 | Tap targets at least 24px with real spacing | PRESENT | ENFORCED: `layout-tap-target-size` blocking (`layout.ts:113-116`); hardening `check_tap_target_spacing` (`page_hardening_scan.py:486`) | as cited | None. |
+| 17.10 | Minimum rendered text size 12.5px | PRESENT | ENFORCED: `layout-min-font-size` blocking (`layout.ts:59-110`) | `tokens.css:27` (`--text-xs: 13px`) | None. |
+| 17.11 | `flex: 1 0 100%` will not break a line past a `max-width`; use grid | MISSING | none | none | **SKIP.** Kit layouts are grid (`board-styles.css:66-75`, `PageShell.astro:105-107`), and the trap only bites hand-written flex rows. |
+| 17.12 | Never ship a page-scoped `* { margin: 0 }` (it zeroes Tailwind px/py) | MISSING | none | No such rule exists in `src/` today (grep), and no check exists | **ADOPT-LATER.** Add a two-line regex to `page_hardening_scan.py`. It is cheap but not urgent. |
+| 17.13 | `clamp()` / `calc()` need spaces around `+` and `-` | PRESENT | ENFORCED: `css-math-spacing` ERROR (`page_hardening_scan.py:154-171`; `tests/py/test_page_hardening.py`), report-only unless `--fail-on-error` | as cited | See 18.1: the scan does not read `src/components/kit/*`. |
+| 17.14 | Nothing cut off at the screen edge; no horizontal scroll at any width | PRESENT | ENFORCED: `layout-no-horizontal-overflow`, `hero-aside-no-clip` (blocking) | `global.css:35` | None. Rule 10's clamp on built heroes is still ungated (Known Issue 64, `session-log.md:1184`); that belongs to another section's audit. |
+
+### §18 · Harden Pass
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 18.0 | Sprint 3 is its own sprint, not folded into build or gates | PRESENT | TEXT-ONLY | `docs/reference/WORKFLOW.md:51,61-68,425-478` | None. |
+| 18.1 | Run the hardening scan for the slug, then verify each finding on the built page before editing | PARTIAL, **with a scope defect** | report-only (`page_hardening_scan.py:12-18`); verify-first is `rules/gates.md` `verify-the-gate-first` (untested) | `page_hardening_scan.py:98-146`: a scoped run resolves `src/pages/<slug>/index.astro`, so **`uk-locations/<city>` (a dynamic route, `src/pages/uk-locations/[slug].astro`) scans only `BaseLayout.astro` and `global.css`** (verified by calling `src_files()`). A whole-site run globs `src/components/*.astro` non-recursively, so **no `src/components/kit/*` file is ever scanned** (36 files, 0 kit). | **ADOPT-BEFORE-P5.** Make `src_files()` resolve dynamic routes (city pages, and blog via `[...post].astro`) and include `src/components/kit/**`. Otherwise the harden sprint on every project 5 page is a clean scan of two files. |
+| 18.2 | Markup ↔ CSS drift check: class-diff every ported section against the source component | PARTIAL | `markup-css-drift` / `-orphan` in the hardening scan (`page_hardening_scan.py:989-1050`, report-only); `css-class-resolves` and `css-no-dead-component-rule` render checks are **advisory** (`css.ts:28-30,135-137`) | `SPEC_MANDATED` at `page_hardening_scan.py:925-928` lists **source-repo classes** (`doc-stack`, `otA`, `geo-pin`, `chkB`, `seam`...), which is residue that no BSUK component uses | **ADOPT-BEFORE-P5**, together with 18.1. Re-base `SPEC_MANDATED` to the kit's mandated classes (for example `counter-wrap`, `stack-table`, `kit-dial`) so "styled but never rendered" can name a missing BSUK component. |
+| 18.3 | After any scoped re-theme, re-check every descendant that sets its own colour against the new background | PARTIAL | `tests/py/test_design_tokens.py:109-135` (`SELF_BEDDED_KIT_RULES`, one entry: `.hero-aside`); runtime `a11y-text-contrast-aa` is **advisory** (`tests/render/checks/a11y.ts:18-41`); fixture `known_broken/kit-hero-aside-ink-inherited.html` | `bsuk-page-hardening/SKILL.md:297-317` (§1l descendant colour) | **ADOPT-LATER.** Promote `a11y-text-contrast-aa` once its 6 baseline rows are triaged (`render-baseline-project4.md:50`). City pages re-use kit components on `bl-frame-band` inverse beds, which is exactly where this failure occurs. |
+| 18.4 | Contrast ratios are written down from a calculation, not from the draft | PRESENT | ENFORCED: `test_contrast_pairs_clear_aa` computes every pair from `tokens.css` (`tests/py/test_design_tokens.py:62-106`); `test_counter_inks_are_guarded_pairs_on_the_counter_bed` (`:207-220`) | `data/design/contrast.json`; `rules/design.md:20` ("add the pair before you use it"); `PageDial.astro:174-177` (4.49:1 measured) | None. |
+| 18.5 | Contrast floors (CAG: stone-600 body, small clay, footer `white/80`, no opacity dimming) | PARTIAL | BSUK token pairs are ENFORCED (18.4); `opacity-dims-text-contrast` WARN (`page_hardening_scan.py:310-320`) | The BSUK floor is "brass never carries small text on a light bed" (`bsuk-component-refresh/SKILL.md:29-33`), but **the hardening floor check is CAG residue**: `check_clay_small_text` looks for `--clay` / `#e8604c` (`page_hardening_scan.py:294-303`), which do not exist here, so it can never fire. The hardening skill's dial contrast table cites greens `#234f3b` / `#9fc7b0` (`bsuk-page-hardening/SKILL.md:167-176`). | **ADOPT-LATER.** Replace the clay check with a brass (`--color-cta`) small-text-on-light check and re-base the skill's table to steel/brass/bone. The residue survived `check:markers` because the marker list does not name these tokens. |
+| 18.6 | Colour specificity check (a 1.19:1 result is a losing specificity battle) | PRESENT | report-only `component-color-loses-to-descendant` (`page_hardening_scan.py:1089-1165`); `theme-lead-color-outranks-component` (`:1205-1265`); `css-component-color-not-overridden` **advisory** (`css.ts:248-250`) | `bsuk-page-hardening/SKILL.md:297-345` | None beyond 18.1's scope fix. The theme check also reads a nonexistent `src/styles/direction-d.css` (`page_hardening_scan.py:1305-1306`), which is harmless. |
+| 18.7 | Impeccable + frontend-design pass (hierarchy, IA, cognitive load, spacing, motion, states, UX copy) | MISSING | none | No mention in `WORKFLOW.md`, `bsuk-page-hardening`, `bsuk-final-page-pass` or `CLAUDE.md` | **ADOPT-LATER.** This is a judgment pass run through globally installed skills. Name it once in WORKFLOW Sprint 3 step 6. It cannot be tested. |
+| 18.8 | Verify in a painting page: IO reads static in an occluded pane; scroll-spy and animation checks run in Playwright | PRESENT | TEXT-ONLY (the render harness itself is Playwright) | `bsuk-page-hardening/SKILL.md:349-353`; `WORKFLOW.md:466-469` | None, but see 13.9: the one scroll-spy on the site has no Playwright test. |
+
+---
+
+### Verdict counts
+
+| Section | PRESENT | PARTIAL | MISSING | N/A | Rows |
+|---|---|---|---|---|---|
+| §13 | 7 | 5 | 1 | 1 | 14 |
+| §14 | 4 | 1 | 1 | 0 | 6 |
+| §15a | 3 | 3 | 0 | 0 | 6 |
+| §15b | 1 | 5 | 1 | 0 | 7 |
+| §15c | 5 | 0 | 0 | 0 | 5 |
+| §16 | 10 | 8 | 0 | 0 | 18 |
+| §17 | 9 | 1 | 2 | 3 | 15 |
+| §18 | 4 | 4 | 1 | 0 | 9 |
+| **Total** | **43** | **27** | **6** | **4** | **80** |
+
+Of the 43 PRESENT rows, 28 are ENFORCED by a check, 4 are judgment rules and 11 are TEXT-ONLY or hold by construction. Several "enforced" checks are **advisory** render checks that never fail the run: hero/counter separation, H3 image-first, image box reserved, text contrast, single Product/Offer, form contract, CSS drift and dup crossover.
+
+### Top gaps for project 5 (ranked)
+
+1. **The hero pool for 28 city pages is undecided (13.2, Known Issue 60).** Rule 16 cannot be met from three `interior-guide` heroes, and the rule 16 gate skips records with no `layout_type`. This is a STOP before the first city board.
+2. **Uniform in-body image box not implemented (15a.1, 15a.2, 15a.4).** The rule says 760px at 16:9 with `.og-tall` on mobile. The code ships `.bl-img` at 100% or 420px with intrinsic ratio and no `.sec-img`/`.og-tall` CSS. Rule 17 multiplies body images across 30 or more pages, so decide and build the box (plus `BODY_SIZES` and a render check) before the first page.
+3. **`layout-h3-image-first` is blind on real pages (13.7).** It matches only `.sec-img`, the real pages render `.bl-img`, and the check is advisory. The H3 image-first rule is therefore unenforced exactly where rule 17 adds H3 images.
+4. **The hardening scan does not see city pages or the kit (18.1, 18.2).** A scoped run on `uk-locations/<city>` scans 2 files, a site run skips `src/components/kit/**`, and `SPEC_MANDATED` holds source-repo classes. The harden sprint would report clean on nothing.
+5. **New pages are not auto-added to render targets (17.0).** Nothing forces a new city, comparison or blog page into `tests/render/targets.json`, and there is no `comparison` page type. Every blocking §15/§17 check would then examine none of the project 5 pages.
+6. **Board `global_cta: "hidden"` is contradicted by every built page (16d.3).** `SiteFooterKit` always renders its CTA band. Wire the flag or retire it before 30 more boards record it.
+7. **Puppy cards carry no delivery line (16d.1).** City pages mount `PuppyCard`. Add the `data/settings.json` delivery/collection line to the component once, and add a `dist/` test.
+8. **The dial scroll-spy and Link-First rule are unguarded (13.9, 16c.5).** Add one Playwright scroll-spy spec, and add a mechanical Link-First anchor-position check. Both are cheap, and both go onto every project 5 page. Promote `layout-hero-counter-separation` to blocking in the same pass (13.6).
+</script>
+<script type="text/markdown" data-title="Appendix D — item table, CAG §19–26">
+Scope: §19a–d, §20 M1–M18, §21, §22, §23, §24, §25, §26. This audit was read-only. Nothing in the repo was edited or run in a way that writes files. Every citation is `file:line` under `/Users/apple/Downloads/BSUK`.
+
+Legend. **ENFORCED** means a script, test or npm check fails when the rule is broken. **manual** means a script exists and fails only when someone runs it, usually with `--fail-on-error`. **TEXT-ONLY** means the rule is prose and nothing checks it.
+
+### §19a · Run these
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence (file:line) | Recommendation + why |
+|---|---|---|---|---|---|
+| 19a.1 | `npm run test:render:meta` | PRESENT | ENFORCED | CLAUDE.md:249; package.json `test:render:meta`; tests/render/meta.spec.ts (1800 lines) | — |
+| 19a.2 | `npm run test:render:pages` | PRESENT | ENFORCED (blocking defects fail the test) | CLAUDE.md:252; tests/render/pages.spec.ts:160-171 | — |
+| 19a.3 | `python3 scripts/quality_report.py` | PRESENT | ENFORCED, in part: it exits non-zero only when a rule links to a check that does not exist | CLAUDE.md:267; scripts/quality_report.py:254-276; tests/py/test_quality_report.py | — |
+| 19a.4 | `python3 scripts/perf_audit.py` | PRESENT | ENFORCED (the floor is 100 per category) | scripts/perf_audit.py:190,263; CLAUDE.md:267 | See 19b.5: the default number of runs is wrong. |
+| 19a.5 | Per-page duplicate audit, body **and** `--headers` | PRESENT | manual (report-only by default). The render harness's DUP family is advisory. The board's heading-collision refusal is ENFORCED before build. | scripts/dup_content_audit.py:15,361; CLAUDE.md:264,269; scripts/build_page_board.py:884-890; tests/render/checks/dup.ts:72 | ADOPT-BEFORE-P5, folded into the per-page runner (Top gap 7). 28 city pages share one template, so crossovers between them are the main risk. |
+| 19a.6 | Final page audit on the right page-type profile | PRESENT | manual (`--fail-on-error`) | scripts/final_page_audit.py:15,95 (profiles: puppy, interior, home, **location**, **comparison**) | ADOPT-BEFORE-P5 inside the per-page runner. |
+| 19a.7 | Seam-parity check | N/A | — | BSUK has no section-seam divider. Recorded in tests/render/checks/layout.ts:294 ("MEASURED ABSENT from BSUK's dist/") and .claude/skills/bsuk-page-hardening/SKILL.md:38-39 (the source script was not ported). | — |
+| 19a.8 | Page hardening scan | PRESENT | manual | scripts/page_hardening_scan.py; CLAUDE.md:264; package.json `audit:harden` | Put it in the per-page runner. |
+| 19a.9 | AEO audit | PRESENT | manual | scripts/aeo_audit.py:23-25; CLAUDE.md:265 | Put it in the per-page runner. |
+
+### §19b · Gate integrity
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 19b.1 | Run the meta gate first | PRESENT | TEXT-ONLY (ordering) | CLAUDE.md:259-260 | SKIP. `npm run test:render` already runs both specs, and meta does not depend on dist/. |
+| 19b.2 | Confirm the defect on the built page before editing | PRESENT | TEXT-ONLY | rules/gates.md:74; data/quality/rule-index.json marks `verify-the-gate-first` as `untested` | SKIP. It is a judgment rule, so no test can hold it. |
+| 19b.3 | Read the gate's examined count before believing a PASS | PRESENT | ENFORCED, but only when the scorecard is built by hand | scripts/build_scorecard.mjs:55-64 (Guard 2), :78-81 (zero pages); .claude/skills/bsuk-gate-integrity/SKILL.md:74 | See M1. |
+| 19b.4 | **Run every gate twice** | PARTIAL | TEXT-ONLY, and only at project level | Done at every project close: docs/reports/p5-readiness-gate-report.md:38 ("Run twice — identical"); docs/reports/page-rebuilds-gate-report.md:329; docs/superpowers/specs/2026-09-19-page-rebuilds-design.md:172; docs/reference/session-log.md:21,50,86. It is **not** a rule in CLAUDE.md or rules/gates.md, and it is not done per page. | ADOPT-BEFORE-P5. Add it to rules/gates.md with a pytest that every `docs/reports/*-gate-report.md` carries a run-twice table, and have the per-page runner run twice and diff the output. Each of the 28 city pages is its own gate target. |
+| 19b.5 | **Perf needs ≥5 runs; report the warm median of ≥3 and look at the distribution** | PARTIAL | not enforced | perf_audit.py:204 defaults to `--runs 1`. The script's own docstring (:5) says `--runs 5`. .claude/skills/bsuk-perf-gate/SKILL.md:22-23 says `--runs 3`. docs/reference/WORKFLOW.md:651 says ≥5. No step discards the cold first run, so the result is not a "warm" median. The distribution is printed (:262,271). | ADOPT-BEFORE-P5. Make the default 5 runs, drop run 1 as cold, and refuse a CLS verdict on fewer than 5 runs. Three documents disagree today, and P5 adds about 31 pages to measure. |
+| 19b.6 | When a defect escapes, fix the harness and write no new rule | PRESENT | ENFORCED, in part (quality_report §5 lists rules with no test) | rules/gates.md:83; CLAUDE.md:284-287; .claude/skills/bsuk-learning-loop/SKILL.md:14-18 | — |
+
+### §19c · Registering is not shipping
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 19c.1 | A check counts as shipped only when it examined a non-zero count on a real page | PARTIAL | ENFORCED only when someone runs `node scripts/build_scorecard.mjs` | Guard 2 is corpus-level: build_scorecard.mjs:55-64. The per-page floor exists only for DUP (pages.spec.ts:137-142). There is no npm script, and the guard is not chained after `test:render:pages`. scripts/health-sweep.sh:138 only warns. meta asserts it only for *deferred* checks (meta.spec.ts:1520-1556), reading the scorecards. | **ADOPT-BEFORE-P5 (Top gap 1).** Add `test:render:pages` → `&& node scripts/build_scorecard.mjs`. Add a meta test that every registered, non-deferred check has `examined_by_check > 0` in the latest scorecards. The code already reads the scorecards. |
+| 19c.2 | Meta asserts wiring in both directions | PRESENT | ENFORCED | meta.spec.ts:1173-1181 (registered but not wired), :1183-1195 (declared but not registered) | — |
+| 19c.3 | New checks enter as `advisory` and are promoted after zero false reports across one full cluster | PARTIAL | TEXT-ONLY | The rule is stated in tests/render/targets.json:2 (`_comment`). There is no promotion record and no test. Blocking checks such as `a11y-hero-ledge-contrast` (a11y.ts:267) and `hero-aside-no-clip` (layout.ts:584) carry no evidence of an advisory period. | **ADOPT-BEFORE-P5.** Add a `promotions` map to targets.json (check → cluster cleared, date, false-report count = 0), plus a meta test that every `blocking` check has an entry and every check added after a set date starts `advisory`. The 28-page city cluster is the natural promotion window. |
+| 19c.4 | Name the false-positive classes against built CSS before any fix (out-of-flow labels; translucent foregrounds) | PRESENT | ENFORCED in code, with fixtures | tests/render/checks/a11y.ts:13,31-37,97-134 (backdrop returns null for alpha < 1 and image backdrops) | — |
+| 19c.5 | "The one family that looks real" (clay/gold on light) | PRESENT (BSUK equivalent: brass on light) | ENFORCED for declared pairs | .claude/agents/bsuk-accessibility-fixer.md:49 (brass as text is 2.1:1, so it is a fill only); rules/design.md:20; tests/py/test_design_tokens.py:94 | — |
+| 19c.6 | A still-loading image is not a broken one (decode budget) | PRESENT | ENFORCED | tests/render/checks/img.ts:18-29; meta.spec.ts:1212-1243 | — |
+
+### §19d · Manual pass list
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 19d.1 | 400px-class hero; staggered hero image sizing | N/A (deliberately different) | — | BSUK uses a per-page hero chosen on the board (working rule 16, CLAUDE.md:179; tests/py/test_rule16_gate.py). Sizing is held by `img-sizes-matches-box`, which is blocking (img.ts:244). | — |
+| 19d.2 | Hero and counter strip visually separate | PRESENT | ENFORCED (advisory) | layout.ts:265 `layout-hero-counter-separation` | Promote it after P5 (19c.3). |
+| 19d.3 | H3 sections image-first | PRESENT | ENFORCED (advisory) | layout.ts:339; rules/design.md:49; rule 17 (CLAUDE.md:192) | Promote it after P5. |
+| 19d.4 | Unique newsletter image and one-line title per page | PARTIAL | not enforced | The newsletter is a board-tuple slot (scripts/pageboard.py:137). No uniqueness check was found. | SKIP. BSUK has no per-page newsletter-uniqueness rule, and the DUP gate already catches a repeated title line. |
+| 19d.5 | An opening paragraph under **every** header | PRESENT | ENFORCED (advisory) | sem.ts:197 `sem-section-opening-paragraph` | Promote it after P5. |
+| 19d.6 | Uniform OG boxes; og-photo gating at 900px | PARTIAL | TEXT-ONLY | page_hardening_scan.py:210 mentions `.og-photo`. rule-index marks `uniform-inbody-image-sizing` as `untested`. | ADOPT-LATER (project 5 close). It is cosmetic and does not block the city pages. |
+| 19d.7 | Separate blog and contact H2s | MISSING | — | No match anywhere in scripts, checks, rules or skills | SKIP. It is specific to CAG's template. The BSUK city template (docs/reference/location-page-template.md) has its own section plan, and board heading collision catches a merged H2. |
+| 19d.8 | Mobile table stacking verified, `caption` included | PRESENT | ENFORCED (blocking) | layout.ts:502-516 (`layout-table-stacks-on-mobile` reads `caption`). **But** rule-index row `tables-three-styles-stacked-on-mobile` is still `untested`. | ADOPT-BEFORE-P5 (a one-line fix). Point the rule-index row at `tests/render/checks/layout.ts::layout-table-stacks-on-mobile`, so quality_report §5 stops listing a rule that is in fact tested. |
+| 19d.9 | Jump-rail `scroll-margin`; jump links actually jump | PRESENT | ENFORCED (blocking) | nav.ts:117 `nav-jump-target-lands`; nav.ts:185-201 forces instant scroll | — |
+| 19d.10 | Further-reading cards show the target page's own hero | PARTIAL | TEXT-ONLY | rules/images.md:34. rule-index marks `read-card-thumb-is-target-hero` as `untested`. | **ADOPT-BEFORE-P5.** Rule 17 puts linked cards on 28 new pages. A check in dist/ is easy: the card's `img src` must equal the target page's hero `src`. |
+| 19d.11 | Seam count matches section count | N/A | — | See 19a.7 | — |
+| 19d.12 | Schema verified in `dist/`: types, no duplicates, no false `InStock` | PRESENT | ENFORCED | schema.ts:79,150 (blocking `schema-sold-not-instock`); scripts/schema_check.py (`check:schema` in `check:all`) | — |
+| 19d.13 | No visible dates in body copy | PRESENT | ENFORCED (blocking) | schema.ts:255 `schema-no-visible-date` | — |
+| 19d.14 | All six heading levels, ≥5 H5, ≥5 H6 | PRESENT | manual FAIL, plus advisory in the harness | final_page_audit.py:161-162,436-439; sem.ts:73 | — |
+| 19d.15 | Lighthouse warm median-of-3 recorded | PARTIAL | not enforced | The gate reports record a median of 3 (p5-readiness-gate-report.md:187), but nothing discards the cold run | See 19b.5. |
+| 19d.16 | Verified in `dist/`, never by grepping source | PRESENT | ENFORCED | pages.spec.ts:~85 (freshness `beforeAll` refuses a stale dist); meta.spec.ts:327-430 | — |
+
+### §20 · Measurement ledger (M1–M18)
+
+**The ledger as a whole: MISSING.** No close-out step reports these numbers together. The gate reports carry some of them as prose, for example page-rebuilds-gate-report.md:174-212, but there is no template and no script.
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| M1 | Nodes examined per check on real pages, > 0 | PARTIAL | manual (Guard 2) | build_scorecard.mjs:55-64; scorecards carry `examined_by_check` (:120-125) | ADOPT-BEFORE-P5 (Top gap 1). |
+| M2 | Families registered vs wired, symmetric difference = ∅ | PRESENT | ENFORCED | meta.spec.ts:1143-1195 | Print both sets in the close-out. |
+| M3 | Advisory vs blocking reported separately, never summed | PRESENT | ENFORCED (`npm run baseline` → render_baseline.py `--check`) | scripts/render_baseline.py:6,58,115-119; page-rebuilds-gate-report.md:196-207 | — |
+| M4 | False-positive classes confirmed against built CSS | PRESENT | named in code | a11y.ts:31-37 | Add a count to the close-out. |
+| M5 | Contrast computed, ≥4.5 / 3.0, recomputed at ship time | PRESENT | ENFORCED for token pairs; the rendered check is advisory | tests/py/test_design_tokens.py:62,94; a11y.ts:20,265 | "At ship time" belongs to project 6: re-run it then. |
+| M6 | Minimum rendered text ≥12.5px | PRESENT | ENFORCED (blocking) | layout.ts:60-70 | — |
+| M7 | Lighthouse warm median, ≥5 runs, with the distribution | PARTIAL | not enforced | perf_audit.py:204 (default 1) | ADOPT-BEFORE-P5 (Top gap 3). |
+| M8 | Gate runs per gate ≥2, both clean | PARTIAL | TEXT-ONLY | Only at project level (19b.4) | ADOPT-BEFORE-P5 (Top gap 7). |
+| M9 | Rework rate: page vs harness, never merged | PARTIAL | the report splits them; there is no data | quality_report.py:203-221 keeps them apart. data/quality/rework-ledger.json has `windows: []`. `scripts/rework_ledger.py` **does not exist**, yet quality_report.py:205 still prints "arrives with project 4", and project 4 is complete. | ADOPT-BEFORE-P5. Port or write `rework_ledger.py`. P5 (about 31 pages) is the first window worth measuring, and the stale promise misleads. |
+| M10 | Duplicate crossover, body and headers = 0 non-whitelist | PRESENT | manual, plus the board's pre-build heading gate | dup_content_audit.py:15; WORKFLOW.md:656; build_page_board.py:884 | Fold it into the per-page runner (Top gap 7). |
+| M11 | Seam count vs section count | N/A | — | layout.ts:294; bsuk-page-hardening/SKILL.md:38 | — |
+| M12 | LLM visibility cells fetched / total (`n/30`) | N/A (deliberate: 1 engine × 1 query) | the `fetched` field is ENFORCED by the script | docs/superpowers/specs/2026-09-23-competitor-intel-design.md:162,344; .claude/agents/bsuk-llm-keyword-intel.md:13; docs/research/llm-intel/*.json key `fetched` | Report it as `n/1` per page (`n/31` for the cluster) in the close-out. |
+| M13 | Slugs whose **rendered** output changed = IndexNow count | PARTIAL | inactive until project 6 | indexnow_submit.py:111-130: `--changed` diffs **source** files matching `src/pages/<slug>/index.astro` only. It cannot see `src/pages/uk-locations/[slug].astro` (all 28 city pages), `available-puppies/[slug].astro`, `[...post].astro` or any shared-component edit. It also diffs against `origin/main`, which does not exist yet. | ADOPT-LATER (project 6), but record the list in P5: hash each `dist/**/index.html` before and after, and store the changed-slug list in the P5 close-out, so project 6 has the true count. |
+| M14 | Fact fixes swept in both tenses (`dist/` and `data/`) | PARTIAL | facts_preserved_check covers dist (kept facts) | scripts/facts_preserved_check.py:1-20. There is no sweep for **retired** facts. Known Issue 65 (session-log.md:1195-1211) lists retired fees, prices and deposit wording live in `data/locations.json` bodies and dist. | **ADOPT-BEFORE-P5.** Add a retired-facts check over `data/`, `src/` and `dist/` (a list of retired figures and phrasings, each failing). P5 rewrites exactly these bodies, and a fix made only in dist regresses on the next build. |
+| M15 | Image decode budget before classifying | PRESENT | ENFORCED | img.ts:24-29; meta.spec.ts:1212 | — |
+| M16 | Heading computed sizes at 3 widths, monotonic | MISSING | — | No check exists. The type scale is fixed px tokens (src/styles/tokens.css:27-34) with no `vw` term. | SKIP. The CAG cause (a `vw` term inverting the hierarchy) is absent from BSUK's tokens. Revisit only if a clamp with `vw` enters. |
+| M17 | `sizes` measured, not guessed | PRESENT (hero) | ENFORCED (blocking) | img.ts:214-246 `img-sizes-matches-box` (hero only); body images are covered by `img-srcset-within-2x` | — |
+| M18 | Untested rules in rule-index, reported | PRESENT | ENFORCED (listed on every run) | quality_report.py:89,254-276; rule-index.json: 79 rules = 50 test / 20 untested / 9 judgment | — |
+| M-all | A close-out that reports M1–M18 | MISSING | — | No script and no gate-report section | **ADOPT-BEFORE-P5 (Top gap 2).** Write `scripts/measurement_ledger.py`, emitting `docs/reports/<project>-ledger.json` plus a markdown table. It can compute M1–M3, M6, M9, M10, M13 and M18 from scorecards, raw data and rule-index, and it is also the §26 stage-4 feed. |
+
+### §21 · LLM visibility measurement
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 21.1 | 5 engines × primary keyword plus top 5 variations = 30 cells | N/A (deliberate, spend-guarded) | — | competitor-intel spec:162 ("One engine per page"); bsuk-llm-keyword-intel.md:13 ("no second engine"); WORKFLOW.md:154,593 | ADOPT-LATER (project 6). Once the domain is live, add `llm_mentions` and consider Google AIO through the SERP endpoint. |
+| 21.2 | Per engine: cited? · URL · position · competitors cited · phrasing | PRESENT (position is not a separate field) | the script writes it | llm-intel JSON keys `bsuk_cited`, `citations`, `citation_gap`, `answer_text`, `format` | — |
+| 21.3 | `NOT FETCHED` with the barrier named; compare against the fetched count | PRESENT | ENFORCED (the script writes it; tests/py/test_llm_intel.py) | bsuk-llm-keyword-intel.md "NOT FETCHED output" section; JSON `fetched.status` | — |
+| 21.4 | Extract the answer structure | PRESENT | script | the `format` layer ("the mirror template"), competitor-intel spec:167 | — |
+| 21.5 | Engine keywords missing from our page | PRESENT | script plus agent `EXTRA` | the `entities` layer; spec amendment 12 (:344) | — |
+| 21.6 | **LLM Visibility score** recorded against the page | MISSING | — | No `score` key in the output. Yet .claude/skills/grill-me/SKILL.md:181-184 and WORKFLOW.md:177 tell the orchestrator to report a 0–10 score, "cited in 1 of 5 AI engines". | **ADOPT-BEFORE-P5** (cheap). Either compute a 0–10 score in the llm-intel script, or rewrite grill-me and WORKFLOW so they do not promise one. grill-me runs once per P5 page and today has nothing to read. |
+| 21.7 | Route gaps (keywords → verifier; questions → FAQ; structure → AIO/GEO) | PRESENT | TEXT-ONLY | WORKFLOW.md:595 (not cited → non-commodity agent); bsuk-llm-keyword-intel.md step 6 (hands off to query-augmentation) | — |
+| 21.8 | Re-measure after deploy for the delta | N/A (deferred) | — | WORKFLOW.md:589 ("run after page goes live"); rules/deploy.md:63 (no live pages until project 6) | ADOPT-LATER (project 6). Write the delta rule into WORKFLOW 4c. |
+| 21.9 | Verify an agent's report against source; log rulings as resolved, do not re-raise | PARTIAL | TEXT-ONLY | rules/gates.md:74; Known Issue states such as "RESOLVED" (session-log.md:619,658) | See §25.0. |
+
+### §22 · Deploy and session close
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 22.1 | Build, then verify the **built** page | PRESENT | ENFORCED | pages.spec.ts freshness `beforeAll`; all audits read dist/ (evidence_audit.py:6) | — |
+| 22.2 | Regenerate sitemaps after any page add or remove | PRESENT | ENFORCED | package.json `postbuild` runs generate_sitemaps.py; `check:sitemaps` in `check:all`; sitemap_check.py:12-16 (listed ⇒ built, built ⇒ listed) | — |
+| 22.3 | Commit and push; push is deploy; `main` only | N/A (deferred) | ENFORCED as "never push" | rules/deploy.md:5,33,63; CLAUDE.md rule 3 (:109) | Project 6. |
+| 22.4a | Every redirect resolves in one hop | PRESENT | ENFORCED (`check:redirects`) | scripts/redirect_check.py:6-8,96 | — |
+| 22.4b | Live HTTP 200 at the canonical URL | N/A (deferred) | — | WORKFLOW.md:56,884-896; .claude/agents/bsuk-deploy-verifier.md | Project 6. |
+| 22.5 | IndexNow only after the deploy is live | PRESENT | ENFORCED (the release guard refuses) | indexnow_submit.py:13-18; tests/py/test_indexnow_submit.py; CLAUDE.md:39 | — |
+| 22.6 | Submit every slug whose **rendered** output changed | PARTIAL | — | See M13. The bsuk-indexing SKILL.md:3 description says "rendered output changes", but the script diffs source. | ADOPT-LATER (project 6); record the dist-hash diff in P5 (Top gap 6). |
+| 22.7 | Write the lessons doc | PARTIAL | TEXT-ONLY | WORKFLOW.md:699 names "a dated file under docs/superpowers/sessions/". **None exists**: that folder holds only two strategy files. In practice lessons live in gate reports and Known Issues. | ADOPT-BEFORE-P5 (a text fix). Point WORKFLOW Sprint 6 at the gate report's lessons section, or add a pytest that each gate report has a "Lessons" H2. Documentation that disagrees with practice is how a step gets skipped. |
+| 22.8 | Learning loop: an escaped defect fixes the harness | PRESENT | partly (quality_report) | .claude/skills/bsuk-learning-loop/SKILL.md; WORKFLOW.md:700-710 | — |
+| 22.9 | Update "What's Next"; save memory | PRESENT | TEXT-ONLY | .claude/skills/session-closer/SKILL.md:30,72-97; WORKFLOW.md:712 | — |
+| 22.10 | Every deliverable as an Artifact with copy buttons, plus `.md` | PRESENT | builder tested; shipping is TEXT | CLAUDE.md:214-220; scripts/build_spec_artifact.py, build_report_artifact.py:1-20; tests/py/test_report_artifact.py | — |
+
+### §23 · Master deliverables index (per sprint)
+
+| # | CAG sprint deliverables | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 23.0 | Sprint 0 (16): URL family, query table, redirect map with chain lengths, inbound links, SERP snapshots, fan-out and PAA, section and visual inventory, gap matrix, keyword universe, entity map, co-occurrence, predicate table, PAA set, thread ledger, NOT FETCHED list | PARTIAL | `check:competitors`, `check:gaps`, `check:queries`, `check:redirects` | WORKFLOW.md:118-188. Gap matrix: scripts/gap_matrix.py. Queries/PAA: bsuk-paa-agent, query_augment.py. Threads: bsuk-reddit-threads. Entities: data/bsuk-ontology.json, keyword-verifier:145. SERP pool top-5 Google + top-5 Bing: location-page-template.md. Redirects: data/redirects.json plus the chain check. **No** per-page visual inventory, predicate table or co-occurrence pair table was found; inbound links appear only in internal-link-agent. | SKIP the missing tables for P5. Rule 17 plus the approved outline and board already cover structure, and those three are research artefacts other auditors own. |
+| 23.1 | Sprint 0.5 (2): two strategies plus a blended **(Recommended)**; CTA strategy | PRESENT | `strategy_cite_check.py` | .claude/agents/bsuk-strategy-synthesizer.md; .claude/skills/bsuk-cta-strategy; docs/superpowers/sessions/2026-09-25-location-pages-strategy.md | — |
+| 23.2 | Sprint 1 (9): 10-column distribution matrix, H1–H6 outline, 5 A/B variants per H1/H2, header dup gate before approval, component tuple and hero delta, tool decision, 3 meta sets, 8 counter snippets, visual companion | PRESENT (as the page board); H2 A/B variants and counter-snippet counts were not verified | ENFORCED: `board_gate.py` refuses without approval; heading collision fails the gate | build_page_board.py:856-980 (blocks 1 Brief, 2 H1 and meta, 3 Outline plus collision, 4 Distribution, 5 Entities, 6 Components, 7 Images, 8 Approve); CLAUDE.md:272-276; test_rule16_gate.py | — |
+| 23.3 | Asset Gate (4): folder inventory, per-image analysis, infographic prompt pack, metadata with no duplicate alts | PRESENT | `img-alt-present-and-unique` is blocking (img.ts:141) | board block 7 (build_page_board.py:964); scripts/image_rules.py, ingest_image.py; skills image-metadata, image-prompt-generator; Known Issue 70 (generated images wait for the key) | — |
+| 23.4 | Sprint 2 (5): built page in dist, pre-write dup gate, keyword metric table ours vs top 5, entity count check, schema in dist | PRESENT, except the ours-vs-top-5 keyword table (PARTIAL) | outline provenance check (`check:outline`), `check:schema` | rules/copy.md:70; bsuk-keyword-verifier.md:143-145 (competitor fan-out counts are TEXT) | SKIP. The board's block 4 per-keyword distribution covers it for P5. |
+| 23.5 | Sprint 3 (5): hardening scan with verification notes, markup↔CSS class diff, descendant colour audit, contrast at 3 widths, polish notes | PRESENT | advisory: `css-class-resolves`, `css-component-color-not-overridden`, `a11y-text-contrast-aa` at 375/768/1280 | css.ts:28,248; bsuk-page-hardening/SKILL.md:297,356 | — |
+| 23.6 | Sprint 4 (9): meta first, render at 3 widths, quality, perf, final audit, seam parity, manual pass, Lighthouse, **gate-integrity note (examined counts, wiring symmetry, second run)** | PARTIAL | — | Everything is present except the gate-integrity note per page and seam parity (N/A). Gate reports carry Harness and Second-run sections at project level (page-rebuilds-gate-report.md:174,329). | ADOPT-BEFORE-P5 via Top gap 2. The ledger script *is* the gate-integrity note. |
+| 23.7 | Sprint 5 (4): LLM table with fetched denominator, answer structure, engine-keyword gap and routing, visibility score | PARTIAL | — | See §21: the score is missing and the 1×1 scope is deliberate | Score: ADOPT-BEFORE-P5 (21.6). |
+| 23.8 | Sprint 6 (6): sitemaps, live 200 and one-hop redirects, IndexNow count = rendered-changed count, lessons doc, memory, Artifact plus `.md` | PARTIAL | — | Sitemaps, one-hop redirects and the Artifact are PRESENT. Live 200 and IndexNow are N/A (project 6). The rendered-changed count and the lessons doc are PARTIAL (M13, 22.7). | As in M13 and 22.7. |
+
+### §24 · Reference library and banked traps
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 24.1 | For-sale UI/UX polish playbook | N/A | — | Not ported. The for-sale cluster was rebuilt in project 4, and P5 builds no for-sale pages. | SKIP. It is outside P5's page types. |
+| 24.2 | For-sale cluster lessons: cross-sell spec, **Anchor Diversity Ledger**, measurement probes | PRESENT (the ledger) | ENFORCED for anchors and diversity | rules/links.md:38; tests/py/test_anchor_types.py, test_link_diversity.py; WORKFLOW.md:706 | — |
+| 24.3 | Image art-direction source of truth | PRESENT | image_rules tests | IMAGE-DESIGNS.md; scripts/image_designs.py; tests/py/test_image_designs.py | — |
+| 24.4 | Strategic product doc and visual design doc | PRESENT | rules/gates.md `design-context-read-first` is `untested` | docs/superpowers/specs/2026-09-15-foundation-design.md; rules/design.md; project 3 design system | — |
+| 24.5 | The gate-integrity skill | PRESENT | — | .claude/skills/bsuk-gate-integrity/SKILL.md (178 lines, 12-case table at :48-52) | — |
+| 24.6 | `targets.json` promotion rule | PARTIAL | TEXT-ONLY | targets.json:2 | See 19c.3. |
+| 24.7 | Standard of done = the most recently shipped page in the same cluster | PARTIAL | TEXT-ONLY | Only "the homepage board is the worked example" (CLAUDE.md:276). The location cluster has no named benchmark. | ADOPT-BEFORE-P5 (one line). Name the first approved city page as the cluster's standard of done and mark it `corpus: true` in targets.json. |
+| T1 | `smooth-scroll` kills jump links | PRESENT | ENFORCED | nav.ts:69-71,185-201; meta.spec.ts:764-816 | — |
+| T2 | `CSSStyleRule.cssRules` is truthy on every rule | PRESENT | ENFORCED | css.ts:41; build_scorecard.mjs:105; meta.spec.ts:1138 | — |
+| T3 | `behavior:'instant'` ≠ `'auto'` | PRESENT | ENFORCED | probes.ts:136,213-224 | — |
+| T4 | Playwright loads a spec once per **worker** | PRESENT | ENFORCED | pages.spec.ts:65-80; meta.spec.ts:444-600 (regression probe) | — |
+| T5 | Lazy images do not load by scrolling | PRESENT | ENFORCED in the harness | probes.ts:9 ("Force every lazy image to fetch BEFORE scrolling") | — |
+| T6 | A hung check makes a page score ABSENT | PRESENT | ENFORCED | runCheck.ts:42-58 (bounded wait); build_scorecard.mjs:45-52 (Guard 1: missing partials FAIL) | Guard 1 is manual too, so it is covered by Top gap 1. |
+| T7 | zsh will not word-split `$VAR` | PRESENT | TEXT-ONLY | rules/gates.md:74; bsuk-gate-integrity/SKILL.md:48 | — |
+| T8 | A static scan covers 108 pages where the harness covers 15 | PARTIAL | — | targets.json lists 20 pages against about 61 built. There is no rule that the render target list grows with the cluster. | **ADOPT-BEFORE-P5.** Add each new city, comparison and blog page to targets.json as it is built, with a pytest that every page carrying an approved `data/boards/<slug>.json` appears in targets.json. Otherwise 28 new pages get only static scans. |
+| T9 | The design-system CSS file is not globally imported | N/A | — | CAG-specific file. BSUK imports tokens.css and kit.css through the layout. | — |
+| T10 | `caption` is the forgotten table child | PRESENT | ENFORCED | layout.ts:516 | — |
+| T11 | An absolutely positioned label is a sibling of the photo, so `position:relative` belongs on the card | PRESENT | ENFORCED (hardening scan) | page_hardening_scan.py:242-265 | — |
+| T12 | Registered ≠ wired | PRESENT | ENFORCED | meta.spec.ts:1143-1195 | — |
+| T13 | A still-loading image is not a broken one | PRESENT | ENFORCED | img.ts:24; meta.spec.ts:1212 | — |
+
+### §25 · Open flags
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 25.0 | A register of open flags with resolved / do-not-re-raise states | PARTIAL | TEXT-ONLY | "Known Issues" 1–80 (docs/reference/session-log.md:308ff) uses the states CLOSED, RESOLVED (:619,658), MOVED TO PROJECT 6 (:600) and DONE (:1367). There is **no "do not re-raise" or "KNOWN-IGNORED" state**, and no test checks that every item has a state. Rule 7 points at a session brief's `## Open Flags` (CLAUDE.md:120-121), but no session brief is committed. User rulings sit on the answer board (docs/reference/answer-board/batches/). | **ADOPT-BEFORE-P5** (cheap). Add a `RESOLVED — do not re-raise` state, plus a pytest that every numbered Known Issue opens with a state token (OPEN / CLOSED / RESOLVED-DNR / MOVED TO PROJECT n / KNOWN-IGNORED). P5 agents read Known Issues 59–80 and should not re-litigate rulings. |
+| 25.1 | `a11y-text-contrast-aa` demoted to advisory; 1,783 leads triaged in their own sprint | PRESENT (BSUK equivalent) | advisory, plus a scoped blocking sibling | a11y.ts:41 advisory, :265 `a11y-hero-ledge-contrast` blocking. At BSUK scale it is 6 advisory rows (page-rebuilds-gate-report.md:198). | — |
+| 25.2 | Clay/gold on light, 3.17–3.38:1 | PRESENT (decided) | ENFORCED | bsuk-accessibility-fixer.md:49 (brass is a fill only); test_design_tokens.py:94 | — |
+| 25.3 | `/70de/` source maps from Cloudflare Rocket Loader | N/A | — | No host until project 6 (rules/deploy.md:5) | — |
+| 25.4 | `page-sitemap.xml` emits `/.astro/` | PRESENT (guarded) | ENFORCED | sitemap_check.py:12 (every `<loc>` must be a built page); indexnow_submit.py:47-49 (JUNK list) | — |
+| 25.5 | DNA: singles yes, pairs no (RESOLVED) | N/A (CAG fact) | — | The BSUK equivalents are Known Issues 28 and 29, marked RESOLVED | — |
+| 25.6 | "72-hour" and "3-day" both correct (RESOLVED) | N/A (CAG fact) | — | — | — |
+| 25.7 | GSC / Bing baselines NOT FETCHED | N/A (deferred) | — | WORKFLOW.md:125,139-141 (`@bsuk-gsc-analytics` deferred to project 6) | — |
+
+### §26 · From brief to web tool
+
+| # | CAG item | Verdict | Enforced? | BSUK evidence | Recommendation + why |
+|---|---|---|---|---|---|
+| 26.1 | Stage 1: one markdown source rendered to HTML, a copy button per section, `.md` download | PRESENT | builder tested | scripts/build_spec_artifact.py, build_report_artifact.py:3-7; CLAUDE.md:214-220 | — |
+| 26.2 | Stage 2: the Target Block becomes a form that templates the brief (slug into every command, page type picks the builder) | PARTIAL | — | The per-page board (`data/boards/<slug>.json`, build_page_board.py:856-980) is a form with approval radios and picks written back by board_approve.py. It does not template the gate commands per slug. | ADOPT-LATER (after P5). It becomes cheap once the per-page runner exists: the runner *is* the templated command list. |
+| 26.3 | Stage 3: checkboxes become state (a run tracker, a progress rail) | PARTIAL | — | Approval state is persisted and gated (board_gate.py). The answer board persists questions and answers (docs/reference/answer-board/README.md). There is no per-page tracker of which sprint or gate is open. | ADOPT-LATER (mid-P5, if 28 pages prove hard to track). Until then a board-status table in the session log will do. |
+| 26.4 | Stage 4: the ledger reads from the repo (close-out writes JSON, and a page fetches it) | PARTIAL | — | Machine-readable pieces exist: data/quality/scorecards/*.json (90), `--json` reports in docs/reports/*.json, data/quality/rule-index.json. There is no close-out JSON and no dashboard. | The JSON is ADOPT-BEFORE-P5 (it is Top gap 2's output). The dashboard is ADOPT-LATER (project 6), per CAG's own trade-off: wait until the numbers are worth watching. |
+
+### Top gaps for project 5 (ranked)
+
+1. **The zero-examined guard is not wired (M1, 19c.1).** Chain `node scripts/build_scorecard.mjs` after `test:render:pages`, and add a meta test that every registered, non-deferred check has `examined_by_check > 0` in the latest scorecards. Today Guard 1 and Guard 2 fire only when someone remembers to run them. Put the new city and comparison pages into targets.json (T8), with a pytest tying approved boards to targets, so the harness examines the pages P5 actually builds.
+2. **There is no measurement-ledger close-out (§20, 23.6, 26.4).** Write `scripts/measurement_ledger.py`. It should emit JSON plus a table covering M1–M3, M6, M8 (runs recorded), M9, M10, M12 (`n/31`), M13 (dist-hash diff) and M18, and every gate report should carry it. It doubles as the per-page "gate-integrity note".
+3. **The perf protocol contradicts itself (19b.5, M7).** perf_audit defaults to 1 run, its docstring says 5, the perf-gate skill says 3, and WORKFLOW says ≥5. Nothing discards the cold run. Default to 5, report the warm median of runs 2–5 with the spread, and refuse a CLS verdict on fewer than 5 runs.
+4. **Advisory-first promotion is prose only (19c.3, 24.6).** Add a `promotions` record in targets.json and a meta test. Treat the city cluster as the promotion cluster for `layout-hero-counter-separation`, `layout-h3-image-first` and `sem-section-opening-paragraph`, which all govern rule 17 pages.
+5. **There is no retired-facts sweep across both tenses (M14; Known Issue 65).** Retired fees, prices and deposit wording live in `data/locations.json` and dist today. Before rewriting 28 bodies, add a failing check over `data/`, `src/` and `dist/`.
+6. **IndexNow `--changed` is source-based (M13, 22.6).** It cannot see `uk-locations/[slug].astro` or shared components, so all 28 city pages would go unsubmitted. For P5, record a dist-hash changed-slug list at close. In project 6, replace `changed_slugs()` with the rendered diff.
+7. **There is no per-page gate runner, and "run every gate twice" is not a rule (19a.5–9, 19b.4, M8, M10).** Add `npm run gate:page -- <slug>`: dup body and `--headers`, final audit on the location or comparison profile, hardening, AEO and evidence audits, all with `--fail-on-error`, run twice and diffed. Write the run-twice rule into rules/gates.md with a pytest on gate reports.
+8. **Stale or mis-marked registry items that mislead P5 agents.**
+   - grill-me and WORKFLOW promise an LLM Visibility 0–10 score that nothing computes (21.6).
+   - `read-card-thumb-is-target-hero` has no check (19d.10).
+   - The rule-index row `tables-three-styles-stacked-on-mobile` says `untested` even though a blocking check exists (19d.8).
+   - quality_report still says `rework_ledger.py` "arrives with project 4" (M9).
+   - WORKFLOW names a lessons-doc location that is never used (22.7).
+   - Known Issues have no "do not re-raise" state (25.0).
+
+### Verdict counts
+
+Rows counted: 19a (9), 19b (6), 19c (6), 19d (16), §20 (19: M1–M18 plus M-all), §21 (9), §22 (11), §23 (9), §24 (20), §25 (8), §26 (4). Total **117**.
+
+| Verdict | Count |
+|---|---|
+| PRESENT | 70 |
+| PARTIAL | 28 |
+| MISSING | 4 |
+| N/A | 15 |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+<script>
+(function(){
+  var doc=document.getElementById('doc'),toc=document.getElementById('toc'),all=[];
+  function copy(text,el){navigator.clipboard.writeText(text).then(function(){el.textContent='Copied';el.className='copied';setTimeout(function(){el.textContent='';},1800);});}
+  document.querySelectorAll('script[type="text/markdown"]').forEach(function(b,i){
+    var title=b.getAttribute('data-title'),md=b.textContent.replace(/^\n+|\s+$/g,'').replace(/<\\\/(script)/gi,'</$1');
+    all.push('## '+title+'\n\n'+md);
+    var id='s'+i,sec=document.createElement('section');sec.className='sec';sec.id=id;
+    var sh=document.createElement('div');sh.className='sh';
+    var h2=document.createElement('h2');h2.textContent=title;sh.appendChild(h2);
+    var right=document.createElement('span');var st=document.createElement('span');st.style.marginRight='8px';
+    var btn=document.createElement('button');btn.className='btn ghost';btn.textContent='Copy section';
+    btn.addEventListener('click',function(){copy('## '+title+'\n\n'+md,st);});
+    right.appendChild(st);right.appendChild(btn);sh.appendChild(right);sec.appendChild(sh);
+    var body=document.createElement('div');body.className='md';body.innerHTML=window.marked?marked.parse(md):md;
+    sec.appendChild(body);doc.appendChild(sec);
+    var a=document.createElement('a');a.href='#'+id;a.textContent=title;toc.appendChild(a);
+  });
+  document.getElementById('copy-all').addEventListener('click',function(){copy("# BlueStaffyUK \u2014 CAG brief parity audit\n\n"+all.join('\n\n'),document.getElementById('all-status'));});
+})();
+</script>
