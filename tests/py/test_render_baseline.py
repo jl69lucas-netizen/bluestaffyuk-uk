@@ -311,3 +311,85 @@ def test_a_promoted_check_on_a_new_page_is_counted_blocking(promoted):
     out = run(*promoted, expect=0).stdout
     # york (approved board) -> blocking; leeds (legacy, no board) -> advisory
     assert "| LAYOUT | 1 | 1 | 2 |" in out
+
+
+# ── Parity: the TypeScript rule pages.spec.ts runs and the Python mirror above agree ────────
+#
+# Same technique as tests/py/test_global_cta.py: esbuild (already in node_modules for
+# Astro/Vite) compiles tests/render/lib/promotions.ts, and a Node driver runs the real
+# isNewPage/severityFor over the matrix, reading each board fixture directory through the real
+# approvedBoards. The Python side answers the same matrix; every cell must match.
+import shutil  # noqa: E402
+
+ESBUILD = ROOT / "node_modules/.bin/esbuild"
+NODE = shutil.which("node")
+PROMOTED = ("layout-hero-counter-separation", "layout-h3-image-first",
+            "sem-section-opening-paragraph", "sem-title-case-headings")
+SCOPE_ALL = "nav-jump-target-lands"
+
+
+def test_the_typescript_and_python_new_page_rules_agree(tmp_path):
+    if not ESBUILD.exists() or not NODE:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "promotions.mjs"
+    subprocess.run([str(ESBUILD), str(ROOT / "tests/render/lib/promotions.ts"), "--format=esm",
+                    "--platform=node", f"--outfile={out}", "--log-level=error"], check=True)
+
+    targets = json.loads((ROOT / "tests/render/targets.json").read_text(encoding="utf-8"))
+    promotions = targets["promotions"]
+    meta = RB.load_checks(ROOT / "tests/render/checks")
+    checks = [{"id": c, "severity": meta[c][1]} for c in (*PROMOTED, SCOPE_ALL)]
+    assert [c["severity"] for c in checks] == ["advisory"] * 4 + ["blocking"]
+
+    slugs = ["blue-staffy-blog-guides", "_demo", "blue-staffy-puppies-york",
+             "uk-locations/blue-staffy-puppies-york"]
+    boards = {"approved": {"approval": {"approved_at": "x"}},
+              "previous-only": {"approval": None, "approval_previous": {"approved_at": "x"}},
+              "none": None}
+    cases = []
+    for slug in slugs:
+        bare = slug.split("/")[-1]
+        for state, record in boards.items():
+            d = tmp_path / "boards" / f"{slug.replace('/', '--')}__{state}"
+            d.mkdir(parents=True)
+            if record is not None:
+                (d / f"{slug.replace('/', '--')}.json").write_text(json.dumps(record))
+            for page_type in ("location", "comparison", "blog", "hub", "for-sale"):
+                for rebuilt in ([bare], []):
+                    for flag in (True, False):
+                        rule = {**targets["new_page_rule"], "or_board_approved": flag}
+                        cases.append({"slug": slug, "page_type": page_type, "rebuilt": rebuilt,
+                                      "boards_dir": str(d), "rule": rule})
+    assert len(cases) == 4 * 3 * 5 * 2 * 2
+
+    driver = (
+        f"const m = await import({json.dumps(out.as_uri())});"
+        f"const cases = {json.dumps(cases)}; const checks = {json.dumps(checks)};"
+        f"const promotions = {json.dumps(promotions)};"
+        "console.log(JSON.stringify(cases.map((c) => {"
+        "  const t = { slug: c.slug, page_type: c.page_type };"
+        "  const rebuilt = new Set(c.rebuilt); const boards = m.approvedBoards(c.boards_dir);"
+        "  return [m.isNewPage(t, c.rule, rebuilt, boards),"
+        "          checks.map((k) => m.severityFor(k, t, promotions, c.rule, rebuilt, boards))];"
+        "})));"
+    )
+    res = subprocess.run([NODE, "--input-type=module", "-e", driver],
+                         check=True, capture_output=True, text=True)
+    ts = json.loads(res.stdout)
+
+    mismatches = []
+    new_seen = set()
+    for c, (ts_new, ts_sev) in zip(cases, ts):
+        rebuilt, approved = set(c["rebuilt"]), RB.approved_boards(c["boards_dir"])
+        py_new = RB.is_new_page(c["slug"], c["page_type"], c["rule"], rebuilt, approved)
+        promo = (promotions, c["rule"], rebuilt, approved)
+        py_sev = [RB.severity_for(k["id"], k["severity"], c["slug"], c["page_type"], promo)
+                  for k in checks]
+        new_seen.add(py_new)
+        if (py_new, py_sev) != (ts_new, ts_sev):
+            label = {k: c[k] for k in ("slug", "page_type", "rebuilt")}
+            label["board"] = pathlib.Path(c["boards_dir"]).name
+            label["or_board_approved"] = c["rule"]["or_board_approved"]
+            mismatches.append(f"{label}: ts {ts_new} {ts_sev} / py {py_new} {py_sev}")
+    assert new_seen == {True, False}, "the matrix must exercise both answers"
+    assert mismatches == [], f"{len(mismatches)} cells disagree:\n" + "\n".join(mismatches[:10])
