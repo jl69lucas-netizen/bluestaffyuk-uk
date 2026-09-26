@@ -1,5 +1,5 @@
 {
-  "_comment": "Per-page-type ceilings on head-term repetition inside <main>. PROPOSALS re-based from CAG on 2026-09-16 until a calibration pass measures them against the pages that AI answers actually cite (record the date in `calibrated`). A term absent from a page type's map has no ceiling. Terms are BSUK's six head terms; the caps are proportional to the CAG originals, not measured.",
+  "_comment": "Per-page-type ceilings on head-term repetition inside <main>. PROPOSALS re-based from CAG on 2026-09-16 until a calibration pass measures them against the pages that AI answers actually cite (record the date in `calibrated`). A term absent from a page type's map has no ceiling. Terms are BSUK's five head terms, the page's own city and the brand; the caps are proportional to the CAG originals, not measured. `city` is the literal `{city}`: scripts/evidence_audit.py resolves it per slug to the row's `city` in data/locations.json (a bracketed note dropped, a national `UK` row skipped), so it budgets location pages only. `bluestaffyuk` is the brand written as one word; `Blue Staffy UK` with spaces is counted by the `blue staffy` and `uk` head terms.",
   "calibrated": null,
   "title_max_chars": 70,
   "superlatives": [
@@ -17,8 +17,9 @@
     "staffy puppies": "staff(?:y|ie)\\s+pupp(?:y|ies)",
     "staffordshire bull terrier": "staffordshire\\s+bull\\s+terriers?",
     "puppies for sale": "pupp(?:y|ies)\\s+for\\s+sale",
-    "glasgow": "\\bglasgow\\b",
-    "uk": "\\bUK\\b"
+    "city": "{city}",
+    "uk": "\\bUK\\b",
+    "bluestaffyuk": "\\bbluestaffyuk\\b"
   },
   "budgets": {
     "home": {
@@ -26,64 +27,65 @@
       "staffy puppies": 12,
       "staffordshire bull terrier": 8,
       "puppies for sale": 6,
-      "glasgow": 8,
-      "uk": 10
+      "uk": 10,
+      "bluestaffyuk": 10
     },
     "for-sale": {
       "blue staffy": 15,
       "staffy puppies": 12,
       "staffordshire bull terrier": 6,
       "puppies for sale": 8,
-      "glasgow": 6,
-      "uk": 8
+      "uk": 8,
+      "bluestaffyuk": 10
     },
     "puppy": {
       "blue staffy": 12,
       "staffy puppies": 10,
       "staffordshire bull terrier": 5,
       "puppies for sale": 6,
-      "glasgow": 5,
-      "uk": 6
+      "uk": 6,
+      "bluestaffyuk": 5
     },
     "comparison": {
       "blue staffy": 12,
       "staffy puppies": 8,
       "staffordshire bull terrier": 8,
       "puppies for sale": 4,
-      "glasgow": 4,
-      "uk": 6
+      "uk": 6,
+      "bluestaffyuk": 8
     },
     "location": {
       "blue staffy": 10,
       "staffy puppies": 8,
       "staffordshire bull terrier": 5,
       "puppies for sale": 6,
-      "glasgow": 8,
-      "uk": 8
+      "city": 8,
+      "uk": 8,
+      "bluestaffyuk": 10
     },
     "interior": {
       "blue staffy": 12,
       "staffy puppies": 8,
       "staffordshire bull terrier": 6,
       "puppies for sale": 4,
-      "glasgow": 4,
-      "uk": 6
+      "uk": 6,
+      "bluestaffyuk": 10
     },
     "blog": {
       "blue staffy": 8,
       "staffy puppies": 6,
       "staffordshire bull terrier": 6,
       "puppies for sale": 3,
-      "glasgow": 3,
-      "uk": 5
+      "uk": 5,
+      "bluestaffyuk": 8
     },
     "hub": {
       "blue staffy": 10,
       "staffy puppies": 8,
       "staffordshire bull terrier": 5,
       "puppies for sale": 5,
-      "glasgow": 5,
-      "uk": 6
+      "uk": 6,
+      "bluestaffyuk": 5
     }
   },
   "title_max_chars_by_slug": {
@@ -104,11 +106,12 @@
   "budgets_by_slug": {
     "_comment": "Per-slug override of budgets[page_type]. A number replaces the page-type ceiling; null removes the ceiling for that slug. Every override must carry a `_why` naming the approved outline or breeder ruling that earns it. The twelve project 4 rebuilt pages carry one each (Known Issue 34): budget = the CARRIED count (the working-rule-15 verbatim set as it stands on the page, plus the shell's repetition of those approved headings in the section dial, strip, sheet and table of contents) + the page type's own-prose ceiling, floored at the count AS BUILT so the entry is a ratchet — any later edit that pushes a term higher re-fails the audit. Project 5's location and puppy pages carry no entry and are judged on the page-type defaults.",
     "index": {
-      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 49 as built = 25 carried + 15 shell + 9 own; budget 60 = 25 + 15 + the home ceiling 20; `staffy puppies` 23 as built = 12 carried + 6 shell + 5 own; budget 30 = 12 + 6 + the home ceiling 12; `staffordshire bull terrier` 19 as built = 10 carried + 3 shell + 6 own; budget 21 = 10 + 3 + the home ceiling 8; `uk` 42 as built = 21 carried + 6 shell + 15 own; budget 42 = as built, because own 15 is over the home ceiling 10. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
+      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 49 as built = 25 carried + 15 shell + 9 own; budget 60 = 25 + 15 + the home ceiling 20; `staffy puppies` 23 as built = 12 carried + 6 shell + 5 own; budget 30 = 12 + 6 + the home ceiling 12; `staffordshire bull terrier` 19 as built = 10 carried + 3 shell + 6 own; budget 21 = 10 + 3 + the home ceiling 8; `uk` 42 as built = 21 carried + 6 shell + 15 own; budget 42 = as built, because own 15 is over the home ceiling 10. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built. `bluestaffyuk` (added 2026-09-26, CAG parity audit D2) 19 as built, over the home ceiling 10; budget 19 = as built, so the new term ratchets this page rather than failing it retroactively.",
       "blue staffy": 60,
       "staffy puppies": 30,
       "staffordshire bull terrier": 21,
-      "uk": 42
+      "uk": 42,
+      "bluestaffyuk": 19
     },
     "thank-you-blue-staffy-puppies-journey": {
       "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 does not reach this page (built before it; data/verbatim/applies.json), so nothing is carried; the overage is the kit's own rows and the shell. `uk` 7 as built = 0 carried + 0 shell + 7 own; budget 7 = as built, because own 7 is over the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
@@ -131,17 +134,19 @@
       "uk": 20
     },
     "buy-staffy-puppies-for-sale-uk": {
-      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `staffy puppies` 21 as built = 13 carried + 6 shell + 2 own; budget 31 = 13 + 6 + the for-sale ceiling 12; `staffordshire bull terrier` 21 as built = 16 carried + 3 shell + 2 own; budget 25 = 16 + 3 + the for-sale ceiling 6; `uk` 53 as built = 30 carried + 15 shell + 8 own; budget 53 = 30 + 15 + the for-sale ceiling 8. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose.",
+      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `staffy puppies` 21 as built = 13 carried + 6 shell + 2 own; budget 31 = 13 + 6 + the for-sale ceiling 12; `staffordshire bull terrier` 21 as built = 16 carried + 3 shell + 2 own; budget 25 = 16 + 3 + the for-sale ceiling 6; `uk` 53 as built = 30 carried + 15 shell + 8 own; budget 53 = 30 + 15 + the for-sale ceiling 8. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose. `bluestaffyuk` (added 2026-09-26, CAG parity audit D2) 56 as built, over the for-sale ceiling 10; budget 56 = as built, so the new term ratchets this page rather than failing it retroactively.",
       "staffy puppies": 31,
       "staffordshire bull terrier": 25,
-      "uk": 53
+      "uk": 53,
+      "bluestaffyuk": 56
     },
     "blue-staffy-uk-breeders": {
-      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 26 as built = 15 carried + 6 shell + 5 own; budget 33 = 15 + 6 + the interior ceiling 12; `staffy puppies` 12 as built = 6 carried + 3 shell + 3 own; budget 17 = 6 + 3 + the interior ceiling 8; `staffordshire bull terrier` 11 as built = 3 carried + 3 shell + 5 own; budget 12 = 3 + 3 + the interior ceiling 6; `uk` 26 as built = 10 carried + 3 shell + 13 own; budget 26 = as built, because own 13 is over the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
+      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 26 as built = 15 carried + 6 shell + 5 own; budget 33 = 15 + 6 + the interior ceiling 12; `staffy puppies` 12 as built = 6 carried + 3 shell + 3 own; budget 17 = 6 + 3 + the interior ceiling 8; `staffordshire bull terrier` 11 as built = 3 carried + 3 shell + 5 own; budget 12 = 3 + 3 + the interior ceiling 6; `uk` 26 as built = 10 carried + 3 shell + 13 own; budget 26 = as built, because own 13 is over the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built. `bluestaffyuk` (added 2026-09-26, CAG parity audit D2) 11 as built, over the interior ceiling 10; budget 11 = as built, so the new term ratchets this page rather than failing it retroactively.",
       "blue staffy": 33,
       "staffy puppies": 17,
       "staffordshire bull terrier": 12,
-      "uk": 26
+      "uk": 26,
+      "bluestaffyuk": 11
     },
     "blue-staffy-health-uk": {
       "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 37 as built = 25 carried + 6 shell + 6 own; budget 43 = 25 + 6 + the interior ceiling 12; `staffy puppies` 26 as built = 14 carried + 6 shell + 6 own; budget 28 = 14 + 6 + the interior ceiling 8; `staffordshire bull terrier` 22 as built = 7 carried + 6 shell + 9 own; budget 22 = as built, because own 9 is over the interior ceiling 6; `uk` 25 as built = 10 carried + 9 shell + 6 own; budget 25 = 10 + 9 + the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `staffordshire bull terrier` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
@@ -157,11 +162,12 @@
       "uk": 41
     },
     "uk-blue-staffy-puppy-buying-guide": {
-      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 85 as built = 49 carried + 33 shell + 3 own; budget 94 = 49 + 33 + the interior ceiling 12; `staffy puppies` 62 as built = 37 carried + 24 shell + 1 own; budget 69 = 37 + 24 + the interior ceiling 8; `staffordshire bull terrier` 23 as built = 19 carried + 3 shell + 1 own; budget 28 = 19 + 3 + the interior ceiling 6; `uk` 47 as built = 31 carried + 9 shell + 7 own; budget 47 = as built, because own 7 is over the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",
+      "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 85 as built = 49 carried + 33 shell + 3 own; budget 94 = 49 + 33 + the interior ceiling 12; `staffy puppies` 62 as built = 37 carried + 24 shell + 1 own; budget 69 = 37 + 24 + the interior ceiling 8; `staffordshire bull terrier` 23 as built = 19 carried + 3 shell + 1 own; budget 28 = 19 + 3 + the interior ceiling 6; `uk` 47 as built = 31 carried + 9 shell + 7 own; budget 47 = as built, because own 7 is over the interior ceiling 6. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built. `bluestaffyuk` (added 2026-09-26, CAG parity audit D2) 11 as built, over the interior ceiling 10; budget 11 = as built, so the new term ratchets this page rather than failing it retroactively.",
       "blue staffy": 94,
       "staffy puppies": 69,
       "staffordshire bull terrier": 28,
-      "uk": 47
+      "uk": 47,
+      "bluestaffyuk": 11
     },
     "blue-staffy-blog-guides": {
       "_why": "MEASURED on dist/ 2026-09-22 at the project 4 close-out (Known Issue 34). Working rule 15 (faithful rewrite) requires the migrated H1, every keyword H2/H3, their opening paragraphs and the FAQ questions on the page word for word, and the approved record's tables and counter state the head terms in their own rows; none of that density is the writer's to remove. `blue staffy` 11 as built = 0 carried + 3 shell + 8 own; budget 11 = 0 + 3 + the blog ceiling 8; `uk` 11 as built = 4 carried + 0 shell + 7 own; budget 11 = as built, because own 7 is over the blog ceiling 5. 'Own' is everything else inside <main>, and it includes the kit's table, counter, FAQ and review rows read from data/*.json as well as fresh prose; on `uk` it is over the proposed (uncalibrated) ceiling, so those budgets are the page as built.",

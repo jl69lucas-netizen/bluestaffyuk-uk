@@ -32,6 +32,7 @@ a missing budget file is a gate that cannot run, not a gate that passed.
 """
 import re, sys, json, pathlib, argparse
 from collections import defaultdict
+from functools import lru_cache
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from _slugs import dist_path as _dist_path, page_key  # noqa: E402
@@ -41,6 +42,10 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 BUDGETS_PATH = ROOT / "data" / "quality" / "evidence-budgets.json"
 LEDGER_PATH = ROOT / "data" / "quality" / "evidence-ledger.json"
 TARGETS_PATH = ROOT / "tests" / "render" / "targets.json"
+LOCATIONS_PATH = ROOT / "data" / "locations.json"
+# The `{city}` term (data/quality/evidence-budgets.json) is the page's OWN city, resolved per
+# slug: a Glasgow-only city term left 27 of the 28 city pages with no ceiling at all.
+CITY_TERM = "{city}"
 
 CHECK_IDS = [
     {"id": "term-budget-per-page"},
@@ -63,6 +68,36 @@ def main_html(html):
 
 
 # ── term-budget-per-page ────────────────────────────────────────────────────
+@lru_cache(maxsize=1)
+def _location_cities():
+    """{location slug: city} from data/locations.json; empty when the file is absent."""
+    if not LOCATIONS_PATH.exists():
+        return {}
+    return {r["slug"]: r["city"] for r in json.loads(LOCATIONS_PATH.read_text(encoding="utf-8"))}
+
+
+def city_for(slug):
+    """The city a `uk-locations/<slug>` page is about, or None.
+
+    A bracketed note is not part of the name (`Glasgow (breeding dogs)` is Glasgow), and a
+    national row (`city` "UK") has no city term: the `uk` head term already budgets that word.
+    Any page outside the city cluster has no city term either."""
+    if not slug.startswith("uk-locations/"):
+        return None
+    city = _location_cities().get(slug.split("/", 1)[1])
+    if not city:
+        return None
+    city = re.sub(r"\s*\(.*?\)\s*", " ", city).strip()
+    return None if city.upper() == "UK" else city
+
+
+def city_pattern(city):
+    """`Newcastle-under-Lyme` also matches `Newcastle under Lyme`: any run of spaces or
+    hyphens in the name matches any run of spaces or hyphens on the page."""
+    words = [w for w in re.split(r"[\s-]+", city) if w]
+    return r"\b" + r"[\s-]+".join(re.escape(w) for w in words) + r"\b"
+
+
 def term_budget(html, page_type, budgets, slug=""):
     """[(term, count, ceiling)] for every term over its ceiling. Owner pages are exempt for their term.
     Per-slug override: budgets_by_slug — a number replaces the page-type ceiling, null removes it."""
@@ -82,6 +117,11 @@ def term_budget(html, page_type, budgets, slug=""):
         if term == "legit" and slug in budgets.get("legit_owner", []):
             continue
         pat = budgets["terms"].get(term, re.escape(term))
+        if pat == CITY_TERM:
+            city = city_for(slug)
+            if city is None:
+                continue
+            pat = city_pattern(city)
         n = len(re.findall(pat, text, flags=re.I))
         if n > ceiling:
             out.append((term, n, ceiling))
