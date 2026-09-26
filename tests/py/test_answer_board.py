@@ -236,3 +236,9 @@ def test_a_batch_over_the_size_cap_is_refused(tmp_path, monkeypatch, capsys):
     rc = answer_board_batch.main([str(FIX / "mini.md"), "--project", "x", "--out-dir", str(tmp_path)])
     assert rc == 1 and list(tmp_path.iterdir()) == []
     assert "over 256 KiB" in capsys.readouterr().err
+
+
+def test_an_option_without_a_label_is_refused():
+    with pytest.raises(answer_sheet.SheetError) as err:
+        answer_sheet.parse_sheet("# T\n\n## S\n\n1. **Q?** x\n   - (a)  \n")
+    assert str(err.value) == "line 6: option a has no label"

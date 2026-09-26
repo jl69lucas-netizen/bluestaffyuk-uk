@@ -73,7 +73,10 @@ def parse_sheet(text):
             oid = opt.group(1).lower()
             if any(o["id"] == oid for o in item["options"]):
                 raise SheetError(f"line {no}: option {oid} is listed twice")
-            item["options"].append({"id": oid, "label": opt.group(2).strip()})
+            label = opt.group(2).strip()
+            if not label:
+                raise SheetError(f"line {no}: option {oid} has no label")
+            item["options"].append({"id": oid, "label": label})
             continue
         m = ITEM.match(line)
         if m:
