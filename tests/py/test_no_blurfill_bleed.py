@@ -16,6 +16,7 @@ scripts/family_rules.py BUILT_BEFORE_SYSTEM_GAPS:
 """
 import json
 import pathlib
+import re
 import sys
 
 import pytest
@@ -179,3 +180,38 @@ def test_no_image_skill_offers_b_for_a_new_page(skill):
     assert "--og-style B" not in text
     assert "Style `B` (Blur-Fill) with" not in text
     assert "when the slot's style is `B`" not in text
+
+
+@pytest.mark.parametrize("skill", ["bsuk-site-patterns", "bsuk-puppy-page-builder"])
+def test_new_puppy_portraits_are_baked_contain_on_bone(skill):
+    """The ruling is general: a NEW puppy portrait is baked 4:5 with the bone-gradient contain
+    style; the puppy images already baked are unchanged, and the skill says so."""
+    text = (ROOT / ".claude/skills" / skill / "SKILL.md").read_text(encoding="utf-8")
+    assert not re.search(r"4:5 blur-fill (?:portrait|master)", text), skill
+    assert "--og-style B" not in text and "--style blurfill" not in text
+    assert "--style contain" in text and RULING in text
+    assert "already baked" in text and "unchanged" in text
+
+
+# ── the build gate ───────────────────────────────────────────────────────────────────────
+
+def _record(slug):
+    sys.path.insert(0, str(ROOT / "tests" / "py"))
+    from test_image_rules import _full
+    b = _full()
+    b["meta"]["slug"] = slug
+    weeks = next(s for s in b["sections"] if s["id"] == "how-we-raise")["tree"][0]["images"][0]
+    weeks["og_style"] = "B"
+    return b
+
+
+def test_the_gate_fails_a_new_page_whose_record_names_style_b():
+    found = [f for f in IR.slot_findings(_record(NEW)) if f[0] == IR.OG_STYLE_RETIRED]
+    assert len(found) == 1 and found[0][1] == "FAIL", found
+    assert ("style B (blurfill) is retired for in-body images on new pages — "
+            "user ruling 2026-09-26") in found[0][2] and "weeks-photo" in found[0][2]
+    assert IR.OG_STYLE_RETIRED in {c for c, _, _ in family_rules.findings(_record(NEW), {})}
+
+
+def test_the_gate_leaves_a_frozen_page_s_style_b_alone():
+    assert not [f for f in IR.slot_findings(_record(FROZEN)) if f[0] == IR.OG_STYLE_RETIRED]

@@ -188,12 +188,16 @@ a row of `docs/reference/external-link-library.md` (a board naming any other URL
   **Card crop is 800×800**; the in-body portrait box is the uniform 16:9
   (`rules/images.md` `uniform-inbody-image-sizing`).
 - **Portraits — the locked framing rule.** A puppy portrait shows the whole dog, or at
-  minimum head and chest with ears and muzzle complete inside the frame. Bake single-pup
-  portraits as a **4:5 blur-fill** master and ship the mobile full-bleed 4:5 rule
+  minimum head and chest with ears and muzzle complete inside the frame. Bake a new single-pup
+  portrait as a **4:5 master with the bone-gradient contain style**
+  (`python3 scripts/reframe_og.py … --style contain`), never blur-fill
+  (user ruling 2026-09-26: no grey or black bleed on phones; bleeds use design colours),
+  and ship the mobile full-bleed 4:5 rule
   (`.sec-img.og-tall{width:100vw;margin-left:calc(50% - 50vw);aspect-ratio:4/5;border-radius:0}`);
   desktop keeps the uniform 16:9 box. Tune `object-position` per image so the head sits
   inside the box — the box never changes, only the focal point — and where no focal point
   saves the frame, re-cut the master rather than shipping the crop.
+  Puppy images already baked (blur-fill included) are unchanged; the rule binds new portraits.
   **Never head-crop a pup** (`rules/puppies.md` `no-head-cropped-portraits`).
 - **In-body images** — every H2, H3 and key H4 gets an image, in the uniform box, under
   100 KB WebP with a `-760.webp` sibling and srcset, `width`/`height` always set. H3 → image
