@@ -74,14 +74,14 @@ script.
 
 The `rich` pages in `data/page-map.json`. Key differences from puppy: `no_aggregateoffer`,
 `shipping_line`, `wordcount_in_band` and `real_hero_image` are all `NA` (not applicable).
-`house_method` = WARN. The source repo's separate interior audit script was not ported —
+The source repo's separate interior audit script was not ported —
 source repo only; `scripts/final_page_audit.py` with no flag IS the interior profile.
 
 ### Other page types — compact one-row summary
 
 | Page type | Key hard gates | Key scaled / scoped | Notes |
 |---|---|---|---|
-| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | house_method WARN | `python3 scripts/final_page_audit.py` with no flag |
+| **Interior** (`rich` pages) | single_canonical, no_phone_in_body, no_visible_date, jsonld_valid, faqpage_present | none — no WARN checks; every other check defaults to FAIL | `python3 scripts/final_page_audit.py` with no flag |
 | **For-sale / variant** (`/blue-staffy-pup-sale-uk/`, `/buy-staffy-puppies-for-sale-uk/`) | sold_not_instock; single_canonical; the £200–£350 delivery band | word count 1,000–2,000; `no_aggregateoffer` WARN — a hub may aggregate, a single pup may not | one `Product` per pup, one `Offer` each (`rules/puppies.md`) |
 | **Location** (`/uk-locations/<slug>/`, 28 cities) | single_canonical; no_visible_date; BreadcrumbList; delivery band | word count 3,000–5,000; the city entity in H1; FAQPage present | every city comes from `data/locations.json` |
 | **Comparison** (`/uk-staffordshire-bull-terrier-guide/` etc.) | single_canonical; comparison table present; no_visible_date | word count 1,500–3,000; H1 contains "vs" or "versus" | `bsuk-comparison-builder` handles schema |
@@ -97,7 +97,7 @@ an unmapped type.
 
 ## Verdict model
 - **FAIL** — any REAL hard-gate check fails (per the active profile). Ship-blocking; fix before deploy.
-- **PASS-WITH-WARNINGS** — no hard fails, but ≥1 soft item (Flesch 55–60, `house_method` WARN, alt marginally >190, a missing-but-recommended entity). Shippable; fixes logged for follow-up.
+- **PASS-WITH-WARNINGS** — no hard fails, but ≥1 soft item (Flesch 55–60, alt marginally >190, a missing-but-recommended entity). Shippable; fixes logged for follow-up.
 - **PASS** — clean.
 
 Every `✗` is triaged **REAL** (fix now) / **ACCEPTED** (correct for page type) / **FALSE
