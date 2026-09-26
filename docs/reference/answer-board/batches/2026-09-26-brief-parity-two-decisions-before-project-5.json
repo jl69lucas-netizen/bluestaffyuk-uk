@@ -1,6 +1,6 @@
 {
-  "askedAt": "2026-09-26T15:08:34Z",
-  "id": "2026-09-26-cag-parity-two-decisions-before-project-5",
+  "askedAt": "2026-09-26T16:06:33Z",
+  "id": "2026-09-26-brief-parity-two-decisions-before-project-5",
   "intro": "The CAG page-brief audit (https://claude.ai/artifact/S5xqdrrgFmmgcWFuuoqTGN) found 25 gaps to close\nbefore project 5. Two of them change what the pages look like, so they are yours to pick. The\nplan builds the recommended option unless you pick otherwise. Claude's recommendation is marked.",
   "project": "project-5",
   "questions": [
@@ -56,5 +56,5 @@
     }
   ],
   "status": "open",
-  "title": "CAG parity · two decisions before project 5"
+  "title": "Brief parity · two decisions before project 5"
 }

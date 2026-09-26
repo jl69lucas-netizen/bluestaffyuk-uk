@@ -1,4 +1,4 @@
-# CAG parity · two decisions before project 5
+# Brief parity · two decisions before project 5
 
 The CAG page-brief audit (https://claude.ai/artifact/S5xqdrrgFmmgcWFuuoqTGN) found 25 gaps to close
 before project 5. Two of them change what the pages look like, so they are yours to pick. The
