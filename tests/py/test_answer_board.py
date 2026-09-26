@@ -242,3 +242,43 @@ def test_an_option_without_a_label_is_refused():
     with pytest.raises(answer_sheet.SheetError) as err:
         answer_sheet.parse_sheet("# T\n\n## S\n\n1. **Q?** x\n   - (a)  \n")
     assert str(err.value) == "line 6: option a has no label"
+
+
+import build_answer_board  # noqa: E402
+
+
+def shell():
+    return build_answer_board.render_shell(build_answer_board.demo_batch())
+
+
+def test_the_shell_holds_the_layout_containers_and_no_real_questions():
+    page = shell()
+    for marker in ('id="rail-batches"', 'id="batches"', 'id="done"', 'id="status-line"',
+                   'id="total-done"', 'id="bar"', "<title>Questions for You</title>"):
+        assert marker in page, marker
+    assert "Are there blue Staffy puppies" not in page  # real questions come from db
+
+
+def test_the_demo_batch_is_embedded_as_json_without_a_closing_script_tag():
+    page = shell()
+    blob = page.split('<script type="application/json" id="demo-batch">', 1)[1].split("</script>", 1)[0]
+    demo = json.loads(blob)
+    assert demo["id"] == "demo" and [q["kind"] for q in demo["questions"]] == ["text", "choice", "text"]
+    evil = dict(demo, intro="has </script> inside")
+    out = build_answer_board.render_shell(evil)
+    blob = out.split('<script type="application/json" id="demo-batch">', 1)[1].split("</script>", 1)[0]
+    assert json.loads(blob)["intro"] == "has </script> inside"
+
+
+def test_only_google_fonts_is_referenced():
+    hosts = set(re.findall(r'(?:src|href)="https?://([^/"]+)', shell()))
+    assert hosts <= {"fonts.googleapis.com"}, hosts
+
+
+def test_the_shell_builds_byte_identically(tmp_path):
+    cmd = [sys.executable, str(ROOT / "scripts/build_answer_board.py"), "--out", str(tmp_path / "b.html")]
+    run = subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+    assert run.returncode == 0, run.stderr
+    first = (tmp_path / "b.html").read_bytes()
+    subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
+    assert (tmp_path / "b.html").read_bytes() == first
