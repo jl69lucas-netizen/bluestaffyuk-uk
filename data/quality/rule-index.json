@@ -297,8 +297,10 @@
   {
    "id": "uniform-inbody-image-sizing",
    "family": "IMG",
-   "enforced": "untested",
-   "pack": "rules/images.md"
+   "enforced": "test",
+   "pack": "rules/images.md",
+   "test": "tests/py/test_uniform_image_box.py",
+   "_note": "Built 2026-09-26 (answer-board ruling (a), CAG parity audit \u00a715a): BodyImage box=\"uniform\" / \"tall\" and the .bl-img.sec-img / .og-tall rules in src/styles/board-styles.css, for project 5 pages; the twelve built pages keep the natural .bl-img. The box's bleed is bone (--color-surface), per the user's ruling note; portraits bake with reframe_og.py --style contain."
   },
   {
    "id": "link-first-anchors",

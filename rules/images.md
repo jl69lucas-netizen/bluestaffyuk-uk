@@ -19,10 +19,12 @@ family: IMG
 
 ---
 id: uniform-inbody-image-sizing
-enforced: untested
+enforced: test
 family: IMG
 ---
 
+- **BSUK's box (answer-board ruling (a), 2026-09-26).** The box below is built once, in `src/components/BodyImage.astro`: a project 5 page (location, comparison, blog) renders every in-body image with `box="uniform"` — `.bl-img.sec-img`, `max-width: 760px; aspect-ratio: 1408 / 768; object-fit: cover; height: auto` — and a portrait with `box="tall"`, which adds `.og-tall` and turns 4:5, full width, at 900px and below. `focal` sets `object-position`; `sizes` defaults to `UNIFORM_SIZES` (`src/lib/assets.ts`). The twelve pages built before project 5 keep the natural `.bl-img` (420px beside the prose) until they are touched. Held up by `tests/py/test_uniform_image_box.py`.
+- **Bleed colour:** any area around or behind an in-body image is a design-system token (`--color-surface` / bone); in-body portraits for the uniform box are baked with `python3 scripts/reframe_og.py … --style contain` (bone gradient), never `--style blurfill` (a blurred copy of the photo can read grey or black on phones). User ruling 2026-09-26.
 - **Uniform in-body image sizing (ALWAYS — locked 2026-07-12) — applies to comparison + long-form content pages and every image agent/skill** — EVERY in-body section image, **OG photo AND infographic alike, renders in the SAME box as an infographic**: `.sec-img.inf-img` = `max-width:760px; aspect-ratio:1408/768 (16:9); object-fit:cover; height:auto`, **identical on mobile / tablet / desktop**. Do NOT give OG photos the smaller/variable boxes (`.portrait` 420px, `.portrait-tall` 340px, `.photo43` 480px) on these pages — the breeder wants every image the same rectangle down the page, matching the infographic sizing the comparison cluster (project 5) will ship. Tune **`object-position` per OG photo** so the puppy isn't cropped out (box size never changes, only the focal point). Ship each `<100 KB WebP + -760.webp` sibling with `srcset`/`sizes` like the infographics. Hero staggered-portrait component keeps its own `.hero-imgs` sizing. **Exact pipeline (2026-07-12): `PIL.ImageOps.fit(src,(1408,768),LANCZOS,centering=per-image)` → WebP `method=6`, quality-walk 82↓ until <95 KB → `-760.webp` sibling; a low-res OG master is upscaled to the box on purpose (uniform sizing beats pixel-peeping — breeder's call).** Canonical spec: project 3's design system. Differentiate sibling pages so they don't look identical with `.claude/skills/bsuk-component-refresh/SKILL.md` (the "Refresh Agent" — layout/accent/motif deltas, never a palette change).
 
 ---

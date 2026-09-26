@@ -133,3 +133,10 @@ export const inPublic = (publicPath: string) => {
  * today and one after this. A page whose geometry is genuinely different states its own.
  */
 export const BODY_SIZES = '(max-width: 640px) 100vw, 420px';
+
+/**
+ * The `sizes` of the uniform box (`.bl-img.sec-img`, BodyImage `box="uniform"` or `"tall"`):
+ * 760px wide wherever the column allows it, the full column below that. 800px is 760 plus
+ * the column's two 20px gutters, so above it the box is at its cap.
+ */
+export const UNIFORM_SIZES = '(max-width: 800px) 100vw, 760px';
