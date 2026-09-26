@@ -20,7 +20,7 @@ family: COPY
 
 ---
 id: delivery-band-on-every-card
-enforced: untested
+enforced: test
 family: COPY
 ---
 

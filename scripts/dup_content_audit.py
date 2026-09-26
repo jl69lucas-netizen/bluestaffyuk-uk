@@ -135,6 +135,11 @@ WHITELIST_SNIPPETS = [
     "vennie female blue and white 1 700",
     "christa female blue 1 700",
     "cheryl female blue with white blaze 1 700",
+    # the card's delivery line (rules/puppies.md `delivery-band-on-every-card`): the pack's
+    # canonical words, rendered once per card by src/components/kit/PuppyCard.astro from
+    # data/settings.json, so it repeats on every page that mounts a card by design. Added
+    # 2026-09-26 with the line itself (CAG parity audit D4); measured on dist/ that day.
+    "uk home delivery 200 350 by distance or collect in carlisle",
 
     # document-title + skip-link chrome that leaks into the text stream
     "blue staffy puppy for sale blue staffy uk skip to content",

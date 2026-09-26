@@ -343,8 +343,10 @@
   {
    "id": "delivery-band-on-every-card",
    "family": "COPY",
-   "enforced": "untested",
-   "pack": "rules/puppies.md"
+   "enforced": "test",
+   "pack": "rules/puppies.md",
+   "test": "tests/py/test_puppy_card_delivery.py",
+   "_note": "The card half: every built puppy card carries the canonical line from data/settings.json (CAG parity audit D4, 2026-09-26). The delivery-section half stays with the builders' outlines."
   },
   {
    "id": "design-system-nine",
