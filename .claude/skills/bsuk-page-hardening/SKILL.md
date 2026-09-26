@@ -278,7 +278,7 @@ text sat in `.faqC-x`, a 16×16 icon box, and every question crushed to 16px.
 
 | Styled, never rendered | When | Action |
 |---|---|---|
-| **Missing component** | a working rule mandates it — `SPEC_MANDATED` in `scripts/page_hardening_scan.py`: the kit's `.counter-wrap`, `.stack-table`, `.kit-hero`, `.kit-dial`, `.kit-nav`, `.kit-sheet`, `.kit-faq`, `.stmt-label` | **Render it.** Deleting the CSS hides a spec violation. Raised as ERROR. |
+| **Missing component** | it is in `SPEC_MANDATED` (`scripts/page_hardening_scan.py`): kit classes whose own file must keep rendering them — `.counter-wrap`, `.stack-table`, `.kit-hero`, `.kit-dial`, `.kit-nav`, `.kit-sheet`, `.kit-faq`, `.stmt-label`. Not a presence check: no page is required to use them, and a page that imports the kit component may restyle its class | **Render it.** Deleting the CSS hides a spec violation. Raised as ERROR. |
 | **Dead code** | it belongs to a variant this page does not ship (`.k1` when the page ships K2) | Delete it. Raised as WARN. |
 
 On one source page that split was **7 missing components vs 30 genuinely dead classes**.

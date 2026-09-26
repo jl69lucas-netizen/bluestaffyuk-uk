@@ -88,3 +88,81 @@ def test_a_custom_property_name_is_not_css_math(tmp_path):
     lines = [f["line"] for f in H.findings if f["check"] == "css-math-spacing"]
     H.findings.clear()
     assert lines == [2]
+
+
+# ── Task 15 review ────────────────────────────────────────────────────────────────────────────
+import subprocess  # noqa: E402
+
+
+def test_a_pageshell_page_follows_imports_at_any_depth():
+    """page → PageShell (layout) → SiteHeaderKit → PageNav / Mark: two fixed import levels
+    never reached the kit's own imports."""
+    files = H.src_files(["blue-staffy-health-uk"], root=str(ROOT))
+    assert "src/components/kit/PageNav.astro" in files
+    assert "src/components/kit/Mark.astro" in files
+
+
+def test_an_import_cycle_terminates(tmp_path):
+    (tmp_path / "src/pages/p").mkdir(parents=True)
+    (tmp_path / "src/components").mkdir(parents=True)
+    (tmp_path / "src/pages/p/index.astro").write_text("---\nimport A from '../../components/A.astro';\n---\n")
+    (tmp_path / "src/components/A.astro").write_text("---\nimport B from './B.astro';\n---\n")
+    (tmp_path / "src/components/B.astro").write_text("---\nimport A from './A.astro';\n---\n")
+    files = H.src_files(["p"], root=str(tmp_path))
+    assert {"src/components/A.astro", "src/components/B.astro"} <= set(files)
+
+
+def _run(*slugs):
+    return subprocess.run([sys.executable, "scripts/page_hardening_scan.py", *slugs],
+                          cwd=ROOT, capture_output=True, text=True)
+
+
+def test_an_unknown_page_exits_2():
+    for slug in ("no-such-page", "uk-locations/blue-staffy-puppies-nowheresville"):
+        r = _run(slug)
+        assert r.returncode == 2, (slug, r.returncode, r.stdout[-300:])
+        assert f"no built page for {slug}" in r.stdout + r.stderr
+
+
+def test_css_math_reads_balanced_parentheses(tmp_path):
+    css = tmp_path / "a.css"
+    css.write_text(".a{width:calc(var(--a)+var(--b))}\n"
+                   ".b{width:calc(var(--s-4)-2px)}\n"
+                   ".c{width:calc(var(--a) + var(--b))}\n")
+    H.findings.clear()
+    H.check_css_math([str(css)])
+    lines = [f["line"] for f in H.findings if f["check"] == "css-math-spacing"]
+    H.findings.clear()
+    assert lines == [1, 2]
+
+
+def test_class_list_forms():
+    h, _ = H._rendered_classes("<a class:list={ ['sp'] }><b class:list={{'obj': x}}>"
+                               "<i class:list={{active: on, 'is-x': y}}>")
+    assert {"sp", "obj", "active", "is-x"} <= h
+
+
+def test_a_page_restyling_an_imported_kit_class_is_not_drift(tmp_path, monkeypatch):
+    (tmp_path / "src/pages/p").mkdir(parents=True)
+    (tmp_path / "src/components/kit").mkdir(parents=True)
+    (tmp_path / "src/components/kit/Hero.astro").write_text(
+        "<section class:list={['kit-hero', cls]}></section>\n<style>.kit-hero{display:grid}</style>\n")
+    page = ("---\nimport Hero from '../../components/kit/Hero.astro';\n---\n<Hero />\n"
+            "<style>\n.kit-hero{margin:0}\n</style>\n")
+    (tmp_path / "src/pages/p/index.astro").write_text(page)
+    monkeypatch.chdir(tmp_path)
+    H.findings.clear()
+    H.check_class_drift([("src/pages/p/index.astro", page)])
+    errors = [f for f in H.findings if f["sev"] == "ERROR"]
+    H.findings.clear()
+    H.check_class_drift([("src/pages/q.astro", "<p/>\n<style>\n.kit-hero{margin:0}\n</style>\n")])
+    orphan = [f for f in H.findings if f["sev"] == "ERROR"]
+    H.findings.clear()
+    assert errors == []
+    assert orphan, "a page with no kit import styling .kit-hero is still an ERROR"
+
+
+def test_data_and_script_files_are_not_css_checked():
+    H.findings.clear()
+    assert H.css_checked(["data/locations.json", "src/lib/site.ts", "a.js", "x.astro", "y.css"]) \
+        == ["x.astro", "y.css"]
