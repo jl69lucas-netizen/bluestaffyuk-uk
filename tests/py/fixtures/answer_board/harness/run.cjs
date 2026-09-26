@@ -13,7 +13,7 @@ const DEMO = JSON.parse(html.split('<script type="application/json" id="demo-bat
 const B1 = Object.assign({}, DEMO, { id: "b1" });
 const answerWrites = (sets) => sets.filter((s) => s.p.indexOf("/answers/") >= 0);
 
-async function open(browser, seed, draft, hash, withComments) {
+async function open(browser, seed, draft, hash, withComments, noRuntime) {
   const ctx = await browser.newContext();
   const page = await ctx.newPage();
   const errors = [];
@@ -23,7 +23,7 @@ async function open(browser, seed, draft, hash, withComments) {
     window.__withComments = !!withComments;
     if (draft) { try { localStorage.setItem("answer-board:v1", JSON.stringify(draft)); } catch (e) { /* none */ } }
   }, { seed, draft, withComments });
-  await page.addInitScript({ path: FAKE });
+  if (!noRuntime) await page.addInitScript({ path: FAKE });
   await page.goto("file://" + PAGE + (hash || ""));
   return { ctx, page, errors };
 }
@@ -148,6 +148,110 @@ async function open(browser, seed, draft, hash, withComments) {
     await page.waitForTimeout(800);
     const subs = (await page.evaluate(() => window.__sets)).filter((x) => x.p.indexOf("/submissions/") >= 0);
     out.unavailable = { snapshots: subs.length, status: await page.locator("#b-b1 [data-send-status]").textContent() };
+    await ctx.close();
+  }
+
+  // 10–16. The "Any additional questions" section.
+  const ADD = "#additional-text", ADD_SEND = "#additional-send";
+  const addWrites = (sets) => sets.filter((s) => s.p === "drafts/additional");
+  const addSnaps = (sets) => sets.filter((s) => s.p.indexOf("additional/") === 0);
+
+  // (a) A 4 s typing burst: one or two writes to drafts/additional.
+  {
+    const { ctx, page } = await open(browser, {});
+    await page.waitForSelector(ADD, { state: "visible" });
+    const ta = page.locator(ADD);
+    await ta.click();
+    await ta.type("ab"); await page.waitForTimeout(900);
+    for (let i = 0; i < 40; i++) { await ta.type("x"); await page.waitForTimeout(100); }
+    await page.waitForTimeout(1500);
+    out.addBurst = addWrites(await page.evaluate(() => window.__sets)).length;
+    await ctx.close();
+  }
+
+  // (b) A reload keeps the text (browser draft; the fake db starts empty again).
+  {
+    const { ctx, page } = await open(browser, {});
+    await page.waitForSelector(ADD, { state: "visible" });
+    await page.locator(ADD).fill("keep me\nand me");
+    await page.waitForTimeout(100);
+    await page.reload();
+    await page.waitForSelector(ADD, { state: "visible" });
+    await page.waitForTimeout(300);
+    out.addReload = await page.locator(ADD).inputValue();
+    await ctx.close();
+  }
+
+  // (c) Send: one snapshot with the typed text, one note naming it, the field cleared.
+  {
+    const { ctx, page } = await open(browser, {}, null, "", true);
+    await page.evaluate(() => { window.__can = "available"; });
+    await page.waitForSelector(ADD, { state: "visible" });
+    const typed = "1. Also check the footer?\n2. Sub-task: resize the logo.";
+    await page.locator(ADD).fill(typed);
+    await page.locator(ADD_SEND).click();
+    await page.waitForTimeout(1200);
+    const sets = await page.evaluate(() => window.__sets);
+    const snaps = addSnaps(sets), drafts = addWrites(sets), sent = await page.evaluate(() => window.__sent);
+    const sid = snaps.length ? snaps[0].body.id : "";
+    out.addSend = { snaps: snaps.length, textOk: snaps.length === 1 && snaps[0].body.text === typed,
+      pathOk: snaps.length === 1 && snaps[0].p === "additional/" + sid && /^s-[0-9T-]+Z$/.test(sid),
+      sent: sent.length, noteOk: sent.length === 1 && sent[0].indexOf(sid) >= 0 && sent[0].indexOf("additional/" + sid) >= 0,
+      noteBytes: sent.length ? Buffer.byteLength(sent[0]) : 0,
+      field: await page.locator(ADD).inputValue(),
+      lastDraft: drafts.length ? drafts[drafts.length - 1].body.text : null,
+      stored: await page.evaluate(() => (JSON.parse(localStorage.getItem("answer-board:v1") || "{}")._additional || {}).text),
+      status: await page.locator("#additional-status").textContent() };
+    await ctx.close();
+  }
+
+  // (d) Send with nothing typed: disabled, no writes, no send.
+  {
+    const { ctx, page } = await open(browser, {}, null, "", true);
+    await page.evaluate(() => { window.__can = "available"; });
+    await page.waitForSelector(ADD, { state: "visible" });
+    await page.locator(ADD_SEND).click({ force: true });
+    await page.waitForTimeout(800);
+    const disabled = await page.locator(ADD_SEND).isDisabled();
+    const hint = await page.locator("#additional-hint").textContent();
+    const writes = (await page.evaluate(() => window.__sets)).length, sent = (await page.evaluate(() => window.__sent)).length;
+    await page.locator(ADD).fill("   \n  ");
+    const blankDisabled = await page.locator(ADD_SEND).isDisabled();
+    out.addEmpty = { disabled, hint, writes, sent, blankDisabled };
+    await ctx.close();
+  }
+
+  // (e) The snapshot save fails: the field is not cleared and the error shows.
+  {
+    const { ctx, page } = await open(browser, {}, null, "", true);
+    await page.evaluate(() => { window.__can = "available"; window.__rejectSet = "additional/"; });
+    await page.waitForSelector(ADD, { state: "visible" });
+    await page.locator(ADD).fill("do not lose me");
+    await page.locator(ADD_SEND).click();
+    await page.waitForTimeout(1200);
+    const drafts = addWrites(await page.evaluate(() => window.__sets));
+    out.addReject = { field: await page.locator(ADD).inputValue(),
+      cleared: drafts.some((s) => s.body.text === ""),
+      status: await page.locator("#additional-status").textContent() };
+    await ctx.close();
+  }
+
+  // (f) #demo shows the section with Send off.
+  {
+    const { ctx, page } = await open(browser, {}, null, "#demo");
+    await page.waitForSelector("#demo--q01");
+    out.addDemo = { visible: await page.locator("#additional").isVisible(),
+      disabled: await page.locator(ADD_SEND).isDisabled(),
+      status: await page.locator("#additional-status").textContent() };
+    await ctx.close();
+  }
+
+  // (g) Outside claude.ai (no runtime): the section stays hidden.
+  {
+    const { ctx, page } = await open(browser, {}, null, "", false, true);
+    await page.waitForTimeout(300);
+    out.addNoBoard = { visible: await page.locator("#additional").isVisible(),
+      status: await page.locator("#status-line").textContent() };
     await ctx.close();
   }
 

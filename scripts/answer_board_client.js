@@ -1,7 +1,9 @@
 /* Answer board client (spec docs/superpowers/specs/2026-09-26-answer-board-design.md §5–§6).
    Inlined by scripts/build_answer_board.py. Batches (the questions) come from the board's db;
    answers save one document per question with a browser draft as backup. Every capability is
-   optional: claude.use() may resolve null. `#demo` renders the embedded demo batch locally. */
+   optional: claude.use() may resolve null. `#demo` renders the embedded demo batch locally.
+   The static "Any additional questions" section (spec §6, revision 3) saves to drafts/additional
+   and sends a snapshot additional/<s-time>. */
 (function () {
   "use strict";
   var DEMO = JSON.parse(document.getElementById("demo-batch").textContent);
@@ -21,6 +23,8 @@
   var db = null, comments = null, downloads = null, demo = false, firstBatches = true, batchesLoaded = false;
   var canSend = "off";  // cached comments.canSendToClaude(): only for the hint shown before a click
   var DOWNLOAD_OFF = ["unavailable", "not_granted", "capability_disabled", "capability_removed"];
+  var ADD_T = "drafts::additional";  // timers/inflight/again/written key for drafts/additional
+  var addSending = false, addLater = null, addSynced = false;
 
   function $(id) { return document.getElementById(id); }
   function setText(el, s) { if (typeof el === "string") el = $(el); if (el) el.textContent = s; }
@@ -62,9 +66,20 @@
     Object.keys(answers).forEach(function (id) {
       if (demo ? id === "demo" : !batchesLoaded || (batches[id] && batches[id].status !== "received")) keep[id] = answers[id];
     });
+    // The additional text lives under a reserved key (batch ids are slugs, never "_…"); demo
+    // mode keeps its own so a demo never touches the real text.
+    if (add.updatedAt) keep[addKey()] = { text: add.text, updatedAt: add.updatedAt };
     try { localStorage.setItem(DRAFT_KEY, JSON.stringify(keep)); } catch (e) { /* storage blocked */ }
   }
   var draft = readDraft();
+  function addKey() { return demo ? "_additional_demo" : "_additional"; }
+  var add = { text: "", updatedAt: 0 };  // the additional questions text, set from the draft on start
+  function adoptAdd(rec) {
+    if (!rec || typeof rec.updatedAt !== "number" || rec.updatedAt <= add.updatedAt) return false;
+    add.text = typeof rec.text === "string" ? rec.text : "";
+    add.updatedAt = rec.updatedAt;
+    return true;
+  }
   function adopt(id, key, rec) {
     var a = answers[id][key];
     if (!a || !rec || typeof rec.updatedAt !== "number" || rec.updatedAt <= a.updatedAt) return false;
@@ -275,8 +290,24 @@
     var tick = document.getElementById(id + "--" + key).querySelector(".tick");
     if (!db) { setText("saved", "Saved in this browser"); setText(tick, "✓ saved here"); return; }
     setText("saved", "Saving…"); setText(tick, "");
-    clearTimeout(timers[k(id, key)]);
-    timers[k(id, key)] = setTimeout(function () { flush(id, key); }, 800);
+    debounce(k(id, key), function () { flush(id, key); });
+  }
+  function debounce(t, fn) { clearTimeout(timers[t]); timers[t] = setTimeout(fn, 800); }
+  // One write in flight per document: a change made meanwhile is written once it settles.
+  function writeDoc(t, ref, body, ok, retry, settled) {
+    if (inflight[t]) { again[t] = true; return inflight[t]; }
+    var p = ref.set(body).then(function () {
+      ok();
+      setText("saved", "Saved to the board " + new Date().toLocaleTimeString());
+    }, function (e) {
+      setText("saved", "Not saved to the board (" + ((e && e.code) || "error") + "). Kept in this browser.");
+    }).then(function () {
+      delete inflight[t];
+      if (again[t]) { delete again[t]; return retry(); }
+      if (settled) settled();
+    });
+    inflight[t] = p;
+    return p;
   }
   function busy(id, key) {
     var card = $(id + "--" + key), ta = card && card.querySelector("textarea");
@@ -302,22 +333,14 @@
       if (adopt(id, key, rec)) { paintCard(id, key, true); writeDraft(); renderRail(); paintTotals(); }
     }
     if (!db || !a || a.updatedAt === 0 || written[t] === sig(a)) return inflight[t] || Promise.resolve();
-    if (inflight[t]) { again[t] = true; return inflight[t]; }
     var body = { n: a.n, text: a.text, choice: a.choice, status: a.status, updatedAt: a.updatedAt };
-    var p = db.collection("batches/" + id + "/answers").doc(key).set(body).then(function () {
+    return writeDoc(t, db.collection("batches/" + id + "/answers").doc(key), body, function () {
       written[t] = sig(body);
-      setText("saved", "Saved to the board " + new Date().toLocaleTimeString());
       var card = document.getElementById(id + "--" + key);
       if (card) setText(card.querySelector(".tick"), "✓ saved");
-    }, function (e) {
-      setText("saved", "Not saved to the board (" + ((e && e.code) || "error") + "). Kept in this browser.");
-    }).then(function () {
-      delete inflight[t];
-      if (again[t]) { delete again[t]; return flush(id, key); }
+    }, function () { return flush(id, key); }, function () {
       if (later[t] && !busy(id, key)) applyLater(id, key, false);
     });
-    inflight[t] = p;
-    return p;
   }
   function flushBatch(id) { return Promise.all(Object.keys(answers[id]).map(function (key) { return flush(id, key); })); }
 
@@ -356,22 +379,36 @@
     var card = sendCard(id);  // the card may have been re-rendered while sending
     if (card) setText(card.querySelector("[data-send-status]"), msg);
   }
+  // The send must start inside the click (it needs the viewer's recent gesture), so it runs
+  // beside the saves and always tries: a cached canSendToClaude() may be stale, and a
+  // claude_unavailable rejection is decided before anything is posted. Resolves to how it went.
+  function startSend(el, note) {
+    return (!comments ? Promise.resolve("off") : comments.anchorFor(el).then(function (anchor) {
+      return comments.sendToClaude({ anchor: anchor, text: note });
+    }).then(function () { return "sent"; })).catch(function (e) { return (e && e.code) || "error"; })
+      .then(function (how) { refreshCanSend(); return how; });
+  }
+  // `copy` names the fallback chip, `read` what to tell Claude Code.
+  function sendMessage(how, sid, copy, read) {
+    var tell = "Tell Claude Code \"" + read + "\", or use " + copy + ".";
+    if (how === "sent") return "Sent to Claude Code (copy " + sid + "). Claude's reply will appear in the comment thread.";
+    if (how === "rate_limited") return "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.";
+    if (how === "consent_required") return "Saved as copy " + sid + ". You didn't allow comments from this page. Press Send again to allow it.";
+    if (how === "forbidden" || how === "writers_only") return "Saved as copy " + sid + ". Only an editor of this board can send to Claude.";
+    if (how === "claude_unavailable") return "Saved on the board as copy " + sid + ", but Claude Code couldn't receive it right now. " + tell;
+    if (how === "no_session") return "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. " + tell;
+    return "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. " + tell;
+  }
+  function snapshotId() { return "s-" + new Date().toISOString().replace(/[:.]/g, "-"); }
   function onSend(id, card) {
     if (sending[id]) return;
     if (!db) { setText(card.querySelector("[data-send-status]"), "This view cannot send. Use Copy answers."); return; }
     sending[id] = "Sending…";
     showSending(id);
-    var sid = "s-" + new Date().toISOString().replace(/[:.]/g, "-"), c = counts(id), b = batches[id];
+    var sid = snapshotId(), c = counts(id), b = batches[id];
     var note = "Answers submitted — " + b.title.slice(0, 120) + " (" + id + "). Snapshot " + sid + ": " + c.answered + " answered, " +
       c.skip + " skip, " + c.not_yet + " not yet, " + c.empty + " empty. Read db batches/" + id + "/submissions/" + sid + ".";
-    // The send must start inside this click (it needs the viewer's recent gesture), so it runs
-    // beside the saves and always tries: a cached canSendToClaude() may be stale, and a
-    // claude_unavailable rejection is decided before anything is posted. Claude reads the
-    // snapshot seconds later.
-    var sendingP = (!comments ? Promise.resolve("off") : comments.anchorFor(card).then(function (anchor) {
-      return comments.sendToClaude({ anchor: anchor, text: note });
-    }).then(function () { return "sent"; })).catch(function (e) { return (e && e.code) || "error"; })
-      .then(function (how) { refreshCanSend(); return how; });
+    var sendingP = startSend(card, note);  // Claude reads the snapshot seconds later
     var saving = flushBatch(id).then(function () {
       return db.collection("batches/" + id + "/submissions").doc(sid).set({
         at: new Date().toISOString(), id: sid, batchId: id, counts: c,
@@ -383,14 +420,7 @@
       });
     });
     Promise.all([saving, sendingP]).then(function (r) {
-      var how = r[1];
-      if (how === "sent") sendResult(id, "Sent to Claude Code (copy " + sid + "). Claude's reply will appear in the comment thread.");
-      else if (how === "rate_limited") sendResult(id, "Saved as copy " + sid + ". Sending is limited for a moment; wait, then press Send again.");
-      else if (how === "consent_required") sendResult(id, "Saved as copy " + sid + ". You didn't allow comments from this page. Press Send again to allow it.");
-      else if (how === "forbidden" || how === "writers_only") sendResult(id, "Saved as copy " + sid + ". Only an editor of this board can send to Claude.");
-      else if (how === "claude_unavailable") sendResult(id, "Saved on the board as copy " + sid + ", but Claude Code couldn't receive it right now. Tell Claude Code \"read my answers\", or use Copy answers.");
-      else if (how === "no_session") sendResult(id, "Saved on the board as copy " + sid + ", but no Claude Code session is watching this board right now. Tell Claude Code \"read my answers\", or use Copy answers.");
-      else sendResult(id, "Saved on the board as copy " + sid + ", but sending to Claude isn't available here. Tell Claude Code \"read my answers\", or use Copy answers.");
+      sendResult(id, sendMessage(r[1], sid, "Copy answers", "read my answers"));
     }, function (e) {
       sendResult(id, "The copy could not be saved (" + ((e && e.code) || "error") + "). Your answers are still here. Press Send again.");
     });
@@ -398,6 +428,103 @@
   function copyText(text, el) {
     if (!navigator.clipboard) { flash(el, "Copy is blocked in this view"); return; }
     navigator.clipboard.writeText(text).then(function () { flash(el, "Copied"); }, function () { flash(el, "Copy is blocked in this view"); });
+  }
+
+  // ---------- any additional questions ----------
+  function addEls() {
+    return { sec: $("additional"), ta: $("additional-text"), send: $("additional-send"),
+      hint: $("additional-hint"), status: $("additional-status") };
+  }
+  function addBusy() { return !!timers[ADD_T] || document.activeElement === $("additional-text"); }
+  function paintAdditional(force) {
+    var e = addEls();
+    if ((force || document.activeElement !== e.ta) && e.ta.value !== add.text) { e.ta.value = add.text; grow(e.ta); }
+    var empty = !add.text.trim();
+    e.send.disabled = !db || empty;  // off in demo and with nothing to send
+    e.send.setAttribute("aria-disabled", String(addSending || e.send.disabled));  // off, or busy while a Send runs
+    setText(e.hint, db && empty ? "Type something first" : "");
+  }
+  function showAdditional() {
+    var e = addEls();
+    e.sec.hidden = false;
+    if (!db) setText(e.status, demo ? "Demo: sending is off. Copy text works." : "");
+    paintAdditional();
+  }
+  function flushAdditional() {
+    clearTimeout(timers[ADD_T]); delete timers[ADD_T];
+    // A newer board text held during the edit wins over the older local text.
+    if (addLater && adoptAdd(addLater)) { paintAdditional(true); writeDraft(); }
+    addLater = null;
+    if (!db || add.updatedAt === 0 || written[ADD_T] === add.text) return inflight[ADD_T] || Promise.resolve();
+    var body = { text: add.text, updatedAt: add.updatedAt };
+    return writeDoc(ADD_T, db.collection("drafts").doc("additional"), body,
+      function () { written[ADD_T] = body.text; }, flushAdditional, null);
+  }
+  function touchAdditional() {
+    add.updatedAt = Date.now();
+    writeDraft(); paintAdditional();
+    if (!db) { setText("saved", "Saved in this browser"); return; }
+    setText("saved", "Saving…");
+    debounce(ADD_T, flushAdditional);
+  }
+  function subscribeAdditional() {
+    db.collection("drafts").onSnapshot(function (snap) {
+      snap.docs.forEach(function (d) {
+        if (d.id !== "additional") return;
+        var rec = d.data();
+        if (!rec) return;
+        written[ADD_T] = typeof rec.text === "string" ? rec.text : "";
+        if (addBusy()) {
+          // Never change the field under the viewer's hands; keep the newest record for later.
+          if (typeof rec.updatedAt === "number" && rec.updatedAt > add.updatedAt &&
+              (!addLater || rec.updatedAt > addLater.updatedAt)) addLater = rec;
+          return;
+        }
+        if (adoptAdd(rec)) { paintAdditional(); writeDraft(); }
+      });
+      // A browser draft newer than the board is written up once, on the first snapshot.
+      if (!addSynced) {
+        addSynced = true;
+        if (add.updatedAt && !timers[ADD_T] && !inflight[ADD_T] && written[ADD_T] !== add.text) flushAdditional();
+      }
+    }, function (e) {
+      setText("saved", "Additional questions stopped syncing (" + ((e && e.code) || "error") + "). Reload the page.");
+    });
+  }
+  function onSendAdditional() {
+    var e = addEls(), text = add.text;
+    if (addSending || !db || !text.trim()) return;
+    addSending = true;
+    paintAdditional();
+    setText(e.status, "Sending…");
+    var sid = snapshotId();
+    var note = "Additional questions submitted. Snapshot " + sid + " (" + text.length + " characters). Read db additional/" + sid + ".";
+    var sendingP = startSend(e.sec, note);
+    var saving = db.collection("additional").doc(sid).set({ at: new Date().toISOString(), id: sid, text: text });
+    Promise.all([saving, sendingP]).then(function (r) {
+      addSending = false;
+      // Clear only what was sent; text typed while sending stays.
+      if (add.text === text) {
+        add.text = ""; add.updatedAt = Date.now(); addLater = null;
+        paintAdditional(true); writeDraft(); flushAdditional();
+      }
+      paintAdditional();
+      setText(e.status, sendMessage(r[1], sid, "Copy text", "read my additional questions"));
+    }, function (err) {
+      addSending = false;
+      paintAdditional();
+      setText(e.status, "The copy could not be saved (" + ((err && err.code) || "error") + "). Your text is still here. Press Send again.");
+    });
+  }
+  function wireAdditional() {
+    var e = addEls();
+    adoptAdd(draft[addKey()]);
+    e.ta.addEventListener("input", function () { add.text = e.ta.value; grow(e.ta); touchAdditional(); });
+    e.sec.addEventListener("focusout", function () {
+      if (addLater && !timers[ADD_T]) flushAdditional();
+    });
+    e.send.addEventListener("click", onSendAdditional);
+    $("additional-copy").addEventListener("click", function () { copyText(add.text, $("additional-fallback")); });
   }
 
   // ---------- wiring ----------
@@ -516,6 +643,7 @@
     renderBatches();
   }
   function noBoard() {
+    $("additional").hidden = true;
     setText("status-line", "");
     $("status-line").innerHTML = 'Open this board on claude.ai to see your questions. <a href="#demo" id="demo-link">Preview a demo batch</a>';
     $("status-line").hidden = false;
@@ -525,6 +653,8 @@
     demo = true;
     batches.demo = cleanBatch(DEMO, "demo");
     ensureAnswers("demo");
+    wireAdditional();
+    showAdditional();
     renderBatches();
   }
   function connect() {
@@ -539,6 +669,9 @@
     use.call(window.claude, "db").then(function (ns) {
       if (!ns) { noBoard(); return; }
       db = ns;
+      wireAdditional();
+      showAdditional();
+      subscribeAdditional();
       db.collection("batches").onSnapshot(onBatches, function (e) {
         setText("status-line", "The board's storage stopped (" + ((e && e.code) || "error") + "). Reload the page.");
         $("status-line").hidden = false;
