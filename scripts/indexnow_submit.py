@@ -27,6 +27,7 @@ import json
 import os
 import pathlib
 import re
+import subprocess
 import sys
 import urllib.error
 import urllib.request
@@ -110,20 +111,43 @@ def urls_from_sitemaps():
 RENDERED_CHANGES = pathlib.Path("docs") / "reports" / "rendered-changes.json"
 
 
+def git_head():
+    """`git rev-parse HEAD`, or None when git cannot say."""
+    r = subprocess.run(["git", "rev-parse", "HEAD"], capture_output=True, text=True)
+    return r.stdout.strip() if r.returncode == 0 else None
+
+
 def changed_slugs():
     """Page slugs whose RENDERED output changed: docs/reports/rendered-changes.json, written by
     `python3 scripts/rendered_changes.py --base <dir-or-ref> --json` from a dist-hash diff.
 
     The source diff this replaced matched `src/pages/<x>/index.astro` only, so it never named a
     city page (`uk-locations/[slug].astro`), a puppy, a blog post or a page changed through a
-    shared component (audit D6). `index` is the root and maps to ""."""
+    shared component (audit D6). `index` is the root and maps to "".
+
+    Refuses a report older than any built page: a rebuild after the diff can change pages the
+    report never saw. Warns (does not refuse) when the report was made on another commit or on
+    an uncommitted tree — the build may still be the one that was diffed."""
     if not RENDERED_CHANGES.is_file():
         die(f"{RENDERED_CHANGES} not found — run `python3 scripts/rendered_changes.py --base "
             "<dir-or-ref> --json` after the build, then --changed submits what it lists")
     try:
-        rows = json.loads(RENDERED_CHANGES.read_text(encoding="utf-8"))["changed"]
-    except (OSError, ValueError, KeyError) as e:
+        report = json.loads(RENDERED_CHANGES.read_text(encoding="utf-8"))
+        rows, made_on = report["changed"], str(report.get("head", ""))
+    except (OSError, ValueError, KeyError, TypeError) as e:
         die(f"cannot read {RENDERED_CHANGES}: {e}")
+    stamp = RENDERED_CHANGES.stat().st_mtime
+    if any(p.stat().st_mtime > stamp for p in SITEMAP_DIR.glob("**/index.html")):
+        die(f"{RENDERED_CHANGES}: report is older than the current build — rerun "
+            "rendered_changes.py --json")
+    head = git_head()
+    if made_on.removesuffix("-dirty") != head:
+        print(f"WARNING: {RENDERED_CHANGES} was made on {made_on[:12] or '?'}, HEAD is "
+              f"{(head or 'unreadable')[:12]} — check the build is the one that was diffed",
+              file=sys.stderr)
+    elif made_on.endswith("-dirty"):
+        print(f"WARNING: {RENDERED_CHANGES} was made on an uncommitted tree ({made_on[:12]}-dirty)",
+              file=sys.stderr)
     return sorted("" if s == "index" else s for s in rows)
 
 

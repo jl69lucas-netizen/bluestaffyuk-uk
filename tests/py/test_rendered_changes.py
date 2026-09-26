@@ -68,17 +68,31 @@ def test_a_ref_base_reads_the_manifest_that_ref_committed(tmp_path):
         RC.ROOT = ROOT
 
 
+ENV = {"PATH": "/usr/bin:/bin"}
+
+
+def _repo(tmp_path):
+    """A committed git tree whose .gitignore hides the two builds, so it starts clean."""
+    subprocess.run(["git", "init", "-q"], cwd=tmp_path, check=True)
+    (tmp_path / ".gitignore").write_text("old/\ndist/\n", encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "m"],
+                   cwd=tmp_path, check=True)
+    return tmp_path
+
+
+def _cli(tmp_path, *args):
+    return subprocess.run([sys.executable, SCRIPT, *args], cwd=tmp_path, capture_output=True,
+                          text=True, env={**ENV, "RENDERED_CHANGES_ROOT": str(tmp_path)})
+
+
 def test_the_cli_writes_the_report_and_the_manifest(tmp_path):
     """The fixed interface Task 26 (measurement ledger) reads:
     docs/reports/rendered-changes.json = {"base", "head", "changed"}."""
-    for cmd in (["git", "init", "-q"], ["git", "-c", "user.email=t@t", "-c", "user.name=t",
-                                        "commit", "-q", "--allow-empty", "-m", "m"]):
-        subprocess.run(cmd, cwd=tmp_path, check=True)
+    _repo(tmp_path)
     old = _dist(tmp_path / "old", {"index": "same", "uk-locations/x": "before"})
     _dist(tmp_path / "dist", {"index": "same", "uk-locations/x": "after", "blog-post": "new"})
-    r = subprocess.run([sys.executable, SCRIPT, "--base", str(old), "--json"], cwd=tmp_path,
-                       capture_output=True, text=True, env={"RENDERED_CHANGES_ROOT": str(tmp_path),
-                                                            "PATH": "/usr/bin:/bin"})
+    r = _cli(tmp_path, "--base", str(old), "--json", "--record-manifest")
     assert r.returncode == 0, r.stdout + r.stderr
     rep = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())
     assert set(rep) == {"base", "head", "changed"}
@@ -87,6 +101,78 @@ def test_the_cli_writes_the_report_and_the_manifest(tmp_path):
     man = json.loads((tmp_path / "data/quality/dist-hashes.json").read_text())
     assert man["head"] == rep["head"] and sorted(man["pages"]) == ["blog-post", "index", "uk-locations/x"]
     assert "2 changed" in r.stdout
+
+
+def test_json_writes_only_the_report_and_record_manifest_only_the_manifest(tmp_path):
+    """Recording the manifest is a separate act: done on every --json, a skipped or failed
+    IndexNow submit would silently drop its pages from the next diff."""
+    _repo(tmp_path)
+    old = _dist(tmp_path / "old", {"index": "a"})
+    _dist(tmp_path / "dist", {"index": "b"})
+    assert _cli(tmp_path, "--base", str(old), "--json").returncode == 0
+    assert (tmp_path / "docs/reports/rendered-changes.json").is_file()
+    assert not (tmp_path / "data/quality/dist-hashes.json").exists()
+    (tmp_path / "docs/reports/rendered-changes.json").unlink()
+    assert _cli(tmp_path, "--base", str(old), "--record-manifest").returncode == 0
+    assert (tmp_path / "data/quality/dist-hashes.json").is_file()
+    assert not (tmp_path / "docs/reports/rendered-changes.json").exists()
+
+
+def test_head_is_marked_dirty_by_uncommitted_work_but_not_by_its_own_outputs(tmp_path):
+    _repo(tmp_path)
+    old = _dist(tmp_path / "old", {"index": "a"})
+    _dist(tmp_path / "dist", {"index": "b"})
+    for _ in range(2):  # the second run sees the first run's report and manifest, untracked
+        assert _cli(tmp_path, "--base", str(old), "--json", "--record-manifest").returncode == 0
+        head = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())["head"]
+        assert len(head) == 40 and not head.endswith("-dirty")
+    (tmp_path / "stray.txt").write_text("x", encoding="utf-8")
+    assert _cli(tmp_path, "--base", str(old), "--json", "--record-manifest").returncode == 0
+    rep = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())
+    man = json.loads((tmp_path / "data/quality/dist-hashes.json").read_text())
+    assert rep["head"].endswith("-dirty") and len(rep["head"]) == 46 and man["head"] == rep["head"]
+
+
+def test_a_base_with_no_pages_is_refused(tmp_path):
+    """An empty base would call every page "changed" and send the whole site."""
+    _repo(tmp_path)
+    (tmp_path / "old").mkdir()
+    _dist(tmp_path / "dist", {"index": "b"})
+    r = _cli(tmp_path, "--base", str(tmp_path / "old"), "--json")
+    assert r.returncode == 2 and "has no pages" in r.stdout
+    assert not (tmp_path / "docs/reports/rendered-changes.json").exists()
+
+
+@pytest.mark.parametrize("pages", [["index"], {"index": 1}, "x"])
+def test_a_malformed_manifest_at_the_ref_is_refused(tmp_path, pages):
+    _repo(tmp_path)
+    (tmp_path / "data/quality").mkdir(parents=True)
+    (tmp_path / "data/quality/dist-hashes.json").write_text(
+        json.dumps({"head": "abc", "pages": pages}), encoding="utf-8")
+    subprocess.run(["git", "add", "-A"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.email=t@t", "-c", "user.name=t", "commit", "-qm", "m2"],
+                   cwd=tmp_path, check=True)
+    _dist(tmp_path / "dist", {"index": "b"})
+    r = _cli(tmp_path, "--base", "HEAD", "--json")
+    assert r.returncode == 2 and "malformed" in r.stdout
+
+
+def test_no_git_head_is_refused_not_reported_as_unknown(tmp_path):
+    old = _dist(tmp_path / "old", {"index": "a"})
+    _dist(tmp_path / "dist", {"index": "b"})
+    r = _cli(tmp_path, "--base", str(old), "--json")
+    assert r.returncode == 2 and "cannot read git HEAD" in r.stdout
+    assert not (tmp_path / "docs/reports/rendered-changes.json").exists()
+
+
+def test_removed_slugs_are_printed_but_never_written(tmp_path):
+    _repo(tmp_path)
+    old = _dist(tmp_path / "old", {"index": "a", "gone": "g"})
+    _dist(tmp_path / "dist", {"index": "a"})
+    r = _cli(tmp_path, "--base", str(old), "--json")
+    assert r.returncode == 0 and "  removed gone" in r.stdout
+    rep = json.loads((tmp_path / "docs/reports/rendered-changes.json").read_text())
+    assert rep["changed"] == [] and "gone" not in json.dumps(rep)
 
 
 def test_the_cli_refuses_without_a_build(tmp_path):
@@ -111,3 +197,16 @@ def test_a_style_or_script_bundle_change_alone_is_not_a_rendered_change():
     assert h(base) == h(css_only)
     assert h(base) != h(text)
     assert h(base) != h(schema)
+
+
+@pytest.mark.parametrize("open_tag", [
+    "<script type='application/ld+json'>",
+    '<SCRIPT TYPE="application/LD+JSON">',
+    '<script  data-x="1"   type = "application/ld+json" >',
+])
+def test_json_ld_counts_whatever_its_spelling(open_tag):
+    close = "</SCRIPT>" if open_tag.startswith("<SCRIPT") else "</script>"
+    page = "<html><head>{}{{\"@type\":\"{}\"}}{}</head><body>x</body></html>"
+    a = page.format(open_tag, "Product", close)
+    b = page.format(open_tag, "Offer", close)
+    assert RC.content_hash(a) != RC.content_hash(b)

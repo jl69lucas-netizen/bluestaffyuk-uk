@@ -190,3 +190,44 @@ def test_changed_refuses_without_the_rendered_changes_report(monkeypatch, tmp_pa
     mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
     assert _run(mod, monkeypatch, ["--dry-run", "--changed"]) == 2
     assert "scripts/rendered_changes.py --base" in capsys.readouterr().err
+
+
+def _report(tmp_path, head="def"):
+    (tmp_path / "docs/reports").mkdir(parents=True, exist_ok=True)
+    rep = tmp_path / "docs/reports/rendered-changes.json"
+    rep.write_text('{"base": "abc", "head": "%s", "changed": ["index"]}' % head, encoding="utf-8")
+    return rep
+
+
+def test_changed_refuses_a_report_older_than_the_build(monkeypatch, tmp_path, capsys):
+    """A rebuild after the diff can change pages the report never saw."""
+    import os
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    rep = _report(tmp_path)
+    (tmp_path / "dist/uk-locations/x").mkdir(parents=True)
+    page = tmp_path / "dist/uk-locations/x/index.html"
+    page.write_text("x", encoding="utf-8")
+    t = rep.stat().st_mtime
+    os.utime(page, (t + 10, t + 10))
+    assert _run(mod, monkeypatch, ["--dry-run", "--changed"]) == 2
+    assert "report is older than the current build — rerun rendered_changes.py --json" in capsys.readouterr().err
+
+
+def test_changed_warns_but_submits_when_the_report_head_is_not_head(monkeypatch, tmp_path, capsys):
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    _report(tmp_path, head="a" * 40)
+    monkeypatch.setattr(mod, "git_head", lambda: "b" * 40)
+    monkeypatch.setattr(sys, "argv", ["indexnow_submit.py", "--dry-run", "--changed"])
+    assert mod.main() == 0
+    cap = capsys.readouterr()
+    assert "WARNING" in cap.err and "a" * 12 in cap.err
+    assert "  + https://example.invalid/\n" in cap.out
+
+
+def test_changed_is_quiet_when_the_report_head_is_head(monkeypatch, tmp_path, capsys):
+    mod = _load(monkeypatch, tmp_path, BSUK_RELEASE="1", SITE_URL="https://example.invalid")
+    _report(tmp_path, head="b" * 40)
+    monkeypatch.setattr(mod, "git_head", lambda: "b" * 40)
+    monkeypatch.setattr(sys, "argv", ["indexnow_submit.py", "--dry-run", "--changed"])
+    assert mod.main() == 0
+    assert "WARNING" not in capsys.readouterr().err

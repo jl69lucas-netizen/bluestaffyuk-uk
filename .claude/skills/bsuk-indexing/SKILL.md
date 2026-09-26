@@ -248,8 +248,20 @@ python3 scripts/indexnow_submit.py --changed   # submits what rendered_changes.p
 
 `--changed` reads the rendered-changes report that `python3 scripts/rendered_changes.py --json` writes (git-ignored, under docs/reports/), never a source diff: a city page renders
 from `src/pages/uk-locations/[slug].astro` and a data row, so only the built output says which
-pages moved. Every close runs `rendered_changes.py --json` and commits
-`data/quality/dist-hashes.json`, so the next close can pass its commit as `--base`.
+pages moved. It refuses a report older than the current build (rebuilt since the diff? rerun
+`rendered_changes.py --json`) and warns when the report was made on another commit.
+
+Only after the submit succeeds, record the manifest the next diff starts from, and commit it:
+
+```bash
+python3 scripts/rendered_changes.py --base <dir-or-ref> --record-manifest   # refreshes data/quality/dist-hashes.json
+```
+
+Never record it after a skipped or failed submit: the unsubmitted pages would drop out of the
+next diff. The one other time to record it is a project close that deliberately rebases. The
+manifest's `head` is the commit the build was made on top of (`-dirty` if the tree had
+uncommitted work); the manifest itself belongs to the commit that adds it, so the next close
+passes that commit as `--base`.
 
 ```bash
 python3 scripts/indexnow_submit.py --dry-run <slug>   # refuses (exit 2) without BSUK_RELEASE=1

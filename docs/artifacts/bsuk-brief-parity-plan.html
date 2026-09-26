@@ -4873,6 +4873,8 @@ EOF
 <script type="text/markdown" data-title="Task 16: scripts/rendered_changes.py — dist-hash diff; writes docs/reports/rendered-changes.json">
 > **Controller amendment (integration replay):** hashes page *content* — inline `<style>`, non-JSON-LD scripts and `/_astro/` asset links are stripped before hashing. Without it Task 8's shared CSS made all 51 pages "changed"; with it the replay reports exactly the 12 rebuilt pages. Test `test_a_style_or_script_bundle_change_alone_is_not_a_rendered_change` pins it.
 
+> **Review amendment (Task 16 quality review):** `--json` writes only the report; a separate `--record-manifest` refreshes `data/quality/dist-hashes.json`, and only after a successful IndexNow submit (or a close that deliberately rebases) — never after a skipped or failed one. Wherever this task says `--json` "also refreshes" the manifest, read `--record-manifest`. `head` gains `-dirty` on an uncommitted tree; a zero-page base, a malformed manifest and an unreadable HEAD exit 2; `indexnow_submit.py --changed` refuses a report older than the build and warns when its `head` is not HEAD.
+
 Audit D6 / Wave 2 row 14 / Appendix D M13, 22.6. IndexNow's `--changed` diffed source paths
 matching `src/pages/<x>/index.astro` against `origin/main` (which does not exist): it could
 never name a city page, a puppy, a blog post or a shared-component change.
