@@ -41,7 +41,7 @@ section.sec h2{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:22px
 </style>
 <div class="wrap">
 <header class="mast"><div><p class="eyebrow">BlueStaffyUK · before project 5</p><h1 class="title">Does BSUK carry the CAG page build brief?</h1></div>
-<div class="meta"><span class="pill">2026-09-26</span> <span class="pill">audit complete — 26 gaps, 2 decisions</span><br>docs/reports/cag-brief-parity-audit.md</div></header>
+<div class="meta"><span class="pill">2026-09-26</span> <span class="pill">audit complete — 27 gaps, 2 decisions</span><br>docs/reports/cag-brief-parity-audit.md</div></header>
 <div class="toolbar"><button class="btn" id="copy-all">Copy the whole document as Markdown</button><span id="all-status"></span><span>Each section has its own copy button; the copy is exact markdown, not scraped HTML.</span></div>
 <nav class="toc" id="toc"></nav>
 <div id="doc"></div>
@@ -80,8 +80,9 @@ Three things stand out:
    H3 image-first check matches a CSS class the real pages do not use. The hardening scan reads 2
    files for a city page. And `board_gate` (the Asset Gate) is not part of `check:all`. CAG
    learned this the hard way: its blocking contrast check examined zero nodes for a full day.
-3. **Correction (user ruling, 2026-09-26):** `impeccable` and `frontend-design` are mandatory on
-   every page. The §0–5 auditor had marked them "skip"; they are now a Wave 4 gap (21b).
+3. **Correction (user ruling, 2026-09-26):** `impeccable`, `frontend-design` and
+   `superpowers:verification-before-completion` are mandatory on every page. The §0–5 auditor had
+   marked them "skip"; they are now Wave 4 gaps 21b and 21c.
 4. **Six live defects or fabrication risks came up**, and I confirmed each one in the repo
    myself. They are listed below.
 </script>
@@ -204,7 +205,8 @@ Grouped into four waves, easiest first. Each item names the CAG section and the 
 | # | Change | CAG § | Why |
 |---|---|---|---|
 | 21 | `docs/reference/page-run.md` — the ordered per-page run; `check:workflow` guards its references | 3, 23 | Your framing: one workflow before each page |
-| 21b | **`impeccable` + `frontend-design` mandatory in Sprint 3 on every page** (user ruling 2026-09-26): routed in CLAUDE.md, WORKFLOW and the three builder skills; each run is recorded in `data/harden/<slug>.json` (widths 375/768/1280, findings, fixes, commit) and `gate:page` fails without it | 2, 18 | The audit had marked these "skip"; you ruled them a must. A record makes "ran it" provable, not a claim |
+| 21b | **`impeccable` + `frontend-design` mandatory in Sprint 3 on every page** (user ruling 2026-09-26): routed in CLAUDE.md, WORKFLOW and the three builder skills; each run is recorded in `data/page-runs/<slug>.json` (widths 375/768/1280, findings, fixes, commit) and `gate:page` fails without it | 2, 18 | The audit had marked these "skip"; you ruled them a must. A record makes "ran it" provable, not a claim |
+| 21c | **`superpowers:verification-before-completion` mandatory** (user ruling 2026-09-26) at the end of Sprint 4 and again at close, before any "done" or PASS claim; routed in CLAUDE.md, WORKFLOW, the builder skills and session-closer; the same per-page record logs the commands run, their exit codes and the claims verified, and `gate:page` fails without it | 2, 19b, 22 | The audit had marked it "skip" ("`check:all` is the verification"); you ruled it a must. The skill is what stops a "done" claim that no command backs |
 | 22 | Auto-filled intake block on each board (page state, robots, verbatim count, empty `h1`, question file, retired-term hits); close KI 63 | 0, 5 | CAG §0 — "mode is determined by looking" |
 | 23 | `npm run gate:page -- <slug>`: dup (body + `--headers`), final audit for the right profile, hardening, AEO and evidence audits, each with `--fail-on-error`, run twice and diffed; the "run twice" rule goes in `rules/gates.md` | 19a, 19b, M8 | One command per page instead of seven |
 | 24 | `scripts/measurement_ledger.py` — JSON + table of M1–M3, M6, M8–M10, M12, M13, M18 in every gate report | 20, 26 | CAG §20: each is a number reported at close, not a box ticked |
@@ -353,7 +355,7 @@ Read-only audit. Every citation was opened or grepped; nothing in the repo was c
 | S.46 | `cag-indexing` | PRESENT (inactive) | ENFORCED guard: `indexnow_submit.py` exits 2 without `BSUK_RELEASE=1` (`tests/py/test_indexnow_submit.py`) | `.claude/skills/bsuk-indexing/SKILL.md`; `CLAUDE.md:39-43` | — |
 | S.47 | `session-closer` | PRESENT | — | `.claude/skills/session-closer/SKILL.md` | — |
 | S.48 | `cag-learning-loop` | PRESENT | `quality_report.py` | `.claude/skills/bsuk-learning-loop/SKILL.md` | — |
-| S.49 | `superpowers:verification-before-completion` | MISSING (not routed) | — | 0 hits | **SKIP.** `check:all` + `board_gate` are the verification. |
+| S.49 | `superpowers:verification-before-completion` | MISSING (not routed) | — | 0 hits | **ADOPT-BEFORE-P5 — user ruling 2026-09-26: mandatory on every page** (end of gates + at close). Plan Tasks 23 + 25. |
 | S.50 | builder: for-sale/buy → `cag-for-sale-page-builder` | PRESENT | — | `.claude/skills/bsuk-puppy-page-builder/SKILL.md` (manifest rebase) | — |
 | S.51 | builder: bird listing → `cag-bird-listing-page` + `cag-bird-page-excellence` | N/A | — | `data/port-manifest.json` ("parrot-only … never ported"); puppy pages use the builder in S.50 | — |
 | S.52 | builder: comparison → `cag-comparison-page-builder` | PRESENT | builder-skill tests (`tests/py/test_builder_skills.py`) | `.claude/skills/bsuk-comparison-page-builder/SKILL.md`; agent `bsuk-comparison-builder.md`. KI 62: no URLs or hub yet (`session-log.md:1172`) | See §4 (the slug decision). |
