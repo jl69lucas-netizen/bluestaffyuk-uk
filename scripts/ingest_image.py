@@ -31,10 +31,15 @@ Framing (IMAGE-DESIGNS.md §7): --og-style A|B|E is baked into the 1408x768 box 
 scripts/reframe_og.py (A contain, B blurfill with --mobcrop, E topcover); C|D|H are CSS
 components, baked at native ratio up to 1408 wide; --infographic IG-n is framed with A.
 
+Style B is retired for in-body images on new pages (user ruling 2026-09-26: "No grey or
+black bleed on phones"): it is REFUSED for any page not in family_rules
+BUILT_BEFORE_SYSTEM_GAPS, and for `folder` without --board, which cannot know the page.
+The twelve built pages keep B, so their existing images can be re-ingested.
+
 Usage:
-  python3 scripts/ingest_image.py folder <master> [--stem <seo-stem>] --og-style B [--mobcrop 4:5]
+  python3 scripts/ingest_image.py folder <master> [--stem <seo-stem>] --og-style A
         [--board <slug> --slot <slot>] [--dry-run]
-  python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style B [--mobcrop 4:5]
+  python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --og-style A
   python3 scripts/ingest_image.py draft <master> --board <slug> --slot <slot> --infographic IG-2
   python3 scripts/ingest_image.py publish --board <slug> --slot <slot> --stem <seo-stem>
 """
@@ -51,6 +56,7 @@ import tempfile
 
 from PIL import Image
 
+import family_rules
 import image_candidates
 import image_designs
 import image_rules
@@ -74,6 +80,8 @@ SLOT_ID = image_rules.SLOT_ID                 # the gate's rule, matched whole
 SLUG = re.compile(r"^[a-z0-9-]+(/[a-z0-9-]+)*$")
 BAKED = {"A": "contain", "B": "blurfill", "E": "topcover"}
 NATIVE = {"C", "D", "H"}
+RETIRED_B = ("style B (blurfill) is retired for in-body images — user ruling 2026-09-26: "
+             "no grey or black bleed on phones; use A (contain, bone gradient) or E (topcover)")
 # The approval pick: the build gate's own grammar (scripts/image_rules.py), matched whole
 # with fullmatch, so ingest and the gate cannot drift apart. image_rules never imports this.
 PICK = image_rules.PICK
@@ -166,6 +174,14 @@ def _style_problems(og_style, infographic, mobcrop=""):
         return ["OG style %r is not named in IMAGE-DESIGNS.md §7" % og_style]
     if infographic and infographic not in image_designs.load()["infographic_styles"]:
         return ["infographic style %r is not named in IMAGE-DESIGNS.md §8" % infographic]
+    return []
+
+
+def _retired_problems(og_style, slug):
+    """Style B on a new page (or on a page this call cannot name) is refused; the twelve
+    pages built before project 5 keep it."""
+    if og_style == "B" and (not slug or slug not in family_rules.BUILT_BEFORE_SYSTEM_GAPS):
+        return [RETIRED_B + ("" if slug else " (no --board given, so the page is unknown)")]
     return []
 
 
@@ -376,7 +392,8 @@ def folder(master, stem=None, og_style=None, infographic=None, mobcrop="", slug=
     master, root = pathlib.Path(master), pathlib.Path(root)
     stem = stem or default_stem(master.name)
     problems = (_check_master(master) + stem_problems(stem)
-                + _style_problems(og_style, infographic, mobcrop))
+                + _style_problems(og_style, infographic, mobcrop)
+                + _retired_problems(og_style, slug))
     if bool(slug) != bool(slot):
         problems.append("give --board and --slot together (got %s)"
                         % ("--board only" if slug else "--slot only"))
@@ -407,7 +424,7 @@ def draft(master, slug, slot, og_style=None, infographic=None, mobcrop="", root=
     of the bytes written, and the pick that approves exactly those bytes."""
     master, root = pathlib.Path(master), pathlib.Path(root)
     problems = (_check_master(master) + _style_problems(og_style, infographic, mobcrop)
-                + _slug_problems(slug))
+                + _slug_problems(slug) + _retired_problems(og_style, slug))
     if not (isinstance(slot, str) and SLOT_ID.fullmatch(slot)):
         problems.append("slot %r is not a slot id" % slot)
     if not _slug_problems(slug) and not board_path(slug, root).exists():

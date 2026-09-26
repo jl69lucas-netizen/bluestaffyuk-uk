@@ -139,9 +139,9 @@ def test_style_radios_carry_the_label_map_names_and_uses(repo):
     assert images["styles"] == labels
     block = _block(_html(b, images))
     weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
-    b_use = labels["og"]["B"]["use"]
-    assert f'title="{IR._e(b_use)}"' in weeks
-    assert "B · %s</label>" % IR._e(labels["og"]["B"]["name"]) in weeks
+    a_use = labels["og"]["A"]["use"]
+    assert f'title="{IR._e(a_use)}"' in weeks
+    assert "A · %s</label>" % IR._e(labels["og"]["A"]["name"]) in weeks
     assert "⭐ C · %s</label>" % IR._e(labels["og"]["C"]["name"]) in weeks
     graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
     assert "⭐ IG-2 · %s</label>" % IR._e(labels["infographic"]["IG-2"]["name"]) in graphic

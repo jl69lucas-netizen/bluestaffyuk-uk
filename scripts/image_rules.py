@@ -525,6 +525,13 @@ def _slot_html(board, sec, node, img, row, images, current):
         label, styles, prefix, want = "Or make an infographic, style", IG_STYLES, "ig:", img.get("infographic_style")
     else:
         label, styles, prefix, want = "Or generate an OG photo, style", OG_STYLES, "og:", img.get("og_style")
+        # Style B (blurfill) is retired for a new page's in-body image (user ruling 2026-09-26:
+        # no grey or black bleed on phones). The ids stay stable; B is only not offered, unless
+        # it is the pick already stored, which stays visible. scripts/ingest_image.py refuses it.
+        import family_rules  # noqa: E402  (lazy: family_rules imports this module)
+        slug = (board.get("meta") or {}).get("slug")
+        if slug not in family_rules.BUILT_BEFORE_SYSTEM_GAPS and current != "og:B":
+            styles = tuple(st for st in styles if st != "B")
     named = _label_map(images.get("styles")).get("infographic" if prefix == "ig:" else "og", {})
 
     def _style(st):

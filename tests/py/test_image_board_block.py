@@ -66,8 +66,9 @@ def test_every_slot_gets_a_radio_group_with_thumbnails_and_styles(repo):
     assert block.count('src="data:image/webp;base64,') >= 2
     # OG styles on a photo slot, IG styles on the infographic slot; the record's own style starred.
     weeks = block.split('id="img-weeks-photo"', 1)[1].split("</fieldset>", 1)[0]
+    # B (blurfill) is not offered on a new page (user ruling 2026-09-26; test_no_blurfill_bleed.py).
     assert [v for v in ("og:A", "og:B", "og:C", "og:D", "og:E", "og:H") if f'value="{v}"' in weeks] == \
-        ["og:A", "og:B", "og:C", "og:D", "og:E", "og:H"]
+        ["og:A", "og:C", "og:D", "og:E", "og:H"]
     assert "⭐ C</label>" in weeks and 'value="ig:' not in weeks
     graphic = block.split('id="img-checks-graphic"', 1)[1].split("</fieldset>", 1)[0]
     assert 'value="ig:IG-5"' in graphic and "⭐ IG-2</label>" in graphic and 'value="og:' not in graphic

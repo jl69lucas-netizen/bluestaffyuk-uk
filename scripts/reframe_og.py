@@ -6,15 +6,17 @@ These styles keep the whole dog instead, centred full-height, so the box's later
 `object-fit:cover` (or a mobile 4:5 crop) only ever trims padding:
 
   contain   Style A — the sharp master contained over a bone gradient (#FAF8F3 -> #F4F1EA).
+            The default: the bone bed is a design-system colour (user ruling 2026-09-26:
+            no grey or black bleed on phones).
   blurfill  Style B — the sharp master contained over a blurred cover copy of itself.
-            The default for a single-dog portrait.
+            Retired for in-body images on new pages; kept for social OG images only.
   topcover  Style E — cover fill anchored to the TOP: the head is never cut, paws may crop.
 
 Styles C, D and H are CSS components; their masters are baked at native ratio by
 scripts/ingest_image.py, not here.
 
 Usage:
-  python3 scripts/reframe_og.py <master> <out.webp> [--style blurfill] [--mobcrop 4:5]
+  python3 scripts/reframe_og.py <master> <out.webp> [--style contain] [--mobcrop 4:5]
         [--sib <out-760.webp>] [--w 1408] [--h 768] [--blur 14] [--fgup] [--maxkb 95]
 
 `--mobcrop 4:5` keeps the sharp dog inside the central 4:5 strip of the box, so it
@@ -175,7 +177,7 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("src")
     ap.add_argument("out")
-    ap.add_argument("--style", default="blurfill", choices=STYLES)
+    ap.add_argument("--style", default="contain", choices=STYLES)
     ap.add_argument("--w", type=int, default=W)
     ap.add_argument("--h", type=int, default=H)
     ap.add_argument("--blur", type=int, default=14)
