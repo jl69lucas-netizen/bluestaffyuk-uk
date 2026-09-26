@@ -787,8 +787,15 @@ class _Metrics(HTMLParser):
                 self.videos += 1
             elif tag == "table":
                 self.tables += 1
-        if tag == "a" and self._h3 is not None:
-            self._h3["link"] = True
+        if tag == "a":
+            if self._h3 is not None:
+                self._h3["link"] = True
+            # An item (li / article) is linked when it holds an <a> outside its body <p>s: a
+            # card's "View" link. An inline link in a FAQ answer paragraph does not count.
+            for k, e in enumerate(self.stack):
+                if e["tag"] in ("li", "article") and not any(
+                        x["tag"] == "p" for x in self.stack[k + 1:]):
+                    e["link"] = True
         if tag in VOID_TAGS:
             return
         counted = self._counted()
@@ -814,7 +821,8 @@ class _Metrics(HTMLParser):
                             "parts": [], "bare": [], "ordinal": self.ordinal,
                             "link": False}
         self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
-                           "h3": False, "nested": False, "hidden": hidden, "scope": scope})
+                           "h3": False, "nested": False, "hidden": hidden, "scope": scope,
+                           "link": False})
 
     def _close_open_item(self):
         """A new <li> closes an open <li> of the same list, as a browser does (as _H2s)."""
@@ -871,8 +879,10 @@ class _Metrics(HTMLParser):
         """Indices into self.h3s of card titles. A heading that is only links, or sits inside
         a link, is a card title. In a group — its nearest <article> is a card (two or more leaf
         articles that hold an H3) or it is in a list of MIN_CARD_ITEMS or more H3 items — a
-        heading is a card only when it is linked (it holds an <a>): a plain FAQ or steps list
-        is prose. Never a card: an H3 inside a <button> (an accordion question), an H3 ending
+        heading is a card only when it is linked: it holds an <a>, or its item holds one
+        outside the item's <p> paragraphs (a "View" link beside the title). A plain FAQ or
+        steps list, even with inline links in its answers, is prose.
+        Never a card: an H3 inside a <button> (an accordion question), an H3 ending
         in "?", or any H3 on a page whose JSON-LD has FAQPage (`faq`)."""
         if faq:
             return set()
@@ -886,10 +896,12 @@ class _Metrics(HTMLParser):
             if any(e["tag"] == "button" for e in ancestors) or text.endswith("?"):
                 continue
             nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
-            grouped = bool(nearest and id(nearest[0]) in card_articles) or any(
-                e["tag"] == "li" and e["parent"] is not None
-                and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors)
-            if not bare or any(e["tag"] == "a" for e in ancestors) or (grouped and link):
+            group = [e for e in ancestors if e["tag"] == "li" and e["parent"] is not None
+                     and items[id(e["parent"])] >= MIN_CARD_ITEMS]
+            if nearest and id(nearest[0]) in card_articles:
+                group.append(nearest[0])
+            linked = link or any(e["link"] for e in group)
+            if not bare or any(e["tag"] == "a" for e in ancestors) or (group and linked):
                 out.add(i)
         return out
 
@@ -1018,7 +1030,8 @@ def _prose_problem(p):
     if listed and share > 100 * LISTING_LD_SHARE:
         return f"listing: JSON-LD {listed}, card grid holds {share}% of the prose"
     if listed and in_sections < 100 * LISTING_LD_SECTION_SHARE:
-        return f"listing: JSON-LD {listed}, only {in_sections}% of the prose sits in content sections"
+        return (f"listing: JSON-LD {listed}, only {in_sections}% of the prose sits in content "
+                "sections")
     return None
 
 
@@ -1038,7 +1051,8 @@ def word_target(pages):
     A page counts when it is measured, not blocked, has words and a content H2, and is not a
     listing: a card grid holding most of its prose, or JSON-LD ItemList / SearchResultsPage /
     OfferCatalog with a grid over LISTING_LD_SHARE or under LISTING_LD_SECTION_SHARE of its
-    prose in content sections (a kept page with such JSON-LD gets a note). Each site (registrable domain) counts once, at its best-ranked page (Google,
+    prose in content sections (a kept page with such JSON-LD gets a note).
+    Each site (registrable domain) counts once, at its best-ranked page (Google,
     then Bing, then URL, as section_target). The top count is an outlier and dropped when it
     exceeds OUTLIER_RATIO × the next, as section_target does. An even count's median is the
     mean of the middle two rounded half up (int(x + 0.5)), never round()'s half-to-even.
@@ -1072,6 +1086,10 @@ def word_target(pages):
     notes = [{"url": p["url"], "reason": _prose_note(p)} for p in kept if _prose_note(p)]
     out = {"median": None, "from": len(counts), "of": len(pages),
            "used": [p["url"] for p in kept], "excluded": excluded, "notes": notes}
+    if not any(isinstance(p.get("metrics"), dict) for p in pages):
+        out["status"] = ("NOT FETCHED — no competitor page measured yet; run python3 "
+                         "scripts/query_augment.py --competitor-metrics <slug>")
+        return out
     if len(counts) < MIN_TARGET_PAGES:
         out["status"] = (f"NOT FETCHED — fewer than two prose competitor pages "
                          f"({len(counts)} used)")

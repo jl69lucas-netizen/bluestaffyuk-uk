@@ -209,8 +209,8 @@ def test_word_target_counts_each_site_once_keeping_the_best_ranked_url():
     ({"listing": "card grid holds 80% of the prose"}, "listing: card grid holds 80% of the prose"),
 ])
 def test_word_target_excludes_what_is_not_prose(over, reason):
-    pages = [_measured("https://a.example/", 1, 300, **over), _measured("https://b.example/", 2, 310),
-             _measured("https://c.example/", 3, 330)]
+    pages = [_measured("https://a.example/", 1, 300, **over),
+             _measured("https://b.example/", 2, 310), _measured("https://c.example/", 3, 330)]
     wt = Q.word_target(pages)
     assert wt["used"] == ["https://b.example/", "https://c.example/"] and wt["median"] == 320
     assert wt["excluded"] == [{"url": "https://a.example/", "reason": reason}]
@@ -269,13 +269,15 @@ def test_a_consent_dialog_inside_a_section_is_not_prose():
 @pytest.mark.parametrize("attr", ["hidden", "aria-hidden='true'", "role='dialog'",
                                   "aria-modal='true'", "class='cookie-notice'"])
 def test_hidden_and_dialog_subtrees_are_not_prose(attr):
-    html = f"<main><h2>Care</h2><p>Two words.</p><div {attr}><p>six more words sit in here</p></div></main>"
+    html = (f"<main><h2>Care</h2><p>Two words.</p><div {attr}><p>six more words sit in here</p>"
+            "</div></main>")
     m = Q.page_metrics(html)
     assert _section_words(html) == [("Care", 2)] and m["word_count"] == 3
 
 
 def test_only_main_is_counted_when_the_page_has_one():
-    html = ("<body><header><p>Site header words</p></header><div><p>Sidebar promo words here</p></div>"
+    html = ("<body><header><p>Site header words</p></header>"
+            "<div><p>Sidebar promo words here</p></div>"
             "<main><h2>Care</h2><p>Two words.</p><img src=a></main><img src=b></body>")
     m = Q.page_metrics(html)
     assert m["scope"] == "main" and m["word_count"] == 3 and m["images"] == 1
@@ -312,7 +314,8 @@ def test_a_page_wrapped_in_a_form_is_still_measured():
 def test_card_h3s_are_counted_but_never_kept():
     cards = "".join(f"<li><h3>Advert {i} <a href='/a{i}'>Staffy For Sale</a></h3><p>Pup.</p></li>"
                     for i in range(3))
-    arts = "".join(f"<article><a href='/l{i}'><h3>Litter ad {i}</h3></a></article>" for i in range(2))
+    arts = "".join(f"<article><a href='/l{i}'><h3>Litter ad {i}</h3></a></article>"
+                   for i in range(2))
     html = (f"<main><h2>Pups</h2><p>Intro.</p><h3>Real heading</h3><ul>{cards}</ul>{arts}"
             "<h3><a href='/x'>Linked title</a></h3></main>")
     s = Q.page_metrics(html)["sections"][0]
@@ -328,7 +331,8 @@ def test_a_section_with_more_than_12_h3s_keeps_only_the_count():
 def test_a_card_grid_holding_most_of_the_prose_marks_a_listing():
     cards = "".join(f"<li><a href='/p/{i}'><h3>Pup {i}</h3><p>Lovely blue boy ready now with papers"
                     "</p></a></li>" for i in range(6))
-    html = f"<main><h2>Staffies for sale</h2><ul>{cards}</ul><h2>About</h2><p>Short note.</p></main>"
+    html = (f"<main><h2>Staffies for sale</h2><ul>{cards}</ul><h2>About</h2>"
+            "<p>Short note.</p></main>")
     m = Q.page_metrics(html)
     assert m["listing"] and m["listing"].startswith("card grid holds ")
 
@@ -434,7 +438,8 @@ def test_listing_json_ld_with_a_large_grid_is_excluded():
     wt = Q.word_target(pages)
     assert wt["used"] == ["https://b.example/", "https://c.example/"] and wt["notes"] == []
     assert wt["excluded"] == [{"url": "https://a.example/",
-                               "reason": "listing: JSON-LD ItemList, card grid holds 55% of the prose"}]
+                               "reason": "listing: JSON-LD ItemList, card grid holds 55% of "
+                                         "the prose"}]
 
 
 def test_site_of_documents_its_hand_kept_suffix_list():
@@ -484,7 +489,8 @@ def test_a_breeder_page_with_item_list_and_prose_in_sections_is_kept_with_a_note
 @pytest.mark.parametrize("n", [0, 1])
 def test_word_target_needs_two_prose_pages(n):
     pages = [_measured(f"https://s{i}.example/", i + 1, 300 + i) for i in range(n)]
-    pages.append(dict(_record("https://blocked.example/", PAGE, 9), blocked=True))
+    pages.append(dict(_record("https://blocked.example/", PAGE, 9), blocked=True,
+                      metrics=EXPECTED))
     wt = Q.word_target(pages)
     assert wt["median"] is None and wt["from"] == n and len(wt["used"]) == n
     assert wt["status"] == f"NOT FETCHED — fewer than two prose competitor pages ({n} used)"
@@ -502,3 +508,45 @@ def test_load_competitors_refuses_a_bad_section_share(tmp_path):
     root = _repo(tmp_path, [page], {})
     with pytest.raises(Q.BadInput, match="section_share"):
         Q.load_competitors(SLUG, root)
+
+
+
+# ── Task 17: cards linked beside the title; the measure-first hint ────────────────────────────
+def _view_items(tag, n=8):
+    return "".join(f"<{tag}><img src='/{i}.jpg'><h3>Pup {i}</h3><p>{_words(20)}</p>"
+                   f"<a href='/pup/{i}'>View</a></{tag}>" for i in range(n))
+
+
+@pytest.mark.parametrize("wrap,tag", [("ul", "li"), ("div", "article")])
+def test_cards_linked_beside_the_title_are_a_listing(wrap, tag):
+    html = (f"<main><h2>Puppies for sale</h2><p>{_words(10)}</p>"
+            f"<{wrap}>{_view_items(tag)}</{wrap}></main>")
+    m = Q.page_metrics(html)
+    assert m["listing"] and m["listing"].startswith("card grid holds ")
+    assert m["sections"][0]["h3"] == [] and m["sections"][0]["h3_count"] == 8
+
+
+def test_a_faq_list_with_inline_links_in_its_answers_is_prose():
+    qs = "".join(f"<li><h3>{q}</h3><p>{_words(30)} see <a href='/g{i}'>our guide</a> "
+                 f"{_words(20)}</p></li>"
+                 for i, q in enumerate(["Feeding", "Worming", "Vaccines", "Insurance",
+                                        "Is a staffy good with kids?", "Microchips"]))
+    html = f"<main><p>{_words(80)}</p><h2>FAQs</h2><ul>{qs}</ul></main>"
+    m = Q.page_metrics(html)
+    assert m["listing"] is None and m["grid_share"] == 0
+    assert m["sections"][0]["h3"] == ["Feeding", "Worming", "Vaccines", "Insurance",
+                                      "Is a staffy good with kids?", "Microchips"]
+
+
+def test_word_target_with_nothing_measured_says_to_measure_first():
+    wt = Q.word_target([_record("https://a.example/", PAGE, 1),
+                        dict(_record("https://b.example/", PAGE, 2), blocked=True)])
+    assert wt["median"] is None and wt["status"] == (
+        "NOT FETCHED — no competitor page measured yet; run python3 scripts/query_augment.py "
+        "--competitor-metrics <slug>")
+
+
+def test_word_target_with_some_metrics_keeps_the_two_page_wording():
+    wt = Q.word_target([_measured("https://a.example/", 1, 300),
+                        _record("https://b.example/", PAGE, 2)])
+    assert wt["status"] == "NOT FETCHED — fewer than two prose competitor pages (1 used)"
