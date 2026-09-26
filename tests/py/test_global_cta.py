@@ -61,3 +61,69 @@ def test_the_footer_takes_the_flag_as_a_prop():
     assert re.search(r"\{cta\s*&&", src), "the band must render only when `cta` is true"
     shell = (ROOT / "src/layouts/PageShell.astro").read_text(encoding="utf-8")
     assert "globalCtaShown" in shell and "<SiteFooterKit slot=\"footer\" cta={" in shell
+
+
+# ---- Behaviour of src/lib/globalCta.ts itself (Task 7 review) -------------------------------
+#
+# The dist tests above only see today's twelve approved boards. These run the real TypeScript
+# against fixture records: esbuild (already in node_modules for Astro/Vite) compiles the file
+# with `import.meta.glob` defined to a global the Node driver fills in first, so the fixtures
+# stand in for data/boards/ and nothing else about the module is stubbed.
+import json as _json
+import shutil
+import subprocess
+import sys
+
+ESBUILD = ROOT / "node_modules/.bin/esbuild"
+NODE = shutil.which("node")
+
+
+def run_global_cta(tmp_path, records, pathnames):
+    """{board stem: record}, [pathname] -> [globalCtaShown(pathname)] from the compiled TS."""
+    if not ESBUILD.exists() or not NODE:
+        pytest.skip("needs node and node_modules/.bin/esbuild (npm install)")
+    out = tmp_path / "globalCta.mjs"
+    subprocess.run(
+        [str(ESBUILD), str(ROOT / "src/lib/globalCta.ts"), "--format=esm", f"--outfile={out}",
+         "--define:import.meta.glob=globalThis.__bsukGlob", "--log-level=error"],
+        check=True,
+    )
+    fixtures = {f"../../data/boards/{stem}.json": rec for stem, rec in records.items()}
+    driver = (
+        f"const recs = {_json.dumps(fixtures)};"
+        "globalThis.__bsukGlob = () => recs;"
+        f"const m = await import({_json.dumps(out.as_uri())});"
+        f"console.log(JSON.stringify({_json.dumps(pathnames)}.map(p => m.globalCtaShown(p))));"
+    )
+    res = subprocess.run([NODE, "--input-type=module", "-e", driver],
+                         check=True, capture_output=True, text=True)
+    return _json.loads(res.stdout)
+
+
+def _record(global_cta, approval=None, approval_previous=None):
+    rec = {"approval": approval, "brief": {"cta": {"global_cta": global_cta}}}
+    if approval_previous is not None:
+        rec["approval_previous"] = approval_previous
+    return rec
+
+
+def test_a_reboarded_record_keeps_the_pick_in_force(tmp_path):
+    # Under re-board `approval` is null and the old approval sits in `approval_previous`
+    # (scripts/pageboard.py, scripts/board_approve.py; src/lib/pickedStyle.ts reads it the same
+    # way). The page ships what the breeder last agreed to, so "hidden" still hides the band.
+    got = run_global_cta(tmp_path, {
+        "reboarded": _record("hidden", approval=None, approval_previous={"approved_at": "x"}),
+        "never-approved": _record("hidden"),
+        "approved": _record("hidden", approval={"approved_at": "x"}),
+    }, ["/reboarded/", "/never-approved/", "/approved/", "/no-board/"])
+    assert got == [False, True, False, True], got
+
+
+def test_a_nested_route_finds_its_board_the_way_slug_file_names_it(tmp_path):
+    sys.path.insert(0, str(ROOT / "scripts"))
+    from pageboard import slug_file
+    stem = slug_file("uk-locations/blue-staffy-puppies-london")
+    assert stem == "uk-locations--blue-staffy-puppies-london", stem
+    got = run_global_cta(tmp_path, {stem: _record("hidden", approval={"approved_at": "x"})},
+                         ["/uk-locations/blue-staffy-puppies-london/"])
+    assert got == [False], got
