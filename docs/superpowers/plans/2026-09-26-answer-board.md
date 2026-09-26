@@ -1392,3 +1392,19 @@ Co-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>"
 - [ ] **Step 6: Commit** the URL records; merge `--no-ff` into `foundation` (`merge: answer board tool build` + trailer); on `foundation` run build, pytest, check:all, `npm run -s ds:build`; record counts.
 - [ ] **Step 7: Round trip with the user** — watch the board (ArtifactComments `watch`), ask the user to answer one question and press Send on the Lisa batch; on the notification follow README "Receive answers" (save, commit, reply) but leave the batch **open** (status stays `open`) since the other questions are unanswered.
 - [ ] **Step 8: Close-out** — execution record appended to this plan; plan Artifact published; worktree removed; memory updated.
+
+---
+
+## Execution record (2026-09-26)
+
+Executed subagent-driven (Opus implementers; spec + quality review per group; a final whole-branch review). Merged `--no-ff` into `foundation` at `f4df758`.
+
+| Group | Commits | Review outcome |
+|---|---|---|
+| A — Tasks 1–2 (parser, batch maker, Lisa batch) | b454ffe, 00178bb, cd18f0e | approved after fixes: strict option grammar, questions before a section and empty sheets refused, `--date`/`--batch-id` validated, OSError handled, stronger tests |
+| B — Tasks 3–4 (shell, client) | 8b03852, 09dfd94, b38a08d, bb245c9, a32450f, abc663b | critical C1 fixed (the answers snapshot bypassed the 800 ms debounce: 32 writes per 4 s typing burst → 2); malformed batches skipped not fatal; no edits under a focused field; deferred re-render; 12 minors; demo keeps real drafts; a stale `canSendToClaude` never blocks a send. The plan's client put `q.key`/`q.n` into innerHTML unescaped — fixed. A Playwright harness with a fake db runs in pytest (`tests/py/fixtures/answer_board/harness/`) |
+| C — Task 6 (rule, README, quick-start, session log) | ec51791 | approved |
+| Task 5 browser check (controller) | — | demo: text, choice, Skip, reload keeps all; 375 px top bar, no overflow; light and dark; 0 console errors |
+| Task 7 (controller) | e6302c6 | board published https://claude.ai/artifact/2psVTYc8oYQvdpibyviAcf (db rules read/write admin, comments, downloads); Lisa's batch posted and re-posted with the board pointer (v2); `as_level: interact` list returns nothing; watch armed; Lisa's old page republished with the pointer (v3) |
+
+Checks on `foundation` after the merge: build 0, `ds:build` 0, `canvas:build` 0, pytest **5220 passed, 1 skipped, 1 xfailed**, `check:all` 0. Deviations from the plan: the regenerated `docs/reference/system-registry.md` (3 new scripts); the Lisa pointer also lands in her batch's intro, because the batch is made from the same sheet. First real batch after merge: `2026-09-26-project-5-decisions-before-the-first-city-page` (Known Issues 60, 61/63, 67, 70). Open: the first real Send round trip with the user.
