@@ -270,6 +270,18 @@ def test_the_demo_batch_is_embedded_as_json_without_a_closing_script_tag():
     assert json.loads(blob)["intro"] == "has </script> inside"
 
 
+def test_the_additional_questions_section_sits_between_the_batches_and_done():
+    page = shell()
+    assert page.index('id="batches"') < page.index('id="additional"') < page.index('id="done"')
+    assert '<section class="sec additional" id="additional"' in page
+    sec = page.split('id="additional"', 1)[1].split("</section>", 1)[0]
+    assert "Any additional questions" in sec
+    assert "Extra questions or sub-tasks for Claude Code — type or paste them here, then send." in sec
+    assert sec.count("<textarea") == 1 and 'autocomplete="off"' in sec and ">Your questions</label>" in sec
+    assert 'id="additional-send"' in sec and "Send to Claude Code" in sec
+    assert 'role="status"' in sec and ">Copy text</button>" in sec
+
+
 def test_only_google_fonts_is_referenced():
     hosts = set(re.findall(r'(?:src|href)="https?://([^/"]+)', shell()))
     assert hosts <= {"fonts.googleapis.com"}, hosts
@@ -413,6 +425,22 @@ def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
     assert res["staleCache"]["status"].startswith("Sent to Claude Code"), res
     assert res["unavailable"]["snapshots"] == 1, res
     assert "Claude Code couldn't receive it right now" in res["unavailable"]["status"], res
+    # The "Any additional questions" section.
+    assert 1 <= res["addBurst"] <= 2, res                           # the debounce holds
+    assert res["addReload"] == "keep me\nand me", res              # the browser draft survives a reload
+    send = res["addSend"]
+    assert send["snaps"] == 1 and send["textOk"] and send["pathOk"], res
+    assert send["sent"] == 1 and send["noteOk"] and send["noteBytes"] <= 1024, res
+    assert send["field"] == "" and send["lastDraft"] == "" and send["stored"] == "", res
+    assert send["status"].startswith("Sent to Claude Code (copy s-"), res
+    assert res["addEmpty"] == {"disabled": True, "hint": "Type something first", "writes": 0,
+                               "sent": 0, "blankDisabled": True}, res
+    assert res["addReject"]["field"] == "do not lose me" and not res["addReject"]["cleared"], res
+    assert "could not be saved" in res["addReject"]["status"], res
+    assert res["addDemo"] == {"visible": True, "disabled": True,
+                              "status": "Demo: sending is off. Copy text works."}, res
+    assert res["addNoBoard"]["visible"] is False, res
+    assert "Open this board on claude.ai" in res["addNoBoard"]["status"], res
 
 
 def test_claude_md_carries_the_answer_board_rule():

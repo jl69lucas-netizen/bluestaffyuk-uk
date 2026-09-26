@@ -43,5 +43,18 @@ On a Send notification (or when the user says "read my answers"):
 4. ArtifactComments `reply` in the Send's thread with the counts and the commit, then act on
    the answers.
 
+### Additional questions
+
+The board's "Any additional questions" section sends free text (extra questions or sub-tasks
+for the task in hand). On a note naming `additional/<sid>` (or when the user says "read my
+additional questions"):
+
+1. ArtifactData `get`, collection `additional`, doc_id `<sid>` (with no note, `list`
+   `additional` and take the newest `s-…` not yet saved under `answers/`).
+2. Save the text as sent to
+   `docs/reference/answer-board/answers/additional-<YYYY-MM-DD>-<sid>.md`, and commit.
+3. ArtifactComments `reply` in the Send's thread (what you took on, and the commit), then act
+   on it.
+
 Answers are records of what the user said. Writing them into the site's data files is the
 work that asked the questions (for the questions for Lisa: project 5, Known Issue 41).

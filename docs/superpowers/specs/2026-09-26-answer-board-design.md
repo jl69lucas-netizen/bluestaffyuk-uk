@@ -89,6 +89,8 @@ with no gaps or repeats; the parser exits non-zero naming the line otherwise. Ke
 | `batches/<batchId>` | Claude (ArtifactData) | `{id, title, project, askedAt, intro, status: "open"\|"received", receivedAt, receivedCommit, sections: [{title, lead}], questions: [{n, key, section, question, context, where, kind: "text"\|"choice", options: [{id, label}]}]}` |
 | `batches/<batchId>/answers/<qNN>` | the page | `{n, text, choice, status: "answered"\|"not_yet"\|"skip"\|"empty", updatedAt}` |
 | `batches/<batchId>/submissions/<s-time>` | the page, on Send | `{at, id, batchId, counts, answers: [{n, key, question, kind, choice, choiceLabel, status, text}]}` |
+| `drafts/additional` | the page | `{text, updatedAt}` — the "Any additional questions" text as typed; `text: ""` after a Send |
+| `additional/<s-time>` | the page, on the additional Send | `{at, id, text}` — the text as sent |
 
 `batchId` is a slug with the date, e.g. `2026-09-24-questions-for-lisa-bright`. A choice question is
 Answered once an option is picked; the note is optional. A text question is Answered when it
@@ -121,6 +123,18 @@ has text. *Not yet* and *Skip* (labelled "Leave it off the site" when the batch'
   'read my answers', or copy them below."; `rate_limited`: wait and press again) and keep Copy
   and Download (`downloads` capability; hidden when null). Nothing retries by itself.
 - Received batches (status `received`, set by Claude) move to Done, showing the commit.
+- **Any additional questions** (revision 3, 2026-09-26: the user asked for one free-text field
+  for extra questions or sub-tasks). A static section between the open batches and Done — not
+  from `db`, no rail entry — shown once the board connects and in `#demo`, hidden in the
+  "open this on claude.ai" state. One auto-growing textarea autosaves like an answer (browser
+  draft under the reserved key `_additional`, `drafts/additional` with the same 800 ms / only
+  on change / one in flight rules; the newer of draft and board wins; a focused field is never
+  overwritten). Its own Send (disabled until the trimmed text is non-empty: "Type something
+  first") writes `additional/<s-time>` and, inside the click, sends the note `Additional
+  questions submitted. Snapshot <s-time> (N characters). Read db additional/<s-time>.`; once
+  the snapshot is saved the field, the draft and `drafts/additional` are cleared (a failed save
+  clears nothing). Outcome messages match the batch Send; Copy text is the fallback. In
+  `#demo` Send is off and Copy works.
 
 ## 7. Claude's side (the rule)
 

@@ -1,7 +1,8 @@
 /* Fake claude.ai runtime for the answer board harness: an in-memory db with a
    latency-compensated local echo on set() and a confirmed echo 150 ms later, like the real
    store. `window.__seed` (set by an earlier init script) preloads documents; every set() is
-   logged in `window.__sets`; `window.__put(path, body)` writes as another viewer would. */
+   logged in `window.__sets`; `window.__put(path, body)` writes as another viewer would;
+   `window.__rejectSet` makes set() under a path prefix fail. */
 window.__sets = [];
 (function () {
   var store = {}, listeners = {};
@@ -29,6 +30,8 @@ window.__sets = [];
     },
     get: function () { return Promise.resolve(snapOf(coll)); },
     doc: function (id) { var p = coll + "/" + id; return { set: function (body) {
+      // window.__rejectSet = "prefix": a set() on a path starting with it fails, unwritten.
+      if (window.__rejectSet && p.indexOf(window.__rejectSet) === 0) return Promise.reject({ code: "permission_denied" });
       window.__sets.push({ p: p, t: performance.now(), body: JSON.parse(JSON.stringify(body)) });
       store[p] = JSON.parse(JSON.stringify(body)); fire(coll);            // local echo
       return new Promise(function (r) { setTimeout(function () { fire(coll); r(); }, 150); }); // confirmed
