@@ -16,7 +16,7 @@ python3 scripts/evidence_audit.py <slug> [<slug> ...]      # slugs LITERALLY; `i
 > **Read `.claude/skills/bsuk-gate-integrity/SKILL.md` first.** Term counts are exact. The statement-label and superlative checks are proxies: confirm a flagged section by reading it.
 
 ## Why this gate exists (measured 2026-09-09, `dist/`)
-In the source repo the homepage `<main>` said one licence term 44×, the brand 66×, DNA 40× and one statute term 28× across 8,830 words, and credited one review quote to two different buyers. Not one credential on the site linked to a proof object. Four house rules (a keyword floor of 85, "150+ entity mentions", ≥5 H5 + ≥5 H6, a title that was "never short") were the cause. The breeder's ruling: **sections stay; repetition goes; proof replaces assertion.**
+In the source repo the homepage `<main>` said one licence term 44×, the brand 66×, DNA 40× and one statute term 28× across 8,830 words, and credited one review quote to two different buyers. Not one credential on the site linked to a proof object. Four house rules (a keyword floor (85 mentions), "150+ entity mentions", ≥5 H5 + ≥5 H6, a title that was "never short") were the cause. The breeder's ruling: **sections stay; repetition goes; proof replaces assertion.**
 
 ## The four rules this skill owns
 | Rule | What it means on the page |

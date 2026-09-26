@@ -231,9 +231,9 @@ Priority fixes: [list top 3]
 
 ## Keyword Distribution Targets
 
-For full pages (10+ sections, 3,000+ words), audit that keyword mentions fall within these ranges:
+For full pages (10+ sections, 3,000+ words), audit that keyword mentions stay at or under these per-type caps (no floor):
 
-| Keyword Type | Target Count | Notes |
+| Keyword Type | Cap (no more than) | Notes |
 |---|---|---|
 | Primary keyword | 30–35 | 1–2% density; never stuffed |
 | LSI keywords | 20–25 total | Natural placement throughout |

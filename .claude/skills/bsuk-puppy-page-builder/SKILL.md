@@ -62,7 +62,7 @@ real slugs from `data/locations.json`, never the same trio twice).
 ## 2. Content formula
 
 ### 2a. Keyword distribution per page (≤105 total mentions, no floor; 1–2% primary density, never stuffed)
-| Type | Count | Note |
+| Type | Cap (no more than) | Note |
 |---|---|---|
 | Primary keyword | 30–35 | natural placements; front-loaded in title/H1/first 100 words |
 | LSI | 20–25 | across variations |
@@ -72,6 +72,8 @@ real slugs from `data/locations.json`, never the same trio twice).
 | Comparison ("blue vs brindle", "male vs female") | 5–8 | link to the comparison cluster |
 | Solution ("health-tested", "KC-aware") | 5–10 | |
 | Transactional ("reserve", "deposit", "available now") | ~15 | honest only |
+
+Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct.
 
 Source for the actual keywords: per-page Sprint 0 research. **Search-console data is NOT
 FETCHED until project 6** — no query, impression or position figure may be written before

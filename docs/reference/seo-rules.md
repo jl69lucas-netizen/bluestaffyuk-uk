@@ -108,7 +108,7 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 
 **Rule 18 — Keyword Frequency Table (Per Page)**
 
-| Keyword Type | Target Count | Note |
+| Keyword Type | Cap (no more than) | Note |
 |---|---|---|
 | Primary keyword (exact) | 30–35× | 1–2% density; natural, not stuffed |
 | LSI keywords | 20–25× | Synonyms and related terms |
@@ -120,6 +120,8 @@ Top-of-funnel impression volume; every informational page needs CTR-optimised me
 | Related keywords | 10–15× | |
 | Transactional keywords | 15× | Buy, for sale, available, pricing |
 | **TOTAL** | **≤105 (no minimum)** | |
+
+Each row caps that keyword type; the page total is capped at 105. The rows are not summed and never a number to reach — a short, focused page that uses far fewer is correct.
 
 The authority for this table is `.claude/agents/bsuk-keyword-verifier.md`, which judges the
 count; this block follows it (`tests/py/test_rule18_frequency.py`):
