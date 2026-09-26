@@ -15,11 +15,16 @@ the contact page, and `for-sale` is the commercial cluster the blocking families
 """
 import json
 import pathlib
+import sys
 
 import pytest
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "scripts"))
+from _slugs import resolve_page  # noqa: E402
+
 TARGETS = ROOT / "tests/render/targets.json"
+REBUILT = ROOT / "data/facts/rebuilt.json"
 DIST = ROOT / "dist"
 CONTACT_SLUG = "uk-blue-staffy-breeders-contact"
 
@@ -46,7 +51,7 @@ def test_there_are_target_pages_at_all(targets):
 
 
 def test_every_declared_page_type_has_at_least_one_target_page(targets):
-    orphans = sorted(_declared(targets) - _used(targets))
+    orphans = sorted(_declared(targets) - _used(targets) - set(targets.get("pending_page_types", {})))
     assert not orphans, (
         f"page types declared in families_by_page_type with no page in `pages`: {orphans} — "
         "every family wired only to these examines zero real pages"
@@ -90,3 +95,60 @@ def test_every_target_page_exists_in_the_built_site(targets):
         if not built.is_file():
             missing.append(f"{slug} -> {built.relative_to(ROOT)}")
     assert not missing, "target pages with no built page:\n" + "\n".join(missing)
+
+
+# ── parity plan Task 10: project 5 pages are render targets ─────────────────────────────────
+def test_a_pending_page_type_is_declared_unbuilt_and_says_when_it_ends(targets):
+    """`pending_page_types` is the one way to declare a page type before its first page
+    exists (project 5's comparison pages). It expires by itself: the moment a target of that
+    type is added, the entry is a lie and this fails until it is removed."""
+    for page_type, reason in targets.get("pending_page_types", {}).items():
+        assert page_type in targets["families_by_page_type"], f"{page_type} is pending but wired to nothing"
+        assert page_type not in _used(targets), (
+            f"{page_type} has a target page now — remove it from pending_page_types")
+        assert "remove this entry when" in reason.lower(), page_type
+
+
+def test_the_comparison_page_type_runs_every_family(targets):
+    """Project 5 builds comparison pages; a page type added later with fewer families would
+    make its first page the least-examined page on the site."""
+    fams = targets["families_by_page_type"]
+    assert "comparison" in fams
+    assert sorted(fams["comparison"]) == sorted(fams["location"])
+
+
+def _rebuilt_gaps(keys, targets):
+    """(missing, wrong): rebuilt keys with no target at their route, and targets whose
+    page_type disagrees with the page's own board record."""
+    by_slug = {p["slug"]: p["page_type"] for p in targets["pages"]}
+    missing, wrong = [], []
+    for key in keys:
+        route = resolve_page(key, ROOT)[1] or "index"
+        if route not in by_slug:
+            missing.append(f"{key} -> {route}")
+            continue
+        board = ROOT / "data/boards" / (key + ".json")
+        if board.exists():
+            want = json.loads(board.read_text(encoding="utf-8"))["meta"]["page_type"]
+            if by_slug[route] != want:
+                wrong.append(f"{route}: targets.json says {by_slug[route]}, the board says {want}")
+    return missing, wrong
+
+
+def test_every_rebuilt_page_is_a_render_target_of_its_board_type(targets):
+    """A page written from an approved board is only measured at 375/768/1280 if it is in
+    `pages`, and nothing added one automatically: a project 5 page left out would be judged
+    by no blocking render check at all, and every check would still read green."""
+    missing, wrong = _rebuilt_gaps(json.loads(REBUILT.read_text(encoding="utf-8")), targets)
+    assert not missing, ("rebuilt pages with no render target — add each to "
+                         "tests/render/targets.json `pages`:\n" + "\n".join(missing))
+    assert not wrong, "\n".join(wrong)
+
+
+def test_a_rebuilt_city_page_resolves_to_its_route_and_is_caught_when_untargeted(targets):
+    """The predicate on the key shape project 5 adds: a bare city key resolves through
+    data/page-map.json to uk-locations/<slug>, and a city page with no target is named."""
+    missing, wrong = _rebuilt_gaps(["blue-staffy-puppies-hull", "index"], targets)
+    assert missing == ["blue-staffy-puppies-hull -> uk-locations/blue-staffy-puppies-hull"]
+    assert wrong == []
+    assert _rebuilt_gaps(["blue-staffy-puppies-birmingham"], targets) == ([], [])
