@@ -20,38 +20,8 @@
           {
             "h2": "30 Puppies found",
             "words": 1610,
-            "h3": [
-              "Blue Staff pup last girl available K.C Registered",
-              "🥨 2 Amazing Dark Red boys 🥨",
-              "Staffy for sale",
-              "Stunning Red Staffordshire Bull Terrier (male)",
-              "KC REG KASSIUS PUPS",
-              "Beautiful Staffordshire Bull Terrier Puppies",
-              "Red. Staffordshire bull terriers",
-              "6 beauitful pups looking for there 5 star homes",
-              "KC Blue Short Legged Staffordshire Bull Terrior",
-              "Adorable puppy for Staffordshire Bull Terrier",
-              "Staffordshire bull terrier",
-              "KC Registered Red/Brindle Staffy Puppies",
-              "Nala 1 year old staffy",
-              "(BULLSCAFF) CHAMPION SIRED SBT puppies",
-              "STUNNING BLUE STAFFY PUPPIES",
-              "Blue American staffies",
-              "Beautiful black and blue staffy pups",
-              "🥨Future litter🥨 Reds/Brindles",
-              "KC registered Staffordshire bull terrier pup",
-              "Stunning original black/blue Staff pups *rare*",
-              "10 beautifull blue staffy",
-              "Staffy",
-              "Kc champion lines red boys",
-              "Top quality pedigree staff puppies",
-              "FAQs",
-              "What is the average price of a Staffy puppy?",
-              "What are the downsides of Staffies?",
-              "Is a Staffy a good family dog?",
-              "Are Staffies calm dogs?",
-              "Why do Staffies have a bad reputation?"
-            ]
+            "h3_count": 30,
+            "h3": []
           }
         ],
         "h3_count": 30,
@@ -62,6 +32,8 @@
           "AggregateOffer",
           "Product"
         ],
+        "scope": "body",
+        "listing": "card grid holds 100% of the prose",
         "scrubbed": 0
       }
     },
@@ -78,17 +50,19 @@
       "metrics": {
         "title": "Staffordshire Bull Terrier Puppies For Sale In Salford, Manchester | Staffie Owners",
         "meta_description": "13 Staffordshire Bull Terrier puppies for sale in Salford, Manchester from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
-        "word_count": 2127,
-        "intro_words": 7,
+        "word_count": 2155,
+        "intro_words": 0,
         "sections": [
           {
             "h2": "13 Staffie Puppies For Sale In Salford, Manchester",
             "words": 141,
+            "h3_count": 0,
             "h3": []
           },
           {
             "h2": "Frequently Asked Questions",
-            "words": 195,
+            "words": 230,
+            "h3_count": 4,
             "h3": [
               "How much does a Staffie puppy cost?",
               "Where can I find a Staffie puppy for sale in Salford?",
@@ -117,6 +91,8 @@
           "Question",
           "SearchResultsPage"
         ],
+        "scope": "main",
+        "listing": "card grid holds 81% of the prose",
         "scrubbed": 0
       }
     },
@@ -138,6 +114,8 @@
         "videos": 0,
         "tables": 0,
         "schema_types": [],
+        "scope": "main",
+        "listing": null,
         "scrubbed": 0
       }
     },
@@ -153,19 +131,20 @@
       "metrics": {
         "title": "Staffordshire Bull Terrier Dogs & Puppies for Sale in Manchester - Gumtree",
         "meta_description": "Find adorable Staffordshire Bull Terrier Dogs &amp; Puppies for adoption in Manchester on Gumtree.",
-        "word_count": 667,
-        "intro_words": 354,
+        "word_count": 386,
+        "intro_words": 73,
         "sections": [
           {
             "h2": "Results from outside your search",
             "words": 2,
+            "h3_count": 1,
             "h3": [
               "Here are 13 additional results in your extended area"
             ]
           }
         ],
         "h3_count": 1,
-        "images": 15,
+        "images": 14,
         "videos": 0,
         "tables": 0,
         "schema_types": [
@@ -176,6 +155,8 @@
           "Thing",
           "WebSite"
         ],
+        "scope": "body",
+        "listing": "card grid holds 76% of the prose",
         "scrubbed": 0
       }
     },
@@ -193,27 +174,30 @@
       "metrics": {
         "title": "Staffordshire Bull Terrier puppies for Sale near me in Manchester, Greater Manchester | Puppies.co.uk",
         "meta_description": "Find Staffordshire Bull Terrier Dogs and Puppies for sale in Manchester, Greater Manchester near you. The UK’s number 1 marketplace for the nation's favourite pet.",
-        "word_count": 1023,
-        "intro_words": 726,
+        "word_count": 1349,
+        "intro_words": 1168,
         "sections": [
           {
             "h2": "Recommended for you",
             "words": 132,
+            "h3_count": 0,
             "h3": []
           },
           {
             "h2": "Nearest towns and cities",
             "words": 20,
+            "h3_count": 0,
             "h3": []
           },
           {
             "h2": "Fetch the latest puppy news by joining our pack",
-            "words": 116,
+            "words": 1,
+            "h3_count": 0,
             "h3": []
           }
         ],
         "h3_count": 0,
-        "images": 162,
+        "images": 155,
         "videos": 0,
         "tables": 0,
         "schema_types": [
@@ -226,6 +210,8 @@
           "Product",
           "Thing"
         ],
+        "scope": "main",
+        "listing": null,
         "scrubbed": 0
       }
     },
@@ -242,17 +228,19 @@
       "metrics": {
         "title": "Blue Staffordshire Bull Terrier Puppies For Sale In Manchester | Staffie Owners",
         "meta_description": "7 Blue Staffordshire Bull Terrier puppies for sale in Manchester from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
-        "word_count": 2188,
-        "intro_words": 7,
+        "word_count": 2216,
+        "intro_words": 0,
         "sections": [
           {
             "h2": "7 Blue Staffie Puppies For Sale In Manchester",
             "words": 122,
+            "h3_count": 0,
             "h3": []
           },
           {
             "h2": "Frequently Asked Questions",
-            "words": 213,
+            "words": 248,
+            "h3_count": 4,
             "h3": [
               "How much does a Blue Staffie puppy cost?",
               "Where can I find a Blue Staffie puppy for sale in Manchester?",
@@ -281,6 +269,8 @@
           "Question",
           "SearchResultsPage"
         ],
+        "scope": "main",
+        "listing": "card grid holds 82% of the prose",
         "scrubbed": 0
       }
     },
@@ -297,17 +287,19 @@
       "metrics": {
         "title": "Staffordshire Bull Terrier Puppies For Sale In Manchester | Staffie Owners",
         "meta_description": "21 Staffordshire Bull Terrier puppies for sale in Manchester from trusted breeders and sellers - explore KC-registered litters and health-tested puppies on the UK's leading Staffie classifieds site",
-        "word_count": 2116,
-        "intro_words": 7,
+        "word_count": 2144,
+        "intro_words": 0,
         "sections": [
           {
             "h2": "21 Staffie Puppies For Sale In Manchester",
             "words": 132,
+            "h3_count": 0,
             "h3": []
           },
           {
             "h2": "Frequently Asked Questions",
-            "words": 195,
+            "words": 230,
+            "h3_count": 4,
             "h3": [
               "How much does a Staffie puppy cost?",
               "Where can I find a Staffie puppy for sale in Manchester?",
@@ -336,6 +328,8 @@
           "Question",
           "SearchResultsPage"
         ],
+        "scope": "main",
+        "listing": "card grid holds 82% of the prose",
         "scrubbed": 0
       }
     },
@@ -357,38 +351,8 @@
           {
             "h2": "63 Puppies found",
             "words": 1617,
-            "h3": [
-              "KC Blue Staffy Puppies - 8+ Confirmed, Males Open",
-              "🔴🔵⚫️Amazing Champion Bred staffys",
-              "Beautiful Merle pocket Bully x staffy pups",
-              "CHAMPIONS KC REG SBT PUPPY",
-              "Blue Staffordshire Bull Terrier",
-              "KC staffy pups",
-              "Blue Staff pup last girl available K.C Registered",
-              "Stunning blue staff puppies",
-              "Stunning Health tested kc reg puppies",
-              "Blue staffie pups 🐶",
-              "Rare Blue Merle Staffordshire Bull Terrier Staff",
-              "KC STAFFORDSHIRE BULL TERRIER PUPPIES",
-              "10 gorgeous blue staffy puppies",
-              "STUNNING BLUE STAFFY PUPPIES",
-              "KC Blue Short Legged Staffordshire Bull Terrior",
-              "Kc champion lined Staffordshire bull terrier pupps",
-              "KC REG KASSIUS PUPS",
-              "3 beautiful kc reg blue Staffordshire terrier pups",
-              "Beautiful Staffordshire Bull Terrier Puppies",
-              "Outstanding litter blue brindle white kc staffys",
-              "(BULLSCAFF) CHAMPION SIRED SBT puppies",
-              "STUNNING BLUE STAFFY PUPPIES",
-              "blue staffys ready",
-              "KC Blue Staffordshire Bull terrier puppies",
-              "FAQs",
-              "What is the average price of a Staffy puppy?",
-              "What are the downsides of Staffies?",
-              "Is a Staffy a good family dog?",
-              "Are Staffies calm dogs?",
-              "Why do Staffies have a bad reputation?"
-            ]
+            "h3_count": 30,
+            "h3": []
           }
         ],
         "h3_count": 30,
@@ -399,6 +363,8 @@
           "AggregateOffer",
           "Product"
         ],
+        "scope": "body",
+        "listing": "card grid holds 100% of the prose",
         "scrubbed": 0
       }
     }

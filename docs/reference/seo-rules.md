@@ -200,8 +200,9 @@ than 9 (`docs/reference/location-page-template.md`, "Section count").
 **Rule 27 — Word Count (Dynamic)**
 The competitors' median word count, from the competitor scan: `word_target.median` in the
 question file (`data/queries/<slug>.json`), measured by `query_augment.py --competitor-metrics`
-from the saved competitor HTML; `NOT FETCHED — <barrier>` (its `status`) until that scan
-exists. Never fix a word count before running competitor research, and never pick a number
+from the saved competitor HTML. Only prose pages count: listings, blocked pages and same-site
+repeats are excluded and named with a reason. `NOT FETCHED — <barrier>` (its `status`) until
+that scan exists, or when no competitor page is prose. Never fix a word count before running competitor research, and never pick a number
 first and write to fill it.
 
 **Rule 28 — Header Count Targets**

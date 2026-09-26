@@ -58,6 +58,7 @@ import sys
 from collections import Counter
 from html.parser import HTMLParser
 from pathlib import Path, PurePosixPath
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -613,28 +614,33 @@ class _H2s(HTMLParser):
 
     def content_indices(self):
         """Indices into self.found (= the n-th <h2> tag, from 0) of the content H2s."""
+        return [i for i, k in enumerate(self.kinds()) if k == "content"]
+
+    def kinds(self):
+        """One per self.found: "content", "card" (a card or advert title) or "furniture"
+        (empty, navigation, footer, form, consent dialog or page header)."""
         seen = {id(e): e for anc, _, _ in self.found for e in anc}.values()
         leaves = [e for e in seen if e["tag"] == "article" and e["h2"] and not e["nested"]]
         card_articles = {id(e) for e in leaves} if len(leaves) >= MIN_CARD_ARTICLES else set()
         items = Counter(id(e["parent"]) for e in seen
                         if e["tag"] == "li" and e["h2"] and e["parent"] is not None)
         out = []
-        for i, (ancestors, text, bare) in enumerate(self.found):
+        for ancestors, text, bare in self.found:
             tags = [e["tag"] for e in ancestors]
-            # A heading that is nothing but links is a card title, not a section.
-            if not text or not bare or CARD_ANCESTORS & set(tags) \
-                    or any(e["consent"] for e in ancestors):
-                continue
             nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
-            if nearest and id(nearest[0]) in card_articles:
-                continue
-            if any(e["tag"] == "li" and e["parent"] is not None
-                   and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors):
-                continue
-            if any(t == "header" and not HEADER_HOSTS & set(tags[:j])
-                   for j, t in enumerate(tags)):
-                continue
-            out.append(i)
+            if not text or (CARD_ANCESTORS - {"a"}) & set(tags) \
+                    or any(e["consent"] for e in ancestors) \
+                    or any(t == "header" and not HEADER_HOSTS & set(tags[:j])
+                           for j, t in enumerate(tags)):
+                out.append("furniture")
+            # A heading that is nothing but links is a card title, not a section.
+            elif not bare or "a" in tags \
+                    or (nearest and id(nearest[0]) in card_articles) \
+                    or any(e["tag"] == "li" and e["parent"] is not None
+                           and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors):
+                out.append("card")
+            else:
+                out.append("content")
         return out
 
 
@@ -675,64 +681,141 @@ def extract_h2s(html):
 
 
 # ── competitor page metrics (parity build Task 17) ────────────────────────────────────────────
-# The same saved page --extract-h2 reads, measured once more: no second fetch. Text inside
-# these elements is never page prose (navigation, furniture, forms and the <head>).
-# A <button> is not skipped: accordion FAQs put their question H3s inside one.
-METRIC_SKIP = RAW_TAGS | {"head", "title", "noscript", "svg", "nav", "footer", "aside", "form",
-                          "select"}
+# The same saved page --extract-h2 reads, measured once more: no second fetch. Only the page's
+# own content counts: <main> (or role="main"), else its one <article>, else the <body>, never
+# the text inside these elements (furniture, form controls and the <head>), a page-level
+# <header>, a consent dialog (the _H2s test), or a `hidden` / aria-hidden="true" subtree.
+# A <form> is not skipped (an ASP.NET page wraps its whole body in one); a <button> is not
+# skipped either (accordion FAQs put their question H3s inside one).
+METRIC_SKIP = RAW_TAGS | {"head", "title", "noscript", "svg", "nav", "footer", "aside",
+                          "select", "option", "optgroup", "datalist", "textarea"}
 HEADING_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6"}
 WORD = re.compile(r"[^\W_]+(?:['’-][^\W_]+)*")
-VIDEO_SRC = re.compile(r"youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com|wistia|dailymotion",
-                       re.I)
+VIDEO_SRC = re.compile(r"youtube\.com|youtube-nocookie\.com|youtu\.be|vimeo\.com|wistia"
+                       r"|dailymotion", re.I)
 # A string that carries a phone number, an email or a WhatsApp link is never kept: committed
 # raw files hold no third-party contact details (tests/py/test_no_third_party_contacts.py).
-CONTACTISH = re.compile(r"@|wa\.me|whatsapp|(?:\d[\s()+-]{0,2}){9,}", re.I)
+# A UK number is 0 or +44/0044 (optionally "(0)") and 9–10 more digits, spaces, dots, hyphens
+# or brackets between them; a 15-digit microchip, a date or a price never fits.
+CONTACTISH = re.compile(
+    r"(?<![\w+./-])(?:(?:\+|00)44[\s.-]?(?:\(0\)[\s.-]?)?|\(?0)[1-9](?:[\s.()-]{0,2}\d){8,9}"
+    r"(?![\w/-]|\.\d)"
+    r"|[\w.%+-]+@[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)*\.[A-Za-z]{2,}"
+    r"|[\w.%+-]+\s*[(\[]at[)\]]\s*[A-Za-z0-9-]+"
+    r"|\b[\w.%+-]+\s+at\s+[A-Za-z0-9-]+\s+dot\s+[a-z]{2,}\b"
+    r"|wa\.me|wa\.link|whatsapp", re.I)
+MAX_KEPT_H3 = 12          # a section with more H3s than this keeps only their count
+LISTING_TYPES = {"ItemList", "SearchResultsPage", "OfferCatalog"}
+LISTING_SHARE = 0.6       # a card grid holding more of the prose than this is a listing page
+SCHEMA_URL = re.compile(r"^https?://schema\.org/", re.I)
+
+
+class _Scope(HTMLParser):
+    """Pre-pass: does the page have a <main> (or role="main"), and how many <article>s?"""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.main = False
+        self.articles = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag == "main" or (dict(attrs).get("role") or "").lower() == "main":
+            self.main = True
+        elif tag == "article":
+            self.articles += 1
+
+
+def _scope_of(html):
+    s = _Scope()
+    s.feed(html)
+    s.close()
+    return "main" if s.main else "article" if s.articles == 1 else "body"
 
 
 class _Metrics(HTMLParser):
     """Word, heading, media and schema counts for one saved page. `ordinal` counts every <h2>
     start tag exactly as _H2s does, so words and H3s land under the n-th <h2>."""
 
-    def __init__(self):
+    def __init__(self, scope):
         super().__init__(convert_charrefs=True)
+        self.scope = scope
+        # open elements: {"tag", "parent", "h3", "nested", "hidden", "scope"}
         self.stack = []
         self.ordinal = 0
         self.words = Counter()          # ordinal -> prose words (headings excluded)
-        self.h3 = {}                    # ordinal -> [H3 text]
+        self.h3s = []                   # (ancestor entries, text, bare, ordinal)
         self.total = 0
-        self.h3_count = self.images = self.videos = self.tables = 0
+        self.images = self.videos = self.tables = 0
         self.title = self.meta_description = None
         self._title = None
-        self._h3 = None
+        self._h3 = None                 # {"depth", "ancestors", "parts", "bare", "ordinal"}
         self._ld = None
         self.ld_blocks = []
 
-    def _hidden(self):
-        return any(t in METRIC_SKIP for t in self.stack)
+    def _counted(self):
+        """Inside the page's content scope and outside every skipped subtree."""
+        if any(e["hidden"] for e in self.stack):
+            return False
+        return self.scope == "body" or any(e["scope"] for e in self.stack)
 
     def handle_starttag(self, tag, attrs):
         a = dict(attrs)
         if tag == "h2":
             self.ordinal += 1
-        if tag == "title" and self.title is None and "svg" not in self.stack:
+        if tag == "title" and self.title is None and not any(e["tag"] == "svg"
+                                                            for e in self.stack):
             self._title = []
         if tag == "meta" and (a.get("name") or "").lower() == "description" \
                 and self.meta_description is None:
             self.meta_description = " ".join((a.get("content") or "").split()) or None
-        if tag == "script" and (a.get("type") or "").lower() == "application/ld+json":
+        if tag == "script" and (a.get("type") or "").split(";")[0].strip().lower() \
+                == "application/ld+json":
             self._ld = []
-        if not self._hidden():
+        if tag == "li":
+            self._close_open_item()
+        if self._counted():
             if tag == "img":
                 self.images += 1
             elif tag == "video" or (tag == "iframe" and VIDEO_SRC.search(a.get("src") or "")):
                 self.videos += 1
             elif tag == "table":
                 self.tables += 1
-            elif tag == "h3":
-                self.h3_count += 1
-                self._h3 = []
-        if tag not in VOID_TAGS:
-            self.stack.append(tag)
+        if tag in VOID_TAGS:
+            return
+        counted = self._counted()
+        tags = {e["tag"] for e in self.stack}
+        hidden = (tag in METRIC_SKIP
+                  or (tag == "header" and not HEADER_HOSTS & tags)
+                  or "hidden" in a
+                  or (a.get("aria-hidden") or "").lower() == "true"
+                  or (tag not in CONSENT_EXEMPT and (
+                      (a.get("role") or "").lower() == "dialog"
+                      or (a.get("aria-modal") or "").lower() == "true"
+                      or bool(CONSENT.search(f"{a.get('id') or ''} {a.get('class') or ''}")))))
+        scope = (self.scope == "main" and (tag == "main" or (a.get("role") or "").lower() == "main")
+                 ) or (self.scope == "article" and tag == "article")
+        if tag == "h3":
+            self._close_h3()
+            if counted and not hidden:
+                for e in self.stack:
+                    e["h3"] = True
+                for e in [e for e in self.stack if e["tag"] == "article"][:-1]:
+                    e["nested"] = True
+                self._h3 = {"depth": len(self.stack), "ancestors": list(self.stack),
+                            "parts": [], "bare": [], "ordinal": self.ordinal}
+        self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
+                           "h3": False, "nested": False, "hidden": hidden, "scope": scope})
+
+    def _close_open_item(self):
+        """A new <li> closes an open <li> of the same list, as a browser does (as _H2s)."""
+        for i in range(len(self.stack) - 1, -1, -1):
+            if self.stack[i]["tag"] in ("ul", "ol", "menu"):
+                return
+            if self.stack[i]["tag"] == "li":
+                del self.stack[i:]
+                if self._h3 is not None and len(self.stack) <= self._h3["depth"]:
+                    self._close_h3()
+                return
 
     def handle_endtag(self, tag):
         if tag == "title" and self._title is not None:
@@ -741,27 +824,60 @@ class _Metrics(HTMLParser):
         if tag == "script" and self._ld is not None:
             self.ld_blocks.append("".join(self._ld))
             self._ld = None
-        if tag == "h3" and self._h3 is not None:
-            text = " ".join("".join(self._h3).split())
-            if text:
-                self.h3.setdefault(self.ordinal, []).append(text)
-            self._h3 = None
-        if tag in self.stack:
-            del self.stack[len(self.stack) - 1 - self.stack[::-1].index(tag):]
+        tags = [e["tag"] for e in self.stack]
+        if tag not in tags:
+            return          # a stray end tag closes nothing
+        del self.stack[len(tags) - 1 - tags[::-1].index(tag):]
+        if self._h3 is not None and len(self.stack) <= self._h3["depth"]:
+            self._close_h3()
 
     def handle_data(self, data):
         if self._title is not None:
             self._title.append(data)
         if self._ld is not None:
             self._ld.append(data)
-        if self._hidden():
+        if not self._counted():
             return
         if self._h3 is not None:
-            self._h3.append(data)
+            self._h3["parts"].append(data)
+            if "a" not in [e["tag"] for e in self.stack[self._h3["depth"] + 1:]]:
+                self._h3["bare"].append(data)
         n = len(WORD.findall(data))
         self.total += n
-        if not HEADING_TAGS & set(self.stack):
+        if not any(e["tag"] in HEADING_TAGS for e in self.stack):
             self.words[self.ordinal] += n
+
+    def _close_h3(self):
+        h, self._h3 = self._h3, None
+        if h is not None:
+            self.h3s.append((h["ancestors"], " ".join("".join(h["parts"]).split()),
+                             bool("".join(h["bare"]).strip()), h["ordinal"]))
+
+    def close(self):
+        super().close()
+        self._close_h3()
+
+    def card_h3s(self):
+        """Indices into self.h3s of card titles, by _H2s' card rules: a heading that is only
+        links or sits in a link, one whose nearest <article> is a card (two or more leaf
+        articles that hold an H3), or one in a list of MIN_CARD_ITEMS or more H3 items. An H3
+        inside a <button> is an accordion question (a FAQ list), never a card."""
+        seen = {id(e): e for anc, *_ in self.h3s for e in anc}.values()
+        leaves = [e for e in seen if e["tag"] == "article" and e["h3"] and not e["nested"]]
+        card_articles = {id(e) for e in leaves} if len(leaves) >= MIN_CARD_ARTICLES else set()
+        items = Counter(id(e["parent"]) for e in seen
+                        if e["tag"] == "li" and e["h3"] and e["parent"] is not None)
+        out = set()
+        for i, (ancestors, _, bare, _) in enumerate(self.h3s):
+            nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
+            if any(e["tag"] == "button" for e in ancestors):
+                continue
+            if (not bare or any(e["tag"] == "a" for e in ancestors)
+                    or (nearest and id(nearest[0]) in card_articles)
+                    or any(e["tag"] == "li" and e["parent"] is not None
+                           and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors)):
+                out.add(i)
+        return out
 
 
 def _schema_types(blocks):
@@ -772,7 +888,7 @@ def _schema_types(blocks):
             t = o.get("@type")
             for x in (t if isinstance(t, list) else [t]):
                 if isinstance(x, str) and x:
-                    found.add(x)
+                    found.add(SCHEMA_URL.sub("", x))
             for v in o.values():
                 walk(v)
         elif isinstance(o, list):
@@ -783,24 +899,28 @@ def _schema_types(blocks):
             walk(json.loads(b))
         except ValueError:
             continue   # a broken JSON-LD block names no type
-    return sorted(found)
+    return sorted(t for t in found if t)
 
 
 def page_metrics(html):
     """What a competitor page carries, measured from the saved HTML --extract-h2 reads:
 
-    title, meta_description, word_count (visible words outside the <head>, nav, footer,
-    aside, form, select, noscript, svg, script, style and template), intro_words
-    (prose before the first content H2), sections (one per content H2 from extract_h2s, in order:
-    its prose words up to the next <h2> of any kind, headings excluded, and its H3 texts),
-    h3_count, images, videos (<video> or a YouTube/Vimeo/Wistia/Dailymotion iframe), tables,
-    schema_types (every JSON-LD @type, sorted) and scrubbed (how many title, description or
+    title, meta_description, word_count (visible words in the page's scope — <main>, else its
+    one <article>, else the <body> — outside furniture, form controls, a page-level header,
+    consent dialogs and hidden subtrees), intro_words (prose before the first content H2),
+    sections (one per content H2 from extract_h2s, in order: its prose words up to the next
+    <h2> of any kind, headings excluded, its H3 count, and its H3 texts — never a card title,
+    and none at all past MAX_KEPT_H3), h3_count, images, videos (<video> or a YouTube / Vimeo /
+    Wistia / Dailymotion iframe), tables, schema_types (every JSON-LD @type, schema.org URLs
+    shortened, sorted), scope, listing (why the page is a listing — a card grid holding more
+    than LISTING_SHARE of the prose — or None) and scrubbed (how many title, description or
     H3 strings were dropped because they carried a phone number, an email or a WhatsApp link).
     """
     h = _H2s()
     h.feed(html)
     h.close()
-    m = _Metrics()
+    scope = _scope_of(html)
+    m = _Metrics(scope)
     m.feed(html)
     m.close()
     scrubbed = 0
@@ -811,32 +931,120 @@ def page_metrics(html):
             scrubbed += 1
             return None
         return text
-    sections, content = [], h.content_indices()
-    first = content[0] + 1 if content else m.ordinal + 1
+    cards = m.card_h3s()
+    kinds = h.kinds()
+    content = [i for i, k in enumerate(kinds) if k == "content"]
+    sections = []
+    grids = []                      # prose words held by each card grid
     for i in content:
-        h3s = [keep(t) for t in m.h3.get(i + 1, [])]
-        sections.append({"h2": h.found[i][1], "words": m.words[i + 1],
-                         "h3": [t for t in h3s if t is not None]})
+        mine = [j for j, x in enumerate(m.h3s) if x[3] == i + 1]
+        texts = [] if len(mine) > MAX_KEPT_H3 else [keep(m.h3s[j][1]) for j in mine
+                                                    if j not in cards and m.h3s[j][1]]
+        sections.append({"h2": h.found[i][1], "words": m.words[i + 1], "h3_count": len(mine),
+                         "h3": [t for t in texts if t is not None]})
+        if sum(j in cards for j in mine) >= MIN_CARD_ITEMS:
+            grids.append(m.words[i + 1])
+    run = 0                          # consecutive card-title H2s form one grid
+    for i, k in enumerate(kinds):
+        if k == "card":
+            run += m.words[i + 1]
+        elif run:
+            grids.append(run)
+            run = 0
+    if run:
+        grids.append(run)
+    prose = sum(m.words.values())
+    listing = None
+    if prose and grids and max(grids) > LISTING_SHARE * prose:
+        listing = f"card grid holds {round(100 * max(grids) / prose)}% of the prose"
+    first = content[0] + 1 if content else m.ordinal + 1
     return {"title": keep(m.title), "meta_description": keep(m.meta_description),
-            "word_count": m.total, "intro_words": sum(m.words[k] for k in range(first)), "sections": sections,
-            "h3_count": m.h3_count, "images": m.images, "videos": m.videos,
-            "tables": m.tables, "schema_types": _schema_types(m.ld_blocks),
-            "scrubbed": scrubbed}
+            "word_count": m.total, "intro_words": sum(m.words[k] for k in range(first)),
+            "sections": sections, "h3_count": len(m.h3s), "images": m.images,
+            "videos": m.videos, "tables": m.tables, "schema_types": _schema_types(m.ld_blocks),
+            "scope": scope, "listing": listing, "scrubbed": scrubbed}
+
+
+MULTI_PART_SUFFIXES = {"co.uk", "org.uk", "me.uk", "ltd.uk", "plc.uk", "net.uk", "ac.uk",
+                       "gov.uk", "com.au", "net.au", "org.au", "co.nz", "co.za", "co.ie"}
+
+
+def site_of(url):
+    """The registrable domain: www.pets4homes.co.uk and pets4homes.co.uk are one site."""
+    labels = (urlsplit(url).hostname or "").rstrip(".").split(".")
+    n = 3 if ".".join(labels[-2:]) in MULTI_PART_SUFFIXES else 2
+    return ".".join(labels[-n:])
+
+
+def _prose_problem(p):
+    """Why a competitor page cannot count toward the word target, or None."""
+    m = p.get("metrics")
+    if p.get("blocked", False):
+        return "blocked (a bot challenge)"
+    if not isinstance(m, dict):
+        return "not measured"
+    if not m.get("word_count"):
+        return "no words measured"
+    if not m.get("sections", [None]):
+        return "no content H2"
+    listed = sorted(LISTING_TYPES & set(m.get("schema_types", [])))
+    if listed:
+        return f"listing: JSON-LD {', '.join(listed)}"
+    if m.get("listing"):
+        return f"listing: {m['listing']}"
+    return None
 
 
 def word_target(pages):
-    """Rule 27's number: the median word_count of the pages that are measured and not
-    blocked. {"median", "from", "of"}; with nothing measured, median is None and "status"
-    names the barrier."""
-    counts = sorted(p["metrics"]["word_count"] for p in pages
-                    if isinstance(p.get("metrics"), dict) and not p.get("blocked", False))
-    out = {"median": None, "from": len(counts), "of": len(pages)}
+    """Rule 27's number: the median word_count of the competitor pages that are prose.
+
+    A page counts when it is measured, not blocked, has words and a content H2, and is not a
+    listing (JSON-LD ItemList / SearchResultsPage / OfferCatalog, or a card grid holding most
+    of its prose). Each site (registrable domain) counts once, at its best-ranked page (Google,
+    then Bing, then URL, as section_target). The top count is an outlier and dropped when it
+    exceeds OUTLIER_RATIO × the next, as section_target does. An even count's median is the
+    mean of the middle two rounded half up (int(x + 0.5)), never round()'s half-to-even.
+    {"median", "from", "of", "used": [urls], "excluded": [{"url", "reason"}]}; with nothing
+    usable, median is None and "status" names the barrier."""
+    excluded, usable = [], []
+    for p in pages:
+        why = _prose_problem(p)
+        if why:
+            excluded.append({"url": p["url"], "reason": why})
+        else:
+            usable.append(p)
+    usable.sort(key=lambda p: (p.get("google_pos") or 99, p.get("bing_pos") or 99, p["url"]))
+    kept, sites = [], {}
+    for p in usable:
+        first = sites.setdefault(site_of(p["url"]), p["url"])
+        if first != p["url"]:
+            excluded.append({"url": p["url"], "reason": f"same site as {first}"})
+        else:
+            kept.append(p)
+    by_size = sorted(kept, key=lambda p: -p["metrics"]["word_count"])
+    if len(by_size) > 1 and (by_size[0]["metrics"]["word_count"]
+                             > OUTLIER_RATIO * by_size[1]["metrics"]["word_count"]):
+        top, nxt = by_size[0], by_size[1]["metrics"]["word_count"]
+        why = f"outlier: {top['metrics']['word_count']} words > {OUTLIER_RATIO} × the next ({nxt})"
+        excluded.append({"url": top["url"], "reason": why})
+        kept.remove(top)
+    counts = sorted(p["metrics"]["word_count"] for p in kept)
+    order = {p["url"]: i for i, p in enumerate(pages)}
+    excluded.sort(key=lambda e: order[e["url"]])
+    out = {"median": None, "from": len(counts), "of": len(pages),
+           "used": [p["url"] for p in kept], "excluded": excluded}
     if not counts:
-        out["status"] = ("NOT FETCHED — no competitor page carries metrics; run "
-                         "query_augment.py --competitor-metrics <slug> over the cached HTML")
+        if any(isinstance(p.get("metrics"), dict) for p in pages):
+            out["status"] = ("NOT FETCHED — no measured competitor page is prose (every one is "
+                             "a listing, blocked, empty or a same-site repeat; see excluded): "
+                             "this SERP gives Rule 27 no median")
+        else:
+            out["status"] = ("NOT FETCHED — no competitor page carries metrics; run "
+                             "query_augment.py --competitor-metrics <slug> over the cached HTML")
         return out
     mid = len(counts) // 2
-    out["median"] = counts[mid] if len(counts) % 2 else round((counts[mid - 1] + counts[mid]) / 2)
+    even = int((counts[mid - 1] + counts[mid]) / 2 + 0.5) if mid else counts[mid]
+    out["median"] = counts[mid] if len(counts) % 2 else even
     return out
 
 
@@ -1399,18 +1607,22 @@ def competitor_metrics(slug, root=ROOT):
     """Fill each competitors.json page's `metrics` from data/queries/cache/<slug>/<n>.html,
     n being the page's 1-based place in `pages` — the file --extract-h2 already read. No fetch.
 
-    Returns (measured, missing urls). A cache file whose h2 / h2_all / blocked differ from the
-    page's record is not that page: BadInput, and nothing is written."""
+    Returns (measured, missing urls, dropped urls): a page with no cache file loses any
+    metrics it carried (they can no longer be re-measured). A cache file whose h2 / h2_all /
+    blocked differ from the page's record is not that page: BadInput, and nothing is written."""
     path = Path(root) / "data/queries/raw" / slug / "competitors.json"
-    d = load_competitors(slug, root)
     if not path.exists():
-        raise BadInput(path, "missing — write competitors.json (bsuk-query-augmentation Step 3) first")
+        raise BadInput(path, "missing — write competitors.json (bsuk-query-augmentation "
+                             "Step 3) first")
+    d = load_competitors(slug, root)
     cache = Path(root) / "data/queries/cache" / slug
-    measured, missing = 0, []
+    measured, missing, dropped = 0, [], []
     for n, p in enumerate(d["pages"], 1):
         f = cache / f"{n}.html"
         if not f.exists():
             missing.append(p["url"])
+            if p.pop("metrics", None) is not None:
+                dropped.append(p["url"])
             continue
         html = decode_html(f.read_bytes())
         rep = page_report(html)
@@ -1422,7 +1634,7 @@ def competitor_metrics(slug, root=ROOT):
         p["metrics"] = page_metrics(html)
         measured += 1
     _write_json(path, d)
-    return measured, missing
+    return measured, missing, dropped
 
 
 def load_previous(slug, root=ROOT):
@@ -1629,14 +1841,16 @@ def main(argv=None):
         ap.error(f"slug must match ^[a-z0-9-]+$, got {slug!r}")
     if a.competitor_metrics:
         try:
-            measured, missing = competitor_metrics(slug, root)
+            measured, missing, dropped = competitor_metrics(slug, root)
         except BadInput as e:
             print(f"query_augment.py: bad input: {e}", file=sys.stderr)
             return EXIT_BAD_INPUT
         total = measured + len(missing)
         print(f"measured {measured} of {total} pages in data/queries/raw/{slug}/competitors.json"
               + "".join(f"\n  no cache file (NOT FETCHED — data/queries/cache/{slug}/ holds no "
-                        f"saved page): {u}" for u in missing))
+                        f"saved page): {u}" for u in missing)
+              + "".join(f"\n  dropped stale metrics (its cache file is gone): {u}"
+                        for u in dropped))
         return EXIT_OK
     if a.preflight:
         if a.source not in CANDIDATE_SOURCES:

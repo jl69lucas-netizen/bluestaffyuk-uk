@@ -51,7 +51,15 @@
         "median": {"type": ["integer", "null"], "minimum": 0},
         "from": {"type": "integer", "minimum": 0},
         "of": {"type": "integer", "minimum": 0},
-        "status": {"type": "string", "pattern": "^NOT FETCHED — \\S"}
+        "status": {"type": "string", "pattern": "^NOT FETCHED — \\S"},
+        "used": {"type": "array", "items": {"type": "string"}},
+        "excluded": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["url", "reason"],
+            "properties": {"url": {"type": "string"}, "reason": {"type": "string", "minLength": 1}}
+          }
+        }
       }
     },
     "extra_sections": {
