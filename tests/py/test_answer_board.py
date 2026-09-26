@@ -282,3 +282,41 @@ def test_the_shell_builds_byte_identically(tmp_path):
     first = (tmp_path / "b.html").read_bytes()
     subprocess.run(cmd, capture_output=True, text=True, cwd=ROOT)
     assert (tmp_path / "b.html").read_bytes() == first
+
+
+CLIENT = ROOT / "scripts" / "answer_board_client.js"
+
+
+@pytest.mark.skipif(shutil.which("node") is None, reason="node not installed")
+def test_the_client_is_valid_javascript():
+    run = subprocess.run(["node", "--check", str(CLIENT)], capture_output=True, text=True)
+    assert run.returncode == 0, run.stderr
+
+
+def test_every_capability_is_optional():
+    js = CLIENT.read_text(encoding="utf-8")
+    assert "window.claude && window.claude.use" in js
+    for name in ("db", "comments", "downloads"):
+        assert f'use.call(window.claude, "{name}")' in js
+    assert js.count("if (!ns)") >= 3
+
+
+def test_the_client_uses_the_spec_paths():
+    js = CLIENT.read_text(encoding="utf-8")
+    assert 'db.collection("batches")' in js
+    assert '"batches/" + id + "/answers"' in js and '"batches/" + id + "/submissions"' in js
+    for verb in ("canSendToClaude", "sendToClaude", "anchorFor", "onSnapshot", "localStorage"):
+        assert verb in js, verb
+
+
+def test_db_text_is_escaped_before_it_reaches_innerHTML():
+    js = CLIENT.read_text(encoding="utf-8")
+    assert "function esc(" in js and "function inline(" in js
+    assert re.search(r"inline\(s\)\s*\{\s*s = esc\(s\)", js)
+
+
+def test_the_longest_note_is_well_under_the_comment_limit():
+    note = ("Answers submitted — " + "T" * 120 + " (" + "b" * 90 + "). Snapshot s-2026-09-26T10-11-12-000Z: "
+            "99 answered, 99 skip, 99 not yet, 99 empty. Read db batches/" + "b" * 90 +
+            "/submissions/s-2026-09-26T10-11-12-000Z.")
+    assert len(note.encode("utf-8")) < 1024
