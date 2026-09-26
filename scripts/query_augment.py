@@ -707,6 +707,9 @@ CONTACTISH = re.compile(
 MAX_KEPT_H3 = 12          # a section with more H3s than this keeps only their count
 LISTING_TYPES = {"ItemList", "SearchResultsPage", "OfferCatalog"}
 LISTING_SHARE = 0.6       # a card grid holding more of the prose than this is a listing page
+# Listing JSON-LD (LISTING_TYPES) excludes a page only with a card grid holding more than this:
+# a breeder page can carry an ItemList of its litters beside real prose.
+LISTING_LD_SHARE = 0.4
 SCHEMA_URL = re.compile(r"^https?://schema\.org/", re.I)
 
 
@@ -743,7 +746,7 @@ class _Metrics(HTMLParser):
         self.stack = []
         self.ordinal = 0
         self.words = Counter()          # ordinal -> prose words (headings excluded)
-        self.h3s = []                   # (ancestor entries, text, bare, ordinal)
+        self.h3s = []                   # (ancestor entries, text, bare, ordinal, has a link)
         self.total = 0
         self.images = self.videos = self.tables = 0
         self.title = self.meta_description = None
@@ -780,6 +783,8 @@ class _Metrics(HTMLParser):
                 self.videos += 1
             elif tag == "table":
                 self.tables += 1
+        if tag == "a" and self._h3 is not None:
+            self._h3["link"] = True
         if tag in VOID_TAGS:
             return
         counted = self._counted()
@@ -802,7 +807,8 @@ class _Metrics(HTMLParser):
                 for e in [e for e in self.stack if e["tag"] == "article"][:-1]:
                     e["nested"] = True
                 self._h3 = {"depth": len(self.stack), "ancestors": list(self.stack),
-                            "parts": [], "bare": [], "ordinal": self.ordinal}
+                            "parts": [], "bare": [], "ordinal": self.ordinal,
+                            "link": False}
         self.stack.append({"tag": tag, "parent": self.stack[-1] if self.stack else None,
                            "h3": False, "nested": False, "hidden": hidden, "scope": scope})
 
@@ -851,31 +857,35 @@ class _Metrics(HTMLParser):
         h, self._h3 = self._h3, None
         if h is not None:
             self.h3s.append((h["ancestors"], " ".join("".join(h["parts"]).split()),
-                             bool("".join(h["bare"]).strip()), h["ordinal"]))
+                             bool("".join(h["bare"]).strip()), h["ordinal"], h["link"]))
 
     def close(self):
         super().close()
         self._close_h3()
 
-    def card_h3s(self):
-        """Indices into self.h3s of card titles, by _H2s' card rules: a heading that is only
-        links or sits in a link, one whose nearest <article> is a card (two or more leaf
-        articles that hold an H3), or one in a list of MIN_CARD_ITEMS or more H3 items. An H3
-        inside a <button> is an accordion question (a FAQ list), never a card."""
+    def card_h3s(self, faq=False):
+        """Indices into self.h3s of card titles. A heading that is only links, or sits inside
+        a link, is a card title. In a group — its nearest <article> is a card (two or more leaf
+        articles that hold an H3) or it is in a list of MIN_CARD_ITEMS or more H3 items — a
+        heading is a card only when it is linked (it holds an <a>): a plain FAQ or steps list
+        is prose. Never a card: an H3 inside a <button> (an accordion question), an H3 ending
+        in "?", or any H3 on a page whose JSON-LD has FAQPage (`faq`)."""
+        if faq:
+            return set()
         seen = {id(e): e for anc, *_ in self.h3s for e in anc}.values()
         leaves = [e for e in seen if e["tag"] == "article" and e["h3"] and not e["nested"]]
         card_articles = {id(e) for e in leaves} if len(leaves) >= MIN_CARD_ARTICLES else set()
         items = Counter(id(e["parent"]) for e in seen
                         if e["tag"] == "li" and e["h3"] and e["parent"] is not None)
         out = set()
-        for i, (ancestors, _, bare, _) in enumerate(self.h3s):
-            nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
-            if any(e["tag"] == "button" for e in ancestors):
+        for i, (ancestors, text, bare, _, link) in enumerate(self.h3s):
+            if any(e["tag"] == "button" for e in ancestors) or text.endswith("?"):
                 continue
-            if (not bare or any(e["tag"] == "a" for e in ancestors)
-                    or (nearest and id(nearest[0]) in card_articles)
-                    or any(e["tag"] == "li" and e["parent"] is not None
-                           and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors)):
+            nearest = [e for e in ancestors if e["tag"] == "article"][-1:]
+            grouped = bool(nearest and id(nearest[0]) in card_articles) or any(
+                e["tag"] == "li" and e["parent"] is not None
+                and items[id(e["parent"])] >= MIN_CARD_ITEMS for e in ancestors)
+            if not bare or any(e["tag"] == "a" for e in ancestors) or (grouped and link):
                 out.add(i)
         return out
 
@@ -912,7 +922,8 @@ def page_metrics(html):
     <h2> of any kind, headings excluded, its H3 count, and its H3 texts — never a card title,
     and none at all past MAX_KEPT_H3), h3_count, images, videos (<video> or a YouTube / Vimeo /
     Wistia / Dailymotion iframe), tables, schema_types (every JSON-LD @type, schema.org URLs
-    shortened, sorted), scope, listing (why the page is a listing — a card grid holding more
+    shortened, sorted), scope, grid_share (the % of the prose held by the largest card grid),
+    listing (why the page is a listing — a card grid holding more
     than LISTING_SHARE of the prose — or None) and scrubbed (how many title, description or
     H3 strings were dropped because they carried a phone number, an email or a WhatsApp link).
     """
@@ -931,7 +942,8 @@ def page_metrics(html):
             scrubbed += 1
             return None
         return text
-    cards = m.card_h3s()
+    types = _schema_types(m.ld_blocks)
+    cards = m.card_h3s(faq="FAQPage" in types)
     kinds = h.kinds()
     content = [i for i, k in enumerate(kinds) if k == "content"]
     sections = []
@@ -954,15 +966,16 @@ def page_metrics(html):
     if run:
         grids.append(run)
     prose = sum(m.words.values())
+    share = round(100 * max(grids) / prose) if prose and grids else 0
     listing = None
     if prose and grids and max(grids) > LISTING_SHARE * prose:
-        listing = f"card grid holds {round(100 * max(grids) / prose)}% of the prose"
+        listing = f"card grid holds {share}% of the prose"
     first = content[0] + 1 if content else m.ordinal + 1
     return {"title": keep(m.title), "meta_description": keep(m.meta_description),
             "word_count": m.total, "intro_words": sum(m.words[k] for k in range(first)),
             "sections": sections, "h3_count": len(m.h3s), "images": m.images,
-            "videos": m.videos, "tables": m.tables, "schema_types": _schema_types(m.ld_blocks),
-            "scope": scope, "listing": listing, "scrubbed": scrubbed}
+            "videos": m.videos, "tables": m.tables, "schema_types": types,
+            "scope": scope, "grid_share": share, "listing": listing, "scrubbed": scrubbed}
 
 
 MULTI_PART_SUFFIXES = {"co.uk", "org.uk", "me.uk", "ltd.uk", "plc.uk", "net.uk", "ac.uk",
@@ -970,7 +983,11 @@ MULTI_PART_SUFFIXES = {"co.uk", "org.uk", "me.uk", "ltd.uk", "plc.uk", "net.uk",
 
 
 def site_of(url):
-    """The registrable domain: www.pets4homes.co.uk and pets4homes.co.uk are one site."""
+    """The registrable domain: www.pets4homes.co.uk and pets4homes.co.uk are one site.
+
+    Approximate: the last two labels, or three under a suffix in the hand-kept
+    MULTI_PART_SUFFIXES list — not the Public Suffix List, so an unlisted multi-part suffix
+    (e.g. a .gov.au host) reads as one site per second-level label."""
     labels = (urlsplit(url).hostname or "").rstrip(".").split(".")
     n = 3 if ".".join(labels[-2:]) in MULTI_PART_SUFFIXES else 2
     return ".".join(labels[-n:])
@@ -987,11 +1004,21 @@ def _prose_problem(p):
         return "no words measured"
     if not m.get("sections", [None]):
         return "no content H2"
-    listed = sorted(LISTING_TYPES & set(m.get("schema_types", [])))
-    if listed:
-        return f"listing: JSON-LD {', '.join(listed)}"
     if m.get("listing"):
         return f"listing: {m['listing']}"
+    listed = sorted(LISTING_TYPES & set(m.get("schema_types", [])))
+    share = m.get("grid_share", 0)
+    if listed and share > 100 * LISTING_LD_SHARE:
+        return f"listing: JSON-LD {', '.join(listed)}, card grid holds {share}% of the prose"
+    return None
+
+
+def _prose_note(p):
+    """Why a kept page is worth a second look (listing JSON-LD with a small grid), or None."""
+    listed = sorted(LISTING_TYPES & set(p["metrics"].get("schema_types", [])))
+    if listed:
+        return (f"has {', '.join(listed)} JSON-LD (kept: grid share "
+                f"{p['metrics'].get('grid_share', 0)}%)")
     return None
 
 
@@ -1031,8 +1058,9 @@ def word_target(pages):
     counts = sorted(p["metrics"]["word_count"] for p in kept)
     order = {p["url"]: i for i, p in enumerate(pages)}
     excluded.sort(key=lambda e: order[e["url"]])
+    notes = [{"url": p["url"], "reason": _prose_note(p)} for p in kept if _prose_note(p)]
     out = {"median": None, "from": len(counts), "of": len(pages),
-           "used": [p["url"] for p in kept], "excluded": excluded}
+           "used": [p["url"] for p in kept], "excluded": excluded, "notes": notes}
     if not counts:
         if any(isinstance(p.get("metrics"), dict) for p in pages):
             out["status"] = ("NOT FETCHED — no measured competitor page is prose (every one is "
@@ -1568,7 +1596,7 @@ def load_competitors(slug, root=ROOT):
 
 
 METRIC_COUNTS = ("word_count", "intro_words", "h3_count", "images", "videos", "tables",
-                 "scrubbed")
+                 "grid_share", "scrubbed")
 
 
 def _count(x):

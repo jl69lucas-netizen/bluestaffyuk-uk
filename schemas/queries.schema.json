@@ -53,6 +53,13 @@
         "of": {"type": "integer", "minimum": 0},
         "status": {"type": "string", "pattern": "^NOT FETCHED — \\S"},
         "used": {"type": "array", "items": {"type": "string"}},
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "object", "additionalProperties": false, "required": ["url", "reason"],
+            "properties": {"url": {"type": "string"}, "reason": {"type": "string", "minLength": 1}}
+          }
+        },
         "excluded": {
           "type": "array",
           "items": {

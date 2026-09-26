@@ -33,6 +33,7 @@ EXPECTED = {
     "tables": 1,
     "schema_types": ["FAQPage", "ItemPage", "Organization", "Question", "WebPage"],
     "scope": "main",
+    "grid_share": 11,
     "listing": None,
     "scrubbed": 1,
 }
@@ -198,9 +199,12 @@ def test_word_target_counts_each_site_once_keeping_the_best_ranked_url():
 @pytest.mark.parametrize("over,reason", [
     ({"word_count": 0}, "no words measured"),
     ({"sections": []}, "no content H2"),
-    ({"schema_types": ["ItemList", "WebPage"]}, "listing: JSON-LD ItemList"),
-    ({"schema_types": ["SearchResultsPage"]}, "listing: JSON-LD SearchResultsPage"),
-    ({"schema_types": ["OfferCatalog"]}, "listing: JSON-LD OfferCatalog"),
+    ({"schema_types": ["ItemList", "WebPage"], "grid_share": 45},
+     "listing: JSON-LD ItemList, card grid holds 45% of the prose"),
+    ({"schema_types": ["SearchResultsPage"], "grid_share": 41},
+     "listing: JSON-LD SearchResultsPage, card grid holds 41% of the prose"),
+    ({"schema_types": ["OfferCatalog"], "grid_share": 90},
+     "listing: JSON-LD OfferCatalog, card grid holds 90% of the prose"),
     ({"listing": "card grid holds 80% of the prose"}, "listing: card grid holds 80% of the prose"),
 ])
 def test_word_target_excludes_what_is_not_prose(over, reason):
@@ -303,8 +307,9 @@ def test_a_page_wrapped_in_a_form_is_still_measured():
 
 
 def test_card_h3s_are_counted_but_never_kept():
-    cards = "".join(f"<li><h3>Advert {i} Staffy For Sale</h3><p>Pup.</p></li>" for i in range(3))
-    arts = "".join(f"<article><h3>Litter ad {i}</h3></article>" for i in range(2))
+    cards = "".join(f"<li><h3>Advert {i} <a href='/a{i}'>Staffy For Sale</a></h3><p>Pup.</p></li>"
+                    for i in range(3))
+    arts = "".join(f"<article><a href='/l{i}'><h3>Litter ad {i}</h3></a></article>" for i in range(2))
     html = (f"<main><h2>Pups</h2><p>Intro.</p><h3>Real heading</h3><ul>{cards}</ul>{arts}"
             "<h3><a href='/x'>Linked title</a></h3></main>")
     s = Q.page_metrics(html)["sections"][0]
@@ -318,8 +323,8 @@ def test_a_section_with_more_than_12_h3s_keeps_only_the_count():
 
 
 def test_a_card_grid_holding_most_of_the_prose_marks_a_listing():
-    cards = "".join(f"<li><h3>Pup {i}</h3><p>Lovely blue boy ready now with papers</p></li>"
-                    for i in range(6))
+    cards = "".join(f"<li><a href='/p/{i}'><h3>Pup {i}</h3><p>Lovely blue boy ready now with papers"
+                    "</p></a></li>" for i in range(6))
     html = f"<main><h2>Staffies for sale</h2><ul>{cards}</ul><h2>About</h2><p>Short note.</p></main>"
     m = Q.page_metrics(html)
     assert m["listing"] and m["listing"].startswith("card grid holds ")
@@ -361,7 +366,8 @@ def test_contactish_leaves_ordinary_text_alone(text):
 
 
 def test_word_target_when_every_measured_page_is_a_listing_says_so():
-    wt = Q.word_target([_measured("https://a.example/", 1, 300, schema_types=["ItemList"])])
+    wt = Q.word_target([_measured("https://a.example/", 1, 300, schema_types=["ItemList"],
+                                  grid_share=70)])
     assert wt["median"] is None and wt["used"] == []
     assert wt["status"].startswith("NOT FETCHED — no measured competitor page is prose")
 
@@ -371,3 +377,62 @@ def test_accordion_faq_h3s_in_a_list_are_kept():
                  for i in range(4))
     s = Q.page_metrics(f"<main><h2>FAQs</h2><ul>{qs}</ul></main>")["sections"][0]
     assert s["h3"] == [f"Question {i}?" for i in range(4)]
+
+
+
+# ── Task 17 re-review: FAQ lists are prose ────────────────────────────────────────────────────
+def _words(n, w="word"):
+    return " ".join([w] * n)
+
+
+def test_a_plain_faq_list_is_prose_and_keeps_its_questions():
+    qs = "".join(f"<li><h3>Question {i}?</h3><p>{_words(60)}</p></li>" for i in range(6))
+    html = (f"<main><p>{_words(80)}</p><h2>About us</h2><p>{_words(80)}</p>"
+            f"<h2>FAQs</h2><ul>{qs}</ul></main>")
+    m = Q.page_metrics(html)
+    assert m["listing"] is None and m["grid_share"] == 0
+    assert m["sections"][1]["h3"] == [f"Question {i}?" for i in range(6)]
+
+
+def test_plain_text_h3_items_without_links_are_not_cards():
+    items = "".join(f"<li><h3>Step {i}</h3><p>{_words(20)}</p></li>" for i in range(5))
+    m = Q.page_metrics(f"<main><h2>How it works</h2><ul>{items}</ul></main>")
+    assert m["listing"] is None and m["sections"][0]["h3"] == [f"Step {i}" for i in range(5)]
+
+
+def test_every_h3_is_kept_on_a_page_with_faqpage_json_ld():
+    ld = '<script type="application/ld+json">{"@type":"FAQPage"}</script>'
+    items = "".join(f"<li><a href='/q{i}'><h3>Ask {i}</h3></a><p>answer</p></li>" for i in range(4))
+    m = Q.page_metrics(f"{ld}<main><h2>FAQs</h2><ul>{items}</ul></main>")
+    assert m["sections"][0]["h3"] == [f"Ask {i}" for i in range(4)] and m["listing"] is None
+
+
+def test_a_linked_30_card_grid_is_still_a_listing_and_drops_its_titles():
+    cards = "".join(f"<li><a href='/pup/{i}'><h3>Blue Staffy Pup {i}</h3>"
+                    f"<p>{_words(20)}</p></a></li>" for i in range(30))
+    m = Q.page_metrics(f"<main><h2>30 puppies found</h2><p>{_words(10)}</p><ul>{cards}</ul></main>")
+    assert m["listing"] and m["listing"].startswith("card grid holds ")
+    assert m["sections"][0]["h3"] == [] and m["sections"][0]["h3_count"] == 30
+
+
+def test_listing_json_ld_with_a_small_grid_is_kept_with_a_note():
+    pages = [_measured("https://a.example/", 1, 300, schema_types=["ItemList"], grid_share=12),
+             _measured("https://b.example/", 2, 320)]
+    wt = Q.word_target(pages)
+    assert wt["used"] == ["https://a.example/", "https://b.example/"] and wt["excluded"] == []
+    assert wt["notes"] == [{"url": "https://a.example/",
+                            "reason": "has ItemList JSON-LD (kept: grid share 12%)"}]
+
+
+def test_listing_json_ld_with_a_large_grid_is_excluded():
+    pages = [_measured("https://a.example/", 1, 300, schema_types=["ItemList"], grid_share=55),
+             _measured("https://b.example/", 2, 320)]
+    wt = Q.word_target(pages)
+    assert wt["used"] == ["https://b.example/"] and wt["notes"] == []
+    assert wt["excluded"] == [{"url": "https://a.example/",
+                               "reason": "listing: JSON-LD ItemList, card grid holds 55% of the prose"}]
+
+
+def test_site_of_documents_its_hand_kept_suffix_list():
+    assert "Public Suffix List" in Q.site_of.__doc__
+    assert Q.site_of("https://www.pets4homes.co.uk/x") == "pets4homes.co.uk"

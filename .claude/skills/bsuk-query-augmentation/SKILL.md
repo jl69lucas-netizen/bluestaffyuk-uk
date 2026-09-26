@@ -152,9 +152,10 @@ description, word count, words and H3s per content H2, image/video/table counts,
 `@type`s) and lists the pages with no cache file. Exit 6 means a cache file is not the page its
 record says — re-save that page, never edit the record to match. The question file's
 `word_target` (Rule 27) is the median word count of the pages that are prose: blocked, empty
-and listing pages (JSON-LD ItemList / SearchResultsPage / OfferCatalog, or a card grid holding
-most of the words) are excluded, each site counts once at its best-ranked page, and an outlier
-is dropped as in `section_target`. It lists the URLs used and each exclusion's reason.
+and listing pages (a card grid of linked titles holding most of the words, or ItemList /
+SearchResultsPage / OfferCatalog JSON-LD with a grid holding over 40%) are excluded, each site
+counts once at its best-ranked page, and an outlier is dropped as in `section_target`. It lists
+the URLs used, each exclusion's reason, and a note on any kept page with listing JSON-LD.
 Never count, clean or judge competitor H2s yourself — the script does, the same way every time.
 
 ## Step 4 — threads
