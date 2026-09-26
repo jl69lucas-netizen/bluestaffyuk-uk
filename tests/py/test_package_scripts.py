@@ -109,8 +109,11 @@ def test_the_check_all_chain_is_the_documented_one():
     # than the site — markers asks whether a source-repo word survived, workflow asks whether
     # WORKFLOW.md / quick-start.md name an agent, script or npm script that is not there
     # (Known Issue 56).
+    # check:retired follows check:placeholders: both judge what the built site SAYS — a
+    # placeholder is a fact not yet supplied, a retired fact is one that has been withdrawn
+    # (Known Issue 65; its allowlist only shrinks).
     expected = ["check:parity", "check:facts", "check:links", "check:verbatim",
                 "check:outline", "check:redirects", "check:schema", "check:queries",
                 "check:competitors", "check:gaps", "check:sitemaps", "check:placeholders",
-                "check:workflow", "check:markers", "agents"]
+                "check:retired", "check:workflow", "check:markers", "agents"]
     assert re.findall(r"npm run ([\w:-]+)", SCRIPTS["check:all"]) == expected

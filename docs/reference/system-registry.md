@@ -154,7 +154,7 @@ vendored from upstream OpenSpec, like the four `openspec-*` skills.
 - `.claude/commands/opsx/explore.md`
 - `.claude/commands/opsx/propose.md`
 
-## Scripts — 79
+## Scripts — 80
 
 Every `.py`, `.sh` and `.mjs` in `scripts/`. A script the source repo had and this
 list does not was not ported; `data/port-manifest.json` records the decision.
@@ -233,6 +233,7 @@ list does not was not ported; `data/port-manifest.json` records the decision.
 - `scripts/reframe_og.py`
 - `scripts/release_guard.sh`
 - `scripts/render_baseline.py`
+- `scripts/retired_facts_check.py`
 - `scripts/schema_check.py`
 - `scripts/sitemap_check.py`
 - `scripts/strategy_cite_check.py`
@@ -296,6 +297,7 @@ and exits non-zero on a problem.
 | `scripts/workflow_ref_check.py` | WORKFLOW.md and quick-start.md name only agents, scripts and npm scripts that exist |
 | `scripts/marker_check.py` | no source-repo marker survives anywhere in the scanned roots |
 | `scripts/placeholder_check.py` | counts launch placeholders; fails only under `BSUK_RELEASE=1` |
+| `scripts/retired_facts_check.py` | no retired figure, retired wording or former-city claim on a built page, in rendered data or in src/ (Known Issue 65 allowlist only shrinks) |
 | `scripts/final_page_audit.py` | headings, six levels, the H5/H6 minimums |
 | `scripts/schema_check.py` | structured data on every built page |
 | `scripts/sitemap_check.py` | sitemap shards and what is excluded from them |

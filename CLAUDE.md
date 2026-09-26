@@ -254,7 +254,7 @@ npm run test:render:pages
 
 `check:all` chains `check:parity`, `check:facts`, `check:links`, `check:verbatim`,
 `check:outline`, `check:redirects`, `check:schema`, `check:queries`, `check:competitors`,
-`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:workflow`, `check:markers` and
+`check:gaps`, `check:sitemaps`, `check:placeholders`, `check:retired`, `check:workflow`, `check:markers` and
 `agents`, in that order (`tests/py/test_package_scripts.py` pins the chain and
 `tests/py/test_doc_drift.py` pins this sentence to it). Every gate in the chain must be
 green. `test:render:meta` is the gate that checks the checkers — run it **before** trusting
