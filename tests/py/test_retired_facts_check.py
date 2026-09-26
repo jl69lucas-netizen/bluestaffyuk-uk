@@ -16,9 +16,74 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import retired_facts_check as R  # noqa: E402
 
-# The offenders live on 2026-09-26 (Known Issue 65). Project 5 burns this down; raising it
-# is a new retired fact, and that is what the gate exists to refuse.
-ALLOWLIST_CEILING = 48
+# The offenders live on 2026-09-26 (Known Issue 65; the former-home and former-city ones
+# also Known Issue 16). The ratchet is by IDENTITY, not just by count: every entry must be
+# one of FROZEN, and the list must be exactly ALLOWLIST_CEILING long.
+# TO LOWER IT (each project 5 city rebuild): delete the page's entries from
+# data/quality/retired-facts-allowlist.json and lower ALLOWLIST_CEILING by the number
+# deleted, in the same commit. Leave FROZEN alone (a key that is gone can never return,
+# because the count would no longer match). Never add to FROZEN or raise the ceiling: a new
+# retired fact is fixed on the page.
+ALLOWLIST_CEILING = 57
+FROZEN = frozenset({
+    "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£1,100",
+    "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£850",
+    "data:locations.json/blue-staffy-puppies-aberdeen/body_html:amount:£850–£1,200",
+    "data:locations.json/blue-staffy-puppies-dundee/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-edinburgh/body_html:amount:£1,100",
+    "data:locations.json/blue-staffy-puppies-edinburgh/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-edinburgh/body_html:amount:£850",
+    "data:locations.json/blue-staffy-puppies-edinburgh/body_html:amount:£850–£1,200",
+    "data:locations.json/blue-staffy-puppies-hull/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-hull/body_html:term:non-refundable",
+    "data:locations.json/blue-staffy-puppies-inverness/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-middlesbrough/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-oxford/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-sunderland/body_html:amount:£1,000–£1,100",
+    "data:locations.json/blue-staffy-puppies-sunderland/body_html:amount:£100",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:amount:£300",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:amount:£850–£1,200",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:city:Glasgow",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:home:from our glasgow home",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:home:our glasgow",
+    "data:locations.json/blue-staffy-puppies-uk/body_html:term:council-licensed",
+    "data:locations.json/blue-staffy-puppies-york/body_html:amount:£100",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:amount:£850–£1,200",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:city:Glasgow",
+    "data:locations.json/staffy-breeding-dogs-glasgow/body_html:home:our glasgow home",
+    "data:locations.json/staffy-breeding-dogs-glasgow/description:city:Glasgow",
+    "data:locations.json/staffy-breeding-dogs-glasgow/description:home:based in glasgow",
+    "data:locations.json/staffy-breeding-dogs-glasgow/h1:city:Glasgow",
+    "data:locations.json/staffy-breeding-dogs-glasgow/title:city:Glasgow",
+    "dist:uk-locations/blue-staffy-puppies-aberdeen:amount:£1,100",
+    "dist:uk-locations/blue-staffy-puppies-aberdeen:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-aberdeen:amount:£850",
+    "dist:uk-locations/blue-staffy-puppies-aberdeen:amount:£850–£1,200",
+    "dist:uk-locations/blue-staffy-puppies-dundee:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-edinburgh:amount:£1,100",
+    "dist:uk-locations/blue-staffy-puppies-edinburgh:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-edinburgh:amount:£850",
+    "dist:uk-locations/blue-staffy-puppies-edinburgh:amount:£850–£1,200",
+    "dist:uk-locations/blue-staffy-puppies-hull:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-hull:term:non-refundable",
+    "dist:uk-locations/blue-staffy-puppies-inverness:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-middlesbrough:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-oxford:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-sunderland:amount:£1,000–£1,100",
+    "dist:uk-locations/blue-staffy-puppies-sunderland:amount:£100",
+    "dist:uk-locations/blue-staffy-puppies-uk:amount:£300",
+    "dist:uk-locations/blue-staffy-puppies-uk:amount:£850–£1,200",
+    "dist:uk-locations/blue-staffy-puppies-uk:city:Glasgow",
+    "dist:uk-locations/blue-staffy-puppies-uk:home:from our glasgow home",
+    "dist:uk-locations/blue-staffy-puppies-uk:home:our glasgow",
+    "dist:uk-locations/blue-staffy-puppies-uk:term:council-licensed",
+    "dist:uk-locations/blue-staffy-puppies-york:amount:£100",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:amount:£850–£1,200",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:city:Glasgow",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:based in glasgow",
+    "dist:uk-locations/staffy-breeding-dogs-glasgow:home:our glasgow home",
+})
 
 LOCKED = ({0, 500, 1500, 1700, 1000, 1200, 200, 350}, {(200, 350), (1500, 1700)})
 
@@ -53,7 +118,9 @@ def test_the_locked_set_is_read_from_the_data_files():
 
 
 @pytest.mark.parametrize("text", ["£1,500", "£1500 - £1700", "£200–£350", "£0 to collect",
-                                  "a £500 deposit, refundable", "£1,500–£1,700."])
+                                  "a £500 deposit, refundable", "£1,500–£1,700.",
+                                  "£200 to £350", "£1,500 to £1,700", "£ 1,500", "£200-350",
+                                  "£1,500–1,700", "£1,700 - £1,500", "£350 to £200"])
 def test_locked_amounts_pass(text):
     assert R.amount_findings(text, LOCKED) == []
 
@@ -61,7 +128,15 @@ def test_locked_amounts_pass(text):
 @pytest.mark.parametrize("text,found", [("Ground Transport — £100", ["£100"]),
                                         ("from £850 - £1,200", ["£850–£1,200"]),
                                         ("£1,000–£1,100 each", ["£1,000–£1,100"]),
-                                        ("£200 to £300", ["£300"])])
+                                        # "to" joins a range like a dash does, so "£200 to
+                                        # £300" is ONE claim — a delivery band whose top end
+                                        # is retired — and is reported as the band, the same
+                                        # spelling a dashed band gets.
+                                        ("£200 to £300", ["£200–£300"]),
+                                        ("£1,000 to £1,200", ["£1,000–£1,200"]),
+                                        ("from £850 to £1,200", ["£850–£1,200"]),
+                                        ("£850-1,200", ["£850–£1,200"]),
+                                        ("£ 100 delivery", ["£100"])])
 def test_retired_amounts_fail(text, found):
     assert R.amount_findings(text, LOCKED) == found
 
@@ -74,9 +149,68 @@ def test_retired_wording_fails_in_any_case():
 def test_the_former_city_fails_in_prose_but_not_as_a_link_to_its_own_page():
     link = '<li><a href="/uk-locations/staffy-puppies-for-sale-glasgow/">Glasgow</a></li>'
     assert R.html_findings(link, LOCKED) == []
-    assert R.html_findings("<p>collect from our Glasgow home</p>" + link, LOCKED) == [("city", "Glasgow")]
+    # "from our Glasgow home" is also a former-HOME claim, which no page may make.
+    assert R.html_findings("<p>collect from our Glasgow home</p>" + link, LOCKED) == [
+        ("city", "Glasgow"), ("home", "from our glasgow home")]
     # The city's own page may name the city it is about.
     assert R.html_findings("<p>puppies in Glasgow</p>", LOCKED, city_page=True) == []
+
+
+def test_the_former_home_is_a_claim_even_on_the_citys_own_pages():
+    # The business moved to Carlisle (Known Issue 16). The for-sale-glasgow page may name the
+    # city it is about; no page may say the kennel is there.
+    claim = "<p>Collect from our Glasgow home in Coltmuir, G22.</p>"
+    assert R.html_findings(claim, LOCKED, city_page=True) == [
+        ("home", "from our glasgow home"), ("home", "coltmuir"), ("home", "g22")]
+    assert R.html_findings("<p>Staffy puppies in Glasgow</p>", LOCKED, city_page=True) == []
+    assert R.html_findings("<p>We are based in Carlisle, our home.</p>", LOCKED) == []
+
+
+def test_only_the_for_sale_page_may_name_the_former_city(tmp_path):
+    root = _tree(tmp_path, pages={
+        "index": "<p>ok</p>",
+        "uk-locations/staffy-breeding-dogs-glasgow": "<p>Breeding dogs in Glasgow, based in Glasgow.</p>",
+        "uk-locations/staffy-puppies-for-sale-glasgow": "<p>Staffy puppies for sale in Glasgow.</p>"},
+        rows=[{"slug": "staffy-puppies-for-sale-glasgow", "title": "Glasgow", "h1": "Glasgow",
+               "description": "Puppies near Glasgow", "body_html": "<p>our Glasgow home</p>"}])
+    r = R.run(root=root, allowlist=tmp_path / "none.json")
+    assert r["new"] == [
+        "data:locations.json/staffy-puppies-for-sale-glasgow/body_html:home:our glasgow home",
+        "dist:uk-locations/staffy-breeding-dogs-glasgow:city:Glasgow",
+        "dist:uk-locations/staffy-breeding-dogs-glasgow:home:based in glasgow"]
+
+
+def test_head_meta_and_alt_text_are_read_but_urls_are_not():
+    head = ('<meta name="description" content="Pups from £850 - £1,200">'
+            '<meta property="og:title" content="A non-refundable deposit">'
+            '<meta property="og:url" content="https://x.test/£5">'
+            '<img src="/£7.jpg" alt="Our council licensed kennel">'
+            '<a href="/£9/">ok</a>')
+    assert R.html_findings(head, LOCKED) == [
+        ("amount", "£850–£1,200"), ("term", "non-refundable"), ("term", "council-licensed")]
+
+
+def test_entities_in_plain_text_fields_are_decoded(tmp_path):
+    root = _tree(tmp_path, rows=[{"slug": "blue-staffy-puppies-hull", "title": "Hull",
+                                  "h1": "Hull", "description": "Delivery &pound;100",
+                                  "body_html": "<p>ok</p>"}])
+    assert R.run(root=root, allowlist=tmp_path / "none.json")["new"] == [
+        "data:locations.json/blue-staffy-puppies-hull/description:amount:£100"]
+
+
+def test_a_missing_data_file_is_not_a_missing_build(tmp_path, capsys, monkeypatch):
+    root = _tree(tmp_path)
+    (root / "data/locations.json").unlink()
+    monkeypatch.setattr(R, "ROOT", root)
+    assert R.main([]) == 2
+    out = capsys.readouterr().out
+    assert "data/locations.json" in out and "build first" not in out
+    (root / "data/locations.json").write_text("[]", encoding="utf-8")
+    import shutil
+    shutil.rmtree(root / "dist")
+    (root / "dist").write_text("not a directory", encoding="utf-8")
+    assert R.main([]) == 2
+    assert "build first" in capsys.readouterr().out
 
 
 def test_json_ld_is_read_and_other_scripts_are_not():
@@ -132,18 +266,25 @@ def _allow():
 
 
 def test_the_allowlist_only_shrinks():
-    entries = _allow()["entries"]
-    assert len(entries) <= ALLOWLIST_CEILING, (
-        f"{len(entries)} allowlisted retired facts, ceiling {ALLOWLIST_CEILING}: a new retired "
-        "fact is fixed on the page, never added to the allowlist")
+    entries = set(_allow()["entries"])
+    assert entries <= FROZEN, (
+        f"not in the 2026-09-26 set: {sorted(entries - FROZEN)} — a new retired fact is fixed "
+        "on the page, never added to the allowlist")
+    assert len(entries) == ALLOWLIST_CEILING, (
+        f"{len(entries)} allowlisted retired facts, ALLOWLIST_CEILING {ALLOWLIST_CEILING}: after "
+        "deleting entries, lower the constant by the same number in the same commit")
 
 
 def test_every_entry_is_known_issue_65_and_dated():
     doc = _allow()
     assert doc["known_issue"] == 65 and doc["since"] == "2026-09-26"
+    assert doc["known_issues"] == [65, 16]
     for key, reason in doc["entries"].items():
         assert key.split(":", 1)[0] in ("dist", "data", "src"), key
         assert "Known Issue 65" in reason, key
+        # A former-home or former-city entry is also the relocation (Known Issue 16).
+        if key.split(":")[-2] in ("home", "city"):
+            assert "Known Issue 16" in reason, key
 
 
 def test_no_rebuilt_page_is_ever_allowlisted():

@@ -7,8 +7,9 @@ city pages printing a retired delivery fee, a retired price band, a "non-refunda
 deposit, collection from the former city and "council-licensed" — was found by hand. This
 gate sweeps both tenses of the site (audit D5):
 
-  dist      every built page (dist/**/index.html) minus the specimen routes, visible text
-            plus JSON-LD
+  dist      every built page (dist/**/index.html) minus the specimen routes: visible text,
+            JSON-LD, <meta name="description">, the text-valued og:* meta (not og:url or
+            og:image*) and img alt text. Link and image URLs (href, src) are not copy
   data      the data files pages render facts from: data/locations.json (field by field,
             per city row), settings, puppies, price matrix, FAQ and reviews
   src       src/**/*.{astro,ts,tsx,js,mjs,md,mdx} with comments stripped — a comment that
@@ -18,12 +19,19 @@ and fails on
   amount    a £ figure whose value is not locked: the deposit, the two prices, the two
             balances (price less deposit), the delivery band ends, the two locked ranges and
             £0 (collection is free); values are read from data/settings.json and
-            data/price-matrix.json, never typed here. Trade-off: a retired figure that
+            data/price-matrix.json, never typed here. A range is two figures joined by a
+            dash or by "to" ("£850 to £1,200"); after a dash the second £ may be dropped
+            ("£200-350"); its ends are sorted before lookup, so "£1,700–£1,500" is the
+            locked range. "£ 1,500" is read as £1,500. Trade-off: a retired figure that
             happens to equal a locked one (a balance) passes on its own — the retired band
             it sits in still fails
   term      "non-refundable", "council-licensed" / "council licensed"
-  city      the former city (Known Issue 16) anywhere but its own two city pages and the
-            anchor text of a link to one of them
+  city      the former city (Known Issue 16) named anywhere but the one page that sells
+            puppies there (staffy-puppies-for-sale-glasgow) and the anchor text of a link to
+            either of its two city pages
+  home      a claim that the kennel is still in the former city — "based in / our / from our
+            Glasgow (home)", the former district "Coltmuir", the postcode district "G22" —
+            on EVERY page, the city's own two included: the business is in Carlisle
 
 WHAT IS NOT SCANNED, and why. data/boards/, data/facts/ and data/verbatim/ record retired
 wording ON PURPOSE (`dropped.prices` is the accounting of what a rebuild struck); a figure
@@ -36,9 +44,11 @@ this gate can enter check:all green today and still fail the first NEW retired f
 shrinks: an entry that no longer fires is a FAIL too (remove it), a rebuilt page can never
 carry one, and tests/py/test_retired_facts_check.py pins its ceiling.
 
-Exit 1 on any finding outside the allowlist or any stale entry, 2 when dist/ is missing.
+Exit 1 on any finding outside the allowlist or any stale entry; 2 when dist/ is not a
+directory (build first) or a data file the sweep reads is missing (its own message).
 Usage: python3 scripts/retired_facts_check.py [--json]   |   npm run check:retired
 """
+import html
 import html.parser
 import json
 import pathlib
@@ -51,9 +61,16 @@ ALLOWLIST = ROOT / "data" / "quality" / "retired-facts-allowlist.json"
 SPECIMEN_PREFIXES = ("board-preview/", "kit-preview/")
 FORMER_CITY = "Glasgow"
 FORMER_CITY_SLUGS = ("staffy-breeding-dogs-glasgow", "staffy-puppies-for-sale-glasgow")
+# The one page that may name the former city it is about: it sells puppies TO Glasgow.
+FORMER_CITY_PAGE = "staffy-puppies-for-sale-glasgow"
 TERMS = re.compile(r"(?i)\bnon-refundable\b|\bcouncil[- ]licensed\b")
-AMOUNT = r"£\d[\d,]*(?<![,])"
-MONEY = re.compile(AMOUNT + r"(?:\s*[–—-]\s*" + AMOUNT + r")?")
+HOME = re.compile(r"(?i)\b(?:based in|from our|our)\s+Glasgow(?:\s+home)?\b|\bColtmuir\b|\bG22\b")
+NUMBER = r"\d[\d,]*(?<![,])"
+AMOUNT = r"£\s?" + NUMBER
+# A second figure joins by a dash (its £ may be dropped: "£200-350") or by " to " (its £ may
+# not: "£0 to 8 weeks" is not a range).
+MONEY = re.compile(AMOUNT + r"(?:\s*[–—-]\s*£?\s?" + NUMBER + r"|\s+to\s+" + AMOUNT + r")?")
+OG_URL_PROPERTIES = ("og:url", "og:image")
 RENDERED_DATA = ("settings.json", "puppies.json", "price-matrix.json", "faq.json", "reviews.json")
 LOCATION_FIELDS = ("title", "h1", "description", "body_html")
 SRC_SUFFIXES = {".astro", ".ts", ".tsx", ".js", ".mjs", ".md", ".mdx"}
@@ -84,17 +101,18 @@ def amount_findings(text, locked):
     singles, ranges = locked
     out = []
     for m in MONEY.finditer(text):
-        parts = re.findall(AMOUNT, m.group(0))
+        parts = re.findall(NUMBER, m.group(0))
         vals = tuple(_value(x) for x in parts)
-        ok = vals[0] in singles if len(vals) == 1 else vals in ranges
+        ok = vals[0] in singles if len(vals) == 1 else tuple(sorted(vals)) in ranges
         if not ok:
-            out.append(re.sub(r"\s*[–—-]\s*", "–", m.group(0).strip()))
+            out.append("–".join("£" + x for x in parts))
     return out
 
 
 class _Text(html.parser.HTMLParser):
-    """Visible text plus JSON-LD. Text inside <a> whose href names one of the former city's
-    own pages is collected apart, because naming the city a page is ABOUT is not a claim."""
+    """Visible text, JSON-LD, the description / text-valued og:* meta and img alt. Text
+    inside <a> whose href names one of the former city's own pages is collected apart,
+    because naming the city a link points to is not a claim."""
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -106,6 +124,12 @@ class _Text(html.parser.HTMLParser):
             self.skip += 1
         if tag == "a" and any(s in (a.get("href") or "") for s in FORMER_CITY_SLUGS):
             self.city_link += 1
+        prop = a.get("property") or ""
+        if tag == "meta" and (a.get("name") == "description" or (
+                prop.startswith("og:") and not prop.startswith(OG_URL_PROPERTIES))):
+            self.parts.append(("text", a.get("content") or ""))
+        if tag == "img" and a.get("alt"):
+            self.parts.append(("text", a["alt"]))
 
     def handle_endtag(self, tag):
         if tag in ("style", "script") and self.skip:
@@ -127,12 +151,14 @@ def html_findings(markup, locked, city_page=False):
 
 
 def text_findings(text, locked, city=True, city_text=None):
-    """[(kind, value)] for one blob. `city=False` switches the former-city rule off (the
-    city's own page); `city_text` is what that rule reads when it is not `text` itself."""
+    """[(kind, value)] for one blob. `city=False` switches the bare former-city rule off
+    (the page that sells puppies there); the former-HOME rule is never switched off.
+    `city_text` is what the city rule reads when it is not `text` itself."""
     found = [("amount", a) for a in amount_findings(text, locked)]
     found += [("term", m.group(0).lower().replace(" ", "-")) for m in TERMS.finditer(text)]
     if city and FORMER_CITY in (text if city_text is None else city_text):
         found.append(("city", FORMER_CITY))
+    found += [("home", re.sub(r"\s+", " ", m.group(0)).lower()) for m in HOME.finditer(text)]
     return found
 
 
@@ -156,7 +182,7 @@ def scan_dist(dist, locked):
         if (key + "/").startswith(SPECIMEN_PREFIXES):
             continue
         n += 1
-        city_page = key.split("/")[-1] in FORMER_CITY_SLUGS
+        city_page = key.split("/")[-1] == FORMER_CITY_PAGE
         for kind, value in html_findings(page.read_text(encoding="utf-8"), locked, city_page):
             out.setdefault(f"dist:{key}:{kind}:{value}", 0)
             out[f"dist:{key}:{kind}:{value}"] += 1
@@ -167,12 +193,14 @@ def scan_data(root, locked):
     out, n = {}, 0
     rows = json.loads((root / "data" / "locations.json").read_text(encoding="utf-8"))
     for row in rows:
-        city_page = row["slug"] in FORMER_CITY_SLUGS
+        city_page = row["slug"] == FORMER_CITY_PAGE
         for field in LOCATION_FIELDS:
             n += 1
             value = row.get(field) or ""
+            # Plain-text fields render through Astro's escaping, but an entity typed into
+            # the data ("&pound;100") is still the figure a reader is shown.
             found = (html_findings(value, locked, city_page) if field == "body_html"
-                     else text_findings(value, locked, city=not city_page))
+                     else text_findings(html.unescape(value), locked, city=not city_page))
             for kind, v in found:
                 k = f"data:locations.json/{row['slug']}/{field}:{kind}:{v}"
                 out[k] = out.get(k, 0) + 1
@@ -181,7 +209,7 @@ def scan_data(root, locked):
         if not path.exists():
             continue
         n += 1
-        for kind, v in text_findings(path.read_text(encoding="utf-8"), locked):
+        for kind, v in text_findings(html.unescape(path.read_text(encoding="utf-8")), locked):
             k = f"data:{name}:{kind}:{v}"
             out[k] = out.get(k, 0) + 1
     return out, n
@@ -206,13 +234,18 @@ def load_allowlist(path=ALLOWLIST):
     return json.loads(pathlib.Path(path).read_text(encoding="utf-8")).get("entries", {})
 
 
-def run(root=ROOT, dist=None, allowlist=None):
+class BuildMissing(FileNotFoundError):
+    """dist/ is not a directory: the site has not been built."""
+
+
+def run(root=None, dist=None, allowlist=None):
     """{'examined': {...}, 'new': [...], 'allowed': [...], 'stale': [...]}; raises
-    FileNotFoundError when dist/ is missing — a sweep of no pages is not a pass."""
-    root = pathlib.Path(root)
+    BuildMissing (a FileNotFoundError) when dist/ is not a directory — a sweep of no pages
+    is not a pass — and FileNotFoundError when a data file it reads is missing."""
+    root = pathlib.Path(ROOT if root is None else root)
     dist = root / "dist" if dist is None else pathlib.Path(dist)
-    if not dist.exists():
-        raise FileNotFoundError(f"{dist} does not exist — build first (npm run build)")
+    if not dist.is_dir():
+        raise BuildMissing(f"{dist} is not a directory — build first (npm run build)")
     locked = locked_amounts(root)
     found, examined = {}, {}
     for scope, fn in (("dist", lambda: scan_dist(dist, locked)),
@@ -232,8 +265,12 @@ def main(argv=None):
     argv = sys.argv[1:] if argv is None else argv
     try:
         r = run()
-    except FileNotFoundError as e:
+    except BuildMissing as e:
         print(f"retired-facts ERROR {e}")
+        return 2
+    except FileNotFoundError as e:
+        print(f"retired-facts ERROR missing data file {e.filename} — the sweep reads it for "
+              "the locked set or the rendered facts; restore it (this is not a build problem)")
         return 2
     ex = r["examined"]
     print(f"retired-facts: examined {ex['dist']} built pages, {ex['data']} data fields/files, "
