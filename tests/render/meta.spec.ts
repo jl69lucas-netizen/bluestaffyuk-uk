@@ -17,7 +17,7 @@ import { fileURLToPath } from 'node:url';
 import { registry, MAX_DEFECT_ROWS, type Check, type Defect } from './lib/registry.js';
 import { runCheck } from './lib/runCheck.js';
 import { flattenSlug } from './lib/scorecard.js';
-import { latestCards, readScorecards, zeroExamined } from './lib/examined.js';
+import { latestCards, notYetMeasured, readScorecards, zeroExamined } from './lib/examined.js';
 import { fixtureUrl, FIXTURE_BASE } from './lib/servers.js';
 import { measureTopChrome, waitForScrollSettle } from './lib/probes.js';
 import { checkDistFreshness, builtRoutesWithoutSource } from './lib/freshness.js';
@@ -1810,6 +1810,11 @@ test.describe('a11y-text-contrast-aa [kit Hero aside]', () => {
  * durable record of the last page run, so the meta gate reads them and refuses a registered,
  * non-deferred check whose examined count is zero across the newest card of every target.
  * A skip, never a pass, when no target has a card: no data must not read as verified.
+ *
+ * This reads the last successful scorecard run; the runner's exit code (Guard 2) is the live
+ * guard. So a check registered SINCE that run has no key in any card: it is reported by name
+ * as "not yet measured" (annotation + console), never failed — the next full page run's Guard 2
+ * judges it. Only a check the cards DID measure, at zero everywhere, fails here.
  */
 test.describe('zero-examined guard: every non-deferred check examined > 0 in the latest scorecards', () => {
   const here = dirname(fileURLToPath(import.meta.url));
@@ -1830,15 +1835,33 @@ test.describe('zero-examined guard: every non-deferred check examined > 0 in the
     expect(got).toEqual(['a@2026-09-22', 'b@2026-09-19']);
   });
 
-  test('zeroExamined names a check that judged nothing, a check missing from every card, and never a deferred one', () => {
-    const cards = [
-      { slug: 'a', date: '2026-09-22', examined_by_check: { live: 3, dead: 0, parked: 0 } },
-      { slug: 'b', date: '2026-09-22', examined_by_check: { live: 1, dead: 0 } },
-    ];
-    expect(zeroExamined(['live', 'dead', 'parked', 'unwired'], { parked: 'reason' }, cards)).toEqual([
+  const synthetic = [
+    { slug: 'a', date: '2026-09-22', examined_by_check: { live: 3, dead: 0, parked: 0 } },
+    { slug: 'b', date: '2026-09-22', examined_by_check: { live: 1, dead: 0 } },
+  ];
+
+  test('zeroExamined names a measured check that judged nothing, and never a deferred or unmeasured one', () => {
+    expect(zeroExamined(['live', 'dead', 'parked', 'unwired'], { parked: 'reason' }, synthetic)).toEqual([
       'dead',
-      'unwired',
     ]);
+  });
+
+  test('notYetMeasured names a registered check absent from every card, and never a deferred one', () => {
+    expect(
+      notYetMeasured(['live', 'dead', 'parked', 'unwired', 'shelved'], { shelved: 'reason' }, synthetic),
+    ).toEqual(['unwired']);
+  });
+
+  test('readScorecards names the file it could not parse', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'cards-'));
+    try {
+      writeFileSync(join(dir, 'good-2026-09-22.json'), JSON.stringify({ slug: 'good', date: '2026-09-22' }));
+      writeFileSync(join(dir, 'broken-2026-09-22.json'), '{ not json');
+      expect(() => readScorecards(dir)).toThrow(/broken-2026-09-22\.json/);
+      expect(readScorecards(join(dir, 'absent'))).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 
   test('the REAL latest scorecards examined every registered, non-deferred check', () => {
@@ -1850,11 +1873,17 @@ test.describe('zero-examined guard: every non-deferred check examined > 0 in the
       test.skip(true, 'no scorecard for any target — run `npm run test:render:pages` (it builds them)');
       return;
     }
-    const dead = zeroExamined(
-      registry.map((c) => c.id),
-      targetsFile.deferred_checks ?? {},
-      cards,
-    );
+    const ids = registry.map((c) => c.id);
+    const deferred = targetsFile.deferred_checks ?? {};
+    const unmeasured = notYetMeasured(ids, deferred, cards);
+    if (unmeasured.length > 0) {
+      const note =
+        `not yet measured (no key in the newest scorecard of any target; the next full ` +
+        `\`npm run test:render:pages\` judges them): ${unmeasured.join(', ')}`;
+      test.info().annotations.push({ type: 'not yet measured', description: note });
+      console.warn(note);
+    }
+    const dead = zeroExamined(ids, deferred, cards);
     expect(
       dead,
       `examined zero nodes across the newest scorecard of ${cards.length} target page(s): ` +

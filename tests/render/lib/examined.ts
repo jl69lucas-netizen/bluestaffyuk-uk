@@ -13,12 +13,22 @@ export interface Scorecard {
   examined_by_check?: Record<string, number>;
 }
 
-/** Every card on disk; an absent directory is an empty list, never an error. */
+/**
+ * Every card on disk; an absent directory is an empty list, never an error. A card that does
+ * not parse is an error that names the file — a bare JSON SyntaxError points at nothing.
+ */
 export function readScorecards(dir: string): Scorecard[] {
   if (!existsSync(dir)) return [];
   return readdirSync(dir)
     .filter((f) => f.endsWith('.json'))
-    .map((f) => JSON.parse(readFileSync(join(dir, f), 'utf8')) as Scorecard);
+    .map((f) => {
+      const path = join(dir, f);
+      try {
+        return JSON.parse(readFileSync(path, 'utf8')) as Scorecard;
+      } catch (e) {
+        throw new Error(`unreadable scorecard ${path}: ${(e as Error).message}`);
+      }
+    });
 }
 
 /**
@@ -37,25 +47,51 @@ export function latestCards(cards: Scorecard[], slugs?: string[]): Scorecard[] {
   return [...best.values()];
 }
 
+/** Per registered, non-deferred id: summed examined count, or null when no card has its key. */
+function examinedTotals(
+  checkIds: string[],
+  deferred: Record<string, string>,
+  cards: Scorecard[],
+): Map<string, number | null> {
+  const total = new Map<string, number | null>(
+    checkIds.filter((id) => !(id in deferred)).map((id) => [id, null]),
+  );
+  for (const c of cards) {
+    for (const [id, n] of Object.entries(c.examined_by_check ?? {})) {
+      if (total.has(id)) total.set(id, (total.get(id) ?? 0) + n);
+    }
+  }
+  return total;
+}
+
 /**
- * Registered, non-deferred check ids whose examined count sums to zero across `cards`.
- * Seeded from the ids, not from the cards: a check that ran nowhere contributes no key to any
- * card and would be invisible to a sum over the cards alone (build_scorecard.mjs Guard 2's
- * own reasoning).
+ * Registered, non-deferred check ids the cards DID measure and whose examined count sums to
+ * zero across them: a check that ran and judged nothing. This fails the meta gate.
  */
 export function zeroExamined(
   checkIds: string[],
   deferred: Record<string, string>,
   cards: Scorecard[],
 ): string[] {
-  const total = new Map<string, number>(checkIds.map((id) => [id, 0]));
-  for (const c of cards) {
-    for (const [id, n] of Object.entries(c.examined_by_check ?? {})) {
-      if (total.has(id)) total.set(id, (total.get(id) ?? 0) + n);
-    }
-  }
-  return [...total.entries()]
-    .filter(([id, n]) => n === 0 && !(id in deferred))
+  return [...examinedTotals(checkIds, deferred, cards).entries()]
+    .filter(([, n]) => n === 0)
+    .map(([id]) => id)
+    .sort();
+}
+
+/**
+ * Registered, non-deferred check ids with no key in ANY card. The cards are the last
+ * successful page run, so this is usually a check registered since then; reported by name,
+ * not failed — the runner's live Guard 2 (seeded from the manifest, not the cards) judges it
+ * on the next full run.
+ */
+export function notYetMeasured(
+  checkIds: string[],
+  deferred: Record<string, string>,
+  cards: Scorecard[],
+): string[] {
+  return [...examinedTotals(checkIds, deferred, cards).entries()]
+    .filter(([, n]) => n === null)
     .map(([id]) => id)
     .sort();
 }
