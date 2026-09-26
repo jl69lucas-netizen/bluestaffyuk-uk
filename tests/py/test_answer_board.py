@@ -407,3 +407,18 @@ def test_the_client_in_a_browser_against_a_fake_db(tmp_path):
     assert res["focus"]["typedStill"] == "mine", res
     assert res["malformed"]["good"] == 1 and res["malformed"]["bad"] == 0, res
     assert res["malformed"]["errors"] == [], res
+
+
+def test_claude_md_carries_the_answer_board_rule():
+    text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+    assert "## Questions for the user — the answer board" in text
+    section = text.split("## Questions for the user — the answer board", 1)[1].split("\n## ", 1)[0]
+    for needle in ("scripts/answer_board_batch.py", "docs/reference/answer-board/README.md",
+                   "ArtifactComments", "either/or"):
+        assert needle in section, needle
+    assert not re.search(r"^\d+\. \*\*", section, re.M), "use bullets: numbered bold items count as working rules"
+
+
+def test_the_readme_names_the_board_url_and_the_paths():
+    text = (ROOT / "docs/reference/answer-board/README.md").read_text(encoding="utf-8")
+    assert "batches/<batchId>/submissions" in text and "docs/reference/answer-board/answers/" in text

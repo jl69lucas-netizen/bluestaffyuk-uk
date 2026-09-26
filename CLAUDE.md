@@ -220,6 +220,17 @@ work is done rather than how a page is built, so they are stated here.
   re-publishable. **Author the content once as markdown inside the page and render it** —
   that is what makes a section's copy button emit exact markdown.
 
+## Questions for the user — the answer board
+
+- Two or more questions for the user, or any question that needs a written answer, go to the
+  answer board as a batch (`python3 scripts/answer_board_batch.py`), never as a list in chat.
+  Chat then says only "N new questions on the board: <link>".
+- A single blocking either/or pick may still be asked in chat. Visual picks keep their browser
+  mockups, and the board question links to the mockup.
+- Watch the board with the ArtifactComments tool at the start of any session that may post or
+  receive, so the user's **Send to Claude Code** reaches the session.
+- Posting, receiving and marking a batch received: `docs/reference/answer-board/README.md`.
+
 ## Gates — run these, do not re-derive them
 
 ```bash
